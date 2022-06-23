@@ -1,5 +1,0 @@
-/* exported ShapeElementData */
-
-function ShapeElementData() {
-
-}

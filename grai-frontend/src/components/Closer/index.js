@@ -1,1 +1,0 @@
-export { CloserSection as default } from './CloserSection'

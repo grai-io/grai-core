@@ -1,1 +1,0 @@
-{"version":3,"file":"color-mode-script.d.ts","sourceRoot":"../../../src","sources":["color-mode-script.tsx"],"names":[],"mappings":";AACA,OAAO,EAAa,eAAe,EAAE,MAAM,uBAAuB,CAAA;AAElE,wBAAgB,SAAS,CAAC,YAAY,EAAE,eAAe,QAoCtD;AAED,UAAU,oBAAoB;IAC5B,gBAAgB,CAAC,EAAE,eAAe,CAAA;IAClC;;OAEG;IACH,KAAK,CAAC,EAAE,MAAM,CAAA;CACf;AAED;;;GAGG;AACH,eAAO,MAAM,eAAe,UAAW,oBAAoB,gBAM1D,CAAA"}

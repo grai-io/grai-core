@@ -1,1 +1,0 @@
-export { ExternalLink } from './ExternalLink';
