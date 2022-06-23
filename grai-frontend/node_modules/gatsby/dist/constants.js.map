@@ -1,0 +1,1 @@
+{"version":3,"sources":["../src/constants.ts"],"names":["ROUTES_DIRECTORY"],"mappings":";;;;AAAO,MAAMA,gBAAgB,GAC3B,QAA2B,GAA3B,GAAiC,yBAAjC,GAA6D,SADxD","sourcesContent":["export const ROUTES_DIRECTORY =\n  _CFLAGS_.GATSBY_MAJOR === `4` ? `.cache/page-ssr/routes/` : `public/`\n"],"file":"constants.js"}

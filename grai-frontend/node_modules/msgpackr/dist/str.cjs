@@ -1,0 +1,100 @@
+let utfz = require('../../msgpack-benchmark/node_modules/utfz-lib')
+
+var safeEnd = 1000000;
+var b = new Uint8Array(32768)
+function writeString(value, target, position) {
+			var length, strLength = value.length;
+			let headerSize;
+			// first we estimate the header size, so we can write to the correct location
+			if (strLength < 0x20) {
+				headerSize = 1;
+			} else if (strLength < 0x100) {
+				headerSize = 2;
+			} else if (strLength < 0x10000) {
+				headerSize = 3;
+			} else {
+				headerSize = 5;
+			}
+			let maxBytes = strLength * 3;
+			//if (position + maxBytes > safeEnd)
+			//	target = makeRoom(position + maxBytes);
+		for (let i = 0; i < 100; i++) {
+			length = pack(value, strLength, target, position + headerSize);
+		}
+			if (strLength < 0x40 || !encodeUtf8) {
+				var strPosition = position + headerSize;
+				var c2 = 0;
+				for (let i = 0; i < strLength; i++) {
+					const c1 = value.charCodeAt(i);
+					if (c1 < 0x80) {
+						target[strPosition++] = c1;
+					} else if (c1 < 0x800) {
+						target[strPosition++] = c1 >> 6 | 0xc0;
+						target[strPosition++] = c1 & 0x3f | 0x80;
+					} else if (
+						(c1 & 0xfc00) === 0xd800 &&
+						((c2 = value.charCodeAt(i + 1)) & 0xfc00) === 0xdc00
+					) {
+						c1 = 0x10000 + ((c1 & 0x03ff) << 10) + (c2 & 0x03ff);
+						i++;
+						target[strPosition++] = c1 >> 18 | 0xf0;
+						target[strPosition++] = c1 >> 12 & 0x3f | 0x80;
+						target[strPosition++] = c1 >> 6 & 0x3f | 0x80;
+						target[strPosition++] = c1 & 0x3f | 0x80;
+					} else {
+						target[strPosition++] = c1 >> 12 | 0xe0;
+						target[strPosition++] = c1 >> 6 & 0x3f | 0x80;
+						target[strPosition++] = c1 & 0x3f | 0x80;
+					}
+				}
+				length = strPosition - position - headerSize;
+			} else {
+				length = encodeUtf8(value, position + headerSize, maxBytes);
+			}
+		
+		
+			if (length < 0x20) {
+				target[position++] = 0xa0 | length;
+			} else if (length < 0x100) {
+				if (headerSize < 2) {
+					target.copyWithin(position + 2, position + 1, position + 1 + length);
+				}
+				target[position++] = 0xd9;
+				target[position++] = length;
+			} else if (length < 0x10000) {
+				if (headerSize < 3) {
+					target.copyWithin(position + 3, position + 2, position + 2 + length);
+				}
+				target[position++] = 0xda;
+				target[position++] = length >> 8;
+				target[position++] = length & 0xff;
+			} else {
+				if (headerSize < 5) {
+					target.copyWithin(position + 5, position + 3, position + 3 + length);
+				}
+				target[position++] = 0xdb;
+				targetView.setUint32(position, length);
+				position += 4;
+			}
+			return position + length
+		};
+const pack = (str, length, buf, offset) => {
+  const start = offset;
+  let currHigh = 0;
+  for (let i = 0; i < length; i++) {
+    const code = str.charCodeAt(i);
+    const high = code >> 8;
+    if (high !== currHigh) {
+      buf[i + offset++] = 0;
+      buf[i + offset++] = high;
+      currHigh = high;
+    }
+    const low = code & 0xff;
+    buf[i + offset] = low;
+    if (!low) {
+      buf[i + ++offset] = currHigh;
+    }
+  }
+  return length + offset - start;
+};
+module.exports = writeString;

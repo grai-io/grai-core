@@ -1,0 +1,1 @@
+export { BenefitsSection as default } from './Benefits';
