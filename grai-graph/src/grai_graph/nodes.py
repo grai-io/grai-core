@@ -6,7 +6,7 @@ class Node:
         self.node_id = uuid.uuid4()
         # self.ancestor_id = ancestor_id
         # self.updated_at = update_time
-
+    
 
 class DataElement(Node):
     pass

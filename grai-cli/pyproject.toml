@@ -17,6 +17,7 @@ tabulate = "^0.8.10"
 confuse = "^1.7.0"
 validators = "^0.20.0"
 fqdn = "^1.5.1"
+schema = "^0.7.5"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

@@ -1,0 +1,10 @@
+version: v1
+type: Node
+spec:
+    name: TestNode
+    namespace: test
+    data_source: test_folder
+    display_name: Mr. Testerson
+    is_active: true
+    metadata:
+        stuff: Goes here

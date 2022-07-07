@@ -1,20 +1,28 @@
-from functools import cache
+import typer
 import os
 from confuse import LazyConfig, YamlSource, CONFIG_FILENAME
-from grai_cli.settings.templates import get_config_parameters
+
+from confuse import OneOf
 
 
-def apply_redactions(config, redact_dict: dict):
+class ConfuseParameters:
+    def __init__(self, template, default_values, redacted_fields):
+        self.template = template
+        self.default_values = default_values
+        self.redacted_fields = redacted_fields
+
+
+def apply_redactions(config_to_redact: LazyConfig, redact_dict: dict):
     for path, value in redact_dict.items():
-        view = config
+        view = config_to_redact
         for key in path.split('.'):
             view = view[key]
         view.redact = value
 
 
 class GraiLazyConfig(LazyConfig):
-    def __init__(self, name, parameters, *args, **kwargs):
-        super().__init__(name, __name__, *args, **kwargs)
+    def __init__(self, name: str, parameters: ConfuseParameters):
+        super().__init__(name, __name__)
 
         self.parameters = parameters
         self.set_args(self.parameters.default_values, dots=True)
@@ -25,5 +33,62 @@ class GraiLazyConfig(LazyConfig):
     def config_filename(self):
         return os.path.join(self.config_dir(), CONFIG_FILENAME)
 
+    def view(self):
+        typer.echo(f"\nfile: {self.config_filename}")
+        typer.echo("\n-------------------------------\n")
+        typer.echo(self.dump(self.parameters.template, redact=True))
+
+
+def _get_config_template():
+    ##########################
+
+    server_template = {
+        "host": str,
+        "port": str,
+    }
+
+    ##########################
+    auth_user_template = {
+        "user": str,
+        "password": str,
+    }
+
+    auth_api_template = {
+        "api_key": str,
+    }
+
+    auth_template = OneOf([auth_user_template, auth_api_template])
+
+    ###########################
+
+    context_template = {
+        "namespace": str
+    }
+
+    ###########################
+
+    template = {
+        "server": server_template,
+        "auth": auth_template,
+        "context": context_template,
+    }
+    return template
+
+
+def get_config_parameters():
+    default_values = {
+        "server.host": "localhost",
+        "server.port": "8000",
+        "context.namespace": "default",
+    }
+
+    redacted_fields = {
+        'auth.password': True,
+        'auth.api_key': True,
+    }
+
+    template = _get_config_template()
+
+    return ConfuseParameters(template, default_values, redacted_fields)
 
 config = GraiLazyConfig('grai', get_config_parameters())

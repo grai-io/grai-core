@@ -1,4 +1,3 @@
-import yaml
 import typer
 from grai_cli.api.config.setup import config_app
 from grai_cli import config
@@ -39,3 +38,8 @@ def cli_init_config(
     config['server']['host'].set(host)
     config['server']['port'].set(port)
 
+
+@config_app.command()
+def view():
+    """Initialize a new config file"""
+    typer.echo(config.view())
