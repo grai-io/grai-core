@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "grai-cli"
+version = "0.1.0"
+description = ""
+authors = ["Ian Eaves <ian.k.eaves@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.scripts]
+grai = "grai_cli.api.entrypoint:app"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+typer = {extras = ["all"], version = "^0.4.2"}
+click-spinner = "^0.1.10"
+tqdm = "^4.64.0"
+tabulate = "^0.8.10"
+confuse = "^1.7.0"
+validators = "^0.20.0"
+fqdn = "^1.5.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+black = "^22.6.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
