@@ -7,5 +7,4 @@ from grai_cli.settings.schemas.schema_resolver import validate_file
 @app.command('apply')
 def apply(file: Path = typer.Argument(...)):
     result = validate_file(file)
-    print(result)
 

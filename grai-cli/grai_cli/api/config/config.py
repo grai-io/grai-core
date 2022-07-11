@@ -9,9 +9,9 @@ from grai_cli.utilities.utilities import writes_config
 @config_app.command('init')
 @writes_config
 def cli_init_config(
-    username: str = typer.Option(default=default_styler(config['auth']['user'].get(str)),
+    username: str = typer.Option(...,
                                  prompt=True,
-                                 callback=default_style_stripper(username_callback),
+                                 callback=username_callback,
                                  prompt_required=True),
     password: str = typer.Option(..., prompt=True,
                                  prompt_required=True,
@@ -33,10 +33,13 @@ def cli_init_config(
 ):
     """Initialize a new config file"""
 
-    config['auth']['user'].set(username)
+    config['auth']['username'].set(username)
     config['auth']['password'].set(password)
     config['server']['host'].set(host)
     config['server']['port'].set(port)
+
+
+
 
 
 @config_app.command()

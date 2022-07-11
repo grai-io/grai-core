@@ -36,6 +36,12 @@ def _(password: str =typer.Option(..., hide_input=True, callback=password_callba
     pass
 
 
+@setter_helper('auth.api_key')
+def _(api_key: str =typer.Option(..., hide_input=True, prompt=True, prompt_required=True, confirmation_prompt=True)):
+    """ Sets config value for auth.password"""
+    pass
+
+
 @setter_helper('server.host')
 def _(host: str = typer.Argument(..., callback=host_callback)):
     """ Sets config value for server.host"""

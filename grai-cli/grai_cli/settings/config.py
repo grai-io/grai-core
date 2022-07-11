@@ -2,7 +2,7 @@ import typer
 import os
 from confuse import LazyConfig, YamlSource, CONFIG_FILENAME
 
-from confuse import OneOf
+from confuse import OneOf, MappingValues, Optional, Choice
 
 
 class ConfuseParameters:
@@ -25,9 +25,10 @@ class GraiLazyConfig(LazyConfig):
         super().__init__(name, __name__)
 
         self.parameters = parameters
-        self.set_args(self.parameters.default_values, dots=True)
-        apply_redactions(self, self.parameters.redacted_fields)
         self.set_env()
+        # self.set_args(self.parameters.default_values, dots=True)
+        apply_redactions(self, self.parameters.redacted_fields)
+
 
     @property
     def config_filename(self):
@@ -37,6 +38,12 @@ class GraiLazyConfig(LazyConfig):
         typer.echo(f"\nfile: {self.config_filename}")
         typer.echo("\n-------------------------------\n")
         typer.echo(self.dump(self.parameters.template, redact=True))
+
+    def grab(self, value: str):
+        base = self.get(self.parameters.template)
+        for key in value.split('.'):
+            base = base[key]
+        return base
 
 
 def _get_config_template():
@@ -48,13 +55,18 @@ def _get_config_template():
     }
 
     ##########################
+    auth_modes = Choice(choices={'username', 'api'})
+    auth_typer = lambda default: Optional(auth_modes, default=default, allow_missing=True)
+
     auth_user_template = {
-        "user": str,
+        "username": str,
         "password": str,
+        "authentication_mode": auth_typer('username'),
     }
 
     auth_api_template = {
         "api_key": str,
+        "authentication_mode": auth_typer('api'),
     }
 
     auth_template = OneOf([auth_user_template, auth_api_template])
@@ -90,5 +102,6 @@ def get_config_parameters():
     template = _get_config_template()
 
     return ConfuseParameters(template, default_values, redacted_fields)
+
 
 config = GraiLazyConfig('grai', get_config_parameters())

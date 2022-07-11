@@ -18,6 +18,8 @@ confuse = "^1.7.0"
 validators = "^0.20.0"
 fqdn = "^1.5.1"
 schema = "^0.7.5"
+apipkg = "^3.0.1"
+requests = "^2.28.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
