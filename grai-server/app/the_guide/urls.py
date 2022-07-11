@@ -1,0 +1,34 @@
+from django.contrib import admin
+from django.urls import include, path
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+from strawberry.django.views import AsyncGraphQLView
+from api.schema import schema
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+
+
+spectacular_settings = {
+    'SCHEMA_PATH_PREFIX': '/api/v1/',
+}
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("api/v1/health/", include('health.urls'), name='health'),
+    path("api/v1/auth/jwttoken/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/v1/auth/jwttoken/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path('api/v1/auth/', include('auth.urls'), name='auth'),
+    path('api/v1/lineage/', include('lineage.urls'), name='lineage'),
+
+    #path("graphql/", AsyncGraphQLView.as_view(schema=schema)),  # Double check authentication on this one
+    # OpenAPI 3 docs w/ Swagger
+    path("schema/", SpectacularAPIView.as_view(custom_settings=spectacular_settings), name="schema"),
+    path(
+        "docs/",
+        SpectacularSwaggerView.as_view(
+            template_name="swagger-ui.html", url_name="schema"
+        ),
+        name="swagger-ui",
+    ),
+]

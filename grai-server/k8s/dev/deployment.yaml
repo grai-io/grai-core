@@ -1,0 +1,15 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: the-guide
+  namespace: the-guide
+spec:
+  template:
+    spec:
+      containers:
+      - name: the-guide
+        image: 627169567483.dkr.ecr.us-east-2.amazonaws.com/grai-io/the_guide:dev
+        imagePullPolicy: Always
+        envFrom:
+        - secretRef:
+            name: the-guide-secrets

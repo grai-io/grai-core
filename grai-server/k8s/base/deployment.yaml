@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: the-guide
+  namespace: the-guide
+  labels:
+    app: the-guide
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: the-guide
+  template:
+    metadata:
+      labels:
+        app: the-guide
+    spec:
+      containers:
+      - name: the-guide
+        command: ["gunicorn", "--bind", "0.0.0.0:8000", "the_guide.wsgi"]
+        ports:
+          - name: the-guide
+            containerPort: 8000
+            protocol: TCPcd

@@ -1,0 +1,16 @@
+# creation rules are evaluated sequentially, the first match wins
+creation_rules:
+  # upon creation of a file that matches the pattern *.dev.yaml,
+  # KMS set A is used
+  - path_regex: dev/secrets\.env$
+    kms: 'arn:aws:kms:us-east-2:627169567483:key/6055bb96-26f7-4560-849e-897f39458ba6'
+
+  #- encrypted_regex: '^(data|stringData)$'
+  #  kms: 'arn:aws:kms:us-east-2:627169567483:key/6055bb96-26f7-4560-849e-897f39458ba6'
+    #pgp: '442DB5650CD7BF5D7B1462FBB03D4D8891B57D95'
+
+  # prod files use KMS set B in the PROD IAM
+  #- path_regex: \.prod\.yaml$
+  #  kms:
+  #  pgp: '442DB5650CD7BF5D7B1462FBB03D4D8891B57D95'
+  #  hc_vault_uris: "http://localhost:8200/v1/sops/keys/thirdkey"

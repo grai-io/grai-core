@@ -1,0 +1,26 @@
+version: '3.7'
+
+services:
+  the_guide:
+    build: ./app
+    command: gunicorn --bind 0.0.0.0:8000 the_guide.wsgi
+    volumes:
+      - ./app/:/usr/src/app/
+    ports:
+      - 8000:8000
+    environment:
+      - DB_HOST=db
+    # env_file:
+    #   - ./.env.dev
+  db:
+    image: postgres:14.3-alpine
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=grai
+      - POSTGRES_PASSWORD=grai
+      - POSTGRES_DB=grai
+    ports:
+      - 5432:5432
+volumes:
+  pgdata:

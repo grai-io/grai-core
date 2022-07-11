@@ -1,0 +1,7 @@
+resources:
+- ./../base
+nameSuffix: -prod
+secretGenerator:
+  - name: the-guide-secrets
+    envs:
+      - secrets.env
