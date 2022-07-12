@@ -26,7 +26,7 @@ class GraiLazyConfig(LazyConfig):
 
         self.parameters = parameters
         self.set_env()
-        # self.set_args(self.parameters.default_values, dots=True)
+        self.set_args(self.parameters.default_values, dots=True)
         apply_redactions(self, self.parameters.redacted_fields)
 
 
