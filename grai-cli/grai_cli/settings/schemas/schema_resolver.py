@@ -17,4 +17,4 @@ def validate_file(file: str | Path) -> Dict:
     configuration = load_yaml(file)
     result: (str, str) = schema.validate(configuration)
     schema = version_resolvers[result['type']][result['version']]()
-    return schema.validate(configuration)
+    return [schema.validate(configuration)]

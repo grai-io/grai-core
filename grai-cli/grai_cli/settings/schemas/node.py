@@ -6,8 +6,9 @@ from schema import Schema
 def node_schema_v1():
     from grai_cli import config
 
-    version_fields = {
-
+    top_level_fields = {
+        "version": str,
+        "type": str
     }
     node_fields = {
         "name": str,
@@ -22,7 +23,7 @@ def node_schema_v1():
         "spec": node_fields
     }
 
-    schema = version_fields | node_values
+    schema = top_level_fields | node_values
     return Schema(schema, ignore_extra_keys=True)
 
 
