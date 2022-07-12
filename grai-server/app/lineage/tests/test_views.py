@@ -10,6 +10,8 @@ from users.models import User
 from lineage.models import Node, Edge
 from django.test.client import RequestFactory
 from rest_framework.test import force_authenticate
+from rest_framework.test import APIClient
+from rest_framework_api_key.models import APIKey
 
 
 def create_node(client, name=None, namespace='default', data_source='test'):
@@ -115,6 +117,12 @@ def test_duplicate_edge_nodes(auto_login_user):
         response = create_edge(client, source=node_id, destination=node_id)
 
 
+@pytest.fixture
+def api_key():
+    api_key, key = APIKey.objects.create_key(name=str(uuid.uuid4()))
+    return key
+
+
 class TestNodeUserAuth:
     def test_password_auth(self, db, client, create_user, test_password):
         user = create_user()
@@ -135,7 +143,79 @@ class TestNodeUserAuth:
 
     def test_token_auth(self, db, client, create_user):
         user = create_user()
-        headers = {'Authorization': f'Token {user.auth_token.key}'}
-        response = create_node(client, headers)
-
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION=f'Token {user.auth_token.key}')
+        response = create_node(client)
         assert response.status_code == 201
+
+    def test_invalid_token_auth(self, db, client, create_user):
+        user = create_user()
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION=f'Token wrong_token')
+        response = create_node(client)
+        assert response.status_code == 403
+
+    def test_api_key_auth(self, db, client, create_user, api_key):
+        user = create_user()
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION=f'Api-Key {api_key}')
+        response = create_node(client)
+        assert response.status_code == 201
+
+    def test_invalid_api_key_auth(self, db, client, create_user, api_key):
+        user = create_user()
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION=f'Api-Key wrong_api_key')
+        response = create_node(client)
+        assert response.status_code == 403
+
+
+@pytest.fixture
+def test_nodes(db, client, auto_login_user, n=2):
+    client, user = auto_login_user()
+    nodes = [create_node(client).json()['id'] for i in range(n)]
+    return nodes
+
+
+class TestEdgeUserAuth:
+    def test_password_auth(self, db, client, auto_login_user, test_nodes):
+        client, user = auto_login_user()
+        response = create_edge(client, *test_nodes)
+        assert response.status_code == 201
+
+    def test_incorrect_password_auth(self, db, client, create_user, test_nodes):
+        user = create_user()
+        client.logout()
+        client.login(username=user.username, password='wrong_password')
+        response = create_edge(client, *test_nodes)
+        assert response.status_code == 403
+
+    def test_no_auth(self, db, client, create_user, test_nodes):
+        client.logout()
+        response = create_edge(client, *test_nodes)
+        assert response.status_code == 403
+
+    def test_token_auth(self, db, create_user, *test_nodes):
+        user = create_user()
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION=f'Token {user.auth_token.key}')
+        response = create_edge(client, *test_nodes)
+        assert response.status_code == 201
+
+    def test_invalid_token_auth(self, db, create_user, test_nodes):
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION=f'Token wrong_token')
+        response = create_edge(client, *test_nodes)
+        assert response.status_code == 403
+
+    def test_api_key_auth(self, db, api_key, test_nodes):
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION=f'Api-Key {api_key}')
+        response = create_edge(client, *test_nodes)
+        assert response.status_code == 201
+
+    def test_invalid_api_key_auth(self, db, api_key, test_nodes):
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION=f'Api-Key wrong_api_key')
+        response = create_edge(client, *test_nodes)
+        assert response.status_code == 403

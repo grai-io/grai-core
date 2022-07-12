@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_api_key.permissions import HasAPIKey
 
@@ -13,7 +13,7 @@ from lineage.serializers import NodeSerializer, EdgeSerializer
 # https://stackoverflow.com/questions/30582263/setting-user-id-automatically-on-post-in-django-rest
 
 class NodeViewSet(ModelViewSet):
-    authentication_classes = [SessionAuthentication]
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [HasAPIKey | IsAuthenticated]
 
     serializer_class = NodeSerializer
@@ -37,7 +37,7 @@ class NodeViewSet(ModelViewSet):
 
 
 class EdgeViewSet(ModelViewSet):
-    authentication_classes = [SessionAuthentication]
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [HasAPIKey | IsAuthenticated]
 
     serializer_class = EdgeSerializer
