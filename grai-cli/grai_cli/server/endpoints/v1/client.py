@@ -6,6 +6,7 @@ from grai_cli.server.utilities import response_auth_checker
 
 
 class ClientV1(BaseClient):
+    id = 'v1'
     base = '/api/v1/'
     _node_endpoint = 'lineage/nodes/'
     _edge_endpoint = 'lineage/edges/'
@@ -18,8 +19,7 @@ class ClientV1(BaseClient):
         self.edge_endpoint = f"{self.api}{self._edge_endpoint}"
         self.is_authenticated_endpoint = f"{self.api}{self._edge_endpoint}"
 
-    @response_auth_checker
-    def check_authentication(self):
+    def check_authentication(self) -> requests.Response:
         result = requests.get(self.is_authenticated_endpoint, headers=self.authentication_headers())
         return result
 

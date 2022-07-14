@@ -1,4 +1,5 @@
 from pydantic import BaseModel, ValidationError, root_validator
+from typing import Dict, Iterable, Type, TypeAlias
 
 
 class PlaceHolderSchema(BaseModel):
@@ -9,5 +10,6 @@ class PlaceHolderSchema(BaseModel):
         raise AssertionError(message)
 
 
-
-
+class BaseGraiType:
+    name = None
+    type = None

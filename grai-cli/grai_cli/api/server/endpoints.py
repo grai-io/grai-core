@@ -1,11 +1,11 @@
 import typer
+from typing import Optional
 from pathlib import Path
 from grai_cli.api.server.setup import client_app, client_get_app
-#from grai_cli.api.server.utilities import get_endpoints, get_endpoint_from_spec
-from grai_cli.settings.schemas.schema import SchemaGenericTypes
 from grai_cli.api.entrypoint import app
-from grai_cli.settings.schemas.schema import validate_file
+from grai_cli.settings.schemas.schema import SchemaGenericTypes, validate_file, Schema
 from grai_cli.utilities.styling import default_styler
+from grai_cli.utilities.utilities import write_yaml
 from grai_cli.server import get_default_client
 
 
@@ -24,35 +24,32 @@ def is_authenticated():
         typer.echo(f"Failed to Authenticate: Code {authentication_status.status_code}, {authentication_status.content}")
 
 
-@client_get_app.command('nodes', help=f"Grab active {default_styler('nodes')} from the guide.")
-def get_nodes(print: bool = typer.Option(True, "--p", help="Print nodes to console"),
-              to_file: typer.FileTextWrite = typer.Option("--f", help="Write nodes to file")):
-    client = get_default_client()
-    nodes = client.get(SchemaGenericTypes.node)
-    if print and to_file:
-        typer.echo(nodes)
-    elif print:
-        typer.echo(nodes)
-    elif to_file:
-        pass
-    return nodes
+def make_get_endpoint(grai_type):
+    @client_get_app.command(grai_type.name, help=f"Grab active {default_styler(grai_type.name)} from the guide.")
+    def inner(print: bool = typer.Option(True, "--p", help=f"Print {grai_type.name} to console"),
+              to_file: Optional[Path] = typer.Option(None, "--f", help="Write nodes to file")):
+        client = get_default_client()
+        result = client.get(grai_type)
+
+        if print or to_file:
+            result = [Schema.to_model(item, client.id, grai_type.type) for item in result]
+
+        if print:
+            typer.echo(result)
+        if to_file:
+            write_yaml(result, to_file)
+
+        return result
+
+    return inner
 
 
-@client_get_app.command('edges', help=f"Grab active {default_styler('edges')} from the guide.")
-def get_edges(print: bool = typer.Option(True, "--p", help="Print nodes to console"),
-              to_file: typer.FileTextWrite = typer.Option("--f", help="Write nodes to file")):
-    client = get_default_client()
-    nodes = client.get(SchemaGenericTypes.edge)
-    if print and to_file:
-        typer.echo(nodes)
-    elif print:
-        typer.echo(nodes)
-    elif to_file:
-        pass
-    return nodes
+types = [SchemaGenericTypes.node, SchemaGenericTypes.edge]
+for grai_type in types:
+    make_get_endpoint(grai_type)
 
 
-@app.command('apply', help="Apply a configuration to the guide by file name")
+@app.command('apply', help="Apply a configuration to The Guide by file name")
 def apply(file: Path = typer.Argument(...),
           dry_run: bool = typer.Option(False, "--d", help="Dry run of file application")):
 

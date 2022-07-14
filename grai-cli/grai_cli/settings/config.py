@@ -29,7 +29,6 @@ class GraiLazyConfig(LazyConfig):
         self.set_args(self.parameters.default_values, dots=True)
         apply_redactions(self, self.parameters.redacted_fields)
 
-
     @property
     def config_filename(self):
         return os.path.join(self.config_dir(), CONFIG_FILENAME)
@@ -57,8 +56,7 @@ def _get_config_template():
     }
 
     ##########################
-    auth_modes = Choice(choices={'username', 'api'})
-    auth_typer = lambda default: Optional(auth_modes, default=default, allow_missing=True)
+    auth_modes = Choice(choices={'username', 'api', 'token'})
 
     auth_user_template = {
         "username": str,
@@ -71,7 +69,11 @@ def _get_config_template():
         "authentication_mode": Optional(auth_modes, default='api', allow_missing=True),
     }
 
-    auth_template = OneOf([auth_user_template, auth_api_template])
+    token_template = {
+        "token": str,
+        "authentication_mode": Optional(auth_modes, default='token', allow_missing=True),
+    }
+    auth_template = OneOf([auth_user_template, auth_api_template, token_template])
 
     ###########################
 

@@ -1,12 +1,12 @@
-from typing import Dict, Type, Callable, Optional, Literal
-from typing import List, Optional, Union, Dict
+from typing import Optional, Union, Dict, Literal
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated
-
-from grai_cli.settings.schemas.utilities import PlaceHolderSchema
+from uuid import UUID
+from grai_cli.settings.schemas.utilities import PlaceHolderSchema, BaseGraiType
 
 
 class V1(BaseModel):
+    id: Optional[UUID]
     name: str
     namespace: str
     data_source: str
@@ -31,8 +31,10 @@ class NodeV2(BaseModel):
     spec: V2
 
 
-class NodeType:
-    pass
-
-
 Node = Annotated[Union[NodeV1, NodeV2], Field(discriminator='version')]
+
+
+class NodeType(BaseGraiType):
+    name = 'nodes'
+    type = 'Node'
+

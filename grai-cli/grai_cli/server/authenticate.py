@@ -1,6 +1,6 @@
-from functools import singledispatch
 from grai_cli import config
 import requests
+import json
 
 
 json_headers = {
@@ -26,18 +26,20 @@ def get_jwt(self, username, password):
 
 def authenticate_with_username():
     params = {
-        'auth': {
-            "username": str,
-            "password": str,
-        }
+        "username": config.grab('auth.username'),
+        "password": config.grab('auth.password'),
     }
-    params = config.get(params).pop('auth')
-    raise Exception("not implemented")
-    return config.get(params)
+    try:
+        token = config['auth']['token'].get(str)
+    except:
+        url = "http://localhost:8000/api/v1/auth/api-token/"
+        token = requests.post(url, data=json.dumps(params), headers=json_headers).json()['token']
+        config['auth']['token'].set(token)
+    return authenticate_with_token(token)
 
 
-def authenticate_with_token():
-    token = config.grab('auth.token')
+def authenticate_with_token(token=None):
+    token = config.grab('auth.token') if token is None else token
     header = {"Authorization": f"Token {token}"}
     return header
 
@@ -50,7 +52,7 @@ def authenticate_with_api_key():
 
 # TODO Switch to pydantic
 def authenticate():
-    auth_modes = [authenticate_with_username, authenticate_with_api_key, authenticate_with_token]
+    auth_modes = [authenticate_with_api_key, authenticate_with_token, authenticate_with_username]
     for mode in auth_modes:
         try:
             return mode()

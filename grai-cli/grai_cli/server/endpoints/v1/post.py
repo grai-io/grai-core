@@ -10,32 +10,17 @@ from functools import singledispatch
 from grai_cli.server.utilities import response_auth_checker
 
 
-@ClientV1.post.register(str)
-@response_auth_checker
-def _(client: ClientV1, url: str, payload: Dict) -> Dict:
-    headers = client.authentication_headers() | {'Content-Type': 'application/json'}
-    payload = {k: v for k, v in payload.items() if v is not None}
-    response = requests.post(url, data=json.dumps(payload), headers=headers)
-    return response
-
-
-@ClientV1.post.register(NodeV1)
-def _(client: ClientV1, grai_type: NodeV1) -> Dict:
-    url = client.node_endpoint
-    return client.post(url, grai_type.spec.dict())
-
-
 @singledispatch
 def get_edge_node_id(node_id: Any, client: ClientV1) -> UUID:
     raise NotImplementedError(f"No post method implemented for type {type(node_id)}")
 
 
-@get_edge_node_id.register(UUID)
+@get_edge_node_id.register
 def _(node_id: UUID, client: ClientV1) -> UUID:
     return node_id
 
 
-@get_edge_node_id.register(EdgeNodeValues)
+@get_edge_node_id.register
 def _(node_id: EdgeNodeValues, client: ClientV1) -> UUID:
     node = client.get(node_id)
     if len(node) == 0:
@@ -52,9 +37,25 @@ def _(node_id: EdgeNodeValues, client: ClientV1) -> UUID:
     return node[0]['id']
 
 
+@ClientV1.post.register(str)
+@response_auth_checker
+def _(client: ClientV1, url: str, payload: Dict) -> Dict:
+    headers = client.authentication_headers() | {'Content-Type': 'application/json'}
+    payload = {k: v for k, v in payload.items() if v is not None}
+    response = requests.post(url, data=json.dumps(payload), headers=headers)
+    return response
+
+
+@ClientV1.post.register(NodeV1)
+def _(client: ClientV1, grai_type: NodeV1) -> Dict:
+    url = client.node_endpoint
+    return client.post(url, grai_type.spec.dict())
+
+
 @ClientV1.post.register(EdgeV1)
 def _(client: ClientV1, grai_type: EdgeV1) -> Dict:
     grai_type.spec.source = get_edge_node_id(grai_type.spec.source, client)
     grai_type.spec.destination = get_edge_node_id(grai_type.spec.destination, client)
     url = client.edge_endpoint
+    print(grai_type.spec.dict())
     return client.post(url, grai_type.spec.dict())

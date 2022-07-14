@@ -3,7 +3,7 @@ from typing import List, Optional, Union
 from pydantic import BaseModel, Field
 from uuid import UUID
 from typing_extensions import Annotated
-from grai_cli.settings.schemas.utilities import PlaceHolderSchema
+from grai_cli.settings.schemas.utilities import PlaceHolderSchema, BaseGraiType
 
 
 class EdgeNodeValues(BaseModel):
@@ -35,8 +35,9 @@ class EdgeV2(BaseModel):
     spec: V2
 
 
-class EdgeType:
-    pass
-
-
 Edge = Annotated[Union[EdgeV1, EdgeV2], Field(discriminator='version')]
+
+
+class EdgeType(BaseGraiType):
+    name = 'edges'
+    type = 'Edge'

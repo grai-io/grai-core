@@ -1,4 +1,4 @@
-from typing import Iterable, Union, Type
+from typing import Iterable, Union, Type, Dict
 from pydantic import BaseModel, Field
 from grai_cli.settings.schemas.edge import Edge, EdgeType
 from grai_cli.settings.schemas.node import Node, NodeType
@@ -13,12 +13,21 @@ GraiType = Annotated[Union[Node, Edge], Field(discriminator='type')]
 class Schema(BaseModel):
     entity: GraiType
 
-
-class SchemaGenericTypes:
-    node = NodeType()
-    edge = EdgeType()
+    @classmethod
+    def to_model(cls, item: Dict, version: str, type: str):
+        result = {
+            'type': type,
+            'version': version,
+            'spec': item,
+        }
+        return cls(entity=result).entity
 
 
 def validate_file(file: str | Path) -> Iterable[Type[GraiType]]:
     for config in load_all_yaml(file):
         yield Schema(entity=config).entity
+
+
+class SchemaGenericTypes:
+    node = NodeType()
+    edge = EdgeType()

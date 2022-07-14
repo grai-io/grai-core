@@ -24,9 +24,9 @@ def setter_helper(path: str):
     return set_function_maker
 
 
-@setter_helper('auth.user')
-def _(user: str = typer.Argument(..., callback=username_callback)):
-    """ Sets config value for auth.user"""
+@setter_helper('auth.username')
+def _(username: str = typer.Argument(..., callback=username_callback)):
+    """ Sets config value for auth.username"""
     pass
 
 
@@ -38,7 +38,13 @@ def _(password: str =typer.Option(..., hide_input=True, callback=password_callba
 
 @setter_helper('auth.api_key')
 def _(api_key: str =typer.Option(..., hide_input=True, prompt=True, prompt_required=True, confirmation_prompt=True)):
-    """ Sets config value for auth.password"""
+    """ Sets config value for auth.api_key"""
+    pass
+
+
+@setter_helper('auth.token')
+def _(token: str =typer.Option(..., hide_input=True, prompt=True, prompt_required=True, confirmation_prompt=True)):
+    """ Sets config value for auth.token"""
     pass
 
 
@@ -52,6 +58,7 @@ def _(host: str = typer.Argument(..., callback=host_callback)):
 def _(port: str = typer.Argument(..., callback=port_callback)):
     """ Sets config value for server.port"""
     pass
+
 
 @setter_helper('context.namespace')
 def _(namespace: str = typer.Argument(...)):

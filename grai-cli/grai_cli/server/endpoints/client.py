@@ -4,7 +4,9 @@ from functools import singledispatchmethod, singledispatch
 from typing import Any
 
 
-class BaseClient():
+class BaseClient:
+    id = 'base'
+
     def __init__(self):
         self.host = config.grab('server.host')
         self.port = config.grab('server.port')
