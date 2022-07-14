@@ -1,32 +1,38 @@
-from schema import Optional
-from typing import Dict, Type, Callable
-from schema import Schema
+from typing import Dict, Type, Callable, Optional, Literal
+from typing import List, Optional, Union, Dict
+from pydantic import BaseModel, Field
+from typing_extensions import Annotated
+
+from grai_cli.settings.schemas.utilities import PlaceHolderSchema
 
 
-def node_schema_v1():
-    from grai_cli import config
-
-    top_level_fields = {
-        "version": str,
-        "type": str
-    }
-    node_fields = {
-        "name": str,
-        Optional("namespace", default=config['context']['namespace'].get()): str,
-        "data_source": str,
-        Optional("display_name"): str,
-        Optional("is_active"): bool,
-        Optional("metadata"): dict,
-    }
-
-    node_values = {
-        "spec": node_fields
-    }
-
-    schema = top_level_fields | node_values
-    return Schema(schema, ignore_extra_keys=True)
+class V1(BaseModel):
+    name: str
+    namespace: str
+    data_source: str
+    display_name: Optional[str]
+    is_active: Optional[str]
+    metadata: Optional[Dict] = {}
 
 
-node_versions: Dict[str, Callable[[], Schema]] = {
-    "v1": node_schema_v1
-}
+class V2(PlaceHolderSchema):
+    pass
+
+
+class NodeV1(BaseModel):
+    version: Literal['v1']
+    type: Literal['Node']
+    spec: V1
+
+
+class NodeV2(BaseModel):
+    version: Literal['v2']
+    type: Literal['Node']
+    spec: V2
+
+
+class NodeType:
+    pass
+
+
+Node = Annotated[Union[NodeV1, NodeV2], Field(discriminator='version')]

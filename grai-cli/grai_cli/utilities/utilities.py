@@ -1,14 +1,20 @@
-from typing import Callable
+from typing import Callable, Dict, Iterable
 import yaml
 from pathlib import Path
 from functools import wraps
 from grai_cli.settings.config import config
 
 
-def load_yaml(file: str | Path):
+def load_yaml(file: str | Path) -> Dict:
     with open(file, "r") as file:
         result = yaml.safe_load(file)
     return result
+
+
+def load_all_yaml(file: str | Path) -> Iterable[Dict]:
+    with open(file, "r") as file:
+        for item in yaml.safe_load_all(file):
+            yield item
 
 
 def writes_config(fn: Callable) -> Callable:

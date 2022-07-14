@@ -1,0 +1,6 @@
+version: v1
+type: Node
+spec:
+    name: node2
+    namespace: test
+    data_source: cli-test

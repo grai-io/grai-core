@@ -1,11 +1,13 @@
-from schema import Schema, And
+from pydantic import BaseModel, ValidationError, root_validator
 
 
-def base_schema():
-    base = {
-        "version": And(str, lambda x: x == "v1"),
-        "type": And(str, lambda x: x == "Node"),
-    }
-    return Schema(base, ignore_extra_keys=True)
+class PlaceHolderSchema(BaseModel):
+    @root_validator(pre=True)
+    def _(cls, values):
+        message = ("Something is wrong... I can feel it 😡. You've reached a placeholder schema - "
+                    "most likely the `version` of your config file doesn't exist yet.")
+        raise AssertionError(message)
+
+
 
 

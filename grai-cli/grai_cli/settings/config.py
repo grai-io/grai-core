@@ -49,9 +49,11 @@ class GraiLazyConfig(LazyConfig):
 def _get_config_template():
     ##########################
 
+    api_versions = Choice(choices={'v1'})
     server_template = {
         "host": str,
         "port": str,
+        "api_version": Optional(api_versions, default='v1', allow_missing=True)
     }
 
     ##########################
@@ -61,12 +63,12 @@ def _get_config_template():
     auth_user_template = {
         "username": str,
         "password": str,
-        "authentication_mode": auth_typer('username'),
+        "authentication_mode": Optional(auth_modes, default='username', allow_missing=True),
     }
 
     auth_api_template = {
         "api_key": str,
-        "authentication_mode": auth_typer('api'),
+        "authentication_mode": Optional(auth_modes, default='api', allow_missing=True),
     }
 
     auth_template = OneOf([auth_user_template, auth_api_template])

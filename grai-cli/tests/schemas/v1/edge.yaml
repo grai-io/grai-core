@@ -1,0 +1,13 @@
+version: v1
+type: Edge
+spec:
+    data_source: test_folder
+    source:
+        name: node1
+        namespace: test
+    destination:
+        name: node2
+        namespace: test
+    is_active: true
+    metadata:
+        stuff: goes_here

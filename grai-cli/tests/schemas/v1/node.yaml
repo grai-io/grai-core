@@ -1,9 +1,9 @@
 version: v1
 type: Node
 spec:
-    name: TestNode
+    name: node1
     namespace: test
-    data_source: test_folder
+    data_source: cli-test
     display_name: Mr. Testerson
     is_active: true
     metadata:
