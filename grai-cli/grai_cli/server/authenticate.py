@@ -35,6 +35,7 @@ def authenticate_with_username():
         url = "http://localhost:8000/api/v1/auth/api-token/"
         token = requests.post(url, data=json.dumps(params), headers=json_headers).json()['token']
         config['auth']['token'].set(token)
+
     return authenticate_with_token(token)
 
 

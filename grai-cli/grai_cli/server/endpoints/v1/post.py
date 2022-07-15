@@ -57,5 +57,5 @@ def _(client: ClientV1, grai_type: EdgeV1) -> Dict:
     grai_type.spec.source = get_edge_node_id(grai_type.spec.source, client)
     grai_type.spec.destination = get_edge_node_id(grai_type.spec.destination, client)
     url = client.edge_endpoint
-    print(grai_type.spec.dict())
-    return client.post(url, grai_type.spec.dict())
+    result = grai_type.spec.dict()
+    return client.post(url, result)
