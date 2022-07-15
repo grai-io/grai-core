@@ -13,8 +13,7 @@ class OncePerSecondUserThrottle(UserRateThrottle):
 
 @api_view(['GET'])
 @throttle_classes([OncePerSecondUserThrottle])
-#@permission_classes([HasAPIKey | IsAuthenticated])
-@permission_classes([HasAPIKey])
+@permission_classes([HasAPIKey | IsAuthenticated])
 def check_authentication(request):
     return Response({"message": "Authenticated!"})
 

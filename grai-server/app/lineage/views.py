@@ -13,7 +13,7 @@ from lineage.serializers import NodeSerializer, EdgeSerializer
 # https://stackoverflow.com/questions/30582263/setting-user-id-automatically-on-post-in-django-rest
 
 class NodeViewSet(ModelViewSet):
-    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    authentication_classes = [SessionAuthentication, TokenAuthentication, BasicAuthentication]
     permission_classes = [HasAPIKey | IsAuthenticated]
 
     serializer_class = NodeSerializer
@@ -43,7 +43,7 @@ class NodeViewSet(ModelViewSet):
 
 
 class EdgeViewSet(ModelViewSet):
-    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    authentication_classes = [SessionAuthentication, TokenAuthentication, BasicAuthentication]
     permission_classes = [HasAPIKey | IsAuthenticated]
 
     serializer_class = EdgeSerializer
