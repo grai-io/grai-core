@@ -2,15 +2,16 @@
 name = "grai-cli"
 version = "0.1.0"
 description = ""
-authors = ["Ian Eaves <ian.k.eaves@gmail.com>"]
+authors = ["Ian Eaves <ian@grai.io>"]
 readme = "README.md"
+license = "Elastic-2.0"
 
 [tool.poetry.scripts]
 grai = "grai_cli.api.entrypoint:app"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-typer = {extras = ["all"], version = "^0.4.2"}
+typer = {extras = ["all"], version = "^0.6"}
 click-spinner = "^0.1.10"
 tqdm = "^4.64.0"
 tabulate = "^0.8.10"
@@ -20,9 +21,11 @@ fqdn = "^1.5.1"
 apipkg = "^3.0.1"
 requests = "^2.28.1"
 pydantic = "^1.9.1"
+rich = "^12.5.1"
+grai-client = "^0.1.0"
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.2"
+pytest = "^7"
 black = "^22.6.0"
 
 [build-system]

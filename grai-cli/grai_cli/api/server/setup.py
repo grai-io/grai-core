@@ -1,5 +1,20 @@
 import typer
 from grai_cli.api.entrypoint import app
+from grai_cli import config
+from grai_client.endpoints.client import BaseClient
+from grai_cli.utilities.headers import authenticate
+from typing import Type, Dict
+
+
+def get_default_client() -> BaseClient:
+    from grai_client.endpoints.v1.client import ClientV1
+
+    _clients: Dict[str, Type[BaseClient]] = {"v1": ClientV1}
+    host = config.grab("server.host")
+    port = config.grab("server.port")
+    client = _clients[config.grab("server.api_version")](host, port)
+    authenticate(client)
+    return client
 
 
 client_app = typer.Typer(no_args_is_help=True, help="Interact with The Guide")

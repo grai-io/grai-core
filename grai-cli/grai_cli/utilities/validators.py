@@ -26,13 +26,16 @@ def host_callback(inp: str):
     def host_is_valid(inp: str):
         # TODO
         return True
+
     if not host_is_valid(inp):
         raise typer.BadParameter(f"Invalid hostname {inp}")
     return inp
 
 
 def port_callback(inp: str):
-    error = typer.BadParameter(f"'{inp}' is not a valid port, should be a number between 1 and 65535")
+    error = typer.BadParameter(
+        f"'{inp}' is not a valid port, should be a number between 1 and 65535"
+    )
     if not inp.isnumeric():
         raise error
     else:

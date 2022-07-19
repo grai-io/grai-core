@@ -8,3 +8,16 @@ spec:
     is_active: true
     metadata:
         stuff: Goes here
+
+---
+version: v1
+type: Node
+spec:
+
+    name: API
+    namespace: ml-development
+    data_source: cli-test
+    display_name: Mr. Testerson
+    is_active: true
+    metadata:
+        stuff: Goes here
