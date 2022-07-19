@@ -1,3 +1,6 @@
+import networkx as nx
+
+
 class LineageUpdate:
     pass
 

@@ -68,7 +68,6 @@ class Node(BaseModel):
     metadata: Dict = {}
 
 
-
 def build_node(table: Table, column: Column, namespace: str = 'default', data_source: str = 'postgres') -> Node:
     return Node(name=column.name,
                 namespace=namespace,
