@@ -4,12 +4,12 @@ from uuid import UUID
 
 
 class BaseNode(BaseModel):
-    id: UUID
+    id: Union[UUID, str]
     name: str
     namespace: str
     data_source: str
     display_name: Optional[str]
-    is_active: Optional[str]
+    is_active: Optional[bool]
     metadata: Optional[Dict] = {}
 
 

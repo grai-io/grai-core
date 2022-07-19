@@ -8,7 +8,7 @@ EdgeTypes = Union[Type[BaseEdge], BaseEdge]
 
 
 class GraphManifest:
-    def __init__(self, nodes, edges):
+    def __init__(self, nodes: List[Dict], edges: List[Dict]):
         self.nodes: List[NodeTypes] = nodes
         self.edges: List[EdgeTypes] = edges
 
@@ -18,8 +18,14 @@ class Graph(nx.DiGraph):
         self.manifest: GraphManifest = manifest
 
         super().__init__()
-        self.add_nodes_from(self.manifest.nodes)
-        self.add_edges_from(self.manifest.edges)
+        self.add_nodes_from(self.add_nodes_from_manifest())
+        self.add_edges_from(self.add_edges_from_manifest())
+
+    def add_nodes_from_manifest(self):
+        return ((node.id, node.dict) for node in self.manifest.nodes)
+
+    def add_edges_from_manifest(self):
+        return ((edges.id, edges.dict) for edges in self.manifest.edges)
 
     def downstream_nodes(self, node_id):
         return nx.bfs_successors(self, node_id)
@@ -30,14 +36,14 @@ def process_nodes(node_vals: Any) -> List[NodeTypes]:
     raise NotImplementedError()
 
 
-@process_nodes.register(List)
-@process_nodes.register(Tuple)
-def _(node_iter: List) -> List[NodeTypes]:
+@process_nodes.register(list)
+@process_nodes.register(tuple)
+def _(node_iter: Union[list, tuple]) -> List[NodeTypes]:
     return [BaseNode(**node) for node in node_iter]
 
 
-@process_nodes.register(Dict)
-def _(node_dict: Dict) -> NodeTypes:
+@process_nodes.register
+def _(node_dict: dict) -> NodeTypes:
     return BaseNode(**node_dict)
 
 
@@ -46,14 +52,14 @@ def process_edges(edge_vals: Any) -> List[EdgeTypes]:
     raise NotImplementedError()
 
 
-@process_edges.register(List)
-@process_edges.register(Tuple)
-def _(edge_iter: List) -> List[EdgeTypes]:
-    return [BaseEdge(**node) for node in edge_iter]
+@process_edges.register(list)
+@process_edges.register(tuple)
+def _(edge_iter: Union[list, tuple]) -> List[EdgeTypes]:
+    return [BaseEdge(**edge) for edge in edge_iter]
 
 
-@process_edges.register(Dict)
-def _(edge_dict: Dict) -> EdgeTypes:
+@process_edges.register
+def _(edge_dict: dict) -> EdgeTypes:
     return BaseEdge(**edge_dict)
 
 

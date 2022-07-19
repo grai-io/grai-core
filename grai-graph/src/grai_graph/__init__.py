@@ -1,7 +1,8 @@
-from grai_graph.edges import *
-from grai_graph.nodes import *
-from grai_graph.graph import *
-from grai_graph.changes import *
-from grai_graph.schema import *
+from grai_graph import schemas
+from grai_graph import edges
+from grai_graph import nodes
+from grai_graph import graph
+from grai_graph import changes
+
 
 __version__ = "0.1.0"
