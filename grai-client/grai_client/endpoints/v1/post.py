@@ -1,6 +1,7 @@
 from grai_client.schemas.edge import EdgeV1, EdgeType, EdgeNodeValues
 from grai_client.schemas.node import NodeV1, NodeType
 from grai_client.endpoints.v1.client import ClientV1
+from grai_client.endpoints.utilities import response_status_checker
 from typing import Any, Dict, Type
 import requests
 from uuid import UUID
@@ -21,23 +22,23 @@ def _(node_id: UUID, client: ClientV1) -> UUID:
 @get_edge_node_id.register
 def _(node_id: EdgeNodeValues, client: ClientV1) -> UUID:
     node = client.get(node_id)
-    # if len(node) == 0:
-    #     typer.echo(f"No node found matching (name={node_id.name}, namespace={node_id.namespace})")
-    #     raise typer.Exit()
-    # elif len(node) > 1:
-    #     message = (
-    #         f"Something awful has happened there should only be one node matching (name={node_id.name}, namespace={node_id.namespace})."
-    #         "This is likely a bug, pleaase create an issue report at https://github.com/grai-io/grai-core/issues"
-    #     )
-    #     typer.echo(message)
-    #     raise typer.Exit()
+    if len(node) == 0:
+        message = f"No node found matching (name={node_id.name}, namespace={node_id.namespace})"
+        raise ValueError(message)
+    elif len(node) > 1:
+        message = (
+            f"Something awful has happened there should only be one node matching (name={node_id.name}, namespace={node_id.namespace})."
+            "This is likely a bug, pleaase create an issue report at https://github.com/grai-io/grai-core/issues"
+        )
+        raise Exception(message)
 
-    return node[0]['id']
+    return node[0]["id"]
 
 
 @ClientV1.post.register(str)
+@response_status_checker
 def _(client: ClientV1, url: str, payload: Dict) -> Dict:
-    headers = client.authentication_headers() | {'Content-Type': 'application/json'}
+    headers = client.auth_headers | {"Content-Type": "application/json"}
     payload = {k: v for k, v in payload.items() if v is not None}
     response = requests.post(url, data=json.dumps(payload), headers=headers)
     return response

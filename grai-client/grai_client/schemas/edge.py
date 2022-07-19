@@ -24,20 +24,20 @@ class V2(PlaceHolderSchema):
 
 
 class EdgeV1(BaseModel):
-    version: Literal['v1']
-    type: Literal['Edge']
+    version: Literal["v1"]
+    type: Literal["Edge"]
     spec: V1
 
 
 class EdgeV2(BaseModel):
-    version: Literal['v2']
-    type: Literal['Edge']
+    version: Literal["v2"]
+    type: Literal["Edge"]
     spec: V2
 
 
-Edge = Annotated[Union[EdgeV1, EdgeV2], Field(discriminator='version')]
+Edge = Annotated[Union[EdgeV1, EdgeV2], Field(discriminator="version")]
 
 
 class EdgeType(BaseGraiType):
-    name = 'edges'
-    type = 'Edge'
+    name = "edges"
+    type = "Edge"

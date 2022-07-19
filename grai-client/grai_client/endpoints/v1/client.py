@@ -1,15 +1,15 @@
-from grai_cli.server.endpoints.client import BaseClient
+from grai_client.endpoints.client import BaseClient
 from functools import singledispatchmethod, singledispatch
 from typing import Any, Type, Dict
 import requests
 
 
 class ClientV1(BaseClient):
-    id = 'v1'
-    base = '/api/v1/'
-    _node_endpoint = 'lineage/nodes/'
-    _edge_endpoint = 'lineage/edges/'
-    _is_authenticated = 'auth/is-authenticated/'
+    id = "v1"
+    base = "/api/v1/"
+    _node_endpoint = "lineage/nodes/"
+    _edge_endpoint = "lineage/edges/"
+    _is_authenticated = "auth/is-authenticated/"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -19,13 +19,17 @@ class ClientV1(BaseClient):
         self.is_authenticated_endpoint = f"{self.api}{self._edge_endpoint}"
 
     def check_authentication(self) -> requests.Response:
-        result = requests.get(self.is_authenticated_endpoint, headers=self.authentication_headers())
+        result = requests.get(self.is_authenticated_endpoint, headers=self.auth_headers)
         return result
 
     @singledispatchmethod
     def get(self, grai_type: Any) -> Dict:
-        raise NotImplementedError(f"No get method implemented for type {type(grai_type)}")
+        raise NotImplementedError(
+            f"No get method implemented for type {type(grai_type)}"
+        )
 
     @singledispatchmethod
     def post(self, grai_type: Any) -> Dict:
-        raise NotImplementedError(f"No get method implemented for type {type(grai_type)}")
+        raise NotImplementedError(
+            f"No get method implemented for type {type(grai_type)}"
+        )

@@ -20,21 +20,20 @@ class V2(PlaceHolderSchema):
 
 
 class NodeV1(BaseModel):
-    version: Literal['v1']
-    type: Literal['Node']
+    version: Literal["v1"]
+    type: Literal["Node"]
     spec: V1
 
 
 class NodeV2(BaseModel):
-    version: Literal['v2']
-    type: Literal['Node']
+    version: Literal["v2"]
+    type: Literal["Node"]
     spec: V2
 
 
-Node = Annotated[Union[NodeV1, NodeV2], Field(discriminator='version')]
+Node = Annotated[Union[NodeV1, NodeV2], Field(discriminator="version")]
 
 
 class NodeType(BaseGraiType):
-    name = 'nodes'
-    type = 'Node'
-
+    name = "nodes"
+    type = "Node"
