@@ -31,32 +31,32 @@ def authenticate_with_username(client):
     username = config.grab("auth.username")
     password = config.grab("auth.password")
     client.set_authentication_headers(username=username, password=password)
+    return client
 
 
 def authenticate_with_token(client):
     token = config.grab("auth.token")
     client.set_authentication_headers(token=token)
+    return client
 
 
 def authenticate_with_api_key(client):
     api_key = config.grab("auth.api_key")
     client.set_authentication_headers(api_key=api_key)
+    return client
 
 
 # TODO Switch to pydantic
 def authenticate(client):
-    auth_modes = [
-        authenticate_with_api_key,
-        authenticate_with_token,
-        authenticate_with_username,
-    ]
-    for mode in auth_modes:
-        try:
-            return mode(client)
-        except Exception as e:
-            pass
-
-    raise Exception("No supported authentication mode found for your config.")
+    auth_modes = {
+        'username': authenticate_with_username,
+        'token': authenticate_with_token,
+        'api_key': authenticate_with_api_key,
+    }
+    auth_mode_id = config.grab('auth.authentication_mode')
+    auth_mode = auth_modes[auth_mode_id]
+    client = auth_mode(client)
+    return client
 
 
 def response_auth_checker(fn: Callable[[...], Response]) -> Callable[[...], Dict]:

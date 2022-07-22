@@ -12,7 +12,7 @@ spec:
 version: v1
 type: Node
 spec:
-    name: node4
+    name: node5
     namespace: test
     data_source: cli-test
     display_name: Mr. Testerson

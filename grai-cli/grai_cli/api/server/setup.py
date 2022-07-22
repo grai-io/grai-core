@@ -6,13 +6,24 @@ from grai_cli.utilities.headers import authenticate
 from typing import Type, Dict
 
 
+def get_cli_client(client):
+    class VersionedCLIClient(client):
+        def __getattr__(self, attr):
+            try:
+                return getattr(super(), attr)
+            except:
+                typer.Exit()
+
+    return VersionedCLIClient
+
+
 def get_default_client() -> BaseClient:
     from grai_client.endpoints.v1.client import ClientV1
 
     _clients: Dict[str, Type[BaseClient]] = {"v1": ClientV1}
     host = config.grab("server.host")
     port = config.grab("server.port")
-    client = _clients[config.grab("server.api_version")](host, port)
+    client = get_cli_client(_clients[config.grab("server.api_version")])(host, port)
     authenticate(client)
     return client
 

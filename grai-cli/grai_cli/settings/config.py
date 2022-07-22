@@ -69,7 +69,7 @@ def _get_config_template():
 
     auth_api_template = {
         "api_key": str,
-        "authentication_mode": Optional(auth_modes, default="api", allow_missing=True),
+        "authentication_mode": Optional(auth_modes, default="api_key", allow_missing=True),
     }
 
     token_template = {

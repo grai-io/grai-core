@@ -4,7 +4,9 @@ from pathlib import Path
 from functools import wraps, singledispatch
 from grai_cli.settings.config import config
 from typing import Dict, Any, List, Tuple, Union, Callable, Iterable
-from io import TextIOWrapper
+from io import TextIOWrapper, TextIOBase
+from grai_client.endpoints.utilities import GraiEncoder
+from uuid import UUID
 
 
 def load_yaml(file: str | Path) -> Dict:
@@ -25,37 +27,38 @@ def file_handler(fn):
 
 
 @singledispatch
-def write_yaml(data: Any, path: str | Path, mode: str):
-    raise NotImplementedError()
+def prep_data(data: Any):
+    return data
 
 
-@write_yaml.register
-def _(data: dict, file: Union[str, Path, TextIOWrapper], mode: str = "w"):
-    if isinstance(file, (str, Path)):
-        with open(file, mode) as f:
-            yaml.dump(data, f)
+@prep_data.register
+def _(data: dict) -> Dict:
+    return {k: prep_data(v) for k, v in data.items()}
+
+
+@prep_data.register
+def _(data: UUID) -> str:
+    return str(data)
+
+
+@prep_data.register
+def _(data: BaseModel) -> Dict:
+    return prep_data(data.dict())
+
+
+@prep_data.register
+def _(data: list) -> List[Dict]:
+    return [prep_data(item) for item in data]
+
+
+def write_yaml(data: Union[List, Dict, BaseModel], path: Union[str, Path, TextIOWrapper, TextIOBase], mode: str = 'w'):
+    data = prep_data(data)
+    dumper = yaml.dump_all if isinstance(data, list) else yaml.dump
+    if isinstance(path, (str, Path)):
+        with open(path, mode) as f:
+            dumper(data, f)
     else:
-        yaml.dump(data, file)
-
-
-@write_yaml.register
-def _(data: BaseModel, file: Union[str, Path, TextIOWrapper], mode: str = "w"):
-    write_yaml(data.dict(), file, mode)
-
-
-@write_yaml.register
-def _(data: list, file: str | Path, mode: str = "w"):
-    n = len(data)
-    if n == 0:
-        return
-    elif n == 1:
-        write_yaml(data[0], file, mode)
-    else:
-        with open(file, mode) as f:
-            write_yaml(data[0], f)
-            for item in data[1:]:
-                f.write("---\n")
-                write_yaml(item, f)
+        dumper(data, path)
 
 
 def writes_config(fn: Callable) -> Callable:
@@ -79,3 +82,13 @@ def get_config_view(config_field: str):
     for path in config_field.split("."):
         config_view = config_view[path]
     return config_view
+
+
+def merge_dicts(dict_a: Dict, dict_b: Dict) -> Dict:
+    """ Recursively merge elements of dict b into dict a preferring b"""
+    for k, v in dict_b.items():
+        if isinstance(dict_a.get(k, None), dict) and isinstance(v, dict):
+            merge_dicts(dict_a[k], v)
+        else:
+            dict_a[k] = v
+    return dict_a

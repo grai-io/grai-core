@@ -4,15 +4,11 @@ from pathlib import Path
 from grai_cli.api.server.setup import client_app, client_get_app
 from grai_cli.api.entrypoint import app
 from grai_cli.utilities.styling import default_styler
-from grai_cli.utilities.utilities import write_yaml
+from grai_cli.utilities.utilities import write_yaml, merge_dicts
 
 from grai_client.schemas.schema import SchemaGenericTypes, validate_file, Schema
 from grai_cli.api.server.setup import get_default_client
-
-
-@app.command("apply")
-def apply(file: Path = typer.Argument(...)):
-    result = validate_file(file)
+from rich import print as rprint
 
 
 @client_app.command("is_authenticated", help="Verify auth credentials are valid")
@@ -20,45 +16,54 @@ def is_authenticated():
     client = get_default_client()
     authentication_status = client.check_authentication()
     if authentication_status.status_code == 200:
-        typer.echo("Authenticated")
+        rprint("Authenticated")
     else:
-        typer.echo(
+        rprint(
             f"Failed to Authenticate: Code {authentication_status.status_code}, {authentication_status.content}"
         )
 
 
-def make_get_endpoint(grai_type):
-    @client_get_app.command(
-        grai_type.name,
-        help=f"Grab active {default_styler(grai_type.name)} from the guide.",
-    )
-    def inner(
-        print: bool = typer.Option(
-            True, "--p", help=f"Print {grai_type.name} to console"
-        ),
-        to_file: Optional[Path] = typer.Option(None, "--f", help="Write nodes to file"),
-    ):
-        client = get_default_client()
-        result = client.get(grai_type)
+@client_get_app.command('nodes', help=f"Grab active {default_styler(SchemaGenericTypes.node.name)} from the guide.")
+def get_nodes(
+    print: bool = typer.Option(True, "--p", help=f"Print {SchemaGenericTypes.node.name} to console"),
+    to_file: Optional[Path] = typer.Option(None, "--f", help="Write nodes to file"),
+):
+    client = get_default_client()
+    result = client.get(SchemaGenericTypes.node)
 
-        if print or to_file:
-            result = [
-                Schema.to_model(item, client.id, grai_type.type) for item in result
-            ]
+    if print or to_file:
+        result = [
+            Schema.to_model(item, client.id, SchemaGenericTypes.node.type) for item in result
+        ]
 
-        if print:
-            typer.echo(result)
-        if to_file:
-            write_yaml(result, to_file)
+    if print:
+        rprint(result)
+    if isinstance(to_file, Path):
+        write_yaml(result, to_file)
 
-        return result
-
-    return inner
+    return result
 
 
-types = [SchemaGenericTypes.node, SchemaGenericTypes.edge]
-for grai_type in types:
-    make_get_endpoint(grai_type)
+@client_get_app.command('edges', help=f"Grab active {default_styler(SchemaGenericTypes.edge.name)} from the guide.")
+def get_edges(
+    print: bool = typer.Option(True, "--p", help=f"Print {SchemaGenericTypes.edge.name} to console"),
+    to_file: Optional[Path] = typer.Option(None, "--f", help="Write nodes to file"),
+):
+    client = get_default_client()
+    result = client.get(SchemaGenericTypes.edge)
+
+    if print or to_file:
+        result = [
+            Schema.to_model(item, client.id, SchemaGenericTypes.edge.type) for item in result
+        ]
+
+    if print:
+        rprint(result)
+    if to_file:
+        write_yaml(result, to_file)
+
+    return result
+
 
 
 @app.command("apply", help="Apply a configuration to The Guide by file name")
@@ -72,9 +77,40 @@ def apply(
     specs = validate_file(file)
     if dry_run:
         for spec in specs:
-            typer.echo(spec)
+            rprint(spec)
         typer.Exit()
 
-    specs = validate_file(file)
     for spec in specs:
-        client.post(spec)
+        records = client.get(spec)
+        if (num_records := len(records)) == 0:
+            client.post(spec)
+        elif num_records == 1:
+            record = records[0]
+            provided_values = {k: v for k, v in spec.spec.dict().items() if v}
+            merge_dicts(record, provided_values)
+            client.patch(spec.from_spec(record))
+        else:
+            message = (
+                f"Too many records returned for object {spec}, this is probably a bug. "
+                "Please submit a bug report to https://github.com/grai-io/grai-core/issues"
+            )
+            rprint(message)
+            typer.Exit()
+
+
+@app.command("delete", help="Delete a configuration from The Guide by file name")
+def delete(
+    file: Path = typer.Argument(...),
+    dry_run: bool = typer.Option(False, "--d", help="Dry run of file application"),
+):
+
+    # TODO: Edges don't have a human readable unique identifier
+    client = get_default_client()
+    specs = validate_file(file)
+    if dry_run:
+        for spec in specs:
+            rprint(spec)
+        typer.Exit()
+
+    for spec in specs:
+        client.delete(spec)

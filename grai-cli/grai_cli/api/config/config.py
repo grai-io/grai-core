@@ -10,7 +10,7 @@ from grai_cli.utilities.validators import (
     default_style_stripper,
 )
 from grai_cli.utilities.utilities import writes_config
-from rich import print
+from rich import print as rprint
 
 
 @config_app.command("init")
@@ -57,5 +57,4 @@ def cli_init_config(
 @config_app.command(help="Print config to console")
 def view():
     """Initialize a new config file"""
-    print(config.view())
-    # typer.echo(config.view())
+    rprint(config.view())
