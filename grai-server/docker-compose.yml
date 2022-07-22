@@ -10,6 +10,11 @@ services:
       - 8000:8000
     environment:
       - DB_HOST=db
+    depends_on:
+      db:
+        condition: service_healthy
+    links:
+      - db
     # env_file:
     #   - ./.env.dev
   db:
@@ -22,5 +27,10 @@ services:
       - POSTGRES_DB=grai
     ports:
       - 5432:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U grai"]
+      interval: 2s
+      timeout: 2s
+      retries: 20
 volumes:
   pgdata:
