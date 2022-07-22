@@ -16,20 +16,8 @@ class ClientV1(BaseClient):
         self.api = f"{self.url}{self.base}"
         self.node_endpoint = f"{self.api}{self._node_endpoint}"
         self.edge_endpoint = f"{self.api}{self._edge_endpoint}"
-        self.is_authenticated_endpoint = f"{self.api}{self._edge_endpoint}"
+        self.is_authenticated_endpoint = f"{self.api}{self._is_authenticated}"
 
     def check_authentication(self) -> requests.Response:
         result = requests.get(self.is_authenticated_endpoint, headers=self.auth_headers)
         return result
-
-    @singledispatchmethod
-    def get(self, grai_type: Any) -> Dict:
-        raise NotImplementedError(
-            f"No get method implemented for type {type(grai_type)}"
-        )
-
-    @singledispatchmethod
-    def post(self, grai_type: Any) -> Dict:
-        raise NotImplementedError(
-            f"No get method implemented for type {type(grai_type)}"
-        )

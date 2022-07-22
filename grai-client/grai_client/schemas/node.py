@@ -11,8 +11,11 @@ class V1(BaseModel):
     namespace: str
     data_source: str
     display_name: Optional[str]
-    is_active: Optional[str]
+    is_active: Optional[bool] = True
     metadata: Optional[Dict] = {}
+
+    def __hash__(self):
+        return hash(hash(self.name) + hash(self.namespace))
 
 
 class V2(PlaceHolderSchema):
@@ -23,6 +26,14 @@ class NodeV1(BaseModel):
     version: Literal["v1"]
     type: Literal["Node"]
     spec: V1
+
+    def from_spec(self, spec_dict: Dict):
+        args = {
+            'version': self.version,
+            'type': self.type,
+            'spec': spec_dict,
+        }
+        return type(self)(**args)
 
 
 class NodeV2(BaseModel):

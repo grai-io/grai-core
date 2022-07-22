@@ -2,37 +2,12 @@ from grai_client.schemas.edge import EdgeV1, EdgeType, EdgeNodeValues
 from grai_client.schemas.node import NodeV1, NodeType
 from grai_client.endpoints.v1.client import ClientV1
 from grai_client.endpoints.utilities import response_status_checker
+from grai_client.endpoints.v1.get import get_edge_node_id
 from typing import Any, Dict, Type
 import requests
 from uuid import UUID
 import json
 from functools import singledispatch
-
-
-@singledispatch
-def get_edge_node_id(node_id: Any, client: ClientV1) -> UUID:
-    raise NotImplementedError(f"No post method implemented for type {type(node_id)}")
-
-
-@get_edge_node_id.register
-def _(node_id: UUID, client: ClientV1) -> UUID:
-    return node_id
-
-
-@get_edge_node_id.register
-def _(node_id: EdgeNodeValues, client: ClientV1) -> UUID:
-    node = client.get(node_id)
-    if len(node) == 0:
-        message = f"No node found matching (name={node_id.name}, namespace={node_id.namespace})"
-        raise ValueError(message)
-    elif len(node) > 1:
-        message = (
-            f"Something awful has happened there should only be one node matching (name={node_id.name}, namespace={node_id.namespace})."
-            "This is likely a bug, pleaase create an issue report at https://github.com/grai-io/grai-core/issues"
-        )
-        raise Exception(message)
-
-    return node[0]["id"]
 
 
 @ClientV1.post.register(str)

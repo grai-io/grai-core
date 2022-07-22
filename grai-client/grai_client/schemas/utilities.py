@@ -14,3 +14,4 @@ class PlaceHolderSchema(BaseModel):
 class BaseGraiType:
     name = None
     type = None
+

@@ -43,5 +43,7 @@ class UserNameHeader(UserTokenHeader):
         url = "http://localhost:8000/api/v1/auth/api-token/"
         token = requests.post(
             url, data=json.dumps(params), headers=json_headers
-        ).json()["token"]
-        return token
+        )
+        if token.status_code != 200:
+            raise Exception(f"{token.content}")
+        return token.json()['token']

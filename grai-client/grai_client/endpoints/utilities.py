@@ -2,12 +2,17 @@ from typing import Callable, Dict
 from requests import Response
 from requests import RequestException
 from functools import wraps
+from uuid import UUID
+import json
+from grai_client.schemas.schema import BaseModel
 
 
 def response_status_checker(fn: Callable[[...], Response]) -> Callable[[...], Dict]:
-    def response_status_check(resp: Response) -> Response:
+    def response_status_check(resp: Response) -> Dict:
         if resp.status_code in {200, 201}:
-            return resp
+            return resp.json()
+        elif resp.status_code == 204:
+            return {}
         elif resp.status_code in {400, 401, 402, 403}:
             message = f"Failed to Authenticate with code: {resp.status_code}"
         elif resp.status_code == 404:
@@ -20,12 +25,21 @@ def response_status_checker(fn: Callable[[...], Response]) -> Callable[[...], Di
                 "Please submit a bug report to https://github.com/grai-io/grai-core/issues"
             )
         else:
-            message = f"No handling for error code {resp.status_code}"
+            message = f"No handling for error code {resp.status_code}: {resp.reason}"
         raise RequestException(message)
 
     @wraps(fn)
     def inner(*args, **kwargs) -> Dict:
         response = response_status_check(fn(*args, **kwargs))
-        return response.json()
+        return response
 
     return inner
+
+
+class GraiEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, UUID):
+            return str(obj)
+        elif isinstance(obj, BaseModel):
+            return obj.dict()
+        return json.JSONEncoder.default(self, obj)

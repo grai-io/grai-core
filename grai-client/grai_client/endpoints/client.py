@@ -1,5 +1,6 @@
 from grai_client.authentication import UserNameHeader, UserTokenHeader, APIKeyHeader
-from typing import Any
+from typing import Any, Dict
+from functools import singledispatchmethod
 import abc
 
 
@@ -45,14 +46,27 @@ class BaseClient:
     def check_authentication(self):
         raise NotImplementedError(f"No authentication implemented for {type(self)}")
 
-    def get(self, arg: Any):
-        raise NotImplementedError(f"No get method implemented for type {type(arg)}")
+    @singledispatchmethod
+    def get(self, grai_type: Any) -> Dict:
+        raise NotImplementedError(
+            f"No get method implemented for type {type(grai_type)}"
+        )
 
-    def post(self, arg: Any, payload: Any = None):
-        raise NotImplementedError(f"No post method implemented for type {type(arg)}")
+    @singledispatchmethod
+    def post(self, grai_type: Any) -> Dict:
+        raise NotImplementedError(
+            f"No post method implemented for type {type(grai_type)}"
+        )
 
-    def patch(self, arg: Any):
-        raise NotImplementedError(f"No patch method implemented for type {type(arg)}")
+    @singledispatchmethod
+    def patch(self, grai_type: Any) -> Dict:
+        raise NotImplementedError(
+            f"No patch method implemented for type {type(grai_type)}"
+        )
 
-    def delete(self, arg):
-        raise NotImplementedError(f"No delete method implemented for type {type(arg)}")
+    @singledispatchmethod
+    def delete(self, grai_type: Any) -> Dict:
+        raise NotImplementedError(
+            f"No delete method implemented for type {type(grai_type)}"
+        )
+
