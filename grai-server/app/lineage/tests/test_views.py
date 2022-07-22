@@ -12,6 +12,7 @@ from django.test.client import RequestFactory
 from rest_framework.test import force_authenticate
 from rest_framework.test import APIClient
 from rest_framework_api_key.models import APIKey
+import json
 
 
 def create_node(client, name=None, namespace='default', data_source='test'):
@@ -38,15 +39,8 @@ def create_edge(client, source=None, destination=None, data_source='test', **kwa
     }
 
     url = reverse('graph:edges-list')
-    print(kwargs)
     response = client.post(url, args, **kwargs)
     return response
-
-
-actions = ['list']
-route_prefixes = ['nodes', 'edges']
-targets = [(f'{app_name}:{prefix}-{action}', 200)
-           for prefix, action in product(route_prefixes, actions)]
 
 
 @pytest.fixture
@@ -77,6 +71,12 @@ def auto_login_user(db, client, create_user, test_password):
     return make_auto_login
 
 
+actions = ['list']
+route_prefixes = ['nodes', 'edges']
+targets = [(f'{app_name}:{prefix}-{action}', 200)
+           for prefix, action in product(route_prefixes, actions)]
+
+
 @pytest.mark.parametrize("url_name,status", targets)
 @pytest.mark.django_db
 def test_get_endpoints(auto_login_user, url_name, status):
@@ -91,6 +91,48 @@ def test_post_node(auto_login_user):
     client, user = auto_login_user()
     response = create_node(client)
     assert response.status_code == 201
+
+
+@pytest.mark.django_db
+def test_patch_node(auto_login_user):
+    client, user = auto_login_user()
+    response = create_node(client)
+    assert response.status_code == 201
+    node_id = response.json()['id']
+
+    url = reverse('graph:nodes-detail', kwargs={'pk': node_id})
+    print(url)
+    args = {
+      "namespace": "string",
+      "name": "strisdfsdfng",
+      "display_name": "string",
+      "data_source": "string",
+      "metadata": {
+        "additionalProp1": "string",
+        "additionalProp2": "string",
+        "additionalProp3": "string"
+      },
+      "is_active": False
+    }
+    result = client.patch(url, json.dumps(args), content_type="application/json")
+    assert result.status_code == 200
+    result = result.json()
+    assert all(result[key] == value for key, value in args.items())
+
+
+@pytest.mark.django_db
+def test_delete_node(auto_login_user):
+    client, user = auto_login_user()
+    response = create_node(client)
+    assert response.status_code == 201
+    node_id = response.json()['id']
+
+    url = reverse('graph:nodes-detail', kwargs={'pk': node_id})
+    result = client.delete(url)
+    assert result.status_code == 204
+
+    result = client.get(reverse('graph:nodes-detail', kwargs={'pk': node_id}))
+    assert result.status_code == 404
 
 
 @pytest.mark.django_db

@@ -13,17 +13,21 @@ from lineage.serializers import NodeSerializer, EdgeSerializer
 # https://stackoverflow.com/questions/30582263/setting-user-id-automatically-on-post-in-django-rest
 
 class NodeViewSet(ModelViewSet):
-    authentication_classes = [SessionAuthentication, TokenAuthentication, BasicAuthentication]
-    permission_classes = [HasAPIKey | IsAuthenticated]
+    # authentication_classes = [SessionAuthentication, TokenAuthentication, BasicAuthentication]
+    # permission_classes = [HasAPIKey | IsAuthenticated]
 
     serializer_class = NodeSerializer
     type = Node
 
-    def get_object(self):
-        return get_object_or_404(Node, id=self.request.query_params.get("id"))
+    # def get_object(self):
+    #     queryset = self.get_queryset()
+    #     pk = self.request.query_params.get("id")
+    #     obj = queryset.filter(id=pk).first()#get_object_or_404(queryset, id=
+    #     print(obj)
+    #     return obj
 
     def get_queryset(self):
-        queryset = Node.objects
+        queryset = self.type.objects
 
         supported_filters = ['is_active', 'namespace', 'name']
         filters = ((filter_name, condition) for filter_name in supported_filters
@@ -32,14 +36,15 @@ class NodeViewSet(ModelViewSet):
             queryset = queryset.filter(**{filter_name: condition})
         return queryset
 
-    def perform_destroy(self, instance):
-        instance.is_active = False
-        instance.save()
+    # def perform_destroy(self, instance):
+    #     instance.is_active = False
+    #     instance.save()
 
-    def create(self, request):
-        object, create = self.type.objects.update_or_create(**request.data)
-        serializer = self.serializer_class(object)
-        return Response(serializer.data)
+    # This is bugged.
+    # def create(self, request):
+    #     object, create = self.type.objects.update_or_create(**request.data)
+    #     serializer = self.serializer_class(object)
+    #     return Response(serializer.data)
 
 
 class EdgeViewSet(ModelViewSet):
@@ -49,17 +54,25 @@ class EdgeViewSet(ModelViewSet):
     serializer_class = EdgeSerializer
     type = Edge
 
-    def get_object(self):
-        return get_object_or_404(Edge, id=self.request.query_params.get("id"))
+    # def get_object(self):
+    #     return get_object_or_404(Edge, id=self.request.query_params.get("id"))
 
     def get_queryset(self):
-        return Edge.objects.filter(is_active=True).order_by('-updated_at')
+        queryset = self.type.objects
 
-    def perform_destroy(self, instance):
-        instance.is_active = False
-        instance.save()
+        supported_filters = ['is_active', 'source', 'destination']
+        filters = ((filter_name, condition) for filter_name in supported_filters
+                   if (condition := self.request.query_params.get(filter_name)))
+        for filter_name, condition in filters:
+            queryset = queryset.filter(**{filter_name: condition})
+        return queryset
+        #return Edge.objects.filter(is_active=True).order_by('-updated_at')
 
-    def create(self, request):
-        object, create = self.type.objects.update_or_create(**request.data)
-        serializer = self.serializer_class(object)
-        return Response(serializer.data)
+    # def perform_destroy(self, instance):
+    #     instance.is_active = False
+    #     instance.save()
+
+    # def create(self, request):
+    #     object, create = self.type.objects.update_or_create(**request.data)
+    #     serializer = self.serializer_class(object)
+    #     return Response(serializer.data)
