@@ -1,35 +1,32 @@
-import typer
 from typing import Callable
+
+import typer
 from rich.theme import Theme
 
-custom_theme = Theme({"info": "#BFD2EB", "warning": "magenta", "danger": "bold red"})
+
+class GraiColors:
+    mango = (255, 181, 103)
+    polo = (191, 210, 235)
+    kobi = (241, 215, 224)
+    bastille = (53, 29, 54)
+    soapstone = (255, 255, 255)
 
 
-def prompt_styler(*args, **kwargs) -> Callable:
+custom_theme = Theme({"info": "#BFD2EB", "warning": "#ff0000", "danger": "bold red"})
+
+
+def prompt_styler(*args, **kwargs) -> Callable[[str], str]:
     def inner(inp: str) -> str:
         return typer.style(inp, *args, **kwargs)
 
-    strips = inner("test_value").split("test_value")
-    slicer = slice(len(strips[0]), -len(strips[1]))
-
-    def style_inversion(inp: str) -> str:
-        if inp.startswith(strips[0]):
-            return inp[slicer]
-        return inp
-
-    inner.style_callback = style_inversion
     return inner
 
 
-def strip_styling(styler: prompt_styler) -> Callable:
-    def inner(fn: Callable) -> Callable:
-        def inner2(inp: str) -> str:
-            return fn(styler.style_callback(inp))
-
-        return inner2
+def strip_style(fn: Callable[[str], str]) -> Callable[[str], str]:
+    def inner(inp: str) -> str:
+        return fn(typer.unstyle(inp))
 
     return inner
 
 
-# command_styler = prompt_styler(fg="BFD2EB", bold=True)
-default_styler = prompt_styler(fg=typer.colors.GREEN, bold=True)
+default_styler = prompt_styler(fg=GraiColors.mango, bold=True)

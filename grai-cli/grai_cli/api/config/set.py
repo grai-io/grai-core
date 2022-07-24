@@ -1,18 +1,15 @@
-from grai_cli.api.config.setup import set_app
-import yaml
-import typer
-from typing import Callable
-from grai_cli.api.config.setup import config_app
-from grai_cli import config
-from grai_cli.utilities.styling import default_styler
-from grai_cli.utilities.validators import (
-    username_callback,
-    password_callback,
-    host_callback,
-    port_callback,
-)
-from grai_cli.utilities.utilities import writes_config, get_config_view
 from functools import wraps
+from typing import Callable
+
+import typer
+import yaml
+
+from grai_cli import config
+from grai_cli.api.config.setup import config_app, set_app
+from grai_cli.utilities.styling import default_styler
+from grai_cli.utilities.utilities import get_config_view, writes_config
+from grai_cli.utilities.validators import (host_callback, password_callback,
+                                           port_callback, username_callback)
 
 
 def setter_helper(path: str):

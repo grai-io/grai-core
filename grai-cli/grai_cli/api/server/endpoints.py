@@ -1,15 +1,17 @@
-import typer
-from typing import Optional
 from pathlib import Path
-from grai_cli.api.server.setup import client_app, client_get_app
-from grai_cli.api.entrypoint import app
-from grai_cli.utilities.styling import default_styler
-from grai_cli.utilities.utilities import write_yaml, merge_dicts
-from grai_client.schemas.node import NodeType
+from typing import Optional
+
+import typer
 from grai_client.schemas.edge import EdgeType
-from grai_client.schemas.schema import validate_file, Schema, SchemaDispatcher
-from grai_cli.api.server.setup import get_default_client
+from grai_client.schemas.node import NodeType
+from grai_client.schemas.schema import Schema, validate_file
 from rich import print as rprint
+
+from grai_cli.api.entrypoint import app
+from grai_cli.api.server.setup import (client_app, client_get_app,
+                                       get_default_client)
+from grai_cli.utilities.styling import default_styler
+from grai_cli.utilities.utilities import merge_dicts, write_yaml
 
 
 @client_app.command("is_authenticated", help="Verify auth credentials are valid")
@@ -24,7 +26,9 @@ def is_authenticated():
         )
 
 
-@client_get_app.command('nodes', help=f"Grab active {default_styler('nodes')} from the guide.")
+@client_get_app.command(
+    "nodes", help=f"Grab active {default_styler('nodes')} from the guide."
+)
 def get_nodes(
     print: bool = typer.Option(True, "--p", help=f"Print nodes to console"),
     to_file: Optional[Path] = typer.Option(None, "--f", help="Write nodes to file"),
@@ -34,9 +38,7 @@ def get_nodes(
     result = client.get(obj_type)
 
     if print or to_file:
-        result = [
-            Schema.to_model(item, client.id, obj_type) for item in result
-        ]
+        result = [Schema.to_model(item, client.id, obj_type) for item in result]
 
     if print:
         rprint(result)
@@ -46,18 +48,19 @@ def get_nodes(
     return result
 
 
-@client_get_app.command('edges', help=f"Grab active {default_styler('edges')} from the guide.")
+@client_get_app.command(
+    "edges", help=f"Grab active {default_styler('edges')} from the guide."
+)
 def get_edges(
     print: bool = typer.Option(True, "--p", help=f"Print edges to console"),
     to_file: Optional[Path] = typer.Option(None, "--f", help="Write nodes to file"),
 ):
     client = get_default_client()
-    result = client.get(SchemaDispatcher.edge)
+    obj_type = EdgeType()
+    result = client.get(obj_type)
 
     if print or to_file:
-        result = [
-            Schema.to_model(item, client.id, SchemaDispatcher.edge) for item in result
-        ]
+        result = [Schema.to_model(item, client.id, obj_type) for item in result]
 
     if print:
         rprint(result)
@@ -65,7 +68,6 @@ def get_edges(
         write_yaml(result, to_file)
 
     return result
-
 
 
 @app.command("apply", help="Apply a configuration to The Guide by file name")

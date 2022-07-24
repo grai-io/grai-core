@@ -1,4 +1,1 @@
-from grai_cli.utilities import styling
-from grai_cli.utilities import validators
-from grai_cli.utilities import utilities
-from grai_cli.utilities import headers
+from grai_cli.utilities import headers, styling, utilities, validators

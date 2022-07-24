@@ -1,9 +1,12 @@
-from grai_cli import config
-import requests
-from grai_client.authentication import UserTokenHeader, APIKeyHeader, UserNameHeader
-import typer
-from requests import Response
 from typing import Callable, Dict
+
+import requests
+import typer
+from grai_client.authentication import (APIKeyHeader, UserNameHeader,
+                                        UserTokenHeader)
+from requests import Response
+
+from grai_cli import config
 
 json_headers = {"accept": "application/json", "Content-Type": "application/json"}
 
@@ -49,11 +52,11 @@ def authenticate_with_api_key(client):
 # TODO Switch to pydantic
 def authenticate(client):
     auth_modes = {
-        'username': authenticate_with_username,
-        'token': authenticate_with_token,
-        'api_key': authenticate_with_api_key,
+        "username": authenticate_with_username,
+        "token": authenticate_with_token,
+        "api_key": authenticate_with_api_key,
     }
-    auth_mode_id = config.grab('auth.authentication_mode')
+    auth_mode_id = config.grab("auth.authentication_mode")
     auth_mode = auth_modes[auth_mode_id]
     client = auth_mode(client)
     return client

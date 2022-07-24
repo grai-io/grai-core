@@ -11,7 +11,7 @@ grai = "grai_cli.api.entrypoint:app"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-typer = {version = "^0.6"}
+typer = {version = "^0.6.1"}
 click-spinner = "^0.1.10"
 tqdm = "^4.64.0"
 tabulate = "^0.8.10"
@@ -28,6 +28,10 @@ PyYAML = "^6.0"
 [tool.poetry.dev-dependencies]
 pytest = "^7"
 black = "^22.6.0"
+types-PyYAML = "^6.0.10"
+types-requests = "^2.28.3"
+mypy = "^0.971"
+isort = "^5.10.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

@@ -1,12 +1,13 @@
+from functools import singledispatch, wraps
+from io import TextIOBase, TextIOWrapper
+from pathlib import Path
+from typing import Any, Callable, Dict, Iterable, List, Tuple, Union
+from uuid import UUID
+
 import yaml
 from pydantic import BaseModel
-from pathlib import Path
-from functools import wraps, singledispatch
+
 from grai_cli.settings.config import config
-from typing import Dict, Any, List, Tuple, Union, Callable, Iterable
-from io import TextIOWrapper, TextIOBase
-from grai_client.endpoints.utilities import GraiEncoder
-from uuid import UUID
 
 
 def load_yaml(file: str | Path) -> Dict:
@@ -51,7 +52,11 @@ def _(data: list) -> List[Dict]:
     return [prep_data(item) for item in data]
 
 
-def write_yaml(data: Union[List, Dict, BaseModel], path: Union[str, Path, TextIOWrapper, TextIOBase], mode: str = 'w'):
+def write_yaml(
+    data: Union[List, Dict, BaseModel],
+    path: Union[str, Path, TextIOWrapper, TextIOBase],
+    mode: str = "w",
+):
     data = prep_data(data)
     dumper = yaml.dump_all if isinstance(data, list) else yaml.dump
     if isinstance(path, (str, Path)):
@@ -85,7 +90,7 @@ def get_config_view(config_field: str):
 
 
 def merge_dicts(dict_a: Dict, dict_b: Dict) -> Dict:
-    """ Recursively merge elements of dict b into dict a preferring b"""
+    """Recursively merge elements of dict b into dict a preferring b"""
     for k, v in dict_b.items():
         if isinstance(dict_a.get(k, None), dict) and isinstance(v, dict):
             merge_dicts(dict_a[k], v)

@@ -1,8 +1,8 @@
-import typer
 import os
-from confuse import LazyConfig, YamlSource, CONFIG_FILENAME
 
-from confuse import OneOf, MappingValues, Optional, Choice
+import typer
+from confuse import (CONFIG_FILENAME, Choice, LazyConfig, MappingValues, OneOf,
+                     Optional, YamlSource)
 
 
 class ConfuseParameters:
@@ -34,9 +34,6 @@ class GraiLazyConfig(LazyConfig):
         return os.path.join(self.config_dir(), CONFIG_FILENAME)
 
     def view(self):
-        # typer.echo(f"\nfile: {self.config_filename}")
-        # typer.echo("\n-------------------------------\n")
-        # typer.echo(self.dump(self.parameters.template, redact=True))
         return self.dump(self.parameters.template, redact=True)
 
     def grab(self, value: str):
@@ -69,7 +66,9 @@ def _get_config_template():
 
     auth_api_template = {
         "api_key": str,
-        "authentication_mode": Optional(auth_modes, default="api_key", allow_missing=True),
+        "authentication_mode": Optional(
+            auth_modes, default="api_key", allow_missing=True
+        ),
     }
 
     token_template = {
