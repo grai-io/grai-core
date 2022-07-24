@@ -1,38 +1,44 @@
 from functools import singledispatch, wraps
 from io import TextIOBase, TextIOWrapper
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, List, Tuple, Union
+from tempfile import NamedTemporaryFile, TemporaryFile
+from typing import (IO, Any, Callable, Dict, Iterable, List, Sequence, TextIO,
+                    Tuple, Union)
 from uuid import UUID
 
 import yaml
-from grai_cli.settings.config import config
+from multimethod import multimethod
 from pydantic import BaseModel
 
+from grai_cli.settings.config import config
 
-def load_yaml(file: str | Path) -> Dict:
-    with open(file, "r") as file:
+
+def load_yaml(file: Union[str, TextIOBase]) -> Dict:
+    if isinstance(file, str):
+        with open(file, "r") as file:
+            result = yaml.safe_load(file)
+    else:
         result = yaml.safe_load(file)
     return result
 
 
-def load_all_yaml(file: str | Path) -> Iterable[Dict]:
-    with open(file, "r") as file:
+def load_all_yaml(file: Union[str, TextIOBase]) -> Iterable[Dict]:
+    if isinstance(file, str):
+        with open(file, "r") as file:
+            for item in yaml.safe_load_all(file):
+                yield item
+    else:
         for item in yaml.safe_load_all(file):
             yield item
 
 
-def file_handler(fn):
-    def inner(*args, **kwargs):
-        pass
-
-
-@singledispatch
-def prep_data(data: Any):
+@multimethod
+def prep_data(data: Any) -> Any:
     return data
 
 
 @prep_data.register
-def _(data: dict) -> Dict:
+def _(data: Dict) -> Dict:
     return {k: prep_data(v) for k, v in data.items()}
 
 
@@ -47,22 +53,37 @@ def _(data: BaseModel) -> Dict:
 
 
 @prep_data.register
-def _(data: list) -> List[Dict]:
+def _(data: List) -> List[Dict]:
     return [prep_data(item) for item in data]
 
 
+@multimethod
+def dump_yaml():
+    raise NotImplementedError()
+
+
+@dump_yaml.register
+def dump_individual_yaml(item: Dict, stream: TextIOBase):
+    yaml.safe_dump(item, stream)
+
+
+@dump_yaml.register
+def dump_multiple_yaml(items: Sequence[Dict], stream: TextIOBase):
+    yaml.safe_dump_all(items, stream)
+
+
 def write_yaml(
-    data: Union[List, Dict, BaseModel],
-    path: Union[str, Path, TextIOWrapper, TextIOBase],
+    data: Union[Sequence, Dict, BaseModel],
+    path: Union[str, Path, TextIOBase],
     mode: str = "w",
 ):
     data = prep_data(data)
-    dumper = yaml.dump_all if isinstance(data, list) else yaml.dump
+
     if isinstance(path, (str, Path)):
         with open(path, mode) as f:
-            dumper(data, f)
+            dump_yaml(data, f)
     else:
-        dumper(data, path)
+        dump_yaml(data, path)
 
 
 def writes_config(fn: Callable) -> Callable:

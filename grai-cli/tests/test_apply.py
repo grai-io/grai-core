@@ -3,10 +3,11 @@ import tempfile
 import uuid
 
 import yaml
+from typer.testing import CliRunner
+
 from grai_cli.api.entrypoint import app
 from grai_cli.api.server.endpoints import apply, delete, get_edges, get_nodes
 from grai_cli.utilities.utilities import write_yaml
-from typer.testing import CliRunner
 
 runner = CliRunner()
 
@@ -52,7 +53,7 @@ def test_apply_multi_node():
     file = tempfile.NamedTemporaryFile("w+")
     file_name = pathlib.Path(file.name)
     nodes = [make_v1_node() for i in range(5)]
-    write_yaml(nodes, file)
+    write_yaml(nodes, file.name)
     result = runner.invoke(app, ["apply", file.name])
     assert result.exit_code == 0
 

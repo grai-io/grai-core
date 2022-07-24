@@ -1,18 +1,20 @@
 from typing import Dict, Type
 
 import typer
-from grai_cli import config
-from grai_cli.api.entrypoint import app
-from grai_cli.utilities.headers import authenticate
 from grai_client.endpoints.client import BaseClient
 
+from grai_cli.api.entrypoint import app
+from grai_cli.settings.config import config
+from grai_cli.utilities.headers import authenticate
 
-def get_cli_client(client):
+
+def get_cli_client(client: Type[BaseClient]):
     class VersionedCLIClient(client):
         def __getattr__(self, attr):
             try:
                 return getattr(super(), attr)
             except:
+                print("Exiting with error")
                 typer.Exit()
 
     return VersionedCLIClient
@@ -21,7 +23,9 @@ def get_cli_client(client):
 def get_default_client() -> BaseClient:
     from grai_client.endpoints.v1.client import ClientV1
 
-    _clients: Dict[str, Type[BaseClient]] = {"v1": ClientV1}
+    _clients: Dict[str, Type[BaseClient]] = {
+        "v1": ClientV1,
+    }
     host = config.grab("server.host")
     port = config.grab("server.port")
     client = get_cli_client(_clients[config.grab("server.api_version")])(host, port)

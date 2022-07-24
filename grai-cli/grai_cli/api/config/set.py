@@ -2,19 +2,17 @@ from functools import wraps
 from typing import Callable
 
 import typer
-import yaml
-from grai_cli import config
-from grai_cli.api.config.setup import config_app, set_app
-from grai_cli.utilities.styling import default_styler
+
+from grai_cli.api.config.setup import set_app
 from grai_cli.utilities.utilities import get_config_view, writes_config
 from grai_cli.utilities.validators import (host_callback, password_callback,
                                            port_callback, username_callback)
 
 
-def setter_helper(path: str):
+def setter_helper(path: str) -> Callable:
     name = path.split(".")[-1]
 
-    def set_function_maker(fn: Callable):
+    def set_function_maker(fn: Callable) -> Callable:
         @set_app.command(name)
         @writes_config
         @wraps(fn)

@@ -1,8 +1,9 @@
 import typer
-from grai_cli.api.entrypoint import app
 # from grai_cli.utilities.styling import command_styler
 from rich.console import Console
 from rich.text import Text
+
+from grai_cli.api.entrypoint import app
 
 config_app = typer.Typer(
     no_args_is_help=True, help="Interact with your config settings"

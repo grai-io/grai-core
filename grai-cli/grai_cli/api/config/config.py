@@ -1,11 +1,12 @@
 import typer
-from grai_cli import config
+from rich import print as rprint
+
 from grai_cli.api.config.setup import config_app
+from grai_cli.settings.config import config
 from grai_cli.utilities.styling import GraiColors, default_styler, strip_style
 from grai_cli.utilities.utilities import writes_config
 from grai_cli.utilities.validators import (host_callback, password_callback,
                                            port_callback, username_callback)
-from rich import print as rprint
 
 
 @config_app.command("init")

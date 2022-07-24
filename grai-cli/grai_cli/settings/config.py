@@ -1,6 +1,6 @@
 import os
+from typing import Dict
 
-import typer
 from confuse import (CONFIG_FILENAME, Choice, LazyConfig, MappingValues, OneOf,
                      Optional, YamlSource)
 
@@ -43,7 +43,7 @@ class GraiLazyConfig(LazyConfig):
         return base
 
 
-def _get_config_template():
+def _get_config_template() -> Dict:
     ##########################
 
     api_versions = Choice(choices={"v1"})
