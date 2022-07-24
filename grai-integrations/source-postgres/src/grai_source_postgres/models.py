@@ -1,6 +1,8 @@
 from pydantic import BaseModel, Field
 from typing import Any, Optional, List, Dict
 from enum import Enum
+from grai_client.schemas.node import NodeV1
+from grai_client.schemas.edge import EdgeV1
 
 
 class Column(BaseModel):

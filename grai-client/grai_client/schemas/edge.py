@@ -3,7 +3,11 @@ from typing import List, Optional, Union
 from pydantic import BaseModel, Field
 from uuid import UUID
 from typing_extensions import Annotated
-from grai_client.schemas.utilities import PlaceHolderSchema, BaseGraiType
+from grai_client.schemas.utilities import PlaceHolderSchema, BaseSpec, DispatchType
+
+
+class BaseEdge(BaseModel):
+    type: Literal["Edge"]
 
 
 class EdgeNodeValues(BaseModel):
@@ -14,7 +18,7 @@ class EdgeNodeValues(BaseModel):
         return hash(hash(self.name) + hash(self.namespace))
 
 
-class V1(BaseModel):
+class V1(BaseSpec):
     id: Optional[UUID]
     data_source: str
     source: Union[EdgeNodeValues, UUID]
@@ -27,15 +31,15 @@ class V1(BaseModel):
 
 
 class V2(PlaceHolderSchema):
+    """Placeholder for future use."""
     pass
 
 
-class EdgeV1(BaseModel):
+class EdgeV1(BaseEdge):
     version: Literal["v1"]
-    type: Literal["Edge"]
     spec: V1
 
-    def from_spec(self, spec_dict: Dict):
+    def from_spec(self, spec_dict: Dict) -> 'EdgeV1':
         args = {
             'version': self.version,
             'type': self.type,
@@ -44,15 +48,15 @@ class EdgeV1(BaseModel):
         return type(self)(**args)
 
 
-class EdgeV2(BaseModel):
+class EdgeV2(BaseEdge):
     version: Literal["v2"]
-    type: Literal["Edge"]
     spec: V2
 
 
-Edge = Annotated[Union[EdgeV1, EdgeV2], Field(discriminator="version")]
+class EdgeType(DispatchType):
+    name: str = "edges"
+    type: str = 'Edge'
 
 
-class EdgeType(BaseGraiType):
-    name = "edges"
-    type = "Edge"
+EdgeTypes = Union[EdgeV1, EdgeV2]
+Edge = Annotated[EdgeTypes, Field(discriminator="version")]

@@ -1,7 +1,17 @@
 from pydantic import BaseModel, root_validator
+from typing import Type, Dict, Union, List, Optional, Any
 
 
-class PlaceHolderSchema(BaseModel):
+class DispatchType:
+    name: str
+    type: str
+
+
+class BaseSpec(BaseModel):
+    is_active: Optional[bool] = True
+
+
+class PlaceHolderSchema(BaseSpec):
     @root_validator(pre=True)
     def _(cls, values):
         message = (
@@ -11,7 +21,27 @@ class PlaceHolderSchema(BaseModel):
         raise AssertionError(message)
 
 
-class BaseGraiType:
-    name = None
-    type = None
+def unpack_object(obj: Union[Dict, BaseModel]) -> Dict:
+    if isinstance(obj, Dict):
+        return obj
+    elif isinstance(obj, BaseModel):
+        return obj.dict()
+    else:
+        raise NotImplementedError(f"No method to unpack objects of type {type(obj)}")
+
+
+def merge_dicts(a: Dict, b: Dict) -> Dict:
+    for k, v in b.items():
+        if isinstance(a.get(k, None), dict) and isinstance(v, dict):
+            merge_dicts(a[k], v)
+        else:
+            a[k] = v
+    return a
+
+
+def merge_models(a: BaseModel, b: BaseModel) -> BaseModel:
+    a_type = type(a)
+    merged = merge_dicts(unpack_object(a), unpack_object(b))
+    return a_type(**merged)
+
 

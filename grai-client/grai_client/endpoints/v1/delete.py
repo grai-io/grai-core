@@ -8,16 +8,16 @@ import requests
 import json
 
 
-@ClientV1.delete.register(str)
+@ClientV1.delete.register
 @response_status_checker
-def _(client: ClientV1, url: str) -> Dict:
+def delete_url(client: ClientV1, url: str) -> requests.Response:
     headers = client.auth_headers
     response = requests.delete(url,  headers=headers)
     return response
 
 
-@ClientV1.delete.register(NodeV1)
-def _(client: ClientV1, grai_type: NodeV1) -> Dict:
+@ClientV1.delete.register
+def delete_node_v1(client: ClientV1, grai_type: NodeV1) -> Dict:
     node_id = grai_type.spec.id
     if node_id is None:
         node = client.get(grai_type)
@@ -26,12 +26,12 @@ def _(client: ClientV1, grai_type: NodeV1) -> Dict:
     return client.delete(url)
 
 
-@ClientV1.delete.register(EdgeV1)
-def _(client: ClientV1, grai_type: EdgeV1) -> Dict:
+@ClientV1.delete.register
+def delete_edge_v1(client: ClientV1, grai_type: EdgeV1) -> Dict:
     edge = client.get(grai_type)
     if len(edge) == 0:
         print(f"No edge matching `{grai_type}`")
-        return
+        return {}
 
     edge_id = edge[0]['id']
     url = f'{client.edge_endpoint}{edge_id}/'

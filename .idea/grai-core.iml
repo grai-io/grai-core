@@ -4,6 +4,8 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/grai-cli" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/grai-client/grai_client" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/grai-client/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/grai-graph/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/grai-graph/tests" isTestSource="true" />
     </content>

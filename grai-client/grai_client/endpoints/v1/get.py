@@ -10,16 +10,16 @@ from uuid import UUID
 
 @singledispatch
 def get_edge_node_id(node_id: Any, client: ClientV1) -> UUID:
-    raise NotImplementedError(f"No post method implemented for type {type(node_id)}")
+    raise NotImplementedError(f"No get method implemented for type {type(node_id)}")
 
 
 @get_edge_node_id.register
-def _(node_id: UUID, client: ClientV1) -> UUID:
+def get_edge_node_by_id_v1(node_id: UUID, client: ClientV1) -> UUID:
     return node_id
 
 
 @get_edge_node_id.register
-def _(node_id: EdgeNodeValues, client: ClientV1) -> UUID:
+def get_edge_node_v1(node_id: EdgeNodeValues, client: ClientV1) -> UUID:
     node = client.get(node_id)
     if len(node) == 0:
         message = f"No node found matching (name={node_id.name}, namespace={node_id.namespace})"
@@ -34,9 +34,9 @@ def _(node_id: EdgeNodeValues, client: ClientV1) -> UUID:
     return node[0]["id"]
 
 
-@ClientV1.get.register(str)
+@ClientV1.get.register
 @response_status_checker
-def _(client: ClientV1, url: str) -> requests.request:
+def get_url_v1(client: ClientV1, url: str) -> requests.Response:
     response = requests.get(url, headers=client.auth_headers)
     return response
 
@@ -47,26 +47,25 @@ def url_with_filters(url: str, node: NodeV1) -> str:
     return f"{url}?{filters}"
 
 
-@ClientV1.get.register(NodeV1)
-def _(client: ClientV1, grai_type: NodeV1) -> requests.request:
+@ClientV1.get.register
+def get_specific_node_v1(client: ClientV1, grai_type: NodeV1) -> requests.Response:
     url = url_with_filters(client.node_endpoint, grai_type)
     return client.get(url)
 
 
-@ClientV1.get.register(NodeType)
-def _(client: ClientV1, grai_type: NodeType) -> requests.request:
+@ClientV1.get.register
+def get_node_v1(client: ClientV1, grai_type: NodeType) -> requests.Response:
     url = client.node_endpoint
     return client.get(url)
 
 
-@ClientV1.get.register(EdgeNodeValues)
-def _(client: ClientV1, node_values: EdgeNodeValues) -> requests.request:
+@ClientV1.get.register
+def get_node_by_names_v1(client: ClientV1, node_values: EdgeNodeValues) -> requests.Response:
     url = f"{client.node_endpoint}?name={node_values.name}&namespace={node_values.namespace}"
     return client.get(url)
 
 
-@ClientV1.get.register(EdgeV1)
-@ClientV1.get.register(EdgeType)
-def _(client: ClientV1, grai_type: EdgeV1) -> requests.request:
+@ClientV1.get.register
+def get_edge_v1(client: ClientV1, grai_type: Union[EdgeType, EdgeV1]) -> requests.Response:
     url = client.edge_endpoint
     return client.get(url)

@@ -6,6 +6,7 @@ authors = ["Ian Eaves <ian.k.eaves@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
+grai-client = "^0.1.0"
 
 [tool.poetry.dev-dependencies]
 

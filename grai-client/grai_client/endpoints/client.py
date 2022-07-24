@@ -1,7 +1,8 @@
 from grai_client.authentication import UserNameHeader, UserTokenHeader, APIKeyHeader
 from typing import Any, Dict
-from functools import singledispatchmethod
+from functools import singledispatchmethod, singledispatch
 import abc
+from multimethod import multimethod
 
 
 class BaseClient:
@@ -14,11 +15,11 @@ class BaseClient:
         self.api = f"{self.url}"
         self._auth_headers = None
 
-    def build_url(self, endpoint):
+    def build_url(self, endpoint: str) -> str:
         return f"{self.api}{endpoint}"
 
     @property
-    def auth_headers(self):
+    def auth_headers(self) -> Dict:
         if not self._auth_headers:
             raise Exception(
                 "Client not authenticated. Please call `set_authentication_headers` with your credentials first"
@@ -46,27 +47,26 @@ class BaseClient:
     def check_authentication(self):
         raise NotImplementedError(f"No authentication implemented for {type(self)}")
 
-    @singledispatchmethod
+    @multimethod
     def get(self, grai_type: Any) -> Dict:
         raise NotImplementedError(
             f"No get method implemented for type {type(grai_type)}"
         )
 
-    @singledispatchmethod
+    @multimethod
     def post(self, grai_type: Any) -> Dict:
         raise NotImplementedError(
             f"No post method implemented for type {type(grai_type)}"
         )
 
-    @singledispatchmethod
+    @multimethod
     def patch(self, grai_type: Any) -> Dict:
         raise NotImplementedError(
             f"No patch method implemented for type {type(grai_type)}"
         )
 
-    @singledispatchmethod
+    @multimethod
     def delete(self, grai_type: Any) -> Dict:
         raise NotImplementedError(
             f"No delete method implemented for type {type(grai_type)}"
         )
-

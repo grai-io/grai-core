@@ -1,4 +1,4 @@
-from typing import Callable, Dict
+from typing import Callable, Dict, Any, ParamSpec
 from requests import Response
 from requests import RequestException
 from functools import wraps
@@ -7,7 +7,10 @@ import json
 from grai_client.schemas.schema import BaseModel
 
 
-def response_status_checker(fn: Callable[[...], Response]) -> Callable[[...], Dict]:
+P = ParamSpec('P')
+
+
+def response_status_checker(fn: Callable[P, Response]) -> Callable[P, Dict]:
     def response_status_check(resp: Response) -> Dict:
         if resp.status_code in {200, 201}:
             return resp.json()
@@ -29,15 +32,16 @@ def response_status_checker(fn: Callable[[...], Response]) -> Callable[[...], Di
         raise RequestException(message)
 
     @wraps(fn)
-    def inner(*args, **kwargs) -> Dict:
-        response = response_status_check(fn(*args, **kwargs))
+    def inner(*args: P.args, **kwargs: P.kwargs) -> Dict:
+        result = fn(*args, **kwargs)
+        response = response_status_check(result)
         return response
 
     return inner
 
 
 class GraiEncoder(json.JSONEncoder):
-    def default(self, obj):
+    def default(self, obj: Any) -> Any:
         if isinstance(obj, UUID):
             return str(obj)
         elif isinstance(obj, BaseModel):

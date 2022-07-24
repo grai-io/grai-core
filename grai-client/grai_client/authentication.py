@@ -35,7 +35,7 @@ class UserNameHeader(UserTokenHeader):
         self.password = password
         super().__init__(token=self.get_token())
 
-    def get_token(self):
+    def get_token(self) -> str:
         params = {
             "username": self.username,
             "password": self.password,
@@ -45,5 +45,5 @@ class UserNameHeader(UserTokenHeader):
             url, data=json.dumps(params), headers=json_headers
         )
         if token.status_code != 200:
-            raise Exception(f"{token.content}")
+            raise Exception("Failed to get user token from server")
         return token.json()['token']
