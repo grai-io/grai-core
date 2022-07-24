@@ -1,8 +1,8 @@
 import os
 from pathlib import Path
-from decouple import config
-from typing import Dict, Any
+from typing import Any, Dict
 
+from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 MEDIA_ROOT = str(BASE_DIR.joinpath("media"))
@@ -74,8 +74,8 @@ THIRD_PARTY_APPS = [
     "social_django",
     "rest_framework_simplejwt",
     "django_extensions",
-    'rest_framework.authtoken',
-    'rest_framework_api_key',
+    "rest_framework.authtoken",
+    "rest_framework_api_key",
 ]
 
 THE_GUIDE_APPS = [
@@ -191,4 +191,3 @@ CSRF_COOKIE_SECURE = True
 
 # OpenApi
 # https://drf-spectacular.readthedocs.io/en/latest/settings.html
-

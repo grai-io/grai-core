@@ -1,15 +1,16 @@
-from pydantic import BaseModel, Field
-from typing import Any, Optional, List, Dict
 from enum import Enum
-from grai_client.schemas.node import NodeV1
+from typing import Any, Dict, List, Optional
+
 from grai_client.schemas.edge import EdgeV1
+from grai_client.schemas.node import NodeV1
+from pydantic import BaseModel, Field
 
 
 class Column(BaseModel):
-    name: str = Field(alias='column_name')
+    name: str = Field(alias="column_name")
     data_type: str
     is_nullable: bool
-    default_value: Any = Field(alias='column_default')
+    default_value: Any = Field(alias="column_default")
     is_pk: Optional[bool]
 
     class Config:
@@ -17,8 +18,8 @@ class Column(BaseModel):
 
 
 class Table(BaseModel):
-    name: str = Field(alias='table_name')
-    table_schema: str = Field(alias='schema')
+    name: str = Field(alias="table_name")
+    table_schema: str = Field(alias="schema")
     columns: Optional[List[Column]] = []
     metadata: Optional[Dict] = {}
 
@@ -33,8 +34,8 @@ class ColumnID(BaseModel):
 
 
 class Constraint(str, Enum):
-    foreign_key = 'f'
-    primary_key = 'p'
+    foreign_key = "f"
+    primary_key = "p"
 
 
 class Edge(BaseModel):
@@ -57,21 +58,39 @@ class EdgeQuery(BaseModel):
 
     def to_edge(self) -> Edge:
         assert len(self.self_columns) == 1 and len(self.foreign_columns) == 1
-        source = ColumnID(table_schema=self.self_schema, table_name=self.self_table, name=self.self_columns[0])
-        destination = ColumnID(table_schema=self.foreign_schema, table_name=self.foreign_table,
-                               name=self.foreign_columns[0])
-        return Edge(definition=self.definition, source=source, destination=destination, constraint_type=self.constraint_type)
+        source = ColumnID(
+            table_schema=self.self_schema,
+            table_name=self.self_table,
+            name=self.self_columns[0],
+        )
+        destination = ColumnID(
+            table_schema=self.foreign_schema,
+            table_name=self.foreign_table,
+            name=self.foreign_columns[0],
+        )
+        return Edge(
+            definition=self.definition,
+            source=source,
+            destination=destination,
+            constraint_type=self.constraint_type,
+        )
 
 
 class Node(BaseModel):
     name: str
-    namespace: str = 'default'
-    data_source: str = 'postgres'
+    namespace: str = "default"
+    data_source: str = "postgres"
     metadata: Dict = {}
 
 
-def build_node(table: Table, column: Column, namespace: str = 'default', data_source: str = 'postgres') -> Node:
-    return Node(name=column.name,
-                namespace=namespace,
-                data_source=data_source,
+def build_node(
+    table: Table,
+    column: Column,
+    namespace: str = "default",
+    data_source: str = "postgres",
+) -> Node:
+    return Node(
+        name=column.name,
+        namespace=namespace,
+        data_source=data_source,
     )

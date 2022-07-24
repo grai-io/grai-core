@@ -2,11 +2,10 @@ from typing import Callable, Dict
 
 import requests
 import typer
+from grai_cli import config
 from grai_client.authentication import (APIKeyHeader, UserNameHeader,
                                         UserTokenHeader)
 from requests import Response
-
-from grai_cli import config
 
 json_headers = {"accept": "application/json", "Content-Type": "application/json"}
 

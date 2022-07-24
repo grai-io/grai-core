@@ -4,10 +4,10 @@ from grai_source_postgres.loader import PostgresConnector
 # Tests only run with a separate postgres container deployed
 # TODO: Mock the DB connection: https://blog.devgenius.io/creating-a-mock-database-for-unittesting-in-python-is-easier-than-you-think-c458e747224b
 test_credentials = {
-    'host': 'localhost',
-    'dbname': 'docker',
-    'user': 'docker',
-    'password': 'docker'
+    "host": "localhost",
+    "dbname": "docker",
+    "user": "docker",
+    "password": "docker",
 }
 
 
@@ -33,6 +33,3 @@ def test_building_edges():
         edges = conn.get_foreign_keys()
 
     assert len(edges) > 0
-
-
-

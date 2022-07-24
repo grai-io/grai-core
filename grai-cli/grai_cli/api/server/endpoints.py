@@ -2,16 +2,15 @@ from pathlib import Path
 from typing import Optional
 
 import typer
-from grai_client.schemas.edge import EdgeType
-from grai_client.schemas.node import NodeType
-from grai_client.schemas.schema import Schema, validate_file
-from rich import print as rprint
-
 from grai_cli.api.entrypoint import app
 from grai_cli.api.server.setup import (client_app, client_get_app,
                                        get_default_client)
 from grai_cli.utilities.styling import default_styler
 from grai_cli.utilities.utilities import merge_dicts, write_yaml
+from grai_client.schemas.edge import EdgeType
+from grai_client.schemas.node import NodeType
+from grai_client.schemas.schema import Schema, validate_file
+from rich import print as rprint
 
 
 @client_app.command("is_authenticated", help="Verify auth credentials are valid")

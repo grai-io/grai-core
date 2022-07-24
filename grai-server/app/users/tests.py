@@ -1,32 +1,33 @@
 import uuid
+from itertools import product
 
 import django.db.utils
 import pytest
-from itertools import product
 from django.test import Client
-from django.urls import reverse
-from lineage.urls import app_name
-from users.models import User
-from lineage.models import Node, Edge
 from django.test.client import RequestFactory
+from django.urls import reverse
+from lineage.models import Edge, Node
+from lineage.urls import app_name
 from rest_framework.test import force_authenticate
+from users.models import User
 
 
 @pytest.fixture
 def test_password():
-    return 'strong-test-pass'
+    return "strong-test-pass"
 
 
 def test_username():
-    return f'{str(uuid.uuid4())}@gmail.com'
+    return f"{str(uuid.uuid4())}@gmail.com"
 
 
 @pytest.fixture
 def create_user(db, django_user_model, test_password):
     def make_user(**kwargs):
-        kwargs['password'] = test_password
-        kwargs.setdefault('username', test_username())
+        kwargs["password"] = test_password
+        kwargs.setdefault("username", test_username())
         return django_user_model.objects.create_user(**kwargs)
+
     return make_user
 
 
@@ -42,6 +43,8 @@ class TestUserAuth:
         assert success is False
 
     def test_incorrect_password_auth(self, db, client, create_user, test_password):
-        user = User.objects.create_user(username='test@gmail.com', password=test_password)
-        success = client.login(username=user.username, password='wrong_password')
+        user = User.objects.create_user(
+            username="test@gmail.com", password=test_password
+        )
+        success = client.login(username=user.username, password="wrong_password")
         assert success is False

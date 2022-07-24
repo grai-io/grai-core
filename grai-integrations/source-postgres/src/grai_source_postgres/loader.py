@@ -1,12 +1,20 @@
-import psycopg2
-import psycopg2.extras
 import contextlib
 from typing import Dict, List
-from grai_source_postgres.models import Table, Column, ColumnID, EdgeQuery
+
+import psycopg2
+import psycopg2.extras
+from grai_source_postgres.models import Column, ColumnID, EdgeQuery, Table
 
 
 class PostgresConnector:
-    def __init__(self, dbname: str, user: str, password: str, host: str = 'localhost', port: str = '5432'):
+    def __init__(
+        self,
+        dbname: str,
+        user: str,
+        password: str,
+        host: str = "localhost",
+        port: str = "5432",
+    ):
         self.host = host
         self.port = port
         self.dbname = dbname
@@ -40,7 +48,9 @@ class PostgresConnector:
         self._connection = None
 
     def query_runner(self, query: str, param_dict: Dict = {}) -> List[Dict]:
-        with self.connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cursor:
+        with self.connection.cursor(
+            cursor_factory=psycopg2.extras.RealDictCursor
+        ) as cursor:
             cursor.execute(query, param_dict)
             result = cursor.fetchall()
         return [dict(item) for item in result]
@@ -109,7 +119,7 @@ class PostgresConnector:
             ORDER BY "self_schema", "self_table";
         """
         results = self.query_runner(query)
-        results = (result for result in results if result['constraint_type'] == 'f')
+        results = (result for result in results if result["constraint_type"] == "f")
         return [EdgeQuery(**fk).to_edge() for fk in results]
 
     def get_nodes(self) -> List:
@@ -119,5 +129,3 @@ class PostgresConnector:
             nodes.append(table)
             nodes.extend(table.columns)
         return nodes
-
-

@@ -1,6 +1,7 @@
-from pydantic import BaseModel
-from typing import Optional, Dict, Union
+from typing import Dict, Optional, Union
 from uuid import UUID
+
+from pydantic import BaseModel
 
 
 class BaseNode(BaseModel):

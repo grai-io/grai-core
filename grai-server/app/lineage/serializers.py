@@ -1,6 +1,7 @@
 from django.db.models import fields
 from rest_framework import serializers
-from .models import Node, Edge
+
+from .models import Edge, Node
 
 
 class NodeSerializer(serializers.ModelSerializer):
@@ -8,8 +9,16 @@ class NodeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Node
-        fields = ('id', 'namespace', 'name', 'display_name', 'data_source', 'metadata', 'is_active')
-        read_only_fields = ('created_at', 'updated_at')
+        fields = (
+            "id",
+            "namespace",
+            "name",
+            "display_name",
+            "data_source",
+            "metadata",
+            "is_active",
+        )
+        read_only_fields = ("created_at", "updated_at")
 
 
 class EdgeSerializer(serializers.ModelSerializer):
@@ -21,5 +30,5 @@ class EdgeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Edge
-        fields = ('id', 'data_source', 'metadata', 'is_active', 'source', 'destination')
-        read_only_fields = ('created_at', 'updated_at')
+        fields = ("id", "data_source", "metadata", "is_active", "source", "destination")
+        read_only_fields = ("created_at", "updated_at")

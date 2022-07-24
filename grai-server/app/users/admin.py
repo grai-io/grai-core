@@ -1,11 +1,10 @@
 from django.contrib import admin
-from users.models import User
 from rest_framework.authtoken.admin import TokenAdmin
+from users.models import User
 
-from .forms import CustomUserCreationForm, CustomUserChangeForm
+from .forms import CustomUserChangeForm, CustomUserCreationForm
 
-
-TokenAdmin.raw_id_fields = ['user']
+TokenAdmin.raw_id_fields = ["user"]
 
 
 @admin.register(User)

@@ -3,7 +3,6 @@ from typing import Callable
 
 import typer
 import yaml
-
 from grai_cli import config
 from grai_cli.api.config.setup import config_app, set_app
 from grai_cli.utilities.styling import default_styler

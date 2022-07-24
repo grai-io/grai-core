@@ -1,12 +1,13 @@
-from django.db import models
 import uuid
-from django.db.models import Q, F
+
+from django.db import models
+from django.db.models import F, Q
 
 
 # Create your models here.
 class Node(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    namespace = models.CharField(max_length=255, default='default')
+    namespace = models.CharField(max_length=255, default="default")
     name = models.CharField(max_length=255)
     display_name = models.CharField(max_length=255)
 
@@ -29,13 +30,14 @@ class Node(models.Model):
     def __str__(self):
         return f"{self.display_name}"
 
-
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['namespace', 'name'], name='Node namespaces/name uniqueness')
+            models.UniqueConstraint(
+                fields=["namespace", "name"], name="Node namespaces/name uniqueness"
+            )
         ]
         indexes = [
-            models.Index(fields=['namespace', 'name']),
+            models.Index(fields=["namespace", "name"]),
         ]
 
 
@@ -60,8 +62,11 @@ class Edge(models.Model):
 
     class Meta:
         constraints = [
-            models.CheckConstraint(check=~Q(source=F('destination')), name='Edges are not allowed between the same nodes')
+            models.CheckConstraint(
+                check=~Q(source=F("destination")),
+                name="Edges are not allowed between the same nodes",
+            )
         ]
         indexes = [
-            models.Index(fields=['is_active']),
+            models.Index(fields=["is_active"]),
         ]

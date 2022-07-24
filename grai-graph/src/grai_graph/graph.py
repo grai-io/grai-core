@@ -1,7 +1,8 @@
-import networkx as nx
-from typing import List, Type, Any, Tuple, Union, Dict
-from grai_graph.schemas import BaseNode, BaseEdge
 from functools import singledispatch
+from typing import Any, Dict, List, Tuple, Type, Union
+
+import networkx as nx
+from grai_graph.schemas import BaseEdge, BaseNode
 
 NodeTypes = Union[Type[BaseNode], BaseNode]
 EdgeTypes = Union[Type[BaseEdge], BaseEdge]

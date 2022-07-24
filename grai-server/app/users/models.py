@@ -1,12 +1,13 @@
-from django.db import models
-from phonenumber_field.modelfields import PhoneNumberField
 import uuid
+
+from django.conf import settings
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
-from django.utils.translation import gettext_lazy as _
-from django.conf import settings
+from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils.translation import gettext_lazy as _
+from phonenumber_field.modelfields import PhoneNumberField
 from rest_framework.authtoken.models import Token
 
 
@@ -28,7 +29,7 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault("is_superuser", False)
 
         user = self._create_user(username, password, **extra_fields)
-        
+
         return user
 
     def create_superuser(self, username, password, **extra_fields):
@@ -47,8 +48,8 @@ class User(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     username = models.EmailField(_("email address"), unique=True, null=True, blank=True)
     email = None
-    first_name = models.CharField(default='', max_length=255)
-    last_name = models.CharField(default='', max_length=255)
+    first_name = models.CharField(default="", max_length=255)
+    last_name = models.CharField(default="", max_length=255)
     phone = PhoneNumberField(null=True, blank=True, unique=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -68,8 +69,3 @@ class User(AbstractUser):
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
-
-
-
-
-

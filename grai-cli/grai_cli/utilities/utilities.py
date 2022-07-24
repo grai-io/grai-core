@@ -5,9 +5,8 @@ from typing import Any, Callable, Dict, Iterable, List, Tuple, Union
 from uuid import UUID
 
 import yaml
-from pydantic import BaseModel
-
 from grai_cli.settings.config import config
+from pydantic import BaseModel
 
 
 def load_yaml(file: str | Path) -> Dict:
