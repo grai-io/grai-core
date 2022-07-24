@@ -1,11 +1,12 @@
-from grai_client.schemas.edge import EdgeV1, EdgeType, EdgeNodeValues
-from grai_client.schemas.node import NodeV1, NodeType
-from grai_client.endpoints.v1.client import ClientV1
-from grai_client.endpoints.utilities import response_status_checker
-import requests
 from functools import singledispatch
-from typing import Union, Any
+from typing import Any, Union
 from uuid import UUID
+
+import requests
+from grai_client.endpoints.utilities import response_status_checker
+from grai_client.endpoints.v1.client import ClientV1
+from grai_client.schemas.edge import EdgeNodeValues, EdgeType, EdgeV1
+from grai_client.schemas.node import NodeType, NodeV1
 
 
 @singledispatch
@@ -42,7 +43,7 @@ def get_url_v1(client: ClientV1, url: str) -> requests.Response:
 
 
 def url_with_filters(url: str, node: NodeV1) -> str:
-    keys = ['name', 'namespace']
+    keys = ["name", "namespace"]
     filters = "&".join([f"{key}={getattr(node.spec, key)}" for key in keys])
     return f"{url}?{filters}"
 
@@ -60,12 +61,16 @@ def get_node_v1(client: ClientV1, grai_type: NodeType) -> requests.Response:
 
 
 @ClientV1.get.register
-def get_node_by_names_v1(client: ClientV1, node_values: EdgeNodeValues) -> requests.Response:
+def get_node_by_names_v1(
+    client: ClientV1, node_values: EdgeNodeValues
+) -> requests.Response:
     url = f"{client.node_endpoint}?name={node_values.name}&namespace={node_values.namespace}"
     return client.get(url)
 
 
 @ClientV1.get.register
-def get_edge_v1(client: ClientV1, grai_type: Union[EdgeType, EdgeV1]) -> requests.Response:
+def get_edge_v1(
+    client: ClientV1, grai_type: Union[EdgeType, EdgeV1]
+) -> requests.Response:
     url = client.edge_endpoint
     return client.get(url)

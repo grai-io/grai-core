@@ -1,7 +1,9 @@
-from grai_client.authentication import UserNameHeader, UserTokenHeader, APIKeyHeader
-from typing import Any, Dict
-from functools import singledispatchmethod, singledispatch
 import abc
+from functools import singledispatch, singledispatchmethod
+from typing import Any, Dict
+
+from grai_client.authentication import (APIKeyHeader, UserNameHeader,
+                                        UserTokenHeader)
 from multimethod import multimethod
 
 

@@ -1,6 +1,6 @@
 import uuid
-import pytest
 
+import pytest
 from grai_client.schemas import edge, node, schema
 
 

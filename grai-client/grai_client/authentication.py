@@ -1,6 +1,7 @@
-import requests
-import json
 import abc
+import json
+
+import requests
 
 json_headers = {"accept": "application/json", "Content-Type": "application/json"}
 
@@ -41,9 +42,7 @@ class UserNameHeader(UserTokenHeader):
             "password": self.password,
         }
         url = "http://localhost:8000/api/v1/auth/api-token/"
-        token = requests.post(
-            url, data=json.dumps(params), headers=json_headers
-        )
+        token = requests.post(url, data=json.dumps(params), headers=json_headers)
         if token.status_code != 200:
             raise Exception("Failed to get user token from server")
-        return token.json()['token']
+        return token.json()["token"]

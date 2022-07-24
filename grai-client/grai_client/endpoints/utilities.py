@@ -1,13 +1,12 @@
-from typing import Callable, Dict, Any, ParamSpec
-from requests import Response
-from requests import RequestException
-from functools import wraps
-from uuid import UUID
 import json
+from functools import wraps
+from typing import Any, Callable, Dict, ParamSpec
+from uuid import UUID
+
 from grai_client.schemas.schema import BaseModel
+from requests import RequestException, Response
 
-
-P = ParamSpec('P')
+P = ParamSpec("P")
 
 
 def response_status_checker(fn: Callable[P, Response]) -> Callable[P, Dict]:

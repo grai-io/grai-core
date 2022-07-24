@@ -1,14 +1,13 @@
-from typing import Iterable, Union, Type, Dict, Any
-from pydantic import BaseModel, Field
+from pathlib import Path
+from typing import Any, Dict, Iterable, Type, Union
+
+import yaml
 from grai_client.schemas.edge import Edge, EdgeType
 from grai_client.schemas.node import Node, NodeType
 from grai_client.schemas.utilities import DispatchType
-from typing_extensions import Annotated
-import yaml
 from multimethod import multimethod
-
-from pathlib import Path
-
+from pydantic import BaseModel, Field
+from typing_extensions import Annotated
 
 GraiType = Annotated[Union[Node, Edge], Field(discriminator="type")]
 
@@ -26,10 +25,7 @@ class Schema(BaseModel):
         return cls(entity=result).entity
 
 
-def validate_file(file: Union[str,  Path]) -> Iterable[GraiType]:
+def validate_file(file: Union[str, Path]) -> Iterable[GraiType]:
     with open(file) as f:
         for item in yaml.safe_load_all(f):
             yield Schema(entity=item).entity
-
-
-

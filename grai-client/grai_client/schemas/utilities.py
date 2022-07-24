@@ -1,5 +1,6 @@
+from typing import Any, Dict, List, Optional, Type, Union
+
 from pydantic import BaseModel, root_validator
-from typing import Type, Dict, Union, List, Optional, Any
 
 
 class DispatchType:
@@ -43,5 +44,3 @@ def merge_models(a: BaseModel, b: BaseModel) -> BaseModel:
     a_type = type(a)
     merged = merge_dicts(unpack_object(a), unpack_object(b))
     return a_type(**merged)
-
-

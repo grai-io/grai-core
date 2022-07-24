@@ -1,8 +1,10 @@
-from typing import Optional, Union, Dict, Literal
+from typing import Dict, Literal, Optional, Union
+from uuid import UUID
+
+from grai_client.schemas.utilities import (BaseSpec, DispatchType,
+                                           PlaceHolderSchema)
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated
-from uuid import UUID
-from grai_client.schemas.utilities import PlaceHolderSchema, BaseSpec, DispatchType
 
 
 class BaseNode(BaseModel):
@@ -30,11 +32,11 @@ class NodeV1(BaseNode):
     version: Literal["v1"]
     spec: V1
 
-    def from_spec(self, spec_dict: Dict) -> 'NodeV1':
+    def from_spec(self, spec_dict: Dict) -> "NodeV1":
         args = {
-            'version': self.version,
-            'type': self.type,
-            'spec': spec_dict,
+            "version": self.version,
+            "type": self.type,
+            "spec": spec_dict,
         }
         return type(self)(**args)
 
@@ -43,10 +45,13 @@ class NodeV2(BaseNode):
     version: Literal["v2"]
     spec: V2
 
+    def from_spec(self, spec_dict: Dict) -> "NodeV2":
+        raise NotImplementedError()
+
 
 class NodeType(DispatchType):
     name: str = "nodes"
-    type: str = 'Node'
+    type: str = "Node"
 
 
 NodeTypes = Union[NodeV1, NodeV2]

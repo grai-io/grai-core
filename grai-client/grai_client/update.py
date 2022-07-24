@@ -1,8 +1,8 @@
-from grai_client.schemas.node import Node
-from typing import List, Dict
-import requests
-from grai_client.schemas.schema import GraiType
+from typing import Dict, List
 
+import requests
+from grai_client.schemas.node import Node
+from grai_client.schemas.schema import GraiType
 from grai_client.schemas.utilities import merge_models
 
 
@@ -24,9 +24,13 @@ def update(client, nodes: List[Node], active_nodes: List[Node]):
     deactivated_node_keys = current_node_map.keys() - node_map.keys()
     updated_node_keys = node_map.keys() - new_node_keys
 
-    deactivated_nodes = deactivate_nodes([current_node_map[k] for k in deactivated_node_keys])
+    deactivated_nodes = deactivate_nodes(
+        [current_node_map[k] for k in deactivated_node_keys]
+    )
     new_nodes = [node_map[k] for k in new_node_keys]
-    updated_nodes = [merge_models(node_map[k], current_node_map[k]) for k in updated_node_keys]
+    updated_nodes = [
+        merge_models(node_map[k], current_node_map[k]) for k in updated_node_keys
+    ]
 
     for node in updated_nodes:
         client.patch(node)
