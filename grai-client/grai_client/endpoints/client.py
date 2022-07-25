@@ -1,6 +1,6 @@
 import abc
 from functools import singledispatch, singledispatchmethod
-from typing import Any, Dict
+from typing import Any, Dict, Union, Optional
 
 from grai_client.authentication import (APIKeyHeader, UserNameHeader,
                                         UserTokenHeader)
@@ -30,10 +30,10 @@ class BaseClient:
 
     def set_authentication_headers(
         self,
-        username: str | None = None,
-        password: str | None = None,
-        token: str | None = None,
-        api_key: str | None = None,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+        token: Optional[str] = None,
+        api_key: Optional[str] = None,
     ):
         if username and password:
             self._auth_headers = UserNameHeader(username, password).headers

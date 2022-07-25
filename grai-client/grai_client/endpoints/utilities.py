@@ -1,10 +1,17 @@
 import json
 from functools import wraps
-from typing import Any, Callable, Dict, ParamSpec
+from typing import Any, Callable, Dict
 from uuid import UUID
 
 from grai_client.schemas.schema import BaseModel
 from requests import RequestException, Response
+import sys
+
+
+if sys.version_info < (3, 10):
+    from typing_extensions import ParamSpec
+else:
+    from typing import ParamSpec
 
 P = ParamSpec("P")
 
