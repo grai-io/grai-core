@@ -1,9 +1,8 @@
-import contextlib
 from typing import Dict, List
-
+from itertools import chain
 import psycopg2
 import psycopg2.extras
-from grai_source_postgres.models import Column, ColumnID, EdgeQuery, Table
+from grai_source_postgres.models import Column, ColumnID, EdgeQuery, Table, Edge
 
 
 class PostgresConnector:
@@ -88,7 +87,7 @@ class PostgresConnector:
 
         return [Column(**result) for result in self.query_runner(query)]
 
-    def get_foreign_keys(self) -> List[Dict]:
+    def get_foreign_keys(self) -> List[Edge]:
         """This needs to be tested / evaluated
         :param connection:
         :param table:
@@ -119,13 +118,14 @@ class PostgresConnector:
             ORDER BY "self_schema", "self_table";
         """
         results = self.query_runner(query)
-        results = (result for result in results if result["constraint_type"] == "f")
-        return [EdgeQuery(**fk).to_edge() for fk in results]
+        filtered_results = (result for result in results if result["constraint_type"] == "f")
+        return [EdgeQuery(**fk).to_edge() for fk in filtered_results]
 
     def get_nodes(self) -> List:
-        nodes = []
-        for table in self.get_tables():
-            table.columns = self.get_columns(table)
-            nodes.append(table)
-            nodes.extend(table.columns)
-        return nodes
+        def get_nodes():
+            for table in self.get_tables():
+                table.columns = self.get_columns(table)
+                yield table
+                yield table.columns
+
+        return list(chain(*get_nodes()))

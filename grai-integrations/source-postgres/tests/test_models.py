@@ -1,5 +1,7 @@
 import pytest
 from grai_source_postgres.models import Column, Table
+from typing import List, Dict
+
 
 column_params = [
     {"name": "test", "data_type": "integer", "is_nullable": True},
@@ -19,7 +21,7 @@ column_params = [
 ]
 
 
-table_params = [
+table_params: List[Dict] = [
     {"name": "test", "table_schema": "test"},
     {"table_name": "test", "table_schema": "test"},
     {"table_name": "test", "schema": "test"},
