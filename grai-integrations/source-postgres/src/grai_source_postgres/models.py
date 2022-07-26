@@ -1,36 +1,62 @@
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from grai_client.schemas.edge import EdgeV1
-from grai_client.schemas.node import NodeV1
-from pydantic import BaseModel, Field
-
-
-class Column(BaseModel):
-    name: str = Field(alias="column_name")
-    data_type: str
-    is_nullable: bool
-    default_value: Any = Field(alias="column_default")
-    is_pk: Optional[bool]
-
-    class Config:
-        allow_population_by_field_name = True
-
-
-class Table(BaseModel):
-    name: str = Field(alias="table_name")
-    table_schema: str = Field(alias="schema")
-    columns: Optional[List[Column]] = []
-    metadata: Optional[Dict] = {}
-
-    class Config:
-        allow_population_by_field_name = True
-
+from pydantic import BaseModel, Field, validator
 
 class ColumnID(BaseModel):
     table_schema: str
     table_name: str
     name: str
+    namespace: str
+    full_name: Optional[str] = None
+
+    @validator('full_name', always=True)
+    def make_full_name(cls, full_name, values):
+        if full_name is not None:
+            return full_name
+
+        return f"{values['table_schema']}.{values['table_name']}.{values['name']}"
+
+
+class Column(BaseModel):
+    name: str = Field(alias="column_name")
+    table: str
+    column_schema: str = Field(alias="schema")
+    data_type: str
+    is_nullable: bool
+    namespace: str
+    default_value: Any = Field(alias="column_default")
+    is_pk: Optional[bool] = False
+    full_name: Optional[str] = None
+
+    class Config:
+        allow_population_by_field_name = True
+
+    @validator('full_name', always=True)
+    def make_full_name(cls, full_name, values):
+        if full_name is not None:
+            return full_name
+        result = f"{values['column_schema']}.{values['table']}.{values['name']}"
+        return result
+
+
+class Table(BaseModel):
+    name: str = Field(alias="table_name")
+    table_schema: str = Field(alias="schema")
+    namespace: str
+    columns: Optional[List[Column]] = []
+    metadata: Optional[Dict] = {}
+    full_name: Optional[str] = None
+
+    class Config:
+        allow_population_by_field_name = True
+
+    @validator('full_name', always=True)
+    def make_full_name(cls, full_name, values):
+        if full_name is not None:
+            return full_name
+
+        return f"{values['table_schema']}.{values['name']}"
 
 
 class Constraint(str, Enum):
@@ -43,9 +69,10 @@ class Edge(BaseModel):
     destination: ColumnID
     definition: str
     constraint_type: Constraint
-
+    metadata: Optional[Dict] = {}
 
 class EdgeQuery(BaseModel):
+    namespace: str
     constraint_name: str
     constraint_type: str
     self_schema: str
@@ -62,11 +89,13 @@ class EdgeQuery(BaseModel):
             table_schema=self.self_schema,
             table_name=self.self_table,
             name=self.self_columns[0],
+            namespace=self.namespace,
         )
         destination = ColumnID(
             table_schema=self.foreign_schema,
             table_name=self.foreign_table,
             name=self.foreign_columns[0],
+            namespace=self.namespace,
         )
         return Edge(
             definition=self.definition,
@@ -76,21 +105,6 @@ class EdgeQuery(BaseModel):
         )
 
 
-class Node(BaseModel):
-    name: str
-    namespace: str = "default"
-    data_source: str = "postgres"
-    metadata: Dict = {}
 
 
-def build_node(
-    table: Table,
-    column: Column,
-    namespace: str = "default",
-    data_source: str = "postgres",
-) -> Node:
-    return Node(
-        name=column.name,
-        namespace=namespace,
-        data_source=data_source,
-    )
+

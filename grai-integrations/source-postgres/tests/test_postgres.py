@@ -8,6 +8,7 @@ test_credentials = {
     "dbname": "grai",
     "user": "grai",
     "password": "grai",
+    "namespace": "test"
 }
 
 
@@ -25,4 +26,4 @@ def test_building_edges():
     with connection.connect() as conn:
         edges = conn.get_foreign_keys()
 
-    assert len(edges) > 0
+    assert len(edges) > 0, edges

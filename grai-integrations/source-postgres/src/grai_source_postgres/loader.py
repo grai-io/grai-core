@@ -13,12 +13,14 @@ class PostgresConnector:
         password: str,
         host: str = "localhost",
         port: str = "5432",
+        namespace: str = 'default'
     ):
         self.host = host
         self.port = port
         self.dbname = dbname
         self.user = user
         self.password = password
+        self.namespace = namespace
         self._connection = None
 
     def __enter__(self):
@@ -69,7 +71,7 @@ class PostgresConnector:
             AND table_type='BASE TABLE'
             ORDER BY table_schema, table_name
         """
-        return [Table(**result) for result in self.query_runner(query)]
+        return [Table(**result, namespace=self.namespace) for result in self.query_runner(query)]
 
     def get_columns(self, table: Table) -> List[Column]:
         """
@@ -84,8 +86,12 @@ class PostgresConnector:
             AND table_name = '{table.name}'
             ORDER BY ordinal_position
         """
-
-        return [Column(**result) for result in self.query_runner(query)]
+        addtl_args = {
+            'namespace': table.namespace,
+            'schema': table.table_schema,
+            'table': table.table_name
+        }
+        return [Column(**result, **addtl_args) for result in self.query_runner(query)]
 
     def get_foreign_keys(self) -> List[Edge]:
         """This needs to be tested / evaluated
@@ -117,9 +123,12 @@ class PostgresConnector:
             GROUP BY constraint_name, constraint_type, "self_schema", "self_table", definition, "foreign_schema", "foreign_table"
             ORDER BY "self_schema", "self_table";
         """
+        addtl_args = {
+            'namespace': self.namespace,
+        }
         results = self.query_runner(query)
         filtered_results = (result for result in results if result["constraint_type"] == "f")
-        return [EdgeQuery(**fk).to_edge() for fk in filtered_results]
+        return [EdgeQuery(**fk, **addtl_args).to_edge() for fk in filtered_results]
 
     def get_nodes(self) -> List:
         def get_nodes():
