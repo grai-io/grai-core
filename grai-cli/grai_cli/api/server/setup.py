@@ -8,16 +8,16 @@ from grai_cli.settings.config import config
 from grai_cli.utilities.headers import authenticate
 
 
-def get_cli_client(client: Type[BaseClient]):
-    class VersionedCLIClient(client):
-        def __getattr__(self, attr):
-            try:
-                return getattr(super(), attr)
-            except:
-                print("Exiting with error")
-                typer.Exit()
-
-    return VersionedCLIClient
+# def get_cli_client(client: Type[BaseClient]):
+#     class VersionedCLIClient(client):
+#         def __getattr__(self, attr):
+#             try:
+#                 return getattr(super(), attr)
+#             except:
+#                 print(f"Exiting with error, client has no attribute {attr}")
+#                 typer.Exit()
+#
+#     return VersionedCLIClient
 
 
 def get_default_client() -> BaseClient:
@@ -28,7 +28,9 @@ def get_default_client() -> BaseClient:
     }
     host = config.grab("server.host")
     port = config.grab("server.port")
-    client = get_cli_client(_clients[config.grab("server.api_version")])(host, port)
+    client = _clients[config.grab("server.api_version")]
+    client = client(host, port)
+    #client = get_cli_client(client)(host, port)
     authenticate(client)
     return client
 
