@@ -8,6 +8,7 @@ authors = ["Ian Eaves <ian@grai.io>"]
 python = "^3.8"
 networkx = "^2.8.5"
 pydantic = "^1.9.1"
+grai-client = "^0.1.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
