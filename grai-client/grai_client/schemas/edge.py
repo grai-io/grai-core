@@ -2,16 +2,16 @@ from typing import Callable, Dict, List, Literal, Optional, Type, Union
 from uuid import UUID
 
 from grai_client.schemas.utilities import (BaseSpec, DispatchType,
-                                           PlaceHolderSchema)
-from pydantic import BaseModel, Field
+                                           PlaceHolderSchema, GraiBaseModel)
+from pydantic import Field
 from typing_extensions import Annotated
 
 
-class BaseEdge(BaseModel):
+class BaseEdge(GraiBaseModel):
     type: Literal["Edge"]
 
 
-class EdgeNodeValues(BaseModel):
+class EdgeNodeValues(GraiBaseModel):
     name: str
     namespace: str
 

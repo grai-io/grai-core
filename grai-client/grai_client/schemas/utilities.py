@@ -8,7 +8,12 @@ class DispatchType:
     type: str
 
 
-class BaseSpec(BaseModel):
+class GraiBaseModel(BaseModel):
+    class Config:
+        frozen = True
+
+
+class BaseSpec(GraiBaseModel):
     is_active: Optional[bool] = True
 
 

@@ -1,13 +1,13 @@
 import abc
 from functools import singledispatch, singledispatchmethod
-from typing import Any, Dict, Union, Optional
-
+from typing import Any, Dict, Union, Optional, Sequence, List
+from grai_client.schemas.schema import GraiType
 from grai_client.authentication import (APIKeyHeader, UserNameHeader,
                                         UserTokenHeader)
 from multimethod import multimethod
 
 
-class BaseClient:
+class BaseClient(abc.ABC):
     id = "base"
 
     def __init__(self, host: str, port: str):
@@ -72,3 +72,29 @@ class BaseClient:
         raise NotImplementedError(
             f"No delete method implemented for type {type(grai_type)}"
         )
+
+
+@BaseClient.post.register
+def post_sequence(client: BaseClient, objs: Sequence) -> List[Dict]:
+    result = [client.post(obj) for obj in objs]
+    return result
+
+
+@BaseClient.patch.register
+def patch_sequence(client: BaseClient, objs: Sequence) -> List[Dict]:
+    result = [client.patch(obj) for obj in objs]
+    return result
+
+
+@BaseClient.delete.register
+def delete_sequence(client: BaseClient, objs: Sequence) -> List[Dict]:
+    result = [client.delete(obj) for obj in objs]
+    return result
+
+
+@BaseClient.get.register
+def get_sequence(client: BaseClient, objs: Sequence) -> List[Dict]:
+    result = [client.get(obj) for obj in objs]
+    return result
+
+

@@ -3,7 +3,7 @@ from functools import wraps
 from typing import Any, Callable, Dict
 from uuid import UUID
 
-from grai_client.schemas.schema import BaseModel
+from grai_client.schemas.utilities import GraiBaseModel
 from requests import RequestException, Response
 import sys
 
@@ -50,6 +50,6 @@ class GraiEncoder(json.JSONEncoder):
     def default(self, obj: Any) -> Any:
         if isinstance(obj, UUID):
             return str(obj)
-        elif isinstance(obj, BaseModel):
+        elif isinstance(obj, GraiBaseModel):
             return obj.dict()
         return json.JSONEncoder.default(self, obj)

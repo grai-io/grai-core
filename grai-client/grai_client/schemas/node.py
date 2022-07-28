@@ -2,13 +2,16 @@ from typing import Dict, Literal, Optional, Union
 from uuid import UUID
 
 from grai_client.schemas.utilities import (BaseSpec, DispatchType,
-                                           PlaceHolderSchema)
+                                           PlaceHolderSchema, GraiBaseModel)
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated
 
 
-class BaseNode(BaseModel):
+class BaseNode(GraiBaseModel):
     type: Literal["Node"]
+
+    def __hash__(self):
+        return
 
 
 class V1(BaseSpec):

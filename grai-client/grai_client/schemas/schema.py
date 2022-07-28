@@ -2,23 +2,22 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, Type, Union
 
 import yaml
-from grai_client.schemas.edge import Edge, EdgeType
-from grai_client.schemas.node import Node, NodeType
-from grai_client.schemas.utilities import DispatchType
-from multimethod import multimethod
-from pydantic import BaseModel, Field
+from grai_client.schemas.edge import Edge
+from grai_client.schemas.node import Node
+from grai_client.schemas.utilities import DispatchType, GraiBaseModel
+from pydantic import Field
 from typing_extensions import Annotated
 
 GraiType = Annotated[Union[Node, Edge], Field(discriminator="type")]
 
 
-class Schema(BaseModel):
+class Schema(GraiBaseModel):
     entity: GraiType
 
     @classmethod
-    def to_model(cls, item: Dict, version: str, typing_type: DispatchType) -> GraiType:
+    def to_model(cls, item: Dict, version: str, typing_type: Union[DispatchType, str]) -> GraiType:
         result = {
-            "type": typing_type.type,
+            "type": typing_type.type if isinstance(typing_type, DispatchType) else typing_type,
             "version": version,
             "spec": item,
         }

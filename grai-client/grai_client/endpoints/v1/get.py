@@ -1,4 +1,3 @@
-from functools import singledispatch
 from typing import Any, Union
 from uuid import UUID
 
@@ -7,9 +6,10 @@ from grai_client.endpoints.utilities import response_status_checker
 from grai_client.endpoints.v1.client import ClientV1
 from grai_client.schemas.edge import EdgeNodeValues, EdgeType, EdgeV1
 from grai_client.schemas.node import NodeType, NodeV1
+from multimethod import multimethod
 
 
-@singledispatch
+@multimethod
 def get_edge_node_id(node_id: Any, client: ClientV1) -> UUID:
     raise NotImplementedError(f"No get method implemented for type {type(node_id)}")
 
