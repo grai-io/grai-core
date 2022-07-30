@@ -4,7 +4,7 @@ from typing import Any, Dict, Iterable, Type, Union
 import yaml
 from grai_client.schemas.edge import Edge
 from grai_client.schemas.node import Node
-from grai_client.schemas.utilities import DispatchType, GraiBaseModel
+from grai_client.schemas.utilities import GraiBaseModel
 from pydantic import Field
 from typing_extensions import Annotated
 
@@ -15,9 +15,9 @@ class Schema(GraiBaseModel):
     entity: GraiType
 
     @classmethod
-    def to_model(cls, item: Dict, version: str, typing_type: Union[DispatchType, str]) -> GraiType:
+    def to_model(cls, item: Dict, version: str, typing_type: str) -> GraiType:
         result = {
-            "type": typing_type.type if isinstance(typing_type, DispatchType) else typing_type,
+            "type": typing_type,
             "version": version,
             "spec": item,
         }

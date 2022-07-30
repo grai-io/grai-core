@@ -1,7 +1,7 @@
-from typing import Callable, Dict, List, Literal, Optional, Type, Union
+from typing import Callable, Dict, List, Literal, Optional, Type, Union, Literal
 from uuid import UUID
 
-from grai_client.schemas.utilities import (BaseSpec, DispatchType,
+from grai_client.schemas.utilities import (BaseSpec,
                                            PlaceHolderSchema, GraiBaseModel)
 from pydantic import Field
 from typing_extensions import Annotated
@@ -22,8 +22,8 @@ class EdgeNodeValues(GraiBaseModel):
 class V1(BaseSpec):
     id: Optional[UUID]
     data_source: str
-    source: Union[EdgeNodeValues, UUID]
-    destination: Union[EdgeNodeValues, UUID]
+    source: EdgeNodeValues
+    destination: EdgeNodeValues
     is_active: Optional[bool] = True
     metadata: Optional[Dict] = {}
 
@@ -31,7 +31,7 @@ class V1(BaseSpec):
         return hash(hash(self.source) + hash(self.destination))
 
 
-class V2(PlaceHolderSchema):
+class V2(PlaceHolderSchema, V1):
     """Placeholder for future use."""
 
     pass
@@ -58,10 +58,6 @@ class EdgeV2(BaseEdge):
         raise NotImplementedError()
 
 
-class EdgeType(DispatchType):
-    name: str = "edges"
-    type: str = "Edge"
-
-
+EdgeLabels = Literal['edge', 'edges', 'Edge', 'Edges']
 EdgeTypes = Union[EdgeV1, EdgeV2]
 Edge = Annotated[EdgeTypes, Field(discriminator="version")]

@@ -1,11 +1,11 @@
-from typing import Any, Union
+from typing import Any, Union, Literal
 from uuid import UUID
 
 import requests
 from grai_client.endpoints.utilities import response_status_checker
 from grai_client.endpoints.v1.client import ClientV1
-from grai_client.schemas.edge import EdgeNodeValues, EdgeType, EdgeV1
-from grai_client.schemas.node import NodeType, NodeV1
+from grai_client.schemas.edge import EdgeNodeValues, EdgeLabels, EdgeV1
+from grai_client.schemas.node import NodeLabels, NodeV1
 from multimethod import multimethod
 
 
@@ -55,7 +55,7 @@ def get_specific_node_v1(client: ClientV1, grai_type: NodeV1) -> requests.Respon
 
 
 @ClientV1.get.register
-def get_node_v1(client: ClientV1, grai_type: NodeType) -> requests.Response:
+def get_node_by_label_v1(client: ClientV1, grai_type: NodeLabels) -> requests.Response:
     url = client.node_endpoint
     return client.get(url)
 
@@ -69,8 +69,16 @@ def get_node_by_names_v1(
 
 
 @ClientV1.get.register
+def get_edge_by_label_v1(
+    client: ClientV1, grai_type: EdgeLabels
+) -> requests.Response:
+    url = client.edge_endpoint
+    return client.get(url)
+
+
+@ClientV1.get.register
 def get_edge_v1(
-    client: ClientV1, grai_type: Union[EdgeType, EdgeV1]
+    client: ClientV1, grai_type: EdgeV1
 ) -> requests.Response:
     url = client.edge_endpoint
     return client.get(url)

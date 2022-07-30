@@ -1,35 +1,42 @@
-from typing import Dict, List
+from typing import Dict, List, TypeVar, Optional
 
-import requests
 from grai_client.schemas.node import Node
+from grai_client.schemas.edge import Edge
 from grai_client.schemas.schema import GraiType
 from grai_client.schemas.utilities import merge_models
 from grai_client.endpoints.client import BaseClient
 
-
-def deactivate_nodes(nodes: List[GraiType]) -> List[GraiType]:
-    for node in nodes:
-        node.spec.is_active = False
-    return nodes
+T = TypeVar("T", Node, Edge)
 
 
-def update(client: BaseClient, nodes: List[Node], active_nodes: List[Node]):
-    current_node_map = {hash(node): node for node in active_nodes}
-    node_map = {hash(node): node for node in nodes}
+def deactivate(items: List[T]) -> List[T]:
+    updated = []
+    for item in items:
+        new_item = item.dict()
+        new_item['spec']['is_active'] = False
+        updated.append(type(item)(**new_item))
+    return updated
 
-    new_node_keys = node_map.keys() - current_node_map.keys()
-    deactivated_node_keys = current_node_map.keys() - node_map.keys()
-    updated_node_keys = node_map.keys() - new_node_keys
 
-    deactivated_nodes = deactivate_nodes(
-        [current_node_map[k] for k in deactivated_node_keys]
+def update(client: BaseClient, items: List[T], active_items: Optional[List[T]] = None):
+    if active_items is None:
+        active_items = client.get(items[0].type)
+    current_item_map = {hash(item.spec): item for item in active_items}
+    item_map: Dict[int, T] = {hash(item.spec): item for item in items}
+
+    new_item_keys = item_map.keys() - current_item_map.keys()
+    deactivated_item_keys = current_item_map.keys() - item_map.keys()
+    updated_item_keys = item_map.keys() - new_item_keys
+
+    deactivated_items = deactivate(
+        [current_item_map[k] for k in deactivated_item_keys]
     )
-    new_nodes = [node_map[k] for k in new_node_keys]
-    updated_nodes = [
-        merge_models(a, b) for k in updated_node_keys
-        if (a := node_map[k]) != (b := current_node_map[k])
+    new_items: List[T] = [item_map[k] for k in new_item_keys]
+    updated_items = [
+        merge_models(item_map[k], current_item_map[k]) for k in updated_item_keys
+        if item_map[k] != current_item_map[k]
     ]
 
-    client.patch(deactivated_nodes)
-    client.patch(updated_nodes)
-    client.post(new_nodes)
+    client.patch(deactivated_items)
+    client.patch(updated_items)
+    client.post(new_items)

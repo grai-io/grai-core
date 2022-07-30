@@ -6,8 +6,8 @@ from grai_client.endpoints.utilities import (GraiEncoder,
                                              response_status_checker)
 from grai_client.endpoints.v1.client import ClientV1
 from grai_client.endpoints.v1.get import get_edge_node_id
-from grai_client.schemas.edge import EdgeNodeValues, EdgeType, EdgeV1
-from grai_client.schemas.node import NodeType, NodeV1
+from grai_client.schemas.edge import EdgeNodeValues, EdgeV1
+from grai_client.schemas.node import NodeV1
 
 
 @ClientV1.delete.register

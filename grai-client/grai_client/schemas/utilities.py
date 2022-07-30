@@ -1,11 +1,13 @@
-from typing import Any, Dict, List, Optional, Type, Union
-
+from __future__ import annotations
+from typing import Any, Dict, List, Optional, TypeVar, Union
 from pydantic import BaseModel, root_validator
+from typing import TYPE_CHECKING
 
 
-class DispatchType:
-    name: str
-    type: str
+if TYPE_CHECKING:
+    from grai_client.schemas.node import Node
+    from grai_client.schemas.edge import Edge
+    T = TypeVar("T", Node, Edge)
 
 
 class GraiBaseModel(BaseModel):
@@ -45,7 +47,7 @@ def merge_dicts(a: Dict, b: Dict) -> Dict:
     return a
 
 
-def merge_models(a: BaseModel, b: BaseModel) -> BaseModel:
+def merge_models(a: T, b: T) -> T:
     a_type = type(a)
     merged = merge_dicts(unpack_object(a), unpack_object(b))
     return a_type(**merged)
