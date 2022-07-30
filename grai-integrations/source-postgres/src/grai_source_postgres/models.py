@@ -3,14 +3,19 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field, validator
 
-class ColumnID(BaseModel):
+
+class PostgresNode(BaseModel):
+    pass
+
+
+class ColumnID(PostgresNode):
     table_schema: str
     table_name: str
     name: str
     namespace: str
     full_name: Optional[str] = None
 
-    @validator('full_name', always=True)
+    @validator("full_name", always=True)
     def make_full_name(cls, full_name, values):
         if full_name is not None:
             return full_name
@@ -18,7 +23,7 @@ class ColumnID(BaseModel):
         return f"{values['table_schema']}.{values['table_name']}.{values['name']}"
 
 
-class Column(BaseModel):
+class Column(PostgresNode):
     name: str = Field(alias="column_name")
     table: str
     column_schema: str = Field(alias="schema")
@@ -32,7 +37,7 @@ class Column(BaseModel):
     class Config:
         allow_population_by_field_name = True
 
-    @validator('full_name', always=True)
+    @validator("full_name", always=True)
     def make_full_name(cls, full_name, values):
         if full_name is not None:
             return full_name
@@ -40,18 +45,18 @@ class Column(BaseModel):
         return result
 
 
-class Table(BaseModel):
+class Table(PostgresNode):
     name: str = Field(alias="table_name")
     table_schema: str = Field(alias="schema")
     namespace: str
     columns: Optional[List[Column]] = []
-    metadata: Optional[Dict] = {}
+    metadata: Dict = {}
     full_name: Optional[str] = None
 
     class Config:
         allow_population_by_field_name = True
 
-    @validator('full_name', always=True)
+    @validator("full_name", always=True)
     def make_full_name(cls, full_name, values):
         if full_name is not None:
             return full_name
@@ -69,7 +74,8 @@ class Edge(BaseModel):
     destination: ColumnID
     definition: str
     constraint_type: Constraint
-    metadata: Optional[Dict] = {}
+    metadata: Dict = {}
+
 
 class EdgeQuery(BaseModel):
     namespace: str
@@ -103,8 +109,3 @@ class EdgeQuery(BaseModel):
             destination=destination,
             constraint_type=self.constraint_type,
         )
-
-
-
-
-

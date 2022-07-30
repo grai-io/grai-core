@@ -1,26 +1,44 @@
-from typing import Dict, List
+import os
 from itertools import chain
+from typing import Any, Callable, Dict, List, Optional, Union
+
 import psycopg2
 import psycopg2.extras
-from grai_source_postgres.models import Column, ColumnID, EdgeQuery, Table, Edge
+
+from grai_source_postgres.models import (Column, ColumnID, Edge, EdgeQuery,
+                                         PostgresNode, Table)
+
+
+def get_from_env(label: str, default: Optional[Any] = None, validator: Callable = None):
+    env_key = f"GRAI_POSTGRES_{label.upper()}"
+    result = os.getenv(env_key, default)
+    if result is None:
+        message = (
+            f"Establishing postgres connection requires a {label}. "
+            f"Either pass a value explicitly or set a {env_key} environment value."
+        )
+        raise Exception(message)
+    return result if validator is None else validator(result)
 
 
 class PostgresConnector:
     def __init__(
         self,
-        dbname: str,
-        user: str,
-        password: str,
-        host: str = "localhost",
-        port: str = "5432",
-        namespace: str = 'default'
+        dbname: Optional[str] = None,
+        user: Optional[str] = None,
+        password: Optional[str] = None,
+        host: Optional[str] = None,
+        port: Optional[Union[str, int]] = None,
+        namespace: Optional[str] = None,
     ):
-        self.host = host
-        self.port = port
-        self.dbname = dbname
-        self.user = user
-        self.password = password
-        self.namespace = namespace
+        self.host = host if host is not None else get_from_env("host", "localhost")
+        self.port = port if port is not None else get_from_env("port", "5432", str)
+        self.dbname = dbname if dbname is not None else get_from_env("dbname")
+        self.user = user if user is not None else get_from_env("user")
+        self.password = password if password is not None else get_from_env("password")
+        self.namespace = (
+            namespace if namespace is not None else get_from_env("namespace", "default")
+        )
         self._connection = None
 
     def __enter__(self):
@@ -71,7 +89,10 @@ class PostgresConnector:
             AND table_type='BASE TABLE'
             ORDER BY table_schema, table_name
         """
-        return [Table(**result, namespace=self.namespace) for result in self.query_runner(query)]
+        return [
+            Table(**result, namespace=self.namespace)
+            for result in self.query_runner(query)
+        ]
 
     def get_columns(self, table: Table) -> List[Column]:
         """
@@ -87,9 +108,9 @@ class PostgresConnector:
             ORDER BY ordinal_position
         """
         addtl_args = {
-            'namespace': table.namespace,
-            'schema': table.table_schema,
-            'table': table.table_name
+            "namespace": table.namespace,
+            "schema": table.table_schema,
+            "table": table.name,
         }
         return [Column(**result, **addtl_args) for result in self.query_runner(query)]
 
@@ -124,13 +145,15 @@ class PostgresConnector:
             ORDER BY "self_schema", "self_table";
         """
         addtl_args = {
-            'namespace': self.namespace,
+            "namespace": self.namespace,
         }
         results = self.query_runner(query)
-        filtered_results = (result for result in results if result["constraint_type"] == "f")
+        filtered_results = (
+            result for result in results if result["constraint_type"] == "f"
+        )
         return [EdgeQuery(**fk, **addtl_args).to_edge() for fk in filtered_results]
 
-    def get_nodes(self) -> List:
+    def get_nodes(self) -> List[PostgresNode]:
         def get_nodes():
             for table in self.get_tables():
                 table.columns = self.get_columns(table)

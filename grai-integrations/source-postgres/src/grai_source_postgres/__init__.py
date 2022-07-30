@@ -1,1 +1,1 @@
-from grai_source_postgres import base, loader, models, adapters
+from grai_source_postgres import adapters, base, loader, models
