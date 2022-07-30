@@ -1,8 +1,15 @@
 import os
 from typing import Dict
 
-from confuse import (CONFIG_FILENAME, Choice, LazyConfig, MappingValues, OneOf,
-                     Optional, YamlSource)
+from confuse import (
+    CONFIG_FILENAME,
+    Choice,
+    LazyConfig,
+    MappingValues,
+    OneOf,
+    Optional,
+    YamlSource,
+)
 
 
 class ConfuseParameters:

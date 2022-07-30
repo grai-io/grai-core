@@ -2,14 +2,11 @@ from pathlib import Path
 from typing import Optional
 
 import typer
-from grai_client.schemas.edge import EdgeType
-from grai_client.schemas.node import NodeType
 from grai_client.schemas.schema import Schema, validate_file
 from rich import print as rprint
 
 from grai_cli.api.entrypoint import app
-from grai_cli.api.server.setup import (client_app, client_get_app,
-                                       get_default_client)
+from grai_cli.api.server.setup import client_app, client_get_app, get_default_client
 from grai_cli.utilities.styling import default_styler
 from grai_cli.utilities.utilities import merge_dicts, write_yaml
 
@@ -33,12 +30,11 @@ def get_nodes(
     print: bool = typer.Option(True, "--p", help=f"Print nodes to console"),
     to_file: Optional[Path] = typer.Option(None, "--f", help="Write nodes to file"),
 ):
-    obj_type = NodeType()
     client = get_default_client()
-    result = client.get(obj_type)
+    result = client.get("Node")
 
     if print or to_file:
-        result = [Schema.to_model(item, client.id, obj_type) for item in result]
+        result = [Schema.to_model(item, client.id, "Node") for item in result]
 
     if print:
         rprint(result)
@@ -56,11 +52,10 @@ def get_edges(
     to_file: Optional[Path] = typer.Option(None, "--f", help="Write nodes to file"),
 ):
     client = get_default_client()
-    obj_type = EdgeType()
-    result = client.get(obj_type)
+    result = client.get("Edge")
 
     if print or to_file:
-        result = [Schema.to_model(item, client.id, obj_type) for item in result]
+        result = [Schema.to_model(item, client.id, "Edge") for item in result]
 
     if print:
         rprint(result)

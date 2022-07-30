@@ -2,8 +2,18 @@ from functools import singledispatch, wraps
 from io import TextIOBase, TextIOWrapper
 from pathlib import Path
 from tempfile import NamedTemporaryFile, TemporaryFile
-from typing import (IO, Any, Callable, Dict, Iterable, List, Sequence, TextIO,
-                    Tuple, Union)
+from typing import (
+    IO,
+    Any,
+    Callable,
+    Dict,
+    Iterable,
+    List,
+    Sequence,
+    TextIO,
+    Tuple,
+    Union,
+)
 from uuid import UUID
 
 import yaml

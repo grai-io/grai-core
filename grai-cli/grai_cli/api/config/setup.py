@@ -1,4 +1,5 @@
 import typer
+
 # from grai_cli.utilities.styling import command_styler
 from rich.console import Console
 from rich.text import Text

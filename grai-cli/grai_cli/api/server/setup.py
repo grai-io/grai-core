@@ -7,7 +7,6 @@ from grai_cli.api.entrypoint import app
 from grai_cli.settings.config import config
 from grai_cli.utilities.headers import authenticate
 
-
 # def get_cli_client(client: Type[BaseClient]):
 #     class VersionedCLIClient(client):
 #         def __getattr__(self, attr):
@@ -28,9 +27,7 @@ def get_default_client() -> BaseClient:
     }
     host = config.grab("server.host")
     port = config.grab("server.port")
-    client = _clients[config.grab("server.api_version")]
-    client = client(host, port)
-    #client = get_cli_client(client)(host, port)
+    client = _clients[config.grab("server.api_version")](host, port)
     authenticate(client)
     return client
 

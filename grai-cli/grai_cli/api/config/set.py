@@ -5,8 +5,12 @@ import typer
 
 from grai_cli.api.config.setup import set_app
 from grai_cli.utilities.utilities import get_config_view, writes_config
-from grai_cli.utilities.validators import (host_callback, password_callback,
-                                           port_callback, username_callback)
+from grai_cli.utilities.validators import (
+    host_callback,
+    password_callback,
+    port_callback,
+    username_callback,
+)
 
 
 def setter_helper(path: str) -> Callable:
