@@ -157,7 +157,21 @@ class PostgresConnector:
         def get_nodes():
             for table in self.get_tables():
                 table.columns = self.get_columns(table)
-                yield table
+                yield [table]
                 yield table.columns
 
         return list(chain(*get_nodes()))
+
+    # TODO need to push edges between table -> columns
+
+    def get_nodes_and_edges(self):
+        tables = self.get_tables()
+        edges = []
+        for table in tables:
+            table.columns = self.get_columns(table)
+
+        edges = list(chain(*[t.get_edges() for t in tables],
+                           self.get_foreign_keys()))
+
+        nodes = list(chain(tables, *[t.columns for t in tables]))
+        return nodes, edges

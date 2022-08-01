@@ -1,26 +1,40 @@
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, validator, root_validator
 
 
 class PostgresNode(BaseModel):
     pass
 
 
-class ColumnID(PostgresNode):
-    table_schema: str
-    table_name: str
+class ID(PostgresNode):
     name: str
     namespace: str
-    full_name: Optional[str] = None
+    full_name: str
 
-    @validator("full_name", always=True)
-    def make_full_name(cls, full_name, values):
-        if full_name is not None:
-            return full_name
 
-        return f"{values['table_schema']}.{values['table_name']}.{values['name']}"
+class TableID(ID):
+    table_schema: str
+
+    @root_validator(pre=True)
+    def make_full_name(cls, values):
+        full_name = values.get('full_name', None)
+        if values.get('full_name', None) is None:
+            values['full_name'] = f"{values['table_schema']}.{values['name']}"
+        return values
+
+
+class ColumnID(ID):
+    table_schema: str
+    table_name: str
+
+    @root_validator(pre=True)
+    def make_full_name(cls, values):
+        full_name = values.get('full_name', None)
+        if values.get('full_name', None) is None:
+            values['full_name'] = f"{values['table_schema']}.{values['table_name']}.{values['name']}"
+        return values
 
 
 class Column(PostgresNode):
@@ -45,6 +59,20 @@ class Column(PostgresNode):
         return result
 
 
+class Constraint(str, Enum):
+    foreign_key = "f"
+    primary_key = "p"
+    belongs_to = 'bt'
+
+
+class Edge(BaseModel):
+    source: Union[TableID, ColumnID]
+    destination: Union[TableID, ColumnID]
+    definition: Optional[str]
+    constraint_type: Constraint
+    metadata: Optional[Dict] = None
+
+
 class Table(PostgresNode):
     name: str = Field(alias="table_name")
     table_schema: str = Field(alias="schema")
@@ -63,18 +91,24 @@ class Table(PostgresNode):
 
         return f"{values['table_schema']}.{values['name']}"
 
-
-class Constraint(str, Enum):
-    foreign_key = "f"
-    primary_key = "p"
-
-
-class Edge(BaseModel):
-    source: ColumnID
-    destination: ColumnID
-    definition: str
-    constraint_type: Constraint
-    metadata: Dict = {}
+    def get_edges(self):
+        return [
+            Edge(
+                constraint_type=Constraint('bt'),
+                source=TableID(
+                    table_schema=self.table_schema,
+                    name=self.name,
+                    namespace=self.namespace,
+                ),
+                destination=ColumnID(
+                    table_schema=self.table_schema,
+                    table_name=self.name,
+                    name=column.name,
+                    namespace=self.namespace,
+                )
+            )
+            for column in self.columns
+        ]
 
 
 class EdgeQuery(BaseModel):
@@ -91,13 +125,13 @@ class EdgeQuery(BaseModel):
 
     def to_edge(self) -> Edge:
         assert len(self.self_columns) == 1 and len(self.foreign_columns) == 1
-        source = ColumnID(
+        destination = ColumnID(
             table_schema=self.self_schema,
             table_name=self.self_table,
             name=self.self_columns[0],
             namespace=self.namespace,
         )
-        destination = ColumnID(
+        source = ColumnID(
             table_schema=self.foreign_schema,
             table_name=self.foreign_table,
             name=self.foreign_columns[0],

@@ -1,4 +1,4 @@
-from typing import Optional, List, Tuple
+from typing import Optional, List, Tuple, Literal
 
 from grai_client.update import update
 from grai_client.schemas.node import Node
@@ -8,19 +8,19 @@ from grai_source_postgres.adapters import adapt_to_client
 from grai_source_postgres.loader import PostgresConnector
 
 
-def get_nodes_and_edges(connector: PostgresConnector) -> Tuple[List[Node], List[Edge]]:
+def get_nodes_and_edges(connector: PostgresConnector, version: Literal["v1"]) -> Tuple[List[Node], List[Edge]]:
     with connector.connect() as conn:
-        nodes = conn.get_nodes()
-        edges = conn.get_foreign_keys()
+        nodes, edges = conn.get_nodes_and_edges()
 
-    nodes = adapt_to_client(nodes)
-    edges = adapt_to_client(edges)
+    nodes = adapt_to_client(nodes, version)
+    edges = adapt_to_client(edges, version)
     return nodes, edges
 
 
 def update_server(
     client: BaseClient,
     dbname: Optional[str] = None,
+    namespace: Optional[str] = None,
     user: Optional[str] = None,
     password: Optional[str] = None,
     host: Optional[str] = None,
@@ -30,6 +30,6 @@ def update_server(
     conn = PostgresConnector(
         dbname=dbname, user=user, password=password, host=host, port=port
     )
-    nodes, edges = get_nodes_and_edges(conn)
+    nodes, edges = get_nodes_and_edges(conn, client.id)
     update(client, nodes)
     update(client, edges)
