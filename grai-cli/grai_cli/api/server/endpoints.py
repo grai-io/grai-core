@@ -33,9 +33,6 @@ def get_nodes(
     client = get_default_client()
     result = client.get("Node")
 
-    if print or to_file:
-        result = [Schema.to_model(item, client.id, "Node") for item in result]
-
     if print:
         rprint(result)
     if isinstance(to_file, Path):
@@ -53,9 +50,6 @@ def get_edges(
 ):
     client = get_default_client()
     result = client.get("Edge")
-
-    if print or to_file:
-        result = [Schema.to_model(item, client.id, "Edge") for item in result]
 
     if print:
         rprint(result)
@@ -80,21 +74,13 @@ def apply(
         typer.Exit()
 
     for spec in specs:
-        records = client.get(spec)
-        if (num_records := len(records)) == 0:
+        record = client.get(spec)
+        if record is None:
             client.post(spec)
-        elif num_records == 1:
-            record = records[0]
-            provided_values = {k: v for k, v in spec.spec.dict().items() if v}
-            merge_dicts(record, provided_values)
-            client.patch(spec.from_spec(record))
         else:
-            message = (
-                f"Too many records returned for object {spec}, this is probably a bug. "
-                "Please submit a bug report to https://github.com/grai-io/grai-core/issues"
-            )
-            rprint(message)
-            typer.Exit()
+            provided_values = {k: v for k, v in spec.spec.dict().items() if v}
+            updated_record = record.update(provided_values)
+            client.patch(updated_record)
 
 
 @app.command("delete", help="Delete a configuration from The Guide by file name")

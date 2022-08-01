@@ -78,8 +78,18 @@ def dump_individual_yaml(item: Dict, stream: TextIOBase):
 
 
 @dump_yaml.register
+def dump_model_yaml(item: BaseModel, stream: TextIOBase):
+    dump_yaml(item.dict(), stream)
+
+
+@dump_yaml.register
 def dump_multiple_yaml(items: Sequence[Dict], stream: TextIOBase):
     yaml.safe_dump_all(items, stream)
+
+
+@dump_yaml.register
+def dump_multiple_yaml(items: Sequence[BaseModel], stream: TextIOBase):
+    yaml.safe_dump_all(list(item.dict() for item in items), stream)
 
 
 def write_yaml(

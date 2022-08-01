@@ -46,7 +46,7 @@ def test_apply_single_node():
     node_dict = make_v1_node()
     write_yaml(node_dict, file_name)
     result = runner.invoke(app, ["apply", file.name])
-    assert result.exit_code == 0
+    assert result.exit_code == 0, result
 
 
 def test_apply_multi_node():
