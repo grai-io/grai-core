@@ -8,7 +8,7 @@ from typing_extensions import Annotated
 
 
 class BaseNode(GraiBaseModel):
-    type: Literal["Node"]
+    type: Literal["Node"] = "Node"
 
     def __hash__(self):
         return
@@ -35,13 +35,14 @@ class NodeV1(BaseNode):
     version: Literal["v1"]
     spec: V1
 
-    def from_spec(self, spec_dict: Dict) -> "NodeV1":
+    @classmethod
+    def from_spec(cls, spec_dict: Dict) -> "NodeV1":
         args = {
-            "version": self.version,
-            "type": self.type,
+            "version": "v1",
+            "type": "Node",
             "spec": spec_dict,
         }
-        return type(self)(**args)
+        return cls(**args)
 
 
 class NodeV2(BaseNode):

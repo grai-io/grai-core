@@ -1,8 +1,8 @@
-from typing import Any, Union, Literal
+from typing import Any, Union, Literal, List, Optional
 from uuid import UUID
 
 import requests
-from grai_client.endpoints.utilities import response_status_checker
+from grai_client.endpoints.utilities import response_status_check, list_response_parser, response_parser
 from grai_client.endpoints.v1.client import ClientV1
 from grai_client.schemas.edge import EdgeNodeValues, EdgeLabels, EdgeV1
 from grai_client.schemas.node import NodeLabels, NodeV1
@@ -10,35 +10,25 @@ from multimethod import multimethod
 
 
 @multimethod
-def get_edge_node_id(node_id: Any, client: ClientV1) -> UUID:
+def get_edge_node_id(client: ClientV1, node_id: Any) -> UUID:
     raise NotImplementedError(f"No get method implemented for type {type(node_id)}")
 
 
 @get_edge_node_id.register
-def get_edge_node_by_id_v1(node_id: UUID, client: ClientV1) -> UUID:
+def get_edge_node_by_id_v1(client: ClientV1, node_id: UUID) -> UUID:
     return node_id
 
 
 @get_edge_node_id.register
-def get_edge_node_v1(node_id: EdgeNodeValues, client: ClientV1) -> UUID:
-    node = client.get(node_id)
-    if len(node) == 0:
-        message = f"No node found matching (name={node_id.name}, namespace={node_id.namespace})"
-        raise ValueError(message)
-    elif len(node) > 1:
-        message = (
-            f"Something awful has happened there should only be one node matching (name={node_id.name}, namespace={node_id.namespace})."
-            "This is likely a bug, pleaase create an issue report at https://github.com/grai-io/grai-core/issues"
-        )
-        raise Exception(message)
-
-    return node[0]["id"]
+def get_edge_node_v1(client: ClientV1, node_id: EdgeNodeValues) -> UUID:
+    node: NodeV1 = client.get(node_id)
+    return node.spec.id
 
 
 @ClientV1.get.register
-@response_status_checker
 def get_url_v1(client: ClientV1, url: str) -> requests.Response:
     response = requests.get(url, headers=client.auth_headers)
+    response_status_check(response)
     return response
 
 
@@ -49,36 +39,54 @@ def url_with_filters(url: str, node: NodeV1) -> str:
 
 
 @ClientV1.get.register
-def get_specific_node_v1(client: ClientV1, grai_type: NodeV1) -> requests.Response:
+def get_specific_node_v1(client: ClientV1, grai_type: NodeV1) -> Optional[NodeV1]:
     url = url_with_filters(client.node_endpoint, grai_type)
-    return client.get(url)
+    resp = client.get(url).json()
+    if len(resp) == 0:
+        print(f"No node found matching {grai_type}")
+        return
+    return NodeV1.from_spec(resp[0])
 
 
 @ClientV1.get.register
-def get_node_by_label_v1(client: ClientV1, grai_type: NodeLabels) -> requests.Response:
+def get_node_by_label_v1(client: ClientV1, grai_type: NodeLabels) -> List[NodeV1]:
     url = client.node_endpoint
-    return client.get(url)
+    resp = client.get(url).json()
+    return [NodeV1.from_spec(obj) for obj in resp]
 
 
 @ClientV1.get.register
 def get_node_by_names_v1(
     client: ClientV1, node_values: EdgeNodeValues
-) -> requests.Response:
+) -> NodeV1:
     url = f"{client.node_endpoint}?name={node_values.name}&namespace={node_values.namespace}"
-    return client.get(url)
+    resp = client.get(url).json()
+    return NodeV1.from_spec(resp[0])
 
 
 @ClientV1.get.register
 def get_edge_by_label_v1(
     client: ClientV1, grai_type: EdgeLabels
-) -> requests.Response:
+) -> List[EdgeV1]:
     url = client.edge_endpoint
-    return client.get(url)
+    resp = client.get(url).json()
+    return [EdgeV1.from_spec(obj) for obj in resp]
+
+
+def edge_url_with_filters(client: ClientV1, edge: EdgeV1) -> str:
+    source = get_edge_node_id(client, edge.spec.source)
+    destination = get_edge_node_id(client, edge.spec.destination)
+    return f"{client.edge_endpoint}?source={source}&destination={destination}"
 
 
 @ClientV1.get.register
 def get_edge_v1(
     client: ClientV1, grai_type: EdgeV1
-) -> requests.Response:
-    url = client.edge_endpoint
-    return client.get(url)
+) -> Optional[EdgeV1]:
+    url = edge_url_with_filters(client, grai_type)
+    print(url)
+    resp = client.get(url).json()
+    if len(resp) == 0:
+        print(f"No edge found matching {grai_type}")
+        return
+    return EdgeV1.from_spec(resp[0])

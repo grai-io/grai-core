@@ -5,6 +5,7 @@ from grai_client.schemas.schema import GraiType
 from grai_client.authentication import (APIKeyHeader, UserNameHeader,
                                         UserTokenHeader)
 from multimethod import multimethod
+from itertools import chain
 
 
 class BaseClient(abc.ABC):
@@ -87,9 +88,9 @@ def patch_sequence(client: BaseClient, objs: Sequence) -> List[Dict]:
 
 
 @BaseClient.delete.register
-def delete_sequence(client: BaseClient, objs: Sequence) -> List[Dict]:
-    result = [client.delete(obj) for obj in objs]
-    return result
+def delete_sequence(client: BaseClient, objs: Sequence[GraiType]):
+    for obj in objs:
+        client.delete(obj)
 
 
 @BaseClient.get.register

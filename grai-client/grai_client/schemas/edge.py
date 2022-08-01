@@ -22,13 +22,16 @@ class EdgeNodeValues(GraiBaseModel):
 class V1(BaseSpec):
     id: Optional[UUID]
     data_source: str
-    source: EdgeNodeValues
-    destination: EdgeNodeValues
+    source: Union[UUID, EdgeNodeValues]
+    destination: Union[UUID, EdgeNodeValues]
     is_active: Optional[bool] = True
     metadata: Optional[Dict] = {}
 
     def __hash__(self):
         return hash(hash(self.source) + hash(self.destination))
+
+    def __str__(self):
+        return f"Edge[Node({self.source}) -> Node({self.destination})]"
 
 
 class V2(PlaceHolderSchema, V1):
@@ -41,13 +44,14 @@ class EdgeV1(BaseEdge):
     version: Literal["v1"]
     spec: V1
 
-    def from_spec(self, spec_dict: Dict) -> "EdgeV1":
+    @classmethod
+    def from_spec(cls, spec_dict: Dict) -> "EdgeV1":
         args = {
-            "version": self.version,
-            "type": self.type,
+            "version": "v1",
+            "type": "Edge",
             "spec": spec_dict,
         }
-        return type(self)(**args)
+        return cls(**args)
 
 
 class EdgeV2(BaseEdge):

@@ -2,7 +2,7 @@ from typing import Dict, List, TypeVar, Optional
 
 from grai_client.schemas.node import Node
 from grai_client.schemas.edge import Edge
-from grai_client.schemas.schema import GraiType
+from grai_client.schemas.schema import GraiType, Schema
 from grai_client.schemas.utilities import merge_models
 from grai_client.endpoints.client import BaseClient
 
@@ -20,7 +20,8 @@ def deactivate(items: List[T]) -> List[T]:
 
 def update(client: BaseClient, items: List[T], active_items: Optional[List[T]] = None):
     if active_items is None:
-        active_items = client.get(items[0].type)
+        item_type = items[0].type
+        active_items = [Schema.to_model(item, client.id, item_type) for item in client.get(item_type)]
     current_item_map = {hash(item.spec): item for item in active_items}
     item_map: Dict[int, T] = {hash(item.spec): item for item in items}
 
@@ -36,7 +37,6 @@ def update(client: BaseClient, items: List[T], active_items: Optional[List[T]] =
         merge_models(item_map[k], current_item_map[k]) for k in updated_item_keys
         if item_map[k] != current_item_map[k]
     ]
-
     client.patch(deactivated_items)
     client.patch(updated_items)
     client.post(new_items)
