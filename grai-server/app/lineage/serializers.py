@@ -22,13 +22,10 @@ class NodeSerializer(serializers.ModelSerializer):
 
 
 class EdgeSerializer(serializers.ModelSerializer):
-    # id = serializers.UUIDField(read_only=True)
-    # is_active = serializers.BooleanField(read_only=True)
-    # metadata = serializers.JSONField(required=False)
-    # source = serializers.PrimaryKeyRelatedField(read_only=True, pk_field='id')
-    # destination = serializers.PrimaryKeyRelatedField(read_only=True, pk_field='id')
+    name = serializers.CharField(required=False)
+    display_name = serializers.CharField(required=False)
 
     class Meta:
         model = Edge
-        fields = ("id", "data_source", "metadata", "is_active", "source", "destination")
+        fields = ("id", "name", "display_name", "namespace", "data_source", "metadata", "is_active", "source", "destination")
         read_only_fields = ("created_at", "updated_at")

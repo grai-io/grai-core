@@ -100,7 +100,6 @@ def test_patch_node(auto_login_user):
     node_id = response.json()["id"]
 
     url = reverse("graph:nodes-detail", kwargs={"pk": node_id})
-    print(url)
     args = {
         "namespace": "string",
         "name": "strisdfsdfng",
