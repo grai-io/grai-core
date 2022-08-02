@@ -15,8 +15,8 @@ from rest_framework_api_key.permissions import HasAPIKey
 
 
 class NodeViewSet(ModelViewSet):
-    authentication_classes = [SessionAuthentication, TokenAuthentication, BasicAuthentication]
-    permission_classes = [HasAPIKey | IsAuthenticated]
+    # authentication_classes = [SessionAuthentication, TokenAuthentication, BasicAuthentication]
+    # permission_classes = [HasAPIKey | IsAuthenticated]
 
     serializer_class = NodeSerializer
     type = Node
