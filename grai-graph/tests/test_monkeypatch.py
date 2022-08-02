@@ -18,4 +18,4 @@ def test_v1_client_monkeypatch():
     client = ClientV1(**client_configs)
     client.set_authentication_headers(**auth)
     G = client.build_graph()
-    assert isinstance(G, nx.DiGraph)
+    assert isinstance(G.graph, nx.DiGraph)
