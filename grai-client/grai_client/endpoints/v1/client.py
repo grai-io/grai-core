@@ -1,6 +1,7 @@
 import requests
 from grai_client.endpoints.client import BaseClient
-
+from grai_client.endpoints.utilities import (GraiEncoder,
+                                             response_status_check)
 
 class ClientV1(BaseClient):
     id = "v1"
@@ -19,3 +20,4 @@ class ClientV1(BaseClient):
     def check_authentication(self) -> requests.Response:
         result = requests.get(self.is_authenticated_endpoint, headers=self.auth_headers)
         return result
+

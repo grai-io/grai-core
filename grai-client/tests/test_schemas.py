@@ -26,6 +26,8 @@ def make_v1_edge():
         "version": "v1",
         "spec": {
             "id": uuid.uuid4(),
+            "name": "test",
+            "namespace": "test2",
             "data_source": "tests",
             "source": {
                 'namespace': 'sou',

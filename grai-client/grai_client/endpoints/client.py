@@ -1,11 +1,13 @@
 import abc
-from functools import singledispatch, singledispatchmethod
-from typing import Any, Dict, Union, Optional, Sequence, List
+from typing import Any, Dict, Union, Optional, List, Sequence
 from grai_client.schemas.schema import GraiType
 from grai_client.authentication import (APIKeyHeader, UserNameHeader,
                                         UserTokenHeader)
+from grai_client.endpoints.utilities import response_status_check, GraiEncoder
 from multimethod import multimethod
-from itertools import chain
+
+import requests
+import json
 
 
 class BaseClient(abc.ABC):
@@ -51,6 +53,12 @@ class BaseClient(abc.ABC):
         raise NotImplementedError(f"No authentication implemented for {type(self)}")
 
     @multimethod
+    def get_url(self, grai_type: Any) -> str:
+        raise NotImplementedError(
+            f"No url method implemented for type {type(grai_type)}"
+        )
+
+    @multimethod
     def get(self, grai_type: Any) -> Dict:
         raise NotImplementedError(
             f"No get method implemented for type {type(grai_type)}"
@@ -73,7 +81,6 @@ class BaseClient(abc.ABC):
         raise NotImplementedError(
             f"No delete method implemented for type {type(grai_type)}"
         )
-
 
 @BaseClient.post.register
 def post_sequence(client: BaseClient, objs: Sequence) -> List[Dict]:
@@ -99,3 +106,36 @@ def get_sequence(client: BaseClient, objs: Sequence) -> List[Dict]:
     return result
 
 
+@BaseClient.get.register
+def get_url_v1(client: BaseClient, url: str) -> requests.Response:
+    response = requests.get(url, headers=client.auth_headers)
+    response_status_check(response)
+    return response
+
+
+@BaseClient.delete.register
+def delete_url_v1(client: BaseClient, url: str) -> requests.Response:
+    response = requests.delete(url, headers=client.auth_headers)
+    response_status_check(response)
+    return response
+
+
+@BaseClient.patch.register
+def patch_url_v1(client: BaseClient, url: str, payload: Dict) -> requests.Response:
+    headers = {**client.auth_headers, "Content-Type": "application/json"}
+    payload = {k: v for k, v in payload.items() if v is not None}
+    response = requests.patch(
+        url, data=json.dumps(payload, cls=GraiEncoder), headers=headers
+    )
+
+    response_status_check(response)
+    return response
+
+
+@BaseClient.post.register
+def post_url_v1(client: BaseClient, url: str, payload: Dict) -> requests.Response:
+    headers = {**client.auth_headers, "Content-Type": "application/json"}
+    payload = {k: v for k, v in payload.items() if v is not None}
+    response = requests.post(url, data=json.dumps(payload, cls=GraiEncoder), headers=headers)
+    response_status_check(response)
+    return response

@@ -14,17 +14,20 @@ class BaseNode(GraiBaseModel):
         return
 
 
-class V1(BaseSpec):
-    id: Optional[UUID]
+class NodeID(BaseModel):
     name: str
     namespace: str
+    id: Optional[UUID]
+
+    def __hash__(self):
+        return hash(hash(self.name) + hash(self.namespace))
+
+
+class V1(NodeID, BaseSpec):
     data_source: str
     display_name: Optional[str]
     is_active: Optional[bool] = True
     metadata: Optional[Dict] = {}
-
-    def __hash__(self):
-        return hash(hash(self.name) + hash(self.namespace))
 
 
 class V2(PlaceHolderSchema, V1):

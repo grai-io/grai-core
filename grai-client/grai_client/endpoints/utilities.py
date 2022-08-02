@@ -4,6 +4,7 @@ from typing import Any, Callable, Dict, TypeVar, List, Type
 from uuid import UUID
 
 from grai_client.schemas.utilities import GraiBaseModel
+from pydantic import BaseModel
 from requests import RequestException, Response
 import sys
 
@@ -22,7 +23,9 @@ def response_status_check(resp: Response) -> Response:
         return resp
     elif resp.status_code == 204:
         return resp
-    elif resp.status_code in {400, 401, 402, 403}:
+    elif resp.status_code == 400:
+        message = f"400 Bad request: {str(resp.content)} "
+    elif resp.status_code in {401, 403}:
         message = f"Failed to Authenticate with code: {resp.status_code}"
     elif resp.status_code == 404:
         message = f"Error: {resp.status_code}. {resp.reason}"
@@ -41,41 +44,12 @@ def response_status_check(resp: Response) -> Response:
 
     raise RequestException(message)
 
-def response_status_checker(fn: Callable[P, Response]) -> Callable[P, Response]:
-
-    @wraps(fn)
-    def inner(*args: P.args, **kwargs: P.kwargs) -> Response:
-        result = fn(*args, **kwargs)
-        response = response_status_check(result)
-        return response
-
-    return inner
-
-def list_response_parser(return_type: Type[T]) -> Callable[[Callable[P, Response]], Callable[P, List[T]]]:
-    def inner(fn: Callable[P, Response]) -> Callable[P, List[T]]:
-        @wraps(fn)
-        def inner2(*args: P.args, **kwargs: P.kwargs) -> List[T]:
-            resp = fn(*args, **kwargs)
-            return list(return_type.from_spec(**obj) for obj in resp.json())
-        return inner2
-    return inner
-
-
-def response_parser(return_type: Type[T]) -> Callable[[Callable[P, Response]], Callable[P, T]]:
-    def inner(fn: Callable[P, Response]) -> Callable[P, T]:
-        @wraps(fn)
-        def inner2(*args: P.args, **kwargs: P.kwargs) -> T:
-            resp = fn(*args, **kwargs).json()
-            resp = resp[0] if isinstance(resp, list)  else resp
-            return return_type.from_spec(resp)
-        return inner2
-    return inner
 
 
 class GraiEncoder(json.JSONEncoder):
     def default(self, obj: Any) -> Any:
         if isinstance(obj, UUID):
             return str(obj)
-        elif isinstance(obj, GraiBaseModel):
+        elif isinstance(obj, (GraiBaseModel, BaseModel)):
             return obj.dict()
         return json.JSONEncoder.default(self, obj)

@@ -1,44 +1,49 @@
-import json
-from typing import Any, Dict, Type
+from typing import TypeVar
 
-import requests
-from grai_client.endpoints.utilities import (GraiEncoder,
-                                             response_status_check)
 from grai_client.endpoints.v1.client import ClientV1
-from grai_client.endpoints.v1.get import get_edge_node_id
-from grai_client.schemas.edge import EdgeNodeValues, EdgeV1
-from grai_client.schemas.node import  NodeV1
+from grai_client.schemas.utilities import merge_models
+from grai_client.schemas import edge, node
+
+T = TypeVar('T', node.NodeV1, edge.EdgeV1)
 
 
 @ClientV1.patch.register
-def patch_url_v1(client: ClientV1, url: str, payload: Dict) -> requests.Response:
-    headers = {**client.auth_headers, "Content-Type": "application/json"}
-    payload = {k: v for k, v in payload.items() if v is not None}
-    response = requests.patch(
-        url, data=json.dumps(payload, cls=GraiEncoder), headers=headers
-    )
-
-    response_status_check(response)
-    return response
-
-
-@ClientV1.patch.register
-def patch_node_v1(client: ClientV1, grai_type: NodeV1) -> NodeV1:
+def patch_obj_v1(client: ClientV1, grai_type: node.NodeV1) -> node.NodeV1:
     if grai_type.spec.id is None:
-        raise Exception(f"Missing node id on {grai_type}")
-    url = f"{client.node_endpoint}{grai_type.spec.id}/"
-    response = client.patch(url, grai_type.spec.dict())
-    return NodeV1.from_spec(response.json())
+        current = client.get(grai_type)
+        grai_type.spec.id = current.spec.id
+
+    base_url = client.get_url(grai_type)
+    url = f"{base_url}{grai_type.spec.id}/"
+    response = client.patch(url, grai_type.spec.dict()).json()
+    if response is None:
+        return None
+    return node.NodeV1.from_spec(response)
 
 
 @ClientV1.patch.register
-def patch_edge_v1(client: ClientV1, grai_type: EdgeV1) -> EdgeV1:
-    update = {
-        'source': get_edge_node_id(client, grai_type.spec.source),
-        'destination': get_edge_node_id(client, grai_type.spec.destination)
-    }
+def patch_obj_v1(client: ClientV1, grai_type: edge.EdgeV1) -> edge.EdgeV1:
+    if grai_type.spec.id is None:
+        current = client.get(grai_type)
+        grai_type.spec.id = current.spec.id
 
-    url = f"{client.edge_endpoint}{grai_type.spec.id}/"
-    grai_type = grai_type.update({"spec": update})
-    response = client.patch(url, grai_type.spec.dict())
-    return EdgeV1.from_spec(response.json())
+    base_url = client.get_url(grai_type)
+    url = f"{base_url}{grai_type.spec.id}/"
+
+    source = grai_type.spec.source
+    destination = grai_type.spec.destination
+    if source.id is None:
+        source = client.get(source)
+    if destination.id is None:
+        destination= client.get(destination)
+
+    payload = grai_type.spec.dict()
+    payload['source'] = source.id
+    payload['destination'] = destination.id
+    response = client.patch(url, payload).json()
+    if response is not None:
+        response['source'] = source
+        response['destination'] = destination
+
+    return edge.EdgeV1.from_spec(response)
+

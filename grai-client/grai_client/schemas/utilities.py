@@ -35,8 +35,8 @@ def merge_models(a: T, b: T) -> T:
 
 
 class GraiBaseModel(BaseModel):
-    class Config:
-        frozen = True
+    # class Config:
+    #     frozen = True
 
     def update(self, new_values: Dict) -> BaseModel:
         values = self.dict()

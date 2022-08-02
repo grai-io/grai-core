@@ -10,18 +10,16 @@ T = TypeVar("T", Node, Edge)
 
 
 def deactivate(items: List[T]) -> List[T]:
-    updated = []
-    for item in items:
-        new_item = item.dict()
-        new_item['spec']['is_active'] = False
-        updated.append(type(item)(**new_item))
+    updated = [item.update({"spec": {"is_active": False}}) for item in items]
     return updated
 
 
 def update(client: BaseClient, items: List[T], active_items: Optional[List[T]] = None):
     if active_items is None:
-        item_type = items[0].type
-        active_items = [Schema.to_model(item, client.id, item_type) for item in client.get(item_type)]
+        active_items: List[T] = client.get(items[0].type)
+        if active_items is None:
+            active_items = []
+
     current_item_map = {hash(item.spec): item for item in active_items}
     item_map: Dict[int, T] = {hash(item.spec): item for item in items}
 

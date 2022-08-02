@@ -5,17 +5,8 @@ import requests
 from grai_client.endpoints.utilities import (GraiEncoder,
                                              response_status_check)
 from grai_client.endpoints.v1.client import ClientV1
-from grai_client.endpoints.v1.get import get_edge_node_id
-from grai_client.schemas.edge import EdgeNodeValues, EdgeV1
+from grai_client.schemas.edge import EdgeV1
 from grai_client.schemas.node import NodeV1
-
-
-@ClientV1.delete.register
-def delete_url(client: ClientV1, url: str) -> requests.Response:
-    headers = client.auth_headers
-    response = requests.delete(url, headers=headers)
-    response_status_check(response)
-    return response
 
 
 @ClientV1.delete.register
@@ -28,8 +19,8 @@ def delete_node_v1(client: ClientV1, grai_type: NodeV1):
 
 @ClientV1.delete.register
 def delete_edge_v1(client: ClientV1, grai_type: EdgeV1):
-    if grai_type.spec.id  is None:
+    print('in delete edge')
+    if grai_type.spec.id is None:
         grai_type = client.get(grai_type)
     url = f"{client.edge_endpoint}{grai_type.spec.id}/"
-    print(url)
     client.delete(url)

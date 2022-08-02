@@ -3,7 +3,8 @@ from uuid import UUID
 
 from grai_client.schemas.utilities import (BaseSpec,
                                            PlaceHolderSchema, GraiBaseModel)
-from pydantic import Field
+from grai_client.schemas.node import NodeID
+from pydantic import Field, validator
 from typing_extensions import Annotated
 
 
@@ -11,27 +12,24 @@ class BaseEdge(GraiBaseModel):
     type: Literal["Edge"]
 
 
-class EdgeNodeValues(GraiBaseModel):
-    name: str
-    namespace: str
-
-    def __hash__(self):
-        return hash(hash(self.name) + hash(self.namespace))
-
 
 class V1(BaseSpec):
     id: Optional[UUID]
+    name: str
+    namespace: str = "default"
+    display_name: Optional[str]
     data_source: str
-    source: Union[UUID, EdgeNodeValues]
-    destination: Union[UUID, EdgeNodeValues]
+    source: NodeID
+    destination: NodeID
     is_active: Optional[bool] = True
     metadata: Optional[Dict] = {}
 
     def __hash__(self):
-        return hash(hash(self.source) + hash(self.destination))
+        return hash(hash(self.name) + hash(self.namespace))
 
     def __str__(self):
         return f"Edge[Node({self.source}) -> Node({self.destination})]"
+
 
 
 class V2(PlaceHolderSchema, V1):
