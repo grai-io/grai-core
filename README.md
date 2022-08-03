@@ -34,7 +34,7 @@ password: super_secret
 
 You can also explore the API backend at [http://localhost:8000/docs](http://localhost:8000/docs).
 
-Check out this [guide](https://github.com/grai-io/grai-core/examples/quick_start_postgres) for a walk through populating lineage using the postgres connector.
+Check out this [guide](https://github.com/grai-io/grai-core/tree/master/examples/quick_start_postgres) for a walk through populating lineage using the postgres connector.
 
 
 ## Other Features
