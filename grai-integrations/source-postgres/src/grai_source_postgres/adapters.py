@@ -1,9 +1,9 @@
-from typing import Any, Dict, List, Sequence, Type, Literal
+from typing import Any, Dict, List, Literal, Sequence, Type
 
 from grai_client.schemas.schema import Schema
 from multimethod import multimethod
 
-from grai_source_postgres.models import Column, Edge, Table, ID
+from grai_source_postgres.models import ID, Column, Edge, Table
 
 
 @multimethod
@@ -49,8 +49,8 @@ def adapt_table_to_client(current: Table, version: Literal["v1"] = "v1"):
 
 
 def make_name(node1: ID, node2: ID) -> str:
-    node1_name = f'{node1.namespace}:{node1.full_name}'
-    node2_name = f'{node2.namespace}:{node2.full_name}'
+    node1_name = f"{node1.namespace}:{node1.full_name}"
+    node2_name = f"{node2.namespace}:{node2.full_name}"
     return f"{node1_name} -> {node2_name}"
 
 

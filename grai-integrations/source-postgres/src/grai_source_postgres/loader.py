@@ -5,8 +5,14 @@ from typing import Any, Callable, Dict, List, Optional, Union
 import psycopg2
 import psycopg2.extras
 
-from grai_source_postgres.models import (Column, ColumnID, Edge, EdgeQuery,
-                                         PostgresNode, Table)
+from grai_source_postgres.models import (
+    Column,
+    ColumnID,
+    Edge,
+    EdgeQuery,
+    PostgresNode,
+    Table,
+)
 
 
 def get_from_env(label: str, default: Optional[Any] = None, validator: Callable = None):
@@ -170,8 +176,7 @@ class PostgresConnector:
         for table in tables:
             table.columns = self.get_columns(table)
 
-        edges = list(chain(*[t.get_edges() for t in tables],
-                           self.get_foreign_keys()))
+        edges = list(chain(*[t.get_edges() for t in tables], self.get_foreign_keys()))
 
         nodes = list(chain(tables, *[t.columns for t in tables]))
         return nodes, edges

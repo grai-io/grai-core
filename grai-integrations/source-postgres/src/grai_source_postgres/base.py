@@ -1,14 +1,17 @@
-from typing import Optional, List, Tuple, Literal
+from typing import List, Literal, Optional, Tuple
 
-from grai_client.update import update
-from grai_client.schemas.node import Node
-from grai_client.schemas.edge import Edge
 from grai_client.endpoints.client import BaseClient
+from grai_client.schemas.edge import Edge
+from grai_client.schemas.node import Node
+from grai_client.update import update
+
 from grai_source_postgres.adapters import adapt_to_client
 from grai_source_postgres.loader import PostgresConnector
 
 
-def get_nodes_and_edges(connector: PostgresConnector, version: Literal["v1"]) -> Tuple[List[Node], List[Edge]]:
+def get_nodes_and_edges(
+    connector: PostgresConnector, version: Literal["v1"]
+) -> Tuple[List[Node], List[Edge]]:
     with connector.connect() as conn:
         nodes, edges = conn.get_nodes_and_edges()
 

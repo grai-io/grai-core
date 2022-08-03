@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import BaseModel, Field, validator, root_validator
+from pydantic import BaseModel, Field, root_validator, validator
 
 
 class PostgresNode(BaseModel):
@@ -19,9 +19,9 @@ class TableID(ID):
 
     @root_validator(pre=True)
     def make_full_name(cls, values):
-        full_name = values.get('full_name', None)
-        if values.get('full_name', None) is None:
-            values['full_name'] = f"{values['table_schema']}.{values['name']}"
+        full_name = values.get("full_name", None)
+        if values.get("full_name", None) is None:
+            values["full_name"] = f"{values['table_schema']}.{values['name']}"
         return values
 
 
@@ -31,9 +31,11 @@ class ColumnID(ID):
 
     @root_validator(pre=True)
     def make_full_name(cls, values):
-        full_name = values.get('full_name', None)
-        if values.get('full_name', None) is None:
-            values['full_name'] = f"{values['table_schema']}.{values['table_name']}.{values['name']}"
+        full_name = values.get("full_name", None)
+        if values.get("full_name", None) is None:
+            values[
+                "full_name"
+            ] = f"{values['table_schema']}.{values['table_name']}.{values['name']}"
         return values
 
 
@@ -62,7 +64,7 @@ class Column(PostgresNode):
 class Constraint(str, Enum):
     foreign_key = "f"
     primary_key = "p"
-    belongs_to = 'bt'
+    belongs_to = "bt"
 
 
 class Edge(BaseModel):
@@ -94,7 +96,7 @@ class Table(PostgresNode):
     def get_edges(self):
         return [
             Edge(
-                constraint_type=Constraint('bt'),
+                constraint_type=Constraint("bt"),
                 source=TableID(
                     table_schema=self.table_schema,
                     name=self.name,
@@ -105,7 +107,7 @@ class Table(PostgresNode):
                     table_name=self.name,
                     name=column.name,
                     namespace=self.namespace,
-                )
+                ),
             )
             for column in self.columns
         ]
