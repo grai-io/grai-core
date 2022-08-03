@@ -82,8 +82,10 @@ class Edge(models.Model):
                 fields=["namespace", "name"], name="Edge namespaces/name uniqueness"
             ),
             models.UniqueConstraint(
-                fields=["source", "destination"], condition=Q(is_active=True), name="one_active_edge_between_nodes"
-            )
+                fields=["source", "destination"],
+                condition=Q(is_active=True),
+                name="one_active_edge_between_nodes",
+            ),
         ]
         indexes = [
             models.Index(fields=["is_active"]),

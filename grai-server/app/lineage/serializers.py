@@ -27,5 +27,15 @@ class EdgeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Edge
-        fields = ("id", "name", "display_name", "namespace", "data_source", "metadata", "is_active", "source", "destination")
+        fields = (
+            "id",
+            "name",
+            "display_name",
+            "namespace",
+            "data_source",
+            "metadata",
+            "is_active",
+            "source",
+            "destination",
+        )
         read_only_fields = ("created_at", "updated_at")
