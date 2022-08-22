@@ -8,7 +8,7 @@ authors = ["Ian Eaves <ian@grai.io>"]
 python = "^3.8"
 networkx = "^2.8.5"
 pydantic = "^1.9.1"
-grai-client = "^0.1.2"
+grai-client = "^0.1.3"
 matplotlib = {version = "^3.5.2", optional = true}
 pydot = {version = "^1.4.2", optional = true}
 

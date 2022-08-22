@@ -3,8 +3,8 @@ type: Edge
 spec:
     data_source: test_folder
     source:
-        name: node1
-        namespace: test
+        name: public.lineage_node.id
+        namespace: default
     destination:
         name: node2
         namespace: test

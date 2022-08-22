@@ -13,7 +13,6 @@ spec:
 version: v1
 type: Node
 spec:
-
     name: API
     namespace: ml-development
     data_source: cli-test
