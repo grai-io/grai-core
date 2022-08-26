@@ -15,8 +15,8 @@ services:
         condition: service_healthy
     links:
       - db
-    # env_file:
-    #   - ./.env.dev
+    env_file:
+      - ./app/env
   db:
     image: postgres:14.3-alpine
     volumes:
