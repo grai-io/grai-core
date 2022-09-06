@@ -82,7 +82,7 @@ pip install grai-source-dbt
 
 More to come here but if you're interested in contributing or just want to chat, drop an email to hello@grai.io.
 
-Or join our [discord](https://discord.gg/brUby8Wr)!
+Or join our [discord](https://discord.gg/eZfYjfWWwB)!
 
 
 
