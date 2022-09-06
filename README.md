@@ -3,7 +3,7 @@
 </div>
 
 <p align="center">
-  <a href="https://discord.gg/eZfYjfWWwB">
+  <a href="https://discord.gg/sPNS8pkywh">
     <img src="https://dcbadge.vercel.app/api/server/eZfYjfWWwB?compact=true" height=22/>
   </a>
    <a href="https://github.com/grai-io/grai-core">
