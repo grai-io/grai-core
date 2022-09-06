@@ -2,7 +2,7 @@
   <img src="docs/assets/Grai-Logo-Horizontal-2.png" width="350px"><br>
 </div>
 
-[![](https://dcbadge.vercel.app/api/server/eZfYjfWWwB)](https://discord.gg/eZfYjfWWwB)
+[![](https://dcbadge.vercel.app/api/server/eZfYjfWWwB?compact=true)](https://discord.gg/eZfYjfWWwB)
 
 ## Introduction
 
