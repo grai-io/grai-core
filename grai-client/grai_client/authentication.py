@@ -36,12 +36,12 @@ class UserNameHeader(UserTokenHeader):
         self.password = password
         super().__init__(token=self.get_token())
 
-    def get_token(self) -> str:
+    def get_token(self, base_url='http://localhost:8000') -> str:
         params = {
             "username": self.username,
             "password": self.password,
         }
-        url = "http://localhost:8000/api/v1/auth/api-token/"
+        url = f"{base_url}/api/v1/auth/api-token/"
         token = requests.post(url, data=json.dumps(params), headers=json_headers)
         if token.status_code != 200:
             raise Exception("Failed to get user token from server")
