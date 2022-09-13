@@ -41,11 +41,12 @@ def test_adapt_nodes():
     finally:
         os.remove(file_name)
 
+
 def test_update_server_nodes():
     file_name = 'test.csv'
     namespace = 'test'
     test_data.to_csv(file_name, index=False)
-    
+
     try:
         update_server(file_name, namespace)
     except Exception as e:

@@ -53,6 +53,7 @@ def authenticate(client: BaseClient) -> BaseClient:
         "token": authenticate_with_token,
         "api_key": authenticate_with_api_key,
     }
+
     auth_mode_id = config.grab("auth.authentication_mode")
     auth_mode = auth_modes[auth_mode_id]
     client = auth_mode(client)

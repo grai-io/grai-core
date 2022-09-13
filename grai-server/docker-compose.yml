@@ -2,7 +2,8 @@ version: '3.7'
 
 services:
   the_guide:
-    build: ./app
+    image: ghcr.io/grai-io/grai-core/grai-server:latest
+    #build: ./app
     command: gunicorn --bind 0.0.0.0:8000 the_guide.wsgi
     volumes:
       - ./app/:/usr/src/app/
@@ -10,11 +11,8 @@ services:
       - 8000:8000
     environment:
       - DB_HOST=db
-    depends_on:
-      db:
-        condition: service_healthy
-    links:
-      - db
+    networks:
+      - the_guide
     env_file:
       - ./app/env
   db:
@@ -25,6 +23,8 @@ services:
       - POSTGRES_USER=grai
       - POSTGRES_PASSWORD=grai
       - POSTGRES_DB=grai
+    networks:
+      - the_guide
     ports:
       - 5432:5432
     healthcheck:
@@ -32,5 +32,10 @@ services:
       interval: 2s
       timeout: 2s
       retries: 20
+
+networks:
+  the_guide:
+    driver: bridge
+
 volumes:
   pgdata:

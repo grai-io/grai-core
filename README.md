@@ -53,6 +53,12 @@ You can also explore the API backend at [http://localhost:8000/docs](http://loca
 
 Check out this [guide](https://github.com/grai-io/grai-core/tree/master/examples/quick_start_postgres) for a walk through populating lineage using the postgres connector.
 
+## Docker Image
+
+Although you'll need to provide your own postgres container you can also get started with a basic image of Grai is
+avaialable at `ghcr.io/grai-io/grai-core/grai-server`.
+
+
 
 ## Other Features
 

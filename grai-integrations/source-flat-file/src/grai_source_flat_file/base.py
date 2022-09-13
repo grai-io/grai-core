@@ -13,10 +13,9 @@ def update_server(
     client: BaseClient,
     file_name: str,
     namespace: Optional[str] = None,
-
 ):
 
-    nodes, edges = get_nodes_and_edges(file_name)
+    nodes, edges = get_nodes_and_edges(file_name, namespace)
     nodes = adapt_to_client(nodes)
 
     update(client, nodes)

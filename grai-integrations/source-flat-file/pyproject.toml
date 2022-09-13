@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai_source_flat_file"
-version = "0.0.1"
+version = "0.0.4"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>"]
 license = "ELv2"
@@ -10,7 +10,7 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.8"
 pydantic = "^1.9.1"
-grai-client = "^0.1.2"
+grai-client = "^0.1.5"
 PyYAML = "^6.0"
 multimethod = "^1.8"
 pandas = "^1.4.4"
