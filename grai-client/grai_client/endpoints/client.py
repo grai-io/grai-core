@@ -16,7 +16,9 @@ class BaseClient(abc.ABC):
     def __init__(self, host: str, port: str):
         self.host = host
         self.port = port
-        self.url = f"http://{self.host}:{self.port}"
+
+        prefix = 'https' if self.port == '443' else 'http'
+        self.url = f"{prefix}://{self.host}:{self.port}"
         self.api = f"{self.url}"
         self._auth_headers = None
 
@@ -39,7 +41,7 @@ class BaseClient(abc.ABC):
         api_key: Optional[str] = None,
     ):
         if username and password:
-            self._auth_headers = UserNameHeader(username, password).headers
+            self._auth_headers = UserNameHeader(username, password, self.url).headers
         elif token:
             self._auth_headers = UserTokenHeader(token).headers
         elif api_key:

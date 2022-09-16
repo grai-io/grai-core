@@ -1,7 +1,24 @@
 <div align="center">
-  <img src="docs/assets/Grai-Logo-Horizontal-2.png" width="350px"><br>
+  <img src="docs/assets/Grai-Logo-Horizontal-2.png" width="375px"><br>
 </div>
 
+<p align="center">
+  <a href="https://discord.gg/sPNS8pkywh">
+    <img src="https://dcbadge.vercel.app/api/server/eZfYjfWWwB?compact=true" height=22/>
+  </a>
+   <a href="https://github.com/grai-io/grai-core">
+    <img src="https://img.shields.io/github/issues/grai-io/grai-core?style=flat-square" height=22/>
+  </a>
+  </a>
+   <a href="https://github.com/grai-io/grai-core">
+    <img src="https://img.shields.io/github/languages/top/grai-io/grai-core?style=flat-square" height=22/>
+  </a>  
+  </a>
+   <a href="https://github.com/grai-io/grai-core">
+    <img src="https://img.shields.io/pypi/pyversions/grai-graph?style=for-the-badge" height=22/>
+  </a>  
+  
+</p>
 
 ## Introduction
 
@@ -35,6 +52,12 @@ password: super_secret
 You can also explore the API backend at [http://localhost:8000/docs](http://localhost:8000/docs).
 
 Check out this [guide](https://github.com/grai-io/grai-core/tree/master/examples/quick_start_postgres) for a walk through populating lineage using the postgres connector.
+
+## Docker Image
+
+Although you'll need to provide your own postgres container you can also get started with a basic image of Grai is
+avaialable at `ghcr.io/grai-io/grai-core/grai-server`.
+
 
 
 ## Other Features
@@ -82,7 +105,7 @@ pip install grai-source-dbt
 
 More to come here but if you're interested in contributing or just want to chat, drop an email to hello@grai.io.
 
-Or join our [discord](https://discord.gg/brUby8Wr)!
+Or join our [discord](https://discord.gg/eZfYjfWWwB)!
 
 
 

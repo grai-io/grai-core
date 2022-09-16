@@ -5,9 +5,7 @@ APP=grai-server_the_guide_1
 ECR_REPOSITORY=grai-io/the_guide
 ECR_REGISTRY=627169567483.dkr.ecr.us-east-2.amazonaws.com
 GHCR_REPOSITORY=ghcr.io/grai-io/grai-server
-TAG=
-            ghcr.io/${{ github.repository }}:${{ github.ref }}
-            ghcr.io/${{ github.repository }}:latest
+
 
 migrations:  ## Run migrations
 	docker exec $(APP) sh -c "python manage.py makemigrations; exit $?"
@@ -33,8 +31,13 @@ deploy_dev:  ## Deploy to dev
 	kubectl apply -k k8s/dev
 	sops -e -i k8s/dev/secrets.env
 
-build_ghcr:  ## Build image and upload to ghcr
 
+build_ghcr:  ## Build image and upload to ghcr
+	#echo $CR_PAT | docker login ghcr.io -u ieaves --password-stdin
+	docker buildx build --platform linux/amd64,linux/arm64 -t $(GHCR_REPOSITORY):latest app/ --output=type=registry,dest=$(GHCR_REPOSITORY)
+	docker push $(GHCR_REPOSITORY):latest
+	docker buildx build --platform linux/amd64,linux/arm64 -t ghcr.io/grai-io/grai-core/grai-server:0.1.1 app/ --output=type=registry,dest=ghcr.io/grai-io/grai-core/grai-server:0.1.1
+	docker buildx build --platform linux/amd64,linux/arm64 -t ghcr.io/grai-io/grai-core/grai-server:latest app/ --output=type=registry,dest=ghcr.io/grai-io/grai-core/grai-server:latest
 #---------------------------------------------
 
 help:
