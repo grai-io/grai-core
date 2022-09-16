@@ -102,9 +102,9 @@ def _get_config_template() -> Dict:
 
 def get_config_parameters():
     default_values = {
-        "server.host": "localhost",
-        "server.port": "8000",
-        "context.namespace": "default",
+        # "server.host": "localhost",
+        # "server.port": "8000",
+        # "context.namespace": "default",
     }
 
     redacted_fields = {
