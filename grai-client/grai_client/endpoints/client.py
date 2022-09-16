@@ -84,6 +84,7 @@ class BaseClient(abc.ABC):
             f"No delete method implemented for type {type(grai_type)}"
         )
 
+
 @BaseClient.post.register
 def post_sequence(client: BaseClient, objs: Sequence) -> List[Dict]:
     result = [client.post(obj) for obj in objs]
