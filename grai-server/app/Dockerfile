@@ -10,7 +10,7 @@ ENV PYTHONDONTWRITEBYTECODE="1" \
     PIP_NO_CACHE_DIR="off" \
     PIP_DISABLE_PIP_VERSION_CHECK="on" \
     PIP_DEFAULT_TIMEOUT="100" \
-    POETRY_VERSION="1.1.13"
+    POETRY_VERSION="1.2.2"
 
 # libpq-dev and gcc are used to install psycopg2.
 RUN apt update \

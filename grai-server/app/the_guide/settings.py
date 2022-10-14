@@ -1,8 +1,8 @@
 import os
 from pathlib import Path
-from typing import Any, Dict
 
 from decouple import config
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 MEDIA_ROOT = str(BASE_DIR.joinpath("media"))
@@ -82,6 +82,7 @@ THE_GUIDE_APPS = [
     "lineage",
     "users",
     "namespaces",
+    "telemetry",
 ]
 
 INSTALLED_APPS = DJANGO_CORE_APPS + THIRD_PARTY_APPS + THE_GUIDE_APPS
