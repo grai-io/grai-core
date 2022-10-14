@@ -21,9 +21,9 @@ jobs:
       
       - name: Run linters
         uses: wearerequired/lint-action@v1
-        working-directory: "grai-server"
         with:
           black: true
+          black_dir: "grai-server"
           auto_fix: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
           git_email: ian@grai.io
