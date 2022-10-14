@@ -1,8 +1,7 @@
 from typing import Callable, Dict, List, Literal, Optional, Type, Union, Literal
 from uuid import UUID
 
-from grai_client.schemas.utilities import (BaseSpec,
-                                           PlaceHolderSchema, GraiBaseModel)
+from grai_client.schemas.utilities import BaseSpec, PlaceHolderSchema, GraiBaseModel
 from grai_client.schemas.node import NodeID
 from pydantic import Field, validator
 from typing_extensions import Annotated
@@ -10,7 +9,6 @@ from typing_extensions import Annotated
 
 class BaseEdge(GraiBaseModel):
     type: Literal["Edge"]
-
 
 
 class V1(BaseSpec):
@@ -29,7 +27,6 @@ class V1(BaseSpec):
 
     def __str__(self):
         return f"Edge[Node({self.source}) -> Node({self.destination})]"
-
 
 
 class V2(PlaceHolderSchema, V1):
@@ -60,6 +57,6 @@ class EdgeV2(BaseEdge):
         raise NotImplementedError()
 
 
-EdgeLabels = Literal['edge', 'edges', 'Edge', 'Edges']
+EdgeLabels = Literal["edge", "edges", "Edge", "Edges"]
 EdgeTypes = Union[EdgeV1, EdgeV2]
 Edge = Annotated[EdgeTypes, Field(discriminator="version")]

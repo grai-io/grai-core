@@ -21,7 +21,7 @@ try:
     )
 
     with configure_scope() as scope:
-        scope.set_tag('posthog_distinct_id', 'some distinct id')
+        scope.set_tag("posthog_distinct_id", "some distinct id")
 except:
     # Don't break anything for the user if something happens with the telemetry
     pass
@@ -32,11 +32,8 @@ class TelemetryConfig(AppConfig):
     name = "telemetry"
 
     def ready(self):
-        posthog.project_api_key = 'phc_Q8OCDm0JpCwt4Akk3pMybuBWniWPfOsJzRrdxWjAnjE'
-        posthog.host = 'https://app.posthog.com'
-        posthog.disabled = os.environ.get('DISABLE_TELEMETRY', False)
+        posthog.project_api_key = "phc_Q8OCDm0JpCwt4Akk3pMybuBWniWPfOsJzRrdxWjAnjE"
+        posthog.host = "https://app.posthog.com"
+        posthog.disabled = os.environ.get("DISABLE_TELEMETRY", False)
 
-        posthog.capture(
-            orgname,
-            event="Server deployment"
-        )
+        posthog.capture(orgname, event="Server deployment")

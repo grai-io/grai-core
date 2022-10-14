@@ -5,7 +5,11 @@ import networkx as nx
 
 
 def output_graph(
-    graph: nx.DiGraph, file_name: Union[Path, str], sort: bool = True, file_format=None, dpi: Optional[int]=800
+    graph: nx.DiGraph,
+    file_name: Union[Path, str],
+    sort: bool = True,
+    file_format=None,
+    dpi: Optional[int] = 800,
 ) -> None:
     """Output a graph to a file, either as image or as dot file.
     Args:

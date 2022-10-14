@@ -52,5 +52,3 @@ class Column(BaseModel):
             return full_name
         result = f"{values['table']}.{values['name']}"
         return result
-
-

@@ -45,7 +45,6 @@ def response_status_check(resp: Response) -> Response:
     raise RequestException(message)
 
 
-
 class GraiEncoder(json.JSONEncoder):
     def default(self, obj: Any) -> Any:
         if isinstance(obj, UUID):

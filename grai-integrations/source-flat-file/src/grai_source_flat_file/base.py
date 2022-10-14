@@ -19,4 +19,4 @@ def update_server(
     nodes = adapt_to_client(nodes)
 
     update(client, nodes)
-    #update(client, edges)
+    # update(client, edges)
