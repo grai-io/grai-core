@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai-client"
-version = "0.1.5"
+version = "0.1.8"
 description = ""
 authors = ["Ian Eaves <ian.k.eaves@gmail.com>"]
 license = "Elastic-2.0"
