@@ -4,7 +4,7 @@ from grai_client.endpoints.v1.client import ClientV1
 from grai_client.schemas.utilities import merge_models
 from grai_client.schemas import edge, node
 
-T = TypeVar('T', node.NodeV1, edge.EdgeV1)
+T = TypeVar("T", node.NodeV1, edge.EdgeV1)
 
 
 @ClientV1.patch.register
@@ -35,15 +35,14 @@ def patch_obj_v1(client: ClientV1, grai_type: edge.EdgeV1) -> edge.EdgeV1:
     if source.id is None:
         source = client.get(source)
     if destination.id is None:
-        destination= client.get(destination)
+        destination = client.get(destination)
 
     payload = grai_type.spec.dict()
-    payload['source'] = source.id
-    payload['destination'] = destination.id
+    payload["source"] = source.id
+    payload["destination"] = destination.id
     response = client.patch(url, payload).json()
     if response is not None:
-        response['source'] = source
-        response['destination'] = destination
+        response["source"] = source
+        response["destination"] = destination
 
     return edge.EdgeV1.from_spec(response)
-

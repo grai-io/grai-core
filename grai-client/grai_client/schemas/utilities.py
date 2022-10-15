@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from grai_client.schemas.node import Node
     from grai_client.schemas.edge import Edge
+
     T = TypeVar("T", Node, Edge)
 
 
@@ -55,6 +56,3 @@ class PlaceHolderSchema(BaseSpec):
             "most likely the `version` of your config file doesn't exist yet."
         )
         raise AssertionError(message)
-
-
-

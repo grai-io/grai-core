@@ -1,8 +1,7 @@
 from typing import Dict, Literal, Optional, Union
 from uuid import UUID
 
-from grai_client.schemas.utilities import (BaseSpec,
-                                           PlaceHolderSchema, GraiBaseModel)
+from grai_client.schemas.utilities import BaseSpec, PlaceHolderSchema, GraiBaseModel
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated
 
@@ -56,6 +55,6 @@ class NodeV2(BaseNode):
         raise NotImplementedError()
 
 
-NodeLabels = Literal['nodes', 'node', 'Node', 'Nodes']
+NodeLabels = Literal["nodes", "node", "Node", "Nodes"]
 NodeTypes = Union[NodeV1, NodeV2]
 Node = Annotated[NodeTypes, Field(discriminator="version")]
