@@ -1,54 +1,53 @@
 name: Docker Compose Actions Workflow
 on:
-    push:
-        paths:
-        - "grai-server/**"
+  push:
+    paths:
+    - "grai-server/**"
 jobs:
   lint-grai-server:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out Git repository
-        uses: actions/checkout@v4
+    - name: Check out Git repository
+      uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.9"
-          cache: 'pip'
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.9"
+        cache: 'pip'
 
-      - name: Install Python dependencies
-        run: pip install black
+    - name: Install Python dependencies
+      run: pip install black
 
-      - name: Run linters
-        uses: wearerequired/lint-action@v1
-        working-directory: "grai-server"
-        with:
-          black: true
-          auto_fix: true
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          git_email: ian@grai.io
+    - name: Run linters
+      uses: wearerequired/lint-action@v1
+      working-directory: "grai-server"
+      with:
+        black: true
+        auto_fix: true
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        git_email: ian@grai.io
 
   test-grai-server:
     needs: lint-grai-server
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+    - uses: actions/checkout@v2
 
-      - name: Build the stack
-        working-directory: "grai-server"
-        run: docker compose up -d
+    - name: Build the stack
+      working-directory: "grai-server"
+      run: docker compose up -d
 
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.9"
+    - uses: actions/setup-python@v4
+      with:
+        python-version: "3.9"
 
-      - name: Install Poetry
-        uses: abatilo/actions-poetry@v2.0.0
-        with:
-          poetry-version: "3.8"
-          cache: poetry
+    - name: Install Poetry
+      uses: abatilo/actions-poetry@v2.0.0
+      with:
+        cache: poetry
 
-      - name: Test
-        working-directory: "grai-server/app"
-        run: poetry run pytest pytest
+    - name: Test
+      working-directory: "grai-server/app"
+      run: poetry run pytest pytest
 

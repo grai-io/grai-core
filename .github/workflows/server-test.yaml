@@ -20,7 +20,6 @@ jobs:
       - name: Install Poetry
         uses: abatilo/actions-poetry@v2.0.0
         with:
-          poetry-version: "3.8"
           cache: poetry
 
       - name: Test
