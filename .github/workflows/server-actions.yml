@@ -14,23 +14,27 @@ jobs:
     - name: Check out Git repository
       uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
+    - uses: actions/setup-python@v4
       with:
         python-version: "${{ env.pyver }}"
-        cache: 'pip'
-
-    - name: Install Python dependencies
-      run: pip install black
-
+        
     - name: Run linters
       uses: wearerequired/lint-action@v1
-      working-directory: "grai-server"
       with:
         black: true
+        black_dir: "grai-server/app"
         auto_fix: true
         github_token: ${{ secrets.GITHUB_TOKEN }}
         git_email: ian@grai.io
+
+    - name: Install Poetry
+      uses: abatilo/actions-poetry@v2.0.0
+      with:
+        cache: poetry
+      
+    - name: Run isort
+      working-directory: "grai-server/app"
+      run: poetry run isort . -c
 
   test-grai-server:
     needs: lint-grai-server
