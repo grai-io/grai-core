@@ -18,7 +18,6 @@ def delete_node_v1(client: ClientV1, grai_type: NodeV1):
 
 @ClientV1.delete.register
 def delete_edge_v1(client: ClientV1, grai_type: EdgeV1):
-    print("in delete edge")
     if grai_type.spec.id is None:
         grai_type = client.get(grai_type)
     url = f"{client.edge_endpoint}{grai_type.spec.id}/"
