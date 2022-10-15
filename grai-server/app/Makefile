@@ -49,9 +49,7 @@ build_ghcr:  ## Build image and upload to ghcr
 	docker tag $(GHCR_REGISTRY)/$(APP_NAME):$(TAG) $(GHCR_REGISTRY)/$(APP_NAME):latest
 	docker push -a $(GHCR_REGISTRY)/$(APP_NAME)
 
-
 #---------------------------------------------
-
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

@@ -23,15 +23,13 @@ drf-spectacular = "^0.22.1"
 django-extensions = "^3.2"
 djangorestframework-api-key = "^2"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
+isort = "^5.10.1"
 black = "^22.6.0"
 pytest = "^7.1.2"
 pytest-django = "^4.5.2"
 django-stubs = "^1.12.0"
 djangorestframework-stubs = "^1.7.0"
-
-[tool.poetry.group.dev.dependencies]
-isort = "^5.10.1"
 
 [tool.isort]
 profile = "black"
