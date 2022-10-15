@@ -18,6 +18,9 @@ jobs:
       with:
         python-version: "${{ env.pyver }}"
         
+    - name: Install Python dependencies
+      run:  pip install black
+    
     - name: Run linters
       uses: wearerequired/lint-action@v1
       with:
@@ -58,4 +61,5 @@ jobs:
     - name: Test
       working-directory: "grai-server/app"
       run: poetry run pytest pytest
+
 
