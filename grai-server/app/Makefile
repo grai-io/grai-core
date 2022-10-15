@@ -48,6 +48,8 @@ build_ghcr:  ## Build image and upload to ghcr
 	docker build -t $(GHCR_REGISTRY)/$(APP_NAME):$(TAG) .
 	docker tag $(GHCR_REGISTRY)/$(APP_NAME):$(TAG) $(GHCR_REGISTRY)/$(APP_NAME):latest
 	docker push -a $(GHCR_REGISTRY)/$(APP_NAME)
+
+
 #---------------------------------------------
 
 help:
