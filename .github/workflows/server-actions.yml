@@ -6,7 +6,7 @@ on:
 
 env:
   py_ver: "3.10"
-  poetry_ver: "1.22"
+  poetry_ver: "1.2.2"
 jobs:
   lint-grai-server:
     runs-on: ubuntu-latest
