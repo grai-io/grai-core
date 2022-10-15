@@ -3,6 +3,10 @@ on:
   push:
     paths:
     - "grai-server/**"
+
+env:
+  pyver: "3.10"
+
 jobs:
   lint-grai-server:
     runs-on: ubuntu-latest
@@ -13,7 +17,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: "3.9"
+        python-version: "${{ env.pyver }}"
         cache: 'pip'
 
     - name: Install Python dependencies
@@ -40,7 +44,7 @@ jobs:
 
     - uses: actions/setup-python@v4
       with:
-        python-version: "3.9"
+        python-version: "${{ env.pyver }}"
 
     - name: Install Poetry
       uses: abatilo/actions-poetry@v2.0.0
