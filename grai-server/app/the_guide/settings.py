@@ -4,6 +4,7 @@ from typing import Any, Dict
 
 from decouple import config
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 MEDIA_ROOT = str(BASE_DIR.joinpath("media"))
 STATIC_ROOT = str(BASE_DIR.joinpath("staticfiles"))
