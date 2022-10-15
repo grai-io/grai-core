@@ -5,8 +5,8 @@ on:
     - "grai-server/**"
 
 env:
-  pyver: "3.10"
-
+  py_ver: "3.10"
+  poetry_ver: "1.22"
 jobs:
   lint-grai-server:
     runs-on: ubuntu-latest
@@ -16,7 +16,7 @@ jobs:
 
     - uses: actions/setup-python@v4
       with:
-        python-version: "${{ env.pyver }}"
+        python-version: "${{ env.py_ver }}"
         
     - name: Install Python dependencies
       run:  pip install black
@@ -34,6 +34,7 @@ jobs:
       uses: abatilo/actions-poetry@v2.0.0
       with:
         cache: poetry
+        poetry-version: "${{ env.poetry_ver }}"
       
     - name: Run isort
       working-directory: "grai-server/app"
@@ -51,12 +52,13 @@ jobs:
 
     - uses: actions/setup-python@v4
       with:
-        python-version: "${{ env.pyver }}"
+        python-version: "${{ env.py_ver }}"
 
     - name: Install Poetry
       uses: abatilo/actions-poetry@v2.0.0
       with:
         cache: poetry
+        poetry-version: "${{ env.poetry_ver }}"
 
     - name: Test
       working-directory: "grai-server/app"
