@@ -63,10 +63,15 @@ jobs:
 #        DB_PORT: '5432'
 #        DB_USER: grai
 #        DB_PASSWORD: grai
-      run: |
-        pip install .
-        python manage.py migrate --noinput
-        pytest
+      run: pip install .
+
+    - name: Migrations
+      working-directory: "grai-server/app"
+      run: python manage.py migrate --noinput
+
+    - name: Tests
+      working-directory: "grai-server/app"
+      run: pytest
   
 
 #    - name: Run Migrations
