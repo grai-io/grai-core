@@ -42,7 +42,7 @@ jobs:
         env:
           POSTGRES_USER: grai
           POSTGRES_PASSWORD: grai
-#         # SSLMODE: PREFER
+          POSTGRES_DB: grai
         ports:
         - 5432:5432
         # needed because the postgres container does not provide a healthcheck
@@ -50,26 +50,31 @@ jobs:
   
     steps:
     - uses: actions/checkout@v3
-
     - uses: actions/setup-python@v4
       with:
         python-version: "${{ env.py_ver }}"
-  
     - name: Install package
       working-directory: "grai-server/app"
+      run: pip install .
+
+#    - name: Migrations
 #      env:
 #        DEBUG: False
 #        DB_HOST: 'localhost'
 #        DB_PORT: '5432'
 #        DB_USER: grai
 #        DB_PASSWORD: grai
-      run: pip install .
-
-    - name: Migrations
-      working-directory: "grai-server/app"
-      run: python manage.py migrate --noinput
+#      working-directory: "grai-server/app"
+#      run: python manage.py migrate --noinput
 
     - name: Tests
+      env:
+        DEBUG: False
+        DB_HOST: 'localhost'
+        DB_PORT: '5432'
+        DB_USER: grai
+        DB_NAME: grai
+        DB_PASSWORD: grai
       working-directory: "grai-server/app"
       run: pytest
   
