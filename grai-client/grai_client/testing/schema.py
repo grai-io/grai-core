@@ -1,7 +1,8 @@
-from grai_client.schemas.node import NodeV1
-from grai_client.schemas.edge import EdgeV1
-from grai_client.schemas.schema import Schema
 import uuid
+
+from grai_client.schemas.edge import EdgeV1
+from grai_client.schemas.node import NodeV1
+from grai_client.schemas.schema import Schema
 
 
 def mock_v1_node(

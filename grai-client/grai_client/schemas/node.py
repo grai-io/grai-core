@@ -1,7 +1,7 @@
 from typing import Dict, Literal, Optional, Union
 from uuid import UUID
 
-from grai_client.schemas.utilities import BaseSpec, PlaceHolderSchema, GraiBaseModel
+from grai_client.schemas.utilities import BaseSpec, GraiBaseModel, PlaceHolderSchema
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated
 

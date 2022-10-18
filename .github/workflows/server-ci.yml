@@ -1,0 +1,103 @@
+name: Docker Compose Actions Workflow
+on:
+  push:
+    paths:
+    - "grai-server/**"
+
+env:
+  py_ver: "3.10"
+  poetry_ver: "1.2.2"
+
+
+jobs:
+  lint-grai-server:
+    runs-on: ubuntu-latest
+#
+    steps:
+    - name: Check out Git repository
+      uses: actions/checkout@v3
+
+    - name: Install Python
+      id: setup-python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "${{ env.py_ver }}"
+
+    - run: pip install black isort
+  
+    - working-directory: "grai-server/app"
+      run: |
+        black . --check
+        isort . --profile black
+
+  test-grai-server:
+    needs: lint-grai-server
+    runs-on: ubuntu-latest
+    defaults:
+        run:
+          working-directory: ./grai-server/app
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: grai
+          POSTGRES_PASSWORD: grai
+#         # SSLMODE: PREFER
+        ports:
+        - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+  
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: actions/setup-python@v4
+      with:
+        python-version: "${{ env.py_ver }}"
+  
+    - name: Install package
+      working-directory: "grai-server/app"
+#      env:
+#        DEBUG: False
+#        DB_HOST: 'localhost'
+#        DB_PORT: '5432'
+#        DB_USER: grai
+#        DB_PASSWORD: grai
+      run: |
+        pip install .
+        python manage.py migrate --noinput
+        pytest
+  
+
+#    - name: Run Migrations
+#      run: poetry run python manage.py migrate --noinput
+#
+#    - name: Test
+#      working-directory: "grai-server/app"
+#      run: poetry run pytest
+
+
+#    - name: cache poetry install
+#      uses: actions/cache@v2
+#      with:
+#        path: ~/.local
+#        key: poetry-1.2.2-0
+#
+#    - name: Install Poetry
+#      uses: snok/install-poetry@v1
+#      with:
+#        version: 1.2.2
+#        virtualenvs-create: true
+#        virtualenvs-in-project: true
+#
+#    - name: Load cached venv
+#      id: cached-poetry-dependencies
+#      uses: actions/cache@v3
+#      with:
+#        path: ~/.cache
+#        key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+#
+#    - name: Install dependencies
+#      working-directory: "grai-server/app"
+#      if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+#      run: poetry install --no-interaction --no-root

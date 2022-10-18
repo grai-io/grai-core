@@ -1,5 +1,5 @@
 # name: Running Server Tests
-# on:
+on:
 #   push:
 #     paths:
 #     - "grai-server/**"

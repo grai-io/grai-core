@@ -3,7 +3,6 @@ import uuid
 import networkx as nx
 from grai_client.endpoints.v1.client import ClientV1
 from grai_client.testing.schema import mock_v1_edge, mock_v1_node
-
 from grai_graph import graph
 
 # TODO: This needs to be mocked

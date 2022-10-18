@@ -15,13 +15,12 @@ django-phonenumber-field ={extras = ["phonenumberslite"], version = "^6.3.0"}
 django-cors-headers = "^3.13.0"
 social-auth-app-django = "^5.0.0"
 djangorestframework-simplejwt = {extras = ["crypto"], version = "^5.2.0"}
-strawberry-django-plus = "^1.15.0"
 python-decouple = "^3.6"
-strawberry-graphql = "^0.115.0"
 psycopg2 = "^2.9.3"
 drf-spectacular = "^0.22.1"
 django-extensions = "^3.2"
 djangorestframework-api-key = "^2"
+strawberry-django-plus = "^1.28.4"
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.10.1"

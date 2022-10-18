@@ -3,10 +3,9 @@ import uuid
 import networkx as nx
 from grai_client.testing.schema import (
     mock_v1_edge,
-    mock_v1_node,
     mock_v1_edge_and_nodes,
+    mock_v1_node,
 )
-
 from grai_graph import graph
 
 
