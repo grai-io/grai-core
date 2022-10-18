@@ -55,7 +55,9 @@ jobs:
         python-version: "${{ env.py_ver }}"
     - name: Install package
       working-directory: "grai-server/app"
-      run: pip install .
+      run: |
+        pip install pytest pytest-django
+        pip install .
 
 #    - name: Migrations
 #      env:
