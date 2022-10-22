@@ -51,8 +51,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - run: |
-        apt update
-        apt install -y postgresql-client
+        sudo apt update
+        sudo apt install -y postgresql-client
     - run: pg_isready -d github_actions -h 127.0.0.1 -p 5432 -U postgres
 #    - uses: actions/setup-python@v4
 #      with:
