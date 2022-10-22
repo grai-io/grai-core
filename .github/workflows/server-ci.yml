@@ -17,32 +17,32 @@ jobs:
     - name: Check out Git repository
       uses: actions/checkout@v3
 
-    - name: Install Python
-      id: setup-python
-      uses: actions/setup-python@v4
-      with:
-        python-version: "${{ env.py_ver }}"
-
-    - run: pip install black isort
-  
-    - working-directory: "grai-server/app"
-      run: |
-        black . --check
-        isort . --profile black
+#    - name: Install Python
+#      id: setup-python
+#      uses: actions/setup-python@v4
+#      with:
+#        python-version: "${{ env.py_ver }}"
+#
+#    - run: pip install black isort
+#
+#    - working-directory: "grai-server/app"
+#      run: |
+#        black . --check
+#        isort . --profile black
 
   test-grai-server:
     needs: lint-grai-server
     runs-on: ubuntu-latest
-    defaults:
-        run:
-          working-directory: ./grai-server/app
+#    defaults:
+#        run:
+#          working-directory: ./grai-server/app
     services:
       postgres:
         image: postgres:latest
         env:
-          POSTGRES_USER: grai
-          POSTGRES_PASSWORD: grai
-          POSTGRES_DB: grai
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: github_actions
         ports:
         - 5432:5432
         # needed because the postgres container does not provide a healthcheck
@@ -50,36 +50,32 @@ jobs:
   
     steps:
     - uses: actions/checkout@v3
-    - uses: actions/setup-python@v4
-      with:
-        python-version: "${{ env.py_ver }}"
-    - name: Install package
-      working-directory: "grai-server/app"
-      run: |
-        pip install pytest pytest-django
-        pip install .
-
-#    - name: Migrations
+    - run: |
+        apt update
+        apt install -y postgresql-client
+    - run: pg_isready -d github_actions -h 127.0.0.1 -p 5432 -U postgres
+#    - uses: actions/setup-python@v4
+#      with:
+#        python-version: "${{ env.py_ver }}"
+#    - name: Install package
+#      working-directory: "grai-server/app"
+#      run: |
+#        pip install pytest pytest-django
+#        pip install .
+#
+#    - name: Tests
 #      env:
 #        DEBUG: False
 #        DB_HOST: 'localhost'
 #        DB_PORT: '5432'
 #        DB_USER: grai
+#        DB_NAME: grai
 #        DB_PASSWORD: grai
 #      working-directory: "grai-server/app"
-#      run: python manage.py migrate --noinput
-
-    - name: Tests
-      env:
-        DEBUG: False
-        DB_HOST: 'localhost'
-        DB_PORT: '5432'
-        DB_USER: grai
-        DB_NAME: grai
-        DB_PASSWORD: grai
-      working-directory: "grai-server/app"
-      run: pytest
-  
+#      run: |
+#        python manage.py migrate --noinput
+#        pytest
+#
 
 #    - name: Run Migrations
 #      run: poetry run python manage.py migrate --noinput
