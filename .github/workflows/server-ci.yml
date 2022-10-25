@@ -2,64 +2,92 @@ name: PostgreSQL service example
 on: push
 
 jobs:
-  # Label of the container job
-  container-job:
-    # Containers must run in Linux based operating systems
+  tests:
     runs-on: ubuntu-latest
-    # Docker Hub image that `container-job` executes in
-#    container: node:10.18-jessie
 
-    # Service containers to run with `container-job`
     services:
-      # Label used to access the service container
       postgres:
-        # Docker Hub image
-        image: postgres
-        # Provide the password for postgres
+        image: postgres:14.3-alpine
         env:
-          POSTGRES_USER: grai
-          POSTGRES_PASSWORD: grai
-          POSTGRES_DB: grai
-        # Set health checks to wait until postgres has started
-        options: >-
+#          POSTGRES_USER: grai
+#          POSTGRES_PASSWORD: grai
+#          POSTGRES_DB: grai
+        ports:
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: |
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
-    steps:
-      # Downloads a copy of the code in your repository before running CI tests
-      - name: Check out repository code
-        uses: actions/checkout@v3
       
+    steps:
+      - uses: actions/checkout@v3
+
       - run: |
           sudo apt update
           sudo apt install -y postgresql-client
-        
-      - run: pg_isready -d grai -h localhost -p 5432 -U grai
-    
-      - uses: actions/setup-python@v4
-        with:
-          python-version: 3.10
-        
-      - name: Install package
-        working-directory: "grai-server/app"
-        run: |
-          pip install pytest pytest-django
-          pip install .
-  #
-      - name: Tests
-        env:
-          DEBUG: False
-          DB_HOST: '127.0.0.1'
-          DB_PORT: '5432'
-          DB_USER: grai
-          DB_NAME: grai
-          DB_PASSWORD: grai
-        working-directory: "grai-server/app"
-        run: |
-          python manage.py migrate --noinput
-          pytest
+      - run: pg_isready -h 127.0.0.1 -p 5432 # -d grai -U grai
+#
+#jobs:
+#  # Label of the container job
+#  container-job:
+#    # Containers must run in Linux based operating systems
+#    runs-on: ubuntu-latest
+#    # Docker Hub image that `container-job` executes in
+##    container: node:10.18-jessie
+#
+#    # Service containers to run with `container-job`
+#    services:
+#      # Label used to access the service container
+#      postgres:
+#        # Docker Hub image
+#        image: postgres
+#        # Provide the password for postgres
+#        env:
+#          POSTGRES_USER: grai
+#          POSTGRES_PASSWORD: grai
+#          POSTGRES_DB: grai
+#        # Set health checks to wait until postgres has started
+#        options: >-
+#          --health-cmd pg_isready
+#          --health-interval 10s
+#          --health-timeout 5s
+#          --health-retries 5
+#
+#    steps:
+#      # Downloads a copy of the code in your repository before running CI tests
+#      - name: Check out repository code
+#        uses: actions/checkout@v3
+#
+#      - run: |
+#          sudo apt update
+#          sudo apt install -y postgresql-client
+#
+#      - run: pg_isready -d grai -h localhost -p 5432 -U grai
+#
+#      - uses: actions/setup-python@v4
+#        with:
+#          python-version: 3.10
+#
+#      - name: Install package
+#        working-directory: "grai-server/app"
+#        run: |
+#          pip install pytest pytest-django
+#          pip install .
+#  #
+#      - name: Tests
+#        env:
+#          DEBUG: False
+#          DB_HOST: '127.0.0.1'
+#          DB_PORT: '5432'
+#          DB_USER: grai
+#          DB_NAME: grai
+#          DB_PASSWORD: grai
+#        working-directory: "grai-server/app"
+#        run: |
+#          python manage.py migrate --noinput
+#          pytest
       # Performs a clean installation of all dependencies in the `package.json` file
       # For more information, see https://docs.npmjs.com/cli/ci.html
 #      - name: Install dependencies
