@@ -1,9 +1,8 @@
 from typing import Any, Dict, List, Literal, Sequence, Type
 
 from grai_client.schemas.schema import Schema
-from multimethod import multimethod
-
 from grai_source_flat_file.models import ID, Column
+from multimethod import multimethod
 
 
 @multimethod
@@ -26,6 +25,8 @@ def adapt_column_to_client(current: Column, version: Literal["v1"] = "v1"):
         },
     }
     return Schema.to_model(spec_dict, version=version, typing_type="Node")
+
+
 #
 #
 # def make_name(node1: ID, node2: ID) -> str:
@@ -35,5 +36,5 @@ def adapt_column_to_client(current: Column, version: Literal["v1"] = "v1"):
 
 
 @adapt_to_client.register
-def adapt_list_to_client(objs: Sequence, version: Literal["v1"] = 'v1') -> List:
+def adapt_list_to_client(objs: Sequence, version: Literal["v1"] = "v1") -> List:
     return [adapt_to_client(item, version) for item in objs]

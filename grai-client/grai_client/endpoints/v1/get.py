@@ -1,4 +1,5 @@
-from typing import Any, Union, Literal, List, Optional, TypeVar
+from itertools import chain
+from typing import Any, List, Literal, Optional, TypeVar, Union
 from uuid import UUID
 
 import requests
@@ -7,8 +8,6 @@ from grai_client.endpoints.v1.client import ClientV1
 from grai_client.schemas.edge import EdgeLabels, EdgeV1, NodeID
 from grai_client.schemas.node import NodeLabels, NodeV1
 from multimethod import multimethod
-from itertools import chain
-
 
 T = TypeVar("T", NodeV1, EdgeV1)
 
@@ -50,7 +49,9 @@ def get_node_by_label_v1(client: ClientV1, grai_type: NodeLabels) -> List[NodeV1
 
 
 @ClientV1.get.register
-def get_node_by_id(client: ClientV1, grai_type: NodeLabels, node: str) -> Optional[NodeV1]:
+def get_node_by_id(
+    client: ClientV1, grai_type: NodeLabels, node: str
+) -> Optional[NodeV1]:
     url = f"{client.node_endpoint}{node}"
     resp = client.get(url).json()
     return NodeV1.from_spec(resp)
@@ -69,9 +70,8 @@ def get_edge_v1(client: ClientV1, grai_type: EdgeV1) -> Optional[EdgeV1]:
             return None
         resp = resp[0]
 
-
-    resp['source'] = client.get('node', resp['source']).spec
-    resp['destination'] = client.get('node', resp['destination']).spec
+    resp["source"] = client.get("node", resp["source"]).spec
+    resp["destination"] = client.get("node", resp["destination"]).spec
     return EdgeV1.from_spec(resp)
 
 
@@ -81,7 +81,7 @@ def get_edge_by_label_v1(client: ClientV1, grai_type: EdgeLabels) -> List[EdgeV1
     resp = client.get(url).json()
 
     for r in resp:
-        r['source'] = client.get('node', r['source']).spec
-        r['destination'] = client.get('node', r['destination']).spec
+        r["source"] = client.get("node", r["source"]).spec
+        r["destination"] = client.get("node", r["destination"]).spec
 
     return [EdgeV1.from_spec(obj) for obj in resp]

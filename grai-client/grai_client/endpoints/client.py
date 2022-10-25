@@ -1,13 +1,12 @@
 import abc
-from typing import Any, Dict, Union, Optional, List, Sequence
-from grai_client.schemas.schema import GraiType
-from grai_client.authentication import (APIKeyHeader, UserNameHeader,
-                                        UserTokenHeader)
-from grai_client.endpoints.utilities import response_status_check, GraiEncoder
-from multimethod import multimethod
+import json
+from typing import Any, Dict, List, Optional, Sequence, Union
 
 import requests
-import json
+from grai_client.authentication import APIKeyHeader, UserNameHeader, UserTokenHeader
+from grai_client.endpoints.utilities import GraiEncoder, response_status_check
+from grai_client.schemas.schema import GraiType
+from multimethod import multimethod
 
 
 class BaseClient(abc.ABC):
@@ -17,7 +16,7 @@ class BaseClient(abc.ABC):
         self.host = host
         self.port = port
 
-        prefix = 'https' if self.port == '443' else 'http'
+        prefix = "https" if self.port == "443" else "http"
         self.url = f"{prefix}://{self.host}:{self.port}"
         self.api = f"{self.url}"
         self._auth_headers = None
@@ -139,6 +138,8 @@ def patch_url_v1(client: BaseClient, url: str, payload: Dict) -> requests.Respon
 def post_url_v1(client: BaseClient, url: str, payload: Dict) -> requests.Response:
     headers = {**client.auth_headers, "Content-Type": "application/json"}
     payload = {k: v for k, v in payload.items() if v is not None}
-    response = requests.post(url, data=json.dumps(payload, cls=GraiEncoder), headers=headers)
+    response = requests.post(
+        url, data=json.dumps(payload, cls=GraiEncoder), headers=headers
+    )
     response_status_check(response)
     return response

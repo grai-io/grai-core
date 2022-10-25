@@ -1,5 +1,6 @@
+from typing import List, Sequence, Type
+
 from grai_client.endpoints import client, utilities, v1
-from typing import List, Type, Sequence
 
 
 def list_clients() -> Sequence[Type[client.BaseClient]]:

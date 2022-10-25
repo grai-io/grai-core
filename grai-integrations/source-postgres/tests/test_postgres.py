@@ -1,7 +1,6 @@
 import os
 
 import pytest
-
 from grai_source_postgres.loader import PostgresConnector
 
 # Tests only run with a separate postgres container deployed

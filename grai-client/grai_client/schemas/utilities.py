@@ -1,12 +1,13 @@
 from __future__ import annotations
-from typing import Any, Dict, List, Optional, TypeVar, Union
-from pydantic import BaseModel, root_validator
-from typing import TYPE_CHECKING
 
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, TypeVar, Union
+
+from pydantic import BaseModel, root_validator
 
 if TYPE_CHECKING:
-    from grai_client.schemas.node import Node
     from grai_client.schemas.edge import Edge
+    from grai_client.schemas.node import Node
+
     T = TypeVar("T", Node, Edge)
 
 
@@ -55,6 +56,3 @@ class PlaceHolderSchema(BaseSpec):
             "most likely the `version` of your config file doesn't exist yet."
         )
         raise AssertionError(message)
-
-
-
