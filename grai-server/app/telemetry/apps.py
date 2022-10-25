@@ -1,13 +1,12 @@
-from django.apps import AppConfig
 import os
 import uuid
+
 import posthog
 import sentry_sdk
-from sentry_sdk.integrations.django import DjangoIntegration
+from django.apps import AppConfig
 from posthog.sentry.posthog_integration import PostHogIntegration
-
 from sentry_sdk import configure_scope
-
+from sentry_sdk.integrations.django import DjangoIntegration
 
 orgname = uuid.uuid4()
 PostHogIntegration.organization = orgname

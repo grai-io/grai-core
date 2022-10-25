@@ -1,7 +1,6 @@
 from decouple import config
 from django.contrib.auth import get_user_model
 
-
 User = get_user_model()
 
 username = config("DJANGO_SUPERUSER_USERNAME", None)

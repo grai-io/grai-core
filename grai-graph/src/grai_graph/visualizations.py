@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Union, Optional, Tuple
+from typing import Optional, Tuple, Union
 
 import networkx as nx
 

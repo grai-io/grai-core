@@ -1,8 +1,8 @@
 from typing import TypeVar
 
 from grai_client.endpoints.v1.client import ClientV1
-from grai_client.schemas.utilities import merge_models
 from grai_client.schemas import edge, node
+from grai_client.schemas.utilities import merge_models
 
 T = TypeVar("T", node.NodeV1, edge.EdgeV1)
 

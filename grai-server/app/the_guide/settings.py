@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 from decouple import config
-
+from django.core.management.utils import get_random_secret_key
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 MEDIA_ROOT = str(BASE_DIR.joinpath("media"))
@@ -23,10 +23,12 @@ def clean_allowed_hosts(val):
         raise
 
 
-SECRET_KEY = config("SECRET_KEY")
-DEBUG = config("DEBUG", default=False, cast=bool)
+SECRET_KEY = config("SECRET_KEY", default=get_random_secret_key())
+DEBUG = config("DEBUG", default=True, cast=bool)
 TEMPLATE_DEBUG = config("TEMPLATE_DEBUG", default=DEBUG, cast=bool)
-ALLOWED_HOSTS = config("ALLOWED_HOSTS", default=[], cast=clean_allowed_hosts)
+ALLOWED_HOSTS = config(
+    "ALLOWED_HOSTS", default=".localhost, 127.0.0.1, [::1]", cast=clean_allowed_hosts
+)
 
 
 # Database
@@ -34,26 +36,14 @@ ALLOWED_HOSTS = config("ALLOWED_HOSTS", default=[], cast=clean_allowed_hosts)
 
 DATABASES = {
     "default": {
-        "ENGINE": config("DB_ENGINE"),
-        "NAME": config("DB_NAME"),
-        "USER": config("DB_USER"),
-        "PASSWORD": config("DB_PASSWORD"),
-        "HOST": config("DB_HOST"),
-        "PORT": config("DB_PORT"),
+        "ENGINE": config("DB_ENGINE", default="django.db.backends.postgresql"),
+        "NAME": config("DB_NAME", default="grai"),
+        "USER": config("DB_USER", default="grai"),
+        "PASSWORD": config("DB_PASSWORD", default="grai"),
+        "HOST": config("DB_HOST", default="localhost"),
+        "PORT": config("DB_PORT", default=5432),
     }
 }
-
-if os.getenv("GITHUB_WORKFLOW"):
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": "github-actions",
-            "USER": "postgres",
-            "PASSWORD": "postgres",
-            "HOST": "localhost",
-            "PORT": "5432",
-        }
-    }
 
 
 DJANGO_CORE_APPS = [

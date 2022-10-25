@@ -1,12 +1,12 @@
 import abc
-from typing import Any, Dict, Union, Optional, List, Sequence
-from grai_client.schemas.schema import GraiType
-from grai_client.authentication import APIKeyHeader, UserNameHeader, UserTokenHeader
-from grai_client.endpoints.utilities import response_status_check, GraiEncoder
-from multimethod import multimethod
+import json
+from typing import Any, Dict, List, Optional, Sequence, Union
 
 import requests
-import json
+from grai_client.authentication import APIKeyHeader, UserNameHeader, UserTokenHeader
+from grai_client.endpoints.utilities import GraiEncoder, response_status_check
+from grai_client.schemas.schema import GraiType
+from multimethod import multimethod
 
 
 class BaseClient(abc.ABC):

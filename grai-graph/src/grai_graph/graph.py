@@ -1,5 +1,5 @@
 from functools import lru_cache
-from typing import Any, Dict, List, Sequence, Tuple, Type, Union, Optional
+from typing import Any, Dict, List, Optional, Sequence, Tuple, Type, Union
 
 import networkx as nx
 from grai_client.schemas.edge import EdgeTypes

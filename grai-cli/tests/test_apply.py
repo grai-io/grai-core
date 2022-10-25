@@ -3,11 +3,10 @@ import tempfile
 import uuid
 
 import yaml
-from typer.testing import CliRunner
-
 from grai_cli.api.entrypoint import app
 from grai_cli.api.server.endpoints import apply, delete, get_edges, get_nodes
 from grai_cli.utilities.utilities import write_yaml
+from typer.testing import CliRunner
 
 runner = CliRunner()
 

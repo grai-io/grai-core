@@ -1,9 +1,9 @@
-from grai_source_flat_file.loader import get_nodes_and_edges
-from grai_source_flat_file.adapters import adapt_to_client
-from grai_source_flat_file.base import update_server
-import pandas as pd
 import os
 
+import pandas as pd
+from grai_source_flat_file.adapters import adapt_to_client
+from grai_source_flat_file.base import update_server
+from grai_source_flat_file.loader import get_nodes_and_edges
 
 n = 10
 test_data = {"a": range(n), "b": ["t"] * n}

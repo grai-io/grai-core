@@ -1,4 +1,5 @@
-from typing import Any, Union, Literal, List, Optional, TypeVar
+from itertools import chain
+from typing import Any, List, Literal, Optional, TypeVar, Union
 from uuid import UUID
 
 import requests
@@ -7,8 +8,6 @@ from grai_client.endpoints.v1.client import ClientV1
 from grai_client.schemas.edge import EdgeLabels, EdgeV1, NodeID
 from grai_client.schemas.node import NodeLabels, NodeV1
 from multimethod import multimethod
-from itertools import chain
-
 
 T = TypeVar("T", NodeV1, EdgeV1)
 

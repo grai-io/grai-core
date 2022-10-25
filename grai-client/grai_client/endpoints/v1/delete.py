@@ -1,5 +1,5 @@
 import json
-from typing import Any, Dict, Type, List
+from typing import Any, Dict, List, Type
 
 import requests
 from grai_client.endpoints.utilities import GraiEncoder, response_status_check
