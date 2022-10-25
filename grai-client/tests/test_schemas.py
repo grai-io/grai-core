@@ -1,5 +1,6 @@
 import uuid
 from typing import get_args
+
 import pytest
 from grai_client.schemas import edge, node, schema
 
@@ -30,12 +31,12 @@ def make_v1_edge():
             "namespace": "test2",
             "data_source": "tests",
             "source": {
-                'namespace': 'sou',
-                'name': 'rce',
+                "namespace": "sou",
+                "name": "rce",
             },
             "destination": {
-                'namespace': 'desti',
-                'name': 'nation',
+                "namespace": "desti",
+                "name": "nation",
             },
             "is_active": True,
             "metadata": {},
@@ -55,7 +56,9 @@ def make_v1_edge():
 def test_v1_node_typing(test_type, result):
     obj_dict = make_v1_node()
     obj = schema.Schema(entity=obj_dict)
-    assert isinstance(obj.entity, test_type) == result, f"{type(obj)}=={test_type} should be {result}"
+    assert (
+        isinstance(obj.entity, test_type) == result
+    ), f"{type(obj)}=={test_type} should be {result}"
 
 
 @pytest.mark.parametrize(
@@ -70,4 +73,6 @@ def test_v1_node_typing(test_type, result):
 def test_v1_edge_typing(test_type, result):
     obj_dict = make_v1_edge()
     obj = schema.Schema(entity=obj_dict)
-    assert isinstance(obj.entity, test_type) == result, f"{type(obj)}=={test_type} should be {result}"
+    assert (
+        isinstance(obj.entity, test_type) == result
+    ), f"{type(obj)}=={test_type} should be {result}"

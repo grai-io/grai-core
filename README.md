@@ -17,7 +17,9 @@
    <a href="https://github.com/grai-io/grai-core">
     <img src="https://img.shields.io/pypi/pyversions/grai-graph?style=for-the-badge" height=22/>
   </a>  
-  
+  <a href=https://www.ycombinator.com/launches/H8h-grai-open-source-version-control-for-metadata target='_blank'>
+    <img alt=Launch YC: ✨ Grai - Open-source   version control for metadata src=https://www.ycombinator.com/launches/H8h-grai-open-source-version-control-for-metadata/upvote_embed.svg height=22/>
+   </a>
 </p>
 
 ## Introduction

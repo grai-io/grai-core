@@ -2,8 +2,8 @@ version: '3.7'
 
 services:
   the_guide:
-    image: ghcr.io/grai-io/grai-core/grai-server:latest
-    #build: ./app
+    #image: ghcr.io/grai-io/grai-core/grai-server:latest
+    build: ./app
     command: gunicorn --bind 0.0.0.0:8000 the_guide.wsgi
     volumes:
       - ./app/:/usr/src/app/

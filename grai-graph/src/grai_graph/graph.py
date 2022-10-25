@@ -1,5 +1,5 @@
 from functools import lru_cache
-from typing import Any, Dict, List, Sequence, Tuple, Type, Union, Optional
+from typing import Any, Dict, List, Optional, Sequence, Tuple, Type, Union
 
 import networkx as nx
 from grai_client.schemas.edge import EdgeTypes
@@ -28,7 +28,7 @@ class GraphManifest:
 
 
 class Graph:
-    _container_key = 'obj'
+    _container_key = "obj"
 
     def __init__(self, manifest):
         self.manifest: GraphManifest = manifest
@@ -37,26 +37,38 @@ class Graph:
         self.graph.add_edges_from(self.add_edges_from_manifest())
 
     def add_nodes_from_manifest(self):
-        return ((hash(node.spec), {self._container_key: node})
-                for node in self.manifest.nodes)
+        return (
+            (hash(node.spec), {self._container_key: node})
+            for node in self.manifest.nodes
+        )
 
     def add_edges_from_manifest(self):
-        return ((hash(edge.spec.source), hash(edge.spec.destination), {self._container_key: edge})
-                for edge in self.manifest.edges)
+        return (
+            (
+                hash(edge.spec.source),
+                hash(edge.spec.destination),
+                {self._container_key: edge},
+            )
+            for edge in self.manifest.edges
+        )
 
     @lru_cache
     def get_node_id(self, namespace: str, name: str) -> int:
         node = self.manifest.get_node(namespace, name)
         return hash(node.spec)
 
-    def get_node(self,
-                 namespace: Optional[str] = None,
-                 name: Optional[str] = None,
-                 node_id: Optional[int] = None) -> GraiType:
+    def get_node(
+        self,
+        namespace: Optional[str] = None,
+        name: Optional[str] = None,
+        node_id: Optional[int] = None,
+    ) -> GraiType:
         if namespace and name:
             node_id = self.get_node_id(namespace, name)
         elif not node_id:
-            raise Exception(f"`get_node` requires either name & namespace or node_id argument")
+            raise Exception(
+                f"`get_node` requires either name & namespace or node_id argument"
+            )
         return self.graph.nodes.get(node_id)[self._container_key]
 
     def label(self, namespace: str, name: str) -> str:
@@ -66,10 +78,19 @@ class Graph:
         return self.get_node(node_id=node_id).spec.display_name
 
     def relabeled_graph(self):
-        label_map = {hash(node.spec): f"{node.spec.namespace}-{node.spec.name}" for node in self.manifest.nodes}
+        label_map = {
+            hash(node.spec): f"{node.spec.namespace}-{node.spec.name}"
+            for node in self.manifest.nodes
+        }
         nodes = label_map.values()
-        edges = ((hash(edge.spec.source), hash(edge.spec.destination), {self._container_key: edge})
-                for edge in self.manifest.edges)
+        edges = (
+            (
+                hash(edge.spec.source),
+                hash(edge.spec.destination),
+                {self._container_key: edge},
+            )
+            for edge in self.manifest.edges
+        )
         edges = ((label_map[edge[0]], label_map[edge[1]], {}) for edge in edges)
         graph = nx.DiGraph()
         graph.add_nodes_from(nodes)
@@ -79,8 +100,10 @@ class Graph:
 
 @multimethod
 def process_items(vals: Any, version: Any, type: Any) -> List[GraiType]:
-    message = (f"Process items does not have an implementation for "
-               f"{vals=}, {version=}, {type=}")
+    message = (
+        f"Process items does not have an implementation for "
+        f"{vals=}, {version=}, {type=}"
+    )
     raise NotImplementedError(message)
 
 
@@ -105,7 +128,7 @@ def process_sequence(item_iter: Sequence, version: str, type: str) -> List[GraiT
 
 
 def build_graph(nodes: List[Dict], edges: List[Dict], version: str) -> Graph:
-    nodes = process_items(nodes, version, 'Node')
-    edges = process_items(edges, version, 'Edge')
+    nodes = process_items(nodes, version, "Node")
+    edges = process_items(edges, version, "Edge")
     manifest = GraphManifest(nodes, edges)
     return Graph(manifest)

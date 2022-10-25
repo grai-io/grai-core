@@ -31,7 +31,7 @@ class APIKeyHeader(AuthHeader):
 
 
 class UserNameHeader(UserTokenHeader):
-    def __init__(self, username, password, base_url='http://localhost:8000'):
+    def __init__(self, username, password, base_url="http://localhost:8000"):
         self.username = username
         self.password = password
         self.base_url = base_url
