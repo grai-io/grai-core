@@ -8,7 +8,7 @@ jobs:
     services:
       postgres:
         image: postgres:14.3-alpine
-        env:
+#        env:
 #          POSTGRES_USER: grai
 #          POSTGRES_PASSWORD: grai
 #          POSTGRES_DB: grai
