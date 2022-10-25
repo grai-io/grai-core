@@ -24,7 +24,29 @@ jobs:
           sudo apt update
           sudo apt install -y postgresql-client
       - run: pg_isready -h 127.0.0.1 -p 5432 -d grai -U grai
-#
+    
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.10
+
+      - name: Install package
+        working-directory: "grai-server/app"
+        run: |
+          pip install pytest pytest-django
+          pip install .
+  
+      - name: Tests
+        env:
+          DEBUG: False
+          DB_HOST: '127.0.0.1'
+          DB_PORT: '5432'
+          DB_USER: grai
+          DB_NAME: grai
+          DB_PASSWORD: grai
+        working-directory: "grai-server/app"
+        run: |
+          python manage.py migrate --noinput
+          pytest
 #jobs:
 #  # Label of the container job
 #  container-job:
