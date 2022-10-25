@@ -1,0 +1,72 @@
+name: CI Workflow for Grai Server
+on:
+  push:
+    paths:
+    - "grai-server/**"
+
+env:
+  py_ver: "3.10"
+  poetry_ver: "1.2.2"
+  
+jobs:
+  linting:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out Git repository
+      uses: actions/checkout@v3
+
+    - name: Install Python
+      id: setup-python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "${{ env.py_ver }}"
+
+    - run: pip install black isort
+
+    - working-directory: "grai-server/app"
+      run: |
+        black . --check
+        isort . --profile black
+
+  tests:
+    needs: linting
+    runs-on: ubuntu-latest
+    defaults:
+        run:
+          working-directory: ./grai-server/app
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: grai
+          POSTGRES_PASSWORD: grai
+          POSTGRES_DB: grai
+        ports:
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+      
+    steps:
+      - uses: actions/checkout@v3
+    
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "${{ env.py_ver }}"
+
+      - name: Install package
+        run: |
+          pip install pytest pytest-django
+          pip install .
+  
+      - name: Tests
+        env:
+          DEBUG: False
+          DB_HOST: '127.0.0.1'
+          DB_PORT: '5432'
+          DB_USER: grai
+          DB_NAME: grai
+          DB_PASSWORD: grai
+        run: |
+          python manage.py migrate --noinput
+          pytest

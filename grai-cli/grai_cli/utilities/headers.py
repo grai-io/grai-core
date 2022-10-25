@@ -7,15 +7,6 @@ from grai_cli.settings.config import config
 
 json_headers = {"accept": "application/json", "Content-Type": "application/json"}
 
-server_configs = config.get(
-    {
-        "server": {
-            "host": str,
-            "port": str,
-        }
-    }
-)
-
 
 def get_jwt(self, username: str, password: str) -> Dict:
     response = requests.post(

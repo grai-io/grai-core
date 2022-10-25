@@ -7,8 +7,10 @@ from typer.testing import CliRunner
 
 from grai_cli.api.entrypoint import app
 from grai_cli.api.server.endpoints import apply, delete, get_edges, get_nodes
+from grai_cli.utilities.test import prep_tests
 from grai_cli.utilities.utilities import write_yaml
 
+prep_tests()
 runner = CliRunner()
 
 
