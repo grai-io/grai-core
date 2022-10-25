@@ -4,7 +4,6 @@ from pathlib import Path
 from decouple import config
 from django.core.management.utils import get_random_secret_key
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 MEDIA_ROOT = str(BASE_DIR.joinpath("media"))
 STATIC_ROOT = str(BASE_DIR.joinpath("staticfiles"))
