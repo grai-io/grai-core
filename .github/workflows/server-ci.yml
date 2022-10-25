@@ -8,10 +8,10 @@ jobs:
     services:
       postgres:
         image: postgres:14.3-alpine
-#        env:
-#          POSTGRES_USER: grai
-#          POSTGRES_PASSWORD: grai
-#          POSTGRES_DB: grai
+        env:
+          POSTGRES_USER: grai
+          POSTGRES_PASSWORD: grai
+          POSTGRES_DB: grai
         ports:
           - 5432:5432
         # needed because the postgres container does not provide a healthcheck
@@ -27,7 +27,7 @@ jobs:
       - run: |
           sudo apt update
           sudo apt install -y postgresql-client
-      - run: pg_isready -h 127.0.0.1 -p 5432 # -d grai -U grai
+      - run: pg_isready -h 127.0.0.1 -p 5432 -d grai -U grai
 #
 #jobs:
 #  # Label of the container job
