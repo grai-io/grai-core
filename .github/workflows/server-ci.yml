@@ -1,9 +1,5 @@
-name: CI Testing for the Grai Server
-on:
-  push:
-    paths:
-    - grai-server/**
-    - .github
+name: CI Workflow for Grai Server
+on: push
 
 env:
   py_ver: "3.10"
@@ -35,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
         run:
-          working-directory: "./grai-server/app"
+          working-directory: ./grai-server/app
     services:
       postgres:
         image: postgres:latest
