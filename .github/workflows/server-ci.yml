@@ -1,8 +1,8 @@
 name: CI Testing for the Grai Server
 on:
-  push:
-    paths:
-    - "grai-server/**"
+#  push:
+#    paths:
+#    - "grai-server/**"
 
 env:
   py_ver: "3.10"
