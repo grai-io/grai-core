@@ -1,13 +1,15 @@
-name: PostgreSQL service example
-on: push
-
+name: CI Testing for the Grai Server
+on:
+  push:
+    paths:
+    - "grai-server/**"
 
 env:
   py_ver: "3.10"
   poetry_ver: "1.2.2"
   
 jobs:
-  lint-grai-server:
+  linting:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,10 +28,13 @@ jobs:
       run: |
         black . --check
         isort . --profile black
-  test-grai-server:
-    needs: lint-grai-server:
-    runs-on: ubuntu-latest
 
+  tests:
+    needs: linting
+    runs-on: ubuntu-latest
+    defaults:
+        run:
+          working-directory: "./grai-server/app"
     services:
       postgres:
         image: postgres:latest
@@ -50,7 +55,6 @@ jobs:
           python-version: "${{ env.py_ver }}"
 
       - name: Install package
-        working-directory: "grai-server/app"
         run: |
           pip install pytest pytest-django
           pip install .
@@ -63,7 +67,6 @@ jobs:
           DB_USER: grai
           DB_NAME: grai
           DB_PASSWORD: grai
-        working-directory: "grai-server/app"
         run: |
           python manage.py migrate --noinput
           pytest
