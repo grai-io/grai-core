@@ -3,6 +3,7 @@ on:
   push:
     paths:
     - "grai-server/**"
+    - ".github/**"
 
 env:
   py_ver: "3.10"
