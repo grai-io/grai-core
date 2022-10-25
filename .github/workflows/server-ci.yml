@@ -1,5 +1,8 @@
 name: CI Workflow for Grai Server
-on: push
+on:
+  push:
+    paths:
+    - "grai-server/**"
 
 env:
   py_ver: "3.10"
