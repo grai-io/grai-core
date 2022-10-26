@@ -2,16 +2,19 @@ name: CI Workflow for Grai Server
 on:
   push:
     paths:
-    - "grai-server/**"
+    - "grai-cli/**"
 
 env:
   py_ver: "3.10"
   poetry_ver: "1.2.2"
+  project_dir: "./grai-cli"
   
 jobs:
-  linting:
+  lint-cli:
     runs-on: ubuntu-latest
-
+    defaults:
+        run:
+          working-directory: ${{ env.project_dir }}
     steps:
     - name: Check out Git repository
       uses: actions/checkout@v3
@@ -24,13 +27,13 @@ jobs:
 
     - run: pip install black isort
 
-    - working-directory: "grai-server/app"
+    - working-directory: ${{ env.project_dir }}
       run: |
         black . --check
         isort . --profile black
 
-  tests:
-    needs: linting
+  tests-cli:
+    needs: lint-cli
     runs-on: ubuntu-latest
     defaults:
         run:
@@ -54,12 +57,11 @@ jobs:
         with:
           python-version: "${{ env.py_ver }}"
 
-      - name: Install package
+      - name: Install DB Deps
         run: |
-          pip install pytest pytest-django
           pip install .
   
-      - name: Tests
+      - name: Prep
         env:
           DEBUG: False
           DB_HOST: '127.0.0.1'
@@ -69,4 +71,13 @@ jobs:
           DB_PASSWORD: grai
         run: |
           python manage.py migrate --noinput
-          pytest
+
+      - name: Install Package
+        working-directory: ${{ env.project_dir }}
+        run: |
+          pip install pytest
+          pip install .
+
+      - name: Run Tests
+        working-directory: ${{ env.project_dir }}
+        run: pytest

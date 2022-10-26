@@ -9,7 +9,7 @@ env:
   poetry_ver: "1.2.2"
   
 jobs:
-  linting:
+  lint-server:
     runs-on: ubuntu-latest
 
     steps:
@@ -29,8 +29,8 @@ jobs:
         black . --check
         isort . --profile black
 
-  tests:
-    needs: linting
+  tests-server:
+    needs: lint-server
     runs-on: ubuntu-latest
     defaults:
         run:
