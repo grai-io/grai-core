@@ -49,28 +49,21 @@ jobs:
           - 5432:5432
         # needed because the postgres container does not provide a healthcheck
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-      
+      the_guide:
+        image: ghcr.io/grai-io/grai-core/grai-server:latest
+        env:
+          DB_USER: grai
+          DB_PASSWORD: grai
+          DB_NAME: grai
+        ports:
+          - 8000:8000
+        command: gunicorn --bind 0.0.0.0:8000 the_guide.wsgi
     steps:
       - uses: actions/checkout@v3
     
       - uses: actions/setup-python@v4
         with:
           python-version: "${{ env.py_ver }}"
-
-      - name: Install DB Deps
-        run: |
-          pip install .
-  
-      - name: Prep
-        env:
-          DEBUG: False
-          DB_HOST: '127.0.0.1'
-          DB_PORT: '5432'
-          DB_USER: grai
-          DB_NAME: grai
-          DB_PASSWORD: grai
-        run: |
-          python manage.py migrate --noinput
 
       - name: Install Package
         working-directory: ${{ env.project_dir }}
