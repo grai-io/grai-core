@@ -1,4 +1,5 @@
 import typer
+
 from grai_cli.api.entrypoint import app
 
 config_app = typer.Typer(

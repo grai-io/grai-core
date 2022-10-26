@@ -1,5 +1,6 @@
-import shelve
 import os
+import shelve
+
 from grai_cli.settings.config import config
 
 
@@ -18,15 +19,14 @@ class GraiCache:
 
     def startup(self):
         with self.cache as cache:
-            if 'has_init' in cache:
-                self.has_init = cache['has_init']
+            if "has_init" in cache:
+                self.has_init = cache["has_init"]
 
     def set(self, key, value):
         super().__setattr__(key, value)
 
         with self.cache as cache:
             cache[key] = value
-
 
 
 cache = GraiCache()

@@ -1,8 +1,9 @@
 from typing import Dict
 
 import requests
-from grai_cli.settings.config import config
 from grai_client.endpoints.client import BaseClient
+
+from grai_cli.settings.config import config
 
 json_headers = {"accept": "application/json", "Content-Type": "application/json"}
 

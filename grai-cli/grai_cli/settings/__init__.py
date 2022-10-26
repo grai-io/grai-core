@@ -1,1 +1,1 @@
-from grai_cli.settings import config, cache
+from grai_cli.settings import cache, config
