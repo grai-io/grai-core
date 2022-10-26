@@ -1,4 +1,4 @@
-name: CI Workflow for Grai Server
+name: CI Workflow for Grai CLI
 on:
   push:
     paths:
