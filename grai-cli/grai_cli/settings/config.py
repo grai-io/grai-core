@@ -50,6 +50,10 @@ class GraiLazyConfig(LazyConfig):
             base = base[key]
         return base
 
+    @property
+    def has_configfile(self):
+        return os.path.exists(self.config_filename)
+
 
 def _get_config_template() -> Dict:
     ##########################
