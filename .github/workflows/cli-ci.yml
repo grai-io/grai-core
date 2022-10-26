@@ -7,7 +7,7 @@ on:
 env:
   py_ver: "3.10"
   poetry_ver: "1.2.2"
-  project_dir: "./grai-cli"
+  project_dir: "grai-cli"
   
 jobs:
   lint-cli:
@@ -27,8 +27,7 @@ jobs:
 
     - run: pip install black isort
 
-    - working-directory: ${{ env.project_dir }}
-      run: |
+    - run: |
         black . --check
         isort . --profile black
 
@@ -37,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
         run:
-          working-directory: ./grai-server/app
+          working-directory: ${{ env.project_dir }}
     services:
       postgres:
         image: postgres:latest
@@ -65,12 +64,8 @@ jobs:
         with:
           python-version: "${{ env.py_ver }}"
 
-      - name: Install Package
-        working-directory: ${{ env.project_dir }}
-        run: |
+      - run: |
           pip install pytest
           pip install .
 
-      - name: Run Tests
-        working-directory: ${{ env.project_dir }}
-        run: pytest
+      - run: pytest
