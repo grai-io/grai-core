@@ -54,6 +54,8 @@ jobs:
           DB_USER: grai
           DB_PASSWORD: grai
           DB_NAME: grai
+          DB_PORT: "8000"
+          DB_HOST: "127.0.0.1"
         ports:
           - 8000:8000
     steps:
