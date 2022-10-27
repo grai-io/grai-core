@@ -5,6 +5,7 @@ from rest_framework.authentication import (
     SessionAuthentication,
     TokenAuthentication,
 )
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -18,11 +19,12 @@ from lineage.serializers import EdgeSerializer, NodeSerializer
 
 
 class NodeViewSet(ModelViewSet):
-    # authentication_classes = [
-    #     SessionAuthentication,
-    #     TokenAuthentication,
-    #     BasicAuthentication,
-    # ]
+    authentication_classes = [
+        SessionAuthentication,
+        TokenAuthentication,
+        BasicAuthentication,
+        JWTAuthentication,
+    ]
     permission_classes = [HasAPIKey | IsAuthenticated]
 
     serializer_class = NodeSerializer
@@ -60,11 +62,12 @@ class NodeViewSet(ModelViewSet):
 
 
 class EdgeViewSet(ModelViewSet):
-    # authentication_classes = [
-    #     SessionAuthentication,
-    #     TokenAuthentication,
-    #     BasicAuthentication,
-    # ]
+    authentication_classes = [
+        SessionAuthentication,
+        TokenAuthentication,
+        BasicAuthentication,
+        JWTAuthentication,
+    ]
     permission_classes = [HasAPIKey | IsAuthenticated]
 
     serializer_class = EdgeSerializer
