@@ -4,7 +4,7 @@
 APP=grai-server_the_guide_1
 ECR_REPOSITORY=grai-io/the_guide
 ECR_REGISTRY=627169567483.dkr.ecr.us-east-2.amazonaws.com
-GHCR_REPOSITORY=ghcr.io/grai-io/grai-server
+GHCR_REPOSITORY=ghcr.io/grai-io/grai-core/grai-server
 APP_VERSION:=`cd app; poetry version -s`
 
 migrations:  ## Run migrations
@@ -36,11 +36,10 @@ build_ghcr:  ## Build image and upload to ghcr
 	#echo $CR_PAT | docker login ghcr.io -u ieaves --password-stdin
 	docker buildx build --platform linux/amd64,linux/arm64 -t $(GHCR_REPOSITORY):latest app/ --output=type=registry,dest=$(GHCR_REPOSITORY)
 	docker push $(GHCR_REPOSITORY):latest
-	docker buildx build --platform linux/amd64,linux/arm64 -t ghcr.io/grai-io/grai-core/grai-server:$(APP_VERSION) app/ --output=type=registry,dest=ghcr.io/grai-io/grai-core/grai-server:0.1.1
+	docker buildx build --platform linux/amd64,linux/arm64 -t ghcr.io/grai-io/grai-core/grai-server:$(APP_VERSION) app/ --output=type=registry,dest=ghcr.io/grai-io/grai-core/grai-server:$(APP_VERSION)
 	docker buildx build --platform linux/amd64,linux/arm64 -t ghcr.io/grai-io/grai-core/grai-server:latest app/ --output=type=registry,dest=ghcr.io/grai-io/grai-core/grai-server:latest
+
 #---------------------------------------------
 
-test:
-	@echo $(APP_VERSION)
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
