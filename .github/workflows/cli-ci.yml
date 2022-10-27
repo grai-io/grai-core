@@ -56,16 +56,15 @@ jobs:
           DB_NAME: grai
         ports:
           - 8000:8000
-        command: gunicorn --bind 0.0.0.0:8000 the_guide.wsgi
     steps:
     - uses: actions/checkout@v3
     
-    # - uses: actions/setup-python@v4
-    #   with:
-    #     python-version: "${{ env.py_ver }}"
+    - uses: actions/setup-python@v4
+      with:
+        python-version: "${{ env.py_ver }}"
 
-    # - run: |
-    #     pip install pytest
-    #     pip install .
+    - run: |
+        pip install pytest
+        pip install .
 
-    # - run: pytest
+    - run: pytest
