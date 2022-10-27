@@ -1,5 +1,5 @@
 # pull official base image
-FROM python:3.10.5-slim-buster
+FROM python:3.10.5-slim-buster AS build
 
 WORKDIR /usr/src/app
 ENV PYTHONDONTWRITEBYTECODE="1" \
@@ -24,7 +24,8 @@ RUN poetry config virtualenvs.create false  \
     && rm -rf ~/.cache/pypoetry/cache \
     && rm -rf ~/.cache/pypoetry/artifacts
 
+RUN chmod +x /usr/src/app/entrypoint.sh
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
+CMD gunicorn --bind 0.0.0.0:8000 the_guide.wsgi
 
-# TODO: Switch to multistage builds
-# https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds
+
