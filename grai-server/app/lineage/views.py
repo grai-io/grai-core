@@ -18,11 +18,11 @@ from lineage.serializers import EdgeSerializer, NodeSerializer
 
 
 class NodeViewSet(ModelViewSet):
-    authentication_classes = [
-        SessionAuthentication,
-        TokenAuthentication,
-        BasicAuthentication,
-    ]
+    # authentication_classes = [
+    #     SessionAuthentication,
+    #     TokenAuthentication,
+    #     BasicAuthentication,
+    # ]
     permission_classes = [HasAPIKey | IsAuthenticated]
 
     serializer_class = NodeSerializer
@@ -60,11 +60,11 @@ class NodeViewSet(ModelViewSet):
 
 
 class EdgeViewSet(ModelViewSet):
-    authentication_classes = [
-        SessionAuthentication,
-        TokenAuthentication,
-        BasicAuthentication,
-    ]
+    # authentication_classes = [
+    #     SessionAuthentication,
+    #     TokenAuthentication,
+    #     BasicAuthentication,
+    # ]
     permission_classes = [HasAPIKey | IsAuthenticated]
 
     serializer_class = EdgeSerializer
