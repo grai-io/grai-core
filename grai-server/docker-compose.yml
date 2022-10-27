@@ -15,6 +15,12 @@ services:
       - the_guide
     env_file:
       - ./app/env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 1m30s
+      timeout: 3s
+      retries: 3
+      start_period: 40s
   db:
     image: postgres:14.3-alpine
     volumes:

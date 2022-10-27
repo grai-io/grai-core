@@ -1,17 +1,19 @@
-from api.schema import schema
 from django.contrib import admin
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from strawberry.django.views import AsyncGraphQLView
 
+from api.schema import schema
+
 spectacular_settings = {
     "SCHEMA_PATH_PREFIX": "/api/v1/",
 }
 
+
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/v1/health/", include("health.urls"), name="health"),
+    # path("api/v1/health/", include("health.urls"), name="health"),
     path(
         "api/v1/auth/jwttoken/", TokenObtainPairView.as_view(), name="token_obtain_pair"
     ),
@@ -36,4 +38,5 @@ urlpatterns = [
         ),
         name="swagger-ui",
     ),
+    path("health/", include("health_check.urls"), name="health"),
 ]

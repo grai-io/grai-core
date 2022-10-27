@@ -17,10 +17,11 @@ social-auth-app-django = "^5.0.0"
 djangorestframework-simplejwt = {extras = ["crypto"], version = "^5.2.0"}
 python-decouple = "^3.6"
 psycopg2 = "^2.9.3"
-drf-spectacular = "^0.22.1"
 django-extensions = "^3.2"
 djangorestframework-api-key = "^2"
 strawberry-django-plus = "^1.28.4"
+drf-spectacular = "^0.24.2"
+django-health-check = "^3.17.0"
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.10.1"

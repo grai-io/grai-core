@@ -1,9 +1,10 @@
 from typing import List
 
-from lineage.models import Edge, Node
 from strawberry.scalars import JSON
 from strawberry_django_plus import gql
 from strawberry_django_plus.gql import auto
+
+from lineage.models import Edge, Node
 from users.models import User
 
 

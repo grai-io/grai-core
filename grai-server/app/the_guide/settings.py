@@ -66,6 +66,7 @@ THIRD_PARTY_APPS = [
     "django_extensions",
     "rest_framework.authtoken",
     "rest_framework_api_key",
+    "health_check",
 ]
 
 THE_GUIDE_APPS = [
