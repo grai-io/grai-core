@@ -25,6 +25,7 @@ class NodeViewSet(ModelViewSet):
         BasicAuthentication,
         JWTAuthentication,
     ]
+    
     permission_classes = [HasAPIKey | IsAuthenticated]
 
     serializer_class = NodeSerializer
