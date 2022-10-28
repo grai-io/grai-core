@@ -1,7 +1,11 @@
 from django.contrib import admin
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+    TokenVerifyView,
+)
 from strawberry.django.views import AsyncGraphQLView
 
 from api.schema import schema
@@ -22,6 +26,7 @@ urlpatterns = [
         TokenRefreshView.as_view(),
         name="token_refresh",
     ),
+    path("api/v1/auth/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
     path("api/v1/auth/", include("auth.urls"), name="auth"),
     path("api/v1/lineage/", include("lineage.urls"), name="lineage"),
     # path("graphql/", AsyncGraphQLView.as_view(schema=schema)),  # Double check authentication on this one
