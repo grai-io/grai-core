@@ -1,19 +1,11 @@
 from typing import Dict
 
 import requests
-from grai_cli.settings.config import config
 from grai_client.endpoints.client import BaseClient
 
-json_headers = {"accept": "application/json", "Content-Type": "application/json"}
+from grai_cli.settings.config import config
 
-server_configs = config.get(
-    {
-        "server": {
-            "host": str,
-            "port": str,
-        }
-    }
-)
+json_headers = {"accept": "application/json", "Content-Type": "application/json"}
 
 
 def get_jwt(self, username: str, password: str) -> Dict:

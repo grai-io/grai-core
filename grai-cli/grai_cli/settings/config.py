@@ -8,14 +8,14 @@ from confuse import (
     MappingValues,
     OneOf,
     Optional,
+    String,
     YamlSource,
 )
 
 
 class ConfuseParameters:
-    def __init__(self, template, default_values, redacted_fields):
+    def __init__(self, template, redacted_fields):
         self.template = template
-        self.default_values = default_values
         self.redacted_fields = redacted_fields
 
 
@@ -28,12 +28,13 @@ def apply_redactions(config_to_redact: LazyConfig, redact_dict: dict):
 
 
 class GraiLazyConfig(LazyConfig):
-    def __init__(self, name: str, parameters: ConfuseParameters):
-        super().__init__(name, __name__)
+    def __init__(
+        self, appname: str, parameters: ConfuseParameters, modname: str = None
+    ):
+        super().__init__(appname, modname=modname)
 
         self.parameters = parameters
         self.set_env()
-        self.set_args(self.parameters.default_values, dots=True)
         apply_redactions(self, self.parameters.redacted_fields)
 
     @property
@@ -49,14 +50,18 @@ class GraiLazyConfig(LazyConfig):
             base = base[key]
         return base
 
+    @property
+    def has_configfile(self):
+        return os.path.exists(self.config_filename)
+
 
 def _get_config_template() -> Dict:
     ##########################
 
     api_versions = Choice(choices={"v1"})
     server_template = {
-        "host": str,
-        "port": str,
+        "host": String(default="localhost"),
+        "port": String(default="8000"),
         "api_version": Optional(api_versions, default="v1", allow_missing=True),
     }
 
@@ -88,7 +93,7 @@ def _get_config_template() -> Dict:
 
     ###########################
 
-    context_template = {"namespace": str}
+    context_template = {"namespace": String(default="default")}
 
     ###########################
 
@@ -101,12 +106,6 @@ def _get_config_template() -> Dict:
 
 
 def get_config_parameters():
-    default_values = {
-        # "server.host": "localhost",
-        # "server.port": "8000",
-        # "context.namespace": "default",
-    }
-
     redacted_fields = {
         "auth.password": True,
         "auth.api_key": True,
@@ -114,7 +113,7 @@ def get_config_parameters():
 
     template = _get_config_template()
 
-    return ConfuseParameters(template, default_values, redacted_fields)
+    return ConfuseParameters(template, redacted_fields)
 
 
-config = GraiLazyConfig("grai", get_config_parameters())
+config = GraiLazyConfig("grai", get_config_parameters(), modname="grai_cli")

@@ -1,16 +1,18 @@
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, render
-from lineage.models import Edge, Node
-from lineage.serializers import EdgeSerializer, NodeSerializer
 from rest_framework.authentication import (
     BasicAuthentication,
     SessionAuthentication,
     TokenAuthentication,
 )
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_api_key.permissions import HasAPIKey
+
+from lineage.models import Edge, Node
+from lineage.serializers import EdgeSerializer, NodeSerializer
 
 # Creating the user id automatically
 # https://stackoverflow.com/questions/30582263/setting-user-id-automatically-on-post-in-django-rest
@@ -21,7 +23,9 @@ class NodeViewSet(ModelViewSet):
         SessionAuthentication,
         TokenAuthentication,
         BasicAuthentication,
+        JWTAuthentication,
     ]
+
     permission_classes = [HasAPIKey | IsAuthenticated]
 
     serializer_class = NodeSerializer
@@ -63,6 +67,7 @@ class EdgeViewSet(ModelViewSet):
         SessionAuthentication,
         TokenAuthentication,
         BasicAuthentication,
+        JWTAuthentication,
     ]
     permission_classes = [HasAPIKey | IsAuthenticated]
 
