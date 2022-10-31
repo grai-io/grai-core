@@ -35,4 +35,6 @@ class TelemetryConfig(AppConfig):
         posthog.host = "https://app.posthog.com"
         posthog.disabled = os.environ.get("DISABLE_TELEMETRY", False)
 
-        posthog.capture(orgname, event="Server deployment", groups={"package": "grai-server"})
+        posthog.capture(
+            orgname, event="Server deployment", groups={"package": "grai-server"}
+        )
