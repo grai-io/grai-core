@@ -11,7 +11,7 @@ def get_file_name(file_name: str) -> str:
 
 
 def load_file(file_name: str) -> pd.DataFrame:
-    assert file_name.endswith(".csv")
+    assert file_name.endswith(".csv"), file_name
     return pd.read_csv(file_name)
 
 
