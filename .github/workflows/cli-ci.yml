@@ -3,7 +3,9 @@ on:
   push:
     paths:
     - "grai-cli/**"
-
+  pull_request:
+    paths: 
+    - 'grai-cli/**'
 env:
   py_ver: "3.10"
   poetry_ver: "1.2.2"
