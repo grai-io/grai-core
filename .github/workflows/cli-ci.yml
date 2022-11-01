@@ -60,12 +60,12 @@ jobs:
           DB_HOST: "localhost"
         ports:
           - 8000:8000
-        options: >-
-          --health-cmd "curl -f http://localhost:8080/health"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 10
-          --health-start-period 30s
+        options: --health-cmd "curl -f http://localhost:8080/health" --health-interval 2s --health-timeout 5s --health-retries 20 --health-start-period 20s
+          # --health-cmd "curl -f http://localhost:8080/health"
+          # --health-interval 10s
+          # --health-timeout 5s
+          # --health-retries 10
+          # --health-start-period 30s
     steps:
     - uses: actions/checkout@v3
     
