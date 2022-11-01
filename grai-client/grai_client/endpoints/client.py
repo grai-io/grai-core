@@ -26,7 +26,7 @@ class BaseClient(abc.ABC):
             raise Exception(f"Server at {self.url} is not responding.")
 
     def check_server_status(self):
-        resp = requests.get(f'{self.url}/health/')
+        resp = requests.get(f"{self.url}/health/")
         return resp.status_code == 200
 
     def build_url(self, endpoint: str) -> str:
