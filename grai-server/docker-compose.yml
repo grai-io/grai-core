@@ -16,11 +16,11 @@ services:
     env_file:
       - ./app/env
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      test: "curl -f -v -X GET -H 'Accept: application/json' http://localhost:8000/health/"
       interval: 2s
       timeout: 5s
-      retries: 25
-      start_period: 10s
+      retries: 10
+      start_period: 30s
   db:
     image: postgres:14.3-alpine
     volumes:
@@ -34,10 +34,10 @@ services:
     ports:
       - 5432:5432
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U grai"]
+      test: "pg_isready -U grai"
       interval: 2s
       timeout: 2s
-      retries: 20
+      retries: 15
 
 networks:
   the_guide:
