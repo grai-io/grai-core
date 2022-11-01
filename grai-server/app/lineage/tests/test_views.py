@@ -7,10 +7,11 @@ import pytest
 from django.test import Client
 from django.test.client import RequestFactory
 from django.urls import reverse
-from lineage.models import Edge, Node
-from lineage.urls import app_name
 from rest_framework.test import APIClient, force_authenticate
 from rest_framework_api_key.models import APIKey
+
+from lineage.models import Edge, Node
+from lineage.urls import app_name
 from users.models import User
 
 

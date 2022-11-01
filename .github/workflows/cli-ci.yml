@@ -78,8 +78,4 @@ jobs:
         pip install pytest
         pip install .
 
-    - run: "curl -f http://the_guide:8000/health/"
     - run: pytest
-      env:
-        GRAI_HOST: the_guide
-        GRAI_PORT: "8000"

@@ -1,6 +1,7 @@
+from strawberry_django_plus import gql
+
 from api.types import EdgeType, NodeType, UserType
 from lineage.models import Edge, Node
-from strawberry_django_plus import gql
 
 
 @gql.django.input(Node)
