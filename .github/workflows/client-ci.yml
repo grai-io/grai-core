@@ -78,5 +78,5 @@ jobs:
 
     - run: pytest
       env:
-        GRAI_HOST: the_guide
+        GRAI_HOST: localhost
         GRAI_PORT: "8000"
