@@ -5,8 +5,7 @@ from pydantic import Field, validator
 from typing_extensions import Annotated
 
 from grai_client.schemas.node import NodeID
-from grai_client.schemas.utilities import (BaseSpec, GraiBaseModel,
-                                           PlaceHolderSchema)
+from grai_client.schemas.utilities import BaseSpec, GraiBaseModel, PlaceHolderSchema
 
 
 class BaseEdge(GraiBaseModel):

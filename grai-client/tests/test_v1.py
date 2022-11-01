@@ -5,8 +5,11 @@ from grai_client.endpoints.v1.client import ClientV1
 from grai_client.schemas.edge import EdgeV1
 from grai_client.schemas.node import NodeV1
 from grai_client.schemas.schema import Schema
-from grai_client.testing.schema import (mock_v1_edge, mock_v1_edge_and_nodes,
-                                        mock_v1_node)
+from grai_client.testing.schema import (
+    mock_v1_edge,
+    mock_v1_edge_and_nodes,
+    mock_v1_node,
+)
 
 client = ClientV1("localhost", "8000")
 client.set_authentication_headers(username="null@grai.io", password="super_secret")

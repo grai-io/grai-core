@@ -5,8 +5,7 @@ from typing import Any, Dict, List, Optional, Sequence, Union
 import requests
 from multimethod import multimethod
 
-from grai_client.authentication import (APIKeyHeader, UserNameHeader,
-                                        UserTokenHeader)
+from grai_client.authentication import APIKeyHeader, UserNameHeader, UserTokenHeader
 from grai_client.endpoints.utilities import GraiEncoder, response_status_check
 from grai_client.schemas.schema import GraiType
 

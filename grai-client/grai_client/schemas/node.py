@@ -4,8 +4,7 @@ from uuid import UUID
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated
 
-from grai_client.schemas.utilities import (BaseSpec, GraiBaseModel,
-                                           PlaceHolderSchema)
+from grai_client.schemas.utilities import BaseSpec, GraiBaseModel, PlaceHolderSchema
 
 
 class BaseNode(GraiBaseModel):
