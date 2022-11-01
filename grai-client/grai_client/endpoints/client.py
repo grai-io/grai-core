@@ -22,6 +22,13 @@ class BaseClient(abc.ABC):
         self.api = f"{self.url}"
         self._auth_headers = None
 
+        if not self.check_server_status():
+            raise Exception(f"Server at {self.url} is not responding.")
+
+    def check_server_status(self):
+        resp = requests.get(f'{self.url}/health/')
+        return resp.status_code == 200
+
     def build_url(self, endpoint: str) -> str:
         return f"{self.api}{endpoint}"
 

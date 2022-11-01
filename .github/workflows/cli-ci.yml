@@ -50,7 +50,7 @@ jobs:
           - 5432:5432
         # needed because the postgres container does not provide a healthcheck
         options: --health-cmd pg_isready --health-interval 2s --health-timeout 5s --health-retries 15
-      the-guide:
+      the_guide:
         image: ghcr.io/grai-io/grai-core/grai-server:latest
         env:
           DB_USER: grai
@@ -76,7 +76,8 @@ jobs:
         pip install pytest
         pip install .
 
+    - run: "curl -f http://the_guide:8000/health/"
     - run: pytest
       env:
-        GRAI_HOST: localhost
+        GRAI_HOST: the_guide
         GRAI_PORT: "8000"
