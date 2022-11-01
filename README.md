@@ -12,11 +12,11 @@
   </a>
    <a href="https://github.com/grai-io/grai-core">
     <img src="https://img.shields.io/github/languages/top/grai-io/grai-core?style=flat-square" height=22/>
-  </a>  
+  </a>
   </a>
    <a href="https://github.com/grai-io/grai-core">
     <img src="https://img.shields.io/pypi/pyversions/grai-graph?style=for-the-badge" height=22/>
-  </a>  
+  </a>
   <a href=https://www.ycombinator.com/launches/H8h-grai-open-source-version-control-for-metadata target='_blank'>
     <img alt=Launch YC: ✨ Grai - Open-source   version control for metadata src=https://www.ycombinator.com/launches/H8h-grai-open-source-version-control-for-metadata/upvote_embed.svg height=22/>
    </a>
@@ -24,14 +24,14 @@
 
 ## Introduction
 
-**Data lineage made simple.** 
-Grai makes it easy to understand how your data relates together across databases, warehouses, APIs and dashboards. 
+**Data lineage made simple.**
+Grai makes it easy to understand how your data relates together across databases, warehouses, APIs and dashboards.
 
 
 * **Pre-built connectors.** Automatically synchronize lineage from across the stack so your metadata is never out of date.
 * **Centralized data tests.** Write data validation tests which run whenever upstream data sources change (coming soon).
 * **Integrated with git.** Run data validation tasks as part of your CI/CD process to test changes everywhere you data is used. No coordination meetings required.
-* **Your data, your cloud.** Grai is fully open sourced and self hosted. You maintain full control over your data and hosting environment. 
+* **Your data, your cloud.** Grai is fully open sourced and self hosted. You maintain full control over your data and hosting environment.
 
 
 ## Quick Start
@@ -74,7 +74,7 @@ pip install grai-cli
 
 #### Client Library
 
-Provides programmatic access to the data lineage server. 
+Provides programmatic access to the data lineage server.
 
 ```
 pip install grai-client
@@ -108,10 +108,3 @@ pip install grai-source-dbt
 More to come here but if you're interested in contributing or just want to chat, drop an email to hello@grai.io.
 
 Or join our [discord](https://discord.gg/eZfYjfWWwB)!
-
-
-
-
-
-
-

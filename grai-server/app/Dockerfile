@@ -28,5 +28,3 @@ RUN poetry config virtualenvs.create false  \
 RUN chmod +x /usr/src/app/entrypoint.sh
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
 CMD gunicorn --bind 0.0.0.0:8000 the_guide.wsgi
-
-
