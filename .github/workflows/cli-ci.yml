@@ -51,16 +51,16 @@ jobs:
         # needed because the postgres container does not provide a healthcheck
         options: --health-cmd pg_isready --health-interval 2s --health-timeout 5s --health-retries 15
       the-guide:
-        image: ghcr.io/grai-io/grai-core/grai-server
+        image: ghcr.io/grai-io/grai-core/grai-server:latest
         env:
           DB_USER: grai
           DB_PASSWORD: grai
           DB_NAME: grai
-          DB_PORT: 5432
-          DB_HOST: localhost
+          # DB_PORT: 5432
+          # DB_HOST: localhost
         ports:
           - 8000:8000
-        options: --health-cmd 'curl http://localhost:8000/health/'
+        #options: --health-cmd 'curl http://localhost:8000/health/'
         # options: >-
         #    --health-cmd curl http://localhost:8000/health/
         #    --health-interval 2s
