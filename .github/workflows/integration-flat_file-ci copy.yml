@@ -1,18 +1,19 @@
-name: CI Workflow for Grai CLI
+name: CI Workflow for the Grai flat file integration
 on:
   push:
     paths:
-    - "grai-cli/**"
+    - "grai-integration/source-flat-file/**"
   pull_request:
     paths: 
-    - 'grai-cli/**'
+    - "grai-integration/source-flat-file/**"
+
 env:
   py_ver: "3.10"
   poetry_ver: "1.2.2"
-  project_dir: "grai-cli"
+  project_dir: "grai-integration/source-flat-file"
   
 jobs:
-  lint-cli:
+  lint-integration-flat_file:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -33,8 +34,8 @@ jobs:
         black . --check
         isort . --profile black
 
-  tests-cli:
-    needs: lint-cli
+  tests-integration-flat_file:
+    needs: lint-integration-flat_file
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -57,7 +58,7 @@ jobs:
           DB_PASSWORD: grai
           DB_NAME: grai
           DB_PORT: "5432"
-          DB_HOST: postgres
+          DB_HOST: "postgres"
           DJANGO_SUPERUSER_USERNAME: null@grai.io
           DJANGO_SUPERUSER_PASSWORD: super_secret
         ports:
@@ -79,4 +80,3 @@ jobs:
         pip install .
 
     - run: pytest
-

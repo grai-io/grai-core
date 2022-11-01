@@ -22,6 +22,8 @@ isort = "^5.10.1"
 types-PyYAML = "^6.0.11"
 pytest = "^7.2.0"
 
+[tool.isort]
+profile = "black"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

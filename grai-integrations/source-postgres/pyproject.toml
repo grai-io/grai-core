@@ -23,6 +23,9 @@ types-PyYAML = "^6.0.11"
 types-psycopg2 = "^2.9.18"
 pytest = "^7.2.0"
 
+[tool.isort]
+profile = "black"
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

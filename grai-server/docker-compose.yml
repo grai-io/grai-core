@@ -4,7 +4,7 @@ services:
   the_guide:
     #image: ghcr.io/grai-io/grai-core/grai-server:latest
     build: ./app
-    command: python manage.py runserver 0.0.0.0:8000 # runserver is for development only & can be removed
+    #command: python manage.py runserver 0.0.0.0:8000 # runserver is for development only & can be removed
     volumes:
       - ./app/:/usr/src/app/
     ports:
@@ -16,11 +16,11 @@ services:
     env_file:
       - ./app/env
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 1m30s
-      timeout: 3s
-      retries: 3
-      start_period: 40s
+      test: "curl -f -v -H 'Accept: application/json' http://localhost:8000/health/"
+      interval: 2s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
   db:
     image: postgres:14.3-alpine
     volumes:
@@ -34,10 +34,10 @@ services:
     ports:
       - 5432:5432
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U grai"]
+      test: "pg_isready -U grai"
       interval: 2s
       timeout: 2s
-      retries: 20
+      retries: 15
 
 networks:
   the_guide:

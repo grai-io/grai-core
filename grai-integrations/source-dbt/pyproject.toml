@@ -10,7 +10,11 @@ python = "^3.10"
 pydantic = "^1.9.1"
 networkx = "^2.8.3"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
+isort = "^5.10.1"
+
+[tool.isort]
+profile = "black"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

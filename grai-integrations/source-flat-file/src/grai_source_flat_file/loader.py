@@ -3,6 +3,7 @@ from itertools import chain
 from typing import Any, Callable, Dict, List, Optional, Sequence, Union
 
 import pandas as pd
+
 from grai_source_flat_file.models import ID, Column
 
 

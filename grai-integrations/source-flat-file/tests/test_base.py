@@ -1,16 +1,19 @@
 import os
 
 import pandas as pd
+from grai_client.endpoints.v1.client import ClientV1
+
 from grai_source_flat_file.adapters import adapt_to_client
 from grai_source_flat_file.base import update_server
 from grai_source_flat_file.loader import get_nodes_and_edges
-from grai_client.endpoints.v1.client import ClientV1
+
 n = 10
 test_data = {"a": range(n), "b": ["t"] * n}
 test_data = pd.DataFrame(test_data)
 
 client = ClientV1("localhost", "8000")
 client.set_authentication_headers("null@grai.io", "super_secret")
+
 
 def test_load():
     import grai_source_flat_file
