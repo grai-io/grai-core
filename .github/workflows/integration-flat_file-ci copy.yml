@@ -1,4 +1,4 @@
-name: CI Workflow for the Grai Client
+name: CI Workflow for the Grai flat file integration
 on:
   push:
     paths:

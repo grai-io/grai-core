@@ -1,4 +1,4 @@
-name: CI Workflow for the Grai Client
+name: CI Workflow for the Grai graph utility
 on:
   push:
     paths:

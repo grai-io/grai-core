@@ -1,4 +1,4 @@
-name: CI Workflow for the Grai Client
+name: CI Workflow for the Grai the Grai Postgres Integration
 on:
   push:
     paths:
