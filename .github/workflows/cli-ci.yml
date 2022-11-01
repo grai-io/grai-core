@@ -60,7 +60,7 @@ jobs:
           DB_HOST: "localhost"
         ports:
           - 8000:8000
-        options:
+        options: >-
            --health-cmd curl http://localhost:8000/health/
            --health-interval 2s
            --health-retries 10
