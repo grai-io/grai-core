@@ -60,7 +60,7 @@ jobs:
           DB_HOST: "127.0.0.1"
         ports:
           - 8000:8000
-        options: |
+        options: >-
           --health-cmd "curl -f http://localhost:8080/health"
           --health-interval 2s
           --health-timeout 5s

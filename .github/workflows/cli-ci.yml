@@ -57,10 +57,10 @@ jobs:
           DB_PASSWORD: grai
           DB_NAME: grai
           DB_PORT: "8000"
-          DB_HOST: "127.0.0.1"
+          DB_HOST: "localhost"
         ports:
           - 8000:8000
-        options: |
+        options: >-
           --health-cmd "curl -f http://localhost:8080/health"
           --health-interval 2s
           --health-timeout 5s
