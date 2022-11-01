@@ -58,6 +58,8 @@ jobs:
           DB_NAME: grai
           DB_PORT: "5432"
           DB_HOST: "postgres"
+          DJANGO_SUPERUSER_USERNAME: null@grai.io
+          DJANGO_SUPERUSER_PASSWORD: super_secret
         ports:
           - 8000:8000
         options: >-
