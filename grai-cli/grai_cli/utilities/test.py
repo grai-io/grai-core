@@ -1,5 +1,6 @@
 import os
 
+
 def prep_test_auth():
     from grai_cli import config
 
@@ -13,6 +14,7 @@ def prep_test_auth():
         config["server"]["host"].set(host)
     if port:
         config["server"]["port"].set(port)
+
 
 def prep_tests():
     prep_test_auth()
