@@ -1,11 +1,7 @@
 name: CI Workflow for Grai CLI
-on:
-  push:
-    paths:
-    - "grai-cli/**"
-  pull_request:
-    paths: 
-    - 'grai-cli/**'
+on: [push, pull_request]
+  paths:
+  - "grai-cli/**"
 env:
   py_ver: "3.10"
   poetry_ver: "1.2.2"
@@ -79,3 +75,4 @@ jobs:
         pip install .
 
     - run: pytest
+
