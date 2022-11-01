@@ -13,8 +13,9 @@ ENV PYTHONDONTWRITEBYTECODE="1" \
     POETRY_VERSION="1.2.2"
 
 # libpq-dev and gcc are used to install psycopg2.
+# netcat is used to wait for the database to be ready.
 RUN apt update \
-    && apt install -y apt-utils netcat libpq-dev gcc
+    && apt install -y apt-utils netcat libpq-dev gcc curl
 
 COPY . .
 

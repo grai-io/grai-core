@@ -3,10 +3,11 @@ import json
 from typing import Any, Dict, List, Optional, Sequence, Union
 
 import requests
+from multimethod import multimethod
+
 from grai_client.authentication import APIKeyHeader, UserNameHeader, UserTokenHeader
 from grai_client.endpoints.utilities import GraiEncoder, response_status_check
 from grai_client.schemas.schema import GraiType
-from multimethod import multimethod
 
 
 class BaseClient(abc.ABC):
@@ -20,6 +21,13 @@ class BaseClient(abc.ABC):
         self.url = f"{prefix}://{self.host}:{self.port}"
         self.api = f"{self.url}"
         self._auth_headers = None
+
+        if not self.check_server_status():
+            raise Exception(f"Server at {self.url} is not responding.")
+
+    def check_server_status(self):
+        resp = requests.get(f"{self.url}/health/")
+        return resp.status_code == 200
 
     def build_url(self, endpoint: str) -> str:
         return f"{self.api}{endpoint}"

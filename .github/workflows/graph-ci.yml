@@ -1,18 +1,18 @@
-name: CI Workflow for Grai CLI
+name: CI Workflow for the Grai graph utility
 on:
   push:
     paths:
-    - "grai-cli/**"
+    - "grai-graph/**"
   pull_request:
     paths: 
-    - 'grai-cli/**'
+    - 'grai-graph/**'
 env:
   py_ver: "3.10"
   poetry_ver: "1.2.2"
-  project_dir: "grai-cli"
+  project_dir: "grai-graph"
   
 jobs:
-  lint-cli:
+  lint-graph:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -33,8 +33,8 @@ jobs:
         black . --check
         isort . --profile black
 
-  tests-cli:
-    needs: lint-cli
+  tests-graph:
+    needs: lint-graph
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -57,11 +57,12 @@ jobs:
           DB_PASSWORD: grai
           DB_NAME: grai
           DB_PORT: "5432"
-          DB_HOST: postgres
+          DB_HOST: "postgres"
           DJANGO_SUPERUSER_USERNAME: null@grai.io
           DJANGO_SUPERUSER_PASSWORD: super_secret
         ports:
           - 8000:8000
+        options: >-
         options: >-
           --health-cmd "curl -f http://localhost:8000/health/ || exit 1"
           --health-interval 2s
@@ -79,4 +80,3 @@ jobs:
         pip install .
 
     - run: pytest
-

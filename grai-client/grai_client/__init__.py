@@ -1,1 +1,1 @@
-from grai_client import authentication, endpoints, schemas, update
+from grai_client import authentication, endpoints, schemas, update, utilities
