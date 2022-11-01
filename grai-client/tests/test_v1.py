@@ -10,9 +10,9 @@ from grai_client.testing.schema import (
     mock_v1_edge_and_nodes,
     mock_v1_node,
 )
+from grai_client.utilities.tests import get_test_client
 
-client = ClientV1("localhost", "8000")
-client.set_authentication_headers(username="null@grai.io", password="super_secret")
+client = get_test_client()
 
 
 def test_get_nodes():
