@@ -78,4 +78,4 @@ jobs:
         pip install pytest
         pip install .
 
-    - run: pytest
+    - run: pytest -s
