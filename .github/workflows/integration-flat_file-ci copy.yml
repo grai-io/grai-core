@@ -4,14 +4,14 @@ on:
     paths:
     - "grai-integration/source-flat-file/**"
   pull_request:
-    paths: 
+    paths:
     - "grai-integration/source-flat-file/**"
 
 env:
   py_ver: "3.10"
   poetry_ver: "1.2.2"
   project_dir: "grai-integration/source-flat-file"
-  
+
 jobs:
   lint-integration-flat_file:
     runs-on: ubuntu-latest
@@ -70,7 +70,7 @@ jobs:
           --health-start-period 30s
     steps:
     - uses: actions/checkout@v3
-    
+
     - uses: actions/setup-python@v4
       with:
         python-version: "${{ env.py_ver }}"

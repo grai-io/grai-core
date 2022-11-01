@@ -4,13 +4,13 @@ on:
     paths:
     - "grai-cli/**"
   pull_request:
-    paths: 
+    paths:
     - 'grai-cli/**'
 env:
   py_ver: "3.10"
   poetry_ver: "1.2.2"
   project_dir: "grai-cli"
-  
+
 jobs:
   lint-cli:
     runs-on: ubuntu-latest
@@ -69,7 +69,7 @@ jobs:
           --health-start-period 30s
     steps:
     - uses: actions/checkout@v3
-    
+
     - uses: actions/setup-python@v4
       with:
         python-version: "${{ env.py_ver }}"
@@ -79,4 +79,3 @@ jobs:
         pip install .
 
     - run: pytest
-

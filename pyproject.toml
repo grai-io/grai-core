@@ -2,18 +2,25 @@
 name = "grai-core"
 version = "0.1.0"
 description = ""
-authors = ["Ian Eaves <ian.k.eaves@gmail.com>"]
+authors = ["Ian Eaves <ian@grai.io>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-grai-client = "^0.1.0"
-
-[tool.poetry.dev-dependencies]
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.10.1"
+black = "^22.10.0"
+flake8 = "^5.0.4"
+
+[tool.isort]
+profile = "black"
+
+[flake8]
+ignore = "E203, E266, E501, W503, F403, F401"
+max-line-length = 120
+max-complexity = 18
+select = "B,C,E,F,W,T4,B9"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
-

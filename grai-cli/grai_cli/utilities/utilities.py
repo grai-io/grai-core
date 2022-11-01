@@ -17,10 +17,9 @@ from typing import (
 from uuid import UUID
 
 import yaml
+from grai_cli.settings.config import config
 from multimethod import multimethod
 from pydantic import BaseModel
-
-from grai_cli.settings.config import config
 
 
 def load_yaml(file: Union[str, TextIOBase]) -> Dict:
