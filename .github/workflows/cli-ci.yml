@@ -56,15 +56,15 @@ jobs:
           DB_USER: grai
           DB_PASSWORD: grai
           DB_NAME: grai
-          # DB_PORT: 5432
-          # DB_HOST: localhost
+          DB_PORT: "5432"
+          DB_HOST: postgres
         ports:
           - 8000:8000
         options: >-
-          --health-cmd "curl http://localhost:8000/health/"
-        #    --health-interval 2s
-        #    --health-retries 10
-        #    --health-start-period 30s
+          --health-cmd "curl -f http://localhost:8000/health/ || exit 1"
+          --health-interval 2s
+          --health-retries 10
+          --health-start-period 30s
     steps:
     - uses: actions/checkout@v3
     
