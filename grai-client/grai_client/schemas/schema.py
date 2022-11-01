@@ -2,12 +2,11 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, Type, Union
 
 import yaml
-from pydantic import Field
-from typing_extensions import Annotated
-
 from grai_client.schemas.edge import Edge
 from grai_client.schemas.node import Node
 from grai_client.schemas.utilities import GraiBaseModel
+from pydantic import Field
+from typing_extensions import Annotated
 
 GraiType = Annotated[Union[Node, Edge], Field(discriminator="type")]
 

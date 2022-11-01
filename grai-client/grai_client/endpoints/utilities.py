@@ -4,10 +4,9 @@ from functools import wraps
 from typing import Any, Callable, Dict, List, Type, TypeVar
 from uuid import UUID
 
+from grai_client.schemas.utilities import GraiBaseModel
 from pydantic import BaseModel
 from requests import RequestException, Response
-
-from grai_client.schemas.utilities import GraiBaseModel
 
 if sys.version_info < (3, 10):
     from typing_extensions import ParamSpec
