@@ -1,0 +1,40 @@
+repos:
+  # configure shared hooks that you want to run on all repositories here
+  -   repo: https://github.com/pre-commit/pre-commit-hooks.git
+      rev: v4.3.0
+      hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-merge-conflict
+      - id: check-yaml
+
+  # # For hooks that only apply to specific repositories, list them below
+  # -   repo: https://github.com/pre-commit/pre-commit-hooks.git
+  #     sha: v0.6.1
+  #     hooks:
+  #     -   id: flake8
+  #         name: 'flake8 (for repo1)'
+  #         # Only run on repo1 files
+  #         files: '^repo1/.*\.py'
+  #     -   id: flake8
+  #         name: 'flake8 (for repo2)'
+  #         # Only run on repo2 files
+  #         files: '^repo2/.*\.py'
+  #         # maybe repo2 wants specific argument configuration
+  #         args: [--max-line-length=131]
+  #     # maybe repo3 is python3 only
+  #     -   id: flake8
+  #         name: 'flake8 (for repo3)'
+  #         files: '^repo3/.*\.py'
+  #         language_version: python3
+
+    # etc.
+  - repo: https://github.com/psf/black
+    rev: 22.10.0
+    hooks:
+      - id: black
+        # It is recommended to specify the latest version of Python
+        # supported by your project here, or alternatively use
+        # pre-commit's default_language_version, see
+        # https://pre-commit.com/#top_level-default_language_version
+        language_version: python3.9
