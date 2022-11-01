@@ -1,3 +1,6 @@
+import os
+
+
 def get_test_client():
     from grai_client.endpoints.v1.client import ClientV1
 
