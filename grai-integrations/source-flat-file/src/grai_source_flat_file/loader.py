@@ -3,6 +3,7 @@ from itertools import chain
 from typing import Any, Callable, Dict, List, Optional, Sequence, Union
 
 import pandas as pd
+
 from grai_source_flat_file.models import ID, Column
 
 
@@ -11,7 +12,7 @@ def get_file_name(file_name: str) -> str:
 
 
 def load_file(file_name: str) -> pd.DataFrame:
-    assert file_name.endswith(".csv")
+    assert file_name.endswith(".csv"), file_name
     return pd.read_csv(file_name)
 
 

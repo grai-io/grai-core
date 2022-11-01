@@ -6,10 +6,9 @@ from uuid import UUID
 
 import typer
 import yaml
+from grai_cli.settings.config import config
 from multimethod import multimethod
 from pydantic import BaseModel
-
-from grai_cli.settings.config import config
 
 
 def default_callback(ctx: typer.Context):

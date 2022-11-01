@@ -15,7 +15,8 @@ try:
     # https://posthog.com/docs/integrate/server/python
     # TODO: Possibly come back to this later
     sentry_sdk.init(
-        dsn="https://examplePublicKey@o0.ingest.sentry.io/0",
+        dsn="https://3ef0d6800e084eae8b3a8f4ee4be1d3d@o4503978528407552.ingest.sentry.io/4503978529456128",
+        traces_sample_rate=1.0,
         integrations=[DjangoIntegration(), PostHogIntegration()],
     )
 

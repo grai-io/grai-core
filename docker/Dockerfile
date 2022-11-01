@@ -64,4 +64,3 @@ RUN python -m pip install --no-cache-dir "git+https://github.com/dbt-labs/${dbt_
 ##
 FROM base as dbt-postgres
 RUN python -m pip install --no-cache-dir "git+https://github.com/dbt-labs/${dbt_postgres_ref}#egg=dbt-postgres&subdirectory=plugins/postgres"
-

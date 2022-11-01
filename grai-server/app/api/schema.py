@@ -1,10 +1,9 @@
 from typing import List
 
-from strawberry_django_plus import gql
-from strawberry_django_plus.optimizer import DjangoOptimizerExtension
-
 from api.mutations import Mutation
 from api.types import EdgeType, NodeType, UserType
+from strawberry_django_plus import gql
+from strawberry_django_plus.optimizer import DjangoOptimizerExtension
 
 
 @gql.type
