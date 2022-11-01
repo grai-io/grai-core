@@ -61,7 +61,7 @@ jobs:
         ports:
           - 8000:8000
         options: >-
-           --health-cmd 'curl -f -v -X GET -H "Accept: application/json" http://localhost:8000/health/'
+           --health-cmd 'curl -f http://localhost:8000/health/ || exit 1'
            --health-interval 2s
            --health-retries 10
            --health-start-period 30s
