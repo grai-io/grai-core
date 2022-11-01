@@ -1,8 +1,11 @@
 name: CI Workflow for the Grai the Grai Postgres Integration
-on: [push, pull_request]
-  paths:
-  - "grai-integration/source-postgres/**"
-
+on:
+  push:
+    paths:
+    - "grai-integration/source-postgres/**"
+  pull_request:
+    paths: 
+    - "grai-integration/source-postgres/**"
 env:
   py_ver: "3.10"
   poetry_ver: "1.2.2"

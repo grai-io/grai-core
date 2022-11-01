@@ -1,8 +1,11 @@
 name: CI Workflow for Grai Server
-on: [push, pull_request]
-  paths:
-  - "grai-server/**"
-
+on:
+  push:
+    paths:
+    - "grai-server/**"
+  pull_request:
+    paths: 
+    - "grai-server/**"
 env:
   py_ver: "3.10"
   poetry_ver: "1.2.2"

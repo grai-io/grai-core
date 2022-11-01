@@ -1,8 +1,11 @@
 name: CI Workflow for the Grai graph utility
-on: [push, pull_request]
-  paths:
-  - "grai-graph/**"
-
+on:
+  push:
+    paths:
+    - "grai-graph/**"
+  pull_request:
+    paths: 
+    - 'grai-graph/**'
 env:
   py_ver: "3.10"
   poetry_ver: "1.2.2"
