@@ -77,3 +77,6 @@ jobs:
         pip install .
 
     - run: pytest
+      env:
+        GRAI_HOST: localhost
+        GRAI_PORT: "8000"
