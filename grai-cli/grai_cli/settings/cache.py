@@ -33,5 +33,12 @@ class GraiCache:
         with self.cache as cache:
             cache[key] = value
 
+    def get(self, key, default=None):
+        with self.cache as cache:
+            if default:
+                return cache[key]
+            else:
+                return cache.get(key, default)
+
 
 cache = GraiCache()

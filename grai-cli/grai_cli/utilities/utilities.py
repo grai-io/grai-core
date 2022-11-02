@@ -13,7 +13,8 @@ from pydantic import BaseModel
 
 def default_callback(ctx: typer.Context):
     ctx.meta.setdefault("command_path", [])
-    ctx.meta["command_path"].append(ctx.invoked_subcommand)
+    if ctx.invoked_subcommand is not None:
+        ctx.meta["command_path"].append(ctx.invoked_subcommand)
 
 
 def load_yaml(file: Union[str, TextIOBase]) -> Dict:
