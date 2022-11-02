@@ -3,7 +3,6 @@ from typing import Optional
 
 import click
 import typer
-
 from grai_cli.utilities.telemetry import Telemetry
 from grai_cli.utilities.utilities import default_callback
 
@@ -36,6 +35,7 @@ def callback(
     """
     Grai CLI
     """
+
     if telemetry is not None:
         from grai_cli.settings.cache import cache
 

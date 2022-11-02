@@ -3,7 +3,6 @@ import subprocess
 from multiprocessing import Process
 
 import posthog
-
 from grai_cli.settings.cache import cache
 
 posthog.project_api_key = "phc_Q8OCDm0JpCwt4Akk3pMybuBWniWPfOsJzRrdxWjAnjE"

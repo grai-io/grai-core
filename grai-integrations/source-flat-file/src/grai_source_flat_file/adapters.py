@@ -1,9 +1,8 @@
 from typing import Any, Dict, List, Literal, Sequence, Type
 
 from grai_client.schemas.schema import Schema
-from multimethod import multimethod
-
 from grai_source_flat_file.models import ID, Column
+from multimethod import multimethod
 
 
 @multimethod
