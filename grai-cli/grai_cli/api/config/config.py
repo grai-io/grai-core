@@ -38,12 +38,12 @@ def cli_init_config(
         prompt_required=True,
         callback=strip_style(port_callback),
     ),
-    config_location: str = typer.Option(
-        default=default_styler(config.config_filename),
-        prompt="Config path",
-        prompt_required=True,
-        callback=strip_style(lambda x: x),
-    ),
+    # config_location: str = typer.Option(
+    #     default=default_styler(config.config_filename),
+    #     prompt="Config path",
+    #     prompt_required=True,
+    #     callback=strip_style(lambda x: x),
+    # ),
 ):
     """Initialize a new config file"""
     config["auth"]["username"].set(username)
