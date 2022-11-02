@@ -1,29 +1,44 @@
+import subprocess
+from typing import Optional
+
+import click
 import typer
+from grai_cli.utilities.telemetry import Telemetry
+from grai_cli.utilities.utilities import default_callback
 
-app = typer.Typer(rich_markup_mode="rich", no_args_is_help=True, help="Grai CLI")
+
+def result_callback(*args, **kwargs):
+    ctx = click.get_current_context()
+    command_path = ctx.meta["command_path"]
+    if command_path and command_path[0] != "telemetry":
+        command = f"grai {' '.join(command_path)}"
+        Telemetry.capture(command)
 
 
-def check_for_config_file():
-    import subprocess
-
-    import grai_cli
-    from grai_cli.settings.cache import cache
-
-    if grai_cli.config.has_configfile or cache.has_init:
-        return
-
-    message = f"No config file found in ({grai_cli.config.config_filename}). Would you like to create one now?"
-    if not typer.confirm(message):
-        cache.set("has_init", True)
-        return
-
-    cache.set("has_init", True)
-    subprocess.run(["grai", "config", "init"])
+app = typer.Typer(
+    rich_markup_mode="rich",
+    invoke_without_command=True,
+    no_args_is_help=True,
+    help="Grai CLI",
+    pretty_exceptions_show_locals=False,
+    result_callback=result_callback,
+)
 
 
 @app.callback()
-def callback():
+def callback(
+    ctx: typer.Context,
+    telemetry: Optional[bool] = typer.Option(
+        None, show_default=False, help="Enable or disable telemetry"
+    ),
+):
     """
     Grai CLI
     """
-    check_for_config_file()
+
+    if telemetry is not None:
+        from grai_cli.settings.cache import cache
+
+        cache.set("telemetry_consent", telemetry)
+
+    default_callback(ctx)

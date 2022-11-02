@@ -1,25 +1,20 @@
-from functools import singledispatch, wraps
-from io import TextIOBase, TextIOWrapper
+from functools import wraps
+from io import TextIOBase
 from pathlib import Path
-from tempfile import NamedTemporaryFile, TemporaryFile
-from typing import (
-    IO,
-    Any,
-    Callable,
-    Dict,
-    Iterable,
-    List,
-    Sequence,
-    TextIO,
-    Tuple,
-    Union,
-)
+from typing import IO, Any, Callable, Dict, Iterable, List, Sequence, Union
 from uuid import UUID
 
+import typer
 import yaml
 from grai_cli.settings.config import config
 from multimethod import multimethod
 from pydantic import BaseModel
+
+
+def default_callback(ctx: typer.Context):
+    ctx.meta.setdefault("command_path", [])
+    if ctx.invoked_subcommand is not None:
+        ctx.meta["command_path"].append(ctx.invoked_subcommand)
 
 
 def load_yaml(file: Union[str, TextIOBase]) -> Dict:

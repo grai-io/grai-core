@@ -77,6 +77,7 @@ THE_GUIDE_APPS = [
     "lineage",
     "users",
     "namespaces",
+    "telemetry",
 ]
 
 INSTALLED_APPS = DJANGO_CORE_APPS + THIRD_PARTY_APPS + THE_GUIDE_APPS

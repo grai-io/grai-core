@@ -1,4 +1,5 @@
 import os
+import subprocess
 
 
 def prep_test_auth():
@@ -16,5 +17,10 @@ def prep_test_auth():
         config["server"]["port"].set(port)
 
 
+def disable_telemetry():
+    subprocess.run(["grai", "--no-telemetry"])
+
+
 def prep_tests():
     prep_test_auth()
+    disable_telemetry()

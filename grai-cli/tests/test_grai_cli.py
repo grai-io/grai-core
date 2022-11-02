@@ -1,4 +1,23 @@
-from grai_cli import __version__
+from grai_cli.api.entrypoint import app
+from grai_cli.settings.cache import cache
+from grai_cli.utilities.test import prep_tests
+from typer.testing import CliRunner
+
+prep_tests()
+runner = CliRunner()
+
+
+def test_disable_telemetry():
+    result = runner.invoke(app, ["--no-telemetry"])
+    telemetry = cache.get("telemetry_consent")
+    assert not telemetry
+
+
+def test_enable_telemetry():
+    result = runner.invoke(app, ["--telemetry"])
+    telemetry = cache.get("telemetry_consent")
+    assert telemetry
+
 
 #
 # def test_version():
