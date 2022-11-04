@@ -1,0 +1,51 @@
+import { createTheme } from "@mui/material/styles"
+
+// declare module '@material-ui/core/styles/createPalette' {
+//   interface Palette {
+//       pgrey: Palette['primary']
+//   }
+//   interface PaletteOptions {
+//       pgrey: PaletteOptions['primary']
+//   }
+// }
+
+const theme = createTheme({
+  typography: {
+    fontFamily: `"Satoshi", "Roboto", "Helvetica", "Arial", sans-serif`,
+  },
+  palette: {
+    primary: {
+      main: "#351D36",
+      contrastText: "#FFB567",
+    },
+    secondary: {
+      main: "#FFB567",
+    },
+    // pgrey: {
+    //     main: '#aaabb8',
+    // },
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: "inherit",
+        },
+        containedPrimary: {
+          "&:hover": {
+            backgroundColor: "#1AC9FF",
+          },
+        },
+      },
+    },
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          textTransform: "inherit",
+        },
+      },
+    },
+  },
+})
+
+export default theme
