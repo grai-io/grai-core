@@ -3,8 +3,8 @@
 </div>
 
 <p align="center">
-  <a href="https://discord.gg/sPNS8pkywh">
-    <img src="https://dcbadge.vercel.app/api/server/eZfYjfWWwB?compact=true" height=22/>
+  <a href="https://join.slack.com/t/graicommunity/shared_invite/zt-1il70kfeb-TaCm5fwHg_quWCpKNYyj6w">
+    <img src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white" height=22/>
   </a>
    <a href="https://github.com/grai-io/grai-core">
     <img src="https://img.shields.io/github/issues/grai-io/grai-core?style=flat-square" height=22/>
@@ -105,6 +105,6 @@ pip install grai-source-dbt
 
 ## Community
 
-More to come here but if you're interested in contributing or just want to chat, drop an email to hello@grai.io.
+Come and join our [Slack](https://join.slack.com/t/graicommunity/shared_invite/zt-1il70kfeb-TaCm5fwHg_quWCpKNYyj6w)! We're on hand for support, help or just to hang out and chat.
 
-Or join our [discord](https://discord.gg/eZfYjfWWwB)!
+To stay looped into updates, join our [email list](https://www.grai.io/signup/).
