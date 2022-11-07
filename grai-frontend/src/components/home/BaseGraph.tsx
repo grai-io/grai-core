@@ -79,6 +79,36 @@ export const createGraphLayout = async (
 
 const proOptions = { hideAttribution: true }
 
+export const getAllIncomers = (
+  node: Node,
+  nodes: Node[],
+  edges: Edge[]
+): Node[] => {
+  return getIncomers(node, nodes, edges).reduce<Node[]>(
+    (memo, incomer) => [
+      ...memo,
+      incomer,
+      ...getAllIncomers(incomer, nodes, edges),
+    ],
+    []
+  )
+}
+
+export const getAllOutgoers = (
+  node: Node,
+  nodes: Node[],
+  edges: Edge[]
+): Node[] => {
+  return getOutgoers(node, nodes, edges).reduce<Node[]>(
+    (memo, outgoer) => [
+      ...memo,
+      outgoer,
+      ...getAllOutgoers(outgoer, nodes, edges),
+    ],
+    []
+  )
+}
+
 type BaseGraphProps = {
   initialNodes: Node[]
   initialEdges: Edge[]
@@ -100,28 +130,6 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
   }, [initialNodes, initialEdges])
 
   if (!nodes) return <CircularProgress />
-
-  const getAllIncomers = (node: Node, nodes: Node[], edges: Edge[]): Node[] => {
-    return getIncomers(node, nodes, edges).reduce<Node[]>(
-      (memo, incomer) => [
-        ...memo,
-        incomer,
-        ...getAllIncomers(incomer, nodes, edges),
-      ],
-      []
-    )
-  }
-
-  const getAllOutgoers = (node: Node, nodes: Node[], edges: Edge[]): Node[] => {
-    return getOutgoers(node, nodes, edges).reduce<Node[]>(
-      (memo, outgoer) => [
-        ...memo,
-        outgoer,
-        ...getAllOutgoers(outgoer, nodes, edges),
-      ],
-      []
-    )
-  }
 
   const highlightPath = (node: Node, nodes?: Node[], edges?: Edge[]) => {
     if (node && nodes && edges) {
