@@ -13,7 +13,6 @@ def update_server(
     file_name: str,
     namespace: Optional[str] = None,
 ):
-
     nodes, edges = get_nodes_and_edges(file_name, namespace)
     nodes = adapt_to_client(nodes)
 

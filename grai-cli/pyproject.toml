@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai-cli"
-version = "0.1.5"
+version = "0.1.6"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>"]
 readme = "README.md"
@@ -25,6 +25,7 @@ rich = "^12.5.1"
 grai-client = "^0.1.5"
 PyYAML = "^6.0"
 multimethod = "^1.8"
+posthog = "^2.1.2"
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.10.1"

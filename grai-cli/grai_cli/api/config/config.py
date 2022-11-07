@@ -1,6 +1,4 @@
 import typer
-from rich import print as rprint
-
 from grai_cli.api.config.setup import config_app
 from grai_cli.settings.config import config
 from grai_cli.utilities.styling import GraiColors, default_styler, strip_style
@@ -11,6 +9,7 @@ from grai_cli.utilities.validators import (
     port_callback,
     username_callback,
 )
+from rich import print as rprint
 
 
 @config_app.command("init")
@@ -39,12 +38,12 @@ def cli_init_config(
         prompt_required=True,
         callback=strip_style(port_callback),
     ),
-    config_location: str = typer.Option(
-        default=default_styler(config.config_filename),
-        prompt="Config path",
-        prompt_required=True,
-        callback=strip_style(lambda x: x),
-    ),
+    # config_location: str = typer.Option(
+    #     default=default_styler(config.config_filename),
+    #     prompt="Config path",
+    #     prompt_required=True,
+    #     callback=strip_style(lambda x: x),
+    # ),
 ):
     """Initialize a new config file"""
     config["auth"]["username"].set(username)

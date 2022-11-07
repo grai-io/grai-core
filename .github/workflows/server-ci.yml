@@ -3,11 +3,13 @@ on:
   push:
     paths:
     - "grai-server/**"
-
+  pull_request:
+    paths:
+    - "grai-server/**"
 env:
   py_ver: "3.10"
   poetry_ver: "1.2.2"
-  
+
 jobs:
   lint-server:
     runs-on: ubuntu-latest
@@ -45,11 +47,11 @@ jobs:
         ports:
           - 5432:5432
         # needed because the postgres container does not provide a healthcheck
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-      
+        options: --health-cmd pg_isready --health-interval 2s --health-timeout 5s --health-retries 15
+
     steps:
       - uses: actions/checkout@v3
-    
+
       - uses: actions/setup-python@v4
         with:
           python-version: "${{ env.py_ver }}"
@@ -58,7 +60,7 @@ jobs:
         run: |
           pip install pytest pytest-django
           pip install .
-  
+
       - name: Tests
         env:
           DEBUG: False

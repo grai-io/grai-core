@@ -41,7 +41,7 @@ DATABASES = {
         "USER": config("DB_USER", default="grai"),
         "PASSWORD": config("DB_PASSWORD", default="grai"),
         "HOST": config("DB_HOST", default="localhost"),
-        "PORT": config("DB_PORT", default=5432),
+        "PORT": config("DB_PORT", default="5432"),
     }
 }
 
@@ -67,12 +67,17 @@ THIRD_PARTY_APPS = [
     "rest_framework.authtoken",
     "rest_framework_api_key",
     "health_check",
+    "health_check.db",
+    "health_check.cache",
+    "health_check.storage",
+    "health_check.contrib.migrations",
 ]
 
 THE_GUIDE_APPS = [
     "lineage",
     "users",
     "namespaces",
+    "telemetry",
 ]
 
 INSTALLED_APPS = DJANGO_CORE_APPS + THIRD_PARTY_APPS + THE_GUIDE_APPS

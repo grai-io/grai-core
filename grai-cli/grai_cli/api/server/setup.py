@@ -1,11 +1,11 @@
 from typing import Dict, Type
 
 import typer
-from grai_client.endpoints.client import BaseClient
-
 from grai_cli.api.entrypoint import app
 from grai_cli.settings.config import config
 from grai_cli.utilities.headers import authenticate
+from grai_cli.utilities.utilities import default_callback
+from grai_client.endpoints.client import BaseClient
 
 # def get_cli_client(client: Type[BaseClient]):
 #     class VersionedCLIClient(client):
@@ -33,9 +33,13 @@ def get_default_client() -> BaseClient:
     return client
 
 
-client_app = typer.Typer(no_args_is_help=True, help="Interact with The Guide")
+client_app = typer.Typer(
+    no_args_is_help=True, help="Interact with The Guide", callback=default_callback
+)
 app.add_typer(client_app, name="client")
 
 
-client_get_app = typer.Typer(no_args_is_help=True, help="Get objects from The Guide")
+client_get_app = typer.Typer(
+    no_args_is_help=True, help="Get objects from The Guide", callback=default_callback
+)
 app.add_typer(client_get_app, name="get")

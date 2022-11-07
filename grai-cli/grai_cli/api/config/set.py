@@ -2,7 +2,6 @@ from functools import wraps
 from typing import Callable
 
 import typer
-
 from grai_cli.api.config.setup import set_app
 from grai_cli.utilities.utilities import get_config_view, writes_config
 from grai_cli.utilities.validators import (
