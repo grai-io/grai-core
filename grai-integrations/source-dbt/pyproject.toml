@@ -1,17 +1,22 @@
 [tool.poetry]
-name = "source-dbt"
-version = "0.1.0"
+name = "grai_source_dbt"
+version = "0.0.1"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>"]
 license = "ELv2"
+packages = [
+    { include = "grai_source_dbt", from = "src" },
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"
 pydantic = "^1.9.1"
 networkx = "^2.8.3"
+grai-client = "^0.1.8"
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.10.1"
+pytest = "^7.2.0"
 
 [tool.isort]
 profile = "black"
