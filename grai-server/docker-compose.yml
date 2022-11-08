@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 
 services:
   the_guide:
@@ -38,6 +38,10 @@ services:
       interval: 2s
       timeout: 2s
       retries: 15
+  frontend:
+    build: ../grai-frontend
+    ports:
+      - 3000:80
 
 networks:
   the_guide:
