@@ -76,16 +76,50 @@ class Column(ColumnID):
     tags: List
 
 
+def make_depends_on_edge(depends_on_node_id: str, model_node):
+    return Edge(
+        constraint_type=Constraint("dbtm"),
+        source=TableID(
+            unique_id=depends_on_node_id,
+            name=depends_on_node_id.split(".")[1],
+            package_name=model_node.package_name,
+        ),
+        destination=model_node,
+        definition=model_node.raw_sql if hasattr(model_node, 'raw_sql') else None,
+    )
+
+
+def get_table_from_id_str(unique_id: str):
+
+    id_items = unique_id.split('.')
+    model_type, package_name =  id_items[0], id_items[1]
+    if model_type == 'source':
+        name, table_name = id_items[2], id_items[3]
+        result = SourceResourceType(
+            unique_id=unique_id,
+            description='',
+            config=NodeConfig(materialized=None),
+            package_name=package_name,
+            name=table_name,
+            table_name=table_name,
+            raw_sql=None,
+        )
+    else:
+        raise NotImplementedError(f"No implementation for model_type {model_type}")
+
+    return result
+
+
 class Table(TableID):
     unique_id: str
-    path: Path
+    path: Optional[Path]
     description: str
     depends_on: Optional[NodeDeps]
     config: NodeConfig
     package_name: str
     name: str
-    columns: Dict[str, Column]
-    raw_sql: str
+    columns: Optional[Dict[str, Column]]
+    raw_sql: Optional[str]
 
     @validator("columns", pre=True)
     def validate_columns(cls, columns, values):
@@ -130,27 +164,27 @@ class Edge(BaseModel):
 
 
 class ModelResourceType(Table):
-    resource_type: Literal["model"]
+    resource_type: Literal["model"] = "model"
 
 
 class SeedResourceType(Table):
-    resource_type: Literal["seed"]
+    resource_type: Literal["seed"] = "seed"
 
 
 class SourceResourceType(Table):
-    resource_type: Literal["source"]
+    resource_type: Literal["source"] = "source"
 
 
 class AnalysisResourceType(BaseModel):
-    resource_type: Literal["analysis"]
+    resource_type: Literal["analysis"] = "analysis"
 
 
 class TestResourceType(BaseModel):
-    resource_type: Literal["test"]
+    resource_type: Literal["test"] = "test"
 
 
 class OperationResourceType(BaseModel):
-    resource_type: Literal["operation"]
+    resource_type: Literal["operation"] = "operation"
 
 
 NodeTypes = Union[

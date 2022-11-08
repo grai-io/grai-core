@@ -17,7 +17,6 @@ def test_get_all_nodes_and_edges():
     dbt_graph = load_dbt_graph()
 
     assert isinstance(dbt_graph, DBTGraph)
-    print(dbt_graph.nodes)
     assert len(dbt_graph.nodes) > 0
     assert len(dbt_graph.edges) > 0
 
