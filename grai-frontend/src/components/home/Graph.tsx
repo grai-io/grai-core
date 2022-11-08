@@ -26,18 +26,32 @@ const Graph: React.FC<GraphProps> = ({ nodes, edges }) => {
     ? JSON.parse(searchParams.get("errors") ?? "")
     : null
   const limitGraph: boolean =
-    searchParams.get("limitGraph")?.toLowerCase() === "true"
+    searchParams.get("limitGraph")?.toLowerCase() === "true" && !!errors
 
   const initialNodes: RFNode[] = nodes.map(node => ({
     id: node.id,
-    data: { id: node.id, label: node.display_name, metadata: node.metadata },
+    data: {
+      id: node.id,
+      name: node.name,
+      label: node.display_name,
+      metadata: node.metadata,
+    },
     position,
   }))
 
+  const nameToNode = (name: string) => nodes.find(n => n.name === name)
+
+  const enrichedErrors = errors?.map(error => ({
+    ...error,
+    sourceId: nameToNode(error.source)?.id,
+    destinationId: nameToNode(error.destination)?.id,
+  }))
+
   const initialEdges: RFEdge[] = edges.map(edge => {
-    const edgeErrors = errors?.filter(
+    const edgeErrors = enrichedErrors?.filter(
       error =>
-        error.source === edge.source && error.destination === edge.destination
+        error.sourceId === edge.source &&
+        error.destinationId === edge.destination
     )
 
     return {
@@ -54,32 +68,35 @@ const Graph: React.FC<GraphProps> = ({ nodes, edges }) => {
     }
   })
 
-  const errorIds = errors?.map(e => e.destination)
+  function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
+    return value !== null && value !== undefined
+  }
 
-  const filteredNodes =
-    errors && limitGraph
-      ? initialNodes.filter(
-          node =>
-            getAllOutgoers(node, initialNodes, initialEdges).filter(n =>
-              errorIds?.includes(n.id)
-            ).length > 0 ||
-            getAllIncomers(node, initialNodes, initialEdges).filter(n =>
-              errorIds?.includes(n.id)
-            ).length > 0 ||
-            errorIds?.includes(node.id)
-        )
-      : initialNodes
+  const errorIds: string[] =
+    enrichedErrors?.map(e => e.destinationId).filter(notEmpty) ?? []
+
+  const filteredNodes = limitGraph
+    ? initialNodes.filter(
+        node =>
+          getAllOutgoers(node, initialNodes, initialEdges).filter(n =>
+            errorIds?.includes(n.id)
+          ).length > 0 ||
+          getAllIncomers(node, initialNodes, initialEdges).filter(n =>
+            errorIds?.includes(n.id)
+          ).length > 0 ||
+          errorIds?.includes(node.id)
+      )
+    : initialNodes
 
   const filteredNodesIds = filteredNodes.map(n => n.id)
 
-  const filteredEdges =
-    errors && limitGraph
-      ? initialEdges.filter(
-          edge =>
-            filteredNodesIds.includes(edge.source) &&
-            filteredNodesIds.includes(edge.target)
-        )
-      : initialEdges
+  const filteredEdges = limitGraph
+    ? initialEdges.filter(
+        edge =>
+          filteredNodesIds.includes(edge.source) &&
+          filteredNodesIds.includes(edge.target)
+      )
+    : initialEdges
 
   return <BaseGraph initialNodes={filteredNodes} initialEdges={filteredEdges} />
 }
