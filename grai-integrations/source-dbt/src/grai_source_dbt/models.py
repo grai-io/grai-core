@@ -85,19 +85,19 @@ def make_depends_on_edge(depends_on_node_id: str, model_node):
             package_name=model_node.package_name,
         ),
         destination=model_node,
-        definition=model_node.raw_sql if hasattr(model_node, 'raw_sql') else None,
+        definition=model_node.raw_sql if hasattr(model_node, "raw_sql") else None,
     )
 
 
 def get_table_from_id_str(unique_id: str):
 
-    id_items = unique_id.split('.')
-    model_type, package_name =  id_items[0], id_items[1]
-    if model_type == 'source':
+    id_items = unique_id.split(".")
+    model_type, package_name = id_items[0], id_items[1]
+    if model_type == "source":
         name, table_name = id_items[2], id_items[3]
         result = SourceResourceType(
             unique_id=unique_id,
-            description='',
+            description="",
             config=NodeConfig(materialized=None),
             package_name=package_name,
             name=table_name,
