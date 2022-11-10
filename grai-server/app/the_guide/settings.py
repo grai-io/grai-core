@@ -92,7 +92,7 @@ DJANGO_CORE_APPS = [
 
 THIRD_PARTY_APPS = [
     "whitenoise.runserver_nostatic",
-    "strawberry.django",
+    # "strawberry.django",
     "rest_framework",
     "phonenumber_field",
     "corsheaders",
