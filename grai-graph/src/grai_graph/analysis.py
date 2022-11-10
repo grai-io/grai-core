@@ -20,8 +20,10 @@ class GraphAnalyzer:
     def test_type_change(self, namespace: str, name: str, new_type: str):
         node_id = self.graph.get_node_id(namespace, name)
         current_node = self.graph.get_node(namespace, name)
-        if "data_type" in current_node.spec.metadata:
-            current_type = current_node.spec.metadata["data_type"]
+        
+        if 'data_type' in current_node.spec.metadata:
+            current_type = current_node.spec.metadata['data_type']
+
             if current_type == new_type:
                 return []
         else:

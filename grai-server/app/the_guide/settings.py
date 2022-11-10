@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-
+from itertools import product
 from decouple import config
 from django.core.management.utils import get_random_secret_key
 
@@ -14,23 +14,43 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # SECURITY WARNING: keep the secret key used in production secret!
 
 
-def clean_allowed_hosts(val):
+def clean_hosts(val):
     if isinstance(val, list):
         return [item.strip() for item in val]
     elif isinstance(val, str):
         return [s.strip() for s in val.split(",")]
     else:
-        raise
+        raise TypeError(f"hosts must be a list or a string not {type(val)}")
 
 
 SECRET_KEY = config("SECRET_KEY", default=get_random_secret_key())
-DEBUG = config("DEBUG", default=True, cast=bool)
+DEBUG = config("DEBUG", default=False, cast=bool)
 TEMPLATE_DEBUG = config("TEMPLATE_DEBUG", default=DEBUG, cast=bool)
+
+HOST = config("HOST", default=None, cast=str)
+
+
+schemas = ["http", "https"]
+default_cors_origins = [f"{schema}://*" for schema in schemas]
+if HOST:
+    default_allowed_host = HOST
+    default_cors_origins.append(f"{HOST}")
+elif DEBUG:
+    default_allowed_host = ["*"]
+else:
+    default_allowed_host = ["localhost", "0.0.0.0"]
+    
+    default_ports = ["8000", "3000"]
+    default_cors_origins = [f"{schema}://{host}:{port}" 
+                for schema, host, port in product(schemas, default_hosts, default_ports)]
+
+CORS_ALLOW_ALL_ORIGINS = config("CORS_ALLOW_ALL_ORIGINS", default=DEBUG, cast=bool)
 ALLOWED_HOSTS = config(
-    "ALLOWED_HOSTS", default=".localhost, 127.0.0.1, [::1]", cast=clean_allowed_hosts
+    "ALLOWED_HOSTS", default=default_allowed_host, cast=clean_hosts
 )
-
-
+CORS_ALLOWED_ORIGINS = config(
+    "CORS_ALLOWED_ORIGINS", default=default_cors_origins, cast=clean_hosts
+)
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
@@ -188,8 +208,5 @@ CSRF_COOKIE_SECURE = True
 # OpenApi
 # https://drf-spectacular.readthedocs.io/en/latest/settings.html
 
-CORS_ORIGIN_ALLOW_ALL = False
-CORS_ORIGIN_WHITELIST = (
-    "http://localhost:3000",
-    "http://localhost:8000",
-)
+
+

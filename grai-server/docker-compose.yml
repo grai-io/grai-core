@@ -11,6 +11,7 @@ services:
       - 8000:8000
     environment:
       - DB_HOST=db
+      #- DEBUG=True
     networks:
       - the_guide
     env_file:
@@ -38,6 +39,10 @@ services:
       interval: 2s
       timeout: 2s
       retries: 15
+  frontend:
+    build: ../grai-frontend
+    ports:
+      - 3000:80
 
 networks:
   the_guide:
