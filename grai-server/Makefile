@@ -34,12 +34,13 @@ deploy_dev:  ## Deploy to dev
 
 
 build_ghcr:  ## Build image and upload to ghcr
-	#echo $CR_PAT | docker login ghcr.io -u ieaves --password-stdin
-	docker buildx build --platform linux/amd64,linux/arm64 -t $(GHCR_REPOSITORY):latest app/ --output=type=registry,dest=$(GHCR_REPOSITORY)
-	docker push $(GHCR_REPOSITORY):latest
-	docker buildx build --platform linux/amd64,linux/arm64 -t ghcr.io/grai-io/grai-core/grai-server:$(APP_VERSION) app/ --output=type=registry,dest=ghcr.io/grai-io/grai-core/grai-server:$(APP_VERSION)
-	docker buildx build --platform linux/amd64,linux/arm64 -t ghcr.io/grai-io/grai-core/grai-server:latest app/ --output=type=registry,dest=ghcr.io/grai-io/grai-core/grai-server:latest
-
+	# echo $CR_PAT | docker login ghcr.io -u ieaves --password-stdin
+	docker buildx build \
+		--platform linux/amd64,linux/arm64 \
+		-t $(GHCR_REPOSITORY):latest \
+		-t $(GHCR_REPOSITORY):$(APP_VERSION) \
+		--output=type=registry,dest=$(GHCR_REPOSITORY)\
+		$(BUILD_DIRECTORY)
 
 build_dev_ghcr:  ## Build image and upload to ghcr
 	docker buildx build \
