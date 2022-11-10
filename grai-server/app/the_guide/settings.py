@@ -1,6 +1,7 @@
 import os
-from pathlib import Path
 from itertools import product
+from pathlib import Path
+
 from decouple import config
 from django.core.management.utils import get_random_secret_key
 
@@ -46,10 +47,14 @@ else:
     schemes = ["http", "https"]
     default_ports = [SERVER_PORT, FRONTEND_PORT]
     default_hosts = list(set([SERVER_HOST, FRONTEND_HOST]))
-    default_cors_origins = [f"{scheme}://{host}:{port}" 
-                            for scheme, host, port in product(schemes, default_hosts, default_ports)]
+    default_cors_origins = [
+        f"{scheme}://{host}:{port}"
+        for scheme, host, port in product(schemes, default_hosts, default_ports)
+    ]
 
-    default_csrf_origins = [f"{scheme}://{host}" for scheme in schemes for host in default_hosts]
+    default_csrf_origins = [
+        f"{scheme}://{host}" for scheme in schemes for host in default_hosts
+    ]
 
 if not CORS_ALLOW_ALL_ORIGINS and not CORS_ALLOWED_ORIGINS:
     CORS_ALLOWED_ORIGINS = default_cors_origins
@@ -217,6 +222,3 @@ CSRF_COOKIE_SECURE = True
 
 # OpenApi
 # https://drf-spectacular.readthedocs.io/en/latest/settings.html
-
-
-
