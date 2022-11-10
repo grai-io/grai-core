@@ -3,8 +3,15 @@ from functools import cached_property
 from itertools import chain
 from typing import Dict, List, Union
 
-from grai_source_dbt.models import Column, Edge, SupportedNodeTypes, Table, get_table_from_id_str
+from grai_source_dbt.models import (
+    Column,
+    Edge,
+    SupportedNodeTypes,
+    Table,
+    get_table_from_id_str,
+)
 from pydantic import BaseModel, validator
+
 
 class Manifest(BaseModel):
     nodes: Dict["str", SupportedNodeTypes]
@@ -42,8 +49,11 @@ class DBTGraph:
         )
 
         # Sources don't appear to be included in the list of nodes
-        source_edges = [get_table_from_id_str(edge.source.full_name)
-                        for edge in self.edges if edge.source.full_name.startswith('source')]
+        source_edges = [
+            get_table_from_id_str(edge.source.full_name)
+            for edge in self.edges
+            if edge.source.full_name.startswith("source")
+        ]
         nodes.extend(source_edges)
         return nodes
 
