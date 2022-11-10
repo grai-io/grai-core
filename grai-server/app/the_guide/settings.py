@@ -27,30 +27,40 @@ SECRET_KEY = config("SECRET_KEY", default=get_random_secret_key())
 DEBUG = config("DEBUG", default=False, cast=bool)
 TEMPLATE_DEBUG = config("TEMPLATE_DEBUG", default=DEBUG, cast=bool)
 
-HOST = config("HOST", default=None, cast=str)
+SERVER_HOST = config("SERVER_HOST", default="localhost", cast=str)
+SERVER_PORT = config("SERVER_PORT", default="8000", cast=str)
 
+FRONTEND_HOST = config("FRONTEND_HOST", default=SERVER_HOST, cast=str)
+FRONTEND_PORT = config("FRONTEND_PORT", default="3000", cast=str)
 
-schemas = ["http", "https"]
-default_cors_origins = [f"{schema}://*" for schema in schemas]
-if HOST:
-    default_allowed_host = HOST
-    default_cors_origins.append(f"{HOST}")
-elif DEBUG:
-    default_allowed_host = ["*"]
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", default=[], cast=clean_hosts)
+CORS_ALLOW_ALL_ORIGINS = config("CORS_ALLOW_ALL_ORIGINS", default=False, cast=bool)
+CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS", default=[], cast=clean_hosts)
+CSRF_TRUSTED_ORIGINS = config("CSRF_TRUSTED_ORIGINS", default=[], cast=clean_hosts)
+
+if DEBUG:
+    ALLOWED_HOSTS = ["*"]
+    CORS_ALLOW_ALL_ORIGINS = True
+    CSRF_TRUSTED_ORIGINS = ["http://*", "https://*"]
 else:
-    default_allowed_host = ["localhost", "0.0.0.0"]
-    
-    default_ports = ["8000", "3000"]
-    default_cors_origins = [f"{schema}://{host}:{port}" 
-                for schema, host, port in product(schemas, default_hosts, default_ports)]
+    schemes = ["http", "https"]
+    default_ports = [SERVER_PORT, FRONTEND_PORT]
+    default_hosts = list(set([SERVER_HOST, FRONTEND_HOST]))
+    default_cors_origins = [f"{scheme}://{host}:{port}" 
+                            for scheme, host, port in product(schemes, default_hosts, default_ports)]
 
-CORS_ALLOW_ALL_ORIGINS = config("CORS_ALLOW_ALL_ORIGINS", default=DEBUG, cast=bool)
-ALLOWED_HOSTS = config(
-    "ALLOWED_HOSTS", default=default_allowed_host, cast=clean_hosts
-)
-CORS_ALLOWED_ORIGINS = config(
-    "CORS_ALLOWED_ORIGINS", default=default_cors_origins, cast=clean_hosts
-)
+    default_csrf_origins = [f"{scheme}://{host}" for scheme in schemes for host in default_hosts]
+
+if not CORS_ALLOW_ALL_ORIGINS and not CORS_ALLOWED_ORIGINS:
+    CORS_ALLOWED_ORIGINS = default_cors_origins
+
+if not CSRF_TRUSTED_ORIGINS:
+    CSRF_TRUSTED_ORIGINS = default_csrf_origins
+
+if not ALLOWED_HOSTS:
+    ALLOWED_HOSTS = ["127.0.0.1", "0.0.0.0", "localhost"]
+
+
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 

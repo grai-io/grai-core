@@ -11,6 +11,7 @@ services:
       - 8000:8000
     environment:
       - DB_HOST=db
+      #- SERVER_HOST=localhost
       #- DEBUG=True
     networks:
       - the_guide
