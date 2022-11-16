@@ -33,6 +33,6 @@ jobs:
       - name: Test building server image when changed
         if: steps.changed-files-specific.outputs.any_changed == 'true'
         uses: docker/build-push-action@v3
-        context: "${{ env.dockerfile_path }}"
         with:
           push: false
+          context: "${{ env.dockerfile_path }}"
