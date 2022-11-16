@@ -31,6 +31,8 @@ const AuthContext = createContext<AuthContextType>({
 
 export default AuthContext
 
+const baseURL = process.env.REACT_APP_SERVER_URL ?? "http://localhost:8000"
+
 type AuthProviderProps = {
   children: ReactNode
 }
@@ -52,7 +54,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const loginUser = async (username: string, password: string) => {
     const response = await fetch(
-      "http://localhost:8000/api/v1/auth/jwttoken/",
+      `${baseURL}/api/v1/auth/jwttoken/`.replace(/([^:])(\/\/+)/g, "$1/"),
       {
         method: "POST",
         headers: {
@@ -81,17 +83,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     password: string,
     password2: string
   ) => {
-    const response = await fetch("http://localhost:8000/api/register/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username,
-        password,
-        password2,
-      }),
-    })
+    const response = await fetch(
+      `${baseURL}/api/register/`.replace(/([^:])(\/\/+)/g, "$1/"),
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          password,
+          password2,
+        }),
+      }
+    )
     if (response.status === 201) {
       navigate("/login")
     } else {

@@ -4,7 +4,8 @@ import dayjs from "dayjs"
 import { useContext } from "react"
 import AuthContext, { Tokens } from "../components/auth/AuthContext"
 
-const baseURL = "http://localhost:8000/api/v1"
+const serverUrl = process.env.REACT_APP_SERVER_URL ?? "http://localhost:8000"
+const baseURL = `${serverUrl}/api/v1`.replace(/([^:])(\/\/+)/g, "$1/")
 
 const useAxios = () => {
   const { authTokens, setUser, setAuthTokens } = useContext(AuthContext)
