@@ -2,21 +2,20 @@ version: "3.7"
 
 services:
   the_guide:
-    #image: ghcr.io/grai-io/grai-core/grai-server:latest
+    # image: ghcr.io/grai-io/grai-core/grai-server:latest
     build: ./app
-    #command: python manage.py runserver 0.0.0.0:8000 # runserver is for development only & can be removed
     volumes:
       - ./app/:/usr/src/app/
     ports:
       - 8000:8000
     environment:
       - DB_HOST=db
-      #- SERVER_HOST=localhost
-      #- DEBUG=True
-    networks:
-      - the_guide
-    env_file:
-      - ./app/env
+      - DB_PORT=5432
+      - DB_NAME=grai
+      - DB_USER=grai
+      - DB_PASSWORD=grai
+      - DJANGO_SUPERUSER_USERNAME=null@grai.io
+      - DJANGO_SUPERUSER_PASSWORD=super_secret
     healthcheck:
       test: "curl -f -v -H 'Accept: application/json' http://localhost:8000/health/"
       interval: 2s
@@ -25,14 +24,10 @@ services:
       start_period: 20s
   db:
     image: postgres:14.3-alpine
-    volumes:
-      - pgdata:/var/lib/postgresql/data/
     environment:
       - POSTGRES_USER=grai
       - POSTGRES_PASSWORD=grai
       - POSTGRES_DB=grai
-    networks:
-      - the_guide
     ports:
       - 5432:5432
     healthcheck:
@@ -44,12 +39,3 @@ services:
     build: ../grai-frontend
     ports:
       - 3000:80
-    # environment:
-    # - REACT_APP_SERVER_URL=localhost:8000
-
-networks:
-  the_guide:
-    driver: bridge
-
-volumes:
-  pgdata:

@@ -120,3 +120,7 @@ venv.bak/
 !/docsrc/build/
 /playground/
 /docs/.buildinfo
+
+# Server specific ignores
+grai-server/app/media
+grai-server/app/staticfiles
