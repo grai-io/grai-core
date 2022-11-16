@@ -1,0 +1,34 @@
+name: Test Build Grai-Server
+
+on:
+  # Compare the preceeding commit of main -> to the current commit of the main branch.
+  # (Note: To compare changes between the last pushed commit to the remote main branch set `since_last_remote_commit: true`)
+  push:
+    branches:
+      - master
+  # Compare the last commit of main -> to the current commit of a PR branch. 
+  # (Note: To compare changes between the last pushed commit to the remote PR branch set `since_last_remote_commit: true`)
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # OR "2" -> To retrieve the preceding commit.
+
+      - name: Get changed files in grai-server
+        id: changed-files-specific
+        uses: tj-actions/changed-files@v34
+        with:
+          files: |
+            grai-server/app/Dockerfile
+    
+      - name: Test building server image when changed
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
+        uses: docker/build-push-action@v3
+        with:
+          push: false
