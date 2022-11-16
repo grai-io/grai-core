@@ -12,6 +12,9 @@ on:
     branches:
       - master
 
+env:
+  dockerfile_path: grai-server/app/Dockerfile
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -25,10 +28,11 @@ jobs:
         uses: tj-actions/changed-files@v34
         with:
           files: |
-            grai-server/app/Dockerfile
+            ${{ env.dockerfile_path }}
     
       - name: Test building server image when changed
         if: steps.changed-files-specific.outputs.any_changed == 'true'
         uses: docker/build-push-action@v3
+        context: "${{ env.dockerfile_path }}"
         with:
           push: false
