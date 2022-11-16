@@ -12,16 +12,17 @@ ENV PYTHONDONTWRITEBYTECODE="1" \
     PIP_DEFAULT_TIMEOUT="100" \
     POETRY_VERSION="1.2.2"
 
-# libpq-dev and gcc are used to install psycopg2.
+# libpq-dev, and gcc are used to install psycopg2.
 # netcat is used to wait for the database to be ready.
 # curl is used to support healthchecks
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+RUN apt update \
+    && apt install -y \
+    apt-utils \
+    netcat \
     libpq-dev \
     gcc \
-    netcat \
-    curl && \
-    rm -rf /var/lib/apt/lists/*
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
 
 COPY . . 
