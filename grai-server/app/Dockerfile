@@ -20,8 +20,7 @@ RUN apt update \
     apt-utils \
     netcat \
     libpq-dev \
-    gcc \
-    curl \
+    gcc curl \
     && rm -rf /var/lib/apt/lists/*
 
 
