@@ -13,7 +13,7 @@ on:
       - master
 
 env:
-  dockerfile_path: ./grai-server/app/Dockerfile
+  dockerfile_path: ./grai-server/app
 
 jobs:
   build:
@@ -28,7 +28,7 @@ jobs:
         uses: tj-actions/changed-files@v34
         with:
           files: |
-            ${{ env.dockerfile_path }}
+            ${{ env.dockerfile_path }}/Dockerfile
     
       - name: Test building server image when changed
         if: steps.changed-files-specific.outputs.any_changed == 'true'
