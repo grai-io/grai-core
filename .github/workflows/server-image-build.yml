@@ -13,7 +13,7 @@ on:
       - master
 
 env:
-  dockerfile_path: grai-server/app/Dockerfile
+  dockerfile_path: ./grai-server/app/Dockerfile
 
 jobs:
   build:
