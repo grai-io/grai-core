@@ -5,12 +5,9 @@
 .vscode/
 **/.vscode/
 .ipynb_checkpoints
-<<<<<<< Updated upstream
 **/.ipynb_checkpoints/
-=======
 .fleet/
 **/.fleet/
->>>>>>> Stashed changes
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
