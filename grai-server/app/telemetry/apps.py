@@ -24,7 +24,7 @@ try:
         )
 
         with configure_scope() as scope:
-            scope.set_tag("posthog_distinct_id", "some distinct id")
+            scope.set_tag("posthog_org_id", orgname)
 except:
     # Don't break anything for the user if something happens with the telemetry
     pass
