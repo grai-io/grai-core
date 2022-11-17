@@ -19,7 +19,7 @@ def clean_hosts(val):
     if isinstance(val, list):
         return [item.strip() for item in val]
     elif isinstance(val, str):
-        return [s.strip() for s in val.split(",")]
+        return [s.strip() for s in val.strip("'\"").split(",")]
     else:
         raise TypeError(f"hosts must be a list or a string not {type(val)}")
 
