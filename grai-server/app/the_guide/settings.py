@@ -1,8 +1,9 @@
 import os
 from pathlib import Path
-
 from decouple import config
 from django.core.management.utils import get_random_secret_key
+import hashlib
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 MEDIA_ROOT = str(BASE_DIR.joinpath("media"))
@@ -23,7 +24,8 @@ def clean_allowed_hosts(val):
         raise
 
 
-SECRET_KEY = config("SECRET_KEY", default=get_random_secret_key())
+SECRET_KEY = config("SECRET_KEY")  # Default secret_key generated in entrypoint.sh
+USER_ID = hashlib.md5(SECRET_KEY.encode()).hexdigest()
 DEBUG = config("DEBUG", default=True, cast=bool)
 TEMPLATE_DEBUG = config("TEMPLATE_DEBUG", default=DEBUG, cast=bool)
 ALLOWED_HOSTS = config(
