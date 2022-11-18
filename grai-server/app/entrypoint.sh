@@ -20,4 +20,5 @@ python manage.py collectstatic --no-input
 export BEGIN_LOGGING="True"
 python manage.py shell < "init.py"
 
+
 exec "$@"
