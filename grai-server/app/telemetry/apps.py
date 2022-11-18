@@ -1,17 +1,16 @@
 import os
 import uuid
-import os
+
 import posthog
 import sentry_sdk
 from django.apps import AppConfig
+from django.conf import settings
 from posthog.sentry.posthog_integration import PostHogIntegration
 from sentry_sdk import configure_scope
 from sentry_sdk.integrations.django import DjangoIntegration
-from django.conf import settings
-
 
 disable_telemetry = os.environ.get("DISABLE_TELEMETRY", False)
-server_version = os.environ.get('GRAI_SERVER_VERSION', 'unknown')
+server_version = os.environ.get("GRAI_SERVER_VERSION", "unknown")
 
 try:
     # https://posthog.com/docs/integrate/server/python
@@ -42,14 +41,14 @@ class TelemetryConfig(AppConfig):
         posthog.host = "https://app.posthog.com"
 
         group_properties = {
-            'name': 'grai-server',
+            "name": "grai-server",
         }
         if os.environ.get("BEGIN_LOGGING", False):
             posthog.capture(
                 settings.USER_ID,
                 event="Server Deployment",
-                groups={'package': 'id:grai-server', 'name': 'grai-server'},
-                #properties={"$group_set": group_properties}
+                groups={"package": "id:grai-server", "name": "grai-server"},
+                # properties={"$group_set": group_properties}
             )
             # posthog.group_identify('package', 'id:grai-server', {
             #     'name': 'grai-server',
