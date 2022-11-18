@@ -4,6 +4,8 @@ services:
   the_guide:
     # image: ghcr.io/grai-io/grai-core/grai-server:latest
     build: ./app
+    volumes:
+      - ./app/:/usr/src/app/
     ports:
       - 8000:8000
     environment:
