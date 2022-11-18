@@ -10,7 +10,7 @@ on:
 env:
   py_ver: "3.10"
   poetry_ver: "1.2.2"
-
+  SECRET_KEY: "fixed-test-key-that-doesnt-matter"
 jobs:
   lint-server:
     runs-on: ubuntu-latest
