@@ -13,6 +13,9 @@ RUN npm cache clean --force
 # Copy app files
 COPY . .
 
+ARG server_url
+ENV REACT_APP_SERVER_URL=$server_url
+
 # Build the app
 RUN npm run build
 

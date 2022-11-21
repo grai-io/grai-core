@@ -36,6 +36,9 @@ services:
       timeout: 2s
       retries: 15
   frontend:
-    build: ../grai-frontend
+    build:
+      context: ../grai-frontend
+      args:
+        server_url: http://localhost:8000
     ports:
       - 3000:80
