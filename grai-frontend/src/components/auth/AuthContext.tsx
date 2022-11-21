@@ -1,6 +1,11 @@
 import { createContext, useState, useEffect, ReactNode } from "react"
 import jwt_decode from "jwt-decode"
 import { useNavigate } from "react-router-dom"
+declare global {
+  interface Window {
+    _env_: any
+  }
+}
 
 type User = {}
 
@@ -31,7 +36,10 @@ const AuthContext = createContext<AuthContextType>({
 
 export default AuthContext
 
-const baseURL = process.env.REACT_APP_SERVER_URL ?? "http://localhost:8000"
+const baseURL =
+  window._env_?.REACT_APP_SERVER_URL ??
+  process.env.REACT_APP_SERVER_URL ??
+  "http://localhost:8000"
 
 type AuthProviderProps = {
   children: ReactNode
