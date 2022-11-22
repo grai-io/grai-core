@@ -1,3 +1,4 @@
+import hashlib
 import os
 from itertools import product
 from pathlib import Path
@@ -24,8 +25,9 @@ def clean_hosts(val):
         raise TypeError(f"hosts must be a list or a string not {type(val)}")
 
 
-SECRET_KEY = config("SECRET_KEY", default=get_random_secret_key())
-DEBUG = config("DEBUG", default=False, cast=bool)
+SECRET_KEY = config("SECRET_KEY")  # Default secret_key generated in entrypoint.sh
+USER_ID = hashlib.md5(SECRET_KEY.encode()).hexdigest()
+DEBUG = config("DEBUG", default=True, cast=bool)
 TEMPLATE_DEBUG = config("TEMPLATE_DEBUG", default=DEBUG, cast=bool)
 
 SERVER_HOST = config("SERVER_HOST", default="localhost", cast=str)
