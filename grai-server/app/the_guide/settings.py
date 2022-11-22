@@ -1,3 +1,4 @@
+import hashlib
 import os
 from pathlib import Path
 
@@ -23,7 +24,8 @@ def clean_allowed_hosts(val):
         raise
 
 
-SECRET_KEY = config("SECRET_KEY", default=get_random_secret_key())
+SECRET_KEY = config("SECRET_KEY")  # Default secret_key generated in entrypoint.sh
+USER_ID = hashlib.md5(SECRET_KEY.encode()).hexdigest()
 DEBUG = config("DEBUG", default=True, cast=bool)
 TEMPLATE_DEBUG = config("TEMPLATE_DEBUG", default=DEBUG, cast=bool)
 ALLOWED_HOSTS = config(
@@ -57,7 +59,7 @@ DJANGO_CORE_APPS = [
 
 THIRD_PARTY_APPS = [
     "whitenoise.runserver_nostatic",
-    "strawberry.django",
+    # "strawberry.django",
     "rest_framework",
     "phonenumber_field",
     "corsheaders",
