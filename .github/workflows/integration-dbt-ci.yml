@@ -1,9 +1,13 @@
 name: CI Workflow for the Grai DBT integration
 on:
   push:
+    branches:
+      - master
     paths:
     - "grai-integration/source-dbt/**"
   pull_request:
+    branches:
+      - master
     paths:
     - "grai-integration/source-dbt/**"
 

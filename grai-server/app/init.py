@@ -1,5 +1,10 @@
+import os
+
 from decouple import config
 from django.contrib.auth import get_user_model
+from django.core.management.utils import get_random_secret_key
+
+## Init Superuser
 
 User = get_user_model()
 
@@ -13,3 +18,8 @@ if not username and email:
 if username and password and not User.objects.filter(is_superuser=True).exists():
     print(f"Creating superuser {username}")
     User.objects.create_superuser(username, password)
+
+
+## Init Secret Key
+
+SECRET_KEY = config("SECRET_KEY")
