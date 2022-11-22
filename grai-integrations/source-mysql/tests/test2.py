@@ -1,50 +1,7 @@
-import psycopg2
-import psycopg2.extras
+from grai_source_mysql.base import update_server
+from grai_client.endpoints.v1.client import ClientV1
 
-connection_args = {
-    'host': 'localhost',
-    'database': 'docker',
-    'user': 'docker',
-    'password': 'docker',
-    'port': '5432'
-}
+client = ClientV1("localhost","8000")
+client.set_authentication_headers("null@grai.io","super_secret")
 
-mydb = psycopg2.connect(**connection_args)
-
-#mydb = mysql.connector.connect(
-#  host="localhost",
-#  user="docker", 
-#  password="docker",
-#  database="db"
-#)
-
-mycursor = mydb.cursor()
-
-query = ("""
-            SELECT table_schema, table_name
-            FROM information_schema.tables
-            WHERE table_schema != 'pg_catalog'
-            AND table_schema != 'information_schema'
-            AND table_type='BASE TABLE'
-            ORDER BY table_schema, table_name
-            """)
-
-with mydb.cursor(
-            cursor_factory=psycopg2.extras.RealDictCursor
-        ) as cursor:
-            cursor.execute(query)
-            myresult = cursor.fetchall()
-
-
-for x in myresult:
-  print(x)
-
-print(type(myresult))
-
-fruits = ["Apple", "Pear", "Peach", "Banana"]
-
-fruit_dictionary = { fruit : "In stock" for fruit in fruits }
-
-print(fruit_dictionary)
-
-print(type(fruit_dictionary))
+update_server(client, dbname='db', user='docker', password='docker', namespace='jaffle_shop', host='localhost', port='3306')
