@@ -4,7 +4,7 @@
 
 APP=grai-server_the_guide_1
 GHCR_REPOSITORY=ghcr.io/grai-io/grai-core/grai-frontend
-APP_VERSION="0.0.1"
+APP_VERSION=`npm -j ls grai-frontend | jq -r .version`
 BUILD_DIRECTORY="."
 
 
