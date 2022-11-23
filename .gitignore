@@ -6,6 +6,8 @@
 **/.vscode/
 .ipynb_checkpoints
 **/.ipynb_checkpoints/
+.fleet/
+**/.fleet/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -115,3 +117,7 @@ venv.bak/
 !/docsrc/build/
 /playground/
 /docs/.buildinfo
+
+# Server specific ignores
+grai-server/app/media
+grai-server/app/staticfiles

@@ -2,7 +2,7 @@
 FROM python:3.10.5-slim-buster AS build
 
 WORKDIR /usr/src/app
-ENV PYTHONDONTWRITEBYTECODE="1" \
+ARG PYTHONDONTWRITEBYTECODE="1" \
     PYTHONUNBUFFERED="1" \
     OUR_ENV="${YOUR_ENV}" \
     PYTHONFAULTHANDLER="1" \
@@ -12,12 +12,20 @@ ENV PYTHONDONTWRITEBYTECODE="1" \
     PIP_DEFAULT_TIMEOUT="100" \
     POETRY_VERSION="1.2.2"
 
-# libpq-dev and gcc are used to install psycopg2.
+# libpq-dev, and gcc are used to install psycopg2.
 # netcat is used to wait for the database to be ready.
+# curl is used to support healthchecks
 RUN apt update \
-    && apt install -y apt-utils netcat libpq-dev gcc curl
+    && apt install -y \
+    apt-utils \
+    netcat \
+    libpq-dev \
+    gcc \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
-COPY . .
+
+COPY . . 
 
 RUN pip install "poetry==$POETRY_VERSION"
 RUN poetry config virtualenvs.create false  \
@@ -25,6 +33,7 @@ RUN poetry config virtualenvs.create false  \
     && rm -rf ~/.cache/pypoetry/cache \
     && rm -rf ~/.cache/pypoetry/artifacts
 
+
 RUN chmod +x /usr/src/app/entrypoint.sh
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
-CMD gunicorn --bind 0.0.0.0:8000 the_guide.wsgi
+CMD gunicorn the_guide.wsgi -b 0.0.0.0:8000 -w 2
