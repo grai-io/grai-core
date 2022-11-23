@@ -6,6 +6,8 @@
 **/.vscode/
 .ipynb_checkpoints
 **/.ipynb_checkpoints/
+.fleet/
+**/.fleet/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

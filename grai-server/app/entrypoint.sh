@@ -1,7 +1,11 @@
 #!/bin/bash
 
+
+host="${DB_HOST:-localhost}"
+port="${DB_PORT:-5432}"
+
 echo "Waiting for postgres..."
-while ! nc -z $DB_HOST $DB_PORT; do sleep 1; done
+while ! nc -z $host $port; do sleep 1; done
 echo "PostgreSQL started"
 
 # Set the current package version as an environment variable
