@@ -24,11 +24,11 @@ def test_building_nodes():
     assert len(tables) > 0
 
 
-#def test_building_edges():
- #   with connection.connect() as conn:
-  #      edges = conn.get_foreign_keys()
-#
- #   assert len(edges) > 0, edges
+def test_building_edges():
+    with connection.connect() as conn:
+        edges = conn.get_foreign_keys()
+
+    assert len(edges) > 0, edges
 
 
 def test_connector_from_env_vars():
