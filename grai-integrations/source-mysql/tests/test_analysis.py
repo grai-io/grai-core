@@ -1,6 +1,6 @@
 from grai_client.endpoints.v1.client import ClientV1
 from grai_source_mysql.base import update_server
-from grai_source_mysql.loader import mysqlConnector
+from grai_source_mysql.loader import MySQLConnector
 
 test_credentials = {
     "host": "localhost",
