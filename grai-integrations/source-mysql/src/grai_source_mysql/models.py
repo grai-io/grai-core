@@ -90,8 +90,6 @@ class Table(mysqlNode):
     def make_full_name(cls, full_name, values):
         if full_name is not None:
             return full_name
-        print('test')
-        print(values)
         return f"{values['table_schema']}.{values['name']}"
 
     def get_edges(self):

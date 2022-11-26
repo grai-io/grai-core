@@ -80,7 +80,6 @@ class MySQLConnector:
         dict_cursor = self.connection.cursor(dictionary=True)
         dict_cursor.execute(query, param_dict)
         result = dict_cursor.fetchall()
-        print(type(result))
         return [dict(item) for item in result]
 
     def get_tables(self) -> List[Table]:
@@ -97,10 +96,8 @@ class MySQLConnector:
 		    AND table_schema != 'performance_schema'
             ORDER BY table_schema, table_name
         """
-        return [
-            Table(**result, namespace=self.namespace)
-            for result in self.query_runner(query)
-        ]
+        res = ({k.lower(): v for k, v in result.items()} for result in self.query_runner(query))
+        return [Table(**result, namespace=self.namespace) for result in res]
 
     def get_columns(self, table: Table) -> List[Column]:
         """
@@ -115,12 +112,15 @@ class MySQLConnector:
             AND table_name = '{table.name}'
             ORDER BY ordinal_position
         """
+
+        res = ({k.lower(): v for k, v in result.items()} for result in self.query_runner(query))
+
         addtl_args = {
             "namespace": table.namespace,
             "schema": table.table_schema,
             "table": table.name,
         }
-        return [Column(**result, **addtl_args) for result in self.query_runner(query)]
+        return [Column(**result, **addtl_args) for result in res]
 
     def get_foreign_keys(self) -> List[Edge]:
         """This needs to be tested / evaluated
@@ -129,19 +129,19 @@ class MySQLConnector:
         :return:
         """
         # Only need constraint_types == 'f' for foreign keys but the others might be useful someday.
-        # How to do with scheema concept, not used in MySQL?
+        # Removed schemas, no schemas in mysql
         query = """
         select
             tc.CONSTRAINT_NAME as constraint_name,
             case when tc.CONSTRAINT_TYPE='PRIMARY KEY' then 'p'
-                when tc.CONSTRAINT_TYPE='FOREIGN KEY' then 'f' end as constrint_type,
-            'public' as self_schema,
-            tc.TABLE_NAME as self_table, 
-            JSON_ARRAYAGG(kcu.COLUMN_NAME) self_columns,
-            'public' as foreign_schema,
-            kcu.REFERENCED_TABLE_NAME as foreign_table,
-            JSON_ARRAYAGG(kcu.REFERENCED_COLUMN_NAME) as foreign_columns,
-            CONCAT(tc.CONSTRAINT_TYPE, ' (', GROUP_CONCAT(kcu.COLUMN_NAME), ')', (case when tc.CONSTRAINT_TYPE = 'FOREIGN KEY' then CONCAT(' REFERENCES ',kcu.REFERENCED_TABLE_NAME,'(',GROUP_CONCAT(kcu.REFERENCED_COLUMN_NAME),')') else '' end) ) as definition
+                when tc.CONSTRAINT_TYPE='FOREIGN KEY' then 'f' end as constraint_type,
+            tc.TABLE_schema as "self_schema", 
+            tc.TABLE_NAME as "self_table", 
+            GROUP_CONCAT(kcu.COLUMN_NAME SEPARATOR ',') "self_columns",
+            kcu.TABLE_schema as "foreign_schema", 
+            kcu.REFERENCED_TABLE_NAME as "foreign_table",
+            GROUP_CONCAT(kcu.REFERENCED_COLUMN_NAME SEPARATOR ',') as "foreign_columns",
+            CONCAT(tc.CONSTRAINT_TYPE, ' (', GROUP_CONCAT(kcu.COLUMN_NAME), ')', (case when tc.CONSTRAINT_TYPE = 'FOREIGN KEY' then CONCAT(' REFERENCES ',kcu.REFERENCED_TABLE_NAME,'(',GROUP_CONCAT(kcu.REFERENCED_COLUMN_NAME),')') else '' end) ) as "definition"
         from
             information_schema.TABLE_CONSTRAINTS tc 
         join information_schema.KEY_COLUMN_USAGE kcu on 
@@ -154,15 +154,26 @@ class MySQLConnector:
             tc.CONSTRAINT_NAME,
             tc.CONSTRAINT_TYPE,
             tc.TABLE_NAME,
-            kcu.REFERENCED_TABLE_NAME;
+            tc.TABLE_schema,
+            kcu.TABLE_schema,
+            kcu.REFERENCED_TABLE_NAME
         """
         addtl_args = {
             "namespace": self.namespace,
         }
-        results = self.query_runner(query)
+
+        res = self.query_runner(query)
+
+        for i in res:
+            i["self_columns"] = list(i["self_columns"].split(","))
+            i["foreign_columns"] = list(i["foreign_columns"].split(","))
+
+        res = ({k.lower(): v for k, v in result.items()} for result in res)
+
         filtered_results = (
-            result for result in results if result["constraint_type"] == "f"
+            result for result in res if result["constraint_type"] == "f"
         )
+        
         return [EdgeQuery(**fk, **addtl_args).to_edge() for fk in filtered_results]
 
     def get_nodes(self) -> List[mysqlNode]:
