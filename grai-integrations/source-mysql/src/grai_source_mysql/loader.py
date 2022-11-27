@@ -55,7 +55,7 @@ class MySQLConnector:
 
     @property
     def connection_dict(self) -> dict:
-        return {'host': 'localhost','database': 'db','user': 'docker','password': 'docker'}
+        return {'host': self.host,'database': self.dbname ,'user': self.user,'password': self.password, 'port': self.port}
 
     def connect(self):
         if self._connection is None:
