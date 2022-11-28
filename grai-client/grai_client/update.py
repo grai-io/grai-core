@@ -15,6 +15,9 @@ def deactivate(items: List[T]) -> List[T]:
 
 
 def update(client: BaseClient, items: List[T], active_items: Optional[List[T]] = None):
+    if not items:
+        return
+
     if active_items is None:
         active_items: List[T] = client.get(items[0].type)
         if active_items is None:
