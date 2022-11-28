@@ -1,4 +1,4 @@
-name: CI Workflow for the Grai the Grai MySQL Integration
+name: MySQL Integration CI
 on:
   # push:
   #   branches:
@@ -7,8 +7,8 @@ on:
   #   - "grai-integration/source-mysql/**"
   pull_request:
     types: [opened, synchronize, reopened]
-    paths:
-    - "grai-integration/source-mysql/**"
+    # paths:
+    # - "grai-integration/source-mysql/**"
 env:
   py_ver: "3.10"
   poetry_ver: "1.2.2"
