@@ -72,10 +72,6 @@ class MySQLConnector:
         self._connection = None
 
     def query_runner(self, query: str, param_dict: Dict = {}) -> List[Dict]:
-        # Replace psycog2 with mysql connector and return dictionary
-        # with self.connection.cursor(
-        #    cursor_factory=psycopg2.extras.RealDictCursor
-        # ) as cursor:
         dict_cursor = self.connection.cursor(dictionary=True)
         dict_cursor.execute(query, param_dict)
         result = dict_cursor.fetchall()
@@ -169,9 +165,15 @@ class MySQLConnector:
 
         res = self.query_runner(query)
 
-        for i in res:
-            i["self_columns"] = list(i["self_columns"].split(","))
-            i["foreign_columns"] = list(i["foreign_columns"].split(","))
+        for item in res:
+            item["self_columns"] = (
+                list(item["self_columns"].split(",")) if item["self_columns"] else []
+            )
+            item["foreign_columns"] = (
+                list(item["foreign_columns"].split(","))
+                if item["foreign_columns"]
+                else []
+            )
 
         res = ({k.lower(): v for k, v in result.items()} for result in res)
 

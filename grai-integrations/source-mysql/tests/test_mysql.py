@@ -1,7 +1,11 @@
 import os
 
 import pytest
+from grai_client.schemas.edge import EdgeV1
+from grai_client.schemas.node import NodeV1
+from grai_source_mysql.adapters import adapt_to_client
 from grai_source_mysql.loader import MySQLConnector
+from grai_source_mysql.models import Column, ColumnID, Edge, Table
 
 # Tests only run with a separate mysql container deployed
 # TODO: Mock the DB connection:
@@ -15,6 +19,17 @@ test_credentials = {
 
 
 connection = MySQLConnector(**test_credentials)
+
+tables = [
+    Table(
+        name="test",
+        namespace="tests",
+        table_schema="test",
+        columns=[],
+        metadata={"thing": "here"},
+    )
+]
+table_values = [(item, "v1", NodeV1) for item in tables]
 
 
 def test_building_nodes():
