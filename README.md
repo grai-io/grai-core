@@ -25,7 +25,7 @@
 ## Introduction
 
 **Data lineage made simple.**
-Grai makes it easy to understand how your data relates together across databases, warehouses, APIs and dashboards.
+Grai makes it easy to understand how your data relates across databases, warehouses, APIs and dashboards.
 
 
 * **Pre-built connectors.** Automatically synchronize lineage from across the stack so your metadata is never out of date.
