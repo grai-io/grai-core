@@ -7,8 +7,8 @@ on:
   #   - "grai-integration/source-mysql/**"
   pull_request:
     types: [opened, synchronize, reopened]
-    # paths:
-    # - "grai-integration/source-mysql/**"
+    paths:
+    - "grai-integration/source-mysql/**"
 env:
   py_ver: "3.10"
   poetry_ver: "1.2.2"
@@ -70,15 +70,15 @@ jobs:
           --health-interval 2s
           --health-retries 10
           --health-start-period 30s
-        test_db:
-          image: mysql:latest
-          env:
-            MYSQL_ROOT_PASSWORD: grai
-            MYSQL_USER: grai
-            MYSQL_PASSWORD: grai
-            MYSQL_DATABASE: grai
-          ports:
-            - 3306:3306
+      test_db:
+        image: mysql:latest
+        env:
+          MYSQL_ROOT_PASSWORD: grai
+          MYSQL_USER: grai
+          MYSQL_PASSWORD: grai
+          MYSQL_DATABASE: grai
+        ports:
+          - 3306:3306
     steps:
     - uses: actions/checkout@v3
 
