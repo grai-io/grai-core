@@ -4,10 +4,10 @@ from grai_source_postgres.loader import PostgresConnector
 
 test_credentials = {
     "host": "localhost",
-    "port": "5433",
-    "dbname": "docker",
-    "user": "docker",
-    "password": "docker",
+    "port": "5432",
+    "dbname": "grai",
+    "user": "grai",
+    "password": "grai",
     "namespace": "test",
 }
 
