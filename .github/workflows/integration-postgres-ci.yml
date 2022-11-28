@@ -4,16 +4,16 @@ on:
     branches:
       - master
     paths:
-    - "grai-integration/source-postgres/**"
+    - "grai-integrations/source-postgres/**"
   pull_request:
     branches:
       - master
     paths:
-    - "grai-integration/source-postgres/**"
+    - "grai-integrations/source-postgres/**"
 env:
   py_ver: "3.10"
   poetry_ver: "1.2.2"
-  project_dir: "grai-integration/source-postgres"
+  project_dir: "grai-integrations/source-postgres"
 
 jobs:
   lint-integration-postgres:

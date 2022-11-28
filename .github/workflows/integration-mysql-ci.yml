@@ -8,11 +8,11 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
-    - "grai-integration/source-mysql/**"
+    - "grai-integrations/source-mysql/**"
 env:
   py_ver: "3.10"
   poetry_ver: "1.2.2"
-  project_dir: "grai-integration/source-mysql"
+  project_dir: "grai-integrations/source-mysql"
 
 jobs:
   lint-integration-mysql:
