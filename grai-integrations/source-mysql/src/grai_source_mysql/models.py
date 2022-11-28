@@ -4,11 +4,11 @@ from typing import Any, Dict, List, Optional, Union
 from pydantic import BaseModel, Field, root_validator, validator
 
 
-class mysqlNode(BaseModel):
+class MysqlNode(BaseModel):
     pass
 
 
-class ID(mysqlNode):
+class ID(MysqlNode):
     name: str
     namespace: str
     full_name: str
@@ -39,7 +39,7 @@ class ColumnID(ID):
         return values
 
 
-class Column(mysqlNode):
+class Column(MysqlNode):
     name: str = Field(alias="column_name")
     table: str
     column_schema: str = Field(alias="schema")
@@ -75,7 +75,7 @@ class Edge(BaseModel):
     metadata: Optional[Dict] = None
 
 
-class Table(mysqlNode):
+class Table(MysqlNode):
     name: str = Field(alias="table_name")
     table_schema: str = Field(alias="schema")
     namespace: str
