@@ -1,16 +1,14 @@
 name: CI Workflow for the Grai the Grai MySQL Integration
 on:
-  push:
-    branches:
-      - master
-    paths:
-    - "grai-integration/source-mysql/**"
+  # push:
+  #   branches:
+  #     - master
+  #   paths:
+  #   - "grai-integration/source-mysql/**"
   pull_request:
-    branches:
-      - master
+    types: [opened, synchronize, reopened]
     paths:
     - "grai-integration/source-mysql/**"
-
 env:
   py_ver: "3.10"
   poetry_ver: "1.2.2"
@@ -45,15 +43,16 @@ jobs:
       run:
         working-directory: ${{ env.project_dir }}
     services:
-      db:
-        image: mysql
+      postgres:
+        image: postgres:latest
         env:
-          MYSQL_ROOT_PASSWORD: grai
-          MYSQL_USER: grai
-          MYSQL_PASSWORD: grai
-          MYSQL_DATABASE: grai
+          POSTGRES_USER: grai
+          POSTGRES_PASSWORD: grai
+          POSTGRES_DB: grai
         ports:
-          - 3306:3306
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 2s --health-timeout 5s --health-retries 15
       the_guide:
         image: ghcr.io/grai-io/grai-core/grai-server:latest
         env:
@@ -61,7 +60,7 @@ jobs:
           DB_PASSWORD: grai
           DB_NAME: grai
           DB_PORT: "3306"
-          DB_HOST: "db"
+          DB_HOST: "postgres"
           DJANGO_SUPERUSER_USERNAME: null@grai.io
           DJANGO_SUPERUSER_PASSWORD: super_secret
         ports:
@@ -71,6 +70,15 @@ jobs:
           --health-interval 2s
           --health-retries 10
           --health-start-period 30s
+        test_db:
+          image: mysql:latest
+          env:
+            MYSQL_ROOT_PASSWORD: grai
+            MYSQL_USER: grai
+            MYSQL_PASSWORD: grai
+            MYSQL_DATABASE: grai
+          ports:
+            - 3306:3306
     steps:
     - uses: actions/checkout@v3
 
