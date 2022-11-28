@@ -1,0 +1,85 @@
+name: CI Workflow for the Grai the Grai MySQL Integration
+on:
+  push:
+    branches:
+      - master
+    paths:
+    - "grai-integration/source-mysql/**"
+  pull_request:
+    branches:
+      - master
+    paths:
+    - "grai-integration/source-mysql/**"
+
+env:
+  py_ver: "3.10"
+  poetry_ver: "1.2.2"
+  project_dir: "grai-integration/source-mysql"
+
+jobs:
+  lint-integration-mysql:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.project_dir }}
+    steps:
+    - name: Check out Git repository
+      uses: actions/checkout@v3
+
+    - name: Install Python
+      id: setup-python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "${{ env.py_ver }}"
+
+    - run: pip install black isort
+
+    - run: |
+        black . --check
+        isort . --profile black
+
+  tests-integration-mysql:
+    needs: lint-integration-mysql
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.project_dir }}
+    services:
+      db:
+        image: mysql
+        env:
+          MYSQL_ROOT_PASSWORD: grai
+          MYSQL_USER: grai
+          MYSQL_PASSWORD: grai
+          MYSQL_DATABASE: grai
+        ports:
+          - 3306:3306
+      the_guide:
+        image: ghcr.io/grai-io/grai-core/grai-server:latest
+        env:
+          DB_USER: grai
+          DB_PASSWORD: grai
+          DB_NAME: grai
+          DB_PORT: "3306"
+          DB_HOST: "db"
+          DJANGO_SUPERUSER_USERNAME: null@grai.io
+          DJANGO_SUPERUSER_PASSWORD: super_secret
+        ports:
+          - 8000:8000
+        options: >-
+          --health-cmd "curl -f http://localhost:8000/health/ || exit 1"
+          --health-interval 2s
+          --health-retries 10
+          --health-start-period 30s
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: actions/setup-python@v4
+      with:
+        python-version: "${{ env.py_ver }}"
+
+    - run: |
+        pip install pytest
+        pip install .
+
+    - run: pytest

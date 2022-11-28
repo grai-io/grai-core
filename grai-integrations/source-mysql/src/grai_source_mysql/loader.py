@@ -2,17 +2,10 @@ import os
 from itertools import chain
 from typing import Any, Callable, Dict, List, Optional, Union
 
-#import psycopg
-#import psycopg2.extras
+# import psycopg
+# import psycopg2.extras
 import mysql.connector
-from grai_source_mysql.models import (
-    Column,
-    ColumnID,
-    Edge,
-    EdgeQuery,
-    MysqlNode,
-    Table,
-)
+from grai_source_mysql.models import Column, ColumnID, Edge, EdgeQuery, MysqlNode, Table
 
 
 def get_from_env(label: str, default: Optional[Any] = None, validator: Callable = None):
@@ -55,7 +48,13 @@ class MySQLConnector:
 
     @property
     def connection_dict(self) -> dict:
-        return {'host': self.host,'database': self.dbname ,'user': self.user,'password': self.password, 'port': self.port}
+        return {
+            "host": self.host,
+            "database": self.dbname,
+            "user": self.user,
+            "password": self.password,
+            "port": self.port,
+        }
 
     def connect(self):
         if self._connection is None:
@@ -76,7 +75,7 @@ class MySQLConnector:
         # Replace psycog2 with mysql connector and return dictionary
         # with self.connection.cursor(
         #    cursor_factory=psycopg2.extras.RealDictCursor
-        #) as cursor:
+        # ) as cursor:
         dict_cursor = self.connection.cursor(dictionary=True)
         dict_cursor.execute(query, param_dict)
         result = dict_cursor.fetchall()
@@ -96,7 +95,10 @@ class MySQLConnector:
 		    AND table_schema != 'performance_schema'
             ORDER BY table_schema, table_name
         """
-        res = ({k.lower(): v for k, v in result.items()} for result in self.query_runner(query))
+        res = (
+            {k.lower(): v for k, v in result.items()}
+            for result in self.query_runner(query)
+        )
         return [Table(**result, namespace=self.namespace) for result in res]
 
     def get_columns(self, table: Table) -> List[Column]:
@@ -113,7 +115,10 @@ class MySQLConnector:
             ORDER BY ordinal_position
         """
 
-        res = ({k.lower(): v for k, v in result.items()} for result in self.query_runner(query))
+        res = (
+            {k.lower(): v for k, v in result.items()}
+            for result in self.query_runner(query)
+        )
 
         addtl_args = {
             "namespace": table.namespace,
@@ -135,22 +140,22 @@ class MySQLConnector:
             tc.CONSTRAINT_NAME as constraint_name,
             case when tc.CONSTRAINT_TYPE='PRIMARY KEY' then 'p'
                 when tc.CONSTRAINT_TYPE='FOREIGN KEY' then 'f' end as constraint_type,
-            tc.TABLE_schema as "self_schema", 
-            tc.TABLE_NAME as "self_table", 
+            tc.TABLE_schema as "self_schema",
+            tc.TABLE_NAME as "self_table",
             GROUP_CONCAT(kcu.COLUMN_NAME SEPARATOR ',') "self_columns",
-            kcu.TABLE_schema as "foreign_schema", 
+            kcu.TABLE_schema as "foreign_schema",
             kcu.REFERENCED_TABLE_NAME as "foreign_table",
             GROUP_CONCAT(kcu.REFERENCED_COLUMN_NAME SEPARATOR ',') as "foreign_columns",
             CONCAT(tc.CONSTRAINT_TYPE, ' (', GROUP_CONCAT(kcu.COLUMN_NAME), ')', (case when tc.CONSTRAINT_TYPE = 'FOREIGN KEY' then CONCAT(' REFERENCES ',kcu.REFERENCED_TABLE_NAME,'(',GROUP_CONCAT(kcu.REFERENCED_COLUMN_NAME),')') else '' end) ) as "definition"
         from
-            information_schema.TABLE_CONSTRAINTS tc 
-        join information_schema.KEY_COLUMN_USAGE kcu on 
-            (kcu.TABLE_SCHEMA = tc.TABLE_SCHEMA 
-            or kcu.REFERENCED_TABLE_SCHEMA = tc.TABLE_SCHEMA) 
-            and (kcu.TABLE_NAME = tc.TABLE_NAME 
+            information_schema.TABLE_CONSTRAINTS tc
+        join information_schema.KEY_COLUMN_USAGE kcu on
+            (kcu.TABLE_SCHEMA = tc.TABLE_SCHEMA
+            or kcu.REFERENCED_TABLE_SCHEMA = tc.TABLE_SCHEMA)
+            and (kcu.TABLE_NAME = tc.TABLE_NAME
             or kcu.REFERENCED_TABLE_NAME = tc.TABLE_NAME)
-            and kcu.CONSTRAINT_NAME = tc.CONSTRAINT_NAME  
-        group by 
+            and kcu.CONSTRAINT_NAME = tc.CONSTRAINT_NAME
+        group by
             tc.CONSTRAINT_NAME,
             tc.CONSTRAINT_TYPE,
             tc.TABLE_NAME,
@@ -173,7 +178,7 @@ class MySQLConnector:
         filtered_results = (
             result for result in res if result["constraint_type"] == "f"
         )
-        
+
         return [EdgeQuery(**fk, **addtl_args).to_edge() for fk in filtered_results]
 
     def get_nodes(self) -> List[MysqlNode]:

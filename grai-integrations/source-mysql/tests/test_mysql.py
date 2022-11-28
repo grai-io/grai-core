@@ -4,7 +4,7 @@ import pytest
 from grai_source_mysql.loader import MySQLConnector
 
 # Tests only run with a separate mysql container deployed
-# TODO: Mock the DB connection: 
+# TODO: Mock the DB connection:
 test_credentials = {
     "host": "localhost",
     "dbname": "grai",
