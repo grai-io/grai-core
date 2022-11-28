@@ -20,7 +20,6 @@ black = "^22.6.0"
 mypy = "^0.971"
 isort = "^5.10.1"
 types-PyYAML = "^6.0.11"
-types-psycopg2 = "^2.9.18"
 pytest = "^7.2.0"
 
 [tool.isort]

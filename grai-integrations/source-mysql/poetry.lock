@@ -309,14 +309,6 @@ optional = false
 python-versions = ">=3.7"
 
 [[package]]
-name = "types-psycopg2"
-version = "2.9.21.1"
-description = "Typing stubs for psycopg2"
-category = "dev"
-optional = false
-python-versions = "*"
-
-[[package]]
 name = "types-pyyaml"
 version = "6.0.12.1"
 description = "Typing stubs for PyYAML"
@@ -348,7 +340,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "b252fa5849ccac0969246afbc67c5793945b750f2dd362c5070ea3379b90a063"
+content-hash = "5ab021fd8a8eb7c9014c78c7bca141735a8e47dacbdc7d6ade83c5080a19cc3d"
 
 [metadata.files]
 attrs = [
@@ -612,10 +604,6 @@ requests = [
 tomli = [
     {file = "tomli-2.0.1-py3-none-any.whl", hash = "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc"},
     {file = "tomli-2.0.1.tar.gz", hash = "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"},
-]
-types-psycopg2 = [
-    {file = "types-psycopg2-2.9.21.1.tar.gz", hash = "sha256:f5532cf15afdc6b5ebb1e59b7d896617217321f488fd1fbd74e7efb94decfab6"},
-    {file = "types_psycopg2-2.9.21.1-py3-none-any.whl", hash = "sha256:858838f1972f39da2a6e28274201fed8619a40a235dd86e7f66f4548ec474395"},
 ]
 types-pyyaml = [
     {file = "types-PyYAML-6.0.12.1.tar.gz", hash = "sha256:70ccaafcf3fb404d57bffc1529fdd86a13e8b4f2cf9fc3ee81a6408ce0ad59d2"},
