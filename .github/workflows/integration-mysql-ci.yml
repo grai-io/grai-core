@@ -36,18 +36,23 @@ jobs:
     defaults:
       run:
         working-directory: ${{ env.project_dir }}
-    services:
-      test_db:
-        image: mysql:latest
-        env:
-          MYSQL_ROOT_PASSWORD: grai
-          MYSQL_USER: grai
-          MYSQL_PASSWORD: grai
-          MYSQL_DATABASE: grai
-        ports:
-          - 3306:3306
+    # services:
+    #   test_db:
+    #     image: mysql:latest
+    #     env:
+    #       MYSQL_ROOT_PASSWORD: grai
+    #       MYSQL_USER: grai
+    #       MYSQL_PASSWORD: grai
+    #       MYSQL_DATABASE: grai
+    #     ports:
+    #       - 3306:3306
     steps:
     - uses: actions/checkout@v3
+
+    - name: Set up MySQL
+      run: |
+        sudo /etc/init.d/mysql start
+        sh ./data/scripts/init-db.sh
 
     - uses: actions/setup-python@v4
       with:
