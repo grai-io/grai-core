@@ -1,13 +1,6 @@
-name: CI Workflow for the Grai the Grai Postgres Integration
+name: Postgres Integration CI
 on:
-  push:
-    branches:
-      - master
-    paths:
-    - "grai-integrations/source-postgres/**"
   pull_request:
-    branches:
-      - master
     paths:
     - "grai-integrations/source-postgres/**"
 env:

@@ -1,13 +1,6 @@
 name: CI Workflow for Grai CLI
 on:
-  push:
-    branches:
-      - master
-    paths:
-    - "grai-cli/**"
   pull_request:
-    branches:
-      - master
     paths:
     - 'grai-cli/**'
 env:

@@ -1,12 +1,6 @@
 name: MySQL Integration CI
 on:
-  # push:
-  #   branches:
-  #     - master
-  #   paths:
-  #   - "grai-integration/source-mysql/**"
   pull_request:
-    types: [opened, synchronize, reopened]
     paths:
     - "grai-integrations/source-mysql/**"
 env:

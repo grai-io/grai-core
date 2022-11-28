@@ -1,13 +1,6 @@
-name: CI Workflow for the Grai flat file integration
+name: Flat File Integration CI
 on:
-  push:
-    branches:
-      - master
-    paths:
-    - "grai-integrations/source-flat-file/**"
   pull_request:
-    branches:
-      - master
     paths:
     - "grai-integrations/source-flat-file/**"
 
