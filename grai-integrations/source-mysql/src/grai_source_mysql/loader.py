@@ -10,7 +10,7 @@ from grai_source_mysql.models import (
     ColumnID,
     Edge,
     EdgeQuery,
-    mysqlNode,
+    MysqlNode,
     Table,
 )
 
@@ -176,7 +176,7 @@ class MySQLConnector:
         
         return [EdgeQuery(**fk, **addtl_args).to_edge() for fk in filtered_results]
 
-    def get_nodes(self) -> List[mysqlNode]:
+    def get_nodes(self) -> List[MysqlNode]:
         def get_nodes():
             for table in self.get_tables():
                 table.columns = self.get_columns(table)
