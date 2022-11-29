@@ -6,10 +6,9 @@ on:
   push:
     branches:
       - master
-  # Compare the last commit of main -> to the current commit of a PR branch. 
+  # Compare the last commit of main -> to the current commit of a PR branch.
   # (Note: To compare changes between the last pushed commit to the remote PR branch set `since_last_remote_commit: true`)
   pull_request:
-    #types: [opened, reopened]
     branches:
       - master
 
@@ -30,7 +29,7 @@ jobs:
         with:
           files: |
             ${{ env.dockerfile_path }}/Dockerfile
-    
+
       - name: Test building server image when changed
         if: steps.changed-files-specific.outputs.any_changed == 'true'
         uses: docker/build-push-action@v3
