@@ -57,8 +57,9 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Set up MySQL
+      working-directory: ./data/scripts
       run: |
-        sh ./data/scripts/init-db.sh
+        sh init-db.sh
 
     - uses: actions/setup-python@v4
       with:
