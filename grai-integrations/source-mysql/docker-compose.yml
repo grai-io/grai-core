@@ -37,7 +37,7 @@ services:
   mysql:
     image: mysql:latest
     volumes:
-      - ./data/schema/:/docker-entrypoint-initdb.d
+     - ./data/schema/:/docker-entrypoint-initdb.d
     environment:
       MYSQL_ROOT_PASSWORD: grai
       MYSQL_USER: grai
