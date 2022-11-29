@@ -4,7 +4,7 @@ user="${DB_USER:-grai}"
 password="${DB_PASSWORD:-grai}"
 database="${DB_DATABASE:-grai}"
 
-for file in `find '../schema' -type f -name '*.sql'`
+for file in `find ../schema -type f -name *.sql`
   do
     mysql -u $user -p $password -h $host $database < $file
  done
