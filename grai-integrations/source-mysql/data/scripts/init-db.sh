@@ -6,5 +6,6 @@ database="${DB_DATABASE:-grai}"
 
 for file in `find ../schema -type f -name *.sql`
   do
-    mysql -u $user -p $password -h $host $database < $file
+    echo "Executing $file"
+    mysql -u $user --password=$password -h $host --protocol=TCP $database < $file
  done
