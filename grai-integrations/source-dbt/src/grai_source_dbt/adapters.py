@@ -13,8 +13,8 @@ def adapt_to_client(current: Any, desired: Any):
 @adapt_to_client.register
 def adapt_column_to_client(current: SupportedNodeTypes, version: Literal["v1"] = "v1"):
     spec_dict = {
-        "name": current.unique_id,
-        "namespace": current.package_name,
+        "name": current.full_name,
+        "namespace": current.namespace,
         "display_name": current.name,
         "data_source": "grai-dbt-adapter",
         "metadata": {
@@ -23,6 +23,7 @@ def adapt_column_to_client(current: SupportedNodeTypes, version: Literal["v1"] =
             "dbt_resource_type": current.resource_type,
             "dbt_materialization": current.config.materialized,
             "table_name": current.name,
+            "dbt_model_name": current.unique_id,
         },
     }
     return Schema.to_model(spec_dict, version=version, typing_type="Node")

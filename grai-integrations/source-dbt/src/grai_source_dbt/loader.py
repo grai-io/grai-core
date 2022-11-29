@@ -14,7 +14,7 @@ from pydantic import BaseModel, validator
 
 
 class Manifest(BaseModel):
-    nodes: Dict["str", SupportedNodeTypes]
+    nodes: Dict[str, SupportedNodeTypes]
 
     @validator("nodes", pre=True)
     def filter(cls, val):
@@ -37,24 +37,19 @@ class DBTGraph:
 
     @cached_property
     def nodes(self) -> List[Union[Table, Column]]:
-        nodes = list(
-            chain(
-                self.manifest.nodes.values(),
-                *(
-                    vals
-                    for node in self.manifest.nodes.values()
-                    if (vals := list(node.columns.values()))
-                ),
-            )
+        nodes = list(self.manifest.nodes.values())
+        column_nodes = chain(
+            *(vals for node in nodes if (vals := node.columns.values()))
         )
 
         # Sources don't appear to be included in the list of nodes
-        source_edges = [
+        source_nodes = [
             get_table_from_id_str(edge.source.full_name)
             for edge in self.edges
             if edge.source.full_name.startswith("source")
         ]
-        nodes.extend(source_edges)
+
+        nodes = list(chain(nodes, column_nodes, source_nodes))
         return nodes
 
     @cached_property

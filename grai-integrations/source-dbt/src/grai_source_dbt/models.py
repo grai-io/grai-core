@@ -12,30 +12,26 @@ class DBTNode(BaseModel):
 
 class ID(DBTNode):
     name: str
-    namespace: str
-    full_name: str
 
 
 class TableID(ID):
     unique_id: str
-    table_name: str
-    package_name: str
+    table_schema: str = Field(alias="database")
+    namespace: str = Field(alias="package_name")
 
-    @root_validator(pre=True)
-    def set_defaults(cls, values):
-        values.setdefault("full_name", values["unique_id"])
-        values.setdefault("namespace", values["package_name"])
-        values.setdefault("table_name", values["name"])
-        return values
+    @property
+    def full_name(self):
+        return f"{self.table_schema}.{self.name}"
 
 
 class ColumnID(ID):
     table_name: str
+    table_schema: str
+    namespace: str
 
-    @root_validator(pre=True)
-    def set_defaults(cls, values):
-        values.setdefault("full_name", f"{values['table_name']}.{values['name']}")
-        return values
+    @property
+    def full_name(self):
+        return f"{self.table_schema}.{self.table_name}.{self.name}"
 
 
 class Constraint(str, Enum):
@@ -101,7 +97,6 @@ def get_table_from_id_str(unique_id: str):
             config=NodeConfig(materialized=None),
             package_name=package_name,
             name=table_name,
-            table_name=table_name,
             raw_sql=None,
         )
     else:
@@ -111,24 +106,24 @@ def get_table_from_id_str(unique_id: str):
 
 
 class Table(TableID):
-    unique_id: str
     path: Optional[Path]
     description: str
     depends_on: Optional[NodeDeps]
     config: NodeConfig
-    package_name: str
-    name: str
     columns: Optional[Dict[str, Column]]
     raw_sql: Optional[str]
 
-    @validator("columns", pre=True)
-    def validate_columns(cls, columns, values):
+    @root_validator(pre=True)
+    def validate_columns(cls, values):
         node_name = values["name"]
         namespace = values["package_name"]
-        for name, value in columns.items():
+        schema = values["database"]
+        for name, value in values["columns"].items():
             value["table_name"] = node_name
             value["namespace"] = namespace
-        return columns
+            value["table_schema"] = schema
+
+        return values
 
     def get_edges(self):
         column_edges = (
@@ -145,19 +140,21 @@ class Table(TableID):
                 source=TableID(
                     unique_id=model,
                     name=model.split(".")[1],
-                    package_name=self.package_name,
+                    package_name=self.namespace,
+                    database=self.table_schema,
                 ),
                 destination=self,
                 definition=self.raw_sql,
             )
             for model in self.depends_on.nodes
         )
+
         return list(chain(column_edges, model_edges))
 
 
 class Edge(BaseModel):
-    source: Union[ColumnID, TableID]
-    destination: Union[ColumnID, TableID]
+    source: Union[TableID, ColumnID]
+    destination: Union[TableID, ColumnID]
     definition: Optional[str]
     constraint_type: Constraint
     metadata: Optional[Dict] = None
