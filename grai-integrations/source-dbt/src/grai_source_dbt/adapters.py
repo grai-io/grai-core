@@ -11,7 +11,7 @@ def adapt_to_client(current: Any, desired: Any):
 
 
 @adapt_to_client.register
-def adapt_column_to_client(current: SupportedNodeTypes, version: Literal["v1"] = "v1"):
+def adapt_table_to_client(current: SupportedNodeTypes, version: Literal["v1"] = "v1"):
     spec_dict = {
         "name": current.full_name,
         "namespace": current.namespace,

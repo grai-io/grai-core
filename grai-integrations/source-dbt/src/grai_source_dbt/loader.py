@@ -37,19 +37,20 @@ class DBTGraph:
 
     @cached_property
     def nodes(self) -> List[Union[Table, Column]]:
-        nodes = list(self.manifest.nodes.values())
-        column_nodes = chain(
-            *(vals for node in nodes if (vals := node.columns.values()))
+        model_nodes = self.manifest.nodes.values()
+        column_nodes = chain.from_iterable(
+            node.columns.values() for node in self.manifest.nodes.values()
         )
 
         # Sources don't appear to be included in the list of nodes
-        source_nodes = [
-            get_table_from_id_str(edge.source.full_name)
+        # This is bugged
+        source_nodes = (
+            get_table_from_id_str(edge.source.unique_id)
             for edge in self.edges
-            if edge.source.full_name.startswith("source")
-        ]
+            if edge.source.unique_id.startswith("source")
+        )
 
-        nodes = list(chain(nodes, column_nodes, source_nodes))
+        nodes = list(chain(model_nodes, column_nodes, source_nodes))
         return nodes
 
     @cached_property

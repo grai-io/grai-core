@@ -16,7 +16,8 @@ class ID(DBTNode):
 
 class TableID(ID):
     unique_id: str
-    table_schema: str = Field(alias="database")
+    database: str
+    table_schema: str = Field(alias="schema")
     namespace: str = Field(alias="package_name")
 
     @property
@@ -28,6 +29,7 @@ class ColumnID(ID):
     table_name: str
     table_schema: str
     namespace: str
+    database: str
 
     @property
     def full_name(self):
@@ -98,6 +100,7 @@ def get_table_from_id_str(unique_id: str):
             package_name=package_name,
             name=table_name,
             raw_sql=None,
+            database="test",
         )
     else:
         raise NotImplementedError(f"No implementation for model_type {model_type}")
@@ -117,11 +120,13 @@ class Table(TableID):
     def validate_columns(cls, values):
         node_name = values["name"]
         namespace = values["package_name"]
-        schema = values["database"]
+        schema = values["schema"]
+        database = values["database"]
         for name, value in values["columns"].items():
             value["table_name"] = node_name
             value["namespace"] = namespace
             value["table_schema"] = schema
+            value["database"] = database
 
         return values
 
@@ -139,9 +144,12 @@ class Table(TableID):
                 constraint_type=Constraint("dbtm"),
                 source=TableID(
                     unique_id=model,
-                    name=model.split(".")[1],
+                    name=model.split(".")[
+                        2
+                    ],  # unique_id's are {resource_type}.{package_name}.{name} for tables
                     package_name=self.namespace,
-                    database=self.table_schema,
+                    database=self.database,
+                    schema=self.table_schema,
                 ),
                 destination=self,
                 definition=self.raw_sql,
