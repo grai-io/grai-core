@@ -59,6 +59,7 @@ def test_v1_adapted_edge_sources_have_nodes(v1_adapted_nodes, v1_adapted_edges):
     edge_source_ids = {
         (n.spec.source.namespace, n.spec.source.name) for n in v1_adapted_edges
     }
+    # print(edge_source_ids - node_ids)
     assert (
         len(edge_source_ids - node_ids) == 0
     ), "All edge sources should exist in the node list"

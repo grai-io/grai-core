@@ -6,6 +6,7 @@ from typing import Dict, List, Union
 from grai_source_dbt.models import (
     Column,
     Edge,
+    SourceResourceType,
     SupportedNodeTypes,
     Table,
     get_table_from_id_str,
@@ -15,14 +16,11 @@ from pydantic import BaseModel, validator
 
 class Manifest(BaseModel):
     nodes: Dict[str, SupportedNodeTypes]
+    sources: Dict[str, SourceResourceType]
 
     @validator("nodes", pre=True)
     def filter(cls, val):
-        return {
-            k: v
-            for k, v in val.items()
-            if v["resource_type"] in {"model", "source", "seed"}
-        }
+        return {k: v for k, v in val.items() if v["resource_type"] in {"model", "seed"}}
 
     @classmethod
     def load(cls, manifest_file: str):
@@ -42,13 +40,12 @@ class DBTGraph:
             node.columns.values() for node in self.manifest.nodes.values()
         )
 
-        # Sources don't appear to be included in the list of nodes
-        # This is bugged
-        source_nodes = (
-            get_table_from_id_str(edge.source.unique_id)
+        source_nodes = list(
+            self.manifest.sources[edge.source.unique_id]
             for edge in self.edges
             if edge.source.unique_id.startswith("source")
         )
+        # print(list(source_nodes))
 
         nodes = list(chain(model_nodes, column_nodes, source_nodes))
         return nodes

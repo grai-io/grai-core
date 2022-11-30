@@ -87,7 +87,7 @@ def make_depends_on_edge(depends_on_node_id: str, model_node):
     )
 
 
-def get_table_from_id_str(unique_id: str):
+def get_table_from_id_str(unique_id: str, schema: str, database: str):
 
     id_items = unique_id.split(".")
     model_type, package_name = id_items[0], id_items[1]
@@ -100,7 +100,8 @@ def get_table_from_id_str(unique_id: str):
             package_name=package_name,
             name=table_name,
             raw_sql=None,
-            database="test",
+            database=database,
+            schema=schema,
         )
     else:
         raise NotImplementedError(f"No implementation for model_type {model_type}")
@@ -122,6 +123,8 @@ class Table(TableID):
         namespace = values["package_name"]
         schema = values["schema"]
         database = values["database"]
+        values.setdefault("columns", {})
+
         for name, value in values["columns"].items():
             value["table_name"] = node_name
             value["namespace"] = namespace

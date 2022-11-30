@@ -6,7 +6,7 @@ from grai_source_dbt.loader import DBTGraph, Manifest
 
 def get_manifest_file():
     filename = os.path.join(
-        os.path.dirname(__file__), "..", "..", "tests", "data", "manifest.json"
+        os.path.dirname(__file__), "..", "..", "tests", "data", "manifest-1.json"
     )
     return filename
 
