@@ -1,39 +1,27 @@
 from enum import Enum
-from itertools import chain
 from pathlib import Path
-from typing import Annotated, Dict, List, Literal, Optional, Union
+from typing import Dict, List, Literal, Optional, Union
+from uuid import UUID
 
-from pydantic import BaseModel, Field, root_validator, validator
-
-
-class DBTNode(BaseModel):
-    pass
+from pydantic import BaseModel, Field, root_validator
 
 
-class ID(DBTNode):
+class ManifestMetadata(BaseModel):
+    dbt_schema_version: str
+    dbt_version: str
+    generated_at: str
+    invocation_id: str
+    env: Dict
+    project_id: UUID
+    user_id: UUID
+    send_anonymous_usage_stats: bool
+    adapter_type: str
+
+
+class ID(BaseModel):
     name: str
-
-
-class TableID(ID):
-    unique_id: str
-    database: str
-    table_schema: str = Field(alias="schema")
-    namespace: str = Field(alias="package_name")
-
-    @property
-    def full_name(self):
-        return f"{self.table_schema}.{self.name}"
-
-
-class ColumnID(ID):
-    table_name: str
-    table_schema: str
-    namespace: str
-    database: str
-
-    @property
-    def full_name(self):
-        return f"{self.table_schema}.{self.table_name}.{self.name}"
+    namespace: Optional[str]
+    package_name: str
 
 
 class Constraint(str, Enum):
@@ -60,13 +48,15 @@ class DbtMaterializationType(str, Enum):
 
 class NodeDeps(BaseModel):
     nodes: List[str]
+    macros: List[str]  # TODO: macros not currently tested
 
 
 class NodeConfig(BaseModel):
     materialized: Optional[DbtMaterializationType]
 
 
-class Column(ColumnID):
+class DBTNodeColumn(BaseModel):
+    name: str
     description: Optional[str]
     meta: Dict
     data_type: Optional[str]
@@ -74,134 +64,98 @@ class Column(ColumnID):
     tags: List
 
 
-def make_depends_on_edge(depends_on_node_id: str, model_node):
-    return Edge(
-        constraint_type=Constraint("dbtm"),
-        source=TableID(
-            unique_id=depends_on_node_id,
-            name=depends_on_node_id.split(".")[1],
-            package_name=model_node.package_name,
-        ),
-        destination=model_node,
-        definition=model_node.raw_sql if hasattr(model_node, "raw_sql") else None,
-    )
-
-
-def get_table_from_id_str(unique_id: str, schema: str, database: str):
-
-    id_items = unique_id.split(".")
-    model_type, package_name = id_items[0], id_items[1]
-    if model_type == "source":
-        name, table_name = id_items[2], id_items[3]
-        result = SourceResourceType(
-            unique_id=unique_id,
-            description="",
-            config=NodeConfig(materialized=None),
-            package_name=package_name,
-            name=table_name,
-            raw_sql=None,
-            database=database,
-            schema=schema,
-        )
-    else:
-        raise NotImplementedError(f"No implementation for model_type {model_type}")
-
-    return result
-
-
-class Table(TableID):
+class DBTNode(ID):
+    unique_id: str
     path: Optional[Path]
+    original_file_path: Optional[Path]
     description: str
-    depends_on: Optional[NodeDeps]
+    depends_on: NodeDeps
     config: NodeConfig
-    columns: Optional[Dict[str, Column]]
+    columns: Dict[str, DBTNodeColumn]
     raw_sql: Optional[str]
+    database: str
+    node_schema: str = Field(alias="schema")
 
-    @root_validator(pre=True)
-    def validate_columns(cls, values):
-        node_name = values["name"]
-        namespace = values["package_name"]
-        schema = values["schema"]
-        database = values["database"]
-        values.setdefault("columns", {})
+    def __hash__(self):
+        return hash(self.unique_id)
 
-        for name, value in values["columns"].items():
-            value["table_name"] = node_name
-            value["namespace"] = namespace
-            value["table_schema"] = schema
-            value["database"] = database
+    @property
+    def full_name(self):
+        return f"{self.node_schema}.{self.name}"
 
-        return values
+    # @property
+    # def full_name(self):
+    # return f"{self.unique_id}"
 
-    def get_edges(self):
-        column_edges = (
-            Edge(
-                constraint_type=Constraint("bt"),
-                source=self,
-                destination=column,
-            )
-            for column in self.columns.values()
-        )
-        model_edges = (
-            Edge(
-                constraint_type=Constraint("dbtm"),
-                source=TableID(
-                    unique_id=model,
-                    name=model.split(".")[
-                        2
-                    ],  # unique_id's are {resource_type}.{package_name}.{name} for tables
-                    package_name=self.namespace,
-                    database=self.database,
-                    schema=self.table_schema,
-                ),
-                destination=self,
-                definition=self.raw_sql,
-            )
-            for model in self.depends_on.nodes
-        )
 
-        return list(chain(column_edges, model_edges))
+class Table(DBTNode):
+    table_schema: str = Field(alias="schema")
+
+    @property
+    def full_name(self):
+        return f"{self.table_schema}.{self.name}"
+
+
+class Model(Table):
+    resource_type: Literal["model"]
+
+
+class Source(Table):
+    resource_type: Literal["source"]
+    depends_on: NodeDeps = NodeDeps(nodes=[], macros=[])
+
+
+class Seed(DBTNode):
+    table_schema: str = Field(alias="schema")
+    path: Path
+    original_file_path: Path
+    resource_type: Literal["seed"]
+
+
+class Column(ID):
+    name: str
+    description: Optional[str]
+    meta: Dict
+    data_type: Optional[str]
+    quote: Optional[str]
+    tags: List
+    table_unique_id: str
+    table_name: str
+    table_schema: str
+    database: str
+    resource_type: Literal["column"] = "column"
+
+    @property
+    def full_name(self):
+        return f"{self.table_schema}.{self.table_name}.{self.name}"
+
+    @classmethod
+    def from_table_column(cls, table: DBTNode, column: DBTNodeColumn) -> "Column":
+        attrs = {
+            "table_unique_id": table.unique_id,
+            "table_name": table.name,
+            "table_schema": table.node_schema,
+            "database": table.database,
+            "namespace": table.namespace,
+            "package_name": table.package_name,
+        }
+        attrs.update(column.dict())
+        return cls(**attrs)
+
+    def __hash__(self):
+        return hash((self.table_unique_id, self.name))
+
+
+SupportedDBTTypes = Union[Model, Source, Seed]
+GraiNodeTypes = Union[Model, Source, Seed, Column]
 
 
 class Edge(BaseModel):
-    source: Union[TableID, ColumnID]
-    destination: Union[TableID, ColumnID]
+    source: GraiNodeTypes
+    destination: GraiNodeTypes
     definition: Optional[str]
     constraint_type: Constraint
     metadata: Optional[Dict] = None
 
-
-class ModelResourceType(Table):
-    resource_type: Literal["model"] = "model"
-
-
-class SeedResourceType(Table):
-    resource_type: Literal["seed"] = "seed"
-
-
-class SourceResourceType(Table):
-    resource_type: Literal["source"] = "source"
-
-
-class AnalysisResourceType(BaseModel):
-    resource_type: Literal["analysis"] = "analysis"
-
-
-class TestResourceType(BaseModel):
-    resource_type: Literal["test"] = "test"
-
-
-class OperationResourceType(BaseModel):
-    resource_type: Literal["operation"] = "operation"
-
-
-NodeTypes = Union[
-    ModelResourceType,
-    SeedResourceType,
-    SourceResourceType,
-    AnalysisResourceType,
-    TestResourceType,
-]
-SupportedNodeTypes = Union[ModelResourceType, SeedResourceType, SourceResourceType]
-
-Node = Annotated[NodeTypes, Field(discriminator="resource_type")]
+    def __hash__(self):
+        return hash((self.source, self.destination))

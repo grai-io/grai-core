@@ -6,4 +6,4 @@ client = ClientV1("localhost", "8000")
 client.set_authentication_headers("null@grai.io", "super_secret")
 
 
-update_server(client, get_manifest_file())
+update_server(client, get_manifest_file(), namespace="default")

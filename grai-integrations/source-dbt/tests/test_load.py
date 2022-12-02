@@ -11,8 +11,13 @@ from grai_source_dbt.test_utils import load_dbt_graph, load_from_manifest
 
 
 @pytest.fixture
-def dbt_graph():
+def dbt_graph() -> DBTGraph:
     return load_dbt_graph()
+
+
+@pytest.fixture
+def manifest() -> Manifest:
+    return load_from_manifest()
 
 
 @pytest.fixture
@@ -25,9 +30,34 @@ def v1_adapted_edges(dbt_graph):
     return adapt_to_client(dbt_graph.edges, "v1")
 
 
-def test_load_from_manifest():
-    manifest = load_from_manifest()
+def test_load_from_manifest(manifest):
     assert isinstance(manifest, Manifest)
+
+
+def test_all_manifest_node_full_names_unique(manifest):
+    node_names = {node.full_name for node in manifest.nodes.values()}
+    assert len(node_names) == len(manifest.nodes)
+
+
+def test_all_manifest_source_full_names_unique(manifest):
+    node_names = {node.full_name for node in manifest.sources.values()}
+    assert len(node_names) == len(manifest.sources)
+
+
+def test_all_manifest_source_and_node_full_names_unique(manifest):
+    node_names = {node.full_name for node in manifest.nodes.values()}
+    source_names = {node.full_name for node in manifest.sources.values()}
+    assert (len(node_names) + len(source_names)) == (
+        len(manifest.nodes) + len(manifest.sources)
+    )
+
+
+def test_all_manifest_node_and_column_full_names_unique(dbt_graph):
+    node_names = {node.full_name for node in dbt_graph.manifest.nodes.values()}
+    column_names = {column.full_name for column in dbt_graph.columns.values()}
+    assert (len(node_names) + len(column_names)) == (
+        len(dbt_graph.manifest.nodes) + len(dbt_graph.columns)
+    )
 
 
 def test_build_dbt_graph(dbt_graph):
@@ -59,7 +89,7 @@ def test_v1_adapted_edge_sources_have_nodes(v1_adapted_nodes, v1_adapted_edges):
     edge_source_ids = {
         (n.spec.source.namespace, n.spec.source.name) for n in v1_adapted_edges
     }
-    # print(edge_source_ids - node_ids)
+    print(edge_source_ids - node_ids)
     assert (
         len(edge_source_ids - node_ids) == 0
     ), "All edge sources should exist in the node list"
