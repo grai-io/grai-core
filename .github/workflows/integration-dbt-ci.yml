@@ -1,20 +1,13 @@
-name: CI Workflow for the Grai DBT integration
+name: DBT Integration CI
 on:
-  push:
-    branches:
-      - master
-    paths:
-    - "grai-integration/source-dbt/**"
   pull_request:
-    branches:
-      - master
     paths:
-    - "grai-integration/source-dbt/**"
+    - "grai-integrations/source-dbt/**"
 
 env:
   py_ver: "3.10"
   poetry_ver: "1.2.2"
-  project_dir: "grai-integration/source-dbt"
+  project_dir: "grai-integrations/source-dbt"
 
 jobs:
   lint-integration-flat_file:

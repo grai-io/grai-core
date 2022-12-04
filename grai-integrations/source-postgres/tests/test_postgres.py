@@ -10,6 +10,7 @@ test_credentials = {
     "dbname": "grai",
     "user": "grai",
     "password": "grai",
+    "port": "5432",
     "namespace": "test",
 }
 
