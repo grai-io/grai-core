@@ -10,7 +10,7 @@ env:
   project_dir: "grai-integrations/source-dbt"
 
 jobs:
-  lint-integration-flat_file:
+  lint-integration-dbt:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -31,8 +31,8 @@ jobs:
         black . --check
         isort . --profile black
 
-  tests-integration-flat_file:
-    needs: lint-integration-flat_file
+  tests-integration-dbt:
+    needs: lint-integration-dbt
     runs-on: ubuntu-latest
     defaults:
       run:
