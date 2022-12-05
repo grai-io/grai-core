@@ -1,4 +1,4 @@
-name: CI Workflow for Grai CLI
+name: CLI CI
 on:
   pull_request:
     paths:
