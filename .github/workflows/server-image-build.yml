@@ -1,4 +1,4 @@
-name: Test Build Grai-Server
+name: Grai-Server Build
 
 on:
   # Compare the preceeding commit of main -> to the current commit of the main branch.
