@@ -38,13 +38,6 @@ class GraiCache:
                 cache["has_telemetry_alert"] = True
             self.has_telemetry_alert = cache["has_telemetry_alert"]
 
-            if self.first_install:
-                from grai_cli.utilities.telemetry import Telemetry
-
-                cache["first_install"] = False
-                Telemetry.capture("First install")
-            self.first_install = cache["first_install"]
-
     @property
     def cache(self):
         return shelve.open(self.cache_file)
