@@ -33,7 +33,7 @@ def adapt_column_to_client(current: Column, version: Literal["v1"] = "v1"):
 @adapt_to_client.register
 def adapt_table_to_client(current: Table, version: Literal["v1"] = "v1"):
     metadata = {
-        "node_type": current.table_type,
+        "node_type": current.table_type.name,
         "schema": current.table_schema,
     }
     spec_dict = {

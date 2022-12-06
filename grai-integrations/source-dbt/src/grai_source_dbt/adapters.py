@@ -39,7 +39,7 @@ def adapt_column_to_client(current: Column, version: Literal["v1"] = "v1") -> No
         "name": current.full_name,
         "namespace": current.namespace,
         "display_name": current.name,
-        "data_source": "grai-postgres-adapter",
+        "data_source": "grai-dbt-adapter",
         "metadata": {
             "node_type": "Column",
             "description": current.description,
