@@ -1,24 +1,21 @@
 import os
-from functools import cache
 
 from grai_source_dbt.loader import DBTGraph, Manifest
 
 
-def get_manifest_file():
+def get_manifest_file() -> str:
     filename = os.path.join(
         os.path.dirname(__file__), "..", "..", "tests", "data", "manifest.json"
     )
     return filename
 
 
-@cache
-def load_from_manifest():
+def load_from_manifest() -> Manifest:
     manifest = Manifest.load(get_manifest_file())
     return manifest
 
 
-@cache
-def load_dbt_graph():
+def load_dbt_graph() -> DBTGraph:
     manifest = load_from_manifest()
     dbt_graph = DBTGraph(manifest)
     return dbt_graph

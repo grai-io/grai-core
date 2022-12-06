@@ -75,9 +75,17 @@ class Edge(BaseModel):
     metadata: Optional[Dict] = None
 
 
+class TableType(str, Enum):
+    Table = "BASE TABLE"
+    View = "VIEW"
+    ForeignTable = "FOREIGN"
+    TemporaryTable = "LOCAL TEMPORARY"
+
+
 class Table(PostgresNode):
     name: str = Field(alias="table_name")
     table_schema: str = Field(alias="schema")
+    table_type: TableType
     namespace: str
     columns: Optional[List[Column]] = []
     metadata: Dict = {}

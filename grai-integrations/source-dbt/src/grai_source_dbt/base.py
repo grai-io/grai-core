@@ -9,18 +9,23 @@ from grai_source_dbt.loader import DBTGraph, Manifest
 
 
 def get_nodes_and_edges(
-    manifest_file: str, version: Literal["v1"]
+    manifest_file: str, namespace="default", version: str = "v1"
 ) -> Tuple[List[Node], List[Edge]]:
+
     manifest = Manifest.load(manifest_file)
-    dbt_graph = DBTGraph(manifest)
+    dbt_graph = DBTGraph(manifest, namespace=namespace)
 
     nodes = adapt_to_client(dbt_graph.nodes, version)
     edges = adapt_to_client(dbt_graph.edges, version)
     return nodes, edges
 
 
-def update_server(client: BaseClient, manifest_file: str):
-    nodes, edges = get_nodes_and_edges(manifest_file, client.id)
+def update_server(
+    client: BaseClient, manifest_file: str, namespace: str = "default"
+) -> Tuple[List[Node], List[Edge]]:
+    nodes, edges = get_nodes_and_edges(manifest_file, namespace, client.id)
 
     update(client, nodes)
     update(client, edges)
+
+    return nodes, edges

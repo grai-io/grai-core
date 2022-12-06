@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai_source_dbt"
-version = "0.0.2"
+version = "0.0.4"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>"]
 license = "ELv2"
@@ -9,7 +9,7 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.8"
 pydantic = "^1.9.1"
 networkx = "^2.8.3"
 grai-client = "^0.1.8"
