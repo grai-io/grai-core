@@ -1,7 +1,14 @@
+import importlib.util
 from typing import Callable
 
 import typer
-from rich.theme import Theme
+
+if importlib.util.find_spec("rich") is not None:
+    from rich.theme import Theme
+
+    custom_theme = Theme(
+        {"info": "#BFD2EB", "warning": "#ff0000", "danger": "bold red"}
+    )
 
 
 class GraiColors:
@@ -10,9 +17,6 @@ class GraiColors:
     kobi = (241, 215, 224)
     bastille = (53, 29, 54)
     soapstone = (255, 255, 255)
-
-
-custom_theme = Theme({"info": "#BFD2EB", "warning": "#ff0000", "danger": "bold red"})
 
 
 def prompt_styler(*args, **kwargs) -> Callable[[str], str]:

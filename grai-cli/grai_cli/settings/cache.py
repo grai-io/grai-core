@@ -2,6 +2,7 @@ import os
 import shelve
 import uuid
 
+import typer
 from grai_cli.settings.config import config
 
 
@@ -14,14 +15,33 @@ class GraiCache:
             self.first_install = cache.get("first_install", True)
             self.run_config_init = cache.get("run_config_init", True)
 
-            self.has_asked_for_telemetry_consent = cache.get(
-                "has_asked_for_telemetry_consent", False
-            )
+            self.has_telemetry_alert = cache.get("has_telemetry_alert", False)
             self.telemetry_consent = cache.get("telemetry_consent", True)
 
             if "telemetry_id" not in cache:
                 cache["telemetry_id"] = uuid.uuid4()
             self.telemetry_id = cache["telemetry_id"]
+
+            if self.run_config_init or not config.has_configfile:
+                message = f"No config file found in ({config.config_filename}). You can create one by running \
+                    `grai config init`."
+                typer.echo(message)
+                cache["run_config_init"] = False
+            self.run_config_init = cache["run_config_init"]
+
+            if not self.has_telemetry_alert:
+                message = (
+                    f"We use anonymous telemetry data to help us estimate our number of "
+                    f"users and identify failure hotspots. You can disable it using the `--no-telemetry` flag"
+                )
+                typer.echo(message)
+                cache["has_telemetry_alert"] = True
+            self.has_telemetry_alert = cache["has_telemetry_alert"]
+
+            if self.first_install:
+                cache["first_install"] = False
+                Telemetry.capture("First install")
+            self.first_install = cache["first_install"]
 
     @property
     def cache(self):

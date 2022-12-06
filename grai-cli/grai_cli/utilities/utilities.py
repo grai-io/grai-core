@@ -1,3 +1,4 @@
+import importlib.util
 from functools import wraps
 from io import TextIOBase
 from pathlib import Path
@@ -9,6 +10,11 @@ import yaml
 from grai_cli.settings.config import config
 from multimethod import multimethod
 from pydantic import BaseModel
+
+HAS_RICH = importlib.util.find_spec("rich") is not None
+
+if HAS_RICH:
+    from rich import print
 
 
 def default_callback(ctx: typer.Context):
