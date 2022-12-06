@@ -73,10 +73,15 @@ class Edge(BaseModel):
     constraint_type: Constraint
     metadata: Optional[Dict] = None
 
+class TableType(str, Enum):
+    Table = "BASE TABLE"
+    View = "VIEW"
+    TemporaryTable = "TEMPORARY TABLE"
 
 class Table(snowflakeNode):
     name: str = Field(alias="table_name")
     table_schema: str = Field(alias="schema")
+    table_type: TableType
     table_database: str
     namespace: str
     columns: Optional[List[Column]] = []
@@ -90,7 +95,6 @@ class Table(snowflakeNode):
     def make_full_name(cls, full_name, values):
         if full_name is not None:
             return full_name
-        #return f"{values['table_database']}.{values['table_schema']}.{values['name']}"
         return f"{values['table_schema']}.{values['name']}"
 
     def get_edges(self):

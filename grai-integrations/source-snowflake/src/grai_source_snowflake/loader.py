@@ -89,10 +89,9 @@ class SnowflakeConnector:
         """
 
         query = """
-	        SELECT table_schema, table_name
+	        SELECT table_schema, table_name, table_type
             FROM information_schema.tables
             WHERE table_schema != 'INFORMATION_SCHEMA'
-            and table_type = 'BASE TABLE'
             ORDER BY table_schema, table_name
         """
         res = ({k.lower(): v for k, v in result.items()} for result in self.query_runner(query))
@@ -101,7 +100,7 @@ class SnowflakeConnector:
             "namespace": self.namespace,
             "table_database": self.connection_dict['database']
         }
-
+        print('table run')
         return [Table(**result, **addtl_args) for result in res]
 
     def get_columns(self, table: Table) -> List[Column]:
@@ -124,6 +123,7 @@ class SnowflakeConnector:
             "schema": table.table_schema,
             "table": table.name,
         }
+        print('column run')
         return [Column(**result, **addtl_args) for result in res]
 
     def get_foreign_keys(self) -> List[Edge]:
@@ -133,8 +133,8 @@ class SnowflakeConnector:
         :return:
         """
         # This query only returns foreign keys, there is also exported keys and primary keys. Information schema itself doesn't carry the column for foreign keys
-        query = """
-        show IMPORTED KEYS
+        query = f"""
+        show IMPORTED KEYS in database '{self.connection_dict['database']}'
         """
         addtl_args = {
             "namespace": self.namespace,
