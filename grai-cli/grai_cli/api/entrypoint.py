@@ -1,10 +1,9 @@
-import subprocess
 from typing import Optional
 
 import click
 import typer
 from grai_cli.utilities.telemetry import Telemetry
-from grai_cli.utilities.utilities import default_callback
+from grai_cli.utilities.utilities import HAS_RICH, default_callback
 
 
 def result_callback(*args, **kwargs):
@@ -16,7 +15,7 @@ def result_callback(*args, **kwargs):
 
 
 app = typer.Typer(
-    rich_markup_mode="rich",
+    rich_markup_mode="rich" if HAS_RICH else None,
     invoke_without_command=True,
     no_args_is_help=True,
     help="Grai CLI",

@@ -4,10 +4,9 @@ from typing import Optional
 import typer
 from grai_cli.api.entrypoint import app
 from grai_cli.api.server.setup import client_app, client_get_app, get_default_client
+from grai_cli.utilities import utilities
 from grai_cli.utilities.styling import default_styler
 from grai_cli.utilities.utilities import merge_dicts, write_yaml
-from grai_client.schemas.schema import Schema, validate_file
-from rich import print as rprint
 
 
 @client_app.command("is_authenticated", help="Verify auth credentials are valid")
@@ -15,9 +14,9 @@ def is_authenticated():
     client = get_default_client()
     authentication_status = client.check_authentication()
     if authentication_status.status_code == 200:
-        rprint("Authenticated")
+        utilities.print("Authenticated")
     else:
-        rprint(
+        utilities.print(
             f"Failed to Authenticate: Code {authentication_status.status_code}, {authentication_status.content}"
         )
 
@@ -33,7 +32,7 @@ def get_nodes(
     result = client.get("Node")
 
     if print:
-        rprint(result)
+        utilities.print(result)
     if isinstance(to_file, Path):
         write_yaml(result, to_file)
 
@@ -51,7 +50,7 @@ def get_edges(
     result = client.get("Edge")
 
     if print:
-        rprint(result)
+        utilities.print(result)
     if to_file:
         write_yaml(result, to_file)
 
@@ -63,13 +62,14 @@ def apply(
     file: Path = typer.Argument(...),
     dry_run: bool = typer.Option(False, "--d", help="Dry run of file application"),
 ):
+    from grai_client.schemas.schema import validate_file
 
     # TODO: Edges don't have a human readable unique identifier
     client = get_default_client()
     specs = validate_file(file)
     if dry_run:
         for spec in specs:
-            rprint(spec)
+            utilities.print(spec)
         typer.Exit()
 
     for spec in specs:
@@ -87,13 +87,14 @@ def delete(
     file: Path = typer.Argument(...),
     dry_run: bool = typer.Option(False, "--d", help="Dry run of file application"),
 ):
+    from grai_client.schemas.schema import validate_file
 
     # TODO: Edges don't have a human readable unique identifier
     client = get_default_client()
     specs = validate_file(file)
     if dry_run:
         for spec in specs:
-            rprint(spec)
+            utilities.print(spec)
         typer.Exit()
 
     for spec in specs:

@@ -1,19 +1,18 @@
 import typer
 from grai_cli.api.config.setup import config_app
 from grai_cli.settings.config import config
+from grai_cli.utilities import utilities
 from grai_cli.utilities.styling import GraiColors, default_styler, strip_style
-from grai_cli.utilities.utilities import writes_config
 from grai_cli.utilities.validators import (
     host_callback,
     password_callback,
     port_callback,
     username_callback,
 )
-from rich import print as rprint
 
 
 @config_app.command("init")
-@writes_config
+@utilities.writes_config
 def cli_init_config(
     username: str = typer.Option(
         ..., prompt=True, callback=username_callback, prompt_required=True
@@ -55,4 +54,4 @@ def cli_init_config(
 @config_app.command(help="Print config to console")
 def view():
     """Initialize a new config file"""
-    rprint(config.view())
+    utilities.print(config.view())
