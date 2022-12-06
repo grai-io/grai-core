@@ -10,7 +10,7 @@ license = "Elastic-2.0"
 grai = "grai_cli.api.entrypoint:app"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.8"
 typer = {version = "^0.6.1"}
 click-spinner = "^0.1.10"
 tqdm = "^4.64.0"
