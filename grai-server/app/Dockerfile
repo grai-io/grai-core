@@ -1,5 +1,5 @@
 # pull official base image
-FROM python:3.10.5-slim-buster AS build
+FROM python:3.11-slim-buster AS build
 
 WORKDIR /usr/src/app
 ARG PYTHONDONTWRITEBYTECODE="1" \
@@ -25,7 +25,7 @@ RUN apt update \
     && rm -rf /var/lib/apt/lists/*
 
 
-COPY . . 
+COPY . .
 
 RUN pip install "poetry==$POETRY_VERSION"
 RUN poetry config virtualenvs.create false  \
