@@ -9,9 +9,9 @@ from strawberry_django_plus.optimizer import DjangoOptimizerExtension
 
 @gql.type
 class Query:
-    node: List[NodeType] = strawberry.django.field()
-    edge: List[EdgeType] = strawberry.django.field()
-    user: List[UserType] = strawberry.django.field()
+    nodes: List[NodeType] = strawberry.django.field()
+    edges: List[EdgeType] = strawberry.django.field()
+    users: List[UserType] = strawberry.django.field()
 
 
 schema = gql.Schema(
