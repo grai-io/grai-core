@@ -1,41 +1,54 @@
-import { Box, Typography } from "@mui/material"
-import React, { useEffect, useState } from "react"
-import useAxios from "../utils/useAxios"
-import { Edge } from "./edges/Edges"
-import { Node } from "./nodes/Nodes"
+import React from "react"
+import { Box } from "@mui/material"
 import Graph from "../components/home/Graph"
 import AppTopBar from "../components/layout/AppTopBar"
+import { gql, useQuery } from "@apollo/client"
+import Loading from "../components/layout/Loading"
+
+const GET_NODES_AND_EDGES = gql`
+  query GetNodesAndEdges {
+    nodes {
+      id
+      namespace
+      name
+      displayName
+      isActive
+      dataSource
+      metadata
+    }
+    edges {
+      id
+      isActive
+      dataSource
+      source {
+        id
+        name
+        displayName
+      }
+      destination {
+        id
+        name
+        displayName
+      }
+      metadata
+    }
+  }
+`
 
 const Home: React.FC = () => {
-  const [nodes, setNodes] = useState<Node[]>()
-  const [edges, setEdges] = useState<Edge[]>()
-  const [error, setError] = useState<string>()
-  const api = useAxios()
+  const { loading, error, data } = useQuery(GET_NODES_AND_EDGES)
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const responseNodes = await api.get("/lineage/nodes")
-        setNodes(responseNodes.data)
-
-        const responseEdges = await api.get("/lineage/edges")
-        setEdges(responseEdges.data)
-      } catch {
-        setError("Something went wrong")
-      }
-    }
-    fetchData()
-  }, [])
+  if (error) return <p>Error : {error.message}</p>
+  if (loading) return <Loading />
 
   return (
     <>
       <AppTopBar />
-      {nodes && edges && (
+      {data.nodes && data.edges && (
         <Box sx={{ height: "calc(100vh - 68px)", width: "100%" }}>
-          <Graph nodes={nodes} edges={edges} />
+          <Graph nodes={data.nodes} edges={data.edges} />
         </Box>
       )}
-      {error && <Typography>{error}</Typography>}
     </>
   )
 }

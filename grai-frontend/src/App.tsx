@@ -1,18 +1,19 @@
-import { CssBaseline, ThemeProvider } from "@mui/material"
 import React from "react"
-import "./App.css"
+import { CssBaseline, ThemeProvider } from "@mui/material"
 import Routes from "./Routes"
 import theme from "./theme"
+import { ApolloProvider } from "@apollo/client"
+import client from "./client"
 
-const App = () => {
-  return (
-    <div className="App">
-      <CssBaseline />
-      <ThemeProvider theme={theme}>
+const App = () => (
+  <div>
+    <CssBaseline />
+    <ThemeProvider theme={theme}>
+      <ApolloProvider client={client}>
         <Routes />
-      </ThemeProvider>
-    </div>
-  )
-}
+      </ApolloProvider>
+    </ThemeProvider>
+  </div>
+)
 
 export default App
