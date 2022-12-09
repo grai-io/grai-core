@@ -10,21 +10,31 @@ from strawberry_django_plus.optimizer import DjangoOptimizerExtension
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from asgiref.sync import sync_to_async
 
+
 class IsAuthenticated(BasePermission):
     message = "User is not authenticated"
 
     # This method can also be async!
     async def has_permission(self, source: typing.Any, info: Info, **kwargs) -> bool:
-        user, token = await sync_to_async(JWTAuthentication().authenticate)(request=info.context.request)
+        user, token = await sync_to_async(JWTAuthentication().authenticate)(
+            request=info.context.request
+        )
 
         return user.is_authenticated
 
+
 @gql.type
 class Query:
-    nodes: typing.List[NodeType] = strawberry.django.field(permission_classes=[IsAuthenticated])
+    nodes: typing.List[NodeType] = strawberry.django.field(
+        permission_classes=[IsAuthenticated]
+    )
     node: NodeType = strawberry.django.field(permission_classes=[IsAuthenticated])
-    edges: typing.List[EdgeType] = strawberry.django.field(permission_classes=[IsAuthenticated])
-    users: typing.List[UserType] = strawberry.django.field(permission_classes=[IsAuthenticated])
+    edges: typing.List[EdgeType] = strawberry.django.field(
+        permission_classes=[IsAuthenticated]
+    )
+    users: typing.List[UserType] = strawberry.django.field(
+        permission_classes=[IsAuthenticated]
+    )
 
 
 schema = gql.Schema(
