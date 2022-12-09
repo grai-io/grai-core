@@ -31,7 +31,7 @@ urlpatterns = [
     path("api/v1/lineage/", include("lineage.urls"), name="lineage"),
     path(
         "graphql/", AsyncGraphQLView.as_view(schema=schema)
-    ),  # Double check authentication on this one
+    ),
     # OpenAPI 3 docs w/ Swagger
     path(
         "schema/",

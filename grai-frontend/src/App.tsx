@@ -2,16 +2,21 @@ import React from "react"
 import { CssBaseline, ThemeProvider } from "@mui/material"
 import Routes from "./Routes"
 import theme from "./theme"
-import { ApolloProvider } from "@apollo/client"
-import client from "./client"
+import { AuthProvider } from "./components/auth/AuthContext"
+import { BrowserRouter } from "react-router-dom"
+import BackendProvider from "./providers/BackendProvider"
 
 const App = () => (
   <div>
     <CssBaseline />
     <ThemeProvider theme={theme}>
-      <ApolloProvider client={client}>
-        <Routes />
-      </ApolloProvider>
+      <BrowserRouter>
+        <AuthProvider>
+          <BackendProvider>
+            <Routes />
+          </BackendProvider>
+        </AuthProvider>
+      </BrowserRouter>
     </ThemeProvider>
   </div>
 )
