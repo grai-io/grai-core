@@ -4,6 +4,7 @@ import { Typography } from "@mui/material"
 import EdgesTable from "../../components/edges/EdgesTable"
 import AppTopBar from "../../components/layout/AppTopBar"
 import { Node } from "../../pages/nodes/Nodes"
+import Loading from "../../components/layout/Loading"
 
 const GET_EDGES = gql`
   query GetEdges {
@@ -39,7 +40,7 @@ const Edges: React.FC = () => {
   const { loading, error, data } = useQuery(GET_EDGES)
 
   if (error) return <p>Error : {error.message}</p>
-  if (loading) return <p>Loading...</p>
+  if (loading) return <Loading />
 
   return (
     <>

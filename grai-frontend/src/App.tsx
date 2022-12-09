@@ -10,13 +10,13 @@ const App = () => (
   <div>
     <CssBaseline />
     <ThemeProvider theme={theme}>
-      <BrowserRouter>
-        <AuthProvider>
-          <BackendProvider>
+      <AuthProvider>
+        <BackendProvider>
+          <BrowserRouter>
             <Routes />
-          </BackendProvider>
-        </AuthProvider>
-      </BrowserRouter>
+          </BrowserRouter>
+        </BackendProvider>
+      </AuthProvider>
     </ThemeProvider>
   </div>
 )
