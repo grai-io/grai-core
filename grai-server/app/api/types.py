@@ -27,8 +27,8 @@ class NodeType:
     metadata: JSON
     is_active: auto
     created_by: UserType
-    source_edge: List["EdgeType"]
-    destination_edge: List["EdgeType"]
+    source_edges: List["EdgeType"]
+    destination_edges: List["EdgeType"]
 
 
 @strawberry.django.type(Edge)
