@@ -3,23 +3,25 @@ from functools import cached_property
 from itertools import chain
 from typing import Dict, List, Mapping, Tuple, Union
 
-from grai_source_dbt.models import (
+from pydantic import BaseModel, validator
+
+from grai_source_dbt.models.manifest_types import ManifestNode
+from grai_source_dbt.models.nodes import (
     Column,
-    Constraint,
     Edge,
     GraiNodeTypes,
-    ManifestMetadata,
     Model,
     Seed,
     Source,
     SupportedDBTTypes,
     Table,
 )
-from pydantic import BaseModel, validator
+from grai_source_dbt.models.shared import Constraint, ManifestMetadata
+from grai_source_dbt.models.tests import Test
 
 
 class Manifest(BaseModel):
-    nodes: Dict[str, Union[Model, Seed]]
+    nodes: Dict[str, ManifestNode]
     sources: Dict[str, Source]
     metadata: ManifestMetadata
     macros: Dict
@@ -31,9 +33,9 @@ class Manifest(BaseModel):
     parent_map: Dict[str, List[str]]
     child_map: Dict[str, List[str]]
 
-    @validator("nodes", pre=True)
-    def filter(cls, val) -> Dict[str, Dict]:
-        return {k: v for k, v in val.items() if v["resource_type"] in {"model", "seed"}}
+    # @validator("nodes", pre=True)
+    # def filter(cls, val) -> Dict[str, Dict]:
+    #     return {k: v for k, v in val.items() if v["resource_type"] in {"model", "seed"}}
 
     @classmethod
     def load(cls, manifest_file: str) -> "Manifest":
@@ -60,12 +62,25 @@ class DBTGraph:
 
         node_map: Dict[Union[str, Tuple], SupportedDBTTypes] = {}
         node_map.update(
-            {table.unique_id: table for table in self.manifest.nodes.values()}
+            {
+                table.unique_id: table
+                for table in self.manifest.nodes.values()
+                if isinstance(table, (Model, Seed))
+            }
         )
         node_map.update(
             {source.unique_id: source for source in self.manifest.sources.values()}
         )
         return node_map
+
+    @property
+    def tests(self):
+        return [test for test in self.manifest.nodes.values() if isinstance(test, Test)]
+
+    def update_nodes_with_tests(self):
+        for test in self.tests:
+            if test.column_name is not None:
+                self.node_map[test.column_name]
 
     def dbt_nodes(self) -> List[SupportedDBTTypes]:
         return list(self.node_map.values())

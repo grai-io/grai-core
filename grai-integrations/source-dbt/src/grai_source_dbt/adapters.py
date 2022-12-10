@@ -3,8 +3,9 @@ from typing import Any, List, Literal, Sequence, Union
 from grai_client.schemas.edge import EdgeV1
 from grai_client.schemas.node import NodeV1
 from grai_client.schemas.schema import Schema
-from grai_source_dbt.models import Column, Edge, GraiNodeTypes, SupportedDBTTypes
 from multimethod import multimethod
+
+from grai_source_dbt.models.nodes import Column, Edge, GraiNodeTypes, SupportedDBTTypes
 
 
 @multimethod

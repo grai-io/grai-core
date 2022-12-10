@@ -4,6 +4,7 @@ from grai_client.endpoints.client import BaseClient
 from grai_client.schemas.edge import Edge
 from grai_client.schemas.node import Node
 from grai_client.update import update
+
 from grai_source_dbt.adapters import adapt_to_client
 from grai_source_dbt.loader import DBTGraph, Manifest
 
@@ -15,7 +16,7 @@ def get_nodes_and_edges(
     manifest = Manifest.load(manifest_file)
     dbt_graph = DBTGraph(manifest, namespace=namespace)
 
-    nodes = adapt_to_client(dbt_graph.nodes, version)
+    nodes = adapt_to_client(dbt_graph.dbt_nodes, version)
     edges = adapt_to_client(dbt_graph.edges, version)
     return nodes, edges
 
