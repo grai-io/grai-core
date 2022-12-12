@@ -20,6 +20,7 @@
     "elkjs": "^0.8.2",
     "graphql": "^16.6.0",
     "jwt-decode": "^3.1.2",
+    "material-ui-popup-state": "^4.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.0.0",

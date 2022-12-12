@@ -1,13 +1,16 @@
 import {
+  Checkbox,
   CircularProgress,
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableRow,
   Typography,
 } from "@mui/material"
 import React from "react"
+import { useNavigate } from "react-router-dom"
+import TableCell from "../tables/TableCell"
+import ConnectionsMenu from "./ConnectionsMenu"
 
 interface Connector {
   id: string
@@ -29,43 +32,60 @@ type ConnectionsTableProps = {
 const ConnectionsTable: React.FC<ConnectionsTableProps> = ({
   connections,
   loading,
-}) => (
-  <Table size="small">
-    <TableHead>
-      <TableRow>
-        <TableCell>id</TableCell>
-        <TableCell>Namespace</TableCell>
-        <TableCell>Name</TableCell>
-        <TableCell>Connector</TableCell>
-        <TableCell />
-      </TableRow>
-    </TableHead>
-    <TableBody>
-      {connections.map(connection => (
-        <TableRow key={connection.id}>
-          <TableCell>{connection.id}</TableCell>
-          <TableCell>{connection.namespace}</TableCell>
-          <TableCell>{connection.name}</TableCell>
-          <TableCell>{connection.connector.name}</TableCell>
-          <TableCell />
-        </TableRow>
-      ))}
-      {!loading && connections.length === 0 && (
+}) => {
+  const navigate = useNavigate()
+
+  return (
+    <Table size="small">
+      <TableHead>
         <TableRow>
-          <TableCell colSpan={99} sx={{ textAlign: "center", py: 5 }}>
-            <Typography>No Connections</Typography>
+          <TableCell sx={{ p: 0, width: 0 }}>
+            <Checkbox size="small" />
           </TableCell>
+          <TableCell>id</TableCell>
+          <TableCell>Namespace</TableCell>
+          <TableCell>Name</TableCell>
+          <TableCell>Connector</TableCell>
+          <TableCell sx={{ width: 0 }} />
         </TableRow>
-      )}
-      {loading && (
-        <TableRow>
-          <TableCell colSpan={99}>
-            <CircularProgress />
-          </TableCell>
-        </TableRow>
-      )}
-    </TableBody>
-  </Table>
-)
+      </TableHead>
+      <TableBody>
+        {connections.map(connection => (
+          <TableRow
+            key={connection.id}
+            hover
+            sx={{ cursor: "pointer" }}
+            onClick={() => navigate(`/connections/${connection.id}`)}
+          >
+            <TableCell sx={{ p: 0 }} stopPropagation>
+              <Checkbox size="small" />
+            </TableCell>
+            <TableCell>{connection.id}</TableCell>
+            <TableCell>{connection.namespace}</TableCell>
+            <TableCell>{connection.name}</TableCell>
+            <TableCell>{connection.connector.name}</TableCell>
+            <TableCell sx={{ py: 0, px: 1 }} stopPropagation>
+              <ConnectionsMenu connection={connection} />
+            </TableCell>
+          </TableRow>
+        ))}
+        {!loading && connections.length === 0 && (
+          <TableRow>
+            <TableCell colSpan={99} sx={{ textAlign: "center", py: 5 }}>
+              <Typography>No Connections</Typography>
+            </TableCell>
+          </TableRow>
+        )}
+        {loading && (
+          <TableRow>
+            <TableCell colSpan={99}>
+              <CircularProgress />
+            </TableCell>
+          </TableRow>
+        )}
+      </TableBody>
+    </Table>
+  )
+}
 
 export default ConnectionsTable
