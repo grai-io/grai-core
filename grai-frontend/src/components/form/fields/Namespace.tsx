@@ -29,10 +29,7 @@ const Namespace: React.FC<NamespaceProps> = ({ value, onChange }) => {
   const handleChange = (
     event: React.SyntheticEvent<Element, Event>,
     value: string | null
-  ) => {
-    console.log("change")
-    onChange(value)
-  }
+  ) => onChange(value)
 
   return (
     <Autocomplete

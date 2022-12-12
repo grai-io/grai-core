@@ -6,15 +6,21 @@ import { useNavigate } from "react-router-dom"
 import Connector, { ConnectorType } from "../form/fields/Connector"
 import Namespace from "../form/fields/Namespace"
 import Form from "../form/Form"
+import ConnectionsMetadata from "./ConnectionsMetadata"
 
 const CREATE_CONNECTION = gql`
-  mutation Login($connector: ID!, $namespace: String, $name: String!) {
+  mutation Login(
+    $connector: ID!
+    $namespace: String
+    $name: String!
+    $metadata: JSON!
+  ) {
     createConnection(
       input: {
         connector: { set: $connector }
         namespace: $namespace
         name: $name
-        metadata: "{}"
+        metadata: $metadata
       }
     ) {
       __typename
@@ -46,6 +52,7 @@ type Values = {
   connector: ConnectorType | null
   namespace: string | null
   name: string
+  metadata: any
 }
 
 const ConnectionsForm: React.FC = () => {
@@ -55,6 +62,7 @@ const ConnectionsForm: React.FC = () => {
     connector: null,
     namespace: "",
     name: "",
+    metadata: null,
   })
 
   const [createConnection, { loading, error }] = useMutation(CREATE_CONNECTION)
@@ -65,12 +73,12 @@ const ConnectionsForm: React.FC = () => {
         connector: values.connector?.id,
         namespace: values.namespace,
         name: values.name,
+        metadata: values.metadata,
       },
     }).then(data => navigate("/connections"))
 
   return (
     <Form onSubmit={handleSubmit}>
-      {JSON.stringify(values)}
       {error && <Typography>{JSON.stringify(error)}</Typography>}
       <Connector
         value={values.connector}
@@ -88,6 +96,13 @@ const ConnectionsForm: React.FC = () => {
         required
         fullWidth
       />
+      {values.connector && (
+        <ConnectionsMetadata
+          connector={values.connector}
+          value={values.metadata}
+          onChange={value => setValues({ ...values, metadata: value })}
+        />
+      )}
       <LoadingButton
         variant="contained"
         type="submit"

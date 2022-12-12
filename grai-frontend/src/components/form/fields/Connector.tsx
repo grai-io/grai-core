@@ -12,13 +12,27 @@ const GET_CONNECTORS = gql`
     connectors {
       id
       name
+      metadata
     }
   }
 `
 
+interface ConnectorMetadataField {
+  name: string
+  label?: string
+  secret?: boolean
+  required?: boolean
+  default?: string | number
+}
+
+export interface ConnectorMetadata {
+  fields?: ConnectorMetadataField[]
+}
+
 export interface ConnectorType {
   id: string
   name: string
+  metadata: ConnectorMetadata | null | undefined
 }
 
 type ConnectorProps = {
