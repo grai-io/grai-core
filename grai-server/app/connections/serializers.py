@@ -5,8 +5,6 @@ from .models import Connection, Connector
 
 
 class ConnectionSerializer(serializers.ModelSerializer):
-    display_name = serializers.CharField(required=False)
-
     class Meta:
         model = Connection
         fields = (
@@ -21,9 +19,6 @@ class ConnectionSerializer(serializers.ModelSerializer):
 
 
 class ConnectorSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(required=False)
-    display_name = serializers.CharField(required=False)
-
     class Meta:
         model = Connector
         fields = (

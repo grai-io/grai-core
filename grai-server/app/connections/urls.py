@@ -3,7 +3,7 @@ from rest_framework import routers
 
 from .views import ConnectionViewSet, ConnectorViewSet
 
-app_name = "graph"
+app_name = "connections"
 
 router = routers.SimpleRouter()
 router.register("connections", ConnectionViewSet, basename="connections")
