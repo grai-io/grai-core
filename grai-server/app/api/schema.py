@@ -1,7 +1,7 @@
 import typing
 
-# from api.mutations import Mutation
-from api.types import EdgeType, NodeType, UserType, ConnectionType, ConnectorType
+from api.mutations import Mutation
+from api.types import EdgeType, NodeType, UserType, ConnectionType, ConnectorType, NamespaceType
 import strawberry
 from strawberry.permission import BasePermission
 from strawberry.types import Info
@@ -38,6 +38,9 @@ class Query:
     connections: typing.List[ConnectionType] = strawberry.django.field(
         permission_classes=[IsAuthenticated]
     )
+    namespaces: typing.List[NamespaceType] = strawberry.django.field(
+        permission_classes=[IsAuthenticated]
+    )
     users: typing.List[UserType] = strawberry.django.field(
         permission_classes=[IsAuthenticated]
     )
@@ -45,7 +48,7 @@ class Query:
 
 schema = gql.Schema(
     Query,
-    # Mutation,
+    Mutation,
     extensions=[
         DjangoOptimizerExtension,
     ],

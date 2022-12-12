@@ -2,6 +2,7 @@ from typing import List
 
 from lineage.models import Edge, Node
 from connections.models import Connection, Connector
+from namespaces.models import Namespace
 import strawberry
 from strawberry.scalars import JSON
 from strawberry_django_plus import gql
@@ -60,3 +61,8 @@ class ConnectionType:
     created_at: auto
     updated_at: auto
     created_by: UserType
+
+@strawberry.django.type(Namespace)
+class NamespaceType:
+    id: auto
+    name: auto

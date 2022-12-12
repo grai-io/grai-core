@@ -8,6 +8,8 @@ import Home from "./pages/Home"
 import Nodes from "./pages/nodes/Nodes"
 import Node from "./pages/nodes/Node"
 import NotFound from "./pages/NotFound"
+import Connections from "./pages/connections/Connections"
+import ConnectionCreate from "./pages/connections/ConnectionCreate"
 
 const Routes: React.FC = () => (
   <BrowerRoutes>
@@ -18,6 +20,10 @@ const Routes: React.FC = () => (
         <Route path=":nodeId" element={<Node />} />
       </Route>
       <Route path="/edges" element={<Edges />} />
+      <Route path="/connections">
+        <Route index element={<Connections />} />
+        <Route path="create" element={<ConnectionCreate />} />
+      </Route>
     </Route>
 
     <Route element={<GuestRoute />}>
