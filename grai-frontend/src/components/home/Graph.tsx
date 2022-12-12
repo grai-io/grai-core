@@ -33,7 +33,7 @@ const Graph: React.FC<GraphProps> = ({ nodes, edges }) => {
     data: {
       id: node.id,
       name: node.name,
-      label: node.display_name,
+      label: node.displayName,
       metadata: node.metadata,
     },
     position,
@@ -50,14 +50,14 @@ const Graph: React.FC<GraphProps> = ({ nodes, edges }) => {
   const initialEdges: RFEdge[] = edges.map(edge => {
     const edgeErrors = enrichedErrors?.filter(
       error =>
-        error.sourceId === edge.source &&
-        error.destinationId === edge.destination
+        error.sourceId === edge.source.id &&
+        error.destinationId === edge.destination.id
     )
 
     return {
       id: edge.id,
-      source: edge.source,
-      target: edge.destination,
+      source: edge.source.id,
+      target: edge.destination.id,
       markerEnd: {
         type: MarkerType.ArrowClosed,
         width: 40,

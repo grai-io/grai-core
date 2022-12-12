@@ -11,8 +11,8 @@ import ReactFlow, {
 import "reactflow/dist/style.css"
 import Elk from "elkjs"
 import BaseNode from "./BaseNode"
-import { CircularProgress } from "@mui/material"
 import theme from "../../theme"
+import Loading from "../layout/Loading"
 
 const DEFAULT_WIDTH = 250
 const DEFAULT_HEIGHT = 300
@@ -129,7 +129,7 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
       .catch(err => console.error(err))
   }, [initialNodes, initialEdges])
 
-  if (!nodes) return <CircularProgress />
+  if (!nodes) return <Loading />
 
   const highlightPath = (node: Node, nodes?: Node[], edges?: Edge[]) => {
     if (node && nodes && edges) {

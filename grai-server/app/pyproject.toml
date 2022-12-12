@@ -2,7 +2,7 @@
 name = "the_guide"
 version = "0.1.8"
 description = ""
-authors = ["Ian Eaves <ian@grai.io>"]
+authors = ["Ian Eaves <ian@grai.io>", "Edward Louth <edward@grai.io>"]
 license = "Elastic-2.0"
 
 [tool.poetry.dependencies]
@@ -21,7 +21,7 @@ django-extensions = "^3.2"
 djangorestframework-api-key = "^2"
 posthog = "^2.1.2"
 sentry-sdk = "^1.9.10"
-strawberry-django-plus = "^1.28.4"
+strawberry-django-plus = "^1.32"
 drf-spectacular = "^0.24.2"
 django-health-check = "^3.17.0"
 

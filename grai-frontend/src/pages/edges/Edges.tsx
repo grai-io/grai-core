@@ -1,36 +1,46 @@
+import React from "react"
+import { gql, useQuery } from "@apollo/client"
 import { Typography } from "@mui/material"
-import React, { useEffect, useState } from "react"
 import EdgesTable from "../../components/edges/EdgesTable"
 import AppTopBar from "../../components/layout/AppTopBar"
-import useAxios from "../../utils/useAxios"
+import { Node } from "../../pages/nodes/Nodes"
+import Loading from "../../components/layout/Loading"
+
+const GET_EDGES = gql`
+  query GetEdges {
+    edges {
+      id
+      isActive
+      dataSource
+      source {
+        id
+        name
+        displayName
+      }
+      destination {
+        id
+        name
+        displayName
+      }
+      metadata
+    }
+  }
+`
 
 export interface Edge {
   id: string
-  name: string
-  namespace: string
-  data_source: string
-  is_active: boolean
-  source: string
-  destination: string
+  dataSource: string
+  isActive: boolean
+  source: Node
+  destination: Node
   metadata: any
 }
 
 const Edges: React.FC = () => {
-  const [res, setRes] = useState<Edge[] | null>()
-  const [error, setError] = useState<string>()
-  const api = useAxios()
+  const { loading, error, data } = useQuery(GET_EDGES)
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await api.get("/lineage/edges")
-        setRes(response.data)
-      } catch {
-        setError("Something went wrong")
-      }
-    }
-    fetchData()
-  }, [])
+  if (error) return <p>Error : {error.message}</p>
+  if (loading) return <Loading />
 
   return (
     <>
@@ -38,7 +48,7 @@ const Edges: React.FC = () => {
       <Typography variant="h4" sx={{ textAlign: "center", m: 3 }}>
         Edges
       </Typography>
-      <EdgesTable edges={res ?? null} />
+      <EdgesTable edges={data.edges ?? null} />
       {error && <Typography>{error}</Typography>}
     </>
   )
