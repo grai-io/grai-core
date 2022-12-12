@@ -14,6 +14,7 @@ const CREATE_CONNECTION = gql`
     $namespace: String
     $name: String!
     $metadata: JSON!
+    $secrets: JSON!
   ) {
     createConnection(
       input: {
@@ -21,6 +22,7 @@ const CREATE_CONNECTION = gql`
         namespace: $namespace
         name: $name
         metadata: $metadata
+        secrets: $secrets
       }
     ) {
       __typename
@@ -53,6 +55,7 @@ type Values = {
   namespace: string | null
   name: string
   metadata: any
+  secrets: any
 }
 
 const ConnectionsForm: React.FC = () => {
@@ -63,6 +66,7 @@ const ConnectionsForm: React.FC = () => {
     namespace: "",
     name: "",
     metadata: null,
+    secrets: null,
   })
 
   const [createConnection, { loading, error }] = useMutation(CREATE_CONNECTION)
@@ -74,6 +78,7 @@ const ConnectionsForm: React.FC = () => {
         namespace: values.namespace,
         name: values.name,
         metadata: values.metadata,
+        secrets: values.secrets,
       },
     }).then(data => navigate("/connections"))
 
@@ -99,8 +104,10 @@ const ConnectionsForm: React.FC = () => {
       {values.connector && (
         <ConnectionsMetadata
           connector={values.connector}
-          value={values.metadata}
-          onChange={value => setValues({ ...values, metadata: value })}
+          metadata={values.metadata}
+          secrets={values.secrets}
+          onChangeMetadata={value => setValues({ ...values, metadata: value })}
+          onChangeSecrets={value => setValues({ ...values, secrets: value })}
         />
       )}
       <LoadingButton

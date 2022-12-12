@@ -20,6 +20,7 @@ class ConnectionTypeInput:
     namespace: gql.auto
     name: gql.auto
     metadata: gql.auto
+    secrets: gql.auto
 
 @strawberry.type
 class Mutation:

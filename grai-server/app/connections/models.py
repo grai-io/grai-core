@@ -29,6 +29,7 @@ class Connection(models.Model):
     namespace = models.CharField(max_length=255, default="default")
     name = models.CharField(max_length=255)
     metadata = models.JSONField(default=dict)
+    secrets = models.JSONField(default=dict, blank=True, null=True)
     is_active = models.BooleanField(default=True)
 
     created_at = models.DateTimeField(auto_now_add=True)

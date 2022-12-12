@@ -17,7 +17,7 @@ const GET_CONNECTORS = gql`
   }
 `
 
-interface ConnectorMetadataField {
+export interface ConnectorMetadataField {
   name: string
   label?: string
   secret?: boolean
