@@ -4,6 +4,7 @@ import Graph from "../components/home/Graph"
 import AppTopBar from "../components/layout/AppTopBar"
 import { gql, useQuery } from "@apollo/client"
 import Loading from "../components/layout/Loading"
+import theme from "../theme"
 
 const GET_NODES_AND_EDGES = gql`
   query GetNodesAndEdges {
@@ -51,7 +52,13 @@ const Home: React.FC = () => {
     <>
       <AppTopBar />
       {data.nodes && data.edges && (
-        <Box sx={{ height: "calc(100vh - 68px)", width: "100%" }}>
+        <Box
+          sx={{
+            height: "calc(100vh - 70px)",
+            width: "100%",
+            backgroundColor: theme.palette.grey[100],
+          }}
+        >
           <Graph nodes={data.nodes} edges={data.edges} />
         </Box>
       )}

@@ -19,7 +19,7 @@ type AuthContextType = {
   authTokens: Tokens | null
   setAuthTokens: (tokens: Tokens | null) => void
   registerUser: (username: string, password: string, password2: string) => void
-  loginUser: (username: string, password: string) => void
+  loginUser: (username: string, password: string) => Promise<void>
   logoutUser: () => void
 }
 
@@ -29,7 +29,7 @@ const AuthContext = createContext<AuthContextType>({
   authTokens: null,
   setAuthTokens: () => {},
   registerUser: () => {},
-  loginUser: () => {},
+  loginUser: async () => new Promise(() => null),
   logoutUser: () => {},
 })
 

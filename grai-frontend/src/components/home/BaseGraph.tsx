@@ -14,8 +14,8 @@ import BaseNode from "./BaseNode"
 import theme from "../../theme"
 import Loading from "../layout/Loading"
 
-const DEFAULT_WIDTH = 250
-const DEFAULT_HEIGHT = 300
+const DEFAULT_WIDTH = 300
+const DEFAULT_HEIGHT = 110
 
 const nodeTypes = {
   baseNode: BaseNode,
@@ -31,10 +31,10 @@ export const createGraphLayout = async (
   const elk = new Elk({
     defaultLayoutOptions: {
       "elk.algorithm": "layered",
-      "elk.direction": "DOWN",
+      // "elk.direction": "RIGHT",
       "elk.padding": "[top=200,left=100,bottom=25,right=25]",
-      "elk.spacing.nodeNode": "15",
-      "elk.layered.spacing.nodeNodeBetweenLayers": "50",
+      "elk.spacing.nodeNode": "50",
+      "elk.layered.spacing.nodeNodeBetweenLayers": "150",
       "elk.edgeRouting": "SPLINES",
     },
   })

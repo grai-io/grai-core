@@ -28,16 +28,23 @@ const Graph: React.FC<GraphProps> = ({ nodes, edges }) => {
   const limitGraph: boolean =
     searchParams.get("limitGraph")?.toLowerCase() === "true" && !!errors
 
-  const initialNodes: RFNode[] = nodes.map(node => ({
-    id: node.id,
-    data: {
+  const initialNodes: RFNode[] = nodes
+    .filter(node => node.metadata.node_type === "Table")
+    .map(node => ({
       id: node.id,
-      name: node.name,
-      label: node.displayName,
-      metadata: node.metadata,
-    },
-    position,
-  }))
+      data: {
+        id: node.id,
+        name: node.name,
+        label: node.displayName,
+        metadata: node.metadata,
+        count: nodes.filter(
+          n =>
+            n.metadata.table_name === node.metadata.table_name &&
+            n.metadata.node_type !== "Table"
+        ).length,
+      },
+      position,
+    }))
 
   const nameToNode = (name: string) => nodes.find(n => n.name === name)
 
@@ -98,7 +105,41 @@ const Graph: React.FC<GraphProps> = ({ nodes, edges }) => {
       )
     : initialEdges
 
-  return <BaseGraph initialNodes={filteredNodes} initialEdges={filteredEdges} />
+  const transformedEdges = filteredEdges
+    .map(edge => {
+      const sourceNode = nodes.find(n => n.id === edge.source)
+      const targetNode = nodes.find(n => n.id === edge.target)
+
+      const source =
+        sourceNode?.metadata.node_type === "Table"
+          ? edge.source
+          : nodes.find(
+              n =>
+                n.metadata.table_name === sourceNode?.metadata.table_name &&
+                n.metadata.node_type === "Table"
+            )?.id
+      const target =
+        targetNode?.metadata.node_type === "Table"
+          ? edge.target
+          : nodes.find(
+              n =>
+                n.metadata.table_name === targetNode?.metadata.table_name &&
+                n.metadata.node_type === "Table"
+            )?.id
+
+      if (!source || !target || source === target) return null
+
+      return {
+        ...edge,
+        source,
+        target,
+      }
+    })
+    .filter(notEmpty)
+
+  return (
+    <BaseGraph initialNodes={filteredNodes} initialEdges={transformedEdges} />
+  )
 }
 
 export default Graph

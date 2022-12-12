@@ -10,10 +10,10 @@ const LoginForm: React.FC = () => {
   const [password, setPassword] = useState<string>("")
   const [loading, setLoading] = useState(false)
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setLoading(true)
 
-    loginUser(email, password)
+    await loginUser(email, password)
 
     setLoading(false)
   }

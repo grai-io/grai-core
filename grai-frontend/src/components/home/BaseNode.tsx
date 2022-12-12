@@ -1,70 +1,124 @@
-import { Box, Typography } from "@mui/material"
+import { ArrowDropDown } from "@mui/icons-material"
+import { Box, Divider, Menu, MenuItem, Typography } from "@mui/material"
 import React from "react"
 import { useNavigate } from "react-router-dom"
 import { Handle, Position } from "reactflow"
 import theme from "../../theme"
 
 interface BaseNodeProps {
-  data: any
+  data: {
+    id: string
+    label: string
+    highlight: boolean
+    count: number
+  }
 }
 
 const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
   const navigate = useNavigate()
+  const [contextMenu, setContextMenu] = React.useState<{
+    mouseX: number
+    mouseY: number
+  } | null>(null)
 
-  const nodeType = data.metadata.node_type
+  const handleContextMenu = (event: React.MouseEvent) => {
+    event.preventDefault()
+    setContextMenu(
+      contextMenu === null
+        ? {
+            mouseX: event.clientX + 2,
+            mouseY: event.clientY - 6,
+          }
+        : // repeated contextmenu when it is already open closes it with Chrome 84 on Ubuntu
+          // Other native context menus might behave different.
+          // With this behavior we prevent contextmenu from the backdrop to re-locale existing context menus.
+          null
+    )
+  }
+
+  const handleClose = () => {
+    setContextMenu(null)
+  }
 
   return (
-    <Box
-      onClick={() => navigate(`/nodes/${data.id}`)}
-      sx={{
-        fontSize: 12,
-        borderWidth: 1,
-        borderStyle: "solid",
-        borderRadius: nodeType === "Table" ? "25px" : "3px",
-        borderColor: data.highlight
-          ? theme.palette.primary.contrastText
-          : "#555",
-        textAlign: "center",
-        width: 250,
-        p: "10px",
-        cursor: "pointer",
-      }}
-    >
-      <Handle
-        type="target"
-        position={"top" as Position}
-        style={{
-          top: -2,
-          border: 0,
-          backgroundColor: "transparent",
-          color: "transparent",
+    <>
+      <Box
+        onContextMenu={handleContextMenu}
+        sx={{
+          fontSize: 12,
+          borderWidth: 1,
+          borderStyle: "solid",
+          borderRadius: 1,
+          borderColor: data.highlight
+            ? theme.palette.primary.contrastText
+            : "#555",
+          minWidth: 300,
+          p: "10px",
+          py: "5px",
+          cursor: "auto",
+          backgroundColor: "white",
         }}
-        onConnect={params => console.log("handle onConnect", params)}
-        isConnectable={false}
-      />
-      <Typography variant="h6">{data.label}</Typography>
-      {Object.entries(data.metadata)
-        .filter(([key, value]) => value)
-        .map(([key, value]) => (
-          <React.Fragment key={key}>
-            <Typography
-              variant="caption"
-              sx={{ display: "block" }}
-            >{`${key}: ${value}`}</Typography>
-          </React.Fragment>
-        ))}
-      <Handle
-        type="source"
-        position={"bottom" as Position}
-        style={{
-          bottom: 0,
-          border: 0,
-          backgroundColor: "transparent",
-          color: "transparent",
-        }}
-        isConnectable={false}
-      />
-    </Box>
+      >
+        <Handle
+          type="target"
+          position={"left" as Position}
+          style={{
+            left: -2,
+            border: 0,
+            backgroundColor: "transparent",
+            color: "transparent",
+          }}
+          isConnectable={false}
+        />
+        <Typography variant="h6">{data.label}</Typography>
+        {data.count > 0 && (
+          <>
+            <Divider sx={{ mt: 0.5, mb: 1 }} />
+            <Box sx={{ display: "flex" }}>
+              <Typography sx={{ flexGrow: 1 }}>
+                {data.count} Column{data.count > 1 && "s"}
+              </Typography>
+              <Box
+                sx={{ cursor: "pointer" }}
+                onClick={() => console.log("click")}
+              >
+                <ArrowDropDown />
+              </Box>
+            </Box>
+          </>
+        )}
+        <Handle
+          type="source"
+          position={"right" as Position}
+          style={{
+            right: 0,
+            border: 0,
+            backgroundColor: "transparent",
+            color: "transparent",
+          }}
+          isConnectable={false}
+        />
+      </Box>
+      <Menu
+        open={contextMenu !== null}
+        onClose={handleClose}
+        anchorReference="anchorPosition"
+        anchorPosition={
+          contextMenu !== null
+            ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+            : undefined
+        }
+      >
+        <MenuItem onClick={handleClose}>
+          Show lineage for <b>{data.label}</b>
+        </MenuItem>
+        <MenuItem onClick={handleClose}>Show upstream dependents</MenuItem>
+        <MenuItem onClick={handleClose}>Show downstream dependents</MenuItem>
+        <MenuItem onClick={() => navigate(`/nodes/${data.id}`)}>
+          Show profile for this table
+        </MenuItem>
+      </Menu>
+    </>
   )
 }
 
