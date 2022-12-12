@@ -1,16 +1,22 @@
-import { ArrowDropDown } from "@mui/icons-material"
-import { Box, Divider, Menu, MenuItem, Typography } from "@mui/material"
+import { ArrowDropDown, ArrowDropUp } from "@mui/icons-material"
+import { Box, Divider, Menu, MenuItem, Stack, Typography } from "@mui/material"
 import React from "react"
 import { useNavigate } from "react-router-dom"
 import { Handle, Position } from "reactflow"
 import theme from "../../theme"
+
+interface Column {
+  label: string
+}
 
 interface BaseNodeProps {
   data: {
     id: string
     label: string
     highlight: boolean
-    count: number
+    columns: Column[]
+    expanded: boolean
+    onExpand: (value: boolean) => void
   }
 }
 
@@ -53,8 +59,6 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
             ? theme.palette.primary.contrastText
             : "#555",
           minWidth: 300,
-          p: "10px",
-          py: "5px",
           cursor: "auto",
           backgroundColor: "white",
         }}
@@ -70,21 +74,41 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
           }}
           isConnectable={false}
         />
-        <Typography variant="h6">{data.label}</Typography>
-        {data.count > 0 && (
-          <>
-            <Divider sx={{ mt: 0.5, mb: 1 }} />
-            <Box sx={{ display: "flex" }}>
-              <Typography sx={{ flexGrow: 1 }}>
-                {data.count} Column{data.count > 1 && "s"}
-              </Typography>
-              <Box
-                sx={{ cursor: "pointer" }}
-                onClick={() => console.log("click")}
-              >
-                <ArrowDropDown />
+        <Box sx={{ p: 2, py: 1 }}>
+          <Typography variant="h6">{data.label}</Typography>
+          {data.columns.length > 0 && (
+            <>
+              <Divider sx={{ mt: 0.5, mb: 1 }} />
+              <Box sx={{ display: "flex" }}>
+                <Typography sx={{ flexGrow: 1 }}>
+                  {data.columns.length} Column{data.columns.length > 1 && "s"}
+                </Typography>
+                <Box
+                  sx={{ cursor: "pointer" }}
+                  onClick={() => data.onExpand(!data.expanded)}
+                >
+                  {data.expanded ? <ArrowDropUp /> : <ArrowDropDown />}
+                </Box>
               </Box>
-            </Box>
+            </>
+          )}
+        </Box>
+        {data.expanded && (
+          <>
+            <Divider sx={{ borderColor: theme.palette.grey[500] }} />
+            <Stack direction="column" spacing={1} sx={{ px: 2, py: 1 }}>
+              {data.columns
+                .map(column => (
+                  <Box key={column.label}>
+                    <Typography>{column.label}</Typography>
+                  </Box>
+                ))
+                .reduce<JSX.Element[] | null>(
+                  (acc, x, i) =>
+                    acc === null ? [x] : [...acc, <Divider key={i} />, x],
+                  null
+                )}
+            </Stack>
           </>
         )}
         <Handle

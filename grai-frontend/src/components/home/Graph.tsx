@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { Edge } from "../../pages/edges/Edges"
 import { Node } from "../../pages/nodes/Nodes"
 import BaseGraph, { getAllIncomers, getAllOutgoers } from "./BaseGraph"
@@ -21,6 +21,7 @@ const position = { x: 0, y: 0 }
 
 const Graph: React.FC<GraphProps> = ({ nodes, edges }) => {
   const searchParams = new URLSearchParams(useLocation().search)
+  const [expanded, setExpanded] = useState<string[]>([])
 
   const errors: Error[] | null = searchParams.has("errors")
     ? JSON.parse(searchParams.get("errors") ?? "")
@@ -37,11 +38,23 @@ const Graph: React.FC<GraphProps> = ({ nodes, edges }) => {
         name: node.name,
         label: node.displayName,
         metadata: node.metadata,
-        count: nodes.filter(
-          n =>
-            n.metadata.table_name === node.metadata.table_name &&
-            n.metadata.node_type !== "Table"
-        ).length,
+        columns: nodes
+          .filter(
+            n =>
+              n.metadata.table_name === node.metadata.table_name &&
+              n.metadata.node_type !== "Table"
+          )
+          .map(n => ({
+            label: n.displayName ?? n.name,
+          })),
+        expanded: expanded.includes(node.id),
+        onExpand(value: boolean) {
+          setExpanded(
+            value
+              ? expanded.concat(node.id)
+              : expanded.filter(e => e !== node.id)
+          )
+        },
       },
       position,
     }))
@@ -138,7 +151,14 @@ const Graph: React.FC<GraphProps> = ({ nodes, edges }) => {
     .filter(notEmpty)
 
   return (
-    <BaseGraph initialNodes={filteredNodes} initialEdges={transformedEdges} />
+    <>
+      {JSON.stringify(expanded)}
+      <BaseGraph
+        initialNodes={filteredNodes}
+        initialEdges={transformedEdges}
+        expanded={expanded}
+      />
+    </>
   )
 }
 

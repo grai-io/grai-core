@@ -9,7 +9,7 @@ import ReactFlow, {
   ReactFlowProvider,
 } from "reactflow"
 import "reactflow/dist/style.css"
-import Elk from "elkjs"
+import Elk, { ElkNode } from "elkjs"
 import BaseNode from "./BaseNode"
 import theme from "../../theme"
 import Loading from "../layout/Loading"
@@ -25,7 +25,7 @@ export const createGraphLayout = async (
   initialNodes: Node[],
   initialEdges: Edge[]
 ) => {
-  const nodes: any[] = []
+  const nodes: ElkNode[] = []
   const edges: any[] = []
 
   const elk = new Elk({
@@ -43,7 +43,9 @@ export const createGraphLayout = async (
     nodes.push({
       id: node.id,
       width: DEFAULT_WIDTH,
-      height: DEFAULT_HEIGHT,
+      height:
+        DEFAULT_HEIGHT +
+        (node.data.expanded ? node.data.columns.length * 30 : 0),
     })
   )
 
@@ -112,22 +114,25 @@ export const getAllOutgoers = (
 type BaseGraphProps = {
   initialNodes: Node[]
   initialEdges: Edge[]
+  expanded: string[]
 }
 
 const BaseGraph: React.FC<BaseGraphProps> = ({
   initialNodes,
   initialEdges,
+  expanded,
 }) => {
   const [nodes, setNodes] = useState<Node[]>()
   const [edges, setEdges] = useState<Edge[]>(initialEdges)
 
   useEffect(() => {
+    console.log("createGraphLayout")
     createGraphLayout(initialNodes, initialEdges)
       .then(res => {
         setNodes(res)
       })
       .catch(err => console.error(err))
-  }, [initialNodes, initialEdges])
+  }, [initialNodes, initialEdges, expanded])
 
   if (!nodes) return <Loading />
 
