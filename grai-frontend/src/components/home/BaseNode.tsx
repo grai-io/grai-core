@@ -94,22 +94,48 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
           )}
         </Box>
         {data.expanded && (
-          <>
-            <Divider sx={{ borderColor: theme.palette.grey[500] }} />
-            <Stack direction="column" spacing={1} sx={{ px: 2, py: 1 }}>
-              {data.columns
-                .map(column => (
-                  <Box key={column.label}>
-                    <Typography>{column.label}</Typography>
-                  </Box>
-                ))
-                .reduce<JSX.Element[] | null>(
-                  (acc, x, i) =>
-                    acc === null ? [x] : [...acc, <Divider key={i} />, x],
-                  null
-                )}
-            </Stack>
-          </>
+          <Stack direction="column" spacing={1} sx={{ px: 1, pb: 1, mt: -0.5 }}>
+            {data.columns.map((column, index) => (
+              <Box
+                key={column.label}
+                sx={{
+                  borderStyle: "solid",
+                  borderWidth: 1,
+                  borderColor: "divider",
+                  borderRadius: 1,
+                  p: 1,
+                }}
+              >
+                <Typography>{column.label}</Typography>
+                <Handle
+                  id={column.label}
+                  type="target"
+                  position={"left" as Position}
+                  style={{
+                    top: 108 + index * 50,
+                    left: 10,
+                    border: 0,
+                    backgroundColor: "transparent",
+                    color: "transparent",
+                  }}
+                  isConnectable={false}
+                />
+                <Handle
+                  id={column.label}
+                  type="source"
+                  position={"right" as Position}
+                  style={{
+                    top: 108 + index * 50,
+                    right: 10,
+                    border: 0,
+                    backgroundColor: "transparent",
+                    color: "transparent",
+                  }}
+                  isConnectable={false}
+                />
+              </Box>
+            ))}
+          </Stack>
         )}
         <Handle
           type="source"

@@ -30,7 +30,7 @@ const GET_NODE = gql`
         id
         isActive
         dataSource
-        source {
+        destination {
           id
           name
           displayName
@@ -42,7 +42,7 @@ const GET_NODE = gql`
         id
         isActive
         dataSource
-        destination {
+        source {
           id
           name
           displayName
@@ -123,7 +123,7 @@ const Node: React.FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {node.s?.map((edge: any) => (
+              {node.destinationEdges?.map((edge: any) => (
                 <TableRow
                   key={edge.id}
                   onClick={() => navigate(`/nodes/${edge.source?.id}`)}
@@ -139,7 +139,7 @@ const Node: React.FC = () => {
                   <TableCell>{edge.source?.metadata.node_type}</TableCell>
                 </TableRow>
               ))}
-              {node.sourceEdges?.length === 0 && (
+              {node.destinationEdges?.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={3} sx={{ textAlign: "center" }}>
                     No Inputs
@@ -162,7 +162,7 @@ const Node: React.FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {node.destinationEdges?.map((edge: any) => (
+              {node.sourceEdges?.map((edge: any) => (
                 <TableRow
                   key={edge.id}
                   onClick={() => navigate(`/nodes/${edge.destination?.id}`)}
@@ -178,7 +178,7 @@ const Node: React.FC = () => {
                   <TableCell>{edge.destination?.metadata.node_type}</TableCell>
                 </TableRow>
               ))}
-              {node.destinationEdges?.length === 0 && (
+              {node.sourceEdges?.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={3} sx={{ textAlign: "center" }}>
                     No Outputs

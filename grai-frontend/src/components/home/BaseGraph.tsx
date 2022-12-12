@@ -33,8 +33,8 @@ export const createGraphLayout = async (
       "elk.algorithm": "layered",
       // "elk.direction": "RIGHT",
       "elk.padding": "[top=200,left=100,bottom=25,right=25]",
-      "elk.spacing.nodeNode": "50",
-      "elk.layered.spacing.nodeNodeBetweenLayers": "150",
+      "elk.spacing.nodeNode": "100",
+      "elk.layered.spacing.nodeNodeBetweenLayers": "250",
       "elk.edgeRouting": "SPLINES",
     },
   })
@@ -45,7 +45,7 @@ export const createGraphLayout = async (
       width: DEFAULT_WIDTH,
       height:
         DEFAULT_HEIGHT +
-        (node.data.expanded ? node.data.columns.length * 30 : 0),
+        (node.data.expanded ? node.data.columns.length * 50 : 0),
     })
   )
 
@@ -60,7 +60,7 @@ export const createGraphLayout = async (
   const newGraph = await elk.layout({
     id: "root",
     children: nodes,
-    edges: edges,
+    edges,
   })
 
   return initialNodes.map(node => {
@@ -126,10 +126,10 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
   const [edges, setEdges] = useState<Edge[]>(initialEdges)
 
   useEffect(() => {
-    console.log("createGraphLayout")
     createGraphLayout(initialNodes, initialEdges)
       .then(res => {
         setNodes(res)
+        setEdges(initialEdges)
       })
       .catch(err => console.error(err))
   }, [initialNodes, initialEdges, expanded])

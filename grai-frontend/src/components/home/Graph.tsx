@@ -41,7 +41,8 @@ const Graph: React.FC<GraphProps> = ({ nodes, edges }) => {
         columns: nodes
           .filter(
             n =>
-              n.metadata.table_name === node.metadata.table_name &&
+              (n.metadata.table_name === node.metadata.table_name ||
+                `public.${n.metadata.table_name}` === node.name) &&
               n.metadata.node_type !== "Table"
           )
           .map(n => ({
@@ -78,13 +79,14 @@ const Graph: React.FC<GraphProps> = ({ nodes, edges }) => {
       id: edge.id,
       source: edge.source.id,
       target: edge.destination.id,
-      markerEnd: {
-        type: MarkerType.ArrowClosed,
-        width: 40,
-        height: 40,
-      },
+      // markerEnd: {
+      //   type: MarkerType.ArrowClosed,
+      //   width: 40,
+      //   height: 40,
+      // },
       label: edgeErrors?.map(error => error.message).join(", "),
       labelStyle: { fill: "red", fontWeight: 700 },
+      zIndex: 10,
     }
   })
 
@@ -123,42 +125,57 @@ const Graph: React.FC<GraphProps> = ({ nodes, edges }) => {
       const sourceNode = nodes.find(n => n.id === edge.source)
       const targetNode = nodes.find(n => n.id === edge.target)
 
+      const sourceNodeParent = nodes.find(
+        n =>
+          (n.metadata.table_name === sourceNode?.metadata.table_name ||
+            n.name === `public.${sourceNode?.metadata.table_name}`) &&
+          n.metadata.node_type === "Table"
+      )
+      const targetNodeParent = nodes.find(
+        n =>
+          (n.metadata.table_name === targetNode?.metadata.table_name ||
+            n.name === `public.${targetNode?.metadata.table_name}`) &&
+          n.metadata.node_type === "Table"
+      )
+
       const source =
         sourceNode?.metadata.node_type === "Table"
           ? edge.source
-          : nodes.find(
-              n =>
-                n.metadata.table_name === sourceNode?.metadata.table_name &&
-                n.metadata.node_type === "Table"
-            )?.id
+          : sourceNodeParent?.id
       const target =
         targetNode?.metadata.node_type === "Table"
           ? edge.target
-          : nodes.find(
-              n =>
-                n.metadata.table_name === targetNode?.metadata.table_name &&
-                n.metadata.node_type === "Table"
-            )?.id
+          : targetNodeParent?.id
 
       if (!source || !target || source === target) return null
+
+      const sourceHandle =
+        sourceNodeParent && expanded.includes(sourceNodeParent?.id)
+          ? sourceNode?.displayName
+          : null
+      const targetHandle =
+        targetNodeParent && expanded.includes(targetNodeParent?.id)
+          ? targetNode?.displayName
+          : null
 
       return {
         ...edge,
         source,
+        sourceHandle,
         target,
+        targetHandle,
       }
     })
     .filter(notEmpty)
 
+  // console.log(transformedEdges.filter(e => e.sourceHandle || e.targetHandle))
+
   return (
-    <>
-      {JSON.stringify(expanded)}
-      <BaseGraph
-        initialNodes={filteredNodes}
-        initialEdges={transformedEdges}
-        expanded={expanded}
-      />
-    </>
+    <BaseGraph
+      initialNodes={filteredNodes}
+      initialEdges={transformedEdges}
+      expanded={expanded}
+    />
   )
 }
 
