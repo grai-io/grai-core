@@ -1,6 +1,7 @@
 from typing import List
 
 from lineage.models import Edge, Node
+from connections.models import Connection, Connector
 import strawberry
 from strawberry.scalars import JSON
 from strawberry_django_plus import gql
@@ -39,4 +40,23 @@ class EdgeType:
     destination: NodeType
     metadata: JSON
     is_active: auto
+    created_by: UserType
+
+@strawberry.django.type(Connector)
+class ConnectorType:
+    id: auto
+    name: auto
+    metadata: JSON
+    is_active: auto
+
+@strawberry.django.type(Connection)
+class ConnectionType:
+    id: auto
+    connector: ConnectorType
+    namespace: auto
+    name: auto
+    metadata: JSON
+    is_active: auto
+    created_at: auto
+    updated_at: auto
     created_by: UserType

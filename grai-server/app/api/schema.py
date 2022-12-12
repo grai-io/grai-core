@@ -1,7 +1,7 @@
 import typing
 
 # from api.mutations import Mutation
-from api.types import EdgeType, NodeType, UserType
+from api.types import EdgeType, NodeType, UserType, ConnectionType, ConnectorType
 import strawberry
 from strawberry.permission import BasePermission
 from strawberry.types import Info
@@ -30,6 +30,12 @@ class Query:
     )
     node: NodeType = strawberry.django.field(permission_classes=[IsAuthenticated])
     edges: typing.List[EdgeType] = strawberry.django.field(
+        permission_classes=[IsAuthenticated]
+    )
+    connectors: typing.List[ConnectorType] = strawberry.django.field(
+        permission_classes=[IsAuthenticated]
+    )
+    connections: typing.List[ConnectionType] = strawberry.django.field(
         permission_classes=[IsAuthenticated]
     )
     users: typing.List[UserType] = strawberry.django.field(
