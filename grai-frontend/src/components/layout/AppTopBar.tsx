@@ -33,6 +33,13 @@ const AppTopBar: React.FC = () => {
         <Button component={Link} to="/edges" sx={{ my: 2, color: "inherit" }}>
           Edges
         </Button>
+        <Button
+          component={Link}
+          to="/connections"
+          sx={{ my: 2, color: "inherit" }}
+        >
+          Connections
+        </Button>
         <Box sx={{ flexGrow: 1 }} />
         <Button color="inherit" onClick={handleLogout}>
           Logout
