@@ -36,6 +36,7 @@ class Query:
     connections: typing.List[ConnectionType] = strawberry.django.field(
         permission_classes=[IsAuthenticated]
     )
+    connection: ConnectionType = strawberry.django.field(permission_classes=[IsAuthenticated])
     namespaces: typing.List[NamespaceType] = strawberry.django.field(
         permission_classes=[IsAuthenticated]
     )

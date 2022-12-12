@@ -39,7 +39,13 @@ const Home: React.FC = () => {
   const { loading, error, data } = useQuery(GET_NODES_AND_EDGES)
 
   if (error) return <p>Error : {error.message}</p>
-  if (loading) return <Loading />
+  if (loading)
+    return (
+      <>
+        <AppTopBar />
+        <Loading />
+      </>
+    )
 
   return (
     <>

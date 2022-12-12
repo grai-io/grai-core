@@ -1,56 +1,12 @@
-import { gql, useMutation } from "@apollo/client"
 import { LoadingButton } from "@mui/lab"
 import { TextField, Typography } from "@mui/material"
 import React, { useState } from "react"
-import { useNavigate } from "react-router-dom"
 import Connector, { ConnectorType } from "../form/fields/Connector"
 import Namespace from "../form/fields/Namespace"
 import Form from "../form/Form"
 import ConnectionsMetadata from "./ConnectionsMetadata"
 
-const CREATE_CONNECTION = gql`
-  mutation Login(
-    $connector: ID!
-    $namespace: String
-    $name: String!
-    $metadata: JSON!
-    $secrets: JSON!
-  ) {
-    createConnection(
-      input: {
-        connector: { set: $connector }
-        namespace: $namespace
-        name: $name
-        metadata: $metadata
-        secrets: $secrets
-      }
-    ) {
-      __typename
-      ... on OperationInfo {
-        messages {
-          kind
-          message
-          field
-        }
-      }
-      ... on ConnectionType {
-        id
-        connector {
-          id
-          name
-        }
-        namespace
-        name
-        metadata
-        isActive
-        createdAt
-        updatedAt
-      }
-    }
-  }
-`
-
-type Values = {
+export type Values = {
   connector: ConnectorType | null
   namespace: string | null
   name: string
@@ -58,37 +14,35 @@ type Values = {
   secrets: any
 }
 
-const ConnectionsForm: React.FC = () => {
-  const navigate = useNavigate()
+type ConnectionsFormProps = {
+  defaultValues: Values
+  onSubmit: (values: Values) => void
+  error?: any
+  loading?: boolean
+  chooseConnector?: boolean
+}
 
-  const [values, setValues] = useState<Values>({
-    connector: null,
-    namespace: "",
-    name: "",
-    metadata: null,
-    secrets: null,
-  })
+const ConnectionsForm: React.FC<ConnectionsFormProps> = ({
+  defaultValues,
+  onSubmit,
+  error,
+  loading,
+  chooseConnector,
+}) => {
+  const [values, setValues] = useState<Values>(defaultValues)
 
-  const [createConnection, { loading, error }] = useMutation(CREATE_CONNECTION)
-
-  const handleSubmit = () =>
-    createConnection({
-      variables: {
-        connector: values.connector?.id,
-        namespace: values.namespace,
-        name: values.name,
-        metadata: values.metadata,
-        secrets: values.secrets,
-      },
-    }).then(data => navigate("/connections"))
+  const handleSubmit = () => onSubmit(values)
 
   return (
     <Form onSubmit={handleSubmit}>
       {error && <Typography>{JSON.stringify(error)}</Typography>}
-      <Connector
-        value={values.connector}
-        onChange={value => setValues({ ...values, connector: value })}
-      />
+      {chooseConnector && (
+        <Connector
+          value={values.connector}
+          onChange={value => setValues({ ...values, connector: value })}
+        />
+      )}
+
       <Namespace
         value={values.namespace}
         onChange={value => setValues({ ...values, namespace: value })}

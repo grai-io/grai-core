@@ -1,6 +1,6 @@
 import { Box, Grid, Typography } from "@mui/material"
 import React from "react"
-import ConnectionsForm from "../../components/connections/ConnectionsForm"
+import CreateConnectionForm from "../../components/connections/CreateConnectionForm"
 import AppTopBar from "../../components/layout/AppTopBar"
 
 const ConnectionCreate: React.FC = () => (
@@ -10,7 +10,7 @@ const ConnectionCreate: React.FC = () => (
       <Typography variant="h4">Create Connection</Typography>
       <Grid container>
         <Grid item md={4}>
-          <ConnectionsForm />
+          <CreateConnectionForm />
         </Grid>
       </Grid>
     </Box>

@@ -5,7 +5,6 @@ from connections.models import Connection, Connector
 from namespaces.models import Namespace
 import strawberry
 from strawberry.scalars import JSON
-from strawberry_django_plus import gql
 from strawberry_django_plus.gql import auto
 from users.models import User
 

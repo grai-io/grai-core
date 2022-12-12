@@ -10,6 +10,7 @@ import Node from "./pages/nodes/Node"
 import NotFound from "./pages/NotFound"
 import Connections from "./pages/connections/Connections"
 import ConnectionCreate from "./pages/connections/ConnectionCreate"
+import Connection from "./pages/connections/Connection"
 
 const Routes: React.FC = () => (
   <BrowerRoutes>
@@ -23,6 +24,7 @@ const Routes: React.FC = () => (
       <Route path="/connections">
         <Route index element={<Connections />} />
         <Route path="create" element={<ConnectionCreate />} />
+        <Route path=":connectionId" element={<Connection />} />
       </Route>
     </Route>
 

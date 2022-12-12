@@ -1,4 +1,4 @@
-import { Delete, Edit, MoreHoriz, Refresh } from "@mui/icons-material"
+import { Delete, Edit, MoreHoriz } from "@mui/icons-material"
 import {
   IconButton,
   ListItemIcon,
@@ -9,6 +9,7 @@ import {
 import PopupState, { bindMenu, bindTrigger } from "material-ui-popup-state"
 import React from "react"
 import { useNavigate } from "react-router-dom"
+import ConnectionRefresh from "./ConnectionRefresh"
 
 interface Connection {
   id: string
@@ -43,12 +44,7 @@ const ConnectionsMenu: React.FC<ConnectionsMenuProps> = ({ connection }) => {
               </ListItemIcon>
               <ListItemText primary="Edit" />
             </MenuItem>
-            <MenuItem>
-              <ListItemIcon>
-                <Refresh />
-              </ListItemIcon>
-              <ListItemText primary="Refresh" />
-            </MenuItem>
+            <ConnectionRefresh connection={connection} menuItem />
             <MenuItem>
               <ListItemIcon>
                 <Delete />
