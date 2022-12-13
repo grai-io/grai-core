@@ -11,11 +11,13 @@ import NotFound from "./pages/NotFound"
 import Connections from "./pages/connections/Connections"
 import ConnectionCreate from "./pages/connections/ConnectionCreate"
 import Connection from "./pages/connections/Connection"
+import Graph from "./pages/Graph"
 
 const Routes: React.FC = () => (
   <BrowerRoutes>
     <Route element={<PrivateRoute />}>
       <Route index element={<Home />} />
+      <Route path="/graph" element={<Graph />} />
       <Route path="/nodes">
         <Route index element={<Nodes />} />
         <Route path=":nodeId" element={<Node />} />

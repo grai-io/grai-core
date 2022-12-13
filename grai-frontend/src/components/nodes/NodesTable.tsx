@@ -1,20 +1,22 @@
 import {
-  CircularProgress,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
+  Typography,
 } from "@mui/material"
 import React from "react"
 import { useNavigate } from "react-router-dom"
 import { Node } from "../../pages/nodes/Nodes"
+import Loading from "../layout/Loading"
 
 type NodesTableProps = {
-  nodes: Node[] | null
+  nodes: Node[]
+  loading?: boolean
 }
 
-const NodesTable: React.FC<NodesTableProps> = ({ nodes }) => {
+const NodesTable: React.FC<NodesTableProps> = ({ nodes, loading }) => {
   const navigate = useNavigate()
 
   return (
@@ -30,7 +32,7 @@ const NodesTable: React.FC<NodesTableProps> = ({ nodes }) => {
         </TableRow>
       </TableHead>
       <TableBody>
-        {nodes?.map(node => (
+        {nodes.map(node => (
           <TableRow
             key={node.id}
             onClick={() => navigate(`/nodes/${node.id}`)}
@@ -47,10 +49,17 @@ const NodesTable: React.FC<NodesTableProps> = ({ nodes }) => {
             <TableCell>{node.isActive ? "Yes" : "No"}</TableCell>
           </TableRow>
         ))}
-        {!nodes && (
+        {loading && (
           <TableRow>
             <TableCell colSpan={99}>
-              <CircularProgress />
+              <Loading />
+            </TableCell>
+          </TableRow>
+        )}
+        {!nodes && !loading && (
+          <TableRow>
+            <TableCell colSpan={99}>
+              <Typography>No nodes found</Typography>
             </TableCell>
           </TableRow>
         )}

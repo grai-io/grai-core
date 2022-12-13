@@ -1,9 +1,8 @@
-import React from "react"
+import React, { useState } from "react"
 import { gql, useQuery } from "@apollo/client"
-import { Typography } from "@mui/material"
 import AppTopBar from "../../components/layout/AppTopBar"
 import NodesTable from "../../components/nodes/NodesTable"
-import Loading from "../../components/layout/Loading"
+import NodesHeader from "../../components/nodes/NodesHeader"
 
 const GET_NODES = gql`
   query GetNodes {
@@ -30,18 +29,30 @@ export interface Node {
 }
 
 const Nodes: React.FC = () => {
-  const { loading, error, data } = useQuery(GET_NODES)
+  const [search, setSearch] = useState<string>()
+
+  const { loading, error, data, refetch } = useQuery(GET_NODES)
 
   if (error) return <p>Error : {error.message}</p>
-  if (loading) return <Loading />
+
+  const handleRefresh = () => refetch()
+
+  const filteredNodes =
+    (search
+      ? data?.nodes.filter((node: any) =>
+          node.name.toLowerCase().includes(search.toLowerCase())
+        )
+      : data?.nodes) ?? []
 
   return (
     <>
       <AppTopBar />
-      <Typography variant="h4" sx={{ textAlign: "center", m: 3 }}>
-        Nodes
-      </Typography>
-      <NodesTable nodes={data.nodes ?? null} />
+      <NodesHeader
+        search={search}
+        onSearch={setSearch}
+        onRefresh={handleRefresh}
+      />
+      <NodesTable nodes={filteredNodes} loading={loading} />
     </>
   )
 }

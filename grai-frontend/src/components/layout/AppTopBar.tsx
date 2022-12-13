@@ -26,7 +26,9 @@ const AppTopBar: React.FC = () => {
         >
           Grai
         </Typography>
-
+        <Button component={Link} to="/graph" sx={{ my: 2, color: "inherit" }}>
+          Graph
+        </Button>
         <Button component={Link} to="/nodes" sx={{ my: 2, color: "inherit" }}>
           Nodes
         </Button>

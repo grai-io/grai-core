@@ -13,7 +13,12 @@ const ConnectionsHeader: React.FC<ConnectionsHeaderProps> = ({ onRefresh }) => (
       Connections
     </Typography>
     <Stack direction="row" spacing={1}>
-      <Button variant="outlined" sx={{ minWidth: 0 }} onClick={onRefresh}>
+      <Button
+        variant="outlined"
+        sx={{ minWidth: 0 }}
+        onClick={onRefresh}
+        size="small"
+      >
         <Refresh />
       </Button>
       <Button
@@ -21,6 +26,7 @@ const ConnectionsHeader: React.FC<ConnectionsHeaderProps> = ({ onRefresh }) => (
         startIcon={<Add />}
         component={Link}
         to="/connections/create"
+        size="small"
       >
         Add Connection
       </Button>

@@ -3,7 +3,7 @@ import { Box } from "@mui/material"
 import React from "react"
 import { nodesToTables } from "../../helpers/graph"
 import theme from "../../theme"
-import Graph from "../home/Graph"
+import Graph from "../graph/Graph"
 import Loading from "../layout/Loading"
 import { Node as NodeType } from "../../helpers/graph"
 
