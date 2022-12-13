@@ -55,8 +55,14 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
     data.onShow([...data.hiddenSourceTables, ...data.hiddenDestinationTables])
     handleClose()
   }
-  const handleShowSources = () => data.onShow(data.hiddenSourceTables)
-  const handleShowDestinations = () => data.onShow(data.hiddenDestinationTables)
+  const handleShowSources = () => {
+    data.onShow(data.hiddenSourceTables)
+    handleClose()
+  }
+  const handleShowDestinations = () => {
+    data.onShow(data.hiddenDestinationTables)
+    handleClose()
+  }
 
   return (
     <>
@@ -183,8 +189,12 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
         <MenuItem onClick={handleShowHidden}>
           Show lineage for {data.label}
         </MenuItem>
-        <MenuItem onClick={handleClose}>Show upstream dependents</MenuItem>
-        <MenuItem onClick={handleClose}>Show downstream dependents</MenuItem>
+        <MenuItem onClick={handleShowDestinations}>
+          Show upstream dependents
+        </MenuItem>
+        <MenuItem onClick={handleShowSources}>
+          Show downstream dependents
+        </MenuItem>
         <MenuItem onClick={() => navigate(`/nodes/${data.id}`)}>
           Show profile for this table
         </MenuItem>
