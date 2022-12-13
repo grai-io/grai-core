@@ -75,7 +75,6 @@ const CreateConnectionForm: React.FC = () => {
       onSubmit={handleSubmit}
       loading={loading}
       error={error}
-      chooseConnector
     />
   )
 }

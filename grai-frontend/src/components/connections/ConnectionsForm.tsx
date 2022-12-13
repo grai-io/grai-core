@@ -19,7 +19,7 @@ type ConnectionsFormProps = {
   onSubmit: (values: Values) => void
   error?: any
   loading?: boolean
-  chooseConnector?: boolean
+  edit?: boolean
 }
 
 const ConnectionsForm: React.FC<ConnectionsFormProps> = ({
@@ -27,7 +27,7 @@ const ConnectionsForm: React.FC<ConnectionsFormProps> = ({
   onSubmit,
   error,
   loading,
-  chooseConnector,
+  edit,
 }) => {
   const [values, setValues] = useState<Values>(defaultValues)
 
@@ -36,7 +36,7 @@ const ConnectionsForm: React.FC<ConnectionsFormProps> = ({
   return (
     <Form onSubmit={handleSubmit}>
       {error && <Typography>{JSON.stringify(error)}</Typography>}
-      {chooseConnector && (
+      {!edit && (
         <Connector
           value={values.connector}
           onChange={value => setValues({ ...values, connector: value })}
@@ -62,6 +62,7 @@ const ConnectionsForm: React.FC<ConnectionsFormProps> = ({
           secrets={values.secrets}
           onChangeMetadata={value => setValues({ ...values, metadata: value })}
           onChangeSecrets={value => setValues({ ...values, secrets: value })}
+          edit={edit}
         />
       )}
       <LoadingButton

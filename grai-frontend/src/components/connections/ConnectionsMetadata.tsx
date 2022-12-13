@@ -1,6 +1,7 @@
 import { TextField } from "@mui/material"
 import React from "react"
 import { ConnectorMetadataField, ConnectorType } from "../form/fields/Connector"
+import PasswordField from "./PasswordField"
 
 type ConnectionsMetadataProps = {
   connector: ConnectorType
@@ -8,6 +9,7 @@ type ConnectionsMetadataProps = {
   secrets: any
   onChangeMetadata: (value: any) => void
   onChangeSecrets: (value: any) => void
+  edit?: boolean
 }
 
 const ConnectionsMetadata: React.FC<ConnectionsMetadataProps> = ({
@@ -16,6 +18,7 @@ const ConnectionsMetadata: React.FC<ConnectionsMetadataProps> = ({
   secrets,
   onChangeMetadata,
   onChangeSecrets,
+  edit,
 }) => {
   const handleChangeMetadata = (
     mValue: string,
@@ -55,15 +58,13 @@ const ConnectionsMetadata: React.FC<ConnectionsMetadataProps> = ({
       {fields
         ?.filter(f => f.secret)
         .map(field => (
-          <TextField
+          <PasswordField
             key={field.name}
             label={field.label ?? field.name}
-            value={(secrets && secrets[field.name]) ?? ""}
+            value={secrets && secrets[field.name]}
             onChange={event => handleChangeSecrets(event.target.value, field)}
-            margin="normal"
             required={field.required}
-            type="password"
-            fullWidth
+            edit={edit}
           />
         ))}
     </>

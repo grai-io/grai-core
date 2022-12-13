@@ -58,7 +58,7 @@ const UpdateConnectionForm: React.FC<UpdateConnectionFormProps> = ({
         namespace: values.namespace,
         name: values.name,
         metadata: values.metadata,
-        secrets: values.secrets,
+        secrets: values.secrets ?? {},
       },
     })
 
@@ -76,6 +76,7 @@ const UpdateConnectionForm: React.FC<UpdateConnectionFormProps> = ({
       onSubmit={handleSubmit}
       loading={loading}
       error={error}
+      edit
     />
   )
 }

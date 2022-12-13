@@ -41,10 +41,14 @@ class Mutation:
     async def update_connection(self, id: strawberry.ID, namespace: str, name: str, metadata: JSON, secrets: JSON) -> ConnectionType:
         connection = await sync_to_async(Connection.objects.get)(pk=id)
 
+        mergedSecrets = dict()
+        mergedSecrets.update(connection.secrets)
+        mergedSecrets.update(secrets)
+
         connection.namespace = namespace
         connection.name = name
         connection.metadata = metadata
-        connection.secrets = secrets
+        connection.secrets = mergedSecrets
         await sync_to_async(connection.save)()
 
         return connection
