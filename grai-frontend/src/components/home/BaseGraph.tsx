@@ -217,6 +217,7 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
         onPaneClick={() => {
           resetNodeStyles()
         }}
+        fitView
       >
         <Controls />
       </ReactFlow>

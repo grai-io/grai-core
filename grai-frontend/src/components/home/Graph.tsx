@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { Edge } from "../../pages/edges/Edges"
 import { Node } from "../../pages/nodes/Nodes"
 import BaseGraph, { getAllIncomers, getAllOutgoers } from "./BaseGraph"
-import { Edge as RFEdge, MarkerType, Node as RFNode } from "reactflow"
+import { Edge as RFEdge, Node as RFNode } from "reactflow"
 import { useLocation } from "react-router-dom"
 
 interface Error {
