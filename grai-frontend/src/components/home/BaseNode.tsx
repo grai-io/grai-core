@@ -6,7 +6,8 @@ import { Handle, Position } from "reactflow"
 import theme from "../../theme"
 
 interface Column {
-  label: string
+  displayName: string
+  name: string
 }
 
 interface BaseNodeProps {
@@ -97,7 +98,7 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
           <Stack direction="column" spacing={1} sx={{ px: 1, pb: 1, mt: -0.5 }}>
             {data.columns.map((column, index) => (
               <Box
-                key={column.label}
+                key={column.name}
                 sx={{
                   borderStyle: "solid",
                   borderWidth: 1,
@@ -106,9 +107,9 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
                   p: 1,
                 }}
               >
-                <Typography>{column.label}</Typography>
+                <Typography>{column.name}</Typography>
                 <Handle
-                  id={column.label}
+                  id={column.name}
                   type="target"
                   position={"left" as Position}
                   style={{
@@ -121,7 +122,7 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
                   isConnectable={false}
                 />
                 <Handle
-                  id={column.label}
+                  id={column.name}
                   type="source"
                   position={"right" as Position}
                   style={{
@@ -159,9 +160,7 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
             : undefined
         }
       >
-        <MenuItem onClick={handleClose}>
-          Show lineage for <b>{data.label}</b>
-        </MenuItem>
+        <MenuItem onClick={handleClose}>Show lineage for {data.label}</MenuItem>
         <MenuItem onClick={handleClose}>Show upstream dependents</MenuItem>
         <MenuItem onClick={handleClose}>Show downstream dependents</MenuItem>
         <MenuItem onClick={() => navigate(`/nodes/${data.id}`)}>

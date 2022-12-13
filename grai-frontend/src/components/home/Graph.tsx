@@ -1,66 +1,66 @@
 import React, { useState } from "react"
 import { Edge } from "../../pages/edges/Edges"
-import { Node } from "../../pages/nodes/Nodes"
 import BaseGraph, { getAllIncomers, getAllOutgoers } from "./BaseGraph"
 import { Edge as RFEdge, Node as RFNode } from "reactflow"
-import { useLocation } from "react-router-dom"
+import notEmpty from "../../helpers/notEmpty"
+import { Table, Node as NodeType } from "../../helpers/graph"
 
-interface Error {
+export interface Error {
   source: string
   destination: string
   test: string
   message: string
 }
 
+interface Node extends NodeType {
+  displayName: string
+}
+
 type GraphProps = {
-  nodes: Node[]
+  tables: Table<Node>[]
   edges: Edge[]
+  errors?: Error[] | null
+  limitGraph?: boolean
+  initialHidden?: string[]
 }
 
 const position = { x: 0, y: 0 }
 
-const Graph: React.FC<GraphProps> = ({ nodes, edges }) => {
-  const searchParams = new URLSearchParams(useLocation().search)
+const Graph: React.FC<GraphProps> = ({
+  tables,
+  edges,
+  errors,
+  limitGraph,
+  initialHidden,
+}) => {
+  const [hidden, setHidden] = useState<string[]>(initialHidden ?? [])
   const [expanded, setExpanded] = useState<string[]>([])
 
-  const errors: Error[] | null = searchParams.has("errors")
-    ? JSON.parse(searchParams.get("errors") ?? "")
-    : null
-  const limitGraph: boolean =
-    searchParams.get("limitGraph")?.toLowerCase() === "true" && !!errors
+  const visibleTables = tables.filter(table => !hidden.includes(table.id))
 
-  const initialNodes: RFNode[] = nodes
-    .filter(node => node.metadata.node_type === "Table")
-    .map(node => ({
-      id: node.id,
+  const initialNodes: RFNode[] = tables
+    .filter(table => !hidden.includes(table.id))
+    .map(table => ({
+      id: table.id,
       data: {
-        id: node.id,
-        name: node.name,
-        label: node.displayName,
-        metadata: node.metadata,
-        columns: nodes
-          .filter(
-            n =>
-              (n.metadata.table_name === node.metadata.table_name ||
-                `public.${n.metadata.table_name}` === node.name) &&
-              n.metadata.node_type !== "Table"
-          )
-          .map(n => ({
-            label: n.displayName ?? n.name,
-          })),
-        expanded: expanded.includes(node.id),
+        id: table.id,
+        name: table.name,
+        label: table.displayName,
+        metadata: table.metadata,
+        columns: table.columns,
+        expanded: expanded.includes(table.id),
         onExpand(value: boolean) {
           setExpanded(
             value
-              ? expanded.concat(node.id)
-              : expanded.filter(e => e !== node.id)
+              ? expanded.concat(table.id)
+              : expanded.filter(e => e !== table.id)
           )
         },
       },
       position,
     }))
 
-  const nameToNode = (name: string) => nodes.find(n => n.name === name)
+  const nameToNode = (name: string) => tables.find(n => n.name === name)
 
   const enrichedErrors = errors?.map(error => ({
     ...error,
@@ -90,10 +90,6 @@ const Graph: React.FC<GraphProps> = ({ nodes, edges }) => {
     }
   })
 
-  function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
-    return value !== null && value !== undefined
-  }
-
   const errorIds: string[] =
     enrichedErrors?.map(e => e.destinationId).filter(notEmpty) ?? []
 
@@ -122,53 +118,34 @@ const Graph: React.FC<GraphProps> = ({ nodes, edges }) => {
 
   const transformedEdges = filteredEdges
     .map(edge => {
-      const sourceNode = nodes.find(n => n.id === edge.source)
-      const targetNode = nodes.find(n => n.id === edge.target)
-
-      const sourceNodeParent = nodes.find(
-        n =>
-          (n.metadata.table_name === sourceNode?.metadata.table_name ||
-            n.name === `public.${sourceNode?.metadata.table_name}`) &&
-          n.metadata.node_type === "Table"
+      const sourceTable = visibleTables.find(table =>
+        table.columns.some(column => column.id === edge.source)
       )
-      const targetNodeParent = nodes.find(
-        n =>
-          (n.metadata.table_name === targetNode?.metadata.table_name ||
-            n.name === `public.${targetNode?.metadata.table_name}`) &&
-          n.metadata.node_type === "Table"
+      if (!sourceTable) return null
+
+      const destinationTable = visibleTables.find(table =>
+        table.columns.some(column => column.id === edge.target)
       )
+      if (!destinationTable) return null
 
-      const source =
-        sourceNode?.metadata.node_type === "Table"
-          ? edge.source
-          : sourceNodeParent?.id
-      const target =
-        targetNode?.metadata.node_type === "Table"
-          ? edge.target
-          : targetNodeParent?.id
+      if (sourceTable.id === destinationTable.id) return null
 
-      if (!source || !target || source === target) return null
-
-      const sourceHandle =
-        sourceNodeParent && expanded.includes(sourceNodeParent?.id)
-          ? sourceNode?.displayName
-          : null
-      const targetHandle =
-        targetNodeParent && expanded.includes(targetNodeParent?.id)
-          ? targetNode?.displayName
-          : null
+      const sourceHandle = expanded.includes(sourceTable.id)
+        ? sourceTable.columns.find(c => c.id === edge.source)?.name
+        : null
+      const targetHandle = expanded.includes(destinationTable.id)
+        ? destinationTable.columns.find(c => c.id === edge.target)?.name
+        : null
 
       return {
         ...edge,
-        source,
+        source: sourceTable.id,
         sourceHandle,
-        target,
+        target: destinationTable.id,
         targetHandle,
       }
     })
     .filter(notEmpty)
-
-  // console.log(transformedEdges.filter(e => e.sourceHandle || e.targetHandle))
 
   return (
     <BaseGraph

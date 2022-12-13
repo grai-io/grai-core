@@ -12,10 +12,12 @@ import React from "react"
 import { useNavigate } from "react-router-dom"
 import NodeColumns from "./NodeColumns"
 import NodeDetail from "./NodeDetail"
+import { Node as NodeType } from "../../helpers/graph"
 
-export interface Node {
+export interface Node extends NodeType {
   id: string
   name: string
+  displayName: string
   metadata: any
   destinationEdges: {
     id: string
