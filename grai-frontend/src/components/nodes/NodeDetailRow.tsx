@@ -1,17 +1,26 @@
 import { TableRow, TableCell, Typography } from "@mui/material"
-import React from "react"
+import React, { ReactNode } from "react"
 import theme from "../../theme"
 
 type NodeDetailRowProps = {
   label: string
-  value: string
+  value?: string
+  children?: ReactNode
 }
 
-const NodeDetailRow: React.FC<NodeDetailRowProps> = ({ label, value }) => (
+const NodeDetailRow: React.FC<NodeDetailRowProps> = ({
+  label,
+  value,
+  children,
+}) => (
   <TableRow>
     <TableCell
       sx={{
         backgroundColor: theme.palette.grey[100],
+        borderRightWidth: 1,
+        borderRightStyle: "solid",
+        borderRightColor: "divider",
+        width: 300,
       }}
     >
       <Typography sx={{ fontWeight: "bold" }} variant="body2">
@@ -19,7 +28,8 @@ const NodeDetailRow: React.FC<NodeDetailRowProps> = ({ label, value }) => (
       </Typography>
     </TableCell>
     <TableCell>
-      <Typography variant="body2">{value}</Typography>
+      {value && <Typography variant="body2">{value}</Typography>}
+      {children}
     </TableCell>
   </TableRow>
 )

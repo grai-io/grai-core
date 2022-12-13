@@ -15,6 +15,9 @@ const NodeDetail: React.FC<NodeDetailProps> = ({ node }) => (
   <Card variant="outlined" sx={{ borderRadius: 0, borderBottom: 0 }}>
     <Table>
       <TableBody>
+        <NodeDetailRow label="Last updated at" />
+        <NodeDetailRow label="# of rows" />
+        <NodeDetailRow label="# of columns" />
         <NodeDetailRow label="Name" value={node.name} />
         {Object.entries(node.metadata).map(([key, value]) => (
           <NodeDetailRow

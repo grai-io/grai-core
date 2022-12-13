@@ -7,12 +7,16 @@ import {
   TableRow,
   TableCell,
   TableBody,
+  Stack,
+  Button,
 } from "@mui/material"
 import React from "react"
 import { useNavigate } from "react-router-dom"
 import NodeColumns from "./NodeColumns"
 import NodeDetail from "./NodeDetail"
 import { Node as NodeType } from "../../helpers/graph"
+import NodeDetailRow from "./NodeDetailRow"
+import { Link } from "react-router-dom"
 
 export interface Node extends NodeType {
   id: string
@@ -65,83 +69,43 @@ const NodeProfile: React.FC<NodeProfileProps> = ({ node }) => {
           <NodeDetail node={node} />
         </Grid>
         <Grid item md={6}>
-          <Typography variant="h6" sx={{ m: 1 }}>
-            Inputs
-          </Typography>
           <Card variant="outlined" sx={{ borderRadius: 0, borderBottom: 0 }}>
             <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>id</TableCell>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Type</TableCell>
-                </TableRow>
-              </TableHead>
               <TableBody>
-                {node.destinationEdges?.map(edge => (
-                  <TableRow
-                    key={edge.id}
-                    onClick={() => navigate(`/nodes/${edge.source?.id}`)}
-                    hover
-                    sx={{
-                      cursor: "pointer",
-                    }}
-                  >
-                    <TableCell>
-                      {edge.source.displayName ?? edge.source.name}
-                    </TableCell>
-                    <TableCell>{edge.source?.displayName}</TableCell>
-                    <TableCell>{edge.source?.metadata.node_type}</TableCell>
-                  </TableRow>
-                ))}
-                {node.destinationEdges?.length === 0 && (
-                  <TableRow>
-                    <TableCell colSpan={3} sx={{ textAlign: "center" }}>
-                      No Inputs
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </Card>
-          <Typography variant="h6" sx={{ m: 1, mt: 3 }}>
-            Outputs
-          </Typography>
-          <Card variant="outlined" sx={{ borderRadius: 0, borderBottom: 0 }}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>id</TableCell>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Type</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {outputs.map(edge => (
-                  <TableRow
-                    key={edge.id}
-                    onClick={() => navigate(`/nodes/${edge.destination?.id}`)}
-                    hover
-                    sx={{
-                      cursor: "pointer",
-                    }}
-                  >
-                    <TableCell>
-                      {edge.destination.displayName ?? edge.destination.name}
-                    </TableCell>
-                    <TableCell>{edge.destination?.displayName}</TableCell>
-                    <TableCell>
-                      {edge.destination?.metadata.node_type}
-                    </TableCell>
-                  </TableRow>
-                ))}
-                {outputs.length === 0 && (
-                  <TableRow>
-                    <TableCell colSpan={3} sx={{ textAlign: "center" }}>
-                      No Outputs
-                    </TableCell>
-                  </TableRow>
-                )}
+                <NodeDetailRow label="Upstream dependencies">
+                  {node.destinationEdges.length > 0 ? (
+                    <Stack>
+                      {node.destinationEdges?.map(edge => (
+                        <Button
+                          key={edge.id}
+                          component={Link}
+                          to={`/nodes/${edge.source.id}`}
+                        >
+                          {edge.source.displayName}
+                        </Button>
+                      ))}
+                    </Stack>
+                  ) : (
+                    <Typography variant="body2">None</Typography>
+                  )}
+                </NodeDetailRow>
+                <NodeDetailRow label="Downstream dependencies">
+                  {outputs.length > 0 ? (
+                    <Stack>
+                      {outputs.map(edge => (
+                        <Button
+                          key={edge.id}
+                          component={Link}
+                          to={`/nodes/${edge.destination.id}`}
+                        >
+                          {edge.destination.displayName}
+                        </Button>
+                      ))}
+                    </Stack>
+                  ) : (
+                    <Typography variant="body2">None</Typography>
+                  )}
+                </NodeDetailRow>
               </TableBody>
             </Table>
           </Card>
