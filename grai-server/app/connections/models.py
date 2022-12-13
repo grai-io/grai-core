@@ -35,7 +35,11 @@ class Connection(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(
-        "users.User", related_name="connections", on_delete=models.PROTECT, blank=True, null=True
+        "users.User",
+        related_name="connections",
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
     )
 
     class Meta:

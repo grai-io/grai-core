@@ -42,12 +42,14 @@ class EdgeType:
     is_active: auto
     created_by: UserType
 
+
 @strawberry.django.type(Connector)
 class ConnectorType:
     id: auto
     name: auto
     metadata: JSON
     is_active: auto
+
 
 @strawberry.django.type(Connection)
 class ConnectionType:
@@ -60,6 +62,7 @@ class ConnectionType:
     created_at: auto
     updated_at: auto
     created_by: UserType
+
 
 @strawberry.django.type(Namespace)
 class NamespaceType:

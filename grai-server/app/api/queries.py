@@ -1,6 +1,13 @@
 import typing
 
-from api.types import EdgeType, NodeType, UserType, ConnectionType, ConnectorType, NamespaceType
+from api.types import (
+    EdgeType,
+    NodeType,
+    UserType,
+    ConnectionType,
+    ConnectorType,
+    NamespaceType,
+)
 import strawberry
 from strawberry.permission import BasePermission
 from strawberry.types import Info
@@ -36,7 +43,9 @@ class Query:
     connections: typing.List[ConnectionType] = strawberry.django.field(
         permission_classes=[IsAuthenticated]
     )
-    connection: ConnectionType = strawberry.django.field(permission_classes=[IsAuthenticated])
+    connection: ConnectionType = strawberry.django.field(
+        permission_classes=[IsAuthenticated]
+    )
     namespaces: typing.List[NamespaceType] = strawberry.django.field(
         permission_classes=[IsAuthenticated]
     )

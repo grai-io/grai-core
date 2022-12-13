@@ -16,6 +16,7 @@ from asgiref.sync import sync_to_async
 # class NodeTypeInputPartial(gql.NodeInput):
 #     display_name: gql.auto
 
+
 @strawberry.django.input(Connection)
 class ConnectionTypeInput:
     connector: gql.auto
@@ -24,6 +25,7 @@ class ConnectionTypeInput:
     metadata: gql.auto
     secrets: gql.auto
 
+
 @gql.django.partial(Connection)
 class ConnectionTypeInputPartial(gql.NodeInput):
     namespace: gql.auto
@@ -31,14 +33,23 @@ class ConnectionTypeInputPartial(gql.NodeInput):
     metadata: gql.auto
     secrets: gql.auto
 
+
 @strawberry.type
 class Mutation:
     # create_model: NodeType = gql.django.create_mutation(NodeTypeInput)
     # update_model: NodeType = strawberry.django.update_mutation(NodeTypeInputPartial)
     # delete_model: NodeType = gql.django.delete_mutation(gql.NodeInput)
     create_connection: ConnectionType = gql.django.create_mutation(ConnectionTypeInput)
+
     @strawberry.mutation
-    async def update_connection(self, id: strawberry.ID, namespace: str, name: str, metadata: JSON, secrets: JSON) -> ConnectionType:
+    async def update_connection(
+        self,
+        id: strawberry.ID,
+        namespace: str,
+        name: str,
+        metadata: JSON,
+        secrets: JSON,
+    ) -> ConnectionType:
         connection = await sync_to_async(Connection.objects.get)(pk=id)
 
         mergedSecrets = dict()
