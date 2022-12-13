@@ -1,13 +1,14 @@
 from typing import List
 
 from lineage.models import Edge, Node
+import strawberry
 from strawberry.scalars import JSON
 from strawberry_django_plus import gql
 from strawberry_django_plus.gql import auto
 from users.models import User
 
 
-@gql.django.type(User)
+@strawberry.django.type(User)
 class UserType:
     id: auto
     username: auto
@@ -16,7 +17,7 @@ class UserType:
     updated_at: auto
 
 
-@gql.django.type(Node)
+@strawberry.django.type(Node)
 class NodeType:
     id: auto
     namespace: auto
@@ -26,11 +27,11 @@ class NodeType:
     metadata: JSON
     is_active: auto
     created_by: UserType
-    source_edge: List["EdgeType"]
-    destination_edge: List["EdgeType"]
+    source_edges: List["EdgeType"]
+    destination_edges: List["EdgeType"]
 
 
-@gql.django.type(Edge)
+@strawberry.django.type(Edge)
 class EdgeType:
     id: auto
     data_source: auto
