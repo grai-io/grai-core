@@ -48,6 +48,14 @@ const Graph: React.FC<GraphProps> = ({
         label: table.displayName,
         metadata: table.metadata,
         columns: table.columns,
+        sourceTables: table.sourceTables,
+        hiddenSourceTables: table.sourceTables
+          .filter(t => hidden.includes(t.id))
+          .map(t => t.id),
+        destinationTables: table.destinationTables,
+        hiddenDestinationTables: table.destinationTables
+          .filter(t => hidden.includes(t.id))
+          .map(t => t.id),
         expanded: expanded.includes(table.id),
         onExpand(value: boolean) {
           setExpanded(
@@ -55,6 +63,9 @@ const Graph: React.FC<GraphProps> = ({
               ? expanded.concat(table.id)
               : expanded.filter(e => e !== table.id)
           )
+        },
+        onShow(values: string[]) {
+          setHidden([...hidden.filter(a => !values.includes(a))])
         },
       },
       position,

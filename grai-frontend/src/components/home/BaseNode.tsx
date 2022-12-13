@@ -4,6 +4,7 @@ import React from "react"
 import { useNavigate } from "react-router-dom"
 import { Handle, Position } from "reactflow"
 import theme from "../../theme"
+import HiddenTableButton from "./HiddenTableButton"
 
 interface Column {
   displayName: string
@@ -16,8 +17,11 @@ interface BaseNodeProps {
     label: string
     highlight: boolean
     columns: Column[]
+    hiddenSourceTables: string[]
+    hiddenDestinationTables: string[]
     expanded: boolean
     onExpand: (value: boolean) => void
+    onShow: (values: string[]) => void
   }
 }
 
@@ -46,6 +50,13 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
   const handleClose = () => {
     setContextMenu(null)
   }
+
+  const handleShowHidden = () => {
+    data.onShow([...data.hiddenSourceTables, ...data.hiddenDestinationTables])
+    handleClose()
+  }
+  const handleShowSources = () => data.onShow(data.hiddenSourceTables)
+  const handleShowDestinations = () => data.onShow(data.hiddenDestinationTables)
 
   return (
     <>
@@ -76,6 +87,15 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
           isConnectable={false}
         />
         <Box sx={{ p: 2, py: 1 }}>
+          {data.hiddenDestinationTables.length > 0 && (
+            <HiddenTableButton
+              position="left"
+              onClick={handleShowDestinations}
+            />
+          )}
+          {data.hiddenSourceTables.length > 0 && (
+            <HiddenTableButton position="right" onClick={handleShowSources} />
+          )}
           <Typography variant="h6">{data.label}</Typography>
           {data.columns.length > 0 && (
             <>
@@ -160,7 +180,9 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
             : undefined
         }
       >
-        <MenuItem onClick={handleClose}>Show lineage for {data.label}</MenuItem>
+        <MenuItem onClick={handleShowHidden}>
+          Show lineage for {data.label}
+        </MenuItem>
         <MenuItem onClick={handleClose}>Show upstream dependents</MenuItem>
         <MenuItem onClick={handleClose}>Show downstream dependents</MenuItem>
         <MenuItem onClick={() => navigate(`/nodes/${data.id}`)}>
