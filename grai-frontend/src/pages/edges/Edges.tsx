@@ -5,6 +5,7 @@ import EdgesTable from "../../components/edges/EdgesTable"
 import AppTopBar from "../../components/layout/AppTopBar"
 import { Node } from "../../pages/nodes/Nodes"
 import Loading from "../../components/layout/Loading"
+import { GetEdges } from "./__generated__/GetEdges"
 
 const GET_EDGES = gql`
   query GetEdges {
@@ -14,13 +15,21 @@ const GET_EDGES = gql`
       dataSource
       source {
         id
+        namespace
         name
         displayName
+        dataSource
+        isActive
+        metadata
       }
       destination {
         id
+        namespace
         name
         displayName
+        dataSource
+        isActive
+        metadata
       }
       metadata
     }
@@ -37,7 +46,7 @@ export interface Edge {
 }
 
 const Edges: React.FC = () => {
-  const { loading, error, data } = useQuery(GET_EDGES)
+  const { loading, error, data } = useQuery<GetEdges>(GET_EDGES)
 
   if (error) return <p>Error : {error.message}</p>
   if (loading) return <Loading />
@@ -48,7 +57,7 @@ const Edges: React.FC = () => {
       <Typography variant="h4" sx={{ textAlign: "center", m: 3 }}>
         Edges
       </Typography>
-      <EdgesTable edges={data.edges ?? null} />
+      <EdgesTable edges={data?.edges ?? null} />
       {error && <Typography>{error}</Typography>}
     </>
   )

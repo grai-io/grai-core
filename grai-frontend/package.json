@@ -34,7 +34,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "download:schema": "npx apollo client:download-schema --endpoint=http://localhost:8000/graphql/ src/testing/schema.json",
+    "generate:types": "npx apollo client:codegen --target typescript --localSchemaFile src/testing/schema.json"
   },
   "eslintConfig": {
     "extends": [

@@ -7,6 +7,7 @@ import Loading from "../components/layout/Loading"
 import theme from "../theme"
 import { useLocation } from "react-router-dom"
 import { nodesToTables } from "../helpers/graph"
+import { GetNodesAndEdges } from "./__generated__/GetNodesAndEdges"
 
 const GET_NODES_AND_EDGES = gql`
   query GetNodesAndEdges {
@@ -25,13 +26,21 @@ const GET_NODES_AND_EDGES = gql`
       dataSource
       source {
         id
+        namespace
         name
         displayName
+        dataSource
+        isActive
+        metadata
       }
       destination {
         id
+        namespace
         name
         displayName
+        dataSource
+        isActive
+        metadata
       }
       metadata
     }
@@ -41,7 +50,8 @@ const GET_NODES_AND_EDGES = gql`
 const Graph: React.FC = () => {
   const searchParams = new URLSearchParams(useLocation().search)
 
-  const { loading, error, data } = useQuery(GET_NODES_AND_EDGES)
+  const { loading, error, data } =
+    useQuery<GetNodesAndEdges>(GET_NODES_AND_EDGES)
 
   if (error) return <p>Error : {error.message}</p>
   if (loading)
@@ -57,6 +67,8 @@ const Graph: React.FC = () => {
     : null
   const limitGraph: boolean =
     searchParams.get("limitGraph")?.toLowerCase() === "true" && !!errors
+
+  if (!data?.nodes) return null
 
   const tables = nodesToTables(data.nodes, data.edges)
 

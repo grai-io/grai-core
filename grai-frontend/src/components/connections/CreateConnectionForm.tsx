@@ -2,6 +2,10 @@ import { gql, useMutation } from "@apollo/client"
 import React from "react"
 import { useNavigate } from "react-router-dom"
 import ConnectionsForm, { Values } from "./ConnectionsForm"
+import {
+  CreateConnection,
+  CreateConnectionVariables,
+} from "./__generated__/CreateConnection"
 
 const CREATE_CONNECTION = gql`
   mutation CreateConnection(
@@ -48,12 +52,15 @@ const CREATE_CONNECTION = gql`
 const CreateConnectionForm: React.FC = () => {
   const navigate = useNavigate()
 
-  const [createConnection, { loading, error }] = useMutation(CREATE_CONNECTION)
+  const [createConnection, { loading, error }] = useMutation<
+    CreateConnection,
+    CreateConnectionVariables
+  >(CREATE_CONNECTION)
 
   const handleSubmit = (values: Values) =>
     createConnection({
       variables: {
-        connector: values.connector?.id,
+        connector: values.connector?.id ?? "",
         namespace: values.namespace,
         name: values.name,
         metadata: values.metadata,

@@ -6,6 +6,7 @@ import {
   TextField,
 } from "@mui/material"
 import React from "react"
+import { GetNamespaces } from "./__generated__/GetNamespaces"
 
 const GET_NAMESPACES = gql`
   query GetNamespaces {
@@ -22,7 +23,7 @@ type NamespaceProps = {
 }
 
 const Namespace: React.FC<NamespaceProps> = ({ value, onChange }) => {
-  const { data, loading } = useQuery(GET_NAMESPACES)
+  const { data, loading } = useQuery<GetNamespaces>(GET_NAMESPACES)
 
   const options = data?.namespaces.map((n: any) => n.name) ?? []
 

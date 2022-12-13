@@ -6,9 +6,10 @@ import theme from "../../theme"
 import Graph from "../graph/Graph"
 import Loading from "../layout/Loading"
 import { Node as NodeType } from "../../helpers/graph"
+import { GetNodesAndEdgesNodeLineage } from "./__generated__/GetNodesAndEdgesNodeLineage"
 
 const GET_NODES_AND_EDGES = gql`
-  query GetNodesAndEdges {
+  query GetNodesAndEdgesNodeLineage {
     nodes {
       id
       namespace
@@ -24,13 +25,21 @@ const GET_NODES_AND_EDGES = gql`
       dataSource
       source {
         id
+        namespace
         name
         displayName
+        dataSource
+        isActive
+        metadata
       }
       destination {
         id
+        namespace
         name
         displayName
+        dataSource
+        isActive
+        metadata
       }
       metadata
     }
@@ -47,12 +56,13 @@ type NodeLineageProps = {
 }
 
 const NodeLineage: React.FC<NodeLineageProps> = ({ node }) => {
-  const { loading, error, data } = useQuery(GET_NODES_AND_EDGES)
+  const { loading, error, data } =
+    useQuery<GetNodesAndEdgesNodeLineage>(GET_NODES_AND_EDGES)
 
   if (error) return <p>Error : {error.message}</p>
   if (loading) return <Loading />
 
-  if (!data.nodes || !data.edges) return null
+  if (!data?.nodes || !data.edges) return null
 
   const tables = nodesToTables<Node>(data.nodes, data.edges)
 

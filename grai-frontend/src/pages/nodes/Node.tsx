@@ -6,6 +6,7 @@ import Loading from "../../components/layout/Loading"
 import NotFound from "../NotFound"
 import NodeHeader from "../../components/nodes/NodeHeader"
 import NodeContent from "../../components/nodes/NodeContent"
+import { GetNode, GetNodeVariables } from "./__generated__/GetNode"
 
 const GET_NODE = gql`
   query GetNode($nodeId: ID!) {
@@ -48,16 +49,19 @@ const GET_NODE = gql`
 const Node: React.FC = () => {
   const params = useParams()
 
-  const { loading, error, data } = useQuery(GET_NODE, {
-    variables: {
-      nodeId: params.nodeId,
-    },
-  })
+  const { loading, error, data } = useQuery<GetNode, GetNodeVariables>(
+    GET_NODE,
+    {
+      variables: {
+        nodeId: params.nodeId ?? "",
+      },
+    }
+  )
 
   if (error) return <p>Error : {error.message}</p>
   if (loading) return <Loading />
 
-  const node = data.node
+  const node = data?.node
 
   if (!node) return <NotFound />
 

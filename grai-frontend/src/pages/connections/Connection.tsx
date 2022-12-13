@@ -8,6 +8,10 @@ import UpdateConnectionForm from "../../components/connections/UpdateConnectionF
 import AppTopBar from "../../components/layout/AppTopBar"
 import Loading from "../../components/layout/Loading"
 import NotFound from "../NotFound"
+import {
+  GetConnection,
+  GetConnectionVariables,
+} from "./__generated__/GetConnection"
 
 const GET_CONNECTION = gql`
   query GetConnection($connectionId: ID!) {
@@ -30,9 +34,12 @@ const GET_CONNECTION = gql`
 const Connection: React.FC = () => {
   const params = useParams()
 
-  const { loading, error, data } = useQuery(GET_CONNECTION, {
+  const { loading, error, data } = useQuery<
+    GetConnection,
+    GetConnectionVariables
+  >(GET_CONNECTION, {
     variables: {
-      connectionId: params.connectionId,
+      connectionId: params.connectionId ?? "",
     },
   })
 
@@ -45,7 +52,7 @@ const Connection: React.FC = () => {
       </>
     )
 
-  const connection = data.connection
+  const connection = data?.connection
 
   if (!connection) return <NotFound />
 

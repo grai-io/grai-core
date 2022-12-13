@@ -6,6 +6,7 @@ import {
   TextField,
 } from "@mui/material"
 import React from "react"
+import { GetConnectors } from "./__generated__/GetConnectors"
 
 const GET_CONNECTORS = gql`
   query GetConnectors {
@@ -41,7 +42,7 @@ type ConnectorProps = {
 }
 
 const Connector: React.FC<ConnectorProps> = ({ value, onChange }) => {
-  const { data, loading } = useQuery(GET_CONNECTORS)
+  const { data, loading } = useQuery<GetConnectors>(GET_CONNECTORS)
 
   const options = data?.connectors ?? []
 
@@ -51,7 +52,7 @@ const Connector: React.FC<ConnectorProps> = ({ value, onChange }) => {
   ) => onChange(value)
 
   return (
-    <Autocomplete
+    <Autocomplete<ConnectorType>
       disablePortal
       options={options}
       getOptionLabel={value => value.name}

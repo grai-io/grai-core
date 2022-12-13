@@ -1,6 +1,10 @@
 import { gql, useMutation } from "@apollo/client"
 import React from "react"
 import ConnectionsForm, { Values } from "./ConnectionsForm"
+import {
+  UpdateConnection,
+  UpdateConnectionVariables,
+} from "./__generated__/UpdateConnection"
 
 const UPDATE_CONNECTION = gql`
   mutation UpdateConnection(
@@ -49,13 +53,16 @@ type UpdateConnectionFormProps = {
 const UpdateConnectionForm: React.FC<UpdateConnectionFormProps> = ({
   connection,
 }) => {
-  const [updateConnection, { loading, error }] = useMutation(UPDATE_CONNECTION)
+  const [updateConnection, { loading, error }] = useMutation<
+    UpdateConnection,
+    UpdateConnectionVariables
+  >(UPDATE_CONNECTION)
 
   const handleSubmit = (values: Values) =>
     updateConnection({
       variables: {
         connectionId: connection.id,
-        namespace: values.namespace,
+        namespace: values.namespace ?? "",
         name: values.name,
         metadata: values.metadata,
         secrets: values.secrets ?? {},

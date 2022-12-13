@@ -3,6 +3,7 @@ import { gql, useQuery } from "@apollo/client"
 import AppTopBar from "../../components/layout/AppTopBar"
 import ConnectionsTable from "../../components/connections/ConnectionsTable"
 import ConnectionsHeader from "../../components/connections/ConnectionsHeader"
+import { GetConnections } from "./__generated__/GetConnections"
 
 const GET_CONNECTIONS = gql`
   query GetConnections {
@@ -19,7 +20,8 @@ const GET_CONNECTIONS = gql`
 `
 
 const Connections: React.FC = () => {
-  const { loading, error, data, refetch } = useQuery(GET_CONNECTIONS)
+  const { loading, error, data, refetch } =
+    useQuery<GetConnections>(GET_CONNECTIONS)
 
   const handleRefresh = () => refetch()
 
