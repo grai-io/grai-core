@@ -103,9 +103,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
     ).catch(error => {
       if (error.response.status === 401) {
-        setAuthTokens(null)
-        setUser(null)
-
         return
       }
 
@@ -126,6 +123,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setAuthTokens(updatedAuthTokens)
       setUser(jwt_decode(data.access))
     } else {
+      if (response.status === 401) {
+        setAuthTokens(null)
+        setUser(null)
+
+        return
+      }
+
       alert("Something went wrong!")
     }
   }
