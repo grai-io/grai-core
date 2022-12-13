@@ -7,6 +7,7 @@ from api.types import (
     ConnectionType,
     ConnectorType,
     NamespaceType,
+    WorkspaceType,
 )
 import strawberry
 from strawberry.permission import BasePermission
@@ -30,6 +31,9 @@ class IsAuthenticated(BasePermission):
 
 @gql.type
 class Query:
+    workspaces: typing.List[WorkspaceType] = strawberry.django.field(
+        permission_classes=[IsAuthenticated]
+    )
     nodes: typing.List[NodeType] = strawberry.django.field(
         permission_classes=[IsAuthenticated]
     )

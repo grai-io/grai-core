@@ -113,6 +113,7 @@ THIRD_PARTY_APPS = [
 THE_GUIDE_APPS = [
     "lineage",
     "connections",
+    "workspaces",
     "users",
     "namespaces",
     "telemetry",

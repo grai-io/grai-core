@@ -30,6 +30,7 @@ urlpatterns = [
     path("api/v1/auth/", include("auth.urls"), name="auth"),
     path("api/v1/lineage/", include("lineage.urls"), name="lineage"),
     path("api/v1/", include("connections.urls"), name="connections"),
+    path("api/v1/", include("workspaces.urls"), name="workspaces"),
     path("graphql/", AsyncGraphQLView.as_view(schema=schema)),
     # OpenAPI 3 docs w/ Swagger
     path(

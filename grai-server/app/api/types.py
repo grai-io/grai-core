@@ -3,6 +3,7 @@ from typing import List
 from lineage.models import Edge, Node
 from connections.models import Connection, Connector
 from namespaces.models import Namespace
+from workspaces.models import Workspace, Membership
 import strawberry
 from strawberry.scalars import JSON
 from strawberry_django_plus.gql import auto
@@ -68,3 +69,18 @@ class ConnectionType:
 class NamespaceType:
     id: auto
     name: auto
+
+
+@strawberry.django.type(Workspace)
+class WorkspaceType:
+    id: auto
+    name: auto
+    memberships: List["MembershipType"]
+
+
+@strawberry.django.type(Membership)
+class MembershipType:
+    id: auto
+    role: auto
+    user: UserType
+    workspace: WorkspaceType

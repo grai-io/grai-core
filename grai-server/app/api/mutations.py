@@ -26,12 +26,12 @@ class ConnectionTypeInput:
     secrets: gql.auto
 
 
-@gql.django.partial(Connection)
-class ConnectionTypeInputPartial(gql.NodeInput):
-    namespace: gql.auto
-    name: gql.auto
-    metadata: gql.auto
-    secrets: gql.auto
+# @gql.django.partial(Connection)
+# class ConnectionTypeInputPartial(gql.NodeInput):
+#     namespace: gql.auto
+#     name: gql.auto
+#     metadata: gql.auto
+#     secrets: gql.auto
 
 
 @strawberry.type
