@@ -1,6 +1,5 @@
 import {
   Checkbox,
-  CircularProgress,
   Table,
   TableBody,
   TableHead,
@@ -9,6 +8,7 @@ import {
 } from "@mui/material"
 import React from "react"
 import { useNavigate } from "react-router-dom"
+import Loading from "../layout/Loading"
 import TableCell from "../tables/TableCell"
 import ConnectionsMenu from "./ConnectionsMenu"
 
@@ -79,7 +79,7 @@ const ConnectionsTable: React.FC<ConnectionsTableProps> = ({
         {loading && (
           <TableRow>
             <TableCell colSpan={99}>
-              <CircularProgress />
+              <Loading />
             </TableCell>
           </TableRow>
         )}
