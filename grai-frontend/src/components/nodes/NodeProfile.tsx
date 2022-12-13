@@ -3,15 +3,11 @@ import {
   Grid,
   Typography,
   Table,
-  TableHead,
-  TableRow,
-  TableCell,
   TableBody,
   Stack,
   Button,
 } from "@mui/material"
 import React from "react"
-import { useNavigate } from "react-router-dom"
 import NodeColumns from "./NodeColumns"
 import NodeDetail from "./NodeDetail"
 import { Node as NodeType } from "../../helpers/graph"
@@ -54,8 +50,6 @@ type NodeProfileProps = {
 }
 
 const NodeProfile: React.FC<NodeProfileProps> = ({ node }) => {
-  const navigate = useNavigate()
-
   const outputs = node.sourceEdges?.filter(
     edge =>
       edge.destination.metadata.table_name !== node.metadata.table_name &&
