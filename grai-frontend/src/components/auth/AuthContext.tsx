@@ -19,6 +19,7 @@ type AuthContextType = {
   authTokens: Tokens | null
   setAuthTokens: (tokens: Tokens | null) => void
   registerUser: (username: string, password: string, password2: string) => void
+  refresh: () => Promise<void>
   loginUser: (username: string, password: string) => Promise<void>
   logoutUser: () => void
 }
@@ -29,6 +30,7 @@ const AuthContext = createContext<AuthContextType>({
   authTokens: null,
   setAuthTokens: () => {},
   registerUser: () => {},
+  refresh: async () => {},
   loginUser: async () => new Promise(() => null),
   logoutUser: () => {},
 })
@@ -84,6 +86,50 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }
 
+  const refresh = async () => {
+    const response = await fetch(
+      `${baseURL}/api/v1/auth/jwttoken/refresh/`.replace(
+        /([^:])(\/\/+)/g,
+        "$1/"
+      ),
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          refresh: authTokens?.refresh,
+        }),
+      }
+    ).catch(error => {
+      if (error.response.status === 401) {
+        setAuthTokens(null)
+        setUser(null)
+
+        return
+      }
+
+      throw error
+    })
+
+    if (!response) return
+
+    const data = await response.json()
+
+    if (response.status === 200) {
+      const updatedAuthTokens: Tokens = authTokens
+        ? { refresh: authTokens.refresh, access: data.access }
+        : { access: data.access, refresh: "" }
+
+      localStorage.setItem("authTokens", JSON.stringify(updatedAuthTokens))
+
+      setAuthTokens(updatedAuthTokens)
+      setUser(jwt_decode(data.access))
+    } else {
+      alert("Something went wrong!")
+    }
+  }
+
   const registerUser = async (
     username: string,
     password: string,
@@ -119,6 +165,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     authTokens,
     setAuthTokens,
     registerUser,
+    refresh,
     loginUser,
     logoutUser,
   }

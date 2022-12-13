@@ -8,10 +8,10 @@ type BackendProviderProps = {
 }
 
 const BackendProvider: React.FC<BackendProviderProps> = ({ children }) => {
-  const { authTokens, logoutUser } = useContext(AuthContext)
+  const { authTokens, refresh, logoutUser } = useContext(AuthContext)
 
   return (
-    <ApolloProvider client={client(authTokens?.access ?? "", logoutUser)}>
+    <ApolloProvider client={client(authTokens, refresh, logoutUser)}>
       {children}
     </ApolloProvider>
   )
