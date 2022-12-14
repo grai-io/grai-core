@@ -16,6 +16,7 @@ import {
 const GET_CONNECTION = gql`
   query GetConnection($workspaceId: ID!, $connectionId: ID!) {
     workspace(pk: $workspaceId) {
+      id
       connection(pk: $connectionId) {
         id
         namespace

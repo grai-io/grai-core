@@ -11,6 +11,7 @@ import { GetNode, GetNodeVariables } from "./__generated__/GetNode"
 const GET_NODE = gql`
   query GetNode($workspaceId: ID!, $nodeId: ID!) {
     workspace(pk: $workspaceId) {
+      id
       node(pk: $nodeId) {
         id
         namespace

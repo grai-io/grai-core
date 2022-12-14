@@ -15,6 +15,7 @@ import {
 const GET_NODES_AND_EDGES = gql`
   query GetNodesAndEdges($workspaceId: ID!) {
     workspace(pk: $workspaceId) {
+      id
       nodes {
         id
         namespace

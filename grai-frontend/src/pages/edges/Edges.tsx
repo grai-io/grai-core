@@ -11,6 +11,7 @@ import { useParams } from "react-router-dom"
 const GET_EDGES = gql`
   query GetEdges($workspaceId: ID!) {
     workspace(pk: $workspaceId) {
+      id
       edges {
         id
         isActive

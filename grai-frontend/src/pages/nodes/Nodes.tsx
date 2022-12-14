@@ -9,6 +9,7 @@ import { useParams } from "react-router-dom"
 const GET_NODES = gql`
   query GetNodes($workspaceId: ID!) {
     workspace(pk: $workspaceId) {
+      id
       nodes {
         id
         namespace

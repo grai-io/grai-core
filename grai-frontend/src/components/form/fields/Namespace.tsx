@@ -15,6 +15,7 @@ import {
 const GET_NAMESPACES = gql`
   query GetNamespaces($workspaceId: ID!) {
     workspace(pk: $workspaceId) {
+      id
       namespaces {
         id
         name

@@ -12,6 +12,7 @@ import { useParams } from "react-router-dom"
 const GET_CONNECTIONS = gql`
   query GetConnections($workspaceId: ID!) {
     workspace(pk: $workspaceId) {
+      id
       connections {
         id
         namespace

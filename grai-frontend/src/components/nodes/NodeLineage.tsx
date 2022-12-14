@@ -15,6 +15,7 @@ import { useParams } from "react-router-dom"
 const GET_NODES_AND_EDGES = gql`
   query GetNodesAndEdgesNodeLineage($workspaceId: ID!) {
     workspace(pk: $workspaceId) {
+      id
       nodes {
         id
         namespace
