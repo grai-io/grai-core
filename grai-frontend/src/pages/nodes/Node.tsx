@@ -19,30 +19,6 @@ const GET_NODE = gql`
         displayName
         isActive
         dataSource
-        sourceEdges {
-          id
-          isActive
-          dataSource
-          destination {
-            id
-            name
-            displayName
-            metadata
-          }
-          metadata
-        }
-        destinationEdges {
-          id
-          isActive
-          dataSource
-          source {
-            id
-            name
-            displayName
-            metadata
-          }
-          metadata
-        }
         metadata
       }
       nodes {

@@ -19,31 +19,6 @@ export interface Node extends NodeType {
   id: string
   name: string
   displayName: string
-  metadata: any
-  destinationEdges: {
-    id: string
-    source: {
-      id: string
-      name: string
-      displayName: string
-      metadata: {
-        node_type: string
-        table_name: string
-      }
-    }
-  }[]
-  sourceEdges: {
-    id: string
-    destination: {
-      id: string
-      name: string
-      displayName: string
-      metadata: {
-        node_type: string
-        table_name: string
-      }
-    }
-  }[]
 }
 
 type NodeProfileProps = {
