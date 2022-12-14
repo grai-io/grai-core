@@ -3,47 +3,21 @@ import { Box, Button, InputAdornment, TextField } from "@mui/material"
 import React, { ChangeEvent, useState } from "react"
 import NodeColumnsTable from "./NodeColumnsTable"
 
-interface Node {
+interface Column {
   id: string
   name: string
-  metadata: {
-    table_name: string
-  }
-  sourceEdges: {
-    id: string
-    destination: {
-      id: string
-      name: string
-      displayName: string
-      metadata: {
-        node_type: string
-        table_name: string
-      }
-    }
-  }[]
+  displayName: string
 }
 
 type NodeColumnsProps = {
-  node: Node
+  columns: Column[]
 }
 
-const NodeColumns: React.FC<NodeColumnsProps> = ({ node }) => {
+const NodeColumns: React.FC<NodeColumnsProps> = ({ columns }) => {
   const [search, setSearch] = useState<string | null>(null)
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) =>
     setSearch(event.target.value)
-
-  const columns =
-    node.sourceEdges
-      .filter(
-        edge =>
-          edge.destination.metadata.table_name === node.metadata.table_name ||
-          `public.${edge.destination.metadata.table_name}` === node.name
-      )
-      .map(edge => ({
-        id: edge.destination.id,
-        name: edge.destination.displayName ?? edge.destination.name,
-      })) ?? []
 
   return (
     <>

@@ -45,6 +45,39 @@ const GET_NODE = gql`
         }
         metadata
       }
+      nodes {
+        id
+        namespace
+        name
+        displayName
+        isActive
+        dataSource
+        metadata
+      }
+      edges {
+        id
+        isActive
+        dataSource
+        source {
+          id
+          namespace
+          name
+          displayName
+          dataSource
+          isActive
+          metadata
+        }
+        destination {
+          id
+          namespace
+          name
+          displayName
+          dataSource
+          isActive
+          metadata
+        }
+        metadata
+      }
     }
   }
 `
@@ -79,7 +112,11 @@ const Node: React.FC = () => {
     <>
       <AppTopBar />
       <NodeHeader node={node} />
-      <NodeContent node={node} />
+      <NodeContent
+        node={node}
+        nodes={data?.workspace?.nodes}
+        edges={data?.workspace?.edges}
+      />
     </>
   )
 }

@@ -5,6 +5,7 @@ import theme from "../../theme"
 interface Column {
   id: string
   name: string
+  displayName: string
 }
 
 type NodeColumnsTableProps = {
@@ -41,7 +42,7 @@ const NodeColumnsTable: React.FC<NodeColumnsTableProps> = ({
             <TableCell sx={{ color: theme.palette.grey[500], pr: 0 }}>
               {index}
             </TableCell>
-            <TableCell sx={{ pl: 1 }}>{column.name}</TableCell>
+            <TableCell sx={{ pl: 1 }}>{column.displayName}</TableCell>
             <TableCell />
             <TableCell />
             <TableCell />

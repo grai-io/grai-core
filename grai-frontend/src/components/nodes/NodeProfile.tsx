@@ -6,13 +6,14 @@ import {
   TableBody,
   Stack,
   Button,
+  Box,
 } from "@mui/material"
 import React from "react"
 import NodeColumns from "./NodeColumns"
 import NodeDetail from "./NodeDetail"
-import { Node as NodeType } from "../../helpers/graph"
+import { Edge, Node as NodeType, nodeToTable } from "../../helpers/graph"
 import NodeDetailRow from "./NodeDetailRow"
-import { Link } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 
 export interface Node extends NodeType {
   id: string
@@ -47,14 +48,14 @@ export interface Node extends NodeType {
 
 type NodeProfileProps = {
   node: Node
+  nodes: NodeType[]
+  edges: Edge[]
 }
 
-const NodeProfile: React.FC<NodeProfileProps> = ({ node }) => {
-  const outputs = node.sourceEdges?.filter(
-    edge =>
-      edge.destination.metadata.table_name !== node.metadata.table_name &&
-      `public.${edge.destination.metadata.table_name}` !== node.name
-  )
+const NodeProfile: React.FC<NodeProfileProps> = ({ node, nodes, edges }) => {
+  const { workspaceId } = useParams()
+
+  const table = nodeToTable<NodeType>(node, nodes, edges)
 
   return (
     <>
@@ -67,16 +68,17 @@ const NodeProfile: React.FC<NodeProfileProps> = ({ node }) => {
             <Table>
               <TableBody>
                 <NodeDetailRow label="Upstream dependencies">
-                  {node.destinationEdges.length > 0 ? (
+                  {table.destinationTables.length > 0 ? (
                     <Stack>
-                      {node.destinationEdges?.map(edge => (
-                        <Button
-                          key={edge.id}
-                          component={Link}
-                          to={`/nodes/${edge.source.id}`}
-                        >
-                          {edge.source.displayName}
-                        </Button>
+                      {table.destinationTables?.map(table => (
+                        <Box key={table.id}>
+                          <Button
+                            component={Link}
+                            to={`/workspaces/${workspaceId}/nodes/${table.id}`}
+                          >
+                            {table.displayName}
+                          </Button>
+                        </Box>
                       ))}
                     </Stack>
                   ) : (
@@ -84,16 +86,17 @@ const NodeProfile: React.FC<NodeProfileProps> = ({ node }) => {
                   )}
                 </NodeDetailRow>
                 <NodeDetailRow label="Downstream dependencies">
-                  {outputs.length > 0 ? (
+                  {table.sourceTables.length > 0 ? (
                     <Stack>
-                      {outputs.map(edge => (
-                        <Button
-                          key={edge.id}
-                          component={Link}
-                          to={`/nodes/${edge.destination.id}`}
-                        >
-                          {edge.destination.displayName}
-                        </Button>
+                      {table.sourceTables.map(table => (
+                        <Box key={table.id}>
+                          <Button
+                            component={Link}
+                            to={`/workspaces/${workspaceId}/nodes/${table.id}`}
+                          >
+                            {table.displayName}
+                          </Button>
+                        </Box>
                       ))}
                     </Stack>
                   ) : (
@@ -105,7 +108,7 @@ const NodeProfile: React.FC<NodeProfileProps> = ({ node }) => {
           </Card>
         </Grid>
       </Grid>
-      <NodeColumns node={node} />
+      <NodeColumns columns={table.columns} />
     </>
   )
 }
