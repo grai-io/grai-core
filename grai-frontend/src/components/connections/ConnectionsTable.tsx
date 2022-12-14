@@ -36,16 +36,16 @@ const ConnectionsTable: React.FC<ConnectionsTableProps> = ({
   const navigate = useNavigate()
 
   return (
-    <Table size="small">
+    <Table>
       <TableHead>
-        <TableRow>
+        <TableRow sx={{ backgroundColor: theme => theme.palette.grey[100] }}>
           <TableCell sx={{ p: 0, width: 0 }}>
             <Checkbox size="small" />
           </TableCell>
-          <TableCell>id</TableCell>
-          <TableCell>Namespace</TableCell>
           <TableCell>Name</TableCell>
+          <TableCell>Namespace</TableCell>
           <TableCell>Connector</TableCell>
+          <TableCell>Last updated</TableCell>
           <TableCell sx={{ width: 0 }} />
         </TableRow>
       </TableHead>
@@ -60,10 +60,10 @@ const ConnectionsTable: React.FC<ConnectionsTableProps> = ({
             <TableCell sx={{ p: 0 }} stopPropagation>
               <Checkbox size="small" />
             </TableCell>
-            <TableCell>{connection.id}</TableCell>
-            <TableCell>{connection.namespace}</TableCell>
             <TableCell>{connection.name}</TableCell>
+            <TableCell>{connection.namespace}</TableCell>
             <TableCell>{connection.connector.name}</TableCell>
+            <TableCell />
             <TableCell sx={{ py: 0, px: 1 }} stopPropagation>
               <ConnectionsMenu connection={connection} />
             </TableCell>

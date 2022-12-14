@@ -51,14 +51,7 @@ const AppTopBar: React.FC = () => {
           to={`/workspaces/${workspaceId}/nodes`}
           sx={{ my: 2, color: "inherit" }}
         >
-          Nodes
-        </Button>
-        <Button
-          component={Link}
-          to={`/workspaces/${workspaceId}/edges`}
-          sx={{ my: 2, color: "inherit" }}
-        >
-          Edges
+          Tables
         </Button>
         <Button
           component={Link}

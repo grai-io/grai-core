@@ -5,6 +5,7 @@ import NodesTable from "../../components/nodes/NodesTable"
 import NodesHeader from "../../components/nodes/NodesHeader"
 import { GetNodes, GetNodesVariables } from "./__generated__/GetNodes"
 import { useParams } from "react-router-dom"
+import { Box } from "@mui/material"
 
 const GET_NODES = gql`
   query GetNodes($workspaceId: ID!) {
@@ -30,7 +31,9 @@ export interface Node {
   displayName: string
   dataSource: string
   isActive: boolean
-  metadata: any
+  metadata: {
+    node_type: string
+  }
 }
 
 const Nodes: React.FC = () => {
@@ -52,12 +55,14 @@ const Nodes: React.FC = () => {
 
   const handleRefresh = () => refetch()
 
+  const tables = nodes.filter(node => node.metadata.node_type === "Table")
+
   const filteredNodes =
     (search
-      ? nodes.filter((node: any) =>
+      ? tables.filter(node =>
           node.name.toLowerCase().includes(search.toLowerCase())
         )
-      : nodes) ?? []
+      : tables) ?? []
 
   return (
     <>
@@ -67,7 +72,9 @@ const Nodes: React.FC = () => {
         onSearch={setSearch}
         onRefresh={handleRefresh}
       />
-      <NodesTable nodes={filteredNodes} loading={loading} />
+      <Box sx={{ px: 3 }}>
+        <NodesTable nodes={filteredNodes} loading={loading} />
+      </Box>
     </>
   )
 }

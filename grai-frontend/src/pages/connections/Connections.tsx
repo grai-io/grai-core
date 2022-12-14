@@ -8,6 +8,7 @@ import {
   GetConnectionsVariables,
 } from "./__generated__/GetConnections"
 import { useParams } from "react-router-dom"
+import { Box } from "@mui/material"
 
 const GET_CONNECTIONS = gql`
   query GetConnections($workspaceId: ID!) {
@@ -46,10 +47,16 @@ const Connections: React.FC = () => {
     <>
       <AppTopBar />
       <ConnectionsHeader onRefresh={handleRefresh} />
-      <ConnectionsTable
-        connections={data?.workspace.connections ?? []}
-        loading={loading}
-      />
+      <Box
+        sx={{
+          px: 3,
+        }}
+      >
+        <ConnectionsTable
+          connections={data?.workspace.connections ?? []}
+          loading={loading}
+        />
+      </Box>
     </>
   )
 }

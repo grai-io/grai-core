@@ -134,7 +134,7 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
                   p: 1,
                 }}
               >
-                <Typography>{column.name}</Typography>
+                <Typography>{column.displayName ?? column.name}</Typography>
                 <Handle
                   id={column.name}
                   type="target"
@@ -190,10 +190,16 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
         <MenuItem onClick={handleShowHidden}>
           Show lineage for {data.label}
         </MenuItem>
-        <MenuItem onClick={handleShowDestinations}>
+        <MenuItem
+          onClick={handleShowDestinations}
+          disabled={data.hiddenDestinationTables.length === 0}
+        >
           Show upstream dependents
         </MenuItem>
-        <MenuItem onClick={handleShowSources}>
+        <MenuItem
+          onClick={handleShowSources}
+          disabled={data.hiddenSourceTables.length === 0}
+        >
           Show downstream dependents
         </MenuItem>
         <MenuItem

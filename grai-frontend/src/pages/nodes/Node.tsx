@@ -63,7 +63,13 @@ const Node: React.FC = () => {
   )
 
   if (error) return <p>Error : {error.message}</p>
-  if (loading) return <Loading />
+  if (loading)
+    return (
+      <>
+        <AppTopBar />
+        <Loading />
+      </>
+    )
 
   const node = data?.workspace?.node
 

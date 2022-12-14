@@ -20,15 +20,14 @@ const NodesTable: React.FC<NodesTableProps> = ({ nodes, loading }) => {
   const navigate = useNavigate()
 
   return (
-    <Table size="small">
+    <Table>
       <TableHead>
-        <TableRow>
-          <TableCell>id</TableCell>
+        <TableRow sx={{ backgroundColor: theme => theme.palette.grey[100] }}>
           <TableCell>Name</TableCell>
-          <TableCell>Display Name</TableCell>
-          <TableCell> Namespace</TableCell>
+          <TableCell>Namespace</TableCell>
           <TableCell>Data Source</TableCell>
           <TableCell>Active</TableCell>
+          <TableCell>Last updated</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -41,12 +40,11 @@ const NodesTable: React.FC<NodesTableProps> = ({ nodes, loading }) => {
               cursor: "pointer",
             }}
           >
-            <TableCell>{node.id}</TableCell>
-            <TableCell>{node.name}</TableCell>
-            <TableCell>{node.displayName}</TableCell>
+            <TableCell>{node.displayName ?? node.name}</TableCell>
             <TableCell>{node.namespace}</TableCell>
             <TableCell>{node.dataSource}</TableCell>
             <TableCell>{node.isActive ? "Yes" : "No"}</TableCell>
+            <TableCell />
           </TableRow>
         ))}
         {loading && (

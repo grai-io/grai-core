@@ -26,7 +26,7 @@ const NodesHeader: React.FC<NodesHeaderProps> = ({
   return (
     <Box sx={{ display: "flex", m: 3 }}>
       <Typography variant="h4" sx={{ flexGrow: "1" }}>
-        Nodes
+        Tables
       </Typography>
       <Box>
         <TextField
