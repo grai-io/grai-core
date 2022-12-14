@@ -7,7 +7,7 @@
 // GraphQL query operation: GetEdges
 // ====================================================
 
-export interface GetEdges_edges_source {
+export interface GetEdges_workspace_edges_source {
   __typename: "NodeType";
   id: any;
   namespace: string;
@@ -18,7 +18,7 @@ export interface GetEdges_edges_source {
   metadata: any;
 }
 
-export interface GetEdges_edges_destination {
+export interface GetEdges_workspace_edges_destination {
   __typename: "NodeType";
   id: any;
   namespace: string;
@@ -29,16 +29,25 @@ export interface GetEdges_edges_destination {
   metadata: any;
 }
 
-export interface GetEdges_edges {
+export interface GetEdges_workspace_edges {
   __typename: "EdgeType";
   id: any;
   isActive: boolean;
   dataSource: string;
-  source: GetEdges_edges_source;
-  destination: GetEdges_edges_destination;
+  source: GetEdges_workspace_edges_source;
+  destination: GetEdges_workspace_edges_destination;
   metadata: any;
 }
 
+export interface GetEdges_workspace {
+  __typename: "WorkspaceType";
+  edges: GetEdges_workspace_edges[];
+}
+
 export interface GetEdges {
-  edges: GetEdges_edges[];
+  workspace: GetEdges_workspace;
+}
+
+export interface GetEdgesVariables {
+  workspaceId: string;
 }

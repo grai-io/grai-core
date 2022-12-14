@@ -6,42 +6,48 @@ import theme from "../../theme"
 import Graph from "../graph/Graph"
 import Loading from "../layout/Loading"
 import { Node as NodeType } from "../../helpers/graph"
-import { GetNodesAndEdgesNodeLineage } from "./__generated__/GetNodesAndEdgesNodeLineage"
+import {
+  GetNodesAndEdgesNodeLineage,
+  GetNodesAndEdgesNodeLineageVariables,
+} from "./__generated__/GetNodesAndEdgesNodeLineage"
+import { useParams } from "react-router-dom"
 
 const GET_NODES_AND_EDGES = gql`
-  query GetNodesAndEdgesNodeLineage {
-    nodes {
-      id
-      namespace
-      name
-      displayName
-      isActive
-      dataSource
-      metadata
-    }
-    edges {
-      id
-      isActive
-      dataSource
-      source {
+  query GetNodesAndEdgesNodeLineage($workspaceId: ID!) {
+    workspace(pk: $workspaceId) {
+      nodes {
         id
         namespace
         name
         displayName
-        dataSource
         isActive
+        dataSource
         metadata
       }
-      destination {
+      edges {
         id
-        namespace
-        name
-        displayName
-        dataSource
         isActive
+        dataSource
+        source {
+          id
+          namespace
+          name
+          displayName
+          dataSource
+          isActive
+          metadata
+        }
+        destination {
+          id
+          namespace
+          name
+          displayName
+          dataSource
+          isActive
+          metadata
+        }
         metadata
       }
-      metadata
     }
   }
 `
@@ -56,15 +62,22 @@ type NodeLineageProps = {
 }
 
 const NodeLineage: React.FC<NodeLineageProps> = ({ node }) => {
-  const { loading, error, data } =
-    useQuery<GetNodesAndEdgesNodeLineage>(GET_NODES_AND_EDGES)
+  const { workspaceId } = useParams()
+  const { loading, error, data } = useQuery<
+    GetNodesAndEdgesNodeLineage,
+    GetNodesAndEdgesNodeLineageVariables
+  >(GET_NODES_AND_EDGES, {
+    variables: {
+      workspaceId: workspaceId ?? "",
+    },
+  })
 
   if (error) return <p>Error : {error.message}</p>
   if (loading) return <Loading />
 
-  if (!data?.nodes || !data.edges) return null
+  if (!data?.workspace.nodes || !data.workspace.edges) return null
 
-  const tables = nodesToTables<Node>(data.nodes, data.edges)
+  const tables = nodesToTables(data.workspace.nodes, data.workspace.edges)
 
   const hiddenNodes = tables.filter(t => {
     if (t.id === node.id) return false
@@ -86,7 +99,7 @@ const NodeLineage: React.FC<NodeLineageProps> = ({ node }) => {
     >
       <Graph
         tables={tables}
-        edges={data.edges}
+        edges={data.workspace.edges}
         initialHidden={hiddenNodes.map(n => n.id)}
       />
     </Box>

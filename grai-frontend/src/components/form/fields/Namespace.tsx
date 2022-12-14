@@ -6,13 +6,19 @@ import {
   TextField,
 } from "@mui/material"
 import React from "react"
-import { GetNamespaces } from "./__generated__/GetNamespaces"
+import { useParams } from "react-router-dom"
+import {
+  GetNamespaces,
+  GetNamespacesVariables,
+} from "./__generated__/GetNamespaces"
 
 const GET_NAMESPACES = gql`
-  query GetNamespaces {
-    namespaces {
-      id
-      name
+  query GetNamespaces($workspaceId: ID!) {
+    workspace(pk: $workspaceId) {
+      namespaces {
+        id
+        name
+      }
     }
   }
 `
@@ -23,9 +29,17 @@ type NamespaceProps = {
 }
 
 const Namespace: React.FC<NamespaceProps> = ({ value, onChange }) => {
-  const { data, loading } = useQuery<GetNamespaces>(GET_NAMESPACES)
+  const { workspaceId } = useParams()
+  const { data, loading } = useQuery<GetNamespaces, GetNamespacesVariables>(
+    GET_NAMESPACES,
+    {
+      variables: {
+        workspaceId: workspaceId ?? "",
+      },
+    }
+  )
 
-  const options = data?.namespaces.map((n: any) => n.name) ?? []
+  const options = data?.workspace.namespaces.map((n: any) => n.name) ?? []
 
   const handleChange = (
     event: React.SyntheticEvent<Element, Event>,

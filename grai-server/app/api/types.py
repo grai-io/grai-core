@@ -75,6 +75,30 @@ class NamespaceType:
 class WorkspaceType:
     id: auto
     name: auto
+    nodes: List["NodeType"]
+    # node: NodeType = strawberry.django.field
+    @strawberry.django.field
+    def node(self, info, pk: strawberry.ID) -> NodeType:
+        return Node.objects.filter(id=pk).first()
+    
+    edges: List["EdgeType"]
+    # edge: EdgeType = strawberry.django.field(field_name='edges')
+    @strawberry.django.field
+    def edge(self, info, pk: strawberry.ID) -> EdgeType:
+        return Edge.objects.filter(id=pk).first()
+
+    connections: List["ConnectionType"]
+    # connection: ConnectionType = strawberry.django.field
+    @strawberry.django.field
+    def connection(self, info, pk: strawberry.ID) -> ConnectionType:
+        return Connection.objects.filter(id=pk).first()
+
+    namespaces: List["NamespaceType"]
+    # namespace: NamespaceType = strawberry.django.field
+    @strawberry.django.field
+    def namespace(self, info, pk: strawberry.ID) -> NamespaceType:
+        return Namespace.objects.filter(id=pk).first()
+
     memberships: List["MembershipType"]
 
 

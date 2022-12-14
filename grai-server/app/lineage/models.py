@@ -15,6 +15,12 @@ class Node(models.Model):
     metadata = models.JSONField(default=dict)
     is_active = models.BooleanField(default=True)
 
+    workspace = models.ForeignKey(
+        "workspaces.Workspace",
+        related_name="nodes",
+        on_delete=models.CASCADE,
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     # created_by = models.OneToOneField(
@@ -56,6 +62,12 @@ class Edge(models.Model):
     )
     metadata = models.JSONField(default=dict)
     is_active = models.BooleanField(default=True)
+
+    workspace = models.ForeignKey(
+        "workspaces.Workspace",
+        related_name="edges",
+        on_delete=models.CASCADE,
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -32,6 +32,12 @@ class Connection(models.Model):
     secrets = models.JSONField(default=dict, blank=True, null=True)
     is_active = models.BooleanField(default=True)
 
+    workspace = models.ForeignKey(
+        "workspaces.Workspace",
+        related_name="connections",
+        on_delete=models.CASCADE,
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(

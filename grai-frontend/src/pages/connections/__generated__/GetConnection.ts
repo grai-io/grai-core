@@ -7,28 +7,34 @@
 // GraphQL query operation: GetConnection
 // ====================================================
 
-export interface GetConnection_connection_connector {
+export interface GetConnection_workspace_connection_connector {
   __typename: "ConnectorType";
   id: any;
   name: string;
   metadata: any;
 }
 
-export interface GetConnection_connection {
+export interface GetConnection_workspace_connection {
   __typename: "ConnectionType";
   id: any;
   namespace: string;
   name: string;
-  connector: GetConnection_connection_connector;
+  connector: GetConnection_workspace_connection_connector;
   metadata: any;
   createdAt: any;
   updatedAt: any;
 }
 
+export interface GetConnection_workspace {
+  __typename: "WorkspaceType";
+  connection: GetConnection_workspace_connection;
+}
+
 export interface GetConnection {
-  connection: GetConnection_connection;
+  workspace: GetConnection_workspace;
 }
 
 export interface GetConnectionVariables {
+  workspaceId: string;
   connectionId: string;
 }

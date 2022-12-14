@@ -3,25 +3,39 @@ import { gql, useQuery } from "@apollo/client"
 import AppTopBar from "../../components/layout/AppTopBar"
 import ConnectionsTable from "../../components/connections/ConnectionsTable"
 import ConnectionsHeader from "../../components/connections/ConnectionsHeader"
-import { GetConnections } from "./__generated__/GetConnections"
+import {
+  GetConnections,
+  GetConnectionsVariables,
+} from "./__generated__/GetConnections"
+import { useParams } from "react-router-dom"
 
 const GET_CONNECTIONS = gql`
-  query GetConnections {
-    connections {
-      id
-      namespace
-      name
-      connector {
+  query GetConnections($workspaceId: ID!) {
+    workspace(pk: $workspaceId) {
+      connections {
         id
+        namespace
         name
+        connector {
+          id
+          name
+        }
       }
     }
   }
 `
 
 const Connections: React.FC = () => {
-  const { loading, error, data, refetch } =
-    useQuery<GetConnections>(GET_CONNECTIONS)
+  const { workspaceId } = useParams()
+
+  const { loading, error, data, refetch } = useQuery<
+    GetConnections,
+    GetConnectionsVariables
+  >(GET_CONNECTIONS, {
+    variables: {
+      workspaceId: workspaceId ?? "",
+    },
+  })
 
   const handleRefresh = () => refetch()
 
@@ -32,7 +46,7 @@ const Connections: React.FC = () => {
       <AppTopBar />
       <ConnectionsHeader onRefresh={handleRefresh} />
       <ConnectionsTable
-        connections={data?.connections ?? []}
+        connections={data?.workspace.connections ?? []}
         loading={loading}
       />
     </>

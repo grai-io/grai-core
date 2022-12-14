@@ -5,33 +5,36 @@ import EdgesTable from "../../components/edges/EdgesTable"
 import AppTopBar from "../../components/layout/AppTopBar"
 import { Node } from "../../pages/nodes/Nodes"
 import Loading from "../../components/layout/Loading"
-import { GetEdges } from "./__generated__/GetEdges"
+import { GetEdges, GetEdgesVariables } from "./__generated__/GetEdges"
+import { useParams } from "react-router-dom"
 
 const GET_EDGES = gql`
-  query GetEdges {
-    edges {
-      id
-      isActive
-      dataSource
-      source {
+  query GetEdges($workspaceId: ID!) {
+    workspace(pk: $workspaceId) {
+      edges {
         id
-        namespace
-        name
-        displayName
-        dataSource
         isActive
+        dataSource
+        source {
+          id
+          namespace
+          name
+          displayName
+          dataSource
+          isActive
+          metadata
+        }
+        destination {
+          id
+          namespace
+          name
+          displayName
+          dataSource
+          isActive
+          metadata
+        }
         metadata
       }
-      destination {
-        id
-        namespace
-        name
-        displayName
-        dataSource
-        isActive
-        metadata
-      }
-      metadata
     }
   }
 `
@@ -46,10 +49,20 @@ export interface Edge {
 }
 
 const Edges: React.FC = () => {
-  const { loading, error, data } = useQuery<GetEdges>(GET_EDGES)
+  const { workspaceId } = useParams()
+  const { loading, error, data } = useQuery<GetEdges, GetEdgesVariables>(
+    GET_EDGES,
+    {
+      variables: {
+        workspaceId: workspaceId ?? "",
+      },
+    }
+  )
 
   if (error) return <p>Error : {error.message}</p>
   if (loading) return <Loading />
+
+  const edges = data?.workspace?.edges ?? []
 
   return (
     <>
@@ -57,7 +70,7 @@ const Edges: React.FC = () => {
       <Typography variant="h4" sx={{ textAlign: "center", m: 3 }}>
         Edges
       </Typography>
-      <EdgesTable edges={data?.edges ?? null} />
+      <EdgesTable edges={edges} />
       {error && <Typography>{error}</Typography>}
     </>
   )

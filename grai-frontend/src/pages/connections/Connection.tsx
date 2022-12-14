@@ -14,32 +14,35 @@ import {
 } from "./__generated__/GetConnection"
 
 const GET_CONNECTION = gql`
-  query GetConnection($connectionId: ID!) {
-    connection(pk: $connectionId) {
-      id
-      namespace
-      name
-      connector {
+  query GetConnection($workspaceId: ID!, $connectionId: ID!) {
+    workspace(pk: $workspaceId) {
+      connection(pk: $connectionId) {
         id
+        namespace
         name
+        connector {
+          id
+          name
+          metadata
+        }
         metadata
+        createdAt
+        updatedAt
       }
-      metadata
-      createdAt
-      updatedAt
     }
   }
 `
 
 const Connection: React.FC = () => {
-  const params = useParams()
+  const { workspaceId, connectionId } = useParams()
 
   const { loading, error, data } = useQuery<
     GetConnection,
     GetConnectionVariables
   >(GET_CONNECTION, {
     variables: {
-      connectionId: params.connectionId ?? "",
+      workspaceId: workspaceId ?? "",
+      connectionId: connectionId ?? "",
     },
   })
 
@@ -52,7 +55,7 @@ const Connection: React.FC = () => {
       </>
     )
 
-  const connection = data?.connection
+  const connection = data?.workspace?.connection
 
   if (!connection) return <NotFound />
 

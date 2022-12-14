@@ -7,12 +7,21 @@
 // GraphQL query operation: GetNamespaces
 // ====================================================
 
-export interface GetNamespaces_namespaces {
+export interface GetNamespaces_workspace_namespaces {
   __typename: "NamespaceType";
   id: string;
   name: string;
 }
 
+export interface GetNamespaces_workspace {
+  __typename: "WorkspaceType";
+  namespaces: GetNamespaces_workspace_namespaces[];
+}
+
 export interface GetNamespaces {
-  namespaces: GetNamespaces_namespaces[];
+  workspace: GetNamespaces_workspace;
+}
+
+export interface GetNamespacesVariables {
+  workspaceId: string;
 }

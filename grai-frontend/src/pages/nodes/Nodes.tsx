@@ -3,18 +3,21 @@ import { gql, useQuery } from "@apollo/client"
 import AppTopBar from "../../components/layout/AppTopBar"
 import NodesTable from "../../components/nodes/NodesTable"
 import NodesHeader from "../../components/nodes/NodesHeader"
-import { GetNodes } from "./__generated__/GetNodes"
+import { GetNodes, GetNodesVariables } from "./__generated__/GetNodes"
+import { useParams } from "react-router-dom"
 
 const GET_NODES = gql`
-  query GetNodes {
-    nodes {
-      id
-      namespace
-      name
-      displayName
-      isActive
-      dataSource
-      metadata
+  query GetNodes($workspaceId: ID!) {
+    workspace(pk: $workspaceId) {
+      nodes {
+        id
+        namespace
+        name
+        displayName
+        isActive
+        dataSource
+        metadata
+      }
     }
   }
 `
@@ -30,20 +33,30 @@ export interface Node {
 }
 
 const Nodes: React.FC = () => {
+  const { workspaceId } = useParams()
   const [search, setSearch] = useState<string>()
 
-  const { loading, error, data, refetch } = useQuery<GetNodes>(GET_NODES)
+  const { loading, error, data, refetch } = useQuery<
+    GetNodes,
+    GetNodesVariables
+  >(GET_NODES, {
+    variables: {
+      workspaceId: workspaceId ?? "",
+    },
+  })
 
   if (error) return <p>Error : {error.message}</p>
+
+  const nodes = data?.workspace?.nodes ?? []
 
   const handleRefresh = () => refetch()
 
   const filteredNodes =
     (search
-      ? data?.nodes.filter((node: any) =>
+      ? nodes.filter((node: any) =>
           node.name.toLowerCase().includes(search.toLowerCase())
         )
-      : data?.nodes) ?? []
+      : nodes) ?? []
 
   return (
     <>

@@ -5,53 +5,65 @@ import AppTopBar from "../components/layout/AppTopBar"
 import { gql, useQuery } from "@apollo/client"
 import Loading from "../components/layout/Loading"
 import theme from "../theme"
-import { useLocation } from "react-router-dom"
+import { useLocation, useParams } from "react-router-dom"
 import { nodesToTables } from "../helpers/graph"
-import { GetNodesAndEdges } from "./__generated__/GetNodesAndEdges"
+import {
+  GetNodesAndEdges,
+  GetNodesAndEdgesVariables,
+} from "./__generated__/GetNodesAndEdges"
 
 const GET_NODES_AND_EDGES = gql`
-  query GetNodesAndEdges {
-    nodes {
-      id
-      namespace
-      name
-      displayName
-      isActive
-      dataSource
-      metadata
-    }
-    edges {
-      id
-      isActive
-      dataSource
-      source {
+  query GetNodesAndEdges($workspaceId: ID!) {
+    workspace(pk: $workspaceId) {
+      nodes {
         id
         namespace
         name
         displayName
-        dataSource
         isActive
+        dataSource
         metadata
       }
-      destination {
+      edges {
         id
-        namespace
-        name
-        displayName
-        dataSource
         isActive
+        dataSource
+        source {
+          id
+          namespace
+          name
+          displayName
+          dataSource
+          isActive
+          metadata
+        }
+        destination {
+          id
+          namespace
+          name
+          displayName
+          dataSource
+          isActive
+          metadata
+        }
         metadata
       }
-      metadata
     }
   }
 `
 
 const Graph: React.FC = () => {
+  const { workspaceId } = useParams()
   const searchParams = new URLSearchParams(useLocation().search)
 
-  const { loading, error, data } =
-    useQuery<GetNodesAndEdges>(GET_NODES_AND_EDGES)
+  const { loading, error, data } = useQuery<
+    GetNodesAndEdges,
+    GetNodesAndEdgesVariables
+  >(GET_NODES_AND_EDGES, {
+    variables: {
+      workspaceId: workspaceId ?? "",
+    },
+  })
 
   if (error) return <p>Error : {error.message}</p>
   if (loading)
@@ -68,29 +80,28 @@ const Graph: React.FC = () => {
   const limitGraph: boolean =
     searchParams.get("limitGraph")?.toLowerCase() === "true" && !!errors
 
-  if (!data?.nodes) return null
+  if (!data?.workspace?.nodes) return null
 
-  const tables = nodesToTables(data.nodes, data.edges)
+  const tables = nodesToTables(data.workspace.nodes, data.workspace.edges)
 
   return (
     <>
       <AppTopBar />
-      {data.nodes && data.edges && (
-        <Box
-          sx={{
-            height: "calc(100vh - 70px)",
-            width: "100%",
-            backgroundColor: theme.palette.grey[100],
-          }}
-        >
-          <GraphComponent
-            tables={tables}
-            edges={data.edges}
-            errors={errors}
-            limitGraph={limitGraph}
-          />
-        </Box>
-      )}
+
+      <Box
+        sx={{
+          height: "calc(100vh - 70px)",
+          width: "100%",
+          backgroundColor: theme.palette.grey[100],
+        }}
+      >
+        <GraphComponent
+          tables={tables}
+          edges={data.workspace.edges}
+          errors={errors}
+          limitGraph={limitGraph}
+        />
+      </Box>
     </>
   )
 }

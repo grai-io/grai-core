@@ -9,51 +9,54 @@ import NodeContent from "../../components/nodes/NodeContent"
 import { GetNode, GetNodeVariables } from "./__generated__/GetNode"
 
 const GET_NODE = gql`
-  query GetNode($nodeId: ID!) {
-    node(pk: $nodeId) {
-      id
-      namespace
-      name
-      displayName
-      isActive
-      dataSource
-      sourceEdges {
+  query GetNode($workspaceId: ID!, $nodeId: ID!) {
+    workspace(pk: $workspaceId) {
+      node(pk: $nodeId) {
         id
+        namespace
+        name
+        displayName
         isActive
         dataSource
-        destination {
+        sourceEdges {
           id
-          name
-          displayName
+          isActive
+          dataSource
+          destination {
+            id
+            name
+            displayName
+            metadata
+          }
+          metadata
+        }
+        destinationEdges {
+          id
+          isActive
+          dataSource
+          source {
+            id
+            name
+            displayName
+            metadata
+          }
           metadata
         }
         metadata
       }
-      destinationEdges {
-        id
-        isActive
-        dataSource
-        source {
-          id
-          name
-          displayName
-          metadata
-        }
-        metadata
-      }
-      metadata
     }
   }
 `
 
 const Node: React.FC = () => {
-  const params = useParams()
+  const { workspaceId, nodeId } = useParams()
 
   const { loading, error, data } = useQuery<GetNode, GetNodeVariables>(
     GET_NODE,
     {
       variables: {
-        nodeId: params.nodeId ?? "",
+        workspaceId: workspaceId ?? "",
+        nodeId: nodeId ?? "",
       },
     }
   )
@@ -61,7 +64,7 @@ const Node: React.FC = () => {
   if (error) return <p>Error : {error.message}</p>
   if (loading) return <Loading />
 
-  const node = data?.node
+  const node = data?.workspace?.node
 
   if (!node) return <NotFound />
 

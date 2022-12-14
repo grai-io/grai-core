@@ -7,7 +7,7 @@
 // GraphQL query operation: GetNodesAndEdges
 // ====================================================
 
-export interface GetNodesAndEdges_nodes {
+export interface GetNodesAndEdges_workspace_nodes {
   __typename: "NodeType";
   id: any;
   namespace: string;
@@ -18,7 +18,7 @@ export interface GetNodesAndEdges_nodes {
   metadata: any;
 }
 
-export interface GetNodesAndEdges_edges_source {
+export interface GetNodesAndEdges_workspace_edges_source {
   __typename: "NodeType";
   id: any;
   namespace: string;
@@ -29,7 +29,7 @@ export interface GetNodesAndEdges_edges_source {
   metadata: any;
 }
 
-export interface GetNodesAndEdges_edges_destination {
+export interface GetNodesAndEdges_workspace_edges_destination {
   __typename: "NodeType";
   id: any;
   namespace: string;
@@ -40,17 +40,26 @@ export interface GetNodesAndEdges_edges_destination {
   metadata: any;
 }
 
-export interface GetNodesAndEdges_edges {
+export interface GetNodesAndEdges_workspace_edges {
   __typename: "EdgeType";
   id: any;
   isActive: boolean;
   dataSource: string;
-  source: GetNodesAndEdges_edges_source;
-  destination: GetNodesAndEdges_edges_destination;
+  source: GetNodesAndEdges_workspace_edges_source;
+  destination: GetNodesAndEdges_workspace_edges_destination;
   metadata: any;
 }
 
+export interface GetNodesAndEdges_workspace {
+  __typename: "WorkspaceType";
+  nodes: GetNodesAndEdges_workspace_nodes[];
+  edges: GetNodesAndEdges_workspace_edges[];
+}
+
 export interface GetNodesAndEdges {
-  nodes: GetNodesAndEdges_nodes[];
-  edges: GetNodesAndEdges_edges[];
+  workspace: GetNodesAndEdges_workspace;
+}
+
+export interface GetNodesAndEdgesVariables {
+  workspaceId: string;
 }

@@ -7,7 +7,7 @@
 // GraphQL query operation: GetNode
 // ====================================================
 
-export interface GetNode_node_sourceEdges_destination {
+export interface GetNode_workspace_node_sourceEdges_destination {
   __typename: "NodeType";
   id: any;
   name: string;
@@ -15,16 +15,16 @@ export interface GetNode_node_sourceEdges_destination {
   metadata: any;
 }
 
-export interface GetNode_node_sourceEdges {
+export interface GetNode_workspace_node_sourceEdges {
   __typename: "EdgeType";
   id: any;
   isActive: boolean;
   dataSource: string;
-  destination: GetNode_node_sourceEdges_destination;
+  destination: GetNode_workspace_node_sourceEdges_destination;
   metadata: any;
 }
 
-export interface GetNode_node_destinationEdges_source {
+export interface GetNode_workspace_node_destinationEdges_source {
   __typename: "NodeType";
   id: any;
   name: string;
@@ -32,16 +32,16 @@ export interface GetNode_node_destinationEdges_source {
   metadata: any;
 }
 
-export interface GetNode_node_destinationEdges {
+export interface GetNode_workspace_node_destinationEdges {
   __typename: "EdgeType";
   id: any;
   isActive: boolean;
   dataSource: string;
-  source: GetNode_node_destinationEdges_source;
+  source: GetNode_workspace_node_destinationEdges_source;
   metadata: any;
 }
 
-export interface GetNode_node {
+export interface GetNode_workspace_node {
   __typename: "NodeType";
   id: any;
   namespace: string;
@@ -49,15 +49,21 @@ export interface GetNode_node {
   displayName: string;
   isActive: boolean;
   dataSource: string;
-  sourceEdges: GetNode_node_sourceEdges[];
-  destinationEdges: GetNode_node_destinationEdges[];
+  sourceEdges: GetNode_workspace_node_sourceEdges[];
+  destinationEdges: GetNode_workspace_node_destinationEdges[];
   metadata: any;
 }
 
+export interface GetNode_workspace {
+  __typename: "WorkspaceType";
+  node: GetNode_workspace_node;
+}
+
 export interface GetNode {
-  node: GetNode_node;
+  workspace: GetNode_workspace;
 }
 
 export interface GetNodeVariables {
+  workspaceId: string;
   nodeId: string;
 }

@@ -7,7 +7,7 @@
 // GraphQL query operation: GetNodes
 // ====================================================
 
-export interface GetNodes_nodes {
+export interface GetNodes_workspace_nodes {
   __typename: "NodeType";
   id: any;
   namespace: string;
@@ -18,6 +18,15 @@ export interface GetNodes_nodes {
   metadata: any;
 }
 
+export interface GetNodes_workspace {
+  __typename: "WorkspaceType";
+  nodes: GetNodes_workspace_nodes[];
+}
+
 export interface GetNodes {
-  nodes: GetNodes_nodes[];
+  workspace: GetNodes_workspace;
+}
+
+export interface GetNodesVariables {
+  workspaceId: string;
 }

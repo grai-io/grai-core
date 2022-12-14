@@ -1,12 +1,9 @@
 import typing
 
 from api.types import (
-    EdgeType,
-    NodeType,
-    UserType,
-    ConnectionType,
+    
     ConnectorType,
-    NamespaceType,
+    
     WorkspaceType,
 )
 import strawberry
@@ -34,25 +31,7 @@ class Query:
     workspaces: typing.List[WorkspaceType] = strawberry.django.field(
         permission_classes=[IsAuthenticated]
     )
-    nodes: typing.List[NodeType] = strawberry.django.field(
-        permission_classes=[IsAuthenticated]
-    )
-    node: NodeType = strawberry.django.field(permission_classes=[IsAuthenticated])
-    edges: typing.List[EdgeType] = strawberry.django.field(
-        permission_classes=[IsAuthenticated]
-    )
+    workspace: WorkspaceType = strawberry.django.field(permission_classes=[IsAuthenticated])
     connectors: typing.List[ConnectorType] = strawberry.django.field(
-        permission_classes=[IsAuthenticated]
-    )
-    connections: typing.List[ConnectionType] = strawberry.django.field(
-        permission_classes=[IsAuthenticated]
-    )
-    connection: ConnectionType = strawberry.django.field(
-        permission_classes=[IsAuthenticated]
-    )
-    namespaces: typing.List[NamespaceType] = strawberry.django.field(
-        permission_classes=[IsAuthenticated]
-    )
-    users: typing.List[UserType] = strawberry.django.field(
         permission_classes=[IsAuthenticated]
     )
