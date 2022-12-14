@@ -14,7 +14,7 @@ const client = (
   logoutUser: () => void
 ) => {
   const httpLink = createHttpLink({
-    uri: "http://localhost:8000/graphql/", //process.env.REACT_APP_API_URL,
+    uri: `${process.env.REACT_APP_SERVER_URL}/graphql/`,
     // credentials: "include",
     headers: {
       Authorization: `Bearer ${tokens?.access}`,
