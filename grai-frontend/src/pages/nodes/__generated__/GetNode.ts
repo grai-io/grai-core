@@ -56,6 +56,7 @@ export interface GetNode_workspace_node {
 
 export interface GetNode_workspace {
   __typename: "WorkspaceType";
+  id: any;
   node: GetNode_workspace_node;
 }
 

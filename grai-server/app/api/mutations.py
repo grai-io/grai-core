@@ -1,10 +1,12 @@
-from api.types import EdgeType, NodeType, UserType, ConnectionType
+from workspaces.models import Workspace, WorkspaceAPIKey
+from api.types import EdgeType, NodeType, UserType, ConnectionType, KeyResultType
 from lineage.models import Edge, Node
 from connections.models import Connection
 from strawberry_django_plus import gql
 from strawberry.scalars import JSON
 import strawberry
 from asgiref.sync import sync_to_async
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
 # @strawberry.django.input(Node)
@@ -63,3 +65,19 @@ class Mutation:
         await sync_to_async(connection.save)()
 
         return connection
+
+    @strawberry.mutation
+    async def create_api_key(
+        self, info, name: str, workspaceId: strawberry.ID
+    ) -> KeyResultType:
+        user, _ = await sync_to_async(JWTAuthentication().authenticate)(
+            request=info.context.request
+        )
+
+        workspace = await sync_to_async(Workspace.objects.get)(pk=workspaceId)
+
+        api_key, key = await sync_to_async(WorkspaceAPIKey.objects.create_key)(
+            name=name, created_by=user, workspace=workspace
+        )
+
+        return KeyResultType(key=key, api_key=api_key)

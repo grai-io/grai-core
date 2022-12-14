@@ -1,9 +1,7 @@
 import typing
 
 from api.types import (
-    
     ConnectorType,
-    
     WorkspaceType,
 )
 import strawberry
@@ -31,7 +29,9 @@ class Query:
     workspaces: typing.List[WorkspaceType] = strawberry.django.field(
         permission_classes=[IsAuthenticated]
     )
-    workspace: WorkspaceType = strawberry.django.field(permission_classes=[IsAuthenticated])
+    workspace: WorkspaceType = strawberry.django.field(
+        permission_classes=[IsAuthenticated]
+    )
     connectors: typing.List[ConnectorType] = strawberry.django.field(
         permission_classes=[IsAuthenticated]
     )

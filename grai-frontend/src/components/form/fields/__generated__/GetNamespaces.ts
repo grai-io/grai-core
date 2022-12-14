@@ -15,6 +15,7 @@ export interface GetNamespaces_workspace_namespaces {
 
 export interface GetNamespaces_workspace {
   __typename: "WorkspaceType";
+  id: any;
   namespaces: GetNamespaces_workspace_namespaces[];
 }
 

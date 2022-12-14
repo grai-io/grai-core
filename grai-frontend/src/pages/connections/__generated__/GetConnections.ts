@@ -23,6 +23,7 @@ export interface GetConnections_workspace_connections {
 
 export interface GetConnections_workspace {
   __typename: "WorkspaceType";
+  id: any;
   connections: GetConnections_workspace_connections[];
 }
 

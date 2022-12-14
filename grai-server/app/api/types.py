@@ -3,7 +3,7 @@ from typing import List
 from lineage.models import Edge, Node
 from connections.models import Connection, Connector
 from namespaces.models import Namespace
-from workspaces.models import Workspace, Membership
+from workspaces.models import Workspace, Membership, WorkspaceAPIKey
 import strawberry
 from strawberry.scalars import JSON
 from strawberry_django_plus.gql import auto
@@ -79,27 +79,28 @@ class WorkspaceType:
     # node: NodeType = strawberry.django.field
     @strawberry.django.field
     def node(self, info, pk: strawberry.ID) -> NodeType:
-        return Node.objects.filter(id=pk).first()
-    
+        return Node.objects.get(id=pk)
+
     edges: List["EdgeType"]
     # edge: EdgeType = strawberry.django.field(field_name='edges')
     @strawberry.django.field
     def edge(self, info, pk: strawberry.ID) -> EdgeType:
-        return Edge.objects.filter(id=pk).first()
+        return Edge.objects.get(id=pk)
 
     connections: List["ConnectionType"]
     # connection: ConnectionType = strawberry.django.field
     @strawberry.django.field
     def connection(self, info, pk: strawberry.ID) -> ConnectionType:
-        return Connection.objects.filter(id=pk).first()
+        return Connection.objects.get(id=pk)
 
     namespaces: List["NamespaceType"]
     # namespace: NamespaceType = strawberry.django.field
     @strawberry.django.field
     def namespace(self, info, pk: strawberry.ID) -> NamespaceType:
-        return Namespace.objects.filter(id=pk).first()
+        return Namespace.objects.get(id=pk)
 
     memberships: List["MembershipType"]
+    api_keys: List["WorkspaceAPIKeyType"]
 
 
 @strawberry.django.type(Membership)
@@ -108,3 +109,21 @@ class MembershipType:
     role: auto
     user: UserType
     workspace: WorkspaceType
+
+
+@strawberry.django.type(WorkspaceAPIKey)
+class WorkspaceAPIKeyType:
+    id: auto
+    name: auto
+    prefix: auto
+    revoked: auto
+    expiry_date: auto
+    # has_expired: auto
+    created: auto
+    created_by: UserType
+
+
+@strawberry.type
+class KeyResultType:
+    key: str
+    api_key: WorkspaceAPIKeyType

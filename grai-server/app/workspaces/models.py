@@ -1,6 +1,7 @@
 import uuid
 
 from django.db import models
+from rest_framework_api_key.models import AbstractAPIKey, BaseAPIKeyManager
 
 
 class Workspace(models.Model):
@@ -51,3 +52,27 @@ class Membership(models.Model):
             models.Index(fields=["user"]),
             models.Index(fields=["workspace"]),
         ]
+
+
+class WorkspaceAPIKeyManager(BaseAPIKeyManager):
+    def get_usable_keys(self):
+        return super().get_usable_keys()
+
+
+class WorkspaceAPIKey(AbstractAPIKey):
+    workspace = models.ForeignKey(
+        Workspace,
+        on_delete=models.CASCADE,
+        related_name="api_keys",
+    )
+    created_by = models.ForeignKey(
+        "users.User",
+        related_name="workspace_api_keys_created_by",
+        on_delete=models.CASCADE,
+    )
+
+    objects = WorkspaceAPIKeyManager()
+
+    class Meta(AbstractAPIKey.Meta):
+        verbose_name = "Workspace API key"
+        verbose_name_plural = "Workspace API keys"

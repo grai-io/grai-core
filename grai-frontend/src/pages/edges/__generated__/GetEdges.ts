@@ -41,6 +41,7 @@ export interface GetEdges_workspace_edges {
 
 export interface GetEdges_workspace {
   __typename: "WorkspaceType";
+  id: any;
   edges: GetEdges_workspace_edges[];
 }
 
