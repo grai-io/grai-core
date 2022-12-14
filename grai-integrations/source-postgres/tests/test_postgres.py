@@ -7,10 +7,9 @@ from grai_source_postgres.loader import PostgresConnector
 # TODO: Mock the DB connection: https://blog.devgenius.io/creating-a-mock-database-for-unittesting-in-python-is-easier-than-you-think-c458e747224b
 test_credentials = {
     "host": "localhost",
-    "dbname": "docker",
-    "user": "docker",
-    "password": "docker",
-    "port": "5433",
+    "dbname": "grai",
+    "user": "grai",
+    "password": "grai",
     "namespace": "test",
 }
 
