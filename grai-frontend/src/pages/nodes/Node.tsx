@@ -1,7 +1,8 @@
+import React from "react"
+import { gql, useQuery } from "@apollo/client"
 import {
   Card,
   CardContent,
-  CircularProgress,
   Container,
   Grid,
   Table,
@@ -11,183 +12,183 @@ import {
   TableRow,
   Typography,
 } from "@mui/material"
-import React, { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import AppTopBar from "../../components/layout/AppTopBar"
-import useAxios from "../../utils/useAxios"
-import { Edge } from "../edges/Edges"
-import { Node as NodeType } from "./Nodes"
+import Loading from "../../components/layout/Loading"
+import NotFound from "../NotFound"
+
+const GET_NODE = gql`
+  query GetNode($nodeId: ID!) {
+    node(pk: $nodeId) {
+      id
+      namespace
+      name
+      displayName
+      isActive
+      dataSource
+      sourceEdges {
+        id
+        isActive
+        dataSource
+        source {
+          id
+          name
+          displayName
+          metadata
+        }
+        metadata
+      }
+      destinationEdges {
+        id
+        isActive
+        dataSource
+        destination {
+          id
+          name
+          displayName
+          metadata
+        }
+        metadata
+      }
+      metadata
+    }
+  }
+`
 
 const Node: React.FC = () => {
-  const [nodes, setNodes] = useState<NodeType[]>()
-  const [edges, setEdges] = useState<Edge[]>()
-  const [error, setError] = useState<string>()
-  const api = useAxios()
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const responseNodes = await api.get("/lineage/nodes")
-        setNodes(responseNodes.data)
-
-        const responseEdges = await api.get("/lineage/edges")
-        setEdges(responseEdges.data)
-      } catch {
-        setError("Something went wrong")
-      }
-    }
-    fetchData()
-  }, [])
-
   const params = useParams()
   const navigate = useNavigate()
 
-  const node = nodes?.find(n => n.id === params.nodeId)
+  const { loading, error, data } = useQuery(GET_NODE, {
+    variables: {
+      nodeId: params.nodeId,
+    },
+  })
 
-  if (!node)
-    return (
-      <>
-        <CircularProgress />
-      </>
-    )
+  if (error) return <p>Error : {error.message}</p>
+  if (loading) return <Loading />
 
-  const fetchNode = (id: string) => nodes?.find(n => n.id === id)
+  const node = data.node
 
-  const inputEdges = edges
-    ?.filter(e => e.destination === node.id)
-    .map(e => ({
-      ...e,
-      node: fetchNode(e.source),
-    }))
-  const outputEdges = edges
-    ?.filter(e => e.source === node.id)
-    .map(e => ({
-      ...e,
-      node: fetchNode(e.destination),
-    }))
+  if (!node) return <NotFound />
 
   return (
     <>
       <AppTopBar />
-      {nodes && edges ? (
-        <Container maxWidth="md" sx={{ my: 5 }}>
-          <Typography variant="h5" sx={{ my: 5, textAlign: "center" }}>
-            Node {node?.display_name ?? node?.id}
-          </Typography>
-          <Card variant="outlined" sx={{ my: 5 }}>
-            <CardContent>
-              <Grid container spacing={1}>
-                <Grid item md={2}>
-                  <Typography variant="caption">name</Typography>
-                </Grid>
-                <Grid item md={4}>
-                  <Typography variant="body2">{node.name}</Typography>
-                </Grid>
-                <Grid item md={2}>
-                  <Typography variant="caption">id</Typography>
-                </Grid>
-                <Grid item md={4}>
-                  <Typography variant="body2">{node.id}</Typography>
-                </Grid>
-                {Object.entries(node.metadata).map(([key, value]) => (
-                  <React.Fragment key={key}>
-                    <Grid item md={2}>
-                      <Typography variant="caption">{key}</Typography>
-                    </Grid>
-                    <Grid item md={4}>
-                      <Typography variant="body2">
-                        {typeof value === "string"
-                          ? value
-                          : value
-                          ? "yes"
-                          : "no"}
-                      </Typography>
-                    </Grid>
-                  </React.Fragment>
-                ))}
-              </Grid>
-            </CardContent>
-          </Card>
-          <Typography variant="h6" sx={{ m: 1 }}>
-            Inputs
-          </Typography>
-          <Card variant="outlined">
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>id</TableCell>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Type</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {inputEdges?.map(edge => (
-                  <TableRow
-                    key={edge.id}
-                    onClick={() => navigate(`/nodes/${edge.node?.id}`)}
-                    hover
-                    sx={{
-                      cursor: "pointer",
-                    }}
-                  >
-                    <TableCell>{edge.source}</TableCell>
-                    <TableCell>{edge.node?.display_name}</TableCell>
-                    <TableCell>{edge.node?.metadata.node_type}</TableCell>
-                  </TableRow>
-                ))}
-                {inputEdges?.length === 0 && (
-                  <TableRow>
-                    <TableCell colSpan={3} sx={{ textAlign: "center" }}>
-                      No Inputs
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </Card>
-          <Typography variant="h6" sx={{ m: 1, mt: 3 }}>
-            Outputs
-          </Typography>
-          <Card variant="outlined">
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>id</TableCell>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Type</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {outputEdges?.map(edge => (
-                  <TableRow
-                    key={edge.id}
-                    onClick={() => navigate(`/nodes/${edge.node?.id}`)}
-                    hover
-                    sx={{
-                      cursor: "pointer",
-                    }}
-                  >
-                    <TableCell>{edge.source}</TableCell>
-                    <TableCell>{edge.node?.display_name}</TableCell>
-                    <TableCell>{edge.node?.metadata.node_type}</TableCell>
-                  </TableRow>
-                ))}
-                {outputEdges?.length === 0 && (
-                  <TableRow>
-                    <TableCell colSpan={3} sx={{ textAlign: "center" }}>
-                      No Outputs
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </Card>
-        </Container>
-      ) : (
-        <CircularProgress />
-      )}
 
-      {error && <Typography>{error}</Typography>}
+      <Container maxWidth="md" sx={{ my: 5 }}>
+        <Typography variant="h5" sx={{ my: 5, textAlign: "center" }}>
+          Node {node?.displayName ?? node?.id}
+        </Typography>
+        <Card variant="outlined" sx={{ my: 5 }}>
+          <CardContent>
+            <Grid container spacing={1}>
+              <Grid item md={2}>
+                <Typography variant="caption">name</Typography>
+              </Grid>
+              <Grid item md={4}>
+                <Typography variant="body2">{node.name}</Typography>
+              </Grid>
+              <Grid item md={2}>
+                <Typography variant="caption">id</Typography>
+              </Grid>
+              <Grid item md={4}>
+                <Typography variant="body2">{node.id}</Typography>
+              </Grid>
+              {Object.entries(node.metadata).map(([key, value]) => (
+                <React.Fragment key={key}>
+                  <Grid item md={2}>
+                    <Typography variant="caption">{key}</Typography>
+                  </Grid>
+                  <Grid item md={4}>
+                    <Typography variant="body2">
+                      {typeof value === "string" ? value : value ? "yes" : "no"}
+                    </Typography>
+                  </Grid>
+                </React.Fragment>
+              ))}
+            </Grid>
+          </CardContent>
+        </Card>
+        <Typography variant="h6" sx={{ m: 1 }}>
+          Inputs
+        </Typography>
+        <Card variant="outlined">
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>id</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Type</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {node.s?.map((edge: any) => (
+                <TableRow
+                  key={edge.id}
+                  onClick={() => navigate(`/nodes/${edge.source?.id}`)}
+                  hover
+                  sx={{
+                    cursor: "pointer",
+                  }}
+                >
+                  <TableCell>
+                    {edge.source.displayName ?? edge.source.name}
+                  </TableCell>
+                  <TableCell>{edge.source?.displayName}</TableCell>
+                  <TableCell>{edge.source?.metadata.node_type}</TableCell>
+                </TableRow>
+              ))}
+              {node.sourceEdges?.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={3} sx={{ textAlign: "center" }}>
+                    No Inputs
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </Card>
+        <Typography variant="h6" sx={{ m: 1, mt: 3 }}>
+          Outputs
+        </Typography>
+        <Card variant="outlined">
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>id</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Type</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {node.destinationEdges?.map((edge: any) => (
+                <TableRow
+                  key={edge.id}
+                  onClick={() => navigate(`/nodes/${edge.destination?.id}`)}
+                  hover
+                  sx={{
+                    cursor: "pointer",
+                  }}
+                >
+                  <TableCell>
+                    {edge.destination.displayName ?? edge.destination.name}
+                  </TableCell>
+                  <TableCell>{edge.destination?.displayName}</TableCell>
+                  <TableCell>{edge.destination?.metadata.node_type}</TableCell>
+                </TableRow>
+              ))}
+              {node.destinationEdges?.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={3} sx={{ textAlign: "center" }}>
+                    No Outputs
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </Card>
+      </Container>
     </>
   )
 }

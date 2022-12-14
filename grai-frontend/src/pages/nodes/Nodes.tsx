@@ -1,35 +1,39 @@
+import React from "react"
+import { gql, useQuery } from "@apollo/client"
 import { Typography } from "@mui/material"
-import React, { useEffect, useState } from "react"
 import AppTopBar from "../../components/layout/AppTopBar"
 import NodesTable from "../../components/nodes/NodesTable"
-import useAxios from "../../utils/useAxios"
+import Loading from "../../components/layout/Loading"
+
+const GET_NODES = gql`
+  query GetNodes {
+    nodes {
+      id
+      namespace
+      name
+      displayName
+      isActive
+      dataSource
+      metadata
+    }
+  }
+`
 
 export interface Node {
   id: string
   namespace: string
   name: string
-  display_name: string
-  data_source: string
-  is_active: boolean
+  displayName: string
+  dataSource: string
+  isActive: boolean
   metadata: any
 }
 
 const Nodes: React.FC = () => {
-  const [res, setRes] = useState<Node[] | null>()
-  const [error, setError] = useState<string>()
-  const api = useAxios()
+  const { loading, error, data } = useQuery(GET_NODES)
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await api.get("/lineage/nodes")
-        setRes(response.data)
-      } catch {
-        setError("Something went wrong")
-      }
-    }
-    fetchData()
-  }, [])
+  if (error) return <p>Error : {error.message}</p>
+  if (loading) return <Loading />
 
   return (
     <>
@@ -37,8 +41,7 @@ const Nodes: React.FC = () => {
       <Typography variant="h4" sx={{ textAlign: "center", m: 3 }}>
         Nodes
       </Typography>
-      <NodesTable nodes={res ?? null} />
-      {error && <Typography>{error}</Typography>}
+      <NodesTable nodes={data.nodes ?? null} />
     </>
   )
 }

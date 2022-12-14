@@ -1,6 +1,5 @@
 import React from "react"
-import { Routes as BrowerRoutes, Route, BrowserRouter } from "react-router-dom"
-import { AuthProvider } from "./components/auth/AuthContext"
+import { Routes as BrowerRoutes, Route } from "react-router-dom"
 import GuestRoute from "./components/auth/GuestRoute"
 import PrivateRoute from "./components/auth/PrivateRoute"
 import Login from "./pages/auth/Login"
@@ -11,26 +10,22 @@ import Node from "./pages/nodes/Node"
 import NotFound from "./pages/NotFound"
 
 const Routes: React.FC = () => (
-  <BrowserRouter>
-    <AuthProvider>
-      <BrowerRoutes>
-        <Route element={<PrivateRoute />}>
-          <Route index element={<Home />} />
-          <Route path="/nodes">
-            <Route index element={<Nodes />} />
-            <Route path=":nodeId" element={<Node />} />
-          </Route>
-          <Route path="/edges" element={<Edges />} />
-        </Route>
+  <BrowerRoutes>
+    <Route element={<PrivateRoute />}>
+      <Route index element={<Home />} />
+      <Route path="/nodes">
+        <Route index element={<Nodes />} />
+        <Route path=":nodeId" element={<Node />} />
+      </Route>
+      <Route path="/edges" element={<Edges />} />
+    </Route>
 
-        <Route element={<GuestRoute />}>
-          <Route path="/login" element={<Login />} />
-        </Route>
+    <Route element={<GuestRoute />}>
+      <Route path="/login" element={<Login />} />
+    </Route>
 
-        <Route path="*" element={<NotFound />} />
-      </BrowerRoutes>
-    </AuthProvider>
-  </BrowserRouter>
+    <Route path="*" element={<NotFound />} />
+  </BrowerRoutes>
 )
 
 export default Routes
