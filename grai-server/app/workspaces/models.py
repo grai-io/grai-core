@@ -2,9 +2,12 @@ import uuid
 
 from django.db import models
 from rest_framework_api_key.models import AbstractAPIKey, BaseAPIKeyManager
+from django_multitenant.models import TenantModel
 
 
-class Workspace(models.Model):
+class Workspace(TenantModel):
+    tenant_id = 'id'
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)

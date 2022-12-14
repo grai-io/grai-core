@@ -2,10 +2,14 @@ import uuid
 
 from django.db import models
 from django.db.models import F, Q
+from django_multitenant.models import TenantModel
+from django_multitenant.fields import TenantForeignKey
 
 
 # Create your models here.
-class Node(models.Model):
+class Node(TenantModel):
+    tenant_id = "workspace_id"
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     namespace = models.CharField(max_length=255, default="default")
     name = models.CharField(max_length=255)
@@ -47,17 +51,19 @@ class Node(models.Model):
         ]
 
 
-class Edge(models.Model):
+class Edge(TenantModel):
+    tenant_id = "workspace_id"
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     namespace = models.CharField(max_length=255, default="default")
     display_name = models.CharField(max_length=255)
 
     data_source = models.CharField(max_length=255)
-    source = models.ForeignKey(
+    source = TenantForeignKey(
         "Node", related_name="source_edges", on_delete=models.PROTECT
     )
-    destination = models.ForeignKey(
+    destination = TenantForeignKey(
         "Node", related_name="destination_edges", on_delete=models.PROTECT
     )
     metadata = models.JSONField(default=dict)
