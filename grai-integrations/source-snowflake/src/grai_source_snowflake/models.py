@@ -3,11 +3,11 @@ from typing import Any, Dict, List, Optional, Union
 from pydantic import BaseModel, Field, root_validator, validator
 
 
-class snowflakeNode(BaseModel):
+class SnowflakeNode(BaseModel):
     pass
 
 
-class ID(snowflakeNode):
+class ID(SnowflakeNode):
     name: str
     namespace: str
     full_name: str
@@ -38,7 +38,7 @@ class ColumnID(ID):
         return values
 
 
-class Column(snowflakeNode):
+class Column(SnowflakeNode):
     name: str = Field(alias="column_name")
     table: str
     column_schema: str = Field(alias="schema")
@@ -78,7 +78,7 @@ class TableType(str, Enum):
     View = "VIEW"
     TemporaryTable = "TEMPORARY TABLE"
 
-class Table(snowflakeNode):
+class Table(SnowflakeNode):
     name: str = Field(alias="table_name")
     table_schema: str = Field(alias="schema")
     table_type: TableType
@@ -95,6 +95,7 @@ class Table(snowflakeNode):
     def make_full_name(cls, full_name, values):
         if full_name is not None:
             return full_name
+
         return f"{values['table_schema']}.{values['name']}"
 
     def get_edges(self):

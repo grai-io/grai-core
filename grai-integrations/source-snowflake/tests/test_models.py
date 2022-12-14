@@ -32,22 +32,20 @@ for param in column_params:
 
 
 table_params: List[Dict] = [
-    {"name": "test", "namespace": "test", "schema": "test","table_database": "test"},
-    {"table_name": "test", "namespace": "test", "table_schema": "test","table_database": "test"},
-    {"table_name": "test", "namespace": "test", "schema": "test","table_database": "test"},
+    {"name": "test", "namespace": "test", "schema": "test"},
+    {"table_name": "test", "namespace": "test", "table_schema": "test"},
+    {"table_name": "test", "namespace": "test", "schema": "test"},
     {
         "name": "test",
         "schema": "test",
         "namespace": "test",
-        "table_database": "test",
     },
-    {"name": "test", "namespace": "test", "schema": "test","table_database": "test", "columns": []},
-    {"name": "test", "namespace": "test", "schema": "test","table_database": "test", "metadata": {}},
+    {"name": "test", "namespace": "test", "schema": "test", "columns": []},
+    {"name": "test", "namespace": "test", "schema": "test", "metadata": {}},
     {
         "name": "test",
         "namespace": "test",
         "schema": "test",
-        "table_database": "test",
         "metadata": {},
         "columns": [],
     },

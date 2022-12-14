@@ -30,6 +30,7 @@ def update_server(
     database: Optional[str] = None,
     schema: Optional[str] = None,
 ):
+
     conn = SnowflakeConnector(
         account=account, user=user, password=password, role=role, warehouse=warehouse, database=database, schema=schema, namespace=namespace
     )

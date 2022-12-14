@@ -35,7 +35,6 @@ def adapt_table_to_client(current: Table, version: Literal["v1"] = "v1"):
     metadata = {
         "node_type": "Table",
         "schema": current.table_schema,
-        "database": current.table_database,
     }
     spec_dict = {
         "name": current.full_name,
@@ -43,6 +42,7 @@ def adapt_table_to_client(current: Table, version: Literal["v1"] = "v1"):
         "display_name": current.name,
         "data_source": "grai-snowflake-adapter",
         "metadata": metadata,
+        "snowflake_table_type": current.table_type,
     }
     metadata.update(current.metadata)
     return Schema.to_model(spec_dict, version=version, typing_type="Node")

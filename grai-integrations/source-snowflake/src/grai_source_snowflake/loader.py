@@ -7,7 +7,7 @@ from grai_source_snowflake.models import (
     ColumnID,
     Edge,
     EdgeQuery,
-    snowflakeNode,
+    SnowflakeNode,
     Table,
 )
 
@@ -101,6 +101,7 @@ class SnowflakeConnector:
             "table_database": self.connection_dict['database']
         }
         print('table run')
+
         return [Table(**result, **addtl_args) for result in res]
 
     def get_columns(self, table: Table) -> List[Column]:
@@ -132,9 +133,11 @@ class SnowflakeConnector:
         :param table:
         :return:
         """
-        # This query only returns foreign keys, there is also exported keys and primary keys. Information schema itself doesn't carry the column for foreign keys
+        # This query only returns foreign keys, there is also exported keys and primary keys. 
+        # Information schema itself doesn't carry the column for foreign keys
+        # show IMPORTED KEYS in database '{self.connection_dict['database']}'
         query = f"""
-        show IMPORTED KEYS in database '{self.connection_dict['database']}'
+        show IMPORTED KEYS
         """
         addtl_args = {
             "namespace": self.namespace,
@@ -162,7 +165,7 @@ class SnowflakeConnector:
 
         return [EdgeQuery(**fk, **addtl_args).to_edge() for fk in res]
 
-    def get_nodes(self) -> List[snowflakeNode]:
+    def get_nodes(self) -> List[SnowflakeNode]:
         def get_nodes():
             for table in self.get_tables():
                 table.columns = self.get_columns(table)

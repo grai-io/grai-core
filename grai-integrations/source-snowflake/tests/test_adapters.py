@@ -30,7 +30,6 @@ tables = [
         name="test",
         namespace="tests",
         table_schema="test",
-        table_database="test",
         columns=[],
         metadata={"thing": "here"},
     )
