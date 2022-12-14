@@ -1,3 +1,4 @@
+import { useApolloClient } from "@apollo/client"
 import { AccountCircle, Settings, Business, Logout } from "@mui/icons-material"
 import {
   IconButton,
@@ -20,8 +21,10 @@ import AuthContext from "../auth/AuthContext"
 const ProfileMenu: React.FC = () => {
   const { workspaceId } = useParams()
   const { logoutUser } = useContext(AuthContext)
+  const client = useApolloClient()
 
   const handleLogout = (popupState: InjectedProps) => {
+    client.clearStore()
     logoutUser()
     popupState.close()
   }
