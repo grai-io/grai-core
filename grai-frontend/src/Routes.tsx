@@ -12,21 +12,29 @@ import Connections from "./pages/connections/Connections"
 import ConnectionCreate from "./pages/connections/ConnectionCreate"
 import Connection from "./pages/connections/Connection"
 import Graph from "./pages/Graph"
+import Index from "./pages/Index"
+import Workspaces from "./pages/workspaces/Workspaces"
 
 const Routes: React.FC = () => (
   <BrowerRoutes>
     <Route element={<PrivateRoute />}>
-      <Route index element={<Home />} />
-      <Route path="/graph" element={<Graph />} />
-      <Route path="/nodes">
-        <Route index element={<Nodes />} />
-        <Route path=":nodeId" element={<Node />} />
-      </Route>
-      <Route path="/edges" element={<Edges />} />
-      <Route path="/connections">
-        <Route index element={<Connections />} />
-        <Route path="create" element={<ConnectionCreate />} />
-        <Route path=":connectionId" element={<Connection />} />
+      <Route index element={<Index />} />
+      <Route path="workspaces">
+        <Route index element={<Workspaces />} />
+        <Route path=":workspaceId">
+          <Route index element={<Home />} />
+          <Route path="graph" element={<Graph />} />
+          <Route path="nodes">
+            <Route index element={<Nodes />} />
+            <Route path=":nodeId" element={<Node />} />
+          </Route>
+          <Route path="edges" element={<Edges />} />
+          <Route path="connections">
+            <Route index element={<Connections />} />
+            <Route path="create" element={<ConnectionCreate />} />
+            <Route path=":connectionId" element={<Connection />} />
+          </Route>
+        </Route>
       </Route>
     </Route>
 

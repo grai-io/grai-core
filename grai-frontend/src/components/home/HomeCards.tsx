@@ -10,7 +10,7 @@ const HomeCards: React.FC = () => (
         description="Discover relevant tables and columns and explore how data flows
             through your pipelines"
         button="Explore graph"
-        to="/graph"
+        to="graph"
       />
     </Grid>
     <Grid item md={4}>
@@ -19,7 +19,7 @@ const HomeCards: React.FC = () => (
         description="Connect your data stores and pipeline tools to collect information
         on your pipelines"
         button="Add connection"
-        to="/connections"
+        to="connections"
       />
     </Grid>
     <Grid item md={4}>
@@ -27,7 +27,7 @@ const HomeCards: React.FC = () => (
         title="Invite other users"
         description="Invite users to collaborate in Grai"
         button="Invite user"
-        to="/settings/users"
+        to="settings/users"
       />
     </Grid>
   </Grid>

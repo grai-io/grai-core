@@ -55,7 +55,7 @@ const ConnectionsTable: React.FC<ConnectionsTableProps> = ({
             key={connection.id}
             hover
             sx={{ cursor: "pointer" }}
-            onClick={() => navigate(`/connections/${connection.id}`)}
+            onClick={() => navigate(connection.id)}
           >
             <TableCell sx={{ p: 0 }} stopPropagation>
               <Checkbox size="small" />

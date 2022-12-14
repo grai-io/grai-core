@@ -1,7 +1,7 @@
 import { ArrowDropDown, ArrowDropUp } from "@mui/icons-material"
 import { Box, Divider, Menu, MenuItem, Stack, Typography } from "@mui/material"
 import React from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { Handle, Position } from "reactflow"
 import theme from "../../theme"
 import HiddenTableButton from "./HiddenTableButton"
@@ -26,6 +26,7 @@ interface BaseNodeProps {
 }
 
 const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
+  const { workspaceId } = useParams()
   const navigate = useNavigate()
   const [contextMenu, setContextMenu] = React.useState<{
     mouseX: number
@@ -195,7 +196,11 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
         <MenuItem onClick={handleShowSources}>
           Show downstream dependents
         </MenuItem>
-        <MenuItem onClick={() => navigate(`/nodes/${data.id}`)}>
+        <MenuItem
+          onClick={() =>
+            navigate(`/workspaces/${workspaceId}/nodes/${data.id}`)
+          }
+        >
           Show profile for this table
         </MenuItem>
       </Menu>

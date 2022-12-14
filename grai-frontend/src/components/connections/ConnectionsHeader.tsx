@@ -25,7 +25,7 @@ const ConnectionsHeader: React.FC<ConnectionsHeaderProps> = ({ onRefresh }) => (
         variant="outlined"
         startIcon={<Add />}
         component={Link}
-        to="/connections/create"
+        to="create"
         size="small"
       >
         Add Connection

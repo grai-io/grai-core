@@ -35,7 +35,7 @@ const NodesTable: React.FC<NodesTableProps> = ({ nodes, loading }) => {
         {nodes.map(node => (
           <TableRow
             key={node.id}
-            onClick={() => navigate(`/nodes/${node.id}`)}
+            onClick={() => navigate(node.id)}
             hover
             sx={{
               cursor: "pointer",

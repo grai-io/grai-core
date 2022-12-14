@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material"
 import React from "react"
-import { Link } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 
 interface Node {
   id: string
@@ -19,35 +19,39 @@ type NodeHeaderProps = {
   node: Node
 }
 
-const NodeHeader: React.FC<NodeHeaderProps> = ({ node }) => (
-  <>
-    <Box sx={{ display: "flex", p: 2 }}>
-      <Box>
-        <Button
-          component={Link}
-          to="/nodes"
-          color="secondary"
-          startIcon={<KeyboardBackspace />}
+const NodeHeader: React.FC<NodeHeaderProps> = ({ node }) => {
+  const { workspaceId } = useParams()
+
+  return (
+    <>
+      <Box sx={{ display: "flex", p: 2 }}>
+        <Box>
+          <Button
+            component={Link}
+            to={`/workspaces/${workspaceId}/nodes`}
+            color="secondary"
+            startIcon={<KeyboardBackspace />}
+          >
+            Back
+          </Button>
+        </Box>
+        <Typography
+          variant="h6"
+          sx={{ textTransform: "uppercase", mx: 1, mt: 0.3 }}
         >
-          Back
-        </Button>
+          {node?.displayName ?? node?.id}
+        </Typography>
+        <Box>
+          <Tooltip title="Copy Node Name">
+            <IconButton sx={{ mt: 0.5 }}>
+              <ContentCopy sx={{ fontSize: 15 }} />
+            </IconButton>
+          </Tooltip>
+        </Box>
       </Box>
-      <Typography
-        variant="h6"
-        sx={{ textTransform: "uppercase", mx: 1, mt: 0.3 }}
-      >
-        {node?.displayName ?? node?.id}
-      </Typography>
-      <Box>
-        <Tooltip title="Copy Node Name">
-          <IconButton sx={{ mt: 0.5 }}>
-            <ContentCopy sx={{ fontSize: 15 }} />
-          </IconButton>
-        </Tooltip>
-      </Box>
-    </Box>
-    <Divider />
-  </>
-)
+      <Divider />
+    </>
+  )
+}
 
 export default NodeHeader

@@ -1,17 +1,15 @@
 import { AppBar, Toolbar, Button, Box } from "@mui/material"
-import React, { useContext } from "react"
-import { Link } from "react-router-dom"
-import AuthContext from "../auth/AuthContext"
+import React from "react"
+import { Link, useParams } from "react-router-dom"
+import ProfileMenu from "./ProfileMenu"
 
 const AppTopBar: React.FC = () => {
-  const { logoutUser } = useContext(AuthContext)
-
-  const handleLogout = () => logoutUser()
+  const { workspaceId } = useParams()
 
   return (
     <AppBar position="static">
       <Toolbar>
-        <Box component={Link} to="/" sx={{ mt: 1 }}>
+        <Box component={Link} to={`/workspaces/${workspaceId}`} sx={{ mt: 1 }}>
           <svg
             width="105"
             height="43"
@@ -41,26 +39,36 @@ const AppTopBar: React.FC = () => {
             />
           </svg>
         </Box>
-        <Button component={Link} to="/graph" sx={{ my: 2, color: "inherit" }}>
+        <Button
+          component={Link}
+          to={`/workspaces/${workspaceId}/graph`}
+          sx={{ my: 2, color: "inherit" }}
+        >
           Graph
         </Button>
-        <Button component={Link} to="/nodes" sx={{ my: 2, color: "inherit" }}>
+        <Button
+          component={Link}
+          to={`/workspaces/${workspaceId}/nodes`}
+          sx={{ my: 2, color: "inherit" }}
+        >
           Nodes
         </Button>
-        <Button component={Link} to="/edges" sx={{ my: 2, color: "inherit" }}>
+        <Button
+          component={Link}
+          to={`/workspaces/${workspaceId}/edges`}
+          sx={{ my: 2, color: "inherit" }}
+        >
           Edges
         </Button>
         <Button
           component={Link}
-          to="/connections"
+          to={`/workspaces/${workspaceId}/connections`}
           sx={{ my: 2, color: "inherit" }}
         >
           Connections
         </Button>
         <Box sx={{ flexGrow: 1 }} />
-        <Button color="inherit" onClick={handleLogout}>
-          Logout
-        </Button>
+        <ProfileMenu />
       </Toolbar>
     </AppBar>
   )
