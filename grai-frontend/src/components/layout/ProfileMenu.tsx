@@ -14,10 +14,11 @@ import PopupState, {
   InjectedProps,
 } from "material-ui-popup-state"
 import React, { useContext } from "react"
-import { Link } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import AuthContext from "../auth/AuthContext"
 
 const ProfileMenu: React.FC = () => {
+  const { workspaceId } = useParams()
   const { logoutUser } = useContext(AuthContext)
 
   const handleLogout = (popupState: InjectedProps) => {
@@ -44,7 +45,7 @@ const ProfileMenu: React.FC = () => {
             <MenuItem
               onClick={popupState.close}
               component={Link}
-              to="/settings"
+              to={`/workspaces/${workspaceId}/settings`}
             >
               <ListItemIcon>
                 <Settings fontSize="small" />

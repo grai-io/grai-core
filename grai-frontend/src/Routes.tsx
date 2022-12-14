@@ -14,6 +14,8 @@ import Connection from "./pages/connections/Connection"
 import Graph from "./pages/Graph"
 import Index from "./pages/Index"
 import Workspaces from "./pages/workspaces/Workspaces"
+import Settings from "./pages/settings/Settings"
+import ApiKeys from "./pages/settings/ApiKeys"
 
 const Routes: React.FC = () => (
   <BrowerRoutes>
@@ -33,6 +35,10 @@ const Routes: React.FC = () => (
             <Route index element={<Connections />} />
             <Route path="create" element={<ConnectionCreate />} />
             <Route path=":connectionId" element={<Connection />} />
+          </Route>
+          <Route path="settings">
+            <Route index element={<Settings />} />
+            <Route path="api-keys" element={<ApiKeys />} />
           </Route>
         </Route>
       </Route>
