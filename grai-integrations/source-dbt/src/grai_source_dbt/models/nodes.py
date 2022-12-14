@@ -41,6 +41,9 @@ class Seed(DBTNode):
     original_file_path: Path
     resource_type: Literal["seed"]
 
+    #### Grai Specific ####
+    tests: Optional[List[Test]] = []
+
 
 class Column(ID):
     name: str
@@ -74,6 +77,10 @@ class Column(ID):
         }
         attrs.update(column.dict())
         return cls(**attrs)
+
+    @property
+    def unique_id(self):
+        return self.table_unique_id, self.name
 
     def __hash__(self):
         return hash((self.table_unique_id, self.name))

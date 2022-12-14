@@ -51,9 +51,14 @@ class DBTGraph:
         )
         for node in self.node_map.values():
             node.namespace = namespace
+        self.update_nodes_with_tests()
 
     @cached_property
     def node_map(self) -> Dict[Union[str, Tuple], SupportedDBTTypes]:
+        """ Map of dbt models, sources, and seed from unique_id -> node
+
+        :return:
+        """
         message = (
             "Node and source names must be unique. This is a defensive bug that should never happen."
             "Please report this to the maintainers."
@@ -80,8 +85,13 @@ class DBTGraph:
     def update_nodes_with_tests(self):
         for test in self.tests:
             if test.column_name is not None:
-                self.node_map[test.column_name]
+                # TODO: Not 100% certain on this logic.
+                # May need to work differently for different macros / tests
+                # e.g. https://github.com/dbt-labs/dbt-utils#schema-tests
+                for node_id in test.depends_on.nodes:
+                    self.columns[(node_id, test.column_name)].tests.append(test)
 
+    @property
     def dbt_nodes(self) -> List[SupportedDBTTypes]:
         return list(self.node_map.values())
 
@@ -91,7 +101,7 @@ class DBTGraph:
         for table in self.manifest.nodes.values():
             for dbt_column in table.columns.values():
                 column = Column.from_table_column(table, dbt_column)
-                columns[(column.table_unique_id, column.name)] = column
+                columns[column.unique_id] = column
         return columns
 
     def get_column_edges(self) -> List[Edge]:
@@ -101,7 +111,7 @@ class DBTGraph:
                 source=node,
                 destination=self.columns[(node.unique_id, column_str)],
             )
-            for node in self.dbt_nodes()
+            for node in self.dbt_nodes
             for column_str in node.columns
         ]
         return edges
@@ -114,7 +124,7 @@ class DBTGraph:
                 destination=node,
                 definition=self.node_map[parent_str].raw_sql,
             )
-            for node in self.dbt_nodes()
+            for node in self.dbt_nodes
             for parent_str in node.depends_on.nodes
         ]
         return edges

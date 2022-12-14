@@ -16,7 +16,7 @@ def get_nodes_and_edges(
     manifest = Manifest.load(manifest_file)
     dbt_graph = DBTGraph(manifest, namespace=namespace)
 
-    nodes = adapt_to_client(dbt_graph.dbt_nodes, version)
+    nodes = adapt_to_client(dbt_graph.nodes, version)
     edges = adapt_to_client(dbt_graph.edges, version)
     return nodes, edges
 

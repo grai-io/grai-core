@@ -29,7 +29,7 @@ class TestConfig(BaseModel):
         return [self.tags] if isinstance(self.tags, str) else self.tags
 
 
-# TODO: Multiple different types of tests with distinct metadat keyword options
+# TODO: Multiple different types of tests with distinct metadata keyword options
 class TestMetadata(BaseModel):
     name: str
     namespace: Optional[str]

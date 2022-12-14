@@ -15,7 +15,7 @@ def patch_obj_v1(client: ClientV1, grai_type: node.NodeV1) -> node.NodeV1:
 
     base_url = client.get_url(grai_type)
     url = f"{base_url}{grai_type.spec.id}/"
-    response = client.patch(url, grai_type.spec.dict()).json()
+    response = client.patch(url, grai_type.spec.json(exclude_none=True, models_as_dict=True)).json()
     if response is None:
         return None
     return node.NodeV1.from_spec(response)
@@ -34,13 +34,13 @@ def patch_obj_v1(client: ClientV1, grai_type: edge.EdgeV1) -> edge.EdgeV1:
     destination = grai_type.spec.destination
     if source.id is None:
         source = client.get(source)
+        grai_type.spec.source.id = source.id
     if destination.id is None:
         destination = client.get(destination)
+        grai_type.spec.destination.id = destination.id
 
-    payload = grai_type.spec.dict()
-    payload["source"] = source.id
-    payload["destination"] = destination.id
-    response = client.patch(url, payload).json()
+    print(grai_type.spec.json(exclude_none=True, models_as_dict=True))
+    response = client.patch(url, grai_type.spec.json(exclude_none=True, models_as_dict=True)).json()
     if response is not None:
         response["source"] = source
         response["destination"] = destination

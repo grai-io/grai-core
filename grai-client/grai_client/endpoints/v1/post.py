@@ -6,7 +6,7 @@ from grai_client.schemas.node import NodeID, NodeV1
 @ClientV1.post.register
 def post_node_v1(client: ClientV1, grai_type: NodeV1) -> NodeV1:
     url = client.node_endpoint
-    response = client.post(url, grai_type.spec.dict())
+    response = client.post(url, grai_type.spec.json(exclude_none=True))
     return NodeV1.from_spec(response.json())
 
 
@@ -36,10 +36,11 @@ def post_edge_v1(client: ClientV1, grai_type: EdgeV1) -> EdgeV1:
     source = process_node_id(client, grai_type.spec.source)
     destination = process_node_id(client, grai_type.spec.destination)
 
-    payload = grai_type.spec.dict()
-    payload["source"] = source.id
-    payload["destination"] = destination.id
-    response = client.post(url, payload).json()
+    payload = grai_type.dict()
+    payload["spec"]["source"]["id"] = source.id
+    payload["spec"]["destination"]["id"] = destination.id
+    payload = EdgeV1(**payload)
+    response = client.post(url, payload.spec.dict()).json()
 
     if response is not None:
         response["source"] = source

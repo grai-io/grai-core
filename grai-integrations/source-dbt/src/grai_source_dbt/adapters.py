@@ -10,7 +10,8 @@ from grai_source_dbt.models.nodes import Column, Edge, GraiNodeTypes, SupportedD
 
 @multimethod
 def adapt_to_client(current: Any, desired: Any) -> None:
-    raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)}")
+
+    raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)} for value {current}")
 
 
 @adapt_to_client.register
@@ -29,6 +30,7 @@ def adapt_table_to_client(
             "dbt_materialization": current.config.materialized,
             "table_name": current.name,
             "dbt_model_name": current.unique_id,
+            "tests": [test.dict() for test in current.tests]
         },
     }
     return Schema.to_model(spec_dict, version=version, typing_type="Node")
@@ -48,6 +50,7 @@ def adapt_column_to_client(current: Column, version: Literal["v1"] = "v1") -> No
             "dbt_tags": current.tags,
             "table_name": current.table_name,
             "dbt_quote": current.quote,
+            "tests": [test.dict() for test in current.tests]
         },
     }
     return Schema.to_model(spec_dict, version=version, typing_type="Node")

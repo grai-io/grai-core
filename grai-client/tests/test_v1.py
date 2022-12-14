@@ -1,4 +1,6 @@
 import pytest
+from requests import RequestException
+
 from grai_client.endpoints.v1.client import ClientV1
 from grai_client.schemas.edge import EdgeV1
 from grai_client.schemas.node import NodeV1
@@ -9,7 +11,6 @@ from grai_client.testing.schema import (
     mock_v1_node,
 )
 from grai_client.utilities.tests import get_test_client
-from requests import RequestException
 
 client = get_test_client()
 
@@ -50,9 +51,6 @@ def test_delete_edge():
     test_edge, test_nodes = mock_v1_edge_and_nodes()
     test_nodes = client.post(test_nodes)
     test_edge = client.post(test_edge)
-    print("in test")
-    print(test_edge)
-    print(type(test_edge))
     result = client.get(test_edge)
     assert result, result
     client.delete(test_edge)
@@ -79,8 +77,6 @@ def test_patch_edge():
     test_nodes = client.post(test_nodes)
     test_edge = client.post(test_edge)
     test_edge.spec.is_active = False
-    print("in tests")
-    print(test_edge)
     server_updated_edge = client.patch(test_edge)
     assert server_updated_edge == test_edge
 
