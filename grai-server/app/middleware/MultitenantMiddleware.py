@@ -10,13 +10,13 @@ class MultitenantMiddleware:
         header = request.headers.get("Authorization")
 
         if header:
-          [type, key] = header.split()
-          #TODO: Consider handling Bearer token here
-          if type == 'Api-Key':
-            api_key = WorkspaceAPIKey.objects.get_from_key(key)
-            workspace = api_key.workspace
+            [type, key] = header.split()
+            # TODO: Consider handling Bearer token here
+            if type == "Api-Key":
+                api_key = WorkspaceAPIKey.objects.get_from_key(key)
+                workspace = api_key.workspace
 
-            if workspace:
-                set_current_tenant(workspace)
+                if workspace:
+                    set_current_tenant(workspace)
 
         return self.get_response(request)

@@ -6,7 +6,7 @@ from django_multitenant.models import TenantModel
 
 
 class Workspace(TenantModel):
-    tenant_id = 'id'
+    tenant_id = "id"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
