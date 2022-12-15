@@ -7,8 +7,8 @@ import {
   Typography,
 } from "@mui/material"
 import React from "react"
-import HomeCards from "../components/home/HomeCards"
-import AppTopBar from "../components/layout/AppTopBar"
+import HomeCards from "components/home/HomeCards"
+import AppTopBar from "components/layout/AppTopBar"
 
 const Home: React.FC = () => (
   <>

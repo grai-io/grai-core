@@ -1,9 +1,9 @@
 import React, { useState } from "react"
-import { Edge } from "../../pages/edges/Edges"
+import { Edge } from "pages/edges/Edges"
 import BaseGraph, { getAllIncomers, getAllOutgoers } from "./BaseGraph"
 import { Edge as RFEdge, Node as RFNode } from "reactflow"
-import notEmpty from "../../helpers/notEmpty"
-import { Table, Node as NodeType } from "../../helpers/graph"
+import notEmpty from "helpers/notEmpty"
+import { Table, Node as NodeType } from "helpers/graph"
 
 export interface Error {
   source: string

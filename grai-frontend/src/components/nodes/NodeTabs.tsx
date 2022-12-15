@@ -2,7 +2,7 @@ import { BarChart, TableRows, Mediation } from "@mui/icons-material"
 import { Box, Tabs, Tab } from "@mui/material"
 import React from "react"
 import { Link } from "react-router-dom"
-import theme from "../../theme"
+import theme from "theme"
 
 type NodeTabsProps = {
   currentTab: string

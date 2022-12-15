@@ -1,11 +1,11 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
 import { useParams } from "react-router-dom"
-import AppTopBar from "../../components/layout/AppTopBar"
-import Loading from "../../components/layout/Loading"
-import NotFound from "../NotFound"
-import NodeHeader from "../../components/nodes/NodeHeader"
-import NodeContent from "../../components/nodes/NodeContent"
+import AppTopBar from "components/layout/AppTopBar"
+import Loading from "components/layout/Loading"
+import NotFound from "pages/NotFound"
+import NodeHeader from "components/nodes/NodeHeader"
+import NodeContent from "components/nodes/NodeContent"
 import { GetNode, GetNodeVariables } from "./__generated__/GetNode"
 
 const GET_NODE = gql`

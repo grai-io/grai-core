@@ -1,7 +1,7 @@
 import { Box } from "@mui/material"
 import React from "react"
 import { useLocation } from "react-router-dom"
-import { Edge, Node as GraphNode } from "../../helpers/graph"
+import { Edge, Node as GraphNode } from "helpers/graph"
 import NodeLineage from "./NodeLineage"
 import NodeProfile, { Node } from "./NodeProfile"
 import NodeTabs from "./NodeTabs"

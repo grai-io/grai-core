@@ -3,11 +3,11 @@ import { MoreHoriz } from "@mui/icons-material"
 import { Box, Button, Grid, Stack, Typography } from "@mui/material"
 import React from "react"
 import { useParams } from "react-router-dom"
-import ConnectionRefresh from "../../components/connections/ConnectionRefresh"
-import UpdateConnectionForm from "../../components/connections/UpdateConnectionForm"
-import AppTopBar from "../../components/layout/AppTopBar"
-import Loading from "../../components/layout/Loading"
-import NotFound from "../NotFound"
+import ConnectionRefresh from "components/connections/ConnectionRefresh"
+import UpdateConnectionForm from "components/connections/UpdateConnectionForm"
+import AppTopBar from "components/layout/AppTopBar"
+import Loading from "components/layout/Loading"
+import NotFound from "pages/NotFound"
 import {
   GetConnection,
   GetConnectionVariables,

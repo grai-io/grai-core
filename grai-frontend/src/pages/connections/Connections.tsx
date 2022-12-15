@@ -1,8 +1,8 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
-import AppTopBar from "../../components/layout/AppTopBar"
-import ConnectionsTable from "../../components/connections/ConnectionsTable"
-import ConnectionsHeader from "../../components/connections/ConnectionsHeader"
+import AppTopBar from "components/layout/AppTopBar"
+import ConnectionsTable from "components/connections/ConnectionsTable"
+import ConnectionsHeader from "components/connections/ConnectionsHeader"
 import {
   GetConnections,
   GetConnectionsVariables,

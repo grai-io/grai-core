@@ -1,12 +1,12 @@
 import React from "react"
 import { Box } from "@mui/material"
-import GraphComponent, { Error } from "../components/graph/Graph"
-import AppTopBar from "../components/layout/AppTopBar"
+import GraphComponent, { Error } from "components/graph/Graph"
+import AppTopBar from "components/layout/AppTopBar"
 import { gql, useQuery } from "@apollo/client"
-import Loading from "../components/layout/Loading"
-import theme from "../theme"
+import Loading from "components/layout/Loading"
+import theme from "theme"
 import { useLocation, useParams } from "react-router-dom"
-import { nodesToTables } from "../helpers/graph"
+import { nodesToTables } from "helpers/graph"
 import {
   GetNodesAndEdges,
   GetNodesAndEdgesVariables,

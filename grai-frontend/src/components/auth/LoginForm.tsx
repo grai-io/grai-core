@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react"
 import { LoadingButton } from "@mui/lab"
 import { TextField } from "@mui/material"
-import Form from "../form/Form"
+import Form from "components/form/Form"
 import AuthContext from "./AuthContext"
 
 const LoginForm: React.FC = () => {

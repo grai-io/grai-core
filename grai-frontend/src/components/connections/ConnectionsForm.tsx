@@ -1,9 +1,9 @@
 import { LoadingButton } from "@mui/lab"
 import { TextField, Typography } from "@mui/material"
 import React, { useState } from "react"
-import Connector, { ConnectorType } from "../form/fields/Connector"
-import Namespace from "../form/fields/Namespace"
-import Form from "../form/Form"
+import Connector, { ConnectorType } from "components/form/fields/Connector"
+import Namespace from "components/form/fields/Namespace"
+import Form from "components/form/Form"
 import ConnectionsMetadata from "./ConnectionsMetadata"
 
 export type Values = {

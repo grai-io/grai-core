@@ -8,8 +8,8 @@ import {
 } from "@mui/material"
 import React from "react"
 import { useNavigate } from "react-router-dom"
-import { Node } from "../../pages/nodes/Nodes"
-import Loading from "../layout/Loading"
+import { Node } from "pages/nodes/Nodes"
+import Loading from "components/layout/Loading"
 
 type NodesTableProps = {
   nodes: Node[]

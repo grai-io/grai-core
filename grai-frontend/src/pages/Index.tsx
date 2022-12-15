@@ -1,7 +1,7 @@
 import { gql, useQuery } from "@apollo/client"
 import React from "react"
 import { Navigate } from "react-router-dom"
-import Loading from "../components/layout/Loading"
+import Loading from "components/layout/Loading"
 
 const GET_WORKSPACES = gql`
   query GetWorkspacesIndex {

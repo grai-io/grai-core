@@ -1,7 +1,7 @@
 import { Box, Grid, Typography } from "@mui/material"
 import React from "react"
-import CreateConnectionForm from "../../components/connections/CreateConnectionForm"
-import AppTopBar from "../../components/layout/AppTopBar"
+import CreateConnectionForm from "components/connections/CreateConnectionForm"
+import AppTopBar from "components/layout/AppTopBar"
 
 const ConnectionCreate: React.FC = () => (
   <>

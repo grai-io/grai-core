@@ -11,8 +11,8 @@ import ReactFlow, {
 import "reactflow/dist/style.css"
 import Elk, { ElkNode } from "elkjs"
 import BaseNode from "./BaseNode"
-import theme from "../../theme"
-import Loading from "../layout/Loading"
+import theme from "theme"
+import Loading from "components/layout/Loading"
 
 const DEFAULT_WIDTH = 300
 const DEFAULT_HEIGHT = 110

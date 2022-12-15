@@ -8,8 +8,8 @@ import {
 } from "@mui/material"
 import React, { useState } from "react"
 import { useParams } from "react-router-dom"
-import DialogTitle from "../../dialogs/DialogTitle"
-import CopyButton from "../../utils/CopyButton"
+import DialogTitle from "components/dialogs/DialogTitle"
+import CopyButton from "components/utils/CopyButton"
 import CreateKeyForm, { Values } from "./CreateKeyForm"
 import {
   CreateApiKey,

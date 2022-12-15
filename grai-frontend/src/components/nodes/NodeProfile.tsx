@@ -11,7 +11,7 @@ import {
 import React from "react"
 import NodeColumns from "./NodeColumns"
 import NodeDetail from "./NodeDetail"
-import { Edge, Node as NodeType, nodeToTable } from "../../helpers/graph"
+import { Edge, Node as NodeType, nodeToTable } from "helpers/graph"
 import NodeDetailRow from "./NodeDetailRow"
 import { Link, useParams } from "react-router-dom"
 

@@ -1,6 +1,9 @@
 import { TextField } from "@mui/material"
 import React from "react"
-import { ConnectorMetadataField, ConnectorType } from "../form/fields/Connector"
+import {
+  ConnectorMetadataField,
+  ConnectorType,
+} from "components/form/fields/Connector"
 import PasswordField from "./PasswordField"
 
 type ConnectionsMetadataProps = {

@@ -16,7 +16,7 @@ import PopupState, {
 } from "material-ui-popup-state"
 import React, { useContext } from "react"
 import { Link, useParams } from "react-router-dom"
-import AuthContext from "../auth/AuthContext"
+import AuthContext from "components/auth/AuthContext"
 
 const ProfileMenu: React.FC = () => {
   const { workspaceId } = useParams()

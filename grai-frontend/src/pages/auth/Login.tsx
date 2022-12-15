@@ -1,6 +1,6 @@
 import React from "react"
 import { Box, Card, CardContent, Container, Typography } from "@mui/material"
-import LoginForm from "../../components/auth/LoginForm"
+import LoginForm from "components/auth/LoginForm"
 
 const Login: React.FC = () => (
   <Container sx={{ pt: 10 }} maxWidth="xs">

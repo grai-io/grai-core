@@ -8,8 +8,8 @@ import {
 } from "@mui/material"
 import React from "react"
 import { useNavigate } from "react-router-dom"
-import Loading from "../layout/Loading"
-import TableCell from "../tables/TableCell"
+import Loading from "components/layout/Loading"
+import TableCell from "components/tables/TableCell"
 import ConnectionsMenu from "./ConnectionsMenu"
 
 interface Connector {

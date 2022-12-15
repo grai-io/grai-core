@@ -1,16 +1,16 @@
 import { gql, useQuery } from "@apollo/client"
 import { Box } from "@mui/material"
 import React from "react"
-import { nodesToTables } from "../../helpers/graph"
-import theme from "../../theme"
-import Graph from "../graph/Graph"
-import Loading from "../layout/Loading"
-import { Node as NodeType } from "../../helpers/graph"
+import { nodesToTables } from "helpers/graph"
+import theme from "theme"
+import Loading from "components/layout/Loading"
+import { Node as NodeType } from "helpers/graph"
 import {
   GetNodesAndEdgesNodeLineage,
   GetNodesAndEdgesNodeLineageVariables,
 } from "./__generated__/GetNodesAndEdgesNodeLineage"
 import { useParams } from "react-router-dom"
+import Graph from "components/graph/Graph"
 
 const GET_NODES_AND_EDGES = gql`
   query GetNodesAndEdgesNodeLineage($workspaceId: ID!) {

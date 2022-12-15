@@ -3,7 +3,7 @@ import { Box, Divider, Menu, MenuItem, Stack, Typography } from "@mui/material"
 import React from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { Handle, Position } from "reactflow"
-import theme from "../../theme"
+import theme from "theme"
 import HiddenTableButton from "./HiddenTableButton"
 
 interface Column {

@@ -7,7 +7,7 @@ import {
   TableRow,
 } from "@mui/material"
 import React from "react"
-import { Edge } from "../../pages/edges/Edges"
+import { Edge } from "pages/edges/Edges"
 
 type EdgesTableProps = {
   edges: Edge[] | null

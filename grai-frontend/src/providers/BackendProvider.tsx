@@ -1,7 +1,7 @@
 import { ApolloProvider } from "@apollo/client"
 import React, { ReactNode, useContext } from "react"
-import client from "../client"
-import AuthContext from "../components/auth/AuthContext"
+import AuthContext from "components/auth/AuthContext"
+import client from "client"
 
 type BackendProviderProps = {
   children: ReactNode

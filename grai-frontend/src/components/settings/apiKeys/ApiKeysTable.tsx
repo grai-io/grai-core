@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material"
 import React from "react"
-import Loading from "../../layout/Loading"
+import Loading from "components/layout/Loading"
 import ApiKeyMenu from "./ApiKeyMenu"
 
 interface User {
