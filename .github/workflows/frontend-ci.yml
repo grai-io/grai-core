@@ -39,7 +39,7 @@ jobs:
 
     env:
       REGISTRY: ghcr.io
-      IMAGE_NAME: ${{ github.repository }}/grai-frontend
+      IMAGE_NAME: ${{ github.repository }}
 
     defaults:
       run:
@@ -59,7 +59,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/grai-frontend
 
       - name: Set up Docker Buildx
         id: buildx
