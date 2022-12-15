@@ -93,7 +93,11 @@ export const renderWithRouter = (
                     <Route path={path} element={props.children} />
                     {routes.map(route =>
                       typeof route === "string" ? (
-                        <Route key={route} path={route} element={<></>} />
+                        <Route
+                          key={route}
+                          path={route}
+                          element={<>New Page</>}
+                        />
                       ) : (
                         <Route
                           key={route.path}

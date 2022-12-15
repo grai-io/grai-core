@@ -1,10 +1,31 @@
+import { GraphQLError } from "graphql"
 import React from "react"
-import { renderWithRouter, waitFor } from "testing"
-import Index from "./Index"
+import { renderWithMocks, renderWithRouter, screen, waitFor } from "testing"
+import Index, { GET_WORKSPACES } from "./Index"
 
 test("renders", async () => {
-  renderWithRouter(<Index />)
+  renderWithRouter(<Index />, {
+    routes: ["/workspaces/:workspaceId"],
+  })
 
-  // eslint-disable-next-line testing-library/no-wait-for-empty-callback
-  await waitFor(() => {})
+  await waitFor(() => {
+    expect(screen.getByText("New Page")).toBeTruthy()
+  })
+})
+
+test("error", async () => {
+  const mock = {
+    request: {
+      query: GET_WORKSPACES,
+    },
+    result: {
+      errors: [new GraphQLError("Error!")],
+    },
+  }
+
+  renderWithMocks(<Index />, [mock])
+
+  await waitFor(() => {
+    expect(screen.getByText("Error!")).toBeTruthy()
+  })
 })

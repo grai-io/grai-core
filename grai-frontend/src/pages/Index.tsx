@@ -4,7 +4,7 @@ import { Navigate } from "react-router-dom"
 import Loading from "components/layout/Loading"
 import GraphError from "components/utils/GraphError"
 
-const GET_WORKSPACES = gql`
+export const GET_WORKSPACES = gql`
   query GetWorkspacesIndex {
     workspaces {
       id
