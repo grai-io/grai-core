@@ -13,7 +13,7 @@ import {
 } from "./__generated__/GetNodesAndEdges"
 import GraphError from "components/utils/GraphError"
 
-const GET_NODES_AND_EDGES = gql`
+export const GET_NODES_AND_EDGES = gql`
   query GetNodesAndEdges($workspaceId: ID!) {
     workspace(pk: $workspaceId) {
       id
@@ -76,13 +76,12 @@ const Graph: React.FC = () => {
       </>
     )
 
-  const errors: Error[] | null = searchParams.has("errors")
-    ? JSON.parse(searchParams.get("errors") ?? "")
-    : null
+  const errorsQS = searchParams.get("errors")
+  const errors: Error[] | null = errorsQS ? JSON.parse(errorsQS) : null
   const limitGraph: boolean =
     searchParams.get("limitGraph")?.toLowerCase() === "true" && !!errors
 
-  if (!data?.workspace?.nodes) return null
+  if (!data?.workspace.nodes) return null
 
   const tables = nodesToTables(data.workspace.nodes, data.workspace.edges)
 
