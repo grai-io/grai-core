@@ -112,7 +112,7 @@ jobs:
       #     mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
   deploy:
-    # needs: [build-frontend, build-server]
+    needs: [build-frontend, build-server]
 
     runs-on: ubuntu-latest
 
