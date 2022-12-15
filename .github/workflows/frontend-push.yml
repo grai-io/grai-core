@@ -3,7 +3,7 @@ name: "Frontend Push CI"
 on:
   push:
     paths:
-      - ".github/workflows/frontend-ci.yml"
+      - ".github/workflows/frontend-push.yml"
       - "grai-frontend/**"
 
 jobs:

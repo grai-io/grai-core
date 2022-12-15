@@ -3,7 +3,7 @@ name: "Frontend PR CI"
 on:
   pull_request:
     paths:
-      - ".github/workflows/frontend-ci.yml"
+      - ".github/workflows/frontend-pr.yml"
       - "grai-frontend/**"
 
 jobs:
