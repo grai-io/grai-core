@@ -136,7 +136,8 @@ jobs:
         uses: ianbelcher/eks-kubectl-action@master
         with:
           cluster_name: ${{ secrets.CLUSTER_NAME }}
-          args: create namespace $PR_NAME --dry-run=client -o yaml | kubectl apply -f -
+          args: create namespace $PR_NAME
+        continue-on-error: true
 
       - name: Helm apply
         uses: bitovi/github-actions-deploy-eks-helm@v1.1.0
