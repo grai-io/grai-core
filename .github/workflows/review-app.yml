@@ -139,17 +139,18 @@ jobs:
           args: create namespace $PR_NAME --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Helm apply
-        uses: "deliverybot/helm@v1"
+        uses: bitovi/github-actions-deploy-eks-helm@v1.1.0
         with:
-          release: $PR_NAME
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          cluster-name: ${{ secrets.CLUSTER_NAME }}
+          config-files: deployment/values.yml
+          chart-path: grai/grai
           namespace: $PR_NAME
-          chart: "grai/grai"
-          token: "${{ github.token }}"
-          repo: "https://charts.grai.io"
-          repo-alias: grai
-          value-files: "deployment/values.yml"
-        env:
-          KUBECONFIG_FILE: "${{ secrets.KUBECONFIG }}"
+          name: $PR_NAME
+          chart-repository: https://charts.grai.io
+          atomic: true
 
   delete-untagged:
     needs: deploy
