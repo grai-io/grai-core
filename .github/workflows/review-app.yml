@@ -3,116 +3,116 @@ name: "Review App"
 on: pull_request
 
 jobs:
-  build-frontend:
-    runs-on: ubuntu-latest
+  # build-frontend:
+  #   runs-on: ubuntu-latest
 
-    env:
-      REGISTRY: ghcr.io
-      IMAGE_NAME: ${{ github.repository }}
+  #   env:
+  #     REGISTRY: ghcr.io
+  #     IMAGE_NAME: ${{ github.repository }}
 
-    defaults:
-      run:
-        working-directory: grai-frontend
+  #   defaults:
+  #     run:
+  #       working-directory: grai-frontend
 
-    steps:
-      - uses: actions/checkout@v3
+  #   steps:
+  #     - uses: actions/checkout@v3
 
-      - name: Log in to the Container registry
-        uses: docker/login-action@v2
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GH_TOKEN }}
+  #     - name: Log in to the Container registry
+  #       uses: docker/login-action@v2
+  #       with:
+  #         registry: ${{ env.REGISTRY }}
+  #         username: ${{ github.actor }}
+  #         password: ${{ secrets.GH_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/grai-frontend
+  #     - name: Extract metadata (tags, labels) for Docker
+  #       id: meta
+  #       uses: docker/metadata-action@v4
+  #       with:
+  #         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/grai-frontend
 
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@master
+  #     - name: Set up Docker Buildx
+  #       id: buildx
+  #       uses: docker/setup-buildx-action@master
 
-      # - name: Docker cache layers
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: /tmp/.buildx-cache
-      #     key: ${{ runner.os }}-single-buildx-${{ github.sha }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-single-buildx
+  #     # - name: Docker cache layers
+  #     #   uses: actions/cache@v2
+  #     #   with:
+  #     #     path: /tmp/.buildx-cache
+  #     #     key: ${{ runner.os }}-single-buildx-${{ github.sha }}
+  #     #     restore-keys: |
+  #     #       ${{ runner.os }}-single-buildx
 
-      - name: Build
-        uses: docker/build-push-action@v3
-        with:
-          context: grai-frontend
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          # cache-from: type=local,src=/tmp/.buildx-cache
-          # cache-to: type=local,dest=/tmp/.buildx-cache-new
+  #     - name: Build
+  #       uses: docker/build-push-action@v3
+  #       with:
+  #         context: grai-frontend
+  #         push: true
+  #         tags: ${{ steps.meta.outputs.tags }}
+  #         labels: ${{ steps.meta.outputs.labels }}
+  #         # cache-from: type=local,src=/tmp/.buildx-cache
+  #         # cache-to: type=local,dest=/tmp/.buildx-cache-new
 
-      # - name: Move cache
-      #   run: |
-      #     rm -rf /tmp/.buildx-cache
-      #     mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+  #     # - name: Move cache
+  #     #   run: |
+  #     #     rm -rf /tmp/.buildx-cache
+  #     #     mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-  build-server:
-    runs-on: ubuntu-latest
+  # build-server:
+  #   runs-on: ubuntu-latest
 
-    env:
-      REGISTRY: ghcr.io
-      IMAGE_NAME: ${{ github.repository }}
+  #   env:
+  #     REGISTRY: ghcr.io
+  #     IMAGE_NAME: ${{ github.repository }}
 
-    defaults:
-      run:
-        working-directory: grai-server/app
+  #   defaults:
+  #     run:
+  #       working-directory: grai-server/app
 
-    steps:
-      - uses: actions/checkout@v3
+  #   steps:
+  #     - uses: actions/checkout@v3
 
-      - name: Log in to the Container registry
-        uses: docker/login-action@v2
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GH_TOKEN }}
+  #     - name: Log in to the Container registry
+  #       uses: docker/login-action@v2
+  #       with:
+  #         registry: ${{ env.REGISTRY }}
+  #         username: ${{ github.actor }}
+  #         password: ${{ secrets.GH_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/grai-server
+  #     - name: Extract metadata (tags, labels) for Docker
+  #       id: meta
+  #       uses: docker/metadata-action@v4
+  #       with:
+  #         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/grai-server
 
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@master
+  #     - name: Set up Docker Buildx
+  #       id: buildx
+  #       uses: docker/setup-buildx-action@master
 
-      # - name: Docker cache layers
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: /tmp/.buildx-cache
-      #     key: ${{ runner.os }}-single-buildx-${{ github.sha }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-single-buildx
+  #     # - name: Docker cache layers
+  #     #   uses: actions/cache@v2
+  #     #   with:
+  #     #     path: /tmp/.buildx-cache
+  #     #     key: ${{ runner.os }}-single-buildx-${{ github.sha }}
+  #     #     restore-keys: |
+  #     #       ${{ runner.os }}-single-buildx
 
-      - name: Build
-        uses: docker/build-push-action@v3
-        with:
-          context: grai-server/app
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          # cache-from: type=local,src=/tmp/.buildx-cache
-          # cache-to: type=local,dest=/tmp/.buildx-cache-new
+  #     - name: Build
+  #       uses: docker/build-push-action@v3
+  #       with:
+  #         context: grai-server/app
+  #         push: true
+  #         tags: ${{ steps.meta.outputs.tags }}
+  #         labels: ${{ steps.meta.outputs.labels }}
+  # cache-from: type=local,src=/tmp/.buildx-cache
+  # cache-to: type=local,dest=/tmp/.buildx-cache-new
 
-      # - name: Move cache
-      #   run: |
-      #     rm -rf /tmp/.buildx-cache
-      #     mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+  # - name: Move cache
+  #   run: |
+  #     rm -rf /tmp/.buildx-cache
+  #     mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
   deploy:
-    needs: [build-frontend, build-server]
+    # needs: [build-frontend, build-server]
 
     runs-on: ubuntu-latest
 
@@ -122,22 +122,22 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+      # - name: Configure AWS credentials
+      #   uses: aws-actions/configure-aws-credentials@v1
+      #   with:
+      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Update deployment file
         run: sed -i 's|<PR-NUM>|'${PR_NAME}'|' $GITHUB_WORKSPACE/deployment/values.yml
 
-      - name: Create namespace
-        uses: ianbelcher/eks-kubectl-action@master
-        with:
-          cluster_name: ${{ secrets.CLUSTER_NAME }}
-          args: create namespace pr-${{ github.event.number }}
-        continue-on-error: true
+      # - name: Create namespace
+      #   uses: ianbelcher/eks-kubectl-action@master
+      #   with:
+      #     cluster_name: ${{ secrets.CLUSTER_NAME }}
+      #     args: create namespace pr-${{ github.event.number }}
+      #   continue-on-error: true
 
       - name: Helm apply
         uses: bitovi/github-actions-deploy-eks-helm@v1.1.0
@@ -151,7 +151,7 @@ jobs:
           namespace: pr-${{ github.event.number }}
           name: pr-${{ github.event.number }}
           chart-repository: https://charts.grai.io
-          atomic: true
+          # atomic: true
 
   delete-untagged:
     needs: deploy
