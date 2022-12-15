@@ -5,6 +5,7 @@ from connections.models import Connection
 from strawberry_django_plus import gql
 from strawberry.scalars import JSON
 import strawberry
+from strawberry.types import Info
 from asgiref.sync import sync_to_async
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
@@ -69,7 +70,7 @@ class Mutation:
 
     @strawberry.mutation
     async def create_api_key(
-        self, info, name: str, workspaceId: strawberry.ID
+        self, info: Info, name: str, workspaceId: strawberry.ID
     ) -> KeyResultType:
         user, _ = await sync_to_async(JWTAuthentication().authenticate)(
             request=info.context.request

@@ -1,5 +1,6 @@
 from django_multitenant.utils import set_current_tenant
 from workspaces.models import WorkspaceAPIKey
+from django.core.exceptions import PermissionDenied
 
 
 class MultitenantMiddleware:
@@ -13,7 +14,11 @@ class MultitenantMiddleware:
             [type, key] = header.split()
             # TODO: Consider handling Bearer token here
             if type == "Api-Key":
-                api_key = WorkspaceAPIKey.objects.get_from_key(key)
+                try:
+                    api_key = WorkspaceAPIKey.objects.get_from_key(key)
+                except WorkspaceAPIKey.DoesNotExist:
+                    raise PermissionDenied()
+
                 workspace = api_key.workspace
 
                 if workspace:
