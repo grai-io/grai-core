@@ -20,6 +20,11 @@ const mockResolvers = {
   ConnectionType: () => ({
     name: "Connection 1",
   }),
+  NodeType: () => ({
+    metadata: {
+      node_type: "Table",
+    },
+  }),
 }
 
 const customRender = (ui: ReactElement, options?: RenderOptions) =>

@@ -2,7 +2,6 @@ import { gql, useQuery } from "@apollo/client"
 import {
   Box,
   Card,
-  CardContent,
   Container,
   List,
   ListItem,
