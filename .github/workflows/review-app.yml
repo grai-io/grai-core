@@ -136,7 +136,7 @@ jobs:
         uses: ianbelcher/eks-kubectl-action@master
         with:
           cluster_name: ${{ secrets.CLUSTER_NAME }}
-          args: create namespace ${{ $PR_NAME }}
+          args: create namespace pr-${{ github.event.number }}
         continue-on-error: true
 
       - name: Helm apply
@@ -148,8 +148,8 @@ jobs:
           cluster-name: ${{ secrets.CLUSTER_NAME }}
           config-files: deployment/values.yml
           chart-path: grai/grai
-          namespace: ${{ $PR_NAME }}
-          name: ${{ $PR_NAME }}
+          namespace: pr-${{ github.event.number }}
+          name: pr-${{ github.event.number }}
           chart-repository: https://charts.grai.io
           atomic: true
 
