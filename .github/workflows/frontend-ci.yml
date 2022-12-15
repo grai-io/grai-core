@@ -14,9 +14,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: grai-frontend
+    # defaults:
+    #   run:
+    #     working-directory: grai-frontend
 
     steps:
       # - uses: actions/checkout@master
