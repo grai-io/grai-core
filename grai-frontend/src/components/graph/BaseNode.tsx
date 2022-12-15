@@ -7,7 +7,7 @@ import theme from "theme"
 import HiddenTableButton from "./HiddenTableButton"
 
 interface Column {
-  displayName: string
+  displayName?: string | null
   name: string
 }
 

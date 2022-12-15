@@ -12,7 +12,7 @@ test("renders", async () => {
   })
 
   await waitFor(() => {
-    screen.getAllByText("Hello World")
+    expect(screen.getAllByText("Hello World")).toBeTruthy()
   })
 })
 
