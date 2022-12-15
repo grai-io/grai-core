@@ -139,20 +139,17 @@ jobs:
           args: create namespace $PR_NAME --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Helm apply
-        uses: 'deliverybot/helm@v1'
+        uses: "deliverybot/helm@v1"
         with:
           release: $PR_NAME
           namespace: $PR_NAME
-          chart: 'grai/grai'
-          token: '${{ github.token }}'
-          repo: 'https://charts.grai.io'
+          chart: "grai/grai"
+          token: "${{ github.token }}"
+          repo: "https://charts.grai.io"
           repo-alias: grai
-          value-files: >-
-          [
-            "deployment/values.yml"
-          ]
+          value-files: ["deployment/values.yml"]
         env:
-          KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
+          KUBECONFIG_FILE: "${{ secrets.KUBECONFIG }}"
 
   delete-untagged:
     needs: deploy
