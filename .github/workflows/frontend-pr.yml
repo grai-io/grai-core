@@ -11,12 +11,12 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  test:
-    uses: ./.github/workflows/frontend-test.yml
-    secrets: inherit
+  # test:
+  #   uses: ./.github/workflows/frontend-test.yml
+  #   secrets: inherit
 
   build:
-    needs: test
+    # needs: test
 
     runs-on: ubuntu-latest
 
@@ -55,7 +55,7 @@ jobs:
       - name: Build
         uses: docker/build-push-action@v2
         with:
-          context: .
+          context: grai-frontend
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
