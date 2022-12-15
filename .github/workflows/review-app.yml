@@ -139,6 +139,19 @@ jobs:
           chart-repository: https://charts.grai.io
           # atomic: true
 
+      - name: Comment
+        uses: actions/github-script@v5
+        if: context.event.action == 'opened'
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Review app deployed to https://pr-${context.event.number}.app.grai.io'
+            })
+
   delete-untagged:
     needs: deploy
 

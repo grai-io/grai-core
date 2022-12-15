@@ -4,7 +4,7 @@ on:
     types: [closed]
 
 jobs:
-  deployment:
+  cleanup:
     runs-on: "ubuntu-latest"
     steps:
       - name: "Helm uninstall"
