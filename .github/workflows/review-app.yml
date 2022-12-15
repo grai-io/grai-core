@@ -147,7 +147,10 @@ jobs:
           token: "${{ github.token }}"
           repo: "https://charts.grai.io"
           repo-alias: grai
-          value-files: ["deployment/values.yml"]
+          value-files: >-
+          [
+            "deployment/values.yml"
+          ]
         env:
           KUBECONFIG_FILE: "${{ secrets.KUBECONFIG }}"
 
