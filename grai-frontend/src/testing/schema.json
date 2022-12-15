@@ -1524,6 +1524,20 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "workspace",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "OneToManyInput",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          },
+          {
             "name": "connector",
             "description": null,
             "type": {

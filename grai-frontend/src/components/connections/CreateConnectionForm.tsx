@@ -1,6 +1,6 @@
 import { gql, useMutation } from "@apollo/client"
 import React from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import ConnectionsForm, { Values } from "./ConnectionsForm"
 import {
   CreateConnection,
@@ -9,7 +9,8 @@ import {
 
 const CREATE_CONNECTION = gql`
   mutation CreateConnection(
-    $connector: ID!
+    $workspaceId: ID!
+    $connectorId: ID!
     $namespace: String
     $name: String!
     $metadata: JSON!
@@ -17,7 +18,8 @@ const CREATE_CONNECTION = gql`
   ) {
     createConnection(
       input: {
-        connector: { set: $connector }
+        workspace: { set: $workspaceId }
+        connector: { set: $connectorId }
         namespace: $namespace
         name: $name
         metadata: $metadata
@@ -50,6 +52,7 @@ const CREATE_CONNECTION = gql`
 `
 
 const CreateConnectionForm: React.FC = () => {
+  const { workspaceId } = useParams()
   const navigate = useNavigate()
 
   const [createConnection, { loading, error }] = useMutation<
@@ -60,13 +63,14 @@ const CreateConnectionForm: React.FC = () => {
   const handleSubmit = (values: Values) =>
     createConnection({
       variables: {
-        connector: values.connector?.id ?? "",
+        workspaceId: workspaceId ?? "",
+        connectorId: values.connector?.id ?? "",
         namespace: values.namespace,
         name: values.name,
         metadata: values.metadata,
         secrets: values.secrets,
       },
-    }).then(data => navigate("/connections"))
+    }).then(data => navigate(`/workspaces/${workspaceId}/connections`))
 
   const defaultValues: Values = {
     connector: null,

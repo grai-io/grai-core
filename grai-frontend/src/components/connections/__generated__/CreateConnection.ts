@@ -58,7 +58,8 @@ export interface CreateConnection {
 }
 
 export interface CreateConnectionVariables {
-  connector: string;
+  workspaceId: string;
+  connectorId: string;
   namespace?: string | null;
   name: string;
   metadata: any;

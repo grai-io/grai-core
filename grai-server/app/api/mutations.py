@@ -21,6 +21,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 
 @strawberry.django.input(Connection)
 class ConnectionTypeInput:
+    workspace: gql.auto
     connector: gql.auto
     namespace: gql.auto
     name: gql.auto
