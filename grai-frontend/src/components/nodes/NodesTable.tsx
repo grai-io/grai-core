@@ -54,9 +54,9 @@ const NodesTable: React.FC<NodesTableProps> = ({ nodes, loading }) => {
             </TableCell>
           </TableRow>
         )}
-        {!nodes && !loading && (
+        {nodes.length === 0 && !loading && (
           <TableRow>
-            <TableCell colSpan={99}>
+            <TableCell colSpan={99} sx={{ textAlign: "center", py: 10 }}>
               <Typography>No nodes found</Typography>
             </TableCell>
           </TableRow>

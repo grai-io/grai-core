@@ -49,6 +49,7 @@ const NodesHeader: React.FC<NodesHeaderProps> = ({
             sx={{ width: 40, height: 40, minWidth: 0 }}
             onClick={onRefresh}
             size="small"
+            data-testid="nodes-refresh"
           >
             <Refresh />
           </Button>

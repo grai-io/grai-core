@@ -8,7 +8,7 @@ import { useParams } from "react-router-dom"
 import { Box } from "@mui/material"
 import GraphError from "components/utils/GraphError"
 
-const GET_NODES = gql`
+export const GET_NODES = gql`
   query GetNodes($workspaceId: ID!) {
     workspace(pk: $workspaceId) {
       id
@@ -58,12 +58,11 @@ const Nodes: React.FC = () => {
 
   const tables = nodes.filter(node => node.metadata.node_type === "Table")
 
-  const filteredNodes =
-    (search
-      ? tables.filter(node =>
-          node.name.toLowerCase().includes(search.toLowerCase())
-        )
-      : tables) ?? []
+  const filteredNodes = search
+    ? tables.filter(node =>
+        node.name.toLowerCase().includes(search.toLowerCase())
+      )
+    : tables
 
   return (
     <>
