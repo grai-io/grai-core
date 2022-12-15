@@ -1,5 +1,7 @@
 FROM node:18-alpine AS builder
 
+LABEL org.opencontainers.image.source="https://github.com/grai-io/grai-core"
+
 ENV NODE_ENV production
 
 # Add a work directory
