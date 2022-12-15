@@ -6,6 +6,10 @@ on:
       - ".github/workflows/frontend-pr.yml"
       - "grai-frontend/**"
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
 jobs:
   test:
     uses: ./.github/workflows/frontend-test.yml
