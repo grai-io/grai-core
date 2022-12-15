@@ -1,0 +1,12 @@
+name: "Frontend Push CI"
+
+on:
+  push:
+    paths:
+      - ".github/workflows/frontend-ci.yml"
+      - "grai-frontend/**"
+
+jobs:
+  test:
+    uses: ./.github/workflows/frontend-test.yml
+    secrets: inherit
