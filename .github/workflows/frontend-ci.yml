@@ -19,17 +19,21 @@ jobs:
         working-directory: grai-frontend
 
     steps:
-      - uses: actions/checkout@master
-      - name: Use latest Node.js
-        uses: actions/setup-node@v3
-      - name: Install dependencies
-        run: npm ci
-      - name: Run lint
-        run: npm run lint
-      - name: Run npm tests
-        run: npm test -- --coverage
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+      # - uses: actions/checkout@master
+      # - name: Use latest Node.js
+      #   uses: actions/setup-node@v3
+      # - name: Install dependencies
+      #   run: npm ci
+      # - name: Run lint
+      #   run: npm run lint
+      # - name: Run npm tests
+      #   run: npm test -- --coverage
+      # - name: Upload coverage to Codecov
+      #   uses: codecov/codecov-action@v3
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
 
   build:
     if: ${{ startsWith(github.ref, 'refs/pull/') }} #Only run on pull request
