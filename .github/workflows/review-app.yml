@@ -137,7 +137,7 @@ jobs:
           namespace: pr-${{ github.event.number }}
           name: pr-${{ github.event.number }}
           chart-repository: https://charts.grai.io
-          atomic: true
+          # atomic: true
 
   delete-untagged:
     needs: deploy
