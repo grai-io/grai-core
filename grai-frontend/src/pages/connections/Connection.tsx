@@ -12,6 +12,7 @@ import {
   GetConnection,
   GetConnectionVariables,
 } from "./__generated__/GetConnection"
+import GraphError from "components/utils/GraphError"
 
 const GET_CONNECTION = gql`
   query GetConnection($workspaceId: ID!, $connectionId: ID!) {
@@ -47,7 +48,7 @@ const Connection: React.FC = () => {
     },
   })
 
-  if (error) return <p>Error : {error.message}</p>
+  if (error) return <GraphError error={error} />
   if (loading)
     return (
       <>

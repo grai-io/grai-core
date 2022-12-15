@@ -2,6 +2,7 @@ import { gql, useQuery } from "@apollo/client"
 import React from "react"
 import { Navigate } from "react-router-dom"
 import Loading from "components/layout/Loading"
+import GraphError from "components/utils/GraphError"
 
 const GET_WORKSPACES = gql`
   query GetWorkspacesIndex {
@@ -15,7 +16,7 @@ const GET_WORKSPACES = gql`
 const Index: React.FC = () => {
   const { loading, error, data } = useQuery(GET_WORKSPACES)
 
-  if (error) return <p>Error : {error.message}</p>
+  if (error) return <GraphError error={error} />
   if (loading) return <Loading />
 
   const workspaces = data.workspaces

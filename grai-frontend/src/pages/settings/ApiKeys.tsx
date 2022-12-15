@@ -6,6 +6,7 @@ import ApiKeysHeader from "components/settings/apiKeys/ApiKeysHeader"
 import ApiKeysTable from "components/settings/apiKeys/ApiKeysTable"
 import SettingsLayout from "components/settings/SettingsLayout"
 import { GetApiKeys, GetApiKeysVariables } from "./__generated__/GetApiKeys"
+import GraphError from "components/utils/GraphError"
 
 const GET_API_KEYS = gql`
   query GetApiKeys($workspaceId: ID!) {
@@ -39,7 +40,7 @@ const ApiKeys: React.FC = () => {
     }
   )
 
-  if (error) return <p>Error : {error.message}</p>
+  if (error) return <GraphError error={error} />
 
   return (
     <SettingsLayout>

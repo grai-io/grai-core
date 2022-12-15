@@ -6,6 +6,7 @@ import NodesHeader from "components/nodes/NodesHeader"
 import { GetNodes, GetNodesVariables } from "./__generated__/GetNodes"
 import { useParams } from "react-router-dom"
 import { Box } from "@mui/material"
+import GraphError from "components/utils/GraphError"
 
 const GET_NODES = gql`
   query GetNodes($workspaceId: ID!) {
@@ -49,7 +50,7 @@ const Nodes: React.FC = () => {
     },
   })
 
-  if (error) return <p>Error : {error.message}</p>
+  if (error) return <GraphError error={error} />
 
   const nodes = data?.workspace?.nodes ?? []
 

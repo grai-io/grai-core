@@ -10,6 +10,7 @@ import React from "react"
 import { Link } from "react-router-dom"
 import Loading from "components/layout/Loading"
 import { GetWorkspaces } from "./__generated__/GetWorkspaces"
+import GraphError from "components/utils/GraphError"
 
 const GET_WORKSPACES = gql`
   query GetWorkspaces {
@@ -23,7 +24,7 @@ const GET_WORKSPACES = gql`
 const Workspaces: React.FC = () => {
   const { loading, error, data } = useQuery<GetWorkspaces>(GET_WORKSPACES)
 
-  if (error) return <p>Error : {error.message}</p>
+  if (error) return <GraphError error={error} />
   if (loading) return <Loading />
 
   return (

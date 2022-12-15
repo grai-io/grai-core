@@ -9,12 +9,17 @@ import { MemoryRouter, Route, Routes } from "react-router-dom"
 import theme from "theme"
 import AutoMockedProvider from "./AutoMockedProvider"
 import AuthContext, { AuthProvider } from "components/auth/AuthContext"
+import casual from "casual"
 
 const mockResolvers = {
   Date: () => "2019-12-31",
   DateTime: () => "2019-07-24 11:14:37",
   PaginatorInfo: () => ({ currentPage: 1, total: 20 }),
   JSON: () => ({}),
+  UUID: () => casual.uuid,
+  ConnectionType: () => ({
+    name: "Connection 1",
+  }),
 }
 
 const customRender = (ui: ReactElement, options?: RenderOptions) =>

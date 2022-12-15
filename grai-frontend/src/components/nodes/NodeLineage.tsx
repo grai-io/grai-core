@@ -11,6 +11,7 @@ import {
 } from "./__generated__/GetNodesAndEdgesNodeLineage"
 import { useParams } from "react-router-dom"
 import Graph from "components/graph/Graph"
+import GraphError from "components/utils/GraphError"
 
 const GET_NODES_AND_EDGES = gql`
   query GetNodesAndEdgesNodeLineage($workspaceId: ID!) {
@@ -73,7 +74,7 @@ const NodeLineage: React.FC<NodeLineageProps> = ({ node }) => {
     },
   })
 
-  if (error) return <p>Error : {error.message}</p>
+  if (error) return <GraphError error={error} />
   if (loading) return <Loading />
 
   if (!data?.workspace.nodes || !data.workspace.edges) return null

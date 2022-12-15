@@ -18,6 +18,7 @@ const ConnectionsHeader: React.FC<ConnectionsHeaderProps> = ({ onRefresh }) => (
         sx={{ minWidth: 0 }}
         onClick={onRefresh}
         size="small"
+        data-testid="connection-refresh"
       >
         <Refresh />
       </Button>

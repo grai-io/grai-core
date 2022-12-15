@@ -7,6 +7,7 @@ import { Node } from "pages/nodes/Nodes"
 import Loading from "components/layout/Loading"
 import { GetEdges, GetEdgesVariables } from "./__generated__/GetEdges"
 import { useParams } from "react-router-dom"
+import GraphError from "components/utils/GraphError"
 
 const GET_EDGES = gql`
   query GetEdges($workspaceId: ID!) {
@@ -60,7 +61,7 @@ const Edges: React.FC = () => {
     }
   )
 
-  if (error) return <p>Error : {error.message}</p>
+  if (error) return <GraphError error={error} />
   if (loading) return <Loading />
 
   const edges = data?.workspace?.edges ?? []

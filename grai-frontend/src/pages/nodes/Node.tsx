@@ -7,6 +7,7 @@ import NotFound from "pages/NotFound"
 import NodeHeader from "components/nodes/NodeHeader"
 import NodeContent from "components/nodes/NodeContent"
 import { GetNode, GetNodeVariables } from "./__generated__/GetNode"
+import GraphError from "components/utils/GraphError"
 
 const GET_NODE = gql`
   query GetNode($workspaceId: ID!, $nodeId: ID!) {
@@ -71,7 +72,7 @@ const Node: React.FC = () => {
     }
   )
 
-  if (error) return <p>Error : {error.message}</p>
+  if (error) return <GraphError error={error} />
   if (loading)
     return (
       <>

@@ -9,8 +9,9 @@ import {
 } from "./__generated__/GetConnections"
 import { useParams } from "react-router-dom"
 import { Box } from "@mui/material"
+import GraphError from "components/utils/GraphError"
 
-const GET_CONNECTIONS = gql`
+export const GET_CONNECTIONS = gql`
   query GetConnections($workspaceId: ID!) {
     workspace(pk: $workspaceId) {
       id
@@ -41,7 +42,7 @@ const Connections: React.FC = () => {
 
   const handleRefresh = () => refetch()
 
-  if (error) return <p>Error : {error.message}</p>
+  if (error) return <GraphError error={error} />
 
   return (
     <>

@@ -11,6 +11,7 @@ import {
   GetNodesAndEdges,
   GetNodesAndEdgesVariables,
 } from "./__generated__/GetNodesAndEdges"
+import GraphError from "components/utils/GraphError"
 
 const GET_NODES_AND_EDGES = gql`
   query GetNodesAndEdges($workspaceId: ID!) {
@@ -66,7 +67,7 @@ const Graph: React.FC = () => {
     },
   })
 
-  if (error) return <p>Error : {error.message}</p>
+  if (error) return <GraphError error={error} />
   if (loading)
     return (
       <>

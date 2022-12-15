@@ -23,7 +23,11 @@ const ConnectionRefresh: React.FC<ConnectionRefreshProps> = ({ menuItem }) => {
     )
 
   return (
-    <Button variant="outlined" startIcon={<Refresh />}>
+    <Button
+      variant="outlined"
+      startIcon={<Refresh />}
+      data-testid="connection-refresh"
+    >
       Refresh
     </Button>
   )
