@@ -3,7 +3,6 @@ import { Routes as BrowerRoutes, Route } from "react-router-dom"
 import GuestRoute from "./components/auth/GuestRoute"
 import PrivateRoute from "./components/auth/PrivateRoute"
 import Login from "./pages/auth/Login"
-import Edges from "./pages/edges/Edges"
 import Home from "./pages/Home"
 import Nodes from "./pages/nodes/Nodes"
 import Node from "./pages/nodes/Node"
@@ -30,7 +29,6 @@ const Routes: React.FC = () => (
             <Route index element={<Nodes />} />
             <Route path=":nodeId" element={<Node />} />
           </Route>
-          <Route path="edges" element={<Edges />} />
           <Route path="connections">
             <Route index element={<Connections />} />
             <Route path="create" element={<ConnectionCreate />} />

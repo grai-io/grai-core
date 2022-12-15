@@ -1,5 +1,4 @@
 import React, { useState } from "react"
-import { Edge } from "pages/edges/Edges"
 import BaseGraph, { getAllIncomers, getAllOutgoers } from "./BaseGraph"
 import { Edge as RFEdge, Node as RFNode } from "reactflow"
 import notEmpty from "helpers/notEmpty"
@@ -10,6 +9,15 @@ export interface Error {
   destination: string
   test: string
   message: string
+}
+
+interface Edge {
+  id: string
+  dataSource: string
+  isActive: boolean
+  source: Node
+  destination: Node
+  metadata: any
 }
 
 interface Node extends NodeType {
