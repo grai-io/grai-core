@@ -59,11 +59,17 @@ export const renderWithRouter = (
     route = "/",
     routes = [],
     initialEntries = null,
+    user = {
+      id: "1",
+      name: "user1",
+      email: "user@example.com",
+    },
   }: {
     path?: string
     route?: string
     routes?: RouteType[]
     initialEntries?: string[] | null
+    user?: any
   } = {}
 ) => {
   return render(ui, {
@@ -74,11 +80,7 @@ export const renderWithRouter = (
             <MemoryRouter initialEntries={initialEntries ?? [route]}>
               <AuthContext.Provider
                 value={{
-                  user: {
-                    id: "1",
-                    name: "user1",
-                    email: "user@example.com",
-                  },
+                  user,
                   setUser: () => {},
                   authTokens: null,
                   setAuthTokens: () => {},
