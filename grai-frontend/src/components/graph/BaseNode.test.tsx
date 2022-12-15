@@ -1,6 +1,6 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { fireEvent, render, renderWithRouter, screen, waitFor } from "testing"
+import { fireEvent, renderWithRouter, screen, waitFor } from "testing"
 import BaseNode from "./BaseNode"
 import { ReactFlowProvider } from "reactflow"
 
@@ -186,7 +186,7 @@ test("context menu show downstream dependents", async () => {
   )
 })
 
-test("context menu show downstream dependents", async () => {
+test("context menu show profile", async () => {
   const user = userEvent.setup()
 
   renderWithRouter(
