@@ -123,7 +123,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Update deployment file
-        run: sed -i 's|<PR-NUM>|'${PR_NAME}'|' $GITHUB_WORKSPACE/deployment/values.yml
+        run: sed -i 's|<PR-NUM>|'${PR_NAME}'|' $GITHUB_WORKSPACE/.github/values/helm.yml
 
       - name: Helm apply
         uses: bitovi/github-actions-deploy-eks-helm@v1.1.0
@@ -132,7 +132,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
           cluster-name: ${{ secrets.CLUSTER_NAME }}
-          config-files: deployment/values.yml
+          config-files: .github/values/helm.yml
           chart-path: grai/grai
           namespace: pr-${{ github.event.number }}
           name: pr-${{ github.event.number }}
