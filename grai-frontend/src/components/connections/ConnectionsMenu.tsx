@@ -8,7 +8,7 @@ import {
 } from "@mui/material"
 import PopupState, { bindMenu, bindTrigger } from "material-ui-popup-state"
 import React from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import ConnectionRefresh from "./ConnectionRefresh"
 
 interface Connection {
@@ -20,6 +20,7 @@ type ConnectionsMenuProps = {
 }
 
 const ConnectionsMenu: React.FC<ConnectionsMenuProps> = ({ connection }) => {
+  const { workspaceId } = useParams()
   const navigate = useNavigate()
 
   return (
@@ -38,28 +39,25 @@ const ConnectionsMenu: React.FC<ConnectionsMenuProps> = ({ connection }) => {
               },
             }}
           >
-            <MenuItem onClick={() => navigate(`/connections/${connection.id}`)}>
+            <MenuItem
+              onClick={() =>
+                navigate(
+                  `/workspaces/${workspaceId}/connections/${connection.id}`
+                )
+              }
+            >
               <ListItemIcon>
                 <Edit />
               </ListItemIcon>
               <ListItemText primary="Edit" />
             </MenuItem>
-            <ConnectionRefresh connection={connection} menuItem />
-            <MenuItem>
+            <ConnectionRefresh connection={connection} menuItem disabled />
+            <MenuItem disabled>
               <ListItemIcon>
                 <Delete />
               </ListItemIcon>
               <ListItemText primary="Delete" />
             </MenuItem>
-            {/* <RefreshButton
-              source={table.source}
-              menuItem
-              onClose={popupState.close} />
-            <ExportButton
-              tableId={table.id}
-              menuItem
-              onClose={popupState.close} />
-            <TableDeleteButton table={table} onClose={popupState.close} /> */}
           </Menu>
         </>
       )}

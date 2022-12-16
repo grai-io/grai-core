@@ -9,12 +9,16 @@ interface Connection {
 type ConnectionRefreshProps = {
   connection: Connection
   menuItem?: boolean
+  disabled?: boolean
 }
 
-const ConnectionRefresh: React.FC<ConnectionRefreshProps> = ({ menuItem }) => {
+const ConnectionRefresh: React.FC<ConnectionRefreshProps> = ({
+  menuItem,
+  disabled,
+}) => {
   if (menuItem)
     return (
-      <MenuItem>
+      <MenuItem disabled={disabled}>
         <ListItemIcon>
           <Refresh />
         </ListItemIcon>
@@ -26,6 +30,7 @@ const ConnectionRefresh: React.FC<ConnectionRefreshProps> = ({ menuItem }) => {
     <Button
       variant="outlined"
       startIcon={<Refresh />}
+      disabled={disabled}
       data-testid="connection-refresh"
     >
       Refresh
