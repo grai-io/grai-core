@@ -8,4 +8,12 @@ test("renders", async () => {
   await waitFor(() => {
     expect(screen.getByText("Create Connection")).toBeTruthy()
   })
+
+  await waitFor(() => {
+    expect(screen.queryByRole("progressbar")).toBeTruthy()
+  })
+
+  await waitFor(() => {
+    expect(screen.queryByRole("progressbar")).toBeFalsy()
+  })
 })

@@ -8,7 +8,7 @@ import {
 import React from "react"
 import { GetConnectors } from "./__generated__/GetConnectors"
 
-const GET_CONNECTORS = gql`
+export const GET_CONNECTORS = gql`
   query GetConnectors {
     connectors {
       id
@@ -58,6 +58,7 @@ const Connector: React.FC<ConnectorProps> = ({ value, onChange }) => {
       getOptionLabel={value => value.name}
       value={value}
       onChange={handleChange}
+      data-testid="autocomplete"
       renderInput={params => (
         <TextField
           {...params}

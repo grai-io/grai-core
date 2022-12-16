@@ -1,9 +1,10 @@
 import { LoadingButton } from "@mui/lab"
-import { TextField, Typography } from "@mui/material"
+import { TextField } from "@mui/material"
 import React, { useState } from "react"
 import Connector, { ConnectorType } from "components/form/fields/Connector"
 import Form from "components/form/Form"
 import ConnectionsMetadata from "./ConnectionsMetadata"
+import GraphError from "components/utils/GraphError"
 
 export type Values = {
   connector: ConnectorType | null
@@ -34,7 +35,7 @@ const ConnectionsForm: React.FC<ConnectionsFormProps> = ({
 
   return (
     <Form onSubmit={handleSubmit}>
-      {error && <Typography>{JSON.stringify(error)}</Typography>}
+      {error && <GraphError error={error} />}
       {!edit && (
         <Connector
           value={values.connector}
@@ -42,11 +43,13 @@ const ConnectionsForm: React.FC<ConnectionsFormProps> = ({
         />
       )}
 
-<TextField
-        label="Name"
+      <TextField
+        label="Namespace"
         margin="normal"
         value={values.namespace}
-        onChange={event => setValues({ ...values, namespace: event.target.value })}
+        onChange={event =>
+          setValues({ ...values, namespace: event.target.value })
+        }
         required
         fullWidth
       />

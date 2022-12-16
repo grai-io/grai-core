@@ -7,7 +7,7 @@ import {
   CreateConnectionVariables,
 } from "./__generated__/CreateConnection"
 
-const CREATE_CONNECTION = gql`
+export const CREATE_CONNECTION = gql`
   mutation CreateConnection(
     $workspaceId: ID!
     $connectorId: ID!
