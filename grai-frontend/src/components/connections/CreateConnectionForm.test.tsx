@@ -15,7 +15,7 @@ test("renders", async () => {
   renderWithRouter(<CreateConnectionForm />)
 
   await waitFor(() => {
-    expect(screen.queryByRole("progressbar")).toBeTruthy()
+    expect(screen.getByRole("progressbar")).toBeTruthy()
   })
 
   await waitFor(() => {
@@ -99,7 +99,7 @@ test("submit", async () => {
   ])
 
   await waitFor(() => {
-    expect(screen.queryByRole("progressbar")).toBeTruthy()
+    expect(screen.getByRole("progressbar")).toBeTruthy()
   })
 
   await waitFor(() => {

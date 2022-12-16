@@ -10,7 +10,7 @@ test("renders", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.queryByRole("progressbar")).toBeTruthy()
+    expect(screen.getByRole("progressbar")).toBeTruthy()
   })
 
   await waitFor(() => {
