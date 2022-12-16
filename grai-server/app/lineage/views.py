@@ -79,14 +79,8 @@ class EdgeViewSet(ModelViewSet):
     def get_queryset(self):
         queryset = self.type.objects
 
-        supported_filters = ["is_active", "source", "destination"]
-        filters = (
-            (filter_name, condition)
-            for filter_name in supported_filters
-            if (condition := self.request.query_params.get(filter_name))
-        )
-        for filter_name, condition in filters:
-            queryset = queryset.filter(**{filter_name: condition})
+        if condition := self.request.query_params.get('is_active', None):
+            queryset = queryset.filter(is_active=condition)
         return queryset
         # return Edge.objects.filter(is_active=True).order_by('-updated_at')
 
@@ -94,7 +88,10 @@ class EdgeViewSet(ModelViewSet):
     #     instance.is_active = False
     #     instance.save()
 
-    # def create(self, request):
+    # def create(self, request, *args, **kwargs):
+    #     raise Exception(data, request.data['source'])
+    #     return super().create(**data)
     #     object, create = self.type.objects.update_or_create(**request.data)
+    #
     #     serializer = self.serializer_class(object)
     #     return Response(serializer.data)

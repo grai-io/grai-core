@@ -130,27 +130,50 @@ def delete_url_v1(client: BaseClient, url: str) -> requests.Response:
     return response
 
 
-@BaseClient.patch.register
-def patch_url_v1_dict(client: BaseClient, url: str, payload: Dict) -> requests.Response:
-    #payload = {k: v for k, v in payload.items() if v is not None}
-    payload = json.dumps(payload, cls=GraiEncoder)
-    response = client.patch(url, payload)
-    return response
-
-
 @BaseClient.post.register
-def post_url_v1_dict(client: BaseClient, url: str, payload: Dict) -> requests.Response:
-    #payload = {k: v for k, v in payload.items() if v is not None}
-    payload = json.dumps(payload, cls=GraiEncoder)
-    response = client.post(url, payload)
+def post_sequence(client: BaseClient, objs: Sequence) -> List[Dict]:
+    result = [client.post(obj) for obj in objs]
+    return result
+
+
+@BaseClient.patch.register
+def patch_sequence(client: BaseClient, objs: Sequence) -> List[Dict]:
+    result = [client.patch(obj) for obj in objs]
+    return result
+
+
+@BaseClient.delete.register
+def delete_sequence(client: BaseClient, objs: Sequence[GraiType]):
+    for obj in objs:
+        client.delete(obj)
+
+
+@BaseClient.get.register
+def get_sequence(client: BaseClient, objs: Sequence) -> List[Dict]:
+    result = [client.get(obj) for obj in objs]
+    return result
+
+
+@BaseClient.get.register
+def get_url_v1(client: BaseClient, url: str) -> requests.Response:
+    response = requests.get(url, headers=client.auth_headers)
+    response_status_check(response)
+    return response
+
+
+@BaseClient.delete.register
+def delete_url_v1(client: BaseClient, url: str) -> requests.Response:
+    response = requests.delete(url, headers=client.auth_headers)
+    response_status_check(response)
     return response
 
 
 @BaseClient.patch.register
-def patch_url_v1_json(client: BaseClient, url: str, payload: str) -> requests.Response:
+def patch_url_v1(client: BaseClient, url: str, payload: Dict) -> requests.Response:
     headers = {**client.auth_headers, "Content-Type": "application/json"}
+    payload = {k: v for k, v in payload.items() if v is not None}
     response = requests.patch(
-        url, data=payload, headers=headers
+        url, data=json.dumps(payload, cls=GraiEncoder), headers=headers
     )
 
     response_status_check(response)
@@ -158,11 +181,11 @@ def patch_url_v1_json(client: BaseClient, url: str, payload: str) -> requests.Re
 
 
 @BaseClient.post.register
-def post_url_v1_json(client: BaseClient, url: str, payload: str) -> requests.Response:
+def post_url_v1(client: BaseClient, url: str, payload: Dict) -> requests.Response:
     headers = {**client.auth_headers, "Content-Type": "application/json"}
-    print(repr(payload), type(payload))
+    payload = {k: v for k, v in payload.items() if v is not None}
     response = requests.post(
-        url, data=payload, headers=headers
+        url, data=json.dumps(payload, cls=GraiEncoder), headers=headers
     )
     response_status_check(response)
     return response

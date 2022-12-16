@@ -1,5 +1,5 @@
 from itertools import chain
-from typing import Any, List, Literal, Optional, TypeVar, Union
+from typing import Any, List, Literal, Optional, TypeVar, Union, Type
 from uuid import UUID
 
 import requests
