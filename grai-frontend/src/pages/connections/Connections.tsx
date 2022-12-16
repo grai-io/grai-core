@@ -19,6 +19,7 @@ export const GET_CONNECTIONS = gql`
         id
         namespace
         name
+        isActive
         connector {
           id
           name

@@ -1,5 +1,4 @@
 import {
-  Checkbox,
   Table,
   TableBody,
   TableCell,
@@ -35,10 +34,6 @@ const ApiKeysTable: React.FC<ApiKeysTableProps> = ({ keys, loading }) => (
   <Table>
     <TableHead>
       <TableRow sx={{ backgroundColor: theme => theme.palette.grey[100] }}>
-        <TableCell sx={{ width: 0, p: 0 }}>
-          <Checkbox size="small" />
-        </TableCell>
-
         <TableCell sx={{ pl: 1 }}>Name</TableCell>
         <TableCell>Key</TableCell>
         <TableCell>Created</TableCell>
@@ -51,10 +46,6 @@ const ApiKeysTable: React.FC<ApiKeysTableProps> = ({ keys, loading }) => (
     <TableBody>
       {keys.map(key => (
         <TableRow key={key.id}>
-          <TableCell sx={{ p: 0 }}>
-            <Checkbox size="small" />
-          </TableCell>
-
           <TableCell sx={{ pl: 1 }}>{key.name}</TableCell>
           <TableCell>{key.prefix}***********</TableCell>
           <TableCell>{key.created}</TableCell>

@@ -1,5 +1,4 @@
 import {
-  Checkbox,
   Table,
   TableBody,
   TableHead,
@@ -22,6 +21,7 @@ interface Connection {
   namespace: string
   name: string
   connector: Connector
+  isActive: boolean
 }
 
 type ConnectionsTableProps = {
@@ -39,13 +39,10 @@ const ConnectionsTable: React.FC<ConnectionsTableProps> = ({
     <Table>
       <TableHead>
         <TableRow sx={{ backgroundColor: theme => theme.palette.grey[100] }}>
-          <TableCell sx={{ p: 0, width: 0 }}>
-            <Checkbox size="small" />
-          </TableCell>
           <TableCell>Name</TableCell>
           <TableCell>Namespace</TableCell>
           <TableCell>Connector</TableCell>
-          <TableCell>Last updated</TableCell>
+          <TableCell>Active</TableCell>
           <TableCell sx={{ width: 0 }} />
         </TableRow>
       </TableHead>
@@ -57,13 +54,10 @@ const ConnectionsTable: React.FC<ConnectionsTableProps> = ({
             sx={{ cursor: "pointer" }}
             onClick={() => navigate(connection.id)}
           >
-            <TableCell sx={{ p: 0 }} stopPropagation>
-              <Checkbox size="small" />
-            </TableCell>
             <TableCell>{connection.name}</TableCell>
             <TableCell>{connection.namespace}</TableCell>
             <TableCell>{connection.connector.name}</TableCell>
-            <TableCell />
+            <TableCell>{connection.isActive ? "Yes" : "No"}</TableCell>
             <TableCell sx={{ py: 0, px: 1 }} stopPropagation>
               <ConnectionsMenu connection={connection} />
             </TableCell>

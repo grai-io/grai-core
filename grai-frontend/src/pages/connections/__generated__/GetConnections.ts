@@ -18,6 +18,7 @@ export interface GetConnections_workspace_connections {
   id: any;
   namespace: string;
   name: string;
+  isActive: boolean;
   connector: GetConnections_workspace_connections_connector;
 }
 

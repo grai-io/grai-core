@@ -27,7 +27,6 @@ const NodesTable: React.FC<NodesTableProps> = ({ nodes, loading }) => {
           <TableCell>Namespace</TableCell>
           <TableCell>Data Source</TableCell>
           <TableCell>Active</TableCell>
-          <TableCell>Last updated</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -44,7 +43,6 @@ const NodesTable: React.FC<NodesTableProps> = ({ nodes, loading }) => {
             <TableCell>{node.namespace}</TableCell>
             <TableCell>{node.dataSource}</TableCell>
             <TableCell>{node.isActive ? "Yes" : "No"}</TableCell>
-            <TableCell />
           </TableRow>
         ))}
         {loading && (
