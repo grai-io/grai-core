@@ -1,11 +1,11 @@
 from typing import TypeVar
-from grai_client.endpoints.v1.utils import process_node_id
+
 from grai_client.endpoints.v1.client import ClientV1
+from grai_client.endpoints.v1.utils import process_node_id
 from grai_client.schemas import edge, node
 from grai_client.schemas.utilities import merge_models
 
 T = TypeVar("T", node.NodeV1, edge.EdgeV1)
-
 
 
 @ClientV1.patch.register

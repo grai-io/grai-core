@@ -1,15 +1,15 @@
-import orjson
+import datetime
 import json
+import pathlib
 import sys
 from functools import wraps
 from typing import Any, Callable, Dict, List, Type, TypeVar
 from uuid import UUID
-import pathlib
 
+import orjson
+from grai_client.schemas.utilities import GraiBaseModel
 from pydantic import BaseModel
 from requests import RequestException, Response
-import datetime
-from grai_client.schemas.utilities import GraiBaseModel
 
 if sys.version_info < (3, 10):
     from typing_extensions import ParamSpec
@@ -49,7 +49,8 @@ def response_status_check(resp: Response) -> Response:
 
 
 class GraiEncoder(json.JSONEncoder):
-    """ Needed for the base python json implementation"""
+    """Needed for the base python json implementation"""
+
     def default(self, obj: Any) -> Any:
         if isinstance(obj, (UUID, pathlib.PosixPath, pathlib.WindowsPath)):
             return str(obj)
@@ -64,9 +65,7 @@ class GraiEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 
-
-
 def serialize_obj(obj: Dict) -> bytes:
-    #json_obj = json.dumps(obj, cls=GraiEncoder)
+    # json_obj = json.dumps(obj, cls=GraiEncoder)
     json_obj = orjson.dumps(obj)
     return json_obj

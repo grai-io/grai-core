@@ -2,9 +2,8 @@ from enum import Enum
 from typing import Any, Dict, List, Literal, Optional, Union
 from uuid import UUID
 
-from pydantic import BaseModel, Field, root_validator
-
 from grai_source_dbt.models.shared import DBTNode
+from pydantic import BaseModel, Field, root_validator
 
 
 class TestConfig(BaseModel):

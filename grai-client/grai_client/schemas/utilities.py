@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, TypeVar, Union
 from uuid import UUID
+
 from pydantic import BaseModel, root_validator
 
 if TYPE_CHECKING:
@@ -44,9 +45,8 @@ class GraiBaseModel(BaseModel):
         return type(self)(**merge_dicts(values, new_values))
 
     class Config:
-        json_encoders = {
-            UUID: lambda x: str(x)
-        }
+        json_encoders = {UUID: lambda x: str(x)}
+
 
 class BaseSpec(GraiBaseModel):
     is_active: Optional[bool] = True

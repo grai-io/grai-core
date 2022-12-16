@@ -1,9 +1,7 @@
 from grai_client.schemas.edge import EdgeV1
 from grai_client.schemas.node import NodeV1
-
-
-from grai_source_dbt.loader import DBTGraph, Manifest
 from grai_source_dbt.base import get_nodes_and_edges
+from grai_source_dbt.loader import DBTGraph, Manifest
 from grai_source_dbt.test_utils import get_manifest_file
 
 
@@ -111,7 +109,13 @@ def test_get_nodes_and_edges():
     nodes, edges = get_nodes_and_edges(manifest_file)
     node_ids = {(node.spec.name, node.spec.namespace) for node in nodes}
     source_ids = {(e.spec.source.name, e.spec.source.namespace) for e in edges}
-    destination_ids = {(e.spec.destination.name, e.spec.destination.namespace) for e in edges}
+    destination_ids = {
+        (e.spec.destination.name, e.spec.destination.namespace) for e in edges
+    }
 
-    assert len(source_ids - node_ids) == 0, f"Edge sources {source_ids - node_ids} missing from node list"
-    assert len(destination_ids - node_ids) == 0, f"Edge destinations {destination_ids - node_ids} missing from node list"
+    assert (
+        len(source_ids - node_ids) == 0
+    ), f"Edge sources {source_ids - node_ids} missing from node list"
+    assert (
+        len(destination_ids - node_ids) == 0
+    ), f"Edge destinations {destination_ids - node_ids} missing from node list"

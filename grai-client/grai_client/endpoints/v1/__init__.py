@@ -1,1 +1,1 @@
-from grai_client.endpoints.v1 import client, utils, delete, get, patch, post, url
+from grai_client.endpoints.v1 import client, delete, get, patch, post, url, utils

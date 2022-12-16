@@ -26,7 +26,9 @@ def create_node(client, name=None, namespace="default", data_source="test"):
     return response
 
 
-def create_edge_with_node_ids(client, source=None, destination=None, data_source="test", **kwargs):
+def create_edge_with_node_ids(
+    client, source=None, destination=None, data_source="test", **kwargs
+):
     if source is None:
         source = create_node(client).json()["id"]
     if destination is None:
@@ -36,7 +38,6 @@ def create_edge_with_node_ids(client, source=None, destination=None, data_source
     url = reverse("graph:edges-list")
     response = client.post(url, args, **kwargs)
     return response
-
 
 
 # def create_edge_without_node_ids(client, source=None, destination=None, data_source="test", **kwargs):
@@ -99,7 +100,9 @@ def test_get_endpoints(auto_login_user, url_name, status):
     client, user = auto_login_user()
     url = reverse(url_name)
     response = client.get(url)
-    assert response.status_code == status, f"verb `get` failed on {url} with status {response.status_code}"
+    assert (
+        response.status_code == status
+    ), f"verb `get` failed on {url} with status {response.status_code}"
 
 
 @pytest.mark.django_db
@@ -178,7 +181,9 @@ def test_duplicate_edge_nodes(auto_login_user):
     client, user = auto_login_user()
     node_id = create_node(client).json()["id"]
     with pytest.raises(django.db.utils.IntegrityError):
-        response = create_edge_with_node_ids(client, source=node_id, destination=node_id)
+        response = create_edge_with_node_ids(
+            client, source=node_id, destination=node_id
+        )
 
 
 @pytest.fixture

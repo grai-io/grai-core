@@ -1,5 +1,5 @@
-from grai_client.endpoints.v1.utils import process_node_id
 from grai_client.endpoints.v1.client import ClientV1
+from grai_client.endpoints.v1.utils import process_node_id
 from grai_client.schemas.edge import EdgeV1
 from grai_client.schemas.node import NodeV1
 
@@ -29,4 +29,3 @@ def post_edge_v1(client: ClientV1, grai_type: EdgeV1) -> EdgeV1:
     response["source"] = source
     response["destination"] = destination
     return EdgeV1.from_spec(response)
-

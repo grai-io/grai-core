@@ -79,7 +79,7 @@ class EdgeViewSet(ModelViewSet):
     def get_queryset(self):
         queryset = self.type.objects
 
-        if condition := self.request.query_params.get('is_active', None):
+        if condition := self.request.query_params.get("is_active", None):
             queryset = queryset.filter(is_active=condition)
         return queryset
         # return Edge.objects.filter(is_active=True).order_by('-updated_at')

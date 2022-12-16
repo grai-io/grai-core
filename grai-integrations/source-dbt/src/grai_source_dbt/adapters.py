@@ -3,15 +3,16 @@ from typing import Any, List, Literal, Sequence, Union
 from grai_client.schemas.edge import EdgeV1
 from grai_client.schemas.node import NodeV1
 from grai_client.schemas.schema import Schema
-from multimethod import multimethod
-
 from grai_source_dbt.models.nodes import Column, Edge, GraiNodeTypes, SupportedDBTTypes
+from multimethod import multimethod
 
 
 @multimethod
 def adapt_to_client(current: Any, desired: Any) -> None:
 
-    raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)} for value {current}")
+    raise NotImplementedError(
+        f"No adapter between {type(current)} and {type(desired)} for value {current}"
+    )
 
 
 @adapt_to_client.register
@@ -34,8 +35,8 @@ def adapt_table_to_client(
     }
 
     if current.tests:
-        spec_dict['metadata']['tests'] = [test.dict() for test in current.tests]
-        
+        spec_dict["metadata"]["tests"] = [test.dict() for test in current.tests]
+
     return Schema.to_model(spec_dict, version=version, typing_type="Node")
 
 
@@ -53,12 +54,12 @@ def adapt_column_to_client(current: Column, version: Literal["v1"] = "v1") -> No
             "dbt_tags": current.tags,
             "table_name": current.table_name,
             "dbt_quote": current.quote,
-            "tests": [test.dict() for test in current.tests]
+            "tests": [test.dict() for test in current.tests],
         },
     }
 
     if current.tests:
-        spec_dict['metadata']['tests'] = [test.dict() for test in current.tests]
+        spec_dict["metadata"]["tests"] = [test.dict() for test in current.tests]
 
     return Schema.to_model(spec_dict, version=version, typing_type="Node")
 

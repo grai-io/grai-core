@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import Dict, List, Literal, Optional, Union
 
-from pydantic import BaseModel, Field
-
 from grai_source_dbt.models.shared import (
     ID,
     Constraint,
@@ -12,6 +10,7 @@ from grai_source_dbt.models.shared import (
     NodeDeps,
 )
 from grai_source_dbt.models.tests import Test
+from pydantic import BaseModel, Field
 
 
 class Table(DBTNode):

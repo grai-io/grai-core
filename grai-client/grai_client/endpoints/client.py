@@ -3,11 +3,10 @@ import json
 from typing import Any, Dict, List, Optional, Sequence, Union
 
 import requests
-from multimethod import multimethod
-
 from grai_client.authentication import APIKeyHeader, UserNameHeader, UserTokenHeader
-from grai_client.endpoints.utilities import serialize_obj, response_status_check
+from grai_client.endpoints.utilities import response_status_check, serialize_obj
 from grai_client.schemas.schema import GraiType
+from multimethod import multimethod
 
 
 class BaseClient(abc.ABC):
@@ -172,9 +171,7 @@ def delete_url_v1(client: BaseClient, url: str) -> requests.Response:
 def patch_url_v1(client: BaseClient, url: str, payload: Dict) -> requests.Response:
     headers = {**client.auth_headers, "Content-Type": "application/json"}
     payload = serialize_obj(payload)
-    response = requests.patch(
-        url, data=payload, headers=headers
-    )
+    response = requests.patch(url, data=payload, headers=headers)
 
     response_status_check(response)
     return response
@@ -184,8 +181,6 @@ def patch_url_v1(client: BaseClient, url: str, payload: Dict) -> requests.Respon
 def post_url_v1(client: BaseClient, url: str, payload: Dict) -> requests.Response:
     headers = {**client.auth_headers, "Content-Type": "application/json"}
     payload = serialize_obj(payload)
-    response = requests.post(
-        url, data=payload, headers=headers
-    )
+    response = requests.post(url, data=payload, headers=headers)
     response_status_check(response)
     return response

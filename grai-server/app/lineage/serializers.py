@@ -1,6 +1,8 @@
+import uuid
+
 from django.db.models import fields
 from rest_framework import serializers
-import uuid
+
 from .models import Edge, Node
 
 
@@ -19,6 +21,7 @@ class NodeSerializer(serializers.ModelSerializer):
             "is_active",
         )
         read_only_fields = ("created_at", "updated_at")
+
 
 # from django.forms.models import model_to_dict
 # class EdgeNodeSerializer(serializers.RelatedField):
