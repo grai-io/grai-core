@@ -35,6 +35,7 @@ test("click row", async () => {
     }
   )
 
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
   await user.click(container.querySelectorAll("tbody > tr")[0])
 
   await waitFor(() => {
