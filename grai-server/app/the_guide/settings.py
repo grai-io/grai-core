@@ -115,7 +115,6 @@ THE_GUIDE_APPS = [
     "connections",
     "workspaces",
     "users",
-    "namespaces",
     "telemetry",
 ]
 
