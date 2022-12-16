@@ -43,7 +43,7 @@ const PasswordField: React.FC<PasswordFieldProps> = ({
   return (
     <TextField
       label={label}
-      value={value ?? ""}
+      value={value}
       onChange={onChange}
       margin="normal"
       required={required}
