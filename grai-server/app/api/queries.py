@@ -49,6 +49,7 @@ def get_workspace(pk: strawberry.ID, info: Info) -> WorkspaceType:
         nodes=workspace.nodes,
         edges=workspace.edges,
         connections=workspace.connections,
+        api_keys=workspace.api_keys,
     )
 
 
