@@ -2,13 +2,12 @@ import { LoadingButton } from "@mui/lab"
 import { TextField, Typography } from "@mui/material"
 import React, { useState } from "react"
 import Connector, { ConnectorType } from "components/form/fields/Connector"
-import Namespace from "components/form/fields/Namespace"
 import Form from "components/form/Form"
 import ConnectionsMetadata from "./ConnectionsMetadata"
 
 export type Values = {
   connector: ConnectorType | null
-  namespace: string | null
+  namespace: string
   name: string
   metadata: any
   secrets: any
@@ -43,9 +42,13 @@ const ConnectionsForm: React.FC<ConnectionsFormProps> = ({
         />
       )}
 
-      <Namespace
+<TextField
+        label="Name"
+        margin="normal"
         value={values.namespace}
-        onChange={value => setValues({ ...values, namespace: value })}
+        onChange={event => setValues({ ...values, namespace: event.target.value })}
+        required
+        fullWidth
       />
       <TextField
         label="Name"
