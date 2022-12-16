@@ -8,13 +8,13 @@
 // ====================================================
 
 export interface CreateApiKey_createApiKey_apiKey {
-  __typename: "WorkspaceAPIKeyType";
+  __typename: "WorkspaceAPIKey";
   id: string;
   name: string;
 }
 
 export interface CreateApiKey_createApiKey {
-  __typename: "KeyResultType";
+  __typename: "KeyResult";
   key: string;
   apiKey: CreateApiKey_createApiKey_apiKey;
 }

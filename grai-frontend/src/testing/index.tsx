@@ -17,10 +17,10 @@ const mockResolvers = {
   PaginatorInfo: () => ({ currentPage: 1, total: 20 }),
   JSON: () => ({}),
   UUID: () => casual.uuid,
-  ConnectionType: () => ({
+  Connection: () => ({
     name: "Connection 1",
   }),
-  NodeType: () => ({
+  Node: () => ({
     metadata: {
       node_type: "Table",
     },

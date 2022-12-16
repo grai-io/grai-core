@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface UpdateConnection_updateConnection {
-  __typename: "ConnectionType";
+  __typename: "Connection";
   id: any;
   namespace: string;
   name: string;

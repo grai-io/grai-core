@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface GetWorkspaces_workspaces {
-  __typename: "WorkspaceType";
+  __typename: "Workspace";
   id: any;
   name: string;
 }

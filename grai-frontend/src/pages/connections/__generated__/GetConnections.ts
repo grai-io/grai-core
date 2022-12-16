@@ -8,13 +8,13 @@
 // ====================================================
 
 export interface GetConnections_workspace_connections_connector {
-  __typename: "ConnectorType";
+  __typename: "Connector";
   id: any;
   name: string;
 }
 
 export interface GetConnections_workspace_connections {
-  __typename: "ConnectionType";
+  __typename: "Connection";
   id: any;
   namespace: string;
   name: string;
@@ -23,7 +23,7 @@ export interface GetConnections_workspace_connections {
 }
 
 export interface GetConnections_workspace {
-  __typename: "WorkspaceType";
+  __typename: "Workspace";
   id: any;
   connections: GetConnections_workspace_connections[];
 }

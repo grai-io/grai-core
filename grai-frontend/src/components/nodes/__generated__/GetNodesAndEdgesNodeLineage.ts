@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface GetNodesAndEdgesNodeLineage_workspace_nodes {
-  __typename: "NodeType";
+  __typename: "Node";
   id: any;
   namespace: string;
   name: string;
@@ -19,7 +19,7 @@ export interface GetNodesAndEdgesNodeLineage_workspace_nodes {
 }
 
 export interface GetNodesAndEdgesNodeLineage_workspace_edges_source {
-  __typename: "NodeType";
+  __typename: "Node";
   id: any;
   namespace: string;
   name: string;
@@ -30,7 +30,7 @@ export interface GetNodesAndEdgesNodeLineage_workspace_edges_source {
 }
 
 export interface GetNodesAndEdgesNodeLineage_workspace_edges_destination {
-  __typename: "NodeType";
+  __typename: "Node";
   id: any;
   namespace: string;
   name: string;
@@ -41,7 +41,7 @@ export interface GetNodesAndEdgesNodeLineage_workspace_edges_destination {
 }
 
 export interface GetNodesAndEdgesNodeLineage_workspace_edges {
-  __typename: "EdgeType";
+  __typename: "Edge";
   id: any;
   isActive: boolean;
   dataSource: string;
@@ -51,7 +51,7 @@ export interface GetNodesAndEdgesNodeLineage_workspace_edges {
 }
 
 export interface GetNodesAndEdgesNodeLineage_workspace {
-  __typename: "WorkspaceType";
+  __typename: "Workspace";
   id: any;
   nodes: GetNodesAndEdgesNodeLineage_workspace_nodes[];
   edges: GetNodesAndEdgesNodeLineage_workspace_edges[];

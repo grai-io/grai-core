@@ -8,13 +8,13 @@
 // ====================================================
 
 export interface GetApiKeys_workspace_apiKeys_createdBy {
-  __typename: "UserType";
+  __typename: "User";
   id: any;
   username: string | null;
 }
 
 export interface GetApiKeys_workspace_apiKeys {
-  __typename: "WorkspaceAPIKeyType";
+  __typename: "WorkspaceAPIKey";
   id: string;
   name: string;
   prefix: string;
@@ -25,7 +25,7 @@ export interface GetApiKeys_workspace_apiKeys {
 }
 
 export interface GetApiKeys_workspace {
-  __typename: "WorkspaceType";
+  __typename: "Workspace";
   id: any;
   apiKeys: GetApiKeys_workspace_apiKeys[];
 }

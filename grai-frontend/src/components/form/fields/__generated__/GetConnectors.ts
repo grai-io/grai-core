@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface GetConnectors_connectors {
-  __typename: "ConnectorType";
+  __typename: "Connector";
   id: any;
   name: string;
   metadata: any;

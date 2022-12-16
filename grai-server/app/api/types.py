@@ -1,17 +1,23 @@
 from typing import List
 
-from lineage.models import Edge, Node
-from connections.models import Connection, Connector
-from namespaces.models import Namespace
-from workspaces.models import Workspace, Membership, WorkspaceAPIKey
+from lineage.models import Edge as EdgeModel, Node as NodeModel
+from connections.models import (
+    Connection as ConnectionModel,
+    Connector as ConnectorModel,
+)
+from workspaces.models import (
+    Workspace as WorkspaceModel,
+    Membership as MembershipModel,
+    WorkspaceAPIKey as WorkspaceAPIKeyModel,
+)
 import strawberry
 from strawberry.scalars import JSON
 from strawberry_django_plus.gql import auto
-from users.models import User
+from users.models import User as UserModel
 
 
-@strawberry.django.type(User)
-class UserType:
+@strawberry.django.type(UserModel)
+class User:
     id: auto
     username: auto
 
@@ -19,8 +25,8 @@ class UserType:
     updated_at: auto
 
 
-@strawberry.django.type(Node)
-class NodeType:
+@strawberry.django.type(NodeModel)
+class Node:
     id: auto
     namespace: auto
     name: auto
@@ -28,91 +34,79 @@ class NodeType:
     data_source: auto
     metadata: JSON
     is_active: auto
-    created_by: UserType
-    source_edges: List["EdgeType"]
-    destination_edges: List["EdgeType"]
+    created_by: User
+    source_edges: List["Edge"]
+    destination_edges: List["Edge"]
 
 
-@strawberry.django.type(Edge)
-class EdgeType:
+@strawberry.django.type(EdgeModel)
+class Edge:
     id: auto
     data_source: auto
-    source: NodeType
-    destination: NodeType
+    source: Node
+    destination: Node
     metadata: JSON
     is_active: auto
-    created_by: UserType
+    created_by: User
 
 
-@strawberry.django.type(Connector)
-class ConnectorType:
+@strawberry.django.type(ConnectorModel)
+class Connector:
     id: auto
     name: auto
     metadata: JSON
     is_active: auto
 
 
-@strawberry.django.type(Connection)
-class ConnectionType:
+@strawberry.django.type(ConnectionModel)
+class Connection:
     id: auto
-    connector: ConnectorType
+    connector: Connector
     namespace: auto
     name: auto
     metadata: JSON
     is_active: auto
     created_at: auto
     updated_at: auto
-    created_by: UserType
+    created_by: User
 
 
-@strawberry.django.type(Namespace)
-class NamespaceType:
+@strawberry.django.type(WorkspaceModel)
+class Workspace:
     id: auto
     name: auto
-
-
-@strawberry.django.type(Workspace)
-class WorkspaceType:
-    id: auto
-    name: auto
-    nodes: List["NodeType"]
+    nodes: List["Node"]
     # node: NodeType = strawberry.django.field
     @strawberry.django.field
-    def node(self, pk: strawberry.ID) -> NodeType:
+    def node(self, pk: strawberry.ID) -> Node:
         return Node.objects.get(id=pk)
 
-    edges: List["EdgeType"]
+    edges: List["Edge"]
     # edge: EdgeType = strawberry.django.field(field_name='edges')
     @strawberry.django.field
-    def edge(self, pk: strawberry.ID) -> EdgeType:
+    def edge(self, pk: strawberry.ID) -> Edge:
         return Edge.objects.get(id=pk)
 
-    connections: List["ConnectionType"]
+    connections: List["Connection"]
     # connection: ConnectionType = strawberry.django.field
     @strawberry.django.field
-    def connection(self, pk: strawberry.ID) -> ConnectionType:
-        return Connection.objects.get(id=pk)
+    def connection(self, pk: strawberry.ID) -> Connection:
+        return ConnectionModel.objects.get(id=pk)
 
-    namespaces: List["NamespaceType"]
-    # namespace: NamespaceType = strawberry.django.field
-    @strawberry.django.field
-    def namespace(self, pk: strawberry.ID) -> NamespaceType:
-        return Namespace.objects.get(id=pk)
-
-    memberships: List["MembershipType"]
-    api_keys: List["WorkspaceAPIKeyType"]
+    memberships: List["Membership"]
+    api_keys: List["WorkspaceAPIKey"]
 
 
-@strawberry.django.type(Membership)
-class MembershipType:
+@strawberry.django.type(MembershipModel)
+class Membership:
     id: auto
     role: auto
-    user: UserType
-    workspace: WorkspaceType
+    user: User
+    workspace: Workspace
 
 
-@strawberry.django.type(WorkspaceAPIKey)
-class WorkspaceAPIKeyType:
+@strawberry.django.type(WorkspaceAPIKeyModel)
+class WorkspaceAPIKey:
     id: auto
     name: auto
     prefix: auto
@@ -120,10 +114,10 @@ class WorkspaceAPIKeyType:
     expiry_date: auto
     # has_expired: auto
     created: auto
-    created_by: UserType
+    created_by: User
 
 
 @strawberry.type
-class KeyResultType:
+class KeyResult:
     key: str
-    api_key: WorkspaceAPIKeyType
+    api_key: WorkspaceAPIKey

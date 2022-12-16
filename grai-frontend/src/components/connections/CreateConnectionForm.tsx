@@ -11,42 +11,30 @@ export const CREATE_CONNECTION = gql`
   mutation CreateConnection(
     $workspaceId: ID!
     $connectorId: ID!
-    $namespace: String
+    $namespace: String!
     $name: String!
     $metadata: JSON!
     $secrets: JSON!
   ) {
     createConnection(
-      input: {
-        workspace: { set: $workspaceId }
-        connector: { set: $connectorId }
-        namespace: $namespace
-        name: $name
-        metadata: $metadata
-        secrets: $secrets
-      }
+      workspaceId: $workspaceId
+      connectorId: $connectorId
+      namespace: $namespace
+      name: $name
+      metadata: $metadata
+      secrets: $secrets
     ) {
-      __typename
-      ... on OperationInfo {
-        messages {
-          kind
-          message
-          field
-        }
-      }
-      ... on ConnectionType {
+      id
+      connector {
         id
-        connector {
-          id
-          name
-        }
-        namespace
         name
-        metadata
-        isActive
-        createdAt
-        updatedAt
       }
+      namespace
+      name
+      metadata
+      isActive
+      createdAt
+      updatedAt
     }
   }
 `

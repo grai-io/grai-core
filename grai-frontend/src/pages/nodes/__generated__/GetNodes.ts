@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface GetNodes_workspace_nodes {
-  __typename: "NodeType";
+  __typename: "Node";
   id: any;
   namespace: string;
   name: string;
@@ -19,7 +19,7 @@ export interface GetNodes_workspace_nodes {
 }
 
 export interface GetNodes_workspace {
-  __typename: "WorkspaceType";
+  __typename: "Workspace";
   id: any;
   nodes: GetNodes_workspace_nodes[];
 }

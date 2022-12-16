@@ -28,7 +28,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "WorkspaceType",
+                    "name": "Workspace",
                     "ofType": null
                   }
                 }
@@ -61,7 +61,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "WorkspaceType",
+                "name": "Workspace",
                 "ofType": null
               }
             },
@@ -83,7 +83,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "ConnectorType",
+                    "name": "Connector",
                     "ofType": null
                   }
                 }
@@ -100,7 +100,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "WorkspaceType",
+        "name": "Workspace",
         "description": null,
         "fields": [
           {
@@ -150,7 +150,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "NodeType",
+                    "name": "Node",
                     "ofType": null
                   }
                 }
@@ -174,7 +174,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "EdgeType",
+                    "name": "Edge",
                     "ofType": null
                   }
                 }
@@ -198,31 +198,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "ConnectionType",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "namespaces",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "NamespaceType",
+                    "name": "Connection",
                     "ofType": null
                   }
                 }
@@ -246,7 +222,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "MembershipType",
+                    "name": "Membership",
                     "ofType": null
                   }
                 }
@@ -270,7 +246,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "WorkspaceAPIKeyType",
+                    "name": "WorkspaceAPIKey",
                     "ofType": null
                   }
                 }
@@ -303,7 +279,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "ConnectionType",
+                "name": "Connection",
                 "ofType": null
               }
             },
@@ -334,38 +310,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "EdgeType",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "namespace",
-            "description": null,
-            "args": [
-              {
-                "name": "pk",
-                "description": null,
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "ID",
-                    "ofType": null
-                  }
-                },
-                "defaultValue": null
-              }
-            ],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "NamespaceType",
+                "name": "Edge",
                 "ofType": null
               }
             },
@@ -396,7 +341,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "NodeType",
+                "name": "Node",
                 "ofType": null
               }
             },
@@ -431,7 +376,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "NodeType",
+        "name": "Node",
         "description": null,
         "fields": [
           {
@@ -570,7 +515,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "UserType",
+                "name": "User",
                 "ofType": null
               }
             },
@@ -592,7 +537,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "EdgeType",
+                    "name": "Edge",
                     "ofType": null
                   }
                 }
@@ -616,7 +561,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "EdgeType",
+                    "name": "Edge",
                     "ofType": null
                   }
                 }
@@ -663,7 +608,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "UserType",
+        "name": "User",
         "description": null,
         "fields": [
           {
@@ -744,7 +689,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "EdgeType",
+        "name": "Edge",
         "description": null,
         "fields": [
           {
@@ -788,7 +733,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "NodeType",
+                "name": "Node",
                 "ofType": null
               }
             },
@@ -804,7 +749,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "NodeType",
+                "name": "Node",
                 "ofType": null
               }
             },
@@ -867,7 +812,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "UserType",
+                "name": "User",
                 "ofType": null
               }
             },
@@ -882,7 +827,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "ConnectionType",
+        "name": "Connection",
         "description": null,
         "fields": [
           {
@@ -910,7 +855,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "ConnectorType",
+                "name": "Connector",
                 "ofType": null
               }
             },
@@ -1019,7 +964,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "UserType",
+              "name": "User",
               "ofType": null
             },
             "isDeprecated": false,
@@ -1033,7 +978,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "ConnectorType",
+        "name": "Connector",
         "description": null,
         "fields": [
           {
@@ -1108,50 +1053,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "NamespaceType",
-        "description": null,
-        "fields": [
-          {
-            "name": "id",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "ID",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "name",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "inputFields": null,
-        "interfaces": [],
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "OBJECT",
-        "name": "MembershipType",
+        "name": "Membership",
         "description": null,
         "fields": [
           {
@@ -1195,7 +1097,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "UserType",
+                "name": "User",
                 "ofType": null
               }
             },
@@ -1211,7 +1113,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "WorkspaceType",
+                "name": "Workspace",
                 "ofType": null
               }
             },
@@ -1226,7 +1128,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "WorkspaceAPIKeyType",
+        "name": "WorkspaceAPIKey",
         "description": null,
         "fields": [
           {
@@ -1330,7 +1232,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "UserType",
+                "name": "User",
                 "ofType": null
               }
             },
@@ -1353,14 +1255,84 @@
             "description": null,
             "args": [
               {
-                "name": "input",
+                "name": "workspaceId",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
                   "ofType": {
-                    "kind": "INPUT_OBJECT",
-                    "name": "ConnectionTypeInput",
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "connectorId",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "namespace",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "name",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "metadata",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "JSON",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "secrets",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "JSON",
                     "ofType": null
                   }
                 },
@@ -1371,8 +1343,8 @@
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
-                "kind": "UNION",
-                "name": "CreateConnectionPayload",
+                "kind": "OBJECT",
+                "name": "Connection",
                 "ofType": null
               }
             },
@@ -1459,7 +1431,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "ConnectionType",
+                "name": "Connection",
                 "ofType": null
               }
             },
@@ -1504,7 +1476,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "KeyResultType",
+                "name": "KeyResult",
                 "ofType": null
               }
             },
@@ -1518,264 +1490,8 @@
         "possibleTypes": null
       },
       {
-        "kind": "INPUT_OBJECT",
-        "name": "ConnectionTypeInput",
-        "description": null,
-        "fields": null,
-        "inputFields": [
-          {
-            "name": "workspace",
-            "description": null,
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "INPUT_OBJECT",
-                "name": "OneToManyInput",
-                "ofType": null
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "connector",
-            "description": null,
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "INPUT_OBJECT",
-                "name": "OneToManyInput",
-                "ofType": null
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "namespace",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "name",
-            "description": null,
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "metadata",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "JSON",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "secrets",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "JSON",
-              "ofType": null
-            },
-            "defaultValue": null
-          }
-        ],
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "INPUT_OBJECT",
-        "name": "OneToManyInput",
-        "description": null,
-        "fields": null,
-        "inputFields": [
-          {
-            "name": "set",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "ID",
-              "ofType": null
-            },
-            "defaultValue": null
-          }
-        ],
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "UNION",
-        "name": "CreateConnectionPayload",
-        "description": null,
-        "fields": null,
-        "inputFields": null,
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": [
-          {
-            "kind": "OBJECT",
-            "name": "ConnectionType",
-            "ofType": null
-          },
-          {
-            "kind": "OBJECT",
-            "name": "OperationInfo",
-            "ofType": null
-          }
-        ]
-      },
-      {
         "kind": "OBJECT",
-        "name": "OperationInfo",
-        "description": "Multiple messages returned by an operation.",
-        "fields": [
-          {
-            "name": "messages",
-            "description": "List of messages returned by the operation.",
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "OperationMessage",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "inputFields": null,
-        "interfaces": [],
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "OBJECT",
-        "name": "OperationMessage",
-        "description": "An error that happened while executing an operation.",
-        "fields": [
-          {
-            "name": "kind",
-            "description": "The kind of this message.",
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "ENUM",
-                "name": "OperationMessageKind",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "message",
-            "description": "The error message.",
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "field",
-            "description": "The field that caused the error, or `null` if it isn't associated with any particular field.",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "inputFields": null,
-        "interfaces": [],
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "ENUM",
-        "name": "OperationMessageKind",
-        "description": "The kind of the returned message.",
-        "fields": null,
-        "inputFields": null,
-        "interfaces": null,
-        "enumValues": [
-          {
-            "name": "INFO",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "WARNING",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "ERROR",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "PERMISSION",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "VALIDATION",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "possibleTypes": null
-      },
-      {
-        "kind": "OBJECT",
-        "name": "KeyResultType",
+        "name": "KeyResult",
         "description": null,
         "fields": [
           {
@@ -1803,7 +1519,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "WorkspaceAPIKeyType",
+                "name": "WorkspaceAPIKey",
                 "ofType": null
               }
             },
