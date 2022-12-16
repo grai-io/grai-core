@@ -1,6 +1,7 @@
+import datetime
 import uuid
 from typing import get_args
-
+import datetime
 import pytest
 
 from grai_client.schemas import edge, node, schema
@@ -17,7 +18,12 @@ def make_v1_node():
             "data_source": "tests",
             "display_name": "ouch",
             "is_active": True,
-            "metadata": {},
+            "metadata": {
+                "test_dict": {'a': 'b'},
+                "test_list": [1, 2, 3],
+                "test_tuple": (4, 5, 6),
+                "test_date": datetime.date(2021, 3, 14)
+            },
         },
     }
 

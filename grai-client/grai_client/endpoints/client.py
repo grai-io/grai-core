@@ -6,7 +6,7 @@ import requests
 from multimethod import multimethod
 
 from grai_client.authentication import APIKeyHeader, UserNameHeader, UserTokenHeader
-from grai_client.endpoints.utilities import GraiEncoder, response_status_check
+from grai_client.endpoints.utilities import serialize_obj, response_status_check
 from grai_client.schemas.schema import GraiType
 
 
@@ -171,9 +171,9 @@ def delete_url_v1(client: BaseClient, url: str) -> requests.Response:
 @BaseClient.patch.register
 def patch_url_v1(client: BaseClient, url: str, payload: Dict) -> requests.Response:
     headers = {**client.auth_headers, "Content-Type": "application/json"}
-    payload = {k: v for k, v in payload.items() if v is not None}
+    payload = serialize_obj(payload)
     response = requests.patch(
-        url, data=json.dumps(payload, cls=GraiEncoder), headers=headers
+        url, data=payload, headers=headers
     )
 
     response_status_check(response)
@@ -183,9 +183,9 @@ def patch_url_v1(client: BaseClient, url: str, payload: Dict) -> requests.Respon
 @BaseClient.post.register
 def post_url_v1(client: BaseClient, url: str, payload: Dict) -> requests.Response:
     headers = {**client.auth_headers, "Content-Type": "application/json"}
-    payload = {k: v for k, v in payload.items() if v is not None}
+    payload = serialize_obj(payload)
     response = requests.post(
-        url, data=json.dumps(payload, cls=GraiEncoder), headers=headers
+        url, data=payload, headers=headers
     )
     response_status_check(response)
     return response

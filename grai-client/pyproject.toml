@@ -11,6 +11,7 @@ pydantic = "^1.9.1"
 requests = "^2.28.1"
 PyYAML = "^6.0"
 multimethod = "^1.8"
+orjson = "^3.8.3"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^0.971"

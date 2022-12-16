@@ -30,9 +30,12 @@ def adapt_table_to_client(
             "dbt_materialization": current.config.materialized,
             "table_name": current.name,
             "dbt_model_name": current.unique_id,
-            "tests": [test.dict() for test in current.tests]
         },
     }
+
+    if current.tests:
+        spec_dict['metadata']['tests'] = [test.dict() for test in current.tests]
+        
     return Schema.to_model(spec_dict, version=version, typing_type="Node")
 
 
@@ -53,6 +56,10 @@ def adapt_column_to_client(current: Column, version: Literal["v1"] = "v1") -> No
             "tests": [test.dict() for test in current.tests]
         },
     }
+
+    if current.tests:
+        spec_dict['metadata']['tests'] = [test.dict() for test in current.tests]
+
     return Schema.to_model(spec_dict, version=version, typing_type="Node")
 
 

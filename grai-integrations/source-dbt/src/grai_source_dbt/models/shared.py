@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from enum import Enum
-from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 from uuid import UUID
 
@@ -78,8 +77,8 @@ class NodeDocs(BaseModel):
 class DBTNode(ID):
     unique_id: str
     root_path: str
-    path: Optional[Path]
-    original_file_path: Optional[Path]
+    path: Optional[str]
+    original_file_path: Optional[str]
     node_schema: str = Field(alias="schema")
     description: str
     depends_on: NodeDeps

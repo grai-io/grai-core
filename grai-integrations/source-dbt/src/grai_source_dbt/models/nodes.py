@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from pathlib import Path
 from typing import Dict, List, Literal, Optional, Union
 
 from pydantic import BaseModel, Field
@@ -37,8 +36,8 @@ class Source(Table):
 
 class Seed(DBTNode):
     table_schema: str = Field(alias="schema")
-    path: Path
-    original_file_path: Path
+    path: str
+    original_file_path: str
     resource_type: Literal["seed"]
 
     #### Grai Specific ####
