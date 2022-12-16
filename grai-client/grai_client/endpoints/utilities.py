@@ -48,6 +48,17 @@ def response_status_check(resp: Response) -> Response:
     raise RequestException(message)
 
 
+def orjson_defaults(obj: Any) -> Any:
+    if isinstance(obj, set):
+        return list(obj)
+    elif isinstance(obj, (pathlib.PosixPath, pathlib.WindowsPath)):
+        return str(obj)
+    elif isinstance(obj, (GraiBaseModel, BaseModel)):
+        return obj.dict()
+    else:
+        raise Exception(f"No supported JSON serialization format for objects of type {type(obj)}")
+
+
 class GraiEncoder(json.JSONEncoder):
     """Needed for the base python json implementation"""
 
@@ -67,5 +78,5 @@ class GraiEncoder(json.JSONEncoder):
 
 def serialize_obj(obj: Dict) -> bytes:
     # json_obj = json.dumps(obj, cls=GraiEncoder)
-    json_obj = orjson.dumps(obj)
+    json_obj = orjson.dumps(obj, default=orjson_defaults)
     return json_obj
