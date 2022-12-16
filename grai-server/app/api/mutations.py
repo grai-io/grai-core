@@ -22,8 +22,8 @@ class Mutation:
         secrets: JSON,
     ) -> Connection:
         connection = await sync_to_async(ConnectionModel.objects.create)(
-            workspaceId=workspaceId,
-            connectorId=connectorId,
+            workspace_id=workspaceId,
+            connector_id=connectorId,
             namespace=namespace,
             name=name,
             metadata=metadata,
