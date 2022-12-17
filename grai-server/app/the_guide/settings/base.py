@@ -1,4 +1,3 @@
-import hashlib
 import os
 from pathlib import Path
 
@@ -22,11 +21,6 @@ def clean_hosts(val):
         )
 
 
-# SECURITY WARNING: keep the secret key used in production secret!
-
-
-SECRET_KEY = config("SECRET_KEY")  # Default secret_key generated in entrypoint.sh
-USER_ID = hashlib.md5(SECRET_KEY.encode()).hexdigest()
 DEBUG = config("DEBUG", default=False, cast=bool)
 TEMPLATE_DEBUG = config("TEMPLATE_DEBUG", default=DEBUG, cast=bool)
 

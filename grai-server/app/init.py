@@ -18,8 +18,3 @@ if not username and email:
 if username and password and not User.objects.filter(is_superuser=True).exists():
     print(f"Creating superuser {username}")
     User.objects.create_superuser(username, password)
-
-
-## Init Secret Key
-
-SECRET_KEY = config("SECRET_KEY")

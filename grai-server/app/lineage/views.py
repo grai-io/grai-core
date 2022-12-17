@@ -38,17 +38,15 @@ class NodeViewSet(ModelViewSet):
     #     return obj
 
     def get_queryset(self):
-        queryset = self.type.objects
+        if len(self.request.query_params) == 0:
+            return self.type.objects
 
         supported_filters = ["is_active", "namespace", "name"]
-        filters = (
-            (filter_name, condition)
-            for filter_name in supported_filters
-            if (condition := self.request.query_params.get(filter_name))
-        )
-        for filter_name, condition in filters:
-            queryset = queryset.filter(**{filter_name: condition})
-        return queryset
+        q_filter = Q()
+        for filter_name in ["is_active", "namespace", "name"]:
+            if condition := self.request.query_params.get(filter_name):
+                q_filter |= Q(**{filter_name: condition})
+        return self.type.objects.filter(q_filter)
 
     # def perform_destroy(self, instance):
     #     instance.is_active = False
@@ -77,12 +75,16 @@ class EdgeViewSet(ModelViewSet):
     #     return get_object_or_404(Edge, id=self.request.query_params.get("id"))
 
     def get_queryset(self):
-        queryset = self.type.objects
+        if len(self.request.query_params) == 0:
+            return self.type.objects
 
-        if condition := self.request.query_params.get("is_active", None):
-            queryset = queryset.filter(is_active=condition)
-        return queryset
-        # return Edge.objects.filter(is_active=True).order_by('-updated_at')
+        q_filter = Q()
+        supported_filters = ["source", "destination", "is_active"]
+        for filter_name in supported_filters:
+            if condition := self.request.query_params.get(filter_name):
+                q_filter |= Q(**{filter_name: condition})
+
+        return self.type.objects.filter(q_filter)
 
     # def perform_destroy(self, instance):
     #     instance.is_active = False
