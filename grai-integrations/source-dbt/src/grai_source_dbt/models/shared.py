@@ -88,15 +88,15 @@ class DBTNode(ID):
     database: str
     fqn: List[str]
     alias: Optional[str]
-    checksum: NodeChecksum
+    checksum: Optional[NodeChecksum]
     tags: Union[str, List[str]]
-    refs: List[List[str]]
-    sources: List[str]
+    refs: Optional[List[List[str]]]
+    sources: Optional[List[List[str]]]
     meta: Dict
-    docs: NodeDocs
+    docs: Optional[NodeDocs]
     patch_path: Any
     compiled_path: Any
-    deferred: bool
+    deferred: Optional[bool]
     unrendered_config: Dict[Any, Any]
     created_at: float
 

@@ -23,10 +23,8 @@ black = "^22.12.0"
 [tool.isort]
 profile = "black"
 
-[tool.pytest.ini_options]
-testpaths = [
-    "tests",
-]
+#[tool.pytest.ini_options]
+#changedir=tests
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
