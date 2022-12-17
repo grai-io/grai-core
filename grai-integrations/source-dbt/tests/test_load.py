@@ -2,7 +2,7 @@ from grai_client.schemas.edge import EdgeV1
 from grai_client.schemas.node import NodeV1
 from grai_source_dbt.base import get_nodes_and_edges
 from grai_source_dbt.loader import DBTGraph, Manifest
-from grai_source_dbt.test_utils import get_manifest_file
+from grai_source_dbt.utils import get_manifest_file
 
 
 def test_load_from_manifest(manifest):
