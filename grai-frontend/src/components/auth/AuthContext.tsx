@@ -1,6 +1,5 @@
 import { createContext, useState, useEffect, ReactNode } from "react"
 import jwt_decode from "jwt-decode"
-import { useNavigate } from "react-router-dom"
 declare global {
   interface Window {
     _env_: any
@@ -58,7 +57,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   )
   const [loading, setLoading] = useState(true)
 
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
 
   const loginUser = async (username: string, password: string) => {
     const response = await fetch(
@@ -80,7 +79,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setAuthTokens(data)
       setUser(jwt_decode(data.access))
       localStorage.setItem("authTokens", JSON.stringify(data))
-      navigate("/")
     } else {
       alert("Something went wrong!")
     }
@@ -105,18 +103,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }),
       }
     )
-    if (response.status === 201) {
-      navigate("/login")
-    } else {
-      alert("Something went wrong!")
-    }
+    if (response.status !== 201) alert("Something went wrong!")
   }
 
   const logoutUser = () => {
     setAuthTokens(null)
     setUser(null)
     localStorage.removeItem("authTokens")
-    navigate("/")
+    // navigate("/")
   }
 
   const contextData = {

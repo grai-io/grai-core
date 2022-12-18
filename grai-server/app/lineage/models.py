@@ -49,10 +49,10 @@ class Edge(models.Model):
 
     data_source = models.CharField(max_length=255)
     source = models.ForeignKey(
-        "Node", related_name="source_edge", on_delete=models.PROTECT
+        "Node", related_name="source_edges", on_delete=models.PROTECT
     )
     destination = models.ForeignKey(
-        "Node", related_name="destination_edge", on_delete=models.PROTECT
+        "Node", related_name="destination_edges", on_delete=models.PROTECT
     )
     metadata = models.JSONField(default=dict)
     is_active = models.BooleanField(default=True)

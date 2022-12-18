@@ -24,15 +24,15 @@ RUN apt update \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-
-COPY . .
+COPY pyproject.toml poetry.lock ./
 
 RUN pip install "poetry==$POETRY_VERSION"
 RUN poetry config virtualenvs.create false  \
-    && poetry install --no-interaction --no-ansi --no-root --no-dev \
+    && poetry install --no-interaction --no-ansi --no-root --only main \
     && rm -rf ~/.cache/pypoetry/cache \
     && rm -rf ~/.cache/pypoetry/artifacts
 
+COPY . .
 
 RUN chmod +x /usr/src/app/entrypoint.sh
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]

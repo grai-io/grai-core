@@ -18,8 +18,6 @@ const EdgesTable: React.FC<EdgesTableProps> = ({ edges }) => (
     <TableHead>
       <TableRow>
         <TableCell>id</TableCell>
-        <TableCell>Name</TableCell>
-        <TableCell> Namespace</TableCell>
         <TableCell>Data Source</TableCell>
         <TableCell>Source</TableCell>
         <TableCell>Destination</TableCell>
@@ -30,12 +28,12 @@ const EdgesTable: React.FC<EdgesTableProps> = ({ edges }) => (
       {edges?.map(edge => (
         <TableRow key={edge.id}>
           <TableCell>{edge.id}</TableCell>
-          <TableCell>{edge.name}</TableCell>
-          <TableCell>{edge.namespace}</TableCell>
-          <TableCell>{edge.data_source}</TableCell>
-          <TableCell>{edge.source}</TableCell>
-          <TableCell>{edge.destination}</TableCell>
-          <TableCell>{edge.is_active ? "Yes" : "No"}</TableCell>
+          <TableCell>{edge.dataSource}</TableCell>
+          <TableCell>{edge.source.displayName ?? edge.source.name}</TableCell>
+          <TableCell>
+            {edge.destination.displayName ?? edge.destination.name}
+          </TableCell>
+          <TableCell>{edge.isActive ? "Yes" : "No"}</TableCell>
         </TableRow>
       ))}
       {!edges && (
