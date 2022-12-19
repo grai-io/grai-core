@@ -11,6 +11,7 @@ from rest_framework.authentication import (
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+from rest_framework_api_key.permissions import HasAPIKey
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from workspaces.permissions import HasWorkspaceAPIKey
 
@@ -26,7 +27,7 @@ class NodeViewSet(ModelViewSet):
         JWTAuthentication,
     ]
 
-    permission_classes = [HasWorkspaceAPIKey | IsAuthenticated]
+    permission_classes = [HasAPIKey | HasWorkspaceAPIKey | IsAuthenticated]
 
     serializer_class = NodeSerializer
     type = Node
@@ -62,12 +63,11 @@ class NodeViewSet(ModelViewSet):
     #     return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
-        data=request.data
+        data=request.data.copy()
         if request.GET.get('workspace', None):
             data['workspace'] = request.GET.get('workspace')
-        elif request.user:
-            if request.user.memberships:
-                data['workspace'] = str(request.user.memberships.first().workspace_id)
+        elif request.user and not request.user.is_anonymous and request.user.memberships and request.user.memberships.first():
+            data['workspace'] = str(request.user.memberships.first().workspace_id)
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -82,7 +82,7 @@ class EdgeViewSet(ModelViewSet):
         BasicAuthentication,
         JWTAuthentication,
     ]
-    permission_classes = [HasWorkspaceAPIKey | IsAuthenticated]
+    permission_classes = [HasAPIKey | HasWorkspaceAPIKey | IsAuthenticated]
 
     serializer_class = EdgeSerializer
     type = Edge
@@ -114,12 +114,11 @@ class EdgeViewSet(ModelViewSet):
     #     return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
-        data=request.data
+        data=request.data.copy()
         if request.GET.get('workspace', None):
             data['workspace'] = request.GET.get('workspace')
-        elif request.user:
-            if request.user.memberships:
-                data['workspace'] = str(request.user.memberships.first().workspace_id)
+        elif request.user and not request.user.is_anonymous and request.user.memberships and request.user.memberships.first():
+            data['workspace'] = str(request.user.memberships.first().workspace_id)
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
