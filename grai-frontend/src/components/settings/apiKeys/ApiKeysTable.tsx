@@ -21,7 +21,7 @@ interface Key {
   prefix: string
   created: string
   revoked: boolean
-  expiryDate: string
+  expiryDate: string | null
   createdBy: User
 }
 

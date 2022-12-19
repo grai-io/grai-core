@@ -34,6 +34,7 @@ const NodesHeader: React.FC<NodesHeaderProps> = ({
           value={search ?? ""}
           onChange={handleSearch}
           size="small"
+          data-testid="nodes-search"
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">

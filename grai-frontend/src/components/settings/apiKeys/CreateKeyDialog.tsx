@@ -15,8 +15,10 @@ import {
   CreateApiKey,
   CreateApiKeyVariables,
 } from "./__generated__/CreateApiKey"
+import GraphError from "components/utils/GraphError"
+import { onError } from "@apollo/client/link/error"
 
-const CREATE_API_KEY = gql`
+export const CREATE_API_KEY = gql`
   mutation CreateApiKey($name: String!, $workspaceId: ID!) {
     createApiKey(name: $name, workspaceId: $workspaceId) {
       key
@@ -51,12 +53,13 @@ const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({ open, onClose }) => {
     })
       .then(res => res.data)
       .then(data => setKey(data?.createApiKey.key))
+      .catch(err => {})
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
       <DialogTitle onClose={onClose}>Create API Key</DialogTitle>
       <DialogContent>
-        {error && JSON.stringify(error)}
+        {error && <GraphError error={error} />}
         {key ? (
           <Alert severity="success">
             <AlertTitle>API key created</AlertTitle>
