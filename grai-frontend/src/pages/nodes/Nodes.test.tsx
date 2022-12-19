@@ -91,14 +91,3 @@ test("no nodes", async () => {
     expect(screen.getByText("No nodes found")).toBeTruthy()
   })
 })
-
-test("search", async () => {
-  const user = userEvent.setup()
-
-  renderWithRouter(<Nodes />)
-
-  await user.type(screen.getByTestId("nodes-search"), "node 1")
-
-  // eslint-disable-next-line testing-library/no-wait-for-empty-callback
-  await waitFor(() => {})
-})

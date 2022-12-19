@@ -16,7 +16,6 @@ import {
   CreateApiKeyVariables,
 } from "./__generated__/CreateApiKey"
 import GraphError from "components/utils/GraphError"
-import { onError } from "@apollo/client/link/error"
 
 export const CREATE_API_KEY = gql`
   mutation CreateApiKey($name: String!, $workspaceId: ID!) {
