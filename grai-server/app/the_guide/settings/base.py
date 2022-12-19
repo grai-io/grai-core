@@ -3,7 +3,7 @@ from pathlib import Path
 
 from decouple import config
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 MEDIA_ROOT = str(BASE_DIR.joinpath("media"))
 STATIC_ROOT = str(BASE_DIR.joinpath("staticfiles"))
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
