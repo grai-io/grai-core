@@ -25,6 +25,12 @@ def clean_hosts(val):
 # SECURITY WARNING: keep the secret key used in production secret!
 
 
+"""
+SECRET_KEY
+    The default secret key should only be needed if manage.py is invoked without entrypoint.sh
+    such as in the case of local tests
+"""
+
 SECRET_KEY = config("SECRET_KEY")  # Default secret_key generated in entrypoint.sh
 USER_ID = hashlib.md5(SECRET_KEY.encode()).hexdigest()
 DEBUG = config("DEBUG", default=False, cast=bool)

@@ -1,5 +1,5 @@
 # pull official base image
-FROM python:3.10.5-slim-buster AS build
+FROM python:3.11-slim-buster AS build
 
 LABEL org.opencontainers.image.source="https://github.com/grai-io/grai-core"
 
@@ -12,7 +12,7 @@ ARG PYTHONDONTWRITEBYTECODE="1" \
     PIP_NO_CACHE_DIR="off" \
     PIP_DISABLE_PIP_VERSION_CHECK="on" \
     PIP_DEFAULT_TIMEOUT="100" \
-    POETRY_VERSION="1.2.2"
+    POETRY_VERSION="1.3.1"
 
 # libpq-dev, and gcc are used to install psycopg2.
 # netcat is used to wait for the database to be ready.
