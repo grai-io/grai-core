@@ -14,6 +14,7 @@ class ConnectionSerializer(serializers.ModelSerializer):
             "name",
             "metadata",
             "is_active",
+            "workspace",
         )
         read_only_fields = ("created_at", "updated_at", "created_by")
 
