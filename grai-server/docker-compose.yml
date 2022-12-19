@@ -18,7 +18,6 @@ services:
       - DJANGO_SUPERUSER_PASSWORD=super_secret
       - SERVER_HOST=localhost
       - FRONTEND_HOST=localhost
-      - SECRET_KEY=secret-key
     healthcheck:
       test: "curl -f -v -H 'Accept: application/json' http://localhost:8000/health/"
       interval: 2s
