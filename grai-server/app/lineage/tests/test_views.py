@@ -4,14 +4,9 @@ from itertools import product
 
 import django.db.utils
 import pytest
-from django.test import Client
-from django.test.client import RequestFactory
 from django.urls import reverse
-from lineage.models import Edge, Node
 from lineage.urls import app_name
-from rest_framework.test import APIClient, force_authenticate
-from rest_framework_api_key.models import APIKey
-from users.models import User
+from rest_framework.test import APIClient
 from workspaces.models import Workspace, WorkspaceAPIKey, Membership
 
 
@@ -85,93 +80,93 @@ targets = [
 ]
 
 
-# @pytest.mark.parametrize("url_name,status", targets)
-# @pytest.mark.django_db
-# def test_get_endpoints(auto_login_user, url_name, status):
-#     client, user = auto_login_user()
-#     url = reverse(url_name)
-#     response = client.get(url)
-#     assert response.status_code == status
+@pytest.mark.parametrize("url_name,status", targets)
+@pytest.mark.django_db
+def test_get_endpoints(auto_login_user, url_name, status):
+    client, user = auto_login_user()
+    url = reverse(url_name)
+    response = client.get(url)
+    assert response.status_code == status
 
 
-# @pytest.mark.django_db
-# def test_post_node(api_key, test_workspace):
-#     client = APIClient()
-#     client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
-#     response = create_node(client, test_workspace)
-#     assert response.status_code == 201
+@pytest.mark.django_db
+def test_post_node(api_key, test_workspace):
+    client = APIClient()
+    client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
+    response = create_node(client, test_workspace)
+    assert response.status_code == 201
 
 
-# @pytest.mark.django_db
-# def test_patch_node(api_key, test_workspace):
-#     client = APIClient()
-#     client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
-#     response = create_node(client, test_workspace)
-#     assert response.status_code == 201
-#     node_id = response.json()["id"]
+@pytest.mark.django_db
+def test_patch_node(api_key, test_workspace):
+    client = APIClient()
+    client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
+    response = create_node(client, test_workspace)
+    assert response.status_code == 201
+    node_id = response.json()["id"]
 
-#     url = reverse("graph:nodes-detail", kwargs={"pk": node_id})
-#     args = {
-#         "namespace": "string",
-#         "name": "strisdfsdfng",
-#         "display_name": "string",
-#         "data_source": "string",
-#         "metadata": {
-#             "additionalProp1": "string",
-#             "additionalProp2": "string",
-#             "additionalProp3": "string",
-#         },
-#         "is_active": False,
-#     }
-#     result = client.patch(url, json.dumps(args), content_type="application/json")
-#     assert result.status_code == 200
-#     result = result.json()
-#     assert all(result[key] == value for key, value in args.items())
-
-
-# @pytest.mark.django_db
-# def test_delete_node(api_key, test_workspace):
-#     client = APIClient()
-#     client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
-#     response = create_node(client, test_workspace)
-#     assert response.status_code == 201
-#     node_id = response.json()["id"]
-
-#     url = reverse("graph:nodes-detail", kwargs={"pk": node_id})
-#     result = client.delete(url)
-#     assert result.status_code == 204
-
-#     result = client.get(reverse("graph:nodes-detail", kwargs={"pk": node_id}))
-#     assert result.status_code == 404
+    url = reverse("graph:nodes-detail", kwargs={"pk": node_id})
+    args = {
+        "namespace": "string",
+        "name": "strisdfsdfng",
+        "display_name": "string",
+        "data_source": "string",
+        "metadata": {
+            "additionalProp1": "string",
+            "additionalProp2": "string",
+            "additionalProp3": "string",
+        },
+        "is_active": False,
+    }
+    result = client.patch(url, json.dumps(args), content_type="application/json")
+    assert result.status_code == 200
+    result = result.json()
+    assert all(result[key] == value for key, value in args.items())
 
 
-# @pytest.mark.django_db
-# def test_post_edge(api_key, test_workspace):
-#     client = APIClient()
-#     client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
-#     response = create_edge(client, test_workspace)
-#     assert response.status_code == 201
+@pytest.mark.django_db
+def test_delete_node(api_key, test_workspace):
+    client = APIClient()
+    client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
+    response = create_node(client, test_workspace)
+    assert response.status_code == 201
+    node_id = response.json()["id"]
+
+    url = reverse("graph:nodes-detail", kwargs={"pk": node_id})
+    result = client.delete(url)
+    assert result.status_code == 204
+
+    result = client.get(reverse("graph:nodes-detail", kwargs={"pk": node_id}))
+    assert result.status_code == 404
 
 
-# @pytest.mark.django_db
-# def test_duplicate_nodes(api_key, test_workspace):
-#     client = APIClient()
-#     client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
-#     name = "test_node"
-#     create_node(client, test_workspace, name)
-#     with pytest.raises(django.db.utils.IntegrityError):
-#         response = create_node(client, test_workspace, name)
+@pytest.mark.django_db
+def test_post_edge(api_key, test_workspace):
+    client = APIClient()
+    client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
+    response = create_edge(client, test_workspace)
+    assert response.status_code == 201
 
 
-# @pytest.mark.django_db
-# def test_duplicate_edge_nodes(api_key, test_workspace):
-#     client = APIClient()
-#     client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
-#     node_id = create_node(client, test_workspace).json()["id"]
-#     with pytest.raises(django.db.utils.IntegrityError):
-#         response = create_edge(
-#             client, test_workspace, source=node_id, destination=node_id
-#         )
+@pytest.mark.django_db
+def test_duplicate_nodes(api_key, test_workspace):
+    client = APIClient()
+    client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
+    name = "test_node"
+    create_node(client, test_workspace, name)
+    with pytest.raises(django.db.utils.IntegrityError):
+        response = create_node(client, test_workspace, name)
+
+
+@pytest.mark.django_db
+def test_duplicate_edge_nodes(api_key, test_workspace):
+    client = APIClient()
+    client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
+    node_id = create_node(client, test_workspace).json()["id"]
+    with pytest.raises(django.db.utils.IntegrityError):
+        response = create_edge(
+            client, test_workspace, source=node_id, destination=node_id
+        )
 
 
 @pytest.fixture
@@ -193,110 +188,87 @@ def api_key(create_user, test_workspace):
     return key
 
 
-@pytest.mark.django_db
-def test_password_auth(db, create_user, test_password, test_workspace):
-    client = APIClient()
-    user = create_user()
-    client.force_login(user=user)
-    response = create_node(client, test_workspace)
-    assert response.status_code == 201
+@pytest.fixture
+def api_client():
+    from rest_framework.test import APIClient
+
+    return APIClient()
 
 
-@pytest.mark.django_db
-def test_incorrect_password_auth(db, client, create_user, test_workspace):
-    user = create_user()
-    client.login(username=user.username, password="wrong_password")
-    response = create_node(client, test_workspace)
-    assert response.status_code == 403
+class TestNodeUserAuth:
+    @pytest.mark.django_db
+    def test_password_auth(self, auto_login_user, test_password, test_workspace):
+        client, user = auto_login_user()
+        client.login(user=user.username, password=test_password)
+        response = create_node(client, test_workspace)
+        assert response.status_code == 201
 
+    @pytest.mark.django_db
+    def test_incorrect_password_auth(self, client, create_user, test_workspace):
+        user = create_user()
+        client.login(username=user.username, password="wrong_password")
+        response = create_node(client, test_workspace)
+        assert response.status_code == 403
 
-@pytest.mark.django_db
-def test_no_auth(db, client, create_user, test_workspace):
-    client.logout()
-    response = create_node(client, test_workspace)
-    assert response.status_code == 403
+    @pytest.mark.django_db
+    def test_no_auth(self, client, test_workspace):
+        client.logout()
+        response = create_node(client, test_workspace)
+        assert response.status_code == 403
 
+    @pytest.mark.django_db
+    def test_api_key_auth(self, test_workspace, api_client, api_key):
+        api_client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
+        response = create_node(api_client, test_workspace)
+        assert response.status_code == 201
 
-@pytest.mark.django_db
-def test_password_auth2(db, create_user, test_password, test_workspace):
-    client = APIClient()
-    user = create_user()
-    client.force_login(user=user)
-    response = create_node(client, test_workspace)
-    assert response.status_code == 201
-
-
-@pytest.mark.django_db
-def test_api_key_auth(api_key, test_workspace):
-    client = APIClient()
-    client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
-    response = create_node(client, test_workspace)
-    assert response.status_code == 201
-    client.credentials()
-    client.logout()
-
-
-@pytest.mark.django_db
-def test_password_auth3(db, create_user, test_password, test_workspace):
-    client = APIClient()
-    user = create_user()
-    client.force_login(user=user)
-    response = create_node(client, test_workspace)
-    assert response.status_code == 201
-
-
-@pytest.mark.django_db
-def test_invalid_api_key_auth(db, create_user, api_key, test_workspace):
-    client = APIClient()
-    client.credentials(HTTP_AUTHORIZATION=f"Api-Key wrong_api_key")
-    response = create_node(client, test_workspace)
-    assert response.status_code == 403
+    @pytest.mark.django_db
+    def test_invalid_api_key_auth(self, test_workspace, api_client):
+        api_client.credentials(HTTP_AUTHORIZATION=f"Api-Key wrong_api_key")
+        response = create_node(api_client, test_workspace)
+        assert response.status_code == 403
 
 
 @pytest.fixture
-def test_nodes(db, api_key, test_workspace, n=2):
-    client = APIClient()
-    client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
-    nodes = [create_node(client, test_workspace).json()["id"] for i in range(n)]
+def test_nodes(api_key, test_workspace, api_client, n=2):
+    api_client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
+    nodes = [create_node(api_client, test_workspace).json()["id"] for i in range(n)]
     return nodes
 
 
-@pytest.mark.django_db
-def test_password_auth4(db, create_user, test_password, test_workspace):
-    client = APIClient()
-    user = create_user()
-    client.force_login(user=user)
-    response = create_node(client, test_workspace)
-    assert response.status_code == 201
+class TestEdgeUserAuth:
+    @pytest.mark.django_db
+    def test_password_auth(
+        self, auto_login_user, test_nodes, test_workspace, test_password
+    ):
+        client, user = auto_login_user()
+        client.login(user=user.username, password=test_password)
+        response = create_edge(client, test_workspace, *test_nodes)
+        assert response.status_code == 201
 
+    @pytest.mark.django_db
+    def test_incorrect_password_auth(
+        self, client, create_user, test_workspace, test_nodes
+    ):
+        user = create_user()
+        client.login(username=user.username, password="wrong_password")
+        response = create_edge(client, test_workspace, *test_nodes)
+        assert response.status_code == 403
 
-@pytest.mark.django_db
-def test_incorrect_password_auth2(db, client, create_user, test_workspace, test_nodes):
-    user = create_user()
-    client.logout()
-    client.login(username=user.username, password="wrong_password")
-    response = create_edge(client, test_workspace, *test_nodes)
-    assert response.status_code == 403
+    @pytest.mark.django_db
+    def test_no_auth(self, client, test_nodes, test_workspace):
+        client.logout()
+        response = create_edge(client, test_workspace, *test_nodes)
+        assert response.status_code == 403
 
+    @pytest.mark.django_db
+    def test_api_key_auth(self, api_key, test_workspace, test_nodes, api_client):
+        api_client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
+        response = create_edge(api_client, test_workspace, *test_nodes)
+        assert response.status_code == 201
 
-@pytest.mark.django_db
-def test_no_auth2(db, client, create_user, test_nodes, test_workspace):
-    client.logout()
-    response = create_edge(client, test_workspace, *test_nodes)
-    assert response.status_code == 403
-
-
-@pytest.mark.django_db
-def test_api_key_auth2(db, api_key, test_workspace, test_nodes):
-    client = APIClient()
-    client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
-    response = create_edge(client, test_workspace, *test_nodes)
-    assert response.status_code == 201
-
-
-@pytest.mark.django_db
-def test_invalid_api_key_auth2(db, api_key, test_workspace, test_nodes):
-    client = APIClient()
-    client.credentials(HTTP_AUTHORIZATION=f"Api-Key wrong_api_key")
-    response = create_edge(client, test_workspace, *test_nodes)
-    assert response.status_code == 403
+    @pytest.mark.django_db
+    def test_invalid_api_key_auth(self, test_workspace, test_nodes, api_client):
+        api_client.credentials(HTTP_AUTHORIZATION=f"Api-Key wrong_api_key")
+        response = create_edge(api_client, test_workspace, *test_nodes)
+        assert response.status_code == 403

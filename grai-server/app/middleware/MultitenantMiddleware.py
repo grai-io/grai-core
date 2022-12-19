@@ -8,6 +8,8 @@ class MultitenantMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
+        set_current_tenant(None)
+
         header = request.headers.get("Authorization")
 
         if header:
