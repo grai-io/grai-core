@@ -62,16 +62,23 @@ class ConnectionViewSet(ModelViewSet):
     #     return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
-        data=request.data.copy()
-        if request.GET.get('workspace', None):
-            data['workspace'] = request.GET.get('workspace')
-        elif request.user and not request.user.is_anonymous and request.user.memberships and request.user.memberships.first():
-            data['workspace'] = str(request.user.memberships.first().workspace_id)
+        data = request.data.copy()
+        if request.GET.get("workspace", None):
+            data["workspace"] = request.GET.get("workspace")
+        elif (
+            request.user
+            and not request.user.is_anonymous
+            and request.user.memberships
+            and request.user.memberships.first()
+        ):
+            data["workspace"] = str(request.user.memberships.first().workspace_id)
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
 
 
 class ConnectorViewSet(ReadOnlyModelViewSet):
