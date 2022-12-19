@@ -27,7 +27,7 @@ class NodeViewSet(ModelViewSet):
         JWTAuthentication,
     ]
 
-    permission_classes = [HasAPIKey | HasWorkspaceAPIKey | IsAuthenticated]
+    permission_classes = [HasWorkspaceAPIKey | IsAuthenticated]
 
     serializer_class = NodeSerializer
     type = Node
