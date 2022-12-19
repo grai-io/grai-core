@@ -9,7 +9,7 @@ from rest_framework.authentication import (
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from workspaces.permissions import HasWorkspaceAPIKey
 
@@ -17,7 +17,7 @@ from workspaces.permissions import HasWorkspaceAPIKey
 # https://stackoverflow.com/questions/30582263/setting-user-id-automatically-on-post-in-django-rest
 
 
-class WorkspaceViewSet(ModelViewSet):
+class WorkspaceViewSet(ReadOnlyModelViewSet):
     authentication_classes = [
         SessionAuthentication,
         TokenAuthentication,
@@ -61,7 +61,7 @@ class WorkspaceViewSet(ModelViewSet):
     #     return Response(serializer.data)
 
 
-class MembershipViewSet(ModelViewSet):
+class MembershipViewSet(ReadOnlyModelViewSet):
     authentication_classes = [
         SessionAuthentication,
         TokenAuthentication,
