@@ -26,7 +26,10 @@ def get_node_from_id(client: ClientV1, grai_type: NodeID) -> Optional[Dict]:
         elif num_results == 1:
             resp = resp[0]
         else:
-            message = f"Server query for node returned {num_results}results but only one was expected. This is a defensive error that should never arise, if you see it please contact the maintainers."
+            message = (
+                f"Server query for node returned {num_results} results but only one was expected. This "
+                f"is a defensive error that should never arise, if you see it please contact the maintainers."
+            )
             raise Exception(message)
 
     return resp
