@@ -50,9 +50,6 @@ def test_delete_edge():
     test_edge, test_nodes = mock_v1_edge_and_nodes()
     test_nodes = client.post(test_nodes)
     test_edge = client.post(test_edge)
-    print("in test")
-    print(test_edge)
-    print(type(test_edge))
     result = client.get(test_edge)
     assert result, result
     client.delete(test_edge)
@@ -79,8 +76,6 @@ def test_patch_edge():
     test_nodes = client.post(test_nodes)
     test_edge = client.post(test_edge)
     test_edge.spec.is_active = False
-    print("in tests")
-    print(test_edge)
     server_updated_edge = client.patch(test_edge)
     assert server_updated_edge == test_edge
 

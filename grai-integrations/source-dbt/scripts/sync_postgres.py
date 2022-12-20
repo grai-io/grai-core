@@ -9,7 +9,7 @@ update_server(
     client,
     host="localhost",
     port="5433",
-    dbname="d" "ocker",
+    dbname="docker",
     user="docker",
     password="docker",
     namespace="default",

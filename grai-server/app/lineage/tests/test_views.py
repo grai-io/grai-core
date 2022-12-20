@@ -26,16 +26,39 @@ def create_node(client, name=None, namespace="default", data_source="test"):
     return response
 
 
-def create_edge(client, source=None, destination=None, data_source="test", **kwargs):
+def create_edge_with_node_ids(
+    client, source=None, destination=None, data_source="test", **kwargs
+):
     if source is None:
         source = create_node(client).json()["id"]
     if destination is None:
         destination = create_node(client).json()["id"]
-    args = {"data_source": data_source, "source": source, "destination": destination}
+    args = {
+        "data_source": data_source,
+        "source": source,
+        "destination": destination,
+        "namespace": "default",
+    }
 
     url = reverse("graph:edges-list")
     response = client.post(url, args, **kwargs)
     return response
+
+
+# def create_edge_without_node_ids(client, source=None, destination=None, data_source="test", **kwargs):
+#     if source is None:
+#         source = create_node(client).json()
+#     if destination is None:
+#         destination = create_node(client).json()
+#     args = {"data_source": data_source,
+#             "source": {k: source[k] for k in ['name', 'namespace']},
+#             "destination": {k: destination[k] for k in ['name', 'namespace']}}
+#
+#     print(args)
+#     url = reverse("graph:edges-list")
+#     response = client.post(url, args, **kwargs)
+#     print(response.request.d)
+#     return response
 
 
 @pytest.fixture
@@ -43,7 +66,7 @@ def test_password():
     return "strong-test-pass"
 
 
-def test_username():
+def generate_username():
     return f"{str(uuid.uuid4())}@gmail.com"
 
 
@@ -51,7 +74,7 @@ def test_username():
 def create_user(db, django_user_model, test_password):
     def make_user(**kwargs):
         kwargs["password"] = test_password
-        kwargs.setdefault("username", test_username())
+        kwargs.setdefault("username", generate_username())
         return django_user_model.objects.create_user(**kwargs)
 
     return make_user
@@ -82,7 +105,9 @@ def test_get_endpoints(auto_login_user, url_name, status):
     client, user = auto_login_user()
     url = reverse(url_name)
     response = client.get(url)
-    assert response.status_code == status
+    assert (
+        response.status_code == status
+    ), f"verb `get` failed on {url} with status {response.status_code}"
 
 
 @pytest.mark.django_db
@@ -136,8 +161,15 @@ def test_delete_node(auto_login_user):
 @pytest.mark.django_db
 def test_post_edge(auto_login_user):
     client, user = auto_login_user()
-    response = create_edge(client)
+    response = create_edge_with_node_ids(client)
     assert response.status_code == 201
+
+
+# @pytest.mark.django_db
+# def test_post_edge_without_node_ids(auto_login_user):
+#     client, user = auto_login_user()
+#     response = create_edge_without_node_ids(client)
+#     assert response.status_code == 201, f"Failed to create edge using node name/namespace information. Got status code {response.status_code} and {response.json()}"
 
 
 @pytest.mark.django_db
@@ -154,7 +186,9 @@ def test_duplicate_edge_nodes(auto_login_user):
     client, user = auto_login_user()
     node_id = create_node(client).json()["id"]
     with pytest.raises(django.db.utils.IntegrityError):
-        response = create_edge(client, source=node_id, destination=node_id)
+        response = create_edge_with_node_ids(
+            client, source=node_id, destination=node_id
+        )
 
 
 @pytest.fixture
@@ -217,45 +251,203 @@ def test_nodes(db, client, auto_login_user, n=2):
     return nodes
 
 
+@pytest.fixture
+def test_full_nodes(auto_login_user):
+    client, user = auto_login_user()
+    nodes = [create_node(client).json() for i in range(4)]
+    return nodes
+
+
+@pytest.fixture
+def test_edges(auto_login_user, test_full_nodes):
+    client, user = auto_login_user()
+    edges = []
+    for source, destination in zip(test_full_nodes, test_full_nodes[1:]):
+        edge = create_edge_with_node_ids(
+            client, source=source["id"], destination=destination["id"]
+        )
+        edges.append(edge.json())
+    return edges
+
+
+class TestNodeWithFilter:
+    def get_url_by_name(self, node):
+        return f"{reverse('graph:nodes-list')}?name={node['name']}&namespace={node['namespace']}"
+
+    def get_url_by_id(self, node):
+        return f"{reverse('graph:nodes-list')}{node['id']}/"
+
+    def test_query_by_name(self, client, test_full_nodes):
+        node = test_full_nodes[0]
+        url = self.get_url_by_name(node)
+        response = client.get(url)
+        assert response.status_code == 200, response
+
+    def test_query_by_name_is_unique(self, client, test_full_nodes):
+        node = test_full_nodes[1]
+        url = self.get_url_by_name(node)
+        response = client.get(url)
+        results = response.json()
+        assert (
+            len(results) == 1
+        ), f"Wrong number of nodes returned in query. Expected 1, got {len(results)}"
+
+    def test_query_by_name_is_correct(self, client, test_full_nodes):
+        node = test_full_nodes[2]
+        url = self.get_url_by_name(node)
+        response = client.get(url)
+        results = response.json()[0]
+        assert results["name"] == node["name"]
+        assert results["namespace"] == node["namespace"]
+        assert results["id"] == node["id"]
+
+    def test_query_by_id(self, client, test_full_nodes):
+        node = test_full_nodes[0]
+        url = self.get_url_by_id(node)
+        response = client.get(url, content_type="application/json")
+        assert response.status_code == 200, response
+
+    def test_query_by_id_is_unique(self, client, test_full_nodes):
+        node = test_full_nodes[1]
+        url = self.get_url_by_id(node)
+        response = client.get(url, content_type="application/json")
+        result = response.json()
+        assert isinstance(
+            result, dict
+        ), f"Expected only a single dictionary got {type(result)}"
+
+    def test_query_by_id_is_correct(self, client, test_full_nodes):
+        node = test_full_nodes[2]
+        url = self.get_url_by_id(node)
+        response = client.get(url)
+        result = response.json()
+        assert result["name"] == node["name"]
+        assert result["namespace"] == node["namespace"]
+        assert result["id"] == node["id"]
+
+
+class TestEdgesWithFilter:
+    def get_url_by_name(self, obj):
+        return f"{reverse('graph:edges-list')}?name={obj['name']}&namespace={obj['namespace']}"
+
+    def get_url_by_source_destination(self, obj):
+        return f"{reverse('graph:edges-list')}?source={obj['source']}&destination={obj['destination']}"
+
+    def get_url_by_id(self, obj):
+        return f"{reverse('graph:edges-list')}{obj['id']}/"
+
+    def test_query_by_name(self, client, test_edges):
+        edge = test_edges[0]
+        url = self.get_url_by_name(edge)
+        response = client.get(url)
+        assert response.status_code == 200, response
+
+    def test_query_by_name_is_unique(self, client, test_edges):
+        edge = test_edges[1]
+        url = self.get_url_by_name(edge)
+        response = client.get(url)
+        results = response.json()
+        assert (
+            len(results) == 1
+        ), f"Wrong number of edges returned in query. Expected 1, got {len(results)}"
+
+    def test_query_by_name_is_correct(self, client, test_edges):
+        edge = test_edges[2]
+        url = self.get_url_by_name(edge)
+        response = client.get(url)
+        results = response.json()[0]
+        assert results["name"] == edge["name"]
+        assert results["namespace"] == edge["namespace"]
+        assert results["id"] == edge["id"]
+
+    def test_query_by_id(self, client, test_edges):
+        edge = test_edges[0]
+        url = self.get_url_by_id(edge)
+        response = client.get(url, content_type="application/json")
+        assert response.status_code == 200, response
+
+    def test_query_by_id_is_unique(self, client, test_edges):
+        edge = test_edges[1]
+        url = self.get_url_by_id(edge)
+        response = client.get(url, content_type="application/json")
+        result = response.json()
+        assert isinstance(
+            result, dict
+        ), f"Expected only a single dictionary got {type(result)}"
+
+    def test_query_by_id_is_correct(self, client, test_edges):
+        edge = test_edges[2]
+        url = self.get_url_by_id(edge)
+        response = client.get(url)
+        result = response.json()
+        assert result["name"] == edge["name"]
+        assert result["namespace"] == edge["namespace"]
+        assert result["id"] == edge["id"]
+
+    def test_query_by_source_destination(self, client, test_edges):
+        edge = test_edges[0]
+        url = self.get_url_by_source_destination(edge)
+        response = client.get(url, content_type="application/json")
+        assert response.status_code == 200, response
+
+    def test_query_by_source_destination_is_unique(self, client, test_edges):
+        edge = test_edges[1]
+        url = self.get_url_by_source_destination(edge)
+        response = client.get(url, content_type="application/json")
+        result = response.json()
+        assert (
+            len(result) == 1
+        ), f"Wrong number of edges returned in query. Expected 1, got {len(results)}"
+
+    def test_query_by_source_destination_is_correct(self, client, test_edges):
+        edge = test_edges[2]
+        url = self.get_url_by_source_destination(edge)
+        response = client.get(url)
+        result = response.json()[0]
+        assert result["name"] == edge["name"]
+        assert result["namespace"] == edge["namespace"]
+        assert result["id"] == edge["id"]
+
+
 class TestEdgeUserAuth:
     def test_password_auth(self, db, client, auto_login_user, test_nodes):
         client, user = auto_login_user()
-        response = create_edge(client, *test_nodes)
+        response = create_edge_with_node_ids(client, *test_nodes)
         assert response.status_code == 201
 
     def test_incorrect_password_auth(self, db, client, create_user, test_nodes):
         user = create_user()
         client.logout()
         client.login(username=user.username, password="wrong_password")
-        response = create_edge(client, *test_nodes)
+        response = create_edge_with_node_ids(client, *test_nodes)
         assert response.status_code == 403
 
     def test_no_auth(self, db, client, create_user, test_nodes):
         client.logout()
-        response = create_edge(client, *test_nodes)
+        response = create_edge_with_node_ids(client, *test_nodes)
         assert response.status_code == 403
 
     def test_token_auth(self, db, create_user, *test_nodes):
         user = create_user()
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION=f"Token {user.auth_token.key}")
-        response = create_edge(client, *test_nodes)
+        response = create_edge_with_node_ids(client, *test_nodes)
         assert response.status_code == 201
 
     def test_invalid_token_auth(self, db, create_user, test_nodes):
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION=f"Token wrong_token")
-        response = create_edge(client, *test_nodes)
+        response = create_edge_with_node_ids(client, *test_nodes)
         assert response.status_code == 403
 
     def test_api_key_auth(self, db, api_key, test_nodes):
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
-        response = create_edge(client, *test_nodes)
+        response = create_edge_with_node_ids(client, *test_nodes)
         assert response.status_code == 201
 
     def test_invalid_api_key_auth(self, db, api_key, test_nodes):
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION=f"Api-Key wrong_api_key")
-        response = create_edge(client, *test_nodes)
+        response = create_edge_with_node_ids(client, *test_nodes)
         assert response.status_code == 403

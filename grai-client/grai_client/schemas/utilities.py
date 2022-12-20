@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, TypeVar, Union
+from uuid import UUID
 
 from pydantic import BaseModel, root_validator
 
@@ -42,6 +43,9 @@ class GraiBaseModel(BaseModel):
     def update(self, new_values: Dict) -> BaseModel:
         values = self.dict()
         return type(self)(**merge_dicts(values, new_values))
+
+    class Config:
+        json_encoders = {UUID: lambda x: str(x)}
 
 
 class BaseSpec(GraiBaseModel):

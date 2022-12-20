@@ -17,7 +17,7 @@ def test_password():
     return "strong-test-pass"
 
 
-def test_username():
+def generate_test_username():
     return f"{str(uuid.uuid4())}@gmail.com"
 
 
@@ -25,7 +25,7 @@ def test_username():
 def create_user(db, django_user_model, test_password):
     def make_user(**kwargs):
         kwargs["password"] = test_password
-        kwargs.setdefault("username", test_username())
+        kwargs.setdefault("username", generate_test_username())
         return django_user_model.objects.create_user(**kwargs)
 
     return make_user

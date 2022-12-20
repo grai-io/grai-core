@@ -1,14 +1,15 @@
 import typing
 
+import strawberry
+
 # from api.mutations import Mutation
 from api.types import EdgeType, NodeType, UserType
-import strawberry
+from asgiref.sync import sync_to_async
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from strawberry.permission import BasePermission
 from strawberry.types import Info
 from strawberry_django_plus import gql
 from strawberry_django_plus.optimizer import DjangoOptimizerExtension
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from asgiref.sync import sync_to_async
 
 
 class IsAuthenticated(BasePermission):
