@@ -134,7 +134,7 @@ def test_patch_node(api_key, test_workspace, api_client):
         },
         "is_active": False,
     }
-    result = client.patch(url, json.dumps(args), content_type="application/json")
+    result = api_client.patch(url, json.dumps(args), content_type="application/json")
     assert result.status_code == 200
     result = result.json()
     assert all(result[key] == value for key, value in args.items())
@@ -148,10 +148,10 @@ def test_delete_node(api_key, test_workspace, api_client):
     node_id = response.json()["id"]
 
     url = reverse("graph:nodes-detail", kwargs={"pk": node_id})
-    result = client.delete(url)
+    result = api_client.delete(url)
     assert result.status_code == 204
 
-    result = client.get(reverse("graph:nodes-detail", kwargs={"pk": node_id}))
+    result = api_client.get(reverse("graph:nodes-detail", kwargs={"pk": node_id}))
     assert result.status_code == 404
 
 
@@ -256,19 +256,22 @@ def test_nodes(api_key, test_workspace, api_client, n=2):
 
 
 @pytest.fixture
-def test_full_nodes(auto_login_user):
+def test_full_nodes(auto_login_user, test_workspace):
     client, user = auto_login_user()
-    nodes = [create_node(client).json() for i in range(4)]
+    nodes = [create_node(client, test_workspace).json() for i in range(4)]
     return nodes
 
 
 @pytest.fixture
-def test_edges(auto_login_user, test_full_nodes):
+def test_edges(auto_login_user, test_full_nodes, test_workspace):
     client, user = auto_login_user()
     edges = []
     for source, destination in zip(test_full_nodes, test_full_nodes[1:]):
         edge = create_edge_with_node_ids(
-            client, source=source["id"], destination=destination["id"]
+            client,
+            workspace=test_workspace,
+            source=source["id"],
+            destination=destination["id"],
         )
         edges.append(edge.json())
     return edges
@@ -401,7 +404,7 @@ class TestEdgesWithFilter:
         result = response.json()
         assert (
             len(result) == 1
-        ), f"Wrong number of edges returned in query. Expected 1, got {len(results)}"
+        ), f"Wrong number of edges returned in query. Expected 1, got {len(result)}"
 
     def test_query_by_source_destination_is_correct(self, client, test_edges):
         edge = test_edges[2]
@@ -444,17 +447,17 @@ class TestEdgeUserAuth:
         response = create_edge_with_node_ids(api_client, test_workspace, *test_nodes)
         assert response.status_code == 201
 
-    def test_invalid_token_auth(self, db, create_user, test_nodes, api_client):
+    def test_invalid_token_auth(self, test_nodes, api_client, test_workspace):
         api_client.credentials(HTTP_AUTHORIZATION=f"Token wrong_token")
-        response = create_edge_with_node_ids(api_client, *test_nodes)
+        response = create_edge_with_node_ids(api_client, test_workspace, *test_nodes)
         assert response.status_code == 403
 
-    def test_api_key_auth(self, db, api_key, test_nodes, api_client):
+    def test_api_key_auth(self, api_key, test_nodes, api_client, test_workspace):
         api_client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
-        response = create_edge_with_node_ids(api_client, *test_nodes)
+        response = create_edge_with_node_ids(api_client, test_workspace, *test_nodes)
         assert response.status_code == 201
 
-    def test_invalid_api_key_auth(self, db, api_key, test_nodes, api_client):
+    def test_invalid_api_key_auth(self, test_nodes, api_client, test_workspace):
         api_client.credentials(HTTP_AUTHORIZATION=f"Api-Key wrong_api_key")
-        response = create_edge_with_node_ids(api_client, *test_nodes)
+        response = create_edge_with_node_ids(api_client, test_workspace, *test_nodes)
         assert response.status_code == 403
