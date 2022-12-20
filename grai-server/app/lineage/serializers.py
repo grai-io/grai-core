@@ -8,6 +8,7 @@ from .models import Edge, Node
 
 class NodeSerializer(serializers.ModelSerializer):
     display_name = serializers.CharField(required=False)
+    workspace = serializers.CharField(required=False)
 
     class Meta:
         model = Node
@@ -63,6 +64,7 @@ class NodeSerializer(serializers.ModelSerializer):
 class EdgeSerializer(serializers.ModelSerializer):
     name = serializers.CharField(required=False)
     display_name = serializers.CharField(required=False)
+    workspace = serializers.CharField(required=False)
 
     class Meta:
         model = Edge

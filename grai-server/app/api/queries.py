@@ -37,7 +37,7 @@ def get_workspace(pk: strawberry.ID, info: Info) -> Workspace:
 
     try:
         workspace = WorkspaceModel.objects.get(id=pk, memberships__user_id=user.id)
-    except Workspace.DoesNotExist:
+    except WorkspaceModel.DoesNotExist:
         raise Exception("Can't find workspace")
 
     return Workspace(
