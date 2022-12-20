@@ -1,3 +1,4 @@
+from api.schema import schema
 from django.contrib import admin
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
@@ -6,8 +7,6 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView,
 )
-
-from api.schema import schema
 from strawberry.django.views import AsyncGraphQLView
 
 spectacular_settings = {

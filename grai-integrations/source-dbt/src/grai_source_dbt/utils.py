@@ -1,11 +1,12 @@
 import os
 
+import pkg_resources
 from grai_source_dbt.loader import DBTGraph, Manifest
 
 
 def get_manifest_file() -> str:
-    filename = os.path.join(
-        os.path.dirname(__file__), "..", "..", "tests", "data", "manifest.json"
+    filename = pkg_resources.resource_filename(
+        __name__, os.path.join("data", "manifest.json")
     )
     return filename
 

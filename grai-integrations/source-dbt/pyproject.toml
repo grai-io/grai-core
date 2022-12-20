@@ -12,14 +12,19 @@ packages = [
 python = "^3.8"
 pydantic = "^1.9.1"
 networkx = "^2.8.3"
-grai-client = "^0.1.8"
+grai-client = "^0.1.14"
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.10.1"
 pytest = "^7.2.0"
+mypy = "^0.991"
+black = "^22.12.0"
 
 [tool.isort]
 profile = "black"
+
+#[tool.pytest.ini_options]
+#changedir=tests
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

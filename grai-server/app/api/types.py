@@ -1,5 +1,4 @@
 from typing import List
-
 from lineage.models import Edge as EdgeModel, Node as NodeModel
 from connections.models import (
     Connection as ConnectionModel,
@@ -11,6 +10,7 @@ from workspaces.models import (
     WorkspaceAPIKey as WorkspaceAPIKeyModel,
 )
 import strawberry
+from lineage.models import Edge, Node
 from strawberry.scalars import JSON
 from strawberry_django_plus.gql import auto
 from users.models import User as UserModel

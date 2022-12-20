@@ -1,6 +1,6 @@
 [[package]]
 name = "asgiref"
-version = "3.5.2"
+version = "3.6.0"
 description = "ASGI specs, helper code, and adapters"
 category = "main"
 optional = false
@@ -776,7 +776,7 @@ python-versions = ">=3.5"
 
 [[package]]
 name = "strawberry-django-plus"
-version = "1.32"
+version = "1.32.1"
 description = "Enhanced Strawberry GraphQL integration with Django"
 category = "main"
 optional = false
@@ -933,8 +933,8 @@ content-hash = "30d15496da869a52cd5c23ed7ae7898edb136f72ef3ca66347ba15baae22af10
 
 [metadata.files]
 asgiref = [
-    {file = "asgiref-3.5.2-py3-none-any.whl", hash = "sha256:1d2880b792ae8757289136f1db2b7b99100ce959b2aa57fd69dab783d05afac4"},
-    {file = "asgiref-3.5.2.tar.gz", hash = "sha256:4a29362a6acebe09bf1d6640db38c1dc3d9217c68e6f9f6204d72667fc19a424"},
+    {file = "asgiref-3.6.0-py3-none-any.whl", hash = "sha256:71e68008da809b957b7ee4b43dbccff33d1b23519fb8344e33f049897077afac"},
+    {file = "asgiref-3.6.0.tar.gz", hash = "sha256:9567dfe7bd8d3c8c892227827c41cce860b368104c3431da67a0c5a65a949506"},
 ]
 attrs = [
     {file = "attrs-22.1.0-py2.py3-none-any.whl", hash = "sha256:86efa402f67bf2df34f51a335487cf46b1ec130d02b8d39fd248abfd30da551c"},
@@ -1449,8 +1449,8 @@ sqlparse = [
     {file = "sqlparse-0.4.3.tar.gz", hash = "sha256:69ca804846bb114d2ec380e4360a8a340db83f0ccf3afceeb1404df028f57268"},
 ]
 strawberry-django-plus = [
-    {file = "strawberry_django_plus-1.32-py3-none-any.whl", hash = "sha256:a8e1f83f936d6d3960eae9a9e0cb16a8144f327f218a8794d55f8656ded7eedc"},
-    {file = "strawberry_django_plus-1.32.tar.gz", hash = "sha256:e37eab8718546886878943a050791169ae24c2bf3a376c0fdf79453c3e73d6d7"},
+    {file = "strawberry_django_plus-1.32.1-py3-none-any.whl", hash = "sha256:675255d461be2d94f417f92e84bf0c4f2d946b668216050c28d90fed2e5e3728"},
+    {file = "strawberry_django_plus-1.32.1.tar.gz", hash = "sha256:90881dee528d3cf56352c38fb33288c0e94dbf5bd63326eadb4d05bb80838224"},
 ]
 strawberry-graphql = [
     {file = "strawberry_graphql-0.151.0-py3-none-any.whl", hash = "sha256:9edfeb2e00517c86dd431a4dd08b4a23ae5d9ef8cf82891753caa03980d4fc5c"},
