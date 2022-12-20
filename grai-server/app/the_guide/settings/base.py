@@ -1,4 +1,6 @@
 import os
+import re
+import subprocess
 from pathlib import Path
 
 from decouple import config
@@ -21,6 +23,17 @@ def clean_hosts(val):
         )
 
 
+def get_server_version():
+    if not (ver := config("GRAI_SERVER_VERSION", False)):
+        try:
+            result = subprocess.run(["poetry", "version", "-s"], stdout=subprocess.PIPE)
+            ver = result.stdout.decode("utf-8").strip()
+        except:
+            ver = "unknown"
+    return ver
+
+
+SERVER_VERSION = get_server_version()
 DEBUG = config("DEBUG", default=False, cast=bool)
 TEMPLATE_DEBUG = config("TEMPLATE_DEBUG", default=DEBUG, cast=bool)
 

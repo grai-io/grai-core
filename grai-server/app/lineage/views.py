@@ -45,7 +45,7 @@ class NodeViewSet(ModelViewSet):
         q_filter = Q()
         for filter_name in ["is_active", "namespace", "name"]:
             if condition := self.request.query_params.get(filter_name):
-                q_filter |= Q(**{filter_name: condition})
+                q_filter &= Q(**{filter_name: condition})
         return self.type.objects.filter(q_filter)
 
     # def perform_destroy(self, instance):
@@ -79,10 +79,10 @@ class EdgeViewSet(ModelViewSet):
             return self.type.objects
 
         q_filter = Q()
-        supported_filters = ["source", "destination", "is_active"]
+        supported_filters = ["source", "destination", "is_active", "name", "namespace"]
         for filter_name in supported_filters:
             if condition := self.request.query_params.get(filter_name):
-                q_filter |= Q(**{filter_name: condition})
+                q_filter &= Q(**{filter_name: condition})
 
         return self.type.objects.filter(q_filter)
 

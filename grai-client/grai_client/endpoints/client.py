@@ -170,8 +170,7 @@ def delete_url_v1(client: BaseClient, url: str) -> requests.Response:
 @BaseClient.patch.register
 def patch_url_v1(client: BaseClient, url: str, payload: Dict) -> requests.Response:
     headers = {**client.auth_headers, "Content-Type": "application/json"}
-    payload = serialize_obj(payload)
-    response = requests.patch(url, data=payload, headers=headers)
+    response = requests.patch(url, data=serialize_obj(payload), headers=headers)
 
     response_status_check(response)
     return response
@@ -180,7 +179,7 @@ def patch_url_v1(client: BaseClient, url: str, payload: Dict) -> requests.Respon
 @BaseClient.post.register
 def post_url_v1(client: BaseClient, url: str, payload: Dict) -> requests.Response:
     headers = {**client.auth_headers, "Content-Type": "application/json"}
-    payload = serialize_obj(payload)
-    response = requests.post(url, data=payload, headers=headers)
+
+    response = requests.post(url, data=serialize_obj(payload), headers=headers)
     response_status_check(response)
     return response

@@ -9,3 +9,5 @@ from ..settings.base import *
 
 SECRET_KEY = config("SECRET_KEY")  # Default secret_key generated in entrypoint.sh
 USER_ID = hashlib.md5(SECRET_KEY.encode()).hexdigest()
+
+DISABLE_TELEMETRY = config("DISABLE_TELEMETRY", False)
