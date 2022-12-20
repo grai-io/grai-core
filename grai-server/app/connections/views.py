@@ -29,7 +29,6 @@ class ConnectionViewSet(ModelViewSet):
     serializer_class = ConnectionSerializer
     type = Connection
 
-
     def get_queryset(self):
         queryset = self.type.objects
 
@@ -55,7 +54,6 @@ class ConnectorViewSet(ReadOnlyModelViewSet):
 
     serializer_class = ConnectorSerializer
     type = Connector
-
 
     def get_queryset(self):
         queryset = self.type.objects
