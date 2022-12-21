@@ -12,6 +12,8 @@ from strawberry.types import Info
 from asgiref.sync import sync_to_async
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import check_password
+from django.core.exceptions import PermissionDenied
 
 
 @strawberry.type
@@ -121,6 +123,22 @@ class Mutation:
         user.first_name = first_name
         user.last_name = last_name
 
+        await sync_to_async(user.save)()
+
+        return user
+
+    @strawberry.mutation
+    async def updatePassword(
+        self, info: Info, old_password: str, password: str
+    ) -> User:
+        user, _ = await sync_to_async(JWTAuthentication().authenticate)(
+            request=info.context.request
+        )
+
+        if not check_password(old_password, user.password):
+            raise PermissionDenied("Old password does not match")
+
+        user.set_password(password)
         await sync_to_async(user.save)()
 
         return user
