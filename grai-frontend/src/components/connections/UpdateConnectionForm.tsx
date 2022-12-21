@@ -6,7 +6,7 @@ import {
   UpdateConnectionVariables,
 } from "./__generated__/UpdateConnection"
 
-const UPDATE_CONNECTION = gql`
+export const UPDATE_CONNECTION = gql`
   mutation UpdateConnection(
     $connectionId: ID!
     $namespace: String!
@@ -62,7 +62,7 @@ const UpdateConnectionForm: React.FC<UpdateConnectionFormProps> = ({
     updateConnection({
       variables: {
         connectionId: connection.id,
-        namespace: values.namespace ?? "",
+        namespace: values.namespace,
         name: values.name,
         metadata: values.metadata,
         secrets: values.secrets ?? {},
