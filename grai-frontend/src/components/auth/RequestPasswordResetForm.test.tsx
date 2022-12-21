@@ -1,13 +1,15 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { renderWithMocks, renderWithRouter, screen, waitFor } from "testing"
-import PasswordResetForm, { RESET_PASSWORD } from "./PasswordResetForm"
+import RequestPasswordResetForm, {
+  REQUEST_PASSWORD_RESET,
+} from "./RequestPasswordResetForm"
 import { GraphQLError } from "graphql"
 
 test("submit", async () => {
   const user = userEvent.setup()
 
-  renderWithRouter(<PasswordResetForm />)
+  renderWithRouter(<RequestPasswordResetForm />)
 
   await user.type(
     screen.getByRole("textbox", { name: /email/i }),
@@ -26,7 +28,7 @@ test("error", async () => {
 
   const mock = {
     request: {
-      query: RESET_PASSWORD,
+      query: REQUEST_PASSWORD_RESET,
       variables: {
         email: "email@grai.io",
       },
@@ -36,7 +38,7 @@ test("error", async () => {
     },
   }
 
-  renderWithMocks(<PasswordResetForm />, [mock])
+  renderWithMocks(<RequestPasswordResetForm />, [mock])
 
   await user.type(
     screen.getByRole("textbox", { name: /email/i }),

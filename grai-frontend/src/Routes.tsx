@@ -20,6 +20,7 @@ import Memberships from "pages/settings/Memberships"
 import ProfileSettings from "pages/settings/ProfileSettings"
 import PasswordSettings from "pages/settings/PasswordSettings"
 import ForgotPassword from "pages/auth/ForgotPassword"
+import PasswordReset from "pages/auth/PasswordReset"
 
 const Routes: React.FC = () => (
   <BrowerRoutes>
@@ -54,6 +55,7 @@ const Routes: React.FC = () => (
     <Route element={<GuestRoute />}>
       <Route path="/login" element={<Login />} />
       <Route path="/forgot" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<PasswordReset />} />
     </Route>
 
     <Route path="*" element={<NotFound />} />

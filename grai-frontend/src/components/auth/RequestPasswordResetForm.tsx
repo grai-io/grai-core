@@ -5,26 +5,26 @@ import Form from "components/form/Form"
 import GraphError from "components/utils/GraphError"
 import React, { useState } from "react"
 import {
-  ResetPassword,
-  ResetPasswordVariables,
-} from "./__generated__/ResetPassword"
+  RequestPasswordReset,
+  RequestPasswordResetVariables,
+} from "./__generated__/RequestPasswordReset"
 
-export const RESET_PASSWORD = gql`
-  mutation ResetPassword($email: String!) {
-    resetPassword(email: $email) {
+export const REQUEST_PASSWORD_RESET = gql`
+  mutation RequestPasswordReset($email: String!) {
+    requestPasswordReset(email: $email) {
       success
     }
   }
 `
 
-const PasswordResetForm: React.FC = () => {
+const RequestPasswordResetForm: React.FC = () => {
   const [email, setEmail] = useState("")
   const [submitted, setSubmitted] = useState(false)
 
-  const [resetPassword, { loading, error }] = useMutation<
-    ResetPassword,
-    ResetPasswordVariables
-  >(RESET_PASSWORD)
+  const [requestPasswordReset, { loading, error }] = useMutation<
+    RequestPasswordReset,
+    RequestPasswordResetVariables
+  >(REQUEST_PASSWORD_RESET)
 
   if (submitted)
     return (
@@ -34,7 +34,7 @@ const PasswordResetForm: React.FC = () => {
     )
 
   const handleSubmit = () =>
-    resetPassword({
+    requestPasswordReset({
       variables: {
         email,
       },
@@ -75,4 +75,4 @@ const PasswordResetForm: React.FC = () => {
   )
 }
 
-export default PasswordResetForm
+export default RequestPasswordResetForm

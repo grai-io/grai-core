@@ -5,7 +5,6 @@ from workspaces.models import (
 )
 from api.types import (
     Connection,
-    Connector,
     Workspace,
     KeyResult,
     Membership,
@@ -13,7 +12,6 @@ from api.types import (
     BasicResult,
 )
 from connections.models import Connection as ConnectionModel
-from strawberry_django_plus import gql
 from strawberry.scalars import JSON
 import strawberry
 from strawberry.types import Info
@@ -22,6 +20,9 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password
 from django.core.exceptions import PermissionDenied
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.contrib.auth.tokens import default_token_generator
 
 
 @strawberry.type
@@ -107,14 +108,14 @@ class Mutation:
     ) -> Membership:
         workspace = await sync_to_async(WorkspaceModel.objects.get)(pk=workspaceId)
 
-        User = get_user_model()
+        UserModel = get_user_model()
 
         user = None
 
         try:
-            user = await sync_to_async(User.objects.get)(username=email)
-        except User.DoesNotExist:
-            user = await sync_to_async(User.objects.create)(username=email)
+            user = await sync_to_async(UserModel.objects.get)(username=email)
+        except UserModel.DoesNotExist:
+            user = await sync_to_async(UserModel.objects.create)(username=email)
 
         membership = await sync_to_async(MembershipModel.objects.create)(
             role=role, user=user, workspace=workspace
@@ -152,5 +153,50 @@ class Mutation:
         return user
 
     @strawberry.mutation
-    async def resetPassword(self, info: Info, email: str) -> BasicResult:
+    async def requestPasswordReset(self, email: str) -> BasicResult:
+        UserModel = get_user_model()
+
+        try:
+            user = await sync_to_async(UserModel.objects.filter(username=email).get)()
+
+            subject = "Grai Password Reset"
+            email_template_name = "auth/password_reset_email.txt"
+            c = {
+                "email": user.email,
+                "domain": "localhost:3000",
+                "uid": user.pk,
+                "user": user,
+                "token": default_token_generator.make_token(user),
+                "protocol": "http",
+            }
+            email_message = render_to_string(email_template_name, c)
+
+            print("Sending email")
+            print(email_message)
+
+            send_mail(
+                subject, email_message, "web@grai.io", [user.email], fail_silently=False
+            )
+
+            print("Email sent")
+        except UserModel.DoesNotExist:
+            print("User not found")
+
         return BasicResult(success=True)
+
+    @strawberry.mutation
+    async def resetPassword(self, token: str, uid: str, password: str) -> User:
+        UserModel = get_user_model()
+
+        try:
+            user = await sync_to_async(UserModel.objects.get)(pk=uid)
+
+            if not default_token_generator.check_token(user, token):
+                raise Exception("Token invalid")
+
+            user.set_password(password)
+            await sync_to_async(user.save)()
+            return user
+
+        except UserModel.DoesNotExist:
+            raise Exception("User not found")

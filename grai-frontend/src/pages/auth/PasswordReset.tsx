@@ -1,9 +1,9 @@
 import { Container, Box, Card, CardContent } from "@mui/material"
-import RequestPasswordResetForm from "components/auth/RequestPasswordResetForm"
+import ResetPasswordForm from "components/auth/ResetPasswordForm"
 import React from "react"
 import { Link } from "react-router-dom"
 
-const ForgotPassword: React.FC = () => (
+const PasswordReset: React.FC = () => (
   <Container sx={{ pt: 10 }} maxWidth="xs">
     <Box sx={{ mb: 3, ml: 1 }}>
       <svg
@@ -37,7 +37,7 @@ const ForgotPassword: React.FC = () => (
     </Box>
     <Card elevation={3}>
       <CardContent sx={{ p: 5 }}>
-        <RequestPasswordResetForm />
+        <ResetPasswordForm />
         <Box sx={{ m: 1, textAlign: "center" }}>
           <Link to="/login" style={{ textDecoration: "none", fontSize: 14 }}>
             Return to sign in
@@ -48,4 +48,4 @@ const ForgotPassword: React.FC = () => (
   </Container>
 )
 
-export default ForgotPassword
+export default PasswordReset

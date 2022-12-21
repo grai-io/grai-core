@@ -8,8 +8,8 @@
 // ====================================================
 
 export interface ResetPassword_resetPassword {
-  __typename: "BasicResult";
-  success: boolean;
+  __typename: "User";
+  id: any;
 }
 
 export interface ResetPassword {
@@ -17,5 +17,7 @@ export interface ResetPassword {
 }
 
 export interface ResetPasswordVariables {
-  email: string;
+  token: string;
+  uid: string;
+  password: string;
 }
