@@ -10,4 +10,7 @@ test("renders", async () => {
       screen.getByRole("heading", { name: /Welcome to Grai/i })
     ).toBeTruthy()
   })
+
+  // eslint-disable-next-line testing-library/no-wait-for-empty-callback
+  await waitFor(() => {})
 })

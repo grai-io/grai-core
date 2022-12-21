@@ -9,6 +9,9 @@ test("renders", async () => {
   await waitFor(() => {
     expect(screen.getByTestId("profile-menu-open")).toBeTruthy()
   })
+
+  // eslint-disable-next-line testing-library/no-wait-for-empty-callback
+  await waitFor(() => {})
 })
 
 test("open", async () => {
@@ -21,6 +24,10 @@ test("open", async () => {
   })
 
   await user.click(screen.getByTestId("profile-menu-open"))
+
+  await waitFor(() => {
+    expect(screen.getByText("Hello World")).toBeTruthy()
+  })
 
   await waitFor(() => {
     expect(screen.getByText("Settings")).toBeTruthy()
