@@ -17,6 +17,7 @@ import Settings from "./pages/settings/Settings"
 import ApiKeys from "./pages/settings/ApiKeys"
 import WorkspaceSettings from "pages/settings/WorkspaceSettings"
 import Memberships from "pages/settings/Memberships"
+import ProfileSettings from "pages/settings/ProfileSettings"
 
 const Routes: React.FC = () => (
   <BrowerRoutes>
@@ -38,6 +39,7 @@ const Routes: React.FC = () => (
           </Route>
           <Route path="settings">
             <Route index element={<Settings />} />
+            <Route path="profile" element={<ProfileSettings />} />
             <Route path="api-keys" element={<ApiKeys />} />
             <Route path="workspace" element={<WorkspaceSettings />} />
             <Route path="memberships" element={<Memberships />} />

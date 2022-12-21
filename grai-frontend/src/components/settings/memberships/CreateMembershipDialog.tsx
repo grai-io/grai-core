@@ -1,10 +1,7 @@
 import { gql, useMutation } from "@apollo/client"
 import {
-  Alert,
-  AlertTitle,
   Dialog,
   DialogContent,
-  Typography,
 } from "@mui/material"
 import React from "react"
 import { useParams } from "react-router-dom"
