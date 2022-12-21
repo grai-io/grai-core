@@ -3,7 +3,7 @@ from workspaces.models import (
     WorkspaceAPIKey,
     Membership as MembershipModel,
 )
-from api.types import Connection, Connector, Workspace, KeyResult, Membership
+from api.types import Connection, Connector, Workspace, KeyResult, Membership, User
 from connections.models import Connection as ConnectionModel
 from strawberry_django_plus import gql
 from strawberry.scalars import JSON
@@ -111,3 +111,16 @@ class Mutation:
         )
 
         return membership
+
+    @strawberry.mutation
+    async def update_profile(self, info: Info, first_name: str, last_name: str) -> User:
+        user, _ = await sync_to_async(JWTAuthentication().authenticate)(
+            request=info.context.request
+        )
+
+        user.first_name = first_name
+        user.last_name = last_name
+
+        await sync_to_async(user.save)()
+
+        return user

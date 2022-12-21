@@ -1,7 +1,7 @@
 import typing
 
 
-from api.types import Connector, Workspace
+from api.types import Connector, Workspace, User
 import strawberry
 from strawberry.permission import BasePermission
 from strawberry.types import Info
@@ -23,14 +23,20 @@ class IsAuthenticated(BasePermission):
         return user.is_authenticated
 
 
-def get_workspaces(info: Info) -> typing.List[Workspace]:
+def get_user(info: Info):
     user, token = JWTAuthentication().authenticate(request=info.context.request)
+
+    return user
+
+
+def get_workspaces(info: Info) -> typing.List[Workspace]:
+    user = get_user(info)
 
     return WorkspaceModel.objects.filter(memberships__user_id=user.id)
 
 
 def get_workspace(pk: strawberry.ID, info: Info) -> Workspace:
-    user, token = JWTAuthentication().authenticate(request=info.context.request)
+    user = get_user(info)
 
     try:
         workspace = WorkspaceModel.objects.get(id=pk, memberships__user_id=user.id)
@@ -38,6 +44,10 @@ def get_workspace(pk: strawberry.ID, info: Info) -> Workspace:
         raise Exception("Can't find workspace")
 
     return workspace
+
+
+def get_profile(info: Info) -> User:
+    return get_user(info)
 
 
 @gql.type
@@ -50,4 +60,7 @@ class Query:
     )
     connectors: typing.List[Connector] = strawberry.django.field(
         permission_classes=[IsAuthenticated]
+    )
+    profile: User = strawberry.django.field(
+        resolver=get_profile, permission_classes=[IsAuthenticated]
     )

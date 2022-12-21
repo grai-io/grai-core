@@ -20,6 +20,12 @@ from users.models import User as UserModel
 class User:
     id: auto
     username: auto
+    first_name: auto
+    last_name: auto
+
+    @strawberry.field
+    def full_name(self) -> str:
+        return f"{self.first_name} {self.last_name}"
 
     created_at: auto
     updated_at: auto
