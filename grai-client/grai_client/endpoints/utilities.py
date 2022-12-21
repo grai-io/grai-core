@@ -7,6 +7,7 @@ from typing import Any, Callable, Dict, List, Type, TypeVar
 from uuid import UUID
 
 import orjson
+import requests
 from grai_client.schemas.utilities import GraiBaseModel
 from pydantic import BaseModel
 from requests import RequestException, Response

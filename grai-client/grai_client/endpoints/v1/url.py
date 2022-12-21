@@ -10,7 +10,7 @@ from multimethod import multimethod
 
 
 @ClientV1.get_url.register
-def get_node_url(client: ClientV1, obj: NodeID) -> str:
+def get_node_id_url(client: ClientV1, obj: NodeID) -> str:
     base_url = client.node_endpoint
     return base_url
 
@@ -26,10 +26,10 @@ def get_edge_url(client: ClientV1, obj: EdgeV1) -> str:
 
 
 @ClientV1.get_url.register
-def get_edge_url(client: ClientV1, obj: NodeLabels) -> str:
+def get_node_label_url(client: ClientV1, obj: NodeLabels) -> str:
     return client.node_endpoint
 
 
 @ClientV1.get_url.register
-def get_edge_url(client: ClientV1, obj: EdgeLabels) -> str:
+def get_edge_label_url(client: ClientV1, obj: EdgeLabels) -> str:
     return client.edge_endpoint
