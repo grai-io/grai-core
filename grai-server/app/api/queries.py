@@ -26,10 +26,7 @@ class IsAuthenticated(BasePermission):
 def get_workspaces(info: Info) -> typing.List[Workspace]:
     user, token = JWTAuthentication().authenticate(request=info.context.request)
 
-    return [
-        Workspace(id=workspace.id, name=workspace.name)
-        for workspace in WorkspaceModel.objects.filter(memberships__user_id=user.id)
-    ]
+    return WorkspaceModel.objects.filter(memberships__user_id=user.id)
 
 
 def get_workspace(pk: strawberry.ID, info: Info) -> Workspace:
@@ -40,14 +37,7 @@ def get_workspace(pk: strawberry.ID, info: Info) -> Workspace:
     except WorkspaceModel.DoesNotExist:
         raise Exception("Can't find workspace")
 
-    return Workspace(
-        id=workspace.id,
-        name=workspace.name,
-        nodes=workspace.nodes,
-        edges=workspace.edges,
-        connections=workspace.connections,
-        api_keys=workspace.api_keys,
-    )
+    return workspace
 
 
 @gql.type

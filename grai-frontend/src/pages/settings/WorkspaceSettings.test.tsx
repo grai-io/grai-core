@@ -9,7 +9,7 @@ test("renders", async () => {
   renderWithRouter(<WorkspaceSettings />)
 
   await waitFor(() => {
-    screen.getByText("Workspace Settings")
+    expect(screen.getByText("Workspace Settings")).toBeTruthy()
   })
 
   await waitFor(() => {
@@ -33,7 +33,7 @@ test("error", async () => {
   renderWithMocks(<WorkspaceSettings />, [mock])
 
   await waitFor(() => {
-    screen.getByText("Workspace Settings")
+    expect(screen.getByText("Workspace Settings")).toBeTruthy()
   })
 
   await waitFor(() => {
@@ -59,7 +59,7 @@ test("not found", async () => {
   renderWithMocks(<WorkspaceSettings />, [mock])
 
   await waitFor(() => {
-    screen.getByText("Workspace Settings")
+    expect(screen.getByText("Workspace Settings")).toBeTruthy()
   })
 
   await waitFor(() => {
@@ -73,7 +73,7 @@ test("submit", async () => {
   renderWithRouter(<WorkspaceSettings />)
 
   await waitFor(() => {
-    screen.getByText("Workspace Settings")
+    expect(screen.getByText("Workspace Settings")).toBeTruthy()
   })
 
   await waitFor(() => {
@@ -125,7 +125,7 @@ test("submit error", async () => {
   renderWithMocks(<WorkspaceSettings />, mocks)
 
   await waitFor(() => {
-    screen.getByText("Workspace Settings")
+    expect(screen.getByText("Workspace Settings")).toBeTruthy()
   })
 
   await waitFor(() => {

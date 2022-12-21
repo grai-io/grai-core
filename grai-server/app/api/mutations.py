@@ -1,5 +1,5 @@
-from workspaces.models import Workspace as WorkspaceModel, WorkspaceAPIKey
-from api.types import Connection, Connector, Workspace, KeyResult
+from workspaces.models import Workspace as WorkspaceModel, WorkspaceAPIKey, Membership as MembershipModel
+from api.types import Connection, Connector, Workspace, KeyResult, Membership
 from connections.models import Connection as ConnectionModel
 from strawberry_django_plus import gql
 from strawberry.scalars import JSON
@@ -7,6 +7,7 @@ import strawberry
 from strawberry.types import Info
 from asgiref.sync import sync_to_async
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.contrib.auth import get_user_model
 
 
 @strawberry.type
@@ -82,3 +83,25 @@ class Mutation:
         await sync_to_async(workspace.save)()
 
         return workspace
+
+    @strawberry.mutation
+    async def create_membership(
+        self,
+        workspaceId: strawberry.ID,
+        role: str,
+        email: str,
+    ) -> Membership:
+        workspace = await sync_to_async(WorkspaceModel.objects.get)(pk=workspaceId)
+        
+        User = get_user_model()
+
+        user = None
+
+        try:
+            user = await sync_to_async(User.objects.get)(username=email)
+        except User.DoesNotExist:
+            user  = await sync_to_async(User.objects.create)(username=email)
+
+        membership = await sync_to_async(MembershipModel.objects.create)(role=role, user=user, workspace=workspace)
+
+        return membership

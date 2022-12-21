@@ -103,6 +103,7 @@ class Membership:
     role: auto
     user: User
     workspace: Workspace
+    created_at: auto
 
 
 @strawberry.django.type(WorkspaceAPIKeyModel)
