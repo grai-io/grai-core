@@ -15,6 +15,7 @@ import Index from "./pages/Index"
 import Workspaces from "./pages/workspaces/Workspaces"
 import Settings from "./pages/settings/Settings"
 import ApiKeys from "./pages/settings/ApiKeys"
+import WorkspaceSettings from "pages/settings/WorkspaceSettings"
 
 const Routes: React.FC = () => (
   <BrowerRoutes>
@@ -37,6 +38,7 @@ const Routes: React.FC = () => (
           <Route path="settings">
             <Route index element={<Settings />} />
             <Route path="api-keys" element={<ApiKeys />} />
+            <Route path="workspace" element={<WorkspaceSettings />} />
           </Route>
         </Route>
       </Route>

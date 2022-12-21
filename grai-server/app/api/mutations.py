@@ -70,3 +70,15 @@ class Mutation:
         )
 
         return KeyResult(key=key, api_key=api_key)
+
+    @strawberry.mutation
+    async def update_workspace(
+        self,
+        id: strawberry.ID,
+        name: str,
+    ) -> Workspace:
+        workspace = await sync_to_async(WorkspaceModel.objects.get)(pk=id)
+        workspace.name = name
+        await sync_to_async(workspace.save)()
+
+        return workspace
