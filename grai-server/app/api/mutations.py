@@ -3,7 +3,15 @@ from workspaces.models import (
     WorkspaceAPIKey,
     Membership as MembershipModel,
 )
-from api.types import Connection, Connector, Workspace, KeyResult, Membership, User
+from api.types import (
+    Connection,
+    Connector,
+    Workspace,
+    KeyResult,
+    Membership,
+    User,
+    BasicResult,
+)
 from connections.models import Connection as ConnectionModel
 from strawberry_django_plus import gql
 from strawberry.scalars import JSON
@@ -142,3 +150,7 @@ class Mutation:
         await sync_to_async(user.save)()
 
         return user
+
+    @strawberry.mutation
+    async def resetPassword(self, info: Info, email: str) -> BasicResult:
+        return BasicResult(success=True)

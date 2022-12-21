@@ -19,6 +19,7 @@ import WorkspaceSettings from "pages/settings/WorkspaceSettings"
 import Memberships from "pages/settings/Memberships"
 import ProfileSettings from "pages/settings/ProfileSettings"
 import PasswordSettings from "pages/settings/PasswordSettings"
+import ForgotPassword from "pages/auth/ForgotPassword"
 
 const Routes: React.FC = () => (
   <BrowerRoutes>
@@ -52,6 +53,7 @@ const Routes: React.FC = () => (
 
     <Route element={<GuestRoute />}>
       <Route path="/login" element={<Login />} />
+      <Route path="/forgot" element={<ForgotPassword />} />
     </Route>
 
     <Route path="*" element={<NotFound />} />

@@ -32,19 +32,17 @@ const keys = [
 test("renders", async () => {
   render(<ApiKeysTable keys={keys} />)
 
-  await waitFor(() => {
-    expect(screen.getByText("key 1")).toBeTruthy()
-  })
+  expect(screen.getByText("key 1")).toBeTruthy()
 })
 
 test("loading", async () => {
   render(<ApiKeysTable keys={[]} loading />)
+
+  expect(screen.getByRole("progressbar")).toBeTruthy()
 })
 
 test("empty", async () => {
   render(<ApiKeysTable keys={[]} />)
 
-  await waitFor(() => {
-    expect(screen.getByText("No API keys found")).toBeTruthy()
-  })
+  expect(screen.getByText("No API keys found")).toBeTruthy()
 })

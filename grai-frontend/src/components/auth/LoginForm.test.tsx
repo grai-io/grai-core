@@ -1,12 +1,12 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { render, screen, waitFor } from "testing"
+import { renderWithRouter, screen, waitFor } from "testing"
 import LoginForm from "./LoginForm"
 
-test("renders", async () => {
+test("submit", async () => {
   const user = userEvent.setup()
 
-  render(<LoginForm />)
+  renderWithRouter(<LoginForm />)
 
   await user.type(
     screen.getByRole("textbox", { name: /email/i }),

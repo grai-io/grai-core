@@ -128,3 +128,8 @@ class WorkspaceAPIKey:
 class KeyResult:
     key: str
     api_key: WorkspaceAPIKey
+
+
+@strawberry.type
+class BasicResult:
+    success: bool

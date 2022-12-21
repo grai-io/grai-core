@@ -1,8 +1,9 @@
+import { Container, Box, Card, CardContent, Typography } from "@mui/material"
+import PasswordResetForm from "components/auth/PasswordResetForm"
 import React from "react"
-import { Box, Card, CardContent, Container, Typography } from "@mui/material"
-import LoginForm from "components/auth/LoginForm"
+import { Link } from "react-router-dom"
 
-const Login: React.FC = () => (
+const ForgotPassword: React.FC = () => (
   <Container sx={{ pt: 10 }} maxWidth="xs">
     <Box sx={{ mb: 3, ml: 1 }}>
       <svg
@@ -36,13 +37,15 @@ const Login: React.FC = () => (
     </Box>
     <Card elevation={3}>
       <CardContent sx={{ p: 5 }}>
-        <Typography variant="h6" sx={{ mb: 2 }}>
-          Sign in to your account
-        </Typography>
-        <LoginForm />
+        <PasswordResetForm />
+        <Box sx={{ m: 1, textAlign: "center" }}>
+          <Link to="/login" style={{ textDecoration: "none", fontSize: 14 }}>
+            Return to sign in
+          </Link>
+        </Box>
       </CardContent>
     </Card>
   </Container>
 )
 
-export default Login
+export default ForgotPassword
