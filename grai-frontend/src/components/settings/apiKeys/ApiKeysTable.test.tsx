@@ -43,4 +43,8 @@ test("loading", async () => {
 
 test("empty", async () => {
   render(<ApiKeysTable keys={[]} />)
+
+  await waitFor(() => {
+    expect(screen.getByText("No API keys found")).toBeTruthy()
+  })
 })

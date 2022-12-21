@@ -52,7 +52,7 @@ test("search", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByText("No nodes found")).toBeTruthy()
+    expect(screen.getByText("No tables found")).toBeTruthy()
   })
 })
 
@@ -88,6 +88,6 @@ test("no nodes", async () => {
   renderWithMocks(<Nodes />, [mock])
 
   await waitFor(() => {
-    expect(screen.getByText("No nodes found")).toBeTruthy()
+    expect(screen.getByText("No tables found")).toBeTruthy()
   })
 })

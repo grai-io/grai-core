@@ -65,6 +65,6 @@ test("empty", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByText("No Memberships")).toBeTruthy()
+    expect(screen.getByText("No memberships found")).toBeTruthy()
   })
 })

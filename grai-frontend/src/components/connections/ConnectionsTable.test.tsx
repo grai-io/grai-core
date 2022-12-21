@@ -24,6 +24,10 @@ test("renders loading", async () => {
 
 test("renders empty", async () => {
   renderWithRouter(<ConnectionsTable connections={[]} />)
+
+  await waitFor(() => {
+    expect(screen.getByText("No connections found")).toBeTruthy()
+  })
 })
 
 test("click row", async () => {
