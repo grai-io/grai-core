@@ -61,7 +61,7 @@ const MembershipsTable: React.FC<MembershipsTableProps> = ({
       {memberships.length === 0 && !loading && (
         <TableRow>
           <TableCell colSpan={99} sx={{ textAlign: "center", py: 10 }}>
-            <Typography>No Memberships</Typography>
+            <Typography>No memberships found</Typography>
           </TableCell>
         </TableRow>
       )}

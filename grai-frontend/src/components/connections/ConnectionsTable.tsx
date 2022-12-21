@@ -65,8 +65,8 @@ const ConnectionsTable: React.FC<ConnectionsTableProps> = ({
         ))}
         {!loading && connections.length === 0 && (
           <TableRow>
-            <TableCell colSpan={99} sx={{ textAlign: "center", py: 5 }}>
-              <Typography>No Connections</Typography>
+            <TableCell colSpan={99} sx={{ textAlign: "center", py: 10 }}>
+              <Typography>No connections found</Typography>
             </TableCell>
           </TableRow>
         )}

@@ -67,7 +67,7 @@ const ApiKeysTable: React.FC<ApiKeysTableProps> = ({ keys, loading }) => (
       {keys.length === 0 && !loading && (
         <TableRow>
           <TableCell colSpan={99} sx={{ textAlign: "center", py: 10 }}>
-            <Typography>No API keys</Typography>
+            <Typography>No API keys found</Typography>
           </TableCell>
         </TableRow>
       )}

@@ -1,4 +1,11 @@
-import { Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@mui/material"
 import React from "react"
 import theme from "theme"
 
@@ -50,6 +57,16 @@ const NodeColumnsTable: React.FC<NodeColumnsTableProps> = ({
             <TableCell />
           </TableRow>
         ))}
+        {filteredColumns.length === 0 && (
+          <TableRow>
+            <TableCell colSpan={99} sx={{ textAlign: "center", py: 10 }}>
+              <Typography>No columns found</Typography>
+              {search && (
+                <Typography sx={{ mt: 2 }}>Try clearing search</Typography>
+              )}
+            </TableCell>
+          </TableRow>
+        )}
       </TableBody>
     </Table>
   )
