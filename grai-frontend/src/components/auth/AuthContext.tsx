@@ -6,7 +6,7 @@ declare global {
   }
 }
 
-type User = {}
+export type User = {}
 
 export type Tokens = {
   access: string

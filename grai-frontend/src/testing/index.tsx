@@ -8,8 +8,8 @@ import { HelmetProvider } from "react-helmet-async"
 import { MemoryRouter, Route, Routes } from "react-router-dom"
 import theme from "theme"
 import AutoMockedProvider from "./AutoMockedProvider"
-import AuthContext, { AuthProvider } from "components/auth/AuthContext"
 import casual from "casual"
+import AuthMock from "./AuthMock"
 
 const mockResolvers = {
   Date: () => "2019-12-31",
@@ -27,17 +27,23 @@ const mockResolvers = {
   }),
 }
 
+const defaultUser = {
+  id: "1",
+  name: "user1",
+  email: "user@example.com",
+}
+
 const customRender = (ui: ReactElement, options?: RenderOptions) =>
   render(ui, {
     wrapper: props => (
       <HelmetProvider>
         <SnackbarProvider>
           <ThemeProvider theme={theme}>
-            <AuthProvider>
+            <AuthMock user={defaultUser}>
               <AutoMockedProvider mockResolvers={mockResolvers}>
                 {props.children}
               </AutoMockedProvider>
-            </AuthProvider>
+            </AuthMock>
           </ThemeProvider>
         </SnackbarProvider>
       </HelmetProvider>
@@ -78,18 +84,7 @@ export const renderWithRouter = (
         <ThemeProvider theme={theme}>
           <AutoMockedProvider mockResolvers={mockResolvers}>
             <MemoryRouter initialEntries={initialEntries ?? [route]}>
-              <AuthContext.Provider
-                value={{
-                  user,
-                  setUser: () => {},
-                  authTokens: null,
-                  setAuthTokens: () => {},
-                  registerUser: () => {},
-                  refresh: async () => {},
-                  loginUser: async () => new Promise(() => null),
-                  logoutUser: () => {},
-                }}
-              >
+              <AuthMock user={user}>
                 <SnackbarProvider maxSnack={3} hideIconVariant>
                   <Routes>
                     <Route path={path} element={props.children} />
@@ -110,7 +105,7 @@ export const renderWithRouter = (
                     )}
                   </Routes>
                 </SnackbarProvider>
-              </AuthContext.Provider>
+              </AuthMock>
             </MemoryRouter>
           </AutoMockedProvider>
         </ThemeProvider>
@@ -138,22 +133,7 @@ export const renderWithMocks = (
         <ThemeProvider theme={theme}>
           <MockedProvider mocks={mocks} addTypename={false}>
             <MemoryRouter initialEntries={[route]}>
-              <AuthContext.Provider
-                value={{
-                  user: {
-                    id: "1",
-                    name: "user1",
-                    email: "user@example.com",
-                  },
-                  setUser: () => {},
-                  authTokens: null,
-                  setAuthTokens: () => {},
-                  registerUser: () => {},
-                  refresh: async () => {},
-                  loginUser: async () => new Promise(() => null),
-                  logoutUser: () => {},
-                }}
-              >
+              <AuthMock user={defaultUser}>
                 <SnackbarProvider maxSnack={3} hideIconVariant>
                   <Routes>
                     <Route path={path} element={props.children} />
@@ -162,7 +142,7 @@ export const renderWithMocks = (
                     ))}
                   </Routes>
                 </SnackbarProvider>
-              </AuthContext.Provider>
+              </AuthMock>
             </MemoryRouter>
           </MockedProvider>
         </ThemeProvider>
