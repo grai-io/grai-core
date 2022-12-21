@@ -21,7 +21,10 @@ export const GET_MEMBERSHIPS = gql`
         user {
           id
           username
+          first_name
+          last_name
         }
+        is_active
         created_at
       }
     }

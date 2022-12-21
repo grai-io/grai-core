@@ -109,6 +109,7 @@ class Membership:
     role: auto
     user: User
     workspace: Workspace
+    is_active: auto
     created_at: auto
 
 

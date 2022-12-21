@@ -11,6 +11,8 @@ export interface GetMemberships_workspace_memberships_user {
   __typename: "User";
   id: any;
   username: string | null;
+  first_name: string;
+  last_name: string;
 }
 
 export interface GetMemberships_workspace_memberships {
@@ -18,6 +20,7 @@ export interface GetMemberships_workspace_memberships {
   id: any;
   role: string;
   user: GetMemberships_workspace_memberships_user;
+  is_active: boolean;
   created_at: any;
 }
 

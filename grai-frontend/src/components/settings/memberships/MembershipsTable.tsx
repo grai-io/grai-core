@@ -13,12 +13,15 @@ import Loading from "components/layout/Loading"
 interface User {
   id: string
   username: string | null
+  first_name: string
+  last_name: string
 }
 
 interface Membership {
   id: string
   role: string
   user: User
+  is_active: boolean
   created_at: string
 }
 
@@ -34,17 +37,23 @@ const MembershipsTable: React.FC<MembershipsTableProps> = ({
   <Table>
     <TableHead>
       <TableRow sx={{ backgroundColor: theme => theme.palette.grey[100] }}>
-        <TableCell sx={{ pl: 1 }}>Name</TableCell>
+        <TableCell>Email</TableCell>
+        <TableCell>Name</TableCell>
         <TableCell>Role</TableCell>
-        <TableCell>Created</TableCell>
+        <TableCell>Active</TableCell>
+        <TableCell sx={{ width: 300 }}>Created</TableCell>
         <TableCell sx={{ width: 0 }} />
       </TableRow>
     </TableHead>
     <TableBody>
       {memberships.map(membership => (
         <TableRow key={membership.id}>
-          <TableCell sx={{ pl: 1 }}>{membership.user.username}</TableCell>
+          <TableCell>{membership.user.username}</TableCell>
+          <TableCell>
+            {membership.user.first_name} {membership.user.last_name}
+          </TableCell>
           <TableCell>{membership.role}</TableCell>
+          <TableCell>{membership.is_active ? "Yes" : "No"}</TableCell>
           <TableCell>{membership.created_at}</TableCell>
           <TableCell sx={{ py: 0, px: 1 }}>
             {/* <MembershipMenu membership={key} /> */}
