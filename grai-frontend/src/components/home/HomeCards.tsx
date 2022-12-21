@@ -27,7 +27,7 @@ const HomeCards: React.FC = () => (
         title="Invite other users"
         description="Invite users to collaborate in Grai"
         button="Invite user"
-        to="settings/users"
+        to="settings/memberships"
       />
     </Grid>
   </Grid>
