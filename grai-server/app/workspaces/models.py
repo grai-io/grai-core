@@ -19,7 +19,9 @@ class Workspace(TenantModel):
         ]
 
 
-class Membership(models.Model):
+class Membership(TenantModel):
+    tenant_id = "workspace_id"
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     role = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)

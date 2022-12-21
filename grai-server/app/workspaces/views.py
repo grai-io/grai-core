@@ -1,5 +1,4 @@
-from django.db.models import Q
-from django.shortcuts import get_object_or_404, render
+from common.permissions.multitenant import Multitenant
 from workspaces.models import Workspace, Membership
 from workspaces.serializers import WorkspaceSerializer, MembershipSerializer
 from rest_framework.authentication import (
@@ -8,7 +7,6 @@ from rest_framework.authentication import (
     TokenAuthentication,
 )
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from workspaces.permissions import HasWorkspaceAPIKey
@@ -30,15 +28,8 @@ class WorkspaceViewSet(ReadOnlyModelViewSet):
     serializer_class = WorkspaceSerializer
     type = Workspace
 
-    # def get_object(self):
-    #     queryset = self.get_queryset()
-    #     pk = self.request.query_params.get("id")
-    #     obj = queryset.filter(id=pk).first()#get_object_or_404(queryset, id=
-    #     print(obj)
-    #     return obj
-
     def get_queryset(self):
-        queryset = self.type.objects
+        queryset = self.type.objects.filter(memberships__user_id=self.request.user.id)
 
         supported_filters = ["name"]
         filters = (
@@ -50,16 +41,6 @@ class WorkspaceViewSet(ReadOnlyModelViewSet):
             queryset = queryset.filter(**{filter_name: condition})
         return queryset
 
-    # def perform_destroy(self, instance):
-    #     instance.is_active = False
-    #     instance.save()
-
-    # This is bugged.
-    # def create(self, request):
-    #     object, create = self.type.objects.update_or_create(**request.data)
-    #     serializer = self.serializer_class(object)
-    #     return Response(serializer.data)
-
 
 class MembershipViewSet(ReadOnlyModelViewSet):
     authentication_classes = [
@@ -68,13 +49,10 @@ class MembershipViewSet(ReadOnlyModelViewSet):
         BasicAuthentication,
         JWTAuthentication,
     ]
-    permission_classes = [HasWorkspaceAPIKey | IsAuthenticated]
+    permission_classes = [(HasWorkspaceAPIKey | IsAuthenticated) & Multitenant]
 
     serializer_class = MembershipSerializer
     type = Membership
-
-    # def get_object(self):
-    #     return get_object_or_404(Edge, id=self.request.query_params.get("id"))
 
     def get_queryset(self):
         queryset = self.type.objects
@@ -88,13 +66,3 @@ class MembershipViewSet(ReadOnlyModelViewSet):
         for filter_name, condition in filters:
             queryset = queryset.filter(**{filter_name: condition})
         return queryset
-        # return Edge.objects.filter(is_active=True).order_by('-updated_at')
-
-    # def perform_destroy(self, instance):
-    #     instance.is_active = False
-    #     instance.save()
-
-    # def create(self, request):
-    #     object, create = self.type.objects.update_or_create(**request.data)
-    #     serializer = self.serializer_class(object)
-    #     return Response(serializer.data)
