@@ -9,7 +9,7 @@ import NodeContent from "components/nodes/NodeContent"
 import { GetNode, GetNodeVariables } from "./__generated__/GetNode"
 import GraphError from "components/utils/GraphError"
 
-const GET_NODE = gql`
+export const GET_NODE = gql`
   query GetNode($workspaceId: ID!, $nodeId: ID!) {
     workspace(pk: $workspaceId) {
       id
