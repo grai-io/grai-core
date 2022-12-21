@@ -85,13 +85,13 @@ class Workspace:
     # node: NodeType = strawberry.django.field
     @strawberry.django.field
     def node(self, pk: strawberry.ID) -> Node:
-        return Node.objects.get(id=pk)
+        return NodeModel.objects.get(id=pk)
 
     edges: List["Edge"]
     # edge: EdgeType = strawberry.django.field(field_name='edges')
     @strawberry.django.field
     def edge(self, pk: strawberry.ID) -> Edge:
-        return Edge.objects.get(id=pk)
+        return EdgeModel.objects.get(id=pk)
 
     connections: List["Connection"]
     # connection: ConnectionType = strawberry.django.field
