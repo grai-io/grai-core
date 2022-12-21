@@ -1,4 +1,8 @@
-from workspaces.models import Workspace as WorkspaceModel, WorkspaceAPIKey, Membership as MembershipModel
+from workspaces.models import (
+    Workspace as WorkspaceModel,
+    WorkspaceAPIKey,
+    Membership as MembershipModel,
+)
 from api.types import Connection, Connector, Workspace, KeyResult, Membership
 from connections.models import Connection as ConnectionModel
 from strawberry_django_plus import gql
@@ -92,7 +96,7 @@ class Mutation:
         email: str,
     ) -> Membership:
         workspace = await sync_to_async(WorkspaceModel.objects.get)(pk=workspaceId)
-        
+
         User = get_user_model()
 
         user = None
@@ -100,8 +104,10 @@ class Mutation:
         try:
             user = await sync_to_async(User.objects.get)(username=email)
         except User.DoesNotExist:
-            user  = await sync_to_async(User.objects.create)(username=email)
+            user = await sync_to_async(User.objects.create)(username=email)
 
-        membership = await sync_to_async(MembershipModel.objects.create)(role=role, user=user, workspace=workspace)
+        membership = await sync_to_async(MembershipModel.objects.create)(
+            role=role, user=user, workspace=workspace
+        )
 
         return membership
