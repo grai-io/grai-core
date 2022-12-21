@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { createContext, useState, useEffect, ReactNode } from "react"
 import jwt_decode from "jwt-decode"
 declare global {
