@@ -1,13 +1,7 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import React from "react"
-import {
-  render,
-  renderWithMocks,
-  renderWithRouter,
-  screen,
-  waitFor,
-} from "testing"
+import { renderWithMocks, renderWithRouter, screen, waitFor } from "testing"
 import ProfileForm, { UPDATE_PROFILE } from "./ProfileForm"
 
 const profile = {
@@ -17,7 +11,7 @@ const profile = {
 }
 
 test("renders", async () => {
-  render(<ProfileForm profile={profile} />)
+  renderWithRouter(<ProfileForm profile={profile} />)
 
   await waitFor(() => {
     expect(
@@ -47,7 +41,7 @@ test("renders", async () => {
 test("submit", async () => {
   const user = userEvent.setup()
 
-  render(<ProfileForm profile={profile} />)
+  renderWithRouter(<ProfileForm profile={profile} />)
 
   await waitFor(() => {
     expect(

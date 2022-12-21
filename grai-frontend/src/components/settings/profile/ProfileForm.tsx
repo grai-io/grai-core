@@ -1,9 +1,17 @@
 import { gql, useMutation } from "@apollo/client"
 import { LoadingButton } from "@mui/lab"
-import { Box, Grid, TextField, Typography } from "@mui/material"
+import {
+  Box,
+  Button,
+  Grid,
+  InputAdornment,
+  TextField,
+  Typography,
+} from "@mui/material"
 import Form from "components/form/Form"
 import GraphError from "components/utils/GraphError"
 import React, { useState } from "react"
+import { Link, useParams } from "react-router-dom"
 import {
   UpdateProfile,
   UpdateProfileVariables,
@@ -35,6 +43,7 @@ type ProfileFormProps = {
 }
 
 const ProfileForm: React.FC<ProfileFormProps> = ({ profile }) => {
+  const { workspaceId } = useParams()
   const [values, setValues] = useState<Values>(profile)
 
   const [updateProfile, { loading, error }] = useMutation<
@@ -85,6 +94,26 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profile }) => {
               margin="normal"
               fullWidth
               required
+            />
+            <TextField
+              label="Password"
+              value="password"
+              type="password"
+              margin="normal"
+              fullWidth
+              disabled
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <Button
+                      component={Link}
+                      to={`/workspaces/${workspaceId}/settings/password`}
+                    >
+                      Change password
+                    </Button>
+                  </InputAdornment>
+                ),
+              }}
             />
             <LoadingButton
               type="submit"
