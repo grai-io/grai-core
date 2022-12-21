@@ -114,11 +114,31 @@ class Mutation:
 
         try:
             user = await sync_to_async(UserModel.objects.get)(username=email)
+            email_template_name = "workspaces/invite_user_email.txt"
+            subject = "Grai Workspace Invite"
         except UserModel.DoesNotExist:
             user = await sync_to_async(UserModel.objects.create)(username=email)
+            email_template_name = "workspaces/new_user_email.txt"
+            subject = "Grai Invite"
 
         membership = await sync_to_async(MembershipModel.objects.create)(
             role=role, user=user, workspace=workspace
+        )
+
+        c = {
+            "email": user.email,
+            "domain": "localhost:3000",
+            "uid": user.pk,
+            "user": user,
+            "token": default_token_generator.make_token(user),
+            "protocol": "http",
+        }
+        email_message = render_to_string(email_template_name, c)
+
+        print(email_message)
+
+        send_mail(
+            subject, email_message, "web@grai.io", [user.email], fail_silently=False
         )
 
         return membership
@@ -171,14 +191,12 @@ class Mutation:
             }
             email_message = render_to_string(email_template_name, c)
 
-            print("Sending email")
             print(email_message)
 
             send_mail(
                 subject, email_message, "web@grai.io", [user.email], fail_silently=False
             )
 
-            print("Email sent")
         except UserModel.DoesNotExist:
             print("User not found")
 
@@ -194,6 +212,27 @@ class Mutation:
             if not default_token_generator.check_token(user, token):
                 raise Exception("Token invalid")
 
+            user.set_password(password)
+            await sync_to_async(user.save)()
+            return user
+
+        except UserModel.DoesNotExist:
+            raise Exception("User not found")
+
+    @strawberry.mutation
+    async def completeSignup(
+        self, token: str, uid: str, first_name: str, last_name: str, password: str
+    ) -> User:
+        UserModel = get_user_model()
+
+        try:
+            user = await sync_to_async(UserModel.objects.get)(pk=uid)
+
+            if not default_token_generator.check_token(user, token):
+                raise Exception("Token invalid")
+
+            user.first_name = first_name
+            user.last_name = last_name
             user.set_password(password)
             await sync_to_async(user.save)()
             return user
