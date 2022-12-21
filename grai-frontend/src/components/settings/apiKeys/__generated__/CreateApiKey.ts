@@ -7,7 +7,7 @@
 // GraphQL mutation operation: CreateApiKey
 // ====================================================
 
-export interface CreateApiKey_createApiKey_apiKey {
+export interface CreateApiKey_createApiKey_api_key {
   __typename: "WorkspaceAPIKey";
   id: string;
   name: string;
@@ -16,7 +16,7 @@ export interface CreateApiKey_createApiKey_apiKey {
 export interface CreateApiKey_createApiKey {
   __typename: "KeyResult";
   key: string;
-  apiKey: CreateApiKey_createApiKey_apiKey;
+  api_key: CreateApiKey_createApiKey_api_key;
 }
 
 export interface CreateApiKey {

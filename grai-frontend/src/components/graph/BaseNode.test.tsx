@@ -10,7 +10,7 @@ const data = {
   highlight: false,
   columns: [
     {
-      displayName: "c1",
+      display_name: "c1",
       name: "c1",
     },
   ],

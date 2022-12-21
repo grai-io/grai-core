@@ -12,14 +12,14 @@ const GET_API_KEYS = gql`
   query GetApiKeys($workspaceId: ID!) {
     workspace(pk: $workspaceId) {
       id
-      apiKeys {
+      api_keys {
         id
         name
         prefix
         created
         revoked
-        expiryDate
-        createdBy {
+        expiry_date
+        created_by {
           id
           username
         }
@@ -46,7 +46,10 @@ const ApiKeys: React.FC = () => {
     <SettingsLayout>
       <Box sx={{ p: 3 }}>
         <ApiKeysHeader />
-        <ApiKeysTable keys={data?.workspace?.apiKeys ?? []} loading={loading} />
+        <ApiKeysTable
+          keys={data?.workspace?.api_keys ?? []}
+          loading={loading}
+        />
       </Box>
     </SettingsLayout>
   )

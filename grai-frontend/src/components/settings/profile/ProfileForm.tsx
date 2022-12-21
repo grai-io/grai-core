@@ -11,23 +11,23 @@ import {
 
 export const UPDATE_PROFILE = gql`
   mutation UpdateProfile($first_name: String!, $last_name: String!) {
-    updateProfile(firstName: $first_name, lastName: $last_name) {
+    updateProfile(first_name: $first_name, last_name: $last_name) {
       id
-      firstName
-      lastName
+      first_name
+      last_name
     }
   }
 `
 
 type Values = {
-  firstName: string
-  lastName: string
+  first_name: string
+  last_name: string
 }
 
 interface Profile {
   username: string | null
-  firstName: string
-  lastName: string
+  first_name: string
+  last_name: string
 }
 
 type ProfileFormProps = {
@@ -45,8 +45,8 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profile }) => {
   const handleSubmit = () =>
     updateProfile({
       variables: {
-        first_name: values.firstName,
-        last_name: values.lastName,
+        first_name: values.first_name,
+        last_name: values.last_name,
       },
     }).catch(err => {})
 
@@ -68,9 +68,9 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profile }) => {
             />
             <TextField
               label="First Name"
-              value={values.firstName}
+              value={values.first_name}
               onChange={event =>
-                setValues({ ...values, firstName: event.target.value })
+                setValues({ ...values, first_name: event.target.value })
               }
               margin="normal"
               fullWidth
@@ -78,9 +78,9 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profile }) => {
             />
             <TextField
               label="Last Name"
-              value={values.lastName}
+              value={values.last_name}
               onChange={event =>
-                setValues({ ...values, lastName: event.target.value })
+                setValues({ ...values, last_name: event.target.value })
               }
               margin="normal"
               fullWidth

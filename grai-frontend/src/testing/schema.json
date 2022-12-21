@@ -248,7 +248,7 @@
             "deprecationReason": null
           },
           {
-            "name": "apiKeys",
+            "name": "api_keys",
             "description": null,
             "args": [],
             "type": {
@@ -444,7 +444,7 @@
             "deprecationReason": null
           },
           {
-            "name": "displayName",
+            "name": "display_name",
             "description": null,
             "args": [],
             "type": {
@@ -460,7 +460,7 @@
             "deprecationReason": null
           },
           {
-            "name": "dataSource",
+            "name": "data_source",
             "description": null,
             "args": [],
             "type": {
@@ -492,7 +492,7 @@
             "deprecationReason": null
           },
           {
-            "name": "isActive",
+            "name": "is_active",
             "description": null,
             "args": [],
             "type": {
@@ -508,7 +508,7 @@
             "deprecationReason": null
           },
           {
-            "name": "createdBy",
+            "name": "created_by",
             "description": null,
             "args": [
               {
@@ -539,7 +539,7 @@
             "deprecationReason": null
           },
           {
-            "name": "sourceEdges",
+            "name": "source_edges",
             "description": null,
             "args": [],
             "type": {
@@ -563,7 +563,7 @@
             "deprecationReason": null
           },
           {
-            "name": "destinationEdges",
+            "name": "destination_edges",
             "description": null,
             "args": [],
             "type": {
@@ -656,7 +656,7 @@
             "deprecationReason": null
           },
           {
-            "name": "firstName",
+            "name": "first_name",
             "description": null,
             "args": [],
             "type": {
@@ -672,7 +672,7 @@
             "deprecationReason": null
           },
           {
-            "name": "lastName",
+            "name": "last_name",
             "description": null,
             "args": [],
             "type": {
@@ -688,7 +688,7 @@
             "deprecationReason": null
           },
           {
-            "name": "createdAt",
+            "name": "created_at",
             "description": null,
             "args": [],
             "type": {
@@ -704,7 +704,7 @@
             "deprecationReason": null
           },
           {
-            "name": "updatedAt",
+            "name": "updated_at",
             "description": null,
             "args": [],
             "type": {
@@ -720,7 +720,7 @@
             "deprecationReason": null
           },
           {
-            "name": "fullName",
+            "name": "full_name",
             "description": null,
             "args": [],
             "type": {
@@ -773,7 +773,7 @@
             "deprecationReason": null
           },
           {
-            "name": "dataSource",
+            "name": "data_source",
             "description": null,
             "args": [],
             "type": {
@@ -837,7 +837,7 @@
             "deprecationReason": null
           },
           {
-            "name": "isActive",
+            "name": "is_active",
             "description": null,
             "args": [],
             "type": {
@@ -853,7 +853,7 @@
             "deprecationReason": null
           },
           {
-            "name": "createdBy",
+            "name": "created_by",
             "description": null,
             "args": [
               {
@@ -975,7 +975,7 @@
             "deprecationReason": null
           },
           {
-            "name": "isActive",
+            "name": "is_active",
             "description": null,
             "args": [],
             "type": {
@@ -991,7 +991,7 @@
             "deprecationReason": null
           },
           {
-            "name": "createdAt",
+            "name": "created_at",
             "description": null,
             "args": [],
             "type": {
@@ -1007,7 +1007,7 @@
             "deprecationReason": null
           },
           {
-            "name": "updatedAt",
+            "name": "updated_at",
             "description": null,
             "args": [],
             "type": {
@@ -1023,7 +1023,7 @@
             "deprecationReason": null
           },
           {
-            "name": "createdBy",
+            "name": "created_by",
             "description": null,
             "args": [],
             "type": {
@@ -1094,7 +1094,7 @@
             "deprecationReason": null
           },
           {
-            "name": "isActive",
+            "name": "is_active",
             "description": null,
             "args": [],
             "type": {
@@ -1185,7 +1185,7 @@
             "deprecationReason": null
           },
           {
-            "name": "createdAt",
+            "name": "created_at",
             "description": null,
             "args": [],
             "type": {
@@ -1276,7 +1276,7 @@
             "deprecationReason": null
           },
           {
-            "name": "expiryDate",
+            "name": "expiry_date",
             "description": null,
             "args": [],
             "type": {
@@ -1304,7 +1304,7 @@
             "deprecationReason": null
           },
           {
-            "name": "createdBy",
+            "name": "created_by",
             "description": null,
             "args": [],
             "type": {
@@ -1672,7 +1672,7 @@
             "description": null,
             "args": [
               {
-                "name": "firstName",
+                "name": "first_name",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",
@@ -1686,7 +1686,7 @@
                 "defaultValue": null
               },
               {
-                "name": "lastName",
+                "name": "last_name",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",
@@ -1740,7 +1740,7 @@
             "deprecationReason": null
           },
           {
-            "name": "apiKey",
+            "name": "api_key",
             "description": null,
             "args": [],
             "type": {

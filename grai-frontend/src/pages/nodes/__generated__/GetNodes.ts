@@ -12,9 +12,9 @@ export interface GetNodes_workspace_nodes {
   id: any;
   namespace: string;
   name: string;
-  displayName: string;
-  isActive: boolean;
-  dataSource: string;
+  display_name: string;
+  is_active: boolean;
+  data_source: string;
   metadata: any;
 }
 

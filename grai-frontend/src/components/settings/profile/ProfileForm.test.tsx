@@ -12,8 +12,8 @@ import ProfileForm, { UPDATE_PROFILE } from "./ProfileForm"
 
 const profile = {
   username: "test@example.com",
-  firstName: "test",
-  lastName: "example",
+  first_name: "test",
+  last_name: "example",
 }
 
 test("renders", async () => {

@@ -22,7 +22,7 @@ export const GET_MEMBERSHIPS = gql`
           id
           username
         }
-        createdAt
+        created_at
       }
     }
   }

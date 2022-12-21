@@ -11,8 +11,8 @@ export interface GetProfile_profile {
   __typename: "User";
   id: any;
   username: string | null;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
 }
 
 export interface GetProfile {

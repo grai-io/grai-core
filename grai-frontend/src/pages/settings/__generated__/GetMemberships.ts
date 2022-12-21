@@ -18,7 +18,7 @@ export interface GetMemberships_workspace_memberships {
   id: any;
   role: string;
   user: GetMemberships_workspace_memberships_user;
-  createdAt: any;
+  created_at: any;
 }
 
 export interface GetMemberships_workspace {

@@ -21,8 +21,8 @@ interface Key {
   prefix: string
   created: string
   revoked: boolean
-  expiryDate: string | null
-  createdBy: User
+  expiry_date: string | null
+  created_by: User
 }
 
 type ApiKeysTableProps = {
@@ -49,8 +49,8 @@ const ApiKeysTable: React.FC<ApiKeysTableProps> = ({ keys, loading }) => (
           <TableCell sx={{ pl: 1 }}>{key.name}</TableCell>
           <TableCell>{key.prefix}***********</TableCell>
           <TableCell>{key.created}</TableCell>
-          <TableCell>{key.createdBy.username}</TableCell>
-          <TableCell>{key.expiryDate}</TableCell>
+          <TableCell>{key.created_by.username}</TableCell>
+          <TableCell>{key.expiry_date}</TableCell>
           <TableCell>{key.revoked ? "Yes" : ""}</TableCell>
           <TableCell sx={{ py: 0, px: 1 }}>
             <ApiKeyMenu apiKey={key} />

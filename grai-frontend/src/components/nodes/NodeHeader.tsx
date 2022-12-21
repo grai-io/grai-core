@@ -12,7 +12,7 @@ import { Link, useParams } from "react-router-dom"
 
 interface Node {
   id: string
-  displayName: string
+  display_name: string
 }
 
 type NodeHeaderProps = {
@@ -39,7 +39,7 @@ const NodeHeader: React.FC<NodeHeaderProps> = ({ node }) => {
           variant="h6"
           sx={{ textTransform: "uppercase", mx: 1, mt: 0.3 }}
         >
-          {node?.displayName ?? node?.id}
+          {node?.display_name ?? node?.id}
         </Typography>
         <Box>
           <Tooltip title="Copy Node Name">

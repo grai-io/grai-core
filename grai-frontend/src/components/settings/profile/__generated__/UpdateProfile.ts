@@ -10,8 +10,8 @@
 export interface UpdateProfile_updateProfile {
   __typename: "User";
   id: any;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
 }
 
 export interface UpdateProfile {

@@ -17,7 +17,7 @@ from django.contrib.auth import get_user_model
 @strawberry.type
 class Mutation:
     @strawberry.mutation
-    async def create_connection(
+    async def createConnection(
         self,
         workspaceId: strawberry.ID,
         connectorId: strawberry.ID,
@@ -38,7 +38,7 @@ class Mutation:
         return connection
 
     @strawberry.mutation
-    async def update_connection(
+    async def updateConnection(
         self,
         id: strawberry.ID,
         namespace: str,
@@ -61,7 +61,7 @@ class Mutation:
         return connection
 
     @strawberry.mutation
-    async def create_api_key(
+    async def createApiKey(
         self, info: Info, name: str, workspaceId: strawberry.ID
     ) -> KeyResult:
         user, _ = await sync_to_async(JWTAuthentication().authenticate)(
@@ -77,7 +77,7 @@ class Mutation:
         return KeyResult(key=key, api_key=api_key)
 
     @strawberry.mutation
-    async def update_workspace(
+    async def updateWorkspace(
         self,
         id: strawberry.ID,
         name: str,
@@ -89,7 +89,7 @@ class Mutation:
         return workspace
 
     @strawberry.mutation
-    async def create_membership(
+    async def createMembership(
         self,
         workspaceId: strawberry.ID,
         role: str,
@@ -113,7 +113,7 @@ class Mutation:
         return membership
 
     @strawberry.mutation
-    async def update_profile(self, info: Info, first_name: str, last_name: str) -> User:
+    async def updateProfile(self, info: Info, first_name: str, last_name: str) -> User:
         user, _ = await sync_to_async(JWTAuthentication().authenticate)(
             request=info.context.request
         )

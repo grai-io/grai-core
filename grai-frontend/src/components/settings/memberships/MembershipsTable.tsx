@@ -19,7 +19,7 @@ interface Membership {
   id: string
   role: string
   user: User
-  createdAt: string
+  created_at: string
 }
 
 type MembershipsTableProps = {
@@ -45,7 +45,7 @@ const MembershipsTable: React.FC<MembershipsTableProps> = ({
         <TableRow key={membership.id}>
           <TableCell sx={{ pl: 1 }}>{membership.user.username}</TableCell>
           <TableCell>{membership.role}</TableCell>
-          <TableCell>{membership.createdAt}</TableCell>
+          <TableCell>{membership.created_at}</TableCell>
           <TableCell sx={{ py: 0, px: 1 }}>
             {/* <MembershipMenu membership={key} /> */}
           </TableCell>

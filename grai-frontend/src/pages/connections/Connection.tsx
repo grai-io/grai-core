@@ -28,8 +28,8 @@ const GET_CONNECTION = gql`
           metadata
         }
         metadata
-        createdAt
-        updatedAt
+        created_at
+        updated_at
       }
     }
   }

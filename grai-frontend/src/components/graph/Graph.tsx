@@ -13,15 +13,15 @@ export interface Error {
 
 interface Edge {
   id: string
-  dataSource: string
-  isActive: boolean
+  data_source: string
+  is_active: boolean
   source: Node
   destination: Node
   metadata: any
 }
 
 interface Node extends NodeType {
-  displayName: string
+  display_name: string
 }
 
 type GraphProps = {
@@ -53,7 +53,7 @@ const Graph: React.FC<GraphProps> = ({
       data: {
         id: table.id,
         name: table.name,
-        label: table.displayName,
+        label: table.display_name,
         metadata: table.metadata,
         columns: table.columns,
         sourceTables: table.sourceTables,

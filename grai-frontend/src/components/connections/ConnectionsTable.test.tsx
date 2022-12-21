@@ -7,7 +7,7 @@ const connection = {
   id: "1",
   namespace: "namespace1",
   name: "connection 1",
-  isActive: true,
+  is_active: true,
   connector: {
     id: "1",
     name: "connector 1",

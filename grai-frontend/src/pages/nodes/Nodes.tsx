@@ -16,9 +16,9 @@ export const GET_NODES = gql`
         id
         namespace
         name
-        displayName
-        isActive
-        dataSource
+        display_name
+        is_active
+        data_source
         metadata
       }
     }
@@ -29,9 +29,9 @@ export interface Node {
   id: string
   namespace: string
   name: string
-  displayName: string
-  dataSource: string
-  isActive: boolean
+  display_name: string
+  data_source: string
+  is_active: boolean
   metadata: {
     node_type: string
   }

@@ -12,8 +12,8 @@ export const GET_PROFILE = gql`
     profile {
       id
       username
-      firstName
-      lastName
+      first_name
+      last_name
     }
   }
 `

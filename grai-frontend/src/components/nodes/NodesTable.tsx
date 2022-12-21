@@ -39,10 +39,10 @@ const NodesTable: React.FC<NodesTableProps> = ({ nodes, loading }) => {
               cursor: "pointer",
             }}
           >
-            <TableCell>{node.displayName ?? node.name}</TableCell>
+            <TableCell>{node.display_name ?? node.name}</TableCell>
             <TableCell>{node.namespace}</TableCell>
-            <TableCell>{node.dataSource}</TableCell>
-            <TableCell>{node.isActive ? "Yes" : "No"}</TableCell>
+            <TableCell>{node.data_source}</TableCell>
+            <TableCell>{node.is_active ? "Yes" : "No"}</TableCell>
           </TableRow>
         ))}
         {loading && (

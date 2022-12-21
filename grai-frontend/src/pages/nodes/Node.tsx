@@ -17,40 +17,40 @@ const GET_NODE = gql`
         id
         namespace
         name
-        displayName
-        isActive
-        dataSource
+        display_name
+        is_active
+        data_source
         metadata
       }
       nodes {
         id
         namespace
         name
-        displayName
-        isActive
-        dataSource
+        display_name
+        is_active
+        data_source
         metadata
       }
       edges {
         id
-        isActive
-        dataSource
+        is_active
+        data_source
         source {
           id
           namespace
           name
-          displayName
-          dataSource
-          isActive
+          display_name
+          data_source
+          is_active
           metadata
         }
         destination {
           id
           namespace
           name
-          displayName
-          dataSource
-          isActive
+          display_name
+          data_source
+          is_active
           metadata
         }
         metadata

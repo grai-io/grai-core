@@ -85,9 +85,9 @@ test("submit", async () => {
           metadata: {
             field1: "value1",
           },
-          isActive: true,
-          createdAt: "",
-          updatedAt: "",
+          is_active: true,
+          created_at: "",
+          updated_at: "",
         },
       },
     },

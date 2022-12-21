@@ -7,27 +7,27 @@
 // GraphQL query operation: GetApiKeys
 // ====================================================
 
-export interface GetApiKeys_workspace_apiKeys_createdBy {
+export interface GetApiKeys_workspace_api_keys_created_by {
   __typename: "User";
   id: any;
   username: string | null;
 }
 
-export interface GetApiKeys_workspace_apiKeys {
+export interface GetApiKeys_workspace_api_keys {
   __typename: "WorkspaceAPIKey";
   id: string;
   name: string;
   prefix: string;
   created: any;
   revoked: boolean;
-  expiryDate: any | null;
-  createdBy: GetApiKeys_workspace_apiKeys_createdBy;
+  expiry_date: any | null;
+  created_by: GetApiKeys_workspace_api_keys_created_by;
 }
 
 export interface GetApiKeys_workspace {
   __typename: "Workspace";
   id: any;
-  apiKeys: GetApiKeys_workspace_apiKeys[];
+  api_keys: GetApiKeys_workspace_api_keys[];
 }
 
 export interface GetApiKeys {

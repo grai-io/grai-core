@@ -3,7 +3,7 @@ import notEmpty from "./notEmpty"
 export interface Node {
   id: string
   name: string
-  displayName: string
+  display_name: string
   metadata: {
     node_type: string
     table_name?: string

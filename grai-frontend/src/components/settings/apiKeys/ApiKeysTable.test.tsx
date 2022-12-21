@@ -9,8 +9,8 @@ const keys = [
     prefix: "1234a",
     created: "2021-01-21",
     revoked: false,
-    expiryDate: null,
-    createdBy: {
+    expiry_date: null,
+    created_by: {
       id: "1",
       username: "edward",
     },
@@ -21,8 +21,8 @@ const keys = [
     prefix: "1234a",
     created: "2021-01-21",
     revoked: true,
-    expiryDate: null,
-    createdBy: {
+    expiry_date: null,
+    created_by: {
       id: "1",
       username: "edward",
     },

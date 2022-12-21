@@ -21,7 +21,7 @@ export const CREATE_API_KEY = gql`
   mutation CreateApiKey($name: String!, $workspaceId: ID!) {
     createApiKey(name: $name, workspaceId: $workspaceId) {
       key
-      apiKey {
+      api_key {
         id
         name
       }

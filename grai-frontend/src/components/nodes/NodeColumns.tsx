@@ -6,7 +6,7 @@ import NodeColumnsTable from "./NodeColumnsTable"
 interface Column {
   id: string
   name: string
-  displayName: string
+  display_name: string
 }
 
 type NodeColumnsProps = {

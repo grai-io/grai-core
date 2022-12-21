@@ -21,7 +21,7 @@ interface Connection {
   namespace: string
   name: string
   connector: Connector
-  isActive: boolean
+  is_active: boolean
 }
 
 type ConnectionsTableProps = {
@@ -57,7 +57,7 @@ const ConnectionsTable: React.FC<ConnectionsTableProps> = ({
             <TableCell>{connection.name}</TableCell>
             <TableCell>{connection.namespace}</TableCell>
             <TableCell>{connection.connector.name}</TableCell>
-            <TableCell>{connection.isActive ? "Yes" : "No"}</TableCell>
+            <TableCell>{connection.is_active ? "Yes" : "No"}</TableCell>
             <TableCell sx={{ py: 0, px: 1 }} stopPropagation>
               <ConnectionsMenu connection={connection} />
             </TableCell>

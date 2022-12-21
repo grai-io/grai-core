@@ -32,9 +32,9 @@ export const CREATE_CONNECTION = gql`
       namespace
       name
       metadata
-      isActive
-      createdAt
-      updatedAt
+      is_active
+      created_at
+      updated_at
     }
   }
 `

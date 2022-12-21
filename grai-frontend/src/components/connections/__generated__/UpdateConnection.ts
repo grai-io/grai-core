@@ -13,9 +13,9 @@ export interface UpdateConnection_updateConnection {
   namespace: string;
   name: string;
   metadata: any;
-  isActive: boolean;
-  createdAt: any;
-  updatedAt: any;
+  is_active: boolean;
+  created_at: any;
+  updated_at: any;
 }
 
 export interface UpdateConnection {

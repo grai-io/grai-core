@@ -18,7 +18,7 @@ import { Link, useParams } from "react-router-dom"
 export interface Node extends NodeType {
   id: string
   name: string
-  displayName: string
+  display_name: string
 }
 
 type NodeProfileProps = {
@@ -51,7 +51,7 @@ const NodeProfile: React.FC<NodeProfileProps> = ({ node, nodes, edges }) => {
                             component={Link}
                             to={`/workspaces/${workspaceId}/nodes/${table.id}`}
                           >
-                            {table.displayName}
+                            {table.display_name}
                           </Button>
                         </Box>
                       ))}
@@ -69,7 +69,7 @@ const NodeProfile: React.FC<NodeProfileProps> = ({ node, nodes, edges }) => {
                             component={Link}
                             to={`/workspaces/${workspaceId}/nodes/${table.id}`}
                           >
-                            {table.displayName}
+                            {table.display_name}
                           </Button>
                         </Box>
                       ))}
