@@ -11,6 +11,7 @@ from typing import (
     ParamSpec,
     Sequence,
     Tuple,
+    Union,
     TypeVar,
 )
 
@@ -35,21 +36,19 @@ class ClientOptions(BaseModel):
 
 func_type = Callable[[T, Unpack[Ts], Optional[ClientOptions]], R]
 
+OptionType = Optional[Union[Dict, ClientOptions]]
+
 
 def unwrap_options(func: Callable[[T, Unpack[Ts]], R]) -> func_type:
     @wraps(func)
-    def inner(
-        self: T, *args: Unpack[Ts], options: Optional[Dict] = None, **kwargs
-    ) -> R:
-        if options is None:
-            options = ClientOptions()
+    def inner(self, *args, options=ClientOptions(), **kwargs) -> R:
+        if isinstance(options, ClientOptions):
+            pass
         elif isinstance(options, Dict):
             options = ClientOptions(**options)
-        elif isinstance(options, ClientOptions):
-            options = options
         else:
-            raise NotImplementedError(f"Unrecognized option types {type(options)}")
-        return func(self, *args, options, **kwargs)
+            raise NotImplementedError(f"Unrecognized options type: {type(options)}")
+        return func(self, *args, options=options, **kwargs)
 
     return inner
 
@@ -160,27 +159,27 @@ class BaseClient(abc.ABC):
         )
 
     @unwrap_options
-    def get(self, *args, **kwargs):
-        return get(self, *args, **kwargs)
+    def get(self, *args, options=ClientOptions(), **kwargs):
+        return get(self, *args, options=options)
 
     @unwrap_options
-    def post(self, *args, **kwargs):
-        return post(self, *args, **kwargs)
+    def post(self, *args, options=ClientOptions(), **kwargs):
+        return post(self, *args, options=options)
 
     @unwrap_options
-    def patch(self, *args, **kwargs):
-        return patch(self, *args, **kwargs)
+    def patch(self, *args, options=ClientOptions(), **kwargs):
+        return patch(self, *args, options=options)
 
     @unwrap_options
-    def delete(self, *args, **kwargs) -> Dict:
-        return delete(self, *args, **kwargs)
+    def delete(self, *args, options=ClientOptions(), **kwargs) -> Dict:
+        return delete(self, *args, options=options)
 
 
 @get.register
 def get_sequence(
     client: BaseClient, objs: Sequence, options: ClientOptions = ClientOptions()
 ) -> List[Dict]:
-    result = [client.get(obj, options) for obj in objs]
+    result = [client.get(obj, options=options) for obj in objs]
     return result
 
 
@@ -189,14 +188,14 @@ def delete_sequence(
     client: BaseClient, objs: Sequence, options: ClientOptions = ClientOptions()
 ) -> None:
     for obj in objs:
-        client.delete(obj, options)
+        client.delete(obj, options=options)
 
 
 @post.register
 def post_sequence(
     client: BaseClient, objs: Sequence, options: ClientOptions = ClientOptions()
 ) -> List[Dict]:
-    result = [client.post(obj, options) for obj in objs]
+    result = [client.post(obj, options=options) for obj in objs]
     return result
 
 
@@ -204,7 +203,7 @@ def post_sequence(
 def patch_sequence(
     client: BaseClient, objs: Sequence, options: ClientOptions = ClientOptions()
 ) -> List[Dict]:
-    result = [client.patch(obj, options) for obj in objs]
+    result = [client.patch(obj, options=options) for obj in objs]
     return result
 
 
@@ -215,8 +214,8 @@ def patch_sequence(
 def get_url_v1(
     client: BaseClient, url: str, options: ClientOptions = ClientOptions()
 ) -> requests.Response:
-    headers = {**client.auth_headers}
-    headers.update(options.headers)
+    headers = {**client.auth_headers, **options.headers}
+
     response = requests.get(url, headers=headers, **options.request_args)
     response_status_check(response)
     return response
@@ -226,8 +225,8 @@ def get_url_v1(
 def delete_url_v1(
     client: BaseClient, url: str, options: ClientOptions = ClientOptions()
 ) -> requests.Response:
-    headers = {**client.auth_headers}
-    headers.update(options.headers)
+    headers = {**client.auth_headers, **options.headers}
+
     response = requests.delete(url, headers=headers, **options.request_args)
     response_status_check(response)
     return response
@@ -240,11 +239,12 @@ def post_url_v1(
     payload: Dict,
     options: ClientOptions = ClientOptions(),
 ) -> requests.Response:
-    headers = {**client.auth_headers, "Content-Type": "application/json"}
-    headers.update(options.headers)
-    payload.update(options.payload)
+    headers = client.auth_headers
+    headers = {**client.auth_headers, "Content-Type": "application/json", **options.headers}
+    payload = {**payload, **options.payload}
+    print(headers)
     response = requests.post(
-        url, data=serialize_obj(payload), headers=headers, **options.request_args
+        url, data=serialize_obj(payload), headers=headers#, **options.request_args
     )
 
     response_status_check(response)
@@ -258,9 +258,9 @@ def patch_url_v1(
     payload: Dict,
     options: ClientOptions = ClientOptions(),
 ) -> requests.Response:
-    headers = {**client.auth_headers, "Content-Type": "application/json"}
-    headers.update(options.headers)
-    payload.update(options.payload)
+    headers = {**client.auth_headers, "Content-Type": "application/json", **options.headers}
+    payload = {**payload, **options.payload}
+
     response = requests.patch(
         url, data=serialize_obj(payload), headers=headers, **options.request_args
     )

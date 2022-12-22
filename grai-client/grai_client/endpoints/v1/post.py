@@ -12,7 +12,7 @@ def post_node_v1(
     client: ClientV1, grai_type: NodeV1, options: ClientOptions = ClientOptions()
 ) -> NodeV1:
     url = client.get_url(grai_type)
-    response = client.post(url, grai_type.spec.dict(exclude_none=True), options)
+    response = client.post(url, grai_type.spec.dict(exclude_none=True), options=options)
     return NodeV1.from_spec(response.json())
 
 
@@ -28,7 +28,7 @@ def post_edge_v1(
     payload = grai_type.spec.dict(exclude_none=True)
     payload["source"] = source.id
     payload["destination"] = destination.id
-    response = client.post(url, payload, options).json()
+    response = client.post(url, payload, options=options).json()
 
     if response is None:
         return None

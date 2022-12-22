@@ -15,7 +15,7 @@ def process_node_id(
     if grai_type.id is not None:
         return grai_type
 
-    server_node = client.get(grai_type, options)
+    server_node = client.get(grai_type, options=options)
     if server_node is None:
         message = (
             f"Could not find node with namespace=`{grai_type.namespace} "
