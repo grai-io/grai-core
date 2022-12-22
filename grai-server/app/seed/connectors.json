@@ -1,0 +1,39 @@
+[
+    {
+        "model": "connections.connector",
+        "pk": "768aea48-1146-4f14-9005-40e89504f4b3",
+        "fields": {
+            "name": "Postgres",
+            "metadata": {
+                "fields": [
+                    {
+                        "name": "dbname",
+                        "label": "Database Name",
+                        "required": true
+                    },
+                    {
+                        "name": "user",
+                        "required": true
+                    },
+                    {
+                        "name": "password",
+                        "secret": true,
+                        "required": true
+                    },
+                    {
+                        "name": "host",
+                        "required": true
+                    },
+                    {
+                        "name": "port",
+                        "default": 5432,
+                        "required": true
+                    }
+                ]
+            },
+            "is_active": true,
+            "created_at": "2022-12-12T10:54:33.501Z",
+            "updated_at": "2022-12-12T10:54:33.501Z"
+        }
+    }
+]
