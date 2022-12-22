@@ -82,8 +82,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setAuthTokens(data)
       setUser(jwt_decode(data.access))
       localStorage.setItem("authTokens", JSON.stringify(data))
+    } else if (response.status === 401) {
+      throw new Error("Incorrect password")
     } else {
-      alert("Something went wrong!")
+      throw new Error("Error")
     }
   }
 

@@ -4,6 +4,8 @@ import { Box, TextField } from "@mui/material"
 import Form from "components/form/Form"
 import AuthContext from "./AuthContext"
 import { Link } from "react-router-dom"
+import GraphError from "components/utils/GraphError"
+import { ApolloError } from "@apollo/client"
 
 type Values = {
   email: string
@@ -17,11 +19,16 @@ const LoginForm: React.FC = () => {
     password: "",
   })
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<ApolloError>()
 
   const handleSubmit = async () => {
     setLoading(true)
 
-    await loginUser(values.email, values.password)
+    try {
+      await loginUser(values.email, values.password)
+    } catch (err: any) {
+      setError(err)
+    }
 
     setLoading(false)
   }
@@ -29,6 +36,7 @@ const LoginForm: React.FC = () => {
   return (
     <Box sx={{ pb: 2 }}>
       <Form onSubmit={handleSubmit}>
+        {error && <GraphError error={error} />}
         <TextField
           id="email"
           label="Email"
@@ -51,6 +59,7 @@ const LoginForm: React.FC = () => {
           required
           value={values.password}
           disabled={loading}
+          error={!!error}
           onChange={event =>
             setValues({ ...values, password: event.target.value })
           }
