@@ -1,3 +1,4 @@
+from decouple import config
 from workspaces.models import (
     Workspace as WorkspaceModel,
     WorkspaceAPIKey,
@@ -23,6 +24,7 @@ from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.contrib.auth.tokens import default_token_generator
+from django.conf import settings
 
 
 @strawberry.type
@@ -126,19 +128,16 @@ class Mutation:
         )
 
         c = {
-            "email": user.email,
-            "domain": "localhost:3000",
+            "email": user.username,
+            "base_url": config("FRONTEND_URL", "http://localhost:3000"),
             "uid": user.pk,
             "user": user,
             "token": default_token_generator.make_token(user),
-            "protocol": "http",
         }
         email_message = render_to_string(email_template_name, c)
 
-        print(email_message)
-
         send_mail(
-            subject, email_message, "web@grai.io", [user.email], fail_silently=False
+            subject, email_message, settings.EMAIL_FROM, [user.username], fail_silently=False
         )
 
         return membership
@@ -182,19 +181,16 @@ class Mutation:
             subject = "Grai Password Reset"
             email_template_name = "auth/password_reset_email.txt"
             c = {
-                "email": user.email,
-                "domain": "localhost:3000",
+                "email": user.username,
+                "base_url": config("FRONTEND_URL", "http://localhost:3000"),
                 "uid": user.pk,
                 "user": user,
                 "token": default_token_generator.make_token(user),
-                "protocol": "http",
             }
             email_message = render_to_string(email_template_name, c)
 
-            print(email_message)
-
             send_mail(
-                subject, email_message, "web@grai.io", [user.email], fail_silently=False
+                subject, email_message, settings.EMAIL_FROM, [user.username], fail_silently=False
             )
 
         except UserModel.DoesNotExist:

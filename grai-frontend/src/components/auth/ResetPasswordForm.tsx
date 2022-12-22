@@ -55,7 +55,9 @@ const ResetPasswordForm: React.FC = () => {
 
   return (
     <Box sx={{ pb: 2 }}>
-      <Typography variant="h6">Choose a new password</Typography>
+      <Typography variant="h6" sx={{ mb: 1 }}>
+        Choose a new password
+      </Typography>
       <Form onSubmit={handleSubmit}>
         {error && <GraphError error={error} />}
         <TextField

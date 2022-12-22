@@ -52,6 +52,38 @@ jupyter = ["ipython (>=7.8.0)", "tokenize-rt (>=3.2.0)"]
 uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
+name = "boto3"
+version = "1.26.35"
+description = "The AWS SDK for Python"
+category = "main"
+optional = false
+python-versions = ">= 3.7"
+
+[package.dependencies]
+botocore = ">=1.29.35,<1.30.0"
+jmespath = ">=0.7.1,<2.0.0"
+s3transfer = ">=0.6.0,<0.7.0"
+
+[package.extras]
+crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
+
+[[package]]
+name = "botocore"
+version = "1.29.35"
+description = "Low-level, data-driven core of boto 3."
+category = "main"
+optional = false
+python-versions = ">= 3.7"
+
+[package.dependencies]
+jmespath = ">=0.7.1,<2.0.0"
+python-dateutil = ">=2.1,<3.0.0"
+urllib3 = ">=1.25.4,<1.27"
+
+[package.extras]
+crt = ["awscrt (==0.15.3)"]
+
+[[package]]
 name = "brotli"
 version = "1.0.9"
 description = "Python bindings for the Brotli compression library"
@@ -212,6 +244,23 @@ phonenumberslite = {version = ">=7.0.2", optional = true, markers = "extra == \"
 [package.extras]
 phonenumbers = ["phonenumbers (>=7.0.2)"]
 phonenumberslite = ["phonenumberslite (>=7.0.2)"]
+
+[[package]]
+name = "django-ses"
+version = "3.3.0"
+description = "A Django email backend for Amazon's Simple Email Service"
+category = "main"
+optional = false
+python-versions = ">=3.7,<4.0"
+
+[package.dependencies]
+boto3 = ">=1.0.0"
+django = ">=2.2"
+pytz = ">=2016.10"
+
+[package.extras]
+bounce = ["cryptography (>=36.0.2)", "requests (>=2.27.1)"]
+events = ["cryptography (>=36.0.2)", "requests (>=2.27.1)"]
 
 [[package]]
 name = "django-stubs"
@@ -390,6 +439,14 @@ colors = ["colorama (>=0.4.3,<0.5.0)"]
 pipfile-deprecated-finder = ["pipreqs", "requirementslib"]
 plugins = ["setuptools"]
 requirements-deprecated-finder = ["pip-api", "pipreqs"]
+
+[[package]]
+name = "jmespath"
+version = "1.0.1"
+description = "JSON Matching Expressions"
+category = "main"
+optional = false
+python-versions = ">=3.7"
 
 [[package]]
 name = "jsonschema"
@@ -677,6 +734,20 @@ requests = ">=2.0.0"
 rsa = ["oauthlib[signedtoken] (>=3.0.0)"]
 
 [[package]]
+name = "s3transfer"
+version = "0.6.0"
+description = "An Amazon S3 Transfer Manager"
+category = "main"
+optional = false
+python-versions = ">= 3.7"
+
+[package.dependencies]
+botocore = ">=1.12.36,<2.0a.0"
+
+[package.extras]
+crt = ["botocore[crt] (>=1.20.29,<2.0a.0)"]
+
+[[package]]
 name = "sentry-sdk"
 version = "1.12.1"
 description = "Python client for Sentry (https://sentry.io)"
@@ -929,7 +1000,7 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.11"
-content-hash = "30d15496da869a52cd5c23ed7ae7898edb136f72ef3ca66347ba15baae22af10"
+content-hash = "54ec7f10efc5ba24808a4548abbda82c11a12506eff0e8a60dbdcf6197222ec9"
 
 [metadata.files]
 asgiref = [
@@ -957,6 +1028,14 @@ black = [
     {file = "black-22.12.0-cp39-cp39-win_amd64.whl", hash = "sha256:559c7a1ba9a006226f09e4916060982fd27334ae1998e7a38b3f33a37f7a2148"},
     {file = "black-22.12.0-py3-none-any.whl", hash = "sha256:436cc9167dd28040ad90d3b404aec22cedf24a6e4d7de221bec2730ec0c97bcf"},
     {file = "black-22.12.0.tar.gz", hash = "sha256:229351e5a18ca30f447bf724d007f890f97e13af070bb6ad4c0a441cd7596a2f"},
+]
+boto3 = [
+    {file = "boto3-1.26.35-py3-none-any.whl", hash = "sha256:f786a12eb036bbe6f473a351182275fd5c43c4e9c523cb8ec9b1946b18830d0d"},
+    {file = "boto3-1.26.35.tar.gz", hash = "sha256:282c9aa0af39fc3f0fac9c91e05f43145ff3d5fee29189b5343490131555981a"},
+]
+botocore = [
+    {file = "botocore-1.29.35-py3-none-any.whl", hash = "sha256:fc329d2772284dcffdf947023de589eaf72a4eb4737505114b1c0f3a1063b3b6"},
+    {file = "botocore-1.29.35.tar.gz", hash = "sha256:ca673347f46f03fb5f1e56326adc9c696daba860838dffbe85e9bb16a8c54d67"},
 ]
 brotli = [
     {file = "Brotli-1.0.9-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:268fe94547ba25b58ebc724680609c8ee3e5a843202e9a381f6f9c5e8bdb5c70"},
@@ -1179,6 +1258,10 @@ django-phonenumber-field = [
     {file = "django-phonenumber-field-6.4.0.tar.gz", hash = "sha256:72a3e7a3e7493bf2a12c07a3bc77ce89813acc16592bf04d0eee3b5a452097ed"},
     {file = "django_phonenumber_field-6.4.0-py3-none-any.whl", hash = "sha256:a31b4f05ac0ff898661516c84940f83adb5cdcf0ae4b9b1d31bb8ad3ff345b58"},
 ]
+django-ses = [
+    {file = "django_ses-3.3.0-py3-none-any.whl", hash = "sha256:029edd3f23333f09cd14b4ebc274a5c3700819f16f1fcd5a25b5639b3be0fdba"},
+    {file = "django_ses-3.3.0.tar.gz", hash = "sha256:bdfc5bd4bf1f95d01756761bc9dae40b79c4c709e49ff1b9bd9e853dfd09efb1"},
+]
 django-stubs = [
     {file = "django-stubs-1.13.1.tar.gz", hash = "sha256:bcc618ba353dabc540d982b9dac1d5a1921652f8fc2a13653d545a57d5e3cc0f"},
     {file = "django_stubs-1.13.1-py3-none-any.whl", hash = "sha256:fbf2ee6a4bce76c3eb5f6707ccadb4cf1c2f1ec485e8c44701ca8de2d0a5df18"},
@@ -1230,6 +1313,10 @@ iniconfig = [
 isort = [
     {file = "isort-5.11.3-py3-none-any.whl", hash = "sha256:83155ffa936239d986b0f190347a3f2285f42a9b9e1725c89d865b27dd0627e5"},
     {file = "isort-5.11.3.tar.gz", hash = "sha256:a8ca25fbfad0f7d5d8447a4314837298d9f6b23aed8618584c894574f626b64b"},
+]
+jmespath = [
+    {file = "jmespath-1.0.1-py3-none-any.whl", hash = "sha256:02e2e4cc71b5bcab88332eebf907519190dd9e6e82107fa7f83b1003a6252980"},
+    {file = "jmespath-1.0.1.tar.gz", hash = "sha256:90261b206d6defd58fdd5e85f478bf633a2901798906be2ad389150c5c60edbe"},
 ]
 jsonschema = [
     {file = "jsonschema-4.17.3-py3-none-any.whl", hash = "sha256:a870ad254da1a8ca84b6a2905cac29d265f805acc57af304784962a2aa6508f6"},
@@ -1423,6 +1510,10 @@ requests = [
 requests-oauthlib = [
     {file = "requests-oauthlib-1.3.1.tar.gz", hash = "sha256:75beac4a47881eeb94d5ea5d6ad31ef88856affe2332b9aafb52c6452ccf0d7a"},
     {file = "requests_oauthlib-1.3.1-py2.py3-none-any.whl", hash = "sha256:2577c501a2fb8d05a304c09d090d6e47c306fef15809d102b327cf8364bddab5"},
+]
+s3transfer = [
+    {file = "s3transfer-0.6.0-py3-none-any.whl", hash = "sha256:06176b74f3a15f61f1b4f25a1fc29a4429040b7647133a463da8fa5bd28d5ecd"},
+    {file = "s3transfer-0.6.0.tar.gz", hash = "sha256:2ed07d3866f523cc561bf4a00fc5535827981b117dd7876f036b0c1aca42c947"},
 ]
 sentry-sdk = [
     {file = "sentry-sdk-1.12.1.tar.gz", hash = "sha256:5bbe4b72de22f9ac1e67f2a4e6efe8fbd595bb59b7b223443f50fe5802a5551c"},

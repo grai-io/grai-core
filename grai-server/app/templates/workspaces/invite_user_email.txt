@@ -3,7 +3,7 @@ Hello,
 
 You have been invited to collaborate on a Grai workspace.
 
-{{ protocol }}://{{ domain }}
+{{ base_url }}
 
 Sincerely,
 

@@ -3,7 +3,7 @@ Hello,
 
 You have been invited to collaborate on a Grai workspace. To get started click the link below.
 
-{{ protocol }}://{{ domain }}/complete-signup?token={{ token }}&uid={{ uid }}
+{{ base_url }}/complete-signup?token={{ token }}&uid={{ uid }}
 
 Sincerely,
 

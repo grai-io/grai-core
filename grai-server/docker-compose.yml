@@ -19,6 +19,7 @@ services:
       - DJANGO_SUPERUSER_WORKSPACE=Workspace1
       - SERVER_HOST=localhost
       - FRONTEND_HOST=localhost
+      - FRONTEND_URL=http://localhost:3000
     healthcheck:
       test: "curl -f -v -H 'Accept: application/json' http://localhost:8000/health/"
       interval: 2s
