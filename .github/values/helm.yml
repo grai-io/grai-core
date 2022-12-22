@@ -7,7 +7,7 @@ backend:
   image:
     repository: ghcr.io/grai-io/grai-core/grai-server
     pullPolicy: Always
-    tag: "<PR-NUM>"
+    tag: "<TAG>"
 
   service:
     port: 8000
@@ -21,7 +21,7 @@ frontend:
   image:
     repository: ghcr.io/grai-io/grai-core/grai-frontend
     pullPolicy: Always
-    tag: "<PR-NUM>"
+    tag: "<TAG>"
 
   service:
     port: 80

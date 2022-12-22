@@ -29,6 +29,12 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/grai-frontend
+          tags: |
+            type=schedule
+            type=ref,event=branch
+            type=ref,event=tag
+            type=sha,event=pr,prefix=,format=long,priority=600
+            type=ref,event=pr
 
       - name: Set up Docker Buildx
         id: buildx
@@ -83,6 +89,12 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/grai-server
+          tags: |
+            type=schedule
+            type=ref,event=branch
+            type=ref,event=tag
+            type=sha,event=pr,prefix=,format=long,priority=600
+            type=ref,event=pr
 
       - name: Set up Docker Buildx
         id: buildx
@@ -118,12 +130,13 @@ jobs:
 
     env:
       PR_NAME: pr-${{ github.event.number }}
+      TAG: ${{ github.sha }}
 
     steps:
       - uses: actions/checkout@v3
 
       - name: Update deployment file
-        run: sed -i 's|<PR-NUM>|'${PR_NAME}'|' $GITHUB_WORKSPACE/.github/values/helm.yml
+        run: sed -ibak -e 's/<PR-NUM>/'${PR_NAME}'/g' -e 's/<TAG>/'${TAG}'/g' $GITHUB_WORKSPACE/.github/values/helm.yml
 
       - name: Helm apply
         uses: bitovi/github-actions-deploy-eks-helm@v1.1.0
