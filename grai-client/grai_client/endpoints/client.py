@@ -3,13 +3,12 @@ import sys
 from typing import Any, Dict, List, Optional, Sequence, TypeVar, Union
 
 import requests
-from multimethod import multimethod
-from pydantic import BaseModel
-
 from grai_client.authentication import APIKeyHeader, UserNameHeader, UserTokenHeader
 from grai_client.endpoints.rest import delete, get, patch, post
 from grai_client.endpoints.utilities import response_status_check, serialize_obj
 from grai_client.schemas.schema import GraiType
+from multimethod import multimethod
+from pydantic import BaseModel
 
 if sys.version_info < (3, 10):
     from typing_extensions import ParamSpec
@@ -40,10 +39,13 @@ class BaseClient(abc.ABC):
         self.default_payload = {} if workspace is None else {"workspace": workspace}
         self.default_headers = {}
         self.default_request_args = {}
-        self.default_options = ClientOptions(**{
-            'payload': self.default_payload,
-            'headers': self.default_headers,
-            'request_args': self.default_request_args})
+        self.default_options = ClientOptions(
+            **{
+                "payload": self.default_payload,
+                "headers": self.default_headers,
+                "request_args": self.default_request_args,
+            }
+        )
 
         prefix = "https" if self.port == "443" else "http"
         self.url = f"{prefix}://{self.host}:{self.port}"

@@ -1,5 +1,4 @@
 import requests
-
 from grai_client.endpoints.client import BaseClient
 
 

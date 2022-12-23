@@ -3,7 +3,6 @@ import uuid
 from typing import get_args
 
 import pytest
-
 from grai_client.schemas import edge, node, schema
 
 
