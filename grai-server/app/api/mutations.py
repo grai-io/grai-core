@@ -137,7 +137,11 @@ class Mutation:
         email_message = render_to_string(email_template_name, c)
 
         send_mail(
-            subject, email_message, settings.EMAIL_FROM, [user.username], fail_silently=False
+            subject,
+            email_message,
+            settings.EMAIL_FROM,
+            [user.username],
+            fail_silently=False,
         )
 
         return membership
@@ -190,7 +194,11 @@ class Mutation:
             email_message = render_to_string(email_template_name, c)
 
             send_mail(
-                subject, email_message, settings.EMAIL_FROM, [user.username], fail_silently=False
+                subject,
+                email_message,
+                settings.EMAIL_FROM,
+                [user.username],
+                fail_silently=False,
             )
 
         except UserModel.DoesNotExist:
