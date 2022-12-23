@@ -1,31 +1,26 @@
 import abc
-import json
-from functools import wraps
-from typing import (
-    Any,
-    Callable,
-    Concatenate,
-    Dict,
-    List,
-    Optional,
-    ParamSpec,
-    Sequence,
-    Tuple,
-    Union,
-    TypeVar,
-)
+import sys
+from typing import Any, Dict, List, Optional, Sequence, TypeVar, Union
 
 import requests
-from grai_client.authentication import APIKeyHeader, UserNameHeader, UserTokenHeader
-from grai_client.endpoints.utilities import response_status_check, serialize_obj
-from grai_client.schemas.schema import GraiType
 from multimethod import multimethod
 from pydantic import BaseModel
-from typing_extensions import TypeVarTuple, Unpack
 
-R = TypeVar("R")
+from grai_client.authentication import APIKeyHeader, UserNameHeader, UserTokenHeader
+from grai_client.endpoints.rest import delete, get, patch, post
+from grai_client.endpoints.utilities import response_status_check, serialize_obj
+from grai_client.schemas.schema import GraiType
+
+if sys.version_info < (3, 10):
+    from typing_extensions import ParamSpec
+else:
+    from typing import ParamSpec
+
+P = ParamSpec("P")
+R = TypeVar("R", covariant=True)
 T = TypeVar("T")
-Ts = TypeVarTuple("Ts")
+OptionType = Optional[Union[Dict, "ClientOptions"]]
+ResultTypes = Union[Optional[GraiType], Sequence[Optional[GraiType]]]
 
 
 class ClientOptions(BaseModel):
@@ -34,84 +29,26 @@ class ClientOptions(BaseModel):
     headers: Dict = {}
 
 
-func_type = Callable[[T, Unpack[Ts], Optional[ClientOptions]], R]
-
-OptionType = Optional[Union[Dict, ClientOptions]]
-
-
-def unwrap_options(func: Callable[[T, Unpack[Ts]], R]) -> func_type:
-    @wraps(func)
-    def inner(self, *args, options=ClientOptions(), **kwargs) -> R:
-        if isinstance(options, ClientOptions):
-            pass
-        elif isinstance(options, Dict):
-            options = ClientOptions(**options)
-        else:
-            raise NotImplementedError(f"Unrecognized options type: {type(options)}")
-        return func(self, *args, options=options, **kwargs)
-
-    return inner
-
-
-@multimethod
-def get(*args, **kwargs) -> None:
-    pass
-
-
-@get.register()
-def get_default(*args) -> None:
-    raise NotImplementedError(
-        f"No get method implemented for type {[type(arg) for arg in args]}"
-    )
-
-
-@multimethod
-def post(*args, **kwargs) -> None:
-    pass
-
-
-@post.register()
-def post_default(*args, **kwargs) -> None:
-    raise NotImplementedError(
-        f"No post method implemented for type {[type(arg) for arg in args]}"
-    )
-
-
-@multimethod
-def patch(*args, **kwargs) -> None:
-    pass
-
-
-@patch.register()
-def patch_default(*args, **kwargs) -> None:
-    raise NotImplementedError(
-        f"No patch method implemented for type {[type(arg) for arg in args]}"
-    )
-
-
-@multimethod
-def delete(*args, **kwargs) -> None:
-    pass
-
-
-@delete.register()
-def delete_default(*args, **kwargs) -> None:
-    raise NotImplementedError(
-        f"No delete method implemented for types {[type(arg) for arg in args]}"
-    )
-
-
 class BaseClient(abc.ABC):
     id = "base"
 
-    def __init__(self, host: str, port: str):
+    def __init__(self, host: str, port: str, workspace: Optional[str] = None):
         self.host = host
         self.port = port
+        self.workspace = workspace
+
+        self.default_payload = {} if workspace is None else {"workspace": workspace}
+        self.default_headers = {}
+        self.default_request_args = {}
+        self.default_options = ClientOptions(**{
+            'payload': self.default_payload,
+            'headers': self.default_headers,
+            'request_args': self.default_request_args})
 
         prefix = "https" if self.port == "443" else "http"
         self.url = f"{prefix}://{self.host}:{self.port}"
         self.api = f"{self.url}"
-        self._auth_headers = None
+        self._auth_headers: Optional[Dict[str, str]] = None
 
         if not self.check_server_status():
             raise Exception(f"Server at {self.url} is not responding.")
@@ -146,7 +83,7 @@ class BaseClient(abc.ABC):
             self._auth_headers = APIKeyHeader(api_key).headers
         else:
             raise Exception(
-                "Authentication requires either a user token, api key, or username/password combo."
+                "Authentication requires either a user token, api key, or username/password combination."
             )
 
     def check_authentication(self) -> requests.Response:
@@ -158,34 +95,50 @@ class BaseClient(abc.ABC):
             f"No url method implemented for type {type(grai_type)}"
         )
 
-    @unwrap_options
-    def get(self, *args, options=ClientOptions(), **kwargs):
-        return get(self, *args, options=options)
+    def prep_options(self, options: OptionType = None) -> ClientOptions:
+        if options is None:
+            options = self.default_options
+        if isinstance(options, ClientOptions):
+            options = ClientOptions(**{**self.default_options.dict(), **options.dict()})
+        elif isinstance(options, Dict):
+            options = ClientOptions(**{**self.default_options.dict(), **options})
+        else:
+            raise NotImplementedError(f"Unrecognized options type: {type(options)}")
 
-    @unwrap_options
-    def post(self, *args, options=ClientOptions(), **kwargs):
-        return post(self, *args, options=options)
+        return options
 
-    @unwrap_options
-    def patch(self, *args, options=ClientOptions(), **kwargs):
-        return patch(self, *args, options=options)
+    def get(self, *args, options: OptionType = None, **kwargs):
+        options = self.prep_options(options)
+        return get(self, *args, options=options, **kwargs)
 
-    @unwrap_options
-    def delete(self, *args, options=ClientOptions(), **kwargs) -> Dict:
-        return delete(self, *args, options=options)
+    def post(self, *args, options: OptionType = None, **kwargs):
+        options = self.prep_options(options)
+        return post(self, *args, options=options, **kwargs)
+
+    def patch(self, *args, options: OptionType = None, **kwargs):
+        options = self.prep_options(options)
+        return patch(self, *args, options=options, **kwargs)
+
+    def delete(self, *args, options: OptionType = None, **kwargs):
+        options = self.prep_options(options)
+        return delete(self, *args, options=options, **kwargs)
 
 
 @get.register
 def get_sequence(
-    client: BaseClient, objs: Sequence, options: ClientOptions = ClientOptions()
-) -> List[Dict]:
+    client: BaseClient,
+    objs: Sequence[Union[str, T]],
+    options: ClientOptions = ClientOptions(),
+) -> Sequence[T]:
     result = [client.get(obj, options=options) for obj in objs]
     return result
 
 
 @delete.register
 def delete_sequence(
-    client: BaseClient, objs: Sequence, options: ClientOptions = ClientOptions()
+    client: BaseClient,
+    objs: Sequence[Union[str, T]],
+    options: ClientOptions = ClientOptions(),
 ) -> None:
     for obj in objs:
         client.delete(obj, options=options)
@@ -193,25 +146,29 @@ def delete_sequence(
 
 @post.register
 def post_sequence(
-    client: BaseClient, objs: Sequence, options: ClientOptions = ClientOptions()
-) -> List[Dict]:
+    client: BaseClient,
+    objs: Sequence[Union[str, T]],
+    options: ClientOptions = ClientOptions(),
+) -> List[T]:
     result = [client.post(obj, options=options) for obj in objs]
     return result
 
 
 @patch.register
 def patch_sequence(
-    client: BaseClient, objs: Sequence, options: ClientOptions = ClientOptions()
-) -> List[Dict]:
+    client: BaseClient,
+    objs: Sequence[Union[str, T]],
+    options: ClientOptions = ClientOptions(),
+) -> List[T]:
     result = [client.patch(obj, options=options) for obj in objs]
     return result
 
 
-#  -------------------------------  #
+# -------------------------------------------- #
 
 
 @get.register
-def get_url_v1(
+def get_url(
     client: BaseClient, url: str, options: ClientOptions = ClientOptions()
 ) -> requests.Response:
     headers = {**client.auth_headers, **options.headers}
@@ -222,7 +179,7 @@ def get_url_v1(
 
 
 @delete.register
-def delete_url_v1(
+def delete_url(
     client: BaseClient, url: str, options: ClientOptions = ClientOptions()
 ) -> requests.Response:
     headers = {**client.auth_headers, **options.headers}
@@ -233,18 +190,22 @@ def delete_url_v1(
 
 
 @post.register
-def post_url_v1(
+def post_url(
     client: BaseClient,
     url: str,
     payload: Dict,
     options: ClientOptions = ClientOptions(),
 ) -> requests.Response:
     headers = client.auth_headers
-    headers = {**client.auth_headers, "Content-Type": "application/json", **options.headers}
+    headers = {
+        **client.auth_headers,
+        "Content-Type": "application/json",
+        **options.headers,
+    }
     payload = {**payload, **options.payload}
-    print(headers)
+
     response = requests.post(
-        url, data=serialize_obj(payload), headers=headers#, **options.request_args
+        url, data=serialize_obj(payload), headers=headers  # , **options.request_args
     )
 
     response_status_check(response)
@@ -252,13 +213,17 @@ def post_url_v1(
 
 
 @patch.register
-def patch_url_v1(
+def patch_url(
     client: BaseClient,
     url: str,
     payload: Dict,
     options: ClientOptions = ClientOptions(),
 ) -> requests.Response:
-    headers = {**client.auth_headers, "Content-Type": "application/json", **options.headers}
+    headers = {
+        **client.auth_headers,
+        "Content-Type": "application/json",
+        **options.headers,
+    }
     payload = {**payload, **options.payload}
 
     response = requests.patch(

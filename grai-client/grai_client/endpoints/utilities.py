@@ -2,15 +2,14 @@ import datetime
 import json
 import pathlib
 import sys
-from functools import wraps
-from typing import Any, Callable, Dict, List, Type, TypeVar
+from typing import Any, Dict, TypeVar
 from uuid import UUID
 
 import orjson
-import requests
-from grai_client.schemas.utilities import GraiBaseModel
 from pydantic import BaseModel
 from requests import RequestException, Response
+
+from grai_client.schemas.utilities import GraiBaseModel
 
 if sys.version_info < (3, 10):
     from typing_extensions import ParamSpec
@@ -68,6 +67,10 @@ class GraiEncoder(json.JSONEncoder):
 
 
 def serialize_obj(obj: Dict) -> bytes:
-    # json_obj = json.dumps(obj, cls=GraiEncoder)
     json_obj = orjson.dumps(obj, default=orjson_defaults)
+    return json_obj
+
+
+def serialize_obj_fallback(obj: Dict) -> str:
+    json_obj = json.dumps(obj, cls=GraiEncoder)
     return json_obj

@@ -1,5 +1,3 @@
-from typing import Optional
-
 from grai_client.endpoints.client import ClientOptions
 from grai_client.endpoints.v1.client import ClientV1
 from grai_client.schemas.node import NodeID

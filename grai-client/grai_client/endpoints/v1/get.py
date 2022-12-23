@@ -1,8 +1,5 @@
-from itertools import chain
-from typing import Any, Dict, List, Literal, Optional, Type, TypeVar, Union
-from uuid import UUID
+from typing import Dict, List, Optional, TypeVar
 
-import requests
 from grai_client.endpoints.client import ClientOptions, get
 from grai_client.endpoints.v1.client import ClientV1
 from grai_client.schemas.edge import EdgeLabels, EdgeV1, NodeID
@@ -50,7 +47,7 @@ def get_node_id(
 def get_node_v1(
     client: ClientV1, grai_type: NodeV1, options: ClientOptions = ClientOptions()
 ) -> Optional[NodeV1]:
-    spec = get_node_from_id(client, grai_type.spec, options=options)
+    spec = get_node_from_id(client, grai_type.spec, options)
     return NodeV1.from_spec(spec) if isinstance(spec, dict) else spec
 
 
