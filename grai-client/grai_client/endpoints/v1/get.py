@@ -1,6 +1,7 @@
 from typing import Dict, List, Optional, TypeVar
 
-from grai_client.endpoints.client import ClientOptions, get
+from grai_client.endpoints.client import ClientOptions
+from grai_client.endpoints.rest import get
 from grai_client.endpoints.v1.client import ClientV1
 from grai_client.schemas.edge import EdgeLabels, EdgeV1, NodeID
 from grai_client.schemas.node import NodeLabels, NodeV1
@@ -16,7 +17,7 @@ def get_node_from_id(
     base_url = client.get_url(grai_type)
     if grai_type.id is not None:
         url = f"{base_url}{grai_type.id}"
-        resp = client.get(url).json()
+        resp = client.get(url, options=options).json()
     else:
         url = f"{base_url}?name={grai_type.name}&namespace={grai_type.namespace}"
         resp = client.get(url, options=options).json()
@@ -55,7 +56,7 @@ def get_node_v1(
 def get_node_by_label_v1(
     client: ClientV1, grai_type: NodeLabels, options: ClientOptions = ClientOptions()
 ) -> List[NodeV1]:
-    url = client.node_endpoint
+    url = client.get_url(grai_type)
     resp = client.get(url, options=options).json()
     return [NodeV1.from_spec(obj) for obj in resp]
 
@@ -67,7 +68,7 @@ def get_node_by_id(
     node: str,
     options: ClientOptions = ClientOptions(),
 ) -> Optional[NodeV1]:
-    url = f"{client.node_endpoint}{node}"
+    url = f"{client.get_url(grai_type)}{node}"
     resp = client.get(url, options=options).json()
     return NodeV1.from_spec(resp)
 
@@ -76,7 +77,7 @@ def get_node_by_id(
 def get_edge_v1(
     client: ClientV1, grai_type: EdgeV1, options: ClientOptions = ClientOptions()
 ) -> Optional[EdgeV1]:
-    base_url = client.edge_endpoint
+    base_url = client.get_url(grai_type)
     if grai_type.spec.id is not None:
         url = f"{base_url}{grai_type.spec.id}"
         resp = client.get(url, options=options).json()

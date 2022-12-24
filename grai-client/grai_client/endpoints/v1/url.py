@@ -5,8 +5,7 @@ from grai_client.schemas.node import NodeID, NodeLabels, NodeV1
 
 @ClientV1.get_url.register
 def get_node_id_url(client: ClientV1, obj: NodeID) -> str:
-    base_url = client.node_endpoint
-    return base_url
+    return client.node_endpoint
 
 
 @ClientV1.get_url.register

@@ -1,6 +1,7 @@
 from typing import Optional, TypeVar
 
-from grai_client.endpoints.client import ClientOptions, patch
+from grai_client.endpoints.client import ClientOptions
+from grai_client.endpoints.rest import patch
 from grai_client.endpoints.v1.client import ClientV1
 from grai_client.endpoints.v1.utils import process_node_id
 from grai_client.schemas import edge, node

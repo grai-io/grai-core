@@ -111,6 +111,7 @@ class BaseClient(abc.ABC):
 
     def get(self, *args, options: OptionType = None, **kwargs):
         options = self.prep_options(options)
+        print(options, kwargs)
         return get(self, *args, options=options, **kwargs)
 
     def post(self, *args, options: OptionType = None, **kwargs):
@@ -129,7 +130,7 @@ class BaseClient(abc.ABC):
 @get.register
 def get_sequence(
     client: BaseClient,
-    objs: Sequence[Union[str, T]],
+    objs: Sequence,
     options: ClientOptions = ClientOptions(),
 ) -> Sequence[T]:
     result = [client.get(obj, options=options) for obj in objs]
@@ -139,7 +140,7 @@ def get_sequence(
 @delete.register
 def delete_sequence(
     client: BaseClient,
-    objs: Sequence[Union[str, T]],
+    objs: Sequence,
     options: ClientOptions = ClientOptions(),
 ) -> None:
     for obj in objs:
@@ -149,7 +150,7 @@ def delete_sequence(
 @post.register
 def post_sequence(
     client: BaseClient,
-    objs: Sequence[Union[str, T]],
+    objs: Sequence,
     options: ClientOptions = ClientOptions(),
 ) -> List[T]:
     result = [client.post(obj, options=options) for obj in objs]
@@ -159,7 +160,7 @@ def post_sequence(
 @patch.register
 def patch_sequence(
     client: BaseClient,
-    objs: Sequence[Union[str, T]],
+    objs: Sequence,
     options: ClientOptions = ClientOptions(),
 ) -> List[T]:
     result = [client.patch(obj, options=options) for obj in objs]
@@ -170,7 +171,7 @@ def patch_sequence(
 
 
 @get.register
-def get_url(
+def client_get_url(
     client: BaseClient, url: str, options: ClientOptions = ClientOptions()
 ) -> requests.Response:
     headers = {**client.auth_headers, **options.headers}
@@ -181,7 +182,7 @@ def get_url(
 
 
 @delete.register
-def delete_url(
+def client_delete_url(
     client: BaseClient, url: str, options: ClientOptions = ClientOptions()
 ) -> requests.Response:
     headers = {**client.auth_headers, **options.headers}
@@ -192,7 +193,7 @@ def delete_url(
 
 
 @post.register
-def post_url(
+def client_post_url(
     client: BaseClient,
     url: str,
     payload: Dict,
@@ -215,7 +216,7 @@ def post_url(
 
 
 @patch.register
-def patch_url(
+def client_patch_url(
     client: BaseClient,
     url: str,
     payload: Dict,

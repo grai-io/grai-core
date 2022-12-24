@@ -19,6 +19,7 @@ def update(client: BaseClient, items: List[T], active_items: Optional[List[T]] =
         return
 
     if active_items is None:
+        print(items[0].type)
         active_items = client.get(items[0].type)
         if active_items is None:
             active_items = []
