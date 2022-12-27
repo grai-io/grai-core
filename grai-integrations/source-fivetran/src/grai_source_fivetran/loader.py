@@ -141,49 +141,53 @@ class FivetranConnector:
         self, connector_id: str, limit: Optional[int] = None
     ) -> List[TableMetadataResponse]:
         url = f"{self.base_endpoint}/metadata/connectors/{connector_id}/tables"
-        params = self.make_params(limit=limit)
         return [
             TableMetadataResponse(**item)
-            for item in self.get_paginated_data_items(url, params=params)
+            for item in self.get_paginated_data_items(
+                url, params=self.make_params(limit=limit)
+            )
         ]
 
     def get_columns(
         self, connector_id: str, limit: Optional[int] = None
     ) -> List[ColumnMetadataResponse]:
         url = f"{self.base_endpoint}/metadata/connectors/{connector_id}/columns"
-        params = self.make_params(limit=limit)
         return [
             ColumnMetadataResponse(**item)
-            for item in self.get_paginated_data_items(url, params=params)
+            for item in self.get_paginated_data_items(
+                url, params=self.make_params(limit=limit)
+            )
         ]
 
     def get_schemas(
         self, connector_id: str, limit: Optional[int] = None
     ) -> List[SchemaMetadataResponse]:
         url = f"{self.base_endpoint}/metadata/connectors/{connector_id}/schemas"
-        params = self.make_params(limit=limit)
         return [
             SchemaMetadataResponse(**item)
-            for item in self.get_paginated_data_items(url, params=params)
+            for item in self.get_paginated_data_items(
+                url, params=self.make_params(limit=limit)
+            )
         ]
 
     def get_all_groups(self, limit: Optional[int] = None) -> List[GroupResponse]:
         url = f"{self.base_endpoint}/groups"
-        result_type = V1GroupsGetResponse
-        params = self.make_params(limit=limit)
         return [
             GroupResponse(**item)
-            for item in self.get_paginated_data_items(url, params=params)
+            for item in self.get_paginated_data_items(
+                url, params=self.make_params(limit=limit)
+            )
         ]
 
     def get_group_connectors(
         self, group_id: str, limit: Optional[int] = None
     ) -> List[ConnectorResponse]:
         url = f"{self.base_endpoint}/groups/{group_id}/connectors"
-        params = self.make_params(limit=limit)
         return [
             ConnectorResponse(**item)
-            for item in self.get_paginated_data_items(url, params=params)
+            for item in self.get_paginated_data_items(
+                url, params=self.make_params(limit=limit)
+            )
         ]
 
     def get_destination_metadata(
