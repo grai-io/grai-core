@@ -78,7 +78,6 @@ class FivetranConnector:
         self.sessions = requests.Session()
         self.sessions.auth = self.auth
         self.default_headers = {"Accept": "application/json"}
-        self.default_params = {"cursor": self.get_cursor(), "limit": 100}
 
     @staticmethod
     def get_cursor() -> str:
@@ -96,8 +95,8 @@ class FivetranConnector:
         assert result.status_code == 200
         return result.json()
 
-    def make_params(self, limit: int = 100):
-        return {"cursor": self.get_cursor(), "limit": limit}
+    def make_params(self, limit: Optional[int] = None):
+        return {"cursor": self.get_cursor(), "limit": 100 if limit is None else limit}
 
     def paginated_query(
         self,
@@ -137,34 +136,31 @@ class FivetranConnector:
         return results
 
     def get_tables(
-        self, connector_id: str, limit: int = 0
+        self, connector_id: str, limit: Optional[int] = None
     ) -> List[TableMetadataResponse]:
         url = f"{self.base_endpoint}/metadata/connectors/{connector_id}/tables"
         result_type = V1MetadataConnectorsConnectorIdTablesGetResponse
-        results = self.get_paginated_data_items(
-            url, result_type, params=self.make_params(limit)
-        )
-        return results
+        params = self.make_params(limit)
+
+        return self.get_paginated_data_items(url, result_type, params=params)
 
     def get_columns(
-        self, connector_id: str, limit: int = 0
+        self, connector_id: str, limit: Optional[int] = None
     ) -> List[ColumnMetadataResponse]:
         url = f"{self.base_endpoint}/metadata/connectors/{connector_id}/columns"
         result_type = V1MetadataConnectorsConnectorIdColumnsGetResponse
-        results = self.get_paginated_data_items(
-            url, result_type, params=self.make_params(limit)
-        )
-        return results
+        params = self.make_params(limit)
+
+        return self.get_paginated_data_items(url, result_type, params=params)
 
     def get_schemas(
-        self, connector_id: str, limit: int = 0
+        self, connector_id: str, limit: Optional[int] = None
     ) -> List[SchemaMetadataResponse]:
         url = f"{self.base_endpoint}/metadata/connectors/{connector_id}/schemas"
         result_type = V1MetadataConnectorsConnectorIdSchemasGetResponse
-        results = self.get_paginated_data_items(
-            url, result_type, params=self.make_params(limit)
-        )
-        return results
+        params = self.make_params(limit)
+
+        return self.get_paginated_data_items(url, result_type, params=params)
 
     def get_destination_metadata(
         self, destination_id: str
@@ -187,23 +183,21 @@ class FivetranConnector:
         data = self.make_request(self.session.get, url)
         return V1ConnectorsConnectorIdSchemasSchemaTablesTableColumnsGetResponse(**data)
 
-    def get_all_groups(self, limit: int = 0) -> List[GroupResponse]:
+    def get_all_groups(self, limit: Optional[int] = None) -> List[GroupResponse]:
         url = f"{self.base_endpoint}/groups"
         result_type = V1GroupsGetResponse
-        results = self.get_paginated_data_items(
-            url, result_type, params=self.make_params(limit)
-        )
-        return results
+        params = self.make_params(limit)
+
+        return self.get_paginated_data_items(url, result_type, params=params)
 
     def get_group_connectors(
-        self, group_id: str, limit: int = 0
+        self, group_id: str, limit: Optional[int] = None
     ) -> List[ConnectorResponse]:
         url = f"{self.base_endpoint}/groups/{group_id}/connectors"
         result_type = V1GroupsGroupIdConnectorsGetResponse
-        results = self.get_paginated_data_items(
-            url, result_type, params=self.make_params(limit)
-        )
-        return results
+        params = self.make_params(limit)
+
+        return self.get_paginated_data_items(url, result_type, params=params)
 
 
 class FivetranGraiMapper(FivetranConnector):
