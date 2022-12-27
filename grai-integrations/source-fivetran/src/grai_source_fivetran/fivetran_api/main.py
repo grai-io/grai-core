@@ -132,16 +132,16 @@ from .api_models import (
 )
 
 app = FastAPI(
-    title='OpenAPI Definition',
-    description='The OpenAPI Specification is a standard format to define the structure and syntax of REST APIs. OpenAPI documents are both machine and human-readable, which enables anyone to easily determine how each API works. [More details](https://www.openapis.org/faq)',
-    version='v1',
-    servers=[{'url': 'https://api.fivetran.com', 'variables': {}}],
+    title="OpenAPI Definition",
+    description="The OpenAPI Specification is a standard format to define the structure and syntax of REST APIs. OpenAPI documents are both machine and human-readable, which enables anyone to easily determine how each API works. [More details](https://www.openapis.org/faq)",
+    version="v1",
+    servers=[{"url": "https://api.fivetran.com", "variables": {}}],
 )
 
 
-@app.post('/v1/certificates', response_model=V1CertificatesPostResponse)
+@app.post("/v1/certificates", response_model=V1CertificatesPostResponse)
 def approve_certificate(
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: TrustCertificateRequest = None,
 ) -> V1CertificatesPostResponse:
     """
@@ -151,12 +151,12 @@ def approve_certificate(
 
 
 @app.post(
-    '/v1/connectors',
+    "/v1/connectors",
     response_model=None,
-    responses={'201': {'model': V1ConnectorsPostResponse}},
+    responses={"201": {"model": V1ConnectorsPostResponse}},
 )
 def create_connector(
-    accept: Optional[str] = Header('application/json;version=2', alias='Accept'),
+    accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
     body: NewConnectorRequestV1 = None,
 ) -> Union[None, V1ConnectorsPostResponse]:
     """
@@ -166,11 +166,11 @@ def create_connector(
 
 
 @app.get(
-    '/v1/connectors/{connector_id}', response_model=V1ConnectorsConnectorIdGetResponse
+    "/v1/connectors/{connector_id}", response_model=V1ConnectorsConnectorIdGetResponse
 )
 def connector_details(
-    connector_id: str = Path(..., alias='connectorId'),
-    accept: Optional[str] = Header('application/json;version=2', alias='Accept'),
+    connector_id: str = Path(..., alias="connectorId"),
+    accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
 ) -> V1ConnectorsConnectorIdGetResponse:
     """
     Retrieve Connector Details
@@ -179,12 +179,12 @@ def connector_details(
 
 
 @app.delete(
-    '/v1/connectors/{connector_id}',
+    "/v1/connectors/{connector_id}",
     response_model=V1ConnectorsConnectorIdDeleteResponse,
 )
 def delete_connector(
-    connector_id: str = Path(..., alias='connectorId'),
-    accept: Optional[str] = Header('application/json;version=2', alias='Accept'),
+    connector_id: str = Path(..., alias="connectorId"),
+    accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
 ) -> V1ConnectorsConnectorIdDeleteResponse:
     """
     Delete a Connector
@@ -193,11 +193,11 @@ def delete_connector(
 
 
 @app.patch(
-    '/v1/connectors/{connector_id}', response_model=V1ConnectorsConnectorIdPatchResponse
+    "/v1/connectors/{connector_id}", response_model=V1ConnectorsConnectorIdPatchResponse
 )
 def modify_connector(
-    connector_id: str = Path(..., alias='connectorId'),
-    accept: Optional[str] = Header('application/json;version=2', alias='Accept'),
+    connector_id: str = Path(..., alias="connectorId"),
+    accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
     body: UpdateConnectorRequest = None,
 ) -> V1ConnectorsConnectorIdPatchResponse:
     """
@@ -207,12 +207,12 @@ def modify_connector(
 
 
 @app.post(
-    '/v1/connectors/{connector_id}/connect-card',
+    "/v1/connectors/{connector_id}/connect-card",
     response_model=V1ConnectorsConnectorIdConnectCardPostResponse,
 )
 def connect_card(
-    connector_id: str = Path(..., alias='connectorId'),
-    accept: Optional[str] = Header('application/json;version=2', alias='Accept'),
+    connector_id: str = Path(..., alias="connectorId"),
+    accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
     body: ConnectCardConfigRequest = None,
 ) -> V1ConnectorsConnectorIdConnectCardPostResponse:
     """
@@ -222,12 +222,12 @@ def connect_card(
 
 
 @app.post(
-    '/v1/connectors/{connector_id}/connect-card-token',
+    "/v1/connectors/{connector_id}/connect-card-token",
     response_model=CreatePbfTokenResponse,
 )
 def connect_card_token(
-    connector_id: str = Path(..., alias='connectorId'),
-    accept: Optional[str] = Header('application/json;version=2', alias='Accept'),
+    connector_id: str = Path(..., alias="connectorId"),
+    accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
 ) -> CreatePbfTokenResponse:
     """
     Connect Card Token
@@ -236,12 +236,12 @@ def connect_card_token(
 
 
 @app.post(
-    '/v1/connectors/{connector_id}/resync',
+    "/v1/connectors/{connector_id}/resync",
     response_model=V1ConnectorsConnectorIdResyncPostResponse,
 )
 def resync_connector(
-    connector_id: str = Path(..., alias='connectorId'),
-    accept: Optional[str] = Header('application/json;version=2', alias='Accept'),
+    connector_id: str = Path(..., alias="connectorId"),
+    accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
     body: ResyncConnectorRequest = None,
 ) -> V1ConnectorsConnectorIdResyncPostResponse:
     """
@@ -251,12 +251,12 @@ def resync_connector(
 
 
 @app.get(
-    '/v1/connectors/{connector_id}/schemas',
+    "/v1/connectors/{connector_id}/schemas",
     response_model=V1ConnectorsConnectorIdSchemasGetResponse,
 )
 def connector_schema_config(
-    connector_id: str = Path(..., alias='connectorId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    connector_id: str = Path(..., alias="connectorId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1ConnectorsConnectorIdSchemasGetResponse:
     """
     Retrieve a Connector Schema Config
@@ -265,12 +265,12 @@ def connector_schema_config(
 
 
 @app.patch(
-    '/v1/connectors/{connector_id}/schemas',
+    "/v1/connectors/{connector_id}/schemas",
     response_model=V1ConnectorsConnectorIdSchemasPatchResponse,
 )
 def modify_connector_schema_config(
-    connector_id: str = Path(..., alias='connectorId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    connector_id: str = Path(..., alias="connectorId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: StandardConfigUpdateRequest = None,
 ) -> V1ConnectorsConnectorIdSchemasPatchResponse:
     """
@@ -280,12 +280,12 @@ def modify_connector_schema_config(
 
 
 @app.post(
-    '/v1/connectors/{connector_id}/schemas/reload',
+    "/v1/connectors/{connector_id}/schemas/reload",
     response_model=V1ConnectorsConnectorIdSchemasReloadPostResponse,
 )
 def reload_connector_schema_config(
-    connector_id: str = Path(..., alias='connectorId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    connector_id: str = Path(..., alias="connectorId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: ReloadStandardConfigRequest = None,
 ) -> V1ConnectorsConnectorIdSchemasReloadPostResponse:
     """
@@ -295,12 +295,12 @@ def reload_connector_schema_config(
 
 
 @app.post(
-    '/v1/connectors/{connector_id}/schemas/tables/resync',
+    "/v1/connectors/{connector_id}/schemas/tables/resync",
     response_model=V1ConnectorsConnectorIdSchemasTablesResyncPostResponse,
 )
 def resync_tables(
-    connector_id: str = Path(..., alias='connectorId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    connector_id: str = Path(..., alias="connectorId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: V1ConnectorsConnectorIdSchemasTablesResyncPostRequest = None,
 ) -> V1ConnectorsConnectorIdSchemasTablesResyncPostResponse:
     """
@@ -310,13 +310,13 @@ def resync_tables(
 
 
 @app.patch(
-    '/v1/connectors/{connector_id}/schemas/{schema_name}',
+    "/v1/connectors/{connector_id}/schemas/{schema_name}",
     response_model=V1ConnectorsConnectorIdSchemasSchemaNamePatchResponse,
 )
 def modify_connector_database_schema_config(
-    connector_id: str = Path(..., alias='connectorId'),
-    schema_name: str = Path(..., alias='schemaName'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    connector_id: str = Path(..., alias="connectorId"),
+    schema_name: str = Path(..., alias="schemaName"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: SchemaUpdateRequest = None,
 ) -> V1ConnectorsConnectorIdSchemasSchemaNamePatchResponse:
     """
@@ -326,14 +326,14 @@ def modify_connector_database_schema_config(
 
 
 @app.patch(
-    '/v1/connectors/{connector_id}/schemas/{schema_name}/tables/{table_name}',
+    "/v1/connectors/{connector_id}/schemas/{schema_name}/tables/{table_name}",
     response_model=V1ConnectorsConnectorIdSchemasSchemaNameTablesTableNamePatchResponse,
 )
 def modify_connector_table_config(
-    connector_id: str = Path(..., alias='connectorId'),
-    schema_name: str = Path(..., alias='schemaName'),
-    table_name: str = Path(..., alias='tableName'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    connector_id: str = Path(..., alias="connectorId"),
+    schema_name: str = Path(..., alias="schemaName"),
+    table_name: str = Path(..., alias="tableName"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: TableUpdateRequest = None,
 ) -> V1ConnectorsConnectorIdSchemasSchemaNameTablesTableNamePatchResponse:
     """
@@ -343,15 +343,15 @@ def modify_connector_table_config(
 
 
 @app.patch(
-    '/v1/connectors/{connector_id}/schemas/{schema_name}/tables/{table_name}/columns/{column_name}',
+    "/v1/connectors/{connector_id}/schemas/{schema_name}/tables/{table_name}/columns/{column_name}",
     response_model=V1ConnectorsConnectorIdSchemasSchemaNameTablesTableNameColumnsColumnNamePatchResponse,
 )
 def modify_connector_column_config(
-    connector_id: str = Path(..., alias='connectorId'),
-    schema_name: str = Path(..., alias='schemaName'),
-    table_name: str = Path(..., alias='tableName'),
-    column_name: str = Path(..., alias='columnName'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    connector_id: str = Path(..., alias="connectorId"),
+    schema_name: str = Path(..., alias="schemaName"),
+    table_name: str = Path(..., alias="tableName"),
+    column_name: str = Path(..., alias="columnName"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: ColumnUpdateRequest = None,
 ) -> V1ConnectorsConnectorIdSchemasSchemaNameTablesTableNameColumnsColumnNamePatchResponse:
     """
@@ -361,14 +361,14 @@ def modify_connector_column_config(
 
 
 @app.get(
-    '/v1/connectors/{connector_id}/schemas/{schema}/tables/{table}/columns',
+    "/v1/connectors/{connector_id}/schemas/{schema}/tables/{table}/columns",
     response_model=V1ConnectorsConnectorIdSchemasSchemaTablesTableColumnsGetResponse,
 )
 def connector_column_config(
-    connector_id: str = Path(..., alias='connectorId'),
+    connector_id: str = Path(..., alias="connectorId"),
     schema: str = ...,
     table: str = ...,
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1ConnectorsConnectorIdSchemasSchemaTablesTableColumnsGetResponse:
     """
     Retrieve Source Table Columns Config
@@ -377,12 +377,12 @@ def connector_column_config(
 
 
 @app.post(
-    '/v1/connectors/{connector_id}/sync',
+    "/v1/connectors/{connector_id}/sync",
     response_model=V1ConnectorsConnectorIdSyncPostResponse,
 )
 def sync_connector(
-    connector_id: str = Path(..., alias='connectorId'),
-    accept: Optional[str] = Header('application/json;version=2', alias='Accept'),
+    connector_id: str = Path(..., alias="connectorId"),
+    accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
     body: SyncConnectorRequest = None,
 ) -> V1ConnectorsConnectorIdSyncPostResponse:
     """
@@ -392,12 +392,12 @@ def sync_connector(
 
 
 @app.post(
-    '/v1/connectors/{connector_id}/test',
+    "/v1/connectors/{connector_id}/test",
     response_model=V1ConnectorsConnectorIdTestPostResponse,
 )
 def run_setup_tests(
-    connector_id: str = Path(..., alias='connectorId'),
-    accept: Optional[str] = Header('application/json;version=2', alias='Accept'),
+    connector_id: str = Path(..., alias="connectorId"),
+    accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
     body: RunSetupTestsRequest = None,
 ) -> V1ConnectorsConnectorIdTestPostResponse:
     """
@@ -406,10 +406,10 @@ def run_setup_tests(
     pass
 
 
-@app.get('/v1/dbt/models/{model_id}', response_model=V1DbtModelsModelIdGetResponse)
+@app.get("/v1/dbt/models/{model_id}", response_model=V1DbtModelsModelIdGetResponse)
 def dbt_model_details(
-    model_id: str = Path(..., alias='modelId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    model_id: str = Path(..., alias="modelId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1DbtModelsModelIdGetResponse:
     """
     Retrieve DBT Model Details
@@ -417,12 +417,12 @@ def dbt_model_details(
     pass
 
 
-@app.get('/v1/dbt/projects', response_model=V1DbtProjectsGetResponse)
+@app.get("/v1/dbt/projects", response_model=V1DbtProjectsGetResponse)
 def list_dbt_projects(
     group_id: Optional[str] = None,
     cursor: Optional[str] = None,
     limit: Optional[int] = None,
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1DbtProjectsGetResponse:
     """
     List All DBT Projects
@@ -431,12 +431,12 @@ def list_dbt_projects(
 
 
 @app.post(
-    '/v1/dbt/projects',
+    "/v1/dbt/projects",
     response_model=None,
-    responses={'201': {'model': V1DbtProjectsPostResponse}},
+    responses={"201": {"model": V1DbtProjectsPostResponse}},
 )
 def create_dbt_project(
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: NewDbtProjectRequest = None,
 ) -> Union[None, V1DbtProjectsPostResponse]:
     """
@@ -446,11 +446,11 @@ def create_dbt_project(
 
 
 @app.get(
-    '/v1/dbt/projects/{project_id}', response_model=V1DbtProjectsProjectIdGetResponse
+    "/v1/dbt/projects/{project_id}", response_model=V1DbtProjectsProjectIdGetResponse
 )
 def dbt_project_details(
-    project_id: str = Path(..., alias='projectId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    project_id: str = Path(..., alias="projectId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1DbtProjectsProjectIdGetResponse:
     """
     Retrieve DBT Project Details
@@ -459,14 +459,14 @@ def dbt_project_details(
 
 
 @app.get(
-    '/v1/dbt/projects/{project_id}/models',
+    "/v1/dbt/projects/{project_id}/models",
     response_model=V1DbtProjectsProjectIdModelsGetResponse,
 )
 def list_dbt_project_models(
-    project_id: str = Path(..., alias='projectId'),
+    project_id: str = Path(..., alias="projectId"),
     cursor: Optional[str] = None,
     limit: Optional[int] = None,
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1DbtProjectsProjectIdModelsGetResponse:
     """
     List All DBT Models
@@ -475,12 +475,12 @@ def list_dbt_project_models(
 
 
 @app.post(
-    '/v1/dbt/projects/{project_id}/test',
+    "/v1/dbt/projects/{project_id}/test",
     response_model=V1DbtProjectsProjectIdTestPostResponse,
 )
 def test_dbt_project(
-    project_id: str = Path(..., alias='projectId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    project_id: str = Path(..., alias="projectId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1DbtProjectsProjectIdTestPostResponse:
     """
     Test DBT Project
@@ -489,14 +489,14 @@ def test_dbt_project(
 
 
 @app.get(
-    '/v1/dbt/projects/{project_id}/transformations',
+    "/v1/dbt/projects/{project_id}/transformations",
     response_model=V1DbtProjectsProjectIdTransformationsGetResponse,
 )
 def list_dbt_project_transformations(
-    project_id: str = Path(..., alias='projectId'),
+    project_id: str = Path(..., alias="projectId"),
     cursor: Optional[str] = None,
     limit: Optional[int] = None,
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1DbtProjectsProjectIdTransformationsGetResponse:
     """
     List All DBT Transformations
@@ -505,13 +505,13 @@ def list_dbt_project_transformations(
 
 
 @app.post(
-    '/v1/dbt/projects/{project_id}/transformations',
+    "/v1/dbt/projects/{project_id}/transformations",
     response_model=None,
-    responses={'201': {'model': V1DbtProjectsProjectIdTransformationsPostResponse}},
+    responses={"201": {"model": V1DbtProjectsProjectIdTransformationsPostResponse}},
 )
 def create_dbt_transformation(
-    project_id: str = Path(..., alias='projectId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    project_id: str = Path(..., alias="projectId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: NewTransformationRequest = None,
 ) -> Union[None, V1DbtProjectsProjectIdTransformationsPostResponse]:
     """
@@ -521,12 +521,12 @@ def create_dbt_transformation(
 
 
 @app.get(
-    '/v1/dbt/transformations/{transformation_id}',
+    "/v1/dbt/transformations/{transformation_id}",
     response_model=V1DbtTransformationsTransformationIdGetResponse,
 )
 def dbt_transformation_details(
-    transformation_id: str = Path(..., alias='transformationId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    transformation_id: str = Path(..., alias="transformationId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1DbtTransformationsTransformationIdGetResponse:
     """
     Retrieve DBT Transformation Details
@@ -535,12 +535,12 @@ def dbt_transformation_details(
 
 
 @app.delete(
-    '/v1/dbt/transformations/{transformation_id}',
+    "/v1/dbt/transformations/{transformation_id}",
     response_model=V1DbtTransformationsTransformationIdDeleteResponse,
 )
 def delete_dbt_transformation(
-    transformation_id: str = Path(..., alias='transformationId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    transformation_id: str = Path(..., alias="transformationId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1DbtTransformationsTransformationIdDeleteResponse:
     """
     Delete DBT Transformation
@@ -549,12 +549,12 @@ def delete_dbt_transformation(
 
 
 @app.patch(
-    '/v1/dbt/transformations/{transformation_id}',
+    "/v1/dbt/transformations/{transformation_id}",
     response_model=V1DbtTransformationsTransformationIdPatchResponse,
 )
 def modify_dbt_transformation(
-    transformation_id: str = Path(..., alias='transformationId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    transformation_id: str = Path(..., alias="transformationId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: UpdateTransformationRequest = None,
 ) -> V1DbtTransformationsTransformationIdPatchResponse:
     """
@@ -564,12 +564,12 @@ def modify_dbt_transformation(
 
 
 @app.post(
-    '/v1/destinations',
+    "/v1/destinations",
     response_model=None,
-    responses={'201': {'model': V1DestinationsPostResponse}},
+    responses={"201": {"model": V1DestinationsPostResponse}},
 )
 def create_destination(
-    accept: Optional[str] = Header('application/json;version=2', alias='Accept'),
+    accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
     body: NewDestinationRequest = None,
 ) -> Union[None, V1DestinationsPostResponse]:
     """
@@ -579,12 +579,12 @@ def create_destination(
 
 
 @app.get(
-    '/v1/destinations/{destination_id}',
+    "/v1/destinations/{destination_id}",
     response_model=V1DestinationsDestinationIdGetResponse,
 )
 def destination_details(
-    destination_id: str = Path(..., alias='destinationId'),
-    accept: Optional[str] = Header('application/json;version=2', alias='Accept'),
+    destination_id: str = Path(..., alias="destinationId"),
+    accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
 ) -> V1DestinationsDestinationIdGetResponse:
     """
     Retrieve Destination Details
@@ -593,12 +593,12 @@ def destination_details(
 
 
 @app.delete(
-    '/v1/destinations/{destination_id}',
+    "/v1/destinations/{destination_id}",
     response_model=V1DestinationsDestinationIdDeleteResponse,
 )
 def delete_destination(
-    destination_id: str = Path(..., alias='destinationId'),
-    accept: Optional[str] = Header('application/json;version=2', alias='Accept'),
+    destination_id: str = Path(..., alias="destinationId"),
+    accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
 ) -> V1DestinationsDestinationIdDeleteResponse:
     """
     Delete a destination
@@ -607,12 +607,12 @@ def delete_destination(
 
 
 @app.patch(
-    '/v1/destinations/{destination_id}',
+    "/v1/destinations/{destination_id}",
     response_model=V1DestinationsDestinationIdPatchResponse,
 )
 def modify_destination(
-    destination_id: str = Path(..., alias='destinationId'),
-    accept: Optional[str] = Header('application/json;version=2', alias='Accept'),
+    destination_id: str = Path(..., alias="destinationId"),
+    accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
     body: UpdateDestinationRequest = None,
 ) -> V1DestinationsDestinationIdPatchResponse:
     """
@@ -622,12 +622,12 @@ def modify_destination(
 
 
 @app.post(
-    '/v1/destinations/{destination_id}/test',
+    "/v1/destinations/{destination_id}/test",
     response_model=V1DestinationsDestinationIdTestPostResponse,
 )
 def run_destination_setup_tests(
-    destination_id: str = Path(..., alias='destinationId'),
-    accept: Optional[str] = Header('application/json;version=2', alias='Accept'),
+    destination_id: str = Path(..., alias="destinationId"),
+    accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
     body: RunSetupTestsRequest = None,
 ) -> V1DestinationsDestinationIdTestPostResponse:
     """
@@ -636,9 +636,9 @@ def run_destination_setup_tests(
     pass
 
 
-@app.post('/v1/fingerprints', response_model=V1FingerprintsPostResponse)
+@app.post("/v1/fingerprints", response_model=V1FingerprintsPostResponse)
 def approve_fingerprint(
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: TrustFingerprintRequest = None,
 ) -> V1FingerprintsPostResponse:
     """
@@ -647,11 +647,11 @@ def approve_fingerprint(
     pass
 
 
-@app.get('/v1/groups', response_model=V1GroupsGetResponse)
+@app.get("/v1/groups", response_model=V1GroupsGetResponse)
 def list_all_groups(
     cursor: Optional[str] = None,
     limit: Optional[int] = None,
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1GroupsGetResponse:
     """
     List All Groups
@@ -660,12 +660,12 @@ def list_all_groups(
 
 
 @app.post(
-    '/v1/groups',
+    "/v1/groups",
     response_model=None,
-    responses={'201': {'model': V1GroupsPostResponse}},
+    responses={"201": {"model": V1GroupsPostResponse}},
 )
 def create_group(
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: NewGroupRequest = None,
 ) -> Union[None, V1GroupsPostResponse]:
     """
@@ -674,10 +674,10 @@ def create_group(
     pass
 
 
-@app.get('/v1/groups/{group_id}', response_model=V1GroupsGroupIdGetResponse)
+@app.get("/v1/groups/{group_id}", response_model=V1GroupsGroupIdGetResponse)
 def group_details(
-    group_id: str = Path(..., alias='groupId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    group_id: str = Path(..., alias="groupId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1GroupsGroupIdGetResponse:
     """
     Retrieve Group Details
@@ -685,10 +685,10 @@ def group_details(
     pass
 
 
-@app.delete('/v1/groups/{group_id}', response_model=V1GroupsGroupIdDeleteResponse)
+@app.delete("/v1/groups/{group_id}", response_model=V1GroupsGroupIdDeleteResponse)
 def delete_group(
-    group_id: str = Path(..., alias='groupId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    group_id: str = Path(..., alias="groupId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1GroupsGroupIdDeleteResponse:
     """
     Delete a group
@@ -696,10 +696,10 @@ def delete_group(
     pass
 
 
-@app.patch('/v1/groups/{group_id}', response_model=V1GroupsGroupIdPatchResponse)
+@app.patch("/v1/groups/{group_id}", response_model=V1GroupsGroupIdPatchResponse)
 def modify_group(
-    group_id: str = Path(..., alias='groupId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    group_id: str = Path(..., alias="groupId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: UpdateGroupRequest = None,
 ) -> V1GroupsGroupIdPatchResponse:
     """
@@ -709,15 +709,15 @@ def modify_group(
 
 
 @app.get(
-    '/v1/groups/{group_id}/connectors',
+    "/v1/groups/{group_id}/connectors",
     response_model=V1GroupsGroupIdConnectorsGetResponse,
 )
 def list_all_connectors_in_group(
-    group_id: str = Path(..., alias='groupId'),
+    group_id: str = Path(..., alias="groupId"),
     schema: Optional[str] = None,
     cursor: Optional[str] = None,
     limit: Optional[int] = None,
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1GroupsGroupIdConnectorsGetResponse:
     """
     List All Connectors within a Group
@@ -725,12 +725,12 @@ def list_all_connectors_in_group(
     pass
 
 
-@app.get('/v1/groups/{group_id}/users', response_model=V1GroupsGroupIdUsersGetResponse)
+@app.get("/v1/groups/{group_id}/users", response_model=V1GroupsGroupIdUsersGetResponse)
 def list_all_users_in_group(
-    group_id: str = Path(..., alias='groupId'),
+    group_id: str = Path(..., alias="groupId"),
     cursor: Optional[str] = None,
     limit: Optional[int] = None,
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1GroupsGroupIdUsersGetResponse:
     """
     List All Users within a Group
@@ -739,11 +739,11 @@ def list_all_users_in_group(
 
 
 @app.post(
-    '/v1/groups/{group_id}/users', response_model=V1GroupsGroupIdUsersPostResponse
+    "/v1/groups/{group_id}/users", response_model=V1GroupsGroupIdUsersPostResponse
 )
 def add_user_to_group(
-    group_id: str = Path(..., alias='groupId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    group_id: str = Path(..., alias="groupId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: AddUserToGroupRequest = None,
 ) -> V1GroupsGroupIdUsersPostResponse:
     """
@@ -753,13 +753,13 @@ def add_user_to_group(
 
 
 @app.delete(
-    '/v1/groups/{group_id}/users/{user_id}',
+    "/v1/groups/{group_id}/users/{user_id}",
     response_model=V1GroupsGroupIdUsersUserIdDeleteResponse,
 )
 def delete_user_from_group(
-    group_id: str = Path(..., alias='groupId'),
-    user_id: str = Path(..., alias='userId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    group_id: str = Path(..., alias="groupId"),
+    user_id: str = Path(..., alias="userId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1GroupsGroupIdUsersUserIdDeleteResponse:
     """
     Remove a User from a Group
@@ -768,14 +768,14 @@ def delete_user_from_group(
 
 
 @app.get(
-    '/v1/metadata/connectors/{connector_id}/columns',
+    "/v1/metadata/connectors/{connector_id}/columns",
     response_model=V1MetadataConnectorsConnectorIdColumnsGetResponse,
 )
 def column_metadata(
-    connector_id: str = Path(..., alias='connectorId'),
+    connector_id: str = Path(..., alias="connectorId"),
     cursor: Optional[str] = None,
     limit: Optional[int] = None,
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1MetadataConnectorsConnectorIdColumnsGetResponse:
     """
     Retrieve column metadata
@@ -784,14 +784,14 @@ def column_metadata(
 
 
 @app.get(
-    '/v1/metadata/connectors/{connector_id}/schemas',
+    "/v1/metadata/connectors/{connector_id}/schemas",
     response_model=V1MetadataConnectorsConnectorIdSchemasGetResponse,
 )
 def schema_metadata(
-    connector_id: str = Path(..., alias='connectorId'),
+    connector_id: str = Path(..., alias="connectorId"),
     cursor: Optional[str] = None,
     limit: Optional[int] = None,
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1MetadataConnectorsConnectorIdSchemasGetResponse:
     """
     Retrieve schema metadata
@@ -800,14 +800,14 @@ def schema_metadata(
 
 
 @app.get(
-    '/v1/metadata/connectors/{connector_id}/tables',
+    "/v1/metadata/connectors/{connector_id}/tables",
     response_model=V1MetadataConnectorsConnectorIdTablesGetResponse,
 )
 def table_metadata(
-    connector_id: str = Path(..., alias='connectorId'),
+    connector_id: str = Path(..., alias="connectorId"),
     cursor: Optional[str] = None,
     limit: Optional[int] = None,
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1MetadataConnectorsConnectorIdTablesGetResponse:
     """
     Retrieve table metadata
@@ -815,11 +815,11 @@ def table_metadata(
     pass
 
 
-@app.get('/v1/metadata/{name}', response_model=V1MetadataNameGetResponse)
+@app.get("/v1/metadata/{name}", response_model=V1MetadataNameGetResponse)
 def metadata_connectors(
     cursor: Optional[str] = None,
     limit: Optional[int] = None,
-    accept: Optional[str] = Header('application/json;version=2', alias='Accept'),
+    accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
 ) -> V1MetadataNameGetResponse:
     """
     Retrieve source metadata
@@ -828,11 +828,11 @@ def metadata_connectors(
 
 
 @app.get(
-    '/v1/metadata/{name}/{service}', response_model=V1MetadataNameServiceGetResponse
+    "/v1/metadata/{name}/{service}", response_model=V1MetadataNameServiceGetResponse
 )
 def metadata_connector_config(
     service: str,
-    accept: Optional[str] = Header('application/json;version=2', alias='Accept'),
+    accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
 ) -> V1MetadataNameServiceGetResponse:
     """
     Retrieve connector configuration metadata
@@ -840,11 +840,11 @@ def metadata_connector_config(
     pass
 
 
-@app.get('/v1/roles', response_model=V1RolesGetResponse)
+@app.get("/v1/roles", response_model=V1RolesGetResponse)
 def list_all_roles(
     cursor: Optional[str] = None,
     limit: Optional[int] = None,
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1RolesGetResponse:
     """
     List all roles
@@ -852,11 +852,11 @@ def list_all_roles(
     pass
 
 
-@app.get('/v1/teams', response_model=V1TeamsGetResponse)
+@app.get("/v1/teams", response_model=V1TeamsGetResponse)
 def list_all_teams(
     cursor: Optional[str] = None,
     limit: Optional[int] = None,
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1TeamsGetResponse:
     """
     List all teams
@@ -865,10 +865,10 @@ def list_all_teams(
 
 
 @app.post(
-    '/v1/teams', response_model=None, responses={'201': {'model': V1TeamsPostResponse}}
+    "/v1/teams", response_model=None, responses={"201": {"model": V1TeamsPostResponse}}
 )
 def create_team(
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: TeamRequest = None,
 ) -> Union[None, V1TeamsPostResponse]:
     """
@@ -877,10 +877,10 @@ def create_team(
     pass
 
 
-@app.get('/v1/teams/{team_id}', response_model=V1TeamsTeamIdGetResponse)
+@app.get("/v1/teams/{team_id}", response_model=V1TeamsTeamIdGetResponse)
 def team_details(
-    team_id: str = Path(..., alias='teamId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    team_id: str = Path(..., alias="teamId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1TeamsTeamIdGetResponse:
     """
     Retrieve team details
@@ -888,10 +888,10 @@ def team_details(
     pass
 
 
-@app.delete('/v1/teams/{team_id}', response_model=V1TeamsTeamIdDeleteResponse)
+@app.delete("/v1/teams/{team_id}", response_model=V1TeamsTeamIdDeleteResponse)
 def delete_team(
-    team_id: str = Path(..., alias='teamId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    team_id: str = Path(..., alias="teamId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1TeamsTeamIdDeleteResponse:
     """
     Delete a team
@@ -899,10 +899,10 @@ def delete_team(
     pass
 
 
-@app.patch('/v1/teams/{team_id}', response_model=V1TeamsTeamIdPatchResponse)
+@app.patch("/v1/teams/{team_id}", response_model=V1TeamsTeamIdPatchResponse)
 def modify_team(
-    team_id: str = Path(..., alias='teamId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    team_id: str = Path(..., alias="teamId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: TeamRequest = None,
 ) -> V1TeamsTeamIdPatchResponse:
     """
@@ -912,13 +912,13 @@ def modify_team(
 
 
 @app.get(
-    '/v1/teams/{team_id}/connectors', response_model=V1TeamsTeamIdConnectorsGetResponse
+    "/v1/teams/{team_id}/connectors", response_model=V1TeamsTeamIdConnectorsGetResponse
 )
 def get_team_memberships_in_connectors(
-    team_id: str = Path(..., alias='teamId'),
+    team_id: str = Path(..., alias="teamId"),
     cursor: Optional[str] = None,
     limit: Optional[int] = None,
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1TeamsTeamIdConnectorsGetResponse:
     """
     List all connector memberships
@@ -927,13 +927,13 @@ def get_team_memberships_in_connectors(
 
 
 @app.post(
-    '/v1/teams/{team_id}/connectors',
+    "/v1/teams/{team_id}/connectors",
     response_model=None,
-    responses={'201': {'model': V1TeamsTeamIdConnectorsPostResponse}},
+    responses={"201": {"model": V1TeamsTeamIdConnectorsPostResponse}},
 )
 def add_team_membership_in_connector(
-    team_id: str = Path(..., alias='teamId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    team_id: str = Path(..., alias="teamId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: MembershipRequest = None,
 ) -> Union[None, V1TeamsTeamIdConnectorsPostResponse]:
     """
@@ -943,13 +943,13 @@ def add_team_membership_in_connector(
 
 
 @app.get(
-    '/v1/teams/{team_id}/connectors/{connector_id}',
+    "/v1/teams/{team_id}/connectors/{connector_id}",
     response_model=V1TeamsTeamIdConnectorsConnectorIdGetResponse,
 )
 def get_team_membership_in_connector(
-    team_id: str = Path(..., alias='teamId'),
-    connector_id: str = Path(..., alias='connectorId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    team_id: str = Path(..., alias="teamId"),
+    connector_id: str = Path(..., alias="connectorId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1TeamsTeamIdConnectorsConnectorIdGetResponse:
     """
     Retrieve connector membership
@@ -958,13 +958,13 @@ def get_team_membership_in_connector(
 
 
 @app.delete(
-    '/v1/teams/{team_id}/connectors/{connector_id}',
+    "/v1/teams/{team_id}/connectors/{connector_id}",
     response_model=V1TeamsTeamIdConnectorsConnectorIdDeleteResponse,
 )
 def delete_team_membership_in_connector(
-    team_id: str = Path(..., alias='teamId'),
-    connector_id: str = Path(..., alias='connectorId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    team_id: str = Path(..., alias="teamId"),
+    connector_id: str = Path(..., alias="connectorId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1TeamsTeamIdConnectorsConnectorIdDeleteResponse:
     """
     Delete connector membership
@@ -973,13 +973,13 @@ def delete_team_membership_in_connector(
 
 
 @app.patch(
-    '/v1/teams/{team_id}/connectors/{connector_id}',
+    "/v1/teams/{team_id}/connectors/{connector_id}",
     response_model=V1TeamsTeamIdConnectorsConnectorIdPatchResponse,
 )
 def update_team_membership_in_connector(
-    team_id: str = Path(..., alias='teamId'),
-    connector_id: str = Path(..., alias='connectorId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    team_id: str = Path(..., alias="teamId"),
+    connector_id: str = Path(..., alias="connectorId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: UpdateMembershipRequest = None,
 ) -> V1TeamsTeamIdConnectorsConnectorIdPatchResponse:
     """
@@ -988,12 +988,12 @@ def update_team_membership_in_connector(
     pass
 
 
-@app.get('/v1/teams/{team_id}/groups', response_model=V1TeamsTeamIdGroupsGetResponse)
+@app.get("/v1/teams/{team_id}/groups", response_model=V1TeamsTeamIdGroupsGetResponse)
 def get_team_memberships_in_groups(
-    team_id: str = Path(..., alias='teamId'),
+    team_id: str = Path(..., alias="teamId"),
     cursor: Optional[str] = None,
     limit: Optional[int] = None,
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1TeamsTeamIdGroupsGetResponse:
     """
     List all group memberships
@@ -1002,13 +1002,13 @@ def get_team_memberships_in_groups(
 
 
 @app.post(
-    '/v1/teams/{team_id}/groups',
+    "/v1/teams/{team_id}/groups",
     response_model=None,
-    responses={'201': {'model': V1TeamsTeamIdGroupsPostResponse}},
+    responses={"201": {"model": V1TeamsTeamIdGroupsPostResponse}},
 )
 def add_team_membership_in_group(
-    team_id: str = Path(..., alias='teamId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    team_id: str = Path(..., alias="teamId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: MembershipRequest = None,
 ) -> Union[None, V1TeamsTeamIdGroupsPostResponse]:
     """
@@ -1018,13 +1018,13 @@ def add_team_membership_in_group(
 
 
 @app.get(
-    '/v1/teams/{team_id}/groups/{group_id}',
+    "/v1/teams/{team_id}/groups/{group_id}",
     response_model=V1TeamsTeamIdGroupsGroupIdGetResponse,
 )
 def get_team_membership_in_group(
-    team_id: str = Path(..., alias='teamId'),
-    group_id: str = Path(..., alias='groupId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    team_id: str = Path(..., alias="teamId"),
+    group_id: str = Path(..., alias="groupId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1TeamsTeamIdGroupsGroupIdGetResponse:
     """
     Retrieve group membership
@@ -1033,13 +1033,13 @@ def get_team_membership_in_group(
 
 
 @app.delete(
-    '/v1/teams/{team_id}/groups/{group_id}',
+    "/v1/teams/{team_id}/groups/{group_id}",
     response_model=V1TeamsTeamIdGroupsGroupIdDeleteResponse,
 )
 def delete_team_membership_in_group(
-    team_id: str = Path(..., alias='teamId'),
-    group_id: str = Path(..., alias='groupId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    team_id: str = Path(..., alias="teamId"),
+    group_id: str = Path(..., alias="groupId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1TeamsTeamIdGroupsGroupIdDeleteResponse:
     """
     Delete group membership
@@ -1048,13 +1048,13 @@ def delete_team_membership_in_group(
 
 
 @app.patch(
-    '/v1/teams/{team_id}/groups/{group_id}',
+    "/v1/teams/{team_id}/groups/{group_id}",
     response_model=V1TeamsTeamIdGroupsGroupIdPatchResponse,
 )
 def update_team_membership_in_group(
-    team_id: str = Path(..., alias='teamId'),
-    group_id: str = Path(..., alias='groupId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    team_id: str = Path(..., alias="teamId"),
+    group_id: str = Path(..., alias="groupId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: UpdateMembershipRequest = None,
 ) -> V1TeamsTeamIdGroupsGroupIdPatchResponse:
     """
@@ -1063,10 +1063,10 @@ def update_team_membership_in_group(
     pass
 
 
-@app.delete('/v1/teams/{team_id}/role', response_model=V1TeamsTeamIdRoleDeleteResponse)
+@app.delete("/v1/teams/{team_id}/role", response_model=V1TeamsTeamIdRoleDeleteResponse)
 def delete_team_membership_in_account(
-    team_id: str = Path(..., alias='teamId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    team_id: str = Path(..., alias="teamId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1TeamsTeamIdRoleDeleteResponse:
     """
     Delete team role in account
@@ -1074,12 +1074,12 @@ def delete_team_membership_in_account(
     pass
 
 
-@app.get('/v1/teams/{team_id}/users', response_model=V1TeamsTeamIdUsersGetResponse)
+@app.get("/v1/teams/{team_id}/users", response_model=V1TeamsTeamIdUsersGetResponse)
 def list_users_in_team(
-    team_id: str = Path(..., alias='teamId'),
+    team_id: str = Path(..., alias="teamId"),
     cursor: Optional[str] = None,
     limit: Optional[int] = None,
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1TeamsTeamIdUsersGetResponse:
     """
     List all user memberships
@@ -1088,13 +1088,13 @@ def list_users_in_team(
 
 
 @app.post(
-    '/v1/teams/{team_id}/users',
+    "/v1/teams/{team_id}/users",
     response_model=None,
-    responses={'201': {'model': V1TeamsTeamIdUsersPostResponse}},
+    responses={"201": {"model": V1TeamsTeamIdUsersPostResponse}},
 )
 def add_user_to_team(
-    team_id: str = Path(..., alias='teamId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    team_id: str = Path(..., alias="teamId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: TeamMembershipRequest = None,
 ) -> Union[None, V1TeamsTeamIdUsersPostResponse]:
     """
@@ -1104,13 +1104,13 @@ def add_user_to_team(
 
 
 @app.get(
-    '/v1/teams/{team_id}/users/{user_id}',
+    "/v1/teams/{team_id}/users/{user_id}",
     response_model=V1TeamsTeamIdUsersUserIdGetResponse,
 )
 def get_user_in_team(
-    team_id: str = Path(..., alias='teamId'),
-    user_id: str = Path(..., alias='userId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    team_id: str = Path(..., alias="teamId"),
+    user_id: str = Path(..., alias="userId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1TeamsTeamIdUsersUserIdGetResponse:
     """
     Retrieve user membership in a team
@@ -1119,13 +1119,13 @@ def get_user_in_team(
 
 
 @app.delete(
-    '/v1/teams/{team_id}/users/{user_id}',
+    "/v1/teams/{team_id}/users/{user_id}",
     response_model=V1TeamsTeamIdUsersUserIdDeleteResponse,
 )
 def delete_user_from_team(
-    team_id: str = Path(..., alias='teamId'),
-    user_id: str = Path(..., alias='userId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    team_id: str = Path(..., alias="teamId"),
+    user_id: str = Path(..., alias="userId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1TeamsTeamIdUsersUserIdDeleteResponse:
     """
     Delete a user from a team
@@ -1134,13 +1134,13 @@ def delete_user_from_team(
 
 
 @app.patch(
-    '/v1/teams/{team_id}/users/{user_id}',
+    "/v1/teams/{team_id}/users/{user_id}",
     response_model=V1TeamsTeamIdUsersUserIdPatchResponse,
 )
 def update_user_membership(
-    team_id: str = Path(..., alias='teamId'),
-    user_id: str = Path(..., alias='userId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    team_id: str = Path(..., alias="teamId"),
+    user_id: str = Path(..., alias="userId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: UpdateMembershipRequest = None,
 ) -> V1TeamsTeamIdUsersUserIdPatchResponse:
     """
@@ -1149,11 +1149,11 @@ def update_user_membership(
     pass
 
 
-@app.get('/v1/users', response_model=V1UsersGetResponse)
+@app.get("/v1/users", response_model=V1UsersGetResponse)
 def list_all_users(
     cursor: Optional[str] = None,
     limit: Optional[int] = None,
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1UsersGetResponse:
     """
     List All Users
@@ -1162,10 +1162,10 @@ def list_all_users(
 
 
 @app.post(
-    '/v1/users', response_model=None, responses={'201': {'model': V1UsersPostResponse}}
+    "/v1/users", response_model=None, responses={"201": {"model": V1UsersPostResponse}}
 )
 def create_user(
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: NewUserRequest = None,
 ) -> Union[None, V1UsersPostResponse]:
     """
@@ -1174,9 +1174,9 @@ def create_user(
     pass
 
 
-@app.delete('/v1/users/{id}', response_model=V1UsersIdDeleteResponse)
+@app.delete("/v1/users/{id}", response_model=V1UsersIdDeleteResponse)
 def delete_user(
-    id: str, accept: Optional[str] = Header('application/json', alias='Accept')
+    id: str, accept: Optional[str] = Header("application/json", alias="Accept")
 ) -> V1UsersIdDeleteResponse:
     """
     Delete a user
@@ -1184,10 +1184,10 @@ def delete_user(
     pass
 
 
-@app.get('/v1/users/{user_id}', response_model=V1UsersUserIdGetResponse)
+@app.get("/v1/users/{user_id}", response_model=V1UsersUserIdGetResponse)
 def user_details(
-    user_id: str = Path(..., alias='userId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    user_id: str = Path(..., alias="userId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1UsersUserIdGetResponse:
     """
     Retrieve User Details
@@ -1195,10 +1195,10 @@ def user_details(
     pass
 
 
-@app.patch('/v1/users/{user_id}', response_model=V1UsersUserIdPatchResponse)
+@app.patch("/v1/users/{user_id}", response_model=V1UsersUserIdPatchResponse)
 def modify_user(
-    user_id: str = Path(..., alias='userId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    user_id: str = Path(..., alias="userId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: UpdateUserRequest = None,
 ) -> V1UsersUserIdPatchResponse:
     """
@@ -1208,13 +1208,13 @@ def modify_user(
 
 
 @app.get(
-    '/v1/users/{user_id}/connectors', response_model=V1UsersUserIdConnectorsGetResponse
+    "/v1/users/{user_id}/connectors", response_model=V1UsersUserIdConnectorsGetResponse
 )
 def get_user_memberships_in_connectors(
-    user_id: str = Path(..., alias='userId'),
+    user_id: str = Path(..., alias="userId"),
     cursor: Optional[str] = None,
     limit: Optional[int] = None,
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1UsersUserIdConnectorsGetResponse:
     """
     List all connector memberships
@@ -1223,13 +1223,13 @@ def get_user_memberships_in_connectors(
 
 
 @app.post(
-    '/v1/users/{user_id}/connectors',
+    "/v1/users/{user_id}/connectors",
     response_model=None,
-    responses={'201': {'model': MembershipResponse}},
+    responses={"201": {"model": MembershipResponse}},
 )
 def add_user_membership_in_connector(
-    user_id: str = Path(..., alias='userId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    user_id: str = Path(..., alias="userId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: MembershipRequest = None,
 ) -> Union[None, MembershipResponse]:
     """
@@ -1239,13 +1239,13 @@ def add_user_membership_in_connector(
 
 
 @app.get(
-    '/v1/users/{user_id}/connectors/{connector_id}',
+    "/v1/users/{user_id}/connectors/{connector_id}",
     response_model=V1UsersUserIdConnectorsConnectorIdGetResponse,
 )
 def get_user_membership_in_connector(
-    user_id: str = Path(..., alias='userId'),
-    connector_id: str = Path(..., alias='connectorId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    user_id: str = Path(..., alias="userId"),
+    connector_id: str = Path(..., alias="connectorId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1UsersUserIdConnectorsConnectorIdGetResponse:
     """
     Retrieve connector membership
@@ -1254,13 +1254,13 @@ def get_user_membership_in_connector(
 
 
 @app.delete(
-    '/v1/users/{user_id}/connectors/{connector_id}',
+    "/v1/users/{user_id}/connectors/{connector_id}",
     response_model=V1UsersUserIdConnectorsConnectorIdDeleteResponse,
 )
 def delete_user_membership_in_connector(
-    user_id: str = Path(..., alias='userId'),
-    connector_id: str = Path(..., alias='connectorId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    user_id: str = Path(..., alias="userId"),
+    connector_id: str = Path(..., alias="connectorId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1UsersUserIdConnectorsConnectorIdDeleteResponse:
     """
     Delete connector membership
@@ -1269,13 +1269,13 @@ def delete_user_membership_in_connector(
 
 
 @app.patch(
-    '/v1/users/{user_id}/connectors/{connector_id}',
+    "/v1/users/{user_id}/connectors/{connector_id}",
     response_model=V1UsersUserIdConnectorsConnectorIdPatchResponse,
 )
 def update_user_membership_in_connector(
-    user_id: str = Path(..., alias='userId'),
-    connector_id: str = Path(..., alias='connectorId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    user_id: str = Path(..., alias="userId"),
+    connector_id: str = Path(..., alias="connectorId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: UpdateMembershipRequest = None,
 ) -> V1UsersUserIdConnectorsConnectorIdPatchResponse:
     """
@@ -1284,12 +1284,12 @@ def update_user_membership_in_connector(
     pass
 
 
-@app.get('/v1/users/{user_id}/groups', response_model=V1UsersUserIdGroupsGetResponse)
+@app.get("/v1/users/{user_id}/groups", response_model=V1UsersUserIdGroupsGetResponse)
 def get_user_memberships_in_groups(
-    user_id: str = Path(..., alias='userId'),
+    user_id: str = Path(..., alias="userId"),
     cursor: Optional[str] = None,
     limit: Optional[int] = None,
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1UsersUserIdGroupsGetResponse:
     """
     List all group memberships
@@ -1298,13 +1298,13 @@ def get_user_memberships_in_groups(
 
 
 @app.post(
-    '/v1/users/{user_id}/groups',
+    "/v1/users/{user_id}/groups",
     response_model=None,
-    responses={'201': {'model': V1UsersUserIdGroupsPostResponse}},
+    responses={"201": {"model": V1UsersUserIdGroupsPostResponse}},
 )
 def add_user_membership_in_group(
-    user_id: str = Path(..., alias='userId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    user_id: str = Path(..., alias="userId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: MembershipRequest = None,
 ) -> Union[None, V1UsersUserIdGroupsPostResponse]:
     """
@@ -1314,13 +1314,13 @@ def add_user_membership_in_group(
 
 
 @app.get(
-    '/v1/users/{user_id}/groups/{group_id}',
+    "/v1/users/{user_id}/groups/{group_id}",
     response_model=V1UsersUserIdGroupsGroupIdGetResponse,
 )
 def get_user_membership_in_group(
-    user_id: str = Path(..., alias='userId'),
-    group_id: str = Path(..., alias='groupId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    user_id: str = Path(..., alias="userId"),
+    group_id: str = Path(..., alias="groupId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1UsersUserIdGroupsGroupIdGetResponse:
     """
     Retrieve group membership
@@ -1329,13 +1329,13 @@ def get_user_membership_in_group(
 
 
 @app.delete(
-    '/v1/users/{user_id}/groups/{group_id}',
+    "/v1/users/{user_id}/groups/{group_id}",
     response_model=V1UsersUserIdGroupsGroupIdDeleteResponse,
 )
 def delete_user_membership_in_group(
-    user_id: str = Path(..., alias='userId'),
-    group_id: str = Path(..., alias='groupId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    user_id: str = Path(..., alias="userId"),
+    group_id: str = Path(..., alias="groupId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1UsersUserIdGroupsGroupIdDeleteResponse:
     """
     Delete group membership
@@ -1344,13 +1344,13 @@ def delete_user_membership_in_group(
 
 
 @app.patch(
-    '/v1/users/{user_id}/groups/{group_id}',
+    "/v1/users/{user_id}/groups/{group_id}",
     response_model=V1UsersUserIdGroupsGroupIdPatchResponse,
 )
 def update_user_membership_in_group(
-    user_id: str = Path(..., alias='userId'),
-    group_id: str = Path(..., alias='groupId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    user_id: str = Path(..., alias="userId"),
+    group_id: str = Path(..., alias="groupId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: UpdateMembershipRequest = None,
 ) -> V1UsersUserIdGroupsGroupIdPatchResponse:
     """
@@ -1359,10 +1359,10 @@ def update_user_membership_in_group(
     pass
 
 
-@app.delete('/v1/users/{user_id}/role', response_model=V1UsersUserIdRoleDeleteResponse)
+@app.delete("/v1/users/{user_id}/role", response_model=V1UsersUserIdRoleDeleteResponse)
 def delete_user_membership_in_account(
-    user_id: str = Path(..., alias='userId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    user_id: str = Path(..., alias="userId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1UsersUserIdRoleDeleteResponse:
     """
     Delete user role in account
@@ -1370,11 +1370,11 @@ def delete_user_membership_in_account(
     pass
 
 
-@app.get('/v1/webhooks', response_model=V1WebhooksGetResponse)
+@app.get("/v1/webhooks", response_model=V1WebhooksGetResponse)
 def list_all_webhooks(
     cursor: Optional[str] = None,
     limit: Optional[int] = None,
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1WebhooksGetResponse:
     """
     Retrieve the list of webhooks
@@ -1382,9 +1382,9 @@ def list_all_webhooks(
     pass
 
 
-@app.post('/v1/webhooks/account', response_model=WebhookResponse)
+@app.post("/v1/webhooks/account", response_model=WebhookResponse)
 def create_account_webhook(
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: WebhookRequest = None,
 ) -> WebhookResponse:
     """
@@ -1393,10 +1393,10 @@ def create_account_webhook(
     pass
 
 
-@app.post('/v1/webhooks/group/{group_id}', response_model=WebhookResponse)
+@app.post("/v1/webhooks/group/{group_id}", response_model=WebhookResponse)
 def create_group_webhook(
-    group_id: str = Path(..., alias='groupId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    group_id: str = Path(..., alias="groupId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: WebhookRequest = None,
 ) -> WebhookResponse:
     """
@@ -1405,10 +1405,10 @@ def create_group_webhook(
     pass
 
 
-@app.get('/v1/webhooks/{webhook_id}', response_model=WebhookResponse)
+@app.get("/v1/webhooks/{webhook_id}", response_model=WebhookResponse)
 def webhook_details(
-    webhook_id: str = Path(..., alias='webhookId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    webhook_id: str = Path(..., alias="webhookId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> WebhookResponse:
     """
     Retrieve webhook details
@@ -1417,11 +1417,11 @@ def webhook_details(
 
 
 @app.delete(
-    '/v1/webhooks/{webhook_id}', response_model=None, responses={'204': {'model': str}}
+    "/v1/webhooks/{webhook_id}", response_model=None, responses={"204": {"model": str}}
 )
 def delete_webhook(
-    webhook_id: str = Path(..., alias='webhookId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    webhook_id: str = Path(..., alias="webhookId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> Union[None, str]:
     """
     Delete webhook
@@ -1429,10 +1429,10 @@ def delete_webhook(
     pass
 
 
-@app.patch('/v1/webhooks/{webhook_id}', response_model=WebhookResponse)
+@app.patch("/v1/webhooks/{webhook_id}", response_model=WebhookResponse)
 def modify_webhook(
-    webhook_id: str = Path(..., alias='webhookId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    webhook_id: str = Path(..., alias="webhookId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: WebhookRequest = None,
 ) -> WebhookResponse:
     """
@@ -1441,10 +1441,10 @@ def modify_webhook(
     pass
 
 
-@app.post('/v1/webhooks/{webhook_id}/test', response_model=WebhookTestResponse)
+@app.post("/v1/webhooks/{webhook_id}/test", response_model=WebhookTestResponse)
 def test_webhook(
-    webhook_id: str = Path(..., alias='webhookId'),
-    accept: Optional[str] = Header('application/json', alias='Accept'),
+    webhook_id: str = Path(..., alias="webhookId"),
+    accept: Optional[str] = Header("application/json", alias="Accept"),
     body: WebhookTestRequest = None,
 ) -> WebhookTestResponse:
     """

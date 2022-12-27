@@ -13,35 +13,35 @@ from pydantic import BaseModel, Extra, Field
 
 class TrustCertificateRequest(BaseModel):
     connector_id: Optional[str] = Field(
-        None, description='The unique identifier for the connector'
+        None, description="The unique identifier for the connector"
     )
     destination_id: Optional[str] = Field(
-        None, description='The unique identifier for the destination.'
+        None, description="The unique identifier for the destination."
     )
-    hash: str = Field(..., description='Hash of the certificate.')
-    encoded_cert: str = Field(..., description='The certificate encoded in base64.')
+    hash: str = Field(..., description="Hash of the certificate.")
+    encoded_cert: str = Field(..., description="The certificate encoded in base64.")
 
 
 class ConnectCardConfig(BaseModel):
     redirect_uri: Optional[str] = Field(
         None,
-        description='The URI on your site we redirect the end user to after successful setup. The URI must start with the `https` or `http` prefix. ',
+        description="The URI on your site we redirect the end user to after successful setup. The URI must start with the `https` or `http` prefix. ",
     )
     hide_setup_guide: Optional[bool] = Field(
         None,
-        description='An optional parameter that lets you hide the embedded setup guide in the Connect Card.',
+        description="An optional parameter that lets you hide the embedded setup guide in the Connect Card.",
     )
 
 
 class NodeTypeEnum(Enum):
-    ARRAY = 'ARRAY'
-    BINARY = 'BINARY'
-    BOOLEAN = 'BOOLEAN'
-    MISSING = 'MISSING'
-    NUMBER = 'NUMBER'
-    OBJECT = 'OBJECT'
-    POJO = 'POJO'
-    STRING = 'STRING'
+    ARRAY = "ARRAY"
+    BINARY = "BINARY"
+    BOOLEAN = "BOOLEAN"
+    MISSING = "MISSING"
+    NUMBER = "NUMBER"
+    OBJECT = "OBJECT"
+    POJO = "POJO"
+    STRING = "STRING"
 
 
 class NodeType(BaseModel):
@@ -73,59 +73,59 @@ class JsonNode(BaseModel):
 
 
 class SyncFrequency(Enum):
-    field_5 = '5'
-    field_15 = '15'
-    field_30 = '30'
-    field_60 = '60'
-    field_120 = '120'
-    field_180 = '180'
-    field_360 = '360'
-    field_480 = '480'
-    field_720 = '720'
-    field_1440 = '1440'
+    field_5 = "5"
+    field_15 = "15"
+    field_30 = "30"
+    field_60 = "60"
+    field_120 = "120"
+    field_180 = "180"
+    field_360 = "360"
+    field_480 = "480"
+    field_720 = "720"
+    field_1440 = "1440"
 
 
 class NewConnectorRequestV1(BaseModel):
     group_id: Optional[str] = Field(
         None,
-        description='The unique identifier for the group within the Fivetran system',
+        description="The unique identifier for the group within the Fivetran system",
     )
     service: Optional[str] = Field(
-        None, description='The connector type name within the Fivetran system'
+        None, description="The connector type name within the Fivetran system"
     )
     trust_certificates: Optional[bool] = Field(
         None,
-        description='Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).',
+        description="Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).",
     )
     trust_fingerprints: Optional[bool] = Field(
         None,
-        description='Specifies whether we should trust the SSH fingerprint automatically. The default value is FALSE. If a fingerprint is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).',
+        description="Specifies whether we should trust the SSH fingerprint automatically. The default value is FALSE. If a fingerprint is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).",
     )
     run_setup_tests: Optional[bool] = Field(
         None,
-        description='Specifies whether the setup tests should be run automatically. The default value is TRUE.',
+        description="Specifies whether the setup tests should be run automatically. The default value is TRUE.",
     )
     paused: Optional[bool] = Field(
-        None, description='Specifies whether the connector is paused'
+        None, description="Specifies whether the connector is paused"
     )
     pause_after_trial: Optional[bool] = Field(
         None,
-        description='Specifies whether the connector should be paused after the free trial period has ended',
+        description="Specifies whether the connector should be paused after the free trial period has ended",
     )
     sync_frequency: Optional[SyncFrequency] = Field(
-        None, description='The connector sync frequency in minutes'
+        None, description="The connector sync frequency in minutes"
     )
     daily_sync_time: Optional[str] = Field(
         None,
-        description='The optional parameter that defines the sync start time when the sync frequency is already set or being set by the current request to 1440. It can be specified in one hour increments starting from 00:00 to 23:00. If not specified, we will use [the baseline sync start time](https://fivetran.com/docs/getting-started/syncoverview#syncfrequencyandscheduling). This parameter has no effect on the [0 to 60 minutes offset](https://fivetran.com/docs/getting-started/syncoverview#syncstarttimesandoffsets) used to determine the actual sync start time',
+        description="The optional parameter that defines the sync start time when the sync frequency is already set or being set by the current request to 1440. It can be specified in one hour increments starting from 00:00 to 23:00. If not specified, we will use [the baseline sync start time](https://fivetran.com/docs/getting-started/syncoverview#syncfrequencyandscheduling). This parameter has no effect on the [0 to 60 minutes offset](https://fivetran.com/docs/getting-started/syncoverview#syncstarttimesandoffsets) used to determine the actual sync start time",
     )
     schedule_type: Optional[str] = None
     connect_card_config: Optional[ConnectCardConfig] = None
 
 
 class CreatePbfTokenResponse(BaseModel):
-    token: Optional[str] = Field(None, description='The connect-card auth token')
-    connector_id: Optional[str] = Field(None, description='The connector identifier')
+    token: Optional[str] = Field(None, description="The connect-card auth token")
+    connector_id: Optional[str] = Field(None, description="The connector identifier")
 
 
 class ConnectCardConfigRequest(BaseModel):
@@ -135,18 +135,18 @@ class ConnectCardConfigRequest(BaseModel):
 class ResyncConnectorRequest(BaseModel):
     scope: Optional[Dict[str, List[str]]] = Field(
         None,
-        description='A map containing an array of tables to re-sync for each schema, must be non-empty. The parameter is optional',
+        description="A map containing an array of tables to re-sync for each schema, must be non-empty. The parameter is optional",
     )
 
 
 class RunSetupTestsRequest(BaseModel):
     trust_certificates: Optional[bool] = Field(
         None,
-        description='Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).',
+        description="Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).",
     )
     trust_fingerprints: Optional[bool] = Field(
         None,
-        description='Specifies whether we should trust the SSH fingerprint automatically. The default value is FALSE. If a fingerprint is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).',
+        description="Specifies whether we should trust the SSH fingerprint automatically. The default value is FALSE. If a fingerprint is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).",
     )
 
 
@@ -158,701 +158,701 @@ class SyncConnectorRequest(BaseModel):
 
 
 class SyncFrequency1(Enum):
-    field_5 = '5'
-    field_15 = '15'
-    field_30 = '30'
-    field_60 = '60'
-    field_120 = '120'
-    field_180 = '180'
-    field_360 = '360'
-    field_480 = '480'
-    field_720 = '720'
-    field_1440 = '1440'
+    field_5 = "5"
+    field_15 = "15"
+    field_30 = "30"
+    field_60 = "60"
+    field_120 = "120"
+    field_180 = "180"
+    field_360 = "360"
+    field_480 = "480"
+    field_720 = "720"
+    field_1440 = "1440"
 
 
 class ScheduleType(Enum):
-    auto = 'auto'
-    manual = 'manual'
+    auto = "auto"
+    manual = "manual"
 
 
 class UpdateConnectorRequest(BaseModel):
     trust_certificates: Optional[bool] = Field(
         None,
-        description='Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).',
+        description="Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).",
     )
     trust_fingerprints: Optional[bool] = Field(
         None,
-        description='Specifies whether we should trust the SSH fingerprint automatically. The default value is FALSE. If a fingerprint is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).',
+        description="Specifies whether we should trust the SSH fingerprint automatically. The default value is FALSE. If a fingerprint is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).",
     )
     config: Optional[Any] = Field(
         None,
-        description='The connector setup configuration. Check possible config formats in [create method](/openapi/reference/v1/operation/create_connector/)',
+        description="The connector setup configuration. Check possible config formats in [create method](/openapi/reference/v1/operation/create_connector/)",
     )
     auth: Optional[Any] = Field(
         None,
-        description='The connector authorization settings. Check possible config formats in [create method](/openapi/reference/v1/operation/create_connector/)',
+        description="The connector authorization settings. Check possible config formats in [create method](/openapi/reference/v1/operation/create_connector/)",
     )
     sync_frequency: Optional[SyncFrequency1] = Field(
-        None, description='The connector sync frequency in minutes'
+        None, description="The connector sync frequency in minutes"
     )
     daily_sync_time: Optional[str] = Field(
         None,
-        description='The connector daily sync start time that we return only when the sync frequency is set to 1440 (which means 24 hours) and the daily_sync_time parameter was set using the Create a Connector or Modify a Connector request',
+        description="The connector daily sync start time that we return only when the sync frequency is set to 1440 (which means 24 hours) and the daily_sync_time parameter was set using the Create a Connector or Modify a Connector request",
     )
     paused: Optional[bool] = Field(
-        None, description='Specifies whether the connector is paused'
+        None, description="Specifies whether the connector is paused"
     )
     paused_after_trial: Optional[bool] = Field(
         None,
-        description='Specifies whether the connector should be paused after the free trial period has ended',
+        description="Specifies whether the connector should be paused after the free trial period has ended",
     )
-    schema_status: Optional[str] = Field(None, description='Schema status')
+    schema_status: Optional[str] = Field(None, description="Schema status")
     is_historical_sync: Optional[bool] = Field(
         None,
-        description='The boolean specifying whether the connector should be triggered to re-sync all historical data. If you set this parameter to TRUE, the next scheduled sync will be historical. If the value is FALSE or not specified, the connector will not re-sync historical data. NOTE: When the value is TRUE, only the next scheduled sync will be historical, all subsequent ones will be incremental. This parameter is set to FALSE once the historical sync is completed.',
+        description="The boolean specifying whether the connector should be triggered to re-sync all historical data. If you set this parameter to TRUE, the next scheduled sync will be historical. If the value is FALSE or not specified, the connector will not re-sync historical data. NOTE: When the value is TRUE, only the next scheduled sync will be historical, all subsequent ones will be incremental. This parameter is set to FALSE once the historical sync is completed.",
     )
     schedule_type: Optional[ScheduleType] = Field(
         None,
-        description='The connector schedule configuration type. Supported values: auto, manual',
+        description="The connector schedule configuration type. Supported values: auto, manual",
     )
     run_setup_tests: Optional[bool] = Field(
         None,
-        description='Specifies whether the setup tests should be run automatically. The default value is TRUE.',
+        description="Specifies whether the setup tests should be run automatically. The default value is TRUE.",
     )
     pause_after_trial: Optional[bool] = Field(
         None,
-        description='Specifies whether the connector should be paused after the free trial period has ended',
+        description="Specifies whether the connector should be paused after the free trial period has ended",
     )
 
 
 class Alert(BaseModel):
-    code: Optional[str] = Field(None, description='Code')
-    message: Optional[str] = Field(None, description='Setup test message')
+    code: Optional[str] = Field(None, description="Code")
+    message: Optional[str] = Field(None, description="Setup test message")
 
 
 class ConnectCardResponse(BaseModel):
-    token: Optional[str] = Field(None, description='The connect-card auth token')
+    token: Optional[str] = Field(None, description="The connect-card auth token")
     uri: Optional[str] = Field(
-        None, description='The Connect Card URI for the user interface'
+        None, description="The Connect Card URI for the user interface"
     )
 
 
 class ConnectorStatusResponse(BaseModel):
     tasks: Optional[List[Alert]] = Field(
-        None, description='The collection of tasks for the connector'
+        None, description="The collection of tasks for the connector"
     )
     warnings: Optional[List[Alert]] = Field(
-        None, description='The collection of warnings for the connector'
+        None, description="The collection of warnings for the connector"
     )
-    schema_status: Optional[str] = Field(None, description='Schema status')
+    schema_status: Optional[str] = Field(None, description="Schema status")
     update_state: Optional[str] = Field(
         None,
-        description='The current data update state of the connector. The available values are: <br /> - on_schedule - the sync is running smoothly, no delays <br /> - delayed - the data is delayed for a longer time than expected for the update.',
+        description="The current data update state of the connector. The available values are: <br /> - on_schedule - the sync is running smoothly, no delays <br /> - delayed - the data is delayed for a longer time than expected for the update.",
     )
     setup_state: Optional[str] = Field(
         None,
-        description='The current setup state of the connector. The available values are: <br /> - incomplete - the setup config is incomplete, the setup tests never succeeded <br /> - connected - the connector is properly set up <br /> - broken - the connector setup config is broken.',
+        description="The current setup state of the connector. The available values are: <br /> - incomplete - the setup config is incomplete, the setup tests never succeeded <br /> - connected - the connector is properly set up <br /> - broken - the connector setup config is broken.",
     )
     sync_state: Optional[str] = Field(
         None,
-        description='The current sync state of the connector. The available values are: <br /> - scheduled - the sync is waiting to be run <br /> - syncing - the sync is currently running <br /> - paused - the sync is currently paused <br /> - rescheduled - the sync is waiting until more API calls are available in the source service.',
+        description="The current sync state of the connector. The available values are: <br /> - scheduled - the sync is waiting to be run <br /> - syncing - the sync is currently running <br /> - paused - the sync is currently paused <br /> - rescheduled - the sync is waiting until more API calls are available in the source service.",
     )
     is_historical_sync: Optional[bool] = Field(
         None,
-        description='The boolean specifying whether the connector should be triggered to re-sync all historical data. If you set this parameter to TRUE, the next scheduled sync will be historical. If the value is FALSE or not specified, the connector will not re-sync historical data. NOTE: When the value is TRUE, only the next scheduled sync will be historical, all subsequent ones will be incremental. This parameter is set to FALSE once the historical sync is completed.',
+        description="The boolean specifying whether the connector should be triggered to re-sync all historical data. If you set this parameter to TRUE, the next scheduled sync will be historical. If the value is FALSE or not specified, the connector will not re-sync historical data. NOTE: When the value is TRUE, only the next scheduled sync will be historical, all subsequent ones will be incremental. This parameter is set to FALSE once the historical sync is completed.",
     )
     rescheduled_for: Optional[datetime] = None
 
 
 class SetupTestResultResponse(BaseModel):
-    title: Optional[str] = Field(None, description='Setup test title.')
+    title: Optional[str] = Field(None, description="Setup test title.")
     status: Optional[str] = Field(
-        None, description='The current state of the connector. '
+        None, description="The current state of the connector. "
     )
-    message: Optional[str] = Field(None, description='Setup test message.')
-    details: Optional[Dict[str, Any]] = Field(None, description='Setup test details.')
+    message: Optional[str] = Field(None, description="Setup test message.")
+    details: Optional[Dict[str, Any]] = Field(None, description="Setup test details.")
 
 
 class ConnectorConnectCardResponse(BaseModel):
     connect_card: Optional[ConnectCardResponse] = None
-    connector_id: Optional[str] = Field(None, description='The connector identifier')
+    connector_id: Optional[str] = Field(None, description="The connector identifier")
     connect_card_config: Optional[ConnectCardConfig] = None
 
 
 class ReloadStandardConfigRequest(BaseModel):
     exclude_mode: Optional[str] = Field(
         None,
-        description='Specifies whether all schemas and tables will be enabled or disabled in the standard config',
+        description="Specifies whether all schemas and tables will be enabled or disabled in the standard config",
     )
 
 
 class ColumnUpdateRequest(BaseModel):
     enabled: Optional[bool] = Field(
         None,
-        description='The boolean value specifying whether the sync for the table into the destination is enabled.',
+        description="The boolean value specifying whether the sync for the table into the destination is enabled.",
     )
     hashed: Optional[bool] = Field(
         None,
-        description='The boolean value specifying whether a column should be hashed',
+        description="The boolean value specifying whether a column should be hashed",
     )
 
 
 class SyncMode(Enum):
-    SOFT_DELETE = 'SOFT_DELETE'
-    HISTORY = 'HISTORY'
-    LIVE = 'LIVE'
+    SOFT_DELETE = "SOFT_DELETE"
+    HISTORY = "HISTORY"
+    LIVE = "LIVE"
 
 
 class TableUpdateRequest(BaseModel):
     enabled: Optional[bool] = Field(
         None,
-        description='The boolean value specifying whether the sync for the table into the destination is enabled.',
+        description="The boolean value specifying whether the sync for the table into the destination is enabled.",
     )
     columns: Optional[Dict[str, ColumnUpdateRequest]] = Field(
         None,
-        description='The set of columns within your table schema config that are synced into the destination',
+        description="The set of columns within your table schema config that are synced into the destination",
     )
     sync_mode: Optional[SyncMode] = Field(
         None,
-        description='This field appears in the response if the connector supports switching sync modes for tables',
+        description="This field appears in the response if the connector supports switching sync modes for tables",
     )
 
 
 class SchemaChangeHandling(Enum):
-    ALLOW_ALL = 'ALLOW_ALL'
-    ALLOW_COLUMNS = 'ALLOW_COLUMNS'
-    BLOCK_ALL = 'BLOCK_ALL'
+    ALLOW_ALL = "ALLOW_ALL"
+    ALLOW_COLUMNS = "ALLOW_COLUMNS"
+    BLOCK_ALL = "BLOCK_ALL"
 
 
 class ReasonCode(Enum):
-    SYSTEM_COLUMN = 'SYSTEM_COLUMN'
-    DELETED = 'DELETED'
-    OTHER = 'OTHER'
+    SYSTEM_COLUMN = "SYSTEM_COLUMN"
+    DELETED = "DELETED"
+    OTHER = "OTHER"
 
 
 class ColumnEnabledPatchSettings(BaseModel):
     allowed: Optional[bool] = Field(
         None,
-        description='The boolean value specifying whether the enabled property can be modified',
+        description="The boolean value specifying whether the enabled property can be modified",
     )
     reason: Optional[str] = Field(
         None,
-        description='The additional message indicating the reason why the enabled property cannot be modified. This field appears in the response only when the reason_code value is OTHER',
+        description="The additional message indicating the reason why the enabled property cannot be modified. This field appears in the response only when the reason_code value is OTHER",
     )
     reason_code: Optional[ReasonCode] = Field(
         None,
-        description='The reason code indicating the reason why the enabled property cannot be modified: <br /> SYSTEM_TABLE - the table is a system table <br /> DELETED - the table was deleted in the source <br /> OTHER - the table was excluded by the system for some reason <br /> This field appears in the response when the allowed property value is FALSE',
+        description="The reason code indicating the reason why the enabled property cannot be modified: <br /> SYSTEM_TABLE - the table is a system table <br /> DELETED - the table was deleted in the source <br /> OTHER - the table was excluded by the system for some reason <br /> This field appears in the response when the allowed property value is FALSE",
     )
 
 
 class SchemaChangeHandling1(Enum):
-    ALLOW_ALL = 'ALLOW_ALL'
-    ALLOW_COLUMNS = 'ALLOW_COLUMNS'
-    BLOCK_ALL = 'BLOCK_ALL'
+    ALLOW_ALL = "ALLOW_ALL"
+    ALLOW_COLUMNS = "ALLOW_COLUMNS"
+    BLOCK_ALL = "BLOCK_ALL"
 
 
 class SyncMode1(Enum):
-    SOFT_DELETE = 'SOFT_DELETE'
-    HISTORY = 'HISTORY'
-    LIVE = 'LIVE'
+    SOFT_DELETE = "SOFT_DELETE"
+    HISTORY = "HISTORY"
+    LIVE = "LIVE"
 
 
 class ReasonCode1(Enum):
-    SYSTEM_TABLE = 'SYSTEM_TABLE'
-    DELETED = 'DELETED'
-    OTHER = 'OTHER'
+    SYSTEM_TABLE = "SYSTEM_TABLE"
+    DELETED = "DELETED"
+    OTHER = "OTHER"
 
 
 class TableEnabledPatchSettings(BaseModel):
     allowed: Optional[bool] = Field(
         None,
-        description='The boolean value specifying whether the enabled property can be modified',
+        description="The boolean value specifying whether the enabled property can be modified",
     )
     reason: Optional[str] = Field(
         None,
-        description='The additional message indicating the reason why the enabled property cannot be modified. This field appears in the response only when the reason_code value is OTHER',
+        description="The additional message indicating the reason why the enabled property cannot be modified. This field appears in the response only when the reason_code value is OTHER",
     )
     reason_code: Optional[ReasonCode1] = Field(
         None,
-        description='The reason code indicating the reason why the enabled property cannot be modified: <br /> SYSTEM_TABLE - the table is a system table <br /> DELETED - the table was deleted in the source <br /> OTHER - the table was excluded by the system for some reason <br /> This field appears in the response when the allowed property value is FALSE',
+        description="The reason code indicating the reason why the enabled property cannot be modified: <br /> SYSTEM_TABLE - the table is a system table <br /> DELETED - the table was deleted in the source <br /> OTHER - the table was excluded by the system for some reason <br /> This field appears in the response when the allowed property value is FALSE",
     )
 
 
 class NewDbtProjectRequest(BaseModel):
     group_id: Optional[str] = Field(
         None,
-        description='The unique identifier for the Group within the Fivetran system.',
+        description="The unique identifier for the Group within the Fivetran system.",
     )
     dbt_version: Optional[str] = Field(
-        None, description='The version of dbt that should run the project.'
+        None, description="The version of dbt that should run the project."
     )
-    git_remote_url: Optional[str] = Field(None, description='Git remote url.')
-    git_branch: Optional[str] = Field(None, description='Git branch.')
+    git_remote_url: Optional[str] = Field(None, description="Git remote url.")
+    git_branch: Optional[str] = Field(None, description="Git branch.")
     default_schema: Optional[str] = Field(
-        None, description='Default schema in destination.'
+        None, description="Default schema in destination."
     )
-    folder_path: Optional[str] = Field(None, description='Folder in Git repo.')
+    folder_path: Optional[str] = Field(None, description="Folder in Git repo.")
     target_name: Optional[str] = Field(
         None,
-        description='Target name to set or override the value from the deployment.yaml.',
+        description="Target name to set or override the value from the deployment.yaml.",
     )
     threads: Optional[int] = Field(
-        None, description='The number of threads dbt will use.'
+        None, description="The number of threads dbt will use."
     )
 
 
 class ScheduleType1(Enum):
-    INTEGRATED = 'INTEGRATED'
-    TIME_OF_DAY = 'TIME_OF_DAY'
-    INTERVAL = 'INTERVAL'
+    INTEGRATED = "INTEGRATED"
+    TIME_OF_DAY = "TIME_OF_DAY"
+    INTERVAL = "INTERVAL"
 
 
 class DaysOfWeekEnum(Enum):
-    MONDAY = 'MONDAY'
-    TUESDAY = 'TUESDAY'
-    WEDNESDAY = 'WEDNESDAY'
-    THURSDAY = 'THURSDAY'
-    FRIDAY = 'FRIDAY'
-    SATURDAY = 'SATURDAY'
-    SUNDAY = 'SUNDAY'
+    MONDAY = "MONDAY"
+    TUESDAY = "TUESDAY"
+    WEDNESDAY = "WEDNESDAY"
+    THURSDAY = "THURSDAY"
+    FRIDAY = "FRIDAY"
+    SATURDAY = "SATURDAY"
+    SUNDAY = "SUNDAY"
 
 
 class TransformationSchedule(BaseModel):
-    schedule_type: Optional[ScheduleType1] = Field(None, description='Schedule type')
+    schedule_type: Optional[ScheduleType1] = Field(None, description="Schedule type")
     days_of_week: Optional[List[DaysOfWeekEnum]] = Field(
-        None, description='Days of week', unique_items=True
+        None, description="Days of week", unique_items=True
     )
-    interval: Optional[int] = Field(None, description='Interval.')
-    time_of_day: Optional[str] = Field(None, description='Time of day')
+    interval: Optional[int] = Field(None, description="Interval.")
+    time_of_day: Optional[str] = Field(None, description="Time of day")
 
 
 class UpdateTransformationRequest(BaseModel):
     schedule: Optional[TransformationSchedule] = None
     run_tests: Optional[bool] = Field(
         None,
-        description='The field indicates whether the tests has been confugured for DBT Transformation.',
+        description="The field indicates whether the tests has been confugured for DBT Transformation.",
     )
 
 
 class DbtProjectDetailsResponse(BaseModel):
     id: Optional[str] = Field(
         None,
-        description='The unique identifier for the DBT Model within the Fivetran system.',
+        description="The unique identifier for the DBT Model within the Fivetran system.",
     )
-    folder_path: Optional[str] = Field(None, description='Folder in Git repo.')
+    folder_path: Optional[str] = Field(None, description="Folder in Git repo.")
     created_at: Optional[datetime] = Field(
-        None, description='The timestamp when DBT project was created.'
+        None, description="The timestamp when DBT project was created."
     )
     target_name: Optional[str] = Field(
         None,
-        description='Target name to set or override the value from the deployment.yaml.',
+        description="Target name to set or override the value from the deployment.yaml.",
     )
-    git_remote_url: Optional[str] = Field(None, description='Git remote url.')
+    git_remote_url: Optional[str] = Field(None, description="Git remote url.")
     default_schema: Optional[str] = Field(
-        None, description='Default schema in destination.'
+        None, description="Default schema in destination."
     )
     group_id: Optional[str] = Field(
         None,
-        description='The unique identifier for the Group within the Fivetran system.',
+        description="The unique identifier for the Group within the Fivetran system.",
     )
     public_key: Optional[str] = Field(
-        None, description='Public key to grant Fivetran SSH access to git repository.'
+        None, description="Public key to grant Fivetran SSH access to git repository."
     )
     created_by_id: Optional[str] = Field(
         None,
-        description='The unique identifier for the User within the Fivetran system.',
+        description="The unique identifier for the User within the Fivetran system.",
     )
-    git_branch: Optional[str] = Field(None, description='Git branch.')
+    git_branch: Optional[str] = Field(None, description="Git branch.")
 
 
 class Status(Enum):
-    SUCCEEDED = 'SUCCEEDED'
-    RUNNING = 'RUNNING'
-    FAILED = 'FAILED'
-    PENDING = 'PENDING'
+    SUCCEEDED = "SUCCEEDED"
+    RUNNING = "RUNNING"
+    FAILED = "FAILED"
+    PENDING = "PENDING"
 
 
 class TransformationDetailsResponse(BaseModel):
     id: Optional[str] = Field(
         None,
-        description='The unique identifier for the DBT Model within the Fivetran system.',
+        description="The unique identifier for the DBT Model within the Fivetran system.",
     )
     status: Optional[Status] = Field(
-        None, description='The status of DBT Transformation.'
+        None, description="The status of DBT Transformation."
     )
     schedule: Optional[TransformationSchedule] = None
     last_run: Optional[datetime] = Field(
-        None, description='The timestamp of last DBT Transformation run.'
+        None, description="The timestamp of last DBT Transformation run."
     )
     run_tests: Optional[bool] = Field(
         None,
-        description='The field indicates whether the tests has been confugured for DBT Transformation.',
+        description="The field indicates whether the tests has been confugured for DBT Transformation.",
     )
     model_ids: Optional[List[str]] = Field(
-        None, description='Identifiers of related models'
+        None, description="Identifiers of related models"
     )
-    output_model_name: Optional[str] = Field(None, description='The DBT Model name.')
+    output_model_name: Optional[str] = Field(None, description="The DBT Model name.")
     dbt_project_id: Optional[str] = Field(
         None,
-        description='The unique identifier for the DBT Project within the Fivetran system.',
+        description="The unique identifier for the DBT Project within the Fivetran system.",
     )
     dbt_model_id: Optional[str] = Field(
         None,
-        description='The unique identifier for the DBT Model within the Fivetran system.',
+        description="The unique identifier for the DBT Model within the Fivetran system.",
     )
     connector_ids: Optional[List[str]] = Field(
-        None, description='Identifiers of related connectors'
+        None, description="Identifiers of related connectors"
     )
     next_run: Optional[datetime] = Field(
-        None, description='The timestamp of next DBT Transformation run.'
+        None, description="The timestamp of next DBT Transformation run."
     )
 
 
 class DbtProjectResponse(BaseModel):
     id: Optional[str] = Field(
         None,
-        description='The unique identifier for the DBT Model within the Fivetran system.',
+        description="The unique identifier for the DBT Model within the Fivetran system.",
     )
     created_at: Optional[datetime] = Field(
-        None, description='The timestamp when DBT project was created.'
+        None, description="The timestamp when DBT project was created."
     )
     created_by_id: Optional[str] = Field(
         None,
-        description='The unique identifier for the User within the Fivetran system.',
+        description="The unique identifier for the User within the Fivetran system.",
     )
     group_id: Optional[str] = Field(
         None,
-        description='The unique identifier for the Group within the Fivetran system.',
+        description="The unique identifier for the Group within the Fivetran system.",
     )
 
 
 class DbtModelResponse(BaseModel):
     id: Optional[str] = Field(
         None,
-        description='The unique identifier for the DBT Model within the Fivetran system.',
+        description="The unique identifier for the DBT Model within the Fivetran system.",
     )
     scheduled: Optional[bool] = Field(
         None,
-        description='The unique identifier for the DBT Model within the Fivetran system.',
+        description="The unique identifier for the DBT Model within the Fivetran system.",
     )
-    model_name: Optional[str] = Field(None, description='The DBT Model name.')
+    model_name: Optional[str] = Field(None, description="The DBT Model name.")
 
 
 class Status1(Enum):
-    SUCCEEDED = 'SUCCEEDED'
-    RUNNING = 'RUNNING'
-    FAILED = 'FAILED'
-    PENDING = 'PENDING'
+    SUCCEEDED = "SUCCEEDED"
+    RUNNING = "RUNNING"
+    FAILED = "FAILED"
+    PENDING = "PENDING"
 
 
 class TransformationResponse(BaseModel):
     id: Optional[str] = Field(
         None,
-        description='The unique identifier for the DBT Model within the Fivetran system.',
+        description="The unique identifier for the DBT Model within the Fivetran system.",
     )
     status: Optional[Status1] = Field(
-        None, description='The status of DBT Transformation.'
+        None, description="The status of DBT Transformation."
     )
     schedule: Optional[TransformationSchedule] = None
     last_run: Optional[datetime] = Field(
-        None, description='The timestamp of last DBT Transformation run.'
+        None, description="The timestamp of last DBT Transformation run."
     )
     run_tests: Optional[bool] = Field(
         None,
-        description='The field indicates whether the tests has been confugured for DBT Transformation.',
+        description="The field indicates whether the tests has been confugured for DBT Transformation.",
     )
-    output_model_name: Optional[str] = Field(None, description='The DBT Model name.')
+    output_model_name: Optional[str] = Field(None, description="The DBT Model name.")
     dbt_project_id: Optional[str] = Field(
         None,
-        description='The unique identifier for the DBT Project within the Fivetran system.',
+        description="The unique identifier for the DBT Project within the Fivetran system.",
     )
     dbt_model_id: Optional[str] = Field(
         None,
-        description='The unique identifier for the DBT Model within the Fivetran system.',
+        description="The unique identifier for the DBT Model within the Fivetran system.",
     )
     next_run: Optional[datetime] = Field(
-        None, description='The timestamp of next DBT Transformation run.'
+        None, description="The timestamp of next DBT Transformation run."
     )
 
 
 class DbtProjectTestResponse(BaseModel):
     setup_tests: Optional[List[SetupTestResultResponse]] = Field(
-        None, description='Setup tests results'
+        None, description="Setup tests results"
     )
     dbt_project_id: Optional[str] = Field(
         None,
-        description='The unique identifier for the DBT Project within the Fivetran system.',
+        description="The unique identifier for the DBT Project within the Fivetran system.",
     )
 
 
 class Region(Enum):
-    GCP_US_EAST4 = 'GCP_US_EAST4'
-    GCP_US_WEST1 = 'GCP_US_WEST1'
-    GCP_EUROPE_WEST3 = 'GCP_EUROPE_WEST3'
-    GCP_AUSTRALIA_SOUTHEAST1 = 'GCP_AUSTRALIA_SOUTHEAST1'
-    GCP_NORTHAMERICA_NORTHEAST1 = 'GCP_NORTHAMERICA_NORTHEAST1'
-    GCP_EUROPE_WEST2 = 'GCP_EUROPE_WEST2'
-    GCP_ASIA_SOUTHEAST1 = 'GCP_ASIA_SOUTHEAST1'
-    AWS_US_EAST_1 = 'AWS_US_EAST_1'
-    AWS_US_EAST_2 = 'AWS_US_EAST_2'
-    AWS_US_WEST_2 = 'AWS_US_WEST_2'
-    AWS_AP_SOUTHEAST_2 = 'AWS_AP_SOUTHEAST_2'
-    AWS_EU_CENTRAL_1 = 'AWS_EU_CENTRAL_1'
-    AWS_EU_WEST_1 = 'AWS_EU_WEST_1'
-    _AWS_EU_WEST_2 = ' AWS_EU_WEST_2'
-    AZURE_EASTUS2 = 'AZURE_EASTUS2'
-    AZURE_AUSTRALIAEAST = 'AZURE_AUSTRALIAEAST'
-    GCP_ASIA_SOUTH1 = 'GCP_ASIA_SOUTH1'
+    GCP_US_EAST4 = "GCP_US_EAST4"
+    GCP_US_WEST1 = "GCP_US_WEST1"
+    GCP_EUROPE_WEST3 = "GCP_EUROPE_WEST3"
+    GCP_AUSTRALIA_SOUTHEAST1 = "GCP_AUSTRALIA_SOUTHEAST1"
+    GCP_NORTHAMERICA_NORTHEAST1 = "GCP_NORTHAMERICA_NORTHEAST1"
+    GCP_EUROPE_WEST2 = "GCP_EUROPE_WEST2"
+    GCP_ASIA_SOUTHEAST1 = "GCP_ASIA_SOUTHEAST1"
+    AWS_US_EAST_1 = "AWS_US_EAST_1"
+    AWS_US_EAST_2 = "AWS_US_EAST_2"
+    AWS_US_WEST_2 = "AWS_US_WEST_2"
+    AWS_AP_SOUTHEAST_2 = "AWS_AP_SOUTHEAST_2"
+    AWS_EU_CENTRAL_1 = "AWS_EU_CENTRAL_1"
+    AWS_EU_WEST_1 = "AWS_EU_WEST_1"
+    _AWS_EU_WEST_2 = " AWS_EU_WEST_2"
+    AZURE_EASTUS2 = "AZURE_EASTUS2"
+    AZURE_AUSTRALIAEAST = "AZURE_AUSTRALIAEAST"
+    GCP_ASIA_SOUTH1 = "GCP_ASIA_SOUTH1"
 
 
 class NewDestinationRequest(BaseModel):
     group_id: str = Field(
         ...,
-        description='The unique identifier for the group within the Fivetran system.',
-        example='String',
+        description="The unique identifier for the group within the Fivetran system.",
+        example="String",
     )
     service: str = Field(
         ...,
-        description='The name for the destination type within the Fivetran system.',
-        example='String',
+        description="The name for the destination type within the Fivetran system.",
+        example="String",
     )
     region: Optional[Region] = Field(
         None,
-        description='Data processing location. This is where Fivetran will operate and run computation on data.',
-        example='>- optional_US_by_default: US, EU, APAC (Australia), UK, CANADA, SINGAPORE',
+        description="Data processing location. This is where Fivetran will operate and run computation on data.",
+        example=">- optional_US_by_default: US, EU, APAC (Australia), UK, CANADA, SINGAPORE",
     )
     time_zone_offset: str = Field(
         ...,
-        description='Determines the time zone for the Fivetran sync schedule.',
-        example='integer: -11, 10 ... ,0 , ... +11, +12',
+        description="Determines the time zone for the Fivetran sync schedule.",
+        example="integer: -11, 10 ... ,0 , ... +11, +12",
     )
     trust_certificates: Optional[bool] = Field(
         None,
-        description='Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).',
+        description="Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).",
     )
     trust_fingerprints: Optional[bool] = Field(
         None,
-        description='Specifies whether we should trust the SSH fingerprint automatically. The default value is FALSE. If a fingerprint is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).',
+        description="Specifies whether we should trust the SSH fingerprint automatically. The default value is FALSE. If a fingerprint is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).",
     )
     run_setup_tests: Optional[bool] = Field(
         None,
-        description='Specifies whether setup tests should be run automatically.',
+        description="Specifies whether setup tests should be run automatically.",
         example=True,
     )
 
 
 class Region1(Enum):
-    GCP_US_EAST4 = 'GCP_US_EAST4'
-    GCP_US_WEST1 = 'GCP_US_WEST1'
-    GCP_EUROPE_WEST3 = 'GCP_EUROPE_WEST3'
-    GCP_AUSTRALIA_SOUTHEAST1 = 'GCP_AUSTRALIA_SOUTHEAST1'
-    GCP_NORTHAMERICA_NORTHEAST1 = 'GCP_NORTHAMERICA_NORTHEAST1'
-    GCP_EUROPE_WEST2 = 'GCP_EUROPE_WEST2'
-    GCP_ASIA_SOUTHEAST1 = 'GCP_ASIA_SOUTHEAST1'
-    AWS_US_EAST_1 = 'AWS_US_EAST_1'
-    AWS_US_EAST_2 = 'AWS_US_EAST_2'
-    AWS_US_WEST_2 = 'AWS_US_WEST_2'
-    AWS_AP_SOUTHEAST_2 = 'AWS_AP_SOUTHEAST_2'
-    AWS_EU_CENTRAL_1 = 'AWS_EU_CENTRAL_1'
-    AWS_EU_WEST_1 = 'AWS_EU_WEST_1'
-    _AWS_EU_WEST_2 = ' AWS_EU_WEST_2'
-    AZURE_EASTUS2 = 'AZURE_EASTUS2'
-    AZURE_AUSTRALIAEAST = 'AZURE_AUSTRALIAEAST'
-    GCP_ASIA_SOUTH1 = 'GCP_ASIA_SOUTH1'
+    GCP_US_EAST4 = "GCP_US_EAST4"
+    GCP_US_WEST1 = "GCP_US_WEST1"
+    GCP_EUROPE_WEST3 = "GCP_EUROPE_WEST3"
+    GCP_AUSTRALIA_SOUTHEAST1 = "GCP_AUSTRALIA_SOUTHEAST1"
+    GCP_NORTHAMERICA_NORTHEAST1 = "GCP_NORTHAMERICA_NORTHEAST1"
+    GCP_EUROPE_WEST2 = "GCP_EUROPE_WEST2"
+    GCP_ASIA_SOUTHEAST1 = "GCP_ASIA_SOUTHEAST1"
+    AWS_US_EAST_1 = "AWS_US_EAST_1"
+    AWS_US_EAST_2 = "AWS_US_EAST_2"
+    AWS_US_WEST_2 = "AWS_US_WEST_2"
+    AWS_AP_SOUTHEAST_2 = "AWS_AP_SOUTHEAST_2"
+    AWS_EU_CENTRAL_1 = "AWS_EU_CENTRAL_1"
+    AWS_EU_WEST_1 = "AWS_EU_WEST_1"
+    _AWS_EU_WEST_2 = " AWS_EU_WEST_2"
+    AZURE_EASTUS2 = "AZURE_EASTUS2"
+    AZURE_AUSTRALIAEAST = "AZURE_AUSTRALIAEAST"
+    GCP_ASIA_SOUTH1 = "GCP_ASIA_SOUTH1"
 
 
 class UpdateDestinationRequest(BaseModel):
     region: Optional[Region1] = Field(
         None,
-        description='Data processing location. This is where Fivetran will operate and run computation on data.',
-        example='>- optional_US_by_default: US, EU, APAC (Australia), UK, CANADA, SINGAPORE',
+        description="Data processing location. This is where Fivetran will operate and run computation on data.",
+        example=">- optional_US_by_default: US, EU, APAC (Australia), UK, CANADA, SINGAPORE",
     )
     time_zone_offset: Optional[str] = Field(
         None,
-        description='Determines the time zone for the Fivetran sync schedule.',
-        example='integer: -11, 10 ... ,0 , ... +11, +12',
+        description="Determines the time zone for the Fivetran sync schedule.",
+        example="integer: -11, 10 ... ,0 , ... +11, +12",
     )
     trust_certificates: Optional[bool] = Field(
         None,
-        description='Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).',
+        description="Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).",
     )
     trust_fingerprints: Optional[bool] = Field(
         None,
-        description='Specifies whether we should trust the SSH fingerprint automatically. The default value is FALSE. If a fingerprint is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).',
+        description="Specifies whether we should trust the SSH fingerprint automatically. The default value is FALSE. If a fingerprint is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).",
     )
     run_setup_tests: Optional[bool] = Field(
         None,
-        description='Specifies whether setup tests should be run automatically.',
+        description="Specifies whether setup tests should be run automatically.",
         example=True,
     )
     config: Optional[Any] = Field(
         None,
-        description='The connector setup configuration. Check possible config formats in [create method](/openapi/reference/v1/operation/create_destination/)',
+        description="The connector setup configuration. Check possible config formats in [create method](/openapi/reference/v1/operation/create_destination/)",
     )
 
 
 class Region2(Enum):
-    GCP_US_EAST4 = 'GCP_US_EAST4'
-    GCP_US_WEST1 = 'GCP_US_WEST1'
-    GCP_EUROPE_WEST3 = 'GCP_EUROPE_WEST3'
-    GCP_AUSTRALIA_SOUTHEAST1 = 'GCP_AUSTRALIA_SOUTHEAST1'
-    GCP_NORTHAMERICA_NORTHEAST1 = 'GCP_NORTHAMERICA_NORTHEAST1'
-    GCP_EUROPE_WEST2 = 'GCP_EUROPE_WEST2'
-    GCP_ASIA_SOUTHEAST1 = 'GCP_ASIA_SOUTHEAST1'
-    AWS_US_EAST_1 = 'AWS_US_EAST_1'
-    AWS_US_EAST_2 = 'AWS_US_EAST_2'
-    AWS_US_WEST_2 = 'AWS_US_WEST_2'
-    AWS_AP_SOUTHEAST_2 = 'AWS_AP_SOUTHEAST_2'
-    AWS_EU_CENTRAL_1 = 'AWS_EU_CENTRAL_1'
-    AWS_EU_WEST_1 = 'AWS_EU_WEST_1'
-    _AWS_EU_WEST_2 = ' AWS_EU_WEST_2'
-    AZURE_EASTUS2 = 'AZURE_EASTUS2'
-    AZURE_AUSTRALIAEAST = 'AZURE_AUSTRALIAEAST'
-    GCP_ASIA_SOUTH1 = 'GCP_ASIA_SOUTH1'
+    GCP_US_EAST4 = "GCP_US_EAST4"
+    GCP_US_WEST1 = "GCP_US_WEST1"
+    GCP_EUROPE_WEST3 = "GCP_EUROPE_WEST3"
+    GCP_AUSTRALIA_SOUTHEAST1 = "GCP_AUSTRALIA_SOUTHEAST1"
+    GCP_NORTHAMERICA_NORTHEAST1 = "GCP_NORTHAMERICA_NORTHEAST1"
+    GCP_EUROPE_WEST2 = "GCP_EUROPE_WEST2"
+    GCP_ASIA_SOUTHEAST1 = "GCP_ASIA_SOUTHEAST1"
+    AWS_US_EAST_1 = "AWS_US_EAST_1"
+    AWS_US_EAST_2 = "AWS_US_EAST_2"
+    AWS_US_WEST_2 = "AWS_US_WEST_2"
+    AWS_AP_SOUTHEAST_2 = "AWS_AP_SOUTHEAST_2"
+    AWS_EU_CENTRAL_1 = "AWS_EU_CENTRAL_1"
+    AWS_EU_WEST_1 = "AWS_EU_WEST_1"
+    _AWS_EU_WEST_2 = " AWS_EU_WEST_2"
+    AZURE_EASTUS2 = "AZURE_EASTUS2"
+    AZURE_AUSTRALIAEAST = "AZURE_AUSTRALIAEAST"
+    GCP_ASIA_SOUTH1 = "GCP_ASIA_SOUTH1"
 
 
 class DestinationResponse(BaseModel):
     id: Optional[str] = Field(
         None,
-        description='The unique identifier for the destination within the Fivetran system',
+        description="The unique identifier for the destination within the Fivetran system",
     )
     service: Optional[str] = Field(
         None,
-        description='The name for the destination type within the Fivetran system.',
-        example='String',
+        description="The name for the destination type within the Fivetran system.",
+        example="String",
     )
     region: Optional[Region2] = Field(
         None,
-        description='Data processing location. This is where Fivetran will operate and run computation on data.',
-        example='>- optional_US_by_default: US, EU, APAC (Australia), UK, CANADA, SINGAPORE',
+        description="Data processing location. This is where Fivetran will operate and run computation on data.",
+        example=">- optional_US_by_default: US, EU, APAC (Australia), UK, CANADA, SINGAPORE",
     )
-    setup_status: Optional[str] = Field(None, description='Destination setup status')
+    setup_status: Optional[str] = Field(None, description="Destination setup status")
     group_id: Optional[str] = Field(
         None,
-        description='The unique identifier for the group within the Fivetran system.',
-        example='String',
+        description="The unique identifier for the group within the Fivetran system.",
+        example="String",
     )
     time_zone_offset: Optional[str] = Field(
         None,
-        description='Determines the time zone for the Fivetran sync schedule.',
-        example='integer: -11, 10 ... ,0 , ... +11, +12',
+        description="Determines the time zone for the Fivetran sync schedule.",
+        example="integer: -11, 10 ... ,0 , ... +11, +12",
     )
     setup_tests: Optional[List[SetupTestResultResponse]] = Field(
-        None, description='Setup tests results for this destination'
+        None, description="Setup tests results for this destination"
     )
 
 
 class TrustFingerprintRequest(BaseModel):
     connector_id: Optional[str] = Field(
-        None, description='The unique identifier for the connector'
+        None, description="The unique identifier for the connector"
     )
     destination_id: Optional[str] = Field(
-        None, description='The unique identifier for the destination'
+        None, description="The unique identifier for the destination"
     )
-    hash: str = Field(..., description='Hash of the fingerprint')
-    public_key: str = Field(..., description='The SSH public key')
+    hash: str = Field(..., description="Hash of the fingerprint")
+    public_key: str = Field(..., description="The SSH public key")
 
 
 class AddUserToGroupRequest(BaseModel):
     email: Optional[str] = Field(
         None,
-        description='The email address that the user has associated with their user profile.',
+        description="The email address that the user has associated with their user profile.",
     )
     role: Optional[str] = Field(
         None,
-        description='The group role that you would like to assign this new user to. Supported group roles: ‘Destination Administrator‘, ‘Destination Reviewer‘, ‘Destination Analyst‘, ‘Connector Creator‘, or a custom destination role',
+        description="The group role that you would like to assign this new user to. Supported group roles: ‘Destination Administrator‘, ‘Destination Reviewer‘, ‘Destination Analyst‘, ‘Connector Creator‘, or a custom destination role",
     )
 
 
 class NewGroupRequest(BaseModel):
     name: Optional[str] = Field(
-        None, description='The name of the group within your account.', example='string'
+        None, description="The name of the group within your account.", example="string"
     )
 
 
 class UpdateGroupRequest(BaseModel):
     name: Optional[str] = Field(
-        None, description='The name of the group within your account.', example='string'
+        None, description="The name of the group within your account.", example="string"
     )
 
 
 class GroupResponse(BaseModel):
     id: Optional[str] = Field(
         None,
-        description='The unique identifier for the group within the Fivetran system.',
+        description="The unique identifier for the group within the Fivetran system.",
     )
     name: Optional[str] = Field(
-        None, description='The name of the group within your account.'
+        None, description="The name of the group within your account."
     )
     created_at: Optional[datetime] = Field(
-        None, description='The timestamp of when the group was created in your account.'
+        None, description="The timestamp of when the group was created in your account."
     )
 
 
 class ConnectorResponse(BaseModel):
     id: Optional[str] = Field(
         None,
-        description='The unique identifier for the group within the Fivetran system.',
+        description="The unique identifier for the group within the Fivetran system.",
     )
     service: Optional[str] = Field(
-        None, description='The name for the connector type within the Fivetran system.'
+        None, description="The name for the connector type within the Fivetran system."
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
+        alias="schema",
         description="The name used both as the connector's name within the Fivetran system and as the source schema's name within your destination.",
     )
     paused: Optional[bool] = Field(
-        None, description='Specifies whether the connector is paused.'
+        None, description="Specifies whether the connector is paused."
     )
     status: Optional[ConnectorStatusResponse] = None
     config: Optional[Dict[str, Dict[str, Any]]] = Field(
-        None, description='The connector setup configuration.'
+        None, description="The connector setup configuration."
     )
     daily_sync_time: Optional[str] = Field(
         None,
-        description='The optional parameter that defines the sync start time when the sync frequency is already set or being set by the current request to 1440. It can be specified in one hour increments starting from 00:00 to 23:00. If not specified, we will use the baseline sync start time. This parameter has no effect on the 0 to 60 minutes offset used to determine the actual sync start time.',
+        description="The optional parameter that defines the sync start time when the sync frequency is already set or being set by the current request to 1440. It can be specified in one hour increments starting from 00:00 to 23:00. If not specified, we will use the baseline sync start time. This parameter has no effect on the 0 to 60 minutes offset used to determine the actual sync start time.",
     )
     succeeded_at: Optional[datetime] = Field(
         None,
-        description='The timestamp of the time the connector sync succeeded last time.',
+        description="The timestamp of the time the connector sync succeeded last time.",
     )
     connect_card: Optional[ConnectCardResponse] = None
     sync_frequency: Optional[int] = Field(
-        None, description='The connector sync frequency in minutes'
+        None, description="The connector sync frequency in minutes"
     )
     pause_after_trial: Optional[bool] = Field(
         None,
-        description='Specifies whether the connector should be paused after the free trial period has ended.',
+        description="Specifies whether the connector should be paused after the free trial period has ended.",
     )
     group_id: Optional[str] = Field(
         None,
-        description='The unique identifier for the group within the Fivetran system.',
+        description="The unique identifier for the group within the Fivetran system.",
     )
     connected_by: Optional[str] = Field(
         None,
-        description='The unique identifier of the user who has created the connector in your account.',
+        description="The unique identifier of the user who has created the connector in your account.",
     )
     setup_tests: Optional[List[SetupTestResultResponse]] = Field(
-        None, description='Setup tests results'
+        None, description="Setup tests results"
     )
     source_sync_details: Optional[Dict[str, Any]] = Field(
         None,
         description="The additional information about the connector's state. The format of this parameter is specific for each connector type.",
     )
     service_version: Optional[int] = Field(
-        None, description='The connector type version within the Fivetran system.'
+        None, description="The connector type version within the Fivetran system."
     )
     created_at: Optional[datetime] = Field(
-        None, description='The timestamp of when the group was created in your account.'
+        None, description="The timestamp of when the group was created in your account."
     )
     failed_at: Optional[datetime] = Field(
         None,
-        description='The timestamp of the time the connector sync failed last time.',
+        description="The timestamp of the time the connector sync failed last time.",
     )
     schedule_type: Optional[str] = Field(
         None,
-        description='The connector schedule config type. Supported values: auto, manual. Lets you disable or enable an automatic data sync on a schedule.',
+        description="The connector schedule config type. Supported values: auto, manual. Lets you disable or enable an automatic data sync on a schedule.",
     )
     connect_card_config: Optional[ConnectCardConfig] = None
 
@@ -860,353 +860,353 @@ class ConnectorResponse(BaseModel):
 class UserResponse(BaseModel):
     id: Optional[str] = Field(
         None,
-        description='The unique identifier for the user within the Fivetran system.',
+        description="The unique identifier for the user within the Fivetran system.",
     )
     email: Optional[str] = Field(
         None,
-        description='The email address that the user has associated with their user profile.',
+        description="The email address that the user has associated with their user profile.",
     )
     verified: Optional[bool] = Field(
         None,
-        description='The field indicates whether the user has verified their email address in the account creation process.',
+        description="The field indicates whether the user has verified their email address in the account creation process.",
     )
     invited: Optional[bool] = Field(
         None,
-        description='The field indicates whether the user has been invited to your account.',
+        description="The field indicates whether the user has been invited to your account.",
     )
     picture: Optional[str] = Field(
         None,
         description="The user's avatar as a URL link (for example, 'http://mycompany.com/avatars/john_white.png') or base64 data URI (for example, 'data:image/png;base64,aHR0cDovL215Y29tcGFueS5jb20vYXZhdGFycy9qb2huX3doaXRlLnBuZw==')",
     )
-    phone: Optional[str] = Field(None, description='The phone number of the user.')
+    phone: Optional[str] = Field(None, description="The phone number of the user.")
     role: Optional[str] = Field(
-        None, description='The role that you would like to assign to the user '
+        None, description="The role that you would like to assign to the user "
     )
     active: Optional[bool] = Field(
         None,
         description="The boolean value indicating the user's status. If the user is able to log in, the value is true. If the user's account has been suspended, the value is false",
     )
-    given_name: Optional[str] = Field(None, description='The first name of the user.')
+    given_name: Optional[str] = Field(None, description="The first name of the user.")
     created_at: Optional[datetime] = Field(
-        None, description='The timestamp that the user created their Fivetran account'
+        None, description="The timestamp that the user created their Fivetran account"
     )
-    family_name: Optional[str] = Field(None, description='The last name of the user.')
+    family_name: Optional[str] = Field(None, description="The last name of the user.")
     logged_in_at: Optional[datetime] = Field(
         None,
-        description='The last time that the user has logged into their Fivetran account.',
+        description="The last time that the user has logged into their Fivetran account.",
     )
 
 
 class Type(Enum):
-    API = 'API'
-    Dbt = 'Dbt'
-    Marketing = 'Marketing'
-    HumanResources = 'HumanResources'
-    Finance = 'Finance'
-    Productivity = 'Productivity'
-    Engineering = 'Engineering'
-    Support = 'Support'
-    Sales = 'Sales'
-    Security = 'Security'
-    SuperConnectorTest = 'SuperConnectorTest'
-    Free = 'Free'
-    File = 'File'
-    Database = 'Database'
-    Events = 'Events'
-    Function = 'Function'
-    BITool = 'BITool'
-    Warehouse = 'Warehouse'
-    Log = 'Log'
-    Hvr = 'Hvr'
+    API = "API"
+    Dbt = "Dbt"
+    Marketing = "Marketing"
+    HumanResources = "HumanResources"
+    Finance = "Finance"
+    Productivity = "Productivity"
+    Engineering = "Engineering"
+    Support = "Support"
+    Sales = "Sales"
+    Security = "Security"
+    SuperConnectorTest = "SuperConnectorTest"
+    Free = "Free"
+    File = "File"
+    Database = "Database"
+    Events = "Events"
+    Function = "Function"
+    BITool = "BITool"
+    Warehouse = "Warehouse"
+    Log = "Log"
+    Hvr = "Hvr"
 
 
 class MetadataResponse(BaseModel):
     id: Optional[str] = Field(
-        None, description='The connector type identifier within the Fivetran system'
+        None, description="The connector type identifier within the Fivetran system"
     )
     name: Optional[str] = Field(
-        None, description='The connector service name within the Fivetran system'
+        None, description="The connector service name within the Fivetran system"
     )
-    type: Optional[Type] = Field(None, description='The connector service type')
+    type: Optional[Type] = Field(None, description="The connector service type")
     description: Optional[str] = Field(
-        None, description='The description characterizing the purpose of the connector'
+        None, description="The description characterizing the purpose of the connector"
     )
     icons: Optional[List[str]] = Field(
         None,
-        description='The set of additional icon resource URLs in different formats (.svg, .png). Updating this list is not a breaking change. The set of icon URLs or the icons themselves may be changed',
+        description="The set of additional icon resource URLs in different formats (.svg, .png). Updating this list is not a breaking change. The set of icon URLs or the icons themselves may be changed",
     )
     config: Optional[Dict[str, Any]] = Field(
-        None, description='Metadata for configuration fields'
+        None, description="Metadata for configuration fields"
     )
     auth: Optional[Dict[str, Any]] = Field(
-        None, description='Metadata for authorization fields (optional)'
+        None, description="Metadata for authorization fields (optional)"
     )
     link_to_erd: Optional[str] = Field(
-        None, description='The link to the connector ERD (entity–relationship diagram)'
+        None, description="The link to the connector ERD (entity–relationship diagram)"
     )
-    icon_url: Optional[str] = Field(None, description='The icon resource URL')
+    icon_url: Optional[str] = Field(None, description="The icon resource URL")
     link_to_docs: Optional[str] = Field(
-        None, description='The link to the connector documentation'
+        None, description="The link to the connector documentation"
     )
 
 
 class RoleResponse(BaseModel):
-    name: Optional[str] = Field(None, description='The role name')
-    description: Optional[str] = Field(None, description='The role description')
+    name: Optional[str] = Field(None, description="The role name")
+    description: Optional[str] = Field(None, description="The role description")
     scope: Optional[List[str]] = Field(
         None,
-        description='Defines the list of resources the role manages',
+        description="Defines the list of resources the role manages",
         unique_items=True,
     )
     is_custom: Optional[bool] = Field(
-        None, description='Defines whether the role is standard or custom'
+        None, description="Defines whether the role is standard or custom"
     )
 
 
 class ColumnMetadataResponse(BaseModel):
-    id: Optional[str] = Field(None, description='The unique column identifier')
+    id: Optional[str] = Field(None, description="The unique column identifier")
     name_in_source: Optional[str] = Field(
-        None, description='The column name in the source'
+        None, description="The column name in the source"
     )
     type_in_destination: Optional[str] = Field(
-        None, description='The column type in the destination'
+        None, description="The column type in the destination"
     )
     is_foreign_key: Optional[bool] = Field(
-        None, description='The boolean specifying whether the column is a foreign key'
+        None, description="The boolean specifying whether the column is a foreign key"
     )
     is_primary_key: Optional[bool] = Field(
-        None, description='The boolean specifying whether the column is a primary key'
+        None, description="The boolean specifying whether the column is a primary key"
     )
     type_in_source: Optional[str] = Field(
-        None, description='The column type in the source'
+        None, description="The column type in the source"
     )
     parent_id: Optional[str] = Field(
         None,
-        description='The unique identifier of the table associated with the column',
+        description="The unique identifier of the table associated with the column",
     )
     name_in_destination: Optional[str] = Field(
-        None, description='The column name in the destination'
+        None, description="The column name in the destination"
     )
 
 
 class SchemaMetadataResponse(BaseModel):
-    id: Optional[str] = Field(None, description='The unique schema identifier')
+    id: Optional[str] = Field(None, description="The unique schema identifier")
     name_in_source: Optional[str] = Field(
-        None, description='The schema name in the source'
+        None, description="The schema name in the source"
     )
     name_in_destination: Optional[str] = Field(
-        None, description='The schema name in the destination'
+        None, description="The schema name in the destination"
     )
 
 
 class TableMetadataResponse(BaseModel):
-    id: Optional[str] = Field(None, description='The unique table identifier')
+    id: Optional[str] = Field(None, description="The unique table identifier")
     name_in_source: Optional[str] = Field(
-        None, description='The table name in the source'
+        None, description="The table name in the source"
     )
     parent_id: Optional[str] = Field(
         None,
-        description='The unique identifier of the schema associated with the table',
+        description="The unique identifier of the schema associated with the table",
     )
     name_in_destination: Optional[str] = Field(
-        None, description='The table name in the destination'
+        None, description="The table name in the destination"
     )
 
 
 class MembershipRequest(BaseModel):
     id: str = Field(
         ...,
-        description='The unique identifier for the user within the Fivetran system.',
+        description="The unique identifier for the user within the Fivetran system.",
     )
     role: str = Field(
-        ..., description='The role that you would like to assign to the user '
+        ..., description="The role that you would like to assign to the user "
     )
 
 
 class TeamMembershipRequest(BaseModel):
-    user_id: Optional[str] = Field(None, description='The unique identifier of user')
+    user_id: Optional[str] = Field(None, description="The unique identifier of user")
     role: Optional[str] = Field(None, description="The user's role within the team")
 
 
 class TeamRequest(BaseModel):
     name: Optional[str] = Field(
-        None, description='The name of the team within your account'
+        None, description="The name of the team within your account"
     )
     description: Optional[str] = Field(
-        None, description='The description of the team within your account'
+        None, description="The description of the team within your account"
     )
-    role: Optional[str] = Field(None, description='The account role of the team')
+    role: Optional[str] = Field(None, description="The account role of the team")
 
 
 class UpdateMembershipRequest(BaseModel):
     role: str = Field(
-        ..., description='The role that you would like to assign to the user '
+        ..., description="The role that you would like to assign to the user "
     )
 
 
 class MembershipResponse(BaseModel):
     id: Optional[str] = Field(
-        None, description='The membership entity unique identifier'
+        None, description="The membership entity unique identifier"
     )
     role: Optional[str] = Field(
-        None, description='The role the user has within the entity'
+        None, description="The role the user has within the entity"
     )
     created_at: Optional[datetime] = Field(
-        None, description='The date and time the membership was created'
+        None, description="The date and time the membership was created"
     )
 
 
 class TeamMembershipResponse(BaseModel):
-    user_id: Optional[str] = Field(None, description='The unique identifier of user')
+    user_id: Optional[str] = Field(None, description="The unique identifier of user")
     role: Optional[str] = Field(None, description="The user's role within the team")
 
 
 class TeamResponse(BaseModel):
     id: Optional[str] = Field(
-        None, description='The unique identifier for the team within your account'
+        None, description="The unique identifier for the team within your account"
     )
     name: Optional[str] = Field(
-        None, description='The name of the team within your account'
+        None, description="The name of the team within your account"
     )
     description: Optional[str] = Field(
-        None, description='The description of the team within your account'
+        None, description="The description of the team within your account"
     )
-    role: Optional[str] = Field(None, description='The account role of the team')
+    role: Optional[str] = Field(None, description="The account role of the team")
 
 
 class NewUserRequest(BaseModel):
     email: str = Field(
         ...,
-        description='The email address that the user has associated with their user profile.',
-        example='string',
+        description="The email address that the user has associated with their user profile.",
+        example="string",
     )
     family_name: str = Field(
-        ..., description='The last name of the user.', example='string'
+        ..., description="The last name of the user.", example="string"
     )
     given_name: str = Field(
-        ..., description='The first name of the user.', example='string'
+        ..., description="The first name of the user.", example="string"
     )
     phone: Optional[str] = Field(
-        None, description='The phone number of the user.', example='string'
+        None, description="The phone number of the user.", example="string"
     )
     picture: Optional[str] = Field(
         None,
         description="The user's avatar as a URL link (for example, 'http://mycompany.com/avatars/john_white.png') or base64 data URI (for example, 'data:image/png;base64,aHR0cDovL215Y29tcGFueS5jb20vYXZhdGFycy9qb2huX3doaXRlLnBuZw==')",
-        example='string',
+        example="string",
     )
     role: Optional[str] = Field(
-        None, description='The role that you would like to assign to the user '
+        None, description="The role that you would like to assign to the user "
     )
 
 
 class UpdateUserRequest(BaseModel):
     family_name: str = Field(
-        ..., description='The last name of the user.', example='string'
+        ..., description="The last name of the user.", example="string"
     )
     given_name: str = Field(
-        ..., description='The first name of the user.', example='string'
+        ..., description="The first name of the user.", example="string"
     )
     phone: Optional[str] = Field(
-        None, description='The phone number of the user.', example='string'
+        None, description="The phone number of the user.", example="string"
     )
     picture: Optional[str] = Field(
         None,
         description="The user's avatar as a URL link (for example, 'http://mycompany.com/avatars/john_white.png') or base64 data URI (for example, 'data:image/png;base64,aHR0cDovL215Y29tcGFueS5jb20vYXZhdGFycy9qb2huX3doaXRlLnBuZw==')",
-        example='string',
+        example="string",
     )
     role: Optional[str] = Field(
-        None, description='The role that you would like to assign to the user '
+        None, description="The role that you would like to assign to the user "
     )
 
 
 class WebhookRequest(BaseModel):
     url: Optional[str] = Field(
-        None, description='Your webhooks URL endpoint for your application'
+        None, description="Your webhooks URL endpoint for your application"
     )
-    events: Optional[List[str]] = Field(None, description='The array of event types')
+    events: Optional[List[str]] = Field(None, description="The array of event types")
     active: Optional[bool] = Field(
         None,
-        description='Boolean, if set to true, webhooks are immediately sent in response to events',
+        description="Boolean, if set to true, webhooks are immediately sent in response to events",
     )
     secret: Optional[str] = Field(
-        None, description='The secret string used for payload signing. Optional.'
+        None, description="The secret string used for payload signing. Optional."
     )
 
 
 class WebhookTestRequest(BaseModel):
-    event: Optional[str] = Field(None, description='Events')
+    event: Optional[str] = Field(None, description="Events")
 
 
 class Type1(Enum):
-    group = 'group'
-    account = 'account'
+    group = "group"
+    account = "account"
 
 
 class WebhookResponse(BaseModel):
-    id: Optional[str] = Field(None, description='The webhook ID')
-    type: Optional[Type1] = Field(None, description='The webhook type')
+    id: Optional[str] = Field(None, description="The webhook ID")
+    type: Optional[Type1] = Field(None, description="The webhook type")
     url: Optional[str] = Field(
-        None, description='Your webhooks URL endpoint for your application'
+        None, description="Your webhooks URL endpoint for your application"
     )
-    events: Optional[List[str]] = Field(None, description='The array of event types')
+    events: Optional[List[str]] = Field(None, description="The array of event types")
     active: Optional[bool] = Field(
         None,
-        description='Boolean, if set to true, webhooks are immediately sent in response to events',
+        description="Boolean, if set to true, webhooks are immediately sent in response to events",
     )
     secret: Optional[str] = Field(
-        None, description='The secret string used for payload signing. Optional.'
+        None, description="The secret string used for payload signing. Optional."
     )
     created_at: Optional[datetime] = Field(
-        None, description='The webhook creation timestamp'
+        None, description="The webhook creation timestamp"
     )
     created_by: Optional[str] = Field(
-        None, description='The ID of the user who created the webhook'
+        None, description="The ID of the user who created the webhook"
     )
-    group_id: Optional[str] = Field(None, description='The group ID')
+    group_id: Optional[str] = Field(None, description="The group ID")
 
 
 class WebhookTestResponse(BaseModel):
-    succeed: Optional[bool] = Field(None, description='Test result')
-    status: Optional[int] = Field(None, description='Test status')
-    message: Optional[str] = Field(None, description='Test message')
+    succeed: Optional[bool] = Field(None, description="Test result")
+    status: Optional[int] = Field(None, description="Test status")
+    message: Optional[str] = Field(None, description="Test message")
 
 
 class Config(BaseModel):
-    public_key: Optional[str] = Field(None, title='')
+    public_key: Optional[str] = Field(None, title="")
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='Database name', title='')
+    database: Optional[str] = Field(None, description="Database name", title="")
     password: Optional[str] = Field(
-        None, description='Database user password', title=''
+        None, description="Database user password", title=""
     )
     connection_type: Optional[Dict[str, Any]] = Field(
-        None, description='Connection method. Default value: `Directly`.', title=''
+        None, description="Connection method. Default value: `Directly`.", title=""
     )
-    port: Optional[int] = Field(None, description='Server port number', title='')
-    host: Optional[str] = Field(None, description='Server name', title='')
+    port: Optional[int] = Field(None, description="Server port number", title="")
+    host: Optional[str] = Field(None, description="Server name", title="")
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
     always_encrypted: Optional[bool] = Field(
         None,
-        description='Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
-    user: Optional[str] = Field(None, description='Database user name', title='')
+    user: Optional[str] = Field(None, description="Database user name", title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
 
 
 class AuroraPostgresWarehouseConfigV1(BaseModel):
-    config: Optional[Config] = Field(None, description='')
+    config: Optional[Config] = Field(None, description="")
 
 
 class AuroraPostgresWarehouseNewDestinationRequest(
@@ -1216,41 +1216,41 @@ class AuroraPostgresWarehouseNewDestinationRequest(
 
 
 class Config1(BaseModel):
-    public_key: Optional[str] = Field(None, title='')
+    public_key: Optional[str] = Field(None, title="")
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='Database name', title='')
+    database: Optional[str] = Field(None, description="Database name", title="")
     password: Optional[str] = Field(
-        None, description='Database user password', title=''
+        None, description="Database user password", title=""
     )
     connection_type: Optional[Dict[str, Any]] = Field(
-        None, description='Connection method. Default value: `Directly`.', title=''
+        None, description="Connection method. Default value: `Directly`.", title=""
     )
-    port: Optional[int] = Field(None, description='Server port number', title='')
-    host: Optional[str] = Field(None, description='Server name', title='')
+    port: Optional[int] = Field(None, description="Server port number", title="")
+    host: Optional[str] = Field(None, description="Server name", title="")
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
     always_encrypted: Optional[bool] = Field(
         None,
-        description='Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
-    user: Optional[str] = Field(None, description='Database user name', title='')
+    user: Optional[str] = Field(None, description="Database user name", title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
 
 
 class AuroraWarehouseConfigV1(BaseModel):
-    config: Optional[Config1] = Field(None, description='')
+    config: Optional[Config1] = Field(None, description="")
 
 
 class AuroraWarehouseNewDestinationRequest(
@@ -1260,21 +1260,21 @@ class AuroraWarehouseNewDestinationRequest(
 
 
 class Config2(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
-    tunnel_port: Optional[int] = Field(None, description='', title='')
-    database: Optional[str] = Field(None, description='', title='')
-    password: Optional[str] = Field(None, description='', title='')
-    connection_type: Optional[Dict[str, Any]] = Field(None, description='', title='')
-    port: Optional[int] = Field(None, description='', title='')
-    host: Optional[str] = Field(None, description='', title='')
-    tunnel_host: Optional[str] = Field(None, description='', title='')
-    always_encrypted: Optional[bool] = Field(None, description='', title='')
-    user: Optional[str] = Field(None, description='', title='')
-    tunnel_user: Optional[str] = Field(None, description='', title='')
+    public_key: Optional[str] = Field(None, description="", title="")
+    tunnel_port: Optional[int] = Field(None, description="", title="")
+    database: Optional[str] = Field(None, description="", title="")
+    password: Optional[str] = Field(None, description="", title="")
+    connection_type: Optional[Dict[str, Any]] = Field(None, description="", title="")
+    port: Optional[int] = Field(None, description="", title="")
+    host: Optional[str] = Field(None, description="", title="")
+    tunnel_host: Optional[str] = Field(None, description="", title="")
+    always_encrypted: Optional[bool] = Field(None, description="", title="")
+    user: Optional[str] = Field(None, description="", title="")
+    tunnel_user: Optional[str] = Field(None, description="", title="")
 
 
 class AzurePostgresWarehouseConfigV1(BaseModel):
-    config: Optional[Config2] = Field(None, description='')
+    config: Optional[Config2] = Field(None, description="")
 
 
 class AzurePostgresWarehouseNewDestinationRequest(
@@ -1284,41 +1284,41 @@ class AzurePostgresWarehouseNewDestinationRequest(
 
 
 class Config3(BaseModel):
-    public_key: Optional[str] = Field(None, title='')
+    public_key: Optional[str] = Field(None, title="")
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='Database name', title='')
+    database: Optional[str] = Field(None, description="Database name", title="")
     password: Optional[str] = Field(
-        None, description='Database user password', title=''
+        None, description="Database user password", title=""
     )
     connection_type: Optional[Dict[str, Any]] = Field(
-        None, description='Connection method. Default value: `Directly`.', title=''
+        None, description="Connection method. Default value: `Directly`.", title=""
     )
-    port: Optional[int] = Field(None, description='Server port number', title='')
-    host: Optional[str] = Field(None, description='Server name', title='')
+    port: Optional[int] = Field(None, description="Server port number", title="")
+    host: Optional[str] = Field(None, description="Server name", title="")
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
     always_encrypted: Optional[bool] = Field(
         None,
-        description='Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
-    user: Optional[str] = Field(None, description='Database user name', title='')
+    user: Optional[str] = Field(None, description="Database user name", title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
 
 
 class AzureSqlDataWarehouseConfigV1(BaseModel):
-    config: Optional[Config3] = Field(None, description='')
+    config: Optional[Config3] = Field(None, description="")
 
 
 class AzureSqlDataWarehouseNewDestinationRequest(
@@ -1328,21 +1328,21 @@ class AzureSqlDataWarehouseNewDestinationRequest(
 
 
 class Config4(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
-    tunnel_port: Optional[int] = Field(None, description='', title='')
-    database: Optional[str] = Field(None, description='', title='')
-    password: Optional[str] = Field(None, description='', title='')
-    connection_type: Optional[Dict[str, Any]] = Field(None, description='', title='')
-    port: Optional[int] = Field(None, description='', title='')
-    host: Optional[str] = Field(None, description='', title='')
-    tunnel_host: Optional[str] = Field(None, description='', title='')
-    always_encrypted: Optional[bool] = Field(None, description='', title='')
-    user: Optional[str] = Field(None, description='', title='')
-    tunnel_user: Optional[str] = Field(None, description='', title='')
+    public_key: Optional[str] = Field(None, description="", title="")
+    tunnel_port: Optional[int] = Field(None, description="", title="")
+    database: Optional[str] = Field(None, description="", title="")
+    password: Optional[str] = Field(None, description="", title="")
+    connection_type: Optional[Dict[str, Any]] = Field(None, description="", title="")
+    port: Optional[int] = Field(None, description="", title="")
+    host: Optional[str] = Field(None, description="", title="")
+    tunnel_host: Optional[str] = Field(None, description="", title="")
+    always_encrypted: Optional[bool] = Field(None, description="", title="")
+    user: Optional[str] = Field(None, description="", title="")
+    tunnel_user: Optional[str] = Field(None, description="", title="")
 
 
 class AzureSqlDatabaseConfigV1(BaseModel):
-    config: Optional[Config4] = Field(None, description='')
+    config: Optional[Config4] = Field(None, description="")
 
 
 class AzureSqlDatabaseNewDestinationRequest(
@@ -1352,21 +1352,21 @@ class AzureSqlDatabaseNewDestinationRequest(
 
 
 class Config5(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
-    tunnel_port: Optional[int] = Field(None, description='', title='')
-    database: Optional[str] = Field(None, description='', title='')
-    password: Optional[str] = Field(None, description='', title='')
-    connection_type: Optional[Dict[str, Any]] = Field(None, description='', title='')
-    port: Optional[int] = Field(None, description='', title='')
-    host: Optional[str] = Field(None, description='', title='')
-    tunnel_host: Optional[str] = Field(None, description='', title='')
-    always_encrypted: Optional[bool] = Field(None, description='', title='')
-    user: Optional[str] = Field(None, description='', title='')
-    tunnel_user: Optional[str] = Field(None, description='', title='')
+    public_key: Optional[str] = Field(None, description="", title="")
+    tunnel_port: Optional[int] = Field(None, description="", title="")
+    database: Optional[str] = Field(None, description="", title="")
+    password: Optional[str] = Field(None, description="", title="")
+    connection_type: Optional[Dict[str, Any]] = Field(None, description="", title="")
+    port: Optional[int] = Field(None, description="", title="")
+    host: Optional[str] = Field(None, description="", title="")
+    tunnel_host: Optional[str] = Field(None, description="", title="")
+    always_encrypted: Optional[bool] = Field(None, description="", title="")
+    user: Optional[str] = Field(None, description="", title="")
+    tunnel_user: Optional[str] = Field(None, description="", title="")
 
 
 class AzureSqlManagedDbWarehouseConfigV1(BaseModel):
-    config: Optional[Config5] = Field(None, description='')
+    config: Optional[Config5] = Field(None, description="")
 
 
 class AzureSqlManagedDbWarehouseNewDestinationRequest(
@@ -1378,24 +1378,24 @@ class AzureSqlManagedDbWarehouseNewDestinationRequest(
 class Config6(BaseModel):
     bucket: Optional[str] = Field(
         None,
-        description='Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.',
-        title='',
+        description="Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.",
+        title="",
     )
     secret_key: Optional[str] = Field(
         None,
-        description='Private key of the customer service account. If specified, your service account will be used to process the data instead of the Fivetran-managed service account.',
-        title='',
+        description="Private key of the customer service account. If specified, your service account will be used to process the data instead of the Fivetran-managed service account.",
+        title="",
     )
-    project_id: Optional[str] = Field(None, description='BigQuery project ID', title='')
+    project_id: Optional[str] = Field(None, description="BigQuery project ID", title="")
     data_set_location: Optional[str] = Field(
         None,
-        description='Data location. Datasets will reside in this location.',
-        title='',
+        description="Data location. Datasets will reside in this location.",
+        title="",
     )
 
 
 class BigQueryConfigV1(BaseModel):
-    config: Optional[Config6] = Field(None, description='')
+    config: Optional[Config6] = Field(None, description="")
 
 
 class BigQueryNewDestinationRequest(NewDestinationRequest, BigQueryConfigV1):
@@ -1404,28 +1404,28 @@ class BigQueryNewDestinationRequest(NewDestinationRequest, BigQueryConfigV1):
 
 class Config7(BaseModel):
     create_external_tables: Optional[bool] = Field(
-        None, description='Whether to create external tables', title=''
+        None, description="Whether to create external tables", title=""
     )
-    connection_type: Optional[Dict[str, Any]] = Field(None, title='')
-    port: Optional[int] = Field(None, description='Server port number', title='')
-    catalog: Optional[str] = Field(None, description='Catalog name', title='')
+    connection_type: Optional[Dict[str, Any]] = Field(None, title="")
+    port: Optional[int] = Field(None, description="Server port number", title="")
+    catalog: Optional[str] = Field(None, description="Catalog name", title="")
     cloud_provider: Optional[Dict[str, Any]] = Field(
-        None, description='Databricks Deployment Cloud', title=''
+        None, description="Databricks Deployment Cloud", title=""
     )
-    http_path: Optional[str] = Field(None, description='HTTP path', title='')
-    server_host_name: Optional[str] = Field(None, description='Server name', title='')
+    http_path: Optional[str] = Field(None, description="HTTP path", title="")
+    server_host_name: Optional[str] = Field(None, description="Server name", title="")
     external_location: Optional[str] = Field(
         None,
         description='External location to store Delta tables. Default value: `""`  (null). By default, the external tables will reside in the `/{schema}/{table}` path, and if you specify an external location in the `{externalLocation}/{schema}/{table}` path.',
-        title='',
+        title="",
     )
     personal_access_token: Optional[str] = Field(
-        None, description='Personal access token', title=''
+        None, description="Personal access token", title=""
     )
 
 
 class DatabricksConfigV1(BaseModel):
-    config: Optional[Config7] = Field(None, description='')
+    config: Optional[Config7] = Field(None, description="")
 
 
 class DatabricksNewDestinationRequest(NewDestinationRequest, DatabricksConfigV1):
@@ -1433,14 +1433,14 @@ class DatabricksNewDestinationRequest(NewDestinationRequest, DatabricksConfigV1)
 
 
 class Config8(BaseModel):
-    bucket: Optional[str] = Field(None, description='', title='')
-    secret_key: Optional[str] = Field(None, description='', title='')
-    project_id: Optional[str] = Field(None, description='', title='')
-    data_set_location: Optional[str] = Field(None, description='', title='')
+    bucket: Optional[str] = Field(None, description="", title="")
+    secret_key: Optional[str] = Field(None, description="", title="")
+    project_id: Optional[str] = Field(None, description="", title="")
+    data_set_location: Optional[str] = Field(None, description="", title="")
 
 
 class ManagedBigQueryConfigV1(BaseModel):
-    config: Optional[Config8] = Field(None, description='')
+    config: Optional[Config8] = Field(None, description="")
 
 
 class ManagedBigQueryNewDestinationRequest(
@@ -1450,21 +1450,21 @@ class ManagedBigQueryNewDestinationRequest(
 
 
 class Config9(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
-    tunnel_port: Optional[int] = Field(None, description='', title='')
-    database: Optional[str] = Field(None, description='', title='')
-    password: Optional[str] = Field(None, description='', title='')
-    connection_type: Optional[Dict[str, Any]] = Field(None, description='', title='')
-    port: Optional[int] = Field(None, description='', title='')
-    host: Optional[str] = Field(None, description='', title='')
-    tunnel_host: Optional[str] = Field(None, description='', title='')
-    always_encrypted: Optional[bool] = Field(None, description='', title='')
-    user: Optional[str] = Field(None, description='', title='')
-    tunnel_user: Optional[str] = Field(None, description='', title='')
+    public_key: Optional[str] = Field(None, description="", title="")
+    tunnel_port: Optional[int] = Field(None, description="", title="")
+    database: Optional[str] = Field(None, description="", title="")
+    password: Optional[str] = Field(None, description="", title="")
+    connection_type: Optional[Dict[str, Any]] = Field(None, description="", title="")
+    port: Optional[int] = Field(None, description="", title="")
+    host: Optional[str] = Field(None, description="", title="")
+    tunnel_host: Optional[str] = Field(None, description="", title="")
+    always_encrypted: Optional[bool] = Field(None, description="", title="")
+    user: Optional[str] = Field(None, description="", title="")
+    tunnel_user: Optional[str] = Field(None, description="", title="")
 
 
 class MariaRdsWarehouseConfigV1(BaseModel):
-    config: Optional[Config9] = Field(None, description='')
+    config: Optional[Config9] = Field(None, description="")
 
 
 class MariaRdsWarehouseNewDestinationRequest(
@@ -1474,21 +1474,21 @@ class MariaRdsWarehouseNewDestinationRequest(
 
 
 class Config10(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
-    tunnel_port: Optional[int] = Field(None, description='', title='')
-    database: Optional[str] = Field(None, description='', title='')
-    password: Optional[str] = Field(None, description='', title='')
-    connection_type: Optional[Dict[str, Any]] = Field(None, description='', title='')
-    port: Optional[int] = Field(None, description='', title='')
-    host: Optional[str] = Field(None, description='', title='')
-    tunnel_host: Optional[str] = Field(None, description='', title='')
-    always_encrypted: Optional[bool] = Field(None, description='', title='')
-    user: Optional[str] = Field(None, description='', title='')
-    tunnel_user: Optional[str] = Field(None, description='', title='')
+    public_key: Optional[str] = Field(None, description="", title="")
+    tunnel_port: Optional[int] = Field(None, description="", title="")
+    database: Optional[str] = Field(None, description="", title="")
+    password: Optional[str] = Field(None, description="", title="")
+    connection_type: Optional[Dict[str, Any]] = Field(None, description="", title="")
+    port: Optional[int] = Field(None, description="", title="")
+    host: Optional[str] = Field(None, description="", title="")
+    tunnel_host: Optional[str] = Field(None, description="", title="")
+    always_encrypted: Optional[bool] = Field(None, description="", title="")
+    user: Optional[str] = Field(None, description="", title="")
+    tunnel_user: Optional[str] = Field(None, description="", title="")
 
 
 class MariaWarehouseConfigV1(BaseModel):
-    config: Optional[Config10] = Field(None, description='')
+    config: Optional[Config10] = Field(None, description="")
 
 
 class MariaWarehouseNewDestinationRequest(
@@ -1498,41 +1498,41 @@ class MariaWarehouseNewDestinationRequest(
 
 
 class Config11(BaseModel):
-    public_key: Optional[str] = Field(None, title='')
+    public_key: Optional[str] = Field(None, title="")
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='Database name', title='')
+    database: Optional[str] = Field(None, description="Database name", title="")
     password: Optional[str] = Field(
-        None, description='Database user password', title=''
+        None, description="Database user password", title=""
     )
     connection_type: Optional[Dict[str, Any]] = Field(
-        None, description='Connection method. Default value: `Directly`.', title=''
+        None, description="Connection method. Default value: `Directly`.", title=""
     )
-    port: Optional[int] = Field(None, description='Server port number', title='')
-    host: Optional[str] = Field(None, description='Server name', title='')
+    port: Optional[int] = Field(None, description="Server port number", title="")
+    host: Optional[str] = Field(None, description="Server name", title="")
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
     always_encrypted: Optional[bool] = Field(
         None,
-        description='Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
-    user: Optional[str] = Field(None, description='Database user name', title='')
+    user: Optional[str] = Field(None, description="Database user name", title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
 
 
 class MysqlRdsWarehouseConfigV1(BaseModel):
-    config: Optional[Config11] = Field(None, description='')
+    config: Optional[Config11] = Field(None, description="")
 
 
 class MysqlRdsWarehouseNewDestinationRequest(
@@ -1542,41 +1542,41 @@ class MysqlRdsWarehouseNewDestinationRequest(
 
 
 class Config12(BaseModel):
-    public_key: Optional[str] = Field(None, title='')
+    public_key: Optional[str] = Field(None, title="")
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='Database name', title='')
+    database: Optional[str] = Field(None, description="Database name", title="")
     password: Optional[str] = Field(
-        None, description='Database user password', title=''
+        None, description="Database user password", title=""
     )
     connection_type: Optional[Dict[str, Any]] = Field(
-        None, description='Connection method. Default value: `Directly`.', title=''
+        None, description="Connection method. Default value: `Directly`.", title=""
     )
-    port: Optional[int] = Field(None, description='Server port number', title='')
-    host: Optional[str] = Field(None, description='Server name', title='')
+    port: Optional[int] = Field(None, description="Server port number", title="")
+    host: Optional[str] = Field(None, description="Server name", title="")
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
     always_encrypted: Optional[bool] = Field(
         None,
-        description='Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
-    user: Optional[str] = Field(None, description='Database user name', title='')
+    user: Optional[str] = Field(None, description="Database user name", title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
 
 
 class MysqlWarehouseConfigV1(BaseModel):
-    config: Optional[Config12] = Field(None, description='')
+    config: Optional[Config12] = Field(None, description="")
 
 
 class MysqlWarehouseNewDestinationRequest(
@@ -1586,42 +1586,42 @@ class MysqlWarehouseNewDestinationRequest(
 
 
 class Config13(BaseModel):
-    public_key: Optional[str] = Field(None, title='')
-    auth_type: Optional[Dict[str, Any]] = Field(None, title='')
-    cluster_region: Optional[str] = Field(None, title='')
+    public_key: Optional[str] = Field(None, title="")
+    auth_type: Optional[Dict[str, Any]] = Field(None, title="")
+    cluster_region: Optional[str] = Field(None, title="")
     connection_type: Optional[Dict[str, Any]] = Field(
-        None, description='Connection method. Default value: `Directly`.', title=''
+        None, description="Connection method. Default value: `Directly`.", title=""
     )
-    external_id: Optional[str] = Field(None, title='')
-    always_encrypted: Optional[bool] = Field(None, title='')
+    external_id: Optional[str] = Field(None, title="")
+    always_encrypted: Optional[bool] = Field(None, title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='Database name', title='')
+    database: Optional[str] = Field(None, description="Database name", title="")
     password: Optional[str] = Field(
-        None, description='Database user password', title=''
+        None, description="Database user password", title=""
     )
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
-    cluster_id: Optional[str] = Field(None, title='')
-    role_arn: Optional[str] = Field(None, title='')
-    port: Optional[int] = Field(None, description='Server port number', title='')
-    host: Optional[str] = Field(None, description='Server name', title='')
+    cluster_id: Optional[str] = Field(None, title="")
+    role_arn: Optional[str] = Field(None, title="")
+    port: Optional[int] = Field(None, description="Server port number", title="")
+    host: Optional[str] = Field(None, description="Server name", title="")
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
-    user: Optional[str] = Field(None, description='Database user name', title='')
+    user: Optional[str] = Field(None, description="Database user name", title="")
 
 
 class PanoplyConfigV1(BaseModel):
-    config: Optional[Config13] = Field(None, description='')
+    config: Optional[Config13] = Field(None, description="")
 
 
 class PanoplyNewDestinationRequest(NewDestinationRequest, PanoplyConfigV1):
@@ -1629,42 +1629,42 @@ class PanoplyNewDestinationRequest(NewDestinationRequest, PanoplyConfigV1):
 
 
 class Config14(BaseModel):
-    public_key: Optional[str] = Field(None, title='')
-    auth_type: Optional[Dict[str, Any]] = Field(None, title='')
-    cluster_region: Optional[str] = Field(None, title='')
+    public_key: Optional[str] = Field(None, title="")
+    auth_type: Optional[Dict[str, Any]] = Field(None, title="")
+    cluster_region: Optional[str] = Field(None, title="")
     connection_type: Optional[Dict[str, Any]] = Field(
-        None, description='Connection method. Default value: `Directly`.', title=''
+        None, description="Connection method. Default value: `Directly`.", title=""
     )
-    external_id: Optional[str] = Field(None, title='')
-    always_encrypted: Optional[bool] = Field(None, title='')
+    external_id: Optional[str] = Field(None, title="")
+    always_encrypted: Optional[bool] = Field(None, title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='Database name', title='')
+    database: Optional[str] = Field(None, description="Database name", title="")
     password: Optional[str] = Field(
-        None, description='Database user password', title=''
+        None, description="Database user password", title=""
     )
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
-    cluster_id: Optional[str] = Field(None, title='')
-    role_arn: Optional[str] = Field(None, title='')
-    port: Optional[int] = Field(None, description='Server port number', title='')
-    host: Optional[str] = Field(None, description='Server name', title='')
+    cluster_id: Optional[str] = Field(None, title="")
+    role_arn: Optional[str] = Field(None, title="")
+    port: Optional[int] = Field(None, description="Server port number", title="")
+    host: Optional[str] = Field(None, description="Server name", title="")
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
-    user: Optional[str] = Field(None, description='Database user name', title='')
+    user: Optional[str] = Field(None, description="Database user name", title="")
 
 
 class PeriscopeWarehouseConfigV1(BaseModel):
-    config: Optional[Config14] = Field(None, description='')
+    config: Optional[Config14] = Field(None, description="")
 
 
 class PeriscopeWarehouseNewDestinationRequest(
@@ -1674,41 +1674,41 @@ class PeriscopeWarehouseNewDestinationRequest(
 
 
 class Config15(BaseModel):
-    public_key: Optional[str] = Field(None, title='')
+    public_key: Optional[str] = Field(None, title="")
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='Database name', title='')
+    database: Optional[str] = Field(None, description="Database name", title="")
     password: Optional[str] = Field(
-        None, description='Database user password', title=''
+        None, description="Database user password", title=""
     )
     connection_type: Optional[Dict[str, Any]] = Field(
-        None, description='Connection method. Default value: `Directly`.', title=''
+        None, description="Connection method. Default value: `Directly`.", title=""
     )
-    port: Optional[int] = Field(None, description='Server port number', title='')
-    host: Optional[str] = Field(None, description='Server name', title='')
+    port: Optional[int] = Field(None, description="Server port number", title="")
+    host: Optional[str] = Field(None, description="Server name", title="")
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
     always_encrypted: Optional[bool] = Field(
         None,
-        description='Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
-    user: Optional[str] = Field(None, description='Database user name', title='')
+    user: Optional[str] = Field(None, description="Database user name", title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
 
 
 class PostgresGcpWarehouseConfigV1(BaseModel):
-    config: Optional[Config15] = Field(None, description='')
+    config: Optional[Config15] = Field(None, description="")
 
 
 class PostgresGcpWarehouseNewDestinationRequest(
@@ -1718,41 +1718,41 @@ class PostgresGcpWarehouseNewDestinationRequest(
 
 
 class Config16(BaseModel):
-    public_key: Optional[str] = Field(None, title='')
+    public_key: Optional[str] = Field(None, title="")
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='Database name', title='')
+    database: Optional[str] = Field(None, description="Database name", title="")
     password: Optional[str] = Field(
-        None, description='Database user password', title=''
+        None, description="Database user password", title=""
     )
     connection_type: Optional[Dict[str, Any]] = Field(
-        None, description='Connection method. Default value: `Directly`.', title=''
+        None, description="Connection method. Default value: `Directly`.", title=""
     )
-    port: Optional[int] = Field(None, description='Server port number', title='')
-    host: Optional[str] = Field(None, description='Server name', title='')
+    port: Optional[int] = Field(None, description="Server port number", title="")
+    host: Optional[str] = Field(None, description="Server name", title="")
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
     always_encrypted: Optional[bool] = Field(
         None,
-        description='Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
-    user: Optional[str] = Field(None, description='Database user name', title='')
+    user: Optional[str] = Field(None, description="Database user name", title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
 
 
 class PostgresRdsWarehouseConfigV1(BaseModel):
-    config: Optional[Config16] = Field(None, description='')
+    config: Optional[Config16] = Field(None, description="")
 
 
 class PostgresRdsWarehouseNewDestinationRequest(
@@ -1762,41 +1762,41 @@ class PostgresRdsWarehouseNewDestinationRequest(
 
 
 class Config17(BaseModel):
-    public_key: Optional[str] = Field(None, title='')
+    public_key: Optional[str] = Field(None, title="")
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='Database name', title='')
+    database: Optional[str] = Field(None, description="Database name", title="")
     password: Optional[str] = Field(
-        None, description='Database user password', title=''
+        None, description="Database user password", title=""
     )
     connection_type: Optional[Dict[str, Any]] = Field(
-        None, description='Connection method. Default value: `Directly`.', title=''
+        None, description="Connection method. Default value: `Directly`.", title=""
     )
-    port: Optional[int] = Field(None, description='Server port number', title='')
-    host: Optional[str] = Field(None, description='Server name', title='')
+    port: Optional[int] = Field(None, description="Server port number", title="")
+    host: Optional[str] = Field(None, description="Server name", title="")
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
     always_encrypted: Optional[bool] = Field(
         None,
-        description='Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
-    user: Optional[str] = Field(None, description='Database user name', title='')
+    user: Optional[str] = Field(None, description="Database user name", title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
 
 
 class PostgresWarehouseConfigV1(BaseModel):
-    config: Optional[Config17] = Field(None, description='')
+    config: Optional[Config17] = Field(None, description="")
 
 
 class PostgresWarehouseNewDestinationRequest(
@@ -1806,58 +1806,58 @@ class PostgresWarehouseNewDestinationRequest(
 
 
 class Config18(BaseModel):
-    public_key: Optional[str] = Field(None, title='')
+    public_key: Optional[str] = Field(None, title="")
     auth_type: Optional[Dict[str, Any]] = Field(
-        None, description='Authentication type. Default value: `PASSWORD`.', title=''
+        None, description="Authentication type. Default value: `PASSWORD`.", title=""
     )
     cluster_region: Optional[str] = Field(
         None,
-        description='Cluster region. Must be populated if `connection_type` is set to `SshTunnel` and `auth_type` is set to `IAM`.',
-        title='',
+        description="Cluster region. Must be populated if `connection_type` is set to `SshTunnel` and `auth_type` is set to `IAM`.",
+        title="",
     )
     connection_type: Optional[Dict[str, Any]] = Field(
-        None, description='Connection method. Default value: `Directly`.', title=''
+        None, description="Connection method. Default value: `Directly`.", title=""
     )
-    external_id: Optional[str] = Field(None, title='')
-    always_encrypted: Optional[bool] = Field(None, title='')
+    external_id: Optional[str] = Field(None, title="")
+    always_encrypted: Optional[bool] = Field(None, title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='Database name', title='')
+    database: Optional[str] = Field(None, description="Database name", title="")
     password: Optional[str] = Field(
         None,
-        description='Database user password. Required if authentication type is `PASSWORD`.',
-        title='',
+        description="Database user password. Required if authentication type is `PASSWORD`.",
+        title="",
     )
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
     cluster_id: Optional[str] = Field(
         None,
-        description='Cluster ID. Must be populated if `connection_type` is set to `SshTunnel` and `auth_type` is set to `IAM`.',
-        title='',
+        description="Cluster ID. Must be populated if `connection_type` is set to `SshTunnel` and `auth_type` is set to `IAM`.",
+        title="",
     )
     role_arn: Optional[str] = Field(
         None,
-        description='Role ARN with Redshift permissions. Required if authentication type is `IAM`.',
-        title='',
+        description="Role ARN with Redshift permissions. Required if authentication type is `IAM`.",
+        title="",
     )
-    port: Optional[int] = Field(None, description='Server port number', title='')
-    host: Optional[str] = Field(None, description='Server name', title='')
+    port: Optional[int] = Field(None, description="Server port number", title="")
+    host: Optional[str] = Field(None, description="Server name", title="")
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
-    user: Optional[str] = Field(None, description='Database user name', title='')
+    user: Optional[str] = Field(None, description="Database user name", title="")
 
 
 class RedshiftConfigV1(BaseModel):
-    config: Optional[Config18] = Field(None, description='')
+    config: Optional[Config18] = Field(None, description="")
 
 
 class RedshiftNewDestinationRequest(NewDestinationRequest, RedshiftConfigV1):
@@ -1865,45 +1865,45 @@ class RedshiftNewDestinationRequest(NewDestinationRequest, RedshiftConfigV1):
 
 
 class Config19(BaseModel):
-    snowflake_region: Optional[str] = Field(None, description='', title='')
+    snowflake_region: Optional[str] = Field(None, description="", title="")
     role: Optional[str] = Field(
         None,
-        description='Snowflake role name. (see https://docs.snowflake.com/en/user-guide/security-access-control-overview.html#roles)',
-        title='',
+        description="Snowflake role name. (see https://docs.snowflake.com/en/user-guide/security-access-control-overview.html#roles)",
+        title="",
     )
-    connection_type: Optional[Dict[str, Any]] = Field(None, title='')
+    connection_type: Optional[Dict[str, Any]] = Field(None, title="")
     auth: Optional[Dict[str, Any]] = Field(
-        None, description='Password-based or key-based authentication type', title=''
+        None, description="Password-based or key-based authentication type", title=""
     )
     private_key: Optional[str] = Field(
         None,
-        description='Private access key.  The field should be specified if authentication type is `KEY_PAIR`.',
-        title='',
+        description="Private access key.  The field should be specified if authentication type is `KEY_PAIR`.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='Database name', title='')
+    database: Optional[str] = Field(None, description="Database name", title="")
     password: Optional[str] = Field(
         None,
-        description='Database user password. The field should be specified if authentication type is `PASSWORD`.',
-        title='',
+        description="Database user password. The field should be specified if authentication type is `PASSWORD`.",
+        title="",
     )
     is_private_key_encrypted: Optional[bool] = Field(
         None,
-        description='Indicates that a private key is encrypted. The default value: `false`. The field can be specified if authentication type is `KEY_PAIR`.',
-        title='',
+        description="Indicates that a private key is encrypted. The default value: `false`. The field can be specified if authentication type is `KEY_PAIR`.",
+        title="",
     )
-    port: Optional[int] = Field(None, description='Server port number', title='')
-    snowflake_cloud: Optional[Dict[str, Any]] = Field(None, description='', title='')
-    host: Optional[str] = Field(None, description='Server name', title='')
+    port: Optional[int] = Field(None, description="Server port number", title="")
+    snowflake_cloud: Optional[Dict[str, Any]] = Field(None, description="", title="")
+    host: Optional[str] = Field(None, description="Server name", title="")
     passphrase: Optional[str] = Field(
         None,
-        description='In case private key is encrypted, you are required to enter passphrase that was used to encrypt the private key. The field can be specified if authentication type is `KEY_PAIR`.',
-        title='',
+        description="In case private key is encrypted, you are required to enter passphrase that was used to encrypt the private key. The field can be specified if authentication type is `KEY_PAIR`.",
+        title="",
     )
-    user: Optional[str] = Field(None, description='Database user name', title='')
+    user: Optional[str] = Field(None, description="Database user name", title="")
 
 
 class SnowflakeConfigV1(BaseModel):
-    config: Optional[Config19] = Field(None, description='')
+    config: Optional[Config19] = Field(None, description="")
 
 
 class SnowflakeNewDestinationRequest(NewDestinationRequest, SnowflakeConfigV1):
@@ -1911,41 +1911,41 @@ class SnowflakeNewDestinationRequest(NewDestinationRequest, SnowflakeConfigV1):
 
 
 class Config20(BaseModel):
-    public_key: Optional[str] = Field(None, title='')
+    public_key: Optional[str] = Field(None, title="")
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='Database name', title='')
+    database: Optional[str] = Field(None, description="Database name", title="")
     password: Optional[str] = Field(
-        None, description='Database user password', title=''
+        None, description="Database user password", title=""
     )
     connection_type: Optional[Dict[str, Any]] = Field(
-        None, description='Connection method. Default value: `Directly`.', title=''
+        None, description="Connection method. Default value: `Directly`.", title=""
     )
-    port: Optional[int] = Field(None, description='Server port number', title='')
-    host: Optional[str] = Field(None, description='Server name', title='')
+    port: Optional[int] = Field(None, description="Server port number", title="")
+    host: Optional[str] = Field(None, description="Server name", title="")
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
     always_encrypted: Optional[bool] = Field(
         None,
-        description='Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
-    user: Optional[str] = Field(None, description='Database user name', title='')
+    user: Optional[str] = Field(None, description="Database user name", title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
 
 
 class SqlServerRdsWarehouseConfigV1(BaseModel):
-    config: Optional[Config20] = Field(None, description='')
+    config: Optional[Config20] = Field(None, description="")
 
 
 class SqlServerRdsWarehouseNewDestinationRequest(
@@ -1955,41 +1955,41 @@ class SqlServerRdsWarehouseNewDestinationRequest(
 
 
 class Config21(BaseModel):
-    public_key: Optional[str] = Field(None, title='')
+    public_key: Optional[str] = Field(None, title="")
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='Database name', title='')
+    database: Optional[str] = Field(None, description="Database name", title="")
     password: Optional[str] = Field(
-        None, description='Database user password', title=''
+        None, description="Database user password", title=""
     )
     connection_type: Optional[Dict[str, Any]] = Field(
-        None, description='Connection method. Default value: `Directly`.', title=''
+        None, description="Connection method. Default value: `Directly`.", title=""
     )
-    port: Optional[int] = Field(None, description='Server port number', title='')
-    host: Optional[str] = Field(None, description='Server name', title='')
+    port: Optional[int] = Field(None, description="Server port number", title="")
+    host: Optional[str] = Field(None, description="Server name", title="")
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
     always_encrypted: Optional[bool] = Field(
         None,
-        description='Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
-    user: Optional[str] = Field(None, description='Database user name', title='')
+    user: Optional[str] = Field(None, description="Database user name", title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.',
-        title='',
+        description="SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+        title="",
     )
 
 
 class SqlServerWarehouseConfigV1(BaseModel):
-    config: Optional[Config21] = Field(None, description='')
+    config: Optional[Config21] = Field(None, description="")
 
 
 class SqlServerWarehouseNewDestinationRequest(
@@ -2114,15 +2114,15 @@ class SqlServerWarehouseDestinationResponse(
 
 class Config22(BaseModel):
     api_key: Optional[str] = Field(
-        None, description='Your ActiveCampaign API key.', title=''
+        None, description="Your ActiveCampaign API key.", title=""
     )
     sub_domain: Optional[str] = Field(
-        None, description='Your ActiveCampaign sub-domain.', title=''
+        None, description="Your ActiveCampaign sub-domain.", title=""
     )
 
 
 class ActivecampaignConfigV1(BaseModel):
-    config: Optional[Config22] = Field(None, description='')
+    config: Optional[Config22] = Field(None, description="")
 
 
 class ActivecampaignNewConnectorRequestV1(
@@ -2134,44 +2134,44 @@ class ActivecampaignNewConnectorRequestV1(
 class Config23(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     export_storage_type: Optional[Dict[str, Any]] = Field(
-        None, description='Your cloud storage.', title=''
+        None, description="Your cloud storage.", title=""
     )
     csv_definition: Optional[str] = Field(
         None,
-        description='CSV definition for the CSV export (https://help.adjust.com/en/article/csv-uploads#how-do-i-format-my-csv-definition).',
-        title='',
+        description="CSV definition for the CSV export (https://help.adjust.com/en/article/csv-uploads#how-do-i-format-my-csv-definition).",
+        title="",
     )
     s3_role_arn: Optional[str] = Field(
         None,
-        description='Used if the `export_storage_type` is `AWS_S3`, the Role ARN required for authentication.',
-        title='',
+        description="Used if the `export_storage_type` is `AWS_S3`, the Role ARN required for authentication.",
+        title="",
     )
     bucket_name: Optional[str] = Field(
-        None, description='Your AWS S3 or GCS bucket.', title=''
+        None, description="Your AWS S3 or GCS bucket.", title=""
     )
 
 
 class Auth(BaseModel):
     export_storage_type: Optional[Dict[str, Any]] = Field(
-        None, description='Your cloud storage.'
+        None, description="Your cloud storage."
     )
     csv_definition: Optional[str] = Field(
-        None, description='CSV definition for the CSV export'
+        None, description="CSV definition for the CSV export"
     )
-    bucket_name: Optional[str] = Field(None, description='Your AWS S3 or GCS bucket.')
+    bucket_name: Optional[str] = Field(None, description="Your AWS S3 or GCS bucket.")
     s3_role_arn: Optional[str] = Field(
         None,
-        description='If the export_storage_type is AWS_S3, the Role ARN required for authentication.',
+        description="If the export_storage_type is AWS_S3, the Role ARN required for authentication.",
     )
 
 
 class AdjustConfigV1(BaseModel):
-    config: Optional[Config23] = Field(None, description='')
+    config: Optional[Config23] = Field(None, description="")
     auth: Optional[Auth] = None
 
 
@@ -2182,84 +2182,84 @@ class AdjustNewConnectorRequestV1(NewConnectorRequestV1, AdjustConfigV1):
 class AdobeAnalyticsConfiguration(BaseModel):
     report_suites: Optional[List[str]] = Field(
         None,
-        description='Specific report suites to sync. Must be populated if `sync_mode` is set to `SpecificReportSuites`.',
-        title='',
+        description="Specific report suites to sync. Must be populated if `sync_mode` is set to `SpecificReportSuites`.",
+        title="",
     )
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
-        description='Whether to sync all report suites or specific report suites. Default value: `AllReportSuites` .',
-        title='',
+        description="Whether to sync all report suites or specific report suites. Default value: `AllReportSuites` .",
+        title="",
     )
     elements: Optional[List[str]] = Field(
-        None, description='The elements that you want to sync.', title=''
+        None, description="The elements that you want to sync.", title=""
     )
     metrics: Optional[List[str]] = Field(
-        None, description='The metrics that you want to sync.', title=''
+        None, description="The metrics that you want to sync.", title=""
     )
     table: Optional[str] = Field(
         None,
-        description='The table name unique within the schema to which connector will sync the data. Required for connector creation.',
-        title='',
+        description="The table name unique within the schema to which connector will sync the data. Required for connector creation.",
+        title="",
     )
     calculated_metrics: Optional[List[str]] = Field(
-        None, description='The calculated_metrics that you want to sync.', title=''
+        None, description="The calculated_metrics that you want to sync.", title=""
     )
     segments: Optional[List[str]] = Field(
-        None, description='The segments that you want to sync.', title=''
+        None, description="The segments that you want to sync.", title=""
     )
 
 
 class Config24(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     technical_account_id: Optional[str] = Field(
         None,
-        description='Technical Account ID from the Service Account (JWT) credentials of your Adobe Project.',
-        title='',
+        description="Technical Account ID from the Service Account (JWT) credentials of your Adobe Project.",
+        title="",
     )
     organization_id: Optional[str] = Field(
         None,
-        description='Organization ID from the Service Account (JWT) credentials of your Adobe Project.',
-        title='',
+        description="Organization ID from the Service Account (JWT) credentials of your Adobe Project.",
+        title="",
     )
     timeframe_months: Optional[Dict[str, Any]] = Field(
         None,
         description="Number of months of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `TWELVE` .",
-        title='',
+        title="",
     )
     private_key: Optional[str] = Field(
         None,
-        description='The complete contents of your private key file including the start and end tags (`----BEGIN PRIVATE KEY----` to `----END PRIVATE KEY----`).',
-        title='',
+        description="The complete contents of your private key file including the start and end tags (`----BEGIN PRIVATE KEY----` to `----END PRIVATE KEY----`).",
+        title="",
     )
     client_secret: Optional[str] = Field(
         None,
-        description='Client Secret from the Service Account (JWT) credentials of your Adobe Project.',
-        title='',
+        description="Client Secret from the Service Account (JWT) credentials of your Adobe Project.",
+        title="",
     )
     client_id: Optional[str] = Field(
         None,
-        description='Client ID from the Service Account (JWT) credentials of your Adobe Project.',
-        title='',
+        description="Client ID from the Service Account (JWT) credentials of your Adobe Project.",
+        title="",
     )
     date_granularity: Optional[Dict[str, Any]] = Field(
         None,
-        description='The aggregation duration you want. Default value: `HOUR` .',
-        title='',
+        description="The aggregation duration you want. Default value: `HOUR` .",
+        title="",
     )
     adobe_analytics_configurations: Optional[List[AdobeAnalyticsConfiguration]] = Field(
         None,
-        description='The list of configurations of tables you want to sync. The number of tables and their configurations is limited to 5. Required for connector creation.',
-        title='',
+        description="The list of configurations of tables you want to sync. The number of tables and their configurations is limited to 5. Required for connector creation.",
+        title="",
     )
 
 
 class AdobeAnalyticsConfigV1(BaseModel):
-    config: Optional[Config24] = Field(None, description='')
+    config: Optional[Config24] = Field(None, description="")
 
 
 class AdobeAnalyticsNewConnectorRequestV1(
@@ -2271,45 +2271,45 @@ class AdobeAnalyticsNewConnectorRequestV1(
 class Config25(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    ftp_password: Optional[str] = Field(None, description='FTP password.', title='')
+    ftp_password: Optional[str] = Field(None, description="FTP password.", title="")
     sftp_is_key_pair: Optional[bool] = Field(
-        None, description='Log in with key pair or password', title=''
+        None, description="Log in with key pair or password", title=""
     )
-    sftp_user: Optional[str] = Field(None, description='SFTP user.', title='')
-    ftp_port: Optional[int] = Field(None, description='FTP port.', title='')
-    sftp_port: Optional[int] = Field(None, description='SFTP port.', title='')
+    sftp_user: Optional[str] = Field(None, description="SFTP user.", title="")
+    ftp_port: Optional[int] = Field(None, description="FTP port.", title="")
+    sftp_port: Optional[int] = Field(None, description="SFTP port.", title="")
     abs_container_name: Optional[str] = Field(
-        None, description='Azure blob storage container name.', title=''
+        None, description="Azure blob storage container name.", title=""
     )
-    sftp_host: Optional[str] = Field(None, description='SFTP host.', title='')
+    sftp_host: Optional[str] = Field(None, description="SFTP host.", title="")
     source: Optional[Dict[str, Any]] = Field(
-        None, description='The data source.', title=''
+        None, description="The data source.", title=""
     )
-    ftp_host: Optional[str] = Field(None, description='FTP host.', title='')
+    ftp_host: Optional[str] = Field(None, description="FTP host.", title="")
     is_ftps: Optional[bool] = Field(
-        None, description='Use Secure FTP (FTPS).', title=''
+        None, description="Use Secure FTP (FTPS).", title=""
     )
-    ftp_user: Optional[str] = Field(None, description='FTP user.', title='')
+    ftp_user: Optional[str] = Field(None, description="FTP user.", title="")
     s3role_arn: Optional[str] = Field(
-        None, description='The Role ARN required for authentication.', title=''
+        None, description="The Role ARN required for authentication.", title=""
     )
     abs_connection_string: Optional[str] = Field(
-        None, description='Azure blob storage connection string.', title=''
+        None, description="Azure blob storage connection string.", title=""
     )
-    s3bucket: Optional[str] = Field(None, description='The S3 bucket name.', title='')
+    s3bucket: Optional[str] = Field(None, description="The S3 bucket name.", title="")
     sftp_password: Optional[str] = Field(
         None,
-        description='SFTP password required if sftp_is_key_pair is false',
-        title='',
+        description="SFTP password required if sftp_is_key_pair is false",
+        title="",
     )
 
 
 class AdobeAnalyticsDataFeedConfigV1(BaseModel):
-    config: Optional[Config25] = Field(None, description='')
+    config: Optional[Config25] = Field(None, description="")
 
 
 class AdobeAnalyticsDataFeedNewConnectorRequestV1(
@@ -2321,22 +2321,22 @@ class AdobeAnalyticsDataFeedNewConnectorRequestV1(
 class Config26(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     ws_certificate: Optional[str] = Field(
-        None, description='Web Services Certificate.', title=''
+        None, description="Web Services Certificate.", title=""
     )
-    private_key: Optional[str] = Field(None, description='Private Key.', title='')
+    private_key: Optional[str] = Field(None, description="Private Key.", title="")
     client_secret: Optional[str] = Field(
-        None, description='Your ADP Client Secret.', title=''
+        None, description="Your ADP Client Secret.", title=""
     )
-    client_id: Optional[str] = Field(None, description='Your ADP Client ID.', title='')
+    client_id: Optional[str] = Field(None, description="Your ADP Client ID.", title="")
 
 
 class AdpWorkforceNowConfigV1(BaseModel):
-    config: Optional[Config26] = Field(None, description='')
+    config: Optional[Config26] = Field(None, description="")
 
 
 class AdpWorkforceNowNewConnectorRequestV1(
@@ -2348,62 +2348,62 @@ class AdpWorkforceNowNewConnectorRequestV1(
 class Config27(BaseModel):
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
-        description='Whether to sync all advertisables or specific advertisables. Default value: `AllAdvertisables`.',
-        title='',
+        description="Whether to sync all advertisables or specific advertisables. Default value: `AllAdvertisables`.",
+        title="",
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     timeframe_months: Optional[Dict[str, Any]] = Field(
         None,
         description="Number of months of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `TWELVE`.",
-        title='',
+        title="",
     )
     advertisables: Optional[List[str]] = Field(
         None,
-        description='Specific advertisables to sync. Must be populated if `sync_mode` is set to `SpecificAdvertisables`.',
-        title='',
+        description="Specific advertisables to sync. Must be populated if `sync_mode` is set to `SpecificAdvertisables`.",
+        title="",
     )
     metrics: Optional[List[str]] = Field(
-        None, description='The metrics that you want to sync.', title=''
+        None, description="The metrics that you want to sync.", title=""
     )
     report_type: Optional[Dict[str, Any]] = Field(
         None,
-        description='The report type you want. Default value: `ALL_ADS`.',
-        title='',
+        description="The report type you want. Default value: `ALL_ADS`.",
+        title="",
     )
     table: Optional[str] = Field(
         None,
-        description='Destination table. Table is permanent and cannot be changed after connection creation',
-        title='Destination table',
+        description="Destination table. Table is permanent and cannot be changed after connection creation",
+        title="Destination table",
     )
     dimensions: Optional[List[str]] = Field(
-        None, description='The dimenstions that you want to sync.', title=''
+        None, description="The dimenstions that you want to sync.", title=""
     )
 
 
 class ClientAccess(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth1(BaseModel):
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
     client_access: Optional[ClientAccess] = None
 
 
 class AdrollConfigV1(BaseModel):
-    config: Optional[Config27] = Field(None, description='')
+    config: Optional[Config27] = Field(None, description="")
     auth: Optional[Auth1] = None
 
 
@@ -2414,24 +2414,24 @@ class AdrollNewConnectorRequestV1(NewConnectorRequestV1, AdrollConfigV1):
 class Config28(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     api_key: Optional[str] = Field(
-        None, description='API key of the Airtable account.', title=''
+        None, description="API key of the Airtable account.", title=""
     )
-    base_id: Optional[str] = Field(None, title='')
-    table_name: Optional[str] = Field(None, title='')
+    base_id: Optional[str] = Field(None, title="")
+    table_name: Optional[str] = Field(None, title="")
     table: Optional[str] = Field(
         None,
-        description='Destination table. Table is permanent and cannot be changed after connection creation',
-        title='Destination table',
+        description="Destination table. Table is permanent and cannot be changed after connection creation",
+        title="Destination table",
     )
 
 
 class AirtableConfigV1(BaseModel):
-    config: Optional[Config28] = Field(None, description='')
+    config: Optional[Config28] = Field(None, description="")
 
 
 class AirtableNewConnectorRequestV1(NewConnectorRequestV1, AirtableConfigV1):
@@ -2441,49 +2441,49 @@ class AirtableNewConnectorRequestV1(NewConnectorRequestV1, AirtableConfigV1):
 class Config29(BaseModel):
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
-        description='Option to select connector should sync all profiles or specific profiles.',
-        title='',
+        description="Option to select connector should sync all profiles or specific profiles.",
+        title="",
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     attribution_window: Optional[Dict[str, Any]] = Field(
         None,
-        description='Time period used to attribute conversions based on clicks.',
-        title='',
+        description="Time period used to attribute conversions based on clicks.",
+        title="",
     )
     profiles: Optional[List[int]] = Field(
         None,
-        description='Specific User Profile IDs to sync. Must be populated if `sync_mode` is set to `SpecificProfiles`.',
-        title='',
+        description="Specific User Profile IDs to sync. Must be populated if `sync_mode` is set to `SpecificProfiles`.",
+        title="",
     )
     region: Optional[Dict[str, Any]] = Field(
-        None, description='The region used by the Amazon Ads profile.', title=''
+        None, description="The region used by the Amazon Ads profile.", title=""
     )
 
 
 class ClientAccess1(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth2(BaseModel):
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
     client_access: Optional[ClientAccess1] = None
 
 
 class AmazonAdsConfigV1(BaseModel):
-    config: Optional[Config29] = Field(None, description='')
+    config: Optional[Config29] = Field(None, description="")
     auth: Optional[Auth2] = None
 
 
@@ -2493,28 +2493,28 @@ class AmazonAdsNewConnectorRequestV1(NewConnectorRequestV1, AmazonAdsConfigV1):
 
 class ProjectCredential(BaseModel):
     secret_key: Optional[str] = Field(
-        None, description='The secret key of the project.', title=''
+        None, description="The secret key of the project.", title=""
     )
     api_key: Optional[str] = Field(
-        None, description='The API key of the project.', title=''
+        None, description="The API key of the project.", title=""
     )
     project: Optional[str] = Field(
-        None, description='The project name you wish to use with Fivetran.', title=''
+        None, description="The project name you wish to use with Fivetran.", title=""
     )
 
 
 class Config30(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    project_credentials: Optional[List[ProjectCredential]] = Field(None, title='')
+    project_credentials: Optional[List[ProjectCredential]] = Field(None, title="")
 
 
 class AmplitudeConfigV1(BaseModel):
-    config: Optional[Config30] = Field(None, description='')
+    config: Optional[Config30] = Field(None, description="")
 
 
 class AmplitudeNewConnectorRequestV1(NewConnectorRequestV1, AmplitudeConfigV1):
@@ -2523,46 +2523,46 @@ class AmplitudeNewConnectorRequestV1(NewConnectorRequestV1, AmplitudeConfigV1):
 
 class Config31(BaseModel):
     sync_mode: Optional[Dict[str, Any]] = Field(
-        None, description='Whether to sync all exports or specific exports.', title=''
+        None, description="Whether to sync all exports or specific exports.", title=""
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     password: Optional[str] = Field(
         None,
-        description='Your Anaplan password. Must be populated if `auth_mode` is set to `Basic`.',
-        title='',
+        description="Your Anaplan password. Must be populated if `auth_mode` is set to `Basic`.",
+        title="",
     )
     selected_exports: Optional[List[str]] = Field(
         None,
-        description='The list of export IDs in the format `<workspace_id>_<model_id>_<export_id>` that the connector will sync. Must be populated if `sync_mode` is set to `SpecificExports`.',
-        title='',
+        description="The list of export IDs in the format `<workspace_id>_<model_id>_<export_id>` that the connector will sync. Must be populated if `sync_mode` is set to `SpecificExports`.",
+        title="",
     )
     certificate: Optional[str] = Field(
         None,
-        description='The contents of your PEM certificate file. Must be populated if `auth_mode` is set to `Certificate`.',
-        title='',
+        description="The contents of your PEM certificate file. Must be populated if `auth_mode` is set to `Certificate`.",
+        title="",
     )
     auth_mode: Optional[Dict[str, Any]] = Field(
-        None, description='The Anaplan authentication method.', title=''
+        None, description="The Anaplan authentication method.", title=""
     )
     private_key: Optional[str] = Field(
         None,
-        description='The contents of your private key file. Must be populated if `auth_mode` is set to `Certificate`.',
-        title='',
+        description="The contents of your private key file. Must be populated if `auth_mode` is set to `Certificate`.",
+        title="",
     )
     username: Optional[str] = Field(
         None,
-        description='Your Anaplan user ID. Must be populated if `auth_mode` is set to `Basic`.',
-        title='',
+        description="Your Anaplan user ID. Must be populated if `auth_mode` is set to `Basic`.",
+        title="",
     )
 
 
 class AnaplanConfigV1(BaseModel):
-    config: Optional[Config31] = Field(None, description='')
+    config: Optional[Config31] = Field(None, description="")
 
 
 class AnaplanNewConnectorRequestV1(NewConnectorRequestV1, AnaplanConfigV1):
@@ -2572,47 +2572,47 @@ class AnaplanNewConnectorRequestV1(NewConnectorRequestV1, AnaplanConfigV1):
 class Config32(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     consumer_group: Optional[str] = Field(
-        None, description='Kafka consumer group name.', title=''
+        None, description="Kafka consumer group name.", title=""
     )
     sync_type: Optional[Dict[str, Any]] = Field(
         None,
-        description='Kafka sync type.  Unpacked messages must be valid JSON.',
-        title='',
+        description="Kafka sync type.  Unpacked messages must be valid JSON.",
+        title="",
     )
-    client_cert: Optional[str] = Field(None, title='')
-    sasl_scram512_secret: Optional[str] = Field(None, title='')
-    sasl_plain_secret: Optional[str] = Field(None, title='')
-    schema_registry_credentials_source: Optional[str] = Field(None, title='')
-    client_cert_key: Optional[str] = Field(None, title='')
+    client_cert: Optional[str] = Field(None, title="")
+    sasl_scram512_secret: Optional[str] = Field(None, title="")
+    sasl_plain_secret: Optional[str] = Field(None, title="")
+    schema_registry_credentials_source: Optional[str] = Field(None, title="")
+    client_cert_key: Optional[str] = Field(None, title="")
     message_type: Optional[Dict[str, Any]] = Field(
-        None, description='Kafka message type.', title=''
+        None, description="Kafka message type.", title=""
     )
-    sasl_scram512_key: Optional[str] = Field(None, title='')
-    sasl_scram256_secret: Optional[str] = Field(None, title='')
+    sasl_scram512_key: Optional[str] = Field(None, title="")
+    sasl_scram256_secret: Optional[str] = Field(None, title="")
     servers: Optional[List[str]] = Field(
         None,
-        description='Comma-separated list of Kafka servers in the format `server:port`.',
-        title='',
+        description="Comma-separated list of Kafka servers in the format `server:port`.",
+        title="",
     )
-    sasl_plain_key: Optional[str] = Field(None, title='')
-    sasl_mechanism: Optional[Dict[str, Any]] = Field(None, title='')
+    sasl_plain_key: Optional[str] = Field(None, title="")
+    sasl_mechanism: Optional[Dict[str, Any]] = Field(None, title="")
     security_protocol: Optional[Dict[str, Any]] = Field(
-        None, description='Security protocol for Kafka interaction.', title=''
+        None, description="Security protocol for Kafka interaction.", title=""
     )
-    sasl_scram256_key: Optional[str] = Field(None, title='')
-    schema_registry_secret: Optional[str] = Field(None, title='')
-    trusted_cert: Optional[str] = Field(None, title='')
-    schema_registry_urls: Optional[List[str]] = Field(None, title='')
-    schema_registry_key: Optional[str] = Field(None, title='')
+    sasl_scram256_key: Optional[str] = Field(None, title="")
+    schema_registry_secret: Optional[str] = Field(None, title="")
+    trusted_cert: Optional[str] = Field(None, title="")
+    schema_registry_urls: Optional[List[str]] = Field(None, title="")
+    schema_registry_key: Optional[str] = Field(None, title="")
 
 
 class ApacheKafkaConfigV1(BaseModel):
-    config: Optional[Config32] = Field(None, description='')
+    config: Optional[Config32] = Field(None, description="")
 
 
 class ApacheKafkaNewConnectorRequestV1(NewConnectorRequestV1, ApacheKafkaConfigV1):
@@ -2620,50 +2620,50 @@ class ApacheKafkaNewConnectorRequestV1(NewConnectorRequestV1, ApacheKafkaConfigV
 
 
 class Config33(BaseModel):
-    sync_mode: Optional[Dict[str, Any]] = Field(None, title='')
+    sync_mode: Optional[Dict[str, Any]] = Field(None, title="")
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     pem_private_key: Optional[str] = Field(
         None,
-        description='The contents of your PEM secret key file. Must be populated if `is_auth2_enabled` is set to `true`.',
-        title='',
+        description="The contents of your PEM secret key file. Must be populated if `is_auth2_enabled` is set to `true`.",
+        title="",
     )
     pem_certificate: Optional[str] = Field(
         None,
-        description='The contents of your PEM certificate file. Must be populated if `is_auth2_enabled` is set to `false`.',
-        title='',
+        description="The contents of your PEM certificate file. Must be populated if `is_auth2_enabled` is set to `false`.",
+        title="",
     )
-    timeframe_months: Optional[Dict[str, Any]] = Field(None, title='')
-    organizations: Optional[List[str]] = Field(None, title='')
+    timeframe_months: Optional[Dict[str, Any]] = Field(None, title="")
+    organizations: Optional[List[str]] = Field(None, title="")
     private_key: Optional[str] = Field(
         None,
-        description='The contents of your secret key file. Must be populated if `is_auth2_enabled` is set to `false`.',
-        title='',
+        description="The contents of your secret key file. Must be populated if `is_auth2_enabled` is set to `false`.",
+        title="",
     )
     is_auth2_enabled: Optional[bool] = Field(
         None,
-        description='The contents of your PEM certificate file. Default value: `false`',
-        title='',
+        description="The contents of your PEM certificate file. Default value: `false`",
+        title="",
     )
-    show_records_with_no_metrics: Optional[bool] = Field(None, description='', title='')
+    show_records_with_no_metrics: Optional[bool] = Field(None, description="", title="")
 
 
 class Auth3(BaseModel):
-    key_id: Optional[str] = Field(None, description='Apple Search Ads REST API Key ID')
+    key_id: Optional[str] = Field(None, description="Apple Search Ads REST API Key ID")
     team_id: Optional[str] = Field(
-        None, description='Apple Search Ads REST API Team ID.'
+        None, description="Apple Search Ads REST API Team ID."
     )
     client_id: Optional[str] = Field(
-        None, description='Apple Search Ads REST API Client ID'
+        None, description="Apple Search Ads REST API Client ID"
     )
 
 
 class AppleSearchAdsConfigV1(BaseModel):
-    config: Optional[Config33] = Field(None, description='')
+    config: Optional[Config33] = Field(None, description="")
     auth: Optional[Auth3] = None
 
 
@@ -2675,28 +2675,28 @@ class AppleSearchAdsNewConnectorRequestV1(
 
 class Config34(BaseModel):
     access_key_id: Optional[str] = Field(
-        None, description='Your AWS access key ID.', title=''
+        None, description="Your AWS access key ID.", title=""
     )
-    bucket: Optional[str] = Field(None, title='')
+    bucket: Optional[str] = Field(None, title="")
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     secret_key: Optional[str] = Field(
-        None, description='Your AWS secret key.', title=''
+        None, description="Your AWS secret key.", title=""
     )
-    role_arn: Optional[str] = Field(None, title='')
+    role_arn: Optional[str] = Field(None, title="")
     home_folder: Optional[str] = Field(
-        None, description='Your S3 home folder path of the Data Locker.', title=''
+        None, description="Your S3 home folder path of the Data Locker.", title=""
     )
-    sync_data_locker: Optional[bool] = Field(None, title='')
-    use_customer_bucket: Optional[bool] = Field(None, title='')
+    sync_data_locker: Optional[bool] = Field(None, title="")
+    use_customer_bucket: Optional[bool] = Field(None, title="")
 
 
 class AppsflyerConfigV1(BaseModel):
-    config: Optional[Config34] = Field(None, description='')
+    config: Optional[Config34] = Field(None, description="")
 
 
 class AppsflyerNewConnectorRequestV1(NewConnectorRequestV1, AppsflyerConfigV1):
@@ -2705,40 +2705,40 @@ class AppsflyerNewConnectorRequestV1(NewConnectorRequestV1, AppsflyerConfigV1):
 
 class Config35(BaseModel):
     sync_mode: Optional[Dict[str, Any]] = Field(
-        None, description='Whether to sync all projects or specific projects.', title=''
+        None, description="Whether to sync all projects or specific projects.", title=""
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     projects: Optional[List[str]] = Field(
         None,
-        description='Specific Project IDs to sync. Must be populated if `syncMode` is set to `SpecificProjects`.',
-        title='',
+        description="Specific Project IDs to sync. Must be populated if `syncMode` is set to `SpecificProjects`.",
+        title="",
     )
 
 
 class ClientAccess2(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth4(BaseModel):
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
     client_access: Optional[ClientAccess2] = None
 
 
 class AsanaConfigV1(BaseModel):
-    config: Optional[Config35] = Field(None, description='')
+    config: Optional[Config35] = Field(None, description="")
     auth: Optional[Auth4] = None
 
 
@@ -2747,49 +2747,49 @@ class AsanaNewConnectorRequestV1(NewConnectorRequestV1, AsanaConfigV1):
 
 
 class Config36(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
+    public_key: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
         description="Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-        title='',
+        title="",
     )
     update_method: Optional[Dict[str, Any]] = Field(
         None,
         description="The method to detect new or changed rows. <br>Supported values:<br>`BINLOG` - Fivetran uses your binary logs (also called binlogs) to request only the data that has changed since our last sync. This is the default value if no value is specified. <br>`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
-        title='',
+        title="",
     )
-    always_encrypted: Optional[bool] = Field(None, title='')
+    always_encrypted: Optional[bool] = Field(None, title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH user, specify only to connect via an SSH tunnel.",
+        title="",
     )
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH port, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH port, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='The database name.', title='')
-    password: Optional[str] = Field(None, description="The user's password.", title='')
-    port: Optional[int] = Field(None, description='The port number.', title='')
+    database: Optional[str] = Field(None, description="The database name.", title="")
+    password: Optional[str] = Field(None, description="The user's password.", title="")
+    port: Optional[int] = Field(None, description="The port number.", title="")
     host: Optional[str] = Field(
-        None, description='DB instance host or IP address.', title=''
+        None, description="DB instance host or IP address.", title=""
     )
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).',
-        title='',
+        description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+        title="",
     )
     schema_prefix: Optional[str] = Field(
         None,
         description="Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-        title='Destination schema prefix',
+        title="Destination schema prefix",
     )
-    user: Optional[str] = Field(None, description='The user name.', title='')
+    user: Optional[str] = Field(None, description="The user name.", title="")
 
 
 class AuroraConfigV1(BaseModel):
-    config: Optional[Config36] = Field(None, description='')
+    config: Optional[Config36] = Field(None, description="")
 
 
 class AuroraNewConnectorRequestV1(NewConnectorRequestV1, AuroraConfigV1):
@@ -2797,56 +2797,56 @@ class AuroraNewConnectorRequestV1(NewConnectorRequestV1, AuroraConfigV1):
 
 
 class Config37(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
-    publication_name: Optional[str] = Field(None, description='', title='')
+    public_key: Optional[str] = Field(None, description="", title="")
+    publication_name: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
         description="Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-        title='',
+        title="",
     )
     update_method: Optional[Dict[str, Any]] = Field(
         None,
         description='The method to detect new or changed rows. <br>Specify only for `"service": "postgres"` or `"service": "postgres_rds"`. <br>Supported values:<br>`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.<br>`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.<br>`WAL_PGOUTPUT` - <span class="beta tag">BETA</span> logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.',
-        title='',
+        title="",
     )
-    always_encrypted: Optional[bool] = Field(None, title='')
+    always_encrypted: Optional[bool] = Field(None, title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH user, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='The database name.', title='')
-    password: Optional[str] = Field(None, description="The user's password.", title='')
+    database: Optional[str] = Field(None, description="The database name.", title="")
+    password: Optional[str] = Field(None, description="The user's password.", title="")
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH port, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH port, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    heroku_rds_hosted: Optional[Dict[str, Any]] = Field(None, title='')
-    port: Optional[int] = Field(None, description='The port number.', title='')
+    heroku_rds_hosted: Optional[Dict[str, Any]] = Field(None, title="")
+    port: Optional[int] = Field(None, description="The port number.", title="")
     host: Optional[str] = Field(
-        None, description='DB instance host or IP address.', title=''
+        None, description="DB instance host or IP address.", title=""
     )
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).',
-        title='',
+        description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+        title="",
     )
     schema_prefix: Optional[str] = Field(
         None,
         description="Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-        title='Destination schema prefix',
+        title="Destination schema prefix",
     )
     replication_slot: Optional[str] = Field(
         None,
         description='Replication slot name. Specify only for `"updated_method": "WAL"` or `"WAL_PGOUTPUT"`.',
-        title='',
+        title="",
     )
-    user: Optional[str] = Field(None, description='The user name.', title='')
+    user: Optional[str] = Field(None, description="The user name.", title="")
 
 
 class AuroraPostgresConfigV1(BaseModel):
-    config: Optional[Config37] = Field(None, description='')
+    config: Optional[Config37] = Field(None, description="")
 
 
 class AuroraPostgresNewConnectorRequestV1(
@@ -2858,30 +2858,30 @@ class AuroraPostgresNewConnectorRequestV1(
 class Config38(BaseModel):
     bucket: Optional[str] = Field(
         None,
-        description='The AWS bucket name which is configured for AWS CloudTrail.',
-        title='',
+        description="The AWS bucket name which is configured for AWS CloudTrail.",
+        title="",
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     role_arn: Optional[str] = Field(
-        None, description='The Role ARN required for authentication.', title=''
+        None, description="The Role ARN required for authentication.", title=""
     )
     prefix: Optional[str] = Field(
-        None, description='If prefix is present when configuring the bucket.', title=''
+        None, description="If prefix is present when configuring the bucket.", title=""
     )
     external_id: Optional[str] = Field(
         None,
-        description='This is the same as your `group_id`, used for authentication along with the `role_arn`.',
-        title='',
+        description="This is the same as your `group_id`, used for authentication along with the `role_arn`.",
+        title="",
     )
 
 
 class AwsCloudtrailConfigV1(BaseModel):
-    config: Optional[Config38] = Field(None, description='')
+    config: Optional[Config38] = Field(None, description="")
 
 
 class AwsCloudtrailNewConnectorRequestV1(NewConnectorRequestV1, AwsCloudtrailConfigV1):
@@ -2891,27 +2891,27 @@ class AwsCloudtrailNewConnectorRequestV1(NewConnectorRequestV1, AwsCloudtrailCon
 class Config39(BaseModel):
     bucket: Optional[str] = Field(
         None,
-        description='The AWS bucket name that is configured for AWS Config.',
-        title='',
+        description="The AWS bucket name that is configured for AWS Config.",
+        title="",
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     role_arn: Optional[str] = Field(
-        None, description='The Role ARN required for authentication.', title=''
+        None, description="The Role ARN required for authentication.", title=""
     )
     prefix: Optional[str] = Field(
         None,
-        description='The prefix if you used one when configuring the bucket.',
-        title='',
+        description="The prefix if you used one when configuring the bucket.",
+        title="",
     )
 
 
 class AwsInventoryConfigV1(BaseModel):
-    config: Optional[Config39] = Field(None, description='')
+    config: Optional[Config39] = Field(None, description="")
 
 
 class AwsInventoryNewConnectorRequestV1(NewConnectorRequestV1, AwsInventoryConfigV1):
@@ -2919,46 +2919,46 @@ class AwsInventoryNewConnectorRequestV1(NewConnectorRequestV1, AwsInventoryConfi
 
 
 class SecretsListItem(BaseModel):
-    value: Optional[str] = Field(None, description='', title='')
-    key: Optional[str] = Field(None, description='', title='')
+    value: Optional[str] = Field(None, description="", title="")
+    key: Optional[str] = Field(None, description="", title="")
 
 
 class Config40(BaseModel):
-    bucket: Optional[str] = Field(None, description='', title='')
+    bucket: Optional[str] = Field(None, description="", title="")
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    sync_method: Optional[Dict[str, Any]] = Field(None, description='', title='')
+    sync_method: Optional[Dict[str, Any]] = Field(None, description="", title="")
     role_arn: Optional[str] = Field(
-        None, description='The Role ARN required for authentication.', title=''
+        None, description="The Role ARN required for authentication.", title=""
     )
     secrets_list: Optional[List[SecretsListItem]] = Field(
         None,
-        description='List of Secrets that should be passed to the function at runtime.',
-        title='',
+        description="List of Secrets that should be passed to the function at runtime.",
+        title="",
     )
     function: Optional[str] = Field(
-        None, description='The name of your AWS Lambda Function.', title=''
+        None, description="The name of your AWS Lambda Function.", title=""
     )
-    external_id: Optional[str] = Field(None, title='')
+    external_id: Optional[str] = Field(None, title="")
     region: Optional[str] = Field(
         None,
-        description='The AWS region code for the DynamoDB instance, e.g. `us-east-1`.',
-        title='',
+        description="The AWS region code for the DynamoDB instance, e.g. `us-east-1`.",
+        title="",
     )
     secrets: Optional[str] = Field(
         None,
-        description='The secrets that should be passed to the function at runtime.',
-        title='',
+        description="The secrets that should be passed to the function at runtime.",
+        title="",
     )
-    is_private_link_required: Optional[bool] = Field(None, title='')
+    is_private_link_required: Optional[bool] = Field(None, title="")
 
 
 class AwsLambdaConfigV1(BaseModel):
-    config: Optional[Config40] = Field(None, description='')
+    config: Optional[Config40] = Field(None, description="")
 
 
 class AwsLambdaNewConnectorRequestV1(NewConnectorRequestV1, AwsLambdaConfigV1):
@@ -2968,62 +2968,62 @@ class AwsLambdaNewConnectorRequestV1(NewConnectorRequestV1, AwsLambdaConfigV1):
 class Config41(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     consumer_group: Optional[str] = Field(
-        None, description='The name of consumer group created for Fivetran.', title=''
+        None, description="The name of consumer group created for Fivetran.", title=""
     )
     sync_type: Optional[Dict[str, Any]] = Field(
         None,
-        description='The sync type.  Unpacked messages must be valid JSON.',
-        title='',
+        description="The sync type.  Unpacked messages must be valid JSON.",
+        title="",
     )
     client_cert: Optional[str] = Field(
         None,
-        description='If `security_protocol` is set to `TLS`, upload the `Client Certificate`.',
-        title='',
+        description="If `security_protocol` is set to `TLS`, upload the `Client Certificate`.",
+        title="",
     )
     sasl_scram512_secret: Optional[str] = Field(
         None,
         description="If `security_protocol` is set to `SASL`, enter your secret's `saslScram512Key`.",
-        title='',
+        title="",
     )
-    schema_registry_credentials_source: Optional[str] = Field(None, title='')
+    schema_registry_credentials_source: Optional[str] = Field(None, title="")
     client_cert_key: Optional[str] = Field(
         None,
-        description='If `security_protocol` is set to `TLS`, upload the `Client Certificate Key`.',
-        title='',
+        description="If `security_protocol` is set to `TLS`, upload the `Client Certificate Key`.",
+        title="",
     )
     message_type: Optional[Dict[str, Any]] = Field(
-        None, description='The Message type.', title=''
+        None, description="The Message type.", title=""
     )
     sasl_scram512_key: Optional[str] = Field(
         None,
         description="If `security_protocol` is set to `SASL`, enter your secret's `saslScram512Key`.",
-        title='',
+        title="",
     )
     servers: Optional[List[str]] = Field(
         None,
-        description='Comma-separated list of Kafka servers in the `server:port` format.',
-        title='',
+        description="Comma-separated list of Kafka servers in the `server:port` format.",
+        title="",
     )
     security_protocol: Optional[Dict[str, Any]] = Field(
-        None, description='The security protocol for Kafka interaction.', title=''
+        None, description="The security protocol for Kafka interaction.", title=""
     )
-    schema_registry_secret: Optional[str] = Field(None, title='')
+    schema_registry_secret: Optional[str] = Field(None, title="")
     trusted_cert: Optional[str] = Field(
         None,
-        description='If `security_protocol` is set to `TLS`, upload the `Trusted Certificate`.',
-        title='',
+        description="If `security_protocol` is set to `TLS`, upload the `Trusted Certificate`.",
+        title="",
     )
-    schema_registry_urls: Optional[List[str]] = Field(None, title='')
-    schema_registry_key: Optional[str] = Field(None, title='')
+    schema_registry_urls: Optional[List[str]] = Field(None, title="")
+    schema_registry_key: Optional[str] = Field(None, title="")
 
 
 class AwsMskConfigV1(BaseModel):
-    config: Optional[Config41] = Field(None, description='')
+    config: Optional[Config41] = Field(None, description="")
 
 
 class AwsMskNewConnectorRequestV1(NewConnectorRequestV1, AwsMskConfigV1):
@@ -3033,86 +3033,86 @@ class AwsMskNewConnectorRequestV1(NewConnectorRequestV1, AwsMskConfigV1):
 class Config42(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     append_file_option: Optional[Dict[str, Any]] = Field(
         None,
-        description='If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.',
-        title='',
+        description="If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.",
+        title="",
     )
     prefix: Optional[str] = Field(
         None,
-        description='All files and folders under this folder path will be searched for files to sync.',
-        title='',
+        description="All files and folders under this folder path will be searched for files to sync.",
+        title="",
     )
     pattern: Optional[str] = Field(
         None,
-        description='All files in your search path matching this regular expression will be synced.',
-        title='',
+        description="All files in your search path matching this regular expression will be synced.",
+        title="",
     )
     escape_char: Optional[str] = Field(
         None,
-        description='If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.',
-        title='',
+        description="If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.",
+        title="",
     )
     skip_after: Optional[int] = Field(
         None,
-        description='We will skip over the number of lines specified at the end so as to not introduce aberrant data into your destination.',
-        title='',
+        description="We will skip over the number of lines specified at the end so as to not introduce aberrant data into your destination.",
+        title="",
     )
     connection_string: Optional[str] = Field(
-        None, description='The blob storage container connection string.', title=''
+        None, description="The blob storage container connection string.", title=""
     )
-    empty_header: Optional[bool] = Field(None, title='')
+    empty_header: Optional[bool] = Field(None, title="")
     skip_before: Optional[int] = Field(
         None,
-        description='We will skip over the number of lines specified before syncing data.',
-        title='',
+        description="We will skip over the number of lines specified before syncing data.",
+        title="",
     )
     null_sequence: Optional[str] = Field(
         None,
-        description='If your CSVs use a special value indicating null, you can specify it here.',
-        title='',
+        description="If your CSVs use a special value indicating null, you can specify it here.",
+        title="",
     )
     container_name: Optional[str] = Field(
-        None, description='The name of the blob container.', title=''
+        None, description="The name of the blob container.", title=""
     )
     file_type: Optional[Dict[str, Any]] = Field(
         None,
-        description='If your files are saved with improper extensions, you can force them to by synced as the selected filetype.',
-        title='',
+        description="If your files are saved with improper extensions, you can force them to by synced as the selected filetype.",
+        title="",
     )
     delimiter: Optional[str] = Field(
         None,
-        description='You can specify your the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.',
-        title='',
+        description="You can specify your the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.",
+        title="",
     )
     on_error: Optional[Dict[str, Any]] = Field(
         None,
-        description='If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as fail unless you are certain that you have undesirable, malformed data.',
-        title='',
+        description="If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as fail unless you are certain that you have undesirable, malformed data.",
+        title="",
     )
     compression: Optional[Dict[str, Any]] = Field(
         None,
-        description='The secrets that should be passed to the function at runtime.',
-        title='',
+        description="The secrets that should be passed to the function at runtime.",
+        title="",
     )
     table: Optional[str] = Field(
         None,
-        description='Destination table. Table is permanent and cannot be changed after connection creation',
-        title='Destination table',
+        description="Destination table. Table is permanent and cannot be changed after connection creation",
+        title="Destination table",
     )
     archive_pattern: Optional[str] = Field(
         None,
-        description='Files inside of compressed archives with filenames matching this regular expression will be synced.',
-        title='',
+        description="Files inside of compressed archives with filenames matching this regular expression will be synced.",
+        title="",
     )
 
 
 class AzureBlobStorageConfigV1(BaseModel):
-    config: Optional[Config42] = Field(None, description='')
+    config: Optional[Config42] = Field(None, description="")
 
 
 class AzureBlobStorageNewConnectorRequestV1(
@@ -3124,28 +3124,28 @@ class AzureBlobStorageNewConnectorRequestV1(
 class Config43(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     consumer_group: Optional[str] = Field(
-        None, description='Name of consumer group created for Fivetran.', title=''
+        None, description="Name of consumer group created for Fivetran.", title=""
     )
     sync_type: Optional[Dict[str, Any]] = Field(
-        None, description='Sync type.  Unpacked messages must be valid JSON.', title=''
+        None, description="Sync type.  Unpacked messages must be valid JSON.", title=""
     )
     message_type: Optional[Dict[str, Any]] = Field(
-        None, description='Message type.', title=''
+        None, description="Message type.", title=""
     )
     connection_string: Optional[str] = Field(
         None,
-        description='Connection string of the Event Hub Namespace you want to sync.',
-        title='',
+        description="Connection string of the Event Hub Namespace you want to sync.",
+        title="",
     )
 
 
 class AzureEventHubConfigV1(BaseModel):
-    config: Optional[Config43] = Field(None, description='')
+    config: Optional[Config43] = Field(None, description="")
 
 
 class AzureEventHubNewConnectorRequestV1(NewConnectorRequestV1, AzureEventHubConfigV1):
@@ -3153,40 +3153,40 @@ class AzureEventHubNewConnectorRequestV1(NewConnectorRequestV1, AzureEventHubCon
 
 
 class SecretsListItem1(BaseModel):
-    value: Optional[str] = Field(None, description='', title='')
-    key: Optional[str] = Field(None, description='', title='')
+    value: Optional[str] = Field(None, description="", title="")
+    key: Optional[str] = Field(None, description="", title="")
 
 
 class Config44(BaseModel):
-    bucket: Optional[str] = Field(None, description='', title='')
+    bucket: Optional[str] = Field(None, description="", title="")
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    sync_method: Optional[Dict[str, Any]] = Field(None, description='', title='')
+    sync_method: Optional[Dict[str, Any]] = Field(None, description="", title="")
     function_app: Optional[str] = Field(
-        None, description='Function app name in Azure portal.', title=''
+        None, description="Function app name in Azure portal.", title=""
     )
     function_key: Optional[str] = Field(
-        None, description='Function key used for authorization.', title=''
+        None, description="Function key used for authorization.", title=""
     )
     secrets_list: Optional[List[SecretsListItem1]] = Field(
-        None, description='', title=''
+        None, description="", title=""
     )
     function_name: Optional[str] = Field(
-        None, description='Name of the function to be triggered.', title=''
+        None, description="Name of the function to be triggered.", title=""
     )
     secrets: Optional[str] = Field(
         None,
-        description='The secrets that should be passed to the function at runtime.',
-        title='',
+        description="The secrets that should be passed to the function at runtime.",
+        title="",
     )
 
 
 class AzureFunctionConfigV1(BaseModel):
-    config: Optional[Config44] = Field(None, description='')
+    config: Optional[Config44] = Field(None, description="")
 
 
 class AzureFunctionNewConnectorRequestV1(NewConnectorRequestV1, AzureFunctionConfigV1):
@@ -3194,56 +3194,56 @@ class AzureFunctionNewConnectorRequestV1(NewConnectorRequestV1, AzureFunctionCon
 
 
 class Config45(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
-    publication_name: Optional[str] = Field(None, description='', title='')
+    public_key: Optional[str] = Field(None, description="", title="")
+    publication_name: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
         description="Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-        title='',
+        title="",
     )
     update_method: Optional[Dict[str, Any]] = Field(
         None,
         description='The method to detect new or changed rows. <br>Specify only for `"service": "postgres"` or `"service": "postgres_rds"`. <br>Supported values:<br>`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.<br>`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.<br>`WAL_PGOUTPUT` - <span class="beta tag">BETA</span> logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.',
-        title='',
+        title="",
     )
-    always_encrypted: Optional[bool] = Field(None, title='')
+    always_encrypted: Optional[bool] = Field(None, title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH user, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='The database name.', title='')
-    password: Optional[str] = Field(None, description="The user's password.", title='')
+    database: Optional[str] = Field(None, description="The database name.", title="")
+    password: Optional[str] = Field(None, description="The user's password.", title="")
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH port, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH port, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    heroku_rds_hosted: Optional[Dict[str, Any]] = Field(None, title='')
-    port: Optional[int] = Field(None, description='The port number.', title='')
+    heroku_rds_hosted: Optional[Dict[str, Any]] = Field(None, title="")
+    port: Optional[int] = Field(None, description="The port number.", title="")
     host: Optional[str] = Field(
-        None, description='DB instance host or IP address.', title=''
+        None, description="DB instance host or IP address.", title=""
     )
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).',
-        title='',
+        description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+        title="",
     )
     schema_prefix: Optional[str] = Field(
         None,
         description="Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-        title='Destination schema prefix',
+        title="Destination schema prefix",
     )
     replication_slot: Optional[str] = Field(
         None,
         description='Replication slot name. Specify only for `"updated_method": "WAL"` or `"WAL_PGOUTPUT"`.',
-        title='',
+        title="",
     )
-    user: Optional[str] = Field(None, description='The user name.', title='')
+    user: Optional[str] = Field(None, description="The user name.", title="")
 
 
 class AzurePostgresConfigV1(BaseModel):
-    config: Optional[Config45] = Field(None, description='')
+    config: Optional[Config45] = Field(None, description="")
 
 
 class AzurePostgresNewConnectorRequestV1(NewConnectorRequestV1, AzurePostgresConfigV1):
@@ -3252,106 +3252,106 @@ class AzurePostgresNewConnectorRequestV1(NewConnectorRequestV1, AzurePostgresCon
 
 class Config46(BaseModel):
     asb_i_p: Optional[str] = Field(
-        None, description='The IP address (or) the URL of ASB namespace', title='asb_ip'
+        None, description="The IP address (or) the URL of ASB namespace", title="asb_ip"
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     has_manage_permissions: Optional[bool] = Field(
         None,
-        description='The boolean value specifying whether the connection string has manage permissions',
-        title='has_manage_permissions',
+        description="The boolean value specifying whether the connection string has manage permissions",
+        title="has_manage_permissions",
     )
     auth_type: Optional[Dict[str, Any]] = Field(
         None,
-        description='The authentication mode to access the topic',
-        title='auth_type',
+        description="The authentication mode to access the topic",
+        title="auth_type",
     )
     sync_type: Optional[Dict[str, Any]] = Field(
         None,
-        description='The sync type, which is based on the message type. For `text` and `xml`, `packed` is supported. For `protobuf` and `avro`, `unpacked` is supported. For `json`, both `packed` and `unpacked` are supported',
-        title='sync_type',
+        description="The sync type, which is based on the message type. For `text` and `xml`, `packed` is supported. For `protobuf` and `avro`, `unpacked` is supported. For `json`, both `packed` and `unpacked` are supported",
+        title="sync_type",
     )
     topics: Optional[List[str]] = Field(
         None,
-        description='The comma-separated list of topics which should be synced. Required if you do not have manage permissions',
-        title='topics',
+        description="The comma-separated list of topics which should be synced. Required if you do not have manage permissions",
+        title="topics",
     )
     message_type: Optional[Dict[str, Any]] = Field(
-        None, description='The format of messages in the topic', title='message_type'
+        None, description="The format of messages in the topic", title="message_type"
     )
     connection_string: Optional[str] = Field(
         None,
-        description='The connection string used for authentication. Required if the authentication type is `ConnectionString` ',
-        title='connection_string',
+        description="The connection string used for authentication. Required if the authentication type is `ConnectionString` ",
+        title="connection_string",
     )
     connection_method: Optional[Dict[str, Any]] = Field(
-        None, description='The connection method', title='connection_method'
+        None, description="The connection method", title="connection_method"
     )
     namespace: Optional[str] = Field(
         None,
-        description='The ASB namespace which we have to sync. Required for `AzureActiveDirectory` authentication.',
-        title='namespace',
+        description="The ASB namespace which we have to sync. Required for `AzureActiveDirectory` authentication.",
+        title="namespace",
     )
     host_i_p: Optional[str] = Field(
         None,
-        description='The IP address of the host machine which we use to connect to ASB via ssh',
-        title='host_ip',
+        description="The IP address of the host machine which we use to connect to ASB via ssh",
+        title="host_ip",
     )
     schema_registry_secret: Optional[str] = Field(
         None,
-        description='The secret used to access the schema registry. Required for the `avro` and `protobuf` message types',
-        title='schema_registry_secret',
+        description="The secret used to access the schema registry. Required for the `avro` and `protobuf` message types",
+        title="schema_registry_secret",
     )
     subscriber_name: Optional[str] = Field(
         None,
-        description='The subscriber name. If the connection string does not have manage permission, you need to specify a subscriber name we can use to fetch data. If not specified, we default to `fivetran_sub_<schema>`',
-        title='subscriber_name',
+        description="The subscriber name. If the connection string does not have manage permission, you need to specify a subscriber name we can use to fetch data. If not specified, we default to `fivetran_sub_<schema>`",
+        title="subscriber_name",
     )
     host_user: Optional[str] = Field(
         None,
-        description='The username on the host machine which we use to connect to ASB via ssh',
-        title='host_user',
+        description="The username on the host machine which we use to connect to ASB via ssh",
+        title="host_user",
     )
     schema_registry_key: Optional[str] = Field(
         None,
-        description='The key used to access the schema registry. Required for the `avro` and `protobuf` message types',
-        title='schema_registry_key',
+        description="The key used to access the schema registry. Required for the `avro` and `protobuf` message types",
+        title="schema_registry_key",
     )
     schema_registry_urls: Optional[List[str]] = Field(
         None,
-        description='The comma-separated list of schema registry servers in the `server:port` format',
-        title='schema_registry_urls',
+        description="The comma-separated list of schema registry servers in the `server:port` format",
+        title="schema_registry_urls",
     )
 
 
 class ClientAccess3(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth5(BaseModel):
     access_token: Optional[str] = Field(
         None,
-        description='The long-lived Access token carries the information necessary to access API resources',
+        description="The long-lived Access token carries the information necessary to access API resources",
     )
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
     client_access: Optional[ClientAccess3] = None
-    realm_id: Optional[str] = Field(None, description='Realm ID of your application.')
+    realm_id: Optional[str] = Field(None, description="Realm ID of your application.")
 
 
 class AzureServiceBusConfigV1(BaseModel):
-    config: Optional[Config46] = Field(None, description='')
+    config: Optional[Config46] = Field(None, description="")
     auth: Optional[Auth5] = None
 
 
@@ -3362,62 +3362,62 @@ class AzureServiceBusNewConnectorRequestV1(
 
 
 class Config47(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
-    agent_user: Optional[str] = Field(None, description='', title='')
-    connection_type: Optional[Dict[str, Any]] = Field(None, description='', title='')
-    agent_password: Optional[str] = Field(None, description='', title='')
-    always_encrypted: Optional[bool] = Field(None, title='')
-    agent_public_cert: Optional[str] = Field(None, description='', title='')
+    public_key: Optional[str] = Field(None, description="", title="")
+    agent_user: Optional[str] = Field(None, description="", title="")
+    connection_type: Optional[Dict[str, Any]] = Field(None, description="", title="")
+    agent_password: Optional[str] = Field(None, description="", title="")
+    always_encrypted: Optional[bool] = Field(None, title="")
+    agent_public_cert: Optional[str] = Field(None, description="", title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH user, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='The database name.', title='')
-    password: Optional[str] = Field(None, description="The user's password.", title='')
+    database: Optional[str] = Field(None, description="The database name.", title="")
+    password: Optional[str] = Field(None, description="The user's password.", title="")
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH port, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH port, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    port: Optional[int] = Field(None, description='The port number.', title='')
+    port: Optional[int] = Field(None, description="The port number.", title="")
     host: Optional[str] = Field(
-        None, description='DB instance host or IP address.', title=''
+        None, description="DB instance host or IP address.", title=""
     )
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).',
-        title='',
+        description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+        title="",
     )
-    agent_port: Optional[int] = Field(None, description='', title='')
+    agent_port: Optional[int] = Field(None, description="", title="")
     schema_prefix: Optional[str] = Field(
         None,
         description="Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-        title='Destination schema prefix',
+        title="Destination schema prefix",
     )
-    agent_host: Optional[str] = Field(None, description='', title='')
-    sap_user: Optional[str] = Field(None, description='', title='')
+    agent_host: Optional[str] = Field(None, description="", title="")
+    sap_user: Optional[str] = Field(None, description="", title="")
     user: Optional[str] = Field(
         None,
-        description='The user name.  For Azure Databases, the format must be `user@domain`.',
-        title='',
+        description="The user name.  For Azure Databases, the format must be `user@domain`.",
+        title="",
     )
 
 
 class Auth6(BaseModel):
     access_token: Optional[str] = Field(
         None,
-        description='The long-lived Access token carries the information necessary to access API resources',
+        description="The long-lived Access token carries the information necessary to access API resources",
     )
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
-    realm_id: Optional[str] = Field(None, description='Realm ID of your application.')
+    realm_id: Optional[str] = Field(None, description="Realm ID of your application.")
 
 
 class AzureSqlDbConfigV1(BaseModel):
-    config: Optional[Config47] = Field(None, description='')
+    config: Optional[Config47] = Field(None, description="")
     auth: Optional[Auth6] = None
 
 
@@ -3426,44 +3426,44 @@ class AzureSqlDbNewConnectorRequestV1(NewConnectorRequestV1, AzureSqlDbConfigV1)
 
 
 class Config48(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
-    agent_user: Optional[str] = Field(None, description='', title='')
-    connection_type: Optional[Dict[str, Any]] = Field(None, description='', title='')
-    agent_password: Optional[str] = Field(None, description='', title='')
-    always_encrypted: Optional[bool] = Field(None, description='', title='')
-    agent_public_cert: Optional[str] = Field(None, description='', title='')
-    tunnel_user: Optional[str] = Field(None, description='', title='')
-    database: Optional[str] = Field(None, description='', title='')
-    password: Optional[str] = Field(None, description='', title='')
-    tunnel_port: Optional[int] = Field(None, description='', title='')
-    port: Optional[int] = Field(None, description='', title='')
-    host: Optional[str] = Field(None, description='', title='')
-    tunnel_host: Optional[str] = Field(None, description='', title='')
-    agent_port: Optional[int] = Field(None, description='', title='')
+    public_key: Optional[str] = Field(None, description="", title="")
+    agent_user: Optional[str] = Field(None, description="", title="")
+    connection_type: Optional[Dict[str, Any]] = Field(None, description="", title="")
+    agent_password: Optional[str] = Field(None, description="", title="")
+    always_encrypted: Optional[bool] = Field(None, description="", title="")
+    agent_public_cert: Optional[str] = Field(None, description="", title="")
+    tunnel_user: Optional[str] = Field(None, description="", title="")
+    database: Optional[str] = Field(None, description="", title="")
+    password: Optional[str] = Field(None, description="", title="")
+    tunnel_port: Optional[int] = Field(None, description="", title="")
+    port: Optional[int] = Field(None, description="", title="")
+    host: Optional[str] = Field(None, description="", title="")
+    tunnel_host: Optional[str] = Field(None, description="", title="")
+    agent_port: Optional[int] = Field(None, description="", title="")
     schema_prefix: Optional[str] = Field(
         None,
         description="Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-        title='Destination schema prefix',
+        title="Destination schema prefix",
     )
-    agent_host: Optional[str] = Field(None, description='', title='')
-    sap_user: Optional[str] = Field(None, description='', title='')
-    user: Optional[str] = Field(None, description='', title='')
+    agent_host: Optional[str] = Field(None, description="", title="")
+    sap_user: Optional[str] = Field(None, description="", title="")
+    user: Optional[str] = Field(None, description="", title="")
 
 
 class Auth7(BaseModel):
     access_token: Optional[str] = Field(
         None,
-        description='The long-lived Access token carries the information necessary to access API resources',
+        description="The long-lived Access token carries the information necessary to access API resources",
     )
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
-    realm_id: Optional[str] = Field(None, description='Realm ID of your application.')
+    realm_id: Optional[str] = Field(None, description="Realm ID of your application.")
 
 
 class AzureSqlManagedDbConfigV1(BaseModel):
-    config: Optional[Config48] = Field(None, description='')
+    config: Optional[Config48] = Field(None, description="")
     auth: Optional[Auth7] = None
 
 
@@ -3476,51 +3476,51 @@ class AzureSqlManagedDbNewConnectorRequestV1(
 class Config49(BaseModel):
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
-        description='Whether to sync all accounts or specific accounts. Default value: `AllAccounts`.',
-        title='',
+        description="Whether to sync all accounts or specific accounts. Default value: `AllAccounts`.",
+        title="",
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     rollback_window_size: Optional[int] = Field(
         None,
-        description='A period of time in days during which a conversion is recorded.',
-        title='',
+        description="A period of time in days during which a conversion is recorded.",
+        title="",
     )
     timeframe_months: Optional[Dict[str, Any]] = Field(
         None,
         description="Number of months of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `SIX`.",
-        title='',
+        title="",
     )
     accounts: Optional[List[str]] = Field(
         None,
-        description='Specific accounts to sync. Must be populated if `syncMode` is set to `SpecificAccounts`.',
-        title='',
+        description="Specific accounts to sync. Must be populated if `syncMode` is set to `SpecificAccounts`.",
+        title="",
     )
 
 
 class ClientAccess4(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth8(BaseModel):
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
     client_access: Optional[ClientAccess4] = None
 
 
 class BingadsConfigV1(BaseModel):
-    config: Optional[Config49] = Field(None, description='')
+    config: Optional[Config49] = Field(None, description="")
     auth: Optional[Auth8] = None
 
 
@@ -3531,98 +3531,98 @@ class BingadsNewConnectorRequestV1(NewConnectorRequestV1, BingadsConfigV1):
 class Config50(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     append_file_option: Optional[Dict[str, Any]] = Field(
         None,
-        description='If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.',
-        title='',
+        description="If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.",
+        title="",
     )
     prefix: Optional[str] = Field(
         None,
-        description='All files and folders under this folder path will be searched for files to sync.',
-        title='',
+        description="All files and folders under this folder path will be searched for files to sync.",
+        title="",
     )
     pattern: Optional[str] = Field(
         None,
-        description='All files in your search path matching this regular expression will be synced.',
-        title='',
+        description="All files in your search path matching this regular expression will be synced.",
+        title="",
     )
     escape_char: Optional[str] = Field(
         None,
-        description='If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.',
-        title='',
+        description="If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.",
+        title="",
     )
     skip_after: Optional[int] = Field(
         None,
-        description='We will skip over the number of lines specified at the end so as to not introduce aberrant data into your destination.',
-        title='',
+        description="We will skip over the number of lines specified at the end so as to not introduce aberrant data into your destination.",
+        title="",
     )
     skip_before: Optional[int] = Field(
         None,
-        description='We will skip over the number of lines specified before syncing data.',
-        title='',
+        description="We will skip over the number of lines specified before syncing data.",
+        title="",
     )
-    empty_header: Optional[bool] = Field(None, description='', title='')
+    empty_header: Optional[bool] = Field(None, description="", title="")
     null_sequence: Optional[str] = Field(
         None,
-        description='If your CSVs use a special value indicating null, you can specify it here.',
-        title='',
+        description="If your CSVs use a special value indicating null, you can specify it here.",
+        title="",
     )
-    folder_i_d: Optional[str] = Field(None, title='')
+    folder_i_d: Optional[str] = Field(None, title="")
     is_single_table_mode: Optional[bool] = Field(
         None,
-        description='Allows the creation of connector using Merge Mode strategy.',
-        title='',
+        description="Allows the creation of connector using Merge Mode strategy.",
+        title="",
     )
     delimiter: Optional[str] = Field(
         None,
-        description='You can specify the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.',
-        title='',
+        description="You can specify the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.",
+        title="",
     )
     file_type: Optional[Dict[str, Any]] = Field(
         None,
-        description='If your files are saved with improper extensions, you can force them to be synced as the selected filetype.',
-        title='',
+        description="If your files are saved with improper extensions, you can force them to be synced as the selected filetype.",
+        title="",
     )
     on_error: Optional[Dict[str, Any]] = Field(
         None,
-        description='If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as fail unless you are certain that you have undesirable, malformed data.',
-        title='',
+        description="If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as fail unless you are certain that you have undesirable, malformed data.",
+        title="",
     )
     compression: Optional[Dict[str, Any]] = Field(
         None,
-        description='The compression format is used to let Fivetran know that even files without a compression extension should be decompressed using the selected compression format.',
-        title='',
+        description="The compression format is used to let Fivetran know that even files without a compression extension should be decompressed using the selected compression format.",
+        title="",
     )
     archive_pattern: Optional[str] = Field(
         None,
-        description='Files inside of compressed archives with filenames matching this regular expression will be synced.',
-        title='',
+        description="Files inside of compressed archives with filenames matching this regular expression will be synced.",
+        title="",
     )
     table: Optional[str] = Field(
         None,
-        description='Destination table. Table is permanent and cannot be changed after connection creation',
-        title='Destination table',
+        description="Destination table. Table is permanent and cannot be changed after connection creation",
+        title="Destination table",
     )
 
 
 class Auth9(BaseModel):
     access_token: Optional[str] = Field(
         None,
-        description='The long-lived Access token carries the information necessary to access API resources',
+        description="The long-lived Access token carries the information necessary to access API resources",
     )
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
-    realm_id: Optional[str] = Field(None, description='Realm ID of your application.')
+    realm_id: Optional[str] = Field(None, description="Realm ID of your application.")
 
 
 class BoxConfigV1(BaseModel):
-    config: Optional[Config50] = Field(None, description='')
+    config: Optional[Config50] = Field(None, description="")
     auth: Optional[Auth9] = None
 
 
@@ -3632,24 +3632,24 @@ class BoxNewConnectorRequestV1(NewConnectorRequestV1, BoxConfigV1):
 
 class Config51(BaseModel):
     public_key: Optional[str] = Field(
-        None, description='The contents of your PEM certificate file.', title=''
+        None, description="The contents of your PEM certificate file.", title=""
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     private_key: Optional[str] = Field(
-        None, description='The contents of your secret key file.', title=''
+        None, description="The contents of your secret key file.", title=""
     )
     merchant_id: Optional[str] = Field(
-        None, description='Your Braintree merchant ID.', title=''
+        None, description="Your Braintree merchant ID.", title=""
     )
 
 
 class BraintreeConfigV1(BaseModel):
-    config: Optional[Config51] = Field(None, description='')
+    config: Optional[Config51] = Field(None, description="")
 
 
 class BraintreeNewConnectorRequestV1(NewConnectorRequestV1, BraintreeConfigV1):
@@ -3658,24 +3658,24 @@ class BraintreeNewConnectorRequestV1(NewConnectorRequestV1, BraintreeConfigV1):
 
 class Config52(BaseModel):
     public_key: Optional[str] = Field(
-        None, description='The contents of your PEM certificate file.', title=''
+        None, description="The contents of your PEM certificate file.", title=""
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     private_key: Optional[str] = Field(
-        None, description='The contents of your secret key file.', title=''
+        None, description="The contents of your secret key file.", title=""
     )
     merchant_id: Optional[str] = Field(
-        None, description='Your Braintree merchant ID.', title=''
+        None, description="Your Braintree merchant ID.", title=""
     )
 
 
 class BraintreeSandboxConfigV1(BaseModel):
-    config: Optional[Config52] = Field(None, description='')
+    config: Optional[Config52] = Field(None, description="")
 
 
 class BraintreeSandboxNewConnectorRequestV1(
@@ -3687,14 +3687,14 @@ class BraintreeSandboxNewConnectorRequestV1(
 class Config53(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
 
 
 class BranchConfigV1(BaseModel):
-    config: Optional[Config53] = Field(None, description='')
+    config: Optional[Config53] = Field(None, description="")
 
 
 class BranchNewConnectorRequestV1(NewConnectorRequestV1, BranchConfigV1):
@@ -3704,57 +3704,57 @@ class BranchNewConnectorRequestV1(NewConnectorRequestV1, BranchConfigV1):
 class Config54(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     gcs_folder: Optional[str] = Field(
         None,
-        description='Your GCS folder name. Required if `GCS` is the `cloud_storage_type`',
-        title='',
+        description="Your GCS folder name. Required if `GCS` is the `cloud_storage_type`",
+        title="",
     )
-    s3_export_bucket: Optional[str] = Field(None, title='')
-    api_url: Optional[str] = Field(None, description='Your Braze API URL.', title='')
+    s3_export_bucket: Optional[str] = Field(None, title="")
+    api_url: Optional[str] = Field(None, description="Your Braze API URL.", title="")
     gcs_bucket: Optional[str] = Field(
         None,
-        description='Your GCS bucket. Required if `GCS` is the `cloud_storage_type`',
-        title='',
+        description="Your GCS bucket. Required if `GCS` is the `cloud_storage_type`",
+        title="",
     )
-    s3_export_role_arn: Optional[str] = Field(None, title='')
-    abs_container_name: Optional[str] = Field(None, title='')
+    s3_export_role_arn: Optional[str] = Field(None, title="")
+    abs_container_name: Optional[str] = Field(None, title="")
     s3external_id: Optional[str] = Field(
         None,
-        description='This is the same as your `group_id`, used for authentication along with the `role_arn` required if `AWS_S3` is the `cloud_storage_type`',
-        title='',
+        description="This is the same as your `group_id`, used for authentication along with the `role_arn` required if `AWS_S3` is the `cloud_storage_type`",
+        title="",
     )
-    s3_export_folder: Optional[str] = Field(None, title='')
+    s3_export_folder: Optional[str] = Field(None, title="")
     s3folder: Optional[str] = Field(
         None,
-        description='Your S3 folder name required if `AWS_S3` is the `cloud_storage_type`',
-        title='',
+        description="Your S3 folder name required if `AWS_S3` is the `cloud_storage_type`",
+        title="",
     )
-    abs_prefix: Optional[str] = Field(None, title='')
-    enable_exports: Optional[bool] = Field(None, title='')
+    abs_prefix: Optional[str] = Field(None, title="")
+    enable_exports: Optional[bool] = Field(None, title="")
     cloud_storage_type: Optional[Dict[str, Any]] = Field(
-        None, description='Cloud storage type Braze Current is connected to.', title=''
+        None, description="Cloud storage type Braze Current is connected to.", title=""
     )
-    export_storage_type: Optional[Dict[str, Any]] = Field(None, title='')
+    export_storage_type: Optional[Dict[str, Any]] = Field(None, title="")
     s3role_arn: Optional[str] = Field(
         None,
-        description='The Role ARN required for authentication required if `AWS_S3` is the `cloud_storage_type`',
-        title='',
+        description="The Role ARN required for authentication required if `AWS_S3` is the `cloud_storage_type`",
+        title="",
     )
-    abs_connection_string: Optional[str] = Field(None, title='')
+    abs_connection_string: Optional[str] = Field(None, title="")
     s3bucket: Optional[str] = Field(
         None,
-        description='Your S3 bucket required if `AWS_S3` is the `cloud_storage_type`',
-        title='',
+        description="Your S3 bucket required if `AWS_S3` is the `cloud_storage_type`",
+        title="",
     )
-    api_key: Optional[str] = Field(None, description='Your Braze API Key.', title='')
+    api_key: Optional[str] = Field(None, description="Your Braze API Key.", title="")
 
 
 class BrazeConfigV1(BaseModel):
-    config: Optional[Config54] = Field(None, description='')
+    config: Optional[Config54] = Field(None, description="")
 
 
 class BrazeNewConnectorRequestV1(NewConnectorRequestV1, BrazeConfigV1):
@@ -3763,31 +3763,31 @@ class BrazeNewConnectorRequestV1(NewConnectorRequestV1, BrazeConfigV1):
 
 class Config55(BaseModel):
     bucket: Optional[str] = Field(
-        None, description='The bucket name for CloudFront.', title=''
+        None, description="The bucket name for CloudFront.", title=""
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    skip_before: Optional[int] = Field(None, description='', title='')
+    skip_before: Optional[int] = Field(None, description="", title="")
     role_arn: Optional[str] = Field(
-        None, description='The Role ARN required for authentication.', title=''
+        None, description="The Role ARN required for authentication.", title=""
     )
     prefix: Optional[str] = Field(
-        None, description='The name of the CloudFront folder in the bucket.', title=''
+        None, description="The name of the CloudFront folder in the bucket.", title=""
     )
     external_id: Optional[str] = Field(
         None,
-        description='This is the same as your `group_id`, used for authentication along with the `role_arn`.',
-        title='',
+        description="This is the same as your `group_id`, used for authentication along with the `role_arn`.",
+        title="",
     )
-    skip_after: Optional[int] = Field(None, description='', title='')
+    skip_after: Optional[int] = Field(None, description="", title="")
 
 
 class CloudfrontConfigV1(BaseModel):
-    config: Optional[Config55] = Field(None, description='')
+    config: Optional[Config55] = Field(None, description="")
 
 
 class CloudfrontNewConnectorRequestV1(NewConnectorRequestV1, CloudfrontConfigV1):
@@ -3797,19 +3797,19 @@ class CloudfrontNewConnectorRequestV1(NewConnectorRequestV1, CloudfrontConfigV1)
 class Config56(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    login_password: Optional[str] = Field(None, description='', title='')
-    client_secret: Optional[str] = Field(None, description='', title='')
-    region: Optional[str] = Field(None, description='', title='')
-    client_id: Optional[str] = Field(None, description='', title='')
-    username: Optional[str] = Field(None, description='', title='')
+    login_password: Optional[str] = Field(None, description="", title="")
+    client_secret: Optional[str] = Field(None, description="", title="")
+    region: Optional[str] = Field(None, description="", title="")
+    client_id: Optional[str] = Field(None, description="", title="")
+    username: Optional[str] = Field(None, description="", title="")
 
 
 class ConcurConfigV1(BaseModel):
-    config: Optional[Config56] = Field(None, description='')
+    config: Optional[Config56] = Field(None, description="")
 
 
 class ConcurNewConnectorRequestV1(NewConnectorRequestV1, ConcurConfigV1):
@@ -3819,39 +3819,39 @@ class ConcurNewConnectorRequestV1(NewConnectorRequestV1, ConcurConfigV1):
 class Config57(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     consumer_group: Optional[str] = Field(
-        None, description='Confluent Cloud consumer group name.', title=''
+        None, description="Confluent Cloud consumer group name.", title=""
     )
     servers: Optional[List[str]] = Field(
         None,
-        description='Comma-separated list of Confluent Cloud servers in the format `server:port`.',
-        title='',
+        description="Comma-separated list of Confluent Cloud servers in the format `server:port`.",
+        title="",
     )
     sync_type: Optional[Dict[str, Any]] = Field(
         None,
-        description='Kafka sync type.  Unpacked messages must be valid JSON.',
-        title='',
+        description="Kafka sync type.  Unpacked messages must be valid JSON.",
+        title="",
     )
-    api_key: Optional[str] = Field(None, title='')
-    schema_registry_credentials_source: Optional[str] = Field(None, title='')
+    api_key: Optional[str] = Field(None, title="")
+    schema_registry_credentials_source: Optional[str] = Field(None, title="")
     security_protocol: Optional[Dict[str, Any]] = Field(
-        None, description='Security protocol for Confluent Cloud interaction.', title=''
+        None, description="Security protocol for Confluent Cloud interaction.", title=""
     )
-    schema_registry_secret: Optional[str] = Field(None, title='')
+    schema_registry_secret: Optional[str] = Field(None, title="")
     message_type: Optional[Dict[str, Any]] = Field(
-        None, description='Confluent Cloud message type.', title=''
+        None, description="Confluent Cloud message type.", title=""
     )
-    api_secret: Optional[str] = Field(None, title='')
-    schema_registry_urls: Optional[List[str]] = Field(None, title='')
-    schema_registry_key: Optional[str] = Field(None, title='')
+    api_secret: Optional[str] = Field(None, title="")
+    schema_registry_urls: Optional[List[str]] = Field(None, title="")
+    schema_registry_key: Optional[str] = Field(None, title="")
 
 
 class ConfluentCloudConfigV1(BaseModel):
-    config: Optional[Config57] = Field(None, description='')
+    config: Optional[Config57] = Field(None, description="")
 
 
 class ConfluentCloudNewConnectorRequestV1(
@@ -3863,24 +3863,24 @@ class ConfluentCloudNewConnectorRequestV1(
 class Config58(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     instance: Optional[str] = Field(
         None,
-        description='The instance name of your Coupa account in the URL.',
-        title='',
+        description="The instance name of your Coupa account in the URL.",
+        title="",
     )
-    api_key: Optional[str] = Field(None, description='Your Coupa API key.', title='')
+    api_key: Optional[str] = Field(None, description="Your Coupa API key.", title="")
     client_secret: Optional[str] = Field(
-        None, description='Your Coupa client_id', title=''
+        None, description="Your Coupa client_id", title=""
     )
-    client_id: Optional[str] = Field(None, description='Your Coupa client_id', title='')
+    client_id: Optional[str] = Field(None, description="Your Coupa client_id", title="")
 
 
 class CoupaConfigV1(BaseModel):
-    config: Optional[Config58] = Field(None, description='')
+    config: Optional[Config58] = Field(None, description="")
 
 
 class CoupaNewConnectorRequestV1(NewConnectorRequestV1, CoupaConfigV1):
@@ -3890,30 +3890,30 @@ class CoupaNewConnectorRequestV1(NewConnectorRequestV1, CoupaConfigV1):
 class Config59(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     report_timezone: Optional[str] = Field(
-        None, description='Report Timezone', title=''
+        None, description="Report Timezone", title=""
     )
     timeframe_months: Optional[Dict[str, Any]] = Field(
         None,
         description="The number of months of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created.  <br> <strong>NOTE:</strong> The greater number of months means the initial sync will take more time.",
-        title='',
+        title="",
     )
-    currency: Optional[Dict[str, Any]] = Field(None, description='Currency', title='')
+    currency: Optional[Dict[str, Any]] = Field(None, description="Currency", title="")
     client_secret: Optional[str] = Field(
-        None, description='Your Criteo client secret key.', title=''
+        None, description="Your Criteo client secret key.", title=""
     )
-    metrics: Optional[List[str]] = Field(None, description='Metrics', title='')
+    metrics: Optional[List[str]] = Field(None, description="Metrics", title="")
     client_id: Optional[str] = Field(
-        None, description='Your Criteo Client ID.', title=''
+        None, description="Your Criteo Client ID.", title=""
     )
 
 
 class CriteoConfigV1(BaseModel):
-    config: Optional[Config59] = Field(None, description='')
+    config: Optional[Config59] = Field(None, description="")
 
 
 class CriteoNewConnectorRequestV1(NewConnectorRequestV1, CriteoConfigV1):
@@ -3923,14 +3923,14 @@ class CriteoNewConnectorRequestV1(NewConnectorRequestV1, CriteoConfigV1):
 class Config60(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
 
 
 class DelightedConfigV1(BaseModel):
-    config: Optional[Config60] = Field(None, description='')
+    config: Optional[Config60] = Field(None, description="")
 
 
 class DelightedNewConnectorRequestV1(NewConnectorRequestV1, DelightedConfigV1):
@@ -3938,47 +3938,47 @@ class DelightedNewConnectorRequestV1(NewConnectorRequestV1, DelightedConfigV1):
 
 
 class Config61(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
+    public_key: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
         description="Possible values:`SshTunnel`, `PrivateLink` . `SshTunnel` is used as a value if this parameter is omitted in the request and the following parameter's values are specified: `tunnel_host`, `tunnel_port`, `tunnel_user`.",
-        title='',
+        title="",
     )
-    hosts: Optional[List[str]] = Field(None, description='', title='')
-    always_encrypted: Optional[bool] = Field(None, description='', title='')
+    hosts: Optional[List[str]] = Field(None, description="", title="")
+    always_encrypted: Optional[bool] = Field(None, description="", title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user, specify only to connect via an SSH tunnel. Required for connector creation.',
-        title='',
+        description="SSH user, specify only to connect via an SSH tunnel. Required for connector creation.",
+        title="",
     )
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH port, only specify when connecting via an SSH tunnel. Required for connector creation.',
-        title='',
+        description="SSH port, only specify when connecting via an SSH tunnel. Required for connector creation.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='', title='')
-    password: Optional[str] = Field(None, description="The user's password.", title='')
-    port: Optional[int] = Field(None, description='', title='')
+    database: Optional[str] = Field(None, description="", title="")
+    password: Optional[str] = Field(None, description="The user's password.", title="")
+    port: Optional[int] = Field(None, description="", title="")
     host: Optional[str] = Field(
         None,
-        description='A host address of the primary node. It should be a DB instance host/IP address with a port number.',
-        title='',
+        description="A host address of the primary node. It should be a DB instance host/IP address with a port number.",
+        title="",
     )
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH host, only specify when connecting via an SSH tunnel (do not use a load balancer). Required for connector creation.',
-        title='',
+        description="SSH host, only specify when connecting via an SSH tunnel (do not use a load balancer). Required for connector creation.",
+        title="",
     )
     schema_prefix: Optional[str] = Field(
         None,
         description="Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-        title='Destination schema prefix',
+        title="Destination schema prefix",
     )
-    user: Optional[str] = Field(None, description='The user name.', title='')
+    user: Optional[str] = Field(None, description="The user name.", title="")
 
 
 class DocumentdbConfigV1(BaseModel):
-    config: Optional[Config61] = Field(None, description='')
+    config: Optional[Config61] = Field(None, description="")
 
 
 class DocumentdbNewConnectorRequestV1(NewConnectorRequestV1, DocumentdbConfigV1):
@@ -3986,85 +3986,85 @@ class DocumentdbNewConnectorRequestV1(NewConnectorRequestV1, DocumentdbConfigV1)
 
 
 class DimensionFilter(BaseModel):
-    filter_expression: Optional[str] = Field(None, description='', title='')
-    match_type: Optional[Dict[str, Any]] = Field(None, description='', title='')
-    dimension: Optional[str] = Field(None, description='', title='')
+    filter_expression: Optional[str] = Field(None, description="", title="")
+    match_type: Optional[Dict[str, Any]] = Field(None, description="", title="")
+    dimension: Optional[str] = Field(None, description="", title="")
 
 
 class Config62(BaseModel):
     dimension_filters: Optional[List[DimensionFilter]] = Field(
-        None, description='', title=''
+        None, description="", title=""
     )
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
-        description='Whether to sync all user profiles or specific ones. Default value: `AllAccounts`.',
-        title='',
+        description="Whether to sync all user profiles or specific ones. Default value: `AllAccounts`.",
+        title="",
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     report_configuration_ids: Optional[List[str]] = Field(
         None,
-        description='You can select only one Floodlight Configuration ID per account.',
-        title='',
+        description="You can select only one Floodlight Configuration ID per account.",
+        title="",
     )
     enable_all_dimension_combinations: Optional[bool] = Field(
         None,
-        description='Whether to enable all reach dimension combinations in the report. Default value: `false`',
-        title='',
+        description="Whether to enable all reach dimension combinations in the report. Default value: `false`",
+        title="",
     )
     timeframe_months: Optional[Dict[str, Any]] = Field(
         None,
         description="Number of months of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `TWELVE`.",
-        title='',
+        title="",
     )
     user_profiles: Optional[List[str]] = Field(
         None,
-        description='IDs of specific User Profiles to sync. Must be populated if `sync_mode` is set to `SpecificAccounts`.',
-        title='',
+        description="IDs of specific User Profiles to sync. Must be populated if `sync_mode` is set to `SpecificAccounts`.",
+        title="",
     )
     report_type: Optional[Dict[str, Any]] = Field(
         None,
-        description='Type of reporting data to sync. Default value: `STANDARD`.',
-        title='',
+        description="Type of reporting data to sync. Default value: `STANDARD`.",
+        title="",
     )
     metrics: Optional[List[str]] = Field(
-        None, description='Report metrics to include into a sync.', title=''
+        None, description="Report metrics to include into a sync.", title=""
     )
     table: Optional[str] = Field(
         None,
-        description='Destination table. Table is permanent and cannot be changed after connection creation',
-        title='Destination table',
+        description="Destination table. Table is permanent and cannot be changed after connection creation",
+        title="Destination table",
     )
     dimensions: Optional[List[str]] = Field(
         None,
-        description='Report dimensions to include into a sync. The `date` dimension is mandatory for all the report types. The `advertiser` dimension is mandatory for `REACH` report type',
-        title='',
+        description="Report dimensions to include into a sync. The `date` dimension is mandatory for all the report types. The `advertiser` dimension is mandatory for `REACH` report type",
+        title="",
     )
 
 
 class ClientAccess5(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth10(BaseModel):
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
     client_access: Optional[ClientAccess5] = None
 
 
 class DoubleClickCampaignManagerConfigV1(BaseModel):
-    config: Optional[Config62] = Field(None, description='')
+    config: Optional[Config62] = Field(None, description="")
     auth: Optional[Auth10] = None
 
 
@@ -4077,59 +4077,59 @@ class DoubleClickCampaignManagerNewConnectorRequestV1(
 class Config63(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     network_code: Optional[int] = Field(
         None,
-        description='Network code is a unique, numeric identifier for your Ad Manager network.',
-        title='',
+        description="Network code is a unique, numeric identifier for your Ad Manager network.",
+        title="",
     )
     dimension_attributes: Optional[List[str]] = Field(
         None,
-        description='Dimension attributes provide additional fields associated with a Dimension. Dimension attributes can only be selected with their corresponding Dimensions.',
-        title='',
+        description="Dimension attributes provide additional fields associated with a Dimension. Dimension attributes can only be selected with their corresponding Dimensions.",
+        title="",
     )
     ad_unit_view: Optional[Dict[str, Any]] = Field(
-        None, description='Ad unit view for the report.', title=''
+        None, description="Ad unit view for the report.", title=""
     )
     columns: Optional[List[str]] = Field(
         None,
-        description='Columns provide all trafficking statistics and revenue information available for the chosen Dimensions.',
-        title='',
+        description="Columns provide all trafficking statistics and revenue information available for the chosen Dimensions.",
+        title="",
     )
     table: Optional[str] = Field(
         None,
-        description='Destination table. Table is permanent and cannot be changed after connection creation',
-        title='Destination table',
+        description="Destination table. Table is permanent and cannot be changed after connection creation",
+        title="Destination table",
     )
     dimensions: Optional[List[str]] = Field(
         None,
-        description='Report dimensions to include in the sync. The `date` dimension is mandatory for all the report types.',
-        title='',
+        description="Report dimensions to include in the sync. The `date` dimension is mandatory for all the report types.",
+        title="",
     )
 
 
 class ClientAccess6(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth11(BaseModel):
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
     client_access: Optional[ClientAccess6] = None
 
 
 class DoubleClickPublishersConfigV1(BaseModel):
-    config: Optional[Config63] = Field(None, description='')
+    config: Optional[Config63] = Field(None, description="")
     auth: Optional[Auth11] = None
 
 
@@ -4140,13 +4140,13 @@ class DoubleClickPublishersNewConnectorRequestV1(
 
 
 class Auth12(BaseModel):
-    client_secret: Optional[str] = Field(None, description='', title='')
-    client_id: Optional[str] = Field(None, description='', title='')
+    client_secret: Optional[str] = Field(None, description="", title="")
+    client_id: Optional[str] = Field(None, description="", title="")
 
 
 class DriftConfigV1(BaseModel):
-    config: Optional[Dict[str, Any]] = Field(None, description='')
-    auth: Optional[Auth12] = Field(None, description='')
+    config: Optional[Dict[str, Any]] = Field(None, description="")
+    auth: Optional[Auth12] = Field(None, description="")
 
 
 class DriftNewConnectorRequestV1(NewConnectorRequestV1, DriftConfigV1):
@@ -4156,111 +4156,111 @@ class DriftNewConnectorRequestV1(NewConnectorRequestV1, DriftConfigV1):
 class Config64(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    is_filein_root_name_space: Optional[bool] = Field(None, title='')
+    is_filein_root_name_space: Optional[bool] = Field(None, title="")
     append_file_option: Optional[Dict[str, Any]] = Field(
         None,
-        description='If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.',
-        title='',
+        description="If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.",
+        title="",
     )
     prefix: Optional[str] = Field(
         None,
-        description='All files and folders under this folder path will be searched for files to sync.',
-        title='',
+        description="All files and folders under this folder path will be searched for files to sync.",
+        title="",
     )
     pattern: Optional[str] = Field(
         None,
-        description='All files in your search path matching this regular expression will be synced.',
-        title='',
+        description="All files in your search path matching this regular expression will be synced.",
+        title="",
     )
     escape_char: Optional[str] = Field(
         None,
-        description='If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.',
-        title='',
+        description="If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.",
+        title="",
     )
     skip_after: Optional[int] = Field(
         None,
-        description='We will skip over the number of lines specified at the end so as to not introduce aberrant data into your destination.',
-        title='',
+        description="We will skip over the number of lines specified at the end so as to not introduce aberrant data into your destination.",
+        title="",
     )
     skip_before: Optional[int] = Field(
         None,
-        description='We will skip over the number of lines specified before syncing data.',
-        title='',
+        description="We will skip over the number of lines specified before syncing data.",
+        title="",
     )
-    empty_header: Optional[bool] = Field(None, description='', title='')
+    empty_header: Optional[bool] = Field(None, description="", title="")
     null_sequence: Optional[str] = Field(
         None,
-        description='If your CSVs use a special value indicating null, you can specify it here.',
-        title='',
+        description="If your CSVs use a special value indicating null, you can specify it here.",
+        title="",
     )
     folder: Optional[str] = Field(
-        None, description='Your Dropbox Folder URL.', title=''
+        None, description="Your Dropbox Folder URL.", title=""
     )
     is_single_table_mode: Optional[bool] = Field(
         None,
-        description='Allows the creation of connector using Merge Mode strategy.',
-        title='',
+        description="Allows the creation of connector using Merge Mode strategy.",
+        title="",
     )
     delimiter: Optional[str] = Field(
         None,
-        description='You can specify the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.',
-        title='',
+        description="You can specify the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.",
+        title="",
     )
     file_type: Optional[Dict[str, Any]] = Field(
         None,
-        description='If your files are saved with improper extensions, you can force them to be synced as the selected filetype.',
-        title='',
+        description="If your files are saved with improper extensions, you can force them to be synced as the selected filetype.",
+        title="",
     )
     on_error: Optional[Dict[str, Any]] = Field(
         None,
-        description='If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as fail unless you are certain that you have undesirable, malformed data.',
-        title='',
+        description="If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as fail unless you are certain that you have undesirable, malformed data.",
+        title="",
     )
     compression: Optional[Dict[str, Any]] = Field(
         None,
-        description='The compression format is used to let Fivetran know that even files without a compression extension should be decompressed using the selected compression format.',
-        title='',
+        description="The compression format is used to let Fivetran know that even files without a compression extension should be decompressed using the selected compression format.",
+        title="",
     )
     archive_pattern: Optional[str] = Field(
         None,
-        description='Files inside of compressed archives with filenames matching this regular expression will be synced.',
-        title='',
+        description="Files inside of compressed archives with filenames matching this regular expression will be synced.",
+        title="",
     )
     table: Optional[str] = Field(
         None,
-        description='Destination table. Table is permanent and cannot be changed after connection creation',
-        title='Destination table',
+        description="Destination table. Table is permanent and cannot be changed after connection creation",
+        title="Destination table",
     )
 
 
 class ClientAccess7(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth13(BaseModel):
     access_token: Optional[str] = Field(
         None,
-        description='The long-lived Access token carries the information necessary to access API resources',
+        description="The long-lived Access token carries the information necessary to access API resources",
     )
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
     client_access: Optional[ClientAccess7] = None
-    realm_id: Optional[str] = Field(None, description='Realm ID of your application.')
+    realm_id: Optional[str] = Field(None, description="Realm ID of your application.")
 
 
 class DropboxConfigV1(BaseModel):
-    config: Optional[Config64] = Field(None, description='')
+    config: Optional[Config64] = Field(None, description="")
     auth: Optional[Auth13] = None
 
 
@@ -4271,37 +4271,37 @@ class DropboxNewConnectorRequestV1(NewConnectorRequestV1, DropboxConfigV1):
 class Config65(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     domain_name: Optional[str] = Field(
         None,
-        description='The custom domain name associated with Dynamics 365.',
-        title='',
+        description="The custom domain name associated with Dynamics 365.",
+        title="",
     )
-    resource_u_r_l: Optional[str] = Field(None, title='')
+    resource_u_r_l: Optional[str] = Field(None, title="")
 
 
 class ClientAccess8(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth14(BaseModel):
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
     client_access: Optional[ClientAccess8] = None
 
 
 class Dynamics365ConfigV1(BaseModel):
-    config: Optional[Config65] = Field(None, description='')
+    config: Optional[Config65] = Field(None, description="")
     auth: Optional[Auth14] = None
 
 
@@ -4310,60 +4310,60 @@ class Dynamics365NewConnectorRequestV1(NewConnectorRequestV1, Dynamics365ConfigV
 
 
 class Config66(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
-    agent_user: Optional[str] = Field(None, description='', title='')
-    connection_type: Optional[Dict[str, Any]] = Field(None, description='', title='')
-    agent_password: Optional[str] = Field(None, description='', title='')
-    always_encrypted: Optional[bool] = Field(None, title='')
-    agent_public_cert: Optional[str] = Field(None, description='', title='')
+    public_key: Optional[str] = Field(None, description="", title="")
+    agent_user: Optional[str] = Field(None, description="", title="")
+    connection_type: Optional[Dict[str, Any]] = Field(None, description="", title="")
+    agent_password: Optional[str] = Field(None, description="", title="")
+    always_encrypted: Optional[bool] = Field(None, title="")
+    agent_public_cert: Optional[str] = Field(None, description="", title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH user, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='The database name.', title='')
-    password: Optional[str] = Field(None, description="The user's password.", title='')
+    database: Optional[str] = Field(None, description="The database name.", title="")
+    password: Optional[str] = Field(None, description="The user's password.", title="")
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH port, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH port, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    port: Optional[int] = Field(None, description='The port number.', title='')
+    port: Optional[int] = Field(None, description="The port number.", title="")
     host: Optional[str] = Field(
-        None, description='DB instance host or IP address.', title=''
+        None, description="DB instance host or IP address.", title=""
     )
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).',
-        title='',
+        description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+        title="",
     )
-    agent_port: Optional[int] = Field(None, description='', title='')
+    agent_port: Optional[int] = Field(None, description="", title="")
     schema_prefix: Optional[str] = Field(
         None,
         description="Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-        title='Destination schema prefix',
+        title="Destination schema prefix",
     )
-    agent_host: Optional[str] = Field(None, description='', title='')
-    sap_user: Optional[str] = Field(None, description='', title='')
+    agent_host: Optional[str] = Field(None, description="", title="")
+    sap_user: Optional[str] = Field(None, description="", title="")
     user: Optional[str] = Field(
-        None, description='The user name. The format must be `user@domain`.', title=''
+        None, description="The user name. The format must be `user@domain`.", title=""
     )
 
 
 class Auth15(BaseModel):
     access_token: Optional[str] = Field(
         None,
-        description='The long-lived Access token carries the information necessary to access API resources',
+        description="The long-lived Access token carries the information necessary to access API resources",
     )
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
-    realm_id: Optional[str] = Field(None, description='Realm ID of your application.')
+    realm_id: Optional[str] = Field(None, description="Realm ID of your application.")
 
 
 class Dynamics365FoConfigV1(BaseModel):
-    config: Optional[Config66] = Field(None, description='')
+    config: Optional[Config66] = Field(None, description="")
     auth: Optional[Auth15] = None
 
 
@@ -4374,33 +4374,33 @@ class Dynamics365FoNewConnectorRequestV1(NewConnectorRequestV1, Dynamics365FoCon
 class Config67(BaseModel):
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
-        description='Whether to sync all tables in unpacked mode only or specific tables in packed mode. Default value: `UseUnpackedModeOnly`.',
-        title='',
+        description="Whether to sync all tables in unpacked mode only or specific tables in packed mode. Default value: `UseUnpackedModeOnly`.",
+        title="",
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     packed_mode_tables: Optional[List[str]] = Field(
-        None, description='List of tables to be synced in packed mode.', title=''
+        None, description="List of tables to be synced in packed mode.", title=""
     )
     external_id: Optional[str] = Field(
         None,
-        description='This is the same as your `group_id`, used for authentication along with the `role_arn`.',
-        title='',
+        description="This is the same as your `group_id`, used for authentication along with the `role_arn`.",
+        title="",
     )
     aws_region_code: Optional[str] = Field(
         None,
-        description='The AWS region code for the DynamoDB instance, e.g. `us-east-1`.',
-        title='',
+        description="The AWS region code for the DynamoDB instance, e.g. `us-east-1`.",
+        title="",
     )
-    role_a_r_n: Optional[str] = Field(None, title='')
+    role_a_r_n: Optional[str] = Field(None, title="")
 
 
 class DynamodbConfigV1(BaseModel):
-    config: Optional[Config67] = Field(None, description='')
+    config: Optional[Config67] = Field(None, description="")
 
 
 class DynamodbNewConnectorRequestV1(NewConnectorRequestV1, DynamodbConfigV1):
@@ -4410,26 +4410,26 @@ class DynamodbNewConnectorRequestV1(NewConnectorRequestV1, DynamodbConfigV1):
 class Config68(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
 
 
 class Auth16(BaseModel):
     access_token: Optional[str] = Field(
         None,
-        description='The long-lived Access token carries the information necessary to access API resources',
+        description="The long-lived Access token carries the information necessary to access API resources",
     )
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
-    realm_id: Optional[str] = Field(None, description='Realm ID of your application.')
+    realm_id: Optional[str] = Field(None, description="Realm ID of your application.")
 
 
 class EloquaConfigV1(BaseModel):
-    config: Optional[Config68] = Field(None, description='')
+    config: Optional[Config68] = Field(None, description="")
     auth: Optional[Auth16] = None
 
 
@@ -4440,73 +4440,73 @@ class EloquaNewConnectorRequestV1(NewConnectorRequestV1, EloquaConfigV1):
 class Config69(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    append_file_option: Optional[Dict[str, Any]] = Field(None, title='')
+    append_file_option: Optional[Dict[str, Any]] = Field(None, title="")
     pattern: Optional[str] = Field(
         None,
-        description='All files in your search path matching this regular expression will be synced.',
-        title='',
+        description="All files in your search path matching this regular expression will be synced.",
+        title="",
     )
     escape_char: Optional[str] = Field(
         None,
-        description='If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.',
-        title='',
+        description="If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.",
+        title="",
     )
-    external_id: Optional[str] = Field(None, description='', title='')
+    external_id: Optional[str] = Field(None, description="", title="")
     skip_after: Optional[int] = Field(
         None,
-        description='We will skip over the number of lines specified at the end so as to not introduce aberrant data into your destination.',
-        title='',
+        description="We will skip over the number of lines specified at the end so as to not introduce aberrant data into your destination.",
+        title="",
     )
-    empty_header: Optional[bool] = Field(None, title='')
+    empty_header: Optional[bool] = Field(None, title="")
     skip_before: Optional[int] = Field(
         None,
-        description='We will skip over the number of lines specified before syncing data.',
-        title='',
+        description="We will skip over the number of lines specified before syncing data.",
+        title="",
     )
     null_sequence: Optional[str] = Field(
         None,
-        description='If your CSVs use a special value indicating null, you can specify it here.',
-        title='',
+        description="If your CSVs use a special value indicating null, you can specify it here.",
+        title="",
     )
     file_type: Optional[Dict[str, Any]] = Field(
         None,
-        description='If your files are saved with improper extensions, you can force them to by synced as the selected filetype.',
-        title='',
+        description="If your files are saved with improper extensions, you can force them to by synced as the selected filetype.",
+        title="",
     )
     delimiter: Optional[str] = Field(
         None,
-        description='You can specify your the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.',
-        title='',
+        description="You can specify your the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.",
+        title="",
     )
     on_error: Optional[Dict[str, Any]] = Field(
         None,
-        description='If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as fail unless you are certain that you have undesirable, malformed data.',
-        title='',
+        description="If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as fail unless you are certain that you have undesirable, malformed data.",
+        title="",
     )
     compression: Optional[Dict[str, Any]] = Field(
         None,
-        description='The secrets that should be passed to the function at runtime.',
-        title='',
+        description="The secrets that should be passed to the function at runtime.",
+        title="",
     )
     table: Optional[str] = Field(
         None,
-        description='Destination table. Table is permanent and cannot be changed after connection creation',
-        title='Destination table',
+        description="Destination table. Table is permanent and cannot be changed after connection creation",
+        title="Destination table",
     )
     archive_pattern: Optional[str] = Field(
         None,
-        description='Files inside of compressed archives with filenames matching this regular expression will be synced.',
-        title='',
+        description="Files inside of compressed archives with filenames matching this regular expression will be synced.",
+        title="",
     )
-    email: Optional[str] = Field(None, title='')
+    email: Optional[str] = Field(None, title="")
 
 
 class EmailConfigV1(BaseModel):
-    config: Optional[Config69] = Field(None, description='')
+    config: Optional[Config69] = Field(None, description="")
 
 
 class EmailNewConnectorRequestV1(NewConnectorRequestV1, EmailConfigV1):
@@ -4516,79 +4516,79 @@ class EmailNewConnectorRequestV1(NewConnectorRequestV1, EmailConfigV1):
 class Config70(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     view_attribution_window: Optional[Dict[str, Any]] = Field(
         None,
-        description='Time period to attribute conversions based on views. [Possible view_attribution_window values](/docs/applications/facebook-ads-insights/api-config#viewattributionwindow).',
-        title='',
+        description="Time period to attribute conversions based on views. [Possible view_attribution_window values](/docs/applications/facebook-ads-insights/api-config#viewattributionwindow).",
+        title="",
     )
     prebuilt_report: Optional[Dict[str, Any]] = Field(
         None,
-        description='The name of report of which connector will sync the data. [Possible prebuilt_report values](/docs/applications/facebook-ads-insights/api-config#prebuiltreport).',
-        title='',
+        description="The name of report of which connector will sync the data. [Possible prebuilt_report values](/docs/applications/facebook-ads-insights/api-config#prebuiltreport).",
+        title="",
     )
     breakdowns: Optional[List[Dict[str, Any]]] = Field(
         None,
-        description='List of breakdowns which connector will sync. [Possible breakdowns values](/docs/applications/facebook-ads-insights/api-config#breakdowns).',
-        title='',
+        description="List of breakdowns which connector will sync. [Possible breakdowns values](/docs/applications/facebook-ads-insights/api-config#breakdowns).",
+        title="",
     )
     aggregation: Optional[Dict[str, Any]] = Field(
         None,
-        description='Options to select aggregation duration. [Possible aggregation values](/docs/applications/facebook-ads-insights/api-config#aggregation).',
-        title='',
+        description="Options to select aggregation duration. [Possible aggregation values](/docs/applications/facebook-ads-insights/api-config#aggregation).",
+        title="",
     )
     click_attribution_window: Optional[Dict[str, Any]] = Field(
         None,
-        description='Time period to attribute conversions based on clicks. [Possible click_attribution_window values](/docs/applications/facebook-ads-insights/api-config#clickattributionwindow).',
-        title='',
+        description="Time period to attribute conversions based on clicks. [Possible click_attribution_window values](/docs/applications/facebook-ads-insights/api-config#clickattributionwindow).",
+        title="",
     )
     action_report_time: Optional[Dict[str, Any]] = Field(
         None,
-        description='The report time of action stats. [Possible action_report time values](/docs/applications/facebook-ads-insights/api-config#actionreporttime).',
-        title='',
+        description="The report time of action stats. [Possible action_report time values](/docs/applications/facebook-ads-insights/api-config#actionreporttime).",
+        title="",
     )
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
-        description='Option to select connector should sync all accounts or specific accounts. [Possible sync_mode values](/docs/applications/facebook-ads-insights/api-config#syncmode).',
-        title='',
+        description="Option to select connector should sync all accounts or specific accounts. [Possible sync_mode values](/docs/applications/facebook-ads-insights/api-config#syncmode).",
+        title="",
     )
     timeframe_months: Optional[Dict[str, Any]] = Field(
         None,
         description="Number of months of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `THREE`.",
-        title='',
+        title="",
     )
     action_breakdowns: Optional[List[Dict[str, Any]]] = Field(
         None,
-        description='List of action_breakdowns which connector will sync. [Possible action_breakdowns values](/docs/applications/facebook-ads-insights/api-config#actionbreakdowns).',
-        title='',
+        description="List of action_breakdowns which connector will sync. [Possible action_breakdowns values](/docs/applications/facebook-ads-insights/api-config#actionbreakdowns).",
+        title="",
     )
     accounts: Optional[List[str]] = Field(
         None,
-        description='List of accounts of which connector will sync the data.',
-        title='',
+        description="List of accounts of which connector will sync the data.",
+        title="",
     )
     fields: Optional[List[Dict[str, Any]]] = Field(
         None,
-        description='List of fields which connector will sync. [Possible field values](/docs/applications/facebook-ads-insights/api-config#fields).',
-        title='',
+        description="List of fields which connector will sync. [Possible field values](/docs/applications/facebook-ads-insights/api-config#fields).",
+        title="",
     )
     config_type: Optional[Dict[str, Any]] = Field(
         None,
-        description='Option to select Prebuilt Reports or Custom Reports. [Possible config_type values](/docs/applications/facebook-ads-insights/api-config#configtype).',
-        title='',
+        description="Option to select Prebuilt Reports or Custom Reports. [Possible config_type values](/docs/applications/facebook-ads-insights/api-config#configtype).",
+        title="",
     )
     table: Optional[str] = Field(
         None,
-        description='Destination table. Table is permanent and cannot be changed after connection creation',
-        title='Destination table',
+        description="Destination table. Table is permanent and cannot be changed after connection creation",
+        title="Destination table",
     )
 
 
 class FacebookConfigV1(BaseModel):
-    config: Optional[Config70] = Field(None, description='')
+    config: Optional[Config70] = Field(None, description="")
 
 
 class FacebookNewConnectorRequestV1(NewConnectorRequestV1, FacebookConfigV1):
@@ -4598,24 +4598,24 @@ class FacebookNewConnectorRequestV1(NewConnectorRequestV1, FacebookConfigV1):
 class Config71(BaseModel):
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
-        description='Whether to sync all accounts or specific accounts. Default value: `AllAccounts`.',
-        title='',
+        description="Whether to sync all accounts or specific accounts. Default value: `AllAccounts`.",
+        title="",
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     accounts: Optional[List[str]] = Field(
         None,
-        description='Specific accounts to sync. Must be populated if `sync_mode` is set to `SpecificAccounts`.',
-        title='',
+        description="Specific accounts to sync. Must be populated if `sync_mode` is set to `SpecificAccounts`.",
+        title="",
     )
 
 
 class FacebookAdAccountConfigV1(BaseModel):
-    config: Optional[Config71] = Field(None, description='')
+    config: Optional[Config71] = Field(None, description="")
 
 
 class FacebookAdAccountNewConnectorRequestV1(
@@ -4627,115 +4627,115 @@ class FacebookAdAccountNewConnectorRequestV1(
 class CustomTable(BaseModel):
     prebuilt_report_name: Optional[str] = Field(
         None,
-        description='The report name to which connector will sync the data. [Possible prebuilt_report values](/docs/applications/facebook-ads-insights/api-config#prebuiltreport).',
-        title='',
+        description="The report name to which connector will sync the data. [Possible prebuilt_report values](/docs/applications/facebook-ads-insights/api-config#prebuiltreport).",
+        title="",
     )
     view_attribution_window: Optional[Dict[str, Any]] = Field(
         None,
-        description='Time period to attribute conversions based on views. [Possible view_attribution_window values](/docs/applications/facebook-ads-insights/api-config#viewattributionwindow).',
-        title='',
+        description="Time period to attribute conversions based on views. [Possible view_attribution_window values](/docs/applications/facebook-ads-insights/api-config#viewattributionwindow).",
+        title="",
     )
-    use_unified_attribution_setting: Optional[bool] = Field(None, title='')
-    level: Optional[Dict[str, Any]] = Field(None, title='')
+    use_unified_attribution_setting: Optional[bool] = Field(None, title="")
+    level: Optional[Dict[str, Any]] = Field(None, title="")
     breakdowns: Optional[List[Dict[str, Any]]] = Field(
         None,
-        description='List of breakdowns which connector will sync. [Possible breakdowns values](/docs/applications/facebook-ads-insights/api-config#breakdowns).',
-        title='',
+        description="List of breakdowns which connector will sync. [Possible breakdowns values](/docs/applications/facebook-ads-insights/api-config#breakdowns).",
+        title="",
     )
     action_breakdowns: Optional[List[Dict[str, Any]]] = Field(
         None,
-        description='List of action_breakdowns which connector will sync. [Possible action_breakdowns values](/docs/applications/facebook-ads-insights/api-config#actionbreakdowns).',
-        title='',
+        description="List of action_breakdowns which connector will sync. [Possible action_breakdowns values](/docs/applications/facebook-ads-insights/api-config#actionbreakdowns).",
+        title="",
     )
     click_attribution_window: Optional[Dict[str, Any]] = Field(
         None,
-        description='Time period to attribute conversions based on clicks. [Possible click_attribution_window values](/docs/applications/facebook-ads-insights/api-config#clickattributionwindow).',
-        title='',
+        description="Time period to attribute conversions based on clicks. [Possible click_attribution_window values](/docs/applications/facebook-ads-insights/api-config#clickattributionwindow).",
+        title="",
     )
     aggregation: Optional[Dict[str, Any]] = Field(
         None,
-        description='Options to select aggregation duration. [Possible aggregation values](/docs/applications/facebook-ads-insights/api-config#aggregation).',
-        title='',
+        description="Options to select aggregation duration. [Possible aggregation values](/docs/applications/facebook-ads-insights/api-config#aggregation).",
+        title="",
     )
     config_type: Optional[Dict[str, Any]] = Field(
         None,
-        description='Option to select Prebuilt Reports or Custom Reports. [Possible config_type values](/docs/applications/facebook-ads-insights/api-config#configtype).',
-        title='',
+        description="Option to select Prebuilt Reports or Custom Reports. [Possible config_type values](/docs/applications/facebook-ads-insights/api-config#configtype).",
+        title="",
     )
     fields: Optional[List[Dict[str, Any]]] = Field(
         None,
-        description='List of fields which connector will sync. [Possible field values](/docs/applications/facebook-ads-insights/api-config#fields).',
-        title='',
+        description="List of fields which connector will sync. [Possible field values](/docs/applications/facebook-ads-insights/api-config#fields).",
+        title="",
     )
     table_name: Optional[str] = Field(
         None,
         description="The table name within the schema to which the connector will sync the data. It must be unique within the connector and must comply with [Fivetran's naming conventions](/docs/getting-started/core-concepts#namingconventions).",
-        title='',
+        title="",
     )
     action_report_time: Optional[Dict[str, Any]] = Field(
         None,
-        description='The report time of action stats. [Possible action_report time values](/docs/applications/facebook-ads-insights/api-config#actionreporttime).',
-        title='',
+        description="The report time of action stats. [Possible action_report time values](/docs/applications/facebook-ads-insights/api-config#actionreporttime).",
+        title="",
     )
 
 
 class Config72(BaseModel):
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
-        description='Option to select connector should sync all accounts or specific accounts. [Possible sync_mode values](/docs/applications/facebook-ads-insights/api-config#syncmode).',
-        title='',
+        description="Option to select connector should sync all accounts or specific accounts. [Possible sync_mode values](/docs/applications/facebook-ads-insights/api-config#syncmode).",
+        title="",
     )
     custom_tables: Optional[List[CustomTable]] = Field(
         None,
-        description='List of custom tables. Each custom table corresponds to a table within the schema to which connector will sync the data.',
-        title='',
+        description="List of custom tables. Each custom table corresponds to a table within the schema to which connector will sync the data.",
+        title="",
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     sync_metadata: Optional[bool] = Field(
         None,
-        description='Parameter defining whether to enable or disable metadata synchronisation. Default value: `TRUE`.',
-        title='',
+        description="Parameter defining whether to enable or disable metadata synchronisation. Default value: `TRUE`.",
+        title="",
     )
     timeframe_months: Optional[Dict[str, Any]] = Field(
         None,
         description="Number of months of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `THREE`.",
-        title='',
+        title="",
     )
     accounts: Optional[List[str]] = Field(
         None,
-        description='List of accounts of which connector will sync the data.',
-        title='',
+        description="List of accounts of which connector will sync the data.",
+        title="",
     )
 
 
 class ClientAccess9(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth17(BaseModel):
     access_token: Optional[str] = Field(
         None,
-        description='The long-lived Access token carries the information necessary to access API resources',
+        description="The long-lived Access token carries the information necessary to access API resources",
     )
     client_access: Optional[ClientAccess9] = None
     user_access_token: Optional[str] = Field(
         None,
-        description='The long-lived System User access token carries the information necessary to access API resources',
+        description="The long-lived System User access token carries the information necessary to access API resources",
     )
 
 
 class FacebookAdsConfigV1(BaseModel):
-    config: Optional[Config72] = Field(None, description='')
+    config: Optional[Config72] = Field(None, description="")
     auth: Optional[Auth17] = None
 
 
@@ -4746,41 +4746,41 @@ class FacebookAdsNewConnectorRequestV1(NewConnectorRequestV1, FacebookAdsConfigV
 class Config73(BaseModel):
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
-        description='Whether to sync all accounts or specific accounts. Default value: `AllPages`.',
-        title='',
+        description="Whether to sync all accounts or specific accounts. Default value: `AllPages`.",
+        title="",
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     pages: Optional[List[str]] = Field(
         None,
-        description='Specific pages to sync. Must be populated if `sync_mode` is set to `SpecificPages`.',
-        title='',
+        description="Specific pages to sync. Must be populated if `sync_mode` is set to `SpecificPages`.",
+        title="",
     )
 
 
 class ClientAccess10(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth18(BaseModel):
     access_token: Optional[str] = Field(
         None,
-        description='The long-lived Access token carries the information necessary to access API resources',
+        description="The long-lived Access token carries the information necessary to access API resources",
     )
     client_access: Optional[ClientAccess10] = None
 
 
 class FacebookPagesConfigV1(BaseModel):
-    config: Optional[Config73] = Field(None, description='')
+    config: Optional[Config73] = Field(None, description="")
     auth: Optional[Auth18] = None
 
 
@@ -4791,38 +4791,38 @@ class FacebookPagesNewConnectorRequestV1(NewConnectorRequestV1, FacebookPagesCon
 class Config74(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    password: Optional[str] = Field(None, title='')
+    password: Optional[str] = Field(None, title="")
     base_url: Optional[str] = Field(
         None,
-        description='(Optional) The custom Salesforce domain. Make sure that the `base_url` starts with `https://`.',
-        title='',
+        description="(Optional) The custom Salesforce domain. Make sure that the `base_url` starts with `https://`.",
+        title="",
     )
-    username: Optional[str] = Field(None, title='')
+    username: Optional[str] = Field(None, title="")
 
 
 class ClientAccess11(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth19(BaseModel):
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
     client_access: Optional[ClientAccess11] = None
 
 
 class FinancialForceConfigV1(BaseModel):
-    config: Optional[Config74] = Field(None, description='')
+    config: Optional[Config74] = Field(None, description="")
     auth: Optional[Auth19] = None
 
 
@@ -4835,18 +4835,18 @@ class FinancialForceNewConnectorRequestV1(
 class Config75(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     is_account_level_connector: Optional[bool] = Field(
-        None, description='(Optional) Retrieve account-level logs.', title=''
+        None, description="(Optional) Retrieve account-level logs.", title=""
     )
-    group_name: Optional[str] = Field(None, title='')
+    group_name: Optional[str] = Field(None, title="")
 
 
 class FivetranLogConfigV1(BaseModel):
-    config: Optional[Config75] = Field(None, description='')
+    config: Optional[Config75] = Field(None, description="")
 
 
 class FivetranLogNewConnectorRequestV1(NewConnectorRequestV1, FivetranLogConfigV1):
@@ -4856,22 +4856,22 @@ class FivetranLogNewConnectorRequestV1(NewConnectorRequestV1, FivetranLogConfigV
 class Config76(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     api_key: Optional[str] = Field(
-        None, description='Your Freshdesk API Key.', title=''
+        None, description="Your Freshdesk API Key.", title=""
     )
     subdomain: Optional[str] = Field(
         None,
         description="Your company's freshdesk subdomain (usually **company**.freshdesk.com).",
-        title='',
+        title="",
     )
 
 
 class FreshdeskConfigV1(BaseModel):
-    config: Optional[Config76] = Field(None, description='')
+    config: Optional[Config76] = Field(None, description="")
 
 
 class FreshdeskNewConnectorRequestV1(NewConnectorRequestV1, FreshdeskConfigV1):
@@ -4881,31 +4881,31 @@ class FreshdeskNewConnectorRequestV1(NewConnectorRequestV1, FreshdeskConfigV1):
 class Config77(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
 
 
 class ClientAccess12(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth20(BaseModel):
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
     client_access: Optional[ClientAccess12] = None
 
 
 class FrontConfigV1(BaseModel):
-    config: Optional[Config77] = Field(None, description='')
+    config: Optional[Config77] = Field(None, description="")
     auth: Optional[Auth20] = None
 
 
@@ -4916,87 +4916,87 @@ class FrontNewConnectorRequestV1(NewConnectorRequestV1, FrontConfigV1):
 class Config78(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     append_file_option: Optional[Dict[str, Any]] = Field(
         None,
-        description='If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.',
-        title='',
+        description="If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.",
+        title="",
     )
     prefix: Optional[str] = Field(
         None,
-        description='All files and folders under this folder path will be searched for files to sync.',
-        title='',
+        description="All files and folders under this folder path will be searched for files to sync.",
+        title="",
     )
     pattern: Optional[str] = Field(
         None,
-        description='All files in your search path matching this regular expression will be synced.',
-        title='',
+        description="All files in your search path matching this regular expression will be synced.",
+        title="",
     )
     is_secure: Optional[bool] = Field(
-        None, description='Whether the server supports FTPS.', title=''
+        None, description="Whether the server supports FTPS.", title=""
     )
     escape_char: Optional[str] = Field(
         None,
-        description='If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.',
-        title='',
+        description="If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.",
+        title="",
     )
     skip_after: Optional[int] = Field(
         None,
-        description='We will skip over the number of lines specified at the end so as to not introduce aberrant data into your destination.',
-        title='',
+        description="We will skip over the number of lines specified at the end so as to not introduce aberrant data into your destination.",
+        title="",
     )
-    password: Optional[str] = Field(None, description='FTP password.', title='')
-    empty_header: Optional[bool] = Field(None, title='')
+    password: Optional[str] = Field(None, description="FTP password.", title="")
+    empty_header: Optional[bool] = Field(None, title="")
     skip_before: Optional[int] = Field(
         None,
-        description='We will skip over the number of lines specified before syncing data.',
-        title='',
+        description="We will skip over the number of lines specified before syncing data.",
+        title="",
     )
     null_sequence: Optional[str] = Field(
         None,
-        description='If your CSVs use a special value indicating null, you can specify it here.',
-        title='',
+        description="If your CSVs use a special value indicating null, you can specify it here.",
+        title="",
     )
-    port: Optional[int] = Field(None, description='FTP port.', title='')
+    port: Optional[int] = Field(None, description="FTP port.", title="")
     file_type: Optional[Dict[str, Any]] = Field(
         None,
-        description='If your files are saved with improper extensions, you can force them to by synced as the selected filetype.',
-        title='',
+        description="If your files are saved with improper extensions, you can force them to by synced as the selected filetype.",
+        title="",
     )
     delimiter: Optional[str] = Field(
         None,
-        description='You can specify your the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.',
-        title='',
+        description="You can specify your the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.",
+        title="",
     )
-    host: Optional[str] = Field(None, description='FTP host address.', title='')
+    host: Optional[str] = Field(None, description="FTP host address.", title="")
     on_error: Optional[Dict[str, Any]] = Field(
         None,
-        description='If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as fail unless you are certain that you have undesirable, malformed data.',
-        title='',
+        description="If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as fail unless you are certain that you have undesirable, malformed data.",
+        title="",
     )
     compression: Optional[Dict[str, Any]] = Field(
         None,
-        description='The secrets that should be passed to the function at runtime.',
-        title='',
+        description="The secrets that should be passed to the function at runtime.",
+        title="",
     )
-    user: Optional[str] = Field(None, description='FTP user.', title='')
+    user: Optional[str] = Field(None, description="FTP user.", title="")
     table: Optional[str] = Field(
         None,
-        description='Destination table. Table is permanent and cannot be changed after connection creation',
-        title='Destination table',
+        description="Destination table. Table is permanent and cannot be changed after connection creation",
+        title="Destination table",
     )
     archive_pattern: Optional[str] = Field(
         None,
-        description='Files inside of compressed archives with filenames matching this regular expression will be synced.',
-        title='',
+        description="Files inside of compressed archives with filenames matching this regular expression will be synced.",
+        title="",
     )
 
 
 class FtpConfigV1(BaseModel):
-    config: Optional[Config78] = Field(None, description='')
+    config: Optional[Config78] = Field(None, description="")
 
 
 class FtpNewConnectorRequestV1(NewConnectorRequestV1, FtpConfigV1):
@@ -5006,20 +5006,20 @@ class FtpNewConnectorRequestV1(NewConnectorRequestV1, FtpConfigV1):
 class Config79(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     access_key: Optional[str] = Field(
-        None, description='The access key for API authentication.', title=''
+        None, description="The access key for API authentication.", title=""
     )
     sub_domain: Optional[str] = Field(
-        None, description='The subdomain of your Gainsight account.', title=''
+        None, description="The subdomain of your Gainsight account.", title=""
     )
 
 
 class GainsightCustomerSuccessConfigV1(BaseModel):
-    config: Optional[Config79] = Field(None, description='')
+    config: Optional[Config79] = Field(None, description="")
 
 
 class GainsightCustomerSuccessNewConnectorRequestV1(
@@ -5031,93 +5031,93 @@ class GainsightCustomerSuccessNewConnectorRequestV1(
 class Config80(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     auth_type: Optional[Dict[str, Any]] = Field(
         None,
-        description='Authorization type. Required for storage bucket authentication.',
-        title='',
+        description="Authorization type. Required for storage bucket authentication.",
+        title="",
     )
     append_file_option: Optional[Dict[str, Any]] = Field(
         None,
-        description='If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.',
-        title='',
+        description="If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.",
+        title="",
     )
     prefix: Optional[str] = Field(
         None,
-        description='All files and folders under this folder path will be searched for files to sync.',
-        title='',
+        description="All files and folders under this folder path will be searched for files to sync.",
+        title="",
     )
     pattern: Optional[str] = Field(
         None,
-        description='All files in your search path matching this regular expression will be synced.',
-        title='',
+        description="All files in your search path matching this regular expression will be synced.",
+        title="",
     )
     escape_char: Optional[str] = Field(
         None,
-        description='If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.',
-        title='',
+        description="If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.",
+        title="",
     )
     skip_after: Optional[int] = Field(
         None,
-        description='We will skip over the number of lines specified at the end so as to not introduce aberrant data into your destination.',
-        title='',
+        description="We will skip over the number of lines specified at the end so as to not introduce aberrant data into your destination.",
+        title="",
     )
     bucket: Optional[str] = Field(
-        None, description='The name of the GCS bucket.', title=''
+        None, description="The name of the GCS bucket.", title=""
     )
     secret_key: Optional[str] = Field(
         None,
-        description='Your JSON Private Key. Used to authorize service account. Required if you use a Custom Service Account to authenticate the storage bucket.',
-        title='',
+        description="Your JSON Private Key. Used to authorize service account. Required if you use a Custom Service Account to authenticate the storage bucket.",
+        title="",
     )
-    empty_header: Optional[bool] = Field(None, title='')
+    empty_header: Optional[bool] = Field(None, title="")
     skip_before: Optional[int] = Field(
         None,
-        description='We will skip over the number of lines specified before syncing data.',
-        title='',
+        description="We will skip over the number of lines specified before syncing data.",
+        title="",
     )
     null_sequence: Optional[str] = Field(
         None,
-        description='If your CSVs use a special value indicating null, you can specify it here.',
-        title='',
+        description="If your CSVs use a special value indicating null, you can specify it here.",
+        title="",
     )
     file_type: Optional[Dict[str, Any]] = Field(
         None,
-        description='If your files are saved with improper extensions, you can force them to by synced as the selected filetype.',
-        title='',
+        description="If your files are saved with improper extensions, you can force them to by synced as the selected filetype.",
+        title="",
     )
     delimiter: Optional[str] = Field(
         None,
-        description='You can specify your the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.',
-        title='',
+        description="You can specify your the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.",
+        title="",
     )
     on_error: Optional[Dict[str, Any]] = Field(
         None,
-        description='If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as fail unless you are certain that you have undesirable, malformed data.',
-        title='',
+        description="If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as fail unless you are certain that you have undesirable, malformed data.",
+        title="",
     )
     compression: Optional[Dict[str, Any]] = Field(
         None,
-        description='The secrets that should be passed to the function at runtime.',
-        title='',
+        description="The secrets that should be passed to the function at runtime.",
+        title="",
     )
     table: Optional[str] = Field(
         None,
-        description='Destination table. Table is permanent and cannot be changed after connection creation',
-        title='Destination table',
+        description="Destination table. Table is permanent and cannot be changed after connection creation",
+        title="Destination table",
     )
     archive_pattern: Optional[str] = Field(
         None,
-        description='Files inside of compressed archives with filenames matching this regular expression will be synced.',
-        title='',
+        description="Files inside of compressed archives with filenames matching this regular expression will be synced.",
+        title="",
     )
 
 
 class GcsConfigV1(BaseModel):
-    config: Optional[Config80] = Field(None, description='')
+    config: Optional[Config80] = Field(None, description="")
 
 
 class GcsNewConnectorRequestV1(NewConnectorRequestV1, GcsConfigV1):
@@ -5127,36 +5127,36 @@ class GcsNewConnectorRequestV1(NewConnectorRequestV1, GcsConfigV1):
 class Config81(BaseModel):
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
-        description='Whether to sync all repositories or specific repositories.',
-        title='',
+        description="Whether to sync all repositories or specific repositories.",
+        title="",
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     use_webhooks: Optional[bool] = Field(
-        None, description='Set to `true` to capture deletes.', title=''
+        None, description="Set to `true` to capture deletes.", title=""
     )
     pat: Optional[str] = Field(
-        None, description='The `Personal Access Token` generated in Github.', title=''
+        None, description="The `Personal Access Token` generated in Github.", title=""
     )
     repositories: Optional[List[str]] = Field(
         None,
-        description='Specific Repository IDs to sync. Must be populated if `syncMode` is set to `SpecificRepositories`.',
-        title='',
+        description="Specific Repository IDs to sync. Must be populated if `syncMode` is set to `SpecificRepositories`.",
+        title="",
     )
     auth_mode: Optional[Dict[str, Any]] = Field(
-        None, description='Authorization type.', title=''
+        None, description="Authorization type.", title=""
     )
     username: Optional[str] = Field(
-        None, description='`Login` of your GitHub profile.', title=''
+        None, description="`Login` of your GitHub profile.", title=""
     )
 
 
 class GithubConfigV1(BaseModel):
-    config: Optional[Config81] = Field(None, description='')
+    config: Optional[Config81] = Field(None, description="")
 
 
 class GithubNewConnectorRequestV1(NewConnectorRequestV1, GithubConfigV1):
@@ -5166,72 +5166,72 @@ class GithubNewConnectorRequestV1(NewConnectorRequestV1, GithubConfigV1):
 class Report(BaseModel):
     report_type: Optional[str] = Field(
         None,
-        description='The name of the Google Ads report from which the connector will sync the data. [Possible report_type values](https://developers.google.com/adwords/api/docs/appendix/reports#report-types).',
-        title='',
+        description="The name of the Google Ads report from which the connector will sync the data. [Possible report_type values](https://developers.google.com/adwords/api/docs/appendix/reports#report-types).",
+        title="",
     )
     fields: Optional[List[str]] = Field(
         None,
-        description='A list of the fields to sync. Must be populated if `config_type` is set to `Custom`.',
-        title='',
+        description="A list of the fields to sync. Must be populated if `config_type` is set to `Custom`.",
+        title="",
     )
     table: Optional[str] = Field(
         None,
-        description='The table name within the schema to which connector will sync the data of the specific report.',
-        title='',
+        description="The table name within the schema to which connector will sync the data of the specific report.",
+        title="",
     )
 
 
 class Config82(BaseModel):
     sync_mode: Optional[Dict[str, Any]] = Field(
-        None, description='Whether to sync all accounts or specific accounts.', title=''
+        None, description="Whether to sync all accounts or specific accounts.", title=""
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     reports: Optional[List[Report]] = Field(
         None,
-        description='The list of reports. Each report corresponds to a table within the schema to which connector will sync the data.',
-        title='',
+        description="The list of reports. Each report corresponds to a table within the schema to which connector will sync the data.",
+        title="",
     )
     manager_accounts: Optional[List[str]] = Field(
         None,
-        description='The list of the Manager Account IDs whose clients will be synced. Must be populated if `sync_mode` is set to `ManagerAccounts`.',
-        title='',
+        description="The list of the Manager Account IDs whose clients will be synced. Must be populated if `sync_mode` is set to `ManagerAccounts`.",
+        title="",
     )
     timeframe_months: Optional[Dict[str, Any]] = Field(
         None,
         description="The number of months of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `TWELVE`.",
-        title='',
+        title="",
     )
     accounts: Optional[List[str]] = Field(
         None,
-        description='The list of Account IDs to sync. Must be populated if `sync_mode` is set to `SpecificAccounts`.',
-        title='',
+        description="The list of Account IDs to sync. Must be populated if `sync_mode` is set to `SpecificAccounts`.",
+        title="",
     )
     customer_id: Optional[str] = Field(
         None,
-        description='ID of the customer, can be retrieved from your AdWords dashboard.',
-        title='',
+        description="ID of the customer, can be retrieved from your AdWords dashboard.",
+        title="",
     )
     conversion_window_size: Optional[int] = Field(
         None,
-        description='A period of time in days during which a conversion is recorded.',
-        title='',
+        description="A period of time in days during which a conversion is recorded.",
+        title="",
     )
 
 
 class ClientAccess13(BaseModel):
     developer_token: Optional[str] = Field(
-        None, description='Your approved Developer token to connect to the API.'
+        None, description="Your approved Developer token to connect to the API."
     )
     client_secret: Optional[str] = Field(
-        None, description='Client secret of your client application.'
+        None, description="Client secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
     user_agent: Optional[str] = Field(
         None, description="Your company's name in your client application"
@@ -5241,13 +5241,13 @@ class ClientAccess13(BaseModel):
 class Auth21(BaseModel):
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
     client_access: Optional[ClientAccess13] = None
 
 
 class GoogleAdsConfigV1(BaseModel):
-    config: Optional[Config82] = Field(None, description='')
+    config: Optional[Config82] = Field(None, description="")
     auth: Optional[Auth21] = None
 
 
@@ -5258,124 +5258,124 @@ class GoogleAdsNewConnectorRequestV1(NewConnectorRequestV1, GoogleAdsConfigV1):
 class Report1(BaseModel):
     filter: Optional[str] = Field(
         None,
-        description='String parameter restricts the data returned for your report. To use the filters parameter, specify a dimension or metric on which to filter, followed by the filter expression',
-        title='',
+        description="String parameter restricts the data returned for your report. To use the filters parameter, specify a dimension or metric on which to filter, followed by the filter expression",
+        title="",
     )
-    segment_ids: Optional[List[str]] = Field(None, title='')
+    segment_ids: Optional[List[str]] = Field(None, title="")
     prebuilt_report: Optional[Dict[str, Any]] = Field(
         None,
-        description='The name of the Prebuilt Report from which the connector will sync the data.',
-        title='',
+        description="The name of the Prebuilt Report from which the connector will sync the data.",
+        title="",
     )
     metrics: Optional[List[str]] = Field(
-        None, description='The report metrics to include into a sync.', title=''
+        None, description="The report metrics to include into a sync.", title=""
     )
     config_type: Optional[Dict[str, Any]] = Field(
         None,
-        description='Whether to use the [Prebuilt Reports or Custom Reports](/docs/applications/google-analytics#schemainformation).',
-        title='',
+        description="Whether to use the [Prebuilt Reports or Custom Reports](/docs/applications/google-analytics#schemainformation).",
+        title="",
     )
     table: Optional[str] = Field(
         None,
-        description='The table name within the schema to which connector will sync the data of the specific report.',
-        title='',
+        description="The table name within the schema to which connector will sync the data of the specific report.",
+        title="",
     )
     dimensions: Optional[List[str]] = Field(
         None,
-        description='The report dimensions to include into a sync. The `date` dimension is mandatory for all the report types.',
-        title='',
+        description="The report dimensions to include into a sync. The `date` dimension is mandatory for all the report types.",
+        title="",
     )
     segments: Optional[List[str]] = Field(
         None,
-        description='A segment is a subset of your Analytics data that is made up of one or more non-destructive filters (filters that do not alter the underlying data). Those filters isolate subsets of users, sessions, and hits.',
-        title='',
+        description="A segment is a subset of your Analytics data that is made up of one or more non-destructive filters (filters that do not alter the underlying data). Those filters isolate subsets of users, sessions, and hits.",
+        title="",
     )
 
 
 class Config83(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     reports: Optional[List[Report1]] = Field(
         None,
-        description='The list of reports. Each report corresponds to a table within the schema to which connector will sync the data.',
-        title='',
+        description="The list of reports. Each report corresponds to a table within the schema to which connector will sync the data.",
+        title="",
     )
     prebuilt_report: Optional[Dict[str, Any]] = Field(
         None,
-        description='The name of the Prebuilt Report from which the connector will sync the data.',
-        title='',
+        description="The name of the Prebuilt Report from which the connector will sync the data.",
+        title="",
     )
     profiles: Optional[List[str]] = Field(
         None,
-        description='Specific User Profile IDs to sync.  Must be populated if `syncMode` is set to `SpecificAccounts`.',
-        title='',
+        description="Specific User Profile IDs to sync.  Must be populated if `syncMode` is set to `SpecificAccounts`.",
+        title="",
     )
     segments: Optional[List[str]] = Field(
         None,
-        description='A segment is a subset of your Analytics data that is made up of one or more non-destructive filters (filters that do not alter the underlying data). Those filters isolate subsets of users, sessions, and hits.',
-        title='',
+        description="A segment is a subset of your Analytics data that is made up of one or more non-destructive filters (filters that do not alter the underlying data). Those filters isolate subsets of users, sessions, and hits.",
+        title="",
     )
     filter: Optional[str] = Field(
         None,
-        description='String parameter restricts the data returned for your report. To use the filters parameter, specify a dimension or metric on which to filter, followed by the filter expression',
-        title='',
+        description="String parameter restricts the data returned for your report. To use the filters parameter, specify a dimension or metric on which to filter, followed by the filter expression",
+        title="",
     )
     sync_mode: Optional[Dict[str, Any]] = Field(
-        None, description='Whether to sync all accounts or specific accounts.', title=''
+        None, description="Whether to sync all accounts or specific accounts.", title=""
     )
     timeframe_months: Optional[Dict[str, Any]] = Field(
         None,
         description="Number of months of reporting data you'd like to include in your initial sync. This cannot be modified once connection is created. The default value: `TWELVE`.",
-        title='',
+        title="",
     )
     accounts: Optional[List[str]] = Field(
         None,
-        description='The list of specific Account IDs to sync.  Must be populated if `syncMode` is set to `SpecificAccounts`.',
-        title='',
+        description="The list of specific Account IDs to sync.  Must be populated if `syncMode` is set to `SpecificAccounts`.",
+        title="",
     )
     metrics: Optional[List[str]] = Field(
-        None, description='The report metrics to include into a sync.', title=''
+        None, description="The report metrics to include into a sync.", title=""
     )
     config_type: Optional[Dict[str, Any]] = Field(
         None,
-        description='Whether to use the [Prebuilt Reports or Custom Reports](/docs/applications/google-analytics#schemainformation).',
-        title='',
+        description="Whether to use the [Prebuilt Reports or Custom Reports](/docs/applications/google-analytics#schemainformation).",
+        title="",
     )
     table: Optional[str] = Field(
         None,
-        description='Destination table. Table is permanent and cannot be changed after connection creation',
-        title='Destination table',
+        description="Destination table. Table is permanent and cannot be changed after connection creation",
+        title="Destination table",
     )
     dimensions: Optional[List[str]] = Field(
         None,
-        description='The report dimensions to include into a sync. The `date` dimension is mandatory for all the report types.',
-        title='',
+        description="The report dimensions to include into a sync. The `date` dimension is mandatory for all the report types.",
+        title="",
     )
 
 
 class ClientAccess14(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth22(BaseModel):
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
     client_access: Optional[ClientAccess14] = None
 
 
 class GoogleAnalyticsConfigV1(BaseModel):
-    config: Optional[Config83] = Field(None, description='')
+    config: Optional[Config83] = Field(None, description="")
     auth: Optional[Auth22] = None
 
 
@@ -5388,19 +5388,19 @@ class GoogleAnalyticsNewConnectorRequestV1(
 class Config84(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    project_id: Optional[str] = Field(None, description='The project ID.', title='')
-    dataset_id: Optional[str] = Field(None, description='The dataset ID.', title='')
+    project_id: Optional[str] = Field(None, description="The project ID.", title="")
+    dataset_id: Optional[str] = Field(None, description="The dataset ID.", title="")
     bucket_name: Optional[str] = Field(
-        None, description='The name of the bucket.', title=''
+        None, description="The name of the bucket.", title=""
     )
 
 
 class GoogleAnalytics360ConfigV1(BaseModel):
-    config: Optional[Config84] = Field(None, description='')
+    config: Optional[Config84] = Field(None, description="")
 
 
 class GoogleAnalytics360NewConnectorRequestV1(
@@ -5410,84 +5410,84 @@ class GoogleAnalytics360NewConnectorRequestV1(
 
 
 class Report2(BaseModel):
-    filter_value: Optional[str] = Field(None, title='')
+    filter_value: Optional[str] = Field(None, title="")
     prebuilt_report: Optional[Dict[str, Any]] = Field(
         None,
-        description='The name of the Prebuilt Report from which the connector will sync the data.',
-        title='',
+        description="The name of the Prebuilt Report from which the connector will sync the data.",
+        title="",
     )
     filter_field_name: Optional[str] = Field(
-        None, description='The dimension name to filter on.', title=''
+        None, description="The dimension name to filter on.", title=""
     )
     metrics: Optional[List[str]] = Field(
-        None, description='The report metrics to include into a sync.', title=''
+        None, description="The report metrics to include into a sync.", title=""
     )
     config_type: Optional[Dict[str, Any]] = Field(
         None,
-        description='Whether to use the Prebuilt Reports or Custom Reports.',
-        title='',
+        description="Whether to use the Prebuilt Reports or Custom Reports.",
+        title="",
     )
     table: Optional[str] = Field(
         None,
-        description='The table name within the schema to which connector will sync the data of the specific report.',
-        title='',
+        description="The table name within the schema to which connector will sync the data of the specific report.",
+        title="",
     )
     dimensions: Optional[List[str]] = Field(
-        None, description='The report dimensions to include into a sync.', title=''
+        None, description="The report dimensions to include into a sync.", title=""
     )
 
 
 class Config85(BaseModel):
     sync_mode: Optional[Dict[str, Any]] = Field(
-        None, description='Whether to sync all accounts or specific accounts.', title=''
+        None, description="Whether to sync all accounts or specific accounts.", title=""
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     reports: Optional[List[Report2]] = Field(
         None,
-        description='The list of reports. Each report corresponds to a table within the schema to which connector will sync the data.',
-        title='',
+        description="The list of reports. Each report corresponds to a table within the schema to which connector will sync the data.",
+        title="",
     )
     timeframe_months: Optional[Dict[str, Any]] = Field(
         None,
         description="The number of months of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created. The default value: `TWELVE`.",
-        title='',
+        title="",
     )
     accounts: Optional[List[str]] = Field(
         None,
-        description='The list of specific Account IDs to sync. Must be populated if `sync_mode` is set to `SPECIFIC_ACCOUNTS`.',
-        title='',
+        description="The list of specific Account IDs to sync. Must be populated if `sync_mode` is set to `SPECIFIC_ACCOUNTS`.",
+        title="",
     )
     properties: Optional[List[str]] = Field(
         None,
-        description='The array of strings in the `properties/{id}` format where `id` is a Google Analytics 4 property identifier. Must be populated if `sync_mode` is set to `SPECIFIC_ACCOUNTS`.',
-        title='',
+        description="The array of strings in the `properties/{id}` format where `id` is a Google Analytics 4 property identifier. Must be populated if `sync_mode` is set to `SPECIFIC_ACCOUNTS`.",
+        title="",
     )
 
 
 class ClientAccess15(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth23(BaseModel):
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
     client_access: Optional[ClientAccess15] = None
 
 
 class GoogleAnalytics4ConfigV1(BaseModel):
-    config: Optional[Config85] = Field(None, description='')
+    config: Optional[Config85] = Field(None, description="")
     auth: Optional[Auth23] = None
 
 
@@ -5500,19 +5500,19 @@ class GoogleAnalytics4NewConnectorRequestV1(
 class Config86(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    project_id: Optional[str] = Field(None, description='The Project ID.', title='')
+    project_id: Optional[str] = Field(None, description="The Project ID.", title="")
     bucket_name: Optional[str] = Field(
-        None, description='The name of the bucket.', title=''
+        None, description="The name of the bucket.", title=""
     )
-    dataset_id: Optional[str] = Field(None, description='The Dataset ID.', title='')
+    dataset_id: Optional[str] = Field(None, description="The Dataset ID.", title="")
 
 
 class GoogleAnalytics4ExportConfigV1(BaseModel):
-    config: Optional[Config86] = Field(None, description='')
+    config: Optional[Config86] = Field(None, description="")
 
 
 class GoogleAnalytics4ExportNewConnectorRequestV1(
@@ -5524,51 +5524,51 @@ class GoogleAnalytics4ExportNewConnectorRequestV1(
 class Config87(BaseModel):
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
-        description='Whether to sync all accounts or specific accounts. Default value: `ALL_ACCOUNTS`',
-        title='',
+        description="Whether to sync all accounts or specific accounts. Default value: `ALL_ACCOUNTS`",
+        title="",
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     timeframe_months: Optional[Dict[str, Any]] = Field(
         None,
         description="Number of months of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `TWELVE`.",
-        title='',
+        title="",
     )
     profiles: Optional[List[str]] = Field(
         None,
-        description='Specific User Profile IDs to sync.  Must be populated if `sync_mode` is set to `SPECIFIC_ACCOUNTS`.',
-        title='',
+        description="Specific User Profile IDs to sync.  Must be populated if `sync_mode` is set to `SPECIFIC_ACCOUNTS`.",
+        title="",
     )
     accounts: Optional[List[str]] = Field(
         None,
-        description='Specific Account IDs to sync.  Must be populated if `sync_mode` is set to `SPECIFIC_ACCOUNTS`.',
-        title='',
+        description="Specific Account IDs to sync.  Must be populated if `sync_mode` is set to `SPECIFIC_ACCOUNTS`.",
+        title="",
     )
 
 
 class ClientAccess16(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth24(BaseModel):
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
     client_access: Optional[ClientAccess16] = None
 
 
 class GoogleAnalyticsMcfConfigV1(BaseModel):
-    config: Optional[Config87] = Field(None, description='')
+    config: Optional[Config87] = Field(None, description="")
     auth: Optional[Auth24] = None
 
 
@@ -5579,35 +5579,35 @@ class GoogleAnalyticsMcfNewConnectorRequestV1(
 
 
 class SecretsListItem2(BaseModel):
-    value: Optional[str] = Field(None, description='', title='')
-    key: Optional[str] = Field(None, description='', title='')
+    value: Optional[str] = Field(None, description="", title="")
+    key: Optional[str] = Field(None, description="", title="")
 
 
 class Config88(BaseModel):
-    bucket: Optional[str] = Field(None, description='', title='')
+    bucket: Optional[str] = Field(None, description="", title="")
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    sync_method: Optional[Dict[str, Any]] = Field(None, description='', title='')
-    is_authenticated_invocation: Optional[bool] = Field(None, title='')
+    sync_method: Optional[Dict[str, Any]] = Field(None, description="", title="")
+    is_authenticated_invocation: Optional[bool] = Field(None, title="")
     secrets_list: Optional[List[SecretsListItem2]] = Field(
-        None, description='', title=''
+        None, description="", title=""
     )
     function_trigger: Optional[str] = Field(
-        None, description='The trigger URL of the cloud function.', title=''
+        None, description="The trigger URL of the cloud function.", title=""
     )
     secrets: Optional[str] = Field(
         None,
-        description='The secrets that should be passed to the function at runtime.',
-        title='',
+        description="The secrets that should be passed to the function at runtime.",
+        title="",
     )
 
 
 class GoogleCloudFunctionConfigV1(BaseModel):
-    config: Optional[Config88] = Field(None, description='')
+    config: Optional[Config88] = Field(None, description="")
 
 
 class GoogleCloudFunctionNewConnectorRequestV1(
@@ -5617,49 +5617,49 @@ class GoogleCloudFunctionNewConnectorRequestV1(
 
 
 class Config89(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
+    public_key: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
         description="Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-        title='',
+        title="",
     )
     update_method: Optional[Dict[str, Any]] = Field(
         None,
         description="The method to detect new or changed rows. <br>Supported values:<br>`BINLOG` - Fivetran uses your binary logs (also called binlogs) to request only the data that has changed since our last sync. This is the default value if no value is specified. <br>`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
-        title='',
+        title="",
     )
-    always_encrypted: Optional[bool] = Field(None, title='')
+    always_encrypted: Optional[bool] = Field(None, title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH user, specify only to connect via an SSH tunnel.",
+        title="",
     )
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH port, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH port, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='The database name.', title='')
-    password: Optional[str] = Field(None, description="The user's password.", title='')
-    port: Optional[int] = Field(None, description='The port number.', title='')
+    database: Optional[str] = Field(None, description="The database name.", title="")
+    password: Optional[str] = Field(None, description="The user's password.", title="")
+    port: Optional[int] = Field(None, description="The port number.", title="")
     host: Optional[str] = Field(
-        None, description='DB instance host or IP address.', title=''
+        None, description="DB instance host or IP address.", title=""
     )
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).',
-        title='',
+        description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+        title="",
     )
     schema_prefix: Optional[str] = Field(
         None,
         description="Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-        title='Destination schema prefix',
+        title="Destination schema prefix",
     )
-    user: Optional[str] = Field(None, description='The user name.', title='')
+    user: Optional[str] = Field(None, description="The user name.", title="")
 
 
 class GoogleCloudMysqlConfigV1(BaseModel):
-    config: Optional[Config89] = Field(None, description='')
+    config: Optional[Config89] = Field(None, description="")
 
 
 class GoogleCloudMysqlNewConnectorRequestV1(
@@ -5669,56 +5669,56 @@ class GoogleCloudMysqlNewConnectorRequestV1(
 
 
 class Config90(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
-    publication_name: Optional[str] = Field(None, description='', title='')
+    public_key: Optional[str] = Field(None, description="", title="")
+    publication_name: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
         description="Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-        title='',
+        title="",
     )
     update_method: Optional[Dict[str, Any]] = Field(
         None,
         description='The method to detect new or changed rows. <br>Specify only for `"service": "postgres"` or `"service": "postgres_rds"`. <br>Supported values:<br>`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.<br>`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.<br>`WAL_PGOUTPUT` - <span class="beta tag">BETA</span> logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.',
-        title='',
+        title="",
     )
-    always_encrypted: Optional[bool] = Field(None, title='')
+    always_encrypted: Optional[bool] = Field(None, title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH user, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='The database name.', title='')
-    password: Optional[str] = Field(None, description="The user's password.", title='')
+    database: Optional[str] = Field(None, description="The database name.", title="")
+    password: Optional[str] = Field(None, description="The user's password.", title="")
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH port, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH port, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    heroku_rds_hosted: Optional[Dict[str, Any]] = Field(None, title='')
-    port: Optional[int] = Field(None, description='The port number.', title='')
+    heroku_rds_hosted: Optional[Dict[str, Any]] = Field(None, title="")
+    port: Optional[int] = Field(None, description="The port number.", title="")
     host: Optional[str] = Field(
-        None, description='DB instance host or IP address.', title=''
+        None, description="DB instance host or IP address.", title=""
     )
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).',
-        title='',
+        description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+        title="",
     )
     schema_prefix: Optional[str] = Field(
         None,
         description="Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-        title='Destination schema prefix',
+        title="Destination schema prefix",
     )
     replication_slot: Optional[str] = Field(
         None,
         description='Replication slot name. Specify only for `"updated_method": "WAL"` or `"WAL_PGOUTPUT"`.',
-        title='',
+        title="",
     )
-    user: Optional[str] = Field(None, description='The user name.', title='')
+    user: Optional[str] = Field(None, description="The user name.", title="")
 
 
 class GoogleCloudPostgresqlConfigV1(BaseModel):
-    config: Optional[Config90] = Field(None, description='')
+    config: Optional[Config90] = Field(None, description="")
 
 
 class GoogleCloudPostgresqlNewConnectorRequestV1(
@@ -5728,62 +5728,62 @@ class GoogleCloudPostgresqlNewConnectorRequestV1(
 
 
 class Config91(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
-    agent_user: Optional[str] = Field(None, description='', title='')
-    connection_type: Optional[Dict[str, Any]] = Field(None, description='', title='')
-    agent_password: Optional[str] = Field(None, description='', title='')
-    always_encrypted: Optional[bool] = Field(None, description='', title='')
-    agent_public_cert: Optional[str] = Field(None, description='', title='')
+    public_key: Optional[str] = Field(None, description="", title="")
+    agent_user: Optional[str] = Field(None, description="", title="")
+    connection_type: Optional[Dict[str, Any]] = Field(None, description="", title="")
+    agent_password: Optional[str] = Field(None, description="", title="")
+    always_encrypted: Optional[bool] = Field(None, description="", title="")
+    agent_public_cert: Optional[str] = Field(None, description="", title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user, only specify when connecting via an SSH tunnel.',
-        title='',
+        description="SSH user, only specify when connecting via an SSH tunnel.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='The database name.', title='')
-    password: Optional[str] = Field(None, description="The user's password.", title='')
+    database: Optional[str] = Field(None, description="The database name.", title="")
+    password: Optional[str] = Field(None, description="The user's password.", title="")
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH port, only specify when connecting via an SSH tunnel.',
-        title='',
+        description="SSH port, only specify when connecting via an SSH tunnel.",
+        title="",
     )
-    port: Optional[int] = Field(None, description='The port number.', title='')
+    port: Optional[int] = Field(None, description="The port number.", title="")
     host: Optional[str] = Field(
-        None, description='DB instance host or IP address.', title=''
+        None, description="DB instance host or IP address.", title=""
     )
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH host, only specify when connecting via an SSH tunnel (do not use a load balancer).',
-        title='',
+        description="SSH host, only specify when connecting via an SSH tunnel (do not use a load balancer).",
+        title="",
     )
-    agent_port: Optional[int] = Field(None, description='', title='')
+    agent_port: Optional[int] = Field(None, description="", title="")
     schema_prefix: Optional[str] = Field(
         None,
         description="Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-        title='Destination schema prefix',
+        title="Destination schema prefix",
     )
-    agent_host: Optional[str] = Field(None, description='', title='')
-    sap_user: Optional[str] = Field(None, description='', title='')
+    agent_host: Optional[str] = Field(None, description="", title="")
+    sap_user: Optional[str] = Field(None, description="", title="")
     user: Optional[str] = Field(
         None,
-        description='The user name. For Azure Databases, the format must be `user@domain`.',
-        title='',
+        description="The user name. For Azure Databases, the format must be `user@domain`.",
+        title="",
     )
 
 
 class Auth25(BaseModel):
     access_token: Optional[str] = Field(
         None,
-        description='The long-lived Access token carries the information necessary to access API resources',
+        description="The long-lived Access token carries the information necessary to access API resources",
     )
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
-    realm_id: Optional[str] = Field(None, description='Realm ID of your application.')
+    realm_id: Optional[str] = Field(None, description="Realm ID of your application.")
 
 
 class GoogleCloudSqlserverConfigV1(BaseModel):
-    config: Optional[Config91] = Field(None, description='')
+    config: Optional[Config91] = Field(None, description="")
     auth: Optional[Auth25] = None
 
 
@@ -5796,67 +5796,67 @@ class GoogleCloudSqlserverNewConnectorRequestV1(
 class Config92(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     query_id: Optional[str] = Field(
         None,
-        description='The ID of the query whose configuration you want to reuse. This is a required parameter when `config_method` is set to `REUSE_EXISTING`.',
-        title='',
+        description="The ID of the query whose configuration you want to reuse. This is a required parameter when `config_method` is set to `REUSE_EXISTING`.",
+        title="",
     )
     config_method: Optional[Dict[str, Any]] = Field(
         None,
-        description='The report configuration method. Specifies whether a new configuration is defined manually or an existing configuration is reused. The default value is `CREATE_NEW`.',
-        title='',
+        description="The report configuration method. Specifies whether a new configuration is defined manually or an existing configuration is reused. The default value is `CREATE_NEW`.",
+        title="",
     )
     partners: Optional[List[str]] = Field(
         None,
-        description='The list of partners to include into a sync. This parameter only takes effect when `config_method` is set to `CREATE_NEW`.',
-        title='',
+        description="The list of partners to include into a sync. This parameter only takes effect when `config_method` is set to `CREATE_NEW`.",
+        title="",
     )
     update_config_on_each_sync: Optional[bool] = Field(
         None,
-        description='Specifies whether the configuration is updated before each sync or only when the connector settings are saved. This parameter only takes effect when `config_method` is set to `REUSE_EXISTING`. The default value is `true`.',
-        title='',
+        description="Specifies whether the configuration is updated before each sync or only when the connector settings are saved. This parameter only takes effect when `config_method` is set to `REUSE_EXISTING`. The default value is `true`.",
+        title="",
     )
     advertisers: Optional[List[str]] = Field(
         None,
-        description='The list of advertisers to include into a sync. This parameter only takes effect when `config_method` is set to `CREATE_NEW`.',
-        title='',
+        description="The list of advertisers to include into a sync. This parameter only takes effect when `config_method` is set to `CREATE_NEW`.",
+        title="",
     )
-    timeframe_months: Optional[Dict[str, Any]] = Field(None, title='')
+    timeframe_months: Optional[Dict[str, Any]] = Field(None, title="")
     metrics: Optional[List[str]] = Field(
         None,
-        description='The report metrics to include into a sync. The metric names are provided in the API format. This is a required parameter when `config_method` is set to `CREATE_NEW`.',
-        title='',
+        description="The report metrics to include into a sync. The metric names are provided in the API format. This is a required parameter when `config_method` is set to `CREATE_NEW`.",
+        title="",
     )
     report_type: Optional[Dict[str, Any]] = Field(
         None,
-        description='The type of the report to create. This is a required parameter when `config_method` is set to `CREATE_NEW`.',
-        title='',
+        description="The type of the report to create. This is a required parameter when `config_method` is set to `CREATE_NEW`.",
+        title="",
     )
     table: Optional[str] = Field(
         None,
-        description='Destination table. Table is permanent and cannot be changed after connection creation',
-        title='Destination table',
+        description="Destination table. Table is permanent and cannot be changed after connection creation",
+        title="Destination table",
     )
     dimensions: Optional[List[str]] = Field(
         None,
-        description='The report dimensions (filters) to include into a sync. The dimension names are provided in the API format. This is a required parameter when `config_method` is set to `CREATE_NEW`.',
-        title='',
+        description="The report dimensions (filters) to include into a sync. The dimension names are provided in the API format. This is a required parameter when `config_method` is set to `CREATE_NEW`.",
+        title="",
     )
 
 
 class Auth26(BaseModel):
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
 
 
 class GoogleDisplayAndVideo360ConfigV1(BaseModel):
-    config: Optional[Config92] = Field(None, description='')
+    config: Optional[Config92] = Field(None, description="")
     auth: Optional[Auth26] = None
 
 
@@ -5867,101 +5867,101 @@ class GoogleDisplayAndVideo360NewConnectorRequestV1(
 
 
 class Config93(BaseModel):
-    service_account: Optional[str] = Field(None, description='', title='')
+    service_account: Optional[str] = Field(None, description="", title="")
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     append_file_option: Optional[Dict[str, Any]] = Field(
         None,
-        description='If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.',
-        title='',
+        description="If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.",
+        title="",
     )
     prefix: Optional[str] = Field(
         None,
-        description='All files and folders under this folder path will be searched for files to sync, this can be the entire drive link or a folder URL',
-        title='',
+        description="All files and folders under this folder path will be searched for files to sync, this can be the entire drive link or a folder URL",
+        title="",
     )
     pattern: Optional[str] = Field(
         None,
-        description='All files in your search path matching this regular expression will be synced.',
-        title='',
+        description="All files in your search path matching this regular expression will be synced.",
+        title="",
     )
     escape_char: Optional[str] = Field(
         None,
-        description='If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.',
-        title='',
+        description="If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.",
+        title="",
     )
     skip_after: Optional[int] = Field(
         None,
-        description='We will skip over the number of lines specified at the end so as to not introduce aberrant data into your destination.',
-        title='',
+        description="We will skip over the number of lines specified at the end so as to not introduce aberrant data into your destination.",
+        title="",
     )
     skip_before: Optional[int] = Field(
         None,
-        description='We will skip over the number of lines specified before syncing data.',
-        title='',
+        description="We will skip over the number of lines specified before syncing data.",
+        title="",
     )
-    empty_header: Optional[bool] = Field(None, description='', title='')
+    empty_header: Optional[bool] = Field(None, description="", title="")
     null_sequence: Optional[str] = Field(
         None,
-        description='If your CSVs use a special value indicating null, you can specify it here.',
-        title='',
+        description="If your CSVs use a special value indicating null, you can specify it here.",
+        title="",
     )
-    folder_i_d: Optional[str] = Field(None, title='')
+    folder_i_d: Optional[str] = Field(None, title="")
     is_single_table_mode: Optional[bool] = Field(
         None,
-        description='Allows the creation of connector using Merge Mode strategy.',
-        title='',
+        description="Allows the creation of connector using Merge Mode strategy.",
+        title="",
     )
     delimiter: Optional[str] = Field(
         None,
-        description='You can specify the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.',
-        title='',
+        description="You can specify the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.",
+        title="",
     )
     file_type: Optional[Dict[str, Any]] = Field(
         None,
-        description='If your files are saved with improper extensions, you can force them to be synced as the selected filetype.',
-        title='',
+        description="If your files are saved with improper extensions, you can force them to be synced as the selected filetype.",
+        title="",
     )
     on_error: Optional[Dict[str, Any]] = Field(
         None,
-        description='If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as fail unless you are certain that you have undesirable, malformed data.',
-        title='',
+        description="If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as fail unless you are certain that you have undesirable, malformed data.",
+        title="",
     )
     compression: Optional[Dict[str, Any]] = Field(
         None,
-        description='The compression format is used to let Fivetran know that even files without a compression extension should be decompressed using the selected compression format.',
-        title='',
+        description="The compression format is used to let Fivetran know that even files without a compression extension should be decompressed using the selected compression format.",
+        title="",
     )
     archive_pattern: Optional[str] = Field(
         None,
-        description='Files inside of compressed archives with filenames matching this regular expression will be synced.',
-        title='',
+        description="Files inside of compressed archives with filenames matching this regular expression will be synced.",
+        title="",
     )
     table: Optional[str] = Field(
         None,
-        description='Destination table. Table is permanent and cannot be changed after connection creation',
-        title='Destination table',
+        description="Destination table. Table is permanent and cannot be changed after connection creation",
+        title="Destination table",
     )
 
 
 class Auth27(BaseModel):
     access_token: Optional[str] = Field(
         None,
-        description='The long-lived Access token carries the information necessary to access API resources',
+        description="The long-lived Access token carries the information necessary to access API resources",
     )
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
-    realm_id: Optional[str] = Field(None, description='Realm ID of your application.')
+    realm_id: Optional[str] = Field(None, description="Realm ID of your application.")
 
 
 class GoogleDriveConfigV1(BaseModel):
-    config: Optional[Config93] = Field(None, description='')
+    config: Optional[Config93] = Field(None, description="")
     auth: Optional[Auth27] = None
 
 
@@ -5971,22 +5971,22 @@ class GoogleDriveNewConnectorRequestV1(NewConnectorRequestV1, GoogleDriveConfigV
 
 class Config94(BaseModel):
     bucket: Optional[str] = Field(
-        None, description='The Google Cloud Storage source bucket.', title=''
+        None, description="The Google Cloud Storage source bucket.", title=""
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
 
 
 class ClientAccess17(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
@@ -5995,7 +5995,7 @@ class Auth28(BaseModel):
 
 
 class GooglePlayConfigV1(BaseModel):
-    config: Optional[Config94] = Field(None, description='')
+    config: Optional[Config94] = Field(None, description="")
     auth: Optional[Auth28] = None
 
 
@@ -6006,60 +6006,60 @@ class GooglePlayNewConnectorRequestV1(NewConnectorRequestV1, GooglePlayConfigV1)
 class Report3(BaseModel):
     aggregation: Optional[Dict[str, Any]] = Field(
         None,
-        description='(Optional) Aggregation type. Supported only for the `SEARCH_RESULTS` report type',
-        title='',
+        description="(Optional) Aggregation type. Supported only for the `SEARCH_RESULTS` report type",
+        title="",
     )
     report_type: Optional[Dict[str, Any]] = Field(
-        None, description='The type of report', title=''
+        None, description="The type of report", title=""
     )
     search_types: Optional[List[Dict[str, Any]]] = Field(
         None,
-        description='Search types included to sync. Supported only for the `SEARCH_RESULTS` report type',
-        title='',
+        description="Search types included to sync. Supported only for the `SEARCH_RESULTS` report type",
+        title="",
     )
     table: Optional[str] = Field(
         None,
-        description='The name of a table within the schema to which connector syncs the data of a given report.',
-        title='',
+        description="The name of a table within the schema to which connector syncs the data of a given report.",
+        title="",
     )
     dimensions: Optional[List[Dict[str, Any]]] = Field(
-        None, description='The report dimensions included to sync.', title=''
+        None, description="The report dimensions included to sync.", title=""
     )
 
 
 class Config95(BaseModel):
     sync_mode: Optional[Dict[str, Any]] = Field(
-        None, description='Whether to sync all sites or specific sites.', title=''
+        None, description="Whether to sync all sites or specific sites.", title=""
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     reports: Optional[List[Report3]] = Field(
         None,
-        description='The list of reports. Each report corresponds to a table within the schema to which connector syncs the data.',
-        title='',
+        description="The list of reports. Each report corresponds to a table within the schema to which connector syncs the data.",
+        title="",
     )
     timeframe_months: Optional[Dict[str, Any]] = Field(
         None,
         description="Number of months of reporting data you'd like to include in your initial sync. This cannot be modified once connection is created.",
-        title='',
+        title="",
     )
     site_urls: Optional[List[str]] = Field(
         None,
-        description='Specific Site URLs to sync. Must be populated if `sync_mode` is set to `SpecificSites`.',
-        title='',
+        description="Specific Site URLs to sync. Must be populated if `sync_mode` is set to `SpecificSites`.",
+        title="",
     )
 
 
 class ClientAccess18(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
@@ -6068,7 +6068,7 @@ class Auth29(BaseModel):
 
 
 class GoogleSearchConsoleConfigV1(BaseModel):
-    config: Optional[Config95] = Field(None, description='')
+    config: Optional[Config95] = Field(None, description="")
     auth: Optional[Auth29] = None
 
 
@@ -6081,51 +6081,51 @@ class GoogleSearchConsoleNewConnectorRequestV1(
 class Config96(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     auth_type: Optional[Dict[str, Any]] = Field(
         None,
-        description='The `OAuth` value must be specified for this type of authorization.',
-        title='',
+        description="The `OAuth` value must be specified for this type of authorization.",
+        title="",
     )
     named_range: Optional[str] = Field(
         None,
-        description='The name of the named data range on the sheet that contains the data to be synced.',
-        title='',
+        description="The name of the named data range on the sheet that contains the data to be synced.",
+        title="",
     )
     sheet_id: Optional[str] = Field(
         None,
         description="The URL of the sheet that can be copied from the browser address bar, or the ID of the sheet that can be found in the sheet's URL between **/d/** and **/edit**.",
-        title='',
+        title="",
     )
     table: Optional[str] = Field(
         None,
-        description='Destination table. Table is permanent and cannot be changed after connection creation',
-        title='Destination table',
+        description="Destination table. Table is permanent and cannot be changed after connection creation",
+        title="Destination table",
     )
 
 
 class ClientAccess19(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth30(BaseModel):
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
     client_access: Optional[ClientAccess19] = None
 
 
 class GoogleSheetsConfigV1(BaseModel):
-    config: Optional[Config96] = Field(None, description='')
+    config: Optional[Config96] = Field(None, description="")
     auth: Optional[Auth30] = None
 
 
@@ -6136,17 +6136,17 @@ class GoogleSheetsNewConnectorRequestV1(NewConnectorRequestV1, GoogleSheetsConfi
 class Config97(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     api_key: Optional[str] = Field(
-        None, description='Your Greenhouse API key.', title=''
+        None, description="Your Greenhouse API key.", title=""
     )
 
 
 class GreenhouseConfigV1(BaseModel):
-    config: Optional[Config97] = Field(None, description='')
+    config: Optional[Config97] = Field(None, description="")
 
 
 class GreenhouseNewConnectorRequestV1(NewConnectorRequestV1, GreenhouseConfigV1):
@@ -6154,20 +6154,20 @@ class GreenhouseNewConnectorRequestV1(NewConnectorRequestV1, GreenhouseConfigV1)
 
 
 class Config98(BaseModel):
-    bucket: Optional[str] = Field(None, description='The S3 bucket name.', title='')
+    bucket: Optional[str] = Field(None, description="The S3 bucket name.", title="")
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     role_arn: Optional[str] = Field(
-        None, description='The Role ARN required for authentication.', title=''
+        None, description="The Role ARN required for authentication.", title=""
     )
 
 
 class HeapConfigV1(BaseModel):
-    config: Optional[Config98] = Field(None, description='')
+    config: Optional[Config98] = Field(None, description="")
 
 
 class HeapNewConnectorRequestV1(NewConnectorRequestV1, HeapConfigV1):
@@ -6177,27 +6177,27 @@ class HeapNewConnectorRequestV1(NewConnectorRequestV1, HeapConfigV1):
 class Config99(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    api_key: Optional[str] = Field(None, description='Your Height API key.', title='')
+    api_key: Optional[str] = Field(None, description="Your Height API key.", title="")
 
 
 class Auth31(BaseModel):
     access_token: Optional[str] = Field(
         None,
-        description='The long-lived Access token carries the information necessary to access API resources',
+        description="The long-lived Access token carries the information necessary to access API resources",
     )
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
-    realm_id: Optional[str] = Field(None, description='Realm ID of your application.')
+    realm_id: Optional[str] = Field(None, description="Realm ID of your application.")
 
 
 class HeightConfigV1(BaseModel):
-    config: Optional[Config99] = Field(None, description='')
+    config: Optional[Config99] = Field(None, description="")
     auth: Optional[Auth31] = None
 
 
@@ -6208,31 +6208,31 @@ class HeightNewConnectorRequestV1(NewConnectorRequestV1, HeightConfigV1):
 class Config100(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
 
 
 class ClientAccess20(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth32(BaseModel):
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
     client_access: Optional[ClientAccess20] = None
 
 
 class HelpscoutConfigV1(BaseModel):
-    config: Optional[Config100] = Field(None, description='')
+    config: Optional[Config100] = Field(None, description="")
     auth: Optional[Auth32] = None
 
 
@@ -6243,38 +6243,38 @@ class HelpscoutNewConnectorRequestV1(NewConnectorRequestV1, HelpscoutConfigV1):
 class Config101(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     consumer_group: Optional[str] = Field(
-        None, description='Heroku Kafka consumer group name.', title=''
+        None, description="Heroku Kafka consumer group name.", title=""
     )
     servers: Optional[List[str]] = Field(
         None,
-        description='Comma-separated list of Heroku Kafka servers in the format `server:port`.',
-        title='',
+        description="Comma-separated list of Heroku Kafka servers in the format `server:port`.",
+        title="",
     )
     sync_type: Optional[Dict[str, Any]] = Field(
         None,
-        description='Heroku Kafka sync type.  Unpacked messages must be valid JSON.',
-        title='',
+        description="Heroku Kafka sync type.  Unpacked messages must be valid JSON.",
+        title="",
     )
-    client_cert: Optional[str] = Field(None, title='')
-    key_store_type: Optional[str] = Field(None, title='')
-    trust_store_type: Optional[str] = Field(None, title='')
+    client_cert: Optional[str] = Field(None, title="")
+    key_store_type: Optional[str] = Field(None, title="")
+    trust_store_type: Optional[str] = Field(None, title="")
     security_protocol: Optional[Dict[str, Any]] = Field(
-        None, description='Security protocol for Heroku Kafka interaction.', title=''
+        None, description="Security protocol for Heroku Kafka interaction.", title=""
     )
-    client_cert_key: Optional[str] = Field(None, title='')
+    client_cert_key: Optional[str] = Field(None, title="")
     message_type: Optional[Dict[str, Any]] = Field(
-        None, description='Heroku Kafka message type.', title=''
+        None, description="Heroku Kafka message type.", title=""
     )
-    trusted_cert: Optional[str] = Field(None, title='')
+    trusted_cert: Optional[str] = Field(None, title="")
 
 
 class HerokuKafkaConfigV1(BaseModel):
-    config: Optional[Config101] = Field(None, description='')
+    config: Optional[Config101] = Field(None, description="")
 
 
 class HerokuKafkaNewConnectorRequestV1(NewConnectorRequestV1, HerokuKafkaConfigV1):
@@ -6282,56 +6282,56 @@ class HerokuKafkaNewConnectorRequestV1(NewConnectorRequestV1, HerokuKafkaConfigV
 
 
 class Config102(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
-    publication_name: Optional[str] = Field(None, description='', title='')
+    public_key: Optional[str] = Field(None, description="", title="")
+    publication_name: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
         description="Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-        title='',
+        title="",
     )
     update_method: Optional[Dict[str, Any]] = Field(
         None,
         description='The method to detect new or changed rows. <br>Specify only for `"service": "postgres"` or `"service": "postgres_rds"`. <br>Supported values:<br>`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.<br>`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.<br>`WAL_PGOUTPUT` - <span class="beta tag">BETA</span> logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.',
-        title='',
+        title="",
     )
-    always_encrypted: Optional[bool] = Field(None, title='')
+    always_encrypted: Optional[bool] = Field(None, title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH user, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='The database name.', title='')
-    password: Optional[str] = Field(None, description="The user's password.", title='')
+    database: Optional[str] = Field(None, description="The database name.", title="")
+    password: Optional[str] = Field(None, description="The user's password.", title="")
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH port, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH port, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    heroku_rds_hosted: Optional[Dict[str, Any]] = Field(None, title='')
-    port: Optional[int] = Field(None, description='The port number.', title='')
+    heroku_rds_hosted: Optional[Dict[str, Any]] = Field(None, title="")
+    port: Optional[int] = Field(None, description="The port number.", title="")
     host: Optional[str] = Field(
-        None, description='DB instance host or IP address.', title=''
+        None, description="DB instance host or IP address.", title=""
     )
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).',
-        title='',
+        description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+        title="",
     )
     schema_prefix: Optional[str] = Field(
         None,
         description="Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-        title='Destination schema prefix',
+        title="Destination schema prefix",
     )
     replication_slot: Optional[str] = Field(
         None,
         description='Replication slot name. Specify only for `"updated_method": "WAL"` or `"WAL_PGOUTPUT"`.',
-        title='',
+        title="",
     )
-    user: Optional[str] = Field(None, description='The user name.', title='')
+    user: Optional[str] = Field(None, description="The user name.", title="")
 
 
 class HerokuPostgresConfigV1(BaseModel):
-    config: Optional[Config102] = Field(None, description='')
+    config: Optional[Config102] = Field(None, description="")
 
 
 class HerokuPostgresNewConnectorRequestV1(
@@ -6343,31 +6343,31 @@ class HerokuPostgresNewConnectorRequestV1(
 class Config103(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
 
 
 class ClientAccess21(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth33(BaseModel):
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
     client_access: Optional[ClientAccess21] = None
 
 
 class HubspotConfigV1(BaseModel):
-    config: Optional[Config103] = Field(None, description='')
+    config: Optional[Config103] = Field(None, description="")
     auth: Optional[Auth33] = None
 
 
@@ -6378,33 +6378,33 @@ class HubspotNewConnectorRequestV1(NewConnectorRequestV1, HubspotConfigV1):
 class Config104(BaseModel):
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
-        description='Whether to sync all accounts or specific accounts. Default value: `AllAccounts`.',
-        title='',
+        description="Whether to sync all accounts or specific accounts. Default value: `AllAccounts`.",
+        title="",
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     timeframe_months: Optional[Dict[str, Any]] = Field(
         None,
         description="Number of months of data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `SIX`.",
-        title='',
+        title="",
     )
     accounts: Optional[List[str]] = Field(
         None,
-        description='Specific accounts to sync. Must be populated if `sync_mode` is set to `SpecificAccounts`.',
-        title='',
+        description="Specific accounts to sync. Must be populated if `sync_mode` is set to `SpecificAccounts`.",
+        title="",
     )
 
 
 class ClientAccess22(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
@@ -6413,7 +6413,7 @@ class Auth34(BaseModel):
 
 
 class InstagramBusinessConfigV1(BaseModel):
-    config: Optional[Config104] = Field(None, description='')
+    config: Optional[Config104] = Field(None, description="")
     auth: Optional[Auth34] = None
 
 
@@ -6426,14 +6426,14 @@ class InstagramBusinessNewConnectorRequestV1(
 class Config105(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
 
 
 class IntercomConfigV1(BaseModel):
-    config: Optional[Config105] = Field(None, description='')
+    config: Optional[Config105] = Field(None, description="")
 
 
 class IntercomNewConnectorRequestV1(NewConnectorRequestV1, IntercomConfigV1):
@@ -6443,16 +6443,16 @@ class IntercomNewConnectorRequestV1(NewConnectorRequestV1, IntercomConfigV1):
 class Config106(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    endpoint: Optional[str] = Field(None, title='')
-    api_key: Optional[str] = Field(None, description='Your Iterable API key.', title='')
+    endpoint: Optional[str] = Field(None, title="")
+    api_key: Optional[str] = Field(None, description="Your Iterable API key.", title="")
 
 
 class IterableConfigV1(BaseModel):
-    config: Optional[Config106] = Field(None, description='')
+    config: Optional[Config106] = Field(None, description="")
 
 
 class IterableNewConnectorRequestV1(NewConnectorRequestV1, IterableConfigV1):
@@ -6462,53 +6462,53 @@ class IterableNewConnectorRequestV1(NewConnectorRequestV1, IterableConfigV1):
 class Config107(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     app_specific_password: Optional[str] = Field(
-        None, description='Your app-specific password', title=''
+        None, description="Your app-specific password", title=""
     )
     sales_accounts: Optional[List[str]] = Field(
         None,
-        description='Specific sales account to sync. Must be populated if `sales_account_sync_mode` is set to `SpecificSalesAccounts`.',
-        title='',
+        description="Specific sales account to sync. Must be populated if `sales_account_sync_mode` is set to `SpecificSalesAccounts`.",
+        title="",
     )
     app_sync_mode: Optional[Dict[str, Any]] = Field(
-        None, description='Whether to sync all apps or specific apps.', title=''
+        None, description="Whether to sync all apps or specific apps.", title=""
     )
-    account_sync_mode: Optional[Dict[str, Any]] = Field(None, title='')
-    password: Optional[str] = Field(None, description='Your password', title='')
+    account_sync_mode: Optional[Dict[str, Any]] = Field(None, title="")
+    password: Optional[str] = Field(None, description="Your password", title="")
     finance_account_sync_mode: Optional[Dict[str, Any]] = Field(
         None,
-        description='Whether to sync all finance accounts or specific finance accounts.',
-        title='',
+        description="Whether to sync all finance accounts or specific finance accounts.",
+        title="",
     )
     timeframe_months: Optional[Dict[str, Any]] = Field(
-        None, description='Historical sync time frame in months.', title=''
+        None, description="Historical sync time frame in months.", title=""
     )
     finance_accounts: Optional[List[str]] = Field(
         None,
-        description='Specific finance accounts to sync. Must be populated if `finance_account_sync_mode` is set to `SpecificFinanceAccounts`.',
-        title='',
+        description="Specific finance accounts to sync. Must be populated if `finance_account_sync_mode` is set to `SpecificFinanceAccounts`.",
+        title="",
     )
-    phone_number: Optional[str] = Field(None, title='')
-    accounts: Optional[List[str]] = Field(None, title='')
+    phone_number: Optional[str] = Field(None, title="")
+    accounts: Optional[List[str]] = Field(None, title="")
     sales_account_sync_mode: Optional[Dict[str, Any]] = Field(
         None,
-        description='Whether to sync all sales accounts or specific sales accounts.',
-        title='',
+        description="Whether to sync all sales accounts or specific sales accounts.",
+        title="",
     )
-    username: Optional[str] = Field(None, description='Your Apple ID', title='')
+    username: Optional[str] = Field(None, description="Your Apple ID", title="")
     apps: Optional[List[int]] = Field(
         None,
-        description='Specific apps to sync. Must be populated if `app_sync_mode` is set to `SpecificApps`.',
-        title='',
+        description="Specific apps to sync. Must be populated if `app_sync_mode` is set to `SpecificApps`.",
+        title="",
     )
 
 
 class ItunesConnectConfigV1(BaseModel):
-    config: Optional[Config107] = Field(None, description='')
+    config: Optional[Config107] = Field(None, description="")
 
 
 class ItunesConnectNewConnectorRequestV1(NewConnectorRequestV1, ItunesConnectConfigV1):
@@ -6518,32 +6518,32 @@ class ItunesConnectNewConnectorRequestV1(NewConnectorRequestV1, ItunesConnectCon
 class Config108(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     path: Optional[str] = Field(
         None,
-        description='A URL subdirectory where the Jira instance is working.',
-        title='',
+        description="A URL subdirectory where the Jira instance is working.",
+        title="",
     )
     password: Optional[str] = Field(
-        None, description="The Jira user's password.", title=''
+        None, description="The Jira user's password.", title=""
     )
     port: Optional[int] = Field(
-        None, description='The Jira service host port.', title=''
+        None, description="The Jira service host port.", title=""
     )
     on_premise: Optional[bool] = Field(
-        None, description='Whether the Jira instance is local or in cloud.', title=''
+        None, description="Whether the Jira instance is local or in cloud.", title=""
     )
     host: Optional[str] = Field(
-        None, description='The Jira service host address.', title=''
+        None, description="The Jira service host address.", title=""
     )
-    user: Optional[str] = Field(None, description='The Jira username.', title='')
+    user: Optional[str] = Field(None, description="The Jira username.", title="")
 
 
 class JiraConfigV1(BaseModel):
-    config: Optional[Config108] = Field(None, description='')
+    config: Optional[Config108] = Field(None, description="")
 
 
 class JiraNewConnectorRequestV1(NewConnectorRequestV1, JiraConfigV1):
@@ -6553,45 +6553,45 @@ class JiraNewConnectorRequestV1(NewConnectorRequestV1, JiraConfigV1):
 class Config109(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    append_file_option: Optional[Dict[str, Any]] = Field(None, title='')
+    append_file_option: Optional[Dict[str, Any]] = Field(None, title="")
     prefix: Optional[str] = Field(
         None,
-        description='Folder path to the Kinesis files within the bucket.',
-        title='',
+        description="Folder path to the Kinesis files within the bucket.",
+        title="",
     )
-    pattern: Optional[str] = Field(None, title='')
-    escape_char: Optional[str] = Field(None, title='')
-    external_id: Optional[str] = Field(None, description='', title='')
-    skip_after: Optional[int] = Field(None, description='', title='')
-    list_strategy: Optional[Dict[str, Any]] = Field(None, description='', title='')
+    pattern: Optional[str] = Field(None, title="")
+    escape_char: Optional[str] = Field(None, title="")
+    external_id: Optional[str] = Field(None, description="", title="")
+    skip_after: Optional[int] = Field(None, description="", title="")
+    list_strategy: Optional[Dict[str, Any]] = Field(None, description="", title="")
     bucket: Optional[str] = Field(
-        None, description='The name of the Kinesis bucket.', title=''
+        None, description="The name of the Kinesis bucket.", title=""
     )
-    empty_header: Optional[bool] = Field(None, title='')
-    skip_before: Optional[int] = Field(None, description='', title='')
-    null_sequence: Optional[str] = Field(None, title='')
+    empty_header: Optional[bool] = Field(None, title="")
+    skip_before: Optional[int] = Field(None, description="", title="")
+    null_sequence: Optional[str] = Field(None, title="")
     role_arn: Optional[str] = Field(
-        None, description='The Role ARN required for authentication.', title=''
+        None, description="The Role ARN required for authentication.", title=""
     )
-    file_type: Optional[Dict[str, Any]] = Field(None, title='')
-    delimiter: Optional[str] = Field(None, title='')
-    is_public: Optional[bool] = Field(None, description='', title='')
-    on_error: Optional[Dict[str, Any]] = Field(None, title='')
-    compression: Optional[Dict[str, Any]] = Field(None, title='')
+    file_type: Optional[Dict[str, Any]] = Field(None, title="")
+    delimiter: Optional[str] = Field(None, title="")
+    is_public: Optional[bool] = Field(None, description="", title="")
+    on_error: Optional[Dict[str, Any]] = Field(None, title="")
+    compression: Optional[Dict[str, Any]] = Field(None, title="")
     table: Optional[str] = Field(
         None,
-        description='Destination table. Table is permanent and cannot be changed after connection creation',
-        title='Destination table',
+        description="Destination table. Table is permanent and cannot be changed after connection creation",
+        title="Destination table",
     )
-    archive_pattern: Optional[str] = Field(None, title='')
+    archive_pattern: Optional[str] = Field(None, title="")
 
 
 class KinesisConfigV1(BaseModel):
-    config: Optional[Config109] = Field(None, description='')
+    config: Optional[Config109] = Field(None, description="")
 
 
 class KinesisNewConnectorRequestV1(NewConnectorRequestV1, KinesisConfigV1):
@@ -6601,15 +6601,15 @@ class KinesisNewConnectorRequestV1(NewConnectorRequestV1, KinesisConfigV1):
 class Config110(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    api_key: Optional[str] = Field(None, description='Your Klaviyo API key.', title='')
+    api_key: Optional[str] = Field(None, description="Your Klaviyo API key.", title="")
 
 
 class KlaviyoConfigV1(BaseModel):
-    config: Optional[Config110] = Field(None, description='')
+    config: Optional[Config110] = Field(None, description="")
 
 
 class KlaviyoNewConnectorRequestV1(NewConnectorRequestV1, KlaviyoConfigV1):
@@ -6618,20 +6618,20 @@ class KlaviyoNewConnectorRequestV1(NewConnectorRequestV1, KlaviyoConfigV1):
 
 class Config111(BaseModel):
     access_token: Optional[str] = Field(
-        None, description='Your Kustomer API key.', title=''
+        None, description="Your Kustomer API key.", title=""
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    eu_region: Optional[bool] = Field(None, title='')
-    domain: Optional[str] = Field(None, title='')
+    eu_region: Optional[bool] = Field(None, title="")
+    domain: Optional[str] = Field(None, title="")
 
 
 class KustomerConfigV1(BaseModel):
-    config: Optional[Config111] = Field(None, description='')
+    config: Optional[Config111] = Field(None, description="")
 
 
 class KustomerNewConnectorRequestV1(NewConnectorRequestV1, KustomerConfigV1):
@@ -6641,15 +6641,15 @@ class KustomerNewConnectorRequestV1(NewConnectorRequestV1, KustomerConfigV1):
 class Config112(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    api_key: Optional[str] = Field(None, description='Your Lever API key.', title='')
+    api_key: Optional[str] = Field(None, description="Your Lever API key.", title="")
 
 
 class LeverConfigV1(BaseModel):
-    config: Optional[Config112] = Field(None, description='')
+    config: Optional[Config112] = Field(None, description="")
 
 
 class LeverNewConnectorRequestV1(NewConnectorRequestV1, LeverConfigV1):
@@ -6659,14 +6659,14 @@ class LeverNewConnectorRequestV1(NewConnectorRequestV1, LeverConfigV1):
 class Config113(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
 
 
 class LightSpeedRetailConfigV1(BaseModel):
-    config: Optional[Config113] = Field(None, description='')
+    config: Optional[Config113] = Field(None, description="")
 
 
 class LightSpeedRetailNewConnectorRequestV1(
@@ -6678,61 +6678,61 @@ class LightSpeedRetailNewConnectorRequestV1(
 class Config114(BaseModel):
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
-        description='Whether to sync all accounts or specific accounts. Default value: `AllAccounts`',
-        title='',
+        description="Whether to sync all accounts or specific accounts. Default value: `AllAccounts`",
+        title="",
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     reports: Optional[List[str]] = Field(
         None,
         description="Specific analytics reports to sync. Must be populated if adAnalytics is set to 'SpecificReports'.",
-        title='',
+        title="",
     )
     post_click_attribution_window_size: Optional[Dict[str, Any]] = Field(
         None,
-        description='The time period to attribute conversions based on clicks. Default value: `DAY_30`',
-        title='',
+        description="The time period to attribute conversions based on clicks. Default value: `DAY_30`",
+        title="",
     )
     ad_analytics: Optional[Dict[str, Any]] = Field(
         None,
-        description='Whether to sync all analytic reports or specific. Default value: `AllReports`',
-        title='',
+        description="Whether to sync all analytic reports or specific. Default value: `AllReports`",
+        title="",
     )
     view_through_attribution_window_size: Optional[Dict[str, Any]] = Field(
         None,
-        description='The time period to attribute conversions based on views. Default value: `DAY_7`',
-        title='',
+        description="The time period to attribute conversions based on views. Default value: `DAY_7`",
+        title="",
     )
     accounts: Optional[List[str]] = Field(
         None,
-        description='Specific Account IDs to sync. Must be populated if `syncMode` is set to `SpecificAccounts`.',
-        title='',
+        description="Specific Account IDs to sync. Must be populated if `syncMode` is set to `SpecificAccounts`.",
+        title="",
     )
 
 
 class ClientAccess23(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth35(BaseModel):
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
     client_access: Optional[ClientAccess23] = None
 
 
 class LinkedinAdsConfigV1(BaseModel):
-    config: Optional[Config114] = Field(None, description='')
+    config: Optional[Config114] = Field(None, description="")
     auth: Optional[Auth35] = None
 
 
@@ -6743,31 +6743,31 @@ class LinkedinAdsNewConnectorRequestV1(NewConnectorRequestV1, LinkedinAdsConfigV
 class Config115(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
 
 
 class ClientAccess24(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth36(BaseModel):
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
     client_access: Optional[ClientAccess24] = None
 
 
 class LinkedinCompanyPagesConfigV1(BaseModel):
-    config: Optional[Config115] = Field(None, description='')
+    config: Optional[Config115] = Field(None, description="")
     auth: Optional[Auth36] = None
 
 
@@ -6778,49 +6778,49 @@ class LinkedinCompanyPagesNewConnectorRequestV1(
 
 
 class Config116(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
+    public_key: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
         description="Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-        title='',
+        title="",
     )
     update_method: Optional[Dict[str, Any]] = Field(
         None,
         description="The method to detect new or changed rows. <br>Supported values:<br>`BINLOG` - Fivetran uses your binary logs (also called binlogs) to request only the data that has changed since our last sync. This is the default value if no value is specified. <br>`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
-        title='',
+        title="",
     )
-    always_encrypted: Optional[bool] = Field(None, title='')
+    always_encrypted: Optional[bool] = Field(None, title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH user, specify only to connect via an SSH tunnel.",
+        title="",
     )
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH port, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH port, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='The database name.', title='')
-    password: Optional[str] = Field(None, description="The user's password.", title='')
-    port: Optional[int] = Field(None, description='The port number.', title='')
+    database: Optional[str] = Field(None, description="The database name.", title="")
+    password: Optional[str] = Field(None, description="The user's password.", title="")
+    port: Optional[int] = Field(None, description="The port number.", title="")
     host: Optional[str] = Field(
-        None, description='DB instance host or IP address.', title=''
+        None, description="DB instance host or IP address.", title=""
     )
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).',
-        title='',
+        description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+        title="",
     )
     schema_prefix: Optional[str] = Field(
         None,
         description="Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-        title='Destination schema prefix',
+        title="Destination schema prefix",
     )
-    user: Optional[str] = Field(None, description='The user name.', title='')
+    user: Optional[str] = Field(None, description="The user name.", title="")
 
 
 class MagentoMysqlConfigV1(BaseModel):
-    config: Optional[Config116] = Field(None, description='')
+    config: Optional[Config116] = Field(None, description="")
 
 
 class MagentoMysqlNewConnectorRequestV1(NewConnectorRequestV1, MagentoMysqlConfigV1):
@@ -6828,49 +6828,49 @@ class MagentoMysqlNewConnectorRequestV1(NewConnectorRequestV1, MagentoMysqlConfi
 
 
 class Config117(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
+    public_key: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
         description="Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-        title='',
+        title="",
     )
     update_method: Optional[Dict[str, Any]] = Field(
         None,
         description="The method to detect new or changed rows. <br>Supported values:<br>`BINLOG` - Fivetran uses your binary logs (also called binlogs) to request only the data that has changed since our last sync. This is the default value if no value is specified. <br>`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
-        title='',
+        title="",
     )
-    always_encrypted: Optional[bool] = Field(None, title='')
+    always_encrypted: Optional[bool] = Field(None, title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH user, specify only to connect via an SSH tunnel.",
+        title="",
     )
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH port, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH port, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='The database name.', title='')
-    password: Optional[str] = Field(None, description="The user's password.", title='')
-    port: Optional[int] = Field(None, description='The port number.', title='')
+    database: Optional[str] = Field(None, description="The database name.", title="")
+    password: Optional[str] = Field(None, description="The user's password.", title="")
+    port: Optional[int] = Field(None, description="The port number.", title="")
     host: Optional[str] = Field(
-        None, description='DB instance host or IP address.', title=''
+        None, description="DB instance host or IP address.", title=""
     )
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).',
-        title='',
+        description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+        title="",
     )
     schema_prefix: Optional[str] = Field(
         None,
         description="Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-        title='Destination schema prefix',
+        title="Destination schema prefix",
     )
-    user: Optional[str] = Field(None, description='The user name.', title='')
+    user: Optional[str] = Field(None, description="The user name.", title="")
 
 
 class MagentoMysqlRdsConfigV1(BaseModel):
-    config: Optional[Config117] = Field(None, description='')
+    config: Optional[Config117] = Field(None, description="")
 
 
 class MagentoMysqlRdsNewConnectorRequestV1(
@@ -6882,14 +6882,14 @@ class MagentoMysqlRdsNewConnectorRequestV1(
 class Config118(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
 
 
 class MailchimpConfigV1(BaseModel):
-    config: Optional[Config118] = Field(None, description='')
+    config: Optional[Config118] = Field(None, description="")
 
 
 class MailchimpNewConnectorRequestV1(NewConnectorRequestV1, MailchimpConfigV1):
@@ -6898,24 +6898,24 @@ class MailchimpNewConnectorRequestV1(NewConnectorRequestV1, MailchimpConfigV1):
 
 class Config119(BaseModel):
     use_api_keys: Optional[bool] = Field(
-        None, description='Whether to use multiple API keys for interaction.', title=''
+        None, description="Whether to use multiple API keys for interaction.", title=""
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    api_key: Optional[str] = Field(None, description='Your Mandrill API key.', title='')
+    api_key: Optional[str] = Field(None, description="Your Mandrill API key.", title="")
     api_keys: Optional[List[str]] = Field(
         None,
-        description='Comma-separated list of API keys.  Required if `use_api_keys` is set to `true`.',
-        title='',
+        description="Comma-separated list of API keys.  Required if `use_api_keys` is set to `true`.",
+        title="",
     )
 
 
 class MandrillConfigV1(BaseModel):
-    config: Optional[Config119] = Field(None, description='')
+    config: Optional[Config119] = Field(None, description="")
 
 
 class MandrillNewConnectorRequestV1(NewConnectorRequestV1, MandrillConfigV1):
@@ -6923,49 +6923,49 @@ class MandrillNewConnectorRequestV1(NewConnectorRequestV1, MandrillConfigV1):
 
 
 class Config120(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
+    public_key: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
         description="Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-        title='',
+        title="",
     )
     update_method: Optional[Dict[str, Any]] = Field(
         None,
         description="The method to detect new or changed rows. <br>Supported values:<br>`BINLOG` - Fivetran uses your binary logs (also called binlogs) to request only the data that has changed since our last sync. This is the default value if no value is specified. <br>`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
-        title='',
+        title="",
     )
-    always_encrypted: Optional[bool] = Field(None, title='')
+    always_encrypted: Optional[bool] = Field(None, title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH user, specify only to connect via an SSH tunnel.",
+        title="",
     )
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH port, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH port, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='The database name.', title='')
-    password: Optional[str] = Field(None, description="The user's password.", title='')
-    port: Optional[int] = Field(None, description='The port number.', title='')
+    database: Optional[str] = Field(None, description="The database name.", title="")
+    password: Optional[str] = Field(None, description="The user's password.", title="")
+    port: Optional[int] = Field(None, description="The port number.", title="")
     host: Optional[str] = Field(
-        None, description='DB instance host or IP address.', title=''
+        None, description="DB instance host or IP address.", title=""
     )
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).',
-        title='',
+        description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+        title="",
     )
     schema_prefix: Optional[str] = Field(
         None,
         description="Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-        title='Destination schema prefix',
+        title="Destination schema prefix",
     )
-    user: Optional[str] = Field(None, description='The user name.', title='')
+    user: Optional[str] = Field(None, description="The user name.", title="")
 
 
 class MariaConfigV1(BaseModel):
-    config: Optional[Config120] = Field(None, description='')
+    config: Optional[Config120] = Field(None, description="")
 
 
 class MariaNewConnectorRequestV1(NewConnectorRequestV1, MariaConfigV1):
@@ -6973,49 +6973,49 @@ class MariaNewConnectorRequestV1(NewConnectorRequestV1, MariaConfigV1):
 
 
 class Config121(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
+    public_key: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
         description="Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-        title='',
+        title="",
     )
     update_method: Optional[Dict[str, Any]] = Field(
         None,
         description="The method to detect new or changed rows. <br>Supported values:<br>`BINLOG` - Fivetran uses your binary logs (also called binlogs) to request only the data that has changed since our last sync. This is the default value if no value is specified. <br>`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
-        title='',
+        title="",
     )
-    always_encrypted: Optional[bool] = Field(None, title='')
+    always_encrypted: Optional[bool] = Field(None, title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH user, specify only to connect via an SSH tunnel.",
+        title="",
     )
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH port, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH port, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='The database name.', title='')
-    password: Optional[str] = Field(None, description="The user's password.", title='')
-    port: Optional[int] = Field(None, description='The port number.', title='')
+    database: Optional[str] = Field(None, description="The database name.", title="")
+    password: Optional[str] = Field(None, description="The user's password.", title="")
+    port: Optional[int] = Field(None, description="The port number.", title="")
     host: Optional[str] = Field(
-        None, description='DB instance host or IP address.', title=''
+        None, description="DB instance host or IP address.", title=""
     )
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).',
-        title='',
+        description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+        title="",
     )
     schema_prefix: Optional[str] = Field(
         None,
         description="Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-        title='Destination schema prefix',
+        title="Destination schema prefix",
     )
-    user: Optional[str] = Field(None, description='The user name.', title='')
+    user: Optional[str] = Field(None, description="The user name.", title="")
 
 
 class MariaAzureConfigV1(BaseModel):
-    config: Optional[Config121] = Field(None, description='')
+    config: Optional[Config121] = Field(None, description="")
 
 
 class MariaAzureNewConnectorRequestV1(NewConnectorRequestV1, MariaAzureConfigV1):
@@ -7023,49 +7023,49 @@ class MariaAzureNewConnectorRequestV1(NewConnectorRequestV1, MariaAzureConfigV1)
 
 
 class Config122(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
+    public_key: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
         description="Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-        title='',
+        title="",
     )
     update_method: Optional[Dict[str, Any]] = Field(
         None,
         description="The method to detect new or changed rows. <br>Supported values:<br>`BINLOG` - Fivetran uses your binary logs (also called binlogs) to request only the data that has changed since our last sync. This is the default value if no value is specified. <br>`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
-        title='',
+        title="",
     )
-    always_encrypted: Optional[bool] = Field(None, title='')
+    always_encrypted: Optional[bool] = Field(None, title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH user, specify only to connect via an SSH tunnel.",
+        title="",
     )
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH port, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH port, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='The database name.', title='')
-    password: Optional[str] = Field(None, description="The user's password.", title='')
-    port: Optional[int] = Field(None, description='The port number.', title='')
+    database: Optional[str] = Field(None, description="The database name.", title="")
+    password: Optional[str] = Field(None, description="The user's password.", title="")
+    port: Optional[int] = Field(None, description="The port number.", title="")
     host: Optional[str] = Field(
-        None, description='DB instance host or IP address.', title=''
+        None, description="DB instance host or IP address.", title=""
     )
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).',
-        title='',
+        description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+        title="",
     )
     schema_prefix: Optional[str] = Field(
         None,
         description="Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-        title='Destination schema prefix',
+        title="Destination schema prefix",
     )
-    user: Optional[str] = Field(None, description='The user name.', title='')
+    user: Optional[str] = Field(None, description="The user name.", title="")
 
 
 class MariaRdsConfigV1(BaseModel):
-    config: Optional[Config122] = Field(None, description='')
+    config: Optional[Config122] = Field(None, description="")
 
 
 class MariaRdsNewConnectorRequestV1(NewConnectorRequestV1, MariaRdsConfigV1):
@@ -7075,23 +7075,23 @@ class MariaRdsNewConnectorRequestV1(NewConnectorRequestV1, MariaRdsConfigV1):
 class Config123(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     password: Optional[str] = Field(
-        None, description="The Marin user's password.", title=''
+        None, description="The Marin user's password.", title=""
     )
-    port: Optional[int] = Field(None, title='')
+    port: Optional[int] = Field(None, title="")
     prefix: Optional[str] = Field(
-        None, description='Folder path to the Marin manifest file.', title=''
+        None, description="Folder path to the Marin manifest file.", title=""
     )
-    host: Optional[str] = Field(None, description='The Marin host address.', title='')
-    user: Optional[str] = Field(None, description='The Marin username.', title='')
+    host: Optional[str] = Field(None, description="The Marin host address.", title="")
+    user: Optional[str] = Field(None, description="The Marin username.", title="")
 
 
 class MarinConfigV1(BaseModel):
-    config: Optional[Config123] = Field(None, description='')
+    config: Optional[Config123] = Field(None, description="")
 
 
 class MarinNewConnectorRequestV1(NewConnectorRequestV1, MarinConfigV1):
@@ -7099,37 +7099,37 @@ class MarinNewConnectorRequestV1(NewConnectorRequestV1, MarinConfigV1):
 
 
 class Config124(BaseModel):
-    soap_uri: Optional[str] = Field(None, title='')
+    soap_uri: Optional[str] = Field(None, title="")
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     endpoint: Optional[str] = Field(
-        None, description='Marketo REST API endpoint.', title=''
+        None, description="Marketo REST API endpoint.", title=""
     )
-    user_id: Optional[str] = Field(None, title='')
+    user_id: Optional[str] = Field(None, title="")
     identity: Optional[str] = Field(
-        None, description='Marketo REST API identity url.', title=''
+        None, description="Marketo REST API identity url.", title=""
     )
     api_quota: Optional[int] = Field(
         None,
-        description='Allowed number of API requests to Marketo instance per day, the default value is 50000.',
-        title='',
+        description="Allowed number of API requests to Marketo instance per day, the default value is 50000.",
+        title="",
     )
-    bulk_api_quota: Optional[float] = Field(None, title='')
-    encryption_key: Optional[str] = Field(None, title='')
+    bulk_api_quota: Optional[float] = Field(None, title="")
+    encryption_key: Optional[str] = Field(None, title="")
     client_secret: Optional[str] = Field(
-        None, description='Marketo REST API Client Secret.', title=''
+        None, description="Marketo REST API Client Secret.", title=""
     )
     client_id: Optional[str] = Field(
-        None, description='Marketo REST API Client Id.', title=''
+        None, description="Marketo REST API Client Id.", title=""
     )
 
 
 class MarketoConfigV1(BaseModel):
-    config: Optional[Config124] = Field(None, description='')
+    config: Optional[Config124] = Field(None, description="")
 
 
 class MarketoNewConnectorRequestV1(NewConnectorRequestV1, MarketoConfigV1):
@@ -7139,14 +7139,14 @@ class MarketoNewConnectorRequestV1(NewConnectorRequestV1, MarketoConfigV1):
 class Config125(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
 
 
 class MavenlinkConfigV1(BaseModel):
-    config: Optional[Config125] = Field(None, description='')
+    config: Optional[Config125] = Field(None, description="")
 
 
 class MavenlinkNewConnectorRequestV1(NewConnectorRequestV1, MavenlinkConfigV1):
@@ -7156,32 +7156,32 @@ class MavenlinkNewConnectorRequestV1(NewConnectorRequestV1, MavenlinkConfigV1):
 class Config126(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     domain_type: Optional[str] = Field(
-        None, description='Domain type of your Medallia URL', title=''
+        None, description="Domain type of your Medallia URL", title=""
     )
-    subdomain: Optional[str] = Field(None, description='Medallia subdomain', title='')
+    subdomain: Optional[str] = Field(None, description="Medallia subdomain", title="")
     client_secret: Optional[str] = Field(
-        None, description='Medallia Client Secret key', title=''
+        None, description="Medallia Client Secret key", title=""
     )
     client_name: Optional[str] = Field(
-        None, description='Medallia company name', title=''
+        None, description="Medallia company name", title=""
     )
-    client_id: Optional[str] = Field(None, description='Medallia Client ID', title='')
+    client_id: Optional[str] = Field(None, description="Medallia Client ID", title="")
 
 
 class Auth37(BaseModel):
     access_token: Optional[str] = Field(
         None,
-        description='The long-lived Access token carries the information necessary to access API resources',
+        description="The long-lived Access token carries the information necessary to access API resources",
     )
 
 
 class MedalliaConfigV1(BaseModel):
-    config: Optional[Config126] = Field(None, description='')
+    config: Optional[Config126] = Field(None, description="")
     auth: Optional[Auth37] = None
 
 
@@ -7192,28 +7192,28 @@ class MedalliaNewConnectorRequestV1(NewConnectorRequestV1, MedalliaConfigV1):
 class Config127(BaseModel):
     site_name: Optional[str] = Field(
         None,
-        description='The Name of the SharePoint site. The Site Name is the `name` field in the Graph API response for sites.',
-        title='',
+        description="The Name of the SharePoint site. The Site Name is the `name` field in the Graph API response for sites.",
+        title="",
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     site_id: Optional[str] = Field(
         None,
-        description='The Site ID of the SharePoint site from which you want to sync your lists. The Site ID is the `id` field in the [Graph API](https://docs.microsoft.com/en-us/graph/api/site-search?view=graph-rest-1.0&tabs=http) response for sites.',
-        title='',
+        description="The Site ID of the SharePoint site from which you want to sync your lists. The Site ID is the `id` field in the [Graph API](https://docs.microsoft.com/en-us/graph/api/site-search?view=graph-rest-1.0&tabs=http) response for sites.",
+        title="",
     )
 
 
 class ClientAccess25(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
@@ -7222,7 +7222,7 @@ class Auth38(BaseModel):
 
 
 class MicrosoftListsConfigV1(BaseModel):
-    config: Optional[Config127] = Field(None, description='')
+    config: Optional[Config127] = Field(None, description="")
     auth: Optional[Auth38] = None
 
 
@@ -7235,17 +7235,17 @@ class MicrosoftListsNewConnectorRequestV1(
 class Config128(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     api_secret: Optional[str] = Field(
-        None, description='Mixpanel API Secret.', title=''
+        None, description="Mixpanel API Secret.", title=""
     )
 
 
 class MixpanelConfigV1(BaseModel):
-    config: Optional[Config128] = Field(None, description='')
+    config: Optional[Config128] = Field(None, description="")
 
 
 class MixpanelNewConnectorRequestV1(NewConnectorRequestV1, MixpanelConfigV1):
@@ -7253,57 +7253,57 @@ class MixpanelNewConnectorRequestV1(NewConnectorRequestV1, MixpanelConfigV1):
 
 
 class Config129(BaseModel):
-    public_key: Optional[str] = Field(None, title='')
+    public_key: Optional[str] = Field(None, title="")
     packed_mode_tables: Optional[List[str]] = Field(
         None,
-        description='List of tables to be synced in packed mode; format:`<db>.<table>`(case-sensitive).',
-        title='',
+        description="List of tables to be synced in packed mode; format:`<db>.<table>`(case-sensitive).",
+        title="",
     )
     packing_mode: Optional[Dict[str, Any]] = Field(
         None,
-        description='Whether to sync all tables in unpacked mode only, all tables in packed mode only, or specific tables in packed mode. Default value: `UseUnpackedModeOnly`.',
-        title='',
+        description="Whether to sync all tables in unpacked mode only, all tables in packed mode only, or specific tables in packed mode. Default value: `UseUnpackedModeOnly`.",
+        title="",
     )
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
         description="Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-        title='',
+        title="",
     )
     hosts: Optional[List[str]] = Field(
         None,
-        description='A list of host addresses of the primary node and all replicas. Each list item is either: a DB instance host/IP address with a port number, or SRV host record.',
-        title='',
+        description="A list of host addresses of the primary node and all replicas. Each list item is either: a DB instance host/IP address with a port number, or SRV host record.",
+        title="",
     )
-    always_encrypted: Optional[bool] = Field(None, title='')
+    always_encrypted: Optional[bool] = Field(None, title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH user, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    database: Optional[str] = Field(None, title='')
-    password: Optional[str] = Field(None, description="The user's password.", title='')
+    database: Optional[str] = Field(None, title="")
+    password: Optional[str] = Field(None, description="The user's password.", title="")
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH port, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH port, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    port: Optional[int] = Field(None, title='')
-    host: Optional[str] = Field(None, title='')
+    port: Optional[int] = Field(None, title="")
+    host: Optional[str] = Field(None, title="")
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).',
-        title='',
+        description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+        title="",
     )
     schema_prefix: Optional[str] = Field(
         None,
         description="Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-        title='Destination schema prefix',
+        title="Destination schema prefix",
     )
-    user: Optional[str] = Field(None, description='The user name.', title='')
+    user: Optional[str] = Field(None, description="The user name.", title="")
 
 
 class MongoConfigV1(BaseModel):
-    config: Optional[Config129] = Field(None, description='')
+    config: Optional[Config129] = Field(None, description="")
 
 
 class MongoNewConnectorRequestV1(NewConnectorRequestV1, MongoConfigV1):
@@ -7311,57 +7311,57 @@ class MongoNewConnectorRequestV1(NewConnectorRequestV1, MongoConfigV1):
 
 
 class Config130(BaseModel):
-    public_key: Optional[str] = Field(None, title='')
+    public_key: Optional[str] = Field(None, title="")
     packed_mode_tables: Optional[List[str]] = Field(
         None,
-        description='List of tables to be synced in packed mode; format:`<db>.<table>`(case-sensitive).',
-        title='',
+        description="List of tables to be synced in packed mode; format:`<db>.<table>`(case-sensitive).",
+        title="",
     )
     packing_mode: Optional[Dict[str, Any]] = Field(
         None,
-        description='Whether to sync all tables in unpacked mode only, all tables in packed mode only, or specific tables in packed mode. Default value: `UseUnpackedModeOnly`.',
-        title='',
+        description="Whether to sync all tables in unpacked mode only, all tables in packed mode only, or specific tables in packed mode. Default value: `UseUnpackedModeOnly`.",
+        title="",
     )
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
         description="Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-        title='',
+        title="",
     )
     hosts: Optional[List[str]] = Field(
         None,
-        description='A list of host addresses of the primary node and all replicas. Each list item is either: a DB instance host/IP address with a port number, or SRV host record.',
-        title='',
+        description="A list of host addresses of the primary node and all replicas. Each list item is either: a DB instance host/IP address with a port number, or SRV host record.",
+        title="",
     )
-    always_encrypted: Optional[bool] = Field(None, title='')
+    always_encrypted: Optional[bool] = Field(None, title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH user, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    database: Optional[str] = Field(None, title='')
-    password: Optional[str] = Field(None, description="The user's password.", title='')
+    database: Optional[str] = Field(None, title="")
+    password: Optional[str] = Field(None, description="The user's password.", title="")
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH port, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH port, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    port: Optional[int] = Field(None, title='')
-    host: Optional[str] = Field(None, title='')
+    port: Optional[int] = Field(None, title="")
+    host: Optional[str] = Field(None, title="")
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).',
-        title='',
+        description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+        title="",
     )
     schema_prefix: Optional[str] = Field(
         None,
         description="Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-        title='Destination schema prefix',
+        title="Destination schema prefix",
     )
-    user: Optional[str] = Field(None, description='The user name.', title='')
+    user: Optional[str] = Field(None, description="The user name.", title="")
 
 
 class MongoShardedConfigV1(BaseModel):
-    config: Optional[Config130] = Field(None, description='')
+    config: Optional[Config130] = Field(None, description="")
 
 
 class MongoShardedNewConnectorRequestV1(NewConnectorRequestV1, MongoShardedConfigV1):
@@ -7369,49 +7369,49 @@ class MongoShardedNewConnectorRequestV1(NewConnectorRequestV1, MongoShardedConfi
 
 
 class Config131(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
+    public_key: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
         description="Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-        title='',
+        title="",
     )
     update_method: Optional[Dict[str, Any]] = Field(
         None,
         description="The method to detect new or changed rows. <br>Supported values:<br>`BINLOG` - Fivetran uses your binary logs (also called binlogs) to request only the data that has changed since our last sync. This is the default value if no value is specified. <br>`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
-        title='',
+        title="",
     )
-    always_encrypted: Optional[bool] = Field(None, title='')
+    always_encrypted: Optional[bool] = Field(None, title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH user, specify only to connect via an SSH tunnel.",
+        title="",
     )
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH port, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH port, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='The database name.', title='')
-    password: Optional[str] = Field(None, description="The user's password.", title='')
-    port: Optional[int] = Field(None, description='The port number.', title='')
+    database: Optional[str] = Field(None, description="The database name.", title="")
+    password: Optional[str] = Field(None, description="The user's password.", title="")
+    port: Optional[int] = Field(None, description="The port number.", title="")
     host: Optional[str] = Field(
-        None, description='DB instance host or IP address.', title=''
+        None, description="DB instance host or IP address.", title=""
     )
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).',
-        title='',
+        description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+        title="",
     )
     schema_prefix: Optional[str] = Field(
         None,
         description="Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-        title='Destination schema prefix',
+        title="Destination schema prefix",
     )
-    user: Optional[str] = Field(None, description='The user name.', title='')
+    user: Optional[str] = Field(None, description="The user name.", title="")
 
 
 class MysqlConfigV1(BaseModel):
-    config: Optional[Config131] = Field(None, description='')
+    config: Optional[Config131] = Field(None, description="")
 
 
 class MysqlNewConnectorRequestV1(NewConnectorRequestV1, MysqlConfigV1):
@@ -7419,49 +7419,49 @@ class MysqlNewConnectorRequestV1(NewConnectorRequestV1, MysqlConfigV1):
 
 
 class Config132(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
+    public_key: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
         description="Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-        title='',
+        title="",
     )
     update_method: Optional[Dict[str, Any]] = Field(
         None,
         description="The method to detect new or changed rows. <br>Supported values:<br>`BINLOG` - Fivetran uses your binary logs (also called binlogs) to request only the data that has changed since our last sync. This is the default value if no value is specified. <br>`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
-        title='',
+        title="",
     )
-    always_encrypted: Optional[bool] = Field(None, title='')
+    always_encrypted: Optional[bool] = Field(None, title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH user, specify only to connect via an SSH tunnel.",
+        title="",
     )
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH port, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH port, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='The database name.', title='')
-    password: Optional[str] = Field(None, description="The user's password.", title='')
-    port: Optional[int] = Field(None, description='The port number.', title='')
+    database: Optional[str] = Field(None, description="The database name.", title="")
+    password: Optional[str] = Field(None, description="The user's password.", title="")
+    port: Optional[int] = Field(None, description="The port number.", title="")
     host: Optional[str] = Field(
-        None, description='DB instance host or IP address.', title=''
+        None, description="DB instance host or IP address.", title=""
     )
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).',
-        title='',
+        description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+        title="",
     )
     schema_prefix: Optional[str] = Field(
         None,
         description="Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-        title='Destination schema prefix',
+        title="Destination schema prefix",
     )
-    user: Optional[str] = Field(None, description='The user name.', title='')
+    user: Optional[str] = Field(None, description="The user name.", title="")
 
 
 class MysqlAzureConfigV1(BaseModel):
-    config: Optional[Config132] = Field(None, description='')
+    config: Optional[Config132] = Field(None, description="")
 
 
 class MysqlAzureNewConnectorRequestV1(NewConnectorRequestV1, MysqlAzureConfigV1):
@@ -7469,49 +7469,49 @@ class MysqlAzureNewConnectorRequestV1(NewConnectorRequestV1, MysqlAzureConfigV1)
 
 
 class Config133(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
+    public_key: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
         description="Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-        title='',
+        title="",
     )
     update_method: Optional[Dict[str, Any]] = Field(
         None,
         description="The method to detect new or changed rows. <br>Supported values:<br>`BINLOG` - Fivetran uses your binary logs (also called binlogs) to request only the data that has changed since our last sync. This is the default value if no value is specified. <br>`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
-        title='',
+        title="",
     )
-    always_encrypted: Optional[bool] = Field(None, title='')
+    always_encrypted: Optional[bool] = Field(None, title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH user, specify only to connect via an SSH tunnel.",
+        title="",
     )
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH port, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH port, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='The database name.', title='')
-    password: Optional[str] = Field(None, description="The user's password.", title='')
-    port: Optional[int] = Field(None, description='The port number.', title='')
+    database: Optional[str] = Field(None, description="The database name.", title="")
+    password: Optional[str] = Field(None, description="The user's password.", title="")
+    port: Optional[int] = Field(None, description="The port number.", title="")
     host: Optional[str] = Field(
-        None, description='DB instance host or IP address.', title=''
+        None, description="DB instance host or IP address.", title=""
     )
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).',
-        title='',
+        description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+        title="",
     )
     schema_prefix: Optional[str] = Field(
         None,
         description="Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-        title='Destination schema prefix',
+        title="Destination schema prefix",
     )
-    user: Optional[str] = Field(None, description='The user name.', title='')
+    user: Optional[str] = Field(None, description="The user name.", title="")
 
 
 class MysqlRdsConfigV1(BaseModel):
-    config: Optional[Config133] = Field(None, description='')
+    config: Optional[Config133] = Field(None, description="")
 
 
 class MysqlRdsNewConnectorRequestV1(NewConnectorRequestV1, MysqlRdsConfigV1):
@@ -7519,41 +7519,41 @@ class MysqlRdsNewConnectorRequestV1(NewConnectorRequestV1, MysqlRdsConfigV1):
 
 
 class Config134(BaseModel):
-    consumer_key: Optional[str] = Field(None, title='')
+    consumer_key: Optional[str] = Field(None, title="")
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    token_secret: Optional[str] = Field(None, title='')
+    token_secret: Optional[str] = Field(None, title="")
     password: Optional[str] = Field(
-        None, description="The NetSuite user's password.", title=''
+        None, description="The NetSuite user's password.", title=""
     )
-    consumer_secret: Optional[str] = Field(None, title='')
+    consumer_secret: Optional[str] = Field(None, title="")
     role: Optional[str] = Field(
-        None, description='The NetSuite Role ID for connection.', title=''
+        None, description="The NetSuite Role ID for connection.", title=""
     )
     port: Optional[int] = Field(
-        None, description='The NetSuite service host port.', title=''
+        None, description="The NetSuite service host port.", title=""
     )
     datasource: Optional[str] = Field(
-        None, description='The NetSuite data source value: `NetSuite.com`.', title=''
+        None, description="The NetSuite data source value: `NetSuite.com`.", title=""
     )
     host: Optional[str] = Field(
-        None, description='The NetSuite service host address.', title=''
+        None, description="The NetSuite service host address.", title=""
     )
-    token_key: Optional[str] = Field(None, title='')
+    token_key: Optional[str] = Field(None, title="")
     account: Optional[str] = Field(
-        None, description='The NetSuite Account ID.', title=''
+        None, description="The NetSuite Account ID.", title=""
     )
     email: Optional[str] = Field(
-        None, description="The NetSuite user's email address.", title=''
+        None, description="The NetSuite user's email address.", title=""
     )
 
 
 class NetsuiteSuiteanalyticsConfigV1(BaseModel):
-    config: Optional[Config134] = Field(None, description='')
+    config: Optional[Config134] = Field(None, description="")
 
 
 class NetsuiteSuiteanalyticsNewConnectorRequestV1(
@@ -7565,48 +7565,48 @@ class NetsuiteSuiteanalyticsNewConnectorRequestV1(
 class Config135(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    append_file_option: Optional[Dict[str, Any]] = Field(None, title='')
-    prefix: Optional[str] = Field(None, title='')
-    pattern: Optional[str] = Field(None, title='')
-    escape_char: Optional[str] = Field(None, title='')
-    skip_after: Optional[int] = Field(None, title='')
+    append_file_option: Optional[Dict[str, Any]] = Field(None, title="")
+    prefix: Optional[str] = Field(None, title="")
+    pattern: Optional[str] = Field(None, title="")
+    escape_char: Optional[str] = Field(None, title="")
+    skip_after: Optional[int] = Field(None, title="")
     folder_path: Optional[str] = Field(
-        None, description='Your OneDrive folder URL', title=''
+        None, description="Your OneDrive folder URL", title=""
     )
-    skip_before: Optional[int] = Field(None, title='')
-    empty_header: Optional[bool] = Field(None, title='')
-    null_sequence: Optional[str] = Field(None, title='')
-    is_single_table_mode: Optional[bool] = Field(None, title='')
-    delimiter: Optional[str] = Field(None, title='')
-    file_type: Optional[Dict[str, Any]] = Field(None, title='')
-    on_error: Optional[Dict[str, Any]] = Field(None, title='')
-    compression: Optional[Dict[str, Any]] = Field(None, title='')
-    archive_pattern: Optional[str] = Field(None, title='')
+    skip_before: Optional[int] = Field(None, title="")
+    empty_header: Optional[bool] = Field(None, title="")
+    null_sequence: Optional[str] = Field(None, title="")
+    is_single_table_mode: Optional[bool] = Field(None, title="")
+    delimiter: Optional[str] = Field(None, title="")
+    file_type: Optional[Dict[str, Any]] = Field(None, title="")
+    on_error: Optional[Dict[str, Any]] = Field(None, title="")
+    compression: Optional[Dict[str, Any]] = Field(None, title="")
+    archive_pattern: Optional[str] = Field(None, title="")
 
 
 class ClientAccess26(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth39(BaseModel):
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
     client_access: Optional[ClientAccess26] = None
 
 
 class OneDriveConfigV1(BaseModel):
-    config: Optional[Config135] = Field(None, description='')
+    config: Optional[Config135] = Field(None, description="")
     auth: Optional[Auth39] = None
 
 
@@ -7617,35 +7617,35 @@ class OneDriveNewConnectorRequestV1(NewConnectorRequestV1, OneDriveConfigV1):
 class Config136(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     account_id: Optional[str] = Field(
-        None, description='Your Optimizely account ID.', title=''
+        None, description="Your Optimizely account ID.", title=""
     )
-    enriched_export: Optional[str] = Field(None, title='')
+    enriched_export: Optional[str] = Field(None, title="")
 
 
 class ClientAccess27(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth40(BaseModel):
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
     client_access: Optional[ClientAccess27] = None
 
 
 class OptimizelyConfigV1(BaseModel):
-    config: Optional[Config136] = Field(None, description='')
+    config: Optional[Config136] = Field(None, description="")
     auth: Optional[Auth40] = None
 
 
@@ -7654,56 +7654,56 @@ class OptimizelyNewConnectorRequestV1(NewConnectorRequestV1, OptimizelyConfigV1)
 
 
 class Config137(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
-    agent_user: Optional[str] = Field(None, title='')
+    public_key: Optional[str] = Field(None, description="", title="")
+    agent_user: Optional[str] = Field(None, title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
         description="Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-        title='',
+        title="",
     )
-    update_method: Optional[Dict[str, Any]] = Field(None, description='', title='')
-    agent_password: Optional[str] = Field(None, title='')
-    pdb_name: Optional[str] = Field(None, title='')
-    use_oracle_rac: Optional[bool] = Field(None, description='', title='')
-    always_encrypted: Optional[bool] = Field(None, title='')
-    agent_public_cert: Optional[str] = Field(None, title='')
+    update_method: Optional[Dict[str, Any]] = Field(None, description="", title="")
+    agent_password: Optional[str] = Field(None, title="")
+    pdb_name: Optional[str] = Field(None, title="")
+    use_oracle_rac: Optional[bool] = Field(None, description="", title="")
+    always_encrypted: Optional[bool] = Field(None, title="")
+    agent_public_cert: Optional[str] = Field(None, title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH user, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='The database name.', title='')
-    password: Optional[str] = Field(None, description="The user's password.", title='')
+    database: Optional[str] = Field(None, description="The database name.", title="")
+    password: Optional[str] = Field(None, description="The user's password.", title="")
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH port, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH port, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    port: Optional[int] = Field(None, description='The port number.', title='')
+    port: Optional[int] = Field(None, description="The port number.", title="")
     host: Optional[str] = Field(
-        None, description='DB instance host or IP address.', title=''
+        None, description="DB instance host or IP address.", title=""
     )
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).',
-        title='',
+        description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+        title="",
     )
-    tns: Optional[str] = Field(None, title='')
-    agent_ora_home: Optional[str] = Field(None, title='')
-    agent_port: Optional[int] = Field(None, title='')
+    tns: Optional[str] = Field(None, title="")
+    agent_ora_home: Optional[str] = Field(None, title="")
+    agent_port: Optional[int] = Field(None, title="")
     schema_prefix: Optional[str] = Field(
         None,
         description="Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-        title='Destination schema prefix',
+        title="Destination schema prefix",
     )
-    sap_user: Optional[str] = Field(None, description='', title='')
-    agent_host: Optional[str] = Field(None, title='')
-    user: Optional[str] = Field(None, description='The user name.', title='')
-    asm_password: Optional[str] = Field(None, title='')
+    sap_user: Optional[str] = Field(None, description="", title="")
+    agent_host: Optional[str] = Field(None, title="")
+    user: Optional[str] = Field(None, description="The user name.", title="")
+    asm_password: Optional[str] = Field(None, title="")
 
 
 class OracleConfigV1(BaseModel):
-    config: Optional[Config137] = Field(None, description='')
+    config: Optional[Config137] = Field(None, description="")
 
 
 class OracleNewConnectorRequestV1(NewConnectorRequestV1, OracleConfigV1):
@@ -7711,56 +7711,56 @@ class OracleNewConnectorRequestV1(NewConnectorRequestV1, OracleConfigV1):
 
 
 class Config138(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
-    agent_user: Optional[str] = Field(None, title='')
+    public_key: Optional[str] = Field(None, description="", title="")
+    agent_user: Optional[str] = Field(None, title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
         description="Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-        title='',
+        title="",
     )
-    update_method: Optional[Dict[str, Any]] = Field(None, description='', title='')
-    agent_password: Optional[str] = Field(None, title='')
-    pdb_name: Optional[str] = Field(None, title='')
-    use_oracle_rac: Optional[bool] = Field(None, description='', title='')
-    always_encrypted: Optional[bool] = Field(None, title='')
-    agent_public_cert: Optional[str] = Field(None, title='')
+    update_method: Optional[Dict[str, Any]] = Field(None, description="", title="")
+    agent_password: Optional[str] = Field(None, title="")
+    pdb_name: Optional[str] = Field(None, title="")
+    use_oracle_rac: Optional[bool] = Field(None, description="", title="")
+    always_encrypted: Optional[bool] = Field(None, title="")
+    agent_public_cert: Optional[str] = Field(None, title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH user, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='The database name.', title='')
-    password: Optional[str] = Field(None, description="The user's password.", title='')
+    database: Optional[str] = Field(None, description="The database name.", title="")
+    password: Optional[str] = Field(None, description="The user's password.", title="")
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH port, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH port, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    port: Optional[int] = Field(None, description='The port number.', title='')
+    port: Optional[int] = Field(None, description="The port number.", title="")
     host: Optional[str] = Field(
-        None, description='DB instance host or IP address.', title=''
+        None, description="DB instance host or IP address.", title=""
     )
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).',
-        title='',
+        description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+        title="",
     )
-    tns: Optional[str] = Field(None, title='')
-    agent_ora_home: Optional[str] = Field(None, title='')
-    agent_port: Optional[int] = Field(None, title='')
+    tns: Optional[str] = Field(None, title="")
+    agent_ora_home: Optional[str] = Field(None, title="")
+    agent_port: Optional[int] = Field(None, title="")
     schema_prefix: Optional[str] = Field(
         None,
         description="Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-        title='Destination schema prefix',
+        title="Destination schema prefix",
     )
-    sap_user: Optional[str] = Field(None, description='', title='')
-    agent_host: Optional[str] = Field(None, title='')
-    user: Optional[str] = Field(None, description='The user name.', title='')
-    asm_password: Optional[str] = Field(None, title='')
+    sap_user: Optional[str] = Field(None, description="", title="")
+    agent_host: Optional[str] = Field(None, title="")
+    user: Optional[str] = Field(None, description="The user name.", title="")
+    asm_password: Optional[str] = Field(None, title="")
 
 
 class OracleEbsConfigV1(BaseModel):
-    config: Optional[Config138] = Field(None, description='')
+    config: Optional[Config138] = Field(None, description="")
 
 
 class OracleEbsNewConnectorRequestV1(NewConnectorRequestV1, OracleEbsConfigV1):
@@ -7768,60 +7768,60 @@ class OracleEbsNewConnectorRequestV1(NewConnectorRequestV1, OracleEbsConfigV1):
 
 
 class Config139(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
-    agent_user: Optional[str] = Field(None, title='')
+    public_key: Optional[str] = Field(None, description="", title="")
+    agent_user: Optional[str] = Field(None, title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
         description="Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-        title='',
+        title="",
     )
-    update_method: Optional[Dict[str, Any]] = Field(None, description='', title='')
-    agent_password: Optional[str] = Field(None, title='')
-    pdb_name: Optional[str] = Field(None, title='')
-    use_oracle_rac: Optional[bool] = Field(None, description='', title='')
-    always_encrypted: Optional[bool] = Field(None, title='')
-    agent_public_cert: Optional[str] = Field(None, title='')
+    update_method: Optional[Dict[str, Any]] = Field(None, description="", title="")
+    agent_password: Optional[str] = Field(None, title="")
+    pdb_name: Optional[str] = Field(None, title="")
+    use_oracle_rac: Optional[bool] = Field(None, description="", title="")
+    always_encrypted: Optional[bool] = Field(None, title="")
+    agent_public_cert: Optional[str] = Field(None, title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH user, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='The database name.', title='')
-    password: Optional[str] = Field(None, description="The user's password.", title='')
+    database: Optional[str] = Field(None, description="The database name.", title="")
+    password: Optional[str] = Field(None, description="The user's password.", title="")
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH port, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH port, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    port: Optional[int] = Field(None, description='The port number.', title='')
+    port: Optional[int] = Field(None, description="The port number.", title="")
     host: Optional[str] = Field(
-        None, description='DB instance host or IP address.', title=''
+        None, description="DB instance host or IP address.", title=""
     )
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).',
-        title='',
+        description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+        title="",
     )
     tns: Optional[str] = Field(
         None,
         description="Single-tenant database: The database's SID. <br> Multi-tenant database: The database's TNS.",
-        title='',
+        title="",
     )
-    agent_ora_home: Optional[str] = Field(None, title='')
-    agent_port: Optional[int] = Field(None, title='')
+    agent_ora_home: Optional[str] = Field(None, title="")
+    agent_port: Optional[int] = Field(None, title="")
     schema_prefix: Optional[str] = Field(
         None,
         description="Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-        title='Destination schema prefix',
+        title="Destination schema prefix",
     )
-    sap_user: Optional[str] = Field(None, description='', title='')
-    agent_host: Optional[str] = Field(None, title='')
-    user: Optional[str] = Field(None, description='The user name.', title='')
-    asm_password: Optional[str] = Field(None, title='')
+    sap_user: Optional[str] = Field(None, description="", title="")
+    agent_host: Optional[str] = Field(None, title="")
+    user: Optional[str] = Field(None, description="The user name.", title="")
+    asm_password: Optional[str] = Field(None, title="")
 
 
 class OracleHvaConfigV1(BaseModel):
-    config: Optional[Config139] = Field(None, description='')
+    config: Optional[Config139] = Field(None, description="")
 
 
 class OracleHvaNewConnectorRequestV1(NewConnectorRequestV1, OracleHvaConfigV1):
@@ -7829,56 +7829,56 @@ class OracleHvaNewConnectorRequestV1(NewConnectorRequestV1, OracleHvaConfigV1):
 
 
 class Config140(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
-    agent_user: Optional[str] = Field(None, title='')
+    public_key: Optional[str] = Field(None, description="", title="")
+    agent_user: Optional[str] = Field(None, title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
         description="Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-        title='',
+        title="",
     )
-    update_method: Optional[Dict[str, Any]] = Field(None, description='', title='')
-    agent_password: Optional[str] = Field(None, title='')
-    pdb_name: Optional[str] = Field(None, title='')
-    use_oracle_rac: Optional[bool] = Field(None, description='', title='')
-    always_encrypted: Optional[bool] = Field(None, title='')
-    agent_public_cert: Optional[str] = Field(None, title='')
+    update_method: Optional[Dict[str, Any]] = Field(None, description="", title="")
+    agent_password: Optional[str] = Field(None, title="")
+    pdb_name: Optional[str] = Field(None, title="")
+    use_oracle_rac: Optional[bool] = Field(None, description="", title="")
+    always_encrypted: Optional[bool] = Field(None, title="")
+    agent_public_cert: Optional[str] = Field(None, title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH user, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='The database name.', title='')
-    password: Optional[str] = Field(None, description="The user's password.", title='')
+    database: Optional[str] = Field(None, description="The database name.", title="")
+    password: Optional[str] = Field(None, description="The user's password.", title="")
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH port, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH port, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    port: Optional[int] = Field(None, description='The port number.', title='')
+    port: Optional[int] = Field(None, description="The port number.", title="")
     host: Optional[str] = Field(
-        None, description='DB instance host or IP address.', title=''
+        None, description="DB instance host or IP address.", title=""
     )
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).',
-        title='',
+        description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+        title="",
     )
-    tns: Optional[str] = Field(None, title='')
-    agent_ora_home: Optional[str] = Field(None, title='')
-    agent_port: Optional[int] = Field(None, title='')
+    tns: Optional[str] = Field(None, title="")
+    agent_ora_home: Optional[str] = Field(None, title="")
+    agent_port: Optional[int] = Field(None, title="")
     schema_prefix: Optional[str] = Field(
         None,
         description="Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-        title='Destination schema prefix',
+        title="Destination schema prefix",
     )
-    sap_user: Optional[str] = Field(None, description='', title='')
-    agent_host: Optional[str] = Field(None, title='')
-    user: Optional[str] = Field(None, description='The user name.', title='')
-    asm_password: Optional[str] = Field(None, title='')
+    sap_user: Optional[str] = Field(None, description="", title="")
+    agent_host: Optional[str] = Field(None, title="")
+    user: Optional[str] = Field(None, description="The user name.", title="")
+    asm_password: Optional[str] = Field(None, title="")
 
 
 class OracleRacConfigV1(BaseModel):
-    config: Optional[Config140] = Field(None, description='')
+    config: Optional[Config140] = Field(None, description="")
 
 
 class OracleRacNewConnectorRequestV1(NewConnectorRequestV1, OracleRacConfigV1):
@@ -7886,56 +7886,56 @@ class OracleRacNewConnectorRequestV1(NewConnectorRequestV1, OracleRacConfigV1):
 
 
 class Config141(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
-    agent_user: Optional[str] = Field(None, title='')
+    public_key: Optional[str] = Field(None, description="", title="")
+    agent_user: Optional[str] = Field(None, title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
         description="Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-        title='',
+        title="",
     )
-    update_method: Optional[Dict[str, Any]] = Field(None, description='', title='')
-    agent_password: Optional[str] = Field(None, title='')
-    pdb_name: Optional[str] = Field(None, title='')
-    use_oracle_rac: Optional[bool] = Field(None, description='', title='')
-    always_encrypted: Optional[bool] = Field(None, title='')
-    agent_public_cert: Optional[str] = Field(None, title='')
+    update_method: Optional[Dict[str, Any]] = Field(None, description="", title="")
+    agent_password: Optional[str] = Field(None, title="")
+    pdb_name: Optional[str] = Field(None, title="")
+    use_oracle_rac: Optional[bool] = Field(None, description="", title="")
+    always_encrypted: Optional[bool] = Field(None, title="")
+    agent_public_cert: Optional[str] = Field(None, title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH user, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='The database name.', title='')
-    password: Optional[str] = Field(None, description="The user's password.", title='')
+    database: Optional[str] = Field(None, description="The database name.", title="")
+    password: Optional[str] = Field(None, description="The user's password.", title="")
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH port, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH port, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    port: Optional[int] = Field(None, description='The port number.', title='')
+    port: Optional[int] = Field(None, description="The port number.", title="")
     host: Optional[str] = Field(
-        None, description='DB instance host or IP address.', title=''
+        None, description="DB instance host or IP address.", title=""
     )
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).',
-        title='',
+        description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+        title="",
     )
-    tns: Optional[str] = Field(None, title='')
-    agent_ora_home: Optional[str] = Field(None, title='')
-    agent_port: Optional[int] = Field(None, title='')
+    tns: Optional[str] = Field(None, title="")
+    agent_ora_home: Optional[str] = Field(None, title="")
+    agent_port: Optional[int] = Field(None, title="")
     schema_prefix: Optional[str] = Field(
         None,
         description="Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-        title='Destination schema prefix',
+        title="Destination schema prefix",
     )
-    sap_user: Optional[str] = Field(None, description='', title='')
-    agent_host: Optional[str] = Field(None, title='')
-    user: Optional[str] = Field(None, description='The user name.', title='')
-    asm_password: Optional[str] = Field(None, title='')
+    sap_user: Optional[str] = Field(None, description="", title="")
+    agent_host: Optional[str] = Field(None, title="")
+    user: Optional[str] = Field(None, description="The user name.", title="")
+    asm_password: Optional[str] = Field(None, title="")
 
 
 class OracleRdsConfigV1(BaseModel):
-    config: Optional[Config141] = Field(None, description='')
+    config: Optional[Config141] = Field(None, description="")
 
 
 class OracleRdsNewConnectorRequestV1(NewConnectorRequestV1, OracleRdsConfigV1):
@@ -7945,21 +7945,21 @@ class OracleRdsNewConnectorRequestV1(NewConnectorRequestV1, OracleRdsConfigV1):
 class Config142(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     password: Optional[str] = Field(
-        None, description="The Outbrain user's password.", title=''
+        None, description="The Outbrain user's password.", title=""
     )
-    timeframe_months: Optional[Dict[str, Any]] = Field(None, title='')
+    timeframe_months: Optional[Dict[str, Any]] = Field(None, title="")
     user: Optional[str] = Field(
-        None, description='The username or email of the Outbrain user.', title=''
+        None, description="The username or email of the Outbrain user.", title=""
     )
 
 
 class OutbrainConfigV1(BaseModel):
-    config: Optional[Config142] = Field(None, description='')
+    config: Optional[Config142] = Field(None, description="")
 
 
 class OutbrainNewConnectorRequestV1(NewConnectorRequestV1, OutbrainConfigV1):
@@ -7969,21 +7969,21 @@ class OutbrainNewConnectorRequestV1(NewConnectorRequestV1, OutbrainConfigV1):
 class Config143(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
 
 
 class Auth41(BaseModel):
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
 
 
 class OutreachConfigV1(BaseModel):
-    config: Optional[Config143] = Field(None, description='')
+    config: Optional[Config143] = Field(None, description="")
     auth: Optional[Auth41] = None
 
 
@@ -7994,29 +7994,29 @@ class OutreachNewConnectorRequestV1(NewConnectorRequestV1, OutreachConfigV1):
 class Config144(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     password: Optional[str] = Field(
-        None, description="The Pardot user's password.", title=''
+        None, description="The Pardot user's password.", title=""
     )
     business_unit_id: Optional[str] = Field(
-        None, description='Business Unit Id', title=''
+        None, description="Business Unit Id", title=""
     )
     user_key: Optional[str] = Field(
-        None, description="The Pardot user's API key.", title=''
+        None, description="The Pardot user's API key.", title=""
     )
     api_version: Optional[Dict[str, Any]] = Field(
-        None, description='API Version', title=''
+        None, description="API Version", title=""
     )
     email: Optional[str] = Field(
-        None, description='The email of the Pardot user.', title=''
+        None, description="The email of the Pardot user.", title=""
     )
 
 
 class PardotConfigV1(BaseModel):
-    config: Optional[Config144] = Field(None, description='')
+    config: Optional[Config144] = Field(None, description="")
 
 
 class PardotNewConnectorRequestV1(NewConnectorRequestV1, PardotConfigV1):
@@ -8026,20 +8026,20 @@ class PardotNewConnectorRequestV1(NewConnectorRequestV1, PardotConfigV1):
 class Config145(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     secret_key: Optional[str] = Field(
-        None, description='`Client Secret` of your PayPal client application.', title=''
+        None, description="`Client Secret` of your PayPal client application.", title=""
     )
     client_id: Optional[str] = Field(
-        None, description='`Client ID` of your PayPal client application.', title=''
+        None, description="`Client ID` of your PayPal client application.", title=""
     )
 
 
 class PaypalConfigV1(BaseModel):
-    config: Optional[Config145] = Field(None, description='')
+    config: Optional[Config145] = Field(None, description="")
 
 
 class PaypalNewConnectorRequestV1(NewConnectorRequestV1, PaypalConfigV1):
@@ -8049,20 +8049,20 @@ class PaypalNewConnectorRequestV1(NewConnectorRequestV1, PaypalConfigV1):
 class Config146(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     secret_key: Optional[str] = Field(
-        None, description='`Client Secret` of your PayPal client application.', title=''
+        None, description="`Client Secret` of your PayPal client application.", title=""
     )
     client_id: Optional[str] = Field(
-        None, description='`Client ID` of your PayPal client application.', title=''
+        None, description="`Client ID` of your PayPal client application.", title=""
     )
 
 
 class PaypalSandboxConfigV1(BaseModel):
-    config: Optional[Config146] = Field(None, description='')
+    config: Optional[Config146] = Field(None, description="")
 
 
 class PaypalSandboxNewConnectorRequestV1(NewConnectorRequestV1, PaypalSandboxConfigV1):
@@ -8072,30 +8072,30 @@ class PaypalSandboxNewConnectorRequestV1(NewConnectorRequestV1, PaypalSandboxCon
 class Config147(BaseModel):
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
-        description='Whether to sync all App IDs or specific App IDs. Default value: `AllAppIds`.',
-        title='',
+        description="Whether to sync all App IDs or specific App IDs. Default value: `AllAppIds`.",
+        title="",
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     integration_key: Optional[str] = Field(
-        None, description='The integration key of the Pendo account.', title=''
+        None, description="The integration key of the Pendo account.", title=""
     )
     app_ids: Optional[List[str]] = Field(
         None,
-        description='Specific App IDs to sync. Must be populated if `sync_mode` is set to `SpecificAppIds`.',
-        title='',
+        description="Specific App IDs to sync. Must be populated if `sync_mode` is set to `SpecificAppIds`.",
+        title="",
     )
     region: Optional[Dict[str, Any]] = Field(
-        None, description='The Pendo account region.', title=''
+        None, description="The Pendo account region.", title=""
     )
 
 
 class PendoConfigV1(BaseModel):
-    config: Optional[Config147] = Field(None, description='')
+    config: Optional[Config147] = Field(None, description="")
 
 
 class PendoNewConnectorRequestV1(NewConnectorRequestV1, PendoConfigV1):
@@ -8105,53 +8105,53 @@ class PendoNewConnectorRequestV1(NewConnectorRequestV1, PendoConfigV1):
 class Config148(BaseModel):
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
-        description='Whether to sync all advertisers or specific advertisers.',
-        title='',
+        description="Whether to sync all advertisers or specific advertisers.",
+        title="",
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     view_attribution_window: Optional[Dict[str, Any]] = Field(
         None,
         description="The number of days to use as the conversion attribution window for a 'view' action.",
-        title='',
+        title="",
     )
     timeframe_months: Optional[Dict[str, Any]] = Field(
         None,
         description="Number of months of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `THREE`.",
-        title='',
+        title="",
     )
     advertisers: Optional[List[str]] = Field(
         None,
-        description='Specific Advertisers to sync.  Must be populated if `sync_mode` is set to `SpecificAdvertisers`.',
-        title='',
+        description="Specific Advertisers to sync.  Must be populated if `sync_mode` is set to `SpecificAdvertisers`.",
+        title="",
     )
     conversion_report_time: Optional[Dict[str, Any]] = Field(
         None,
-        description='The date that the user interacted with the ad OR completed a conversion event.',
-        title='',
+        description="The date that the user interacted with the ad OR completed a conversion event.",
+        title="",
     )
     engagement_attribution_window: Optional[Dict[str, Any]] = Field(
         None,
-        description='The number of days to use as the conversion attribution window for an engagement (i.e. closeup or save) action.',
-        title='',
+        description="The number of days to use as the conversion attribution window for an engagement (i.e. closeup or save) action.",
+        title="",
     )
     click_attribution_window: Optional[Dict[str, Any]] = Field(
         None,
         description="The number of days to use as the conversion attribution window for a 'click' action.",
-        title='',
+        title="",
     )
 
 
 class ClientAccess28(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
@@ -8160,7 +8160,7 @@ class Auth42(BaseModel):
 
 
 class PinterestAdsConfigV1(BaseModel):
-    config: Optional[Config148] = Field(None, description='')
+    config: Optional[Config148] = Field(None, description="")
     auth: Optional[Auth42] = None
 
 
@@ -8171,36 +8171,36 @@ class PinterestAdsNewConnectorRequestV1(NewConnectorRequestV1, PinterestAdsConfi
 class Config149(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    webhook_url: Optional[str] = Field(None, title='')
+    webhook_url: Optional[str] = Field(None, title="")
     api_token: Optional[str] = Field(
-        None, description='(Optional)Your Pipedrive personal API token', title=''
+        None, description="(Optional)Your Pipedrive personal API token", title=""
     )
-    domain: Optional[str] = Field(None, description='Your Pipedrive domain.', title='')
+    domain: Optional[str] = Field(None, description="Your Pipedrive domain.", title="")
 
 
 class ClientAccess29(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth43(BaseModel):
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
     client_access: Optional[ClientAccess29] = None
 
 
 class PipedriveConfigV1(BaseModel):
-    config: Optional[Config149] = Field(None, description='')
+    config: Optional[Config149] = Field(None, description="")
     auth: Optional[Auth43] = None
 
 
@@ -8209,56 +8209,56 @@ class PipedriveNewConnectorRequestV1(NewConnectorRequestV1, PipedriveConfigV1):
 
 
 class Config150(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
-    publication_name: Optional[str] = Field(None, description='', title='')
+    public_key: Optional[str] = Field(None, description="", title="")
+    publication_name: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
         description="Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-        title='',
+        title="",
     )
     update_method: Optional[Dict[str, Any]] = Field(
         None,
         description='The method to detect new or changed rows. <br>Specify only for `"service": "postgres"` or `"service": "postgres_rds"`. <br>Supported values:<br>`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.<br>`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.<br>`WAL_PGOUTPUT` - <span class="beta tag">BETA</span> logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.',
-        title='',
+        title="",
     )
-    always_encrypted: Optional[bool] = Field(None, title='')
+    always_encrypted: Optional[bool] = Field(None, title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH user, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='The database name.', title='')
-    password: Optional[str] = Field(None, description="The user's password.", title='')
+    database: Optional[str] = Field(None, description="The database name.", title="")
+    password: Optional[str] = Field(None, description="The user's password.", title="")
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH port, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH port, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    heroku_rds_hosted: Optional[Dict[str, Any]] = Field(None, title='')
-    port: Optional[int] = Field(None, description='The port number.', title='')
+    heroku_rds_hosted: Optional[Dict[str, Any]] = Field(None, title="")
+    port: Optional[int] = Field(None, description="The port number.", title="")
     host: Optional[str] = Field(
-        None, description='DB instance host or IP address.', title=''
+        None, description="DB instance host or IP address.", title=""
     )
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).',
-        title='',
+        description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+        title="",
     )
     schema_prefix: Optional[str] = Field(
         None,
         description="Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-        title='Destination schema prefix',
+        title="Destination schema prefix",
     )
     replication_slot: Optional[str] = Field(
         None,
         description='Replication slot name. Specify only for `"updated_method": "WAL"` or `"WAL_PGOUTPUT"`.',
-        title='',
+        title="",
     )
-    user: Optional[str] = Field(None, description='The user name.', title='')
+    user: Optional[str] = Field(None, description="The user name.", title="")
 
 
 class PostgresConfigV1(BaseModel):
-    config: Optional[Config150] = Field(None, description='')
+    config: Optional[Config150] = Field(None, description="")
 
 
 class PostgresNewConnectorRequestV1(NewConnectorRequestV1, PostgresConfigV1):
@@ -8266,56 +8266,56 @@ class PostgresNewConnectorRequestV1(NewConnectorRequestV1, PostgresConfigV1):
 
 
 class Config151(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
-    publication_name: Optional[str] = Field(None, description='', title='')
+    public_key: Optional[str] = Field(None, description="", title="")
+    publication_name: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
         description="Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-        title='',
+        title="",
     )
     update_method: Optional[Dict[str, Any]] = Field(
         None,
         description='The method to detect new or changed rows. <br>Specify only for `"service": "postgres"` or `"service": "postgres_rds"`. <br>Supported values:<br>`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.<br>`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.<br>`WAL_PGOUTPUT` - <span class="beta tag">BETA</span> logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.',
-        title='',
+        title="",
     )
-    always_encrypted: Optional[bool] = Field(None, title='')
+    always_encrypted: Optional[bool] = Field(None, title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH user, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='The database name.', title='')
-    password: Optional[str] = Field(None, description="The user's password.", title='')
+    database: Optional[str] = Field(None, description="The database name.", title="")
+    password: Optional[str] = Field(None, description="The user's password.", title="")
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH port, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH port, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    heroku_rds_hosted: Optional[Dict[str, Any]] = Field(None, title='')
-    port: Optional[int] = Field(None, description='The port number.', title='')
+    heroku_rds_hosted: Optional[Dict[str, Any]] = Field(None, title="")
+    port: Optional[int] = Field(None, description="The port number.", title="")
     host: Optional[str] = Field(
-        None, description='DB instance host or IP address.', title=''
+        None, description="DB instance host or IP address.", title=""
     )
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).',
-        title='',
+        description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+        title="",
     )
     schema_prefix: Optional[str] = Field(
         None,
         description="Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-        title='Destination schema prefix',
+        title="Destination schema prefix",
     )
     replication_slot: Optional[str] = Field(
         None,
         description='Replication slot name. Specify only for `"updated_method": "WAL"` or `"WAL_PGOUTPUT"`.',
-        title='',
+        title="",
     )
-    user: Optional[str] = Field(None, description='The user name.', title='')
+    user: Optional[str] = Field(None, description="The user name.", title="")
 
 
 class PostgresRdsConfigV1(BaseModel):
-    config: Optional[Config151] = Field(None, description='')
+    config: Optional[Config151] = Field(None, description="")
 
 
 class PostgresRdsNewConnectorRequestV1(NewConnectorRequestV1, PostgresRdsConfigV1):
@@ -8325,22 +8325,22 @@ class PostgresRdsNewConnectorRequestV1(NewConnectorRequestV1, PostgresRdsConfigV
 class Config152(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     api_token: Optional[str] = Field(
-        None, description='API token of the Qualtrics account.', title=''
+        None, description="API token of the Qualtrics account.", title=""
     )
     data_center: Optional[str] = Field(
         None,
-        description='Data center ID of the Qualtrics account. Can be found in the URL before `qualtrics.com`. (For example, if your URL is `youraccount.ca1.qualtrics.com`, then the data center is `ca1`.)',
-        title='',
+        description="Data center ID of the Qualtrics account. Can be found in the URL before `qualtrics.com`. (For example, if your URL is `youraccount.ca1.qualtrics.com`, then the data center is `ca1`.)",
+        title="",
     )
 
 
 class QualtricsConfigV1(BaseModel):
-    config: Optional[Config152] = Field(None, description='')
+    config: Optional[Config152] = Field(None, description="")
 
 
 class QualtricsNewConnectorRequestV1(NewConnectorRequestV1, QualtricsConfigV1):
@@ -8350,32 +8350,32 @@ class QualtricsNewConnectorRequestV1(NewConnectorRequestV1, QualtricsConfigV1):
 class Config153(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
 
 
 class ClientAccess30(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth44(BaseModel):
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
     client_access: Optional[ClientAccess30] = None
-    realm_id: Optional[str] = Field(None, description='Realm ID of your application.')
+    realm_id: Optional[str] = Field(None, description="Realm ID of your application.")
 
 
 class QuickbooksConfigV1(BaseModel):
-    config: Optional[Config153] = Field(None, description='')
+    config: Optional[Config153] = Field(None, description="")
     auth: Optional[Auth44] = None
 
 
@@ -8386,17 +8386,17 @@ class QuickbooksNewConnectorRequestV1(NewConnectorRequestV1, QuickbooksConfigV1)
 class Config154(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     api_token: Optional[str] = Field(
-        None, description='The Recharge API token.', title=''
+        None, description="The Recharge API token.", title=""
     )
 
 
 class RechargeConfigV1(BaseModel):
-    config: Optional[Config154] = Field(None, description='')
+    config: Optional[Config154] = Field(None, description="")
 
 
 class RechargeNewConnectorRequestV1(NewConnectorRequestV1, RechargeConfigV1):
@@ -8406,18 +8406,18 @@ class RechargeNewConnectorRequestV1(NewConnectorRequestV1, RechargeConfigV1):
 class Config155(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    api_key: Optional[str] = Field(None, description='The Recurly API key.', title='')
+    api_key: Optional[str] = Field(None, description="The Recurly API key.", title="")
     sub_domain: Optional[str] = Field(
-        None, description="Your company's Recurly subdomain.", title=''
+        None, description="Your company's Recurly subdomain.", title=""
     )
 
 
 class RecurlyConfigV1(BaseModel):
-    config: Optional[Config155] = Field(None, description='')
+    config: Optional[Config155] = Field(None, description="")
 
 
 class RecurlyNewConnectorRequestV1(NewConnectorRequestV1, RecurlyConfigV1):
@@ -8427,78 +8427,78 @@ class RecurlyNewConnectorRequestV1(NewConnectorRequestV1, RecurlyConfigV1):
 class CustomReport(BaseModel):
     custom_events_included: Optional[bool] = Field(
         None,
-        description='The boolean value specifying whether the custom events are included in event conversions report. Default value: `false`',
-        title='',
+        description="The boolean value specifying whether the custom events are included in event conversions report. Default value: `false`",
+        title="",
     )
     conversions_report_included: Optional[bool] = Field(
         None,
-        description='The boolean value specifying whether to enable or disable event conversions data synchronisation. Default value: `false`',
-        title='',
+        description="The boolean value specifying whether to enable or disable event conversions data synchronisation. Default value: `false`",
+        title="",
     )
     event_names: Optional[List[str]] = Field(
         None,
-        description='The list of events the conversion data will be synchronised for',
-        title='',
+        description="The list of events the conversion data will be synchronised for",
+        title="",
     )
     level: Optional[Dict[str, Any]] = Field(
-        None, description='Level of custom report.', title=''
+        None, description="Level of custom report.", title=""
     )
     report_fields: Optional[List[str]] = Field(
-        None, description='The list of fields included in custom report', title=''
+        None, description="The list of fields included in custom report", title=""
     )
     segmentation: Optional[Dict[str, Any]] = Field(
-        None, description='Level of custom report.', title=''
+        None, description="Level of custom report.", title=""
     )
     report_name: Optional[str] = Field(
         None,
-        description='The table name within the schema to which connector syncs the data of the specific report.',
-        title='',
+        description="The table name within the schema to which connector syncs the data of the specific report.",
+        title="",
     )
 
 
 class Config156(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     timeframe_months: Optional[Dict[str, Any]] = Field(
         None,
         description="Number of months' worth of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `TWELVE`.",
-        title='',
+        title="",
     )
     custom_reports: Optional[List[CustomReport]] = Field(
         None,
-        description='The list of custom report configurations. Each report corresponds to a table within the schema to which connector will sync the data.',
-        title='',
+        description="The list of custom report configurations. Each report corresponds to a table within the schema to which connector will sync the data.",
+        title="",
     )
 
 
 class ClientAccess31(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth45(BaseModel):
     access_token: Optional[str] = Field(
         None,
-        description='The long-lived Access token carries the information necessary to access API resources',
+        description="The long-lived Access token carries the information necessary to access API resources",
     )
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
     client_access: Optional[ClientAccess31] = None
-    realm_id: Optional[str] = Field(None, description='Realm ID of your application.')
+    realm_id: Optional[str] = Field(None, description="Realm ID of your application.")
 
 
 class RedditAdsConfigV1(BaseModel):
-    config: Optional[Config156] = Field(None, description='')
+    config: Optional[Config156] = Field(None, description="")
     auth: Optional[Auth45] = None
 
 
@@ -8509,99 +8509,99 @@ class RedditAdsNewConnectorRequestV1(NewConnectorRequestV1, RedditAdsConfigV1):
 class Config157(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     append_file_option: Optional[Dict[str, Any]] = Field(
         None,
-        description='If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.',
-        title='',
+        description="If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.",
+        title="",
     )
     prefix: Optional[str] = Field(
         None,
-        description='All files and folders under this folder path will be searched for files to sync.',
-        title='',
+        description="All files and folders under this folder path will be searched for files to sync.",
+        title="",
     )
     pattern: Optional[str] = Field(
         None,
-        description='All files in your search path matching this regular expression will be synced.',
-        title='',
+        description="All files in your search path matching this regular expression will be synced.",
+        title="",
     )
     escape_char: Optional[str] = Field(
         None,
-        description='If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.',
-        title='',
+        description="If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.",
+        title="",
     )
     external_id: Optional[str] = Field(
         None,
         description="Used for authentication along with the `role_arn`. If not provided, it uses connector's `group_id`. Use the [List All Groups endpoint](/docs/rest-api/groups#listallgroups) to find the `group_id`.",
-        title='',
+        title="",
     )
     skip_after: Optional[int] = Field(
         None,
-        description='We will skip over the number of lines specified at the end so as to not introduce aberrant data into your destination.',
-        title='',
+        description="We will skip over the number of lines specified at the end so as to not introduce aberrant data into your destination.",
+        title="",
     )
     list_strategy: Optional[Dict[str, Any]] = Field(
-        None, description='The listing strategy we want to use.', title=''
+        None, description="The listing strategy we want to use.", title=""
     )
-    bucket: Optional[str] = Field(None, description='The S3 bucket name.', title='')
+    bucket: Optional[str] = Field(None, description="The S3 bucket name.", title="")
     empty_header: Optional[bool] = Field(
         None,
-        description='If your CSVs are headerless, set this is as `true`. When `true`, we will generate generic column names following the convention of `column_0`, `column_1`, ... `column_n` to map the rows. Default value: `false`.',
-        title='',
+        description="If your CSVs are headerless, set this is as `true`. When `true`, we will generate generic column names following the convention of `column_0`, `column_1`, ... `column_n` to map the rows. Default value: `false`.",
+        title="",
     )
     skip_before: Optional[int] = Field(
         None,
-        description='We will skip over the number of lines specified before syncing data.',
-        title='',
+        description="We will skip over the number of lines specified before syncing data.",
+        title="",
     )
     null_sequence: Optional[str] = Field(
         None,
-        description='If your CSVs use a special value indicating null, you can specify it here.',
-        title='',
+        description="If your CSVs use a special value indicating null, you can specify it here.",
+        title="",
     )
     role_arn: Optional[str] = Field(
-        None, description='The Role ARN required for authentication.', title=''
+        None, description="The Role ARN required for authentication.", title=""
     )
     file_type: Optional[Dict[str, Any]] = Field(
         None,
-        description='If your files are saved with improper extensions, you can force them to by synced as the selected filetype.',
-        title='',
+        description="If your files are saved with improper extensions, you can force them to by synced as the selected filetype.",
+        title="",
     )
     delimiter: Optional[str] = Field(
         None,
-        description='You can specify your the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.',
-        title='',
+        description="You can specify your the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.",
+        title="",
     )
     is_public: Optional[bool] = Field(
-        None, description='Whether bucket is public or not', title=''
+        None, description="Whether bucket is public or not", title=""
     )
     on_error: Optional[Dict[str, Any]] = Field(
         None,
-        description='If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as fail unless you are certain that you have undesirable, malformed data.',
-        title='',
+        description="If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as fail unless you are certain that you have undesirable, malformed data.",
+        title="",
     )
     compression: Optional[Dict[str, Any]] = Field(
         None,
-        description='The secrets that should be passed to the function at runtime.',
-        title='',
+        description="The secrets that should be passed to the function at runtime.",
+        title="",
     )
     table: Optional[str] = Field(
         None,
-        description='Destination table. Table is permanent and cannot be changed after connection creation',
-        title='Destination table',
+        description="Destination table. Table is permanent and cannot be changed after connection creation",
+        title="Destination table",
     )
     archive_pattern: Optional[str] = Field(
         None,
-        description='Files inside of compressed archives with filenames matching this regular expression will be synced.',
-        title='',
+        description="Files inside of compressed archives with filenames matching this regular expression will be synced.",
+        title="",
     )
 
 
 class S3ConfigV1(BaseModel):
-    config: Optional[Config157] = Field(None, description='')
+    config: Optional[Config157] = Field(None, description="")
 
 
 class S3NewConnectorRequestV1(NewConnectorRequestV1, S3ConfigV1):
@@ -8611,21 +8611,21 @@ class S3NewConnectorRequestV1(NewConnectorRequestV1, S3ConfigV1):
 class Config158(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     login_password: Optional[str] = Field(
         None,
-        description='The login password. It is a part of the login credentials.',
-        title='',
+        description="The login password. It is a part of the login credentials.",
+        title="",
     )
-    user_i_d: Optional[str] = Field(None, title='')
-    company_i_d: Optional[str] = Field(None, title='')
+    user_i_d: Optional[str] = Field(None, title="")
+    company_i_d: Optional[str] = Field(None, title="")
 
 
 class SageIntacctConfigV1(BaseModel):
-    config: Optional[Config158] = Field(None, description='')
+    config: Optional[Config158] = Field(None, description="")
 
 
 class SageIntacctNewConnectorRequestV1(NewConnectorRequestV1, SageIntacctConfigV1):
@@ -8635,22 +8635,22 @@ class SageIntacctNewConnectorRequestV1(NewConnectorRequestV1, SageIntacctConfigV
 class Config159(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    s3path: Optional[str] = Field(None, title='')
-    api_key: Optional[str] = Field(None, description='The Sailthru API key.', title='')
-    is_sailthru_connect_enabled: Optional[bool] = Field(None, title='')
-    is_valid_credential: Optional[bool] = Field(None, title='')
+    s3path: Optional[str] = Field(None, title="")
+    api_key: Optional[str] = Field(None, description="The Sailthru API key.", title="")
+    is_sailthru_connect_enabled: Optional[bool] = Field(None, title="")
+    is_valid_credential: Optional[bool] = Field(None, title="")
     api_secret: Optional[str] = Field(
-        None, description='The Sailthru API secret.', title=''
+        None, description="The Sailthru API secret.", title=""
     )
-    group_region: Optional[Dict[str, Any]] = Field(None, title='')
+    group_region: Optional[Dict[str, Any]] = Field(None, title="")
 
 
 class SailthruConfigV1(BaseModel):
-    config: Optional[Config159] = Field(None, description='')
+    config: Optional[Config159] = Field(None, description="")
 
 
 class SailthruNewConnectorRequestV1(NewConnectorRequestV1, SailthruConfigV1):
@@ -8660,38 +8660,38 @@ class SailthruNewConnectorRequestV1(NewConnectorRequestV1, SailthruConfigV1):
 class Config160(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    password: Optional[str] = Field(None, title='')
+    password: Optional[str] = Field(None, title="")
     base_url: Optional[str] = Field(
         None,
-        description='(Optional) The custom Salesforce domain. Make sure that the `base_url` starts with `https://`.',
-        title='',
+        description="(Optional) The custom Salesforce domain. Make sure that the `base_url` starts with `https://`.",
+        title="",
     )
-    username: Optional[str] = Field(None, title='')
+    username: Optional[str] = Field(None, title="")
 
 
 class ClientAccess32(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth46(BaseModel):
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
     client_access: Optional[ClientAccess32] = None
 
 
 class SalesforceConfigV1(BaseModel):
-    config: Optional[Config160] = Field(None, description='')
+    config: Optional[Config160] = Field(None, description="")
     auth: Optional[Auth46] = None
 
 
@@ -8702,30 +8702,30 @@ class SalesforceNewConnectorRequestV1(NewConnectorRequestV1, SalesforceConfigV1)
 class Config161(BaseModel):
     is_new_package: Optional[bool] = Field(
         None,
-        description='Indicates that that your installed package uses OAuth 2.0. Default value: `false`',
-        title='',
+        description="Indicates that that your installed package uses OAuth 2.0. Default value: `false`",
+        title="",
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    e2e_base_url: Optional[str] = Field(None, title='')
+    e2e_base_url: Optional[str] = Field(None, title="")
     instance: Optional[str] = Field(
-        None, description='The Salesforce Marketing Cloud instance ID', title=''
+        None, description="The Salesforce Marketing Cloud instance ID", title=""
     )
-    sub_domain: Optional[str] = Field(None, title='')
+    sub_domain: Optional[str] = Field(None, title="")
     client_secret: Optional[str] = Field(
-        None, description='The Salesforce Marketing Cloud client secret.', title=''
+        None, description="The Salesforce Marketing Cloud client secret.", title=""
     )
     client_id: Optional[str] = Field(
-        None, description='The Salesforce Marketing Cloud client ID.', title=''
+        None, description="The Salesforce Marketing Cloud client ID.", title=""
     )
 
 
 class SalesforceMarketingCloudConfigV1(BaseModel):
-    config: Optional[Config161] = Field(None, description='')
+    config: Optional[Config161] = Field(None, description="")
 
 
 class SalesforceMarketingCloudNewConnectorRequestV1(
@@ -8737,38 +8737,38 @@ class SalesforceMarketingCloudNewConnectorRequestV1(
 class Config162(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    password: Optional[str] = Field(None, title='')
+    password: Optional[str] = Field(None, title="")
     base_url: Optional[str] = Field(
         None,
-        description='(Optional) The custom Salesforce domain. Make sure that the `base_url` starts with `https://`.',
-        title='',
+        description="(Optional) The custom Salesforce domain. Make sure that the `base_url` starts with `https://`.",
+        title="",
     )
-    username: Optional[str] = Field(None, title='')
+    username: Optional[str] = Field(None, title="")
 
 
 class ClientAccess33(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth47(BaseModel):
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
     client_access: Optional[ClientAccess33] = None
 
 
 class SalesforceSandboxConfigV1(BaseModel):
-    config: Optional[Config162] = Field(None, description='')
+    config: Optional[Config162] = Field(None, description="")
     auth: Optional[Auth47] = None
 
 
@@ -8781,23 +8781,23 @@ class SalesforceSandboxNewConnectorRequestV1(
 class Config163(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     password: Optional[str] = Field(
-        None, description='The SAP Business ByDesign password.', title=''
+        None, description="The SAP Business ByDesign password.", title=""
     )
     instance_url: Optional[str] = Field(
-        None, description='The SAP Business ByDesign instance URL.', title=''
+        None, description="The SAP Business ByDesign instance URL.", title=""
     )
     username: Optional[str] = Field(
-        None, description='The SAP Business ByDesign username.', title=''
+        None, description="The SAP Business ByDesign username.", title=""
     )
 
 
 class SapBusinessByDesignConfigV1(BaseModel):
-    config: Optional[Config163] = Field(None, description='')
+    config: Optional[Config163] = Field(None, description="")
 
 
 class SapBusinessByDesignNewConnectorRequestV1(
@@ -8809,46 +8809,46 @@ class SapBusinessByDesignNewConnectorRequestV1(
 class Config164(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    append_file_option: Optional[Dict[str, Any]] = Field(None, title='')
+    append_file_option: Optional[Dict[str, Any]] = Field(None, title="")
     sync_type: Optional[Dict[str, Any]] = Field(
-        None, description='The Segment connector sync type.', title=''
+        None, description="The Segment connector sync type.", title=""
     )
     prefix: Optional[str] = Field(
         None,
-        description='Folder path to the Segment files within the bucket. Must be populated if `sync_type` is set to `S3`.',
-        title='',
+        description="Folder path to the Segment files within the bucket. Must be populated if `sync_type` is set to `S3`.",
+        title="",
     )
-    pattern: Optional[str] = Field(None, title='')
-    escape_char: Optional[str] = Field(None, title='')
-    external_id: Optional[str] = Field(None, description='', title='')
-    skip_after: Optional[int] = Field(None, description='', title='')
+    pattern: Optional[str] = Field(None, title="")
+    escape_char: Optional[str] = Field(None, title="")
+    external_id: Optional[str] = Field(None, description="", title="")
+    skip_after: Optional[int] = Field(None, description="", title="")
     bucket: Optional[str] = Field(
         None,
-        description='The name of the Segment bucket. Must be populated if `sync_type` is set to `S3`.',
-        title='',
+        description="The name of the Segment bucket. Must be populated if `sync_type` is set to `S3`.",
+        title="",
     )
-    empty_header: Optional[bool] = Field(None, title='')
-    skip_before: Optional[int] = Field(None, description='', title='')
-    null_sequence: Optional[str] = Field(None, title='')
+    empty_header: Optional[bool] = Field(None, title="")
+    skip_before: Optional[int] = Field(None, description="", title="")
+    null_sequence: Optional[str] = Field(None, title="")
     role_arn: Optional[str] = Field(
         None,
-        description='The Role ARN required for authentication. Must be populated if `sync_type` is set to `S3`.',
-        title='',
+        description="The Role ARN required for authentication. Must be populated if `sync_type` is set to `S3`.",
+        title="",
     )
-    file_type: Optional[Dict[str, Any]] = Field(None, title='')
-    delimiter: Optional[str] = Field(None, title='')
-    on_error: Optional[Dict[str, Any]] = Field(None, title='')
-    compression: Optional[Dict[str, Any]] = Field(None, title='')
-    table: Optional[str] = Field(None, title='')
-    archive_pattern: Optional[str] = Field(None, title='')
+    file_type: Optional[Dict[str, Any]] = Field(None, title="")
+    delimiter: Optional[str] = Field(None, title="")
+    on_error: Optional[Dict[str, Any]] = Field(None, title="")
+    compression: Optional[Dict[str, Any]] = Field(None, title="")
+    table: Optional[str] = Field(None, title="")
+    archive_pattern: Optional[str] = Field(None, title="")
 
 
 class SegmentConfigV1(BaseModel):
-    config: Optional[Config164] = Field(None, description='')
+    config: Optional[Config164] = Field(None, description="")
 
 
 class SegmentNewConnectorRequestV1(NewConnectorRequestV1, SegmentConfigV1):
@@ -8858,15 +8858,15 @@ class SegmentNewConnectorRequestV1(NewConnectorRequestV1, SegmentConfigV1):
 class Config165(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    api_key: Optional[str] = Field(None, description='The SendGrid API key.', title='')
+    api_key: Optional[str] = Field(None, description="The SendGrid API key.", title="")
 
 
 class SendgridConfigV1(BaseModel):
-    config: Optional[Config165] = Field(None, description='')
+    config: Optional[Config165] = Field(None, description="")
 
 
 class SendgridNewConnectorRequestV1(NewConnectorRequestV1, SendgridConfigV1):
@@ -8876,29 +8876,29 @@ class SendgridNewConnectorRequestV1(NewConnectorRequestV1, SendgridConfigV1):
 class Config166(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     password: Optional[str] = Field(
-        None, description='Your account password.', title=''
+        None, description="Your account password.", title=""
     )
     instance: Optional[str] = Field(
-        None, description='ServiceNow Instance ID.', title=''
+        None, description="ServiceNow Instance ID.", title=""
     )
     client_secret: Optional[str] = Field(
-        None, description='ServiceNow Client Secret.', title=''
+        None, description="ServiceNow Client Secret.", title=""
     )
     client_id: Optional[str] = Field(
-        None, description='ServiceNow Client ID.', title=''
+        None, description="ServiceNow Client ID.", title=""
     )
     username: Optional[str] = Field(
-        None, description='Your ServiceNow User ID (username).', title=''
+        None, description="Your ServiceNow User ID (username).", title=""
     )
 
 
 class ServicenowConfigV1(BaseModel):
-    config: Optional[Config166] = Field(None, description='')
+    config: Optional[Config166] = Field(None, description="")
 
 
 class ServicenowNewConnectorRequestV1(NewConnectorRequestV1, ServicenowConfigV1):
@@ -8906,96 +8906,96 @@ class ServicenowNewConnectorRequestV1(NewConnectorRequestV1, ServicenowConfigV1)
 
 
 class Config167(BaseModel):
-    public_key: Optional[str] = Field(None, title='')
+    public_key: Optional[str] = Field(None, title="")
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     prefix: Optional[str] = Field(
         None,
-        description='All files and folders under this folder path will be searched for files to sync.',
-        title='',
+        description="All files and folders under this folder path will be searched for files to sync.",
+        title="",
     )
     pattern: Optional[str] = Field(
         None,
-        description='All files in your search path matching this regular expression will be synced.',
-        title='',
+        description="All files in your search path matching this regular expression will be synced.",
+        title="",
     )
     skip_after: Optional[int] = Field(
         None,
-        description='We will skip over the number of lines specified at the end so as to not introduce aberrant data into your destination.',
-        title='',
+        description="We will skip over the number of lines specified at the end so as to not introduce aberrant data into your destination.",
+        title="",
     )
-    tunnel_port: Optional[int] = Field(None, description='SFTP Tunnel port.', title='')
-    empty_header: Optional[bool] = Field(None, title='')
-    password: Optional[str] = Field(None, description='SFTP password.', title='')
+    tunnel_port: Optional[int] = Field(None, description="SFTP Tunnel port.", title="")
+    empty_header: Optional[bool] = Field(None, title="")
+    password: Optional[str] = Field(None, description="SFTP password.", title="")
     skip_before: Optional[int] = Field(
         None,
-        description='We will skip over the number of lines specified before syncing data.',
-        title='',
+        description="We will skip over the number of lines specified before syncing data.",
+        title="",
     )
     file_type: Optional[Dict[str, Any]] = Field(
         None,
-        description='If your files are saved with improper extensions, you can force them to by synced as the selected filetype.',
-        title='',
+        description="If your files are saved with improper extensions, you can force them to by synced as the selected filetype.",
+        title="",
     )
     delimiter: Optional[str] = Field(
         None,
-        description='You can specify your the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.',
-        title='',
+        description="You can specify your the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.",
+        title="",
     )
-    host: Optional[str] = Field(None, description='SFTP host address.', title='')
+    host: Optional[str] = Field(None, description="SFTP host address.", title="")
     on_error: Optional[Dict[str, Any]] = Field(
         None,
-        description='If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as fail unless you are certain that you have undesirable, malformed data.',
-        title='',
+        description="If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as fail unless you are certain that you have undesirable, malformed data.",
+        title="",
     )
     table: Optional[str] = Field(
         None,
-        description='Destination table. Table is permanent and cannot be changed after connection creation',
-        title='Destination table',
+        description="Destination table. Table is permanent and cannot be changed after connection creation",
+        title="Destination table",
     )
     archive_pattern: Optional[str] = Field(
         None,
-        description='Files inside of compressed archives with filenames matching this regular expression will be synced.',
-        title='',
+        description="Files inside of compressed archives with filenames matching this regular expression will be synced.",
+        title="",
     )
-    append_file_option: Optional[Dict[str, Any]] = Field(None, title='')
+    append_file_option: Optional[Dict[str, Any]] = Field(None, title="")
     escape_char: Optional[str] = Field(
         None,
-        description='If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.',
-        title='',
+        description="If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.",
+        title="",
     )
     connection_method: Optional[Dict[str, Any]] = Field(
-        None, description='Connection type.', title=''
+        None, description="Connection type.", title=""
     )
-    tunnel_user: Optional[str] = Field(None, description='SFTP Tunnel user.', title='')
+    tunnel_user: Optional[str] = Field(None, description="SFTP Tunnel user.", title="")
     null_sequence: Optional[str] = Field(
         None,
-        description='If your CSVs use a special value indicating null, you can specify it here.',
-        title='',
+        description="If your CSVs use a special value indicating null, you can specify it here.",
+        title="",
     )
-    port: Optional[int] = Field(None, description='SFTP port.', title='')
+    port: Optional[int] = Field(None, description="SFTP port.", title="")
     tunnel_host: Optional[str] = Field(
-        None, description='SFTP Tunnel host address.', title=''
+        None, description="SFTP Tunnel host address.", title=""
     )
     is_keypair: Optional[bool] = Field(
         None,
-        description='Whether to use a key pair for authentication.  When `true`, do not use `password`.',
-        title='',
+        description="Whether to use a key pair for authentication.  When `true`, do not use `password`.",
+        title="",
     )
     compression: Optional[Dict[str, Any]] = Field(
         None,
-        description='The secrets that should be passed to the function at runtime.',
-        title='',
+        description="The secrets that should be passed to the function at runtime.",
+        title="",
     )
-    user: Optional[str] = Field(None, description='SFTP user.', title='')
+    user: Optional[str] = Field(None, description="SFTP user.", title="")
 
 
 class SftpConfigV1(BaseModel):
-    config: Optional[Config167] = Field(None, description='')
+    config: Optional[Config167] = Field(None, description="")
 
 
 class SftpNewConnectorRequestV1(NewConnectorRequestV1, SftpConfigV1):
@@ -9005,107 +9005,107 @@ class SftpNewConnectorRequestV1(NewConnectorRequestV1, SftpConfigV1):
 class Config168(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     append_file_option: Optional[Dict[str, Any]] = Field(
         None,
-        description='If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.',
-        title='',
+        description="If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.",
+        title="",
     )
     prefix: Optional[str] = Field(
         None,
-        description='All files and folders under this folder path link will be searched for files to sync. This can be any shared folder link.',
-        title='',
+        description="All files and folders under this folder path link will be searched for files to sync. This can be any shared folder link.",
+        title="",
     )
     pattern: Optional[str] = Field(
         None,
-        description='All files in your search path matching this regular expression will be synced.',
-        title='',
+        description="All files in your search path matching this regular expression will be synced.",
+        title="",
     )
     escape_char: Optional[str] = Field(
         None,
-        description='If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.',
-        title='',
+        description="If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.",
+        title="",
     )
     skip_after: Optional[int] = Field(
         None,
-        description='We will skip over the number of lines specified at the end so as to not introduce aberrant data into your destination.',
-        title='',
+        description="We will skip over the number of lines specified at the end so as to not introduce aberrant data into your destination.",
+        title="",
     )
     skip_before: Optional[int] = Field(
         None,
-        description='We will skip over the number of lines specified before syncing data.',
-        title='',
+        description="We will skip over the number of lines specified before syncing data.",
+        title="",
     )
-    empty_header: Optional[bool] = Field(None, title='')
+    empty_header: Optional[bool] = Field(None, title="")
     null_sequence: Optional[str] = Field(
         None,
-        description='If your CSVs use a special value indicating null, you can specify it here.',
-        title='',
+        description="If your CSVs use a special value indicating null, you can specify it here.",
+        title="",
     )
     is_single_table_mode: Optional[bool] = Field(
         None,
-        description='Allows the creation of connector using Merge Mode strategy.',
-        title='',
+        description="Allows the creation of connector using Merge Mode strategy.",
+        title="",
     )
     share_url: Optional[str] = Field(
         None,
-        description='Your SharePoint folder URL. You can find the folder URL by following the steps mentioned [here](/docs/files/share-point/setup-guide).',
-        title='',
+        description="Your SharePoint folder URL. You can find the folder URL by following the steps mentioned [here](/docs/files/share-point/setup-guide).",
+        title="",
     )
     delimiter: Optional[str] = Field(
         None,
-        description='You can specify the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.',
-        title='',
+        description="You can specify the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.",
+        title="",
     )
     file_type: Optional[Dict[str, Any]] = Field(
         None,
-        description='If your files are saved with improper extensions, you can force them to be synced as the selected file type.',
-        title='',
+        description="If your files are saved with improper extensions, you can force them to be synced as the selected file type.",
+        title="",
     )
     on_error: Optional[Dict[str, Any]] = Field(
         None,
-        description='If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as fail unless you are certain that you have undesirable, malformed data.',
-        title='',
+        description="If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as fail unless you are certain that you have undesirable, malformed data.",
+        title="",
     )
     compression: Optional[Dict[str, Any]] = Field(
         None,
-        description='The compression format is used to let Fivetran know that even files without a compression extension should be decompressed using the selected compression format.',
-        title='',
+        description="The compression format is used to let Fivetran know that even files without a compression extension should be decompressed using the selected compression format.",
+        title="",
     )
     archive_pattern: Optional[str] = Field(
         None,
-        description='Files inside of compressed archives with filenames matching this regular expression will be synced.',
-        title='',
+        description="Files inside of compressed archives with filenames matching this regular expression will be synced.",
+        title="",
     )
     table: Optional[str] = Field(
         None,
-        description='Destination table. Table is permanent and cannot be changed after connection creation',
-        title='Destination table',
+        description="Destination table. Table is permanent and cannot be changed after connection creation",
+        title="Destination table",
     )
 
 
 class ClientAccess34(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth48(BaseModel):
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
     client_access: Optional[ClientAccess34] = None
 
 
 class SharePointConfigV1(BaseModel):
-    config: Optional[Config168] = Field(None, description='')
+    config: Optional[Config168] = Field(None, description="")
     auth: Optional[Auth48] = None
 
 
@@ -9116,31 +9116,31 @@ class SharePointNewConnectorRequestV1(NewConnectorRequestV1, SharePointConfigV1)
 class Config169(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     shop: Optional[str] = Field(
         None,
-        description='The Shopify shop name. Can be found in the URL before **.myshopify.com**.',
-        title='',
+        description="The Shopify shop name. Can be found in the URL before **.myshopify.com**.",
+        title="",
     )
 
 
 class Auth49(BaseModel):
     access_token: Optional[str] = Field(
         None,
-        description='The long-lived Access token carries the information necessary to access API resources',
+        description="The long-lived Access token carries the information necessary to access API resources",
     )
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
-    realm_id: Optional[str] = Field(None, description='Realm ID of your application.')
+    realm_id: Optional[str] = Field(None, description="Realm ID of your application.")
 
 
 class ShopifyConfigV1(BaseModel):
-    config: Optional[Config169] = Field(None, description='')
+    config: Optional[Config169] = Field(None, description="")
     auth: Optional[Auth49] = None
 
 
@@ -9151,56 +9151,56 @@ class ShopifyNewConnectorRequestV1(NewConnectorRequestV1, ShopifyConfigV1):
 class Config170(BaseModel):
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
-        description='Whether to sync all organizations or specific organizations. Default value: `AllOrganizations`.',
-        title='',
+        description="Whether to sync all organizations or specific organizations. Default value: `AllOrganizations`.",
+        title="",
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     view_attribution_window: Optional[Dict[str, Any]] = Field(
         None,
-        description='The time period to attribute conversions based on views. Default value: `DAY_1`',
-        title='',
+        description="The time period to attribute conversions based on views. Default value: `DAY_1`",
+        title="",
     )
     swipe_attribution_window: Optional[Dict[str, Any]] = Field(
         None,
-        description='The time period to attribute conversions based on swipes. Default value: `DAY_28`',
-        title='',
+        description="The time period to attribute conversions based on swipes. Default value: `DAY_28`",
+        title="",
     )
     timeframe_months: Optional[Dict[str, Any]] = Field(
         None,
         description="Number of months of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `TWELVE`.",
-        title='',
+        title="",
     )
     organizations: Optional[List[str]] = Field(
         None,
-        description='Specific organizations IDs to sync. Must be populated if `syncMode` is set to `SpecificOrganizations`.',
-        title='',
+        description="Specific organizations IDs to sync. Must be populated if `syncMode` is set to `SpecificOrganizations`.",
+        title="",
     )
 
 
 class ClientAccess35(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth50(BaseModel):
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
     client_access: Optional[ClientAccess35] = None
 
 
 class SnapchatAdsConfigV1(BaseModel):
-    config: Optional[Config170] = Field(None, description='')
+    config: Optional[Config170] = Field(None, description="")
     auth: Optional[Auth50] = None
 
 
@@ -9211,17 +9211,17 @@ class SnapchatAdsNewConnectorRequestV1(NewConnectorRequestV1, SnapchatAdsConfigV
 class Config171(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    endpoint: Optional[str] = Field(None, title='')
-    config_repository_u_r_l: Optional[str] = Field(None, title='')
-    enable_enrichments: Optional[bool] = Field(None, title='')
+    endpoint: Optional[str] = Field(None, title="")
+    config_repository_u_r_l: Optional[str] = Field(None, title="")
+    enable_enrichments: Optional[bool] = Field(None, title="")
 
 
 class SnowplowConfigV1(BaseModel):
-    config: Optional[Config171] = Field(None, description='')
+    config: Optional[Config171] = Field(None, description="")
 
 
 class SnowplowNewConnectorRequestV1(NewConnectorRequestV1, SnowplowConfigV1):
@@ -9231,24 +9231,24 @@ class SnowplowNewConnectorRequestV1(NewConnectorRequestV1, SnowplowConfigV1):
 class Config172(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     password: Optional[str] = Field(
-        None, description="The Splunk user's password.", title=''
+        None, description="The Splunk user's password.", title=""
     )
     port: Optional[int] = Field(
-        None, description='The Splunk service host port.', title=''
+        None, description="The Splunk service host port.", title=""
     )
     host: Optional[str] = Field(
-        None, description='The Splunk service host address.', title=''
+        None, description="The Splunk service host address.", title=""
     )
-    user: Optional[str] = Field(None, description='The Splunk username.', title='')
+    user: Optional[str] = Field(None, description="The Splunk username.", title="")
 
 
 class SplunkConfigV1(BaseModel):
-    config: Optional[Config172] = Field(None, description='')
+    config: Optional[Config172] = Field(None, description="")
 
 
 class SplunkNewConnectorRequestV1(NewConnectorRequestV1, SplunkConfigV1):
@@ -9256,62 +9256,62 @@ class SplunkNewConnectorRequestV1(NewConnectorRequestV1, SplunkConfigV1):
 
 
 class Config173(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
-    agent_user: Optional[str] = Field(None, description='', title='')
-    connection_type: Optional[Dict[str, Any]] = Field(None, description='', title='')
-    agent_password: Optional[str] = Field(None, description='', title='')
-    always_encrypted: Optional[bool] = Field(None, title='')
-    agent_public_cert: Optional[str] = Field(None, description='', title='')
+    public_key: Optional[str] = Field(None, description="", title="")
+    agent_user: Optional[str] = Field(None, description="", title="")
+    connection_type: Optional[Dict[str, Any]] = Field(None, description="", title="")
+    agent_password: Optional[str] = Field(None, description="", title="")
+    always_encrypted: Optional[bool] = Field(None, title="")
+    agent_public_cert: Optional[str] = Field(None, description="", title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH user, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='The database name.', title='')
-    password: Optional[str] = Field(None, description="The user's password.", title='')
+    database: Optional[str] = Field(None, description="The database name.", title="")
+    password: Optional[str] = Field(None, description="The user's password.", title="")
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH port, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH port, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    port: Optional[int] = Field(None, description='The port number.', title='')
+    port: Optional[int] = Field(None, description="The port number.", title="")
     host: Optional[str] = Field(
-        None, description='DB instance host or IP address.', title=''
+        None, description="DB instance host or IP address.", title=""
     )
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).',
-        title='',
+        description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+        title="",
     )
-    agent_port: Optional[int] = Field(None, description='', title='')
+    agent_port: Optional[int] = Field(None, description="", title="")
     schema_prefix: Optional[str] = Field(
         None,
         description="Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-        title='Destination schema prefix',
+        title="Destination schema prefix",
     )
-    agent_host: Optional[str] = Field(None, description='', title='')
-    sap_user: Optional[str] = Field(None, description='', title='')
+    agent_host: Optional[str] = Field(None, description="", title="")
+    sap_user: Optional[str] = Field(None, description="", title="")
     user: Optional[str] = Field(
         None,
-        description='The user name.  For Azure Databases, the format must be `user@domain`.',
-        title='',
+        description="The user name.  For Azure Databases, the format must be `user@domain`.",
+        title="",
     )
 
 
 class Auth51(BaseModel):
     access_token: Optional[str] = Field(
         None,
-        description='The long-lived Access token carries the information necessary to access API resources',
+        description="The long-lived Access token carries the information necessary to access API resources",
     )
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
-    realm_id: Optional[str] = Field(None, description='Realm ID of your application.')
+    realm_id: Optional[str] = Field(None, description="Realm ID of your application.")
 
 
 class SqlServerConfigV1(BaseModel):
-    config: Optional[Config173] = Field(None, description='')
+    config: Optional[Config173] = Field(None, description="")
     auth: Optional[Auth51] = None
 
 
@@ -9320,62 +9320,62 @@ class SqlServerNewConnectorRequestV1(NewConnectorRequestV1, SqlServerConfigV1):
 
 
 class Config174(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
-    agent_user: Optional[str] = Field(None, title='')
-    connection_type: Optional[Dict[str, Any]] = Field(None, description='', title='')
-    agent_password: Optional[str] = Field(None, title='')
-    always_encrypted: Optional[bool] = Field(None, title='')
-    agent_public_cert: Optional[str] = Field(None, title='')
+    public_key: Optional[str] = Field(None, description="", title="")
+    agent_user: Optional[str] = Field(None, title="")
+    connection_type: Optional[Dict[str, Any]] = Field(None, description="", title="")
+    agent_password: Optional[str] = Field(None, title="")
+    always_encrypted: Optional[bool] = Field(None, title="")
+    agent_public_cert: Optional[str] = Field(None, title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH user, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='The database name.', title='')
-    password: Optional[str] = Field(None, description="The user's password.", title='')
+    database: Optional[str] = Field(None, description="The database name.", title="")
+    password: Optional[str] = Field(None, description="The user's password.", title="")
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH port, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH port, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    port: Optional[int] = Field(None, description='The port number.', title='')
+    port: Optional[int] = Field(None, description="The port number.", title="")
     host: Optional[str] = Field(
-        None, description='DB instance host or IP address.', title=''
+        None, description="DB instance host or IP address.", title=""
     )
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).',
-        title='',
+        description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+        title="",
     )
-    agent_port: Optional[int] = Field(None, title='')
+    agent_port: Optional[int] = Field(None, title="")
     schema_prefix: Optional[str] = Field(
         None,
         description="Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-        title='Destination schema prefix',
+        title="Destination schema prefix",
     )
-    agent_host: Optional[str] = Field(None, title='')
-    sap_user: Optional[str] = Field(None, description='', title='')
+    agent_host: Optional[str] = Field(None, title="")
+    sap_user: Optional[str] = Field(None, description="", title="")
     user: Optional[str] = Field(
         None,
-        description='The user name.  For Azure Databases, the format must be `user@domain`.',
-        title='',
+        description="The user name.  For Azure Databases, the format must be `user@domain`.",
+        title="",
     )
 
 
 class Auth52(BaseModel):
     access_token: Optional[str] = Field(
         None,
-        description='The long-lived Access token carries the information necessary to access API resources',
+        description="The long-lived Access token carries the information necessary to access API resources",
     )
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
-    realm_id: Optional[str] = Field(None, description='Realm ID of your application.')
+    realm_id: Optional[str] = Field(None, description="Realm ID of your application.")
 
 
 class SqlServerHvaConfigV1(BaseModel):
-    config: Optional[Config174] = Field(None, description='')
+    config: Optional[Config174] = Field(None, description="")
     auth: Optional[Auth52] = None
 
 
@@ -9384,62 +9384,62 @@ class SqlServerHvaNewConnectorRequestV1(NewConnectorRequestV1, SqlServerHvaConfi
 
 
 class Config175(BaseModel):
-    public_key: Optional[str] = Field(None, description='', title='')
-    agent_user: Optional[str] = Field(None, description='', title='')
-    connection_type: Optional[Dict[str, Any]] = Field(None, description='', title='')
-    agent_password: Optional[str] = Field(None, description='', title='')
-    always_encrypted: Optional[bool] = Field(None, title='')
-    agent_public_cert: Optional[str] = Field(None, description='', title='')
+    public_key: Optional[str] = Field(None, description="", title="")
+    agent_user: Optional[str] = Field(None, description="", title="")
+    connection_type: Optional[Dict[str, Any]] = Field(None, description="", title="")
+    agent_password: Optional[str] = Field(None, description="", title="")
+    always_encrypted: Optional[bool] = Field(None, title="")
+    agent_public_cert: Optional[str] = Field(None, description="", title="")
     tunnel_user: Optional[str] = Field(
         None,
-        description='SSH user, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH user, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    database: Optional[str] = Field(None, description='The database name.', title='')
-    password: Optional[str] = Field(None, description="The user's password.", title='')
+    database: Optional[str] = Field(None, description="The database name.", title="")
+    password: Optional[str] = Field(None, description="The user's password.", title="")
     tunnel_port: Optional[int] = Field(
         None,
-        description='SSH port, specify only to connect via an SSH tunnel.',
-        title='',
+        description="SSH port, specify only to connect via an SSH tunnel.",
+        title="",
     )
-    port: Optional[int] = Field(None, description='The port number.', title='')
+    port: Optional[int] = Field(None, description="The port number.", title="")
     host: Optional[str] = Field(
-        None, description='DB instance host or IP address.', title=''
+        None, description="DB instance host or IP address.", title=""
     )
     tunnel_host: Optional[str] = Field(
         None,
-        description='SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).',
-        title='',
+        description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+        title="",
     )
-    agent_port: Optional[int] = Field(None, description='', title='')
+    agent_port: Optional[int] = Field(None, description="", title="")
     schema_prefix: Optional[str] = Field(
         None,
         description="Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-        title='Destination schema prefix',
+        title="Destination schema prefix",
     )
-    agent_host: Optional[str] = Field(None, description='', title='')
-    sap_user: Optional[str] = Field(None, description='', title='')
+    agent_host: Optional[str] = Field(None, description="", title="")
+    sap_user: Optional[str] = Field(None, description="", title="")
     user: Optional[str] = Field(
         None,
-        description='The user name.  For Azure Databases, the format must be `user@domain`.',
-        title='',
+        description="The user name.  For Azure Databases, the format must be `user@domain`.",
+        title="",
     )
 
 
 class Auth53(BaseModel):
     access_token: Optional[str] = Field(
         None,
-        description='The long-lived Access token carries the information necessary to access API resources',
+        description="The long-lived Access token carries the information necessary to access API resources",
     )
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
-    realm_id: Optional[str] = Field(None, description='Realm ID of your application.')
+    realm_id: Optional[str] = Field(None, description="Realm ID of your application.")
 
 
 class SqlServerRdsConfigV1(BaseModel):
-    config: Optional[Config175] = Field(None, description='')
+    config: Optional[Config175] = Field(None, description="")
     auth: Optional[Auth53] = None
 
 
@@ -9450,22 +9450,22 @@ class SqlServerRdsNewConnectorRequestV1(NewConnectorRequestV1, SqlServerRdsConfi
 class Config176(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     api_access_token: Optional[str] = Field(
         None,
-        description='Square App user the access token specific to your Application.',
-        title='',
+        description="Square App user the access token specific to your Application.",
+        title="",
     )
     client_id: Optional[str] = Field(
-        None, description='The Application ID specific to your organization.', title=''
+        None, description="The Application ID specific to your organization.", title=""
     )
 
 
 class SquareConfigV1(BaseModel):
-    config: Optional[Config176] = Field(None, description='')
+    config: Optional[Config176] = Field(None, description="")
 
 
 class SquareNewConnectorRequestV1(NewConnectorRequestV1, SquareConfigV1):
@@ -9475,27 +9475,27 @@ class SquareNewConnectorRequestV1(NewConnectorRequestV1, SquareConfigV1):
 class Config177(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     support_connected_accounts_sync: Optional[bool] = Field(
         None,
-        description='Sync Connected Accounts. Connected Account Documentation - https://stripe.com/docs/api/connected_accounts.',
-        title='',
+        description="Sync Connected Accounts. Connected Account Documentation - https://stripe.com/docs/api/connected_accounts.",
+        title="",
     )
-    api_key: Optional[str] = Field(None, description='Restricted API key', title='')
+    api_key: Optional[str] = Field(None, description="Restricted API key", title="")
 
 
 class Auth54(BaseModel):
     access_token: Optional[str] = Field(
         None,
-        description='The long-lived Access token carries the information necessary to access API resources',
+        description="The long-lived Access token carries the information necessary to access API resources",
     )
 
 
 class StripeConfigV1(BaseModel):
-    config: Optional[Config177] = Field(None, description='')
+    config: Optional[Config177] = Field(None, description="")
     auth: Optional[Auth54] = None
 
 
@@ -9506,27 +9506,27 @@ class StripeNewConnectorRequestV1(NewConnectorRequestV1, StripeConfigV1):
 class Config178(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     support_connected_accounts_sync: Optional[bool] = Field(
         None,
-        description='Sync Connected Accounts. Connected Account Documentation - https://stripe.com/docs/api/connected_accounts.',
-        title='',
+        description="Sync Connected Accounts. Connected Account Documentation - https://stripe.com/docs/api/connected_accounts.",
+        title="",
     )
-    api_key: Optional[str] = Field(None, description='Restricted API key', title='')
+    api_key: Optional[str] = Field(None, description="Restricted API key", title="")
 
 
 class Auth55(BaseModel):
     access_token: Optional[str] = Field(
         None,
-        description='The long-lived Access token carries the information necessary to access API resources',
+        description="The long-lived Access token carries the information necessary to access API resources",
     )
 
 
 class StripeTestConfigV1(BaseModel):
-    config: Optional[Config178] = Field(None, description='')
+    config: Optional[Config178] = Field(None, description="")
     auth: Optional[Auth55] = None
 
 
@@ -9537,36 +9537,36 @@ class StripeTestNewConnectorRequestV1(NewConnectorRequestV1, StripeTestConfigV1)
 class Config179(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     eu_region: Optional[bool] = Field(
         None,
-        description='The SurveyMonkey account region. Specify `true`, if your account is hosted in the EU region. Default value is `false`.',
-        title='',
+        description="The SurveyMonkey account region. Specify `true`, if your account is hosted in the EU region. Default value is `false`.",
+        title="",
     )
 
 
 class ClientAccess36(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth56(BaseModel):
     access_token: Optional[str] = Field(
         None,
-        description='The long-lived Access token carries the information necessary to access API resources',
+        description="The long-lived Access token carries the information necessary to access API resources",
     )
     client_access: Optional[ClientAccess36] = None
 
 
 class SurveyMonkeyConfigV1(BaseModel):
-    config: Optional[Config179] = Field(None, description='')
+    config: Optional[Config179] = Field(None, description="")
     auth: Optional[Auth56] = None
 
 
@@ -9576,30 +9576,30 @@ class SurveyMonkeyNewConnectorRequestV1(NewConnectorRequestV1, SurveyMonkeyConfi
 
 class Config180(BaseModel):
     sync_mode: Optional[Dict[str, Any]] = Field(
-        None, description='Whether to sync all accounts or specific accounts.', title=''
+        None, description="Whether to sync all accounts or specific accounts.", title=""
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     account_ids: Optional[List[str]] = Field(
         None,
-        description='Specific Account IDs to sync.  Must be populated if `syncMode` is set to `SpecificAccounts`.',
-        title='',
+        description="Specific Account IDs to sync.  Must be populated if `syncMode` is set to `SpecificAccounts`.",
+        title="",
     )
-    timeframe_months: Optional[Dict[str, Any]] = Field(None, title='')
+    timeframe_months: Optional[Dict[str, Any]] = Field(None, title="")
     client_secret: Optional[str] = Field(
-        None, description='The Taboola client secret.', title=''
+        None, description="The Taboola client secret.", title=""
     )
     client_id: Optional[str] = Field(
-        None, description='The Taboola client ID.', title=''
+        None, description="The Taboola client ID.", title=""
     )
 
 
 class TaboolaConfigV1(BaseModel):
-    config: Optional[Config180] = Field(None, description='')
+    config: Optional[Config180] = Field(None, description="")
 
 
 class TaboolaNewConnectorRequestV1(NewConnectorRequestV1, TaboolaConfigV1):
@@ -9609,46 +9609,46 @@ class TaboolaNewConnectorRequestV1(NewConnectorRequestV1, TaboolaConfigV1):
 class Config181(BaseModel):
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
-        description='Whether to sync all advertiser accounts or specific accounts.',
-        title='',
+        description="Whether to sync all advertiser accounts or specific accounts.",
+        title="",
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     timeframe_months: Optional[Dict[str, Any]] = Field(
         None,
         description="Number of months of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `THREE`.",
-        title='',
+        title="",
     )
     accounts: Optional[List[str]] = Field(
         None,
-        description='Specific accounts to sync.  Must be populated if `sync_mode` is set to `SpecificAccounts`.',
-        title='',
+        description="Specific accounts to sync.  Must be populated if `sync_mode` is set to `SpecificAccounts`.",
+        title="",
     )
 
 
 class ClientAccess37(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth57(BaseModel):
     access_token: Optional[str] = Field(
         None,
-        description='The long-lived Access token carries the information necessary to access API resources',
+        description="The long-lived Access token carries the information necessary to access API resources",
     )
     client_access: Optional[ClientAccess37] = None
 
 
 class TiktokAdsConfigV1(BaseModel):
-    config: Optional[Config181] = Field(None, description='')
+    config: Optional[Config181] = Field(None, description="")
     auth: Optional[Auth57] = None
 
 
@@ -9658,25 +9658,25 @@ class TiktokAdsNewConnectorRequestV1(NewConnectorRequestV1, TiktokAdsConfigV1):
 
 class Config182(BaseModel):
     sync_mode: Optional[Dict[str, Any]] = Field(
-        None, description='Whether to sync all accounts or specific accounts.', title=''
+        None, description="Whether to sync all accounts or specific accounts.", title=""
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    secret: Optional[str] = Field(None, description='The Twilio API secret', title='')
+    secret: Optional[str] = Field(None, description="The Twilio API secret", title="")
     accounts: Optional[List[str]] = Field(
         None,
-        description='Specific Accounts to sync.  Must be populated if `sync_mode` is set to `SpecificAccounts`.',
-        title='',
+        description="Specific Accounts to sync.  Must be populated if `sync_mode` is set to `SpecificAccounts`.",
+        title="",
     )
-    sid: Optional[str] = Field(None, description='The Twilio API key SID', title='')
+    sid: Optional[str] = Field(None, description="The Twilio API key SID", title="")
 
 
 class TwilioConfigV1(BaseModel):
-    config: Optional[Config182] = Field(None, description='')
+    config: Optional[Config182] = Field(None, description="")
 
 
 class TwilioNewConnectorRequestV1(NewConnectorRequestV1, TwilioConfigV1):
@@ -9686,54 +9686,54 @@ class TwilioNewConnectorRequestV1(NewConnectorRequestV1, TwilioConfigV1):
 class Config183(BaseModel):
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
-        description='Whether to sync all accounts or specific accounts. Default value: `AllAccounts`.',
-        title='',
+        description="Whether to sync all accounts or specific accounts. Default value: `AllAccounts`.",
+        title="",
     )
-    consumer_key: Optional[str] = Field(None, description='', title='')
+    consumer_key: Optional[str] = Field(None, description="", title="")
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    consumer_secret: Optional[str] = Field(None, description='', title='')
+    consumer_secret: Optional[str] = Field(None, description="", title="")
     timeframe_months: Optional[Dict[str, Any]] = Field(
         None,
         description="Number of months of data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `THREE`.",
-        title='',
+        title="",
     )
     accounts: Optional[List[str]] = Field(
         None,
-        description='Specific accounts to sync. Must be populated if `sync_mode` is set to `SpecificAccounts`.',
-        title='',
+        description="Specific accounts to sync. Must be populated if `sync_mode` is set to `SpecificAccounts`.",
+        title="",
     )
 
 
 class ClientAccess38(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth58(BaseModel):
-    consumer_key: Optional[str] = Field(None, description='API Key of your app')
-    consumer_secret: Optional[str] = Field(None, description='API Secret of your app')
+    consumer_key: Optional[str] = Field(None, description="API Key of your app")
+    consumer_secret: Optional[str] = Field(None, description="API Secret of your app")
     client_access: Optional[ClientAccess38] = None
     oauth_token: Optional[str] = Field(
         None,
-        description='The Access token carries the information necessary to access API resources',
+        description="The Access token carries the information necessary to access API resources",
     )
     oauth_token_secret: Optional[str] = Field(
         None,
-        description='The Access token secret carry the information necessary to access API resources.',
+        description="The Access token secret carry the information necessary to access API resources.",
     )
 
 
 class TwitterConfigV1(BaseModel):
-    config: Optional[Config183] = Field(None, description='')
+    config: Optional[Config183] = Field(None, description="")
     auth: Optional[Auth58] = None
 
 
@@ -9743,56 +9743,56 @@ class TwitterNewConnectorRequestV1(NewConnectorRequestV1, TwitterConfigV1):
 
 class Config184(BaseModel):
     sync_mode: Optional[Dict[str, Any]] = Field(
-        None, description='Whether to sync all accounts or specific accounts.', title=''
+        None, description="Whether to sync all accounts or specific accounts.", title=""
     )
     consumer_key: Optional[str] = Field(
-        None, description='The Twitter App consumer key.', title=''
+        None, description="The Twitter App consumer key.", title=""
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     consumer_secret: Optional[str] = Field(
-        None, description='The Twitter App consumer secret.', title=''
+        None, description="The Twitter App consumer secret.", title=""
     )
     timeframe_months: Optional[Dict[str, Any]] = Field(
-        None, description='Historical sync timeframe in months.', title=''
+        None, description="Historical sync timeframe in months.", title=""
     )
-    is_custom_api_credentials: Optional[bool] = Field(None, title='')
+    is_custom_api_credentials: Optional[bool] = Field(None, title="")
     accounts: Optional[List[str]] = Field(
         None,
-        description='Specific Accounts to sync.  Must be populated if `sync_mode` is set to `SpecificAccounts`.',
-        title='',
+        description="Specific Accounts to sync.  Must be populated if `sync_mode` is set to `SpecificAccounts`.",
+        title="",
     )
 
 
 class ClientAccess39(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth59(BaseModel):
-    consumer_key: Optional[str] = Field(None, description='API Key of your app')
-    consumer_secret: Optional[str] = Field(None, description='API Secret of your app')
+    consumer_key: Optional[str] = Field(None, description="API Key of your app")
+    consumer_secret: Optional[str] = Field(None, description="API Secret of your app")
     client_access: Optional[ClientAccess39] = None
     oauth_token: Optional[str] = Field(
         None,
-        description='The Access token carries the information necessary to access API resources',
+        description="The Access token carries the information necessary to access API resources",
     )
     oauth_token_secret: Optional[str] = Field(
         None,
-        description='The Access token secret carry the information necessary to access API resources.',
+        description="The Access token secret carry the information necessary to access API resources.",
     )
 
 
 class TwitterAdsConfigV1(BaseModel):
-    config: Optional[Config184] = Field(None, description='')
+    config: Optional[Config184] = Field(None, description="")
     auth: Optional[Auth59] = None
 
 
@@ -9803,35 +9803,35 @@ class TwitterAdsNewConnectorRequestV1(NewConnectorRequestV1, TwitterAdsConfigV1)
 class Config185(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
 
 
 class ClientAccess40(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
 class Auth60(BaseModel):
     access_token: Optional[str] = Field(
         None,
-        description='The long-lived Access token carries the information necessary to access API resources',
+        description="The long-lived Access token carries the information necessary to access API resources",
     )
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
     client_access: Optional[ClientAccess40] = None
 
 
 class TypeformConfigV1(BaseModel):
-    config: Optional[Config185] = Field(None, description='')
+    config: Optional[Config185] = Field(None, description="")
     auth: Optional[Auth60] = None
 
 
@@ -9842,23 +9842,23 @@ class TypeformNewConnectorRequestV1(NewConnectorRequestV1, TypeformConfigV1):
 class Config186(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     domain: Optional[str] = Field(
         None,
         description='Domain of your UserVoice site. If it ends with ".uservoice.com", you can specify just the subdomain ("mydomain.uservoice.com" â\x86\x92 "mydomain")',
-        title='',
+        title="",
     )
     secret: Optional[str] = Field(
-        None, description='The UserVoice API secret.', title=''
+        None, description="The UserVoice API secret.", title=""
     )
-    key: Optional[str] = Field(None, description='The UserVoice API key.', title='')
+    key: Optional[str] = Field(None, description="The UserVoice API key.", title="")
 
 
 class UservoiceConfigV1(BaseModel):
-    config: Optional[Config186] = Field(None, description='')
+    config: Optional[Config186] = Field(None, description="")
 
 
 class UservoiceNewConnectorRequestV1(NewConnectorRequestV1, UservoiceConfigV1):
@@ -9868,54 +9868,54 @@ class UservoiceNewConnectorRequestV1(NewConnectorRequestV1, UservoiceConfigV1):
 class Config187(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     endpoint: Optional[str] = Field(
         None,
-        description='You can send your events to https://webhooks.fivetran.com/webhooks/{endpoint}',
-        title='',
+        description="You can send your events to https://webhooks.fivetran.com/webhooks/{endpoint}",
+        title="",
     )
     bucket_service: Optional[Dict[str, Any]] = Field(
         None,
         description="Whether to store the events in Fivetran's container service or your S3 bucket. Default value: `Fivetran`.",
-        title='',
+        title="",
     )
     sync_format: Optional[Dict[str, Any]] = Field(
         None,
-        description='The webhooks sync format.  Default value: `Unpacked`. Unpacked messages must be valid JSON.',
-        title='',
+        description="The webhooks sync format.  Default value: `Unpacked`. Unpacked messages must be valid JSON.",
+        title="",
     )
     gcs_bucket: Optional[str] = Field(
         None,
-        description='The GCS bucket name. Required if `bucket_service` is set to `GCS`.',
-        title='',
+        description="The GCS bucket name. Required if `bucket_service` is set to `GCS`.",
+        title="",
     )
     s3_role_arn: Optional[str] = Field(
         None,
-        description='The Role ARN required for authentication. Required if `bucket_service` is set to `S3`.',
-        title='',
+        description="The Role ARN required for authentication. Required if `bucket_service` is set to `S3`.",
+        title="",
     )
     blob_sas_url: Optional[str] = Field(
         None,
-        description='The blob SAS URL of your Azure container. Required if `bucket_service` is set to `AZURE`.',
-        title='',
+        description="The blob SAS URL of your Azure container. Required if `bucket_service` is set to `AZURE`.",
+        title="",
     )
     s3_bucket: Optional[str] = Field(
         None,
-        description='The S3 bucket name. Required if `bucket_service` is set to `S3`.',
-        title='',
+        description="The S3 bucket name. Required if `bucket_service` is set to `S3`.",
+        title="",
     )
     table: Optional[str] = Field(
         None,
-        description='Destination table. Table is permanent and cannot be changed after connection creation',
-        title='Destination table',
+        description="Destination table. Table is permanent and cannot be changed after connection creation",
+        title="Destination table",
     )
 
 
 class WebhooksConfigV1(BaseModel):
-    config: Optional[Config187] = Field(None, description='')
+    config: Optional[Config187] = Field(None, description="")
 
 
 class WebhooksNewConnectorRequestV1(NewConnectorRequestV1, WebhooksConfigV1):
@@ -9924,18 +9924,18 @@ class WebhooksNewConnectorRequestV1(NewConnectorRequestV1, WebhooksConfigV1):
 
 class Config188(BaseModel):
     consumer_key: Optional[str] = Field(
-        None, description='Your WooCommerce Consumer key.', title=''
+        None, description="Your WooCommerce Consumer key.", title=""
     )
     consumer_secret: Optional[str] = Field(
-        None, description='Your WooCommerce Consumer secret.', title=''
+        None, description="Your WooCommerce Consumer secret.", title=""
     )
     sub_domain: Optional[str] = Field(
-        None, description='Your WooCommerce sub-domain.', title=''
+        None, description="Your WooCommerce sub-domain.", title=""
     )
 
 
 class WoocommerceConfigV1(BaseModel):
-    config: Optional[Config188] = Field(None, description='')
+    config: Optional[Config188] = Field(None, description="")
 
 
 class WoocommerceNewConnectorRequestV1(NewConnectorRequestV1, WoocommerceConfigV1):
@@ -9945,25 +9945,25 @@ class WoocommerceNewConnectorRequestV1(NewConnectorRequestV1, WoocommerceConfigV
 class Config189(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    password: Optional[str] = Field(None, description='Workday password.', title='')
-    primary_keys: Optional[List[str]] = Field(None, title='')
-    user_name: Optional[str] = Field(None, description='Workday username.', title='')
+    password: Optional[str] = Field(None, description="Workday password.", title="")
+    primary_keys: Optional[List[str]] = Field(None, title="")
+    user_name: Optional[str] = Field(None, description="Workday username.", title="")
     report_url: Optional[str] = Field(
-        None, description='URL for a live custom report.', title=''
+        None, description="URL for a live custom report.", title=""
     )
     table: Optional[str] = Field(
         None,
-        description='Destination table. Table is permanent and cannot be changed after connection creation',
-        title='Destination table',
+        description="Destination table. Table is permanent and cannot be changed after connection creation",
+        title="Destination table",
     )
 
 
 class WorkdayConfigV1(BaseModel):
-    config: Optional[Config189] = Field(None, description='')
+    config: Optional[Config189] = Field(None, description="")
 
 
 class WorkdayNewConnectorRequestV1(NewConnectorRequestV1, WorkdayConfigV1):
@@ -9973,19 +9973,19 @@ class WorkdayNewConnectorRequestV1(NewConnectorRequestV1, WorkdayConfigV1):
 class Config190(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    password: Optional[str] = Field(None, description='Workday password.', title='')
+    password: Optional[str] = Field(None, description="Workday password.", title="")
     domain_host_name: Optional[str] = Field(
-        None, description='Workday host name.', title=''
+        None, description="Workday host name.", title=""
     )
-    username: Optional[str] = Field(None, title='')
+    username: Optional[str] = Field(None, title="")
 
 
 class WorkdayHcmConfigV1(BaseModel):
-    config: Optional[Config190] = Field(None, description='')
+    config: Optional[Config190] = Field(None, description="")
 
 
 class WorkdayHcmNewConnectorRequestV1(NewConnectorRequestV1, WorkdayHcmConfigV1):
@@ -9995,14 +9995,14 @@ class WorkdayHcmNewConnectorRequestV1(NewConnectorRequestV1, WorkdayHcmConfigV1)
 class Config191(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
 
 
 class XeroConfigV1(BaseModel):
-    config: Optional[Config191] = Field(None, description='')
+    config: Optional[Config191] = Field(None, description="")
 
 
 class XeroNewConnectorRequestV1(NewConnectorRequestV1, XeroConfigV1):
@@ -10012,33 +10012,33 @@ class XeroNewConnectorRequestV1(NewConnectorRequestV1, XeroConfigV1):
 class Config192(BaseModel):
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
-        description='Whether to sync all accounts or specific accounts. Default value: `SpecificAccounts`.',
-        title='',
+        description="Whether to sync all accounts or specific accounts. Default value: `SpecificAccounts`.",
+        title="",
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     timeframe_months: Optional[Dict[str, Any]] = Field(
         None,
         description="Number of months of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `TWELVE`.",
-        title='',
+        title="",
     )
     advertisers_id: Optional[List[int]] = Field(
         None,
-        description='Specific Advertiser IDs to sync. Must be populated if `syncMode` is set to `SpecificAccounts`.',
-        title='',
+        description="Specific Advertiser IDs to sync. Must be populated if `syncMode` is set to `SpecificAccounts`.",
+        title="",
     )
 
 
 class ClientAccess41(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
@@ -10047,7 +10047,7 @@ class Auth61(BaseModel):
 
 
 class YahooGeminiConfigV1(BaseModel):
-    config: Optional[Config192] = Field(None, description='')
+    config: Optional[Config192] = Field(None, description="")
     auth: Optional[Auth61] = None
 
 
@@ -10058,33 +10058,33 @@ class YahooGeminiNewConnectorRequestV1(NewConnectorRequestV1, YahooGeminiConfigV
 class Config193(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     report_type: Optional[str] = Field(
         None,
-        description='The name of report of which connector will sync the data.',
-        title='',
+        description="The name of report of which connector will sync the data.",
+        title="",
     )
     content_owner_id: Optional[str] = Field(
         None,
-        description='Used only for Content Owner reports. The ID of the content owner for whom the API request is being made.',
-        title='',
+        description="Used only for Content Owner reports. The ID of the content owner for whom the API request is being made.",
+        title="",
     )
     table: Optional[str] = Field(
         None,
-        description='Destination table. Table is permanent and cannot be changed after connection creation',
-        title='Destination table',
+        description="Destination table. Table is permanent and cannot be changed after connection creation",
+        title="Destination table",
     )
 
 
 class ClientAccess42(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
@@ -10093,7 +10093,7 @@ class Auth62(BaseModel):
 
 
 class YoutubeAnalyticsConfigV1(BaseModel):
-    config: Optional[Config193] = Field(None, description='')
+    config: Optional[Config193] = Field(None, description="")
     auth: Optional[Auth62] = None
 
 
@@ -10106,31 +10106,31 @@ class YoutubeAnalyticsNewConnectorRequestV1(
 class Config194(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    domain: Optional[str] = Field(None, description='Zendesk domain.', title='')
+    domain: Optional[str] = Field(None, description="Zendesk domain.", title="")
     api_token: Optional[str] = Field(
         None,
-        description='Zendesk API tokens are auto-generated passwords in the Support admin interface.',
-        title='',
+        description="Zendesk API tokens are auto-generated passwords in the Support admin interface.",
+        title="",
     )
-    email: Optional[str] = Field(None, description='Zendesk email.', title='')
+    email: Optional[str] = Field(None, description="Zendesk email.", title="")
     api_usage: Optional[float] = Field(
-        None, description='Maximum Zendesk Api Usage allowed', title=''
+        None, description="Maximum Zendesk Api Usage allowed", title=""
     )
 
 
 class Auth63(BaseModel):
     access_token: Optional[str] = Field(
         None,
-        description='The long-lived Access token carries the information necessary to access API resources',
+        description="The long-lived Access token carries the information necessary to access API resources",
     )
 
 
 class ZendeskConfigV1(BaseModel):
-    config: Optional[Config194] = Field(None, description='')
+    config: Optional[Config194] = Field(None, description="")
     auth: Optional[Auth63] = None
 
 
@@ -10141,28 +10141,28 @@ class ZendeskNewConnectorRequestV1(NewConnectorRequestV1, ZendeskConfigV1):
 class Config195(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    subdomain: Optional[str] = Field(None, description='Your Zendesk domain.', title='')
+    subdomain: Optional[str] = Field(None, description="Your Zendesk domain.", title="")
     client_secret: Optional[str] = Field(
-        None, description='Your Zendesk client secret.', title=''
+        None, description="Your Zendesk client secret.", title=""
     )
     client_id: Optional[str] = Field(
-        None, description='Your Zendesk client ID.', title=''
+        None, description="Your Zendesk client ID.", title=""
     )
 
 
 class Auth64(BaseModel):
     access_token: Optional[str] = Field(
         None,
-        description='The long-lived Access token carries the information necessary to access API resources',
+        description="The long-lived Access token carries the information necessary to access API resources",
     )
 
 
 class ZendeskChatConfigV1(BaseModel):
-    config: Optional[Config195] = Field(None, description='')
+    config: Optional[Config195] = Field(None, description="")
     auth: Optional[Auth64] = None
 
 
@@ -10173,26 +10173,26 @@ class ZendeskChatNewConnectorRequestV1(NewConnectorRequestV1, ZendeskChatConfigV
 class Config196(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
 
 
 class Auth65(BaseModel):
     access_token: Optional[str] = Field(
         None,
-        description='The long-lived Access token carries the information necessary to access API resources',
+        description="The long-lived Access token carries the information necessary to access API resources",
     )
     refresh_token: Optional[str] = Field(
         None,
-        description='The long-lived Refresh token carry the information necessary to get a new access token for API resources.',
+        description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
     )
-    realm_id: Optional[str] = Field(None, description='Realm ID of your application.')
+    realm_id: Optional[str] = Field(None, description="Realm ID of your application.")
 
 
 class ZendeskSellConfigV1(BaseModel):
-    config: Optional[Config196] = Field(None, description='')
+    config: Optional[Config196] = Field(None, description="")
     auth: Optional[Auth65] = None
 
 
@@ -10203,21 +10203,21 @@ class ZendeskSellNewConnectorRequestV1(NewConnectorRequestV1, ZendeskSellConfigV
 class Config197(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     api_token: Optional[str] = Field(
         None,
-        description='Zendesk API tokens are auto-generated passwords in the Support admin interface.',
-        title='',
+        description="Zendesk API tokens are auto-generated passwords in the Support admin interface.",
+        title="",
     )
-    domain: Optional[str] = Field(None, description='Zendesk domain.', title='')
-    email: Optional[str] = Field(None, description='Zendesk email.', title='')
+    domain: Optional[str] = Field(None, description="Zendesk domain.", title="")
+    email: Optional[str] = Field(None, description="Zendesk email.", title="")
 
 
 class ZendeskSunshineConfigV1(BaseModel):
-    config: Optional[Config197] = Field(None, description='')
+    config: Optional[Config197] = Field(None, description="")
 
 
 class ZendeskSunshineNewConnectorRequestV1(
@@ -10229,19 +10229,19 @@ class ZendeskSunshineNewConnectorRequestV1(
 class Config198(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
-    data_center: Optional[str] = Field(None, description='', title='')
+    data_center: Optional[str] = Field(None, description="", title="")
 
 
 class ClientAccess43(BaseModel):
     client_secret: Optional[str] = Field(
-        None, description='Client Secret of your client application.'
+        None, description="Client Secret of your client application."
     )
     client_id: Optional[str] = Field(
-        None, description='Client ID of your client application.'
+        None, description="Client ID of your client application."
     )
 
 
@@ -10250,7 +10250,7 @@ class Auth66(BaseModel):
 
 
 class ZohoCrmConfigV1(BaseModel):
-    config: Optional[Config198] = Field(None, description='')
+    config: Optional[Config198] = Field(None, description="")
     auth: Optional[Auth66] = None
 
 
@@ -10261,28 +10261,28 @@ class ZohoCrmNewConnectorRequestV1(NewConnectorRequestV1, ZohoCrmConfigV1):
 class Config199(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     is_multi_entity_feature_enabled: Optional[bool] = Field(
         None,
-        description='Set to `true` if there are multiple entities in your Zuora account and you only want to use one entity. Otherwise, set to `false`.',
-        title='',
+        description="Set to `true` if there are multiple entities in your Zuora account and you only want to use one entity. Otherwise, set to `false`.",
+        title="",
     )
     client_secret: Optional[str] = Field(
-        None, description='Zuora Client Secret.', title=''
+        None, description="Zuora Client Secret.", title=""
     )
     entity_id: Optional[str] = Field(
         None,
         description="If `is_multi_entity_feature_enabled` is `true`, then it's `EntityId`.",
-        title='',
+        title="",
     )
-    client_id: Optional[str] = Field(None, description='Zuora Client ID.', title='')
+    client_id: Optional[str] = Field(None, description="Zuora Client ID.", title="")
 
 
 class ZuoraConfigV1(BaseModel):
-    config: Optional[Config199] = Field(None, description='')
+    config: Optional[Config199] = Field(None, description="")
 
 
 class ZuoraNewConnectorRequestV1(NewConnectorRequestV1, ZuoraConfigV1):
@@ -10292,28 +10292,28 @@ class ZuoraNewConnectorRequestV1(NewConnectorRequestV1, ZuoraConfigV1):
 class Config200(BaseModel):
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
-        description='Destination schema. Schema is permanent and cannot be changed after connection creation',
-        title='Destination schema',
+        alias="schema",
+        description="Destination schema. Schema is permanent and cannot be changed after connection creation",
+        title="Destination schema",
     )
     is_multi_entity_feature_enabled: Optional[bool] = Field(
         None,
-        description='Set to `true` if there are multiple entities in your Zuora account and you only want to use one entity. Otherwise, set to `false`.',
-        title='',
+        description="Set to `true` if there are multiple entities in your Zuora account and you only want to use one entity. Otherwise, set to `false`.",
+        title="",
     )
     client_secret: Optional[str] = Field(
-        None, description='Zuora Client Secret.', title=''
+        None, description="Zuora Client Secret.", title=""
     )
     entity_id: Optional[str] = Field(
         None,
         description="If `is_multi_entity_feature_enabled` is `true`, then it's `EntityId`.",
-        title='',
+        title="",
     )
-    client_id: Optional[str] = Field(None, description='Zuora Client ID.', title='')
+    client_id: Optional[str] = Field(None, description="Zuora Client ID.", title="")
 
 
 class ZuoraSandboxConfigV1(BaseModel):
-    config: Optional[Config200] = Field(None, description='')
+    config: Optional[Config200] = Field(None, description="")
 
 
 class ZuoraSandboxNewConnectorRequestV1(NewConnectorRequestV1, ZuoraSandboxConfigV1):
@@ -10322,277 +10322,277 @@ class ZuoraSandboxNewConnectorRequestV1(NewConnectorRequestV1, ZuoraSandboxConfi
 
 class Data(BaseModel):
     items: Optional[List[MembershipResponse]] = Field(
-        None, description='The collection of return items'
+        None, description="The collection of return items"
     )
     nextCursor: Optional[str] = Field(
-        None, description='The value of the cursor parameter for the next page'
+        None, description="The value of the cursor parameter for the next page"
     )
 
 
 class V1TeamsTeamIdConnectorsGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data] = None
 
 
 class V1TeamsTeamIdConnectorsPostResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[MembershipResponse] = None
 
 
 class V1TeamsTeamIdUsersUserIdGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[TeamMembershipResponse] = None
 
 
 class V1TeamsTeamIdUsersUserIdDeleteResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1TeamsTeamIdUsersUserIdPatchResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
 
 
 class Data1(BaseModel):
     items: Optional[List[UserResponse]] = Field(
-        None, description='The collection of return items'
+        None, description="The collection of return items"
     )
     nextCursor: Optional[str] = Field(
-        None, description='The value of the cursor parameter for the next page'
+        None, description="The value of the cursor parameter for the next page"
     )
 
 
 class V1UsersGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data1] = None
 
 
 class V1UsersPostResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[UserResponse] = None
 
 
 class V1TeamsTeamIdGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[TeamResponse] = None
 
 
 class V1TeamsTeamIdDeleteResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1TeamsTeamIdPatchResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[TeamResponse] = None
 
 
 class V1TeamsTeamIdRoleDeleteResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
 
 
 class Data2(BaseModel):
     items: Optional[List[MembershipResponse]] = Field(
-        None, description='The collection of return items'
+        None, description="The collection of return items"
     )
     nextCursor: Optional[str] = Field(
-        None, description='The value of the cursor parameter for the next page'
+        None, description="The value of the cursor parameter for the next page"
     )
 
 
 class V1UsersUserIdGroupsGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data2] = None
 
 
 class V1UsersUserIdGroupsPostResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[MembershipResponse] = None
 
 
 class Data3(BaseModel):
     items: Optional[List[MembershipResponse]] = Field(
-        None, description='The collection of return items'
+        None, description="The collection of return items"
     )
     nextCursor: Optional[str] = Field(
-        None, description='The value of the cursor parameter for the next page'
+        None, description="The value of the cursor parameter for the next page"
     )
 
 
 class V1TeamsTeamIdGroupsGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data3] = None
 
 
 class V1TeamsTeamIdGroupsPostResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[MembershipResponse] = None
 
 
 class V1CertificatesPostResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1DestinationsPostResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[DestinationResponse] = None
 
 
 class V1UsersIdDeleteResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1UsersUserIdGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[UserResponse] = None
 
 
 class V1UsersUserIdPatchResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[UserResponse] = None
 
 
 class V1GroupsGroupIdGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[GroupResponse] = None
 
 
 class V1GroupsGroupIdDeleteResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1GroupsGroupIdPatchResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[GroupResponse] = None
 
 
 class V1UsersUserIdConnectorsConnectorIdGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[MembershipResponse] = None
 
 
 class V1UsersUserIdConnectorsConnectorIdDeleteResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[MembershipResponse] = None
 
 
 class V1UsersUserIdConnectorsConnectorIdPatchResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[MembershipResponse] = None
 
 
 class V1ConnectorsConnectorIdConnectCardPostResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[ConnectorConnectCardResponse] = None
 
 
 class Data4(BaseModel):
     items: Optional[List[MetadataResponse]] = Field(
-        None, description='The collection of return items'
+        None, description="The collection of return items"
     )
     nextCursor: Optional[str] = Field(
-        None, description='The value of the cursor parameter for the next page'
+        None, description="The value of the cursor parameter for the next page"
     )
 
 
 class V1MetadataNameGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data4] = None
 
 
 class V1DbtTransformationsTransformationIdGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[TransformationDetailsResponse] = None
 
 
 class V1DbtTransformationsTransformationIdDeleteResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1DbtTransformationsTransformationIdPatchResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[TransformationDetailsResponse] = None
 
 
 class V1DbtProjectsProjectIdGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[DbtProjectDetailsResponse] = None
 
 
 class V1TeamsTeamIdGroupsGroupIdGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[MembershipResponse] = None
 
 
 class V1TeamsTeamIdGroupsGroupIdDeleteResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1TeamsTeamIdGroupsGroupIdPatchResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1ConnectorsConnectorIdResyncPostResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1UsersUserIdRoleDeleteResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
 
 
 class Data5(BaseModel):
     items: Optional[List[UserResponse]] = Field(
-        None, description='The collection of return items'
+        None, description="The collection of return items"
     )
     nextCursor: Optional[str] = Field(
-        None, description='The value of the cursor parameter for the next page'
+        None, description="The value of the cursor parameter for the next page"
     )
 
 
 class V1GroupsGroupIdUsersGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data5] = None
 
 
 class V1GroupsGroupIdUsersPostResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1ConnectorsConnectorIdSchemasTablesResyncPostRequest(BaseModel):
@@ -10603,384 +10603,384 @@ class V1ConnectorsConnectorIdSchemasTablesResyncPostRequest(BaseModel):
 
 
 class V1ConnectorsConnectorIdSchemasTablesResyncPostResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1DestinationsDestinationIdTestPostResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[DestinationResponse] = None
 
 
 class Data6(BaseModel):
     items: Optional[List[SchemaMetadataResponse]] = Field(
-        None, description='The collection of return items'
+        None, description="The collection of return items"
     )
     nextCursor: Optional[str] = Field(
-        None, description='The value of the cursor parameter for the next page'
+        None, description="The value of the cursor parameter for the next page"
     )
 
 
 class V1MetadataConnectorsConnectorIdSchemasGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data6] = None
 
 
 class Data7(BaseModel):
     items: Optional[List[GroupResponse]] = Field(
-        None, description='The collection of return items'
+        None, description="The collection of return items"
     )
     nextCursor: Optional[str] = Field(
-        None, description='The value of the cursor parameter for the next page'
+        None, description="The value of the cursor parameter for the next page"
     )
 
 
 class V1GroupsGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data7] = None
 
 
 class V1GroupsPostResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[GroupResponse] = None
 
 
 class V1FingerprintsPostResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1ConnectorsConnectorIdDeleteResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1MetadataNameServiceGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[MetadataResponse] = None
 
 
 class Data8(BaseModel):
     items: Optional[List[TeamResponse]] = Field(
-        None, description='The collection of return items'
+        None, description="The collection of return items"
     )
     nextCursor: Optional[str] = Field(
-        None, description='The value of the cursor parameter for the next page'
+        None, description="The value of the cursor parameter for the next page"
     )
 
 
 class V1TeamsGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data8] = None
 
 
 class V1TeamsPostResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[TeamResponse] = None
 
 
 class V1DbtProjectsProjectIdTestPostResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[DbtProjectTestResponse] = None
 
 
 class V1ConnectorsConnectorIdSyncPostResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1GroupsGroupIdUsersUserIdDeleteResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
 
 
 class Data9(BaseModel):
     items: Optional[List[ColumnMetadataResponse]] = Field(
-        None, description='The collection of return items'
+        None, description="The collection of return items"
     )
     nextCursor: Optional[str] = Field(
-        None, description='The value of the cursor parameter for the next page'
+        None, description="The value of the cursor parameter for the next page"
     )
 
 
 class V1MetadataConnectorsConnectorIdColumnsGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data9] = None
 
 
 class Data10(BaseModel):
     items: Optional[List[TableMetadataResponse]] = Field(
-        None, description='The collection of return items'
+        None, description="The collection of return items"
     )
     nextCursor: Optional[str] = Field(
-        None, description='The value of the cursor parameter for the next page'
+        None, description="The value of the cursor parameter for the next page"
     )
 
 
 class V1MetadataConnectorsConnectorIdTablesGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data10] = None
 
 
 class Data11(BaseModel):
     items: Optional[List[TransformationResponse]] = Field(
-        None, description='The collection of return items'
+        None, description="The collection of return items"
     )
     nextCursor: Optional[str] = Field(
-        None, description='The value of the cursor parameter for the next page'
+        None, description="The value of the cursor parameter for the next page"
     )
 
 
 class V1DbtProjectsProjectIdTransformationsGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data11] = None
 
 
 class V1DbtProjectsProjectIdTransformationsPostResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[TransformationDetailsResponse] = None
 
 
 class Data12(BaseModel):
     items: Optional[List[DbtProjectResponse]] = Field(
-        None, description='The collection of return items'
+        None, description="The collection of return items"
     )
     nextCursor: Optional[str] = Field(
-        None, description='The value of the cursor parameter for the next page'
+        None, description="The value of the cursor parameter for the next page"
     )
 
 
 class V1DbtProjectsGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data12] = None
 
 
 class V1DbtProjectsPostResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[DbtProjectDetailsResponse] = None
 
 
 class Data13(BaseModel):
     items: Optional[List[RoleResponse]] = Field(
-        None, description='The collection of return items'
+        None, description="The collection of return items"
     )
     nextCursor: Optional[str] = Field(
-        None, description='The value of the cursor parameter for the next page'
+        None, description="The value of the cursor parameter for the next page"
     )
 
 
 class V1RolesGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data13] = None
 
 
 class Data14(BaseModel):
     items: Optional[List[DbtModelResponse]] = Field(
-        None, description='The collection of return items'
+        None, description="The collection of return items"
     )
     nextCursor: Optional[str] = Field(
-        None, description='The value of the cursor parameter for the next page'
+        None, description="The value of the cursor parameter for the next page"
     )
 
 
 class V1DbtProjectsProjectIdModelsGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data14] = None
 
 
 class V1TeamsTeamIdConnectorsConnectorIdGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[MembershipResponse] = None
 
 
 class V1TeamsTeamIdConnectorsConnectorIdDeleteResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1TeamsTeamIdConnectorsConnectorIdPatchResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
 
 
 class Data15(BaseModel):
     items: Optional[List[ConnectorResponse]] = Field(
-        None, description='The collection of return items'
+        None, description="The collection of return items"
     )
     nextCursor: Optional[str] = Field(
-        None, description='The value of the cursor parameter for the next page'
+        None, description="The value of the cursor parameter for the next page"
     )
 
 
 class V1GroupsGroupIdConnectorsGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data15] = None
 
 
 class V1DestinationsDestinationIdGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[DestinationResponse] = None
 
 
 class V1DestinationsDestinationIdDeleteResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1DestinationsDestinationIdPatchResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[DestinationResponse] = None
 
 
 class V1WebhooksGetResponse(BaseModel):
     items: Optional[List[WebhookResponse]] = Field(
-        None, description='The collection of return items'
+        None, description="The collection of return items"
     )
     nextCursor: Optional[str] = Field(
-        None, description='The value of the cursor parameter for the next page'
+        None, description="The value of the cursor parameter for the next page"
     )
 
 
 class Data16(BaseModel):
     items: Optional[List[TeamMembershipResponse]] = Field(
-        None, description='The collection of return items'
+        None, description="The collection of return items"
     )
     nextCursor: Optional[str] = Field(
-        None, description='The value of the cursor parameter for the next page'
+        None, description="The value of the cursor parameter for the next page"
     )
 
 
 class V1TeamsTeamIdUsersGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data16] = None
 
 
 class V1TeamsTeamIdUsersPostResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[TeamMembershipResponse] = None
 
 
 class V1UsersUserIdGroupsGroupIdGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[MembershipResponse] = None
 
 
 class V1UsersUserIdGroupsGroupIdDeleteResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1UsersUserIdGroupsGroupIdPatchResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
 
 
 class Data17(BaseModel):
     items: Optional[List[MembershipResponse]] = Field(
-        None, description='The collection of return items'
+        None, description="The collection of return items"
     )
     nextCursor: Optional[str] = Field(
-        None, description='The value of the cursor parameter for the next page'
+        None, description="The value of the cursor parameter for the next page"
     )
 
 
 class V1UsersUserIdConnectorsGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data17] = None
 
 
 class V1DbtModelsModelIdGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[DbtModelResponse] = None
 
 
 class ConnectorResponseV1(BaseModel):
     id: Optional[str] = Field(
         None,
-        description='The unique identifier for the connector within the Fivetran system',
+        description="The unique identifier for the connector within the Fivetran system",
     )
     service: Optional[str] = Field(
-        None, description='The connector type name within the Fivetran system'
+        None, description="The connector type name within the Fivetran system"
     )
     schema_: Optional[str] = Field(
         None,
-        alias='schema',
+        alias="schema",
         description="The name used both as the connector's name within the Fivetran system and as the source schema's name within your destination",
     )
     paused: Optional[bool] = Field(
-        None, description='Specifies whether the connector is paused'
+        None, description="Specifies whether the connector is paused"
     )
     status: Optional[ConnectorStatusResponse] = None
     daily_sync_time: Optional[str] = Field(
         None,
-        description='The connector daily sync start time that we return only when the sync frequency is set to 1440 (which means 24 hours) and the daily_sync_time parameter was set using the Create a Connector or Modify a Connector request',
+        description="The connector daily sync start time that we return only when the sync frequency is set to 1440 (which means 24 hours) and the daily_sync_time parameter was set using the Create a Connector or Modify a Connector request",
     )
     succeeded_at: Optional[datetime] = Field(
         None,
-        description='The timestamp of the time the connector sync succeeded last time',
+        description="The timestamp of the time the connector sync succeeded last time",
     )
     connect_card: Optional[ConnectCardResponse] = None
     sync_frequency: Optional[int] = Field(
-        None, description='The connector sync frequency in minutes'
+        None, description="The connector sync frequency in minutes"
     )
     pause_after_trial: Optional[bool] = Field(
         None,
-        description='Specifies whether the connector should be paused after the free trial period has ended',
+        description="Specifies whether the connector should be paused after the free trial period has ended",
     )
     group_id: Optional[str] = Field(
         None,
-        description='The unique identifier for the group within the Fivetran system',
+        description="The unique identifier for the group within the Fivetran system",
     )
     connected_by: Optional[str] = Field(
         None,
-        description='The unique identifier of the user who has created the connector in your account',
+        description="The unique identifier of the user who has created the connector in your account",
     )
     setup_tests: Optional[List[SetupTestResultResponse]] = Field(
-        None, description='Setup tests results for this connector'
+        None, description="Setup tests results for this connector"
     )
     source_sync_details: Optional[Dict[str, Any]] = Field(
         None,
         description="The additional information about the connector's state. The format of this parameter is specific for each connector type",
     )
     service_version: Optional[int] = Field(
-        None, description='The connector type version within the Fivetran system'
+        None, description="The connector type version within the Fivetran system"
     )
     created_at: Optional[datetime] = Field(
         None,
-        description='The timestamp of the time the connector was created in your account',
+        description="The timestamp of the time the connector was created in your account",
     )
     failed_at: Optional[datetime] = Field(
         None,
-        description='The timestamp of the time the connector sync failed last time',
+        description="The timestamp of the time the connector sync failed last time",
     )
     schedule_type: Optional[str] = Field(
         None,
-        description='The connector schedule configuration type. Supported values: auto, manual',
+        description="The connector schedule configuration type. Supported values: auto, manual",
     )
     connect_card_config: Optional[ConnectCardConfig] = None
 
@@ -10988,37 +10988,37 @@ class ConnectorResponseV1(BaseModel):
 class SchemaUpdateRequest(BaseModel):
     enabled: Optional[bool] = Field(
         None,
-        description='The boolean value specifying whether the sync for the table into the destination is enabled.',
+        description="The boolean value specifying whether the sync for the table into the destination is enabled.",
     )
     tables: Optional[Dict[str, TableUpdateRequest]] = Field(
         None,
-        description='The set of tables within your database schema config that are synced into the destination',
+        description="The set of tables within your database schema config that are synced into the destination",
     )
 
 
 class StandardConfigUpdateRequest(BaseModel):
     schemas: Optional[Dict[str, SchemaUpdateRequest]] = Field(
         None,
-        description='The set of schemas within your connector schema config that are synced into the destination',
+        description="The set of schemas within your connector schema config that are synced into the destination",
     )
     schema_change_handling: Optional[SchemaChangeHandling] = Field(
         None,
-        description='The possible values for the schema_change_handling parameter are as follows: <br /> ALLOW_ALL - all new schemas, tables, and columns which appear in the source after the initial setup are included in syncs <br /> ALLOW_COLUMNS - all new schemas and tables which appear in the source after the initial setup are excluded from syncs, but new columns are included <br /> BLOCK_ALL - all new schemas, tables, and columns which appear in the source after the initial setup are excluded from syncs',
+        description="The possible values for the schema_change_handling parameter are as follows: <br /> ALLOW_ALL - all new schemas, tables, and columns which appear in the source after the initial setup are included in syncs <br /> ALLOW_COLUMNS - all new schemas and tables which appear in the source after the initial setup are excluded from syncs, but new columns are included <br /> BLOCK_ALL - all new schemas, tables, and columns which appear in the source after the initial setup are excluded from syncs",
     )
 
 
 class ColumnConfigResponse(BaseModel):
     name_in_destination: Optional[str] = Field(
         None,
-        description='The schema name within your destination in accordance with Fivetran conventional rules',
+        description="The schema name within your destination in accordance with Fivetran conventional rules",
     )
     enabled: Optional[bool] = Field(
         None,
-        description='The boolean value specifying whether the sync for the table into the destination is enabled.',
+        description="The boolean value specifying whether the sync for the table into the destination is enabled.",
     )
     hashed: Optional[bool] = Field(
         None,
-        description='The boolean value specifying whether a column should be hashed',
+        description="The boolean value specifying whether a column should be hashed",
     )
     enabled_patch_settings: Optional[ColumnEnabledPatchSettings] = None
 
@@ -11026,19 +11026,19 @@ class ColumnConfigResponse(BaseModel):
 class TableConfigResponse(BaseModel):
     sync_mode: Optional[SyncMode1] = Field(
         None,
-        description='This field appears in the response if the connector supports switching sync modes for tables',
+        description="This field appears in the response if the connector supports switching sync modes for tables",
     )
     name_in_destination: Optional[str] = Field(
         None,
-        description='The schema name within your destination in accordance with Fivetran conventional rules',
+        description="The schema name within your destination in accordance with Fivetran conventional rules",
     )
     enabled: Optional[bool] = Field(
         None,
-        description='The boolean value specifying whether the sync for the table into the destination is enabled.',
+        description="The boolean value specifying whether the sync for the table into the destination is enabled.",
     )
     columns: Optional[Dict[str, ColumnConfigResponse]] = Field(
         None,
-        description='The set of columns within your table schema config that are synced into the destination',
+        description="The set of columns within your table schema config that are synced into the destination",
     )
     enabled_patch_settings: Optional[TableEnabledPatchSettings] = None
 
@@ -11046,19 +11046,19 @@ class TableConfigResponse(BaseModel):
 class TableColumnsConfigResponse(BaseModel):
     columns: Optional[Dict[str, ColumnConfigResponse]] = Field(
         None,
-        description='The set of columns within your table schema config that are synced into the destination',
+        description="The set of columns within your table schema config that are synced into the destination",
     )
 
 
 class NewTransformationRequest(BaseModel):
     dbt_model_id: Optional[str] = Field(
         None,
-        description='The unique identifier for the DBT Model within the Fivetran system.',
+        description="The unique identifier for the DBT Model within the Fivetran system.",
     )
     schedule: Optional[TransformationSchedule] = None
     run_tests: Optional[bool] = Field(
         None,
-        description='The field indicates whether the tests has been confugured for DBT Transformation.',
+        description="The field indicates whether the tests has been confugured for DBT Transformation.",
     )
 
 
@@ -11835,98 +11835,98 @@ class ZuoraSandboxConnectorResponseV1(ConnectorResponseV1, ZuoraSandboxConfigV1)
 
 
 class V1ConnectorsConnectorIdTestPostResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[ConnectorResponseV1] = None
 
 
 class V1ConnectorsConnectorIdSchemasSchemaTablesTableColumnsGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[TableColumnsConfigResponse] = None
 
 
 class V1ConnectorsConnectorIdGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[ConnectorResponseV1] = None
 
 
 class V1ConnectorsConnectorIdPatchResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[ConnectorResponseV1] = None
 
 
 class V1ConnectorsPostResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[ConnectorResponseV1] = None
 
 
 class SchemaConfigResponse(BaseModel):
     name_in_destination: Optional[str] = Field(
         None,
-        description='The schema name within your destination in accordance with Fivetran conventional rules',
+        description="The schema name within your destination in accordance with Fivetran conventional rules",
     )
     enabled: Optional[bool] = Field(
         None,
-        description='The boolean value specifying whether the sync for the table into the destination is enabled.',
+        description="The boolean value specifying whether the sync for the table into the destination is enabled.",
     )
     tables: Optional[Dict[str, TableConfigResponse]] = Field(
         None,
-        description='The set of tables within your database schema config that are synced into the destination',
+        description="The set of tables within your database schema config that are synced into the destination",
     )
 
 
 class StandardConfigResponse(BaseModel):
     enable_new_by_default: Optional[bool] = Field(
         None,
-        description='The boolean value specifying whether to enable new schemas, tables, and columns by default',
+        description="The boolean value specifying whether to enable new schemas, tables, and columns by default",
     )
     schemas: Optional[Dict[str, SchemaConfigResponse]] = Field(
         None,
-        description='The set of schemas within your connector schema config that are synced into the destination',
+        description="The set of schemas within your connector schema config that are synced into the destination",
     )
     schema_change_handling: Optional[SchemaChangeHandling1] = Field(
         None,
-        description='The possible values for the schema_change_handling parameter are as follows: <br /> ALLOW_ALL - all new schemas, tables, and columns which appear in the source after the initial setup are included in syncs <br /> ALLOW_COLUMNS - all new schemas and tables which appear in the source after the initial setup are excluded from syncs, but new columns are included <br /> BLOCK_ALL - all new schemas, tables, and columns which appear in the source after the initial setup are excluded from syncs',
+        description="The possible values for the schema_change_handling parameter are as follows: <br /> ALLOW_ALL - all new schemas, tables, and columns which appear in the source after the initial setup are included in syncs <br /> ALLOW_COLUMNS - all new schemas and tables which appear in the source after the initial setup are excluded from syncs, but new columns are included <br /> BLOCK_ALL - all new schemas, tables, and columns which appear in the source after the initial setup are excluded from syncs",
     )
 
 
 class V1ConnectorsConnectorIdSchemasSchemaNameTablesTableNameColumnsColumnNamePatchResponse(
     BaseModel
 ):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[StandardConfigResponse] = None
 
 
 class V1ConnectorsConnectorIdSchemasGetResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[StandardConfigResponse] = None
 
 
 class V1ConnectorsConnectorIdSchemasPatchResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[StandardConfigResponse] = None
 
 
 class V1ConnectorsConnectorIdSchemasSchemaNamePatchResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[StandardConfigResponse] = None
 
 
 class V1ConnectorsConnectorIdSchemasReloadPostResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[StandardConfigResponse] = None
 
 
 class V1ConnectorsConnectorIdSchemasSchemaNameTablesTableNamePatchResponse(BaseModel):
-    code: Optional[str] = Field(None, description='Response status code')
-    message: Optional[str] = Field(None, description='Response status text')
+    code: Optional[str] = Field(None, description="Response status code")
+    message: Optional[str] = Field(None, description="Response status text")
     data: Optional[StandardConfigResponse] = None
