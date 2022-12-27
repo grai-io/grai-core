@@ -2,8 +2,6 @@ import asyncio
 import os
 import random
 import string
-from functools import partial
-from itertools import chain
 from typing import (
     Any,
     Callable,
@@ -11,10 +9,9 @@ from typing import (
     Iterable,
     List,
     Optional,
+    ParamSpec,
     Sequence,
-    Tuple,
     TypeVar,
-    Union,
 )
 
 import requests
@@ -28,23 +25,9 @@ from grai_source_fivetran.fivetran_api.api_models import (
     V1ConnectorsConnectorIdSchemasSchemaTablesTableColumnsGetResponse,
     V1DestinationsDestinationIdGetResponse,
     V1GroupsGetResponse,
-    V1GroupsGroupIdConnectorsGetResponse,
-    V1MetadataConnectorsConnectorIdColumnsGetResponse,
-    V1MetadataConnectorsConnectorIdSchemasGetResponse,
-    V1MetadataConnectorsConnectorIdTablesGetResponse,
 )
-from grai_source_fivetran.models import (
-    ColumnResult,
-    ConnectorMetadata,
-    DestinationMetadata,
-    SchemaResult,
-    SourceTableColumnMetadata,
-    TableResult,
-)
-from pydantic import BaseModel
 
 T = TypeVar("T")
-R = TypeVar("R")
 
 
 def get_from_env(label: str, default: Optional[Any] = None, validator: Callable = None):
@@ -60,8 +43,13 @@ def get_from_env(label: str, default: Optional[Any] = None, validator: Callable 
     return result if validator is None else validator(result)
 
 
-def unpack(items: Sequence[Sequence[T]]) -> Sequence[T]:
-    return [item for seq in items for item in seq]
+def has_data_items(item: Dict) -> bool:
+    if item.get("data", None) is None:
+        return False
+    elif item["data"].get("items", None) is None:
+        return False
+    else:
+        return True
 
 
 class FivetranConnector:
@@ -75,92 +63,128 @@ class FivetranConnector:
         self.user = user if user is not None else get_from_env("user")
         self.password = password if password is not None else get_from_env("password")
 
-        self.sessions = requests.Session()
-        self.sessions.auth = self.auth
+        self.session = requests.Session()
+        self.session.auth = self.user, self.password
         self.default_headers = {"Accept": "application/json"}
 
     @staticmethod
-    def get_cursor() -> str:
-        return "".join(random.choices(string.ascii_lowercase, k=10))
+    def get_cursor(k: Optional[int] = 10) -> str:
+        k = 10 if k is None else k
+        return "".join(random.choices(string.ascii_lowercase, k=k))
 
-    @staticmethod
+    def make_params(
+        self, cursor_len: Optional[int] = None, limit: Optional[int] = None
+    ):
+        return {
+            "cursor": self.get_cursor(cursor_len),
+            "limit": 100 if limit is None else limit,
+        }
+
     def make_request(
-        request: Callable[..., requests.Response],
-        url: str,
-        headers: Dict,
-        params: Dict,
-        **kwargs,
-    ) -> Dict:
-        result = request(url, headers=headers, params=params, **kwargs)
-        assert result.status_code == 200
-        return result.json()
-
-    def make_params(self, limit: Optional[int] = None):
-        return {"cursor": self.get_cursor(), "limit": 100 if limit is None else limit}
-
-    def paginated_query(
         self,
         request: Callable[..., requests.Response],
-        result_obj: T,
         url: str,
         headers: Optional[Dict] = None,
         params: Optional[Dict] = None,
         **kwargs,
-    ) -> Iterable[T]:
+    ) -> Dict:
+        headers = self.default_headers if headers is None else headers
+        params = self.make_params() if params is None else params
+        result = request(url, headers=headers, params=params, **kwargs)
+        assert result.status_code == 200
+        return result.json()
+
+    def paginated_query(
+        self,
+        request: Callable[..., requests.Response],
+        url: str,
+        headers: Optional[Dict] = None,
+        params: Optional[Dict] = None,
+        **kwargs,
+    ) -> Iterable[Dict]:
+        def has_cursor(item: Dict) -> bool:
+            if (
+                item.get("data", None) is not None
+                and item["data"].get("nextCursor", None) is not None
+            ):
+                return True
+            return False
+
         headers = self.default_headers if headers is None else headers
         params = self.make_params() if params is None else params
         result = self.make_request(
             request, url, headers=headers, params=params, **kwargs
         )
-        yield result_obj(**result)
+        yield result
 
-        while result.data.nextCursor is not None:
-            params["cursor"] = result.data.nextCursor
+        while has_cursor(result):
+            params["cursor"] = result["data"]["nextCursor"]
             result = self.make_request(
                 request, url, headers=headers, params=params, **kwargs
             )
-            yield result_obj(**result)
+            yield result
 
     def get_paginated_data_items(
         self,
         url: str,
-        result_obj: T,
         headers: Optional[Dict] = None,
         params: Optional[Dict] = None,
-    ) -> List[R]:
-        results = []
-        for page in self.paginated_query(
-            self.session.get, result_obj, url, params=params, headers=headers
-        ):
-            results.extend(page.data.items)
+    ) -> List[Dict]:
+        query = self.paginated_query(
+            self.session.get, url, params=params, headers=headers
+        )
+        data = (page["data"]["items"] for page in query if has_data_items(page))
+        results = [item for items in data for item in items]
         return results
 
     def get_tables(
         self, connector_id: str, limit: Optional[int] = None
     ) -> List[TableMetadataResponse]:
         url = f"{self.base_endpoint}/metadata/connectors/{connector_id}/tables"
-        result_type = V1MetadataConnectorsConnectorIdTablesGetResponse
-        params = self.make_params(limit)
-
-        return self.get_paginated_data_items(url, result_type, params=params)
+        params = self.make_params(limit=limit)
+        return [
+            TableMetadataResponse(**item)
+            for item in self.get_paginated_data_items(url, params=params)
+        ]
 
     def get_columns(
         self, connector_id: str, limit: Optional[int] = None
     ) -> List[ColumnMetadataResponse]:
         url = f"{self.base_endpoint}/metadata/connectors/{connector_id}/columns"
-        result_type = V1MetadataConnectorsConnectorIdColumnsGetResponse
-        params = self.make_params(limit)
-
-        return self.get_paginated_data_items(url, result_type, params=params)
+        params = self.make_params(limit=limit)
+        return [
+            ColumnMetadataResponse(**item)
+            for item in self.get_paginated_data_items(url, params=params)
+        ]
 
     def get_schemas(
         self, connector_id: str, limit: Optional[int] = None
     ) -> List[SchemaMetadataResponse]:
         url = f"{self.base_endpoint}/metadata/connectors/{connector_id}/schemas"
-        result_type = V1MetadataConnectorsConnectorIdSchemasGetResponse
-        params = self.make_params(limit)
+        params = self.make_params(limit=limit)
+        return [
+            SchemaMetadataResponse(**item)
+            for item in self.get_paginated_data_items(url, params=params)
+        ]
 
-        return self.get_paginated_data_items(url, result_type, params=params)
+    def get_all_groups(self, limit: Optional[int] = None) -> List[GroupResponse]:
+        url = f"{self.base_endpoint}/groups"
+        result_type = V1GroupsGetResponse
+        params = self.make_params(limit=limit)
+        return [
+            GroupResponse(**item)
+            for item in self.get_paginated_data_items(url, params=params)
+        ]
+
+    def get_group_connectors(
+        self, group_id: str, limit: Optional[int] = None
+    ) -> List[ConnectorResponse]:
+        url = f"{self.base_endpoint}/groups/{group_id}/connectors"
+        params = self.make_params(limit=limit)
+        return [
+            ConnectorResponse(**item)
+            for item in self.get_paginated_data_items(url, params=params)
+        ]
 
     def get_destination_metadata(
         self, destination_id: str
@@ -183,67 +207,73 @@ class FivetranConnector:
         data = self.make_request(self.session.get, url)
         return V1ConnectorsConnectorIdSchemasSchemaTablesTableColumnsGetResponse(**data)
 
-    def get_all_groups(self, limit: Optional[int] = None) -> List[GroupResponse]:
-        url = f"{self.base_endpoint}/groups"
-        result_type = V1GroupsGetResponse
-        params = self.make_params(limit)
 
-        return self.get_paginated_data_items(url, result_type, params=params)
+async def caller(
+    semaphore: asyncio.Semaphore, func: Callable[..., T], *args, **kwargs
+) -> T:
+    result = func(*args, **kwargs)
 
-    def get_group_connectors(
-        self, group_id: str, limit: Optional[int] = None
-    ) -> List[ConnectorResponse]:
-        url = f"{self.base_endpoint}/groups/{group_id}/connectors"
-        result_type = V1GroupsGroupIdConnectorsGetResponse
-        params = self.make_params(limit)
+    async with semaphore:
+        if semaphore.locked():
+            await asyncio.sleep(1)
+    return result
 
-        return self.get_paginated_data_items(url, result_type, params=params)
+
+def parallelize_http(semaphore):
+    async def parallel(
+        func: Callable[P, Sequence[T]],
+        arg_list: Iterable[Sequence[Any]],
+        kwarg_list: Optional[Sequence[Dict[str, Any]]] = None,
+    ) -> List[T]:
+        arg_list = list(arg_list)
+        kwarg_list = [{}] * len(arg_list) if kwarg_list is None else kwarg_list
+        assert len(arg_list) == len(kwarg_list)
+
+        tasks = (
+            caller(semaphore, func, *args, **kwargs)
+            for args, kwargs in zip(arg_list, kwarg_list)
+        )
+        return await asyncio.gather(*tasks)
+
+    def inner(
+        func: Callable[P, Sequence[T]],
+        arg_list: Iterable[Sequence[Any]],
+        kwarg_list: Optional[Sequence[Dict[str, Any]]] = None,
+    ) -> List[T]:
+        return asyncio.run(parallel(func, arg_list, kwarg_list))
+
+    return inner
 
 
 class FivetranGraiMapper(FivetranConnector):
     def __init__(self, parallelization: int = 10):
         self.parallelization = parallelization
-        self.request_limiter = asyncio.Semaphore(self.parallelization)
+        self.semaphore = asyncio.Semaphore(self.parallelization)
+        self.http_runner = parallelize_http(self.semaphore)
 
-        self.groups = {group.id: group for group in self.get_all_groups()}
+        self.groups = {
+            group.id: group for group in self.get_all_groups() if group.id is not None
+        }
         self.connectors = {
             conn.id: conn
             for group_id in self.groups.keys()
             for conn in self.get_group_connectors(group_id)
+            if conn.id is not None
         }
 
-        self.schemas = self.parallel(self.get_schemas, arg_list=self.connectors.keys())
-        self.schemas = {schema.id: schema for schema in unpack(self.schemas)}
+        schemas = self.http_runner(self.get_schemas, arg_list=self.connectors.keys())
+        tables = self.http_runner(self.get_tables, arg_list=self.connectors.keys())
+        columns = self.http_runner(self.get_columns, arg_list=self.connectors.keys())
 
-        self.tables = self.parallel(self.get_tables, arg_list=self.connectors.keys())
-        self.tables = {table.id: table for table in unpack(self.tables)}
-
-        self.columns = self.parallel(self.get_columns, arg_list=self.connectors.keys())
-        self.columns = {column.id: column for column in unpack(self.columns)}
-
-    async def caller(self, func: Callable[..., T], *args, **kwargs) -> T:
-        result = func(*args, **kwargs)
-
-        async with self.request_limiter:
-            if self.request_limiter.locked():
-                await asyncio.sleep(1)
-        return result
-
-    async def parallel(
-        self,
-        func: Callable[..., T],
-        arg_list: Sequence,
-        kwarg_list: Optional[List[Dict]] = None,
-    ) -> List[T]:
-        if kwarg_list is None:
-            kwarg_list = [{}] * len(arg_list)
-        assert len(arg_list) == len(kwarg_list)
-
-        tasks = (
-            self.caller(func, *args, **kwargs)
-            for args, kwargs in zip(arg_list, kwarg_list)
-        )
-        return await asyncio.gather(*tasks)
+        self.schemas: Dict[str, SchemaMetadataResponse] = {
+            item.id: item for seq in schemas for item in seq
+        }
+        self.tables: Dict[str, TableMetadataResponse] = {
+            item.id: item for seq in tables for item in seq
+        }
+        self.columns: Dict[str, ColumnMetadataResponse] = {
+            item.id: item for seq in columns for item in seq
+        }
 
     def get_nodes_and_edges(self):
         pass
