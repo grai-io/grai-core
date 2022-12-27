@@ -5,14 +5,14 @@ from grai_client.schemas.edge import Edge
 from grai_client.schemas.node import Node
 from grai_client.update import update
 from grai_source_fivetran.adapters import adapt_to_client
-from grai_source_fivetran.loader import PostgresConnector
+from grai_source_fivetran.loader import FivetranConnector
+from functools import partial
 
 
 def get_nodes_and_edges(
-    connector: PostgresConnector, version: Literal["v1"]
+    connector: FivetranConnector, version: Literal["v1"]
 ) -> Tuple[List[Node], List[Edge]]:
-    with connector.connect() as conn:
-        nodes, edges = conn.get_nodes_and_edges()
+    nodes, edges = connector.get_nodes_and_edges()
 
     nodes = adapt_to_client(nodes, version)
     edges = adapt_to_client(edges, version)
@@ -21,17 +21,16 @@ def get_nodes_and_edges(
 
 def update_server(
     client: BaseClient,
-    dbname: Optional[str] = None,
     namespace: Optional[str] = None,
     user: Optional[str] = None,
     password: Optional[str] = None,
-    host: Optional[str] = None,
-    port: Optional[str] = None,
+    fivetran_endpoint: Optional[str] = None
 ):
+    kwargs = {'user': user, 'password': password}
+    if fivetran_endpoint is not None:
+        kwargs['fivetran_endpoint'] = fivetran_endpoint
 
-    conn = PostgresConnector(
-        dbname=dbname, user=user, password=password, host=host, port=port
-    )
+    conn = FivetranConnector(**kwargs)
     nodes, edges = get_nodes_and_edges(conn, client.id)
     update(client, nodes)
     update(client, edges)
