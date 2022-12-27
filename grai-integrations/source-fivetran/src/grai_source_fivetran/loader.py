@@ -115,7 +115,7 @@ class FivetranConnector:
         )
         yield result_obj(**result)
 
-        while "nextCursor" in result["data"]:
+        while result.data.nextCursor is not None:
             params["cursor"] = result.data.nextCursor
             result = self.make_request(
                 request, url, headers=headers, params=params, **kwargs
@@ -211,22 +211,21 @@ class FivetranGraiMapper(FivetranConnector):
         self.parallelization = parallelization
         self.request_limiter = asyncio.Semaphore(self.parallelization)
 
-        self.groups = self.get_all_groups()
+        self.groups = {group.id: group for group in self.get_all_groups()}
         self.connectors = {
             conn.id: conn
             for group in self.groups
             for conn in self.get_group_connectors(group)
         }
 
-        self.schemas = unpack(
-            self.parallel(self.get_schemas, arg_list=self.connectors.keys())
-        )
-        self.tables = unpack(
-            self.parallel(self.get_tables, arg_list=self.connectors.keys())
-        )
-        self.columns = unpack(
-            self.parallel(self.get_columns, arg_list=self.connectors.keys())
-        )
+        self.schemas = self.parallel(self.get_schemas, arg_list=self.connectors.keys())
+        self.schemas = {schema.id: schema for schema in unpack(self.schemas)}
+
+        self.tables = self.parallel(self.get_tables, arg_list=self.connectors.keys())
+        self.tables = {table.id: table for table in unpack(self.tables)}
+
+        self.columns = self.parallel(self.get_columns, arg_list=self.connectors.keys())
+        self.columns = {column.id: column for column in unpack(self.columns)}
 
     async def caller(self, func: Callable[..., T], *args, **kwargs) -> T:
         result = func(*args, **kwargs)
