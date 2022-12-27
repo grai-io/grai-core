@@ -208,8 +208,8 @@ class FivetranGraiMapper(FivetranConnector):
         self.groups = {group.id: group for group in self.get_all_groups()}
         self.connectors = {
             conn.id: conn
-            for group in self.groups
-            for conn in self.get_group_connectors(group)
+            for group_id in self.groups.keys()
+            for conn in self.get_group_connectors(group_id)
         }
 
         self.schemas = self.parallel(self.get_schemas, arg_list=self.connectors.keys())
