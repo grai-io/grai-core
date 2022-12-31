@@ -51,10 +51,10 @@ class Connection(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["namespace", "name"],
+                fields=["workspace", "namespace", "name"],
                 name="Node namespaces/name uniqueness - Connection",
             )
         ]
         indexes = [
-            models.Index(fields=["namespace", "name"]),
+            models.Index(fields=["workspace", "namespace", "name"]),
         ]
