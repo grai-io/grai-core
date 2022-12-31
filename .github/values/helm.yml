@@ -35,7 +35,6 @@ ingress:
     alb.ingress.kubernetes.io/load-balancer-name: alb-dev
     alb.ingress.kubernetes.io/group.name: prod-ingress
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}, {"HTTP":80}]'
-    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-west-2:627169567483:certificate/a30397f5-797c-43e9-94d1-2e6808d77454
     alb.ingress.kubernetes.io/ssl-redirect: "443"
     alb.ingress.kubernetes.io/healthcheck-path: /health
 
