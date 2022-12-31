@@ -43,7 +43,8 @@ class Node(TenantModel):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["workspace", "namespace", "name"], name="Node namespaces/name uniqueness"
+                fields=["workspace", "namespace", "name"],
+                name="Node namespaces/name uniqueness",
             )
         ]
         indexes = [
@@ -97,7 +98,8 @@ class Edge(TenantModel):
                 name="Edges are not allowed between the same nodes",
             ),
             models.UniqueConstraint(
-                fields=["workspace", "namespace", "name"], name="Edge namespaces/name uniqueness"
+                fields=["workspace", "namespace", "name"],
+                name="Edge namespaces/name uniqueness",
             ),
             models.UniqueConstraint(
                 fields=["source", "destination"],
