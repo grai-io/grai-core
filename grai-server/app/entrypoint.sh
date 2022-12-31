@@ -25,11 +25,6 @@ export BEGIN_LOGGING="True"
 python manage.py shell < "init.py"
 
 # Seed database from json files
-fixtures=$(ls seed/)
-while IFS= read -r fixture; do
-    echo -n "Seeding "
-    echo $fixture
-    python manage.py loaddata seed/$fixture
-done <<< "$fixtures"
+python manage.py loaddata connectors
 
 exec "$@"
