@@ -8,9 +8,11 @@ from django.urls import reverse
 from lineage.urls import app_name
 from workspaces.models import Workspace, WorkspaceAPIKey, Membership
 
+
 @pytest.fixture
 def create_workspace(name=None):
     return Workspace.objects.create(name=uuid.uuid4() if name is None else name)
+
 
 @pytest.fixture
 def test_password():
@@ -44,10 +46,11 @@ def auto_login_user(client, create_user, test_password, create_workspace):
 
     return make_auto_login
 
+
 @pytest.mark.django_db
 def test_get_workspaces(auto_login_user):
     client, user, workspace = auto_login_user()
-    url = reverse('workspaces:workspaces-list')
+    url = reverse("workspaces:workspaces-list")
     response = client.get(url)
     assert (
         response.status_code == 200
@@ -60,7 +63,7 @@ def test_get_workspaces(auto_login_user):
 def test_get_workspaces_no_membership(auto_login_user):
     client, user, workspace = auto_login_user()
     Workspace.objects.create(name="abc2")
-    url = reverse('workspaces:workspaces-list')
+    url = reverse("workspaces:workspaces-list")
     response = client.get(url)
     assert (
         response.status_code == 200
@@ -68,20 +71,22 @@ def test_get_workspaces_no_membership(auto_login_user):
     workspaces = list(response.json())
     assert len(workspaces) == 1
 
+
 @pytest.mark.django_db
 def test_get_workspace(auto_login_user):
     client, user, workspace = auto_login_user()
-    url = reverse('workspaces:workspaces-detail', kwargs={"pk": str(workspace.id)})
+    url = reverse("workspaces:workspaces-detail", kwargs={"pk": str(workspace.id)})
     response = client.get(url)
     assert (
         response.status_code == 200
     ), f"verb `get` failed on workspaces with status {response.status_code}"
 
+
 @pytest.mark.django_db
 def test_get_workspace_no_membership(auto_login_user):
     client, user, workspace = auto_login_user()
     workspace2 = Workspace.objects.create(name="abc2")
-    url = reverse('workspaces:workspaces-detail', kwargs={"pk": str(workspace2.id)})
+    url = reverse("workspaces:workspaces-detail", kwargs={"pk": str(workspace2.id)})
     response = client.get(url)
     assert (
         response.status_code == 404
