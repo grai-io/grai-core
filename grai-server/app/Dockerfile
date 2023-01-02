@@ -1,6 +1,8 @@
 # pull official base image
 FROM python:3.11-slim-buster AS build
 
+LABEL org.opencontainers.image.source="https://github.com/grai-io/grai-core"
+
 WORKDIR /usr/src/app
 ARG PYTHONDONTWRITEBYTECODE="1" \
     PYTHONUNBUFFERED="1" \

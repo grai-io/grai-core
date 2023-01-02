@@ -1,0 +1,63 @@
+backend:
+  name: "backend"
+  host: "<PR-NUM>-api.dev.grai.io"
+
+  replicaCount: 1
+
+  image:
+    repository: ghcr.io/grai-io/grai-core/grai-server
+    pullPolicy: Always
+    tag: "<TAG>"
+
+  service:
+    port: 8000
+
+frontend:
+  name: "frontend"
+  host: "<PR-NUM>.dev.grai.io"
+
+  replicaCount: 1
+
+  image:
+    repository: ghcr.io/grai-io/grai-core/grai-frontend
+    pullPolicy: Always
+    tag: "<TAG>"
+
+  service:
+    port: 80
+
+ingress:
+  enabled: true
+  className: "alb"
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/load-balancer-name: alb-dev
+    alb.ingress.kubernetes.io/group.name: ingress-dev
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}, {"HTTP":80}]'
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+    alb.ingress.kubernetes.io/healthcheck-path: /health
+
+superuser:
+  username: "null@grai.io"
+  password: "super_secret"
+
+postgresql:
+  enabled: true
+
+# Setups up postgres helm chart when postgres.enabled=true
+global:
+  postgresql:
+    auth:
+      database: "grai"
+      username: "grai"
+      password: "grai"
+      postgresPassword: "grai"
+
+connections:
+  database:
+    host: "<PR-NUM>-postgresql"
+    port: "5432"
+    database: "grai"
+    username: "grai"
+    password: "grai"

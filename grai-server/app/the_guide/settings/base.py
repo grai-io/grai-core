@@ -119,8 +119,9 @@ THIRD_PARTY_APPS = [
 
 THE_GUIDE_APPS = [
     "lineage",
+    "connections",
+    "workspaces",
     "users",
-    "namespaces",
     "telemetry",
 ]
 
@@ -251,3 +252,12 @@ LOGGING = {
         },
     },
 }
+
+EMAIL_BACKEND = config(
+    "EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend"
+)
+EMAIL_FROM = config("EMAIL_FROM", None)
+AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID", None)
+AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY", None)
+AWS_SES_REGION_NAME = config("AWS_SES_REGION", None)
+AWS_SES_REGION_ENDPOINT = "email.us-west-2.amazonaws.com"
