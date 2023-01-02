@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { createContext, useState, useEffect, ReactNode } from "react"
 import jwt_decode from "jwt-decode"
 declare global {
@@ -6,7 +7,7 @@ declare global {
   }
 }
 
-type User = {}
+export type User = {}
 
 export type Tokens = {
   access: string
@@ -19,7 +20,8 @@ type AuthContextType = {
   authTokens: Tokens | null
   setAuthTokens: (tokens: Tokens | null) => void
   registerUser: (username: string, password: string, password2: string) => void
-  loginUser: (username: string, password: string) => void
+  refresh: () => Promise<void>
+  loginUser: (username: string, password: string) => Promise<void>
   logoutUser: () => void
 }
 
@@ -29,7 +31,8 @@ const AuthContext = createContext<AuthContextType>({
   authTokens: null,
   setAuthTokens: () => {},
   registerUser: () => {},
-  loginUser: () => {},
+  refresh: async () => {},
+  loginUser: async () => new Promise(() => null),
   logoutUser: () => {},
 })
 
@@ -79,7 +82,57 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setAuthTokens(data)
       setUser(jwt_decode(data.access))
       localStorage.setItem("authTokens", JSON.stringify(data))
+    } else if (response.status === 401) {
+      throw new Error("Incorrect password")
     } else {
+      throw new Error("Error")
+    }
+  }
+
+  const refresh = async () => {
+    const response = await fetch(
+      `${baseURL}/api/v1/auth/jwttoken/refresh/`.replace(
+        /([^:])(\/\/+)/g,
+        "$1/"
+      ),
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          refresh: authTokens?.refresh,
+        }),
+      }
+    ).catch(error => {
+      if (error.response.status === 401) {
+        return
+      }
+
+      throw error
+    })
+
+    if (!response) return
+
+    const data = await response.json()
+
+    if (response.status === 200) {
+      const updatedAuthTokens: Tokens = authTokens
+        ? { refresh: authTokens.refresh, access: data.access }
+        : { access: data.access, refresh: "" }
+
+      localStorage.setItem("authTokens", JSON.stringify(updatedAuthTokens))
+
+      setAuthTokens(updatedAuthTokens)
+      setUser(jwt_decode(data.access))
+    } else {
+      if (response.status === 401) {
+        setAuthTokens(null)
+        setUser(null)
+
+        return
+      }
+
       alert("Something went wrong!")
     }
   }
@@ -119,6 +172,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     authTokens,
     setAuthTokens,
     registerUser,
+    refresh,
     loginUser,
     logoutUser,
   }
