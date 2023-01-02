@@ -1,3 +1,4 @@
+import os
 import pathlib
 import tempfile
 import uuid
@@ -11,6 +12,11 @@ from typer.testing import CliRunner
 
 prep_tests()
 runner = CliRunner()
+
+
+def get_temp_file():
+    fname = os.urandom(24).hex()
+    return os.path.join(tempfile.gettempdir(), fname)
 
 
 def make_v1_node():
@@ -42,21 +48,20 @@ def make_v1_edge(source_id, destination_id):
 
 
 def test_apply_single_node():
-    file = tempfile.NamedTemporaryFile("w+")
-    file_name = pathlib.Path(file.name)
-    node_dict = make_v1_node()
-    write_yaml(node_dict, file_name)
-    result = runner.invoke(app, ["apply", file.name])
-    assert result.exit_code == 0, result
+    with tempfile.NamedTemporaryFile("w+") as file:
+        node_dict = make_v1_node()
+        write_yaml(node_dict, file.name)
+        result = runner.invoke(app, ["apply", file.name])
+        assert result.exit_code == 0, result
 
 
 def test_apply_multi_node():
-    file = tempfile.NamedTemporaryFile("w+")
-    file_name = pathlib.Path(file.name)
-    nodes = [make_v1_node() for i in range(5)]
-    write_yaml(nodes, file.name)
-    result = runner.invoke(app, ["apply", file.name])
-    assert result.exit_code == 0
+    with tempfile.NamedTemporaryFile("w+") as file:
+        file_name = pathlib.Path(file.name)
+        nodes = [make_v1_node() for i in range(5)]
+        write_yaml(nodes, file.name)
+        result = runner.invoke(app, ["apply", file.name])
+        assert result.exit_code == 0
 
 
 def test_create_and_get_nodes():
@@ -73,14 +78,17 @@ def test_create_and_get_nodes():
 
 
 def test_delete_single_node():
-    file = tempfile.NamedTemporaryFile("w+")
-    file_name = pathlib.Path(file.name)
-    node_dict = make_v1_node()
-    yaml.dump(node_dict, file)
-    result = runner.invoke(app, ["apply", file.name])
-    assert result.exit_code == 0
-    result = runner.invoke(app, ["delete", file.name])
-    assert result.exit_code == 0
-    server_nodes = get_nodes(print=False)
-    node_set = {(str(n.spec.name), str(n.spec.namespace)) for n in server_nodes}
-    assert (node_dict["spec"]["name"], node_dict["spec"]["namespace"]) not in node_set
+    with tempfile.NamedTemporaryFile("w+") as file:
+        file_name = pathlib.Path(file.name)
+        node_dict = make_v1_node()
+        yaml.dump(node_dict, file)
+        result = runner.invoke(app, ["apply", file.name])
+        assert result.exit_code == 0
+        result = runner.invoke(app, ["delete", file.name])
+        assert result.exit_code == 0
+        server_nodes = get_nodes(print=False)
+        node_set = {(str(n.spec.name), str(n.spec.namespace)) for n in server_nodes}
+        assert (
+            node_dict["spec"]["name"],
+            node_dict["spec"]["namespace"],
+        ) not in node_set

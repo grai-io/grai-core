@@ -21,10 +21,10 @@ def get_default_client() -> BaseClient:
     host = config.grab("server.host")
     port = config.grab("server.port")
     workspace = config.grab("server.workspace")
-    args = [host, port]
-    if workspace is not None:
-        args.append(workspace)
-    client = _clients[config.grab("server.api_version")](*args)
+
+    client = _clients[config.grab("server.api_version")](
+        host, port, workspace=workspace
+    )
 
     authenticate(client)
     return client
