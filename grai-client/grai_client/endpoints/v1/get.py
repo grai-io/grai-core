@@ -5,6 +5,7 @@ from grai_client.endpoints.rest import get
 from grai_client.endpoints.v1.client import ClientV1
 from grai_client.schemas.edge import EdgeLabels, EdgeV1, NodeID
 from grai_client.schemas.node import NodeLabels, NodeV1
+from grai_client.schemas.workspace import Workspace, WorkspaceLabels
 
 T = TypeVar("T", NodeV1, EdgeV1)
 
@@ -105,3 +106,24 @@ def get_edge_by_label_v1(
         r["destination"] = client.get("node", r["destination"]).spec
 
     return [EdgeV1.from_spec(obj) for obj in resp]
+
+
+@get.register
+def get_workspace_by_name_v1(
+    client: ClientV1,
+    grai_type: WorkspaceLabels,
+    name: str,
+    options: ClientOptions = ClientOptions(),
+) -> Optional[Workspace]:
+    url = f"{client.get_url(grai_type)}?name={name}"
+    print(url)
+    resp = client.get(url, options=options).json()
+    num_resp = len(resp)
+    if num_resp == 0:
+        return None
+    elif num_resp == 1:
+        return Workspace(**resp[0])
+    else:
+        raise Exception(
+            f"Too many workspaces found matching the name {name}. This is a defensive error you should never see."
+        )
