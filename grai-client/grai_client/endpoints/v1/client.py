@@ -14,6 +14,7 @@ class ClientV1(BaseClient):
     _is_authenticated_endpoint = "auth/is-authenticated/"
 
     def __init__(self, *args, workspace: Optional[Union[str, UUID]] = None, **kwargs):
+        print(kwargs)
         super().__init__(*args, **kwargs)
         self.api = f"{self.url}{self.base}"
         self.node_endpoint = f"{self.api}{self._node_endpoint}"
