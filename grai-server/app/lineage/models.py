@@ -2,10 +2,14 @@ import uuid
 
 from django.db import models
 from django.db.models import F, Q
+from django_multitenant.models import TenantModel
+from django_multitenant.fields import TenantForeignKey
 
 
 # Create your models here.
-class Node(models.Model):
+class Node(TenantModel):
+    tenant_id = "workspace_id"
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     namespace = models.CharField(max_length=255, default="default")
     name = models.CharField(max_length=255)
@@ -14,6 +18,12 @@ class Node(models.Model):
     data_source = models.CharField(max_length=255)
     metadata = models.JSONField(default=dict)
     is_active = models.BooleanField(default=True)
+
+    workspace = models.ForeignKey(
+        "workspaces.Workspace",
+        related_name="nodes",
+        on_delete=models.CASCADE,
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -33,29 +43,38 @@ class Node(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["namespace", "name"], name="Node namespaces/name uniqueness"
+                fields=["workspace", "namespace", "name"],
+                name="Node namespaces/name uniqueness",
             )
         ]
         indexes = [
-            models.Index(fields=["namespace", "name"]),
+            models.Index(fields=["workspace", "namespace", "name"]),
         ]
 
 
-class Edge(models.Model):
+class Edge(TenantModel):
+    tenant_id = "workspace_id"
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     namespace = models.CharField(max_length=255, default="default")
     display_name = models.CharField(max_length=255)
 
     data_source = models.CharField(max_length=255)
-    source = models.ForeignKey(
+    source = TenantForeignKey(
         "Node", related_name="source_edges", on_delete=models.PROTECT
     )
-    destination = models.ForeignKey(
+    destination = TenantForeignKey(
         "Node", related_name="destination_edges", on_delete=models.PROTECT
     )
     metadata = models.JSONField(default=dict)
     is_active = models.BooleanField(default=True)
+
+    workspace = models.ForeignKey(
+        "workspaces.Workspace",
+        related_name="edges",
+        on_delete=models.CASCADE,
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -79,7 +98,8 @@ class Edge(models.Model):
                 name="Edges are not allowed between the same nodes",
             ),
             models.UniqueConstraint(
-                fields=["namespace", "name"], name="Edge namespaces/name uniqueness"
+                fields=["workspace", "namespace", "name"],
+                name="Edge namespaces/name uniqueness",
             ),
             models.UniqueConstraint(
                 fields=["source", "destination"],
@@ -88,6 +108,6 @@ class Edge(models.Model):
             ),
         ]
         indexes = [
-            models.Index(fields=["is_active"]),
-            models.Index(fields=["namespace", "name"]),
+            models.Index(fields=["workspace", "is_active"]),
+            models.Index(fields=["workspace", "namespace", "name"]),
         ]
