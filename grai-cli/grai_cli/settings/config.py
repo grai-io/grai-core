@@ -62,6 +62,7 @@ def _get_config_template() -> Dict:
     server_template = {
         "host": String(default="localhost"),
         "port": String(default="8000"),
+        "workspace": Optional(str, allow_missing=True),
         "api_version": Optional(api_versions, default="v1", allow_missing=True),
     }
 

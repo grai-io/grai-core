@@ -1,6 +1,5 @@
 import requests
 from grai_client.endpoints.client import BaseClient
-from grai_client.endpoints.utilities import GraiEncoder, response_status_check
 
 
 class ClientV1(BaseClient):
