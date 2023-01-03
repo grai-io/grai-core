@@ -154,7 +154,7 @@ jobs:
 
       - name: Comment
         uses: actions/github-script@v5
-        if: github.event.action == 'opened'
+        # if: github.event.action == 'opened'
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
@@ -162,7 +162,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'Review app deployed to https://'${PR_NAME}'.dev.grai.io'
+              body: `Review app deployed to https://${{env.PR_NAME}}.dev.grai.io`
             })
 
   delete-untagged:
