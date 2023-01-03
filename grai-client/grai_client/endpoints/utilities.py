@@ -2,8 +2,7 @@ import datetime
 import json
 import pathlib
 import sys
-from functools import wraps
-from typing import Any, Callable, Dict, List, Type, TypeVar
+from typing import Any, Dict, TypeVar
 from uuid import UUID
 
 import orjson
@@ -22,28 +21,16 @@ T = TypeVar("T")
 
 
 def response_status_check(resp: Response) -> Response:
-    if resp.status_code in {200, 201}:
+    if resp.status_code in {200, 201, 204}:
         return resp
-    elif resp.status_code == 204:
-        return resp
-    elif resp.status_code == 400:
-        message = f"400 Bad request: {str(resp.content)} "
-    elif resp.status_code in {401, 403}:
-        message = f"Failed to Authenticate with code: {resp.status_code}"
-    elif resp.status_code == 404:
-        message = f"Error: {resp.status_code}. {resp.reason}"
-    elif resp.status_code == 405:
-        message = f"{resp.status_code} Operation not permitted: {resp.reason}"
-    elif resp.status_code == 415:
-        message = f"Error: {resp.status_code}. {resp.reason}"
-    elif resp.status_code == 500:
+
+    message = f"Error: {resp.status_code}. {resp.reason}. {resp.content.decode()}"
+    if resp.status_code == 500:
         message = (
-            f"Error: {resp.status_code}. {resp.reason} "
+            f"{message}"
             "If you think this should not be the case it might be a bug, you can "
             "submit a bug report at https://github.com/grai-io/grai-core/issues"
         )
-    else:
-        message = f"No handling for error code {resp.status_code}: {resp.reason}"
 
     raise RequestException(message)
 
@@ -79,6 +66,10 @@ class GraiEncoder(json.JSONEncoder):
 
 
 def serialize_obj(obj: Dict) -> bytes:
-    # json_obj = json.dumps(obj, cls=GraiEncoder)
     json_obj = orjson.dumps(obj, default=orjson_defaults)
+    return json_obj
+
+
+def serialize_obj_fallback(obj: Dict) -> str:
+    json_obj = json.dumps(obj, cls=GraiEncoder)
     return json_obj

@@ -8,7 +8,8 @@ def get_test_client():
     port = os.environ.get("GRAI_PORT", "8000")
     username = os.environ.get("GRAI_USERNAME", "null@grai.io")
     password = os.environ.get("GRAI_PASSWORD", "super_secret")
+    workspace = os.environ.get("GRAI_WORKSPACE", "default")
 
-    client = ClientV1(host, port)
+    client = ClientV1(host, port, workspace=workspace)
     client.set_authentication_headers(username=username, password=password)
     return client
