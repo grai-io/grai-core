@@ -1,10 +1,11 @@
-import { Chip } from "@mui/material"
+import { Box, Chip, Stack, Typography } from "@mui/material"
 import NodeDetailRow from "components/nodes/NodeDetailRow"
 import React from "react"
 
 interface Run {
   id: string
   status: string
+  started_at: string | null
 }
 
 type ConnectionRunDetailProps = {
@@ -18,9 +19,12 @@ const ConnectionRunDetail: React.FC<ConnectionRunDetailProps> = ({
 }) => (
   <NodeDetailRow label={label}>
     {run && (
-      <>
-        <Chip label={run?.status} />
-      </>
+      <Stack spacing={1}>
+        <Typography variant="body2">{run?.started_at}</Typography>
+        <Box>
+          <Chip label={run?.status} />
+        </Box>
+      </Stack>
     )}
   </NodeDetailRow>
 )

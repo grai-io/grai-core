@@ -17,13 +17,42 @@ export const RUN_CONNECTION = gql`
   mutation RunConnection($connectionId: ID!) {
     runConnection(connectionId: $connectionId) {
       id
-      status
-      created_at
-      started_at
-      finished_at
-      user {
+      last_run {
         id
-        first_name
+        status
+        started_at
+        finished_at
+        metadata
+        user {
+          id
+          first_name
+          last_name
+        }
+      }
+      last_successful_run {
+        id
+        status
+        started_at
+        finished_at
+        metadata
+        user {
+          id
+          first_name
+          last_name
+        }
+      }
+      runs {
+        id
+        status
+        created_at
+        started_at
+        finished_at
+        user {
+          id
+          first_name
+          last_name
+        }
+        metadata
       }
     }
   }

@@ -87,14 +87,14 @@ class Connection:
     @strawberry.django.field
     def last_run(self) -> Optional["Run"]:
         return (
-            RunModel.objects.filter(connection=self.id).order_by("created_at").first()
+            RunModel.objects.filter(connection=self.id).order_by("-created_at").first()
         )
 
     @strawberry.django.field
     def last_successful_run(self) -> Optional["Run"]:
         return (
             RunModel.objects.filter(connection=self.id, status="success")
-            .order_by("created_at")
+            .order_by("-created_at")
             .first()
         )
 

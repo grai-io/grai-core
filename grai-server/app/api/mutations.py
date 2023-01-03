@@ -15,6 +15,7 @@ from api.types import (
 )
 from api.queries import IsAuthenticated
 from connections.models import Connection as ConnectionModel, Run as RunModel
+from connections.tasks import run_update_server
 from strawberry.scalars import JSON
 import strawberry
 from strawberry.types import Info
@@ -80,7 +81,7 @@ class Mutation:
         self,
         info: Info,
         connectionId: strawberry.ID,
-    ) -> Run:
+    ) -> Connection:
         user, _ = await sync_to_async(JWTAuthentication().authenticate)(
             request=info.context.request
         )
@@ -92,9 +93,9 @@ class Mutation:
             status="queued",
         )
 
-        # TODO: Trigger run job here
+        run_update_server.delay(run.id)
 
-        return run
+        return connection
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def createApiKey(
