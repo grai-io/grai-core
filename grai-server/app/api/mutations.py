@@ -6,13 +6,15 @@ from workspaces.models import (
 )
 from api.types import (
     Connection,
+    Run,
     Workspace,
     KeyResult,
     Membership,
     User,
     BasicResult,
 )
-from connections.models import Connection as ConnectionModel
+from api.queries import IsAuthenticated
+from connections.models import Connection as ConnectionModel, Run as RunModel
 from strawberry.scalars import JSON
 import strawberry
 from strawberry.types import Info
@@ -29,7 +31,7 @@ from django.conf import settings
 
 @strawberry.type
 class Mutation:
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def createConnection(
         self,
         workspaceId: strawberry.ID,
@@ -50,7 +52,7 @@ class Mutation:
 
         return connection
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def updateConnection(
         self,
         id: strawberry.ID,
@@ -73,7 +75,28 @@ class Mutation:
 
         return connection
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def runConnection(
+        self,
+        info: Info,
+        connectionId: strawberry.ID,
+    ) -> Run:
+        user, _ = await sync_to_async(JWTAuthentication().authenticate)(
+            request=info.context.request
+        )
+        connection = await sync_to_async(ConnectionModel.objects.get)(pk=connectionId)
+        run = await sync_to_async(RunModel.objects.create)(
+            connection=connection,
+            workspace_id=connection.workspace_id,
+            user=user,
+            status="queued",
+        )
+
+        # TODO: Trigger run job here
+
+        return run
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def createApiKey(
         self, info: Info, name: str, workspaceId: strawberry.ID
     ) -> KeyResult:
@@ -89,7 +112,7 @@ class Mutation:
 
         return KeyResult(key=key, api_key=api_key)
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def updateWorkspace(
         self,
         id: strawberry.ID,
@@ -101,7 +124,7 @@ class Mutation:
 
         return workspace
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def createMembership(
         self,
         workspaceId: strawberry.ID,
@@ -146,7 +169,7 @@ class Mutation:
 
         return membership
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def updateProfile(self, info: Info, first_name: str, last_name: str) -> User:
         user, _ = await sync_to_async(JWTAuthentication().authenticate)(
             request=info.context.request
@@ -159,7 +182,7 @@ class Mutation:
 
         return user
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def updatePassword(
         self, info: Info, old_password: str, password: str
     ) -> User:

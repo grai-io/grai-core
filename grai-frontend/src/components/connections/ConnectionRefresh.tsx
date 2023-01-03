@@ -1,3 +1,4 @@
+import { gql, useMutation } from "@apollo/client"
 import { Refresh } from "@mui/icons-material"
 import { LoadingButton } from "@mui/lab"
 import {
@@ -7,6 +8,26 @@ import {
   CircularProgress,
 } from "@mui/material"
 import React from "react"
+import {
+  RunConnection,
+  RunConnectionVariables,
+} from "./__generated__/RunConnection"
+
+export const RUN_CONNECTION = gql`
+  mutation RunConnection($connectionId: ID!) {
+    runConnection(connectionId: $connectionId) {
+      id
+      status
+      created_at
+      started_at
+      finished_at
+      user {
+        id
+        first_name
+      }
+    }
+  }
+`
 
 interface Run {
   id: string
@@ -29,15 +50,28 @@ const ConnectionRefresh: React.FC<ConnectionRefreshProps> = ({
   menuItem,
   disabled,
 }) => {
-  const loading = connection.last_run?.status
-    ? ["queued", "running"].includes(connection.last_run.status)
-    : false
+  const [runConnection, { loading }] = useMutation<
+    RunConnection,
+    RunConnectionVariables
+  >(RUN_CONNECTION, {
+    variables: {
+      connectionId: connection.id,
+    },
+  })
+
+  const handleClick = () => runConnection()
+
+  const loading2 =
+    loading ||
+    (connection.last_run?.status
+      ? ["queued", "running"].includes(connection.last_run.status)
+      : false)
 
   if (menuItem)
     return (
-      <MenuItem disabled={disabled || loading}>
+      <MenuItem disabled={disabled || loading} onClick={handleClick}>
         <ListItemIcon>
-          {loading ? <CircularProgress /> : <Refresh />}
+          {loading2 ? <CircularProgress /> : <Refresh />}
         </ListItemIcon>
         <ListItemText primary="Refresh" />
       </MenuItem>
@@ -45,14 +79,15 @@ const ConnectionRefresh: React.FC<ConnectionRefreshProps> = ({
 
   return (
     <LoadingButton
+      onClick={handleClick}
       variant="outlined"
       startIcon={<Refresh />}
       disabled={disabled}
-      loading={loading}
+      loading={loading2}
       loadingPosition="start"
       data-testid="connection-refresh"
     >
-      {loading ? connection.last_run?.status : "Refresh"}
+      {(loading2 && connection.last_run?.status) || "Refresh"}
     </LoadingButton>
   )
 }
