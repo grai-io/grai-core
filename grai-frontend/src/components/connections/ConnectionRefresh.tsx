@@ -1,9 +1,21 @@
 import { Refresh } from "@mui/icons-material"
-import { MenuItem, ListItemIcon, ListItemText, Button } from "@mui/material"
+import { LoadingButton } from "@mui/lab"
+import {
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+  CircularProgress,
+} from "@mui/material"
 import React from "react"
+
+interface Run {
+  id: string
+  status: string
+}
 
 interface Connection {
   id: string
+  last_run: Run | null
 }
 
 type ConnectionRefreshProps = {
@@ -13,28 +25,35 @@ type ConnectionRefreshProps = {
 }
 
 const ConnectionRefresh: React.FC<ConnectionRefreshProps> = ({
+  connection,
   menuItem,
   disabled,
 }) => {
+  const loading = connection.last_run?.status
+    ? ["queued", "running"].includes(connection.last_run.status)
+    : false
+
   if (menuItem)
     return (
-      <MenuItem disabled={disabled}>
+      <MenuItem disabled={disabled || loading}>
         <ListItemIcon>
-          <Refresh />
+          {loading ? <CircularProgress /> : <Refresh />}
         </ListItemIcon>
         <ListItemText primary="Refresh" />
       </MenuItem>
     )
 
   return (
-    <Button
+    <LoadingButton
       variant="outlined"
       startIcon={<Refresh />}
       disabled={disabled}
+      loading={loading}
+      loadingPosition="start"
       data-testid="connection-refresh"
     >
-      Refresh
-    </Button>
+      {loading ? connection.last_run?.status : "Refresh"}
+    </LoadingButton>
   )
 }
 

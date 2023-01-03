@@ -9,17 +9,24 @@ import {
 } from "@mui/material"
 import React from "react"
 import { Link, useParams } from "react-router-dom"
+import ConnectionRefresh from "./ConnectionRefresh"
 
-interface Node {
+interface Run {
   id: string
-  display_name: string
+  status: string
 }
 
-type NodeHeaderProps = {
-  node: Node
+interface Connection {
+  id: string
+  name: string
+  last_run: Run | null
 }
 
-const NodeHeader: React.FC<NodeHeaderProps> = ({ node }) => {
+type ConnectionHeaderProps = {
+  connection: Connection
+}
+
+const ConnectionHeader: React.FC<ConnectionHeaderProps> = ({ connection }) => {
   const { workspaceId } = useParams()
 
   return (
@@ -28,7 +35,7 @@ const NodeHeader: React.FC<NodeHeaderProps> = ({ node }) => {
         <Box>
           <Button
             component={Link}
-            to={`/workspaces/${workspaceId}/nodes`}
+            to={`/workspaces/${workspaceId}/connections`}
             color="secondary"
             startIcon={<KeyboardBackspace />}
           >
@@ -39,19 +46,20 @@ const NodeHeader: React.FC<NodeHeaderProps> = ({ node }) => {
           variant="h6"
           sx={{ textTransform: "uppercase", mx: 1, mt: 0.3 }}
         >
-          {node?.display_name ?? node?.id}
+          {connection.name}
         </Typography>
-        <Box>
-          <Tooltip title="Copy Table Name">
+        <Box sx={{ flexGrow: 1 }}>
+          <Tooltip title="Copy Connection Name">
             <IconButton sx={{ mt: 0.5 }}>
               <ContentCopy sx={{ fontSize: 15 }} />
             </IconButton>
           </Tooltip>
         </Box>
+        <ConnectionRefresh connection={connection} />
       </Box>
       <Divider />
     </>
   )
 }
 
-export default NodeHeader
+export default ConnectionHeader

@@ -45,3 +45,8 @@ services:
       - 3000:80
     environment:
       - REACT_APP_API_URL=http://localhost:8000
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - "6379:6379"

@@ -1,8 +1,10 @@
-from typing import List
+import datetime
+from typing import List, Optional
 from lineage.models import Edge as EdgeModel, Node as NodeModel
 from connections.models import (
     Connection as ConnectionModel,
     Connector as ConnectorModel,
+    Run as RunModel,
 )
 from workspaces.models import (
     Workspace as WorkspaceModel,
@@ -76,6 +78,18 @@ class Connection:
     updated_at: auto
     created_by: User
 
+    runs: List["Run"]
+    # run: Run = strawberry.django.field
+    @strawberry.django.field
+    def run(self, pk: strawberry.ID) -> 'Run':
+        return RunModel.objects.get(id=pk)
+    @strawberry.django.field
+    def last_run(self) -> Optional['Run']:
+        return RunModel.objects.filter(connection=self.id).order_by('created_at').first()
+    @strawberry.django.field
+    def last_successful_run(self) -> Optional['Run']:
+        return RunModel.objects.filter(connection=self.id, status='success').order_by('created_at').first()
+
 
 @strawberry.django.type(WorkspaceModel)
 class Workspace:
@@ -99,6 +113,12 @@ class Workspace:
     def connection(self, pk: strawberry.ID) -> Connection:
         return ConnectionModel.objects.get(id=pk)
 
+    runs: List["Run"]
+    # run: Run = strawberry.django.field
+    @strawberry.django.field
+    def run(self, pk: strawberry.ID) -> 'Run':
+        return RunModel.objects.get(id=pk)
+
     memberships: List["Membership"]
     api_keys: List["WorkspaceAPIKey"]
 
@@ -119,7 +139,7 @@ class WorkspaceAPIKey:
     name: auto
     prefix: auto
     revoked: auto
-    expiry_date: auto
+    expiry_date: Optional[datetime.datetime]
     # has_expired: auto
     created: auto
     created_by: User
@@ -134,3 +154,16 @@ class KeyResult:
 @strawberry.type
 class BasicResult:
     success: bool
+
+
+@strawberry.django.type(RunModel)
+class Run:
+    id: auto
+    connection: Connection
+    status: auto
+    metadata: JSON
+    created_at: auto
+    updated_at: auto
+    started_at: Optional[datetime.datetime]
+    finished_at: Optional[datetime.datetime]
+    user: Optional[User]

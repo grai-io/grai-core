@@ -24,6 +24,20 @@ export const GET_CONNECTIONS = gql`
           id
           name
         }
+        last_run {
+          id
+          status
+          started_at
+          finished_at
+          metadata
+        }
+        last_successful_run {
+          id
+          status
+          started_at
+          finished_at
+          metadata
+        }
       }
     }
   }

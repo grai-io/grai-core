@@ -11,8 +11,14 @@ import React from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import ConnectionRefresh from "./ConnectionRefresh"
 
+interface Run {
+  id: string
+  status: string
+}
+
 interface Connection {
   id: string
+  last_run: Run | null
 }
 
 type ConnectionsMenuProps = {

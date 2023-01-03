@@ -11,6 +11,11 @@ import Loading from "components/layout/Loading"
 import TableCell from "components/tables/TableCell"
 import ConnectionsMenu from "./ConnectionsMenu"
 
+interface Run {
+  id: string
+  status: string
+}
+
 interface Connector {
   id: string
   name: string
@@ -22,6 +27,7 @@ interface Connection {
   name: string
   connector: Connector
   is_active: boolean
+  last_run: Run | null
 }
 
 type ConnectionsTableProps = {

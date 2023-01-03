@@ -12,6 +12,7 @@ const connection = {
     id: "1",
     name: "connector 1",
   },
+  last_run: null,
 }
 
 test("renders", async () => {
