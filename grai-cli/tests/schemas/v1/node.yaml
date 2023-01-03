@@ -8,7 +8,6 @@ spec:
     is_active: true
     metadata:
         stuff: Goes here
-
 ---
 version: v1
 type: Node
