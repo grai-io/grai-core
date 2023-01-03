@@ -19,7 +19,7 @@ def run_update_server(runId):
         # update_server
         connector = run.connection.connector
 
-        if connector.name == "postgres":
+        if connector.name == "Postgres":
             run_postgres()
         else:
             raise NoConnectorError("No connector found")
@@ -35,7 +35,18 @@ def run_update_server(runId):
 
 
 def run_postgres():
-    pass
+    from grai_client.endpoints.v1.client import ClientV1
+
+    # client = ClientV1('pr63.api.grai.io', '443')
+    client = ClientV1('localhost', '8000', workspace="198e90f3-112e-4a11-84e7-1b5a4f02cec1")
+    client.set_authentication_headers(username='null@grai.io', password='super_secret')
+    # client.set_authentication_headers(api_key='qBzzVcCT.sVPZ3yVrv4e7oA9yzEtdrc1HwAOmLlsa')
+    # client.set_authentication_headers(api_key='PYqPIzQp.06JTpWid4V0JN0wEkEVqo2Bcq3gHSUig')
+
+    from grai_source_postgres.base import update_server
+
+    update_server(client, dbname="grai", user='grai', password='grai', namespace='test')
+
 
 
 class NoConnectorError(Exception):

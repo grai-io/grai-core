@@ -3,6 +3,8 @@ from .models import Connector, Connection, Run
 
 
 class RunAdmin(admin.ModelAdmin):
+    search_fields = ['id']
+
     list_filter = (
         "status",
         ("connection", admin.RelatedOnlyFieldListFilter),
