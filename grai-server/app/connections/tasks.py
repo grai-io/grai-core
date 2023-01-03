@@ -20,7 +20,7 @@ def run_update_server(runId):
         connector = run.connection.connector
 
         if connector.name == "Postgres":
-            run_postgres()
+            run_postgres(run)
         else:
             raise NoConnectorError("No connector found")
 
@@ -34,19 +34,29 @@ def run_update_server(runId):
         run.save()
 
 
-def run_postgres():
+def run_postgres(run):
     from grai_client.endpoints.v1.client import ClientV1
 
-    # client = ClientV1('pr63.api.grai.io', '443')
-    client = ClientV1('localhost', '8000', workspace="198e90f3-112e-4a11-84e7-1b5a4f02cec1")
-    client.set_authentication_headers(username='null@grai.io', password='super_secret')
+    # TODO: update this to point to self
+    client = ClientV1("localhost", "8000", workspace=run.workspace.id)
+    # TODO: update this to use current user
+    client.set_authentication_headers(username="null@grai.io", password="super_secret")
     # client.set_authentication_headers(api_key='qBzzVcCT.sVPZ3yVrv4e7oA9yzEtdrc1HwAOmLlsa')
-    # client.set_authentication_headers(api_key='PYqPIzQp.06JTpWid4V0JN0wEkEVqo2Bcq3gHSUig')
 
     from grai_source_postgres.base import update_server
 
-    update_server(client, dbname="grai", user='grai', password='grai', namespace='test')
+    metadata = run.connection.metadata
+    secrets = run.connection.secrets
 
+    update_server(
+        client,
+        host=metadata["host"],
+        port=metadata["port"],
+        dbname=metadata["dbname"],
+        user=metadata["user"],
+        password=secrets["password"],
+        namespace="test",
+    )
 
 
 class NoConnectorError(Exception):

@@ -13,6 +13,9 @@ class Connector(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=["name"], name="Name uniqueness"),
@@ -51,6 +54,9 @@ class Connection(TenantModel):
         blank=True,
         null=True,
     )
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         constraints = [
@@ -95,3 +101,6 @@ class Run(TenantModel):
         blank=True,
         null=True,
     )
+
+    def __str__(self):
+        return str(self.id)
