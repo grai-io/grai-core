@@ -11,7 +11,7 @@ T = TypeVar("T", Node, Edge)
 
 def deactivate(items: List[T]) -> List[T]:
     updated = [item.update({"spec": {"is_active": False}}) for item in items]
-    return updated
+    return updated  # type: ignore
 
 
 def update(client: BaseClient, items: List[T], active_items: Optional[List[T]] = None):
@@ -19,7 +19,7 @@ def update(client: BaseClient, items: List[T], active_items: Optional[List[T]] =
         return
 
     if active_items is None:
-        active_items: List[T] = client.get(items[0].type)
+        active_items = client.get(items[0].type)
         if active_items is None:
             active_items = []
 
