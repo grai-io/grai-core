@@ -1,5 +1,6 @@
 from enum import Enum
 from typing import Any, Dict, List, Optional, Union
+
 from pydantic import BaseModel, Field, root_validator, validator
 
 
@@ -17,7 +18,7 @@ class TableID(ID):
     table_schema: str
 
     @root_validator(pre=True)
-    def make_full_name(cls, values):
+    def make_full_name(cls, values: Dict) -> Dict:
         full_name = values.get("full_name", None)
         if values.get("full_name", None) is None:
             values["full_name"] = f"{values['table_schema']}.{values['name']}"
@@ -29,7 +30,7 @@ class ColumnID(ID):
     table_name: str
 
     @root_validator(pre=True)
-    def make_full_name(cls, values):
+    def make_full_name(cls, values: Dict) -> Dict:
         full_name = values.get("full_name", None)
         if values.get("full_name", None) is None:
             values[
@@ -53,7 +54,7 @@ class Column(SnowflakeNode):
         allow_population_by_field_name = True
 
     @validator("full_name", always=True)
-    def make_full_name(cls, full_name, values):
+    def make_full_name(cls, full_name: Optional[str], values: Dict) -> str:
         if full_name is not None:
             return full_name
         result = f"{values['column_schema']}.{values['table']}.{values['name']}"
@@ -73,10 +74,12 @@ class Edge(BaseModel):
     constraint_type: Constraint
     metadata: Optional[Dict] = None
 
+
 class TableType(str, Enum):
     Table = "BASE TABLE"
     View = "VIEW"
     TemporaryTable = "TEMPORARY TABLE"
+
 
 class Table(SnowflakeNode):
     name: str = Field(alias="table_name")
@@ -84,7 +87,7 @@ class Table(SnowflakeNode):
     table_type: TableType
     table_database: str
     namespace: str
-    columns: Optional[List[Column]] = []
+    columns: List[Column] = []
     metadata: Dict = {}
     full_name: Optional[str] = None
 
@@ -92,13 +95,13 @@ class Table(SnowflakeNode):
         allow_population_by_field_name = True
 
     @validator("full_name", always=True)
-    def make_full_name(cls, full_name, values):
+    def make_full_name(cls, full_name: Optional[str], values: Dict) -> str:
         if full_name is not None:
             return full_name
 
         return f"{values['table_schema']}.{values['name']}"
 
-    def get_edges(self):
+    def get_edges(self) -> List[Edge]:
         return [
             Edge(
                 constraint_type=Constraint("bt"),

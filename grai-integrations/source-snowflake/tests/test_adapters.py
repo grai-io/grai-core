@@ -9,7 +9,7 @@ columns = [
         name="test",
         namespace="tests",
         table="test",
-        schema="test",
+        column_schema="test",
         data_type="integer",
         is_nullable=True,
         default_value="Orange",
@@ -31,6 +31,8 @@ tables = [
         namespace="tests",
         table_schema="test",
         columns=[],
+        table_type="TEMPORARY TABLE",
+        table_database="a_db",
         metadata={"thing": "here"},
     )
 ]
