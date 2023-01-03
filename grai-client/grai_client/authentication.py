@@ -1,5 +1,6 @@
 import abc
 import json
+from typing import Dict
 
 import requests
 
@@ -17,7 +18,7 @@ class UserTokenHeader(AuthHeader):
         self.token = token
 
     @property
-    def headers(self):
+    def headers(self) -> Dict[str, str]:
         return {"Authorization": f"Token {self.token}"}
 
 
@@ -26,7 +27,7 @@ class APIKeyHeader(AuthHeader):
         self.api_key = api_key
 
     @property
-    def headers(self):
+    def headers(self) -> Dict[str, str]:
         return {"Authorization": f"Api-Key {self.api_key}"}
 
 
