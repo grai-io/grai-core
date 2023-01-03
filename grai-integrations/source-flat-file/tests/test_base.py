@@ -10,7 +10,7 @@ n = 10
 test_data = {"a": range(n), "b": ["t"] * n}
 test_data = pd.DataFrame(test_data)
 
-client = ClientV1("localhost", "8000")
+client = ClientV1("localhost", "8000", workspace="default")
 client.set_authentication_headers("null@grai.io", "super_secret")
 
 

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai_source_postgres"
-version = "0.1.4"
+version = "0.1.5"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>"]
 license = "ELv2"
@@ -10,7 +10,7 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.8"
 pydantic = "^1.9.1"
-grai-client = "^0.1.3"
+grai-client = "^0.1.15"
 PyYAML = "^6.0"
 multimethod = "^1.8"
 psycopg2 = "^2.9.5"
