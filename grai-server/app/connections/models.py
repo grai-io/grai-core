@@ -80,10 +80,14 @@ class Run(TenantModel):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    started_at = models.DateTimeField(blank=True,
-        null=True,)
-    finished_at = models.DateTimeField(blank=True,
-        null=True,)
+    started_at = models.DateTimeField(
+        blank=True,
+        null=True,
+    )
+    finished_at = models.DateTimeField(
+        blank=True,
+        null=True,
+    )
     user = models.ForeignKey(
         "users.User",
         related_name="runs",

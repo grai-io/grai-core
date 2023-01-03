@@ -81,14 +81,22 @@ class Connection:
     runs: List["Run"]
     # run: Run = strawberry.django.field
     @strawberry.django.field
-    def run(self, pk: strawberry.ID) -> 'Run':
+    def run(self, pk: strawberry.ID) -> "Run":
         return RunModel.objects.get(id=pk)
+
     @strawberry.django.field
-    def last_run(self) -> Optional['Run']:
-        return RunModel.objects.filter(connection=self.id).order_by('created_at').first()
+    def last_run(self) -> Optional["Run"]:
+        return (
+            RunModel.objects.filter(connection=self.id).order_by("created_at").first()
+        )
+
     @strawberry.django.field
-    def last_successful_run(self) -> Optional['Run']:
-        return RunModel.objects.filter(connection=self.id, status='success').order_by('created_at').first()
+    def last_successful_run(self) -> Optional["Run"]:
+        return (
+            RunModel.objects.filter(connection=self.id, status="success")
+            .order_by("created_at")
+            .first()
+        )
 
 
 @strawberry.django.type(WorkspaceModel)
@@ -116,7 +124,7 @@ class Workspace:
     runs: List["Run"]
     # run: Run = strawberry.django.field
     @strawberry.django.field
-    def run(self, pk: strawberry.ID) -> 'Run':
+    def run(self, pk: strawberry.ID) -> "Run":
         return RunModel.objects.get(id=pk)
 
     memberships: List["Membership"]
