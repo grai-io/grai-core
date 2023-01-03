@@ -261,3 +261,13 @@ AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID", None)
 AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY", None)
 AWS_SES_REGION_NAME = config("AWS_SES_REGION", None)
 AWS_SES_REGION_ENDPOINT = "email.us-west-2.amazonaws.com"
+
+# Celery settings
+
+CELERY_BROKER_URL = 'redis://localhost:6379'
+
+#: Only add pickle to this list if your broker is secured
+#: from unwanted access (see userguide/security.html)
+CELERY_ACCEPT_CONTENT = ['json']
+# CELERY_RESULT_BACKEND = 'db+sqlite:///results.sqlite'
+CELERY_TASK_SERIALIZER = 'json'

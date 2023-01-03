@@ -26,6 +26,8 @@ drf-spectacular = "^0.24.2"
 django-health-check = "^3.17.0"
 django_multitenant = "^3.0.0"
 django-ses = "^3.3.0"
+celery = "^5.2.7"
+redis = "^4.4.0"
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.10.1"
