@@ -1,13 +1,13 @@
+/* istanbul ignore file */
 import { createContext, useState, useEffect, ReactNode } from "react"
 import jwt_decode from "jwt-decode"
-import { useNavigate } from "react-router-dom"
 declare global {
   interface Window {
     _env_: any
   }
 }
 
-type User = {}
+export type User = {}
 
 export type Tokens = {
   access: string
@@ -20,7 +20,8 @@ type AuthContextType = {
   authTokens: Tokens | null
   setAuthTokens: (tokens: Tokens | null) => void
   registerUser: (username: string, password: string, password2: string) => void
-  loginUser: (username: string, password: string) => void
+  refresh: () => Promise<void>
+  loginUser: (username: string, password: string) => Promise<void>
   logoutUser: () => void
 }
 
@@ -30,7 +31,8 @@ const AuthContext = createContext<AuthContextType>({
   authTokens: null,
   setAuthTokens: () => {},
   registerUser: () => {},
-  loginUser: () => {},
+  refresh: async () => {},
+  loginUser: async () => new Promise(() => null),
   logoutUser: () => {},
 })
 
@@ -58,7 +60,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   )
   const [loading, setLoading] = useState(true)
 
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
 
   const loginUser = async (username: string, password: string) => {
     const response = await fetch(
@@ -80,8 +82,57 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setAuthTokens(data)
       setUser(jwt_decode(data.access))
       localStorage.setItem("authTokens", JSON.stringify(data))
-      navigate("/")
+    } else if (response.status === 401) {
+      throw new Error("Incorrect password")
     } else {
+      throw new Error("Error")
+    }
+  }
+
+  const refresh = async () => {
+    const response = await fetch(
+      `${baseURL}/api/v1/auth/jwttoken/refresh/`.replace(
+        /([^:])(\/\/+)/g,
+        "$1/"
+      ),
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          refresh: authTokens?.refresh,
+        }),
+      }
+    ).catch(error => {
+      if (error.response.status === 401) {
+        return
+      }
+
+      throw error
+    })
+
+    if (!response) return
+
+    const data = await response.json()
+
+    if (response.status === 200) {
+      const updatedAuthTokens: Tokens = authTokens
+        ? { refresh: authTokens.refresh, access: data.access }
+        : { access: data.access, refresh: "" }
+
+      localStorage.setItem("authTokens", JSON.stringify(updatedAuthTokens))
+
+      setAuthTokens(updatedAuthTokens)
+      setUser(jwt_decode(data.access))
+    } else {
+      if (response.status === 401) {
+        setAuthTokens(null)
+        setUser(null)
+
+        return
+      }
+
       alert("Something went wrong!")
     }
   }
@@ -105,18 +156,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }),
       }
     )
-    if (response.status === 201) {
-      navigate("/login")
-    } else {
-      alert("Something went wrong!")
-    }
+    if (response.status !== 201) alert("Something went wrong!")
   }
 
   const logoutUser = () => {
     setAuthTokens(null)
     setUser(null)
     localStorage.removeItem("authTokens")
-    navigate("/")
+    // navigate("/")
   }
 
   const contextData = {
@@ -125,6 +172,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     authTokens,
     setAuthTokens,
     registerUser,
+    refresh,
     loginUser,
     logoutUser,
   }

@@ -1,43 +1,36 @@
 [tool.poetry]
 name = "grai-cli"
-version = "0.1.6"
+version = "0.1.7"
 description = ""
-authors = ["Ian Eaves <ian@grai.io>"]
-readme = "README.md"
+authors = ["Ian Eaves <ian.k.eaves@gmail.com>"]
 license = "Elastic-2.0"
+readme = "README.md"
+packages = [{include = "grai_cli"}]
 
 [tool.poetry.scripts]
 grai = "grai_cli.api.entrypoint:app"
 
 [tool.poetry.dependencies]
-python = "^3.10"
-typer = {version = "^0.6.1"}
-click-spinner = "^0.1.10"
-tqdm = "^4.64.0"
-tabulate = "^0.8.10"
-confuse = "^1.7.0"
-validators = "^0.20.0"
-fqdn = "^1.5.1"
-apipkg = "^3.0.1"
+python = "^3.8"
+multimethod = "^1.9"
+typer = "^0.7.0"
+confuse = "^2.0.0"
 requests = "^2.28.1"
-pydantic = "^1.9.1"
-rich = "^12.5.1"
-grai-client = "^0.1.6"
-PyYAML = "^6.0"
-multimethod = "^1.8"
-posthog = "^2.1.2"
-
-[tool.poetry.group.dev.dependencies]
-isort = "^5.10.1"
-pytest = "^7"
-black = "^22.6.0"
-types-PyYAML = "^6.0.10"
-types-requests = "^2.28.3"
-mypy = "^0.971"
+pydantic = "^1.10.2"
+grai-client = "^0.1.9"
+posthog = "^2.2.0"
+rich = {version = "^12.6.0", optional = true}
 
 [tool.isort]
 profile = "black"
 
+[tool.poetry.group.dev.dependencies]
+isort = "^5.10.1"
+pytest = "^7.2.0"
+black = "^22.10.0"
+types-requests = "^2.28.11.5"
+mypy = "^0.991"
+
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

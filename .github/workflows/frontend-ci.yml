@@ -1,0 +1,28 @@
+name: "Frontend CI"
+
+on:
+  push:
+    paths:
+      - ".github/workflows/frontend-pr.yml"
+      - "grai-frontend/**"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: grai-frontend
+
+    steps:
+      - uses: actions/checkout@master
+      - name: Use latest Node.js
+        uses: actions/setup-node@v3
+      - name: Install dependencies
+        run: npm ci
+      - name: Run lint
+        run: npm run lint
+      - name: Run npm tests
+        run: npm test -- --coverage
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3

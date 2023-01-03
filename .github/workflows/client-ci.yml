@@ -1,15 +1,9 @@
-name: CI Workflow for the Grai Client
+name: Grai Client CI
 on:
-  push:
-    branches:
-      - master
-    paths:
-    - "grai-client/**"
   pull_request:
-    branches:
-      - master
     paths:
     - 'grai-client/**'
+
 env:
   py_ver: "3.10"
   poetry_ver: "1.2.2"

@@ -32,22 +32,46 @@ for param in column_params:
 
 
 table_params: List[Dict] = [
-    {"name": "test", "namespace": "test", "schema": "test"},
-    {"table_name": "test", "namespace": "test", "table_schema": "test"},
-    {"table_name": "test", "namespace": "test", "schema": "test"},
+    {"name": "test", "namespace": "test", "schema": "test", "table_type": "BASE TABLE"},
+    {
+        "table_name": "test",
+        "namespace": "test",
+        "table_schema": "test",
+        "table_type": "VIEW",
+    },
+    {
+        "table_name": "test",
+        "namespace": "test",
+        "schema": "test",
+        "table_type": "FOREIGN",
+    },
     {
         "name": "test",
         "schema": "test",
         "namespace": "test",
+        "table_type": "LOCAL TEMPORARY",
     },
-    {"name": "test", "namespace": "test", "schema": "test", "columns": []},
-    {"name": "test", "namespace": "test", "schema": "test", "metadata": {}},
+    {
+        "name": "test",
+        "namespace": "test",
+        "schema": "test",
+        "columns": [],
+        "table_type": "BASE TABLE",
+    },
+    {
+        "name": "test",
+        "namespace": "test",
+        "schema": "test",
+        "metadata": {},
+        "table_type": "BASE TABLE",
+    },
     {
         "name": "test",
         "namespace": "test",
         "schema": "test",
         "metadata": {},
         "columns": [],
+        "table_type": "BASE TABLE",
     },
 ]
 new_table = table_params[-1]

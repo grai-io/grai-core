@@ -1,3 +1,4 @@
+from api.schema import schema
 from django.contrib import admin
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
@@ -6,10 +7,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView,
 )
-
-# TODO: Strawberry not working
-# from api.schema import schema
-# from strawberry.django.views import AsyncGraphQLView
+from strawberry.django.views import AsyncGraphQLView
 
 spectacular_settings = {
     "SCHEMA_PATH_PREFIX": "/api/v1/",
@@ -30,7 +28,9 @@ urlpatterns = [
     path("api/v1/auth/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
     path("api/v1/auth/", include("auth.urls"), name="auth"),
     path("api/v1/lineage/", include("lineage.urls"), name="lineage"),
-    # path("graphql/", AsyncGraphQLView.as_view(schema=schema)),  # Double check authentication on this one
+    path("api/v1/", include("connections.urls"), name="connections"),
+    path("api/v1/", include("workspaces.urls"), name="workspaces"),
+    path("graphql/", AsyncGraphQLView.as_view(schema=schema)),
     # OpenAPI 3 docs w/ Swagger
     path(
         "schema/",

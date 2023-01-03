@@ -1,20 +1,13 @@
-name: CI Workflow for the Grai flat file integration
+name: Flat File Integration CI
 on:
-  push:
-    branches:
-      - master
-    paths:
-    - "grai-integration/source-flat-file/**"
   pull_request:
-    branches:
-      - master
     paths:
-    - "grai-integration/source-flat-file/**"
+    - "grai-integrations/source-flat-file/**"
 
 env:
   py_ver: "3.10"
   poetry_ver: "1.2.2"
-  project_dir: "grai-integration/source-flat-file"
+  project_dir: "grai-integrations/source-flat-file"
 
 jobs:
   lint-integration-flat_file:

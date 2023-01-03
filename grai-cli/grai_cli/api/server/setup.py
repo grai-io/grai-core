@@ -1,22 +1,15 @@
-from typing import Dict, Type
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Dict, Type
 
 import typer
 from grai_cli.api.entrypoint import app
 from grai_cli.settings.config import config
 from grai_cli.utilities.headers import authenticate
 from grai_cli.utilities.utilities import default_callback
-from grai_client.endpoints.client import BaseClient
 
-# def get_cli_client(client: Type[BaseClient]):
-#     class VersionedCLIClient(client):
-#         def __getattr__(self, attr):
-#             try:
-#                 return getattr(super(), attr)
-#             except:
-#                 print(f"Exiting with error, client has no attribute {attr}")
-#                 typer.Exit()
-#
-#     return VersionedCLIClient
+if TYPE_CHECKING:
+    from grai_client.endpoints.client import BaseClient
 
 
 def get_default_client() -> BaseClient:

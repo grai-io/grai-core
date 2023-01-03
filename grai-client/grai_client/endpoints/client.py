@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional, Sequence, Union
 
 import requests
 from grai_client.authentication import APIKeyHeader, UserNameHeader, UserTokenHeader
-from grai_client.endpoints.utilities import GraiEncoder, response_status_check
+from grai_client.endpoints.utilities import response_status_check, serialize_obj
 from grai_client.schemas.schema import GraiType
 from multimethod import multimethod
 
@@ -129,13 +129,48 @@ def delete_url_v1(client: BaseClient, url: str) -> requests.Response:
     return response
 
 
+@BaseClient.post.register
+def post_sequence(client: BaseClient, objs: Sequence) -> List[Dict]:
+    result = [client.post(obj) for obj in objs]
+    return result
+
+
+@BaseClient.patch.register
+def patch_sequence(client: BaseClient, objs: Sequence) -> List[Dict]:
+    result = [client.patch(obj) for obj in objs]
+    return result
+
+
+@BaseClient.delete.register
+def delete_sequence(client: BaseClient, objs: Sequence[GraiType]):
+    for obj in objs:
+        client.delete(obj)
+
+
+@BaseClient.get.register
+def get_sequence(client: BaseClient, objs: Sequence) -> List[Dict]:
+    result = [client.get(obj) for obj in objs]
+    return result
+
+
+@BaseClient.get.register
+def get_url_v1(client: BaseClient, url: str) -> requests.Response:
+    response = requests.get(url, headers=client.auth_headers)
+    response_status_check(response)
+    return response
+
+
+@BaseClient.delete.register
+def delete_url_v1(client: BaseClient, url: str) -> requests.Response:
+    response = requests.delete(url, headers=client.auth_headers)
+    response_status_check(response)
+    return response
+
+
 @BaseClient.patch.register
 def patch_url_v1(client: BaseClient, url: str, payload: Dict) -> requests.Response:
     headers = {**client.auth_headers, "Content-Type": "application/json"}
-    payload = {k: v for k, v in payload.items() if v is not None}
-    response = requests.patch(
-        url, data=json.dumps(payload, cls=GraiEncoder), headers=headers
-    )
+    response = requests.patch(url, data=serialize_obj(payload), headers=headers)
 
     response_status_check(response)
     return response
@@ -144,9 +179,7 @@ def patch_url_v1(client: BaseClient, url: str, payload: Dict) -> requests.Respon
 @BaseClient.post.register
 def post_url_v1(client: BaseClient, url: str, payload: Dict) -> requests.Response:
     headers = {**client.auth_headers, "Content-Type": "application/json"}
-    payload = {k: v for k, v in payload.items() if v is not None}
-    response = requests.post(
-        url, data=json.dumps(payload, cls=GraiEncoder), headers=headers
-    )
+
+    response = requests.post(url, data=serialize_obj(payload), headers=headers)
     response_status_check(response)
     return response

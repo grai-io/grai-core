@@ -12,6 +12,8 @@ from grai_client.schemas.node import NodeV1
 def delete_node_v1(client: ClientV1, grai_type: NodeV1):
     if grai_type.spec.id is None:
         grai_type = client.get(grai_type)
+        if grai_type is None:
+            return
     url = f"{client.node_endpoint}{grai_type.spec.id}/"
     client.delete(url)
 

@@ -1,18 +1,11 @@
-name: CI Workflow for Grai Server
+name: Grai Server CI
 on:
-  push:
-    branches:
-      - master
-    paths:
-    - "grai-server/**"
   pull_request:
-    branches:
-      - master
     paths:
     - "grai-server/**"
 env:
-  py_ver: "3.10"
-  poetry_ver: "1.2.2"
+  py_ver: "3.11"
+  poetry_ver: "1.3.1"
   SECRET_KEY: "fixed-test-key-that-doesnt-matter"
 jobs:
   lint-server:

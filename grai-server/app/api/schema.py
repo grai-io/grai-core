@@ -1,22 +1,15 @@
-from typing import List
-
+from api.queries import Query
 from api.mutations import Mutation
-from api.types import EdgeType, NodeType, UserType
+from strawberry.schema.config import StrawberryConfig
 from strawberry_django_plus import gql
 from strawberry_django_plus.optimizer import DjangoOptimizerExtension
 
 
-@gql.type
-class Query:
-    node: List[NodeType] = gql.django.field()
-    edge: List[EdgeType] = gql.django.field()
-    user: List[UserType] = gql.django.field()
-
-
 schema = gql.Schema(
-    Query,
-    # Mutation,
+    query=Query,
+    mutation=Mutation,
     extensions=[
         DjangoOptimizerExtension,
     ],
+    config=StrawberryConfig(auto_camel_case=False),
 )
