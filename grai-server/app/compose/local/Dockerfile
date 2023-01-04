@@ -41,13 +41,10 @@ RUN poetry config virtualenvs.create false  \
 
 COPY . .
 
-COPY ./compose/local/entrypoint.sh /entrypoint
-RUN sed -i 's/\r$//g' /entrypoint
-RUN chmod +x /entrypoint
+COPY ./compose/local/entrypoint.sh /entrypoint.sh
+RUN sed -i 's/\r$//g' /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-COPY ./compose/local/start.sh /start
-RUN sed -i 's/\r$//g' /start
-RUN chmod +x /start
 
 COPY ./compose/local/worker.sh /start-celeryworker
 RUN sed -i 's/\r$//g' /start-celeryworker
@@ -57,8 +54,5 @@ RUN chmod +x /start-celeryworker
 # RUN sed -i 's/\r$//g' /start-celerybeat
 # RUN chmod +x /start-celerybeat
 
-COPY ./compose/local/flower.sh /start-flower
-RUN sed -i 's/\r$//g' /start-flower
-RUN chmod +x /start-flower
-
-ENTRYPOINT ["/entrypoint"]
+ENTRYPOINT ["/entrypoint.sh"]
+CMD gunicorn the_guide.wsgi -b 0.0.0.0:8000 -w 2

@@ -33,7 +33,6 @@ services:
       timeout: 5s
       retries: 10
       start_period: 20s
-    command: /start
 
   frontend:
     build: ../grai-frontend
