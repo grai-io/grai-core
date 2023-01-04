@@ -14,9 +14,9 @@ class CustomUserAdmin(admin.ModelAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = User
-    list_display = ('username', 'first_name', 'last_name', 'is_staff', 'is_superuser')
-    list_filter = ('is_staff', 'is_superuser')
-    search_fields = ['username', 'first_name', "last_name"]
+    list_display = ("username", "first_name", "last_name", "is_staff", "is_superuser")
+    list_filter = ("is_staff", "is_superuser")
+    search_fields = ["username", "first_name", "last_name"]
 
 
 admin.site.unregister(Group)

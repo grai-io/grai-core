@@ -4,14 +4,21 @@ from .models import Edge, Node
 
 
 class NodeAdmin(admin.ModelAdmin):
-    @admin.display(description='Name')
+    @admin.display(description="Name")
     def final_name(self, obj):
         return obj.display_name or obj.name
 
-    list_display = ('id', 'namespace', 'final_name', "data_source", "workspace", 'is_active')
+    list_display = (
+        "id",
+        "namespace",
+        "final_name",
+        "data_source",
+        "workspace",
+        "is_active",
+    )
 
     search_fields = ["id", "namespace", "name", "display_name", "data_source"]
-    
+
     list_filter = (
         "namespace",
         "is_active",
@@ -21,14 +28,21 @@ class NodeAdmin(admin.ModelAdmin):
 
 
 class EdgeAdmin(admin.ModelAdmin):
-    @admin.display(description='Name')
+    @admin.display(description="Name")
     def final_name(self, obj):
         return obj.display_name or obj.name
-  
-    list_display = ('id', 'namespace', 'final_name', "data_source", "workspace", 'is_active')
-  
+
+    list_display = (
+        "id",
+        "namespace",
+        "final_name",
+        "data_source",
+        "workspace",
+        "is_active",
+    )
+
     search_fields = ["id", "namespace", "name", "display_name", "data_source"]
-    
+
     list_filter = (
         "namespace",
         "is_active",
@@ -37,8 +51,6 @@ class EdgeAdmin(admin.ModelAdmin):
         ("source", admin.RelatedOnlyFieldListFilter),
         ("destination", admin.RelatedOnlyFieldListFilter),
     )
-
-    
 
 
 admin.site.register(Node, NodeAdmin)

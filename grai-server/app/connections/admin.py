@@ -3,17 +3,23 @@ from .models import Connector, Connection
 
 
 class ConnectorAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'is_active')
+    list_display = ("id", "name", "is_active")
 
     search_fields = ["id", "name"]
 
-    list_filter = (
-        "is_active",
-    )
+    list_filter = ("is_active",)
 
 
 class ConnectionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'connector', 'workspace', 'namespace', 'is_active', 'created_by')
+    list_display = (
+        "id",
+        "name",
+        "connector",
+        "workspace",
+        "namespace",
+        "is_active",
+        "created_by",
+    )
 
     search_fields = ["id", "namespace", "name"]
     list_filter = (
