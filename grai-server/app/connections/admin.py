@@ -32,11 +32,21 @@ class ConnectionAdmin(admin.ModelAdmin):
 
 
 class RunAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "connection",
+        "status",
+        "workspace",
+        "started_at",
+        "user",
+    )
+
     search_fields = ["id"]
 
     list_filter = (
         "status",
         ("connection", admin.RelatedOnlyFieldListFilter),
+        "workspace",
     )
 
 
