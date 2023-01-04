@@ -196,7 +196,7 @@ class Connection:
 class WorkspaceFilter:
     id: auto
     name: FilterLookup[str]
-    memberships: FilterLookup['MembershipFilter']
+    memberships: FilterLookup["MembershipFilter"]
 
 
 @strawberry_django.ordering.order(WorkspaceModel)
