@@ -13,7 +13,7 @@ on:
       - master
 
 env:
-  dockerfile_path: ./grai-server/app
+  dockerfile_path: ./grai-server/app/compose/local
 
 jobs:
   build:
@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # OR "2" -> To retrieve the preceding commit.
+          fetch-depth: 0 # OR "2" -> To retrieve the preceding commit.
 
       - name: Get changed files in grai-server
         id: changed-files-specific
