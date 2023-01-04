@@ -1,1 +1,1 @@
-from grai_client.schemas import edge, node, schema, utilities
+from grai_client.schemas import edge, node, schema, utilities, workspace
