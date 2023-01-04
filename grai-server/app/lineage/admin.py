@@ -6,7 +6,7 @@ from .models import Edge, Node
 class NodeAdmin(admin.ModelAdmin):
     @admin.display(description="Name")
     def final_name(self, obj):
-        return obj.display_name or obj.name
+        return obj.display_name if obj.display_name else obj.name
 
     list_display = (
         "id",
@@ -30,7 +30,7 @@ class NodeAdmin(admin.ModelAdmin):
 class EdgeAdmin(admin.ModelAdmin):
     @admin.display(description="Name")
     def final_name(self, obj):
-        return obj.display_name or obj.name
+        return obj.display_name if obj.display_name else obj.name
 
     list_display = (
         "id",
