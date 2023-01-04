@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import React from "react"
-import { render, renderWithRouter, screen, waitFor } from "testing"
+import { renderWithRouter, screen, waitFor } from "testing"
 import ProfileMenu from "./ProfileMenu"
 
 test("renders", async () => {
