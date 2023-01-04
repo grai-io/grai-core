@@ -4,6 +4,7 @@ FROM python:3.11-slim-buster AS build
 LABEL org.opencontainers.image.source="https://github.com/grai-io/grai-core"
 
 WORKDIR /usr/src/app
+
 ARG PYTHONDONTWRITEBYTECODE="1" \
     PYTHONUNBUFFERED="1" \
     OUR_ENV="${YOUR_ENV}" \
@@ -36,6 +37,24 @@ RUN poetry config virtualenvs.create false  \
 
 COPY . .
 
-RUN chmod +x /usr/src/app/entrypoint.sh
-ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
-CMD gunicorn the_guide.wsgi -b 0.0.0.0:8000 -w 2
+COPY ./compose/local/entrypoint.sh /entrypoint
+RUN sed -i 's/\r$//g' /entrypoint
+RUN chmod +x /entrypoint
+
+COPY ./compose/local/start.sh /start
+RUN sed -i 's/\r$//g' /start
+RUN chmod +x /start
+
+COPY ./compose/local/worker.sh /start-celeryworker
+RUN sed -i 's/\r$//g' /start-celeryworker
+RUN chmod +x /start-celeryworker
+
+# COPY ./compose/local/django/celery/beat/start /start-celerybeat
+# RUN sed -i 's/\r$//g' /start-celerybeat
+# RUN chmod +x /start-celerybeat
+
+COPY ./compose/local/flower.sh /start-flower
+RUN sed -i 's/\r$//g' /start-flower
+RUN chmod +x /start-flower
+
+ENTRYPOINT ["/entrypoint"]

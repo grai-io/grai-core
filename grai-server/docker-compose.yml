@@ -3,7 +3,9 @@ version: "3.7"
 services:
   the_guide:
     # image: ghcr.io/grai-io/grai-core/grai-server:latest
-    build: ./app
+    build:
+      context: ./app
+      dockerfile: ./compose/local/Dockerfile
     volumes:
       - ./app/:/usr/src/app/
     ports:
@@ -20,12 +22,28 @@ services:
       - SERVER_HOST=localhost
       - FRONTEND_HOST=localhost
       - FRONTEND_URL=http://localhost:3000
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+      - db
     healthcheck:
       test: "curl -f -v -H 'Accept: application/json' http://localhost:8000/health/"
       interval: 2s
       timeout: 5s
       retries: 10
       start_period: 20s
+    command: /start
+
+  frontend:
+    build: ../grai-frontend
+    ports:
+      - 3000:80
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+    depends_on:
+      - the_guide
+
   db:
     image: postgres:14.3-alpine
     environment:
@@ -39,14 +57,32 @@ services:
       interval: 2s
       timeout: 2s
       retries: 15
-  frontend:
-    build: ../grai-frontend
-    ports:
-      - 3000:80
-    environment:
-      - REACT_APP_API_URL=http://localhost:8000
+
   redis:
-    image: redis
+    image: redis:7-alpine
     restart: always
     ports:
       - "6379:6379"
+
+  celery_worker:
+    build:
+      context: ./app
+      dockerfile: ./compose/local/Dockerfile
+    # image: django_celery_example_celery_worker
+    command: /start-celeryworker
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - db
+
+  flower:
+    image: mher/flower
+    ports:
+      - 5557:5555
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+
+    depends_on:
+      - redis
+      - db
