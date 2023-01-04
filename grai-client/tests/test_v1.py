@@ -30,6 +30,13 @@ def test_post_node():
     assert isinstance(result, NodeV1)
 
 
+def test_post_node_with_payload_options():
+    test_node = mock_v1_node()
+    options = {"payload": {"is_active": False}}
+    result = client.post(test_node, options=options)
+    assert result.spec.is_active is False
+
+
 def test_post_edge():
     test_edge, test_nodes = mock_v1_edge_and_nodes()
     client.post(test_nodes)

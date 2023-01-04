@@ -3,7 +3,8 @@ on:
   pull_request:
     paths:
     - "grai-integrations/source-flat-file/**"
-
+    - "grai-client/**"
+    - "grai-server/**"
 env:
   py_ver: "3.10"
   poetry_ver: "1.2.2"
