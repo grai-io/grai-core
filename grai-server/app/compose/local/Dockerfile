@@ -5,6 +5,8 @@ LABEL org.opencontainers.image.source="https://github.com/grai-io/grai-core"
 
 WORKDIR /usr/src/app
 
+ENV PATH=$PATH:/root/.cargo/bin
+
 ARG PYTHONDONTWRITEBYTECODE="1" \
     PYTHONUNBUFFERED="1" \
     OUR_ENV="${YOUR_ENV}" \
@@ -26,6 +28,8 @@ RUN apt update \
     gcc \
     curl \
     && rm -rf /var/lib/apt/lists/*
+
+RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
 
 COPY pyproject.toml poetry.lock ./
 
