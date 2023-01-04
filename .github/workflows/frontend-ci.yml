@@ -1,9 +1,9 @@
-name: "Frontend CI"
+name: Grai Frontend CI
 
 on:
   push:
     paths:
-      - ".github/workflows/frontend-pr.yml"
+      - ".github/workflows/frontend-ci.yml"
       - "grai-frontend/**"
 
 jobs:
@@ -26,3 +26,5 @@ jobs:
         run: npm test -- --coverage
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
+        with:
+          flags: grai-frontend

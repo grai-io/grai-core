@@ -1,12 +1,16 @@
 name: Grai Server CI
+
 on:
-  pull_request:
+  push:
     paths:
+      - ".github/workflows/server-ci.yml"
       - "grai-server/**"
+
 env:
   py_ver: "3.11"
   poetry_ver: "1.3.1"
   SECRET_KEY: "fixed-test-key-that-doesnt-matter"
+
 jobs:
   lint-server:
     runs-on: ubuntu-latest
@@ -31,9 +35,11 @@ jobs:
   tests-server:
     needs: lint-server
     runs-on: ubuntu-latest
+
     defaults:
       run:
         working-directory: ./grai-server/app
+
     services:
       postgres:
         image: postgres:latest
@@ -73,3 +79,5 @@ jobs:
 
       - name: Upload Coverage to Codecov
         uses: codecov/codecov-action@v2
+        with:
+          flags: grai-server
