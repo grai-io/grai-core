@@ -1,12 +1,32 @@
 import abc
-import json
-from typing import Any, Dict, List, Optional, Sequence, Union
+import sys
+from typing import Any, Dict, List, Optional, Sequence, TypeVar, Union
+from uuid import UUID
 
 import requests
 from grai_client.authentication import APIKeyHeader, UserNameHeader, UserTokenHeader
+from grai_client.endpoints.rest import delete, get, patch, post
 from grai_client.endpoints.utilities import response_status_check, serialize_obj
 from grai_client.schemas.schema import GraiType
 from multimethod import multimethod
+from pydantic import BaseModel
+
+if sys.version_info < (3, 10):
+    from typing_extensions import ParamSpec
+else:
+    from typing import ParamSpec
+
+P = ParamSpec("P")
+R = TypeVar("R", covariant=True)
+T = TypeVar("T")
+OptionType = Optional[Union[Dict, "ClientOptions"]]
+ResultTypes = Union[Optional[GraiType], Sequence[Optional[GraiType]]]
+
+
+class ClientOptions(BaseModel):
+    payload: Dict = {}
+    request_args: Dict = {}
+    headers: Dict = {}
 
 
 class BaseClient(abc.ABC):
@@ -16,15 +36,29 @@ class BaseClient(abc.ABC):
         self.host = host
         self.port = port
 
+        self.default_payload = {}
+        self.default_headers = {}
+        self.default_request_args = {}
+        self.session = requests.Session()
+
         prefix = "https" if self.port == "443" else "http"
         self.url = f"{prefix}://{self.host}:{self.port}"
         self.api = f"{self.url}"
-        self._auth_headers = None
+        self._auth_headers: Optional[Dict[str, str]] = None
 
         if not self.check_server_status():
             raise Exception(f"Server at {self.url} is not responding.")
 
-    def check_server_status(self):
+    def default_options(self):
+        return ClientOptions(
+            **{
+                "payload": self.default_payload,
+                "headers": self.default_headers,
+                "request_args": self.default_request_args,
+            }
+        )
+
+    def check_server_status(self) -> bool:
         resp = requests.get(f"{self.url}/health/")
         return resp.status_code == 200
 
@@ -33,7 +67,7 @@ class BaseClient(abc.ABC):
 
     @property
     def auth_headers(self) -> Dict:
-        if not self._auth_headers:
+        if self._auth_headers is None:
             raise Exception(
                 "Client not authenticated. Please call `set_authentication_headers` with your credentials first"
             )
@@ -45,19 +79,20 @@ class BaseClient(abc.ABC):
         password: Optional[str] = None,
         token: Optional[str] = None,
         api_key: Optional[str] = None,
-    ):
+    ) -> None:
         if username and password:
-            self._auth_headers = UserNameHeader(username, password, self.url).headers
+            self.session.auth = (username, password)
+            self._auth_headers = {}
         elif token:
             self._auth_headers = UserTokenHeader(token).headers
         elif api_key:
             self._auth_headers = APIKeyHeader(api_key).headers
         else:
             raise Exception(
-                "Authentication requires either a user token, api key, or username/password combo."
+                "Authentication requires either a user token, api key, or username/password combination."
             )
 
-    def check_authentication(self):
+    def check_authentication(self) -> requests.Response:
         raise NotImplementedError(f"No authentication implemented for {type(self)}")
 
     @multimethod
@@ -66,120 +101,145 @@ class BaseClient(abc.ABC):
             f"No url method implemented for type {type(grai_type)}"
         )
 
-    @multimethod
-    def get(self, grai_type: Any) -> Dict:
-        raise NotImplementedError(
-            f"No get method implemented for type {type(grai_type)}"
-        )
+    def prep_options(self, options: OptionType = None) -> ClientOptions:
+        default_options = self.default_options()
+        if options is None:
+            options = default_options
+        if isinstance(options, ClientOptions):
+            default_options.payload |= options.payload
+            default_options.headers |= options.headers
+            default_options.request_args |= options.request_args
+        elif isinstance(options, Dict):
+            default_options.payload |= options.get("payload", {})
+            default_options.headers |= options.get("headers", {})
+            default_options.request_args |= options.get("request_args", {})
+        else:
+            raise NotImplementedError(f"Unrecognized options type: {type(options)}")
 
-    @multimethod
-    def post(self, grai_type: Any) -> Dict:
-        raise NotImplementedError(
-            f"No post method implemented for type {type(grai_type)}"
-        )
+        return default_options
 
-    @multimethod
-    def patch(self, grai_type: Any) -> Dict:
-        raise NotImplementedError(
-            f"No patch method implemented for type {type(grai_type)}"
-        )
+    def get(self, *args, options: OptionType = None, **kwargs):
+        options = self.prep_options(options)
+        return get(self, *args, options=options, **kwargs)
 
-    @multimethod
-    def delete(self, grai_type: Any) -> Dict:
-        raise NotImplementedError(
-            f"No delete method implemented for type {type(grai_type)}"
-        )
+    def post(self, *args, options: OptionType = None, **kwargs):
+        options = self.prep_options(options)
+        return post(self, *args, options=options, **kwargs)
+
+    def patch(self, *args, options: OptionType = None, **kwargs):
+        options = self.prep_options(options)
+        return patch(self, *args, options=options, **kwargs)
+
+    def delete(self, *args, options: OptionType = None, **kwargs):
+        options = self.prep_options(options)
+        return delete(self, *args, options=options, **kwargs)
 
 
-@BaseClient.post.register
-def post_sequence(client: BaseClient, objs: Sequence) -> List[Dict]:
-    result = [client.post(obj) for obj in objs]
+@get.register
+def get_sequence(
+    client: BaseClient,
+    objs: Sequence,
+    options: ClientOptions = ClientOptions(),
+) -> Sequence[T]:
+    result = [client.get(obj, options=options) for obj in objs]
     return result
 
 
-@BaseClient.patch.register
-def patch_sequence(client: BaseClient, objs: Sequence) -> List[Dict]:
-    result = [client.patch(obj) for obj in objs]
-    return result
-
-
-@BaseClient.delete.register
-def delete_sequence(client: BaseClient, objs: Sequence[GraiType]):
+@delete.register
+def delete_sequence(
+    client: BaseClient,
+    objs: Sequence,
+    options: ClientOptions = ClientOptions(),
+) -> None:
     for obj in objs:
-        client.delete(obj)
+        client.delete(obj, options=options)
 
 
-@BaseClient.get.register
-def get_sequence(client: BaseClient, objs: Sequence) -> List[Dict]:
-    result = [client.get(obj) for obj in objs]
+@post.register
+def post_sequence(
+    client: BaseClient,
+    objs: Sequence,
+    options: ClientOptions = ClientOptions(),
+) -> List[T]:
+    result = [client.post(obj, options=options) for obj in objs]
     return result
 
 
-@BaseClient.get.register
-def get_url_v1(client: BaseClient, url: str) -> requests.Response:
-    response = requests.get(url, headers=client.auth_headers)
-    response_status_check(response)
-    return response
-
-
-@BaseClient.delete.register
-def delete_url_v1(client: BaseClient, url: str) -> requests.Response:
-    response = requests.delete(url, headers=client.auth_headers)
-    response_status_check(response)
-    return response
-
-
-@BaseClient.post.register
-def post_sequence(client: BaseClient, objs: Sequence) -> List[Dict]:
-    result = [client.post(obj) for obj in objs]
+@patch.register
+def patch_sequence(
+    client: BaseClient,
+    objs: Sequence,
+    options: ClientOptions = ClientOptions(),
+) -> List[T]:
+    result = [client.patch(obj, options=options) for obj in objs]
     return result
 
 
-@BaseClient.patch.register
-def patch_sequence(client: BaseClient, objs: Sequence) -> List[Dict]:
-    result = [client.patch(obj) for obj in objs]
-    return result
+# -------------------------------------------- #
 
 
-@BaseClient.delete.register
-def delete_sequence(client: BaseClient, objs: Sequence[GraiType]):
-    for obj in objs:
-        client.delete(obj)
+@get.register
+def client_get_url(
+    client: BaseClient, url: str, options: ClientOptions = ClientOptions()
+) -> requests.Response:
+    headers = {**client.auth_headers, **options.headers}
 
-
-@BaseClient.get.register
-def get_sequence(client: BaseClient, objs: Sequence) -> List[Dict]:
-    result = [client.get(obj) for obj in objs]
-    return result
-
-
-@BaseClient.get.register
-def get_url_v1(client: BaseClient, url: str) -> requests.Response:
-    response = requests.get(url, headers=client.auth_headers)
+    response = client.session.get(url, headers=headers, **options.request_args)
     response_status_check(response)
     return response
 
 
-@BaseClient.delete.register
-def delete_url_v1(client: BaseClient, url: str) -> requests.Response:
-    response = requests.delete(url, headers=client.auth_headers)
+@delete.register
+def client_delete_url(
+    client: BaseClient, url: str, options: ClientOptions = ClientOptions()
+) -> requests.Response:
+    headers = {**client.auth_headers, **options.headers}
+
+    response = client.session.delete(url, headers=headers, **options.request_args)
     response_status_check(response)
     return response
 
 
-@BaseClient.patch.register
-def patch_url_v1(client: BaseClient, url: str, payload: Dict) -> requests.Response:
-    headers = {**client.auth_headers, "Content-Type": "application/json"}
-    response = requests.patch(url, data=serialize_obj(payload), headers=headers)
+@post.register
+def client_post_url(
+    client: BaseClient,
+    url: str,
+    payload: Dict,
+    options: ClientOptions = ClientOptions(),
+) -> requests.Response:
+    headers = client.auth_headers
+    headers = {
+        **client.auth_headers,
+        "Content-Type": "application/json",
+        **options.headers,
+    }
+    payload = {**payload, **options.payload}
+
+    response = client.session.post(
+        url, data=serialize_obj(payload), headers=headers  # , **options.request_args
+    )
 
     response_status_check(response)
     return response
 
 
-@BaseClient.post.register
-def post_url_v1(client: BaseClient, url: str, payload: Dict) -> requests.Response:
-    headers = {**client.auth_headers, "Content-Type": "application/json"}
+@patch.register
+def client_patch_url(
+    client: BaseClient,
+    url: str,
+    payload: Dict,
+    options: ClientOptions = ClientOptions(),
+) -> requests.Response:
+    headers = {
+        **client.auth_headers,
+        "Content-Type": "application/json",
+        **options.headers,
+    }
+    payload = {**payload, **options.payload}
 
-    response = requests.post(url, data=serialize_obj(payload), headers=headers)
+    response = client.session.patch(
+        url, data=serialize_obj(payload), headers=headers, **options.request_args
+    )
+
     response_status_check(response)
     return response

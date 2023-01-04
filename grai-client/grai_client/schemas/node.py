@@ -55,6 +55,6 @@ class NodeV2(BaseNode):
         raise NotImplementedError()
 
 
-NodeLabels = Literal["nodes", "node", "Node", "Nodes"]
+NodeLabels = Literal["node", "nodes", "Node", "Nodes"]
 NodeTypes = Union[NodeV1, NodeV2]
 Node = Annotated[NodeTypes, Field(discriminator="version")]

@@ -16,7 +16,7 @@ services:
       - DB_PASSWORD=grai
       - DJANGO_SUPERUSER_USERNAME=null@grai.io
       - DJANGO_SUPERUSER_PASSWORD=super_secret
-      - DJANGO_SUPERUSER_WORKSPACE=Workspace1
+      - DJANGO_SUPERUSER_WORKSPACE=default
       - SERVER_HOST=localhost
       - FRONTEND_HOST=localhost
       - FRONTEND_URL=http://localhost:3000

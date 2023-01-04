@@ -1,19 +1,19 @@
 [tool.poetry]
-name = "grai_source_mysql"
-version = "0.0.2"
+name = "grai_source_snowflake"
+version = "0.0.1"
 description = ""
 authors = ["Tony Lewis <tony@grai.io>"]
 license = "ELv2"
 packages = [
-    { include = "grai_source_mysql", from = "src" },
+    { include = "grai_source_snowflake", from = "src" },
 ]
 [tool.poetry.dependencies]
 python = "^3.8"
 pydantic = "^1.9.1"
-grai-client = "^0.1.15"
+grai-client = "^0.1.3"
 PyYAML = "^6.0"
 multimethod = "^1.8"
-mysql-connector-python = "^8.0.31"
+snowflake-connector-python = "^2.8.3"
 
 [tool.poetry.group.dev.dependencies]
 black = "^22.6.0"
