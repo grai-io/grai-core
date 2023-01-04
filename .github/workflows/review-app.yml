@@ -112,6 +112,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: grai-server/app
+          file: compose/local/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
