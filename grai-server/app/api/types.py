@@ -12,6 +12,7 @@ from workspaces.models import (
     WorkspaceAPIKey as WorkspaceAPIKeyModel,
 )
 import strawberry
+import strawberry_django
 from lineage.models import Edge, Node
 from strawberry.scalars import JSON
 from strawberry_django_plus.gql import auto
@@ -164,7 +165,13 @@ class BasicResult:
     success: bool
 
 
-@strawberry.django.type(RunModel)
+@strawberry_django.ordering.order(RunModel)
+class RunOrder:
+    id: auto
+    created_at: auto
+
+
+@strawberry.django.type(RunModel, order=RunOrder, pagination=True)
 class Run:
     id: auto
     connection: Connection

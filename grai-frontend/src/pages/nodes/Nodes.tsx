@@ -7,6 +7,7 @@ import { GetNodes, GetNodesVariables } from "./__generated__/GetNodes"
 import { useParams } from "react-router-dom"
 import { Box } from "@mui/material"
 import GraphError from "components/utils/GraphError"
+import { nodeIsTable } from "helpers/graph"
 
 export const GET_NODES = gql`
   query GetNodes($workspaceId: ID!) {
@@ -56,7 +57,7 @@ const Nodes: React.FC = () => {
 
   const handleRefresh = () => refetch()
 
-  const tables = nodes.filter(node => node.metadata.node_type === "Table")
+  const tables = nodes.filter(nodeIsTable)
 
   const filteredNodes = search
     ? tables.filter(node =>

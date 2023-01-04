@@ -51,7 +51,7 @@ const GET_CONNECTION = gql`
             last_name
           }
         }
-        runs {
+        runs(order: { created_at: DESC }) {
           id
           status
           created_at

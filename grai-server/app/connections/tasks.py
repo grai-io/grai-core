@@ -1,6 +1,12 @@
+from typing import Dict, List, Optional, TypeVar
+
 from .models import Run
 from celery import shared_task
 from datetime import datetime
+from grai_client.schemas.edge import Edge, EdgeV1
+from grai_client.schemas.node import Node, NodeV1, NodeID
+
+from .task_helpers import update
 
 
 @shared_task
@@ -33,30 +39,26 @@ def run_update_server(runId):
         run.finished_at = datetime.now()
         run.save()
 
+        raise e
+
 
 def run_postgres(run):
-    from grai_client.endpoints.v1.client import ClientV1
-
-    # TODO: update this to point to self
-    client = ClientV1("localhost", "8000", workspace=run.workspace.id)
-    # TODO: update this to use current user
-    client.set_authentication_headers(username="null@grai.io", password="super_secret")
-    # client.set_authentication_headers(api_key='qBzzVcCT.sVPZ3yVrv4e7oA9yzEtdrc1HwAOmLlsa')
-
-    from grai_source_postgres.base import update_server
+    from grai_source_postgres.base import get_nodes_and_edges
+    from grai_source_postgres.loader import PostgresConnector
 
     metadata = run.connection.metadata
     secrets = run.connection.secrets
 
-    update_server(
-        client,
+    conn = PostgresConnector(
         host=metadata["host"],
         port=metadata["port"],
         dbname=metadata["dbname"],
         user=metadata["user"],
         password=secrets["password"],
-        namespace=run.connection.namespace,
     )
+    nodes, edges = get_nodes_and_edges(conn, "v1")
+    update(run.workspace, nodes)
+    update(run.workspace, edges)
 
 
 class NoConnectorError(Exception):
