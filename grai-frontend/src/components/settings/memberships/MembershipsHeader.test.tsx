@@ -1,7 +1,6 @@
 import userEvent from "@testing-library/user-event"
-import { GraphQLError } from "graphql"
 import React from "react"
-import { renderWithMocks, renderWithRouter, screen, waitFor } from "testing"
+import { renderWithRouter, screen, waitFor } from "testing"
 import MembershipsHeader from "./MembershipsHeader"
 
 test("renders", async () => {

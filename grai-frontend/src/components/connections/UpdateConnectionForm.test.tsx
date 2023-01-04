@@ -1,14 +1,7 @@
 import userEvent from "@testing-library/user-event"
 import { GET_CONNECTORS } from "components/form/fields/Connector"
 import React from "react"
-import {
-  fireEvent,
-  renderWithMocks,
-  renderWithRouter,
-  screen,
-  waitFor,
-  within,
-} from "testing"
+import { renderWithMocks, renderWithRouter, screen } from "testing"
 import UpdateConnectionForm, { UPDATE_CONNECTION } from "./UpdateConnectionForm"
 
 const connection = {
