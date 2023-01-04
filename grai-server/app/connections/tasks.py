@@ -55,7 +55,7 @@ def run_postgres(run):
         dbname=metadata["dbname"],
         user=metadata["user"],
         password=secrets["password"],
-        namespace="test",
+        namespace=run.connection.namespace,
     )
 
 
