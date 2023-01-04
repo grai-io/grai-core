@@ -11,7 +11,7 @@ env:
   project_dir: "grai-integrations/source-snowflake"
 
 jobs:
-  lint-integration-postgres:
+  lint-integration-snowflake:
     runs-on: ubuntu-latest
     defaults:
       run:
