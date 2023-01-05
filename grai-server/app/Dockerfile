@@ -39,20 +39,19 @@ RUN poetry config virtualenvs.create false  \
     && rm -rf ~/.cache/pypoetry/cache \
     && rm -rf ~/.cache/pypoetry/artifacts
 
+COPY ./worker.sh /start-celeryworker
+RUN sed -i 's/\r$//g' /start-celeryworker \
+    && chmod +x /start-celeryworker
+
+# COPY ./beat.sh /usr/src/app/start-celerybeat
+# RUN sed -i 's/\r$//g' /start-celerybeat \
+    # && chmod +x /start-celerybeat
+
+COPY ./entrypoint.sh /usr/src/app/entrypoint.sh
+RUN sed -i 's/\r$//g' /usr/src/app/entrypoint.sh \
+    && chmod +x /usr/src/app/entrypoint.sh
+
 COPY . .
 
-COPY ./compose/local/entrypoint.sh /entrypoint.sh
-RUN sed -i 's/\r$//g' /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
-
-COPY ./compose/local/worker.sh /start-celeryworker
-RUN sed -i 's/\r$//g' /start-celeryworker
-RUN chmod +x /start-celeryworker
-
-# COPY ./compose/local/django/celery/beat/start /start-celerybeat
-# RUN sed -i 's/\r$//g' /start-celerybeat
-# RUN chmod +x /start-celerybeat
-
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
 CMD gunicorn the_guide.wsgi -b 0.0.0.0:8000 -w 2
