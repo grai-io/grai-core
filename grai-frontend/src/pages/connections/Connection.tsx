@@ -30,6 +30,7 @@ const GET_CONNECTION = gql`
         last_run {
           id
           status
+          created_at
           started_at
           finished_at
           metadata
@@ -42,6 +43,7 @@ const GET_CONNECTION = gql`
         last_successful_run {
           id
           status
+          created_at
           started_at
           finished_at
           metadata

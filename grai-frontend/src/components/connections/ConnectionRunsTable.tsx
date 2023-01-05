@@ -5,9 +5,16 @@ import {
   TableCell,
   TableBody,
   Typography,
+  Tooltip,
 } from "@mui/material"
 import React from "react"
 import theme from "theme"
+import {
+  durationAgo,
+  runDurationString,
+  runQueuedString,
+} from "helpers/runDuration"
+import { DateTime } from "luxon"
 
 interface User {
   id: string
@@ -19,7 +26,9 @@ interface Run {
   id: string
   user: User | null
   status: string
-  started_at: string
+  created_at: string
+  started_at: string | null
+  finished_at: string | null
 }
 
 type ConnectionRunsTableProps = {
@@ -34,9 +43,9 @@ const ConnectionRunsTable: React.FC<ConnectionRunsTableProps> = ({ runs }) => (
         <TableCell>id</TableCell>
         <TableCell>User</TableCell>
         <TableCell>Status</TableCell>
-        <TableCell>Started</TableCell>
-        <TableCell>Queued</TableCell>
-        <TableCell>Duration</TableCell>
+        <TableCell sx={{ textAlign: "right" }}>Started</TableCell>
+        <TableCell sx={{ textAlign: "right" }}>Queued</TableCell>
+        <TableCell sx={{ textAlign: "right" }}>Duration</TableCell>
         <TableCell />
       </TableRow>
     </TableHead>
@@ -49,9 +58,23 @@ const ConnectionRunsTable: React.FC<ConnectionRunsTableProps> = ({ runs }) => (
           <TableCell sx={{ pl: 1 }}>{run.id.slice(0, 6)}</TableCell>
           <TableCell>{run.user?.first_name}</TableCell>
           <TableCell>{run.status}</TableCell>
-          <TableCell>{run.started_at}</TableCell>
-          <TableCell />
-          <TableCell />
+          <TableCell sx={{ textAlign: "right" }}>
+            <Tooltip
+              title={DateTime.fromISO(run.created_at).toLocaleString(
+                DateTime.DATETIME_FULL_WITH_SECONDS
+              )}
+            >
+              <Typography variant="body2">
+                {durationAgo(run.created_at)} ago
+              </Typography>
+            </Tooltip>
+          </TableCell>
+          <TableCell sx={{ textAlign: "right" }}>
+            {runQueuedString(run)}
+          </TableCell>
+          <TableCell sx={{ textAlign: "right" }}>
+            {runDurationString(run)}
+          </TableCell>
           <TableCell />
         </TableRow>
       ))}

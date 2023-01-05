@@ -25,7 +25,9 @@ interface Run {
   id: string
   user: User | null
   status: string
-  started_at: string
+  created_at: string
+  started_at: string | null
+  finished_at: string | null
 }
 
 interface Connection {

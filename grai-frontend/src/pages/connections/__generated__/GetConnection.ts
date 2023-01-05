@@ -25,6 +25,7 @@ export interface GetConnection_workspace_connection_last_run {
   __typename: "Run";
   id: any;
   status: string;
+  created_at: any;
   started_at: any | null;
   finished_at: any | null;
   metadata: any;
@@ -42,6 +43,7 @@ export interface GetConnection_workspace_connection_last_successful_run {
   __typename: "Run";
   id: any;
   status: string;
+  created_at: any;
   started_at: any | null;
   finished_at: any | null;
   metadata: any;

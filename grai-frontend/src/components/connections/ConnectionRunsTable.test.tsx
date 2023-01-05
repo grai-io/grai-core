@@ -14,7 +14,9 @@ const runs = [
       last_name: "test",
     },
     status: "success",
+    created_at: "1234",
     started_at: "1234",
+    finished_at: null,
   },
 ]
 
