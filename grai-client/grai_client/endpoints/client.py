@@ -59,7 +59,7 @@ class BaseClient(abc.ABC):
         )
 
     def check_server_status(self) -> bool:
-        resp = requests.get(f"{self.url}/health/")
+        resp = self.session.get(f"{self.url}/health/", timeout=30)
         return resp.status_code == 200
 
     def build_url(self, endpoint: str) -> str:
