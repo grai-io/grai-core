@@ -8,11 +8,10 @@ import {
 } from "@mui/material"
 import React from "react"
 import HomeCards from "components/home/HomeCards"
-import AppTopBar from "components/layout/AppTopBar"
+import PageLayout from "components/layout/PageLayout"
 
 const Home: React.FC = () => (
-  <>
-    <AppTopBar />
+  <PageLayout>
     <Container maxWidth="lg" sx={{ textAlign: "center" }}>
       <Box sx={{ mt: 15 }}>
         <img src="/logo512.png" width="75px" height="75px" alt="logo" />
@@ -34,7 +33,7 @@ const Home: React.FC = () => (
       />
       <HomeCards />
     </Container>
-  </>
+  </PageLayout>
 )
 
 export default Home
