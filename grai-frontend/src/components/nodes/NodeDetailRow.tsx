@@ -6,12 +6,14 @@ type NodeDetailRowProps = {
   label: string
   value?: string
   children?: ReactNode
+  right?: boolean
 }
 
 const NodeDetailRow: React.FC<NodeDetailRowProps> = ({
   label,
   value,
   children,
+  right,
 }) => (
   <TableRow>
     <TableCell
@@ -27,7 +29,7 @@ const NodeDetailRow: React.FC<NodeDetailRowProps> = ({
         {label}
       </Typography>
     </TableCell>
-    <TableCell>
+    <TableCell sx={{ textAlign: right ? "right" : undefined }}>
       {value && <Typography variant="body2">{value}</Typography>}
       {children}
     </TableCell>

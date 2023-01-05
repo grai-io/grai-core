@@ -34,7 +34,7 @@ def run_update_server(runId):
         run.finished_at = datetime.now()
         run.save()
     except Exception as e:
-        run.metadata = str(e)
+        run.metadata = {"error": str(e)}
         run.status = "error"
         run.finished_at = datetime.now()
         run.save()

@@ -7,6 +7,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material"
+import RunStatus from "components/runs/RunStatus"
 import React from "react"
 import { Link, useParams } from "react-router-dom"
 import ConnectionRefresh from "./ConnectionRefresh"
@@ -54,6 +55,9 @@ const ConnectionHeader: React.FC<ConnectionHeaderProps> = ({ connection }) => {
               <ContentCopy sx={{ fontSize: 15 }} />
             </IconButton>
           </Tooltip>
+          {connection.last_run && (
+            <RunStatus run={connection.last_run} link sx={{ ml: 2 }} />
+          )}
         </Box>
         <ConnectionRefresh connection={connection} />
       </Box>
