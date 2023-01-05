@@ -1,10 +1,14 @@
-import { Box, Chip, Stack, Typography } from "@mui/material"
+import { Box, Stack, Tooltip, Typography } from "@mui/material"
 import NodeDetailRow from "components/nodes/NodeDetailRow"
+import RunStatus from "components/runs/RunStatus"
+import { durationAgo } from "helpers/runDuration"
+import { DateTime } from "luxon"
 import React from "react"
 
 interface Run {
   id: string
   status: string
+  created_at: string
   started_at: string | null
 }
 
@@ -20,9 +24,17 @@ const ConnectionRunDetail: React.FC<ConnectionRunDetailProps> = ({
   <NodeDetailRow label={label}>
     {run && (
       <Stack spacing={1}>
-        <Typography variant="body2">{run?.started_at}</Typography>
+        <Tooltip
+          title={DateTime.fromISO(run.created_at).toLocaleString(
+            DateTime.DATETIME_FULL_WITH_SECONDS
+          )}
+        >
+          <Typography variant="body2">
+            Started {durationAgo(run.created_at)} ago
+          </Typography>
+        </Tooltip>
         <Box>
-          <Chip label={run?.status} />
+          <RunStatus run={run} size="small" link />
         </Box>
       </Stack>
     )}
