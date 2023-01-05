@@ -11,6 +11,9 @@ on:
   pull_request:
     branches:
       - master
+    paths:
+      - ".github/workflows/server-image-build.yml"
+      - "grai-server/**"
 
 env:
   dockerfile_path: ./grai-server/app
@@ -21,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # OR "2" -> To retrieve the preceding commit.
+          fetch-depth: 0 # OR "2" -> To retrieve the preceding commit.
 
       - name: Get changed files in grai-server
         id: changed-files-specific
