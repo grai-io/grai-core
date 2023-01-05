@@ -71,3 +71,29 @@ test("error", async () => {
     expect(screen.getByText("Error!")).toBeTruthy()
   })
 })
+
+test("no nodes", async () => {
+  const mock = {
+    request: {
+      query: GET_NODES_AND_EDGES,
+      variables: {
+        workspaceId: "",
+      },
+    },
+    result: {
+      data: {
+        workspace: {
+          id: "1",
+          nodes: null,
+          edges: null,
+        },
+      },
+    },
+  }
+
+  renderWithMocks(<Graph />, [mock])
+
+  await waitFor(() => {
+    expect(screen.getAllByText("No nodes found")).toBeTruthy()
+  })
+})

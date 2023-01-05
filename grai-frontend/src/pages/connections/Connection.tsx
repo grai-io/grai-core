@@ -11,7 +11,7 @@ import PageLayout from "components/layout/PageLayout"
 import ConnectionHeader from "components/connections/ConnectionHeader"
 import ConnectionContent from "components/connections/ConnectionContent"
 
-const GET_CONNECTION = gql`
+export const GET_CONNECTION = gql`
   query GetConnection($workspaceId: ID!, $connectionId: ID!) {
     workspace(pk: $workspaceId) {
       id
