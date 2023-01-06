@@ -24,6 +24,8 @@ class TestUpdateServer(TransactionTestCase):
         assert (
             str(e_info.value)
             == 'could not translate host name "a" to address: nodename nor servname provided, or not known\n'
+            or str(e_info.value)
+            == 'could not translate host name "a" to address: Temporary failure in name resolution\n'
         )
 
     def test_run_update_server_no_connector(self):
