@@ -1,7 +1,7 @@
 name: Grai Frontend CI
 
 on:
-  push:
+  pull_request:
     paths:
       - ".github/workflows/frontend-ci.yml"
       - "grai-frontend/**"
