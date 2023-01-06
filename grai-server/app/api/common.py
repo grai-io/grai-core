@@ -19,7 +19,7 @@ class IsAuthenticated(BasePermission):
         )
 
         if user.is_authenticated:
-            info.request.user = user
+            info.context.request.user = user
 
         return user.is_authenticated
 
