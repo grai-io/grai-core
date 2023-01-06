@@ -1,8 +1,6 @@
-import { Table, TableBody } from "@mui/material"
 import userEvent from "@testing-library/user-event"
 import React from "react"
-import { render, renderWithRouter, screen } from "testing"
-import ConnectionProperties from "./ConnectionProperties"
+import { renderWithRouter, screen } from "testing"
 import ConnectionRunsTable from "./ConnectionRunsTable"
 
 const runs = [
@@ -22,8 +20,27 @@ const runs = [
 
 test("renders", async () => {
   renderWithRouter(<ConnectionRunsTable runs={runs} />)
+
+  expect(screen.getByText("Success")).toBeTruthy()
 })
 
 test("renders empty", async () => {
   renderWithRouter(<ConnectionRunsTable runs={[]} />)
+
+  expect(screen.getByText("No runs found")).toBeTruthy()
+})
+
+test("row click", async () => {
+  const user = userEvent.setup()
+
+  const { container } = renderWithRouter(<ConnectionRunsTable runs={runs} />, {
+    routes: ["/workspaces/:workspaceId/runs/:runId"],
+  })
+
+  expect(screen.getByText("Success")).toBeTruthy()
+
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+  await user.click(container.querySelectorAll("tbody > tr")[0])
+
+  expect(screen.getByText("New Page")).toBeTruthy()
 })
