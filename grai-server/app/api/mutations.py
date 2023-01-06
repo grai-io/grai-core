@@ -17,7 +17,6 @@ from strawberry.scalars import JSON
 import strawberry
 from strawberry.types import Info
 from asgiref.sync import sync_to_async
-from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password
 from django.core.exceptions import PermissionDenied
@@ -25,11 +24,12 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.contrib.auth.tokens import default_token_generator
 from django.conf import settings
+from .common import get_user, IsAuthenticated
 
 
 @strawberry.type
 class Mutation:
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def createConnection(
         self,
         workspaceId: strawberry.ID,
@@ -50,7 +50,7 @@ class Mutation:
 
         return connection
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def updateConnection(
         self,
         id: strawberry.ID,
@@ -73,13 +73,11 @@ class Mutation:
 
         return connection
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def createApiKey(
         self, info: Info, name: str, workspaceId: strawberry.ID
     ) -> KeyResult:
-        user, _ = await sync_to_async(JWTAuthentication().authenticate)(
-            request=info.context.request
-        )
+        user = get_user()
 
         workspace = await WorkspaceModel.objects.aget(pk=workspaceId)
 
@@ -89,7 +87,7 @@ class Mutation:
 
         return KeyResult(key=key, api_key=api_key)
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def updateWorkspace(
         self,
         id: strawberry.ID,
@@ -101,7 +99,7 @@ class Mutation:
 
         return workspace
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def createMembership(
         self,
         workspaceId: strawberry.ID,
@@ -146,11 +144,9 @@ class Mutation:
 
         return membership
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def updateProfile(self, info: Info, first_name: str, last_name: str) -> User:
-        user, _ = await sync_to_async(JWTAuthentication().authenticate)(
-            request=info.context.request
-        )
+        user = get_user()
 
         user.first_name = first_name
         user.last_name = last_name
@@ -159,13 +155,11 @@ class Mutation:
 
         return user
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def updatePassword(
         self, info: Info, old_password: str, password: str
     ) -> User:
-        user, _ = await sync_to_async(JWTAuthentication().authenticate)(
-            request=info.context.request
-        )
+        user = get_user()
 
         if not check_password(old_password, user.password):
             raise PermissionDenied("Old password does not match")
