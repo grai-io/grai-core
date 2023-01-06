@@ -6,7 +6,6 @@ from workspaces.models import (
 )
 from api.types import (
     Connection,
-    Run,
     Workspace,
     KeyResult,
     Membership,
@@ -20,7 +19,6 @@ from strawberry.scalars import JSON
 import strawberry
 from strawberry.types import Info
 from asgiref.sync import sync_to_async
-from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password
 from django.core.exceptions import PermissionDenied
@@ -28,6 +26,7 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.contrib.auth.tokens import default_token_generator
 from django.conf import settings
+from .common import get_user, IsAuthenticated
 
 
 @strawberry.type
@@ -42,7 +41,7 @@ class Mutation:
         metadata: JSON,
         secrets: JSON,
     ) -> Connection:
-        connection = await sync_to_async(ConnectionModel.objects.create)(
+        connection = await ConnectionModel.objects.acreate(
             workspace_id=workspaceId,
             connector_id=connectorId,
             namespace=namespace,
@@ -62,7 +61,7 @@ class Mutation:
         metadata: JSON,
         secrets: JSON,
     ) -> Connection:
-        connection = await sync_to_async(ConnectionModel.objects.get)(pk=id)
+        connection = await ConnectionModel.objects.aget(pk=id)
 
         mergedSecrets = dict()
         mergedSecrets.update(connection.secrets)
@@ -82,9 +81,7 @@ class Mutation:
         info: Info,
         connectionId: strawberry.ID,
     ) -> Connection:
-        user, _ = await sync_to_async(JWTAuthentication().authenticate)(
-            request=info.context.request
-        )
+        user = get_user(info)
         connection = await sync_to_async(ConnectionModel.objects.get)(pk=connectionId)
         run = await sync_to_async(RunModel.objects.create)(
             connection=connection,
@@ -101,11 +98,9 @@ class Mutation:
     async def createApiKey(
         self, info: Info, name: str, workspaceId: strawberry.ID
     ) -> KeyResult:
-        user, _ = await sync_to_async(JWTAuthentication().authenticate)(
-            request=info.context.request
-        )
+        user = get_user(info)
 
-        workspace = await sync_to_async(WorkspaceModel.objects.get)(pk=workspaceId)
+        workspace = await WorkspaceModel.objects.aget(pk=workspaceId)
 
         api_key, key = await sync_to_async(WorkspaceAPIKey.objects.create_key)(
             name=name, created_by=user, workspace=workspace
@@ -119,7 +114,7 @@ class Mutation:
         id: strawberry.ID,
         name: str,
     ) -> Workspace:
-        workspace = await sync_to_async(WorkspaceModel.objects.get)(pk=id)
+        workspace = await WorkspaceModel.objects.aget(pk=id)
         workspace.name = name
         await sync_to_async(workspace.save)()
 
@@ -132,18 +127,18 @@ class Mutation:
         role: str,
         email: str,
     ) -> Membership:
-        workspace = await sync_to_async(WorkspaceModel.objects.get)(pk=workspaceId)
+        workspace = await WorkspaceModel.objects.aget(pk=workspaceId)
 
         UserModel = get_user_model()
 
         user = None
 
         try:
-            user = await sync_to_async(UserModel.objects.get)(username=email)
+            user = await UserModel.objects.aget(username=email)
             email_template_name = "workspaces/invite_user_email.txt"
             subject = "Grai Workspace Invite"
         except UserModel.DoesNotExist:
-            user = await sync_to_async(UserModel.objects.create)(username=email)
+            user = await UserModel.objects.acreate(username=email)
             email_template_name = "workspaces/new_user_email.txt"
             subject = "Grai Invite"
 
@@ -172,9 +167,7 @@ class Mutation:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def updateProfile(self, info: Info, first_name: str, last_name: str) -> User:
-        user, _ = await sync_to_async(JWTAuthentication().authenticate)(
-            request=info.context.request
-        )
+        user = get_user(info)
 
         user.first_name = first_name
         user.last_name = last_name
@@ -187,9 +180,7 @@ class Mutation:
     async def updatePassword(
         self, info: Info, old_password: str, password: str
     ) -> User:
-        user, _ = await sync_to_async(JWTAuthentication().authenticate)(
-            request=info.context.request
-        )
+        user = get_user(info)
 
         if not check_password(old_password, user.password):
             raise PermissionDenied("Old password does not match")
@@ -204,7 +195,7 @@ class Mutation:
         UserModel = get_user_model()
 
         try:
-            user = await sync_to_async(UserModel.objects.filter(username=email).get)()
+            user = await UserModel.objects.filter(username=email).aget()
 
             subject = "Grai Password Reset"
             email_template_name = "auth/password_reset_email.txt"
@@ -235,7 +226,7 @@ class Mutation:
         UserModel = get_user_model()
 
         try:
-            user = await sync_to_async(UserModel.objects.get)(pk=uid)
+            user = await UserModel.objects.aget(pk=uid)
 
             if not default_token_generator.check_token(user, token):
                 raise Exception("Token invalid")
@@ -254,7 +245,7 @@ class Mutation:
         UserModel = get_user_model()
 
         try:
-            user = await sync_to_async(UserModel.objects.get)(pk=uid)
+            user = await UserModel.objects.aget(pk=uid)
 
             if not default_token_generator.check_token(user, token):
                 raise Exception("Token invalid")

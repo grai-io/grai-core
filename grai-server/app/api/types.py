@@ -23,8 +23,8 @@ from users.models import User as UserModel
 @strawberry.django.filters.filter(UserModel, lookups=True)
 class UserFilter:
     username: auto
-    first_name: auto
-    last_name: auto
+    first_name: Optional[str]
+    last_name: Optional[str]
     created_at: auto
     updated_at: auto
 
@@ -123,6 +123,7 @@ class Edge:
     id: auto
     namespace: auto
     name: auto
+    display_name: auto
     data_source: auto
     source: Node
     destination: Node

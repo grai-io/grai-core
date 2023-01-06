@@ -81,14 +81,14 @@ uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
 name = "boto3"
-version = "1.26.42"
+version = "1.26.44"
 description = "The AWS SDK for Python"
 category = "main"
 optional = false
 python-versions = ">= 3.7"
 
 [package.dependencies]
-botocore = ">=1.29.42,<1.30.0"
+botocore = ">=1.29.44,<1.30.0"
 jmespath = ">=0.7.1,<2.0.0"
 s3transfer = ">=0.6.0,<0.7.0"
 
@@ -97,7 +97,7 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "botocore"
-version = "1.29.42"
+version = "1.29.44"
 description = "Low-level, data-driven core of boto 3."
 category = "main"
 optional = false
@@ -580,7 +580,7 @@ python-versions = ">=3.5"
 name = "iniconfig"
 version = "1.1.1"
 description = "iniconfig: brain-dead simple config-ini parsing"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 
@@ -717,7 +717,7 @@ python-versions = ">=3.7"
 name = "packaging"
 version = "22.0"
 description = "Core utilities for Python packages"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 
@@ -753,7 +753,7 @@ test = ["appdirs (==1.4.4)", "covdefaults (>=2.2.2)", "pytest (>=7.2)", "pytest-
 name = "pluggy"
 version = "1.0.0"
 description = "plugin and hook calling mechanisms for python"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -849,7 +849,7 @@ python-versions = ">=3.7"
 name = "pytest"
 version = "7.2.0"
 description = "pytest: simple powerful testing with Python"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 
@@ -862,6 +862,21 @@ pluggy = ">=0.12,<2.0"
 
 [package.extras]
 testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "pygments (>=2.7.2)", "requests", "xmlschema"]
+
+[[package]]
+name = "pytest-asyncio"
+version = "0.20.3"
+description = "Pytest support for asyncio"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+pytest = ">=6.1.0"
+
+[package.extras]
+docs = ["sphinx (>=5.3)", "sphinx-rtd-theme (>=1.0)"]
+testing = ["coverage (>=6.2)", "flaky (>=3.5.0)", "hypothesis (>=5.7.1)", "mypy (>=0.931)", "pytest-trio (>=0.7.0)"]
 
 [[package]]
 name = "pytest-django"
@@ -1090,7 +1105,7 @@ python-versions = ">=3.5"
 
 [[package]]
 name = "strawberry-django-plus"
-version = "1.33.2"
+version = "1.34"
 description = "Enhanced Strawberry GraphQL integration with Django"
 category = "main"
 optional = false
@@ -1259,7 +1274,7 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.11"
-content-hash = "9b44a2fe03a0dab3c478a7f5c409915dd117815cfc0b26afd788510a7d51bd5a"
+content-hash = "6534e50f1227a3dc719b02aad6f3dc02dfce5ef5e868218d1b54b71a0c554faf"
 
 [metadata.files]
 amqp = [
@@ -1301,12 +1316,12 @@ black = [
     {file = "black-22.12.0.tar.gz", hash = "sha256:229351e5a18ca30f447bf724d007f890f97e13af070bb6ad4c0a441cd7596a2f"},
 ]
 boto3 = [
-    {file = "boto3-1.26.42-py3-none-any.whl", hash = "sha256:75c995a04723f23e35e16ea491ed91a1345e2fa6492678a216488512308dada1"},
-    {file = "boto3-1.26.42.tar.gz", hash = "sha256:4cfd7e05e4033dbca2cc59bcfdafbdaef9d83dc3c0448917569b301d85766d9d"},
+    {file = "boto3-1.26.44-py3-none-any.whl", hash = "sha256:a612ed29551900e6504e749df9b3c991453ee2bf2656d63777d76b4cbd644fed"},
+    {file = "boto3-1.26.44.tar.gz", hash = "sha256:4f4c3018caf2ddaf355f202be8ff48c5ecf9d4208d6d6c581055428fcfa2309b"},
 ]
 botocore = [
-    {file = "botocore-1.29.42-py3-none-any.whl", hash = "sha256:f52f9dbd7ad42b3528c1052086c1a7b6122a018f919afdb604f2889caefe8092"},
-    {file = "botocore-1.29.42.tar.gz", hash = "sha256:d05c62f64e76194c40f598f5f7c804ec50d9820e9f03f6e0198558e4ace167c4"},
+    {file = "botocore-1.29.44-py3-none-any.whl", hash = "sha256:d4c10df0946ada82827b9f5323c43ba2ee5e81ae9c2acfbd2c59f65668c27863"},
+    {file = "botocore-1.29.44.tar.gz", hash = "sha256:e48371ff2c375f6a5ac2e6cdbb2d32aa14b1c9c0c049f12af96ec5614c55a6f1"},
 ]
 brotli = [
     {file = "Brotli-1.0.9-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:268fe94547ba25b58ebc724680609c8ee3e5a843202e9a381f6f9c5e8bdb5c70"},
@@ -1859,6 +1874,10 @@ pytest = [
     {file = "pytest-7.2.0-py3-none-any.whl", hash = "sha256:892f933d339f068883b6fd5a459f03d85bfcb355e4981e146d2c7616c21fef71"},
     {file = "pytest-7.2.0.tar.gz", hash = "sha256:c4014eb40e10f11f355ad4e3c2fb2c6c6d1919c73f3b5a433de4708202cade59"},
 ]
+pytest-asyncio = [
+    {file = "pytest-asyncio-0.20.3.tar.gz", hash = "sha256:83cbf01169ce3e8eb71c6c278ccb0574d1a7a3bb8eaaf5e50e0ad342afb33b36"},
+    {file = "pytest_asyncio-0.20.3-py3-none-any.whl", hash = "sha256:f129998b209d04fcc65c96fc85c11e5316738358909a8399e93be553d7656442"},
+]
 pytest-django = [
     {file = "pytest-django-4.5.2.tar.gz", hash = "sha256:d9076f759bb7c36939dbdd5ae6633c18edfc2902d1a69fdbefd2426b970ce6c2"},
     {file = "pytest_django-4.5.2-py3-none-any.whl", hash = "sha256:c60834861933773109334fe5a53e83d1ef4828f2203a1d6a0fa9972f4f75ab3e"},
@@ -1962,8 +1981,8 @@ sqlparse = [
     {file = "sqlparse-0.4.3.tar.gz", hash = "sha256:69ca804846bb114d2ec380e4360a8a340db83f0ccf3afceeb1404df028f57268"},
 ]
 strawberry-django-plus = [
-    {file = "strawberry_django_plus-1.33.2-py3-none-any.whl", hash = "sha256:eb0370b0d39c7f2ba77f417e133dd4a139538151e6b84eabc95646ef54aedffb"},
-    {file = "strawberry_django_plus-1.33.2.tar.gz", hash = "sha256:65c1abaf74d9d420be0e32bbb0403e4a48a4174fe6fb38cb0760bf5a93b7131f"},
+    {file = "strawberry_django_plus-1.34-py3-none-any.whl", hash = "sha256:1cc3ebda3203f59959f2a652d60bd3fd599543044d782a567715c5a1809c3dab"},
+    {file = "strawberry_django_plus-1.34.tar.gz", hash = "sha256:baf78ec9883f079d420feab142684ae4a3b6538dad129cb302b4c9d798ec7fe7"},
 ]
 strawberry-graphql = [
     {file = "strawberry_graphql-0.151.2-py3-none-any.whl", hash = "sha256:0e7df5314cc781f164fcc37d4058f73d1ba1111b72ee3334ee70002332b6ca28"},
