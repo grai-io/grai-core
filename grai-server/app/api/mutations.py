@@ -69,7 +69,7 @@ class Mutation:
         connection.name = name
         connection.metadata = metadata
         connection.secrets = mergedSecrets
-        await connection.asave()
+        await sync_to_async(connection.save)()
 
         return connection
 
@@ -77,7 +77,7 @@ class Mutation:
     async def createApiKey(
         self, info: Info, name: str, workspaceId: strawberry.ID
     ) -> KeyResult:
-        user = get_user()
+        user = get_user(info)
 
         workspace = await WorkspaceModel.objects.aget(pk=workspaceId)
 
@@ -95,7 +95,7 @@ class Mutation:
     ) -> Workspace:
         workspace = await WorkspaceModel.objects.aget(pk=id)
         workspace.name = name
-        await workspace.asave()
+        await sync_to_async(workspace.save)()
 
         return workspace
 
@@ -121,7 +121,7 @@ class Mutation:
             email_template_name = "workspaces/new_user_email.txt"
             subject = "Grai Invite"
 
-        membership = await MembershipModel.objects.acreate(
+        membership = await sync_to_async(MembershipModel.objects.create)(
             role=role, user=user, workspace=workspace
         )
 
@@ -146,12 +146,12 @@ class Mutation:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def updateProfile(self, info: Info, first_name: str, last_name: str) -> User:
-        user = get_user()
+        user = get_user(info)
 
         user.first_name = first_name
         user.last_name = last_name
 
-        await user.asave()
+        await sync_to_async(user.save)()
 
         return user
 
@@ -159,13 +159,13 @@ class Mutation:
     async def updatePassword(
         self, info: Info, old_password: str, password: str
     ) -> User:
-        user = get_user()
+        user = get_user(info)
 
         if not check_password(old_password, user.password):
             raise PermissionDenied("Old password does not match")
 
         user.set_password(password)
-        await user.asave()
+        await sync_to_async(user.save)()
 
         return user
 
@@ -211,7 +211,7 @@ class Mutation:
                 raise Exception("Token invalid")
 
             user.set_password(password)
-            await user.asave()
+            await sync_to_async(user.save)()
             return user
 
         except UserModel.DoesNotExist:
@@ -232,7 +232,7 @@ class Mutation:
             user.first_name = first_name
             user.last_name = last_name
             user.set_password(password)
-            await user.asave()
+            await sync_to_async(user.save)()
             return user
 
         except UserModel.DoesNotExist:
