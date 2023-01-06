@@ -209,6 +209,7 @@ async def test_create_membership_existing_user(test_info):
         "username": "test2@grai.com",
     }
 
+
 @pytest.mark.django_db
 async def test_update_profile(test_info):
     info, workspace, user = test_info
