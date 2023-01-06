@@ -27,6 +27,7 @@ django-health-check = "^3.17.0"
 django_multitenant = "^3.0.0"
 django-ses = "^3.3.0"
 coverage = "^7.0.3"
+pytest-asyncio = "^0.20.3"
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.10.1"
