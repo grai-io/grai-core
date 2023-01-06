@@ -16,17 +16,21 @@ class IsAuthenticated(BasePermission):
 
     # This method can also be async!
     async def has_permission(self, source: typing.Any, info: Info, **kwargs) -> bool:
+        if info.context.request.user and not info.context.request.user.is_anonymous:
+            return True
+
         user, token = await sync_to_async(JWTAuthentication().authenticate)(
             request=info.context.request
         )
+
+        if user.is_authenticated:
+            info.request.user = user
 
         return user.is_authenticated
 
 
 def get_user(info: Info):
-    user, token = JWTAuthentication().authenticate(request=info.context.request)
-
-    return user
+    return info.context.request.user
 
 
 def get_workspaces(info: Info) -> typing.List[Workspace]:

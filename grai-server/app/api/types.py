@@ -122,6 +122,7 @@ class Edge:
     id: auto
     namespace: auto
     name: auto
+    display_name: auto
     data_source: auto
     source: Node
     destination: Node
