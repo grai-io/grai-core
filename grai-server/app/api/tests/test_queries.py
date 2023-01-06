@@ -4,8 +4,10 @@ import pytest
 from django.http.request import HttpRequest
 from django.contrib.auth import get_user_model
 
+
 class Info(object):
-      pass
+    pass
+
 
 @pytest.fixture
 async def test_info():
@@ -22,6 +24,7 @@ async def test_info():
     info.request = request
 
     return info, workspace, user
+
 
 @pytest.mark.django_db
 async def test_workspaces(test_info):
@@ -45,6 +48,7 @@ async def test_workspaces(test_info):
             "name": "Test Workspace",
         }
     ]
+
 
 @pytest.mark.django_db
 async def test_workspaces_no_membership(test_info):
@@ -71,28 +75,32 @@ async def test_workspaces_no_membership(test_info):
         }
     ]
 
-# @pytest.mark.asyncio
-# async def test_profile():
-#     query = """
-#         query profile {
-#             profile {
-#                 id
-#                 username
-#                 first_name
-#                 last_name
-#             }
-#         }
-#     """
 
-#     result = await schema.execute(query)
+@pytest.mark.django_db
+async def test_profile(test_info):
+    info, workspace, user = test_info
 
-#     assert result.errors is None
-#     assert result.data["profile"] == [
-#         {
-#             "id": "1",
-#             "username": "null@grai.io",
-#         }
-#     ]
+    query = """
+        query profile {
+            profile {
+                id
+                username
+                first_name
+                last_name
+            }
+        }
+    """
+
+    result = await schema.execute(query, context_value=info)
+
+    assert result.errors is None
+    assert result.data["profile"] == {
+        "id": str(user.id),
+        "username": user.username,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+    }
+
 
 # @pytest.mark.asyncio
 # async def test_mutation():
