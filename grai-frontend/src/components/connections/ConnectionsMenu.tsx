@@ -9,17 +9,7 @@ import {
 import PopupState, { bindMenu, bindTrigger } from "material-ui-popup-state"
 import React from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import ConnectionRefresh from "./ConnectionRefresh"
-
-interface Run {
-  id: string
-  status: string
-}
-
-interface Connection {
-  id: string
-  last_run: Run | null
-}
+import ConnectionRefresh, { Connection } from "./ConnectionRefresh"
 
 type ConnectionsMenuProps = {
   connection: Connection

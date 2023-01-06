@@ -1,5 +1,6 @@
 import { Check, Close, HourglassEmpty } from "@mui/icons-material"
 import {
+  Box,
   Chip,
   ChipPropsVariantOverrides,
   CircularProgress,
@@ -30,7 +31,11 @@ const status: { [key: string]: Status } = {
   },
   running: {
     label: "Running",
-    icon: <CircularProgress />,
+    icon: (
+      <Box>
+        <CircularProgress sx={{ height: 15, width: 15 }} />
+      </Box>
+    ),
     color: "default",
   },
   success: {

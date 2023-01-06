@@ -38,7 +38,7 @@ class UserOrder:
     updated_at: auto
 
 
-@strawberry.django.type(UserModel, order=UserOrder, filters=UserFilter, pagination=True)
+@strawberry.django.type(UserModel, order=UserOrder, filters=UserFilter)
 class User:
     id: auto
     username: auto

@@ -18,6 +18,7 @@ export interface RunConnection_runConnection_last_run {
   __typename: "Run";
   id: any;
   status: string;
+  created_at: any;
   started_at: any | null;
   finished_at: any | null;
   metadata: any;

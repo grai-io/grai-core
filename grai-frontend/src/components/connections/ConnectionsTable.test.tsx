@@ -13,7 +13,9 @@ const connections = [
       id: "1",
       name: "connector 1",
     },
+    runs: [],
     last_run: null,
+    last_successful_run: null,
   },
   {
     id: "2",
@@ -24,7 +26,9 @@ const connections = [
       id: "1",
       name: "connector 1",
     },
+    runs: [],
     last_run: null,
+    last_successful_run: null,
   },
 ]
 

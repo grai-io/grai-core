@@ -10,24 +10,23 @@ import {
 import RunStatus from "components/runs/RunStatus"
 import React from "react"
 import { Link, useParams } from "react-router-dom"
-import ConnectionRefresh from "./ConnectionRefresh"
+import ConnectionRefresh, {
+  Connection as BaseConnection,
+} from "./ConnectionRefresh"
 
-interface Run {
-  id: string
-  status: string
-}
-
-interface Connection {
-  id: string
+interface Connection extends BaseConnection {
   name: string
-  last_run: Run | null
 }
 
 type ConnectionHeaderProps = {
   connection: Connection
+  onRefresh?: () => void
 }
 
-const ConnectionHeader: React.FC<ConnectionHeaderProps> = ({ connection }) => {
+const ConnectionHeader: React.FC<ConnectionHeaderProps> = ({
+  connection,
+  onRefresh,
+}) => {
   const { workspaceId } = useParams()
 
   return (
@@ -59,7 +58,7 @@ const ConnectionHeader: React.FC<ConnectionHeaderProps> = ({ connection }) => {
             <RunStatus run={connection.last_run} link sx={{ ml: 2 }} />
           )}
         </Box>
-        <ConnectionRefresh connection={connection} />
+        <ConnectionRefresh connection={connection} onRefresh={onRefresh} />
       </Box>
       <Divider />
     </>
