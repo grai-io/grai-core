@@ -1,6 +1,9 @@
 name: "Review App"
 
-on: pull_request
+on:
+  pull_request:
+    paths:
+      - "grai-frontend/**"
 
 jobs:
   build-frontend:
