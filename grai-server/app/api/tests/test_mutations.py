@@ -272,6 +272,36 @@ async def test_update_password(test_info):
 
 
 @pytest.mark.django_db
+async def test_update_password_wrong_password(test_info):
+    info, workspace, user = test_info
+
+    user.set_password("old_password")
+    await sync_to_async(user.save)()
+
+    mutation = """
+        mutation UpdatePassword($old_password: String!, $password: String!) {
+            updatePassword(old_password: $old_password, password: $password) {
+                id
+            }
+        }
+    """
+
+    resp = await schema.execute(
+        mutation,
+        variable_values={
+            "old_password": "old_password2",
+            "password": "password",
+        },
+        context_value=info,
+    )
+
+    assert (
+        str(resp.errors)
+        == "[GraphQLError('Old password does not match', locations=[SourceLocation(line=3, column=13)], path=['updatePassword'])]"
+    )
+
+
+@pytest.mark.django_db
 async def test_request_password_reset():
     User = get_user_model()
 
@@ -461,7 +491,7 @@ async def test_complete_signup_invalid_token(test_info):
 
 
 @pytest.mark.django_db
-async def test_complete_signup():
+async def test_complete_signup_no_user():
     mutation = """
         mutation CompleteSignup($token: String!, $uid: String!, $first_name: String!, $last_name: String!, $password: String!) {
             completeSignup(token: $token, uid: $uid, first_name: $first_name, last_name: $last_name, password: $password) {
