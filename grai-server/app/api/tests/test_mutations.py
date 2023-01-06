@@ -4,6 +4,7 @@ import pytest
 from .common import test_info
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
+from asgiref.sync import sync_to_async
 
 
 @pytest.mark.django_db
@@ -173,6 +174,42 @@ async def test_create_membership(test_info):
 
 
 @pytest.mark.django_db
+async def test_create_membership_existing_user(test_info):
+    info, workspace, user = test_info
+    User = get_user_model()
+    user = await User.objects.acreate(username="test2@grai.com")
+
+    mutation = """
+        mutation CreateMembership($workspaceId: ID!, $role: String!, $email: String!) {
+            createMembership(workspaceId: $workspaceId, role: $role, email: $email) {
+                id
+                role
+                user {
+                    id
+                    username
+                }
+            }
+        }
+    """
+
+    resp = await schema.execute(
+        mutation,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "role": "admin",
+            "email": "test2@grai.com",
+        },
+        context_value=info,
+    )
+
+    assert resp.errors is None
+    assert resp.data["createMembership"]["role"] == "admin"
+    assert resp.data["createMembership"]["user"] == {
+        "id": str(user.id),
+        "username": "test2@grai.com",
+    }
+
+@pytest.mark.django_db
 async def test_update_profile(test_info):
     info, workspace, user = test_info
 
@@ -200,6 +237,36 @@ async def test_update_profile(test_info):
         "id": str(user.id),
         "first_name": "First Name",
         "last_name": "Test",
+    }
+
+
+@pytest.mark.django_db
+async def test_update_password(test_info):
+    info, workspace, user = test_info
+
+    user.set_password("old_password")
+    await sync_to_async(user.save)()
+
+    mutation = """
+        mutation UpdatePassword($old_password: String!, $password: String!) {
+            updatePassword(old_password: $old_password, password: $password) {
+                id
+            }
+        }
+    """
+
+    resp = await schema.execute(
+        mutation,
+        variable_values={
+            "old_password": "old_password",
+            "password": "password",
+        },
+        context_value=info,
+    )
+
+    assert resp.errors is None
+    assert resp.data["updatePassword"] == {
+        "id": str(user.id),
     }
 
 
@@ -241,7 +308,7 @@ async def test_request_password_reset_no_user():
     resp = await schema.execute(
         mutation,
         variable_values={
-            "email": "test@example.com",
+            "email": "test2@example.com",
         },
     )
 
@@ -272,6 +339,58 @@ async def test_reset_password(test_info):
     assert resp.data["resetPassword"] == {
         "id": str(user.id),
     }
+
+
+@pytest.mark.django_db
+async def test_reset_password_invalid_token(test_info):
+    info, workspace, user = test_info
+
+    mutation = """
+        mutation ResetPassword($token: String!, $uid: String!, $password: String!) {
+            resetPassword(token: $token, uid: $uid, password: $password) {
+                id
+            }
+        }
+    """
+
+    resp = await schema.execute(
+        mutation,
+        variable_values={
+            "token": "1234",
+            "uid": str(user.pk),
+            "password": "password",
+        },
+    )
+
+    assert (
+        str(resp.errors)
+        == "[GraphQLError('Token invalid', locations=[SourceLocation(line=3, column=13)], path=['resetPassword'])]"
+    )
+
+
+@pytest.mark.django_db
+async def test_reset_password_no_user():
+    mutation = """
+        mutation ResetPassword($token: String!, $uid: String!, $password: String!) {
+            resetPassword(token: $token, uid: $uid, password: $password) {
+                id
+            }
+        }
+    """
+
+    resp = await schema.execute(
+        mutation,
+        variable_values={
+            "token": "1234",
+            "uid": "85a3c968-15c4-4906-83ff-931a672c087f",
+            "password": "password",
+        },
+    )
+
+    assert (
+        str(resp.errors)
+        == "[GraphQLError('User not found', locations=[SourceLocation(line=3, column=13)], path=['resetPassword'])]"
+    )
 
 
 @pytest.mark.django_db
@@ -307,3 +426,63 @@ async def test_complete_signup(test_info):
         "first_name": "First",
         "last_name": "Last",
     }
+
+
+@pytest.mark.django_db
+async def test_complete_signup_invalid_token(test_info):
+    info, workspace, user = test_info
+
+    mutation = """
+        mutation CompleteSignup($token: String!, $uid: String!, $first_name: String!, $last_name: String!, $password: String!) {
+            completeSignup(token: $token, uid: $uid, first_name: $first_name, last_name: $last_name, password: $password) {
+                id
+                first_name
+                last_name
+            }
+        }
+    """
+
+    resp = await schema.execute(
+        mutation,
+        variable_values={
+            "token": "1234",
+            "uid": str(user.pk),
+            "first_name": "First",
+            "last_name": "Last",
+            "password": "password",
+        },
+    )
+
+    assert (
+        str(resp.errors)
+        == "[GraphQLError('Token invalid', locations=[SourceLocation(line=3, column=13)], path=['completeSignup'])]"
+    )
+
+
+@pytest.mark.django_db
+async def test_complete_signup():
+    mutation = """
+        mutation CompleteSignup($token: String!, $uid: String!, $first_name: String!, $last_name: String!, $password: String!) {
+            completeSignup(token: $token, uid: $uid, first_name: $first_name, last_name: $last_name, password: $password) {
+                id
+                first_name
+                last_name
+            }
+        }
+    """
+
+    resp = await schema.execute(
+        mutation,
+        variable_values={
+            "token": "1234",
+            "uid": "85a3c968-15c4-4906-83ff-931a672c087f",
+            "first_name": "First",
+            "last_name": "Last",
+            "password": "password",
+        },
+    )
+
+    assert (
+        str(resp.errors)
+        == "[GraphQLError('User not found', locations=[SourceLocation(line=3, column=13)], path=['completeSignup'])]"
+    )
