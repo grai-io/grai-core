@@ -19,8 +19,10 @@ def get_node(workspace: Workspace, grai_type: NodeID) -> NodeModel:
 
 
 def deactivate(items: List[T]) -> List[T]:
-    updated = [item.update({"spec": {"is_active": False}}) for item in items]
-    return updated  # type: ignore
+    for item in items:
+        item.spec.is_active = False
+
+    return items
 
 
 def update(

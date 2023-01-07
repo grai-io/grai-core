@@ -50,7 +50,7 @@ class Connection(TenantModel):
     created_by = models.ForeignKey(
         "users.User",
         related_name="connections",
-        on_delete=models.PROTECT,
+        on_delete=models.SET_NULL,
         blank=True,
         null=True,
     )
