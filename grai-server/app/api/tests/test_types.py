@@ -8,7 +8,7 @@ from .common import test_info
 async def test_run(test_info):
     info, workspace, user = test_info
 
-    connector = await Connector.objects.acreate(name="Connector 2")
+    connector = await Connector.objects.acreate(name="Connector 4")
     connection = await Connection.objects.acreate(
         workspace=workspace,
         connector=connector,
