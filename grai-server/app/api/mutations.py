@@ -29,9 +29,13 @@ from .common import get_user, IsAuthenticated
 
 async def get_workspace(info: Info, workspaceId: strawberry.ID):
     user = get_user(info)
-    workspace = await WorkspaceModel.objects.aget(
-        pk=workspaceId, memberships__user_id=user.id
-    )
+
+    try:
+        workspace = await WorkspaceModel.objects.aget(
+            pk=workspaceId, memberships__user_id=user.id
+        )
+    except WorkspaceModel.DoesNotExist:
+        raise Exception("Can't find workspace")
 
     return workspace
 
