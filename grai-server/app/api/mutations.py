@@ -27,11 +27,25 @@ from django.conf import settings
 from .common import get_user, IsAuthenticated
 
 
+async def get_workspace(info: Info, workspaceId: strawberry.ID):
+    user = get_user(info)
+
+    try:
+        workspace = await WorkspaceModel.objects.aget(
+            pk=workspaceId, memberships__user_id=user.id
+        )
+    except WorkspaceModel.DoesNotExist:
+        raise Exception("Can't find workspace")
+
+    return workspace
+
+
 @strawberry.type
 class Mutation:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def createConnection(
         self,
+        info: Info,
         workspaceId: strawberry.ID,
         connectorId: strawberry.ID,
         namespace: str,
@@ -39,8 +53,10 @@ class Mutation:
         metadata: JSON,
         secrets: JSON,
     ) -> Connection:
+        workspace = await get_workspace(info, workspaceId)
+
         connection = await ConnectionModel.objects.acreate(
-            workspace_id=workspaceId,
+            workspace=workspace,
             connector_id=connectorId,
             namespace=namespace,
             name=name,
@@ -53,13 +69,21 @@ class Mutation:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def updateConnection(
         self,
+        info: Info,
         id: strawberry.ID,
         namespace: str,
         name: str,
         metadata: JSON,
         secrets: JSON,
     ) -> Connection:
-        connection = await ConnectionModel.objects.aget(pk=id)
+        user = get_user(info)
+
+        try:
+            connection = await ConnectionModel.objects.aget(
+                pk=id, workspace__memberships__user_id=user.id
+            )
+        except ConnectionModel.DoesNotExist:
+            raise Exception("Can't find connection")
 
         mergedSecrets = dict()
         mergedSecrets.update(connection.secrets)
@@ -78,8 +102,7 @@ class Mutation:
         self, info: Info, name: str, workspaceId: strawberry.ID
     ) -> KeyResult:
         user = get_user(info)
-
-        workspace = await WorkspaceModel.objects.aget(pk=workspaceId)
+        workspace = await get_workspace(info, workspaceId)
 
         api_key, key = await sync_to_async(WorkspaceAPIKey.objects.create_key)(
             name=name, created_by=user, workspace=workspace
@@ -90,10 +113,12 @@ class Mutation:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def updateWorkspace(
         self,
+        info: Info,
         id: strawberry.ID,
         name: str,
     ) -> Workspace:
-        workspace = await WorkspaceModel.objects.aget(pk=id)
+        workspace = await get_workspace(info, id)
+
         workspace.name = name
         await sync_to_async(workspace.save)()
 
@@ -102,11 +127,12 @@ class Mutation:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def createMembership(
         self,
+        info: Info,
         workspaceId: strawberry.ID,
         role: str,
         email: str,
     ) -> Membership:
-        workspace = await WorkspaceModel.objects.aget(pk=workspaceId)
+        workspace = await get_workspace(info, workspaceId)
 
         UserModel = get_user_model()
 
