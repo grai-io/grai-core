@@ -120,6 +120,49 @@ async def test_update_connection(test_info):
 
 
 @pytest.mark.django_db
+async def test_update_connection_no_membership(test_info):
+    info, workspace, user = test_info
+
+    workspace2 = await Workspace.objects.acreate(name="W3")
+
+    connector = await Connector.objects.acreate(name="Connector 7")
+    connection = await Connection.objects.acreate(
+        workspace=workspace2,
+        connector=connector,
+        namespace="default",
+        name="test connection2",
+        metadata={},
+        secrets={},
+    )
+
+    mutation = """
+        mutation UpdateConnection($id: ID!, $namespace: String!, $name: String!, $metadata: JSON!, $secrets: JSON!) {
+            updateConnection(id: $id, namespace: $namespace, name: $name, metadata: $metadata, secrets: $secrets) {
+                id
+                name
+            }
+        }
+    """
+
+    resp = await schema.execute(
+        mutation,
+        variable_values={
+            "id": str(connection.id),
+            "namespace": "default",
+            "name": "test connection3",
+            "metadata": {},
+            "secrets": {},
+        },
+        context_value=info,
+    )
+
+    assert (
+        str(resp.errors)
+        == """[GraphQLError("Can't find connection", locations=[SourceLocation(line=3, column=13)], path=['updateConnection'])]"""
+    )
+
+
+@pytest.mark.django_db
 async def test_create_api_key(test_info):
     info, workspace, user = test_info
 

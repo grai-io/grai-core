@@ -77,9 +77,13 @@ class Mutation:
         secrets: JSON,
     ) -> Connection:
         user = get_user(info)
-        connection = await ConnectionModel.objects.aget(
-            pk=id, workspace__memberships__user_id=user.id
-        )
+
+        try:
+            connection = await ConnectionModel.objects.aget(
+                pk=id, workspace__memberships__user_id=user.id
+            )
+        except ConnectionModel.DoesNotExist:
+            raise Exception("Can't find connection")
 
         mergedSecrets = dict()
         mergedSecrets.update(connection.secrets)
