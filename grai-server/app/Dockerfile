@@ -29,12 +29,11 @@ RUN apt update \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
-
 COPY pyproject.toml poetry.lock ./
 
 RUN pip install "poetry==$POETRY_VERSION"
 RUN poetry config virtualenvs.create false  \
+    && poetry lock \
     && poetry install --no-interaction --no-ansi --no-root --only main \
     && rm -rf ~/.cache/pypoetry/cache \
     && rm -rf ~/.cache/pypoetry/artifacts
