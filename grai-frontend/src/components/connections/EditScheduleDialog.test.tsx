@@ -26,8 +26,6 @@ test("submit", async () => {
   expect(screen.getByText("Edit Schedule")).toBeTruthy()
 
   await user.click(screen.getByRole("button", { name: /save/i }))
-
-  await waitFor(() => {})
 })
 
 test("submit cron", async () => {
@@ -56,8 +54,6 @@ test("submit cron", async () => {
   await user.click(screen.getByLabelText("Enabled"))
 
   await user.click(screen.getByRole("button", { name: /save/i }))
-
-  await waitFor(() => {})
 })
 
 test("error", async () => {
