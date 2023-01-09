@@ -33,7 +33,7 @@ COPY pyproject.toml poetry.lock ./
 
 RUN pip install "poetry==$POETRY_VERSION"
 RUN poetry config virtualenvs.create false  \
-    && poetry lock \
+    && poetry lock --no-update \
     && poetry install --no-interaction --no-ansi --no-root --only main \
     && rm -rf ~/.cache/pypoetry/cache \
     && rm -rf ~/.cache/pypoetry/artifacts
