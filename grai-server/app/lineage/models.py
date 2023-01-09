@@ -2,8 +2,8 @@ import uuid
 
 from django.db import models
 from django.db.models import F, Q
-from django_multitenant.models import TenantModel
 from django_multitenant.fields import TenantForeignKey
+from django_multitenant.models import TenantModel
 
 
 # Create your models here.

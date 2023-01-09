@@ -3,7 +3,7 @@ name = "grai_source_mysql"
 version = "0.0.2"
 description = ""
 authors = ["Tony Lewis <tony@grai.io>"]
-license = "ELv2"
+license = "Elastic-2.0"
 packages = [
     { include = "grai_source_mysql", from = "src" },
 ]

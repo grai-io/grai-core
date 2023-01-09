@@ -31,6 +31,7 @@ class TableAttributes(BaseModel):
 
 
 class GraiNodeMetadata(BaseModel):
+    version: Literal["v1"] = "v1"
     node_type: NodeTypes
     node_attributes: Any
 

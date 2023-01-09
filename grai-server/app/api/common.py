@@ -1,9 +1,9 @@
 import typing
 
+from asgiref.sync import sync_to_async
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from strawberry.permission import BasePermission
 from strawberry.types import Info
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from asgiref.sync import sync_to_async
 
 
 class IsAuthenticated(BasePermission):

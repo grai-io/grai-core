@@ -2,7 +2,7 @@
 name = "grai-cli"
 version = "0.1.7"
 description = ""
-authors = ["Ian Eaves <ian.k.eaves@gmail.com>"]
+authors = ["Ian Eaves <ian@grai.io>"]
 license = "Elastic-2.0"
 readme = "README.md"
 packages = [{include = "grai_cli"}]
