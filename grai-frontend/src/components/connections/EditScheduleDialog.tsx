@@ -99,7 +99,9 @@ const EditScheduleDialog: React.FC<EditScheduleDialogProps> = ({
         is_active,
         secrets: {},
       },
-    }).then(() => onClose())
+    })
+      .catch(err => {})
+      .then(() => onClose())
 
   const setCron = (field: keyof CronValue, value: string) => {
     let cron: CronValue = values?.cron
@@ -123,6 +125,7 @@ const EditScheduleDialog: React.FC<EditScheduleDialogProps> = ({
         Edit Schedule
       </BootstrapDialogTitle>
       <DialogContent>
+        {/* {error && JSON.stringify(error)} */}
         {error && <GraphError error={error} />}
         <Form onSubmit={handleSubmit}>
           <FormControl>
