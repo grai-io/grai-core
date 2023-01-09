@@ -20,12 +20,52 @@ services:
       - SERVER_HOST=localhost
       - FRONTEND_HOST=localhost
       - FRONTEND_URL=http://localhost:3000
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+      - db
     healthcheck:
       test: "curl -f -v -H 'Accept: application/json' http://localhost:8000/health/"
       interval: 2s
       timeout: 5s
       retries: 10
       start_period: 20s
+
+  celery_worker:
+    build: ./app
+    # image: django_celery_example_celery_worker
+    command: /start-celeryworker
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=grai
+      - DB_USER=grai
+      - DB_PASSWORD=grai
+      - DJANGO_SUPERUSER_USERNAME=null@grai.io
+      - DJANGO_SUPERUSER_PASSWORD=super_secret
+      - DJANGO_SUPERUSER_WORKSPACE=default
+      - SERVER_HOST=localhost
+      - FRONTEND_HOST=localhost
+      - FRONTEND_URL=http://localhost:3000
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/0
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - db
+    scale: 1
+
+  frontend:
+    build: ../grai-frontend
+    ports:
+      - 3000:80
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+    depends_on:
+      - the_guide
+
   db:
     image: postgres:14.3-alpine
     environment:
@@ -39,9 +79,20 @@ services:
       interval: 2s
       timeout: 2s
       retries: 15
-  frontend:
-    build: ../grai-frontend
+
+  redis:
+    image: redis:7-alpine
+    restart: always
     ports:
-      - 3000:80
+      - "6379:6379"
+
+  flower:
+    image: mher/flower
+    ports:
+      - 5557:5555
     environment:
-      - REACT_APP_API_URL=http://localhost:8000
+      - CELERY_BROKER_URL=redis://redis:6379/0
+
+    depends_on:
+      - redis
+      - db

@@ -33,7 +33,8 @@ export type Table<N extends Node> = N &
     destinationTables: BaseTable<N>[]
   }
 
-const nodeIsTable = (node: Node) => node.metadata.node_type === "Table"
+export const nodeIsTable = (node: Node) =>
+  ["table", "base table"].includes(node.metadata.node_type.toLowerCase())
 const tableColumns = <N extends Node>(table: N, nodes: N[], edges: Edge[]) =>
   edges
     .filter(

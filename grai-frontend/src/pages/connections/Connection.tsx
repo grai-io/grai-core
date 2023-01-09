@@ -1,20 +1,17 @@
 import { gql, useQuery } from "@apollo/client"
-import { MoreHoriz } from "@mui/icons-material"
-import { Box, Button, Grid, Stack, Typography } from "@mui/material"
-import React from "react"
+import React, { useEffect } from "react"
 import { useParams } from "react-router-dom"
-import ConnectionRefresh from "components/connections/ConnectionRefresh"
-import UpdateConnectionForm from "components/connections/UpdateConnectionForm"
-import AppTopBar from "components/layout/AppTopBar"
-import Loading from "components/layout/Loading"
 import NotFound from "pages/NotFound"
 import {
   GetConnection,
   GetConnectionVariables,
 } from "./__generated__/GetConnection"
 import GraphError from "components/utils/GraphError"
+import PageLayout from "components/layout/PageLayout"
+import ConnectionHeader from "components/connections/ConnectionHeader"
+import ConnectionContent from "components/connections/ConnectionContent"
 
-const GET_CONNECTION = gql`
+export const GET_CONNECTION = gql`
   query GetConnection($workspaceId: ID!, $connectionId: ID!) {
     workspace(pk: $workspaceId) {
       id
@@ -30,6 +27,45 @@ const GET_CONNECTION = gql`
         metadata
         created_at
         updated_at
+        last_run {
+          id
+          status
+          created_at
+          started_at
+          finished_at
+          metadata
+          user {
+            id
+            first_name
+            last_name
+          }
+        }
+        last_successful_run {
+          id
+          status
+          created_at
+          started_at
+          finished_at
+          metadata
+          user {
+            id
+            first_name
+            last_name
+          }
+        }
+        runs(order: { created_at: DESC }) {
+          id
+          status
+          created_at
+          started_at
+          finished_at
+          user {
+            id
+            first_name
+            last_name
+          }
+          metadata
+        }
       }
     }
   }
@@ -38,7 +74,7 @@ const GET_CONNECTION = gql`
 const Connection: React.FC = () => {
   const { workspaceId, connectionId } = useParams()
 
-  const { loading, error, data } = useQuery<
+  const { loading, error, data, startPolling, stopPolling } = useQuery<
     GetConnection,
     GetConnectionVariables
   >(GET_CONNECTION, {
@@ -48,39 +84,30 @@ const Connection: React.FC = () => {
     },
   })
 
+  const status = data?.workspace.connection?.last_run?.status
+
+  useEffect(() => {
+    if (!status) return
+
+    if (!["success", "error"].includes(status)) return
+
+    stopPolling()
+  }, [status, stopPolling])
+
   if (error) return <GraphError error={error} />
-  if (loading)
-    return (
-      <>
-        <AppTopBar />
-        <Loading />
-      </>
-    )
+  if (loading) return <PageLayout loading />
 
   const connection = data?.workspace?.connection
 
   if (!connection) return <NotFound />
 
+  const handleRefresh = () => startPolling(1000)
+
   return (
-    <>
-      <AppTopBar />
-      <Box sx={{ display: "flex", p: 3 }}>
-        <Typography variant="h4" sx={{ flexGrow: 1 }}>
-          {connection.name}
-        </Typography>
-        <Stack direction="row" spacing={1}>
-          <ConnectionRefresh connection={connection} />
-          <Button variant="outlined" sx={{ minWidth: 0 }}>
-            <MoreHoriz />
-          </Button>
-        </Stack>
-      </Box>
-      <Grid container sx={{ px: 3 }}>
-        <Grid item md={4}>
-          <UpdateConnectionForm connection={connection} />
-        </Grid>
-      </Grid>
-    </>
+    <PageLayout>
+      <ConnectionHeader connection={connection} onRefresh={handleRefresh} />
+      <ConnectionContent connection={connection} />
+    </PageLayout>
   )
 }
 

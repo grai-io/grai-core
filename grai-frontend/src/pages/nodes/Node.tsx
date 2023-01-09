@@ -1,13 +1,12 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
 import { useParams } from "react-router-dom"
-import AppTopBar from "components/layout/AppTopBar"
-import Loading from "components/layout/Loading"
 import NotFound from "pages/NotFound"
 import NodeHeader from "components/nodes/NodeHeader"
 import NodeContent from "components/nodes/NodeContent"
 import { GetNode, GetNodeVariables } from "./__generated__/GetNode"
 import GraphError from "components/utils/GraphError"
+import PageLayout from "components/layout/PageLayout"
 
 export const GET_NODE = gql`
   query GetNode($workspaceId: ID!, $nodeId: ID!) {
@@ -73,28 +72,21 @@ const Node: React.FC = () => {
   )
 
   if (error) return <GraphError error={error} />
-  if (loading)
-    return (
-      <>
-        <AppTopBar />
-        <Loading />
-      </>
-    )
+  if (loading) return <PageLayout loading />
 
   const node = data?.workspace?.node
 
   if (!node) return <NotFound />
 
   return (
-    <>
-      <AppTopBar />
+    <PageLayout>
       <NodeHeader node={node} />
       <NodeContent
         node={node}
         nodes={data?.workspace?.nodes}
         edges={data?.workspace?.edges}
       />
-    </>
+    </PageLayout>
   )
 }
 

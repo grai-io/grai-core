@@ -116,7 +116,6 @@ def get_workspace_by_name_v1(
     options: ClientOptions = ClientOptions(),
 ) -> Optional[Workspace]:
     url = f"{client.get_url(grai_type)}?name={name}"
-    print(url)
     resp = client.get(url, options=options).json()
     num_resp = len(resp)
     if num_resp == 0:

@@ -5,6 +5,9 @@ import ConnectionsMenu from "./ConnectionsMenu"
 
 const connection = {
   id: "1",
+  runs: [],
+  last_run: null,
+  last_successful_run: null,
 }
 
 test("renders", async () => {

@@ -38,7 +38,7 @@ interface Connector {
   metadata: any
 }
 
-interface Connection {
+export interface Connection {
   id: string
   namespace: string
   name: string
@@ -48,10 +48,12 @@ interface Connection {
 
 type UpdateConnectionFormProps = {
   connection: Connection
+  onClose?: () => void
 }
 
 const UpdateConnectionForm: React.FC<UpdateConnectionFormProps> = ({
   connection,
+  onClose,
 }) => {
   const [updateConnection, { loading, error }] = useMutation<
     UpdateConnection,
@@ -67,7 +69,7 @@ const UpdateConnectionForm: React.FC<UpdateConnectionFormProps> = ({
         metadata: values.metadata,
         secrets: values.secrets ?? {},
       },
-    })
+    }).then(() => onClose && onClose())
 
   const defaultValues: Values = {
     connector: connection.connector,

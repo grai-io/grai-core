@@ -1,9 +1,7 @@
 import React from "react"
-import { Box } from "@mui/material"
+import { Alert, Box } from "@mui/material"
 import GraphComponent, { Error } from "components/graph/Graph"
-import AppTopBar from "components/layout/AppTopBar"
 import { gql, useQuery } from "@apollo/client"
-import Loading from "components/layout/Loading"
 import theme from "theme"
 import { useLocation, useParams } from "react-router-dom"
 import { nodesToTables } from "helpers/graph"
@@ -12,6 +10,7 @@ import {
   GetNodesAndEdgesVariables,
 } from "./__generated__/GetNodesAndEdges"
 import GraphError from "components/utils/GraphError"
+import PageLayout from "components/layout/PageLayout"
 
 export const GET_NODES_AND_EDGES = gql`
   query GetNodesAndEdges($workspaceId: ID!) {
@@ -68,27 +67,19 @@ const Graph: React.FC = () => {
   })
 
   if (error) return <GraphError error={error} />
-  if (loading)
-    return (
-      <>
-        <AppTopBar />
-        <Loading />
-      </>
-    )
+  if (loading) return <PageLayout loading />
 
   const errorsQS = searchParams.get("errors")
   const errors: Error[] | null = errorsQS ? JSON.parse(errorsQS) : null
   const limitGraph: boolean =
     searchParams.get("limitGraph")?.toLowerCase() === "true" && !!errors
 
-  if (!data?.workspace.nodes) return null
+  if (!data?.workspace.nodes) return <Alert>No nodes found</Alert>
 
   const tables = nodesToTables(data.workspace.nodes, data.workspace.edges)
 
   return (
-    <>
-      <AppTopBar />
-
+    <PageLayout>
       <Box
         sx={{
           height: "calc(100vh - 70px)",
@@ -98,12 +89,13 @@ const Graph: React.FC = () => {
       >
         <GraphComponent
           tables={tables}
+          nodes={data.workspace.nodes}
           edges={data.workspace.edges}
           errors={errors}
           limitGraph={limitGraph}
         />
       </Box>
-    </>
+    </PageLayout>
   )
 }
 

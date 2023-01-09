@@ -1,6 +1,5 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
-import AppTopBar from "components/layout/AppTopBar"
 import ConnectionsTable from "components/connections/ConnectionsTable"
 import ConnectionsHeader from "components/connections/ConnectionsHeader"
 import {
@@ -10,6 +9,7 @@ import {
 import { useParams } from "react-router-dom"
 import { Box } from "@mui/material"
 import GraphError from "components/utils/GraphError"
+import PageLayout from "components/layout/PageLayout"
 
 export const GET_CONNECTIONS = gql`
   query GetConnections($workspaceId: ID!) {
@@ -23,6 +23,45 @@ export const GET_CONNECTIONS = gql`
         connector {
           id
           name
+        }
+        runs(order: { created_at: DESC }) {
+          id
+          status
+          created_at
+          started_at
+          finished_at
+          user {
+            id
+            first_name
+            last_name
+          }
+          metadata
+        }
+        last_run {
+          id
+          status
+          created_at
+          started_at
+          finished_at
+          user {
+            id
+            first_name
+            last_name
+          }
+          metadata
+        }
+        last_successful_run {
+          id
+          status
+          created_at
+          started_at
+          finished_at
+          user {
+            id
+            first_name
+            last_name
+          }
+          metadata
         }
       }
     }
@@ -46,8 +85,7 @@ const Connections: React.FC = () => {
   if (error) return <GraphError error={error} />
 
   return (
-    <>
-      <AppTopBar />
+    <PageLayout>
       <ConnectionsHeader onRefresh={handleRefresh} />
       <Box
         sx={{
@@ -59,7 +97,7 @@ const Connections: React.FC = () => {
           loading={loading}
         />
       </Box>
-    </>
+    </PageLayout>
   )
 }
 

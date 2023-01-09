@@ -1,12 +1,13 @@
 import React, { useState } from "react"
 import { gql, useQuery } from "@apollo/client"
-import AppTopBar from "components/layout/AppTopBar"
 import NodesTable from "components/nodes/NodesTable"
 import NodesHeader from "components/nodes/NodesHeader"
 import { GetNodes, GetNodesVariables } from "./__generated__/GetNodes"
 import { useParams } from "react-router-dom"
 import { Box } from "@mui/material"
 import GraphError from "components/utils/GraphError"
+import { nodeIsTable } from "helpers/graph"
+import PageLayout from "components/layout/PageLayout"
 
 export const GET_NODES = gql`
   query GetNodes($workspaceId: ID!) {
@@ -56,7 +57,7 @@ const Nodes: React.FC = () => {
 
   const handleRefresh = () => refetch()
 
-  const tables = nodes.filter(node => node.metadata.node_type === "Table")
+  const tables = nodes.filter(nodeIsTable)
 
   const filteredNodes = search
     ? tables.filter(node =>
@@ -65,8 +66,7 @@ const Nodes: React.FC = () => {
     : tables
 
   return (
-    <>
-      <AppTopBar />
+    <PageLayout>
       <NodesHeader
         search={search}
         onSearch={setSearch}
@@ -75,7 +75,7 @@ const Nodes: React.FC = () => {
       <Box sx={{ px: 3 }}>
         <NodesTable nodes={filteredNodes} loading={loading} />
       </Box>
-    </>
+    </PageLayout>
   )
 }
 
