@@ -89,6 +89,7 @@ const Graph: React.FC = () => {
       >
         <GraphComponent
           tables={tables}
+          nodes={data.workspace.nodes}
           edges={data.workspace.edges}
           errors={errors}
           limitGraph={limitGraph}

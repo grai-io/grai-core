@@ -101,6 +101,7 @@ const NodeLineage: React.FC<NodeLineageProps> = ({ node }) => {
     >
       <Graph
         tables={tables}
+        nodes={data.workspace.nodes}
         edges={data.workspace.edges}
         initialHidden={hiddenNodes.map(n => n.id)}
       />
