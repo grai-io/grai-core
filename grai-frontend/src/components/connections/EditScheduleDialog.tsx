@@ -102,13 +102,15 @@ const EditScheduleDialog: React.FC<EditScheduleDialogProps> = ({
     }).then(() => onClose())
 
   const setCron = (field: keyof CronValue, value: string) => {
-    let cron: CronValue = values?.cron ?? {
-      minutes: "*",
-      hours: "*",
-      day_of_week: "*",
-      day_of_month: "*",
-      month_of_year: "*",
-    }
+    let cron: CronValue = values?.cron
+      ? { ...values.cron }
+      : {
+          minutes: "*",
+          hours: "*",
+          day_of_week: "*",
+          day_of_month: "*",
+          month_of_year: "*",
+        }
 
     cron[field] = value
 
