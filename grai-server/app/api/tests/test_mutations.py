@@ -126,6 +126,102 @@ async def test_update_connection(test_info):
 
 
 @pytest.mark.django_db
+async def test_update_connection_with_schedule(test_info):
+    info, workspace, user = test_info
+
+    connector = await Connector.objects.acreate(name="Connector 9")
+    connection = await Connection.objects.acreate(
+        workspace=workspace,
+        connector=connector,
+        namespace="default",
+        name="test connection2",
+        metadata={},
+        secrets={},
+    )
+
+    mutation = """
+        mutation UpdateConnection($id: ID!, $namespace: String!, $name: String!, $metadata: JSON!, $secrets: JSON, $schedules: JSON, $is_active: Boolean) {
+            updateConnection(id: $id, namespace: $namespace, name: $name, metadata: $metadata, secrets: $secrets, schedules: $schedules, is_active: $is_active) {
+                id
+                name
+            }
+        }
+    """
+
+    resp = await schema.execute(
+        mutation,
+        variable_values={
+            "id": str(connection.id),
+            "namespace": "default",
+            "name": "test connection3",
+            "metadata": {},
+            "secrets": None,
+            "schedules": {
+                "type": "cron",
+                "cron": {
+                    "minutes": "*",
+                    "hours": "*",
+                    "day_of_week": "*",
+                    "day_of_month": "*",
+                    "month_of_year": "*",
+                },
+            },
+            "is_active": False,
+        },
+        context_value=info,
+    )
+
+    assert resp.errors is None
+    assert resp.data["updateConnection"] == {
+        "id": str(connection.id),
+        "name": "test connection3",
+    }
+
+
+@pytest.mark.django_db
+async def test_update_connection_with_incorrect_schedule(test_info):
+    info, workspace, user = test_info
+
+    connector = await Connector.objects.acreate(name="Connector 10")
+    connection = await Connection.objects.acreate(
+        workspace=workspace,
+        connector=connector,
+        namespace="default",
+        name="test connection2",
+        metadata={},
+        secrets={},
+    )
+
+    mutation = """
+        mutation UpdateConnection($id: ID!, $namespace: String!, $name: String!, $metadata: JSON!, $secrets: JSON, $schedules: JSON, $is_active: Boolean) {
+            updateConnection(id: $id, namespace: $namespace, name: $name, metadata: $metadata, secrets: $secrets, schedules: $schedules, is_active: $is_active) {
+                id
+                name
+            }
+        }
+    """
+
+    resp = await schema.execute(
+        mutation,
+        variable_values={
+            "id": str(connection.id),
+            "namespace": "default",
+            "name": "test connection3",
+            "metadata": {},
+            "secrets": None,
+            "schedules": {"type": "blah"},
+            "is_active": False,
+        },
+        context_value=info,
+    )
+
+    assert (
+        str(resp.errors)
+        == "[GraphQLError('Schedule type not found', locations=[SourceLocation(line=3, column=13)], path=['updateConnection'])]"
+    )
+
+
+@pytest.mark.django_db
 async def test_update_connection_no_membership(test_info):
     info, workspace, user = test_info
 

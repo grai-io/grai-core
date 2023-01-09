@@ -78,9 +78,14 @@ class Connection(TenantModel):
         ]
 
     def save(self, *args, **kwargs):
-        if self.schedules is dict:
+        if isinstance(self.schedules, dict):
 
-            if self.schedules.get("type", None) == "cron":
+            type = self.schedules.get("type", None)
+
+            if type is None:
+                pass
+
+            elif type == "cron":
                 from django_celery_beat.models import CrontabSchedule, PeriodicTask
 
                 cron = self.schedules["cron"]
