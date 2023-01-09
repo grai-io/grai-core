@@ -1,5 +1,9 @@
-from connections.models import Connection, Connector
-from connections.serializers import ConnectionSerializer, ConnectorSerializer
+from connections.models import Connection, Connector, Run
+from connections.serializers import (
+    ConnectionSerializer,
+    ConnectorSerializer,
+    RunSerializer,
+)
 from rest_framework.authentication import (
     BasicAuthentication,
     SessionAuthentication,
@@ -67,3 +71,16 @@ class ConnectorViewSet(ReadOnlyModelViewSet):
         for filter_name, condition in filters:
             queryset = queryset.filter(**{filter_name: condition})
         return queryset
+
+
+class RunViewSet(ReadOnlyModelViewSet):
+    authentication_classes = [
+        SessionAuthentication,
+        TokenAuthentication,
+        BasicAuthentication,
+        JWTAuthentication,
+    ]
+    permission_classes = [HasAPIKey | HasWorkspaceAPIKey | IsAuthenticated]
+
+    serializer_class = RunSerializer
+    type = Run

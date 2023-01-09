@@ -22,6 +22,7 @@ import PasswordSettings from "pages/settings/PasswordSettings"
 import ForgotPassword from "pages/auth/ForgotPassword"
 import PasswordReset from "pages/auth/PasswordReset"
 import CompleteSignup from "pages/auth/CompleteSignup"
+import Run from "pages/runs/Run"
 
 const Routes: React.FC = () => (
   <BrowerRoutes>
@@ -35,6 +36,9 @@ const Routes: React.FC = () => (
           <Route path="nodes">
             <Route index element={<Nodes />} />
             <Route path=":nodeId" element={<Node />} />
+          </Route>
+          <Route path="runs">
+            <Route path=":runId" element={<Run />} />
           </Route>
           <Route path="connections">
             <Route index element={<Connections />} />

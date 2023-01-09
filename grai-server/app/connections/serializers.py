@@ -1,7 +1,7 @@
 from django.db.models import fields
 from rest_framework import serializers
 
-from .models import Connection, Connector
+from .models import Connection, Connector, Run
 
 
 class ConnectionSerializer(serializers.ModelSerializer):
@@ -29,3 +29,17 @@ class ConnectorSerializer(serializers.ModelSerializer):
             "is_active",
         )
         read_only_fields = ("created_at", "updated_at")
+
+
+class RunSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Run
+        fields = (
+            "id",
+            "connection",
+            "status",
+            "metadata",
+            "workspace",
+            "user",
+        )
+        read_only_fields = ("created_at", "updated_at", "started_at", "finished_at")

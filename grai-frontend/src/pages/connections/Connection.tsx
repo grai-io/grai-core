@@ -1,8 +1,6 @@
 import { gql, useQuery } from "@apollo/client"
-import { Grid } from "@mui/material"
-import React from "react"
+import React, { useEffect } from "react"
 import { useParams } from "react-router-dom"
-import UpdateConnectionForm from "components/connections/UpdateConnectionForm"
 import NotFound from "pages/NotFound"
 import {
   GetConnection,
@@ -11,6 +9,7 @@ import {
 import GraphError from "components/utils/GraphError"
 import PageLayout from "components/layout/PageLayout"
 import ConnectionHeader from "components/connections/ConnectionHeader"
+import ConnectionContent from "components/connections/ConnectionContent"
 
 export const GET_CONNECTION = gql`
   query GetConnection($workspaceId: ID!, $connectionId: ID!) {
@@ -28,6 +27,45 @@ export const GET_CONNECTION = gql`
         metadata
         created_at
         updated_at
+        last_run {
+          id
+          status
+          created_at
+          started_at
+          finished_at
+          metadata
+          user {
+            id
+            first_name
+            last_name
+          }
+        }
+        last_successful_run {
+          id
+          status
+          created_at
+          started_at
+          finished_at
+          metadata
+          user {
+            id
+            first_name
+            last_name
+          }
+        }
+        runs(order: { created_at: DESC }) {
+          id
+          status
+          created_at
+          started_at
+          finished_at
+          user {
+            id
+            first_name
+            last_name
+          }
+          metadata
+        }
       }
     }
   }
@@ -36,7 +74,7 @@ export const GET_CONNECTION = gql`
 const Connection: React.FC = () => {
   const { workspaceId, connectionId } = useParams()
 
-  const { loading, error, data } = useQuery<
+  const { loading, error, data, startPolling, stopPolling } = useQuery<
     GetConnection,
     GetConnectionVariables
   >(GET_CONNECTION, {
@@ -46,6 +84,16 @@ const Connection: React.FC = () => {
     },
   })
 
+  const status = data?.workspace.connection?.last_run?.status
+
+  useEffect(() => {
+    if (!status) return
+
+    if (!["success", "error"].includes(status)) return
+
+    stopPolling()
+  }, [status, stopPolling])
+
   if (error) return <GraphError error={error} />
   if (loading) return <PageLayout loading />
 
@@ -53,14 +101,12 @@ const Connection: React.FC = () => {
 
   if (!connection) return <NotFound />
 
+  const handleRefresh = () => startPolling(1000)
+
   return (
     <PageLayout>
-      <ConnectionHeader connection={connection} />
-      <Grid container sx={{ px: 3 }}>
-        <Grid item md={4}>
-          <UpdateConnectionForm connection={connection} />
-        </Grid>
-      </Grid>
+      <ConnectionHeader connection={connection} onRefresh={handleRefresh} />
+      <ConnectionContent connection={connection} />
     </PageLayout>
   )
 }

@@ -12,7 +12,9 @@ from api.types import (
     User,
     BasicResult,
 )
-from connections.models import Connection as ConnectionModel
+from api.queries import IsAuthenticated
+from connections.models import Connection as ConnectionModel, Run as RunModel
+from connections.tasks import run_update_server
 from strawberry.scalars import JSON
 import strawberry
 from strawberry.types import Info
@@ -94,6 +96,32 @@ class Mutation:
         connection.metadata = metadata
         connection.secrets = mergedSecrets
         await sync_to_async(connection.save)()
+
+        return connection
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def runConnection(
+        self,
+        info: Info,
+        connectionId: strawberry.ID,
+    ) -> Connection:
+        user = get_user(info)
+
+        try:
+            connection = await sync_to_async(ConnectionModel.objects.get)(
+                pk=connectionId, workspace__memberships__user_id=user.id
+            )
+        except ConnectionModel.DoesNotExist:
+            raise Exception("Can't find connection")
+
+        run = await sync_to_async(RunModel.objects.create)(
+            connection=connection,
+            workspace_id=connection.workspace_id,
+            user=user,
+            status="queued",
+        )
+
+        run_update_server.delay(run.id)
 
         return connection
 

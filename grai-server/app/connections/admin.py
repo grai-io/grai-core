@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Connector, Connection
+from .models import Connector, Connection, Run
 
 
 class ConnectorAdmin(admin.ModelAdmin):
@@ -31,5 +31,25 @@ class ConnectionAdmin(admin.ModelAdmin):
     )
 
 
+class RunAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "connection",
+        "status",
+        "workspace",
+        "started_at",
+        "user",
+    )
+
+    search_fields = ["id"]
+
+    list_filter = (
+        "status",
+        ("connection", admin.RelatedOnlyFieldListFilter),
+        "workspace",
+    )
+
+
 admin.site.register(Connector, ConnectorAdmin)
 admin.site.register(Connection, ConnectionAdmin)
+admin.site.register(Run, RunAdmin)

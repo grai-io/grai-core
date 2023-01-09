@@ -42,7 +42,7 @@ const NodeHeader: React.FC<NodeHeaderProps> = ({ node }) => {
           {node?.display_name ?? node?.id}
         </Typography>
         <Box>
-          <Tooltip title="Copy Node Name">
+          <Tooltip title="Copy Table Name">
             <IconButton sx={{ mt: 0.5 }}>
               <ContentCopy sx={{ fontSize: 15 }} />
             </IconButton>

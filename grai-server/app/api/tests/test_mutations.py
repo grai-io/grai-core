@@ -163,6 +163,116 @@ async def test_update_connection_no_membership(test_info):
 
 
 @pytest.mark.django_db
+async def test_run_connection(test_info):
+    info, workspace, user = test_info
+
+    connector = await Connector.objects.acreate(name="Connector 3")
+    connection = await Connection.objects.acreate(
+        workspace=workspace,
+        connector=connector,
+        namespace="default",
+        name="test connection2",
+        metadata={},
+        secrets={},
+    )
+
+    mutation = """
+        mutation RunConnection($connectionId: ID!) {
+            runConnection(connectionId: $connectionId) {
+                id
+            }
+        }
+    """
+
+    resp = await schema.execute(
+        mutation,
+        variable_values={
+            "connectionId": str(connection.id),
+        },
+        context_value=info,
+    )
+
+    assert resp.errors is None
+    assert resp.data["runConnection"] == {
+        "id": str(connection.id),
+    }
+
+
+@pytest.mark.django_db
+async def test_run_connection_no_membership(test_info):
+    info, workspace, user = test_info
+
+    workspace2 = await Workspace.objects.acreate(name="W4")
+
+    connector = await Connector.objects.acreate(name="Connector 8")
+    connection = await Connection.objects.acreate(
+        workspace=workspace2,
+        connector=connector,
+        namespace="default",
+        name="test connection2",
+        metadata={},
+        secrets={},
+    )
+
+    mutation = """
+        mutation RunConnection($connectionId: ID!) {
+            runConnection(connectionId: $connectionId) {
+                id
+            }
+        }
+    """
+
+    resp = await schema.execute(
+        mutation,
+        variable_values={
+            "connectionId": str(connection.id),
+        },
+        context_value=info,
+    )
+
+    assert (
+        str(resp.errors)
+        == """[GraphQLError("Can't find connection", locations=[SourceLocation(line=3, column=13)], path=['runConnection'])]"""
+    )
+
+
+@pytest.mark.django_db
+async def test_run_connection_postgres(test_info):
+    info, workspace, user = test_info
+
+    connector = await Connector.objects.acreate(name="Postgres")
+    connection = await Connection.objects.acreate(
+        workspace=workspace,
+        connector=connector,
+        namespace="default",
+        name="test connection2",
+        metadata={},
+        secrets={},
+    )
+
+    mutation = """
+        mutation RunConnection($connectionId: ID!) {
+            runConnection(connectionId: $connectionId) {
+                id
+            }
+        }
+    """
+
+    resp = await schema.execute(
+        mutation,
+        variable_values={
+            "connectionId": str(connection.id),
+        },
+        context_value=info,
+    )
+
+    assert resp.errors is None
+    assert resp.data["runConnection"] == {
+        "id": str(connection.id),
+    }
+
+
+@pytest.mark.django_db
 async def test_create_api_key(test_info):
     info, workspace, user = test_info
 

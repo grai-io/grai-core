@@ -4,6 +4,7 @@ from lineage.models import Edge as EdgeModel, Node as NodeModel
 from connections.models import (
     Connection as ConnectionModel,
     Connector as ConnectorModel,
+    Run as RunModel,
 )
 from workspaces.models import (
     Workspace as WorkspaceModel,
@@ -37,7 +38,7 @@ class UserOrder:
     updated_at: auto
 
 
-@strawberry.django.type(UserModel, order=UserOrder, filters=UserFilter, pagination=True)
+@strawberry.django.type(UserModel, order=UserOrder, filters=UserFilter)
 class User:
     id: auto
     username: auto
@@ -192,6 +193,26 @@ class Connection:
     updated_at: auto
     created_by: User
 
+    runs: List["Run"]
+    # run: Run = strawberry.django.field
+    @strawberry.django.field
+    def run(self, pk: strawberry.ID) -> "Run":
+        return RunModel.objects.get(id=pk)
+
+    @strawberry.django.field
+    def last_run(self) -> Optional["Run"]:
+        return (
+            RunModel.objects.filter(connection=self.id).order_by("-created_at").first()
+        )
+
+    @strawberry.django.field
+    def last_successful_run(self) -> Optional["Run"]:
+        return (
+            RunModel.objects.filter(connection=self.id, status="success")
+            .order_by("-created_at")
+            .first()
+        )
+
 
 @strawberry.django.filters.filter(WorkspaceModel)
 class WorkspaceFilter:
@@ -229,6 +250,12 @@ class Workspace:
     @strawberry.django.field
     def connection(self, pk: strawberry.ID) -> Connection:
         return ConnectionModel.objects.get(id=pk)
+
+    runs: List["Run"]
+    # run: Run = strawberry.django.field
+    @strawberry.django.field
+    def run(self, pk: strawberry.ID) -> "Run":
+        return RunModel.objects.get(id=pk)
 
     memberships: List["Membership"]
     api_keys: List["WorkspaceAPIKey"]
@@ -306,3 +333,22 @@ class KeyResult:
 @strawberry.type
 class BasicResult:
     success: bool
+
+
+@strawberry_django.ordering.order(RunModel)
+class RunOrder:
+    id: auto
+    created_at: auto
+
+
+@strawberry.django.type(RunModel, order=RunOrder, pagination=True)
+class Run:
+    id: auto
+    connection: Connection
+    status: auto
+    metadata: JSON
+    created_at: auto
+    updated_at: auto
+    started_at: Optional[datetime.datetime]
+    finished_at: Optional[datetime.datetime]
+    user: Optional[User]
