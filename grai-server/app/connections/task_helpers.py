@@ -70,11 +70,11 @@ def update(
         values = item.spec.__dict__
 
         values["workspace"] = workspace
+        values["display_name"] = values["name"]
 
         if type == "Edge":
             values["source"] = get_node(workspace, values["source"])
             values["destination"] = get_node(workspace, values["destination"])
-            values["display_name"] = values.get("display_name", values["name"])
 
         return Model(**values)
 

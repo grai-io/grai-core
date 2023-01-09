@@ -115,6 +115,7 @@ THIRD_PARTY_APPS = [
     "health_check.cache",
     "health_check.storage",
     "health_check.contrib.migrations",
+    "django_celery_beat",
 ]
 
 THE_GUIDE_APPS = [

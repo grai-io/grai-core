@@ -178,6 +178,7 @@ test("refresh no last_sucessful_run", async () => {
                 metadata: {},
               },
               metadata: {},
+              schedules: null,
               created_at: "1234",
               updated_at: "1234",
               last_run: {

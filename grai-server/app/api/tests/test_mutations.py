@@ -15,8 +15,8 @@ async def test_create_connection(test_info):
     connector = await Connector.objects.acreate(name="Connector 1")
 
     mutation = """
-        mutation CreateConnection($workspaceId: ID!, $connectorId: ID!, $namespace: String!, $name: String!, $metadata: JSON!, $secrets: JSON!) {
-            createConnection(workspaceId: $workspaceId, connectorId: $connectorId, namespace: $namespace, name: $name, metadata: $metadata, secrets: $secrets) {
+        mutation CreateConnection($workspaceId: ID!, $connectorId: ID!, $namespace: String!, $name: String!, $metadata: JSON!, $secrets: JSON, $schedules: JSON, $is_active: Boolean) {
+            createConnection(workspaceId: $workspaceId, connectorId: $connectorId, namespace: $namespace, name: $name, metadata: $metadata, secrets: $secrets, schedules: $schedules, is_active: $is_active) {
                 id
                 name
             }
@@ -31,7 +31,9 @@ async def test_create_connection(test_info):
             "namespace": "default",
             "name": "test connection",
             "metadata": {},
-            "secrets": {},
+            "secrets": None,
+            "schedules": None,
+            "is_active": False,
         },
         context_value=info,
     )
@@ -50,8 +52,8 @@ async def test_create_connection_no_membership(test_info):
     connector = await Connector.objects.acreate(name="Connector 6")
 
     mutation = """
-        mutation CreateConnection($workspaceId: ID!, $connectorId: ID!, $namespace: String!, $name: String!, $metadata: JSON!, $secrets: JSON!) {
-            createConnection(workspaceId: $workspaceId, connectorId: $connectorId, namespace: $namespace, name: $name, metadata: $metadata, secrets: $secrets) {
+        mutation CreateConnection($workspaceId: ID!, $connectorId: ID!, $namespace: String!, $name: String!, $metadata: JSON!, $secrets: JSON, $schedules: JSON, $is_active: Boolean) {
+            createConnection(workspaceId: $workspaceId, connectorId: $connectorId, namespace: $namespace, name: $name, metadata: $metadata, secrets: $secrets, schedules: $schedules, is_active: $is_active) {
                 id
                 name
             }
@@ -66,7 +68,9 @@ async def test_create_connection_no_membership(test_info):
             "namespace": "default",
             "name": "test connection",
             "metadata": {},
-            "secrets": {},
+            "secrets": None,
+            "schedules": None,
+            "is_active": False,
         },
         context_value=info,
     )
@@ -92,8 +96,8 @@ async def test_update_connection(test_info):
     )
 
     mutation = """
-        mutation UpdateConnection($id: ID!, $namespace: String!, $name: String!, $metadata: JSON!, $secrets: JSON!) {
-            updateConnection(id: $id, namespace: $namespace, name: $name, metadata: $metadata, secrets: $secrets) {
+        mutation UpdateConnection($id: ID!, $namespace: String!, $name: String!, $metadata: JSON!, $secrets: JSON, $schedules: JSON, $is_active: Boolean) {
+            updateConnection(id: $id, namespace: $namespace, name: $name, metadata: $metadata, secrets: $secrets, schedules: $schedules, is_active: $is_active) {
                 id
                 name
             }
@@ -107,7 +111,9 @@ async def test_update_connection(test_info):
             "namespace": "default",
             "name": "test connection3",
             "metadata": {},
-            "secrets": {},
+            "secrets": None,
+            "schedules": None,
+            "is_active": False,
         },
         context_value=info,
     )
@@ -136,8 +142,8 @@ async def test_update_connection_no_membership(test_info):
     )
 
     mutation = """
-        mutation UpdateConnection($id: ID!, $namespace: String!, $name: String!, $metadata: JSON!, $secrets: JSON!) {
-            updateConnection(id: $id, namespace: $namespace, name: $name, metadata: $metadata, secrets: $secrets) {
+        mutation UpdateConnection($id: ID!, $namespace: String!, $name: String!, $metadata: JSON!, $secrets: JSON, $schedules: JSON, $is_active: Boolean) {
+            updateConnection(id: $id, namespace: $namespace, name: $name, metadata: $metadata, secrets: $secrets, schedules: $schedules, is_active: $is_active) {
                 id
                 name
             }
@@ -151,7 +157,9 @@ async def test_update_connection_no_membership(test_info):
             "namespace": "default",
             "name": "test connection3",
             "metadata": {},
-            "secrets": {},
+            "secrets": None,
+            "schedules": None,
+            "is_active": False,
         },
         context_value=info,
     )

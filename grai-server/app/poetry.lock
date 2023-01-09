@@ -313,6 +313,21 @@ argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
 
 [[package]]
+name = "django-celery-beat"
+version = "2.4.0"
+description = "Database-backed Periodic Tasks."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+celery = ">=5.2.3,<6.0"
+Django = ">=2.2,<4.2"
+django-timezone-field = ">=5.0"
+python-crontab = ">=2.3.4"
+tzdata = "*"
+
+[[package]]
 name = "django-cors-headers"
 version = "3.13.0"
 description = "django-cors-headers is a Django application for handling the server headers required for Cross-Origin Resource Sharing (CORS)."
@@ -421,6 +436,17 @@ python-versions = ">=3.7"
 [package.dependencies]
 django = "*"
 typing-extensions = "*"
+
+[[package]]
+name = "django-timezone-field"
+version = "5.0"
+description = "A Django app providing DB, form, and REST framework fields for zoneinfo and pytz timezone objects."
+category = "main"
+optional = false
+python-versions = ">=3.7,<4.0"
+
+[package.dependencies]
+pytz = "*"
 
 [[package]]
 name = "djangorestframework"
@@ -894,6 +920,21 @@ docs = ["sphinx", "sphinx-rtd-theme"]
 testing = ["Django", "django-configurations (>=2.0)"]
 
 [[package]]
+name = "python-crontab"
+version = "2.7.1"
+description = "Python Crontab API"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+python-dateutil = "*"
+
+[package.extras]
+cron-description = ["cron-descriptor"]
+cron-schedule = ["croniter"]
+
+[[package]]
 name = "python-dateutil"
 version = "2.8.2"
 description = "Extensions to the standard Python datetime module"
@@ -1274,7 +1315,7 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.11"
-content-hash = "6534e50f1227a3dc719b02aad6f3dc02dfce5ef5e868218d1b54b71a0c554faf"
+content-hash = "e713d102fab651f7bb967db07367656bc85567c3dda0368eae9b583ed53ebd9b"
 
 [metadata.files]
 amqp = [
@@ -1591,6 +1632,10 @@ django = [
     {file = "Django-4.1.5-py3-none-any.whl", hash = "sha256:4b214a05fe4c99476e99e2445c8b978c8369c18d4dea8e22ec412862715ad763"},
     {file = "Django-4.1.5.tar.gz", hash = "sha256:ff56ebd7ead0fd5dbe06fe157b0024a7aaea2e0593bb3785fb594cf94dad58ef"},
 ]
+django-celery-beat = [
+    {file = "django-celery-beat-2.4.0.tar.gz", hash = "sha256:58efe9460e4373a241c2b3d839518f29a28ae19bc80a8dba20da204c7ea50613"},
+    {file = "django_celery_beat-2.4.0-py3-none-any.whl", hash = "sha256:a20b7a7857daaa2eea1f4cfefb2a965456800216f5763c6cf918c2e21372b3c8"},
+]
 django-cors-headers = [
     {file = "django-cors-headers-3.13.0.tar.gz", hash = "sha256:f9dc6b4e3f611c3199700b3e5f3398c28757dcd559c2f82932687f3d0443cfdf"},
     {file = "django_cors_headers-3.13.0-py3-none-any.whl", hash = "sha256:37e42883b5f1f2295df6b4bba96eb2417a14a03270cb24b2a07f021cd4487cf4"},
@@ -1621,6 +1666,10 @@ django-stubs = [
 django-stubs-ext = [
     {file = "django-stubs-ext-0.7.0.tar.gz", hash = "sha256:4fd8cdbc68d1a421f21bb7e0d9e76d50f6a4b504d350ba786405daf536e90c21"},
     {file = "django_stubs_ext-0.7.0-py3-none-any.whl", hash = "sha256:d729fbc7fe8970a7e26b35956c35b48502516f011d523c0577bdfb02ed956284"},
+]
+django-timezone-field = [
+    {file = "django-timezone-field-5.0.tar.gz", hash = "sha256:15746ed367a5a32eda76cfa2886eeec1de8cda79f519b7c5e12f87ed7cdbd663"},
+    {file = "django_timezone_field-5.0-py3-none-any.whl", hash = "sha256:199f211082eeac7e83563929b8ce41399c1c0f00dfc2f36bc00bea381027eaaa"},
 ]
 djangorestframework = [
     {file = "djangorestframework-3.14.0-py3-none-any.whl", hash = "sha256:eb63f58c9f218e1a7d064d17a70751f528ed4e1d35547fdade9aaf4cd103fd08"},
@@ -1881,6 +1930,10 @@ pytest-asyncio = [
 pytest-django = [
     {file = "pytest-django-4.5.2.tar.gz", hash = "sha256:d9076f759bb7c36939dbdd5ae6633c18edfc2902d1a69fdbefd2426b970ce6c2"},
     {file = "pytest_django-4.5.2-py3-none-any.whl", hash = "sha256:c60834861933773109334fe5a53e83d1ef4828f2203a1d6a0fa9972f4f75ab3e"},
+]
+python-crontab = [
+    {file = "python-crontab-2.7.1.tar.gz", hash = "sha256:b21af4647c7bbb848fef2f020616c6b0289dcb9f94b4f991a55310ff9bec5749"},
+    {file = "python_crontab-2.7.1-py3-none-any.whl", hash = "sha256:9c374d1c9d401afdd8dd958f20077f74c158ab3fffb9604296802715e887fe48"},
 ]
 python-dateutil = [
     {file = "python-dateutil-2.8.2.tar.gz", hash = "sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86"},

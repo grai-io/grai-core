@@ -188,6 +188,7 @@ class Connection:
     namespace: auto
     name: auto
     metadata: JSON
+    schedules: JSON
     is_active: auto
     created_at: auto
     updated_at: auto

@@ -4,26 +4,27 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: UpdateConnection
+// GraphQL mutation operation: UpdateConnectionSchedule
 // ====================================================
 
-export interface UpdateConnection_updateConnection {
+export interface UpdateConnectionSchedule_updateConnection {
   __typename: "Connection";
   id: any;
   namespace: string;
   name: string;
   metadata: any;
+  schedules: any | null;
   is_active: boolean;
   created_at: any;
   updated_at: any;
 }
 
-export interface UpdateConnection {
-  updateConnection: UpdateConnection_updateConnection;
+export interface UpdateConnectionSchedule {
+  updateConnection: UpdateConnectionSchedule_updateConnection;
 }
 
-export interface UpdateConnectionVariables {
-  connectionId: string;
+export interface UpdateConnectionScheduleVariables {
+  id: string;
   namespace: string;
   name: string;
   metadata: any;

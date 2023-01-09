@@ -1,3 +1,4 @@
+from typing import Optional
 from decouple import config
 from workspaces.models import (
     Workspace as WorkspaceModel,
@@ -53,7 +54,9 @@ class Mutation:
         namespace: str,
         name: str,
         metadata: JSON,
-        secrets: JSON,
+        secrets: Optional[JSON],
+        schedules: Optional[JSON],
+        is_active: Optional[bool],
     ) -> Connection:
         workspace = await get_workspace(info, workspaceId)
 
@@ -64,6 +67,8 @@ class Mutation:
             name=name,
             metadata=metadata,
             secrets=secrets,
+            schedules=schedules,
+            is_active=is_active if is_active is not None else True,
         )
 
         return connection
@@ -76,7 +81,9 @@ class Mutation:
         namespace: str,
         name: str,
         metadata: JSON,
-        secrets: JSON,
+        secrets: Optional[JSON],
+        schedules: Optional[JSON],
+        is_active: Optional[bool],
     ) -> Connection:
         user = get_user(info)
 
@@ -88,13 +95,15 @@ class Mutation:
             raise Exception("Can't find connection")
 
         mergedSecrets = dict()
-        mergedSecrets.update(connection.secrets)
-        mergedSecrets.update(secrets)
+        mergedSecrets.update(connection.secrets if connection.secrets else {})
+        mergedSecrets.update(secrets if secrets else {})
 
         connection.namespace = namespace
         connection.name = name
         connection.metadata = metadata
         connection.secrets = mergedSecrets
+        connection.schedules = schedules
+        connection.is_active = is_active
         await sync_to_async(connection.save)()
 
         return connection

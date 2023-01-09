@@ -75,9 +75,8 @@ test("submit", async () => {
           field1: "value1",
         },
         secrets: {},
-        // secrets: {
-        //   field2: "value2",
-        // },
+        schedules: null,
+        is_active: true,
       },
     },
     result: {
@@ -94,6 +93,8 @@ test("submit", async () => {
           metadata: {
             field1: "value1",
           },
+          secrets: null,
+          schedules: null,
           is_active: true,
           created_at: "",
           updated_at: "",
