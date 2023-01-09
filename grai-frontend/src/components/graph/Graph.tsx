@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import BaseGraph, { getAllIncomers, getAllOutgoers } from "./BaseGraph"
+import BaseGraph from "./BaseGraph"
 import { Edge as RFEdge, Node as RFNode } from "reactflow"
 import notEmpty from "helpers/notEmpty"
 import { Table, Node as NodeType } from "helpers/graph"
@@ -26,6 +26,7 @@ interface Node extends NodeType {
 
 type GraphProps = {
   tables: Table<Node>[]
+  nodes: Node[]
   edges: Edge[]
   errors?: Error[] | null
   limitGraph?: boolean
@@ -36,6 +37,7 @@ const position = { x: 0, y: 0 }
 
 const Graph: React.FC<GraphProps> = ({
   tables,
+  nodes,
   edges,
   errors,
   limitGraph,
@@ -46,7 +48,7 @@ const Graph: React.FC<GraphProps> = ({
 
   const visibleTables = tables.filter(table => !hidden.includes(table.id))
 
-  const initialNodes: RFNode[] = tables
+  const initialTables: RFNode[] = tables
     .filter(table => !hidden.includes(table.id))
     .map(table => ({
       id: table.id,
@@ -79,7 +81,7 @@ const Graph: React.FC<GraphProps> = ({
       position,
     }))
 
-  const nameToNode = (name: string) => tables.find(n => n.name === name)
+  const nameToNode = (name: string) => nodes.find(n => n.name === name)
 
   const enrichedErrors = errors?.map(error => ({
     ...error,
@@ -109,29 +111,38 @@ const Graph: React.FC<GraphProps> = ({
     }
   })
 
-  const errorIds: string[] =
-    enrichedErrors?.map(e => e.destinationId).filter(notEmpty) ?? []
+  const errorSourceIds =
+    enrichedErrors?.map(error => error.sourceId).filter(notEmpty) ?? []
+
+  const errorDestinationIds =
+    enrichedErrors?.map(error => error.destinationId).filter(notEmpty) ?? []
+
+  const errorTables = tables.filter(
+    table =>
+      table.columns.filter(
+        column =>
+          errorSourceIds.includes(column.id) ||
+          errorDestinationIds.includes(column.id)
+      ).length > 0
+  )
+
+  const errorTableIds = errorTables.map(table => table.id)
 
   const filteredNodes = limitGraph
-    ? initialNodes.filter(
-        node =>
-          getAllOutgoers(node, initialNodes, initialEdges).filter(n =>
-            errorIds?.includes(n.id)
-          ).length > 0 ||
-          getAllIncomers(node, initialNodes, initialEdges).filter(n =>
-            errorIds?.includes(n.id)
-          ).length > 0 ||
-          errorIds?.includes(node.id)
-      )
-    : initialNodes
+    ? initialTables.filter(table => errorTableIds.includes(table.id))
+    : initialTables
 
-  const filteredNodesIds = filteredNodes.map(n => n.id)
+  const errorTableColumnIds = errorTables.reduce(
+    (res: string[], table) =>
+      res.concat(table.columns.map(column => column.id)),
+    []
+  )
 
   const filteredEdges = limitGraph
     ? initialEdges.filter(
         edge =>
-          filteredNodesIds.includes(edge.source) &&
-          filteredNodesIds.includes(edge.target)
+          errorTableColumnIds.includes(edge.source) &&
+          errorTableColumnIds.includes(edge.target)
       )
     : initialEdges
 
