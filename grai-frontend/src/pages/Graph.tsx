@@ -1,5 +1,5 @@
 import React from "react"
-import { Alert, Box, Typography } from "@mui/material"
+import { Alert, Box } from "@mui/material"
 import GraphComponent, { Error } from "components/graph/Graph"
 import { gql, useQuery } from "@apollo/client"
 import theme from "theme"
@@ -89,6 +89,7 @@ const Graph: React.FC = () => {
       >
         <GraphComponent
           tables={tables}
+          nodes={data.workspace.nodes}
           edges={data.workspace.edges}
           errors={errors}
           limitGraph={limitGraph}
