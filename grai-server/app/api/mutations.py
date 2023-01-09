@@ -106,7 +106,14 @@ class Mutation:
         connectionId: strawberry.ID,
     ) -> Connection:
         user = get_user(info)
-        connection = await sync_to_async(ConnectionModel.objects.get)(pk=connectionId)
+
+        try:
+            connection = await sync_to_async(ConnectionModel.objects.get)(
+                pk=connectionId, workspace__memberships__user_id=user.id
+            )
+        except ConnectionModel.DoesNotExist:
+            raise Exception("Can't find connection")
+
         run = await sync_to_async(RunModel.objects.create)(
             connection=connection,
             workspace_id=connection.workspace_id,
