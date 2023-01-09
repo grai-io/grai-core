@@ -1,4 +1,5 @@
 from connections.models import Connector, Connection
+from workspaces.models import Workspace
 from api.schema import schema
 import pytest
 from .common import test_info
@@ -38,6 +39,42 @@ async def test_create_connection(test_info):
     assert resp.errors is None
     assert resp.data["createConnection"]["id"] != None
     assert resp.data["createConnection"]["name"] == "test connection"
+
+
+@pytest.mark.django_db
+async def test_create_connection_no_membership(test_info):
+    info, workspace, user = test_info
+
+    workspace2 = await Workspace.objects.acreate(name="W2")
+
+    connector = await Connector.objects.acreate(name="Connector 6")
+
+    mutation = """
+        mutation CreateConnection($workspaceId: ID!, $connectorId: ID!, $namespace: String!, $name: String!, $metadata: JSON!, $secrets: JSON!) {
+            createConnection(workspaceId: $workspaceId, connectorId: $connectorId, namespace: $namespace, name: $name, metadata: $metadata, secrets: $secrets) {
+                id
+                name
+            }
+        }
+    """
+
+    resp = await schema.execute(
+        mutation,
+        variable_values={
+            "workspaceId": str(workspace2.id),
+            "connectorId": str(connector.id),
+            "namespace": "default",
+            "name": "test connection",
+            "metadata": {},
+            "secrets": {},
+        },
+        context_value=info,
+    )
+
+    assert (
+        str(resp.errors)
+        == """[GraphQLError("Can\'t find workspace", locations=[SourceLocation(line=3, column=13)], path=[\'createConnection\'])]"""
+    )
 
 
 @pytest.mark.django_db
@@ -83,6 +120,49 @@ async def test_update_connection(test_info):
 
 
 @pytest.mark.django_db
+async def test_update_connection_no_membership(test_info):
+    info, workspace, user = test_info
+
+    workspace2 = await Workspace.objects.acreate(name="W3")
+
+    connector = await Connector.objects.acreate(name="Connector 7")
+    connection = await Connection.objects.acreate(
+        workspace=workspace2,
+        connector=connector,
+        namespace="default",
+        name="test connection2",
+        metadata={},
+        secrets={},
+    )
+
+    mutation = """
+        mutation UpdateConnection($id: ID!, $namespace: String!, $name: String!, $metadata: JSON!, $secrets: JSON!) {
+            updateConnection(id: $id, namespace: $namespace, name: $name, metadata: $metadata, secrets: $secrets) {
+                id
+                name
+            }
+        }
+    """
+
+    resp = await schema.execute(
+        mutation,
+        variable_values={
+            "id": str(connection.id),
+            "namespace": "default",
+            "name": "test connection3",
+            "metadata": {},
+            "secrets": {},
+        },
+        context_value=info,
+    )
+
+    assert (
+        str(resp.errors)
+        == """[GraphQLError("Can't find connection", locations=[SourceLocation(line=3, column=13)], path=['updateConnection'])]"""
+    )
+
+
+@pytest.mark.django_db
 async def test_run_connection(test_info):
     info, workspace, user = test_info
 
@@ -116,6 +196,44 @@ async def test_run_connection(test_info):
     assert resp.data["runConnection"] == {
         "id": str(connection.id),
     }
+
+
+@pytest.mark.django_db
+async def test_run_connection_no_membership(test_info):
+    info, workspace, user = test_info
+
+    workspace2 = await Workspace.objects.acreate(name="W4")
+
+    connector = await Connector.objects.acreate(name="Connector 8")
+    connection = await Connection.objects.acreate(
+        workspace=workspace2,
+        connector=connector,
+        namespace="default",
+        name="test connection2",
+        metadata={},
+        secrets={},
+    )
+
+    mutation = """
+        mutation RunConnection($connectionId: ID!) {
+            runConnection(connectionId: $connectionId) {
+                id
+            }
+        }
+    """
+
+    resp = await schema.execute(
+        mutation,
+        variable_values={
+            "connectionId": str(connection.id),
+        },
+        context_value=info,
+    )
+
+    assert (
+        str(resp.errors)
+        == """[GraphQLError("Can't find connection", locations=[SourceLocation(line=3, column=13)], path=['runConnection'])]"""
+    )
 
 
 @pytest.mark.django_db
