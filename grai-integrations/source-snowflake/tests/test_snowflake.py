@@ -1,6 +1,7 @@
 import os
 
 import pytest
+
 from grai_source_snowflake.loader import SnowflakeConnector
 
 # Tests only run with a separate snowflake container deployed

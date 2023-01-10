@@ -1,4 +1,5 @@
 import pytest
+
 from grai_source_dbt.adapters import adapt_to_client
 from grai_source_dbt.loader import DBTGraph, Manifest
 from grai_source_dbt.models.tests import Test

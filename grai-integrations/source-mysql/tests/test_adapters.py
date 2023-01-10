@@ -1,6 +1,7 @@
 import pytest
 from grai_client.schemas.edge import EdgeV1
 from grai_client.schemas.node import NodeV1
+
 from grai_source_mysql.adapters import adapt_to_client
 from grai_source_mysql.models import Column, ColumnID, Edge, Table
 

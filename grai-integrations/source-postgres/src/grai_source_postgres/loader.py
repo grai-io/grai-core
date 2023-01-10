@@ -4,6 +4,7 @@ from typing import Any, Callable, Dict, List, Optional, Union
 
 import psycopg2
 import psycopg2.extras
+
 from grai_source_postgres.models import (
     Column,
     ColumnID,

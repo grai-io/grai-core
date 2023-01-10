@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Dict, Type
 
 import typer
+
 from grai_cli.api.entrypoint import app
 from grai_cli.settings.config import config
 from grai_cli.utilities.headers import authenticate
