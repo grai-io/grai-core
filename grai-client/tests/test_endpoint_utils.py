@@ -3,6 +3,7 @@ import uuid
 from typing import get_args
 
 import pytest
+
 from grai_client.endpoints.utilities import serialize_obj
 from grai_client.schemas import edge, node, schema
 
