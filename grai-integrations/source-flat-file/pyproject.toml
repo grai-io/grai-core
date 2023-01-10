@@ -24,6 +24,7 @@ pytest = "^7.2.0"
 
 [tool.isort]
 profile = "black"
+known_first_party = "grai_source_flat_file"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

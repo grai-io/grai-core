@@ -1,6 +1,7 @@
 import pytest
-from connections.task_helpers import deactivate, get_node, update
 from grai_client.schemas.node import NodeID, NodeV1
+
+from connections.task_helpers import deactivate, get_node, update
 from lineage.models import Node
 from workspaces.models import Workspace
 

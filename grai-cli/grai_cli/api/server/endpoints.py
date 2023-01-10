@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Optional
 
 import typer
+
 from grai_cli.api.entrypoint import app
 from grai_cli.api.server.setup import client_app, client_get_app, get_default_client
 from grai_cli.utilities import utilities

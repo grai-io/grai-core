@@ -3,6 +3,7 @@ import shelve
 import uuid
 
 import typer
+
 from grai_cli.settings.config import config
 
 

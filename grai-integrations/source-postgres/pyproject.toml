@@ -25,6 +25,7 @@ pytest = "^7.2.0"
 
 [tool.isort]
 profile = "black"
+known_first_party = "grai_source_postgres"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
