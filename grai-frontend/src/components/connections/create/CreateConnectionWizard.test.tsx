@@ -1,5 +1,4 @@
 import userEvent from "@testing-library/user-event"
-import { GET_CONNECTORS } from "components/form/fields/Connector"
 import React from "react"
 import {
   fireEvent,
@@ -40,34 +39,34 @@ test("close", async () => {
 test("submit", async () => {
   const user = userEvent.setup()
 
-  const connectorsMock = {
-    request: {
-      query: GET_CONNECTORS,
-    },
-    result: {
-      data: {
-        connectors: [
-          {
-            id: "1",
-            name: "Test Connector 1",
-            metadata: {
-              fields: [
-                {
-                  name: "field1",
-                  label: "Field 1",
-                },
-                {
-                  name: "field2",
-                  label: "Field 2",
-                  secret: true,
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  }
+  // const connectorsMock = {
+  //   request: {
+  //     query: GET_CONNECTORS,
+  //   },
+  //   result: {
+  //     data: {
+  //       connectors: [
+  //         {
+  //           id: "1",
+  //           name: "Test Connector 1",
+  //           metadata: {
+  //             fields: [
+  //               {
+  //                 name: "field1",
+  //                 label: "Field 1",
+  //               },
+  //               {
+  //                 name: "field2",
+  //                 label: "Field 2",
+  //                 secret: true,
+  //               },
+  //             ],
+  //           },
+  //         },
+  //       ],
+  //     },
+  //   },
+  // }
 
   const createMock = {
     request: {
@@ -116,7 +115,7 @@ test("submit", async () => {
 
   const { container } = renderWithMocks(
     <CreateConnectionWizard />,
-    [connectorsMock, createMock],
+    [createMock],
     {
       routes: ["/workspaces/:workspaceId/connections/:connectionId"],
     }

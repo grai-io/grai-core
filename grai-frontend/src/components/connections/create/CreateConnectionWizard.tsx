@@ -2,10 +2,10 @@ import { gql, useMutation } from "@apollo/client"
 import { ArrowForward } from "@mui/icons-material"
 import { LoadingButton } from "@mui/lab"
 import { Box, Button, Typography } from "@mui/material"
-import { ConnectorType } from "components/form/fields/Connector"
 import WizardLayout, { WizardSteps } from "components/wizards/WizardLayout"
 import React, { useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
+import { ConnectorType } from "../ConnectionsForm"
 import {
   CreateConnection,
   CreateConnectionVariables,
