@@ -2,6 +2,7 @@ import uuid
 from typing import Union
 
 import networkx as nx
+
 from grai_graph.graph import Graph
 
 

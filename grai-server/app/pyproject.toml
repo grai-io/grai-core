@@ -43,6 +43,7 @@ djangorestframework-stubs = "^1.7.0"
 
 [tool.isort]
 profile = "black"
+known_first_party = "the_guide"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

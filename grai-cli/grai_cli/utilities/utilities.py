@@ -7,9 +7,10 @@ from uuid import UUID
 
 import typer
 import yaml
-from grai_cli.settings.config import config
 from multimethod import multimethod
 from pydantic import BaseModel
+
+from grai_cli.settings.config import config
 
 HAS_RICH = importlib.util.find_spec("rich") is not None
 

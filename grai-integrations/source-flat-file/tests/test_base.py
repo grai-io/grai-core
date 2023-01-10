@@ -2,6 +2,7 @@ import os
 
 import pandas as pd
 from grai_client.endpoints.v1.client import ClientV1
+
 from grai_source_flat_file.adapters import adapt_to_client
 from grai_source_flat_file.base import update_server
 from grai_source_flat_file.loader import get_nodes_and_edges
