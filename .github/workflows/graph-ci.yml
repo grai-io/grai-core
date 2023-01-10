@@ -28,7 +28,7 @@ jobs:
 
     - run: |
         black . --check
-        isort . --profile black
+        isort . --profile black --check
 
   tests-graph:
     needs: lint-graph
