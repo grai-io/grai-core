@@ -1,9 +1,9 @@
-from connections.models import Connector, Connection, Run
-from connections.tasks import run_update_server, run_connection_schedule
-from workspaces.models import Workspace
 import pytest
-from django.test import TransactionTestCase
+from connections.models import Connection, Connector, Run
+from connections.tasks import run_connection_schedule, run_update_server
 from decouple import config
+from django.test import TransactionTestCase
+from workspaces.models import Workspace
 
 
 class TestUpdateServer(TransactionTestCase):

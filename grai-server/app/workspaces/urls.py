@@ -1,7 +1,7 @@
 from django.urls import path
 from rest_framework import routers
 
-from .views import WorkspaceViewSet, MembershipViewSet
+from .views import MembershipViewSet, WorkspaceViewSet
 
 app_name = "workspaces"
 

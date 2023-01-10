@@ -1,9 +1,10 @@
 from typing import Dict, List, Optional, TypeVar
 
 from grai_client.schemas.edge import Edge, EdgeV1
-from grai_client.schemas.node import Node, NodeV1, NodeID
+from grai_client.schemas.node import Node, NodeID, NodeV1
 from grai_client.schemas.utilities import merge_models
-from lineage.models import Node as NodeModel, Edge as EdgeModel
+from lineage.models import Edge as EdgeModel
+from lineage.models import Node as NodeModel
 from workspaces.models import Workspace
 
 T = TypeVar("T", Node, Edge)

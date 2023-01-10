@@ -1,7 +1,8 @@
 import datetime
 import uuid
+
 import pytest
-from connections.models import Connector, Connection, Run
+from connections.models import Connection, Connector, Run
 from workspaces.models import Workspace
 
 

@@ -1,8 +1,8 @@
 import uuid
 
 from django.db import models
-from rest_framework_api_key.models import AbstractAPIKey, BaseAPIKeyManager
 from django_multitenant.models import TenantModel
+from rest_framework_api_key.models import AbstractAPIKey, BaseAPIKeyManager
 
 
 class Workspace(TenantModel):

@@ -1,6 +1,7 @@
-from workspaces.models import Workspace
-from api.schema import schema
 import pytest
+from api.schema import schema
+from workspaces.models import Workspace
+
 from .common import test_info
 
 

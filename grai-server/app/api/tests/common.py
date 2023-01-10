@@ -1,7 +1,7 @@
-from workspaces.models import Workspace, Membership
 import pytest
-from django.http.request import HttpRequest
 from django.contrib.auth import get_user_model
+from django.http.request import HttpRequest
+from workspaces.models import Membership, Workspace
 
 
 class Info(object):
