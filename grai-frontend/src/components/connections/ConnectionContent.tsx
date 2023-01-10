@@ -1,11 +1,11 @@
 import { Box, Card, Grid, Table, TableBody, Typography } from "@mui/material"
 import React from "react"
 import ConnectionDetail from "./ConnectionDetail"
-import ConnectionRunDetail from "./ConnectionRunDetail"
-import ConnectionRunsTable from "./ConnectionRunsTable"
+import ConnectionRunDetail from "./runs/ConnectionRunDetail"
+import ConnectionRunsTable from "./runs/ConnectionRunsTable"
 import ConnectionSchedule, {
   Connection as BaseConnection,
-} from "./ConnectionSchedule"
+} from "./schedule/ConnectionSchedule"
 
 interface Run {
   id: string

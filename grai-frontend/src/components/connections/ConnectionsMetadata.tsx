@@ -4,7 +4,7 @@ import {
   ConnectorMetadataField,
   ConnectorType,
 } from "components/form/fields/Connector"
-import PasswordField from "./PasswordField"
+import PasswordField from "./fields/PasswordField"
 
 type ConnectionsMetadataProps = {
   connector: ConnectorType

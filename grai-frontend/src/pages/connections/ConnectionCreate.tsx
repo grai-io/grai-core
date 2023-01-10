@@ -1,6 +1,6 @@
+import CreateConnectionWizard from "components/connections/create/CreateConnectionWizard"
 import React from "react"
-import CreateConnectionForm from "components/connections/CreateConnectionForm"
 
-const ConnectionCreate: React.FC = () => <CreateConnectionForm />
+const ConnectionCreate: React.FC = () => <CreateConnectionWizard />
 
 export default ConnectionCreate
