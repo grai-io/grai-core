@@ -1,6 +1,4 @@
 import pytest
-from requests import RequestException
-
 from grai_client.endpoints.v1.client import ClientV1
 from grai_client.schemas.edge import EdgeV1
 from grai_client.schemas.node import NodeV1
@@ -11,6 +9,7 @@ from grai_client.testing.schema import (
     mock_v1_node,
 )
 from grai_client.utilities.tests import get_test_client
+from requests import RequestException
 
 client = get_test_client()
 

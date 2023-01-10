@@ -2,7 +2,6 @@ import datetime
 import uuid
 
 import pytest
-
 from grai_client.schemas import edge, node, schema
 from grai_client.update import update
 from grai_client.utilities.tests import get_test_client

@@ -4,6 +4,7 @@ import uuid
 # Create your tests here.
 import pytest
 from django.test import TestCase
+
 from lineage.models import Edge, Node
 from workspaces.models import Workspace
 

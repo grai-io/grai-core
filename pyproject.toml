@@ -15,7 +15,6 @@ pre-commit = "^2.20.0"
 
 [tool.isort]
 profile = "black"
-#src_paths = ["*"]#["grai-*", "grai-*/src", "grai-integrations/source-dbt/src", "grai-integrations/*", "grai-integrations/*/tests"]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

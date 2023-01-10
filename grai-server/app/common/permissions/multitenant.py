@@ -1,4 +1,5 @@
 from django_multitenant.utils import set_current_tenant
+
 from rest_framework import permissions
 from workspaces.models import Workspace, WorkspaceAPIKey
 

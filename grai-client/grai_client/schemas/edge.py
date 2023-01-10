@@ -1,11 +1,10 @@
 from typing import Callable, Dict, List, Literal, Optional, Type, Union
 from uuid import UUID
 
-from pydantic import Field, validator
-from typing_extensions import Annotated
-
 from grai_client.schemas.node import NodeID
 from grai_client.schemas.utilities import BaseSpec, GraiBaseModel, PlaceHolderSchema
+from pydantic import Field, validator
+from typing_extensions import Annotated
 
 
 class BaseEdge(GraiBaseModel):

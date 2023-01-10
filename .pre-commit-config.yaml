@@ -13,8 +13,8 @@ repos:
     rev: 5.11.4
     hooks:
       - id: isort
-        args: ['--resolve-all-configs', --profile black]
-
+        args: ['--resolve-all-configs', "--profile black"]
+        exclude: grai-server
   # - repo: https://github.com/pycqa/flake8
   #   rev: 4.0.1
   #   hooks:
