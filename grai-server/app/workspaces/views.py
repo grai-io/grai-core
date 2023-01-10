@@ -1,6 +1,4 @@
 from common.permissions.multitenant import Multitenant
-from workspaces.models import Workspace, Membership
-from workspaces.serializers import WorkspaceSerializer, MembershipSerializer
 from rest_framework.authentication import (
     BasicAuthentication,
     SessionAuthentication,
@@ -9,7 +7,9 @@ from rest_framework.authentication import (
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from workspaces.models import Membership, Workspace
 from workspaces.permissions import HasWorkspaceAPIKey
+from workspaces.serializers import MembershipSerializer, WorkspaceSerializer
 
 # Creating the user id automatically
 # https://stackoverflow.com/questions/30582263/setting-user-id-automatically-on-post-in-django-rest

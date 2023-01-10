@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Connector, Connection, Run
+
+from .models import Connection, Connector, Run
 
 
 class ConnectorAdmin(admin.ModelAdmin):

@@ -1,11 +1,11 @@
+from datetime import datetime
 from typing import Dict, List, Optional, TypeVar
 
-from .models import Run
 from celery import shared_task
-from datetime import datetime
 from grai_client.schemas.edge import Edge, EdgeV1
-from grai_client.schemas.node import Node, NodeV1, NodeID
+from grai_client.schemas.node import Node, NodeID, NodeV1
 
+from .models import Run
 from .task_helpers import update
 
 

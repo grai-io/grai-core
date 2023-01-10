@@ -1,7 +1,7 @@
 from django.db.models import fields
 from rest_framework import serializers
 
-from .models import Workspace, Membership
+from .models import Membership, Workspace
 
 
 class WorkspaceSerializer(serializers.ModelSerializer):

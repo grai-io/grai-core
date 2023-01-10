@@ -1,8 +1,8 @@
-from connections.models import Connector, Connection, Run
-from connections.tasks import run_update_server
-from workspaces.models import Workspace
 import pytest
+from connections.models import Connection, Connector, Run
+from connections.tasks import run_update_server
 from django.test import TransactionTestCase
+from workspaces.models import Workspace
 
 
 class TestUpdateServer(TransactionTestCase):
