@@ -3,10 +3,30 @@ from connections.tasks import run_update_server, run_connection_schedule
 from workspaces.models import Workspace
 import pytest
 from django.test import TransactionTestCase
+from decouple import config
 
 
 class TestUpdateServer(TransactionTestCase):
     def test_run_update_server_postgres(self):
+        workspace = Workspace.objects.create(name="W1")
+        connector = Connector.objects.create(name="Postgres")
+        connection = Connection.objects.create(
+            name="C1",
+            connector=connector,
+            workspace=workspace,
+            metadata={
+                "host": config("DB_HOST"),
+                "port": 5432,
+                "dbname": "grai",
+                "user": "grai",
+            },
+            secrets={"password": "grai"},
+        )
+        run = Run.objects.create(connection=connection, workspace=workspace)
+
+        run_update_server(str(run.id))
+
+    def test_run_update_server_postgres_no_host(self):
         workspace = Workspace.objects.create(name="W1")
         connector = Connector.objects.create(name="Postgres")
         connection = Connection.objects.create(
