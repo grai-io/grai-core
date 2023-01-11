@@ -139,18 +139,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          cluster_name: ${{ secrets.CLUSTER_NAME }}
+
       - name: Deploy to Kubernetes cluster
         uses: ianbelcher/eks-kubectl-action@master
         with:
-          cluster_name: ${{ secrets.CLUSTER_NAME }}
-          aws_region: ${{ secrets.AWS_REGION }}
           args: set image deployment/api-prod api=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/grai-server:${{ github.sha }}
 
       - name: Verify deployment
         uses: ianbelcher/eks-kubectl-action@master
         with:
-          cluster_name: ${{ secrets.CLUSTER_NAME }}
-          aws_region: ${{ secrets.AWS_REGION }}
           args: rollout status deployment/api
 
   tests-frontend:
@@ -201,7 +205,7 @@ jobs:
       - name: Copy to s3
         uses: prewk/s3-cp-action@v2
         with:
-          source: "./build"
+          source: "./grai-frontend/build"
           dest: s3://${{ secrets.APP_BUCKET }}
           flags: --recursive
 
