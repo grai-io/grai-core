@@ -6,6 +6,10 @@ on:
       - ".github/workflows/frontend-ci.yml"
       - "grai-frontend/**"
 
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest

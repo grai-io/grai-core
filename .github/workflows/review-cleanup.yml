@@ -1,4 +1,5 @@
-name: "Review App Cleanup"
+name: Review App Cleanup
+
 on:
   pull_request:
     types: [closed]
