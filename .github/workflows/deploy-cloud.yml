@@ -119,7 +119,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/grai-server
           tags: |
             type=raw,value=latest,priority=100
-            type=sha,prefx=,format=long,priority=100
+            type=sha,prefix=,format=long,priority=100
 
       - name: Set up Docker Buildx
         id: buildx
