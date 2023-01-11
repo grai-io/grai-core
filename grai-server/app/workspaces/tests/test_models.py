@@ -1,8 +1,10 @@
 import datetime
 import uuid
+
 import pytest
-from workspaces.models import Workspace
 from django_multitenant.utils import set_current_tenant
+
+from workspaces.models import Workspace
 
 
 @pytest.mark.django_db

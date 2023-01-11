@@ -1,6 +1,8 @@
-from connections.models import Connector, Connection, Run
-from api.schema import schema
 import pytest
+
+from api.schema import schema
+from connections.models import Connection, Connector, Run
+
 from .common import test_info
 
 

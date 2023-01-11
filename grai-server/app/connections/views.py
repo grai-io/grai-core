@@ -1,9 +1,3 @@
-from connections.models import Connection, Connector, Run
-from connections.serializers import (
-    ConnectionSerializer,
-    ConnectorSerializer,
-    RunSerializer,
-)
 from rest_framework.authentication import (
     BasicAuthentication,
     SessionAuthentication,
@@ -13,8 +7,15 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework_api_key.permissions import HasAPIKey
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from workspaces.permissions import HasWorkspaceAPIKey
+
 from common.permissions.multitenant import Multitenant
+from connections.models import Connection, Connector, Run
+from connections.serializers import (
+    ConnectionSerializer,
+    ConnectorSerializer,
+    RunSerializer,
+)
+from workspaces.permissions import HasWorkspaceAPIKey
 
 # Creating the user id automatically
 # https://stackoverflow.com/questions/30582263/setting-user-id-automatically-on-post-in-django-rest

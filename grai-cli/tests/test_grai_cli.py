@@ -1,7 +1,8 @@
+from typer.testing import CliRunner
+
 from grai_cli.api.entrypoint import app
 from grai_cli.settings.cache import cache
 from grai_cli.utilities.test import prep_tests
-from typer.testing import CliRunner
 
 prep_tests()
 runner = CliRunner()

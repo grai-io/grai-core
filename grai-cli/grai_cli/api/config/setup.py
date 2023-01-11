@@ -1,4 +1,5 @@
 import typer
+
 from grai_cli.api.entrypoint import app
 from grai_cli.utilities.utilities import default_callback
 

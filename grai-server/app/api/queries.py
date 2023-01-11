@@ -1,14 +1,16 @@
 import typing
 
-from .common import get_user, IsAuthenticated
-from api.types import Connector, Workspace, User
 import strawberry
+from asgiref.sync import sync_to_async
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from strawberry.permission import BasePermission
 from strawberry.types import Info
 from strawberry_django_plus import gql
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from asgiref.sync import sync_to_async
+
+from api.types import Connector, User, Workspace
 from workspaces.models import Workspace as WorkspaceModel
+
+from .common import IsAuthenticated, get_user
 
 
 def get_workspaces(info: Info) -> typing.List[Workspace]:

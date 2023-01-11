@@ -1,4 +1,5 @@
 import typer
+
 from grai_cli.utilities.styling import default_styler, strip_style
 
 default_style_stripper = strip_style(default_styler)

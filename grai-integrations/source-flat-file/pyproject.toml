@@ -3,7 +3,7 @@ name = "grai_source_flat_file"
 version = "0.0.4"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>"]
-license = "ELv2"
+license = "Elastic-2.0"
 packages = [
     { include = "grai_source_flat_file", from = "src" },
 ]
@@ -24,6 +24,7 @@ pytest = "^7.2.0"
 
 [tool.isort]
 profile = "black"
+known_first_party = "grai_source_flat_file"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

@@ -1,8 +1,9 @@
-import uuid, json
+import json
+import uuid
 
 from django.db import models
-from django_multitenant.models import TenantModel
 from django_multitenant.fields import TenantForeignKey
+from django_multitenant.models import TenantModel
 
 
 class Connector(models.Model):

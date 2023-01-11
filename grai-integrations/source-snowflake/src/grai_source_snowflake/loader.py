@@ -3,6 +3,7 @@ from itertools import chain
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 import snowflake.connector
+
 from grai_source_snowflake.models import (
     Column,
     ColumnID,

@@ -5,8 +5,9 @@ from itertools import product
 import django.db.utils
 import pytest
 from django.urls import reverse
+
 from lineage.urls import app_name
-from workspaces.models import Workspace, WorkspaceAPIKey, Membership
+from workspaces.models import Membership, Workspace, WorkspaceAPIKey
 
 
 @pytest.fixture

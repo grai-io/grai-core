@@ -41,9 +41,13 @@ pytest = "^7.1.2"
 pytest-django = "^4.5.2"
 django-stubs = "^1.12.0"
 djangorestframework-stubs = "^1.7.0"
+pytest-asyncio = "^0.20.3"
 
 [tool.isort]
 profile = "black"
+#known_first_party = "the_guide"
+src_paths = ["*"]
+#combine_as_imports = true
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

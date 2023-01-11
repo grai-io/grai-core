@@ -1,11 +1,13 @@
-from connections.models import Connector, Connection
-from workspaces.models import Workspace
-from api.schema import schema
 import pytest
-from .common import test_info
+from asgiref.sync import sync_to_async
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
-from asgiref.sync import sync_to_async
+
+from api.schema import schema
+from connections.models import Connection, Connector
+from workspaces.models import Workspace
+
+from .common import test_info
 
 
 @pytest.mark.django_db

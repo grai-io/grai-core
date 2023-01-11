@@ -3,6 +3,8 @@ from functools import cached_property
 from itertools import chain
 from typing import Dict, List, Mapping, Tuple, Union
 
+from pydantic import BaseModel, validator
+
 from grai_source_dbt.models.manifest_types import ManifestNode
 from grai_source_dbt.models.nodes import (
     Column,
@@ -16,7 +18,6 @@ from grai_source_dbt.models.nodes import (
 )
 from grai_source_dbt.models.shared import Constraint, ManifestMetadata
 from grai_source_dbt.models.tests import Test
-from pydantic import BaseModel, validator
 
 
 class Manifest(BaseModel):
