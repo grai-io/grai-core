@@ -42,9 +42,9 @@ COPY ./worker.sh /start-celeryworker
 RUN sed -i 's/\r$//g' /start-celeryworker \
     && chmod +x /start-celeryworker
 
-# COPY ./beat.sh /usr/src/app/start-celerybeat
-# RUN sed -i 's/\r$//g' /start-celerybeat \
-    # && chmod +x /start-celerybeat
+COPY ./beat.sh /start-celerybeat
+RUN sed -i 's/\r$//g' /start-celerybeat \
+    && chmod +x /start-celerybeat
 
 COPY ./entrypoint.sh /usr/src/app/entrypoint.sh
 RUN sed -i 's/\r$//g' /usr/src/app/entrypoint.sh \

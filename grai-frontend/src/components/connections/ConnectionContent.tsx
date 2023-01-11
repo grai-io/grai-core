@@ -3,6 +3,9 @@ import React from "react"
 import ConnectionDetail from "./ConnectionDetail"
 import ConnectionRunDetail from "./ConnectionRunDetail"
 import ConnectionRunsTable from "./ConnectionRunsTable"
+import ConnectionSchedule, {
+  Connection as BaseConnection,
+} from "./ConnectionSchedule"
 
 interface Run {
   id: string
@@ -30,7 +33,7 @@ interface Run {
   finished_at: string | null
 }
 
-interface Connection {
+interface Connection extends BaseConnection {
   id: string
   name: string
   namespace: string
@@ -57,6 +60,7 @@ const ConnectionContent: React.FC<ConnectionContentProps> = ({
         <Card variant="outlined" sx={{ borderRadius: 0, borderBottom: 0 }}>
           <Table>
             <TableBody>
+              <ConnectionSchedule connection={connection} />
               <ConnectionRunDetail label="Last Run" run={connection.last_run} />
               <ConnectionRunDetail
                 label="Last Successful Run"

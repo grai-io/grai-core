@@ -14,7 +14,9 @@ export const CREATE_CONNECTION = gql`
     $namespace: String!
     $name: String!
     $metadata: JSON!
-    $secrets: JSON!
+    $secrets: JSON
+    $schedules: JSON
+    $is_active: Boolean
   ) {
     createConnection(
       workspaceId: $workspaceId
@@ -23,6 +25,8 @@ export const CREATE_CONNECTION = gql`
       name: $name
       metadata: $metadata
       secrets: $secrets
+      schedules: $schedules
+      is_active: $is_active
     ) {
       id
       connector {
@@ -57,6 +61,8 @@ const CreateConnectionForm: React.FC = () => {
         name: values.name,
         metadata: values.metadata,
         secrets: values.secrets,
+        schedules: null,
+        is_active: true,
       },
     }).then(data => navigate(`/workspaces/${workspaceId}/connections`))
 

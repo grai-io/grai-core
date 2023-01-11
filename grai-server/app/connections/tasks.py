@@ -1,21 +1,28 @@
 from datetime import datetime
-from typing import Dict, List, Optional, TypeVar
 
 from celery import shared_task
-from grai_client.schemas.edge import Edge, EdgeV1
-from grai_client.schemas.node import Node, NodeID, NodeV1
 
-from .models import Run
+from .models import Connection, Run
 from .task_helpers import update
 
 
 @shared_task
 def run_update_server(runId):
     print(f"Task starting {runId}")
-
-    # Find run
     run = Run.objects.get(pk=runId)
+    execute_run(run)
 
+
+@shared_task
+def run_connection_schedule(connectionId):
+    connection = Connection.objects.get(pk=connectionId)
+    run = Run.objects.create(
+        workspace=connection.workspace, connection=connection, status="queued"
+    )
+    execute_run(run)
+
+
+def execute_run(run: Run):
     # Set run status to running
     run.status = "running"
     run.started_at = datetime.now()
@@ -42,7 +49,7 @@ def run_update_server(runId):
         raise e
 
 
-def run_postgres(run):
+def run_postgres(run: Run):
     from grai_source_postgres.base import get_nodes_and_edges
     from grai_source_postgres.loader import PostgresConnector
 

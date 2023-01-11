@@ -1,3 +1,4 @@
+import json
 import uuid
 
 from django.db import models
@@ -37,6 +38,14 @@ class Connection(TenantModel):
     name = models.CharField(max_length=255)
     metadata = models.JSONField(default=dict)
     secrets = models.JSONField(default=dict, blank=True, null=True)
+    schedules = models.JSONField(default=dict, blank=True, null=True)
+    task = models.ForeignKey(
+        "django_celery_beat.PeriodicTask",
+        related_name="connections",
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
+    )
     is_active = models.BooleanField(default=True)
 
     workspace = models.ForeignKey(
@@ -68,6 +77,49 @@ class Connection(TenantModel):
         indexes = [
             models.Index(fields=["workspace", "namespace", "name"]),
         ]
+
+    def save(self, *args, **kwargs):
+        if isinstance(self.schedules, dict):
+
+            type = self.schedules.get("type", None)
+
+            if type is None:
+                pass
+
+            elif type == "cron":
+                from django_celery_beat.models import CrontabSchedule, PeriodicTask
+
+                cron = self.schedules["cron"]
+
+                schedule, _ = CrontabSchedule.objects.get_or_create(
+                    minute=cron["minutes"],  # TODO: Get from schedule
+                    hour=cron["hours"],
+                    day_of_week="*",
+                    day_of_month="*",
+                    month_of_year="*",
+                    # timezone=zoneinfo.ZoneInfo("Canada/Pacific"),
+                )
+
+                if self.task:
+                    self.task.crontab = schedule
+                    self.task.kwargs = json.dumps({"connectionId": str(self.id)})
+                    self.task.enabled = self.is_active
+                    self.task.save()
+                else:
+                    self.task = PeriodicTask.objects.create(
+                        crontab=schedule,
+                        name=f"{self.name}-{str(self.id)}",
+                        task="connections.tasks.run_connection_schedule",
+                        kwargs={"connectionId": str(self.id)},
+                        enabled=self.is_active,
+                    )
+            else:
+                raise Exception("Schedule type not found")
+
+        # elif self.task:
+        #     self.task.delete()
+
+        super(Connection, self).save(*args, **kwargs)
 
 
 class Run(TenantModel):
