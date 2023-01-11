@@ -117,7 +117,7 @@ jobs:
         with:
           images: ghcr.io/${{ github.repository }}/grai-server
           tags: |
-            type=raw,value=latest,priority=100
+            type=raw,value=cloud,priority=100
             type=sha,prefix=,format=long,priority=100
 
       - name: Set up Docker Buildx
