@@ -1,4 +1,4 @@
-name: "Review App"
+name: Review App
 
 on:
   pull_request:
