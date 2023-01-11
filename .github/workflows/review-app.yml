@@ -5,6 +5,10 @@ on:
     paths:
       - "grai-frontend/**"
 
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-frontend:
     runs-on: ubuntu-latest
