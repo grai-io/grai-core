@@ -1,14 +1,39 @@
 import pytest
-from grai_client.schemas.node import NodeID, NodeV1
-
 from connections.task_helpers import deactivate, get_node, update
-from lineage.models import Node
+from grai_client.schemas.edge import EdgeV1
+from grai_client.schemas.node import NodeID, NodeV1
+from lineage.models import Edge, Node
 from workspaces.models import Workspace
 
 
 @pytest.fixture
 def test_workspace():
     return Workspace.objects.create(name="W1")
+
+
+@pytest.fixture
+def test_node(test_workspace):
+    return Node.objects.create(workspace=test_workspace, name="N1")
+
+
+@pytest.fixture
+def test_source_node(test_workspace):
+    return Node.objects.create(workspace=test_workspace, name="S1")
+
+
+@pytest.fixture
+def test_destination_node(test_workspace):
+    return Node.objects.create(workspace=test_workspace, name="D1")
+
+
+@pytest.fixture
+def test_edge(test_workspace, test_source_node, test_destination_node):
+    return Edge.objects.create(
+        workspace=test_workspace,
+        name="N1",
+        source=test_source_node,
+        destination=test_destination_node,
+    )
 
 
 @pytest.fixture
@@ -19,6 +44,28 @@ def test_node_v1():
             "namespace": "default",
             "data_source": "test",
             "display_name": "node1",
+        }
+    )
+
+
+@pytest.fixture
+def test_edge_v1(test_workspace, test_source_node, test_destination_node):
+    return EdgeV1.from_spec(
+        {
+            "name": "edge1",
+            "namespace": "default",
+            "data_source": "test",
+            "display_name": "edge1",
+            "source": NodeID(
+                name="node1",
+                namespace="default",
+                id=str(test_source_node.id),
+            ),
+            "destination": NodeID(
+                name="node2",
+                namespace="default",
+                id=str(test_destination_node.id),
+            ),
         }
     )
 
@@ -83,8 +130,14 @@ class TestDeactivate:
 
 class TestUpdate:
     @pytest.mark.django_db
-    def test_nodes(self, test_workspace, test_node_v1):
+    def test_nodes(self, test_workspace, test_node_v1, test_node):
         items = [test_node_v1]
+
+        update(test_workspace, items)
+
+    @pytest.mark.django_db
+    def test_edges(self, test_workspace, test_edge_v1, test_edge):
+        items = [test_edge_v1]
 
         update(test_workspace, items)
 

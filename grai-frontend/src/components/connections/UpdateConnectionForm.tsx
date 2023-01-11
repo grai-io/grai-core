@@ -12,7 +12,9 @@ export const UPDATE_CONNECTION = gql`
     $namespace: String!
     $name: String!
     $metadata: JSON!
-    $secrets: JSON!
+    $secrets: JSON
+    $schedules: JSON
+    $is_active: Boolean
   ) {
     updateConnection(
       id: $connectionId
@@ -20,6 +22,8 @@ export const UPDATE_CONNECTION = gql`
       name: $name
       metadata: $metadata
       secrets: $secrets
+      schedules: $schedules
+      is_active: $is_active
     ) {
       id
       namespace
@@ -68,6 +72,8 @@ const UpdateConnectionForm: React.FC<UpdateConnectionFormProps> = ({
         name: values.name,
         metadata: values.metadata,
         secrets: values.secrets ?? {},
+        schedules: null,
+        is_active: true,
       },
     }).then(() => onClose && onClose())
 

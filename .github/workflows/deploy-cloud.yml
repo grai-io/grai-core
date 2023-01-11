@@ -1,0 +1,240 @@
+name: Deploy Cloud
+
+on:
+  push:
+    branches:
+      - master
+    files:
+      - "grai-client/**"
+      - "grai-server/**"
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  py_ver: "3.11"
+  poetry_ver: "1.3.1"
+  SECRET_KEY: "fixed-test-key-that-doesnt-matter"
+
+jobs:
+  lint-server:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - name: Install Python
+        id: setup-python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "${{ env.py_ver }}"
+
+      - run: pip install black isort
+
+      - working-directory: "grai-server/app"
+        run: |
+          black . --check
+        # isort . --profile black --check
+
+  tests-server:
+    needs: lint-server
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./grai-server/app
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: grai
+          POSTGRES_PASSWORD: grai
+          POSTGRES_DB: grai
+        ports:
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 2s --health-timeout 5s --health-retries 15
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "${{ env.py_ver }}"
+
+      - name: Install package
+        run: |
+          pip install pytest pytest-django coverage
+          pip install .
+
+      - name: Tests
+        env:
+          DEBUG: False
+          DB_HOST: "127.0.0.1"
+          DB_PORT: "5432"
+          DB_USER: grai
+          DB_NAME: grai
+          DB_PASSWORD: grai
+        run: |
+          python manage.py migrate --noinput
+          coverage run -m pytest
+          coverage xml
+
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          flags: grai-server
+
+  build-server:
+    needs: [lint-server, tests-server, tests-frontend]
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: grai-server/app
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GH_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/${{ github.repository }}/grai-server
+          tags: |
+            type=raw,value=cloud,priority=100
+            type=sha,prefix=,format=long,priority=100
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@master
+
+      - name: Build
+        uses: docker/build-push-action@v3
+        with:
+          context: grai-server/app
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  deploy-server:
+    needs: [build-frontend, build-server]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Deploy to Kubernetes cluster
+        uses: ianbelcher/eks-kubectl-action@master
+        with:
+          cluster_name: ${{ secrets.CLUSTER_NAME }}
+          args: set image deployment/api-prod api=ghcr.io/${{ github.repository }}/grai-server:${{ github.sha }}
+
+      - name: Verify deployment
+        uses: ianbelcher/eks-kubectl-action@master
+        with:
+          cluster_name: ${{ secrets.CLUSTER_NAME }}
+          args: rollout status deployment/api-prod
+
+  tests-frontend:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: grai-frontend
+
+    steps:
+      - uses: actions/checkout@master
+      - name: Use latest Node.js
+        uses: actions/setup-node@v3
+      - name: Install dependencies
+        run: npm ci
+      - name: Run lint
+        run: npm run lint
+      - name: Run npm tests
+        run: npm test -- --coverage
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          flags: grai-frontend
+
+  build-frontend:
+    needs: tests-frontend
+
+    runs-on: ubuntu-latest
+
+    env:
+      REACT_APP_SERVER_URL: ${{ secrets.REACT_APP_SERVER_URL }}
+
+    defaults:
+      run:
+        working-directory: grai-frontend
+
+    steps:
+      - uses: actions/checkout@master
+      - name: Use latest Node.js
+        uses: actions/setup-node@v3
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Setup environment variables
+        run: ./env.sh
+      - uses: actions/upload-artifact@master
+        with:
+          name: frontend-build
+          path: "./grai-frontend/build"
+
+  deploy-frontend:
+    needs: [build-frontend, build-server]
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: grai-frontend
+
+    steps:
+      - uses: actions/download-artifact@master
+        with:
+          name: frontend-build
+          path: "./grai-frontend/build"
+
+      - name: Copy to s3
+        uses: prewk/s3-cp-action@v2
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          source: "./grai-frontend/build"
+          dest: s3://${{ secrets.APP_BUCKET }}
+          flags: --recursive
+
+      - name: Invalidate CloudFront
+        uses: chetan/invalidate-cloudfront-action@v2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          DISTRIBUTION: ${{ secrets.AWS_CF_DISTRIBUTION }}
+          PATHS: "/*"
+          AWS_REGION: "us-east-1"

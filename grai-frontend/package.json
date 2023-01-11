@@ -26,7 +26,7 @@
     "graphql": "^16.6.0",
     "jwt-decode": "^3.1.2",
     "luxon": "^3.2.1",
-    "material-ui-popup-state": "^4.1.0",
+    "material-ui-popup-state": "^5.0.4",
     "notistack": "^2.0.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -45,7 +45,7 @@
     "eject": "react-scripts eject",
     "lint": "eslint src/**/*.{ts,tsx,test.tsx}",
     "lint:fix": "eslint src/**/*.{ts,tsx,test.tsx} --fix",
-    "download:schema": "npx apollo client:download-schema --endpoint=http://localhost:8000/graphql/ src/testing/schema.json",
+    "download:schema": "npx apollo client:download-schema --endpoint=http://127.0.0.1:8000/graphql/ src/testing/schema.json",
     "generate:types": "npx apollo client:codegen --target typescript --localSchemaFile src/testing/schema.json"
   },
   "eslintConfig": {

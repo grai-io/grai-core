@@ -25,6 +25,8 @@ export const GET_CONNECTION = gql`
           metadata
         }
         metadata
+        schedules
+        is_active
         created_at
         updated_at
         last_run {

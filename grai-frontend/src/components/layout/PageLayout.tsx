@@ -1,4 +1,5 @@
 import { Box } from "@mui/material"
+import ErrorBoundary from "components/utils/ErrorBoundary"
 import React, { ReactNode } from "react"
 import AppTopBar from "./AppTopBar"
 import Loading from "./Loading"
@@ -17,7 +18,9 @@ const PageLayout: React.FC<PageLayoutProps> = ({
   <>
     <AppTopBar />
     {loading && <Loading />}
-    <Box sx={{ padding: padding ? 3 : undefined }}>{children}</Box>
+    <ErrorBoundary>
+      <Box sx={{ padding: padding ? 3 : undefined }}>{children}</Box>
+    </ErrorBoundary>
   </>
 )
 

@@ -69,6 +69,8 @@ test("submit", async () => {
         secrets: {
           field2: "value2",
         },
+        schedules: null,
+        is_active: true,
       },
     },
     result: {

@@ -1,9 +1,13 @@
-name: "Review App"
+name: Review App
 
 on:
   pull_request:
     paths:
       - "grai-frontend/**"
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-frontend:

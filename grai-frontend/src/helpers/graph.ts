@@ -5,9 +5,9 @@ export interface Node {
   name: string
   display_name: string
   metadata: {
-    node_type: string
-    table_name?: string
-  }
+    node_type?: string | null
+    table_name?: string | null
+  } | null
 }
 
 export interface Edge {
@@ -19,8 +19,8 @@ export interface Edge {
     id: string
   }
   metadata: {
-    constraint_type: string
-  }
+    constraint_type?: string | null
+  } | null
 }
 
 type BaseTable<N extends Node> = N & {
@@ -34,13 +34,14 @@ export type Table<N extends Node> = N &
   }
 
 export const nodeIsTable = (node: Node) =>
+  node.metadata?.node_type &&
   ["table", "base table"].includes(node.metadata.node_type.toLowerCase())
 const tableColumns = <N extends Node>(table: N, nodes: N[], edges: Edge[]) =>
   edges
     .filter(
       edge =>
         edge.source.id === table.id &&
-        edge.metadata.constraint_type === "belongs_to"
+        edge.metadata?.constraint_type === "belongs_to"
     )
     .map(edge => nodes.find(node => node.id === edge.destination.id))
     .filter(notEmpty)
@@ -63,6 +64,9 @@ const nodeToBaseTable = <N extends Node>(
   columns: tableColumns(node, nodes, edges),
 })
 
+const tableOrColumnsMatch = <N extends Node>(table: BaseTable<N>, id: string) =>
+  table.id === id || table.columns.some(c => c.id === id)
+
 export const nodesToTables = <N extends Node>(
   nodes: N[],
   edges: Edge[]
@@ -73,15 +77,15 @@ export const nodesToTables = <N extends Node>(
     const sourceTables = tables.filter(t =>
       edges.some(
         e =>
-          table.columns.some(c => c.id === e.source.id) &&
-          t.columns.some(c => c.id === e.destination.id)
+          tableOrColumnsMatch(table, e.source.id) &&
+          tableOrColumnsMatch(t, e.destination.id)
       )
     )
     const destinationTables = tables.filter(t =>
       edges.some(
         e =>
-          table.columns.some(c => c.id === e.destination.id) &&
-          t.columns.some(c => c.id === e.source.id)
+          tableOrColumnsMatch(table, e.destination.id) &&
+          tableOrColumnsMatch(t, e.source.id)
       )
     )
 
