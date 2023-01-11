@@ -115,7 +115,7 @@ def adapt_column_to_client(current: Column, version: Literal["v1"] = "v1"):
         "name": current.full_name,
         "namespace": current.namespace,
         "display_name": current.name,
-        "data_source": "grai-postgres-adapter",
+        "data_source": config.integration_name,
         "metadata": build_metadata(current, version),
     }
     return Schema.to_model(spec_dict, version=version, typing_type="Node")
@@ -127,7 +127,7 @@ def adapt_table_to_client(current: Table, version: Literal["v1"] = "v1"):
         "name": current.full_name,
         "namespace": current.namespace,
         "display_name": current.name,
-        "data_source": "grai-postgres-adapter",
+        "data_source": config.integration_name,
         "metadata": build_metadata(current, version),
     }
     return Schema.to_model(spec_dict, version=version, typing_type="Node")
@@ -142,7 +142,7 @@ def make_name(node1: ID, node2: ID) -> str:
 @adapt_to_client.register
 def adapt_edge_to_client(current: Edge, version: Literal["v1"] = "v1"):
     spec_dict = {
-        "data_source": "grai-postgres-adapter",
+        "data_source": config.integration_name,
         "name": make_name(current.source, current.destination),
         "namespace": current.source.namespace,
         "source": {

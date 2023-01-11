@@ -42,7 +42,7 @@ def build_grai_metadata_from_node(
 @build_grai_metadata.register
 def build_grai_metadata_from_edge(
     current: Edge, version: Literal["v1"] = "v1"
-) -> base_schemas.ColumnMetadata:
+) -> base_schemas.GraiEdgeMetadata:
     data = {"version": version}
     return base_schemas.GraiEdgeMetadata(**data)
 

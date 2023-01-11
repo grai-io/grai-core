@@ -113,7 +113,7 @@ def adapt_column_to_client(current: Column, version: Literal["v1"] = "v1"):
         "name": current.full_name,
         "namespace": current.namespace,
         "display_name": current.name,
-        "data_source": "grai-mysql-adapter",
+        "data_source": config.integration_name,
         "metadata": build_metadata(current, version),
     }
     return Schema.to_model(spec_dict, version=version, typing_type="Node")
@@ -125,7 +125,7 @@ def adapt_table_to_client(current: Table, version: Literal["v1"] = "v1"):
         "name": current.full_name,
         "namespace": current.namespace,
         "display_name": current.name,
-        "data_source": "grai-mysql-adapter",
+        "data_source": config.integration_name,
         "metadata": build_metadata(current, version),
     }
     return Schema.to_model(spec_dict, version=version, typing_type="Node")
