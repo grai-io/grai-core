@@ -4,9 +4,9 @@ on:
     paths:
       - "grai-graph/**"
 
-concurrency:
-  group: ${{ github.ref }}
-  cancel-in-progress: true
+#concurrency:
+#  group: ${{ github.ref }}
+#  cancel-in-progress: true
 
 env:
   py_ver: "3.10"
