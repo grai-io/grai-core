@@ -90,7 +90,7 @@ jobs:
           flags: grai-server
 
   build-server:
-    needs: [lint-server, test-server]
+    needs: [lint-server, tests-server]
 
     runs-on: ubuntu-latest
 
