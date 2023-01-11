@@ -90,7 +90,7 @@ jobs:
           flags: grai-server
 
   build-server:
-    needs: [lint-server, tests-server]
+    needs: [lint-server, tests-server, tests-frontend]
 
     runs-on: ubuntu-latest
 
@@ -119,7 +119,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/grai-server
           tags: |
             type=raw,value=latest,priority=100
-            type=sha,format=long,priority=100
+            type=sha,prefx=,format=long,priority=100
 
       - name: Set up Docker Buildx
         id: buildx
@@ -134,7 +134,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
   deploy-server:
-    needs: [tests-frontend, build-server]
+    needs: [build-frontend, build-server]
 
     runs-on: ubuntu-latest
 
@@ -180,13 +180,13 @@ jobs:
         with:
           flags: grai-frontend
 
-  build-and-deploy-frontend:
-    needs: [tests-frontend, build-server]
+  build-frontend:
+    needs: tests-frontend
 
     runs-on: ubuntu-latest
 
     env:
-      REACT_APP_SERVER_URL: https://api.grai.io
+      REACT_APP_SERVER_URL: ${{ secrets.REACT_APP_SERVER_URL }}
 
     defaults:
       run:
@@ -202,6 +202,25 @@ jobs:
         run: npm run build
       - name: Setup environment variables
         run: ./env.sh
+      - uses: actions/upload-artifact@master
+        with:
+          name: frontend-build
+          path: "./grai-frontend/build"
+
+  deploy-frontend:
+    needs: [build-frontend, build-server]
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: grai-frontend
+
+    steps:
+      - uses: actions/download-artifact@master
+        with:
+          name: frontend-build
+          path: "./grai-frontend/build"
 
       - name: Copy to s3
         uses: prewk/s3-cp-action@v2
@@ -215,8 +234,8 @@ jobs:
       - name: Invalidate CloudFront
         uses: chetan/invalidate-cloudfront-action@v2
         env:
-          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           DISTRIBUTION: ${{ secrets.AWS_CF_DISTRIBUTION }}
           PATHS: "/*"
           AWS_REGION: "us-east-1"
