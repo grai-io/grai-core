@@ -134,7 +134,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
   deploy-server:
-    needs: build-server
+    needs: [tests-frontend, build-server]
 
     runs-on: ubuntu-latest
 
@@ -143,10 +143,71 @@ jobs:
         uses: ianbelcher/eks-kubectl-action@master
         with:
           cluster_name: ${{ secrets.CLUSTER_NAME }}
+          aws_region: ${{ secrets.AWS_REGION }}
           args: set image deployment/api-prod api=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/grai-server:${{ github.sha }}
 
       - name: Verify deployment
         uses: ianbelcher/eks-kubectl-action@master
         with:
           cluster_name: ${{ secrets.CLUSTER_NAME }}
+          aws_region: ${{ secrets.AWS_REGION }}
           args: rollout status deployment/api
+
+  tests-frontend:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: grai-frontend
+
+    steps:
+      - uses: actions/checkout@master
+      - name: Use latest Node.js
+        uses: actions/setup-node@v3
+      - name: Install dependencies
+        run: npm ci
+      - name: Run lint
+        run: npm run lint
+      - name: Run npm tests
+        run: npm test -- --coverage
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          flags: grai-frontend
+
+  build-and-deploy-frontend:
+    needs: [tests-frontend, build-server]
+
+    runs-on: ubuntu-latest
+
+    env:
+      REACT_APP_SERVER_URL: https://api.grai.io
+
+    defaults:
+      run:
+        working-directory: grai-frontend
+
+    steps:
+      - uses: actions/checkout@master
+      - name: Use latest Node.js
+        uses: actions/setup-node@v3
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Setup environment variables
+        run: ./env.sh
+
+      - name: Copy to s3
+        uses: prewk/s3-cp-action@v2
+        with:
+          source: "./build"
+          dest: s3://${{ secrets.APP_BUCKET }}
+          flags: --recursive
+
+      - name: Invalidate CloudFront
+        uses: chetan/invalidate-cloudfront-action@v2
+        env:
+          DISTRIBUTION: ${{ secrets.AWS_CF_DISTRIBUTION }}
+          PATHS: "/*"
+          AWS_REGION: "us-east-1"
