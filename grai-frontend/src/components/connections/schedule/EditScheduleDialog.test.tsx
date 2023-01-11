@@ -18,6 +18,23 @@ test("renders", async () => {
   expect(screen.getByText("Edit Schedule")).toBeTruthy()
 })
 
+test("renders with schedule", async () => {
+  const connection = {
+    id: "1",
+    schedules: {
+      type: "cron",
+    },
+    is_active: false,
+    namespace: "default",
+    name: "c1",
+    metadata: {},
+  }
+
+  render(<EditScheduleDialog open onClose={() => {}} connection={connection} />)
+
+  expect(screen.getByText("Edit Schedule")).toBeTruthy()
+})
+
 test("submit", async () => {
   const user = userEvent.setup()
 

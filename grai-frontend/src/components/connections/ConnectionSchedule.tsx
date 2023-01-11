@@ -2,7 +2,7 @@ import { Edit } from "@mui/icons-material"
 import { Box, Button, Stack } from "@mui/material"
 import NodeDetailRow from "components/nodes/NodeDetailRow"
 import React, { useState } from "react"
-import EditScheduleDialog from "./EditScheduleDialog"
+import EditScheduleDialog from "./schedule/EditScheduleDialog"
 
 interface ConnectionScheduleItem {
   type: string | null
