@@ -8,6 +8,7 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - name: "Helm uninstall"
+        continue-on-error: true
         uses: bitovi/github-actions-deploy-eks-helm@v1.0.4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
