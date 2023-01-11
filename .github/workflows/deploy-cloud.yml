@@ -156,7 +156,7 @@ jobs:
         uses: ianbelcher/eks-kubectl-action@master
         with:
           cluster_name: ${{ secrets.CLUSTER_NAME }}
-          args: rollout status deployment/api
+          args: rollout status deployment/api-prod
 
   tests-frontend:
     runs-on: ubuntu-latest
@@ -215,6 +215,8 @@ jobs:
       - name: Invalidate CloudFront
         uses: chetan/invalidate-cloudfront-action@v2
         env:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           DISTRIBUTION: ${{ secrets.AWS_CF_DISTRIBUTION }}
           PATHS: "/*"
           AWS_REGION: "us-east-1"
