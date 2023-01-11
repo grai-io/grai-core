@@ -20,7 +20,7 @@ def build_grai_metadata(current: Any, desired: Any) -> None:
 
 
 @build_grai_metadata.register
-def build_metadata_from_node(
+def build_grai_metadata_from_column(
     current: Column, version: Literal["v1"] = "v1"
 ) -> base_schemas.ColumnMetadata:
     data = {"version": version, "node_type": "Column", "node_attributes": {}}
@@ -31,12 +31,20 @@ def build_metadata_from_node(
 
 
 @build_grai_metadata.register
-def build_metadata_from_node(
+def build_grai_metadata_from_node(
     current: SupportedDBTTypes, version: Literal["v1"] = "v1"
 ) -> GraiNodeMetadata:
     data = {"version": version, "node_type": "Table", "node_attributes": {}}
 
     return base_schemas.TableMetadata(**data)
+
+
+@build_grai_metadata.register
+def build_grai_metadata_from_edge(
+    current: Edge, version: Literal["v1"] = "v1"
+) -> base_schemas.ColumnMetadata:
+    data = {"version": version}
+    return base_schemas.GraiEdgeMetadata(**data)
 
 
 @multimethod
@@ -47,7 +55,7 @@ def build_dbt_metadata(current: Any, desired: Any) -> None:
 
 
 @build_dbt_metadata.register
-def build_metadata_from_node(current: Column, version: Literal["v1"] = "v1") -> Dict:
+def build_metadata_from_column(current: Column, version: Literal["v1"] = "v1") -> Dict:
     data = {
         "description": current.description,
         "data_type": current.data_type,
@@ -61,7 +69,7 @@ def build_metadata_from_node(current: Column, version: Literal["v1"] = "v1") -> 
 
 
 @build_dbt_metadata.register
-def build_metadata_from_node(current: Edge, version: Literal["v1"] = "v1") -> Dict:
+def build_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> Dict:
     data = {
         "definition": current.definition,
         "constraint_type": current.constraint_type.name,
@@ -148,10 +156,12 @@ def adapt_edge_to_client(current: Edge, version: Literal["v1"] = "v1") -> EdgeV1
             "name": current.destination.full_name,
             "namespace": current.destination.namespace,
         },
-        "metadata": {config.metadata_id: build_dbt_metadata(current, version)},
+        "metadata": {
+            grai_base_config.metadata_id: build_grai_metadata(current, version),
+            config.metadata_id: build_dbt_metadata(current, version),
+        },
     }
-    if current.metadata:
-        metadata.update(current.metadata)
+
     return Schema.to_model(spec_dict, version=version, typing_type="Edge")
 
 
