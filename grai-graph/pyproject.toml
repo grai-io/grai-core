@@ -3,6 +3,7 @@ name = "grai-graph"
 version = "0.1.4"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>"]
+license = "Elastic-2.0"
 
 [tool.poetry.dependencies]
 python = "^3.8"
@@ -22,6 +23,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.isort]
 profile = "black"
+known_first_party = "grai_graph"
 
 [tool.poetry.extras]
 vis = ["matplotlib", "pydot"]

@@ -4,6 +4,7 @@ from grai_client.endpoints.client import BaseClient
 from grai_client.schemas.edge import Edge
 from grai_client.schemas.node import Node
 from grai_client.update import update
+
 from grai_source_postgres.adapters import adapt_to_client
 from grai_source_postgres.loader import PostgresConnector
 

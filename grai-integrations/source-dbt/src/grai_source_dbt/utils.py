@@ -1,6 +1,7 @@
 import os
 
 import pkg_resources
+
 from grai_source_dbt.loader import DBTGraph, Manifest
 
 

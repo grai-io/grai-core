@@ -1,8 +1,9 @@
 from typing import Any, Dict, List, Literal, Sequence, Type
 
 from grai_client.schemas.schema import Schema
-from grai_source_postgres.models import ID, Column, Edge, Table
 from multimethod import multimethod
+
+from grai_source_postgres.models import ID, Column, Edge, Table
 
 
 @multimethod
@@ -33,8 +34,9 @@ def adapt_column_to_client(current: Column, version: Literal["v1"] = "v1"):
 @adapt_to_client.register
 def adapt_table_to_client(current: Table, version: Literal["v1"] = "v1"):
     metadata = {
-        "node_type": current.table_type.name,
+        "node_type": "Table",
         "schema": current.table_schema,
+        "table_type": current.table_type.name,
     }
     spec_dict = {
         "name": current.full_name,

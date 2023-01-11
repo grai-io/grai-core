@@ -34,7 +34,7 @@ jobs:
 
     - run: |
         black . --check
-        isort . --profile black
+        isort . --profile black --check
 
   tests-integration-mysql:
     needs: lint-integration-mysql

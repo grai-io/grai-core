@@ -2,6 +2,7 @@ from typing import Optional, Union
 from uuid import UUID, uuid4
 
 import requests
+
 from grai_client.endpoints.client import BaseClient
 
 

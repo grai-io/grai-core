@@ -1,9 +1,10 @@
 import pytest
-from api.schema import schema
 from asgiref.sync import sync_to_async
-from connections.models import Connection, Connector
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
+
+from api.schema import schema
+from connections.models import Connection, Connector
 from workspaces.models import Workspace
 
 from .common import test_info

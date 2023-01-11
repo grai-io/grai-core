@@ -1,4 +1,5 @@
 import typer
+
 from grai_cli.api.config.setup import config_app
 from grai_cli.settings.config import config
 from grai_cli.utilities import utilities

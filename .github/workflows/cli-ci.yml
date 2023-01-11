@@ -30,7 +30,7 @@ jobs:
 
     - run: |
         black . --check
-        isort . --profile black
+        isort . --profile black --check
 
   tests-cli:
     needs: lint-cli

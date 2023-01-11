@@ -30,7 +30,7 @@ jobs:
       - working-directory: "grai-server/app"
         run: |
           black . --check
-          isort . --profile black
+        # isort . --profile black --check
 
   tests-server:
     needs: lint-server

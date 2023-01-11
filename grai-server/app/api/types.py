@@ -3,6 +3,10 @@ from typing import List, Optional
 
 import strawberry
 import strawberry_django
+from strawberry.scalars import JSON
+from strawberry_django.filters import FilterLookup
+from strawberry_django_plus.gql import auto
+
 from connections.models import Connection as ConnectionModel
 from connections.models import Connector as ConnectorModel
 from connections.models import Run as RunModel
@@ -10,9 +14,6 @@ from lineage.models import Edge
 from lineage.models import Edge as EdgeModel
 from lineage.models import Node
 from lineage.models import Node as NodeModel
-from strawberry.scalars import JSON
-from strawberry_django.filters import FilterLookup
-from strawberry_django_plus.gql import auto
 from users.models import User as UserModel
 from workspaces.models import Membership as MembershipModel
 from workspaces.models import Workspace as WorkspaceModel

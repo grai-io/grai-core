@@ -148,13 +148,17 @@ const Graph: React.FC<GraphProps> = ({
 
   const transformedEdges = filteredEdges
     .map(edge => {
-      const sourceTable = visibleTables.find(table =>
-        table.columns.some(column => column.id === edge.source)
+      const sourceTable = visibleTables.find(
+        table =>
+          table.id === edge.source ||
+          table.columns.some(column => column.id === edge.source)
       )
       if (!sourceTable) return null
 
-      const destinationTable = visibleTables.find(table =>
-        table.columns.some(column => column.id === edge.target)
+      const destinationTable = visibleTables.find(
+        table =>
+          table.id === edge.target ||
+          table.columns.some(column => column.id === edge.target)
       )
       if (!destinationTable) return null
 

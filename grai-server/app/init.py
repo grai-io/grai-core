@@ -3,6 +3,7 @@ import os
 from decouple import config
 from django.contrib.auth import get_user_model
 from django.core.management.utils import get_random_secret_key
+
 from workspaces.models import Membership, Workspace
 
 ## Init Superuser

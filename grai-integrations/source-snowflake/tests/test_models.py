@@ -1,6 +1,7 @@
 from typing import Dict, List
 
 import pytest
+
 from grai_source_snowflake.models import Column, Edge, Table
 
 column_params = [

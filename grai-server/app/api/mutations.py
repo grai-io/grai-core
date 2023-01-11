@@ -1,12 +1,7 @@
 from typing import Optional
 
 import strawberry
-from api.queries import IsAuthenticated
-from api.types import BasicResult, Connection, KeyResult, Membership, User, Workspace
 from asgiref.sync import sync_to_async
-from connections.models import Connection as ConnectionModel
-from connections.models import Run as RunModel
-from connections.tasks import run_update_server
 from decouple import config
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -17,6 +12,12 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from strawberry.scalars import JSON
 from strawberry.types import Info
+
+from api.queries import IsAuthenticated
+from api.types import BasicResult, Connection, KeyResult, Membership, User, Workspace
+from connections.models import Connection as ConnectionModel
+from connections.models import Run as RunModel
+from connections.tasks import run_update_server
 from workspaces.models import Membership as MembershipModel
 from workspaces.models import Workspace as WorkspaceModel
 from workspaces.models import WorkspaceAPIKey
