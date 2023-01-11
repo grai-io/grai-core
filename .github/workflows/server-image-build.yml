@@ -6,6 +6,9 @@ on:
   push:
     branches:
       - master
+    paths:
+      - ".github/workflows/server-image-build.yml"
+      - "grai-server/**"
   # Compare the last commit of main -> to the current commit of a PR branch.
   # (Note: To compare changes between the last pushed commit to the remote PR branch set `since_last_remote_commit: true`)
   pull_request:
