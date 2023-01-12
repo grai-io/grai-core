@@ -24,7 +24,7 @@ interface User {
   last_name: string
 }
 
-interface Run {
+export interface Run {
   id: string
   user: User | null
   status: string

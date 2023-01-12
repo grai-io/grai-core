@@ -1,5 +1,6 @@
 import pytest
 from django.test import TransactionTestCase
+from decouple import config
 
 from connections.models import Connection, Connector, Run
 from connections.tasks import run_connection_schedule, run_update_server

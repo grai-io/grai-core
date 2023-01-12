@@ -1,5 +1,4 @@
 from typing import Optional
-
 import strawberry
 from asgiref.sync import sync_to_async
 from decouple import config

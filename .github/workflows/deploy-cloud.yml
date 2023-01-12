@@ -9,7 +9,7 @@ on:
       - "grai-server/**"
 
 concurrency:
-  group: ${{ github.ref }}
+  group: ${{ github.ref }}-deploy-cloud
   cancel-in-progress: true
 
 env:

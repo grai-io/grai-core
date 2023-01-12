@@ -7,7 +7,7 @@ on:
       - "grai-server/**"
 
 concurrency:
-  group: ${{ github.ref }}
+  group: ${{ github.ref }}-cli-ci
   cancel-in-progress: true
 
 env:

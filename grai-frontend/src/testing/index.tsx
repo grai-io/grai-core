@@ -138,7 +138,7 @@ export const renderWithMocks = (
                   <Routes>
                     <Route path={path} element={props.children} />
                     {routes.map(path => (
-                      <Route key={path} path={path} element={<></>} />
+                      <Route key={path} path={path} element={<>New Page</>} />
                     ))}
                   </Routes>
                 </SnackbarProvider>
