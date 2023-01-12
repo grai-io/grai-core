@@ -1,7 +1,9 @@
 import { Card, Table, TableBody } from "@mui/material"
 import NodeDetailRow from "components/nodes/NodeDetailRow"
 import React from "react"
-import ConnectionProperties from "./ConnectionProperties"
+import ConnectionSchedule, {
+  Connection as BaseConnection,
+} from "./schedule/ConnectionSchedule"
 
 interface Run {
   id: string
@@ -14,7 +16,7 @@ interface Connector {
   metadata: any
 }
 
-interface Connection {
+interface Connection extends BaseConnection {
   id: string
   name: string
   namespace: string
@@ -33,7 +35,7 @@ const ConnectionDetail: React.FC<ConnectionDetailProps> = ({ connection }) => (
     <Table>
       <TableBody>
         <NodeDetailRow label="Connector" value={connection.connector.name} />
-        <ConnectionProperties connection={connection} />
+        <ConnectionSchedule connection={connection} />
       </TableBody>
     </Table>
   </Card>

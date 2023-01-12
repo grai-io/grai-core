@@ -1,7 +1,7 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { render, renderWithMocks, screen, waitFor } from "testing"
-import EditScheduleDialog, { UPDATE_CONNECTION } from "./EditScheduleDialog"
+import EditScheduleForm, { UPDATE_CONNECTION } from "./EditScheduleForm"
 
 const connection = {
   id: "1",
@@ -13,9 +13,9 @@ const connection = {
 }
 
 test("renders", async () => {
-  render(<EditScheduleDialog open onClose={() => {}} connection={connection} />)
+  render(<EditScheduleForm connection={connection} />)
 
-  expect(screen.getByText("Edit Schedule")).toBeTruthy()
+  expect(screen.getByText("Schedule type")).toBeTruthy()
 })
 
 test("renders with schedule", async () => {
@@ -30,17 +30,17 @@ test("renders with schedule", async () => {
     metadata: {},
   }
 
-  render(<EditScheduleDialog open onClose={() => {}} connection={connection} />)
+  render(<EditScheduleForm connection={connection} />)
 
-  expect(screen.getByText("Edit Schedule")).toBeTruthy()
+  expect(screen.getByText("Schedule type")).toBeTruthy()
 })
 
 test("submit", async () => {
   const user = userEvent.setup()
 
-  render(<EditScheduleDialog open onClose={() => {}} connection={connection} />)
+  render(<EditScheduleForm connection={connection} />)
 
-  expect(screen.getByText("Edit Schedule")).toBeTruthy()
+  expect(screen.getByText("Schedule type")).toBeTruthy()
 
   await user.click(screen.getByRole("button", { name: /save/i }))
 })
@@ -48,9 +48,9 @@ test("submit", async () => {
 test("submit cron", async () => {
   const user = userEvent.setup()
 
-  render(<EditScheduleDialog open onClose={() => {}} connection={connection} />)
+  render(<EditScheduleForm connection={connection} />)
 
-  expect(screen.getByText("Edit Schedule")).toBeTruthy()
+  expect(screen.getByText("Schedule type")).toBeTruthy()
 
   await user.click(screen.getByLabelText("Cron expression"))
 
@@ -94,12 +94,9 @@ test("error", async () => {
     },
   }
 
-  renderWithMocks(
-    <EditScheduleDialog open onClose={() => {}} connection={connection} />,
-    [mock]
-  )
+  renderWithMocks(<EditScheduleForm connection={connection} />, [mock])
 
-  expect(screen.getByText("Edit Schedule")).toBeTruthy()
+  expect(screen.getByText("Schedule type")).toBeTruthy()
 
   await user.click(screen.getByRole("button", { name: /save/i }))
 

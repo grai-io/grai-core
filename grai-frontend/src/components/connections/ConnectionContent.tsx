@@ -1,11 +1,8 @@
-import { Box, Card, Grid, Table, TableBody, Typography } from "@mui/material"
+import { Box, Card, Grid, Table, TableBody } from "@mui/material"
 import React from "react"
 import ConnectionDetail from "./ConnectionDetail"
 import ConnectionRunDetail from "./runs/ConnectionRunDetail"
-import ConnectionRunsTable from "./runs/ConnectionRunsTable"
-import ConnectionSchedule, {
-  Connection as BaseConnection,
-} from "./schedule/ConnectionSchedule"
+import { Connection as BaseConnection } from "./schedule/ConnectionSchedule"
 
 interface Run {
   id: string
@@ -60,7 +57,6 @@ const ConnectionContent: React.FC<ConnectionContentProps> = ({
         <Card variant="outlined" sx={{ borderRadius: 0, borderBottom: 0 }}>
           <Table>
             <TableBody>
-              <ConnectionSchedule connection={connection} />
               <ConnectionRunDetail label="Last Run" run={connection.last_run} />
               <ConnectionRunDetail
                 label="Last Successful Run"
@@ -71,10 +67,6 @@ const ConnectionContent: React.FC<ConnectionContentProps> = ({
         </Card>
       </Grid>
     </Grid>
-    <Typography variant="h6" sx={{ ml: 1 }}>
-      Runs
-    </Typography>
-    <ConnectionRunsTable runs={connection.runs} />
   </Box>
 )
 
