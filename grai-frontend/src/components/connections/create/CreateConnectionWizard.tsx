@@ -60,7 +60,7 @@ export type CronValue = {
   month_of_year: string
 }
 
-type SchedulesValues = {
+export type SchedulesValues = {
   type: string | null
   cron?: CronValue
 }

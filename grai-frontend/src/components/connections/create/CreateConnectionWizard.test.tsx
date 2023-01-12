@@ -1,4 +1,6 @@
 import userEvent from "@testing-library/user-event"
+import { UserEvent } from "@testing-library/user-event/dist/types/setup/setup"
+import { GraphQLError } from "graphql"
 import React from "react"
 import { renderWithMocks, renderWithRouter, screen, waitFor } from "testing"
 import { GET_CONNECTORS } from "./ConnectorSelect"
@@ -30,110 +32,53 @@ test("close", async () => {
   expect(screen.getByText("New Page")).toBeTruthy()
 })
 
-test("submit", async () => {
-  jest.setTimeout(10000)
-
-  const user = userEvent.setup()
-
-  const connectorsMock = {
-    request: {
-      query: GET_CONNECTORS,
-    },
-    result: {
-      data: {
-        connectors: [
-          {
-            id: "1",
-            name: "PostgreSQL",
-            category: "databases",
-            coming_soon: false,
-            icon: "",
-            metadata: {
-              fields: [
-                {
-                  name: "dbname",
-                  label: "Database Name",
-                  required: true,
-                },
-                {
-                  name: "user",
-                  required: true,
-                },
-                {
-                  name: "password",
-                  secret: true,
-                  required: true,
-                },
-                {
-                  name: "host",
-                  required: true,
-                },
-                {
-                  name: "port",
-                  default: 5432,
-                  required: true,
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  }
-
-  const createMock = {
-    request: {
-      query: CREATE_CONNECTION,
-      variables: {
-        workspaceId: "",
-        connectorId: "1",
-        namespace: "default",
-        name: "test connectiontest",
-        metadata: { dbname: "test", user: "test", host: "test", port: "5432" },
-        secrets: { password: "password" },
-        schedules: {
-          type: "cron",
-          cron: {
-            minutes: "10,30",
-            hours: "*1,8",
-            day_of_week: "*",
-            day_of_month: "*",
-            month_of_year: "*",
-          },
-        },
-        is_active: true,
-      },
-    },
-    result: {
-      data: {
-        createConnection: {
-          __typename: "ConnectionType",
+const connectorsMock = {
+  request: {
+    query: GET_CONNECTORS,
+  },
+  result: {
+    data: {
+      connectors: [
+        {
           id: "1",
-          connector: {
-            id: "1",
-            name: "c",
-          },
-          namespace: "default",
-          name: "test connection",
+          name: "PostgreSQL",
+          category: "databases",
+          coming_soon: false,
+          icon: "",
           metadata: {
-            field1: "value1",
+            fields: [
+              {
+                name: "dbname",
+                label: "Database Name",
+                required: true,
+              },
+              {
+                name: "user",
+                required: true,
+              },
+              {
+                name: "password",
+                secret: true,
+                required: true,
+              },
+              {
+                name: "host",
+                required: true,
+              },
+              {
+                name: "port",
+                default: 5432,
+                required: true,
+              },
+            ],
           },
-          is_active: true,
-          created_at: "",
-          updated_at: "",
         },
-      },
+      ],
     },
-  }
+  },
+}
 
-  const { container } = renderWithMocks(
-    <CreateConnectionWizard />,
-    [connectorsMock, createMock],
-    {
-      routes: ["/workspaces/:workspaceId/connections/:connectionId"],
-    }
-  )
-
+const submit = async (user: UserEvent, container: HTMLElement) => {
   expect(screen.getByText("Select a connector")).toBeTruthy()
 
   await waitFor(() => {
@@ -191,10 +136,119 @@ test("submit", async () => {
   await user.type(screen.getByRole("textbox", { name: "Hours" }), "1,8")
 
   await user.click(screen.getByRole("button", { name: /finish/i }))
+}
+
+test("submit", async () => {
+  jest.setTimeout(10000)
+
+  const user = userEvent.setup()
+
+  const createMock = {
+    request: {
+      query: CREATE_CONNECTION,
+      variables: {
+        workspaceId: "",
+        connectorId: "1",
+        namespace: "default",
+        name: "test connectiontest",
+        metadata: { dbname: "test", user: "test", host: "test", port: "5432" },
+        secrets: { password: "password" },
+        schedules: {
+          type: "cron",
+          cron: {
+            minutes: "10,30",
+            hours: "*1,8",
+            day_of_week: "*",
+            day_of_month: "*",
+            month_of_year: "*",
+          },
+        },
+        is_active: true,
+      },
+    },
+    result: {
+      data: {
+        createConnection: {
+          __typename: "ConnectionType",
+          id: "1",
+          connector: {
+            id: "1",
+            name: "c",
+          },
+          namespace: "default",
+          name: "test connection",
+          metadata: {
+            field1: "value1",
+          },
+          is_active: true,
+          created_at: "",
+          updated_at: "",
+        },
+      },
+    },
+  }
+
+  const { container } = renderWithMocks(
+    <CreateConnectionWizard />,
+    [connectorsMock, createMock],
+    {
+      routes: ["/workspaces/:workspaceId/connections/:connectionId"],
+    }
+  )
+
+  await submit(user, container)
 
   await waitFor(() => {
     expect(screen.queryByText("Set a schedule for this connection")).toBeFalsy()
   })
 
   expect(screen.getByText("New Page")).toBeTruthy()
+})
+
+test("error", async () => {
+  jest.setTimeout(10000)
+
+  const user = userEvent.setup()
+
+  const createMock = {
+    request: {
+      query: CREATE_CONNECTION,
+      variables: {
+        workspaceId: "",
+        connectorId: "1",
+        namespace: "default",
+        name: "test connectiontest",
+        metadata: { dbname: "test", user: "test", host: "test", port: "5432" },
+        secrets: { password: "password" },
+        schedules: {
+          type: "cron",
+          cron: {
+            minutes: "10,30",
+            hours: "*1,8",
+            day_of_week: "*",
+            day_of_month: "*",
+            month_of_year: "*",
+          },
+        },
+        is_active: true,
+      },
+    },
+    result: {
+      errors: [new GraphQLError("Error!")],
+    },
+  }
+
+  const { container } = renderWithMocks(
+    <CreateConnectionWizard />,
+    [connectorsMock, createMock],
+    {
+      routes: ["/workspaces/:workspaceId/connections/:connectionId"],
+    }
+  )
+
+  await submit(user, container)
+
+  await waitFor(() => {
+    expect(screen.getAllByText("Error!")).toBeTruthy()
+  })
 })
