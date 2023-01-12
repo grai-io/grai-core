@@ -23,8 +23,8 @@ class GraphManifest:
         #            for edge in self.edges), \
         #     "Graph manifests require edge source/destination UUID's rather than name/namespace specification"
 
-    def get_node(self, namespace: str, name: str) -> NodeTypes:
-        return self.node_index[namespace][name]
+    def get_node(self, namespace: str, name: str) -> Optional[NodeTypes]:
+        return self.node_index.get(namespace, {}).get(name, None)
 
 
 class Graph:
@@ -53,9 +53,9 @@ class Graph:
         )
 
     @lru_cache
-    def get_node_id(self, namespace: str, name: str) -> int:
+    def get_node_id(self, namespace: str, name: str) -> Optional[int]:
         node = self.manifest.get_node(namespace, name)
-        return hash(node.spec)
+        return hash(node.spec) if node is not None else node
 
     def get_node(
         self,
@@ -65,10 +65,15 @@ class Graph:
     ) -> GraiType:
         if namespace and name:
             node_id = self.get_node_id(namespace, name)
+            if node_id is None:
+                raise Exception(
+                    f"No nodes found with name={name} and namespace={namespace}"
+                )
         elif not node_id:
             raise Exception(
                 f"`get_node` requires either name & namespace or node_id argument"
             )
+
         return self.graph.nodes.get(node_id)[self._container_key]
 
     def label(self, namespace: str, name: str) -> str:
