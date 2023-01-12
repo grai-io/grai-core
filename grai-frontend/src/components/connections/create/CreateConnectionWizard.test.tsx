@@ -8,6 +8,8 @@ import CreateConnectionWizard, {
   CREATE_CONNECTION,
 } from "./CreateConnectionWizard"
 
+jest.setTimeout(10000)
+
 test("renders", async () => {
   renderWithRouter(<CreateConnectionWizard />)
 
@@ -139,8 +141,6 @@ const submit = async (user: UserEvent, container: HTMLElement) => {
 }
 
 test("submit", async () => {
-  jest.setTimeout(10000)
-
   const user = userEvent.setup()
 
   const createMock = {
@@ -206,8 +206,6 @@ test("submit", async () => {
 })
 
 test("error", async () => {
-  jest.setTimeout(10000)
-
   const user = userEvent.setup()
 
   const createMock = {
