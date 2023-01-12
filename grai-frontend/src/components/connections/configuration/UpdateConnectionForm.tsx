@@ -4,7 +4,7 @@ import ConnectionsForm, { Values } from "../ConnectionsForm"
 import {
   UpdateConnection,
   UpdateConnectionVariables,
-} from "../__generated__/UpdateConnection"
+} from "./__generated__/UpdateConnection"
 
 export const UPDATE_CONNECTION = gql`
   mutation UpdateConnection(

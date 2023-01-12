@@ -17,7 +17,7 @@ import React, { useState } from "react"
 import {
   UpdateConnectionSchedule,
   UpdateConnectionScheduleVariables,
-} from "../__generated__/UpdateConnectionSchedule"
+} from "./__generated__/UpdateConnectionSchedule"
 import { Connection } from "./ConnectionSchedule"
 
 export const UPDATE_CONNECTION = gql`

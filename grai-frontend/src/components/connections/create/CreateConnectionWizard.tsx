@@ -10,7 +10,7 @@ import { Connector } from "../connectors/ConnectorCard"
 import {
   CreateConnection,
   CreateConnectionVariables,
-} from "../__generated__/CreateConnection"
+} from "./__generated__/CreateConnection"
 import ConnectorSelect from "./ConnectorSelect"
 import SetSchedule from "./SetSchedule"
 import SetupConnection from "./SetupConnection"
