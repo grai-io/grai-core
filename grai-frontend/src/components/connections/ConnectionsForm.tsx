@@ -21,6 +21,7 @@ export interface ConnectorType {
   id: string
   name: string
   metadata: ConnectorMetadata | null | undefined
+  icon?: string | null
 }
 
 export type Values = {

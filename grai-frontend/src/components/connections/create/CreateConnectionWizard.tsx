@@ -1,7 +1,4 @@
 import { gql, useMutation } from "@apollo/client"
-import { ArrowForward } from "@mui/icons-material"
-import { LoadingButton } from "@mui/lab"
-import { Box, Button, Typography } from "@mui/material"
 import WizardLayout, { WizardSteps } from "components/wizards/WizardLayout"
 import React, { useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
@@ -11,10 +8,10 @@ import {
   CreateConnection,
   CreateConnectionVariables,
 } from "./__generated__/CreateConnection"
-import ConnectorSelect from "./ConnectorSelect"
 import SetSchedule from "./SetSchedule"
 import SetupConnection from "./SetupConnection"
 import TestConnection from "./TestConnection"
+import ConnectorSelectTab from "./ConnectorSelectTab"
 
 export const CREATE_CONNECTION = gql`
   mutation CreateConnection(
@@ -127,82 +124,34 @@ const CreateConnectionWizard: React.FC = () => {
   const steps: WizardSteps = [
     {
       title: "Select connector",
-      subTitle: "Select a connector",
-      actionText: "Click on a connector to continue",
-      element: ({ setActiveStep }) => (
-        <ConnectorSelect onSelect={handleSelect(setActiveStep)} />
+      element: opts => (
+        <ConnectorSelectTab
+          opts={opts}
+          onSelect={handleSelect(opts.setActiveStep)}
+        />
       ),
     },
     {
       title: "Setup connection",
-      subTitle: (
-        <Box sx={{ display: "flex" }}>
-          <img
-            src="https://cdn.sanity.io/images/pwmfmi47/production/245cb2ccbc976d6dc38d90456ca1fd7cdbcb2dc6-2424x2500.svg"
-            alt="PostgreSQL logo"
-            style={{ height: 28, width: 28 }}
-          />
-          <Typography variant="h5" sx={{ ml: 2 }}>
-            Connect to PostgreSQL
-          </Typography>
-        </Box>
-      ),
-      element: <SetupConnection values={values} setValues={setValues} />,
-      actionButtons: opts => (
-        <Button
-          variant="contained"
-          type="submit"
-          sx={{ minWidth: 120, color: "white" }}
-          endIcon={<ArrowForward />}
-          onClick={opts.forwardStep}
-        >
-          Continue
-        </Button>
+      element: opts => (
+        <SetupConnection opts={opts} values={values} setValues={setValues} />
       ),
     },
     {
       title: "Test connection",
-      subTitle: (
-        <Box sx={{ display: "flex" }}>
-          <img
-            src="https://cdn.sanity.io/images/pwmfmi47/production/245cb2ccbc976d6dc38d90456ca1fd7cdbcb2dc6-2424x2500.svg"
-            alt="PostgreSQL logo"
-            style={{ height: 28, width: 28 }}
-          />
-          <Typography variant="h5" sx={{ ml: 2 }}>
-            Test connection to PostgreSQL
-          </Typography>
-        </Box>
-      ),
-      element: <TestConnection values={values} />,
-      actionButtons: opts => (
-        <Button
-          variant="contained"
-          type="submit"
-          sx={{ minWidth: 120, color: "white" }}
-          endIcon={<ArrowForward />}
-          onClick={opts.forwardStep}
-        >
-          Continue
-        </Button>
-      ),
+      element: opts => <TestConnection opts={opts} values={values} />,
     },
     {
       title: "Set schedule",
-      subTitle: "Set a schedule for this connection",
-      element: (
-        <SetSchedule values={values} setValues={setValues} error={error} />
-      ),
-      actionButtons: (
-        <LoadingButton
-          variant="contained"
-          type="submit"
-          sx={{ minWidth: 120, color: "white" }}
+      element: opts => (
+        <SetSchedule
+          opts={opts}
+          values={values}
+          setValues={setValues}
+          error={error}
           loading={loading}
-          onClick={handleSubmit}
-        >
-          Finish
-        </LoadingButton>
+          onSubmit={handleSubmit}
+        />
       ),
     },
   ]

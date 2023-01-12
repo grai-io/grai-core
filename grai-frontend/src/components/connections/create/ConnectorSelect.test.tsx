@@ -1,3 +1,4 @@
+import { ElementOptions } from "components/wizards/WizardLayout"
 import { GraphQLError } from "graphql"
 import React from "react"
 import { render, waitFor, screen, renderWithMocks } from "testing"

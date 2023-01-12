@@ -1,4 +1,5 @@
 import { ApolloError } from "@apollo/client"
+import { LoadingButton } from "@mui/lab"
 import {
   Grid,
   FormControl,
@@ -9,22 +10,32 @@ import {
   ListItemText,
 } from "@mui/material"
 import GraphError from "components/utils/GraphError"
+import WizardBottomBar from "components/wizards/WizardBottomBar"
+import { ElementOptions } from "components/wizards/WizardLayout"
+import WizardSubtitle from "components/wizards/WizardSubtitle"
 import React from "react"
 import { Values } from "./CreateConnectionWizard"
 import SetCron from "./SetCron"
 
 type SetScheduleProps = {
+  opts: ElementOptions
   values: Values
   setValues: (values: Values) => void
+  loading?: boolean
   error?: ApolloError
+  onSubmit: () => void
 }
 
 const SetSchedule: React.FC<SetScheduleProps> = ({
+  opts,
   values,
   setValues,
+  loading,
   error,
+  onSubmit,
 }) => (
   <>
+    <WizardSubtitle title="Set a schedule for this connection" />
     {error && <GraphError error={error} />}
     <Grid container sx={{ pt: 3 }}>
       <Grid item md={8}>
@@ -99,6 +110,17 @@ const SetSchedule: React.FC<SetScheduleProps> = ({
         )}
       </Grid>
     </Grid>
+    <WizardBottomBar opts={opts}>
+      <LoadingButton
+        variant="contained"
+        type="submit"
+        sx={{ minWidth: 120, color: "white" }}
+        loading={loading}
+        onClick={onSubmit}
+      >
+        Finish
+      </LoadingButton>
+    </WizardBottomBar>
   </>
 )
 
