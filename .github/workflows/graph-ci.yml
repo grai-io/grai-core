@@ -5,7 +5,7 @@ on:
       - "grai-graph/**"
 
 concurrency:
-  group: ${{ github.ref }}
+  group: ${{ github.ref }}-graph-ci
   cancel-in-progress: true
 
 env:

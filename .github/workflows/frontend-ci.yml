@@ -7,7 +7,7 @@ on:
       - "grai-frontend/**"
 
 concurrency:
-  group: ${{ github.ref }}
+  group: ${{ github.ref }}-frontend-ci
   cancel-in-progress: true
 
 jobs:
