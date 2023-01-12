@@ -14,12 +14,12 @@ const ConnectorList: React.FC<ConnectorListProps> = ({
   onSelect,
 }) => (
   <>
-    <Typography variant="h6" sx={{ mt: 5, mb: 3 }}>
+    <Typography variant="h6" sx={{ mt: 5, mb: 3, textTransform: "capitalize" }}>
       {title}
     </Typography>
     <Grid container spacing={2}>
       {connectors.map(connector => (
-        <Grid item md={3} key={connector.title}>
+        <Grid item md={3} key={connector.id}>
           <ConnectorCard connector={connector} onSelect={onSelect} />
         </Grid>
       ))}

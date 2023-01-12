@@ -8,11 +8,7 @@ import {
 import { onError } from "@apollo/client/link/error"
 import { Tokens } from "./components/auth/AuthContext"
 
-const client = (
-  tokens: Tokens | null,
-  refresh: () => Promise<void>,
-  logoutUser: () => void
-) => {
+const client = (tokens: Tokens | null, refresh: () => Promise<void>) => {
   const baseURL =
     window._env_?.REACT_APP_SERVER_URL ??
     process.env.REACT_APP_SERVER_URL ??
@@ -49,22 +45,9 @@ const client = (
     }
   })
 
-  const logoutLink = onError(({ graphQLErrors }) => {
-    console.log(graphQLErrors?.[0].message)
-
-    if (
-      graphQLErrors?.[0].message ===
-      "{'detail': ErrorDetail(string='Given token not valid for any token type', code='token_not_valid'), 'code': ErrorDetail(string='token_not_valid', code='token_not_valid'), 'messages': [{'token_class': ErrorDetail(string='AccessToken', code='token_not_valid'), 'token_type': ErrorDetail(string='access', code='token_not_valid'), 'message': ErrorDetail(string='Token is invalid or expired', code='token_not_valid')}]}"
-    ) {
-      console.log("unathenticated")
-
-      logoutUser()
-    }
-  })
-
   return new ApolloClient({
     cache: new InMemoryCache(),
-    link: from([logoutLink, errorLink, httpLink]),
+    link: from([errorLink, httpLink]),
     connectToDevTools: true,
   })
 }

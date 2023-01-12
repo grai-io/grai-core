@@ -6,6 +6,7 @@ import WizardLayout, { WizardSteps } from "components/wizards/WizardLayout"
 import React, { useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { ConnectorType } from "../ConnectionsForm"
+import { Connector } from "../connectors/ConnectorCard"
 import {
   CreateConnection,
   CreateConnectionVariables,
@@ -93,11 +94,11 @@ const CreateConnectionWizard: React.FC = () => {
 
   const [values, setValues] = useState<Values>(defaultValues)
 
-  const handleSubmit = () =>
+  const handleSubmit = () => {
     createConnection({
       variables: {
         workspaceId: workspaceId ?? "",
-        connectorId: values.connector?.id ?? "",
+        connectorId: values.connector?.id as string,
         namespace: values.namespace,
         name: values.name,
         metadata: values.metadata,
@@ -112,44 +113,16 @@ const CreateConnectionWizard: React.FC = () => {
         )
       )
       .catch(() => {})
-
-  const handleSelect = (setActiveStep: (step: number) => void) => {
-    setValues({
-      ...values,
-      connector: {
-        id: "768aea48-1146-4f14-9005-40e89504f4b3",
-        name: "Postgres",
-        metadata: {
-          fields: [
-            {
-              name: "dbname",
-              label: "Database Name",
-              required: true,
-            },
-            {
-              name: "user",
-              required: true,
-            },
-            {
-              name: "password",
-              secret: true,
-              required: true,
-            },
-            {
-              name: "host",
-              required: true,
-            },
-            {
-              name: "port",
-              default: 5432,
-              required: true,
-            },
-          ],
-        },
-      },
-    })
-    setActiveStep(1)
   }
+
+  const handleSelect =
+    (setActiveStep: (step: number) => void) => (connector: Connector) => {
+      setValues({
+        ...values,
+        connector,
+      })
+      setActiveStep(1)
+    }
 
   const steps: WizardSteps = [
     {
@@ -157,7 +130,7 @@ const CreateConnectionWizard: React.FC = () => {
       subTitle: "Select a connector",
       actionText: "Click on a connector to continue",
       element: ({ setActiveStep }) => (
-        <ConnectorSelect onSelect={() => handleSelect(setActiveStep)} />
+        <ConnectorSelect onSelect={handleSelect(setActiveStep)} />
       ),
     },
     {
@@ -201,7 +174,7 @@ const CreateConnectionWizard: React.FC = () => {
           </Typography>
         </Box>
       ),
-      element: <TestConnection />,
+      element: <TestConnection values={values} />,
       actionButtons: opts => (
         <Button
           variant="contained"

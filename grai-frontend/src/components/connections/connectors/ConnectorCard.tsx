@@ -8,13 +8,14 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material"
-import React, { ReactNode } from "react"
+import React from "react"
 
 export interface Connector {
-  title: string
-  iconSrc?: string
-  icon?: ReactNode
-  disabled?: boolean
+  id: string
+  name: string
+  icon?: string | null
+  coming_soon?: boolean
+  metadata: any
 }
 
 type ConnectorCardProps = {
@@ -30,30 +31,29 @@ const ConnectorCard: React.FC<ConnectorCardProps> = ({
     <Card variant="outlined">
       <CardActionArea
         onClick={() => onSelect(connector)}
-        disabled={connector.disabled}
+        disabled={connector.coming_soon}
       >
         <List>
           <ListItem>
             <ListItemIcon sx={{ minWidth: 45 }}>
-              {connector.icon}
-              {connector.iconSrc && (
+              {connector.icon && (
                 <img
-                  src={connector.iconSrc}
-                  alt={`${connector.title} logo`}
+                  src={connector.icon}
+                  alt={`${connector.name} logo`}
                   style={{ height: 28, width: 28 }}
                 />
               )}
             </ListItemIcon>
             <ListItemText
               primary={
-                <Typography variant="body2">{connector.title}</Typography>
+                <Typography variant="body2">{connector.name}</Typography>
               }
             />
           </ListItem>
         </List>
       </CardActionArea>
     </Card>
-    {connector.disabled && (
+    {connector.coming_soon && (
       <Box
         sx={{
           position: "relative",

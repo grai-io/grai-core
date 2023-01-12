@@ -1,7 +1,17 @@
 import { Box, Typography, Divider } from "@mui/material"
 import React from "react"
 
-const CreateConnectionHelp: React.FC = () => (
+interface Connector {
+  name: string
+}
+
+type CreateConnectionHelpProps = {
+  connector: Connector | null
+}
+
+const CreateConnectionHelp: React.FC<CreateConnectionHelpProps> = ({
+  connector,
+}) => (
   <Box
     sx={{
       borderLeftWidth: 1,
@@ -14,7 +24,7 @@ const CreateConnectionHelp: React.FC = () => (
       <Typography>Read our docs</Typography>
       <Divider sx={{ my: 1 }} />
       <Typography variant="body2">
-        Not sure where to start? Check out the docs for PostgreSQL for
+        Not sure where to start? Check out the docs for {connector?.name} for
         step-by-step instructions.
       </Typography>
     </Box>

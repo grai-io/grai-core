@@ -9,8 +9,13 @@ import {
 } from "@mui/material"
 import React from "react"
 import CreateConnectionHelp from "./CreateConnectionHelp"
+import { Values } from "./CreateConnectionWizard"
 
-const TestConnection: React.FC = () => {
+type TestConnectionProps = {
+  values: Values
+}
+
+const TestConnection: React.FC<TestConnectionProps> = ({ values }) => {
   return (
     <Grid container sx={{ mt: 5 }}>
       <Grid item md={8} sx={{ pr: 3 }}>
@@ -33,7 +38,7 @@ const TestConnection: React.FC = () => {
         </Alert>
       </Grid>
       <Grid item md={4} sx={{}}>
-        <CreateConnectionHelp />
+        <CreateConnectionHelp connector={values.connector} />
       </Grid>
     </Grid>
   )

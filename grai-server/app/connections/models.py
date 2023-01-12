@@ -11,6 +11,9 @@ class Connector(models.Model):
     name = models.CharField(max_length=255)
     metadata = models.JSONField(default=dict)
     is_active = models.BooleanField(default=True)
+    icon = models.CharField(max_length=255, blank=True, null=True)
+    category = models.CharField(max_length=255, blank=True, null=True)
+    coming_soon = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

@@ -1,13 +1,7 @@
 import userEvent from "@testing-library/user-event"
 import React from "react"
-import {
-  fireEvent,
-  renderWithMocks,
-  renderWithRouter,
-  screen,
-  waitFor,
-  within,
-} from "testing"
+import { renderWithMocks, renderWithRouter, screen, waitFor } from "testing"
+import { GET_CONNECTORS } from "./ConnectorSelect"
 import CreateConnectionWizard, {
   CREATE_CONNECTION,
 } from "./CreateConnectionWizard"
@@ -39,41 +33,58 @@ test("close", async () => {
 test("submit", async () => {
   const user = userEvent.setup()
 
-  // const connectorsMock = {
-  //   request: {
-  //     query: GET_CONNECTORS,
-  //   },
-  //   result: {
-  //     data: {
-  //       connectors: [
-  //         {
-  //           id: "1",
-  //           name: "Test Connector 1",
-  //           metadata: {
-  //             fields: [
-  //               {
-  //                 name: "field1",
-  //                 label: "Field 1",
-  //               },
-  //               {
-  //                 name: "field2",
-  //                 label: "Field 2",
-  //                 secret: true,
-  //               },
-  //             ],
-  //           },
-  //         },
-  //       ],
-  //     },
-  //   },
-  // }
+  const connectorsMock = {
+    request: {
+      query: GET_CONNECTORS,
+    },
+    result: {
+      data: {
+        connectors: [
+          {
+            id: "1",
+            name: "PostgreSQL",
+            category: "databases",
+            coming_soon: false,
+            icon: "",
+            metadata: {
+              fields: [
+                {
+                  name: "dbname",
+                  label: "Database Name",
+                  required: true,
+                },
+                {
+                  name: "user",
+                  required: true,
+                },
+                {
+                  name: "password",
+                  secret: true,
+                  required: true,
+                },
+                {
+                  name: "host",
+                  required: true,
+                },
+                {
+                  name: "port",
+                  default: 5432,
+                  required: true,
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  }
 
   const createMock = {
     request: {
       query: CREATE_CONNECTION,
       variables: {
         workspaceId: "",
-        connectorId: "768aea48-1146-4f14-9005-40e89504f4b3",
+        connectorId: "1",
         namespace: "default",
         name: "test connectiontest",
         metadata: { dbname: "test", user: "test", host: "test", port: "5432" },
@@ -115,7 +126,7 @@ test("submit", async () => {
 
   const { container } = renderWithMocks(
     <CreateConnectionWizard />,
-    [createMock],
+    [connectorsMock, createMock],
     {
       routes: ["/workspaces/:workspaceId/connections/:connectionId"],
     }
@@ -123,7 +134,11 @@ test("submit", async () => {
 
   expect(screen.getByText("Select a connector")).toBeTruthy()
 
-  user.click(screen.getByRole("button", { name: "PostreSQL logo PostreSQL" }))
+  await waitFor(() => {
+    expect(screen.getByRole("button", { name: /PostgreSQL/i })).toBeTruthy()
+  })
+
+  await user.click(screen.getByRole("button", { name: /PostgreSQL/i }))
 
   await waitFor(() => {
     expect(screen.queryByText("Select a connector")).toBeFalsy()

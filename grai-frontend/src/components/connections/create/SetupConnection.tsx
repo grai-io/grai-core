@@ -47,7 +47,7 @@ const SetupConnection: React.FC<SetupConnectionProps> = ({
         )}
       </Grid>
       <Grid item md={4} sx={{}}>
-        <CreateConnectionHelp />
+        <CreateConnectionHelp connector={values.connector} />
       </Grid>
     </Grid>
   )
