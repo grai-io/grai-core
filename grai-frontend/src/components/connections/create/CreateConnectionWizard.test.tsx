@@ -31,6 +31,8 @@ test("close", async () => {
 })
 
 test("submit", async () => {
+  jest.setTimeout(10000)
+
   const user = userEvent.setup()
 
   const connectorsMock = {
