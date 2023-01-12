@@ -1,9 +1,6 @@
 import typing
 
 import strawberry
-from asgiref.sync import sync_to_async
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from strawberry.permission import BasePermission
 from strawberry.types import Info
 from strawberry_django_plus import gql
 
@@ -15,6 +12,8 @@ from .common import IsAuthenticated, get_user
 
 def get_workspaces(info: Info) -> typing.List[Workspace]:
     user = get_user(info)
+
+    print(user.id)
 
     return WorkspaceModel.objects.filter(memberships__user_id=user.id)
 
@@ -37,7 +36,7 @@ def get_profile(info: Info) -> User:
 @gql.type
 class Query:
     workspaces: typing.List[Workspace] = strawberry.django.field(
-        resolver=get_workspaces, permission_classes=[IsAuthenticated]
+        resolver=get_workspaces,  # permission_classes=[IsAuthenticated]
     )
     workspace: Workspace = strawberry.django.field(
         resolver=get_workspace, permission_classes=[IsAuthenticated]

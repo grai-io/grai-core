@@ -9,14 +9,10 @@ type AuthMockProps = {
 const AuthMock: React.FC<AuthMockProps> = ({ user, children }) => (
   <AuthContext.Provider
     value={{
-      user,
-      setUser: () => {},
-      authTokens: null,
-      setAuthTokens: () => {},
       registerUser: () => {},
-      refresh: async () => {},
       loginUser: async () => new Promise(() => null),
       logoutUser: () => {},
+      loggedIn: true,
     }}
   >
     {children}

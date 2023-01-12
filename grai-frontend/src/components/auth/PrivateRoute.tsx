@@ -3,10 +3,10 @@ import { useContext } from "react"
 import AuthContext from "./AuthContext"
 
 const PrivateRoute: React.FC = () => {
-  const { user } = useContext(AuthContext)
+  const { loggedIn } = useContext(AuthContext)
   let location = useLocation()
 
-  if (!user) return <Navigate to="/login" state={{ redirect: location }} />
+  if (!loggedIn) return <Navigate to="/login" state={{ redirect: location }} />
 
   return <Outlet />
 }

@@ -20,6 +20,7 @@ from connections.tasks import run_update_server
 from workspaces.models import Membership as MembershipModel
 from workspaces.models import Workspace as WorkspaceModel
 from workspaces.models import WorkspaceAPIKey
+from django.contrib.auth import authenticate, login
 
 from .common import IsAuthenticated, get_user
 
@@ -39,6 +40,22 @@ async def get_workspace(info: Info, workspaceId: strawberry.ID):
 
 @strawberry.type
 class Mutation:
+    @strawberry.mutation
+    async def login(
+        self,
+        info: Info,
+        username: str,
+        password: str,
+    ) -> User:
+        user = authenticate(username=username, password=password)
+
+        if user is None:
+            raise Exception("Invalid credentials")
+
+        login(info.context.request, user)
+
+        return user
+
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def createConnection(
         self,

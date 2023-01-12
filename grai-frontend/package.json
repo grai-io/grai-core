@@ -24,7 +24,6 @@
     "dayjs": "^1.11.6",
     "elkjs": "^0.8.2",
     "graphql": "^16.6.0",
-    "jwt-decode": "^3.1.2",
     "luxon": "^3.2.1",
     "material-ui-popup-state": "^5.0.4",
     "notistack": "^2.0.8",

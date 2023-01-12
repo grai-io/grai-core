@@ -9,6 +9,7 @@ from rest_framework_simplejwt.views import (
 from strawberry.django.views import AsyncGraphQLView
 
 from api.schema import schema
+from auth.views import login_view, whoami_view
 
 spectacular_settings = {
     "SCHEMA_PATH_PREFIX": "/api/v1/",
@@ -46,4 +47,6 @@ urlpatterns = [
         name="swagger-ui",
     ),
     path("health/", include("health_check.urls"), name="health"),
+    path("login/", login_view, name="api-login"),
+    path("whoami/", whoami_view, name="api-whoami"),
 ]
