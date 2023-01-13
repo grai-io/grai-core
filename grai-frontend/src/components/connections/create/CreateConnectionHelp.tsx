@@ -1,5 +1,8 @@
-import { Box, Typography, Divider } from "@mui/material"
+import { Link } from "@mui/material"
+import HelpItem from "components/help/HelpItem"
+import HelpSection from "components/help/HelpSection"
 import React from "react"
+import { Link as RouterLink, useParams } from "react-router-dom"
 
 interface Connector {
   name: string
@@ -11,40 +14,29 @@ type CreateConnectionHelpProps = {
 
 const CreateConnectionHelp: React.FC<CreateConnectionHelpProps> = ({
   connector,
-}) => (
-  <Box
-    sx={{
-      borderLeftWidth: 1,
-      borderLeftStyle: "solid",
-      borderLeftColor: "divider",
-      pl: 3,
-    }}
-  >
-    <Box sx={{ mb: 5 }}>
-      <Typography>Read our docs</Typography>
-      <Divider sx={{ my: 1 }} />
-      <Typography variant="body2">
-        Not sure where to start? Check out the docs for {connector?.name} for
+}) => {
+  const { workspaceId } = useParams()
+
+  return (
+    <HelpSection>
+      <HelpItem title="Read our docs">
+        Not sure where to start? Check out the{" "}
+        <Link href="https://docs.grai.io">docs for {connector?.name}</Link> for
         step-by-step instructions.
-      </Typography>
-    </Box>
-    <Box sx={{ mb: 5 }}>
-      <Typography>Invite a teammate</Typography>
-      <Divider sx={{ my: 1 }} />
-      <Typography variant="body2">
-        If you're missing credentials or connection info, invite a teammate to
-        join you in this Grai workspace.
-      </Typography>
-    </Box>
-    <Box sx={{ mb: 5 }}>
-      <Typography>Contact support</Typography>
-      <Divider sx={{ my: 1 }} />
-      <Typography variant="body2">
+      </HelpItem>
+      <HelpItem title="Invite a teammate">
+        If you're missing credentials or connection info,{" "}
+        <RouterLink to={`/workspaces/${workspaceId}/settings/memberships`}>
+          invite a teammate
+        </RouterLink>{" "}
+        to join you in this Grai workspace.
+      </HelpItem>
+      <HelpItem title="Contact support">
         We're here to help! Chat with us if you feel stuck or have any
         questions.
-      </Typography>
-    </Box>
-  </Box>
-)
+      </HelpItem>
+    </HelpSection>
+  )
+}
 
 export default CreateConnectionHelp

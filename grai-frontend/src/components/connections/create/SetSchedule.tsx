@@ -14,6 +14,7 @@ import WizardBottomBar from "components/wizards/WizardBottomBar"
 import { ElementOptions } from "components/wizards/WizardLayout"
 import WizardSubtitle from "components/wizards/WizardSubtitle"
 import React from "react"
+import ScheduleHelp from "../schedule/ScheduleHelp"
 import { Values } from "./CreateConnectionWizard"
 import SetCron from "./SetCron"
 
@@ -108,6 +109,9 @@ const SetSchedule: React.FC<SetScheduleProps> = ({
             setValues={setValues}
           />
         )}
+      </Grid>
+      <Grid item md={4}>
+        <ScheduleHelp />
       </Grid>
     </Grid>
     <WizardBottomBar opts={opts}>
