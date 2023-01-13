@@ -3,12 +3,37 @@ import pytest
 from api.schema import schema
 from workspaces.models import Workspace
 
-from .common import test_info
+from .common import test_context, test_basic_context
 
 
 @pytest.mark.django_db
-async def test_workspace(test_info):
-    info, workspace, user = test_info
+async def test_workspaces_no_login(test_basic_context):
+    context = test_basic_context
+
+    query = """
+        query Workspaces {
+            workspaces {
+                id
+                name
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        context_value=context,
+    )
+
+    assert (
+        str(result.errors)
+        == "[GraphQLError('User is not authenticated', locations=[SourceLocation(line=3, column=13)], path=['workspaces'])]"
+    )
+    assert result.data is None
+
+
+@pytest.mark.django_db
+async def test_workspace(test_context):
+    context, workspace, user = test_context
 
     query = """
         query Workspace($pk: ID!) {
@@ -24,7 +49,7 @@ async def test_workspace(test_info):
         variable_values={
             "pk": str(workspace.id),
         },
-        context_value=info,
+        context_value=context,
     )
 
     assert result.errors is None
@@ -35,8 +60,8 @@ async def test_workspace(test_info):
 
 
 @pytest.mark.django_db
-async def test_workspace_no_workspace(test_info):
-    info, workspace, user = test_info
+async def test_workspace_no_workspace(test_context):
+    context, workspace, user = test_context
 
     query = """
         query Workspace($pk: ID!) {
@@ -52,18 +77,19 @@ async def test_workspace_no_workspace(test_info):
         variable_values={
             "pk": "85a3c968-15c4-4906-83ff-931a672c087f",
         },
-        context_value=info,
+        context_value=context,
     )
 
     assert (
         str(result.errors)
         == """[GraphQLError("Can't find workspace", locations=[SourceLocation(line=3, column=13)], path=['workspace'])]"""
     )
+    assert result.data is None
 
 
 @pytest.mark.django_db
-async def test_workspaces(test_info):
-    info, workspace, user = test_info
+async def test_workspaces(test_context):
+    context, workspace, user = test_context
 
     query = """
         query Workspaces {
@@ -74,7 +100,7 @@ async def test_workspaces(test_info):
         }
     """
 
-    result = await schema.execute(query, context_value=info)
+    result = await schema.execute(query, context_value=context)
 
     assert result.errors is None
     assert result.data["workspaces"] == [
@@ -86,8 +112,8 @@ async def test_workspaces(test_info):
 
 
 @pytest.mark.django_db
-async def test_workspaces_no_membership(test_info):
-    info, workspace, user = test_info
+async def test_workspaces_no_membership(test_context):
+    context, workspace, user = test_context
 
     await Workspace.objects.acreate(name="Test Workspace2")
 
@@ -100,7 +126,7 @@ async def test_workspaces_no_membership(test_info):
         }
     """
 
-    result = await schema.execute(query, context_value=info)
+    result = await schema.execute(query, context_value=context)
 
     assert result.errors is None
     assert result.data["workspaces"] == [
@@ -112,8 +138,8 @@ async def test_workspaces_no_membership(test_info):
 
 
 @pytest.mark.django_db
-async def test_profile(test_info):
-    info, workspace, user = test_info
+async def test_profile(test_context):
+    context, workspace, user = test_context
 
     query = """
         query Profile {
@@ -126,7 +152,7 @@ async def test_profile(test_info):
         }
     """
 
-    result = await schema.execute(query, context_value=info)
+    result = await schema.execute(query, context_value=context)
 
     assert result.errors is None
     assert result.data["profile"] == {
