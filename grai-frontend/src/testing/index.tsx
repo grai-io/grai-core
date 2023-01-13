@@ -10,6 +10,7 @@ import theme from "theme"
 import AutoMockedProvider from "./AutoMockedProvider"
 import casual from "casual"
 import AuthMock from "./AuthMock"
+import GuestRoute from "components/auth/GuestRoute"
 
 const mockResolvers = {
   Date: () => "2019-12-31",
@@ -27,19 +28,13 @@ const mockResolvers = {
   }),
 }
 
-const defaultUser = {
-  id: "1",
-  name: "user1",
-  email: "user@example.com",
-}
-
 const customRender = (ui: ReactElement, options?: RenderOptions) =>
   render(ui, {
     wrapper: props => (
       <HelmetProvider>
         <SnackbarProvider>
           <ThemeProvider theme={theme}>
-            <AuthMock user={defaultUser}>
+            <AuthMock initialLoggedIn={true}>
               <AutoMockedProvider mockResolvers={mockResolvers}>
                 {props.children}
               </AutoMockedProvider>
@@ -58,6 +53,16 @@ type RouteType =
       element: ReactNode
     }
 
+type CustomRenderOptions = {
+  path?: string
+  route?: string
+  routes?: RouteType[]
+  initialEntries?: string[] | null
+  loggedIn?: boolean
+  guestRoute?: boolean
+  throwError?: boolean
+}
+
 export const renderWithRouter = (
   ui: ReactElement,
   {
@@ -65,18 +70,10 @@ export const renderWithRouter = (
     route = "/",
     routes = [],
     initialEntries = null,
-    user = {
-      id: "1",
-      name: "user1",
-      email: "user@example.com",
-    },
-  }: {
-    path?: string
-    route?: string
-    routes?: RouteType[]
-    initialEntries?: string[] | null
-    user?: any
-  } = {}
+    loggedIn = true,
+    guestRoute = false,
+    throwError = false,
+  }: CustomRenderOptions = {}
 ) => {
   return render(ui, {
     wrapper: props => (
@@ -84,10 +81,16 @@ export const renderWithRouter = (
         <ThemeProvider theme={theme}>
           <AutoMockedProvider mockResolvers={mockResolvers}>
             <MemoryRouter initialEntries={initialEntries ?? [route]}>
-              <AuthMock user={user}>
+              <AuthMock initialLoggedIn={loggedIn} throwError={throwError}>
                 <SnackbarProvider maxSnack={3} hideIconVariant>
                   <Routes>
-                    <Route path={path} element={props.children} />
+                    {guestRoute ? (
+                      <Route element={<GuestRoute />}>
+                        <Route path={path} element={props.children} />
+                      </Route>
+                    ) : (
+                      <Route path={path} element={props.children} />
+                    )}
                     {routes.map(route =>
                       typeof route === "string" ? (
                         <Route
@@ -121,11 +124,9 @@ export const renderWithMocks = (
     path = "/",
     route = "/",
     routes = [],
-  }: {
-    path?: string
-    route?: string
-    routes?: string[]
-  } = {}
+    loggedIn = true,
+    throwError = false,
+  }: CustomRenderOptions = {}
 ) => {
   return render(ui, {
     wrapper: props => (
@@ -133,13 +134,25 @@ export const renderWithMocks = (
         <ThemeProvider theme={theme}>
           <MockedProvider mocks={mocks} addTypename={false}>
             <MemoryRouter initialEntries={[route]}>
-              <AuthMock user={defaultUser}>
+              <AuthMock initialLoggedIn={loggedIn} throwError={throwError}>
                 <SnackbarProvider maxSnack={3} hideIconVariant>
                   <Routes>
                     <Route path={path} element={props.children} />
-                    {routes.map(path => (
-                      <Route key={path} path={path} element={<>New Page</>} />
-                    ))}
+                    {routes.map(route =>
+                      typeof route === "string" ? (
+                        <Route
+                          key={route}
+                          path={route}
+                          element={<>New Page</>}
+                        />
+                      ) : (
+                        <Route
+                          key={route.path}
+                          path={route.path}
+                          element={route.element}
+                        />
+                      )
+                    )}
                   </Routes>
                 </SnackbarProvider>
               </AuthMock>

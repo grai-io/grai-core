@@ -1,192 +1,112 @@
 /* istanbul ignore file */
-import { createContext, useState, useEffect, ReactNode } from "react"
-import jwt_decode from "jwt-decode"
+import { ApolloClient, gql, NormalizedCacheObject } from "@apollo/client"
+import { createContext, ReactNode } from "react"
+import { Login, LoginVariables } from "./__generated__/Login"
+import { Logout } from "./__generated__/Logout"
+import { Register, RegisterVariables } from "./__generated__/Register"
 declare global {
   interface Window {
     _env_: any
   }
 }
 
-export type User = {}
+export const LOGIN = gql`
+  mutation Login($username: String!, $password: String!) {
+    login(username: $username, password: $password) {
+      id
+      username
+      first_name
+      last_name
+    }
+  }
+`
 
-export type Tokens = {
-  access: string
-  refresh: string
-}
+export const LOGOUT = gql`
+  mutation Logout {
+    logout
+  }
+`
+
+export const REGISTER = gql`
+  mutation Register($username: String!, $password: String!) {
+    register(username: $username, password: $password) {
+      id
+      username
+      first_name
+      last_name
+    }
+  }
+`
 
 type AuthContextType = {
-  user: User | null
-  setUser: (user: User | null) => void
-  authTokens: Tokens | null
-  setAuthTokens: (tokens: Tokens | null) => void
-  registerUser: (username: string, password: string, password2: string) => void
-  refresh: () => Promise<void>
+  registerUser: (username: string, password: string) => void
   loginUser: (username: string, password: string) => Promise<void>
   logoutUser: () => void
+  loggedIn: boolean
 }
 
 const AuthContext = createContext<AuthContextType>({
-  user: null,
-  setUser: () => {},
-  authTokens: null,
-  setAuthTokens: () => {},
   registerUser: () => {},
-  refresh: async () => {},
   loginUser: async () => new Promise(() => null),
   logoutUser: () => {},
+  loggedIn: false,
 })
 
 export default AuthContext
 
-const baseURL =
-  window._env_?.REACT_APP_SERVER_URL ??
-  process.env.REACT_APP_SERVER_URL ??
-  "http://localhost:8000"
-
 type AuthProviderProps = {
+  loggedIn: boolean
+  setLoggedIn: (value: boolean) => void
+  client: ApolloClient<NormalizedCacheObject>
   children: ReactNode
 }
 
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [authTokens, setAuthTokens] = useState(() =>
-    localStorage.getItem("authTokens")
-      ? JSON.parse(localStorage.getItem("authTokens") ?? "")
-      : null
-  )
-  const [user, setUser] = useState<User | null>(() =>
-    localStorage.getItem("authTokens")
-      ? jwt_decode(localStorage.getItem("authTokens") ?? "")
-      : null
-  )
-  const [loading, setLoading] = useState(true)
-
-  // const navigate = useNavigate()
-
-  const loginUser = async (username: string, password: string) => {
-    const response = await fetch(
-      `${baseURL}/api/v1/auth/jwttoken/`.replace(/([^:])(\/\/+)/g, "$1/"),
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+export const AuthProvider: React.FC<AuthProviderProps> = ({
+  loggedIn,
+  setLoggedIn,
+  client,
+  children,
+}) => {
+  const loginUser = async (username: string, password: string) =>
+    client
+      .mutate<Login, LoginVariables>({
+        mutation: LOGIN,
+        variables: {
           username,
           password,
-        }),
-      }
-    )
-    const data = await response.json()
-
-    if (response.status === 200) {
-      setAuthTokens(data)
-      setUser(jwt_decode(data.access))
-      localStorage.setItem("authTokens", JSON.stringify(data))
-    } else if (response.status === 401) {
-      throw new Error("Incorrect password")
-    } else {
-      throw new Error("Error")
-    }
-  }
-
-  const refresh = async () => {
-    const response = await fetch(
-      `${baseURL}/api/v1/auth/jwttoken/refresh/`.replace(
-        /([^:])(\/\/+)/g,
-        "$1/"
-      ),
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          refresh: authTokens?.refresh,
-        }),
-      }
-    ).catch(error => {
-      if (error.response.status === 401) {
-        return
-      }
+      })
+      .then(() => setLoggedIn(true))
 
-      throw error
-    })
-
-    if (!response) return
-
-    const data = await response.json()
-
-    if (response.status === 200) {
-      const updatedAuthTokens: Tokens = authTokens
-        ? { refresh: authTokens.refresh, access: data.access }
-        : { access: data.access, refresh: "" }
-
-      localStorage.setItem("authTokens", JSON.stringify(updatedAuthTokens))
-
-      setAuthTokens(updatedAuthTokens)
-      setUser(jwt_decode(data.access))
-    } else {
-      if (response.status === 401) {
-        setAuthTokens(null)
-        setUser(null)
-
-        return
-      }
-
-      alert("Something went wrong!")
-    }
-  }
-
-  const registerUser = async (
-    username: string,
-    password: string,
-    password2: string
-  ) => {
-    const response = await fetch(
-      `${baseURL}/api/register/`.replace(/([^:])(\/\/+)/g, "$1/"),
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+  const registerUser = async (username: string, password: string) =>
+    client
+      .mutate<Register, RegisterVariables>({
+        mutation: REGISTER,
+        variables: {
           username,
           password,
-          password2,
-        }),
-      }
-    )
-    if (response.status !== 201) alert("Something went wrong!")
-  }
+        },
+      })
+      .then(() => setLoggedIn(true))
 
-  const logoutUser = () => {
-    setAuthTokens(null)
-    setUser(null)
-    localStorage.removeItem("authTokens")
-    // navigate("/")
-  }
+  const logoutUser = async () =>
+    client
+      .mutate<Logout>({
+        mutation: LOGOUT,
+      })
+      .then(() => {
+        client.resetStore()
+        setLoggedIn(false)
+      })
 
   const contextData = {
-    user,
-    setUser,
-    authTokens,
-    setAuthTokens,
     registerUser,
-    refresh,
     loginUser,
     logoutUser,
+    loggedIn,
   }
 
-  useEffect(() => {
-    if (authTokens) {
-      setUser(jwt_decode(authTokens.access))
-    }
-    setLoading(false)
-  }, [authTokens, loading])
-
   return (
-    <AuthContext.Provider value={contextData}>
-      {loading ? null : children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextData}>{children}</AuthContext.Provider>
   )
 }
