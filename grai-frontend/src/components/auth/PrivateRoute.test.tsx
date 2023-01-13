@@ -11,7 +11,7 @@ test("renders", async () => {
 
 test("renders logged out", async () => {
   renderWithRouter(<PrivateRoute />, {
-    user: null,
+    loggedIn: false,
     routes: [{ path: "/login", element: <>Login</> }],
   })
 

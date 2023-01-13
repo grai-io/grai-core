@@ -20,7 +20,8 @@ from connections.tasks import run_update_server
 from workspaces.models import Membership as MembershipModel
 from workspaces.models import Workspace as WorkspaceModel
 from workspaces.models import WorkspaceAPIKey
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import get_user_model
 
 from .common import IsAuthenticated, get_user
 
@@ -47,12 +48,36 @@ class Mutation:
         username: str,
         password: str,
     ) -> User:
-        user = authenticate(username=username, password=password)
+        user = await sync_to_async(authenticate)(username=username, password=password)
 
         if user is None:
             raise Exception("Invalid credentials")
 
-        login(info.context.request, user)
+        await sync_to_async(login)(info.context.request, user)
+
+        return user
+
+    @strawberry.mutation
+    async def logout(
+        self,
+        info: Info,
+    ) -> bool:
+        await sync_to_async(logout)(info.context.request)
+
+        return True
+
+    @strawberry.mutation
+    async def register(
+        self,
+        info: Info,
+        username: str,
+        password: str,
+    ) -> User:
+        UserModel = get_user_model()
+
+        user = await UserModel.objects.acreate(username=username, password=password)
+
+        await sync_to_async(login)(info.context.request, user)
 
         return user
 

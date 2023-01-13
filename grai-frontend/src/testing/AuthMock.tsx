@@ -1,22 +1,40 @@
-import AuthContext, { User } from "components/auth/AuthContext"
-import React, { ReactNode } from "react"
+import AuthContext from "components/auth/AuthContext"
+import React, { ReactNode, useState } from "react"
 
 type AuthMockProps = {
-  user: User | null
+  initialLoggedIn: boolean
+  throwError?: boolean
   children: ReactNode
 }
 
-const AuthMock: React.FC<AuthMockProps> = ({ user, children }) => (
-  <AuthContext.Provider
-    value={{
-      registerUser: () => {},
-      loginUser: async () => new Promise(() => null),
-      logoutUser: () => {},
-      loggedIn: true,
-    }}
-  >
-    {children}
-  </AuthContext.Provider>
-)
+const AuthMock: React.FC<AuthMockProps> = ({
+  children,
+  initialLoggedIn,
+  throwError,
+}) => {
+  const [loggedIn, setLoggedIn] = useState(initialLoggedIn)
+
+  return (
+    <AuthContext.Provider
+      value={{
+        registerUser: () => {
+          setLoggedIn(true)
+        },
+        loginUser: async () => {
+          if (throwError) throw Error("Login Error")
+
+          setLoggedIn(true)
+          return new Promise(() => null)
+        },
+        logoutUser: () => {
+          setLoggedIn(false)
+        },
+        loggedIn,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  )
+}
 
 export default AuthMock

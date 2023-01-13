@@ -1,16 +1,45 @@
 /* istanbul ignore file */
+import { ApolloClient, gql, NormalizedCacheObject } from "@apollo/client"
 import { createContext, ReactNode } from "react"
-import useLocalStorage from "helpers/useLocalStorage"
+import { Login, LoginVariables } from "./__generated__/Login"
+import { Logout } from "./__generated__/Logout"
+import { Register, RegisterVariables } from "./__generated__/Register"
 declare global {
   interface Window {
     _env_: any
   }
 }
 
-export type User = {}
+export const LOGIN = gql`
+  mutation Login($username: String!, $password: String!) {
+    login(username: $username, password: $password) {
+      id
+      username
+      first_name
+      last_name
+    }
+  }
+`
+
+export const LOGOUT = gql`
+  mutation Logout {
+    logout
+  }
+`
+
+export const REGISTER = gql`
+  mutation Register($username: String!, $password: String!) {
+    register(username: $username, password: $password) {
+      id
+      username
+      first_name
+      last_name
+    }
+  }
+`
 
 type AuthContextType = {
-  registerUser: (username: string, password: string, password2: string) => void
+  registerUser: (username: string, password: string) => void
   loginUser: (username: string, password: string) => Promise<void>
   logoutUser: () => void
   loggedIn: boolean
@@ -25,68 +54,50 @@ const AuthContext = createContext<AuthContextType>({
 
 export default AuthContext
 
-const baseURL =
-  window._env_?.REACT_APP_SERVER_URL ??
-  process.env.REACT_APP_SERVER_URL ??
-  "http://localhost:8000"
-
 type AuthProviderProps = {
+  loggedIn: boolean
+  setLoggedIn: (value: boolean) => void
+  client: ApolloClient<NormalizedCacheObject>
   children: ReactNode
 }
 
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [loggedIn, setLoggedIn] = useLocalStorage("loggedIn", false)
-
-  const loginUser = async (username: string, password: string) => {
-    const response = await fetch(
-      `${baseURL}/login/`.replace(/([^:])(\/\/+)/g, "$1/"),
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+export const AuthProvider: React.FC<AuthProviderProps> = ({
+  loggedIn,
+  setLoggedIn,
+  client,
+  children,
+}) => {
+  const loginUser = async (username: string, password: string) =>
+    client
+      .mutate<Login, LoginVariables>({
+        mutation: LOGIN,
+        variables: {
           username,
           password,
-        }),
-        credentials: "include",
-      }
-    )
-
-    if (response.status === 200) {
-      setLoggedIn(true)
-    } else if (response.status === 401) {
-      throw new Error("Incorrect password")
-    } else {
-      throw new Error("Error")
-    }
-  }
-
-  const registerUser = async (
-    username: string,
-    password: string,
-    password2: string
-  ) => {
-    const response = await fetch(
-      `${baseURL}/api/register/`.replace(/([^:])(\/\/+)/g, "$1/"),
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
         },
-        body: JSON.stringify({
+      })
+      .then(() => setLoggedIn(true))
+
+  const registerUser = async (username: string, password: string) =>
+    client
+      .mutate<Register, RegisterVariables>({
+        mutation: REGISTER,
+        variables: {
           username,
           password,
-          password2,
-        }),
-      }
-    )
-    if (response.status !== 201) alert("Something went wrong!")
-  }
+        },
+      })
+      .then(() => setLoggedIn(true))
 
-  const logoutUser = () => {
-    setLoggedIn(false)
-  }
+  const logoutUser = async () =>
+    client
+      .mutate<Logout>({
+        mutation: LOGOUT,
+      })
+      .then(() => {
+        client.resetStore()
+        setLoggedIn(false)
+      })
 
   const contextData = {
     registerUser,

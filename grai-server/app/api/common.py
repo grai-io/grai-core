@@ -12,7 +12,7 @@ class IsAuthenticated(BasePermission):
         if info.context.request.user is None:
             return False
 
-        return sync_to_async(lambda: info.context.request.user.is_authenticated)
+        return await sync_to_async(lambda: info.context.request.user.is_authenticated)()
 
 
 def get_user(info: Info):

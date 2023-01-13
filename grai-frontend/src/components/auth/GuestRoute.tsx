@@ -11,7 +11,7 @@ const GuestRoute: React.FC<GuestRouteProps> = ({ redirect }) => {
   let location = useLocation()
 
   if (loggedIn)
-    return <Navigate to={location.state.redirect ?? redirect ?? "/"} replace />
+    return <Navigate to={location.state?.redirect ?? redirect ?? "/"} replace />
 
   return <Outlet />
 }

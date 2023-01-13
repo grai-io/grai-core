@@ -36,7 +36,7 @@ def get_profile(info: Info) -> User:
 @gql.type
 class Query:
     workspaces: typing.List[Workspace] = strawberry.django.field(
-        resolver=get_workspaces,  # permission_classes=[IsAuthenticated]
+        resolver=get_workspaces, permission_classes=[IsAuthenticated]
     )
     workspace: Workspace = strawberry.django.field(
         resolver=get_workspace, permission_classes=[IsAuthenticated]

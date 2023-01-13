@@ -6,7 +6,7 @@ import {
 } from "@apollo/client"
 import { onError } from "@apollo/client/link/error"
 
-const client = (logoutUser: () => void) => {
+const make_client = (logoutUser: () => void) => {
   const baseURL =
     window._env_?.REACT_APP_SERVER_URL ??
     process.env.REACT_APP_SERVER_URL ??
@@ -15,13 +15,10 @@ const client = (logoutUser: () => void) => {
   const httpLink = createHttpLink({
     uri: `${baseURL}/graphql/`,
     credentials: "include",
-    // headers: {
-    //   Authorization: `Bearer ${tokens?.access}`,
-    // },
   })
 
   const errorLink = onError(({ graphQLErrors }) => {
-    if (graphQLErrors?.[0].message === "User is not authenticated123") {
+    if (graphQLErrors?.[0].message === "User is not authenticated") {
       logoutUser()
     }
   })
@@ -33,4 +30,4 @@ const client = (logoutUser: () => void) => {
   })
 }
 
-export default client
+export default make_client
