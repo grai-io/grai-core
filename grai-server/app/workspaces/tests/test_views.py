@@ -7,12 +7,16 @@ import pytest
 from django.urls import reverse
 
 from lineage.urls import app_name
-from workspaces.models import Membership, Workspace, WorkspaceAPIKey
+from workspaces.models import Membership, Organisation, Workspace, WorkspaceAPIKey
 
 
 @pytest.fixture
 def create_workspace(name=None):
-    return Workspace.objects.create(name=uuid.uuid4() if name is None else name)
+    organisation = Organisation.objects.create(name="Test Organisation2")
+
+    return Workspace.objects.create(
+        name=uuid.uuid4() if name is None else name, organisation=organisation
+    )
 
 
 @pytest.fixture

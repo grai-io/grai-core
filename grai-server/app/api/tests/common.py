@@ -5,27 +5,41 @@ from django.http.request import HttpRequest
 from asgiref.sync import sync_to_async
 from django.conf import settings
 from importlib import import_module
+import pytest_asyncio
 
-from workspaces.models import Membership, Workspace
+from workspaces.models import Membership, Organisation, Workspace
 
 
 class Context(object):
     pass
 
 
-@pytest.fixture
-async def test_context():
+@pytest_asyncio.fixture
+async def test_organisation():
+    return await Organisation.objects.acreate(name="Test Organisation")
+
+
+@pytest_asyncio.fixture
+async def test_user():
     User = get_user_model()
 
-    workspace = await Workspace.objects.acreate(name="Test Workspace")
     user = User()
     user.set_password("password")
     await sync_to_async(user.save)()
 
-    await Membership.objects.acreate(user=user, workspace=workspace, role="admin")
+    return user
+
+
+@pytest_asyncio.fixture
+async def test_context(test_organisation, test_user):
+    workspace, created = await Workspace.objects.aget_or_create(
+        name="Test Workspace", organisation=test_organisation
+    )
+
+    await Membership.objects.acreate(user=test_user, workspace=workspace, role="admin")
 
     request = HttpRequest
-    request.user = user
+    request.user = test_user
 
     context = Context()
     context.request = request
@@ -35,10 +49,10 @@ async def test_context():
     context.request.session = engine.SessionStore(session_key)
     context.request.META = {}
 
-    return context, workspace, user
+    return context, test_organisation, workspace, test_user
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def test_basic_context():
     request = HttpRequest
     request.user = None

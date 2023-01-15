@@ -33,7 +33,7 @@ async def test_workspaces_no_login(test_basic_context):
 
 @pytest.mark.django_db
 async def test_workspace(test_context):
-    context, workspace, user = test_context
+    context, organisation, workspace, user = test_context
 
     query = """
         query Workspace($pk: ID!) {
@@ -61,7 +61,7 @@ async def test_workspace(test_context):
 
 @pytest.mark.django_db
 async def test_workspace_no_workspace(test_context):
-    context, workspace, user = test_context
+    context, organisation, workspace, user = test_context
 
     query = """
         query Workspace($pk: ID!) {
@@ -89,7 +89,7 @@ async def test_workspace_no_workspace(test_context):
 
 @pytest.mark.django_db
 async def test_workspaces(test_context):
-    context, workspace, user = test_context
+    context, organisation, workspace, user = test_context
 
     query = """
         query Workspaces {
@@ -113,9 +113,9 @@ async def test_workspaces(test_context):
 
 @pytest.mark.django_db
 async def test_workspaces_no_membership(test_context):
-    context, workspace, user = test_context
+    context, organisation, workspace, user = test_context
 
-    await Workspace.objects.acreate(name="Test Workspace2")
+    await Workspace.objects.acreate(name="Test Workspace2", organisation=organisation)
 
     query = """
         query Workspaces {
@@ -139,7 +139,7 @@ async def test_workspaces_no_membership(test_context):
 
 @pytest.mark.django_db
 async def test_profile(test_context):
-    context, workspace, user = test_context
+    context, organisation, workspace, user = test_context
 
     query = """
         query Profile {

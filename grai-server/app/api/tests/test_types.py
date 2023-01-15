@@ -8,7 +8,7 @@ from .common import test_context
 
 @pytest.mark.django_db
 async def test_workspace_run(test_context):
-    context, workspace, user = test_context
+    context, organisation, workspace, user = test_context
 
     connector = await Connector.objects.acreate(name="Connector 4")
     connection = await Connection.objects.acreate(
@@ -54,7 +54,7 @@ async def test_workspace_run(test_context):
 
 @pytest.mark.django_db
 async def test_workspace_connection_run(test_context):
-    context, workspace, user = test_context
+    context, organisation, workspace, user = test_context
 
     connector = await Connector.objects.acreate(name="Connector 5")
     connection = await Connection.objects.acreate(

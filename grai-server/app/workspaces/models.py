@@ -5,9 +5,7 @@ from django_multitenant.models import TenantModel
 from rest_framework_api_key.models import AbstractAPIKey, BaseAPIKeyManager
 
 
-class Workspace(TenantModel):
-    tenant_id = "id"
-
+class Organisation(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -17,8 +15,44 @@ class Workspace(TenantModel):
         return self.name
 
     class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["name"], name="Organisation name uniqueness"
+            ),
+        ]
         indexes = [
             models.Index(fields=["name"]),
+        ]
+
+
+class Workspace(TenantModel):
+    tenant_id = "id"
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=255)
+    organisation = models.ForeignKey(
+        "workspaces.Organisation",
+        related_name="workspaces",
+        on_delete=models.CASCADE,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+    def ref(self):
+        return f"{self.organisation.name}/{self.name}"
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["organisation", "name"],
+                name="Organisation workspace name uniqueness",
+            )
+        ]
+        indexes = [
+            models.Index(fields=["organisation", "name"]),
         ]
 
 
