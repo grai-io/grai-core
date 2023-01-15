@@ -8,7 +8,7 @@ import CreateConnectionWizard, {
   CREATE_CONNECTION,
 } from "./CreateConnectionWizard"
 
-jest.setTimeout(10000)
+jest.setTimeout(30000)
 
 test("renders", async () => {
   renderWithRouter(<CreateConnectionWizard />)

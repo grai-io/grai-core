@@ -12,6 +12,7 @@ import SetSchedule from "./SetSchedule"
 import SetupConnection from "./SetupConnection"
 import TestConnection from "./TestConnection"
 import ConnectorSelectTab from "./ConnectorSelectTab"
+import { useSnackbar } from "notistack"
 
 export const CREATE_CONNECTION = gql`
   mutation CreateConnection(
@@ -74,6 +75,7 @@ export type Values = {
 const CreateConnectionWizard: React.FC = () => {
   const { workspaceId } = useParams()
   const navigate = useNavigate()
+  const { enqueueSnackbar } = useSnackbar()
 
   const [createConnection, { loading, error }] = useMutation<
     CreateConnection,
@@ -109,6 +111,7 @@ const CreateConnectionWizard: React.FC = () => {
           `/workspaces/${workspaceId}/connections/${res.data?.createConnection.id}`
         )
       )
+      .then(() => enqueueSnackbar("Connection created"))
       .catch(() => {})
   }
 

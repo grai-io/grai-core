@@ -10,6 +10,7 @@ import {
   UpdatePassword,
   UpdatePasswordVariables,
 } from "./__generated__/UpdatePassword"
+import { useSnackbar } from "notistack"
 
 export const UPDATE_PASSWORD = gql`
   mutation UpdatePassword($old_password: String!, $password: String!) {
@@ -27,6 +28,7 @@ type Values = {
 const PasswordSettings: React.FC = () => {
   const { workspaceId } = useParams()
   const navigate = useNavigate()
+  const { enqueueSnackbar } = useSnackbar()
 
   const [values, setValues] = useState<Values>({
     old_password: "",
@@ -42,6 +44,7 @@ const PasswordSettings: React.FC = () => {
     updatePassword({
       variables: values,
     })
+      .then(() => enqueueSnackbar("Password updated"))
       .then(() => navigate(`/workspaces/${workspaceId}/settings/profile`))
       .catch(err => {})
 

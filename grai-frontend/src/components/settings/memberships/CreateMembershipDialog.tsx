@@ -1,8 +1,5 @@
 import { gql, useMutation } from "@apollo/client"
-import {
-  Dialog,
-  DialogContent,
-} from "@mui/material"
+import { Dialog, DialogContent } from "@mui/material"
 import React from "react"
 import { useParams } from "react-router-dom"
 import DialogTitle from "components/dialogs/DialogTitle"
@@ -12,6 +9,7 @@ import {
   CreateMembership,
   CreateMembershipVariables,
 } from "./__generated__/CreateMembership"
+import { useSnackbar } from "notistack"
 
 export const CREATE_MEMBERSHIP = gql`
   mutation CreateMembership(
@@ -37,6 +35,7 @@ type CreateKeyDialogProps = {
 
 const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({ open, onClose }) => {
   const { workspaceId } = useParams()
+  const { enqueueSnackbar } = useSnackbar()
 
   const [createMembership, { loading, error }] = useMutation<
     CreateMembership,
@@ -51,6 +50,7 @@ const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({ open, onClose }) => {
       },
     })
       .then(() => onClose())
+      .then(() => enqueueSnackbar("Membership added"))
       .catch(err => {})
 
   return (
