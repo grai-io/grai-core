@@ -32,10 +32,10 @@ def execute_run(run: Run):
         # update_server
         connector = run.connection.connector
 
-        if connector.name == "Postgres":
+        if connector.name == "PostgreSQL":
             run_postgres(run)
         else:
-            raise NoConnectorError("No connector found")
+            raise NoConnectorError(f"No connector found for: {connector.name}")
 
         run.status = "success"
         run.finished_at = datetime.now()
