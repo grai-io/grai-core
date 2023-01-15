@@ -1,4 +1,5 @@
 import { gql, useMutation } from "@apollo/client"
+import { useSnackbar } from "notistack"
 import React from "react"
 import ConnectionsForm, { Values } from "../ConnectionsForm"
 import {
@@ -57,6 +58,7 @@ type UpdateConnectionFormProps = {
 const UpdateConnectionForm: React.FC<UpdateConnectionFormProps> = ({
   connection,
 }) => {
+  const { enqueueSnackbar } = useSnackbar()
   const [updateConnection, { loading, error }] = useMutation<
     UpdateConnection,
     UpdateConnectionVariables
@@ -73,7 +75,7 @@ const UpdateConnectionForm: React.FC<UpdateConnectionFormProps> = ({
         schedules: null,
         is_active: true,
       },
-    })
+    }).then(() => enqueueSnackbar("Connection updated"))
 
   const defaultValues: Values = {
     connector: connection.connector,

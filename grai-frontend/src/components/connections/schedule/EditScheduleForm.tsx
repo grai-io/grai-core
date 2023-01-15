@@ -19,6 +19,7 @@ import {
   UpdateConnectionScheduleVariables,
 } from "./__generated__/UpdateConnectionSchedule"
 import { Connection } from "./ConnectionSchedule"
+import { useSnackbar } from "notistack"
 
 export const UPDATE_CONNECTION = gql`
   mutation UpdateConnectionSchedule(
@@ -69,6 +70,8 @@ type EditScheduleFormProps = {
 }
 
 const EditScheduleForm: React.FC<EditScheduleFormProps> = ({ connection }) => {
+  const { enqueueSnackbar } = useSnackbar()
+
   const [is_active, setIsActive] = useState(connection.is_active)
   const [values, setValues] = useState<Values>(
     connection.schedules
@@ -91,7 +94,9 @@ const EditScheduleForm: React.FC<EditScheduleFormProps> = ({ connection }) => {
         is_active,
         secrets: {},
       },
-    }).catch(err => {})
+    })
+      .then(() => enqueueSnackbar("Connection updated"))
+      .catch(err => {})
 
   const setCron = (field: keyof CronValue, value: string) => {
     let cron: CronValue = values?.cron
