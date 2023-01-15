@@ -12,13 +12,13 @@ from workspaces.models import Workspace
 class TestUpdateServer(TransactionTestCase):
     def test_run_update_server_postgres(self):
         workspace = Workspace.objects.create(name="W1")
-        connector = Connector.objects.create(name="Postgres")
+        connector = Connector.objects.create(name="PostgreSQL")
         connection = Connection.objects.create(
             name="C1",
             connector=connector,
             workspace=workspace,
             metadata={
-                "host": config("DB_HOST"),
+                "host": config("DB_HOST", "localhost"),
                 "port": 5432,
                 "dbname": "grai",
                 "user": "grai",
@@ -31,7 +31,7 @@ class TestUpdateServer(TransactionTestCase):
 
     def test_run_update_server_postgres_no_host(self):
         workspace = Workspace.objects.create(name="W1")
-        connector = Connector.objects.create(name="Postgres")
+        connector = Connector.objects.create(name="PostgreSQL")
         connection = Connection.objects.create(
             name="C1",
             connector=connector,
@@ -62,13 +62,13 @@ class TestUpdateServer(TransactionTestCase):
         with pytest.raises(Exception) as e_info:
             run_update_server(str(run.id))
 
-        assert str(e_info.value) == "No connector found"
+        assert str(e_info.value) == "No connector found for: Connector"
 
 
 class TestConnectionSchedule(TransactionTestCase):
-    def test_run_update_server_postgres(self):
+    def test_run_connection_schedule_postgres(self):
         workspace = Workspace.objects.create(name="W1")
-        connector = Connector.objects.create(name="Postgres")
+        connector = Connector.objects.create(name="PostgreSQL")
         connection = Connection.objects.create(
             name="C1",
             connector=connector,
@@ -87,7 +87,7 @@ class TestConnectionSchedule(TransactionTestCase):
             == 'could not translate host name "a" to address: Temporary failure in name resolution\n'
         )
 
-    def test_run_update_server_no_connector(self):
+    def test_run_connection_schedule_no_connector(self):
         workspace = Workspace.objects.create(name="W1")
         connector = Connector.objects.create(name="Connector")
         connection = Connection.objects.create(
@@ -96,4 +96,4 @@ class TestConnectionSchedule(TransactionTestCase):
 
         with pytest.raises(Exception) as e_info:
             run_connection_schedule(str(connection.id))
-        assert str(e_info.value) == "No connector found"
+        assert str(e_info.value) == "No connector found for: Connector"
