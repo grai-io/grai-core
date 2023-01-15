@@ -24,7 +24,10 @@ const LoginForm: React.FC = () => {
   const handleSubmit = async () => {
     setLoading(true)
 
-    await loginUser(values.email, values.password).catch(err => setError(err))
+    await loginUser(values.email, values.password).catch(err => {
+      setError(err)
+      setLoading(false)
+    })
   }
 
   return (
