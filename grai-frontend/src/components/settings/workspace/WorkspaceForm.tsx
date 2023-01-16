@@ -3,6 +3,7 @@ import { LoadingButton } from "@mui/lab"
 import { Box, Grid, TextField, Typography } from "@mui/material"
 import Form from "components/form/Form"
 import GraphError from "components/utils/GraphError"
+import { useSnackbar } from "notistack"
 import React, { useState } from "react"
 import {
   UpdateWorkspace,
@@ -33,6 +34,7 @@ type WorkspaceFormProps = {
 
 const WorkspaceForm: React.FC<WorkspaceFormProps> = ({ workspace }) => {
   const [values, setValues] = useState<Values>(workspace)
+  const { enqueueSnackbar } = useSnackbar()
 
   const [updateWorkspace, { loading, error }] = useMutation<
     UpdateWorkspace,
@@ -45,7 +47,9 @@ const WorkspaceForm: React.FC<WorkspaceFormProps> = ({ workspace }) => {
         id: workspace.id,
         name: values.name,
       },
-    }).catch(err => {})
+    })
+      .then(() => enqueueSnackbar("Workspace updated"))
+      .catch(err => {})
 
   return (
     <Box sx={{ p: 3 }}>

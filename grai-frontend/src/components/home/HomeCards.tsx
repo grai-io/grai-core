@@ -19,7 +19,7 @@ const HomeCards: React.FC = () => (
         description="Connect your data stores and pipeline tools to collect information
         on your pipelines"
         button="Add connection"
-        to="connections"
+        to="connections/create"
       />
     </Grid>
     <Grid item md={4}>

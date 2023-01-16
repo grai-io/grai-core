@@ -7,11 +7,11 @@ type GuestRouteProps = {
 }
 
 const GuestRoute: React.FC<GuestRouteProps> = ({ redirect }) => {
-  const { user } = useContext(AuthContext)
+  const { loggedIn } = useContext(AuthContext)
   let location = useLocation()
 
-  if (user)
-    return <Navigate to={location.state.redirect ?? redirect ?? "/"} replace />
+  if (loggedIn)
+    return <Navigate to={location.state?.redirect ?? redirect ?? "/"} replace />
 
   return <Outlet />
 }

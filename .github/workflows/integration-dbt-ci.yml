@@ -7,9 +7,10 @@ on:
       - "grai-client/**"
       - "grai-server/**"
 
-#concurrency:
-#  group: ${{ github.ref }}
-#  cancel-in-progress: true
+
+concurrency:
+  group: ${{ github.ref }}-integration-dbt-ci
+  cancel-in-progress: true
 
 env:
   py_ver: "3.10"

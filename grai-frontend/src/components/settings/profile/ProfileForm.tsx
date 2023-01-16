@@ -10,6 +10,7 @@ import {
 } from "@mui/material"
 import Form from "components/form/Form"
 import GraphError from "components/utils/GraphError"
+import { useSnackbar } from "notistack"
 import React, { useState } from "react"
 import { Link, useParams } from "react-router-dom"
 import {
@@ -45,6 +46,7 @@ type ProfileFormProps = {
 const ProfileForm: React.FC<ProfileFormProps> = ({ profile }) => {
   const { workspaceId } = useParams()
   const [values, setValues] = useState<Values>(profile)
+  const { enqueueSnackbar } = useSnackbar()
 
   const [updateProfile, { loading, error }] = useMutation<
     UpdateProfile,
@@ -57,7 +59,9 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profile }) => {
         first_name: values.first_name,
         last_name: values.last_name,
       },
-    }).catch(err => {})
+    })
+      .then(() => enqueueSnackbar("Profile updated"))
+      .catch(err => {})
 
   return (
     <Box sx={{ p: 3 }}>

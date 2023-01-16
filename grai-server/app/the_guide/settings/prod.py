@@ -11,3 +11,8 @@ SECRET_KEY = config("SECRET_KEY")  # Default secret_key generated in entrypoint.
 USER_ID = hashlib.md5(SECRET_KEY.encode()).hexdigest()
 
 DISABLE_TELEMETRY = config("DISABLE_TELEMETRY", False)
+
+CSRF_COOKIE_SAMESITE = "None"
+SESSION_COOKIE_SAMESITE = "None"
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True

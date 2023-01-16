@@ -1,9 +1,93 @@
 [
     {
         "model": "connections.connector",
+        "pk": "24f36cac-a9bc-4663-9613-5c2c2f63cfe5",
+        "fields": {
+            "name": "Amazon Redshift",
+            "metadata": {},
+            "is_active": true,
+            "icon": "https://cdn.sanity.io/images/pwmfmi47/production/f3e8edc5f92315c09202e01a28f206e777084c12-512x512.svg",
+            "category": "databases",
+            "coming_soon": true,
+            "created_at": "2023-01-11T21:15:56.544Z",
+            "updated_at": "2023-01-11T21:15:56.544Z"
+        }
+    },
+    {
+        "model": "connections.connector",
+        "pk": "533052b6-785b-4268-98a3-ded1215a1463",
+        "fields": {
+            "name": "MySQL",
+            "metadata": {},
+            "is_active": true,
+            "icon": "https://cdn.sanity.io/images/pwmfmi47/production/e4d7a37a2425ce7e012e23fdb4f53d985e18a4a3-1280x1280.png",
+            "category": "databases",
+            "coming_soon": true,
+            "created_at": "2023-01-11T21:16:48.728Z",
+            "updated_at": "2023-01-11T21:16:48.728Z"
+        }
+    },
+    {
+        "model": "connections.connector",
+        "pk": "60e37eff-7b89-4bf7-983b-722d9e095a12",
+        "fields": {
+            "name": "Google BigQuery",
+            "metadata": {},
+            "is_active": true,
+            "icon": "https://cdn.sanity.io/images/pwmfmi47/production/2a4f3d940e21dfa356bd993177586dab5e1b628f-2500x2500.svg",
+            "category": "databases",
+            "coming_soon": true,
+            "created_at": "2023-01-11T21:16:09.411Z",
+            "updated_at": "2023-01-11T21:16:09.411Z"
+        }
+    },
+    {
+        "model": "connections.connector",
+        "pk": "65bb3f15-764f-4a64-8754-62a8c1445afd",
+        "fields": {
+            "name": "MongoDB",
+            "metadata": {},
+            "is_active": true,
+            "icon": "https://cdn.sanity.io/images/pwmfmi47/production/804ef5c917633c58b18f6cfc0d654b637cbc9a0e-128x128.png",
+            "category": "databases",
+            "coming_soon": true,
+            "created_at": "2023-01-11T21:16:34.291Z",
+            "updated_at": "2023-01-11T21:16:34.291Z"
+        }
+    },
+    {
+        "model": "connections.connector",
+        "pk": "6ba7e6a4-8121-4b74-9a81-d949ab107502",
+        "fields": {
+            "name": "Stitch",
+            "metadata": {},
+            "is_active": true,
+            "icon": "/images/stitch-logo.png",
+            "category": "data tools",
+            "coming_soon": true,
+            "created_at": "2023-01-11T21:17:27.425Z",
+            "updated_at": "2023-01-11T21:17:27.425Z"
+        }
+    },
+    {
+        "model": "connections.connector",
+        "pk": "71f1db71-2181-4353-89ca-34e187f606dd",
+        "fields": {
+            "name": "Microsoft SQL Server",
+            "metadata": {},
+            "is_active": true,
+            "icon": "https://cdn.sanity.io/images/pwmfmi47/production/95bced9d0a4f668ceea0442a15c2cb4fdcb38b7e-452x452.png",
+            "category": "databases",
+            "coming_soon": true,
+            "created_at": "2023-01-11T21:16:21.900Z",
+            "updated_at": "2023-01-11T21:16:21.900Z"
+        }
+    },
+    {
+        "model": "connections.connector",
         "pk": "768aea48-1146-4f14-9005-40e89504f4b3",
         "fields": {
-            "name": "Postgres",
+            "name": "PostgreSQL",
             "metadata": {
                 "fields": [
                     {
@@ -32,8 +116,67 @@
                 ]
             },
             "is_active": true,
+            "icon": "https://cdn.sanity.io/images/pwmfmi47/production/245cb2ccbc976d6dc38d90456ca1fd7cdbcb2dc6-2424x2500.svg",
+            "category": "databases",
+            "coming_soon": false,
             "created_at": "2022-12-12T10:54:33.501Z",
-            "updated_at": "2022-12-12T10:54:33.501Z"
+            "updated_at": "2023-01-11T21:15:11.705Z"
+        }
+    },
+    {
+        "model": "connections.connector",
+        "pk": "77a47042-ad28-4e98-a4e3-fbb6c0280e36",
+        "fields": {
+            "name": "dbt",
+            "metadata": {},
+            "is_active": true,
+            "icon": "/images/dbt-logo.png",
+            "category": "data tools",
+            "coming_soon": false,
+            "created_at": "2023-01-11T21:17:01.683Z",
+            "updated_at": "2023-01-11T21:17:01.683Z"
+        }
+    },
+    {
+        "model": "connections.connector",
+        "pk": "a80c528e-5149-4c0b-8e48-2fa995641d49",
+        "fields": {
+            "name": "Snowflake",
+            "metadata": {},
+            "is_active": true,
+            "icon": "https://cdn.sanity.io/images/pwmfmi47/production/a4ac9f5f978ab2446fc17bf116067cb7c74116a2-960x952.png",
+            "category": "databases",
+            "coming_soon": false,
+            "created_at": "2023-01-11T21:15:40.178Z",
+            "updated_at": "2023-01-11T21:15:40.178Z"
+        }
+    },
+    {
+        "model": "connections.connector",
+        "pk": "a9158bbc-eeca-4b10-806a-1b0a7b997a8f",
+        "fields": {
+            "name": "Fivetran",
+            "metadata": {},
+            "is_active": true,
+            "icon": "/images/fivetran-logo.png",
+            "category": "data tools",
+            "coming_soon": false,
+            "created_at": "2023-01-11T21:17:16.264Z",
+            "updated_at": "2023-01-11T21:17:16.264Z"
+        }
+    },
+    {
+        "model": "connections.connector",
+        "pk": "ec14066f-716b-413c-8b44-34bf78fb4256",
+        "fields": {
+            "name": "Flat File",
+            "metadata": {},
+            "is_active": true,
+            "icon": "/images/file-icon.png",
+            "category": null,
+            "coming_soon": false,
+            "created_at": "2023-01-11T21:17:47.540Z",
+            "updated_at": "2023-01-11T21:19:57.027Z"
         }
     }
 ]

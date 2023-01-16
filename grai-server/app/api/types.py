@@ -145,6 +145,8 @@ class ConnectorOrder:
     id: auto
     name: auto
     is_active: auto
+    category: auto
+    coming_soon: auto
 
 
 @strawberry.django.type(
@@ -155,6 +157,9 @@ class Connector:
     name: auto
     metadata: JSON
     is_active: auto
+    icon: Optional[str]
+    category: Optional[str]
+    coming_soon: auto
 
 
 @strawberry.django.filters.filter(ConnectionModel, lookups=True)

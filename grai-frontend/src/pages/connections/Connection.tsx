@@ -10,6 +10,7 @@ import GraphError from "components/utils/GraphError"
 import PageLayout from "components/layout/PageLayout"
 import ConnectionHeader from "components/connections/ConnectionHeader"
 import ConnectionContent from "components/connections/ConnectionContent"
+import ConnectionTabs from "components/connections/ConnectionTabs"
 
 export const GET_CONNECTION = gql`
   query GetConnection($workspaceId: ID!, $connectionId: ID!) {
@@ -109,6 +110,7 @@ const Connection: React.FC = () => {
     <PageLayout>
       <ConnectionHeader connection={connection} onRefresh={handleRefresh} />
       <ConnectionContent connection={connection} />
+      <ConnectionTabs connection={connection} />
     </PageLayout>
   )
 }

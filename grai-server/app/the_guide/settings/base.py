@@ -227,11 +227,6 @@ STATIC_URL = "/static/"
 
 PHONENUMBER_DEFAULT_REGION = "US"
 
-# Https
-
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-
 # OpenApi
 # https://drf-spectacular.readthedocs.io/en/latest/settings.html
 
@@ -273,3 +268,7 @@ CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND", "redis://127.0.0.1:6379
 CELERY_ACCEPT_CONTENT = ["json"]
 # CELERY_RESULT_BACKEND = 'db+sqlite:///results.sqlite'
 CELERY_TASK_SERIALIZER = "json"
+
+CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_HTTPONLY = True
+SESSION_COOKIE_HTTPONLY = True
