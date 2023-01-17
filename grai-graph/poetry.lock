@@ -289,6 +289,21 @@ pyyaml = ">=6.0,<7.0"
 requests = ">=2.28.1,<3.0.0"
 
 [[package]]
+name = "grai-schemas"
+version = "0.1.2"
+description = ""
+category = "main"
+optional = false
+python-versions = ">=3.8,<4.0"
+files = [
+    {file = "grai_schemas-0.1.2-py3-none-any.whl", hash = "sha256:aeb2922bdc98c8a28ee4226dea480824e915d38d6dad3d6af62854596d3eec64"},
+    {file = "grai_schemas-0.1.2.tar.gz", hash = "sha256:0024f31167281c1b2062de557075e97ff18dbde47382bf946485f6a77d489cf9"},
+]
+
+[package.dependencies]
+pydantic = ">=1.10.4,<2.0.0"
+
+[[package]]
 name = "idna"
 version = "3.4"
 description = "Internationalized Domain Names in Applications (IDNA)"
@@ -958,4 +973,4 @@ vis = ["matplotlib", "pydot"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "3d815bfe1739afee49dd5689cd7dedc3c72338a8309adad9f88c98aed6ce3950"
+content-hash = "8a0e33f6b6d95825254567ea2f18b799c7561285fff9938e75fbc1a5a37d4160"

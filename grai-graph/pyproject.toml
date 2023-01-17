@@ -12,6 +12,7 @@ pydantic = "^1.9.1"
 grai-client = "^0.1.5"
 matplotlib = {version = "^3.5.2", optional = true}
 pydot = {version = "^1.4.2", optional = true}
+grai-schemas = "^0.1.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.2.0"
