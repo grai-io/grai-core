@@ -7,8 +7,8 @@ from grai_client.schemas.node import NodeTypes
 from grai_graph.graph import Graph
 
 
-def get_is_unique(node: NodeTypes) -> Optional[bool]:
-    return node.spec.metadata["grai"].get("node_attributes", {}).get("is_unique", None)
+def get_attr(node: NodeTypes, key: str) -> Optional[bool]:
+    return node.spec.metadata["grai"].get("node_attributes", {}).get(str, None)
 
 
 class GraphAnalyzer:
@@ -62,11 +62,66 @@ class GraphAnalyzer:
             for node_id in self.graph.graph.predecessors(node_id)
         )
         col_predecessors = tuple(
-            node for node in predecessors if node["grai"]["node_type"] == "Column"
+            node
+            for node in predecessors
+            if node.spec.metadata["grai"]["node_type"] == "Column"
         )
         return col_predecessors
 
-    def test_unique_violations(self, namespace: str, name: str, expects_unique: bool):
+    def column_successors(self, namespace: str, name: str):
+        node_id = self.graph.get_node_id(namespace, name)
+        successors = (
+            self.graph.get_node(node_id=node_id)
+            for node_id in self.graph.graph.successors(node_id)
+        )
+        col_successors = tuple(
+            node
+            for node in successors
+            if node.spec.metadata["grai"]["node_type"] == "Column"
+        )
+        return col_successors
+
+    def traverse_unique_violations(
+        self, node: NodeTypes, expects_unique: bool
+    ) -> List[NodeTypes]:
+        affected_nodes = []
+
+        node_is_unique = node.spec.metadata["grai"]["node_attributes"]["is_unique"]
+        if node_is_unique is not None and node_is_unique != expects_unique:
+            affected_nodes.append(node)
+
+        node_id = self.graph.get_node_id(node.spec.namespace, node.spec.name)
+        for test_node in self.column_successors(node.spec.namespace, node.spec.name):
+            test_node_id = self.graph.get_node_id(
+                test_node.spec.namespace, test_node.spec.name
+            )
+            edge_data = self.graph.graph[node_id][test_node_id][
+                self.graph._container_key
+            ]
+
+            # TODO What if we don't have information about the edge but both nodes have identical expectations for unique?
+            if not edge_data.spec.metadata["grai"]["edge_attributes"][
+                "preserves_unique"
+            ]:
+                continue
+
+            test_node_is_unique = get_attr(test_node, "is_unique")
+
+            if (
+                test_node_is_unique is not None
+                and test_node_is_unique != expects_unique
+            ):
+                affected_nodes.append(test_node)
+            else:
+                affected_nodes.extend(
+                    self.traverse_unique_violations(test_node, expects_unique)
+                )
+
+        return affected_nodes
+
+    def test_unique_violations(
+        self, namespace: str, name: str, expects_unique: bool
+    ) -> List[NodeTypes]:
         """
 
         :param namespace:
@@ -74,30 +129,57 @@ class GraphAnalyzer:
         :param expects_unique: can't evaluate anything in the case of None
         :return:
         """
-        check_downstream, check_upstream = True, True
-        node_id = self.graph.get_node_id(namespace, name)
-        current_node = self.graph.get_node(node_id=node_id)
+        current_node = self.graph.get_node(
+            node_id=self.graph.get_node_id(namespace, name)
+        )
         assert (
             current_node.spec.metadata["grai"]["node_type"] == "Column"
         ), "Unique violation tests can only be applied to columns"
 
-        is_unique = (
-            current_node.spec.metadata["grai"]
-            .get("node_attributes", {})
-            .get("is_unique", None)
-        )
+        # Only looks downstream
+        affected_nodes = self.traverse_unique_violations(current_node, expects_unique)
+        return affected_nodes
 
-        if is_unique is None:
-            check_upstream = False
-
+    def traverse_null_violations(
+        self, node: NodeTypes, is_nullable: bool
+    ) -> List[NodeTypes]:
         affected_nodes = []
-        for node in self.graph.graph.successors(node_id):
-            predecessors = self.column_predecessors(node)
-            if len(predecessors) == 1:
-                # successor is a direct descendant
-                test_node_id = predecessors[0]
-                test_node = self.graph.get_node(node_id=test_node_id)
-                test_is_unique = get_is_unique(test_node)
+        for node in self.column_successors(node.spec.namespace, node.spec.name):
+            predecessors = self.column_predecessors(node.spec.namespace, node.spec.name)
+            if len(predecessors) != 1:
+                continue
 
-                if test_is_unique is not None and test_is_unique != expects_unique:
-                    affected_nodes.append(test_node)
+            # successor is a direct descendant
+            test_node = self.graph.get_node(node_id=predecessors[0])
+            test_is_nullable = get_attr(test_node, "is_nullable")
+
+            if test_is_nullable is not None and test_is_nullable != is_nullable:
+                affected_nodes.extend(
+                    self.downstream_nodes(test_node.spec.namespace, test_node.spec.name)
+                )
+            else:
+                affected_nodes.extend(
+                    self.traverse_unique_violations(test_node, is_nullable)
+                )
+
+        return affected_nodes
+
+    def test_nullable_violations(
+        self, namespace: str, name: str, is_nullable: bool
+    ) -> List[NodeTypes]:
+        """
+        :param namespace:
+        :param name:
+        :param is_nullable: can't evaluate anything in the case of None
+        :return:
+        """
+        current_node = self.graph.get_node(
+            node_id=self.graph.get_node_id(namespace, name)
+        )
+        assert (
+            current_node.spec.metadata["grai"]["node_type"] == "Column"
+        ), "Unique violation tests can only be applied to columns"
+
+        # Only looks downstream
+        affected_nodes = self.traverse_null_violations(current_node, is_nullable)
+        return affected_nodes

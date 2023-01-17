@@ -118,12 +118,7 @@ def process_dict(dict_item: Dict, version: str, type: str) -> GraiType:
 
 
 @process_items.register
-def process_node(item: NodeTypes, version: str, type: str) -> GraiType:
-    return item
-
-
-@process_items.register
-def process_edge(item: EdgeTypes, version: str, type: str) -> GraiType:
+def process_node(item: GraiType, version: str, type: str) -> GraiType:
     return item
 
 
