@@ -7,9 +7,11 @@ on:
       - "grai-client/**"
       - "grai-server/**"
 
+
 concurrency:
   group: ${{ github.ref }}-integration-flat_file-ci
   cancel-in-progress: true
+
 
 env:
   py_ver: "3.10"

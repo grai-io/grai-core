@@ -1,9 +1,12 @@
 import pytest
 from grai_client.schemas.edge import EdgeV1
 from grai_client.schemas.node import NodeV1
+from grai_schemas import config as core_config
+from grai_schemas.models import GraiEdgeMetadata, GraiNodeMetadata
 
 from grai_source_snowflake.adapters import adapt_to_client
 from grai_source_snowflake.models import Column, ColumnID, Edge, Table
+from grai_source_snowflake.package_definitions import config
 
 columns = [
     Column(
@@ -64,3 +67,31 @@ edge_values = [(item, "v1", EdgeV1) for item in edges]
 def test_edge_adapter(item, version, target):
     result = adapt_to_client(item, version)
     assert isinstance(result, target)
+
+
+def test_metadata_has_core_metadata_ids(mock_get_nodes_and_edges):
+    nodes, edges = mock_get_nodes_and_edges
+    for node in nodes:
+        assert core_config.metadata_id in node.spec.metadata
+
+    for edge in edges:
+        assert core_config.metadata_id in edge.spec.metadata
+
+
+def test_metadata_has_dbt_metadata_id(mock_get_nodes_and_edges):
+    nodes, edges = mock_get_nodes_and_edges
+    for node in nodes:
+        assert config.metadata_id in node.spec.metadata
+
+    for edge in edges:
+        assert config.metadata_id in edge.spec.metadata
+
+
+def test_metadata_is_core_compliant(mock_get_nodes_and_edges):
+    nodes, edges = mock_get_nodes_and_edges
+
+    for node in nodes:
+        assert isinstance(node.spec.metadata[core_config.metadata_id], GraiNodeMetadata)
+
+    for edge in edges:
+        assert isinstance(edge.spec.metadata[core_config.metadata_id], GraiEdgeMetadata)

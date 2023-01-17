@@ -7,6 +7,7 @@ from grai_client.update import update
 
 from grai_source_postgres.adapters import adapt_to_client
 from grai_source_postgres.loader import PostgresConnector
+from grai_source_postgres.package_definitions import config
 
 
 def get_nodes_and_edges(

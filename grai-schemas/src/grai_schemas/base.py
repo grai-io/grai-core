@@ -1,6 +1,8 @@
-from grai_schemas.models import GraiNodeMetadata
+from typing import Union
+
+from grai_schemas.models import GraiEdgeMetadata, GraiNodeMetadata
 from pydantic import BaseModel
 
 
 class Metadata(BaseModel):
-    grai: GraiNodeMetadata
+    grai: Union[GraiNodeMetadata, GraiEdgeMetadata]

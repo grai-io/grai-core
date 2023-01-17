@@ -1,8 +1,11 @@
 from grai_client.schemas.edge import EdgeV1
 from grai_client.schemas.node import NodeV1
+from grai_schemas import config as core_config
+from grai_schemas.models import GraiEdgeMetadata, GraiNodeMetadata
 
 from grai_source_dbt.base import get_nodes_and_edges
 from grai_source_dbt.loader import DBTGraph, Manifest
+from grai_source_dbt.package_definitions import config
 from grai_source_dbt.utils import get_manifest_file
 
 
@@ -120,3 +123,34 @@ def test_get_nodes_and_edges():
     assert (
         len(destination_ids - node_ids) == 0
     ), f"Edge destinations {destination_ids - node_ids} missing from node list"
+
+
+def test_metadata_has_core_metadata_ids():
+    manifest_file = get_manifest_file()
+    nodes, edges = get_nodes_and_edges(manifest_file)
+    for node in nodes:
+        assert core_config.metadata_id in node.spec.metadata
+
+    for edge in edges:
+        assert core_config.metadata_id in edge.spec.metadata
+
+
+def test_metadata_has_dbt_metadata_id():
+    manifest_file = get_manifest_file()
+    nodes, edges = get_nodes_and_edges(manifest_file)
+    for node in nodes:
+        assert config.metadata_id in node.spec.metadata
+
+    for edge in edges:
+        assert config.metadata_id in edge.spec.metadata
+
+
+def test_metadata_is_core_compliant():
+    manifest_file = get_manifest_file()
+    nodes, edges = get_nodes_and_edges(manifest_file)
+
+    for node in nodes:
+        assert isinstance(node.spec.metadata[core_config.metadata_id], GraiNodeMetadata)
+
+    for edge in edges:
+        assert isinstance(edge.spec.metadata[core_config.metadata_id], GraiEdgeMetadata)

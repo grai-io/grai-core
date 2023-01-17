@@ -4,9 +4,11 @@ on:
     paths:
       - "grai-graph/**"
 
+
 concurrency:
   group: ${{ github.ref }}-graph-ci
   cancel-in-progress: true
+
 
 env:
   py_ver: "3.10"

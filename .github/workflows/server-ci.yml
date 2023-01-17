@@ -6,9 +6,11 @@ on:
       - ".github/workflows/server-ci.yml"
       - "grai-server/**"
 
+
 concurrency:
   group: ${{ github.ref }}-server-ci
   cancel-in-progress: true
+
 
 env:
   py_ver: "3.11"
