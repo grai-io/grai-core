@@ -45,12 +45,12 @@ class GraiNodeMetadata(HashableBaseModel):
 
 class ColumnMetadata(GraiNodeMetadata):
     node_type: Literal["Column"] = "Column"
-    node_attributes: ColumnAttributes
+    node_attributes: ColumnAttributes = ColumnAttributes()
 
 
 class TableMetadata(GraiNodeMetadata):
     node_type: Literal["Table"] = "Table"
-    node_attributes: TableAttributes
+    node_attributes: TableAttributes = TableAttributes()
 
 
 class EdgeAttributes(HashableBaseModel):
@@ -69,4 +69,4 @@ class ColumnToColumnAttributes(EdgeAttributes):
 
 class GraiEdgeMetadata(HashableBaseModel):
     version: Literal["v1"] = "v1"
-    edge_attributes: EdgeAttributes
+    edge_attributes: EdgeAttributes = EdgeAttributes()

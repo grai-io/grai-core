@@ -76,7 +76,7 @@ def mock_v1_edge(
 
 
 def build_graph_from_map(
-    map: Dict[Union[str, TestNodeObj], Dict[ColumnToColumnAttributes, List[str]]]
+    map: Dict[Union[str, TestNodeObj], List[Tuple[str, ColumnToColumnAttributes]]]
 ) -> graph.Graph:
     nodes = [
         node if isinstance(node, TestNodeObj) else TestNodeObj(name=node)
@@ -86,11 +86,10 @@ def build_graph_from_map(
     nodes = [mock_v1_node(node) for node in nodes]
 
     edges = (
-        [(source, node_name_map[destination], meta) for destination in destinations]
+        (source, node_name_map[destination], meta)
         for source, dest_meta in map.items()
-        for meta, destinations in dest_meta.items()
+        for destination, meta in dest_meta
     )
-    edges = (edge for edge_list in edges for edge in edge_list)
     edges = [mock_v1_edge(*args) for args in edges]
     return graph.build_graph(nodes, edges, "v1")
 

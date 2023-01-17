@@ -82,13 +82,15 @@ class GraphAnalyzer:
         return col_successors
 
     def traverse_unique_violations(
-        self, node: NodeTypes, expects_unique: bool
-    ) -> List[NodeTypes]:
-        affected_nodes = []
+        self, node: NodeTypes, expects_unique: bool, path: List = []
+    ) -> List[List[NodeTypes]]:
+
+        if len(path) == 0:
+            path.append(node)
 
         node_is_unique = node.spec.metadata["grai"]["node_attributes"]["is_unique"]
         if node_is_unique is not None and node_is_unique != expects_unique:
-            affected_nodes.append(node)
+            yield path
 
         node_id = self.graph.get_node_id(node.spec.namespace, node.spec.name)
         for test_node in self.column_successors(node.spec.namespace, node.spec.name):
@@ -106,18 +108,17 @@ class GraphAnalyzer:
                 continue
 
             test_node_is_unique = get_attr(test_node, "is_unique")
+            new_path = [*path, test_node]
 
             if (
                 test_node_is_unique is not None
                 and test_node_is_unique != expects_unique
             ):
-                affected_nodes.append(test_node)
+                yield new_path
             else:
-                affected_nodes.extend(
-                    self.traverse_unique_violations(test_node, expects_unique)
+                yield from self.traverse_unique_violations(
+                    test_node, expects_unique, path=new_path
                 )
-
-        return affected_nodes
 
     def test_unique_violations(
         self, namespace: str, name: str, expects_unique: bool
@@ -138,31 +139,42 @@ class GraphAnalyzer:
 
         # Only looks downstream
         affected_nodes = self.traverse_unique_violations(current_node, expects_unique)
-        return affected_nodes
+        return list(affected_nodes)
 
     def traverse_null_violations(
-        self, node: NodeTypes, is_nullable: bool
+        self, node: NodeTypes, is_nullable: bool, path: List = []
     ) -> List[NodeTypes]:
-        affected_nodes = []
-        for node in self.column_successors(node.spec.namespace, node.spec.name):
-            predecessors = self.column_predecessors(node.spec.namespace, node.spec.name)
-            if len(predecessors) != 1:
+        if len(path) == 0:
+            path.append(node)
+
+        node_is_nullable = node.spec.metadata["grai"]["node_attributes"]["is_nullable"]
+        if node_is_nullable is not None and node_is_nullable != is_nullable:
+            yield path
+
+        node_id = self.graph.get_node_id(node.spec.namespace, node.spec.name)
+        for test_node in self.column_successors(node.spec.namespace, node.spec.name):
+            test_node_id = self.graph.get_node_id(
+                test_node.spec.namespace, test_node.spec.name
+            )
+            edge_data = self.graph.graph[node_id][test_node_id][
+                self.graph._container_key
+            ]
+
+            # TODO What if we don't have information about the edge but both nodes have identical expectations for unique?
+            if not edge_data.spec.metadata["grai"]["edge_attributes"][
+                "preserves_nullable"
+            ]:
                 continue
 
-            # successor is a direct descendant
-            test_node = self.graph.get_node(node_id=predecessors[0])
-            test_is_nullable = get_attr(test_node, "is_nullable")
+            test_node_is_unique = get_attr(test_node, "is_nullable")
+            new_path = [*path, test_node]
 
-            if test_is_nullable is not None and test_is_nullable != is_nullable:
-                affected_nodes.extend(
-                    self.downstream_nodes(test_node.spec.namespace, test_node.spec.name)
-                )
+            if test_node_is_unique is not None and test_node_is_unique != is_nullable:
+                yield new_path
             else:
-                affected_nodes.extend(
-                    self.traverse_unique_violations(test_node, is_nullable)
+                yield from self.traverse_null_violations(
+                    test_node, is_nullable, path=new_path
                 )
-
-        return affected_nodes
 
     def test_nullable_violations(
         self, namespace: str, name: str, is_nullable: bool
@@ -182,4 +194,4 @@ class GraphAnalyzer:
 
         # Only looks downstream
         affected_nodes = self.traverse_null_violations(current_node, is_nullable)
-        return affected_nodes
+        return list(affected_nodes)
