@@ -10,7 +10,7 @@ from grai_client.testing.schema import (
 from grai_schemas.models import ColumnToColumnAttributes
 
 from grai_graph import graph
-from grai_graph.test_utils import (
+from grai_graph.utils import (
     DEFAULT_NAMESPACE,
     TestNodeObj,
     build_graph_from_map,

@@ -1,7 +1,7 @@
 import pytest
 
 from grai_graph import graph
-from grai_graph.test_utils import TestNodeObj
+from grai_graph.utils import TestNodeObj
 
 TestNodeObj.__test__ = False
 
