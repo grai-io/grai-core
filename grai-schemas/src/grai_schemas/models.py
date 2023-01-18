@@ -1,8 +1,8 @@
 import uuid
 from enum import Enum
-from typing import Any, Literal, Optional
+from typing import Annotated, Any, Literal, Optional, Union
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class HashableBaseModel(BaseModel):
@@ -25,6 +25,10 @@ class DefaultValue(HashableBaseModel):
     default_value: Optional[Any]
 
 
+class V1(HashableBaseModel):
+    version: Literal["v1"] = "v1"
+
+
 class ColumnAttributes(HashableBaseModel):
     data_type: Optional[str]  # This will need to be standardized
     default_value: Optional[DefaultValue]
@@ -33,40 +37,46 @@ class ColumnAttributes(HashableBaseModel):
     is_primary_key: Optional[bool]
 
 
-class TableAttributes(HashableBaseModel):
-    pass
-
-
-class GraiNodeMetadata(HashableBaseModel):
-    version: Literal["v1"] = "v1"
-    node_type: NodeTypes
-    node_attributes: Any
-
-
-class ColumnMetadata(GraiNodeMetadata):
+class ColumnMetadata(V1):
     node_type: Literal["Column"] = "Column"
     node_attributes: ColumnAttributes = ColumnAttributes()
 
 
-class TableMetadata(GraiNodeMetadata):
+class TableAttributes(HashableBaseModel):
+    pass
+
+
+class TableMetadata(V1):
     node_type: Literal["Table"] = "Table"
     node_attributes: TableAttributes = TableAttributes()
 
 
-class EdgeAttributes(HashableBaseModel):
+GraiNodeMetadata = Annotated[
+    Union[ColumnMetadata, TableMetadata], Field(discriminator="node_type")
+]
+
+
+class TableToColumnAttributes(V1):
     pass
 
 
-class TableToColumnAttributes(EdgeAttributes):
-    pass
+class TableToColumnMetadata(V1):
+    edge_type: Literal["TableToColumn"] = "TableToColumn"
+    edge_attributes: TableToColumnAttributes = TableToColumnAttributes()
 
 
-class ColumnToColumnAttributes(EdgeAttributes):
+class ColumnToColumnAttributes(V1):
     preserves_data_type: Optional[bool] = None
     preserves_nullable: Optional[bool] = None
     preserves_unique: Optional[bool] = None
 
 
-class GraiEdgeMetadata(HashableBaseModel):
-    version: Literal["v1"] = "v1"
-    edge_attributes: EdgeAttributes = EdgeAttributes()
+class ColumnToColumnMetadata(V1):
+    edge_type: Literal["TableToColumn"] = "ColumnToColumn"
+    edge_attributes: ColumnToColumnAttributes = ColumnToColumnAttributes()
+
+
+GraiEdgeMetadata = Annotated[
+    Union[TableToColumnMetadata, ColumnToColumnMetadata],
+    Field(discriminator="edge_type"),
+]
