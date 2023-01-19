@@ -18,7 +18,8 @@ def create_organisation(name=None):
 @pytest.fixture
 def create_workspace(create_organisation, name=None):
     return Workspace.objects.create(
-        name=uuid.uuid4() if name is None else name, organisation=create_organisation
+        name=str(uuid.uuid4()) if name is None else name,
+        organisation=create_organisation,
     )
 
 
@@ -65,6 +66,54 @@ def test_get_workspaces(auto_login_user):
     ), f"verb `get` failed on workspaces with status {response.status_code}"
     workspaces = list(response.json())
     assert len(workspaces) == 1
+
+
+@pytest.mark.django_db
+def test_get_workspaces_by_name(auto_login_user):
+    client, user, workspace = auto_login_user()
+    url = reverse("workspaces:workspaces-list")
+    response = client.get(f"{url}?name={workspace.name}")
+    assert (
+        response.status_code == 200
+    ), f"verb `get` failed on workspaces with status {response.status_code}"
+    workspaces = list(response.json())
+    assert len(workspaces) == 1
+
+
+@pytest.mark.django_db
+def test_get_workspaces_by_name_missing(auto_login_user):
+    client, user, workspace = auto_login_user()
+    url = reverse("workspaces:workspaces-list")
+    response = client.get(f"{url}?name=abc")
+    assert (
+        response.status_code == 200
+    ), f"verb `get` failed on workspaces with status {response.status_code}"
+    workspaces = list(response.json())
+    assert len(workspaces) == 0
+
+
+@pytest.mark.django_db
+def test_get_workspaces_by_ref(auto_login_user, create_organisation):
+    client, user, workspace = auto_login_user()
+    url = reverse("workspaces:workspaces-list")
+    response = client.get(f"{url}?ref={create_organisation.name}/{workspace.name}")
+    assert (
+        response.status_code == 200
+    ), f"verb `get` failed on workspaces with status {response.status_code}"
+    workspaces = list(response.json())
+    assert len(workspaces) == 1
+
+
+@pytest.mark.django_db
+def test_get_workspaces_by_ref_missing(auto_login_user):
+    client, user, workspace = auto_login_user()
+    url = reverse("workspaces:workspaces-list")
+    response = client.get(f"{url}?ref=org/workspace")
+    assert (
+        response.status_code == 200
+    ), f"verb `get` failed on workspaces with status {response.status_code}"
+    workspaces = list(response.json())
+    assert len(workspaces) == 0
 
 
 @pytest.mark.django_db
