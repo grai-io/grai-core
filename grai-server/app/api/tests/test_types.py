@@ -3,22 +3,13 @@ import pytest
 from api.schema import schema
 from connections.models import Connection, Connector, Run
 
-from .common import test_context
+from .common import test_context, test_organisation, test_user, generate_connection
 
 
 @pytest.mark.django_db
 async def test_workspace_run(test_context):
     context, organisation, workspace, user = test_context
-
-    connector = await Connector.objects.acreate(name="Connector 4")
-    connection = await Connection.objects.acreate(
-        workspace=workspace,
-        connector=connector,
-        namespace="default",
-        name="test connection2",
-        metadata={},
-        secrets={},
-    )
+    connection = await generate_connection(workspace=workspace)
     run = await Run.objects.acreate(
         workspace=workspace, connection=connection, status="success", user=user
     )
@@ -55,16 +46,7 @@ async def test_workspace_run(test_context):
 @pytest.mark.django_db
 async def test_workspace_connection_run(test_context):
     context, organisation, workspace, user = test_context
-
-    connector = await Connector.objects.acreate(name="Connector 5")
-    connection = await Connection.objects.acreate(
-        workspace=workspace,
-        connector=connector,
-        namespace="default",
-        name="test connection2",
-        metadata={},
-        secrets={},
-    )
+    connection = await generate_connection(workspace=workspace)
     run = await Run.objects.acreate(
         workspace=workspace, connection=connection, status="success", user=user
     )

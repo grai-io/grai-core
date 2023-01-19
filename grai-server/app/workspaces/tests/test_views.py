@@ -11,11 +11,14 @@ from workspaces.models import Membership, Organisation, Workspace, WorkspaceAPIK
 
 
 @pytest.fixture
-def create_workspace(name=None):
-    organisation = Organisation.objects.create(name="Test Organisation2")
+def create_organisation(name=None):
+    return Organisation.objects.create(name=uuid.uuid4() if name is None else name)
 
+
+@pytest.fixture
+def create_workspace(create_organisation, name=None):
     return Workspace.objects.create(
-        name=uuid.uuid4() if name is None else name, organisation=organisation
+        name=uuid.uuid4() if name is None else name, organisation=create_organisation
     )
 
 
@@ -65,9 +68,9 @@ def test_get_workspaces(auto_login_user):
 
 
 @pytest.mark.django_db
-def test_get_workspaces_no_membership(auto_login_user):
+def test_get_workspaces_no_membership(auto_login_user, create_organisation):
     client, user, workspace = auto_login_user()
-    Workspace.objects.create(name="abc2")
+    Workspace.objects.create(name="abc2", organisation=create_organisation)
     url = reverse("workspaces:workspaces-list")
     response = client.get(url)
     assert (
@@ -88,9 +91,9 @@ def test_get_workspace(auto_login_user):
 
 
 @pytest.mark.django_db
-def test_get_workspace_no_membership(auto_login_user):
+def test_get_workspace_no_membership(auto_login_user, create_organisation):
     client, user, workspace = auto_login_user()
-    workspace2 = Workspace.objects.create(name="abc2")
+    workspace2 = Workspace.objects.create(name="abc2", organisation=create_organisation)
     url = reverse("workspaces:workspaces-detail", kwargs={"pk": str(workspace2.id)})
     response = client.get(url)
     assert (

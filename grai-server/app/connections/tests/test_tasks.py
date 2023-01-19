@@ -6,12 +6,14 @@ from connections.models import Connection, Connector, Run
 from connections.tasks import run_connection_schedule, run_update_server
 from decouple import config
 from django.test import TransactionTestCase
-from workspaces.models import Workspace
+from workspaces.models import Workspace, Organisation
 
 
 class TestUpdateServer(TransactionTestCase):
+    @pytest.mark.django_db
     def test_run_update_server_postgres(self):
-        workspace = Workspace.objects.create(name="W1")
+        organisation = Organisation.objects.create(name="Org1")
+        workspace = Workspace.objects.create(name="W1", organisation=organisation)
         connector = Connector.objects.create(name="PostgreSQL")
         connection = Connection.objects.create(
             name="C1",
@@ -29,8 +31,10 @@ class TestUpdateServer(TransactionTestCase):
 
         run_update_server(str(run.id))
 
+    @pytest.mark.django_db
     def test_run_update_server_postgres_no_host(self):
-        workspace = Workspace.objects.create(name="W1")
+        organisation = Organisation.objects.create(name="Org1")
+        workspace = Workspace.objects.create(name="W1", organisation=organisation)
         connector = Connector.objects.create(name="PostgreSQL")
         connection = Connection.objects.create(
             name="C1",
@@ -51,8 +55,10 @@ class TestUpdateServer(TransactionTestCase):
             == 'could not translate host name "a" to address: Temporary failure in name resolution\n'
         )
 
+    @pytest.mark.django_db
     def test_run_update_server_no_connector(self):
-        workspace = Workspace.objects.create(name="W1")
+        organisation = Organisation.objects.create(name="Org1")
+        workspace = Workspace.objects.create(name="W1", organisation=organisation)
         connector = Connector.objects.create(name="Connector")
         connection = Connection.objects.create(
             name="C1", connector=connector, workspace=workspace
@@ -66,8 +72,10 @@ class TestUpdateServer(TransactionTestCase):
 
 
 class TestConnectionSchedule(TransactionTestCase):
+    @pytest.mark.django_db
     def test_run_connection_schedule_postgres(self):
-        workspace = Workspace.objects.create(name="W1")
+        organisation = Organisation.objects.create(name="Org1")
+        workspace = Workspace.objects.create(name="W1", organisation=organisation)
         connector = Connector.objects.create(name="PostgreSQL")
         connection = Connection.objects.create(
             name="C1",
@@ -87,8 +95,10 @@ class TestConnectionSchedule(TransactionTestCase):
             == 'could not translate host name "a" to address: Temporary failure in name resolution\n'
         )
 
+    @pytest.mark.django_db
     def test_run_connection_schedule_no_connector(self):
-        workspace = Workspace.objects.create(name="W1")
+        organisation = Organisation.objects.create(name="Org1")
+        workspace = Workspace.objects.create(name="W1", organisation=organisation)
         connector = Connector.objects.create(name="Connector")
         connection = Connection.objects.create(
             name="C1", connector=connector, workspace=workspace

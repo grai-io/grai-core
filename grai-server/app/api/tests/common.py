@@ -1,22 +1,28 @@
+import uuid
+
 import pytest
+import pytest_asyncio
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.http.request import HttpRequest
 from asgiref.sync import sync_to_async
 from django.conf import settings
 from importlib import import_module
-import pytest_asyncio
-
 from workspaces.models import Membership, Organisation, Workspace
+from connections.models import Connector, Connection
 
 
 class Context(object):
     pass
 
 
-@pytest_asyncio.fixture
+@pytest.fixture
 async def test_organisation():
-    return await Organisation.objects.acreate(name="Test Organisation")
+    organisation, created = await Organisation.objects.aget_or_create(
+        name="Test Organisation"
+    )
+
+    return organisation
 
 
 @pytest_asyncio.fixture
@@ -66,3 +72,42 @@ async def test_basic_context():
     context.request.META = {}
 
     return context
+
+
+def generate_username():
+    return f"{str(uuid.uuid4())}@gmail.com"
+
+
+def generate_workspace_name():
+    return f"Workspace {str(uuid.uuid4())}"
+
+
+def generate_connector_name():
+    return f"Connector {str(uuid.uuid4())}"
+
+
+def generate_connection_name():
+    return f"Connection {str(uuid.uuid4())}"
+
+
+async def generate_workspace(organisation: Organisation):
+    return await Workspace.objects.acreate(
+        name=generate_workspace_name(), organisation=organisation
+    )
+
+
+async def generate_connector():
+    return await Connector.objects.acreate(name=generate_connector_name())
+
+
+async def generate_connection(workspace: Workspace, connector: Connector = None):
+    connector = connector if connector else await generate_connector()
+
+    return await Connection.objects.acreate(
+        workspace=workspace,
+        connector=connector,
+        namespace="default",
+        name=generate_connection_name(),
+        metadata={},
+        secrets={},
+    )
