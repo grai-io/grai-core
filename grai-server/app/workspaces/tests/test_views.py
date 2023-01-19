@@ -8,6 +8,7 @@ from django.urls import reverse
 
 from lineage.urls import app_name
 from workspaces.models import Membership, Organisation, Workspace, WorkspaceAPIKey
+import unittest
 
 
 @pytest.fixture
@@ -114,6 +115,26 @@ def test_get_workspaces_by_ref_missing(auto_login_user):
     ), f"verb `get` failed on workspaces with status {response.status_code}"
     workspaces = list(response.json())
     assert len(workspaces) == 0
+
+
+@pytest.mark.django_db
+def test_get_workspaces_by_ref_missing_slash(auto_login_user):
+    client, user, workspace = auto_login_user()
+    url = reverse("workspaces:workspaces-list")
+    try:
+        client.get(f"{url}?ref=orgworkspace")
+    except Exception:
+        pass
+
+
+@pytest.mark.django_db
+def test_get_workspaces_by_ref_extra_slash(auto_login_user):
+    client, user, workspace = auto_login_user()
+    url = reverse("workspaces:workspaces-list")
+    try:
+        client.get(f"{url}?ref=org/w/orkspace")
+    except Exception:
+        pass
 
 
 @pytest.mark.django_db
