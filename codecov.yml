@@ -5,8 +5,10 @@ flag_management:
       - type: project
         target: auto
         threshold: 2%
+        only_pulls: true
       - type: patch
         target: 90%
+        only_pulls: true
   individual_flags: # exceptions to the default rules above, stated flag by flag
     - name: grai-server #fill in your own flag name
       paths:
@@ -15,8 +17,10 @@ flag_management:
       statuses:
         - type: project
           target: 20%
+          only_pulls: true
         - type: patch
           target: 100%
+          only_pulls: true
     - name: grai-frontend #fill in your own flag name
       paths:
         - grai-frontend #fill in your own path. Note, accepts globs, not regexes
@@ -24,8 +28,10 @@ flag_management:
       statuses:
         - type: project
           target: 20%
+          only_pulls: true
         - type: patch
           target: 100%
+          only_pulls: true
 
 ignore:
   - "**/tests/*"
