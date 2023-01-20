@@ -16,8 +16,6 @@ frontend:
   name: "frontend"
   host: "<PR-NUM>.dev.grai.io"
 
-  replicaCount: 1
-
   image:
     repository: ghcr.io/grai-io/grai-core/grai-frontend
     pullPolicy: Always
@@ -25,6 +23,26 @@ frontend:
 
   service:
     port: 80
+
+celery_worker:
+  name: "celery-worker"
+
+  replicaCount: 1
+
+  image:
+    repository: ghcr.io/grai-io/grai-core/grai-server
+    pullPolicy: Always
+    tag: "<TAG>"
+
+celery_beat_worker:
+  name: "celery-beat-worker"
+
+  replicaCount: 1
+
+  image:
+    repository: ghcr.io/grai-io/grai-core/grai-server
+    pullPolicy: Always
+    tag: "<TAG>"
 
 ingress:
   enabled: true
@@ -41,9 +59,16 @@ ingress:
 superuser:
   username: "null@grai.io"
   password: "super_secret"
+  workspace: "default"
 
 postgresql:
   enabled: true
+
+redis:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: false
 
 # Setups up postgres helm chart when postgres.enabled=true
 global:
@@ -61,3 +86,7 @@ connections:
     database: "grai"
     username: "grai"
     password: "grai"
+
+  redis:
+    host: "<PR-NUM>-redis-master"
+    port: "6379"
