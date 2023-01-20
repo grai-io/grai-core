@@ -86,5 +86,5 @@ connections:
     password: "grai"
 
   redis:
-    host: "<PR-NUM>-redis"
+    host: "<PR-NUM>-redis-master"
     port: "6379"
