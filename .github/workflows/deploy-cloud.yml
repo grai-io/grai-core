@@ -145,11 +145,23 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Deploy to Kubernetes cluster
+      - name: Deploy to Kubernetes cluster - api
         uses: ianbelcher/eks-kubectl-action@master
         with:
           cluster_name: ${{ secrets.CLUSTER_NAME }}
           args: set image deployment/api-prod api=ghcr.io/${{ github.repository }}/grai-server:${{ github.sha }}
+
+      - name: Deploy to Kubernetes cluster - celery
+        uses: ianbelcher/eks-kubectl-action@master
+        with:
+          cluster_name: ${{ secrets.CLUSTER_NAME }}
+          args: set image deployment/celery-worker-prod celery-worker=ghcr.io/${{ github.repository }}/grai-server:${{ github.sha }}
+
+      - name: Deploy to Kubernetes cluster - celery beat
+        uses: ianbelcher/eks-kubectl-action@master
+        with:
+          cluster_name: ${{ secrets.CLUSTER_NAME }}
+          args: set image deployment/celery-beat-worker-prod celery-beat-worker=ghcr.io/${{ github.repository }}/grai-server:${{ github.sha }}
 
       - name: Verify deployment
         uses: ianbelcher/eks-kubectl-action@master
