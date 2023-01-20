@@ -88,3 +88,5 @@ connections:
   redis:
     host: "<PR-NUM>-redis-master"
     port: "6379"
+    auth:
+      enabled: false
