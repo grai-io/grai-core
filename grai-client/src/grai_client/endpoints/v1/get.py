@@ -1,4 +1,7 @@
-from typing import Dict, List, Optional, TypeVar
+import uuid
+from typing import Dict, List, Optional, TypeVar, Union
+
+from multimethod import overload
 
 from grai_client.endpoints.client import ClientOptions
 from grai_client.endpoints.rest import get
@@ -53,6 +56,69 @@ def get_node_v1(
     return NodeV1.from_spec(spec) if isinstance(spec, dict) else spec
 
 
+def _get_nodes_by_name(
+    client: ClientV1,
+    grai_type: NodeLabels,
+    name: str,
+    options: ClientOptions = ClientOptions(),
+) -> Optional[List[NodeV1]]:
+    url = f"{client.get_url(grai_type)}?name={name}"
+    resp = client.get(url, options=options).json()
+    num_results = len(resp)
+    if num_results == 0:
+        return None
+    else:
+        return [NodeV1.from_spec(obj) for obj in resp]
+
+
+def valid_uuid(val):
+    try:
+        uuid.UUID(str(val))
+        return True
+    except ValueError:
+        return False
+
+
+def _get_nodes_by_uuid(
+    client: ClientV1,
+    grai_type: NodeLabels,
+    name: str,
+    options: ClientOptions = ClientOptions(),
+) -> Optional[NodeV1]:
+    url = f"{client.get_url(grai_type)}{name}"
+
+    resp = client.get(url, options=options).json()
+    return NodeV1.from_spec(resp)
+
+
+@get.register
+def get_nodes_by_str(
+    client: ClientV1,
+    grai_type: NodeLabels,
+    name: str,
+    options: ClientOptions = ClientOptions(),
+) -> Optional[Union[List[NodeV1], NodeV1]]:
+    if valid_uuid(name):
+        return _get_nodes_by_uuid(client, grai_type, name, options=options)
+    else:
+        return _get_nodes_by_name(client, grai_type, name, options=options)
+
+
+@get.register
+def get_nodes_by_name_and_namespace(
+    client: ClientV1,
+    grai_type: NodeLabels,
+    name: str,
+    namespace: str,
+    options: ClientOptions = ClientOptions(),
+) -> Optional[List[NodeV1]]:
+    if valid_uuid(name):
+        return client.get(grai_type, name, options=options)
+
+    node_id = NodeID(name=name, namespace=namespace)
+    return client.get(node_id, options=options)
+
+
 @get.register
 def get_node_by_label_v1(
     client: ClientV1, grai_type: NodeLabels, options: ClientOptions = ClientOptions()
@@ -60,18 +126,6 @@ def get_node_by_label_v1(
     url = client.get_url(grai_type)
     resp = client.get(url, options=options).json()
     return [NodeV1.from_spec(obj) for obj in resp]
-
-
-@get.register
-def get_node_by_id(
-    client: ClientV1,
-    grai_type: NodeLabels,
-    node: str,
-    options: ClientOptions = ClientOptions(),
-) -> Optional[NodeV1]:
-    url = f"{client.get_url(grai_type)}{node}"
-    resp = client.get(url, options=options).json()
-    return NodeV1.from_spec(resp)
 
 
 @get.register
@@ -106,6 +160,20 @@ def get_edge_by_label_v1(
         r["destination"] = client.get("node", r["destination"]).spec
 
     return [EdgeV1.from_spec(obj) for obj in resp]
+
+
+@get.register
+def get_all_workspaces(
+    client: ClientV1,
+    grai_type: WorkspaceLabels,
+    options: ClientOptions = ClientOptions(),
+) -> Optional[Workspace]:
+    resp = client.get(client.get_url(grai_type), options=options).json()
+
+    if len(resp) == 0:
+        return None
+    else:
+        return [Workspace(**item) for item in resp]
 
 
 @get.register

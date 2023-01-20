@@ -26,11 +26,19 @@ def is_authenticated():
     "nodes", help=f"Grab active {default_styler('nodes')} from the guide."
 )
 def get_nodes(
+    name: str = typer.Argument(None),
+    namespace: str = typer.Option(None, "--namespace", "-n", help="Namespace of node"),
     print: bool = typer.Option(True, "--p", help=f"Print nodes to console"),
     to_file: Optional[Path] = typer.Option(None, "--f", help="Write nodes to file"),
 ):
     client = get_default_client()
-    result = client.get("Node")
+    if name is None:
+        result = client.get("Node")
+    elif namespace is None:
+        result = client.get("Node", name)
+    else:
+        utilities.print(name, namespace)
+        result = client.get("Node", name, namespace)
 
     if print:
         utilities.print(result)
@@ -45,10 +53,34 @@ def get_nodes(
 )
 def get_edges(
     print: bool = typer.Option(True, "--p", help=f"Print edges to console"),
-    to_file: Optional[Path] = typer.Option(None, "--f", help="Write nodes to file"),
+    to_file: Optional[Path] = typer.Option(None, "--f", help="Write edges to file"),
 ):
     client = get_default_client()
     result = client.get("Edge")
+
+    if print:
+        utilities.print(result)
+    if to_file:
+        write_yaml(result, to_file)
+
+    return result
+
+
+@client_get_app.command(
+    "workspaces", help=f"Grab active {default_styler('workspaces')} from the guide."
+)
+def get_workspaces(
+    name: str = typer.Argument(None),
+    print: bool = typer.Option(True, "--p", help=f"Print workspaces to console"),
+    to_file: Optional[Path] = typer.Option(
+        None, "--f", help="Write workspaces to file"
+    ),
+):
+    client = get_default_client()
+    if name is None:
+        result = client.get("workspaces")
+    else:
+        result = client.get("workspaces", name)
 
     if print:
         utilities.print(result)

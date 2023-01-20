@@ -29,6 +29,10 @@ class ClientOptions(BaseModel):
     request_args: Dict = {}
     headers: Dict = {}
 
+    @classmethod
+    def __hash__(cls):
+        return id(cls)
+
 
 class BaseClient(abc.ABC):
     id = "base"

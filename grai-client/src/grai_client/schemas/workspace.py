@@ -9,4 +9,4 @@ class Workspace(BaseModel):
     id: UUID
 
 
-WorkspaceLabels = Literal["workspace", "workspaces"]
+WorkspaceLabels = Literal["workspace", "workspaces", "Workspace", "Workspaces"]
