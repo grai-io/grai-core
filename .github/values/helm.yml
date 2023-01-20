@@ -67,6 +67,8 @@ postgresql:
 redis:
   enabled: true
   architecture: standalone
+  auth:
+    enabled: false
 
 # Setups up postgres helm chart when postgres.enabled=true
 global:
@@ -88,5 +90,3 @@ connections:
   redis:
     host: "<PR-NUM>-redis-master"
     port: "6379"
-    auth:
-      enabled: false
