@@ -4,18 +4,23 @@ from rest_framework import permissions
 from workspaces.models import Workspace, WorkspaceAPIKey
 
 
-class Multitenant(permissions.BasePermission):
-    def has_permission(self, request, view):
-        set_current_tenant(None)
-        workspace = self.get_workspace(request)
+class BasePermission(permissions.BasePermission):
+    def get_workspace(self, request, guess: bool = True):
+        workspace = self.get_workspace_from_header(request)
 
         if workspace:
-            set_current_tenant(workspace)
-            return True
+            return workspace
 
-        return False
+        if guess and request.user and not request.user.is_anonymous:
+            if request.GET.get("workspace", None):
+                id = request.GET.get("workspace")
+                return self.get_workspace_from_id(request, id)
 
-    def get_workspace(self, request):
+            if request.user.memberships and request.user.memberships.first():
+                id = str(request.user.memberships.first().workspace_id)
+                return self.get_workspace_from_id(request, id)
+
+    def get_workspace_from_header(self, request):
         header = request.headers.get("Authorization")
 
         if header:
@@ -30,17 +35,31 @@ class Multitenant(permissions.BasePermission):
                 except WorkspaceAPIKey.DoesNotExist:
                     pass
 
-        if request.user and not request.user.is_anonymous:
-            if request.GET.get("workspace", None):
-                id = request.GET.get("workspace")
-                return self.get_workspace_from_id(request, id)
-
-            if request.user.memberships and request.user.memberships.first():
-                id = str(request.user.memberships.first().workspace_id)
-                return self.get_workspace_from_id(request, id)
-
     def get_workspace_from_id(self, request, id):
         try:
             return Workspace.objects.get(id=id, memberships__user_id=request.user.id)
         except Workspace.DoesNotExist:
             raise Exception("Can't find workspace")
+
+
+class MultitenantWorkspaces(BasePermission):
+    def has_permission(self, request, view):
+        set_current_tenant(None)
+        workspace = self.get_workspace(request, False)
+
+        if workspace:
+            set_current_tenant(workspace)
+
+        return True
+
+
+class Multitenant(BasePermission):
+    def has_permission(self, request, view):
+        set_current_tenant(None)
+        workspace = self.get_workspace(request)
+
+        if workspace:
+            set_current_tenant(workspace)
+            return True
+
+        return False

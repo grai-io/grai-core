@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from common.permissions.multitenant import Multitenant
+from common.permissions.multitenant import Multitenant, MultitenantWorkspaces
 from workspaces.models import Membership, Workspace
 from workspaces.permissions import HasWorkspaceAPIKey
 from workspaces.serializers import MembershipSerializer, WorkspaceSerializer
@@ -24,7 +24,9 @@ class WorkspaceViewSet(ReadOnlyModelViewSet):
         JWTAuthentication,
     ]
 
-    permission_classes = [HasWorkspaceAPIKey | IsAuthenticated]
+    permission_classes = [
+        (HasWorkspaceAPIKey | IsAuthenticated) & MultitenantWorkspaces
+    ]
 
     serializer_class = WorkspaceSerializer
     type = Workspace
