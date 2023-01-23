@@ -1,7 +1,7 @@
 from grai_client.schemas.edge import EdgeV1
 from grai_client.schemas.node import NodeV1
 from grai_schemas import config as core_config
-from grai_schemas.models import GraiEdgeMetadata, GraiNodeMetadata
+from grai_schemas import models
 
 from grai_source_dbt.base import get_nodes_and_edges
 from grai_source_dbt.loader import DBTGraph, Manifest
@@ -60,6 +60,9 @@ def test_v1_adapted_nodes_have_namespace(v1_adapted_nodes):
 
 
 def test_v1_adapted_edge_source_has_name(v1_adapted_edges):
+    import devtools
+
+    devtools.debug(v1_adapted_edges[0])
     assert all(edge.spec.source.name is not None for edge in v1_adapted_edges)
 
 
@@ -111,6 +114,7 @@ def test_v1_adapted_edge_destination_have_nodes(v1_adapted_nodes, v1_adapted_edg
 def test_get_nodes_and_edges():
     manifest_file = get_manifest_file()
     nodes, edges = get_nodes_and_edges(manifest_file)
+    assert type(nodes[0])
     node_ids = {(node.spec.name, node.spec.namespace) for node in nodes}
     source_ids = {(e.spec.source.name, e.spec.source.namespace) for e in edges}
     destination_ids = {
@@ -150,7 +154,7 @@ def test_metadata_is_core_compliant():
     nodes, edges = get_nodes_and_edges(manifest_file)
 
     for node in nodes:
-        assert isinstance(node.spec.metadata[core_config.metadata_id], GraiNodeMetadata)
+        assert isinstance(node.spec.metadata[core_config.metadata_id], models.NodeV1)
 
     for edge in edges:
-        assert isinstance(edge.spec.metadata[core_config.metadata_id], GraiEdgeMetadata)
+        assert isinstance(edge.spec.metadata[core_config.metadata_id], models.EdgeV1)

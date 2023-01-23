@@ -26,4 +26,5 @@ def load_from_manifest() -> Manifest:
 def load_dbt_graph() -> DBTGraph:
     manifest = load_from_manifest()
     dbt_graph = DBTGraph(manifest)
+
     return dbt_graph
