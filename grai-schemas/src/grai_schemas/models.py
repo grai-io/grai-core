@@ -29,6 +29,10 @@ class V1(HashableBaseModel):
     version: Literal["v1"] = "v1"
 
 
+class NodeV1(V1):
+    pass
+
+
 class ColumnAttributes(HashableBaseModel):
     data_type: Optional[str]  # This will need to be standardized
     default_value: Optional[DefaultValue]
@@ -37,7 +41,7 @@ class ColumnAttributes(HashableBaseModel):
     is_primary_key: Optional[bool]
 
 
-class ColumnMetadata(V1):
+class ColumnMetadata(NodeV1):
     node_type: Literal["Column"] = "Column"
     node_attributes: ColumnAttributes = ColumnAttributes()
 
@@ -46,7 +50,7 @@ class TableAttributes(HashableBaseModel):
     pass
 
 
-class TableMetadata(V1):
+class TableMetadata(NodeV1):
     node_type: Literal["Table"] = "Table"
     node_attributes: TableAttributes = TableAttributes()
 
@@ -56,11 +60,15 @@ GraiNodeMetadata = Annotated[
 ]
 
 
+class EdgeV1(V1):
+    pass
+
+
 class TableToColumnAttributes(V1):
     pass
 
 
-class TableToColumnMetadata(V1):
+class TableToColumnMetadata(EdgeV1):
     edge_type: Literal["TableToColumn"] = "TableToColumn"
     edge_attributes: TableToColumnAttributes = TableToColumnAttributes()
 
@@ -71,8 +79,8 @@ class ColumnToColumnAttributes(V1):
     preserves_unique: Optional[bool] = None
 
 
-class ColumnToColumnMetadata(V1):
-    edge_type: Literal["TableToColumn"] = "ColumnToColumn"
+class ColumnToColumnMetadata(EdgeV1):
+    edge_type: Literal["ColumnToColumn"] = "ColumnToColumn"
     edge_attributes: ColumnToColumnAttributes = ColumnToColumnAttributes()
 
 

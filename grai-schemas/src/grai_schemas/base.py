@@ -4,5 +4,12 @@ from grai_schemas.models import GraiEdgeMetadata, GraiNodeMetadata
 from pydantic import BaseModel
 
 
-class Metadata(BaseModel):
-    grai: Union[GraiNodeMetadata, GraiEdgeMetadata]
+class EdgeMetadata(BaseModel):
+    grai: GraiEdgeMetadata
+
+
+class NodeMetadata(BaseModel):
+    grai: GraiNodeMetadata
+
+
+__all__ = ["EdgeMetadata", "NodeMetadata"]
