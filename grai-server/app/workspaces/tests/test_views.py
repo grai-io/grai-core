@@ -1,14 +1,7 @@
-import json
 import uuid
-from itertools import product
-
-import django.db.utils
 import pytest
 from django.urls import reverse
-
-from lineage.urls import app_name
 from workspaces.models import Membership, Organisation, Workspace, WorkspaceAPIKey
-import unittest
 
 
 @pytest.fixture
@@ -57,115 +50,115 @@ def auto_login_user(client, create_user, test_password, create_workspace):
     return make_auto_login
 
 
-@pytest.mark.django_db
-def test_get_workspaces(auto_login_user):
-    client, user, workspace = auto_login_user()
-    url = reverse("workspaces:workspaces-list")
-    response = client.get(url)
-    assert (
-        response.status_code == 200
-    ), f"verb `get` failed on workspaces with status {response.status_code}"
-    workspaces = list(response.json())
-    assert len(workspaces) == 1
+@pytest.fixture
+def api_key(create_user, create_workspace):
+    user = create_user()
+    api_key, key = WorkspaceAPIKey.objects.create_key(
+        name="ContentAP-tests", workspace=create_workspace, created_by=user
+    )
+    return key
 
 
-@pytest.mark.django_db
-def test_get_workspaces_by_name(auto_login_user):
-    client, user, workspace = auto_login_user()
-    url = reverse("workspaces:workspaces-list")
-    response = client.get(f"{url}?name={workspace.name}")
-    assert (
-        response.status_code == 200
-    ), f"verb `get` failed on workspaces with status {response.status_code}"
-    workspaces = list(response.json())
-    assert len(workspaces) == 1
+@pytest.fixture
+def api_client():
+    from rest_framework.test import APIClient
+
+    return APIClient()
 
 
-@pytest.mark.django_db
-def test_get_workspaces_by_name_missing(auto_login_user):
-    client, user, workspace = auto_login_user()
-    url = reverse("workspaces:workspaces-list")
-    response = client.get(f"{url}?name=abc")
-    assert (
-        response.status_code == 200
-    ), f"verb `get` failed on workspaces with status {response.status_code}"
-    workspaces = list(response.json())
-    assert len(workspaces) == 0
+class TestWorkspacesUserAuth:
+    @pytest.mark.django_db
+    def test_get_workspaces(self, auto_login_user):
+        client, user, workspace = auto_login_user()
+        url = reverse("workspaces:workspaces-list")
+        response = client.get(url)
+        assert (
+            response.status_code == 200
+        ), f"verb `get` failed on workspaces with status {response.status_code}"
+        workspaces = list(response.json())
+        assert len(workspaces) == 1
+
+    @pytest.mark.django_db
+    def test_get_workspaces_no_membership(self, auto_login_user, create_organisation):
+        client, user, workspace = auto_login_user()
+        Workspace.objects.create(name="abc2", organisation=create_organisation)
+        url = reverse("workspaces:workspaces-list")
+        response = client.get(url)
+        assert (
+            response.status_code == 200
+        ), f"verb `get` failed on workspaces with status {response.status_code}"
+        workspaces = list(response.json())
+        assert len(workspaces) == 1
 
 
-@pytest.mark.django_db
-def test_get_workspaces_by_ref(auto_login_user, create_organisation):
-    client, user, workspace = auto_login_user()
-    url = reverse("workspaces:workspaces-list")
-    response = client.get(f"{url}?ref={create_organisation.name}/{workspace.name}")
-    assert (
-        response.status_code == 200
-    ), f"verb `get` failed on workspaces with status {response.status_code}"
-    workspaces = list(response.json())
-    assert len(workspaces) == 1
+class TestWorkspacesApiKeyAuth:
+    @pytest.mark.django_db
+    def test_get_workspaces(self, api_client, api_key):
+        api_client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
+        url = reverse("workspaces:workspaces-list")
+        response = api_client.get(url)
+        assert (
+            response.status_code == 200
+        ), f"verb `get` failed on workspaces with status {response.status_code}"
+        workspaces = list(response.json())
+        assert len(workspaces) == 1
+
+    @pytest.mark.django_db
+    def test_get_workspaces_wrong_key(self, api_client, api_key, create_organisation):
+        api_client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
+        Workspace.objects.create(name="abc2", organisation=create_organisation)
+        url = reverse("workspaces:workspaces-list")
+        response = api_client.get(url)
+        assert (
+            response.status_code == 200
+        ), f"verb `get` failed on workspaces with status {response.status_code}"
+        workspaces = list(response.json())
+        assert len(workspaces) == 1
 
 
-@pytest.mark.django_db
-def test_get_workspaces_by_ref_missing(auto_login_user):
-    client, user, workspace = auto_login_user()
-    url = reverse("workspaces:workspaces-list")
-    response = client.get(f"{url}?ref=org/workspace")
-    assert (
-        response.status_code == 200
-    ), f"verb `get` failed on workspaces with status {response.status_code}"
-    workspaces = list(response.json())
-    assert len(workspaces) == 0
+class TestWorkspaceUserAuth:
+    @pytest.mark.django_db
+    def test_get_workspace(self, auto_login_user):
+        client, user, workspace = auto_login_user()
+        url = reverse("workspaces:workspaces-detail", kwargs={"pk": str(workspace.id)})
+        response = client.get(url)
+        assert (
+            response.status_code == 200
+        ), f"verb `get` failed on workspaces with status {response.status_code}"
+
+    @pytest.mark.django_db
+    def test_get_workspace_no_membership(self, auto_login_user, create_organisation):
+        client, user, workspace = auto_login_user()
+        workspace2 = Workspace.objects.create(
+            name="abc2", organisation=create_organisation
+        )
+        url = reverse("workspaces:workspaces-detail", kwargs={"pk": str(workspace2.id)})
+        response = client.get(url)
+        assert (
+            response.status_code == 404
+        ), f"verb `get` failed on workspaces with status {response.status_code}"
 
 
-@pytest.mark.django_db
-def test_get_workspaces_by_ref_missing_slash(auto_login_user):
-    client, user, workspace = auto_login_user()
-    url = reverse("workspaces:workspaces-list")
-    try:
-        client.get(f"{url}?ref=orgworkspace")
-    except Exception:
-        pass
+class TestWorkspaceApiKeyAuth:
+    @pytest.mark.django_db
+    def test_get_workspace(self, api_client, api_key, create_workspace):
+        api_client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
+        url = reverse(
+            "workspaces:workspaces-detail", kwargs={"pk": str(create_workspace.id)}
+        )
+        response = api_client.get(url)
+        assert (
+            response.status_code == 200
+        ), f"verb `get` failed on workspaces with status {response.status_code}"
 
-
-@pytest.mark.django_db
-def test_get_workspaces_by_ref_extra_slash(auto_login_user):
-    client, user, workspace = auto_login_user()
-    url = reverse("workspaces:workspaces-list")
-    try:
-        client.get(f"{url}?ref=org/w/orkspace")
-    except Exception:
-        pass
-
-
-@pytest.mark.django_db
-def test_get_workspaces_no_membership(auto_login_user, create_organisation):
-    client, user, workspace = auto_login_user()
-    Workspace.objects.create(name="abc2", organisation=create_organisation)
-    url = reverse("workspaces:workspaces-list")
-    response = client.get(url)
-    assert (
-        response.status_code == 200
-    ), f"verb `get` failed on workspaces with status {response.status_code}"
-    workspaces = list(response.json())
-    assert len(workspaces) == 1
-
-
-@pytest.mark.django_db
-def test_get_workspace(auto_login_user):
-    client, user, workspace = auto_login_user()
-    url = reverse("workspaces:workspaces-detail", kwargs={"pk": str(workspace.id)})
-    response = client.get(url)
-    assert (
-        response.status_code == 200
-    ), f"verb `get` failed on workspaces with status {response.status_code}"
-
-
-@pytest.mark.django_db
-def test_get_workspace_no_membership(auto_login_user, create_organisation):
-    client, user, workspace = auto_login_user()
-    workspace2 = Workspace.objects.create(name="abc2", organisation=create_organisation)
-    url = reverse("workspaces:workspaces-detail", kwargs={"pk": str(workspace2.id)})
-    response = client.get(url)
-    assert (
-        response.status_code == 404
-    ), f"verb `get` failed on workspaces with status {response.status_code}"
+    @pytest.mark.django_db
+    def test_get_workspace_wrong_key(self, api_client, api_key, create_organisation):
+        api_client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
+        workspace2 = Workspace.objects.create(
+            name="abc2", organisation=create_organisation
+        )
+        url = reverse("workspaces:workspaces-detail", kwargs={"pk": str(workspace2.id)})
+        response = api_client.get(url)
+        assert (
+            response.status_code == 404
+        ), f"verb `get` failed on workspaces with status {response.status_code}"

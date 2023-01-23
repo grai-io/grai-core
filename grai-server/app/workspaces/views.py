@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from common.permissions.multitenant import Multitenant
+from common.permissions.multitenant import Multitenant, MultitenantWorkspaces
 from workspaces.models import Membership, Workspace
 from workspaces.permissions import HasWorkspaceAPIKey
 from workspaces.serializers import MembershipSerializer, WorkspaceSerializer
@@ -24,13 +24,19 @@ class WorkspaceViewSet(ReadOnlyModelViewSet):
         JWTAuthentication,
     ]
 
-    permission_classes = [HasWorkspaceAPIKey | IsAuthenticated]
+    permission_classes = [
+        (HasWorkspaceAPIKey | IsAuthenticated) & MultitenantWorkspaces
+    ]
 
     serializer_class = WorkspaceSerializer
     type = Workspace
 
     def get_queryset(self):
-        queryset = self.type.objects.filter(memberships__user_id=self.request.user.id)
+        queryset = (
+            self.type.objects.filter(memberships__user_id=self.request.user.id)
+            if not self.request.user.is_anonymous
+            else self.type.objects
+        )
 
         supported_filters = ["name", "ref"]
         filters = (

@@ -1,8 +1,8 @@
-from grai_schemas.models import Column, NodeTypes, Table
+from grai_schemas.models import ColumnMetadata, NodeTypes, TableMetadata
 
 
 class TestColumnObjTyping:
-    obj_fields = Column.__fields__
+    obj_fields = ColumnMetadata.__fields__
 
     def test_node_type_values(self):
         # Type annotation is validated by static type checker
@@ -13,7 +13,7 @@ class TestColumnObjTyping:
 
 
 class TestTableObjTyping:
-    obj_fields = Table.__fields__
+    obj_fields = TableMetadata.__fields__
 
     def test_node_type_values(self):
         # Type annotation is validated by static type checker

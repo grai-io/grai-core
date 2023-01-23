@@ -23,7 +23,9 @@ const mockResolvers = {
   }),
   Node: () => ({
     metadata: {
-      node_type: "Table",
+      grai: {
+        node_type: "Table",
+      },
     },
   }),
 }

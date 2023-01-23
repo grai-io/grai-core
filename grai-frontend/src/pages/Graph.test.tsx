@@ -11,7 +11,9 @@ const sourceNode = {
   is_active: true,
   data_source: "test",
   metadata: {
-    node_type: "Table",
+    grai: {
+      node_type: "Table",
+    },
   },
 }
 
@@ -23,7 +25,9 @@ const destinationNode = {
   is_active: true,
   data_source: "test",
   metadata: {
-    node_type: "Table",
+    grai: {
+      node_type: "Table",
+    },
   },
 }
 
@@ -35,8 +39,9 @@ const columnNode = {
   is_active: true,
   data_source: "test",
   metadata: {
-    node_type: "Column",
-    data_type: null,
+    grai: {
+      node_type: "Column",
+    },
   },
 }
 
@@ -59,7 +64,7 @@ const mock = {
             data_source: "test",
             source: sourceNode,
             destination: destinationNode,
-            metadata: { definition: null, constraint_type: "dbt_model" },
+            metadata: { grai: { constraint_type: "dbt_model" } },
           },
           {
             id: "2",
@@ -67,7 +72,7 @@ const mock = {
             data_source: "test",
             source: sourceNode,
             destination: columnNode,
-            metadata: { definition: null, constraint_type: "belongs_to" },
+            metadata: { grai: { constraint_type: "TableToColumn" } },
           },
         ],
       },
