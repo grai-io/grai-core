@@ -32,7 +32,11 @@ class WorkspaceViewSet(ReadOnlyModelViewSet):
     type = Workspace
 
     def get_queryset(self):
-        queryset = self.type.objects.filter(memberships__user_id=self.request.user.id)
+        queryset = (
+            self.type.objects.filter(memberships__user_id=self.request.user.id)
+            if not self.request.user.is_anonymous
+            else self.type.objects
+        )
 
         supported_filters = ["name"]
         filters = (
