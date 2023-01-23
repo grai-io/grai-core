@@ -3,7 +3,6 @@ from typing import Dict, List, Optional, TypeVar
 from grai_client.endpoints.client import BaseClient
 from grai_client.schemas.edge import Edge
 from grai_client.schemas.node import Node
-from grai_client.schemas.schema import GraiType, Schema
 from grai_client.schemas.utilities import merge_models
 
 T = TypeVar("T", Node, Edge)

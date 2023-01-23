@@ -2,6 +2,7 @@ import datetime
 import json
 import pathlib
 import sys
+import uuid
 from typing import Any, Dict, TypeVar
 from uuid import UUID
 
@@ -19,6 +20,14 @@ else:
 
 P = ParamSpec("P")
 T = TypeVar("T")
+
+
+def is_valid_uuid(val):
+    try:
+        uuid.UUID(str(val))
+        return True
+    except ValueError:
+        return False
 
 
 def response_status_check(resp: Response) -> Response:

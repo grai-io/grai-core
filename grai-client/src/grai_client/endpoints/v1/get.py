@@ -1,10 +1,10 @@
-import uuid
 from typing import Dict, List, Optional, TypeVar, Union
 
 from multimethod import overload
 
 from grai_client.endpoints.client import ClientOptions
 from grai_client.endpoints.rest import get
+from grai_client.endpoints.utilities import is_valid_uuid
 from grai_client.endpoints.v1.client import ClientV1
 from grai_client.schemas.edge import EdgeLabels, EdgeV1, NodeID
 from grai_client.schemas.node import NodeLabels, NodeV1
@@ -71,14 +71,6 @@ def _get_nodes_by_name(
         return [NodeV1.from_spec(obj) for obj in resp]
 
 
-def valid_uuid(val):
-    try:
-        uuid.UUID(str(val))
-        return True
-    except ValueError:
-        return False
-
-
 def _get_nodes_by_uuid(
     client: ClientV1,
     grai_type: NodeLabels,
@@ -98,7 +90,7 @@ def get_nodes_by_str(
     name: str,
     options: ClientOptions = ClientOptions(),
 ) -> Optional[Union[List[NodeV1], NodeV1]]:
-    if valid_uuid(name):
+    if is_valid_uuid(name):
         return _get_nodes_by_uuid(client, grai_type, name, options=options)
     else:
         return _get_nodes_by_name(client, grai_type, name, options=options)
@@ -112,7 +104,7 @@ def get_nodes_by_name_and_namespace(
     namespace: str,
     options: ClientOptions = ClientOptions(),
 ) -> Optional[List[NodeV1]]:
-    if valid_uuid(name):
+    if is_valid_uuid(name):
         return client.get(grai_type, name, options=options)
 
     node_id = NodeID(name=name, namespace=namespace)
@@ -167,7 +159,7 @@ def get_all_workspaces(
     client: ClientV1,
     grai_type: WorkspaceLabels,
     options: ClientOptions = ClientOptions(),
-) -> Optional[Workspace]:
+) -> Optional[List[Workspace]]:
     resp = client.get(client.get_url(grai_type), options=options).json()
 
     if len(resp) == 0:
@@ -183,6 +175,8 @@ def get_workspace_by_name_v1(
     name: str,
     options: ClientOptions = ClientOptions(),
 ) -> Optional[Workspace]:
+    if is_valid_uuid(name):
+        url = f"{client.get_url(grai_type)}{name}"
     url = f"{client.get_url(grai_type)}?name={name}"
     resp = client.get(url, options=options).json()
     num_resp = len(resp)
