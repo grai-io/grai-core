@@ -1,7 +1,8 @@
 import pytest
 
 from api.schema import schema
-from connections.models import Connection, Connector, Run
+from connections.models import Run
+from lineage.models import Node, Edge
 
 from .common import test_context, test_organisation, test_user, generate_connection
 
@@ -102,3 +103,70 @@ async def test_workspace_connection_run(test_context):
     assert result.data["workspace"]["connection"]["last_successful_run"]["id"] == str(
         run.id
     )
+
+
+@pytest.mark.django_db
+async def test_workspace_node(test_context):
+    context, organisation, workspace, user = test_context
+
+    node = await Node.objects.acreate(workspace=workspace)
+
+    query = """
+        query Workspace($workspaceId: ID!, $nodeId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                node(id: $nodeId) {
+                  id
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "nodeId": str(node.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["node"]["id"] == str(node.id)
+
+
+@pytest.mark.django_db
+async def test_workspace_edge(test_context):
+    context, organisation, workspace, user = test_context
+
+    source = await Node.objects.acreate(workspace=workspace, name="source")
+    destination = await Node.objects.acreate(workspace=workspace, name="destination")
+
+    edge = await Edge.objects.acreate(
+        workspace=workspace, source=source, destination=destination
+    )
+
+    query = """
+        query Workspace($workspaceId: ID!, $edgeId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                edge(id: $edgeId) {
+                  id
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "edgeId": str(edge.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["edge"]["id"] == str(edge.id)

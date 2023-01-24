@@ -5,12 +5,20 @@ from workspaces.models import Membership, Organisation, Workspace, WorkspaceAPIK
 
 
 @pytest.fixture
-def create_organisation(name=None):
+def create_organisation(name: str = None):
     return Organisation.objects.create(name=uuid.uuid4() if name is None else name)
 
 
 @pytest.fixture
-def create_workspace(create_organisation, name=None):
+def create_workspace(create_organisation, name: str = None):
+    return Workspace.objects.create(
+        name=str(uuid.uuid4()) if name is None else name,
+        organisation=create_organisation,
+    )
+
+
+@pytest.fixture
+def create_workspace2(create_organisation, name: str = None):
     return Workspace.objects.create(
         name=str(uuid.uuid4()) if name is None else name,
         organisation=create_organisation,
@@ -66,8 +74,8 @@ def api_client():
     return APIClient()
 
 
+@pytest.mark.django_db
 class TestWorkspacesUserAuth:
-    @pytest.mark.django_db
     def test_get_workspaces(self, auto_login_user):
         client, user, workspace = auto_login_user()
         url = reverse("workspaces:workspaces-list")
@@ -78,7 +86,43 @@ class TestWorkspacesUserAuth:
         workspaces = list(response.json())
         assert len(workspaces) == 1
 
-    @pytest.mark.django_db
+    def test_get_workspaces_by_name(
+        self, auto_login_user, create_organisation, create_workspace2
+    ):
+        client, user, workspace = auto_login_user()
+        url = reverse(f"workspaces:workspaces-list")
+        response = client.get(f"{url}?name={workspace.name}")
+        assert (
+            response.status_code == 200
+        ), f"verb `get` failed on workspaces with status {response.status_code}"
+        workspaces = list(response.json())
+        assert len(workspaces) == 1
+
+    def test_get_workspaces_by_ref(
+        self, auto_login_user, create_organisation, create_workspace2
+    ):
+        client, user, workspace = auto_login_user()
+        url = reverse(f"workspaces:workspaces-list")
+        response = client.get(f"{url}?ref={create_organisation.name}/{workspace.name}")
+        assert (
+            response.status_code == 200
+        ), f"verb `get` failed on workspaces with status {response.status_code}"
+        workspaces = list(response.json())
+        assert len(workspaces) == 1
+
+    def test_get_workspaces_by_ref_incorrect_format(
+        self, auto_login_user, create_organisation, create_workspace2
+    ):
+        client, user, workspace = auto_login_user()
+        url = reverse(f"workspaces:workspaces-list")
+
+        with pytest.raises(Exception) as e_info:
+            response = client.get(
+                f"{url}?ref={create_organisation.name}{workspace.name}"
+            )
+
+        assert str(e_info.value) == "Incorrect format, should be organisation/workspace"
+
     def test_get_workspaces_no_membership(self, auto_login_user, create_organisation):
         client, user, workspace = auto_login_user()
         Workspace.objects.create(name="abc2", organisation=create_organisation)
@@ -91,8 +135,8 @@ class TestWorkspacesUserAuth:
         assert len(workspaces) == 1
 
 
+@pytest.mark.django_db
 class TestWorkspacesApiKeyAuth:
-    @pytest.mark.django_db
     def test_get_workspaces(self, api_client, api_key):
         api_client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
         url = reverse("workspaces:workspaces-list")
@@ -103,7 +147,6 @@ class TestWorkspacesApiKeyAuth:
         workspaces = list(response.json())
         assert len(workspaces) == 1
 
-    @pytest.mark.django_db
     def test_get_workspaces_wrong_key(self, api_client, api_key, create_organisation):
         api_client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
         Workspace.objects.create(name="abc2", organisation=create_organisation)
@@ -116,8 +159,8 @@ class TestWorkspacesApiKeyAuth:
         assert len(workspaces) == 1
 
 
+@pytest.mark.django_db
 class TestWorkspaceUserAuth:
-    @pytest.mark.django_db
     def test_get_workspace(self, auto_login_user):
         client, user, workspace = auto_login_user()
         url = reverse("workspaces:workspaces-detail", kwargs={"pk": str(workspace.id)})
@@ -126,7 +169,6 @@ class TestWorkspaceUserAuth:
             response.status_code == 200
         ), f"verb `get` failed on workspaces with status {response.status_code}"
 
-    @pytest.mark.django_db
     def test_get_workspace_no_membership(self, auto_login_user, create_organisation):
         client, user, workspace = auto_login_user()
         workspace2 = Workspace.objects.create(
@@ -139,8 +181,8 @@ class TestWorkspaceUserAuth:
         ), f"verb `get` failed on workspaces with status {response.status_code}"
 
 
+@pytest.mark.django_db
 class TestWorkspaceApiKeyAuth:
-    @pytest.mark.django_db
     def test_get_workspace(self, api_client, api_key, create_workspace):
         api_client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
         url = reverse(
@@ -151,7 +193,6 @@ class TestWorkspaceApiKeyAuth:
             response.status_code == 200
         ), f"verb `get` failed on workspaces with status {response.status_code}"
 
-    @pytest.mark.django_db
     def test_get_workspace_wrong_key(self, api_client, api_key, create_organisation):
         api_client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
         workspace2 = Workspace.objects.create(
