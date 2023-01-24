@@ -11,7 +11,7 @@ import AutoMockedProvider from "./AutoMockedProvider"
 import casual from "casual"
 import AuthMock from "./AuthMock"
 import GuestRoute from "components/auth/GuestRoute"
-import WorkspaceMock from "./WorkspaceMock"
+import WorkspaceProvider from "components/utils/WorkspaceProvider"
 
 const mockResolvers = {
   Date: () => "2019-12-31",
@@ -87,7 +87,7 @@ export const renderWithRouter = (
               <AuthMock initialLoggedIn={loggedIn} throwError={throwError}>
                 <SnackbarProvider maxSnack={3} hideIconVariant>
                   <Routes>
-                    <Route element={<WorkspaceMock />}>
+                    <Route element={<WorkspaceProvider />}>
                       {guestRoute ? (
                         <Route element={<GuestRoute />}>
                           <Route path={path} element={props.children} />
@@ -142,7 +142,7 @@ export const renderWithMocks = (
               <AuthMock initialLoggedIn={loggedIn} throwError={throwError}>
                 <SnackbarProvider maxSnack={3} hideIconVariant>
                   <Routes>
-                    <Route element={<WorkspaceMock />}>
+                    <Route element={<WorkspaceProvider />}>
                       <Route path={path} element={props.children} />
                       {routes.map(route =>
                         typeof route === "string" ? (

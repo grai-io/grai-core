@@ -20,8 +20,8 @@ test("error", async () => {
     request: {
       query: GET_MEMBERSHIPS,
       variables: {
-        organisationName: "organisation",
-        workspaceName: "workspace",
+        organisationName: "",
+        workspaceName: "",
       },
     },
     result: {
@@ -41,8 +41,8 @@ test("empty", async () => {
     request: {
       query: GET_MEMBERSHIPS,
       variables: {
-        organisationName: "organisation",
-        workspaceName: "workspace",
+        organisationName: "",
+        workspaceName: "",
       },
     },
     result: {

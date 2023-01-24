@@ -21,8 +21,8 @@ test("refresh", async () => {
       request: {
         query: GET_CONNECTION,
         variables: {
-          organisationName: "organisation",
-          workspaceName: "workspace",
+          organisationName: "",
+          workspaceName: "",
           connectionId: "",
         },
       },
@@ -163,8 +163,8 @@ test("refresh no last_sucessful_run", async () => {
       request: {
         query: GET_CONNECTION,
         variables: {
-          organisationName: "organisation",
-          workspaceName: "workspace",
+          organisationName: "",
+          workspaceName: "",
           connectionId: "",
         },
       },
@@ -290,8 +290,8 @@ test("error", async () => {
     request: {
       query: GET_CONNECTION,
       variables: {
-        organisationName: "organisation",
-        workspaceName: "workspace",
+        organisationName: "",
+        workspaceName: "",
         connectionId: "",
       },
     },
@@ -312,8 +312,8 @@ test("not found", async () => {
     request: {
       query: GET_CONNECTION,
       variables: {
-        organisationName: "organisation",
-        workspaceName: "workspace",
+        organisationName: "",
+        workspaceName: "",
         connectionId: "",
       },
     },

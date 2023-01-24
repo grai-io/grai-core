@@ -49,8 +49,8 @@ const mock = {
   request: {
     query: GET_NODES_AND_EDGES,
     variables: {
-      organisationName: "organisation",
-      workspaceName: "workspace",
+      organisationName: "",
+      workspaceName: "",
     },
   },
   result: {
@@ -153,8 +153,8 @@ test("error", async () => {
     request: {
       query: GET_NODES_AND_EDGES,
       variables: {
-        organisationName: "organisation",
-        workspaceName: "workspace",
+        organisationName: "",
+        workspaceName: "",
       },
     },
     result: {
@@ -174,8 +174,8 @@ test("no nodes", async () => {
     request: {
       query: GET_NODES_AND_EDGES,
       variables: {
-        organisationName: "organisation",
-        workspaceName: "workspace",
+        organisationName: "",
+        workspaceName: "",
       },
     },
     result: {

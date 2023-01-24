@@ -22,8 +22,8 @@ test("error", async () => {
     request: {
       query: GET_WORKSPACE,
       variables: {
-        organisationName: "organisation",
-        workspaceName: "workspace",
+        organisationName: "",
+        workspaceName: "",
       },
     },
     result: {
@@ -47,8 +47,8 @@ test("not found", async () => {
     request: {
       query: GET_WORKSPACE,
       variables: {
-        organisationName: "organisation",
-        workspaceName: "workspace",
+        organisationName: "",
+        workspaceName: "",
       },
     },
     result: {
@@ -98,8 +98,8 @@ test("submit error", async () => {
       request: {
         query: GET_WORKSPACE,
         variables: {
-          organisationName: "organisation",
-          workspaceName: "workspace",
+          organisationName: "",
+          workspaceName: "",
         },
       },
       result: {

@@ -21,8 +21,8 @@ test("error", async () => {
     request: {
       query: GET_NODES,
       variables: {
-        organisationName: "organisation",
-        workspaceName: "workspace",
+        organisationName: "",
+        workspaceName: "",
       },
     },
     result: {
@@ -73,8 +73,8 @@ test("no nodes", async () => {
     request: {
       query: GET_NODES,
       variables: {
-        organisationName: "organisation",
-        workspaceName: "workspace",
+        organisationName: "",
+        workspaceName: "",
       },
     },
     result: {
