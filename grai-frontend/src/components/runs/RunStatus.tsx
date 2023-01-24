@@ -24,32 +24,6 @@ type Status = {
     | "warning"
 }
 
-const status: { [key: string]: Status } = {
-  queued: {
-    label: "Queued",
-    icon: <HourglassEmpty />,
-  },
-  running: {
-    label: "Running",
-    icon: (
-      <Box>
-        <CircularProgress sx={{ height: 15, width: 15 }} />
-      </Box>
-    ),
-    color: "default",
-  },
-  success: {
-    label: "Success",
-    icon: <Check />,
-    color: "success",
-  },
-  error: {
-    label: "Error",
-    icon: <Close />,
-    color: "error",
-  },
-}
-
 interface Run {
   id: string
   status: string
@@ -82,6 +56,32 @@ const RunStatus: React.FC<RunStatusProps> = ({
     navigate(`/workspaces/${workspaceId}/runs/${run.id}`)
 
   const handleClick = onClick ? onClick : link ? handleNavigate : undefined
+
+  const status: { [key: string]: Status } = {
+    queued: {
+      label: "Queued",
+      icon: <HourglassEmpty />,
+    },
+    running: {
+      label: "Running",
+      icon: (
+        <Box sx={{ px: size === "small" ? 0.5 : null }}>
+          <CircularProgress size={size === "small" ? "0.8rem" : undefined} />
+        </Box>
+      ),
+      color: "default",
+    },
+    success: {
+      label: "Success",
+      icon: <Check />,
+      color: "success",
+    },
+    error: {
+      label: "Error",
+      icon: <Close />,
+      color: "error",
+    },
+  }
 
   return (
     <Chip
