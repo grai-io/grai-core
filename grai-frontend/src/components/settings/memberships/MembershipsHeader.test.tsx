@@ -4,7 +4,7 @@ import { renderWithRouter, screen, waitFor } from "testing"
 import MembershipsHeader from "./MembershipsHeader"
 
 test("renders", async () => {
-  renderWithRouter(<MembershipsHeader />)
+  renderWithRouter(<MembershipsHeader workspaceId="1" />)
 
   await waitFor(() => {
     expect(screen.getByText("Memberships")).toBeTruthy()
@@ -14,7 +14,7 @@ test("renders", async () => {
 test("open", async () => {
   const user = userEvent.setup()
 
-  renderWithRouter(<MembershipsHeader />)
+  renderWithRouter(<MembershipsHeader workspaceId="1" />)
 
   await waitFor(() => {
     expect(screen.getByText("Memberships")).toBeTruthy()

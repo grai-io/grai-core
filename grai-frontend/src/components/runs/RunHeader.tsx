@@ -7,8 +7,9 @@ import {
   IconButton,
   Divider,
 } from "@mui/material"
+import useWorkspace from "helpers/useWorkspace"
 import React from "react"
-import { useParams, Link } from "react-router-dom"
+import { Link } from "react-router-dom"
 import RunStatus from "./RunStatus"
 
 interface Connection {
@@ -27,7 +28,7 @@ type RunHeaderProps = {
 }
 
 const RunHeader: React.FC<RunHeaderProps> = ({ run }) => {
-  const { workspaceId } = useParams()
+  const { routePrefix } = useWorkspace()
 
   return (
     <>
@@ -35,7 +36,7 @@ const RunHeader: React.FC<RunHeaderProps> = ({ run }) => {
         <Box>
           <Button
             component={Link}
-            to={`/workspaces/${workspaceId}/connections/${run.connection.id}`}
+            to={`${routePrefix}/connections/${run.connection.id}`}
             color="secondary"
             startIcon={<KeyboardBackspace />}
           >

@@ -3,7 +3,13 @@ import { Box, Button, Typography } from "@mui/material"
 import React, { useState } from "react"
 import CreateMembershipDialog from "./CreateMembershipDialog"
 
-const MembershipsHeader: React.FC = () => {
+type MembershipsHeaderProps = {
+  workspaceId: string
+}
+
+const MembershipsHeader: React.FC<MembershipsHeaderProps> = ({
+  workspaceId,
+}) => {
   const [open, setOpen] = useState(false)
 
   const handleOpen = () => setOpen(true)
@@ -19,7 +25,11 @@ const MembershipsHeader: React.FC = () => {
           Invite user
         </Button>
       </Box>
-      <CreateMembershipDialog open={open} onClose={handleClose} />
+      <CreateMembershipDialog
+        workspaceId={workspaceId}
+        open={open}
+        onClose={handleClose}
+      />
     </Box>
   )
 }

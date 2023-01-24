@@ -74,6 +74,7 @@ export interface GetNode {
 }
 
 export interface GetNodeVariables {
-  workspaceId: string;
+  organisationName: string;
+  workspaceName: string;
   nodeId: string;
 }

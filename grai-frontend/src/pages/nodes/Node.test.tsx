@@ -17,7 +17,8 @@ test("error", async () => {
     request: {
       query: GET_NODE,
       variables: {
-        workspaceId: "",
+        organisationName: "organisation",
+        workspaceName: "workspace",
         nodeId: "",
       },
     },
@@ -38,7 +39,8 @@ test("not found", async () => {
     request: {
       query: GET_NODE,
       variables: {
-        workspaceId: "",
+        organisationName: "organisation",
+        workspaceName: "workspace",
         nodeId: "",
       },
     },

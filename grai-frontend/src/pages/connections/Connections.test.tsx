@@ -36,7 +36,8 @@ test("error", async () => {
     request: {
       query: GET_CONNECTIONS,
       variables: {
-        workspaceId: "",
+        organisationName: "organisation",
+        workspaceName: "workspace",
       },
     },
     result: {

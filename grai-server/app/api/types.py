@@ -7,17 +7,19 @@ from strawberry.scalars import JSON
 from strawberry_django.filters import FilterLookup
 from strawberry_django_plus.gql import auto
 
-from connections.models import Connection as ConnectionModel
-from connections.models import Connector as ConnectorModel
-from connections.models import Run as RunModel
-from lineage.models import Edge
-from lineage.models import Edge as EdgeModel
-from lineage.models import Node
-from lineage.models import Node as NodeModel
+from connections.models import (
+    Connection as ConnectionModel,
+    Connector as ConnectorModel,
+    Run as RunModel,
+)
+from lineage.models import Edge as EdgeModel, Node as NodeModel
 from users.models import User as UserModel
-from workspaces.models import Membership as MembershipModel
-from workspaces.models import Workspace as WorkspaceModel
-from workspaces.models import WorkspaceAPIKey as WorkspaceAPIKeyModel
+from workspaces.models import (
+    Membership as MembershipModel,
+    Organisation as OrganisationModel,
+    Workspace as WorkspaceModel,
+    WorkspaceAPIKey as WorkspaceAPIKeyModel,
+)
 
 
 @strawberry.django.filters.filter(UserModel, lookups=True)
@@ -202,8 +204,8 @@ class Connection:
     runs: List["Run"]
     # run: Run = strawberry.django.field
     @strawberry.django.field
-    def run(self, pk: strawberry.ID) -> "Run":
-        return RunModel.objects.get(id=pk)
+    def run(self, id: strawberry.ID) -> "Run":
+        return RunModel.objects.get(id=id)
 
     @strawberry.django.field
     def last_run(self) -> Optional["Run"]:
@@ -218,6 +220,12 @@ class Connection:
             .order_by("-created_at")
             .first()
         )
+
+
+@strawberry.django.type(OrganisationModel)
+class Organisation:
+    id: auto
+    name: auto
 
 
 @strawberry.django.filters.filter(WorkspaceModel)
@@ -239,29 +247,30 @@ class WorkspaceOrder:
 class Workspace:
     id: auto
     name: auto
+    organisation: Organisation
     nodes: List["Node"]
     # node: NodeType = strawberry.django.field
     @strawberry.django.field
-    def node(self, pk: strawberry.ID) -> Node:
-        return NodeModel.objects.get(id=pk)
+    def node(self, id: strawberry.ID) -> Node:
+        return NodeModel.objects.get(id=id)
 
     edges: List["Edge"]
     # edge: EdgeType = strawberry.django.field(field_name='edges')
     @strawberry.django.field
-    def edge(self, pk: strawberry.ID) -> Edge:
-        return EdgeModel.objects.get(id=pk)
+    def edge(self, id: strawberry.ID) -> Edge:
+        return EdgeModel.objects.get(id=id)
 
     connections: List["Connection"]
     # connection: ConnectionType = strawberry.django.field
     @strawberry.django.field
-    def connection(self, pk: strawberry.ID) -> Connection:
-        return ConnectionModel.objects.get(id=pk)
+    def connection(self, id: strawberry.ID) -> Connection:
+        return ConnectionModel.objects.get(id=id)
 
     runs: List["Run"]
     # run: Run = strawberry.django.field
     @strawberry.django.field
-    def run(self, pk: strawberry.ID) -> "Run":
-        return RunModel.objects.get(id=pk)
+    def run(self, id: strawberry.ID) -> "Run":
+        return RunModel.objects.get(id=id)
 
     memberships: List["Membership"]
     api_keys: List["WorkspaceAPIKey"]

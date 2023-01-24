@@ -1,8 +1,9 @@
 import { Link } from "@mui/material"
 import HelpItem from "components/help/HelpItem"
 import HelpSection from "components/help/HelpSection"
+import useWorkspace from "helpers/useWorkspace"
 import React from "react"
-import { Link as RouterLink, useParams } from "react-router-dom"
+import { Link as RouterLink } from "react-router-dom"
 
 interface Connector {
   name: string
@@ -15,7 +16,7 @@ type CreateConnectionHelpProps = {
 const CreateConnectionHelp: React.FC<CreateConnectionHelpProps> = ({
   connector,
 }) => {
-  const { workspaceId } = useParams()
+  const { routePrefix } = useWorkspace()
 
   return (
     <HelpSection>
@@ -26,7 +27,7 @@ const CreateConnectionHelp: React.FC<CreateConnectionHelpProps> = ({
       </HelpItem>
       <HelpItem title="Invite a teammate">
         If you're missing credentials or connection info,{" "}
-        <RouterLink to={`/workspaces/${workspaceId}/settings/memberships`}>
+        <RouterLink to={`${routePrefix}/settings/memberships`}>
           invite a teammate
         </RouterLink>{" "}
         to join you in this Grai workspace.

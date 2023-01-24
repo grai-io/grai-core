@@ -7,8 +7,9 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material"
+import useWorkspace from "helpers/useWorkspace"
 import React from "react"
-import { Link, useParams } from "react-router-dom"
+import { Link } from "react-router-dom"
 
 interface Node {
   id: string
@@ -20,7 +21,7 @@ type NodeHeaderProps = {
 }
 
 const NodeHeader: React.FC<NodeHeaderProps> = ({ node }) => {
-  const { workspaceId } = useParams()
+  const { routePrefix } = useWorkspace()
 
   return (
     <>
@@ -28,7 +29,7 @@ const NodeHeader: React.FC<NodeHeaderProps> = ({ node }) => {
         <Box>
           <Button
             component={Link}
-            to={`/workspaces/${workspaceId}/nodes`}
+            to={`${routePrefix}/nodes`}
             color="secondary"
             startIcon={<KeyboardBackspace />}
           >

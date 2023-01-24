@@ -8,8 +8,9 @@ import {
   Typography,
 } from "@mui/material"
 import RunStatus from "components/runs/RunStatus"
+import useWorkspace from "helpers/useWorkspace"
 import React from "react"
-import { Link, useParams } from "react-router-dom"
+import { Link } from "react-router-dom"
 import ConnectionRefresh, {
   Connection as BaseConnection,
 } from "./ConnectionRefresh"
@@ -27,7 +28,7 @@ const ConnectionHeader: React.FC<ConnectionHeaderProps> = ({
   connection,
   onRefresh,
 }) => {
-  const { workspaceId } = useParams()
+  const { routePrefix } = useWorkspace()
 
   return (
     <>
@@ -35,7 +36,7 @@ const ConnectionHeader: React.FC<ConnectionHeaderProps> = ({
         <Box>
           <Button
             component={Link}
-            to={`/workspaces/${workspaceId}/connections`}
+            to={`${routePrefix}/connections`}
             color="secondary"
             startIcon={<KeyboardBackspace />}
           >

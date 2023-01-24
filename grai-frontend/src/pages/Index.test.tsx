@@ -5,7 +5,7 @@ import Index, { GET_WORKSPACES } from "./Index"
 
 test("renders", async () => {
   renderWithRouter(<Index />, {
-    routes: ["/workspaces/:workspaceId"],
+    routes: ["/:organisationName/:workspaceName"],
   })
 
   await waitFor(() => {

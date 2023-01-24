@@ -62,5 +62,6 @@ export interface GetNodesAndEdges {
 }
 
 export interface GetNodesAndEdgesVariables {
-  workspaceId: string;
+  organisationName: string;
+  workspaceName: string;
 }

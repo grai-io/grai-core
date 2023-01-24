@@ -4,11 +4,6 @@ import { createContext, ReactNode } from "react"
 import { Login, LoginVariables } from "./__generated__/Login"
 import { Logout } from "./__generated__/Logout"
 import { Register, RegisterVariables } from "./__generated__/Register"
-declare global {
-  interface Window {
-    _env_: any
-  }
-}
 
 export const LOGIN = gql`
   mutation Login($username: String!, $password: String!) {

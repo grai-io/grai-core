@@ -15,13 +15,14 @@ import {
   ListItemText,
   Toolbar,
 } from "@mui/material"
+import useWorkspace from "helpers/useWorkspace"
 import React, { useState } from "react"
-import { Link, useParams } from "react-router-dom"
+import { Link } from "react-router-dom"
 
 const drawerWidth = 300
 
 const SettingsDrawer: React.FC = () => {
-  const { workspaceId } = useParams()
+  const { routePrefix } = useWorkspace()
   const [open, setOpen] = useState(true)
 
   const handleClose = () => setOpen(false)
@@ -45,7 +46,7 @@ const SettingsDrawer: React.FC = () => {
           <ListItem sx={{ py: 0 }}>
             <ListItemButton
               component={Link}
-              to={`/workspaces/${workspaceId}/settings/profile`}
+              to={`${routePrefix}/settings/profile`}
             >
               <ListItemIcon sx={{ minWidth: 0, mr: 2 }}>
                 <AccountCircle />
@@ -56,7 +57,7 @@ const SettingsDrawer: React.FC = () => {
           <ListItem sx={{ py: 0 }}>
             <ListItemButton
               component={Link}
-              to={`/workspaces/${workspaceId}/settings/api-keys`}
+              to={`${routePrefix}/settings/api-keys`}
             >
               <ListItemIcon sx={{ minWidth: 0, mr: 2 }}>
                 <VpnKey />
@@ -67,7 +68,7 @@ const SettingsDrawer: React.FC = () => {
           <ListItem sx={{ py: 0 }}>
             <ListItemButton
               component={Link}
-              to={`/workspaces/${workspaceId}/settings/workspace`}
+              to={`${routePrefix}/settings/workspace`}
             >
               <ListItemIcon sx={{ minWidth: 0, mr: 2 }}>
                 <Business />
@@ -78,7 +79,7 @@ const SettingsDrawer: React.FC = () => {
           <ListItem sx={{ py: 0 }}>
             <ListItemButton
               component={Link}
-              to={`/workspaces/${workspaceId}/settings/memberships`}
+              to={`${routePrefix}/settings/memberships`}
             >
               <ListItemIcon sx={{ minWidth: 0, mr: 2 }}>
                 <People />

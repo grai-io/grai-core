@@ -16,7 +16,8 @@ test("renders errors", async () => {
     request: {
       query: GET_RUN,
       variables: {
-        workspaceId: "",
+        organisationName: "organisation",
+        workspaceName: "workspace",
         runId: "",
       },
     },
@@ -66,7 +67,8 @@ test("error", async () => {
     request: {
       query: GET_RUN,
       variables: {
-        workspaceId: "",
+        organisationName: "organisation",
+        workspaceName: "workspace",
         runId: "",
       },
     },
@@ -87,7 +89,8 @@ test("not found", async () => {
     request: {
       query: GET_RUN,
       variables: {
-        workspaceId: "",
+        organisationName: "organisation",
+        workspaceName: "workspace",
         runId: "",
       },
     },

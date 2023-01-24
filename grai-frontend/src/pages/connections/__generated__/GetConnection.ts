@@ -95,6 +95,7 @@ export interface GetConnection {
 }
 
 export interface GetConnectionVariables {
-  workspaceId: string;
+  organisationName: string;
+  workspaceName: string;
   connectionId: string;
 }

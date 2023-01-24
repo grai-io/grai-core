@@ -1,15 +1,16 @@
 import { AppBar, Toolbar, Button, Box } from "@mui/material"
+import useWorkspace from "helpers/useWorkspace"
 import React from "react"
-import { Link, useParams } from "react-router-dom"
+import { Link } from "react-router-dom"
 import ProfileMenu from "./ProfileMenu"
 
 const AppTopBar: React.FC = () => {
-  const { workspaceId } = useParams()
+  const { routePrefix } = useWorkspace()
 
   return (
     <AppBar position="static">
       <Toolbar>
-        <Box component={Link} to={`/workspaces/${workspaceId}`} sx={{ mt: 1 }}>
+        <Box component={Link} to={routePrefix} sx={{ mt: 1 }}>
           <svg
             width="105"
             height="43"
@@ -41,21 +42,21 @@ const AppTopBar: React.FC = () => {
         </Box>
         <Button
           component={Link}
-          to={`/workspaces/${workspaceId}/graph`}
+          to={`${routePrefix}/graph`}
           sx={{ my: 2, color: "inherit" }}
         >
           Graph
         </Button>
         <Button
           component={Link}
-          to={`/workspaces/${workspaceId}/nodes`}
+          to={`${routePrefix}/nodes`}
           sx={{ my: 2, color: "inherit" }}
         >
           Tables
         </Button>
         <Button
           component={Link}
-          to={`/workspaces/${workspaceId}/connections`}
+          to={`${routePrefix}/connections`}
           sx={{ my: 2, color: "inherit" }}
         >
           Connections

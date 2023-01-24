@@ -7,6 +7,14 @@
 // GraphQL query operation: GetConnections
 // ====================================================
 
+export interface GetConnections_profile {
+  __typename: "User";
+  id: any;
+  username: string | null;
+  first_name: string;
+  last_name: string;
+}
+
 export interface GetConnections_workspace_connections_connector {
   __typename: "Connector";
   id: any;
@@ -82,13 +90,16 @@ export interface GetConnections_workspace_connections {
 export interface GetConnections_workspace {
   __typename: "Workspace";
   id: any;
+  name: string;
   connections: GetConnections_workspace_connections[];
 }
 
 export interface GetConnections {
+  profile: GetConnections_profile;
   workspace: GetConnections_workspace;
 }
 
 export interface GetConnectionsVariables {
-  workspaceId: string;
+  organisationName: string;
+  workspaceName: string;
 }

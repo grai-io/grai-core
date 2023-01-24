@@ -7,7 +7,6 @@ import {
   Typography,
 } from "@mui/material"
 import React, { useState } from "react"
-import { useParams } from "react-router-dom"
 import DialogTitle from "components/dialogs/DialogTitle"
 import CopyButton from "components/utils/CopyButton"
 import CreateKeyForm, { Values } from "./CreateKeyForm"
@@ -30,12 +29,16 @@ export const CREATE_API_KEY = gql`
 `
 
 type CreateKeyDialogProps = {
+  workspaceId: string
   open: boolean
   onClose: () => void
 }
 
-const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({ open, onClose }) => {
-  const { workspaceId } = useParams()
+const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({
+  workspaceId,
+  open,
+  onClose,
+}) => {
   const [key, setKey] = useState<string>()
 
   const [createApiKey, { loading, error }] = useMutation<
@@ -47,7 +50,7 @@ const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({ open, onClose }) => {
     createApiKey({
       variables: {
         ...values,
-        workspaceId: workspaceId ?? "",
+        workspaceId,
       },
     })
       .then(res => res.data)

@@ -8,8 +8,8 @@ import {
   Theme,
 } from "@mui/material"
 import { OverridableStringUnion } from "@mui/types"
+import useWorkspace from "helpers/useWorkspace"
 import React, { JSXElementConstructor, ReactElement } from "react"
-import { useNavigate, useParams } from "react-router-dom"
 
 type Status = {
   label?: string
@@ -75,11 +75,9 @@ const RunStatus: React.FC<RunStatusProps> = ({
   onClick,
   sx,
 }) => {
-  const navigate = useNavigate()
-  const { workspaceId } = useParams()
+  const { workspaceNavigate } = useWorkspace()
 
-  const handleNavigate = () =>
-    navigate(`/workspaces/${workspaceId}/runs/${run.id}`)
+  const handleNavigate = () => workspaceNavigate(`runs/${run.id}`)
 
   const handleClick = onClick ? onClick : link ? handleNavigate : undefined
 

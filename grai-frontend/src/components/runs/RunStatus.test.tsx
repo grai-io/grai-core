@@ -18,7 +18,7 @@ test("navigate", async () => {
   const user = userEvent.setup()
 
   renderWithRouter(<RunStatus run={run} link />, {
-    routes: ["/workspaces/:workspaceId/runs/:runId"],
+    routes: ["/:organisationName/:workspaceName/runs/:runId"],
   })
 
   expect(screen.getByText("Success")).toBeTruthy()

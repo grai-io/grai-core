@@ -62,5 +62,6 @@ export interface GetNodesAndEdgesNodeLineage {
 }
 
 export interface GetNodesAndEdgesNodeLineageVariables {
-  workspaceId: string;
+  organisationName: string;
+  workspaceName: string;
 }

@@ -20,6 +20,10 @@ const GET_WORKSPACES = gql`
     workspaces {
       id
       name
+      organisation {
+        id
+        name
+      }
     }
   }
 `
@@ -68,7 +72,7 @@ const Workspaces: React.FC = () => {
               <ListItem key={workspace.id} disablePadding>
                 <ListItemButton
                   component={Link}
-                  to={`/workspaces/${workspace.id}`}
+                  to={`/${workspace.organisation.name}/${workspace.name}`}
                 >
                   <ListItemText primary={workspace.name} />
                 </ListItemButton>

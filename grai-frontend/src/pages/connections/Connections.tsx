@@ -6,14 +6,14 @@ import {
   GetConnections,
   GetConnectionsVariables,
 } from "./__generated__/GetConnections"
-import { useParams } from "react-router-dom"
 import { Box } from "@mui/material"
 import GraphError from "components/utils/GraphError"
 import PageLayout from "components/layout/PageLayout"
+import useWorkspace from "helpers/useWorkspace"
 
 export const GET_CONNECTIONS = gql`
-  query GetConnections($workspaceId: ID!) {
-    workspace(pk: $workspaceId) {
+  query GetConnections($organisationName: String!, $workspaceName: String!) {
+    workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       connections {
         id
@@ -69,14 +69,15 @@ export const GET_CONNECTIONS = gql`
 `
 
 const Connections: React.FC = () => {
-  const { workspaceId } = useParams()
+  const { organisationName, workspaceName } = useWorkspace()
 
   const { loading, error, data, refetch } = useQuery<
     GetConnections,
     GetConnectionsVariables
   >(GET_CONNECTIONS, {
     variables: {
-      workspaceId: workspaceId ?? "",
+      organisationName,
+      workspaceName,
     },
   })
 

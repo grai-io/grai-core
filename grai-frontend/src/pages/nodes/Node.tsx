@@ -7,12 +7,17 @@ import NodeContent from "components/nodes/NodeContent"
 import { GetNode, GetNodeVariables } from "./__generated__/GetNode"
 import GraphError from "components/utils/GraphError"
 import PageLayout from "components/layout/PageLayout"
+import useWorkspace from "helpers/useWorkspace"
 
 export const GET_NODE = gql`
-  query GetNode($workspaceId: ID!, $nodeId: ID!) {
-    workspace(pk: $workspaceId) {
+  query GetNode(
+    $organisationName: String!
+    $workspaceName: String!
+    $nodeId: ID!
+  ) {
+    workspace(organisationName: $organisationName, name: $workspaceName) {
       id
-      node(pk: $nodeId) {
+      node(id: $nodeId) {
         id
         namespace
         name
@@ -59,13 +64,15 @@ export const GET_NODE = gql`
 `
 
 const Node: React.FC = () => {
-  const { workspaceId, nodeId } = useParams()
+  const { organisationName, workspaceName } = useWorkspace()
+  const { nodeId } = useParams()
 
   const { loading, error, data } = useQuery<GetNode, GetNodeVariables>(
     GET_NODE,
     {
       variables: {
-        workspaceId: workspaceId ?? "",
+        organisationName,
+        workspaceName,
         nodeId: nodeId ?? "",
       },
     }

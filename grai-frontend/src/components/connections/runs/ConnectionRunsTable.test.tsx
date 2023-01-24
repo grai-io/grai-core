@@ -34,7 +34,7 @@ test("row click", async () => {
   const user = userEvent.setup()
 
   const { container } = renderWithRouter(<ConnectionRunsTable runs={runs} />, {
-    routes: ["/workspaces/:workspaceId/runs/:runId"],
+    routes: ["/:organisationName/:workspaceName/runs/:runId"],
   })
 
   expect(screen.getByText("Success")).toBeTruthy()

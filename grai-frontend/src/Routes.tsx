@@ -23,36 +23,38 @@ import ForgotPassword from "pages/auth/ForgotPassword"
 import PasswordReset from "pages/auth/PasswordReset"
 import CompleteSignup from "pages/auth/CompleteSignup"
 import Run from "pages/runs/Run"
+import WorkspaceProvider from "components/utils/WorkspaceProvider"
 
 const Routes: React.FC = () => (
   <BrowerRoutes>
     <Route element={<PrivateRoute />}>
       <Route index element={<Index />} />
-      <Route path="workspaces">
-        <Route index element={<Workspaces />} />
-        <Route path=":workspaceId">
-          <Route index element={<Home />} />
-          <Route path="graph" element={<Graph />} />
-          <Route path="nodes">
-            <Route index element={<Nodes />} />
-            <Route path=":nodeId" element={<Node />} />
-          </Route>
-          <Route path="runs">
-            <Route path=":runId" element={<Run />} />
-          </Route>
-          <Route path="connections">
-            <Route index element={<Connections />} />
-            <Route path="create" element={<ConnectionCreate />} />
-            <Route path=":connectionId" element={<Connection />} />
-          </Route>
-          <Route path="settings">
-            <Route index element={<Settings />} />
-            <Route path="profile" element={<ProfileSettings />} />
-            <Route path="password" element={<PasswordSettings />} />
-            <Route path="api-keys" element={<ApiKeys />} />
-            <Route path="workspace" element={<WorkspaceSettings />} />
-            <Route path="memberships" element={<Memberships />} />
-          </Route>
+      <Route path="/workspaces" element={<Workspaces />} />
+      <Route
+        path=":organisationName/:workspaceName"
+        element={<WorkspaceProvider />}
+      >
+        <Route index element={<Home />} />
+        <Route path="graph" element={<Graph />} />
+        <Route path="nodes">
+          <Route index element={<Nodes />} />
+          <Route path=":nodeId" element={<Node />} />
+        </Route>
+        <Route path="runs">
+          <Route path=":runId" element={<Run />} />
+        </Route>
+        <Route path="connections">
+          <Route index element={<Connections />} />
+          <Route path="create" element={<ConnectionCreate />} />
+          <Route path=":connectionId" element={<Connection />} />
+        </Route>
+        <Route path="settings">
+          <Route index element={<Settings />} />
+          <Route path="profile" element={<ProfileSettings />} />
+          <Route path="password" element={<PasswordSettings />} />
+          <Route path="api-keys" element={<ApiKeys />} />
+          <Route path="workspace" element={<WorkspaceSettings />} />
+          <Route path="memberships" element={<Memberships />} />
         </Route>
       </Route>
     </Route>

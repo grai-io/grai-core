@@ -11,12 +11,17 @@ import PageLayout from "components/layout/PageLayout"
 import ConnectionHeader from "components/connections/ConnectionHeader"
 import ConnectionContent from "components/connections/ConnectionContent"
 import ConnectionTabs from "components/connections/ConnectionTabs"
+import useWorkspace from "helpers/useWorkspace"
 
 export const GET_CONNECTION = gql`
-  query GetConnection($workspaceId: ID!, $connectionId: ID!) {
-    workspace(pk: $workspaceId) {
+  query GetConnection(
+    $organisationName: String!
+    $workspaceName: String!
+    $connectionId: ID!
+  ) {
+    workspace(organisationName: $organisationName, name: $workspaceName) {
       id
-      connection(pk: $connectionId) {
+      connection(id: $connectionId) {
         id
         namespace
         name
@@ -75,14 +80,16 @@ export const GET_CONNECTION = gql`
 `
 
 const Connection: React.FC = () => {
-  const { workspaceId, connectionId } = useParams()
+  const { organisationName, workspaceName } = useWorkspace()
+  const { connectionId } = useParams()
 
   const { loading, error, data, startPolling, stopPolling } = useQuery<
     GetConnection,
     GetConnectionVariables
   >(GET_CONNECTION, {
     variables: {
-      workspaceId: workspaceId ?? "",
+      organisationName,
+      workspaceName,
       connectionId: connectionId ?? "",
     },
   })

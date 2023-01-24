@@ -13,7 +13,8 @@ import NodeColumns from "./NodeColumns"
 import NodeDetail from "./NodeDetail"
 import { Edge, Node as NodeType, nodeToTable } from "helpers/graph"
 import NodeDetailRow from "./NodeDetailRow"
-import { Link, useParams } from "react-router-dom"
+import { Link } from "react-router-dom"
+import useWorkspace from "helpers/useWorkspace"
 
 export interface Node extends NodeType {
   id: string
@@ -28,7 +29,7 @@ type NodeProfileProps = {
 }
 
 const NodeProfile: React.FC<NodeProfileProps> = ({ node, nodes, edges }) => {
-  const { workspaceId } = useParams()
+  const { routePrefix } = useWorkspace()
 
   const table = nodeToTable<NodeType>(node, nodes, edges)
 
@@ -49,7 +50,7 @@ const NodeProfile: React.FC<NodeProfileProps> = ({ node, nodes, edges }) => {
                         <Box key={table.id}>
                           <Button
                             component={Link}
-                            to={`/workspaces/${workspaceId}/nodes/${table.id}`}
+                            to={`${routePrefix}/nodes/${table.id}`}
                           >
                             {table.display_name}
                           </Button>
@@ -67,7 +68,7 @@ const NodeProfile: React.FC<NodeProfileProps> = ({ node, nodes, edges }) => {
                         <Box key={table.id}>
                           <Button
                             component={Link}
-                            to={`/workspaces/${workspaceId}/nodes/${table.id}`}
+                            to={`${routePrefix}/nodes/${table.id}`}
                           >
                             {table.display_name}
                           </Button>

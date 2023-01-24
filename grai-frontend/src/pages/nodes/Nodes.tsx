@@ -3,15 +3,15 @@ import { gql, useQuery } from "@apollo/client"
 import NodesTable from "components/nodes/NodesTable"
 import NodesHeader from "components/nodes/NodesHeader"
 import { GetNodes, GetNodesVariables } from "./__generated__/GetNodes"
-import { useParams } from "react-router-dom"
 import { Box } from "@mui/material"
 import GraphError from "components/utils/GraphError"
 import { nodeIsTable } from "helpers/graph"
 import PageLayout from "components/layout/PageLayout"
+import useWorkspace from "helpers/useWorkspace"
 
 export const GET_NODES = gql`
-  query GetNodes($workspaceId: ID!) {
-    workspace(pk: $workspaceId) {
+  query GetNodes($organisationName: String!, $workspaceName: String!) {
+    workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       nodes {
         id
@@ -36,7 +36,7 @@ export interface Node {
 }
 
 const Nodes: React.FC = () => {
-  const { workspaceId } = useParams()
+  const { organisationName, workspaceName } = useWorkspace()
   const [search, setSearch] = useState<string>()
 
   const { loading, error, data, refetch } = useQuery<
@@ -44,7 +44,8 @@ const Nodes: React.FC = () => {
     GetNodesVariables
   >(GET_NODES, {
     variables: {
-      workspaceId: workspaceId ?? "",
+      organisationName,
+      workspaceName,
     },
   })
 

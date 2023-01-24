@@ -11,6 +11,7 @@ import AutoMockedProvider from "./AutoMockedProvider"
 import casual from "casual"
 import AuthMock from "./AuthMock"
 import GuestRoute from "components/auth/GuestRoute"
+import WorkspaceMock from "./WorkspaceMock"
 
 const mockResolvers = {
   Date: () => "2019-12-31",
@@ -86,28 +87,30 @@ export const renderWithRouter = (
               <AuthMock initialLoggedIn={loggedIn} throwError={throwError}>
                 <SnackbarProvider maxSnack={3} hideIconVariant>
                   <Routes>
-                    {guestRoute ? (
-                      <Route element={<GuestRoute />}>
-                        <Route path={path} element={props.children} />
-                      </Route>
-                    ) : (
-                      <Route path={path} element={props.children} />
-                    )}
-                    {routes.map(route =>
-                      typeof route === "string" ? (
-                        <Route
-                          key={route}
-                          path={route}
-                          element={<>New Page</>}
-                        />
+                    <Route element={<WorkspaceMock />}>
+                      {guestRoute ? (
+                        <Route element={<GuestRoute />}>
+                          <Route path={path} element={props.children} />
+                        </Route>
                       ) : (
-                        <Route
-                          key={route.path}
-                          path={route.path}
-                          element={route.element}
-                        />
-                      )
-                    )}
+                        <Route path={path} element={props.children} />
+                      )}
+                      {routes.map(route =>
+                        typeof route === "string" ? (
+                          <Route
+                            key={route}
+                            path={route}
+                            element={<>New Page</>}
+                          />
+                        ) : (
+                          <Route
+                            key={route.path}
+                            path={route.path}
+                            element={route.element}
+                          />
+                        )
+                      )}
+                    </Route>
                   </Routes>
                 </SnackbarProvider>
               </AuthMock>
@@ -139,22 +142,24 @@ export const renderWithMocks = (
               <AuthMock initialLoggedIn={loggedIn} throwError={throwError}>
                 <SnackbarProvider maxSnack={3} hideIconVariant>
                   <Routes>
-                    <Route path={path} element={props.children} />
-                    {routes.map(route =>
-                      typeof route === "string" ? (
-                        <Route
-                          key={route}
-                          path={route}
-                          element={<>New Page</>}
-                        />
-                      ) : (
-                        <Route
-                          key={route.path}
-                          path={route.path}
-                          element={route.element}
-                        />
-                      )
-                    )}
+                    <Route element={<WorkspaceMock />}>
+                      <Route path={path} element={props.children} />
+                      {routes.map(route =>
+                        typeof route === "string" ? (
+                          <Route
+                            key={route}
+                            path={route}
+                            element={<>New Page</>}
+                          />
+                        ) : (
+                          <Route
+                            key={route.path}
+                            path={route.path}
+                            element={route.element}
+                          />
+                        )
+                      )}
+                    </Route>
                   </Routes>
                 </SnackbarProvider>
               </AuthMock>

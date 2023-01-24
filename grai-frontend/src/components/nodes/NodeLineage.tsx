@@ -9,13 +9,16 @@ import {
   GetNodesAndEdgesNodeLineage,
   GetNodesAndEdgesNodeLineageVariables,
 } from "./__generated__/GetNodesAndEdgesNodeLineage"
-import { useParams } from "react-router-dom"
 import Graph from "components/graph/Graph"
 import GraphError from "components/utils/GraphError"
+import useWorkspace from "helpers/useWorkspace"
 
 const GET_NODES_AND_EDGES = gql`
-  query GetNodesAndEdgesNodeLineage($workspaceId: ID!) {
-    workspace(pk: $workspaceId) {
+  query GetNodesAndEdgesNodeLineage(
+    $organisationName: String!
+    $workspaceName: String!
+  ) {
+    workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       nodes {
         id
@@ -64,13 +67,14 @@ type NodeLineageProps = {
 }
 
 const NodeLineage: React.FC<NodeLineageProps> = ({ node }) => {
-  const { workspaceId } = useParams()
+  const { organisationName, workspaceName } = useWorkspace()
   const { loading, error, data } = useQuery<
     GetNodesAndEdgesNodeLineage,
     GetNodesAndEdgesNodeLineageVariables
   >(GET_NODES_AND_EDGES, {
     variables: {
-      workspaceId: workspaceId ?? "",
+      organisationName,
+      workspaceName,
     },
   })
 

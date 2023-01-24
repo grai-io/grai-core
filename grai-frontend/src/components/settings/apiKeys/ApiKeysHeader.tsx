@@ -3,7 +3,11 @@ import { Box, Button, Typography } from "@mui/material"
 import React, { useState } from "react"
 import CreateKeyDialog from "./CreateKeyDialog"
 
-const ApiKeysHeader: React.FC = () => {
+type ApiKeysHeaderProps = {
+  workspaceId: string
+}
+
+const ApiKeysHeader: React.FC<ApiKeysHeaderProps> = ({ workspaceId }) => {
   const [open, setOpen] = useState(false)
 
   const handleOpen = () => setOpen(true)
@@ -19,7 +23,11 @@ const ApiKeysHeader: React.FC = () => {
           Add API Key
         </Button>
       </Box>
-      <CreateKeyDialog open={open} onClose={handleClose} />
+      <CreateKeyDialog
+        workspaceId={workspaceId}
+        open={open}
+        onClose={handleClose}
+      />
     </Box>
   )
 }

@@ -18,7 +18,7 @@ test("edit", async () => {
   const user = userEvent.setup()
 
   renderWithRouter(<ConnectionsMenu connection={connection} />, {
-    routes: ["/workspaces/:workspaceId/connections/:connectionId"],
+    routes: ["/:organisationName/:workspaceName/connections/:connectionId"],
   })
 
   await user.click(screen.getByTestId("MoreHorizIcon"))

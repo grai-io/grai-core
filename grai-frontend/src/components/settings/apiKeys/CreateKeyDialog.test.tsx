@@ -5,17 +5,17 @@ import { render, renderWithMocks, screen, waitFor } from "testing"
 import CreateKeyDialog, { CREATE_API_KEY } from "./CreateKeyDialog"
 
 test("renders", async () => {
-  render(<CreateKeyDialog open={false} onClose={() => {}} />)
+  render(<CreateKeyDialog workspaceId="1" open={false} onClose={() => {}} />)
 })
 
 test("renders open", async () => {
-  render(<CreateKeyDialog open={true} onClose={() => {}} />)
+  render(<CreateKeyDialog workspaceId="1" open={true} onClose={() => {}} />)
 })
 
 test("submit", async () => {
   const user = userEvent.setup()
 
-  render(<CreateKeyDialog open={true} onClose={() => {}} />)
+  render(<CreateKeyDialog workspaceId="1" open={true} onClose={() => {}} />)
 
   await user.type(screen.getByRole("textbox", { name: /name/i }), "key 3")
 
@@ -34,7 +34,7 @@ test("submit error", async () => {
       query: CREATE_API_KEY,
       variables: {
         name: "key 4",
-        workspaceId: "",
+        workspaceId: "1",
       },
     },
     result: {
@@ -42,7 +42,10 @@ test("submit error", async () => {
     },
   }
 
-  renderWithMocks(<CreateKeyDialog open={true} onClose={() => {}} />, [mock])
+  renderWithMocks(
+    <CreateKeyDialog workspaceId="1" open={true} onClose={() => {}} />,
+    [mock]
+  )
 
   await user.type(screen.getByRole("textbox", { name: /name/i }), "key 4")
 
