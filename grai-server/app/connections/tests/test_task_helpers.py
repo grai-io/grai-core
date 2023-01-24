@@ -1,7 +1,7 @@
 import pytest
 from connections.task_helpers import deactivate, get_node, update
 from grai_client.schemas.edge import EdgeV1
-from grai_client.schemas.node import NodeID, NodeV1
+from grai_client.schemas.node import NodeV1
 from lineage.models import Edge, Node
 from workspaces.models import Workspace
 
@@ -56,16 +56,16 @@ def test_edge_v1(test_workspace, test_source_node, test_destination_node):
             "namespace": "default",
             "data_source": "test",
             "display_name": "edge1",
-            "source": NodeID(
-                name="node1",
-                namespace="default",
-                id=str(test_source_node.id),
-            ),
-            "destination": NodeID(
-                name="node2",
-                namespace="default",
-                id=str(test_destination_node.id),
-            ),
+            "source": {
+                "name": "node1",
+                "namespace": "default",
+                "id": str(test_source_node.id),
+            },
+            "destination": {
+                "name": "node2",
+                "namespace": "default",
+                "id": str(test_destination_node.id),
+            },
         }
     )
 
@@ -73,11 +73,11 @@ def test_edge_v1(test_workspace, test_source_node, test_destination_node):
 class TestGetNode:
     @pytest.mark.django_db
     def test_id(self, test_workspace):
-        grai_type = NodeID(
-            name="model1",
-            namespace="default",
-            id="85a3c968-15c4-4906-83ff-931a672c087f",
-        )
+        grai_type = {
+            "name": "model1",
+            "namespace": "default",
+            "id": "85a3c968-15c4-4906-83ff-931a672c087f",
+        }
 
         node = get_node(test_workspace, grai_type)
 
@@ -89,7 +89,7 @@ class TestGetNode:
             name="model1", namespace="default", workspace=test_workspace
         )
 
-        grai_type = NodeID(name="model1", namespace="default")
+        grai_type = {"name": "model1", "namespace": "default"}
 
         result = get_node(test_workspace, grai_type)
 
@@ -99,7 +99,7 @@ class TestGetNode:
 
     @pytest.mark.django_db
     def test_no_node(self, test_workspace):
-        grai_type = NodeID(name="model1", namespace="default")
+        grai_type = {"name": "model1", "namespace": "default"}
 
         with pytest.raises(Exception) as e_info:
             get_node(test_workspace, grai_type)
