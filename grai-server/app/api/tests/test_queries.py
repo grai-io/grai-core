@@ -36,8 +36,8 @@ async def test_workspace(test_context):
     context, organisation, workspace, user = test_context
 
     query = """
-        query Workspace($pk: ID!) {
-            workspace(pk: $pk) {
+        query Workspace($id: ID!) {
+            workspace(id: $id) {
                 id
                 name
             }
@@ -47,7 +47,7 @@ async def test_workspace(test_context):
     result = await schema.execute(
         query,
         variable_values={
-            "pk": str(workspace.id),
+            "id": str(workspace.id),
         },
         context_value=context,
     )
@@ -64,8 +64,8 @@ async def test_workspace_no_workspace(test_context):
     context, organisation, workspace, user = test_context
 
     query = """
-        query Workspace($pk: ID!) {
-            workspace(pk: $pk) {
+        query Workspace($id: ID!) {
+            workspace(id: $id) {
                 id
                 name
             }
@@ -75,7 +75,7 @@ async def test_workspace_no_workspace(test_context):
     result = await schema.execute(
         query,
         variable_values={
-            "pk": "85a3c968-15c4-4906-83ff-931a672c087f",
+            "id": "85a3c968-15c4-4906-83ff-931a672c087f",
         },
         context_value=context,
     )

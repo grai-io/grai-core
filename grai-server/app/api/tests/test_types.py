@@ -16,9 +16,9 @@ async def test_workspace_run(test_context):
 
     query = """
         query Workspace($workspaceId: ID!, $runId: ID!) {
-            workspace(pk: $workspaceId) {
+            workspace(id: $workspaceId) {
                 id
-                run(pk: $runId) {
+                run(id: $runId) {
                   id
                   status
                   user {
@@ -53,12 +53,12 @@ async def test_workspace_connection_run(test_context):
 
     query = """
         query Workspace($workspaceId: ID!, $connectionId: ID!, $runId: ID!) {
-            workspace(pk: $workspaceId) {
+            workspace(id: $workspaceId) {
                 id
-                connection(pk: $connectionId) {
+                connection(id: $connectionId) {
                   id
                   name
-                  run(pk: $runId) {
+                  run(id: $runId) {
                     id
                     status
                     user {
