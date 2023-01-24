@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional, Tuple, Union
+from typing import List, Literal, Optional, Tuple
 
 from grai_client.endpoints.client import BaseClient
 from grai_client.schemas.edge import Edge
@@ -10,7 +10,7 @@ from grai_source_snowflake.loader import SnowflakeConnector
 
 
 def get_nodes_and_edges(
-    connector: SnowflakeConnector, version: Union[str, Literal["v1"]]
+    connector: SnowflakeConnector, version: Literal["v1"]
 ) -> Tuple[List[Node], List[Edge]]:
     if version != "v1":
         raise NotImplementedError(

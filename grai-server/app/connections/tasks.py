@@ -1,7 +1,5 @@
 from datetime import datetime
-
 from celery import shared_task
-
 from .models import Connection, Run
 from .task_helpers import update
 
@@ -34,6 +32,8 @@ def execute_run(run: Run):
 
         if connector.name == "PostgreSQL":
             run_postgres(run)
+        if connector.name == "Snowflake":
+            run_snowflake(run)
         else:
             raise NoConnectorError(f"No connector found for: {connector.name}")
 
@@ -62,6 +62,28 @@ def run_postgres(run: Run):
         dbname=metadata["dbname"],
         user=metadata["user"],
         password=secrets["password"],
+    )
+    nodes, edges = get_nodes_and_edges(conn, "v1")
+    update(run.workspace, nodes)
+    update(run.workspace, edges)
+
+
+def run_snowflake(run: Run):
+    from grai_source_snowflake.base import get_nodes_and_edges
+    from grai_source_snowflake.loader import SnowflakeConnector
+
+    metadata = run.connection.metadata
+    secrets = run.connection.secrets
+
+    conn = SnowflakeConnector(
+        account=metadata.get("account"),
+        user=metadata.get("user"),
+        password=secrets.get("password"),
+        role=metadata["role"],
+        warehouse=metadata.get("warehouse"),
+        database=metadata.get("database"),
+        schema=metadata.get("schema"),
+        namespace=metadata.get("namespace"),
     )
     nodes, edges = get_nodes_and_edges(conn, "v1")
     update(run.workspace, nodes)

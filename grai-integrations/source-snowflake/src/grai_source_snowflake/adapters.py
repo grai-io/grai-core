@@ -43,9 +43,9 @@ def build_grai_metadata_from_column(
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_node(
+def build_grai_metadata_from_table(
     current: Table, version: Literal["v1"] = "v1"
-) -> GraiNodeMetadata:
+) -> base_schemas.TableMetadata:
     data = {"version": version, "node_type": "Table", "node_attributes": {}}
 
     return base_schemas.TableMetadata(**data)
@@ -56,7 +56,21 @@ def build_grai_metadata_from_edge(
     current: Edge, version: Literal["v1"] = "v1"
 ) -> base_schemas.GraiEdgeMetadata:
     data = {"version": version}
-    return base_schemas.GraiEdgeMetadata(**data)
+
+    # if isinstance(current.source, Table) and isinstance(current.destination, Column):
+    if current.constraint_type.value == "bt":
+        data["edge_type"] = "TableToColumn"
+        data["edge_attributes"] = {}
+        return base_schemas.TableToColumnMetadata(**data)
+    # elif isinstance(current.source, Column) and isinstance(current.destination, Column):
+    else:
+        data["edge_type"] = "ColumnToColumn"
+        data["edge_attributes"] = {}
+        return base_schemas.ColumnToColumnMetadata(**data)
+    # else:
+    #     data["edge_type"] = "Edge"
+    #     data["edge_attributes"] = None
+    #     return base_schemas.EdgeV1(**data)
 
 
 @multimethod
@@ -88,7 +102,7 @@ def build_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> Di
 
 
 @build_snowflake_metadata.register
-def build_metadata_from_node(current: Table, version: Literal["v1"] = "v1") -> Dict:
+def build_metadata_from_table(current: Table, version: Literal["v1"] = "v1") -> Dict:
     data = {
         "schema": current.table_schema,
         "table_type": current.table_type.value,
