@@ -32,7 +32,7 @@ def execute_run(run: Run):
 
         if connector.name == Connector.POSTGRESQL:
             run_postgres(run)
-        if connector.name == Connector.SNOWFLAKE:
+        elif connector.name == Connector.SNOWFLAKE:
             run_snowflake(run)
         else:
             raise NoConnectorError(f"No connector found for: {connector.name}")
