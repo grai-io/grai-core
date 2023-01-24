@@ -1,6 +1,6 @@
 from datetime import datetime
 from celery import shared_task
-from .models import Connection, Run
+from .models import Connection, Run, Connector
 from .task_helpers import update
 
 
@@ -30,9 +30,9 @@ def execute_run(run: Run):
         # update_server
         connector = run.connection.connector
 
-        if connector.name == "PostgreSQL":
+        if connector.name == Connector.POSTGRESQL:
             run_postgres(run)
-        if connector.name == "Snowflake":
+        if connector.name == Connector.SNOWFLAKE:
             run_snowflake(run)
         else:
             raise NoConnectorError(f"No connector found for: {connector.name}")

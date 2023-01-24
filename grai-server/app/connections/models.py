@@ -7,8 +7,16 @@ from django_multitenant.models import TenantModel
 
 
 class Connector(models.Model):
+    POSTGRESQL = "PostgreSQL"
+    SNOWFLAKE = "Snowflake"
+
+    CONNECTOR_CHOICES = [
+        (POSTGRESQL, "PostgreSQL"),
+        (SNOWFLAKE, "Snowflake"),
+    ]
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, choices=CONNECTOR_CHOICES)
     metadata = models.JSONField(default=dict)
     is_active = models.BooleanField(default=True)
     icon = models.CharField(max_length=255, blank=True, null=True)
