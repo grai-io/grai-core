@@ -1,0 +1,57 @@
+version: "3.7"
+
+x-uffizzi:
+  ingress:
+    service: nginx
+    port: 8081
+
+services:
+
+  server:
+    image: "${SERVER_IMAGE}"
+    volumes:
+      - ./grai-server/app/:/usr/src/app/
+    ports:
+      - 8000:8000
+    environment:
+      - DB_HOST=127.0.0.1
+      - DB_PORT=5432
+      - DB_NAME=grai
+      - DB_USER=grai
+      - DB_PASSWORD=grai
+      - DJANGO_SUPERUSER_USERNAME=null@grai.io
+      - DJANGO_SUPERUSER_PASSWORD=super_secret
+      - DJANGO_SUPERUSER_WORKSPACE=Workspace1
+    entrypoint: /bin/sh
+    command:
+         - "-c"
+         - "FRONTEND_URL=$$UFFIZZI_URL/ /usr/src/app/entrypoint.sh gunicorn the_guide.wsgi -b 127.0.0.1:8000 -w 2"
+    deploy:
+          resources:
+            limits:
+              memory: 2000M  
+  
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_USER=grai
+      - POSTGRES_PASSWORD=grai
+      - POSTGRES_DB=grai
+    ports:
+      - 5432:5432
+  
+  frontend:
+    image: "${FRONTEND_IMAGE}"
+    entrypoint: /bin/sh
+    command:
+         - "-c"
+         - "REACT_APP_SERVER_URL=$$UFFIZZI_URL/api /usr/share/nginx/html/env.sh && nginx -g \"daemon off;\""
+    deploy:
+          resources:
+            limits:
+              memory: 2000M  
+              
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./nginx-uffizzi:/etc/nginx
