@@ -38,6 +38,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ accept, value, onChange }) => {
         <Box sx={{ display: "flex" }}>
           <Box sx={{ flexGrow: 1 }}>{value.name}</Box>
           <Box>
+            s
             <Close onClick={clearFile} sx={{ cursor: "pointer" }} />
           </Box>
         </Box>
@@ -55,6 +56,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ accept, value, onChange }) => {
               : undefined,
           }}
           {...getRootProps()}
+          data-testid="drop-input"
         >
           <input {...getInputProps()} />
           {isDragActive ? (
