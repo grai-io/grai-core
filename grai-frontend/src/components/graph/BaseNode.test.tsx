@@ -7,6 +7,7 @@ import { ReactFlowProvider } from "reactflow"
 const data = {
   id: "1234",
   label: "Node Label",
+  data_source: "test",
   highlight: false,
   columns: [
     {

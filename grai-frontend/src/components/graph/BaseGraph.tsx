@@ -45,7 +45,7 @@ export const createGraphLayout = async (
       width: DEFAULT_WIDTH,
       height:
         DEFAULT_HEIGHT +
-        (node.data.expanded ? node.data.columns.length * 50 : 0),
+        (node.data.expanded ? node.data.columns.length * 42 + 100 : 0),
     })
   )
 
@@ -71,7 +71,7 @@ export const createGraphLayout = async (
     if (gnode?.x && gnode?.y && gnode?.width && gnode?.height) {
       node.position = {
         x: gnode.x - gnode.width / 2 + Math.random() / 1000,
-        y: gnode.y - gnode.height / 2,
+        y: gnode.y - gnode.height / 2 + (node.data.expanded ? 120 : 0),
       }
     }
 

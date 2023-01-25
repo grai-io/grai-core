@@ -4,6 +4,7 @@ import useWorkspace from "helpers/useWorkspace"
 import React from "react"
 import { Handle, Position } from "reactflow"
 import theme from "theme"
+import DataSourceIcon from "./DataSourceIcon"
 import HiddenTableButton from "./HiddenTableButton"
 
 interface Column {
@@ -15,6 +16,7 @@ interface BaseNodeProps {
   data: {
     id: string
     label: string
+    data_source: string
     highlight: boolean
     columns: Column[]
     hiddenSourceTables: string[]
@@ -102,7 +104,10 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
           {data.hiddenSourceTables.length > 0 && (
             <HiddenTableButton position="right" onClick={handleShowSources} />
           )}
-          <Typography variant="h6">{data.label}</Typography>
+          <Box sx={{ display: "flex" }}>
+            <DataSourceIcon dataSource={data.data_source} />
+            <Typography variant="h6">{data.label}</Typography>
+          </Box>
           {data.columns.length > 0 && (
             <>
               <Divider sx={{ mt: 0.5, mb: 1 }} />

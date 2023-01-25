@@ -11,12 +11,12 @@ from workspaces.models import Workspace
 T = TypeVar("T", Node, Edge)
 
 
-def get_node(workspace: Workspace, grai_type: NodeID) -> NodeModel:
-    if grai_type.id is not None:
-        return NodeModel(**grai_type.__dict__)
+def get_node(workspace: Workspace, grai_type: dict) -> NodeModel:
+    if grai_type.get("id") is not None:
+        return NodeModel(**grai_type)
 
     return NodeModel.objects.filter(workspace=workspace).get(
-        namespace=grai_type.namespace, name=grai_type.name
+        namespace=grai_type.get("namespace"), name=grai_type.get("name")
     )
 
 
@@ -69,7 +69,7 @@ def update(
     ]
 
     def schemaToModel(item: T):
-        values = item.spec.__dict__
+        values = item.spec.dict(exclude_none=True)
 
         values["workspace"] = workspace
         values["display_name"] = values["name"]

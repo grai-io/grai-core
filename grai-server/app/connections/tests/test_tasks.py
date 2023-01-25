@@ -18,7 +18,7 @@ def test_workspace(test_organisation):
 
 @pytest.fixture
 def test_postgres_connector():
-    return Connector.objects.create(name="PostgreSQL")
+    return Connector.objects.create(name=Connector.POSTGRESQL)
 
 
 @pytest.fixture

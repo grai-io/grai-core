@@ -19,6 +19,8 @@ import useWorkspace from "helpers/useWorkspace"
 export interface Node extends NodeType {
   id: string
   name: string
+  namespace: string
+  data_source: string
   display_name: string
 }
 
