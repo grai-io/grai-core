@@ -1,5 +1,7 @@
 from typing import Optional
 
+from connections.tasks import NoConnectorError
+
 from connections.task_helpers import update
 import strawberry
 from asgiref.sync import sync_to_async
@@ -17,7 +19,10 @@ from strawberry.file_uploads import Upload
 
 from api.queries import IsAuthenticated
 from api.types import BasicResult, Connection, KeyResult, Membership, User, Workspace
-from connections.models import Connection as ConnectionModel
+from connections.models import (
+    Connection as ConnectionModel,
+    Connector as ConnectorModel,
+)
 from connections.models import Run as RunModel
 from connections.tasks import run_update_server
 from workspaces.models import Membership as MembershipModel
@@ -345,20 +350,29 @@ class Mutation:
             raise Exception("User not found")
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    def uploadDbtManifest(
-        self, info: Info, workspaceId: strawberry.ID, namespace: str, file: Upload
+    async def uploadConnectorFile(
+        self,
+        info: Info,
+        workspaceId: strawberry.ID,
+        namespace: str,
+        connectorId: strawberry.ID,
+        file: Upload,
     ) -> BasicResult:
-        from grai_source_dbt.base import get_nodes_and_edges
+        workspace = await get_workspace(info, workspaceId)
+        connector = await ConnectorModel.objects.aget(pk=connectorId)
 
-        workspace = get_workspace(info, workspaceId)
+        if connector.name == ConnectorModel.DBT:
+            from grai_source_dbt.base import get_nodes_and_edges
+        else:
+            raise NoConnectorError(f"No connector found for: {connector.name}")
 
-        path = default_storage.save("tmp/somename.json", ContentFile(file.read()))
+        path = default_storage.save("tmp/file.json", ContentFile(file.read()))
         tmp_file = os.path.join(settings.MEDIA_ROOT, path)
 
         nodes, edges = get_nodes_and_edges(
             manifest_file=tmp_file, namespace=namespace, version="v1"
         )
-        update(workspace, nodes)
-        update(workspace, edges)
+        await sync_to_async(update)(workspace, nodes)
+        await sync_to_async(update)(workspace, edges)
 
         return BasicResult(success=True)

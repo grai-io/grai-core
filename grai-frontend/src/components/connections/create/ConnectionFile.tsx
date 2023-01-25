@@ -13,18 +13,20 @@ import { useNavigate, useParams } from "react-router-dom"
 import { ConnectorType } from "../ConnectionsForm"
 import CreateConnectionHelp from "./CreateConnectionHelp"
 import {
-  UploadDbtManifest,
-  UploadDbtManifestVariables,
-} from "./__generated__/UploadDbtManifest"
+  UploadConnectorFile,
+  UploadConnectorFileVariables,
+} from "./__generated__/UploadConnectorFile"
 
-export const UPLOAD_DBT_MANIFEST = gql`
-  mutation UploadDbtManifest(
+export const UPLOAD_CONNECTOR_FILE = gql`
+  mutation UploadConnectorFile(
     $workspaceId: ID!
+    $connectorId: ID!
     $namespace: String!
     $file: Upload!
   ) {
-    uploadDbtManifest(
+    uploadConnectorFile(
       workspaceId: $workspaceId
+      connectorId: $connectorId
       namespace: $namespace
       file: $file
     ) {
@@ -53,14 +55,18 @@ const ConnectionFile: React.FC<ConnectionFileProps> = ({ connector, opts }) => {
     namespace: "default",
   })
 
-  const [uploadDbtManifest, { loading, error }] = useMutation<
-    UploadDbtManifest,
-    UploadDbtManifestVariables
-  >(UPLOAD_DBT_MANIFEST)
+  const [uploadConnectorFile, { loading, error }] = useMutation<
+    UploadConnectorFile,
+    UploadConnectorFileVariables
+  >(UPLOAD_CONNECTOR_FILE)
 
   const handleSubmit = () =>
-    uploadDbtManifest({
-      variables: { workspaceId: workspaceId ?? "", ...values },
+    uploadConnectorFile({
+      variables: {
+        workspaceId: workspaceId ?? "",
+        connectorId: connector.id,
+        ...values,
+      },
     })
       .then(res => navigate(`/workspaces/${workspaceId}/connections`))
       .then(() => enqueueSnackbar("File uploaded"))

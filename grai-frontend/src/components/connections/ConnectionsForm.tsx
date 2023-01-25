@@ -88,10 +88,10 @@ const ConnectionsForm: React.FC<ConnectionsFormProps> = ({
       <LoadingButton
         variant="contained"
         type="submit"
-        sx={{ minWidth: 120, color: "white" }}
+        sx={{ mt: 2 }}
         loading={loading}
       >
-        Finish
+        Save
       </LoadingButton>
     </Form>
   )

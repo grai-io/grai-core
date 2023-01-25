@@ -9,10 +9,12 @@ from django_multitenant.models import TenantModel
 class Connector(models.Model):
     POSTGRESQL = "PostgreSQL"
     SNOWFLAKE = "Snowflake"
+    DBT = "dbt"
 
     CONNECTOR_CHOICES = [
         (POSTGRESQL, "PostgreSQL"),
         (SNOWFLAKE, "Snowflake"),
+        (DBT, "dbt"),
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

@@ -4697,7 +4697,7 @@
             "deprecationReason": null
           },
           {
-            "name": "uploadDbtManifest",
+            "name": "uploadConnectorFile",
             "description": null,
             "args": [
               {
@@ -4723,6 +4723,20 @@
                   "ofType": {
                     "kind": "SCALAR",
                     "name": "String",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "connectorId",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID",
                     "ofType": null
                   }
                 },
