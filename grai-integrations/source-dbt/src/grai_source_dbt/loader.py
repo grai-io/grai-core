@@ -102,6 +102,10 @@ class DBTGraph:
             for dbt_column in table.columns.values():
                 column = Column.from_table_column(table, dbt_column)
                 columns[column.unique_id] = column
+        for source in self.manifest.sources.values():
+            for dbt_column in source.columns.values():
+                column = Column.from_table_column(source, dbt_column)
+                columns[column.unique_id] = column
         return columns
 
     def get_column_edges(self) -> List[Edge]:
