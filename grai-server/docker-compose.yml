@@ -34,7 +34,8 @@ services:
 
   celery_worker:
     build: ./app
-    # image: django_celery_example_celery_worker
+    volumes:
+      - ./app/:/usr/src/app/
     command: /start-celeryworker
     environment:
       - DB_HOST=db
@@ -50,8 +51,6 @@ services:
       - FRONTEND_URL=http://localhost:3000
       - CELERY_BROKER=redis://redis:6379/0
       - CELERY_BACKEND=redis://redis:6379/0
-    # volumes:
-    #   - .:/app
     depends_on:
       - redis
       - db
@@ -59,6 +58,8 @@ services:
 
   celery_beat_worker:
     build: ./app
+    volumes:
+      - ./app/:/usr/src/app/
     command: /start-celerybeat
     environment:
       - DB_HOST=db
@@ -74,8 +75,6 @@ services:
       - FRONTEND_URL=http://localhost:3000
       - CELERY_BROKER=redis://redis:6379/0
       - CELERY_BACKEND=redis://redis:6379/0
-    volumes:
-      - .:/app
     depends_on:
       - redis
       - db

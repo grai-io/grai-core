@@ -34,11 +34,12 @@ class NodeViewSet(ModelViewSet):
         if len(self.request.query_params) == 0:
             return self.type.objects
 
-        supported_filters = ["is_active", "namespace", "name"]
         q_filter = Q()
-        for filter_name in ["is_active", "namespace", "name"]:
+        supported_filters = ["is_active", "namespace", "name"]
+        for filter_name in supported_filters:
             if condition := self.request.query_params.get(filter_name):
                 q_filter &= Q(**{filter_name: condition})
+
         return self.type.objects.filter(q_filter)
 
 

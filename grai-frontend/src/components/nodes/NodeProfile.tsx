@@ -18,6 +18,8 @@ import { Link, useParams } from "react-router-dom"
 export interface Node extends NodeType {
   id: string
   name: string
+  namespace: string
+  data_source: string
   display_name: string
 }
 

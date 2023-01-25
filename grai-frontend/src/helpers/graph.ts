@@ -1,13 +1,21 @@
 import notEmpty from "./notEmpty"
 
+export interface GraiNodeMetadata {
+  node_type?: "Table" | "Column" | null
+  table_name?: string | null
+}
+
 export interface Node {
   id: string
   name: string
   display_name: string
   metadata: {
-    node_type?: string | null
-    table_name?: string | null
+    grai?: GraiNodeMetadata | null
   } | null
+}
+
+export interface GraiEdgeMetadata {
+  edge_type?: "TableToColumn" | null
 }
 
 export interface Edge {
@@ -19,7 +27,7 @@ export interface Edge {
     id: string
   }
   metadata: {
-    constraint_type?: string | null
+    grai?: GraiEdgeMetadata | null
   } | null
 }
 
@@ -34,14 +42,14 @@ export type Table<N extends Node> = N &
   }
 
 export const nodeIsTable = (node: Node) =>
-  node.metadata?.node_type &&
-  ["table", "base table"].includes(node.metadata.node_type.toLowerCase())
+  node.metadata?.grai?.node_type === "Table"
+
 const tableColumns = <N extends Node>(table: N, nodes: N[], edges: Edge[]) =>
   edges
     .filter(
       edge =>
         edge.source.id === table.id &&
-        edge.metadata?.constraint_type === "belongs_to"
+        edge.metadata?.grai?.edge_type === "TableToColumn"
     )
     .map(edge => nodes.find(node => node.id === edge.destination.id))
     .filter(notEmpty)

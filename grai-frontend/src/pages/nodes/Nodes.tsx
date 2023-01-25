@@ -33,9 +33,6 @@ export interface Node {
   display_name: string
   data_source: string
   is_active: boolean
-  metadata: {
-    node_type: string
-  }
 }
 
 const Nodes: React.FC = () => {
