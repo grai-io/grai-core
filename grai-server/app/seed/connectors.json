@@ -142,7 +142,40 @@
         "pk": "a80c528e-5149-4c0b-8e48-2fa995641d49",
         "fields": {
             "name": "Snowflake",
-            "metadata": {},
+            "metadata": {
+                "fields": [
+                    {
+                        "name": "account",
+                        "required": true
+                    },
+                    {
+                        "name": "user",
+                        "required": true
+                    },
+                    {
+                        "name": "password",
+                        "secret": true,
+                        "required": true
+                    },
+                    {
+                        "name": "role",
+                        "required": true
+                    },
+                    {
+                        "name": "warehouse",
+                        "default": "COMPUTE_WH",
+                        "required": true
+                    },
+                    {
+                        "name": "database",
+                        "required": true
+                    },
+                    {
+                        "name": "schema",
+                        "required": true
+                    }
+                ]
+            },
             "is_active": true,
             "icon": "https://cdn.sanity.io/images/pwmfmi47/production/a4ac9f5f978ab2446fc17bf116067cb7c74116a2-960x952.png",
             "category": "databases",
