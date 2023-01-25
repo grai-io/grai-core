@@ -1,57 +1,30 @@
 from typing import Optional
 
-from connections.task_helpers import get_node
-
-from connections.tasks import NoConnectorError
-
-from connections.task_helpers import update
 import strawberry
 from asgiref.sync import sync_to_async
 from decouple import config
 from django.conf import settings
-from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate, get_user_model, login, logout
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+from strawberry.file_uploads import Upload
 from strawberry.scalars import JSON
 from strawberry.types import Info
-from strawberry.file_uploads import Upload
 
+from api.common import IsAuthenticated, get_user
 from api.queries import IsAuthenticated
 from api.types import BasicResult, Connection, KeyResult, Membership, User, Workspace
-from connections.models import (
-    Connection as ConnectionModel,
-    Connector as ConnectorModel,
-)
+from connections.models import Connection as ConnectionModel
 from connections.models import Run as RunModel
 from connections.tasks import run_update_server
 from workspaces.models import Membership as MembershipModel
-from workspaces.models import Workspace as WorkspaceModel
 from workspaces.models import WorkspaceAPIKey
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth import get_user_model
-import os
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
-from django.conf import settings
-from lineage.models import Node as NodeModel, Edge as EdgeModel
 
-from .common import IsAuthenticated, get_user
-
-
-async def get_workspace(info: Info, workspaceId: strawberry.ID):
-    user = get_user(info)
-
-    try:
-        workspace = await WorkspaceModel.objects.aget(
-            pk=workspaceId, memberships__user_id=user.id
-        )
-    except WorkspaceModel.DoesNotExist:
-        raise Exception("Can't find workspace")
-
-    return workspace
+from .common import get_workspace
+from .upload_connector_file import uploadConnectorFile
 
 
 @strawberry.type
@@ -361,55 +334,6 @@ class Mutation:
         connectorId: strawberry.ID,
         file: Upload,
     ) -> BasicResult:
-        workspace = await get_workspace(info, workspaceId)
-        connector = await ConnectorModel.objects.aget(pk=connectorId)
-
-        path = default_storage.save("tmp/file.json", ContentFile(file.read()))
-        tmp_file = os.path.join(settings.MEDIA_ROOT, path)
-
-        if connector.name == ConnectorModel.DBT:
-            from grai_source_dbt.base import get_nodes_and_edges
-        elif connector.name == ConnectorModel.YAMLFILE:
-            from grai_client.schemas.schema import validate_file
-
-            # TODO: Edges don't have a human readable unique identifier
-            entities = validate_file(tmp_file)
-            for entity in entities:
-                type = entity.type
-                values = entity.spec.dict(exclude_none=True)
-
-                Model = NodeModel if type == "Node" else EdgeModel
-
-                if type == "Edge":
-                    values["source"] = await sync_to_async(get_node)(
-                        workspace, values["source"]
-                    )
-                    values["destination"] = await sync_to_async(get_node)(
-                        workspace, values["destination"]
-                    )
-
-                try:
-                    record = await Model.objects.filter(workspace=workspace).aget(
-                        name=entity.spec.name, namespace=entity.spec.namespace
-                    )
-                    provided_values = {k: v for k, v in values.items() if v}
-
-                    for (key, value) in provided_values.items():
-                        setattr(record, key, value)
-
-                    await sync_to_async(record.save)()
-                except Model.DoesNotExist:
-                    values["workspace"] = workspace
-                    await Model.objects.acreate(**values)
-
-            return BasicResult(success=True)
-        else:
-            raise NoConnectorError(f"No connector found for: {connector.name}")
-
-        nodes, edges = get_nodes_and_edges(
-            manifest_file=tmp_file, namespace=namespace, version="v1"
+        return await uploadConnectorFile(
+            info, workspaceId, namespace, connectorId, file
         )
-        await sync_to_async(update)(workspace, nodes)
-        await sync_to_async(update)(workspace, edges)
-
-        return BasicResult(success=True)

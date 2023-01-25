@@ -1,10 +1,11 @@
+from importlib import import_module
+
 import pytest
+from asgiref.sync import sync_to_async
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.http.request import HttpRequest
-from asgiref.sync import sync_to_async
-from django.conf import settings
-from importlib import import_module
 
 from workspaces.models import Membership, Workspace
 
