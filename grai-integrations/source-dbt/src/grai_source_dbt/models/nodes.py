@@ -31,7 +31,12 @@ class Model(Table):
 
 class Source(Table):
     resource_type: Literal["source"]
+    identifier: str
     depends_on: NodeDeps = NodeDeps(nodes=[], macros=[])
+
+    @property
+    def full_name(self):
+        return f"{self.table_schema}.{self.identifer}"
 
 
 class Seed(DBTNode):
