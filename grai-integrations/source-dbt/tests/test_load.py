@@ -60,9 +60,6 @@ def test_v1_adapted_nodes_have_namespace(v1_adapted_nodes):
 
 
 def test_v1_adapted_edge_source_has_name(v1_adapted_edges):
-    import devtools
-
-    devtools.debug(v1_adapted_edges[0])
     assert all(edge.spec.source.name is not None for edge in v1_adapted_edges)
 
 
