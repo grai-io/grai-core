@@ -45,7 +45,7 @@ export const createGraphLayout = async (
       width: DEFAULT_WIDTH,
       height:
         DEFAULT_HEIGHT +
-        (node.data.expanded ? node.data.columns.length * 25 + 100 : 0),
+        (node.data.expanded ? node.data.columns.length * 42 + 100 : 0),
     })
   )
 

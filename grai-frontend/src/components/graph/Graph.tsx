@@ -22,6 +22,7 @@ interface Edge {
 
 interface Node extends NodeType {
   display_name: string
+  data_source: string
 }
 
 type GraphProps = {
@@ -56,6 +57,7 @@ const Graph: React.FC<GraphProps> = ({
         id: table.id,
         name: table.name,
         label: table.display_name,
+        data_source: table.data_source,
         metadata: table.metadata,
         columns: table.columns,
         sourceTables: table.sourceTables,
