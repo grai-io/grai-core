@@ -128,7 +128,12 @@
         "pk": "77a47042-ad28-4e98-a4e3-fbb6c0280e36",
         "fields": {
             "name": "dbt",
-            "metadata": {},
+            "metadata": {
+                "file": {
+                    "name": "manifest.json",
+                    "extension": "json"
+                }
+            },
             "is_active": true,
             "icon": "/images/dbt-logo.png",
             "category": "data tools",

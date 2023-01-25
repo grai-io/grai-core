@@ -15,6 +15,9 @@ export interface ConnectorMetadataField {
 
 export interface ConnectorMetadata {
   fields?: ConnectorMetadataField[]
+  file?: {
+    name?: string | null
+  } | null
 }
 
 export interface ConnectorType {
@@ -85,10 +88,10 @@ const ConnectionsForm: React.FC<ConnectionsFormProps> = ({
       <LoadingButton
         variant="contained"
         type="submit"
-        sx={{ mt: 2 }}
+        sx={{ minWidth: 120, color: "white" }}
         loading={loading}
       >
-        Save
+        Finish
       </LoadingButton>
     </Form>
   )

@@ -1,4 +1,6 @@
 from typing import Optional
+
+from connections.task_helpers import update
 import strawberry
 from asgiref.sync import sync_to_async
 from decouple import config
@@ -11,6 +13,7 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from strawberry.scalars import JSON
 from strawberry.types import Info
+from strawberry.file_uploads import Upload
 
 from api.queries import IsAuthenticated
 from api.types import BasicResult, Connection, KeyResult, Membership, User, Workspace
@@ -22,6 +25,10 @@ from workspaces.models import Workspace as WorkspaceModel
 from workspaces.models import WorkspaceAPIKey
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
+import os
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from django.conf import settings
 
 from .common import IsAuthenticated, get_user
 
@@ -336,3 +343,22 @@ class Mutation:
 
         except UserModel.DoesNotExist:
             raise Exception("User not found")
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    def uploadDbtManifest(
+        self, info: Info, workspaceId: strawberry.ID, namespace: str, file: Upload
+    ) -> BasicResult:
+        from grai_source_dbt.base import get_nodes_and_edges
+
+        workspace = get_workspace(info, workspaceId)
+
+        path = default_storage.save("tmp/somename.json", ContentFile(file.read()))
+        tmp_file = os.path.join(settings.MEDIA_ROOT, path)
+
+        nodes, edges = get_nodes_and_edges(
+            manifest_file=tmp_file, namespace=namespace, version="v1"
+        )
+        update(workspace, nodes)
+        update(workspace, edges)
+
+        return BasicResult(success=True)
