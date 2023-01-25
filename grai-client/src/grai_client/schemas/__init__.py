@@ -1,1 +1,1 @@
-from grai_client.schemas import edge, node, schema, workspace
+from grai_client.schemas import edge, labels, schema, workspace

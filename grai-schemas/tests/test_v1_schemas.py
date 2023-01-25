@@ -3,8 +3,9 @@ import uuid
 from typing import get_args
 
 import pytest
-
-from grai_client.schemas import edge, node, schema
+from grai_schemas.base import Edge, Node
+from grai_schemas.schema import Schema
+from grai_schemas.v1 import EdgeV1, NodeV1
 
 
 def make_v1_node():
@@ -57,15 +58,15 @@ def make_v1_edge():
 @pytest.mark.parametrize(
     "test_type,result",
     [
-        (node.NodeV1, True),
-        (node.NodeTypes, True),
-        (edge.EdgeV1, False),
-        (edge.EdgeTypes, False),
+        (NodeV1, True),
+        (Node, True),
+        (EdgeV1, False),
+        (Edge, False),
     ],
 )
 def test_v1_node_typing(test_type, result):
     obj_dict = make_v1_node()
-    obj = schema.Schema(entity=obj_dict)
+    obj = Schema(entity=obj_dict)
     assert (
         isinstance(obj.entity, test_type) == result
     ), f"{type(obj)}=={test_type} should be {result}"
@@ -74,15 +75,15 @@ def test_v1_node_typing(test_type, result):
 @pytest.mark.parametrize(
     "test_type,result",
     [
-        (node.NodeV1, False),
-        (node.NodeTypes, False),
-        (edge.EdgeV1, True),
-        (edge.EdgeTypes, True),
+        (NodeV1, False),
+        (Node, False),
+        (EdgeV1, True),
+        (Edge, True),
     ],
 )
 def test_v1_edge_typing(test_type, result):
     obj_dict = make_v1_edge()
-    obj = schema.Schema(entity=obj_dict)
+    obj = Schema(entity=obj_dict)
     assert (
         isinstance(obj.entity, test_type) == result
     ), f"{type(obj)}=={test_type} should be {result}"

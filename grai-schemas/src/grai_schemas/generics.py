@@ -37,19 +37,38 @@ class PlaceHolderSchema(GraiBaseModel):
 # ----
 
 
-class HasDefaultValue(GraiBaseModel):
-    has_default_value: Literal[True]
-    data_type: str
-    default_value: Any
+class DefaultValue(GraiBaseModel):
+    has_default_value: Optional[bool]
+    data_type: Optional[str] = None
+    default_value: Optional[Any] = None
 
+    @root_validator()
+    def validate(cls, values):
+        if isinstance(values, DefaultValue):
+            has_default_value = values.has_default_value
+            data_type = values.data_type
+            default_value = values.default_value
+        else:
+            has_default_value = values.get("has_default_value", None)
+            data_type = values.get("data_type", None)
+            default_value = values.get("default_value", None)
 
-class NoDefaultValue(GraiBaseModel):
-    has_default_value: Literal[False]
-    data_type: None = None
-    default_value: None = None
+        if has_default_value is None or has_default_value is False:
+            assert (
+                data_type is None
+            ), "Cannot set a data_type when `has_default_value` is not True"
+            assert (
+                default_value is None
+            ), "Cannot set a default_value when `has_default_value` is not True"
+        else:
+            assert (
+                data_type is not None
+            ), "If `has_default_value` is True, a `data_type` is required"
+            assert (
+                default_value is not None
+            ), "If `has_default_value` is True, a `default_value` is required"
 
-
-DefaultValue = Union[HasDefaultValue, NoDefaultValue]
+        return values
 
 
 # ----

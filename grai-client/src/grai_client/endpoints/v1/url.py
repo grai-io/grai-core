@@ -1,7 +1,8 @@
+from grai_schemas.v1 import EdgeV1, NodeV1
+from grai_schemas.v1.node import NodeIdTypes
+
 from grai_client.endpoints.v1.client import ClientV1
-from grai_client.schemas.edge import EdgeLabels, EdgeV1
-from grai_client.schemas.node import NodeIdTypes, NodeLabels, NodeV1
-from grai_client.schemas.workspace import WorkspaceLabels
+from grai_client.schemas.labels import EdgeLabels, NodeLabels, WorkspaceLabels
 
 
 @ClientV1.get_url.register

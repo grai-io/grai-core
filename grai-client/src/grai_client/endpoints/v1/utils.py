@@ -1,6 +1,7 @@
+from grai_schemas.v1.node import NodeIdTypes
+
 from grai_client.endpoints.client import ClientOptions
 from grai_client.endpoints.v1.client import ClientV1
-from grai_client.schemas.node import NodeIdTypes
 
 
 def process_node_id(

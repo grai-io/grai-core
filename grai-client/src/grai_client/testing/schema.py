@@ -1,8 +1,6 @@
 import uuid
 
-from grai_client.schemas.edge import EdgeV1
-from grai_client.schemas.node import NodeV1
-from grai_client.schemas.schema import Schema
+from grai_schemas.v1 import EdgeV1, NodeV1
 
 BASE_NODE_METADATA = {"grai": {"node_type": "Node", "node_attributes": {}}}
 BASE_EDGE_METADATA = {"grai": {"edge_type": "Edge", "Edge_attributes": {}}}
