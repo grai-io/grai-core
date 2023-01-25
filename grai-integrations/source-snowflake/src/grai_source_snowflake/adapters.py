@@ -34,14 +34,14 @@ def build_grai_metadata(current: Any, desired: Any) -> None:
 def build_grai_metadata_from_column(
     current: Column, version: Literal["v1"] = "v1"
 ) -> ColumnMetadata:
+
+    default_value = current.default_value
     if current.default_value is not None:
         default_value = DefaultValue(
             has_default_value=True,
             default_value=current.default_value,
-            data_type=str(type(current.default_value)),
+            data_type=current.data_type,
         )
-    else:
-        default_value = None
 
     data = {
         "version": version,

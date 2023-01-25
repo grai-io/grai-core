@@ -2,8 +2,6 @@ import os
 from itertools import chain
 from typing import Any, Callable, Dict, List, Optional, Union
 
-# import psycopg
-# import psycopg2.extras
 import mysql.connector
 
 from grai_source_mysql.models import Column, ColumnID, Edge, EdgeQuery, MysqlNode, Table
