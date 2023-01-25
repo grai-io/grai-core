@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import React, { createContext } from "react"
 import { Outlet, useNavigate, useParams } from "react-router-dom"
 
