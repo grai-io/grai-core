@@ -19,7 +19,6 @@ class NodeSerializer(serializers.ModelSerializer):
             "data_source",
             "metadata",
             "is_active",
-            "workspace",
         )
         read_only_fields = ("created_at", "updated_at")
 
@@ -76,6 +75,5 @@ class EdgeSerializer(serializers.ModelSerializer):
             "is_active",
             "source",
             "destination",
-            "workspace",
         )
         read_only_fields = ("created_at", "updated_at")
