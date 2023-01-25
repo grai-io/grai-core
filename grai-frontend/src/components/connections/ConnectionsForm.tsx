@@ -17,6 +17,7 @@ export interface ConnectorMetadata {
   fields?: ConnectorMetadataField[]
   file?: {
     name?: string | null
+    extension?: string | null
   } | null
 }
 

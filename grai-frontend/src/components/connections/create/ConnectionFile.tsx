@@ -9,6 +9,7 @@ import { ElementOptions } from "components/wizards/WizardLayout"
 import WizardSubtitle from "components/wizards/WizardSubtitle"
 import { useSnackbar } from "notistack"
 import React, { useState } from "react"
+import { Accept } from "react-dropzone"
 import { useNavigate, useParams } from "react-router-dom"
 import { ConnectorType } from "../ConnectionsForm"
 import CreateConnectionHelp from "./CreateConnectionHelp"
@@ -71,6 +72,15 @@ const ConnectionFile: React.FC<ConnectionFileProps> = ({ connector, opts }) => {
       .then(res => navigate(`/workspaces/${workspaceId}/connections`))
       .then(() => enqueueSnackbar("File uploaded"))
 
+  const accept: Accept =
+    connector.metadata?.file?.extension === "json"
+      ? {
+          "application/json": [".json"],
+        }
+      : {
+          "application/yaml": [".yaml", ".yml"],
+        }
+
   return (
     <Form onSubmit={handleSubmit}>
       <WizardSubtitle
@@ -96,6 +106,7 @@ const ConnectionFile: React.FC<ConnectionFileProps> = ({ connector, opts }) => {
           <FileUpload
             value={values.file}
             onChange={file => setValues({ ...values, file })}
+            accept={accept}
           />
         </Grid>
         <Grid item md={4} sx={{}}>

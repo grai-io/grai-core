@@ -1,14 +1,15 @@
 import { Close } from "@mui/icons-material"
 import { Box, Alert } from "@mui/material"
 import React, { useCallback, useState } from "react"
-import { FileRejection, useDropzone } from "react-dropzone"
+import { Accept, FileRejection, useDropzone } from "react-dropzone"
 
 type FileUploadProps = {
+  accept?: Accept | undefined
   value: File | null
   onChange: (file: File | null) => void
 }
 
-const FileUpload: React.FC<FileUploadProps> = ({ value, onChange }) => {
+const FileUpload: React.FC<FileUploadProps> = ({ accept, value, onChange }) => {
   const [rejections, setRejections] = useState<FileRejection[] | null>(null)
 
   const onDropAccepted = useCallback(
@@ -26,9 +27,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ value, onChange }) => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDropAccepted,
     onDropRejected,
-    accept: {
-      "application/json": [".json"],
-    },
+    accept,
   })
 
   const clearFile = () => onChange(null)
