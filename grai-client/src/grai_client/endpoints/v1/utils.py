@@ -1,11 +1,11 @@
 from grai_client.endpoints.client import ClientOptions
 from grai_client.endpoints.v1.client import ClientV1
-from grai_client.schemas.node import NodeID
+from grai_client.schemas.node import NodeIdTypes
 
 
 def process_node_id(
-    client: ClientV1, grai_type: NodeID, options: ClientOptions = ClientOptions()
-) -> NodeID:
+    client: ClientV1, grai_type: NodeIdTypes, options: ClientOptions = ClientOptions()
+) -> NodeIdTypes:
     """
     Process a NodeID object, either by returning if it has a known id, or by getting
     the id from the server.

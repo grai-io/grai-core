@@ -3,7 +3,8 @@ from uuid import UUID
 
 from grai_schemas.generics import GraiBaseModel
 from grai_schemas.v1.generics import ID, BaseID, NamedID, UuidID
-from grai_schemas.v1.metadata.nodes import GenericNodeMetadataV1, Metadata
+from grai_schemas.v1.metadata.metadata import MetadataV1
+from grai_schemas.v1.metadata.nodes import GenericNodeMetadataV1
 
 
 class NodeNamedID(NamedID):
@@ -21,8 +22,8 @@ class BaseSpec(GraiBaseModel):
     is_active: Optional[bool] = True
     data_source: str
     display_name: Optional[str]
-    workspace: UUID
-    metadata: Metadata = GenericNodeMetadataV1(node_type="Node")
+    workspace: Optional[UUID]
+    metadata: MetadataV1 = MetadataV1(grai=GenericNodeMetadataV1(node_type="Node"))
 
 
 class NamedSpec(BaseSpec, NodeNamedID):

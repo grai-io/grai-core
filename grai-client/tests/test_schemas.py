@@ -19,6 +19,7 @@ def make_v1_node():
             "display_name": "ouch",
             "is_active": True,
             "metadata": {
+                "grai": {"node_type": "Node", "node_attributes": {}},
                 "test_dict": {"a": "b"},
                 "test_list": [1, 2, 3],
                 "test_tuple": (4, 5, 6),
@@ -46,7 +47,9 @@ def make_v1_edge():
                 "name": "nation",
             },
             "is_active": True,
-            "metadata": {},
+            "metadata": {
+                "grai": {"edge_type": "Edge", "edge_attributes": {}},
+            },
         },
     }
 
@@ -55,9 +58,9 @@ def make_v1_edge():
     "test_type,result",
     [
         (node.NodeV1, True),
-        (get_args(node.NodeTypes), True),
+        (node.NodeTypes, True),
         (edge.EdgeV1, False),
-        (get_args(edge.EdgeTypes), False),
+        (edge.EdgeTypes, False),
     ],
 )
 def test_v1_node_typing(test_type, result):
@@ -72,9 +75,9 @@ def test_v1_node_typing(test_type, result):
     "test_type,result",
     [
         (node.NodeV1, False),
-        (get_args(node.NodeTypes), False),
+        (node.NodeTypes, False),
         (edge.EdgeV1, True),
-        (get_args(edge.EdgeTypes), True),
+        (edge.EdgeTypes, True),
     ],
 )
 def test_v1_edge_typing(test_type, result):

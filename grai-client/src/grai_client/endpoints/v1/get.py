@@ -6,8 +6,8 @@ from grai_client.endpoints.client import ClientOptions
 from grai_client.endpoints.rest import get
 from grai_client.endpoints.utilities import is_valid_uuid
 from grai_client.endpoints.v1.client import ClientV1
-from grai_client.schemas.edge import EdgeLabels, EdgeV1, NodeID
-from grai_client.schemas.node import NodeLabels, NodeV1
+from grai_client.schemas.edge import EdgeLabels, EdgeV1
+from grai_client.schemas.node import NodeIdTypes, NodeLabels, NodeV1
 from grai_client.schemas.workspace import Workspace, WorkspaceLabels
 
 T = TypeVar("T", NodeV1, EdgeV1)
@@ -15,7 +15,7 @@ T = TypeVar("T", NodeV1, EdgeV1)
 
 def get_node_from_id(
     client: ClientV1,
-    grai_type: NodeID,
+    grai_type: NodeIdTypes,
     options: Optional[ClientOptions] = ClientOptions(),
 ) -> Optional[Dict]:
     base_url = client.get_url(grai_type)
@@ -42,8 +42,8 @@ def get_node_from_id(
 
 @get.register
 def get_node_id(
-    client: ClientV1, grai_type: NodeID, options: ClientOptions = ClientOptions()
-) -> Optional[NodeID]:
+    client: ClientV1, grai_type: NodeIdTypes, options: ClientOptions = ClientOptions()
+) -> Optional[NodeIdTypes]:
     spec = get_node_from_id(client, grai_type, options=options)
     return NodeV1.from_spec(spec).spec if isinstance(spec, dict) else spec
 

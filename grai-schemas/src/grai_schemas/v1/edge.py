@@ -3,6 +3,7 @@ from uuid import UUID
 
 from grai_schemas.v1.generics import BaseID, GraiBaseModel, NamedID
 from grai_schemas.v1.metadata.edges import GenericEdgeMetadataV1, Metadata
+from grai_schemas.v1.metadata.metadata import MetadataV1
 from grai_schemas.v1.node import NodeIdTypes
 
 
@@ -23,8 +24,8 @@ class BaseSpec(GraiBaseModel):
     source: NodeIdTypes
     destination: NodeIdTypes
     is_active: Optional[bool] = True
-    workspace: UUID
-    metadata: Metadata = GenericEdgeMetadataV1(edge_type="Edge")
+    workspace: Optional[UUID]
+    metadata: MetadataV1 = MetadataV1(grai=GenericEdgeMetadataV1(edge_type="Edge"))
 
     def __str__(self):
         return f"Edge[Node({self.source}) -> Node({self.destination})]"

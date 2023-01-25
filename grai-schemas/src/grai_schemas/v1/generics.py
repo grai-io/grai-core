@@ -14,7 +14,7 @@ class BaseID(GraiBaseModel):
     namespace: Optional[str]
 
 
-class NamedID(GraiBaseModel):
+class NamedID(BaseID):
     name: str
     namespace: str
     id: Optional[UUID]
@@ -23,7 +23,7 @@ class NamedID(GraiBaseModel):
         return hash(hash(self.name) + hash(self.namespace))
 
 
-class UuidID(GraiBaseModel):
+class UuidID(BaseID):
     id: UUID
     name: Optional[str]
     namespace: Optional[str]
