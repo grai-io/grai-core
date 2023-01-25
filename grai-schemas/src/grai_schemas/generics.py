@@ -38,20 +38,21 @@ class PlaceHolderSchema(GraiBaseModel):
 
 
 class DefaultValue(GraiBaseModel):
-    has_default_value: Optional[bool]
+    has_default_value: Optional[bool] = None
     data_type: Optional[str] = None
     default_value: Optional[Any] = None
 
     @root_validator()
     def validate(cls, values):
-        if isinstance(values, DefaultValue):
-            has_default_value = values.has_default_value
-            data_type = values.data_type
-            default_value = values.default_value
-        else:
+        if isinstance(values, dict):
             has_default_value = values.get("has_default_value", None)
             data_type = values.get("data_type", None)
             default_value = values.get("default_value", None)
+        else:
+            raise Exception(f"{type(values)}, {values.__dict__}")
+            has_default_value = values.has_default_value
+            data_type = values.data_type
+            default_value = values.default_value
 
         if has_default_value is None or has_default_value is False:
             assert (
