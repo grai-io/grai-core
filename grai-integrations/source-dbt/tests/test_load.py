@@ -1,7 +1,7 @@
-from grai_client.schemas.edge import EdgeV1
-from grai_client.schemas.node import NodeV1
 from grai_schemas import config as core_config
-from grai_schemas import models
+from grai_schemas.v1 import EdgeV1, NodeV1
+from grai_schemas.v1.metadata.edges import Metadata as EdgeV1Metadata
+from grai_schemas.v1.metadata.nodes import Metadata as NodeV1Metadata
 
 from grai_source_dbt.base import get_nodes_and_edges
 from grai_source_dbt.loader import DBTGraph, Manifest
@@ -78,13 +78,13 @@ def test_v1_adapted_edge_destination_has_namespace(v1_adapted_edges):
 def test_v1_adapt_nodes(v1_adapted_nodes):
     test_type = NodeV1
     for item in v1_adapted_nodes:
-        assert isinstance(item, test_type), f"{item} is not of type {test_type}"
+        assert isinstance(item, test_type), f"{type(item)} is not of type {test_type}"
 
 
 def test_v1_adapt_edges(v1_adapted_edges):
     test_type = EdgeV1
     for item in v1_adapted_edges:
-        assert isinstance(item, test_type), f"{item} is not of type {test_type}"
+        assert isinstance(item, test_type), f"{type(item)} is not of type {test_type}"
 
 
 def test_v1_adapted_edge_sources_have_nodes(v1_adapted_nodes, v1_adapted_edges):
@@ -130,20 +130,20 @@ def test_metadata_has_core_metadata_ids():
     manifest_file = get_manifest_file()
     nodes, edges = get_nodes_and_edges(manifest_file)
     for node in nodes:
-        assert core_config.metadata_id in node.spec.metadata
+        assert hasattr(node.spec.metadata, core_config.metadata_id)
 
     for edge in edges:
-        assert core_config.metadata_id in edge.spec.metadata
+        assert hasattr(edge.spec.metadata, core_config.metadata_id)
 
 
 def test_metadata_has_dbt_metadata_id():
     manifest_file = get_manifest_file()
     nodes, edges = get_nodes_and_edges(manifest_file)
     for node in nodes:
-        assert config.metadata_id in node.spec.metadata
+        assert hasattr(node.spec.metadata, config.metadata_id)
 
     for edge in edges:
-        assert config.metadata_id in edge.spec.metadata
+        assert hasattr(edge.spec.metadata, config.metadata_id)
 
 
 def test_metadata_is_core_compliant():
@@ -151,7 +151,11 @@ def test_metadata_is_core_compliant():
     nodes, edges = get_nodes_and_edges(manifest_file)
 
     for node in nodes:
-        assert isinstance(node.spec.metadata[core_config.metadata_id], models.NodeV1)
+        assert isinstance(
+            getattr(node.spec.metadata, core_config.metadata_id), NodeV1Metadata
+        ), node.spec.metadata
 
     for edge in edges:
-        assert isinstance(edge.spec.metadata[core_config.metadata_id], models.EdgeV1)
+        assert isinstance(
+            getattr(edge.spec.metadata, core_config.metadata_id), EdgeV1Metadata
+        )

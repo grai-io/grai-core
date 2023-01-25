@@ -1,4 +1,4 @@
-from grai_schemas.v1.metadata.nodes import ColumnMetadata, NodeTypes, TableMetadata
+from grai_schemas.v1.metadata.nodes import ColumnMetadata, NodeTypeLabels, TableMetadata
 
 # Goal is to test that each node type in the Enum is covered by a corresponding model literal
 

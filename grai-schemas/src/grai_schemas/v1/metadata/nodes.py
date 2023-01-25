@@ -5,7 +5,7 @@ from grai_schemas.generics import DefaultValue, HashableBaseModel
 from grai_schemas.v1.generics import GraiBaseModel, V1Mixin
 
 
-class NodeTypes(Enum):
+class NodeTypeLabels(Enum):
     generic = "Node"
     table = "Table"
     column = "Column"
@@ -17,7 +17,7 @@ class SourceType(Enum):
 
 class GenericNodeMetadataV1(V1Mixin):
     node_type: Literal["Node"]
-    node_attributes: Optional[dict]
+    node_attributes: dict = {}
 
 
 class ColumnAttributes(GraiBaseModel):
