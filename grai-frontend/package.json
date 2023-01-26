@@ -22,6 +22,7 @@
     "@types/react-dom": "^18.0.7",
     "@types/react-router-dom": "^5.3.3",
     "apollo-upload-client": "^17.0.0",
+    "bundlewatch": "^0.3.3",
     "casual": "^1.6.2",
     "dayjs": "^1.11.6",
     "elkjs": "^0.8.2",
