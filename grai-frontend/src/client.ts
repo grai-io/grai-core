@@ -1,11 +1,7 @@
 /* istanbul ignore file */
-import {
-  ApolloClient,
-  createHttpLink,
-  from,
-  InMemoryCache,
-} from "@apollo/client"
+import { ApolloClient, from, InMemoryCache } from "@apollo/client"
 import { onError } from "@apollo/client/link/error"
+import { createUploadLink } from "apollo-upload-client"
 
 const make_client = (logoutUser: () => void) => {
   const baseURL =
@@ -13,7 +9,7 @@ const make_client = (logoutUser: () => void) => {
     process.env.REACT_APP_SERVER_URL ??
     "http://localhost:8000"
 
-  const httpLink = createHttpLink({
+  const uploadLink = createUploadLink({
     uri: `${baseURL}/graphql/`,
     credentials: "include",
   })
@@ -26,7 +22,7 @@ const make_client = (logoutUser: () => void) => {
 
   return new ApolloClient({
     cache: new InMemoryCache(),
-    link: from([errorLink, httpLink]),
+    link: from([errorLink, uploadLink]),
     connectToDevTools: true,
   })
 }

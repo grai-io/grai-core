@@ -6,6 +6,7 @@ import { ElementOptions } from "components/wizards/WizardLayout"
 import WizardSubtitle from "components/wizards/WizardSubtitle"
 import React from "react"
 import ConnectionsMetadata from "../ConnectionsMetadata"
+import ConnectionFile from "./ConnectionFile"
 import CreateConnectionHelp from "./CreateConnectionHelp"
 import { Values } from "./CreateConnectionWizard"
 
@@ -20,6 +21,9 @@ const SetupConnection: React.FC<SetupConnectionProps> = ({
   values,
   setValues,
 }) => {
+  if (values.connector?.metadata?.file?.name)
+    return <ConnectionFile connector={values.connector} opts={opts} />
+
   return (
     <Form onSubmit={opts.forwardStep}>
       <WizardSubtitle
