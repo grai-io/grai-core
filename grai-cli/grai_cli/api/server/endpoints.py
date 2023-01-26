@@ -37,7 +37,6 @@ def get_nodes(
     elif namespace is None:
         result = client.get("Node", name)
     else:
-        utilities.print(name, namespace)
         result = client.get("Node", name, namespace)
 
     if print:
