@@ -50,6 +50,7 @@
     "lint": "eslint src/**/*.{ts,tsx,test.tsx}",
     "lint:fix": "eslint src/**/*.{ts,tsx,test.tsx} --fix",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
+    "bundlewatch": "bundlewatch",
     "download:schema": "npx apollo client:download-schema --endpoint=http://127.0.0.1:8000/graphql/ src/testing/schema.json",
     "generate:types": "npx apollo client:codegen --target typescript --localSchemaFile src/testing/schema.json"
   },
