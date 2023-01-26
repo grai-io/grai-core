@@ -13,6 +13,7 @@ import SetupConnection from "./SetupConnection"
 import TestConnection from "./TestConnection"
 import ConnectorSelectTab from "./ConnectorSelectTab"
 import { useSnackbar } from "notistack"
+import { NewConnection } from "./__generated__/NewConnection"
 
 export const CREATE_CONNECTION = gql`
   mutation CreateConnection(
@@ -80,7 +81,41 @@ const CreateConnectionWizard: React.FC = () => {
   const [createConnection, { loading, error }] = useMutation<
     CreateConnection,
     CreateConnectionVariables
-  >(CREATE_CONNECTION)
+  >(CREATE_CONNECTION, {
+    update(cache, { data }) {
+      cache.modify({
+        id: cache.identify({
+          id: workspaceId,
+          __typename: "Workspace",
+        }),
+        fields: {
+          connections(existingConnections = []) {
+            if (!data?.createConnection) return
+
+            const newConnection = cache.writeFragment<NewConnection>({
+              data: data.createConnection,
+              fragment: gql`
+                fragment NewConnection on Connection {
+                  id
+                  connector {
+                    id
+                    name
+                  }
+                  namespace
+                  name
+                  metadata
+                  is_active
+                  created_at
+                  updated_at
+                }
+              `,
+            })
+            return [...existingConnections, newConnection]
+          },
+        },
+      })
+    },
+  })
 
   const defaultValues: Values = {
     connector: null,
