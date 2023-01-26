@@ -70,5 +70,13 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "bundlewatch": {
+    "files": [
+      {
+        "path": "build/**/*.js",
+        "maxSize": "100kB"
+      }
+    ]
   }
 }
