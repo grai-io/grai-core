@@ -1,14 +1,13 @@
 from typing import Dict, List, Optional, TypeVar
 
-from grai_client.schemas.edge import Edge, EdgeV1
-from grai_client.schemas.node import Node, NodeID, NodeV1
-from grai_client.schemas.utilities import merge_models
+from grai_schemas.v1 import EdgeV1, NodeV1
+from grai_schemas.v1.node import NodeNamedID
+from grai_schemas.utilities import merge_models
+from grai_schemas.schema import GraiType
 
 from lineage.models import Edge as EdgeModel
 from lineage.models import Node as NodeModel
 from workspaces.models import Workspace
-
-T = TypeVar("T", Node, Edge)
 
 
 def get_node(workspace: Workspace, grai_type: dict) -> NodeModel:
@@ -20,7 +19,7 @@ def get_node(workspace: Workspace, grai_type: dict) -> NodeModel:
     )
 
 
-def deactivate(items: List[T]) -> List[T]:
+def deactivate(items: List[GraiType]) -> List[GraiType]:
     for item in items:
         item.spec.is_active = False
 
@@ -29,8 +28,8 @@ def deactivate(items: List[T]) -> List[T]:
 
 def update(
     workspace: Workspace,
-    items: List[T],
-    active_items: Optional[List[T]] = None,
+    items: List[GraiType],
+    active_items: Optional[List[GraiType]] = None,
 ):
     if not items:
         return
@@ -48,27 +47,32 @@ def update(
             spec = active_model.__dict__
 
             if type == "Edge":
-                spec["source"] = NodeID(**active_model.source.__dict__)
-                spec["destination"] = NodeID(**active_model.destination.__dict__)
+                spec["source"] = NodeNamedID(**active_model.source.__dict__)
+                spec["destination"] = NodeNamedID(**active_model.destination.__dict__)
+                spec["metadata"] = {
+                    "grai": {"node_type": "Edge", "edge_type": "ColumnToColumn"}
+                }
+            else:
+                spec["metadata"] = {"grai": {"node_type": "Column"}}
 
             active_items.append(Schema.from_spec(spec))
 
     current_item_map = {hash(item.spec): item for item in active_items}
-    item_map: Dict[int, T] = {hash(item.spec): item for item in items}
+    item_map: Dict[int, GraiType] = {hash(item.spec): item for item in items}
 
     new_item_keys = item_map.keys() - current_item_map.keys()
     deactivated_item_keys = current_item_map.keys() - item_map.keys()
     updated_item_keys = item_map.keys() - new_item_keys
 
     deactivated_items = deactivate([current_item_map[k] for k in deactivated_item_keys])
-    new_items: List[T] = [item_map[k] for k in new_item_keys]
+    new_items: List[GraiType] = [item_map[k] for k in new_item_keys]
     updated_items = [
         merge_models(item_map[k], current_item_map[k])
         for k in updated_item_keys
         if item_map[k] != current_item_map[k]
     ]
 
-    def schemaToModel(item: T):
+    def schemaToModel(item: GraiType):
         values = item.spec.dict(exclude_none=True)
 
         values["workspace"] = workspace

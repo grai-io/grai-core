@@ -1,6 +1,5 @@
 import pytest
-from grai_client.schemas.edge import EdgeV1
-from grai_client.schemas.node import NodeV1
+from grai_schemas.v1 import EdgeV1, NodeV1
 
 from connections.task_helpers import deactivate, get_node, update
 from lineage.models import Edge, Node
@@ -45,6 +44,7 @@ def test_node_v1():
             "namespace": "default",
             "data_source": "test",
             "display_name": "node1",
+            "metadata": {"grai": {"node_type": "Node"}},
         }
     )
 
@@ -67,6 +67,7 @@ def test_edge_v1(test_workspace, test_source_node, test_destination_node):
                 "namespace": "default",
                 "id": str(test_destination_node.id),
             },
+            "metadata": {"grai": {"edge_type": "Edge"}},
         }
     )
 

@@ -3,7 +3,8 @@ spec:
   display_name: table1
   is_active: true
   metadata:
-    node_type: Table
+    grai:
+      node_type: Table
   name: table1
   namespace: default
 type: Node
@@ -14,7 +15,8 @@ spec:
   display_name: column1
   is_active: true
   metadata:
-    node_type: Column
+    grai:
+      node_type: Column
   name: column1
   namespace: default
 type: Node
@@ -27,7 +29,9 @@ spec:
     namespace: default
   is_active: true
   metadata:
-    constraint_type: TableToColumn
+    grai:
+      node_type: Edge
+      edge_type: TableToColumn
   name: table1 > column1
   namespace: default
   source:
