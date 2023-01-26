@@ -1,9 +1,10 @@
 import pytest
 from decouple import config
+from django.test import TransactionTestCase
+
 from connections.models import Connection, Connector, Run
 from connections.tasks import run_connection_schedule, run_update_server
-from django.test import TransactionTestCase
-from workspaces.models import Workspace, Organisation
+from workspaces.models import Organisation, Workspace
 
 
 @pytest.fixture

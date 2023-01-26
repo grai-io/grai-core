@@ -1,15 +1,15 @@
 import uuid
+from importlib import import_module
 
 import pytest
 import pytest_asyncio
-from django.contrib.auth import get_user_model
-from django.contrib.auth.models import AnonymousUser
-from django.http.request import HttpRequest
 from asgiref.sync import sync_to_async
 from django.conf import settings
-from importlib import import_module
+from django.contrib.auth import get_user_model
+from django.http.request import HttpRequest
+
+from connections.models import Connection, Connector
 from workspaces.models import Membership, Organisation, Workspace
-from connections.models import Connector, Connection
 
 
 class Context(object):

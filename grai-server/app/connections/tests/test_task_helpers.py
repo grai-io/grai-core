@@ -1,9 +1,10 @@
 import pytest
-from connections.task_helpers import deactivate, get_node, update
 from grai_client.schemas.edge import EdgeV1
 from grai_client.schemas.node import NodeV1
+
+from connections.task_helpers import deactivate, get_node, update
 from lineage.models import Edge, Node
-from workspaces.models import Workspace, Organisation
+from workspaces.models import Organisation, Workspace
 
 
 @pytest.fixture

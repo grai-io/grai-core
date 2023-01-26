@@ -4,7 +4,6 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
 
 from api.schema import schema
-from asgiref.sync import sync_to_async
 
 from .common import (
     generate_connection,
@@ -12,8 +11,8 @@ from .common import (
     generate_connector,
     generate_username,
     generate_workspace,
-    test_context,
     test_basic_context,
+    test_context,
     test_organisation,
     test_user,
 )

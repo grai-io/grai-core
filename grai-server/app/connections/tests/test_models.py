@@ -4,7 +4,7 @@ import uuid
 import pytest
 
 from connections.models import Connection, Connector, Run
-from workspaces.models import Workspace, Organisation
+from workspaces.models import Organisation, Workspace
 
 
 @pytest.mark.django_db

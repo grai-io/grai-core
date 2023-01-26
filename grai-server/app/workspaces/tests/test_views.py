@@ -1,6 +1,8 @@
 import uuid
+
 import pytest
 from django.urls import reverse
+
 from workspaces.models import Membership, Organisation, Workspace, WorkspaceAPIKey
 
 

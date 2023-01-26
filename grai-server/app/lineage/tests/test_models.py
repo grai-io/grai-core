@@ -6,7 +6,7 @@ import pytest
 from django.test import TestCase
 
 from lineage.models import Edge, Node
-from workspaces.models import Workspace, Organisation
+from workspaces.models import Organisation, Workspace
 
 
 @pytest.mark.django_db

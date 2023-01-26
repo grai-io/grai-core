@@ -128,7 +128,12 @@
         "pk": "77a47042-ad28-4e98-a4e3-fbb6c0280e36",
         "fields": {
             "name": "dbt",
-            "metadata": {},
+            "metadata": {
+                "file": {
+                    "name": "manifest.json",
+                    "extension": "json"
+                }
+            },
             "is_active": true,
             "icon": "/images/dbt-logo.png",
             "category": "data tools",
@@ -193,7 +198,7 @@
             "is_active": true,
             "icon": "/images/fivetran-logo.png",
             "category": "data tools",
-            "coming_soon": false,
+            "coming_soon": true,
             "created_at": "2023-01-11T21:17:16.264Z",
             "updated_at": "2023-01-11T21:17:16.264Z"
         }
@@ -204,6 +209,25 @@
         "fields": {
             "name": "Flat File",
             "metadata": {},
+            "is_active": true,
+            "icon": "/images/file-icon.png",
+            "category": null,
+            "coming_soon": true,
+            "created_at": "2023-01-11T21:17:47.540Z",
+            "updated_at": "2023-01-11T21:19:57.027Z"
+        }
+    },
+    {
+        "model": "connections.connector",
+        "pk": "dbdc3704-5c01-4343-a11e-2e41c69e558c",
+        "fields": {
+            "name": "YAML File",
+            "metadata": {
+                "file": {
+                    "name": "yaml",
+                    "extension": "yaml"
+                }
+            },
             "is_active": true,
             "icon": "/images/file-icon.png",
             "category": null,

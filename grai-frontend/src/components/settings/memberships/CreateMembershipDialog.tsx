@@ -43,7 +43,36 @@ const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({
   const [createMembership, { loading, error }] = useMutation<
     CreateMembership,
     CreateMembershipVariables
-  >(CREATE_MEMBERSHIP)
+  >(CREATE_MEMBERSHIP, {
+    update(cache, { data }) {
+      cache.modify({
+        id: cache.identify({
+          id: workspaceId,
+          __typename: "Workspace",
+        }),
+        fields: {
+          memberships(existingMemberships = []) {
+            if (!data?.createMembership) return
+
+            const newMembership = cache.writeFragment({
+              data: data.createMembership,
+              fragment: gql`
+                fragment NewMembership on WorkspaceMembership {
+                  id
+                  role
+                  user {
+                    id
+                    username
+                  }
+                }
+              `,
+            })
+            return [...existingMemberships, newMembership]
+          },
+        },
+      })
+    },
+  })
 
   const handleSubmit = (values: Values) =>
     createMembership({

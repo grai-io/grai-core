@@ -1,4 +1,5 @@
-from typing import Optional, List
+from typing import List, Optional
+
 import strawberry
 from strawberry.types import Info
 from strawberry_django_plus import gql

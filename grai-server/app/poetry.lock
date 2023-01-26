@@ -1009,6 +1009,39 @@ pyyaml = ">=6.0,<7.0"
 requests = ">=2.28.1,<3.0.0"
 
 [[package]]
+name = "grai-schemas"
+version = "0.1.4"
+description = ""
+category = "main"
+optional = false
+python-versions = ">=3.8,<4.0"
+files = [
+    {file = "grai_schemas-0.1.4-py3-none-any.whl", hash = "sha256:a1f118e152619320c8c05e9f37b3b675081006e452e9751594caf9f5fe02e80c"},
+    {file = "grai_schemas-0.1.4.tar.gz", hash = "sha256:15e220abdf373381f407bca299a9a24f8ad863774351096d99b733dc824742df"},
+]
+
+[package.dependencies]
+pydantic = ">=1.10.4,<2.0.0"
+
+[[package]]
+name = "grai-source-dbt"
+version = "0.0.8"
+description = ""
+category = "main"
+optional = false
+python-versions = ">=3.8,<4.0"
+files = [
+    {file = "grai_source_dbt-0.0.8-py3-none-any.whl", hash = "sha256:32ea53ce359481181f2beb1d0b1f9df6e47c0b425f62ed9d2c4704c7c5bd2904"},
+    {file = "grai_source_dbt-0.0.8.tar.gz", hash = "sha256:59ea66f5aa8d18b462d3c6ca8d7864db4ca4dbc96c1007cbf41569eebec47c22"},
+]
+
+[package.dependencies]
+grai-client = ">=0.1.16,<0.2.0"
+grai-schemas = ">=0.1.2,<0.2.0"
+networkx = ">=2.8.3,<3.0.0"
+pydantic = ">=1.9.1,<2.0.0"
+
+[[package]]
 name = "grai-source-postgres"
 version = "0.1.3"
 description = ""
@@ -1263,6 +1296,25 @@ files = [
     {file = "mypy_extensions-0.4.3-py2.py3-none-any.whl", hash = "sha256:090fedd75945a69ae91ce1303b5824f428daf5a028d2f6ab8a299250a846f15d"},
     {file = "mypy_extensions-0.4.3.tar.gz", hash = "sha256:2d82818f5bb3e369420cb3c4060a7970edba416647068eb4c5343488a6c604a8"},
 ]
+
+[[package]]
+name = "networkx"
+version = "2.8.8"
+description = "Python package for creating and manipulating graphs and networks"
+category = "main"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "networkx-2.8.8-py3-none-any.whl", hash = "sha256:e435dfa75b1d7195c7b8378c3859f0445cd88c6b0375c181ed66823a9ceb7524"},
+    {file = "networkx-2.8.8.tar.gz", hash = "sha256:230d388117af870fce5647a3c52401fcf753e94720e6ea6b4197a5355648885e"},
+]
+
+[package.extras]
+default = ["matplotlib (>=3.4)", "numpy (>=1.19)", "pandas (>=1.3)", "scipy (>=1.8)"]
+developer = ["mypy (>=0.982)", "pre-commit (>=2.20)"]
+doc = ["nb2plots (>=0.6)", "numpydoc (>=1.5)", "pillow (>=9.2)", "pydata-sphinx-theme (>=0.11)", "sphinx (>=5.2)", "sphinx-gallery (>=0.11)", "texext (>=0.6.6)"]
+extra = ["lxml (>=4.6)", "pydot (>=1.4.2)", "pygraphviz (>=1.9)", "sympy (>=1.10)"]
+test = ["codecov (>=2.1)", "pytest (>=7.2)", "pytest-cov (>=4.0)"]
 
 [[package]]
 name = "oauthlib"
@@ -2204,4 +2256,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "428d0d779733ae3ada885e2d6ee648a4c67c07ceafb0fd95c215c0270067c465"
+content-hash = "c975cf9a272876f85f63792326fea5e6161e031a5eb94d829712001c9b6a35f4"
