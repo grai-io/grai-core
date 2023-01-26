@@ -6,7 +6,8 @@ from django.contrib.auth.tokens import default_token_generator
 from api.schema import schema
 from connections.models import Connection, Connector
 from workspaces.models import Workspace
-from .common import test_context, test_basic_context
+
+from .common import test_basic_context, test_context
 
 
 @pytest.mark.django_db

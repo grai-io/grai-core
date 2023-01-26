@@ -1,42 +1,30 @@
 from typing import Optional
+
 import strawberry
 from asgiref.sync import sync_to_async
 from decouple import config
 from django.conf import settings
-from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate, get_user_model, login, logout
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+from strawberry.file_uploads import Upload
 from strawberry.scalars import JSON
 from strawberry.types import Info
 
+from api.common import IsAuthenticated, get_user
 from api.queries import IsAuthenticated
 from api.types import BasicResult, Connection, KeyResult, Membership, User, Workspace
 from connections.models import Connection as ConnectionModel
 from connections.models import Run as RunModel
 from connections.tasks import run_update_server
 from workspaces.models import Membership as MembershipModel
-from workspaces.models import Workspace as WorkspaceModel
 from workspaces.models import WorkspaceAPIKey
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth import get_user_model
 
-from .common import IsAuthenticated, get_user
-
-
-async def get_workspace(info: Info, workspaceId: strawberry.ID):
-    user = get_user(info)
-
-    try:
-        workspace = await WorkspaceModel.objects.aget(
-            pk=workspaceId, memberships__user_id=user.id
-        )
-    except WorkspaceModel.DoesNotExist:
-        raise Exception("Can't find workspace")
-
-    return workspace
+from .common import get_workspace
+from .upload_connector_file import uploadConnectorFile
 
 
 @strawberry.type
@@ -336,3 +324,16 @@ class Mutation:
 
         except UserModel.DoesNotExist:
             raise Exception("User not found")
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def uploadConnectorFile(
+        self,
+        info: Info,
+        workspaceId: strawberry.ID,
+        namespace: str,
+        connectorId: strawberry.ID,
+        file: Upload,
+    ) -> BasicResult:
+        return await uploadConnectorFile(
+            info, workspaceId, namespace, connectorId, file
+        )

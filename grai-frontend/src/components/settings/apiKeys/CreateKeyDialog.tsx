@@ -16,6 +16,7 @@ import {
   CreateApiKeyVariables,
 } from "./__generated__/CreateApiKey"
 import GraphError from "components/utils/GraphError"
+import { NewApiKey } from "./__generated__/NewApiKey"
 
 export const CREATE_API_KEY = gql`
   mutation CreateApiKey($name: String!, $workspaceId: ID!) {
@@ -41,7 +42,32 @@ const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({ open, onClose }) => {
   const [createApiKey, { loading, error }] = useMutation<
     CreateApiKey,
     CreateApiKeyVariables
-  >(CREATE_API_KEY)
+  >(CREATE_API_KEY, {
+    update(cache, { data }) {
+      cache.modify({
+        id: cache.identify({
+          id: workspaceId,
+          __typename: "Workspace",
+        }),
+        fields: {
+          api_keys(existingApiKeys = []) {
+            if (!data?.createApiKey) return
+
+            const newApiKey = cache.writeFragment<NewApiKey>({
+              data: data.createApiKey.api_key,
+              fragment: gql`
+                fragment NewApiKey on WorkspaceAPIKey {
+                  id
+                  name
+                }
+              `,
+            })
+            return [...existingApiKeys, newApiKey]
+          },
+        },
+      })
+    },
+  })
 
   const handleSubmit = (values: Values) =>
     createApiKey({

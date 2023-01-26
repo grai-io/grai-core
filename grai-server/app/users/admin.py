@@ -1,8 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
-from rest_framework.authtoken.admin import TokenAdmin
 from django.utils.translation import gettext_lazy as _
+from rest_framework.authtoken.admin import TokenAdmin
 
 from users.models import User
 

@@ -15,6 +15,10 @@ export interface ConnectorMetadataField {
 
 export interface ConnectorMetadata {
   fields?: ConnectorMetadataField[]
+  file?: {
+    name?: string | null
+    extension?: string | null
+  } | null
 }
 
 export interface ConnectorType {
