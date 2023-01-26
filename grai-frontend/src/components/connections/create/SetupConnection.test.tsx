@@ -152,7 +152,7 @@ test("upload file", async () => {
 })
 
 test("upload wrong file", async () => {
-  const user = userEvent.setup()
+  // const user = userEvent.setup()
 
   renderWithRouter(
     <SetupConnection

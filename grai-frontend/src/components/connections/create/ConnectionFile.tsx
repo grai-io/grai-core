@@ -7,6 +7,7 @@ import GraphError from "components/utils/GraphError"
 import WizardBottomBar from "components/wizards/WizardBottomBar"
 import { ElementOptions } from "components/wizards/WizardLayout"
 import WizardSubtitle from "components/wizards/WizardSubtitle"
+import { clearWorkspace } from "helpers/cache"
 import { useSnackbar } from "notistack"
 import React, { useState } from "react"
 import { Accept } from "react-dropzone"
@@ -59,7 +60,11 @@ const ConnectionFile: React.FC<ConnectionFileProps> = ({ connector, opts }) => {
   const [uploadConnectorFile, { loading, error }] = useMutation<
     UploadConnectorFile,
     UploadConnectorFileVariables
-  >(UPLOAD_CONNECTOR_FILE)
+  >(UPLOAD_CONNECTOR_FILE, {
+    update(cache) {
+      clearWorkspace(cache, workspaceId ?? "")
+    },
+  })
 
   const handleSubmit = () =>
     uploadConnectorFile({
