@@ -15,6 +15,7 @@ from .common import (
     test_context,
     test_organisation,
     test_user,
+    test_workspace,
 )
 
 

@@ -37,12 +37,19 @@ async def test_user():
 
 
 @pytest_asyncio.fixture
-async def test_context(test_organisation, test_user):
+async def test_workspace(test_organisation):
     workspace, created = await Workspace.objects.aget_or_create(
         name="Test Workspace", organisation=test_organisation
     )
 
-    await Membership.objects.acreate(user=test_user, workspace=workspace, role="admin")
+    return workspace
+
+
+@pytest_asyncio.fixture
+async def test_context(test_organisation, test_workspace, test_user):
+    await Membership.objects.acreate(
+        user=test_user, workspace=test_workspace, role="admin"
+    )
 
     request = HttpRequest
     request.user = test_user
@@ -55,7 +62,7 @@ async def test_context(test_organisation, test_user):
     context.request.session = engine.SessionStore(session_key)
     context.request.META = {}
 
-    return context, test_organisation, workspace, test_user
+    return context, test_organisation, test_workspace, test_user
 
 
 @pytest_asyncio.fixture

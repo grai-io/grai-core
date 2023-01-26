@@ -3,7 +3,13 @@ import pytest
 from api.schema import schema
 from workspaces.models import Workspace
 
-from .common import test_basic_context, test_context, test_organisation, test_user
+from .common import (
+    test_basic_context,
+    test_context,
+    test_organisation,
+    test_user,
+    test_workspace,
+)
 
 
 @pytest.mark.django_db
@@ -32,7 +38,7 @@ async def test_workspaces_no_login(test_basic_context):
 
 
 @pytest.mark.django_db
-async def test_workspace(test_context):
+async def test_workspace_get(test_context):
     context, organisation, workspace, user = test_context
 
     query = """

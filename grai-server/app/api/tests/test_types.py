@@ -4,7 +4,13 @@ from api.schema import schema
 from connections.models import Run
 from lineage.models import Edge, Node
 
-from .common import generate_connection, test_context, test_organisation, test_user
+from .common import (
+    generate_connection,
+    test_context,
+    test_organisation,
+    test_user,
+    test_workspace,
+)
 
 
 @pytest.mark.django_db
