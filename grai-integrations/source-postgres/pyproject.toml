@@ -10,11 +10,11 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.8"
 pydantic = "^1.9.1"
-grai-client = "^0.1.15"
+grai-client = "^0.2.0"
 PyYAML = "^6.0"
 multimethod = "^1.8"
 psycopg2 = "^2.9.5"
-grai-schemas = "^0.1.0"
+grai-schemas = "^0.1.5"
 
 [tool.poetry.group.dev.dependencies]
 black = "^22.6.0"
