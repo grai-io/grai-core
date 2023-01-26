@@ -33,6 +33,6 @@ jobs:
         with:
           flags: grai-frontend
       - run: npm run build
-      - uses: jackyef/bundlewatch-gh-action@master
+      - uses: jackyef/bundlewatch-gh-action@0.2.0
         with:
           bundlewatch-github-token: ${{ secrets.BUNDLEWATCH_GITHUB_TOKEN }}
