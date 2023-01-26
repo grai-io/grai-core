@@ -22,14 +22,11 @@ def is_authenticated():
         )
 
 
-@client_get_app.command(
-    "nodes", help=f"Grab active {default_styler('nodes')} from the guide."
-)
 def get_nodes(
-    name: str = typer.Argument(None),
-    namespace: str = typer.Option(None, "--namespace", "-n", help="Namespace of node"),
-    print: bool = typer.Option(True, "--p", help=f"Print nodes to console"),
-    to_file: Optional[Path] = typer.Option(None, "--f", help="Write nodes to file"),
+    name: Optional[str] = None,
+    namespace: Optional[str] = None,
+    print: bool = True,
+    to_file: Optional[Path] = None,
 ):
     client = get_default_client()
     if name is None:
@@ -45,6 +42,20 @@ def get_nodes(
         write_yaml(result, to_file)
 
     return result
+
+
+@client_get_app.command(
+    "nodes", help=f"Grab active {default_styler('nodes')} from the guide."
+)
+def get_nodes_cli(
+    name: Optional[str] = typer.Argument(None),
+    namespace: Optional[str] = typer.Option(
+        None, "--namespace", "-n", help="Namespace of node"
+    ),
+    print: bool = typer.Option(True, "--p", help=f"Print nodes to console"),
+    to_file: Optional[Path] = typer.Option(None, "--f", help="Write nodes to file"),
+):
+    return get_nodes(name=name, namespace=namespace, print=print, to_file=to_file)
 
 
 @client_get_app.command(

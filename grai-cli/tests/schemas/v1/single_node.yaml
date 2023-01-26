@@ -4,3 +4,6 @@ spec:
     name: node2
     namespace: test
     data_source: cli-test
+    metadata:
+        grai:
+            node_type: "Node"
