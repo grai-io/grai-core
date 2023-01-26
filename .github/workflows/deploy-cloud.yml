@@ -217,6 +217,8 @@ jobs:
         with:
           name: frontend-build
           path: "./grai-frontend/build"
+      - name: Run bundlewatch and upload results
+        run: npm run bundlewatch
 
   deploy-frontend:
     needs: [build-frontend, build-server]

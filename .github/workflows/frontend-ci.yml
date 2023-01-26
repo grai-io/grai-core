@@ -6,7 +6,6 @@ on:
       - ".github/workflows/frontend-ci.yml"
       - "grai-frontend/**"
 
-
 concurrency:
   group: ${{ github.ref }}-frontend-ci
   cancel-in-progress: true
@@ -33,3 +32,7 @@ jobs:
         uses: codecov/codecov-action@v3
         with:
           flags: grai-frontend
+      - name: Run build
+        run: npm run build
+      - name: Run bundlewatch and upload results
+        run: npm run bundlewatch
