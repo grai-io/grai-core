@@ -7,8 +7,10 @@ import {
   ListItemText,
   CircularProgress,
 } from "@mui/material"
+import { clearWorkspace } from "helpers/cache"
 import { DateTime } from "luxon"
 import React from "react"
+import { useParams } from "react-router-dom"
 import {
   RunConnection,
   RunConnectionVariables,
@@ -96,6 +98,8 @@ const ConnectionRefresh: React.FC<ConnectionRefreshProps> = ({
   disabled,
   onRefresh,
 }) => {
+  const { workspaceId } = useParams()
+
   const runToTypedRun = (run: Run) => ({
     ...run,
     user: run.user ? { ...run.user, __typename: "User" as const } : null,
@@ -108,6 +112,9 @@ const ConnectionRefresh: React.FC<ConnectionRefreshProps> = ({
   >(RUN_CONNECTION, {
     variables: {
       connectionId: connection.id,
+    },
+    update(cache) {
+      clearWorkspace(cache, workspaceId ?? "")
     },
   })
 

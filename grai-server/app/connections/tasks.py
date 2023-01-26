@@ -1,6 +1,8 @@
 from datetime import datetime
+
 from celery import shared_task
-from .models import Connection, Run, Connector
+
+from .models import Connection, Connector, Run
 from .task_helpers import update
 
 

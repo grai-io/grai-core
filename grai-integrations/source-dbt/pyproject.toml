@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "grai_source_dbt"
-version = "0.0.9"
+version = "0.0.10"
 description = ""
-authors = ["Ian Eaves <ian@grai.io>"]
+authors = ["Ian Eaves <ian@grai.io>", "Edward Louth <edward@grai.io>"]
 license = "Elastic-2.0"
 packages = [
     { include = "grai_source_dbt", from = "src" },

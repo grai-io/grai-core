@@ -36,7 +36,7 @@ class Source(Table):
 
     @property
     def full_name(self):
-        return f"{self.table_schema}.{self.identifer}"
+        return f"{self.table_schema}.{self.identifier}"
 
 
 class Seed(DBTNode):
