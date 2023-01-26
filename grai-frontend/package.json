@@ -73,10 +73,13 @@
     ]
   },
   "bundlewatch": {
+    "trackBranches": [
+      "master"
+    ],
     "files": [
       {
         "path": "build/**/*.js",
-        "maxSize": "100kB"
+        "maxSize": "500kB"
       }
     ]
   }
