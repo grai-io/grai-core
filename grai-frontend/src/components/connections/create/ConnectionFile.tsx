@@ -75,7 +75,7 @@ const ConnectionFile: React.FC<ConnectionFileProps> = ({ connector, opts }) => {
   const accept: Accept =
     connector.metadata?.file?.extension === "json"
       ? {
-          "application/json": [".json2"],
+          "application/json": [".json"],
         }
       : {
           "application/yaml": [".yaml", ".yml"],

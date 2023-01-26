@@ -193,7 +193,7 @@ test("upload wrong file", async () => {
   })
   fireEvent.drop(inputEl)
   expect(
-    await screen.findByText("File type must be application/json,.json2")
+    await screen.findByText("File type must be application/json,.json")
   ).toBeInTheDocument()
 })
 
