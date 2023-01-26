@@ -36,6 +36,7 @@
     "react-router-dom": "^6.0.0",
     "react-scripts": "5.0.1",
     "reactflow": "^11.0.0",
+    "source-map-explorer": "^2.5.3",
     "typescript": "^4.8.4",
     "web-vitals": "^2.1.4",
     "web-worker": "^1.2.0"
@@ -47,6 +48,7 @@
     "eject": "react-scripts eject",
     "lint": "eslint src/**/*.{ts,tsx,test.tsx}",
     "lint:fix": "eslint src/**/*.{ts,tsx,test.tsx} --fix",
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "download:schema": "npx apollo client:download-schema --endpoint=http://127.0.0.1:8000/graphql/ src/testing/schema.json",
     "generate:types": "npx apollo client:codegen --target typescript --localSchemaFile src/testing/schema.json"
   },
@@ -67,6 +69,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {}
+  }
 }
