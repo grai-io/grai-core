@@ -121,18 +121,18 @@ uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
 name = "boto3"
-version = "1.26.57"
+version = "1.26.58"
 description = "The AWS SDK for Python"
 category = "main"
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "boto3-1.26.57-py3-none-any.whl", hash = "sha256:f1f13bfcb34d2175cf6f515a632bc432e0b357e4ebee7d4efda7ab5ec2914ef2"},
-    {file = "boto3-1.26.57.tar.gz", hash = "sha256:9c34ceac30a0672d2b6b030d459eb87f1a02d48f86f347fb4b054de85fb8a4b1"},
+    {file = "boto3-1.26.58-py3-none-any.whl", hash = "sha256:d130281211014510b2cf33412a177909d8d18286e1ef67362850dea07067b7df"},
+    {file = "boto3-1.26.58.tar.gz", hash = "sha256:89811efea5ac4eeba0a816a41e651fa06110926a7fdb7f20e5eb84e519902ee2"},
 ]
 
 [package.dependencies]
-botocore = ">=1.29.57,<1.30.0"
+botocore = ">=1.29.58,<1.30.0"
 jmespath = ">=0.7.1,<2.0.0"
 s3transfer = ">=0.6.0,<0.7.0"
 
@@ -141,14 +141,14 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "botocore"
-version = "1.29.57"
+version = "1.29.58"
 description = "Low-level, data-driven core of boto 3."
 category = "main"
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "botocore-1.29.57-py3-none-any.whl", hash = "sha256:f43382babffc07645a084484b1f08fb9d3fa4744bb08b74065ae0b4b1f4103b6"},
-    {file = "botocore-1.29.57.tar.gz", hash = "sha256:02078e37d6b3626794f821385f3357195d87610fa1b25355577ed5393f16f7b8"},
+    {file = "botocore-1.29.58-py3-none-any.whl", hash = "sha256:413ea124f2486f142dd59ed7fb68ec86f53bc7c932db9613cadd510d76c6b245"},
+    {file = "botocore-1.29.58.tar.gz", hash = "sha256:e4e0d05c1493bedc88bb78b24a08d79a60f3b9cea21a64edea3e8411823ecf82"},
 ]
 
 [package.dependencies]
@@ -1026,14 +1026,14 @@ pydantic = ">=1.10.4,<2.0.0"
 
 [[package]]
 name = "grai-source-dbt"
-version = "0.0.10"
+version = "0.0.11"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_source_dbt-0.0.10-py3-none-any.whl", hash = "sha256:91c46cb5c2640b8f4dc305ca91c73bd7d783cf70b6d4debdd2e7469a1854e1b5"},
-    {file = "grai_source_dbt-0.0.10.tar.gz", hash = "sha256:35972c02da57cf72bd3c88b1829694c210b7c1d503227c98243ca54cb600ae73"},
+    {file = "grai_source_dbt-0.0.11-py3-none-any.whl", hash = "sha256:68c1647def332cc894c8428f66b9e0d1975207c1aaa39d8a617c43c3532057e5"},
+    {file = "grai_source_dbt-0.0.11.tar.gz", hash = "sha256:c630aef3c3096efc03def45f12912897c1e09faac12d59f9673e6e5104a1ad5e"},
 ]
 
 [package.dependencies]
@@ -1044,14 +1044,14 @@ pydantic = ">=1.9.1,<2.0.0"
 
 [[package]]
 name = "grai-source-postgres"
-version = "0.1.6"
+version = "0.1.8"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_source_postgres-0.1.6-py3-none-any.whl", hash = "sha256:52caf7151c93cff0e6c8ebc6c453295213896e33521c84090cfc79e4f899e11e"},
-    {file = "grai_source_postgres-0.1.6.tar.gz", hash = "sha256:6e5b02cbc8cd47315eecbf9a66140075c0df88b07bd1844ca760719ecd3abf65"},
+    {file = "grai_source_postgres-0.1.8-py3-none-any.whl", hash = "sha256:27c1d76559f9857be8a05c5cd3c495d8e72adf5d0fdd2c50dbeafa0397c34042"},
+    {file = "grai_source_postgres-0.1.8.tar.gz", hash = "sha256:9e6933c88d2701d7e1bd0463bb09b367398bfc297aa3c5cac9277a61dd61d725"},
 ]
 
 [package.dependencies]
@@ -2258,4 +2258,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "84a8943fb9dd8a25fbfc3c56632e13bdbc378ccfc1ea3c7359760878d6c2f818"
+content-hash = "7e2aba107f7d67bdbeb6c5508a7b1a97e5a4e5693841102fcf510d09be1d7033"

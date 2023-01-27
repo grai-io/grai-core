@@ -1,19 +1,23 @@
 from typing import Any, Dict, List, Literal, Sequence, Union
 
 from grai_schemas import config as grai_base_config
-from grai_schemas.generics import DefaultValue
 from grai_schemas.schema import Schema
 from grai_schemas.v1 import EdgeV1, NodeV1
-from grai_schemas.v1.metadata.edges import EdgeTypeLabels, GenericEdgeMetadataV1
-from grai_schemas.v1.metadata.nodes import (
-    ColumnMetadata,
-    GenericNodeMetadataV1,
-    NodeTypeLabels,
-    TableMetadata,
+from grai_schemas.v1.metadata.edges import (
+    EdgeTypeLabels,
+    GenericEdgeMetadataV1,
+    TableToColumnMetadata,
 )
+from grai_schemas.v1.metadata.nodes import ColumnMetadata, NodeTypeLabels, TableMetadata
 from multimethod import multimethod
 
-from grai_source_dbt.models.nodes import Column, Edge, GraiNodeTypes, SupportedDBTTypes
+from grai_source_dbt.models.nodes import (
+    Column,
+    Constraint,
+    Edge,
+    GraiNodeTypes,
+    SupportedDBTTypes,
+)
 from grai_source_dbt.package_definitions import config
 
 
@@ -52,8 +56,19 @@ def build_grai_metadata_from_node(
 def build_grai_metadata_from_edge(
     current: Edge, version: Literal["v1"] = "v1"
 ) -> GenericEdgeMetadataV1:
-    data = {"version": version, "edge_type": EdgeTypeLabels.generic.value}
-    return GenericEdgeMetadataV1(**data)
+    data = {"version": version}
+
+    # if isinstance(current.source, Table) and isinstance(current.destination, Column):
+    if current.constraint_type.value == Constraint.belongs_to:
+        data["edge_type"] = EdgeTypeLabels.table_to_column.value
+        return TableToColumnMetadata(**data)
+    # elif isinstance(current.source, Column) and isinstance(current.destination, Column):
+    # elif current.constraint_type.value == "btdm":
+    #     data["edge_type"] = EdgeTypeLabels.column_to_column.value
+    #     return TableToTableMetadata(**data)
+    else:
+        data["edge_type"] = EdgeTypeLabels.generic.value
+        return GenericEdgeMetadataV1(**data)
 
 
 @multimethod
@@ -148,7 +163,9 @@ def adapt_column_to_client(current: Column, version: Literal["v1"] = "v1") -> No
 
 
 def make_name(node1: GraiNodeTypes, node2: GraiNodeTypes) -> str:
-    return f"{node1.full_name} -> {node2.full_name}"
+    node1_name = f"{node1.namespace}:{node1.full_name}"
+    node2_name = f"{node2.namespace}:{node2.full_name}"
+    return f"{node1_name} -> {node2_name}"
 
 
 @adapt_to_client.register

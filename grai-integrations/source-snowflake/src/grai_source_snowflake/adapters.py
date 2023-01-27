@@ -4,22 +4,16 @@ from grai_client.schemas.schema import Schema
 from grai_schemas import config as base_config
 from grai_schemas.generics import DefaultValue
 from grai_schemas.v1 import EdgeV1, NodeV1
-from grai_schemas.v1.metadata import GraiMetadataV1
 from grai_schemas.v1.metadata.edges import (
     ColumnToColumnMetadata,
     EdgeTypeLabels,
     GenericEdgeMetadataV1,
     TableToColumnMetadata,
 )
-from grai_schemas.v1.metadata.nodes import (
-    ColumnMetadata,
-    GenericNodeMetadataV1,
-    NodeTypeLabels,
-    TableMetadata,
-)
+from grai_schemas.v1.metadata.nodes import ColumnMetadata, NodeTypeLabels, TableMetadata
 from multimethod import multimethod
 
-from grai_source_snowflake.models import ID, Column, Edge, Table
+from grai_source_snowflake.models import ID, Column, Constraint, Edge, Table
 from grai_source_snowflake.package_definitions import config
 
 
@@ -75,15 +69,17 @@ def build_grai_metadata_from_edge(
 ) -> GenericEdgeMetadataV1:
     data = {"version": version}
 
-    if isinstance(current.source, Table) and isinstance(current.destination, Column):
+    # if isinstance(current.source, Table) and isinstance(current.destination, Column):
+    if current.constraint_type.value == Constraint.belongs_to:
         data["edge_type"] = EdgeTypeLabels.table_to_column.value
         return TableToColumnMetadata(**data)
-    elif isinstance(current.source, Column) and isinstance(current.destination, Column):
+    # elif isinstance(current.source, Column) and isinstance(current.destination, Column):
+    else:
         data["edge_type"] = EdgeTypeLabels.column_to_column.value
         return ColumnToColumnMetadata(**data)
-    else:
-        data["edge_type"] = EdgeTypeLabels.generic.value
-        return GenericEdgeMetadataV1(**data)
+    # else:
+    #     data["edge_type"] = EdgeTypeLabels.generic.value
+    #     return GenericEdgeMetadataV1(**data)
 
 
 # ---
