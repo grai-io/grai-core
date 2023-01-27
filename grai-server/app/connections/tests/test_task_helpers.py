@@ -89,9 +89,7 @@ class TestGetNode:
 
     @pytest.mark.django_db
     def test_node(self, test_workspace):
-        node = Node.objects.create(
-            name="model1", namespace="default", workspace=test_workspace
-        )
+        node = Node.objects.create(name="model1", namespace="default", workspace=test_workspace)
 
         grai_type = {"name": "model1", "namespace": "default"}
 

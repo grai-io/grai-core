@@ -29,11 +29,7 @@ def test_metadata_is_core_compliant(mock_get_nodes_and_edges):
     nodes, edges = mock_get_nodes_and_edges
 
     for node in nodes:
-        assert isinstance(
-            getattr(node.spec.metadata, core_config.metadata_id), GraiNodeMetadataV1
-        ), node.spec.metadata
+        assert isinstance(getattr(node.spec.metadata, core_config.metadata_id), GraiNodeMetadataV1), node.spec.metadata
 
     for edge in edges:
-        assert isinstance(
-            getattr(edge.spec.metadata, core_config.metadata_id), GraiEdgeMetadataV1
-        )
+        assert isinstance(getattr(edge.spec.metadata, core_config.metadata_id), GraiEdgeMetadataV1)

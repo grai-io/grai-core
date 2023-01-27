@@ -10,9 +10,7 @@ class Schema(GraiBaseModel):
     entity: GraiType
 
     @classmethod
-    def to_model(
-        cls, item: Dict, version: Literal["v1"], typing_type: Literal["Node", "Edge"]
-    ) -> GraiType:
+    def to_model(cls, item: Dict, version: Literal["v1"], typing_type: Literal["Node", "Edge"]) -> GraiType:
         result = {
             "type": typing_type,
             "version": version,

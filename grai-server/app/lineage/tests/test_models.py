@@ -13,9 +13,7 @@ from workspaces.models import Workspace
 def test_node_created():
     workspace = Workspace.objects.create(name="W1")
 
-    node = Node.objects.create(
-        namespace="temp", name="a", data_source="test", workspace=workspace
-    )
+    node = Node.objects.create(namespace="temp", name="a", data_source="test", workspace=workspace)
 
     assert node.id == uuid.UUID(str(node.id))
     assert node.name == "a"
@@ -32,9 +30,7 @@ def test_node_created():
 def test_node_created_from_load():
     workspace = Workspace.objects.create(name="W1")
 
-    node = Node.objects.create(
-        namespace="temp2", name="abc", data_source="test", workspace=workspace
-    )
+    node = Node.objects.create(namespace="temp2", name="abc", data_source="test", workspace=workspace)
     nodes = list(Node.objects.filter(namespace="temp2", name="abc").all())
     assert len(nodes) == 1
     node2 = nodes[0]

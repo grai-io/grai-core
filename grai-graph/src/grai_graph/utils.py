@@ -77,7 +77,8 @@ def mock_v1_edge(
             "is_active": True,
             "metadata": {
                 "grai": ColumnToColumnMetadata(
-                    edge_type=EdgeTypeLabels.column_to_column.value, edge_attributes=metadata
+                    edge_type=EdgeTypeLabels.column_to_column.value,
+                    edge_attributes=metadata,
                 ).dict()
             },
         },

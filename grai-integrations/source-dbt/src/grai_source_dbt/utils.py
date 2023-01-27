@@ -12,9 +12,7 @@ def get_manifest_file(file_id: str = "jaffle_shop") -> str:
         raise Exception(
             f"Unrecognized file name identifier: {file_id}. Currently supported manifest files include {list(file_id_map.keys())}"
         )
-    filename = pkg_resources.resource_filename(
-        __name__, os.path.join("data", file_id_map[file_id])
-    )
+    filename = pkg_resources.resource_filename(__name__, os.path.join("data", file_id_map[file_id]))
     return filename
 
 

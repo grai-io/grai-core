@@ -18,9 +18,7 @@ spectacular_settings = {
 urlpatterns = [
     path("admin/", admin.site.urls),
     # path("api/v1/health/", include("health.urls"), name="health"),
-    path(
-        "api/v1/auth/jwttoken/", TokenObtainPairView.as_view(), name="token_obtain_pair"
-    ),
+    path("api/v1/auth/jwttoken/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path(
         "api/v1/auth/jwttoken/refresh/",
         TokenRefreshView.as_view(),
@@ -40,9 +38,7 @@ urlpatterns = [
     ),
     path(
         "docs/",
-        SpectacularSwaggerView.as_view(
-            template_name="swagger-ui.html", url_name="schema"
-        ),
+        SpectacularSwaggerView.as_view(template_name="swagger-ui.html", url_name="schema"),
         name="swagger-ui",
     ),
     path("health/", include("health_check.urls"), name="health"),

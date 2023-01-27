@@ -149,9 +149,7 @@ class ConnectorOrder:
     coming_soon: auto
 
 
-@strawberry.django.type(
-    ConnectorModel, order=ConnectorOrder, filters=ConnectorFilter, pagination=True
-)
+@strawberry.django.type(ConnectorModel, order=ConnectorOrder, filters=ConnectorFilter, pagination=True)
 class Connector:
     id: auto
     name: auto
@@ -184,9 +182,7 @@ class ConnectionOrder:
     updated_at: auto
 
 
-@strawberry.django.type(
-    ConnectionModel, order=ConnectionOrder, filters=ConnectionFilter, pagination=True
-)
+@strawberry.django.type(ConnectionModel, order=ConnectionOrder, filters=ConnectionFilter, pagination=True)
 class Connection:
     id: auto
     connector: Connector
@@ -207,17 +203,11 @@ class Connection:
 
     @strawberry.django.field
     def last_run(self) -> Optional["Run"]:
-        return (
-            RunModel.objects.filter(connection=self.id).order_by("-created_at").first()
-        )
+        return RunModel.objects.filter(connection=self.id).order_by("-created_at").first()
 
     @strawberry.django.field
     def last_successful_run(self) -> Optional["Run"]:
-        return (
-            RunModel.objects.filter(connection=self.id, status="success")
-            .order_by("-created_at")
-            .first()
-        )
+        return RunModel.objects.filter(connection=self.id, status="success").order_by("-created_at").first()
 
 
 @strawberry.django.filters.filter(WorkspaceModel)
@@ -233,9 +223,7 @@ class WorkspaceOrder:
     name: auto
 
 
-@strawberry.django.type(
-    WorkspaceModel, order=WorkspaceOrder, filters=WorkspaceFilter, pagination=True
-)
+@strawberry.django.type(WorkspaceModel, order=WorkspaceOrder, filters=WorkspaceFilter, pagination=True)
 class Workspace:
     id: auto
     name: auto
@@ -285,9 +273,7 @@ class MembershipOrder:
     created_at: auto
 
 
-@strawberry.django.type(
-    MembershipModel, order=MembershipOrder, filters=MembershipFilter, pagination=True
-)
+@strawberry.django.type(MembershipModel, order=MembershipOrder, filters=MembershipFilter, pagination=True)
 class Membership:
     id: auto
     role: auto
