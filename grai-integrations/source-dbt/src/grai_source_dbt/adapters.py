@@ -1,16 +1,14 @@
 from typing import Any, Dict, List, Literal, Sequence, Union
 
 from grai_schemas import config as grai_base_config
-from grai_schemas.generics import DefaultValue
 from grai_schemas.schema import Schema
 from grai_schemas.v1 import EdgeV1, NodeV1
-from grai_schemas.v1.metadata.edges import EdgeTypeLabels, GenericEdgeMetadataV1
-from grai_schemas.v1.metadata.nodes import (
-    ColumnMetadata,
-    GenericNodeMetadataV1,
-    NodeTypeLabels,
-    TableMetadata,
+from grai_schemas.v1.metadata.edges import (
+    EdgeTypeLabels,
+    GenericEdgeMetadataV1,
+    TableToColumnMetadata,
 )
+from grai_schemas.v1.metadata.nodes import ColumnMetadata, NodeTypeLabels, TableMetadata
 from multimethod import multimethod
 
 from grai_source_dbt.models.nodes import Column, Edge, GraiNodeTypes, SupportedDBTTypes
@@ -52,8 +50,19 @@ def build_grai_metadata_from_node(
 def build_grai_metadata_from_edge(
     current: Edge, version: Literal["v1"] = "v1"
 ) -> GenericEdgeMetadataV1:
-    data = {"version": version, "edge_type": EdgeTypeLabels.generic.value}
-    return GenericEdgeMetadataV1(**data)
+    data = {"version": version}
+
+    # if isinstance(current.source, Table) and isinstance(current.destination, Column):
+    if current.constraint_type.value == "bt":
+        data["edge_type"] = EdgeTypeLabels.table_to_column.value
+        return TableToColumnMetadata(**data)
+    # elif isinstance(current.source, Column) and isinstance(current.destination, Column):
+    # elif current.constraint_type.value == "btdm":
+    #     data["edge_type"] = EdgeTypeLabels.column_to_column.value
+    #     return TableToTableMetadata(**data)
+    else:
+        data["edge_type"] = EdgeTypeLabels.generic.value
+        return GenericEdgeMetadataV1(**data)
 
 
 @multimethod

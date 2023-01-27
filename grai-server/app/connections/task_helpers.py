@@ -1,10 +1,8 @@
 from copy import deepcopy
-from typing import Dict, List, Optional, TypeVar
+from typing import Dict, List
 
 from django.db.models import Q
 from grai_schemas.schema import GraiType
-from grai_schemas.v1 import EdgeV1, NodeV1
-from grai_schemas.v1.node import NodeNamedID
 
 from lineage.models import Edge as EdgeModel
 from lineage.models import Node as NodeModel
