@@ -13,7 +13,7 @@ from grai_schemas.v1.metadata.edges import (
 from grai_schemas.v1.metadata.nodes import ColumnMetadata, NodeTypeLabels, TableMetadata
 from multimethod import multimethod
 
-from grai_source_snowflake.models import ID, Column, Edge, Table
+from grai_source_snowflake.models import ID, Column, Constraint, Edge, Table
 from grai_source_snowflake.package_definitions import config
 
 
@@ -70,7 +70,7 @@ def build_grai_metadata_from_edge(
     data = {"version": version}
 
     # if isinstance(current.source, Table) and isinstance(current.destination, Column):
-    if current.constraint_type.value == "bt":
+    if current.constraint_type.value == Constraint.belongs_to:
         data["edge_type"] = EdgeTypeLabels.table_to_column.value
         return TableToColumnMetadata(**data)
     # elif isinstance(current.source, Column) and isinstance(current.destination, Column):
