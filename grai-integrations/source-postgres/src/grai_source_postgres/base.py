@@ -31,7 +31,12 @@ def update_server(
 ):
 
     conn = PostgresConnector(
-        dbname=dbname, user=user, password=password, host=host, port=port
+        dbname=dbname,
+        user=user,
+        password=password,
+        host=host,
+        port=port,
+        namespace=namespace,
     )
     nodes, edges = get_nodes_and_edges(conn, client.id)
     update(client, nodes)

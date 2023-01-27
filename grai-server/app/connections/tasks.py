@@ -64,6 +64,7 @@ def run_postgres(run: Run):
         dbname=metadata["dbname"],
         user=metadata["user"],
         password=secrets["password"],
+        namespace=run.connection.namespace,
     )
     nodes, edges = get_nodes_and_edges(conn, "v1")
     update(run.workspace, nodes)
@@ -85,7 +86,7 @@ def run_snowflake(run: Run):
         warehouse=metadata.get("warehouse"),
         database=metadata.get("database"),
         schema=metadata.get("schema"),
-        namespace=metadata.get("namespace"),
+        namespace=run.connection.namespace,
     )
     nodes, edges = get_nodes_and_edges(conn, "v1")
     update(run.workspace, nodes)
