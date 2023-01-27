@@ -1,9 +1,22 @@
-from typing import Any, Dict, List, Literal, Sequence, Type
+from typing import Any, Dict, List, Literal, Sequence, Union
 
-import grai_schemas.models as base_schemas
 from grai_client.schemas.schema import Schema
 from grai_schemas import config as base_config
-from grai_schemas.models import DefaultValue, GraiNodeMetadata
+from grai_schemas.generics import DefaultValue
+from grai_schemas.v1 import EdgeV1, NodeV1
+from grai_schemas.v1.metadata import GraiMetadataV1
+from grai_schemas.v1.metadata.edges import (
+    ColumnToColumnMetadata,
+    EdgeTypeLabels,
+    GenericEdgeMetadataV1,
+    TableToColumnMetadata,
+)
+from grai_schemas.v1.metadata.nodes import (
+    ColumnMetadata,
+    GenericNodeMetadataV1,
+    NodeTypeLabels,
+    TableMetadata,
+)
 from multimethod import multimethod
 
 from grai_source_snowflake.models import ID, Column, Edge, Table
@@ -20,17 +33,19 @@ def build_grai_metadata(current: Any, desired: Any) -> None:
 @build_grai_metadata.register
 def build_grai_metadata_from_column(
     current: Column, version: Literal["v1"] = "v1"
-) -> base_schemas.ColumnMetadata:
+) -> ColumnMetadata:
 
     default_value = current.default_value
     if current.default_value is not None:
         default_value = DefaultValue(
-            has_default_value=True, default_value=current.default_value
+            has_default_value=True,
+            default_value=current.default_value,
+            data_type=current.data_type,
         )
 
     data = {
         "version": version,
-        "node_type": "Column",
+        "node_type": NodeTypeLabels.column.value,
         "node_attributes": {
             "data_type": current.data_type,
             "default_value": default_value,
@@ -38,39 +53,40 @@ def build_grai_metadata_from_column(
             "is_primary_key": current.is_pk,
         },
     }
-
-    return base_schemas.ColumnMetadata(**data)
+    return ColumnMetadata(**data)
 
 
 @build_grai_metadata.register
 def build_grai_metadata_from_table(
     current: Table, version: Literal["v1"] = "v1"
-) -> base_schemas.TableMetadata:
-    data = {"version": version, "node_type": "Table", "node_attributes": {}}
+) -> TableMetadata:
+    data = {
+        "version": version,
+        "node_type": NodeTypeLabels.table.value,
+        "node_attributes": {},
+    }
 
-    return base_schemas.TableMetadata(**data)
+    return TableMetadata(**data)
 
 
 @build_grai_metadata.register
 def build_grai_metadata_from_edge(
     current: Edge, version: Literal["v1"] = "v1"
-) -> base_schemas.GraiEdgeMetadata:
+) -> GenericEdgeMetadataV1:
     data = {"version": version}
 
-    # if isinstance(current.source, Table) and isinstance(current.destination, Column):
-    if current.constraint_type.value == "bt":
-        data["edge_type"] = "TableToColumn"
-        data["edge_attributes"] = {}
-        return base_schemas.TableToColumnMetadata(**data)
-    # elif isinstance(current.source, Column) and isinstance(current.destination, Column):
+    if isinstance(current.source, Table) and isinstance(current.destination, Column):
+        data["edge_type"] = EdgeTypeLabels.table_to_column.value
+        return TableToColumnMetadata(**data)
+    elif isinstance(current.source, Column) and isinstance(current.destination, Column):
+        data["edge_type"] = EdgeTypeLabels.column_to_column.value
+        return ColumnToColumnMetadata(**data)
     else:
-        data["edge_type"] = "ColumnToColumn"
-        data["edge_attributes"] = {}
-        return base_schemas.ColumnToColumnMetadata(**data)
-    # else:
-    #     data["edge_type"] = "Edge"
-    #     data["edge_attributes"] = None
-    #     return base_schemas.EdgeV1(**data)
+        data["edge_type"] = EdgeTypeLabels.generic.value
+        return GenericEdgeMetadataV1(**data)
+
+
+# ---
 
 
 @multimethod
@@ -91,6 +107,15 @@ def build_metadata_from_column(current: Column, version: Literal["v1"] = "v1") -
 
 
 @build_snowflake_metadata.register
+def build_metadata_from_table(current: Table, version: Literal["v1"] = "v1") -> Dict:
+    data = {
+        "schema": current.table_schema,
+        "table_type": current.table_type.value,
+    }
+    return data
+
+
+@build_snowflake_metadata.register
 def build_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> Dict:
     data = {
         "definition": current.definition,
@@ -101,29 +126,23 @@ def build_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> Di
     return data
 
 
-@build_snowflake_metadata.register
-def build_metadata_from_table(current: Table, version: Literal["v1"] = "v1") -> Dict:
-    data = {
-        "schema": current.table_schema,
-        "table_type": current.table_type.value,
-    }
-    return data
+# ---
 
 
 def build_metadata(obj, version):
     return {
         base_config.metadata_id: build_grai_metadata(obj, version),
-        config.metadata_id: build_snowflake_metadata(obj, version),
+        config.metadata_id: {},  # build_snowflake_metadata(obj, version),
     }
 
 
 @multimethod
-def adapt_to_client(current: Any, desired: Any):
+def adapt_to_client(current: Any, desired: Any) -> Union[NodeV1, EdgeV1]:
     raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)}")
 
 
 @adapt_to_client.register
-def adapt_column_to_client(current: Column, version: Literal["v1"] = "v1"):
+def adapt_column_to_client(current: Column, version: Literal["v1"] = "v1") -> NodeV1:
     spec_dict = {
         "name": current.full_name,
         "namespace": current.namespace,
@@ -135,9 +154,9 @@ def adapt_column_to_client(current: Column, version: Literal["v1"] = "v1"):
 
 
 @adapt_to_client.register
-def adapt_table_to_client(current: Table, version: Literal["v1"] = "v1"):
+def adapt_table_to_client(current: Table, version: Literal["v1"] = "v1") -> NodeV1:
     metadata = {
-        "node_type": "Table",
+        "node_type": NodeTypeLabels.table.value,
         "schema": current.table_schema,
     }
     spec_dict = {
@@ -158,7 +177,7 @@ def make_name(node1: ID, node2: ID) -> str:
 
 
 @adapt_to_client.register
-def adapt_edge_to_client(current: Edge, version: Literal["v1"] = "v1"):
+def adapt_edge_to_client(current: Edge, version: Literal["v1"] = "v1") -> EdgeV1:
     spec_dict = {
         "data_source": config.integration_name,
         "name": make_name(current.source, current.destination),

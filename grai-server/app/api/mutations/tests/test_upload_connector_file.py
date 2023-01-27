@@ -1,11 +1,12 @@
-import pytest
+import os
 
+import pytest
+from strawberry.types import Info
+
+from api.mutations.upload_connector_file import uploadConnectorFile
+from api.tests.common import test_context
 from connections.models import Connector
 from lineage.models import Node
-from api.tests.common import test_context
-from api.mutations.upload_connector_file import uploadConnectorFile
-from strawberry.types import Info
-import os
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 

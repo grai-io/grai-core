@@ -1,9 +1,8 @@
 from typing import List, Literal, Tuple
 
 from grai_client.endpoints.client import BaseClient
-from grai_client.schemas.edge import Edge
-from grai_client.schemas.node import Node
 from grai_client.update import update
+from grai_schemas.base import Edge, Node
 
 from grai_source_dbt.adapters import adapt_to_client
 from grai_source_dbt.loader import DBTGraph, Manifest

@@ -1,3 +1,5 @@
+import os
+
 import pytest
 
 from grai_source_snowflake.base import adapt_to_client, get_nodes_and_edges
@@ -6,6 +8,7 @@ from grai_source_snowflake.models import Column, Edge, Table
 
 # Tests only run with a separate snowflake container deployed
 # TODO: Mock the DB connection: https://blog.devgenius.io/creating-a-mock-database-for-unittesting-in-python-is-easier-than-you-think-c458e747224b
+
 # @pytest.fixture
 # def connection() -> SnowflakeConnector:
 #     test_credentials = {
@@ -18,7 +21,6 @@ from grai_source_snowflake.models import Column, Edge, Table
 #         "account": "test",
 #         "warehouse": "test",
 #     }
-#
 #     connection = SnowflakeConnector(**test_credentials)
 #     return connection
 #

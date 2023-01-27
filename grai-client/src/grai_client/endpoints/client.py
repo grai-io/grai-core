@@ -7,7 +7,7 @@ import requests
 from multimethod import multimethod
 from pydantic import BaseModel
 
-from grai_client.authentication import APIKeyHeader, UserNameHeader, UserTokenHeader
+from grai_client.authentication import APIKeyHeader, UserTokenHeader
 from grai_client.endpoints.rest import delete, get, patch, post
 from grai_client.endpoints.utilities import response_status_check, serialize_obj
 from grai_client.schemas.schema import GraiType
@@ -29,9 +29,13 @@ class ClientOptions(BaseModel):
     request_args: Dict = {}
     headers: Dict = {}
 
+    @classmethod
+    def __hash__(cls):
+        return id(cls)
+
 
 class BaseClient(abc.ABC):
-    id = "base"
+    id: str = "base"
 
     def __init__(self, host: str, port: str):
         self.host = host
@@ -93,6 +97,7 @@ class BaseClient(abc.ABC):
                 "Authentication requires either a user token, api key, or username/password combination."
             )
 
+    @abc.abstractmethod
     def check_authentication(self) -> requests.Response:
         raise NotImplementedError(f"No authentication implemented for {type(self)}")
 

@@ -1,8 +1,8 @@
+from grai_schemas.v1 import EdgeV1, NodeV1
+
 from grai_client.endpoints.client import ClientOptions
 from grai_client.endpoints.rest import delete
 from grai_client.endpoints.v1.client import ClientV1
-from grai_client.schemas.edge import EdgeV1
-from grai_client.schemas.node import NodeV1
 
 
 @delete.register

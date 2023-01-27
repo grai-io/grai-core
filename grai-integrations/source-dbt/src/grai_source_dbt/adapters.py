@@ -1,11 +1,16 @@
 from typing import Any, Dict, List, Literal, Sequence, Union
 
-import grai_schemas.models as base_schemas
-from grai_client.schemas.edge import EdgeV1
-from grai_client.schemas.node import NodeV1
-from grai_client.schemas.schema import Schema
 from grai_schemas import config as grai_base_config
-from grai_schemas.models import DefaultValue, GraiNodeMetadata
+from grai_schemas.generics import DefaultValue
+from grai_schemas.schema import Schema
+from grai_schemas.v1 import EdgeV1, NodeV1
+from grai_schemas.v1.metadata.edges import EdgeTypeLabels, GenericEdgeMetadataV1
+from grai_schemas.v1.metadata.nodes import (
+    ColumnMetadata,
+    GenericNodeMetadataV1,
+    NodeTypeLabels,
+    TableMetadata,
+)
 from multimethod import multimethod
 
 from grai_source_dbt.models.nodes import Column, Edge, GraiNodeTypes, SupportedDBTTypes
@@ -22,29 +27,33 @@ def build_grai_metadata(current: Any, desired: Any) -> None:
 @build_grai_metadata.register
 def build_grai_metadata_from_column(
     current: Column, version: Literal["v1"] = "v1"
-) -> base_schemas.ColumnMetadata:
-    data = {"version": version, "node_type": "Column", "node_attributes": {}}
+) -> ColumnMetadata:
+    data = {
+        "version": version,
+        "node_type": NodeTypeLabels.column.value,
+        "node_attributes": {},
+    }
     if current.data_type is not None:
         data["node_attributes"]["data_type"] = current.data_type
 
-    return base_schemas.ColumnMetadata(**data)
+    return ColumnMetadata(**data)
 
 
 @build_grai_metadata.register
 def build_grai_metadata_from_node(
     current: SupportedDBTTypes, version: Literal["v1"] = "v1"
-) -> GraiNodeMetadata:
-    data = {"version": version, "node_type": "Table", "node_attributes": {}}
+) -> TableMetadata:
+    data = {"version": version, "node_type": NodeTypeLabels.table.value}
 
-    return base_schemas.TableMetadata(**data)
+    return TableMetadata(**data)
 
 
 @build_grai_metadata.register
 def build_grai_metadata_from_edge(
     current: Edge, version: Literal["v1"] = "v1"
-) -> base_schemas.GraiEdgeMetadata:
-    data = {"version": version}
-    return base_schemas.GraiEdgeMetadata(**data)
+) -> GenericEdgeMetadataV1:
+    data = {"version": version, "edge_type": EdgeTypeLabels.generic.value}
+    return GenericEdgeMetadataV1(**data)
 
 
 @multimethod
