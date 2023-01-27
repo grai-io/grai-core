@@ -1,7 +1,9 @@
+import uuid
+
 import pytest
 from grai_schemas.v1 import EdgeV1, NodeV1
 
-from connections.task_helpers import deactivate, get_node, update
+from connections.task_helpers import get_node, update
 from lineage.models import Edge, Node
 from workspaces.models import Workspace
 
@@ -109,25 +111,59 @@ class TestGetNode:
         assert str(e_info.value) == "Node matching query does not exist."
 
 
-class TestDeactivate:
-    @pytest.mark.django_db
-    def test_nodes(self, test_node_v1):
-        items = [test_node_v1]
+def mock_node(test_workspace):
+    return Node(
+        workspace=test_workspace,
+        name=str(uuid.uuid4()),
+        data_source="test",
+        metadata={"grai": {"node_type": "Node"}},
+    )
 
-        result = deactivate(items)
 
-        assert len(result) == 1
+def mock_node_schema(node):
 
-        assert result[0].spec.name == "node1"
-        assert result[0].spec.is_active == False
+    return NodeV1.from_spec(
+        {
+            "name": node.name,
+            "namespace": node.namespace,
+            "data_source": node.data_source,
+            "display_name": node.display_name,
+            "workspace": node.workspace.id,
+            "metadata": node.metadata,
+        }
+    )
 
-    @pytest.mark.django_db
-    def test_empty_list(self):
-        items = []
 
-        result = deactivate(items)
+def mock_edge(source, destination, test_workspace):
+    return Edge(
+        workspace=test_workspace,
+        name=str(uuid.uuid4()),
+        source=source,
+        destination=destination,
+        metadata={"grai": {"edge_type": "Edge"}},
+    )
 
-        assert len(result) == 0
+
+def mock_edge_schema(edge):
+    return EdgeV1.from_spec(
+        {
+            "name": edge.name,
+            "namespace": edge.namespace,
+            "data_source": edge.data_source,
+            "display_name": edge.display_name,
+            "source": {
+                "name": edge.source.name,
+                "namespace": edge.source.namespace,
+                "id": str(edge.source.id),
+            },
+            "destination": {
+                "name": edge.destination.name,
+                "namespace": edge.destination.namespace,
+                "id": str(edge.destination.id),
+            },
+            "metadata": edge.metadata,
+        }
+    )
 
 
 class TestUpdate:
@@ -138,8 +174,25 @@ class TestUpdate:
         update(test_workspace, items)
 
     @pytest.mark.django_db
-    def test_edges(self, test_workspace, test_edge_v1, test_edge):
-        items = [test_edge_v1]
+    def test_create_edges(self, test_workspace):
+        nodes = [mock_node(test_workspace) for _ in range(2)]
+        for node in nodes:
+            node.save()
+        edge = mock_edge(*nodes, test_workspace)
+        items = [mock_edge_schema(edge)]
+
+        update(test_workspace, items)
+
+    @pytest.mark.django_db
+    def test_update_edges(self, test_workspace):
+        nodes = [mock_node(test_workspace) for _ in range(2)]
+        for node in nodes:
+            node.save()
+        edge = mock_edge(*nodes, test_workspace)
+        edge.save()
+        updated_edge = mock_edge_schema(edge)
+        updated_edge.spec.data_source = "a_new_place"
+        items = [updated_edge]
 
         update(test_workspace, items)
 

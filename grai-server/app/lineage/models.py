@@ -32,10 +32,13 @@ class Node(TenantModel):
     # )
 
     def save(self, *args, **kwargs):
+        self.set_names()
+        super().save(*args, **kwargs)
+
+    def set_names(self, *args, **kwargs):
         if not self.display_name:
             self.display_name = self.name
-
-        super().save(*args, **kwargs)
+        return self
 
     def __str__(self):
         return f"{self.display_name}"
@@ -81,12 +84,15 @@ class Edge(TenantModel):
     # created_by = models.OneToOneField("users.User", on_delete=models.PROTECT)
 
     def save(self, *args, **kwargs):
+        self.set_names()
+        super().save(*args, **kwargs)
+
+    def set_names(self):
         if not self.name:
             self.name = str(self)
         if not self.display_name:
             self.display_name = self.name
-
-        super().save(*args, **kwargs)
+        return self
 
     def __str__(self):
         return f"{self.source} -> {self.destination}"
