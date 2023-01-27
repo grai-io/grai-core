@@ -21,31 +21,16 @@ export const GET_NODES_AND_EDGES = gql`
         namespace
         name
         display_name
-        is_active
         data_source
         metadata
       }
       edges {
         id
-        is_active
-        data_source
         source {
           id
-          namespace
-          name
-          display_name
-          data_source
-          is_active
-          metadata
         }
         destination {
           id
-          namespace
-          name
-          display_name
-          data_source
-          is_active
-          metadata
         }
         metadata
       }

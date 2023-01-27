@@ -13,11 +13,13 @@ export interface Error {
 
 interface Edge {
   id: string
-  data_source: string
-  is_active: boolean
-  source: Node
-  destination: Node
+  source: NodeId
+  destination: NodeId
   metadata: any
+}
+
+interface NodeId {
+  id: string
 }
 
 interface Node extends NodeType {

@@ -13,7 +13,6 @@ export interface GetNodesAndEdges_workspace_nodes {
   namespace: string;
   name: string;
   display_name: string;
-  is_active: boolean;
   data_source: string;
   metadata: any;
 }
@@ -21,30 +20,16 @@ export interface GetNodesAndEdges_workspace_nodes {
 export interface GetNodesAndEdges_workspace_edges_source {
   __typename: "Node";
   id: any;
-  namespace: string;
-  name: string;
-  display_name: string;
-  data_source: string;
-  is_active: boolean;
-  metadata: any;
 }
 
 export interface GetNodesAndEdges_workspace_edges_destination {
   __typename: "Node";
   id: any;
-  namespace: string;
-  name: string;
-  display_name: string;
-  data_source: string;
-  is_active: boolean;
-  metadata: any;
 }
 
 export interface GetNodesAndEdges_workspace_edges {
   __typename: "Edge";
   id: any;
-  is_active: boolean;
-  data_source: string;
   source: GetNodesAndEdges_workspace_edges_source;
   destination: GetNodesAndEdges_workspace_edges_destination;
   metadata: any;
