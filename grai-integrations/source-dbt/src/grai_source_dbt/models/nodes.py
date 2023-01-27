@@ -49,6 +49,11 @@ class Seed(DBTNode):
     tests: Optional[List[Test]] = []
 
 
+class Snapshot(DBTNode):
+    resource_type: Literal["snapshot"]
+    depends_on: NodeDeps = NodeDeps(nodes=[], macros=[])
+
+
 class Column(ID):
     name: str
     description: Optional[str]
@@ -90,7 +95,7 @@ class Column(ID):
         return hash((self.table_unique_id, self.name))
 
 
-SupportedDBTTypes = Union[Model, Source, Seed]
+SupportedDBTTypes = Union[Model, Source, Seed, Snapshot]
 GraiNodeTypes = Union[Model, Source, Seed, Column]
 
 

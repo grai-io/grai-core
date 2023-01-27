@@ -45,6 +45,7 @@ class DbtMaterializationType(str, Enum):
     incremental = "incremental"
     ephemeral = "ephemeral"
     seed = "seed"
+    snapshot = "snapshot"
 
 
 class NodeDeps(BaseModel):

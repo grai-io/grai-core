@@ -1026,21 +1026,16 @@ pydantic = ">=1.10.4,<2.0.0"
 
 [[package]]
 name = "grai-source-dbt"
-version = "0.0.11"
+version = "0.0.12"
 description = ""
 category = "main"
 optional = false
-python-versions = ">=3.8,<4.0"
-files = [
-    {file = "grai_source_dbt-0.0.11-py3-none-any.whl", hash = "sha256:68c1647def332cc894c8428f66b9e0d1975207c1aaa39d8a617c43c3532057e5"},
-    {file = "grai_source_dbt-0.0.11.tar.gz", hash = "sha256:c630aef3c3096efc03def45f12912897c1e09faac12d59f9673e6e5104a1ad5e"},
-]
+python-versions = "*"
+files = []
 
-[package.dependencies]
-grai-client = ">=0.2.0,<0.3.0"
-grai-schemas = ">=0.1.5,<0.2.0"
-networkx = ">=2.8.3,<3.0.0"
-pydantic = ">=1.9.1,<2.0.0"
+[package.source]
+type = "file"
+url = "../../grai-integrations/source-dbt/dist/grai_source_dbt-0.0.12-py3-none-any.whl"
 
 [[package]]
 name = "grai-source-postgres"
@@ -1298,25 +1293,6 @@ files = [
     {file = "mypy_extensions-0.4.3-py2.py3-none-any.whl", hash = "sha256:090fedd75945a69ae91ce1303b5824f428daf5a028d2f6ab8a299250a846f15d"},
     {file = "mypy_extensions-0.4.3.tar.gz", hash = "sha256:2d82818f5bb3e369420cb3c4060a7970edba416647068eb4c5343488a6c604a8"},
 ]
-
-[[package]]
-name = "networkx"
-version = "2.8.8"
-description = "Python package for creating and manipulating graphs and networks"
-category = "main"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "networkx-2.8.8-py3-none-any.whl", hash = "sha256:e435dfa75b1d7195c7b8378c3859f0445cd88c6b0375c181ed66823a9ceb7524"},
-    {file = "networkx-2.8.8.tar.gz", hash = "sha256:230d388117af870fce5647a3c52401fcf753e94720e6ea6b4197a5355648885e"},
-]
-
-[package.extras]
-default = ["matplotlib (>=3.4)", "numpy (>=1.19)", "pandas (>=1.3)", "scipy (>=1.8)"]
-developer = ["mypy (>=0.982)", "pre-commit (>=2.20)"]
-doc = ["nb2plots (>=0.6)", "numpydoc (>=1.5)", "pillow (>=9.2)", "pydata-sphinx-theme (>=0.11)", "sphinx (>=5.2)", "sphinx-gallery (>=0.11)", "texext (>=0.6.6)"]
-extra = ["lxml (>=4.6)", "pydot (>=1.4.2)", "pygraphviz (>=1.9)", "sympy (>=1.10)"]
-test = ["codecov (>=2.1)", "pytest (>=7.2)", "pytest-cov (>=4.0)"]
 
 [[package]]
 name = "oauthlib"
@@ -2258,4 +2234,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "7e2aba107f7d67bdbeb6c5508a7b1a97e5a4e5693841102fcf510d09be1d7033"
+content-hash = "d38ac38ed8cf0716c27ca8d7ab637b26a635231bc10356668f0312bb5dfeeb14"
