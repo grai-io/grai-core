@@ -1044,14 +1044,14 @@ pydantic = ">=1.9.1,<2.0.0"
 
 [[package]]
 name = "grai-source-postgres"
-version = "0.1.8"
+version = "0.1.9"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_source_postgres-0.1.8-py3-none-any.whl", hash = "sha256:27c1d76559f9857be8a05c5cd3c495d8e72adf5d0fdd2c50dbeafa0397c34042"},
-    {file = "grai_source_postgres-0.1.8.tar.gz", hash = "sha256:9e6933c88d2701d7e1bd0463bb09b367398bfc297aa3c5cac9277a61dd61d725"},
+    {file = "grai_source_postgres-0.1.9-py3-none-any.whl", hash = "sha256:66ffddae5e71ceb6b7f63466c5df6c10038075e04b22d8268ac3f50f3b9257a0"},
+    {file = "grai_source_postgres-0.1.9.tar.gz", hash = "sha256:8a6710fce609efbc48d7fb20957e201f5f269fe31ab88d849561085912457805"},
 ]
 
 [package.dependencies]
@@ -2258,4 +2258,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "d38ac38ed8cf0716c27ca8d7ab637b26a635231bc10356668f0312bb5dfeeb14"
+content-hash = "ac53dda8bc0af66064e6451950a2948fc7810588e7fd7b805bfdaeb3b9a31f95"
