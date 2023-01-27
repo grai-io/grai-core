@@ -157,7 +157,9 @@ def adapt_column_to_client(current: Column, version: Literal["v1"] = "v1") -> No
 
 
 def make_name(node1: GraiNodeTypes, node2: GraiNodeTypes) -> str:
-    return f"{node1.full_name} -> {node2.full_name}"
+    node1_name = f"{node1.namespace}:{node1.full_name}"
+    node2_name = f"{node2.namespace}:{node2.full_name}"
+    return f"{node1_name} -> {node2_name}"
 
 
 @adapt_to_client.register
