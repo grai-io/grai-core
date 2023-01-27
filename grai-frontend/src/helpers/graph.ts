@@ -16,7 +16,7 @@ export interface Node {
 }
 
 export interface GraiEdgeMetadata {
-  edge_type?: "TableToColumn" | "Edge" | null
+  edge_type?: "TableToColumn" | null
 }
 
 export interface Edge {
@@ -30,9 +30,6 @@ export interface Edge {
   metadata: {
     constraint_type?: string | null
     grai?: GraiEdgeMetadata | null
-    "grai-source-dbt"?: {
-      constraint_type?: string | null
-    } | null
   } | null
 }
 
@@ -46,19 +43,18 @@ export type Table<N extends Node> = N &
     destinationTables: BaseTable<N>[]
   }
 
-export const nodeIsTable = (node: Node) => true
-// node.metadata?.grai?.node_type === "Table" ||
-// node.metadata?.node_type === "Table" ||
-// node.metadata?.node_type === "BASE TABLE"
-
-//edge.metadata?.grai?.edge_type === "Edge" ||
+export const nodeIsTable = (node: Node) =>
+  node.metadata?.grai?.node_type === "Table" ||
+  node.metadata?.node_type === "Table" ||
+  node.metadata?.node_type === "BASE TABLE"
 
 const tableColumns = <N extends Node>(table: N, nodes: N[], edges: Edge[]) =>
   edges
     .filter(
       edge =>
         edge.source.id === table.id &&
-        edge.metadata?.["grai-source-dbt"]?.constraint_type === "belongs_to2"
+        (edge.metadata?.grai?.edge_type === "TableToColumn" ||
+          edge.metadata?.constraint_type === "belongs_to")
     )
     .map(edge => nodes.find(node => node.id === edge.destination.id))
     .filter(notEmpty)
