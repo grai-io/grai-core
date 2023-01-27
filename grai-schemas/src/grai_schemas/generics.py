@@ -1,8 +1,10 @@
+import abc
+from dataclasses import dataclass
 from typing import Any, Dict, Literal, Optional, Union
 from uuid import UUID
 
 from grai_schemas.utilities import merge_dicts
-from pydantic import BaseModel, root_validator
+from pydantic import BaseModel, dataclasses, root_validator, validator
 
 
 class HashableBaseModel(BaseModel):
@@ -26,7 +28,7 @@ class PlaceHolderSchema(GraiBaseModel):
     is_active: Optional[bool] = True
 
     @root_validator(pre=True)
-    def _(cls, values):
+    def root_validator_of_placeholder(cls, values):
         message = (
             "Something is wrong... I can feel it 😡. You've reached a placeholder schema - "
             "most likely the `version` of your config file doesn't exist yet."
@@ -43,15 +45,16 @@ class DefaultValue(GraiBaseModel):
     default_value: Optional[Any] = None
 
     @root_validator()
-    def validate(cls, values):
+    def validate_default_value_root(cls, values):
         if isinstance(values, dict):
             has_default_value = values.get("has_default_value", None)
             data_type = values.get("data_type", None)
             default_value = values.get("default_value", None)
-        elif isinstance(values, DefaultValue):
-            has_default_value = values.has_default_value
-            data_type = values.data_type
-            default_value = values.default_value
+        # elif isinstance(values, DefaultValue):
+        #     breakpoint()
+        #     has_default_value = values.has_default_value
+        #     data_type = values.data_type
+        #     default_value = values.default_value
         else:
             raise NotImplementedError(
                 f"No available implementation to produce a DefaultValue from a {type(values)}"
@@ -76,3 +79,17 @@ class DefaultValue(GraiBaseModel):
 
 
 # ----
+
+
+class PackageConfig(BaseModel):
+    integration_name: str
+    metadata_id: str
+
+    @validator("metadata_id")
+    def metadata_id_validation(cls, value):
+        assert "-" not in value
+        return value
+
+    class Config:
+        validate_assignment = True
+        validate_all = True

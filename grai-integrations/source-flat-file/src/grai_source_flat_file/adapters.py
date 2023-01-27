@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Literal, Sequence, Type, Union
 from grai_client.schemas.schema import Schema
 from grai_schemas import config as base_config
 from grai_schemas.generics import DefaultValue
-from grai_schemas.v1.metadata.edges import EdgeTypeLabels, GenericEdgeMetadataV1
+from grai_schemas.v1.metadata.edges import EdgeTypeLabels, TableToColumnMetadata
 from grai_schemas.v1.metadata.nodes import ColumnMetadata, NodeTypeLabels, TableMetadata
 from multimethod import multimethod
 
@@ -50,11 +50,11 @@ def build_grai_metadata_from_node(
 @build_grai_metadata.register
 def build_grai_metadata_from_edge(
     current: Edge, version: Literal["v1"] = "v1"
-) -> GenericEdgeMetadataV1:
+) -> TableToColumnMetadata:
     data = {
         "version": version,
     }
-    return GenericEdgeMetadataV1(edge_type=EdgeTypeLabels.generic.value, **data)
+    return TableToColumnMetadata(edge_type=EdgeTypeLabels.table_to_column.value, **data)
 
 
 @multimethod

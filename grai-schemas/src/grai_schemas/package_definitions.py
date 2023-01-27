@@ -1,6 +1,9 @@
-from dataclasses import dataclass
+from grai_schemas.generics import PackageConfig
 
 
-@dataclass
-class config:
+class Config(PackageConfig):
+    integration_name = "grai-schemas"
     metadata_id = "grai"
+
+
+config = Config()

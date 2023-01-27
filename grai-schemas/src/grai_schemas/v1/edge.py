@@ -31,11 +31,11 @@ class BaseSpec(GraiBaseModel):
         return f"Edge[Node({self.source}) -> Node({self.destination})]"
 
 
-class NamedSpec(BaseSpec, EdgeNamedID):
+class NamedSpec(EdgeNamedID, BaseSpec):
     pass
 
 
-class IDSpec(BaseSpec, EdgeUuidID):
+class IDSpec(EdgeUuidID, BaseSpec):
     pass
 
 
