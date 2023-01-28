@@ -2,8 +2,12 @@ import React, { useState } from "react"
 import BaseGraph from "./BaseGraph"
 import { Edge as RFEdge, Node as RFNode } from "reactflow"
 import notEmpty from "helpers/notEmpty"
-import { Node as NodeType } from "helpers/graph"
-import { Edge, EnhancedTable } from "helpers/graph2"
+import { Edge, EnhancedTable } from "helpers/graph"
+
+export interface GraiNodeMetadata {
+  node_type?: "Table" | "Column" | null
+  table_name?: string | null
+}
 
 export interface Error {
   source: string
@@ -17,12 +21,15 @@ interface Column {
   name: string
 }
 
-interface Table extends EnhancedTable, NodeType {
+interface Table extends EnhancedTable {
   id: string
   name: string
   display_name: string
   data_source: string
   columns: Column[]
+  metadata: {
+    grai?: GraiNodeMetadata | null
+  } | null
 }
 
 type GraphProps = {

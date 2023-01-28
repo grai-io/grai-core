@@ -7,7 +7,7 @@ import TableContent from "components/tables/TableContent"
 import GraphError from "components/utils/GraphError"
 import PageLayout from "components/layout/PageLayout"
 import { GetTable, GetTableVariables } from "./__generated__/GetTable"
-import { tableToEnhancedTable } from "helpers/graph2"
+import { tableToEnhancedTable } from "helpers/graph"
 
 export const GET_TABLE = gql`
   query GetTable($workspaceId: ID!, $tableId: ID!) {

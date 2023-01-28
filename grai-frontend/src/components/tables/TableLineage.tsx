@@ -10,7 +10,7 @@ import {
   GetTablesAndEdgesTableLineage,
   GetTablesAndEdgesTableLineageVariables,
 } from "./__generated__/GetTablesAndEdgesTableLineage"
-import { tablesToEnhancedTables } from "helpers/graph2"
+import { tablesToEnhancedTables } from "helpers/graph"
 
 const GET_TABLES_AND_EDGES = gql`
   query GetTablesAndEdgesTableLineage($workspaceId: ID!) {
