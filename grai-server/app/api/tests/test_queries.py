@@ -82,7 +82,7 @@ async def test_workspace_no_workspace(test_context):
 
     assert (
         str(result.errors)
-        == "[GraphQLError('LimitedWorkspace matching query does not exist.', locations=[SourceLocation(line=3, column=13)], path=['workspace'])]"
+        == "[GraphQLError('Workspace matching query does not exist.', locations=[SourceLocation(line=3, column=13)], path=['workspace'])]"
     )
     assert result.data is None
 

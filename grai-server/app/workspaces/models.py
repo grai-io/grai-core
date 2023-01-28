@@ -1,14 +1,27 @@
 import uuid
 
 from django.db import models
+from django_multitenant.mixins import TenantManagerMixin
 from django_multitenant.models import TenantModel
 from rest_framework_api_key.models import AbstractAPIKey, BaseAPIKeyManager
 
 from .utils import get_current_user
 
 
+class WorkspaceManager(TenantManagerMixin, models.Manager):
+    def get_queryset(self):
+        user = get_current_user()
+
+        if user:
+            return super().get_queryset().filter(memberships__user_id=user.id)
+
+        return super().get_queryset()
+
+
 class Workspace(TenantModel):
     tenant_id = "id"
+
+    objects = WorkspaceManager()
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
@@ -22,23 +35,6 @@ class Workspace(TenantModel):
         indexes = [
             models.Index(fields=["name"]),
         ]
-
-
-class LimitedWorkspaceManager(models.Manager):
-    def get_queryset(self):
-        user = get_current_user()
-
-        if user:
-            return super().get_queryset().filter(memberships__user_id=user.id)
-
-        return super().get_queryset()
-
-
-class LimitedWorkspace(Workspace):
-    objects = LimitedWorkspaceManager()
-
-    class Meta:
-        proxy = True
 
 
 class Membership(TenantModel):

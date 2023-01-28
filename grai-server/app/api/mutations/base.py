@@ -180,7 +180,7 @@ class Mutation:
         workspace.name = name
         await sync_to_async(workspace.save)()
 
-        return Workspace(**model_to_dict(workspace), id=workspace.id, edges=None, connections=None, api_keys=None)
+        return workspace
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def createMembership(
