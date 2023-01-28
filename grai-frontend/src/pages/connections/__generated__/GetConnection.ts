@@ -75,7 +75,7 @@ export interface GetConnection_workspace_connection {
   name: string;
   connector: GetConnection_workspace_connection_connector;
   metadata: any;
-  schedules: any;
+  schedules: any | null;
   is_active: boolean;
   created_at: any;
   updated_at: any;

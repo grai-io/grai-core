@@ -13,7 +13,7 @@ export interface UpdateConnectionSchedule_updateConnection {
   namespace: string;
   name: string;
   metadata: any;
-  schedules: any;
+  schedules: any | null;
   is_active: boolean;
   created_at: any;
   updated_at: any;

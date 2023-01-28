@@ -3,11 +3,11 @@ from typing import List, Optional
 
 import strawberry
 import strawberry_django
+from django.db.models import Prefetch
 from strawberry.scalars import JSON
 from strawberry_django.filters import FilterLookup
 from strawberry_django_plus import gql
 from strawberry_django_plus.gql import auto
-from django.db.models import Prefetch
 
 from connections.models import Connection as ConnectionModel
 from connections.models import Connector as ConnectorModel
@@ -17,8 +17,8 @@ from lineage.models import Edge as EdgeModel
 from lineage.models import Node
 from lineage.models import Node as NodeModel
 from users.models import User as UserModel
-from workspaces.models import Membership as MembershipModel
 from workspaces.models import LimitedWorkspace as LimitedWorkspaceModel
+from workspaces.models import Membership as MembershipModel
 from workspaces.models import WorkspaceAPIKey as WorkspaceAPIKeyModel
 
 
@@ -191,7 +191,7 @@ class Connection:
     namespace: auto
     name: auto
     metadata: JSON
-    schedules: JSON
+    schedules: Optional[JSON]
     is_active: auto
     created_at: auto
     updated_at: auto

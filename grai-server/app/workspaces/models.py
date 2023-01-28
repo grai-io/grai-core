@@ -3,6 +3,7 @@ import uuid
 from django.db import models
 from django_multitenant.models import TenantModel
 from rest_framework_api_key.models import AbstractAPIKey, BaseAPIKeyManager
+
 from .utils import get_current_user
 
 
@@ -34,6 +35,8 @@ class LimitedWorkspaceManager(models.Manager):
 
 
 class LimitedWorkspace(Workspace):
+    objects = LimitedWorkspaceManager()
+
     class Meta:
         proxy = True
 
