@@ -287,11 +287,13 @@ class Workspace:
 
     @gql.django.field
     def table(self, pk: strawberry.ID) -> Table:
-        return NodeModel.objects.get(id=pk, metadata__grai__node_type="Table")
+        return NodeModel.objects.filter(id=pk, workspace_id=self.id, metadata__grai__node_type="Table")
 
     @gql.django.field
     def other_edges(self) -> List[Edge]:
-        return EdgeModel.objects.filter(workspace_id=self.id).exclude(metadata__grai__edge_type="TableToColumn")
+        return EdgeModel.objects.filter(workspace_id=self.id).exclude(
+            metadata__has_key="grai.edge_type", metadata__grai__edge_type="TableToColumn"
+        )
 
 
 @gql.django.filters.filter(MembershipModel, lookups=True)

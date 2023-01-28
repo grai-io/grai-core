@@ -1,7 +1,7 @@
 import { GraphQLError } from "graphql"
 import React from "react"
 import { renderWithMocks, renderWithRouter, screen, waitFor } from "testing"
-import Graph, { GET_NODES_AND_EDGES } from "./Graph"
+import Graph, { GET_TABLES_AND_EDGES } from "./Graph"
 
 const sourceNode = {
   id: "1",
@@ -47,7 +47,7 @@ const columnNode = {
 
 const mock = {
   request: {
-    query: GET_NODES_AND_EDGES,
+    query: GET_TABLES_AND_EDGES,
     variables: {
       workspaceId: "",
     },
@@ -56,8 +56,8 @@ const mock = {
     data: {
       workspace: {
         id: "1",
-        nodes: [sourceNode, destinationNode, columnNode],
-        edges: [
+        tables: [sourceNode, destinationNode, columnNode],
+        other_edges: [
           {
             id: "1",
             is_active: true,
@@ -150,7 +150,7 @@ test("renders with limitGraph", async () => {
 test("error", async () => {
   const mock = {
     request: {
-      query: GET_NODES_AND_EDGES,
+      query: GET_TABLES_AND_EDGES,
       variables: {
         workspaceId: "",
       },
@@ -170,7 +170,7 @@ test("error", async () => {
 test("no nodes", async () => {
   const mock = {
     request: {
-      query: GET_NODES_AND_EDGES,
+      query: GET_TABLES_AND_EDGES,
       variables: {
         workspaceId: "",
       },
@@ -179,8 +179,8 @@ test("no nodes", async () => {
       data: {
         workspace: {
           id: "1",
-          nodes: null,
-          edges: null,
+          tables: null,
+          other_edges: null,
         },
       },
     },

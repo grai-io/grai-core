@@ -8,6 +8,7 @@ import {
   Button,
   Box,
 } from "@mui/material"
+import NodeDetailRow from "components/nodes/NodeDetailRow"
 import React from "react"
 // import TableColumns from "../tables/TableColumns"
 // import TableDetail from "../tables/TableDetail"
@@ -23,7 +24,12 @@ interface Column {
   display_name: string
 }
 
-export interface Table {
+interface BaseTable {
+  id: string
+  display_name: string
+}
+
+export interface TableInterface {
   id: string
   name: string
   namespace: string
@@ -31,10 +37,12 @@ export interface Table {
   display_name: string
   columns: Column[]
   metadata: any
+  sourceTables: BaseTable[]
+  destinationTables: BaseTable[]
 }
 
 type TableProfileProps = {
-  table: Table
+  table: TableInterface
 }
 
 const TableProfile: React.FC<TableProfileProps> = ({ table }) => {
@@ -47,10 +55,10 @@ const TableProfile: React.FC<TableProfileProps> = ({ table }) => {
           <TableDetail table={table} />
         </Grid>
         <Grid item md={6}>
-          {/* <Card variant="outlined" sx={{ borderRadius: 0, borderBottom: 0 }}>
+          <Card variant="outlined" sx={{ borderRadius: 0, borderBottom: 0 }}>
             <Table>
               <TableBody>
-                <TableDetailRow label="Upstream dependencies">
+                <NodeDetailRow label="Upstream dependencies">
                   {table.destinationTables.length > 0 ? (
                     <Stack>
                       {table.destinationTables?.map(table => (
@@ -67,8 +75,8 @@ const TableProfile: React.FC<TableProfileProps> = ({ table }) => {
                   ) : (
                     <Typography variant="body2">None</Typography>
                   )}
-                </TableDetailRow>
-                <TableDetailRow label="Downstream dependencies">
+                </NodeDetailRow>
+                <NodeDetailRow label="Downstream dependencies">
                   {table.sourceTables.length > 0 ? (
                     <Stack>
                       {table.sourceTables.map(table => (
@@ -85,10 +93,10 @@ const TableProfile: React.FC<TableProfileProps> = ({ table }) => {
                   ) : (
                     <Typography variant="body2">None</Typography>
                   )}
-                </TableDetailRow>
+                </NodeDetailRow>
               </TableBody>
             </Table>
-          </Card> */}
+          </Card>
         </Grid>
       </Grid>
       <TableColumns columns={table.columns} />
