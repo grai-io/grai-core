@@ -10,7 +10,6 @@ import {
   GetTablesAndEdgesTableLineage,
   GetTablesAndEdgesTableLineageVariables,
 } from "./__generated__/GetTablesAndEdgesTableLineage"
-import { tablesToEnhancedTables } from "helpers/graph"
 
 const GET_TABLES_AND_EDGES = gql`
   query GetTablesAndEdgesTableLineage($workspaceId: ID!) {
@@ -24,6 +23,16 @@ const GET_TABLES_AND_EDGES = gql`
         data_source
         metadata
         columns {
+          id
+          name
+          display_name
+        }
+        source_tables {
+          id
+          name
+          display_name
+        }
+        destination_tables {
           id
           name
           display_name
@@ -71,14 +80,12 @@ const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
 
   if (!tables) return <Alert>No tables found</Alert>
 
-  const enhancedTables = tablesToEnhancedTables(data.workspace.tables, edges)
-
-  const hiddenTables = enhancedTables.filter(t => {
+  const hiddenTables = tables.filter(t => {
     if (t.id === table.id) return false
 
     return !(
-      t.sourceTables.some(sourceTable => sourceTable.id === table.id) ||
-      t.destinationTables.some(sourceTable => sourceTable.id === table.id)
+      t.source_tables.some(sourceTable => sourceTable.id === table.id) ||
+      t.destination_tables.some(sourceTable => sourceTable.id === table.id)
     )
   })
 
@@ -92,7 +99,7 @@ const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
       }}
     >
       <Graph
-        tables={enhancedTables}
+        tables={tables}
         edges={edges}
         initialHidden={hiddenTables.map(n => n.id)}
       />

@@ -7,7 +7,6 @@ import TableContent from "components/tables/TableContent"
 import GraphError from "components/utils/GraphError"
 import PageLayout from "components/layout/PageLayout"
 import { GetTable, GetTableVariables } from "./__generated__/GetTable"
-import { tableToEnhancedTable } from "helpers/graph"
 
 export const GET_TABLE = gql`
   query GetTable($workspaceId: ID!, $tableId: ID!) {
@@ -26,29 +25,16 @@ export const GET_TABLE = gql`
           name
           display_name
         }
-      }
-      tables {
-        id
-        namespace
-        name
-        display_name
-        data_source
-        metadata
-        columns {
+        source_tables {
           id
           name
           display_name
         }
-      }
-      other_edges {
-        id
-        source {
+        destination_tables {
           id
+          name
+          display_name
         }
-        destination {
-          id
-        }
-        metadata
       }
     }
   }
@@ -74,16 +60,10 @@ const Table: React.FC = () => {
 
   if (!table) return <NotFound />
 
-  const enhancedTable = tableToEnhancedTable(
-    table,
-    data.workspace.tables,
-    data.workspace.other_edges
-  )
-
   return (
     <PageLayout>
       <TableHeader table={table} />
-      <TableContent table={enhancedTable} />
+      <TableContent table={table} />
     </PageLayout>
   )
 }

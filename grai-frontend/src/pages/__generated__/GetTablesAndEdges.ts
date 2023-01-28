@@ -13,6 +13,20 @@ export interface GetTablesAndEdges_workspace_tables_columns {
   name: string;
 }
 
+export interface GetTablesAndEdges_workspace_tables_source_tables {
+  __typename: "Table";
+  id: any;
+  name: string;
+  display_name: string;
+}
+
+export interface GetTablesAndEdges_workspace_tables_destination_tables {
+  __typename: "Table";
+  id: any;
+  name: string;
+  display_name: string;
+}
+
 export interface GetTablesAndEdges_workspace_tables {
   __typename: "Table";
   id: any;
@@ -22,6 +36,8 @@ export interface GetTablesAndEdges_workspace_tables {
   data_source: string;
   metadata: any;
   columns: GetTablesAndEdges_workspace_tables_columns[];
+  source_tables: GetTablesAndEdges_workspace_tables_source_tables[];
+  destination_tables: GetTablesAndEdges_workspace_tables_destination_tables[];
 }
 
 export interface GetTablesAndEdges_workspace_other_edges_source {

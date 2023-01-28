@@ -19,8 +19,8 @@ interface BaseNodeProps {
     data_source: string
     highlight: boolean
     columns: Column[]
-    hiddenSourceTables: string[]
-    hiddenDestinationTables: string[]
+    hiddensource_tables: string[]
+    hiddendestination_tables: string[]
     expanded: boolean
     onExpand: (value: boolean) => void
     onShow: (values: string[]) => void
@@ -55,15 +55,15 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
   }
 
   const handleShowHidden = () => {
-    data.onShow([...data.hiddenSourceTables, ...data.hiddenDestinationTables])
+    data.onShow([...data.hiddensource_tables, ...data.hiddendestination_tables])
     handleClose()
   }
   const handleShowSources = () => {
-    data.onShow(data.hiddenSourceTables)
+    data.onShow(data.hiddensource_tables)
     handleClose()
   }
   const handleShowDestinations = () => {
-    data.onShow(data.hiddenDestinationTables)
+    data.onShow(data.hiddendestination_tables)
     handleClose()
   }
 
@@ -96,13 +96,13 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
           isConnectable={false}
         />
         <Box sx={{ p: 2, py: 1 }}>
-          {data.hiddenDestinationTables.length > 0 && (
+          {data.hiddendestination_tables.length > 0 && (
             <HiddenTableButton
               position="left"
               onClick={handleShowDestinations}
             />
           )}
-          {data.hiddenSourceTables.length > 0 && (
+          {data.hiddensource_tables.length > 0 && (
             <HiddenTableButton position="right" onClick={handleShowSources} />
           )}
           <Box sx={{ display: "flex" }}>
@@ -197,13 +197,13 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
         </MenuItem>
         <MenuItem
           onClick={handleShowDestinations}
-          disabled={data.hiddenDestinationTables.length === 0}
+          disabled={data.hiddendestination_tables.length === 0}
         >
           Show upstream dependents
         </MenuItem>
         <MenuItem
           onClick={handleShowSources}
-          disabled={data.hiddenSourceTables.length === 0}
+          disabled={data.hiddensource_tables.length === 0}
         >
           Show downstream dependents
         </MenuItem>

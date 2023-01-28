@@ -65,12 +65,12 @@ const Graph: React.FC<GraphProps> = ({
         data_source: table.data_source,
         metadata: table.metadata,
         columns: table.columns,
-        sourceTables: table.sourceTables,
-        hiddenSourceTables: table.sourceTables
+        source_tables: table.source_tables,
+        hiddensource_tables: table.source_tables
           .filter(t => hidden.includes(t.id))
           .map(t => t.id),
-        destinationTables: table.destinationTables,
-        hiddenDestinationTables: table.destinationTables
+        destination_tables: table.destination_tables,
+        hiddendestination_tables: table.destination_tables
           .filter(t => hidden.includes(t.id))
           .map(t => t.id),
 

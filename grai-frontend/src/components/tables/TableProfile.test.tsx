@@ -19,8 +19,8 @@ const table = {
       node_type: "Table",
     },
   },
-  sourceTables: [other_table],
-  destinationTables: [other_table],
+  source_tables: [other_table],
+  destination_tables: [other_table],
 }
 
 test("renders", async () => {

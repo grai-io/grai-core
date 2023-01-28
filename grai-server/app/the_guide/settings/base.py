@@ -32,7 +32,7 @@ def get_server_version():
 
 
 SERVER_VERSION = get_server_version()
-DEBUG = config("DEBUG", default=False, cast=bool)
+DEBUG = config("DEBUG", default=True, cast=bool)
 TEMPLATE_DEBUG = config("TEMPLATE_DEBUG", default=DEBUG, cast=bool)
 
 SERVER_HOST = config("SERVER_HOST", default="localhost", cast=str)

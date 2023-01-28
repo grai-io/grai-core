@@ -33,8 +33,8 @@ export interface TableInterface {
   display_name: string
   columns: Column[]
   metadata: any | null
-  sourceTables: BaseTable[]
-  destinationTables: BaseTable[]
+  source_tables: BaseTable[]
+  destination_tables: BaseTable[]
 }
 
 type TableProfileProps = {
@@ -55,9 +55,9 @@ const TableProfile: React.FC<TableProfileProps> = ({ table }) => {
             <Table>
               <TableBody>
                 <NodeDetailRow label="Upstream dependencies">
-                  {table.destinationTables.length > 0 ? (
+                  {table.destination_tables.length > 0 ? (
                     <Stack>
-                      {table.destinationTables?.map(table => (
+                      {table.destination_tables?.map(table => (
                         <Box key={table.id}>
                           <Button
                             component={Link}
@@ -73,9 +73,9 @@ const TableProfile: React.FC<TableProfileProps> = ({ table }) => {
                   )}
                 </NodeDetailRow>
                 <NodeDetailRow label="Downstream dependencies">
-                  {table.sourceTables.length > 0 ? (
+                  {table.source_tables.length > 0 ? (
                     <Stack>
-                      {table.sourceTables.map(table => (
+                      {table.source_tables.map(table => (
                         <Box key={table.id}>
                           <Button
                             component={Link}

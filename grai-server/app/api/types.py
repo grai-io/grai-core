@@ -230,6 +230,128 @@ class Table(Node):
     def columns(self) -> List[Column]:
         return list(set([edge.destination for edge in self.edges_list]))
 
+    @gql.django.field(
+        prefetch_related=(
+            Prefetch(
+                "source_edges",
+                queryset=EdgeModel.objects.exclude(metadata__grai__edge_type="TableToColumn").select_related(
+                    "destination"
+                ),
+                to_attr="sources_list",
+            ),
+            Prefetch(
+                "source_edges",
+                queryset=EdgeModel.objects.filter(metadata__grai__edge_type="TableToColumn")
+                .select_related("destination")
+                .prefetch_related(
+                    Prefetch(
+                        "destination__source_edges",
+                        queryset=EdgeModel.objects.exclude(metadata__grai__edge_type="TableToColumn")
+                        .select_related("destination")
+                        .prefetch_related(
+                            Prefetch(
+                                "destination__destination_edges",
+                                queryset=EdgeModel.objects.filter(
+                                    metadata__grai__edge_type="TableToColumn"
+                                ).select_related("source"),
+                                to_attr="tables",
+                            )
+                        ),
+                        to_attr="sources_list",
+                    ),
+                    Prefetch(
+                        "destination__destination_edges",
+                        queryset=EdgeModel.objects.exclude(metadata__grai__edge_type="TableToColumn")
+                        .select_related("source")
+                        .prefetch_related(
+                            Prefetch(
+                                "source__destination_edges",
+                                queryset=EdgeModel.objects.filter(
+                                    metadata__grai__edge_type="TableToColumn"
+                                ).select_related("source"),
+                                to_attr="tables",
+                            )
+                        ),
+                        to_attr="destination_list",
+                    ),
+                ),
+                to_attr="columns",
+            ),
+        )
+    )
+    def source_tables(self) -> List["Table"]:
+        tables = []
+
+        for source in self.sources_list:
+            tables.append(source.destination)
+
+        for column in self.columns:
+            for source in column.destination.sources_list:
+                for table in source.destination.tables:
+                    tables.append(table.source)
+
+        return list(set(tables))
+
+    @gql.django.field(
+        prefetch_related=(
+            Prefetch(
+                "destination_edges",
+                queryset=EdgeModel.objects.exclude(metadata__grai__edge_type="TableToColumn").select_related("source"),
+                to_attr="destinations_list",
+            ),
+            Prefetch(
+                "source_edges",
+                queryset=EdgeModel.objects.filter(metadata__grai__edge_type="TableToColumn")
+                .select_related("destination")
+                .prefetch_related(
+                    Prefetch(
+                        "destination__source_edges",
+                        queryset=EdgeModel.objects.exclude(metadata__grai__edge_type="TableToColumn")
+                        .select_related("destination")
+                        .prefetch_related(
+                            Prefetch(
+                                "destination__destination_edges",
+                                queryset=EdgeModel.objects.filter(
+                                    metadata__grai__edge_type="TableToColumn"
+                                ).select_related("source"),
+                                to_attr="tables",
+                            )
+                        ),
+                        to_attr="sources_list",
+                    ),
+                    Prefetch(
+                        "destination__destination_edges",
+                        queryset=EdgeModel.objects.exclude(metadata__grai__edge_type="TableToColumn")
+                        .select_related("source")
+                        .prefetch_related(
+                            Prefetch(
+                                "source__destination_edges",
+                                queryset=EdgeModel.objects.filter(
+                                    metadata__grai__edge_type="TableToColumn"
+                                ).select_related("source"),
+                                to_attr="tables",
+                            )
+                        ),
+                        to_attr="destination_list",
+                    ),
+                ),
+                to_attr="columns2",
+            ),
+        )
+    )
+    def destination_tables(self) -> List["Table"]:
+        tables = []
+
+        for destination in self.destinations_list:
+            tables.append(destination.source)
+
+        for column in self.columns2:
+            for destination in column.destination.destination_list:
+                for table in destination.source.tables:
+                    tables.append(table.source)
+
+        return list(set(tables))
+
 
 @gql.django.filters.filter(WorkspaceModel)
 class WorkspaceFilter:
