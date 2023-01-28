@@ -29,13 +29,12 @@ RUN apt update \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-#COPY pyproject.toml poetry.lock ./
+COPY pyproject.toml poetry.lock ./
 
 RUN pip install "poetry==$POETRY_VERSION"
 RUN poetry config virtualenvs.create false  \
     && poetry lock --no-update \
     && poetry install --no-interaction --no-ansi --no-root --only main \
-#     && poetry run pip install grai-source-snowflake --no-use-pep517 \
     && rm -rf ~/.cache/pypoetry/cache \
     && rm -rf ~/.cache/pypoetry/artifacts
 
