@@ -35,20 +35,24 @@ export const tableToEnhancedTable = <T extends Table>(
   tables: T[],
   edges: Edge[]
 ): EnhancedTable & T => {
-  const sourceTables = tables.filter(t =>
-    edges.some(
-      e =>
-        tableOrColumnsMatch(table, e.source.id) &&
-        tableOrColumnsMatch(t, e.destination.id)
+  const sourceTables = tables
+    .filter(t => t.id !== table.id)
+    .filter(t =>
+      edges.some(
+        e =>
+          tableOrColumnsMatch(table, e.source.id) &&
+          tableOrColumnsMatch(t, e.destination.id)
+      )
     )
-  )
-  const destinationTables = tables.filter(t =>
-    edges.some(
-      e =>
-        tableOrColumnsMatch(table, e.destination.id) &&
-        tableOrColumnsMatch(t, e.source.id)
+  const destinationTables = tables
+    .filter(t => t.id !== table.id)
+    .filter(t =>
+      edges.some(
+        e =>
+          tableOrColumnsMatch(table, e.destination.id) &&
+          tableOrColumnsMatch(t, e.source.id)
+      )
     )
-  )
 
   return { ...table, sourceTables, destinationTables }
 }

@@ -1,6 +1,5 @@
 import { Box } from "@mui/material"
 import React from "react"
-import { Edge, Table as GraphTable } from "helpers/graph"
 import TableLineage from "../../components/tables/TableLineage"
 import TableProfile, { TableInterface } from "./TableProfile"
 import Tabs from "components/tabs/Tabs"

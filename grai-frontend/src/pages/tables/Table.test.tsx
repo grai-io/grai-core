@@ -48,7 +48,7 @@ test("not found", async () => {
           id: "1",
           table: null,
           tables: [],
-          edges: [],
+          other_edges: [],
         },
       },
     },

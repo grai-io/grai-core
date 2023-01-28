@@ -3,34 +3,6 @@ import React from "react"
 import { renderWithMocks, renderWithRouter, screen, waitFor } from "testing"
 import Graph, { GET_TABLES_AND_EDGES } from "./Graph"
 
-const sourceNode = {
-  id: "1",
-  namespace: "default",
-  name: "N1",
-  display_name: "N1",
-  is_active: true,
-  data_source: "test",
-  metadata: {
-    grai: {
-      node_type: "Table",
-    },
-  },
-}
-
-const destinationNode = {
-  id: "2",
-  namespace: "default",
-  name: "N2",
-  display_name: "N2 Node",
-  is_active: true,
-  data_source: "test",
-  metadata: {
-    grai: {
-      node_type: "Table",
-    },
-  },
-}
-
 const columnNode = {
   id: "3",
   namespace: "default",
@@ -45,6 +17,36 @@ const columnNode = {
   },
 }
 
+const sourceTable = {
+  id: "1",
+  namespace: "default",
+  name: "N1",
+  display_name: "N1",
+  is_active: true,
+  data_source: "test",
+  metadata: {
+    grai: {
+      node_type: "Table",
+    },
+  },
+  columns: [columnNode],
+}
+
+const destinationTable = {
+  id: "2",
+  namespace: "default",
+  name: "N2",
+  display_name: "N2 Node",
+  is_active: true,
+  data_source: "test",
+  metadata: {
+    grai: {
+      node_type: "Table",
+    },
+  },
+  columns: [],
+}
+
 const mock = {
   request: {
     query: GET_TABLES_AND_EDGES,
@@ -56,24 +58,24 @@ const mock = {
     data: {
       workspace: {
         id: "1",
-        tables: [sourceNode, destinationNode, columnNode],
+        tables: [sourceTable, destinationTable],
         other_edges: [
           {
             id: "1",
             is_active: true,
             data_source: "test",
-            source: sourceNode,
-            destination: destinationNode,
+            source: sourceTable,
+            destination: destinationTable,
             metadata: { grai: { constraint_type: "dbt_model" } },
           },
-          {
-            id: "2",
-            is_active: true,
-            data_source: "test",
-            source: sourceNode,
-            destination: columnNode,
-            metadata: { grai: { constraint_type: "TableToColumn" } },
-          },
+          // {
+          //   id: "2",
+          //   is_active: true,
+          //   data_source: "test",
+          //   source: sourceNode,
+          //   destination: columnNode,
+          //   metadata: { grai: { constraint_type: "TableToColumn" } },
+          // },
         ],
       },
     },
@@ -189,6 +191,6 @@ test("no nodes", async () => {
   renderWithMocks(<Graph />, [mock])
 
   await waitFor(() => {
-    expect(screen.getAllByText("No nodes found")).toBeTruthy()
+    expect(screen.getAllByText("No tables found")).toBeTruthy()
   })
 })

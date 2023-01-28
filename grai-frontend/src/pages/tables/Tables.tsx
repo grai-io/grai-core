@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { gql, useQuery } from "@apollo/client"
-import NodesHeader from "components/nodes/NodesHeader"
+import TablesHeader from "components/tables/TablesHeader"
 import { useParams } from "react-router-dom"
 import { Box } from "@mui/material"
 import GraphError from "components/utils/GraphError"
@@ -61,7 +61,7 @@ const Tables: React.FC = () => {
 
   return (
     <PageLayout>
-      <NodesHeader
+      <TablesHeader
         search={search}
         onSearch={setSearch}
         onRefresh={handleRefresh}
