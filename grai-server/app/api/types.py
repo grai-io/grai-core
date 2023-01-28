@@ -7,6 +7,7 @@ from strawberry.scalars import JSON
 from strawberry_django.filters import FilterLookup
 from strawberry_django_plus import gql
 from strawberry_django_plus.gql import auto
+from django.db.models import Prefetch
 
 from connections.models import Connection as ConnectionModel
 from connections.models import Connector as ConnectorModel
@@ -230,12 +231,17 @@ class Column(Node):
 
 @gql.django.type(NodeModel, order=NodeOrder, filters=NodeFilter, pagination=True)
 class Table(Node):
-    @gql.django.field
-    def columns(self) -> List[Column]:
-        return NodeModel.objects.filter(
-            destination_edges__source_id=self.id,
-            destination_edges__metadata__grai__edge_type="TableToColumn",
+    @gql.django.field(
+        prefetch_related=Prefetch(
+            "source_edges",
+            queryset=EdgeModel.objects.filter(
+                metadata__grai__edge_type="TableToColumn"
+            ).select_related("destination"),
+            to_attr="edges_list",
         )
+    )
+    def columns(self) -> List[Column]:
+        return list(set([edge.destination for edge in self.edges_list]))
 
 
 @gql.django.filters.filter(WorkspaceModel)
