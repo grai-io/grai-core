@@ -30,6 +30,8 @@ const sourceTable = {
     },
   },
   columns: [columnNode],
+  source_tables: [],
+  destination_tables: [],
 }
 
 const destinationTable = {
@@ -45,6 +47,8 @@ const destinationTable = {
     },
   },
   columns: [],
+  source_tables: [],
+  destination_tables: [],
 }
 
 const mock = {
