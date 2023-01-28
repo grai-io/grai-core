@@ -16,7 +16,7 @@ export const GET_TABLES_AND_EDGES = gql`
   query GetTablesAndEdges($workspaceId: ID!) {
     workspace(pk: $workspaceId) {
       id
-      tables {
+      tables(pagination: { offset: 0, limit: 100 }) {
         id
         namespace
         name

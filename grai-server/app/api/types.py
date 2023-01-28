@@ -8,6 +8,7 @@ from strawberry.scalars import JSON
 from strawberry_django.filters import FilterLookup
 from strawberry_django_plus import gql
 from strawberry_django_plus.gql import auto
+from strawberry_django.pagination import OffsetPaginationInput
 
 from connections.models import Connection as ConnectionModel
 from connections.models import Connector as ConnectorModel
@@ -279,8 +280,15 @@ class Workspace:
     updated_at: auto
 
     @gql.django.field
-    def tables(self) -> List[Table]:
-        return NodeModel.objects.filter(workspace_id=self.id, metadata__grai__node_type="Table")
+    def tables(self, pagination: Optional[OffsetPaginationInput] = None) -> List[Table]:
+        query_set = NodeModel.objects.filter(workspace_id=self.id, metadata__grai__node_type="Table")
+
+        if pagination:
+            start = pagination.offset
+            stop = start + pagination.limit
+            return query_set[start:stop]
+
+        return query_set
 
     @gql.django.field
     def table(self, pk: strawberry.ID) -> Table:
