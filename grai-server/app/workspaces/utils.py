@@ -1,6 +1,6 @@
 try:
     from threading import local
-except ImportError:
+except ImportError:  # pragma: no cover
     from django.utils._threading_local import local
 
 
