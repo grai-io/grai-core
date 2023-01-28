@@ -1,27 +1,17 @@
 import { Card, Table, TableBody } from "@mui/material"
-import NodeDetailRow from "components/nodes/NodeDetailRow"
+import NodeDetailRow from "components/layout/NodeDetailRow"
+import valueToString from "helpers/valueToString"
 import React from "react"
 
 interface TableInterface {
   name: string
   namespace: string
   data_source: string
-  metadata: any
+  metadata?: any | null
 }
 
 type TableDetailProps = {
   table: TableInterface
-}
-
-const valueToString = (value: any): string => {
-  switch (typeof value) {
-    case "string":
-      return value
-    case "boolean":
-      return value ? "yes" : "no"
-  }
-
-  return JSON.stringify(value)
 }
 
 const TableDetail: React.FC<TableDetailProps> = ({ table }) => (
@@ -34,9 +24,10 @@ const TableDetail: React.FC<TableDetailProps> = ({ table }) => (
         <NodeDetailRow label="Name" value={table.name} />
         <NodeDetailRow label="Namespace" value={table.namespace} />
         <NodeDetailRow label="Data Source" value={table.data_source} />
-        {Object.entries(table.metadata).map(([key, value]) => (
-          <NodeDetailRow key={key} label={key} value={valueToString(value)} />
-        ))}
+        {table.metadata &&
+          Object.entries(table.metadata).map(([key, value]) => (
+            <NodeDetailRow key={key} label={key} value={valueToString(value)} />
+          ))}
       </TableBody>
     </Table>
   </Card>

@@ -67,6 +67,23 @@ test("refresh", async () => {
   await waitFor(() => {})
 })
 
+test("click row", async () => {
+  const user = userEvent.setup()
+
+  const { container } = renderWithRouter(<Tables />, {
+    routes: ["/:tableId"],
+  })
+
+  await waitFor(() => {
+    screen.getAllByText("Hello World")
+  })
+
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+  await user.click(container.querySelectorAll("tbody > tr")[0])
+
+  expect(screen.getByText("New Page")).toBeTruthy()
+})
+
 test("no tables", async () => {
   const mock = {
     request: {

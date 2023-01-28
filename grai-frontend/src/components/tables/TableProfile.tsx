@@ -8,7 +8,7 @@ import {
   Button,
   Box,
 } from "@mui/material"
-import NodeDetailRow from "components/nodes/NodeDetailRow"
+import NodeDetailRow from "components/layout/NodeDetailRow"
 import React from "react"
 import { Link, useParams } from "react-router-dom"
 import TableColumns from "./TableColumns"
@@ -32,7 +32,7 @@ export interface TableInterface {
   data_source: string
   display_name: string
   columns: Column[]
-  metadata: any
+  metadata: any | null
   sourceTables: BaseTable[]
   destinationTables: BaseTable[]
 }

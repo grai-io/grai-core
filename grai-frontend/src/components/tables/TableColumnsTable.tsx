@@ -9,7 +9,7 @@ import {
 import React from "react"
 import theme from "theme"
 
-interface Column {
+export interface Column {
   id: string
   name: string
   display_name: string
