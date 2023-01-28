@@ -291,6 +291,10 @@ class Workspace:
         return query_set
 
     @gql.django.field
+    def tables_count(self) -> int:
+        return NodeModel.objects.filter(workspace_id=self.id, metadata__grai__node_type="Table").count()
+
+    @gql.django.field
     def table(self, pk: strawberry.ID) -> Table:
         return NodeModel.objects.filter(id=pk, workspace_id=self.id, metadata__grai__node_type="Table")
 
@@ -298,6 +302,14 @@ class Workspace:
     def other_edges(self) -> List[Edge]:
         return EdgeModel.objects.filter(workspace_id=self.id).exclude(
             metadata__has_key="grai.edge_type", metadata__grai__edge_type="TableToColumn"
+        )
+
+    @gql.django.field
+    def other_edges_count(self) -> int:
+        return (
+            EdgeModel.objects.filter(workspace_id=self.id)
+            .exclude(metadata__has_key="grai.edge_type", metadata__grai__edge_type="TableToColumn")
+            .count()
         )
 
 
