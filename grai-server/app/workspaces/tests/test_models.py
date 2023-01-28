@@ -5,10 +5,12 @@ import pytest
 from django_multitenant.utils import set_current_tenant
 
 from workspaces.models import Workspace
+from workspaces.utils import set_current_user
 
 
 @pytest.mark.django_db
 def test_workspace_created():
+    set_current_user(None)
     workspace = Workspace.objects.create(name="abc")
 
     assert workspace.id == uuid.UUID(str(workspace.id))
@@ -19,6 +21,7 @@ def test_workspace_created():
 
 @pytest.mark.django_db
 def test_workspace_created_from_load():
+    set_current_user(None)
     set_current_tenant(None)
     workspace = Workspace.objects.create(name="abc")
     workspaces = list(Workspace.objects.filter(name="abc").all())

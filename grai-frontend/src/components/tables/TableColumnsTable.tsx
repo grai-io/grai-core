@@ -9,18 +9,18 @@ import {
 import React from "react"
 import theme from "theme"
 
-interface Column {
+export interface Column {
   id: string
   name: string
   display_name: string
 }
 
-type NodeColumnsTableProps = {
+type TableColumnsTableProps = {
   search: string | null
   columns: Column[]
 }
 
-const NodeColumnsTable: React.FC<NodeColumnsTableProps> = ({
+const TableColumnsTable: React.FC<TableColumnsTableProps> = ({
   search,
   columns,
 }) => {
@@ -72,4 +72,4 @@ const NodeColumnsTable: React.FC<NodeColumnsTableProps> = ({
   )
 }
 
-export default NodeColumnsTable
+export default TableColumnsTable

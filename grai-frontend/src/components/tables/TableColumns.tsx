@@ -1,7 +1,7 @@
 import { OpenInFull, SearchRounded } from "@mui/icons-material"
 import { Box, Button, InputAdornment, TextField } from "@mui/material"
 import React, { ChangeEvent, useState } from "react"
-import NodeColumnsTable from "./NodeColumnsTable"
+import TableColumnsTable from "./TableColumnsTable"
 
 interface Column {
   id: string
@@ -9,11 +9,11 @@ interface Column {
   display_name: string
 }
 
-type NodeColumnsProps = {
+type TableColumnsProps = {
   columns: Column[]
 }
 
-const NodeColumns: React.FC<NodeColumnsProps> = ({ columns }) => {
+const TableColumns: React.FC<TableColumnsProps> = ({ columns }) => {
   const [search, setSearch] = useState<string | null>(null)
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) =>
@@ -45,9 +45,9 @@ const NodeColumns: React.FC<NodeColumnsProps> = ({ columns }) => {
           </Button>
         </Box>
       </Box>
-      <NodeColumnsTable search={search} columns={columns} />
+      <TableColumnsTable search={search} columns={columns} />
     </>
   )
 }
 
-export default NodeColumns
+export default TableColumns

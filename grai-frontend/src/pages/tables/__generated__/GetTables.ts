@@ -4,11 +4,11 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GetNodes
+// GraphQL query operation: GetTables
 // ====================================================
 
-export interface GetNodes_workspace_nodes {
-  __typename: "Node";
+export interface GetTables_workspace_tables {
+  __typename: "Table";
   id: any;
   namespace: string;
   name: string;
@@ -18,16 +18,16 @@ export interface GetNodes_workspace_nodes {
   metadata: any;
 }
 
-export interface GetNodes_workspace {
+export interface GetTables_workspace {
   __typename: "Workspace";
   id: any;
-  nodes: GetNodes_workspace_nodes[];
+  tables: GetTables_workspace_tables[];
 }
 
-export interface GetNodes {
-  workspace: GetNodes_workspace;
+export interface GetTables {
+  workspace: GetTables_workspace;
 }
 
-export interface GetNodesVariables {
+export interface GetTablesVariables {
   workspaceId: string;
 }

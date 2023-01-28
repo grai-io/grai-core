@@ -209,7 +209,7 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
         </MenuItem>
         <MenuItem
           onClick={() =>
-            navigate(`/workspaces/${workspaceId}/nodes/${data.id}`)
+            navigate(`/workspaces/${workspaceId}/tables/${data.id}`)
           }
         >
           Show profile for this table
