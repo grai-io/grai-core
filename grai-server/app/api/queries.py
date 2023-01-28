@@ -1,50 +1,39 @@
 import typing
 
-import strawberry
-from django_multitenant.utils import set_current_tenant
+from workspaces.utils import set_current_user
+
 from strawberry.permission import BasePermission
 from strawberry.types import Info
 from strawberry_django_plus import gql
+from asgiref.sync import sync_to_async
 
 from api.types import Connector, User, Workspace
-from workspaces.models import Workspace as WorkspaceModel
 
 from .common import IsAuthenticated, get_user
 
 
-def get_workspaces(info: Info) -> typing.List[Workspace]:
-    user = get_user(info)
+class WorkspaceFilter(BasePermission):
+    async def has_permission(self, source: typing.Any, info: Info, **kwargs) -> bool:
+        if info.context.request.user is None:
+            return False
 
-    return WorkspaceModel.objects.filter(memberships__user_id=user.id)
+        is_authenticated = await sync_to_async(lambda: info.context.request.user.is_authenticated)()
 
+        if not is_authenticated:
+            return False
 
-def get_workspace(pk: strawberry.ID, info: Info) -> Workspace:
-    user = get_user(info)
+        set_current_user(info.context.request.user)
 
-    try:
-        workspace = WorkspaceModel.objects.get(id=pk, memberships__user_id=user.id)
-    except WorkspaceModel.DoesNotExist:
-        raise Exception("Can't find workspace")
-
-    return workspace
+        return True
 
 
 def get_profile(info: Info) -> User:
     return get_user(info)
 
 
-class WorkspaceFilter(BasePermission):
-    async def has_permission(self, source: typing.Any, info: Info, **kwargs) -> bool:
-        set_current_tenant(source)
-        return True
-
-
 @gql.type
 class Query:
-    workspaces: typing.List[Workspace] = gql.django.field(resolver=get_workspaces, permission_classes=[IsAuthenticated])
-    # workspace: Workspace = gql.django.field(
-    #     resolver=get_workspace
-    # )
+    workspaces: typing.List[Workspace] = gql.django.field(permission_classes=[IsAuthenticated, WorkspaceFilter])
     workspace: Workspace = gql.django.field(permission_classes=[IsAuthenticated, WorkspaceFilter])
     connectors: typing.List[Connector] = gql.django.field(permission_classes=[IsAuthenticated])
     profile: User = gql.django.field(resolver=get_profile, permission_classes=[IsAuthenticated])

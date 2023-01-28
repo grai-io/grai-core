@@ -3,6 +3,7 @@ import uuid
 from django.db import models
 from django_multitenant.models import TenantModel
 from rest_framework_api_key.models import AbstractAPIKey, BaseAPIKeyManager
+from .utils import get_current_user
 
 
 class Workspace(TenantModel):
@@ -20,6 +21,21 @@ class Workspace(TenantModel):
         indexes = [
             models.Index(fields=["name"]),
         ]
+
+
+class LimitedWorkspaceManager(models.Manager):
+    def get_queryset(self):
+        user = get_current_user()
+
+        if user:
+            return super().get_queryset().filter(memberships__user_id=user.id)
+
+        return super().get_queryset()
+
+
+class LimitedWorkspace(Workspace):
+    class Meta:
+        proxy = True
 
 
 class Membership(TenantModel):

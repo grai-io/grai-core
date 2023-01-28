@@ -18,7 +18,7 @@ from lineage.models import Node
 from lineage.models import Node as NodeModel
 from users.models import User as UserModel
 from workspaces.models import Membership as MembershipModel
-from workspaces.models import Workspace as WorkspaceModel
+from workspaces.models import LimitedWorkspace as LimitedWorkspaceModel
 from workspaces.models import WorkspaceAPIKey as WorkspaceAPIKeyModel
 
 
@@ -230,28 +230,25 @@ class Table(Node):
         return list(set([edge.destination for edge in self.edges_list]))
 
 
-@gql.django.filters.filter(WorkspaceModel)
+@gql.django.filters.filter(LimitedWorkspaceModel)
 class WorkspaceFilter:
     id: auto
     name: FilterLookup[str]
     memberships: FilterLookup["MembershipFilter"]
 
 
-@strawberry_django.ordering.order(WorkspaceModel)
+@strawberry_django.ordering.order(LimitedWorkspaceModel)
 class WorkspaceOrder:
     id: auto
     name: auto
 
 
-@gql.django.type(WorkspaceModel, order=WorkspaceOrder, filters=WorkspaceFilter, pagination=True)
+@gql.django.type(LimitedWorkspaceModel, order=WorkspaceOrder, filters=WorkspaceFilter, pagination=True)
 class Workspace:
     id: auto
     name: auto
-    nodes: List["Node"]
-    # @gql.django.field
-    # def nodes(self) -> List[Node]:
-    #     return NodeModel.objects.all()
 
+    nodes: List["Node"]
     # node: NodeType = strawberry.django.field
     @gql.django.field
     def node(self, pk: strawberry.ID) -> Node:
