@@ -89,20 +89,14 @@ const Graph: React.FC<GraphProps> = ({
       position,
     }))
 
-  // const nameToNode = (name: string) => nodes.find(n => n.name === name)
+  //TODO: Need to include columns here
+  const nameToNode = (name: string) => tables.find(n => n.name === name)
 
-  // const enrichedErrors = errors?.map(error => ({
-  //   ...error,
-  //   sourceId: nameToNode(error.source)?.id,
-  //   destinationId: nameToNode(error.destination)?.id,
-  // }))
-
-  interface EnrichedError extends Error {
-    sourceId: string
-    destinationId: string
-  }
-
-  const enrichedErrors: EnrichedError[] = []
+  const enrichedErrors = errors?.map(error => ({
+    ...error,
+    sourceId: nameToNode(error.source)?.id,
+    destinationId: nameToNode(error.destination)?.id,
+  }))
 
   const initialEdges: RFEdge[] = edges.map(edge => {
     const edgeErrors = enrichedErrors?.filter(
