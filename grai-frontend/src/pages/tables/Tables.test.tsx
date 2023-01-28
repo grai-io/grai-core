@@ -2,10 +2,10 @@ import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import React from "react"
 import { renderWithMocks, renderWithRouter, screen, waitFor } from "testing"
-import Nodes, { GET_NODES } from "./Nodes"
+import Tables, { GET_TABLES } from "./Tables"
 
 test("renders", async () => {
-  renderWithRouter(<Nodes />)
+  renderWithRouter(<Tables />)
 
   await waitFor(() => {
     screen.getByRole("heading", { name: /Tables/i })
@@ -19,7 +19,7 @@ test("renders", async () => {
 test("error", async () => {
   const mock = {
     request: {
-      query: GET_NODES,
+      query: GET_TABLES,
       variables: {
         workspaceId: "",
       },
@@ -29,7 +29,7 @@ test("error", async () => {
     },
   }
 
-  renderWithMocks(<Nodes />, [mock])
+  renderWithMocks(<Tables />, [mock])
 
   await waitFor(() => {
     expect(screen.getByText("Error!")).toBeTruthy()
@@ -39,7 +39,7 @@ test("error", async () => {
 test("search", async () => {
   const user = userEvent.setup()
 
-  renderWithRouter(<Nodes />)
+  renderWithRouter(<Tables />)
 
   await waitFor(() => {
     screen.getAllByText("Hello World")
@@ -59,18 +59,35 @@ test("search", async () => {
 test("refresh", async () => {
   const user = userEvent.setup()
 
-  renderWithRouter(<Nodes />)
+  renderWithRouter(<Tables />)
 
-  await user.click(screen.getByTestId("nodes-refresh"))
+  await user.click(screen.getByTestId("tables-refresh"))
 
   // eslint-disable-next-line testing-library/no-wait-for-empty-callback
   await waitFor(() => {})
 })
 
-test("no nodes", async () => {
+test("click row", async () => {
+  const user = userEvent.setup()
+
+  const { container } = renderWithRouter(<Tables />, {
+    routes: ["/:tableId"],
+  })
+
+  await waitFor(() => {
+    screen.getAllByText("Hello World")
+  })
+
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+  await user.click(container.querySelectorAll("tbody > tr")[0])
+
+  expect(screen.getByText("New Page")).toBeTruthy()
+})
+
+test("no tables", async () => {
   const mock = {
     request: {
-      query: GET_NODES,
+      query: GET_TABLES,
       variables: {
         workspaceId: "",
       },
@@ -79,13 +96,13 @@ test("no nodes", async () => {
       data: {
         workspace: {
           id: "1234",
-          nodes: [],
+          tables: [],
         },
       },
     },
   }
 
-  renderWithMocks(<Nodes />, [mock])
+  renderWithMocks(<Tables />, [mock])
 
   await waitFor(() => {
     expect(screen.getByText("No tables found")).toBeTruthy()

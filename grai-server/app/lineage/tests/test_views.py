@@ -8,6 +8,12 @@ from django.urls import reverse
 
 from lineage.urls import app_name
 from workspaces.models import Membership, Workspace, WorkspaceAPIKey
+from workspaces.utils import set_current_user
+
+
+@pytest.fixture(autouse=True)
+def run_around_tests():
+    set_current_user(None)
 
 
 def create_node(client, workspace, name=None, namespace="default", data_source="test"):

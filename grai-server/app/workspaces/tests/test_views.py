@@ -8,6 +8,12 @@ from django.urls import reverse
 
 from lineage.urls import app_name
 from workspaces.models import Membership, Workspace, WorkspaceAPIKey
+from workspaces.utils import set_current_user
+
+
+@pytest.fixture(autouse=True)
+def run_around_tests():
+    set_current_user(None)
 
 
 @pytest.fixture

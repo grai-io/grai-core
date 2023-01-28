@@ -1,19 +1,18 @@
 import React, { useState } from "react"
 import { gql, useQuery } from "@apollo/client"
-import NodesTable from "components/nodes/NodesTable"
-import NodesHeader from "components/nodes/NodesHeader"
-import { GetNodes, GetNodesVariables } from "./__generated__/GetNodes"
+import TablesHeader from "components/tables/TablesHeader"
 import { useParams } from "react-router-dom"
 import { Box } from "@mui/material"
 import GraphError from "components/utils/GraphError"
-import { nodeIsTable } from "helpers/graph"
 import PageLayout from "components/layout/PageLayout"
+import { GetTables, GetTablesVariables } from "./__generated__/GetTables"
+import TablesTable from "components/tables/TablesTable"
 
-export const GET_NODES = gql`
-  query GetNodes($workspaceId: ID!) {
+export const GET_TABLES = gql`
+  query GetTables($workspaceId: ID!) {
     workspace(pk: $workspaceId) {
       id
-      nodes {
+      tables {
         id
         namespace
         name
@@ -26,7 +25,7 @@ export const GET_NODES = gql`
   }
 `
 
-export interface Node {
+export interface Table {
   id: string
   namespace: string
   name: string
@@ -35,14 +34,14 @@ export interface Node {
   is_active: boolean
 }
 
-const Nodes: React.FC = () => {
+const Tables: React.FC = () => {
   const { workspaceId } = useParams()
   const [search, setSearch] = useState<string>()
 
   const { loading, error, data, refetch } = useQuery<
-    GetNodes,
-    GetNodesVariables
-  >(GET_NODES, {
+    GetTables,
+    GetTablesVariables
+  >(GET_TABLES, {
     variables: {
       workspaceId: workspaceId ?? "",
     },
@@ -50,30 +49,28 @@ const Nodes: React.FC = () => {
 
   if (error) return <GraphError error={error} />
 
-  const nodes = data?.workspace?.nodes ?? []
+  const tables = data?.workspace?.tables ?? []
 
   const handleRefresh = () => refetch()
 
-  const tables = nodes.filter(nodeIsTable)
-
-  const filteredNodes = search
-    ? tables.filter(node =>
-        node.name.toLowerCase().includes(search.toLowerCase())
+  const filteredTables = search
+    ? tables.filter(table =>
+        table.name.toLowerCase().includes(search.toLowerCase())
       )
     : tables
 
   return (
     <PageLayout>
-      <NodesHeader
+      <TablesHeader
         search={search}
         onSearch={setSearch}
         onRefresh={handleRefresh}
       />
       <Box sx={{ px: 3 }}>
-        <NodesTable nodes={filteredNodes} loading={loading} />
+        <TablesTable tables={filteredTables} loading={loading} />
       </Box>
     </PageLayout>
   )
 }
 
-export default Nodes
+export default Tables

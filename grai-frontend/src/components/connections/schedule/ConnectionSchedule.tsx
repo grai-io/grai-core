@@ -1,5 +1,5 @@
 import { Box, Stack } from "@mui/material"
-import NodeDetailRow from "components/nodes/NodeDetailRow"
+import NodeDetailRow from "components/layout/NodeDetailRow"
 import React from "react"
 
 export type CronValue = {

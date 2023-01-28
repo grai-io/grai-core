@@ -9,13 +9,13 @@ import {
 } from "@mui/material"
 import React, { ChangeEvent } from "react"
 
-type NodesHeaderProps = {
+type TablesHeaderProps = {
   search?: string | null
   onSearch?: (value: string) => void
   onRefresh?: () => void
 }
 
-const NodesHeader: React.FC<NodesHeaderProps> = ({
+const TablesHeader: React.FC<TablesHeaderProps> = ({
   search,
   onSearch,
   onRefresh,
@@ -34,7 +34,7 @@ const NodesHeader: React.FC<NodesHeaderProps> = ({
           value={search ?? ""}
           onChange={handleSearch}
           size="small"
-          data-testid="nodes-search"
+          data-testid="tables-search"
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -50,7 +50,7 @@ const NodesHeader: React.FC<NodesHeaderProps> = ({
             sx={{ width: 40, height: 40, minWidth: 0 }}
             onClick={onRefresh}
             size="small"
-            data-testid="nodes-refresh"
+            data-testid="tables-refresh"
           >
             <Refresh />
           </Button>
@@ -60,4 +60,4 @@ const NodesHeader: React.FC<NodesHeaderProps> = ({
   )
 }
 
-export default NodesHeader
+export default TablesHeader

@@ -9,7 +9,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material"
-import NodeDetailRow from "components/nodes/NodeDetailRow"
+import NodeDetailRow from "components/layout/NodeDetailRow"
 import {
   durationAgo,
   runDurationString,

@@ -12,8 +12,8 @@ const Index = lazy(() => import("./pages/Index"))
 const Workspaces = lazy(() => import("./pages/workspaces/Workspaces"))
 const Home = lazy(() => import("./pages/Home"))
 const Graph = lazy(() => import("./pages/Graph"))
-const Nodes = lazy(() => import("./pages/nodes/Nodes"))
-const Node = lazy(() => import("./pages/nodes/Node"))
+const Tables = lazy(() => import("./pages/tables/Tables"))
+const Table = lazy(() => import("./pages/tables/Table"))
 const Run = lazy(() => import("./pages/runs/Run"))
 const Connections = lazy(() => import("./pages/connections/Connections"))
 const ConnectionCreate = lazy(
@@ -46,9 +46,9 @@ const Routes: React.FC = () => (
             <Route path=":workspaceId">
               <Route index element={<Home />} />
               <Route path="graph" element={<Graph />} />
-              <Route path="nodes">
-                <Route index element={<Nodes />} />
-                <Route path=":nodeId" element={<Node />} />
+              <Route path="tables">
+                <Route index element={<Tables />} />
+                <Route path=":tableId" element={<Table />} />
               </Route>
               <Route path="runs">
                 <Route path=":runId" element={<Run />} />

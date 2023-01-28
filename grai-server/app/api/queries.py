@@ -1,32 +1,11 @@
 import typing
 
-import strawberry
 from strawberry.types import Info
 from strawberry_django_plus import gql
 
 from api.types import Connector, User, Workspace
-from workspaces.models import Workspace as WorkspaceModel
 
-from .common import IsAuthenticated, get_user
-
-
-def get_workspaces(info: Info) -> typing.List[Workspace]:
-    user = get_user(info)
-
-    print(user.id)
-
-    return WorkspaceModel.objects.filter(memberships__user_id=user.id)
-
-
-def get_workspace(pk: strawberry.ID, info: Info) -> Workspace:
-    user = get_user(info)
-
-    try:
-        workspace = WorkspaceModel.objects.get(id=pk, memberships__user_id=user.id)
-    except WorkspaceModel.DoesNotExist:
-        raise Exception("Can't find workspace")
-
-    return workspace
+from .common import IsAuthenticated, WorkspaceFilter, get_user
 
 
 def get_profile(info: Info) -> User:
@@ -35,9 +14,7 @@ def get_profile(info: Info) -> User:
 
 @gql.type
 class Query:
-    workspaces: typing.List[Workspace] = strawberry.django.field(
-        resolver=get_workspaces, permission_classes=[IsAuthenticated]
-    )
-    workspace: Workspace = strawberry.django.field(resolver=get_workspace, permission_classes=[IsAuthenticated])
-    connectors: typing.List[Connector] = strawberry.django.field(permission_classes=[IsAuthenticated])
-    profile: User = strawberry.django.field(resolver=get_profile, permission_classes=[IsAuthenticated])
+    workspaces: typing.List[Workspace] = gql.django.field(permission_classes=[WorkspaceFilter])
+    workspace: Workspace = gql.django.field(permission_classes=[WorkspaceFilter])
+    connectors: typing.List[Connector] = gql.django.field(permission_classes=[IsAuthenticated])
+    profile: User = gql.django.field(resolver=get_profile, permission_classes=[IsAuthenticated])

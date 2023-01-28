@@ -10,5 +10,8 @@
 export interface NewApiKey {
   __typename: "WorkspaceAPIKey";
   id: string;
+  /**
+   * A free-form name for the API key. Need not be unique. 50 characters max.
+   */
   name: string;
 }

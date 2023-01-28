@@ -1,95 +1,52 @@
-import notEmpty from "./notEmpty"
-
-export interface GraiNodeMetadata {
-  node_type?: "Table" | "Column" | null
-  table_name?: string | null
+export interface Column {
+  id: string
 }
 
-export interface Node {
+export interface BaseTable {
   id: string
   name: string
   display_name: string
-  metadata: {
-    grai?: GraiNodeMetadata | null
-  } | null
 }
 
-export interface GraiEdgeMetadata {
-  edge_type?: "TableToColumn" | null
+export interface Table extends BaseTable {
+  columns: Column[]
+}
+
+export interface EnhancedTable extends BaseTable {
+  sourceTables: Table[]
+  destinationTables: Table[]
 }
 
 export interface Edge {
   id: string
-  source: {
-    id: string
-  }
-  destination: {
-    id: string
-  }
-  metadata: {
-    grai?: GraiEdgeMetadata | null
-  } | null
+  source: NodeID
+  destination: NodeID
 }
 
-type BaseTable<N extends Node> = N & {
-  columns: N[]
+interface NodeID {
+  id: string
 }
 
-export type Table<N extends Node> = N &
-  BaseTable<N> & {
-    sourceTables: BaseTable<N>[]
-    destinationTables: BaseTable<N>[]
-  }
-
-export const nodeIsTable = (node: Node) =>
-  node.metadata?.grai?.node_type === "Table"
-
-const tableColumns = <N extends Node>(table: N, nodes: N[], edges: Edge[]) =>
-  edges
-    .filter(
-      edge =>
-        edge.source.id === table.id &&
-        edge.metadata?.grai?.edge_type === "TableToColumn"
-    )
-    .map(edge => nodes.find(node => node.id === edge.destination.id))
-    .filter(notEmpty)
-
-const nodesToBaseTables = <N extends Node>(
-  nodes: N[],
-  edges: Edge[]
-): BaseTable<N>[] =>
-  nodes.filter(nodeIsTable).map(table => ({
-    ...table,
-    columns: tableColumns(table, nodes, edges),
-  }))
-
-const nodeToBaseTable = <N extends Node>(
-  node: N,
-  nodes: N[],
-  edges: Edge[]
-): BaseTable<N> => ({
-  ...node,
-  columns: tableColumns(node, nodes, edges),
-})
-
-const tableOrColumnsMatch = <N extends Node>(table: BaseTable<N>, id: string) =>
+const tableOrColumnsMatch = (table: Table, id: string) =>
   table.id === id || table.columns.some(c => c.id === id)
 
-export const nodesToTables = <N extends Node>(
-  nodes: N[],
+export const tableToEnhancedTable = <T extends Table>(
+  table: T,
+  tables: T[],
   edges: Edge[]
-): Table<N>[] => {
-  const tables = nodesToBaseTables(nodes, edges)
-
-  return tables.map(table => {
-    const sourceTables = tables.filter(t =>
+): EnhancedTable & T => {
+  const sourceTables = tables
+    .filter(t => t.id !== table.id)
+    .filter(t =>
       edges.some(
         e =>
           tableOrColumnsMatch(table, e.source.id) &&
           tableOrColumnsMatch(t, e.destination.id)
       )
     )
-    const destinationTables = tables.filter(t =>
+  const destinationTables = tables
+    .filter(t => t.id !== table.id)
+    .filter(t =>
       edges.some(
         e =>
           tableOrColumnsMatch(table, e.destination.id) &&
@@ -97,32 +54,11 @@ export const nodesToTables = <N extends Node>(
       )
     )
 
-    return { ...table, sourceTables, destinationTables }
-  })
-}
-
-export const nodeToTable = <N extends Node>(
-  node: N,
-  nodes: N[],
-  edges: Edge[]
-) => {
-  const table = nodeToBaseTable(node, nodes, edges)
-  const tables = nodesToBaseTables(nodes, edges)
-
-  const sourceTables = tables.filter(t =>
-    edges.some(
-      e =>
-        table.columns.some(c => c.id === e.source.id) &&
-        t.columns.some(c => c.id === e.destination.id)
-    )
-  )
-  const destinationTables = tables.filter(t =>
-    edges.some(
-      e =>
-        table.columns.some(c => c.id === e.destination.id) &&
-        t.columns.some(c => c.id === e.source.id)
-    )
-  )
-
   return { ...table, sourceTables, destinationTables }
 }
+
+export const tablesToEnhancedTables = <T extends Table>(
+  tables: T[],
+  edges: Edge[]
+): (EnhancedTable & T)[] =>
+  tables.map(table => tableToEnhancedTable<T>(table, tables, edges))
