@@ -307,3 +307,131 @@ async def test_edge(test_context):
     assert result.data["workspace"]["edge"]["id"] == str(edge.id)
     assert result.data["workspace"]["edge"]["source"]["id"] == str(source.id)
     assert result.data["workspace"]["edge"]["destination"]["id"] == str(destination.id)
+
+
+@pytest.mark.django_db
+async def test_table_source_tables(test_context):
+    context, workspace, user = test_context
+
+    table = await Node.objects.acreate(workspace=workspace, metadata={"grai": {"node_type": "Table"}})
+
+    query = """
+        query Workspace($workspaceId: ID!, $tableId: ID!) {
+          workspace(pk: $workspaceId) {
+            id
+            table(pk: $tableId) {
+                id
+                source_tables {
+                  id
+                  name
+                  display_name
+                }
+            }
+          }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "tableId": str(table.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["table"]["id"] == str(table.id)
+
+
+@pytest.mark.django_db
+async def test_table_destination_tables(test_context):
+    context, workspace, user = test_context
+
+    table = await Node.objects.acreate(workspace=workspace, metadata={"grai": {"node_type": "Table"}})
+
+    query = """
+        query Workspace($workspaceId: ID!, $tableId: ID!) {
+          workspace(pk: $workspaceId) {
+            id
+            table(pk: $tableId) {
+                id
+                destination_tables {
+                  id
+                  name
+                  display_name
+                }
+            }
+          }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "tableId": str(table.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["table"]["id"] == str(table.id)
+
+
+@pytest.mark.django_db
+async def test_tables_count(test_context):
+    context, workspace, user = test_context
+
+    await Node.objects.acreate(workspace=workspace, metadata={"grai": {"node_type": "Table"}})
+
+    query = """
+        query Workspace($workspaceId: ID!) {
+          workspace(pk: $workspaceId) {
+            id
+            tables_count
+          }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["tables_count"] == 1
+
+
+@pytest.mark.django_db
+async def test_other_edges_count(test_context):
+    context, workspace, user = test_context
+
+    await Node.objects.acreate(workspace=workspace, metadata={"grai": {"node_type": "Table"}})
+
+    query = """
+        query Workspace($workspaceId: ID!) {
+          workspace(pk: $workspaceId) {
+            id
+            other_edges_count
+          }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["other_edges_count"] == 0
