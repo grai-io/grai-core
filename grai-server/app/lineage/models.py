@@ -64,12 +64,8 @@ class Edge(TenantModel):
     display_name = models.CharField(max_length=255)
 
     data_source = models.CharField(max_length=255)
-    source = TenantForeignKey(
-        "Node", related_name="source_edges", on_delete=models.PROTECT
-    )
-    destination = TenantForeignKey(
-        "Node", related_name="destination_edges", on_delete=models.PROTECT
-    )
+    source = TenantForeignKey("Node", related_name="source_edges", on_delete=models.PROTECT)
+    destination = TenantForeignKey("Node", related_name="destination_edges", on_delete=models.PROTECT)
     metadata = models.JSONField(default=dict)
     is_active = models.BooleanField(default=True)
 

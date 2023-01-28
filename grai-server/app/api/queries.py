@@ -38,12 +38,6 @@ class Query:
     workspaces: typing.List[Workspace] = strawberry.django.field(
         resolver=get_workspaces, permission_classes=[IsAuthenticated]
     )
-    workspace: Workspace = strawberry.django.field(
-        resolver=get_workspace, permission_classes=[IsAuthenticated]
-    )
-    connectors: typing.List[Connector] = strawberry.django.field(
-        permission_classes=[IsAuthenticated]
-    )
-    profile: User = strawberry.django.field(
-        resolver=get_profile, permission_classes=[IsAuthenticated]
-    )
+    workspace: Workspace = strawberry.django.field(resolver=get_workspace, permission_classes=[IsAuthenticated])
+    connectors: typing.List[Connector] = strawberry.django.field(permission_classes=[IsAuthenticated])
+    profile: User = strawberry.django.field(resolver=get_profile, permission_classes=[IsAuthenticated])

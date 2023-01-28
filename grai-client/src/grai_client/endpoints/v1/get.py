@@ -50,9 +50,7 @@ def get_node_id(
 
 
 @get.register
-def get_node_v1(
-    client: ClientV1, grai_type: NodeV1, options: ClientOptions = ClientOptions()
-) -> Optional[NodeV1]:
+def get_node_v1(client: ClientV1, grai_type: NodeV1, options: ClientOptions = ClientOptions()) -> Optional[NodeV1]:
     spec = get_node_from_id(client, grai_type.spec, options)
     return NodeV1.from_spec(spec) if isinstance(spec, dict) else spec
 
@@ -122,9 +120,7 @@ def get_node_by_label_v1(
 
 
 @get.register
-def get_edge_v1(
-    client: ClientV1, grai_type: EdgeV1, options: ClientOptions = ClientOptions()
-) -> Optional[EdgeV1]:
+def get_edge_v1(client: ClientV1, grai_type: EdgeV1, options: ClientOptions = ClientOptions()) -> Optional[EdgeV1]:
     base_url = client.get_url(grai_type)
     if grai_type.spec.id is not None:
         url = f"{base_url}{grai_type.spec.id}"

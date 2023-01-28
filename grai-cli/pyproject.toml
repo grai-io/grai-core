@@ -26,6 +26,9 @@ grai-schemas = "^0.1.5"
 profile = "black"
 known_first_party = "grai_cli"
 
+[tool.black]
+line-length = 120
+
 [tool.poetry.group.dev.dependencies]
 isort = "^5.10.1"
 pytest = "^7.2.0"

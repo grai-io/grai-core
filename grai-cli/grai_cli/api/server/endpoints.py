@@ -44,23 +44,17 @@ def get_nodes(
     return result
 
 
-@client_get_app.command(
-    "nodes", help=f"Grab active {default_styler('nodes')} from the guide."
-)
+@client_get_app.command("nodes", help=f"Grab active {default_styler('nodes')} from the guide.")
 def get_nodes_cli(
     name: Optional[str] = typer.Argument(None),
-    namespace: Optional[str] = typer.Option(
-        None, "--namespace", "-n", help="Namespace of node"
-    ),
+    namespace: Optional[str] = typer.Option(None, "--namespace", "-n", help="Namespace of node"),
     print: bool = typer.Option(True, "--p", help=f"Print nodes to console"),
     to_file: Optional[Path] = typer.Option(None, "--f", help="Write nodes to file"),
 ):
     return get_nodes(name=name, namespace=namespace, print=print, to_file=to_file)
 
 
-@client_get_app.command(
-    "edges", help=f"Grab active {default_styler('edges')} from the guide."
-)
+@client_get_app.command("edges", help=f"Grab active {default_styler('edges')} from the guide.")
 def get_edges(
     print: bool = typer.Option(True, "--p", help=f"Print edges to console"),
     to_file: Optional[Path] = typer.Option(None, "--f", help="Write edges to file"),
@@ -76,15 +70,11 @@ def get_edges(
     return result
 
 
-@client_get_app.command(
-    "workspaces", help=f"Grab active {default_styler('workspaces')} from the guide."
-)
+@client_get_app.command("workspaces", help=f"Grab active {default_styler('workspaces')} from the guide.")
 def get_workspaces(
     name: str = typer.Argument(None),
     print: bool = typer.Option(True, "--p", help=f"Print workspaces to console"),
-    to_file: Optional[Path] = typer.Option(
-        None, "--f", help="Write workspaces to file"
-    ),
+    to_file: Optional[Path] = typer.Option(None, "--f", help="Write workspaces to file"),
 ):
     client = get_default_client()
     if name is None:

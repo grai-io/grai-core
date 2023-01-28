@@ -42,9 +42,7 @@ class PostgresConnector:
         self.dbname = dbname if dbname is not None else get_from_env("dbname")
         self.user = user if user is not None else get_from_env("user")
         self.password = password if password is not None else get_from_env("password")
-        self.namespace = (
-            namespace if namespace is not None else get_from_env("namespace", "default")
-        )
+        self.namespace = namespace if namespace is not None else get_from_env("namespace", "default")
         self._connection = None
 
     def __enter__(self):
@@ -55,7 +53,9 @@ class PostgresConnector:
 
     @property
     def connection_string(self) -> str:
-        return f"dbname={self.dbname} host='{self.host}' user='{self.user}' password='{self.password}' port='{self.port}'"
+        return (
+            f"dbname={self.dbname} host='{self.host}' user='{self.user}' password='{self.password}' port='{self.port}'"
+        )
 
     def connect(self):
         if self._connection is None:
@@ -73,9 +73,7 @@ class PostgresConnector:
         self._connection = None
 
     def query_runner(self, query: str, param_dict: Dict = {}) -> List[Dict]:
-        with self.connection.cursor(
-            cursor_factory=psycopg2.extras.RealDictCursor
-        ) as cursor:
+        with self.connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cursor:
             cursor.execute(query, param_dict)
             result = cursor.fetchall()
         return [dict(item) for item in result]
@@ -94,10 +92,7 @@ class PostgresConnector:
             AND table_schema != 'information_schema'
             ORDER BY table_schema, table_name
         """
-        return [
-            Table(**result, namespace=self.namespace)
-            for result in self.query_runner(query)
-        ]
+        return [Table(**result, namespace=self.namespace) for result in self.query_runner(query)]
 
     def get_columns(self, table: Table) -> List[Column]:
         """
@@ -153,9 +148,7 @@ class PostgresConnector:
             "namespace": self.namespace,
         }
         results = self.query_runner(query)
-        filtered_results = (
-            result for result in results if result["constraint_type"] == "f"
-        )
+        filtered_results = (result for result in results if result["constraint_type"] == "f")
         return [EdgeQuery(**fk, **addtl_args).to_edge() for fk in filtered_results]
 
     def get_nodes(self) -> List[PostgresNode]:

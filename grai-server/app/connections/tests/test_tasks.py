@@ -40,9 +40,7 @@ class TestUpdateServer:
 
         run_update_server(str(run.id))
 
-    def test_run_update_server_postgres_no_host(
-        self, test_workspace, test_postgres_connector
-    ):
+    def test_run_update_server_postgres_no_host(self, test_workspace, test_postgres_connector):
         connection = Connection.objects.create(
             name="C2",
             connector=test_postgres_connector,
@@ -63,9 +61,7 @@ class TestUpdateServer:
         )
 
     def test_run_update_server_no_connector(self, test_workspace, test_connector):
-        connection = Connection.objects.create(
-            name="C3", connector=test_connector, workspace=test_workspace
-        )
+        connection = Connection.objects.create(name="C3", connector=test_connector, workspace=test_workspace)
         run = Run.objects.create(connection=connection, workspace=test_workspace)
 
         with pytest.raises(Exception) as e_info:
@@ -76,9 +72,7 @@ class TestUpdateServer:
 
 @pytest.mark.django_db
 class TestConnectionSchedule:
-    def test_run_connection_schedule_postgres(
-        self, test_workspace, test_postgres_connector
-    ):
+    def test_run_connection_schedule_postgres(self, test_workspace, test_postgres_connector):
         connection = Connection.objects.create(
             name="C4",
             connector=test_postgres_connector,
@@ -98,9 +92,7 @@ class TestConnectionSchedule:
         )
 
     def test_run_connection_schedule_no_connector(self, test_workspace, test_connector):
-        connection = Connection.objects.create(
-            name="C5", connector=test_connector, workspace=test_workspace
-        )
+        connection = Connection.objects.create(name="C5", connector=test_connector, workspace=test_workspace)
 
         with pytest.raises(Exception) as e_info:
             run_connection_schedule(str(connection.id))

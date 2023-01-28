@@ -11,26 +11,20 @@ T = TypeVar("T", NodeV1, EdgeV1)
 
 
 @patch.register
-def patch_node_v1(
-    client: ClientV1, grai_type: NodeV1, options: ClientOptions = ClientOptions()
-) -> Optional[NodeV1]:
+def patch_node_v1(client: ClientV1, grai_type: NodeV1, options: ClientOptions = ClientOptions()) -> Optional[NodeV1]:
     if grai_type.spec.id is None:
         current = client.get(grai_type)
         grai_type.spec.id = current.spec.id
 
     url = f"{client.get_url(grai_type)}{grai_type.spec.id}/"
-    response = client.patch(
-        url, grai_type.spec.dict(exclude_none=True), options=options
-    ).json()
+    response = client.patch(url, grai_type.spec.dict(exclude_none=True), options=options).json()
     if response is None:
         return None
     return NodeV1.from_spec(response)
 
 
 @patch.register
-def patch_edge_v1(
-    client: ClientV1, grai_type: EdgeV1, options: ClientOptions = ClientOptions()
-) -> Optional[EdgeV1]:
+def patch_edge_v1(client: ClientV1, grai_type: EdgeV1, options: ClientOptions = ClientOptions()) -> Optional[EdgeV1]:
     if grai_type.spec.id is None:
         current = client.get(grai_type)
         grai_type.spec.id = current.spec.id

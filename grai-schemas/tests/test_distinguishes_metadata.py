@@ -28,9 +28,7 @@ def test_distinguishes_generic_node_metadata():
 
 
 def test_distinguishes_column_metadata():
-    spec = {
-        "grai": {"node_type": "Column", "node_attributes": {"is_primary_key": True}}
-    }
+    spec = {"grai": {"node_type": "Column", "node_attributes": {"is_primary_key": True}}}
 
     obj = GraiMetadata(**spec)
     assert isinstance(obj.grai, GraiNodeMetadata)

@@ -19,9 +19,7 @@ async def test_workspace_run(test_context):
         metadata={},
         secrets={},
     )
-    run = await Run.objects.acreate(
-        workspace=workspace, connection=connection, status="success", user=user
-    )
+    run = await Run.objects.acreate(workspace=workspace, connection=connection, status="success", user=user)
 
     query = """
         query Workspace($workspaceId: ID!, $runId: ID!) {
@@ -65,9 +63,7 @@ async def test_workspace_connection_run(test_context):
         metadata={},
         secrets={},
     )
-    run = await Run.objects.acreate(
-        workspace=workspace, connection=connection, status="success", user=user
-    )
+    run = await Run.objects.acreate(workspace=workspace, connection=connection, status="success", user=user)
 
     query = """
         query Workspace($workspaceId: ID!, $connectionId: ID!, $runId: ID!) {
@@ -117,6 +113,4 @@ async def test_workspace_connection_run(test_context):
     assert result.data["workspace"]["connection"]["id"] == str(connection.id)
     assert result.data["workspace"]["connection"]["run"]["id"] == str(run.id)
     assert result.data["workspace"]["connection"]["last_run"]["id"] == str(run.id)
-    assert result.data["workspace"]["connection"]["last_successful_run"]["id"] == str(
-        run.id
-    )
+    assert result.data["workspace"]["connection"]["last_successful_run"]["id"] == str(run.id)

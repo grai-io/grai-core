@@ -16,9 +16,7 @@ def run_update_server(runId):
 @shared_task
 def run_connection_schedule(connectionId):
     connection = Connection.objects.get(pk=connectionId)
-    run = Run.objects.create(
-        workspace=connection.workspace, connection=connection, status="queued"
-    )
+    run = Run.objects.create(workspace=connection.workspace, connection=connection, status="queued")
     execute_run(run)
 
 

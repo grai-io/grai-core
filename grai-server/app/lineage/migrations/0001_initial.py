@@ -60,15 +60,11 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name="node",
-            index=models.Index(
-                fields=["namespace", "name"], name="lineage_nod_namespa_742536_idx"
-            ),
+            index=models.Index(fields=["namespace", "name"], name="lineage_nod_namespa_742536_idx"),
         ),
         migrations.AddConstraint(
             model_name="node",
-            constraint=models.UniqueConstraint(
-                fields=("namespace", "name"), name="Node namespaces/name uniqueness"
-            ),
+            constraint=models.UniqueConstraint(fields=("namespace", "name"), name="Node namespaces/name uniqueness"),
         ),
         migrations.AddField(
             model_name="edge",
@@ -90,15 +86,11 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name="edge",
-            index=models.Index(
-                fields=["is_active"], name="lineage_edg_is_acti_1522cd_idx"
-            ),
+            index=models.Index(fields=["is_active"], name="lineage_edg_is_acti_1522cd_idx"),
         ),
         migrations.AddIndex(
             model_name="edge",
-            index=models.Index(
-                fields=["namespace", "name"], name="lineage_edg_namespa_f8f692_idx"
-            ),
+            index=models.Index(fields=["namespace", "name"], name="lineage_edg_namespa_f8f692_idx"),
         ),
         migrations.AddConstraint(
             model_name="edge",
@@ -112,9 +104,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddConstraint(
             model_name="edge",
-            constraint=models.UniqueConstraint(
-                fields=("namespace", "name"), name="Edge namespaces/name uniqueness"
-            ),
+            constraint=models.UniqueConstraint(fields=("namespace", "name"), name="Edge namespaces/name uniqueness"),
         ),
         migrations.AddConstraint(
             model_name="edge",

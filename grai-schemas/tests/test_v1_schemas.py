@@ -67,9 +67,7 @@ def make_v1_edge():
 def test_v1_node_typing(test_type, result):
     obj_dict = make_v1_node()
     obj = Schema(entity=obj_dict)
-    assert (
-        isinstance(obj.entity, test_type) == result
-    ), f"{type(obj)}=={test_type} should be {result}"
+    assert isinstance(obj.entity, test_type) == result, f"{type(obj)}=={test_type} should be {result}"
 
 
 @pytest.mark.parametrize(
@@ -84,6 +82,4 @@ def test_v1_node_typing(test_type, result):
 def test_v1_edge_typing(test_type, result):
     obj_dict = make_v1_edge()
     obj = Schema(entity=obj_dict)
-    assert (
-        isinstance(obj.entity, test_type) == result
-    ), f"{type(obj)}=={test_type} should be {result}"
+    assert isinstance(obj.entity, test_type) == result, f"{type(obj)}=={test_type} should be {result}"

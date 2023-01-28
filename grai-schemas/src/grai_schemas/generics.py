@@ -53,24 +53,14 @@ class DefaultValue(GraiBaseModel):
             data_type = values.data_type
             default_value = values.default_value
         else:
-            raise NotImplementedError(
-                f"No available implementation to produce a DefaultValue from a {type(values)}"
-            )
+            raise NotImplementedError(f"No available implementation to produce a DefaultValue from a {type(values)}")
 
         if has_default_value is None or has_default_value is False:
-            assert (
-                data_type is None
-            ), "Cannot set a data_type when `has_default_value` is not True"
-            assert (
-                default_value is None
-            ), "Cannot set a default_value when `has_default_value` is not True"
+            assert data_type is None, "Cannot set a data_type when `has_default_value` is not True"
+            assert default_value is None, "Cannot set a default_value when `has_default_value` is not True"
         else:
-            assert (
-                data_type is not None
-            ), "If `has_default_value` is True, a `data_type` is required"
-            assert (
-                default_value is not None
-            ), "If `has_default_value` is True, a `default_value` is required"
+            assert data_type is not None, "If `has_default_value` is True, a `data_type` is required"
+            assert default_value is not None, "If `has_default_value` is True, a `default_value` is required"
 
         return values
 

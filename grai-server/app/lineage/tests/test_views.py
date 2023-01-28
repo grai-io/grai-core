@@ -23,9 +23,7 @@ def create_node(client, workspace, name=None, namespace="default", data_source="
     return response
 
 
-def create_edge_with_node_ids(
-    client, workspace, source=None, destination=None, data_source="test", **kwargs
-):
+def create_edge_with_node_ids(client, workspace, source=None, destination=None, data_source="test", **kwargs):
     if source is None:
         source = create_node(client, workspace).json()["id"]
     if destination is None:
@@ -94,10 +92,7 @@ def auto_login_user(client, create_user, test_password, create_workspace):
 
 actions = ["list"]
 route_prefixes = ["nodes", "edges"]
-targets = [
-    (f"{app_name}:{prefix}-{action}", 200)
-    for prefix, action in product(route_prefixes, actions)
-]
+targets = [(f"{app_name}:{prefix}-{action}", 200) for prefix, action in product(route_prefixes, actions)]
 
 
 @pytest.mark.parametrize("url_name,status", targets)
@@ -106,9 +101,7 @@ def test_get_endpoints(auto_login_user, url_name, status):
     client, user = auto_login_user()
     url = reverse(url_name)
     response = client.get(url)
-    assert (
-        response.status_code == status
-    ), f"verb `get` failed on {url} with status {response.status_code}"
+    assert response.status_code == status, f"verb `get` failed on {url} with status {response.status_code}"
 
 
 @pytest.mark.django_db
@@ -180,9 +173,7 @@ def test_duplicate_edge_nodes(api_key, create_workspace, api_client):
     api_client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
     node_id = create_node(api_client, create_workspace).json()["id"]
     with pytest.raises(django.db.utils.IntegrityError):
-        response = create_edge_with_node_ids(
-            api_client, create_workspace, source=node_id, destination=node_id
-        )
+        response = create_edge_with_node_ids(api_client, create_workspace, source=node_id, destination=node_id)
 
 
 @pytest.fixture
@@ -193,9 +184,7 @@ def create_workspace(name=None):
 @pytest.fixture
 def create_membership(create_workspace):
     def make_membership(user):
-        membership = Membership.objects.create(
-            role="admin", user=user, workspace=create_workspace
-        )
+        membership = Membership.objects.create(role="admin", user=user, workspace=create_workspace)
         return membership, create_workspace
 
     return make_membership
@@ -302,9 +291,7 @@ class TestNodeWithFilter:
         url = self.get_url_by_name(node)
         response = client.get(url)
         results = response.json()
-        assert (
-            len(results) == 1
-        ), f"Wrong number of nodes returned in query. Expected 1, got {len(results)}"
+        assert len(results) == 1, f"Wrong number of nodes returned in query. Expected 1, got {len(results)}"
 
     def test_query_by_name_is_correct(self, client, test_full_nodes):
         node = test_full_nodes[2]
@@ -326,9 +313,7 @@ class TestNodeWithFilter:
         url = self.get_url_by_id(node)
         response = client.get(url, content_type="application/json")
         result = response.json()
-        assert isinstance(
-            result, dict
-        ), f"Expected only a single dictionary got {type(result)}"
+        assert isinstance(result, dict), f"Expected only a single dictionary got {type(result)}"
 
     def test_query_by_id_is_correct(self, client, test_full_nodes):
         node = test_full_nodes[2]
@@ -361,9 +346,7 @@ class TestEdgesWithFilter:
         url = self.get_url_by_name(edge)
         response = client.get(url)
         results = response.json()
-        assert (
-            len(results) == 1
-        ), f"Wrong number of edges returned in query. Expected 1, got {len(results)}"
+        assert len(results) == 1, f"Wrong number of edges returned in query. Expected 1, got {len(results)}"
 
     def test_query_by_name_is_correct(self, client, test_edges):
         edge = test_edges[2]
@@ -385,9 +368,7 @@ class TestEdgesWithFilter:
         url = self.get_url_by_id(edge)
         response = client.get(url, content_type="application/json")
         result = response.json()
-        assert isinstance(
-            result, dict
-        ), f"Expected only a single dictionary got {type(result)}"
+        assert isinstance(result, dict), f"Expected only a single dictionary got {type(result)}"
 
     def test_query_by_id_is_correct(self, client, test_edges):
         edge = test_edges[2]
@@ -409,9 +390,7 @@ class TestEdgesWithFilter:
         url = self.get_url_by_source_destination(edge)
         response = client.get(url, content_type="application/json")
         result = response.json()
-        assert (
-            len(result) == 1
-        ), f"Wrong number of edges returned in query. Expected 1, got {len(result)}"
+        assert len(result) == 1, f"Wrong number of edges returned in query. Expected 1, got {len(result)}"
 
     def test_query_by_source_destination_is_correct(self, client, test_edges):
         edge = test_edges[2]
@@ -425,18 +404,14 @@ class TestEdgesWithFilter:
 
 class TestEdgeUserAuth:
     @pytest.mark.django_db
-    def test_password_auth(
-        self, auto_login_user, test_nodes, create_workspace, test_password
-    ):
+    def test_password_auth(self, auto_login_user, test_nodes, create_workspace, test_password):
         client, user = auto_login_user()
         client.login(user=user.username, password=test_password)
         response = create_edge_with_node_ids(client, create_workspace, *test_nodes)
         assert response.status_code == 201
 
     @pytest.mark.django_db
-    def test_incorrect_password_auth(
-        self, client, create_user, create_workspace, test_nodes
-    ):
+    def test_incorrect_password_auth(self, client, create_user, create_workspace, test_nodes):
         user = create_user()
         client.login(username=user.username, password="wrong_password")
         response = create_edge_with_node_ids(client, create_workspace, *test_nodes)
