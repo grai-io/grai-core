@@ -48,17 +48,12 @@ def get_existing_items(from_items, workspace, Model):
 def get_edge_nodes_from_database(items, workspace):
     sources = (item["source"] for item in items)
     destinations = (item["destination"] for item in items)
-    needed_nodes = {
-        (item["name"], item["namespace"]) for item in [*sources, *destinations]
-    }
+    needed_nodes = {(item["name"], item["namespace"]) for item in [*sources, *destinations]}
     query = Q()
     for name, namespace in needed_nodes:
         query |= Q(name=name) & Q(namespace=namespace)
     query &= Q(workspace=workspace)
-    nodes = {
-        (node.name, node.namespace): node
-        for node in NodeModel.objects.filter(query).all()
-    }
+    nodes = {(node.name, node.namespace): node for node in NodeModel.objects.filter(query).all()}
     return nodes
 
 
@@ -91,17 +86,13 @@ def update(
             item_map[k]["source"] = model.source
             item_map[k]["destination"] = model.destination
 
-        node_map = get_edge_nodes_from_database(
-            [item_map[key] for key in new_item_keys], workspace
-        )
+        node_map = get_edge_nodes_from_database([item_map[key] for key in new_item_keys], workspace)
 
         for key in new_item_keys:
             source = item_map[key]["source"]
             destination = item_map[key]["destination"]
             item_map[key]["source"] = node_map[(source["name"], source["namespace"])]
-            item_map[key]["destination"] = node_map[
-                (destination["name"], destination["namespace"])
-            ]
+            item_map[key]["destination"] = node_map[(destination["name"], destination["namespace"])]
 
     deactivated_items = deactivate([current_item_map[k] for k in deactivated_item_keys])
 
@@ -123,9 +114,7 @@ def update(
                     item_key,
                     merge_dicts(getattr(current_item, item_key), item_value),
                 )
-            elif (
-                item_value != getattr(current_item, item_key) and item_value is not None
-            ):
+            elif item_value != getattr(current_item, item_key) and item_value is not None:
                 setattr(current_item, item_key, item_value)
         if current_item != current_item_map[k]:
             updated_items.append(current_item)

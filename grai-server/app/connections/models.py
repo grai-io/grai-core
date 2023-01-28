@@ -46,9 +46,7 @@ class Connection(TenantModel):
     tenant_id = "workspace_id"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    connector = models.ForeignKey(
-        "Connector", related_name="connections", on_delete=models.PROTECT
-    )
+    connector = models.ForeignKey("Connector", related_name="connections", on_delete=models.PROTECT)
     namespace = models.CharField(max_length=255, default="default")
     name = models.CharField(max_length=255)
     metadata = models.JSONField(default=dict)
@@ -141,9 +139,7 @@ class Run(TenantModel):
     tenant_id = "workspace_id"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    connection = TenantForeignKey(
-        "Connection", related_name="runs", on_delete=models.CASCADE
-    )
+    connection = TenantForeignKey("Connection", related_name="runs", on_delete=models.CASCADE)
     status = models.CharField(max_length=255)
     metadata = models.JSONField(default=dict)
     workspace = models.ForeignKey(

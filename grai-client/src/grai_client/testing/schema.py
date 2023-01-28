@@ -64,9 +64,7 @@ def mock_v1_edge(
     return EdgeV1(**edge_dict)
 
 
-def mock_v1_edge_and_nodes(
-    name=None, data_source=None, is_active=True, metadata={}, namespace=None
-):
+def mock_v1_edge_and_nodes(name=None, data_source=None, is_active=True, metadata={}, namespace=None):
     final_metadata = BASE_EDGE_METADATA.copy()
     final_metadata.update(metadata)
 

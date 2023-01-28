@@ -8,6 +8,4 @@ from grai_source_dbt.models.tests import Test
 # class ManifestNode(BaseModel):
 #     __root__: Annotated[Union[Model, Seed, Test], Field(discriminator='resource_type')]
 
-ManifestNode = Annotated[
-    Union[Model, Seed, Snapshot, Test], Field(discriminator="resource_type")
-]
+ManifestNode = Annotated[Union[Model, Seed, Snapshot, Test], Field(discriminator="resource_type")]

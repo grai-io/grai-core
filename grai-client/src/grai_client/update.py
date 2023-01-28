@@ -32,9 +32,7 @@ def update(client: BaseClient, items: List[T], active_items: Optional[List[T]] =
     deactivated_items = deactivate([current_item_map[k] for k in deactivated_item_keys])
     new_items: List[T] = [item_map[k] for k in new_item_keys]
     updated_items = [
-        merge_models(item_map[k], current_item_map[k])
-        for k in updated_item_keys
-        if item_map[k] != current_item_map[k]
+        merge_models(item_map[k], current_item_map[k]) for k in updated_item_keys if item_map[k] != current_item_map[k]
     ]
     client.patch(deactivated_items)
     client.patch(updated_items)

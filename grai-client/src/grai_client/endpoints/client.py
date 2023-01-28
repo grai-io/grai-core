@@ -93,9 +93,7 @@ class BaseClient(abc.ABC):
         elif api_key:
             self._auth_headers = APIKeyHeader(api_key).headers
         else:
-            raise Exception(
-                "Authentication requires either a user token, api key, or username/password combination."
-            )
+            raise Exception("Authentication requires either a user token, api key, or username/password combination.")
 
     @abc.abstractmethod
     def check_authentication(self) -> requests.Response:
@@ -103,9 +101,7 @@ class BaseClient(abc.ABC):
 
     @multimethod
     def get_url(self, grai_type: Any) -> str:
-        raise NotImplementedError(
-            f"No url method implemented for type {type(grai_type)}"
-        )
+        raise NotImplementedError(f"No url method implemented for type {type(grai_type)}")
 
     def prep_options(self, options: OptionType = None) -> ClientOptions:
         default_options = self.default_options()
@@ -185,9 +181,7 @@ def patch_sequence(
 
 
 @get.register
-def client_get_url(
-    client: BaseClient, url: str, options: ClientOptions = ClientOptions()
-) -> requests.Response:
+def client_get_url(client: BaseClient, url: str, options: ClientOptions = ClientOptions()) -> requests.Response:
     headers = {**client.auth_headers, **options.headers}
 
     response = client.session.get(url, headers=headers, **options.request_args)
@@ -196,9 +190,7 @@ def client_get_url(
 
 
 @delete.register
-def client_delete_url(
-    client: BaseClient, url: str, options: ClientOptions = ClientOptions()
-) -> requests.Response:
+def client_delete_url(client: BaseClient, url: str, options: ClientOptions = ClientOptions()) -> requests.Response:
     headers = {**client.auth_headers, **options.headers}
 
     response = client.session.delete(url, headers=headers, **options.request_args)
@@ -221,9 +213,7 @@ def client_post_url(
     }
     payload = {**payload, **options.payload}
 
-    response = client.session.post(
-        url, data=serialize_obj(payload), headers=headers  # , **options.request_args
-    )
+    response = client.session.post(url, data=serialize_obj(payload), headers=headers)  # , **options.request_args
 
     response_status_check(response)
     return response
@@ -243,9 +233,7 @@ def client_patch_url(
     }
     payload = {**payload, **options.payload}
 
-    response = client.session.patch(
-        url, data=serialize_obj(payload), headers=headers, **options.request_args
-    )
+    response = client.session.patch(url, data=serialize_obj(payload), headers=headers, **options.request_args)
 
     response_status_check(response)
     return response

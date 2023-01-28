@@ -75,13 +75,8 @@ def mock_v1_edge(
     return EdgeV1(**edge_dict)
 
 
-def build_graph_from_map(
-    map: Dict[Union[str, TestNodeObj], List[Tuple[str, ColumnToColumnAttributes]]]
-) -> graph.Graph:
-    nodes = [
-        node if isinstance(node, TestNodeObj) else TestNodeObj(name=node)
-        for node in map.keys()
-    ]
+def build_graph_from_map(map: Dict[Union[str, TestNodeObj], List[Tuple[str, ColumnToColumnAttributes]]]) -> graph.Graph:
+    nodes = [node if isinstance(node, TestNodeObj) else TestNodeObj(name=node) for node in map.keys()]
     node_name_map = {node.name: node for node in nodes}
     nodes = [mock_v1_node(node) for node in nodes]
 

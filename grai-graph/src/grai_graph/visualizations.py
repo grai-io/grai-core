@@ -51,9 +51,7 @@ def output_graph(
     try:
         p.write(file_name, format=file_format)
     except AssertionError:
-        raise ValueError(
-            "Could not write file. Please make sure that the format is accepted by pydot."
-        )
+        raise ValueError("Could not write file. Please make sure that the format is accepted by pydot.")
 
 
 def plot_graph(

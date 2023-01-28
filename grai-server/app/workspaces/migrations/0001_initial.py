@@ -157,9 +157,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name="membership",
-            index=models.Index(
-                fields=["workspace"], name="workspaces__workspa_ee535f_idx"
-            ),
+            index=models.Index(fields=["workspace"], name="workspaces__workspa_ee535f_idx"),
         ),
         migrations.AddConstraint(
             model_name="membership",

@@ -22,6 +22,9 @@ mypy = "^0.991"
 [tool.isort]
 profile = "black"
 
+[tool.black]
+line-length = 120
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

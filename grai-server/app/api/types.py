@@ -81,9 +81,7 @@ class NodeOrder:
     updated_at: auto
 
 
-@gql.django.type(
-    NodeModel, order=NodeOrder, filters=NodeFilter, pagination=True, only=["id"]
-)
+@gql.django.type(NodeModel, order=NodeOrder, filters=NodeFilter, pagination=True, only=["id"])
 class Node:
     id: auto
     namespace: auto
@@ -153,9 +151,7 @@ class ConnectorOrder:
     coming_soon: auto
 
 
-@gql.django.type(
-    ConnectorModel, order=ConnectorOrder, filters=ConnectorFilter, pagination=True
-)
+@gql.django.type(ConnectorModel, order=ConnectorOrder, filters=ConnectorFilter, pagination=True)
 class Connector:
     id: auto
     name: auto
@@ -188,9 +184,7 @@ class ConnectionOrder:
     updated_at: auto
 
 
-@gql.django.type(
-    ConnectionModel, order=ConnectionOrder, filters=ConnectionFilter, pagination=True
-)
+@gql.django.type(ConnectionModel, order=ConnectionOrder, filters=ConnectionFilter, pagination=True)
 class Connection:
     id: auto
     connector: Connector
@@ -211,17 +205,11 @@ class Connection:
 
     @gql.django.field
     def last_run(self) -> Optional["Run"]:
-        return (
-            RunModel.objects.filter(connection=self.id).order_by("-created_at").first()
-        )
+        return RunModel.objects.filter(connection=self.id).order_by("-created_at").first()
 
     @gql.django.field
     def last_successful_run(self) -> Optional["Run"]:
-        return (
-            RunModel.objects.filter(connection=self.id, status="success")
-            .order_by("-created_at")
-            .first()
-        )
+        return RunModel.objects.filter(connection=self.id, status="success").order_by("-created_at").first()
 
 
 @gql.django.type(NodeModel, order=NodeOrder, filters=NodeFilter, pagination=True)
@@ -234,9 +222,7 @@ class Table(Node):
     @gql.django.field(
         prefetch_related=Prefetch(
             "source_edges",
-            queryset=EdgeModel.objects.filter(
-                metadata__grai__edge_type="TableToColumn"
-            ).select_related("destination"),
+            queryset=EdgeModel.objects.filter(metadata__grai__edge_type="TableToColumn").select_related("destination"),
             to_attr="edges_list",
         )
     )
@@ -257,9 +243,7 @@ class WorkspaceOrder:
     name: auto
 
 
-@gql.django.type(
-    WorkspaceModel, order=WorkspaceOrder, filters=WorkspaceFilter, pagination=True
-)
+@gql.django.type(WorkspaceModel, order=WorkspaceOrder, filters=WorkspaceFilter, pagination=True)
 class Workspace:
     id: auto
     name: auto
@@ -299,9 +283,7 @@ class Workspace:
 
     @gql.django.field
     def tables(self) -> List[Table]:
-        return NodeModel.objects.filter(
-            workspace_id=self.id, metadata__grai__node_type="Table"
-        )
+        return NodeModel.objects.filter(workspace_id=self.id, metadata__grai__node_type="Table")
 
     @gql.django.field
     def table(self, pk: strawberry.ID) -> Table:
@@ -309,9 +291,7 @@ class Workspace:
 
     @gql.django.field
     def other_edges(self) -> List[Edge]:
-        return EdgeModel.objects.filter(workspace_id=self.id).exclude(
-            metadata__grai__edge_type="TableToColumn"
-        )
+        return EdgeModel.objects.filter(workspace_id=self.id).exclude(metadata__grai__edge_type="TableToColumn")
 
 
 @gql.django.filters.filter(MembershipModel, lookups=True)
@@ -332,9 +312,7 @@ class MembershipOrder:
     created_at: auto
 
 
-@gql.django.type(
-    MembershipModel, order=MembershipOrder, filters=MembershipFilter, pagination=True
-)
+@gql.django.type(MembershipModel, order=MembershipOrder, filters=MembershipFilter, pagination=True)
 class Membership:
     id: auto
     role: auto

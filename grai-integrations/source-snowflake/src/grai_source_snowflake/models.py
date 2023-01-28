@@ -33,9 +33,7 @@ class ColumnID(ID):
     def make_full_name(cls, values: Dict) -> Dict:
         full_name = values.get("full_name", None)
         if values.get("full_name", None) is None:
-            values[
-                "full_name"
-            ] = f"{values['table_schema']}.{values['table_name']}.{values['name']}"
+            values["full_name"] = f"{values['table_schema']}.{values['table_name']}.{values['name']}"
         return values
 
 

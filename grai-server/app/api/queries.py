@@ -41,18 +41,10 @@ class WorkspaceFilter(BasePermission):
 
 @gql.type
 class Query:
-    workspaces: typing.List[Workspace] = gql.django.field(
-        resolver=get_workspaces, permission_classes=[IsAuthenticated]
-    )
+    workspaces: typing.List[Workspace] = gql.django.field(resolver=get_workspaces, permission_classes=[IsAuthenticated])
     # workspace: Workspace = gql.django.field(
     #     resolver=get_workspace
     # )
-    workspace: Workspace = gql.django.field(
-        permission_classes=[IsAuthenticated, WorkspaceFilter]
-    )
-    connectors: typing.List[Connector] = gql.django.field(
-        permission_classes=[IsAuthenticated]
-    )
-    profile: User = gql.django.field(
-        resolver=get_profile, permission_classes=[IsAuthenticated]
-    )
+    workspace: Workspace = gql.django.field(permission_classes=[IsAuthenticated, WorkspaceFilter])
+    connectors: typing.List[Connector] = gql.django.field(permission_classes=[IsAuthenticated])
+    profile: User = gql.django.field(resolver=get_profile, permission_classes=[IsAuthenticated])

@@ -15,9 +15,7 @@ from grai_cli.utilities.validators import (
 @config_app.command("init")
 @utilities.writes_config
 def cli_init_config(
-    username: str = typer.Option(
-        ..., prompt=True, callback=username_callback, prompt_required=True
-    ),
+    username: str = typer.Option(..., prompt=True, callback=username_callback, prompt_required=True),
     password: str = typer.Option(
         ...,
         prompt=True,

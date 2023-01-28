@@ -13,15 +13,11 @@ from grai_source_flat_file.package_definitions import config
 
 @multimethod
 def build_grai_metadata(current: Any, desired: Any) -> None:
-    raise NotImplementedError(
-        f"No adapter between {type(current)} and {type(desired)} for value {current}"
-    )
+    raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)} for value {current}")
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_column(
-    current: Column, version: Literal["v1"] = "v1"
-) -> ColumnMetadata:
+def build_grai_metadata_from_column(current: Column, version: Literal["v1"] = "v1") -> ColumnMetadata:
     data = {
         "version": version,
         "node_type": NodeTypeLabels.column.value,
@@ -35,9 +31,7 @@ def build_grai_metadata_from_column(
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_node(
-    current: Table, version: Literal["v1"] = "v1"
-) -> TableMetadata:
+def build_grai_metadata_from_node(current: Table, version: Literal["v1"] = "v1") -> TableMetadata:
     data = {
         "version": version,
         "node_type": NodeTypeLabels.table.value,
@@ -48,9 +42,7 @@ def build_grai_metadata_from_node(
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_edge(
-    current: Edge, version: Literal["v1"] = "v1"
-) -> GenericEdgeMetadataV1:
+def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> GenericEdgeMetadataV1:
     data = {
         "version": version,
     }
@@ -59,9 +51,7 @@ def build_grai_metadata_from_edge(
 
 @multimethod
 def build_flat_file_metadata(current: Any, desired: Any) -> None:
-    raise NotImplementedError(
-        f"No adapter between {type(current)} and {type(desired)} for value {current}"
-    )
+    raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)} for value {current}")
 
 
 @build_flat_file_metadata.register
@@ -97,9 +87,7 @@ def adapt_to_client(current: Any, desired: Any):
 
 
 @adapt_to_client.register
-def adapt_column_to_client(
-    current: Union[Table, Column], version: Literal["v1"] = "v1"
-):
+def adapt_column_to_client(current: Union[Table, Column], version: Literal["v1"] = "v1"):
     spec_dict = {
         "name": current.full_name,
         "namespace": current.namespace,
