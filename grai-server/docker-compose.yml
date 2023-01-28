@@ -22,7 +22,6 @@ services:
       - FRONTEND_URL=http://localhost:3000
       - CELERY_BROKER=redis://redis:6379/0
       - CELERY_BACKEND=redis://redis:6379/0
-      - SECRET_KEY=1234
     depends_on:
       - redis
       - db
