@@ -34,9 +34,7 @@ class MySQLConnector:
         self.dbname = dbname if dbname is not None else get_from_env("dbname")
         self.user = user if user is not None else get_from_env("user")
         self.password = password if password is not None else get_from_env("password")
-        self.namespace = (
-            namespace if namespace is not None else get_from_env("namespace", "default")
-        )
+        self.namespace = namespace if namespace is not None else get_from_env("namespace", "default")
         self._connection = None
 
     def __enter__(self):
@@ -90,10 +88,7 @@ class MySQLConnector:
 		    AND table_schema != 'performance_schema'
             ORDER BY table_schema, table_name
         """
-        res = (
-            {k.lower(): v for k, v in result.items()}
-            for result in self.query_runner(query)
-        )
+        res = ({k.lower(): v for k, v in result.items()} for result in self.query_runner(query))
         return [Table(**result, namespace=self.namespace) for result in res]
 
     def get_columns(self, table: Table) -> List[Column]:
@@ -110,10 +105,7 @@ class MySQLConnector:
             ORDER BY ordinal_position
         """
 
-        res = (
-            {k.lower(): v for k, v in result.items()}
-            for result in self.query_runner(query)
-        )
+        res = ({k.lower(): v for k, v in result.items()} for result in self.query_runner(query))
 
         addtl_args = {
             "namespace": table.namespace,
@@ -165,20 +157,12 @@ class MySQLConnector:
         res = self.query_runner(query)
 
         for item in res:
-            item["self_columns"] = (
-                list(item["self_columns"].split(",")) if item["self_columns"] else []
-            )
-            item["foreign_columns"] = (
-                list(item["foreign_columns"].split(","))
-                if item["foreign_columns"]
-                else []
-            )
+            item["self_columns"] = list(item["self_columns"].split(",")) if item["self_columns"] else []
+            item["foreign_columns"] = list(item["foreign_columns"].split(",")) if item["foreign_columns"] else []
 
         res = ({k.lower(): v for k, v in result.items()} for result in res)
 
-        filtered_results = (
-            result for result in res if result["constraint_type"] == "f"
-        )
+        filtered_results = (result for result in res if result["constraint_type"] == "f")
 
         return [EdgeQuery(**fk, **addtl_args).to_edge() for fk in filtered_results]
 

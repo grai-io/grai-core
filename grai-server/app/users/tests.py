@@ -44,8 +44,6 @@ class TestUserAuth:
         assert success is False
 
     def test_incorrect_password_auth(self, db, client, create_user, test_password):
-        user = User.objects.create_user(
-            username="test@gmail.com", password=test_password
-        )
+        user = User.objects.create_user(username="test@gmail.com", password=test_password)
         success = client.login(username=user.username, password="wrong_password")
         assert success is False

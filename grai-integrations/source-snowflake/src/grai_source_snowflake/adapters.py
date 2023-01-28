@@ -19,15 +19,11 @@ from grai_source_snowflake.package_definitions import config
 
 @multimethod
 def build_grai_metadata(current: Any, desired: Any) -> None:
-    raise NotImplementedError(
-        f"No adapter between {type(current)} and {type(desired)} for value {current}"
-    )
+    raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)} for value {current}")
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_column(
-    current: Column, version: Literal["v1"] = "v1"
-) -> ColumnMetadata:
+def build_grai_metadata_from_column(current: Column, version: Literal["v1"] = "v1") -> ColumnMetadata:
 
     default_value = current.default_value
     if current.default_value is not None:
@@ -51,9 +47,7 @@ def build_grai_metadata_from_column(
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_table(
-    current: Table, version: Literal["v1"] = "v1"
-) -> TableMetadata:
+def build_grai_metadata_from_table(current: Table, version: Literal["v1"] = "v1") -> TableMetadata:
     data = {
         "version": version,
         "node_type": NodeTypeLabels.table.value,
@@ -64,9 +58,7 @@ def build_grai_metadata_from_table(
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_edge(
-    current: Edge, version: Literal["v1"] = "v1"
-) -> GenericEdgeMetadataV1:
+def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> GenericEdgeMetadataV1:
     data = {"version": version}
 
     # if isinstance(current.source, Table) and isinstance(current.destination, Column):
@@ -87,9 +79,7 @@ def build_grai_metadata_from_edge(
 
 @multimethod
 def build_snowflake_metadata(current: Any, desired: Any) -> None:
-    raise NotImplementedError(
-        f"No adapter between {type(current)} and {type(desired)} for value {current}"
-    )
+    raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)} for value {current}")
 
 
 @build_snowflake_metadata.register

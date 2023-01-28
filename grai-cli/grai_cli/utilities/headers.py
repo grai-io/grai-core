@@ -13,9 +13,7 @@ json_headers = {"accept": "application/json", "Content-Type": "application/json"
 def get_jwt(self, username: str, password: str) -> Dict:
     import requests
 
-    response = requests.post(
-        f"{self.api}/token/", headers=self.json_headers, params=self.user_auth_params
-    )
+    response = requests.post(f"{self.api}/token/", headers=self.json_headers, params=self.user_auth_params)
     if response.status_code != 200:
         raise
 

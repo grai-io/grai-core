@@ -26,17 +26,13 @@ def test_all_manifest_source_full_names_unique(manifest):
 def test_all_manifest_source_and_node_full_names_unique(manifest):
     node_names = {node.full_name for node in manifest.nodes.values()}
     source_names = {node.full_name for node in manifest.sources.values()}
-    assert (len(node_names) + len(source_names)) == (
-        len(manifest.nodes) + len(manifest.sources)
-    )
+    assert (len(node_names) + len(source_names)) == (len(manifest.nodes) + len(manifest.sources))
 
 
 def test_all_manifest_node_and_column_full_names_unique(dbt_graph):
     node_names = {node.full_name for node in dbt_graph.manifest.nodes.values()}
     column_names = {column.full_name for column in dbt_graph.columns.values()}
-    assert (len(node_names) + len(column_names)) == (
-        len(dbt_graph.manifest.nodes) + len(dbt_graph.columns)
-    )
+    assert (len(node_names) + len(column_names)) == (len(dbt_graph.manifest.nodes) + len(dbt_graph.columns))
 
 
 def test_build_dbt_graph(dbt_graph):
@@ -89,23 +85,14 @@ def test_v1_adapt_edges(v1_adapted_edges):
 
 def test_v1_adapted_edge_sources_have_nodes(v1_adapted_nodes, v1_adapted_edges):
     node_ids = {(n.spec.namespace, n.spec.name) for n in v1_adapted_nodes}
-    edge_source_ids = {
-        (n.spec.source.namespace, n.spec.source.name) for n in v1_adapted_edges
-    }
-    assert (
-        len(edge_source_ids - node_ids) == 0
-    ), "All edge sources should exist in the node list"
+    edge_source_ids = {(n.spec.source.namespace, n.spec.source.name) for n in v1_adapted_edges}
+    assert len(edge_source_ids - node_ids) == 0, "All edge sources should exist in the node list"
 
 
 def test_v1_adapted_edge_destination_have_nodes(v1_adapted_nodes, v1_adapted_edges):
     node_ids = {(n.spec.namespace, n.spec.name) for n in v1_adapted_nodes}
-    edge_destination_ids = {
-        (n.spec.destination.namespace, n.spec.destination.name)
-        for n in v1_adapted_edges
-    }
-    assert (
-        len(edge_destination_ids - node_ids) == 0
-    ), "All edge destinations should exist in the node list"
+    edge_destination_ids = {(n.spec.destination.namespace, n.spec.destination.name) for n in v1_adapted_edges}
+    assert len(edge_destination_ids - node_ids) == 0, "All edge destinations should exist in the node list"
 
 
 def test_get_nodes_and_edges():
@@ -114,13 +101,9 @@ def test_get_nodes_and_edges():
     assert type(nodes[0])
     node_ids = {(node.spec.name, node.spec.namespace) for node in nodes}
     source_ids = {(e.spec.source.name, e.spec.source.namespace) for e in edges}
-    destination_ids = {
-        (e.spec.destination.name, e.spec.destination.namespace) for e in edges
-    }
+    destination_ids = {(e.spec.destination.name, e.spec.destination.namespace) for e in edges}
 
-    assert (
-        len(source_ids - node_ids) == 0
-    ), f"Edge sources {source_ids - node_ids} missing from node list"
+    assert len(source_ids - node_ids) == 0, f"Edge sources {source_ids - node_ids} missing from node list"
     assert (
         len(destination_ids - node_ids) == 0
     ), f"Edge destinations {destination_ids - node_ids} missing from node list"
@@ -151,11 +134,7 @@ def test_metadata_is_core_compliant():
     nodes, edges = get_nodes_and_edges(manifest_file)
 
     for node in nodes:
-        assert isinstance(
-            getattr(node.spec.metadata, core_config.metadata_id), NodeV1Metadata
-        ), node.spec.metadata
+        assert isinstance(getattr(node.spec.metadata, core_config.metadata_id), NodeV1Metadata), node.spec.metadata
 
     for edge in edges:
-        assert isinstance(
-            getattr(edge.spec.metadata, core_config.metadata_id), EdgeV1Metadata
-        )
+        assert isinstance(getattr(edge.spec.metadata, core_config.metadata_id), EdgeV1Metadata)

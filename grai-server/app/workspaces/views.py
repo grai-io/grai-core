@@ -24,9 +24,7 @@ class WorkspaceViewSet(ReadOnlyModelViewSet):
         JWTAuthentication,
     ]
 
-    permission_classes = [
-        (HasWorkspaceAPIKey | IsAuthenticated) & MultitenantWorkspaces
-    ]
+    permission_classes = [(HasWorkspaceAPIKey | IsAuthenticated) & MultitenantWorkspaces]
 
     serializer_class = WorkspaceSerializer
     type = Workspace

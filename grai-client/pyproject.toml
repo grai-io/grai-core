@@ -26,6 +26,9 @@ types-requests = "^2.28.11.5"
 types-pyyaml = "^6.0.12.2"
 pre-commit = "^2.20.0"
 
+[tool.black]
+line-length = 120
+
 [tool.isort]
 profile = "black"
 known_first_party = "grai_client"

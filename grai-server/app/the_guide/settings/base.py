@@ -18,9 +18,7 @@ def clean_hosts(val):
     elif isinstance(val, str):
         return [s.strip() for s in val.strip("'\"").split(",")]
     else:
-        raise TypeError(
-            f"hosts must be a list or comma separated string not {type(val)}"
-        )
+        raise TypeError(f"hosts must be a list or comma separated string not {type(val)}")
 
 
 def get_server_version():
@@ -53,26 +51,16 @@ if DEBUG:
     default_allow_all_origins = True
 else:
     default_allowed_hosts = [SERVER_HOST, "127.0.0.1", "[::1]"]
-    default_csrf_trusted_origins = [
-        f"{scheme}://{host}" for scheme in schemes for host in hosts
-    ]
+    default_csrf_trusted_origins = [f"{scheme}://{host}" for scheme in schemes for host in hosts]
     default_cors_allowed_origins = [
-        f"{scheme}://{host}"
-        for scheme in schemes
-        for host in [FRONTEND_HOST, f"{FRONTEND_HOST}:{FRONTEND_PORT}"]
+        f"{scheme}://{host}" for scheme in schemes for host in [FRONTEND_HOST, f"{FRONTEND_HOST}:{FRONTEND_PORT}"]
     ]
     default_allow_all_origins = False
 
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", default=default_allowed_hosts, cast=clean_hosts)
-CORS_ALLOWED_ORIGINS = config(
-    "CORS_ALLOWED_ORIGINS", default=default_cors_allowed_origins, cast=clean_hosts
-)
-CSRF_TRUSTED_ORIGINS = config(
-    "CSRF_TRUSTED_ORIGINS", default=default_csrf_trusted_origins, cast=clean_hosts
-)
-CORS_ALLOW_ALL_ORIGINS = config(
-    "CORS_ALLOW_ALL_ORIGINS", default=default_allow_all_origins, cast=bool
-)
+CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS", default=default_cors_allowed_origins, cast=clean_hosts)
+CSRF_TRUSTED_ORIGINS = config("CSRF_TRUSTED_ORIGINS", default=default_csrf_trusted_origins, cast=clean_hosts)
+CORS_ALLOW_ALL_ORIGINS = config("CORS_ALLOW_ALL_ORIGINS", default=default_allow_all_origins, cast=bool)
 
 
 # Database
@@ -249,9 +237,7 @@ LOGGING = {
     },
 }
 
-EMAIL_BACKEND = config(
-    "EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend"
-)
+EMAIL_BACKEND = config("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
 EMAIL_FROM = config("EMAIL_FROM", None)
 AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID", None)
 AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY", None)

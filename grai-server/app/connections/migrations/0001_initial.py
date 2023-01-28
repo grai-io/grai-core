@@ -59,9 +59,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name="connector",
-            index=models.Index(
-                fields=["is_active"], name="connections_is_acti_b59726_idx"
-            ),
+            index=models.Index(fields=["is_active"], name="connections_is_acti_b59726_idx"),
         ),
         migrations.AddIndex(
             model_name="connector",
@@ -69,9 +67,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddConstraint(
             model_name="connector",
-            constraint=models.UniqueConstraint(
-                fields=("name",), name="Name uniqueness"
-            ),
+            constraint=models.UniqueConstraint(fields=("name",), name="Name uniqueness"),
         ),
         migrations.AddField(
             model_name="connection",

@@ -40,9 +40,7 @@ class TestUniqueness(unittest.TestCase):
 
     def get_nodes(n: int = 3):
         variables = "abcdefghijklmnopqrstuvwxyz"
-        extra_kwargs = {
-            char: TestNodeObj(name=char, node_attributes={}) for char in variables[0:n]
-        }
+        extra_kwargs = {char: TestNodeObj(name=char, node_attributes={}) for char in variables[0:n]}
 
         def inner(fn):
             def wraps(*args, **kwargs):
@@ -61,9 +59,7 @@ class TestUniqueness(unittest.TestCase):
             c: [],
         }
         G = get_analysis_from_map(mock_structure)
-        results = G.test_unique_violations(
-            name="a", namespace=DEFAULT_NAMESPACE, expects_unique=True
-        )
+        results = G.test_unique_violations(name="a", namespace=DEFAULT_NAMESPACE, expects_unique=True)
         assert len(results) == 0
 
     @get_nodes(n=3)
@@ -76,9 +72,7 @@ class TestUniqueness(unittest.TestCase):
             c: [],
         }
         G = get_analysis_from_map(mock_structure)
-        results = G.test_unique_violations(
-            name="a", namespace=DEFAULT_NAMESPACE, expects_unique=True
-        )
+        results = G.test_unique_violations(name="a", namespace=DEFAULT_NAMESPACE, expects_unique=True)
         assert len(results) == 0
 
     @get_nodes(n=3)
@@ -91,9 +85,7 @@ class TestUniqueness(unittest.TestCase):
             c: [],
         }
         G = get_analysis_from_map(mock_structure)
-        results = G.test_unique_violations(
-            name="a", namespace=DEFAULT_NAMESPACE, expects_unique=False
-        )
+        results = G.test_unique_violations(name="a", namespace=DEFAULT_NAMESPACE, expects_unique=False)
 
         assert len(results) == 1 and results[0][-1].spec.name is "a", results
 
@@ -108,9 +100,7 @@ class TestUniqueness(unittest.TestCase):
             d: [],
         }
         G = get_analysis_from_map(mock_structure)
-        results = G.test_unique_violations(
-            name="a", namespace=DEFAULT_NAMESPACE, expects_unique=True
-        )
+        results = G.test_unique_violations(name="a", namespace=DEFAULT_NAMESPACE, expects_unique=True)
         assert len(results) == 1 and results[0][-1].spec.name is "d", results
 
     @get_nodes(n=3)
@@ -123,14 +113,8 @@ class TestUniqueness(unittest.TestCase):
             c: [],
         }
         G = get_analysis_from_map(mock_structure)
-        results = G.test_unique_violations(
-            name="a", namespace=DEFAULT_NAMESPACE, expects_unique=True
-        )
-        assert (
-            len(results) == 2
-            and results[0][-1].spec.name is "c"
-            and results[0][-1].spec.name is "c"
-        )
+        results = G.test_unique_violations(name="a", namespace=DEFAULT_NAMESPACE, expects_unique=True)
+        assert len(results) == 2 and results[0][-1].spec.name is "c" and results[0][-1].spec.name is "c"
 
 
 class TestNullable(unittest.TestCase):
@@ -140,9 +124,7 @@ class TestNullable(unittest.TestCase):
 
     def get_nodes(n: int = 3):
         variables = "abcdefghijklmnopqrstuvwxyz"
-        extra_kwargs = {
-            char: TestNodeObj(name=char, node_attributes={}) for char in variables[0:n]
-        }
+        extra_kwargs = {char: TestNodeObj(name=char, node_attributes={}) for char in variables[0:n]}
 
         def inner(fn):
             def wraps(*args, **kwargs):
@@ -161,9 +143,7 @@ class TestNullable(unittest.TestCase):
             c: [],
         }
         G = get_analysis_from_map(mock_structure)
-        results = G.test_nullable_violations(
-            name="a", namespace=DEFAULT_NAMESPACE, is_nullable=True
-        )
+        results = G.test_nullable_violations(name="a", namespace=DEFAULT_NAMESPACE, is_nullable=True)
         assert len(results) == 0
 
     @get_nodes(n=3)
@@ -175,9 +155,7 @@ class TestNullable(unittest.TestCase):
             c: [],
         }
         G = get_analysis_from_map(mock_structure)
-        results = G.test_nullable_violations(
-            name="a", namespace=DEFAULT_NAMESPACE, is_nullable=True
-        )
+        results = G.test_nullable_violations(name="a", namespace=DEFAULT_NAMESPACE, is_nullable=True)
         assert len(results) == 0
 
     @get_nodes(n=3)
@@ -190,9 +168,7 @@ class TestNullable(unittest.TestCase):
             c: [],
         }
         G = get_analysis_from_map(mock_structure)
-        results = G.test_nullable_violations(
-            name="a", namespace=DEFAULT_NAMESPACE, is_nullable=True
-        )
+        results = G.test_nullable_violations(name="a", namespace=DEFAULT_NAMESPACE, is_nullable=True)
         assert len(results) == 0
 
     @get_nodes(n=3)
@@ -205,9 +181,7 @@ class TestNullable(unittest.TestCase):
             c: [],
         }
         G = get_analysis_from_map(mock_structure)
-        results = G.test_nullable_violations(
-            name="a", namespace=DEFAULT_NAMESPACE, is_nullable=False
-        )
+        results = G.test_nullable_violations(name="a", namespace=DEFAULT_NAMESPACE, is_nullable=False)
 
         assert len(results) == 1 and results[0][-1].spec.name is "a", results
 
@@ -222,9 +196,7 @@ class TestNullable(unittest.TestCase):
             d: [],
         }
         G = get_analysis_from_map(mock_structure)
-        results = G.test_nullable_violations(
-            name="a", namespace=DEFAULT_NAMESPACE, is_nullable=True
-        )
+        results = G.test_nullable_violations(name="a", namespace=DEFAULT_NAMESPACE, is_nullable=True)
         assert (
             len(results) == 1 and results[0][-1].spec.name is "d"
         ), "Test failure not detected multiple steps from source node"
@@ -239,11 +211,5 @@ class TestNullable(unittest.TestCase):
             c: [],
         }
         G = get_analysis_from_map(mock_structure)
-        results = G.test_nullable_violations(
-            name="a", namespace=DEFAULT_NAMESPACE, is_nullable=True
-        )
-        assert (
-            len(results) == 2
-            and results[0][-1].spec.name is "c"
-            and results[0][-1].spec.name is "c"
-        )
+        results = G.test_nullable_violations(name="a", namespace=DEFAULT_NAMESPACE, is_nullable=True)
+        assert len(results) == 2 and results[0][-1].spec.name is "c" and results[0][-1].spec.name is "c"

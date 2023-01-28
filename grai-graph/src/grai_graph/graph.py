@@ -37,10 +37,7 @@ class Graph:
         self.graph.add_edges_from(self.add_edges_from_manifest())
 
     def add_nodes_from_manifest(self):
-        return (
-            (hash(node.spec), {self._container_key: node})
-            for node in self.manifest.nodes
-        )
+        return ((hash(node.spec), {self._container_key: node}) for node in self.manifest.nodes)
 
     def add_edges_from_manifest(self):
         return (
@@ -66,13 +63,9 @@ class Graph:
         if namespace and name:
             node_id = self.get_node_id(namespace, name)
             if node_id is None:
-                raise Exception(
-                    f"No nodes found with name={name} and namespace={namespace}"
-                )
+                raise Exception(f"No nodes found with name={name} and namespace={namespace}")
         elif not node_id:
-            raise Exception(
-                f"`get_node` requires either name & namespace or node_id argument"
-            )
+            raise Exception(f"`get_node` requires either name & namespace or node_id argument")
 
         return self.graph.nodes.get(node_id)[self._container_key]
 
@@ -83,10 +76,7 @@ class Graph:
         return self.get_node(node_id=node_id).spec.display_name
 
     def relabeled_graph(self):
-        label_map = {
-            hash(node.spec): f"{node.spec.namespace}-{node.spec.name}"
-            for node in self.manifest.nodes
-        }
+        label_map = {hash(node.spec): f"{node.spec.namespace}-{node.spec.name}" for node in self.manifest.nodes}
         nodes = label_map.values()
         edges = (
             (
@@ -105,10 +95,7 @@ class Graph:
 
 @multimethod
 def process_items(vals: Any, version: Any, type: Any) -> List[GraiType]:
-    message = (
-        f"Process items does not have an implementation for "
-        f"{vals=}, {version=}, {type=}"
-    )
+    message = f"Process items does not have an implementation for " f"{vals=}, {version=}, {type=}"
     raise NotImplementedError(message)
 
 

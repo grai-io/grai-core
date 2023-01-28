@@ -52,9 +52,7 @@ def orjson_defaults(obj: Any) -> Any:
     elif isinstance(obj, (GraiBaseModel, BaseModel)):
         return obj.dict()
     else:
-        raise Exception(
-            f"No supported JSON serialization format for objects of type {type(obj)}"
-        )
+        raise Exception(f"No supported JSON serialization format for objects of type {type(obj)}")
 
 
 class GraiEncoder(json.JSONEncoder):

@@ -52,17 +52,9 @@ def test_table_adapter(item, version, target):
     assert isinstance(result, target)
 
 
-source = ColumnID(
-    table_schema="schema", table_name="table", name="id", namespace="test"
-)
-destination = ColumnID(
-    table_schema="schema", table_name="table", name="id2", namespace="test"
-)
-edges = [
-    Edge(
-        source=source, destination=destination, definition="thing", constraint_type="f"
-    )
-]
+source = ColumnID(table_schema="schema", table_name="table", name="id", namespace="test")
+destination = ColumnID(table_schema="schema", table_name="table", name="id2", namespace="test")
+edges = [Edge(source=source, destination=destination, definition="thing", constraint_type="f")]
 edge_values = [(item, "v1", EdgeV1) for item in edges]
 
 
@@ -124,11 +116,7 @@ def test_metadata_is_core_compliant(mock_get_nodes_and_edges):
     nodes, edges = mock_get_nodes_and_edges
 
     for node in nodes:
-        assert isinstance(
-            getattr(node.spec.metadata, core_config.metadata_id), GraiNodeMetadataV1
-        ), node.spec.metadata
+        assert isinstance(getattr(node.spec.metadata, core_config.metadata_id), GraiNodeMetadataV1), node.spec.metadata
 
     for edge in edges:
-        assert isinstance(
-            getattr(edge.spec.metadata, core_config.metadata_id), GraiEdgeMetadataV1
-        )
+        assert isinstance(getattr(edge.spec.metadata, core_config.metadata_id), GraiEdgeMetadataV1)
