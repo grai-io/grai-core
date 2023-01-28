@@ -9,49 +9,55 @@ import {
   Box,
 } from "@mui/material"
 import React from "react"
-import NodeColumns from "./NodeColumns"
-import NodeDetail from "./NodeDetail"
-import { Edge, Node as NodeType, nodeToTable } from "helpers/graph"
-import NodeDetailRow from "./NodeDetailRow"
+// import TableColumns from "../tables/TableColumns"
+// import TableDetail from "../tables/TableDetail"
+// import { Edge, Node as NodeType } from "helpers/graph"
+// import TableDetailRow from "../tables/TableDetailRow"
 import { Link, useParams } from "react-router-dom"
+import TableColumns from "./TableColumns"
+import TableDetail from "./TableDetail"
 
-export interface Node extends NodeType {
+interface Column {
+  id: string
+  name: string
+  display_name: string
+}
+
+export interface Table {
   id: string
   name: string
   namespace: string
   data_source: string
   display_name: string
+  columns: Column[]
+  metadata: any
 }
 
-type NodeProfileProps = {
-  node: Node
-  nodes: NodeType[]
-  edges: Edge[]
+type TableProfileProps = {
+  table: Table
 }
 
-const NodeProfile: React.FC<NodeProfileProps> = ({ node, nodes, edges }) => {
+const TableProfile: React.FC<TableProfileProps> = ({ table }) => {
   const { workspaceId } = useParams()
-
-  const table = nodeToTable<NodeType>(node, nodes, edges)
 
   return (
     <>
       <Grid container spacing={3} sx={{ pt: 3 }}>
         <Grid item md={6}>
-          <NodeDetail node={node} />
+          <TableDetail table={table} />
         </Grid>
         <Grid item md={6}>
-          <Card variant="outlined" sx={{ borderRadius: 0, borderBottom: 0 }}>
+          {/* <Card variant="outlined" sx={{ borderRadius: 0, borderBottom: 0 }}>
             <Table>
               <TableBody>
-                <NodeDetailRow label="Upstream dependencies">
+                <TableDetailRow label="Upstream dependencies">
                   {table.destinationTables.length > 0 ? (
                     <Stack>
                       {table.destinationTables?.map(table => (
                         <Box key={table.id}>
                           <Button
                             component={Link}
-                            to={`/workspaces/${workspaceId}/nodes/${table.id}`}
+                            to={`/workspaces/${workspaceId}/tables/${table.id}`}
                           >
                             {table.display_name}
                           </Button>
@@ -61,15 +67,15 @@ const NodeProfile: React.FC<NodeProfileProps> = ({ node, nodes, edges }) => {
                   ) : (
                     <Typography variant="body2">None</Typography>
                   )}
-                </NodeDetailRow>
-                <NodeDetailRow label="Downstream dependencies">
+                </TableDetailRow>
+                <TableDetailRow label="Downstream dependencies">
                   {table.sourceTables.length > 0 ? (
                     <Stack>
                       {table.sourceTables.map(table => (
                         <Box key={table.id}>
                           <Button
                             component={Link}
-                            to={`/workspaces/${workspaceId}/nodes/${table.id}`}
+                            to={`/workspaces/${workspaceId}/tables/${table.id}`}
                           >
                             {table.display_name}
                           </Button>
@@ -79,15 +85,15 @@ const NodeProfile: React.FC<NodeProfileProps> = ({ node, nodes, edges }) => {
                   ) : (
                     <Typography variant="body2">None</Typography>
                   )}
-                </NodeDetailRow>
+                </TableDetailRow>
               </TableBody>
             </Table>
-          </Card>
+          </Card> */}
         </Grid>
       </Grid>
-      <NodeColumns columns={table.columns} />
+      <TableColumns columns={table.columns} />
     </>
   )
 }
 
-export default NodeProfile
+export default TableProfile

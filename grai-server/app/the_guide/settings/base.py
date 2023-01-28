@@ -34,7 +34,7 @@ def get_server_version():
 
 
 SERVER_VERSION = get_server_version()
-DEBUG = config("DEBUG", default=False, cast=bool)
+DEBUG = config("DEBUG", default=True, cast=bool)
 TEMPLATE_DEBUG = config("TEMPLATE_DEBUG", default=DEBUG, cast=bool)
 
 SERVER_HOST = config("SERVER_HOST", default="localhost", cast=str)
@@ -230,10 +230,30 @@ PHONENUMBER_DEFAULT_REGION = "US"
 # OpenApi
 # https://drf-spectacular.readthedocs.io/en/latest/settings.html
 
+import logging
+import traceback
+
+
+class StackInfoHandler(logging.StreamHandler):
+
+    trim = 5
+
+    def emit(self, record):
+        super(StackInfoHandler, self).emit(record)
+        stack = "".join(str(row) for row in traceback.format_stack()[: -self.trim])
+        self.stream.write(stack)
+
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "handlers": {
+        "db-console": {
+            "level": "DEBUG",
+            # 'class': 'the_guide.settings.base.StackInfoHandler',  # Reference the custom handler
+            "class": "logging.StreamHandler",
+            # 'formatter': 'simple',
+        },
         "file": {
             "level": "DEBUG",
             "class": "logging.FileHandler",
@@ -245,6 +265,16 @@ LOGGING = {
             "handlers": ["file"],
             "level": "DEBUG",
             "propagate": True,
+        },
+        # "django.db.backends": {
+        #     "handlers": ["file"],
+        #     "level": "DEBUG",
+        #     "propagate": True,
+        # },
+        "django.db.backends": {
+            "handlers": ["db-console"],
+            "level": "DEBUG",
+            "propagate": False,
         },
     },
 }

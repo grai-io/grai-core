@@ -4,11 +4,11 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GetNode
+// GraphQL query operation: GetTablesAndEdgesTableLineage
 // ====================================================
 
-export interface GetNode_workspace_node {
-  __typename: "Node";
+export interface GetTablesAndEdgesTableLineage_workspace_tables {
+  __typename: "Table";
   id: any;
   namespace: string;
   name: string;
@@ -18,18 +18,7 @@ export interface GetNode_workspace_node {
   metadata: any;
 }
 
-export interface GetNode_workspace_nodes {
-  __typename: "Node";
-  id: any;
-  namespace: string;
-  name: string;
-  display_name: string;
-  is_active: boolean;
-  data_source: string;
-  metadata: any;
-}
-
-export interface GetNode_workspace_edges_source {
+export interface GetTablesAndEdgesTableLineage_workspace_edges_source {
   __typename: "Node";
   id: any;
   namespace: string;
@@ -40,7 +29,7 @@ export interface GetNode_workspace_edges_source {
   metadata: any;
 }
 
-export interface GetNode_workspace_edges_destination {
+export interface GetTablesAndEdgesTableLineage_workspace_edges_destination {
   __typename: "Node";
   id: any;
   namespace: string;
@@ -51,29 +40,27 @@ export interface GetNode_workspace_edges_destination {
   metadata: any;
 }
 
-export interface GetNode_workspace_edges {
+export interface GetTablesAndEdgesTableLineage_workspace_edges {
   __typename: "Edge";
   id: any;
   is_active: boolean;
   data_source: string;
-  source: GetNode_workspace_edges_source;
-  destination: GetNode_workspace_edges_destination;
+  source: GetTablesAndEdgesTableLineage_workspace_edges_source;
+  destination: GetTablesAndEdgesTableLineage_workspace_edges_destination;
   metadata: any;
 }
 
-export interface GetNode_workspace {
+export interface GetTablesAndEdgesTableLineage_workspace {
   __typename: "Workspace";
   id: any;
-  node: GetNode_workspace_node;
-  nodes: GetNode_workspace_nodes[];
-  edges: GetNode_workspace_edges[];
+  tables: GetTablesAndEdgesTableLineage_workspace_tables[];
+  edges: GetTablesAndEdgesTableLineage_workspace_edges[];
 }
 
-export interface GetNode {
-  workspace: GetNode_workspace;
+export interface GetTablesAndEdgesTableLineage {
+  workspace: GetTablesAndEdgesTableLineage_workspace;
 }
 
-export interface GetNodeVariables {
+export interface GetTablesAndEdgesTableLineageVariables {
   workspaceId: string;
-  nodeId: string;
 }

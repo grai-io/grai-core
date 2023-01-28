@@ -10,16 +10,16 @@ import {
 import React from "react"
 import { Link, useParams } from "react-router-dom"
 
-interface Node {
+interface Table {
   id: string
   display_name: string
 }
 
-type NodeHeaderProps = {
-  node: Node
+type TableHeaderProps = {
+  table: Table
 }
 
-const NodeHeader: React.FC<NodeHeaderProps> = ({ node }) => {
+const TableHeader: React.FC<TableHeaderProps> = ({ table }) => {
   const { workspaceId } = useParams()
 
   return (
@@ -28,7 +28,7 @@ const NodeHeader: React.FC<NodeHeaderProps> = ({ node }) => {
         <Box>
           <Button
             component={Link}
-            to={`/workspaces/${workspaceId}/nodes`}
+            to={`/workspaces/${workspaceId}/tables`}
             color="secondary"
             startIcon={<KeyboardBackspace />}
           >
@@ -39,7 +39,7 @@ const NodeHeader: React.FC<NodeHeaderProps> = ({ node }) => {
           variant="h6"
           sx={{ textTransform: "uppercase", mx: 1, mt: 0.3 }}
         >
-          {node?.display_name ?? node?.id}
+          {table?.display_name ?? table?.id}
         </Typography>
         <Box>
           <Tooltip title="Copy Table Name">
@@ -54,4 +54,4 @@ const NodeHeader: React.FC<NodeHeaderProps> = ({ node }) => {
   )
 }
 
-export default NodeHeader
+export default TableHeader

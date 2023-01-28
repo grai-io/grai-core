@@ -1,18 +1,16 @@
 import { Box } from "@mui/material"
 import React from "react"
-import { Edge, Node as GraphNode } from "helpers/graph"
-import NodeLineage from "./NodeLineage"
-import NodeProfile, { Node } from "./NodeProfile"
+import { Edge, Table as GraphTable } from "helpers/graph"
+import TableLineage from "../../components/tables/TableLineage"
+import TableProfile, { Table } from "./TableProfile"
 import Tabs from "components/tabs/Tabs"
 import { BarChart, Mediation, TableRows } from "@mui/icons-material"
 
-type NodeContentProps = {
-  node: Node
-  nodes: GraphNode[]
-  edges: Edge[]
+type TableContentProps = {
+  table: Table
 }
 
-const NodeContent: React.FC<NodeContentProps> = ({ node, nodes, edges }) => (
+const TableContent: React.FC<TableContentProps> = ({ table }) => (
   <Box sx={{ px: 2, py: 1 }}>
     <Tabs
       tabs={[
@@ -20,7 +18,7 @@ const NodeContent: React.FC<NodeContentProps> = ({ node, nodes, edges }) => (
           value: "profile",
           label: "Profile",
           icon: <BarChart />,
-          element: <NodeProfile node={node} nodes={nodes} edges={edges} />,
+          element: <TableProfile table={table} />,
         },
         {
           value: "sample",
@@ -32,11 +30,11 @@ const NodeContent: React.FC<NodeContentProps> = ({ node, nodes, edges }) => (
           value: "lineage",
           label: "Lineage",
           icon: <Mediation />,
-          element: <NodeLineage node={node} />,
+          element: <TableLineage table={table} />,
         },
       ]}
     />
   </Box>
 )
 
-export default NodeContent
+export default TableContent

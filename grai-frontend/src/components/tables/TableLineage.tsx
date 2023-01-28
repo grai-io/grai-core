@@ -1,23 +1,22 @@
 import { gql, useQuery } from "@apollo/client"
 import { Box } from "@mui/material"
 import React from "react"
-import { nodesToTables } from "helpers/graph"
 import theme from "theme"
 import Loading from "components/layout/Loading"
-import { Node as NodeType } from "helpers/graph"
-import {
-  GetNodesAndEdgesNodeLineage,
-  GetNodesAndEdgesNodeLineageVariables,
-} from "./__generated__/GetNodesAndEdgesNodeLineage"
+// import { Table as TableType } from "helpers/graph"
 import { useParams } from "react-router-dom"
 import Graph from "components/graph/Graph"
 import GraphError from "components/utils/GraphError"
+import {
+  GetTablesAndEdgesTableLineage,
+  GetTablesAndEdgesTableLineageVariables,
+} from "./__generated__/GetTablesAndEdgesTableLineage"
 
-const GET_NODES_AND_EDGES = gql`
-  query GetNodesAndEdgesNodeLineage($workspaceId: ID!) {
+const GET_TABLES_AND_EDGES = gql`
+  query GetTablesAndEdgesTableLineage($workspaceId: ID!) {
     workspace(pk: $workspaceId) {
       id
-      nodes {
+      tables {
         id
         namespace
         name
@@ -54,21 +53,21 @@ const GET_NODES_AND_EDGES = gql`
   }
 `
 
-interface Node extends NodeType {
+interface Table {
   id: string
   display_name: string
 }
 
-type NodeLineageProps = {
-  node: Node
+type TableLineageProps = {
+  table: Table
 }
 
-const NodeLineage: React.FC<NodeLineageProps> = ({ node }) => {
+const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
   const { workspaceId } = useParams()
   const { loading, error, data } = useQuery<
-    GetNodesAndEdgesNodeLineage,
-    GetNodesAndEdgesNodeLineageVariables
-  >(GET_NODES_AND_EDGES, {
+    GetTablesAndEdgesTableLineage,
+    GetTablesAndEdgesTableLineageVariables
+  >(GET_TABLES_AND_EDGES, {
     variables: {
       workspaceId: workspaceId ?? "",
     },
@@ -77,17 +76,17 @@ const NodeLineage: React.FC<NodeLineageProps> = ({ node }) => {
   if (error) return <GraphError error={error} />
   if (loading) return <Loading />
 
-  if (!data?.workspace.nodes || !data.workspace.edges) return null
+  if (!data?.workspace.tables || !data.workspace.edges) return null
 
-  const tables = nodesToTables(data.workspace.nodes, data.workspace.edges)
+  const hiddenTables = data?.workspace.tables.filter(t => {
+    if (t.id === table.id) return false
 
-  const hiddenNodes = tables.filter(t => {
-    if (t.id === node.id) return false
+    return true
 
-    return !(
-      t.sourceTables.some(sourceTable => sourceTable.id === node.id) ||
-      t.destinationTables.some(sourceTable => sourceTable.id === node.id)
-    )
+    // return !(
+    //   t.sourceTables.some(sourceTable => sourceTable.id === table.id) ||
+    //   t.destinationTables.some(sourceTable => sourceTable.id === table.id)
+    // )
   })
 
   return (
@@ -99,14 +98,14 @@ const NodeLineage: React.FC<NodeLineageProps> = ({ node }) => {
         mt: 2,
       }}
     >
-      <Graph
+      {/* <Graph
         tables={tables}
-        nodes={data.workspace.nodes}
+        tables={data.workspace.tables}
         edges={data.workspace.edges}
-        initialHidden={hiddenNodes.map(n => n.id)}
-      />
+        initialHidden={hiddenTables.map(n => n.id)}
+      /> */}
     </Box>
   )
 }
 
-export default NodeLineage
+export default TableLineage
