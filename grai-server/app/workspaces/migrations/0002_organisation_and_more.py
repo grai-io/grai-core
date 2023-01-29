@@ -11,7 +11,7 @@ def forwards_func(apps, schema_editor):
     # if we directly import it, it'll be the wrong version
     Organisation = apps.get_model("workspaces", "Organisation")
     db_alias = schema_editor.connection.alias
-    Organisation.objects.using(db_alias).create(name="default")
+    Organisation.objects.using(db_alias).create(id="c8dba28b-6991-4c1d-98d5-f9b58ccada90", name="default")
 
 
 class Migration(migrations.Migration):
@@ -59,7 +59,7 @@ class Migration(migrations.Migration):
             model_name="workspace",
             name="organisation",
             field=models.ForeignKey(
-                default="default",
+                default="c8dba28b-6991-4c1d-98d5-f9b58ccada90",
                 on_delete=django.db.models.deletion.CASCADE,
                 related_name="workspaces",
                 to="workspaces.organisation",
