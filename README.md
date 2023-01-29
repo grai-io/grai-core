@@ -36,13 +36,15 @@ Grai makes it easy to understand how your data relates across databases, warehou
 
 ## Quick Start
 
+A great place to start is our Quick Start guide in our [documentation](https://docs.grai.io/quick-start). To get going very quickly
+
 ```
 git clone https://github.com/grai-io/grai-core
 cd grai-core/grai-server
 docker compose up
 ```
 
-The server should now be available at [http://localhost:8000/admin](http://localhost:8000/admin).
+Your frontend is now here [http://localhost:3000/](http://localhost:3000/).
 
 Default login credentials:
 
@@ -51,9 +53,12 @@ username: null@grai.io
 password: super_secret
 ```
 
-You can also explore the API backend at [http://localhost:8000/docs](http://localhost:8000/docs).
+Here is our getting started guide for the [web application](https://docs.grai.io/web-app/getting-started).
 
-Check out this [guide](https://github.com/grai-io/grai-core/tree/master/examples/quick_start_postgres) for a walk through populating lineage using the postgres connector.
+The server itself is accessible here [http://localhost:3000/](http://localhost:3000/).
+
+To work with the client, learn more [here](https://docs.grai.io/tooling/client).
+
 
 ## Docker Image
 
