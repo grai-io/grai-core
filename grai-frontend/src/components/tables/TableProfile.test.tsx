@@ -7,23 +7,47 @@ const other_table = {
   display_name: "other table",
 }
 
-const table = {
-  id: "1",
-  name: "Table 1",
-  namespace: "default",
-  data_source: "test-source",
-  display_name: "Table 1",
-  columns: [],
-  metadata: {
-    grai: {
-      node_type: "Table",
-    },
-  },
-  sourceTables: [other_table],
-  destinationTables: [other_table],
-}
-
 test("renders", async () => {
+  const table = {
+    id: "1",
+    name: "Table 1",
+    namespace: "default",
+    data_source: "test-source",
+    display_name: "Table 1",
+    columns: [],
+    metadata: {
+      grai: {
+        node_type: "Table",
+      },
+    },
+    source_tables: [other_table],
+    destination_tables: [other_table],
+  }
+
+  renderWithRouter(<TableProfile table={table} />)
+
+  await waitFor(() => {
+    expect(screen.getByText("Table 1")).toBeInTheDocument()
+  })
+})
+
+test("renders no sources or destinations", async () => {
+  const table = {
+    id: "1",
+    name: "Table 1",
+    namespace: "default",
+    data_source: "test-source",
+    display_name: "Table 1",
+    columns: [],
+    metadata: {
+      grai: {
+        node_type: "Table",
+      },
+    },
+    source_tables: [],
+    destination_tables: [],
+  }
+
   renderWithRouter(<TableProfile table={table} />)
 
   await waitFor(() => {

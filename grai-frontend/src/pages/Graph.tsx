@@ -10,13 +10,12 @@ import {
   GetTablesAndEdges,
   GetTablesAndEdgesVariables,
 } from "./__generated__/GetTablesAndEdges"
-import { tablesToEnhancedTables } from "helpers/graph"
 
 export const GET_TABLES_AND_EDGES = gql`
   query GetTablesAndEdges($workspaceId: ID!) {
     workspace(pk: $workspaceId) {
       id
-      tables(pagination: { offset: 0, limit: 100 }) {
+      tables(pagination: { offset: 0, limit: 100000 }) {
         id
         namespace
         name
@@ -26,6 +25,16 @@ export const GET_TABLES_AND_EDGES = gql`
         columns {
           id
           name
+        }
+        source_tables {
+          id
+          name
+          display_name
+        }
+        destination_tables {
+          id
+          name
+          display_name
         }
       }
       other_edges {
@@ -68,8 +77,6 @@ const Graph: React.FC = () => {
 
   if (!tables) return <Alert>No tables found</Alert>
 
-  const enhancedTables = tablesToEnhancedTables(tables, edges)
-
   return (
     <PageLayout>
       <Box
@@ -80,7 +87,7 @@ const Graph: React.FC = () => {
         }}
       >
         <GraphComponent
-          tables={enhancedTables}
+          tables={tables}
           edges={edges}
           errors={errors}
           limitGraph={limitGraph}

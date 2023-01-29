@@ -73,9 +73,6 @@
     ]
   },
   "bundlewatch": {
-    "trackBranches": [
-      "master"
-    ],
     "files": [
       {
         "path": "build/**/*.js",
