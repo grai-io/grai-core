@@ -13,7 +13,7 @@ python = "^3.8"
 pydantic = "^1.9.1"
 networkx = "^2.8.3"
 grai-client = "^0.2.0"
-grai-schemas = "^0.1.5"
+grai-schemas = "^0.1.7"
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.10.1"

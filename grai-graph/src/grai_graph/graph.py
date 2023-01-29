@@ -2,9 +2,9 @@ from functools import lru_cache
 from typing import Any, Dict, List, Optional, Sequence, Tuple, Type, Union
 
 import networkx as nx
-from grai_client.schemas.edge import EdgeTypes
-from grai_client.schemas.node import NodeTypes
-from grai_client.schemas.schema import GraiType, Schema
+from grai_schemas.base import Edge as EdgeTypes
+from grai_schemas.base import Node as NodeTypes
+from grai_schemas.schema import GraiType, Schema
 from multimethod import multimethod
 
 
@@ -17,11 +17,6 @@ class GraphManifest:
         for node in nodes:
             self.node_index.setdefault(node.spec.namespace, {})
             self.node_index[node.spec.namespace].setdefault(node.spec.name, node)
-        # assert all(isinstance(node.spec.id, uuid.UUID) for node in self.nodes), \
-        #     "Graph manifests require node UUID's rather than name/namespace specification"
-        # assert all(isinstance(edge.spec.source, uuid.UUID) and isinstance(edge.spec.destination, uuid.UUID)
-        #            for edge in self.edges), \
-        #     "Graph manifests require edge source/destination UUID's rather than name/namespace specification"
 
     def get_node(self, namespace: str, name: str) -> Optional[NodeTypes]:
         return self.node_index.get(namespace, {}).get(name, None)
@@ -118,4 +113,5 @@ def build_graph(nodes: List[Dict], edges: List[Dict], version: str) -> Graph:
     nodes = process_items(nodes, version, "Node")
     edges = process_items(edges, version, "Edge")
     manifest = GraphManifest(nodes, edges)
+
     return Graph(manifest)

@@ -17,6 +17,7 @@ from grai_source_dbt.models.nodes import (
     Edge,
     GraiNodeTypes,
     SupportedDBTTypes,
+    Table,
 )
 from grai_source_dbt.package_definitions import config
 
@@ -50,14 +51,12 @@ def build_grai_metadata_from_node(current: SupportedDBTTypes, version: Literal["
 def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> GenericEdgeMetadataV1:
     data = {"version": version}
 
-    # if isinstance(current.source, Table) and isinstance(current.destination, Column):
-    if current.constraint_type.value == Constraint.belongs_to:
+    if isinstance(current.source, Table) and isinstance(current.destination, Column):
         data["edge_type"] = EdgeTypeLabels.table_to_column.value
         return TableToColumnMetadata(**data)
-    # elif isinstance(current.source, Column) and isinstance(current.destination, Column):
-    # elif current.constraint_type.value == "btdm":
-    #     data["edge_type"] = EdgeTypeLabels.column_to_column.value
-    #     return TableToTableMetadata(**data)
+    elif isinstance(current.source, Column) and isinstance(current.destination, Column):
+        data["edge_type"] = EdgeTypeLabels.column_to_column.value
+        return TableToTableMetadata(**data)
     else:
         data["edge_type"] = EdgeTypeLabels.generic.value
         return GenericEdgeMetadataV1(**data)

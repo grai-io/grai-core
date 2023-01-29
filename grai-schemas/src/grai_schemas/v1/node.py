@@ -26,11 +26,11 @@ class BaseSpec(GraiBaseModel):
     metadata: MetadataV1 = MetadataV1(grai=GenericNodeMetadataV1(node_type="Node"))
 
 
-class NamedSpec(BaseSpec, NodeNamedID):
+class NamedSpec(NodeNamedID, BaseSpec):
     pass
 
 
-class IDSpec(BaseSpec, NodeUuidID):
+class IDSpec(NodeUuidID, BaseSpec):
     pass
 
 

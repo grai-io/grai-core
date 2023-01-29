@@ -1,6 +1,8 @@
 from grai_schemas import config as core_config
 from grai_schemas.v1 import EdgeV1, NodeV1
+from grai_schemas.v1.metadata.edges import ColumnToColumnMetadata
 from grai_schemas.v1.metadata.edges import Metadata as EdgeV1Metadata
+from grai_schemas.v1.metadata.edges import TableToColumnMetadata
 from grai_schemas.v1.metadata.nodes import Metadata as NodeV1Metadata
 
 from grai_source_dbt.base import get_nodes_and_edges
@@ -107,6 +109,18 @@ def test_get_nodes_and_edges():
     assert (
         len(destination_ids - node_ids) == 0
     ), f"Edge destinations {destination_ids - node_ids} missing from node list"
+
+
+def test_all_bt_edges_have_table_to_column_metadata(v1_adapted_edges):
+    bt_edges = (edge for edge in v1_adapted_edges if edge.spec.metadata.grai_source_dbt["constraint_type"] == "bt")
+    for edge in bt_edges:
+        assert isinstance(edge.metadata.grai, TableToColumnMetadata)
+
+
+def test_all_dbtm_edges_have_column_to_column_metadata(v1_adapted_edges):
+    bt_edges = (edge for edge in v1_adapted_edges if edge.spec.metadata.grai_source_dbt["constraint_type"] == "dbtm")
+    for edge in bt_edges:
+        assert isinstance(edge.metadata.grai, ColumnToColumnMetadata)
 
 
 def test_metadata_has_core_metadata_ids():

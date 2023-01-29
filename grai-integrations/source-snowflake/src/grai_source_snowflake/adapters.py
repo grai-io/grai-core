@@ -61,17 +61,17 @@ def build_grai_metadata_from_table(current: Table, version: Literal["v1"] = "v1"
 def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> GenericEdgeMetadataV1:
     data = {"version": version}
 
-    # if isinstance(current.source, Table) and isinstance(current.destination, Column):
-    if current.constraint_type.value == Constraint.belongs_to:
+    if isinstance(current.source, Table) and isinstance(current.destination, Column):
+        # if current.constraint_type.value == Constraint.belongs_to:
         data["edge_type"] = EdgeTypeLabels.table_to_column.value
         return TableToColumnMetadata(**data)
-    # elif isinstance(current.source, Column) and isinstance(current.destination, Column):
-    else:
+    elif isinstance(current.source, Column) and isinstance(current.destination, Column):
+        # else:
         data["edge_type"] = EdgeTypeLabels.column_to_column.value
         return ColumnToColumnMetadata(**data)
-    # else:
-    #     data["edge_type"] = EdgeTypeLabels.generic.value
-    #     return GenericEdgeMetadataV1(**data)
+    else:
+        data["edge_type"] = EdgeTypeLabels.generic.value
+        return GenericEdgeMetadataV1(**data)
 
 
 # ---

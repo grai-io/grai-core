@@ -1,12 +1,16 @@
 from typing import Dict, List, Optional, Tuple, Union
 
-from grai_client.schemas.edge import EdgeV1
-from grai_client.schemas.node import NodeV1
-from grai_schemas.models import (
+from grai_schemas.v1 import EdgeV1, NodeV1
+from grai_schemas.v1.metadata.edges import (
+    ColumnToColumnAttributes,
+    ColumnToColumnMetadata,
+    EdgeTypeLabels,
+    GenericEdgeMetadataV1,
+)
+from grai_schemas.v1.metadata.nodes import (
     ColumnAttributes,
     ColumnMetadata,
-    ColumnToColumnAttributes,
-    GraiEdgeMetadata,
+    NodeTypeLabels,
 )
 from pydantic import BaseModel
 
@@ -39,7 +43,9 @@ def mock_v1_node(node: Union[str, TestNodeObj]):
             "data_source": "test_source",
             "display_name": node.name,
             "is_active": True,
-            "metadata": {"grai": ColumnMetadata(node_attributes=metadata).dict()},
+            "metadata": {
+                "grai": ColumnMetadata(node_type=NodeTypeLabels.column.value, node_attributes=metadata).dict()
+            },
         },
     }
     return NodeV1(**node_dict)
@@ -69,7 +75,12 @@ def mock_v1_edge(
                 "namespace": destination_node.namespace,
             },
             "is_active": True,
-            "metadata": {"grai": GraiEdgeMetadata(edge_attributes=metadata).dict()},
+            "metadata": {
+                "grai": ColumnToColumnMetadata(
+                    edge_type=EdgeTypeLabels.column_to_column.value,
+                    edge_attributes=metadata,
+                ).dict()
+            },
         },
     }
     return EdgeV1(**edge_dict)
