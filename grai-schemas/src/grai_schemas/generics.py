@@ -77,7 +77,9 @@ class PackageConfig(BaseModel):
 
     @validator("metadata_id")
     def metadata_id_validation(cls, value):
-        assert "-" not in value
+        assert (
+            "-" not in value
+        ), f"Error found in metadata_id: {value}. `-` is a reserved character which should not be used."
         return value
 
     class Config:

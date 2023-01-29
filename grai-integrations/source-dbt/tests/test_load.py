@@ -112,16 +112,12 @@ def test_get_nodes_and_edges():
 
 
 def test_all_bt_edges_have_table_to_column_metadata(v1_adapted_edges):
-    from devtools import debug
-
     bt_edges = (edge for edge in v1_adapted_edges if edge.spec.metadata.grai_source_dbt["constraint_type"] == "bt")
     for edge in bt_edges:
         assert isinstance(edge.metadata.grai, TableToColumnMetadata)
 
 
 def test_all_dbtm_edges_have_column_to_column_metadata(v1_adapted_edges):
-    from devtools import debug
-
     bt_edges = (edge for edge in v1_adapted_edges if edge.spec.metadata.grai_source_dbt["constraint_type"] == "dbtm")
     for edge in bt_edges:
         assert isinstance(edge.metadata.grai, ColumnToColumnMetadata)
