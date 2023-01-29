@@ -16,9 +16,7 @@ def run_update_server(runId):
 @shared_task
 def run_connection_schedule(connectionId):
     connection = Connection.objects.get(pk=connectionId)
-    run = Run.objects.create(
-        workspace=connection.workspace, connection=connection, status="queued"
-    )
+    run = Run.objects.create(workspace=connection.workspace, connection=connection, status="queued")
     execute_run(run)
 
 
@@ -64,6 +62,7 @@ def run_postgres(run: Run):
         dbname=metadata["dbname"],
         user=metadata["user"],
         password=secrets["password"],
+        namespace=run.connection.namespace,
     )
     nodes, edges = get_nodes_and_edges(conn, "v1")
     update(run.workspace, nodes)
@@ -85,7 +84,7 @@ def run_snowflake(run: Run):
         warehouse=metadata.get("warehouse"),
         database=metadata.get("database"),
         schema=metadata.get("schema"),
-        namespace=metadata.get("namespace"),
+        namespace=run.connection.namespace,
     )
     nodes, edges = get_nodes_and_edges(conn, "v1")
     update(run.workspace, nodes)

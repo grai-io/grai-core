@@ -21,13 +21,9 @@ def test_run_created():
     organisation = Organisation.objects.create(name="O1")
     workspace = Workspace.objects.create(name="W1", organisation=organisation)
     connector = Connector.objects.create(name="C1")
-    connection = Connection.objects.create(
-        workspace=workspace, connector=connector, name="Connection 1"
-    )
+    connection = Connection.objects.create(workspace=workspace, connector=connector, name="Connection 1")
 
-    run = Run.objects.create(
-        workspace=workspace, connection=connection, status="success"
-    )
+    run = Run.objects.create(workspace=workspace, connection=connection, status="success")
 
     assert run.id == uuid.UUID(str(run.id))
     assert str(run) == str(run.id)
@@ -45,9 +41,7 @@ class TestConnection:
         organisation = Organisation.objects.create(name="O1")
         workspace = Workspace.objects.create(name="W1", organisation=organisation)
         connector = Connector.objects.create(name="C1")
-        connection = Connection.objects.create(
-            workspace=workspace, connector=connector, name="Connection 1"
-        )
+        connection = Connection.objects.create(workspace=workspace, connector=connector, name="Connection 1")
 
         assert connection.id == uuid.UUID(str(connection.id))
         assert str(connection) == "Connection 1"
@@ -58,9 +52,7 @@ class TestConnection:
         organisation = Organisation.objects.create(name="O1")
         workspace = Workspace.objects.create(name="W1", organisation=organisation)
         connector = Connector.objects.create(name="C1")
-        connection = Connection.objects.create(
-            workspace=workspace, connector=connector, name="Connection 1"
-        )
+        connection = Connection.objects.create(workspace=workspace, connector=connector, name="Connection 1")
 
         connection.schedules = {
             "type": "cron",
@@ -124,9 +116,7 @@ class TestConnection:
         organisation = Organisation.objects.create(name="O1")
         workspace = Workspace.objects.create(name="W1", organisation=organisation)
         connector = Connector.objects.create(name="C1")
-        connection = Connection.objects.create(
-            workspace=workspace, connector=connector, name="Connection 1"
-        )
+        connection = Connection.objects.create(workspace=workspace, connector=connector, name="Connection 1")
 
         connection.schedules = {
             "type": "blah",

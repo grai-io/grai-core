@@ -16,6 +16,8 @@ HAS_RICH = importlib.util.find_spec("rich") is not None
 
 if HAS_RICH:
     from rich import print
+else:
+    print = print
 
 
 def default_callback(ctx: typer.Context):

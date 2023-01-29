@@ -3,8 +3,11 @@ from typing import List, Optional
 
 import strawberry
 import strawberry_django
+from django.db.models import Prefetch
 from strawberry.scalars import JSON
 from strawberry_django.filters import FilterLookup
+from strawberry_django.pagination import OffsetPaginationInput
+from strawberry_django_plus import gql
 from strawberry_django_plus.gql import auto
 
 from connections.models import Connection as ConnectionModel
@@ -19,7 +22,7 @@ from workspaces.models import Workspace as WorkspaceModel
 from workspaces.models import WorkspaceAPIKey as WorkspaceAPIKeyModel
 
 
-@strawberry.django.filters.filter(UserModel, lookups=True)
+@gql.django.filters.filter(UserModel, lookups=True)
 class UserFilter:
     username: auto
     first_name: Optional[str]
@@ -37,14 +40,14 @@ class UserOrder:
     updated_at: auto
 
 
-@strawberry.django.type(UserModel, order=UserOrder, filters=UserFilter)
+@gql.django.type(UserModel, order=UserOrder, filters=UserFilter)
 class User:
     id: auto
     username: auto
     first_name: auto
     last_name: auto
 
-    @strawberry.field
+    @gql.field
     def full_name(self) -> str:
         return f"{self.first_name} {self.last_name}"
 
@@ -52,7 +55,7 @@ class User:
     updated_at: auto
 
 
-@strawberry.django.filters.filter(NodeModel, lookups=True)
+@gql.django.filters.filter(NodeModel, lookups=True)
 class NodeFilter:
     id: auto
     namespace: auto
@@ -78,7 +81,7 @@ class NodeOrder:
     updated_at: auto
 
 
-@strawberry.django.type(NodeModel, order=NodeOrder, filters=NodeFilter, pagination=True)
+@gql.django.type(NodeModel, order=NodeOrder, filters=NodeFilter, pagination=True, only=["id"])
 class Node:
     id: auto
     namespace: auto
@@ -91,7 +94,7 @@ class Node:
     destination_edges: List["Edge"]
 
 
-@strawberry.django.filters.filter(EdgeModel, lookups=True)
+@gql.django.filters.filter(EdgeModel, lookups=True)
 class EdgeFilter:
     id: auto
     namespace: auto
@@ -117,22 +120,22 @@ class EdgeOrder:
     updated_at: auto
 
 
-@strawberry.django.type(EdgeModel, order=EdgeOrder, filters=EdgeFilter, pagination=True)
+@gql.django.type(EdgeModel, order=EdgeOrder, filters=EdgeFilter, pagination=True)
 class Edge:
     id: auto
     namespace: auto
     name: auto
     display_name: auto
     data_source: auto
-    source: Node
-    destination: Node
+    source: Node = gql.django.field()
+    destination: Node = gql.django.field()
     metadata: JSON
     is_active: auto
     created_at: auto
     updated_at: auto
 
 
-@strawberry.django.filters.filter(ConnectorModel, lookups=True)
+@gql.django.filters.filter(ConnectorModel, lookups=True)
 class ConnectorFilter:
     id: auto
     name: auto
@@ -148,9 +151,7 @@ class ConnectorOrder:
     coming_soon: auto
 
 
-@strawberry.django.type(
-    ConnectorModel, order=ConnectorOrder, filters=ConnectorFilter, pagination=True
-)
+@gql.django.type(ConnectorModel, order=ConnectorOrder, filters=ConnectorFilter, pagination=True)
 class Connector:
     id: auto
     name: auto
@@ -161,7 +162,7 @@ class Connector:
     coming_soon: auto
 
 
-@strawberry.django.filters.filter(ConnectionModel, lookups=True)
+@gql.django.filters.filter(ConnectionModel, lookups=True)
 class ConnectionFilter:
     id: auto
     namespace: auto
@@ -183,16 +184,14 @@ class ConnectionOrder:
     updated_at: auto
 
 
-@strawberry.django.type(
-    ConnectionModel, order=ConnectionOrder, filters=ConnectionFilter, pagination=True
-)
+@gql.django.type(ConnectionModel, order=ConnectionOrder, filters=ConnectionFilter, pagination=True)
 class Connection:
     id: auto
     connector: Connector
     namespace: auto
     name: auto
     metadata: JSON
-    schedules: JSON
+    schedules: Optional[JSON]
     is_active: auto
     created_at: auto
     updated_at: auto
@@ -200,32 +199,166 @@ class Connection:
 
     runs: List["Run"]
     # run: Run = strawberry.django.field
-    @strawberry.django.field
+    @gql.django.field
     def run(self, id: strawberry.ID) -> "Run":
         return RunModel.objects.get(id=id)
 
-    @strawberry.django.field
+    @gql.django.field
     def last_run(self) -> Optional["Run"]:
-        return (
-            RunModel.objects.filter(connection=self.id).order_by("-created_at").first()
-        )
+        return RunModel.objects.filter(connection=self.id).order_by("-created_at").first()
 
-    @strawberry.django.field
+    @gql.django.field
     def last_successful_run(self) -> Optional["Run"]:
-        return (
-            RunModel.objects.filter(connection=self.id, status="success")
-            .order_by("-created_at")
-            .first()
+        return RunModel.objects.filter(connection=self.id, status="success").order_by("-created_at").first()
+
+
+@gql.django.type(NodeModel, order=NodeOrder, filters=NodeFilter, pagination=True)
+class Column(Node):
+    pass
+
+
+@gql.django.type(NodeModel, order=NodeOrder, filters=NodeFilter, pagination=True)
+class Table(Node):
+    @gql.django.field(
+        prefetch_related=Prefetch(
+            "source_edges",
+            queryset=EdgeModel.objects.filter(metadata__grai__edge_type="TableToColumn").select_related("destination"),
+            to_attr="edges_list",
         )
+    )
+    def columns(self) -> List[Column]:
+        return list(set([edge.destination for edge in self.edges_list]))
+
+    @gql.django.field(
+        prefetch_related=(
+            Prefetch(
+                "source_edges",
+                queryset=EdgeModel.objects.exclude(metadata__grai__edge_type="TableToColumn").select_related(
+                    "destination"
+                ),
+                to_attr="sources_list",
+            ),
+            Prefetch(
+                "source_edges",
+                queryset=EdgeModel.objects.filter(metadata__grai__edge_type="TableToColumn")
+                .select_related("destination")
+                .prefetch_related(
+                    Prefetch(
+                        "destination__source_edges",
+                        queryset=EdgeModel.objects.exclude(metadata__grai__edge_type="TableToColumn")
+                        .select_related("destination")
+                        .prefetch_related(
+                            Prefetch(
+                                "destination__destination_edges",
+                                queryset=EdgeModel.objects.filter(
+                                    metadata__grai__edge_type="TableToColumn"
+                                ).select_related("source"),
+                                to_attr="tables",
+                            )
+                        ),
+                        to_attr="sources_list",
+                    ),
+                    Prefetch(
+                        "destination__destination_edges",
+                        queryset=EdgeModel.objects.exclude(metadata__grai__edge_type="TableToColumn")
+                        .select_related("source")
+                        .prefetch_related(
+                            Prefetch(
+                                "source__destination_edges",
+                                queryset=EdgeModel.objects.filter(
+                                    metadata__grai__edge_type="TableToColumn"
+                                ).select_related("source"),
+                                to_attr="tables",
+                            )
+                        ),
+                        to_attr="destination_list",
+                    ),
+                ),
+                to_attr="columns",
+            ),
+        )
+    )
+    def source_tables(self) -> List["Table"]:
+        tables = []
+
+        for source in self.sources_list:
+            tables.append(source.destination)
+
+        for column in self.columns:
+            for source in column.destination.sources_list:
+                for table in source.destination.tables:
+                    tables.append(table.source)
+
+        return list(set(tables))
+
+    @gql.django.field(
+        prefetch_related=(
+            Prefetch(
+                "destination_edges",
+                queryset=EdgeModel.objects.exclude(metadata__grai__edge_type="TableToColumn").select_related("source"),
+                to_attr="destinations_list",
+            ),
+            Prefetch(
+                "source_edges",
+                queryset=EdgeModel.objects.filter(metadata__grai__edge_type="TableToColumn")
+                .select_related("destination")
+                .prefetch_related(
+                    Prefetch(
+                        "destination__source_edges",
+                        queryset=EdgeModel.objects.exclude(metadata__grai__edge_type="TableToColumn")
+                        .select_related("destination")
+                        .prefetch_related(
+                            Prefetch(
+                                "destination__destination_edges",
+                                queryset=EdgeModel.objects.filter(
+                                    metadata__grai__edge_type="TableToColumn"
+                                ).select_related("source"),
+                                to_attr="tables",
+                            )
+                        ),
+                        to_attr="sources_list",
+                    ),
+                    Prefetch(
+                        "destination__destination_edges",
+                        queryset=EdgeModel.objects.exclude(metadata__grai__edge_type="TableToColumn")
+                        .select_related("source")
+                        .prefetch_related(
+                            Prefetch(
+                                "source__destination_edges",
+                                queryset=EdgeModel.objects.filter(
+                                    metadata__grai__edge_type="TableToColumn"
+                                ).select_related("source"),
+                                to_attr="tables",
+                            )
+                        ),
+                        to_attr="destination_list",
+                    ),
+                ),
+                to_attr="columns2",
+            ),
+        )
+    )
+    def destination_tables(self) -> List["Table"]:
+        tables = []
+
+        for destination in self.destinations_list:
+            tables.append(destination.source)
+
+        for column in self.columns2:
+            for destination in column.destination.destination_list:
+                for table in destination.source.tables:
+                    tables.append(table.source)
+
+        return list(set(tables))
 
 
-@strawberry.django.type(OrganisationModel)
+@gql.django.type(OrganisationModel)
 class Organisation:
     id: auto
     name: auto
 
 
-@strawberry.django.filters.filter(WorkspaceModel)
+@gql.django.filters.filter(WorkspaceModel)
 class WorkspaceFilter:
     id: auto
     name: FilterLookup[str]
@@ -238,42 +371,96 @@ class WorkspaceOrder:
     name: auto
 
 
-@strawberry.django.type(
-    WorkspaceModel, order=WorkspaceOrder, filters=WorkspaceFilter, pagination=True
-)
+@gql.django.type(WorkspaceModel, order=WorkspaceOrder, filters=WorkspaceFilter, pagination=True)
 class Workspace:
     id: auto
     name: auto
+    created_at: auto
+    updated_at: auto
+
     organisation: Organisation
-    nodes: List["Node"]
-    # node: NodeType = strawberry.django.field
-    @strawberry.django.field
+
+    # Nodes
+    @gql.django.field
+    def nodes(self) -> List["Node"]:
+        return NodeModel.objects.filter(workspace=self)
+
+    @gql.django.field
     def node(self, id: strawberry.ID) -> Node:
         return NodeModel.objects.get(id=id)
 
-    edges: List["Edge"]
-    # edge: EdgeType = strawberry.django.field(field_name='edges')
-    @strawberry.django.field
+    # Edges
+    @gql.django.field
+    def edges(self) -> List["Edge"]:
+        return EdgeModel.objects.filter(workspace=self)
+
+    @gql.django.field
     def edge(self, id: strawberry.ID) -> Edge:
         return EdgeModel.objects.get(id=id)
 
-    connections: List["Connection"]
-    # connection: ConnectionType = strawberry.django.field
-    @strawberry.django.field
+    # Connections
+    @gql.django.field
+    def connections(self) -> List["Connection"]:
+        return ConnectionModel.objects.filter(workspace=self)
+
+    @gql.django.field
     def connection(self, id: strawberry.ID) -> Connection:
         return ConnectionModel.objects.get(id=id)
 
-    runs: List["Run"]
-    # run: Run = strawberry.django.field
-    @strawberry.django.field
+    # Runs
+    @gql.django.field
+    def runs(self) -> List["Run"]:
+        return RunModel.objects.filter(workspace=self)
+
+    @gql.django.field
     def run(self, id: strawberry.ID) -> "Run":
         return RunModel.objects.get(id=id)
 
-    memberships: List["Membership"]
-    api_keys: List["WorkspaceAPIKey"]
+    # Memberships
+    @gql.django.field
+    def memberships(self) -> List["Membership"]:
+        return MembershipModel.objects.filter(workspace=self)
+
+    # Api Keys
+    api_keys: List["WorkspaceAPIKey"] = gql.django.field()
+
+    # Tables
+    @gql.django.field
+    def tables(self, pagination: Optional[OffsetPaginationInput] = None) -> List[Table]:
+        query_set = NodeModel.objects.filter(workspace_id=self.id, metadata__grai__node_type="Table")
+
+        if pagination:
+            start = pagination.offset
+            stop = start + pagination.limit
+            return query_set[start:stop]
+
+        return query_set
+
+    @gql.django.field
+    def tables_count(self) -> int:
+        return NodeModel.objects.filter(workspace_id=self.id, metadata__grai__node_type="Table").count()
+
+    @gql.django.field
+    def table(self, id: strawberry.ID) -> Table:
+        return NodeModel.objects.filter(id=id, workspace_id=self.id, metadata__grai__node_type="Table")
+
+    # Other edges
+    @gql.django.field
+    def other_edges(self) -> List[Edge]:
+        return EdgeModel.objects.filter(workspace_id=self.id).exclude(
+            metadata__has_key="grai.edge_type", metadata__grai__edge_type="TableToColumn"
+        )
+
+    @gql.django.field
+    def other_edges_count(self) -> int:
+        return (
+            EdgeModel.objects.filter(workspace_id=self.id)
+            .exclude(metadata__has_key="grai.edge_type", metadata__grai__edge_type="TableToColumn")
+            .count()
+        )
 
 
-@strawberry.django.filters.filter(MembershipModel, lookups=True)
+@gql.django.filters.filter(MembershipModel, lookups=True)
 class MembershipFilter:
     id: auto
     role: auto
@@ -291,9 +478,7 @@ class MembershipOrder:
     created_at: auto
 
 
-@strawberry.django.type(
-    MembershipModel, order=MembershipOrder, filters=MembershipFilter, pagination=True
-)
+@gql.django.type(MembershipModel, order=MembershipOrder, filters=MembershipFilter, pagination=True)
 class Membership:
     id: auto
     role: auto
@@ -303,7 +488,7 @@ class Membership:
     created_at: auto
 
 
-@strawberry.django.filters.filter(WorkspaceAPIKeyModel, lookups=True)
+@gql.django.filters.filter(WorkspaceAPIKeyModel, lookups=True)
 class WorkspaceAPIKeyFilter:
     id: auto
     name: auto
@@ -319,11 +504,12 @@ class WorkspaceAPIKeyOrder:
     created: auto
 
 
-@strawberry.django.type(
+@gql.django.type(
     WorkspaceAPIKeyModel,
     order=WorkspaceAPIKeyOrder,
     filters=WorkspaceAPIKeyFilter,
     pagination=True,
+    only=["id", "revoked"],
 )
 class WorkspaceAPIKey:
     id: auto
@@ -336,13 +522,13 @@ class WorkspaceAPIKey:
     created_by: User
 
 
-@strawberry.type
+@gql.type
 class KeyResult:
     key: str
     api_key: WorkspaceAPIKey
 
 
-@strawberry.type
+@gql.type
 class BasicResult:
     success: bool
 
@@ -353,7 +539,7 @@ class RunOrder:
     created_at: auto
 
 
-@strawberry.django.type(RunModel, order=RunOrder, pagination=True)
+@gql.django.type(RunModel, order=RunOrder, pagination=True)
 class Run:
     id: auto
     connection: Connection

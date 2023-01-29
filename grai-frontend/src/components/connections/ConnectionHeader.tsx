@@ -21,11 +21,13 @@ interface Connection extends BaseConnection {
 
 type ConnectionHeaderProps = {
   connection: Connection
+  workspaceId: string
   onRefresh?: () => void
 }
 
 const ConnectionHeader: React.FC<ConnectionHeaderProps> = ({
   connection,
+  workspaceId,
   onRefresh,
 }) => {
   const { routePrefix } = useWorkspace()
@@ -59,7 +61,11 @@ const ConnectionHeader: React.FC<ConnectionHeaderProps> = ({
             <RunStatus run={connection.last_run} link sx={{ ml: 2 }} />
           )}
         </Box>
-        <ConnectionRefresh connection={connection} onRefresh={onRefresh} />
+        <ConnectionRefresh
+          connection={connection}
+          workspaceId={workspaceId}
+          onRefresh={onRefresh}
+        />
       </Box>
       <Divider />
     </>

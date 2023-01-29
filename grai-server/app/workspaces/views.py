@@ -24,9 +24,7 @@ class WorkspaceViewSet(ReadOnlyModelViewSet):
         JWTAuthentication,
     ]
 
-    permission_classes = [
-        (HasWorkspaceAPIKey | IsAuthenticated) & MultitenantWorkspaces
-    ]
+    permission_classes = [(HasWorkspaceAPIKey | IsAuthenticated) & MultitenantWorkspaces]
 
     serializer_class = WorkspaceSerializer
     type = Workspace
@@ -49,9 +47,7 @@ class WorkspaceViewSet(ReadOnlyModelViewSet):
                 split = condition.split("/")
 
                 if len(split) == 1 or len(split) > 2:
-                    raise Exception(
-                        "Incorrect format, should be organisation/workspace"
-                    )
+                    raise Exception("Incorrect format, should be organisation/workspace")
 
                 queryset = queryset.filter(name=split[1], organisation__name=split[0])
             else:

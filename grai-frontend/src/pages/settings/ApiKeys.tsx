@@ -11,7 +11,7 @@ import NotFound from "pages/NotFound"
 
 const GET_API_KEYS = gql`
   query GetApiKeys($organisationName: String!, $workspaceName: String!) {
-    workspace(organisationName: $organsationName, name: $workspaceName) {
+    workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       api_keys {
         id

@@ -2,14 +2,14 @@ import datetime
 import json
 import pathlib
 import sys
+import uuid
 from typing import Any, Dict, TypeVar
 from uuid import UUID
 
 import orjson
+from grai_schemas.generics import GraiBaseModel
 from pydantic import BaseModel
 from requests import RequestException, Response
-
-from grai_client.schemas.utilities import GraiBaseModel
 
 if sys.version_info < (3, 10):
     from typing_extensions import ParamSpec
@@ -19,6 +19,14 @@ else:
 
 P = ParamSpec("P")
 T = TypeVar("T")
+
+
+def is_valid_uuid(val):
+    try:
+        uuid.UUID(str(val))
+        return True
+    except ValueError:
+        return False
 
 
 def response_status_check(resp: Response) -> Response:
@@ -44,9 +52,7 @@ def orjson_defaults(obj: Any) -> Any:
     elif isinstance(obj, (GraiBaseModel, BaseModel)):
         return obj.dict()
     else:
-        raise Exception(
-            f"No supported JSON serialization format for objects of type {type(obj)}"
-        )
+        raise Exception(f"No supported JSON serialization format for objects of type {type(obj)}")
 
 
 class GraiEncoder(json.JSONEncoder):

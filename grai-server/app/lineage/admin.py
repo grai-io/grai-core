@@ -20,10 +20,10 @@ class NodeAdmin(admin.ModelAdmin):
     search_fields = ["id", "namespace", "name", "display_name", "data_source"]
 
     list_filter = (
+        "workspace",
         "namespace",
         "is_active",
         "data_source",
-        "workspace",
     )
 
 
@@ -44,10 +44,10 @@ class EdgeAdmin(admin.ModelAdmin):
     search_fields = ["id", "namespace", "name", "display_name", "data_source"]
 
     list_filter = (
+        "workspace",
         "namespace",
         "is_active",
         "data_source",
-        "workspace",
         ("source", admin.RelatedOnlyFieldListFilter),
         ("destination", admin.RelatedOnlyFieldListFilter),
     )

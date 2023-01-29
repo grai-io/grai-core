@@ -13,9 +13,13 @@ import ConnectionRefresh, { Connection } from "./ConnectionRefresh"
 
 type ConnectionsMenuProps = {
   connection: Connection
+  workspaceId: string
 }
 
-const ConnectionsMenu: React.FC<ConnectionsMenuProps> = ({ connection }) => {
+const ConnectionsMenu: React.FC<ConnectionsMenuProps> = ({
+  connection,
+  workspaceId,
+}) => {
   const { workspaceNavigate } = useWorkspace()
 
   return (
@@ -42,7 +46,12 @@ const ConnectionsMenu: React.FC<ConnectionsMenuProps> = ({ connection }) => {
               </ListItemIcon>
               <ListItemText primary="Edit" />
             </MenuItem>
-            <ConnectionRefresh connection={connection} menuItem disabled />
+            <ConnectionRefresh
+              connection={connection}
+              workspaceId={workspaceId}
+              menuItem
+              disabled
+            />
             <MenuItem disabled>
               <ListItemIcon>
                 <Delete />

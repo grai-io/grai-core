@@ -11,7 +11,7 @@ import { clearWorkspace } from "helpers/cache"
 import { useSnackbar } from "notistack"
 import React, { useState } from "react"
 import { Accept } from "react-dropzone"
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { ConnectorType } from "../ConnectionsForm"
 import CreateConnectionHelp from "./CreateConnectionHelp"
 import {
@@ -44,13 +44,17 @@ type Values = {
 
 type ConnectionFileProps = {
   connector: ConnectorType
+  workspaceId: string
   opts: ElementOptions
 }
 
-const ConnectionFile: React.FC<ConnectionFileProps> = ({ connector, opts }) => {
+const ConnectionFile: React.FC<ConnectionFileProps> = ({
+  connector,
+  workspaceId,
+  opts,
+}) => {
   const navigate = useNavigate()
   const { enqueueSnackbar } = useSnackbar()
-  const { workspaceId } = useParams()
 
   const [values, setValues] = useState<Values>({
     file: null,
@@ -62,14 +66,14 @@ const ConnectionFile: React.FC<ConnectionFileProps> = ({ connector, opts }) => {
     UploadConnectorFileVariables
   >(UPLOAD_CONNECTOR_FILE, {
     update(cache) {
-      clearWorkspace(cache, workspaceId ?? "")
+      clearWorkspace(cache, workspaceId)
     },
   })
 
   const handleSubmit = () =>
     uploadConnectorFile({
       variables: {
-        workspaceId: workspaceId ?? "",
+        workspaceId,
         connectorId: connector.id,
         ...values,
       },

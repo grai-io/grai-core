@@ -11,18 +11,26 @@ import CreateConnectionHelp from "./CreateConnectionHelp"
 import { Values } from "./CreateConnectionWizard"
 
 type SetupConnectionProps = {
+  workspaceId: string
   opts: ElementOptions
   values: Values
   setValues: (values: Values) => void
 }
 
 const SetupConnection: React.FC<SetupConnectionProps> = ({
+  workspaceId,
   opts,
   values,
   setValues,
 }) => {
   if (values.connector?.metadata?.file?.name)
-    return <ConnectionFile connector={values.connector} opts={opts} />
+    return (
+      <ConnectionFile
+        connector={values.connector}
+        workspaceId={workspaceId}
+        opts={opts}
+      />
+    )
 
   return (
     <Form onSubmit={opts.forwardStep}>

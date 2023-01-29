@@ -49,15 +49,9 @@ class SnowflakeConnector:
         self.password = get_from_env("password") if password is None else password
         self.warehouse = get_from_env("warehouse") if warehouse is None else warehouse
         self.role = get_from_env("role", required=False) if role is None else role
-        self.database = (
-            get_from_env("database", required=False) if database is None else database
-        )
-        self.schema = (
-            get_from_env("schema", required=False) if schema is None else schema
-        )
-        self.namespace = (
-            get_from_env("namespace", "default") if namespace is None else namespace
-        )
+        self.database = get_from_env("database", required=False) if database is None else database
+        self.schema = get_from_env("schema", required=False) if schema is None else schema
+        self.namespace = get_from_env("namespace", "default") if namespace is None else namespace
         self.additional_conn_kwargs = kwargs
         self._connection: Optional[snowflake.connector.SnowflakeConnection] = None
 
@@ -81,17 +75,11 @@ class SnowflakeConnector:
             "database",
             "schema",
         ]
-        return {
-            key: value
-            for key in connection_keys
-            if (value := getattr(self, key)) is not None
-        }
+        return {key: value for key in connection_keys if (value := getattr(self, key)) is not None}
 
     def connect(self) -> "SnowflakeConnector":
         if self._connection is None:
-            self._connection = snowflake.connector.connect(
-                **self.connection_dict, **self.additional_conn_kwargs
-            )
+            self._connection = snowflake.connector.connect(**self.connection_dict, **self.additional_conn_kwargs)
         return self
 
     @property
@@ -125,10 +113,7 @@ class SnowflakeConnector:
             WHERE table_schema != 'INFORMATION_SCHEMA'
             ORDER BY table_schema, table_name
         """
-        res = (
-            {k.lower(): v for k, v in result.items()}
-            for result in self.query_runner(query)
-        )
+        res = ({k.lower(): v for k, v in result.items()} for result in self.query_runner(query))
 
         additional_args = {
             "namespace": self.namespace,
@@ -155,10 +140,7 @@ class SnowflakeConnector:
             AND table_name = '{table.name}'
         """
 
-        res = (
-            {k.lower(): v for k, v in result.items()}
-            for result in self.query_runner(query)
-        )
+        res = ({k.lower(): v for k, v in result.items()} for result in self.query_runner(query))
 
         addtl_args = {
             "namespace": table.namespace,

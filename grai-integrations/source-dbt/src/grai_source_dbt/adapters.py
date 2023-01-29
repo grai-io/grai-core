@@ -1,57 +1,71 @@
 from typing import Any, Dict, List, Literal, Sequence, Union
 
-import grai_schemas.models as base_schemas
-from grai_client.schemas.edge import EdgeV1
-from grai_client.schemas.node import NodeV1
-from grai_client.schemas.schema import Schema
 from grai_schemas import config as grai_base_config
-from grai_schemas.models import DefaultValue, GraiNodeMetadata
+from grai_schemas.schema import Schema
+from grai_schemas.v1 import EdgeV1, NodeV1
+from grai_schemas.v1.metadata.edges import (
+    EdgeTypeLabels,
+    GenericEdgeMetadataV1,
+    TableToColumnMetadata,
+)
+from grai_schemas.v1.metadata.nodes import ColumnMetadata, NodeTypeLabels, TableMetadata
 from multimethod import multimethod
 
-from grai_source_dbt.models.nodes import Column, Edge, GraiNodeTypes, SupportedDBTTypes
+from grai_source_dbt.models.nodes import (
+    Column,
+    Constraint,
+    Edge,
+    GraiNodeTypes,
+    SupportedDBTTypes,
+)
 from grai_source_dbt.package_definitions import config
 
 
 @multimethod
 def build_grai_metadata(current: Any, desired: Any) -> None:
-    raise NotImplementedError(
-        f"No adapter between {type(current)} and {type(desired)} for value {current}"
-    )
+    raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)} for value {current}")
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_column(
-    current: Column, version: Literal["v1"] = "v1"
-) -> base_schemas.ColumnMetadata:
-    data = {"version": version, "node_type": "Column", "node_attributes": {}}
+def build_grai_metadata_from_column(current: Column, version: Literal["v1"] = "v1") -> ColumnMetadata:
+    data = {
+        "version": version,
+        "node_type": NodeTypeLabels.column.value,
+        "node_attributes": {},
+    }
     if current.data_type is not None:
         data["node_attributes"]["data_type"] = current.data_type
 
-    return base_schemas.ColumnMetadata(**data)
+    return ColumnMetadata(**data)
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_node(
-    current: SupportedDBTTypes, version: Literal["v1"] = "v1"
-) -> GraiNodeMetadata:
-    data = {"version": version, "node_type": "Table", "node_attributes": {}}
+def build_grai_metadata_from_node(current: SupportedDBTTypes, version: Literal["v1"] = "v1") -> TableMetadata:
+    data = {"version": version, "node_type": NodeTypeLabels.table.value}
 
-    return base_schemas.TableMetadata(**data)
+    return TableMetadata(**data)
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_edge(
-    current: Edge, version: Literal["v1"] = "v1"
-) -> base_schemas.GraiEdgeMetadata:
+def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> GenericEdgeMetadataV1:
     data = {"version": version}
-    return base_schemas.GraiEdgeMetadata(**data)
+
+    # if isinstance(current.source, Table) and isinstance(current.destination, Column):
+    if current.constraint_type.value == Constraint.belongs_to:
+        data["edge_type"] = EdgeTypeLabels.table_to_column.value
+        return TableToColumnMetadata(**data)
+    # elif isinstance(current.source, Column) and isinstance(current.destination, Column):
+    # elif current.constraint_type.value == "btdm":
+    #     data["edge_type"] = EdgeTypeLabels.column_to_column.value
+    #     return TableToTableMetadata(**data)
+    else:
+        data["edge_type"] = EdgeTypeLabels.generic.value
+        return GenericEdgeMetadataV1(**data)
 
 
 @multimethod
 def build_dbt_metadata(current: Any, desired: Any) -> None:
-    raise NotImplementedError(
-        f"No adapter between {type(current)} and {type(desired)} for value {current}"
-    )
+    raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)} for value {current}")
 
 
 @build_dbt_metadata.register
@@ -79,9 +93,7 @@ def build_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> Di
 
 
 @build_dbt_metadata.register
-def build_metadata_from_node(
-    current: SupportedDBTTypes, version: Literal["v1"] = "v1"
-) -> Dict:
+def build_metadata_from_node(current: SupportedDBTTypes, version: Literal["v1"] = "v1") -> Dict:
     data = {
         "description": current.description,
         "dbt_resource_type": current.resource_type,
@@ -97,15 +109,11 @@ def build_metadata_from_node(
 
 @multimethod
 def adapt_to_client(current: Any, desired: Any) -> None:
-    raise NotImplementedError(
-        f"No adapter between {type(current)} and {type(desired)} for value {current}"
-    )
+    raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)} for value {current}")
 
 
 @adapt_to_client.register
-def adapt_table_to_client(
-    current: SupportedDBTTypes, version: Literal["v1"] = "v1"
-) -> NodeV1:
+def adapt_table_to_client(current: SupportedDBTTypes, version: Literal["v1"] = "v1") -> NodeV1:
     spec_dict = {
         "name": current.full_name,
         "namespace": current.namespace,
@@ -139,7 +147,9 @@ def adapt_column_to_client(current: Column, version: Literal["v1"] = "v1") -> No
 
 
 def make_name(node1: GraiNodeTypes, node2: GraiNodeTypes) -> str:
-    return f"{node1.full_name} -> {node2.full_name}"
+    node1_name = f"{node1.namespace}:{node1.full_name}"
+    node2_name = f"{node2.namespace}:{node2.full_name}"
+    return f"{node1_name} -> {node2_name}"
 
 
 @adapt_to_client.register
@@ -166,7 +176,5 @@ def adapt_edge_to_client(current: Edge, version: Literal["v1"] = "v1") -> EdgeV1
 
 
 @adapt_to_client.register
-def adapt_list_to_client(
-    objs: Sequence, version: Literal["v1"]
-) -> List[Union[NodeV1, EdgeV1]]:
+def adapt_list_to_client(objs: Sequence, version: Literal["v1"]) -> List[Union[NodeV1, EdgeV1]]:
     return [adapt_to_client(item, version) for item in objs]

@@ -1,36 +1,40 @@
-from typing import Any, Dict, List, Literal, Sequence, Type, Union
+from typing import Any, Dict, List, Literal, Sequence
 
-import grai_schemas.models as base_schemas
 from grai_client.schemas.schema import Schema
 from grai_schemas import config as base_config
-from grai_schemas.models import DefaultValue, GraiNodeMetadata
+from grai_schemas.generics import DefaultValue
+from grai_schemas.v1.metadata.edges import (
+    ColumnToColumnMetadata,
+    EdgeTypeLabels,
+    GenericEdgeMetadataV1,
+    TableToColumnMetadata,
+)
+from grai_schemas.v1.metadata.nodes import ColumnMetadata, NodeTypeLabels, TableMetadata
 from multimethod import multimethod
 
-from grai_source_postgres.models import ID, Column, Edge, Table
+from grai_source_postgres.models import ID, Column, Constraint, Edge, Table
 from grai_source_postgres.package_definitions import config
 
 
 @multimethod
 def build_grai_metadata(current: Any, desired: Any) -> None:
-    raise NotImplementedError(
-        f"No adapter between {type(current)} and {type(desired)} for value {current}"
-    )
+    raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)} for value {current}")
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_column(
-    current: Column, version: Literal["v1"] = "v1"
-) -> base_schemas.ColumnMetadata:
+def build_grai_metadata_from_column(current: Column, version: Literal["v1"] = "v1") -> ColumnMetadata:
 
     default_value = current.default_value
     if current.default_value is not None:
         default_value = DefaultValue(
-            has_default_value=True, default_value=current.default_value
+            has_default_value=True,
+            default_value=current.default_value,
+            data_type=current.data_type,
         )
 
     data = {
         "version": version,
-        "node_type": "Column",
+        "node_type": NodeTypeLabels.column.value,
         "node_attributes": {
             "data_type": current.data_type,
             "default_value": default_value,
@@ -39,31 +43,40 @@ def build_grai_metadata_from_column(
         },
     }
 
-    return base_schemas.ColumnMetadata(**data)
+    return ColumnMetadata(**data)
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_node(
-    current: Table, version: Literal["v1"] = "v1"
-) -> GraiNodeMetadata:
-    data = {"version": version, "node_type": "Table", "node_attributes": {}}
+def build_grai_metadata_from_node(current: Table, version: Literal["v1"] = "v1") -> TableMetadata:
+    data = {
+        "version": version,
+        "node_type": NodeTypeLabels.table.value,
+        "node_attributes": {},
+    }
 
-    return base_schemas.TableMetadata(**data)
+    return TableMetadata(**data)
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_edge(
-    current: Edge, version: Literal["v1"] = "v1"
-) -> base_schemas.GraiEdgeMetadata:
+def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> GenericEdgeMetadataV1:
     data = {"version": version}
-    return base_schemas.GraiEdgeMetadata(**data)
+
+    # if isinstance(current.source, Table) and isinstance(current.destination, Column):
+    if current.constraint_type.value == Constraint.belongs_to:
+        data["edge_type"] = EdgeTypeLabels.table_to_column.value
+        return TableToColumnMetadata(**data)
+    # elif isinstance(current.source, Column) and isinstance(current.destination, Column):
+    else:
+        data["edge_type"] = EdgeTypeLabels.column_to_column.value
+        return ColumnToColumnMetadata(**data)
+    # else:
+    #     data["edge_type"] = EdgeTypeLabels.generic.value
+    #     return GenericEdgeMetadataV1(**data)
 
 
 @multimethod
 def build_postgres_metadata(current: Any, desired: Any) -> None:
-    raise NotImplementedError(
-        f"No adapter between {type(current)} and {type(desired)} for value {current}"
-    )
+    raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)} for value {current}")
 
 
 @build_postgres_metadata.register

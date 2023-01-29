@@ -4,6 +4,7 @@ from uuid import UUID, uuid4
 import requests
 
 from grai_client.endpoints.client import BaseClient
+from grai_client.endpoints.utilities import is_valid_uuid
 
 
 class ClientV1(BaseClient):
@@ -29,7 +30,7 @@ class ClientV1(BaseClient):
         return result
 
     @property
-    def workspace(self):
+    def workspace(self) -> str:
         return self._workspace
 
     @workspace.setter
@@ -38,22 +39,22 @@ class ClientV1(BaseClient):
             self._workspace = workspace
             self.default_payload.pop("workspace", None)
             return
-        elif isinstance(workspace, UUID):
-            pass
+
+        if isinstance(workspace, UUID):
+            workspace = str(workspace)
         elif isinstance(workspace, str):
-            try:
-                workspace = UUID(workspace)
-            except:
+            if not is_valid_uuid(workspace):
                 result = self.get("workspace", workspace)
+
                 if result is None:
                     raise Exception(f"No workspace matching `name={workspace}`")
                 else:
-                    workspace = result.id
+                    workspace = str(result.id)
         else:
             raise TypeError("Workspace must be either a string, uuid, or None.")
 
         self._workspace = workspace
-        self.default_payload["workspace"] = workspace
+        self.default_payload["workspace"] = self._workspace
 
     def set_authentication_headers(self, *args, **kwargs):
         super().set_authentication_headers(*args, **kwargs)

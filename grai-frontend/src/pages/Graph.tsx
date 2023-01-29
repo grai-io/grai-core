@@ -4,49 +4,47 @@ import GraphComponent, { Error } from "components/graph/Graph"
 import { gql, useQuery } from "@apollo/client"
 import theme from "theme"
 import { useLocation } from "react-router-dom"
-import { nodesToTables } from "helpers/graph"
-import {
-  GetNodesAndEdges,
-  GetNodesAndEdgesVariables,
-} from "./__generated__/GetNodesAndEdges"
 import GraphError from "components/utils/GraphError"
 import PageLayout from "components/layout/PageLayout"
+import {
+  GetTablesAndEdges,
+  GetTablesAndEdgesVariables,
+} from "./__generated__/GetTablesAndEdges"
 import useWorkspace from "helpers/useWorkspace"
 
-export const GET_NODES_AND_EDGES = gql`
-  query GetNodesAndEdges($organisationName: String!, $workspaceName: String!) {
+export const GET_TABLES_AND_EDGES = gql`
+  query GetTablesAndEdges($organisationName: String!, $workspaceName: String!) {
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
-      nodes {
+      tables(pagination: { offset: 0, limit: 100000 }) {
         id
         namespace
         name
         display_name
-        is_active
         data_source
         metadata
-      }
-      edges {
-        id
-        is_active
-        data_source
-        source {
+        columns {
           id
-          namespace
+          name
+        }
+        source_tables {
+          id
           name
           display_name
-          data_source
-          is_active
-          metadata
+        }
+        destination_tables {
+          id
+          name
+          display_name
+        }
+      }
+      other_edges {
+        id
+        source {
+          id
         }
         destination {
           id
-          namespace
-          name
-          display_name
-          data_source
-          is_active
-          metadata
         }
         metadata
       }
@@ -59,9 +57,9 @@ const Graph: React.FC = () => {
   const searchParams = new URLSearchParams(useLocation().search)
 
   const { loading, error, data } = useQuery<
-    GetNodesAndEdges,
-    GetNodesAndEdgesVariables
-  >(GET_NODES_AND_EDGES, {
+    GetTablesAndEdges,
+    GetTablesAndEdgesVariables
+  >(GET_TABLES_AND_EDGES, {
     variables: {
       organisationName,
       workspaceName,
@@ -76,9 +74,10 @@ const Graph: React.FC = () => {
   const limitGraph: boolean =
     searchParams.get("limitGraph")?.toLowerCase() === "true" && !!errors
 
-  if (!data?.workspace.nodes) return <Alert>No nodes found</Alert>
+  const tables = data?.workspace.tables
+  const edges = data?.workspace.other_edges ?? []
 
-  const tables = nodesToTables(data.workspace.nodes, data.workspace.edges)
+  if (!tables) return <Alert>No tables found</Alert>
 
   return (
     <PageLayout>
@@ -91,8 +90,7 @@ const Graph: React.FC = () => {
       >
         <GraphComponent
           tables={tables}
-          nodes={data.workspace.nodes}
-          edges={data.workspace.edges}
+          edges={edges}
           errors={errors}
           limitGraph={limitGraph}
         />

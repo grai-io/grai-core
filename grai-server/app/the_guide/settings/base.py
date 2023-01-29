@@ -18,9 +18,7 @@ def clean_hosts(val):
     elif isinstance(val, str):
         return [s.strip() for s in val.strip("'\"").split(",")]
     else:
-        raise TypeError(
-            f"hosts must be a list or comma separated string not {type(val)}"
-        )
+        raise TypeError(f"hosts must be a list or comma separated string not {type(val)}")
 
 
 def get_server_version():
@@ -34,7 +32,7 @@ def get_server_version():
 
 
 SERVER_VERSION = get_server_version()
-DEBUG = config("DEBUG", default=False, cast=bool)
+DEBUG = config("DEBUG", default=True, cast=bool)
 TEMPLATE_DEBUG = config("TEMPLATE_DEBUG", default=DEBUG, cast=bool)
 
 SERVER_HOST = config("SERVER_HOST", default="localhost", cast=str)
@@ -53,26 +51,16 @@ if DEBUG:
     default_allow_all_origins = True
 else:
     default_allowed_hosts = [SERVER_HOST, "127.0.0.1", "[::1]"]
-    default_csrf_trusted_origins = [
-        f"{scheme}://{host}" for scheme in schemes for host in hosts
-    ]
+    default_csrf_trusted_origins = [f"{scheme}://{host}" for scheme in schemes for host in hosts]
     default_cors_allowed_origins = [
-        f"{scheme}://{host}"
-        for scheme in schemes
-        for host in [FRONTEND_HOST, f"{FRONTEND_HOST}:{FRONTEND_PORT}"]
+        f"{scheme}://{host}" for scheme in schemes for host in [FRONTEND_HOST, f"{FRONTEND_HOST}:{FRONTEND_PORT}"]
     ]
     default_allow_all_origins = False
 
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", default=default_allowed_hosts, cast=clean_hosts)
-CORS_ALLOWED_ORIGINS = config(
-    "CORS_ALLOWED_ORIGINS", default=default_cors_allowed_origins, cast=clean_hosts
-)
-CSRF_TRUSTED_ORIGINS = config(
-    "CSRF_TRUSTED_ORIGINS", default=default_csrf_trusted_origins, cast=clean_hosts
-)
-CORS_ALLOW_ALL_ORIGINS = config(
-    "CORS_ALLOW_ALL_ORIGINS", default=default_allow_all_origins, cast=bool
-)
+CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS", default=default_cors_allowed_origins, cast=clean_hosts)
+CSRF_TRUSTED_ORIGINS = config("CSRF_TRUSTED_ORIGINS", default=default_csrf_trusted_origins, cast=clean_hosts)
+CORS_ALLOW_ALL_ORIGINS = config("CORS_ALLOW_ALL_ORIGINS", default=default_allow_all_origins, cast=bool)
 
 
 # Database
@@ -230,10 +218,15 @@ PHONENUMBER_DEFAULT_REGION = "US"
 # OpenApi
 # https://drf-spectacular.readthedocs.io/en/latest/settings.html
 
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "handlers": {
+        "db-console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+        },
         "file": {
             "level": "DEBUG",
             "class": "logging.FileHandler",
@@ -246,12 +239,15 @@ LOGGING = {
             "level": "DEBUG",
             "propagate": True,
         },
+        "django.db.backends": {
+            "handlers": ["db-console"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
     },
 }
 
-EMAIL_BACKEND = config(
-    "EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend"
-)
+EMAIL_BACKEND = config("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
 EMAIL_FROM = config("EMAIL_FROM", None)
 AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID", None)
 AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY", None)

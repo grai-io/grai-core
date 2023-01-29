@@ -26,9 +26,7 @@ if username and password and not User.objects.filter(is_superuser=True).exists()
     organisation, created = Organisation.objects.get_or_create(name=organisation_name)
 
     print(f"Get or creating workspace {workspace_name}")
-    workspace, created = Workspace.objects.get_or_create(
-        name=workspace_name, organisation=organisation
-    )
+    workspace, created = Workspace.objects.get_or_create(name=workspace_name, organisation=organisation)
 
     print(f"Creating membership")
     Membership.objects.create(role="admin", user=user, workspace=workspace)

@@ -13,9 +13,7 @@ __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file
 
 @pytest.fixture
 async def test_node(test_workspace):
-    node, created = await Node.objects.aget_or_create(
-        name="table1", namespace="default", workspace=test_workspace
-    )
+    node, created = await Node.objects.aget_or_create(name="table1", namespace="default", workspace=test_workspace)
 
     return node
 

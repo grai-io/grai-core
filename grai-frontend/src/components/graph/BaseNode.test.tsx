@@ -194,7 +194,7 @@ test("context menu show profile", async () => {
     <ReactFlowProvider>
       <BaseNode data={data} />
     </ReactFlowProvider>,
-    { routes: ["/:organisationName/:workspaceName/nodes/:nodeId"] }
+    { routes: ["/:organisationName/:workspaceName/tables/:nodeId"] }
   )
 
   fireEvent.contextMenu(screen.getByText("Node Label"))

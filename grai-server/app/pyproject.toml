@@ -28,12 +28,13 @@ django_multitenant = "^3.0.0"
 django-ses = "^3.3.0"
 celery = "^5.2.7"
 redis = "^4.4.0"
-grai-client = "^0.1.15"
-grai-source-postgres = "^0.1.3"
+grai-client = "^0.2.0"
+grai-schemas = "^0.1.5"
+grai-source-dbt = "^0.0.12"
+grai-source-postgres = "^0.1.9"
 coverage = "^7.0.3"
 pytest-asyncio = "^0.20.3"
 django-celery-beat = "^2.4.0"
-grai-source-dbt = "^0.0.8"
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.10.1"
@@ -46,9 +47,10 @@ pytest-asyncio = "^0.20.3"
 
 [tool.isort]
 profile = "black"
-#known_first_party = "the_guide"
 src_paths = ["*"]
-#combine_as_imports = true
+
+[tool.black]
+line-length = 120
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

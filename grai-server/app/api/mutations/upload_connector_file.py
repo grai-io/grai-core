@@ -44,12 +44,8 @@ async def uploadConnectorFile(
             Model = NodeModel if type == "Node" else EdgeModel
 
             if type == "Edge":
-                values["source"] = await sync_to_async(get_node)(
-                    workspace, values["source"]
-                )
-                values["destination"] = await sync_to_async(get_node)(
-                    workspace, values["destination"]
-                )
+                values["source"] = await sync_to_async(get_node)(workspace, values["source"])
+                values["destination"] = await sync_to_async(get_node)(workspace, values["destination"])
 
             try:
                 record = await Model.objects.filter(workspace=workspace).aget(
@@ -69,9 +65,7 @@ async def uploadConnectorFile(
     else:
         raise NoConnectorError(f"No connector found for: {connector.name}")
 
-    nodes, edges = get_nodes_and_edges(
-        manifest_file=tmp_file, namespace=namespace, version="v1"
-    )
+    nodes, edges = get_nodes_and_edges(manifest_file=tmp_file, namespace=namespace, version="v1")
     await sync_to_async(update)(workspace, nodes)
     await sync_to_async(update)(workspace, edges)
 

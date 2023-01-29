@@ -47,9 +47,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name="workspace",
-            index=models.Index(
-                fields=["organisation", "name"], name="workspaces__organis_007202_idx"
-            ),
+            index=models.Index(fields=["organisation", "name"], name="workspaces__organis_007202_idx"),
         ),
         migrations.AddConstraint(
             model_name="workspace",
@@ -64,8 +62,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AddConstraint(
             model_name="organisation",
-            constraint=models.UniqueConstraint(
-                fields=("name",), name="Organisation name uniqueness"
-            ),
+            constraint=models.UniqueConstraint(fields=("name",), name="Organisation name uniqueness"),
         ),
     ]

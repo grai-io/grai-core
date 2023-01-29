@@ -208,6 +208,7 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
   return (
     <ReactFlowProvider>
       <ReactFlow
+        minZoom={0}
         nodes={nodes}
         edges={edges}
         proOptions={proOptions}

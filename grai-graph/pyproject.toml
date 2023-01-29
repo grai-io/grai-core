@@ -30,5 +30,8 @@ build-backend = "poetry.core.masonry.api"
 profile = "black"
 known_first_party = "grai_graph"
 
+[tool.black]
+line-length = 120
+
 [tool.poetry.extras]
 vis = ["matplotlib", "pydot"]

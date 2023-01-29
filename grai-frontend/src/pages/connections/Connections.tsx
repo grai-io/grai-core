@@ -95,6 +95,7 @@ const Connections: React.FC = () => {
       >
         <ConnectionsTable
           connections={data?.workspace.connections ?? []}
+          workspaceId={data?.workspace.id}
           loading={loading}
         />
       </Box>

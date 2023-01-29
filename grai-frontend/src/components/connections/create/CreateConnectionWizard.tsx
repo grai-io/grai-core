@@ -175,7 +175,12 @@ const CreateConnectionWizard: React.FC<CreateConnectionWizardProps> = ({
     {
       title: "Setup connection",
       element: opts => (
-        <SetupConnection opts={opts} values={values} setValues={setValues} />
+        <SetupConnection
+          workspaceId={workspaceId}
+          opts={opts}
+          values={values}
+          setValues={setValues}
+        />
       ),
     },
     {

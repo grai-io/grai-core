@@ -16,9 +16,7 @@ class Organisation(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(
-                fields=["name"], name="Organisation name uniqueness"
-            ),
+            models.UniqueConstraint(fields=["name"], name="Organisation name uniqueness"),
         ]
         indexes = [
             models.Index(fields=["name"]),

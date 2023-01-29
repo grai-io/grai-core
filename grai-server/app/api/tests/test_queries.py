@@ -61,7 +61,7 @@ async def test_workspace_get(test_context):
     assert result.errors is None
     assert result.data["workspace"] == {
         "id": str(workspace.id),
-        "name": "Test Workspace",
+        "name": workspace.name,
     }
 
 
@@ -109,12 +109,7 @@ async def test_workspaces(test_context):
     result = await schema.execute(query, context_value=context)
 
     assert result.errors is None
-    assert result.data["workspaces"] == [
-        {
-            "id": str(workspace.id),
-            "name": "Test Workspace",
-        }
-    ]
+    assert result.data["workspaces"] == [{"id": str(workspace.id), "name": workspace.name}]
 
 
 @pytest.mark.django_db
@@ -135,12 +130,7 @@ async def test_workspaces_no_membership(test_context):
     result = await schema.execute(query, context_value=context)
 
     assert result.errors is None
-    assert result.data["workspaces"] == [
-        {
-            "id": str(workspace.id),
-            "name": "Test Workspace",
-        }
-    ]
+    assert result.data["workspaces"] == [{"id": str(workspace.id), "name": workspace.name}]
 
 
 @pytest.mark.django_db

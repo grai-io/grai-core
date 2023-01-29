@@ -115,7 +115,11 @@ const Connection: React.FC = () => {
 
   return (
     <PageLayout>
-      <ConnectionHeader connection={connection} onRefresh={handleRefresh} />
+      <ConnectionHeader
+        connection={connection}
+        workspaceId={data.workspace.id}
+        onRefresh={handleRefresh}
+      />
       <ConnectionContent connection={connection} />
       <ConnectionTabs connection={connection} />
     </PageLayout>

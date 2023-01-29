@@ -2,7 +2,12 @@ import React, { useState } from "react"
 import BaseGraph from "./BaseGraph"
 import { Edge as RFEdge, Node as RFNode } from "reactflow"
 import notEmpty from "helpers/notEmpty"
-import { Table, Node as NodeType } from "helpers/graph"
+import { Edge, EnhancedTable } from "helpers/graph"
+
+export interface GraiNodeMetadata {
+  node_type?: "Table" | "Column" | null
+  table_name?: string | null
+}
 
 export interface Error {
   source: string
@@ -11,23 +16,24 @@ export interface Error {
   message: string
 }
 
-interface Edge {
+interface Column {
   id: string
-  data_source: string
-  is_active: boolean
-  source: Node
-  destination: Node
-  metadata: any
+  name: string
 }
 
-interface Node extends NodeType {
+interface Table extends EnhancedTable {
+  id: string
+  name: string
   display_name: string
   data_source: string
+  columns: Column[]
+  metadata: {
+    grai?: GraiNodeMetadata | null
+  } | null
 }
 
 type GraphProps = {
-  tables: Table<Node>[]
-  nodes: Node[]
+  tables: Table[]
   edges: Edge[]
   errors?: Error[] | null
   limitGraph?: boolean
@@ -38,7 +44,6 @@ const position = { x: 0, y: 0 }
 
 const Graph: React.FC<GraphProps> = ({
   tables,
-  nodes,
   edges,
   errors,
   limitGraph,
@@ -60,14 +65,15 @@ const Graph: React.FC<GraphProps> = ({
         data_source: table.data_source,
         metadata: table.metadata,
         columns: table.columns,
-        sourceTables: table.sourceTables,
-        hiddenSourceTables: table.sourceTables
+        source_tables: table.source_tables,
+        hiddenSourceTables: table.source_tables
           .filter(t => hidden.includes(t.id))
           .map(t => t.id),
-        destinationTables: table.destinationTables,
-        hiddenDestinationTables: table.destinationTables
+        destination_tables: table.destination_tables,
+        hiddenDestinationTables: table.destination_tables
           .filter(t => hidden.includes(t.id))
           .map(t => t.id),
+
         expanded: expanded.includes(table.id),
         onExpand(value: boolean) {
           setExpanded(
@@ -83,7 +89,8 @@ const Graph: React.FC<GraphProps> = ({
       position,
     }))
 
-  const nameToNode = (name: string) => nodes.find(n => n.name === name)
+  //TODO: Need to include columns here
+  const nameToNode = (name: string) => tables.find(n => n.name === name)
 
   const enrichedErrors = errors?.map(error => ({
     ...error,

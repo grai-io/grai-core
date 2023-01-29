@@ -1,9 +1,13 @@
 import React from "react"
-import { render, screen } from "@testing-library/react"
+import { render, screen, waitFor } from "@testing-library/react"
 import App from "./App"
 
-test("renders learn react link", () => {
+test("renders learn react link", async () => {
   render(<App />)
-  const linkElement = screen.getByText(/Sign in to your account/i)
-  expect(linkElement).toBeInTheDocument()
+
+  expect(screen.getByRole("progressbar")).toBeInTheDocument()
+
+  await waitFor(() => {
+    expect(screen.getByText(/Sign in to your account/i)).toBeInTheDocument()
+  })
 })

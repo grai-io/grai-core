@@ -206,7 +206,7 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
         >
           Show downstream dependents
         </MenuItem>
-        <MenuItem onClick={() => workspaceNavigate(`nodes/${data.id}`)}>
+        <MenuItem onClick={() => workspaceNavigate(`tables/${data.id}`)}>
           Show profile for this table
         </MenuItem>
       </Menu>

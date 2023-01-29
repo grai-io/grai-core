@@ -14,9 +14,7 @@ def test_node_created():
     organisation = Organisation.objects.create(name="O1")
     workspace = Workspace.objects.create(name="W1", organisation=organisation)
 
-    node = Node.objects.create(
-        namespace="temp", name="a", data_source="test", workspace=workspace
-    )
+    node = Node.objects.create(namespace="temp", name="a", data_source="test", workspace=workspace)
 
     assert node.id == uuid.UUID(str(node.id))
     assert node.name == "a"
@@ -34,9 +32,7 @@ def test_node_created_from_load():
     organisation = Organisation.objects.create(name="O1")
     workspace = Workspace.objects.create(name="W1", organisation=organisation)
 
-    node = Node.objects.create(
-        namespace="temp2", name="abc", data_source="test", workspace=workspace
-    )
+    node = Node.objects.create(namespace="temp2", name="abc", data_source="test", workspace=workspace)
     nodes = list(Node.objects.filter(namespace="temp2", name="abc").all())
     assert len(nodes) == 1
     node2 = nodes[0]

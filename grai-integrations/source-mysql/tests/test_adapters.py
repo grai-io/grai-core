@@ -1,8 +1,7 @@
 import pytest
-from grai_client.schemas.edge import EdgeV1
-from grai_client.schemas.node import NodeV1
 from grai_schemas import config as core_config
-from grai_schemas.models import GraiEdgeMetadata, GraiNodeMetadata
+from grai_schemas.v1 import EdgeV1, NodeV1
+from grai_schemas.v1.metadata import GraiEdgeMetadataV1, GraiNodeMetadataV1
 
 from grai_source_mysql.adapters import adapt_to_client
 from grai_source_mysql.models import Column, ColumnID, Edge, Table
@@ -47,17 +46,9 @@ def test_table_adapter(item, version, target):
     assert isinstance(result, target)
 
 
-source = ColumnID(
-    table_schema="schema", table_name="table", name="id", namespace="test"
-)
-destination = ColumnID(
-    table_schema="schema", table_name="table", name="id2", namespace="test"
-)
-edges = [
-    Edge(
-        source=source, destination=destination, definition="thing", constraint_type="f"
-    )
-]
+source = ColumnID(table_schema="schema", table_name="table", name="id", namespace="test")
+destination = ColumnID(table_schema="schema", table_name="table", name="id2", namespace="test")
+edges = [Edge(source=source, destination=destination, definition="thing", constraint_type="f")]
 edge_values = [(item, "v1", EdgeV1) for item in edges]
 
 
@@ -70,26 +61,26 @@ def test_edge_adapter(item, version, target):
 def test_metadata_has_core_metadata_ids(nodes_and_edges):
     nodes, edges = nodes_and_edges
     for node in nodes:
-        assert core_config.metadata_id in node.spec.metadata
+        assert hasattr(node.spec.metadata, core_config.metadata_id)
 
     for edge in edges:
-        assert core_config.metadata_id in edge.spec.metadata
+        assert hasattr(edge.spec.metadata, core_config.metadata_id)
 
 
-def test_metadata_has_dbt_metadata_id(nodes_and_edges):
+def test_metadata_has_mysql_metadata_id(nodes_and_edges):
     nodes, edges = nodes_and_edges
     for node in nodes:
-        assert config.metadata_id in node.spec.metadata
+        assert hasattr(node.spec.metadata, config.metadata_id)
 
     for edge in edges:
-        assert config.metadata_id in edge.spec.metadata
+        assert hasattr(edge.spec.metadata, config.metadata_id)
 
 
 def test_metadata_is_core_compliant(nodes_and_edges):
     nodes, edges = nodes_and_edges
 
     for node in nodes:
-        assert isinstance(node.spec.metadata[core_config.metadata_id], GraiNodeMetadata)
+        assert isinstance(getattr(node.spec.metadata, core_config.metadata_id), GraiNodeMetadataV1), node.spec.metadata
 
     for edge in edges:
-        assert isinstance(edge.spec.metadata[core_config.metadata_id], GraiEdgeMetadata)
+        assert isinstance(getattr(edge.spec.metadata, core_config.metadata_id), GraiEdgeMetadataV1)

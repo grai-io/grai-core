@@ -10,7 +10,6 @@ import {
 import { clearWorkspace } from "helpers/cache"
 import { DateTime } from "luxon"
 import React from "react"
-import { useParams } from "react-router-dom"
 import {
   RunConnection,
   RunConnectionVariables,
@@ -87,6 +86,7 @@ export interface Connection {
 
 type ConnectionRefreshProps = {
   connection: Connection
+  workspaceId: string
   menuItem?: boolean
   disabled?: boolean
   onRefresh?: () => void
@@ -94,12 +94,11 @@ type ConnectionRefreshProps = {
 
 const ConnectionRefresh: React.FC<ConnectionRefreshProps> = ({
   connection,
+  workspaceId,
   menuItem,
   disabled,
   onRefresh,
 }) => {
-  const { workspaceId } = useParams()
-
   const runToTypedRun = (run: Run) => ({
     ...run,
     user: run.user ? { ...run.user, __typename: "User" as const } : null,
@@ -114,7 +113,7 @@ const ConnectionRefresh: React.FC<ConnectionRefreshProps> = ({
       connectionId: connection.id,
     },
     update(cache) {
-      clearWorkspace(cache, workspaceId ?? "")
+      clearWorkspace(cache, workspaceId)
     },
   })
 

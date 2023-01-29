@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai_source_flat_file"
-version = "0.0.5"
+version = "0.0.6"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>"]
 license = "Elastic-2.0"
@@ -10,11 +10,11 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.8"
 pydantic = "^1.9.1"
-grai-client = "^0.1.15"
+grai-client = "^0.2.0"
 PyYAML = "^6.0"
 multimethod = "^1.8"
 pandas = "^1.4.4"
-grai-schemas = "^0.1.0"
+grai-schemas = "^0.1.5"
 
 [tool.poetry.group.dev.dependencies]
 black = "^22.6.0"
@@ -26,6 +26,9 @@ pytest = "^7.2.0"
 [tool.isort]
 profile = "black"
 known_first_party = "grai_source_flat_file"
+
+[tool.black]
+line-length = 120
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

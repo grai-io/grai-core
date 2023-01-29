@@ -50,9 +50,7 @@ def table_builder(namespace: str, table_name: str, file_location: str) -> Table:
     return Table(namespace=namespace, file_name=file_location, name=table_name)
 
 
-def build_nodes_and_edges(
-    file_name: str, namespace: str
-) -> Tuple[List[Union[Table, Column]], List[Edge]]:
+def build_nodes_and_edges(file_name: str, namespace: str) -> Tuple[List[Union[Table, Column]], List[Edge]]:
     table_name = get_file_name(file_name)
     df = load_file(file_name)
 

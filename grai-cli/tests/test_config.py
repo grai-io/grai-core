@@ -17,9 +17,7 @@ def test_missing_config_file():
     except:
         raise
     finally:
-        if os.path.exists("temp") and not os.path.exists(
-            grai_cli.config.config_filename
-        ):
+        if os.path.exists("temp") and not os.path.exists(grai_cli.config.config_filename):
             os.rename("temp", grai_cli.config.config_filename)
 
 

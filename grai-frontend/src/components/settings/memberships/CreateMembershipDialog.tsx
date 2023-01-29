@@ -9,6 +9,7 @@ import {
   CreateMembershipVariables,
 } from "./__generated__/CreateMembership"
 import { useSnackbar } from "notistack"
+import { NewMembership } from "./__generated__/NewMembership"
 
 export const CREATE_MEMBERSHIP = gql`
   mutation CreateMembership(
@@ -54,10 +55,10 @@ const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({
           memberships(existingMemberships = []) {
             if (!data?.createMembership) return
 
-            const newMembership = cache.writeFragment({
+            const newMembership = cache.writeFragment<NewMembership>({
               data: data.createMembership,
               fragment: gql`
-                fragment NewMembership on WorkspaceMembership {
+                fragment NewMembership on Membership {
                   id
                   role
                   user {

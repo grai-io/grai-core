@@ -9,6 +9,7 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
+from django.forms.models import model_to_dict
 from django.template.loader import render_to_string
 from strawberry.file_uploads import Upload
 from strawberry.scalars import JSON
@@ -112,9 +113,7 @@ class Mutation:
         user = get_user(info)
 
         try:
-            connection = await ConnectionModel.objects.aget(
-                pk=id, workspace__memberships__user_id=user.id
-            )
+            connection = await ConnectionModel.objects.aget(pk=id, workspace__memberships__user_id=user.id)
         except ConnectionModel.DoesNotExist:
             raise Exception("Can't find connection")
 
@@ -159,9 +158,7 @@ class Mutation:
         return connection
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def createApiKey(
-        self, info: Info, name: str, workspaceId: strawberry.ID
-    ) -> KeyResult:
+    async def createApiKey(self, info: Info, name: str, workspaceId: strawberry.ID) -> KeyResult:
         user = get_user(info)
         workspace = await get_workspace(info, workspaceId)
 
@@ -208,9 +205,7 @@ class Mutation:
             email_template_name = "workspaces/new_user_email.txt"
             subject = "Grai Invite"
 
-        membership = await sync_to_async(MembershipModel.objects.create)(
-            role=role, user=user, workspace=workspace
-        )
+        membership = await sync_to_async(MembershipModel.objects.create)(role=role, user=user, workspace=workspace)
 
         c = {
             "email": user.username,
@@ -243,9 +238,7 @@ class Mutation:
         return user
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def updatePassword(
-        self, info: Info, old_password: str, password: str
-    ) -> User:
+    async def updatePassword(self, info: Info, old_password: str, password: str) -> User:
         user = get_user(info)
 
         if not check_password(old_password, user.password):
@@ -305,9 +298,7 @@ class Mutation:
             raise Exception("User not found")
 
     @strawberry.mutation
-    async def completeSignup(
-        self, token: str, uid: str, first_name: str, last_name: str, password: str
-    ) -> User:
+    async def completeSignup(self, token: str, uid: str, first_name: str, last_name: str, password: str) -> User:
         UserModel = get_user_model()
 
         try:
@@ -334,6 +325,4 @@ class Mutation:
         connectorId: strawberry.ID,
         file: Upload,
     ) -> BasicResult:
-        return await uploadConnectorFile(
-            info, workspaceId, namespace, connectorId, file
-        )
+        return await uploadConnectorFile(info, workspaceId, namespace, connectorId, file)

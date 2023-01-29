@@ -49,7 +49,7 @@ const AppTopBar: React.FC = () => {
         </Button>
         <Button
           component={Link}
-          to={`${routePrefix}/nodes`}
+          to={`${routePrefix}/tables`}
           sx={{ my: 2, color: "inherit" }}
         >
           Tables

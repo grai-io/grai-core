@@ -1,9 +1,10 @@
 from typing import Any, Dict, List, Literal, Sequence, Type, Union
 
-import grai_schemas.models as base_schemas
 from grai_client.schemas.schema import Schema
 from grai_schemas import config as base_config
-from grai_schemas.models import DefaultValue, GraiNodeMetadata
+from grai_schemas.generics import DefaultValue
+from grai_schemas.v1.metadata.edges import EdgeTypeLabels, GenericEdgeMetadataV1
+from grai_schemas.v1.metadata.nodes import ColumnMetadata, NodeTypeLabels, TableMetadata
 from multimethod import multimethod
 
 from grai_source_flat_file.models import ID, Column, Edge, Table
@@ -12,49 +13,45 @@ from grai_source_flat_file.package_definitions import config
 
 @multimethod
 def build_grai_metadata(current: Any, desired: Any) -> None:
-    raise NotImplementedError(
-        f"No adapter between {type(current)} and {type(desired)} for value {current}"
-    )
+    raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)} for value {current}")
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_column(
-    current: Column, version: Literal["v1"] = "v1"
-) -> base_schemas.ColumnMetadata:
+def build_grai_metadata_from_column(current: Column, version: Literal["v1"] = "v1") -> ColumnMetadata:
     data = {
         "version": version,
-        "node_type": "Column",
+        "node_type": NodeTypeLabels.column.value,
         "node_attributes": {
             "data_type": current.data_type,
             "is_nullable": current.is_nullable,
         },
     }
 
-    return base_schemas.ColumnMetadata(**data)
+    return ColumnMetadata(**data)
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_node(
-    current: Table, version: Literal["v1"] = "v1"
-) -> GraiNodeMetadata:
-    data = {"version": version, "node_type": "Table", "node_attributes": {}}
+def build_grai_metadata_from_node(current: Table, version: Literal["v1"] = "v1") -> TableMetadata:
+    data = {
+        "version": version,
+        "node_type": NodeTypeLabels.table.value,
+        "node_attributes": {},
+    }
 
-    return base_schemas.TableMetadata(**data)
+    return TableMetadata(**data)
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_edge(
-    current: Edge, version: Literal["v1"] = "v1"
-) -> base_schemas.GraiEdgeMetadata:
-    data = {"version": version}
-    return base_schemas.GraiEdgeMetadata(**data)
+def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> GenericEdgeMetadataV1:
+    data = {
+        "version": version,
+    }
+    return GenericEdgeMetadataV1(edge_type=EdgeTypeLabels.generic.value, **data)
 
 
 @multimethod
 def build_flat_file_metadata(current: Any, desired: Any) -> None:
-    raise NotImplementedError(
-        f"No adapter between {type(current)} and {type(desired)} for value {current}"
-    )
+    raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)} for value {current}")
 
 
 @build_flat_file_metadata.register
@@ -90,9 +87,7 @@ def adapt_to_client(current: Any, desired: Any):
 
 
 @adapt_to_client.register
-def adapt_column_to_client(
-    current: Union[Table, Column], version: Literal["v1"] = "v1"
-):
+def adapt_column_to_client(current: Union[Table, Column], version: Literal["v1"] = "v1"):
     spec_dict = {
         "name": current.full_name,
         "namespace": current.namespace,
@@ -104,8 +99,8 @@ def adapt_column_to_client(
 
 
 def make_name(node1: ID, node2: ID) -> str:
-    node1_name = f"{node1.namespace}:{node1.full_name}"
-    node2_name = f"{node2.namespace}:{node2.full_name}"
+    node1_name = f"{node1.namespace}.{node1.name}"
+    node2_name = f"{node2.namespace}.{node2.name}"
     return f"{node1_name} -> {node2_name}"
 
 

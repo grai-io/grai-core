@@ -1,35 +1,7 @@
 import { GraphQLError } from "graphql"
 import React from "react"
 import { renderWithMocks, renderWithRouter, screen, waitFor } from "testing"
-import Graph, { GET_NODES_AND_EDGES } from "./Graph"
-
-const sourceNode = {
-  id: "1",
-  namespace: "default",
-  name: "N1",
-  display_name: "N1",
-  is_active: true,
-  data_source: "test",
-  metadata: {
-    grai: {
-      node_type: "Table",
-    },
-  },
-}
-
-const destinationNode = {
-  id: "2",
-  namespace: "default",
-  name: "N2",
-  display_name: "N2 Node",
-  is_active: true,
-  data_source: "test",
-  metadata: {
-    grai: {
-      node_type: "Table",
-    },
-  },
-}
+import Graph, { GET_TABLES_AND_EDGES } from "./Graph"
 
 const columnNode = {
   id: "3",
@@ -45,9 +17,43 @@ const columnNode = {
   },
 }
 
+const sourceTable = {
+  id: "1",
+  namespace: "default",
+  name: "N1",
+  display_name: "N1",
+  is_active: true,
+  data_source: "test",
+  metadata: {
+    grai: {
+      node_type: "Table",
+    },
+  },
+  columns: [columnNode],
+  source_tables: [],
+  destination_tables: [],
+}
+
+const destinationTable = {
+  id: "2",
+  namespace: "default",
+  name: "N2",
+  display_name: "N2 Node",
+  is_active: true,
+  data_source: "test",
+  metadata: {
+    grai: {
+      node_type: "Table",
+    },
+  },
+  columns: [],
+  source_tables: [],
+  destination_tables: [],
+}
+
 const mock = {
   request: {
-    query: GET_NODES_AND_EDGES,
+    query: GET_TABLES_AND_EDGES,
     variables: {
       organisationName: "",
       workspaceName: "",
@@ -57,24 +63,24 @@ const mock = {
     data: {
       workspace: {
         id: "1",
-        nodes: [sourceNode, destinationNode, columnNode],
-        edges: [
+        tables: [sourceTable, destinationTable],
+        other_edges: [
           {
             id: "1",
             is_active: true,
             data_source: "test",
-            source: sourceNode,
-            destination: destinationNode,
+            source: sourceTable,
+            destination: destinationTable,
             metadata: { grai: { constraint_type: "dbt_model" } },
           },
-          {
-            id: "2",
-            is_active: true,
-            data_source: "test",
-            source: sourceNode,
-            destination: columnNode,
-            metadata: { grai: { constraint_type: "TableToColumn" } },
-          },
+          // {
+          //   id: "2",
+          //   is_active: true,
+          //   data_source: "test",
+          //   source: sourceNode,
+          //   destination: columnNode,
+          //   metadata: { grai: { constraint_type: "TableToColumn" } },
+          // },
         ],
       },
     },
@@ -151,7 +157,7 @@ test("renders with limitGraph", async () => {
 test("error", async () => {
   const mock = {
     request: {
-      query: GET_NODES_AND_EDGES,
+      query: GET_TABLES_AND_EDGES,
       variables: {
         organisationName: "",
         workspaceName: "",
@@ -172,7 +178,7 @@ test("error", async () => {
 test("no nodes", async () => {
   const mock = {
     request: {
-      query: GET_NODES_AND_EDGES,
+      query: GET_TABLES_AND_EDGES,
       variables: {
         organisationName: "",
         workspaceName: "",
@@ -182,8 +188,8 @@ test("no nodes", async () => {
       data: {
         workspace: {
           id: "1",
-          nodes: null,
-          edges: null,
+          tables: null,
+          other_edges: null,
         },
       },
     },
@@ -192,6 +198,6 @@ test("no nodes", async () => {
   renderWithMocks(<Graph />, [mock])
 
   await waitFor(() => {
-    expect(screen.getAllByText("No nodes found")).toBeTruthy()
+    expect(screen.getAllByText("No tables found")).toBeTruthy()
   })
 })

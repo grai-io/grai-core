@@ -18,9 +18,7 @@ class Context(object):
 
 @pytest.fixture
 async def test_organisation():
-    organisation, created = await Organisation.objects.aget_or_create(
-        name="Test Organisation"
-    )
+    organisation, created = await Organisation.objects.aget_or_create(name="Test Organisation")
 
     return organisation
 
@@ -38,18 +36,14 @@ async def test_user():
 
 @pytest_asyncio.fixture
 async def test_workspace(test_organisation):
-    workspace, created = await Workspace.objects.aget_or_create(
-        name="Test Workspace", organisation=test_organisation
-    )
+    workspace = await Workspace.objects.acreate(name=str(uuid.uuid4()), organisation=test_organisation)
 
     return workspace
 
 
 @pytest_asyncio.fixture
 async def test_context(test_organisation, test_workspace, test_user):
-    await Membership.objects.acreate(
-        user=test_user, workspace=test_workspace, role="admin"
-    )
+    await Membership.objects.acreate(user=test_user, workspace=test_workspace, role="admin")
 
     request = HttpRequest
     request.user = test_user
@@ -98,9 +92,7 @@ def generate_connection_name():
 
 
 async def generate_workspace(organisation: Organisation):
-    return await Workspace.objects.acreate(
-        name=generate_workspace_name(), organisation=organisation
-    )
+    return await Workspace.objects.acreate(name=generate_workspace_name(), organisation=organisation)
 
 
 async def generate_connector():

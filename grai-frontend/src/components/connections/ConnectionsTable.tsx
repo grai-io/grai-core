@@ -26,11 +26,13 @@ interface Connection extends BaseConnection {
 
 type ConnectionsTableProps = {
   connections: Connection[]
+  workspaceId: string
   loading?: boolean
 }
 
 const ConnectionsTable: React.FC<ConnectionsTableProps> = ({
   connections,
+  workspaceId,
   loading,
 }) => {
   const navigate = useNavigate()
@@ -59,7 +61,10 @@ const ConnectionsTable: React.FC<ConnectionsTableProps> = ({
             <TableCell>{connection.connector.name}</TableCell>
             <TableCell>{connection.is_active ? "Yes" : "No"}</TableCell>
             <TableCell sx={{ py: 0, px: 1 }} stopPropagation>
-              <ConnectionsMenu connection={connection} />
+              <ConnectionsMenu
+                connection={connection}
+                workspaceId={workspaceId}
+              />
             </TableCell>
           </TableRow>
         ))}
