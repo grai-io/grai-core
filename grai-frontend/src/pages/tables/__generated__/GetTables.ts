@@ -29,5 +29,6 @@ export interface GetTables {
 }
 
 export interface GetTablesVariables {
-  workspaceId: string;
+  organisationName: string;
+  workspaceName: string;
 }

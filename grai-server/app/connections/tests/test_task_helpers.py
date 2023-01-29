@@ -5,12 +5,17 @@ from grai_schemas.v1 import EdgeV1, NodeV1
 
 from connections.task_helpers import get_node, update
 from lineage.models import Edge, Node
-from workspaces.models import Workspace
+from workspaces.models import Organisation, Workspace
 
 
 @pytest.fixture
-def test_workspace():
-    return Workspace.objects.create(name="W1")
+def test_organisation():
+    return Organisation.objects.create(name="Org1")
+
+
+@pytest.fixture
+def test_workspace(test_organisation):
+    return Workspace.objects.create(name="W1", organisation=test_organisation)
 
 
 @pytest.fixture

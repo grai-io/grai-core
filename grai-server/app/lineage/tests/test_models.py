@@ -6,12 +6,13 @@ import pytest
 from django.test import TestCase
 
 from lineage.models import Edge, Node
-from workspaces.models import Workspace
+from workspaces.models import Organisation, Workspace
 
 
 @pytest.mark.django_db
 def test_node_created():
-    workspace = Workspace.objects.create(name="W1")
+    organisation = Organisation.objects.create(name="O1")
+    workspace = Workspace.objects.create(name="W1", organisation=organisation)
 
     node = Node.objects.create(namespace="temp", name="a", data_source="test", workspace=workspace)
 
@@ -28,7 +29,8 @@ def test_node_created():
 
 @pytest.mark.django_db
 def test_node_created_from_load():
-    workspace = Workspace.objects.create(name="W1")
+    organisation = Organisation.objects.create(name="O1")
+    workspace = Workspace.objects.create(name="W1", organisation=organisation)
 
     node = Node.objects.create(namespace="temp2", name="abc", data_source="test", workspace=workspace)
     nodes = list(Node.objects.filter(namespace="temp2", name="abc").all())
@@ -41,7 +43,8 @@ def test_node_created_from_load():
 
 @pytest.mark.django_db
 def test_edge_created():
-    workspace = Workspace.objects.create(name="W1")
+    organisation = Organisation.objects.create(name="O1")
+    workspace = Workspace.objects.create(name="W1", organisation=organisation)
 
     node_a = Node.objects.create(
         namespace="default",

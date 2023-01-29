@@ -1,7 +1,6 @@
 import { gql, useMutation } from "@apollo/client"
 import { Dialog, DialogContent } from "@mui/material"
 import React from "react"
-import { useParams } from "react-router-dom"
 import DialogTitle from "components/dialogs/DialogTitle"
 import CreateKeyForm, { Values } from "./CreateMembershipForm"
 import GraphError from "components/utils/GraphError"
@@ -30,12 +29,16 @@ export const CREATE_MEMBERSHIP = gql`
 `
 
 type CreateKeyDialogProps = {
+  workspaceId: string
   open: boolean
   onClose: () => void
 }
 
-const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({ open, onClose }) => {
-  const { workspaceId } = useParams()
+const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({
+  workspaceId,
+  open,
+  onClose,
+}) => {
   const { enqueueSnackbar } = useSnackbar()
 
   const [createMembership, { loading, error }] = useMutation<
@@ -76,7 +79,7 @@ const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({ open, onClose }) => {
     createMembership({
       variables: {
         ...values,
-        workspaceId: workspaceId ?? "",
+        workspaceId,
       },
     })
       .then(() => onClose())

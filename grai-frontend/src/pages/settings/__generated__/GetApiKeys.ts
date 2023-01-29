@@ -44,5 +44,6 @@ export interface GetApiKeys {
 }
 
 export interface GetApiKeysVariables {
-  workspaceId: string;
+  organisationName: string;
+  workspaceName: string;
 }

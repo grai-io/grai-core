@@ -33,15 +33,19 @@ const connections = [
 ]
 
 test("renders", async () => {
-  renderWithRouter(<ConnectionsTable connections={connections} />)
+  renderWithRouter(
+    <ConnectionsTable connections={connections} workspaceId="1" />
+  )
 })
 
 test("renders loading", async () => {
-  renderWithRouter(<ConnectionsTable connections={[]} loading />)
+  renderWithRouter(
+    <ConnectionsTable connections={[]} workspaceId="1" loading />
+  )
 })
 
 test("renders empty", async () => {
-  renderWithRouter(<ConnectionsTable connections={[]} />)
+  renderWithRouter(<ConnectionsTable connections={[]} workspaceId="1" />)
 
   expect(screen.getByText("No connections found")).toBeTruthy()
 })
@@ -50,7 +54,7 @@ test("click row", async () => {
   const user = userEvent.setup()
 
   const { container } = renderWithRouter(
-    <ConnectionsTable connections={connections} />,
+    <ConnectionsTable connections={connections} workspaceId="1" />,
     {
       routes: ["/:nodeId"],
     }

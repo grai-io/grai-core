@@ -4,10 +4,19 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
 
 from api.schema import schema
-from connections.models import Connection, Connector
-from workspaces.models import Workspace
 
-from .common import test_basic_context, test_context
+from .common import (
+    generate_connection,
+    generate_connection_name,
+    generate_connector,
+    generate_username,
+    generate_workspace,
+    test_basic_context,
+    test_context,
+    test_organisation,
+    test_user,
+    test_workspace,
+)
 
 
 @pytest.mark.django_db
@@ -16,7 +25,7 @@ async def test_login(test_basic_context):
 
     User = get_user_model()
 
-    user = User(username="test@grai.io")
+    user = User(username=generate_username())
     user.set_password("password")
     await sync_to_async(user.save)()
 
@@ -55,7 +64,7 @@ async def test_login_bad_password(test_basic_context):
 
     User = get_user_model()
 
-    user = User(username="test2@grai.io")
+    user = User(username=generate_username())
     user.set_password("password")
     await sync_to_async(user.save)()
 
@@ -86,9 +95,10 @@ async def test_login_bad_password(test_basic_context):
     assert result.data is None
 
 
+@pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_logout(test_context):
-    context, workspace, user = test_context
+    context, organisation, workspace, user = test_context
 
     mutation = """
         mutation Logout {
@@ -105,6 +115,7 @@ async def test_logout(test_context):
     assert result.data["logout"] == True
 
 
+@pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_register(test_basic_context):
     context = test_basic_context
@@ -120,10 +131,12 @@ async def test_register(test_basic_context):
         }
     """
 
+    username = generate_username()
+
     result = await schema.execute(
         mutation,
         variable_values={
-            "username": "test3@grai.io",
+            "username": username,
             "password": "password",
         },
         context_value=context,
@@ -131,14 +144,15 @@ async def test_register(test_basic_context):
 
     assert result.errors is None
     assert result.data["register"]["id"] is not None
-    assert result.data["register"]["username"] == "test3@grai.io"
+    assert result.data["register"]["username"] == username
 
 
+@pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_create_connection(test_context):
-    context, workspace, user = test_context
+    context, organisation, workspace, user = test_context
 
-    connector = await Connector.objects.acreate(name="Connector 1")
+    connector = await generate_connector()
 
     mutation = """
         mutation CreateConnection($workspaceId: ID!, $connectorId: ID!, $namespace: String!, $name: String!, $metadata: JSON!, $secrets: JSON, $schedules: JSON, $is_active: Boolean) {
@@ -149,13 +163,15 @@ async def test_create_connection(test_context):
         }
     """
 
+    name = generate_connection_name()
+
     result = await schema.execute(
         mutation,
         variable_values={
             "workspaceId": str(workspace.id),
             "connectorId": str(connector.id),
             "namespace": "default",
-            "name": "test connection",
+            "name": name,
             "metadata": {},
             "secrets": None,
             "schedules": None,
@@ -166,16 +182,16 @@ async def test_create_connection(test_context):
 
     assert result.errors is None
     assert result.data["createConnection"]["id"] != None
-    assert result.data["createConnection"]["name"] == "test connection"
+    assert result.data["createConnection"]["name"] == name
 
 
 @pytest.mark.django_db
 async def test_create_connection_no_membership(test_context):
-    context, workspace, user = test_context
+    context, organisation, workspace, user = test_context
 
-    workspace2 = await Workspace.objects.acreate(name="W2")
+    workspace2 = await generate_workspace(organisation)
 
-    connector = await Connector.objects.acreate(name="Connector 6")
+    connector = await generate_connector()
 
     mutation = """
         mutation CreateConnection($workspaceId: ID!, $connectorId: ID!, $namespace: String!, $name: String!, $metadata: JSON!, $secrets: JSON, $schedules: JSON, $is_active: Boolean) {
@@ -192,7 +208,7 @@ async def test_create_connection_no_membership(test_context):
             "workspaceId": str(workspace2.id),
             "connectorId": str(connector.id),
             "namespace": "default",
-            "name": "test connection",
+            "name": generate_connection_name(),
             "metadata": {},
             "secrets": None,
             "schedules": None,
@@ -210,17 +226,8 @@ async def test_create_connection_no_membership(test_context):
 
 @pytest.mark.django_db
 async def test_update_connection(test_context):
-    context, workspace, user = test_context
-
-    connector = await Connector.objects.acreate(name="Connector 2")
-    connection = await Connection.objects.acreate(
-        workspace=workspace,
-        connector=connector,
-        namespace="default",
-        name="test connection2",
-        metadata={},
-        secrets={},
-    )
+    context, organisation, workspace, user = test_context
+    connection = await generate_connection(workspace)
 
     mutation = """
         mutation UpdateConnection($id: ID!, $namespace: String!, $name: String!, $metadata: JSON!, $secrets: JSON, $schedules: JSON, $is_active: Boolean) {
@@ -231,12 +238,14 @@ async def test_update_connection(test_context):
         }
     """
 
+    name = generate_connection_name()
+
     result = await schema.execute(
         mutation,
         variable_values={
             "id": str(connection.id),
             "namespace": "default",
-            "name": "test connection3",
+            "name": name,
             "metadata": {},
             "secrets": None,
             "schedules": None,
@@ -248,23 +257,14 @@ async def test_update_connection(test_context):
     assert result.errors is None
     assert result.data["updateConnection"] == {
         "id": str(connection.id),
-        "name": "test connection3",
+        "name": name,
     }
 
 
 @pytest.mark.django_db
 async def test_update_connection_with_schedule(test_context):
-    context, workspace, user = test_context
-
-    connector = await Connector.objects.acreate(name="Connector 9")
-    connection = await Connection.objects.acreate(
-        workspace=workspace,
-        connector=connector,
-        namespace="default",
-        name="test connection2",
-        metadata={},
-        secrets={},
-    )
+    context, organisation, workspace, user = test_context
+    connection = await generate_connection(workspace)
 
     mutation = """
         mutation UpdateConnection($id: ID!, $namespace: String!, $name: String!, $metadata: JSON!, $secrets: JSON, $schedules: JSON, $is_active: Boolean) {
@@ -275,12 +275,14 @@ async def test_update_connection_with_schedule(test_context):
         }
     """
 
+    name = generate_connection_name()
+
     result = await schema.execute(
         mutation,
         variable_values={
             "id": str(connection.id),
             "namespace": "default",
-            "name": "test connection3",
+            "name": name,
             "metadata": {},
             "secrets": None,
             "schedules": {
@@ -301,23 +303,14 @@ async def test_update_connection_with_schedule(test_context):
     assert result.errors is None
     assert result.data["updateConnection"] == {
         "id": str(connection.id),
-        "name": "test connection3",
+        "name": name,
     }
 
 
 @pytest.mark.django_db
 async def test_update_connection_with_incorrect_schedule(test_context):
-    context, workspace, user = test_context
-
-    connector = await Connector.objects.acreate(name="Connector 10")
-    connection = await Connection.objects.acreate(
-        workspace=workspace,
-        connector=connector,
-        namespace="default",
-        name="test connection2",
-        metadata={},
-        secrets={},
-    )
+    context, organisation, workspace, user = test_context
+    connection = await generate_connection(workspace)
 
     mutation = """
         mutation UpdateConnection($id: ID!, $namespace: String!, $name: String!, $metadata: JSON!, $secrets: JSON, $schedules: JSON, $is_active: Boolean) {
@@ -333,7 +326,7 @@ async def test_update_connection_with_incorrect_schedule(test_context):
         variable_values={
             "id": str(connection.id),
             "namespace": "default",
-            "name": "test connection3",
+            "name": generate_connection_name(),
             "metadata": {},
             "secrets": None,
             "schedules": {"type": "blah"},
@@ -351,19 +344,9 @@ async def test_update_connection_with_incorrect_schedule(test_context):
 
 @pytest.mark.django_db
 async def test_update_connection_no_membership(test_context):
-    context, workspace, user = test_context
-
-    workspace2 = await Workspace.objects.acreate(name="W3")
-
-    connector = await Connector.objects.acreate(name="Connector 7")
-    connection = await Connection.objects.acreate(
-        workspace=workspace2,
-        connector=connector,
-        namespace="default",
-        name="test connection2",
-        metadata={},
-        secrets={},
-    )
+    context, organisation, workspace, user = test_context
+    workspace2 = await generate_workspace(organisation)
+    connection = await generate_connection(workspace2)
 
     mutation = """
         mutation UpdateConnection($id: ID!, $namespace: String!, $name: String!, $metadata: JSON!, $secrets: JSON, $schedules: JSON, $is_active: Boolean) {
@@ -379,7 +362,7 @@ async def test_update_connection_no_membership(test_context):
         variable_values={
             "id": str(connection.id),
             "namespace": "default",
-            "name": "test connection3",
+            "name": generate_connection_name(),
             "metadata": {},
             "secrets": None,
             "schedules": None,
@@ -397,17 +380,8 @@ async def test_update_connection_no_membership(test_context):
 
 @pytest.mark.django_db
 async def test_run_connection(test_context):
-    context, workspace, user = test_context
-
-    connector = await Connector.objects.acreate(name="Connector 3")
-    connection = await Connection.objects.acreate(
-        workspace=workspace,
-        connector=connector,
-        namespace="default",
-        name="test connection2",
-        metadata={},
-        secrets={},
-    )
+    context, organisation, workspace, user = test_context
+    connection = await generate_connection(workspace)
 
     mutation = """
         mutation RunConnection($connectionId: ID!) {
@@ -433,19 +407,9 @@ async def test_run_connection(test_context):
 
 @pytest.mark.django_db
 async def test_run_connection_no_membership(test_context):
-    context, workspace, user = test_context
-
-    workspace2 = await Workspace.objects.acreate(name="W4")
-
-    connector = await Connector.objects.acreate(name="Connector 8")
-    connection = await Connection.objects.acreate(
-        workspace=workspace2,
-        connector=connector,
-        namespace="default",
-        name="test connection2",
-        metadata={},
-        secrets={},
-    )
+    context, organisation, workspace, user = test_context
+    workspace2 = await generate_workspace(organisation)
+    connection = await generate_connection(workspace2)
 
     mutation = """
         mutation RunConnection($connectionId: ID!) {
@@ -472,17 +436,8 @@ async def test_run_connection_no_membership(test_context):
 
 @pytest.mark.django_db
 async def test_run_connection_postgres(test_context):
-    context, workspace, user = test_context
-
-    connector = await Connector.objects.acreate(name="Postgres")
-    connection = await Connection.objects.acreate(
-        workspace=workspace,
-        connector=connector,
-        namespace="default",
-        name="test connection2",
-        metadata={},
-        secrets={},
-    )
+    context, organisation, workspace, user = test_context
+    connection = await generate_connection(workspace)
 
     mutation = """
         mutation RunConnection($connectionId: ID!) {
@@ -508,7 +463,7 @@ async def test_run_connection_postgres(test_context):
 
 @pytest.mark.django_db
 async def test_create_api_key(test_context):
-    context, workspace, user = test_context
+    context, organisation, workspace, user = test_context
 
     mutation = """
         mutation CreateApiKey($workspaceId: ID!, $name: String!) {
@@ -538,7 +493,7 @@ async def test_create_api_key(test_context):
 
 @pytest.mark.django_db
 async def test_update_workspace(test_context):
-    context, workspace, user = test_context
+    context, organisation, workspace, user = test_context
 
     mutation = """
         mutation UpdateWorkspace($id: ID!, $name: String!) {
@@ -567,7 +522,7 @@ async def test_update_workspace(test_context):
 
 @pytest.mark.django_db
 async def test_create_membership(test_context):
-    context, workspace, user = test_context
+    context, organisation, workspace, user = test_context
 
     mutation = """
         mutation CreateMembership($workspaceId: ID!, $role: String!, $email: String!) {
@@ -599,9 +554,9 @@ async def test_create_membership(test_context):
 
 @pytest.mark.django_db
 async def test_create_membership_existing_user(test_context):
-    context, workspace, user = test_context
+    context, organisation, workspace, user = test_context
     User = get_user_model()
-    user = await User.objects.acreate(username="test2@grai.com")
+    user = await User.objects.acreate(username=generate_username())
 
     mutation = """
         mutation CreateMembership($workspaceId: ID!, $role: String!, $email: String!) {
@@ -621,7 +576,7 @@ async def test_create_membership_existing_user(test_context):
         variable_values={
             "workspaceId": str(workspace.id),
             "role": "admin",
-            "email": "test2@grai.com",
+            "email": user.username,
         },
         context_value=context,
     )
@@ -630,13 +585,13 @@ async def test_create_membership_existing_user(test_context):
     assert result.data["createMembership"]["role"] == "admin"
     assert result.data["createMembership"]["user"] == {
         "id": str(user.id),
-        "username": "test2@grai.com",
+        "username": user.username,
     }
 
 
 @pytest.mark.django_db
 async def test_update_profile(test_context):
-    context, workspace, user = test_context
+    context, organisation, workspace, user = test_context
 
     mutation = """
         mutation UpdateProfile($first_name: String!, $last_name: String!) {
@@ -667,7 +622,7 @@ async def test_update_profile(test_context):
 
 @pytest.mark.django_db
 async def test_update_password(test_context):
-    context, workspace, user = test_context
+    context, organisation, workspace, user = test_context
 
     user.set_password("old_password")
     await sync_to_async(user.save)()
@@ -697,7 +652,7 @@ async def test_update_password(test_context):
 
 @pytest.mark.django_db
 async def test_update_password_wrong_password(test_context):
-    context, workspace, user = test_context
+    context, organisation, workspace, user = test_context
 
     user.set_password("old_password")
     await sync_to_async(user.save)()
@@ -730,7 +685,7 @@ async def test_update_password_wrong_password(test_context):
 async def test_request_password_reset():
     User = get_user_model()
 
-    user = await User.objects.acreate(username="test@grai.com")
+    user = await User.objects.acreate(username=generate_username())
 
     mutation = """
         mutation RequestPasswordReset($email: String!) {
@@ -774,7 +729,7 @@ async def test_request_password_reset_no_user():
 
 @pytest.mark.django_db
 async def test_reset_password(test_context):
-    context, workspace, user = test_context
+    context, organisation, workspace, user = test_context
 
     token = default_token_generator.make_token(user)
 
@@ -799,7 +754,7 @@ async def test_reset_password(test_context):
 
 @pytest.mark.django_db
 async def test_reset_password_invalid_token(test_context):
-    context, workspace, user = test_context
+    context, organisation, workspace, user = test_context
 
     mutation = """
         mutation ResetPassword($token: String!, $uid: String!, $password: String!) {
@@ -852,7 +807,7 @@ async def test_reset_password_no_user():
 
 @pytest.mark.django_db
 async def test_complete_signup(test_context):
-    context, workspace, user = test_context
+    context, organisation, workspace, user = test_context
 
     token = default_token_generator.make_token(user)
 
@@ -887,7 +842,7 @@ async def test_complete_signup(test_context):
 
 @pytest.mark.django_db
 async def test_complete_signup_invalid_token(test_context):
-    context, workspace, user = test_context
+    context, organisation, workspace, user = test_context
 
     mutation = """
         mutation CompleteSignup($token: String!, $uid: String!, $first_name: String!, $last_name: String!, $password: String!) {

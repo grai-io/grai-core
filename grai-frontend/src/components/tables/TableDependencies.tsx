@@ -1,7 +1,8 @@
 import { Stack, Box, Button, Typography } from "@mui/material"
 import NodeDetailRow from "components/layout/NodeDetailRow"
+import useWorkspace from "helpers/useWorkspace"
 import React from "react"
-import { Link, useParams } from "react-router-dom"
+import { Link } from "react-router-dom"
 
 interface Dependency {
   id: string
@@ -17,7 +18,7 @@ const TableDependencies: React.FC<TableDependenciesProps> = ({
   label,
   dependencies,
 }) => {
-  const { workspaceId } = useParams()
+  const { routePrefix } = useWorkspace()
 
   return (
     <NodeDetailRow label={label}>
@@ -25,10 +26,7 @@ const TableDependencies: React.FC<TableDependenciesProps> = ({
         <Stack>
           {dependencies.map(table => (
             <Box key={table.id}>
-              <Button
-                component={Link}
-                to={`/workspaces/${workspaceId}/tables/${table.id}`}
-              >
+              <Button component={Link} to={`${routePrefix}/tables/${table.id}`}>
                 {table.display_name}
               </Button>
             </Box>

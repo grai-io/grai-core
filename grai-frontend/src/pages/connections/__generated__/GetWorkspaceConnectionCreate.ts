@@ -4,20 +4,20 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GetWorkspace
+// GraphQL query operation: GetWorkspaceConnectionCreate
 // ====================================================
 
-export interface GetWorkspace_workspace {
+export interface GetWorkspaceConnectionCreate_workspace {
   __typename: "Workspace";
   id: any;
   name: string;
 }
 
-export interface GetWorkspace {
-  workspace: GetWorkspace_workspace;
+export interface GetWorkspaceConnectionCreate {
+  workspace: GetWorkspaceConnectionCreate_workspace;
 }
 
-export interface GetWorkspaceVariables {
+export interface GetWorkspaceConnectionCreateVariables {
   organisationName: string;
   workspaceName: string;
 }

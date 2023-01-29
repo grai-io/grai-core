@@ -21,6 +21,7 @@ const opts = {
 test("renders", async () => {
   renderWithRouter(
     <SetupConnection
+      workspaceId="1"
       opts={opts}
       values={{
         connector: {
@@ -46,6 +47,7 @@ test("renders", async () => {
 test("renders file", async () => {
   renderWithRouter(
     <SetupConnection
+      workspaceId="1"
       opts={opts}
       values={{
         connector: {
@@ -76,6 +78,7 @@ test("renders file", async () => {
 test("renders file yaml", async () => {
   renderWithRouter(
     <SetupConnection
+      workspaceId="1"
       opts={opts}
       values={{
         connector: {
@@ -108,6 +111,7 @@ test("upload file", async () => {
 
   renderWithRouter(
     <SetupConnection
+      workspaceId="1"
       opts={opts}
       values={{
         connector: {
@@ -156,6 +160,7 @@ test("upload wrong file", async () => {
 
   renderWithRouter(
     <SetupConnection
+      workspaceId="1"
       opts={opts}
       values={{
         connector: {

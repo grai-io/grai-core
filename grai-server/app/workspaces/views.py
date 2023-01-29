@@ -36,14 +36,22 @@ class WorkspaceViewSet(ReadOnlyModelViewSet):
             else self.type.objects
         )
 
-        supported_filters = ["name"]
+        supported_filters = ["name", "ref"]
         filters = (
             (filter_name, condition)
             for filter_name in supported_filters
             if (condition := self.request.query_params.get(filter_name))
         )
         for filter_name, condition in filters:
-            queryset = queryset.filter(**{filter_name: condition})
+            if filter_name == "ref":
+                split = condition.split("/")
+
+                if len(split) == 1 or len(split) > 2:
+                    raise Exception("Incorrect format, should be organisation/workspace")
+
+                queryset = queryset.filter(name=split[1], organisation__name=split[0])
+            else:
+                queryset = queryset.filter(**{filter_name: condition})
         return queryset
 
 

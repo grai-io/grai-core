@@ -55,7 +55,8 @@ const mock = {
   request: {
     query: GET_TABLES_AND_EDGES,
     variables: {
-      workspaceId: "",
+      organisationName: "",
+      workspaceName: "",
     },
   },
   result: {
@@ -158,7 +159,8 @@ test("error", async () => {
     request: {
       query: GET_TABLES_AND_EDGES,
       variables: {
-        workspaceId: "",
+        organisationName: "",
+        workspaceName: "",
       },
     },
     result: {
@@ -178,7 +180,8 @@ test("no nodes", async () => {
     request: {
       query: GET_TABLES_AND_EDGES,
       variables: {
-        workspaceId: "",
+        organisationName: "",
+        workspaceName: "",
       },
     },
     result: {

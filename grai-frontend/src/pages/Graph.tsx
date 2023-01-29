@@ -3,17 +3,18 @@ import { Alert, Box } from "@mui/material"
 import GraphComponent, { Error } from "components/graph/Graph"
 import { gql, useQuery } from "@apollo/client"
 import theme from "theme"
-import { useLocation, useParams } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 import GraphError from "components/utils/GraphError"
 import PageLayout from "components/layout/PageLayout"
 import {
   GetTablesAndEdges,
   GetTablesAndEdgesVariables,
 } from "./__generated__/GetTablesAndEdges"
+import useWorkspace from "helpers/useWorkspace"
 
 export const GET_TABLES_AND_EDGES = gql`
-  query GetTablesAndEdges($workspaceId: ID!) {
-    workspace(pk: $workspaceId) {
+  query GetTablesAndEdges($organisationName: String!, $workspaceName: String!) {
+    workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       tables(pagination: { offset: 0, limit: 100000 }) {
         id
@@ -52,7 +53,7 @@ export const GET_TABLES_AND_EDGES = gql`
 `
 
 const Graph: React.FC = () => {
-  const { workspaceId } = useParams()
+  const { organisationName, workspaceName } = useWorkspace()
   const searchParams = new URLSearchParams(useLocation().search)
 
   const { loading, error, data } = useQuery<
@@ -60,7 +61,8 @@ const Graph: React.FC = () => {
     GetTablesAndEdgesVariables
   >(GET_TABLES_AND_EDGES, {
     variables: {
-      workspaceId: workspaceId ?? "",
+      organisationName,
+      workspaceName,
     },
   })
 

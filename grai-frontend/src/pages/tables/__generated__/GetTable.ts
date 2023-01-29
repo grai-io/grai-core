@@ -53,6 +53,7 @@ export interface GetTable {
 }
 
 export interface GetTableVariables {
-  workspaceId: string;
+  organisationName: string;
+  workspaceName: string;
   tableId: string;
 }

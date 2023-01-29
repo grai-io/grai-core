@@ -3,17 +3,20 @@ import Loading from "components/layout/Loading"
 import SettingsLayout from "components/settings/SettingsLayout"
 import WorkspaceForm from "components/settings/workspace/WorkspaceForm"
 import GraphError from "components/utils/GraphError"
+import useWorkspace from "helpers/useWorkspace"
 import NotFound from "pages/NotFound"
 import React from "react"
-import { useParams } from "react-router-dom"
 import {
-  GetWorkspace,
-  GetWorkspaceVariables,
-} from "./__generated__/GetWorkspace"
+  GetWorkspaceSettings,
+  GetWorkspaceSettingsVariables,
+} from "./__generated__/GetWorkspaceSettings"
 
 export const GET_WORKSPACE = gql`
-  query GetWorkspace($workspaceId: ID!) {
-    workspace(pk: $workspaceId) {
+  query GetWorkspaceSettings(
+    $organisationName: String!
+    $workspaceName: String!
+  ) {
+    workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       name
     }
@@ -21,14 +24,15 @@ export const GET_WORKSPACE = gql`
 `
 
 const WorkspaceSettings: React.FC = () => {
-  const { workspaceId } = useParams()
+  const { organisationName, workspaceName } = useWorkspace()
 
   const { loading, error, data } = useQuery<
-    GetWorkspace,
-    GetWorkspaceVariables
+    GetWorkspaceSettings,
+    GetWorkspaceSettingsVariables
   >(GET_WORKSPACE, {
     variables: {
-      workspaceId: workspaceId ?? "",
+      organisationName,
+      workspaceName,
     },
   })
 
@@ -40,13 +44,13 @@ const WorkspaceSettings: React.FC = () => {
       </SettingsLayout>
     )
 
-  const workspace = data?.workspace
+  const workspaceModel = data?.workspace
 
-  if (!workspace) return <NotFound />
+  if (!workspaceModel) return <NotFound />
 
   return (
     <SettingsLayout>
-      <WorkspaceForm workspace={workspace} />
+      <WorkspaceForm workspace={workspaceModel} />
     </SettingsLayout>
   )
 }

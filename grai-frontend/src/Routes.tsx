@@ -3,6 +3,7 @@ import { Routes as BrowerRoutes, Route } from "react-router-dom"
 import GuestRoute from "./components/auth/GuestRoute"
 import PrivateRoute from "./components/auth/PrivateRoute"
 import NotFound from "./pages/NotFound"
+import WorkspaceProvider from "components/utils/WorkspaceProvider"
 import PageLayout from "components/layout/PageLayout"
 import Loading from "components/layout/Loading"
 import SuspenseOutlet from "components/utils/SuspenseOutlet"
@@ -41,42 +42,43 @@ const Routes: React.FC = () => (
       <Route element={<PrivateRoute />}>
         <Route element={<SuspenseOutlet fallback={<PageLayout loading />} />}>
           <Route index element={<Index />} />
-          <Route path="workspaces">
-            <Route index element={<Workspaces />} />
-            <Route path=":workspaceId">
-              <Route index element={<Home />} />
-              <Route path="graph" element={<Graph />} />
-              <Route path="tables">
-                <Route index element={<Tables />} />
-                <Route path=":tableId" element={<Table />} />
-              </Route>
-              <Route path="runs">
-                <Route path=":runId" element={<Run />} />
-              </Route>
-              <Route path="connections">
-                <Route index element={<Connections />} />
-                <Route path="create" element={<ConnectionCreate />} />
-                <Route path=":connectionId" element={<Connection />} />
-              </Route>
-              <Route
-                path="settings"
-                element={
-                  <SuspenseOutlet
-                    fallback={
-                      <SettingsLayout>
-                        <Loading />
-                      </SettingsLayout>
-                    }
-                  />
-                }
-              >
-                <Route index element={<Settings />} />
-                <Route path="profile" element={<ProfileSettings />} />
-                <Route path="password" element={<PasswordSettings />} />
-                <Route path="api-keys" element={<ApiKeys />} />
-                <Route path="workspace" element={<WorkspaceSettings />} />
-                <Route path="memberships" element={<Memberships />} />
-              </Route>
+          <Route path="/workspaces" element={<Workspaces />} />
+          <Route
+            path=":organisationName/:workspaceName"
+            element={<WorkspaceProvider />}
+          >
+            <Route index element={<Home />} />
+            <Route path="graph" element={<Graph />} />
+            <Route path="tables">
+              <Route index element={<Tables />} />
+              <Route path=":tableId" element={<Table />} />
+            </Route>
+            <Route path="runs">
+              <Route path=":runId" element={<Run />} />
+            </Route>
+            <Route path="connections">
+              <Route index element={<Connections />} />
+              <Route path="create" element={<ConnectionCreate />} />
+              <Route path=":connectionId" element={<Connection />} />
+            </Route>
+            <Route
+              path="settings"
+              element={
+                <SuspenseOutlet
+                  fallback={
+                    <SettingsLayout>
+                      <Loading />
+                    </SettingsLayout>
+                  }
+                />
+              }
+            >
+              <Route index element={<Settings />} />
+              <Route path="profile" element={<ProfileSettings />} />
+              <Route path="password" element={<PasswordSettings />} />
+              <Route path="api-keys" element={<ApiKeys />} />
+              <Route path="workspace" element={<WorkspaceSettings />} />
+              <Route path="memberships" element={<Memberships />} />
             </Route>
           </Route>
         </Route>

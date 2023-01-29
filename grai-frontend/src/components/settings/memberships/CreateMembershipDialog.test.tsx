@@ -7,7 +7,9 @@ import CreateMembershipDialog, {
 } from "./CreateMembershipDialog"
 
 test("renders", async () => {
-  renderWithRouter(<CreateMembershipDialog open={true} onClose={() => {}} />)
+  renderWithRouter(
+    <CreateMembershipDialog workspaceId="1" open={true} onClose={() => {}} />
+  )
 
   await waitFor(() => {
     expect(screen.getByText("Invite user")).toBeTruthy()
@@ -17,7 +19,9 @@ test("renders", async () => {
 test("submit", async () => {
   const user = userEvent.setup()
 
-  renderWithRouter(<CreateMembershipDialog open={true} onClose={() => {}} />)
+  renderWithRouter(
+    <CreateMembershipDialog workspaceId="1" open={true} onClose={() => {}} />
+  )
 
   await waitFor(() => {
     expect(screen.getByText("Invite user")).toBeTruthy()
@@ -40,7 +44,7 @@ test("error", async () => {
       variables: {
         role: "admin",
         email: "email@grai.io",
-        workspaceId: "",
+        workspaceId: "1",
       },
     },
     result: {
@@ -48,9 +52,10 @@ test("error", async () => {
     },
   }
 
-  renderWithMocks(<CreateMembershipDialog open={true} onClose={() => {}} />, [
-    mock,
-  ])
+  renderWithMocks(
+    <CreateMembershipDialog workspaceId="1" open={true} onClose={() => {}} />,
+    [mock]
+  )
 
   await waitFor(() => {
     expect(screen.getByText("Invite user")).toBeTruthy()

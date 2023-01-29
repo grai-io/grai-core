@@ -4,12 +4,11 @@ import uuid
 import pytest
 
 from connections.models import Connection, Connector, Run
-from workspaces.models import Workspace
+from workspaces.models import Organisation, Workspace
 
 
 @pytest.mark.django_db
 def test_connector_created():
-    workspace = Workspace.objects.create(name="W1")
     connector = Connector.objects.create(name="C1")
 
     assert connector.id == uuid.UUID(str(connector.id))
@@ -19,7 +18,8 @@ def test_connector_created():
 
 @pytest.mark.django_db
 def test_run_created():
-    workspace = Workspace.objects.create(name="W1")
+    organisation = Organisation.objects.create(name="O1")
+    workspace = Workspace.objects.create(name="W1", organisation=organisation)
     connector = Connector.objects.create(name="C1")
     connection = Connection.objects.create(workspace=workspace, connector=connector, name="Connection 1")
 
@@ -38,7 +38,8 @@ def test_run_created():
 class TestConnection:
     @pytest.mark.django_db
     def test_connection_created(self):
-        workspace = Workspace.objects.create(name="W1")
+        organisation = Organisation.objects.create(name="O1")
+        workspace = Workspace.objects.create(name="W1", organisation=organisation)
         connector = Connector.objects.create(name="C1")
         connection = Connection.objects.create(workspace=workspace, connector=connector, name="Connection 1")
 
@@ -48,7 +49,8 @@ class TestConnection:
 
     @pytest.mark.django_db
     def test_connection_updated_with_schedule(self):
-        workspace = Workspace.objects.create(name="W1")
+        organisation = Organisation.objects.create(name="O1")
+        workspace = Workspace.objects.create(name="W1", organisation=organisation)
         connector = Connector.objects.create(name="C1")
         connection = Connection.objects.create(workspace=workspace, connector=connector, name="Connection 1")
 
@@ -72,7 +74,8 @@ class TestConnection:
 
     @pytest.mark.django_db
     def test_connection_updated_with_existing_task(self):
-        workspace = Workspace.objects.create(name="W1")
+        organisation = Organisation.objects.create(name="O1")
+        workspace = Workspace.objects.create(name="W1", organisation=organisation)
         connector = Connector.objects.create(name="C1")
         connection = Connection.objects.create(
             workspace=workspace,
@@ -110,7 +113,8 @@ class TestConnection:
 
     @pytest.mark.django_db
     def test_connection_updated_with_incorrect_schedule(self):
-        workspace = Workspace.objects.create(name="W1")
+        organisation = Organisation.objects.create(name="O1")
+        workspace = Workspace.objects.create(name="W1", organisation=organisation)
         connector = Connector.objects.create(name="C1")
         connection = Connection.objects.create(workspace=workspace, connector=connector, name="Connection 1")
 

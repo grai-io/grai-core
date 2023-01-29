@@ -7,8 +7,9 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material"
+import useWorkspace from "helpers/useWorkspace"
 import React from "react"
-import { Link, useParams } from "react-router-dom"
+import { Link } from "react-router-dom"
 
 interface Table {
   id: string
@@ -20,7 +21,7 @@ type TableHeaderProps = {
 }
 
 const TableHeader: React.FC<TableHeaderProps> = ({ table }) => {
-  const { workspaceId } = useParams()
+  const { routePrefix } = useWorkspace()
 
   return (
     <>
@@ -28,7 +29,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({ table }) => {
         <Box>
           <Button
             component={Link}
-            to={`/workspaces/${workspaceId}/tables`}
+            to={`${routePrefix}/tables`}
             color="secondary"
             startIcon={<KeyboardBackspace />}
           >

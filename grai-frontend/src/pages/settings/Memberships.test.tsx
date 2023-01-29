@@ -20,7 +20,8 @@ test("error", async () => {
     request: {
       query: GET_MEMBERSHIPS,
       variables: {
-        workspaceId: "",
+        organisationName: "",
+        workspaceName: "",
       },
     },
     result: {
@@ -29,10 +30,6 @@ test("error", async () => {
   }
 
   renderWithMocks(<Memberships />, [mock])
-
-  await waitFor(() => {
-    expect(screen.getByText("Memberships")).toBeTruthy()
-  })
 
   await waitFor(() => {
     expect(screen.getAllByText("Error!")).toBeTruthy()
@@ -44,7 +41,8 @@ test("empty", async () => {
     request: {
       query: GET_MEMBERSHIPS,
       variables: {
-        workspaceId: "",
+        organisationName: "",
+        workspaceName: "",
       },
     },
     result: {

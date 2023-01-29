@@ -71,5 +71,6 @@ export interface GetTablesAndEdgesTableLineage {
 }
 
 export interface GetTablesAndEdgesTableLineageVariables {
-  workspaceId: string;
+  organisationName: string;
+  workspaceName: string;
 }

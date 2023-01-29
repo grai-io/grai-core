@@ -6,19 +6,18 @@ import strawberry_django
 from django.db.models import Prefetch
 from strawberry.scalars import JSON
 from strawberry_django.filters import FilterLookup
+from strawberry_django.pagination import OffsetPaginationInput
 from strawberry_django_plus import gql
 from strawberry_django_plus.gql import auto
-from strawberry_django.pagination import OffsetPaginationInput
 
 from connections.models import Connection as ConnectionModel
 from connections.models import Connector as ConnectorModel
 from connections.models import Run as RunModel
-from lineage.models import Edge
 from lineage.models import Edge as EdgeModel
-from lineage.models import Node
 from lineage.models import Node as NodeModel
 from users.models import User as UserModel
 from workspaces.models import Membership as MembershipModel
+from workspaces.models import Organisation as OrganisationModel
 from workspaces.models import Workspace as WorkspaceModel
 from workspaces.models import WorkspaceAPIKey as WorkspaceAPIKeyModel
 
@@ -201,8 +200,8 @@ class Connection:
     runs: List["Run"]
     # run: Run = strawberry.django.field
     @gql.django.field
-    def run(self, pk: strawberry.ID) -> "Run":
-        return RunModel.objects.get(id=pk)
+    def run(self, id: strawberry.ID) -> "Run":
+        return RunModel.objects.get(id=id)
 
     @gql.django.field
     def last_run(self) -> Optional["Run"]:
@@ -353,6 +352,12 @@ class Table(Node):
         return list(set(tables))
 
 
+@gql.django.type(OrganisationModel)
+class Organisation:
+    id: auto
+    name: auto
+
+
 @gql.django.filters.filter(WorkspaceModel)
 class WorkspaceFilter:
     id: auto
@@ -370,37 +375,56 @@ class WorkspaceOrder:
 class Workspace:
     id: auto
     name: auto
-
-    nodes: List["Node"]
-    # node: NodeType = strawberry.django.field
-    @gql.django.field
-    def node(self, pk: strawberry.ID) -> Node:
-        return NodeModel.objects.get(id=pk)
-
-    edges: List["Edge"] = gql.django.field()
-    # edge: EdgeType = strawberry.django.field(field_name='edges')
-    @gql.django.field
-    def edge(self, pk: strawberry.ID) -> Edge:
-        return EdgeModel.objects.get(id=pk)
-
-    connections: List["Connection"] = gql.django.field()
-    # connection: ConnectionType = strawberry.django.field
-    @gql.django.field
-    def connection(self, pk: strawberry.ID) -> Connection:
-        return ConnectionModel.objects.get(id=pk)
-
-    runs: List["Run"]
-    # run: Run = strawberry.django.field
-    @gql.django.field
-    def run(self, pk: strawberry.ID) -> "Run":
-        return RunModel.objects.get(id=pk)
-
-    memberships: List["Membership"]
-    api_keys: List["WorkspaceAPIKey"] = gql.django.field()
-
     created_at: auto
     updated_at: auto
 
+    organisation: Organisation
+
+    # Nodes
+    @gql.django.field
+    def nodes(self) -> List["Node"]:
+        return NodeModel.objects.filter(workspace=self)
+
+    @gql.django.field
+    def node(self, id: strawberry.ID) -> Node:
+        return NodeModel.objects.get(id=id)
+
+    # Edges
+    @gql.django.field
+    def edges(self) -> List["Edge"]:
+        return EdgeModel.objects.filter(workspace=self)
+
+    @gql.django.field
+    def edge(self, id: strawberry.ID) -> Edge:
+        return EdgeModel.objects.get(id=id)
+
+    # Connections
+    @gql.django.field
+    def connections(self) -> List["Connection"]:
+        return ConnectionModel.objects.filter(workspace=self)
+
+    @gql.django.field
+    def connection(self, id: strawberry.ID) -> Connection:
+        return ConnectionModel.objects.get(id=id)
+
+    # Runs
+    @gql.django.field
+    def runs(self) -> List["Run"]:
+        return RunModel.objects.filter(workspace=self)
+
+    @gql.django.field
+    def run(self, id: strawberry.ID) -> "Run":
+        return RunModel.objects.get(id=id)
+
+    # Memberships
+    @gql.django.field
+    def memberships(self) -> List["Membership"]:
+        return MembershipModel.objects.filter(workspace=self)
+
+    # Api Keys
+    api_keys: List["WorkspaceAPIKey"] = gql.django.field()
+
+    # Tables
     @gql.django.field
     def tables(self, pagination: Optional[OffsetPaginationInput] = None) -> List[Table]:
         query_set = NodeModel.objects.filter(workspace_id=self.id, metadata__grai__node_type="Table")
@@ -417,9 +441,10 @@ class Workspace:
         return NodeModel.objects.filter(workspace_id=self.id, metadata__grai__node_type="Table").count()
 
     @gql.django.field
-    def table(self, pk: strawberry.ID) -> Table:
-        return NodeModel.objects.filter(id=pk, workspace_id=self.id, metadata__grai__node_type="Table")
+    def table(self, id: strawberry.ID) -> Table:
+        return NodeModel.objects.filter(id=id, workspace_id=self.id, metadata__grai__node_type="Table")
 
+    # Other edges
     @gql.django.field
     def other_edges(self) -> List[Edge]:
         return EdgeModel.objects.filter(workspace_id=self.id).exclude(

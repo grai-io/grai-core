@@ -35,5 +35,6 @@ export interface GetMemberships {
 }
 
 export interface GetMembershipsVariables {
-  workspaceId: string;
+  organisationName: string;
+  workspaceName: string;
 }

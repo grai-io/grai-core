@@ -3,17 +3,20 @@ import { Alert, Box } from "@mui/material"
 import React from "react"
 import theme from "theme"
 import Loading from "components/layout/Loading"
-import { useParams } from "react-router-dom"
 import Graph from "components/graph/Graph"
 import GraphError from "components/utils/GraphError"
 import {
   GetTablesAndEdgesTableLineage,
   GetTablesAndEdgesTableLineageVariables,
 } from "./__generated__/GetTablesAndEdgesTableLineage"
+import useWorkspace from "helpers/useWorkspace"
 
 const GET_TABLES_AND_EDGES = gql`
-  query GetTablesAndEdgesTableLineage($workspaceId: ID!) {
-    workspace(pk: $workspaceId) {
+  query GetTablesAndEdgesTableLineage(
+    $organisationName: String!
+    $workspaceName: String!
+  ) {
+    workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       tables {
         id
@@ -62,13 +65,14 @@ type TableLineageProps = {
 }
 
 const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
-  const { workspaceId } = useParams()
+  const { organisationName, workspaceName } = useWorkspace()
   const { loading, error, data } = useQuery<
     GetTablesAndEdgesTableLineage,
     GetTablesAndEdgesTableLineageVariables
   >(GET_TABLES_AND_EDGES, {
     variables: {
-      workspaceId: workspaceId ?? "",
+      organisationName,
+      workspaceName,
     },
   })
 

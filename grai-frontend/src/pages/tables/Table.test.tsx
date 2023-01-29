@@ -17,7 +17,8 @@ test("error", async () => {
     request: {
       query: GET_TABLE,
       variables: {
-        workspaceId: "",
+        organisationName: "",
+        workspaceName: "",
         tableId: "",
       },
     },
@@ -38,7 +39,8 @@ test("not found", async () => {
     request: {
       query: GET_TABLE,
       variables: {
-        workspaceId: "",
+        organisationName: "",
+        workspaceName: "",
         tableId: "",
       },
     },

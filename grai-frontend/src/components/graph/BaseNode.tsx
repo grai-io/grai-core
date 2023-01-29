@@ -1,7 +1,7 @@
 import { ArrowDropDown, ArrowDropUp } from "@mui/icons-material"
 import { Box, Divider, Menu, MenuItem, Stack, Typography } from "@mui/material"
+import useWorkspace from "helpers/useWorkspace"
 import React from "react"
-import { useNavigate, useParams } from "react-router-dom"
 import { Handle, Position } from "reactflow"
 import theme from "theme"
 import DataSourceIcon from "./DataSourceIcon"
@@ -28,8 +28,7 @@ interface BaseNodeProps {
 }
 
 const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
-  const { workspaceId } = useParams()
-  const navigate = useNavigate()
+  const { workspaceNavigate } = useWorkspace()
   const [contextMenu, setContextMenu] = React.useState<{
     mouseX: number
     mouseY: number
@@ -207,11 +206,7 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
         >
           Show downstream dependents
         </MenuItem>
-        <MenuItem
-          onClick={() =>
-            navigate(`/workspaces/${workspaceId}/tables/${data.id}`)
-          }
-        >
+        <MenuItem onClick={() => workspaceNavigate(`tables/${data.id}`)}>
           Show profile for this table
         </MenuItem>
       </Menu>

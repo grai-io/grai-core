@@ -3,6 +3,12 @@ import { ApolloClient, from, InMemoryCache } from "@apollo/client"
 import { onError } from "@apollo/client/link/error"
 import { createUploadLink } from "apollo-upload-client"
 
+declare global {
+  interface Window {
+    _env_: any
+  }
+}
+
 const make_client = (logoutUser: () => void) => {
   const baseURL =
     window._env_?.REACT_APP_SERVER_URL ??

@@ -7,12 +7,17 @@ import TableContent from "components/tables/TableContent"
 import GraphError from "components/utils/GraphError"
 import PageLayout from "components/layout/PageLayout"
 import { GetTable, GetTableVariables } from "./__generated__/GetTable"
+import useWorkspace from "helpers/useWorkspace"
 
 export const GET_TABLE = gql`
-  query GetTable($workspaceId: ID!, $tableId: ID!) {
-    workspace(pk: $workspaceId) {
+  query GetTable(
+    $organisationName: String!
+    $workspaceName: String!
+    $tableId: ID!
+  ) {
+    workspace(organisationName: $organisationName, name: $workspaceName) {
       id
-      table(pk: $tableId) {
+      table(id: $tableId) {
         id
         namespace
         name
@@ -41,13 +46,15 @@ export const GET_TABLE = gql`
 `
 
 const Table: React.FC = () => {
-  const { workspaceId, tableId } = useParams()
+  const { organisationName, workspaceName } = useWorkspace()
+  const { tableId } = useParams()
 
   const { loading, error, data } = useQuery<GetTable, GetTableVariables>(
     GET_TABLE,
     {
       variables: {
-        workspaceId: workspaceId ?? "",
+        organisationName,
+        workspaceName,
         tableId: tableId ?? "",
       },
     }

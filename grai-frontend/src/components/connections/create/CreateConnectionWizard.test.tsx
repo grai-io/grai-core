@@ -11,7 +11,7 @@ import CreateConnectionWizard, {
 jest.setTimeout(30000)
 
 test("renders", async () => {
-  renderWithRouter(<CreateConnectionWizard />)
+  renderWithRouter(<CreateConnectionWizard workspaceId="1" />)
 
   expect(screen.getByText("Select a connector")).toBeTruthy()
 })
@@ -19,8 +19,8 @@ test("renders", async () => {
 test("close", async () => {
   const user = userEvent.setup()
 
-  renderWithRouter(<CreateConnectionWizard />, {
-    routes: ["/workspaces/:workspaceId/connections"],
+  renderWithRouter(<CreateConnectionWizard workspaceId="1" />, {
+    routes: ["/:organisationName/:workspaceName/connections"],
   })
 
   expect(screen.getByText("Select a connector")).toBeTruthy()
@@ -147,7 +147,7 @@ test("submit", async () => {
     request: {
       query: CREATE_CONNECTION,
       variables: {
-        workspaceId: "",
+        workspaceId: "1",
         connectorId: "1",
         namespace: "default",
         name: "test connectiontest",
@@ -189,10 +189,10 @@ test("submit", async () => {
   }
 
   const { container } = renderWithMocks(
-    <CreateConnectionWizard />,
+    <CreateConnectionWizard workspaceId="1" />,
     [connectorsMock, createMock],
     {
-      routes: ["/workspaces/:workspaceId/connections/:connectionId"],
+      routes: ["/:organisationName/:workspaceName/connections/:connectionId"],
     }
   )
 
@@ -212,7 +212,7 @@ test("error", async () => {
     request: {
       query: CREATE_CONNECTION,
       variables: {
-        workspaceId: "",
+        workspaceId: "1",
         connectorId: "1",
         namespace: "default",
         name: "test connectiontest",
@@ -237,10 +237,10 @@ test("error", async () => {
   }
 
   const { container } = renderWithMocks(
-    <CreateConnectionWizard />,
+    <CreateConnectionWizard workspaceId="1" />,
     [connectorsMock, createMock],
     {
-      routes: ["/workspaces/:workspaceId/connections/:connectionId"],
+      routes: ["/:organisationName/:workspaceName/connections/:connectionId"],
     }
   )
 

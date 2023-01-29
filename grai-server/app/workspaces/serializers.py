@@ -12,7 +12,7 @@ class WorkspaceSerializer(serializers.ModelSerializer):
             "id",
             "name",
         )
-        read_only_fields = ("created_at", "updated_at")
+        read_only_fields = ("ref", "created_at", "updated_at")
 
 
 class MembershipSerializer(serializers.ModelSerializer):

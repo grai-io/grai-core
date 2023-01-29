@@ -1,13 +1,14 @@
 import { Close } from "@mui/icons-material"
 import { AppBar, IconButton, Toolbar, Typography } from "@mui/material"
+import useWorkspace from "helpers/useWorkspace"
 import React from "react"
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 const SettingsAppBar: React.FC = () => {
-  const { workspaceId } = useParams()
+  const { routePrefix } = useWorkspace()
   const navigate = useNavigate()
 
-  const handleClose = () => navigate(`/workspaces/${workspaceId}`)
+  const handleClose = () => navigate(routePrefix)
 
   return (
     <AppBar

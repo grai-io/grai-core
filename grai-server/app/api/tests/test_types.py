@@ -1,24 +1,31 @@
-import pytest
 import uuid
+
+import pytest
 
 from api.schema import schema
 from connections.models import Connection, Connector, Run
-from lineage.models import Node, Edge
+from lineage.models import Edge, Node
 from workspaces.models import Workspace
 
-from .common import test_context
+from .common import (
+    generate_connection,
+    test_context,
+    test_organisation,
+    test_user,
+    test_workspace,
+)
 
 
 @pytest.mark.django_db
 async def test_workspace_run(test_context):
-    context, workspace, user = test_context
+    context, organisation, workspace, user = test_context
 
     connector = await Connector.objects.acreate(name="Connector 4")
     connection = await Connection.objects.acreate(
         workspace=workspace,
         connector=connector,
         namespace="default",
-        name="test connection2",
+        name=uuid.uuid4(),
         metadata={},
         secrets={},
     )
@@ -26,9 +33,9 @@ async def test_workspace_run(test_context):
 
     query = """
         query Workspace($workspaceId: ID!, $runId: ID!) {
-            workspace(pk: $workspaceId) {
+            workspace(id: $workspaceId) {
                 id
-                run(pk: $runId) {
+                run(id: $runId) {
                   id
                   status
                   user {
@@ -56,14 +63,14 @@ async def test_workspace_run(test_context):
 
 @pytest.mark.django_db
 async def test_workspace_connection_run(test_context):
-    context, workspace, user = test_context
+    context, organisation, workspace, user = test_context
 
     connector = await Connector.objects.acreate(name="Connector 5")
     connection = await Connection.objects.acreate(
         workspace=workspace,
         connector=connector,
         namespace="default",
-        name="test connection2",
+        name=uuid.uuid4(),
         metadata={},
         secrets={},
     )
@@ -71,12 +78,12 @@ async def test_workspace_connection_run(test_context):
 
     query = """
         query Workspace($workspaceId: ID!, $connectionId: ID!, $runId: ID!) {
-            workspace(pk: $workspaceId) {
+            workspace(id: $workspaceId) {
                 id
-                connection(pk: $connectionId) {
+                connection(id: $connectionId) {
                   id
                   name
-                  run(pk: $runId) {
+                  run(id: $runId) {
                     id
                     status
                     user {
@@ -122,11 +129,11 @@ async def test_workspace_connection_run(test_context):
 
 @pytest.mark.django_db
 async def test_tables(test_context):
-    context, workspace, user = test_context
+    context, organisation, workspace, user = test_context
 
     query = """
         query Workspace($workspaceId: ID!) {
-          workspace(pk: $workspaceId) {
+          workspace(id: $workspaceId) {
             id
             tables {
                 id
@@ -143,17 +150,75 @@ async def test_tables(test_context):
         context_value=context,
     )
 
+
+@pytest.mark.django_db
+async def test_workspace_nodes(test_context):
+    context, organisation, workspace, user = test_context
+
+    node = await Node.objects.acreate(workspace=workspace)
+
+    query = """
+        query Workspace($workspaceId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                nodes {
+                    id
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+        },
+        context_value=context,
+    )
+
     assert result.errors is None
     assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["nodes"][0]["id"] == str(node.id)
+
+
+@pytest.mark.django_db
+async def test_workspace_node(test_context):
+    context, organisation, workspace, user = test_context
+
+    node = await Node.objects.acreate(workspace=workspace)
+
+    query = """
+        query Workspace($workspaceId: ID!, $nodeId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                node(id: $nodeId) {
+                    id
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "nodeId": str(node.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["node"]["id"] == str(node.id)
 
 
 @pytest.mark.django_db
 async def test_tables_pagination(test_context):
-    context, workspace, user = test_context
+    context, organisation, workspace, user = test_context
 
     query = """
         query Workspace($workspaceId: ID!) {
-          workspace(pk: $workspaceId) {
+          workspace(id: $workspaceId) {
             id
             tables(pagination: {offset: 0, limit: 10}) {
                 id
@@ -176,15 +241,17 @@ async def test_tables_pagination(test_context):
 
 @pytest.mark.django_db
 async def test_table(test_context):
-    context, workspace, user = test_context
+    context, organisation, workspace, user = test_context
 
-    table = await Node.objects.acreate(workspace=workspace, metadata={"grai": {"node_type": "Table"}})
+    table = await Node.objects.acreate(
+        workspace=workspace, metadata={"grai": {"node_type": "Table"}}, name=uuid.uuid4()
+    )
 
     query = """
         query Workspace($workspaceId: ID!, $tableId: ID!) {
-          workspace(pk: $workspaceId) {
+          workspace(id: $workspaceId) {
             id
-            table(pk: $tableId) {
+            table(id: $tableId) {
                 id
                 columns {
                   id
@@ -210,11 +277,11 @@ async def test_table(test_context):
 
 @pytest.mark.django_db
 async def test_other_edges(test_context):
-    context, workspace, user = test_context
+    context, organisation, workspace, user = test_context
 
     query = """
         query Workspace($workspaceId: ID!) {
-          workspace(pk: $workspaceId) {
+          workspace(id: $workspaceId) {
             id
             other_edges {
                 id
@@ -236,16 +303,21 @@ async def test_other_edges(test_context):
 
 
 @pytest.mark.django_db
-async def test_node(test_context):
-    context, workspace, user = test_context
+async def test_workspace_edges(test_context):
+    context, organisation, workspace, user = test_context
 
-    node = await Node.objects.acreate(workspace=workspace, metadata={"grai": {"node_type": "Table"}})
+    source = await Node.objects.acreate(workspace=workspace, name="source")
+    destination = await Node.objects.acreate(workspace=workspace, name="destination")
+
+    edge = await Edge.objects.acreate(
+        workspace=workspace, source=source, destination=destination, metadata={"grai": {"edge_type": "Edge"}}
+    )
 
     query = """
-        query Workspace($workspaceId: ID!, $nodeId: ID!) {
-          workspace(pk: $workspaceId) {
+        query Workspace($workspaceId: ID!) {
+            workspace(id: $workspaceId) {
             id
-            node(pk: $nodeId) {
+            edges {
                 id
             }
           }
@@ -256,33 +328,31 @@ async def test_node(test_context):
         query,
         variable_values={
             "workspaceId": str(workspace.id),
-            "nodeId": str(node.id),
         },
         context_value=context,
     )
 
     assert result.errors is None
     assert result.data["workspace"]["id"] == str(workspace.id)
-    assert result.data["workspace"]["node"]["id"] == str(node.id)
+    assert result.data["workspace"]["edges"][0]["id"] == str(edge.id)
 
 
 @pytest.mark.django_db
-async def test_edge(test_context):
-    context, workspace, user = test_context
+async def test_workspace_edge(test_context):
+    context, organisation, workspace, user = test_context
 
-    source = await Node.objects.acreate(workspace=workspace, name="source", metadata={"grai": {"node_type": "Table"}})
-    destination = await Node.objects.acreate(
-        workspace=workspace, name="desination", metadata={"grai": {"node_type": "Table"}}
-    )
+    source = await Node.objects.acreate(workspace=workspace, name="source")
+    destination = await Node.objects.acreate(workspace=workspace, name="destination")
+
     edge = await Edge.objects.acreate(
         workspace=workspace, source=source, destination=destination, metadata={"grai": {"edge_type": "Edge"}}
     )
 
     query = """
         query Workspace($workspaceId: ID!, $edgeId: ID!) {
-          workspace(pk: $workspaceId) {
+            workspace(id: $workspaceId) {
             id
-            edge(pk: $edgeId) {
+            edge(id: $edgeId) {
                 id
                 source {
                   id
@@ -353,15 +423,15 @@ async def generate_two_tables(workspace: Workspace):
 
 @pytest.mark.django_db
 async def test_table_source_tables(test_context):
-    context, workspace, user = test_context
+    context, organisation, workspace, user = test_context
 
     table, related_table = await generate_two_tables(workspace)
 
     query = """
         query Workspace($workspaceId: ID!, $tableId: ID!) {
-          workspace(pk: $workspaceId) {
+          workspace(id: $workspaceId) {
             id
-            table(pk: $tableId) {
+            table(id: $tableId) {
                 id
                 source_tables {
                   id
@@ -389,15 +459,15 @@ async def test_table_source_tables(test_context):
 
 @pytest.mark.django_db
 async def test_table_destination_tables(test_context):
-    context, workspace, user = test_context
+    context, organisation, workspace, user = test_context
 
     table, related_table = await generate_two_tables(workspace)
 
     query = """
         query Workspace($workspaceId: ID!, $tableId: ID!) {
-          workspace(pk: $workspaceId) {
+          workspace(id: $workspaceId) {
             id
-            table(pk: $tableId) {
+            table(id: $tableId) {
                 id
                 destination_tables {
                   id
@@ -425,13 +495,13 @@ async def test_table_destination_tables(test_context):
 
 @pytest.mark.django_db
 async def test_tables_count(test_context):
-    context, workspace, user = test_context
+    context, organisation, workspace, user = test_context
 
-    await Node.objects.acreate(workspace=workspace, metadata={"grai": {"node_type": "Table"}})
+    await Node.objects.acreate(workspace=workspace, metadata={"grai": {"node_type": "Table"}}, name=uuid.uuid4())
 
     query = """
         query Workspace($workspaceId: ID!) {
-          workspace(pk: $workspaceId) {
+          workspace(id: $workspaceId) {
             id
             tables_count
           }
@@ -453,13 +523,17 @@ async def test_tables_count(test_context):
 
 @pytest.mark.django_db
 async def test_other_edges_count(test_context):
-    context, workspace, user = test_context
+    context, organisation, workspace, user = test_context
 
-    await Node.objects.acreate(workspace=workspace, metadata={"grai": {"node_type": "Table"}})
+    await Node.objects.acreate(
+        workspace=workspace,
+        metadata={"grai": {"node_type": "Table"}},
+        name=uuid.uuid4(),
+    )
 
     query = """
         query Workspace($workspaceId: ID!) {
-          workspace(pk: $workspaceId) {
+          workspace(id: $workspaceId) {
             id
             other_edges_count
           }
@@ -477,3 +551,98 @@ async def test_other_edges_count(test_context):
     assert result.errors is None
     assert result.data["workspace"]["id"] == str(workspace.id)
     assert result.data["workspace"]["other_edges_count"] == 0
+
+
+@pytest.mark.django_db
+async def test_workspace_connections(test_context):
+    context, organisation, workspace, user = test_context
+
+    connector = await Connector.objects.acreate(name=f"Connector - {uuid.uuid4()}")
+    connection = await Connection.objects.acreate(workspace=workspace, connector=connector)
+
+    query = """
+        query Workspace($workspaceId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                connections {
+                    id
+                    connector {
+                        id
+                    }
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["connections"][0]["id"] == str(connection.id)
+    assert result.data["workspace"]["connections"][0]["connector"]["id"] == str(connector.id)
+
+
+@pytest.mark.django_db
+async def test_workspace_runs(test_context):
+    context, organisation, workspace, user = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                runs {
+                    id
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+
+
+@pytest.mark.django_db
+async def test_workspace_memberships(test_context):
+    context, organisation, workspace, user = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                memberships {
+                    id
+                    role
+                    user {
+                        id
+                    }
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["memberships"][0]["role"] == "admin"
+    assert result.data["workspace"]["memberships"][0]["user"]["id"] == str(user.id)

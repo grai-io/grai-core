@@ -1,16 +1,17 @@
 import React, { useState } from "react"
 import { gql, useQuery } from "@apollo/client"
 import TablesHeader from "components/tables/TablesHeader"
-import { useParams } from "react-router-dom"
 import { Box } from "@mui/material"
 import GraphError from "components/utils/GraphError"
 import PageLayout from "components/layout/PageLayout"
+import useWorkspace from "helpers/useWorkspace"
+
 import { GetTables, GetTablesVariables } from "./__generated__/GetTables"
 import TablesTable from "components/tables/TablesTable"
 
 export const GET_TABLES = gql`
-  query GetTables($workspaceId: ID!) {
-    workspace(pk: $workspaceId) {
+  query GetTables($organisationName: String!, $workspaceName: String!) {
+    workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       tables {
         id
@@ -35,7 +36,7 @@ export interface Table {
 }
 
 const Tables: React.FC = () => {
-  const { workspaceId } = useParams()
+  const { organisationName, workspaceName } = useWorkspace()
   const [search, setSearch] = useState<string>()
 
   const { loading, error, data, refetch } = useQuery<
@@ -43,7 +44,8 @@ const Tables: React.FC = () => {
     GetTablesVariables
   >(GET_TABLES, {
     variables: {
-      workspaceId: workspaceId ?? "",
+      organisationName,
+      workspaceName,
     },
   })
 

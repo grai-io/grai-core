@@ -52,6 +52,7 @@ export interface GetRun {
 }
 
 export interface GetRunVariables {
-  workspaceId: string;
+  organisationName: string;
+  workspaceName: string;
   runId: string;
 }

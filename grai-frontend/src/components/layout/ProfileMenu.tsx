@@ -16,10 +16,11 @@ import PopupState, {
   InjectedProps,
 } from "material-ui-popup-state"
 import React, { useContext } from "react"
-import { Link, useParams } from "react-router-dom"
+import { Link } from "react-router-dom"
 import AuthContext from "components/auth/AuthContext"
 import GraphError from "components/utils/GraphError"
 import { GetProfileMenu } from "./__generated__/GetProfileMenu"
+import useWorkspace from "helpers/useWorkspace"
 
 export const GET_PROFILE = gql`
   query GetProfileMenu {
@@ -33,7 +34,7 @@ export const GET_PROFILE = gql`
 `
 
 const ProfileMenu: React.FC = () => {
-  const { workspaceId } = useParams()
+  const { routePrefix } = useWorkspace()
   const { logoutUser } = useContext(AuthContext)
   const client = useApolloClient()
 
@@ -73,7 +74,7 @@ const ProfileMenu: React.FC = () => {
             <MenuItem
               onClick={popupState.close}
               component={Link}
-              to={`/workspaces/${workspaceId}/settings`}
+              to={`${routePrefix}/settings`}
             >
               <ListItemIcon>
                 <Settings fontSize="small" />

@@ -70,5 +70,6 @@ export interface GetTablesAndEdges {
 }
 
 export interface GetTablesAndEdgesVariables {
-  workspaceId: string;
+  organisationName: string;
+  workspaceName: string;
 }

@@ -1,14 +1,20 @@
 import pytest
 from decouple import config
+from django.test import TransactionTestCase
 
 from connections.models import Connection, Connector, Run
 from connections.tasks import run_connection_schedule, run_update_server
-from workspaces.models import Workspace
+from workspaces.models import Organisation, Workspace
 
 
 @pytest.fixture
-def test_workspace():
-    return Workspace.objects.create(name="W10")
+def test_organisation():
+    return Organisation.objects.create(name="Org1")
+
+
+@pytest.fixture
+def test_workspace(test_organisation):
+    return Workspace.objects.create(name="W10", organisation=test_organisation)
 
 
 @pytest.fixture

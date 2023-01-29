@@ -16,7 +16,7 @@ import {
 } from "helpers/runDuration"
 import { DateTime } from "luxon"
 import RunStatus from "components/runs/RunStatus"
-import { useNavigate, useParams } from "react-router-dom"
+import useWorkspace from "helpers/useWorkspace"
 
 interface User {
   id: string
@@ -38,8 +38,7 @@ type ConnectionRunsTableProps = {
 }
 
 const ConnectionRunsTable: React.FC<ConnectionRunsTableProps> = ({ runs }) => {
-  const navigate = useNavigate()
-  const { workspaceId } = useParams()
+  const { workspaceNavigate } = useWorkspace()
 
   return (
     <Table sx={{ mt: 1 }}>
@@ -61,9 +60,7 @@ const ConnectionRunsTable: React.FC<ConnectionRunsTableProps> = ({ runs }) => {
             key={run.id}
             hover
             sx={{ cursor: "pointer" }}
-            onClick={() =>
-              navigate(`/workspaces/${workspaceId}/runs/${run.id}`)
-            }
+            onClick={() => workspaceNavigate(`runs/${run.id}`)}
           >
             <TableCell sx={{ color: theme.palette.grey[500], pr: 0 }}>
               {index}
