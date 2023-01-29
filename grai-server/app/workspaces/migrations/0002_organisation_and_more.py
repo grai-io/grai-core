@@ -6,6 +6,14 @@ import django.db.models.deletion
 from django.db import migrations, models
 
 
+def forwards_func(apps, schema_editor):
+    # We get the model from the versioned app registry;
+    # if we directly import it, it'll be the wrong version
+    Organisation = apps.get_model("workspaces", "Organisation")
+    db_alias = schema_editor.connection.alias
+    Organisation.objects.using(db_alias).create(name="default")
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -38,7 +46,20 @@ class Migration(migrations.Migration):
             model_name="workspace",
             name="organisation",
             field=models.ForeignKey(
-                default="0cec206a-57e0-4534-aa78-ba726a7e8f54",
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="workspaces",
+                to="workspaces.organisation",
+                blank=True,
+                null=True,
+            ),
+            preserve_default=False,
+        ),
+        migrations.RunPython(forwards_func),
+        migrations.AlterField(
+            model_name="workspace",
+            name="organisation",
+            field=models.ForeignKey(
+                default="default",
                 on_delete=django.db.models.deletion.CASCADE,
                 related_name="workspaces",
                 to="workspaces.organisation",
