@@ -1,5 +1,5 @@
 import { gql, useQuery } from "@apollo/client"
-import React, { useEffect } from "react"
+import React from "react"
 import { useParams } from "react-router-dom"
 import NotFound from "pages/NotFound"
 import {
@@ -12,7 +12,7 @@ import ConnectionHeader from "components/connections/ConnectionHeader"
 import ConnectionContent from "components/connections/ConnectionContent"
 import ConnectionTabs from "components/connections/ConnectionTabs"
 import useWorkspace from "helpers/useWorkspace"
-import runPolling from "helpers/runPolling"
+import useRunPolling from "helpers/runPolling"
 
 export const GET_CONNECTION = gql`
   query GetConnection(
@@ -97,11 +97,7 @@ const Connection: React.FC = () => {
 
   const status = data?.workspace.connection?.last_run?.status
 
-  useEffect(runPolling(status, startPolling, stopPolling), [
-    status,
-    startPolling,
-    stopPolling,
-  ])
+  useRunPolling(status, startPolling, stopPolling)
 
   if (error) return <GraphError error={error} />
   if (loading) return <PageLayout loading />

@@ -1,28 +1,36 @@
+import React from "react"
+import { render } from "testing"
 import runPolling from "./runPolling"
 
 const startPolling = jest.fn()
 const stopPolling = jest.fn()
 
+const TestComponent: React.FC<{ status: string }> = ({ status }) => {
+  runPolling(status, startPolling, stopPolling)
+
+  return null
+}
+
 test("runDuration queued", () => {
-  expect(runPolling("queued", startPolling, stopPolling)()).toBeUndefined()
+  render(<TestComponent status="queued" />)
 
   expect(startPolling).toHaveBeenCalled()
 })
 
 test("runDuration running", () => {
-  expect(runPolling("running", startPolling, stopPolling)()).toBeUndefined()
+  render(<TestComponent status="running" />)
 
   expect(startPolling).toHaveBeenCalled()
 })
 
 test("runDuration success", () => {
-  expect(runPolling("success", startPolling, stopPolling)()).toBeUndefined()
+  render(<TestComponent status="success" />)
 
   expect(stopPolling).toHaveBeenCalled()
 })
 
 test("runDuration error", () => {
-  expect(runPolling("error", startPolling, stopPolling)()).toBeUndefined()
+  render(<TestComponent status="error" />)
 
   expect(stopPolling).toHaveBeenCalled()
 })

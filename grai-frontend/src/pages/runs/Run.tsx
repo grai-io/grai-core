@@ -3,10 +3,10 @@ import PageLayout from "components/layout/PageLayout"
 import RunDetail from "components/runs/RunDetail"
 import RunHeader from "components/runs/RunHeader"
 import GraphError from "components/utils/GraphError"
-import runPolling from "helpers/runPolling"
+import useRunPolling from "helpers/runPolling"
 import useWorkspace from "helpers/useWorkspace"
 import NotFound from "pages/NotFound"
-import React, { useEffect } from "react"
+import React from "react"
 import { useParams } from "react-router-dom"
 import { GetRun, GetRunVariables } from "./__generated__/GetRun"
 
@@ -66,11 +66,7 @@ const Run: React.FC = () => {
 
   const status = data?.workspace.run?.status
 
-  useEffect(runPolling(status, startPolling, stopPolling), [
-    status,
-    startPolling,
-    stopPolling,
-  ])
+  useRunPolling(status, startPolling, stopPolling)
 
   if (error) return <GraphError error={error} />
   if (loading) return <PageLayout loading />

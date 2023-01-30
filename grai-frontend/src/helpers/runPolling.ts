@@ -1,11 +1,12 @@
-const runPolling =
-  (
-    status: string | undefined,
-    startPolling: (interval: number) => void,
-    stopPolling: () => void,
-    interval: number = 1000
-  ) =>
-  () => {
+import { useEffect } from "react"
+
+const useRunPolling = (
+  status: string | undefined,
+  startPolling: (interval: number) => void,
+  stopPolling: () => void,
+  interval: number = 1000
+) =>
+  useEffect(() => {
     switch (status) {
       case "queued":
       case "running":
@@ -16,6 +17,6 @@ const runPolling =
       case "error":
         stopPolling()
     }
-  }
+  }, [status, startPolling, stopPolling, interval])
 
-export default runPolling
+export default useRunPolling
