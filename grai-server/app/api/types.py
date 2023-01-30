@@ -542,7 +542,8 @@ class RunOrder:
 @gql.django.type(RunModel, order=RunOrder, pagination=True)
 class Run:
     id: auto
-    connection: Connection
+    connector: Connector
+    connection: Optional[Connection]
     status: auto
     metadata: JSON
     created_at: auto

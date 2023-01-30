@@ -16,7 +16,15 @@ from strawberry.types import Info
 
 from api.common import IsAuthenticated, get_user
 from api.queries import IsAuthenticated
-from api.types import BasicResult, Connection, KeyResult, Membership, User, Workspace
+from api.types import (
+    BasicResult,
+    Connection,
+    KeyResult,
+    Membership,
+    Run,
+    User,
+    Workspace,
+)
 from connections.models import Connection as ConnectionModel
 from connections.models import Run as RunModel
 from connections.tasks import run_update_server
@@ -323,5 +331,5 @@ class Mutation:
         namespace: str,
         connectorId: strawberry.ID,
         file: Upload,
-    ) -> BasicResult:
+    ) -> Run:
         return await uploadConnectorFile(info, workspaceId, namespace, connectorId, file)

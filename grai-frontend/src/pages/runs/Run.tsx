@@ -19,6 +19,10 @@ export const GET_RUN = gql`
       id
       run(id: $runId) {
         id
+        connector {
+          id
+          name
+        }
         connection {
           id
           name

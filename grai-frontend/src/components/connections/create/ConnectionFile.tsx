@@ -32,7 +32,31 @@ export const UPLOAD_CONNECTOR_FILE = gql`
       namespace: $namespace
       file: $file
     ) {
-      success
+      id
+      connector {
+        id
+        name
+      }
+      connection {
+        id
+        name
+        connector {
+          id
+          name
+        }
+      }
+      status
+      metadata
+      created_at
+      updated_at
+      started_at
+      finished_at
+      user {
+        id
+        username
+        first_name
+        last_name
+      }
     }
   }
 `
@@ -78,7 +102,9 @@ const ConnectionFile: React.FC<ConnectionFileProps> = ({
         ...values,
       },
     })
-      .then(res => workspaceNavigate("connections"))
+      .then(res =>
+        workspaceNavigate(`runs/${res.data?.uploadConnectorFile.id}`)
+      )
       .then(() => enqueueSnackbar("File uploaded"))
 
   const accept: Accept =
