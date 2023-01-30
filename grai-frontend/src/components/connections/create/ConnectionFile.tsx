@@ -8,10 +8,10 @@ import WizardBottomBar from "components/wizards/WizardBottomBar"
 import { ElementOptions } from "components/wizards/WizardLayout"
 import WizardSubtitle from "components/wizards/WizardSubtitle"
 import { clearWorkspace } from "helpers/cache"
+import useWorkspace from "helpers/useWorkspace"
 import { useSnackbar } from "notistack"
 import React, { useState } from "react"
 import { Accept } from "react-dropzone"
-import { useNavigate } from "react-router-dom"
 import { ConnectorType } from "../ConnectionsForm"
 import CreateConnectionHelp from "./CreateConnectionHelp"
 import {
@@ -53,7 +53,7 @@ const ConnectionFile: React.FC<ConnectionFileProps> = ({
   workspaceId,
   opts,
 }) => {
-  const navigate = useNavigate()
+  const { workspaceNavigate } = useWorkspace()
   const { enqueueSnackbar } = useSnackbar()
 
   const [values, setValues] = useState<Values>({
@@ -78,7 +78,7 @@ const ConnectionFile: React.FC<ConnectionFileProps> = ({
         ...values,
       },
     })
-      .then(res => navigate(`/workspaces/${workspaceId}/connections`))
+      .then(res => workspaceNavigate("connections"))
       .then(() => enqueueSnackbar("File uploaded"))
 
   const accept: Accept =
