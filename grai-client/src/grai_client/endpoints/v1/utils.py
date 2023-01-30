@@ -14,7 +14,12 @@ def process_node_id(client: ClientV1, grai_type: NodeIdTypes, options: ClientOpt
 
     server_node = client.get(grai_type, options=options)
     if server_node is None:
-        message = f"Could not find node with namespace=`{grai_type.namespace} " f"and name=`{grai_type.name}` on server"
+        if grai_type.id is None:
+            message = (
+                f"Could not find node with namespace=`{grai_type.namespace} " f"and name=`{grai_type.name}` on server"
+            )
+        else:
+            message = f"Could not find node with id=`{grai_type.id}`"
         raise ValueError(message)
 
-    return server_node
+    return server_node.spec
