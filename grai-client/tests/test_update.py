@@ -19,22 +19,47 @@ extra_metadata = {
 TEST_NODES = [mock_v1_node(metadata=extra_metadata) for _ in range(2)]
 
 
-@pytest.mark.parametrize("client", clients)
-def test_update_no_updates(client):
-    result = update(client, [])
+@pytest.mark.parametrize("versioned_client", clients)
+def test_update_no_updates(versioned_client):
+    result = update(versioned_client, [])
     assert result is None
 
 
-@pytest.mark.parametrize("client", clients)
-def test_update_nodes(client):
-    result = update(client, TEST_NODES)
+@pytest.mark.parametrize("versioned_client", clients)
+def test_update_nodes(versioned_client):
+    result = update(versioned_client, TEST_NODES)
     assert result is None
 
 
-def test_update_deactivate():
-    test_node = get_test_node()
-    result = client.get("node", "*", test_node.spec.namespace)
-    assert isinstance(result, list)
-    assert len(result) == 1  # node namespace is a uuid and therefore unique
-    assert result[0].spec.name == test_node.spec.name
-    assert result[0].spec.namespace == test_node.spec.namespace
+def test_update_node_creation(client):
+    nodes = [mock_v1_node() for _ in range(1)]
+    namespace = nodes[0].spec.namespace
+    update(client, nodes)
+    new_nodes = client.get(nodes[0].type, "*", namespace)
+    assert len(new_nodes) == len(nodes)
+
+
+def test_update_node_update(client):
+    nodes = [mock_v1_node() for _ in range(1)]
+    namespace = nodes[0].spec.namespace
+    update(client, nodes)
+    new_nodes = client.get(nodes[0].type, "*", namespace)
+    assert len(new_nodes) == len(nodes)
+
+    update(client, nodes)
+    new_nodes = client.get(nodes[0].type, "*", namespace)
+    assert len(new_nodes) == len(nodes)
+
+
+def test_update_node_deactivate(client):
+    nodes = [mock_v1_node() for _ in range(1)]
+    namespace = nodes[0].spec.namespace
+    update(client, nodes)
+    new_nodes = client.get(nodes[0].type, "*", namespace)
+    assert len(new_nodes) == len(nodes)
+    for node in nodes:
+        node.spec.is_active = False
+    update(client, nodes)
+    new_nodes = client.get(nodes[0].type, "*", namespace)
+    assert len(new_nodes) == len(nodes)
+    assert all(node.spec.is_active for node in new_nodes)

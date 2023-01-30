@@ -120,3 +120,19 @@ def test_patch_edge():
 
     client.delete(test_edge)
     client.delete(test_nodes)
+
+
+def test_node_hash(client):
+    test_node = mock_v1_node()
+    test_node.spec.id = None
+    new_node = client.post(test_node)
+    assert hash(new_node) == hash(test_node)
+
+
+def test_edge_hash(client):
+    test_edge, test_nodes = mock_v1_edge_and_nodes()
+    for obj in [test_edge, *test_nodes]:
+        obj.spec.id = None
+    client.post(test_nodes)
+    new_edge = client.post(test_edge)
+    assert hash(new_edge) == hash(test_edge)
