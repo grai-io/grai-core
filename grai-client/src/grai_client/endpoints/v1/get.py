@@ -42,10 +42,11 @@ def get_node_from_id(
             client, base_url, options=options, name=grai_type.name, namespace=grai_type.namespace
         )
 
-        num_resp = len(resp)
-        if num_resp == 1:
+        if resp is None:
+            return None
+        elif len(resp) == 1:
             return resp[0]
-        elif num_resp > 1:
+        else:
             message = (
                 f"Server query for node returned {len(resp)} results but only one was expected. This "
                 f"is a defensive error that should never arise, if you see it please contact the maintainers."
