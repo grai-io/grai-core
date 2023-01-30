@@ -1,10 +1,14 @@
+import os
 import pytest
 from decouple import config
-from django.test import TransactionTestCase
 
-from connections.models import Connection, Connector, Run
+from lineage.models import Node
+from connections.models import Connection, Connector, Run, RunFile
 from connections.tasks import run_connection_schedule, run_update_server
 from workspaces.models import Organisation, Workspace
+from django.core.files.uploadedfile import UploadedFile
+
+__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 
 @pytest.fixture
@@ -20,6 +24,16 @@ def test_workspace(test_organisation):
 @pytest.fixture
 def test_postgres_connector():
     return Connector.objects.create(name=Connector.POSTGRESQL)
+
+
+@pytest.fixture
+def test_dbt_connector():
+    return Connector.objects.create(name=Connector.DBT)
+
+
+@pytest.fixture
+def test_yaml_file_connector():
+    return Connector.objects.create(name=Connector.YAMLFILE)
 
 
 @pytest.fixture
@@ -74,6 +88,26 @@ class TestUpdateServer:
             run_update_server(str(run.id))
 
         assert str(e_info.value) == "No connector found for: Connector"
+
+    def test_run_update_server_dbt(self, test_workspace, test_dbt_connector):
+        with open(os.path.join(__location__, "manifest.json")) as reader:
+            file = UploadedFile(reader, name="manifest.json")
+
+            run = Run.objects.create(connector=test_dbt_connector, workspace=test_workspace)
+            RunFile.objects.create(run=run, file=file)
+
+            run_update_server(str(run.id))
+
+    def test_run_update_server_yaml_file(self, test_workspace, test_yaml_file_connector):
+        Node.objects.create(workspace=test_workspace, namespace="default", name="table1")
+
+        with open(os.path.join(__location__, "test.yaml")) as reader:
+            file = UploadedFile(reader, name="test.yaml")
+
+            run = Run.objects.create(connector=test_yaml_file_connector, workspace=test_workspace)
+            RunFile.objects.create(run=run, file=file)
+
+            run_update_server(str(run.id))
 
 
 @pytest.mark.django_db

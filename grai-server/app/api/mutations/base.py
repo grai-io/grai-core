@@ -14,8 +14,7 @@ from strawberry.file_uploads import Upload
 from strawberry.scalars import JSON
 from strawberry.types import Info
 
-from api.common import IsAuthenticated, get_user
-from api.queries import IsAuthenticated
+from api.common import IsAuthenticated, get_user, get_workspace
 from api.types import (
     BasicResult,
     Connection,
@@ -25,14 +24,14 @@ from api.types import (
     User,
     Workspace,
 )
-from connections.models import Connection as ConnectionModel
-from connections.models import Run as RunModel
+from connections.models import (
+    Connection as ConnectionModel,
+    Connector as ConnectorModel,
+    Run as RunModel,
+    RunFile as RunFileModel,
+)
 from connections.tasks import run_update_server
-from workspaces.models import Membership as MembershipModel
-from workspaces.models import WorkspaceAPIKey
-
-from .common import get_workspace
-from .upload_connector_file import uploadConnectorFile
+from workspaces.models import Membership as MembershipModel, WorkspaceAPIKey
 
 
 @strawberry.type
@@ -332,4 +331,15 @@ class Mutation:
         connectorId: strawberry.ID,
         file: Upload,
     ) -> Run:
-        return await uploadConnectorFile(info, workspaceId, namespace, connectorId, file)
+        user = get_user(info)
+        workspace = await get_workspace(info, workspaceId)
+        connector = await ConnectorModel.objects.aget(pk=connectorId)
+
+        run = await RunModel.objects.acreate(workspace=workspace, connector=connector, status="queued", user=user)
+        runFile = RunFileModel(run=run)
+        runFile.file = file
+        await sync_to_async(runFile.save)()
+
+        run_update_server.delay(run.id)
+
+        return run

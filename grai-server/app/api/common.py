@@ -1,8 +1,10 @@
 import typing
 
 from asgiref.sync import sync_to_async
+import strawberry
 from strawberry.permission import BasePermission
 from strawberry.types import Info
+from workspaces.models import Workspace
 
 
 class IsAuthenticated(BasePermission):
@@ -17,3 +19,14 @@ class IsAuthenticated(BasePermission):
 
 def get_user(info: Info):
     return info.context.request.user
+
+
+async def get_workspace(info: Info, workspaceId: strawberry.ID):
+    user = get_user(info)
+
+    try:
+        workspace = await Workspace.objects.aget(pk=workspaceId, memberships__user_id=user.id)
+    except Workspace.DoesNotExist:
+        raise Exception("Can't find workspace")
+
+    return workspace
