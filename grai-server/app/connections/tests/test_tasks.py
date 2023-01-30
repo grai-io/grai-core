@@ -28,12 +28,16 @@ def test_postgres_connector():
 
 @pytest.fixture
 def test_dbt_connector():
-    return Connector.objects.create(name=Connector.DBT)
+    connector, created = Connector.objects.get_or_create(name=Connector.DBT)
+
+    return connector
 
 
 @pytest.fixture
 def test_yaml_file_connector():
-    return Connector.objects.create(name=Connector.YAMLFILE)
+    connector, created = Connector.objects.get_or_create(name=Connector.YAMLFILE)
+
+    return connector
 
 
 @pytest.fixture
