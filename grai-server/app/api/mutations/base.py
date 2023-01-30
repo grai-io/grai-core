@@ -9,23 +9,29 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
-from django.forms.models import model_to_dict
 from django.template.loader import render_to_string
 from strawberry.file_uploads import Upload
 from strawberry.scalars import JSON
 from strawberry.types import Info
 
-from api.common import IsAuthenticated, get_user
-from api.queries import IsAuthenticated
-from api.types import BasicResult, Connection, KeyResult, Membership, User, Workspace
-from connections.models import Connection as ConnectionModel
-from connections.models import Run as RunModel
+from api.common import IsAuthenticated, get_user, get_workspace
+from api.types import (
+    BasicResult,
+    Connection,
+    KeyResult,
+    Membership,
+    Run,
+    User,
+    Workspace,
+)
+from connections.models import (
+    Connection as ConnectionModel,
+    Connector as ConnectorModel,
+    Run as RunModel,
+    RunFile as RunFileModel,
+)
 from connections.tasks import run_update_server
-from workspaces.models import Membership as MembershipModel
-from workspaces.models import WorkspaceAPIKey
-
-from .common import get_workspace
-from .upload_connector_file import uploadConnectorFile
+from workspaces.models import Membership as MembershipModel, WorkspaceAPIKey
 
 
 @strawberry.type
@@ -324,5 +330,16 @@ class Mutation:
         namespace: str,
         connectorId: strawberry.ID,
         file: Upload,
-    ) -> BasicResult:
-        return await uploadConnectorFile(info, workspaceId, namespace, connectorId, file)
+    ) -> Run:
+        user = get_user(info)
+        workspace = await get_workspace(info, workspaceId)
+        connector = await ConnectorModel.objects.aget(pk=connectorId)
+
+        run = await RunModel.objects.acreate(workspace=workspace, connector=connector, status="queued", user=user)
+        runFile = RunFileModel(run=run)
+        runFile.file = file
+        await sync_to_async(runFile.save)()
+
+        run_update_server.delay(run.id)
+
+        return run

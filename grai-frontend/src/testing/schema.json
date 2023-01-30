@@ -2028,7 +2028,7 @@
             "deprecationReason": null
           },
           {
-            "name": "connection",
+            "name": "connector",
             "description": null,
             "args": [
               {
@@ -2047,9 +2047,32 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "Connection",
+                "name": "Connector",
                 "ofType": null
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "connection",
+            "description": null,
+            "args": [
+              {
+                "name": "pagination",
+                "description": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "OffsetPaginationInput",
+                  "ofType": null
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "Connection",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -4714,7 +4737,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "BasicResult",
+                "name": "Run",
                 "ofType": null
               }
             },
