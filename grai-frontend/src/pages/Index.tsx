@@ -9,6 +9,10 @@ export const GET_WORKSPACES = gql`
     workspaces {
       id
       name
+      organisation {
+        id
+        name
+      }
     }
   }
 `
@@ -21,7 +25,16 @@ const Index: React.FC = () => {
 
   const workspaces = data.workspaces
 
-  return <Navigate to={`/workspaces/${workspaces[0]?.id}`} />
+  const firstWorkspace = workspaces[0]
+
+  if (firstWorkspace)
+    return (
+      <Navigate
+        to={`/${firstWorkspace.organisation.name}/${firstWorkspace.name}`}
+      />
+    )
+
+  return <Navigate to="/workspaces" />
 }
 
 export default Index
