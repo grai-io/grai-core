@@ -12,7 +12,6 @@ from grai_cli.utilities.test import prep_tests
 from grai_cli.utilities.utilities import write_yaml
 
 prep_tests()
-runner = CliRunner()
 
 
 def get_temp_file():
@@ -48,7 +47,7 @@ def make_v1_edge(source_id, destination_id):
     return node
 
 
-def test_apply_single_node():
+def test_apply_single_node(runner):
     with tempfile.NamedTemporaryFile("w+") as file:
         node_dict = make_v1_node()
         write_yaml(node_dict, file.name)
@@ -56,7 +55,7 @@ def test_apply_single_node():
         assert result.exit_code == 0, result
 
 
-def test_apply_multi_node():
+def test_apply_multi_node(runner):
     with tempfile.NamedTemporaryFile("w+") as file:
         file_name = pathlib.Path(file.name)
         nodes = [make_v1_node() for i in range(5)]
@@ -65,7 +64,7 @@ def test_apply_multi_node():
         assert result.exit_code == 0
 
 
-def test_create_and_get_nodes():
+def test_create_and_get_nodes(runner):
     with tempfile.NamedTemporaryFile("w+") as file:
         nodes = [make_v1_node() for i in range(2)]
         write_yaml(nodes, file.name)
@@ -78,7 +77,7 @@ def test_create_and_get_nodes():
         assert len(diff) == 0, "Created nodes were not returned by get"
 
 
-def test_delete_single_node():
+def test_delete_single_node(runner):
     with tempfile.NamedTemporaryFile("w+") as file:
         file_name = pathlib.Path(file.name)
         node_dict = make_v1_node()
