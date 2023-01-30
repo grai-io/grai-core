@@ -30,7 +30,10 @@ def get_nodes(
 ):
     client = get_default_client()
     if name is None:
-        result = client.get("Node")
+        if namespace is None:
+            result = client.get("Node")
+        else:
+            result = client.get("Node", "*", namespace)
     elif namespace is None:
         result = client.get("Node", name)
     else:

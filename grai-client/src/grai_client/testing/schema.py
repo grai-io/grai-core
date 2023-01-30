@@ -21,8 +21,8 @@ def mock_v1_node(
         "version": "v1",
         "spec": {
             "id": None,
-            "name": str(uuid.uuid4()) if name is None else name,
-            "namespace": "client_mocking" if namespace is None else namespace,
+            "name": f"name-{uuid.uuid4()}" if name is None else name,
+            "namespace": f"namespace-{uuid.uuid4()}" if namespace is None else namespace,
             "data_source": str(uuid.uuid4()) if data_source is None else data_source,
             "display_name": str(uuid.uuid4()) if display_name is None else display_name,
             "is_active": is_active,
