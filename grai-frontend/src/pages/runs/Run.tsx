@@ -5,7 +5,7 @@ import RunHeader from "components/runs/RunHeader"
 import GraphError from "components/utils/GraphError"
 import useWorkspace from "helpers/useWorkspace"
 import NotFound from "pages/NotFound"
-import React from "react"
+import React, { useEffect } from "react"
 import { useParams } from "react-router-dom"
 import { GetRun, GetRunVariables } from "./__generated__/GetRun"
 
@@ -52,13 +52,31 @@ const Run: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
   const { runId } = useParams()
 
-  const { loading, error, data } = useQuery<GetRun, GetRunVariables>(GET_RUN, {
+  const { loading, error, data, startPolling, stopPolling } = useQuery<
+    GetRun,
+    GetRunVariables
+  >(GET_RUN, {
     variables: {
       organisationName,
       workspaceName,
       runId: runId ?? "",
     },
   })
+
+  const status = data?.workspace.run?.status
+
+  useEffect(() => {
+    switch (status) {
+      case "queued":
+      case "running":
+        startPolling(1000)
+        return
+
+      case "success":
+      case "error":
+        stopPolling()
+    }
+  }, [status, startPolling, stopPolling])
 
   if (error) return <GraphError error={error} />
   if (loading) return <PageLayout loading />

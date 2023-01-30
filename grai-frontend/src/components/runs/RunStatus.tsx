@@ -63,8 +63,8 @@ const RunStatus: React.FC<RunStatusProps> = ({
     running: {
       label: "Running",
       icon: (
-        <Box sx={{ px: size === "small" ? 0.5 : null }}>
-          <CircularProgress size={size === "small" ? "0.8rem" : undefined} />
+        <Box sx={{ px: 0.5 }}>
+          <CircularProgress size={size === "small" ? "0.8rem" : "1.2rem"} />
         </Box>
       ),
       color: "default",
