@@ -104,6 +104,7 @@ THIRD_PARTY_APPS = [
     "health_check.storage",
     "health_check.contrib.migrations",
     "django_celery_beat",
+    "storages",
 ]
 
 THE_GUIDE_APPS = [
@@ -268,3 +269,6 @@ CELERY_TASK_SERIALIZER = "json"
 CORS_ALLOW_CREDENTIALS = True
 CSRF_COOKIE_HTTPONLY = True
 SESSION_COOKIE_HTTPONLY = True
+
+DEFAULT_FILE_STORAGE = config("DEFAULT_FILE_STORAGE", None)
+AWS_STORAGE_BUCKET_NAME = config("AWS_STORAGE_BUCKET_NAME", None)

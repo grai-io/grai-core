@@ -175,6 +175,12 @@ class Run(TenantModel):
     def __str__(self):
         return str(self.id)
 
+    def save(self, *args, **kwargs):
+        if self.connector_id is None and self.connection_id is not None:
+            self.connector = self.connection.connector
+
+        super(Run, self).save(*args, **kwargs)
+
 
 def directory_path(instance, filename):
     return "run_{0}/{1}".format(instance.run.id, filename)

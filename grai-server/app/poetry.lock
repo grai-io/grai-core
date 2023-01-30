@@ -832,6 +832,29 @@ bounce = ["cryptography (>=36.0.2)", "requests (>=2.27.1)"]
 events = ["cryptography (>=36.0.2)", "requests (>=2.27.1)"]
 
 [[package]]
+name = "django-storages"
+version = "1.13.2"
+description = "Support for many storage backends in Django"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "django-storages-1.13.2.tar.gz", hash = "sha256:cbadd15c909ceb7247d4ffc503f12a9bec36999df8d0bef7c31e57177d512688"},
+    {file = "django_storages-1.13.2-py3-none-any.whl", hash = "sha256:31dc5a992520be571908c4c40d55d292660ece3a55b8141462b4e719aa38eab3"},
+]
+
+[package.dependencies]
+Django = ">=3.2"
+
+[package.extras]
+azure = ["azure-storage-blob (>=12.0.0)"]
+boto3 = ["boto3 (>=1.4.4)"]
+dropbox = ["dropbox (>=7.2.1)"]
+google = ["google-cloud-storage (>=1.27.0)"]
+libcloud = ["apache-libcloud"]
+sftp = ["paramiko (>=1.10.0)"]
+
+[[package]]
 name = "django-stubs"
 version = "1.14.0"
 description = "Mypy stubs for Django"
@@ -2258,4 +2281,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "d45127172161ffb3c1d2ea1838cc1daa5c42e1e8a8aedf5e39f584f32705ad06"
+content-hash = "300bc5bb063d526fa47b024f8ad2d1849abde02a357c2128884fc0a02643d25a"

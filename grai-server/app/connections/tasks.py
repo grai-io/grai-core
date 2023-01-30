@@ -1,7 +1,4 @@
-import os
 from datetime import datetime
-
-from django.conf import settings
 
 from celery import shared_task
 
@@ -99,29 +96,45 @@ def run_snowflake(run: Run):
 
 
 def run_dbt(run: Run):
-    from grai_source_dbt.base import get_nodes_and_edges
+    import json
+
+    # from grai_source_dbt.base import get_nodes_and_edges
+    from grai_source_dbt.loader import DBTGraph, Manifest
+    from grai_source_dbt.adapters import adapt_to_client
 
     runFile = run.files.first()
 
-    file = os.path.join(settings.MEDIA_ROOT, runFile.file.name)
     namespace = "default"
 
-    nodes, edges = get_nodes_and_edges(manifest_file=file, namespace=namespace, version="v1")
+    # nodes, edges = get_nodes_and_edges(manifest_file=runFile.file.read(), namespace=namespace, version="v1")
+    with runFile.file.open("r") as f:
+        data = json.load(f)
+
+    manifest = Manifest(**data)
+    dbt_graph = DBTGraph(manifest, namespace=namespace)
+
+    nodes = adapt_to_client(dbt_graph.nodes, "v1")
+    edges = adapt_to_client(dbt_graph.edges, "v1")
+
     update(run.workspace, nodes)
     update(run.workspace, edges)
 
 
 def run_yaml_file(run: Run):
-    from grai_client.schemas.schema import validate_file
+    import yaml
+    from grai_schemas.schema import Schema
 
     from lineage.models import Edge, Node
 
     runFile = run.files.first()
 
-    file = os.path.join(settings.MEDIA_ROOT, runFile.file.name)
+    def validate_file():
+        with runFile.file.open("r") as f:
+            for item in yaml.safe_load_all(f):
+                yield Schema(entity=item).entity
 
     # TODO: Edges don't have a human readable unique identifier
-    entities = validate_file(file)
+    entities = validate_file()
     for entity in entities:
         type = entity.type
         values = entity.spec.dict(exclude_none=True)
