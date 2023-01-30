@@ -249,14 +249,14 @@ testing = ["covdefaults (>=2.2.2)", "coverage (>=7.0.1)", "pytest (>=7.2)", "pyt
 
 [[package]]
 name = "grai-schemas"
-version = "0.1.7"
+version = "0.1.8"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_schemas-0.1.7-py3-none-any.whl", hash = "sha256:f684cbf75e2de82b7a95a416ad1286a905feba0443754d16d0b7b22cae29dffb"},
-    {file = "grai_schemas-0.1.7.tar.gz", hash = "sha256:0d0539d30d16e94bd51cf1947a244eb0fe24ae25e61f53a91ed542e24a7e5b8f"},
+    {file = "grai_schemas-0.1.8-py3-none-any.whl", hash = "sha256:205f39212dc7f85fead65209d1c067794fe6156844bbb0afbdfed426cd4d4d5c"},
+    {file = "grai_schemas-0.1.8.tar.gz", hash = "sha256:26c6f2aeb8ab2960bb7bdfcb1008af21f8e6ef612806491c0749bae836e03a3d"},
 ]
 
 [package.dependencies]
@@ -264,14 +264,14 @@ pydantic = ">=1.10.4,<2.0.0"
 
 [[package]]
 name = "identify"
-version = "2.5.16"
+version = "2.5.17"
 description = "File identification library for Python"
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "identify-2.5.16-py2.py3-none-any.whl", hash = "sha256:832832a58ecc1b8f33d5e8cb4f7d3db2f5c7fbe922dfee5f958b48fed691501a"},
-    {file = "identify-2.5.16.tar.gz", hash = "sha256:c47acedfe6495b1c603ed7e93469b26e839cab38db4155113f36f718f8b3dc47"},
+    {file = "identify-2.5.17-py2.py3-none-any.whl", hash = "sha256:7d526dd1283555aafcc91539acc061d8f6f59adb0a7bba462735b0a318bff7ed"},
+    {file = "identify-2.5.17.tar.gz", hash = "sha256:93cc61a861052de9d4c541a7acb7e3dcc9c11b398a2144f6e52ae5285f5f4f06"},
 ]
 
 [package.extras]
@@ -800,4 +800,4 @@ testing = ["coverage (>=6.2)", "coverage-enable-subprocess (>=1)", "flaky (>=3.7
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "67d90a0c7e5741972c900f99fdd9eb99bc4f69f165d7c50831c777bcd99238ef"
+content-hash = "920e4f6fc2072409ac04b6a13e5df096b127bdc7a4798321da1fb215a1522f33"
