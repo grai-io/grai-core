@@ -9,7 +9,6 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
-from django.forms.models import model_to_dict
 from django.template.loader import render_to_string
 from strawberry.file_uploads import Upload
 from strawberry.scalars import JSON

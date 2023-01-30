@@ -1,20 +1,18 @@
 import os
 
 import strawberry
-from asgiref.sync import sync_to_async
 from django.conf import settings
-from django.core.files.base import ContentFile
-from django.core.files.storage import default_storage
+from asgiref.sync import sync_to_async
 from strawberry.file_uploads import Upload
 from strawberry.types import Info
 
 from api.mutations.common import get_workspace
 from api.types import BasicResult
-from connections.models import Connector as ConnectorModel
+from api.common import get_user
+from connections.models import Connector, Run, RunFile
 from connections.task_helpers import get_node, update
 from connections.tasks import NoConnectorError
-from lineage.models import Edge as EdgeModel
-from lineage.models import Node as NodeModel
+from lineage.models import Node, Edge
 
 
 async def uploadConnectorFile(
@@ -24,15 +22,20 @@ async def uploadConnectorFile(
     connectorId: strawberry.ID,
     file: Upload,
 ) -> BasicResult:
+    user = get_user(info)
     workspace = await get_workspace(info, workspaceId)
-    connector = await ConnectorModel.objects.aget(pk=connectorId)
+    connector = await Connector.objects.aget(pk=connectorId)
 
-    path = default_storage.save("tmp/file.json", ContentFile(file.read()))
-    tmp_file = os.path.join(settings.MEDIA_ROOT, path)
+    run = await Run.objects.acreate(workspace=workspace, connector=connector, status="queued", user=user)
+    runFile = RunFile(run=run)
+    runFile.file = file
+    await sync_to_async(runFile.save)()
 
-    if connector.name == ConnectorModel.DBT:
+    tmp_file = os.path.join(settings.MEDIA_ROOT, runFile.file.name)
+
+    if connector.name == Connector.DBT:
         from grai_source_dbt.base import get_nodes_and_edges
-    elif connector.name == ConnectorModel.YAMLFILE:
+    elif connector.name == Connector.YAMLFILE:
         from grai_client.schemas.schema import validate_file
 
         # TODO: Edges don't have a human readable unique identifier
@@ -41,7 +44,7 @@ async def uploadConnectorFile(
             type = entity.type
             values = entity.spec.dict(exclude_none=True)
 
-            Model = NodeModel if type == "Node" else EdgeModel
+            Model = Node if type == "Node" else Edge
 
             if type == "Edge":
                 values["source"] = await sync_to_async(get_node)(workspace, values["source"])
