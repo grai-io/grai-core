@@ -29,7 +29,11 @@ class UuidID(BaseID):
     namespace: Optional[str]
 
     def __hash__(self):
-        return hash(self.id)
+        if self.name is None or self.namespace is None:
+            raise NotImplementedError(
+                f"Computing a hash for {self} requires both name and namespace for compatibility reasons."
+            )
+        return hash(hash(self.name) + hash(self.namespace))
 
 
 ID = Union[UuidID, NamedID]
