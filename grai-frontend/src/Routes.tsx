@@ -54,6 +54,7 @@ const Routes: React.FC = () => (
               <Route path=":tableId" element={<Table />} />
             </Route>
             <Route path="runs">
+              <Route index element={<NotFound />} />
               <Route path=":runId" element={<Run />} />
             </Route>
             <Route path="connections">
@@ -79,8 +80,11 @@ const Routes: React.FC = () => (
               <Route path="api-keys" element={<ApiKeys />} />
               <Route path="workspace" element={<WorkspaceSettings />} />
               <Route path="memberships" element={<Memberships />} />
+              <Route path="*" element={<NotFound />} />
             </Route>
+            <Route path="*" element={<NotFound />} />
           </Route>
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Route>
 

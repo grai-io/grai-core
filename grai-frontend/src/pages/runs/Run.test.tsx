@@ -28,6 +28,10 @@ test("renders errors", async () => {
           run: {
             id: "1",
             status: "error",
+            connector: {
+              id: "1",
+              name: "Test Connector",
+            },
             connection: {
               id: "1",
               name: "Connection 1",

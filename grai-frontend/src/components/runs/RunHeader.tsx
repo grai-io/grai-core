@@ -12,6 +12,11 @@ import React from "react"
 import { Link } from "react-router-dom"
 import RunStatus from "./RunStatus"
 
+interface Connector {
+  id: string
+  name: string
+}
+
 interface Connection {
   id: string
   name: string
@@ -19,7 +24,8 @@ interface Connection {
 
 interface Run {
   id: string
-  connection: Connection
+  connector: Connector
+  connection: Connection | null
   status: string
 }
 
@@ -36,7 +42,11 @@ const RunHeader: React.FC<RunHeaderProps> = ({ run }) => {
         <Box>
           <Button
             component={Link}
-            to={`${routePrefix}/connections/${run.connection.id}`}
+            to={
+              run.connection
+                ? `${routePrefix}/connections/${run.connection.id}`
+                : `${routePrefix}/runs`
+            }
             color="secondary"
             startIcon={<KeyboardBackspace />}
           >
@@ -47,7 +57,8 @@ const RunHeader: React.FC<RunHeaderProps> = ({ run }) => {
           variant="h6"
           sx={{ textTransform: "uppercase", mx: 1, mt: 0.3 }}
         >
-          {run.connection.name}/{run.id.slice(0, 6)}
+          {run.connection ? `${run.connection.name}/` : null}
+          {run.id.slice(0, 6)}
         </Typography>
         <Box>
           <Tooltip title="Copy Run id">

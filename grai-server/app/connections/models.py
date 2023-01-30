@@ -139,7 +139,14 @@ class Run(TenantModel):
     tenant_id = "workspace_id"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    connection = TenantForeignKey("Connection", related_name="runs", on_delete=models.CASCADE)
+    connector = models.ForeignKey("Connector", related_name="runs", on_delete=models.PROTECT)
+    connection = TenantForeignKey(
+        "Connection",
+        related_name="runs",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+    )
     status = models.CharField(max_length=255)
     metadata = models.JSONField(default=dict)
     workspace = models.ForeignKey(
@@ -167,3 +174,27 @@ class Run(TenantModel):
 
     def __str__(self):
         return str(self.id)
+
+    def save(self, *args, **kwargs):
+        if self.connector_id is None and self.connection_id is not None:
+            self.connector = self.connection.connector
+
+        super(Run, self).save(*args, **kwargs)
+
+
+def directory_path(instance, filename):
+    return "run_{0}/{1}".format(instance.run.id, filename)
+
+
+class RunFile(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    run = models.ForeignKey("Run", related_name="files", on_delete=models.CASCADE)
+    file = models.FileField(upload_to=directory_path, editable=False)
+    name = models.CharField(max_length=255, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        self.name = self.file.name
+
+        super(RunFile, self).save(*args, **kwargs)
