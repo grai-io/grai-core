@@ -1,8 +1,10 @@
 from __future__ import annotations
 
-from typing import Dict, Union
+from typing import Dict, TypeVar, Union
 
 from pydantic import BaseModel
+
+T = TypeVar("T")
 
 
 def unpack_object(obj: Union[Dict, BaseModel]) -> Dict:
@@ -19,7 +21,8 @@ def merge_dicts(a: Dict, b: Dict) -> Dict:
         if isinstance(a.get(k, None), dict) and isinstance(v, dict):
             merge_dicts(a[k], v)
         else:
-            a[k] = v
+            if v is not None:
+                a[k] = v
     return a
 
 

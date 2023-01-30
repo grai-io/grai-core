@@ -29,3 +29,12 @@ def test_update_no_updates(client):
 def test_update_nodes(client):
     result = update(client, TEST_NODES)
     assert result is None
+
+
+def test_update_deactivate():
+    test_node = get_test_node()
+    result = client.get("node", "*", test_node.spec.namespace)
+    assert isinstance(result, list)
+    assert len(result) == 1  # node namespace is a uuid and therefore unique
+    assert result[0].spec.name == test_node.spec.name
+    assert result[0].spec.namespace == test_node.spec.namespace
