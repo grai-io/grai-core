@@ -98,9 +98,10 @@ def run_snowflake(run: Run):
 def run_dbt(run: Run):
     import json
 
+    from grai_source_dbt.adapters import adapt_to_client
+
     # from grai_source_dbt.base import get_nodes_and_edges
     from grai_source_dbt.loader import DBTGraph, Manifest
-    from grai_source_dbt.adapters import adapt_to_client
 
     runFile = run.files.first()
 

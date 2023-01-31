@@ -5,10 +5,17 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.authtoken.admin import TokenAdmin
 
 from users.models import User
+from workspaces.models import Membership
 
 from .forms import CustomUserChangeForm, CustomUserCreationForm
 
 TokenAdmin.raw_id_fields = ["user"]
+
+
+class MembershipInline(admin.TabularInline):
+    model = Membership
+    extra = 0
+    fk_name = "user"
 
 
 class CustomUserAdmin(UserAdmin):
@@ -52,6 +59,10 @@ class CustomUserAdmin(UserAdmin):
     list_display = ("username", "first_name", "last_name", "is_staff", "is_superuser")
     list_filter = ("is_staff", "is_superuser")
     search_fields = ["username", "first_name", "last_name"]
+
+    inlines = [
+        MembershipInline,
+    ]
 
 
 admin.site.unregister(Group)
