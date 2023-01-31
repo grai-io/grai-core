@@ -24,14 +24,13 @@ from api.types import (
     User,
     Workspace,
 )
-from connections.models import (
-    Connection as ConnectionModel,
-    Connector as ConnectorModel,
-    Run as RunModel,
-    RunFile as RunFileModel,
-)
+from connections.models import Connection as ConnectionModel
+from connections.models import Connector as ConnectorModel
+from connections.models import Run as RunModel
+from connections.models import RunFile as RunFileModel
 from connections.tasks import run_update_server
-from workspaces.models import Membership as MembershipModel, WorkspaceAPIKey
+from workspaces.models import Membership as MembershipModel
+from workspaces.models import WorkspaceAPIKey
 
 
 @strawberry.type

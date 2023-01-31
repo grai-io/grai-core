@@ -1,9 +1,9 @@
 from django.contrib import admin
+from django.db.models import JSONField
+
+from common.admin.fields.json_widget import PrettyJSONWidget
 
 from .models import Connection, Connector, Run
-
-from django.db.models import JSONField
-from common.admin.fields.json_widget import PrettyJSONWidget
 
 
 class ConnectorAdmin(admin.ModelAdmin):
@@ -14,6 +14,19 @@ class ConnectorAdmin(admin.ModelAdmin):
     list_filter = ("is_active",)
 
     formfield_overrides = {JSONField: {"widget": PrettyJSONWidget}}
+
+
+class RunInline(admin.TabularInline):
+    model = Run
+    extra = 0
+    fields = ["status", "metadata", "created_at", "started_at", "finished_at", "user"]
+    readonly_fields = ["status", "metadata", "created_at", "started_at", "finished_at", "user"]
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 class ConnectionAdmin(admin.ModelAdmin):
@@ -37,6 +50,10 @@ class ConnectionAdmin(admin.ModelAdmin):
     )
 
     formfield_overrides = {JSONField: {"widget": PrettyJSONWidget}}
+
+    inlines = [
+        RunInline,
+    ]
 
 
 class RunAdmin(admin.ModelAdmin):

@@ -3,7 +3,6 @@ import logging
 
 from django.forms import widgets
 
-
 logger = logging.getLogger(__name__)
 
 

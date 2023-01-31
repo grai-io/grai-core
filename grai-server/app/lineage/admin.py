@@ -1,9 +1,36 @@
 from django.contrib import admin
+from django.db.models import JSONField
+
 from common.admin.fields.json_widget import PrettyJSONWidget
 
 from .models import Edge, Node
 
-from django.db.models import JSONField
+
+class EdgeInline(admin.TabularInline):
+    model = Edge
+    extra = 0
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+class SourceEdgeInline(EdgeInline):
+    fk_name = "source"
+    verbose_name = "Source Edge"
+    verbose_name_plural = "Source Edges"
+    fields = ["name", "namespace", "data_source", "destination", "metadata", "is_active"]
+    readonly_fields = ["name", "namespace", "data_source", "destination", "metadata", "is_active"]
+
+
+class DestinationEdgeInline(EdgeInline):
+    fk_name = "destination"
+    verbose_name = "Destination Edge"
+    verbose_name_plural = "Destination Edges"
+    fields = ["name", "namespace", "data_source", "source", "metadata", "is_active"]
+    readonly_fields = ["name", "namespace", "data_source", "source", "metadata", "is_active"]
 
 
 class NodeAdmin(admin.ModelAdmin):
@@ -30,6 +57,11 @@ class NodeAdmin(admin.ModelAdmin):
     )
 
     formfield_overrides = {JSONField: {"widget": PrettyJSONWidget}}
+
+    inlines = [
+        SourceEdgeInline,
+        DestinationEdgeInline,
+    ]
 
 
 class EdgeAdmin(admin.ModelAdmin):
