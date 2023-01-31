@@ -1,8 +1,7 @@
-from typing import Dict, List, Optional, TypeVar, Union
+from typing import Dict, List, Literal, Optional, TypeVar, Union
 
 from grai_schemas.v1 import EdgeV1, NodeV1
-from grai_schemas.v1.node import NodeIdTypes
-from multimethod import overload
+from grai_schemas.v1.node import NodeIdTypes, NodeNamedID, NodeUuidID
 
 from grai_client.endpoints.client import ClientOptions
 from grai_client.endpoints.rest import get
@@ -12,6 +11,21 @@ from grai_client.schemas.labels import EdgeLabels, NodeLabels, WorkspaceLabels
 from grai_client.schemas.workspace import Workspace
 
 T = TypeVar("T", NodeV1, EdgeV1)
+X = TypeVar("X")
+
+
+def query_obj_from_param_string(
+    client: ClientV1, base_url: str, options=ClientOptions(), **kwargs
+) -> Optional[List[Dict]]:
+    supported_params = ["name", "namespace"]
+    query = "&".join([f"{param}={kwargs[param]}" for param in supported_params if param in kwargs])
+    url = f"{base_url}?{query}"
+    resp = client.get(url, options=options).json()
+    num_results = len(resp)
+    if num_results == 0:
+        return None
+    else:
+        return resp
 
 
 def get_node_from_id(
@@ -24,16 +38,17 @@ def get_node_from_id(
         url = f"{base_url}{grai_type.id}"
         resp = client.get(url, options=options).json()
     else:
-        url = f"{base_url}?name={grai_type.name}&namespace={grai_type.namespace}"
-        resp = client.get(url, options=options).json()
-        num_results = len(resp)
-        if num_results == 0:
+        resp = query_obj_from_param_string(
+            client, base_url, options=options, name=grai_type.name, namespace=grai_type.namespace
+        )
+
+        if resp is None:
             return None
-        elif num_results == 1:
-            resp = resp[0]
+        elif len(resp) == 1:
+            return resp[0]
         else:
             message = (
-                f"Server query for node returned {num_results} results but only one was expected. This "
+                f"Server query for node returned {len(resp)} results but only one was expected. This "
                 f"is a defensive error that should never arise, if you see it please contact the maintainers."
             )
             raise Exception(message)
@@ -42,11 +57,11 @@ def get_node_from_id(
 
 
 @get.register
-def get_node_id(
+def get_from_node_id(
     client: ClientV1, grai_type: NodeIdTypes, options: ClientOptions = ClientOptions()
-) -> Optional[NodeIdTypes]:
+) -> Optional[NodeV1]:
     spec = get_node_from_id(client, grai_type, options=options)
-    return NodeV1.from_spec(spec).spec if isinstance(spec, dict) else spec
+    return NodeV1.from_spec(spec) if isinstance(spec, dict) else spec
 
 
 @get.register
@@ -96,17 +111,31 @@ def get_nodes_by_str(
 
 
 @get.register
+def get_nodes_by_namespace(
+    client: ClientV1,
+    grai_type: NodeLabels,
+    name: Literal["*"],
+    namespace: str,
+    options: ClientOptions = ClientOptions(),
+) -> Optional[List[NodeV1]]:
+    base_url = client.get_url(grai_type)
+    results = query_obj_from_param_string(client, base_url, options=options, namespace=namespace)
+    if results is None:
+        return results
+
+    return [NodeV1.from_spec(result) for result in results]
+
+
+@get.register
 def get_nodes_by_name_and_namespace(
     client: ClientV1,
     grai_type: NodeLabels,
     name: str,
     namespace: str,
     options: ClientOptions = ClientOptions(),
-) -> Optional[List[NodeV1]]:
-    if is_valid_uuid(name):
-        return client.get(grai_type, name, options=options)
+) -> Optional[NodeV1]:
 
-    node_id = NodeID(name=name, namespace=namespace)
+    node_id = NodeNamedID(name=name, namespace=namespace)
     return client.get(node_id, options=options)
 
 

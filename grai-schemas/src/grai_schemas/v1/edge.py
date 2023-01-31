@@ -1,7 +1,7 @@
 from typing import Callable, Dict, List, Literal, Optional, Type, Union
 from uuid import UUID
 
-from grai_schemas.v1.generics import BaseID, GraiBaseModel, NamedID
+from grai_schemas.v1.generics import GraiBaseModel, NamedID, UuidID
 from grai_schemas.v1.metadata.edges import GenericEdgeMetadataV1, Metadata
 from grai_schemas.v1.metadata.metadata import MetadataV1
 from grai_schemas.v1.node import NodeIdTypes
@@ -11,7 +11,7 @@ class EdgeNamedID(NamedID):
     pass
 
 
-class EdgeUuidID(BaseID):
+class EdgeUuidID(UuidID):
     pass
 
 
