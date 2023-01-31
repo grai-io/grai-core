@@ -139,9 +139,6 @@ def adapt_column_to_client(current: Column, version: Literal["v1"] = "v1") -> No
         },
     }
 
-    if current.tests:
-        spec_dict["metadata"]["tests"] = [test.dict() for test in current.tests]
-
     return Schema.to_model(spec_dict, version=version, typing_type="Node")
 
 
