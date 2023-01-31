@@ -24,6 +24,15 @@ class TableToColumnMetadata(GenericEdgeMetadataV1):
     edge_attributes: TableToColumnAttributes = TableToColumnAttributes()
 
 
+class TableToTableAttributes(V1Mixin):
+    pass
+
+
+class TableToTableMetadata(GenericEdgeMetadataV1):
+    edge_type: Literal["TableToTable"]
+    edge_attributes: TableToColumnAttributes = TableToTableAttributes()
+
+
 class ColumnToColumnAttributes(V1Mixin):
     preserves_data_type: Optional[bool] = None
     preserves_nullable: Optional[bool] = None
