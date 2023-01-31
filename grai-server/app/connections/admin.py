@@ -2,6 +2,9 @@ from django.contrib import admin
 
 from .models import Connection, Connector, Run
 
+from django.db.models import JSONField
+from common.admin.fields.json_widget import PrettyJSONWidget
+
 
 class ConnectorAdmin(admin.ModelAdmin):
     list_display = ("id", "name", "is_active")
@@ -9,6 +12,8 @@ class ConnectorAdmin(admin.ModelAdmin):
     search_fields = ["id", "name"]
 
     list_filter = ("is_active",)
+
+    formfield_overrides = {JSONField: {"widget": PrettyJSONWidget}}
 
 
 class ConnectionAdmin(admin.ModelAdmin):
@@ -30,6 +35,8 @@ class ConnectionAdmin(admin.ModelAdmin):
         "namespace",
         "is_active",
     )
+
+    formfield_overrides = {JSONField: {"widget": PrettyJSONWidget}}
 
 
 class RunAdmin(admin.ModelAdmin):

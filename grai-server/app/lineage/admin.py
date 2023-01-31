@@ -1,6 +1,9 @@
 from django.contrib import admin
+from common.admin.fields.json_widget import PrettyJSONWidget
 
 from .models import Edge, Node
+
+from django.db.models import JSONField
 
 
 class NodeAdmin(admin.ModelAdmin):
@@ -25,6 +28,8 @@ class NodeAdmin(admin.ModelAdmin):
         "is_active",
         "data_source",
     )
+
+    formfield_overrides = {JSONField: {"widget": PrettyJSONWidget}}
 
 
 class EdgeAdmin(admin.ModelAdmin):
@@ -51,6 +56,8 @@ class EdgeAdmin(admin.ModelAdmin):
         ("source", admin.RelatedOnlyFieldListFilter),
         ("destination", admin.RelatedOnlyFieldListFilter),
     )
+
+    formfield_overrides = {JSONField: {"widget": PrettyJSONWidget}}
 
 
 admin.site.register(Node, NodeAdmin)
