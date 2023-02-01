@@ -26,7 +26,6 @@ def update_server(
     host: Optional[str] = None,
     port: Optional[str] = None,
 ):
-
     conn = MySQLConnector(dbname=dbname, user=user, password=password, host=host, port=port)
     nodes, edges = get_nodes_and_edges(conn, client.id)
     update(client, nodes)

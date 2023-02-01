@@ -93,7 +93,6 @@ class Connection(TenantModel):
 
     def save(self, *args, **kwargs):
         if isinstance(self.schedules, dict):
-
             type = self.schedules.get("type", None)
 
             if type is None:
