@@ -33,8 +33,8 @@ grai-source-postgres = "^0.1.9"
 coverage = "^7.0.3"
 pytest-asyncio = "^0.20.3"
 django-celery-beat = "^2.4.0"
-grai-schemas = "^0.1.7"
-grai-source-dbt = "^0.0.12"
+grai-schemas = "^0.1.8"
+grai-source-dbt = "^0.1.13"
 django-storages = "^1.13.2"
 
 [tool.poetry.group.dev.dependencies]

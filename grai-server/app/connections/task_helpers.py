@@ -57,16 +57,8 @@ def get_edge_nodes_from_database(items, workspace):
     return nodes
 
 
-def update(
-    workspace: Workspace,
-    items: List[GraiType],
-):
-    if not items:
-        return
-
+def process_updates(workspace, Model, items):
     obj_type = items[0].type
-    Model = NodeModel if obj_type == "Node" else EdgeModel
-
     items = [item.spec.dict() for item in items]
     existing_items = get_existing_items(items, workspace, Model)
 
@@ -104,20 +96,35 @@ def update(
         item.set_names()
 
     updated_items = []
-    for key in updated_item_keys:
+    for k in updated_item_keys:
         current_item = deepcopy(current_item_map[k])
 
         for item_key, item_value in item_map[k].items():
             if isinstance(item_value, dict):
-                setattr(
-                    current_item,
-                    item_key,
-                    merge_dicts(getattr(current_item, item_key), item_value),
-                )
-            elif item_value != getattr(current_item, item_key) and item_value is not None:
+                if "new_thing" in item_value["grai"] or "new_thing" in current_item.metadata["grai"]:
+                    breakpoint()
+                merged_value = merge_dicts(getattr(current_item, item_key), item_value)
+                setattr(current_item, item_key, merged_value)
+
+            # elif item_value != getattr(current_item, item_key) and item_value is not None:
+            elif item_value is not None:
                 setattr(current_item, item_key, item_value)
-        if current_item != current_item_map[k]:
-            updated_items.append(current_item)
+        updated_items.append(current_item)
+        # if current_item != current_item_map[k]:
+        #     updated_items.append(current_item)
+    return new_items, deactivated_items, updated_items
+
+
+def update(
+    workspace: Workspace,
+    items: List[GraiType],
+):
+    if not items:
+        return
+    obj_type = items[0].type
+    Model = NodeModel if obj_type == "Node" else EdgeModel
+
+    new_items, updated_items, deactivated_items = process_updates(workspace, Model, items)
 
     Model.objects.bulk_update(deactivated_items, ["is_active"])
     Model.objects.bulk_update(updated_items, ["metadata"])

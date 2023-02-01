@@ -3,7 +3,7 @@ import uuid
 import pytest
 from grai_schemas.v1 import EdgeV1, NodeV1
 
-from connections.task_helpers import get_node, update
+from connections.task_helpers import get_node, update, process_updates
 from lineage.models import Edge, Node
 from workspaces.models import Organisation, Workspace
 
@@ -123,18 +123,17 @@ def mock_node(test_workspace):
     )
 
 
-def mock_node_schema(node):
-
-    return NodeV1.from_spec(
-        {
-            "name": node.name,
-            "namespace": node.namespace,
-            "data_source": node.data_source,
-            "display_name": node.display_name,
-            "workspace": node.workspace.id,
-            "metadata": node.metadata,
-        }
-    )
+def mock_node_schema(node, metadata={}):
+    spec = {
+        "name": node.name,
+        "namespace": node.namespace,
+        "data_source": node.data_source,
+        "display_name": node.display_name,
+        "workspace": node.workspace.id,
+        "metadata": node.metadata,
+    }
+    spec["metadata"].update(metadata)
+    return NodeV1.from_spec(spec)
 
 
 def mock_edge(source, destination, test_workspace):
@@ -192,15 +191,46 @@ class TestUpdate:
         for node in nodes:
             node.save()
         edge = mock_edge(*nodes, test_workspace)
-        edge.save()
         updated_edge = mock_edge_schema(edge)
         updated_edge.spec.data_source = "a_new_place"
         items = [updated_edge]
 
         update(test_workspace, items)
+        db_edge = Edge.objects.filter(name=edge.name).filter(namespace=edge.namespace).first()
+        assert db_edge.data_source == "a_new_place"
 
     @pytest.mark.django_db
-    def test_empty_list(self, test_workspace):
-        items = []
+    def test_correct_new_items(self, test_workspace):
+        nodes = [mock_node(test_workspace) for _ in range(2)]
+        nodes[0].save()
+        mock_nodes = [mock_node_schema(node) for node in nodes]
+        new, old, updated = process_updates(test_workspace, Node, mock_nodes)
+        assert len(new) == 1
+        assert new[0].name == nodes[1].name
 
-        update(test_workspace, items)
+    @pytest.mark.django_db
+    def test_correct_updated_items(self, test_workspace):
+        nodes = [mock_node(test_workspace) for _ in range(2)]
+        nodes[0].save()
+        mock_nodes = [mock_node_schema(node) for node in nodes]
+        new, old, updated = process_updates(test_workspace, Node, mock_nodes)
+        assert len(updated) == 1
+        assert updated[0].name == nodes[0].name
+
+    @pytest.mark.django_db
+    def test_correct_updated_metadata(self, test_workspace):
+        nodes = [mock_node(test_workspace) for _ in range(2)]
+        nodes[0].metadata["test"] = {"key": "this is a test"}
+        nodes[0].save()
+        mock_nodes = [mock_node_schema(node, {"test2": 2}) for node in nodes]
+        new, old, updated = process_updates(test_workspace, Node, mock_nodes)
+        updated = updated[0].metadata
+        assert "test" in updated
+        assert isinstance(updated["test"], dict)
+        assert updated["test"]["key"] == "this is a test"
+        assert "grai" in updated
+        assert isinstance(updated["grai"], dict)
+        assert updated["grai"]["node_type"] == "Node"
+
+        assert "test2" in updated
+        assert updated["test2"] == 2
