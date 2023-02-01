@@ -209,18 +209,18 @@ test = ["pytest (>=6)"]
 
 [[package]]
 name = "grai-client"
-version = "0.2.0"
+version = "0.2.2"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_client-0.2.0-py3-none-any.whl", hash = "sha256:e2fe2d85456892a7d9062ddad33c5930077c32f494973f016716d0d3eca1d846"},
-    {file = "grai_client-0.2.0.tar.gz", hash = "sha256:5d712a26403cafaa75df00b7e7ff5ea421a77d606f9131b3d3a9ee4f6c289911"},
+    {file = "grai_client-0.2.2-py3-none-any.whl", hash = "sha256:32409ea8845da656b7e7448dc01f3a0cb5f37ab64366a5e3d8a1ea2d141ed387"},
+    {file = "grai_client-0.2.2.tar.gz", hash = "sha256:3bcad582841061283450b88287c467e1f1fa1a5ac8775700e19ae5c4e4751b8e"},
 ]
 
 [package.dependencies]
-grai-schemas = ">=0.1.5,<0.2.0"
+grai-schemas = ">=0.1.8,<0.2.0"
 multimethod = "1.9"
 orjson = ">=3.8.3,<4.0.0"
 pydantic = ">=1.9.1,<2.0.0"
@@ -229,14 +229,14 @@ requests = ">=2.28.1,<3.0.0"
 
 [[package]]
 name = "grai-schemas"
-version = "0.1.7"
+version = "0.1.9"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_schemas-0.1.7-py3-none-any.whl", hash = "sha256:f684cbf75e2de82b7a95a416ad1286a905feba0443754d16d0b7b22cae29dffb"},
-    {file = "grai_schemas-0.1.7.tar.gz", hash = "sha256:0d0539d30d16e94bd51cf1947a244eb0fe24ae25e61f53a91ed542e24a7e5b8f"},
+    {file = "grai_schemas-0.1.9-py3-none-any.whl", hash = "sha256:3416b3be743094ee304b4cb522d1c8810b8c6d4682c1b9f8966c0cfea8716fe3"},
+    {file = "grai_schemas-0.1.9.tar.gz", hash = "sha256:e28195d336c623476e581e6a667881cde97da757b7454ef5b7ba14807bf671dd"},
 ]
 
 [package.dependencies]
@@ -268,19 +268,19 @@ files = [
 
 [[package]]
 name = "isort"
-version = "5.11.4"
+version = "5.12.0"
 description = "A Python utility / library to sort Python imports."
 category = "dev"
 optional = false
-python-versions = ">=3.7.0"
+python-versions = ">=3.8.0"
 files = [
-    {file = "isort-5.11.4-py3-none-any.whl", hash = "sha256:c033fd0edb91000a7f09527fe5c75321878f98322a77ddcc81adbd83724afb7b"},
-    {file = "isort-5.11.4.tar.gz", hash = "sha256:6db30c5ded9815d813932c04c2f85a360bcdd35fed496f4d8f35495ef0a261b6"},
+    {file = "isort-5.12.0-py3-none-any.whl", hash = "sha256:f84c2818376e66cf843d497486ea8fed8700b340f308f076c6fb1229dff318b6"},
+    {file = "isort-5.12.0.tar.gz", hash = "sha256:8bef7dde241278824a6d83f44a544709b065191b95b6e50894bdc722fcba0504"},
 ]
 
 [package.extras]
-colors = ["colorama (>=0.4.3,<0.5.0)"]
-pipfile-deprecated-finder = ["pipreqs", "requirementslib"]
+colors = ["colorama (>=0.4.3)"]
+pipfile-deprecated-finder = ["pip-shims (>=0.5.2)", "pipreqs", "requirementslib"]
 plugins = ["setuptools"]
 requirements-deprecated-finder = ["pip-api", "pipreqs"]
 
