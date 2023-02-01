@@ -118,7 +118,7 @@ THE_GUIDE_APPS = [
 INSTALLED_APPS = DJANGO_CORE_APPS + THIRD_PARTY_APPS + THE_GUIDE_APPS
 
 MIDDLEWARE = [
-    "middleware.HealthCheckMiddleware.HealthCheckMiddleware",
+    "middleware.HealthCheckMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -128,6 +128,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "middleware.MultitenantMiddleware",
 ]
 
 
@@ -220,33 +221,33 @@ PHONENUMBER_DEFAULT_REGION = "US"
 # https://drf-spectacular.readthedocs.io/en/latest/settings.html
 
 
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "handlers": {
-        "db-console": {
-            "level": "DEBUG",
-            "class": "logging.StreamHandler",
-        },
-        "file": {
-            "level": "DEBUG",
-            "class": "logging.FileHandler",
-            "filename": f"debug.log",
-        },
-    },
-    "loggers": {
-        "django": {
-            "handlers": ["file"],
-            "level": "DEBUG",
-            "propagate": True,
-        },
-        "django.db.backends": {
-            "handlers": ["db-console"],
-            "level": "DEBUG",
-            "propagate": False,
-        },
-    },
-}
+# LOGGING = {
+#     "version": 1,
+#     "disable_existing_loggers": False,
+#     "handlers": {
+#         "db-console": {
+#             "level": "DEBUG",
+#             "class": "logging.StreamHandler",
+#         },
+#         "file": {
+#             "level": "DEBUG",
+#             "class": "logging.FileHandler",
+#             "filename": f"debug.log",
+#         },
+#     },
+#     "loggers": {
+#         "django": {
+#             "handlers": ["file"],
+#             "level": "DEBUG",
+#             "propagate": True,
+#         },
+#         "django.db.backends": {
+#             "handlers": ["db-console"],
+#             "level": "DEBUG",
+#             "propagate": False,
+#         },
+#     },
+# }
 
 EMAIL_BACKEND = config("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
 EMAIL_FROM = config("EMAIL_FROM", None)

@@ -1,12 +1,13 @@
 import os
+
 import pytest
 from decouple import config
+from django.core.files.uploadedfile import UploadedFile
 
-from lineage.models import Node
 from connections.models import Connection, Connector, Run, RunFile
 from connections.tasks import run_connection_schedule, run_update_server
+from lineage.models import Node
 from workspaces.models import Organisation, Workspace
-from django.core.files.uploadedfile import UploadedFile
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
