@@ -9,7 +9,6 @@ from grai_source_dbt.loader import DBTGraph, Manifest
 
 
 def get_nodes_and_edges(manifest_file: str, namespace="default", version: str = "v1") -> Tuple[List[Node], List[Edge]]:
-
     manifest = Manifest.load(manifest_file)
     dbt_graph = DBTGraph(manifest, namespace=namespace)
 
