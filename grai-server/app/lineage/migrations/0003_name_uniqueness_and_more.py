@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("workspaces", "0001_initial"),
         ("lineage", "0002_alter_edge_destination_alter_edge_source"),

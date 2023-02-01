@@ -124,7 +124,6 @@ def mock_node(test_workspace):
 
 
 def mock_node_schema(node):
-
     return NodeV1.from_spec(
         {
             "name": node.name,

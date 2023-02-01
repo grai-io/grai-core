@@ -15,7 +15,6 @@ def forwards_func(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("workspaces", "0001_initial"),
     ]
