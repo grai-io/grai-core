@@ -979,14 +979,14 @@ requests = ">=2.28.1,<3.0.0"
 
 [[package]]
 name = "grai-schemas"
-version = "0.1.8"
+version = "0.1.9"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_schemas-0.1.8-py3-none-any.whl", hash = "sha256:205f39212dc7f85fead65209d1c067794fe6156844bbb0afbdfed426cd4d4d5c"},
-    {file = "grai_schemas-0.1.8.tar.gz", hash = "sha256:26c6f2aeb8ab2960bb7bdfcb1008af21f8e6ef612806491c0749bae836e03a3d"},
+    {file = "grai_schemas-0.1.9-py3-none-any.whl", hash = "sha256:3416b3be743094ee304b4cb522d1c8810b8c6d4682c1b9f8966c0cfea8716fe3"},
+    {file = "grai_schemas-0.1.9.tar.gz", hash = "sha256:e28195d336c623476e581e6a667881cde97da757b7454ef5b7ba14807bf671dd"},
 ]
 
 [package.dependencies]
@@ -994,14 +994,14 @@ pydantic = ">=1.10.4,<2.0.0"
 
 [[package]]
 name = "grai-source-dbt"
-version = "0.1.13"
+version = "0.1.14"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_source_dbt-0.1.13-py3-none-any.whl", hash = "sha256:bbd6fe440f7ab63ad5d333eca56423350df494c0356edfb1156cb40aa399ae50"},
-    {file = "grai_source_dbt-0.1.13.tar.gz", hash = "sha256:d94f7fe5acb118e130c54f69701549160735096e656f7bc2b0cb50f82833d24f"},
+    {file = "grai_source_dbt-0.1.14-py3-none-any.whl", hash = "sha256:a23e5378c6d581137b4c3caa9ec3e1b7196c086b88d9dba1a257fb57a2441335"},
+    {file = "grai_source_dbt-0.1.14.tar.gz", hash = "sha256:63b0dc6a94dbd1bab2911fa635e38df187daf0b0385718fa4b0166afa7424057"},
 ]
 
 [package.dependencies]
@@ -1012,14 +1012,14 @@ pydantic = ">=1.9.1,<2.0.0"
 
 [[package]]
 name = "grai-source-postgres"
-version = "0.1.9"
+version = "0.1.10"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_source_postgres-0.1.9-py3-none-any.whl", hash = "sha256:66ffddae5e71ceb6b7f63466c5df6c10038075e04b22d8268ac3f50f3b9257a0"},
-    {file = "grai_source_postgres-0.1.9.tar.gz", hash = "sha256:8a6710fce609efbc48d7fb20957e201f5f269fe31ab88d849561085912457805"},
+    {file = "grai_source_postgres-0.1.10-py3-none-any.whl", hash = "sha256:ede7ab3a6f595f6ecbd5c63ab821d194d72f051908e119032a29b1a5292d7322"},
+    {file = "grai_source_postgres-0.1.10.tar.gz", hash = "sha256:96b393666eebc0c4d1b2a174a08095a13c69f6370a9885a0031b7d2584d9418d"},
 ]
 
 [package.dependencies]
@@ -1032,19 +1032,19 @@ PyYAML = ">=6.0,<7.0"
 
 [[package]]
 name = "grai-source-snowflake"
-version = "0.0.12"
+version = "0.0.13"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_source_snowflake-0.0.12-py3-none-any.whl", hash = "sha256:70fc40040979027d30e90042dc717c49ca5efdf4406ae6bcade69dc5642fe8de"},
-    {file = "grai_source_snowflake-0.0.12.tar.gz", hash = "sha256:7403fe34078a0f3c4804043fa01444e45fe1462c4e69c0314e6741522dee082b"},
+    {file = "grai_source_snowflake-0.0.13-py3-none-any.whl", hash = "sha256:d3f353d44aa574bee6d783adc0e58a0e36c3285c00b1094d042efbc66d5d3738"},
+    {file = "grai_source_snowflake-0.0.13.tar.gz", hash = "sha256:3dbf15750c7908168099ad5e81175e9da857aa73b8395ac6d755fa85ca1b66b5"},
 ]
 
 [package.dependencies]
 grai-client = ">=0.2.0,<0.3.0"
-grai-schemas = ">=0.1.5,<0.2.0"
+grai-schemas = ">=0.1.9,<0.2.0"
 multimethod = ">=1.8,<2.0"
 pydantic = ">=1.9.1,<2.0.0"
 PyYAML = ">=6.0,<7.0"
@@ -2010,14 +2010,14 @@ tornado = ["tornado (>=5)"]
 
 [[package]]
 name = "setuptools"
-version = "67.0.0"
+version = "67.1.0"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "setuptools-67.0.0-py3-none-any.whl", hash = "sha256:9d790961ba6219e9ff7d9557622d2fe136816a264dd01d5997cfc057d804853d"},
-    {file = "setuptools-67.0.0.tar.gz", hash = "sha256:883131c5b6efa70b9101c7ef30b2b7b780a4283d5fc1616383cdf22c83cbefe6"},
+    {file = "setuptools-67.1.0-py3-none-any.whl", hash = "sha256:a7687c12b444eaac951ea87a9627c4f904ac757e7abdc5aac32833234af90378"},
+    {file = "setuptools-67.1.0.tar.gz", hash = "sha256:e261cdf010c11a41cb5cb5f1bf3338a7433832029f559a6a7614bd42a967c300"},
 ]
 
 [package.extras]
@@ -2174,14 +2174,14 @@ enum = ["django-choices-field (>=2.0)"]
 
 [[package]]
 name = "strawberry-graphql"
-version = "0.155.2"
+version = "0.155.3"
 description = "A library for creating GraphQL APIs"
 category = "main"
 optional = false
 python-versions = ">=3.7,<4.0"
 files = [
-    {file = "strawberry_graphql-0.155.2-py3-none-any.whl", hash = "sha256:b92bc7ee52348cd983781a7742c408567319d569e521ea568831ca3f61ca73b2"},
-    {file = "strawberry_graphql-0.155.2.tar.gz", hash = "sha256:2589e8bcd65e724532e960a14af8c4efac621952e208c9bd36f97873401a2f44"},
+    {file = "strawberry_graphql-0.155.3-py3-none-any.whl", hash = "sha256:ec258f2821e7ce2d73aeb499a4be603cc8642e5806c4682e5c34b0625dcab90e"},
+    {file = "strawberry_graphql-0.155.3.tar.gz", hash = "sha256:bf41d91ab2858360ca26d06cf21ddb3b4ff831017cd9eb11290aeb69a9e7a59c"},
 ]
 
 [package.dependencies]
@@ -2381,4 +2381,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "f626299a036345aed68bd62fc08c4810ab7a1b11ded087ee9a812e129a3c846a"
+content-hash = "4cad2ab12f044b35683dfe585a1a4d929743dbf2f2134fe6895e367cc3dc3556"
