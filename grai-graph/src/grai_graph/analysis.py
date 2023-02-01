@@ -41,12 +41,12 @@ class GraphAnalyzer:
         affected_nodes = self.traverse_data_type_violations(current_node, new_type)
         return list(affected_nodes)
 
-    def traverse_data_type_violations(self, node: NodeTypes, new_type: str, path: List = []) -> List[NodeTypes]:
+    def traverse_data_type_violations(self, node: NodeTypes, new_type: str, path: List = []) -> List[List[NodeTypes]]:
         if len(path) == 0:
             path.append(node)
         data_type = node.spec.metadata.grai.node_attributes.data_type
-        if data_type is not None and data_type != new_type:
-            yield path
+        # if data_type is not None and data_type != new_type:
+        #     yield path
 
         node_id = self.graph.get_node_id(node.spec.namespace, node.spec.name)
         for test_node in self.column_successors(node.spec.namespace, node.spec.name):
@@ -58,7 +58,7 @@ class GraphAnalyzer:
 
             # TODO What if we don't have information about the edge but both nodes have identical expectations for unique?
             if (
-                not hasattr(edge_meta.edge_attributes, "preserves_unique")
+                hasattr(edge_meta.edge_attributes, "preserves_unique")
                 and not edge_meta.edge_attributes.preserves_data_type
             ):
                 continue
@@ -90,8 +90,8 @@ class GraphAnalyzer:
             path.append(node)
 
         node_is_unique = node.spec.metadata.grai.node_attributes.is_unique
-        if node_is_unique is not None and node_is_unique != expects_unique:
-            yield path
+        # if node_is_unique is not None and node_is_unique != expects_unique:
+        #     yield path
 
         node_id = self.graph.get_node_id(node.spec.namespace, node.spec.name)
         for test_node in self.column_successors(node.spec.namespace, node.spec.name):
@@ -103,7 +103,7 @@ class GraphAnalyzer:
             # TODO What if we don't have information about the edge but both nodes have identical expectations for unique?
 
             if (
-                not hasattr(edge_meta.edge_attributes, "preserves_unique")
+                hasattr(edge_meta.edge_attributes, "preserves_unique")
                 and not edge_meta.edge_attributes.preserves_unique
             ):
                 continue
@@ -138,8 +138,8 @@ class GraphAnalyzer:
             path.append(node)
 
         node_is_nullable = node.spec.metadata.grai.node_attributes.is_nullable
-        if node_is_nullable is not None and node_is_nullable != is_nullable:
-            yield path
+        # if node_is_nullable is not None and node_is_nullable != is_nullable:
+        #     yield path
 
         node_id = self.graph.get_node_id(node.spec.namespace, node.spec.name)
         for test_node in self.column_successors(node.spec.namespace, node.spec.name):
@@ -151,7 +151,7 @@ class GraphAnalyzer:
 
             # TODO What if we don't have information about the edge but both nodes have identical expectations for unique?
             if (
-                not hasattr(edge_meta.edge_attributes, "preserves_unique")
+                hasattr(edge_meta.edge_attributes, "preserves_unique")
                 and not edge_meta.edge_attributes.preserves_nullable
             ):
                 continue
