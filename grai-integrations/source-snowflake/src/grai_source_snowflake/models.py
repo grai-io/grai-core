@@ -13,13 +13,15 @@ class ID(SnowflakeNode):
     namespace: str
     full_name: str
 
+    class Config:
+        extra = "forbid"
+
 
 class TableID(ID):
     table_schema: str
 
     @root_validator(pre=True)
     def make_full_name(cls, values: Dict) -> Dict:
-        full_name = values.get("full_name", None)
         if values.get("full_name", None) is None:
             values["full_name"] = f"{values['table_schema']}.{values['name']}"
         return values
@@ -78,8 +80,8 @@ class Constraint(str, Enum):
 
 
 class Edge(BaseModel):
-    source: Union[TableID, ColumnID]
-    destination: Union[TableID, ColumnID]
+    source: Union[ColumnID, TableID]
+    destination: Union[ColumnID, TableID]
     definition: Optional[str]
     constraint_type: Constraint
     metadata: Optional[Dict] = None

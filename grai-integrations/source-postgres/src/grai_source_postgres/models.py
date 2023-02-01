@@ -13,6 +13,9 @@ class ID(PostgresNode):
     namespace: str
     full_name: str
 
+    class Config:
+        extra = False
+
 
 class TableID(ID):
     table_schema: str
@@ -66,8 +69,8 @@ class Constraint(str, Enum):
 
 
 class Edge(BaseModel):
-    source: Union[TableID, ColumnID]
-    destination: Union[TableID, ColumnID]
+    source: Union[ColumnID, TableID]
+    destination: Union[ColumnID, TableID]
     definition: Optional[str]
     constraint_type: Constraint
     metadata: Optional[Dict] = None

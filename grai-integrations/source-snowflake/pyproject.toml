@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai_source_snowflake"
-version = "0.0.12"
+version = "0.0.13"
 description = ""
 authors = ["Tony Lewis <tony@grai.io>", "Edward Louth <edward@grai.io>"]
 license = "ELv2"
@@ -14,7 +14,7 @@ grai-client = "^0.2.0"
 PyYAML = "^6.0"
 multimethod = "^1.8"
 snowflake-connector-python = "^3.0.0"
-grai-schemas = "^0.1.5"
+grai-schemas = "^0.1.9"
 
 [tool.poetry.group.dev.dependencies]
 black = "^22.6.0"
