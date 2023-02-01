@@ -36,6 +36,12 @@ class ColumnID(ID):
             values["full_name"] = f"{values['table_schema']}.{values['table_name']}.{values['name']}"
         return values
 
+    @validator("table_name")
+    def validate_name(cls, value):
+        if value.startswith('"') and value.endswith('"'):
+            return value
+        return value.lower()
+
 
 class Column(SnowflakeNode):
     name: str = Field(alias="column_name")
@@ -57,6 +63,12 @@ class Column(SnowflakeNode):
             return full_name
         result = f"{values['column_schema']}.{values['table']}.{values['name']}"
         return result
+
+    @validator("name")
+    def validate_name(cls, value):
+        if value.startswith('"') and value.endswith('"'):
+            return value
+        return value.lower()
 
 
 class Constraint(str, Enum):
@@ -98,6 +110,12 @@ class Table(SnowflakeNode):
             return full_name
 
         return f"{values['table_schema']}.{values['name']}"
+
+    @validator("name")
+    def validate_name(cls, value):
+        if value.startswith('"') and value.endswith('"'):
+            return value
+        return value.lower()
 
     def get_edges(self) -> List[Edge]:
         return [
