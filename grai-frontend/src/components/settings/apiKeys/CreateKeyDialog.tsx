@@ -9,7 +9,7 @@ import {
 import React, { useState } from "react"
 import DialogTitle from "components/dialogs/DialogTitle"
 import CopyButton from "components/utils/CopyButton"
-import CreateKeyForm, { Values } from "./CreateKeyForm"
+import CreateKeyForm from "./CreateKeyForm"
 import {
   CreateApiKey,
   CreateApiKeyVariables,
@@ -29,6 +29,10 @@ export const CREATE_API_KEY = gql`
   }
 `
 
+export type Values = {
+  name: string
+}
+
 type CreateKeyDialogProps = {
   workspaceId: string
   open: boolean
@@ -41,6 +45,9 @@ const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({
   onClose,
 }) => {
   const [key, setKey] = useState<string>()
+  const [values, setValues] = useState<Values>({
+    name: "",
+  })
 
   const [createApiKey, { loading, error }] = useMutation<
     CreateApiKey,
@@ -72,7 +79,7 @@ const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({
     },
   })
 
-  const handleSubmit = (values: Values) =>
+  const handleSubmit = () =>
     createApiKey({
       variables: {
         ...values,
@@ -83,9 +90,17 @@ const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({
       .then(data => setKey(data?.createApiKey.key))
       .catch(err => {})
 
+  const handleClose = () => {
+    setValues({
+      name: "",
+    })
+    setKey(undefined)
+    onClose()
+  }
+
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle onClose={onClose}>Create API Key</DialogTitle>
+    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+      <DialogTitle onClose={handleClose}>Create API Key</DialogTitle>
       <DialogContent>
         {error && <GraphError error={error} />}
         {key ? (
@@ -99,7 +114,12 @@ const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({
             again.
           </Alert>
         ) : (
-          <CreateKeyForm onSubmit={handleSubmit} loading={loading} />
+          <CreateKeyForm
+            onSubmit={handleSubmit}
+            loading={loading}
+            values={values}
+            setValues={setValues}
+          />
         )}
       </DialogContent>
     </Dialog>

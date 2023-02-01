@@ -1,23 +1,23 @@
 import { LoadingButton } from "@mui/lab"
 import { TextField } from "@mui/material"
-import React, { useState } from "react"
+import React from "react"
 import Form from "components/form/Form"
-
-export type Values = {
-  name: string
-}
+import { Values } from "./CreateKeyDialog"
 
 type CreateKeyFormProps = {
-  onSubmit: (values: Values) => void
+  onSubmit: () => void
   loading?: boolean
+  values: Values
+  setValues: (values: Values) => void
 }
 
-const CreateKeyForm: React.FC<CreateKeyFormProps> = ({ onSubmit, loading }) => {
-  const [values, setValues] = useState<Values>({
-    name: "",
-  })
-
-  const handleSubmit = () => onSubmit(values)
+const CreateKeyForm: React.FC<CreateKeyFormProps> = ({
+  onSubmit,
+  loading,
+  values,
+  setValues,
+}) => {
+  const handleSubmit = () => onSubmit()
 
   return (
     <Form onSubmit={handleSubmit}>

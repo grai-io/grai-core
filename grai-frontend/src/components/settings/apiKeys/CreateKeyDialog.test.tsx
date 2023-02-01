@@ -24,6 +24,10 @@ test("submit", async () => {
   await waitFor(() => {
     expect(screen.getByText("API key created")).toBeTruthy()
   })
+
+  await user.click(screen.getByTestId("CloseIcon"))
+
+  expect(screen.queryByText("API key created")).toBeFalsy()
 })
 
 test("submit error", async () => {
