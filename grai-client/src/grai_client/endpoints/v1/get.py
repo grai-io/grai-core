@@ -134,7 +134,6 @@ def get_nodes_by_name_and_namespace(
     namespace: str,
     options: ClientOptions = ClientOptions(),
 ) -> Optional[NodeV1]:
-
     node_id = NodeNamedID(name=name, namespace=namespace)
     return client.get(node_id, options=options)
 

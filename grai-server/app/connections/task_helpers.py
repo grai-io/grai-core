@@ -81,7 +81,6 @@ def update(
         item_map[k]["id"] = model.id
 
     if obj_type == "Edge":
-
         for k, model in current_item_map.items():
             item_map[k]["source"] = model.source
             item_map[k]["destination"] = model.destination

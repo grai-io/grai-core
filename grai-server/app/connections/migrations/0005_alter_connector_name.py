@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("connections", "0004_connector_category_connector_coming_soon_and_more"),
     ]

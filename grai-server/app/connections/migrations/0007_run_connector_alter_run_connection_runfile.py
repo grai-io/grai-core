@@ -10,7 +10,6 @@ import connections.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("connections", "0006_alter_connector_name"),
     ]

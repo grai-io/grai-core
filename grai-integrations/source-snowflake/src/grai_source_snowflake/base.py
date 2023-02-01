@@ -31,7 +31,6 @@ def update_server(
     database: Optional[str] = None,
     schema: Optional[str] = None,
 ) -> None:
-
     conn = SnowflakeConnector(
         account=account,
         user=user,

@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("django_celery_beat", "0016_alter_crontabschedule_timezone"),
         ("connections", "0002_alter_connection_created_by_run"),

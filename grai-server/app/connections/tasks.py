@@ -152,7 +152,7 @@ def run_yaml_file(run: Run):
             )
             provided_values = {k: v for k, v in values.items() if v}
 
-            for (key, value) in provided_values.items():
+            for key, value in provided_values.items():
                 setattr(record, key, value)
 
             record.save()

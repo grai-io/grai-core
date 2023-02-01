@@ -18,7 +18,6 @@ def build_grai_metadata(current: Any, desired: Any) -> None:
 
 @build_grai_metadata.register
 def build_grai_metadata_from_column(current: Column, version: Literal["v1"] = "v1") -> ColumnMetadata:
-
     default_value = current.default_value
     if current.default_value is not None:
         default_value = DefaultValue(

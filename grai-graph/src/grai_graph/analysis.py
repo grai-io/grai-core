@@ -107,7 +107,6 @@ class GraphAnalyzer:
     def traverse_unique_violations(
         self, node: NodeTypes, expects_unique: bool, path: List = []
     ) -> List[List[NodeTypes]]:
-
         if len(path) == 0:
             path.append(node)
 

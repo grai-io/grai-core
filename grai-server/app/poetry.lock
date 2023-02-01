@@ -121,18 +121,18 @@ uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
 name = "boto3"
-version = "1.26.59"
+version = "1.26.61"
 description = "The AWS SDK for Python"
 category = "main"
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "boto3-1.26.59-py3-none-any.whl", hash = "sha256:34ee771a5cc84c16e75d4b9ef4672f51c2bafdce66ec457bbaac630b37d9cd5e"},
-    {file = "boto3-1.26.59.tar.gz", hash = "sha256:7d9cebb507fc96e6eb429621ccb2e731b75e7bbb8d6d9f0cf0c08089ee3c1ab7"},
+    {file = "boto3-1.26.61-py3-none-any.whl", hash = "sha256:5194c16e1f2371c25ee038e8291faf99117b4f2d272d70f48851ba47bcea44b4"},
+    {file = "boto3-1.26.61.tar.gz", hash = "sha256:78d75f6a08c33618d9ce37acca78e4f80e316a8ce3ac040c562f8054afe6451e"},
 ]
 
 [package.dependencies]
-botocore = ">=1.29.59,<1.30.0"
+botocore = ">=1.29.61,<1.30.0"
 jmespath = ">=0.7.1,<2.0.0"
 s3transfer = ">=0.6.0,<0.7.0"
 
@@ -141,14 +141,14 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "botocore"
-version = "1.29.59"
+version = "1.29.61"
 description = "Low-level, data-driven core of boto 3."
 category = "main"
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "botocore-1.29.59-py3-none-any.whl", hash = "sha256:5533644ddefaccfaa98460a63eb73e61a46aad019771226d103b1054b0df6103"},
-    {file = "botocore-1.29.59.tar.gz", hash = "sha256:bc75d41c5eecf624a2f9875483135aa78088a50c8d29847793f92756697cfed5"},
+    {file = "botocore-1.29.61-py3-none-any.whl", hash = "sha256:c7a7133d02c5e9a8fcc9e5a238bf15bde2d5369366553520332a88bc05b7358a"},
+    {file = "botocore-1.29.61.tar.gz", hash = "sha256:22ead51f900e3465d0e4e670d02d091e613c88be8b333c47bfda727f8988eef3"},
 ]
 
 [package.dependencies]
@@ -1014,18 +1014,18 @@ sidecar = ["drf-spectacular-sidecar"]
 
 [[package]]
 name = "grai-client"
-version = "0.2.0"
+version = "0.2.2"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_client-0.2.0-py3-none-any.whl", hash = "sha256:e2fe2d85456892a7d9062ddad33c5930077c32f494973f016716d0d3eca1d846"},
-    {file = "grai_client-0.2.0.tar.gz", hash = "sha256:5d712a26403cafaa75df00b7e7ff5ea421a77d606f9131b3d3a9ee4f6c289911"},
+    {file = "grai_client-0.2.2-py3-none-any.whl", hash = "sha256:32409ea8845da656b7e7448dc01f3a0cb5f37ab64366a5e3d8a1ea2d141ed387"},
+    {file = "grai_client-0.2.2.tar.gz", hash = "sha256:3bcad582841061283450b88287c467e1f1fa1a5ac8775700e19ae5c4e4751b8e"},
 ]
 
 [package.dependencies]
-grai-schemas = ">=0.1.5,<0.2.0"
+grai-schemas = ">=0.1.8,<0.2.0"
 multimethod = "1.9"
 orjson = ">=3.8.3,<4.0.0"
 pydantic = ">=1.9.1,<2.0.0"
@@ -1034,14 +1034,14 @@ requests = ">=2.28.1,<3.0.0"
 
 [[package]]
 name = "grai-schemas"
-version = "0.1.7"
+version = "0.1.8"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_schemas-0.1.7-py3-none-any.whl", hash = "sha256:f684cbf75e2de82b7a95a416ad1286a905feba0443754d16d0b7b22cae29dffb"},
-    {file = "grai_schemas-0.1.7.tar.gz", hash = "sha256:0d0539d30d16e94bd51cf1947a244eb0fe24ae25e61f53a91ed542e24a7e5b8f"},
+    {file = "grai_schemas-0.1.8-py3-none-any.whl", hash = "sha256:205f39212dc7f85fead65209d1c067794fe6156844bbb0afbdfed426cd4d4d5c"},
+    {file = "grai_schemas-0.1.8.tar.gz", hash = "sha256:26c6f2aeb8ab2960bb7bdfcb1008af21f8e6ef612806491c0749bae836e03a3d"},
 ]
 
 [package.dependencies]
@@ -1482,14 +1482,14 @@ testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
 name = "posthog"
-version = "2.2.0"
+version = "2.3.0"
 description = "Integrate PostHog into any python application."
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "posthog-2.2.0-py2.py3-none-any.whl", hash = "sha256:cf3561a23d6770991f0b890fbe09e20c488e54efe65f9202ffd4e37dd6a90f8a"},
-    {file = "posthog-2.2.0.tar.gz", hash = "sha256:1f450a20f7bed217874ded234f6ffc24ae73da37a16aa5bf76335249b34a9f60"},
+    {file = "posthog-2.3.0-py2.py3-none-any.whl", hash = "sha256:d4e2dcbfbea876409725470437acb32ca96cd7696c144bb19993ce6ad561f504"},
+    {file = "posthog-2.3.0.tar.gz", hash = "sha256:906ce912caa7f307ec8d32a88283203e96da6e4fd86e65ba7503994c5c484ac9"},
 ]
 
 [package.dependencies]

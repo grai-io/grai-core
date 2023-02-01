@@ -27,7 +27,6 @@ def update_server(
     host: Optional[str] = None,
     port: Optional[str] = None,
 ):
-
     conn = PostgresConnector(
         dbname=dbname,
         user=user,
