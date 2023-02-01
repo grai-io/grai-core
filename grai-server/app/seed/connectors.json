@@ -177,7 +177,7 @@
                     },
                     {
                         "name": "schema",
-                        "required": true
+                        "required": false
                     }
                 ]
             },
