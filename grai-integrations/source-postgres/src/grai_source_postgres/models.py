@@ -14,7 +14,7 @@ class ID(PostgresNode):
     full_name: str
 
     class Config:
-        extra = False
+        extra = "forbid"
 
 
 class TableID(ID):
