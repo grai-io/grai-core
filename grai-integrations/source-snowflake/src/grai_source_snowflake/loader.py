@@ -133,11 +133,15 @@ class SnowflakeConnector:
         schema.table in the database connected to.
         """
 
+        table_name = (
+            table.name if table.name.startswith('"') and table.name.endswith('"') else f"'{table.name.upper()}'"
+        )
+
         query = f"""
             SELECT column_name, data_type, is_nullable, column_default
             FROM information_schema.columns
             WHERE table_schema = '{table.table_schema}'
-            AND table_name = '{table.name}'
+            AND table_name = {table_name}
         """
 
         res = ({k.lower(): v for k, v in result.items()} for result in self.query_runner(query))
