@@ -7,10 +7,6 @@ from grai_schemas.base import Node as NodeTypes
 from grai_graph.graph import Graph
 
 
-def get_attr(node: NodeTypes, key: str) -> Optional[bool]:
-    return node.spec.metadata["grai"].get("node_attributes", {}).get(str, None)
-
-
 class GraphAnalyzer:
     def __init__(self, graph: Graph):
         self.graph = graph
@@ -27,25 +23,6 @@ class GraphAnalyzer:
 
     def test_delete_node(self, namespace: str, name: str):
         return list(self.downstream_nodes(namespace, name))
-
-    def test_type_change(self, namespace: str, name: str, new_type: str) -> List[NodeTypes]:
-        """Returns a list of nodes affected by a type change
-
-        :param namespace:
-        :param name:
-        :param new_type:
-        :return:
-        """
-        node_id = self.graph.get_node_id(namespace, name)
-        current_node = self.graph.get_node(namespace, name)
-
-        if current_node.spec.metadata.grai.node_attributes.data_type is not None:
-            if current_node.spec.metadata.grai.node_attributes.data_type == new_type:
-                return []
-        else:
-            raise AttributeError(f"No data type defined for {self.graph.id_label(node_id)}")
-        result = self.graph.graph.successors(node_id)
-        return [self.graph.get_node(node_id=node_id) for node_id in result]
 
     def test_type_change(self, namespace: str, name: str, new_type: bool) -> List[List[NodeTypes]]:
         """
@@ -67,7 +44,6 @@ class GraphAnalyzer:
     def traverse_data_type_violations(self, node: NodeTypes, new_type: str, path: List = []) -> List[NodeTypes]:
         if len(path) == 0:
             path.append(node)
-
         data_type = node.spec.metadata.grai.node_attributes.data_type
         if data_type is not None and data_type != new_type:
             yield path
@@ -81,7 +57,10 @@ class GraphAnalyzer:
             node_meta = test_node.spec.metadata.grai
 
             # TODO What if we don't have information about the edge but both nodes have identical expectations for unique?
-            if not edge_meta.edge_attributes.preserves_data_type:
+            if (
+                not hasattr(edge_meta.edge_attributes, "preserves_unique")
+                and not edge_meta.edge_attributes.preserves_data_type
+            ):
                 continue
 
             new_path = [*path, test_node]
@@ -123,7 +102,10 @@ class GraphAnalyzer:
 
             # TODO What if we don't have information about the edge but both nodes have identical expectations for unique?
 
-            if not edge_meta.edge_attributes.preserves_unique:
+            if (
+                not hasattr(edge_meta.edge_attributes, "preserves_unique")
+                and not edge_meta.edge_attributes.preserves_unique
+            ):
                 continue
 
             test_node_is_unique = node_meta.node_attributes.is_unique
@@ -168,7 +150,10 @@ class GraphAnalyzer:
             node_meta = test_node.spec.metadata.grai
 
             # TODO What if we don't have information about the edge but both nodes have identical expectations for unique?
-            if not edge_meta.edge_attributes.preserves_nullable:
+            if (
+                not hasattr(edge_meta.edge_attributes, "preserves_unique")
+                and not edge_meta.edge_attributes.preserves_nullable
+            ):
                 continue
 
             new_path = [*path, test_node]

@@ -294,6 +294,7 @@ class TestDataType(unittest.TestCase):
             d: [],
         }
         G = get_analysis_from_map(mock_structure)
+
         results = G.test_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="int")
         assert (
             len(results) == 1 and results[0][-1].spec.name is "d"
