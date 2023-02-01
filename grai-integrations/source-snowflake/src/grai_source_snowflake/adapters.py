@@ -9,11 +9,20 @@ from grai_schemas.v1.metadata.edges import (
     EdgeTypeLabels,
     GenericEdgeMetadataV1,
     TableToColumnMetadata,
+    TableToTableMetadata,
 )
 from grai_schemas.v1.metadata.nodes import ColumnMetadata, NodeTypeLabels, TableMetadata
 from multimethod import multimethod
 
-from grai_source_snowflake.models import ID, Column, Constraint, Edge, Table
+from grai_source_snowflake.models import (
+    ID,
+    Column,
+    ColumnID,
+    Constraint,
+    Edge,
+    Table,
+    TableID,
+)
 from grai_source_snowflake.package_definitions import config
 
 
@@ -60,16 +69,20 @@ def build_grai_metadata_from_table(current: Table, version: Literal["v1"] = "v1"
 def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> GenericEdgeMetadataV1:
     data = {"version": version}
 
-    # if isinstance(current.source, Table) and isinstance(current.destination, Column):
-    if current.constraint_type.value == Constraint.belongs_to:
-        data["edge_type"] = EdgeTypeLabels.table_to_column.value
-        return TableToColumnMetadata(**data)
-    elif isinstance(current.source, Column) and isinstance(current.destination, Column):
-        data["edge_type"] = EdgeTypeLabels.column_to_column.value
-        return ColumnToColumnMetadata(**data)
-    else:
-        data["edge_type"] = EdgeTypeLabels.generic.value
-        return GenericEdgeMetadataV1(**data)
+    if isinstance(current.source, TableID):
+        if isinstance(current.destination, ColumnID):
+            data["edge_type"] = EdgeTypeLabels.table_to_column.value
+            return TableToColumnMetadata(**data)
+        elif isinstance(current.destination, TableID):
+            data["edge_type"] = EdgeTypeLabels.table_to_table.value
+            return TableToTableMetadata(**data)
+    elif isinstance(current.source, ColumnID):
+        if isinstance(current.destination, ColumnID):
+            data["edge_type"] = EdgeTypeLabels.column_to_column.value
+            return ColumnToColumnMetadata(**data)
+
+    data["edge_type"] = EdgeTypeLabels.generic.value
+    return GenericEdgeMetadataV1(**data)
 
 
 # ---
@@ -116,7 +129,7 @@ def build_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> Di
 def build_metadata(obj, version):
     return {
         base_config.metadata_id: build_grai_metadata(obj, version),
-        config.metadata_id: {},  # build_snowflake_metadata(obj, version),
+        config.metadata_id: build_snowflake_metadata(obj, version),
     }
 
 

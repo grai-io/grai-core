@@ -8,6 +8,7 @@ class EdgeTypeLabels(Enum):
     generic = "Edge"
     table_to_column = "TableToColumn"
     column_to_column = "ColumnToColumn"
+    table_to_table = "TableToTable"
 
 
 class GenericEdgeMetadataV1(V1Mixin):
