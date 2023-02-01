@@ -37,6 +37,12 @@ def build_grai_metadata_from_column(current: Column, version: Literal["v1"] = "v
     if current.data_type is not None:
         data["node_attributes"]["data_type"] = current.data_type
 
+    for test in current.tests:
+        if test.test_metadata.name == "not_null":
+            data["node_attributes"]["is_nullable"] = False
+        elif test.test_metadata.name == "unique":
+            data["node_attributes"]["is_unique"] = True
+
     return ColumnMetadata(**data)
 
 
