@@ -204,7 +204,7 @@ def get_edge_nodes_from_database(items, workspace):
 #     Model.objects.bulk_create(new_items)
 
 
-def process_updates(workspace, Model, items, active_items):
+def process_updates(workspace, Model, items, active_items=None):
     if not items:
         return
 
