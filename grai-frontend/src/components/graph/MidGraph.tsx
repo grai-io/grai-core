@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import BaseGraph from "./BaseGraph"
 import { Edge as RFEdge, Node as RFNode } from "reactflow"
 import notEmpty from "helpers/notEmpty"
@@ -53,6 +53,10 @@ const MidGraph: React.FC<GraphProps> = ({
 }) => {
   const [hidden, setHidden] = useState<string[]>(initialHidden ?? [])
   const [expanded, setExpanded] = useState<string[]>([])
+
+  useEffect(() => {
+    setHidden(initialHidden ?? [])
+  }, [initialHidden])
 
   const visibleTables = tables.filter(table => !hidden.includes(table.id))
 
@@ -157,6 +161,7 @@ const MidGraph: React.FC<GraphProps> = ({
       initialNodes={initialTables}
       initialEdges={transformedEdges}
       expanded={expanded}
+      errors={!!errors}
     />
   )
 }
