@@ -88,11 +88,23 @@ const mock = {
 }
 
 test("renders", async () => {
-  window.ResizeObserver = jest.fn().mockImplementation(() => ({
-    disconnect: jest.fn(),
-    observe: jest.fn(),
-    unobserve: jest.fn(),
-  }))
+  class ResizeObserver {
+    callback: globalThis.ResizeObserverCallback
+
+    constructor(callback: globalThis.ResizeObserverCallback) {
+      this.callback = callback
+    }
+
+    observe(target: Element) {
+      this.callback([{ target } as globalThis.ResizeObserverEntry], this)
+    }
+
+    unobserve() {}
+
+    disconnect() {}
+  }
+
+  window.ResizeObserver = ResizeObserver
 
   renderWithMocks(<Graph />, [mock])
 
@@ -120,16 +132,28 @@ test("renders", async () => {
 // })
 
 test("renders with errors", async () => {
-  window.ResizeObserver = jest.fn().mockImplementation(() => ({
-    disconnect: jest.fn(),
-    observe: jest.fn(),
-    unobserve: jest.fn(),
-  }))
+  class ResizeObserver {
+    callback: globalThis.ResizeObserverCallback
+
+    constructor(callback: globalThis.ResizeObserverCallback) {
+      this.callback = callback
+    }
+
+    observe(target: Element) {
+      this.callback([{ target } as globalThis.ResizeObserverEntry], this)
+    }
+
+    unobserve() {}
+
+    disconnect() {}
+  }
+
+  window.ResizeObserver = ResizeObserver
 
   renderWithRouter(<Graph />, {
-    path: "/workspaces/:workspaceId/graph",
+    path: "/:organisationName/:workspaceName/graph",
     route:
-      "/workspaces/1234/graph?errors=%5B%7B%22source%22%3A%20%22a%22%2C%20%22destination%22%3A%20%22b%22%2C%20%22test%22%3A%20%22nullable%22%2C%20%22message%22%3A%20%22not%20null%22%7D%5D",
+      "/default/1234/graph?errors=%5B%7B%22source%22%3A%20%22a%22%2C%20%22destination%22%3A%20%22b%22%2C%20%22test%22%3A%20%22nullable%22%2C%20%22message%22%3A%20%22not%20null%22%7D%5D",
   })
 
   await waitFor(() => {
@@ -138,15 +162,27 @@ test("renders with errors", async () => {
 })
 
 test("renders with limitGraph", async () => {
-  window.ResizeObserver = jest.fn().mockImplementation(() => ({
-    disconnect: jest.fn(),
-    observe: jest.fn(),
-    unobserve: jest.fn(),
-  }))
+  class ResizeObserver {
+    callback: globalThis.ResizeObserverCallback
+
+    constructor(callback: globalThis.ResizeObserverCallback) {
+      this.callback = callback
+    }
+
+    observe(target: Element) {
+      this.callback([{ target } as globalThis.ResizeObserverEntry], this)
+    }
+
+    unobserve() {}
+
+    disconnect() {}
+  }
+
+  window.ResizeObserver = ResizeObserver
 
   renderWithRouter(<Graph />, {
-    path: "/workspaces/:workspaceId/graph",
-    route: "/workspaces/1234/graph?limitGraph=true",
+    path: ":organisationName/:workspaceName/graph",
+    route: "/default/1234/graph?limitGraph=true",
   })
 
   await waitFor(() => {

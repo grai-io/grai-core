@@ -39,10 +39,7 @@ const ErrorEdge: React.FC<EdgeProps<ErrorData>> = ({
 
   const [expand, setExpand] = useState(false)
 
-  const toggleExpand = () => {
-    console.log("toggle expand")
-    setExpand(!expand)
-  }
+  const toggleExpand = () => setExpand(!expand)
 
   return (
     <>
@@ -56,15 +53,6 @@ const ErrorEdge: React.FC<EdgeProps<ErrorData>> = ({
             pointerEvents: "all",
             position: "absolute",
             transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
-            // borderColor: theme => theme.palette.error.main,
-            // borderWidth: 1,
-            // borderStyle: "solid",
-            // backgroundColor: "white",
-            // color: theme => theme.palette.error.contrastText,
-            // padding: 1,
-            // borderRadius: 1,
-            // fontSize: 12,
-            // fontWeight: 700,
             zIndex: 20,
             width: 225,
             overflowWrap: "break-word",
