@@ -51,19 +51,36 @@ const destinationTable = {
   destination_tables: [],
 }
 
+const spareTable = {
+  id: "3",
+  namespace: "default",
+  name: "N3",
+  display_name: "N3 Node",
+  is_active: true,
+  data_source: "test",
+  metadata: {
+    grai: {
+      node_type: "Table",
+    },
+  },
+  columns: [],
+  source_tables: [],
+  destination_tables: [],
+}
+
 const mock = {
   request: {
     query: GET_TABLES_AND_EDGES,
     variables: {
-      organisationName: "",
-      workspaceName: "",
+      organisationName: "default",
+      workspaceName: "demo",
     },
   },
   result: {
     data: {
       workspace: {
         id: "1",
-        tables: [sourceTable, destinationTable],
+        tables: [sourceTable, destinationTable, spareTable],
         other_edges: [
           {
             id: "1",
@@ -106,7 +123,10 @@ test("renders", async () => {
 
   window.ResizeObserver = ResizeObserver
 
-  renderWithMocks(<Graph />, [mock])
+  renderWithMocks(<Graph />, [mock], {
+    path: ":organisationName/:workspaceName/graph",
+    route: "/default/demo/graph",
+  })
 
   await waitFor(() => {
     screen.getAllByText("N2 Node")
@@ -153,7 +173,7 @@ test("renders with errors", async () => {
   renderWithRouter(<Graph />, {
     path: "/:organisationName/:workspaceName/graph",
     route:
-      "/default/1234/graph?errors=%5B%7B%22source%22%3A%20%22a%22%2C%20%22destination%22%3A%20%22b%22%2C%20%22test%22%3A%20%22nullable%22%2C%20%22message%22%3A%20%22not%20null%22%7D%5D",
+      "/default/demo/graph?errors=%5B%7B%22source%22%3A%20%22a%22%2C%20%22destination%22%3A%20%22b%22%2C%20%22test%22%3A%20%22nullable%22%2C%20%22message%22%3A%20%22not%20null%22%7D%5D",
   })
 
   await waitFor(() => {
@@ -180,13 +200,14 @@ test("renders with limitGraph", async () => {
 
   window.ResizeObserver = ResizeObserver
 
-  renderWithRouter(<Graph />, {
+  renderWithMocks(<Graph />, [mock], {
     path: ":organisationName/:workspaceName/graph",
-    route: "/default/1234/graph?limitGraph=true",
+    route:
+      "/default/demo/graph?limitGraph=true&errors=%5B%7B%22source%22%3A%20%22N1%22%2C%20%22destination%22%3A%20%22N2%22%2C%20%22test%22%3A%20%22nullable%22%2C%20%22message%22%3A%20%22not%20null%22%7D%5D",
   })
 
   await waitFor(() => {
-    screen.getAllByText("Hello World")
+    screen.getAllByText("N2 Node")
   })
 })
 

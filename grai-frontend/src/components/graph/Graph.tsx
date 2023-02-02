@@ -48,6 +48,8 @@ const Graph: React.FC<GraphProps> = ({
 
   const errorTables = tables.filter(
     table =>
+      errorSourceIds.includes(table.id) ||
+      errorDestinationIds.includes(table.id) ||
       table.columns.filter(
         column =>
           errorSourceIds.includes(column.id) ||
