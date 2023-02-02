@@ -8,7 +8,7 @@ import {
   GetWorkspaceVariables,
 } from "./__generated__/GetWorkspace"
 
-const GET_WORKSPACE = gql`
+export const GET_WORKSPACE = gql`
   query GetWorkspace($workspaceId: ID!) {
     workspace(id: $workspaceId) {
       id

@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import React, { lazy, Suspense } from "react"
 import { Routes as BrowerRoutes, Route } from "react-router-dom"
 import GuestRoute from "./components/auth/GuestRoute"
