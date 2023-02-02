@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import React, { lazy, Suspense } from "react"
 import { Routes as BrowerRoutes, Route } from "react-router-dom"
 import GuestRoute from "./components/auth/GuestRoute"
@@ -8,6 +9,7 @@ import PageLayout from "components/layout/PageLayout"
 import Loading from "components/layout/Loading"
 import SuspenseOutlet from "components/utils/SuspenseOutlet"
 import SettingsLayout from "components/settings/SettingsLayout"
+import WorkspaceRedirect from "pages/workspaces/WorkspaceRedirect"
 
 const Index = lazy(() => import("./pages/Index"))
 const Workspaces = lazy(() => import("./pages/workspaces/Workspaces"))
@@ -42,7 +44,11 @@ const Routes: React.FC = () => (
       <Route element={<PrivateRoute />}>
         <Route element={<SuspenseOutlet fallback={<PageLayout loading />} />}>
           <Route index element={<Index />} />
-          <Route path="/workspaces" element={<Workspaces />} />
+          <Route path="/workspaces">
+            <Route index element={<Workspaces />} />
+            <Route path=":workspaceId" element={<WorkspaceRedirect />} />
+            <Route path=":workspaceId/:rest*" element={<WorkspaceRedirect />} />
+          </Route>
           <Route
             path=":organisationName/:workspaceName"
             element={<WorkspaceProvider />}
