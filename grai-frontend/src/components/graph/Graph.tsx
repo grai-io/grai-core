@@ -65,7 +65,7 @@ const Graph: React.FC<GraphProps> = ({
           .filter(table => !errorTableIds.includes(table.id))
           .map(table => table.id)
       )
-    : initialHidden
+    : initialHidden ?? []
 
   return (
     <MidGraph
@@ -73,6 +73,7 @@ const Graph: React.FC<GraphProps> = ({
       edges={edges}
       errors={enrichedErrors}
       initialHidden={initialHidden2}
+      // limitGraph={limitGraph}
     />
   )
 }
