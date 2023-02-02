@@ -12,19 +12,21 @@ interface Column {
   name: string
 }
 
+export type BaseNodeData = {
+  id: string
+  label: string
+  data_source: string
+  highlight: boolean
+  columns: Column[]
+  hiddenSourceTables: string[]
+  hiddenDestinationTables: string[]
+  expanded: boolean
+  onExpand: (value: boolean) => void
+  onShow: (values: string[]) => void
+}
+
 interface BaseNodeProps {
-  data: {
-    id: string
-    label: string
-    data_source: string
-    highlight: boolean
-    columns: Column[]
-    hiddenSourceTables: string[]
-    hiddenDestinationTables: string[]
-    expanded: boolean
-    onExpand: (value: boolean) => void
-    onShow: (values: string[]) => void
-  }
+  data: BaseNodeData
 }
 
 const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import ReactFlow, {
   Controls,
   Edge,
+  EdgeTypes,
   getIncomers,
   getOutgoers,
   Node,
@@ -13,12 +14,17 @@ import Elk, { ElkNode } from "elkjs"
 import BaseNode from "./BaseNode"
 import theme from "theme"
 import Loading from "components/layout/Loading"
+import ErrorEdge from "./ErrorEdge"
 
 const DEFAULT_WIDTH = 300
 const DEFAULT_HEIGHT = 110
 
 const nodeTypes = {
   baseNode: BaseNode,
+}
+
+const edgeTypes: EdgeTypes = {
+  error: ErrorEdge,
 }
 
 export const createGraphLayout = async (
@@ -213,6 +219,7 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
         edges={edges}
         proOptions={proOptions}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         onNodeMouseEnter={(_event, node) => highlightPath(node, nodes, edges)}
         onNodeMouseLeave={() => resetNodeStyles()}
         onPaneClick={() => {

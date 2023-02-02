@@ -3,6 +3,8 @@ import BaseGraph from "./BaseGraph"
 import { Edge as RFEdge, Node as RFNode } from "reactflow"
 import notEmpty from "helpers/notEmpty"
 import { Edge, EnhancedTable } from "helpers/graph"
+import { ErrorData } from "./ErrorEdge"
+import { BaseNodeData } from "./BaseNode"
 
 export interface GraiNodeMetadata {
   node_type?: "Table" | "Column" | null
@@ -54,7 +56,7 @@ const Graph: React.FC<GraphProps> = ({
 
   const visibleTables = tables.filter(table => !hidden.includes(table.id))
 
-  const initialTables: RFNode[] = tables
+  const initialTables: RFNode<BaseNodeData>[] = tables
     .filter(table => !hidden.includes(table.id))
     .map(table => ({
       id: table.id,
@@ -85,12 +87,19 @@ const Graph: React.FC<GraphProps> = ({
         onShow(values: string[]) {
           setHidden([...hidden.filter(a => !values.includes(a))])
         },
+        highlight: false,
       },
       position,
     }))
 
-  //TODO: Need to include columns here
-  const nameToNode = (name: string) => tables.find(n => n.name === name)
+  const columns: Column[] = errors
+    ? tables.reduce<Column[]>((res, table) => res.concat(table.columns), [])
+    : []
+
+  const tablesAndColumns = columns.concat(tables)
+
+  const nameToNode = (name: string) =>
+    tablesAndColumns.find(n => n.name === name)
 
   const enrichedErrors = errors?.map(error => ({
     ...error,
@@ -98,7 +107,7 @@ const Graph: React.FC<GraphProps> = ({
     destinationId: nameToNode(error.destination)?.id,
   }))
 
-  const initialEdges: RFEdge[] = edges.map(edge => {
+  const initialEdges: RFEdge<ErrorData>[] = edges.map(edge => {
     const edgeErrors = enrichedErrors?.filter(
       error =>
         error.sourceId === edge.source.id &&
@@ -114,7 +123,10 @@ const Graph: React.FC<GraphProps> = ({
       //   width: 40,
       //   height: 40,
       // },
-      label: edgeErrors?.map(error => error.message).join(", "),
+      data: {
+        errors: edgeErrors,
+      },
+      type: edgeErrors && edgeErrors.length > 0 ? "error" : undefined,
       labelStyle: { fill: "red", fontWeight: 700 },
       zIndex: 10,
     }
