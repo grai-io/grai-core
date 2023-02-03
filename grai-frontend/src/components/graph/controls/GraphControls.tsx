@@ -1,12 +1,12 @@
 import { Add, FitScreen, Remove } from "@mui/icons-material"
-import { Box, Button, Checkbox, Stack, Typography } from "@mui/material"
+import { Box, Button, Checkbox, Stack } from "@mui/material"
 import React from "react"
 import { useSearchParams } from "react-router-dom"
 import { useReactFlow } from "reactflow"
+import NControls, { ControlNOptions } from "./NControls"
 
 export type ControlOptions = {
-  n?: number
-  setN?: (input: number) => void
+  n?: ControlNOptions
 }
 
 type GraphControlsProps = {
@@ -138,68 +138,7 @@ const GraphControls: React.FC<GraphControlsProps> = ({ errors, options }) => {
             </Button>
           </Box>
         )}
-        {options?.n && (
-          <Box sx={{ display: "flex" }}>
-            <Typography variant="body2" sx={{ p: 0.5, ml: 1, mr: 0.5 }}>
-              N
-            </Typography>
-            <Button
-              variant="contained"
-              disableElevation
-              onClick={() =>
-                options.setN && options.setN(Math.max((options.n ?? 1) - 1, 1))
-              }
-              disabled={options.n < 2}
-              sx={{
-                backgroundColor: "white",
-                color: "black",
-                borderStyle: "solid",
-                borderWidth: 1,
-                borderColor: "divider",
-                borderRadius: 0,
-                borderRight: "none",
-                p: 0.25,
-                minWidth: 0,
-              }}
-            >
-              <Remove fontSize="small" />
-            </Button>
-            <Typography
-              variant="body2"
-              sx={{
-                backgroundColor: "white",
-                color: "black",
-                borderStyle: "solid",
-                borderWidth: 1,
-                borderColor: "divider",
-                borderRadius: 0,
-                borderRight: "none",
-                p: 0.25,
-                textAlign: "center",
-                minWidth: 25,
-              }}
-            >
-              {options.n}
-            </Typography>
-            <Button
-              variant="contained"
-              disableElevation
-              onClick={() => options.setN && options.setN((options.n ?? 1) + 1)}
-              sx={{
-                backgroundColor: "white",
-                color: "black",
-                borderStyle: "solid",
-                borderWidth: 1,
-                borderColor: "divider",
-                borderRadius: 0,
-                p: 0.25,
-                minWidth: 0,
-              }}
-            >
-              <Add fontSize="small" />
-            </Button>
-          </Box>
-        )}
+        {options?.n && <NControls options={options.n} />}
       </Stack>
     </Box>
   )

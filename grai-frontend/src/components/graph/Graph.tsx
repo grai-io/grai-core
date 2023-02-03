@@ -2,7 +2,7 @@ import React from "react"
 import notEmpty from "helpers/notEmpty"
 import { Edge } from "helpers/graph"
 import MidGraph, { Column, Table } from "./MidGraph"
-import { ControlOptions } from "./GraphControls"
+import { ControlOptions } from "./controls/GraphControls"
 
 export interface Error {
   source: string

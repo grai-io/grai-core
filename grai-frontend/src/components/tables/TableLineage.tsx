@@ -65,7 +65,7 @@ type TableLineageProps = {
 }
 
 const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
-  const [n, setN] = useState(1)
+  const [value, setValue] = useState(1)
   const { organisationName, workspaceName } = useWorkspace()
   const { loading, error, data } = useQuery<
     GetTablesAndEdgesTableLineage,
@@ -87,7 +87,7 @@ const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
 
   const visibleTables: string[] = [table.id]
 
-  for (var i = 0; i < n; i++) {
+  for (var i = 0; i < value; i++) {
     const tablesToAdd = tables.filter(
       t =>
         t.source_tables.some(sourceTable =>
@@ -103,15 +103,6 @@ const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
 
   const hiddenTables = tables.filter(t => !visibleTables.includes(t.id))
 
-  // const hiddenTables = tables.filter(t => {
-  //   if (t.id === table.id) return false
-
-  //   return !(
-  //     t.source_tables.some(sourceTable => sourceTable.id === table.id) ||
-  //     t.destination_tables.some(sourceTable => sourceTable.id === table.id)
-  //   )
-  // })
-
   return (
     <Box
       sx={{
@@ -126,8 +117,10 @@ const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
         edges={edges}
         initialHidden={hiddenTables.map(n => n.id)}
         controlOptions={{
-          n,
-          setN,
+          n: {
+            value,
+            setValue,
+          },
         }}
       />
     </Box>

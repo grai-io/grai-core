@@ -5,7 +5,7 @@ import notEmpty from "helpers/notEmpty"
 import { Edge, EnhancedTable } from "helpers/graph"
 import { ErrorData } from "./ErrorEdge"
 import { BaseNodeData } from "./BaseNode"
-import { ControlOptions } from "./GraphControls"
+import { ControlOptions } from "./controls/GraphControls"
 
 export interface GraiNodeMetadata {
   node_type?: "Table" | "Column" | null
