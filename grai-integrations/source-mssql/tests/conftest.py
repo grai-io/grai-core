@@ -1,20 +1,20 @@
 import pytest
 
 from grai_source_mssql.base import get_nodes_and_edges
-from grai_source_mssql.loader import MySQLConnector
+from grai_source_mssql.loader import MsSQLConnector
 
 
 @pytest.fixture
-def connection() -> MySQLConnector:
+def connection() -> MsSQLConnector:
     test_credentials = {
         "host": "localhost",
         "dbname": "grai",
-        "user": "grai",
-        "password": "grai",
-        "namespace": "test",
+        "user": "sa",
+        "password": "GraiGraiGr4i",
+        "namespace": "default",
     }
 
-    connection = MySQLConnector(**test_credentials)
+    connection = MsSQLConnector(**test_credentials)
     return connection
 
 
