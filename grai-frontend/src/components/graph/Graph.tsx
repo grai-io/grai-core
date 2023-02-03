@@ -2,6 +2,7 @@ import React from "react"
 import notEmpty from "helpers/notEmpty"
 import { Edge } from "helpers/graph"
 import MidGraph, { Column, Table } from "./MidGraph"
+import { ControlOptions } from "./GraphControls"
 
 export interface Error {
   source: string
@@ -16,6 +17,7 @@ type GraphProps = {
   errors?: Error[] | null
   limitGraph?: boolean
   initialHidden?: string[]
+  controlOptions?: ControlOptions
 }
 
 const Graph: React.FC<GraphProps> = ({
@@ -24,6 +26,7 @@ const Graph: React.FC<GraphProps> = ({
   errors,
   limitGraph,
   initialHidden,
+  controlOptions,
 }) => {
   const columns: Column[] = errors
     ? tables.reduce<Column[]>((res, table) => res.concat(table.columns), [])
@@ -73,7 +76,7 @@ const Graph: React.FC<GraphProps> = ({
       edges={edges}
       errors={enrichedErrors}
       initialHidden={initialHidden2}
-      // limitGraph={limitGraph}
+      controlOptions={controlOptions}
     />
   )
 }

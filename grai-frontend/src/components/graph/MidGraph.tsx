@@ -5,6 +5,7 @@ import notEmpty from "helpers/notEmpty"
 import { Edge, EnhancedTable } from "helpers/graph"
 import { ErrorData } from "./ErrorEdge"
 import { BaseNodeData } from "./BaseNode"
+import { ControlOptions } from "./GraphControls"
 
 export interface GraiNodeMetadata {
   node_type?: "Table" | "Column" | null
@@ -41,6 +42,7 @@ type GraphProps = {
   edges: Edge[]
   errors?: Error[] | null
   initialHidden?: string[]
+  controlOptions?: ControlOptions
 }
 
 const position = { x: 0, y: 0 }
@@ -50,6 +52,7 @@ const MidGraph: React.FC<GraphProps> = ({
   edges,
   errors,
   initialHidden,
+  controlOptions,
 }) => {
   const [hidden, setHidden] = useState<string[]>(initialHidden ?? [])
   const [expanded, setExpanded] = useState<string[]>([])
@@ -162,6 +165,7 @@ const MidGraph: React.FC<GraphProps> = ({
       initialEdges={transformedEdges}
       expanded={expanded}
       errors={!!errors}
+      controlOptions={controlOptions}
     />
   )
 }

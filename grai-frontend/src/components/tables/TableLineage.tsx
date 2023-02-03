@@ -1,6 +1,6 @@
 import { gql, useQuery } from "@apollo/client"
 import { Alert, Box } from "@mui/material"
-import React from "react"
+import React, { useState } from "react"
 import theme from "theme"
 import Loading from "components/layout/Loading"
 import Graph from "components/graph/Graph"
@@ -65,6 +65,7 @@ type TableLineageProps = {
 }
 
 const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
+  const [n, setN] = useState(1)
   const { organisationName, workspaceName } = useWorkspace()
   const { loading, error, data } = useQuery<
     GetTablesAndEdgesTableLineage,
@@ -84,14 +85,32 @@ const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
 
   if (!tables) return <Alert>No tables found</Alert>
 
-  const hiddenTables = tables.filter(t => {
-    if (t.id === table.id) return false
+  const visibleTables: string[] = [table.id]
 
-    return !(
-      t.source_tables.some(sourceTable => sourceTable.id === table.id) ||
-      t.destination_tables.some(sourceTable => sourceTable.id === table.id)
+  for (var i = 0; i < n; i++) {
+    const tablesToAdd = tables.filter(
+      t =>
+        t.source_tables.some(sourceTable =>
+          visibleTables.includes(sourceTable.id)
+        ) ||
+        t.destination_tables.some(destinationTable =>
+          visibleTables.includes(destinationTable.id)
+        )
     )
-  })
+
+    visibleTables.push(...tablesToAdd.map(t => t.id))
+  }
+
+  const hiddenTables = tables.filter(t => !visibleTables.includes(t.id))
+
+  // const hiddenTables = tables.filter(t => {
+  //   if (t.id === table.id) return false
+
+  //   return !(
+  //     t.source_tables.some(sourceTable => sourceTable.id === table.id) ||
+  //     t.destination_tables.some(sourceTable => sourceTable.id === table.id)
+  //   )
+  // })
 
   return (
     <Box
@@ -106,6 +125,10 @@ const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
         tables={tables}
         edges={edges}
         initialHidden={hiddenTables.map(n => n.id)}
+        controlOptions={{
+          n,
+          setN,
+        }}
       />
     </Box>
   )
