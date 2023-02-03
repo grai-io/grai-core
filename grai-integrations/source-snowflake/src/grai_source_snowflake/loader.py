@@ -156,7 +156,12 @@ class SnowflakeConnector:
 
     @cached_property
     def column_map(self):
-        return {(col.column_schema, col.table): col for col in self.columns}
+        result_map = {}
+        for col in self.columns:
+            table_id = (col.column_schema, col.table)
+            result_map.setdefault(table_id, [])
+            result_map[table_id].append(col)
+        return result_map
 
     def get_table_columns(self, table: Table):
         table_id = (table.table_schema, table.name)
@@ -215,7 +220,8 @@ class SnowflakeConnector:
         return fks
 
     def get_nodes(self) -> List[SnowflakeNode]:
-        return list(chain(self.tables, *[t.columns for t in self.tables]))
+        # return list(chain(self.tables, *[t.columns for t in self.tables]))
+        return list(chain(self.tables, self.columns))
 
     def get_edges(self) -> List[Edge]:
         edges = list(chain(*[t.get_edges() for t in self.tables], self.foreign_keys))

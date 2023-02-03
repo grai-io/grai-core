@@ -27,6 +27,12 @@ class TableID(ID):
         return values
 
 
+def validate_quoted_string(string: str) -> str:
+    if string.startswith('"') and string.endswith('"'):
+        return string
+    return string.lower()
+
+
 class ColumnID(ID):
     table_schema: str
     table_name: str
@@ -40,9 +46,7 @@ class ColumnID(ID):
 
     @validator("table_name")
     def validate_name(cls, value):
-        if value.startswith('"') and value.endswith('"'):
-            return value
-        return value.lower()
+        return validate_quoted_string(value)
 
 
 class Column(SnowflakeNode):
@@ -66,11 +70,9 @@ class Column(SnowflakeNode):
         result = f"{values['column_schema']}.{values['table']}.{values['name']}"
         return result
 
-    @validator("name")
+    @validator("name", "table")
     def validate_name(cls, value):
-        if value.startswith('"') and value.endswith('"'):
-            return value
-        return value.lower()
+        return validate_quoted_string(value)
 
 
 class Constraint(str, Enum):
@@ -119,9 +121,7 @@ class Table(SnowflakeNode):
 
     @validator("name")
     def validate_name(cls, value):
-        if value.startswith('"') and value.endswith('"'):
-            return value
-        return value.lower()
+        return validate_quoted_string(value)
 
     def get_edges(self) -> List[Edge]:
         return [

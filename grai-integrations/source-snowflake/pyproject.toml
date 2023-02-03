@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai_source_snowflake"
-version = "0.0.13"
+version = "0.0.14"
 description = ""
 authors = ["Tony Lewis <tony@grai.io>", "Edward Louth <edward@grai.io>"]
 license = "ELv2"
@@ -10,17 +10,16 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.8"
 pydantic = "^1.9.1"
-grai-client = "^0.2.0"
 PyYAML = "^6.0"
 multimethod = "^1.8"
 snowflake-connector-python = "^3.0.0"
 grai-schemas = "^0.1.9"
+grai-client = "^0.2.2"
 
 [tool.poetry.group.dev.dependencies]
 black = "^22.6.0"
 mypy = "^0.971"
 isort = "^5.10.1"
-types-PyYAML = "^6.0.11"
 pytest = "^7.2.0"
 python-dotenv = "^0.21.1"
 
