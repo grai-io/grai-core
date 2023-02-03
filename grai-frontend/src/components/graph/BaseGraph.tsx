@@ -14,7 +14,7 @@ import BaseNode from "./BaseNode"
 import theme from "theme"
 import Loading from "components/layout/Loading"
 import ErrorEdge from "./ErrorEdge"
-import GraphControls from "./GraphControls"
+import GraphControls, { ControlOptions } from "./controls/GraphControls"
 
 const DEFAULT_WIDTH = 300
 const DEFAULT_HEIGHT = 110
@@ -122,6 +122,7 @@ type BaseGraphProps = {
   initialEdges: Edge[]
   expanded: string[]
   errors: boolean
+  controlOptions?: ControlOptions
 }
 
 const BaseGraph: React.FC<BaseGraphProps> = ({
@@ -129,6 +130,7 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
   initialEdges,
   expanded,
   errors,
+  controlOptions,
 }) => {
   const [nodes, setNodes] = useState<Node[]>()
   const [edges, setEdges] = useState<Edge[]>(initialEdges)
@@ -215,7 +217,7 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
 
   return (
     <ReactFlowProvider>
-      <GraphControls errors={!!errors} />
+      <GraphControls errors={!!errors} options={controlOptions} />
       <ReactFlow
         minZoom={0}
         nodes={nodes}
