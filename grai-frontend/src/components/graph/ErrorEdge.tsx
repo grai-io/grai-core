@@ -9,6 +9,7 @@ import {
 } from "@mui/material"
 import React, { useState } from "react"
 import { EdgeProps, getBezierPath, EdgeLabelRenderer } from "reactflow"
+import theme from "theme"
 
 interface Error {
   message: string
@@ -43,7 +44,14 @@ const ErrorEdge: React.FC<EdgeProps<ErrorData>> = ({
 
   return (
     <>
-      <path id={id} className="react-flow__edge-path" d={edgePath} />
+      <path
+        id={id}
+        className="react-flow__edge-path"
+        d={edgePath}
+        style={{
+          stroke: "red",
+        }}
+      />
       <EdgeLabelRenderer>
         <Alert
           severity="error"
