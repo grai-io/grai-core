@@ -49,7 +49,7 @@ const ErrorEdge: React.FC<EdgeProps<ErrorData>> = ({
         className="react-flow__edge-path"
         d={edgePath}
         style={{
-          stroke: "red",
+          stroke: theme.palette.error.main,
         }}
       />
       <EdgeLabelRenderer>
