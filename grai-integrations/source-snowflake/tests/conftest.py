@@ -1,4 +1,5 @@
 import os
+from itertools import chain
 
 import pytest
 
@@ -32,10 +33,13 @@ from grai_source_snowflake.models import Column, Edge, Table
 
 
 @pytest.fixture
-def mock_get_nodes_and_edges(tables, edges):
-    nodes = adapt_to_client(tables, "v1")
-    edges = adapt_to_client(edges, "v1")
-    return nodes, edges
+def v1_adapted_nodes(mock_get_nodes_and_edges):
+    return mock_get_nodes_and_edges[0]
+
+
+@pytest.fixture
+def v1_adapted_edges(mock_get_nodes_and_edges):
+    return mock_get_nodes_and_edges[1]
 
 
 @pytest.fixture
@@ -112,11 +116,6 @@ def table_params(column_params):
 
 
 @pytest.fixture
-def tables(table_params):
-    return [Table(**params) for params in table_params]
-
-
-@pytest.fixture
 def edge_params():
     def make_column_id():
         return {
@@ -144,5 +143,17 @@ def edge_params():
 
 
 @pytest.fixture
+def tables(table_params, edges):
+    return [Table(**params) for params in table_params]
+
+
+@pytest.fixture
 def edges(edge_params):
     return [Edge(**params) for params in edge_params]
+
+
+@pytest.fixture
+def mock_get_nodes_and_edges(tables, edges):
+    nodes = adapt_to_client(tables, "v1")
+    edges = adapt_to_client(edges, "v1")
+    return nodes, edges
