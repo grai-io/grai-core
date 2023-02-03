@@ -106,6 +106,10 @@ class Table(SnowflakeNode):
     class Config:
         allow_population_by_field_name = True
 
+    @property
+    def id(self):
+        return self.table_schema, self.name
+
     @validator("full_name", always=True)
     def make_full_name(cls, full_name: Optional[str], values: Dict) -> str:
         if full_name is not None:

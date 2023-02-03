@@ -46,7 +46,7 @@ class TestLiveSnowflakeIfHasDotEnv(unittest.TestCase):
             return
 
         with connection.connect() as conn:
-            tables = conn.get_tables()
+            tables = conn.tables
 
         assert isinstance(tables, list)
         # assert len(tables) > 0, f"test expected more than {len(tables)} results"
@@ -57,7 +57,7 @@ class TestLiveSnowflakeIfHasDotEnv(unittest.TestCase):
             return
 
         with connection.connect() as conn:
-            edges = conn.get_foreign_keys()
+            edges = conn.foreign_keys
 
         assert isinstance(edges, list)
         # assert len(edges) > 0, f"test expected more than {len(edges)} results"
