@@ -62,8 +62,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up MySQL
-        working-directory: ${{ env.project_dir }}/data/scripts
+      - name: Set upSQL db
+        working-directory: /init/scripts/init-db.sh
         run: |
           sh init-db.sh
 
