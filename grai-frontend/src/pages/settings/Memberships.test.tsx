@@ -65,3 +65,28 @@ test("empty", async () => {
     expect(screen.getByText("No memberships found")).toBeTruthy()
   })
 })
+
+test("no workspace", async () => {
+  const mock = {
+    request: {
+      query: GET_MEMBERSHIPS,
+      variables: {
+        organisationName: "",
+        workspaceName: "",
+      },
+    },
+    result: {
+      data: {
+        workspace: null,
+      },
+    },
+  }
+
+  renderWithMocks(<Memberships />, [mock])
+
+  await waitFor(() => {
+    expect(
+      screen.getByText("Sorry something has gone wrong")
+    ).toBeInTheDocument()
+  })
+})
