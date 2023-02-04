@@ -1,6 +1,5 @@
 import { gql, useQuery } from "@apollo/client"
 import { Box } from "@mui/material"
-import PageLayout from "components/layout/PageLayout"
 import MembershipsHeader from "components/settings/memberships/MembershipsHeader"
 import MembershipsTable from "components/settings/memberships/MembershipsTable"
 import SettingsLayout from "components/settings/SettingsLayout"
@@ -47,16 +46,15 @@ const Memberships: React.FC = () => {
   })
 
   if (error) return <GraphError error={error} />
-  if (loading) return <PageLayout loading />
 
   const workspace = data?.workspace
 
-  if (!workspace) return <NotFound />
+  if (!loading && !workspace) return <NotFound />
 
   return (
     <SettingsLayout>
       <Box sx={{ p: 3 }}>
-        <MembershipsHeader workspaceId={workspace.id} />
+        <MembershipsHeader workspaceId={workspace?.id} />
         <MembershipsTable
           memberships={data?.workspace?.memberships ?? []}
           loading={loading}

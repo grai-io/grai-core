@@ -9,7 +9,7 @@ import GraphError from "components/utils/GraphError"
 import useWorkspace from "helpers/useWorkspace"
 import NotFound from "pages/NotFound"
 
-const GET_API_KEYS = gql`
+export const GET_API_KEYS = gql`
   query GetApiKeys($organisationName: String!, $workspaceName: String!) {
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
@@ -46,12 +46,12 @@ const ApiKeys: React.FC = () => {
 
   const workspace = data?.workspace
 
-  if (!workspace) return <NotFound />
+  if (!loading && !workspace) return <NotFound />
 
   return (
     <SettingsLayout>
       <Box sx={{ p: 3 }}>
-        <ApiKeysHeader workspaceId={workspace.id} />
+        <ApiKeysHeader workspaceId={workspace?.id} />
         <ApiKeysTable
           keys={data?.workspace?.api_keys ?? []}
           loading={loading}
