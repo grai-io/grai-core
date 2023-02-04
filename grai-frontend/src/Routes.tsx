@@ -47,7 +47,10 @@ const Routes: React.FC = () => (
           <Route path="/workspaces">
             <Route index element={<Workspaces />} />
             <Route path=":workspaceId" element={<WorkspaceRedirect />} />
-            <Route path=":workspaceId/:rest*" element={<WorkspaceRedirect />} />
+            <Route
+              path=":workspaceId/:rest/*"
+              element={<WorkspaceRedirect />}
+            />
           </Route>
           <Route
             path=":organisationName/:workspaceName"

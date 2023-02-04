@@ -5,9 +5,13 @@ import SettingsDrawer from "./SettingsDrawer"
 
 type SettingsLayoutProps = {
   children?: ReactNode
+  loading?: boolean
 }
 
-const SettingsLayout: React.FC<SettingsLayoutProps> = ({ children }) => {
+const SettingsLayout: React.FC<SettingsLayoutProps> = ({
+  children,
+  loading,
+}) => {
   return (
     <Box sx={{ display: "flex" }}>
       <SettingsAppBar />
