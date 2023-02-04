@@ -38,3 +38,5 @@ below.
 sudo ln -s /opt/homebrew/etc/odbcinst.ini /etc/odbcinst.ini
 sudo ln -s /opt/homebrew/etc/odbc.ini /etc/odbc.ini
 ```
+
+When installing locally, if you get an error like `ImportError: dlopen(/opt/homebrew/lib/python3.11/site-packages/pyodbc.cpython-311-darwin.so, 0x0002): symbol not found in flat namespace (_SQLAllocHandle)`, you can try uninstalling `pip uninstall pyodbc` and then reinstall with build `pip install --no-binary :all: pyodbc`.
