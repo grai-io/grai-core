@@ -28,6 +28,7 @@ class MsSqlSettings(BaseSettings):
     user: Optional[str]
     password: Optional[SecretStr]
     encrypt: Optional[bool]
+    additional_connection_strings: Optional[List[str]] = (None,)
 
     def connection_string(self):
         connection_attributes = [f"DRIVER={self.driver}"]
@@ -46,6 +47,10 @@ class MsSqlSettings(BaseSettings):
             connection_attributes.append(f"Server={self.host},{'1433' if self.port is None else self.port}")
         else:
             raise Exception("Connection strings require either `server` or a `host`/`port` combination.")
+
+        if self.additional_connection_strings is not None:
+            connection_attributes.extend(self.additional_connection_strings)
+
         return "; ".join(connection_attributes)
 
     @validator("driver")
@@ -82,6 +87,7 @@ class MsSQLConnector:
         port: Optional[str] = None,
         encrypt: Optional[bool] = None,
         namespace: Optional[str] = None,
+        additional_connection_strings: Optional[List[str]] = None,
     ):
         connection_values = {
             "driver": driver,
@@ -93,6 +99,7 @@ class MsSQLConnector:
             "port": port,
             "encrypt": encrypt,
             "namespace": namespace,
+            "additional_connection_strings": additional_connection_strings,
         }
         user_provided_connection_params = {k: v for k, v in connection_values.items() if v is not None}
         self.config = ConnectorSettings(**user_provided_connection_params)
