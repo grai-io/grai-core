@@ -43,7 +43,7 @@ class MsSqlSettings(BaseSettings):
         if self.server is not None:
             connection_attributes.append(f"Server={self.server}")
         elif self.host is not None:
-            f"Server={self.host},{'1433' if self.port is None else self.port}"
+            connection_attributes.append(f"Server={self.host},{'1433' if self.port is None else self.port}")
         else:
             raise Exception("Connection strings require either `server` or a `host`/`port` combination.")
         return "; ".join(connection_attributes)
