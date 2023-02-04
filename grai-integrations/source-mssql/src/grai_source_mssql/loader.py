@@ -28,7 +28,7 @@ class MsSqlSettings(BaseSettings):
     user: Optional[str]
     password: Optional[SecretStr]
     encrypt: Optional[bool]
-    additional_connection_strings: Optional[List[str]] = (None,)
+    additional_connection_strings: Optional[List[str]] = None
 
     def connection_string(self):
         connection_attributes = [f"DRIVER={self.driver}"]
