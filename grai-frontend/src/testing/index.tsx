@@ -41,9 +41,9 @@ type RouteType =
 type CustomRenderOptions = RenderOptions & {
   path?: string
   withRouter?: boolean
-  route?: string
+  route?: string | Partial<Location>
   routes?: RouteType[]
-  initialEntries?: string[] | null
+  initialEntries?: (string | Partial<Location>)[] | null
   loggedIn?: boolean
   guestRoute?: boolean
   throwError?: boolean

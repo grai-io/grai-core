@@ -11,6 +11,26 @@ import {
 } from "@mui/material"
 import { AccountCircle, Business, People, VpnKey } from "@mui/icons-material"
 import { Link } from "react-router-dom"
+import { gql, useQuery } from "@apollo/client"
+import useWorkspace from "helpers/useWorkspace"
+import GraphError from "components/utils/GraphError"
+import {
+  GetWorkspaceSettings,
+  GetWorkspaceSettingsVariables,
+} from "./__generated__/GetWorkspaceSettings"
+import NotFound from "pages/NotFound"
+
+export const GET_WORKSPACE = gql`
+  query GetWorkspaceSettings(
+    $organisationName: String!
+    $workspaceName: String!
+  ) {
+    workspace(organisationName: $organisationName, name: $workspaceName) {
+      id
+      name
+    }
+  }
+`
 
 const pages = [
   {
@@ -56,6 +76,25 @@ const pages = [
 ]
 
 const Settings: React.FC = () => {
+  const { organisationName, workspaceName } = useWorkspace()
+
+  const { loading, error, data } = useQuery<
+    GetWorkspaceSettings,
+    GetWorkspaceSettingsVariables
+  >(GET_WORKSPACE, {
+    variables: {
+      organisationName,
+      workspaceName,
+    },
+  })
+
+  if (error) return <GraphError error={error} />
+  if (loading) return <SettingsLayout loading />
+
+  const workspace = data?.workspace
+
+  if (!workspace) return <NotFound />
+
   return (
     <SettingsLayout>
       <Grid container spacing={5} sx={{ p: 5 }}>
