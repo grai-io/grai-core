@@ -1,10 +1,12 @@
 import { GraphQLError } from "graphql"
 import React from "react"
-import { renderWithMocks, renderWithRouter, screen, waitFor } from "testing"
+import { render, screen, waitFor } from "testing"
 import ProfileSettings, { GET_PROFILE } from "./ProfileSettings"
 
 test("renders", async () => {
-  renderWithRouter(<ProfileSettings />)
+  render(<ProfileSettings />, {
+    withRouter: true,
+  })
 
   await waitFor(() => {
     expect(screen.getByText("Profile Settings")).toBeTruthy()
@@ -12,16 +14,18 @@ test("renders", async () => {
 })
 
 test("error", async () => {
-  const mock = {
-    request: {
-      query: GET_PROFILE,
+  const mocks = [
+    {
+      request: {
+        query: GET_PROFILE,
+      },
+      result: {
+        errors: [new GraphQLError("Error!")],
+      },
     },
-    result: {
-      errors: [new GraphQLError("Error!")],
-    },
-  }
+  ]
 
-  renderWithMocks(<ProfileSettings />, [mock])
+  render(<ProfileSettings />, { mocks, withRouter: true })
 
   await waitFor(() => {
     expect(screen.getAllByText("Error!")).toBeTruthy()
@@ -29,18 +33,20 @@ test("error", async () => {
 })
 
 test("not found", async () => {
-  const mock = {
-    request: {
-      query: GET_PROFILE,
-    },
-    result: {
-      data: {
-        profile: null,
+  const mocks = [
+    {
+      request: {
+        query: GET_PROFILE,
+      },
+      result: {
+        data: {
+          profile: null,
+        },
       },
     },
-  }
+  ]
 
-  renderWithMocks(<ProfileSettings />, [mock])
+  render(<ProfileSettings />, { mocks, withRouter: true })
 
   await waitFor(() => {
     expect(screen.getAllByText("Page not found")).toBeTruthy()

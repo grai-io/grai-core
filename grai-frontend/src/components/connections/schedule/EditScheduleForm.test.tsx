@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { render, renderWithMocks, screen, waitFor } from "testing"
+import { render, screen, waitFor } from "testing"
 import EditScheduleForm, { UPDATE_CONNECTION } from "./EditScheduleForm"
 
 const connection = {
@@ -76,25 +76,27 @@ test("submit cron", async () => {
 test("error", async () => {
   const user = userEvent.setup()
 
-  const mock = {
-    request: {
-      query: UPDATE_CONNECTION,
-      variables: {
-        id: "1",
-        schedules: null,
-        is_active: false,
-        namespace: "default",
-        name: "c1",
-        metadata: {},
-        secrets: {},
+  const mocks = [
+    {
+      request: {
+        query: UPDATE_CONNECTION,
+        variables: {
+          id: "1",
+          schedules: null,
+          is_active: false,
+          namespace: "default",
+          name: "c1",
+          metadata: {},
+          secrets: {},
+        },
+      },
+      result: {
+        errors: [new GraphQLError("Error!")],
       },
     },
-    result: {
-      errors: [new GraphQLError("Error!")],
-    },
-  }
+  ]
 
-  renderWithMocks(<EditScheduleForm connection={connection} />, [mock])
+  render(<EditScheduleForm connection={connection} />, { mocks })
 
   expect(screen.getByText("Schedule type")).toBeTruthy()
 

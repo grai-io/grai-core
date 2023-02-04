@@ -1,14 +1,17 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import React from "react"
-import { renderWithMocks, renderWithRouter, screen, waitFor } from "testing"
+import { render, screen, waitFor } from "testing"
 import CreateMembershipDialog, {
   CREATE_MEMBERSHIP,
 } from "./CreateMembershipDialog"
 
 test("renders", async () => {
-  renderWithRouter(
-    <CreateMembershipDialog workspaceId="1" open={true} onClose={() => {}} />
+  render(
+    <CreateMembershipDialog workspaceId="1" open={true} onClose={() => {}} />,
+    {
+      withRouter: true,
+    }
   )
 
   await waitFor(() => {
@@ -19,8 +22,11 @@ test("renders", async () => {
 test("submit", async () => {
   const user = userEvent.setup()
 
-  renderWithRouter(
-    <CreateMembershipDialog workspaceId="1" open={true} onClose={() => {}} />
+  render(
+    <CreateMembershipDialog workspaceId="1" open={true} onClose={() => {}} />,
+    {
+      withRouter: true,
+    }
   )
 
   await waitFor(() => {
@@ -38,23 +44,25 @@ test("submit", async () => {
 test("error", async () => {
   const user = userEvent.setup()
 
-  const mock = {
-    request: {
-      query: CREATE_MEMBERSHIP,
-      variables: {
-        role: "admin",
-        email: "email@grai.io",
-        workspaceId: "1",
+  const mocks = [
+    {
+      request: {
+        query: CREATE_MEMBERSHIP,
+        variables: {
+          role: "admin",
+          email: "email@grai.io",
+          workspaceId: "1",
+        },
+      },
+      result: {
+        errors: [new GraphQLError("Error!")],
       },
     },
-    result: {
-      errors: [new GraphQLError("Error!")],
-    },
-  }
+  ]
 
-  renderWithMocks(
+  render(
     <CreateMembershipDialog workspaceId="1" open={true} onClose={() => {}} />,
-    [mock]
+    { mocks }
   )
 
   await waitFor(() => {

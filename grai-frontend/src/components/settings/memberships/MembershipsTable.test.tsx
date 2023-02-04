@@ -1,5 +1,5 @@
 import React from "react"
-import { renderWithRouter, screen } from "testing"
+import { render, screen } from "testing"
 import MembershipsTable from "./MembershipsTable"
 
 const memberships = [
@@ -30,19 +30,25 @@ const memberships = [
 ]
 
 test("renders", async () => {
-  renderWithRouter(<MembershipsTable memberships={memberships} />)
+  render(<MembershipsTable memberships={memberships} />, {
+    withRouter: true,
+  })
 
   expect(screen.getByText("test@user.com")).toBeTruthy()
 })
 
 test("empty", async () => {
-  renderWithRouter(<MembershipsTable memberships={[]} />)
+  render(<MembershipsTable memberships={[]} />, {
+    withRouter: true,
+  })
 
   expect(screen.getByText("No memberships found")).toBeTruthy()
 })
 
 test("loading", async () => {
-  renderWithRouter(<MembershipsTable memberships={[]} loading />)
+  render(<MembershipsTable memberships={[]} loading />, {
+    withRouter: true,
+  })
 
   expect(screen.getByRole("progressbar")).toBeTruthy()
 })

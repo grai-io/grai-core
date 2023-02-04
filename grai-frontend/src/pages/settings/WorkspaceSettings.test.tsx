@@ -2,11 +2,13 @@ import userEvent from "@testing-library/user-event"
 import { UPDATE_WORKSPACE } from "components/settings/workspace/WorkspaceForm"
 import { GraphQLError } from "graphql"
 import React from "react"
-import { renderWithMocks, renderWithRouter, screen, waitFor } from "testing"
+import { render, screen, waitFor } from "testing"
 import WorkspaceSettings, { GET_WORKSPACE } from "./WorkspaceSettings"
 
 test("renders", async () => {
-  renderWithRouter(<WorkspaceSettings />)
+  render(<WorkspaceSettings />, {
+    withRouter: true,
+  })
 
   await waitFor(() => {
     expect(screen.getByText("Workspace Settings")).toBeTruthy()
@@ -18,20 +20,22 @@ test("renders", async () => {
 })
 
 test("error", async () => {
-  const mock = {
-    request: {
-      query: GET_WORKSPACE,
-      variables: {
-        organisationName: "",
-        workspaceName: "",
+  const mocks = [
+    {
+      request: {
+        query: GET_WORKSPACE,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+        },
+      },
+      result: {
+        errors: [new GraphQLError("Error!")],
       },
     },
-    result: {
-      errors: [new GraphQLError("Error!")],
-    },
-  }
+  ]
 
-  renderWithMocks(<WorkspaceSettings />, [mock])
+  render(<WorkspaceSettings />, { mocks, withRouter: true })
 
   await waitFor(() => {
     expect(screen.getByText("Workspace Settings")).toBeTruthy()
@@ -43,22 +47,24 @@ test("error", async () => {
 })
 
 test("not found", async () => {
-  const mock = {
-    request: {
-      query: GET_WORKSPACE,
-      variables: {
-        organisationName: "",
-        workspaceName: "",
+  const mocks = [
+    {
+      request: {
+        query: GET_WORKSPACE,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+        },
+      },
+      result: {
+        data: {
+          workspace: null,
+        },
       },
     },
-    result: {
-      data: {
-        workspace: null,
-      },
-    },
-  }
+  ]
 
-  renderWithMocks(<WorkspaceSettings />, [mock])
+  render(<WorkspaceSettings />, { mocks, withRouter: true })
 
   await waitFor(() => {
     expect(screen.getByText("Workspace Settings")).toBeTruthy()
@@ -72,7 +78,9 @@ test("not found", async () => {
 test("submit", async () => {
   const user = userEvent.setup()
 
-  renderWithRouter(<WorkspaceSettings />)
+  render(<WorkspaceSettings />, {
+    withRouter: true,
+  })
 
   await waitFor(() => {
     expect(screen.getByText("Workspace Settings")).toBeTruthy()
@@ -125,7 +133,7 @@ test("submit error", async () => {
     },
   ]
 
-  renderWithMocks(<WorkspaceSettings />, mocks)
+  render(<WorkspaceSettings />, { mocks, withRouter: true })
 
   await waitFor(() => {
     expect(screen.getByText("Workspace Settings")).toBeTruthy()

@@ -1,5 +1,5 @@
 import React from "react"
-import { renderWithRouter, screen, waitFor } from "testing"
+import { render, screen, waitFor } from "testing"
 import TableProfile from "./TableProfile"
 
 const other_table = {
@@ -24,7 +24,9 @@ test("renders", async () => {
     destination_tables: [other_table],
   }
 
-  renderWithRouter(<TableProfile table={table} />)
+  render(<TableProfile table={table} />, {
+    withRouter: true,
+  })
 
   await waitFor(() => {
     expect(screen.getByText("Table 1")).toBeInTheDocument()
@@ -48,7 +50,9 @@ test("renders no sources or destinations", async () => {
     destination_tables: [],
   }
 
-  renderWithRouter(<TableProfile table={table} />)
+  render(<TableProfile table={table} />, {
+    withRouter: true,
+  })
 
   await waitFor(() => {
     expect(screen.getByText("Table 1")).toBeInTheDocument()

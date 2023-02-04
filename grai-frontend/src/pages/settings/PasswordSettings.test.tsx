@@ -1,11 +1,13 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import React from "react"
-import { renderWithMocks, renderWithRouter, screen, waitFor } from "testing"
+import { render, screen, waitFor } from "testing"
 import PasswordSettings, { UPDATE_PASSWORD } from "./PasswordSettings"
 
 test("renders", async () => {
-  renderWithRouter(<PasswordSettings />)
+  render(<PasswordSettings />, {
+    withRouter: true,
+  })
 
   expect(screen.getByText("Change Password")).toBeTruthy()
 })
@@ -13,7 +15,9 @@ test("renders", async () => {
 test("submit", async () => {
   const user = userEvent.setup()
 
-  renderWithRouter(<PasswordSettings />)
+  render(<PasswordSettings />, {
+    withRouter: true,
+  })
 
   expect(screen.getByText("Change Password")).toBeTruthy()
 
@@ -26,20 +30,22 @@ test("submit", async () => {
 test("error", async () => {
   const user = userEvent.setup()
 
-  const mock = {
-    request: {
-      query: UPDATE_PASSWORD,
-      variables: {
-        old_password: "password",
-        password: "password2",
+  const mocks = [
+    {
+      request: {
+        query: UPDATE_PASSWORD,
+        variables: {
+          old_password: "password",
+          password: "password2",
+        },
+      },
+      result: {
+        errors: [new GraphQLError("Error!")],
       },
     },
-    result: {
-      errors: [new GraphQLError("Error!")],
-    },
-  }
+  ]
 
-  renderWithMocks(<PasswordSettings />, [mock])
+  render(<PasswordSettings />, { mocks, withRouter: true })
 
   expect(screen.getByText("Change Password")).toBeTruthy()
 

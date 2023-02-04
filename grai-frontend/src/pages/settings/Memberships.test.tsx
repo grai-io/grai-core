@@ -1,10 +1,12 @@
 import { GraphQLError } from "graphql"
 import React from "react"
-import { renderWithMocks, renderWithRouter, screen, waitFor } from "testing"
+import { render, screen, waitFor } from "testing"
 import Memberships, { GET_MEMBERSHIPS } from "./Memberships"
 
 test("renders", async () => {
-  renderWithRouter(<Memberships />)
+  render(<Memberships />, {
+    withRouter: true,
+  })
 
   await waitFor(() => {
     expect(screen.getByText("Memberships")).toBeTruthy()
@@ -16,20 +18,22 @@ test("renders", async () => {
 })
 
 test("error", async () => {
-  const mock = {
-    request: {
-      query: GET_MEMBERSHIPS,
-      variables: {
-        organisationName: "",
-        workspaceName: "",
+  const mocks = [
+    {
+      request: {
+        query: GET_MEMBERSHIPS,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+        },
+      },
+      result: {
+        errors: [new GraphQLError("Error!")],
       },
     },
-    result: {
-      errors: [new GraphQLError("Error!")],
-    },
-  }
+  ]
 
-  renderWithMocks(<Memberships />, [mock])
+  render(<Memberships />, { mocks, withRouter: true })
 
   await waitFor(() => {
     expect(screen.getAllByText("Error!")).toBeTruthy()
@@ -37,25 +41,27 @@ test("error", async () => {
 })
 
 test("empty", async () => {
-  const mock = {
-    request: {
-      query: GET_MEMBERSHIPS,
-      variables: {
-        organisationName: "",
-        workspaceName: "",
+  const mocks = [
+    {
+      request: {
+        query: GET_MEMBERSHIPS,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+        },
       },
-    },
-    result: {
-      data: {
-        workspace: {
-          id: "1",
-          memberships: [],
+      result: {
+        data: {
+          workspace: {
+            id: "1",
+            memberships: [],
+          },
         },
       },
     },
-  }
+  ]
 
-  renderWithMocks(<Memberships />, [mock])
+  render(<Memberships />, { mocks, withRouter: true })
 
   await waitFor(() => {
     expect(screen.getByText("Memberships")).toBeTruthy()
@@ -67,22 +73,24 @@ test("empty", async () => {
 })
 
 test("no workspace", async () => {
-  const mock = {
-    request: {
-      query: GET_MEMBERSHIPS,
-      variables: {
-        organisationName: "",
-        workspaceName: "",
+  const mocks = [
+    {
+      request: {
+        query: GET_MEMBERSHIPS,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+        },
+      },
+      result: {
+        data: {
+          workspace: null,
+        },
       },
     },
-    result: {
-      data: {
-        workspace: null,
-      },
-    },
-  }
+  ]
 
-  renderWithMocks(<Memberships />, [mock])
+  render(<Memberships />, { mocks, withRouter: true })
 
   await waitFor(() => {
     expect(

@@ -1,16 +1,16 @@
 import React from "react"
-import { renderWithRouter, screen, waitFor } from "testing"
+import { render, screen, waitFor } from "testing"
 import PrivateRoute from "./PrivateRoute"
 
 test("renders", async () => {
-  renderWithRouter(<PrivateRoute />)
+  render(<PrivateRoute />, { withRouter: true })
 
   // eslint-disable-next-line testing-library/no-wait-for-empty-callback
   await waitFor(() => {})
 })
 
 test("renders logged out", async () => {
-  renderWithRouter(<PrivateRoute />, {
+  render(<PrivateRoute />, {
     loggedIn: false,
     routes: [{ path: "/login", element: <>Login</> }],
   })

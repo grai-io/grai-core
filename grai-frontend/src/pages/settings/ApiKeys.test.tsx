@@ -1,10 +1,12 @@
 import { GraphQLError } from "graphql"
 import React from "react"
-import { renderWithMocks, renderWithRouter, screen, waitFor } from "testing"
+import { render, screen, waitFor } from "testing"
 import ApiKeys, { GET_API_KEYS } from "./ApiKeys"
 
 test("renders", async () => {
-  renderWithRouter(<ApiKeys />)
+  render(<ApiKeys />, {
+    withRouter: true,
+  })
 
   await waitFor(() => {
     screen.getByText("Settings")
@@ -16,20 +18,22 @@ test("renders", async () => {
 })
 
 test("error", async () => {
-  const mock = {
-    request: {
-      query: GET_API_KEYS,
-      variables: {
-        organisationName: "",
-        workspaceName: "",
+  const mocks = [
+    {
+      request: {
+        query: GET_API_KEYS,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+        },
+      },
+      result: {
+        errors: [new GraphQLError("Error!")],
       },
     },
-    result: {
-      errors: [new GraphQLError("Error!")],
-    },
-  }
+  ]
 
-  renderWithMocks(<ApiKeys />, [mock])
+  render(<ApiKeys />, { mocks, withRouter: true })
 
   await waitFor(() => {
     expect(screen.getAllByText("Error!")).toBeTruthy()
@@ -37,22 +41,24 @@ test("error", async () => {
 })
 
 test("no workspace", async () => {
-  const mock = {
-    request: {
-      query: GET_API_KEYS,
-      variables: {
-        organisationName: "",
-        workspaceName: "",
+  const mocks = [
+    {
+      request: {
+        query: GET_API_KEYS,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+        },
+      },
+      result: {
+        data: {
+          workspace: null,
+        },
       },
     },
-    result: {
-      data: {
-        workspace: null,
-      },
-    },
-  }
+  ]
 
-  renderWithMocks(<ApiKeys />, [mock])
+  render(<ApiKeys />, { mocks, withRouter: true })
 
   await waitFor(() => {
     expect(

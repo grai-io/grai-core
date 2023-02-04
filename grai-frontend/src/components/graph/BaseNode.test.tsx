@@ -1,6 +1,6 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { fireEvent, renderWithRouter, screen, waitFor } from "testing"
+import { fireEvent, render, screen, waitFor } from "testing"
 import BaseNode from "./BaseNode"
 import { ReactFlowProvider } from "reactflow"
 
@@ -23,10 +23,13 @@ const data = {
 }
 
 test("renders", async () => {
-  renderWithRouter(
+  render(
     <ReactFlowProvider>
       <BaseNode data={data} />
-    </ReactFlowProvider>
+    </ReactFlowProvider>,
+    {
+      withRouter: true,
+    }
   )
 
   await waitFor(() => {
@@ -35,10 +38,13 @@ test("renders", async () => {
 })
 
 test("renders no columns", async () => {
-  renderWithRouter(
+  render(
     <ReactFlowProvider>
       <BaseNode data={{ ...data, columns: [] }} />
-    </ReactFlowProvider>
+    </ReactFlowProvider>,
+    {
+      withRouter: true,
+    }
   )
 
   await waitFor(() => {
@@ -47,7 +53,7 @@ test("renders no columns", async () => {
 })
 
 test("renders multiple columns", async () => {
-  renderWithRouter(
+  render(
     <ReactFlowProvider>
       <BaseNode
         data={{
@@ -61,7 +67,10 @@ test("renders multiple columns", async () => {
           expanded: true,
         }}
       />
-    </ReactFlowProvider>
+    </ReactFlowProvider>,
+    {
+      withRouter: true,
+    }
   )
 
   await waitFor(() => {
@@ -78,7 +87,7 @@ test("renders multiple columns", async () => {
 })
 
 test("highlight", async () => {
-  renderWithRouter(
+  render(
     <ReactFlowProvider>
       <BaseNode
         data={{
@@ -86,7 +95,10 @@ test("highlight", async () => {
           highlight: true,
         }}
       />
-    </ReactFlowProvider>
+    </ReactFlowProvider>,
+    {
+      withRouter: true,
+    }
   )
 
   await waitFor(() => {
@@ -95,7 +107,7 @@ test("highlight", async () => {
 })
 
 test("expanded", async () => {
-  renderWithRouter(
+  render(
     <ReactFlowProvider>
       <BaseNode
         data={{
@@ -103,7 +115,10 @@ test("expanded", async () => {
           expanded: true,
         }}
       />
-    </ReactFlowProvider>
+    </ReactFlowProvider>,
+    {
+      withRouter: true,
+    }
   )
 
   await waitFor(() => {
@@ -118,10 +133,13 @@ test("expanded", async () => {
 test("expand", async () => {
   const user = userEvent.setup()
 
-  renderWithRouter(
+  render(
     <ReactFlowProvider>
       <BaseNode data={data} />
-    </ReactFlowProvider>
+    </ReactFlowProvider>,
+    {
+      withRouter: true,
+    }
   )
 
   await user.click(screen.getByTestId("ArrowDropDownIcon"))
@@ -130,10 +148,13 @@ test("expand", async () => {
 test("context menu", async () => {
   const user = userEvent.setup()
 
-  renderWithRouter(
+  render(
     <ReactFlowProvider>
       <BaseNode data={data} />
-    </ReactFlowProvider>
+    </ReactFlowProvider>,
+    {
+      withRouter: true,
+    }
   )
 
   fireEvent.contextMenu(screen.getByText("Node Label"))
@@ -144,10 +165,13 @@ test("context menu", async () => {
 test("context menu show lineage", async () => {
   const user = userEvent.setup()
 
-  renderWithRouter(
+  render(
     <ReactFlowProvider>
       <BaseNode data={data} />
-    </ReactFlowProvider>
+    </ReactFlowProvider>,
+    {
+      withRouter: true,
+    }
   )
 
   fireEvent.contextMenu(screen.getByText("Node Label"))
@@ -158,10 +182,13 @@ test("context menu show lineage", async () => {
 test("context menu show upstream dependents", async () => {
   const user = userEvent.setup()
 
-  renderWithRouter(
+  render(
     <ReactFlowProvider>
       <BaseNode data={data} />
-    </ReactFlowProvider>
+    </ReactFlowProvider>,
+    {
+      withRouter: true,
+    }
   )
 
   fireEvent.contextMenu(screen.getByText("Node Label"))
@@ -174,10 +201,13 @@ test("context menu show upstream dependents", async () => {
 test("context menu show downstream dependents", async () => {
   const user = userEvent.setup()
 
-  renderWithRouter(
+  render(
     <ReactFlowProvider>
       <BaseNode data={data} />
-    </ReactFlowProvider>
+    </ReactFlowProvider>,
+    {
+      withRouter: true,
+    }
   )
 
   fireEvent.contextMenu(screen.getByText("Node Label"))
@@ -190,7 +220,7 @@ test("context menu show downstream dependents", async () => {
 test("context menu show profile", async () => {
   const user = userEvent.setup()
 
-  renderWithRouter(
+  render(
     <ReactFlowProvider>
       <BaseNode data={data} />
     </ReactFlowProvider>,

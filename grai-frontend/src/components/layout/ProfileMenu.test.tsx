@@ -1,10 +1,12 @@
 import userEvent from "@testing-library/user-event"
 import React from "react"
-import { renderWithRouter, screen, waitFor } from "testing"
+import { render, screen, waitFor } from "testing"
 import ProfileMenu from "./ProfileMenu"
 
 test("renders", async () => {
-  renderWithRouter(<ProfileMenu />)
+  render(<ProfileMenu />, {
+    withRouter: true,
+  })
 
   await waitFor(() => {
     expect(screen.getByTestId("profile-menu-open")).toBeTruthy()
@@ -17,7 +19,9 @@ test("renders", async () => {
 test("open", async () => {
   const user = userEvent.setup()
 
-  renderWithRouter(<ProfileMenu />)
+  render(<ProfileMenu />, {
+    withRouter: true,
+  })
 
   await waitFor(() => {
     expect(screen.getByTestId("profile-menu-open")).toBeTruthy()
@@ -37,7 +41,9 @@ test("open", async () => {
 test("logout", async () => {
   const user = userEvent.setup()
 
-  renderWithRouter(<ProfileMenu />)
+  render(<ProfileMenu />, {
+    withRouter: true,
+  })
 
   await waitFor(() => {
     expect(screen.getByTestId("profile-menu-open")).toBeTruthy()

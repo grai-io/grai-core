@@ -1,10 +1,12 @@
 import userEvent from "@testing-library/user-event"
 import React from "react"
-import { renderWithRouter, screen, waitFor } from "testing"
+import { render, screen, waitFor } from "testing"
 import MembershipsHeader from "./MembershipsHeader"
 
 test("renders", async () => {
-  renderWithRouter(<MembershipsHeader workspaceId="1" />)
+  render(<MembershipsHeader workspaceId="1" />, {
+    withRouter: true,
+  })
 
   await waitFor(() => {
     expect(screen.getByText("Memberships")).toBeTruthy()
@@ -14,7 +16,9 @@ test("renders", async () => {
 test("open", async () => {
   const user = userEvent.setup()
 
-  renderWithRouter(<MembershipsHeader workspaceId="1" />)
+  render(<MembershipsHeader workspaceId="1" />, {
+    withRouter: true,
+  })
 
   await waitFor(() => {
     expect(screen.getByText("Memberships")).toBeTruthy()

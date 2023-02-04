@@ -2,7 +2,7 @@ import userEvent from "@testing-library/user-event"
 import { UserEvent } from "@testing-library/user-event/dist/types/setup/setup"
 import { GraphQLError } from "graphql"
 import React from "react"
-import { renderWithMocks, renderWithRouter, screen, waitFor } from "testing"
+import { render, screen, waitFor } from "testing"
 import { GET_CONNECTORS } from "./ConnectorSelect"
 import CreateConnectionWizard, {
   CREATE_CONNECTION,
@@ -11,7 +11,9 @@ import CreateConnectionWizard, {
 jest.setTimeout(30000)
 
 test("renders", async () => {
-  renderWithRouter(<CreateConnectionWizard workspaceId="1" />)
+  render(<CreateConnectionWizard workspaceId="1" />, {
+    withRouter: true,
+  })
 
   expect(screen.getByText("Select a connector")).toBeTruthy()
 })
@@ -19,7 +21,7 @@ test("renders", async () => {
 test("close", async () => {
   const user = userEvent.setup()
 
-  renderWithRouter(<CreateConnectionWizard workspaceId="1" />, {
+  render(<CreateConnectionWizard workspaceId="1" />, {
     routes: ["/:organisationName/:workspaceName/connections"],
   })
 
@@ -188,13 +190,10 @@ test("submit", async () => {
     },
   }
 
-  const { container } = renderWithMocks(
-    <CreateConnectionWizard workspaceId="1" />,
-    [connectorsMock, createMock],
-    {
-      routes: ["/:organisationName/:workspaceName/connections/:connectionId"],
-    }
-  )
+  const { container } = render(<CreateConnectionWizard workspaceId="1" />, {
+    routes: ["/:organisationName/:workspaceName/connections/:connectionId"],
+    mocks: [connectorsMock, createMock],
+  })
 
   await submit(user, container)
 
@@ -236,13 +235,10 @@ test("error", async () => {
     },
   }
 
-  const { container } = renderWithMocks(
-    <CreateConnectionWizard workspaceId="1" />,
-    [connectorsMock, createMock],
-    {
-      routes: ["/:organisationName/:workspaceName/connections/:connectionId"],
-    }
-  )
+  const { container } = render(<CreateConnectionWizard workspaceId="1" />, {
+    routes: ["/:organisationName/:workspaceName/connections/:connectionId"],
+    mocks: [connectorsMock, createMock],
+  })
 
   await submit(user, container)
 

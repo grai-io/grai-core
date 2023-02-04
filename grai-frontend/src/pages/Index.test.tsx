@@ -1,10 +1,10 @@
 import { GraphQLError } from "graphql"
 import React from "react"
-import { renderWithMocks, renderWithRouter, screen, waitFor } from "testing"
+import { render, screen, waitFor } from "testing"
 import Index, { GET_WORKSPACES } from "./Index"
 
 test("renders", async () => {
-  renderWithRouter(<Index />, {
+  render(<Index />, {
     routes: ["/:organisationName/:workspaceName"],
   })
 
@@ -14,16 +14,18 @@ test("renders", async () => {
 })
 
 test("error", async () => {
-  const mock = {
-    request: {
-      query: GET_WORKSPACES,
+  const mocks = [
+    {
+      request: {
+        query: GET_WORKSPACES,
+      },
+      result: {
+        errors: [new GraphQLError("Error!")],
+      },
     },
-    result: {
-      errors: [new GraphQLError("Error!")],
-    },
-  }
+  ]
 
-  renderWithMocks(<Index />, [mock])
+  render(<Index />, { mocks })
 
   await waitFor(() => {
     expect(screen.getByText("Error!")).toBeTruthy()

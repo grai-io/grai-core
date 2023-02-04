@@ -1,13 +1,13 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { renderWithMocks, renderWithRouter, screen, waitFor } from "testing"
+import { render, screen, waitFor } from "testing"
 import { GraphQLError } from "graphql"
 import ResetPasswordForm, { RESET_PASSWORD } from "./ResetPasswordForm"
 
 test("submit", async () => {
   const user = userEvent.setup()
 
-  renderWithRouter(<ResetPasswordForm />, {
+  render(<ResetPasswordForm />, {
     route: "?token=abc&uid=1234",
     path: "/",
   })
@@ -24,23 +24,26 @@ test("submit", async () => {
 test("error", async () => {
   const user = userEvent.setup()
 
-  const mock = {
-    request: {
-      query: RESET_PASSWORD,
-      variables: {
-        token: "abc",
-        uid: "1234",
-        password: "password",
+  const mocks = [
+    {
+      request: {
+        query: RESET_PASSWORD,
+        variables: {
+          token: "abc",
+          uid: "1234",
+          password: "password",
+        },
+      },
+      result: {
+        errors: [new GraphQLError("Error!")],
       },
     },
-    result: {
-      errors: [new GraphQLError("Error!")],
-    },
-  }
+  ]
 
-  renderWithMocks(<ResetPasswordForm />, [mock], {
+  render(<ResetPasswordForm />, {
     route: "?token=abc&uid=1234",
     path: "/",
+    mocks,
   })
 
   await user.type(screen.getByTestId("password"), "password")
