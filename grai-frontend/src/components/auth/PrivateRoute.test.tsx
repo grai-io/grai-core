@@ -16,6 +16,6 @@ test("renders logged out", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByText("Login")).toBeTruthy()
+    expect(screen.getByText("Login")).toBeInTheDocument()
   })
 })

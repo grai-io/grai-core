@@ -27,7 +27,7 @@ test("submit", async () => {
   await user.click(screen.getByRole("button", { name: /login/i }))
 
   await waitFor(() => {
-    expect(screen.getByText("New Page")).toBeTruthy()
+    expect(screen.getByText("New Page")).toBeInTheDocument()
   })
 })
 
@@ -53,6 +53,6 @@ test("error", async () => {
   await user.click(screen.getByRole("button", { name: /login/i }))
 
   await waitFor(() => {
-    expect(screen.getByText("Error")).toBeTruthy()
+    expect(screen.getByText("Error")).toBeInTheDocument()
   })
 })

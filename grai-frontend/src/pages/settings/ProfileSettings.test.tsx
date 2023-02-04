@@ -9,7 +9,7 @@ test("renders", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByText("Profile Settings")).toBeTruthy()
+    expect(screen.getByText("Profile Settings")).toBeInTheDocument()
   })
 })
 
@@ -28,7 +28,7 @@ test("error", async () => {
   render(<ProfileSettings />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getAllByText("Error!")).toBeTruthy()
+    expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })
 
@@ -49,6 +49,6 @@ test("not found", async () => {
   render(<ProfileSettings />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getAllByText("Page not found")).toBeTruthy()
+    expect(screen.getByText("Page not found")).toBeInTheDocument()
   })
 })

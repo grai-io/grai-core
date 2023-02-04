@@ -23,7 +23,7 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  expect(screen.getByText("Success")).toBeTruthy()
+  expect(screen.getByText("Success")).toBeInTheDocument()
 })
 
 test("renders empty", async () => {
@@ -31,7 +31,7 @@ test("renders empty", async () => {
     withRouter: true,
   })
 
-  expect(screen.getByText("No runs found")).toBeTruthy()
+  expect(screen.getByText("No runs found")).toBeInTheDocument()
 })
 
 test("row click", async () => {
@@ -41,10 +41,10 @@ test("row click", async () => {
     routes: ["/:organisationName/:workspaceName/runs/:runId"],
   })
 
-  expect(screen.getByText("Success")).toBeTruthy()
+  expect(screen.getByText("Success")).toBeInTheDocument()
 
   // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
   await user.click(container.querySelectorAll("tbody > tr")[0])
 
-  expect(screen.getByText("New Page")).toBeTruthy()
+  expect(screen.getByText("New Page")).toBeInTheDocument()
 })

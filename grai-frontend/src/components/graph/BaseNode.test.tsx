@@ -33,7 +33,7 @@ test("renders", async () => {
   )
 
   await waitFor(() => {
-    expect(screen.getByText("Node Label")).toBeTruthy()
+    expect(screen.getByText("Node Label")).toBeInTheDocument()
   })
 })
 
@@ -48,7 +48,7 @@ test("renders no columns", async () => {
   )
 
   await waitFor(() => {
-    expect(screen.getByText("Node Label")).toBeTruthy()
+    expect(screen.getByText("Node Label")).toBeInTheDocument()
   })
 })
 
@@ -74,15 +74,15 @@ test("renders multiple columns", async () => {
   )
 
   await waitFor(() => {
-    expect(screen.getByText("Node Label")).toBeTruthy()
+    expect(screen.getByText("Node Label")).toBeInTheDocument()
   })
 
   await waitFor(() => {
-    expect(screen.getByText("c1")).toBeTruthy()
+    expect(screen.getByText("c1")).toBeInTheDocument()
   })
 
   await waitFor(() => {
-    expect(screen.getByText("c2")).toBeTruthy()
+    expect(screen.getByText("c2")).toBeInTheDocument()
   })
 })
 
@@ -102,7 +102,7 @@ test("highlight", async () => {
   )
 
   await waitFor(() => {
-    expect(screen.getByText("Node Label")).toBeTruthy()
+    expect(screen.getByText("Node Label")).toBeInTheDocument()
   })
 })
 
@@ -122,11 +122,11 @@ test("expanded", async () => {
   )
 
   await waitFor(() => {
-    expect(screen.getByText("Node Label")).toBeTruthy()
+    expect(screen.getByText("Node Label")).toBeInTheDocument()
   })
 
   await waitFor(() => {
-    expect(screen.getByText("c1")).toBeTruthy()
+    expect(screen.getByText("c1")).toBeInTheDocument()
   })
 })
 
@@ -234,6 +234,6 @@ test("context menu show profile", async () => {
   )
 
   await waitFor(() => {
-    expect(screen.getByText("New Page")).toBeTruthy()
+    expect(screen.getByText("New Page")).toBeInTheDocument()
   })
 })

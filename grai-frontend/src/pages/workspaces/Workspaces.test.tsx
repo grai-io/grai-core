@@ -8,6 +8,8 @@ test("renders", async () => {
   })
 
   await waitFor(() => {
-    screen.getByRole("heading", { name: /Select workspace/i })
+    expect(
+      screen.getByRole("heading", { name: /Select workspace/i })
+    ).toBeInTheDocument()
   })
 })

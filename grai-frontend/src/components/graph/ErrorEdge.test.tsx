@@ -54,6 +54,6 @@ test("renders errors", async () => {
   )
 
   // await waitFor(() => {
-  //   expect(screen.getByText("Error Message")).toBeTruthy()
+  //   expect(screen.getByText("Error Message")).toBeInTheDocument()
   // })
 })

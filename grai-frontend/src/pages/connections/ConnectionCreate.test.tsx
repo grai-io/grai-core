@@ -8,8 +8,8 @@ test("renders", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByText("Create Connection")).toBeTruthy()
+    expect(screen.getByText("Create Connection")).toBeInTheDocument()
   })
 
-  expect(screen.getByText("Select a connector")).toBeTruthy()
+  expect(screen.getByText("Select a connector")).toBeInTheDocument()
 })

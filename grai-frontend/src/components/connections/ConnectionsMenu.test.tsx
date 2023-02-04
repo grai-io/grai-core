@@ -28,6 +28,6 @@ test("edit", async () => {
   await user.click(screen.getByTestId("EditIcon"))
 
   await waitFor(() => {
-    expect(screen.getByText("New Page")).toBeTruthy()
+    expect(screen.getByText("New Page")).toBeInTheDocument()
   })
 })

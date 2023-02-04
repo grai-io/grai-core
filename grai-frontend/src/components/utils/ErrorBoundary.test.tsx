@@ -4,7 +4,7 @@ import ErrorBoundary from "./ErrorBoundary"
 test("renders", async () => {
   render(<ErrorBoundary>Result</ErrorBoundary>)
 
-  expect(screen.getByText("Result")).toBeTruthy()
+  expect(screen.getByText("Result")).toBeInTheDocument()
 })
 
 test("errors", async () => {
@@ -18,5 +18,5 @@ test("errors", async () => {
     </ErrorBoundary>
   )
 
-  expect(screen.getByText("Sorry there was an error")).toBeTruthy()
+  expect(screen.getByText("Sorry there was an error")).toBeInTheDocument()
 })

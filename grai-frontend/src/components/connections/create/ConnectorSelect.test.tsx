@@ -63,11 +63,11 @@ test("renders other", async () => {
   render(<ConnectorSelect onSelect={() => {}} />, { mocks })
 
   await waitFor(() => {
-    expect(screen.getByText("other")).toBeTruthy()
+    expect(screen.getByText("other")).toBeInTheDocument()
   })
 
   await waitFor(() => {
-    expect(screen.getByText("PostgreSQL")).toBeTruthy()
+    expect(screen.getByText("PostgreSQL")).toBeInTheDocument()
   })
 })
 
@@ -86,6 +86,6 @@ test("error", async () => {
   render(<ConnectorSelect onSelect={() => {}} />, { mocks })
 
   await waitFor(() => {
-    expect(screen.getAllByText("Error!")).toBeTruthy()
+    expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })

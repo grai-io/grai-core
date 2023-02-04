@@ -15,7 +15,7 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  expect(screen.getByText("Select a connector")).toBeTruthy()
+  expect(screen.getByText("Select a connector")).toBeInTheDocument()
 })
 
 test("close", async () => {
@@ -25,7 +25,7 @@ test("close", async () => {
     routes: ["/:organisationName/:workspaceName/connections"],
   })
 
-  expect(screen.getByText("Select a connector")).toBeTruthy()
+  expect(screen.getByText("Select a connector")).toBeInTheDocument()
 
   user.click(screen.getByTestId("CloseIcon"))
 
@@ -33,7 +33,7 @@ test("close", async () => {
     expect(screen.queryByText("Select a connector")).toBeFalsy()
   })
 
-  expect(screen.getByText("New Page")).toBeTruthy()
+  expect(screen.getByText("New Page")).toBeInTheDocument()
 })
 
 const connectorsMock = {
@@ -83,7 +83,7 @@ const connectorsMock = {
 }
 
 const submit = async (user: UserEvent, container: HTMLElement) => {
-  expect(screen.getByText("Select a connector")).toBeTruthy()
+  expect(screen.getByText("Select a connector")).toBeInTheDocument()
 
   await waitFor(() => {
     expect(screen.getByRole("button", { name: /PostgreSQL/i })).toBeTruthy()
@@ -95,7 +95,7 @@ const submit = async (user: UserEvent, container: HTMLElement) => {
     expect(screen.queryByText("Select a connector")).toBeFalsy()
   })
 
-  expect(screen.getByText("Connect to PostgreSQL")).toBeTruthy()
+  expect(screen.getByText("Connect to PostgreSQL")).toBeInTheDocument()
 
   await user.type(screen.getByRole("textbox", { name: "Namespace" }), "default")
 
@@ -124,7 +124,7 @@ const submit = async (user: UserEvent, container: HTMLElement) => {
     expect(screen.queryByText("Connect to PostgreSQL")).toBeFalsy()
   })
 
-  expect(screen.getByText("Test connection to PostgreSQL")).toBeTruthy()
+  expect(screen.getByText("Test connection to PostgreSQL")).toBeInTheDocument()
 
   await user.click(screen.getByRole("button", { name: /continue/i }))
 
@@ -132,7 +132,9 @@ const submit = async (user: UserEvent, container: HTMLElement) => {
     expect(screen.queryByText("Test connection to PostgreSQL")).toBeFalsy()
   })
 
-  expect(screen.getByText("Set a schedule for this connection")).toBeTruthy()
+  expect(
+    screen.getByText("Set a schedule for this connection")
+  ).toBeInTheDocument()
 
   await user.click(screen.getByTestId("cron-expression"))
 
@@ -201,7 +203,7 @@ test("submit", async () => {
     expect(screen.queryByText("Set a schedule for this connection")).toBeFalsy()
   })
 
-  expect(screen.getByText("New Page")).toBeTruthy()
+  expect(screen.getByText("New Page")).toBeInTheDocument()
 })
 
 test("error", async () => {
@@ -243,6 +245,6 @@ test("error", async () => {
   await submit(user, container)
 
   await waitFor(() => {
-    expect(screen.getAllByText("Error!")).toBeTruthy()
+    expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })

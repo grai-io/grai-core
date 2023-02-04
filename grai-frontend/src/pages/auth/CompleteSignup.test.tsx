@@ -21,5 +21,5 @@ test("missing token", async () => {
     path: "/",
   })
 
-  expect(screen.getByText("Missing required token")).toBeTruthy()
+  expect(screen.getByText("Missing required token")).toBeInTheDocument()
 })

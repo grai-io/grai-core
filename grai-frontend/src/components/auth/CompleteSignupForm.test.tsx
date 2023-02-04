@@ -61,6 +61,6 @@ test("error", async () => {
   await user.click(screen.getByRole("button", { name: /submit/i }))
 
   await waitFor(() => {
-    expect(screen.getAllByText("Error!")).toBeTruthy()
+    expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })

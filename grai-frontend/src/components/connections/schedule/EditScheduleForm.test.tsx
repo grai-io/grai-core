@@ -15,7 +15,7 @@ const connection = {
 test("renders", async () => {
   render(<EditScheduleForm connection={connection} />)
 
-  expect(screen.getByText("Schedule type")).toBeTruthy()
+  expect(screen.getByText("Schedule type")).toBeInTheDocument()
 })
 
 test("renders with schedule", async () => {
@@ -32,7 +32,7 @@ test("renders with schedule", async () => {
 
   render(<EditScheduleForm connection={connection} />)
 
-  expect(screen.getByText("Schedule type")).toBeTruthy()
+  expect(screen.getByText("Schedule type")).toBeInTheDocument()
 })
 
 test("submit", async () => {
@@ -40,7 +40,7 @@ test("submit", async () => {
 
   render(<EditScheduleForm connection={connection} />)
 
-  expect(screen.getByText("Schedule type")).toBeTruthy()
+  expect(screen.getByText("Schedule type")).toBeInTheDocument()
 
   await user.click(screen.getByRole("button", { name: /save/i }))
 })
@@ -50,7 +50,7 @@ test("submit cron", async () => {
 
   render(<EditScheduleForm connection={connection} />)
 
-  expect(screen.getByText("Schedule type")).toBeTruthy()
+  expect(screen.getByText("Schedule type")).toBeInTheDocument()
 
   await user.click(screen.getByLabelText("Cron expression"))
 
@@ -98,11 +98,11 @@ test("error", async () => {
 
   render(<EditScheduleForm connection={connection} />, { mocks })
 
-  expect(screen.getByText("Schedule type")).toBeTruthy()
+  expect(screen.getByText("Schedule type")).toBeInTheDocument()
 
   await user.click(screen.getByRole("button", { name: /save/i }))
 
   await waitFor(() => {
-    expect(screen.getAllByText("Error!")).toBeTruthy()
+    expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })

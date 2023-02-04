@@ -30,11 +30,11 @@ test("open", async () => {
   await user.click(screen.getByTestId("profile-menu-open"))
 
   await waitFor(() => {
-    expect(screen.getByText("Hello World")).toBeTruthy()
+    expect(screen.getByText("Hello World")).toBeInTheDocument()
   })
 
   await waitFor(() => {
-    expect(screen.getByText("Settings")).toBeTruthy()
+    expect(screen.getByText("Settings")).toBeInTheDocument()
   })
 })
 
@@ -52,7 +52,7 @@ test("logout", async () => {
   await user.click(screen.getByTestId("profile-menu-open"))
 
   await waitFor(() => {
-    expect(screen.getByText("Logout")).toBeTruthy()
+    expect(screen.getByText("Logout")).toBeInTheDocument()
   })
 
   await user.click(screen.getByText("Logout"))

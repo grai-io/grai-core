@@ -11,7 +11,7 @@ test("renders", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByText("Workspace Settings")).toBeTruthy()
+    expect(screen.getByText("Workspace Settings")).toBeInTheDocument()
   })
 
   await waitFor(() => {
@@ -38,11 +38,11 @@ test("error", async () => {
   render(<WorkspaceSettings />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getByText("Workspace Settings")).toBeTruthy()
+    expect(screen.getByText("Workspace Settings")).toBeInTheDocument()
   })
 
   await waitFor(() => {
-    expect(screen.getAllByText("Error!")).toBeTruthy()
+    expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })
 
@@ -67,11 +67,11 @@ test("not found", async () => {
   render(<WorkspaceSettings />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getByText("Workspace Settings")).toBeTruthy()
+    expect(screen.getByText("Workspace Settings")).toBeInTheDocument()
   })
 
   await waitFor(() => {
-    expect(screen.getAllByText("Page not found")).toBeTruthy()
+    expect(screen.getByText("Page not found")).toBeInTheDocument()
   })
 })
 
@@ -83,7 +83,7 @@ test("submit", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByText("Workspace Settings")).toBeTruthy()
+    expect(screen.getByText("Workspace Settings")).toBeInTheDocument()
   })
 
   await waitFor(() => {
@@ -136,7 +136,7 @@ test("submit error", async () => {
   render(<WorkspaceSettings />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getByText("Workspace Settings")).toBeTruthy()
+    expect(screen.getByText("Workspace Settings")).toBeInTheDocument()
   })
 
   await waitFor(() => {
@@ -146,6 +146,6 @@ test("submit error", async () => {
   await user.click(screen.getByRole("button", { name: /save/i }))
 
   await waitFor(() => {
-    expect(screen.getAllByText("Error!")).toBeTruthy()
+    expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })

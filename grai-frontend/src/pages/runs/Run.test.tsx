@@ -9,7 +9,7 @@ test("renders", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByText("Started")).toBeTruthy()
+    expect(screen.getByText("Started")).toBeInTheDocument()
   })
 })
 
@@ -66,7 +66,7 @@ test("renders errors", async () => {
   render(<Run />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getByText("You got an error")).toBeTruthy()
+    expect(screen.getByText("You got an error")).toBeInTheDocument()
   })
 })
 
@@ -90,7 +90,7 @@ test("error", async () => {
   render(<Run />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getAllByText("Error!")).toBeTruthy()
+    expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })
 
@@ -119,6 +119,6 @@ test("not found", async () => {
   render(<Run />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getAllByText("Page not found")).toBeTruthy()
+    expect(screen.getByText("Page not found")).toBeInTheDocument()
   })
 })

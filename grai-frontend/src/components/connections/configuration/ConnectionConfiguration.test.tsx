@@ -20,5 +20,5 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  expect(screen.getByText("Namespace")).toBeTruthy()
+  expect(screen.getByText("Namespace")).toBeInTheDocument()
 })

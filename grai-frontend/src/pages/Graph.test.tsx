@@ -132,7 +132,7 @@ test("renders", async () => {
   })
 
   await waitFor(() => {
-    screen.getAllByText("N2 Node")
+    expect(screen.getByText("N2 Node")).toBeInTheDocument()
   })
 })
 
@@ -148,7 +148,7 @@ test("renders", async () => {
 //   renderWithMocks(<Graph />, [mock])
 
 //   await waitFor(() => {
-//     screen.getAllByText("N2 Node")
+//     screen.getByText("N2 Node")
 //   })
 
 //   await user.click(screen.getByTestId("ArrowDropDownIcon"))
@@ -180,7 +180,7 @@ test("renders with errors", async () => {
   })
 
   await waitFor(() => {
-    screen.getAllByText("Hello World")
+    expect(screen.getAllByText("Hello World")).toBeTruthy()
   })
 })
 
@@ -211,7 +211,7 @@ test("renders with limitGraph", async () => {
   })
 
   await waitFor(() => {
-    screen.getAllByText("N2 Node")
+    expect(screen.getByText("N2 Node")).toBeInTheDocument
   })
 })
 
@@ -234,7 +234,7 @@ test("error", async () => {
   render(<Graph />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeTruthy()
+    expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })
 
@@ -263,6 +263,6 @@ test("no nodes", async () => {
   render(<Graph />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getAllByText("No tables found")).toBeTruthy()
+    expect(screen.getByText("No tables found")).toBeInTheDocument()
   })
 })

@@ -54,6 +54,6 @@ test("error", async () => {
   render(<Connections />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeTruthy()
+    expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })

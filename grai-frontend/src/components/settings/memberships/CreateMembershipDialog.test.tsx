@@ -15,7 +15,7 @@ test("renders", async () => {
   )
 
   await waitFor(() => {
-    expect(screen.getByText("Invite user")).toBeTruthy()
+    expect(screen.getByText("Invite user")).toBeInTheDocument()
   })
 })
 
@@ -30,7 +30,7 @@ test("submit", async () => {
   )
 
   await waitFor(() => {
-    expect(screen.getByText("Invite user")).toBeTruthy()
+    expect(screen.getByText("Invite user")).toBeInTheDocument()
   })
 
   await user.type(
@@ -66,7 +66,7 @@ test("error", async () => {
   )
 
   await waitFor(() => {
-    expect(screen.getByText("Invite user")).toBeTruthy()
+    expect(screen.getByText("Invite user")).toBeInTheDocument()
   })
 
   await user.type(
@@ -77,6 +77,6 @@ test("error", async () => {
   await user.click(screen.getByRole("button", { name: /Save/i }))
 
   await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeTruthy()
+    expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })

@@ -44,7 +44,7 @@ test("renders", async () => {
     }
   )
 
-  expect(screen.getByText("Connect to Test Connector")).toBeTruthy()
+  expect(screen.getByText("Connect to Test Connector")).toBeInTheDocument()
 })
 
 test("renders file", async () => {
@@ -78,7 +78,7 @@ test("renders file", async () => {
     }
   )
 
-  expect(screen.getByText("Connect to Test File Connector")).toBeTruthy()
+  expect(screen.getByText("Connect to Test File Connector")).toBeInTheDocument()
 })
 
 test("renders file yaml", async () => {
@@ -112,7 +112,7 @@ test("renders file yaml", async () => {
     }
   )
 
-  expect(screen.getByText("Connect to Test YAML Connector")).toBeTruthy()
+  expect(screen.getByText("Connect to Test YAML Connector")).toBeInTheDocument()
 })
 
 test("upload file", async () => {
@@ -148,7 +148,7 @@ test("upload file", async () => {
     }
   )
 
-  expect(screen.getByText("Connect to Test File Connector")).toBeTruthy()
+  expect(screen.getByText("Connect to Test File Connector")).toBeInTheDocument()
 
   window.URL.createObjectURL = jest.fn().mockImplementation(() => "url")
 
@@ -200,7 +200,7 @@ test("upload wrong file", async () => {
     }
   )
 
-  expect(screen.getByText("Connect to Test File Connector")).toBeTruthy()
+  expect(screen.getByText("Connect to Test File Connector")).toBeInTheDocument()
 
   window.URL.createObjectURL = jest.fn().mockImplementation(() => "url")
 
@@ -262,7 +262,7 @@ test("upload wrong file", async () => {
 //     [mock]
 //   )
 
-//   expect(screen.getByText("Connect to Test File Connector")).toBeTruthy()
+//   expect(screen.getByText("Connect to Test File Connector")).toBeInTheDocument()
 
 //   window.URL.createObjectURL = jest.fn().mockImplementation(() => "url")
 

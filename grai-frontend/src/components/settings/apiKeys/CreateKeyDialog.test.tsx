@@ -22,7 +22,7 @@ test("submit", async () => {
   await user.click(screen.getByRole("button", { name: /save/i }))
 
   await waitFor(() => {
-    expect(screen.getByText("API key created")).toBeTruthy()
+    expect(screen.getByText("API key created")).toBeInTheDocument()
   })
 
   await user.click(screen.getByTestId("CloseIcon"))
@@ -43,7 +43,7 @@ test("submit error", async () => {
         },
       },
       result: {
-        errors: [new GraphQLError("Error2!")],
+        errors: [new GraphQLError("Error!")],
       },
     },
   ]
@@ -57,6 +57,6 @@ test("submit error", async () => {
   await user.click(screen.getByRole("button", { name: /save/i }))
 
   await waitFor(() => {
-    expect(screen.getAllByText("Error2!")).toBeTruthy()
+    expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })

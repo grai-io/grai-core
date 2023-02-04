@@ -13,7 +13,7 @@ test("renders", async () => {
   expect(screen.getByRole("progressbar")).toBeInTheDocument()
 
   await waitFor(() => {
-    expect(screen.getByText("New Page")).toBeTruthy()
+    expect(screen.getByText("New Page")).toBeInTheDocument()
   })
 })
 
@@ -39,6 +39,6 @@ test("error", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeTruthy()
+    expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })

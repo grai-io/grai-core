@@ -9,11 +9,13 @@ test("renders", async () => {
   })
 
   await waitFor(() => {
-    screen.getByText("Settings")
+    expect(screen.getByText("Settings")).toBeInTheDocument()
   })
 
   await waitFor(() => {
-    screen.getByRole("heading", { name: /Api Keys/i })
+    expect(
+      screen.getByRole("heading", { name: /Api Keys/i })
+    ).toBeInTheDocument()
   })
 })
 
@@ -36,7 +38,7 @@ test("error", async () => {
   render(<ApiKeys />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getAllByText("Error!")).toBeTruthy()
+    expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })
 

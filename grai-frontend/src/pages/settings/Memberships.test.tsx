@@ -9,7 +9,7 @@ test("renders", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByText("Memberships")).toBeTruthy()
+    expect(screen.getByText("Memberships")).toBeInTheDocument()
   })
 
   await waitFor(() => {
@@ -36,7 +36,7 @@ test("error", async () => {
   render(<Memberships />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getAllByText("Error!")).toBeTruthy()
+    expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })
 
@@ -64,11 +64,11 @@ test("empty", async () => {
   render(<Memberships />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getByText("Memberships")).toBeTruthy()
+    expect(screen.getByText("Memberships")).toBeInTheDocument()
   })
 
   await waitFor(() => {
-    expect(screen.getByText("No memberships found")).toBeTruthy()
+    expect(screen.getByText("No memberships found")).toBeInTheDocument()
   })
 })
 

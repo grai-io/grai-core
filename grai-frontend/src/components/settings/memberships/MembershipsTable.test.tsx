@@ -34,7 +34,7 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  expect(screen.getByText("test@user.com")).toBeTruthy()
+  expect(screen.getByText("test@user.com")).toBeInTheDocument()
 })
 
 test("empty", async () => {
@@ -42,7 +42,7 @@ test("empty", async () => {
     withRouter: true,
   })
 
-  expect(screen.getByText("No memberships found")).toBeTruthy()
+  expect(screen.getByText("No memberships found")).toBeInTheDocument()
 })
 
 test("loading", async () => {

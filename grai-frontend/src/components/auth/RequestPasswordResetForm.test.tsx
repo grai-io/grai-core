@@ -21,7 +21,7 @@ test("submit", async () => {
   await user.click(screen.getByRole("button", { name: /submit/i }))
 
   await waitFor(() => {
-    expect(screen.getByText("Password reset email sent")).toBeTruthy()
+    expect(screen.getByText("Password reset email sent")).toBeInTheDocument()
   })
 })
 
@@ -52,6 +52,6 @@ test("error", async () => {
   await user.click(screen.getByRole("button", { name: /submit/i }))
 
   await waitFor(() => {
-    expect(screen.getAllByText("Error!")).toBeTruthy()
+    expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })

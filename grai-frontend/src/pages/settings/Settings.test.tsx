@@ -8,6 +8,6 @@ test("renders", async () => {
   })
 
   await waitFor(() => {
-    screen.getByText("Settings")
+    expect(screen.getByText("Settings")).toBeInTheDocument()
   })
 })

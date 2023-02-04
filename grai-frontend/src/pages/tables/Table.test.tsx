@@ -10,7 +10,7 @@ test("renders", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByText("Profile")).toBeTruthy()
+    expect(screen.getByText("Profile")).toBeInTheDocument()
   })
 })
 
@@ -34,7 +34,7 @@ test("error", async () => {
   render(<Table />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getAllByText("Error!")).toBeTruthy()
+    expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })
 

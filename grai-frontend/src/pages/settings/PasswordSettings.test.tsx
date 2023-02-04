@@ -9,7 +9,7 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  expect(screen.getByText("Change Password")).toBeTruthy()
+  expect(screen.getByText("Change Password")).toBeInTheDocument()
 })
 
 test("submit", async () => {
@@ -19,7 +19,7 @@ test("submit", async () => {
     withRouter: true,
   })
 
-  expect(screen.getByText("Change Password")).toBeTruthy()
+  expect(screen.getByText("Change Password")).toBeInTheDocument()
 
   await user.type(screen.getByTestId("current-password"), "password")
   await user.type(screen.getByTestId("new-password"), "password2")
@@ -47,7 +47,7 @@ test("error", async () => {
 
   render(<PasswordSettings />, { mocks, withRouter: true })
 
-  expect(screen.getByText("Change Password")).toBeTruthy()
+  expect(screen.getByText("Change Password")).toBeInTheDocument()
 
   await user.type(screen.getByTestId("current-password"), "password")
   await user.type(screen.getByTestId("new-password"), "password2")
@@ -55,6 +55,6 @@ test("error", async () => {
   await user.click(screen.getByRole("button", { name: /save/i }))
 
   await waitFor(() => {
-    expect(screen.getAllByText("Error!")).toBeTruthy()
+    expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })

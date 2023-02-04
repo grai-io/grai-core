@@ -13,7 +13,7 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  expect(screen.getByText("Success")).toBeTruthy()
+  expect(screen.getByText("Success")).toBeInTheDocument()
 })
 
 test("navigate", async () => {
@@ -23,11 +23,11 @@ test("navigate", async () => {
     routes: ["/:organisationName/:workspaceName/runs/:runId"],
   })
 
-  expect(screen.getByText("Success")).toBeTruthy()
+  expect(screen.getByText("Success")).toBeInTheDocument()
 
   await user.click(screen.getByTestId("CheckIcon"))
 
-  expect(screen.getByText("New Page")).toBeTruthy()
+  expect(screen.getByText("New Page")).toBeInTheDocument()
 })
 
 test("onClick", async () => {
@@ -35,5 +35,5 @@ test("onClick", async () => {
     withRouter: true,
   })
 
-  expect(screen.getByText("Success")).toBeTruthy()
+  expect(screen.getByText("Success")).toBeInTheDocument()
 })

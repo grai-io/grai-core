@@ -9,7 +9,7 @@ test("renders", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByText("Memberships")).toBeTruthy()
+    expect(screen.getByText("Memberships")).toBeInTheDocument()
   })
 })
 
@@ -21,7 +21,7 @@ test("open", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByText("Memberships")).toBeTruthy()
+    expect(screen.getByText("Memberships")).toBeInTheDocument()
   })
 
   await user.click(screen.getByRole("button", { name: /Invite user/i }))
