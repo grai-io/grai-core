@@ -1,58 +1,66 @@
 import { GraphQLError } from "graphql"
 import React from "react"
-import { renderWithMocks, renderWithRouter, screen, waitFor } from "testing"
+import { render, screen, waitFor } from "testing"
 import ApiKeys, { GET_API_KEYS } from "./ApiKeys"
 
 test("renders", async () => {
-  renderWithRouter(<ApiKeys />)
-
-  await waitFor(() => {
-    screen.getByText("Settings")
+  render(<ApiKeys />, {
+    withRouter: true,
   })
 
   await waitFor(() => {
-    screen.getByRole("heading", { name: /Api Keys/i })
+    expect(screen.getByText("Settings")).toBeInTheDocument()
+  })
+
+  await waitFor(() => {
+    expect(
+      screen.getByRole("heading", { name: /Api Keys/i })
+    ).toBeInTheDocument()
   })
 })
 
 test("error", async () => {
-  const mock = {
-    request: {
-      query: GET_API_KEYS,
-      variables: {
-        organisationName: "",
-        workspaceName: "",
+  const mocks = [
+    {
+      request: {
+        query: GET_API_KEYS,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+        },
+      },
+      result: {
+        errors: [new GraphQLError("Error!")],
       },
     },
-    result: {
-      errors: [new GraphQLError("Error!")],
-    },
-  }
+  ]
 
-  renderWithMocks(<ApiKeys />, [mock])
+  render(<ApiKeys />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getAllByText("Error!")).toBeTruthy()
+    expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })
 
 test("no workspace", async () => {
-  const mock = {
-    request: {
-      query: GET_API_KEYS,
-      variables: {
-        organisationName: "",
-        workspaceName: "",
+  const mocks = [
+    {
+      request: {
+        query: GET_API_KEYS,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+        },
+      },
+      result: {
+        data: {
+          workspace: null,
+        },
       },
     },
-    result: {
-      data: {
-        workspace: null,
-      },
-    },
-  }
+  ]
 
-  renderWithMocks(<ApiKeys />, [mock])
+  render(<ApiKeys />, { mocks, withRouter: true })
 
   await waitFor(() => {
     expect(

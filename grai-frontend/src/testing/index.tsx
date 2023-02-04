@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 import React, { ReactElement, ReactNode } from "react"
-import { MockedProvider, MockedResponse } from "@apollo/client/testing"
+import { MockedResponse } from "@apollo/client/testing"
 import { ThemeProvider } from "@mui/material"
 import { render, RenderOptions } from "@testing-library/react"
 import { SnackbarProvider } from "notistack"
@@ -31,14 +31,43 @@ const mockResolvers = {
   }),
 }
 
-const customRender = (ui: ReactElement, options?: RenderOptions) =>
+type RouteType =
+  | string
+  | {
+      path: string
+      element: ReactNode
+    }
+
+type CustomRenderOptions = RenderOptions & {
+  path?: string
+  withRouter?: boolean
+  route?: string
+  routes?: RouteType[]
+  initialEntries?: string[] | null
+  loggedIn?: boolean
+  guestRoute?: boolean
+  throwError?: boolean
+  mocks?: readonly MockedResponse<Record<string, any>>[]
+}
+
+const customRender = (ui: ReactElement, options?: CustomRenderOptions) => {
+  if (options?.withRouter || options?.path || options?.route || options?.routes)
+    return renderWithRouter(ui, options)
+
+  return basicRender(ui, options)
+}
+
+const basicRender = (ui: ReactElement, options?: CustomRenderOptions) =>
   render(ui, {
     wrapper: props => (
       <HelmetProvider>
         <SnackbarProvider>
           <ThemeProvider theme={theme}>
             <AuthMock initialLoggedIn={true}>
-              <AutoMockedProvider mockResolvers={mockResolvers}>
+              <AutoMockedProvider
+                mockResolvers={mockResolvers}
+                mocks={options?.mocks}
+              >
                 {props.children}
               </AutoMockedProvider>
             </AuthMock>
@@ -49,24 +78,7 @@ const customRender = (ui: ReactElement, options?: RenderOptions) =>
     ...options,
   })
 
-type RouteType =
-  | string
-  | {
-      path: string
-      element: ReactNode
-    }
-
-type CustomRenderOptions = {
-  path?: string
-  route?: string
-  routes?: RouteType[]
-  initialEntries?: string[] | null
-  loggedIn?: boolean
-  guestRoute?: boolean
-  throwError?: boolean
-}
-
-export const renderWithRouter = (
+const renderWithRouter = (
   ui: ReactElement,
   {
     path = "/",
@@ -76,13 +88,14 @@ export const renderWithRouter = (
     loggedIn = true,
     guestRoute = false,
     throwError = false,
+    mocks,
   }: CustomRenderOptions = {}
 ) => {
   return render(ui, {
     wrapper: props => (
       <HelmetProvider>
         <ThemeProvider theme={theme}>
-          <AutoMockedProvider mockResolvers={mockResolvers}>
+          <AutoMockedProvider mockResolvers={mockResolvers} mocks={mocks}>
             <MemoryRouter initialEntries={initialEntries ?? [route]}>
               <AuthMock initialLoggedIn={loggedIn} throwError={throwError}>
                 <SnackbarProvider maxSnack={3} hideIconVariant>
@@ -116,55 +129,6 @@ export const renderWithRouter = (
               </AuthMock>
             </MemoryRouter>
           </AutoMockedProvider>
-        </ThemeProvider>
-      </HelmetProvider>
-    ),
-  })
-}
-
-export const renderWithMocks = (
-  ui: ReactElement,
-  mocks: readonly MockedResponse<Record<string, any>>[],
-  {
-    path = "/",
-    route = "/",
-    routes = [],
-    loggedIn = true,
-    throwError = false,
-  }: CustomRenderOptions = {}
-) => {
-  return render(ui, {
-    wrapper: props => (
-      <HelmetProvider>
-        <ThemeProvider theme={theme}>
-          <MockedProvider mocks={mocks} addTypename={false}>
-            <MemoryRouter initialEntries={[route]}>
-              <AuthMock initialLoggedIn={loggedIn} throwError={throwError}>
-                <SnackbarProvider maxSnack={3} hideIconVariant>
-                  <Routes>
-                    <Route element={<WorkspaceProvider />}>
-                      <Route path={path} element={props.children} />
-                      {routes.map(route =>
-                        typeof route === "string" ? (
-                          <Route
-                            key={route}
-                            path={route}
-                            element={<>New Page</>}
-                          />
-                        ) : (
-                          <Route
-                            key={route.path}
-                            path={route.path}
-                            element={route.element}
-                          />
-                        )
-                      )}
-                    </Route>
-                  </Routes>
-                </SnackbarProvider>
-              </AuthMock>
-            </MemoryRouter>
-          </MockedProvider>
         </ThemeProvider>
       </HelmetProvider>
     ),

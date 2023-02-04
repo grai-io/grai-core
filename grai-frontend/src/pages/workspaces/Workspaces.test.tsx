@@ -1,13 +1,17 @@
 import { GraphQLError } from "graphql"
 import React from "react"
-import { renderWithMocks, renderWithRouter, screen, waitFor } from "testing"
 import Workspaces, { GET_WORKSPACES } from "./Workspaces"
+import { render, screen, waitFor } from "testing"
 
 test("renders", async () => {
-  renderWithRouter(<Workspaces />)
+  render(<Workspaces />, {
+    withRouter: true,
+  })
 
   await waitFor(() => {
-    screen.getByRole("heading", { name: /Select workspace/i })
+    expect(
+      screen.getByRole("heading", { name: /Select workspace/i })
+    ).toBeInTheDocument()
   })
 })
 
@@ -25,7 +29,7 @@ test("no workspaces", async () => {
     },
   ]
 
-  renderWithMocks(<Workspaces />, mocks)
+  render(<Workspaces />, { mocks, withRouter: true })
 
   await waitFor(() => {
     screen.getByRole("heading", { name: /No workspaces/i })
@@ -44,7 +48,7 @@ test("error", async () => {
     },
   ]
 
-  renderWithMocks(<Workspaces />, mocks)
+  render(<Workspaces />, { mocks, withRouter: true })
 
   await waitFor(() => {
     expect(screen.getByText("Error!")).toBeInTheDocument()

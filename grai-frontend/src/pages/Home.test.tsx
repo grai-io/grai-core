@@ -1,9 +1,11 @@
 import React from "react"
-import { renderWithRouter, screen, waitFor } from "testing"
+import { render, screen, waitFor } from "testing"
 import Home from "./Home"
 
 test("renders", async () => {
-  renderWithRouter(<Home />)
+  render(<Home />, {
+    withRouter: true,
+  })
 
   await waitFor(() => {
     expect(

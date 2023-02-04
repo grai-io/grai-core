@@ -5,5 +5,5 @@ import NotFound from "./NotFound"
 test("renders", async () => {
   render(<NotFound />)
 
-  expect(screen.getByText("Page not found")).toBeTruthy()
+  expect(screen.getByText("Page not found")).toBeInTheDocument()
 })

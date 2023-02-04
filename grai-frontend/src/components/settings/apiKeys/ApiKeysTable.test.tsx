@@ -32,7 +32,7 @@ const keys = [
 test("renders", async () => {
   render(<ApiKeysTable keys={keys} />)
 
-  expect(screen.getByText("key 1")).toBeTruthy()
+  expect(screen.getByText("key 1")).toBeInTheDocument()
 })
 
 test("loading", async () => {
@@ -44,5 +44,5 @@ test("loading", async () => {
 test("empty", async () => {
   render(<ApiKeysTable keys={[]} />)
 
-  expect(screen.getByText("No API keys found")).toBeTruthy()
+  expect(screen.getByText("No API keys found")).toBeInTheDocument()
 })

@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import React from "react"
-import { renderWithMocks, renderWithRouter, screen } from "testing"
+import { render, screen } from "testing"
 import UpdateConnectionForm, { UPDATE_CONNECTION } from "./UpdateConnectionForm"
 
 const connection = {
@@ -28,7 +28,9 @@ const connection = {
 }
 
 test("renders", async () => {
-  renderWithRouter(<UpdateConnectionForm connection={connection} />)
+  render(<UpdateConnectionForm connection={connection} />, {
+    withRouter: true,
+  })
 })
 
 test("submit", async () => {
@@ -102,9 +104,9 @@ test("submit", async () => {
     },
   }
 
-  const { container } = renderWithMocks(
+  const { container } = render(
     <UpdateConnectionForm connection={connection} />,
-    [createMock]
+    { mocks: [createMock] }
   )
 
   await user.type(screen.getByRole("textbox", { name: "Namespace" }), "default")

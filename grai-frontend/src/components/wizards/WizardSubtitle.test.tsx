@@ -9,11 +9,11 @@ test("renders", async () => {
 test("renders title", async () => {
   render(<WizardSubtitle title="Test Title" />)
 
-  expect(screen.getByText("Test Title")).toBeTruthy()
+  expect(screen.getByText("Test Title")).toBeInTheDocument()
 })
 
 test("renders title icon", async () => {
   render(<WizardSubtitle title="Test Title" icon="/images/file-icon.png" />)
 
-  expect(screen.getByText("Test Title")).toBeTruthy()
+  expect(screen.getByText("Test Title")).toBeInTheDocument()
 })

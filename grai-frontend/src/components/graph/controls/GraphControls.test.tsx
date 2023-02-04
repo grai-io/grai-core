@@ -1,14 +1,17 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { renderWithRouter, screen } from "testing"
+import { render, screen } from "testing"
 import { ReactFlowProvider } from "reactflow"
 import GraphControls from "./GraphControls"
 
 test("renders", async () => {
-  renderWithRouter(
+  render(
     <ReactFlowProvider>
       <GraphControls errors={false} />
-    </ReactFlowProvider>
+    </ReactFlowProvider>,
+    {
+      withRouter: true,
+    }
   )
 
   expect(screen.getByTestId("AddIcon")).toBeInTheDocument()
@@ -16,23 +19,29 @@ test("renders", async () => {
 })
 
 test("renders options", async () => {
-  renderWithRouter(
+  render(
     <ReactFlowProvider>
       <GraphControls
         errors={false}
         options={{ n: { value: 1, setValue: (input: number) => {} } }}
       />
-    </ReactFlowProvider>
+    </ReactFlowProvider>,
+    {
+      withRouter: true,
+    }
   )
 })
 
 test("zoom controls", async () => {
   const user = userEvent.setup()
 
-  renderWithRouter(
+  render(
     <ReactFlowProvider>
       <GraphControls errors={false} />
-    </ReactFlowProvider>
+    </ReactFlowProvider>,
+    {
+      withRouter: true,
+    }
   )
 
   expect(screen.getByTestId("AddIcon")).toBeInTheDocument()
@@ -47,10 +56,13 @@ test("zoom controls", async () => {
 test("renders errors", async () => {
   const user = userEvent.setup()
 
-  renderWithRouter(
+  render(
     <ReactFlowProvider>
       <GraphControls errors />
-    </ReactFlowProvider>
+    </ReactFlowProvider>,
+    {
+      withRouter: true,
+    }
   )
 
   expect(screen.getByText("Limit Graph")).toBeInTheDocument()

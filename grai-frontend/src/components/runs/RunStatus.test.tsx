@@ -1,6 +1,6 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { renderWithRouter, screen } from "testing"
+import { render, screen } from "testing"
 import RunStatus from "./RunStatus"
 
 const run = {
@@ -9,27 +9,31 @@ const run = {
 }
 
 test("renders", async () => {
-  renderWithRouter(<RunStatus run={run} />)
+  render(<RunStatus run={run} />, {
+    withRouter: true,
+  })
 
-  expect(screen.getByText("Success")).toBeTruthy()
+  expect(screen.getByText("Success")).toBeInTheDocument()
 })
 
 test("navigate", async () => {
   const user = userEvent.setup()
 
-  renderWithRouter(<RunStatus run={run} link />, {
+  render(<RunStatus run={run} link />, {
     routes: ["/:organisationName/:workspaceName/runs/:runId"],
   })
 
-  expect(screen.getByText("Success")).toBeTruthy()
+  expect(screen.getByText("Success")).toBeInTheDocument()
 
   await user.click(screen.getByTestId("CheckIcon"))
 
-  expect(screen.getByText("New Page")).toBeTruthy()
+  expect(screen.getByText("New Page")).toBeInTheDocument()
 })
 
 test("onClick", async () => {
-  renderWithRouter(<RunStatus run={run} onClick={() => {}} />)
+  render(<RunStatus run={run} onClick={() => {}} />, {
+    withRouter: true,
+  })
 
-  expect(screen.getByText("Success")).toBeTruthy()
+  expect(screen.getByText("Success")).toBeInTheDocument()
 })

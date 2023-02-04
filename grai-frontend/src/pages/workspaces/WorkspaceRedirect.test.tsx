@@ -1,10 +1,10 @@
 import { GraphQLError } from "graphql"
 import React from "react"
-import { renderWithMocks, renderWithRouter, screen, waitFor } from "testing"
+import { render, screen, waitFor } from "testing"
 import WorkspaceRedirect, { GET_WORKSPACE } from "./WorkspaceRedirect"
 
 test("renders", async () => {
-  renderWithRouter(<WorkspaceRedirect />, {
+  render(<WorkspaceRedirect />, {
     route: "/workspaces/1234",
     path: "/workspaces/:workspaceId",
     routes: ["/:organisationName/:workspaceName"],
@@ -13,29 +13,32 @@ test("renders", async () => {
   expect(screen.getByRole("progressbar")).toBeInTheDocument()
 
   await waitFor(() => {
-    expect(screen.getByText("New Page")).toBeTruthy()
+    expect(screen.getByText("New Page")).toBeInTheDocument()
   })
 })
 
 test("error", async () => {
-  const mock = {
-    request: {
-      query: GET_WORKSPACE,
-      variables: {
-        workspaceId: "1234",
+  const mocks = [
+    {
+      request: {
+        query: GET_WORKSPACE,
+        variables: {
+          workspaceId: "1234",
+        },
+      },
+      result: {
+        errors: [new GraphQLError("Error!")],
       },
     },
-    result: {
-      errors: [new GraphQLError("Error!")],
-    },
-  }
+  ]
 
-  renderWithMocks(<WorkspaceRedirect />, [mock], {
+  render(<WorkspaceRedirect />, {
     route: "/workspaces/1234",
     path: "/workspaces/:workspaceId",
+    mocks,
   })
 
   await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeTruthy()
+    expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })

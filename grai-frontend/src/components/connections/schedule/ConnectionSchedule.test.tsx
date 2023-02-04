@@ -25,7 +25,7 @@ test("renders", async () => {
     </Table>
   )
 
-  expect(screen.getByText("Schedule")).toBeTruthy()
+  expect(screen.getByText("Schedule")).toBeInTheDocument()
 })
 
 test("renders cron", async () => {
@@ -60,5 +60,5 @@ test("renders cron", async () => {
     </Table>
   )
 
-  expect(screen.getByText("Schedule")).toBeTruthy()
+  expect(screen.getByText("Schedule")).toBeInTheDocument()
 })

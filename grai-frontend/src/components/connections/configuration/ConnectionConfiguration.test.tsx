@@ -1,4 +1,4 @@
-import { renderWithRouter, screen } from "testing"
+import { render, screen } from "testing"
 import ConnectionConfiguration from "./ConnectionConfiguration"
 
 const connection = {
@@ -16,7 +16,9 @@ const connection = {
 }
 
 test("renders", async () => {
-  renderWithRouter(<ConnectionConfiguration connection={connection} />)
+  render(<ConnectionConfiguration connection={connection} />, {
+    withRouter: true,
+  })
 
-  expect(screen.getByText("Namespace")).toBeTruthy()
+  expect(screen.getByText("Namespace")).toBeInTheDocument()
 })
