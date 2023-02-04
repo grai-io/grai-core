@@ -5,10 +5,10 @@ from grai_client.update import update
 from grai_schemas.base import Edge, Node
 
 from grai_source_mssql.adapters import adapt_to_client
-from grai_source_mssql.loader import Ms
+from grai_source_mssql.loader import MsSQLConnector
 
 
-def get_nodes_and_edges(connector: MySQLConnector, version: Literal["v1"]) -> Tuple[List[Node], List[Edge]]:
+def get_nodes_and_edges(connector: MsSQLConnector, version: Literal["v1"]) -> Tuple[List[Node], List[Edge]]:
     with connector.connect() as conn:
         nodes, edges = conn.get_nodes_and_edges()
 
@@ -26,7 +26,7 @@ def update_server(
     host: Optional[str] = None,
     port: Optional[str] = None,
 ):
-    conn = MySQLConnector(dbname=dbname, user=user, password=password, host=host, port=port)
+    conn = MsSQLConnector(dbname=dbname, user=user, password=password, host=host, port=port)
     nodes, edges = get_nodes_and_edges(conn, client.id)
     update(client, nodes)
     update(client, edges)

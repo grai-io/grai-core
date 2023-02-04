@@ -27,7 +27,7 @@ column_params = [
         "column_default": 2,
     },
 ]
-shared = {"table": "test_table", "schema": "test_schema"}
+shared = {"table": "test_table", "column_schema": "test_schema"}
 for param in column_params:
     param.update(shared)
 

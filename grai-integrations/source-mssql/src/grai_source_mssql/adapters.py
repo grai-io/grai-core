@@ -136,7 +136,7 @@ def make_name(node1: ID, node2: ID) -> str:
 @adapt_to_client.register
 def adapt_edge_to_client(current: Edge, version: Literal["v1"] = "v1"):
     spec_dict = {
-        "data_source": "grai-mysql-adapter",
+        "data_source": config.integration_name,
         "name": make_name(current.source, current.destination),
         "namespace": current.source.namespace,
         "source": {

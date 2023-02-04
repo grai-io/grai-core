@@ -1,31 +1,73 @@
 import os
+import warnings
+from functools import cached_property
 from itertools import chain
 from typing import Any, Callable, Dict, List, Optional, Union
 
+import pydantic
 import pyodbc
-from pydantic import BaseSettings
+from pydantic import SecretStr, validator
 
-from grai_source_mssql.models import Column, ColumnID, Edge, EdgeQuery, MysqlNode, Table
+from grai_source_mssql.models import Column, ColumnID, Edge, EdgeQuery, MsSqlNode, Table
+
+ENV_PREFIX = "GRAI_MSSQL_"
 
 
-class MsSqlSettings:
-    driver: str = "{SQL Server}"
-    database: str
-    server: str
+class BaseSettings(pydantic.BaseSettings):
+    class Config:
+        env_prefix = ENV_PREFIX
+
+
+class MsSqlSettings(BaseSettings):
+    driver: Optional[str] = None
+    database: Optional[str] = None
+    server: Optional[str] = None
+    host: Optional[str] = None
+    port: Optional[str] = None
     trusted_connection: Optional[bool] = None
     user: Optional[str]
-    password: Optional[str]
-
-    class Config:
-        env_prefix = "GRAI_MSSQL_"
+    password: Optional[SecretStr]
+    encrypt: Optional[bool]
 
     def connection_string(self):
-        connection_attributes = [f"DRIVER={self.driver}", f"Server={self.server}", f"DATABASE={self.database}"]
+        connection_attributes = [f"DRIVER={self.driver}"]
         if self.trusted_connection:
             connection_attributes.append("Trusted_Connection=yes")
         else:
-            connection_attributes.extend([f"UID={self.user}", f"Pwd={self.password}"])
+            connection_attributes.extend([f"UID={self.user}", f"Pwd={self.password.get_secret_value()}"])
+        if self.encrypt is not None:
+            connection_attributes.append(f"Encrypt={'yes' if self.encrypt else 'no'}")
+        if self.database is not None:
+            connection_attributes.append(f"DATABASE={self.database}")
+
+        if self.server is not None:
+            connection_attributes.append(f"Server={self.server}")
+        elif self.host is not None:
+            f"Server={self.host},{'1433' if self.port is None else self.port}"
+        else:
+            raise Exception("Connection strings require either `server` or a `host`/`port` combination.")
         return "; ".join(connection_attributes)
+
+    @validator("driver")
+    def validate_driver(cls, value):
+        available_drivers = pyodbc.drivers()
+        if value is None:
+            message = f"Running the MS Server connector requires either a `driver` parameter or {ENV_PREFIX}DRIVER environment variable. Normally we would attempt to detect an available driver installed on your system, however, in this case none were found. "
+            assert len(available_drivers) >= 1, message
+            return available_drivers[0]
+        elif value not in available_drivers:
+            warnings.warn(
+                f"Specified driver {value} not found in the list of available pyodbc drivers {available_drivers}"
+            )
+        return value
+
+
+class MsSqlGraiSettings(BaseSettings):
+    namespace: str = "default"
+
+
+class ConnectorSettings(MsSqlSettings, MsSqlGraiSettings):
+    pass
 
 
 class MsSQLConnector:
@@ -36,18 +78,24 @@ class MsSQLConnector:
         password: Optional[str] = None,
         database: Optional[str] = None,
         server: Optional[str] = None,
+        host: Optional[str] = None,
+        port: Optional[str] = None,
+        encrypt: Optional[bool] = None,
         namespace: Optional[str] = None,
     ):
         connection_values = {
             "driver": driver,
             "user": user,
             "password": password,
-            "dbname": database,
+            "database": database,
             "server": server,
+            "host": host,
+            "port": port,
+            "encrypt": encrypt,
+            "namespace": namespace,
         }
         user_provided_connection_params = {k: v for k, v in connection_values.items() if v is not None}
-        self.config = MsSqlSettings(**user_provided_connection_params)
-        self.namespace = namespace
+        self.config = ConnectorSettings(**user_provided_connection_params)
         self._connection = None
 
     def __enter__(self):
@@ -59,6 +107,7 @@ class MsSQLConnector:
     def connect(self):
         if self._connection is None:
             self._connection = pyodbc.connect(self.config.connection_string())
+        return self
 
     @property
     def connection(self):
@@ -70,13 +119,16 @@ class MsSQLConnector:
         self.connection.close()
         self._connection = None
 
-    def query_runner(self, query: str, param_dict: Dict = {}) -> List[Dict]:
+    def query_runner(self, query: str, params: List = []) -> List[Dict]:
         cursor = self.connection.cursor()
-        cursor.execute(query, param_dict)
+        # queries must be parameterized with ?
+        # https://github.com/mkleehammer/pyodbc/wiki/Getting-started#parameters
+        cursor.execute(query, *params)
         columns = [col[0] for col in cursor.description]
         return [dict(zip(columns, row)) for row in cursor.fetchall()]
 
-    def get_tables(self) -> List[Table]:
+    @cached_property
+    def tables(self) -> List[Table]:
         """
         Create and return a list of dictionaries with the
         schemas and names of tables in the database
@@ -85,35 +137,54 @@ class MsSQLConnector:
 
         query = """
 	        SELECT TABLE_SCHEMA, TABLE_NAME, TABLE_TYPE
-            FROM sys.Tables
+            FROM INFORMATION_SCHEMA.TABLES
         """
-        res = ({k.lower(): v for k, v in result.items()} for result in self.query_runner(query))
-        return [Table(**result, namespace=self.namespace) for result in res]
+        tables = ({k.lower(): v for k, v in result.items()} for result in self.query_runner(query))
+        tables = [Table(**result, namespace=self.config.namespace) for result in tables]
+        for table in tables:
+            table.columns = self.get_table_columns(table)
+        return tables
 
-    def get_columns(self, table: Optional[Table] = None) -> List[Column]:
+    @cached_property
+    def columns(self) -> List[Column]:
         """
         Creates and returns a list of dictionaries for the specified
         schema.table in the database connected to.
         """
         query = f"""
-            SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE, COLUMN_DEFAULT, COLUMN_KEY, TABLE, TABLE_SCHEMA
+            SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE, COLUMN_DEFAULT, TABLE_NAME, TABLE_SCHEMA
             FROM INFORMATION_SCHEMA.COLUMNS
         """
-        if table is not None:
-            query = f"""
-                {query}
-                WHERE TABLE_SCHEMA = '{table.table_schema}'
-                AND TABLE = '{table.name}'
-            """
 
-        res = ({k.lower(): v for k, v in result.items()} for result in self.query_runner(query))
+        res = [{k.lower(): v for k, v in result.items()} for result in self.query_runner(query)]
+        for item in res:
+            item.update(
+                {
+                    "table": item["table_name"],
+                    "column_schema": item["table_schema"],
+                }
+            )
 
-        addtl_args = {
-            "namespace": self.namespace,
-        }
-        return [Column(**result, **addtl_args) for result in res]
+        return [Column(**result, namespace=self.config.namespace) for result in res]
 
-    def get_foreign_keys(self) -> List[Edge]:
+    @cached_property
+    def column_map(self):
+        result_map = {}
+        for col in self.columns:
+            table_id = (col.column_schema, col.table)
+            result_map.setdefault(table_id, [])
+            result_map[table_id].append(col)
+        return result_map
+
+    def get_table_columns(self, table: Table):
+        table_id = (table.table_schema, table.name)
+        if table_id in self.column_map:
+            return self.column_map[table_id]
+        else:
+            raise Exception(f"No columns found for table with schema={table.table_schema} and name={table.name}")
+
+    @cached_property
+    def foreign_keys(self) -> List[Edge]:
         """This needs to be tested / evaluated
         :param connection:
         :param table:
@@ -121,12 +192,11 @@ class MsSQLConnector:
         """
 
         query = """
-            SELECT  obj.name AS FK_NAME,
-                sch.name AS [schema_name],
-                tab1.name AS [table],
-                col1.name AS [column],
-                tab2.name AS [referenced_table],
-                col2.name AS [referenced_column]
+            SELECT sch.name AS [self_schema],
+                tab1.name AS [self_table],
+                col1.name AS [self_columns],
+                tab2.name AS [foreign_table],
+                col2.name AS [foreign_columns]
             FROM sys.foreign_key_columns fkc
             INNER JOIN sys.objects obj
                 ON obj.object_id = fkc.constraint_object_id
@@ -141,41 +211,31 @@ class MsSQLConnector:
             INNER JOIN sys.columns col2
                 ON col2.column_id = referenced_column_id AND col2.object_id = tab2.object_id
         """
-        addtl_args = {
-            "namespace": self.namespace,
-        }
-
         res = self.query_runner(query)
 
-        # for item in res:
-        #     item["self_columns"] = list(item["self_columns"].split(",")) if item["self_columns"] else []
-        #     item["foreign_columns"] = list(item["foreign_columns"].split(",")) if item["foreign_columns"] else []
+        res = [{k.lower(): v for k, v in result.items()} for result in res]
+        for item in res:
+            item.update(
+                {
+                    "constraint_type": "f",
+                    "definition": "",
+                    "foreign_schema": item["self_schema"],  # TODO: This is not necessarily true
+                    "namespace": self.config.namespace,
+                    "constraint_name": "",
+                    "self_columns": list(item["self_columns"].split(",")),
+                    "foreign_columns": list(item["foreign_columns"].split(",")),
+                }
+            )
+        return [EdgeQuery(**fk).to_edge() for fk in res]
 
-        res = ({k.lower(): v for k, v in result.items()} for result in res)
+    def get_nodes(self) -> List[MsSqlNode]:
+        return list(chain(self.tables, self.columns))
 
-        filtered_results = (result for result in res if result["constraint_type"] == "f")
-
-        return [EdgeQuery(**fk, **addtl_args).to_edge() for fk in filtered_results]
-
-    def get_nodes(self) -> List[MysqlNode]:
-        def get_nodes():
-            for table in self.get_tables():
-                table.columns = self.get_columns(table)
-                yield [table]
-                yield table.columns
-
-        return list(chain(*get_nodes()))
-
-    # TODO need to push edges between table -> columns
+    def get_edges(self):
+        return list(chain(*[t.get_edges() for t in self.tables], self.foreign_keys))
 
     def get_nodes_and_edges(self):
-        tables = self.get_tables()
-        column_idx = {(col.column_schema, col.table) for col in self.get_columns()}
-
-        for table in tables:
-            table.columns = column_idx[(table.table_schema, table.name)]
-
-        nodes = list(chain(tables, *[t.columns for t in tables]))
-        edges = list(chain(*[t.get_edges() for t in tables], self.get_foreign_keys()))
+        nodes = self.get_nodes()
+        edges = self.get_edges()
 
         return nodes, edges

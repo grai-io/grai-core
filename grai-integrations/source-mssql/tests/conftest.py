@@ -7,11 +7,11 @@ from grai_source_mssql.loader import MsSQLConnector
 @pytest.fixture
 def connection() -> MsSQLConnector:
     test_credentials = {
-        "host": "localhost",
-        "dbname": "grai",
+        "server": "localhost,1433",
         "user": "sa",
         "password": "GraiGraiGr4i",
-        "namespace": "default",
+        "namespace": "test",
+        "encrypt": False,
     }
 
     connection = MsSQLConnector(**test_credentials)
