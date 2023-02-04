@@ -1,6 +1,5 @@
 import React from "react"
-import userEvent from "@testing-library/user-event"
-import { fireEvent, render, screen, waitFor } from "testing"
+import { render } from "testing"
 import { Position, ReactFlowProvider } from "reactflow"
 import ErrorEdge from "./ErrorEdge"
 

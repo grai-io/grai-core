@@ -211,7 +211,7 @@ test("renders with limitGraph", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByText("N2 Node")).toBeInTheDocument
+    expect(screen.getByText("N2 Node")).toBeInTheDocument()
   })
 })
 
