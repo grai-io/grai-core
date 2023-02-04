@@ -15,7 +15,7 @@ import Loading from "components/layout/Loading"
 import { GetWorkspaces } from "./__generated__/GetWorkspaces"
 import GraphError from "components/utils/GraphError"
 
-const GET_WORKSPACES = gql`
+export const GET_WORKSPACES = gql`
   query GetWorkspaces {
     workspaces {
       id
@@ -66,19 +66,34 @@ const Workspaces: React.FC = () => {
       </svg>
       <Card variant="outlined" sx={{ mt: 2 }}>
         <Box sx={{ p: 3 }}>
-          <Typography variant="h6">Select Workspace</Typography>
-          <List sx={{ pb: 0 }}>
-            {data?.workspaces.map(workspace => (
-              <ListItem key={workspace.id} disablePadding>
-                <ListItemButton
-                  component={Link}
-                  to={`/${workspace.organisation.name}/${workspace.name}`}
-                >
-                  <ListItemText primary={workspace.name} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
+          {data?.workspaces && data.workspaces.length > 0 ? (
+            <>
+              <Typography variant="h6">Select Workspace</Typography>
+              <List sx={{ pb: 0 }}>
+                {data?.workspaces.map(workspace => (
+                  <ListItem key={workspace.id} disablePadding>
+                    <ListItemButton
+                      component={Link}
+                      to={`/${workspace.organisation.name}/${workspace.name}`}
+                    >
+                      <ListItemText primary={workspace.name} />
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+              </List>
+            </>
+          ) : (
+            <Box sx={{ textAlign: "center" }}>
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                No Workspaces
+              </Typography>
+              <Typography variant="body1">
+                You are not a member of any workspaces.
+                <br />
+                Please contact your administrator.
+              </Typography>
+            </Box>
+          )}
         </Box>
       </Card>
     </Container>
