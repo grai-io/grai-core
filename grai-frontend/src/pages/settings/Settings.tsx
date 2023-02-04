@@ -18,6 +18,7 @@ import {
   GetWorkspaceSettings,
   GetWorkspaceSettingsVariables,
 } from "./__generated__/GetWorkspaceSettings"
+import NotFound from "pages/NotFound"
 
 export const GET_WORKSPACE = gql`
   query GetWorkspaceSettings(
@@ -92,7 +93,7 @@ const Settings: React.FC = () => {
 
   const workspace = data?.workspace
 
-  if (!workspace) return null
+  if (!workspace) return <NotFound />
 
   return (
     <SettingsLayout>

@@ -16,6 +16,7 @@ import {
   GetWorkspaceHome,
   GetWorkspaceHomeVariables,
 } from "./__generated__/GetWorkspaceHome"
+import NotFound from "./NotFound"
 
 export const GET_WORKSPACE = gql`
   query GetWorkspaceHome($organisationName: String!, $workspaceName: String!) {
@@ -44,7 +45,7 @@ const Home: React.FC = () => {
 
   const workspace = data?.workspace
 
-  if (!workspace) return null
+  if (!workspace) return <NotFound />
 
   return (
     <PageLayout>
