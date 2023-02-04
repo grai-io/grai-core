@@ -1,16 +1,27 @@
+import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import React from "react"
 import { render, screen, waitFor } from "testing"
 import Settings, { GET_WORKSPACE } from "./Settings"
 
 test("renders", async () => {
+  const user = userEvent.setup()
+
   render(<Settings />, {
-    withRouter: true,
+    path: "/:organisationName/:workspaceName/settings",
+    route: "/default/demo/settings",
+    routes: ["/default/demo/settings/profile"],
   })
 
   await waitFor(() => {
     expect(screen.getByText("Settings")).toBeInTheDocument()
   })
+
+  await waitFor(() => {
+    expect(screen.getByTestId("AccountCircleIcon")).toBeInTheDocument()
+  })
+
+  await user.click(screen.getByTestId("AccountCircleIcon"))
 })
 
 test("error", async () => {
