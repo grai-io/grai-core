@@ -1,6 +1,6 @@
 import { GraphQLError } from "graphql"
 import React from "react"
-import { renderWithMocks, renderWithRouter, screen, waitFor } from "testing"
+import { render, screen, waitFor } from "testing"
 import Graph, { GET_TABLES_AND_EDGES } from "./Graph"
 
 const columnNode = {
@@ -68,41 +68,43 @@ const spareTable = {
   destination_tables: [],
 }
 
-const mock = {
-  request: {
-    query: GET_TABLES_AND_EDGES,
-    variables: {
-      organisationName: "default",
-      workspaceName: "demo",
+const mocks = [
+  {
+    request: {
+      query: GET_TABLES_AND_EDGES,
+      variables: {
+        organisationName: "default",
+        workspaceName: "demo",
+      },
     },
-  },
-  result: {
-    data: {
-      workspace: {
-        id: "1",
-        tables: [sourceTable, destinationTable, spareTable],
-        other_edges: [
-          {
-            id: "1",
-            is_active: true,
-            data_source: "test",
-            source: sourceTable,
-            destination: destinationTable,
-            metadata: { grai: { constraint_type: "dbt_model" } },
-          },
-          // {
-          //   id: "2",
-          //   is_active: true,
-          //   data_source: "test",
-          //   source: sourceNode,
-          //   destination: columnNode,
-          //   metadata: { grai: { constraint_type: "TableToColumn" } },
-          // },
-        ],
+    result: {
+      data: {
+        workspace: {
+          id: "1",
+          tables: [sourceTable, destinationTable, spareTable],
+          other_edges: [
+            {
+              id: "1",
+              is_active: true,
+              data_source: "test",
+              source: sourceTable,
+              destination: destinationTable,
+              metadata: { grai: { constraint_type: "dbt_model" } },
+            },
+            // {
+            //   id: "2",
+            //   is_active: true,
+            //   data_source: "test",
+            //   source: sourceNode,
+            //   destination: columnNode,
+            //   metadata: { grai: { constraint_type: "TableToColumn" } },
+            // },
+          ],
+        },
       },
     },
   },
-}
+]
 
 test("renders", async () => {
   class ResizeObserver {
@@ -123,13 +125,14 @@ test("renders", async () => {
 
   window.ResizeObserver = ResizeObserver
 
-  renderWithMocks(<Graph />, [mock], {
+  render(<Graph />, {
     path: ":organisationName/:workspaceName/graph",
     route: "/default/demo/graph",
+    mocks,
   })
 
   await waitFor(() => {
-    screen.getAllByText("N2 Node")
+    expect(screen.getByText("N2 Node")).toBeInTheDocument()
   })
 })
 
@@ -145,7 +148,7 @@ test("renders", async () => {
 //   renderWithMocks(<Graph />, [mock])
 
 //   await waitFor(() => {
-//     screen.getAllByText("N2 Node")
+//     screen.getByText("N2 Node")
 //   })
 
 //   await user.click(screen.getByTestId("ArrowDropDownIcon"))
@@ -170,14 +173,14 @@ test("renders with errors", async () => {
 
   window.ResizeObserver = ResizeObserver
 
-  renderWithRouter(<Graph />, {
+  render(<Graph />, {
     path: "/:organisationName/:workspaceName/graph",
     route:
       "/default/demo/graph?errors=%5B%7B%22source%22%3A%20%22a%22%2C%20%22destination%22%3A%20%22b%22%2C%20%22test%22%3A%20%22nullable%22%2C%20%22message%22%3A%20%22not%20null%22%7D%5D",
   })
 
   await waitFor(() => {
-    screen.getAllByText("Hello World")
+    expect(screen.getAllByText("Hello World")).toBeTruthy()
   })
 })
 
@@ -200,61 +203,66 @@ test("renders with limitGraph", async () => {
 
   window.ResizeObserver = ResizeObserver
 
-  renderWithMocks(<Graph />, [mock], {
+  render(<Graph />, {
     path: ":organisationName/:workspaceName/graph",
     route:
       "/default/demo/graph?limitGraph=true&errors=%5B%7B%22source%22%3A%20%22N1%22%2C%20%22destination%22%3A%20%22N2%22%2C%20%22test%22%3A%20%22nullable%22%2C%20%22message%22%3A%20%22not%20null%22%7D%5D",
+    mocks,
   })
 
   await waitFor(() => {
-    screen.getAllByText("N2 Node")
+    expect(screen.getByText("N2 Node")).toBeInTheDocument()
   })
 })
 
 test("error", async () => {
-  const mock = {
-    request: {
-      query: GET_TABLES_AND_EDGES,
-      variables: {
-        organisationName: "",
-        workspaceName: "",
+  const mocks = [
+    {
+      request: {
+        query: GET_TABLES_AND_EDGES,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+        },
+      },
+      result: {
+        errors: [new GraphQLError("Error!")],
       },
     },
-    result: {
-      errors: [new GraphQLError("Error!")],
-    },
-  }
+  ]
 
-  renderWithMocks(<Graph />, [mock])
+  render(<Graph />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeTruthy()
+    expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })
 
 test("no nodes", async () => {
-  const mock = {
-    request: {
-      query: GET_TABLES_AND_EDGES,
-      variables: {
-        organisationName: "",
-        workspaceName: "",
+  const mocks = [
+    {
+      request: {
+        query: GET_TABLES_AND_EDGES,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+        },
       },
-    },
-    result: {
-      data: {
-        workspace: {
-          id: "1",
-          tables: null,
-          other_edges: null,
+      result: {
+        data: {
+          workspace: {
+            id: "1",
+            tables: null,
+            other_edges: null,
+          },
         },
       },
     },
-  }
+  ]
 
-  renderWithMocks(<Graph />, [mock])
+  render(<Graph />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getAllByText("No tables found")).toBeTruthy()
+    expect(screen.getByText("No tables found")).toBeInTheDocument()
   })
 })

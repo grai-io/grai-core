@@ -2,14 +2,16 @@ import userEvent from "@testing-library/user-event"
 import { UPDATE_WORKSPACE } from "components/settings/workspace/WorkspaceForm"
 import { GraphQLError } from "graphql"
 import React from "react"
-import { renderWithMocks, renderWithRouter, screen, waitFor } from "testing"
+import { render, screen, waitFor } from "testing"
 import WorkspaceSettings, { GET_WORKSPACE } from "./WorkspaceSettings"
 
 test("renders", async () => {
-  renderWithRouter(<WorkspaceSettings />)
+  render(<WorkspaceSettings />, {
+    withRouter: true,
+  })
 
   await waitFor(() => {
-    expect(screen.getByText("Workspace Settings")).toBeTruthy()
+    expect(screen.getByText("Workspace Settings")).toBeInTheDocument()
   })
 
   await waitFor(() => {
@@ -18,64 +20,70 @@ test("renders", async () => {
 })
 
 test("error", async () => {
-  const mock = {
-    request: {
-      query: GET_WORKSPACE,
-      variables: {
-        organisationName: "",
-        workspaceName: "",
+  const mocks = [
+    {
+      request: {
+        query: GET_WORKSPACE,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+        },
+      },
+      result: {
+        errors: [new GraphQLError("Error!")],
       },
     },
-    result: {
-      errors: [new GraphQLError("Error!")],
-    },
-  }
+  ]
 
-  renderWithMocks(<WorkspaceSettings />, [mock])
+  render(<WorkspaceSettings />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getByText("Workspace Settings")).toBeTruthy()
+    expect(screen.getByText("Workspace Settings")).toBeInTheDocument()
   })
 
   await waitFor(() => {
-    expect(screen.getAllByText("Error!")).toBeTruthy()
+    expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })
 
 test("not found", async () => {
-  const mock = {
-    request: {
-      query: GET_WORKSPACE,
-      variables: {
-        organisationName: "",
-        workspaceName: "",
+  const mocks = [
+    {
+      request: {
+        query: GET_WORKSPACE,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+        },
+      },
+      result: {
+        data: {
+          workspace: null,
+        },
       },
     },
-    result: {
-      data: {
-        workspace: null,
-      },
-    },
-  }
+  ]
 
-  renderWithMocks(<WorkspaceSettings />, [mock])
+  render(<WorkspaceSettings />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getByText("Workspace Settings")).toBeTruthy()
+    expect(screen.getByText("Workspace Settings")).toBeInTheDocument()
   })
 
   await waitFor(() => {
-    expect(screen.getAllByText("Page not found")).toBeTruthy()
+    expect(screen.getByText("Page not found")).toBeInTheDocument()
   })
 })
 
 test("submit", async () => {
   const user = userEvent.setup()
 
-  renderWithRouter(<WorkspaceSettings />)
+  render(<WorkspaceSettings />, {
+    withRouter: true,
+  })
 
   await waitFor(() => {
-    expect(screen.getByText("Workspace Settings")).toBeTruthy()
+    expect(screen.getByText("Workspace Settings")).toBeInTheDocument()
   })
 
   await waitFor(() => {
@@ -125,10 +133,10 @@ test("submit error", async () => {
     },
   ]
 
-  renderWithMocks(<WorkspaceSettings />, mocks)
+  render(<WorkspaceSettings />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getByText("Workspace Settings")).toBeTruthy()
+    expect(screen.getByText("Workspace Settings")).toBeInTheDocument()
   })
 
   await waitFor(() => {
@@ -138,6 +146,6 @@ test("submit error", async () => {
   await user.click(screen.getByRole("button", { name: /save/i }))
 
   await waitFor(() => {
-    expect(screen.getAllByText("Error!")).toBeTruthy()
+    expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })

@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import React from "react"
-import { renderWithRouter, screen } from "testing"
+import { render, screen } from "testing"
 import ConnectionsTable from "./ConnectionsTable"
 
 const connections = [
@@ -33,27 +33,29 @@ const connections = [
 ]
 
 test("renders", async () => {
-  renderWithRouter(
-    <ConnectionsTable connections={connections} workspaceId="1" />
-  )
+  render(<ConnectionsTable connections={connections} workspaceId="1" />, {
+    withRouter: true,
+  })
 })
 
 test("renders loading", async () => {
-  renderWithRouter(
-    <ConnectionsTable connections={[]} workspaceId="1" loading />
-  )
+  render(<ConnectionsTable connections={[]} workspaceId="1" loading />, {
+    withRouter: true,
+  })
 })
 
 test("renders empty", async () => {
-  renderWithRouter(<ConnectionsTable connections={[]} workspaceId="1" />)
+  render(<ConnectionsTable connections={[]} workspaceId="1" />, {
+    withRouter: true,
+  })
 
-  expect(screen.getByText("No connections found")).toBeTruthy()
+  expect(screen.getByText("No connections found")).toBeInTheDocument()
 })
 
 test("click row", async () => {
   const user = userEvent.setup()
 
-  const { container } = renderWithRouter(
+  const { container } = render(
     <ConnectionsTable connections={connections} workspaceId="1" />,
     {
       routes: ["/:nodeId"],
@@ -63,5 +65,5 @@ test("click row", async () => {
   // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
   await user.click(container.querySelectorAll("tbody > tr")[0])
 
-  expect(screen.getByText("New Page")).toBeTruthy()
+  expect(screen.getByText("New Page")).toBeInTheDocument()
 })

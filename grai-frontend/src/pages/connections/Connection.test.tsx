@@ -2,11 +2,13 @@ import userEvent from "@testing-library/user-event"
 import { RUN_CONNECTION } from "components/connections/ConnectionRefresh"
 import { GraphQLError } from "graphql"
 import React from "react"
-import { renderWithMocks, renderWithRouter, screen, waitFor } from "testing"
+import { render, screen, waitFor } from "testing"
 import Connection, { GET_CONNECTION } from "./Connection"
 
 test("renders", async () => {
-  renderWithRouter(<Connection />)
+  render(<Connection />, {
+    withRouter: true,
+  })
 
   await waitFor(() => {
     expect(screen.getAllByText("Connection 1")).toBeTruthy()
@@ -142,7 +144,7 @@ test("refresh", async () => {
     },
   ]
 
-  renderWithMocks(<Connection />, mocks)
+  render(<Connection />, { mocks, withRouter: true })
 
   await waitFor(() => {
     expect(screen.getAllByText("Connection 1")).toBeTruthy()
@@ -272,7 +274,7 @@ test("refresh no last_sucessful_run", async () => {
     },
   ]
 
-  renderWithMocks(<Connection />, mocks)
+  render(<Connection />, { mocks, withRouter: true })
 
   await waitFor(() => {
     expect(screen.getAllByText("Connection 1")).toBeTruthy()
@@ -286,48 +288,52 @@ test("refresh no last_sucessful_run", async () => {
 })
 
 test("error", async () => {
-  const mock = {
-    request: {
-      query: GET_CONNECTION,
-      variables: {
-        organisationName: "",
-        workspaceName: "",
-        connectionId: "",
+  const mocks = [
+    {
+      request: {
+        query: GET_CONNECTION,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+          connectionId: "",
+        },
+      },
+      result: {
+        errors: [new GraphQLError("Error!")],
       },
     },
-    result: {
-      errors: [new GraphQLError("Error!")],
-    },
-  }
+  ]
 
-  renderWithMocks(<Connection />, [mock])
+  render(<Connection />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getAllByText("Error!")).toBeTruthy()
+    expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })
 
 test("not found", async () => {
-  const mock = {
-    request: {
-      query: GET_CONNECTION,
-      variables: {
-        organisationName: "",
-        workspaceName: "",
-        connectionId: "",
+  const mocks = [
+    {
+      request: {
+        query: GET_CONNECTION,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+          connectionId: "",
+        },
       },
-    },
-    result: {
-      data: {
-        workspace: {
-          id: "1",
-          connection: null,
+      result: {
+        data: {
+          workspace: {
+            id: "1",
+            connection: null,
+          },
         },
       },
     },
-  }
+  ]
 
-  renderWithMocks(<Connection />, [mock])
+  render(<Connection />, { mocks, withRouter: true })
 
   await waitFor(() => {
     expect(screen.getAllByText("Page not found")).toBeTruthy()

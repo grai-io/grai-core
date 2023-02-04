@@ -12,5 +12,5 @@ test("message", async () => {
   render(<Loading message="message" />)
 
   expect(screen.getByRole("progressbar")).toBeTruthy()
-  expect(screen.getByText("message")).toBeTruthy()
+  expect(screen.getByText("message")).toBeInTheDocument()
 })

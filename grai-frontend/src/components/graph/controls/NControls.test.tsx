@@ -1,6 +1,6 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { renderWithRouter, screen } from "testing"
+import { render, screen } from "testing"
 import { ReactFlowProvider } from "reactflow"
 import NControls from "./NControls"
 
@@ -8,7 +8,7 @@ test("renders", async () => {
   let value = 1
   const setValue = (input: number) => (value = input)
 
-  renderWithRouter(
+  render(
     <ReactFlowProvider>
       <NControls
         options={{
@@ -16,7 +16,10 @@ test("renders", async () => {
           setValue,
         }}
       />
-    </ReactFlowProvider>
+    </ReactFlowProvider>,
+    {
+      withRouter: true,
+    }
   )
 
   expect(screen.getByTestId("AddIcon")).toBeInTheDocument()
@@ -29,7 +32,7 @@ test("plus", async () => {
 
   const user = userEvent.setup()
 
-  renderWithRouter(
+  render(
     <ReactFlowProvider>
       <NControls
         options={{
@@ -37,7 +40,10 @@ test("plus", async () => {
           setValue,
         }}
       />
-    </ReactFlowProvider>
+    </ReactFlowProvider>,
+    {
+      withRouter: true,
+    }
   )
 
   expect(value).toEqual(1)
@@ -56,7 +62,7 @@ test("minus", async () => {
 
   const user = userEvent.setup()
 
-  renderWithRouter(
+  render(
     <ReactFlowProvider>
       <NControls
         options={{
@@ -64,7 +70,10 @@ test("minus", async () => {
           setValue,
         }}
       />
-    </ReactFlowProvider>
+    </ReactFlowProvider>,
+    {
+      withRouter: true,
+    }
   )
 
   expect(value).toEqual(2)

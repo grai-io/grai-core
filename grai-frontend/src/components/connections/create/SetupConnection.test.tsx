@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import React from "react"
-import { renderWithRouter, screen, fireEvent } from "testing"
+import { render, screen, fireEvent } from "testing"
 import { Values } from "./CreateConnectionWizard"
 
 import SetupConnection from "./SetupConnection"
@@ -19,7 +19,7 @@ const opts = {
 }
 
 test("renders", async () => {
-  renderWithRouter(
+  render(
     <SetupConnection
       workspaceId="1"
       opts={opts}
@@ -38,14 +38,17 @@ test("renders", async () => {
       setValues={function (values: Values): void {
         throw new Error("Function not implemented.")
       }}
-    />
+    />,
+    {
+      withRouter: true,
+    }
   )
 
-  expect(screen.getByText("Connect to Test Connector")).toBeTruthy()
+  expect(screen.getByText("Connect to Test Connector")).toBeInTheDocument()
 })
 
 test("renders file", async () => {
-  renderWithRouter(
+  render(
     <SetupConnection
       workspaceId="1"
       opts={opts}
@@ -69,14 +72,17 @@ test("renders file", async () => {
       setValues={function (values: Values): void {
         throw new Error("Function not implemented.")
       }}
-    />
+    />,
+    {
+      withRouter: true,
+    }
   )
 
-  expect(screen.getByText("Connect to Test File Connector")).toBeTruthy()
+  expect(screen.getByText("Connect to Test File Connector")).toBeInTheDocument()
 })
 
 test("renders file yaml", async () => {
-  renderWithRouter(
+  render(
     <SetupConnection
       workspaceId="1"
       opts={opts}
@@ -100,16 +106,19 @@ test("renders file yaml", async () => {
       setValues={function (values: Values): void {
         throw new Error("Function not implemented.")
       }}
-    />
+    />,
+    {
+      withRouter: true,
+    }
   )
 
-  expect(screen.getByText("Connect to Test YAML Connector")).toBeTruthy()
+  expect(screen.getByText("Connect to Test YAML Connector")).toBeInTheDocument()
 })
 
 test("upload file", async () => {
   const user = userEvent.setup()
 
-  renderWithRouter(
+  render(
     <SetupConnection
       workspaceId="1"
       opts={opts}
@@ -133,10 +142,13 @@ test("upload file", async () => {
       setValues={function (values: Values): void {
         throw new Error("Function not implemented.")
       }}
-    />
+    />,
+    {
+      withRouter: true,
+    }
   )
 
-  expect(screen.getByText("Connect to Test File Connector")).toBeTruthy()
+  expect(screen.getByText("Connect to Test File Connector")).toBeInTheDocument()
 
   window.URL.createObjectURL = jest.fn().mockImplementation(() => "url")
 
@@ -158,7 +170,7 @@ test("upload file", async () => {
 test("upload wrong file", async () => {
   // const user = userEvent.setup()
 
-  renderWithRouter(
+  render(
     <SetupConnection
       workspaceId="1"
       opts={opts}
@@ -182,10 +194,13 @@ test("upload wrong file", async () => {
       setValues={function (values: Values): void {
         throw new Error("Function not implemented.")
       }}
-    />
+    />,
+    {
+      withRouter: true,
+    }
   )
 
-  expect(screen.getByText("Connect to Test File Connector")).toBeTruthy()
+  expect(screen.getByText("Connect to Test File Connector")).toBeInTheDocument()
 
   window.URL.createObjectURL = jest.fn().mockImplementation(() => "url")
 
@@ -247,7 +262,7 @@ test("upload wrong file", async () => {
 //     [mock]
 //   )
 
-//   expect(screen.getByText("Connect to Test File Connector")).toBeTruthy()
+//   expect(screen.getByText("Connect to Test File Connector")).toBeInTheDocument()
 
 //   window.URL.createObjectURL = jest.fn().mockImplementation(() => "url")
 

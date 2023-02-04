@@ -1,9 +1,11 @@
 import React from "react"
-import { renderWithRouter, screen, waitFor } from "testing"
+import { render, screen, waitFor } from "testing"
 import ForgotPassword from "./ForgotPassword"
 
 test("renders", async () => {
-  renderWithRouter(<ForgotPassword />)
+  render(<ForgotPassword />, {
+    withRouter: true,
+  })
 
   await waitFor(() => {
     expect(
