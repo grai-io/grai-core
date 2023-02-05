@@ -1,5 +1,6 @@
 import os
 
+import pytest
 from grai_schemas.v1 import EdgeV1, NodeV1
 
 from grai_source_mssql.adapters import adapt_to_client
@@ -53,6 +54,7 @@ def test_building_edges(connection):
     assert len(result) > 0
 
 
+@pytest.mark.filterwarnings("ignore:Specified driver")
 def test_connector_from_env_vars():
     env_vars = {
         "GRAI_MSSQL_DATABASE": "localhost",
@@ -60,14 +62,14 @@ def test_connector_from_env_vars():
         "GRAI_MSSQL_USER": "sa",
         "GRAI_MSSQL_PASSWORD": "GraiGraiGr4ai",
         "GRAI_MSSQL_NAMESPACE": "test",
-        "GRAI_MSSQL_DRIVER": "{SQL Server}",
+        "GRAI_MSSQL_DRIVER": "{This is an invalid driver configuration}",
         "GRAI_MSSQL_TRUSTED_CONNECTION": "true",
     }
     for k, v in env_vars.items():
         os.environ[k] = v
 
     conn = MsSQLConnector()
-    assert conn.config.driver == "{SQL Server}"
+    assert conn.config.driver == "{This is an invalid driver configuration}"
     assert conn.config.database == "localhost"
     assert conn.config.user == "sa"
     assert conn.config.password.get_secret_value() == "GraiGraiGr4ai"
