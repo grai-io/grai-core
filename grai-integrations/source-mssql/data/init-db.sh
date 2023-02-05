@@ -9,4 +9,3 @@ for file in $(find $script_dir -type f -name '*.sql' | sort)
      echo "Executing init script $file"
      /opt/mssql-tools/bin/sqlcmd -U sa -P $MSSQL_SA_PASSWORD -l 30 -e -i $file
    done
-sleep infinity
