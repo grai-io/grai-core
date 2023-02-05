@@ -60,10 +60,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # - name: Set up SQL db
-      #   working-directory: ${{ env.project_dir }}/data/scripts
-      #   run: |
-      #     sh init-db.sh
+      - name: Set up SQL db
+        working-directory: ${{ env.project_dir }}/data
+        run: |
+          sh init-db.sh
 
       - uses: actions/setup-python@v4
         with:

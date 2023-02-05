@@ -10,10 +10,7 @@ services:
       MSSQL_SA_PASSWORD: GraiGraiGr4i
     ports:
       - 1433:1433
-    command:
-    - /bin/bash
-    - -c
-    - /init/scripts/init-db.sh & /opt/mssql/bin/sqlservr
+    command: ['/bin/bash', '-c', '/init/init-db.sh & /opt/mssql/bin/sqlservr']
     healthcheck:
       test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $$MSSQL_SA_PASSWORD -Q "SELECT 1" || exit 1
       interval: 3s
