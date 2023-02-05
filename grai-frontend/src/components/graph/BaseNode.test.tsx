@@ -108,6 +108,46 @@ test("highlight", async () => {
   })
 })
 
+test("search highlight", async () => {
+  render(
+    <ReactFlowProvider>
+      <BaseNode
+        data={{
+          ...data,
+          searchHighlight: true,
+        }}
+      />
+    </ReactFlowProvider>,
+    {
+      withRouter: true,
+    }
+  )
+
+  await waitFor(() => {
+    expect(screen.getByText("Node Label")).toBeInTheDocument()
+  })
+})
+
+test("search dim", async () => {
+  render(
+    <ReactFlowProvider>
+      <BaseNode
+        data={{
+          ...data,
+          searchDim: true,
+        }}
+      />
+    </ReactFlowProvider>,
+    {
+      withRouter: true,
+    }
+  )
+
+  await waitFor(() => {
+    expect(screen.getByText("Node Label")).toBeInTheDocument()
+  })
+})
+
 test("expanded", async () => {
   render(
     <ReactFlowProvider>

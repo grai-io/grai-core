@@ -1,3 +1,4 @@
+import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import React from "react"
 import { render, screen, waitFor } from "testing"
@@ -265,4 +266,38 @@ test("no nodes", async () => {
   await waitFor(() => {
     expect(screen.getByText("No tables found")).toBeInTheDocument()
   })
+})
+
+test("search", async () => {
+  const user = userEvent.setup()
+
+  class ResizeObserver {
+    callback: globalThis.ResizeObserverCallback
+
+    constructor(callback: globalThis.ResizeObserverCallback) {
+      this.callback = callback
+    }
+
+    observe(target: Element) {
+      this.callback([{ target } as globalThis.ResizeObserverEntry], this)
+    }
+
+    unobserve() {}
+
+    disconnect() {}
+  }
+
+  window.ResizeObserver = ResizeObserver
+
+  render(<Graph />, {
+    path: ":organisationName/:workspaceName/graph",
+    route: "/default/demo/graph",
+    mocks,
+  })
+
+  await waitFor(() => {
+    expect(screen.getByText("N2 Node")).toBeInTheDocument()
+  })
+
+  await user.type(screen.getByTestId("search-input"), "search")
 })

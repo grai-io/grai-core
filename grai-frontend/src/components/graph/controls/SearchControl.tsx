@@ -20,6 +20,9 @@ const SearchControl: React.FC<SearchControlProps> = ({ value, onChange }) => {
         onChange={handleChange}
         placeholder="Search"
         size="small"
+        inputProps={{
+          "data-testid": "search-input",
+        }}
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
