@@ -7,12 +7,12 @@ import useWorkspace from "helpers/useWorkspace"
 import NotFound from "pages/NotFound"
 import React from "react"
 import {
-  GetWorkspaceSettings,
-  GetWorkspaceSettingsVariables,
-} from "./__generated__/GetWorkspaceSettings"
+  GetWorkspaceSettingsW,
+  GetWorkspaceSettingsWVariables,
+} from "./__generated__/GetWorkspaceSettingsW"
 
 export const GET_WORKSPACE = gql`
-  query GetWorkspaceSettings(
+  query GetWorkspaceSettingsW(
     $organisationName: String!
     $workspaceName: String!
   ) {
@@ -27,8 +27,8 @@ const WorkspaceSettings: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
 
   const { loading, error, data } = useQuery<
-    GetWorkspaceSettings,
-    GetWorkspaceSettingsVariables
+    GetWorkspaceSettingsW,
+    GetWorkspaceSettingsWVariables
   >(GET_WORKSPACE, {
     variables: {
       organisationName,

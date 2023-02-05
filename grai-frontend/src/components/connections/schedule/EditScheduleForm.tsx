@@ -139,7 +139,7 @@ const EditScheduleForm: React.FC<EditScheduleFormProps> = ({ connection }) => {
             <FormControlLabel
               value="custom"
               control={<Radio />}
-              label="Custom resurrence"
+              label="Custom recurrence"
               disabled
             />
             <FormControlLabel

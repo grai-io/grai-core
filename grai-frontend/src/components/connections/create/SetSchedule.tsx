@@ -82,7 +82,7 @@ const SetSchedule: React.FC<SetScheduleProps> = ({
               control={<Radio sx={{ mr: 1 }} />}
               label={
                 <ListItemText
-                  primary="Custom resurrence"
+                  primary="Custom recurrence"
                   secondary="Schedule your sync to run on specific days (e.g., Mondays at 9am)"
                 />
               }

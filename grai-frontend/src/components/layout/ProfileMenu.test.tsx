@@ -1,10 +1,12 @@
 import userEvent from "@testing-library/user-event"
 import React from "react"
-import { renderWithRouter, screen, waitFor } from "testing"
+import { render, screen, waitFor } from "testing"
 import ProfileMenu from "./ProfileMenu"
 
 test("renders", async () => {
-  renderWithRouter(<ProfileMenu />)
+  render(<ProfileMenu />, {
+    withRouter: true,
+  })
 
   await waitFor(() => {
     expect(screen.getByTestId("profile-menu-open")).toBeTruthy()
@@ -17,7 +19,9 @@ test("renders", async () => {
 test("open", async () => {
   const user = userEvent.setup()
 
-  renderWithRouter(<ProfileMenu />)
+  render(<ProfileMenu />, {
+    withRouter: true,
+  })
 
   await waitFor(() => {
     expect(screen.getByTestId("profile-menu-open")).toBeTruthy()
@@ -26,18 +30,20 @@ test("open", async () => {
   await user.click(screen.getByTestId("profile-menu-open"))
 
   await waitFor(() => {
-    expect(screen.getByText("Hello World")).toBeTruthy()
+    expect(screen.getByText("Hello World")).toBeInTheDocument()
   })
 
   await waitFor(() => {
-    expect(screen.getByText("Settings")).toBeTruthy()
+    expect(screen.getByText("Settings")).toBeInTheDocument()
   })
 })
 
 test("logout", async () => {
   const user = userEvent.setup()
 
-  renderWithRouter(<ProfileMenu />)
+  render(<ProfileMenu />, {
+    withRouter: true,
+  })
 
   await waitFor(() => {
     expect(screen.getByTestId("profile-menu-open")).toBeTruthy()
@@ -46,7 +52,7 @@ test("logout", async () => {
   await user.click(screen.getByTestId("profile-menu-open"))
 
   await waitFor(() => {
-    expect(screen.getByText("Logout")).toBeTruthy()
+    expect(screen.getByText("Logout")).toBeInTheDocument()
   })
 
   await user.click(screen.getByText("Logout"))

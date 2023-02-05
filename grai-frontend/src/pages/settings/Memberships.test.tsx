@@ -1,13 +1,15 @@
 import { GraphQLError } from "graphql"
 import React from "react"
-import { renderWithMocks, renderWithRouter, screen, waitFor } from "testing"
+import { render, screen, waitFor } from "testing"
 import Memberships, { GET_MEMBERSHIPS } from "./Memberships"
 
 test("renders", async () => {
-  renderWithRouter(<Memberships />)
+  render(<Memberships />, {
+    withRouter: true,
+  })
 
   await waitFor(() => {
-    expect(screen.getByText("Memberships")).toBeTruthy()
+    expect(screen.getByText("Memberships")).toBeInTheDocument()
   })
 
   await waitFor(() => {
@@ -16,52 +18,83 @@ test("renders", async () => {
 })
 
 test("error", async () => {
-  const mock = {
-    request: {
-      query: GET_MEMBERSHIPS,
-      variables: {
-        organisationName: "",
-        workspaceName: "",
+  const mocks = [
+    {
+      request: {
+        query: GET_MEMBERSHIPS,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+        },
+      },
+      result: {
+        errors: [new GraphQLError("Error!")],
       },
     },
-    result: {
-      errors: [new GraphQLError("Error!")],
-    },
-  }
+  ]
 
-  renderWithMocks(<Memberships />, [mock])
+  render(<Memberships />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getAllByText("Error!")).toBeTruthy()
+    expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })
 
 test("empty", async () => {
-  const mock = {
-    request: {
-      query: GET_MEMBERSHIPS,
-      variables: {
-        organisationName: "",
-        workspaceName: "",
+  const mocks = [
+    {
+      request: {
+        query: GET_MEMBERSHIPS,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+        },
       },
-    },
-    result: {
-      data: {
-        workspace: {
-          id: "1",
-          memberships: [],
+      result: {
+        data: {
+          workspace: {
+            id: "1",
+            memberships: [],
+          },
         },
       },
     },
-  }
+  ]
 
-  renderWithMocks(<Memberships />, [mock])
+  render(<Memberships />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getByText("Memberships")).toBeTruthy()
+    expect(screen.getByText("Memberships")).toBeInTheDocument()
   })
 
   await waitFor(() => {
-    expect(screen.getByText("No memberships found")).toBeTruthy()
+    expect(screen.getByText("No memberships found")).toBeInTheDocument()
+  })
+})
+
+test("no workspace", async () => {
+  const mocks = [
+    {
+      request: {
+        query: GET_MEMBERSHIPS,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+        },
+      },
+      result: {
+        data: {
+          workspace: null,
+        },
+      },
+    },
+  ]
+
+  render(<Memberships />, { mocks, withRouter: true })
+
+  await waitFor(() => {
+    expect(
+      screen.getByText("Sorry something has gone wrong")
+    ).toBeInTheDocument()
   })
 })

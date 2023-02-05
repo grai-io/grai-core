@@ -1,7 +1,7 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import React from "react"
-import { renderWithMocks, renderWithRouter, screen, waitFor } from "testing"
+import { render, screen, waitFor } from "testing"
 import ProfileForm, { UPDATE_PROFILE } from "./ProfileForm"
 
 const profile = {
@@ -11,7 +11,9 @@ const profile = {
 }
 
 test("renders", async () => {
-  renderWithRouter(<ProfileForm profile={profile} />)
+  render(<ProfileForm profile={profile} />, {
+    withRouter: true,
+  })
 
   await waitFor(() => {
     expect(
@@ -41,7 +43,9 @@ test("renders", async () => {
 test("submit", async () => {
   const user = userEvent.setup()
 
-  renderWithRouter(<ProfileForm profile={profile} />)
+  render(<ProfileForm profile={profile} />, {
+    withRouter: true,
+  })
 
   await waitFor(() => {
     expect(
@@ -76,20 +80,22 @@ test("submit", async () => {
 test("error", async () => {
   const user = userEvent.setup()
 
-  const mock = {
-    request: {
-      query: UPDATE_PROFILE,
-      variables: {
-        first_name: "testa",
-        last_name: "exampleb",
+  const mocks = [
+    {
+      request: {
+        query: UPDATE_PROFILE,
+        variables: {
+          first_name: "testa",
+          last_name: "exampleb",
+        },
+      },
+      result: {
+        errors: [new GraphQLError("Error!")],
       },
     },
-    result: {
-      errors: [new GraphQLError("Error!")],
-    },
-  }
+  ]
 
-  renderWithMocks(<ProfileForm profile={profile} />, [mock])
+  render(<ProfileForm profile={profile} />, { mocks, withRouter: true })
 
   await waitFor(() => {
     expect(
@@ -121,6 +127,6 @@ test("error", async () => {
   await user.click(screen.getByRole("button", { name: /save/i }))
 
   await waitFor(() => {
-    expect(screen.getAllByText("Error!")).toBeTruthy()
+    expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })

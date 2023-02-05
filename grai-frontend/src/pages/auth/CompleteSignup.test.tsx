@@ -1,9 +1,9 @@
 import React from "react"
-import { renderWithRouter, screen } from "testing"
+import { render, screen } from "testing"
 import CompleteSignup from "./CompleteSignup"
 
 test("renders", async () => {
-  renderWithRouter(<CompleteSignup />, {
+  render(<CompleteSignup />, {
     route: "?token=abc&uid=1234",
     path: "/",
   })
@@ -16,10 +16,10 @@ test("renders", async () => {
 })
 
 test("missing token", async () => {
-  renderWithRouter(<CompleteSignup />, {
+  render(<CompleteSignup />, {
     route: "?uid=1234",
     path: "/",
   })
 
-  expect(screen.getByText("Missing required token")).toBeTruthy()
+  expect(screen.getByText("Missing required token")).toBeInTheDocument()
 })

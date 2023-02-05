@@ -1,6 +1,5 @@
 import React from "react"
-import userEvent from "@testing-library/user-event"
-import { renderWithRouter, screen } from "testing"
+import { render, screen } from "testing"
 import RunHeader from "./RunHeader"
 
 test("renders", async () => {
@@ -14,7 +13,9 @@ test("renders", async () => {
     connection: null,
   }
 
-  renderWithRouter(<RunHeader run={run} />)
+  render(<RunHeader run={run} />, {
+    withRouter: true,
+  })
 
   expect(screen.getByText("Success")).toBeInTheDocument()
   expect(screen.getByText("123456")).toBeInTheDocument()
@@ -34,7 +35,9 @@ test("renders connection", async () => {
     },
   }
 
-  renderWithRouter(<RunHeader run={run} />)
+  render(<RunHeader run={run} />, {
+    withRouter: true,
+  })
 
   expect(screen.getByText("Success")).toBeInTheDocument()
   expect(screen.getByText("Connection1/123456")).toBeInTheDocument()

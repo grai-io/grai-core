@@ -1,5 +1,7 @@
 import { gql, useQuery } from "@apollo/client"
 import {
+  Alert,
+  AlertTitle,
   Box,
   Card,
   Container,
@@ -10,12 +12,12 @@ import {
   Typography,
 } from "@mui/material"
 import React from "react"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import Loading from "components/layout/Loading"
 import { GetWorkspaces } from "./__generated__/GetWorkspaces"
 import GraphError from "components/utils/GraphError"
 
-const GET_WORKSPACES = gql`
+export const GET_WORKSPACES = gql`
   query GetWorkspaces {
     workspaces {
       id
@@ -29,6 +31,8 @@ const GET_WORKSPACES = gql`
 `
 
 const Workspaces: React.FC = () => {
+  const location = useLocation()
+
   const { loading, error, data } = useQuery<GetWorkspaces>(GET_WORKSPACES)
 
   if (error) return <GraphError error={error} />
@@ -64,21 +68,56 @@ const Workspaces: React.FC = () => {
           fill="#351D36"
         />
       </svg>
+      {location.state?.workspaceNotFound && (
+        <Alert severity="error">
+          <AlertTitle>Error</AlertTitle>
+          <Typography variant="body2" sx={{ mb: 1 }}>
+            Workspace{" "}
+            <Box
+              component="span"
+              sx={{
+                fontWeight: 800,
+              }}
+            >
+              {location.state.organisationName}\{location.state.workspaceName}
+            </Box>{" "}
+            not found
+          </Typography>
+          <Typography variant="body2">
+            Please contact your administrator
+          </Typography>
+        </Alert>
+      )}
       <Card variant="outlined" sx={{ mt: 2 }}>
         <Box sx={{ p: 3 }}>
-          <Typography variant="h6">Select Workspace</Typography>
-          <List sx={{ pb: 0 }}>
-            {data?.workspaces.map(workspace => (
-              <ListItem key={workspace.id} disablePadding>
-                <ListItemButton
-                  component={Link}
-                  to={`/${workspace.organisation.name}/${workspace.name}`}
-                >
-                  <ListItemText primary={workspace.name} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
+          {data?.workspaces && data.workspaces.length > 0 ? (
+            <>
+              <Typography variant="h6">Select Workspace</Typography>
+              <List sx={{ pb: 0 }}>
+                {data?.workspaces.map(workspace => (
+                  <ListItem key={workspace.id} disablePadding>
+                    <ListItemButton
+                      component={Link}
+                      to={`/${workspace.organisation.name}/${workspace.name}`}
+                    >
+                      <ListItemText primary={workspace.name} />
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+              </List>
+            </>
+          ) : (
+            <Box sx={{ textAlign: "center" }}>
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                No Workspaces
+              </Typography>
+              <Typography variant="body1">
+                You are not a member of any workspaces.
+                <br />
+                Please contact your administrator.
+              </Typography>
+            </Box>
+          )}
         </Box>
       </Card>
     </Container>

@@ -1,13 +1,13 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { renderWithMocks, renderWithRouter, screen, waitFor } from "testing"
+import { render, screen, waitFor } from "testing"
 import { GraphQLError } from "graphql"
 import CompleteSignupForm, { COMPLETE_SIGNUP } from "./CompleteSignupForm"
 
 test("submit", async () => {
   const user = userEvent.setup()
 
-  renderWithRouter(<CompleteSignupForm />, {
+  render(<CompleteSignupForm />, {
     route: "?token=abc&uid=1234",
     path: "/",
   })
@@ -30,25 +30,28 @@ test("submit", async () => {
 test("error", async () => {
   const user = userEvent.setup()
 
-  const mock = {
-    request: {
-      query: COMPLETE_SIGNUP,
-      variables: {
-        token: "abc",
-        uid: "1234",
-        first_name: "test",
-        last_name: "user",
-        password: "password",
+  const mocks = [
+    {
+      request: {
+        query: COMPLETE_SIGNUP,
+        variables: {
+          token: "abc",
+          uid: "1234",
+          first_name: "test",
+          last_name: "user",
+          password: "password",
+        },
+      },
+      result: {
+        errors: [new GraphQLError("Error!")],
       },
     },
-    result: {
-      errors: [new GraphQLError("Error!")],
-    },
-  }
+  ]
 
-  renderWithMocks(<CompleteSignupForm />, [mock], {
+  render(<CompleteSignupForm />, {
     route: "?token=abc&uid=1234",
     path: "/",
+    mocks,
   })
 
   await user.type(screen.getByRole("textbox", { name: /first name/i }), "test")
@@ -58,6 +61,6 @@ test("error", async () => {
   await user.click(screen.getByRole("button", { name: /submit/i }))
 
   await waitFor(() => {
-    expect(screen.getAllByText("Error!")).toBeTruthy()
+    expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })
