@@ -1,5 +1,5 @@
 import { Remove, Add } from "@mui/icons-material"
-import { Box, Typography, Button } from "@mui/material"
+import { Box, Button, TextField, InputAdornment } from "@mui/material"
 import React from "react"
 
 export type ControlNOptions = {
@@ -13,9 +13,29 @@ type NControlsProps = {
 
 const NControls: React.FC<NControlsProps> = ({ options }) => (
   <Box sx={{ display: "flex" }}>
-    <Typography variant="body2" sx={{ p: 0.5, ml: 1, mr: 0.5 }}>
-      N
-    </Typography>
+    <TextField
+      value={options.value}
+      onChange={event => options.setValue(Number(event.target.value))}
+      size="small"
+      sx={{
+        backgroundColor: "white",
+        width: 100,
+        "& fieldset": {
+          borderRadius: "4px 0px 0px 4px",
+        },
+      }}
+      inputProps={{
+        style: {
+          textAlign: "right",
+          borderTopRightRadius: 0,
+          borderBottomRightRadius: 0,
+          borderRadius: 0,
+        },
+      }}
+      InputProps={{
+        startAdornment: <InputAdornment position="start">Steps</InputAdornment>,
+      }}
+    />
     <Button
       variant="contained"
       disableElevation
@@ -26,32 +46,15 @@ const NControls: React.FC<NControlsProps> = ({ options }) => (
         color: "black",
         borderStyle: "solid",
         borderWidth: 1,
-        borderColor: "divider",
+        borderColor: "rgba(0,0,0,0.23)",
         borderRadius: 0,
-        borderRight: "none",
+        borderLeft: "none",
         p: 0.25,
-        minWidth: 0,
+        minWidth: 40,
       }}
     >
       <Remove fontSize="small" />
     </Button>
-    <Typography
-      variant="body2"
-      sx={{
-        backgroundColor: "white",
-        color: "black",
-        borderStyle: "solid",
-        borderWidth: 1,
-        borderColor: "divider",
-        borderRadius: 0,
-        borderRight: "none",
-        p: 0.25,
-        textAlign: "center",
-        minWidth: 25,
-      }}
-    >
-      {options.value}
-    </Typography>
     <Button
       variant="contained"
       disableElevation
@@ -61,10 +64,11 @@ const NControls: React.FC<NControlsProps> = ({ options }) => (
         color: "black",
         borderStyle: "solid",
         borderWidth: 1,
-        borderColor: "divider",
-        borderRadius: 0,
+        borderColor: "rgba(0,0,0,0.23)",
+        borderRadius: "0px 4px 4px 0px",
+        borderLeft: "none",
         p: 0.25,
-        minWidth: 0,
+        minWidth: 40,
       }}
     >
       <Add fontSize="small" />

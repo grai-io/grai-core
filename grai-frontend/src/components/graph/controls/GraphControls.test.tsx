@@ -5,16 +5,11 @@ import { ReactFlowProvider } from "reactflow"
 import GraphControls from "./GraphControls"
 
 test("renders", async () => {
-  render(
-    <ReactFlowProvider>
-      <GraphControls errors={false} search={null} onSearch={() => {}} />
-    </ReactFlowProvider>,
-    {
-      withRouter: true,
-    }
-  )
+  render(<GraphControls errors={false} search={null} onSearch={() => {}} />, {
+    withRouter: true,
+  })
 
-  expect(screen.getByTestId("AddIcon")).toBeInTheDocument()
+  expect(screen.getByTestId("SearchIcon")).toBeInTheDocument()
   expect(screen.queryByText("Limit Graph")).toBeFalsy()
 })
 
@@ -32,27 +27,6 @@ test("renders options", async () => {
       withRouter: true,
     }
   )
-})
-
-test("zoom controls", async () => {
-  const user = userEvent.setup()
-
-  render(
-    <ReactFlowProvider>
-      <GraphControls errors={false} search={null} onSearch={() => {}} />
-    </ReactFlowProvider>,
-    {
-      withRouter: true,
-    }
-  )
-
-  expect(screen.getByTestId("AddIcon")).toBeInTheDocument()
-  expect(screen.getByTestId("RemoveIcon")).toBeInTheDocument()
-  expect(screen.getByTestId("FitScreenIcon")).toBeInTheDocument()
-
-  await user.click(screen.getByTestId("AddIcon"))
-  await user.click(screen.getByTestId("RemoveIcon"))
-  await user.click(screen.getByTestId("FitScreenIcon"))
 })
 
 test("renders errors", async () => {
