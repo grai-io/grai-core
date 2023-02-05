@@ -117,7 +117,7 @@ const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
         edges={edges}
         initialHidden={hiddenTables.map(n => n.id)}
         controlOptions={{
-          n: {
+          steps: {
             value,
             setValue,
           },

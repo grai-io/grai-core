@@ -1,21 +1,26 @@
-import { Add, FitScreen, Remove } from "@mui/icons-material"
 import { Box, Button, Checkbox, Stack } from "@mui/material"
 import React from "react"
 import { useSearchParams } from "react-router-dom"
-import { useReactFlow } from "reactflow"
-import NControls, { ControlNOptions } from "./NControls"
+import StepsControl, { StepsControlOptions } from "./StepsControl"
+import SearchControl from "./SearchControl"
 
 export type ControlOptions = {
-  n?: ControlNOptions
+  steps?: StepsControlOptions
 }
 
 type GraphControlsProps = {
   errors: boolean
   options?: ControlOptions
+  search: string | null
+  onSearch: (input: string | null) => void
 }
 
-const GraphControls: React.FC<GraphControlsProps> = ({ errors, options }) => {
-  const reactFlowInstance = useReactFlow()
+const GraphControls: React.FC<GraphControlsProps> = ({
+  errors,
+  options,
+  search,
+  onSearch,
+}) => {
   let [searchParams, setSearchParams] = useSearchParams()
 
   const limitGraph: boolean =
@@ -50,66 +55,11 @@ const GraphControls: React.FC<GraphControlsProps> = ({ errors, options }) => {
           position: "absolute",
           top: 10,
           left: 10,
-          width: 500,
+          width: "100%",
           pointerEvents: "all",
           zIndex: 30,
         }}
       >
-        <Box>
-          <Button
-            variant="contained"
-            disableElevation
-            onClick={() => reactFlowInstance.zoomIn()}
-            sx={{
-              backgroundColor: "white",
-              color: "black",
-              borderStyle: "solid",
-              borderWidth: 1,
-              borderColor: "divider",
-              borderRadius: 0,
-              borderRight: "none",
-              p: 0.25,
-              minWidth: 0,
-            }}
-          >
-            <Add fontSize="small" />
-          </Button>
-          <Button
-            variant="contained"
-            disableElevation
-            onClick={() => reactFlowInstance.zoomOut()}
-            sx={{
-              backgroundColor: "white",
-              color: "black",
-              borderStyle: "solid",
-              borderWidth: 1,
-              borderColor: "divider",
-              borderRadius: 0,
-              borderRight: "none",
-              p: 0.25,
-              minWidth: 0,
-            }}
-          >
-            <Remove fontSize="small" />
-          </Button>
-          <Button
-            variant="contained"
-            disableElevation
-            onClick={() => reactFlowInstance.fitView()}
-            sx={{
-              backgroundColor: "white",
-              color: "black",
-              borderStyle: "solid",
-              borderWidth: 1,
-              borderColor: "divider",
-              borderRadius: 0,
-              p: 0.25,
-              minWidth: 0,
-            }}
-          >
-            <FitScreen fontSize="small" />
-          </Button>
-        </Box>
         {errors && (
           <Box>
             <Button
@@ -138,7 +88,8 @@ const GraphControls: React.FC<GraphControlsProps> = ({ errors, options }) => {
             </Button>
           </Box>
         )}
-        {options?.n && <NControls options={options.n} />}
+        {options?.steps && <StepsControl options={options.steps} />}
+        <SearchControl value={search} onChange={onSearch} />
       </Stack>
     </Box>
   )

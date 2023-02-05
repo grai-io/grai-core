@@ -1,10 +1,10 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { fireEvent, render, screen, waitFor } from "testing"
-import BaseNode from "./BaseNode"
+import BaseNode, { BaseNodeData } from "./BaseNode"
 import { ReactFlowProvider } from "reactflow"
 
-const data = {
+const data: BaseNodeData = {
   id: "1234",
   label: "Node Label",
   data_source: "test",
@@ -20,6 +20,8 @@ const data = {
   expanded: false,
   onExpand: (value: boolean) => {},
   onShow: (values: string[]) => {},
+  searchHighlight: false,
+  searchDim: false,
 }
 
 test("renders", async () => {
@@ -93,6 +95,46 @@ test("highlight", async () => {
         data={{
           ...data,
           highlight: true,
+        }}
+      />
+    </ReactFlowProvider>,
+    {
+      withRouter: true,
+    }
+  )
+
+  await waitFor(() => {
+    expect(screen.getByText("Node Label")).toBeInTheDocument()
+  })
+})
+
+test("search highlight", async () => {
+  render(
+    <ReactFlowProvider>
+      <BaseNode
+        data={{
+          ...data,
+          searchHighlight: true,
+        }}
+      />
+    </ReactFlowProvider>,
+    {
+      withRouter: true,
+    }
+  )
+
+  await waitFor(() => {
+    expect(screen.getByText("Node Label")).toBeInTheDocument()
+  })
+})
+
+test("search dim", async () => {
+  render(
+    <ReactFlowProvider>
+      <BaseNode
+        data={{
+          ...data,
+          searchDim: true,
         }}
       />
     </ReactFlowProvider>,
