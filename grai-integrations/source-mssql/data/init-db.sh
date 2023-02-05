@@ -29,7 +29,7 @@ if [[ $COMPLETED -ne 1 ]]; then
 fi
 echo "Database ready"
 
-for file in $(find $SCRIPT_DIR -type f -name '*.sql' | sort)
+for file in $(find . -type f -name '*.sql' | sort)
    do
      echo "Executing init script $file"
      /opt/mssql-tools/bin/sqlcmd -U sa -P $MSSQL_SA_PASSWORD -l 30 -e -i $file -S "$SERVER"
