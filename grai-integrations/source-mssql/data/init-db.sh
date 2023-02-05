@@ -10,6 +10,7 @@ COMPLETED=0
 echo "Waiting for database to become ready"
 while [[ $COMPLETED -ne 1 ]] && [[ $i -lt 60 ]]; do
   i=$((i + 1))
+  echo "Retrying connection..."
   COMPLETED=1
 	DBSTATUS=$(/opt/mssql-tools/bin/sqlcmd -h -1 -t 1 -U sa -P "$MSSQL_SA_PASSWORD" -S "$SERVER")
 	ERRCODE=$?
@@ -29,6 +30,7 @@ if [[ $COMPLETED -ne 1 ]]; then
 	echo "ERROR: SQL Server took more than 60 seconds to start up or one or more databases are not in an ONLINE state"
 	exit 1
 fi
+echo "Database ready"
 
 for file in $(find $SCRIPT_DIR -type f -name '*.sql' | sort)
    do
