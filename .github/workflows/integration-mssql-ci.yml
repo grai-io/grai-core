@@ -63,7 +63,7 @@ jobs:
       - name: Set up SQL db
         working-directory: ${{ env.project_dir }}/data
         run: |
-          sh init-db.sh
+          bash init-db.sh
 
       - uses: actions/setup-python@v4
         with:
