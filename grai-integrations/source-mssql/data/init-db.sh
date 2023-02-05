@@ -31,6 +31,8 @@ echo "Database ready"
 
 /opt/mssql-tools/bin/sqlcmd -U sa -P $MSSQL_SA_PASSWORD -l 30 -e -i 001.sql
 echo "da fuq"
+echo $(pwd)
+echo $(ls)
 for file in $(find . -type f -name '*.sql' | sort)
    do
      echo "Executing init script $file"
