@@ -24,6 +24,9 @@ def test_building_tables(connection):
         result = conn.tables
 
     assert len(result) > 0
+    result_names = {r.name for r in result}
+    assert "table1" in result_names, result_names
+    assert "table2" in result_names, result_names
 
 
 def test_building_columns(connection):
@@ -43,7 +46,6 @@ def test_building_foreign_keys(connection):
 def test_building_nodes(connection):
     with connection.connect() as conn:
         result = conn.get_nodes()
-
     assert len(result) > 0
 
 
