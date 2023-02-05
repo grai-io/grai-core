@@ -9,7 +9,7 @@ echo "Waiting for database to become ready"
 while [[ $COMPLETED -ne 1 ]] && [[ $i -lt 60 ]]; do
   i=$((i + 1))
   COMPLETED=1
-	DBSTATUS=$(/opt/mssql-tools/bin/sqlcmd -h -1 -t 1 -U sa -P $MSSQL_SA_PASSWORD)
+	DBSTATUS=$(/opt/mssql-tools/bin/sqlcmd -h -1 -t 1 -U sa -P "$MSSQL_SA_PASSWORD")
 	ERRCODE=$?
 
   if [[ $DBSTATUS -ne 0 ]]; then
