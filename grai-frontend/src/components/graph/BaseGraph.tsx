@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import ReactFlow, {
+  Controls,
   Edge,
   EdgeTypes,
   getIncomers,
@@ -123,6 +124,8 @@ type BaseGraphProps = {
   expanded: string[]
   errors: boolean
   controlOptions?: ControlOptions
+  search: string | null
+  onSearch: (input: string | null) => void
 }
 
 const BaseGraph: React.FC<BaseGraphProps> = ({
@@ -131,6 +134,8 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
   expanded,
   errors,
   controlOptions,
+  search,
+  onSearch,
 }) => {
   const [nodes, setNodes] = useState<Node[]>()
   const [edges, setEdges] = useState<Edge[]>(initialEdges)
@@ -217,7 +222,12 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
 
   return (
     <ReactFlowProvider>
-      <GraphControls errors={!!errors} options={controlOptions} />
+      <GraphControls
+        errors={!!errors}
+        options={controlOptions}
+        search={search}
+        onSearch={onSearch}
+      />
       <ReactFlow
         minZoom={0}
         nodes={nodes}
@@ -231,7 +241,9 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
           resetNodeStyles()
         }}
         fitView
-      />
+      >
+        <Controls showInteractive={false} />
+      </ReactFlow>
     </ReactFlowProvider>
   )
 }

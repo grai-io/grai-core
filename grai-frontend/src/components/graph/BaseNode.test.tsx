@@ -1,10 +1,10 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { fireEvent, render, screen, waitFor } from "testing"
-import BaseNode from "./BaseNode"
+import BaseNode, { BaseNodeData } from "./BaseNode"
 import { ReactFlowProvider } from "reactflow"
 
-const data = {
+const data: BaseNodeData = {
   id: "1234",
   label: "Node Label",
   data_source: "test",
@@ -20,6 +20,8 @@ const data = {
   expanded: false,
   onExpand: (value: boolean) => {},
   onShow: (values: string[]) => {},
+  searchHighlight: false,
+  searchDim: false,
 }
 
 test("renders", async () => {

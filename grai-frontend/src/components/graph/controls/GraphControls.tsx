@@ -4,6 +4,7 @@ import React from "react"
 import { useSearchParams } from "react-router-dom"
 import { useReactFlow } from "reactflow"
 import NControls, { ControlNOptions } from "./NControls"
+import SearchControl from "./SearchControl"
 
 export type ControlOptions = {
   n?: ControlNOptions
@@ -12,9 +13,16 @@ export type ControlOptions = {
 type GraphControlsProps = {
   errors: boolean
   options?: ControlOptions
+  search: string | null
+  onSearch: (input: string | null) => void
 }
 
-const GraphControls: React.FC<GraphControlsProps> = ({ errors, options }) => {
+const GraphControls: React.FC<GraphControlsProps> = ({
+  errors,
+  options,
+  search,
+  onSearch,
+}) => {
   const reactFlowInstance = useReactFlow()
   let [searchParams, setSearchParams] = useSearchParams()
 
@@ -50,7 +58,7 @@ const GraphControls: React.FC<GraphControlsProps> = ({ errors, options }) => {
           position: "absolute",
           top: 10,
           left: 10,
-          width: 500,
+          width: "100%",
           pointerEvents: "all",
           zIndex: 30,
         }}
@@ -139,6 +147,7 @@ const GraphControls: React.FC<GraphControlsProps> = ({ errors, options }) => {
           </Box>
         )}
         {options?.n && <NControls options={options.n} />}
+        <SearchControl value={search} onChange={onSearch} />
       </Stack>
     </Box>
   )

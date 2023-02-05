@@ -23,6 +23,8 @@ export type BaseNodeData = {
   expanded: boolean
   onExpand: (value: boolean) => void
   onShow: (values: string[]) => void
+  searchHighlight: boolean
+  searchDim: boolean
 }
 
 interface BaseNodeProps {
@@ -68,6 +70,22 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
     handleClose()
   }
 
+  const borderColor = data.highlight
+    ? theme.palette.primary.contrastText
+    : data.searchDim
+    ? "#999"
+    : "#555"
+
+  const backgroundColor = data.searchHighlight
+    ? theme.palette.info.light
+    : "white"
+
+  const color = data.searchDim
+    ? theme.palette.grey[500]
+    : data.searchHighlight
+    ? theme.palette.info.contrastText
+    : undefined
+
   return (
     <>
       <Box
@@ -77,12 +95,11 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
           borderWidth: 1,
           borderStyle: "solid",
           borderRadius: 1,
-          borderColor: data.highlight
-            ? theme.palette.primary.contrastText
-            : "#555",
+          borderColor,
           minWidth: 300,
           cursor: "auto",
-          backgroundColor: "white",
+          backgroundColor,
+          color,
         }}
       >
         <Handle

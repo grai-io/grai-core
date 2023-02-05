@@ -7,7 +7,7 @@ import GraphControls from "./GraphControls"
 test("renders", async () => {
   render(
     <ReactFlowProvider>
-      <GraphControls errors={false} />
+      <GraphControls errors={false} search={null} onSearch={() => {}} />
     </ReactFlowProvider>,
     {
       withRouter: true,
@@ -24,6 +24,8 @@ test("renders options", async () => {
       <GraphControls
         errors={false}
         options={{ n: { value: 1, setValue: (input: number) => {} } }}
+        search={null}
+        onSearch={() => {}}
       />
     </ReactFlowProvider>,
     {
@@ -37,7 +39,7 @@ test("zoom controls", async () => {
 
   render(
     <ReactFlowProvider>
-      <GraphControls errors={false} />
+      <GraphControls errors={false} search={null} onSearch={() => {}} />
     </ReactFlowProvider>,
     {
       withRouter: true,
@@ -58,7 +60,7 @@ test("renders errors", async () => {
 
   render(
     <ReactFlowProvider>
-      <GraphControls errors />
+      <GraphControls errors search={null} onSearch={() => {}} />
     </ReactFlowProvider>,
     {
       withRouter: true,
