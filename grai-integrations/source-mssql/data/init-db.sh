@@ -3,7 +3,7 @@
 SCRIPT_DIR=$(dirname -- "$0")
 HOST="${DB_HOST:-localhost}"
 PORT="${DB_PORT:-"1433"}"
-SERVER="$HOST,$PORT"
+SERVER="tcp:$HOST,$PORT"
 i=0
 COMPLETED=0
 

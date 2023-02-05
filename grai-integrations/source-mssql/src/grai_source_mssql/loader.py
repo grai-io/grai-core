@@ -1,5 +1,6 @@
 import os
 import warnings
+from enum import Enum
 from functools import cached_property
 from itertools import chain
 from typing import Any, Callable, Dict, List, Optional, Union
@@ -18,10 +19,17 @@ class BaseSettings(pydantic.BaseSettings):
         env_prefix = ENV_PREFIX
 
 
+class Protocol(Enum):
+    TCP = "tcp"
+    ICP = "Icp"
+    NP = "NP"
+
+
 class MsSqlSettings(BaseSettings):
     driver: Optional[str] = None
     database: Optional[str] = None
     server: Optional[str] = None
+    protocol: Optional[Protocol] = Protocol.TCP.value
     host: Optional[str] = None
     port: Optional[str] = None
     trusted_connection: Optional[bool] = None
@@ -29,6 +37,13 @@ class MsSqlSettings(BaseSettings):
     password: Optional[SecretStr]
     encrypt: Optional[bool]
     additional_connection_strings: Optional[List[str]] = None
+
+    @validator("protocol")
+    def validate_protocol(cls, value):
+        if value is None:
+            return Protocol.TCP.value
+
+        return Protocol(value)
 
     def connection_string(self):
         connection_attributes = [f"DRIVER={self.driver}"]
@@ -44,7 +59,9 @@ class MsSqlSettings(BaseSettings):
         if self.server is not None:
             connection_attributes.append(f"Server={self.server}")
         elif self.host is not None:
-            connection_attributes.append(f"Server={self.host},{'1433' if self.port is None else self.port}")
+            connection_attributes.append(
+                f"Server={self.protocol.value}:{self.host},{'1433' if self.port is None else self.port}"
+            )
         else:
             raise Exception("Connection strings require either `server` or a `host`/`port` combination.")
 
