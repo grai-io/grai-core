@@ -13,6 +13,7 @@ const icons: Icons = {
   "grai-source-dbt": "/images/dbt-logo.png",
   "grai-source-postgres": "/images/postgres-logo.svg",
   "grai-source-snowflake": "/images/snowflake-logo.png",
+  "grai-source-mssql": "/images/mssql-logo.png",
 }
 
 const DataSourceIcon: React.FC<DataSourceIconProps> = ({ dataSource }) => {
