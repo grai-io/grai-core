@@ -60,7 +60,7 @@ def test_connector_from_env_vars():
         "GRAI_MSSQL_DATABASE": "localhost",
         "GRAI_MSSQL_SERVER": "grai",
         "GRAI_MSSQL_USER": "sa",
-        "GRAI_MSSQL_PASSWORD": "GraiGraiGr4ai",
+        "GRAI_MSSQL_PASSWORD": "GraiGraiGr4i",
         "GRAI_MSSQL_NAMESPACE": "test",
         "GRAI_MSSQL_DRIVER": "{This is an invalid driver configuration}",
         "GRAI_MSSQL_TRUSTED_CONNECTION": "true",
@@ -72,6 +72,6 @@ def test_connector_from_env_vars():
     assert conn.config.driver == "{This is an invalid driver configuration}"
     assert conn.config.database == "localhost"
     assert conn.config.user == "sa"
-    assert conn.config.password.get_secret_value() == "GraiGraiGr4ai"
+    assert conn.config.password.get_secret_value() == "GraiGraiGr4i"
     assert conn.config.trusted_connection is True
     assert conn.config.namespace == "test"
