@@ -18,7 +18,7 @@ test("renders options", async () => {
     <ReactFlowProvider>
       <GraphControls
         errors={false}
-        options={{ n: { value: 1, setValue: (input: number) => {} } }}
+        options={{ steps: { value: 1, setValue: (input: number) => {} } }}
         search={null}
         onSearch={() => {}}
       />

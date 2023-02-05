@@ -7,7 +7,7 @@ from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 MEDIA_ROOT = str(BASE_DIR.joinpath("media"))
-STATIC_ROOT = str(BASE_DIR.joinpath("staticfiles"))
+STATIC_ROOT = "/var/wwww/static"
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 

@@ -1,25 +1,19 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { render, screen } from "testing"
-import { ReactFlowProvider } from "reactflow"
-import NControls from "./NControls"
+import StepsControl from "./StepsControl"
 
 test("renders", async () => {
   let value = 1
   const setValue = (input: number) => (value = input)
 
   render(
-    <ReactFlowProvider>
-      <NControls
-        options={{
-          value,
-          setValue,
-        }}
-      />
-    </ReactFlowProvider>,
-    {
-      withRouter: true,
-    }
+    <StepsControl
+      options={{
+        value,
+        setValue,
+      }}
+    />
   )
 
   expect(screen.getByTestId("AddIcon")).toBeInTheDocument()
@@ -33,17 +27,12 @@ test("plus", async () => {
   const user = userEvent.setup()
 
   render(
-    <ReactFlowProvider>
-      <NControls
-        options={{
-          value,
-          setValue,
-        }}
-      />
-    </ReactFlowProvider>,
-    {
-      withRouter: true,
-    }
+    <StepsControl
+      options={{
+        value,
+        setValue,
+      }}
+    />
   )
 
   expect(value).toEqual(1)
@@ -63,17 +52,12 @@ test("minus", async () => {
   const user = userEvent.setup()
 
   render(
-    <ReactFlowProvider>
-      <NControls
-        options={{
-          value,
-          setValue,
-        }}
-      />
-    </ReactFlowProvider>,
-    {
-      withRouter: true,
-    }
+    <StepsControl
+      options={{
+        value,
+        setValue,
+      }}
+    />
   )
 
   expect(value).toEqual(2)
@@ -84,4 +68,26 @@ test("minus", async () => {
   await user.click(screen.getByTestId("RemoveIcon"))
 
   expect(value).toEqual(1)
+})
+
+test("change", async () => {
+  let value = 1
+  const setValue = (input: number) => (value = input)
+
+  const user = userEvent.setup()
+
+  render(
+    <StepsControl
+      options={{
+        value,
+        setValue,
+      }}
+    />
+  )
+
+  expect(value).toEqual(1)
+
+  await user.type(screen.getByRole("textbox"), "1")
+
+  expect(value).toEqual(11)
 })

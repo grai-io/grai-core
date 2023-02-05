@@ -2,16 +2,16 @@ import { Remove, Add } from "@mui/icons-material"
 import { Box, Button, TextField, InputAdornment } from "@mui/material"
 import React from "react"
 
-export type ControlNOptions = {
+export type StepsControlOptions = {
   value: number
   setValue: (input: number) => void
 }
 
-type NControlsProps = {
-  options: ControlNOptions
+type StepsControlProps = {
+  options: StepsControlOptions
 }
 
-const NControls: React.FC<NControlsProps> = ({ options }) => (
+const StepsControl: React.FC<StepsControlProps> = ({ options }) => (
   <Box sx={{ display: "flex" }}>
     <TextField
       value={options.value}
@@ -76,4 +76,4 @@ const NControls: React.FC<NControlsProps> = ({ options }) => (
   </Box>
 )
 
-export default NControls
+export default StepsControl

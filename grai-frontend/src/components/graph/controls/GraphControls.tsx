@@ -1,11 +1,11 @@
 import { Box, Button, Checkbox, Stack } from "@mui/material"
 import React from "react"
 import { useSearchParams } from "react-router-dom"
-import NControls, { ControlNOptions } from "./NControls"
+import StepsControl, { StepsControlOptions } from "./StepsControl"
 import SearchControl from "./SearchControl"
 
 export type ControlOptions = {
-  n?: ControlNOptions
+  steps?: StepsControlOptions
 }
 
 type GraphControlsProps = {
@@ -88,7 +88,7 @@ const GraphControls: React.FC<GraphControlsProps> = ({
             </Button>
           </Box>
         )}
-        {options?.n && <NControls options={options.n} />}
+        {options?.steps && <StepsControl options={options.steps} />}
         <SearchControl value={search} onChange={onSearch} />
       </Stack>
     </Box>
