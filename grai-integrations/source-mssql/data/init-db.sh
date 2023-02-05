@@ -3,27 +3,24 @@
 SCRIPT_DIR=$(dirname -- "$0")
 HOST="${DB_HOST:-localhost}"
 PORT="${DB_PORT:-"1433"}"
+MSSQL_SA_PASSWORD="${MSSQL_SA_PASSWORD:-"GraiGraiGr4i"}"
 SERVER="tcp:$HOST,$PORT"
 i=0
 COMPLETED=0
 
 echo "Waiting for database to become ready"
-while [[ $COMPLETED -ne 1 ]] && [[ $i -lt 60 ]]; do
+while [[ $COMPLETED -ne 1 ]] && [[ $i -lt 30 ]]; do
   i=$((i + 1))
-  echo "Retrying connection..."
   COMPLETED=1
-	DBSTATUS=$(/opt/mssql-tools/bin/sqlcmd -h -1 -t 1 -U sa -P "$MSSQL_SA_PASSWORD" -S "$SERVER")
-	ERRCODE=$?
-
+	#DBSTATUS=$(/opt/mssql-tools/bin/sqlcmd -h -1 -t 1 -U sa -P "$MSSQL_SA_PASSWORD" -S "$SERVER")
+  DBSTATUS=$(/opt/mssql-tools/bin/sqlcmd -S localhost,1433 -U sa -P $MSSQL_SA_PASSWORD -Q 'select 1' -b -o /dev/null)
   if [[ $DBSTATUS -ne 0 ]]; then
     COMPLETED=0
+  else
+    echo "Retrying connection..."
+    sleep 1
   fi
 
-  if [[ $ERRCODE -ne 0 ]]; then
-    COMPLETED=0
-  fi
-
-	sleep 1
 done
 
 if [[ $COMPLETED -ne 1 ]]; then
