@@ -62,6 +62,8 @@ jobs:
 
       - name: Set up SQL db
         working-directory: ${{ env.project_dir }}/data
+        env:
+          MSSQL_SA_PASSWORD: ${{env.DB_PASSWORD}}
         run: |
           bash init-db.sh
 
