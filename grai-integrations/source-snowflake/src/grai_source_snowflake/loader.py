@@ -1,4 +1,5 @@
 import os
+from functools import cached_property
 from itertools import chain
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
@@ -12,6 +13,10 @@ from grai_source_snowflake.models import (
     SnowflakeNode,
     Table,
 )
+
+
+def string_is_quoted(string: str) -> bool:
+    return string.startswith('"') and string.endswith('"')
 
 
 def get_from_env(
@@ -55,9 +60,6 @@ class SnowflakeConnector:
         self.additional_conn_kwargs = kwargs
         self._connection: Optional[snowflake.connector.SnowflakeConnection] = None
 
-        self._tables: Optional[List[Table]] = None
-        self._foreign_keys: Optional[List[Edge]] = None
-
     def __enter__(self):
         return self.connect()
 
@@ -97,16 +99,13 @@ class SnowflakeConnector:
         dict_cursor.execute(query, param_dict)
         return dict_cursor.fetchall()  # type: ignore
 
-    def get_tables(self) -> List[Table]:
+    @cached_property
+    def tables(self) -> List[Table]:
         """
         Create and return a list of dictionaries with the
         schemas and names of tables in the database
         connected to by the connection argument.
         """
-
-        if self._tables is not None:
-            return self._tables
-
         query = """
 	        SELECT table_schema, table_name, table_type
             FROM information_schema.tables
@@ -122,38 +121,63 @@ class SnowflakeConnector:
 
         tables = [Table(**result, **additional_args) for result in res]
         for table in tables:
-            table.columns = self.get_columns(table)
+            table.columns = self.get_table_columns(table)
+        return tables
 
-        self._tables = tables
-        return self._tables
-
-    def get_columns(self, table: Table) -> List[Column]:
+    @cached_property
+    def columns(self) -> List[Column]:
         """
         Creates and returns a list of dictionaries for the specified
         schema.table in the database connected to.
         """
 
-        table_name = (
-            table.name if table.name.startswith('"') and table.name.endswith('"') else f"'{table.name.upper()}'"
-        )
+        def quoted_table_name(table_name: str) -> str:
+            return table_name if table_name.startswith('"') and table_name.endswith('"') else f"'{table_name.upper()}'"
 
         query = f"""
-            SELECT column_name, data_type, is_nullable, column_default
+            SELECT column_name, data_type, is_nullable, column_default, table_schema, table_name
             FROM information_schema.columns
-            WHERE table_schema = '{table.table_schema}'
-            AND table_name = {table_name}
         """
 
-        res = ({k.lower(): v for k, v in result.items()} for result in self.query_runner(query))
+        res = [{k.lower(): v for k, v in result.items()} for result in self.query_runner(query)]
+        for item in res:
+            item.update(
+                {
+                    "table": item["table_name"],
+                    #'table': quoted_table_name(item['table_name']),
+                    "column_schema": item["table_schema"],
+                }
+            )
 
         addtl_args = {
-            "namespace": table.namespace,
-            "schema": table.table_schema,
-            "table": table.name,
+            "namespace": self.namespace,
         }
         return [Column(**result, **addtl_args) for result in res]
 
-    def get_foreign_keys(self) -> List[Edge]:
+    @cached_property
+    def column_map(self):
+        result_map = {}
+        for col in self.columns:
+            table_id = (col.column_schema, col.table)
+            result_map.setdefault(table_id, [])
+            result_map[table_id].append(col)
+        return result_map
+
+    def get_table_columns(self, table: Table):
+        table_id = (table.table_schema, table.name)
+        if table_id in self.column_map:
+            return self.column_map[table_id]
+
+        schema = table_id[0] if string_is_quoted(table_id[0]) else table_id[0].upper()
+        name = table_id[1] if string_is_quoted(table_id[1]) else table_id[1].upper()
+        table_id = (schema, name)
+        if table_id in self.column_map:
+            return self.column_map[table_id]
+        else:
+            raise Exception(f"No columns found for table with schema={schema} and name={name}")
+
+    @cached_property
+    def foreign_keys(self) -> List[Edge]:
         """This needs to be tested / evaluated
         :param connection:
         :param table:
@@ -162,9 +186,6 @@ class SnowflakeConnector:
         # This query only returns foreign keys, there is also exported keys and primary keys.
         # Information schema itself doesn't carry the column for foreign keys
         # show IMPORTED KEYS in database '{self.connection_dict['database']}'
-
-        if self._foreign_keys is not None:
-            return self._foreign_keys
 
         query = f"""
         show IMPORTED KEYS
@@ -196,16 +217,14 @@ class SnowflakeConnector:
         res = ({k.lower(): v for k, v in result.items()} for result in imported_keys)
         fks = [EdgeQuery(**fk, **addtl_args).to_edge() for fk in res]
 
-        self._foreign_keys = fks
-        return self._foreign_keys
+        return fks
 
     def get_nodes(self) -> List[SnowflakeNode]:
-        tables = self.get_tables()
-        return list(chain(tables, *[t.columns for t in tables]))
+        # return list(chain(self.tables, *[t.columns for t in self.tables]))
+        return list(chain(self.tables, self.columns))
 
     def get_edges(self) -> List[Edge]:
-        tables = self.get_tables()
-        edges = list(chain(*[t.get_edges() for t in tables], self.get_foreign_keys()))
+        edges = list(chain(*[t.get_edges() for t in self.tables], self.foreign_keys))
         return edges
 
     def get_nodes_and_edges(self) -> Tuple[List[SnowflakeNode], List[Edge]]:
