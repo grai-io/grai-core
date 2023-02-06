@@ -26,6 +26,7 @@ RUN apt update \
     libpq-dev \
     gcc \
     curl \
+    unixodbc \
     && rm -rf /var/lib/apt/lists/*
 
 COPY pyproject.toml poetry.lock ./
