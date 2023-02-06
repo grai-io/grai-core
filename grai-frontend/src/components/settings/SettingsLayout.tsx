@@ -1,4 +1,5 @@
 import { Box, Toolbar } from "@mui/material"
+import Loading from "components/layout/Loading"
 import React, { ReactNode } from "react"
 import SettingsAppBar from "./SettingsAppBar"
 import SettingsDrawer from "./SettingsDrawer"
@@ -18,6 +19,7 @@ const SettingsLayout: React.FC<SettingsLayoutProps> = ({
       <SettingsDrawer />
       <Box component="main" sx={{ flexGrow: 1 }}>
         <Toolbar />
+        {loading && <Loading />}
         {children}
       </Box>
     </Box>

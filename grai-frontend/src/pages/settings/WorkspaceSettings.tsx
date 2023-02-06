@@ -1,5 +1,4 @@
 import { gql, useQuery } from "@apollo/client"
-import Loading from "components/layout/Loading"
 import SettingsLayout from "components/settings/SettingsLayout"
 import WorkspaceForm from "components/settings/workspace/WorkspaceForm"
 import GraphError from "components/utils/GraphError"
@@ -37,12 +36,7 @@ const WorkspaceSettings: React.FC = () => {
   })
 
   if (error) return <GraphError error={error} />
-  if (loading)
-    return (
-      <SettingsLayout>
-        <Loading />
-      </SettingsLayout>
-    )
+  if (loading) return <SettingsLayout loading />
 
   const workspaceModel = data?.workspace
 
