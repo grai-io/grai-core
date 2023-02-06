@@ -4,11 +4,11 @@ from typing import Any, Dict, List, Optional, Union
 from pydantic import BaseModel, Field, root_validator, validator
 
 
-class SnowflakeNode(BaseModel):
+class MsSqlNode(BaseModel):
     pass
 
 
-class ID(SnowflakeNode):
+class ID(MsSqlNode):
     name: str
     namespace: str
     full_name: str
@@ -21,16 +21,11 @@ class TableID(ID):
     table_schema: str
 
     @root_validator(pre=True)
-    def make_full_name(cls, values: Dict) -> Dict:
+    def make_full_name(cls, values):
+        full_name = values.get("full_name", None)
         if values.get("full_name", None) is None:
             values["full_name"] = f"{values['table_schema']}.{values['name']}"
         return values
-
-
-def validate_quoted_string(string: str) -> str:
-    if string.startswith('"') and string.endswith('"'):
-        return string
-    return string.lower()
 
 
 class ColumnID(ID):
@@ -38,21 +33,17 @@ class ColumnID(ID):
     table_name: str
 
     @root_validator(pre=True)
-    def make_full_name(cls, values: Dict) -> Dict:
+    def make_full_name(cls, values):
         full_name = values.get("full_name", None)
         if values.get("full_name", None) is None:
             values["full_name"] = f"{values['table_schema']}.{values['table_name']}.{values['name']}"
         return values
 
-    @validator("table_name")
-    def validate_name(cls, value):
-        return validate_quoted_string(value)
 
-
-class Column(SnowflakeNode):
+class Column(MsSqlNode):
     name: str = Field(alias="column_name")
-    table: str
-    column_schema: str = Field(alias="schema")
+    table: str = Field(alias="table_name")
+    column_schema: str = Field(alias="table_schema")
     data_type: str
     is_nullable: bool
     namespace: str
@@ -64,15 +55,11 @@ class Column(SnowflakeNode):
         allow_population_by_field_name = True
 
     @validator("full_name", always=True)
-    def make_full_name(cls, full_name: Optional[str], values: Dict) -> str:
+    def make_full_name(cls, full_name, values):
         if full_name is not None:
             return full_name
         result = f"{values['column_schema']}.{values['table']}.{values['name']}"
         return result
-
-    @validator("name", "table")
-    def validate_name(cls, value):
-        return validate_quoted_string(value)
 
 
 class Constraint(str, Enum):
@@ -89,41 +76,24 @@ class Edge(BaseModel):
     metadata: Optional[Dict] = None
 
 
-class TableType(str, Enum):
-    Table = "BASE TABLE"
-    View = "VIEW"
-    TemporaryTable = "TEMPORARY TABLE"
-
-
-class Table(SnowflakeNode):
+class Table(MsSqlNode):
     name: str = Field(alias="table_name")
     table_schema: str = Field(alias="schema")
-    table_type: TableType
-    table_database: str
     namespace: str
-    columns: List[Column] = []
+    columns: Optional[List[Column]] = []
     metadata: Dict = {}
     full_name: Optional[str] = None
 
     class Config:
         allow_population_by_field_name = True
 
-    @property
-    def id(self):
-        return self.table_schema, self.name
-
     @validator("full_name", always=True)
-    def make_full_name(cls, full_name: Optional[str], values: Dict) -> str:
+    def make_full_name(cls, full_name, values):
         if full_name is not None:
             return full_name
-
         return f"{values['table_schema']}.{values['name']}"
 
-    @validator("name")
-    def validate_name(cls, value):
-        return validate_quoted_string(value)
-
-    def get_edges(self) -> List[Edge]:
+    def get_edges(self):
         return [
             Edge(
                 constraint_type=Constraint("bt"),

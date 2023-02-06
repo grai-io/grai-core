@@ -42,5 +42,6 @@ def update_server(
         namespace=namespace,
     )
     nodes, edges = get_nodes_and_edges(conn, client.id)
+
     update(client, nodes)
     update(client, edges)
