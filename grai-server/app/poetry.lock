@@ -1011,6 +1011,25 @@ networkx = ">=2.8.3,<3.0.0"
 pydantic = ">=1.9.1,<2.0.0"
 
 [[package]]
+name = "grai-source-mssql"
+version = "0.0.1"
+description = ""
+category = "main"
+optional = false
+python-versions = ">=3.8,<4.0"
+files = [
+    {file = "grai_source_mssql-0.0.1-py3-none-any.whl", hash = "sha256:f21cbead99900252982344ff181f4091911987d5a75f53138d9324ca9753249f"},
+    {file = "grai_source_mssql-0.0.1.tar.gz", hash = "sha256:8d8f52a1689738fb8a92ce5042ef56646e79ff33660c08259ff1e373a2c5119d"},
+]
+
+[package.dependencies]
+grai-client = ">=0.2.0,<0.3.0"
+grai-schemas = ">=0.1.8,<0.2.0"
+multimethod = ">=1.8,<2.0"
+pydantic = ">=1.9.1,<2.0.0"
+pyodbc = ">=4.0.35,<5.0.0"
+
+[[package]]
 name = "grai-source-postgres"
 version = "0.1.11"
 description = ""
@@ -1649,6 +1668,47 @@ docs = ["sphinx (>=4.5.0,<5.0.0)", "sphinx-rtd-theme", "zope.interface"]
 tests = ["coverage[toml] (==5.0.4)", "pytest (>=6.0.0,<7.0.0)"]
 
 [[package]]
+name = "pyodbc"
+version = "4.0.35"
+description = "DB API Module for ODBC"
+category = "main"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*"
+files = [
+    {file = "pyodbc-4.0.35-cp27-cp27m-win32.whl", hash = "sha256:c3ab48723c647bfd38dfa60dde3c1967e4e0e92a11c93ae30ec6665765e5a0f7"},
+    {file = "pyodbc-4.0.35-cp27-cp27m-win_amd64.whl", hash = "sha256:f964f5f153569dae60b149b35aa7d54b46fb38c6bf928c346d928771b0a5f590"},
+    {file = "pyodbc-4.0.35-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:e9a69b16fc59b74a9153c06e452a8093eae4a6ea542462811f517e7ccc5ff3e8"},
+    {file = "pyodbc-4.0.35-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:cfe3c59fb151daef483533ab94b6b7367fa643137f94dac0a189e9779d691755"},
+    {file = "pyodbc-4.0.35-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:fe0448f3d39253ed55d1b2b4bfa22f04413e8d0b09202a81d74e4cbe54de34a4"},
+    {file = "pyodbc-4.0.35-cp310-cp310-win32.whl", hash = "sha256:3bbd1819c7441766a086bf24d7803a7fd466f22dbbaffcab7acc01397961e552"},
+    {file = "pyodbc-4.0.35-cp310-cp310-win_amd64.whl", hash = "sha256:c7f8e34b18474bc347bd3623408c8ecb405cf2fa71cb72e42b9657f4ffbc146a"},
+    {file = "pyodbc-4.0.35-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:ea33e115ea6b3f5113a647c4a121247d32d8f338c3d9e1937b50222e52ad4360"},
+    {file = "pyodbc-4.0.35-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:8388c222a64fc8b0039be8e2663212e6a2915c842d5fd34f32126ee392b6c48e"},
+    {file = "pyodbc-4.0.35-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:95c1e3f2747af0957de17192811f06525a8e9c3e6491b4698b3f34d626333be7"},
+    {file = "pyodbc-4.0.35-cp311-cp311-win32.whl", hash = "sha256:71aa000e8ac925ccfabb2cdb9b2ec3247de243305d12bf5b24fcdd248ffd07e3"},
+    {file = "pyodbc-4.0.35-cp311-cp311-win_amd64.whl", hash = "sha256:df74d692e3002208ef16994adcd0ba0a5f579ec8621a2aa2866195defcecfdb1"},
+    {file = "pyodbc-4.0.35-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:9632c19850bdeeb7ce2e9e38cf64df1688cd803e810bf18ab92fb0588956f7be"},
+    {file = "pyodbc-4.0.35-cp36-cp36m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:4b3d978619e68d0a6d6bc1f7749575b6de4ac4312aab0e889a18315b1bb06e9b"},
+    {file = "pyodbc-4.0.35-cp36-cp36m-win32.whl", hash = "sha256:baf1d62959de66a664b4d63c4af00d09f107981be7a8961ce235a0fce386663b"},
+    {file = "pyodbc-4.0.35-cp36-cp36m-win_amd64.whl", hash = "sha256:729b4454ede1384c4eb0608b552d59e933b377bc9f3d68a0b3d44f00c8c2ecab"},
+    {file = "pyodbc-4.0.35-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:38da788c66e9594174635ee37f494d0211fe2b5634aa2364be28317b1bbed16d"},
+    {file = "pyodbc-4.0.35-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9918c50936e80cac300c9423c5936a2573543e2476749155616ef50685891145"},
+    {file = "pyodbc-4.0.35-cp37-cp37m-win32.whl", hash = "sha256:b6f1d113d382fed53fd2f5692266c83409ecbdc6144a7e1abbed76050e9e5973"},
+    {file = "pyodbc-4.0.35-cp37-cp37m-win_amd64.whl", hash = "sha256:c24115c491585018faf88b1cafc73a91e177ff57c7d82d04abebe7fb52cae6b3"},
+    {file = "pyodbc-4.0.35-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:12b7a308e9e30d2da96a613ac12d46cd6f81a4791e5c5849e382e73eda1d23a2"},
+    {file = "pyodbc-4.0.35-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:d94dd82d8ded92d3f7ed7d575dc53127e1bcc2bb7ada0ccac51eb4520cffc780"},
+    {file = "pyodbc-4.0.35-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:0c9fb521b376d1b804ada98c6dd12a8b349c301060bfdc194a5045882f0b2887"},
+    {file = "pyodbc-4.0.35-cp38-cp38-win32.whl", hash = "sha256:cd885f28ba39debb1c8ace95a1fed551835a5a399778350094c71d0007e42a75"},
+    {file = "pyodbc-4.0.35-cp38-cp38-win_amd64.whl", hash = "sha256:dda0b6f9728941523e5b84b6a12bdcff420596451d2cfefcd7f21ace3bfde334"},
+    {file = "pyodbc-4.0.35-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:389a8522806f439c430f5f339186e02b130f7b2de91c1366f44a21fb1229bb1b"},
+    {file = "pyodbc-4.0.35-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:f068590bcce50b0120e88ec4f90d65f660e8d39052fad3733a40614623a987e4"},
+    {file = "pyodbc-4.0.35-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2b92c67e8255c8636af687f56361eaa420dd5d1b7bc883e2ff473d85a5e63e08"},
+    {file = "pyodbc-4.0.35-cp39-cp39-win32.whl", hash = "sha256:27340dff78694fee6e6629500ecbfbafc7694861e22256ff00af9865442d1bfe"},
+    {file = "pyodbc-4.0.35-cp39-cp39-win_amd64.whl", hash = "sha256:2a85203d2b6ab417f52600295294a5bb46a69fa383764959b57e8d843090fd43"},
+    {file = "pyodbc-4.0.35.tar.gz", hash = "sha256:92b9af48e8b928455bc8b94bf3da05751faec0932a11eee237c189c6d439e5c8"},
+]
+
+[[package]]
 name = "pyopenssl"
 version = "23.0.0"
 description = "Python wrapper module around the OpenSSL library"
@@ -2045,19 +2105,30 @@ category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
+    {file = "snowflake-connector-python-3.0.0.tar.gz", hash = "sha256:17411b811492fe460a5033e17fa7ae33478ba88a958d0b070ba0bd6594910881"},
     {file = "snowflake_connector_python-3.0.0-cp310-cp310-macosx_10_14_x86_64.whl", hash = "sha256:551300e4c2d39d370c8a8c4b826ca717b63d8e4fb814a3e240c0fe28ee23886c"},
     {file = "snowflake_connector_python-3.0.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:9df2f0cfb69c98362025cabacbb5df280422a1f988289c5b93df59f6d74a360f"},
+    {file = "snowflake_connector_python-3.0.0-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:8fb51c663b5c92b70ee2169a42717941b3192f32e925fea0f4f2b25e045ecba6"},
+    {file = "snowflake_connector_python-3.0.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d7e7b9b863901db8ead4a3624aef5fb03852d06f2d02328320b4b8d8ac2d27d3"},
     {file = "snowflake_connector_python-3.0.0-cp310-cp310-win_amd64.whl", hash = "sha256:3e884c715ea71d70e50caa582d91ed665b732dfda22c420bfbc315f2d7fb1281"},
     {file = "snowflake_connector_python-3.0.0-cp311-cp311-macosx_10_14_x86_64.whl", hash = "sha256:73287382052bbdfae9fe6d1055e6b1ec617e6f7aae6cb36504027a7ce74ad290"},
     {file = "snowflake_connector_python-3.0.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:cf4106e2152c50816eeee22f9992dc9702b2aa6714793e62fee7f6c2a49926a0"},
+    {file = "snowflake_connector_python-3.0.0-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:8dc6737347d9635f9bfd8ae958f5d0fc1a6d3af61441dcb423b284e3503876e9"},
+    {file = "snowflake_connector_python-3.0.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:065b8700df493ba0c8f54d6b4489dcdea32c05838eb03f06c5d556f954d208df"},
     {file = "snowflake_connector_python-3.0.0-cp311-cp311-win_amd64.whl", hash = "sha256:a9404d1669d14ac8c129f58e1af3b4c0f7d37b3ce2a342d692e396ee9ae19fc4"},
     {file = "snowflake_connector_python-3.0.0-cp37-cp37m-macosx_10_14_x86_64.whl", hash = "sha256:9c49f107a6ef657faa8ee942ff552b4324e4e8e5ac764e78b819a61e2e8b4fe7"},
+    {file = "snowflake_connector_python-3.0.0-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:002ae724b440a0afed4e6d172a6cd0dd9bfd51f520d1ed2d8f7bb4c954339cb5"},
+    {file = "snowflake_connector_python-3.0.0-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:8bc3c9bebca3d35014b09b1ba68e62bb2c9e6fea59a727a4739d1e98a24ea433"},
     {file = "snowflake_connector_python-3.0.0-cp37-cp37m-win_amd64.whl", hash = "sha256:83d33604bfb0d25aa3fe8d2b7edf34ea5a1b31b461eef964232dfff5b94446ee"},
     {file = "snowflake_connector_python-3.0.0-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:6de61e1b6700405cbb6af7996e4306f205a566737e4abf147e0eb2b717cb0b5f"},
     {file = "snowflake_connector_python-3.0.0-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:427d2ddd2ce2b136359562fbc84584c7ad9b62f717937c34e6b081a8c1f75a92"},
+    {file = "snowflake_connector_python-3.0.0-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:3c6e9d387e5d0ee31c17994abbd38ae2324893fe3982d50c1ee8d6888df16b30"},
+    {file = "snowflake_connector_python-3.0.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:e3342faf5cce844bff6d56d3d8e630b62ba7a6620ed2203cbc1b16aeccff38de"},
     {file = "snowflake_connector_python-3.0.0-cp38-cp38-win_amd64.whl", hash = "sha256:d339e556b37339364c2401ad57ec14d23bd87c517aae1a9edb9a0689acbaa984"},
     {file = "snowflake_connector_python-3.0.0-cp39-cp39-macosx_10_14_x86_64.whl", hash = "sha256:5e2faac864c4f4fa8d3caa9ab512c18e2c464eb042fdf56f2d022f028901e7a6"},
     {file = "snowflake_connector_python-3.0.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:be70b00294d179b4f8a71f39d096b8f04510421f86e576c66562669f4a1fdd9e"},
+    {file = "snowflake_connector_python-3.0.0-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:2e711148d87b8f311b17929919c727658577ddf922683891fc26dd56b0e463bc"},
+    {file = "snowflake_connector_python-3.0.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:fec004bbba6323b2305beac1b8eec58116c845c69dafee2af147578aa2a1e2dd"},
     {file = "snowflake_connector_python-3.0.0-cp39-cp39-win_amd64.whl", hash = "sha256:01ec5ce97dc83250b5fcf8329fa68ada5fdc1ba290c979bf1e0cdfdb95ee32f0"},
 ]
 
@@ -2370,4 +2441,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "b3b7013b6f4ad591d26d7bb7f52de3f5cd480e451c612abdfabe5750d90c0a5c"
+content-hash = "903647b462044fd6a1dbf05c88eca19c6b777dd9f414061a29ebaac7075d6946"

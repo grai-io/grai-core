@@ -74,11 +74,36 @@
         "pk": "71f1db71-2181-4353-89ca-34e187f606dd",
         "fields": {
             "name": "Microsoft SQL Server",
-            "metadata": {},
+            "metadata": {
+                "fields": [
+                    {
+                        "name": "database",
+                        "required": true
+                    },
+                    {
+                        "name": "user",
+                        "required": true
+                    },
+                    {
+                        "name": "password",
+                        "secret": true,
+                        "required": true
+                    },
+                    {
+                        "name": "host",
+                        "required": true
+                    },
+                    {
+                        "name": "port",
+                        "default": 1433,
+                        "required": false
+                    }
+                ]
+            },
             "is_active": true,
             "icon": "https://cdn.sanity.io/images/pwmfmi47/production/95bced9d0a4f668ceea0442a15c2cb4fdcb38b7e-452x452.png",
             "category": "databases",
-            "coming_soon": true,
+            "coming_soon": false,
             "created_at": "2023-01-11T21:16:21.900Z",
             "updated_at": "2023-01-11T21:16:21.900Z"
         }
