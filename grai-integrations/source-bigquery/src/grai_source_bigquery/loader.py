@@ -1,5 +1,6 @@
 import json
 import os
+from functools import cached_property
 from itertools import chain
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
@@ -74,27 +75,19 @@ class BigqueryConnector:
     def query_runner(self, query: str, param_dict: Dict = {}) -> List[Dict]:
         return self.connection.query(query)
 
-        # dict_cursor = self.connection.cursor(bigquery.connector.DictCursor)
-        # dict_cursor.execute(query, param_dict)
-        # return dict_cursor.fetchall()  # type: ignore
-
-    def get_tables(self) -> List[Table]:
+    @cached_property
+    def tables(self) -> List[Table]:
         """
         Create and return a list of dictionaries with the
         schemas and names of tables in the database
         connected to by the connection argument.
         """
-
-        if self._tables is not None:
-            return self._tables
-
         query = f"""
 	        SELECT table_schema, table_name, table_type
             FROM {self.project}.{self.dataset}.INFORMATION_SCHEMA.TABLES
             WHERE table_schema != 'INFORMATION_SCHEMA'
             ORDER BY table_schema, table_name
         """
-
         res = ({k.lower(): v for k, v in result.items()} for result in self.query_runner(query))
 
         additional_args = {
@@ -104,41 +97,62 @@ class BigqueryConnector:
 
         tables = [Table(**result, **additional_args) for result in res]
         for table in tables:
-            table.columns = self.get_columns(table)
+            table.columns = self.get_table_columns(table)
+        return tables
 
-        self._tables = tables
-        return self._tables
-
-    def get_columns(self, table: Table) -> List[Column]:
+    @cached_property
+    def columns(self) -> List[Column]:
         """
         Creates and returns a list of dictionaries for the specified
         schema.table in the database connected to.
         """
 
         query = f"""
-            SELECT column_name, data_type, is_nullable, column_default
+            SELECT column_name, data_type, is_nullable, column_default, table_schema, table_name
             FROM {self.project}.{self.dataset}.INFORMATION_SCHEMA.COLUMNS
-            WHERE table_schema = '{table.table_schema}'
-            AND table_name = '{table.name}'
         """
 
-        res = ({k.lower(): v for k, v in result.items()} for result in self.query_runner(query))
+        res = [{k.lower(): v for k, v in result.items()} for result in self.query_runner(query)]
+        for item in res:
+            item.update(
+                {
+                    "table": item["table_name"],
+                    "column_schema": item["table_schema"],
+                }
+            )
 
         addtl_args = {
-            "namespace": table.namespace,
-            "schema": table.table_schema,
-            "table": table.name,
+            "namespace": self.namespace,
         }
         return [Column(**result, **addtl_args) for result in res]
 
+    @cached_property
+    def column_map(self):
+        result_map = {}
+        for col in self.columns:
+            table_id = (col.column_schema, col.table)
+            result_map.setdefault(table_id, [])
+            result_map[table_id].append(col)
+        return result_map
+
+    def get_table_columns(self, table: Table):
+        table_id = (table.table_schema, table.name)
+        if table_id in self.column_map:
+            return self.column_map[table_id]
+
+        schema = table_id[0]
+        name = table_id[1]
+        table_id = (schema, name)
+        if table_id in self.column_map:
+            return self.column_map[table_id]
+        else:
+            raise Exception(f"No columns found for table with schema={schema} and name={name}")
+
     def get_nodes(self) -> List[BigqueryNode]:
-        tables = self.get_tables()
-        return list(chain(tables, *[t.columns for t in tables]))
+        return list(chain(self.tables, self.columns))
 
     def get_edges(self) -> List[Edge]:
-        tables = self.get_tables()
-        edges = list(chain(*[t.get_edges() for t in tables]))
-        return edges
+        return list(chain(*[t.get_edges() for t in self.tables]))
 
     def get_nodes_and_edges(self) -> Tuple[List[BigqueryNode], List[Edge]]:
         nodes = self.get_nodes()
