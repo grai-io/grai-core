@@ -2,7 +2,6 @@ import React from "react"
 import SettingsLayout from "components/settings/SettingsLayout"
 import { gql, useQuery } from "@apollo/client"
 import GraphError from "components/utils/GraphError"
-import Loading from "components/layout/Loading"
 import NotFound from "pages/NotFound"
 import ProfileForm from "components/settings/profile/ProfileForm"
 import { GetProfile } from "./__generated__/GetProfile"
@@ -22,12 +21,7 @@ const ProfileSettings: React.FC = () => {
   const { loading, error, data } = useQuery<GetProfile>(GET_PROFILE)
 
   if (error) return <GraphError error={error} />
-  if (loading)
-    return (
-      <SettingsLayout>
-        <Loading />
-      </SettingsLayout>
-    )
+  if (loading) return <SettingsLayout loading />
 
   const profile = data?.profile
 
