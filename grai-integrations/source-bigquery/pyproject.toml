@@ -15,6 +15,7 @@ PyYAML = "^6.0"
 multimethod = "^1.8"
 grai-schemas = "^0.1.9"
 google-cloud-bigquery = "^3.5.0"
+setuptools = "^67.1.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^22.6.0"

@@ -16,25 +16,17 @@ if has_dotenv_file:
 
 def test_connector_from_env_vars():
     env_vars = {
-        "GRAI_BIGQUERY_ACCOUNT": "thing",
-        "GRAI_BIGQUERY_DATABASE": "grai",
-        "GRAI_BIGQUERY_USER": "user",
-        "GRAI_BIGQUERY_PASSWORD": "pw",
-        "GRAI_BIGQUERY_ROLE": "baller",
-        "GRAI_BIGQUERY_WAREHOUSE": "its-huge",
-        "GRAI_BIGQUERY_SCHEMA": "PUBLIC",
+        "GRAI_BIGQUERY_PROJECT": "thing",
+        "GRAI_BIGQUERY_DATASET": "grai",
+        "GRAI_BIGQUERY_CREDENTIALS": "user",
     }
     for k, v in env_vars.items():
         os.environ[k] = v
 
     conn = BigqueryConnector()
-    assert conn.user == "user"
-    assert conn.password == "pw"
-    assert conn.account == "thing"
-    assert conn.database == "grai"
-    assert conn.role == "baller"
-    assert conn.warehouse == "its-huge"
-    assert conn.schema == "PUBLIC"
+    assert conn.project == "thing"
+    assert conn.dataset == "grai"
+    assert conn.credentials == "user"
 
 
 class TestLiveBigqueryIfHasDotEnv(unittest.TestCase):
