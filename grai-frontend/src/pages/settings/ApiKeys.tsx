@@ -52,10 +52,7 @@ const ApiKeys: React.FC = () => {
     <SettingsLayout>
       <Box sx={{ p: 3 }}>
         <ApiKeysHeader workspaceId={workspace?.id} />
-        <ApiKeysTable
-          keys={data?.workspace?.api_keys ?? []}
-          loading={loading}
-        />
+        <ApiKeysTable keys={workspace?.api_keys ?? []} loading={loading} />
       </Box>
     </SettingsLayout>
   )
