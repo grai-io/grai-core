@@ -81,7 +81,7 @@ class RunViewSet(ReadOnlyModelViewSet):
         BasicAuthentication,
         JWTAuthentication,
     ]
-    permission_classes = [HasAPIKey | HasWorkspaceAPIKey | IsAuthenticated]
+    permission_classes = [(HasWorkspaceAPIKey | IsAuthenticated) & Multitenant]
 
     serializer_class = RunSerializer
     type = Run
