@@ -12,13 +12,14 @@ from rest_framework import routers
 from workspaces.permissions import HasWorkspaceAPIKey
 
 from .models import Connection, Connector, Run
-from .views import ConnectionViewSet, ConnectorViewSet
+from .views import ConnectionViewSet, ConnectorViewSet, RunViewSet
 
 app_name = "connections"
 
 router = routers.SimpleRouter()
 router.register("connections", ConnectionViewSet, basename="connections")
 router.register("connectors", ConnectorViewSet, basename="connectors")
+router.register("runs", RunViewSet, basename="runs")
 
 
 @api_view(["POST"])
