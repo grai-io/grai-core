@@ -69,6 +69,8 @@ class Connection(TenantModel):
         on_delete=models.CASCADE,
     )
 
+    temp = models.BooleanField(default=False)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(
@@ -140,13 +142,10 @@ class Run(TenantModel):
     tenant_id = "workspace_id"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    connector = models.ForeignKey("Connector", related_name="runs", on_delete=models.PROTECT)
     connection = TenantForeignKey(
         "Connection",
         related_name="runs",
         on_delete=models.CASCADE,
-        blank=True,
-        null=True,
     )
     status = models.CharField(max_length=255)
     metadata = models.JSONField(default=dict)
@@ -172,15 +171,10 @@ class Run(TenantModel):
         blank=True,
         null=True,
     )
+    trigger = models.JSONField(default=dict)
 
     def __str__(self):
         return str(self.id)
-
-    def save(self, *args, **kwargs):
-        if self.connector_id is None and self.connection_id is not None:
-            self.connector = self.connection.connector
-
-        super(Run, self).save(*args, **kwargs)
 
 
 def directory_path(instance, filename):

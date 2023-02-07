@@ -1,4 +1,5 @@
 import os
+import uuid
 
 import pytest
 from decouple import config
@@ -97,8 +98,10 @@ class TestUpdateServer:
     def test_run_update_server_dbt(self, test_workspace, test_dbt_connector):
         with open(os.path.join(__location__, "manifest.json")) as reader:
             file = UploadedFile(reader, name="manifest.json")
-
-            run = Run.objects.create(connector=test_dbt_connector, workspace=test_workspace)
+            connection = Connection.objects.create(
+                name=str(uuid.uuid4()), connector=test_dbt_connector, workspace=test_workspace
+            )
+            run = Run.objects.create(connection=connection, workspace=test_workspace)
             RunFile.objects.create(run=run, file=file)
 
             run_update_server(str(run.id))
@@ -108,8 +111,10 @@ class TestUpdateServer:
 
         with open(os.path.join(__location__, "test.yaml")) as reader:
             file = UploadedFile(reader, name="test.yaml")
-
-            run = Run.objects.create(connector=test_yaml_file_connector, workspace=test_workspace)
+            connection = Connection.objects.create(
+                name=str(uuid.uuid4()), connector=test_yaml_file_connector, workspace=test_workspace
+            )
+            run = Run.objects.create(connection=connection, workspace=test_workspace)
             RunFile.objects.create(run=run, file=file)
 
             run_update_server(str(run.id))

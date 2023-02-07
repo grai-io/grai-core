@@ -942,6 +942,25 @@ offline = ["drf-spectacular-sidecar"]
 sidecar = ["drf-spectacular-sidecar"]
 
 [[package]]
+name = "fastcore"
+version = "1.5.28"
+description = "Python supercharged for fastai development"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "fastcore-1.5.28-py3-none-any.whl", hash = "sha256:8547b108a348d705ce04949bd327d9ad7871aacf35bce44f20bc475d1d9fa124"},
+    {file = "fastcore-1.5.28.tar.gz", hash = "sha256:0c7597afb1e4d0af5d0bf6f4cd4684947511c48cd25a24d05c0c57cb87856c08"},
+]
+
+[package.dependencies]
+packaging = "*"
+pip = "*"
+
+[package.extras]
+dev = ["jupyterlab", "matplotlib", "nbdev (>=0.2.39)", "numpy", "pandas", "pillow", "torch"]
+
+[[package]]
 name = "filelock"
 version = "3.9.0"
 description = "A platform independent file lock."
@@ -956,6 +975,26 @@ files = [
 [package.extras]
 docs = ["furo (>=2022.12.7)", "sphinx (>=5.3)", "sphinx-autodoc-typehints (>=1.19.5)"]
 testing = ["covdefaults (>=2.2.2)", "coverage (>=7.0.1)", "pytest (>=7.2)", "pytest-cov (>=4)", "pytest-timeout (>=2.1)"]
+
+[[package]]
+name = "ghapi"
+version = "1.0.3"
+description = "A python client for the GitHub API"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "ghapi-1.0.3-py3-none-any.whl", hash = "sha256:988077b99d4613ed71b5845626d2c1232d2bbe72e26c53154847cd1452e7f2e5"},
+    {file = "ghapi-1.0.3.tar.gz", hash = "sha256:1804443a2c12261b247bea08a930445fcb5b8fac1c65f8e9e6504b5842ce8f00"},
+]
+
+[package.dependencies]
+fastcore = ">=1.5.4"
+packaging = "*"
+pip = "*"
+
+[package.extras]
+dev = ["jsonref", "matplotlib"]
 
 [[package]]
 name = "grai-client"
@@ -1445,6 +1484,18 @@ python-versions = "*"
 files = [
     {file = "phonenumberslite-8.13.5-py2.py3-none-any.whl", hash = "sha256:57a6825d729ec2ee28eb7d3a171837adad386defb6ad10593a2ddd405afe569c"},
     {file = "phonenumberslite-8.13.5.tar.gz", hash = "sha256:f143456744422398a26537b8815fb9650f187420a346f4198b2bf1ed6019e8ac"},
+]
+
+[[package]]
+name = "pip"
+version = "23.0"
+description = "The PyPA recommended tool for installing Python packages."
+category = "main"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "pip-23.0-py3-none-any.whl", hash = "sha256:b5f88adff801f5ef052bcdef3daa31b55eb67b0fccd6d0106c206fa248e0463c"},
+    {file = "pip-23.0.tar.gz", hash = "sha256:aee438284e82c8def684b0bcc50b1f6ed5e941af97fa940e83e2e8ef1a59da9b"},
 ]
 
 [[package]]
@@ -2441,4 +2492,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "903647b462044fd6a1dbf05c88eca19c6b777dd9f414061a29ebaac7075d6946"
+content-hash = "371238045c842ade72fd88459fb10bdb040138bf8a4f3cfc6dde60dd5019aa03"

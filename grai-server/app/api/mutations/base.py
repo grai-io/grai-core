@@ -1,4 +1,5 @@
 from typing import Optional
+import uuid
 
 import strawberry
 from asgiref.sync import sync_to_async
@@ -333,8 +334,10 @@ class Mutation:
         user = get_user(info)
         workspace = await get_workspace(info, workspaceId)
         connector = await ConnectorModel.objects.aget(pk=connectorId)
-
-        run = await RunModel.objects.acreate(workspace=workspace, connector=connector, status="queued", user=user)
+        connection = await ConnectionModel.objects.acreate(
+            connector=connector, workspace=workspace, name=f"{connector.name} {uuid.uuid4()}", temp=True
+        )
+        run = await RunModel.objects.acreate(workspace=workspace, connection=connection, status="queued", user=user)
         runFile = RunFileModel(run=run)
         runFile.file = file
         await sync_to_async(runFile.save)()

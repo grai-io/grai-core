@@ -28,7 +28,7 @@ def execute_run(run: Run):
 
     try:
         # update_server
-        connector = run.connector
+        connector = run.connection.connector
 
         if connector.name == Connector.POSTGRESQL:
             run_postgres(run)
