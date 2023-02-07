@@ -33,6 +33,7 @@ class MsSqlSettings(BaseSettings):
     host: Optional[str] = None
     port: Optional[str] = None
     trusted_connection: Optional[bool] = None
+    trust_server_certificate: Optional[bool] = None
     user: Optional[str]
     password: Optional[SecretStr]
     encrypt: Optional[bool]
@@ -66,6 +67,8 @@ class MsSqlSettings(BaseSettings):
         else:
             raise Exception("Connection strings require either `server` or a `host`/`port` combination.")
 
+        if self.trust_server_certificate is not None:
+            connection_attributes.append(f"TrustServerCertificate={'yes' if self.trust_server_certificate else 'no'}")
         if self.additional_connection_strings is not None:
             connection_attributes.extend(self.additional_connection_strings)
 
