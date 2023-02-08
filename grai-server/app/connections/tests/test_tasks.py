@@ -173,6 +173,8 @@ class TestUpdateServer:
         assert (
             str(e_info.value)
             == "('HYT00', '[HYT00] [Microsoft][ODBC Driver 18 for SQL Server]Login timeout expired (0) (SQLDriverConnect)')"
+            or str(e_info.value)
+            == "('HYT00', '[HYT00] [Microsoft][ODBC Driver 17 for SQL Server]Login timeout expired (0) (SQLDriverConnect)')"
         )
 
     def test_bigquery_no_project(self, test_workspace, test_bigquery_connector):
