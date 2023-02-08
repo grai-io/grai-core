@@ -38,6 +38,8 @@ def execute_run(run: Run):
             run_dbt(run)
         elif connector.name == Connector.YAMLFILE:
             run_yaml_file(run)
+        elif connector.name == Connector.MSSQL:
+            run_mssql(run)
         else:
             raise NoConnectorError(f"No connector found for: {connector.name}")
 
@@ -159,6 +161,27 @@ def run_yaml_file(run: Run):
         except Model.DoesNotExist:
             values["workspace"] = run.workspace
             Model.objects.create(**values)
+
+
+def run_mssql(run: Run):
+    from grai_source_mssql.base import get_nodes_and_edges
+    from grai_source_mssql.loader import MsSQLConnector
+
+    metadata = run.connection.metadata
+    secrets = run.connection.secrets
+
+    conn = MsSQLConnector(
+        user=metadata.get("user"),
+        password=secrets.get("password"),
+        database=metadata.get("database"),
+        host=metadata.get("host"),
+        port=metadata.get("port"),
+        namespace=run.connection.namespace,
+        additional_connection_strings=["TrustServerCertificate=yes"],
+    )
+    nodes, edges = get_nodes_and_edges(conn, "v1")
+    update(run.workspace, nodes)
+    update(run.workspace, edges)
 
 
 class NoConnectorError(Exception):

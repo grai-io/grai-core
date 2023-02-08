@@ -7,7 +7,7 @@ from typing import Any, Callable, Dict, List, Optional, Union
 
 import pydantic
 import pyodbc
-from pydantic import SecretStr, validator
+from pydantic import SecretStr, root_validator, validator
 
 from grai_source_mssql.models import Column, ColumnID, Edge, EdgeQuery, MsSqlNode, Table
 
@@ -29,10 +29,11 @@ class MsSqlSettings(BaseSettings):
     driver: Optional[str] = None
     database: Optional[str] = None
     server: Optional[str] = None
-    protocol: Optional[Protocol] = Protocol.TCP.value
+    protocol: Optional[Protocol] = None
     host: Optional[str] = None
     port: Optional[str] = None
     trusted_connection: Optional[bool] = None
+    trust_server_certificate: Optional[bool] = None
     user: Optional[str]
     password: Optional[SecretStr]
     encrypt: Optional[bool]
@@ -59,12 +60,15 @@ class MsSqlSettings(BaseSettings):
         if self.server is not None:
             connection_attributes.append(f"Server={self.server}")
         elif self.host is not None:
-            connection_attributes.append(
-                f"Server={self.protocol.value}:{self.host},{'1433' if self.port is None else self.port}"
-            )
+            protocol_string = "" if self.protocol is None else f"{self.protocol.value}:"
+            port_string = "" if self.port is None else f",{self.port}"
+            server_string = f"Server={protocol_string}{self.host}{port_string}"
+            connection_attributes.append(server_string)
         else:
             raise Exception("Connection strings require either `server` or a `host`/`port` combination.")
 
+        if self.trust_server_certificate is not None:
+            connection_attributes.append(f"TrustServerCertificate={'yes' if self.trust_server_certificate else 'no'}")
         if self.additional_connection_strings is not None:
             connection_attributes.extend(self.additional_connection_strings)
 
@@ -82,6 +86,15 @@ class MsSqlSettings(BaseSettings):
                 f"Specified driver {value} not found in the list of available pyodbc drivers {available_drivers}"
             )
         return value
+
+    @root_validator(pre=True)
+    def parse_empty_values(cls, values):
+        """Empty strings should be treated as missing"""
+        new_values = values.copy()
+        for k, v in values.items():
+            if v == "":
+                new_values.pop(k)
+        return new_values
 
 
 class MsSqlGraiSettings(BaseSettings):

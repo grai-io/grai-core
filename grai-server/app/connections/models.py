@@ -11,12 +11,14 @@ class Connector(models.Model):
     SNOWFLAKE = "Snowflake"
     DBT = "dbt"
     YAMLFILE = "YAML File"
+    MSSQL = "Microsoft SQL Server"
 
     CONNECTOR_CHOICES = [
         (POSTGRESQL, "PostgreSQL"),
         (SNOWFLAKE, "Snowflake"),
         (DBT, "dbt"),
         (YAMLFILE, "YAML File"),
+        (MSSQL, "Microsoft SQL Server"),
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

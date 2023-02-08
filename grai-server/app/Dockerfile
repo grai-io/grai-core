@@ -19,14 +19,25 @@ ARG PYTHONDONTWRITEBYTECODE="1" \
 # libpq-dev, and gcc are used to install psycopg2.
 # netcat is used to wait for the database to be ready.
 # curl is used to support healthchecks
+# unixodbc-dev, g++ are required for pyodbc (note gcc should come with g++)
 RUN apt update \
     && apt install -y \
     apt-utils \
     netcat \
     libpq-dev \
     gcc \
+    g++ \
     curl \
+    unixodbc-dev \
+    gnupg2 \
     && rm -rf /var/lib/apt/lists/*
+
+# Install MS SQL driver
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+    && curl https://packages.microsoft.com/config/debian/11/prod.list > /etc/apt/sources.list.d/mssql-release.list \
+    && apt-get update \
+    && ACCEPT_EULA=Y apt-get install -y msodbcsql18
+
 
 COPY pyproject.toml poetry.lock ./
 
