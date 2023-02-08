@@ -47,6 +47,8 @@ def execute_run(run: Run):
             run_yaml_file(run)
         elif connector.name == Connector.MSSQL:
             run_mssql(run)
+        elif connector.name == Connector.BIGQUERY:
+            run_bigquery(run)
         else:
             raise NoConnectorError(f"No connector found for: {connector.name}")
 
@@ -197,6 +199,24 @@ def run_mssql(run: Run):
         port=metadata.get("port"),
         namespace=run.connection.namespace,
         additional_connection_strings=["TrustServerCertificate=yes"],
+    )
+    nodes, edges = get_nodes_and_edges(conn, "v1")
+    update(run.workspace, nodes)
+    update(run.workspace, edges)
+
+
+def run_bigquery(run: Run):
+    from grai_source_bigquery.base import get_nodes_and_edges
+    from grai_source_bigquery.loader import BigqueryConnector
+
+    metadata = run.connection.metadata
+    secrets = run.connection.secrets
+
+    conn = BigqueryConnector(
+        project=metadata.get("project"),
+        dataset=metadata.get("dataset"),
+        credentials=secrets.get("credentials"),
+        namespace=run.connection.namespace,
     )
     nodes, edges = get_nodes_and_edges(conn, "v1")
     update(run.workspace, nodes)
