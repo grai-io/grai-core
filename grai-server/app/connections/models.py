@@ -141,6 +141,14 @@ class Connection(TenantModel):
 
 
 class Run(TenantModel):
+    TESTS = "tests"
+    UPDATE = "update"
+
+    RUN_ACTIONS = [
+        (TESTS, "tests"),
+        (UPDATE, "update"),
+    ]
+
     tenant_id = "workspace_id"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -174,6 +182,7 @@ class Run(TenantModel):
         null=True,
     )
     trigger = models.JSONField(default=dict)
+    action = models.CharField(max_length=255, choices=RUN_ACTIONS, default="update")
 
     def __str__(self):
         return str(self.id)
