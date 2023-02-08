@@ -4,6 +4,7 @@ from celery import shared_task
 
 from .models import Connection, Connector, Run
 from .task_helpers import get_node, update
+from .github import Github
 
 
 @shared_task
@@ -26,6 +27,12 @@ def execute_run(run: Run):
     run.started_at = datetime.now()
     run.save()
 
+    if run.trigger:
+        github = Github(
+            owner=run.trigger["owner"], repo=run.trigger["repo"], installation_id=run.trigger["installation_id"]
+        )
+        github.start_check(check_id=run.trigger["check_id"])
+
     try:
         # update_server
         connector = run.connection.connector
@@ -46,11 +53,23 @@ def execute_run(run: Run):
         run.status = "success"
         run.finished_at = datetime.now()
         run.save()
+
+        if run.trigger:
+            github = Github(
+                owner=run.trigger["owner"], repo=run.trigger["repo"], installation_id=run.trigger["installation_id"]
+            )
+            github.complete_check(check_id=run.trigger["check_id"])
     except Exception as e:
         run.metadata = {"error": str(e)}
         run.status = "error"
         run.finished_at = datetime.now()
         run.save()
+
+        if run.trigger:
+            github = Github(
+                owner=run.trigger["owner"], repo=run.trigger["repo"], installation_id=run.trigger["installation_id"]
+            )
+            github.complete_check(check_id=run.trigger["check_id"], conclusion="failure")
 
         raise e
 

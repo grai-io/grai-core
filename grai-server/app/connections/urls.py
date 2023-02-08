@@ -58,12 +58,23 @@ def create_run(request):
             secrets=json.loads(secrets) if secrets else None,
         )
 
-    git_owner = request.POST.get("git_owner")
-    if git_owner:
+    github_installation_id = request.POST.get("github_installation_id")
+    if github_installation_id:
+        from .github import Github
+
+        git_owner = request.POST.get("git_owner")
+        git_repo = request.POST.get("git_repo")
+        git_head_sha = request.POST.get("git_head_sha")
+
+        github = Github(owner=git_owner, repo=git_repo, installation_id=github_installation_id)
+        check = github.create_check(head_sha=git_head_sha)
+
         trigger = {
+            "installation_id": github_installation_id,
             "owner": git_owner,
-            "repo": request.POST.get("git_repo"),
-            "head_sha": request.POST.get("git_head_sha"),
+            "repo": git_repo,
+            "head_sha": git_head_sha,
+            "check_id": check.id,
         }
 
     run = Run.objects.create(connection=connection, status="queued", trigger=trigger)
