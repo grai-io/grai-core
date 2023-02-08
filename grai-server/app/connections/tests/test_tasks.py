@@ -152,6 +152,31 @@ class TestUpdateServer:
 
     #     assert (str(e_info.value)== 'Could not automatically determine credentials. Please set GOOGLE_APPLICATION_CREDENTIALS or explicitly create credentials and re-run the application. For more information, please see https://cloud.google.com/docs/authentication/getting-started')
 
+    def test_mssql_no_account(self, test_workspace, test_mssql_connector):
+        connection = Connection.objects.create(
+            name="C2",
+            connector=test_mssql_connector,
+            workspace=test_workspace,
+            metadata={
+                "user": "user",
+                "database": "database",
+                "host": "a",
+                "port": "1443",
+            },
+            secrets={"password": "password1234"},
+        )
+        run = Run.objects.create(connection=connection, workspace=test_workspace)
+
+        with pytest.raises(Exception) as e_info:
+            run_update_server(str(run.id))
+
+        assert (
+            str(e_info.value)
+            == "('HYT00', '[HYT00] [Microsoft][ODBC Driver 18 for SQL Server]Login timeout expired (0) (SQLDriverConnect)')"
+            or str(e_info.value)
+            == "('HYT00', '[HYT00] [Microsoft][ODBC Driver 17 for SQL Server]Login timeout expired (0) (SQLDriverConnect)')"
+        )
+
     def test_bigquery_no_project(self, test_workspace, test_bigquery_connector):
         connection = Connection.objects.create(
             name="C2",
