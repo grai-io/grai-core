@@ -89,8 +89,11 @@ class Edge(BaseModel):
 
 class TableType(str, Enum):
     Table = "BASE TABLE"
+    Clone = "CLONE"
+    Snapshot = "SNAPSHOT"
     View = "VIEW"
-    TemporaryTable = "TEMPORARY TABLE"
+    Materialized_View = "MATERIALIZED VIEW"
+    External = "EXTERNAL"
 
 
 class Table(BigqueryNode):
