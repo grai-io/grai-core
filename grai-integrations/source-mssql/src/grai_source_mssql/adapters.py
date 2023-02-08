@@ -39,6 +39,7 @@ def build_grai_metadata_from_column(current: Column, version: Literal["v1"] = "v
             "data_type": current.data_type,
             "default_value": default_value,
             "is_nullable": current.is_nullable,
+            "is_unique": True if current.is_pk else None,
             "is_primary_key": current.is_pk,
         },
     }
