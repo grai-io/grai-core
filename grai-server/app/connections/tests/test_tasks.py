@@ -28,6 +28,21 @@ def test_postgres_connector():
 
 
 @pytest.fixture
+def test_snowflake_connector():
+    return Connector.objects.create(name=Connector.SNOWFLAKE)
+
+
+@pytest.fixture
+def test_mssql_connector():
+    return Connector.objects.create(name=Connector.MSSQL)
+
+
+@pytest.fixture
+def test_bigquery_connector():
+    return Connector.objects.create(name=Connector.BIGQUERY)
+
+
+@pytest.fixture
 def test_dbt_connector():
     connector, created = Connector.objects.get_or_create(name=Connector.DBT)
 
@@ -113,6 +128,47 @@ class TestUpdateServer:
             RunFile.objects.create(run=run, file=file)
 
             run_update_server(str(run.id))
+
+    # def test_snowflake_no_account(self, test_workspace, test_snowflake_connector):
+    #     connection = Connection.objects.create(
+    #         name="C2",
+    #         connector=test_snowflake_connector,
+    #         workspace=test_workspace,
+
+    #         metadata={
+    #             "account": "account",
+    #             "user": "user",
+    #             "role": "role",
+    #             "warehouse": "warehouse",
+    #             "database": "database",
+    #             "schema": "schema",
+    #         },
+    #         secrets={"password": "password1234"},
+    #     )
+    #     run = Run.objects.create(connection=connection, workspace=test_workspace)
+
+    #     with pytest.raises(Exception) as e_info:
+    #         run_update_server(str(run.id))
+
+    #     assert (str(e_info.value)== 'Could not automatically determine credentials. Please set GOOGLE_APPLICATION_CREDENTIALS or explicitly create credentials and re-run the application. For more information, please see https://cloud.google.com/docs/authentication/getting-started')
+
+    def test_bigquery_no_project(self, test_workspace, test_bigquery_connector):
+        connection = Connection.objects.create(
+            name="C2",
+            connector=test_bigquery_connector,
+            workspace=test_workspace,
+            metadata={"project": "a", "dataset": "dataset"},
+            secrets={"credentials": {}},
+        )
+        run = Run.objects.create(connection=connection, workspace=test_workspace)
+
+        with pytest.raises(Exception) as e_info:
+            run_update_server(str(run.id))
+
+        assert (
+            str(e_info.value)
+            == "Could not automatically determine credentials. Please set GOOGLE_APPLICATION_CREDENTIALS or explicitly create credentials and re-run the application. For more information, please see https://cloud.google.com/docs/authentication/getting-started"
+        )
 
 
 @pytest.mark.django_db
