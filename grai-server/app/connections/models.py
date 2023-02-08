@@ -204,3 +204,39 @@ class RunFile(models.Model):
         self.name = self.file.name
 
         super(RunFile, self).save(*args, **kwargs)
+
+
+class Repository(models.Model):
+    GITHUB = "github"
+
+    REPOSITORY_TYPES = [
+        (GITHUB, "github"),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    type = models.CharField(max_length=255, choices=REPOSITORY_TYPES)
+    owner = models.CharField(max_length=255, editable=False)
+    repo = models.CharField(max_length=255, editable=False)
+    installation_id = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name_plural = "repositories"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["type", "owner", "repo"],
+                name="Repository type/owner/repo uniqueness",
+            )
+        ]
+        indexes = [
+            models.Index(fields=["type"]),
+            models.Index(fields=["type", "owner"]),
+            models.Index(fields=["type", "owner", "repo"]),
+        ]

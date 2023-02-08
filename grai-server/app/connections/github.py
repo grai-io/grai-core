@@ -1,8 +1,10 @@
-from ghapi.all import GhApi
-import jwt
 import time
 from datetime import datetime
+
+import jwt
 import requests
+from ghapi.all import GhApi
+from connections.models import Repository
 
 app_id = "215508"
 pem = "/Users/edwardlouth/Desktop/graibot.2023-02-07.private-key.pem"
@@ -14,10 +16,13 @@ class Github:
     repo: str
     installation_id: int
 
-    def __init__(self, owner: str, repo: str, installation_id: int):
+    def __init__(self, owner: str = None, repo: str = None, installation_id: int = None):
         self.owner = owner
         self.repo = repo
-        self.installation_id = installation_id
+        self.installation_id = installation_id if installation_id is not None else self.fetch_installation_id()
+
+    def fetch_installation_id(self):
+        return Repository.objects.get(type=Repository.GITHUB, owner=self.owner, repo=self.repo).installation_id
 
     def generate_jwt(self) -> str:
         with open(pem, "rb") as pem_file:
@@ -35,6 +40,8 @@ class Github:
     def connect(self):
         jwt = self.generate_jwt()
 
+        print(f"installation_id: {self.installation_id}")
+
         res = requests.post(
             f"https://api.github.com/app/installations/{self.installation_id}/access_tokens",
             headers={
@@ -47,8 +54,11 @@ class Github:
 
         print(data)
 
-        self.token = data["token"]
-        self.expires_at = data["expires_at"]
+        self.token = data.get("token")
+        self.expires_at = data.get("expires_at")
+
+        if self.token is None:
+            raise Exception(data.get("message"))
 
         self.api = GhApi(owner=self.owner, repo=self.repo, token=self.token)
 
@@ -83,3 +93,8 @@ class Github:
             conclusion=conclusion,
             completed_at=datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"),
         )
+
+    def get_repos(self):
+        self.get_api()
+
+        return self.api.apps.list_repos_accessible_to_installation()["repositories"]

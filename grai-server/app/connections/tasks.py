@@ -2,9 +2,9 @@ from datetime import datetime
 
 from celery import shared_task
 
+from .github import Github
 from .models import Connection, Connector, Run
 from .task_helpers import get_node, update
-from .github import Github
 
 
 @shared_task

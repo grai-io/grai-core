@@ -54,22 +54,21 @@ def get_connection(request) -> Connection:
 
 
 def get_trigger(request):
-    github_installation_id = request.POST.get("github_installation_id")
+    git_owner = request.POST.get("git_owner")
 
-    if github_installation_id is None:
+    if git_owner is None:
         return None
 
     from .github import Github
 
-    git_owner = request.POST.get("git_owner")
     git_repo = request.POST.get("git_repo")
     git_head_sha = request.POST.get("git_head_sha")
 
-    github = Github(owner=git_owner, repo=git_repo, installation_id=github_installation_id)
+    github = Github(owner=git_owner, repo=git_repo)
     check = github.create_check(head_sha=git_head_sha)
 
     return {
-        "installation_id": github_installation_id,
+        "installation_id": github.installation_id,
         "owner": git_owner,
         "repo": git_repo,
         "head_sha": git_head_sha,

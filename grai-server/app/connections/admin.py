@@ -3,7 +3,7 @@ from django.db.models import JSONField
 
 from common.admin.fields.json_widget import PrettyJSONWidget
 
-from .models import Connection, Connector, Run
+from .models import Connection, Connector, Repository, Run
 
 
 class ConnectorAdmin(admin.ModelAdmin):
@@ -75,6 +75,25 @@ class RunAdmin(admin.ModelAdmin):
     )
 
 
+class RepositoryAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "type",
+        "owner",
+        "repo",
+        "installation_id",
+        "created_at",
+    )
+
+    search_fields = ["owner", "repo"]
+
+    list_filter = (
+        "type",
+        "owner",
+    )
+
+
 admin.site.register(Connector, ConnectorAdmin)
 admin.site.register(Connection, ConnectionAdmin)
 admin.site.register(Run, RunAdmin)
+admin.site.register(Repository, RepositoryAdmin)

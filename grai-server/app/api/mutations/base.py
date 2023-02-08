@@ -1,5 +1,5 @@
-from typing import Optional
 import uuid
+from typing import Optional
 
 import strawberry
 from asgiref.sync import sync_to_async
@@ -27,6 +27,7 @@ from api.types import (
 )
 from connections.models import Connection as ConnectionModel
 from connections.models import Connector as ConnectorModel
+from connections.models import Repository as RepositoryModel
 from connections.models import Run as RunModel
 from connections.models import RunFile as RunFileModel
 from connections.tasks import run_update_server
@@ -335,7 +336,11 @@ class Mutation:
         workspace = await get_workspace(info, workspaceId)
         connector = await ConnectorModel.objects.aget(pk=connectorId)
         connection = await ConnectionModel.objects.acreate(
-            connector=connector, workspace=workspace, name=f"{connector.name} {uuid.uuid4()}", temp=True
+            connector=connector,
+            workspace=workspace,
+            name=f"{connector.name} {uuid.uuid4()}",
+            temp=True,
+            namespace=namespace,
         )
         run = await RunModel.objects.acreate(workspace=workspace, connection=connection, status="queued", user=user)
         runFile = RunFileModel(run=run)
@@ -345,3 +350,20 @@ class Mutation:
         run_update_server.delay(run.id)
 
         return run
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def addInstallation(
+        self,
+        installationId: int,
+    ) -> BasicResult:
+        from connections.github import Github
+
+        github = Github(installation_id=installationId)
+        repos = github.get_repos()
+
+        for repo in repos:
+            await RepositoryModel.objects.aget_or_create(
+                type=RepositoryModel.GITHUB, owner=repo.owner.login, repo=repo.name, installation_id=installationId
+            )
+
+        return BasicResult(success=True)
