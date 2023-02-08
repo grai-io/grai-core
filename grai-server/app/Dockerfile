@@ -19,14 +19,16 @@ ARG PYTHONDONTWRITEBYTECODE="1" \
 # libpq-dev, and gcc are used to install psycopg2.
 # netcat is used to wait for the database to be ready.
 # curl is used to support healthchecks
+# unixodbc-dev, g++ are required for pyodbc (note gcc should come with g++)
 RUN apt update \
     && apt install -y \
     apt-utils \
     netcat \
     libpq-dev \
     gcc \
+    g++ \
     curl \
-    unixodbc \
+    unixodbc-dev \
     gnupg2 \
     && rm -rf /var/lib/apt/lists/*
 
