@@ -62,8 +62,15 @@ const ConnectionsTable: React.FC<ConnectionsTableProps> = ({
             <TableCell>{connection.namespace}</TableCell>
             <TableCell>{connection.connector.name}</TableCell>
             <TableCell>{connection.is_active ? "Yes" : "No"}</TableCell>
-            <TableCell sx={{ py: 0, px: 1 }}>
-              {connection.last_run && <RunStatus run={connection.last_run} />}
+            <TableCell sx={{ py: 0, px: 1 }} stopPropagation>
+              {connection.last_run && (
+                <RunStatus
+                  run={connection.last_run}
+                  size="small"
+                  link
+                  sx={{ cursor: "pointer" }}
+                />
+              )}
             </TableCell>
             <TableCell sx={{ py: 0, px: 1 }} stopPropagation>
               <ConnectionsMenu
