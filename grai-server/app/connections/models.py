@@ -7,24 +7,25 @@ from django_multitenant.models import TenantModel
 
 
 class Connector(models.Model):
-    POSTGRESQL = "PostgreSQL"
-    SNOWFLAKE = "Snowflake"
+    POSTGRESQL = "postgres"
+    SNOWFLAKE = "snowflake"
     DBT = "dbt"
-    YAMLFILE = "YAML File"
-    MSSQL = "Microsoft SQL Server"
-    BIGQUERY = "Google BigQuery"
+    YAMLFILE = "yaml_file"
+    MSSQL = "mssql"
+    BIGQUERY = "bigquery"
 
-    CONNECTOR_CHOICES = [
-        (POSTGRESQL, "PostgreSQL"),
-        (SNOWFLAKE, "Snowflake"),
+    CONNECTOR_SLUGS = [
+        (POSTGRESQL, "postgres"),
+        (SNOWFLAKE, "snowflake"),
         (DBT, "dbt"),
-        (YAMLFILE, "YAML File"),
-        (MSSQL, "Microsoft SQL Server"),
-        (BIGQUERY, "Google BigQuery"),
+        (YAMLFILE, "yaml_file"),
+        (MSSQL, "mssql"),
+        (BIGQUERY, "bigquery"),
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=255, choices=CONNECTOR_CHOICES)
+    name = models.CharField(max_length=255)
+    slug = models.CharField(max_length=255, choices=CONNECTOR_SLUGS, blank=True, null=True)
     metadata = models.JSONField(default=dict)
     is_active = models.BooleanField(default=True)
     icon = models.CharField(max_length=255, blank=True, null=True)

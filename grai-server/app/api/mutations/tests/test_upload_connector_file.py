@@ -26,7 +26,7 @@ async def test_upload_connector_file_yaml(test_context, test_node):
     info = Info
     info.context = context
 
-    connector, created = await Connector.objects.aget_or_create(name=Connector.YAMLFILE)
+    connector, created = await Connector.objects.aget_or_create(name=Connector.YAMLFILE, slug=Connector.YAMLFILE)
 
     with open(os.path.join(__location__, "test.yaml")) as reader:
         file = UploadedFile(reader, name="test.yaml")
@@ -72,7 +72,7 @@ async def test_upload_connector_file_dbt(test_context, test_node):
     info = Info
     info.context = context
 
-    connector, created = await Connector.objects.aget_or_create(name=Connector.DBT)
+    connector, created = await Connector.objects.aget_or_create(name=Connector.DBT, slug=Connector.DBT)
 
     with open(os.path.join(__location__, "manifest.json")) as reader:
         file = UploadedFile(reader, name="manifest.json")

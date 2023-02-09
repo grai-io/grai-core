@@ -28,21 +28,21 @@ def run_connection_schedule(connectionId):
     execute_run(run)
 
 
-def get_adapter(name: str) -> BaseAdapter:
-    if name == Connector.POSTGRESQL:
+def get_adapter(slug: str) -> BaseAdapter:
+    if slug == Connector.POSTGRESQL:
         return PostgresAdapter()
-    elif name == Connector.SNOWFLAKE:
+    elif slug == Connector.SNOWFLAKE:
         return SnowflakeAdapter()
-    elif name == Connector.DBT:
+    elif slug == Connector.DBT:
         return DbtAdapter()
-    elif name == Connector.YAMLFILE:
+    elif slug == Connector.YAMLFILE:
         return YamlFileAdapter()
-    elif name == Connector.MSSQL:
+    elif slug == Connector.MSSQL:
         return MssqlAdapter()
-    elif name == Connector.BIGQUERY:
+    elif slug == Connector.BIGQUERY:
         return BigqueryAdapter()
 
-    raise NoConnectorError(f"No connector found for: {name}")
+    raise NoConnectorError(f"No connector found for: {slug}")
 
 
 def execute_run(run: Run):
@@ -59,7 +59,7 @@ def execute_run(run: Run):
 
     try:
         connector = run.connection.connector
-        adapter = get_adapter(connector.name)
+        adapter = get_adapter(connector.slug)
 
         # update_server
         adapter.run_update(run)

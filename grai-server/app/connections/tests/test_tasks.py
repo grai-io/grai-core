@@ -25,41 +25,41 @@ def test_workspace(test_organisation):
 
 @pytest.fixture
 def test_postgres_connector():
-    return Connector.objects.create(name=Connector.POSTGRESQL)
+    return Connector.objects.create(name=Connector.POSTGRESQL, slug=Connector.POSTGRESQL)
 
 
 @pytest.fixture
 def test_snowflake_connector():
-    return Connector.objects.create(name=Connector.SNOWFLAKE)
+    return Connector.objects.create(name=Connector.SNOWFLAKE, slug=Connector.SNOWFLAKE)
 
 
 @pytest.fixture
 def test_mssql_connector():
-    return Connector.objects.create(name=Connector.MSSQL)
+    return Connector.objects.create(name=Connector.MSSQL, slug=Connector.MSSQL)
 
 
 @pytest.fixture
 def test_bigquery_connector():
-    return Connector.objects.create(name=Connector.BIGQUERY)
+    return Connector.objects.create(name=Connector.BIGQUERY, slug=Connector.BIGQUERY)
 
 
 @pytest.fixture
 def test_dbt_connector():
-    connector, created = Connector.objects.get_or_create(name=Connector.DBT)
+    connector, created = Connector.objects.get_or_create(name=Connector.DBT, slug=Connector.DBT)
 
     return connector
 
 
 @pytest.fixture
 def test_yaml_file_connector():
-    connector, created = Connector.objects.get_or_create(name=Connector.YAMLFILE)
+    connector, created = Connector.objects.get_or_create(name=Connector.YAMLFILE, slug=Connector.YAMLFILE)
 
     return connector
 
 
 @pytest.fixture
 def test_connector():
-    return Connector.objects.create(name="Connector")
+    return Connector.objects.create(name="Connector", slug="Connector")
 
 
 @pytest.mark.django_db
