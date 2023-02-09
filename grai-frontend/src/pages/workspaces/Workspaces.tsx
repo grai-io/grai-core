@@ -33,7 +33,9 @@ export const GET_WORKSPACES = gql`
 const Workspaces: React.FC = () => {
   const location = useLocation()
 
-  const { loading, error, data } = useQuery<GetWorkspaces>(GET_WORKSPACES)
+  const { loading, error, data } = useQuery<GetWorkspaces>(GET_WORKSPACES, {
+    fetchPolicy: "network-only",
+  })
 
   if (error) return <GraphError error={error} />
   if (loading) return <Loading />
