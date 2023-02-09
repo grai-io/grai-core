@@ -1,5 +1,5 @@
 import userEvent from "@testing-library/user-event"
-import { RUN_CONNECTION } from "components/connections/ConnectionRefresh"
+import { RUN_CONNECTION } from "components/connections/ConnectionRun"
 import { GraphQLError } from "graphql"
 import React from "react"
 import { render, screen, waitFor } from "testing"
@@ -150,7 +150,7 @@ test("refresh", async () => {
     expect(screen.getAllByText("Connection 1")).toBeTruthy()
   })
 
-  await user.click(screen.getByTestId("RefreshIcon"))
+  await user.click(screen.getByTestId("PlayArrowIcon"))
 
   await waitFor(() => {
     expect(screen.getAllByText("Success")).toBeTruthy()
@@ -280,7 +280,7 @@ test("refresh no last_sucessful_run", async () => {
     expect(screen.getAllByText("Connection 1")).toBeTruthy()
   })
 
-  await user.click(screen.getByTestId("RefreshIcon"))
+  await user.click(screen.getByTestId("PlayArrowIcon"))
 
   await waitFor(() => {
     expect(screen.getAllByText("Success")).toBeTruthy()

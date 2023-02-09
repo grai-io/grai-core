@@ -106,14 +106,14 @@ const Connection: React.FC = () => {
 
   if (!connection) return <NotFound />
 
-  const handleRefresh = () => startPolling(1000)
+  const handleRun = () => startPolling(1000)
 
   return (
     <PageLayout>
       <ConnectionHeader
         connection={connection}
         workspaceId={data.workspace.id}
-        onRefresh={handleRefresh}
+        onRun={handleRun}
       />
       <ConnectionContent connection={connection} />
       <ConnectionTabs connection={connection} />

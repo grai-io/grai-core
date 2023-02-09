@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom"
 import Loading from "components/layout/Loading"
 import TableCell from "components/tables/TableCell"
 import ConnectionsMenu from "./ConnectionsMenu"
-import { Connection as BaseConnection } from "./ConnectionRefresh"
+import { Connection as BaseConnection } from "./ConnectionRun"
 
 interface Connector {
   id: string

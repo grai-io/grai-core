@@ -11,9 +11,7 @@ import RunStatus from "components/runs/RunStatus"
 import useWorkspace from "helpers/useWorkspace"
 import React from "react"
 import { Link } from "react-router-dom"
-import ConnectionRefresh, {
-  Connection as BaseConnection,
-} from "./ConnectionRefresh"
+import ConnectionRun, { Connection as BaseConnection } from "./ConnectionRun"
 
 interface Connection extends BaseConnection {
   name: string
@@ -22,13 +20,13 @@ interface Connection extends BaseConnection {
 type ConnectionHeaderProps = {
   connection: Connection
   workspaceId: string
-  onRefresh?: () => void
+  onRun?: () => void
 }
 
 const ConnectionHeader: React.FC<ConnectionHeaderProps> = ({
   connection,
   workspaceId,
-  onRefresh,
+  onRun,
 }) => {
   const { routePrefix } = useWorkspace()
 
@@ -61,10 +59,10 @@ const ConnectionHeader: React.FC<ConnectionHeaderProps> = ({
             <RunStatus run={connection.last_run} link sx={{ ml: 2 }} />
           )}
         </Box>
-        <ConnectionRefresh
+        <ConnectionRun
           connection={connection}
           workspaceId={workspaceId}
-          onRefresh={onRefresh}
+          onRun={onRun}
         />
       </Box>
       <Divider />

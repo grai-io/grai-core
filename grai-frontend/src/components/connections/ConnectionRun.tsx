@@ -1,5 +1,5 @@
 import { gql, useMutation } from "@apollo/client"
-import { Refresh } from "@mui/icons-material"
+import { PlayArrow } from "@mui/icons-material"
 import { LoadingButton } from "@mui/lab"
 import {
   MenuItem,
@@ -84,20 +84,20 @@ export interface Connection {
   runs: Run[]
 }
 
-type ConnectionRefreshProps = {
+type ConnectionRunProps = {
   connection: Connection
   workspaceId: string
   menuItem?: boolean
   disabled?: boolean
-  onRefresh?: () => void
+  onRun?: () => void
 }
 
-const ConnectionRefresh: React.FC<ConnectionRefreshProps> = ({
+const ConnectionRun: React.FC<ConnectionRunProps> = ({
   connection,
   workspaceId,
   menuItem,
   disabled,
-  onRefresh,
+  onRun,
 }) => {
   const runToTypedRun = (run: Run) => ({
     ...run,
@@ -141,7 +141,7 @@ const ConnectionRefresh: React.FC<ConnectionRefreshProps> = ({
           last_run: tmpRun,
         },
       },
-    }).then(() => onRefresh && onRefresh())
+    }).then(() => onRun && onRun())
 
   const loading2 =
     loading ||
@@ -153,9 +153,9 @@ const ConnectionRefresh: React.FC<ConnectionRefreshProps> = ({
     return (
       <MenuItem disabled={disabled || loading} onClick={handleClick}>
         <ListItemIcon>
-          {loading2 ? <CircularProgress /> : <Refresh />}
+          {loading2 ? <CircularProgress /> : <PlayArrow />}
         </ListItemIcon>
-        <ListItemText primary="Refresh" />
+        <ListItemText primary="Run" />
       </MenuItem>
     )
 
@@ -163,15 +163,15 @@ const ConnectionRefresh: React.FC<ConnectionRefreshProps> = ({
     <LoadingButton
       onClick={handleClick}
       variant="outlined"
-      startIcon={<Refresh />}
+      startIcon={<PlayArrow />}
       disabled={disabled}
       loading={loading2}
       loadingPosition="start"
-      data-testid="connection-refresh"
+      data-testid="connection-run"
     >
-      {(loading2 && connection.last_run?.status) || "Refresh"}
+      {(loading2 && connection.last_run?.status) || "Run"}
     </LoadingButton>
   )
 }
 
-export default ConnectionRefresh
+export default ConnectionRun
