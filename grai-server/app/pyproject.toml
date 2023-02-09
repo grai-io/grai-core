@@ -37,7 +37,7 @@ django-celery-beat = "^2.4.0"
 grai-schemas = "^0.1.8"
 grai-source-dbt = "^0.1.13"
 django-storages = "^1.13.2"
-grai-source-mssql = "^0.0.1"
+grai-source-mssql = "^0.0.5"
 grai-source-bigquery = "^0.0.1"
 
 [tool.poetry.group.dev.dependencies]
