@@ -31,7 +31,9 @@ const PostInstall: React.FC = () => {
   })
 
   useEffect(() => {
-    addInstallation().then(() => enqueueSnackbar("Github updated"))
+    addInstallation()
+      .then(() => enqueueSnackbar("Github updated"))
+      .catch(() => {})
   }, [addInstallation, enqueueSnackbar])
 
   if (error) return <GraphError error={error} />
