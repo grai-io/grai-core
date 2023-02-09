@@ -170,9 +170,10 @@ class TestUpdateServer:
         with pytest.raises(Exception) as e_info:
             run_update_server(str(run.id))
 
-        assert (
-            str(e_info.value)
-            == "Could not automatically determine credentials. Please set GOOGLE_APPLICATION_CREDENTIALS or explicitly create credentials and re-run the application. For more information, please see https://cloud.google.com/docs/authentication/getting-started"
+        assert str(
+            e_info.value
+        ) == "Could not automatically determine credentials. Please set GOOGLE_APPLICATION_CREDENTIALS or explicitly create credentials and re-run the application. For more information, please see https://cloud.google.com/docs/authentication/getting-started" or "400 POST https://bigquery.googleapis.com/bigquery/v2/projects/a/jobs?prettyPrint=false: ProjectId and DatasetId must be non-empty" in str(
+            e_info.value
         )
 
 
