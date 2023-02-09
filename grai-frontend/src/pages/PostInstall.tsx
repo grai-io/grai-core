@@ -4,6 +4,10 @@ import GraphError from "components/utils/GraphError"
 import { useSnackbar } from "notistack"
 import React, { useEffect } from "react"
 import { Navigate, useSearchParams } from "react-router-dom"
+import {
+  AddInstallation,
+  AddInstallationVariables,
+} from "./__generated__/AddInstallation"
 
 export const ADD_INSTALLATION = gql`
   mutation AddInstallation($installationId: Int!) {
@@ -17,7 +21,10 @@ const PostInstall: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar()
   const [searchParams] = useSearchParams()
 
-  const [addInstallation, { data, error }] = useMutation(ADD_INSTALLATION, {
+  const [addInstallation, { data, error }] = useMutation<
+    AddInstallation,
+    AddInstallationVariables
+  >(ADD_INSTALLATION, {
     variables: {
       installationId: Number(searchParams.get("installation_id")),
     },

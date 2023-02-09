@@ -2032,6 +2032,20 @@
             "description": null,
             "args": [
               {
+                "name": "pk",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              },
+              {
                 "name": "pagination",
                 "description": null,
                 "type": {
@@ -4738,6 +4752,37 @@
               "ofType": {
                 "kind": "OBJECT",
                 "name": "Run",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "addInstallation",
+            "description": null,
+            "args": [
+              {
+                "name": "installationId",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "BasicResult",
                 "ofType": null
               }
             },

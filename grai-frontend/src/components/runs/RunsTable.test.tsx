@@ -10,10 +10,10 @@ const runs = [
     connection: {
       id: "1",
       name: "Connection 1",
-    },
-    connector: {
-      id: "1",
-      name: "Connector 1",
+      connector: {
+        id: "1",
+        name: "Connector 1",
+      },
     },
     status: "success",
     created_at: "1",

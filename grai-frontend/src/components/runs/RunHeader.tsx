@@ -24,11 +24,11 @@ interface Connector {
 interface Connection extends BaseConnection {
   id: string
   name: string
+  connector: Connector
 }
 
 interface Run {
   id: string
-  connector: Connector
   connection: Connection | null
   status: string
 }

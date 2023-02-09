@@ -7,12 +7,6 @@
 // GraphQL query operation: GetRun
 // ====================================================
 
-export interface GetRun_workspace_run_connector {
-  __typename: "Connector";
-  id: any;
-  name: string;
-}
-
 export interface GetRun_workspace_run_connection_connector {
   __typename: "Connector";
   id: any;
@@ -94,7 +88,6 @@ export interface GetRun_workspace_run_user {
 export interface GetRun_workspace_run {
   __typename: "Run";
   id: any;
-  connector: GetRun_workspace_run_connector;
   connection: GetRun_workspace_run_connection | null;
   status: string;
   metadata: any;
