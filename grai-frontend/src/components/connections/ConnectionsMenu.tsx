@@ -9,7 +9,7 @@ import {
 import useWorkspace from "helpers/useWorkspace"
 import PopupState, { bindMenu, bindTrigger } from "material-ui-popup-state"
 import React from "react"
-import ConnectionRefresh, { Connection } from "./ConnectionRefresh"
+import ConnectionRun, { Connection } from "./ConnectionRun"
 
 type ConnectionsMenuProps = {
   connection: Connection
@@ -46,11 +46,11 @@ const ConnectionsMenu: React.FC<ConnectionsMenuProps> = ({
               </ListItemIcon>
               <ListItemText primary="Edit" />
             </MenuItem>
-            <ConnectionRefresh
+            <ConnectionRun
               connection={connection}
               workspaceId={workspaceId}
               menuItem
-              disabled
+              disabled //Need to handle menu close without stopping query and handle polling
             />
             <MenuItem disabled>
               <ListItemIcon>
