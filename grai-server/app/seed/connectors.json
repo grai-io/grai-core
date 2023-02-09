@@ -32,11 +32,27 @@
         "pk": "60e37eff-7b89-4bf7-983b-722d9e095a12",
         "fields": {
             "name": "Google BigQuery",
-            "metadata": {},
+            "metadata": {
+                "fields": [
+                    {
+                        "name": "project",
+                        "required": true
+                    },
+                    {
+                        "name": "dataset",
+                        "required": true
+                    },
+                    {
+                        "name": "credentials",
+                        "required": true,
+                        "secret": true
+                    }
+                ]
+            },
             "is_active": true,
             "icon": "https://cdn.sanity.io/images/pwmfmi47/production/2a4f3d940e21dfa356bd993177586dab5e1b628f-2500x2500.svg",
             "category": "databases",
-            "coming_soon": true,
+            "coming_soon": false,
             "created_at": "2023-01-11T21:16:09.411Z",
             "updated_at": "2023-01-11T21:16:09.411Z"
         }

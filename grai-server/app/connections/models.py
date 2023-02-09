@@ -12,6 +12,7 @@ class Connector(models.Model):
     DBT = "dbt"
     YAMLFILE = "YAML File"
     MSSQL = "Microsoft SQL Server"
+    BIGQUERY = "Google BigQuery"
 
     CONNECTOR_CHOICES = [
         (POSTGRESQL, "PostgreSQL"),
@@ -19,6 +20,7 @@ class Connector(models.Model):
         (DBT, "dbt"),
         (YAMLFILE, "YAML File"),
         (MSSQL, "Microsoft SQL Server"),
+        (BIGQUERY, "Google BigQuery"),
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

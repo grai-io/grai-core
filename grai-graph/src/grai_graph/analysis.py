@@ -58,7 +58,7 @@ class GraphAnalyzer:
 
             # TODO What if we don't have information about the edge but both nodes have identical expectations for unique?
             if (
-                hasattr(edge_meta.edge_attributes, "preserves_unique")
+                hasattr(edge_meta.edge_attributes, "preserves_data_type")
                 and not edge_meta.edge_attributes.preserves_data_type
             ):
                 continue
@@ -151,7 +151,7 @@ class GraphAnalyzer:
 
             # TODO What if we don't have information about the edge but both nodes have identical expectations for unique?
             if (
-                hasattr(edge_meta.edge_attributes, "preserves_unique")
+                hasattr(edge_meta.edge_attributes, "preserves_nullable")
                 and not edge_meta.edge_attributes.preserves_nullable
             ):
                 continue
