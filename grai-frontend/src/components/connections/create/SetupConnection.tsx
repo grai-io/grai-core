@@ -41,21 +41,21 @@ const SetupConnection: React.FC<SetupConnectionProps> = ({
       <Grid container sx={{ mt: 5 }}>
         <Grid item md={8} sx={{ pr: 3 }}>
           <TextField
-            label="Namespace"
-            margin="normal"
-            value={values.namespace}
-            onChange={event =>
-              setValues({ ...values, namespace: event.target.value })
-            }
-            required
-            fullWidth
-          />
-          <TextField
             label="Name"
             margin="normal"
             value={values.name}
             onChange={event =>
               setValues({ ...values, name: event.target.value })
+            }
+            required
+            fullWidth
+          />
+          <TextField
+            label="Namespace"
+            margin="normal"
+            value={values.namespace}
+            onChange={event =>
+              setValues({ ...values, namespace: event.target.value })
             }
             required
             fullWidth
