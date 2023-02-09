@@ -19,6 +19,15 @@ class MembershipInline(admin.TabularInline):
 
 
 class WorkspaceAdmin(admin.ModelAdmin):
+    list_display = ("id", "name", "organisation")
+
+    list_filter = (
+        ("organisation", admin.RelatedOnlyFieldListFilter),
+        "name",
+    )
+
+    search_fields = ["id", "name"]
+
     inlines = [
         MembershipInline,
     ]
@@ -26,7 +35,11 @@ class WorkspaceAdmin(admin.ModelAdmin):
     actions = [empty_workspace]
 
 
-admin.site.register(Organisation)
+class OrganisationAdmin(admin.ModelAdmin):
+    search_fields = ["id", "name"]
+
+
+admin.site.register(Organisation, OrganisationAdmin)
 admin.site.register(Workspace, WorkspaceAdmin)
 admin.site.register(Membership)
 admin.site.register(WorkspaceAPIKey)
