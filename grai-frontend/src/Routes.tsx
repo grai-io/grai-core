@@ -17,6 +17,7 @@ const Home = lazy(() => import("./pages/Home"))
 const Graph = lazy(() => import("./pages/Graph"))
 const Tables = lazy(() => import("./pages/tables/Tables"))
 const Table = lazy(() => import("./pages/tables/Table"))
+const Runs = lazy(() => import("./pages/runs/Runs"))
 const Run = lazy(() => import("./pages/runs/Run"))
 const Connections = lazy(() => import("./pages/connections/Connections"))
 const ConnectionCreate = lazy(
@@ -60,7 +61,7 @@ const Routes: React.FC = () => (
               <Route path=":tableId" element={<Table />} />
             </Route>
             <Route path="runs">
-              <Route index element={<NotFound />} />
+              <Route index element={<Runs />} />
               <Route path=":runId" element={<Run />} />
             </Route>
             <Route path="connections">
