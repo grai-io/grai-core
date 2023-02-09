@@ -7,6 +7,10 @@ import {
   IconButton,
   Divider,
 } from "@mui/material"
+import ConnectionRun, {
+  Connection as BaseConnection,
+  RunResult,
+} from "components/connections/ConnectionRun"
 import useWorkspace from "helpers/useWorkspace"
 import React from "react"
 import { Link } from "react-router-dom"
@@ -17,7 +21,7 @@ interface Connector {
   name: string
 }
 
-interface Connection {
+interface Connection extends BaseConnection {
   id: string
   name: string
 }
@@ -31,10 +35,13 @@ interface Run {
 
 type RunHeaderProps = {
   run: Run
+  workspaceId: string
 }
 
-const RunHeader: React.FC<RunHeaderProps> = ({ run }) => {
-  const { routePrefix } = useWorkspace()
+const RunHeader: React.FC<RunHeaderProps> = ({ run, workspaceId }) => {
+  const { routePrefix, workspaceNavigate } = useWorkspace()
+
+  const handleRun = (run: RunResult) => workspaceNavigate(`runs/${run.id}`)
 
   return (
     <>
@@ -68,6 +75,14 @@ const RunHeader: React.FC<RunHeaderProps> = ({ run }) => {
           </Tooltip>
         </Box>
         <RunStatus run={run} sx={{ ml: 2 }} />
+        <Box sx={{ flexGrow: 1 }} />
+        {run.connection && (
+          <ConnectionRun
+            connection={run.connection}
+            workspaceId={workspaceId}
+            onRun={handleRun}
+          />
+        )}
       </Box>
       <Divider />
     </>

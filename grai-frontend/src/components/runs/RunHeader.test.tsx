@@ -13,7 +13,7 @@ test("renders", async () => {
     connection: null,
   }
 
-  render(<RunHeader run={run} />, {
+  render(<RunHeader run={run} workspaceId="1" />, {
     withRouter: true,
   })
 
@@ -32,10 +32,13 @@ test("renders connection", async () => {
     connection: {
       id: "2",
       name: "Connection1",
+      last_run: null,
+      last_successful_run: null,
+      runs: [],
     },
   }
 
-  render(<RunHeader run={run} />, {
+  render(<RunHeader run={run} workspaceId="1" />, {
     withRouter: true,
   })
 

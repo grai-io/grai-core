@@ -84,12 +84,16 @@ export interface Connection {
   runs: Run[]
 }
 
+export interface RunResult {
+  id: string
+}
+
 type ConnectionRunProps = {
   connection: Connection
   workspaceId: string
   menuItem?: boolean
   disabled?: boolean
-  onRun?: () => void
+  onRun?: (run: RunResult) => void
 }
 
 const ConnectionRun: React.FC<ConnectionRunProps> = ({
@@ -141,7 +145,12 @@ const ConnectionRun: React.FC<ConnectionRunProps> = ({
           last_run: tmpRun,
         },
       },
-    }).then(() => onRun && onRun())
+    }).then(
+      data =>
+        onRun &&
+        data.data?.runConnection.last_run &&
+        onRun(data.data.runConnection.last_run)
+    )
 
   const loading2 =
     loading ||

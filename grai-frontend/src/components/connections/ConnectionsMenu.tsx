@@ -50,7 +50,7 @@ const ConnectionsMenu: React.FC<ConnectionsMenuProps> = ({
               connection={connection}
               workspaceId={workspaceId}
               menuItem
-              disabled
+              disabled //Need to handle menu close without stopping query and handle polling
             />
             <MenuItem disabled>
               <ListItemIcon>
