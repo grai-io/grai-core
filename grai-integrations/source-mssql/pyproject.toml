@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai_source_mssql"
-version = "0.0.4"
+version = "0.0.4-alpha0"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>"]
 license = "Elastic-2.0"
