@@ -11,6 +11,7 @@ import GraphError from "components/utils/GraphError"
 import PageLayout from "components/layout/PageLayout"
 import useWorkspace from "helpers/useWorkspace"
 
+//Extra parameters required to make cache update work on connection run
 export const GET_CONNECTIONS = gql`
   query GetConnections($organisationName: String!, $workspaceName: String!) {
     workspace(organisationName: $organisationName, name: $workspaceName) {

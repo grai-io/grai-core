@@ -411,7 +411,7 @@ class Workspace:
     # Runs
     @gql.django.field
     def runs(self) -> List["Run"]:
-        return RunModel.objects.filter(workspace=self)
+        return RunModel.objects.order_by("-created_at").filter(workspace=self)
 
     @gql.django.field
     def run(self, id: strawberry.ID) -> "Run":

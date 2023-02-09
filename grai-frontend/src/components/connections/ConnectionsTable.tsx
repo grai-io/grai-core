@@ -10,7 +10,8 @@ import { useNavigate } from "react-router-dom"
 import Loading from "components/layout/Loading"
 import TableCell from "components/tables/TableCell"
 import ConnectionsMenu from "./ConnectionsMenu"
-import { Connection as BaseConnection } from "./ConnectionRefresh"
+import { Connection as BaseConnection } from "./ConnectionRun"
+import RunStatus from "components/runs/RunStatus"
 
 interface Connector {
   id: string
@@ -45,6 +46,7 @@ const ConnectionsTable: React.FC<ConnectionsTableProps> = ({
           <TableCell>Namespace</TableCell>
           <TableCell>Connector</TableCell>
           <TableCell>Active</TableCell>
+          <TableCell>Status</TableCell>
           <TableCell sx={{ width: 0 }} />
         </TableRow>
       </TableHead>
@@ -60,6 +62,16 @@ const ConnectionsTable: React.FC<ConnectionsTableProps> = ({
             <TableCell>{connection.namespace}</TableCell>
             <TableCell>{connection.connector.name}</TableCell>
             <TableCell>{connection.is_active ? "Yes" : "No"}</TableCell>
+            <TableCell sx={{ py: 0, px: 1 }} stopPropagation>
+              {connection.last_run && (
+                <RunStatus
+                  run={connection.last_run}
+                  size="small"
+                  link
+                  sx={{ cursor: "pointer" }}
+                />
+              )}
+            </TableCell>
             <TableCell sx={{ py: 0, px: 1 }} stopPropagation>
               <ConnectionsMenu
                 connection={connection}

@@ -42,7 +42,7 @@ class MsSqlSettings(BaseSettings):
     @validator("protocol")
     def validate_protocol(cls, value):
         if value is None:
-            return Protocol.TCP.value
+            return Protocol.TCP
 
         return Protocol(value)
 
@@ -191,10 +191,21 @@ class MsSQLConnector:
         schema.table in the database connected to.
         """
         query = f"""
-            SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE, COLUMN_DEFAULT, TABLE_NAME, TABLE_SCHEMA
-            FROM INFORMATION_SCHEMA.COLUMNS
+            SELECT c.COLUMN_NAME,
+                   c.DATA_TYPE,
+                   c.IS_NULLABLE,
+                   c.COLUMN_DEFAULT,
+                   c.TABLE_NAME,
+                   c.TABLE_SCHEMA,
+                   tc.CONSTRAINT_TYPE AS [column_constraint]
+            FROM INFORMATION_SCHEMA.COLUMNS c
+            LEFT JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE cu
+                ON c.TABLE_NAME = cu.TABLE_NAME
+                AND c.TABLE_SCHEMA = cu.TABLE_SCHEMA
+                AND c.COLUMN_NAME = cu.COLUMN_NAME
+            LEFT JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
+                ON cu.CONSTRAINT_NAME = tc.CONSTRAINT_NAME
         """
-
         res = [{k.lower(): v for k, v in result.items()} for result in self.query_runner(query)]
         for item in res:
             item.update(
@@ -204,7 +215,8 @@ class MsSQLConnector:
                 }
             )
 
-        return [Column(**result, namespace=self.config.namespace) for result in res]
+        result = [Column(**result, namespace=self.config.namespace) for result in res]
+        return result
 
     @cached_property
     def column_map(self):
