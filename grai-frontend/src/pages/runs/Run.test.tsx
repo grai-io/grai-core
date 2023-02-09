@@ -42,6 +42,9 @@ test("renders errors", async () => {
                   id: "1",
                   name: "connector 1",
                 },
+                runs: [],
+                last_run: null,
+                last_successful_run: null,
               },
               metadata: {
                 error: "You got an error",
