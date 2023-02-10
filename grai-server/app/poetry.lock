@@ -133,18 +133,18 @@ uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
 name = "boto3"
-version = "1.26.67"
+version = "1.26.68"
 description = "The AWS SDK for Python"
 category = "main"
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "boto3-1.26.67-py3-none-any.whl", hash = "sha256:159ab54ab301a213aea0dbebfe97c12909fd9180110a2b78aaa712c2d7d1a929"},
-    {file = "boto3-1.26.67.tar.gz", hash = "sha256:c2e21ac64370fee1f3dccd97b4767e89d046c45c00faec27c36405618e34c7e5"},
+    {file = "boto3-1.26.68-py3-none-any.whl", hash = "sha256:bbb426a9b3afd3ccbac25e03b215d79e90b4c47905b1b08b3b9d86fc74096974"},
+    {file = "boto3-1.26.68.tar.gz", hash = "sha256:c92dd0fde7839c0ca9c16a989d67ceb7f80f53de19f2b087fd1182f2af41b2ae"},
 ]
 
 [package.dependencies]
-botocore = ">=1.29.67,<1.30.0"
+botocore = ">=1.29.68,<1.30.0"
 jmespath = ">=0.7.1,<2.0.0"
 s3transfer = ">=0.6.0,<0.7.0"
 
@@ -153,14 +153,14 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "botocore"
-version = "1.29.67"
+version = "1.29.68"
 description = "Low-level, data-driven core of boto 3."
 category = "main"
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "botocore-1.29.67-py3-none-any.whl", hash = "sha256:424c5fa21913d85ea990928acf35622a4f2b7f0750133b96adaa8c642bb6a878"},
-    {file = "botocore-1.29.67.tar.gz", hash = "sha256:0ccec4a906b6b8c7bb6bc5226509059ee9ed94d3cf1014487ef5b8e56801e6a3"},
+    {file = "botocore-1.29.68-py3-none-any.whl", hash = "sha256:08fa8302a22553e69b70b1de2cc8cec61a3a878546658d091473e13d5b9d2ca4"},
+    {file = "botocore-1.29.68.tar.gz", hash = "sha256:8f5cb96dc0862809d29fe512087c77c15fe6328a2d8238f0a96cccb6eb77ec12"},
 ]
 
 [package.dependencies]
@@ -1502,7 +1502,7 @@ files = [
 name = "iniconfig"
 version = "2.0.0"
 description = "brain-dead simple config-ini parsing"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -1819,14 +1819,14 @@ files = [
 
 [[package]]
 name = "phonenumberslite"
-version = "8.13.5"
+version = "8.13.6"
 description = "Python version of Google's common library for parsing, formatting, storing and validating international phone numbers."
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "phonenumberslite-8.13.5-py2.py3-none-any.whl", hash = "sha256:57a6825d729ec2ee28eb7d3a171837adad386defb6ad10593a2ddd405afe569c"},
-    {file = "phonenumberslite-8.13.5.tar.gz", hash = "sha256:f143456744422398a26537b8815fb9650f187420a346f4198b2bf1ed6019e8ac"},
+    {file = "phonenumberslite-8.13.6-py2.py3-none-any.whl", hash = "sha256:61a9fcf4ce688fabcce8f566fe160dc2984299112ceaa306a18922e4e4d94745"},
+    {file = "phonenumberslite-8.13.6.tar.gz", hash = "sha256:bceb85adeb84eb71bb3bd1afa5163633d513b9e836b486b86fd40df17dc3b074"},
 ]
 
 [[package]]
@@ -1861,7 +1861,7 @@ test = ["appdirs (==1.4.4)", "covdefaults (>=2.2.2)", "pytest (>=7.2.1)", "pytes
 name = "pluggy"
 version = "1.0.0"
 description = "plugin and hook calling mechanisms for python"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -2231,7 +2231,7 @@ files = [
 name = "pytest"
 version = "7.2.1"
 description = "pytest: simple powerful testing with Python"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -2253,7 +2253,7 @@ testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "pygments (>=2.
 name = "pytest-asyncio"
 version = "0.20.3"
 description = "Pytest support for asyncio"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -2286,6 +2286,24 @@ pytest = ">=5.4.0"
 [package.extras]
 docs = ["sphinx", "sphinx-rtd-theme"]
 testing = ["Django", "django-configurations (>=2.0)"]
+
+[[package]]
+name = "pytest-mock"
+version = "3.10.0"
+description = "Thin-wrapper around the mock package for easier use with pytest"
+category = "dev"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "pytest-mock-3.10.0.tar.gz", hash = "sha256:fbbdb085ef7c252a326fd8cdcac0aa3b1333d8811f131bdcc701002e1be7ed4f"},
+    {file = "pytest_mock-3.10.0-py3-none-any.whl", hash = "sha256:f4c973eeae0282963eb293eb173ce91b091a79c1334455acfac9ddee8a1c784b"},
+]
+
+[package.dependencies]
+pytest = ">=5.0"
+
+[package.extras]
+dev = ["pre-commit", "pytest-asyncio", "tox"]
 
 [[package]]
 name = "python-crontab"
@@ -2920,4 +2938,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "271da4d7465e1eddc251b118a8a7bb29b6aa73086ce75fbf4640b5cb5f90415a"
+content-hash = "008cec06919f84bb6f45effae336689bec80e149d824e502b7c5f169db1dd237"

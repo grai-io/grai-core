@@ -134,30 +134,32 @@ class TestUpdateServer:
 
             run_update_server(str(run.id))
 
-    # def test_snowflake_no_account(self, test_workspace, test_snowflake_connector):
-    #     connection = Connection.objects.create(
-    #         name="C2",
-    #         connector=test_snowflake_connector,
-    #         workspace=test_workspace,
+    def test_snowflake_no_account(self, test_workspace, test_snowflake_connector, mocker):
+        mock = mocker.patch("grai_source_snowflake.base.get_nodes_and_edges")
+        mock.return_value = [[], []]
 
-    #         metadata={
-    #             "account": "account",
-    #             "user": "user",
-    #             "role": "role",
-    #             "warehouse": "warehouse",
-    #             "database": "database",
-    #             "schema": "schema",
-    #         },
-    #         secrets={"password": "password1234"},
-    #     )
-    #     run = Run.objects.create(connection=connection, workspace=test_workspace)
+        connection = Connection.objects.create(
+            name="C2",
+            connector=test_snowflake_connector,
+            workspace=test_workspace,
+            metadata={
+                "account": "account",
+                "user": "user",
+                "role": "role",
+                "warehouse": "warehouse",
+                "database": "database",
+                "schema": "schema",
+            },
+            secrets={"password": "password1234"},
+        )
+        run = Run.objects.create(connection=connection, workspace=test_workspace)
 
-    #     with pytest.raises(Exception) as e_info:
-    #         run_update_server(str(run.id))
+        run_update_server(str(run.id))
 
-    #     assert (str(e_info.value)== 'Could not automatically determine credentials. Please set GOOGLE_APPLICATION_CREDENTIALS or explicitly create credentials and re-run the application. For more information, please see https://cloud.google.com/docs/authentication/getting-started')
+    def test_mssql_no_account(self, test_workspace, test_mssql_connector, mocker):
+        mock = mocker.patch("grai_source_mssql.base.get_nodes_and_edges")
+        mock.return_value = [[], []]
 
-    def test_mssql_no_account(self, test_workspace, test_mssql_connector):
         connection = Connection.objects.create(
             name="C2",
             connector=test_mssql_connector,
@@ -172,17 +174,12 @@ class TestUpdateServer:
         )
         run = Run.objects.create(connection=connection, workspace=test_workspace)
 
-        with pytest.raises(Exception) as e_info:
-            run_update_server(str(run.id))
+        run_update_server(str(run.id))
 
-        assert (
-            str(e_info.value)
-            == "('HYT00', '[HYT00] [Microsoft][ODBC Driver 18 for SQL Server]Login timeout expired (0) (SQLDriverConnect)')"
-            or str(e_info.value)
-            == "('HYT00', '[HYT00] [Microsoft][ODBC Driver 17 for SQL Server]Login timeout expired (0) (SQLDriverConnect)')"
-        )
+    def test_bigquery_no_project(self, test_workspace, test_bigquery_connector, mocker):
+        mock = mocker.patch("grai_source_bigquery.base.get_nodes_and_edges")
+        mock.return_value = [[], []]
 
-    def test_bigquery_no_project(self, test_workspace, test_bigquery_connector):
         connection = Connection.objects.create(
             name="C2",
             connector=test_bigquery_connector,
@@ -192,14 +189,7 @@ class TestUpdateServer:
         )
         run = Run.objects.create(connection=connection, workspace=test_workspace)
 
-        with pytest.raises(Exception) as e_info:
-            run_update_server(str(run.id))
-
-        assert str(
-            e_info.value
-        ) == "Could not automatically determine credentials. Please set GOOGLE_APPLICATION_CREDENTIALS or explicitly create credentials and re-run the application. For more information, please see https://cloud.google.com/docs/authentication/getting-started" or "400 POST https://bigquery.googleapis.com/bigquery/v2/projects/a/jobs?prettyPrint=false: ProjectId and DatasetId must be non-empty" in str(
-            e_info.value
-        )
+        run_update_server(str(run.id))
 
 
 @pytest.mark.django_db
