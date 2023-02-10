@@ -182,7 +182,11 @@ class Run(TenantModel):
         blank=True,
         null=True,
     )
-    trigger = models.JSONField(default=dict)
+    trigger = models.JSONField(
+        default=dict,
+        blank=True,
+        null=True,
+    )
     action = models.CharField(max_length=255, choices=RUN_ACTIONS, default="update")
 
     def __str__(self):

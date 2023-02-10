@@ -46,8 +46,8 @@ def get_connection(request) -> Connection:
         namespace=namespace,
         is_active=True,
         temp=True,
-        metadata=json.loads(metadata) if metadata else None,
-        secrets=json.loads(secrets) if secrets else None,
+        metadata=json.loads(metadata) if metadata else {},
+        secrets=json.loads(secrets) if secrets else {},
     )
 
     return connection
