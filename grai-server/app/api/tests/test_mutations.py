@@ -1,8 +1,9 @@
-from connections.github import Github
+from unittest.mock import MagicMock
 import pytest
 from asgiref.sync import sync_to_async
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
+import types
 
 from api.schema import schema
 
@@ -905,7 +906,44 @@ async def test_complete_signup_no_user():
 
 @pytest.mark.django_db
 async def test_add_installation(test_context, mocker):
-    mocker.patch("api.mutations.base.Github")
+    mock = mocker.patch("api.mutations.base.Github")
+    github_instance = MagicMock()
+    owner = types.SimpleNamespace()
+    owner.login = "default"
+    repo = types.SimpleNamespace()
+    repo.name = "repo1"
+    repo.owner = owner
+    github_instance.get_repos.return_value = [repo]
+    mock.return_value = github_instance
+
+    context, organisation, workspace, user = test_context
+
+    mutation = """
+        mutation AddInstallation($installationId: Int!) {
+            addInstallation(installationId: $installationId) {
+                success
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "installationId": 1234,
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data == {"addInstallation": {"success": True}}
+
+
+@pytest.mark.django_db
+async def test_add_installation_no_repos(test_context, mocker):
+    mock = mocker.patch("api.mutations.base.Github")
+    github_instance = MagicMock()
+    github_instance.get_repos.return_value = []
+    mock.return_value = github_instance
 
     context, organisation, workspace, user = test_context
 
