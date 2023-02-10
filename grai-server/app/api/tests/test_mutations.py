@@ -1,9 +1,10 @@
+import types
 from unittest.mock import MagicMock
+
 import pytest
 from asgiref.sync import sync_to_async
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
-import types
 
 from api.schema import schema
 
@@ -919,8 +920,8 @@ async def test_add_installation(test_context, mocker):
     context, organisation, workspace, user = test_context
 
     mutation = """
-        mutation AddInstallation($installationId: Int!) {
-            addInstallation(installationId: $installationId) {
+        mutation AddInstallation($workspaceId: ID!, $installationId: Int!) {
+            addInstallation(workspaceId: $workspaceId, installationId: $installationId) {
                 success
             }
         }
@@ -929,6 +930,7 @@ async def test_add_installation(test_context, mocker):
     result = await schema.execute(
         mutation,
         variable_values={
+            "workspaceId": str(workspace.id),
             "installationId": 1234,
         },
         context_value=context,
@@ -948,8 +950,8 @@ async def test_add_installation_no_repos(test_context, mocker):
     context, organisation, workspace, user = test_context
 
     mutation = """
-        mutation AddInstallation($installationId: Int!) {
-            addInstallation(installationId: $installationId) {
+        mutation AddInstallation($workspaceId: ID!, $installationId: Int!) {
+            addInstallation(workspaceId: $workspaceId, installationId: $installationId) {
                 success
             }
         }
@@ -958,6 +960,7 @@ async def test_add_installation_no_repos(test_context, mocker):
     result = await schema.execute(
         mutation,
         variable_values={
+            "workspaceId": str(workspace.id),
             "installationId": 1234,
         },
         context_value=context,

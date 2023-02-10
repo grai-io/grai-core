@@ -1,7 +1,12 @@
-import pytest
+import types
+from unittest.mock import MagicMock
 import uuid
-from workspaces.models import Membership, Workspace, Organisation
-from connections.models import Connector, Connection
+
+import pytest
+
+from connections.models import Connection, Connector
+from workspaces.models import Membership, Organisation, Workspace
+from installations.models import Repository
 
 
 @pytest.fixture
@@ -55,6 +60,13 @@ def test_connector():
     return Connector.objects.create(name=uuid.uuid4(), slug=uuid.uuid4())
 
 
+@pytest.fixture
+def test_repository(create_workspace):
+    return Repository.objects.create(
+        workspace=create_workspace, owner="test_owner", repo="test_repo", type=Repository.GITHUB, installation_id=1234
+    )
+
+
 @pytest.mark.django_db
 def test_create_run_connection(auto_login_user, test_connector):
     client, user, workspace = auto_login_user()
@@ -96,6 +108,53 @@ def test_create_run_no_connector(auto_login_user, test_connector):
     url = "/api/v1/external-runs/"
 
     with pytest.raises(Exception) as e_info:
-        response = client.post(url)
+        client.post(url)
 
     assert str(e_info.value) == "You must provide a connector or connection_id"
+
+
+@pytest.mark.django_db
+def test_create_run_no_repo(auto_login_user, test_connector):
+    client, user, workspace = auto_login_user()
+
+    url = "/api/v1/external-runs/"
+
+    with pytest.raises(Exception) as e_info:
+        client.post(
+            url,
+            {
+                "connector": test_connector.name,
+                "github_owner": "owner",
+                "github_repo": "repo",
+            },
+        )
+
+    assert str(e_info.value) == "Repository not found, have you installed the Grai Github App?"
+
+
+@pytest.mark.django_db
+def test_create_run_connector_with_github(auto_login_user, test_connector, test_repository, mocker):
+    mock = mocker.patch("connections.urls.Github")
+    github_instance = MagicMock()
+    check = types.SimpleNamespace()
+    check.id = 1234
+    github_instance.create_check.return_value = check
+    github_instance.installation_id = 1234
+    mock.return_value = github_instance
+
+    client, user, workspace = auto_login_user()
+
+    url = "/api/v1/external-runs/"
+    response = client.post(
+        url,
+        {
+            "connector": test_connector.name,
+            "github_owner": test_repository.owner,
+            "github_repo": test_repository.repo,
+            "git_branch": "test_branch",
+            "git_head_sha": "sha1234",
+        },
+    )
+    assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
+    run = response.json()
+    assert run["id"] is not None

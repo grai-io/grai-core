@@ -1,45 +1,46 @@
-import { gql, useMutation } from "@apollo/client"
+import { gql, useQuery } from "@apollo/client"
+import { Container } from "@mui/material"
+import WorkspaceChoice from "components/installations/WorkspaceChoice"
 import Loading from "components/layout/Loading"
 import GraphError from "components/utils/GraphError"
-import { useSnackbar } from "notistack"
-import React, { useEffect } from "react"
-import { Navigate, useSearchParams } from "react-router-dom"
-import {
-  AddInstallation,
-  AddInstallationVariables,
-} from "./__generated__/AddInstallation"
+import React from "react"
+import { useSearchParams } from "react-router-dom"
+import { GetWorkspacesPostInstall } from "./__generated__/GetWorkspacesPostInstall"
 
-export const ADD_INSTALLATION = gql`
-  mutation AddInstallation($installationId: Int!) {
-    addInstallation(installationId: $installationId) {
-      success
+export const GET_WORKSPACES = gql`
+  query GetWorkspacesPostInstall {
+    workspaces {
+      id
+      name
+      organisation {
+        id
+        name
+      }
     }
   }
 `
 
 const PostInstall: React.FC = () => {
-  const { enqueueSnackbar } = useSnackbar()
   const [searchParams] = useSearchParams()
 
-  const [addInstallation, { data, error }] = useMutation<
-    AddInstallation,
-    AddInstallationVariables
-  >(ADD_INSTALLATION, {
-    variables: {
-      installationId: Number(searchParams.get("installation_id")),
-    },
-  })
+  const installationId = Number(searchParams.get("installation_id"))
 
-  useEffect(() => {
-    addInstallation()
-      .then(() => enqueueSnackbar("Github updated"))
-      .catch(() => {})
-  }, [addInstallation, enqueueSnackbar])
+  const { loading, error, data } =
+    useQuery<GetWorkspacesPostInstall>(GET_WORKSPACES)
 
   if (error) return <GraphError error={error} />
-  if (data) return <Navigate to="/" />
+  if (loading) return <Loading />
 
-  return <Loading />
+  const workspaces = data?.workspaces ?? []
+
+  return (
+    <Container maxWidth="sm" sx={{ mt: 20 }}>
+      <WorkspaceChoice
+        workspaces={workspaces}
+        installationId={installationId}
+      />
+    </Container>
+  )
 }
 
 export default PostInstall

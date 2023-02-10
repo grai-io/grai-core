@@ -21,10 +21,4 @@ class Migration(migrations.Migration):
             model_name="repository",
             index=models.Index(fields=["type", "owner", "repo"], name="connections_type_0f2c4c_idx"),
         ),
-        migrations.AddConstraint(
-            model_name="repository",
-            constraint=models.UniqueConstraint(
-                fields=("type", "owner", "repo"), name="Repository type/owner/repo uniqueness"
-            ),
-        ),
     ]

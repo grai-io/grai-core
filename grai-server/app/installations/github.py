@@ -5,7 +5,7 @@ import jwt
 import requests
 from ghapi.all import GhApi
 
-from connections.models import Repository
+from installations.models import Repository
 
 app_id = "215508"
 pem = "/Users/edwardlouth/Desktop/graibot.2023-02-07.private-key.pem"

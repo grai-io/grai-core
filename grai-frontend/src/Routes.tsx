@@ -33,6 +33,7 @@ const WorkspaceSettings = lazy(
   () => import("./pages/settings/WorkspaceSettings")
 )
 const Memberships = lazy(() => import("./pages/settings/Memberships"))
+const PostInstall = lazy(() => import("./pages/PostInstall"))
 
 const Login = lazy(() => import("./pages/auth/Login"))
 const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"))
@@ -91,6 +92,7 @@ const Routes: React.FC = () => (
             </Route>
             <Route path="*" element={<NotFound />} />
           </Route>
+          <Route path="post-install" element={<PostInstall />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Route>

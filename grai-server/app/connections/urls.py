@@ -12,7 +12,9 @@ from rest_framework import routers
 from workspaces.permissions import HasWorkspaceAPIKey
 
 from .models import Connection, Connector, Run
+from installations.models import Repository, Commit, Branch
 from .views import ConnectionViewSet, ConnectorViewSet, RunViewSet
+from installations.github import Github
 
 app_name = "connections"
 
@@ -54,24 +56,32 @@ def get_connection(request) -> Connection:
 
 
 def get_trigger(request):
-    git_owner = request.POST.get("git_owner")
+    owner = request.POST.get("github_owner")
 
-    if git_owner is None:
-        return None
+    if owner is None:
+        return None, None
 
-    from .github import Github
+    repo = request.POST.get("github_repo")
 
-    git_repo = request.POST.get("git_repo")
-    git_head_sha = request.POST.get("git_head_sha")
+    try:
+        repository = Repository.objects.get(owner=owner, repo=repo)
+    except Repository.DoesNotExist:
+        raise Exception("Repository not found, have you installed the Grai Github App?")
 
-    github = Github(owner=git_owner, repo=git_repo)
-    check = github.create_check(head_sha=git_head_sha)
+    branch = request.POST.get("git_branch")
+    head_sha = request.POST.get("git_head_sha")
 
-    return {
+    branch, created = Branch.objects.get_or_create(repository=repository, reference=branch)
+    commit, created = Commit.objects.get_or_create(repository=repository, branch=branch, reference=head_sha)
+
+    github = Github(owner=owner, repo=repo)
+    check = github.create_check(head_sha=head_sha)
+
+    return commit, {
         "installation_id": github.installation_id,
-        "owner": git_owner,
-        "repo": git_repo,
-        "head_sha": git_head_sha,
+        "owner": owner,
+        "repo": repo,
+        "head_sha": head_sha,
         "check_id": check.id,
     }
 
@@ -80,11 +90,11 @@ def get_trigger(request):
 @permission_classes([(HasWorkspaceAPIKey | IsAuthenticated) & Multitenant])
 def create_run(request):
     connection = get_connection(request)
-    trigger = get_trigger(request)
+    commit, trigger = get_trigger(request)
 
     action = request.POST.get("action", "tests")
 
-    run = Run.objects.create(connection=connection, status="queued", trigger=trigger, action=action)
+    run = Run.objects.create(connection=connection, status="queued", commit=commit, trigger=trigger, action=action)
 
     run_update_server.delay(run.id)
 

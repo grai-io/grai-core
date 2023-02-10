@@ -8,8 +8,8 @@ from connections.adapters.mssql import MssqlAdapter
 from connections.adapters.postgres import PostgresAdapter
 from connections.adapters.snowflake import SnowflakeAdapter
 from connections.adapters.yaml_file import YamlFileAdapter
+from installations.github import Github
 
-from .github import Github
 from .models import Connection, Connector, Run
 from .task_helpers import get_node, update
 

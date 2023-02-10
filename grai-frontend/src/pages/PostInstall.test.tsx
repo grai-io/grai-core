@@ -1,7 +1,7 @@
 import { GraphQLError } from "graphql"
 import React from "react"
 import { render, screen, waitFor } from "testing"
-import PostInstall, { ADD_INSTALLATION } from "./PostInstall"
+import PostInstall, { GET_WORKSPACES } from "./PostInstall"
 
 test("renders", async () => {
   render(<PostInstall />, {
@@ -15,7 +15,7 @@ test("renders", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByText("New Page")).toBeInTheDocument()
+    expect(screen.getAllByText("Hello World")).toBeTruthy()
   })
 })
 
@@ -23,10 +23,7 @@ test("error", async () => {
   const mocks = [
     {
       request: {
-        query: ADD_INSTALLATION,
-        variables: {
-          installationId: 1234,
-        },
+        query: GET_WORKSPACES,
       },
       result: {
         errors: [new GraphQLError("Error!")],

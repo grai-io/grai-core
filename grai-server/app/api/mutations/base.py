@@ -27,13 +27,13 @@ from api.types import (
 )
 from connections.models import Connection as ConnectionModel
 from connections.models import Connector as ConnectorModel
-from connections.models import Repository as RepositoryModel
 from connections.models import Run as RunModel
 from connections.models import RunFile as RunFileModel
 from connections.tasks import run_update_server
+from installations.github import Github
+from installations.models import Repository as RepositoryModel
 from workspaces.models import Membership as MembershipModel
 from workspaces.models import WorkspaceAPIKey
-from connections.github import Github
 
 
 @strawberry.type
@@ -355,14 +355,21 @@ class Mutation:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def addInstallation(
         self,
+        info: Info,
+        workspaceId: strawberry.ID,
         installationId: int,
     ) -> BasicResult:
+        workspace = await get_workspace(info, workspaceId)
         github = Github(installation_id=installationId)
         repos = github.get_repos()
 
         for repo in repos:
             await RepositoryModel.objects.aget_or_create(
-                type=RepositoryModel.GITHUB, owner=repo.owner.login, repo=repo.name, installation_id=installationId
+                workspace=workspace,
+                type=RepositoryModel.GITHUB,
+                owner=repo.owner.login,
+                repo=repo.name,
+                installation_id=installationId,
             )
 
         return BasicResult(success=True)

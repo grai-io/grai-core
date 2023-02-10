@@ -1,6 +1,6 @@
 import React from "react"
 import { render, screen } from "testing"
-import WorkspaceChoice from "./WorkspaceChoice"
+import WorkspaceList from "./WorkspaceList"
 
 test("renders", async () => {
   const workspaces = [
@@ -30,7 +30,7 @@ test("renders", async () => {
     },
   ]
 
-  render(<WorkspaceChoice workspaces={workspaces} />, { withRouter: true })
+  render(<WorkspaceList workspaces={workspaces} />, { withRouter: true })
 
   expect(screen.getByText("Organisation1")).toBeInTheDocument()
   expect(screen.getByText("Organisation2")).toBeInTheDocument()
@@ -40,7 +40,7 @@ test("renders", async () => {
 })
 
 test("renders empty", async () => {
-  render(<WorkspaceChoice workspaces={[]} />)
+  render(<WorkspaceList workspaces={[]} />)
 
   expect(screen.getByText("No Workspaces")).toBeInTheDocument()
 })

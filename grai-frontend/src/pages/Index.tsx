@@ -3,6 +3,7 @@ import React from "react"
 import { Navigate } from "react-router-dom"
 import Loading from "components/layout/Loading"
 import GraphError from "components/utils/GraphError"
+import { GetWorkspacesIndex } from "./__generated__/GetWorkspacesIndex"
 
 export const GET_WORKSPACES = gql`
   query GetWorkspacesIndex {
@@ -18,12 +19,12 @@ export const GET_WORKSPACES = gql`
 `
 
 const Index: React.FC = () => {
-  const { loading, error, data } = useQuery(GET_WORKSPACES)
+  const { loading, error, data } = useQuery<GetWorkspacesIndex>(GET_WORKSPACES)
 
   if (error) return <GraphError error={error} />
   if (loading) return <Loading />
 
-  const workspaces = data.workspaces
+  const workspaces = data?.workspaces ?? []
 
   const firstWorkspace = workspaces[0]
 
