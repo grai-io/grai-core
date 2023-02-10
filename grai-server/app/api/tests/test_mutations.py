@@ -900,3 +900,30 @@ async def test_complete_signup_no_user():
         == "[GraphQLError('User not found', locations=[SourceLocation(line=3, column=13)], path=['completeSignup'])]"
     )
     assert result.data is None
+
+
+@pytest.mark.django_db
+async def test_add_installation(test_context, mocker):
+    mock = mocker.patch("ghapi.all.apps.list_repos_accessible_to_installation")
+    mock.return_value = []
+
+    context, organisation, workspace, user = test_context
+
+    mutation = """
+        mutation AddInstallation($installationId: Int!) {
+            addInstallation(installationId: $installationId) {
+                success
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "installationId": 1234,
+        },
+        context_value=context,
+    )
+
+    assert str(result.errors) is None
+    assert result.data == {"success": True}
