@@ -33,6 +33,7 @@ from connections.models import RunFile as RunFileModel
 from connections.tasks import run_update_server
 from workspaces.models import Membership as MembershipModel
 from workspaces.models import WorkspaceAPIKey
+from connections.github import Github
 
 
 @strawberry.type
@@ -356,8 +357,6 @@ class Mutation:
         self,
         installationId: int,
     ) -> BasicResult:
-        from connections.github import Github
-
         github = Github(installation_id=installationId)
         repos = github.get_repos()
 

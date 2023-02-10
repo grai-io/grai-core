@@ -1,3 +1,4 @@
+from connections.github import Github
 import pytest
 from asgiref.sync import sync_to_async
 from django.contrib.auth import get_user_model
@@ -904,8 +905,7 @@ async def test_complete_signup_no_user():
 
 @pytest.mark.django_db
 async def test_add_installation(test_context, mocker):
-    mock = mocker.patch("ghapi.all.apps.list_repos_accessible_to_installation")
-    mock.return_value = []
+    mocker.patch("api.mutations.base.Github")
 
     context, organisation, workspace, user = test_context
 
@@ -925,5 +925,5 @@ async def test_add_installation(test_context, mocker):
         context_value=context,
     )
 
-    assert str(result.errors) is None
-    assert result.data == {"success": True}
+    assert result.errors is None
+    assert result.data == {"addInstallation": {"success": True}}
