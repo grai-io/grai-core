@@ -1,11 +1,11 @@
-import React, { useContext, useState } from "react"
+import React, { useState } from "react"
 import { LoadingButton } from "@mui/lab"
 import { Box, TextField } from "@mui/material"
 import Form from "components/form/Form"
-import AuthContext from "./AuthContext"
 import { Link } from "react-router-dom"
 import GraphError from "components/utils/GraphError"
 import { ApolloError } from "@apollo/client"
+import useAuth from "./useAuth"
 
 type Values = {
   email: string
@@ -13,7 +13,7 @@ type Values = {
 }
 
 const LoginForm: React.FC = () => {
-  const { loginUser } = useContext(AuthContext)
+  const { loginUser } = useAuth()
   const [values, setValues] = useState<Values>({
     email: "",
     password: "",

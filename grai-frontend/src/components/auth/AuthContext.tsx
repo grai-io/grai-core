@@ -23,8 +23,8 @@ export const LOGOUT = gql`
 `
 
 export const REGISTER = gql`
-  mutation Register($username: String!, $password: String!) {
-    register(username: $username, password: $password) {
+  mutation Register($username: String!, $name: String!, $password: String!) {
+    register(username: $username, name: $name, password: $password) {
       id
       username
       first_name
@@ -33,15 +33,17 @@ export const REGISTER = gql`
   }
 `
 
+type RegisterValues = { username: string; name: string; password: string }
+
 type AuthContextType = {
-  registerUser: (username: string, password: string) => void
+  registerUser: (values: RegisterValues) => Promise<void>
   loginUser: (username: string, password: string) => Promise<void>
   logoutUser: () => void
   loggedIn: boolean
 }
 
 const AuthContext = createContext<AuthContextType>({
-  registerUser: () => {},
+  registerUser: () => new Promise(() => null),
   loginUser: async () => new Promise(() => null),
   logoutUser: () => {},
   loggedIn: false,
@@ -73,14 +75,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
       })
       .then(() => setLoggedIn(true))
 
-  const registerUser = async (username: string, password: string) =>
+  const registerUser = async (values: RegisterValues) =>
     client
       .mutate<Register, RegisterVariables>({
         mutation: REGISTER,
-        variables: {
-          username,
-          password,
-        },
+        variables: values,
       })
       .then(() => setLoggedIn(true))
 
