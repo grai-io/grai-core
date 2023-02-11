@@ -71,9 +71,9 @@ class Mutation:
         UserModel = get_user_model()
 
         split_name = name.rpartition(" ")
-        user = await UserModel.objects.acreate(
-            username=username, password=password, first_name=split_name[0], last_name=split_name[2]
-        )
+        user = UserModel(username=username, first_name=split_name[0], last_name=split_name[2])
+        user.set_password(password)
+        await sync_to_async(user.save)()
 
         await sync_to_async(login)(info.context.request, user)
 
