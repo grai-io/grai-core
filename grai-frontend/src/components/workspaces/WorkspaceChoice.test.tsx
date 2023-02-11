@@ -38,9 +38,3 @@ test("renders", async () => {
   expect(screen.getByText("Workspace2")).toBeInTheDocument()
   expect(screen.getByText("Workspace3")).toBeInTheDocument()
 })
-
-test("renders empty", async () => {
-  render(<WorkspaceChoice workspaces={[]} />)
-
-  expect(screen.getByText("No Workspaces")).toBeInTheDocument()
-})

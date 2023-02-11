@@ -7,6 +7,7 @@ import { GetWorkspaces } from "./__generated__/GetWorkspaces"
 import GraphError from "components/utils/GraphError"
 import WorkspaceNotFound from "components/workspaces/WorkspaceNotFound"
 import WorkspaceChoice from "components/workspaces/WorkspaceChoice"
+import CreateWorkspace from "components/workspaces/CreateWorkspace"
 
 export const GET_WORKSPACES = gql`
   query GetWorkspaces {
@@ -30,6 +31,8 @@ const Workspaces: React.FC = () => {
 
   if (error) return <GraphError error={error} />
   if (loading) return <Loading />
+
+  if (data?.workspaces.length === 0) return <CreateWorkspace />
 
   return (
     <Container maxWidth="sm" sx={{ mt: 20 }}>

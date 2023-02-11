@@ -10,6 +10,7 @@ import {
 } from "@mui/material"
 import React from "react"
 import { Link } from "react-router-dom"
+import CreateWorkspace from "./CreateWorkspace"
 
 interface Organisation {
   id: string
@@ -51,39 +52,24 @@ const WorkspaceChoice: React.FC<WorkspaceChoiceProps> = ({ workspaces }) => {
   return (
     <Card variant="outlined" sx={{ mt: 2 }}>
       <Box sx={{ p: 3 }}>
-        {workspaces.length > 0 ? (
-          <>
-            <Typography variant="h6">Select Workspace</Typography>
-            <List sx={{ pb: 0 }}>
-              {organisations.map(organisation => (
-                <React.Fragment key={organisation.id}>
-                  <ListSubheader>{organisation.name}</ListSubheader>
-                  {organisation.workspaces.map(workspace => (
-                    <ListItem key={workspace.id} disablePadding>
-                      <ListItemButton
-                        component={Link}
-                        to={`/${workspace.organisation.name}/${workspace.name}`}
-                      >
-                        <ListItemText primary={workspace.name} />
-                      </ListItemButton>
-                    </ListItem>
-                  ))}
-                </React.Fragment>
+        <Typography variant="h6">Select Workspace</Typography>
+        <List sx={{ pb: 0 }}>
+          {organisations.map(organisation => (
+            <React.Fragment key={organisation.id}>
+              <ListSubheader>{organisation.name}</ListSubheader>
+              {organisation.workspaces.map(workspace => (
+                <ListItem key={workspace.id} disablePadding>
+                  <ListItemButton
+                    component={Link}
+                    to={`/${workspace.organisation.name}/${workspace.name}`}
+                  >
+                    <ListItemText primary={workspace.name} />
+                  </ListItemButton>
+                </ListItem>
               ))}
-            </List>
-          </>
-        ) : (
-          <Box sx={{ textAlign: "center" }}>
-            <Typography variant="h6" sx={{ mb: 2 }}>
-              No Workspaces
-            </Typography>
-            <Typography variant="body1">
-              You are not a member of any workspaces.
-              <br />
-              Please contact your administrator.
-            </Typography>
-          </Box>
-        )}
+            </React.Fragment>
+          ))}
+        </List>
       </Box>
     </Card>
   )

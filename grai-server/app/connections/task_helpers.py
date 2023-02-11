@@ -1,19 +1,19 @@
+import uuid
 from copy import deepcopy
-from typing import Dict, List, TypeVar
+from itertools import chain
+from typing import Any, Dict, List, Optional, Sequence, TypeVar, Union
 
 from django.db import models
 from django.db.models import Q
 from grai_schemas.schema import GraiType
-from multimethod import multimethod
-from typing import Sequence, Any, Optional, Union
+from grai_schemas.v1 import EdgeV1, NodeV1
 from grai_schemas.v1.node import NodeNamedID
-from grai_schemas.v1 import NodeV1, EdgeV1
+from multimethod import multimethod
+from pydantic import BaseModel
+
 from lineage.models import Edge as EdgeModel
 from lineage.models import Node as NodeModel
 from workspaces.models import Workspace
-from itertools import chain
-import uuid
-from pydantic import BaseModel
 
 T = TypeVar("T")
 
