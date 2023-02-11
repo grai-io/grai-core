@@ -8,9 +8,10 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
+  CircularProgress,
 } from "@mui/material"
 import GraphError from "components/utils/GraphError"
-import React from "react"
+import React, { useState } from "react"
 import { Link } from "react-router-dom"
 
 export interface Organisation {
@@ -33,6 +34,7 @@ type WorkspaceListProps = {
   onSelect?: (workspace: Workspace) => void
   link?: boolean
   error?: ApolloError
+  loading?: boolean
 }
 
 const WorkspaceList: React.FC<WorkspaceListProps> = ({
@@ -40,7 +42,10 @@ const WorkspaceList: React.FC<WorkspaceListProps> = ({
   onSelect,
   link,
   error,
+  loading,
 }) => {
+  const [selected, setSelected] = useState<Workspace | null>(null)
+
   const organisations = workspaces.reduce<OrganisationWithWorkspaces[]>(
     (res, workspace) => {
       const existingOrganisation = res.find(
@@ -58,8 +63,10 @@ const WorkspaceList: React.FC<WorkspaceListProps> = ({
     []
   )
 
-  const handleClick = (workspace: Workspace) => () =>
-    onSelect && onSelect(workspace)
+  const handleClick = (workspace: Workspace) => () => {
+    setSelected(workspace)
+    if (onSelect) onSelect(workspace)
+  }
 
   return (
     <Card variant="outlined" sx={{ mt: 2 }}>
@@ -82,9 +89,18 @@ const WorkspaceList: React.FC<WorkspaceListProps> = ({
                           <ListItemText primary={workspace.name} />
                         </ListItemButton>
                       ) : (
-                        <ListItemButton onClick={handleClick(workspace)}>
+                        <ListItem
+                          button
+                          secondaryAction={
+                            loading && workspace.id === selected?.id ? (
+                              <CircularProgress size={20} />
+                            ) : null
+                          }
+                          onClick={handleClick(workspace)}
+                          disabled={loading}
+                        >
                           <ListItemText primary={workspace.name} />
-                        </ListItemButton>
+                        </ListItem>
                       )}
                     </ListItem>
                   ))}

@@ -53,6 +53,7 @@ const WorkspaceChoice: React.FC<WorkspaceChoiceProps> = ({
       workspaces={workspaces}
       onSelect={handleSelect}
       error={error}
+      loading={loading}
     />
   )
 }
