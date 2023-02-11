@@ -121,8 +121,8 @@ async def test_register(test_basic_context):
     context = test_basic_context
 
     mutation = """
-        mutation Register($username: String!, $password: String!) {
-            register(username: $username, password: $password) {
+        mutation Register($username: String!, $name: String!, $password: String!) {
+            register(username: $username, name: $name, password: $password) {
             id
             username
             first_name
@@ -137,6 +137,7 @@ async def test_register(test_basic_context):
         mutation,
         variable_values={
             "username": username,
+            "name": "Test Name Last",
             "password": "password",
         },
         context_value=context,
@@ -145,6 +146,8 @@ async def test_register(test_basic_context):
     assert result.errors is None
     assert result.data["register"]["id"] is not None
     assert result.data["register"]["username"] == username
+    assert result.data["register"]["first_name"] == "Test Name"
+    assert result.data["register"]["last_name"] == "Last"
 
 
 @pytest.mark.asyncio
