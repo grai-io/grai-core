@@ -11,7 +11,7 @@ const AppTopBar: React.FC = () => {
     <AppBar position="static">
       <Toolbar>
         <Box component={Link} to={routePrefix} sx={{ mt: 1 }}>
-          <img src="/images/grai-logo.svg" alt="Grai" />
+          <img src="/images/grai-logo-single.svg" alt="Grai" />
         </Box>
         <Button
           component={Link}
