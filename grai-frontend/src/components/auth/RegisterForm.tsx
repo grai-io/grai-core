@@ -1,9 +1,22 @@
 import React, { useState } from "react"
-import { ApolloError } from "@apollo/client"
 import { LoadingButton } from "@mui/lab"
 import { TextField } from "@mui/material"
 import Form from "components/form/Form"
 import useAuth from "./useAuth"
+import GraphError from "components/utils/GraphError"
+import { gql, useMutation } from "@apollo/client"
+import { Register, RegisterVariables } from "./__generated__/Register"
+
+export const REGISTER = gql`
+  mutation Register($username: String!, $name: String!, $password: String!) {
+    register(username: $username, name: $name, password: $password) {
+      id
+      username
+      first_name
+      last_name
+    }
+  }
+`
 
 type FormValues = {
   username: string
@@ -12,26 +25,26 @@ type FormValues = {
 }
 
 const RegisterForm: React.FC = () => {
-  const { registerUser } = useAuth()
+  const { setLoggedIn } = useAuth()
   const [values, setValues] = useState<FormValues>({
     username: "",
     name: "",
     password: "",
   })
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<ApolloError>()
 
-  const handleSubmit = async () => {
-    setLoading(true)
+  const [register, { loading, error }] = useMutation<
+    Register,
+    RegisterVariables
+  >(REGISTER)
 
-    await registerUser(values).catch(err => {
-      setError(err)
-      setLoading(false)
-    })
-  }
+  const handleSubmit = async () =>
+    register({ variables: values })
+      .then(() => setLoggedIn(true))
+      .catch(() => {})
 
   return (
     <Form onSubmit={handleSubmit}>
+      {error && <GraphError error={error} />}
       <TextField
         id="name"
         label="Name"
@@ -64,8 +77,6 @@ const RegisterForm: React.FC = () => {
         onChange={event =>
           setValues({ ...values, password: event.target.value })
         }
-        error={!!error}
-        helperText={error?.graphQLErrors?.[0]?.message}
       />
       <LoadingButton
         variant="contained"

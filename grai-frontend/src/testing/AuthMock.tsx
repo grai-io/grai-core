@@ -4,36 +4,20 @@ import React, { ReactNode, useState } from "react"
 
 type AuthMockProps = {
   initialLoggedIn: boolean
-  throwError?: boolean
   children: ReactNode
 }
 
-const AuthMock: React.FC<AuthMockProps> = ({
-  children,
-  initialLoggedIn,
-  throwError,
-}) => {
+const AuthMock: React.FC<AuthMockProps> = ({ children, initialLoggedIn }) => {
   const [loggedIn, setLoggedIn] = useState(initialLoggedIn)
 
   return (
     <AuthContext.Provider
       value={{
-        registerUser: () => {
-          if (throwError) throw Error("Register Error")
-
-          setLoggedIn(true)
-          return new Promise(() => null)
-        },
-        loginUser: async () => {
-          if (throwError) throw Error("Login Error")
-
-          setLoggedIn(true)
-          return new Promise(() => null)
-        },
         logoutUser: () => {
           setLoggedIn(false)
         },
         loggedIn,
+        setLoggedIn,
       }}
     >
       {children}

@@ -1,7 +1,8 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { render, screen, waitFor } from "testing"
-import LoginForm from "./LoginForm"
+import LoginForm, { LOGIN } from "./LoginForm"
+import { GraphQLError } from "graphql"
 
 test("submit", async () => {
   const user = userEvent.setup()
@@ -34,10 +35,24 @@ test("submit", async () => {
 test("error", async () => {
   const user = userEvent.setup()
 
+  const mocks = [
+    {
+      request: {
+        query: LOGIN,
+        variables: {
+          username: "email@grai.io",
+          password: "password",
+        },
+      },
+      result: {
+        errors: [new GraphQLError("Error!")],
+      },
+    },
+  ]
+
   render(<LoginForm />, {
     withRouter: true,
-    loggedIn: false,
-    throwError: true,
+    mocks,
   })
 
   await user.type(
@@ -53,6 +68,6 @@ test("error", async () => {
   await user.click(screen.getByRole("button", { name: /login/i }))
 
   await waitFor(() => {
-    expect(screen.getByText("Error")).toBeInTheDocument()
+    expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })

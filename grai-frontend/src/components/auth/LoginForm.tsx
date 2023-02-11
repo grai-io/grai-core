@@ -4,31 +4,39 @@ import { Box, TextField } from "@mui/material"
 import Form from "components/form/Form"
 import { Link } from "react-router-dom"
 import GraphError from "components/utils/GraphError"
-import { ApolloError } from "@apollo/client"
+import { gql, useMutation } from "@apollo/client"
 import useAuth from "./useAuth"
+import { Login, LoginVariables } from "./__generated__/Login"
+
+export const LOGIN = gql`
+  mutation Login($username: String!, $password: String!) {
+    login(username: $username, password: $password) {
+      id
+      username
+      first_name
+      last_name
+    }
+  }
+`
 
 type Values = {
-  email: string
+  username: string
   password: string
 }
 
 const LoginForm: React.FC = () => {
-  const { loginUser } = useAuth()
+  const { setLoggedIn } = useAuth()
   const [values, setValues] = useState<Values>({
-    email: "",
+    username: "",
     password: "",
   })
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<ApolloError>()
 
-  const handleSubmit = async () => {
-    setLoading(true)
+  const [login, { loading, error }] = useMutation<Login, LoginVariables>(LOGIN)
 
-    await loginUser(values.email, values.password).catch(err => {
-      setError(err)
-      setLoading(false)
-    })
-  }
+  const handleSubmit = () =>
+    login({ variables: values })
+      .then(() => setLoggedIn(true))
+      .catch(() => {})
 
   return (
     <Box sx={{ pb: 2 }}>
@@ -41,10 +49,10 @@ const LoginForm: React.FC = () => {
           fullWidth
           margin="normal"
           required
-          value={values.email}
+          value={values.username}
           disabled={loading}
           onChange={event =>
-            setValues({ ...values, email: event.target.value })
+            setValues({ ...values, username: event.target.value })
           }
         />
         <TextField
