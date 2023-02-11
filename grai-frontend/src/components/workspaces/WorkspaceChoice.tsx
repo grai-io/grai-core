@@ -10,7 +10,6 @@ import {
 } from "@mui/material"
 import React from "react"
 import { Link } from "react-router-dom"
-import CreateWorkspace from "./CreateWorkspace"
 
 interface Organisation {
   id: string
