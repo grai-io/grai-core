@@ -5,11 +5,12 @@ from django.urls import path
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from django_multitenant.utils import get_current_tenant
 
 from common.permissions.multitenant import Multitenant
 from connections.tasks import run_update_server
 from installations.github import Github
-from installations.models import Branch, Commit, Repository
+from installations.models import Branch, Commit, Repository, PullRequest
 from rest_framework import routers
 from workspaces.permissions import HasWorkspaceAPIKey
 
@@ -55,7 +56,7 @@ def get_connection(request) -> Connection:
     return connection
 
 
-def get_trigger(request):
+def get_trigger(request, action: str):
     owner = request.POST.get("github_owner")
 
     if owner is None:
@@ -68,14 +69,46 @@ def get_trigger(request):
     except Repository.DoesNotExist:
         raise Exception("Repository not found, have you installed the Grai Github App?")
 
-    branch = request.POST.get("git_branch")
+    branch_reference = request.POST.get("git_branch")
     head_sha = request.POST.get("git_head_sha")
+    pr_reference = request.POST.get("github_pr_reference")
 
-    branch, created = Branch.objects.get_or_create(repository=repository, reference=branch)
-    commit, created = Commit.objects.get_or_create(repository=repository, branch=branch, reference=head_sha)
+    pull_request = None
+
+    branch, created = Branch.objects.get_or_create(repository=repository, reference=branch_reference)
+    if pr_reference:
+        pull_request, created = PullRequest.objects.get_or_create(repository=repository, reference=pr_reference)
+    commit, created = Commit.objects.get_or_create(
+        repository=repository, branch=branch, reference=head_sha, pull_request=pull_request
+    )
 
     github = Github(owner=owner, repo=repo)
-    check = github.create_check(head_sha=head_sha)
+
+    workspace = get_current_tenant()
+    details_url_start = (
+        f"https://app.grai.io/{workspace.organisation.name}/{workspace.name}/reports/github/{owner}/{repo}/"
+    )
+    details_url = (
+        f"{details_url_start}pulls/{pr_reference}"
+        if pr_reference is not None
+        else f"{details_url_start}branches/{branch_reference}"
+    )
+
+    output = (
+        {
+            "title": "Grai Test Summary",
+            "summary": f"[View Test Report on Grai Cloud]({details_url})",
+        }
+        if action == "tests"
+        else None
+    )
+
+    check = github.create_check(
+        head_sha=head_sha,
+        name="Grai Update" if action == "update" else "Grai Test",
+        details_url=details_url,
+        output=output,
+    )
 
     return commit, {
         "installation_id": github.installation_id,
@@ -89,10 +122,10 @@ def get_trigger(request):
 @api_view(["POST"])
 @permission_classes([(HasWorkspaceAPIKey | IsAuthenticated) & Multitenant])
 def create_run(request):
-    connection = get_connection(request)
-    commit, trigger = get_trigger(request)
-
     action = request.POST.get("action", "tests")
+
+    connection = get_connection(request)
+    commit, trigger = get_trigger(request, action)
 
     run = Run.objects.create(connection=connection, status="queued", commit=commit, trigger=trigger, action=action)
 

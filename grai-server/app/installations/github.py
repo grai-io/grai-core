@@ -63,10 +63,19 @@ class Github:
 
         return self.api
 
-    def create_check(self, head_sha: str, external_id: str = None, name: str = "Grai Update"):
+    def create_check(
+        self, head_sha: str, external_id: str = None, name: str = "Grai Update", details_url: str = None, output=None
+    ):
         self.get_api()
 
-        check = self.api.checks.create(name=name, head_sha=head_sha, external_id=external_id, status="queued")
+        check = self.api.checks.create(
+            name=name,
+            head_sha=head_sha,
+            external_id=external_id,
+            status="queued",
+            details_url=details_url,
+            output=output,
+        )
 
         return check
 

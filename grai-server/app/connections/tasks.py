@@ -57,6 +57,8 @@ def execute_run(run: Run):
         github.start_check(check_id=run.trigger["check_id"])
 
     try:
+        results = None
+
         connector = run.connection.connector
         adapter = get_adapter(connector.slug)
 
@@ -76,7 +78,10 @@ def execute_run(run: Run):
             github = Github(
                 owner=run.trigger["owner"], repo=run.trigger["repo"], installation_id=run.trigger["installation_id"]
             )
-            github.complete_check(check_id=run.trigger["check_id"])
+            github.complete_check(
+                check_id=run.trigger["check_id"],
+                conclusion="success" if results is None else "failure",
+            )
     except Exception as e:
         run.metadata = {"error": str(e)}
         run.status = "error"
