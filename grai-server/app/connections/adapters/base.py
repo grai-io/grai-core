@@ -1,8 +1,16 @@
+from abc import ABC
+
+from grai_graph.graph import build_graph
+from grai_schemas.v1 import EdgeV1, NodeV1
+
 from connections.models import Run
-from connections.task_helpers import update
+from connections.task_helpers import modelToSchema, update
+from lineage.models import Edge, Node
+from itertools import chain
+from .tools import TestResultCacheBase
 
 
-class BaseAdapter:
+class BaseAdapter(ABC):
     run: Run
 
     def get_nodes_and_edges(self):
@@ -15,3 +23,25 @@ class BaseAdapter:
 
         update(self.run.workspace, nodes)
         update(self.run.workspace, edges)
+
+    def run_tests(self, run: Run):
+        self.run = run
+
+        new_nodes, new_edges = self.get_nodes_and_edges()
+
+        nodes = [modelToSchema(model, NodeV1, "Node") for model in Node.objects.filter(workspace=run.workspace)]
+        edges = [modelToSchema(model, EdgeV1, "Edge") for model in Edge.objects.filter(workspace=run.workspace)]
+
+        graph = build_graph(nodes, edges, "v1")
+
+        results = TestResultCacheBase(new_nodes, new_edges, graph)
+
+        test_failures = list(chain.from_iterable(results.test_results().values()))
+
+        test_list = [test.toJSON() for test in test_failures]
+
+        print(f"test failures, length: {len(test_failures)}")
+        print(f"test list, length: {len(test_list)}")
+        print(test_list)
+
+        return test_list

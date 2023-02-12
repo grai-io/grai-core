@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Repository, Branch, PullRequest, Commit
+from .models import Branch, Commit, PullRequest, Repository
 
 
 class RepositoryAdmin(admin.ModelAdmin):

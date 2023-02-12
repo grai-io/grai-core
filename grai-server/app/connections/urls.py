@@ -8,13 +8,13 @@ from rest_framework.response import Response
 
 from common.permissions.multitenant import Multitenant
 from connections.tasks import run_update_server
+from installations.github import Github
+from installations.models import Branch, Commit, Repository
 from rest_framework import routers
 from workspaces.permissions import HasWorkspaceAPIKey
 
 from .models import Connection, Connector, Run
-from installations.models import Repository, Commit, Branch
 from .views import ConnectionViewSet, ConnectorViewSet, RunViewSet
-from installations.github import Github
 
 app_name = "connections"
 

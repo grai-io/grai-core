@@ -110,17 +110,6 @@ class TestUpdateServer:
 
         assert str(e_info.value) == "No connector found for: Connector"
 
-    def test_run_update_server_dbt(self, test_workspace, test_dbt_connector):
-        with open(os.path.join(__location__, "manifest.json")) as reader:
-            file = UploadedFile(reader, name="manifest.json")
-            connection = Connection.objects.create(
-                name=str(uuid.uuid4()), connector=test_dbt_connector, workspace=test_workspace
-            )
-            run = Run.objects.create(connection=connection, workspace=test_workspace)
-            RunFile.objects.create(run=run, file=file)
-
-            run_update_server(str(run.id))
-
     def test_run_update_server_yaml_file(self, test_workspace, test_yaml_file_connector):
         Node.objects.create(workspace=test_workspace, namespace="default", name="table1")
 
@@ -190,6 +179,38 @@ class TestUpdateServer:
         run = Run.objects.create(connection=connection, workspace=test_workspace)
 
         run_update_server(str(run.id))
+
+
+@pytest.mark.django_db
+class TestUpdateServerTests:
+    def test_run_update_server_dbt(self, test_workspace, test_dbt_connector):
+        with open(os.path.join(__location__, "manifest.json")) as reader:
+            file = UploadedFile(reader, name="manifest.json")
+            connection = Connection.objects.create(
+                name=str(uuid.uuid4()), connector=test_dbt_connector, workspace=test_workspace
+            )
+            run = Run.objects.create(connection=connection, workspace=test_workspace, action=Run.TESTS)
+            RunFile.objects.create(run=run, file=file)
+
+        run_update_server(str(run.id))
+
+
+@pytest.mark.django_db
+def test_run_update_server_incorrect_action(test_workspace, test_yaml_file_connector):
+    Node.objects.create(workspace=test_workspace, namespace="default", name="table1")
+
+    with open(os.path.join(__location__, "test.yaml")) as reader:
+        file = UploadedFile(reader, name="test.yaml")
+        connection = Connection.objects.create(
+            name=str(uuid.uuid4()), connector=test_yaml_file_connector, workspace=test_workspace
+        )
+        run = Run.objects.create(connection=connection, workspace=test_workspace, action="Incorrect")
+        RunFile.objects.create(run=run, file=file)
+
+        with pytest.raises(Exception) as e_info:
+            run_update_server(str(run.id))
+
+        assert str(e_info.value) == "Incorrect run action Incorrect found, accepted values: tests, update"
 
 
 @pytest.mark.django_db

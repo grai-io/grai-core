@@ -1,12 +1,12 @@
 import types
-from unittest.mock import MagicMock
 import uuid
+from unittest.mock import MagicMock
 
 import pytest
 
 from connections.models import Connection, Connector
-from workspaces.models import Membership, Organisation, Workspace
 from installations.models import Repository
+from workspaces.models import Membership, Organisation, Workspace
 
 
 @pytest.fixture

@@ -39,7 +39,7 @@ class Repository(TenantModel):
         verbose_name_plural = "repositories"
         constraints = [
             models.UniqueConstraint(
-                fields=["type", "owner", "repo"],
+                fields=["workspace", "type", "owner", "repo"],
                 name="Repository type/owner/repo uniqueness",
             )
         ]

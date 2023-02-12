@@ -34,14 +34,10 @@ class Github:
         jwt_instance = jwt.JWT()
         encoded_jwt = jwt_instance.encode(payload, signing_key, alg="RS256")
 
-        print(f"JWT: ", encoded_jwt)
-
         return encoded_jwt
 
     def connect(self):
         jwt = self.generate_jwt()
-
-        print(f"installation_id: {self.installation_id}")
 
         res = requests.post(
             f"https://api.github.com/app/installations/{self.installation_id}/access_tokens",
@@ -52,8 +48,6 @@ class Github:
         )
 
         data = res.json()
-
-        print(data)
 
         self.token = data.get("token")
         self.expires_at = data.get("expires_at")
@@ -73,8 +67,6 @@ class Github:
         self.get_api()
 
         check = self.api.checks.create(name=name, head_sha=head_sha, external_id=external_id, status="queued")
-
-        print(check)
 
         return check
 

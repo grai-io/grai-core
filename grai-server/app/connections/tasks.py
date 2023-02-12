@@ -11,7 +11,6 @@ from connections.adapters.yaml_file import YamlFileAdapter
 from installations.github import Github
 
 from .models import Connection, Connector, Run
-from .task_helpers import get_node, update
 
 
 @shared_task
@@ -61,8 +60,13 @@ def execute_run(run: Run):
         connector = run.connection.connector
         adapter = get_adapter(connector.slug)
 
-        # update_server
-        adapter.run_update(run)
+        if run.action == Run.UPDATE:
+            adapter.run_update(run)
+        elif run.action == Run.TESTS:
+            results = adapter.run_tests(run)
+            run.metadata = {"results": results}
+        else:
+            raise NoActionError(f"Incorrect run action {run.action} found, accepted values: tests, update")
 
         run.status = "success"
         run.finished_at = datetime.now()
@@ -90,3 +94,7 @@ def execute_run(run: Run):
 
 class NoConnectorError(Exception):
     """raise this when no connection is found"""
+
+
+class NoActionError(Exception):
+    """raise this when no action is found"""

@@ -241,23 +241,9 @@ def process_updates(workspace, Model, items, active_items=None):
         merge(item_map[k], current_item_map[k]) for k in updated_item_keys if item_map[k] != current_item_map[k]
     ]
 
-    def schemaToModel(item):
-        values = item.spec.dict()
-        # breakpoint()
-        values["workspace"] = workspace
-        # values["display_name"] = values["name"]
-
-        if type == "Edge":
-            values["source"] = get_node(workspace, values["source"])
-            values["destination"] = get_node(workspace, values["destination"])
-
-        result = Model(**values)
-        result.set_names()
-        return result
-
-    new = [schemaToModel(item) for item in new_items]
-    updates = [schemaToModel(item) for item in updated_items]
-    deactivated_items = [schemaToModel(item) for item in deactivated_items]
+    new = [schemaToModel(item, workspace, Model) for item in new_items]
+    updates = [schemaToModel(item, workspace, Model) for item in updated_items]
+    deactivated_items = [schemaToModel(item, workspace, Model) for item in deactivated_items]
     # breakpoint()
     return new, deactivated_items, updates
 
@@ -273,3 +259,28 @@ def update(workspace: Workspace, items: List[T], active_items: Optional[List[T]]
     # )
     Model.objects.bulk_update(updated_items, ["metadata"])
     Model.objects.bulk_create(new_items)
+
+
+def schemaToModel(item, workspace, Model):
+    values = item.spec.dict()
+    # breakpoint()
+    values["workspace"] = workspace
+    # values["display_name"] = values["name"]
+
+    if type == "Edge":
+        values["source"] = get_node(workspace, values["source"])
+        values["destination"] = get_node(workspace, values["destination"])
+
+    result = Model(**values)
+    result.set_names()
+    return result
+
+
+def modelToSchema(model, Schema, type):
+    spec = model.__dict__
+
+    if type == "Edge":
+        spec["source"] = NodeNamedID(**model.source.__dict__)
+        spec["destination"] = NodeNamedID(**model.destination.__dict__)
+
+    return Schema.from_spec(spec)
