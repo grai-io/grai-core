@@ -19,6 +19,11 @@ const Tables = lazy(() => import("./pages/tables/Tables"))
 const Table = lazy(() => import("./pages/tables/Table"))
 const Runs = lazy(() => import("./pages/runs/Runs"))
 const Run = lazy(() => import("./pages/runs/Run"))
+
+const PullRequest = lazy(
+  () => import("./pages/reports/pull_request/PullRequest")
+)
+
 const Connections = lazy(() => import("./pages/connections/Connections"))
 const ConnectionCreate = lazy(
   () => import("./pages/connections/ConnectionCreate")
@@ -64,6 +69,18 @@ const Routes: React.FC = () => (
             <Route path="runs">
               <Route index element={<Runs />} />
               <Route path=":runId" element={<Run />} />
+            </Route>
+            <Route path="reports">
+              <Route index element={<NotFound />} />
+              <Route path=":type/:owner/:repo">
+                <Route index element={<NotFound />} />
+                <Route path="pulls">
+                  <Route index element={<NotFound />} />
+                  <Route path=":reference" element={<PullRequest />} />
+                </Route>
+                <Route path="*" element={<NotFound />} />
+              </Route>
+              <Route path="*" element={<NotFound />} />
             </Route>
             <Route path="connections">
               <Route index element={<Connections />} />

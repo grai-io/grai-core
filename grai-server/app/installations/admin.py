@@ -1,5 +1,7 @@
 from django.contrib import admin
 
+from connections.models import Run
+
 from .models import Branch, Commit, PullRequest, Repository
 
 
@@ -14,13 +16,16 @@ class RepositoryAdmin(admin.ModelAdmin):
         "workspace",
     )
 
-    search_fields = ["owner", "repo"]
+    search_fields = ["id", "owner", "repo"]
 
     list_filter = (
         "workspace",
         "type",
         "owner",
     )
+
+    fields = ["workspace", "type", "owner", "repo", "installation_id"]
+    readonly_fields = ["owner", "repo"]
 
 
 class BranchAdmin(admin.ModelAdmin):
@@ -39,8 +44,21 @@ class BranchAdmin(admin.ModelAdmin):
     )
 
 
+class CommitInline(admin.TabularInline):
+    model = Commit
+    extra = 0
+    fields = ["workspace", "repository", "branch"]
+    readonly_fields = ["workspace", "repository", "branch"]
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
 class PullRequestAdmin(admin.ModelAdmin):
-    search_fields = ["reference"]
+    search_fields = ["id", "reference"]
 
     list_display = (
         "repository",
@@ -53,15 +71,35 @@ class PullRequestAdmin(admin.ModelAdmin):
         "workspace",
         "repository",
     )
+
+    fields = ["workspace", "repository", "reference"]
+    readonly_fields = ["workspace", "repository", "reference"]
+
+    inlines = [
+        CommitInline,
+    ]
+
+
+class RunInline(admin.TabularInline):
+    model = Run
+    extra = 0
+    fields = ["status", "metadata", "created_at", "started_at", "finished_at", "user"]
+    readonly_fields = ["status", "metadata", "created_at", "started_at", "finished_at", "user"]
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 class CommitAdmin(admin.ModelAdmin):
-    search_fields = ["reference"]
+    search_fields = ["id", "reference"]
 
     list_display = (
+        "reference",
         "repository",
         "branch",
-        "reference",
         "workspace",
         "created_at",
     )
@@ -71,6 +109,10 @@ class CommitAdmin(admin.ModelAdmin):
         "repository",
         "branch",
     )
+
+    inlines = [
+        RunInline,
+    ]
 
 
 admin.site.register(Repository, RepositoryAdmin)

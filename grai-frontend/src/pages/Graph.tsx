@@ -3,7 +3,7 @@ import { Alert, Box } from "@mui/material"
 import GraphComponent, { Error } from "components/graph/Graph"
 import { gql, useQuery } from "@apollo/client"
 import theme from "theme"
-import { useLocation } from "react-router-dom"
+import { useSearchParams } from "react-router-dom"
 import GraphError from "components/utils/GraphError"
 import PageLayout from "components/layout/PageLayout"
 import {
@@ -54,7 +54,7 @@ export const GET_TABLES_AND_EDGES = gql`
 
 const Graph: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
-  const searchParams = new URLSearchParams(useLocation().search)
+  const [searchParams] = useSearchParams()
 
   const { loading, error, data } = useQuery<
     GetTablesAndEdges,

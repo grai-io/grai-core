@@ -4,8 +4,7 @@ from typing import Dict, List
 
 from grai_graph.analysis import Graph, GraphAnalyzer
 from grai_schemas.v1 import EdgeV1, NodeV1
-from connections.task_helpers import schemaToModel
-from lineage.models import Node
+
 
 SEPARATOR_CHAR = "/"
 

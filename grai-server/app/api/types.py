@@ -13,6 +13,9 @@ from strawberry_django_plus.gql import auto
 from connections.models import Connection as ConnectionModel
 from connections.models import Connector as ConnectorModel
 from connections.models import Run as RunModel
+from installations.models import Commit as CommitModel
+from installations.models import PullRequest as PullRequestModel
+from installations.models import Repository as RepositoryModel
 from lineage.models import Edge as EdgeModel
 from lineage.models import Node as NodeModel
 from users.models import User as UserModel
@@ -402,7 +405,7 @@ class Workspace:
     # Connections
     @gql.django.field
     def connections(self) -> List["Connection"]:
-        return ConnectionModel.objects.filter(workspace=self)
+        return ConnectionModel.objects.filter(workspace=self, temp=False)
 
     @gql.django.field
     def connection(self, id: strawberry.ID) -> Connection:
@@ -459,6 +462,34 @@ class Workspace:
             .exclude(metadata__has_key="grai.edge_type", metadata__grai__edge_type="TableToColumn")
             .count()
         )
+
+    # Repositories
+    @gql.django.field
+    def repositories(self) -> List["Repository"]:
+        return RepositoryModel.objects.filter(workspace=self)
+
+    @gql.django.field
+    def repository(
+        self,
+        id: Optional[strawberry.ID] = None,
+        type: Optional[str] = None,
+        owner: Optional[str] = None,
+        repo: Optional[str] = None,
+    ) -> "Repository":
+        return (
+            RepositoryModel.objects.get(id=id)
+            if id is not None
+            else RepositoryModel.objects.get(workspace=self, type=type, owner=owner, repo=repo)
+        )
+
+    # Pull Requests
+    @gql.django.field
+    def pull_requests(self) -> List["PullRequest"]:
+        return PullRequestModel.objects.filter(workspace=self)
+
+    @gql.django.field
+    def pull_request(self, id: strawberry.ID) -> "PullRequest":
+        return PullRequestModel.objects.get(id=id)
 
 
 @gql.django.filters.filter(MembershipModel, lookups=True)
@@ -552,3 +583,47 @@ class Run:
     started_at: Optional[datetime.datetime]
     finished_at: Optional[datetime.datetime]
     user: Optional[User]
+
+
+@gql.django.type(RepositoryModel)
+class Repository:
+    id: auto
+    workspace: Workspace
+    type: auto
+    owner: auto
+    repo: auto
+    pull_requests: List["PullRequest"]
+
+    @gql.django.field
+    def pull_request(self, id: Optional[strawberry.ID] = None, reference: Optional[str] = None) -> "PullRequest":
+        return (
+            PullRequestModel.objects.get(id=id) if id is not None else PullRequestModel.objects.get(reference=reference)
+        )
+
+
+@gql.django.type(PullRequestModel)
+class PullRequest:
+    id: auto
+    reference: auto
+
+    commits: List["Commit"]
+
+    @gql.django.field
+    def last_commit(self) -> Optional["Commit"]:
+        return CommitModel.objects.filter(pull_request=self.id).order_by("-created_at").first()
+
+
+@gql.django.type(CommitModel)
+class Commit:
+    id: auto
+    reference: auto
+
+    runs: List[Run]
+
+    @gql.django.field
+    def last_run(self) -> Optional["Run"]:
+        return RunModel.objects.filter(commit=self.id).order_by("-created_at").first()
+
+    @gql.django.field
+    def last_successful_run(self) -> Optional["Run"]:
+        return RunModel.objects.filter(commit=self.id, status="success").order_by("-created_at").first()

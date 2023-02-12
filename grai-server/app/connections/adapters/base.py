@@ -1,4 +1,5 @@
 from abc import ABC
+from itertools import chain
 
 from grai_graph.graph import build_graph
 from grai_schemas.v1 import EdgeV1, NodeV1
@@ -6,7 +7,7 @@ from grai_schemas.v1 import EdgeV1, NodeV1
 from connections.models import Run
 from connections.task_helpers import modelToSchema, update
 from lineage.models import Edge, Node
-from itertools import chain
+
 from .tools import TestResultCacheBase
 
 
