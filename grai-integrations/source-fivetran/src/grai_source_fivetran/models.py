@@ -1,6 +1,11 @@
 from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
+from grai_source_fivetran.fivetran_api.api_models import (
+    ColumnMetadataResponse,
+    SchemaMetadataResponse,
+    TableMetadataResponse,
+)
 from pydantic import BaseModel, Field, root_validator, validator
 
 
@@ -82,3 +87,71 @@ class ConnectorMetadata(BaseModel):
 
 class SourceTableColumnMetadata(BaseModel):
     columns: Dict[str, ConnectorTableColumnSchema]
+
+
+class Column(BaseModel):
+    name: str
+    fivetran_id: str
+    fivetran_table_id: str
+    table_name: str
+    table_schema: str
+    is_primary_key: bool
+    is_foreign_key: bool
+
+    @property
+    def full_name(self):
+        return f"{self.table_schema}.{self.table_name}.{self.name}"
+
+    @classmethod
+    def from_fivetran_models(
+        cls,
+        schema: SchemaMetadataResponse,
+        table: TableMetadataResponse,
+        column: ColumnMetadataResponse,
+    ):
+        source_values = {
+            "name": column.name_in_source,
+            "five_tran_id": column.id,
+            "fivetran_table_id": column.parent_id,
+            "is_primary_key": column.is_primary_key,
+            "is_foreign_key": column.is_foreign_key,
+            "table_name": table.name_in_source,
+            "table_schema": schema.name_in_source,
+        }
+        destination_values = {
+            "name": column.name_in_destination,
+            "five_tran_id": column.id,
+            "fivetran_table_id": column.parent_id,
+            "is_primary_key": column.is_primary_key,
+            "is_foreign_key": column.is_foreign_key,
+            "table_name": table.name_in_destination,
+            "table_schema": schema.name_in_destination,
+        }
+        return cls(**source_values), cls(**destination_values)
+
+
+class Table(BaseModel):
+    name: str
+    fivetran_id: str
+    schema_name: str
+    columns: List[Column] = []
+
+    @property
+    def full_name(self):
+        return f"{self.schema_name}.{self.name}"
+
+    @classmethod
+    def from_fivetran_models(
+        cls, schema: SchemaMetadataResponse, table: TableMetadataResponse
+    ):
+        source_values = {
+            "name": table.name_in_source,
+            "schema_name": schema.name_in_source,
+            "fivetran_id": table.id,
+        }
+        destination_values = {
+            "name": table.name_in_destination,
+            "schema_name": schema.name_in_destination,
+            "fivetran_id": table.id,
+        }
+        return cls(**source_values), cls(**destination_values)
