@@ -597,7 +597,9 @@ class Repository:
     @gql.django.field
     def pull_request(self, id: Optional[strawberry.ID] = None, reference: Optional[str] = None) -> "PullRequest":
         return (
-            PullRequestModel.objects.get(id=id) if id is not None else PullRequestModel.objects.get(reference=reference)
+            PullRequestModel.objects.get(id=id)
+            if id is not None
+            else PullRequestModel.objects.get(repository=self, reference=reference)
         )
 
 
