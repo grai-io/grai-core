@@ -50,6 +50,7 @@ class TestResult(ABC):
             "failing_node": self.nodeToJson(self.failing_node),
             "node_name": self.node_name,
             "failing_node_name": self.failing_node_name,
+            "message": self.message(),
         }  # "test_path": self.test_path
 
 

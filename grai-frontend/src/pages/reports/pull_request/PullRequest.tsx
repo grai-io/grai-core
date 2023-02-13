@@ -123,6 +123,7 @@ const PullRequest: React.FC = () => {
     failing_node: Node
     failing_node_name: string
     type: string
+    message: string
   }
 
   const results: Result[] | undefined =
@@ -133,7 +134,7 @@ const PullRequest: React.FC = () => {
         source: result.node.name,
         destination: result.failing_node.name,
         test: result.type,
-        message: result.type,
+        message: result.message,
       }))
     : null
 

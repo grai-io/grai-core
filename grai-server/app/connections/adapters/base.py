@@ -38,11 +38,6 @@ class BaseAdapter(ABC):
         results = TestResultCacheBase(new_nodes, new_edges, graph)
 
         test_failures = list(chain.from_iterable(results.test_results().values()))
-
         test_list = [test.toJSON() for test in test_failures]
-
-        print(f"test failures, length: {len(test_failures)}")
-        print(f"test list, length: {len(test_list)}")
-        print(test_list)
 
         return test_list
