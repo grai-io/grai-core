@@ -62,7 +62,7 @@ const periodToText = (
 ): string =>
   long
     ? `${value} ${periodText[key].long}${value > 1 ? "s" : ""}`
-    : `${value}${periodText[key].short}${value > 1 ? "s" : ""}`
+    : `${value}${periodText[key].short}`
 
 export const durationToString = (
   duration: DurationObjectUnits,
