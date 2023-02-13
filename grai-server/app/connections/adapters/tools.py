@@ -5,7 +5,6 @@ from typing import Dict, List
 from grai_graph.analysis import Graph, GraphAnalyzer
 from grai_schemas.v1 import EdgeV1, NodeV1
 
-
 SEPARATOR_CHAR = "/"
 
 
