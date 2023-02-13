@@ -1,0 +1,41 @@
+spec:
+  data_source: grai-core-demo
+  display_name: table1
+  is_active: true
+  metadata:
+    grai:
+      node_type: Table
+  name: table1
+  namespace: default
+type: Node
+version: v1
+---
+spec:
+  data_source: grai-core-demo
+  display_name: column1
+  is_active: true
+  metadata:
+    grai:
+      node_type: Column
+  name: column1
+  namespace: default
+type: Node
+version: v1
+---
+spec:
+  data_source: demo-edges
+  destination:
+    name: column1
+    namespace: default
+  is_active: true
+  metadata:
+    grai:
+      node_type: Edge
+      edge_type: TableToColumn
+  name: table1 > column1
+  namespace: default
+  source:
+    name: table1
+    namespace: default
+type: Edge
+version: v1

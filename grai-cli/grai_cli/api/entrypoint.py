@@ -2,6 +2,7 @@ from typing import Optional
 
 import click
 import typer
+
 from grai_cli.utilities.telemetry import Telemetry
 from grai_cli.utilities.utilities import HAS_RICH, default_callback
 
@@ -27,9 +28,7 @@ app = typer.Typer(
 @app.callback()
 def callback(
     ctx: typer.Context,
-    telemetry: Optional[bool] = typer.Option(
-        None, show_default=False, help="Enable or disable telemetry"
-    ),
+    telemetry: Optional[bool] = typer.Option(None, show_default=False, help="Enable or disable telemetry"),
 ):
     """
     Grai CLI

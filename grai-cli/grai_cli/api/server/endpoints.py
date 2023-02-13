@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Optional
 
 import typer
+
 from grai_cli.api.entrypoint import app
 from grai_cli.api.server.setup import client_app, client_get_app, get_default_client
 from grai_cli.utilities import utilities
@@ -21,15 +22,22 @@ def is_authenticated():
         )
 
 
-@client_get_app.command(
-    "nodes", help=f"Grab active {default_styler('nodes')} from the guide."
-)
 def get_nodes(
-    print: bool = typer.Option(True, "--p", help=f"Print nodes to console"),
-    to_file: Optional[Path] = typer.Option(None, "--f", help="Write nodes to file"),
+    name: Optional[str] = None,
+    namespace: Optional[str] = None,
+    print: bool = True,
+    to_file: Optional[Path] = None,
 ):
     client = get_default_client()
-    result = client.get("Node")
+    if name is None:
+        if namespace is None:
+            result = client.get("Node")
+        else:
+            result = client.get("Node", "*", namespace)
+    elif namespace is None:
+        result = client.get("Node", name)
+    else:
+        result = client.get("Node", name, namespace)
 
     if print:
         utilities.print(result)
@@ -39,15 +47,43 @@ def get_nodes(
     return result
 
 
-@client_get_app.command(
-    "edges", help=f"Grab active {default_styler('edges')} from the guide."
-)
+@client_get_app.command("nodes", help=f"Grab active {default_styler('nodes')} from the guide.")
+def get_nodes_cli(
+    name: Optional[str] = typer.Argument(None),
+    namespace: Optional[str] = typer.Option(None, "--namespace", "-n", help="Namespace of node"),
+    print: bool = typer.Option(True, "--p", help=f"Print nodes to console"),
+    to_file: Optional[Path] = typer.Option(None, "--f", help="Write nodes to file"),
+):
+    return get_nodes(name=name, namespace=namespace, print=print, to_file=to_file)
+
+
+@client_get_app.command("edges", help=f"Grab active {default_styler('edges')} from the guide.")
 def get_edges(
     print: bool = typer.Option(True, "--p", help=f"Print edges to console"),
-    to_file: Optional[Path] = typer.Option(None, "--f", help="Write nodes to file"),
+    to_file: Optional[Path] = typer.Option(None, "--f", help="Write edges to file"),
 ):
     client = get_default_client()
     result = client.get("Edge")
+
+    if print:
+        utilities.print(result)
+    if to_file:
+        write_yaml(result, to_file)
+
+    return result
+
+
+@client_get_app.command("workspaces", help=f"Grab active {default_styler('workspaces')} from the guide.")
+def get_workspaces(
+    name: str = typer.Argument(None),
+    print: bool = typer.Option(True, "--p", help=f"Print workspaces to console"),
+    to_file: Optional[Path] = typer.Option(None, "--f", help="Write workspaces to file"),
+):
+    client = get_default_client()
+    if name is None:
+        result = client.get("workspaces")
+    else:
+        result = client.get("workspaces", name)
 
     if print:
         utilities.print(result)

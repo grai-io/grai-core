@@ -57,7 +57,7 @@ def has_data_items(item: Dict) -> bool:
         return True
 
 
-class FivetranConnector:
+class FivetranAPI:
     def __init__(
         self,
         api_key: Optional[str] = None,
@@ -70,9 +70,7 @@ class FivetranConnector:
             "api_secret": api_secret,
             "endpoint": endpoint,
         }
-        self.config = FiveTranConfig(
-            **{k: v for k, v in passthrough_kwargs.items() if v is not None}
-        )
+        self.config = FiveTranConfig(**{k: v for k, v in passthrough_kwargs.items() if v is not None})
 
         self.session = requests.Session()
         self.session.auth = (
@@ -90,14 +88,8 @@ class FivetranConnector:
         params: Optional[Dict] = None,
         **kwargs,
     ) -> Dict:
-        params = (
-            self.session.params if params is None else {**self.session.params, **params}
-        )
-        headers = (
-            self.session.headers
-            if headers is None
-            else {**self.session.headers, **headers}
-        )
+        params = self.session.params if params is None else {**self.session.params, **params}
+        headers = self.session.headers if headers is None else {**self.session.headers, **headers}
         result = request(url, params=params, headers=headers, **kwargs)
         assert result.status_code == 200
         return result.json(), result
@@ -115,16 +107,12 @@ class FivetranConnector:
                 return True
             return False
 
-        result, response = self.make_request(
-            request, url, headers=headers, params=params, **kwargs
-        )
+        result, response = self.make_request(request, url, headers=headers, params=params, **kwargs)
         yield result
 
         while has_cursor(result):
             params = {**response.request.params, "cursor": result["data"]["nextCursor"]}
-            result, response = self.make_request(
-                request, url, headers=headers, params=params, **kwargs
-            )
+            result, response = self.make_request(request, url, headers=headers, params=params, **kwargs)
             yield result
 
     def get_paginated_data_items(
@@ -133,61 +121,37 @@ class FivetranConnector:
         headers: Optional[Dict] = None,
         params: Optional[Dict] = None,
     ) -> List[Dict]:
-        query = self.paginated_query(
-            self.session.get, url, params=params, headers=headers
-        )
+        query = self.paginated_query(self.session.get, url, params=params, headers=headers)
         data = (page["data"]["items"] for page in query if has_data_items(page))
         results = [item for items in data for item in items]
         return results
 
-    def get_tables(
-        self, connector_id: str, limit: Optional[int] = None
-    ) -> List[TableMetadataResponse]:
+    def get_tables(self, connector_id: str, limit: Optional[int] = None) -> List[TableMetadataResponse]:
         url = f"{self.config.endpoint}/metadata/connectors/{connector_id}/tables"
-        return [
-            TableMetadataResponse(**item) for item in self.get_paginated_data_items(url)
-        ]
+        return [TableMetadataResponse(**item) for item in self.get_paginated_data_items(url)]
 
-    def get_columns(
-        self, connector_id: str, limit: Optional[int] = None
-    ) -> List[ColumnMetadataResponse]:
+    def get_columns(self, connector_id: str, limit: Optional[int] = None) -> List[ColumnMetadataResponse]:
         url = f"{self.config.endpoint}/metadata/connectors/{connector_id}/columns"
-        return [
-            ColumnMetadataResponse(**item)
-            for item in self.get_paginated_data_items(url)
-        ]
+        return [ColumnMetadataResponse(**item) for item in self.get_paginated_data_items(url)]
 
-    def get_schemas(
-        self, connector_id: str, limit: Optional[int] = None
-    ) -> List[SchemaMetadataResponse]:
+    def get_schemas(self, connector_id: str, limit: Optional[int] = None) -> List[SchemaMetadataResponse]:
         url = f"{self.config.endpoint}/metadata/connectors/{connector_id}/schemas"
-        return [
-            SchemaMetadataResponse(**item)
-            for item in self.get_paginated_data_items(url)
-        ]
+        return [SchemaMetadataResponse(**item) for item in self.get_paginated_data_items(url)]
 
     def get_all_groups(self, limit: Optional[int] = None) -> List[GroupResponse]:
         url = f"{self.config.endpoint}/groups"
         return [GroupResponse(**item) for item in self.get_paginated_data_items(url)]
 
-    def get_group_connectors(
-        self, group_id: str, limit: Optional[int] = None
-    ) -> List[ConnectorResponse]:
+    def get_group_connectors(self, group_id: str, limit: Optional[int] = None) -> List[ConnectorResponse]:
         url = f"{self.config.endpoint}/groups/{group_id}/connectors"
-        return [
-            ConnectorResponse(**item) for item in self.get_paginated_data_items(url)
-        ]
+        return [ConnectorResponse(**item) for item in self.get_paginated_data_items(url)]
 
-    def get_destination_metadata(
-        self, destination_id: str
-    ) -> V1DestinationsDestinationIdGetResponse:
+    def get_destination_metadata(self, destination_id: str) -> V1DestinationsDestinationIdGetResponse:
         url = f"{self.config.endpoint}/destinations/{destination_id}"
         data, response = self.make_request(self.session.get, url)
         return V1DestinationsDestinationIdGetResponse(**data)
 
-    def get_connector_metadata(
-        self, connector_id: str
-    ) -> V1ConnectorsConnectorIdSchemasGetResponse:
+    def get_connector_metadata(self, connector_id: str) -> V1ConnectorsConnectorIdSchemasGetResponse:
         url = f"{self.config.endpoint}/connectors/{connector_id}/schemas"
         data, response = self.make_request(self.session.get, url)
         return V1ConnectorsConnectorIdSchemasGetResponse(**data)
@@ -200,9 +164,7 @@ class FivetranConnector:
         return V1ConnectorsConnectorIdSchemasSchemaTablesTableColumnsGetResponse(**data)
 
 
-async def caller(
-    semaphore: asyncio.Semaphore, func: Callable[..., T], *args, **kwargs
-) -> T:
+async def caller(semaphore: asyncio.Semaphore, func: Callable[..., T], *args, **kwargs) -> T:
     result = func(*args, **kwargs)
 
     async with semaphore:
@@ -220,10 +182,7 @@ def parallelize_http(semaphore):
         arg_list = list(arg_list) if not isinstance(arg_list, list) else arg_list
         kwarg_list = [{}] * len(arg_list) if kwarg_list is None else kwarg_list
         assert len(arg_list) == len(kwarg_list)
-        tasks = (
-            caller(semaphore, func, *args, **kwargs)
-            for args, kwargs in zip(arg_list, kwarg_list)
-        )
+        tasks = (caller(semaphore, func, *args, **kwargs) for args, kwargs in zip(arg_list, kwarg_list))
         return await asyncio.gather(*tasks)
 
     def inner(
@@ -244,7 +203,7 @@ class SourceDestinationDict(TypedDict):
 NamespaceTypes = Union[Dict[str, str], SourceDestinationDict]
 
 
-class FivetranGraiMapper(FivetranConnector):
+class FivetranConnector(FivetranAPI):
     def __init__(
         self,
         namespaces: Optional[NamespaceTypes] = None,
@@ -264,11 +223,7 @@ class FivetranGraiMapper(FivetranConnector):
             raise ValueError(message)
         elif namespaces is not None:
             assert all(isinstance(v, (dict, str)) for v in namespaces.values())
-            assert all(
-                isinstance(v, SourceDestinationDict)
-                for v in namespaces.values()
-                if isinstance(v, dict)
-            )
+            assert all(isinstance(v, SourceDestinationDict) for v in namespaces.values() if isinstance(v, dict))
         else:
             namespaces = {}
 
@@ -277,9 +232,7 @@ class FivetranGraiMapper(FivetranConnector):
         self.semaphore = asyncio.Semaphore(self.parallelization)
         self.http_runner = parallelize_http(self.semaphore)
 
-        self.groups = {
-            group.id: group for group in self.get_all_groups() if group.id is not None
-        }
+        self.groups = {group.id: group for group in self.get_all_groups() if group.id is not None}
         self.connectors = {
             conn.id: conn
             for group_id in self.groups.keys()
@@ -288,18 +241,14 @@ class FivetranGraiMapper(FivetranConnector):
         }
 
         if default_namespace is None:
-            self.connectors = {
-                k: v for k, v in self.connectors.items() if v in namespaces
-            }
+            self.connectors = {k: v for k, v in self.connectors.items() if v in namespaces}
         else:
             namespaces = {**namespaces}  # avoid modifying the users original argument
             for k in self.connectors.keys():
                 namespaces.setdefault(k, default_namespace)
 
         self.namespace_map = {
-            k: NamespaceIdentifier(source=v, destination=v)
-            if isinstance(v, str)
-            else NamespaceIdentifier(**v)
+            k: NamespaceIdentifier(source=v, destination=v) if isinstance(v, str) else NamespaceIdentifier(**v)
             for k, v in namespaces.items()
         }
 
@@ -316,15 +265,9 @@ class FivetranGraiMapper(FivetranConnector):
             for column in c_res:
                 self.column_to_conn_map.setdefault(column.id, conn_id)
 
-        self.schemas: Dict[str, SchemaMetadataResponse] = {
-            item.id: item for seq in schemas for item in seq
-        }
-        self.tables: Dict[str, TableMetadataResponse] = {
-            item.id: item for seq in tables for item in seq
-        }
-        self.columns: Dict[str, ColumnMetadataResponse] = {
-            item.id: item for seq in columns for item in seq
-        }
+        self.schemas: Dict[str, SchemaMetadataResponse] = {item.id: item for seq in schemas for item in seq}
+        self.tables: Dict[str, TableMetadataResponse] = {item.id: item for seq in tables for item in seq}
+        self.columns: Dict[str, ColumnMetadataResponse] = {item.id: item for seq in columns for item in seq}
 
     def get_nodes_and_edges(self):
         # table.parent_id -> schema.id
@@ -347,13 +290,8 @@ class FivetranGraiMapper(FivetranConnector):
             for column in self.columns.values()
         ]
 
-        column_edges = (
-            Edge(source=c1, destination=c2, constraint_type="c") for c1, c2 in columns
-        )
-        table_edges = (
-            Edge(source=t1, destination=t2, constraint_type="c")
-            for t1, t2 in tables.values()
-        )
+        column_edges = (Edge(source=c1, destination=c2, constraint_type="c") for c1, c2 in columns)
+        table_edges = (Edge(source=t1, destination=t2, constraint_type="c") for t1, t2 in tables.values())
         table_to_column_edges = (
             Edge(source=table, destination=col, constraint_type="bt")
             for cols in columns

@@ -2,7 +2,14 @@ name: Grai Client CI
 on:
   pull_request:
     paths:
-    - 'grai-client/**'
+      - "grai-client/**"
+      - "grai-server/**"
+
+
+concurrency:
+  group: ${{ github.ref }}-client-ci
+  cancel-in-progress: true
+
 
 env:
   py_ver: "3.10"
@@ -16,20 +23,20 @@ jobs:
       run:
         working-directory: ${{ env.project_dir }}
     steps:
-    - name: Check out Git repository
-      uses: actions/checkout@v3
+      - name: Check out Git repository
+        uses: actions/checkout@v3
 
-    - name: Install Python
-      id: setup-python
-      uses: actions/setup-python@v4
-      with:
-        python-version: "${{ env.py_ver }}"
+      - name: Install Python
+        id: setup-python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "${{ env.py_ver }}"
 
-    - run: pip install black isort
+      - run: pip install black isort
 
-    - run: |
-        black . --check
-        isort . --profile black
+      - run: |
+          black . --check
+          isort . --profile black --check
 
   tests-client:
     needs: lint-client
@@ -66,14 +73,14 @@ jobs:
           --health-retries 10
           --health-start-period 30s
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - uses: actions/setup-python@v4
-      with:
-        python-version: "${{ env.py_ver }}"
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "${{ env.py_ver }}"
 
-    - run: |
-        pip install pytest
-        pip install .
+      - run: |
+          pip install pytest
+          pip install .
 
-    - run: pytest
+      - run: pytest

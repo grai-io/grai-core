@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Dict, List, Literal, Optional, Union
 
+from pydantic import BaseModel, Field
+
 from grai_source_dbt.models.shared import (
     ID,
     Constraint,
@@ -10,7 +12,6 @@ from grai_source_dbt.models.shared import (
     NodeDeps,
 )
 from grai_source_dbt.models.tests import Test
-from pydantic import BaseModel, Field
 
 
 class Table(DBTNode):
@@ -30,7 +31,12 @@ class Model(Table):
 
 class Source(Table):
     resource_type: Literal["source"]
+    identifier: str
     depends_on: NodeDeps = NodeDeps(nodes=[], macros=[])
+
+    @property
+    def full_name(self):
+        return f"{self.table_schema}.{self.identifier}"
 
 
 class Seed(DBTNode):
@@ -41,6 +47,11 @@ class Seed(DBTNode):
 
     #### Grai Specific ####
     tests: Optional[List[Test]] = []
+
+
+class Snapshot(DBTNode):
+    resource_type: Literal["snapshot"]
+    depends_on: NodeDeps = NodeDeps(nodes=[], macros=[])
 
 
 class Column(ID):
@@ -84,7 +95,7 @@ class Column(ID):
         return hash((self.table_unique_id, self.name))
 
 
-SupportedDBTTypes = Union[Model, Source, Seed]
+SupportedDBTTypes = Union[Model, Source, Seed, Snapshot]
 GraiNodeTypes = Union[Model, Source, Seed, Column]
 
 

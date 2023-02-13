@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "grai_source_snowflake"
+version = "0.0.14"
+description = ""
+authors = ["Tony Lewis <tony@grai.io>", "Edward Louth <edward@grai.io>"]
+license = "ELv2"
+packages = [
+    { include = "grai_source_snowflake", from = "src" },
+]
+[tool.poetry.dependencies]
+python = "^3.8"
+pydantic = "^1.9.1"
+PyYAML = "^6.0"
+multimethod = "^1.8"
+snowflake-connector-python = "^3.0.0"
+grai-schemas = "^0.1.9"
+grai-client = "^0.2.2"
+
+[tool.poetry.group.dev.dependencies]
+black = "^22.6.0"
+mypy = "^0.971"
+isort = "^5.10.1"
+pytest = "^7.2.0"
+python-dotenv = "^0.21.1"
+
+[tool.isort]
+profile = "black"
+known_first_party = "grai_source_snowflake"
+
+[tool.black]
+line-length = 120
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

@@ -6,9 +6,10 @@ import pytest
 from django.test import Client
 from django.test.client import RequestFactory
 from django.urls import reverse
+from rest_framework.test import force_authenticate
+
 from lineage.models import Edge, Node
 from lineage.urls import app_name
-from rest_framework.test import force_authenticate
 from users.models import User
 
 
@@ -43,8 +44,6 @@ class TestUserAuth:
         assert success is False
 
     def test_incorrect_password_auth(self, db, client, create_user, test_password):
-        user = User.objects.create_user(
-            username="test@gmail.com", password=test_password
-        )
+        user = User.objects.create_user(username="test@gmail.com", password=test_password)
         success = client.login(username=user.username, password="wrong_password")
         assert success is False

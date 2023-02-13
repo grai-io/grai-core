@@ -10,4 +10,6 @@ spec:
         namespace: test
     is_active: true
     metadata:
+        grai:
+            edge_type: "Edge"
         stuff: goes_here

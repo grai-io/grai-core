@@ -28,9 +28,7 @@ def apply_redactions(config_to_redact: LazyConfig, redact_dict: dict):
 
 
 class GraiLazyConfig(LazyConfig):
-    def __init__(
-        self, appname: str, parameters: ConfuseParameters, modname: str = None
-    ):
+    def __init__(self, appname: str, parameters: ConfuseParameters, modname: str = None):
         super().__init__(appname, modname=modname)
 
         self.parameters = parameters
@@ -62,6 +60,7 @@ def _get_config_template() -> Dict:
     server_template = {
         "host": String(default="localhost"),
         "port": String(default="8000"),
+        "workspace": Optional(str, allow_missing=True),
         "api_version": Optional(api_versions, default="v1", allow_missing=True),
     }
 
@@ -71,23 +70,17 @@ def _get_config_template() -> Dict:
     auth_user_template = {
         "username": str,
         "password": str,
-        "authentication_mode": Optional(
-            auth_modes, default="username", allow_missing=True
-        ),
+        "authentication_mode": Optional(auth_modes, default="username", allow_missing=True),
     }
 
     auth_api_template = {
         "api_key": str,
-        "authentication_mode": Optional(
-            auth_modes, default="api_key", allow_missing=True
-        ),
+        "authentication_mode": Optional(auth_modes, default="api_key", allow_missing=True),
     }
 
     token_template = {
         "token": str,
-        "authentication_mode": Optional(
-            auth_modes, default="token", allow_missing=True
-        ),
+        "authentication_mode": Optional(auth_modes, default="token", allow_missing=True),
     }
     auth_template = OneOf([auth_user_template, auth_api_template, token_template])
 

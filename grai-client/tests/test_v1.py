@@ -1,7 +1,10 @@
+from functools import cache
+
 import pytest
+from grai_schemas.v1 import EdgeV1, NodeV1
+from requests import RequestException
+
 from grai_client.endpoints.v1.client import ClientV1
-from grai_client.schemas.edge import EdgeV1
-from grai_client.schemas.node import NodeV1
 from grai_client.schemas.schema import Schema
 from grai_client.testing.schema import (
     mock_v1_edge,
@@ -9,14 +12,43 @@ from grai_client.testing.schema import (
     mock_v1_node,
 )
 from grai_client.utilities.tests import get_test_client
-from requests import RequestException
 
 client = get_test_client()
+
+
+@cache
+def get_test_node():
+    test_node = mock_v1_node()
+    client.post(test_node)
+    return test_node
 
 
 def test_get_nodes():
     nodes = client.get("node")
     assert all(isinstance(node, NodeV1) for node in nodes)
+
+
+def test_get_nodes_by_name():
+    test_node = get_test_node()
+    result = client.get("node", test_node.spec.name)
+    assert len(result) == 1, result
+    assert result[0].spec.name == test_node.spec.name
+
+
+def test_get_nodes_by_name_namespace():
+    test_node = get_test_node()
+    result = client.get("node", test_node.spec.name, test_node.spec.namespace)
+    assert result.spec.name == test_node.spec.name
+    assert result.spec.namespace == test_node.spec.namespace
+
+
+def test_get_nodes_by_namespace():
+    test_node = get_test_node()
+    result = client.get("node", "*", test_node.spec.namespace)
+    assert isinstance(result, list)
+    assert len(result) == 1  # node namespace is a uuid and therefore unique
+    assert result[0].spec.name == test_node.spec.name
+    assert result[0].spec.namespace == test_node.spec.namespace
 
 
 def test_get_edges():
@@ -28,6 +60,13 @@ def test_post_node():
     test_node = mock_v1_node()
     result = client.post(test_node)
     assert isinstance(result, NodeV1)
+
+
+def test_post_node_with_payload_options():
+    test_node = mock_v1_node()
+    options = {"payload": {"is_active": False}}
+    result = client.post(test_node, options=options)
+    assert result.spec.is_active is False
 
 
 def test_post_edge():
@@ -81,3 +120,19 @@ def test_patch_edge():
 
     client.delete(test_edge)
     client.delete(test_nodes)
+
+
+def test_node_hash(client):
+    test_node = mock_v1_node()
+    test_node.spec.id = None
+    new_node = client.post(test_node)
+    assert hash(new_node) == hash(test_node)
+
+
+def test_edge_hash(client):
+    test_edge, test_nodes = mock_v1_edge_and_nodes()
+    for obj in [test_edge, *test_nodes]:
+        obj.spec.id = None
+    client.post(test_nodes)
+    new_edge = client.post(test_edge)
+    assert hash(new_edge) == hash(test_edge)

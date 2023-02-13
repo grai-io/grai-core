@@ -144,7 +144,6 @@ class Table(BaseModel):
     namespace: str
     fivetran_id: str
     schema_name: str
-    columns: List[Column] = []
 
     @property
     def full_name(self):

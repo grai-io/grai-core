@@ -6,9 +6,7 @@ import typer
 if importlib.util.find_spec("rich") is not None:
     from rich.theme import Theme
 
-    custom_theme = Theme(
-        {"info": "#BFD2EB", "warning": "#ff0000", "danger": "bold red"}
-    )
+    custom_theme = Theme({"info": "#BFD2EB", "warning": "#ff0000", "danger": "bold red"})
 
 
 class GraiColors:

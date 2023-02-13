@@ -4,7 +4,8 @@ from rest_framework.decorators import api_view, permission_classes, throttle_cla
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.throttling import UserRateThrottle
-from rest_framework_api_key.permissions import HasAPIKey
+
+from workspaces.permissions import HasWorkspaceAPIKey
 
 
 class OncePerSecondUserThrottle(UserRateThrottle):
@@ -13,7 +14,7 @@ class OncePerSecondUserThrottle(UserRateThrottle):
 
 @api_view(["GET"])
 @throttle_classes([OncePerSecondUserThrottle])
-@permission_classes([HasAPIKey | IsAuthenticated])
+@permission_classes([HasWorkspaceAPIKey | IsAuthenticated])
 def check_authentication(request):
     return Response({"message": "Authenticated!"})
 

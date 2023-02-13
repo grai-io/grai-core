@@ -4,12 +4,17 @@ import uuid
 # Create your tests here.
 import pytest
 from django.test import TestCase
+
 from lineage.models import Edge, Node
+from workspaces.models import Organisation, Workspace
 
 
 @pytest.mark.django_db
 def test_node_created():
-    node = Node.objects.create(namespace="temp", name="a", data_source="test")
+    organisation = Organisation.objects.create(name="O1")
+    workspace = Workspace.objects.create(name="W1", organisation=organisation)
+
+    node = Node.objects.create(namespace="temp", name="a", data_source="test", workspace=workspace)
 
     assert node.id == uuid.UUID(str(node.id))
     assert node.name == "a"
@@ -24,7 +29,10 @@ def test_node_created():
 
 @pytest.mark.django_db
 def test_node_created_from_load():
-    node = Node.objects.create(namespace="temp2", name="abc", data_source="test")
+    organisation = Organisation.objects.create(name="O1")
+    workspace = Workspace.objects.create(name="W1", organisation=organisation)
+
+    node = Node.objects.create(namespace="temp2", name="abc", data_source="test", workspace=workspace)
     nodes = list(Node.objects.filter(namespace="temp2", name="abc").all())
     assert len(nodes) == 1
     node2 = nodes[0]
@@ -35,14 +43,26 @@ def test_node_created_from_load():
 
 @pytest.mark.django_db
 def test_edge_created():
+    organisation = Organisation.objects.create(name="O1")
+    workspace = Workspace.objects.create(name="W1", organisation=organisation)
+
     node_a = Node.objects.create(
-        namespace="default", name="node_a", data_source="node_source"
+        namespace="default",
+        name="node_a",
+        data_source="node_source",
+        workspace=workspace,
     )
     node_b = Node.objects.create(
-        namespace="default", name="node_b", data_source="node_source"
+        namespace="default",
+        name="node_b",
+        data_source="node_source",
+        workspace=workspace,
     )
     edge = Edge.objects.create(
-        data_source="edge_source", source_id=node_a.id, destination_id=node_b.id
+        data_source="edge_source",
+        source_id=node_a.id,
+        destination_id=node_b.id,
+        workspace=workspace,
     )
 
     assert edge.id == uuid.UUID(str(edge.id))

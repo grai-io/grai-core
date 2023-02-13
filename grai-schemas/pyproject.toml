@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "grai_schemas"
+version = "0.1.9"
+description = ""
+authors = ["Ian Eaves <ian@grai.io>"]
+readme = "README.md"
+license = "Elastic-2.0"
+packages = [{ include = "grai_schemas", from = "src" },]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+pydantic = "^1.10.4"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^22.12.0"
+isort = "^5.11.4"
+pre-commit = "^2.21.0"
+pytest = "^7.2.0"
+mypy = "^0.991"
+
+[tool.isort]
+profile = "black"
+
+[tool.black]
+line-length = 120
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

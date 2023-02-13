@@ -1,0 +1,78 @@
+name: MsSQL Integration CI
+
+on:
+  pull_request:
+    paths:
+      - "grai-integrations/source-mssql/**"
+      - "grai-client/**"
+      - "grai-server/**"
+
+concurrency:
+  group: ${{ github.ref }}-mssql-ci
+  cancel-in-progress: true
+
+env:
+  py_ver: "3.10"
+  poetry_ver: "1.2.2"
+  project_dir: "grai-integrations/source-mssql"
+  DB_DATABASE: grai
+  DB_USER: sa
+  DB_PASSWORD: GraiGraiGr4i
+  DB_HOST: localhost
+
+jobs:
+  lint-integration-mssql:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.project_dir }}
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - name: Install Python
+        id: setup-python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "${{ env.py_ver }}"
+
+      - run: pip install black isort
+
+      - run: |
+          black . --check
+          isort . --profile black --check
+
+  tests-integration-mssql:
+    needs: lint-integration-mssql
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.project_dir }}
+    services:
+      test_db:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: "Y"
+          MSSQL_SA_PASSWORD: ${{ env.DB_PASSWORD }}
+        ports:
+          - 1433:1433
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up SQL db
+        working-directory: ${{ env.project_dir }}/data
+        env:
+          MSSQL_SA_PASSWORD: ${{env.DB_PASSWORD}}
+        run: |
+          bash init-db.sh
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "${{ env.py_ver }}"
+
+      - run: |
+          pip install pytest
+          pip install .
+
+      - run: pytest

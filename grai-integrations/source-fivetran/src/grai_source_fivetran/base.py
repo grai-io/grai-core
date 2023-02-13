@@ -6,7 +6,7 @@ from grai_client.schemas.edge import Edge
 from grai_client.schemas.node import Node
 from grai_client.update import update
 from grai_source_fivetran.adapters import adapt_to_client
-from grai_source_fivetran.loader import FivetranConnector
+from grai_source_fivetran.loader import FivetranAPI
 
 # def get_nodes_and_edges(
 #     connector: FivetranConnector, version: Literal["v1"]

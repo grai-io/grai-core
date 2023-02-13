@@ -2,8 +2,9 @@ from enum import Enum
 from typing import Any, Dict, List, Literal, Optional, Union
 from uuid import UUID
 
-from grai_source_dbt.models.shared import DBTNode
 from pydantic import BaseModel, Field, root_validator
+
+from grai_source_dbt.models.shared import DBTNode
 
 
 class TestConfig(BaseModel):
@@ -14,7 +15,7 @@ class TestConfig(BaseModel):
     tags: Union[str, List[str]]
     meta: Dict
     materialized: Literal["test"]
-    severity: Union[Literal["ERROR"], Literal["WARN"]]
+    severity: Union[Literal["ERROR"], Literal["error"], Literal["WARN"], Literal["warn"]]
     store_failures: Optional[bool]
     where: Optional[str]
     limit: Optional[int]

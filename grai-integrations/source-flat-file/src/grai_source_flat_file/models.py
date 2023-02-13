@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Literal, Optional, Union
 
 from pydantic import BaseModel, Field, root_validator, validator
 
@@ -7,48 +7,40 @@ from pydantic import BaseModel, Field, root_validator, validator
 class ID(BaseModel):
     name: str
     namespace: str
-    full_name: str
+    # full_name: str
 
 
-class TableID(ID):
-    table_schema: str
+class Table(ID):
+    file_name: str
+    columns: Optional[List["Column"]] = None
 
-    @root_validator(pre=True)
-    def make_full_name(cls, values):
-        full_name = values.get("full_name", None)
-        if values.get("full_name", None) is None:
-            values["full_name"] = f"{values['table_schema']}.{values['name']}"
-        return values
+    @property
+    def full_name(self):
+        return self.name
 
+    def get_edges(self) -> List["Edge"]:
+        if self.columns is None:
+            return []
 
-class ColumnID(ID):
-    table_schema: str
-    table_name: str
-
-    @root_validator(pre=True)
-    def make_full_name(cls, values):
-        full_name = values.get("full_name", None)
-        if values.get("full_name", None) is None:
-            values[
-                "full_name"
-            ] = f"{values['table_schema']}.{values['table_name']}.{values['name']}"
-        return values
+        return [Edge(source=self, destination=column) for column in self.columns]
 
 
-class Column(BaseModel):
+class Column(ID):
     name: str = Field(alias="column_name")
     namespace: str
     table: str
     data_type: str
     is_nullable: bool
-    full_name: Optional[str] = None
 
     class Config:
         allow_population_by_field_name = True
 
-    @validator("full_name", always=True)
-    def make_full_name(cls, full_name, values):
-        if full_name is not None:
-            return full_name
-        result = f"{values['table']}.{values['name']}"
-        return result
+    @property
+    def full_name(self):
+        return f"{self.table}.{self.name}"
+
+
+class Edge(BaseModel):
+    source: Union[Table, Column]
+    destination: Union[Table, Column]
+    constraint_type: Literal["bt"] = "bt"

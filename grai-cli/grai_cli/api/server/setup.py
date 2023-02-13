@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Dict, Type
 
 import typer
+
 from grai_cli.api.entrypoint import app
 from grai_cli.settings.config import config
 from grai_cli.utilities.headers import authenticate
@@ -20,19 +21,17 @@ def get_default_client() -> BaseClient:
     }
     host = config.grab("server.host")
     port = config.grab("server.port")
+    workspace = config.grab("server.workspace")
 
-    client = _clients[config.grab("server.api_version")](host, port)
+    client = _clients[config.grab("server.api_version")](host, port, workspace=workspace)
+
     authenticate(client)
     return client
 
 
-client_app = typer.Typer(
-    no_args_is_help=True, help="Interact with The Guide", callback=default_callback
-)
+client_app = typer.Typer(no_args_is_help=True, help="Interact with The Guide", callback=default_callback)
 app.add_typer(client_app, name="client")
 
 
-client_get_app = typer.Typer(
-    no_args_is_help=True, help="Get objects from The Guide", callback=default_callback
-)
+client_get_app = typer.Typer(no_args_is_help=True, help="Get objects from The Guide", callback=default_callback)
 app.add_typer(client_get_app, name="get")

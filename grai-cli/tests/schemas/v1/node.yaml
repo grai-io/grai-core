@@ -7,8 +7,9 @@ spec:
     display_name: Mr. Testerson
     is_active: true
     metadata:
+        grai:
+            node_type: "Node"
         stuff: Goes here
-
 ---
 version: v1
 type: Node
@@ -19,4 +20,6 @@ spec:
     display_name: Mr. Testerson
     is_active: true
     metadata:
+        grai:
+            node_type: "Node"
         stuff: Goes here

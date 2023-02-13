@@ -1,11 +1,12 @@
-import { Outlet, Navigate } from "react-router-dom"
+import { Outlet, Navigate, useLocation } from "react-router-dom"
 import { useContext } from "react"
 import AuthContext from "./AuthContext"
 
 const PrivateRoute: React.FC = () => {
-  const { user } = useContext(AuthContext)
+  const { loggedIn } = useContext(AuthContext)
+  let location = useLocation()
 
-  if (!user) return <Navigate to="/login" />
+  if (!loggedIn) return <Navigate to="/login" state={{ redirect: location }} />
 
   return <Outlet />
 }

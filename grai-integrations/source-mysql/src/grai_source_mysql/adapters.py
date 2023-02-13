@@ -1,8 +1,101 @@
 from typing import Any, Dict, List, Literal, Sequence, Type
 
 from grai_client.schemas.schema import Schema
-from grai_source_mysql.models import ID, Column, Edge, Table
+from grai_schemas import config as base_config
+from grai_schemas.generics import DefaultValue
+from grai_schemas.v1.metadata.edges import EdgeTypeLabels, GenericEdgeMetadataV1
+from grai_schemas.v1.metadata.nodes import ColumnMetadata, NodeTypeLabels, TableMetadata
 from multimethod import multimethod
+
+from grai_source_mysql.models import ID, Column, Edge, Table
+from grai_source_mysql.package_definitions import config
+
+
+@multimethod
+def build_grai_metadata(current: Any, desired: Any) -> None:
+    raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)} for value {current}")
+
+
+@build_grai_metadata.register
+def build_grai_metadata_from_column(current: Column, version: Literal["v1"] = "v1") -> ColumnMetadata:
+    default_value = current.default_value
+    if current.default_value is not None:
+        default_value = DefaultValue(
+            has_default_value=True,
+            default_value=current.default_value,
+            data_type=current.data_type,
+        )
+
+    data = {
+        "version": version,
+        "node_type": NodeTypeLabels.column.value,
+        "node_attributes": {
+            "data_type": current.data_type,
+            "default_value": default_value,
+            "is_nullable": current.is_nullable,
+            "is_primary_key": current.is_pk,
+        },
+    }
+
+    return ColumnMetadata(**data)
+
+
+@build_grai_metadata.register
+def build_grai_metadata_from_node(current: Table, version: Literal["v1"] = "v1") -> TableMetadata:
+    data = {
+        "version": version,
+        "node_type": NodeTypeLabels.table.value,
+        "node_attributes": {},
+    }
+
+    return TableMetadata(**data)
+
+
+@build_grai_metadata.register
+def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> GenericEdgeMetadataV1:
+    data = {"version": version, "edge_type": EdgeTypeLabels.generic.value}
+    return GenericEdgeMetadataV1(**data)
+
+
+@multimethod
+def build_mysql_metadata(current: Any, desired: Any) -> None:
+    raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)} for value {current}")
+
+
+@build_mysql_metadata.register
+def build_metadata_from_column(current: Column, version: Literal["v1"] = "v1") -> Dict:
+    data = {
+        "table_name": current.table,
+        "schema": current.column_schema,
+    }
+
+    return data
+
+
+@build_mysql_metadata.register
+def build_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> Dict:
+    data = {
+        "definition": current.definition,
+        "constraint_type": current.constraint_type.name,
+    }
+    data |= current.metadata if current.metadata is not None else {}
+
+    return data
+
+
+@build_mysql_metadata.register
+def build_metadata_from_node(current: Table, version: Literal["v1"] = "v1") -> Dict:
+    data = {
+        "schema": current.table_schema,
+    }
+    return data
+
+
+def build_metadata(obj, version):
+    return {
+        base_config.metadata_id: build_grai_metadata(obj, version),
+        config.metadata_id: build_mysql_metadata(obj, version),
+    }
 
 
 @multimethod
@@ -16,34 +109,21 @@ def adapt_column_to_client(current: Column, version: Literal["v1"] = "v1"):
         "name": current.full_name,
         "namespace": current.namespace,
         "display_name": current.name,
-        "data_source": "grai-mysql-adapter",
-        "metadata": {
-            "node_type": "Column",
-            "is_pk": current.is_pk,
-            "default_value": current.default_value,
-            "is_nullable": current.is_nullable,
-            "data_type": current.data_type,
-            "table_name": current.table,
-            "schema": current.column_schema,
-        },
+        "data_source": config.integration_name,
+        "metadata": build_metadata(current, version),
     }
     return Schema.to_model(spec_dict, version=version, typing_type="Node")
 
 
 @adapt_to_client.register
 def adapt_table_to_client(current: Table, version: Literal["v1"] = "v1"):
-    metadata = {
-        "node_type": "Table",
-        "schema": current.table_schema,
-    }
     spec_dict = {
         "name": current.full_name,
         "namespace": current.namespace,
         "display_name": current.name,
-        "data_source": "grai-mysql-adapter",
-        "metadata": metadata,
+        "data_source": config.integration_name,
+        "metadata": build_metadata(current, version),
     }
-    metadata.update(current.metadata)
     return Schema.to_model(spec_dict, version=version, typing_type="Node")
 
 
@@ -55,11 +135,6 @@ def make_name(node1: ID, node2: ID) -> str:
 
 @adapt_to_client.register
 def adapt_edge_to_client(current: Edge, version: Literal["v1"] = "v1"):
-    metadata = {
-        "definition": current.definition,
-        "constraint_type": current.constraint_type.name,
-    }
-
     spec_dict = {
         "data_source": "grai-mysql-adapter",
         "name": make_name(current.source, current.destination),
@@ -72,10 +147,8 @@ def adapt_edge_to_client(current: Edge, version: Literal["v1"] = "v1"):
             "name": current.destination.full_name,
             "namespace": current.destination.namespace,
         },
-        "metadata": metadata,
+        "metadata": build_metadata(current, version),
     }
-    if current.metadata:
-        metadata.update(current.metadata)
     return Schema.to_model(spec_dict, version=version, typing_type="Edge")
 
 

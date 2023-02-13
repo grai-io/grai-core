@@ -3,6 +3,8 @@ from functools import cached_property
 from itertools import chain
 from typing import Dict, List, Mapping, Tuple, Union
 
+from pydantic import BaseModel, validator
+
 from grai_source_dbt.models.manifest_types import ManifestNode
 from grai_source_dbt.models.nodes import (
     Column,
@@ -16,7 +18,6 @@ from grai_source_dbt.models.nodes import (
 )
 from grai_source_dbt.models.shared import Constraint, ManifestMetadata
 from grai_source_dbt.models.tests import Test
-from pydantic import BaseModel, validator
 
 
 class Manifest(BaseModel):
@@ -45,9 +46,7 @@ class Manifest(BaseModel):
 
 class DBTGraph:
     def __init__(self, manifest: Union[Manifest, str], namespace="default"):
-        self.manifest = (
-            manifest if isinstance(manifest, Manifest) else Manifest.load(manifest)
-        )
+        self.manifest = manifest if isinstance(manifest, Manifest) else Manifest.load(manifest)
         for node in self.node_map.values():
             node.namespace = namespace
         self.update_nodes_with_tests()
@@ -66,15 +65,9 @@ class DBTGraph:
 
         node_map: Dict[Union[str, Tuple], SupportedDBTTypes] = {}
         node_map.update(
-            {
-                table.unique_id: table
-                for table in self.manifest.nodes.values()
-                if isinstance(table, (Model, Seed))
-            }
+            {table.unique_id: table for table in self.manifest.nodes.values() if isinstance(table, (Model, Seed))}
         )
-        node_map.update(
-            {source.unique_id: source for source in self.manifest.sources.values()}
-        )
+        node_map.update({source.unique_id: source for source in self.manifest.sources.values()})
         return node_map
 
     @property
@@ -100,6 +93,10 @@ class DBTGraph:
         for table in self.manifest.nodes.values():
             for dbt_column in table.columns.values():
                 column = Column.from_table_column(table, dbt_column)
+                columns[column.unique_id] = column
+        for source in self.manifest.sources.values():
+            for dbt_column in source.columns.values():
+                column = Column.from_table_column(source, dbt_column)
                 columns[column.unique_id] = column
         return columns
 

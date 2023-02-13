@@ -1,0 +1,18 @@
+version: "3.7"
+
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    volumes:
+     - ./data/:/init
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: GraiGraiGr4i
+    ports:
+      - 1433:1433
+    command: ['/bin/bash', '-c', '/init/init-db.sh & /opt/mssql/bin/sqlservr']
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $$MSSQL_SA_PASSWORD -Q 'select 1' -b -o /dev/null
+      interval: 3s
+      timeout: 3s
+      retries: 10
