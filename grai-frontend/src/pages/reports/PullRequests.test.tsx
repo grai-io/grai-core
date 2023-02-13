@@ -1,3 +1,4 @@
+import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import React from "react"
 import { render, screen, waitFor } from "testing"
@@ -11,6 +12,25 @@ test("renders", async () => {
   await waitFor(() => {
     expect(screen.getAllByText(/Hello world/i)).toBeTruthy()
   })
+})
+
+test("click row", async () => {
+  const user = userEvent.setup()
+
+  const { container } = render(<PullRequests />, {
+    routes: [
+      "/undefined/undefined/reports//Hello World/Hello World/pulls/Hello World",
+    ],
+  })
+
+  await waitFor(() => {
+    expect(screen.getAllByText(/Hello world/i)).toBeTruthy()
+  })
+
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+  await user.click(container.querySelectorAll("tbody > tr")[0])
+
+  expect(screen.getByText("New Page")).toBeInTheDocument()
 })
 
 test("not found", async () => {
