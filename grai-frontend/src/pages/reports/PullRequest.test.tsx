@@ -1,72 +1,8 @@
 import { GraphQLError } from "graphql"
+import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
 import React from "react"
 import { render, screen, waitFor } from "testing"
 import PullRequest, { GET_PULL_REQUEST } from "./PullRequest"
-
-const columnNode = {
-  id: "3",
-  namespace: "default",
-  name: "N3",
-  display_name: "N3 Node",
-  is_active: true,
-  data_source: "test",
-  metadata: {
-    grai: {
-      node_type: "Column",
-    },
-  },
-}
-
-const sourceTable = {
-  id: "1",
-  namespace: "default",
-  name: "N1",
-  display_name: "N1",
-  is_active: true,
-  data_source: "test",
-  metadata: {
-    grai: {
-      node_type: "Table",
-    },
-  },
-  columns: [columnNode],
-  source_tables: [],
-  destination_tables: [],
-}
-
-const destinationTable = {
-  id: "2",
-  namespace: "default",
-  name: "N2",
-  display_name: "N2 Node",
-  is_active: true,
-  data_source: "test",
-  metadata: {
-    grai: {
-      node_type: "Table",
-    },
-  },
-  columns: [],
-  source_tables: [],
-  destination_tables: [],
-}
-
-const spareTable = {
-  id: "3",
-  namespace: "default",
-  name: "N3",
-  display_name: "N3 Node",
-  is_active: true,
-  data_source: "test",
-  metadata: {
-    grai: {
-      node_type: "Table",
-    },
-  },
-  columns: [],
-  source_tables: [],
-  destination_tables: [],
-}
 
 test("renders", async () => {
   render(<PullRequest />, {
@@ -149,14 +85,6 @@ test("renders errors", async () => {
                 destination: destinationTable,
                 metadata: { grai: { constraint_type: "dbt_model" } },
               },
-              // {
-              //   id: "2",
-              //   is_active: true,
-              //   data_source: "test",
-              //   source: sourceNode,
-              //   destination: columnNode,
-              //   metadata: { grai: { constraint_type: "TableToColumn" } },
-              // },
             ],
           },
         },
@@ -211,14 +139,6 @@ test("not found", async () => {
                 destination: destinationTable,
                 metadata: { grai: { constraint_type: "dbt_model" } },
               },
-              // {
-              //   id: "2",
-              //   is_active: true,
-              //   data_source: "test",
-              //   source: sourceNode,
-              //   destination: columnNode,
-              //   metadata: { grai: { constraint_type: "TableToColumn" } },
-              // },
             ],
           },
         },

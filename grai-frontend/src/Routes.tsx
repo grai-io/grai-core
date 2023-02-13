@@ -20,7 +20,7 @@ const Table = lazy(() => import("./pages/tables/Table"))
 const Runs = lazy(() => import("./pages/runs/Runs"))
 const Run = lazy(() => import("./pages/runs/Run"))
 
-const Reports = lazy(() => import("./pages/reports/Reports"))
+const Commits = lazy(() => import("./pages/reports/Commits"))
 const PullRequests = lazy(() => import("./pages/reports/PullRequests"))
 const PullRequest = lazy(() => import("./pages/reports/PullRequest"))
 const Commit = lazy(() => import("./pages/reports/Commit"))
@@ -74,7 +74,7 @@ const Routes: React.FC = () => (
             <Route path="reports">
               <Route index element={<NotFound />} />
               <Route path=":type/:owner/:repo">
-                <Route index element={<Reports />} />
+                <Route index element={<Commits />} />
                 <Route path="pulls">
                   <Route index element={<PullRequests />} />
                   <Route path=":reference" element={<PullRequest />} />

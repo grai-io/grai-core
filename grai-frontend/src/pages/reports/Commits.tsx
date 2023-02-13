@@ -49,7 +49,7 @@ export const GET_COMMITS = gql`
   }
 `
 
-const Reports: React.FC = () => {
+const Commits: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
   const params = useParams()
 
@@ -90,4 +90,4 @@ const Reports: React.FC = () => {
   )
 }
 
-export default Reports
+export default Commits
