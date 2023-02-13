@@ -71,7 +71,7 @@ jobs:
 
       - name: Install package
         run: |
-          pip install pytest pytest-django coverage
+          pip install pytest pytest_asyncio pytest-django pytest-mock coverage
           pip install .
 
       - name: Tests
