@@ -61,8 +61,8 @@ const periodToText = (
   long: boolean
 ): string =>
   long
-    ? `${value} ${periodText[key].long}${value > 1 && "s"}`
-    : `${value}${periodText[key].short}${value > 1 && "s"}`
+    ? `${value} ${periodText[key].long}${value > 1 ? "s" : ""}`
+    : `${value}${periodText[key].short}${value > 1 ? "s" : ""}`
 
 export const durationToString = (
   duration: DurationObjectUnits,
@@ -87,7 +87,8 @@ export const durationToString = (
   if (duration.days) res.push(periodToText(duration.days, "day", long))
   if (duration.hours) res.push(periodToText(duration.hours, "hour", long))
   if (duration.minutes) res.push(periodToText(duration.minutes, "minute", long))
-  if (duration.seconds) res.push(periodToText(duration.seconds, "second", long))
+  if (duration.seconds)
+    res.push(periodToText(Number(duration.seconds.toFixed(0)), "second", long))
 
   return res.slice(0, length).join(" ")
 }
