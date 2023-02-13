@@ -138,10 +138,8 @@ const PullRequest: React.FC = () => {
       }))
     : null
 
-  console.log(errors)
-
   const tables = data?.workspace.tables
-  const edges = data?.workspace.other_edges ?? []
+  const edges = data?.workspace.other_edges
 
   return (
     <PageLayout>
