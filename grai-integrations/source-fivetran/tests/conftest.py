@@ -1,4 +1,5 @@
 import pytest
+from dotenv import load_dotenv
 from grai_source_fivetran.loader import FivetranConnector, FivetranGraiMapper
 
 
@@ -10,4 +11,20 @@ def connector():
 
 @pytest.fixture
 def mapper():
-    return FivetranGraiMapper()
+    load_dotenv()
+    return FivetranGraiMapper(default_namespace="default")
+
+
+@pytest.fixture
+def mapped_nodes_and_edges(mapper):
+    return mapper.get_nodes_and_edges()
+
+
+@pytest.fixture
+def nodes(mapped_nodes_and_edges):
+    return mapped_nodes_and_edges[0]
+
+
+@pytest.fixture
+def edges(mapped_nodes_and_edges):
+    return mapped_nodes_and_edges[1]

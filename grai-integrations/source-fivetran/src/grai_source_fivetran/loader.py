@@ -1,8 +1,5 @@
 import asyncio
-import os
-import random
-import string
-from functools import wraps
+from itertools import chain
 from typing import (
     Any,
     Callable,
@@ -12,7 +9,10 @@ from typing import (
     Optional,
     ParamSpec,
     Sequence,
+    Tuple,
+    TypedDict,
     TypeVar,
+    Union,
 )
 
 import requests
@@ -27,8 +27,8 @@ from grai_source_fivetran.fivetran_api.api_models import (
     V1DestinationsDestinationIdGetResponse,
     V1GroupsGetResponse,
 )
-from grai_source_fivetran.models import Column, Table
-from pydantic import BaseSettings, SecretStr, validator
+from grai_source_fivetran.models import Column, Edge, NamespaceIdentifier, Table
+from pydantic import BaseModel, BaseSettings, SecretStr, validator
 
 T = TypeVar("T")
 P = ParamSpec("P")
@@ -213,10 +213,10 @@ async def caller(
 
 def parallelize_http(semaphore):
     async def parallel(
-        func: Callable[P, Sequence[T]],
+        func: Callable[P, T],
         arg_list: Iterable[Sequence[Any]],
         kwarg_list: Optional[Sequence[Dict[str, Any]]] = None,
-    ) -> List[T]:
+    ) -> Tuple[T]:
         arg_list = list(arg_list) if not isinstance(arg_list, list) else arg_list
         kwarg_list = [{}] * len(arg_list) if kwarg_list is None else kwarg_list
         assert len(arg_list) == len(kwarg_list)
@@ -227,7 +227,7 @@ def parallelize_http(semaphore):
         return await asyncio.gather(*tasks)
 
     def inner(
-        func: Callable[P, Sequence[T]],
+        func: Callable[P, T],
         arg_list: Iterable[Sequence[Any]],
         kwarg_list: Optional[Sequence[Dict[str, Any]]] = None,
     ) -> List[T]:
@@ -236,12 +236,45 @@ def parallelize_http(semaphore):
     return inner
 
 
+class SourceDestinationDict(TypedDict):
+    source: str
+    destination: str
+
+
+NamespaceTypes = Union[Dict[str, str], SourceDestinationDict]
+
+
 class FivetranGraiMapper(FivetranConnector):
-    def __init__(self, parallelization: int = 10, *args, **kwargs):
+    def __init__(
+        self,
+        namespaces: Optional[NamespaceTypes] = None,
+        default_namespace: Optional[str] = None,
+        parallelization: int = 10,
+        *args,
+        **kwargs,
+    ):
+        if namespaces is None and default_namespace is None:
+            message = (
+                f"The FivetranGraiMapper requires a not null value for `default_namespace` and/or `namespaces. "
+                f"These values are used to identify which Fivetran connection id's belong to which associated "
+                f"Grai namespace. `default_namespace` will map a single namespace to ALL connection id's."
+                "This behavior can be overridden by `namespaces` which maps {connection_id -> "
+                "namespace} or {connection_id -> {source: namespace, destination: namespace}}"
+            )
+            raise ValueError(message)
+        elif namespaces is not None:
+            assert all(isinstance(v, (dict, str)) for v in namespaces.values())
+            assert all(
+                isinstance(v, SourceDestinationDict)
+                for v in namespaces.values()
+                if isinstance(v, dict)
+            )
+        else:
+            namespaces = {}
+
         super().__init__(*args, **kwargs)
         self.parallelization = parallelization
         self.semaphore = asyncio.Semaphore(self.parallelization)
-
         self.http_runner = parallelize_http(self.semaphore)
 
         self.groups = {
@@ -253,10 +286,35 @@ class FivetranGraiMapper(FivetranConnector):
             for conn in self.get_group_connectors(group_id)
             if conn.id is not None
         }
+
+        if default_namespace is None:
+            self.connectors = {
+                k: v for k, v in self.connectors.items() if v in namespaces
+            }
+        else:
+            namespaces = {**namespaces}  # avoid modifying the users original argument
+            for k in self.connectors.keys():
+                namespaces.setdefault(k, default_namespace)
+
+        self.namespace_map = {
+            k: NamespaceIdentifier(source=v, destination=v)
+            if isinstance(v, str)
+            else NamespaceIdentifier(**v)
+            for k, v in namespaces.items()
+        }
+
         connector_ids = [[conn_id] for conn_id in self.connectors.keys()]
         schemas = self.http_runner(self.get_schemas, arg_list=connector_ids)
         tables = self.http_runner(self.get_tables, arg_list=connector_ids)
         columns = self.http_runner(self.get_columns, arg_list=connector_ids)
+
+        self.table_to_conn_map = {}
+        self.column_to_conn_map = {}
+        for conn_id, t_res, c_res in zip(self.connectors.keys(), tables, columns):
+            for table in t_res:
+                self.table_to_conn_map.setdefault(table.id, conn_id)
+            for column in c_res:
+                self.column_to_conn_map.setdefault(column.id, conn_id)
 
         self.schemas: Dict[str, SchemaMetadataResponse] = {
             item.id: item for seq in schemas for item in seq
@@ -271,15 +329,37 @@ class FivetranGraiMapper(FivetranConnector):
     def get_nodes_and_edges(self):
         # table.parent_id -> schema.id
         # column.parent_id -> table.id
-        tables = [
-            Table.from_fivetran_models(self.schemas[table.parent_id], table)
+        tables = {
+            table.id: Table.from_fivetran_models(
+                self.schemas[table.parent_id],
+                table,
+                self.namespace_map[self.table_to_conn_map[table.id]],
+            )
             for table in self.tables.values()
-        ]
+        }
         columns = [
             Column.from_fivetran_models(
                 self.schemas[self.tables[column.parent_id].parent_id],
                 self.tables[column.parent_id],
                 column,
+                self.namespace_map[self.column_to_conn_map[column.id]],
             )
             for column in self.columns.values()
         ]
+
+        column_edges = (
+            Edge(source=c1, destination=c2, constraint_type="c") for c1, c2 in columns
+        )
+        table_edges = (
+            Edge(source=t1, destination=t2, constraint_type="c")
+            for t1, t2 in tables.values()
+        )
+        table_to_column_edges = (
+            Edge(source=table, destination=col, constraint_type="bt")
+            for cols in columns
+            for col, table in zip(cols, tables[cols[0].fivetran_table_id])
+        )
+
+        nodes = chain(chain.from_iterable(tables.values()), *columns)
+        edges = chain(column_edges, table_edges, table_to_column_edges)
+        return list(nodes), list(edges)

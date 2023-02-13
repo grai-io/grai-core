@@ -89,8 +89,14 @@ class SourceTableColumnMetadata(BaseModel):
     columns: Dict[str, ConnectorTableColumnSchema]
 
 
+class NamespaceIdentifier(BaseModel):
+    source: str
+    destination: str
+
+
 class Column(BaseModel):
     name: str
+    namespace: str
     fivetran_id: str
     fivetran_table_id: str
     table_name: str
@@ -108,30 +114,34 @@ class Column(BaseModel):
         schema: SchemaMetadataResponse,
         table: TableMetadataResponse,
         column: ColumnMetadataResponse,
+        namespace: NamespaceIdentifier,
     ):
         source_values = {
             "name": column.name_in_source,
-            "five_tran_id": column.id,
+            "fivetran_id": column.id,
             "fivetran_table_id": column.parent_id,
             "is_primary_key": column.is_primary_key,
             "is_foreign_key": column.is_foreign_key,
             "table_name": table.name_in_source,
             "table_schema": schema.name_in_source,
+            "namespace": namespace.source,
         }
         destination_values = {
             "name": column.name_in_destination,
-            "five_tran_id": column.id,
+            "fivetran_id": column.id,
             "fivetran_table_id": column.parent_id,
             "is_primary_key": column.is_primary_key,
             "is_foreign_key": column.is_foreign_key,
             "table_name": table.name_in_destination,
             "table_schema": schema.name_in_destination,
+            "namespace": namespace.destination,
         }
         return cls(**source_values), cls(**destination_values)
 
 
 class Table(BaseModel):
     name: str
+    namespace: str
     fivetran_id: str
     schema_name: str
     columns: List[Column] = []
@@ -142,16 +152,40 @@ class Table(BaseModel):
 
     @classmethod
     def from_fivetran_models(
-        cls, schema: SchemaMetadataResponse, table: TableMetadataResponse
+        cls,
+        schema: SchemaMetadataResponse,
+        table: TableMetadataResponse,
+        namespace: NamespaceIdentifier,
     ):
         source_values = {
             "name": table.name_in_source,
             "schema_name": schema.name_in_source,
             "fivetran_id": table.id,
+            "namespace": namespace.source,
         }
         destination_values = {
             "name": table.name_in_destination,
             "schema_name": schema.name_in_destination,
             "fivetran_id": table.id,
+            "namespace": namespace.destination,
         }
         return cls(**source_values), cls(**destination_values)
+
+
+class Constraint(str, Enum):
+    belongs_to = "bt"
+    copy = "c"
+
+
+NodeTypes = Union[Column, Table]
+
+
+class Edge(BaseModel):
+    source: NodeTypes
+    destination: NodeTypes
+    definition: Optional[str]
+    constraint_type: Constraint
+    metadata: Optional[Dict] = None
+
+    def __hash__(self):
+        return hash((self.source, self.destination))
