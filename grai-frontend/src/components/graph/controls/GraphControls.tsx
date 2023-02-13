@@ -1,8 +1,9 @@
-import { Box, Button, Checkbox, Stack } from "@mui/material"
+import { Box, Stack } from "@mui/material"
 import React from "react"
 import { useSearchParams } from "react-router-dom"
 import StepsControl, { StepsControlOptions } from "./StepsControl"
 import SearchControl from "./SearchControl"
+import LimitGraphControl from "./LimitGraphControl"
 
 export type ControlOptions = {
   steps?: StepsControlOptions
@@ -61,32 +62,7 @@ const GraphControls: React.FC<GraphControlsProps> = ({
         }}
       >
         {errors && (
-          <Box>
-            <Button
-              variant="contained"
-              disableElevation
-              onClick={handleToggleLimit}
-              sx={{
-                backgroundColor: "white",
-                color: "black",
-                borderStyle: "solid",
-                borderWidth: 1,
-                borderColor: "divider",
-                borderRadius: 0,
-                pl: 0,
-                pr: 1.5,
-                py: 0,
-                minWidth: 0,
-              }}
-            >
-              <Checkbox
-                sx={{ ml: 0.5, mr: 1, p: 0 }}
-                size="small"
-                checked={limitGraph}
-              />
-              Limit Graph
-            </Button>
-          </Box>
+          <LimitGraphControl value={limitGraph} onChange={handleToggleLimit} />
         )}
         {options?.steps && <StepsControl options={options.steps} />}
         <SearchControl value={search} onChange={onSearch} />
