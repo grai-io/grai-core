@@ -16,6 +16,7 @@ from connections.models import Run as RunModel
 from installations.models import Commit as CommitModel
 from installations.models import PullRequest as PullRequestModel
 from installations.models import Repository as RepositoryModel
+from installations.models import Branch as BranchModel
 from lineage.models import Edge as EdgeModel
 from lineage.models import Node as NodeModel
 from users.models import User as UserModel
@@ -603,10 +604,24 @@ class Repository:
         )
 
 
+@gql.django.type(BranchModel)
+class Branch:
+    id: auto
+    reference: auto
+
+    commits: List["Commit"]
+
+    @gql.django.field
+    def last_commit(self) -> Optional["Commit"]:
+        return CommitModel.objects.filter(branch=self.id).order_by("-created_at").first()
+
+
 @gql.django.type(PullRequestModel)
 class PullRequest:
     id: auto
     reference: auto
+    title: Optional[str]
+    branch: "Branch"
 
     commits: List["Commit"]
 
@@ -619,6 +634,7 @@ class PullRequest:
 class Commit:
     id: auto
     reference: auto
+    created_at: auto
 
     runs: List[Run]
 

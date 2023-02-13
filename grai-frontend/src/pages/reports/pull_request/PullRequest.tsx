@@ -10,7 +10,7 @@ import { useParams } from "react-router-dom"
 import {
   GetPullRequest,
   GetPullRequestVariables,
-} from "../__generated__/GetPullRequest"
+} from "./__generated__/GetPullRequest"
 import { Error } from "components/graph/Graph"
 import PullRequestHeader from "./PullRequestHeader"
 
@@ -32,13 +32,19 @@ export const GET_PULL_REQUEST = gql`
         pull_request(reference: $reference) {
           id
           reference
+          title
           last_commit {
             id
             reference
+            created_at
             last_successful_run {
               id
               metadata
             }
+          }
+          branch {
+            id
+            reference
           }
         }
       }
@@ -145,7 +151,7 @@ const PullRequest: React.FC = () => {
       />
       <Box
         sx={{
-          height: "calc(100vh - 126px)",
+          height: "calc(100vh - 186.002px)",
           width: "100%",
           backgroundColor: theme => theme.palette.grey[100],
         }}

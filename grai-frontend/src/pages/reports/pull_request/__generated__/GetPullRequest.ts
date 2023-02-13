@@ -17,14 +17,23 @@ export interface GetPullRequest_workspace_repository_pull_request_last_commit {
   __typename: "Commit";
   id: any;
   reference: string;
+  created_at: any;
   last_successful_run: GetPullRequest_workspace_repository_pull_request_last_commit_last_successful_run | null;
+}
+
+export interface GetPullRequest_workspace_repository_pull_request_branch {
+  __typename: "Branch";
+  id: any;
+  reference: string;
 }
 
 export interface GetPullRequest_workspace_repository_pull_request {
   __typename: "PullRequest";
   id: any;
   reference: string;
+  title: string | null;
   last_commit: GetPullRequest_workspace_repository_pull_request_last_commit | null;
+  branch: GetPullRequest_workspace_repository_pull_request_branch;
 }
 
 export interface GetPullRequest_workspace_repository {
