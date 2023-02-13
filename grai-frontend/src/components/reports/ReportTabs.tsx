@@ -37,15 +37,6 @@ const ReportTabs: React.FC<ReportTabsProps> = ({
           }}
         />
         <Tab
-          label="Branches"
-          value="branches"
-          to={`${routePrefix}/reports/${type}/${repository.owner}/${repository.repo}/branches`}
-          component={Link}
-          sx={{
-            minHeight: 0,
-          }}
-        />
-        <Tab
           label="Pulls"
           value="pulls"
           to={`${routePrefix}/reports/${type}/${repository.owner}/${repository.repo}/pulls`}

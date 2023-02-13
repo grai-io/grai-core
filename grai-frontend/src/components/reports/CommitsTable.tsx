@@ -1,7 +1,7 @@
-import { Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material"
+import { Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
 import React from "react"
-import { Repository } from "../ReportBreadcrumbs"
+import { Repository } from "./ReportBreadcrumbs"
 
 interface Branch {
   reference: string
@@ -10,17 +10,23 @@ interface Branch {
 interface PullRequest {
   reference: string
   title: string | null
-  branch: Branch
 }
 
-type PullRequestTableProps = {
-  pull_requests: PullRequest[]
+interface Commit {
+  reference: string
+  title: string | null
+  branch: Branch
+  pull_request: PullRequest | null
+}
+
+type CommitsTableProps = {
+  commits: Commit[]
   type: string
   repository: Repository
 }
 
-const PullRequestTable: React.FC<PullRequestTableProps> = ({
-  pull_requests,
+const CommitsTable: React.FC<CommitsTableProps> = ({
+  commits,
   type,
   repository,
 }) => {
@@ -33,23 +39,25 @@ const PullRequestTable: React.FC<PullRequestTableProps> = ({
           <TableCell>Name</TableCell>
           <TableCell />
           <TableCell>Branch</TableCell>
+          <TableCell>Pull Request</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
-        {pull_requests.map(pull_request => (
+        {commits.map(commit => (
           <TableRow
-            key={pull_request.reference}
+            key={commit.reference}
             hover
             sx={{ cursor: "pointer" }}
             onClick={() =>
               workspaceNavigate(
-                `reports/${type}/${repository.owner}/${repository.repo}/pulls/${pull_request.reference}`
+                `reports/${type}/${repository.owner}/${repository.repo}/commits/${commit.reference}`
               )
             }
           >
-            <TableCell>{pull_request.title}</TableCell>
-            <TableCell>#{pull_request.reference}</TableCell>
-            <TableCell>{pull_request.branch.reference}</TableCell>
+            <TableCell>{commit.title}</TableCell>
+            <TableCell>{commit.reference.slice(0, 7)}</TableCell>
+            <TableCell>{commit.branch.reference}</TableCell>
+            <TableCell>{commit.pull_request?.title}</TableCell>
           </TableRow>
         ))}
       </TableBody>
@@ -57,4 +65,4 @@ const PullRequestTable: React.FC<PullRequestTableProps> = ({
   )
 }
 
-export default PullRequestTable
+export default CommitsTable

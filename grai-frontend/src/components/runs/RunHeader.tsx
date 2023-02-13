@@ -60,10 +60,7 @@ const RunHeader: React.FC<RunHeaderProps> = ({ run, workspaceId }) => {
             Back
           </Button>
         </Box>
-        <Typography
-          variant="h6"
-          sx={{ textTransform: "uppercase", mx: 1, mt: 0.3 }}
-        >
+        <Typography variant="h6" sx={{ mx: 1, mt: 0.3 }}>
           {run.connection ? `${run.connection.name}/` : null}
           {run.id.slice(0, 6)}
         </Typography>

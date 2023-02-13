@@ -1,21 +1,18 @@
 import { gql, useQuery } from "@apollo/client"
 import { Box } from "@mui/material"
-import Graph from "components/graph/Graph"
 import PageLayout from "components/layout/PageLayout"
+import CommitHeader from "components/reports/commit/CommitHeader"
 import GraphError from "components/utils/GraphError"
 import useWorkspace from "helpers/useWorkspace"
+import Graph from "components/graph/Graph"
 import NotFound from "pages/NotFound"
 import React from "react"
 import { useParams } from "react-router-dom"
-import PullRequestHeader from "components/reports/pull_request/PullRequestHeader"
-import {
-  GetPullRequest,
-  GetPullRequestVariables,
-} from "./__generated__/GetPullRequest"
+import { GetCommit, GetCommitVariables } from "./__generated__/GetCommit"
 import resultsToErrors from "helpers/resultsToErrors"
 
-export const GET_PULL_REQUEST = gql`
-  query GetPullRequest(
+export const GET_COMMIT = gql`
+  query GetCommit(
     $organisationName: String!
     $workspaceName: String!
     $type: String!
@@ -29,22 +26,23 @@ export const GET_PULL_REQUEST = gql`
         id
         owner
         repo
-        pull_request(reference: $reference) {
+        commit(reference: $reference) {
           id
           reference
           title
-          last_commit {
+          created_at
+          last_successful_run {
             id
-            reference
-            created_at
-            last_successful_run {
-              id
-              metadata
-            }
+            metadata
           }
           branch {
             id
             reference
+          }
+          pull_request {
+            id
+            reference
+            title
           }
         }
       }
@@ -84,46 +82,44 @@ export const GET_PULL_REQUEST = gql`
   }
 `
 
-const PullRequest: React.FC = () => {
+const Commit: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
   const params = useParams()
 
   const type = params.type ?? ""
 
-  const { loading, error, data } = useQuery<
-    GetPullRequest,
-    GetPullRequestVariables
-  >(GET_PULL_REQUEST, {
-    variables: {
-      organisationName,
-      workspaceName,
-      type,
-      owner: params.owner ?? "",
-      repo: params.repo ?? "",
-      reference: params.reference ?? "",
-    },
-  })
+  const { loading, error, data } = useQuery<GetCommit, GetCommitVariables>(
+    GET_COMMIT,
+    {
+      variables: {
+        organisationName,
+        workspaceName,
+        type,
+        owner: params.owner ?? "",
+        repo: params.repo ?? "",
+        reference: params.reference ?? "",
+      },
+    }
+  )
 
   if (error) return <GraphError error={error} />
   if (loading) return <PageLayout loading />
 
-  const pullRequest = data?.workspace.repository.pull_request
+  const commit = data?.workspace.repository.commit
 
-  if (!pullRequest) return <NotFound />
+  if (!commit) return <NotFound />
 
-  const errors = resultsToErrors(
-    pullRequest.last_commit?.last_successful_run?.metadata.results
-  )
+  const errors = resultsToErrors(commit.last_successful_run?.metadata.results)
 
   const tables = data?.workspace.tables
   const edges = data?.workspace.other_edges
 
   return (
     <PageLayout>
-      <PullRequestHeader
+      <CommitHeader
         type={type}
         repository={data.workspace.repository}
-        pullRequest={pullRequest}
+        commit={commit}
       />
       <Box
         sx={{
@@ -138,4 +134,4 @@ const PullRequest: React.FC = () => {
   )
 }
 
-export default PullRequest
+export default Commit

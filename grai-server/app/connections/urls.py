@@ -56,7 +56,9 @@ def get_connection(request) -> Connection:
     return connection
 
 
-def get_commit(owner: str, repo: str, branch_reference: str, pr_reference: str, pr_title: str, head_sha: str):
+def get_commit(
+    owner: str, repo: str, branch_reference: str, pr_reference: str, pr_title: str, head_sha: str, commit_title: str
+):
     # Repository
     try:
         repository = Repository.objects.get(owner=owner, repo=repo)
@@ -86,11 +88,16 @@ def get_commit(owner: str, repo: str, branch_reference: str, pr_reference: str, 
         commit = Commit.objects.get(repository=repository, reference=head_sha)
         commit.branch = branch
         commit.pull_request = pull_request
+        commit.title = commit_title
         commit.save()
 
     except Commit.DoesNotExist:
         commit = Commit.objects.create(
-            repository=repository, reference=head_sha, branch=branch, pull_request=pull_request
+            repository=repository,
+            reference=head_sha,
+            branch=branch,
+            pull_request=pull_request,
+            title=commit_title,
         )
 
     return commit
@@ -105,10 +112,11 @@ def get_trigger(request, action: str):
     repo = request.POST.get("github_repo")
     branch_reference = request.POST.get("git_branch")
     head_sha = request.POST.get("git_head_sha")
+    commit_title = request.POST.get("git_commit_message")
     pr_reference = request.POST.get("github_pr_reference")
     pr_title = request.POST.get("github_pr_title")
 
-    commit = get_commit(owner, repo, branch_reference, pr_reference, pr_title, head_sha)
+    commit = get_commit(owner, repo, branch_reference, pr_reference, pr_title, head_sha, commit_title)
 
     github = Github(owner=owner, repo=repo)
 
