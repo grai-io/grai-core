@@ -7,12 +7,12 @@ import useWorkspace from "helpers/useWorkspace"
 import NotFound from "pages/NotFound"
 import React from "react"
 import { useParams } from "react-router-dom"
+import { Error } from "components/graph/Graph"
+import PullRequestHeader from "components/reports/pull_request/PullRequestHeader"
 import {
   GetPullRequest,
   GetPullRequestVariables,
 } from "./__generated__/GetPullRequest"
-import { Error } from "components/graph/Graph"
-import PullRequestHeader from "./PullRequestHeader"
 
 export const GET_PULL_REQUEST = gql`
   query GetPullRequest(
