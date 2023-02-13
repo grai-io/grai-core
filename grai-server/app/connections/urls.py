@@ -56,6 +56,43 @@ def get_connection(request) -> Connection:
     return connection
 
 
+def get_commit(owner: str, repo: str, branch_reference: str, pr_reference: str, head_sha: str):
+    # Repository
+    try:
+        repository = Repository.objects.get(owner=owner, repo=repo)
+    except Repository.DoesNotExist:
+        raise Exception("Repository not found, have you installed the Grai Github App?")
+
+    # Branch
+    branch, created = Branch.objects.get_or_create(repository=repository, reference=branch_reference)
+
+    # Pull Request
+    pull_request = None
+
+    if pr_reference:
+        try:
+            pull_request = PullRequest.objects.get(repository=repository, reference=pr_reference)
+            pull_request.branch = branch
+            pull_request.save()
+        except PullRequest.DoesNotExist:
+            pull_request = PullRequest.objects.create(repository=repository, reference=pr_reference, branch=branch)
+
+    # Commit
+    commit = None
+    try:
+        commit = Commit.objects.get(repository=repository, reference=head_sha)
+        commit.branch = branch
+        commit.pull_request = pull_request
+        commit.save()
+
+    except Commit.DoesNotExist:
+        commit = Commit.objects.create(
+            repository=repository, reference=head_sha, branch=branch, pull_request=pull_request
+        )
+
+    return commit
+
+
 def get_trigger(request, action: str):
     owner = request.POST.get("github_owner")
 
@@ -63,24 +100,11 @@ def get_trigger(request, action: str):
         return None, None
 
     repo = request.POST.get("github_repo")
-
-    try:
-        repository = Repository.objects.get(owner=owner, repo=repo)
-    except Repository.DoesNotExist:
-        raise Exception("Repository not found, have you installed the Grai Github App?")
-
     branch_reference = request.POST.get("git_branch")
     head_sha = request.POST.get("git_head_sha")
     pr_reference = request.POST.get("github_pr_reference")
 
-    pull_request = None
-
-    branch, created = Branch.objects.get_or_create(repository=repository, reference=branch_reference)
-    if pr_reference:
-        pull_request, created = PullRequest.objects.get_or_create(repository=repository, reference=pr_reference)
-    commit, created = Commit.objects.get_or_create(
-        repository=repository, branch=branch, reference=head_sha, pull_request=pull_request
-    )
+    commit = get_commit(owner, repo, branch_reference, pr_reference, head_sha)
 
     github = Github(owner=owner, repo=repo)
 

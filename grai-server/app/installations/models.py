@@ -102,6 +102,11 @@ class PullRequest(TenantModel):
         related_name="pull_requests",
         on_delete=models.CASCADE,
     )
+    branch = models.ForeignKey(
+        "installations.Branch",
+        related_name="pull_requests",
+        on_delete=models.CASCADE,
+    )
     reference = models.CharField(max_length=255, editable=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
