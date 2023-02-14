@@ -463,33 +463,34 @@ files = [
 
 [[package]]
 name = "grai-client"
-version = "0.1.14"
+version = "0.2.2"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_client-0.1.14-py3-none-any.whl", hash = "sha256:928d6c36be0b5efb239b16710e2df199b9aecd71482e2161db3ee08e5cc0bfba"},
-    {file = "grai_client-0.1.14.tar.gz", hash = "sha256:57bc08b166ae0ecd7cc4ed99f9d5993840fa099137a59d058f6b037cbb5495d1"},
+    {file = "grai_client-0.2.2-py3-none-any.whl", hash = "sha256:32409ea8845da656b7e7448dc01f3a0cb5f37ab64366a5e3d8a1ea2d141ed387"},
+    {file = "grai_client-0.2.2.tar.gz", hash = "sha256:3bcad582841061283450b88287c467e1f1fa1a5ac8775700e19ae5c4e4751b8e"},
 ]
 
 [package.dependencies]
-multimethod = ">=1.8,<2.0"
+grai-schemas = ">=0.1.8,<0.2.0"
+multimethod = "1.9"
 orjson = ">=3.8.3,<4.0.0"
 pydantic = ">=1.9.1,<2.0.0"
-PyYAML = ">=6.0,<7.0"
+pyyaml = ">=6.0,<7.0"
 requests = ">=2.28.1,<3.0.0"
 
 [[package]]
 name = "grai-schemas"
-version = "0.1.9"
+version = "0.1.10"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_schemas-0.1.9-py3-none-any.whl", hash = "sha256:3416b3be743094ee304b4cb522d1c8810b8c6d4682c1b9f8966c0cfea8716fe3"},
-    {file = "grai_schemas-0.1.9.tar.gz", hash = "sha256:e28195d336c623476e581e6a667881cde97da757b7454ef5b7ba14807bf671dd"},
+    {file = "grai_schemas-0.1.10-py3-none-any.whl", hash = "sha256:55825b6cb6411e55ce1c72c4859047792f1c3098e87a1ca857ba209226aa734f"},
+    {file = "grai_schemas-0.1.10.tar.gz", hash = "sha256:e315c29e7d2b67804d3080c8b83d68266b5ff91092ab7f3c5374c341f3e2c2d5"},
 ]
 
 [package.dependencies]
@@ -743,14 +744,14 @@ files = [
 
 [[package]]
 name = "multimethod"
-version = "1.9.1"
+version = "1.9"
 description = "Multiple argument dispatching."
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "multimethod-1.9.1-py3-none-any.whl", hash = "sha256:52f8f1f2b9d5a4c7adfdcc114dbeeebe3245a4420801e8807e26522a79fb6bc2"},
-    {file = "multimethod-1.9.1.tar.gz", hash = "sha256:1589bf52ca294667fd15527ea830127c763f5bfc38562e3642591ffd0fd9d56f"},
+    {file = "multimethod-1.9-py3-none-any.whl", hash = "sha256:59cb8ffec7449bd5557993c8d84e788fe04aca9c94b3b181ba8429ab954c24df"},
+    {file = "multimethod-1.9.tar.gz", hash = "sha256:cb1b87815732984172d6802bbfea81d68bfa2a0d5a562fb212ae7d59bad7a455"},
 ]
 
 [[package]]
@@ -1625,4 +1626,4 @@ test = ["covdefaults (>=2.2.2)", "coverage (>=7.1)", "coverage-enable-subprocess
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9.13"
-content-hash = "76e055c3c882d362aeb10865bd15a23be121d9320d4ebe63af43d701a499b9a5"
+content-hash = "f1a09e5d4413a266e978aefa6795b701d0e24ee0902dd825c85fa169c5134ad6"
