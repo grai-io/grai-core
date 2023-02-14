@@ -1,4 +1,3 @@
-import { GraphQLError } from "graphql"
 import React from "react"
 import { fireEvent, render, screen, waitFor, within } from "testing"
 import BranchSelect from "./BranchSelect"
