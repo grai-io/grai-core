@@ -31,7 +31,7 @@ def get_connection(request) -> Connection:
     if connection_id is not None:
         return Connection.objects.get(id=connection_id)
 
-    connector_name = request.POST.get("connector")
+    connector_name = request.POST.get("connector_name")
 
     if connector_name is None:
         raise Exception("You must provide a connector or connection_id")
@@ -39,9 +39,9 @@ def get_connection(request) -> Connection:
     connector = Connector.objects.get(name=connector_name)
 
     name = f"{connector.name} {uuid.uuid4()}"
-    namespace = request.POST.get("namespace", "default")
-    metadata = request.POST.get("metadata")
-    secrets = request.POST.get("secrets")
+    namespace = request.POST.get("connector_namespace", "default")
+    metadata = request.POST.get("connector_metadata")
+    secrets = request.POST.get("connector_secrets")
 
     connection = Connection.objects.create(
         connector=connector,
