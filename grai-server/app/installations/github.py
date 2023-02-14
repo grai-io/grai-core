@@ -11,6 +11,7 @@ from django.conf import settings
 app_id = settings.GITHUB_APP_ID
 pem = settings.GITHUB_PRIVATE_KEY
 
+
 class Github:
     api: GhApi = None
     owner: str
