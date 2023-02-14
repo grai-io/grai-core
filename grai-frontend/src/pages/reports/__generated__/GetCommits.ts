@@ -37,12 +37,19 @@ export interface GetCommits_workspace_repository_commits {
   pull_request: GetCommits_workspace_repository_commits_pull_request | null;
 }
 
+export interface GetCommits_workspace_repository_branches {
+  __typename: "Branch";
+  id: any;
+  reference: string;
+}
+
 export interface GetCommits_workspace_repository {
   __typename: "Repository";
   id: any;
   owner: string;
   repo: string;
   commits: GetCommits_workspace_repository_commits[];
+  branches: GetCommits_workspace_repository_branches[];
 }
 
 export interface GetCommits_workspace {

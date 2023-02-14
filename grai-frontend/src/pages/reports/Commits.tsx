@@ -1,14 +1,16 @@
 import { gql, useQuery } from "@apollo/client"
 import { Box } from "@mui/material"
 import PageLayout from "components/layout/PageLayout"
-import CommitsTable from "components/reports/CommitsTable"
+import BranchSelect from "components/reports/commit/BranchSelect"
+import CommitsList from "components/reports/commit/CommitsList"
+import CommitsTable from "components/reports/commit/CommitsTable"
 import ReportHeader from "components/reports/ReportHeader"
 import ReportTabs from "components/reports/ReportTabs"
 import GraphError from "components/utils/GraphError"
 import useWorkspace from "helpers/useWorkspace"
 import NotFound from "pages/NotFound"
 import React from "react"
-import { useParams } from "react-router-dom"
+import { useParams, useSearchParams } from "react-router-dom"
 import { GetCommits, GetCommitsVariables } from "./__generated__/GetCommits"
 
 export const GET_COMMITS = gql`
@@ -44,6 +46,10 @@ export const GET_COMMITS = gql`
             title
           }
         }
+        branches {
+          id
+          reference
+        }
       }
     }
   }
@@ -52,6 +58,7 @@ export const GET_COMMITS = gql`
 const Commits: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
   const params = useParams()
+  const [searchParams] = useSearchParams()
 
   const type = params.type ?? ""
 
@@ -75,16 +82,27 @@ const Commits: React.FC = () => {
 
   if (!repository) return <NotFound />
 
+  const branchReference = searchParams.get("branch")
+
   return (
     <PageLayout>
       <ReportHeader type={type} repository={repository} />
       <Box sx={{ px: 2 }}>
         <ReportTabs currentTab="commits" type={type} repository={repository} />
-        <CommitsTable
-          commits={repository.commits}
-          type={type}
-          repository={repository}
-        />
+        <BranchSelect branches={repository.branches} />
+        {branchReference ? (
+          <CommitsList
+            type={type}
+            repository={repository}
+            reference={branchReference}
+          />
+        ) : (
+          <CommitsTable
+            commits={repository.commits}
+            type={type}
+            repository={repository}
+          />
+        )}
       </Box>
     </PageLayout>
   )

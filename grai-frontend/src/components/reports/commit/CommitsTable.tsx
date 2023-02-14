@@ -1,7 +1,7 @@
 import { Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
 import React from "react"
-import { Repository } from "./ReportBreadcrumbs"
+import { Repository } from "../ReportBreadcrumbs"
 
 interface Branch {
   reference: string

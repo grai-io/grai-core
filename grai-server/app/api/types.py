@@ -593,8 +593,9 @@ class Repository:
     type: auto
     owner: auto
     repo: auto
+
+    # Pull Requests
     pull_requests: List["PullRequest"]
-    commits: List["Commit"]
 
     @gql.django.field
     def pull_request(self, id: Optional[strawberry.ID] = None, reference: Optional[str] = None) -> "PullRequest":
@@ -603,6 +604,20 @@ class Repository:
             if id is not None
             else PullRequestModel.objects.get(repository=self, reference=reference)
         )
+
+    # Branches
+    branches: List["Branch"]
+
+    @gql.django.field
+    def branch(self, id: Optional[strawberry.ID] = None, reference: Optional[str] = None) -> "Branch":
+        return (
+            BranchModel.objects.get(id=id)
+            if id is not None
+            else BranchModel.objects.get(repository=self, reference=reference)
+        )
+
+    # Commits
+    commits: List["Commit"]
 
     @gql.django.field
     def commit(self, id: Optional[strawberry.ID] = None, reference: Optional[str] = None) -> "Commit":
