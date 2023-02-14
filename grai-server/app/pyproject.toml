@@ -38,6 +38,7 @@ grai-source-dbt = "^0.1.13"
 django-storages = "^1.13.2"
 grai-source-mssql = "^0.0.5"
 grai-source-bigquery = "^0.0.1"
+grai-source-fivetran = "^0.0.1"
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.10.1"

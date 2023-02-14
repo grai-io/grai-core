@@ -235,11 +235,39 @@
         "pk": "a9158bbc-eeca-4b10-806a-1b0a7b997a8f",
         "fields": {
             "name": "Fivetran",
-            "metadata": {},
+            "metadata": {
+                "fields": [
+                    {
+                        "name": "api_key",
+                        "required": true
+                    },
+                    {
+                        "name": "api_secret",
+                        "required": true,
+                        "secret": true
+                    },
+                    {
+                        "name": "namespaces",
+                        "required": false
+                    },
+                    {
+                        "name": "endpoint",
+                        "required": false
+                    },
+                    {
+                        "name": "limit",
+                        "required": false
+                    },
+                    {
+                        "name": "parallelization",
+                        "required": false
+                    }
+                ]
+            },
             "is_active": true,
             "icon": "/images/fivetran-logo.png",
             "category": "data tools",
-            "coming_soon": true,
+            "coming_soon": false,
             "created_at": "2023-01-11T21:17:16.264Z",
             "updated_at": "2023-01-11T21:17:16.264Z"
         }

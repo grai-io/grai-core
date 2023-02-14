@@ -1,7 +1,8 @@
 from django.contrib import admin
 
+from lineage.models import Edge, Node
+
 from .models import Membership, Organisation, Workspace, WorkspaceAPIKey
-from lineage.models import Node, Edge
 
 
 @admin.action(description="Delete nodes and edges")
