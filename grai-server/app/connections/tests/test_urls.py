@@ -5,7 +5,7 @@ from unittest.mock import MagicMock
 import pytest
 
 from connections.models import Connection, Connector
-from installations.models import Repository
+from installations.models import Repository, Branch, PullRequest, Commit
 from workspaces.models import Membership, Organisation, Workspace
 
 
@@ -67,6 +67,45 @@ def test_repository(create_workspace):
     )
 
 
+@pytest.fixture
+def test_branch(create_workspace, test_repository):
+    return Branch.objects.create(workspace=create_workspace, repository=test_repository, reference=str(uuid.uuid4()))
+
+
+@pytest.fixture
+def test_pull_request(create_workspace, test_repository, test_branch):
+    return PullRequest.objects.create(
+        workspace=create_workspace,
+        repository=test_repository,
+        branch=test_branch,
+        reference=str(uuid.uuid4()),
+        title=str(uuid.uuid4()),
+    )
+
+
+@pytest.fixture
+def test_commit(create_workspace, test_repository, test_branch):
+    return Commit.objects.create(
+        workspace=create_workspace,
+        repository=test_repository,
+        branch=test_branch,
+        reference=str(uuid.uuid4()),
+        title=str(uuid.uuid4()),
+    )
+
+
+@pytest.fixture
+def test_commit_with_pr(create_workspace, test_repository, test_branch, test_pull_request):
+    return Commit.objects.create(
+        workspace=create_workspace,
+        repository=test_repository,
+        branch=test_branch,
+        pull_request=test_pull_request,
+        reference=str(uuid.uuid4()),
+        title=str(uuid.uuid4()),
+    )
+
+
 @pytest.mark.django_db
 def test_create_run_connection(auto_login_user, test_connector):
     client, user, workspace = auto_login_user()
@@ -93,7 +132,7 @@ def test_create_run_connector(auto_login_user, test_connector):
     response = client.post(
         url,
         {
-            "connector": test_connector.name,
+            "connector_name": test_connector.name,
         },
     )
     assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
@@ -123,7 +162,7 @@ def test_create_run_no_repo(auto_login_user, test_connector):
         client.post(
             url,
             {
-                "connector": test_connector.name,
+                "connector_name": test_connector.name,
                 "github_owner": "owner",
                 "github_repo": "repo",
             },
@@ -148,11 +187,105 @@ def test_create_run_connector_with_github(auto_login_user, test_connector, test_
     response = client.post(
         url,
         {
-            "connector": test_connector.name,
+            "connector_name": test_connector.name,
             "github_owner": test_repository.owner,
             "github_repo": test_repository.repo,
             "git_branch": "test_branch",
             "git_head_sha": "sha1234",
+        },
+    )
+    assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
+    run = response.json()
+    assert run["id"] is not None
+
+
+@pytest.mark.django_db
+def test_create_run_connector_with_commit(
+    auto_login_user, test_connector, test_repository, test_branch, test_commit, mocker
+):
+    mock = mocker.patch("connections.urls.Github")
+    github_instance = MagicMock()
+    check = types.SimpleNamespace()
+    check.id = 1234
+    github_instance.create_check.return_value = check
+    github_instance.installation_id = 1234
+    mock.return_value = github_instance
+
+    client, user, workspace = auto_login_user()
+
+    url = "/api/v1/external-runs/"
+    response = client.post(
+        url,
+        {
+            "connector_name": test_connector.name,
+            "github_owner": test_repository.owner,
+            "github_repo": test_repository.repo,
+            "git_branch": test_branch.reference,
+            "git_head_sha": test_commit.reference,
+        },
+    )
+    assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
+    run = response.json()
+    assert run["id"] is not None
+
+
+@pytest.mark.django_db
+def test_create_run_connector_with_pull_request(
+    auto_login_user, test_connector, test_repository, test_branch, test_commit, mocker
+):
+    mock = mocker.patch("connections.urls.Github")
+    github_instance = MagicMock()
+    check = types.SimpleNamespace()
+    check.id = 1234
+    github_instance.create_check.return_value = check
+    github_instance.installation_id = 1234
+    mock.return_value = github_instance
+
+    client, user, workspace = auto_login_user()
+
+    url = "/api/v1/external-runs/"
+    response = client.post(
+        url,
+        {
+            "connector_name": test_connector.name,
+            "github_owner": test_repository.owner,
+            "github_repo": test_repository.repo,
+            "git_branch": test_branch.reference,
+            "git_head_sha": test_commit.reference,
+            "github_pr_reference": "123",
+            "github_pr_title": "abc",
+        },
+    )
+    assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
+    run = response.json()
+    assert run["id"] is not None
+
+
+@pytest.mark.django_db
+def test_create_run_connector_with_existing_pull_request(
+    auto_login_user, test_connector, test_repository, test_branch, test_pull_request, test_commit, mocker
+):
+    mock = mocker.patch("connections.urls.Github")
+    github_instance = MagicMock()
+    check = types.SimpleNamespace()
+    check.id = 1234
+    github_instance.create_check.return_value = check
+    github_instance.installation_id = 1234
+    mock.return_value = github_instance
+
+    client, user, workspace = auto_login_user()
+
+    url = "/api/v1/external-runs/"
+    response = client.post(
+        url,
+        {
+            "connector_name": test_connector.name,
+            "github_owner": test_repository.owner,
+            "github_repo": test_repository.repo,
+            "git_branch": test_branch.reference,
+            "git_head_sha": test_commit.reference,
+            "github_pr_reference": test_pull_request.reference,
+            "github_pr_title": test_pull_request.title,
         },
     )
     assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
