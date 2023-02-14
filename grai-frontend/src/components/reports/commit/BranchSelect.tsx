@@ -1,7 +1,6 @@
 import { Box, InputAdornment, MenuItem, TextField } from "@mui/material"
 import useSearchParams from "helpers/useSearchParams"
 import React, { ChangeEvent } from "react"
-import { Repository } from "./CommitBreadcrumbs"
 
 interface Branch {
   reference: string

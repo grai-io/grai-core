@@ -1,3 +1,4 @@
+import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
 import React from "react"
@@ -23,6 +24,27 @@ test("renders branch", async () => {
   await waitFor(() => {
     expect(screen.getAllByText(/Hello world/i)).toBeTruthy()
   })
+})
+
+test("row click", async () => {
+  const user = userEvent.setup()
+
+  const { container } = render(<Commits />, {
+    path: "/:organisationName/:workspaceName/reports/:type/:owner/:repo",
+    route: "/org/demo/reports/github/owner/repo",
+    routes: [
+      "/:organisationName/:workspaceName/reports/:type/:owner/:repo/commits/Hello world",
+    ],
+  })
+
+  await waitFor(() => {
+    expect(screen.getAllByText(/Hello world/i)).toBeTruthy()
+  })
+
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+  await user.click(container.querySelectorAll("tbody > tr")[0])
+
+  expect(screen.getByText("New Page")).toBeInTheDocument()
 })
 
 test("not found", async () => {
