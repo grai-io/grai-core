@@ -14,6 +14,17 @@ test("renders", async () => {
   })
 })
 
+test("renders branch", async () => {
+  render(<Commits />, {
+    path: "/:organisationName/:workspaceName/reports/:type/:owner/:repo",
+    route: "/org/demo/reports/github/owner/repo?branch=aBranch",
+  })
+
+  await waitFor(() => {
+    expect(screen.getAllByText(/Hello world/i)).toBeTruthy()
+  })
+})
+
 test("not found", async () => {
   const mocks = [
     {
