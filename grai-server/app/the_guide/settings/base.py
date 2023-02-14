@@ -259,8 +259,8 @@ AWS_SES_REGION_ENDPOINT = "email.us-west-2.amazonaws.com"
 
 # Celery settings
 
-CELERY_BROKER_URL = os.environ.get("CELERY_BROKER", "redis://127.0.0.1:6379/0")
-CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND", "redis://127.0.0.1:6379/0")
+CELERY_BROKER_URL = config("CELERY_BROKER", "redis://127.0.0.1:6379/0")
+CELERY_RESULT_BACKEND = config("CELERY_BACKEND", "redis://127.0.0.1:6379/0")
 
 #: Only add pickle to this list if your broker is secured
 #: from unwanted access (see userguide/security.html)
@@ -274,3 +274,6 @@ SESSION_COOKIE_HTTPONLY = True
 
 DEFAULT_FILE_STORAGE = config("DEFAULT_FILE_STORAGE", "django.core.files.storage.FileSystemStorage")
 AWS_STORAGE_BUCKET_NAME = config("AWS_STORAGE_BUCKET_NAME", None)
+
+GITHUB_APP_ID = config("GITHUB_APP_ID", None)
+GITHUB_PRIVATE_KEY = config("GITHUB_PRIVATE_KEY", None)

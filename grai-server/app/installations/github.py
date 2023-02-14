@@ -6,10 +6,10 @@ import requests
 from ghapi.all import GhApi
 
 from installations.models import Repository
+from django.conf import settings
 
-app_id = "215508"
-pem = "/Users/edwardlouth/Desktop/graibot.2023-02-07.private-key.pem"
-
+app_id = settings.GITHUB_APP_ID
+pem = settings.GITHUB_PRIVATE_KEY
 
 class Github:
     api: GhApi = None
