@@ -44,16 +44,20 @@ def get_adapter(slug: str) -> BaseAdapter:
     raise NoConnectorError(f"No connector found for: {slug}")
 
 
+def get_github_api(run: Run):
+    repository = run.commit.repository
+
+    return Github(owner=repository.owner, repo=repository.repo, installation_id=repository.installation_id)
+
+
 def execute_run(run: Run):
     # Set run status to running
     run.status = "running"
     run.started_at = datetime.now()
     run.save()
 
-    if run.trigger:
-        github = Github(
-            owner=run.trigger["owner"], repo=run.trigger["repo"], installation_id=run.trigger["installation_id"]
-        )
+    if run.commit and run.trigger:
+        github = get_github_api(run)
         github.start_check(check_id=run.trigger["check_id"])
 
     try:
@@ -74,10 +78,8 @@ def execute_run(run: Run):
         run.finished_at = datetime.now()
         run.save()
 
-        if run.trigger:
-            github = Github(
-                owner=run.trigger["owner"], repo=run.trigger["repo"], installation_id=run.trigger["installation_id"]
-            )
+        if run.commit and run.trigger:
+            github = get_github_api(run)
             github.complete_check(
                 check_id=run.trigger["check_id"],
                 conclusion="success" if results is None else "failure",
@@ -88,10 +90,8 @@ def execute_run(run: Run):
         run.finished_at = datetime.now()
         run.save()
 
-        if run.trigger:
-            github = Github(
-                owner=run.trigger["owner"], repo=run.trigger["repo"], installation_id=run.trigger["installation_id"]
-            )
+        if run.commit and run.trigger:
+            github = get_github_api(run)
             github.complete_check(check_id=run.trigger["check_id"], conclusion="failure")
 
         raise e

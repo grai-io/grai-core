@@ -9,6 +9,8 @@ from connections.models import Connection, Connector, Run, RunFile
 from connections.tasks import run_connection_schedule, run_update_server
 from lineage.models import Node
 from workspaces.models import Organisation, Workspace
+from installations.models import Repository, Branch, Commit
+from installations.tests.test_github import mocked_requests_post
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
@@ -61,6 +63,26 @@ def test_yaml_file_connector():
 def test_connector():
     return Connector.objects.create(name="Connector", slug="Connector")
 
+@pytest.fixture
+def test_repository(test_workspace):
+    return Repository.objects.create(
+        workspace=test_workspace, owner="test_owner", repo="test_repo", type=Repository.GITHUB, installation_id=1234
+    )
+
+
+@pytest.fixture
+def test_branch(test_workspace, test_repository):
+    return Branch.objects.create(workspace=test_workspace, repository=test_repository, reference=str(uuid.uuid4()))
+
+@pytest.fixture
+def test_commit(test_workspace, test_repository, test_branch):
+    return Commit.objects.create(
+        workspace=test_workspace,
+        repository=test_repository,
+        branch=test_branch,
+        reference=str(uuid.uuid4()),
+        title=str(uuid.uuid4()),
+    )
 
 @pytest.mark.django_db
 class TestUpdateServer:
@@ -193,6 +215,32 @@ class TestUpdateServerTests:
             RunFile.objects.create(run=run, file=file)
 
         run_update_server(str(run.id))
+
+    def test_run_update_server_dbt_github(self, test_workspace, test_dbt_connector, test_commit, mocker):
+        mocker.patch("installations.github.requests.post", side_effect=mocked_requests_post)
+        mocker.patch("installations.github.GhApi")
+
+        with open(os.path.join(__location__, "manifest.json")) as reader:
+            file = UploadedFile(reader, name="manifest.json")
+            connection = Connection.objects.create(
+                name=str(uuid.uuid4()), connector=test_dbt_connector, workspace=test_workspace
+            )
+            run = Run.objects.create(connection=connection, workspace=test_workspace, commit=test_commit, action=Run.TESTS, trigger={"check_id": "1234"})
+            RunFile.objects.create(run=run, file=file)
+
+        run_update_server(str(run.id))
+
+    def test_run_update_server_no_connector_github(self, test_workspace, test_connector, test_commit, mocker):
+        mocker.patch("installations.github.requests.post", side_effect=mocked_requests_post)
+        mocker.patch("installations.github.GhApi")
+
+        connection = Connection.objects.create(name="C3", connector=test_connector, workspace=test_workspace)
+        run = Run.objects.create(connection=connection, workspace=test_workspace, commit=test_commit, action=Run.TESTS, trigger={"check_id": "1234"})
+
+        with pytest.raises(Exception) as e_info:
+            run_update_server(str(run.id))
+
+        assert str(e_info.value) == "No connector found for: Connector"
 
 
 @pytest.mark.django_db

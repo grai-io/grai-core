@@ -6,6 +6,8 @@ from installations.github import Github
 from installations.models import Repository
 from workspaces.models import Organisation, Workspace
 
+from django_multitenant.utils import set_current_tenant
+
 
 @pytest.fixture
 def create_organisation(name: str = None):
@@ -63,6 +65,7 @@ def mocked_requests_post_no_token(*args, **kwargs):
 @pytest.mark.django_db
 class TestInit:
     def test_init_with_installation_id(self):
+        set_current_tenant(None)
         github = Github(owner="owner", repo="repo", installation_id="1234")
         assert github.owner == "owner"
         assert github.repo == "repo"
