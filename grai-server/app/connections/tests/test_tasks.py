@@ -7,10 +7,10 @@ from django.core.files.uploadedfile import UploadedFile
 
 from connections.models import Connection, Connector, Run, RunFile
 from connections.tasks import run_connection_schedule, run_update_server
+from installations.models import Branch, Commit, Repository
+from installations.tests.test_github import mocked_requests_post
 from lineage.models import Node
 from workspaces.models import Organisation, Workspace
-from installations.models import Repository, Branch, Commit
-from installations.tests.test_github import mocked_requests_post
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
@@ -63,6 +63,7 @@ def test_yaml_file_connector():
 def test_connector():
     return Connector.objects.create(name="Connector", slug="Connector")
 
+
 @pytest.fixture
 def test_repository(test_workspace):
     return Repository.objects.create(
@@ -74,6 +75,7 @@ def test_repository(test_workspace):
 def test_branch(test_workspace, test_repository):
     return Branch.objects.create(workspace=test_workspace, repository=test_repository, reference=str(uuid.uuid4()))
 
+
 @pytest.fixture
 def test_commit(test_workspace, test_repository, test_branch):
     return Commit.objects.create(
@@ -83,6 +85,7 @@ def test_commit(test_workspace, test_repository, test_branch):
         reference=str(uuid.uuid4()),
         title=str(uuid.uuid4()),
     )
+
 
 @pytest.mark.django_db
 class TestUpdateServer:
@@ -225,7 +228,13 @@ class TestUpdateServerTests:
             connection = Connection.objects.create(
                 name=str(uuid.uuid4()), connector=test_dbt_connector, workspace=test_workspace
             )
-            run = Run.objects.create(connection=connection, workspace=test_workspace, commit=test_commit, action=Run.TESTS, trigger={"check_id": "1234"})
+            run = Run.objects.create(
+                connection=connection,
+                workspace=test_workspace,
+                commit=test_commit,
+                action=Run.TESTS,
+                trigger={"check_id": "1234"},
+            )
             RunFile.objects.create(run=run, file=file)
 
         run_update_server(str(run.id))
@@ -235,7 +244,13 @@ class TestUpdateServerTests:
         mocker.patch("installations.github.GhApi")
 
         connection = Connection.objects.create(name="C3", connector=test_connector, workspace=test_workspace)
-        run = Run.objects.create(connection=connection, workspace=test_workspace, commit=test_commit, action=Run.TESTS, trigger={"check_id": "1234"})
+        run = Run.objects.create(
+            connection=connection,
+            workspace=test_workspace,
+            commit=test_commit,
+            action=Run.TESTS,
+            trigger={"check_id": "1234"},
+        )
 
         with pytest.raises(Exception) as e_info:
             run_update_server(str(run.id))
