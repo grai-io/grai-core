@@ -2,6 +2,7 @@ import pytest
 from dotenv import load_dotenv
 from grai_source_fivetran.adapters import adapt_to_client
 from grai_source_fivetran.loader import FivetranAPI, FivetranConnector
+from grai_source_fivetran.mock_tools import MockFivetranObjects
 
 
 # You may need to create a .env file to run these tests
@@ -11,14 +12,14 @@ def api():
 
 
 @pytest.fixture
-def connector():
-    load_dotenv()
-    return FivetranConnector(default_namespace="default")
-
-
-@pytest.fixture
-def app_nodes_and_edges(connector):
-    return connector.get_nodes_and_edges()
+def app_nodes_and_edges():
+    types_to_mock = ["cc", "ct", "tc", "tt"]
+    edges = [MockFivetranObjects.mock_edge(t) for t in types_to_mock]
+    nodes = []
+    for edge in edges:
+        nodes.append(edge.source)
+        nodes.append(edge.destination)
+    return nodes, edges
 
 
 @pytest.fixture
