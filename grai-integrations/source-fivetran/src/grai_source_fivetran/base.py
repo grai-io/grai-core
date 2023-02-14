@@ -5,13 +5,12 @@ from grai_client.endpoints.client import BaseClient
 from grai_client.schemas.edge import Edge
 from grai_client.schemas.node import Node
 from grai_client.update import update
+
 from grai_source_fivetran.adapters import adapt_to_client
 from grai_source_fivetran.loader import FivetranConnector, NamespaceTypes
 
 
-def get_nodes_and_edges(
-    connector: FivetranConnector, version: Literal["v1"]
-) -> Tuple[List[Node], List[Edge]]:
+def get_nodes_and_edges(connector: FivetranConnector, version: Literal["v1"]) -> Tuple[List[Node], List[Edge]]:
     nodes, edges = connector.get_nodes_and_edges()
 
     nodes = adapt_to_client(nodes, version)

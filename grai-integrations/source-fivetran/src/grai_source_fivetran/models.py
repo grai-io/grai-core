@@ -1,12 +1,13 @@
 from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
+from pydantic import BaseModel, Field, root_validator, validator
+
 from grai_source_fivetran.fivetran_api.api_models import (
     ColumnMetadataResponse,
     SchemaMetadataResponse,
     TableMetadataResponse,
 )
-from pydantic import BaseModel, Field, root_validator, validator
 
 
 class TableResult(BaseModel):

@@ -12,9 +12,10 @@ from grai_schemas.v1.metadata.edges import (
     TableToTableMetadata,
 )
 from grai_schemas.v1.metadata.nodes import ColumnMetadata, NodeTypeLabels, TableMetadata
+from multimethod import multimethod
+
 from grai_source_fivetran.models import Column, Edge, NodeTypes, Table
 from grai_source_fivetran.package_definitions import config
-from multimethod import multimethod
 
 
 @multimethod

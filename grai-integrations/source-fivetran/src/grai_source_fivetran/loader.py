@@ -16,6 +16,8 @@ from typing import (
 )
 
 import requests
+from pydantic import BaseModel, BaseSettings, SecretStr, validator
+
 from grai_source_fivetran.fivetran_api.api_models import (
     ColumnMetadataResponse,
     ConnectorResponse,
@@ -28,7 +30,6 @@ from grai_source_fivetran.fivetran_api.api_models import (
     V1GroupsGetResponse,
 )
 from grai_source_fivetran.models import Column, Edge, NamespaceIdentifier, Table
-from pydantic import BaseModel, BaseSettings, SecretStr, validator
 
 T = TypeVar("T")
 P = ParamSpec("P")

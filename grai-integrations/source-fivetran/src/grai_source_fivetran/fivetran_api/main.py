@@ -165,9 +165,7 @@ def create_connector(
     pass
 
 
-@app.get(
-    "/v1/connectors/{connector_id}", response_model=V1ConnectorsConnectorIdGetResponse
-)
+@app.get("/v1/connectors/{connector_id}", response_model=V1ConnectorsConnectorIdGetResponse)
 def connector_details(
     connector_id: str = Path(..., alias="connectorId"),
     accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
@@ -192,9 +190,7 @@ def delete_connector(
     pass
 
 
-@app.patch(
-    "/v1/connectors/{connector_id}", response_model=V1ConnectorsConnectorIdPatchResponse
-)
+@app.patch("/v1/connectors/{connector_id}", response_model=V1ConnectorsConnectorIdPatchResponse)
 def modify_connector(
     connector_id: str = Path(..., alias="connectorId"),
     accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
@@ -445,9 +441,7 @@ def create_dbt_project(
     pass
 
 
-@app.get(
-    "/v1/dbt/projects/{project_id}", response_model=V1DbtProjectsProjectIdGetResponse
-)
+@app.get("/v1/dbt/projects/{project_id}", response_model=V1DbtProjectsProjectIdGetResponse)
 def dbt_project_details(
     project_id: str = Path(..., alias="projectId"),
     accept: Optional[str] = Header("application/json", alias="Accept"),
@@ -738,9 +732,7 @@ def list_all_users_in_group(
     pass
 
 
-@app.post(
-    "/v1/groups/{group_id}/users", response_model=V1GroupsGroupIdUsersPostResponse
-)
+@app.post("/v1/groups/{group_id}/users", response_model=V1GroupsGroupIdUsersPostResponse)
 def add_user_to_group(
     group_id: str = Path(..., alias="groupId"),
     accept: Optional[str] = Header("application/json", alias="Accept"),
@@ -827,9 +819,7 @@ def metadata_connectors(
     pass
 
 
-@app.get(
-    "/v1/metadata/{name}/{service}", response_model=V1MetadataNameServiceGetResponse
-)
+@app.get("/v1/metadata/{name}/{service}", response_model=V1MetadataNameServiceGetResponse)
 def metadata_connector_config(
     service: str,
     accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
@@ -864,9 +854,7 @@ def list_all_teams(
     pass
 
 
-@app.post(
-    "/v1/teams", response_model=None, responses={"201": {"model": V1TeamsPostResponse}}
-)
+@app.post("/v1/teams", response_model=None, responses={"201": {"model": V1TeamsPostResponse}})
 def create_team(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: TeamRequest = None,
@@ -911,9 +899,7 @@ def modify_team(
     pass
 
 
-@app.get(
-    "/v1/teams/{team_id}/connectors", response_model=V1TeamsTeamIdConnectorsGetResponse
-)
+@app.get("/v1/teams/{team_id}/connectors", response_model=V1TeamsTeamIdConnectorsGetResponse)
 def get_team_memberships_in_connectors(
     team_id: str = Path(..., alias="teamId"),
     cursor: Optional[str] = None,
@@ -1161,9 +1147,7 @@ def list_all_users(
     pass
 
 
-@app.post(
-    "/v1/users", response_model=None, responses={"201": {"model": V1UsersPostResponse}}
-)
+@app.post("/v1/users", response_model=None, responses={"201": {"model": V1UsersPostResponse}})
 def create_user(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: NewUserRequest = None,
@@ -1175,9 +1159,7 @@ def create_user(
 
 
 @app.delete("/v1/users/{id}", response_model=V1UsersIdDeleteResponse)
-def delete_user(
-    id: str, accept: Optional[str] = Header("application/json", alias="Accept")
-) -> V1UsersIdDeleteResponse:
+def delete_user(id: str, accept: Optional[str] = Header("application/json", alias="Accept")) -> V1UsersIdDeleteResponse:
     """
     Delete a user
     """
@@ -1207,9 +1189,7 @@ def modify_user(
     pass
 
 
-@app.get(
-    "/v1/users/{user_id}/connectors", response_model=V1UsersUserIdConnectorsGetResponse
-)
+@app.get("/v1/users/{user_id}/connectors", response_model=V1UsersUserIdConnectorsGetResponse)
 def get_user_memberships_in_connectors(
     user_id: str = Path(..., alias="userId"),
     cursor: Optional[str] = None,
@@ -1416,9 +1396,7 @@ def webhook_details(
     pass
 
 
-@app.delete(
-    "/v1/webhooks/{webhook_id}", response_model=None, responses={"204": {"model": str}}
-)
+@app.delete("/v1/webhooks/{webhook_id}", response_model=None, responses={"204": {"model": str}})
 def delete_webhook(
     webhook_id: str = Path(..., alias="webhookId"),
     accept: Optional[str] = Header("application/json", alias="Accept"),

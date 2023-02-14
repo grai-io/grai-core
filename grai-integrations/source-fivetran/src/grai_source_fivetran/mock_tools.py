@@ -18,9 +18,7 @@ def faker_dep_wrapper(fn: Callable[..., T]):
     @wraps(fn)
     def inner(*args, **kwargs) -> T:
         if not has_faker:
-            raise ModuleNotFoundError(
-                "Mock testing tools require `faker`. Try running `pip install faker`"
-            )
+            raise ModuleNotFoundError("Mock testing tools require `faker`. Try running `pip install faker`")
         return fn(*args, **kwargs)
 
     return inner

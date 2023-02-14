@@ -20,9 +20,7 @@ def test_load_config_from_env_variables():
 
 
 def test_load_config_arguments():
-    config = FiveTranConfig(
-        api_key="test_key", api_secret="test_secret", endpoint="http://www.fivetran.com"
-    )
+    config = FiveTranConfig(api_key="test_key", api_secret="test_secret", endpoint="http://www.fivetran.com")
     assert config.endpoint == "http://www.fivetran.com"
     assert config.api_key.get_secret_value() == "test_key"
     assert config.api_secret.get_secret_value() == "test_secret"

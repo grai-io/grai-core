@@ -1,5 +1,6 @@
 import pytest
 from dotenv import load_dotenv
+
 from grai_source_fivetran.adapters import adapt_to_client
 from grai_source_fivetran.loader import FivetranAPI, FivetranConnector
 from grai_source_fivetran.mock_tools import MockFivetranObjects

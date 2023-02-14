@@ -12,12 +12,8 @@ from pydantic import BaseModel, Extra, Field
 
 
 class TrustCertificateRequest(BaseModel):
-    connector_id: Optional[str] = Field(
-        None, description="The unique identifier for the connector"
-    )
-    destination_id: Optional[str] = Field(
-        None, description="The unique identifier for the destination."
-    )
+    connector_id: Optional[str] = Field(None, description="The unique identifier for the connector")
+    destination_id: Optional[str] = Field(None, description="The unique identifier for the destination.")
     hash: str = Field(..., description="Hash of the certificate.")
     encoded_cert: str = Field(..., description="The certificate encoded in base64.")
 
@@ -90,9 +86,7 @@ class NewConnectorRequestV1(BaseModel):
         None,
         description="The unique identifier for the group within the Fivetran system",
     )
-    service: Optional[str] = Field(
-        None, description="The connector type name within the Fivetran system"
-    )
+    service: Optional[str] = Field(None, description="The connector type name within the Fivetran system")
     trust_certificates: Optional[bool] = Field(
         None,
         description="Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).",
@@ -105,16 +99,12 @@ class NewConnectorRequestV1(BaseModel):
         None,
         description="Specifies whether the setup tests should be run automatically. The default value is TRUE.",
     )
-    paused: Optional[bool] = Field(
-        None, description="Specifies whether the connector is paused"
-    )
+    paused: Optional[bool] = Field(None, description="Specifies whether the connector is paused")
     pause_after_trial: Optional[bool] = Field(
         None,
         description="Specifies whether the connector should be paused after the free trial period has ended",
     )
-    sync_frequency: Optional[SyncFrequency] = Field(
-        None, description="The connector sync frequency in minutes"
-    )
+    sync_frequency: Optional[SyncFrequency] = Field(None, description="The connector sync frequency in minutes")
     daily_sync_time: Optional[str] = Field(
         None,
         description="The optional parameter that defines the sync start time when the sync frequency is already set or being set by the current request to 1440. It can be specified in one hour increments starting from 00:00 to 23:00. If not specified, we will use [the baseline sync start time](https://fivetran.com/docs/getting-started/syncoverview#syncfrequencyandscheduling). This parameter has no effect on the [0 to 60 minutes offset](https://fivetran.com/docs/getting-started/syncoverview#syncstarttimesandoffsets) used to determine the actual sync start time",
@@ -192,16 +182,12 @@ class UpdateConnectorRequest(BaseModel):
         None,
         description="The connector authorization settings. Check possible config formats in [create method](/openapi/reference/v1/operation/create_connector/)",
     )
-    sync_frequency: Optional[SyncFrequency1] = Field(
-        None, description="The connector sync frequency in minutes"
-    )
+    sync_frequency: Optional[SyncFrequency1] = Field(None, description="The connector sync frequency in minutes")
     daily_sync_time: Optional[str] = Field(
         None,
         description="The connector daily sync start time that we return only when the sync frequency is set to 1440 (which means 24 hours) and the daily_sync_time parameter was set using the Create a Connector or Modify a Connector request",
     )
-    paused: Optional[bool] = Field(
-        None, description="Specifies whether the connector is paused"
-    )
+    paused: Optional[bool] = Field(None, description="Specifies whether the connector is paused")
     paused_after_trial: Optional[bool] = Field(
         None,
         description="Specifies whether the connector should be paused after the free trial period has ended",
@@ -232,18 +218,12 @@ class Alert(BaseModel):
 
 class ConnectCardResponse(BaseModel):
     token: Optional[str] = Field(None, description="The connect-card auth token")
-    uri: Optional[str] = Field(
-        None, description="The Connect Card URI for the user interface"
-    )
+    uri: Optional[str] = Field(None, description="The Connect Card URI for the user interface")
 
 
 class ConnectorStatusResponse(BaseModel):
-    tasks: Optional[List[Alert]] = Field(
-        None, description="The collection of tasks for the connector"
-    )
-    warnings: Optional[List[Alert]] = Field(
-        None, description="The collection of warnings for the connector"
-    )
+    tasks: Optional[List[Alert]] = Field(None, description="The collection of tasks for the connector")
+    warnings: Optional[List[Alert]] = Field(None, description="The collection of warnings for the connector")
     schema_status: Optional[str] = Field(None, description="Schema status")
     update_state: Optional[str] = Field(
         None,
@@ -266,9 +246,7 @@ class ConnectorStatusResponse(BaseModel):
 
 class SetupTestResultResponse(BaseModel):
     title: Optional[str] = Field(None, description="Setup test title.")
-    status: Optional[str] = Field(
-        None, description="The current state of the connector. "
-    )
+    status: Optional[str] = Field(None, description="The current state of the connector. ")
     message: Optional[str] = Field(None, description="Setup test message.")
     details: Optional[Dict[str, Any]] = Field(None, description="Setup test details.")
 
@@ -383,22 +361,16 @@ class NewDbtProjectRequest(BaseModel):
         None,
         description="The unique identifier for the Group within the Fivetran system.",
     )
-    dbt_version: Optional[str] = Field(
-        None, description="The version of dbt that should run the project."
-    )
+    dbt_version: Optional[str] = Field(None, description="The version of dbt that should run the project.")
     git_remote_url: Optional[str] = Field(None, description="Git remote url.")
     git_branch: Optional[str] = Field(None, description="Git branch.")
-    default_schema: Optional[str] = Field(
-        None, description="Default schema in destination."
-    )
+    default_schema: Optional[str] = Field(None, description="Default schema in destination.")
     folder_path: Optional[str] = Field(None, description="Folder in Git repo.")
     target_name: Optional[str] = Field(
         None,
         description="Target name to set or override the value from the deployment.yaml.",
     )
-    threads: Optional[int] = Field(
-        None, description="The number of threads dbt will use."
-    )
+    threads: Optional[int] = Field(None, description="The number of threads dbt will use.")
 
 
 class ScheduleType1(Enum):
@@ -419,9 +391,7 @@ class DaysOfWeekEnum(Enum):
 
 class TransformationSchedule(BaseModel):
     schedule_type: Optional[ScheduleType1] = Field(None, description="Schedule type")
-    days_of_week: Optional[List[DaysOfWeekEnum]] = Field(
-        None, description="Days of week", unique_items=True
-    )
+    days_of_week: Optional[List[DaysOfWeekEnum]] = Field(None, description="Days of week", unique_items=True)
     interval: Optional[int] = Field(None, description="Interval.")
     time_of_day: Optional[str] = Field(None, description="Time of day")
 
@@ -440,24 +410,18 @@ class DbtProjectDetailsResponse(BaseModel):
         description="The unique identifier for the DBT Model within the Fivetran system.",
     )
     folder_path: Optional[str] = Field(None, description="Folder in Git repo.")
-    created_at: Optional[datetime] = Field(
-        None, description="The timestamp when DBT project was created."
-    )
+    created_at: Optional[datetime] = Field(None, description="The timestamp when DBT project was created.")
     target_name: Optional[str] = Field(
         None,
         description="Target name to set or override the value from the deployment.yaml.",
     )
     git_remote_url: Optional[str] = Field(None, description="Git remote url.")
-    default_schema: Optional[str] = Field(
-        None, description="Default schema in destination."
-    )
+    default_schema: Optional[str] = Field(None, description="Default schema in destination.")
     group_id: Optional[str] = Field(
         None,
         description="The unique identifier for the Group within the Fivetran system.",
     )
-    public_key: Optional[str] = Field(
-        None, description="Public key to grant Fivetran SSH access to git repository."
-    )
+    public_key: Optional[str] = Field(None, description="Public key to grant Fivetran SSH access to git repository.")
     created_by_id: Optional[str] = Field(
         None,
         description="The unique identifier for the User within the Fivetran system.",
@@ -477,20 +441,14 @@ class TransformationDetailsResponse(BaseModel):
         None,
         description="The unique identifier for the DBT Model within the Fivetran system.",
     )
-    status: Optional[Status] = Field(
-        None, description="The status of DBT Transformation."
-    )
+    status: Optional[Status] = Field(None, description="The status of DBT Transformation.")
     schedule: Optional[TransformationSchedule] = None
-    last_run: Optional[datetime] = Field(
-        None, description="The timestamp of last DBT Transformation run."
-    )
+    last_run: Optional[datetime] = Field(None, description="The timestamp of last DBT Transformation run.")
     run_tests: Optional[bool] = Field(
         None,
         description="The field indicates whether the tests has been confugured for DBT Transformation.",
     )
-    model_ids: Optional[List[str]] = Field(
-        None, description="Identifiers of related models"
-    )
+    model_ids: Optional[List[str]] = Field(None, description="Identifiers of related models")
     output_model_name: Optional[str] = Field(None, description="The DBT Model name.")
     dbt_project_id: Optional[str] = Field(
         None,
@@ -500,12 +458,8 @@ class TransformationDetailsResponse(BaseModel):
         None,
         description="The unique identifier for the DBT Model within the Fivetran system.",
     )
-    connector_ids: Optional[List[str]] = Field(
-        None, description="Identifiers of related connectors"
-    )
-    next_run: Optional[datetime] = Field(
-        None, description="The timestamp of next DBT Transformation run."
-    )
+    connector_ids: Optional[List[str]] = Field(None, description="Identifiers of related connectors")
+    next_run: Optional[datetime] = Field(None, description="The timestamp of next DBT Transformation run.")
 
 
 class DbtProjectResponse(BaseModel):
@@ -513,9 +467,7 @@ class DbtProjectResponse(BaseModel):
         None,
         description="The unique identifier for the DBT Model within the Fivetran system.",
     )
-    created_at: Optional[datetime] = Field(
-        None, description="The timestamp when DBT project was created."
-    )
+    created_at: Optional[datetime] = Field(None, description="The timestamp when DBT project was created.")
     created_by_id: Optional[str] = Field(
         None,
         description="The unique identifier for the User within the Fivetran system.",
@@ -550,13 +502,9 @@ class TransformationResponse(BaseModel):
         None,
         description="The unique identifier for the DBT Model within the Fivetran system.",
     )
-    status: Optional[Status1] = Field(
-        None, description="The status of DBT Transformation."
-    )
+    status: Optional[Status1] = Field(None, description="The status of DBT Transformation.")
     schedule: Optional[TransformationSchedule] = None
-    last_run: Optional[datetime] = Field(
-        None, description="The timestamp of last DBT Transformation run."
-    )
+    last_run: Optional[datetime] = Field(None, description="The timestamp of last DBT Transformation run.")
     run_tests: Optional[bool] = Field(
         None,
         description="The field indicates whether the tests has been confugured for DBT Transformation.",
@@ -570,15 +518,11 @@ class TransformationResponse(BaseModel):
         None,
         description="The unique identifier for the DBT Model within the Fivetran system.",
     )
-    next_run: Optional[datetime] = Field(
-        None, description="The timestamp of next DBT Transformation run."
-    )
+    next_run: Optional[datetime] = Field(None, description="The timestamp of next DBT Transformation run.")
 
 
 class DbtProjectTestResponse(BaseModel):
-    setup_tests: Optional[List[SetupTestResultResponse]] = Field(
-        None, description="Setup tests results"
-    )
+    setup_tests: Optional[List[SetupTestResultResponse]] = Field(None, description="Setup tests results")
     dbt_project_id: Optional[str] = Field(
         None,
         description="The unique identifier for the DBT Project within the Fivetran system.",
@@ -743,12 +687,8 @@ class DestinationResponse(BaseModel):
 
 
 class TrustFingerprintRequest(BaseModel):
-    connector_id: Optional[str] = Field(
-        None, description="The unique identifier for the connector"
-    )
-    destination_id: Optional[str] = Field(
-        None, description="The unique identifier for the destination"
-    )
+    connector_id: Optional[str] = Field(None, description="The unique identifier for the connector")
+    destination_id: Optional[str] = Field(None, description="The unique identifier for the destination")
     hash: str = Field(..., description="Hash of the fingerprint")
     public_key: str = Field(..., description="The SSH public key")
 
@@ -765,15 +705,11 @@ class AddUserToGroupRequest(BaseModel):
 
 
 class NewGroupRequest(BaseModel):
-    name: Optional[str] = Field(
-        None, description="The name of the group within your account.", example="string"
-    )
+    name: Optional[str] = Field(None, description="The name of the group within your account.", example="string")
 
 
 class UpdateGroupRequest(BaseModel):
-    name: Optional[str] = Field(
-        None, description="The name of the group within your account.", example="string"
-    )
+    name: Optional[str] = Field(None, description="The name of the group within your account.", example="string")
 
 
 class GroupResponse(BaseModel):
@@ -781,9 +717,7 @@ class GroupResponse(BaseModel):
         None,
         description="The unique identifier for the group within the Fivetran system.",
     )
-    name: Optional[str] = Field(
-        None, description="The name of the group within your account."
-    )
+    name: Optional[str] = Field(None, description="The name of the group within your account.")
     created_at: Optional[datetime] = Field(
         None, description="The timestamp of when the group was created in your account."
     )
@@ -794,21 +728,15 @@ class ConnectorResponse(BaseModel):
         None,
         description="The unique identifier for the group within the Fivetran system.",
     )
-    service: Optional[str] = Field(
-        None, description="The name for the connector type within the Fivetran system."
-    )
+    service: Optional[str] = Field(None, description="The name for the connector type within the Fivetran system.")
     schema_: Optional[str] = Field(
         None,
         alias="schema",
         description="The name used both as the connector's name within the Fivetran system and as the source schema's name within your destination.",
     )
-    paused: Optional[bool] = Field(
-        None, description="Specifies whether the connector is paused."
-    )
+    paused: Optional[bool] = Field(None, description="Specifies whether the connector is paused.")
     status: Optional[ConnectorStatusResponse] = None
-    config: Optional[Dict[str, Dict[str, Any]]] = Field(
-        None, description="The connector setup configuration."
-    )
+    config: Optional[Dict[str, Dict[str, Any]]] = Field(None, description="The connector setup configuration.")
     daily_sync_time: Optional[str] = Field(
         None,
         description="The optional parameter that defines the sync start time when the sync frequency is already set or being set by the current request to 1440. It can be specified in one hour increments starting from 00:00 to 23:00. If not specified, we will use the baseline sync start time. This parameter has no effect on the 0 to 60 minutes offset used to determine the actual sync start time.",
@@ -818,9 +746,7 @@ class ConnectorResponse(BaseModel):
         description="The timestamp of the time the connector sync succeeded last time.",
     )
     connect_card: Optional[ConnectCardResponse] = None
-    sync_frequency: Optional[int] = Field(
-        None, description="The connector sync frequency in minutes"
-    )
+    sync_frequency: Optional[int] = Field(None, description="The connector sync frequency in minutes")
     pause_after_trial: Optional[bool] = Field(
         None,
         description="Specifies whether the connector should be paused after the free trial period has ended.",
@@ -833,16 +759,12 @@ class ConnectorResponse(BaseModel):
         None,
         description="The unique identifier of the user who has created the connector in your account.",
     )
-    setup_tests: Optional[List[SetupTestResultResponse]] = Field(
-        None, description="Setup tests results"
-    )
+    setup_tests: Optional[List[SetupTestResultResponse]] = Field(None, description="Setup tests results")
     source_sync_details: Optional[Dict[str, Any]] = Field(
         None,
         description="The additional information about the connector's state. The format of this parameter is specific for each connector type.",
     )
-    service_version: Optional[int] = Field(
-        None, description="The connector type version within the Fivetran system."
-    )
+    service_version: Optional[int] = Field(None, description="The connector type version within the Fivetran system.")
     created_at: Optional[datetime] = Field(
         None, description="The timestamp of when the group was created in your account."
     )
@@ -879,9 +801,7 @@ class UserResponse(BaseModel):
         description="The user's avatar as a URL link (for example, 'http://mycompany.com/avatars/john_white.png') or base64 data URI (for example, 'data:image/png;base64,aHR0cDovL215Y29tcGFueS5jb20vYXZhdGFycy9qb2huX3doaXRlLnBuZw==')",
     )
     phone: Optional[str] = Field(None, description="The phone number of the user.")
-    role: Optional[str] = Field(
-        None, description="The role that you would like to assign to the user "
-    )
+    role: Optional[str] = Field(None, description="The role that you would like to assign to the user ")
     active: Optional[bool] = Field(
         None,
         description="The boolean value indicating the user's status. If the user is able to log in, the value is true. If the user's account has been suspended, the value is false",
@@ -921,33 +841,19 @@ class Type(Enum):
 
 
 class MetadataResponse(BaseModel):
-    id: Optional[str] = Field(
-        None, description="The connector type identifier within the Fivetran system"
-    )
-    name: Optional[str] = Field(
-        None, description="The connector service name within the Fivetran system"
-    )
+    id: Optional[str] = Field(None, description="The connector type identifier within the Fivetran system")
+    name: Optional[str] = Field(None, description="The connector service name within the Fivetran system")
     type: Optional[Type] = Field(None, description="The connector service type")
-    description: Optional[str] = Field(
-        None, description="The description characterizing the purpose of the connector"
-    )
+    description: Optional[str] = Field(None, description="The description characterizing the purpose of the connector")
     icons: Optional[List[str]] = Field(
         None,
         description="The set of additional icon resource URLs in different formats (.svg, .png). Updating this list is not a breaking change. The set of icon URLs or the icons themselves may be changed",
     )
-    config: Optional[Dict[str, Any]] = Field(
-        None, description="Metadata for configuration fields"
-    )
-    auth: Optional[Dict[str, Any]] = Field(
-        None, description="Metadata for authorization fields (optional)"
-    )
-    link_to_erd: Optional[str] = Field(
-        None, description="The link to the connector ERD (entity–relationship diagram)"
-    )
+    config: Optional[Dict[str, Any]] = Field(None, description="Metadata for configuration fields")
+    auth: Optional[Dict[str, Any]] = Field(None, description="Metadata for authorization fields (optional)")
+    link_to_erd: Optional[str] = Field(None, description="The link to the connector ERD (entity–relationship diagram)")
     icon_url: Optional[str] = Field(None, description="The icon resource URL")
-    link_to_docs: Optional[str] = Field(
-        None, description="The link to the connector documentation"
-    )
+    link_to_docs: Optional[str] = Field(None, description="The link to the connector documentation")
 
 
 class RoleResponse(BaseModel):
@@ -958,59 +864,41 @@ class RoleResponse(BaseModel):
         description="Defines the list of resources the role manages",
         unique_items=True,
     )
-    is_custom: Optional[bool] = Field(
-        None, description="Defines whether the role is standard or custom"
-    )
+    is_custom: Optional[bool] = Field(None, description="Defines whether the role is standard or custom")
 
 
 class ColumnMetadataResponse(BaseModel):
     id: Optional[str] = Field(None, description="The unique column identifier")
-    name_in_source: Optional[str] = Field(
-        None, description="The column name in the source"
-    )
-    type_in_destination: Optional[str] = Field(
-        None, description="The column type in the destination"
-    )
+    name_in_source: Optional[str] = Field(None, description="The column name in the source")
+    type_in_destination: Optional[str] = Field(None, description="The column type in the destination")
     is_foreign_key: Optional[bool] = Field(
         None, description="The boolean specifying whether the column is a foreign key"
     )
     is_primary_key: Optional[bool] = Field(
         None, description="The boolean specifying whether the column is a primary key"
     )
-    type_in_source: Optional[str] = Field(
-        None, description="The column type in the source"
-    )
+    type_in_source: Optional[str] = Field(None, description="The column type in the source")
     parent_id: Optional[str] = Field(
         None,
         description="The unique identifier of the table associated with the column",
     )
-    name_in_destination: Optional[str] = Field(
-        None, description="The column name in the destination"
-    )
+    name_in_destination: Optional[str] = Field(None, description="The column name in the destination")
 
 
 class SchemaMetadataResponse(BaseModel):
     id: Optional[str] = Field(None, description="The unique schema identifier")
-    name_in_source: Optional[str] = Field(
-        None, description="The schema name in the source"
-    )
-    name_in_destination: Optional[str] = Field(
-        None, description="The schema name in the destination"
-    )
+    name_in_source: Optional[str] = Field(None, description="The schema name in the source")
+    name_in_destination: Optional[str] = Field(None, description="The schema name in the destination")
 
 
 class TableMetadataResponse(BaseModel):
     id: Optional[str] = Field(None, description="The unique table identifier")
-    name_in_source: Optional[str] = Field(
-        None, description="The table name in the source"
-    )
+    name_in_source: Optional[str] = Field(None, description="The table name in the source")
     parent_id: Optional[str] = Field(
         None,
         description="The unique identifier of the schema associated with the table",
     )
-    name_in_destination: Optional[str] = Field(
-        None, description="The table name in the destination"
-    )
+    name_in_destination: Optional[str] = Field(None, description="The table name in the destination")
 
 
 class MembershipRequest(BaseModel):
@@ -1018,9 +906,7 @@ class MembershipRequest(BaseModel):
         ...,
         description="The unique identifier for the user within the Fivetran system.",
     )
-    role: str = Field(
-        ..., description="The role that you would like to assign to the user "
-    )
+    role: str = Field(..., description="The role that you would like to assign to the user ")
 
 
 class TeamMembershipRequest(BaseModel):
@@ -1029,31 +915,19 @@ class TeamMembershipRequest(BaseModel):
 
 
 class TeamRequest(BaseModel):
-    name: Optional[str] = Field(
-        None, description="The name of the team within your account"
-    )
-    description: Optional[str] = Field(
-        None, description="The description of the team within your account"
-    )
+    name: Optional[str] = Field(None, description="The name of the team within your account")
+    description: Optional[str] = Field(None, description="The description of the team within your account")
     role: Optional[str] = Field(None, description="The account role of the team")
 
 
 class UpdateMembershipRequest(BaseModel):
-    role: str = Field(
-        ..., description="The role that you would like to assign to the user "
-    )
+    role: str = Field(..., description="The role that you would like to assign to the user ")
 
 
 class MembershipResponse(BaseModel):
-    id: Optional[str] = Field(
-        None, description="The membership entity unique identifier"
-    )
-    role: Optional[str] = Field(
-        None, description="The role the user has within the entity"
-    )
-    created_at: Optional[datetime] = Field(
-        None, description="The date and time the membership was created"
-    )
+    id: Optional[str] = Field(None, description="The membership entity unique identifier")
+    role: Optional[str] = Field(None, description="The role the user has within the entity")
+    created_at: Optional[datetime] = Field(None, description="The date and time the membership was created")
 
 
 class TeamMembershipResponse(BaseModel):
@@ -1062,15 +936,9 @@ class TeamMembershipResponse(BaseModel):
 
 
 class TeamResponse(BaseModel):
-    id: Optional[str] = Field(
-        None, description="The unique identifier for the team within your account"
-    )
-    name: Optional[str] = Field(
-        None, description="The name of the team within your account"
-    )
-    description: Optional[str] = Field(
-        None, description="The description of the team within your account"
-    )
+    id: Optional[str] = Field(None, description="The unique identifier for the team within your account")
+    name: Optional[str] = Field(None, description="The name of the team within your account")
+    description: Optional[str] = Field(None, description="The description of the team within your account")
     role: Optional[str] = Field(None, description="The account role of the team")
 
 
@@ -1080,57 +948,37 @@ class NewUserRequest(BaseModel):
         description="The email address that the user has associated with their user profile.",
         example="string",
     )
-    family_name: str = Field(
-        ..., description="The last name of the user.", example="string"
-    )
-    given_name: str = Field(
-        ..., description="The first name of the user.", example="string"
-    )
-    phone: Optional[str] = Field(
-        None, description="The phone number of the user.", example="string"
-    )
+    family_name: str = Field(..., description="The last name of the user.", example="string")
+    given_name: str = Field(..., description="The first name of the user.", example="string")
+    phone: Optional[str] = Field(None, description="The phone number of the user.", example="string")
     picture: Optional[str] = Field(
         None,
         description="The user's avatar as a URL link (for example, 'http://mycompany.com/avatars/john_white.png') or base64 data URI (for example, 'data:image/png;base64,aHR0cDovL215Y29tcGFueS5jb20vYXZhdGFycy9qb2huX3doaXRlLnBuZw==')",
         example="string",
     )
-    role: Optional[str] = Field(
-        None, description="The role that you would like to assign to the user "
-    )
+    role: Optional[str] = Field(None, description="The role that you would like to assign to the user ")
 
 
 class UpdateUserRequest(BaseModel):
-    family_name: str = Field(
-        ..., description="The last name of the user.", example="string"
-    )
-    given_name: str = Field(
-        ..., description="The first name of the user.", example="string"
-    )
-    phone: Optional[str] = Field(
-        None, description="The phone number of the user.", example="string"
-    )
+    family_name: str = Field(..., description="The last name of the user.", example="string")
+    given_name: str = Field(..., description="The first name of the user.", example="string")
+    phone: Optional[str] = Field(None, description="The phone number of the user.", example="string")
     picture: Optional[str] = Field(
         None,
         description="The user's avatar as a URL link (for example, 'http://mycompany.com/avatars/john_white.png') or base64 data URI (for example, 'data:image/png;base64,aHR0cDovL215Y29tcGFueS5jb20vYXZhdGFycy9qb2huX3doaXRlLnBuZw==')",
         example="string",
     )
-    role: Optional[str] = Field(
-        None, description="The role that you would like to assign to the user "
-    )
+    role: Optional[str] = Field(None, description="The role that you would like to assign to the user ")
 
 
 class WebhookRequest(BaseModel):
-    url: Optional[str] = Field(
-        None, description="Your webhooks URL endpoint for your application"
-    )
+    url: Optional[str] = Field(None, description="Your webhooks URL endpoint for your application")
     events: Optional[List[str]] = Field(None, description="The array of event types")
     active: Optional[bool] = Field(
         None,
         description="Boolean, if set to true, webhooks are immediately sent in response to events",
     )
-    secret: Optional[str] = Field(
-        None, description="The secret string used for payload signing. Optional."
-    )
+    secret: Optional[str] = Field(None, description="The secret string used for payload signing. Optional.")
 
 
 class WebhookTestRequest(BaseModel):
@@ -1145,23 +993,15 @@ class Type1(Enum):
 class WebhookResponse(BaseModel):
     id: Optional[str] = Field(None, description="The webhook ID")
     type: Optional[Type1] = Field(None, description="The webhook type")
-    url: Optional[str] = Field(
-        None, description="Your webhooks URL endpoint for your application"
-    )
+    url: Optional[str] = Field(None, description="Your webhooks URL endpoint for your application")
     events: Optional[List[str]] = Field(None, description="The array of event types")
     active: Optional[bool] = Field(
         None,
         description="Boolean, if set to true, webhooks are immediately sent in response to events",
     )
-    secret: Optional[str] = Field(
-        None, description="The secret string used for payload signing. Optional."
-    )
-    created_at: Optional[datetime] = Field(
-        None, description="The webhook creation timestamp"
-    )
-    created_by: Optional[str] = Field(
-        None, description="The ID of the user who created the webhook"
-    )
+    secret: Optional[str] = Field(None, description="The secret string used for payload signing. Optional.")
+    created_at: Optional[datetime] = Field(None, description="The webhook creation timestamp")
+    created_by: Optional[str] = Field(None, description="The ID of the user who created the webhook")
     group_id: Optional[str] = Field(None, description="The group ID")
 
 
@@ -1179,9 +1019,7 @@ class Config(BaseModel):
         title="",
     )
     database: Optional[str] = Field(None, description="Database name", title="")
-    password: Optional[str] = Field(
-        None, description="Database user password", title=""
-    )
+    password: Optional[str] = Field(None, description="Database user password", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None, description="Connection method. Default value: `Directly`.", title=""
     )
@@ -1209,9 +1047,7 @@ class AuroraPostgresWarehouseConfigV1(BaseModel):
     config: Optional[Config] = Field(None, description="")
 
 
-class AuroraPostgresWarehouseNewDestinationRequest(
-    NewDestinationRequest, AuroraPostgresWarehouseConfigV1
-):
+class AuroraPostgresWarehouseNewDestinationRequest(NewDestinationRequest, AuroraPostgresWarehouseConfigV1):
     pass
 
 
@@ -1223,9 +1059,7 @@ class Config1(BaseModel):
         title="",
     )
     database: Optional[str] = Field(None, description="Database name", title="")
-    password: Optional[str] = Field(
-        None, description="Database user password", title=""
-    )
+    password: Optional[str] = Field(None, description="Database user password", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None, description="Connection method. Default value: `Directly`.", title=""
     )
@@ -1253,9 +1087,7 @@ class AuroraWarehouseConfigV1(BaseModel):
     config: Optional[Config1] = Field(None, description="")
 
 
-class AuroraWarehouseNewDestinationRequest(
-    NewDestinationRequest, AuroraWarehouseConfigV1
-):
+class AuroraWarehouseNewDestinationRequest(NewDestinationRequest, AuroraWarehouseConfigV1):
     pass
 
 
@@ -1277,9 +1109,7 @@ class AzurePostgresWarehouseConfigV1(BaseModel):
     config: Optional[Config2] = Field(None, description="")
 
 
-class AzurePostgresWarehouseNewDestinationRequest(
-    NewDestinationRequest, AzurePostgresWarehouseConfigV1
-):
+class AzurePostgresWarehouseNewDestinationRequest(NewDestinationRequest, AzurePostgresWarehouseConfigV1):
     pass
 
 
@@ -1291,9 +1121,7 @@ class Config3(BaseModel):
         title="",
     )
     database: Optional[str] = Field(None, description="Database name", title="")
-    password: Optional[str] = Field(
-        None, description="Database user password", title=""
-    )
+    password: Optional[str] = Field(None, description="Database user password", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None, description="Connection method. Default value: `Directly`.", title=""
     )
@@ -1321,9 +1149,7 @@ class AzureSqlDataWarehouseConfigV1(BaseModel):
     config: Optional[Config3] = Field(None, description="")
 
 
-class AzureSqlDataWarehouseNewDestinationRequest(
-    NewDestinationRequest, AzureSqlDataWarehouseConfigV1
-):
+class AzureSqlDataWarehouseNewDestinationRequest(NewDestinationRequest, AzureSqlDataWarehouseConfigV1):
     pass
 
 
@@ -1345,9 +1171,7 @@ class AzureSqlDatabaseConfigV1(BaseModel):
     config: Optional[Config4] = Field(None, description="")
 
 
-class AzureSqlDatabaseNewDestinationRequest(
-    NewDestinationRequest, AzureSqlDatabaseConfigV1
-):
+class AzureSqlDatabaseNewDestinationRequest(NewDestinationRequest, AzureSqlDatabaseConfigV1):
     pass
 
 
@@ -1369,9 +1193,7 @@ class AzureSqlManagedDbWarehouseConfigV1(BaseModel):
     config: Optional[Config5] = Field(None, description="")
 
 
-class AzureSqlManagedDbWarehouseNewDestinationRequest(
-    NewDestinationRequest, AzureSqlManagedDbWarehouseConfigV1
-):
+class AzureSqlManagedDbWarehouseNewDestinationRequest(NewDestinationRequest, AzureSqlManagedDbWarehouseConfigV1):
     pass
 
 
@@ -1403,15 +1225,11 @@ class BigQueryNewDestinationRequest(NewDestinationRequest, BigQueryConfigV1):
 
 
 class Config7(BaseModel):
-    create_external_tables: Optional[bool] = Field(
-        None, description="Whether to create external tables", title=""
-    )
+    create_external_tables: Optional[bool] = Field(None, description="Whether to create external tables", title="")
     connection_type: Optional[Dict[str, Any]] = Field(None, title="")
     port: Optional[int] = Field(None, description="Server port number", title="")
     catalog: Optional[str] = Field(None, description="Catalog name", title="")
-    cloud_provider: Optional[Dict[str, Any]] = Field(
-        None, description="Databricks Deployment Cloud", title=""
-    )
+    cloud_provider: Optional[Dict[str, Any]] = Field(None, description="Databricks Deployment Cloud", title="")
     http_path: Optional[str] = Field(None, description="HTTP path", title="")
     server_host_name: Optional[str] = Field(None, description="Server name", title="")
     external_location: Optional[str] = Field(
@@ -1419,9 +1237,7 @@ class Config7(BaseModel):
         description='External location to store Delta tables. Default value: `""`  (null). By default, the external tables will reside in the `/{schema}/{table}` path, and if you specify an external location in the `{externalLocation}/{schema}/{table}` path.',
         title="",
     )
-    personal_access_token: Optional[str] = Field(
-        None, description="Personal access token", title=""
-    )
+    personal_access_token: Optional[str] = Field(None, description="Personal access token", title="")
 
 
 class DatabricksConfigV1(BaseModel):
@@ -1443,9 +1259,7 @@ class ManagedBigQueryConfigV1(BaseModel):
     config: Optional[Config8] = Field(None, description="")
 
 
-class ManagedBigQueryNewDestinationRequest(
-    NewDestinationRequest, ManagedBigQueryConfigV1
-):
+class ManagedBigQueryNewDestinationRequest(NewDestinationRequest, ManagedBigQueryConfigV1):
     pass
 
 
@@ -1467,9 +1281,7 @@ class MariaRdsWarehouseConfigV1(BaseModel):
     config: Optional[Config9] = Field(None, description="")
 
 
-class MariaRdsWarehouseNewDestinationRequest(
-    NewDestinationRequest, MariaRdsWarehouseConfigV1
-):
+class MariaRdsWarehouseNewDestinationRequest(NewDestinationRequest, MariaRdsWarehouseConfigV1):
     pass
 
 
@@ -1491,9 +1303,7 @@ class MariaWarehouseConfigV1(BaseModel):
     config: Optional[Config10] = Field(None, description="")
 
 
-class MariaWarehouseNewDestinationRequest(
-    NewDestinationRequest, MariaWarehouseConfigV1
-):
+class MariaWarehouseNewDestinationRequest(NewDestinationRequest, MariaWarehouseConfigV1):
     pass
 
 
@@ -1505,9 +1315,7 @@ class Config11(BaseModel):
         title="",
     )
     database: Optional[str] = Field(None, description="Database name", title="")
-    password: Optional[str] = Field(
-        None, description="Database user password", title=""
-    )
+    password: Optional[str] = Field(None, description="Database user password", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None, description="Connection method. Default value: `Directly`.", title=""
     )
@@ -1535,9 +1343,7 @@ class MysqlRdsWarehouseConfigV1(BaseModel):
     config: Optional[Config11] = Field(None, description="")
 
 
-class MysqlRdsWarehouseNewDestinationRequest(
-    NewDestinationRequest, MysqlRdsWarehouseConfigV1
-):
+class MysqlRdsWarehouseNewDestinationRequest(NewDestinationRequest, MysqlRdsWarehouseConfigV1):
     pass
 
 
@@ -1549,9 +1355,7 @@ class Config12(BaseModel):
         title="",
     )
     database: Optional[str] = Field(None, description="Database name", title="")
-    password: Optional[str] = Field(
-        None, description="Database user password", title=""
-    )
+    password: Optional[str] = Field(None, description="Database user password", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None, description="Connection method. Default value: `Directly`.", title=""
     )
@@ -1579,9 +1383,7 @@ class MysqlWarehouseConfigV1(BaseModel):
     config: Optional[Config12] = Field(None, description="")
 
 
-class MysqlWarehouseNewDestinationRequest(
-    NewDestinationRequest, MysqlWarehouseConfigV1
-):
+class MysqlWarehouseNewDestinationRequest(NewDestinationRequest, MysqlWarehouseConfigV1):
     pass
 
 
@@ -1600,9 +1402,7 @@ class Config13(BaseModel):
         title="",
     )
     database: Optional[str] = Field(None, description="Database name", title="")
-    password: Optional[str] = Field(
-        None, description="Database user password", title=""
-    )
+    password: Optional[str] = Field(None, description="Database user password", title="")
     tunnel_port: Optional[int] = Field(
         None,
         description="SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
@@ -1643,9 +1443,7 @@ class Config14(BaseModel):
         title="",
     )
     database: Optional[str] = Field(None, description="Database name", title="")
-    password: Optional[str] = Field(
-        None, description="Database user password", title=""
-    )
+    password: Optional[str] = Field(None, description="Database user password", title="")
     tunnel_port: Optional[int] = Field(
         None,
         description="SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
@@ -1667,9 +1465,7 @@ class PeriscopeWarehouseConfigV1(BaseModel):
     config: Optional[Config14] = Field(None, description="")
 
 
-class PeriscopeWarehouseNewDestinationRequest(
-    NewDestinationRequest, PeriscopeWarehouseConfigV1
-):
+class PeriscopeWarehouseNewDestinationRequest(NewDestinationRequest, PeriscopeWarehouseConfigV1):
     pass
 
 
@@ -1681,9 +1477,7 @@ class Config15(BaseModel):
         title="",
     )
     database: Optional[str] = Field(None, description="Database name", title="")
-    password: Optional[str] = Field(
-        None, description="Database user password", title=""
-    )
+    password: Optional[str] = Field(None, description="Database user password", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None, description="Connection method. Default value: `Directly`.", title=""
     )
@@ -1711,9 +1505,7 @@ class PostgresGcpWarehouseConfigV1(BaseModel):
     config: Optional[Config15] = Field(None, description="")
 
 
-class PostgresGcpWarehouseNewDestinationRequest(
-    NewDestinationRequest, PostgresGcpWarehouseConfigV1
-):
+class PostgresGcpWarehouseNewDestinationRequest(NewDestinationRequest, PostgresGcpWarehouseConfigV1):
     pass
 
 
@@ -1725,9 +1517,7 @@ class Config16(BaseModel):
         title="",
     )
     database: Optional[str] = Field(None, description="Database name", title="")
-    password: Optional[str] = Field(
-        None, description="Database user password", title=""
-    )
+    password: Optional[str] = Field(None, description="Database user password", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None, description="Connection method. Default value: `Directly`.", title=""
     )
@@ -1755,9 +1545,7 @@ class PostgresRdsWarehouseConfigV1(BaseModel):
     config: Optional[Config16] = Field(None, description="")
 
 
-class PostgresRdsWarehouseNewDestinationRequest(
-    NewDestinationRequest, PostgresRdsWarehouseConfigV1
-):
+class PostgresRdsWarehouseNewDestinationRequest(NewDestinationRequest, PostgresRdsWarehouseConfigV1):
     pass
 
 
@@ -1769,9 +1557,7 @@ class Config17(BaseModel):
         title="",
     )
     database: Optional[str] = Field(None, description="Database name", title="")
-    password: Optional[str] = Field(
-        None, description="Database user password", title=""
-    )
+    password: Optional[str] = Field(None, description="Database user password", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None, description="Connection method. Default value: `Directly`.", title=""
     )
@@ -1799,9 +1585,7 @@ class PostgresWarehouseConfigV1(BaseModel):
     config: Optional[Config17] = Field(None, description="")
 
 
-class PostgresWarehouseNewDestinationRequest(
-    NewDestinationRequest, PostgresWarehouseConfigV1
-):
+class PostgresWarehouseNewDestinationRequest(NewDestinationRequest, PostgresWarehouseConfigV1):
     pass
 
 
@@ -1918,9 +1702,7 @@ class Config20(BaseModel):
         title="",
     )
     database: Optional[str] = Field(None, description="Database name", title="")
-    password: Optional[str] = Field(
-        None, description="Database user password", title=""
-    )
+    password: Optional[str] = Field(None, description="Database user password", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None, description="Connection method. Default value: `Directly`.", title=""
     )
@@ -1948,9 +1730,7 @@ class SqlServerRdsWarehouseConfigV1(BaseModel):
     config: Optional[Config20] = Field(None, description="")
 
 
-class SqlServerRdsWarehouseNewDestinationRequest(
-    NewDestinationRequest, SqlServerRdsWarehouseConfigV1
-):
+class SqlServerRdsWarehouseNewDestinationRequest(NewDestinationRequest, SqlServerRdsWarehouseConfigV1):
     pass
 
 
@@ -1962,9 +1742,7 @@ class Config21(BaseModel):
         title="",
     )
     database: Optional[str] = Field(None, description="Database name", title="")
-    password: Optional[str] = Field(
-        None, description="Database user password", title=""
-    )
+    password: Optional[str] = Field(None, description="Database user password", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None, description="Connection method. Default value: `Directly`.", title=""
     )
@@ -1992,15 +1770,11 @@ class SqlServerWarehouseConfigV1(BaseModel):
     config: Optional[Config21] = Field(None, description="")
 
 
-class SqlServerWarehouseNewDestinationRequest(
-    NewDestinationRequest, SqlServerWarehouseConfigV1
-):
+class SqlServerWarehouseNewDestinationRequest(NewDestinationRequest, SqlServerWarehouseConfigV1):
     pass
 
 
-class AuroraPostgresWarehouseDestinationResponse(
-    DestinationResponse, AuroraPostgresWarehouseConfigV1
-):
+class AuroraPostgresWarehouseDestinationResponse(DestinationResponse, AuroraPostgresWarehouseConfigV1):
     pass
 
 
@@ -2008,27 +1782,19 @@ class AuroraWarehouseDestinationResponse(DestinationResponse, AuroraWarehouseCon
     pass
 
 
-class AzurePostgresWarehouseDestinationResponse(
-    DestinationResponse, AzurePostgresWarehouseConfigV1
-):
+class AzurePostgresWarehouseDestinationResponse(DestinationResponse, AzurePostgresWarehouseConfigV1):
     pass
 
 
-class AzureSqlDataWarehouseDestinationResponse(
-    DestinationResponse, AzureSqlDataWarehouseConfigV1
-):
+class AzureSqlDataWarehouseDestinationResponse(DestinationResponse, AzureSqlDataWarehouseConfigV1):
     pass
 
 
-class AzureSqlDatabaseDestinationResponse(
-    DestinationResponse, AzureSqlDatabaseConfigV1
-):
+class AzureSqlDatabaseDestinationResponse(DestinationResponse, AzureSqlDatabaseConfigV1):
     pass
 
 
-class AzureSqlManagedDbWarehouseDestinationResponse(
-    DestinationResponse, AzureSqlManagedDbWarehouseConfigV1
-):
+class AzureSqlManagedDbWarehouseDestinationResponse(DestinationResponse, AzureSqlManagedDbWarehouseConfigV1):
     pass
 
 
@@ -2044,9 +1810,7 @@ class ManagedBigQueryDestinationResponse(DestinationResponse, ManagedBigQueryCon
     pass
 
 
-class MariaRdsWarehouseDestinationResponse(
-    DestinationResponse, MariaRdsWarehouseConfigV1
-):
+class MariaRdsWarehouseDestinationResponse(DestinationResponse, MariaRdsWarehouseConfigV1):
     pass
 
 
@@ -2054,9 +1818,7 @@ class MariaWarehouseDestinationResponse(DestinationResponse, MariaWarehouseConfi
     pass
 
 
-class MysqlRdsWarehouseDestinationResponse(
-    DestinationResponse, MysqlRdsWarehouseConfigV1
-):
+class MysqlRdsWarehouseDestinationResponse(DestinationResponse, MysqlRdsWarehouseConfigV1):
     pass
 
 
@@ -2068,27 +1830,19 @@ class PanoplyDestinationResponse(DestinationResponse, PanoplyConfigV1):
     pass
 
 
-class PeriscopeWarehouseDestinationResponse(
-    DestinationResponse, PeriscopeWarehouseConfigV1
-):
+class PeriscopeWarehouseDestinationResponse(DestinationResponse, PeriscopeWarehouseConfigV1):
     pass
 
 
-class PostgresGcpWarehouseDestinationResponse(
-    DestinationResponse, PostgresGcpWarehouseConfigV1
-):
+class PostgresGcpWarehouseDestinationResponse(DestinationResponse, PostgresGcpWarehouseConfigV1):
     pass
 
 
-class PostgresRdsWarehouseDestinationResponse(
-    DestinationResponse, PostgresRdsWarehouseConfigV1
-):
+class PostgresRdsWarehouseDestinationResponse(DestinationResponse, PostgresRdsWarehouseConfigV1):
     pass
 
 
-class PostgresWarehouseDestinationResponse(
-    DestinationResponse, PostgresWarehouseConfigV1
-):
+class PostgresWarehouseDestinationResponse(DestinationResponse, PostgresWarehouseConfigV1):
     pass
 
 
@@ -2100,34 +1854,24 @@ class SnowflakeDestinationResponse(DestinationResponse, SnowflakeConfigV1):
     pass
 
 
-class SqlServerRdsWarehouseDestinationResponse(
-    DestinationResponse, SqlServerRdsWarehouseConfigV1
-):
+class SqlServerRdsWarehouseDestinationResponse(DestinationResponse, SqlServerRdsWarehouseConfigV1):
     pass
 
 
-class SqlServerWarehouseDestinationResponse(
-    DestinationResponse, SqlServerWarehouseConfigV1
-):
+class SqlServerWarehouseDestinationResponse(DestinationResponse, SqlServerWarehouseConfigV1):
     pass
 
 
 class Config22(BaseModel):
-    api_key: Optional[str] = Field(
-        None, description="Your ActiveCampaign API key.", title=""
-    )
-    sub_domain: Optional[str] = Field(
-        None, description="Your ActiveCampaign sub-domain.", title=""
-    )
+    api_key: Optional[str] = Field(None, description="Your ActiveCampaign API key.", title="")
+    sub_domain: Optional[str] = Field(None, description="Your ActiveCampaign sub-domain.", title="")
 
 
 class ActivecampaignConfigV1(BaseModel):
     config: Optional[Config22] = Field(None, description="")
 
 
-class ActivecampaignNewConnectorRequestV1(
-    NewConnectorRequestV1, ActivecampaignConfigV1
-):
+class ActivecampaignNewConnectorRequestV1(NewConnectorRequestV1, ActivecampaignConfigV1):
     pass
 
 
@@ -2138,9 +1882,7 @@ class Config23(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    export_storage_type: Optional[Dict[str, Any]] = Field(
-        None, description="Your cloud storage.", title=""
-    )
+    export_storage_type: Optional[Dict[str, Any]] = Field(None, description="Your cloud storage.", title="")
     csv_definition: Optional[str] = Field(
         None,
         description="CSV definition for the CSV export (https://help.adjust.com/en/article/csv-uploads#how-do-i-format-my-csv-definition).",
@@ -2151,18 +1893,12 @@ class Config23(BaseModel):
         description="Used if the `export_storage_type` is `AWS_S3`, the Role ARN required for authentication.",
         title="",
     )
-    bucket_name: Optional[str] = Field(
-        None, description="Your AWS S3 or GCS bucket.", title=""
-    )
+    bucket_name: Optional[str] = Field(None, description="Your AWS S3 or GCS bucket.", title="")
 
 
 class Auth(BaseModel):
-    export_storage_type: Optional[Dict[str, Any]] = Field(
-        None, description="Your cloud storage."
-    )
-    csv_definition: Optional[str] = Field(
-        None, description="CSV definition for the CSV export"
-    )
+    export_storage_type: Optional[Dict[str, Any]] = Field(None, description="Your cloud storage.")
+    csv_definition: Optional[str] = Field(None, description="CSV definition for the CSV export")
     bucket_name: Optional[str] = Field(None, description="Your AWS S3 or GCS bucket.")
     s3_role_arn: Optional[str] = Field(
         None,
@@ -2190,12 +1926,8 @@ class AdobeAnalyticsConfiguration(BaseModel):
         description="Whether to sync all report suites or specific report suites. Default value: `AllReportSuites` .",
         title="",
     )
-    elements: Optional[List[str]] = Field(
-        None, description="The elements that you want to sync.", title=""
-    )
-    metrics: Optional[List[str]] = Field(
-        None, description="The metrics that you want to sync.", title=""
-    )
+    elements: Optional[List[str]] = Field(None, description="The elements that you want to sync.", title="")
+    metrics: Optional[List[str]] = Field(None, description="The metrics that you want to sync.", title="")
     table: Optional[str] = Field(
         None,
         description="The table name unique within the schema to which connector will sync the data. Required for connector creation.",
@@ -2204,9 +1936,7 @@ class AdobeAnalyticsConfiguration(BaseModel):
     calculated_metrics: Optional[List[str]] = Field(
         None, description="The calculated_metrics that you want to sync.", title=""
     )
-    segments: Optional[List[str]] = Field(
-        None, description="The segments that you want to sync.", title=""
-    )
+    segments: Optional[List[str]] = Field(None, description="The segments that you want to sync.", title="")
 
 
 class Config24(BaseModel):
@@ -2262,9 +1992,7 @@ class AdobeAnalyticsConfigV1(BaseModel):
     config: Optional[Config24] = Field(None, description="")
 
 
-class AdobeAnalyticsNewConnectorRequestV1(
-    NewConnectorRequestV1, AdobeAnalyticsConfigV1
-):
+class AdobeAnalyticsNewConnectorRequestV1(NewConnectorRequestV1, AdobeAnalyticsConfigV1):
     pass
 
 
@@ -2276,30 +2004,18 @@ class Config25(BaseModel):
         title="Destination schema",
     )
     ftp_password: Optional[str] = Field(None, description="FTP password.", title="")
-    sftp_is_key_pair: Optional[bool] = Field(
-        None, description="Log in with key pair or password", title=""
-    )
+    sftp_is_key_pair: Optional[bool] = Field(None, description="Log in with key pair or password", title="")
     sftp_user: Optional[str] = Field(None, description="SFTP user.", title="")
     ftp_port: Optional[int] = Field(None, description="FTP port.", title="")
     sftp_port: Optional[int] = Field(None, description="SFTP port.", title="")
-    abs_container_name: Optional[str] = Field(
-        None, description="Azure blob storage container name.", title=""
-    )
+    abs_container_name: Optional[str] = Field(None, description="Azure blob storage container name.", title="")
     sftp_host: Optional[str] = Field(None, description="SFTP host.", title="")
-    source: Optional[Dict[str, Any]] = Field(
-        None, description="The data source.", title=""
-    )
+    source: Optional[Dict[str, Any]] = Field(None, description="The data source.", title="")
     ftp_host: Optional[str] = Field(None, description="FTP host.", title="")
-    is_ftps: Optional[bool] = Field(
-        None, description="Use Secure FTP (FTPS).", title=""
-    )
+    is_ftps: Optional[bool] = Field(None, description="Use Secure FTP (FTPS).", title="")
     ftp_user: Optional[str] = Field(None, description="FTP user.", title="")
-    s3role_arn: Optional[str] = Field(
-        None, description="The Role ARN required for authentication.", title=""
-    )
-    abs_connection_string: Optional[str] = Field(
-        None, description="Azure blob storage connection string.", title=""
-    )
+    s3role_arn: Optional[str] = Field(None, description="The Role ARN required for authentication.", title="")
+    abs_connection_string: Optional[str] = Field(None, description="Azure blob storage connection string.", title="")
     s3bucket: Optional[str] = Field(None, description="The S3 bucket name.", title="")
     sftp_password: Optional[str] = Field(
         None,
@@ -2312,9 +2028,7 @@ class AdobeAnalyticsDataFeedConfigV1(BaseModel):
     config: Optional[Config25] = Field(None, description="")
 
 
-class AdobeAnalyticsDataFeedNewConnectorRequestV1(
-    NewConnectorRequestV1, AdobeAnalyticsDataFeedConfigV1
-):
+class AdobeAnalyticsDataFeedNewConnectorRequestV1(NewConnectorRequestV1, AdobeAnalyticsDataFeedConfigV1):
     pass
 
 
@@ -2325,13 +2039,9 @@ class Config26(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    ws_certificate: Optional[str] = Field(
-        None, description="Web Services Certificate.", title=""
-    )
+    ws_certificate: Optional[str] = Field(None, description="Web Services Certificate.", title="")
     private_key: Optional[str] = Field(None, description="Private Key.", title="")
-    client_secret: Optional[str] = Field(
-        None, description="Your ADP Client Secret.", title=""
-    )
+    client_secret: Optional[str] = Field(None, description="Your ADP Client Secret.", title="")
     client_id: Optional[str] = Field(None, description="Your ADP Client ID.", title="")
 
 
@@ -2339,9 +2049,7 @@ class AdpWorkforceNowConfigV1(BaseModel):
     config: Optional[Config26] = Field(None, description="")
 
 
-class AdpWorkforceNowNewConnectorRequestV1(
-    NewConnectorRequestV1, AdpWorkforceNowConfigV1
-):
+class AdpWorkforceNowNewConnectorRequestV1(NewConnectorRequestV1, AdpWorkforceNowConfigV1):
     pass
 
 
@@ -2367,9 +2075,7 @@ class Config27(BaseModel):
         description="Specific advertisables to sync. Must be populated if `sync_mode` is set to `SpecificAdvertisables`.",
         title="",
     )
-    metrics: Optional[List[str]] = Field(
-        None, description="The metrics that you want to sync.", title=""
-    )
+    metrics: Optional[List[str]] = Field(None, description="The metrics that you want to sync.", title="")
     report_type: Optional[Dict[str, Any]] = Field(
         None,
         description="The report type you want. Default value: `ALL_ADS`.",
@@ -2380,18 +2086,12 @@ class Config27(BaseModel):
         description="Destination table. Table is permanent and cannot be changed after connection creation",
         title="Destination table",
     )
-    dimensions: Optional[List[str]] = Field(
-        None, description="The dimenstions that you want to sync.", title=""
-    )
+    dimensions: Optional[List[str]] = Field(None, description="The dimenstions that you want to sync.", title="")
 
 
 class ClientAccess(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth1(BaseModel):
@@ -2418,9 +2118,7 @@ class Config28(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    api_key: Optional[str] = Field(
-        None, description="API key of the Airtable account.", title=""
-    )
+    api_key: Optional[str] = Field(None, description="API key of the Airtable account.", title="")
     base_id: Optional[str] = Field(None, title="")
     table_name: Optional[str] = Field(None, title="")
     table: Optional[str] = Field(
@@ -2460,18 +2158,12 @@ class Config29(BaseModel):
         description="Specific User Profile IDs to sync. Must be populated if `sync_mode` is set to `SpecificProfiles`.",
         title="",
     )
-    region: Optional[Dict[str, Any]] = Field(
-        None, description="The region used by the Amazon Ads profile.", title=""
-    )
+    region: Optional[Dict[str, Any]] = Field(None, description="The region used by the Amazon Ads profile.", title="")
 
 
 class ClientAccess1(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth2(BaseModel):
@@ -2492,15 +2184,9 @@ class AmazonAdsNewConnectorRequestV1(NewConnectorRequestV1, AmazonAdsConfigV1):
 
 
 class ProjectCredential(BaseModel):
-    secret_key: Optional[str] = Field(
-        None, description="The secret key of the project.", title=""
-    )
-    api_key: Optional[str] = Field(
-        None, description="The API key of the project.", title=""
-    )
-    project: Optional[str] = Field(
-        None, description="The project name you wish to use with Fivetran.", title=""
-    )
+    secret_key: Optional[str] = Field(None, description="The secret key of the project.", title="")
+    api_key: Optional[str] = Field(None, description="The API key of the project.", title="")
+    project: Optional[str] = Field(None, description="The project name you wish to use with Fivetran.", title="")
 
 
 class Config30(BaseModel):
@@ -2546,9 +2232,7 @@ class Config31(BaseModel):
         description="The contents of your PEM certificate file. Must be populated if `auth_mode` is set to `Certificate`.",
         title="",
     )
-    auth_mode: Optional[Dict[str, Any]] = Field(
-        None, description="The Anaplan authentication method.", title=""
-    )
+    auth_mode: Optional[Dict[str, Any]] = Field(None, description="The Anaplan authentication method.", title="")
     private_key: Optional[str] = Field(
         None,
         description="The contents of your private key file. Must be populated if `auth_mode` is set to `Certificate`.",
@@ -2576,9 +2260,7 @@ class Config32(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    consumer_group: Optional[str] = Field(
-        None, description="Kafka consumer group name.", title=""
-    )
+    consumer_group: Optional[str] = Field(None, description="Kafka consumer group name.", title="")
     sync_type: Optional[Dict[str, Any]] = Field(
         None,
         description="Kafka sync type.  Unpacked messages must be valid JSON.",
@@ -2589,9 +2271,7 @@ class Config32(BaseModel):
     sasl_plain_secret: Optional[str] = Field(None, title="")
     schema_registry_credentials_source: Optional[str] = Field(None, title="")
     client_cert_key: Optional[str] = Field(None, title="")
-    message_type: Optional[Dict[str, Any]] = Field(
-        None, description="Kafka message type.", title=""
-    )
+    message_type: Optional[Dict[str, Any]] = Field(None, description="Kafka message type.", title="")
     sasl_scram512_key: Optional[str] = Field(None, title="")
     sasl_scram256_secret: Optional[str] = Field(None, title="")
     servers: Optional[List[str]] = Field(
@@ -2654,12 +2334,8 @@ class Config33(BaseModel):
 
 class Auth3(BaseModel):
     key_id: Optional[str] = Field(None, description="Apple Search Ads REST API Key ID")
-    team_id: Optional[str] = Field(
-        None, description="Apple Search Ads REST API Team ID."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Apple Search Ads REST API Client ID"
-    )
+    team_id: Optional[str] = Field(None, description="Apple Search Ads REST API Team ID.")
+    client_id: Optional[str] = Field(None, description="Apple Search Ads REST API Client ID")
 
 
 class AppleSearchAdsConfigV1(BaseModel):
@@ -2667,16 +2343,12 @@ class AppleSearchAdsConfigV1(BaseModel):
     auth: Optional[Auth3] = None
 
 
-class AppleSearchAdsNewConnectorRequestV1(
-    NewConnectorRequestV1, AppleSearchAdsConfigV1
-):
+class AppleSearchAdsNewConnectorRequestV1(NewConnectorRequestV1, AppleSearchAdsConfigV1):
     pass
 
 
 class Config34(BaseModel):
-    access_key_id: Optional[str] = Field(
-        None, description="Your AWS access key ID.", title=""
-    )
+    access_key_id: Optional[str] = Field(None, description="Your AWS access key ID.", title="")
     bucket: Optional[str] = Field(None, title="")
     schema_: Optional[str] = Field(
         None,
@@ -2684,13 +2356,9 @@ class Config34(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    secret_key: Optional[str] = Field(
-        None, description="Your AWS secret key.", title=""
-    )
+    secret_key: Optional[str] = Field(None, description="Your AWS secret key.", title="")
     role_arn: Optional[str] = Field(None, title="")
-    home_folder: Optional[str] = Field(
-        None, description="Your S3 home folder path of the Data Locker.", title=""
-    )
+    home_folder: Optional[str] = Field(None, description="Your S3 home folder path of the Data Locker.", title="")
     sync_data_locker: Optional[bool] = Field(None, title="")
     use_customer_bucket: Optional[bool] = Field(None, title="")
 
@@ -2721,12 +2389,8 @@ class Config35(BaseModel):
 
 
 class ClientAccess2(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth4(BaseModel):
@@ -2772,9 +2436,7 @@ class Config36(BaseModel):
     database: Optional[str] = Field(None, description="The database name.", title="")
     password: Optional[str] = Field(None, description="The user's password.", title="")
     port: Optional[int] = Field(None, description="The port number.", title="")
-    host: Optional[str] = Field(
-        None, description="DB instance host or IP address.", title=""
-    )
+    host: Optional[str] = Field(None, description="DB instance host or IP address.", title="")
     tunnel_host: Optional[str] = Field(
         None,
         description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
@@ -2824,9 +2486,7 @@ class Config37(BaseModel):
     )
     heroku_rds_hosted: Optional[Dict[str, Any]] = Field(None, title="")
     port: Optional[int] = Field(None, description="The port number.", title="")
-    host: Optional[str] = Field(
-        None, description="DB instance host or IP address.", title=""
-    )
+    host: Optional[str] = Field(None, description="DB instance host or IP address.", title="")
     tunnel_host: Optional[str] = Field(
         None,
         description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
@@ -2849,9 +2509,7 @@ class AuroraPostgresConfigV1(BaseModel):
     config: Optional[Config37] = Field(None, description="")
 
 
-class AuroraPostgresNewConnectorRequestV1(
-    NewConnectorRequestV1, AuroraPostgresConfigV1
-):
+class AuroraPostgresNewConnectorRequestV1(NewConnectorRequestV1, AuroraPostgresConfigV1):
     pass
 
 
@@ -2867,12 +2525,8 @@ class Config38(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    role_arn: Optional[str] = Field(
-        None, description="The Role ARN required for authentication.", title=""
-    )
-    prefix: Optional[str] = Field(
-        None, description="If prefix is present when configuring the bucket.", title=""
-    )
+    role_arn: Optional[str] = Field(None, description="The Role ARN required for authentication.", title="")
+    prefix: Optional[str] = Field(None, description="If prefix is present when configuring the bucket.", title="")
     external_id: Optional[str] = Field(
         None,
         description="This is the same as your `group_id`, used for authentication along with the `role_arn`.",
@@ -2900,9 +2554,7 @@ class Config39(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    role_arn: Optional[str] = Field(
-        None, description="The Role ARN required for authentication.", title=""
-    )
+    role_arn: Optional[str] = Field(None, description="The Role ARN required for authentication.", title="")
     prefix: Optional[str] = Field(
         None,
         description="The prefix if you used one when configuring the bucket.",
@@ -2932,17 +2584,13 @@ class Config40(BaseModel):
         title="Destination schema",
     )
     sync_method: Optional[Dict[str, Any]] = Field(None, description="", title="")
-    role_arn: Optional[str] = Field(
-        None, description="The Role ARN required for authentication.", title=""
-    )
+    role_arn: Optional[str] = Field(None, description="The Role ARN required for authentication.", title="")
     secrets_list: Optional[List[SecretsListItem]] = Field(
         None,
         description="List of Secrets that should be passed to the function at runtime.",
         title="",
     )
-    function: Optional[str] = Field(
-        None, description="The name of your AWS Lambda Function.", title=""
-    )
+    function: Optional[str] = Field(None, description="The name of your AWS Lambda Function.", title="")
     external_id: Optional[str] = Field(None, title="")
     region: Optional[str] = Field(
         None,
@@ -2996,9 +2644,7 @@ class Config41(BaseModel):
         description="If `security_protocol` is set to `TLS`, upload the `Client Certificate Key`.",
         title="",
     )
-    message_type: Optional[Dict[str, Any]] = Field(
-        None, description="The Message type.", title=""
-    )
+    message_type: Optional[Dict[str, Any]] = Field(None, description="The Message type.", title="")
     sasl_scram512_key: Optional[str] = Field(
         None,
         description="If `security_protocol` is set to `SASL`, enter your secret's `saslScram512Key`.",
@@ -3076,9 +2722,7 @@ class Config42(BaseModel):
         description="If your CSVs use a special value indicating null, you can specify it here.",
         title="",
     )
-    container_name: Optional[str] = Field(
-        None, description="The name of the blob container.", title=""
-    )
+    container_name: Optional[str] = Field(None, description="The name of the blob container.", title="")
     file_type: Optional[Dict[str, Any]] = Field(
         None,
         description="If your files are saved with improper extensions, you can force them to by synced as the selected filetype.",
@@ -3115,9 +2759,7 @@ class AzureBlobStorageConfigV1(BaseModel):
     config: Optional[Config42] = Field(None, description="")
 
 
-class AzureBlobStorageNewConnectorRequestV1(
-    NewConnectorRequestV1, AzureBlobStorageConfigV1
-):
+class AzureBlobStorageNewConnectorRequestV1(NewConnectorRequestV1, AzureBlobStorageConfigV1):
     pass
 
 
@@ -3128,15 +2770,11 @@ class Config43(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    consumer_group: Optional[str] = Field(
-        None, description="Name of consumer group created for Fivetran.", title=""
-    )
+    consumer_group: Optional[str] = Field(None, description="Name of consumer group created for Fivetran.", title="")
     sync_type: Optional[Dict[str, Any]] = Field(
         None, description="Sync type.  Unpacked messages must be valid JSON.", title=""
     )
-    message_type: Optional[Dict[str, Any]] = Field(
-        None, description="Message type.", title=""
-    )
+    message_type: Optional[Dict[str, Any]] = Field(None, description="Message type.", title="")
     connection_string: Optional[str] = Field(
         None,
         description="Connection string of the Event Hub Namespace you want to sync.",
@@ -3166,18 +2804,10 @@ class Config44(BaseModel):
         title="Destination schema",
     )
     sync_method: Optional[Dict[str, Any]] = Field(None, description="", title="")
-    function_app: Optional[str] = Field(
-        None, description="Function app name in Azure portal.", title=""
-    )
-    function_key: Optional[str] = Field(
-        None, description="Function key used for authorization.", title=""
-    )
-    secrets_list: Optional[List[SecretsListItem1]] = Field(
-        None, description="", title=""
-    )
-    function_name: Optional[str] = Field(
-        None, description="Name of the function to be triggered.", title=""
-    )
+    function_app: Optional[str] = Field(None, description="Function app name in Azure portal.", title="")
+    function_key: Optional[str] = Field(None, description="Function key used for authorization.", title="")
+    secrets_list: Optional[List[SecretsListItem1]] = Field(None, description="", title="")
+    function_name: Optional[str] = Field(None, description="Name of the function to be triggered.", title="")
     secrets: Optional[str] = Field(
         None,
         description="The secrets that should be passed to the function at runtime.",
@@ -3221,9 +2851,7 @@ class Config45(BaseModel):
     )
     heroku_rds_hosted: Optional[Dict[str, Any]] = Field(None, title="")
     port: Optional[int] = Field(None, description="The port number.", title="")
-    host: Optional[str] = Field(
-        None, description="DB instance host or IP address.", title=""
-    )
+    host: Optional[str] = Field(None, description="DB instance host or IP address.", title="")
     tunnel_host: Optional[str] = Field(
         None,
         description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
@@ -3251,9 +2879,7 @@ class AzurePostgresNewConnectorRequestV1(NewConnectorRequestV1, AzurePostgresCon
 
 
 class Config46(BaseModel):
-    asb_i_p: Optional[str] = Field(
-        None, description="The IP address (or) the URL of ASB namespace", title="asb_ip"
-    )
+    asb_i_p: Optional[str] = Field(None, description="The IP address (or) the URL of ASB namespace", title="asb_ip")
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -3329,12 +2955,8 @@ class Config46(BaseModel):
 
 
 class ClientAccess3(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth5(BaseModel):
@@ -3355,9 +2977,7 @@ class AzureServiceBusConfigV1(BaseModel):
     auth: Optional[Auth5] = None
 
 
-class AzureServiceBusNewConnectorRequestV1(
-    NewConnectorRequestV1, AzureServiceBusConfigV1
-):
+class AzureServiceBusNewConnectorRequestV1(NewConnectorRequestV1, AzureServiceBusConfigV1):
     pass
 
 
@@ -3381,9 +3001,7 @@ class Config47(BaseModel):
         title="",
     )
     port: Optional[int] = Field(None, description="The port number.", title="")
-    host: Optional[str] = Field(
-        None, description="DB instance host or IP address.", title=""
-    )
+    host: Optional[str] = Field(None, description="DB instance host or IP address.", title="")
     tunnel_host: Optional[str] = Field(
         None,
         description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
@@ -3467,9 +3085,7 @@ class AzureSqlManagedDbConfigV1(BaseModel):
     auth: Optional[Auth7] = None
 
 
-class AzureSqlManagedDbNewConnectorRequestV1(
-    NewConnectorRequestV1, AzureSqlManagedDbConfigV1
-):
+class AzureSqlManagedDbNewConnectorRequestV1(NewConnectorRequestV1, AzureSqlManagedDbConfigV1):
     pass
 
 
@@ -3503,12 +3119,8 @@ class Config49(BaseModel):
 
 
 class ClientAccess4(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth8(BaseModel):
@@ -3631,21 +3243,15 @@ class BoxNewConnectorRequestV1(NewConnectorRequestV1, BoxConfigV1):
 
 
 class Config51(BaseModel):
-    public_key: Optional[str] = Field(
-        None, description="The contents of your PEM certificate file.", title=""
-    )
+    public_key: Optional[str] = Field(None, description="The contents of your PEM certificate file.", title="")
     schema_: Optional[str] = Field(
         None,
         alias="schema",
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    private_key: Optional[str] = Field(
-        None, description="The contents of your secret key file.", title=""
-    )
-    merchant_id: Optional[str] = Field(
-        None, description="Your Braintree merchant ID.", title=""
-    )
+    private_key: Optional[str] = Field(None, description="The contents of your secret key file.", title="")
+    merchant_id: Optional[str] = Field(None, description="Your Braintree merchant ID.", title="")
 
 
 class BraintreeConfigV1(BaseModel):
@@ -3657,30 +3263,22 @@ class BraintreeNewConnectorRequestV1(NewConnectorRequestV1, BraintreeConfigV1):
 
 
 class Config52(BaseModel):
-    public_key: Optional[str] = Field(
-        None, description="The contents of your PEM certificate file.", title=""
-    )
+    public_key: Optional[str] = Field(None, description="The contents of your PEM certificate file.", title="")
     schema_: Optional[str] = Field(
         None,
         alias="schema",
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    private_key: Optional[str] = Field(
-        None, description="The contents of your secret key file.", title=""
-    )
-    merchant_id: Optional[str] = Field(
-        None, description="Your Braintree merchant ID.", title=""
-    )
+    private_key: Optional[str] = Field(None, description="The contents of your secret key file.", title="")
+    merchant_id: Optional[str] = Field(None, description="Your Braintree merchant ID.", title="")
 
 
 class BraintreeSandboxConfigV1(BaseModel):
     config: Optional[Config52] = Field(None, description="")
 
 
-class BraintreeSandboxNewConnectorRequestV1(
-    NewConnectorRequestV1, BraintreeSandboxConfigV1
-):
+class BraintreeSandboxNewConnectorRequestV1(NewConnectorRequestV1, BraintreeSandboxConfigV1):
     pass
 
 
@@ -3762,9 +3360,7 @@ class BrazeNewConnectorRequestV1(NewConnectorRequestV1, BrazeConfigV1):
 
 
 class Config55(BaseModel):
-    bucket: Optional[str] = Field(
-        None, description="The bucket name for CloudFront.", title=""
-    )
+    bucket: Optional[str] = Field(None, description="The bucket name for CloudFront.", title="")
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -3772,12 +3368,8 @@ class Config55(BaseModel):
         title="Destination schema",
     )
     skip_before: Optional[int] = Field(None, description="", title="")
-    role_arn: Optional[str] = Field(
-        None, description="The Role ARN required for authentication.", title=""
-    )
-    prefix: Optional[str] = Field(
-        None, description="The name of the CloudFront folder in the bucket.", title=""
-    )
+    role_arn: Optional[str] = Field(None, description="The Role ARN required for authentication.", title="")
+    prefix: Optional[str] = Field(None, description="The name of the CloudFront folder in the bucket.", title="")
     external_id: Optional[str] = Field(
         None,
         description="This is the same as your `group_id`, used for authentication along with the `role_arn`.",
@@ -3823,9 +3415,7 @@ class Config57(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    consumer_group: Optional[str] = Field(
-        None, description="Confluent Cloud consumer group name.", title=""
-    )
+    consumer_group: Optional[str] = Field(None, description="Confluent Cloud consumer group name.", title="")
     servers: Optional[List[str]] = Field(
         None,
         description="Comma-separated list of Confluent Cloud servers in the format `server:port`.",
@@ -3842,9 +3432,7 @@ class Config57(BaseModel):
         None, description="Security protocol for Confluent Cloud interaction.", title=""
     )
     schema_registry_secret: Optional[str] = Field(None, title="")
-    message_type: Optional[Dict[str, Any]] = Field(
-        None, description="Confluent Cloud message type.", title=""
-    )
+    message_type: Optional[Dict[str, Any]] = Field(None, description="Confluent Cloud message type.", title="")
     api_secret: Optional[str] = Field(None, title="")
     schema_registry_urls: Optional[List[str]] = Field(None, title="")
     schema_registry_key: Optional[str] = Field(None, title="")
@@ -3854,9 +3442,7 @@ class ConfluentCloudConfigV1(BaseModel):
     config: Optional[Config57] = Field(None, description="")
 
 
-class ConfluentCloudNewConnectorRequestV1(
-    NewConnectorRequestV1, ConfluentCloudConfigV1
-):
+class ConfluentCloudNewConnectorRequestV1(NewConnectorRequestV1, ConfluentCloudConfigV1):
     pass
 
 
@@ -3873,9 +3459,7 @@ class Config58(BaseModel):
         title="",
     )
     api_key: Optional[str] = Field(None, description="Your Coupa API key.", title="")
-    client_secret: Optional[str] = Field(
-        None, description="Your Coupa client_id", title=""
-    )
+    client_secret: Optional[str] = Field(None, description="Your Coupa client_id", title="")
     client_id: Optional[str] = Field(None, description="Your Coupa client_id", title="")
 
 
@@ -3894,22 +3478,16 @@ class Config59(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    report_timezone: Optional[str] = Field(
-        None, description="Report Timezone", title=""
-    )
+    report_timezone: Optional[str] = Field(None, description="Report Timezone", title="")
     timeframe_months: Optional[Dict[str, Any]] = Field(
         None,
         description="The number of months of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created.  <br> <strong>NOTE:</strong> The greater number of months means the initial sync will take more time.",
         title="",
     )
     currency: Optional[Dict[str, Any]] = Field(None, description="Currency", title="")
-    client_secret: Optional[str] = Field(
-        None, description="Your Criteo client secret key.", title=""
-    )
+    client_secret: Optional[str] = Field(None, description="Your Criteo client secret key.", title="")
     metrics: Optional[List[str]] = Field(None, description="Metrics", title="")
-    client_id: Optional[str] = Field(
-        None, description="Your Criteo Client ID.", title=""
-    )
+    client_id: Optional[str] = Field(None, description="Your Criteo Client ID.", title="")
 
 
 class CriteoConfigV1(BaseModel):
@@ -3992,9 +3570,7 @@ class DimensionFilter(BaseModel):
 
 
 class Config62(BaseModel):
-    dimension_filters: Optional[List[DimensionFilter]] = Field(
-        None, description="", title=""
-    )
+    dimension_filters: Optional[List[DimensionFilter]] = Field(None, description="", title="")
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
         description="Whether to sync all user profiles or specific ones. Default value: `AllAccounts`.",
@@ -4031,9 +3607,7 @@ class Config62(BaseModel):
         description="Type of reporting data to sync. Default value: `STANDARD`.",
         title="",
     )
-    metrics: Optional[List[str]] = Field(
-        None, description="Report metrics to include into a sync.", title=""
-    )
+    metrics: Optional[List[str]] = Field(None, description="Report metrics to include into a sync.", title="")
     table: Optional[str] = Field(
         None,
         description="Destination table. Table is permanent and cannot be changed after connection creation",
@@ -4047,12 +3621,8 @@ class Config62(BaseModel):
 
 
 class ClientAccess5(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth10(BaseModel):
@@ -4068,9 +3638,7 @@ class DoubleClickCampaignManagerConfigV1(BaseModel):
     auth: Optional[Auth10] = None
 
 
-class DoubleClickCampaignManagerNewConnectorRequestV1(
-    NewConnectorRequestV1, DoubleClickCampaignManagerConfigV1
-):
+class DoubleClickCampaignManagerNewConnectorRequestV1(NewConnectorRequestV1, DoubleClickCampaignManagerConfigV1):
     pass
 
 
@@ -4091,9 +3659,7 @@ class Config63(BaseModel):
         description="Dimension attributes provide additional fields associated with a Dimension. Dimension attributes can only be selected with their corresponding Dimensions.",
         title="",
     )
-    ad_unit_view: Optional[Dict[str, Any]] = Field(
-        None, description="Ad unit view for the report.", title=""
-    )
+    ad_unit_view: Optional[Dict[str, Any]] = Field(None, description="Ad unit view for the report.", title="")
     columns: Optional[List[str]] = Field(
         None,
         description="Columns provide all trafficking statistics and revenue information available for the chosen Dimensions.",
@@ -4112,12 +3678,8 @@ class Config63(BaseModel):
 
 
 class ClientAccess6(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth11(BaseModel):
@@ -4133,9 +3695,7 @@ class DoubleClickPublishersConfigV1(BaseModel):
     auth: Optional[Auth11] = None
 
 
-class DoubleClickPublishersNewConnectorRequestV1(
-    NewConnectorRequestV1, DoubleClickPublishersConfigV1
-):
+class DoubleClickPublishersNewConnectorRequestV1(NewConnectorRequestV1, DoubleClickPublishersConfigV1):
     pass
 
 
@@ -4197,9 +3757,7 @@ class Config64(BaseModel):
         description="If your CSVs use a special value indicating null, you can specify it here.",
         title="",
     )
-    folder: Optional[str] = Field(
-        None, description="Your Dropbox Folder URL.", title=""
-    )
+    folder: Optional[str] = Field(None, description="Your Dropbox Folder URL.", title="")
     is_single_table_mode: Optional[bool] = Field(
         None,
         description="Allows the creation of connector using Merge Mode strategy.",
@@ -4238,12 +3796,8 @@ class Config64(BaseModel):
 
 
 class ClientAccess7(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth13(BaseModel):
@@ -4284,12 +3838,8 @@ class Config65(BaseModel):
 
 
 class ClientAccess8(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth14(BaseModel):
@@ -4329,9 +3879,7 @@ class Config66(BaseModel):
         title="",
     )
     port: Optional[int] = Field(None, description="The port number.", title="")
-    host: Optional[str] = Field(
-        None, description="DB instance host or IP address.", title=""
-    )
+    host: Optional[str] = Field(None, description="DB instance host or IP address.", title="")
     tunnel_host: Optional[str] = Field(
         None,
         description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
@@ -4345,9 +3893,7 @@ class Config66(BaseModel):
     )
     agent_host: Optional[str] = Field(None, description="", title="")
     sap_user: Optional[str] = Field(None, description="", title="")
-    user: Optional[str] = Field(
-        None, description="The user name. The format must be `user@domain`.", title=""
-    )
+    user: Optional[str] = Field(None, description="The user name. The format must be `user@domain`.", title="")
 
 
 class Auth15(BaseModel):
@@ -4618,9 +4164,7 @@ class FacebookAdAccountConfigV1(BaseModel):
     config: Optional[Config71] = Field(None, description="")
 
 
-class FacebookAdAccountNewConnectorRequestV1(
-    NewConnectorRequestV1, FacebookAdAccountConfigV1
-):
+class FacebookAdAccountNewConnectorRequestV1(NewConnectorRequestV1, FacebookAdAccountConfigV1):
     pass
 
 
@@ -4714,12 +4258,8 @@ class Config72(BaseModel):
 
 
 class ClientAccess9(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth17(BaseModel):
@@ -4763,12 +4303,8 @@ class Config73(BaseModel):
 
 
 class ClientAccess10(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth18(BaseModel):
@@ -4805,12 +4341,8 @@ class Config74(BaseModel):
 
 
 class ClientAccess11(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth19(BaseModel):
@@ -4826,9 +4358,7 @@ class FinancialForceConfigV1(BaseModel):
     auth: Optional[Auth19] = None
 
 
-class FinancialForceNewConnectorRequestV1(
-    NewConnectorRequestV1, FinancialForceConfigV1
-):
+class FinancialForceNewConnectorRequestV1(NewConnectorRequestV1, FinancialForceConfigV1):
     pass
 
 
@@ -4860,9 +4390,7 @@ class Config76(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    api_key: Optional[str] = Field(
-        None, description="Your Freshdesk API Key.", title=""
-    )
+    api_key: Optional[str] = Field(None, description="Your Freshdesk API Key.", title="")
     subdomain: Optional[str] = Field(
         None,
         description="Your company's freshdesk subdomain (usually **company**.freshdesk.com).",
@@ -4888,12 +4416,8 @@ class Config77(BaseModel):
 
 
 class ClientAccess12(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth20(BaseModel):
@@ -4935,9 +4459,7 @@ class Config78(BaseModel):
         description="All files in your search path matching this regular expression will be synced.",
         title="",
     )
-    is_secure: Optional[bool] = Field(
-        None, description="Whether the server supports FTPS.", title=""
-    )
+    is_secure: Optional[bool] = Field(None, description="Whether the server supports FTPS.", title="")
     escape_char: Optional[str] = Field(
         None,
         description="If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.",
@@ -5010,21 +4532,15 @@ class Config79(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    access_key: Optional[str] = Field(
-        None, description="The access key for API authentication.", title=""
-    )
-    sub_domain: Optional[str] = Field(
-        None, description="The subdomain of your Gainsight account.", title=""
-    )
+    access_key: Optional[str] = Field(None, description="The access key for API authentication.", title="")
+    sub_domain: Optional[str] = Field(None, description="The subdomain of your Gainsight account.", title="")
 
 
 class GainsightCustomerSuccessConfigV1(BaseModel):
     config: Optional[Config79] = Field(None, description="")
 
 
-class GainsightCustomerSuccessNewConnectorRequestV1(
-    NewConnectorRequestV1, GainsightCustomerSuccessConfigV1
-):
+class GainsightCustomerSuccessNewConnectorRequestV1(NewConnectorRequestV1, GainsightCustomerSuccessConfigV1):
     pass
 
 
@@ -5065,9 +4581,7 @@ class Config80(BaseModel):
         description="We will skip over the number of lines specified at the end so as to not introduce aberrant data into your destination.",
         title="",
     )
-    bucket: Optional[str] = Field(
-        None, description="The name of the GCS bucket.", title=""
-    )
+    bucket: Optional[str] = Field(None, description="The name of the GCS bucket.", title="")
     secret_key: Optional[str] = Field(
         None,
         description="Your JSON Private Key. Used to authorize service account. Required if you use a Custom Service Account to authenticate the storage bucket.",
@@ -5136,23 +4650,15 @@ class Config81(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    use_webhooks: Optional[bool] = Field(
-        None, description="Set to `true` to capture deletes.", title=""
-    )
-    pat: Optional[str] = Field(
-        None, description="The `Personal Access Token` generated in Github.", title=""
-    )
+    use_webhooks: Optional[bool] = Field(None, description="Set to `true` to capture deletes.", title="")
+    pat: Optional[str] = Field(None, description="The `Personal Access Token` generated in Github.", title="")
     repositories: Optional[List[str]] = Field(
         None,
         description="Specific Repository IDs to sync. Must be populated if `syncMode` is set to `SpecificRepositories`.",
         title="",
     )
-    auth_mode: Optional[Dict[str, Any]] = Field(
-        None, description="Authorization type.", title=""
-    )
-    username: Optional[str] = Field(
-        None, description="`Login` of your GitHub profile.", title=""
-    )
+    auth_mode: Optional[Dict[str, Any]] = Field(None, description="Authorization type.", title="")
+    username: Optional[str] = Field(None, description="`Login` of your GitHub profile.", title="")
 
 
 class GithubConfigV1(BaseModel):
@@ -5224,18 +4730,10 @@ class Config82(BaseModel):
 
 
 class ClientAccess13(BaseModel):
-    developer_token: Optional[str] = Field(
-        None, description="Your approved Developer token to connect to the API."
-    )
-    client_secret: Optional[str] = Field(
-        None, description="Client secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
-    user_agent: Optional[str] = Field(
-        None, description="Your company's name in your client application"
-    )
+    developer_token: Optional[str] = Field(None, description="Your approved Developer token to connect to the API.")
+    client_secret: Optional[str] = Field(None, description="Client secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
+    user_agent: Optional[str] = Field(None, description="Your company's name in your client application")
 
 
 class Auth21(BaseModel):
@@ -5267,9 +4765,7 @@ class Report1(BaseModel):
         description="The name of the Prebuilt Report from which the connector will sync the data.",
         title="",
     )
-    metrics: Optional[List[str]] = Field(
-        None, description="The report metrics to include into a sync.", title=""
-    )
+    metrics: Optional[List[str]] = Field(None, description="The report metrics to include into a sync.", title="")
     config_type: Optional[Dict[str, Any]] = Field(
         None,
         description="Whether to use the [Prebuilt Reports or Custom Reports](/docs/applications/google-analytics#schemainformation).",
@@ -5337,9 +4833,7 @@ class Config83(BaseModel):
         description="The list of specific Account IDs to sync.  Must be populated if `syncMode` is set to `SpecificAccounts`.",
         title="",
     )
-    metrics: Optional[List[str]] = Field(
-        None, description="The report metrics to include into a sync.", title=""
-    )
+    metrics: Optional[List[str]] = Field(None, description="The report metrics to include into a sync.", title="")
     config_type: Optional[Dict[str, Any]] = Field(
         None,
         description="Whether to use the [Prebuilt Reports or Custom Reports](/docs/applications/google-analytics#schemainformation).",
@@ -5358,12 +4852,8 @@ class Config83(BaseModel):
 
 
 class ClientAccess14(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth22(BaseModel):
@@ -5379,9 +4869,7 @@ class GoogleAnalyticsConfigV1(BaseModel):
     auth: Optional[Auth22] = None
 
 
-class GoogleAnalyticsNewConnectorRequestV1(
-    NewConnectorRequestV1, GoogleAnalyticsConfigV1
-):
+class GoogleAnalyticsNewConnectorRequestV1(NewConnectorRequestV1, GoogleAnalyticsConfigV1):
     pass
 
 
@@ -5394,18 +4882,14 @@ class Config84(BaseModel):
     )
     project_id: Optional[str] = Field(None, description="The project ID.", title="")
     dataset_id: Optional[str] = Field(None, description="The dataset ID.", title="")
-    bucket_name: Optional[str] = Field(
-        None, description="The name of the bucket.", title=""
-    )
+    bucket_name: Optional[str] = Field(None, description="The name of the bucket.", title="")
 
 
 class GoogleAnalytics360ConfigV1(BaseModel):
     config: Optional[Config84] = Field(None, description="")
 
 
-class GoogleAnalytics360NewConnectorRequestV1(
-    NewConnectorRequestV1, GoogleAnalytics360ConfigV1
-):
+class GoogleAnalytics360NewConnectorRequestV1(NewConnectorRequestV1, GoogleAnalytics360ConfigV1):
     pass
 
 
@@ -5416,12 +4900,8 @@ class Report2(BaseModel):
         description="The name of the Prebuilt Report from which the connector will sync the data.",
         title="",
     )
-    filter_field_name: Optional[str] = Field(
-        None, description="The dimension name to filter on.", title=""
-    )
-    metrics: Optional[List[str]] = Field(
-        None, description="The report metrics to include into a sync.", title=""
-    )
+    filter_field_name: Optional[str] = Field(None, description="The dimension name to filter on.", title="")
+    metrics: Optional[List[str]] = Field(None, description="The report metrics to include into a sync.", title="")
     config_type: Optional[Dict[str, Any]] = Field(
         None,
         description="Whether to use the Prebuilt Reports or Custom Reports.",
@@ -5432,9 +4912,7 @@ class Report2(BaseModel):
         description="The table name within the schema to which connector will sync the data of the specific report.",
         title="",
     )
-    dimensions: Optional[List[str]] = Field(
-        None, description="The report dimensions to include into a sync.", title=""
-    )
+    dimensions: Optional[List[str]] = Field(None, description="The report dimensions to include into a sync.", title="")
 
 
 class Config85(BaseModel):
@@ -5470,12 +4948,8 @@ class Config85(BaseModel):
 
 
 class ClientAccess15(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth23(BaseModel):
@@ -5491,9 +4965,7 @@ class GoogleAnalytics4ConfigV1(BaseModel):
     auth: Optional[Auth23] = None
 
 
-class GoogleAnalytics4NewConnectorRequestV1(
-    NewConnectorRequestV1, GoogleAnalytics4ConfigV1
-):
+class GoogleAnalytics4NewConnectorRequestV1(NewConnectorRequestV1, GoogleAnalytics4ConfigV1):
     pass
 
 
@@ -5505,9 +4977,7 @@ class Config86(BaseModel):
         title="Destination schema",
     )
     project_id: Optional[str] = Field(None, description="The Project ID.", title="")
-    bucket_name: Optional[str] = Field(
-        None, description="The name of the bucket.", title=""
-    )
+    bucket_name: Optional[str] = Field(None, description="The name of the bucket.", title="")
     dataset_id: Optional[str] = Field(None, description="The Dataset ID.", title="")
 
 
@@ -5515,9 +4985,7 @@ class GoogleAnalytics4ExportConfigV1(BaseModel):
     config: Optional[Config86] = Field(None, description="")
 
 
-class GoogleAnalytics4ExportNewConnectorRequestV1(
-    NewConnectorRequestV1, GoogleAnalytics4ExportConfigV1
-):
+class GoogleAnalytics4ExportNewConnectorRequestV1(NewConnectorRequestV1, GoogleAnalytics4ExportConfigV1):
     pass
 
 
@@ -5551,12 +5019,8 @@ class Config87(BaseModel):
 
 
 class ClientAccess16(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth24(BaseModel):
@@ -5572,9 +5036,7 @@ class GoogleAnalyticsMcfConfigV1(BaseModel):
     auth: Optional[Auth24] = None
 
 
-class GoogleAnalyticsMcfNewConnectorRequestV1(
-    NewConnectorRequestV1, GoogleAnalyticsMcfConfigV1
-):
+class GoogleAnalyticsMcfNewConnectorRequestV1(NewConnectorRequestV1, GoogleAnalyticsMcfConfigV1):
     pass
 
 
@@ -5593,12 +5055,8 @@ class Config88(BaseModel):
     )
     sync_method: Optional[Dict[str, Any]] = Field(None, description="", title="")
     is_authenticated_invocation: Optional[bool] = Field(None, title="")
-    secrets_list: Optional[List[SecretsListItem2]] = Field(
-        None, description="", title=""
-    )
-    function_trigger: Optional[str] = Field(
-        None, description="The trigger URL of the cloud function.", title=""
-    )
+    secrets_list: Optional[List[SecretsListItem2]] = Field(None, description="", title="")
+    function_trigger: Optional[str] = Field(None, description="The trigger URL of the cloud function.", title="")
     secrets: Optional[str] = Field(
         None,
         description="The secrets that should be passed to the function at runtime.",
@@ -5610,9 +5068,7 @@ class GoogleCloudFunctionConfigV1(BaseModel):
     config: Optional[Config88] = Field(None, description="")
 
 
-class GoogleCloudFunctionNewConnectorRequestV1(
-    NewConnectorRequestV1, GoogleCloudFunctionConfigV1
-):
+class GoogleCloudFunctionNewConnectorRequestV1(NewConnectorRequestV1, GoogleCloudFunctionConfigV1):
     pass
 
 
@@ -5642,9 +5098,7 @@ class Config89(BaseModel):
     database: Optional[str] = Field(None, description="The database name.", title="")
     password: Optional[str] = Field(None, description="The user's password.", title="")
     port: Optional[int] = Field(None, description="The port number.", title="")
-    host: Optional[str] = Field(
-        None, description="DB instance host or IP address.", title=""
-    )
+    host: Optional[str] = Field(None, description="DB instance host or IP address.", title="")
     tunnel_host: Optional[str] = Field(
         None,
         description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
@@ -5662,9 +5116,7 @@ class GoogleCloudMysqlConfigV1(BaseModel):
     config: Optional[Config89] = Field(None, description="")
 
 
-class GoogleCloudMysqlNewConnectorRequestV1(
-    NewConnectorRequestV1, GoogleCloudMysqlConfigV1
-):
+class GoogleCloudMysqlNewConnectorRequestV1(NewConnectorRequestV1, GoogleCloudMysqlConfigV1):
     pass
 
 
@@ -5696,9 +5148,7 @@ class Config90(BaseModel):
     )
     heroku_rds_hosted: Optional[Dict[str, Any]] = Field(None, title="")
     port: Optional[int] = Field(None, description="The port number.", title="")
-    host: Optional[str] = Field(
-        None, description="DB instance host or IP address.", title=""
-    )
+    host: Optional[str] = Field(None, description="DB instance host or IP address.", title="")
     tunnel_host: Optional[str] = Field(
         None,
         description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
@@ -5721,9 +5171,7 @@ class GoogleCloudPostgresqlConfigV1(BaseModel):
     config: Optional[Config90] = Field(None, description="")
 
 
-class GoogleCloudPostgresqlNewConnectorRequestV1(
-    NewConnectorRequestV1, GoogleCloudPostgresqlConfigV1
-):
+class GoogleCloudPostgresqlNewConnectorRequestV1(NewConnectorRequestV1, GoogleCloudPostgresqlConfigV1):
     pass
 
 
@@ -5747,9 +5195,7 @@ class Config91(BaseModel):
         title="",
     )
     port: Optional[int] = Field(None, description="The port number.", title="")
-    host: Optional[str] = Field(
-        None, description="DB instance host or IP address.", title=""
-    )
+    host: Optional[str] = Field(None, description="DB instance host or IP address.", title="")
     tunnel_host: Optional[str] = Field(
         None,
         description="SSH host, only specify when connecting via an SSH tunnel (do not use a load balancer).",
@@ -5787,9 +5233,7 @@ class GoogleCloudSqlserverConfigV1(BaseModel):
     auth: Optional[Auth25] = None
 
 
-class GoogleCloudSqlserverNewConnectorRequestV1(
-    NewConnectorRequestV1, GoogleCloudSqlserverConfigV1
-):
+class GoogleCloudSqlserverNewConnectorRequestV1(NewConnectorRequestV1, GoogleCloudSqlserverConfigV1):
     pass
 
 
@@ -5860,9 +5304,7 @@ class GoogleDisplayAndVideo360ConfigV1(BaseModel):
     auth: Optional[Auth26] = None
 
 
-class GoogleDisplayAndVideo360NewConnectorRequestV1(
-    NewConnectorRequestV1, GoogleDisplayAndVideo360ConfigV1
-):
+class GoogleDisplayAndVideo360NewConnectorRequestV1(NewConnectorRequestV1, GoogleDisplayAndVideo360ConfigV1):
     pass
 
 
@@ -5970,9 +5412,7 @@ class GoogleDriveNewConnectorRequestV1(NewConnectorRequestV1, GoogleDriveConfigV
 
 
 class Config94(BaseModel):
-    bucket: Optional[str] = Field(
-        None, description="The Google Cloud Storage source bucket.", title=""
-    )
+    bucket: Optional[str] = Field(None, description="The Google Cloud Storage source bucket.", title="")
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -5982,12 +5422,8 @@ class Config94(BaseModel):
 
 
 class ClientAccess17(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth28(BaseModel):
@@ -6009,9 +5445,7 @@ class Report3(BaseModel):
         description="(Optional) Aggregation type. Supported only for the `SEARCH_RESULTS` report type",
         title="",
     )
-    report_type: Optional[Dict[str, Any]] = Field(
-        None, description="The type of report", title=""
-    )
+    report_type: Optional[Dict[str, Any]] = Field(None, description="The type of report", title="")
     search_types: Optional[List[Dict[str, Any]]] = Field(
         None,
         description="Search types included to sync. Supported only for the `SEARCH_RESULTS` report type",
@@ -6055,12 +5489,8 @@ class Config95(BaseModel):
 
 
 class ClientAccess18(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth29(BaseModel):
@@ -6072,9 +5502,7 @@ class GoogleSearchConsoleConfigV1(BaseModel):
     auth: Optional[Auth29] = None
 
 
-class GoogleSearchConsoleNewConnectorRequestV1(
-    NewConnectorRequestV1, GoogleSearchConsoleConfigV1
-):
+class GoogleSearchConsoleNewConnectorRequestV1(NewConnectorRequestV1, GoogleSearchConsoleConfigV1):
     pass
 
 
@@ -6108,12 +5536,8 @@ class Config96(BaseModel):
 
 
 class ClientAccess19(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth30(BaseModel):
@@ -6140,9 +5564,7 @@ class Config97(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    api_key: Optional[str] = Field(
-        None, description="Your Greenhouse API key.", title=""
-    )
+    api_key: Optional[str] = Field(None, description="Your Greenhouse API key.", title="")
 
 
 class GreenhouseConfigV1(BaseModel):
@@ -6161,9 +5583,7 @@ class Config98(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    role_arn: Optional[str] = Field(
-        None, description="The Role ARN required for authentication.", title=""
-    )
+    role_arn: Optional[str] = Field(None, description="The Role ARN required for authentication.", title="")
 
 
 class HeapConfigV1(BaseModel):
@@ -6215,12 +5635,8 @@ class Config100(BaseModel):
 
 
 class ClientAccess20(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth32(BaseModel):
@@ -6247,9 +5663,7 @@ class Config101(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    consumer_group: Optional[str] = Field(
-        None, description="Heroku Kafka consumer group name.", title=""
-    )
+    consumer_group: Optional[str] = Field(None, description="Heroku Kafka consumer group name.", title="")
     servers: Optional[List[str]] = Field(
         None,
         description="Comma-separated list of Heroku Kafka servers in the format `server:port`.",
@@ -6267,9 +5681,7 @@ class Config101(BaseModel):
         None, description="Security protocol for Heroku Kafka interaction.", title=""
     )
     client_cert_key: Optional[str] = Field(None, title="")
-    message_type: Optional[Dict[str, Any]] = Field(
-        None, description="Heroku Kafka message type.", title=""
-    )
+    message_type: Optional[Dict[str, Any]] = Field(None, description="Heroku Kafka message type.", title="")
     trusted_cert: Optional[str] = Field(None, title="")
 
 
@@ -6309,9 +5721,7 @@ class Config102(BaseModel):
     )
     heroku_rds_hosted: Optional[Dict[str, Any]] = Field(None, title="")
     port: Optional[int] = Field(None, description="The port number.", title="")
-    host: Optional[str] = Field(
-        None, description="DB instance host or IP address.", title=""
-    )
+    host: Optional[str] = Field(None, description="DB instance host or IP address.", title="")
     tunnel_host: Optional[str] = Field(
         None,
         description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
@@ -6334,9 +5744,7 @@ class HerokuPostgresConfigV1(BaseModel):
     config: Optional[Config102] = Field(None, description="")
 
 
-class HerokuPostgresNewConnectorRequestV1(
-    NewConnectorRequestV1, HerokuPostgresConfigV1
-):
+class HerokuPostgresNewConnectorRequestV1(NewConnectorRequestV1, HerokuPostgresConfigV1):
     pass
 
 
@@ -6350,12 +5758,8 @@ class Config103(BaseModel):
 
 
 class ClientAccess21(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth33(BaseModel):
@@ -6400,12 +5804,8 @@ class Config104(BaseModel):
 
 
 class ClientAccess22(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth34(BaseModel):
@@ -6417,9 +5817,7 @@ class InstagramBusinessConfigV1(BaseModel):
     auth: Optional[Auth34] = None
 
 
-class InstagramBusinessNewConnectorRequestV1(
-    NewConnectorRequestV1, InstagramBusinessConfigV1
-):
+class InstagramBusinessNewConnectorRequestV1(NewConnectorRequestV1, InstagramBusinessConfigV1):
     pass
 
 
@@ -6466,9 +5864,7 @@ class Config107(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    app_specific_password: Optional[str] = Field(
-        None, description="Your app-specific password", title=""
-    )
+    app_specific_password: Optional[str] = Field(None, description="Your app-specific password", title="")
     sales_accounts: Optional[List[str]] = Field(
         None,
         description="Specific sales account to sync. Must be populated if `sales_account_sync_mode` is set to `SpecificSalesAccounts`.",
@@ -6527,18 +5923,10 @@ class Config108(BaseModel):
         description="A URL subdirectory where the Jira instance is working.",
         title="",
     )
-    password: Optional[str] = Field(
-        None, description="The Jira user's password.", title=""
-    )
-    port: Optional[int] = Field(
-        None, description="The Jira service host port.", title=""
-    )
-    on_premise: Optional[bool] = Field(
-        None, description="Whether the Jira instance is local or in cloud.", title=""
-    )
-    host: Optional[str] = Field(
-        None, description="The Jira service host address.", title=""
-    )
+    password: Optional[str] = Field(None, description="The Jira user's password.", title="")
+    port: Optional[int] = Field(None, description="The Jira service host port.", title="")
+    on_premise: Optional[bool] = Field(None, description="Whether the Jira instance is local or in cloud.", title="")
+    host: Optional[str] = Field(None, description="The Jira service host address.", title="")
     user: Optional[str] = Field(None, description="The Jira username.", title="")
 
 
@@ -6568,15 +5956,11 @@ class Config109(BaseModel):
     external_id: Optional[str] = Field(None, description="", title="")
     skip_after: Optional[int] = Field(None, description="", title="")
     list_strategy: Optional[Dict[str, Any]] = Field(None, description="", title="")
-    bucket: Optional[str] = Field(
-        None, description="The name of the Kinesis bucket.", title=""
-    )
+    bucket: Optional[str] = Field(None, description="The name of the Kinesis bucket.", title="")
     empty_header: Optional[bool] = Field(None, title="")
     skip_before: Optional[int] = Field(None, description="", title="")
     null_sequence: Optional[str] = Field(None, title="")
-    role_arn: Optional[str] = Field(
-        None, description="The Role ARN required for authentication.", title=""
-    )
+    role_arn: Optional[str] = Field(None, description="The Role ARN required for authentication.", title="")
     file_type: Optional[Dict[str, Any]] = Field(None, title="")
     delimiter: Optional[str] = Field(None, title="")
     is_public: Optional[bool] = Field(None, description="", title="")
@@ -6617,9 +6001,7 @@ class KlaviyoNewConnectorRequestV1(NewConnectorRequestV1, KlaviyoConfigV1):
 
 
 class Config111(BaseModel):
-    access_token: Optional[str] = Field(
-        None, description="Your Kustomer API key.", title=""
-    )
+    access_token: Optional[str] = Field(None, description="Your Kustomer API key.", title="")
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -6669,9 +6051,7 @@ class LightSpeedRetailConfigV1(BaseModel):
     config: Optional[Config113] = Field(None, description="")
 
 
-class LightSpeedRetailNewConnectorRequestV1(
-    NewConnectorRequestV1, LightSpeedRetailConfigV1
-):
+class LightSpeedRetailNewConnectorRequestV1(NewConnectorRequestV1, LightSpeedRetailConfigV1):
     pass
 
 
@@ -6715,12 +6095,8 @@ class Config114(BaseModel):
 
 
 class ClientAccess23(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth35(BaseModel):
@@ -6750,12 +6126,8 @@ class Config115(BaseModel):
 
 
 class ClientAccess24(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth36(BaseModel):
@@ -6771,9 +6143,7 @@ class LinkedinCompanyPagesConfigV1(BaseModel):
     auth: Optional[Auth36] = None
 
 
-class LinkedinCompanyPagesNewConnectorRequestV1(
-    NewConnectorRequestV1, LinkedinCompanyPagesConfigV1
-):
+class LinkedinCompanyPagesNewConnectorRequestV1(NewConnectorRequestV1, LinkedinCompanyPagesConfigV1):
     pass
 
 
@@ -6803,9 +6173,7 @@ class Config116(BaseModel):
     database: Optional[str] = Field(None, description="The database name.", title="")
     password: Optional[str] = Field(None, description="The user's password.", title="")
     port: Optional[int] = Field(None, description="The port number.", title="")
-    host: Optional[str] = Field(
-        None, description="DB instance host or IP address.", title=""
-    )
+    host: Optional[str] = Field(None, description="DB instance host or IP address.", title="")
     tunnel_host: Optional[str] = Field(
         None,
         description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
@@ -6853,9 +6221,7 @@ class Config117(BaseModel):
     database: Optional[str] = Field(None, description="The database name.", title="")
     password: Optional[str] = Field(None, description="The user's password.", title="")
     port: Optional[int] = Field(None, description="The port number.", title="")
-    host: Optional[str] = Field(
-        None, description="DB instance host or IP address.", title=""
-    )
+    host: Optional[str] = Field(None, description="DB instance host or IP address.", title="")
     tunnel_host: Optional[str] = Field(
         None,
         description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
@@ -6873,9 +6239,7 @@ class MagentoMysqlRdsConfigV1(BaseModel):
     config: Optional[Config117] = Field(None, description="")
 
 
-class MagentoMysqlRdsNewConnectorRequestV1(
-    NewConnectorRequestV1, MagentoMysqlRdsConfigV1
-):
+class MagentoMysqlRdsNewConnectorRequestV1(NewConnectorRequestV1, MagentoMysqlRdsConfigV1):
     pass
 
 
@@ -6948,9 +6312,7 @@ class Config120(BaseModel):
     database: Optional[str] = Field(None, description="The database name.", title="")
     password: Optional[str] = Field(None, description="The user's password.", title="")
     port: Optional[int] = Field(None, description="The port number.", title="")
-    host: Optional[str] = Field(
-        None, description="DB instance host or IP address.", title=""
-    )
+    host: Optional[str] = Field(None, description="DB instance host or IP address.", title="")
     tunnel_host: Optional[str] = Field(
         None,
         description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
@@ -6998,9 +6360,7 @@ class Config121(BaseModel):
     database: Optional[str] = Field(None, description="The database name.", title="")
     password: Optional[str] = Field(None, description="The user's password.", title="")
     port: Optional[int] = Field(None, description="The port number.", title="")
-    host: Optional[str] = Field(
-        None, description="DB instance host or IP address.", title=""
-    )
+    host: Optional[str] = Field(None, description="DB instance host or IP address.", title="")
     tunnel_host: Optional[str] = Field(
         None,
         description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
@@ -7048,9 +6408,7 @@ class Config122(BaseModel):
     database: Optional[str] = Field(None, description="The database name.", title="")
     password: Optional[str] = Field(None, description="The user's password.", title="")
     port: Optional[int] = Field(None, description="The port number.", title="")
-    host: Optional[str] = Field(
-        None, description="DB instance host or IP address.", title=""
-    )
+    host: Optional[str] = Field(None, description="DB instance host or IP address.", title="")
     tunnel_host: Optional[str] = Field(
         None,
         description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
@@ -7079,13 +6437,9 @@ class Config123(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    password: Optional[str] = Field(
-        None, description="The Marin user's password.", title=""
-    )
+    password: Optional[str] = Field(None, description="The Marin user's password.", title="")
     port: Optional[int] = Field(None, title="")
-    prefix: Optional[str] = Field(
-        None, description="Folder path to the Marin manifest file.", title=""
-    )
+    prefix: Optional[str] = Field(None, description="Folder path to the Marin manifest file.", title="")
     host: Optional[str] = Field(None, description="The Marin host address.", title="")
     user: Optional[str] = Field(None, description="The Marin username.", title="")
 
@@ -7106,13 +6460,9 @@ class Config124(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    endpoint: Optional[str] = Field(
-        None, description="Marketo REST API endpoint.", title=""
-    )
+    endpoint: Optional[str] = Field(None, description="Marketo REST API endpoint.", title="")
     user_id: Optional[str] = Field(None, title="")
-    identity: Optional[str] = Field(
-        None, description="Marketo REST API identity url.", title=""
-    )
+    identity: Optional[str] = Field(None, description="Marketo REST API identity url.", title="")
     api_quota: Optional[int] = Field(
         None,
         description="Allowed number of API requests to Marketo instance per day, the default value is 50000.",
@@ -7120,12 +6470,8 @@ class Config124(BaseModel):
     )
     bulk_api_quota: Optional[float] = Field(None, title="")
     encryption_key: Optional[str] = Field(None, title="")
-    client_secret: Optional[str] = Field(
-        None, description="Marketo REST API Client Secret.", title=""
-    )
-    client_id: Optional[str] = Field(
-        None, description="Marketo REST API Client Id.", title=""
-    )
+    client_secret: Optional[str] = Field(None, description="Marketo REST API Client Secret.", title="")
+    client_id: Optional[str] = Field(None, description="Marketo REST API Client Id.", title="")
 
 
 class MarketoConfigV1(BaseModel):
@@ -7160,16 +6506,10 @@ class Config126(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    domain_type: Optional[str] = Field(
-        None, description="Domain type of your Medallia URL", title=""
-    )
+    domain_type: Optional[str] = Field(None, description="Domain type of your Medallia URL", title="")
     subdomain: Optional[str] = Field(None, description="Medallia subdomain", title="")
-    client_secret: Optional[str] = Field(
-        None, description="Medallia Client Secret key", title=""
-    )
-    client_name: Optional[str] = Field(
-        None, description="Medallia company name", title=""
-    )
+    client_secret: Optional[str] = Field(None, description="Medallia Client Secret key", title="")
+    client_name: Optional[str] = Field(None, description="Medallia company name", title="")
     client_id: Optional[str] = Field(None, description="Medallia Client ID", title="")
 
 
@@ -7209,12 +6549,8 @@ class Config127(BaseModel):
 
 
 class ClientAccess25(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth38(BaseModel):
@@ -7226,9 +6562,7 @@ class MicrosoftListsConfigV1(BaseModel):
     auth: Optional[Auth38] = None
 
 
-class MicrosoftListsNewConnectorRequestV1(
-    NewConnectorRequestV1, MicrosoftListsConfigV1
-):
+class MicrosoftListsNewConnectorRequestV1(NewConnectorRequestV1, MicrosoftListsConfigV1):
     pass
 
 
@@ -7239,9 +6573,7 @@ class Config128(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    api_secret: Optional[str] = Field(
-        None, description="Mixpanel API Secret.", title=""
-    )
+    api_secret: Optional[str] = Field(None, description="Mixpanel API Secret.", title="")
 
 
 class MixpanelConfigV1(BaseModel):
@@ -7394,9 +6726,7 @@ class Config131(BaseModel):
     database: Optional[str] = Field(None, description="The database name.", title="")
     password: Optional[str] = Field(None, description="The user's password.", title="")
     port: Optional[int] = Field(None, description="The port number.", title="")
-    host: Optional[str] = Field(
-        None, description="DB instance host or IP address.", title=""
-    )
+    host: Optional[str] = Field(None, description="DB instance host or IP address.", title="")
     tunnel_host: Optional[str] = Field(
         None,
         description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
@@ -7444,9 +6774,7 @@ class Config132(BaseModel):
     database: Optional[str] = Field(None, description="The database name.", title="")
     password: Optional[str] = Field(None, description="The user's password.", title="")
     port: Optional[int] = Field(None, description="The port number.", title="")
-    host: Optional[str] = Field(
-        None, description="DB instance host or IP address.", title=""
-    )
+    host: Optional[str] = Field(None, description="DB instance host or IP address.", title="")
     tunnel_host: Optional[str] = Field(
         None,
         description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
@@ -7494,9 +6822,7 @@ class Config133(BaseModel):
     database: Optional[str] = Field(None, description="The database name.", title="")
     password: Optional[str] = Field(None, description="The user's password.", title="")
     port: Optional[int] = Field(None, description="The port number.", title="")
-    host: Optional[str] = Field(
-        None, description="DB instance host or IP address.", title=""
-    )
+    host: Optional[str] = Field(None, description="DB instance host or IP address.", title="")
     tunnel_host: Optional[str] = Field(
         None,
         description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
@@ -7527,38 +6853,22 @@ class Config134(BaseModel):
         title="Destination schema",
     )
     token_secret: Optional[str] = Field(None, title="")
-    password: Optional[str] = Field(
-        None, description="The NetSuite user's password.", title=""
-    )
+    password: Optional[str] = Field(None, description="The NetSuite user's password.", title="")
     consumer_secret: Optional[str] = Field(None, title="")
-    role: Optional[str] = Field(
-        None, description="The NetSuite Role ID for connection.", title=""
-    )
-    port: Optional[int] = Field(
-        None, description="The NetSuite service host port.", title=""
-    )
-    datasource: Optional[str] = Field(
-        None, description="The NetSuite data source value: `NetSuite.com`.", title=""
-    )
-    host: Optional[str] = Field(
-        None, description="The NetSuite service host address.", title=""
-    )
+    role: Optional[str] = Field(None, description="The NetSuite Role ID for connection.", title="")
+    port: Optional[int] = Field(None, description="The NetSuite service host port.", title="")
+    datasource: Optional[str] = Field(None, description="The NetSuite data source value: `NetSuite.com`.", title="")
+    host: Optional[str] = Field(None, description="The NetSuite service host address.", title="")
     token_key: Optional[str] = Field(None, title="")
-    account: Optional[str] = Field(
-        None, description="The NetSuite Account ID.", title=""
-    )
-    email: Optional[str] = Field(
-        None, description="The NetSuite user's email address.", title=""
-    )
+    account: Optional[str] = Field(None, description="The NetSuite Account ID.", title="")
+    email: Optional[str] = Field(None, description="The NetSuite user's email address.", title="")
 
 
 class NetsuiteSuiteanalyticsConfigV1(BaseModel):
     config: Optional[Config134] = Field(None, description="")
 
 
-class NetsuiteSuiteanalyticsNewConnectorRequestV1(
-    NewConnectorRequestV1, NetsuiteSuiteanalyticsConfigV1
-):
+class NetsuiteSuiteanalyticsNewConnectorRequestV1(NewConnectorRequestV1, NetsuiteSuiteanalyticsConfigV1):
     pass
 
 
@@ -7574,9 +6884,7 @@ class Config135(BaseModel):
     pattern: Optional[str] = Field(None, title="")
     escape_char: Optional[str] = Field(None, title="")
     skip_after: Optional[int] = Field(None, title="")
-    folder_path: Optional[str] = Field(
-        None, description="Your OneDrive folder URL", title=""
-    )
+    folder_path: Optional[str] = Field(None, description="Your OneDrive folder URL", title="")
     skip_before: Optional[int] = Field(None, title="")
     empty_header: Optional[bool] = Field(None, title="")
     null_sequence: Optional[str] = Field(None, title="")
@@ -7589,12 +6897,8 @@ class Config135(BaseModel):
 
 
 class ClientAccess26(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth39(BaseModel):
@@ -7621,19 +6925,13 @@ class Config136(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    account_id: Optional[str] = Field(
-        None, description="Your Optimizely account ID.", title=""
-    )
+    account_id: Optional[str] = Field(None, description="Your Optimizely account ID.", title="")
     enriched_export: Optional[str] = Field(None, title="")
 
 
 class ClientAccess27(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth40(BaseModel):
@@ -7680,9 +6978,7 @@ class Config137(BaseModel):
         title="",
     )
     port: Optional[int] = Field(None, description="The port number.", title="")
-    host: Optional[str] = Field(
-        None, description="DB instance host or IP address.", title=""
-    )
+    host: Optional[str] = Field(None, description="DB instance host or IP address.", title="")
     tunnel_host: Optional[str] = Field(
         None,
         description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
@@ -7737,9 +7033,7 @@ class Config138(BaseModel):
         title="",
     )
     port: Optional[int] = Field(None, description="The port number.", title="")
-    host: Optional[str] = Field(
-        None, description="DB instance host or IP address.", title=""
-    )
+    host: Optional[str] = Field(None, description="DB instance host or IP address.", title="")
     tunnel_host: Optional[str] = Field(
         None,
         description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
@@ -7794,9 +7088,7 @@ class Config139(BaseModel):
         title="",
     )
     port: Optional[int] = Field(None, description="The port number.", title="")
-    host: Optional[str] = Field(
-        None, description="DB instance host or IP address.", title=""
-    )
+    host: Optional[str] = Field(None, description="DB instance host or IP address.", title="")
     tunnel_host: Optional[str] = Field(
         None,
         description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
@@ -7855,9 +7147,7 @@ class Config140(BaseModel):
         title="",
     )
     port: Optional[int] = Field(None, description="The port number.", title="")
-    host: Optional[str] = Field(
-        None, description="DB instance host or IP address.", title=""
-    )
+    host: Optional[str] = Field(None, description="DB instance host or IP address.", title="")
     tunnel_host: Optional[str] = Field(
         None,
         description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
@@ -7912,9 +7202,7 @@ class Config141(BaseModel):
         title="",
     )
     port: Optional[int] = Field(None, description="The port number.", title="")
-    host: Optional[str] = Field(
-        None, description="DB instance host or IP address.", title=""
-    )
+    host: Optional[str] = Field(None, description="DB instance host or IP address.", title="")
     tunnel_host: Optional[str] = Field(
         None,
         description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
@@ -7949,13 +7237,9 @@ class Config142(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    password: Optional[str] = Field(
-        None, description="The Outbrain user's password.", title=""
-    )
+    password: Optional[str] = Field(None, description="The Outbrain user's password.", title="")
     timeframe_months: Optional[Dict[str, Any]] = Field(None, title="")
-    user: Optional[str] = Field(
-        None, description="The username or email of the Outbrain user.", title=""
-    )
+    user: Optional[str] = Field(None, description="The username or email of the Outbrain user.", title="")
 
 
 class OutbrainConfigV1(BaseModel):
@@ -7998,21 +7282,11 @@ class Config144(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    password: Optional[str] = Field(
-        None, description="The Pardot user's password.", title=""
-    )
-    business_unit_id: Optional[str] = Field(
-        None, description="Business Unit Id", title=""
-    )
-    user_key: Optional[str] = Field(
-        None, description="The Pardot user's API key.", title=""
-    )
-    api_version: Optional[Dict[str, Any]] = Field(
-        None, description="API Version", title=""
-    )
-    email: Optional[str] = Field(
-        None, description="The email of the Pardot user.", title=""
-    )
+    password: Optional[str] = Field(None, description="The Pardot user's password.", title="")
+    business_unit_id: Optional[str] = Field(None, description="Business Unit Id", title="")
+    user_key: Optional[str] = Field(None, description="The Pardot user's API key.", title="")
+    api_version: Optional[Dict[str, Any]] = Field(None, description="API Version", title="")
+    email: Optional[str] = Field(None, description="The email of the Pardot user.", title="")
 
 
 class PardotConfigV1(BaseModel):
@@ -8030,12 +7304,8 @@ class Config145(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    secret_key: Optional[str] = Field(
-        None, description="`Client Secret` of your PayPal client application.", title=""
-    )
-    client_id: Optional[str] = Field(
-        None, description="`Client ID` of your PayPal client application.", title=""
-    )
+    secret_key: Optional[str] = Field(None, description="`Client Secret` of your PayPal client application.", title="")
+    client_id: Optional[str] = Field(None, description="`Client ID` of your PayPal client application.", title="")
 
 
 class PaypalConfigV1(BaseModel):
@@ -8053,12 +7323,8 @@ class Config146(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    secret_key: Optional[str] = Field(
-        None, description="`Client Secret` of your PayPal client application.", title=""
-    )
-    client_id: Optional[str] = Field(
-        None, description="`Client ID` of your PayPal client application.", title=""
-    )
+    secret_key: Optional[str] = Field(None, description="`Client Secret` of your PayPal client application.", title="")
+    client_id: Optional[str] = Field(None, description="`Client ID` of your PayPal client application.", title="")
 
 
 class PaypalSandboxConfigV1(BaseModel):
@@ -8081,17 +7347,13 @@ class Config147(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    integration_key: Optional[str] = Field(
-        None, description="The integration key of the Pendo account.", title=""
-    )
+    integration_key: Optional[str] = Field(None, description="The integration key of the Pendo account.", title="")
     app_ids: Optional[List[str]] = Field(
         None,
         description="Specific App IDs to sync. Must be populated if `sync_mode` is set to `SpecificAppIds`.",
         title="",
     )
-    region: Optional[Dict[str, Any]] = Field(
-        None, description="The Pendo account region.", title=""
-    )
+    region: Optional[Dict[str, Any]] = Field(None, description="The Pendo account region.", title="")
 
 
 class PendoConfigV1(BaseModel):
@@ -8147,12 +7409,8 @@ class Config148(BaseModel):
 
 
 class ClientAccess28(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth42(BaseModel):
@@ -8176,19 +7434,13 @@ class Config149(BaseModel):
         title="Destination schema",
     )
     webhook_url: Optional[str] = Field(None, title="")
-    api_token: Optional[str] = Field(
-        None, description="(Optional)Your Pipedrive personal API token", title=""
-    )
+    api_token: Optional[str] = Field(None, description="(Optional)Your Pipedrive personal API token", title="")
     domain: Optional[str] = Field(None, description="Your Pipedrive domain.", title="")
 
 
 class ClientAccess29(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth43(BaseModel):
@@ -8236,9 +7488,7 @@ class Config150(BaseModel):
     )
     heroku_rds_hosted: Optional[Dict[str, Any]] = Field(None, title="")
     port: Optional[int] = Field(None, description="The port number.", title="")
-    host: Optional[str] = Field(
-        None, description="DB instance host or IP address.", title=""
-    )
+    host: Optional[str] = Field(None, description="DB instance host or IP address.", title="")
     tunnel_host: Optional[str] = Field(
         None,
         description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
@@ -8293,9 +7543,7 @@ class Config151(BaseModel):
     )
     heroku_rds_hosted: Optional[Dict[str, Any]] = Field(None, title="")
     port: Optional[int] = Field(None, description="The port number.", title="")
-    host: Optional[str] = Field(
-        None, description="DB instance host or IP address.", title=""
-    )
+    host: Optional[str] = Field(None, description="DB instance host or IP address.", title="")
     tunnel_host: Optional[str] = Field(
         None,
         description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
@@ -8329,9 +7577,7 @@ class Config152(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    api_token: Optional[str] = Field(
-        None, description="API token of the Qualtrics account.", title=""
-    )
+    api_token: Optional[str] = Field(None, description="API token of the Qualtrics account.", title="")
     data_center: Optional[str] = Field(
         None,
         description="Data center ID of the Qualtrics account. Can be found in the URL before `qualtrics.com`. (For example, if your URL is `youraccount.ca1.qualtrics.com`, then the data center is `ca1`.)",
@@ -8357,12 +7603,8 @@ class Config153(BaseModel):
 
 
 class ClientAccess30(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth44(BaseModel):
@@ -8390,9 +7632,7 @@ class Config154(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    api_token: Optional[str] = Field(
-        None, description="The Recharge API token.", title=""
-    )
+    api_token: Optional[str] = Field(None, description="The Recharge API token.", title="")
 
 
 class RechargeConfigV1(BaseModel):
@@ -8411,9 +7651,7 @@ class Config155(BaseModel):
         title="Destination schema",
     )
     api_key: Optional[str] = Field(None, description="The Recurly API key.", title="")
-    sub_domain: Optional[str] = Field(
-        None, description="Your company's Recurly subdomain.", title=""
-    )
+    sub_domain: Optional[str] = Field(None, description="Your company's Recurly subdomain.", title="")
 
 
 class RecurlyConfigV1(BaseModel):
@@ -8440,15 +7678,11 @@ class CustomReport(BaseModel):
         description="The list of events the conversion data will be synchronised for",
         title="",
     )
-    level: Optional[Dict[str, Any]] = Field(
-        None, description="Level of custom report.", title=""
-    )
+    level: Optional[Dict[str, Any]] = Field(None, description="Level of custom report.", title="")
     report_fields: Optional[List[str]] = Field(
         None, description="The list of fields included in custom report", title=""
     )
-    segmentation: Optional[Dict[str, Any]] = Field(
-        None, description="Level of custom report.", title=""
-    )
+    segmentation: Optional[Dict[str, Any]] = Field(None, description="Level of custom report.", title="")
     report_name: Optional[str] = Field(
         None,
         description="The table name within the schema to which connector syncs the data of the specific report.",
@@ -8476,12 +7710,8 @@ class Config156(BaseModel):
 
 
 class ClientAccess31(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth45(BaseModel):
@@ -8543,9 +7773,7 @@ class Config157(BaseModel):
         description="We will skip over the number of lines specified at the end so as to not introduce aberrant data into your destination.",
         title="",
     )
-    list_strategy: Optional[Dict[str, Any]] = Field(
-        None, description="The listing strategy we want to use.", title=""
-    )
+    list_strategy: Optional[Dict[str, Any]] = Field(None, description="The listing strategy we want to use.", title="")
     bucket: Optional[str] = Field(None, description="The S3 bucket name.", title="")
     empty_header: Optional[bool] = Field(
         None,
@@ -8562,9 +7790,7 @@ class Config157(BaseModel):
         description="If your CSVs use a special value indicating null, you can specify it here.",
         title="",
     )
-    role_arn: Optional[str] = Field(
-        None, description="The Role ARN required for authentication.", title=""
-    )
+    role_arn: Optional[str] = Field(None, description="The Role ARN required for authentication.", title="")
     file_type: Optional[Dict[str, Any]] = Field(
         None,
         description="If your files are saved with improper extensions, you can force them to by synced as the selected filetype.",
@@ -8575,9 +7801,7 @@ class Config157(BaseModel):
         description="You can specify your the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.",
         title="",
     )
-    is_public: Optional[bool] = Field(
-        None, description="Whether bucket is public or not", title=""
-    )
+    is_public: Optional[bool] = Field(None, description="Whether bucket is public or not", title="")
     on_error: Optional[Dict[str, Any]] = Field(
         None,
         description="If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as fail unless you are certain that you have undesirable, malformed data.",
@@ -8643,9 +7867,7 @@ class Config159(BaseModel):
     api_key: Optional[str] = Field(None, description="The Sailthru API key.", title="")
     is_sailthru_connect_enabled: Optional[bool] = Field(None, title="")
     is_valid_credential: Optional[bool] = Field(None, title="")
-    api_secret: Optional[str] = Field(
-        None, description="The Sailthru API secret.", title=""
-    )
+    api_secret: Optional[str] = Field(None, description="The Sailthru API secret.", title="")
     group_region: Optional[Dict[str, Any]] = Field(None, title="")
 
 
@@ -8674,12 +7896,8 @@ class Config160(BaseModel):
 
 
 class ClientAccess32(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth46(BaseModel):
@@ -8712,25 +7930,17 @@ class Config161(BaseModel):
         title="Destination schema",
     )
     e2e_base_url: Optional[str] = Field(None, title="")
-    instance: Optional[str] = Field(
-        None, description="The Salesforce Marketing Cloud instance ID", title=""
-    )
+    instance: Optional[str] = Field(None, description="The Salesforce Marketing Cloud instance ID", title="")
     sub_domain: Optional[str] = Field(None, title="")
-    client_secret: Optional[str] = Field(
-        None, description="The Salesforce Marketing Cloud client secret.", title=""
-    )
-    client_id: Optional[str] = Field(
-        None, description="The Salesforce Marketing Cloud client ID.", title=""
-    )
+    client_secret: Optional[str] = Field(None, description="The Salesforce Marketing Cloud client secret.", title="")
+    client_id: Optional[str] = Field(None, description="The Salesforce Marketing Cloud client ID.", title="")
 
 
 class SalesforceMarketingCloudConfigV1(BaseModel):
     config: Optional[Config161] = Field(None, description="")
 
 
-class SalesforceMarketingCloudNewConnectorRequestV1(
-    NewConnectorRequestV1, SalesforceMarketingCloudConfigV1
-):
+class SalesforceMarketingCloudNewConnectorRequestV1(NewConnectorRequestV1, SalesforceMarketingCloudConfigV1):
     pass
 
 
@@ -8751,12 +7961,8 @@ class Config162(BaseModel):
 
 
 class ClientAccess33(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth47(BaseModel):
@@ -8772,9 +7978,7 @@ class SalesforceSandboxConfigV1(BaseModel):
     auth: Optional[Auth47] = None
 
 
-class SalesforceSandboxNewConnectorRequestV1(
-    NewConnectorRequestV1, SalesforceSandboxConfigV1
-):
+class SalesforceSandboxNewConnectorRequestV1(NewConnectorRequestV1, SalesforceSandboxConfigV1):
     pass
 
 
@@ -8785,24 +7989,16 @@ class Config163(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    password: Optional[str] = Field(
-        None, description="The SAP Business ByDesign password.", title=""
-    )
-    instance_url: Optional[str] = Field(
-        None, description="The SAP Business ByDesign instance URL.", title=""
-    )
-    username: Optional[str] = Field(
-        None, description="The SAP Business ByDesign username.", title=""
-    )
+    password: Optional[str] = Field(None, description="The SAP Business ByDesign password.", title="")
+    instance_url: Optional[str] = Field(None, description="The SAP Business ByDesign instance URL.", title="")
+    username: Optional[str] = Field(None, description="The SAP Business ByDesign username.", title="")
 
 
 class SapBusinessByDesignConfigV1(BaseModel):
     config: Optional[Config163] = Field(None, description="")
 
 
-class SapBusinessByDesignNewConnectorRequestV1(
-    NewConnectorRequestV1, SapBusinessByDesignConfigV1
-):
+class SapBusinessByDesignNewConnectorRequestV1(NewConnectorRequestV1, SapBusinessByDesignConfigV1):
     pass
 
 
@@ -8814,9 +8010,7 @@ class Config164(BaseModel):
         title="Destination schema",
     )
     append_file_option: Optional[Dict[str, Any]] = Field(None, title="")
-    sync_type: Optional[Dict[str, Any]] = Field(
-        None, description="The Segment connector sync type.", title=""
-    )
+    sync_type: Optional[Dict[str, Any]] = Field(None, description="The Segment connector sync type.", title="")
     prefix: Optional[str] = Field(
         None,
         description="Folder path to the Segment files within the bucket. Must be populated if `sync_type` is set to `S3`.",
@@ -8880,21 +8074,11 @@ class Config166(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    password: Optional[str] = Field(
-        None, description="Your account password.", title=""
-    )
-    instance: Optional[str] = Field(
-        None, description="ServiceNow Instance ID.", title=""
-    )
-    client_secret: Optional[str] = Field(
-        None, description="ServiceNow Client Secret.", title=""
-    )
-    client_id: Optional[str] = Field(
-        None, description="ServiceNow Client ID.", title=""
-    )
-    username: Optional[str] = Field(
-        None, description="Your ServiceNow User ID (username).", title=""
-    )
+    password: Optional[str] = Field(None, description="Your account password.", title="")
+    instance: Optional[str] = Field(None, description="ServiceNow Instance ID.", title="")
+    client_secret: Optional[str] = Field(None, description="ServiceNow Client Secret.", title="")
+    client_id: Optional[str] = Field(None, description="ServiceNow Client ID.", title="")
+    username: Optional[str] = Field(None, description="Your ServiceNow User ID (username).", title="")
 
 
 class ServicenowConfigV1(BaseModel):
@@ -8968,9 +8152,7 @@ class Config167(BaseModel):
         description="If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.",
         title="",
     )
-    connection_method: Optional[Dict[str, Any]] = Field(
-        None, description="Connection type.", title=""
-    )
+    connection_method: Optional[Dict[str, Any]] = Field(None, description="Connection type.", title="")
     tunnel_user: Optional[str] = Field(None, description="SFTP Tunnel user.", title="")
     null_sequence: Optional[str] = Field(
         None,
@@ -8978,9 +8160,7 @@ class Config167(BaseModel):
         title="",
     )
     port: Optional[int] = Field(None, description="SFTP port.", title="")
-    tunnel_host: Optional[str] = Field(
-        None, description="SFTP Tunnel host address.", title=""
-    )
+    tunnel_host: Optional[str] = Field(None, description="SFTP Tunnel host address.", title="")
     is_keypair: Optional[bool] = Field(
         None,
         description="Whether to use a key pair for authentication.  When `true`, do not use `password`.",
@@ -9088,12 +8268,8 @@ class Config168(BaseModel):
 
 
 class ClientAccess34(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth48(BaseModel):
@@ -9183,12 +8359,8 @@ class Config170(BaseModel):
 
 
 class ClientAccess35(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth50(BaseModel):
@@ -9235,15 +8407,9 @@ class Config172(BaseModel):
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    password: Optional[str] = Field(
-        None, description="The Splunk user's password.", title=""
-    )
-    port: Optional[int] = Field(
-        None, description="The Splunk service host port.", title=""
-    )
-    host: Optional[str] = Field(
-        None, description="The Splunk service host address.", title=""
-    )
+    password: Optional[str] = Field(None, description="The Splunk user's password.", title="")
+    port: Optional[int] = Field(None, description="The Splunk service host port.", title="")
+    host: Optional[str] = Field(None, description="The Splunk service host address.", title="")
     user: Optional[str] = Field(None, description="The Splunk username.", title="")
 
 
@@ -9275,9 +8441,7 @@ class Config173(BaseModel):
         title="",
     )
     port: Optional[int] = Field(None, description="The port number.", title="")
-    host: Optional[str] = Field(
-        None, description="DB instance host or IP address.", title=""
-    )
+    host: Optional[str] = Field(None, description="DB instance host or IP address.", title="")
     tunnel_host: Optional[str] = Field(
         None,
         description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
@@ -9339,9 +8503,7 @@ class Config174(BaseModel):
         title="",
     )
     port: Optional[int] = Field(None, description="The port number.", title="")
-    host: Optional[str] = Field(
-        None, description="DB instance host or IP address.", title=""
-    )
+    host: Optional[str] = Field(None, description="DB instance host or IP address.", title="")
     tunnel_host: Optional[str] = Field(
         None,
         description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
@@ -9403,9 +8565,7 @@ class Config175(BaseModel):
         title="",
     )
     port: Optional[int] = Field(None, description="The port number.", title="")
-    host: Optional[str] = Field(
-        None, description="DB instance host or IP address.", title=""
-    )
+    host: Optional[str] = Field(None, description="DB instance host or IP address.", title="")
     tunnel_host: Optional[str] = Field(
         None,
         description="SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
@@ -9459,9 +8619,7 @@ class Config176(BaseModel):
         description="Square App user the access token specific to your Application.",
         title="",
     )
-    client_id: Optional[str] = Field(
-        None, description="The Application ID specific to your organization.", title=""
-    )
+    client_id: Optional[str] = Field(None, description="The Application ID specific to your organization.", title="")
 
 
 class SquareConfigV1(BaseModel):
@@ -9549,12 +8707,8 @@ class Config179(BaseModel):
 
 
 class ClientAccess36(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth56(BaseModel):
@@ -9590,12 +8744,8 @@ class Config180(BaseModel):
         title="",
     )
     timeframe_months: Optional[Dict[str, Any]] = Field(None, title="")
-    client_secret: Optional[str] = Field(
-        None, description="The Taboola client secret.", title=""
-    )
-    client_id: Optional[str] = Field(
-        None, description="The Taboola client ID.", title=""
-    )
+    client_secret: Optional[str] = Field(None, description="The Taboola client secret.", title="")
+    client_id: Optional[str] = Field(None, description="The Taboola client ID.", title="")
 
 
 class TaboolaConfigV1(BaseModel):
@@ -9631,12 +8781,8 @@ class Config181(BaseModel):
 
 
 class ClientAccess37(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth57(BaseModel):
@@ -9710,12 +8856,8 @@ class Config183(BaseModel):
 
 
 class ClientAccess38(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth58(BaseModel):
@@ -9745,18 +8887,14 @@ class Config184(BaseModel):
     sync_mode: Optional[Dict[str, Any]] = Field(
         None, description="Whether to sync all accounts or specific accounts.", title=""
     )
-    consumer_key: Optional[str] = Field(
-        None, description="The Twitter App consumer key.", title=""
-    )
+    consumer_key: Optional[str] = Field(None, description="The Twitter App consumer key.", title="")
     schema_: Optional[str] = Field(
         None,
         alias="schema",
         description="Destination schema. Schema is permanent and cannot be changed after connection creation",
         title="Destination schema",
     )
-    consumer_secret: Optional[str] = Field(
-        None, description="The Twitter App consumer secret.", title=""
-    )
+    consumer_secret: Optional[str] = Field(None, description="The Twitter App consumer secret.", title="")
     timeframe_months: Optional[Dict[str, Any]] = Field(
         None, description="Historical sync timeframe in months.", title=""
     )
@@ -9769,12 +8907,8 @@ class Config184(BaseModel):
 
 
 class ClientAccess39(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth59(BaseModel):
@@ -9810,12 +8944,8 @@ class Config185(BaseModel):
 
 
 class ClientAccess40(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth60(BaseModel):
@@ -9851,9 +8981,7 @@ class Config186(BaseModel):
         description='Domain of your UserVoice site. If it ends with ".uservoice.com", you can specify just the subdomain ("mydomain.uservoice.com" â\x86\x92 "mydomain")',
         title="",
     )
-    secret: Optional[str] = Field(
-        None, description="The UserVoice API secret.", title=""
-    )
+    secret: Optional[str] = Field(None, description="The UserVoice API secret.", title="")
     key: Optional[str] = Field(None, description="The UserVoice API key.", title="")
 
 
@@ -9923,15 +9051,9 @@ class WebhooksNewConnectorRequestV1(NewConnectorRequestV1, WebhooksConfigV1):
 
 
 class Config188(BaseModel):
-    consumer_key: Optional[str] = Field(
-        None, description="Your WooCommerce Consumer key.", title=""
-    )
-    consumer_secret: Optional[str] = Field(
-        None, description="Your WooCommerce Consumer secret.", title=""
-    )
-    sub_domain: Optional[str] = Field(
-        None, description="Your WooCommerce sub-domain.", title=""
-    )
+    consumer_key: Optional[str] = Field(None, description="Your WooCommerce Consumer key.", title="")
+    consumer_secret: Optional[str] = Field(None, description="Your WooCommerce Consumer secret.", title="")
+    sub_domain: Optional[str] = Field(None, description="Your WooCommerce sub-domain.", title="")
 
 
 class WoocommerceConfigV1(BaseModel):
@@ -9952,9 +9074,7 @@ class Config189(BaseModel):
     password: Optional[str] = Field(None, description="Workday password.", title="")
     primary_keys: Optional[List[str]] = Field(None, title="")
     user_name: Optional[str] = Field(None, description="Workday username.", title="")
-    report_url: Optional[str] = Field(
-        None, description="URL for a live custom report.", title=""
-    )
+    report_url: Optional[str] = Field(None, description="URL for a live custom report.", title="")
     table: Optional[str] = Field(
         None,
         description="Destination table. Table is permanent and cannot be changed after connection creation",
@@ -9978,9 +9098,7 @@ class Config190(BaseModel):
         title="Destination schema",
     )
     password: Optional[str] = Field(None, description="Workday password.", title="")
-    domain_host_name: Optional[str] = Field(
-        None, description="Workday host name.", title=""
-    )
+    domain_host_name: Optional[str] = Field(None, description="Workday host name.", title="")
     username: Optional[str] = Field(None, title="")
 
 
@@ -10034,12 +9152,8 @@ class Config192(BaseModel):
 
 
 class ClientAccess41(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth61(BaseModel):
@@ -10080,12 +9194,8 @@ class Config193(BaseModel):
 
 
 class ClientAccess42(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth62(BaseModel):
@@ -10097,9 +9207,7 @@ class YoutubeAnalyticsConfigV1(BaseModel):
     auth: Optional[Auth62] = None
 
 
-class YoutubeAnalyticsNewConnectorRequestV1(
-    NewConnectorRequestV1, YoutubeAnalyticsConfigV1
-):
+class YoutubeAnalyticsNewConnectorRequestV1(NewConnectorRequestV1, YoutubeAnalyticsConfigV1):
     pass
 
 
@@ -10117,9 +9225,7 @@ class Config194(BaseModel):
         title="",
     )
     email: Optional[str] = Field(None, description="Zendesk email.", title="")
-    api_usage: Optional[float] = Field(
-        None, description="Maximum Zendesk Api Usage allowed", title=""
-    )
+    api_usage: Optional[float] = Field(None, description="Maximum Zendesk Api Usage allowed", title="")
 
 
 class Auth63(BaseModel):
@@ -10146,12 +9252,8 @@ class Config195(BaseModel):
         title="Destination schema",
     )
     subdomain: Optional[str] = Field(None, description="Your Zendesk domain.", title="")
-    client_secret: Optional[str] = Field(
-        None, description="Your Zendesk client secret.", title=""
-    )
-    client_id: Optional[str] = Field(
-        None, description="Your Zendesk client ID.", title=""
-    )
+    client_secret: Optional[str] = Field(None, description="Your Zendesk client secret.", title="")
+    client_id: Optional[str] = Field(None, description="Your Zendesk client ID.", title="")
 
 
 class Auth64(BaseModel):
@@ -10220,9 +9322,7 @@ class ZendeskSunshineConfigV1(BaseModel):
     config: Optional[Config197] = Field(None, description="")
 
 
-class ZendeskSunshineNewConnectorRequestV1(
-    NewConnectorRequestV1, ZendeskSunshineConfigV1
-):
+class ZendeskSunshineNewConnectorRequestV1(NewConnectorRequestV1, ZendeskSunshineConfigV1):
     pass
 
 
@@ -10237,12 +9337,8 @@ class Config198(BaseModel):
 
 
 class ClientAccess43(BaseModel):
-    client_secret: Optional[str] = Field(
-        None, description="Client Secret of your client application."
-    )
-    client_id: Optional[str] = Field(
-        None, description="Client ID of your client application."
-    )
+    client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
+    client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth66(BaseModel):
@@ -10270,9 +9366,7 @@ class Config199(BaseModel):
         description="Set to `true` if there are multiple entities in your Zuora account and you only want to use one entity. Otherwise, set to `false`.",
         title="",
     )
-    client_secret: Optional[str] = Field(
-        None, description="Zuora Client Secret.", title=""
-    )
+    client_secret: Optional[str] = Field(None, description="Zuora Client Secret.", title="")
     entity_id: Optional[str] = Field(
         None,
         description="If `is_multi_entity_feature_enabled` is `true`, then it's `EntityId`.",
@@ -10301,9 +9395,7 @@ class Config200(BaseModel):
         description="Set to `true` if there are multiple entities in your Zuora account and you only want to use one entity. Otherwise, set to `false`.",
         title="",
     )
-    client_secret: Optional[str] = Field(
-        None, description="Zuora Client Secret.", title=""
-    )
+    client_secret: Optional[str] = Field(None, description="Zuora Client Secret.", title="")
     entity_id: Optional[str] = Field(
         None,
         description="If `is_multi_entity_feature_enabled` is `true`, then it's `EntityId`.",
@@ -10321,12 +9413,8 @@ class ZuoraSandboxNewConnectorRequestV1(NewConnectorRequestV1, ZuoraSandboxConfi
 
 
 class Data(BaseModel):
-    items: Optional[List[MembershipResponse]] = Field(
-        None, description="The collection of return items"
-    )
-    nextCursor: Optional[str] = Field(
-        None, description="The value of the cursor parameter for the next page"
-    )
+    items: Optional[List[MembershipResponse]] = Field(None, description="The collection of return items")
+    nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1TeamsTeamIdConnectorsGetResponse(BaseModel):
@@ -10358,12 +9446,8 @@ class V1TeamsTeamIdUsersUserIdPatchResponse(BaseModel):
 
 
 class Data1(BaseModel):
-    items: Optional[List[UserResponse]] = Field(
-        None, description="The collection of return items"
-    )
-    nextCursor: Optional[str] = Field(
-        None, description="The value of the cursor parameter for the next page"
-    )
+    items: Optional[List[UserResponse]] = Field(None, description="The collection of return items")
+    nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1UsersGetResponse(BaseModel):
@@ -10401,12 +9485,8 @@ class V1TeamsTeamIdRoleDeleteResponse(BaseModel):
 
 
 class Data2(BaseModel):
-    items: Optional[List[MembershipResponse]] = Field(
-        None, description="The collection of return items"
-    )
-    nextCursor: Optional[str] = Field(
-        None, description="The value of the cursor parameter for the next page"
-    )
+    items: Optional[List[MembershipResponse]] = Field(None, description="The collection of return items")
+    nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1UsersUserIdGroupsGetResponse(BaseModel):
@@ -10422,12 +9502,8 @@ class V1UsersUserIdGroupsPostResponse(BaseModel):
 
 
 class Data3(BaseModel):
-    items: Optional[List[MembershipResponse]] = Field(
-        None, description="The collection of return items"
-    )
-    nextCursor: Optional[str] = Field(
-        None, description="The value of the cursor parameter for the next page"
-    )
+    items: Optional[List[MembershipResponse]] = Field(None, description="The collection of return items")
+    nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1TeamsTeamIdGroupsGetResponse(BaseModel):
@@ -10512,12 +9588,8 @@ class V1ConnectorsConnectorIdConnectCardPostResponse(BaseModel):
 
 
 class Data4(BaseModel):
-    items: Optional[List[MetadataResponse]] = Field(
-        None, description="The collection of return items"
-    )
-    nextCursor: Optional[str] = Field(
-        None, description="The value of the cursor parameter for the next page"
-    )
+    items: Optional[List[MetadataResponse]] = Field(None, description="The collection of return items")
+    nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1MetadataNameGetResponse(BaseModel):
@@ -10576,12 +9648,8 @@ class V1UsersUserIdRoleDeleteResponse(BaseModel):
 
 
 class Data5(BaseModel):
-    items: Optional[List[UserResponse]] = Field(
-        None, description="The collection of return items"
-    )
-    nextCursor: Optional[str] = Field(
-        None, description="The value of the cursor parameter for the next page"
-    )
+    items: Optional[List[UserResponse]] = Field(None, description="The collection of return items")
+    nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1GroupsGroupIdUsersGetResponse(BaseModel):
@@ -10614,12 +9682,8 @@ class V1DestinationsDestinationIdTestPostResponse(BaseModel):
 
 
 class Data6(BaseModel):
-    items: Optional[List[SchemaMetadataResponse]] = Field(
-        None, description="The collection of return items"
-    )
-    nextCursor: Optional[str] = Field(
-        None, description="The value of the cursor parameter for the next page"
-    )
+    items: Optional[List[SchemaMetadataResponse]] = Field(None, description="The collection of return items")
+    nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1MetadataConnectorsConnectorIdSchemasGetResponse(BaseModel):
@@ -10629,12 +9693,8 @@ class V1MetadataConnectorsConnectorIdSchemasGetResponse(BaseModel):
 
 
 class Data7(BaseModel):
-    items: Optional[List[GroupResponse]] = Field(
-        None, description="The collection of return items"
-    )
-    nextCursor: Optional[str] = Field(
-        None, description="The value of the cursor parameter for the next page"
-    )
+    items: Optional[List[GroupResponse]] = Field(None, description="The collection of return items")
+    nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1GroupsGetResponse(BaseModel):
@@ -10666,12 +9726,8 @@ class V1MetadataNameServiceGetResponse(BaseModel):
 
 
 class Data8(BaseModel):
-    items: Optional[List[TeamResponse]] = Field(
-        None, description="The collection of return items"
-    )
-    nextCursor: Optional[str] = Field(
-        None, description="The value of the cursor parameter for the next page"
-    )
+    items: Optional[List[TeamResponse]] = Field(None, description="The collection of return items")
+    nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1TeamsGetResponse(BaseModel):
@@ -10703,12 +9759,8 @@ class V1GroupsGroupIdUsersUserIdDeleteResponse(BaseModel):
 
 
 class Data9(BaseModel):
-    items: Optional[List[ColumnMetadataResponse]] = Field(
-        None, description="The collection of return items"
-    )
-    nextCursor: Optional[str] = Field(
-        None, description="The value of the cursor parameter for the next page"
-    )
+    items: Optional[List[ColumnMetadataResponse]] = Field(None, description="The collection of return items")
+    nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1MetadataConnectorsConnectorIdColumnsGetResponse(BaseModel):
@@ -10718,12 +9770,8 @@ class V1MetadataConnectorsConnectorIdColumnsGetResponse(BaseModel):
 
 
 class Data10(BaseModel):
-    items: Optional[List[TableMetadataResponse]] = Field(
-        None, description="The collection of return items"
-    )
-    nextCursor: Optional[str] = Field(
-        None, description="The value of the cursor parameter for the next page"
-    )
+    items: Optional[List[TableMetadataResponse]] = Field(None, description="The collection of return items")
+    nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1MetadataConnectorsConnectorIdTablesGetResponse(BaseModel):
@@ -10733,12 +9781,8 @@ class V1MetadataConnectorsConnectorIdTablesGetResponse(BaseModel):
 
 
 class Data11(BaseModel):
-    items: Optional[List[TransformationResponse]] = Field(
-        None, description="The collection of return items"
-    )
-    nextCursor: Optional[str] = Field(
-        None, description="The value of the cursor parameter for the next page"
-    )
+    items: Optional[List[TransformationResponse]] = Field(None, description="The collection of return items")
+    nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1DbtProjectsProjectIdTransformationsGetResponse(BaseModel):
@@ -10754,12 +9798,8 @@ class V1DbtProjectsProjectIdTransformationsPostResponse(BaseModel):
 
 
 class Data12(BaseModel):
-    items: Optional[List[DbtProjectResponse]] = Field(
-        None, description="The collection of return items"
-    )
-    nextCursor: Optional[str] = Field(
-        None, description="The value of the cursor parameter for the next page"
-    )
+    items: Optional[List[DbtProjectResponse]] = Field(None, description="The collection of return items")
+    nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1DbtProjectsGetResponse(BaseModel):
@@ -10775,12 +9815,8 @@ class V1DbtProjectsPostResponse(BaseModel):
 
 
 class Data13(BaseModel):
-    items: Optional[List[RoleResponse]] = Field(
-        None, description="The collection of return items"
-    )
-    nextCursor: Optional[str] = Field(
-        None, description="The value of the cursor parameter for the next page"
-    )
+    items: Optional[List[RoleResponse]] = Field(None, description="The collection of return items")
+    nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1RolesGetResponse(BaseModel):
@@ -10790,12 +9826,8 @@ class V1RolesGetResponse(BaseModel):
 
 
 class Data14(BaseModel):
-    items: Optional[List[DbtModelResponse]] = Field(
-        None, description="The collection of return items"
-    )
-    nextCursor: Optional[str] = Field(
-        None, description="The value of the cursor parameter for the next page"
-    )
+    items: Optional[List[DbtModelResponse]] = Field(None, description="The collection of return items")
+    nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1DbtProjectsProjectIdModelsGetResponse(BaseModel):
@@ -10821,12 +9853,8 @@ class V1TeamsTeamIdConnectorsConnectorIdPatchResponse(BaseModel):
 
 
 class Data15(BaseModel):
-    items: Optional[List[ConnectorResponse]] = Field(
-        None, description="The collection of return items"
-    )
-    nextCursor: Optional[str] = Field(
-        None, description="The value of the cursor parameter for the next page"
-    )
+    items: Optional[List[ConnectorResponse]] = Field(None, description="The collection of return items")
+    nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1GroupsGroupIdConnectorsGetResponse(BaseModel):
@@ -10853,21 +9881,13 @@ class V1DestinationsDestinationIdPatchResponse(BaseModel):
 
 
 class V1WebhooksGetResponse(BaseModel):
-    items: Optional[List[WebhookResponse]] = Field(
-        None, description="The collection of return items"
-    )
-    nextCursor: Optional[str] = Field(
-        None, description="The value of the cursor parameter for the next page"
-    )
+    items: Optional[List[WebhookResponse]] = Field(None, description="The collection of return items")
+    nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class Data16(BaseModel):
-    items: Optional[List[TeamMembershipResponse]] = Field(
-        None, description="The collection of return items"
-    )
-    nextCursor: Optional[str] = Field(
-        None, description="The value of the cursor parameter for the next page"
-    )
+    items: Optional[List[TeamMembershipResponse]] = Field(None, description="The collection of return items")
+    nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1TeamsTeamIdUsersGetResponse(BaseModel):
@@ -10899,12 +9919,8 @@ class V1UsersUserIdGroupsGroupIdPatchResponse(BaseModel):
 
 
 class Data17(BaseModel):
-    items: Optional[List[MembershipResponse]] = Field(
-        None, description="The collection of return items"
-    )
-    nextCursor: Optional[str] = Field(
-        None, description="The value of the cursor parameter for the next page"
-    )
+    items: Optional[List[MembershipResponse]] = Field(None, description="The collection of return items")
+    nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1UsersUserIdConnectorsGetResponse(BaseModel):
@@ -10924,17 +9940,13 @@ class ConnectorResponseV1(BaseModel):
         None,
         description="The unique identifier for the connector within the Fivetran system",
     )
-    service: Optional[str] = Field(
-        None, description="The connector type name within the Fivetran system"
-    )
+    service: Optional[str] = Field(None, description="The connector type name within the Fivetran system")
     schema_: Optional[str] = Field(
         None,
         alias="schema",
         description="The name used both as the connector's name within the Fivetran system and as the source schema's name within your destination",
     )
-    paused: Optional[bool] = Field(
-        None, description="Specifies whether the connector is paused"
-    )
+    paused: Optional[bool] = Field(None, description="Specifies whether the connector is paused")
     status: Optional[ConnectorStatusResponse] = None
     daily_sync_time: Optional[str] = Field(
         None,
@@ -10945,9 +9957,7 @@ class ConnectorResponseV1(BaseModel):
         description="The timestamp of the time the connector sync succeeded last time",
     )
     connect_card: Optional[ConnectCardResponse] = None
-    sync_frequency: Optional[int] = Field(
-        None, description="The connector sync frequency in minutes"
-    )
+    sync_frequency: Optional[int] = Field(None, description="The connector sync frequency in minutes")
     pause_after_trial: Optional[bool] = Field(
         None,
         description="Specifies whether the connector should be paused after the free trial period has ended",
@@ -10967,9 +9977,7 @@ class ConnectorResponseV1(BaseModel):
         None,
         description="The additional information about the connector's state. The format of this parameter is specific for each connector type",
     )
-    service_version: Optional[int] = Field(
-        None, description="The connector type version within the Fivetran system"
-    )
+    service_version: Optional[int] = Field(None, description="The connector type version within the Fivetran system")
     created_at: Optional[datetime] = Field(
         None,
         description="The timestamp of the time the connector was created in your account",
@@ -11074,9 +10082,7 @@ class AdobeAnalyticsConnectorResponseV1(ConnectorResponseV1, AdobeAnalyticsConfi
     pass
 
 
-class AdobeAnalyticsDataFeedConnectorResponseV1(
-    ConnectorResponseV1, AdobeAnalyticsDataFeedConfigV1
-):
+class AdobeAnalyticsDataFeedConnectorResponseV1(ConnectorResponseV1, AdobeAnalyticsDataFeedConfigV1):
     pass
 
 
@@ -11144,9 +10150,7 @@ class AwsMskConnectorResponseV1(ConnectorResponseV1, AwsMskConfigV1):
     pass
 
 
-class AzureBlobStorageConnectorResponseV1(
-    ConnectorResponseV1, AzureBlobStorageConfigV1
-):
+class AzureBlobStorageConnectorResponseV1(ConnectorResponseV1, AzureBlobStorageConfigV1):
     pass
 
 
@@ -11170,9 +10174,7 @@ class AzureSqlDbConnectorResponseV1(ConnectorResponseV1, AzureSqlDbConfigV1):
     pass
 
 
-class AzureSqlManagedDbConnectorResponseV1(
-    ConnectorResponseV1, AzureSqlManagedDbConfigV1
-):
+class AzureSqlManagedDbConnectorResponseV1(ConnectorResponseV1, AzureSqlManagedDbConfigV1):
     pass
 
 
@@ -11188,9 +10190,7 @@ class BraintreeConnectorResponseV1(ConnectorResponseV1, BraintreeConfigV1):
     pass
 
 
-class BraintreeSandboxConnectorResponseV1(
-    ConnectorResponseV1, BraintreeSandboxConfigV1
-):
+class BraintreeSandboxConnectorResponseV1(ConnectorResponseV1, BraintreeSandboxConfigV1):
     pass
 
 
@@ -11230,15 +10230,11 @@ class DocumentdbConnectorResponseV1(ConnectorResponseV1, DocumentdbConfigV1):
     pass
 
 
-class DoubleClickCampaignManagerConnectorResponseV1(
-    ConnectorResponseV1, DoubleClickCampaignManagerConfigV1
-):
+class DoubleClickCampaignManagerConnectorResponseV1(ConnectorResponseV1, DoubleClickCampaignManagerConfigV1):
     pass
 
 
-class DoubleClickPublishersConnectorResponseV1(
-    ConnectorResponseV1, DoubleClickPublishersConfigV1
-):
+class DoubleClickPublishersConnectorResponseV1(ConnectorResponseV1, DoubleClickPublishersConfigV1):
     pass
 
 
@@ -11274,9 +10270,7 @@ class FacebookConnectorResponseV1(ConnectorResponseV1, FacebookConfigV1):
     pass
 
 
-class FacebookAdAccountConnectorResponseV1(
-    ConnectorResponseV1, FacebookAdAccountConfigV1
-):
+class FacebookAdAccountConnectorResponseV1(ConnectorResponseV1, FacebookAdAccountConfigV1):
     pass
 
 
@@ -11308,9 +10302,7 @@ class FtpConnectorResponseV1(ConnectorResponseV1, FtpConfigV1):
     pass
 
 
-class GainsightCustomerSuccessConnectorResponseV1(
-    ConnectorResponseV1, GainsightCustomerSuccessConfigV1
-):
+class GainsightCustomerSuccessConnectorResponseV1(ConnectorResponseV1, GainsightCustomerSuccessConfigV1):
     pass
 
 
@@ -11330,57 +10322,39 @@ class GoogleAnalyticsConnectorResponseV1(ConnectorResponseV1, GoogleAnalyticsCon
     pass
 
 
-class GoogleAnalytics360ConnectorResponseV1(
-    ConnectorResponseV1, GoogleAnalytics360ConfigV1
-):
+class GoogleAnalytics360ConnectorResponseV1(ConnectorResponseV1, GoogleAnalytics360ConfigV1):
     pass
 
 
-class GoogleAnalytics4ConnectorResponseV1(
-    ConnectorResponseV1, GoogleAnalytics4ConfigV1
-):
+class GoogleAnalytics4ConnectorResponseV1(ConnectorResponseV1, GoogleAnalytics4ConfigV1):
     pass
 
 
-class GoogleAnalytics4ExportConnectorResponseV1(
-    ConnectorResponseV1, GoogleAnalytics4ExportConfigV1
-):
+class GoogleAnalytics4ExportConnectorResponseV1(ConnectorResponseV1, GoogleAnalytics4ExportConfigV1):
     pass
 
 
-class GoogleAnalyticsMcfConnectorResponseV1(
-    ConnectorResponseV1, GoogleAnalyticsMcfConfigV1
-):
+class GoogleAnalyticsMcfConnectorResponseV1(ConnectorResponseV1, GoogleAnalyticsMcfConfigV1):
     pass
 
 
-class GoogleCloudFunctionConnectorResponseV1(
-    ConnectorResponseV1, GoogleCloudFunctionConfigV1
-):
+class GoogleCloudFunctionConnectorResponseV1(ConnectorResponseV1, GoogleCloudFunctionConfigV1):
     pass
 
 
-class GoogleCloudMysqlConnectorResponseV1(
-    ConnectorResponseV1, GoogleCloudMysqlConfigV1
-):
+class GoogleCloudMysqlConnectorResponseV1(ConnectorResponseV1, GoogleCloudMysqlConfigV1):
     pass
 
 
-class GoogleCloudPostgresqlConnectorResponseV1(
-    ConnectorResponseV1, GoogleCloudPostgresqlConfigV1
-):
+class GoogleCloudPostgresqlConnectorResponseV1(ConnectorResponseV1, GoogleCloudPostgresqlConfigV1):
     pass
 
 
-class GoogleCloudSqlserverConnectorResponseV1(
-    ConnectorResponseV1, GoogleCloudSqlserverConfigV1
-):
+class GoogleCloudSqlserverConnectorResponseV1(ConnectorResponseV1, GoogleCloudSqlserverConfigV1):
     pass
 
 
-class GoogleDisplayAndVideo360ConnectorResponseV1(
-    ConnectorResponseV1, GoogleDisplayAndVideo360ConfigV1
-):
+class GoogleDisplayAndVideo360ConnectorResponseV1(ConnectorResponseV1, GoogleDisplayAndVideo360ConfigV1):
     pass
 
 
@@ -11392,9 +10366,7 @@ class GooglePlayConnectorResponseV1(ConnectorResponseV1, GooglePlayConfigV1):
     pass
 
 
-class GoogleSearchConsoleConnectorResponseV1(
-    ConnectorResponseV1, GoogleSearchConsoleConfigV1
-):
+class GoogleSearchConsoleConnectorResponseV1(ConnectorResponseV1, GoogleSearchConsoleConfigV1):
     pass
 
 
@@ -11430,9 +10402,7 @@ class HubspotConnectorResponseV1(ConnectorResponseV1, HubspotConfigV1):
     pass
 
 
-class InstagramBusinessConnectorResponseV1(
-    ConnectorResponseV1, InstagramBusinessConfigV1
-):
+class InstagramBusinessConnectorResponseV1(ConnectorResponseV1, InstagramBusinessConfigV1):
     pass
 
 
@@ -11468,9 +10438,7 @@ class LeverConnectorResponseV1(ConnectorResponseV1, LeverConfigV1):
     pass
 
 
-class LightSpeedRetailConnectorResponseV1(
-    ConnectorResponseV1, LightSpeedRetailConfigV1
-):
+class LightSpeedRetailConnectorResponseV1(ConnectorResponseV1, LightSpeedRetailConfigV1):
     pass
 
 
@@ -11478,9 +10446,7 @@ class LinkedinAdsConnectorResponseV1(ConnectorResponseV1, LinkedinAdsConfigV1):
     pass
 
 
-class LinkedinCompanyPagesConnectorResponseV1(
-    ConnectorResponseV1, LinkedinCompanyPagesConfigV1
-):
+class LinkedinCompanyPagesConnectorResponseV1(ConnectorResponseV1, LinkedinCompanyPagesConfigV1):
     pass
 
 
@@ -11556,9 +10522,7 @@ class MysqlRdsConnectorResponseV1(ConnectorResponseV1, MysqlRdsConfigV1):
     pass
 
 
-class NetsuiteSuiteanalyticsConnectorResponseV1(
-    ConnectorResponseV1, NetsuiteSuiteanalyticsConfigV1
-):
+class NetsuiteSuiteanalyticsConnectorResponseV1(ConnectorResponseV1, NetsuiteSuiteanalyticsConfigV1):
     pass
 
 
@@ -11666,21 +10630,15 @@ class SalesforceConnectorResponseV1(ConnectorResponseV1, SalesforceConfigV1):
     pass
 
 
-class SalesforceMarketingCloudConnectorResponseV1(
-    ConnectorResponseV1, SalesforceMarketingCloudConfigV1
-):
+class SalesforceMarketingCloudConnectorResponseV1(ConnectorResponseV1, SalesforceMarketingCloudConfigV1):
     pass
 
 
-class SalesforceSandboxConnectorResponseV1(
-    ConnectorResponseV1, SalesforceSandboxConfigV1
-):
+class SalesforceSandboxConnectorResponseV1(ConnectorResponseV1, SalesforceSandboxConfigV1):
     pass
 
 
-class SapBusinessByDesignConnectorResponseV1(
-    ConnectorResponseV1, SapBusinessByDesignConfigV1
-):
+class SapBusinessByDesignConnectorResponseV1(ConnectorResponseV1, SapBusinessByDesignConfigV1):
     pass
 
 
@@ -11800,9 +10758,7 @@ class YahooGeminiConnectorResponseV1(ConnectorResponseV1, YahooGeminiConfigV1):
     pass
 
 
-class YoutubeAnalyticsConnectorResponseV1(
-    ConnectorResponseV1, YoutubeAnalyticsConfigV1
-):
+class YoutubeAnalyticsConnectorResponseV1(ConnectorResponseV1, YoutubeAnalyticsConfigV1):
     pass
 
 
@@ -11894,9 +10850,7 @@ class StandardConfigResponse(BaseModel):
     )
 
 
-class V1ConnectorsConnectorIdSchemasSchemaNameTablesTableNameColumnsColumnNamePatchResponse(
-    BaseModel
-):
+class V1ConnectorsConnectorIdSchemasSchemaNameTablesTableNameColumnsColumnNamePatchResponse(BaseModel):
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[StandardConfigResponse] = None
