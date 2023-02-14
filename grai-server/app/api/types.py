@@ -13,10 +13,10 @@ from strawberry_django_plus.gql import auto
 from connections.models import Connection as ConnectionModel
 from connections.models import Connector as ConnectorModel
 from connections.models import Run as RunModel
+from installations.models import Branch as BranchModel
 from installations.models import Commit as CommitModel
 from installations.models import PullRequest as PullRequestModel
 from installations.models import Repository as RepositoryModel
-from installations.models import Branch as BranchModel
 from lineage.models import Edge as EdgeModel
 from lineage.models import Node as NodeModel
 from users.models import User as UserModel

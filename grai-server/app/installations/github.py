@@ -47,10 +47,16 @@ class Github:
             },
         )
 
+        res.raise_for_status()
+
         data = res.json()
+
+        print(f"data: {data}")
 
         self.token = data.get("token")
         self.expires_at = data.get("expires_at")
+
+        print(f"token: {self.token}")
 
         if self.token is None:
             raise Exception(data.get("message"))
