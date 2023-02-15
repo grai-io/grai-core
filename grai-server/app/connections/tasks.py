@@ -72,7 +72,7 @@ def execute_run(run: Run):
         if run.action == Run.UPDATE:
             adapter.run_update(run)
         elif run.action == Run.TESTS:
-            results = adapter.run_tests(run)
+            results, message = adapter.run_tests(run)
             run.metadata = {"results": results}
         else:
             raise NoActionError(f"Incorrect run action {run.action} found, accepted values: tests, update")
@@ -87,6 +87,8 @@ def execute_run(run: Run):
                 check_id=run.trigger["check_id"],
                 conclusion="success" if results is None else "failure",
             )
+            if run.commit.pull_request:
+                github.post_comment(run.commit.pull_request.reference, message)
     except Exception as e:
         run.metadata = {"error": str(e)}
         run.status = "error"

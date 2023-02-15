@@ -1,5 +1,6 @@
 import time
 from datetime import datetime
+from typing import Optional
 
 import jwt
 import requests
@@ -17,11 +18,13 @@ class Github:
     owner: str
     repo: str
     installation_id: int
+    test_signal_text = "<!-- grai marker text for test comments-->"
 
     def __init__(self, owner: str = None, repo: str = None, installation_id: int = None):
         self.owner = owner
         self.repo = repo
         self.installation_id = installation_id if installation_id is not None else self.fetch_installation_id()
+        self.get_api()
 
     def fetch_installation_id(self):
         return Repository.objects.get(type=Repository.GITHUB, owner=self.owner, repo=self.repo).installation_id
@@ -73,8 +76,6 @@ class Github:
     def create_check(
         self, head_sha: str, external_id: str = None, name: str = "Grai Update", details_url: str = None, output=None
     ):
-        self.get_api()
-
         check = self.api.checks.create(
             name=name,
             head_sha=head_sha,
@@ -87,15 +88,11 @@ class Github:
         return check
 
     def start_check(self, check_id: int):
-        self.get_api()
-
         return self.api.checks.update(
             check_run_id=check_id, status="in_progress", started_at=datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
         )
 
     def complete_check(self, check_id: int, conclusion: str = "success"):
-        self.get_api()
-
         return self.api.checks.update(
             check_run_id=check_id,
             status="completed",
@@ -104,6 +101,28 @@ class Github:
         )
 
     def get_repos(self):
-        self.get_api()
-
         return self.api.apps.list_repos_accessible_to_installation()["repositories"]
+
+    @staticmethod
+    def add_comment_identifier(message, identifier):
+        return f"{identifier}{message}"
+
+    def get_marked_comment(self, pr_number: str, identifier: str) -> Optional[dict]:
+        current_comments = self.api.issues.list_comments(pr_number)
+        # user_comments = (comment for comment in current_comments if comment["user"]["id"] == self.bot_user_id)
+        for comment in current_comments:
+            if identifier in comment["body"]:
+                return comment
+
+        return None
+
+    def post_comment(self, pr_number: str, message: str):
+        message = self.add_comment_identifier(message, self.test_signal_text)
+
+        marked_comment = self.get_marked_comment(pr_number, self.test_signal_text)
+
+        if marked_comment is None:
+            self.api.issues.create_comment(pr_number, body=message)
+            return
+
+        self.api.issues.update_comment(marked_comment["id"], body=message)

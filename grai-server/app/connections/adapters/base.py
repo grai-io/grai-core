@@ -40,4 +40,9 @@ class BaseAdapter(ABC):
         test_failures = list(chain.from_iterable(results.test_results().values()))
         test_list = [test.toJSON() for test in test_failures]
 
-        return test_list
+        message = None
+
+        if run.commit and run.trigger:
+            message = results.consolidated_summary().message(run)
+
+        return test_list, message
