@@ -483,14 +483,44 @@ class Workspace:
             else RepositoryModel.objects.get(workspace=self, type=type, owner=owner, repo=repo)
         )
 
+    # Branches
+    @gql.django.field
+    def branches(self) -> List["Branch"]:
+        return BranchModel.objects.filter(workspace=self)
+
+    @gql.django.field
+    def branch(self, id: Optional[strawberry.ID] = None, reference: Optional[str] = None) -> "Branch":
+        return (
+            BranchModel.objects.get(id=id)
+            if id is not None
+            else BranchModel.objects.get(workspace=self, reference=reference)
+        )
+
     # Pull Requests
     @gql.django.field
     def pull_requests(self) -> List["PullRequest"]:
         return PullRequestModel.objects.filter(workspace=self)
 
     @gql.django.field
-    def pull_request(self, id: strawberry.ID) -> "PullRequest":
-        return PullRequestModel.objects.get(id=id)
+    def pull_request(self, id: Optional[strawberry.ID] = None, reference: Optional[str] = None) -> "PullRequest":
+        return (
+            PullRequestModel.objects.get(id=id)
+            if id is not None
+            else PullRequestModel.objects.get(workspace=self, reference=reference)
+        )
+
+    # Commits
+    @gql.django.field
+    def commits(self) -> List["Commit"]:
+        return CommitModel.objects.filter(workspace=self)
+
+    @gql.django.field
+    def commit(self, id: Optional[strawberry.ID] = None, reference: Optional[str] = None) -> "Commit":
+        return (
+            CommitModel.objects.get(id=id)
+            if id is not None
+            else CommitModel.objects.get(workspace=self, reference=reference)
+        )
 
 
 @gql.django.filters.filter(MembershipModel, lookups=True)
@@ -632,7 +662,9 @@ class Repository:
 class Branch:
     id: auto
     reference: auto
+    repository: "Repository"
 
+    pull_requests: List["PullRequest"]
     commits: List["Commit"]
 
     @gql.django.field
@@ -645,6 +677,7 @@ class PullRequest:
     id: auto
     reference: auto
     title: Optional[str]
+    repository: "Repository"
     branch: "Branch"
 
     commits: List["Commit"]
@@ -659,6 +692,7 @@ class Commit:
     id: auto
     reference: auto
     title: Optional[str]
+    repository: "Repository"
     branch: "Branch"
     pull_request: Optional["PullRequest"]
     created_at: auto
