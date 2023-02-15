@@ -13,6 +13,7 @@ class Connector(models.Model):
     YAMLFILE = "yaml_file"
     MSSQL = "mssql"
     BIGQUERY = "bigquery"
+    FIVETRAN = "fivetran"
 
     CONNECTOR_SLUGS = [
         (POSTGRESQL, "postgres"),
@@ -21,6 +22,7 @@ class Connector(models.Model):
         (YAMLFILE, "yaml_file"),
         (MSSQL, "mssql"),
         (BIGQUERY, "bigquery"),
+        (FIVETRAN, "fivetran"),
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

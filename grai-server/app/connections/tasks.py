@@ -4,6 +4,7 @@ from celery import shared_task
 from connections.adapters.base import BaseAdapter
 from connections.adapters.bigquery import BigqueryAdapter
 from connections.adapters.dbt import DbtAdapter
+from connections.adapters.fivetran import FivetranAdapter
 from connections.adapters.mssql import MssqlAdapter
 from connections.adapters.postgres import PostgresAdapter
 from connections.adapters.snowflake import SnowflakeAdapter
@@ -40,6 +41,8 @@ def get_adapter(slug: str) -> BaseAdapter:
         return MssqlAdapter()
     elif slug == Connector.BIGQUERY:
         return BigqueryAdapter()
+    elif slug == Connector.FIVETRAN:
+        return FivetranAdapter()
 
     raise NoConnectorError(f"No connector found for: {slug}")
 

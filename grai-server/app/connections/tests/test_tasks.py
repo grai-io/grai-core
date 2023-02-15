@@ -46,6 +46,11 @@ def test_bigquery_connector():
 
 
 @pytest.fixture
+def test_fivetran_connector():
+    return Connector.objects.create(name=Connector.FIVETRAN)
+
+
+@pytest.fixture
 def test_dbt_connector():
     connector, created = Connector.objects.get_or_create(name=Connector.DBT, slug=Connector.DBT)
 
@@ -134,6 +139,53 @@ class TestUpdateServer:
             run_update_server(str(run.id))
 
         assert str(e_info.value) == "No connector found for: Connector"
+
+    def test_run_update_server_dbt(self, test_workspace, test_dbt_connector):
+        with open(os.path.join(__location__, "manifest.json")) as reader:
+            file = UploadedFile(reader, name="manifest.json")
+
+            run = Run.objects.create(connector=test_dbt_connector, workspace=test_workspace)
+            RunFile.objects.create(run=run, file=file)
+
+            run_update_server(str(run.id))
+
+    def test_run_update_server_fivetran(self, test_workspace, test_fivetran_connector, mocker):
+        mocker.patch("grai_source_fivetran.loader.FivetranConnector")
+        mock = mocker.patch("grai_source_fivetran.base.get_nodes_and_edges")
+        mock.return_value = [[], []]
+
+        connection = Connection.objects.create(
+            name="C1",
+            connector=test_fivetran_connector,
+            workspace=test_workspace,
+            metadata={"api_key": "abc123"},
+            secrets={"api_secret": "abc123"},
+        )
+
+        run = Run.objects.create(connection=connection, workspace=test_workspace)
+
+        run_update_server(str(run.id))
+
+    def test_run_update_server_fivetran_extras(self, test_workspace, test_fivetran_connector, mocker):
+        mocker.patch("grai_source_fivetran.loader.FivetranConnector")
+        mock = mocker.patch("grai_source_fivetran.base.get_nodes_and_edges")
+        mock.return_value = [[], []]
+
+        connection = Connection.objects.create(
+            name="C1",
+            connector=test_fivetran_connector,
+            workspace=test_workspace,
+            metadata={
+                "api_key": "abc123",
+                "endpoint": "https://grai.io",
+                "limit": "10",
+            },
+            secrets={"api_secret": "abc123"},
+        )
+
+        run = Run.objects.create(connection=connection, workspace=test_workspace)
+
+        run_update_server(str(run.id))
 
     def test_run_update_server_yaml_file(self, test_workspace, test_yaml_file_connector):
         Node.objects.create(workspace=test_workspace, namespace="default", name="table1")

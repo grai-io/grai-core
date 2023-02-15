@@ -151,18 +151,18 @@ uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
 name = "boto3"
-version = "1.26.68"
+version = "1.26.71"
 description = "The AWS SDK for Python"
 category = "main"
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "boto3-1.26.68-py3-none-any.whl", hash = "sha256:bbb426a9b3afd3ccbac25e03b215d79e90b4c47905b1b08b3b9d86fc74096974"},
-    {file = "boto3-1.26.68.tar.gz", hash = "sha256:c92dd0fde7839c0ca9c16a989d67ceb7f80f53de19f2b087fd1182f2af41b2ae"},
+    {file = "boto3-1.26.71-py3-none-any.whl", hash = "sha256:5a9d19cdd8dcec679c483408f208027e01ab2087cbc66787790036087b6737de"},
+    {file = "boto3-1.26.71.tar.gz", hash = "sha256:6c4845243d1896019646d649f1f0ff4042cedcc5db3ecfba3dc2d611ea11cd08"},
 ]
 
 [package.dependencies]
-botocore = ">=1.29.68,<1.30.0"
+botocore = ">=1.29.71,<1.30.0"
 jmespath = ">=0.7.1,<2.0.0"
 s3transfer = ">=0.6.0,<0.7.0"
 
@@ -171,14 +171,14 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "botocore"
-version = "1.29.68"
+version = "1.29.71"
 description = "Low-level, data-driven core of boto 3."
 category = "main"
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "botocore-1.29.68-py3-none-any.whl", hash = "sha256:08fa8302a22553e69b70b1de2cc8cec61a3a878546658d091473e13d5b9d2ca4"},
-    {file = "botocore-1.29.68.tar.gz", hash = "sha256:8f5cb96dc0862809d29fe512087c77c15fe6328a2d8238f0a96cccb6eb77ec12"},
+    {file = "botocore-1.29.71-py3-none-any.whl", hash = "sha256:40406466f5c416b1f54bfbfc11aef90d783103f7ea77a1992dcaf1768ab04e12"},
+    {file = "botocore-1.29.71.tar.gz", hash = "sha256:783e7fa97bb5bf3759e4b333b8da2bcaffdb54828ea1d759b55329cc39003b98"},
 ]
 
 [package.dependencies]
@@ -670,14 +670,14 @@ pygments = ["pygments (>=2.2.0)"]
 
 [[package]]
 name = "django"
-version = "4.1.6"
+version = "4.1.7"
 description = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
 category = "main"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "Django-4.1.6-py3-none-any.whl", hash = "sha256:c6fe7ebe7c017fe59f1029821dae0acb5a2ddcd6c9a0138fd20a8bfefac914bc"},
-    {file = "Django-4.1.6.tar.gz", hash = "sha256:bceb0fe1a386781af0788cae4108622756cd05e7775448deec04a71ddf87685d"},
+    {file = "Django-4.1.7-py3-none-any.whl", hash = "sha256:f2f431e75adc40039ace496ad3b9f17227022e8b11566f4b363da44c7e44761e"},
+    {file = "Django-4.1.7.tar.gz", hash = "sha256:44f714b81c5f190d9d2ddad01a532fe502fa01c4cb8faf1d081f4264ed15dcd8"},
 ]
 
 [package.dependencies]
@@ -1041,6 +1041,18 @@ docs = ["furo (>=2022.12.7)", "sphinx (>=5.3)", "sphinx-autodoc-typehints (>=1.1
 testing = ["covdefaults (>=2.2.2)", "coverage (>=7.0.1)", "pytest (>=7.2)", "pytest-cov (>=4)", "pytest-timeout (>=2.1)"]
 
 [[package]]
+name = "fivetran"
+version = "0.7.0"
+description = ""
+category = "main"
+optional = false
+python-versions = ">=3.9.13,<4.0.0"
+files = [
+    {file = "fivetran-0.7.0-py3-none-any.whl", hash = "sha256:4555b70fc66a3954dff484190a1d63ec41a6f272e60dcddaba81325211b84b81"},
+    {file = "fivetran-0.7.0.tar.gz", hash = "sha256:f397b3c7e97c07edd3f680aec4e644b5e99d733adff22b91368e48fb55336334"},
+]
+
+[[package]]
 name = "ghapi"
 version = "1.0.3"
 description = "A python client for the GitHub API"
@@ -1330,14 +1342,14 @@ vis = ["matplotlib (>=3.5.2,<4.0.0)", "pydot (>=1.4.2,<2.0.0)"]
 
 [[package]]
 name = "grai-schemas"
-version = "0.1.9"
+version = "0.1.10"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_schemas-0.1.9-py3-none-any.whl", hash = "sha256:3416b3be743094ee304b4cb522d1c8810b8c6d4682c1b9f8966c0cfea8716fe3"},
-    {file = "grai_schemas-0.1.9.tar.gz", hash = "sha256:e28195d336c623476e581e6a667881cde97da757b7454ef5b7ba14807bf671dd"},
+    {file = "grai_schemas-0.1.10-py3-none-any.whl", hash = "sha256:55825b6cb6411e55ce1c72c4859047792f1c3098e87a1ca857ba209226aa734f"},
+    {file = "grai_schemas-0.1.10.tar.gz", hash = "sha256:e315c29e7d2b67804d3080c8b83d68266b5ff91092ab7f3c5374c341f3e2c2d5"},
 ]
 
 [package.dependencies]
@@ -1380,6 +1392,27 @@ grai-client = ">=0.2.0,<0.3.0"
 grai-schemas = ">=0.1.7,<0.2.0"
 networkx = ">=2.8.3,<3.0.0"
 pydantic = ">=1.9.1,<2.0.0"
+
+[[package]]
+name = "grai-source-fivetran"
+version = "0.0.1"
+description = ""
+category = "main"
+optional = false
+python-versions = ">=3.9.13,<4.0.0"
+files = [
+    {file = "grai_source_fivetran-0.0.1-py3-none-any.whl", hash = "sha256:634aed106623ff8581a4f8811459aebfc195b558c8486139db213206801904de"},
+    {file = "grai_source_fivetran-0.0.1.tar.gz", hash = "sha256:b43c1a76b5257711378752ab9a5250be9068948d26e819e03107122d42e98351"},
+]
+
+[package.dependencies]
+fivetran = ">=0.7.0,<0.8.0"
+grai-client = ">=0.2.0,<0.3.0"
+grai-schemas = ">=0.1.10,<0.2.0"
+multimethod = ">=1.8,<2.0"
+pydantic = ">=1.9.1,<2.0.0"
+python-dotenv = ">=0.21.1,<0.22.0"
+requests = ">=2.28.1,<3.0.0"
 
 [[package]]
 name = "grai-source-mssql"
@@ -2426,6 +2459,21 @@ files = [
 ]
 
 [[package]]
+name = "python-dotenv"
+version = "0.21.1"
+description = "Read key-value pairs from a .env file and set them as environment variables"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "python-dotenv-0.21.1.tar.gz", hash = "sha256:1c93de8f636cde3ce377292818d0e440b6e45a82f215c3744979151fa8151c49"},
+    {file = "python_dotenv-0.21.1-py3-none-any.whl", hash = "sha256:41e12e0318bebc859fcc4d97d4db8d20ad21721a6aa5047dd59f090391cb549a"},
+]
+
+[package.extras]
+cli = ["click (>=5.0)"]
+
+[[package]]
 name = "python3-openid"
 version = "3.2.0"
 description = "OpenID support for modern servers and consumers."
@@ -2641,14 +2689,14 @@ tornado = ["tornado (>=5)"]
 
 [[package]]
 name = "setuptools"
-version = "67.2.0"
+version = "67.3.1"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "setuptools-67.2.0-py3-none-any.whl", hash = "sha256:16ccf598aab3b506593c17378473978908a2734d7336755a8769b480906bec1c"},
-    {file = "setuptools-67.2.0.tar.gz", hash = "sha256:b440ee5f7e607bb8c9de15259dba2583dd41a38879a7abc1d43a71c59524da48"},
+    {file = "setuptools-67.3.1-py3-none-any.whl", hash = "sha256:23c86b4e44432bfd8899384afc08872ec166a24f48a3f99f293b0a557e6a6b5d"},
+    {file = "setuptools-67.3.1.tar.gz", hash = "sha256:daec07fd848d80676694d6bf69c009d28910aeece68a38dbe88b7e1bb6dba12e"},
 ]
 
 [package.extras]
@@ -2805,14 +2853,14 @@ enum = ["django-choices-field (>=2.0)"]
 
 [[package]]
 name = "strawberry-graphql"
-version = "0.156.2"
+version = "0.156.4"
 description = "A library for creating GraphQL APIs"
 category = "main"
 optional = false
 python-versions = ">=3.7,<4.0"
 files = [
-    {file = "strawberry_graphql-0.156.2-py3-none-any.whl", hash = "sha256:f9a18a40dbd252b280f9ab4848fcd2741612559aead3ba272f98509e19faa011"},
-    {file = "strawberry_graphql-0.156.2.tar.gz", hash = "sha256:2adb0fff4cfb489f9b9b91c05c606c2e061c3b1f5e64dc9f618d834c0d9e1ecf"},
+    {file = "strawberry_graphql-0.156.4-py3-none-any.whl", hash = "sha256:9bafa2854255aa6b30d20dba3c8acb55ee32b8538883abd1e50c9a57c7597c21"},
+    {file = "strawberry_graphql-0.156.4.tar.gz", hash = "sha256:182ff634e3012f0c92a8a44f1d0b137d06f09aa9c56823bcf70f759a9a20857c"},
 ]
 
 [package.dependencies]
@@ -2877,14 +2925,14 @@ files = [
 
 [[package]]
 name = "types-pyyaml"
-version = "6.0.12.5"
+version = "6.0.12.6"
 description = "Typing stubs for PyYAML"
 category = "dev"
 optional = false
 python-versions = "*"
 files = [
-    {file = "types-PyYAML-6.0.12.5.tar.gz", hash = "sha256:3b61b7a8111ce368eb366e4a13f3e94e568bc2ed6227e01520a50ee07993bf38"},
-    {file = "types_PyYAML-6.0.12.5-py3-none-any.whl", hash = "sha256:dcaf87b65b839e7b641721346ef8b12a87f94071e15205a64ac93ca0e0afc77a"},
+    {file = "types-PyYAML-6.0.12.6.tar.gz", hash = "sha256:24e76b938d58e68645271eeb149af6022d1da99788e481f959bd284b164f39a1"},
+    {file = "types_PyYAML-6.0.12.6-py3-none-any.whl", hash = "sha256:77b74d0874482f2b42dd566b7277b0a220068595e0fb42689d0c0560f3d1ae9e"},
 ]
 
 [[package]]
@@ -2916,14 +2964,14 @@ files = [
 
 [[package]]
 name = "typing-extensions"
-version = "4.4.0"
+version = "4.5.0"
 description = "Backported and Experimental Type Hints for Python 3.7+"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "typing_extensions-4.4.0-py3-none-any.whl", hash = "sha256:16fa4864408f655d35ec496218b85f79b3437c829e93320c7c9215ccfd92489e"},
-    {file = "typing_extensions-4.4.0.tar.gz", hash = "sha256:1511434bb92bf8dd198c12b1cc812e800d4181cfcb867674e0f8279cc93087aa"},
+    {file = "typing_extensions-4.5.0-py3-none-any.whl", hash = "sha256:fb33085c39dd998ac16d1431ebc293a8b3eedd00fd4a32de0ff79002c19511b4"},
+    {file = "typing_extensions-4.5.0.tar.gz", hash = "sha256:5cb5f4a79139d699607b3ef622a1dedafa84e115ab0024e0d9c044a9479ca7cb"},
 ]
 
 [[package]]
@@ -3012,4 +3060,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "9a0298d9fdee388ee85ee6095ba75b103835c97ba961341d43584e2a23c8f019"
+content-hash = "b76746f8224e25ddf1ea591909bbaac4e82df6f9d1d24b6c8d851103911e4708"
