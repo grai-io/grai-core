@@ -42,6 +42,11 @@ FRONTEND_PORT = config("SERVER_PORT", default="3000", cast=str)
 
 DISABLE_HTTP = config("DISABLE_HTTP", default=False)
 
+POSTHOG_PROJECT_API_KEY = config("POSTHOG_PROJECT_API_KEY", default="phc_Q8OCDm0JpCwt4Akk3pMybuBWniWPfOsJzRrdxWjAnjE")
+SENTRY_DSN = config(
+    "SENTRY_DSN", default="https://3ef0d6800e084eae8b3a8f4ee4be1d3d@o4503978528407552.ingest.sentry.io/4503978529456128"
+)
+
 schemes = ["https"] if DISABLE_HTTP else ["http", "https"]
 hosts = {SERVER_HOST, FRONTEND_HOST}
 if DEBUG:
