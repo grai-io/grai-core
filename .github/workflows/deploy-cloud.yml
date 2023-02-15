@@ -71,7 +71,7 @@ jobs:
 
       - name: Install package
         run: |
-          pip install pytest pytest-django coverage
+          pip install pytest pytest_asyncio pytest-django pytest-mock coverage
           pip install .
 
       - name: Tests
@@ -91,6 +91,7 @@ jobs:
         uses: codecov/codecov-action@v3
         with:
           flags: grai-server
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   build-server:
     needs: [lint-server, tests-server, tests-frontend]
@@ -190,6 +191,7 @@ jobs:
         uses: codecov/codecov-action@v3
         with:
           flags: grai-frontend
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   build-frontend:
     needs: tests-frontend

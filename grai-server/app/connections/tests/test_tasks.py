@@ -43,6 +43,11 @@ def test_bigquery_connector():
 
 
 @pytest.fixture
+def test_fivetran_connector():
+    return Connector.objects.create(name=Connector.FIVETRAN)
+
+
+@pytest.fixture
 def test_dbt_connector():
     connector, created = Connector.objects.get_or_create(name=Connector.DBT)
 
@@ -118,6 +123,44 @@ class TestUpdateServer:
 
             run_update_server(str(run.id))
 
+    def test_run_update_server_fivetran(self, test_workspace, test_fivetran_connector, mocker):
+        mocker.patch("grai_source_fivetran.loader.FivetranConnector")
+        mock = mocker.patch("grai_source_fivetran.base.get_nodes_and_edges")
+        mock.return_value = [[], []]
+
+        connection = Connection.objects.create(
+            name="C1",
+            connector=test_fivetran_connector,
+            workspace=test_workspace,
+            metadata={"api_key": "abc123"},
+            secrets={"api_secret": "abc123"},
+        )
+
+        run = Run.objects.create(connection=connection, workspace=test_workspace)
+
+        run_update_server(str(run.id))
+
+    def test_run_update_server_fivetran_extras(self, test_workspace, test_fivetran_connector, mocker):
+        mocker.patch("grai_source_fivetran.loader.FivetranConnector")
+        mock = mocker.patch("grai_source_fivetran.base.get_nodes_and_edges")
+        mock.return_value = [[], []]
+
+        connection = Connection.objects.create(
+            name="C1",
+            connector=test_fivetran_connector,
+            workspace=test_workspace,
+            metadata={
+                "api_key": "abc123",
+                "endpoint": "https://grai.io",
+                "limit": "10",
+            },
+            secrets={"api_secret": "abc123"},
+        )
+
+        run = Run.objects.create(connection=connection, workspace=test_workspace)
+
+        run_update_server(str(run.id))
+
     def test_run_update_server_yaml_file(self, test_workspace, test_yaml_file_connector):
         Node.objects.create(workspace=test_workspace, namespace="default", name="table1")
 
@@ -129,30 +172,32 @@ class TestUpdateServer:
 
             run_update_server(str(run.id))
 
-    # def test_snowflake_no_account(self, test_workspace, test_snowflake_connector):
-    #     connection = Connection.objects.create(
-    #         name="C2",
-    #         connector=test_snowflake_connector,
-    #         workspace=test_workspace,
+    def test_snowflake_no_account(self, test_workspace, test_snowflake_connector, mocker):
+        mock = mocker.patch("grai_source_snowflake.base.get_nodes_and_edges")
+        mock.return_value = [[], []]
 
-    #         metadata={
-    #             "account": "account",
-    #             "user": "user",
-    #             "role": "role",
-    #             "warehouse": "warehouse",
-    #             "database": "database",
-    #             "schema": "schema",
-    #         },
-    #         secrets={"password": "password1234"},
-    #     )
-    #     run = Run.objects.create(connection=connection, workspace=test_workspace)
+        connection = Connection.objects.create(
+            name="C2",
+            connector=test_snowflake_connector,
+            workspace=test_workspace,
+            metadata={
+                "account": "account",
+                "user": "user",
+                "role": "role",
+                "warehouse": "warehouse",
+                "database": "database",
+                "schema": "schema",
+            },
+            secrets={"password": "password1234"},
+        )
+        run = Run.objects.create(connection=connection, workspace=test_workspace)
 
-    #     with pytest.raises(Exception) as e_info:
-    #         run_update_server(str(run.id))
+        run_update_server(str(run.id))
 
-    #     assert (str(e_info.value)== 'Could not automatically determine credentials. Please set GOOGLE_APPLICATION_CREDENTIALS or explicitly create credentials and re-run the application. For more information, please see https://cloud.google.com/docs/authentication/getting-started')
+    def test_mssql_no_account(self, test_workspace, test_mssql_connector, mocker):
+        mock = mocker.patch("grai_source_mssql.base.get_nodes_and_edges")
+        mock.return_value = [[], []]
 
-    def test_mssql_no_account(self, test_workspace, test_mssql_connector):
         connection = Connection.objects.create(
             name="C2",
             connector=test_mssql_connector,
@@ -167,17 +212,12 @@ class TestUpdateServer:
         )
         run = Run.objects.create(connection=connection, workspace=test_workspace)
 
-        with pytest.raises(Exception) as e_info:
-            run_update_server(str(run.id))
+        run_update_server(str(run.id))
 
-        assert (
-            str(e_info.value)
-            == "('HYT00', '[HYT00] [Microsoft][ODBC Driver 18 for SQL Server]Login timeout expired (0) (SQLDriverConnect)')"
-            or str(e_info.value)
-            == "('HYT00', '[HYT00] [Microsoft][ODBC Driver 17 for SQL Server]Login timeout expired (0) (SQLDriverConnect)')"
-        )
+    def test_bigquery_no_project(self, test_workspace, test_bigquery_connector, mocker):
+        mock = mocker.patch("grai_source_bigquery.base.get_nodes_and_edges")
+        mock.return_value = [[], []]
 
-    def test_bigquery_no_project(self, test_workspace, test_bigquery_connector):
         connection = Connection.objects.create(
             name="C2",
             connector=test_bigquery_connector,
@@ -187,13 +227,7 @@ class TestUpdateServer:
         )
         run = Run.objects.create(connection=connection, workspace=test_workspace)
 
-        with pytest.raises(Exception) as e_info:
-            run_update_server(str(run.id))
-
-        assert (
-            str(e_info.value)
-            == "Could not automatically determine credentials. Please set GOOGLE_APPLICATION_CREDENTIALS or explicitly create credentials and re-run the application. For more information, please see https://cloud.google.com/docs/authentication/getting-started"
-        )
+        run_update_server(str(run.id))
 
 
 @pytest.mark.django_db

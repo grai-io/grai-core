@@ -31,6 +31,45 @@ export const GET_RUN = gql`
             id
             name
           }
+          runs(order: { created_at: DESC }) {
+            id
+            status
+            created_at
+            started_at
+            finished_at
+            user {
+              id
+              first_name
+              last_name
+            }
+            metadata
+          }
+          last_run {
+            id
+            status
+            created_at
+            started_at
+            finished_at
+            user {
+              id
+              first_name
+              last_name
+            }
+            metadata
+          }
+          last_successful_run {
+            id
+            status
+            created_at
+            started_at
+            finished_at
+            user {
+              id
+              first_name
+              last_name
+            }
+            metadata
+          }
         }
         status
         metadata
@@ -77,7 +116,7 @@ const Run: React.FC = () => {
 
   return (
     <PageLayout>
-      <RunHeader run={run} />
+      <RunHeader run={run} workspaceId={data.workspace.id} />
       <RunDetail run={run} />
     </PageLayout>
   )

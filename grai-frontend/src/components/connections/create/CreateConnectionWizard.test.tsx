@@ -103,8 +103,6 @@ const submit = async (user: UserEvent, container: HTMLElement) => {
     screen.getByRole("textbox", { name: "Name" }),
     "test connection"
   )
-
-  await user.type(screen.getByRole("textbox", { name: "Name" }), "test")
   await user.type(
     screen.getByRole("textbox", { name: "Database Name" }),
     "test"
@@ -153,8 +151,8 @@ test("submit", async () => {
       variables: {
         workspaceId: "1",
         connectorId: "1",
-        namespace: "default",
-        name: "test connectiontest",
+        namespace: "defaultdefault",
+        name: "PostgreSQLtest connection",
         metadata: { dbname: "test", user: "test", host: "test", port: "5432" },
         secrets: { password: "password" },
         schedules: {
@@ -215,8 +213,8 @@ test("error", async () => {
       variables: {
         workspaceId: "1",
         connectorId: "1",
-        namespace: "default",
-        name: "test connectiontest",
+        namespace: "defaultdefault",
+        name: "PostgreSQLtest connection",
         metadata: { dbname: "test", user: "test", host: "test", port: "5432" },
         secrets: { password: "password" },
         schedules: {

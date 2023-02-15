@@ -42,6 +42,8 @@ def execute_run(run: Run):
             run_mssql(run)
         elif connector.name == Connector.BIGQUERY:
             run_bigquery(run)
+        elif connector.name == Connector.FIVETRAN:
+            run_fivetran(run)
         else:
             raise NoConnectorError(f"No connector found for: {connector.name}")
 
@@ -198,6 +200,39 @@ def run_bigquery(run: Run):
         dataset=metadata.get("dataset"),
         credentials=secrets.get("credentials"),
         namespace=run.connection.namespace,
+    )
+    nodes, edges = get_nodes_and_edges(conn, "v1")
+    update(run.workspace, nodes)
+    update(run.workspace, edges)
+
+
+def run_fivetran(run: Run):
+    from grai_source_fivetran.base import get_nodes_and_edges
+    from grai_source_fivetran.loader import FivetranConnector
+
+    metadata = run.connection.metadata
+    secrets = run.connection.secrets
+
+    def getNumber(value: str | None, default: int = None) -> int | None:
+        if value is None or value == "":
+            return default
+
+        return int(value)
+
+    def getValue(value: str | None, default: str = None) -> str | None:
+        if value is None or value == "":
+            return default
+
+        return value
+
+    conn = FivetranConnector(
+        api_key=metadata.get("api_key"),
+        api_secret=secrets.get("api_secret"),
+        namespaces=metadata.get("namespaces"),
+        default_namespace=run.connection.namespace,
+        endpoint=getValue(metadata.get("endpoint"), "https://api.fivetran.com/v1"),
+        limit=getNumber(metadata.get("limit"), 10000),
+        parallelization=getNumber(metadata.get("parallelization"), 10),
     )
     nodes, edges = get_nodes_and_edges(conn, "v1")
     update(run.workspace, nodes)

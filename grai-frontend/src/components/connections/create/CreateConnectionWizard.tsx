@@ -124,7 +124,7 @@ const CreateConnectionWizard: React.FC<CreateConnectionWizardProps> = ({
 
   const defaultValues: Values = {
     connector: null,
-    namespace: "",
+    namespace: "default",
     name: "",
     metadata: null,
     secrets: null,
@@ -158,6 +158,7 @@ const CreateConnectionWizard: React.FC<CreateConnectionWizardProps> = ({
       setValues({
         ...values,
         connector,
+        name: connector.name,
       })
       setActiveStep(1)
     }

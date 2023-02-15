@@ -51,7 +51,6 @@ const ConnectionRunsTable: React.FC<ConnectionRunsTableProps> = ({ runs }) => {
           <TableCell sx={{ textAlign: "right" }}>Started</TableCell>
           <TableCell sx={{ textAlign: "right" }}>Queued</TableCell>
           <TableCell sx={{ textAlign: "right" }}>Duration</TableCell>
-          <TableCell />
         </TableRow>
       </TableHead>
       <TableBody>
@@ -87,7 +86,6 @@ const ConnectionRunsTable: React.FC<ConnectionRunsTableProps> = ({ runs }) => {
             <TableCell sx={{ textAlign: "right" }}>
               {runDurationString(run)}
             </TableCell>
-            <TableCell />
           </TableRow>
         ))}
         {runs.length === 0 && (

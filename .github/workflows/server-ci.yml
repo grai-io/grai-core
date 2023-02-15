@@ -6,11 +6,9 @@ on:
       - ".github/workflows/server-ci.yml"
       - "grai-server/**"
 
-
 concurrency:
   group: ${{ github.ref }}-server-ci
   cancel-in-progress: true
-
 
 env:
   py_ver: "3.11"
@@ -71,7 +69,7 @@ jobs:
 
       - name: Install package
         run: |
-          pip install pytest pytest-django coverage
+          pip install pytest pytest_asyncio pytest-django pytest-mock coverage
           pip install .
 
       - name: Tests
@@ -91,3 +89,4 @@ jobs:
         uses: codecov/codecov-action@v3
         with:
           flags: grai-server
+          token: ${{ secrets.CODECOV_TOKEN }}

@@ -14,7 +14,7 @@ try:
 
     if not settings.DISABLE_TELEMETRY:
         sentry_sdk.init(
-            dsn="https://3ef0d6800e084eae8b3a8f4ee4be1d3d@o4503978528407552.ingest.sentry.io/4503978529456128",
+            dsn=settings.SENTRY_DSN,
             traces_sample_rate=1.0,
             integrations=[DjangoIntegration(), PostHogIntegration()],
             release=f"grai-server@{settings.SERVER_VERSION}",
@@ -34,7 +34,7 @@ class TelemetryConfig(AppConfig):
     def ready(self):
         posthog.disabled = settings.DISABLE_TELEMETRY
         PostHogIntegration.organization = settings.USER_ID
-        posthog.project_api_key = "phc_Q8OCDm0JpCwt4Akk3pMybuBWniWPfOsJzRrdxWjAnjE"
+        posthog.project_api_key = settings.POSTHOG_PROJECT_API_KEY
         posthog.host = "https://app.posthog.com"
 
         group_properties = {
