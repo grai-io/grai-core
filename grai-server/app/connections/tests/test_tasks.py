@@ -7,7 +7,7 @@ from django.core.files.uploadedfile import UploadedFile
 
 from connections.models import Connection, Connector, Run, RunFile
 from connections.tasks import run_connection_schedule, run_update_server
-from installations.models import Branch, Commit, Repository
+from installations.models import Branch, Commit, PullRequest, Repository
 from installations.tests.test_github import mocked_requests_post
 from lineage.models import Node
 from workspaces.models import Organisation, Workspace
@@ -82,11 +82,34 @@ def test_branch(test_workspace, test_repository):
 
 
 @pytest.fixture
+def test_pull_request(test_workspace, test_repository, test_branch):
+    return PullRequest.objects.create(
+        workspace=test_workspace,
+        repository=test_repository,
+        branch=test_branch,
+        reference=str(uuid.uuid4()),
+        title=str(uuid.uuid4()),
+    )
+
+
+@pytest.fixture
 def test_commit(test_workspace, test_repository, test_branch):
     return Commit.objects.create(
         workspace=test_workspace,
         repository=test_repository,
         branch=test_branch,
+        reference=str(uuid.uuid4()),
+        title=str(uuid.uuid4()),
+    )
+
+
+@pytest.fixture
+def test_commit_with_pr(test_workspace, test_repository, test_branch, test_pull_request):
+    return Commit.objects.create(
+        workspace=test_workspace,
+        repository=test_repository,
+        branch=test_branch,
+        pull_request=test_pull_request,
         reference=str(uuid.uuid4()),
         title=str(uuid.uuid4()),
     )
@@ -273,7 +296,7 @@ class TestUpdateServerTests:
 
         run_update_server(str(run.id))
 
-    def test_run_update_server_dbt_github(self, test_workspace, test_dbt_connector, test_commit, mocker):
+    def test_run_update_server_dbt_github(self, test_workspace, test_dbt_connector, test_commit_with_pr, mocker):
         mocker.patch("installations.github.requests.post", side_effect=mocked_requests_post)
         mocker.patch("installations.github.GhApi")
 
@@ -285,7 +308,7 @@ class TestUpdateServerTests:
             run = Run.objects.create(
                 connection=connection,
                 workspace=test_workspace,
-                commit=test_commit,
+                commit=test_commit_with_pr,
                 action=Run.TESTS,
                 trigger={"check_id": "1234"},
             )
