@@ -617,6 +617,89 @@ async def test_workspace_runs(test_context):
 
 
 @pytest.mark.django_db
+async def test_workspace_runs_filter_by_repo(test_context, test_commit):
+    context, organisation, workspace, user = test_context
+
+    connector = await Connector.objects.acreate(name=str(uuid.uuid4()))
+    connection = await Connection.objects.acreate(
+        workspace=workspace,
+        connector=connector,
+        namespace="default",
+        name=uuid.uuid4(),
+        metadata={},
+        secrets={},
+    )
+    run = await Run.objects.acreate(
+        workspace=workspace, commit=test_commit, connection=connection, status="success"
+    )
+
+    query = """
+        query Workspace($workspaceId: ID!, $owner: String, $repo: String) {
+            workspace(id: $workspaceId) {
+                id
+                runs(owner: $owner, repo: $repo) {
+                    id
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "owner": test_commit.repository.owner,
+            "repo": test_commit.repository.repo,
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+
+
+@pytest.mark.django_db
+async def test_workspace_runs_filter_by_branch(test_context, test_branch, test_commit):
+    context, organisation, workspace, user = test_context
+
+    connector = await Connector.objects.acreate(name=str(uuid.uuid4()))
+    connection = await Connection.objects.acreate(
+        workspace=workspace,
+        connector=connector,
+        namespace="default",
+        name=uuid.uuid4(),
+        metadata={},
+        secrets={},
+    )
+    run = await Run.objects.acreate(
+        workspace=workspace, commit=test_commit, connection=connection, status="success"
+    )
+
+    query = """
+        query Workspace($workspaceId: ID!, $branch: String) {
+            workspace(id: $workspaceId) {
+                id
+                runs(branch: $branch) {
+                    id
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "branch": test_commit.branch.reference,
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+
+
+@pytest.mark.django_db
 async def test_workspace_memberships(test_context):
     context, organisation, workspace, user = test_context
 
