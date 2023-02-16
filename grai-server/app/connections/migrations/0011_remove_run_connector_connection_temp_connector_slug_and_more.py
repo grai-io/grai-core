@@ -2,12 +2,51 @@
 
 import uuid
 
-import django.db.models.deletion
-import django_multitenant.fields
 from django.db import migrations, models
+from django_multitenant.mixins import TenantModelMixin
+
+
+def monkey_patch_multitenant() -> None:
+    def __setattr__(self, attrname, val):
+        if (
+            attrname in ("tenant_id", "tenant")
+            and not self._state.adding
+            and val
+            and self.tenant_value
+            and val != self.tenant_value
+            and val != self.tenant_object
+        ):
+            self._try_update_tenant = True
+
+        return super(TenantModelMixin, self).__setattr__(attrname, val)
+
+    TenantModelMixin.__setattr__ = __setattr__
+
+    @property
+    def tenant_field(self):
+        return "tenant_id"
+
+    TenantModelMixin.tenant_field = tenant_field
+
+    @property
+    def tenant_value(self):
+        return self.tenant_id
+
+    TenantModelMixin.tenant_value = tenant_value
+
+    @property
+    def tenant_object(self):
+        return self.tenant
+
+    TenantModelMixin.tenant_object = tenant_object
 
 
 def forwards_func(apps, schema_editor):
+    old_field = TenantModelMixin.tenant_field
+    old_value = TenantModelMixin.tenant_value
+    old_object = TenantModelMixin.tenant_object
+    monkey_patch_multitenant()
+
     # We get the model from the versioned app registry;
     # if we directly import it, it'll be the wrong version
     Run = apps.get_model("connections", "Run")
@@ -22,12 +61,15 @@ def forwards_func(apps, schema_editor):
             workspace=run.workspace,
             connector=run.connector,
             name=connection_name,
-            namespace=run.namespace,
             is_active=True,
             temp=True,
         )
         run.connection = connection
         run.save()
+
+    TenantModelMixin.tenant_field = old_field
+    TenantModelMixin.tenant_value = old_value
+    TenantModelMixin.tenant_object = old_object
 
 
 class Migration(migrations.Migration):
@@ -36,15 +78,15 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(forwards_func),
-        migrations.RemoveField(
-            model_name="run",
-            name="connector",
-        ),
         migrations.AddField(
             model_name="connection",
             name="temp",
             field=models.BooleanField(default=False),
+        ),
+        migrations.RunPython(forwards_func),
+        migrations.RemoveField(
+            model_name="run",
+            name="connector",
         ),
         migrations.AddField(
             model_name="connector",
