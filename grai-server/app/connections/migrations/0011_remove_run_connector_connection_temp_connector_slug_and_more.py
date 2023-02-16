@@ -42,6 +42,9 @@ def monkey_patch_multitenant() -> None:
 
 
 def forwards_func(apps, schema_editor):
+    old_field = TenantModelMixin.tenant_field
+    old_value = TenantModelMixin.tenant_value
+    old_object = TenantModelMixin.tenant_object
     monkey_patch_multitenant()
 
     # We get the model from the versioned app registry;
@@ -64,6 +67,10 @@ def forwards_func(apps, schema_editor):
         )
         run.connection = connection
         run.save()
+
+    TenantModelMixin.tenant_field = old_field
+    TenantModelMixin.tenant_value = old_value
+    TenantModelMixin.tenant_object = old_object
 
 
 class Migration(migrations.Migration):
