@@ -47,6 +47,7 @@ export interface GetReports_workspace_runs_connection {
   __typename: "Connection";
   id: any;
   name: string;
+  temp: boolean;
   connector: GetReports_workspace_runs_connection_connector;
 }
 

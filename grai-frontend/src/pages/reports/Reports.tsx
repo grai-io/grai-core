@@ -47,6 +47,7 @@ export const GET_REPORTS = gql`
         connection {
           id
           name
+          temp
           connector {
             id
             name

@@ -10,6 +10,7 @@ const runs = [
     connection: {
       id: "1",
       name: "Connection Name",
+      temp: false,
       connector: {
         id: "2",
         name: "Connector 1",
@@ -47,6 +48,7 @@ const runs = [
     connection: {
       id: "2",
       name: "Connection Name2",
+      temp: true,
       connector: {
         id: "2",
         name: "Connector 1",
@@ -81,6 +83,7 @@ const runs = [
     connection: {
       id: "2",
       name: "Connection Name2",
+      temp: false,
       connector: {
         id: "2",
         name: "Connector 1",

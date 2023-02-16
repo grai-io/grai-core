@@ -42,6 +42,7 @@ interface Commit {
 
 interface Connection {
   name: string
+  temp: boolean
   connector: Connector
 }
 
@@ -114,10 +115,26 @@ const ReportsTable: React.FC<ReportsTableProps> = ({ runs, loading }) => {
                 {run.connection.connector.icon && (
                   <Avatar
                     src={run.connection.connector.icon}
-                    sx={{ width: 24, height: 24, mr: 1 }}
+                    sx={{
+                      width: 24,
+                      height: 24,
+                      mr: 1,
+                      filter: run.connection.temp
+                        ? "grayscale(100%)"
+                        : undefined,
+                    }}
                   />
                 )}
-                <Typography variant="body2">{run.connection.name}</Typography>
+                {run.connection.temp ? (
+                  <Typography
+                    variant="body2"
+                    sx={{ color: theme => theme.palette.grey[500] }}
+                  >
+                    {run.connection.connector.name}
+                  </Typography>
+                ) : (
+                  <Typography variant="body2">{run.connection.name}</Typography>
+                )}
               </Box>
             </TableCell>
             <TableCell sx={{ py: 0 }}>

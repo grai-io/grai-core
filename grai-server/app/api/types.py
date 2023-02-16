@@ -197,6 +197,7 @@ class Connection:
     metadata: JSON
     schedules: Optional[JSON]
     is_active: auto
+    temp: auto
     created_at: auto
     updated_at: auto
     created_by: User
