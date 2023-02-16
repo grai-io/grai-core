@@ -52,7 +52,7 @@ const runs = [
       connector: {
         id: "2",
         name: "Connector 1",
-        icon: null,
+        icon: "/public/bigquery-icon.png",
       },
     },
     created_at: "1234",
