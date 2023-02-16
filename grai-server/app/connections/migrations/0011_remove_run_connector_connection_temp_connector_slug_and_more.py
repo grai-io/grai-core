@@ -61,7 +61,6 @@ def forwards_func(apps, schema_editor):
             workspace=run.workspace,
             connector=run.connector,
             name=connection_name,
-            namespace=run.namespace,
             is_active=True,
             temp=True,
         )
