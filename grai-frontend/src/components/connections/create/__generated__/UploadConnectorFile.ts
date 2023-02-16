@@ -31,7 +31,7 @@ export interface UploadConnectorFile_uploadConnectorFile_user {
 export interface UploadConnectorFile_uploadConnectorFile {
   __typename: "Run";
   id: any;
-  connection: UploadConnectorFile_uploadConnectorFile_connection | null;
+  connection: UploadConnectorFile_uploadConnectorFile_connection;
   status: string;
   metadata: any;
   created_at: any;

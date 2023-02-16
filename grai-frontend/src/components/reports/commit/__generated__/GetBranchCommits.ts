@@ -38,7 +38,7 @@ export interface GetBranchCommits_workspace_repository_branch_commits {
 }
 
 export interface GetBranchCommits_workspace_repository_branch {
-  __typename: "PullRequest";
+  __typename: "Branch";
   id: any;
   commits: GetBranchCommits_workspace_repository_branch_commits[];
 }

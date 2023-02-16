@@ -32,7 +32,7 @@ const useSearchParams = (): {
   setSearchParams: SetURLSearchParams
   setSearchParam: (
     field: string,
-    value: string | boolean,
+    value: string | boolean | null | undefined,
     clear?: boolean | null
   ) => void
 } => {
@@ -40,7 +40,7 @@ const useSearchParams = (): {
 
   const setSearchParam = (
     field: string,
-    value: string | boolean,
+    value: string | boolean | null | undefined,
     clear: boolean | null = null
   ) =>
     setSearchParams(

@@ -1,11 +1,11 @@
 import { gql, useQuery } from "@apollo/client"
 import { Box } from "@mui/material"
 import PageLayout from "components/layout/PageLayout"
-import BranchSelect from "components/reports/commit/BranchSelect"
+import BranchFilter from "components/reports/filters/BranchFilter"
 import CommitsList from "components/reports/commit/CommitsList"
 import CommitsTable from "components/reports/commit/CommitsTable"
 import ReportHeader from "components/reports/ReportHeader"
-import ReportTabs from "components/reports/ReportTabs"
+import ReportTabs from "components/reports/TypeReportTabs"
 import GraphError from "components/utils/GraphError"
 import useWorkspace from "helpers/useWorkspace"
 import NotFound from "pages/NotFound"
@@ -89,7 +89,7 @@ const Commits: React.FC = () => {
       <ReportHeader type={type} repository={repository} />
       <Box sx={{ px: 2 }}>
         <ReportTabs currentTab="commits" type={type} repository={repository} />
-        <BranchSelect branches={repository.branches} />
+        <BranchFilter branches={repository.branches} />
         {branchReference ? (
           <CommitsList
             type={type}

@@ -31,7 +31,7 @@ export interface GetRuns_workspace_runs {
   __typename: "Run";
   id: any;
   status: string;
-  connection: GetRuns_workspace_runs_connection | null;
+  connection: GetRuns_workspace_runs_connection;
   created_at: any;
   started_at: any | null;
   finished_at: any | null;

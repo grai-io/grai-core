@@ -3,7 +3,7 @@ from typing import List, Optional
 
 import strawberry
 import strawberry_django
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Q
 from strawberry.scalars import JSON
 from strawberry_django.filters import FilterLookup
 from strawberry_django.pagination import OffsetPaginationInput
@@ -414,8 +414,18 @@ class Workspace:
 
     # Runs
     @gql.django.field
-    def runs(self) -> List["Run"]:
-        return RunModel.objects.order_by("-created_at").filter(workspace=self)
+    def runs(
+        self, owner: Optional[str] = None, repo: Optional[str] = None, branch: Optional[str] = None
+    ) -> List["Run"]:
+        q_filter = Q(workspace=self)
+
+        if owner:
+            q_filter &= Q(commit__repository__owner=owner, commit__repository__repo=repo)
+
+        if branch:
+            q_filter &= Q(commit__branch__reference=branch)
+
+        return RunModel.objects.order_by("-created_at").filter(q_filter)
 
     @gql.django.field
     def run(self, id: strawberry.ID) -> "Run":
@@ -605,8 +615,7 @@ class RunOrder:
 @gql.django.type(RunModel, order=RunOrder, pagination=True)
 class Run:
     id: auto
-    connector: Connector
-    connection: Optional[Connection]
+    connection: Connection
     status: auto
     metadata: JSON
     created_at: auto
@@ -614,6 +623,7 @@ class Run:
     started_at: Optional[datetime.datetime]
     finished_at: Optional[datetime.datetime]
     user: Optional[User]
+    commit: Optional["Commit"]
 
 
 @gql.django.type(RepositoryModel)

@@ -2,12 +2,19 @@ import { Box, Tab, Tabs } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
 import React from "react"
 import { Link } from "react-router-dom"
+import { Repository } from "./ReportBreadcrumbs"
 
-type ReportTabsProps = {
+type TypeReportTabsProps = {
   currentTab: string
+  type: string
+  repository: Repository
 }
 
-const ReportTabs: React.FC<ReportTabsProps> = ({ currentTab }) => {
+const TypeReportTabs: React.FC<TypeReportTabsProps> = ({
+  currentTab,
+  type,
+  repository,
+}) => {
   const { routePrefix } = useWorkspace()
 
   return (
@@ -21,9 +28,9 @@ const ReportTabs: React.FC<ReportTabsProps> = ({ currentTab }) => {
         }}
       >
         <Tab
-          label="All"
-          value="all"
-          to={`${routePrefix}/reports`}
+          label="Commits"
+          value="commits"
+          to={`${routePrefix}/reports/${type}/${repository.owner}/${repository.repo}`}
           component={Link}
           sx={{
             minHeight: 0,
@@ -32,20 +39,12 @@ const ReportTabs: React.FC<ReportTabsProps> = ({ currentTab }) => {
         <Tab
           label="Pulls"
           value="pulls"
-          to={`${routePrefix}/reports/pulls`}
+          to={`${routePrefix}/reports/${type}/${repository.owner}/${repository.repo}/pulls`}
           component={Link}
-          disabled
-        />
-        <Tab
-          label="Commits"
-          value="commits"
-          to={`${routePrefix}/reports/commits`}
-          component={Link}
-          disabled
         />
       </Tabs>
     </Box>
   )
 }
 
-export default ReportTabs
+export default TypeReportTabs

@@ -88,7 +88,7 @@ export interface GetRun_workspace_run_user {
 export interface GetRun_workspace_run {
   __typename: "Run";
   id: any;
-  connection: GetRun_workspace_run_connection | null;
+  connection: GetRun_workspace_run_connection;
   status: string;
   metadata: any;
   created_at: any;
