@@ -4,6 +4,7 @@ import pytest
 
 from api.schema import schema
 from connections.models import Connection, Connector, Run
+from installations.models import Branch, Commit, PullRequest, Repository
 from lineage.models import Edge, Node
 from workspaces.models import Workspace
 
@@ -616,6 +617,85 @@ async def test_workspace_runs(test_context):
 
 
 @pytest.mark.django_db
+async def test_workspace_runs_filter_by_repo(test_context, test_commit):
+    context, organisation, workspace, user = test_context
+
+    connector = await Connector.objects.acreate(name=str(uuid.uuid4()))
+    connection = await Connection.objects.acreate(
+        workspace=workspace,
+        connector=connector,
+        namespace="default",
+        name=uuid.uuid4(),
+        metadata={},
+        secrets={},
+    )
+    run = await Run.objects.acreate(workspace=workspace, commit=test_commit, connection=connection, status="success")
+
+    query = """
+        query Workspace($workspaceId: ID!, $owner: String, $repo: String) {
+            workspace(id: $workspaceId) {
+                id
+                runs(owner: $owner, repo: $repo) {
+                    id
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "owner": test_commit.repository.owner,
+            "repo": test_commit.repository.repo,
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+
+
+@pytest.mark.django_db
+async def test_workspace_runs_filter_by_branch(test_context, test_branch, test_commit):
+    context, organisation, workspace, user = test_context
+
+    connector = await Connector.objects.acreate(name=str(uuid.uuid4()))
+    connection = await Connection.objects.acreate(
+        workspace=workspace,
+        connector=connector,
+        namespace="default",
+        name=uuid.uuid4(),
+        metadata={},
+        secrets={},
+    )
+    run = await Run.objects.acreate(workspace=workspace, commit=test_commit, connection=connection, status="success")
+
+    query = """
+        query Workspace($workspaceId: ID!, $branch: String) {
+            workspace(id: $workspaceId) {
+                id
+                runs(branch: $branch) {
+                    id
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "branch": test_commit.branch.reference,
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+
+
+@pytest.mark.django_db
 async def test_workspace_memberships(test_context):
     context, organisation, workspace, user = test_context
 
@@ -646,3 +726,763 @@ async def test_workspace_memberships(test_context):
     assert result.data["workspace"]["id"] == str(workspace.id)
     assert result.data["workspace"]["memberships"][0]["role"] == "admin"
     assert result.data["workspace"]["memberships"][0]["user"]["id"] == str(user.id)
+
+
+@pytest.fixture
+async def test_repository(test_workspace):
+    return await Repository.objects.acreate(
+        workspace=test_workspace, type=Repository.GITHUB, owner=str(uuid.uuid4()), repo=str(uuid.uuid4())
+    )
+
+
+@pytest.fixture
+async def test_branch(test_workspace, test_repository):
+    return await Branch.objects.acreate(
+        workspace=test_workspace, repository=test_repository, reference=str(uuid.uuid4())
+    )
+
+
+@pytest.fixture
+async def test_pull_request(test_workspace, test_repository, test_branch):
+    return await PullRequest.objects.acreate(
+        workspace=test_workspace,
+        repository=test_repository,
+        branch=test_branch,
+        reference=str(uuid.uuid4()),
+        title=str(uuid.uuid4()),
+    )
+
+
+@pytest.fixture
+async def test_commit(test_workspace, test_repository, test_branch):
+    return await Commit.objects.acreate(
+        workspace=test_workspace,
+        repository=test_repository,
+        branch=test_branch,
+        reference=str(uuid.uuid4()),
+        title=str(uuid.uuid4()),
+    )
+
+
+@pytest.fixture
+async def test_commit_with_pr(test_workspace, test_repository, test_branch, test_pull_request):
+    return await Commit.objects.acreate(
+        workspace=test_workspace,
+        repository=test_repository,
+        branch=test_branch,
+        pull_request=test_pull_request,
+        reference=str(uuid.uuid4()),
+        title=str(uuid.uuid4()),
+    )
+
+
+@pytest.mark.django_db
+async def test_workspace_repositories(test_context, test_repository):
+    context, organisation, workspace, user = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                repositories {
+                    id
+                    type
+                    owner
+                    repo
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["repositories"][0]["id"] == str(test_repository.id)
+    assert result.data["workspace"]["repositories"][0]["type"] == Repository.GITHUB
+    assert result.data["workspace"]["repositories"][0]["owner"] == test_repository.owner
+    assert result.data["workspace"]["repositories"][0]["repo"] == test_repository.repo
+
+
+@pytest.mark.django_db
+async def test_workspace_repository_by_id(test_context, test_repository):
+    context, organisation, workspace, user = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!, $repositoryId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                repository(id: $repositoryId) {
+                    id
+                    type
+                    owner
+                    repo
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={"workspaceId": str(workspace.id), "repositoryId": str(test_repository.id)},
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["repository"]["id"] == str(test_repository.id)
+    assert result.data["workspace"]["repository"]["type"] == Repository.GITHUB
+    assert result.data["workspace"]["repository"]["owner"] == test_repository.owner
+    assert result.data["workspace"]["repository"]["repo"] == test_repository.repo
+
+
+@pytest.mark.django_db
+async def test_workspace_repository_by_reference(test_context, test_repository):
+    context, organisation, workspace, user = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!, $type: String!, $owner: String!, $repo: String!) {
+            workspace(id: $workspaceId) {
+                id
+                repository(type: $type, owner: $owner, repo: $repo) {
+                    id
+                    type
+                    owner
+                    repo
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "type": test_repository.type,
+            "owner": test_repository.owner,
+            "repo": test_repository.repo,
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["repository"]["id"] == str(test_repository.id)
+    assert result.data["workspace"]["repository"]["type"] == Repository.GITHUB
+    assert result.data["workspace"]["repository"]["owner"] == test_repository.owner
+    assert result.data["workspace"]["repository"]["repo"] == test_repository.repo
+
+
+@pytest.mark.django_db
+async def test_workspace_branches(test_context, test_branch):
+    context, organisation, workspace, user = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                branches {
+                    id
+                    reference
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["branches"][0]["id"] == str(test_branch.id)
+    assert result.data["workspace"]["branches"][0]["reference"] == test_branch.reference
+
+
+@pytest.mark.django_db
+async def test_workspace_branch_by_id(test_context, test_branch):
+    context, organisation, workspace, user = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!, $branchId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                branch(id: $branchId) {
+                    id
+                    reference
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={"workspaceId": str(workspace.id), "branchId": str(test_branch.id)},
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["branch"]["id"] == str(test_branch.id)
+    assert result.data["workspace"]["branch"]["reference"] == test_branch.reference
+
+
+@pytest.mark.django_db
+async def test_workspace_branch_by_reference(test_context, test_branch):
+    context, organisation, workspace, user = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!, $reference: String!) {
+            workspace(id: $workspaceId) {
+                id
+                branch(reference: $reference) {
+                    id
+                    reference
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "reference": test_branch.reference,
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["branch"]["id"] == str(test_branch.id)
+    assert result.data["workspace"]["branch"]["reference"] == test_branch.reference
+
+
+@pytest.mark.django_db
+async def test_workspace_pull_requests(test_context, test_pull_request):
+    context, organisation, workspace, user = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                pull_requests {
+                    id
+                    reference
+                    title
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["pull_requests"][0]["id"] == str(test_pull_request.id)
+    assert result.data["workspace"]["pull_requests"][0]["reference"] == test_pull_request.reference
+    assert result.data["workspace"]["pull_requests"][0]["title"] == test_pull_request.title
+
+
+@pytest.mark.django_db
+async def test_workspace_pull_request_by_id(test_context, test_pull_request):
+    context, organisation, workspace, user = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!, $pull_requestId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                pull_request(id: $pull_requestId) {
+                    id
+                    reference
+                    title
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={"workspaceId": str(workspace.id), "pull_requestId": str(test_pull_request.id)},
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["pull_request"]["id"] == str(test_pull_request.id)
+    assert result.data["workspace"]["pull_request"]["reference"] == test_pull_request.reference
+    assert result.data["workspace"]["pull_request"]["title"] == test_pull_request.title
+
+
+@pytest.mark.django_db
+async def test_workspace_pull_request_by_reference(test_context, test_pull_request):
+    context, organisation, workspace, user = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!, $reference: String!) {
+            workspace(id: $workspaceId) {
+                id
+                pull_request(reference: $reference) {
+                    id
+                    reference
+                    title
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "reference": test_pull_request.reference,
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["pull_request"]["id"] == str(test_pull_request.id)
+    assert result.data["workspace"]["pull_request"]["reference"] == test_pull_request.reference
+    assert result.data["workspace"]["pull_request"]["title"] == test_pull_request.title
+
+
+@pytest.mark.django_db
+async def test_workspace_commits(test_context, test_commit):
+    context, organisation, workspace, user = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                commits {
+                    id
+                    reference
+                    title
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["commits"][0]["id"] == str(test_commit.id)
+    assert result.data["workspace"]["commits"][0]["reference"] == test_commit.reference
+    assert result.data["workspace"]["commits"][0]["title"] == test_commit.title
+
+
+@pytest.mark.django_db
+async def test_workspace_commit_by_id(test_context, test_commit):
+    context, organisation, workspace, user = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!, $commitId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                commit(id: $commitId) {
+                    id
+                    reference
+                    title
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={"workspaceId": str(workspace.id), "commitId": str(test_commit.id)},
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["commit"]["id"] == str(test_commit.id)
+    assert result.data["workspace"]["commit"]["reference"] == test_commit.reference
+    assert result.data["workspace"]["commit"]["title"] == test_commit.title
+
+
+@pytest.mark.django_db
+async def test_workspace_commit_by_reference(test_context, test_commit):
+    context, organisation, workspace, user = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!, $reference: String!) {
+            workspace(id: $workspaceId) {
+                id
+                commit(reference: $reference) {
+                    id
+                    reference
+                    title
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "reference": test_commit.reference,
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["commit"]["id"] == str(test_commit.id)
+    assert result.data["workspace"]["commit"]["reference"] == test_commit.reference
+    assert result.data["workspace"]["commit"]["title"] == test_commit.title
+
+
+@pytest.mark.django_db
+async def test_repository_branch_by_id(test_context, test_repository, test_branch):
+    context, organisation, workspace, user = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!, $repositoryId: ID!, $branchId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                repository(id: $repositoryId) {
+                    id
+                    branch(id: $branchId) {
+                        id
+                    }
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "repositoryId": str(test_repository.id),
+            "branchId": str(test_branch.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["repository"]["id"] == str(test_repository.id)
+    assert result.data["workspace"]["repository"]["branch"]["id"] == str(test_branch.id)
+
+
+@pytest.mark.django_db
+async def test_repository_branch_by_reference(test_context, test_repository, test_branch):
+    context, organisation, workspace, user = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!, $repositoryId: ID!, $reference: String!) {
+            workspace(id: $workspaceId) {
+                id
+                repository(id: $repositoryId) {
+                    id
+                    branch(reference: $reference) {
+                        id
+                    }
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "repositoryId": str(test_repository.id),
+            "reference": test_branch.reference,
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["repository"]["id"] == str(test_repository.id)
+    assert result.data["workspace"]["repository"]["branch"]["id"] == str(test_branch.id)
+
+
+@pytest.mark.django_db
+async def test_repository_pull_request_by_id(test_context, test_repository, test_pull_request):
+    context, organisation, workspace, user = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!, $repositoryId: ID!, $pullRequestId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                repository(id: $repositoryId) {
+                    id
+                    pull_request(id: $pullRequestId) {
+                        id
+                    }
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "repositoryId": str(test_repository.id),
+            "pullRequestId": str(test_pull_request.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["repository"]["id"] == str(test_repository.id)
+    assert result.data["workspace"]["repository"]["pull_request"]["id"] == str(test_pull_request.id)
+
+
+@pytest.mark.django_db
+async def test_repository_pull_request_by_reference(test_context, test_repository, test_pull_request):
+    context, organisation, workspace, user = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!, $repositoryId: ID!, $reference: String!) {
+            workspace(id: $workspaceId) {
+                id
+                repository(id: $repositoryId) {
+                    id
+                    pull_request(reference: $reference) {
+                        id
+                    }
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "repositoryId": str(test_repository.id),
+            "reference": test_pull_request.reference,
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["repository"]["id"] == str(test_repository.id)
+    assert result.data["workspace"]["repository"]["pull_request"]["id"] == str(test_pull_request.id)
+
+
+@pytest.mark.django_db
+async def test_repository_commit_by_id(test_context, test_repository, test_commit):
+    context, organisation, workspace, user = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!, $repositoryId: ID!, $commitId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                repository(id: $repositoryId) {
+                    id
+                    commit(id: $commitId) {
+                        id
+                    }
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "repositoryId": str(test_repository.id),
+            "commitId": str(test_commit.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["repository"]["id"] == str(test_repository.id)
+    assert result.data["workspace"]["repository"]["commit"]["id"] == str(test_commit.id)
+
+
+@pytest.mark.django_db
+async def test_repository_commit_by_reference(test_context, test_repository, test_commit):
+    context, organisation, workspace, user = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!, $repositoryId: ID!, $reference: String!) {
+            workspace(id: $workspaceId) {
+                id
+                repository(id: $repositoryId) {
+                    id
+                    commit(reference: $reference) {
+                        id
+                    }
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "repositoryId": str(test_repository.id),
+            "reference": test_commit.reference,
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["repository"]["id"] == str(test_repository.id)
+    assert result.data["workspace"]["repository"]["commit"]["id"] == str(test_commit.id)
+
+
+@pytest.mark.django_db
+async def test_branch_last_commit(test_context, test_repository, test_branch, test_commit):
+    context, organisation, workspace, user = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!, $repositoryId: ID!, $branchId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                repository(id: $repositoryId) {
+                    id
+                    branch(id: $branchId) {
+                        id
+                        last_commit {
+                            id
+                        }
+                    }
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "repositoryId": str(test_repository.id),
+            "branchId": str(test_branch.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["repository"]["id"] == str(test_repository.id)
+    assert result.data["workspace"]["repository"]["branch"]["id"] == str(test_branch.id)
+    assert result.data["workspace"]["repository"]["branch"]["last_commit"]["id"] == str(test_commit.id)
+
+
+@pytest.mark.django_db
+async def test_pull_request_last_commit(test_context, test_repository, test_pull_request, test_commit_with_pr):
+    context, organisation, workspace, user = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!, $repositoryId: ID!, $pullRequestId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                repository(id: $repositoryId) {
+                    id
+                    pull_request(id: $pullRequestId) {
+                        id
+                        last_commit {
+                            id
+                        }
+                    }
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "repositoryId": str(test_repository.id),
+            "pullRequestId": str(test_pull_request.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["repository"]["id"] == str(test_repository.id)
+    assert result.data["workspace"]["repository"]["pull_request"]["id"] == str(test_pull_request.id)
+    assert result.data["workspace"]["repository"]["pull_request"]["last_commit"]["id"] == str(test_commit_with_pr.id)
+
+
+@pytest.mark.django_db
+async def test_commit_last_run(test_context, test_commit):
+    context, organisation, workspace, user = test_context
+
+    connector = await Connector.objects.acreate(name=str(uuid.uuid4()))
+    connection = await Connection.objects.acreate(
+        workspace=workspace,
+        connector=connector,
+        namespace="default",
+        name=uuid.uuid4(),
+        metadata={},
+        secrets={},
+    )
+    successful_run = await Run.objects.acreate(
+        workspace=workspace, connection=connection, commit=test_commit, status="success", user=user
+    )
+    last_run = await Run.objects.acreate(
+        workspace=workspace, connection=connection, commit=test_commit, status="failure", user=user
+    )
+
+    query = """
+        query Workspace($workspaceId: ID!, $commitId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                commit(id: $commitId) {
+                    id
+                    last_run {
+                        id
+                    }
+                    last_successful_run {
+                        id
+                    }
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={"workspaceId": str(workspace.id), "commitId": str(test_commit.id)},
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["commit"]["id"] == str(test_commit.id)
+    assert result.data["workspace"]["commit"]["last_run"]["id"] == str(last_run.id)
+    assert result.data["workspace"]["commit"]["last_successful_run"]["id"] == str(successful_run.id)

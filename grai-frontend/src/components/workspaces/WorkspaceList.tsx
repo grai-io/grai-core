@@ -1,36 +1,51 @@
+import { ApolloError } from "@apollo/client"
 import {
   Card,
   Box,
   Typography,
   List,
+  ListSubheader,
   ListItem,
   ListItemButton,
   ListItemText,
-  ListSubheader,
+  CircularProgress,
 } from "@mui/material"
-import React from "react"
+import GraphError from "components/utils/GraphError"
+import React, { useState } from "react"
 import { Link } from "react-router-dom"
 
-interface Organisation {
+export interface Organisation {
   id: string
   name: string
 }
 
-interface Workspace {
+export interface Workspace {
   id: string
-  organisation: Organisation
   name: string
+  organisation: Organisation
 }
 
 interface OrganisationWithWorkspaces extends Organisation {
   workspaces: Workspace[]
 }
 
-type WorkspaceChoiceProps = {
+type WorkspaceListProps = {
   workspaces: Workspace[]
+  onSelect?: (workspace: Workspace) => void
+  link?: boolean
+  error?: ApolloError
+  loading?: boolean
 }
 
-const WorkspaceChoice: React.FC<WorkspaceChoiceProps> = ({ workspaces }) => {
+const WorkspaceList: React.FC<WorkspaceListProps> = ({
+  workspaces,
+  onSelect,
+  link,
+  error,
+  loading,
+}) => {
+  const [selected, setSelected] = useState<Workspace | null>(null)
+
   const organisations = workspaces.reduce<OrganisationWithWorkspaces[]>(
     (res, workspace) => {
       const existingOrganisation = res.find(
@@ -48,24 +63,45 @@ const WorkspaceChoice: React.FC<WorkspaceChoiceProps> = ({ workspaces }) => {
     []
   )
 
+  const handleClick = (workspace: Workspace) => () => {
+    setSelected(workspace)
+    if (onSelect) onSelect(workspace)
+  }
+
   return (
     <Card variant="outlined" sx={{ mt: 2 }}>
       <Box sx={{ p: 3 }}>
         {workspaces.length > 0 ? (
           <>
             <Typography variant="h6">Select Workspace</Typography>
+            {error && <GraphError error={error} />}
             <List sx={{ pb: 0 }}>
               {organisations.map(organisation => (
                 <React.Fragment key={organisation.id}>
                   <ListSubheader>{organisation.name}</ListSubheader>
                   {organisation.workspaces.map(workspace => (
                     <ListItem key={workspace.id} disablePadding>
-                      <ListItemButton
-                        component={Link}
-                        to={`/${workspace.organisation.name}/${workspace.name}`}
-                      >
-                        <ListItemText primary={workspace.name} />
-                      </ListItemButton>
+                      {link ? (
+                        <ListItemButton
+                          component={Link}
+                          to={`/${workspace.organisation.name}/${workspace.name}`}
+                        >
+                          <ListItemText primary={workspace.name} />
+                        </ListItemButton>
+                      ) : (
+                        <ListItem
+                          button
+                          secondaryAction={
+                            loading && workspace.id === selected?.id ? (
+                              <CircularProgress size={20} />
+                            ) : null
+                          }
+                          onClick={handleClick(workspace)}
+                          disabled={loading}
+                        >
+                          <ListItemText primary={workspace.name} />
+                        </ListItem>
+                      )}
                     </ListItem>
                   ))}
                 </React.Fragment>
@@ -89,4 +125,4 @@ const WorkspaceChoice: React.FC<WorkspaceChoiceProps> = ({ workspaces }) => {
   )
 }
 
-export default WorkspaceChoice
+export default WorkspaceList

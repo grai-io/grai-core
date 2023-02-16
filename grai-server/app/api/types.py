@@ -3,7 +3,7 @@ from typing import List, Optional
 
 import strawberry
 import strawberry_django
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Q
 from strawberry.scalars import JSON
 from strawberry_django.filters import FilterLookup
 from strawberry_django.pagination import OffsetPaginationInput
@@ -13,6 +13,10 @@ from strawberry_django_plus.gql import auto
 from connections.models import Connection as ConnectionModel
 from connections.models import Connector as ConnectorModel
 from connections.models import Run as RunModel
+from installations.models import Branch as BranchModel
+from installations.models import Commit as CommitModel
+from installations.models import PullRequest as PullRequestModel
+from installations.models import Repository as RepositoryModel
 from lineage.models import Edge as EdgeModel
 from lineage.models import Node as NodeModel
 from users.models import User as UserModel
@@ -193,6 +197,7 @@ class Connection:
     metadata: JSON
     schedules: Optional[JSON]
     is_active: auto
+    temp: auto
     created_at: auto
     updated_at: auto
     created_by: User
@@ -402,7 +407,7 @@ class Workspace:
     # Connections
     @gql.django.field
     def connections(self) -> List["Connection"]:
-        return ConnectionModel.objects.filter(workspace=self)
+        return ConnectionModel.objects.filter(workspace=self, temp=False)
 
     @gql.django.field
     def connection(self, id: strawberry.ID) -> Connection:
@@ -410,8 +415,18 @@ class Workspace:
 
     # Runs
     @gql.django.field
-    def runs(self) -> List["Run"]:
-        return RunModel.objects.order_by("-created_at").filter(workspace=self)
+    def runs(
+        self, owner: Optional[str] = None, repo: Optional[str] = None, branch: Optional[str] = None
+    ) -> List["Run"]:
+        q_filter = Q(workspace=self)
+
+        if owner:
+            q_filter &= Q(commit__repository__owner=owner, commit__repository__repo=repo)
+
+        if branch:
+            q_filter &= Q(commit__branch__reference=branch)
+
+        return RunModel.objects.order_by("-created_at").filter(q_filter)
 
     @gql.django.field
     def run(self, id: strawberry.ID) -> "Run":
@@ -458,6 +473,64 @@ class Workspace:
             EdgeModel.objects.filter(workspace_id=self.id)
             .exclude(metadata__has_key="grai.edge_type", metadata__grai__edge_type="TableToColumn")
             .count()
+        )
+
+    # Repositories
+    @gql.django.field
+    def repositories(self) -> List["Repository"]:
+        return RepositoryModel.objects.filter(workspace=self)
+
+    @gql.django.field
+    def repository(
+        self,
+        id: Optional[strawberry.ID] = None,
+        type: Optional[str] = None,
+        owner: Optional[str] = None,
+        repo: Optional[str] = None,
+    ) -> "Repository":
+        return (
+            RepositoryModel.objects.get(id=id)
+            if id is not None
+            else RepositoryModel.objects.get(workspace=self, type=type, owner=owner, repo=repo)
+        )
+
+    # Branches
+    @gql.django.field
+    def branches(self) -> List["Branch"]:
+        return BranchModel.objects.filter(workspace=self)
+
+    @gql.django.field
+    def branch(self, id: Optional[strawberry.ID] = None, reference: Optional[str] = None) -> "Branch":
+        return (
+            BranchModel.objects.get(id=id)
+            if id is not None
+            else BranchModel.objects.get(workspace=self, reference=reference)
+        )
+
+    # Pull Requests
+    @gql.django.field
+    def pull_requests(self) -> List["PullRequest"]:
+        return PullRequestModel.objects.filter(workspace=self)
+
+    @gql.django.field
+    def pull_request(self, id: Optional[strawberry.ID] = None, reference: Optional[str] = None) -> "PullRequest":
+        return (
+            PullRequestModel.objects.get(id=id)
+            if id is not None
+            else PullRequestModel.objects.get(workspace=self, reference=reference)
+        )
+
+    # Commits
+    @gql.django.field
+    def commits(self) -> List["Commit"]:
+        return CommitModel.objects.filter(workspace=self)
+
+    @gql.django.field
+    def commit(self, id: Optional[strawberry.ID] = None, reference: Optional[str] = None) -> "Commit":
+        return (
+            CommitModel.objects.get(id=id)
+            if id is not None
+            else CommitModel.objects.get(workspace=self, reference=reference)
         )
 
 
@@ -543,8 +616,7 @@ class RunOrder:
 @gql.django.type(RunModel, order=RunOrder, pagination=True)
 class Run:
     id: auto
-    connector: Connector
-    connection: Optional[Connection]
+    connection: Connection
     status: auto
     metadata: JSON
     created_at: auto
@@ -552,3 +624,96 @@ class Run:
     started_at: Optional[datetime.datetime]
     finished_at: Optional[datetime.datetime]
     user: Optional[User]
+    commit: Optional["Commit"]
+
+
+@gql.django.type(RepositoryModel)
+class Repository:
+    id: auto
+    workspace: Workspace
+    type: auto
+    owner: auto
+    repo: auto
+
+    # Pull Requests
+    pull_requests: List["PullRequest"]
+
+    @gql.django.field
+    def pull_request(self, id: Optional[strawberry.ID] = None, reference: Optional[str] = None) -> "PullRequest":
+        return (
+            PullRequestModel.objects.get(id=id)
+            if id is not None
+            else PullRequestModel.objects.get(repository=self, reference=reference)
+        )
+
+    # Branches
+    branches: List["Branch"]
+
+    @gql.django.field
+    def branch(self, id: Optional[strawberry.ID] = None, reference: Optional[str] = None) -> "Branch":
+        return (
+            BranchModel.objects.get(id=id)
+            if id is not None
+            else BranchModel.objects.get(repository=self, reference=reference)
+        )
+
+    # Commits
+    commits: List["Commit"]
+
+    @gql.django.field
+    def commit(self, id: Optional[strawberry.ID] = None, reference: Optional[str] = None) -> "Commit":
+        return (
+            CommitModel.objects.get(id=id)
+            if id is not None
+            else CommitModel.objects.get(repository=self, reference=reference)
+        )
+
+
+@gql.django.type(BranchModel)
+class Branch:
+    id: auto
+    reference: auto
+    repository: "Repository"
+
+    pull_requests: List["PullRequest"]
+    commits: List["Commit"]
+
+    @gql.django.field
+    def last_commit(self) -> Optional["Commit"]:
+        return CommitModel.objects.filter(branch=self.id).order_by("-created_at").first()
+
+
+@gql.django.type(PullRequestModel)
+class PullRequest:
+    id: auto
+    reference: auto
+    title: Optional[str]
+    repository: "Repository"
+    branch: "Branch"
+
+    commits: List["Commit"]
+
+    @gql.django.field
+    def last_commit(self) -> Optional["Commit"]:
+        return CommitModel.objects.filter(pull_request=self.id).order_by("-created_at").first()
+
+
+@gql.django.type(CommitModel)
+class Commit:
+    id: auto
+    reference: auto
+    title: Optional[str]
+    repository: "Repository"
+    branch: "Branch"
+    pull_request: Optional["PullRequest"]
+    created_at: auto
+
+    runs: List[Run]
+
+    @gql.django.field
+    def last_run(self) -> Optional["Run"]:
+        return RunModel.objects.filter(commit=self.id).order_by("-created_at").first()
+
+    @gql.django.field
+    def last_successful_run(self) -> Optional["Run"]:
+        return RunModel.objects.filter(commit=self.id, status="success").order_by("-created_at").first()

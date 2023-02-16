@@ -1,9 +1,9 @@
 import { Box, Stack } from "@mui/material"
 import React from "react"
-import { useSearchParams } from "react-router-dom"
 import StepsControl, { StepsControlOptions } from "./StepsControl"
 import SearchControl from "./SearchControl"
 import LimitGraphControl from "./LimitGraphControl"
+import useSearchParams from "helpers/useSearchParams"
 
 export type ControlOptions = {
   steps?: StepsControlOptions
@@ -22,30 +22,12 @@ const GraphControls: React.FC<GraphControlsProps> = ({
   search,
   onSearch,
 }) => {
-  let [searchParams, setSearchParams] = useSearchParams()
+  const { searchParams, setSearchParam } = useSearchParams()
 
   const limitGraph: boolean =
     searchParams.get("limitGraph")?.toLowerCase() === "true" && errors
 
-  const set = (input: URLSearchParams, field: string, value: string) => {
-    input.set(field, value)
-
-    return input
-  }
-
-  const remove = (input: URLSearchParams, field: string) => {
-    input.delete(field)
-
-    return input
-  }
-
-  const handleToggleLimit = () => {
-    setSearchParams(
-      limitGraph
-        ? remove(searchParams, "limitGraph")
-        : set(searchParams, "limitGraph", "true")
-    )
-  }
+  const handleToggleLimit = () => setSearchParam("limitGraph", !limitGraph)
 
   return (
     <Box sx={{ position: "relative" }}>

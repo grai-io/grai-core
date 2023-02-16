@@ -32,6 +32,7 @@
         "pk": "60e37eff-7b89-4bf7-983b-722d9e095a12",
         "fields": {
             "name": "Google BigQuery",
+            "slug": "bigquery",
             "metadata": {
                 "fields": [
                     {
@@ -90,6 +91,7 @@
         "pk": "71f1db71-2181-4353-89ca-34e187f606dd",
         "fields": {
             "name": "Microsoft SQL Server",
+            "slug": "mssql",
             "metadata": {
                 "fields": [
                     {
@@ -129,6 +131,7 @@
         "pk": "768aea48-1146-4f14-9005-40e89504f4b3",
         "fields": {
             "name": "PostgreSQL",
+            "slug": "postgres",
             "metadata": {
                 "fields": [
                     {
@@ -169,6 +172,7 @@
         "pk": "77a47042-ad28-4e98-a4e3-fbb6c0280e36",
         "fields": {
             "name": "dbt",
+            "slug": "dbt",
             "metadata": {
                 "file": {
                     "name": "manifest.json",
@@ -188,6 +192,7 @@
         "pk": "a80c528e-5149-4c0b-8e48-2fa995641d49",
         "fields": {
             "name": "Snowflake",
+            "slug": "snowflake",
             "metadata": {
                 "fields": [
                     {
@@ -291,6 +296,7 @@
         "pk": "dbdc3704-5c01-4343-a11e-2e41c69e558c",
         "fields": {
             "name": "YAML File",
+            "slug": "yaml_file",
             "metadata": {
                 "file": {
                     "name": "yaml",

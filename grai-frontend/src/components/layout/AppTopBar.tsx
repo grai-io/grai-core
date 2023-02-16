@@ -61,6 +61,13 @@ const AppTopBar: React.FC = () => {
         >
           Connections
         </Button>
+        <Button
+          component={Link}
+          to={`${routePrefix}/reports`}
+          sx={{ my: 2, color: "inherit" }}
+        >
+          Reports
+        </Button>
         <Box sx={{ flexGrow: 1 }} />
         <ProfileMenu />
       </Toolbar>
