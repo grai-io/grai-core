@@ -629,9 +629,7 @@ async def test_workspace_runs_filter_by_repo(test_context, test_commit):
         metadata={},
         secrets={},
     )
-    run = await Run.objects.acreate(
-        workspace=workspace, commit=test_commit, connection=connection, status="success"
-    )
+    run = await Run.objects.acreate(workspace=workspace, commit=test_commit, connection=connection, status="success")
 
     query = """
         query Workspace($workspaceId: ID!, $owner: String, $repo: String) {
@@ -671,9 +669,7 @@ async def test_workspace_runs_filter_by_branch(test_context, test_branch, test_c
         metadata={},
         secrets={},
     )
-    run = await Run.objects.acreate(
-        workspace=workspace, commit=test_commit, connection=connection, status="success"
-    )
+    run = await Run.objects.acreate(workspace=workspace, commit=test_commit, connection=connection, status="success")
 
     query = """
         query Workspace($workspaceId: ID!, $branch: String) {
