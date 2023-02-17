@@ -51,6 +51,11 @@ def test_fivetran_connector():
 
 
 @pytest.fixture
+def test_mysql_connector():
+    return Connector.objects.create(name=Connector.MYSQL, slug=Connector.MYSQL)
+
+
+@pytest.fixture
 def test_dbt_connector():
     connector, created = Connector.objects.get_or_create(name=Connector.DBT, slug=Connector.DBT)
 
@@ -206,6 +211,28 @@ class TestUpdateServer:
                 "limit": "10",
             },
             secrets={"api_secret": "abc123"},
+        )
+
+        run = Run.objects.create(connection=connection, workspace=test_workspace)
+
+        run_update_server(str(run.id))
+
+    def test_run_update_server_mysql(self, test_workspace, test_mysql_connector, mocker):
+        mocker.patch("grai_source_mysql.loader.MySQLConnector")
+        mock = mocker.patch("grai_source_mysql.base.get_nodes_and_edges")
+        mock.return_value = [[], []]
+
+        connection = Connection.objects.create(
+            name="C1",
+            connector=test_mysql_connector,
+            workspace=test_workspace,
+            metadata={
+                "host": config("DB_HOST", "localhost"),
+                "port": 5432,
+                "dbname": "grai",
+                "user": "grai",
+            },
+            secrets={"password": "grai"},
         )
 
         run = Run.objects.create(connection=connection, workspace=test_workspace)
