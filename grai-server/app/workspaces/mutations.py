@@ -1,3 +1,5 @@
+from typing import Optional
+
 import strawberry
 from asgiref.sync import sync_to_async
 from decouple import config
@@ -11,11 +13,33 @@ from strawberry.types import Info
 from api.common import IsAuthenticated, get_user, get_workspace
 from api.types import KeyResult, Membership, Workspace
 from workspaces.models import Membership as MembershipModel
+from workspaces.models import Organisation as OrganisationModel
+from workspaces.models import Workspace as WorkspaceModel
 from workspaces.models import WorkspaceAPIKey
 
 
 @strawberry.type
 class Mutation:
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def createWorkspace(
+        self,
+        info: Info,
+        name: str,
+        organisationId: Optional[strawberry.ID] = None,
+        organisationName: Optional[str] = None,
+    ) -> Workspace:
+        user = get_user(info)
+
+        organisation = (
+            await OrganisationModel.objects.aget(id=organisationId)
+            if organisationId
+            else await OrganisationModel.objects.acreate(name=organisationName)
+        )
+        workspace = await WorkspaceModel.objects.acreate(organisation=organisation, name=name)
+        await MembershipModel.objects.acreate(user=user, workspace=workspace, role="admin")
+
+        return workspace
+
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def createApiKey(self, info: Info, name: str, workspaceId: strawberry.ID) -> KeyResult:
         user = get_user(info)

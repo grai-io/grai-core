@@ -1,20 +1,21 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { render, screen, waitFor } from "testing"
-import LoginForm, { LOGIN } from "./LoginForm"
+import RegisterForm, { REGISTER } from "./RegisterForm"
 import { GraphQLError } from "graphql"
 
-test("submit", async () => {
+test("renders", async () => {
   const user = userEvent.setup()
 
-  render(<LoginForm />, {
+  render(<RegisterForm />, {
     guestRoute: true,
     loggedIn: false,
-    path: "/login",
-    route: "/login",
+    path: "/register",
+    route: "/register",
     routes: ["/"],
   })
 
+  await user.type(screen.getByRole("textbox", { name: /name/i }), "Test User")
   await user.type(
     screen.getByRole("textbox", { name: /email/i }),
     "email@grai.io"
@@ -25,7 +26,7 @@ test("submit", async () => {
     expect(screen.getByTestId("password")).toHaveValue("password")
   })
 
-  await user.click(screen.getByRole("button", { name: /login/i }))
+  await user.click(screen.getByRole("button", { name: /register/i }))
 
   await waitFor(() => {
     expect(screen.getByText("New Page")).toBeInTheDocument()
@@ -38,8 +39,9 @@ test("error", async () => {
   const mocks = [
     {
       request: {
-        query: LOGIN,
+        query: REGISTER,
         variables: {
+          name: "Test User",
           username: "email@grai.io",
           password: "password",
         },
@@ -50,11 +52,12 @@ test("error", async () => {
     },
   ]
 
-  render(<LoginForm />, {
+  render(<RegisterForm />, {
     withRouter: true,
     mocks,
   })
 
+  await user.type(screen.getByRole("textbox", { name: /name/i }), "Test User")
   await user.type(
     screen.getByRole("textbox", { name: /email/i }),
     "email@grai.io"
@@ -65,7 +68,7 @@ test("error", async () => {
     expect(screen.getByTestId("password")).toHaveValue("password")
   })
 
-  await user.click(screen.getByRole("button", { name: /login/i }))
+  await user.click(screen.getByRole("button", { name: /register/i }))
 
   await waitFor(() => {
     expect(screen.getByText("Error!")).toBeInTheDocument()

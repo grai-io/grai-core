@@ -32,7 +32,7 @@ test("no workspaces", async () => {
   render(<Workspaces />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    screen.getByRole("heading", { name: /No workspaces/i })
+    screen.getByRole("heading", { name: /Create a workspace/i })
   })
 })
 

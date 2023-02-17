@@ -71,55 +71,40 @@ const WorkspaceList: React.FC<WorkspaceListProps> = ({
   return (
     <Card variant="outlined" sx={{ mt: 2 }}>
       <Box sx={{ p: 3 }}>
-        {workspaces.length > 0 ? (
-          <>
-            <Typography variant="h6">Select Workspace</Typography>
-            {error && <GraphError error={error} />}
-            <List sx={{ pb: 0 }}>
-              {organisations.map(organisation => (
-                <React.Fragment key={organisation.id}>
-                  <ListSubheader>{organisation.name}</ListSubheader>
-                  {organisation.workspaces.map(workspace => (
-                    <ListItem key={workspace.id} disablePadding>
-                      {link ? (
-                        <ListItemButton
-                          component={Link}
-                          to={`/${workspace.organisation.name}/${workspace.name}`}
-                        >
-                          <ListItemText primary={workspace.name} />
-                        </ListItemButton>
-                      ) : (
-                        <ListItem
-                          button
-                          secondaryAction={
-                            loading && workspace.id === selected?.id ? (
-                              <CircularProgress size={20} />
-                            ) : null
-                          }
-                          onClick={handleClick(workspace)}
-                          disabled={loading}
-                        >
-                          <ListItemText primary={workspace.name} />
-                        </ListItem>
-                      )}
+        <Typography variant="h6">Select Workspace</Typography>
+        {error && <GraphError error={error} />}
+        <List sx={{ pb: 0 }}>
+          {organisations.map(organisation => (
+            <React.Fragment key={organisation.id}>
+              <ListSubheader>{organisation.name}</ListSubheader>
+              {organisation.workspaces.map(workspace => (
+                <ListItem key={workspace.id} disablePadding>
+                  {link ? (
+                    <ListItemButton
+                      component={Link}
+                      to={`/${workspace.organisation.name}/${workspace.name}`}
+                    >
+                      <ListItemText primary={workspace.name} />
+                    </ListItemButton>
+                  ) : (
+                    <ListItem
+                      button
+                      secondaryAction={
+                        loading && workspace.id === selected?.id ? (
+                          <CircularProgress size={20} />
+                        ) : null
+                      }
+                      onClick={handleClick(workspace)}
+                      disabled={loading}
+                    >
+                      <ListItemText primary={workspace.name} />
                     </ListItem>
-                  ))}
-                </React.Fragment>
+                  )}
+                </ListItem>
               ))}
-            </List>
-          </>
-        ) : (
-          <Box sx={{ textAlign: "center" }}>
-            <Typography variant="h6" sx={{ mb: 2 }}>
-              No Workspaces
-            </Typography>
-            <Typography variant="body1">
-              You are not a member of any workspaces.
-              <br />
-              Please contact your administrator.
-            </Typography>
-          </Box>
-        )}
+            </React.Fragment>
+          ))}
+        </List>
       </Box>
     </Card>
   )

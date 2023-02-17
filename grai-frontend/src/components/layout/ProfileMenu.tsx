@@ -15,12 +15,12 @@ import PopupState, {
   bindTrigger,
   InjectedProps,
 } from "material-ui-popup-state"
-import React, { useContext } from "react"
+import React from "react"
 import { Link } from "react-router-dom"
-import AuthContext from "components/auth/AuthContext"
 import GraphError from "components/utils/GraphError"
 import { GetProfileMenu } from "./__generated__/GetProfileMenu"
 import useWorkspace from "helpers/useWorkspace"
+import useAuth from "components/auth/useAuth"
 
 export const GET_PROFILE = gql`
   query GetProfileMenu {
@@ -35,7 +35,7 @@ export const GET_PROFILE = gql`
 
 const ProfileMenu: React.FC = () => {
   const { routePrefix } = useWorkspace()
-  const { logoutUser } = useContext(AuthContext)
+  const { logoutUser } = useAuth()
   const client = useApolloClient()
 
   const { error, data } = useQuery<GetProfileMenu>(GET_PROFILE)

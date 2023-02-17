@@ -43,6 +43,7 @@ const Memberships = lazy(() => import("./pages/settings/Memberships"))
 const PostInstall = lazy(() => import("./pages/PostInstall"))
 
 const Login = lazy(() => import("./pages/auth/Login"))
+const Register = lazy(() => import("./pages/auth/Register"))
 const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"))
 const PasswordReset = lazy(() => import("./pages/auth/PasswordReset"))
 const CompleteSignup = lazy(() => import("./pages/auth/CompleteSignup"))
@@ -119,6 +120,7 @@ const Routes: React.FC = () => (
 
       <Route element={<GuestRoute />}>
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/forgot" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<PasswordReset />} />
         <Route path="/complete-signup" element={<CompleteSignup />} />

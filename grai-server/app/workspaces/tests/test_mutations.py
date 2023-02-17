@@ -1,3 +1,5 @@
+import uuid
+
 import pytest
 from django.contrib.auth import get_user_model
 
@@ -14,6 +16,76 @@ from api.tests.common import (
     test_user,
     test_workspace,
 )
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_create_workspace(test_context):
+    context, organisation, workspace, user = test_context
+
+    mutation = """
+        mutation CreateWorkspace($organisationName: String!, $name: String!) {
+            createWorkspace(organisationName: $organisationName, name: $name) {
+                id
+                name
+                organisation {
+                    id
+                    name
+                }
+            }
+        }
+    """
+
+    organisationName = str(uuid.uuid4())
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "organisationName": organisationName,
+            "name": "Test Workspace",
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["createWorkspace"]["id"] is not None
+    assert result.data["createWorkspace"]["name"] == "Test Workspace"
+    assert result.data["createWorkspace"]["organisation"]["id"] is not None
+    assert result.data["createWorkspace"]["organisation"]["name"] == organisationName
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_create_workspace_existing_organisation(test_context):
+    context, organisation, workspace, user = test_context
+
+    mutation = """
+        mutation CreateWorkspace($organisationId: ID!, $name: String!) {
+            createWorkspace(organisationId: $organisationId, name: $name) {
+                id
+                name
+                organisation {
+                    id
+                    name
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "organisationId": str(organisation.id),
+            "name": "Test Workspace",
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["createWorkspace"]["id"] is not None
+    assert result.data["createWorkspace"]["name"] == "Test Workspace"
+    assert result.data["createWorkspace"]["organisation"]["id"] == str(organisation.id)
+    assert result.data["createWorkspace"]["organisation"]["name"] == organisation.name
 
 
 @pytest.mark.django_db
