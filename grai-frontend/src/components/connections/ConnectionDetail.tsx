@@ -34,6 +34,7 @@ const ConnectionDetail: React.FC<ConnectionDetailProps> = ({ connection }) => (
   <Card variant="outlined" sx={{ borderRadius: 0, borderBottom: 0 }}>
     <Table>
       <TableBody>
+        <NodeDetailRow label="id" value={connection.id} />
         <NodeDetailRow label="Connector" value={connection.connector.name} />
         <ConnectionSchedule connection={connection} />
       </TableBody>
