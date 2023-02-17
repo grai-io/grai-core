@@ -18,11 +18,38 @@
         "pk": "533052b6-785b-4268-98a3-ded1215a1463",
         "fields": {
             "name": "MySQL",
-            "metadata": {},
+            "slug": "mysql",
+            "metadata": {
+                "fields": [
+                    {
+                        "name": "host",
+                        "required": true
+                    },
+                    {
+                        "name": "port",
+                        "default": 3306,
+                        "required": true
+                    },
+                    {
+                        "name": "dbname",
+                        "label": "Database Name",
+                        "required": true
+                    },
+                    {
+                        "name": "user",
+                        "required": true
+                    },
+                    {
+                        "name": "password",
+                        "secret": true,
+                        "required": true
+                    }
+                ]
+            },
             "is_active": true,
             "icon": "https://cdn.sanity.io/images/pwmfmi47/production/e4d7a37a2425ce7e012e23fdb4f53d985e18a4a3-1280x1280.png",
             "category": "databases",
-            "coming_soon": true,
+            "coming_soon": false,
             "created_at": "2023-01-11T21:16:48.728Z",
             "updated_at": "2023-01-11T21:16:48.728Z"
         }

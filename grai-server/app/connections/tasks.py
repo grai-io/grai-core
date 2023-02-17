@@ -6,6 +6,7 @@ from connections.adapters.bigquery import BigqueryAdapter
 from connections.adapters.dbt import DbtAdapter
 from connections.adapters.fivetran import FivetranAdapter
 from connections.adapters.mssql import MssqlAdapter
+from connections.adapters.mysql import MySQLAdapter
 from connections.adapters.postgres import PostgresAdapter
 from connections.adapters.snowflake import SnowflakeAdapter
 from connections.adapters.yaml_file import YamlFileAdapter
@@ -43,6 +44,8 @@ def get_adapter(slug: str) -> BaseAdapter:
         return BigqueryAdapter()
     elif slug == Connector.FIVETRAN:
         return FivetranAdapter()
+    elif slug == Connector.MYSQL:
+        return MySQLAdapter()
 
     raise NoConnectorError(f"No connector found for: {slug}")
 
