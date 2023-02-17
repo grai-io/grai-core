@@ -31,7 +31,12 @@ class BaseAdapter(ABC):
         new_nodes, new_edges = self.get_nodes_and_edges()
 
         nodes = [modelToSchema(model, NodeV1, "Node") for model in Node.objects.filter(workspace=run.workspace)]
-        edges = [modelToSchema(model, EdgeV1, "Edge") for model in Edge.objects.filter(workspace=run.workspace)]
+        edges = [
+            modelToSchema(model, EdgeV1, "Edge")
+            for model in Edge.objects.filter(workspace=run.workspace)
+            .select_related("source")
+            .select_related("destination")
+        ]
 
         graph = build_graph(nodes, edges, "v1")
 
