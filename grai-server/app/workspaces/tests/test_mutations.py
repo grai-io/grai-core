@@ -1,4 +1,5 @@
 import uuid
+
 import pytest
 from django.contrib.auth import get_user_model
 
@@ -85,6 +86,7 @@ async def test_create_workspace_existing_organisation(test_context):
     assert result.data["createWorkspace"]["name"] == "Test Workspace"
     assert result.data["createWorkspace"]["organisation"]["id"] == str(organisation.id)
     assert result.data["createWorkspace"]["organisation"]["name"] == organisation.name
+
 
 @pytest.mark.django_db
 async def test_create_api_key(test_context):
