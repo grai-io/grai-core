@@ -1,0 +1,80 @@
+name: Fivetran Integration CI
+
+on:
+  pull_request:
+    paths:
+      - "grai-integrations/source-fivetran/**"
+env:
+  py_ver: "3.10"
+  poetry_ver: "1.3.2"
+  project_dir: "grai-integrations/source-fivetran"
+
+jobs:
+  lint-integration-fivetran:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.project_dir }}
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - name: Install Python
+        id: setup-python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "${{ env.py_ver }}"
+
+      - run: pip install black isort
+
+      - run: |
+          black . --check
+          isort . --profile black
+
+  tests-integration-fivetran:
+    needs: lint-integration-fivetran
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.project_dir }}
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: grai
+          POSTGRES_PASSWORD: grai
+          POSTGRES_DB: grai
+        ports:
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 2s --health-timeout 5s --health-retries 15
+      the_guide:
+        image: ghcr.io/grai-io/grai-core/grai-server:latest
+        env:
+          DB_USER: grai
+          DB_PASSWORD: grai
+          DB_NAME: grai
+          DB_PORT: "5432"
+          DB_HOST: "postgres"
+          DJANGO_SUPERUSER_USERNAME: null@grai.io
+          DJANGO_SUPERUSER_PASSWORD: super_secret
+        ports:
+          - 8000:8000
+        options: >-
+          --health-cmd "curl -f http://localhost:8000/health/ || exit 1"
+          --health-interval 2s
+          --health-retries 10
+          --health-start-period 30s
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "${{ env.py_ver }}"
+
+      - uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: "${{ env.poetry_ver }}"
+
+      - run: poetry install
+      - run: poetry run pytest

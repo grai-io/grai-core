@@ -40,6 +40,16 @@ class ColumnID(ID):
         return values
 
 
+class ColumnConstraint(Enum):
+    primary_key = "PRIMARY KEY"
+    unique = "UNIQUE"
+    foreign_key = "FOREIGN KEY"
+    check = "CHECK"
+
+
+UNIQUE_COLUMN_CONSTRAINTS = {ColumnConstraint.primary_key.value, ColumnConstraint.unique.value}
+
+
 class Column(PostgresNode):
     name: str = Field(alias="column_name")
     table: str
@@ -48,6 +58,7 @@ class Column(PostgresNode):
     is_nullable: bool
     namespace: str
     default_value: Any = Field(alias="column_default")
+    column_constraint: Optional[ColumnConstraint]
     is_pk: Optional[bool] = False
     full_name: Optional[str] = None
 

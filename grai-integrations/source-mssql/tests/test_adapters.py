@@ -67,7 +67,7 @@ def test_metadata_has_core_metadata_ids(nodes_and_edges):
         assert hasattr(edge.spec.metadata, core_config.metadata_id)
 
 
-def test_metadata_has_mysql_metadata_id(nodes_and_edges):
+def test_metadata_has_mssql_metadata_id(nodes_and_edges):
     nodes, edges = nodes_and_edges
     for node in nodes:
         assert hasattr(node.spec.metadata, config.metadata_id)

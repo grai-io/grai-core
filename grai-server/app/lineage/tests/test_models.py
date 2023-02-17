@@ -3,18 +3,28 @@ import uuid
 
 # Create your tests here.
 import pytest
-from django.test import TestCase
+from django_multitenant.utils import set_current_tenant
 
 from lineage.models import Edge, Node
 from workspaces.models import Organisation, Workspace
 
 
-@pytest.mark.django_db
-def test_node_created():
-    organisation = Organisation.objects.create(name="O1")
-    workspace = Workspace.objects.create(name="W1", organisation=organisation)
+@pytest.fixture
+def create_organisation(name: str = None):
+    return Organisation.objects.create(name=uuid.uuid4() if name is None else name)
 
-    node = Node.objects.create(namespace="temp", name="a", data_source="test", workspace=workspace)
+
+@pytest.fixture
+def create_workspace(create_organisation, name: str = None):
+    return Workspace.objects.create(
+        name=str(uuid.uuid4()) if name is None else name,
+        organisation=create_organisation,
+    )
+
+
+@pytest.mark.django_db
+def test_node_created(create_workspace):
+    node = Node.objects.create(namespace="temp", name="a", data_source="test", workspace=create_workspace)
 
     assert node.id == uuid.UUID(str(node.id))
     assert node.name == "a"
@@ -28,11 +38,9 @@ def test_node_created():
 
 
 @pytest.mark.django_db
-def test_node_created_from_load():
-    organisation = Organisation.objects.create(name="O1")
-    workspace = Workspace.objects.create(name="W1", organisation=organisation)
-
-    node = Node.objects.create(namespace="temp2", name="abc", data_source="test", workspace=workspace)
+def test_node_created_from_load(create_workspace):
+    set_current_tenant(None)
+    node = Node.objects.create(namespace="temp2", name="abc", data_source="test", workspace=create_workspace)
     nodes = list(Node.objects.filter(namespace="temp2", name="abc").all())
     assert len(nodes) == 1
     node2 = nodes[0]
@@ -42,27 +50,25 @@ def test_node_created_from_load():
 
 
 @pytest.mark.django_db
-def test_edge_created():
-    organisation = Organisation.objects.create(name="O1")
-    workspace = Workspace.objects.create(name="W1", organisation=organisation)
-
+def test_edge_created(create_workspace):
+    set_current_tenant(None)
     node_a = Node.objects.create(
         namespace="default",
         name="node_a",
         data_source="node_source",
-        workspace=workspace,
+        workspace=create_workspace,
     )
     node_b = Node.objects.create(
         namespace="default",
         name="node_b",
         data_source="node_source",
-        workspace=workspace,
+        workspace=create_workspace,
     )
     edge = Edge.objects.create(
         data_source="edge_source",
         source_id=node_a.id,
         destination_id=node_b.id,
-        workspace=workspace,
+        workspace=create_workspace,
     )
 
     assert edge.id == uuid.UUID(str(edge.id))

@@ -1,8 +1,9 @@
-import { Box, Button, Checkbox, Stack } from "@mui/material"
+import { Box, Stack } from "@mui/material"
 import React from "react"
-import { useSearchParams } from "react-router-dom"
 import StepsControl, { StepsControlOptions } from "./StepsControl"
 import SearchControl from "./SearchControl"
+import LimitGraphControl from "./LimitGraphControl"
+import useSearchParams from "helpers/useSearchParams"
 
 export type ControlOptions = {
   steps?: StepsControlOptions
@@ -21,30 +22,12 @@ const GraphControls: React.FC<GraphControlsProps> = ({
   search,
   onSearch,
 }) => {
-  let [searchParams, setSearchParams] = useSearchParams()
+  const { searchParams, setSearchParam } = useSearchParams()
 
   const limitGraph: boolean =
     searchParams.get("limitGraph")?.toLowerCase() === "true" && errors
 
-  const set = (input: URLSearchParams, field: string, value: string) => {
-    input.set(field, value)
-
-    return input
-  }
-
-  const remove = (input: URLSearchParams, field: string) => {
-    input.delete(field)
-
-    return input
-  }
-
-  const handleToggleLimit = () => {
-    setSearchParams(
-      limitGraph
-        ? remove(searchParams, "limitGraph")
-        : set(searchParams, "limitGraph", "true")
-    )
-  }
+  const handleToggleLimit = () => setSearchParam("limitGraph", !limitGraph)
 
   return (
     <Box sx={{ position: "relative" }}>
@@ -61,32 +44,7 @@ const GraphControls: React.FC<GraphControlsProps> = ({
         }}
       >
         {errors && (
-          <Box>
-            <Button
-              variant="contained"
-              disableElevation
-              onClick={handleToggleLimit}
-              sx={{
-                backgroundColor: "white",
-                color: "black",
-                borderStyle: "solid",
-                borderWidth: 1,
-                borderColor: "divider",
-                borderRadius: 0,
-                pl: 0,
-                pr: 1.5,
-                py: 0,
-                minWidth: 0,
-              }}
-            >
-              <Checkbox
-                sx={{ ml: 0.5, mr: 1, p: 0 }}
-                size="small"
-                checked={limitGraph}
-              />
-              Limit Graph
-            </Button>
-          </Box>
+          <LimitGraphControl value={limitGraph} onChange={handleToggleLimit} />
         )}
         {options?.steps && <StepsControl options={options.steps} />}
         <SearchControl value={search} onChange={onSearch} />

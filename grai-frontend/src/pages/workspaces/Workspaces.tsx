@@ -6,7 +6,7 @@ import Loading from "components/layout/Loading"
 import { GetWorkspaces } from "./__generated__/GetWorkspaces"
 import GraphError from "components/utils/GraphError"
 import WorkspaceNotFound from "components/workspaces/WorkspaceNotFound"
-import WorkspaceChoice from "components/workspaces/WorkspaceChoice"
+import WorkspaceList from "components/workspaces/WorkspaceList"
 import CreateWorkspace from "components/workspaces/CreateWorkspace"
 
 export const GET_WORKSPACES = gql`
@@ -43,7 +43,7 @@ const Workspaces: React.FC = () => {
           workspaceName={location.state.workspaceName}
         />
       )}
-      {data?.workspaces && <WorkspaceChoice workspaces={data.workspaces} />}
+      {data?.workspaces && <WorkspaceList workspaces={data.workspaces} link />}
     </Container>
   )
 }

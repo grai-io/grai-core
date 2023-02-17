@@ -19,6 +19,13 @@ const Tables = lazy(() => import("./pages/tables/Tables"))
 const Table = lazy(() => import("./pages/tables/Table"))
 const Runs = lazy(() => import("./pages/runs/Runs"))
 const Run = lazy(() => import("./pages/runs/Run"))
+
+const Reports = lazy(() => import("./pages/reports/Reports"))
+const Commits = lazy(() => import("./pages/reports/Commits"))
+const PullRequests = lazy(() => import("./pages/reports/PullRequests"))
+const PullRequest = lazy(() => import("./pages/reports/PullRequest"))
+const Commit = lazy(() => import("./pages/reports/Commit"))
+
 const Connections = lazy(() => import("./pages/connections/Connections"))
 const ConnectionCreate = lazy(
   () => import("./pages/connections/ConnectionCreate")
@@ -33,6 +40,7 @@ const WorkspaceSettings = lazy(
   () => import("./pages/settings/WorkspaceSettings")
 )
 const Memberships = lazy(() => import("./pages/settings/Memberships"))
+const PostInstall = lazy(() => import("./pages/PostInstall"))
 
 const Login = lazy(() => import("./pages/auth/Login"))
 const Register = lazy(() => import("./pages/auth/Register"))
@@ -65,6 +73,19 @@ const Routes: React.FC = () => (
               <Route index element={<Runs />} />
               <Route path=":runId" element={<Run />} />
             </Route>
+            <Route path="reports">
+              <Route index element={<Reports />} />
+              <Route path=":type/:owner/:repo">
+                <Route index element={<Commits />} />
+                <Route path="pulls">
+                  <Route index element={<PullRequests />} />
+                  <Route path=":reference" element={<PullRequest />} />
+                </Route>
+                <Route path="commits/:reference" element={<Commit />} />
+                <Route path="*" element={<NotFound />} />
+              </Route>
+              <Route path="*" element={<NotFound />} />
+            </Route>
             <Route path="connections">
               <Route index element={<Connections />} />
               <Route path="create" element={<ConnectionCreate />} />
@@ -92,6 +113,7 @@ const Routes: React.FC = () => (
             </Route>
             <Route path="*" element={<NotFound />} />
           </Route>
+          <Route path="post-install" element={<PostInstall />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Route>

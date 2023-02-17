@@ -20,6 +20,7 @@ import RunStatus from "./RunStatus"
 
 interface Connection {
   name: string
+  connector: Connector
 }
 
 interface Connector {
@@ -36,7 +37,6 @@ interface Run {
   id: string
   status: string
   connection: Connection | null
-  connector: Connector
   created_at: string
   started_at: string | null
   finished_at: string | null
@@ -76,7 +76,7 @@ const RunsTable: React.FC<RunsTableProps> = ({ runs, loading }) => {
           >
             <TableCell sx={{ pl: 1 }}>{run.id.slice(0, 6)}</TableCell>
             <TableCell>{run.connection?.name}</TableCell>
-            <TableCell>{run.connector.name}</TableCell>
+            <TableCell>{run.connection?.connector.name}</TableCell>
             <TableCell>{run.user?.first_name}</TableCell>
             <TableCell sx={{ py: 0 }}>
               <RunStatus run={run} size="small" sx={{ cursor: "pointer" }} />

@@ -31,7 +31,7 @@ class TableToTableAttributes(V1Mixin):
 
 class TableToTableMetadata(GenericEdgeMetadataV1):
     edge_type: Literal["TableToTable"]
-    edge_attributes: TableToColumnAttributes = TableToTableAttributes()
+    edge_attributes: TableToTableAttributes = TableToTableAttributes()
 
 
 class ColumnToColumnAttributes(V1Mixin):
@@ -45,4 +45,4 @@ class ColumnToColumnMetadata(GenericEdgeMetadataV1):
     edge_attributes: ColumnToColumnAttributes = ColumnToColumnAttributes()
 
 
-Metadata = Union[TableToColumnMetadata, ColumnToColumnMetadata, GenericEdgeMetadataV1]
+Metadata = Union[TableToColumnMetadata, TableToTableMetadata, ColumnToColumnMetadata, GenericEdgeMetadataV1]

@@ -42,6 +42,11 @@ FRONTEND_PORT = config("SERVER_PORT", default="3000", cast=str)
 
 DISABLE_HTTP = config("DISABLE_HTTP", default=False)
 
+POSTHOG_PROJECT_API_KEY = config("POSTHOG_PROJECT_API_KEY", default="phc_Q8OCDm0JpCwt4Akk3pMybuBWniWPfOsJzRrdxWjAnjE")
+SENTRY_DSN = config(
+    "SENTRY_DSN", default="https://3ef0d6800e084eae8b3a8f4ee4be1d3d@o4503978528407552.ingest.sentry.io/4503978529456128"
+)
+
 schemes = ["https"] if DISABLE_HTTP else ["http", "https"]
 hosts = {SERVER_HOST, FRONTEND_HOST}
 if DEBUG:
@@ -110,6 +115,7 @@ THIRD_PARTY_APPS = [
 THE_GUIDE_APPS = [
     "lineage",
     "connections",
+    "installations",
     "workspaces",
     "users",
     "telemetry",
@@ -258,8 +264,8 @@ AWS_SES_REGION_ENDPOINT = "email.us-west-2.amazonaws.com"
 
 # Celery settings
 
-CELERY_BROKER_URL = os.environ.get("CELERY_BROKER", "redis://127.0.0.1:6379/0")
-CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND", "redis://127.0.0.1:6379/0")
+CELERY_BROKER_URL = config("CELERY_BROKER", "redis://127.0.0.1:6379/0")
+CELERY_RESULT_BACKEND = config("CELERY_BACKEND", "redis://127.0.0.1:6379/0")
 
 #: Only add pickle to this list if your broker is secured
 #: from unwanted access (see userguide/security.html)
@@ -273,3 +279,6 @@ SESSION_COOKIE_HTTPONLY = True
 
 DEFAULT_FILE_STORAGE = config("DEFAULT_FILE_STORAGE", "django.core.files.storage.FileSystemStorage")
 AWS_STORAGE_BUCKET_NAME = config("AWS_STORAGE_BUCKET_NAME", None)
+
+GITHUB_APP_ID = config("GITHUB_APP_ID", None)
+GITHUB_PRIVATE_KEY = config("GITHUB_PRIVATE_KEY", None)

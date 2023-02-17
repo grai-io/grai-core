@@ -33,10 +33,6 @@ export const UPLOAD_CONNECTOR_FILE = gql`
       file: $file
     ) {
       id
-      connector {
-        id
-        name
-      }
       connection {
         id
         name

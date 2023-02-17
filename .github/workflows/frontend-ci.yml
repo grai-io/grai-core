@@ -32,6 +32,7 @@ jobs:
         uses: codecov/codecov-action@v3
         with:
           flags: grai-frontend
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   build:
     runs-on: ubuntu-latest

@@ -7,12 +7,6 @@
 // GraphQL mutation operation: UploadConnectorFile
 // ====================================================
 
-export interface UploadConnectorFile_uploadConnectorFile_connector {
-  __typename: "Connector";
-  id: any;
-  name: string;
-}
-
 export interface UploadConnectorFile_uploadConnectorFile_connection_connector {
   __typename: "Connector";
   id: any;
@@ -37,8 +31,7 @@ export interface UploadConnectorFile_uploadConnectorFile_user {
 export interface UploadConnectorFile_uploadConnectorFile {
   __typename: "Run";
   id: any;
-  connector: UploadConnectorFile_uploadConnectorFile_connector;
-  connection: UploadConnectorFile_uploadConnectorFile_connection | null;
+  connection: UploadConnectorFile_uploadConnectorFile_connection;
   status: string;
   metadata: any;
   created_at: any;

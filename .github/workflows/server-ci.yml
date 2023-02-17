@@ -80,6 +80,7 @@ jobs:
           DB_USER: grai
           DB_NAME: grai
           DB_PASSWORD: grai
+          GITHUB_PRIVATE_KEY: installations/tests/sample.private-key.pem
         run: |
           python manage.py migrate --noinput
           coverage run -m pytest
@@ -89,3 +90,4 @@ jobs:
         uses: codecov/codecov-action@v3
         with:
           flags: grai-server
+          token: ${{ secrets.CODECOV_TOKEN }}
