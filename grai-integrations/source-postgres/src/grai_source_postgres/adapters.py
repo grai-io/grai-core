@@ -15,7 +15,9 @@ from multimethod import multimethod
 
 from grai_source_postgres.models import (
     ID,
+    UNIQUE_COLUMN_CONSTRAINTS,
     Column,
+    ColumnConstraint,
     ColumnID,
     Constraint,
     Edge,
@@ -47,7 +49,9 @@ def build_grai_metadata_from_column(current: Column, version: Literal["v1"] = "v
             "data_type": current.data_type,
             "default_value": default_value,
             "is_nullable": current.is_nullable,
-            "is_primary_key": current.is_pk,
+            "is_primary_key": current.column_constraint
+            and current.column_constraint.value == ColumnConstraint.primary_key.value,
+            "is_unique": current.column_constraint and current.column_constraint.value in UNIQUE_COLUMN_CONSTRAINTS,
         },
     }
 
