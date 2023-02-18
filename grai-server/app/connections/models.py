@@ -133,7 +133,7 @@ class Connection(TenantModel):
                         crontab=schedule,
                         name=f"{self.name}-{str(self.id)}",
                         task="connections.tasks.run_connection_schedule",
-                        kwargs={"connectionId": str(self.id)},
+                        kwargs=json.dumps({"connectionId": str(self.id)}),
                         enabled=self.is_active,
                     )
             else:
