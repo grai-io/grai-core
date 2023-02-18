@@ -64,7 +64,7 @@ class Connection(TenantModel):
     task = models.ForeignKey(
         "django_celery_beat.PeriodicTask",
         related_name="connections",
-        on_delete=models.PROTECT,
+        on_delete=models.DO_NOTHING,
         blank=True,
         null=True,
     )
@@ -103,6 +103,8 @@ class Connection(TenantModel):
         ]
 
     def save(self, *args, **kwargs):
+        task = None
+
         if isinstance(self.schedules, dict):
             type = self.schedules.get("type", None)
 
@@ -139,10 +141,14 @@ class Connection(TenantModel):
             else:
                 raise Exception("Schedule type not found")
 
-        # elif self.task:
-        #     self.task.delete()
+        elif self.task is not None:
+            task = self.task
+            self.task = None
 
         super(Connection, self).save(*args, **kwargs)
+
+        if task:
+            task.delete()
 
 
 class Run(TenantModel):
