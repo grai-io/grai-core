@@ -37,3 +37,4 @@ ignore:
   - "**/tests/*"
   - "**/test_*.py"
   - "**/*.test.*"
+  - "**/migrations/*"

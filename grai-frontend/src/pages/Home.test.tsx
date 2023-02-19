@@ -113,13 +113,7 @@ test("missing workspace", async () => {
 
   await waitFor(() => {
     expect(
-      screen.getByText("Please contact your administrator")
-    ).toBeInTheDocument()
-  })
-
-  await waitFor(() => {
-    expect(
-      screen.getByRole("heading", { name: /No workspaces/i })
+      screen.getByRole("heading", { name: /Create a workspace/i })
     ).toBeInTheDocument()
   })
 })

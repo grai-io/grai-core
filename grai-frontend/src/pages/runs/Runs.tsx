@@ -18,10 +18,10 @@ export const GET_RUNS = gql`
         connection {
           id
           name
-        }
-        connector {
-          id
-          name
+          connector {
+            id
+            name
+          }
         }
         created_at
         started_at

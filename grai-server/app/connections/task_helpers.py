@@ -273,3 +273,13 @@ def update(workspace: Workspace, items: List[T], active_items: Optional[List[T]]
     # )
     Model.objects.bulk_update(updated_items, ["metadata"])
     Model.objects.bulk_create(new_items)
+
+
+def modelToSchema(model, Schema, type):
+    spec = model.__dict__
+
+    if type == "Edge":
+        spec["source"] = NodeNamedID(**model.source.__dict__)
+        spec["destination"] = NodeNamedID(**model.destination.__dict__)
+
+    return Schema.from_spec(spec)

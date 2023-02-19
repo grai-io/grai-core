@@ -1,13 +1,12 @@
 import { Outlet, Navigate, useLocation } from "react-router-dom"
-import { useContext } from "react"
-import AuthContext from "./AuthContext"
+import useAuth from "./useAuth"
 
 type GuestRouteProps = {
   redirect?: string
 }
 
 const GuestRoute: React.FC<GuestRouteProps> = ({ redirect }) => {
-  const { loggedIn } = useContext(AuthContext)
+  const { loggedIn } = useAuth()
   let location = useLocation()
 
   if (loggedIn)
