@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import typing
 from typing import Dict, List, Literal, Optional, Union
 
 from pydantic import BaseModel, Field
@@ -12,7 +13,9 @@ from grai_source_dbt.models.shared import (
     NodeDeps,
 )
 from grai_source_dbt.models.tests import Test
-from grai_source_dbt.versions import NodeTypes
+
+if typing.TYPE_CHECKING:
+    from grai_source_dbt.versions import NodeTypes
 
 
 class Column(ID):
@@ -29,7 +32,7 @@ class Column(ID):
     resource_type: Literal["column"] = "column"
 
     #### Grai Specific ####
-    tests: Optional[List[Test]] = []
+    tests: Optional[List] = []
 
     @property
     def full_name(self):
@@ -55,6 +58,9 @@ class Column(ID):
     def __hash__(self):
         return hash((self.table_unique_id, self.name))
 
+    class Config:
+        validate_assignment = True
+
 
 class EdgeTerminus(BaseModel):
     name: str
@@ -63,6 +69,9 @@ class EdgeTerminus(BaseModel):
     @property
     def identifier(self):
         return f"{self.namespace}:{self.name}"
+
+    class Config:
+        validate_assignment = True
 
 
 class Edge(BaseModel):
@@ -78,3 +87,6 @@ class Edge(BaseModel):
     @property
     def name(self):
         return f"{self.source.identifier} -> {self.destination.identifier}"
+
+    class Config:
+        validate_assignment = True

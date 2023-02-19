@@ -13,8 +13,8 @@ from multimethod import multimethod
 
 from grai_source_dbt.models.nodes import Column, Constraint, Edge
 from grai_source_dbt.package_definitions import config
+from grai_source_dbt.utils import full_name
 from grai_source_dbt.versions import NodeTypes
-from grai_source_dbt.versions.v5 import full_name
 
 
 @multimethod
