@@ -2,6 +2,7 @@ import datetime
 import uuid
 
 import pytest
+from django_celery_beat.models import PeriodicTask
 
 from connections.models import Connection, Connector, Run
 from workspaces.models import Organisation, Workspace
@@ -152,7 +153,14 @@ class TestConnection:
         assert connection.name == "Connection 1"
         assert connection.task is not None
 
+        task = connection.task
+
         connection.schedules = None
         connection.save()
 
         assert connection.task is None
+
+        with pytest.raises(PeriodicTask.DoesNotExist) as e_info:
+            PeriodicTask.objects.get(id=task.id)
+
+        assert str(e_info.value) == "PeriodicTask matching query does not exist."
