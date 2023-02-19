@@ -126,3 +126,33 @@ class TestConnection:
             connection.save()
 
         assert str(e_info.value) == "Schedule type not found"
+
+    @pytest.mark.django_db
+    def test_connection_updated_remove_schedule(self):
+        organisation = Organisation.objects.create(name="O1")
+        workspace = Workspace.objects.create(name="W1", organisation=organisation)
+        connector = Connector.objects.create(name="C1")
+        connection = Connection.objects.create(workspace=workspace, connector=connector, name="Connection 1")
+
+        connection.schedules = {
+            "type": "cron",
+            "cron": {
+                "minutes": "*",
+                "hours": "*",
+                "day_of_week": "*",
+                "day_of_month": "*",
+                "month_of_year": "*",
+            },
+        }
+
+        connection.save()
+
+        assert connection.id == uuid.UUID(str(connection.id))
+        assert str(connection) == "Connection 1"
+        assert connection.name == "Connection 1"
+        assert connection.task is not None
+
+        connection.schedules = None
+        connection.save()
+
+        assert connection.task is None
