@@ -74,6 +74,8 @@ class RunAdmin(admin.ModelAdmin):
         "workspace",
     )
 
+    formfield_overrides = {JSONField: {"widget": PrettyJSONWidget}}
+
 
 admin.site.register(Connector, ConnectorAdmin)
 admin.site.register(Connection, ConnectionAdmin)

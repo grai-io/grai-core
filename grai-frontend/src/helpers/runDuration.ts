@@ -21,9 +21,53 @@ export const runQueued = (run: RunWithQueuedAt) =>
     run.started_at ? DateTime.fromISO(run.started_at) : DateTime.now()
   )
 
+type Period = {
+  short: string
+  long: string
+}
+
+type PeriodText = { [k: string]: Period }
+
+const periodText: PeriodText = {
+  year: {
+    short: "yr",
+    long: "year",
+  },
+  month: {
+    short: "mo",
+    long: "month",
+  },
+  day: {
+    short: "d",
+    long: "day",
+  },
+  hour: {
+    short: "h",
+    long: "hour",
+  },
+  minute: {
+    short: "m",
+    long: "minute",
+  },
+  second: {
+    short: "s",
+    long: "second",
+  },
+}
+
+const periodToText = (
+  value: number,
+  key: keyof PeriodText,
+  long: boolean
+): string =>
+  long
+    ? `${value} ${periodText[key].long}${value > 1 ? "s" : ""}`
+    : `${value}${periodText[key].short}`
+
 export const durationToString = (
   duration: DurationObjectUnits,
-  length: number = 2
+  length: number = 2,
+  long: boolean = false
 ) => {
   if (
     (duration.years ?? 0) +
@@ -38,24 +82,31 @@ export const durationToString = (
 
   let res: string[] = []
 
-  if (duration.years) res.push(`${duration.years}yr`)
-  if (duration.months) res.push(`${duration.months}mo`)
-  if (duration.days) res.push(`${Math.round(duration.days)}d`)
-  if (duration.hours) res.push(`${duration.hours}h`)
-  if (duration.minutes) res.push(`${duration.minutes}m`)
-  if (duration.seconds) res.push(`${Math.round(duration.seconds)}s`)
+  if (duration.years) res.push(periodToText(duration.years, "year", long))
+  if (duration.months) res.push(periodToText(duration.months, "month", long))
+  if (duration.days) res.push(periodToText(duration.days, "day", long))
+  if (duration.hours) res.push(periodToText(duration.hours, "hour", long))
+  if (duration.minutes) res.push(periodToText(duration.minutes, "minute", long))
+  if (duration.seconds)
+    res.push(periodToText(Number(duration.seconds.toFixed(0)), "second", long))
 
   return res.slice(0, length).join(" ")
 }
 
-export const durationAgo = (input: DateTime | string, length: number = 2) =>
+export const durationAgo = (
+  input: DateTime | string,
+  length: number = 2,
+  long: boolean = true
+) =>
   durationToString(
     Interval.fromDateTimes(
       typeof input === "string" ? DateTime.fromISO(input) : input,
       DateTime.now()
     )
       .toDuration(["years", "months", "days", "hours", "minutes", "seconds"])
-      .toObject()
+      .toObject(),
+    length,
+    long
   )
 
 export const runDurationString = (run: Run): string =>

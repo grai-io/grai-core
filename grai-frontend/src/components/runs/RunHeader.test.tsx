@@ -6,10 +6,6 @@ test("renders", async () => {
   const run = {
     id: "123456789",
     status: "success",
-    connector: {
-      id: "1",
-      name: "Connector",
-    },
     connection: null,
   }
 
@@ -25,16 +21,16 @@ test("renders connection", async () => {
   const run = {
     id: "123456789",
     status: "success",
-    connector: {
-      id: "1",
-      name: "Connector",
-    },
     connection: {
       id: "2",
       name: "Connection1",
       last_run: null,
       last_successful_run: null,
       runs: [],
+      connector: {
+        id: "1",
+        name: "Connector",
+      },
     },
   }
 

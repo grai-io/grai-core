@@ -1,5 +1,4 @@
 import userEvent from "@testing-library/user-event"
-import { GraphQLError } from "graphql"
 import React from "react"
 import { render, screen, waitFor } from "testing"
 import RunsTable from "./RunsTable"
@@ -10,10 +9,10 @@ const runs = [
     connection: {
       id: "1",
       name: "Connection 1",
-    },
-    connector: {
-      id: "1",
-      name: "Connector 1",
+      connector: {
+        id: "1",
+        name: "Connector 1",
+      },
     },
     status: "success",
     created_at: "1",

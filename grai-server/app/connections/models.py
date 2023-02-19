@@ -7,26 +7,29 @@ from django_multitenant.models import TenantModel
 
 
 class Connector(models.Model):
-    POSTGRESQL = "PostgreSQL"
-    SNOWFLAKE = "Snowflake"
+    POSTGRESQL = "postgres"
+    SNOWFLAKE = "snowflake"
     DBT = "dbt"
-    YAMLFILE = "YAML File"
-    MSSQL = "Microsoft SQL Server"
-    BIGQUERY = "Google BigQuery"
-    FIVETRAN = "Fivetran"
+    YAMLFILE = "yaml_file"
+    MSSQL = "mssql"
+    BIGQUERY = "bigquery"
+    FIVETRAN = "fivetran"
+    MYSQL = "mysql"
 
-    CONNECTOR_CHOICES = [
-        (POSTGRESQL, "PostgreSQL"),
-        (SNOWFLAKE, "Snowflake"),
+    CONNECTOR_SLUGS = [
+        (POSTGRESQL, "postgres"),
+        (SNOWFLAKE, "snowflake"),
         (DBT, "dbt"),
-        (YAMLFILE, "YAML File"),
-        (MSSQL, "Microsoft SQL Server"),
-        (BIGQUERY, "Google BigQuery"),
-        (FIVETRAN, "Fivetran"),
+        (YAMLFILE, "yaml_file"),
+        (MSSQL, "mssql"),
+        (BIGQUERY, "bigquery"),
+        (FIVETRAN, "fivetran"),
+        (MYSQL, "mysql"),
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=255, choices=CONNECTOR_CHOICES)
+    name = models.CharField(max_length=255)
+    slug = models.CharField(max_length=255, choices=CONNECTOR_SLUGS, blank=True, null=True)
     metadata = models.JSONField(default=dict)
     is_active = models.BooleanField(default=True)
     icon = models.CharField(max_length=255, blank=True, null=True)
@@ -61,7 +64,7 @@ class Connection(TenantModel):
     task = models.ForeignKey(
         "django_celery_beat.PeriodicTask",
         related_name="connections",
-        on_delete=models.PROTECT,
+        on_delete=models.DO_NOTHING,
         blank=True,
         null=True,
     )
@@ -72,6 +75,8 @@ class Connection(TenantModel):
         related_name="connections",
         on_delete=models.CASCADE,
     )
+
+    temp = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -98,6 +103,8 @@ class Connection(TenantModel):
         ]
 
     def save(self, *args, **kwargs):
+        task = None
+
         if isinstance(self.schedules, dict):
             type = self.schedules.get("type", None)
 
@@ -128,29 +135,38 @@ class Connection(TenantModel):
                         crontab=schedule,
                         name=f"{self.name}-{str(self.id)}",
                         task="connections.tasks.run_connection_schedule",
-                        kwargs={"connectionId": str(self.id)},
+                        kwargs=json.dumps({"connectionId": str(self.id)}),
                         enabled=self.is_active,
                     )
             else:
                 raise Exception("Schedule type not found")
 
-        # elif self.task:
-        #     self.task.delete()
+        elif self.task is not None:
+            task = self.task
+            self.task = None
 
         super(Connection, self).save(*args, **kwargs)
 
+        if task:
+            task.delete()
+
 
 class Run(TenantModel):
+    TESTS = "tests"
+    UPDATE = "update"
+
+    RUN_ACTIONS = [
+        (TESTS, "tests"),
+        (UPDATE, "update"),
+    ]
+
     tenant_id = "workspace_id"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    connector = models.ForeignKey("Connector", related_name="runs", on_delete=models.PROTECT)
     connection = TenantForeignKey(
         "Connection",
         related_name="runs",
         on_delete=models.CASCADE,
-        blank=True,
-        null=True,
     )
     status = models.CharField(max_length=255)
     metadata = models.JSONField(default=dict)
@@ -176,15 +192,22 @@ class Run(TenantModel):
         blank=True,
         null=True,
     )
+    trigger = models.JSONField(
+        default=dict,
+        blank=True,
+        null=True,
+    )
+    commit = models.ForeignKey(
+        "installations.Commit",
+        related_name="runs",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    action = models.CharField(max_length=255, choices=RUN_ACTIONS, default="update")
 
     def __str__(self):
         return str(self.id)
-
-    def save(self, *args, **kwargs):
-        if self.connector_id is None and self.connection_id is not None:
-            self.connector = self.connection.connector
-
-        super(Run, self).save(*args, **kwargs)
 
 
 def directory_path(instance, filename):

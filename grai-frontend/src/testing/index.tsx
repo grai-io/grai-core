@@ -46,7 +46,6 @@ type CustomRenderOptions = RenderOptions & {
   initialEntries?: (string | Partial<Location>)[] | null
   loggedIn?: boolean
   guestRoute?: boolean
-  throwError?: boolean
   mocks?: readonly MockedResponse<Record<string, any>>[]
 }
 
@@ -57,17 +56,17 @@ const customRender = (ui: ReactElement, options?: CustomRenderOptions) => {
   return basicRender(ui, options)
 }
 
-const basicRender = (ui: ReactElement, options?: CustomRenderOptions) =>
+const basicRender = (
+  ui: ReactElement,
+  { loggedIn = true, mocks }: CustomRenderOptions = {}
+) =>
   render(ui, {
     wrapper: props => (
       <HelmetProvider>
         <SnackbarProvider>
           <ThemeProvider theme={theme}>
-            <AuthMock initialLoggedIn={true}>
-              <AutoMockedProvider
-                mockResolvers={mockResolvers}
-                mocks={options?.mocks}
-              >
+            <AuthMock initialLoggedIn={loggedIn}>
+              <AutoMockedProvider mockResolvers={mockResolvers} mocks={mocks}>
                 {props.children}
               </AutoMockedProvider>
             </AuthMock>
@@ -75,7 +74,6 @@ const basicRender = (ui: ReactElement, options?: CustomRenderOptions) =>
         </SnackbarProvider>
       </HelmetProvider>
     ),
-    ...options,
   })
 
 const renderWithRouter = (
@@ -87,7 +85,6 @@ const renderWithRouter = (
     initialEntries = null,
     loggedIn = true,
     guestRoute = false,
-    throwError = false,
     mocks,
   }: CustomRenderOptions = {}
 ) => {
@@ -97,7 +94,7 @@ const renderWithRouter = (
         <ThemeProvider theme={theme}>
           <AutoMockedProvider mockResolvers={mockResolvers} mocks={mocks}>
             <MemoryRouter initialEntries={initialEntries ?? [route]}>
-              <AuthMock initialLoggedIn={loggedIn} throwError={throwError}>
+              <AuthMock initialLoggedIn={loggedIn}>
                 <SnackbarProvider maxSnack={3} hideIconVariant>
                   <Routes>
                     <Route element={<WorkspaceProvider />}>
