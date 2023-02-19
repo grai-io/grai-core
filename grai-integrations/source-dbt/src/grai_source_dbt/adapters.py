@@ -11,15 +11,10 @@ from grai_schemas.v1.metadata.edges import (
 from grai_schemas.v1.metadata.nodes import ColumnMetadata, NodeTypeLabels, TableMetadata
 from multimethod import multimethod
 
-from grai_source_dbt.models.nodes import (
-    Column,
-    Constraint,
-    Edge,
-    GraiNodeTypes,
-    SupportedDBTTypes,
-    Table,
-)
+from grai_source_dbt.models.nodes import Column, Constraint, Edge
 from grai_source_dbt.package_definitions import config
+from grai_source_dbt.versions import NodeTypes
+from grai_source_dbt.versions.v5 import full_name
 
 
 @multimethod
@@ -38,16 +33,16 @@ def build_grai_metadata_from_column(current: Column, version: Literal["v1"] = "v
         data["node_attributes"]["data_type"] = current.data_type
 
     for test in current.tests:
-        if test.test_metadata.name == "not_null":
+        if test.test_metadata["name"] == "not_null":
             data["node_attributes"]["is_nullable"] = False
-        elif test.test_metadata.name == "unique":
+        elif test.test_metadata["name"] == "unique":
             data["node_attributes"]["is_unique"] = True
 
     return ColumnMetadata(**data)
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_node(current: SupportedDBTTypes, version: Literal["v1"] = "v1") -> TableMetadata:
+def build_grai_metadata_from_node(current: NodeTypes, version: Literal["v1"] = "v1") -> TableMetadata:
     data = {"version": version, "node_type": NodeTypeLabels.table.value}
 
     return TableMetadata(**data)
@@ -57,7 +52,7 @@ def build_grai_metadata_from_node(current: SupportedDBTTypes, version: Literal["
 def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> GenericEdgeMetadataV1:
     data = {"version": version}
 
-    if isinstance(current.source, Table) and isinstance(current.destination, Column):
+    if isinstance(current.source, NodeTypes) and isinstance(current.destination, Column):
         data["edge_type"] = EdgeTypeLabels.table_to_column.value
         return TableToColumnMetadata(**data)
     elif isinstance(current.source, Column) and isinstance(current.destination, Column):
@@ -98,7 +93,7 @@ def build_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> Di
 
 
 @build_dbt_metadata.register
-def build_metadata_from_node(current: SupportedDBTTypes, version: Literal["v1"] = "v1") -> Dict:
+def build_metadata_from_node(current: NodeTypes, version: Literal["v1"] = "v1") -> Dict:
     data = {
         "description": current.description,
         "dbt_resource_type": current.resource_type,
@@ -106,8 +101,8 @@ def build_metadata_from_node(current: SupportedDBTTypes, version: Literal["v1"] 
         "table_name": current.name,
         "dbt_model_name": current.unique_id,
     }
-    if current.tests:
-        data["tests"] = [test.dict() for test in current.tests]
+    # if current.tests:
+    #     data["tests"] = [test.dict() for test in current.tests]
 
     return data
 
@@ -118,10 +113,10 @@ def adapt_to_client(current: Any, desired: Any) -> None:
 
 
 @adapt_to_client.register
-def adapt_table_to_client(current: SupportedDBTTypes, version: Literal["v1"] = "v1") -> NodeV1:
+def adapt_table_to_client(current: NodeTypes, version: Literal["v1"] = "v1") -> NodeV1:
     spec_dict = {
-        "name": current.full_name,
-        "namespace": current.namespace,
+        "name": current.grai_.full_name,
+        "namespace": current.grai_.namespace,
         "display_name": current.name,
         "data_source": config.integration_name,
         "metadata": {
@@ -148,24 +143,18 @@ def adapt_column_to_client(current: Column, version: Literal["v1"] = "v1") -> No
     return Schema.to_model(spec_dict, version=version, typing_type="Node")
 
 
-def make_name(node1: GraiNodeTypes, node2: GraiNodeTypes) -> str:
-    node1_name = f"{node1.namespace}:{node1.full_name}"
-    node2_name = f"{node2.namespace}:{node2.full_name}"
-    return f"{node1_name} -> {node2_name}"
-
-
 @adapt_to_client.register
 def adapt_edge_to_client(current: Edge, version: Literal["v1"] = "v1") -> EdgeV1:
     spec_dict = {
         "data_source": config.integration_name,
-        "name": make_name(current.source, current.destination),
+        "name": current.name,
         "namespace": current.source.namespace,
         "source": {
-            "name": current.source.full_name,
+            "name": current.source.name,
             "namespace": current.source.namespace,
         },
         "destination": {
-            "name": current.destination.full_name,
+            "name": current.destination.name,
             "namespace": current.destination.namespace,
         },
         "metadata": {
@@ -180,3 +169,8 @@ def adapt_edge_to_client(current: Edge, version: Literal["v1"] = "v1") -> EdgeV1
 @adapt_to_client.register
 def adapt_list_to_client(objs: Sequence, version: Literal["v1"]) -> List[Union[NodeV1, EdgeV1]]:
     return [adapt_to_client(item, version) for item in objs]
+
+
+@adapt_to_client.register
+def adapt_to_client_default_version(obj: Any):
+    return adapt_to_client(obj, version="v1")

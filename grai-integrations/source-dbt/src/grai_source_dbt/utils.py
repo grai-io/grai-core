@@ -2,7 +2,7 @@ import os
 
 import pkg_resources
 
-from grai_source_dbt.loader import DBTGraph, Manifest
+from grai_source_dbt.loader import Manifest
 
 file_id_map = {"jaffle_shop": "manifest.json"}
 
@@ -17,12 +17,12 @@ def get_manifest_file(file_id: str = "jaffle_shop") -> str:
 
 
 def load_from_manifest() -> Manifest:
-    manifest = Manifest.load(get_manifest_file())
+    manifest = Manifest.load(get_manifest_file(), "default")
     return manifest
 
 
-def load_dbt_graph() -> DBTGraph:
-    manifest = load_from_manifest()
-    dbt_graph = DBTGraph(manifest)
-
-    return dbt_graph
+# def load_dbt_graph() -> DBTGraph:
+#     manifest = load_from_manifest()
+#     dbt_graph = DBTGraph(manifest)
+#
+#     return dbt_graph

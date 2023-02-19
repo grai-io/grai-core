@@ -5,16 +5,13 @@ from grai_client.update import update
 from grai_schemas.base import Edge, Node
 
 from grai_source_dbt.adapters import adapt_to_client
-from grai_source_dbt.loader import DBTGraph, Manifest
+from grai_source_dbt.loader import Manifest
 
 
 def get_nodes_and_edges(manifest_file: str, namespace="default", version: str = "v1") -> Tuple[List[Node], List[Edge]]:
     manifest = Manifest.load(manifest_file)
-    dbt_graph = DBTGraph(manifest, namespace=namespace)
 
-    nodes = adapt_to_client(dbt_graph.nodes, version)
-    edges = adapt_to_client(dbt_graph.edges, version)
-    return nodes, edges
+    return manifest.adapted_nodes, manifest.adapted_edges
 
 
 def update_server(client: BaseClient, manifest_file: str, namespace: str = "default") -> Tuple[List[Node], List[Edge]]:
