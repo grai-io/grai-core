@@ -11,9 +11,9 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.8"
 pydantic = "^1.9.1"
-networkx = "^2.8.3"
 grai-client = "^0.2.0"
 grai-schemas = "^0.1.10"
+dbt-artifacts-parser = "^0.2.4"
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.10.1"

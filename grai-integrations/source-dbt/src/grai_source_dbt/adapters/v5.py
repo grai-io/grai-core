@@ -2,11 +2,7 @@ from typing import Dict, Literal
 
 from dbt_artifacts_parser.parsers.manifest.manifest_v5 import ParsedSourceDefinition
 
-from grai_source_dbt.adapters.adapters import (
-    adapt_to_client,
-    build_dbt_metadata,
-    build_grai_metadata,
-)
+from grai_source_dbt.adapters.adapters import build_dbt_metadata
 
 
 @build_dbt_metadata.register
