@@ -1,12 +1,13 @@
 import { OpenInFull, SearchRounded } from "@mui/icons-material"
 import { Box, Button, InputAdornment, TextField } from "@mui/material"
 import React, { ChangeEvent, useState } from "react"
-import TableColumnsTable from "./TableColumnsTable"
+import TableColumnsTable, { ColumnMetadata } from "./TableColumnsTable"
 
-interface Column {
+export interface Column {
   id: string
   name: string
   display_name: string
+  metadata: ColumnMetadata
 }
 
 type TableColumnsProps = {

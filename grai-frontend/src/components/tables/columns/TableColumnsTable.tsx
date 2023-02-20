@@ -8,11 +8,26 @@ import {
 } from "@mui/material"
 import React from "react"
 import theme from "theme"
+import ColumnConstraints from "./ColumnConstraints"
+
+interface GraiColumnMetadata {
+  node_attributes: {
+    data_type?: string | null
+    is_nullable?: boolean | null
+    is_primary_key?: boolean | null
+    is_unique?: boolean | null
+  }
+}
+
+export interface ColumnMetadata {
+  grai: GraiColumnMetadata | null
+}
 
 export interface Column {
   id: string
   name: string
   display_name: string
+  metadata: ColumnMetadata | null
 }
 
 type TableColumnsTableProps = {
@@ -36,11 +51,9 @@ const TableColumnsTable: React.FC<TableColumnsTableProps> = ({
         <TableRow>
           <TableCell sx={{ width: 0 }} />
           <TableCell>Name</TableCell>
-          <TableCell>Lineage</TableCell>
-          <TableCell>Completeness</TableCell>
-          <TableCell>Distribution</TableCell>
-          <TableCell>Description</TableCell>
-          <TableCell>Tags</TableCell>
+          <TableCell>Data Type</TableCell>
+          <TableCell>Constraints</TableCell>
+          <TableCell>Requirements</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -50,10 +63,12 @@ const TableColumnsTable: React.FC<TableColumnsTableProps> = ({
               {index}
             </TableCell>
             <TableCell sx={{ pl: 1 }}>{column.display_name}</TableCell>
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
+            <TableCell>
+              {column.metadata?.grai?.node_attributes.data_type}
+            </TableCell>
+            <TableCell>
+              <ColumnConstraints column={column} />
+            </TableCell>
             <TableCell />
           </TableRow>
         ))}

@@ -7,6 +7,7 @@ const columns: Column[] = [
     id: "1",
     name: "col1",
     display_name: "Column 1",
+    metadata: null,
   },
 ]
 

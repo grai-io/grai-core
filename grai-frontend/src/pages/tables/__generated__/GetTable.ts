@@ -12,6 +12,7 @@ export interface GetTable_workspace_table_columns {
   id: any;
   name: string;
   display_name: string;
+  metadata: any;
 }
 
 export interface GetTable_workspace_table_source_tables {

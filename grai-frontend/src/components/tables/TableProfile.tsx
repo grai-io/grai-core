@@ -1,14 +1,8 @@
 import { Card, Grid, Table, TableBody } from "@mui/material"
 import React from "react"
-import TableColumns from "./TableColumns"
+import TableColumns, { Column } from "./columns/TableColumns"
 import TableDependencies from "./TableDependencies"
 import TableDetail from "./TableDetail"
-
-interface Column {
-  id: string
-  name: string
-  display_name: string
-}
 
 interface BaseTable {
   id: string

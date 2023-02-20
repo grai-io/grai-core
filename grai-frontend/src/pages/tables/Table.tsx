@@ -29,6 +29,7 @@ export const GET_TABLE = gql`
           id
           name
           display_name
+          metadata
         }
         source_tables {
           id
