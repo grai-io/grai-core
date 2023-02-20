@@ -1,4 +1,5 @@
 import json
+from functools import cached_property
 from typing import List, Union
 
 from dbt_artifacts_parser.parser import parse_manifest
@@ -18,11 +19,11 @@ class ManifestProcessor:
         self.loader = loader
         self.namespace = loader.namespace
 
-    @property
+    @cached_property
     def adapted_nodes(self) -> List[NodeV1]:
         return adapt_to_client(self.loader.nodes, "v1")
 
-    @property
+    @cached_property
     def adapted_edges(self) -> List[EdgeV1]:
         return adapt_to_client(self.loader.edges, "v1")
 
