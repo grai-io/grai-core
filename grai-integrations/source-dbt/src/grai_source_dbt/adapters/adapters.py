@@ -104,17 +104,7 @@ def build_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> Di
 
 @build_dbt_metadata.register
 def build_metadata_from_node(current: AllDbtNodeTypes, version: Literal["v1"] = "v1") -> Dict:
-    data = {
-        "description": current.description,
-        "dbt_resource_type": current.resource_type,
-        "dbt_materialization": current.config.materialized,
-        "table_name": current.name,
-        "dbt_model_name": current.unique_id,
-    }
-    # if current.tests:
-    #     data["tests"] = [test.dict() for test in current.tests]
-
-    return data
+    return current.dict()
 
 
 @multimethod
