@@ -7,6 +7,7 @@ import GraphError from "components/utils/GraphError"
 import { gql, useMutation } from "@apollo/client"
 import useAuth from "./useAuth"
 import { Login, LoginVariables } from "./__generated__/Login"
+import posthog from "posthog"
 
 export const LOGIN = gql`
   mutation Login($username: String!, $password: String!) {
@@ -35,6 +36,8 @@ const LoginForm: React.FC = () => {
 
   const handleSubmit = () =>
     login({ variables: values })
+      .then(data => data.data?.login)
+      .then(user => user && posthog.identify(user.id, { email: user.username }))
       .then(() => setLoggedIn(true))
       .catch(() => {})
 

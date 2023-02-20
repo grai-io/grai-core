@@ -6,6 +6,8 @@ import { BrowserRouter } from "react-router-dom"
 import BackendProvider from "./providers/BackendProvider"
 import { SnackbarKey, SnackbarProvider } from "notistack"
 import { Close } from "@mui/icons-material"
+import PosthogProvider from "components/PosthogProvider"
+import "posthog"
 
 const App: React.FC = () => {
   const notistackRef = React.createRef<any>()
@@ -29,6 +31,7 @@ const App: React.FC = () => {
             )}
           >
             <BrowserRouter>
+              <PosthogProvider />
               <Routes />
             </BrowserRouter>
           </SnackbarProvider>

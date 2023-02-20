@@ -6,6 +6,7 @@ import useAuth from "./useAuth"
 import GraphError from "components/utils/GraphError"
 import { gql, useMutation } from "@apollo/client"
 import { Register, RegisterVariables } from "./__generated__/Register"
+import posthog from "posthog"
 
 export const REGISTER = gql`
   mutation Register($username: String!, $name: String!, $password: String!) {
@@ -39,6 +40,8 @@ const RegisterForm: React.FC = () => {
 
   const handleSubmit = async () =>
     register({ variables: values })
+      .then(data => data.data?.register)
+      .then(user => user && posthog.identify(user.id, { email: user.username }))
       .then(() => setLoggedIn(true))
       .catch(() => {})
 
