@@ -29,4 +29,3 @@ NodeTypes = Union[
 ]
 
 SourceTypes = Union[SourceDefinition]
-set_extra_fields([*get_args(NodeTypes), SourceTypes])  # type: ignore

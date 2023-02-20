@@ -49,8 +49,6 @@ NodeTypes = Union[
 ]
 SourceTypes = Union[ParsedSourceDefinition]
 
-set_extra_fields([*get_args(NodeTypes), SourceTypes])  # type: ignore
-
 
 class ManifestLoaderV7(ManifestLoaderV1):
     def make_edge(self, source, destination, constraint_type, definition: bool = False) -> Edge:
