@@ -811,6 +811,43 @@ async def test_workspace_repositories(test_context, test_repository):
 
 
 @pytest.mark.django_db
+async def test_workspace_repositories_filter(test_context, test_repository):
+    context, organisation, workspace, user = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!, $type: String!, $owner: String!, $repo: String!) {
+            workspace(id: $workspaceId) {
+                id
+                repositories(type: $type, owner: $owner, repo: $repo) {
+                    id
+                    type
+                    owner
+                    repo
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "type": test_repository.type,
+            "owner": test_repository.owner,
+            "repo": test_repository.repo,
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["repositories"][0]["id"] == str(test_repository.id)
+    assert result.data["workspace"]["repositories"][0]["type"] == Repository.GITHUB
+    assert result.data["workspace"]["repositories"][0]["owner"] == test_repository.owner
+    assert result.data["workspace"]["repositories"][0]["repo"] == test_repository.repo
+
+
+@pytest.mark.django_db
 async def test_workspace_repository_by_id(test_context, test_repository):
     context, organisation, workspace, user = test_context
 

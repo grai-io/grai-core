@@ -21,6 +21,7 @@ const Runs = lazy(() => import("./pages/runs/Runs"))
 const Run = lazy(() => import("./pages/runs/Run"))
 
 const Reports = lazy(() => import("./pages/reports/Reports"))
+const Repositories = lazy(() => import("./pages/reports/Repositories"))
 const Commits = lazy(() => import("./pages/reports/Commits"))
 const PullRequests = lazy(() => import("./pages/reports/PullRequests"))
 const PullRequest = lazy(() => import("./pages/reports/PullRequest"))
@@ -75,14 +76,17 @@ const Routes: React.FC = () => (
             </Route>
             <Route path="reports">
               <Route index element={<Reports />} />
-              <Route path=":type/:owner/:repo">
-                <Route index element={<Commits />} />
-                <Route path="pulls">
-                  <Route index element={<PullRequests />} />
-                  <Route path=":reference" element={<PullRequest />} />
+              <Route path=":type/:owner">
+                <Route index element={<Repositories />} />
+                <Route path=":repo">
+                  <Route index element={<Commits />} />
+                  <Route path="pulls">
+                    <Route index element={<PullRequests />} />
+                    <Route path=":reference" element={<PullRequest />} />
+                  </Route>
+                  <Route path="commits/:reference" element={<Commit />} />
+                  <Route path="*" element={<NotFound />} />
                 </Route>
-                <Route path="commits/:reference" element={<Commit />} />
-                <Route path="*" element={<NotFound />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Route>
