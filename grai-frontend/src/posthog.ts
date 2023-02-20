@@ -15,21 +15,29 @@ if (posthogApiKey)
     api_host: posthogHost,
   })
 
-const resPosthog = posthog
+type Posthog = {
+  identify: (
+    new_distinct_id?: string | undefined,
+    userPropertiesToSet?: Properties | undefined,
+    userPropertiesToSetOnce?: Properties | undefined
+  ) => void
+  reset: (reset_device_id?: boolean | undefined) => void
+}
 
-resPosthog.identify = (
-  new_distinct_id?: string | undefined,
-  userPropertiesToSet?: Properties | undefined,
-  userPropertiesToSetOnce?: Properties | undefined
-) =>
-  posthogApiKey &&
-  posthog.identify(
-    new_distinct_id,
-    userPropertiesToSet,
-    userPropertiesToSetOnce
-  )
-
-resPosthog.reset = (reset_device_id?: boolean | undefined) =>
-  posthogApiKey && posthog.reset(reset_device_id)
+const resPosthog: Posthog = {
+  identify: (
+    new_distinct_id?: string | undefined,
+    userPropertiesToSet?: Properties | undefined,
+    userPropertiesToSetOnce?: Properties | undefined
+  ) =>
+    posthogApiKey &&
+    posthog.identify(
+      new_distinct_id,
+      userPropertiesToSet,
+      userPropertiesToSetOnce
+    ),
+  reset: (reset_device_id?: boolean | undefined) =>
+    posthogApiKey && posthog.reset(reset_device_id),
+}
 
 export default resPosthog
