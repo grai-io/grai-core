@@ -7,22 +7,22 @@ from grai_schemas.v1.metadata.edges import TableToColumnMetadata
 from grai_schemas.v1.metadata.nodes import Metadata as NodeV1Metadata
 
 from grai_source_dbt.adapters import adapt_to_client
-from grai_source_dbt.data_tools import get_project_root, load_from_manifest
-from grai_source_dbt.loader import Manifest, ManifestProcessor
+from grai_source_dbt.data_tools import get_project_root
+from grai_source_dbt.loaders import SUPPORTED_VERSIONS
 from grai_source_dbt.package_definitions import config
+from grai_source_dbt.processor import ManifestProcessor
 from grai_source_dbt.utils import full_name
-from grai_source_dbt.versions import SUPPORTED_VERSIONS
 
 
 def manifest_ver(id: str) -> ManifestProcessor:
     file = f"{get_project_root()}/../tests/resources/{id}/jaffle_shop/manifest.json"
-    return Manifest.load(file, "default")
+    return ManifestProcessor.load(file, "default")
 
 
 processors = [manifest_ver(ver) for ver in SUPPORTED_VERSIONS]
 
 
-@pytest.mark.parametrize("processor", processors)
+@pytest.mark.parametrize("processor", processors, ids=SUPPORTED_VERSIONS)
 class TestProcessors:
     def test_all_manifest_node_full_names_unique(self, processor):
         node_names = {full_name(node) for node in processor.manifest.nodes.values()}

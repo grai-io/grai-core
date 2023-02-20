@@ -2,16 +2,18 @@ import json
 
 from dbt_artifacts_parser.parser import parse_manifest
 from dbt_artifacts_parser.parsers.utils import get_dbt_schema_version
-from dbt_artifacts_parser.parsers.version_map import ArtifactTypes
 
 from grai_source_dbt.adapters import adapt_to_client
-from grai_source_dbt.versions.base import BaseManifestLoader
-from grai_source_dbt.versions.v5 import ManifestLoaderV5
+from grai_source_dbt.loaders import MANIFEST_MAP
+from grai_source_dbt.loaders.base import BaseManifestLoader
 
 
 class ManifestProcessor:
+    MANIFEST_MAP = MANIFEST_MAP
+
     def __init__(self, loader: BaseManifestLoader):
         self.loader = loader
+        self.namespace = loader.namespace
 
     @property
     def adapted_nodes(self):
@@ -33,20 +35,16 @@ class ManifestProcessor:
     def manifest(self):
         return self.loader.manifest
 
-
-class Manifest:
-    manifest_map = {ArtifactTypes.MANIFEST_V5.value.dbt_schema_version: ManifestLoaderV5}
-
     @classmethod
-    def load(cls, file: str, namespace: str) -> ManifestProcessor:
+    def load(cls, file: str, namespace: str) -> "ManifestProcessor":
         with open(file, "r") as f:
             manifest_dict = json.load(f)
 
         version = get_dbt_schema_version(manifest_dict)
-        if version not in cls.manifest_map:
+        if version not in cls.MANIFEST_MAP:
             message = f"Manifest version {version} not yet supported"
             raise NotImplementedError(message)
 
         manifest_obj = parse_manifest(manifest_dict)
-        manifest = cls.manifest_map[version](manifest_obj, namespace)
+        manifest = MANIFEST_MAP[version](manifest_obj, namespace)
         return ManifestProcessor(manifest)

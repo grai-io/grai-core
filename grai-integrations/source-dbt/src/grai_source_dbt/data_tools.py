@@ -2,7 +2,7 @@ import os
 
 import pkg_resources
 
-from grai_source_dbt.loader import Manifest, ManifestProcessor
+from grai_source_dbt.processor import ManifestProcessor
 
 file_id_map = {"jaffle_shop": "manifest.json"}
 
@@ -21,5 +21,5 @@ def get_manifest_file(file_id: str = "jaffle_shop") -> str:
 
 
 def load_from_manifest() -> ManifestProcessor:
-    manifest = Manifest.load(get_manifest_file(), "default")
+    manifest = ManifestProcessor.load(get_manifest_file(), "default")
     return manifest

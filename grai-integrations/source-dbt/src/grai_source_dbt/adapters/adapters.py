@@ -11,15 +11,17 @@ from grai_schemas.v1.metadata.edges import (
 from grai_schemas.v1.metadata.nodes import ColumnMetadata, NodeTypeLabels, TableMetadata
 from multimethod import multimethod
 
-from grai_source_dbt.models.nodes import Column, Constraint, Edge
+from grai_source_dbt.loaders import AllDbtNodeTypes
+from grai_source_dbt.models.grai import Column, Constraint, Edge
 from grai_source_dbt.package_definitions import config
 from grai_source_dbt.utils import full_name
-from grai_source_dbt.versions import NodeTypes
 
 
 @multimethod
-def build_grai_metadata(current: Any, desired: Any) -> None:
-    raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)} for value {current}")
+def build_grai_metadata(current: Any, version: Any) -> None:
+    raise NotImplementedError(
+        f"No objects of type `{type(current)}` have no implementation of `build_grai_metadata` for version `{version}`."
+    )
 
 
 @build_grai_metadata.register
@@ -42,7 +44,7 @@ def build_grai_metadata_from_column(current: Column, version: Literal["v1"] = "v
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_node(current: NodeTypes, version: Literal["v1"] = "v1") -> TableMetadata:
+def build_grai_metadata_from_node(current: AllDbtNodeTypes, version: Literal["v1"] = "v1") -> TableMetadata:
     data = {"version": version, "node_type": NodeTypeLabels.table.value}
 
     return TableMetadata(**data)
@@ -52,7 +54,7 @@ def build_grai_metadata_from_node(current: NodeTypes, version: Literal["v1"] = "
 def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> GenericEdgeMetadataV1:
     data = {"version": version}
 
-    if isinstance(current.source, NodeTypes) and isinstance(current.destination, Column):
+    if isinstance(current.source, AllDbtNodeTypes) and isinstance(current.destination, Column):
         data["edge_type"] = EdgeTypeLabels.table_to_column.value
         return TableToColumnMetadata(**data)
     elif isinstance(current.source, Column) and isinstance(current.destination, Column):
@@ -64,8 +66,10 @@ def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") 
 
 
 @multimethod
-def build_dbt_metadata(current: Any, desired: Any) -> None:
-    raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)} for value {current}")
+def build_dbt_metadata(current: Any, version: Any) -> None:
+    raise NotImplementedError(
+        f"No objects of type `{type(current)}` have an implementation of `build_dbt_metadata` for version `{version}`."
+    )
 
 
 @build_dbt_metadata.register
@@ -93,7 +97,7 @@ def build_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> Di
 
 
 @build_dbt_metadata.register
-def build_metadata_from_node(current: NodeTypes, version: Literal["v1"] = "v1") -> Dict:
+def build_metadata_from_node(current: AllDbtNodeTypes, version: Literal["v1"] = "v1") -> Dict:
     data = {
         "description": current.description,
         "dbt_resource_type": current.resource_type,
@@ -108,12 +112,12 @@ def build_metadata_from_node(current: NodeTypes, version: Literal["v1"] = "v1") 
 
 
 @multimethod
-def adapt_to_client(current: Any, desired: Any) -> None:
-    raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)} for value {current}")
+def adapt_to_client(current: Any, version: Any) -> None:
+    raise NotImplementedError(f"No objects of type `{type(current)}` have a `{version}` client adapter.")
 
 
 @adapt_to_client.register
-def adapt_table_to_client(current: NodeTypes, version: Literal["v1"] = "v1") -> NodeV1:
+def adapt_table_to_client(current: AllDbtNodeTypes, version: Literal["v1"] = "v1") -> NodeV1:
     spec_dict = {
         "name": current.grai_.full_name,
         "namespace": current.grai_.namespace,

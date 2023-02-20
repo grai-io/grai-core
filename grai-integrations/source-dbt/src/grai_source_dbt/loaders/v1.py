@@ -2,74 +2,62 @@ from functools import cached_property
 from itertools import chain
 from typing import List, Union
 
-from dbt_artifacts_parser.parsers.manifest.manifest_v5 import (
+from dbt_artifacts_parser.parsers.manifest.manifest_v1 import (
     CompiledAnalysisNode,
-    CompiledGenericTestNode,
+    CompiledDataTestNode,
     CompiledHookNode,
     CompiledModelNode,
     CompiledRPCNode,
+    CompiledSchemaTestNode,
     CompiledSeedNode,
-    CompiledSingularTestNode,
     CompiledSnapshotNode,
-    CompiledSqlNode,
-    ManifestV5,
+    ManifestV1,
     ParsedAnalysisNode,
-    ParsedGenericTestNode,
+    ParsedDataTestNode,
     ParsedHookNode,
     ParsedModelNode,
     ParsedRPCNode,
+    ParsedSchemaTestNode,
     ParsedSeedNode,
-    ParsedSingularTestNode,
     ParsedSnapshotNode,
     ParsedSourceDefinition,
-    ParsedSqlNode,
 )
 
-from grai_source_dbt.models.nodes import Column, Edge, EdgeTerminus
+from grai_source_dbt.loaders.base import BaseManifestLoader
+from grai_source_dbt.models.grai import Column, Edge, EdgeTerminus
 from grai_source_dbt.models.shared import Constraint
 from grai_source_dbt.utils import full_name
-from grai_source_dbt.versions.base import BaseManifestLoader
-from grai_source_dbt.versions.utils import DbtTypes
 
-V5NodeTypes = Union[
+NodeTypes = Union[
     CompiledAnalysisNode,
-    CompiledSingularTestNode,
+    CompiledDataTestNode,
     CompiledModelNode,
     CompiledHookNode,
     CompiledRPCNode,
-    CompiledSqlNode,
-    CompiledGenericTestNode,
+    CompiledSchemaTestNode,
     CompiledSeedNode,
     CompiledSnapshotNode,
     ParsedAnalysisNode,
-    ParsedSingularTestNode,
+    ParsedDataTestNode,
     ParsedHookNode,
     ParsedModelNode,
     ParsedRPCNode,
-    ParsedSqlNode,
-    ParsedGenericTestNode,
+    ParsedSchemaTestNode,
     ParsedSeedNode,
     ParsedSnapshotNode,
+    ParsedSnapshotNode,
 ]
+SourceTypes = ParsedSourceDefinition
 
-DbtTypes.register_nodes(V5NodeTypes)
-DbtTypes.register_all(ParsedSourceDefinition)
-DbtTypes.register_manifest(ManifestV5)
+from pydantic import Extra
 
+for obj in NodeTypes.__args__:
+    obj.Config.extra = Extra.allow
 
-@full_name.register
-def node_full_name(obj: V5NodeTypes):
-    return f"{obj.schema_}.{obj.name}"
-
-
-@full_name.register
-def source_full_name(obj: ParsedSourceDefinition):
-    return f"{obj.schema_}.{obj.identifier}"
+SourceTypes.Config.extra = Extra.allow
 
 
-class ManifestLoaderV5(BaseManifestLoader):
-    manifest: ManifestV5
-
+class ManifestLoaderV1(BaseManifestLoader):
     @cached_property
     def test_resources(self):
         test_gen = (test for test in self.manifest.nodes.values() if test.resource_type.value == "test")
@@ -109,27 +97,35 @@ class ManifestLoaderV5(BaseManifestLoader):
         nodes = list(chain(self.node_map.values(), self.columns.values()))
         return list(nodes)
 
+    def make_edge(self, source, destination, constraint_type, definition: bool = False) -> Edge:
+        source_terminus = EdgeTerminus(name=full_name(source), namespace=self.namespace)
+        destination_terminus = EdgeTerminus(name=full_name(destination), namespace=self.namespace)
+        if definition:
+            return Edge(
+                constraint_type=constraint_type,
+                source=source_terminus,
+                destination=destination_terminus,
+                definition=source.raw_sql,
+            )
+        else:
+            return Edge(
+                constraint_type=constraint_type,
+                source=source_terminus,
+                destination=destination_terminus,
+            )
+
     @property
     def edges(self) -> List[Edge]:
         def get_edges():
             for table in self.node_map.values():
                 for column in table.columns.values():
                     column = self.columns[(table.unique_id, column.name)]
-                    edge = Edge(
-                        constraint_type=Constraint("bt"),
-                        source=EdgeTerminus(name=full_name(table), namespace=self.namespace),
-                        destination=EdgeTerminus(name=full_name(column), namespace=self.namespace),
-                    )
+                    edge = self.make_edge(table, column, Constraint("bt"))
                     yield edge
                 if hasattr(table, "depends_on"):
                     for parent_str in table.depends_on.nodes:
                         source_node = self.node_map[parent_str]
-                        edge = Edge(
-                            constraint_type=Constraint("dbtm"),
-                            source=EdgeTerminus(name=full_name(source_node), namespace=self.namespace),
-                            destination=EdgeTerminus(name=full_name(table), namespace=self.namespace),
-                            definition=self.node_map[parent_str].raw_sql,
-                        )
+                        edge = self.make_edge(source_node, table, Constraint("dbtm"), True)
                         yield edge
 
         return list(get_edges())

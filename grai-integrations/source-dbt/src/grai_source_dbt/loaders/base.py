@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 
 from pydantic import BaseModel
 
+from grai_source_dbt.loaders.utils import GraiExtras
 from grai_source_dbt.utils import full_name
-from grai_source_dbt.versions.utils import DbtTypes, GraiExtras
 
 
 class BaseManifestLoader(ABC):

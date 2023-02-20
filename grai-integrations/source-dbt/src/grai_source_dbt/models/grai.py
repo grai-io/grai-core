@@ -12,10 +12,9 @@ from grai_source_dbt.models.shared import (
     DBTNodeColumn,
     NodeDeps,
 )
-from grai_source_dbt.models.tests import Test
 
 if typing.TYPE_CHECKING:
-    from grai_source_dbt.versions import NodeTypes
+    from grai_source_dbt.loaders import NodeTypes
 
 
 class Column(ID):
