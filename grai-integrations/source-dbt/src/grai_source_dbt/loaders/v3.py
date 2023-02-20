@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, get_args
 
 from dbt_artifacts_parser.parsers.manifest.manifest_v3 import (
     CompiledAnalysisNode,
@@ -9,6 +9,7 @@ from dbt_artifacts_parser.parsers.manifest.manifest_v3 import (
     CompiledSchemaTestNode,
     CompiledSeedNode,
     CompiledSnapshotNode,
+    ManifestV3,
     ParsedAnalysisNode,
     ParsedDataTestNode,
     ParsedHookNode,
@@ -19,6 +20,8 @@ from dbt_artifacts_parser.parsers.manifest.manifest_v3 import (
     ParsedSnapshotNode,
     ParsedSourceDefinition,
 )
+
+from grai_source_dbt.utils import set_extra_fields
 
 NodeTypes = Union[
     CompiledAnalysisNode,
@@ -40,11 +43,6 @@ NodeTypes = Union[
     ParsedSnapshotNode,
 ]
 
-SourceTypes = ParsedSourceDefinition
+SourceTypes = Union[ParsedSourceDefinition]
 
-from pydantic import Extra
-
-for obj in NodeTypes.__args__:
-    obj.Config.extra = Extra.allow
-
-SourceTypes.Config.extra = Extra.allow
+set_extra_fields([*get_args(NodeTypes), SourceTypes])  # type: ignore

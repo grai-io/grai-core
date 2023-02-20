@@ -1,11 +1,14 @@
 import json
+from typing import List, Union
 
 from dbt_artifacts_parser.parser import parse_manifest
 from dbt_artifacts_parser.parsers.utils import get_dbt_schema_version
+from grai_schemas.v1 import EdgeV1, NodeV1
 
 from grai_source_dbt.adapters import adapt_to_client
-from grai_source_dbt.loaders import MANIFEST_MAP
+from grai_source_dbt.loaders import MANIFEST_MAP, AllDbtNodeTypes, ManifestTypes
 from grai_source_dbt.loaders.base import BaseManifestLoader
+from grai_source_dbt.models.grai import Column, Edge
 
 
 class ManifestProcessor:
@@ -16,23 +19,23 @@ class ManifestProcessor:
         self.namespace = loader.namespace
 
     @property
-    def adapted_nodes(self):
+    def adapted_nodes(self) -> List[NodeV1]:
         return adapt_to_client(self.loader.nodes, "v1")
 
     @property
-    def adapted_edges(self):
+    def adapted_edges(self) -> List[EdgeV1]:
         return adapt_to_client(self.loader.edges, "v1")
 
     @property
-    def nodes(self):
+    def nodes(self) -> List[Union[AllDbtNodeTypes, Column]]:
         return self.loader.nodes
 
     @property
-    def edges(self):
+    def edges(self) -> List[Edge]:
         return self.loader.edges
 
     @property
-    def manifest(self):
+    def manifest(self) -> ManifestTypes:
         return self.loader.manifest
 
     @classmethod

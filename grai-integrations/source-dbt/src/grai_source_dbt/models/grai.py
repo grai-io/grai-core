@@ -31,7 +31,7 @@ class Column(ID):
     resource_type: Literal["column"] = "column"
 
     #### Grai Specific ####
-    tests: Optional[List] = []
+    tests: List = []
 
     @property
     def full_name(self):

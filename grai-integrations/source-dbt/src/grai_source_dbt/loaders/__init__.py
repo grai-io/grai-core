@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Type, Union, get_args
 
 from dbt_artifacts_parser.parsers.version_map import ArtifactTypes
 
@@ -7,9 +7,13 @@ from grai_source_dbt.loaders.v1 import ManifestLoaderV1
 from grai_source_dbt.loaders.v7 import ManifestLoaderV7
 from grai_source_dbt.utils import full_name
 
+ManifestTypes = Union[
+    v1.ManifestV1, v2.ManifestV2, v3.ManifestV3, v4.ManifestV4, v6.ManifestV6, v7.ManifestV7, v8.ManifestV8
+]
 NodeTypes = Union[
     v1.NodeTypes, v2.NodeTypes, v3.NodeTypes, v4.NodeTypes, v5.NodeTypes, v6.NodeTypes, v7.NodeTypes, v8.NodeTypes
 ]
+
 SourceTypes = Union[
     v1.SourceTypes,
     v2.SourceTypes,
@@ -20,8 +24,8 @@ SourceTypes = Union[
     v7.SourceTypes,
     v8.SourceTypes,
 ]
-
 AllDbtNodeTypes = Union[NodeTypes, SourceTypes]
+AllDbtNodeInstances = get_args(AllDbtNodeTypes)
 
 
 @full_name.register

@@ -4,14 +4,21 @@ from grai_schemas import config as grai_base_config
 from grai_schemas.schema import Schema
 from grai_schemas.v1 import EdgeV1, NodeV1
 from grai_schemas.v1.metadata.edges import (
+    ColumnToColumnMetadata,
     EdgeTypeLabels,
     GenericEdgeMetadataV1,
     TableToColumnMetadata,
+    TableToTableMetadata,
 )
-from grai_schemas.v1.metadata.nodes import ColumnMetadata, NodeTypeLabels, TableMetadata
+from grai_schemas.v1.metadata.nodes import (
+    ColumnAttributes,
+    ColumnMetadata,
+    NodeTypeLabels,
+    TableMetadata,
+)
 from multimethod import multimethod
 
-from grai_source_dbt.loaders import AllDbtNodeTypes
+from grai_source_dbt.loaders import AllDbtNodeInstances, AllDbtNodeTypes
 from grai_source_dbt.models.grai import Column, Constraint, Edge
 from grai_source_dbt.package_definitions import config
 from grai_source_dbt.utils import full_name
@@ -26,20 +33,20 @@ def build_grai_metadata(current: Any, version: Any) -> None:
 
 @build_grai_metadata.register
 def build_grai_metadata_from_column(current: Column, version: Literal["v1"] = "v1") -> ColumnMetadata:
-    data = {
-        "version": version,
-        "node_type": NodeTypeLabels.column.value,
-        "node_attributes": {},
-    }
+    node_attributes: Dict[str, Union[bool, str]] = dict()
     if current.data_type is not None:
-        data["node_attributes"]["data_type"] = current.data_type
+        node_attributes["data_type"] = current.data_type
 
     for test in current.tests:
         if test.test_metadata["name"] == "not_null":
-            data["node_attributes"]["is_nullable"] = False
+            node_attributes["is_nullable"] = False
         elif test.test_metadata["name"] == "unique":
-            data["node_attributes"]["is_unique"] = True
-
+            node_attributes["is_unique"] = True
+    data = {
+        "version": version,
+        "node_type": NodeTypeLabels.column.value,
+        "node_attributes": ColumnAttributes(**node_attributes),
+    }
     return ColumnMetadata(**data)
 
 
@@ -54,15 +61,14 @@ def build_grai_metadata_from_node(current: AllDbtNodeTypes, version: Literal["v1
 def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> GenericEdgeMetadataV1:
     data = {"version": version}
 
-    if isinstance(current.source, AllDbtNodeTypes) and isinstance(current.destination, Column):
+    if isinstance(current.source, AllDbtNodeInstances) and isinstance(current.destination, Column):
         data["edge_type"] = EdgeTypeLabels.table_to_column.value
         return TableToColumnMetadata(**data)
     elif isinstance(current.source, Column) and isinstance(current.destination, Column):
         data["edge_type"] = EdgeTypeLabels.column_to_column.value
-        return TableToTableMetadata(**data)
+        return ColumnToColumnMetadata(**data)
     else:
-        data["edge_type"] = EdgeTypeLabels.generic.value
-        return GenericEdgeMetadataV1(**data)
+        return GenericEdgeMetadataV1(version=version, edge_type=EdgeTypeLabels.generic.value)
 
 
 @multimethod
@@ -128,7 +134,7 @@ def adapt_table_to_client(current: AllDbtNodeTypes, version: Literal["v1"] = "v1
             config.metadata_id: build_dbt_metadata(current, version),
         },
     }
-    return Schema.to_model(spec_dict, version=version, typing_type="Node")
+    return NodeV1.from_spec(spec_dict)
 
 
 @adapt_to_client.register
@@ -144,7 +150,7 @@ def adapt_column_to_client(current: Column, version: Literal["v1"] = "v1") -> No
         },
     }
 
-    return Schema.to_model(spec_dict, version=version, typing_type="Node")
+    return NodeV1.from_spec(spec_dict)
 
 
 @adapt_to_client.register
@@ -167,7 +173,7 @@ def adapt_edge_to_client(current: Edge, version: Literal["v1"] = "v1") -> EdgeV1
         },
     }
 
-    return Schema.to_model(spec_dict, version=version, typing_type="Edge")
+    return EdgeV1.from_spec(spec_dict)
 
 
 @adapt_to_client.register

@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Optional, Union, get_args
 
 from dbt_artifacts_parser.parsers.manifest.manifest_v7 import (
     CompiledAnalysisNode,
@@ -25,7 +25,7 @@ from dbt_artifacts_parser.parsers.manifest.manifest_v7 import (
 
 from grai_source_dbt.loaders.v1 import ManifestLoaderV1
 from grai_source_dbt.models.grai import Edge, EdgeTerminus
-from grai_source_dbt.utils import full_name
+from grai_source_dbt.utils import full_name, set_extra_fields
 
 NodeTypes = Union[
     CompiledAnalysisNode,
@@ -47,13 +47,9 @@ NodeTypes = Union[
     ParsedSeedNode,
     ParsedSnapshotNode,
 ]
-SourceTypes = ParsedSourceDefinition
-from pydantic import Extra
+SourceTypes = Union[ParsedSourceDefinition]
 
-for obj in NodeTypes.__args__:
-    obj.Config.extra = Extra.allow
-
-SourceTypes.Config.extra = Extra.allow
+set_extra_fields([*get_args(NodeTypes), SourceTypes])  # type: ignore
 
 
 class ManifestLoaderV7(ManifestLoaderV1):

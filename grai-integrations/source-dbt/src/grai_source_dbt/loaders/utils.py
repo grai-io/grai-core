@@ -1,6 +1,4 @@
-from typing import Sequence, Union
-
-from pydantic import BaseModel, Extra
+from pydantic import BaseModel
 
 
 def get_schema_id_from_version(label: str) -> str:

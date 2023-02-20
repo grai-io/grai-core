@@ -1,6 +1,6 @@
 from functools import cached_property
 from itertools import chain
-from typing import List, Union
+from typing import List, Type, Union, get_args
 
 from dbt_artifacts_parser.parsers.manifest.manifest_v1 import (
     CompiledAnalysisNode,
@@ -26,7 +26,7 @@ from dbt_artifacts_parser.parsers.manifest.manifest_v1 import (
 from grai_source_dbt.loaders.base import BaseManifestLoader
 from grai_source_dbt.models.grai import Column, Edge, EdgeTerminus
 from grai_source_dbt.models.shared import Constraint
-from grai_source_dbt.utils import full_name
+from grai_source_dbt.utils import full_name, set_extra_fields
 
 NodeTypes = Union[
     CompiledAnalysisNode,
@@ -47,14 +47,9 @@ NodeTypes = Union[
     ParsedSnapshotNode,
     ParsedSnapshotNode,
 ]
-SourceTypes = ParsedSourceDefinition
+SourceTypes = Union[ParsedSourceDefinition]
 
-from pydantic import Extra
-
-for obj in NodeTypes.__args__:
-    obj.Config.extra = Extra.allow
-
-SourceTypes.Config.extra = Extra.allow
+set_extra_fields([*get_args(NodeTypes), SourceTypes])
 
 
 class ManifestLoaderV1(BaseManifestLoader):
