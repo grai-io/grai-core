@@ -1,6 +1,6 @@
 import React from "react"
 import { render, screen } from "testing"
-import ColumnConstraints from "./ColumnConstraints"
+import ColumnProperties from "./ColumnProperties"
 
 test("renders", async () => {
   const column = {
@@ -8,9 +8,10 @@ test("renders", async () => {
     name: "column",
     display_name: "column",
     metadata: null,
+    requirements_edges: [],
   }
 
-  render(<ColumnConstraints column={column} />)
+  render(<ColumnProperties column={column} />)
 })
 
 test("renders empty", async () => {
@@ -23,9 +24,10 @@ test("renders empty", async () => {
         node_attributes: {},
       },
     },
+    requirements_edges: [],
   }
 
-  render(<ColumnConstraints column={column} />)
+  render(<ColumnProperties column={column} />)
 })
 
 test("renders not null", async () => {
@@ -40,9 +42,10 @@ test("renders not null", async () => {
         },
       },
     },
+    requirements_edges: [],
   }
 
-  render(<ColumnConstraints column={column} />)
+  render(<ColumnProperties column={column} />)
 
   expect(screen.getByText("Not Null")).toBeInTheDocument()
 })
@@ -59,9 +62,10 @@ test("renders unique", async () => {
         },
       },
     },
+    requirements_edges: [],
   }
 
-  render(<ColumnConstraints column={column} />)
+  render(<ColumnProperties column={column} />)
 
   expect(screen.getByText("Unique")).toBeInTheDocument()
 })
@@ -78,9 +82,10 @@ test("renders primary key", async () => {
         },
       },
     },
+    requirements_edges: [],
   }
 
-  render(<ColumnConstraints column={column} />)
+  render(<ColumnProperties column={column} />)
 
   expect(screen.getByText("Primary Key")).toBeInTheDocument()
 })

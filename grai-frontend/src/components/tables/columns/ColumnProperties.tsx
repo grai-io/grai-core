@@ -2,11 +2,11 @@ import { Chip, Stack } from "@mui/material"
 import React from "react"
 import { Column } from "./TableColumnsTable"
 
-type ColumnConstraintsProps = {
+type ColumnPropertiesProps = {
   column: Column
 }
 
-const ColumnConstraints: React.FC<ColumnConstraintsProps> = ({ column }) => {
+const ColumnProperties: React.FC<ColumnPropertiesProps> = ({ column }) => {
   const attributes = column.metadata?.grai?.node_attributes
 
   if (!attributes) return null
@@ -26,4 +26,4 @@ const ColumnConstraints: React.FC<ColumnConstraintsProps> = ({ column }) => {
   )
 }
 
-export default ColumnConstraints
+export default ColumnProperties

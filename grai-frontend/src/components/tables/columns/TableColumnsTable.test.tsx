@@ -8,6 +8,7 @@ const columns: Column[] = [
     name: "col1",
     display_name: "Column 1",
     metadata: null,
+    requirements_edges: [],
   },
 ]
 

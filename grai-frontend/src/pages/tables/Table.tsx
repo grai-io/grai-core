@@ -29,6 +29,16 @@ export const GET_TABLE = gql`
           id
           name
           display_name
+          requirements_edges {
+            id
+            metadata
+            source {
+              id
+              name
+              display_name
+              metadata
+            }
+          }
           metadata
         }
         source_tables {

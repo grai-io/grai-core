@@ -8,7 +8,8 @@ import {
 } from "@mui/material"
 import React from "react"
 import theme from "theme"
-import ColumnConstraints from "./ColumnConstraints"
+import ColumnProperties from "./ColumnProperties"
+import ColumnTests from "./ColumnTests"
 
 interface GraiColumnMetadata {
   node_attributes: {
@@ -23,11 +24,30 @@ export interface ColumnMetadata {
   grai: GraiColumnMetadata | null
 }
 
+interface RequirementEdge {
+  metadata?: {
+    grai?: {
+      edge_attributes: {
+        preserves_data_type?: boolean | null
+        preserves_nullable?: boolean | null
+        preserves_unique?: boolean | null
+      }
+    }
+  } | null
+  source: {
+    id: string
+    name: string
+    display_name: string
+    metadata: ColumnMetadata
+  }
+}
+
 export interface Column {
   id: string
   name: string
   display_name: string
   metadata: ColumnMetadata | null
+  requirements_edges: RequirementEdge[]
 }
 
 type TableColumnsTableProps = {
@@ -52,8 +72,8 @@ const TableColumnsTable: React.FC<TableColumnsTableProps> = ({
           <TableCell sx={{ width: 0 }} />
           <TableCell>Name</TableCell>
           <TableCell>Data Type</TableCell>
-          <TableCell>Constraints</TableCell>
-          <TableCell>Requirements</TableCell>
+          <TableCell>Properties</TableCell>
+          <TableCell>Tests</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -67,9 +87,11 @@ const TableColumnsTable: React.FC<TableColumnsTableProps> = ({
               {column.metadata?.grai?.node_attributes.data_type}
             </TableCell>
             <TableCell>
-              <ColumnConstraints column={column} />
+              <ColumnProperties column={column} />
             </TableCell>
-            <TableCell />
+            <TableCell>
+              <ColumnTests column={column} />
+            </TableCell>
           </TableRow>
         ))}
         {filteredColumns.length === 0 && (
