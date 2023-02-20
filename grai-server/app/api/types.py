@@ -477,8 +477,21 @@ class Workspace:
 
     # Repositories
     @gql.django.field
-    def repositories(self) -> List["Repository"]:
-        return RepositoryModel.objects.filter(workspace=self)
+    def repositories(
+        self, type: Optional[str] = None, owner: Optional[str] = None, repo: Optional[str] = None
+    ) -> List["Repository"]:
+        q_filter = Q(workspace=self)
+
+        if type:
+            q_filter &= Q(type=type)
+
+        if owner:
+            q_filter &= Q(owner=owner)
+
+        if repo:
+            q_filter &= Q(repo=repo)
+
+        return RepositoryModel.objects.filter(q_filter)
 
     @gql.django.field
     def repository(
