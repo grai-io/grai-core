@@ -21,6 +21,7 @@ import GraphError from "components/utils/GraphError"
 import { GetProfileMenu } from "./__generated__/GetProfileMenu"
 import useWorkspace from "helpers/useWorkspace"
 import useAuth from "components/auth/useAuth"
+import posthog from "posthog"
 
 export const GET_PROFILE = gql`
   query GetProfileMenu {
@@ -43,6 +44,7 @@ const ProfileMenu: React.FC = () => {
   const handleLogout = (popupState: InjectedProps) => {
     client.clearStore()
     logoutUser()
+    posthog.reset()
     popupState.close()
   }
 
