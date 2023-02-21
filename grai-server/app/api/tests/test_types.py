@@ -256,6 +256,9 @@ async def test_table(test_context):
                 id
                 columns {
                   id
+                  requirements_edges {
+                    id
+                  }
                 }
             }
           }
