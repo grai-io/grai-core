@@ -1,5 +1,5 @@
 import React from "react"
-import { render, screen } from "testing"
+import { render } from "testing"
 import ColumnRequirements from "./ColumnRequirements"
 
 test("renders", async () => {

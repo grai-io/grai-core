@@ -104,7 +104,7 @@ test("expand all", async () => {
 test("click row", async () => {
   const user = userEvent.setup()
 
-  const { container } = render(<Table />, {
+  render(<Table />, {
     withRouter: true,
   })
 
@@ -116,13 +116,13 @@ test("click row", async () => {
     expect(screen.getAllByText("Hello World")).toBeTruthy()
   })
 
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
   await user.click(
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
     screen.getByTestId("columns-table").querySelectorAll("tbody > tr")[0]
   )
 
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
   await user.click(
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
     screen.getByTestId("columns-table").querySelectorAll("tbody > tr")[0]
   )
 })
