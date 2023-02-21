@@ -1,6 +1,4 @@
 import { gql, useQuery } from "@apollo/client"
-import { Box } from "@mui/material"
-import Graph from "components/graph/Graph"
 import PageLayout from "components/layout/PageLayout"
 import GraphError from "components/utils/GraphError"
 import useWorkspace from "helpers/useWorkspace"
@@ -13,6 +11,7 @@ import {
   GetPullRequestVariables,
 } from "./__generated__/GetPullRequest"
 import resultsToErrors from "helpers/resultsToErrors"
+import ReportBody from "components/reports/ReportBody"
 
 export const GET_PULL_REQUEST = gql`
   query GetPullRequest(
@@ -125,15 +124,7 @@ const PullRequest: React.FC = () => {
         repository={data.workspace.repository}
         pullRequest={pullRequest}
       />
-      <Box
-        sx={{
-          height: "calc(100vh - 186.002px)",
-          width: "100%",
-          backgroundColor: theme => theme.palette.grey[100],
-        }}
-      >
-        <Graph tables={tables} edges={edges} errors={errors} limitGraph />
-      </Box>
+      <ReportBody tables={tables} edges={edges} errors={errors} />
     </PageLayout>
   )
 }
