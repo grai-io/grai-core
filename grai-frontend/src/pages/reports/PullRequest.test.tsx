@@ -12,6 +12,10 @@ test("renders", async () => {
   await waitFor(() => {
     expect(screen.getByRole("heading", { name: /Hello world/i })).toBeTruthy()
   })
+
+  await waitFor(() => {
+    expect(screen.getByText("Failed")).toBeTruthy()
+  })
 })
 
 test("renders errors", async () => {
