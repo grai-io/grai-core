@@ -187,6 +187,7 @@ test("renders repeated", async () => {
       },
     ],
     properties: [],
+    requirements: [],
   }
 
   render(<ColumnTests column={column} />)

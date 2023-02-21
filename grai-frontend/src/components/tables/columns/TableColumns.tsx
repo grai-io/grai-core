@@ -1,4 +1,4 @@
-import { OpenInFull, SearchRounded } from "@mui/icons-material"
+import { CloseFullscreen, OpenInFull, SearchRounded } from "@mui/icons-material"
 import { Box, Button, InputAdornment, TextField } from "@mui/material"
 import React, { ChangeEvent, useState } from "react"
 import TableColumnsTable, { Column } from "./TableColumnsTable"
@@ -9,9 +9,15 @@ type TableColumnsProps = {
 
 const TableColumns: React.FC<TableColumnsProps> = ({ columns }) => {
   const [search, setSearch] = useState<string | null>(null)
+  const [expanded, setExpanded] = useState<string[]>([])
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) =>
     setSearch(event.target.value)
+
+  const handleExpand = (id: string, expand: boolean) =>
+    setExpanded(expand ? [...expanded, id] : expanded.filter(e => e !== id))
+  const handleExpandAll = () => setExpanded(columns.map(column => column.id))
+  const handleCollapseAll = () => setExpanded([])
 
   return (
     <>
@@ -34,12 +40,31 @@ const TableColumns: React.FC<TableColumnsProps> = ({ columns }) => {
           />
         </Box>
         <Box>
-          <Button variant="outlined" startIcon={<OpenInFull />}>
-            Expand all rows
-          </Button>
+          {expanded.length > 0 ? (
+            <Button
+              variant="outlined"
+              startIcon={<CloseFullscreen />}
+              onClick={handleCollapseAll}
+            >
+              Collapse all rows
+            </Button>
+          ) : (
+            <Button
+              variant="outlined"
+              startIcon={<OpenInFull />}
+              onClick={handleExpandAll}
+            >
+              Expand all rows
+            </Button>
+          )}
         </Box>
       </Box>
-      <TableColumnsTable search={search} columns={columns} />
+      <TableColumnsTable
+        search={search}
+        columns={columns}
+        expanded={expanded}
+        onExpand={handleExpand}
+      />
     </>
   )
 }

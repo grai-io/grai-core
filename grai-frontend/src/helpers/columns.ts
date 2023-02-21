@@ -40,6 +40,7 @@ export interface Column {
 export interface EnrichedColumn extends Column {
   properties: string[]
   tests: Test[]
+  requirements: Requirement[]
 }
 
 interface Source {
@@ -53,6 +54,15 @@ export type Test = {
   data_type?: string
   source: Source
   passed: boolean | null
+}
+
+type Requirement = {
+  source: Source
+  tests: Edge[]
+}
+
+export type Edge = Test & {
+  preserved: boolean | null
 }
 
 export const columnTests = (column: Column, properties: string[]) =>
@@ -98,6 +108,49 @@ export const columnTests = (column: Column, properties: string[]) =>
     return res
   }, [])
 
+export const columnEdges = (column: Column, properties: string[]) =>
+  column.requirements_edges.reduce<Edge[]>((res, edge) => {
+    const edge_attributes = edge.metadata?.grai?.edge_attributes
+    const node_attributes = edge.source.metadata.grai?.node_attributes
+
+    if (!node_attributes) return res
+
+    //Nullable
+    if (node_attributes.is_nullable === false)
+      return res.concat({
+        type: "not-null",
+        text: "Not Null",
+        source: edge.source,
+        passed: properties.includes("Not Null"),
+        preserved: edge_attributes?.preserves_nullable ?? false,
+      })
+
+    //Unique
+    if (node_attributes.is_unique)
+      return res.concat({
+        type: "unique",
+        text: "Unique",
+        source: edge.source,
+        passed: properties.includes("Unique"),
+        preserved: edge_attributes?.preserves_unique ?? false,
+      })
+
+    //Data type
+    if (node_attributes.data_type)
+      return res.concat({
+        type: "data-type",
+        text: `Data Type: ${node_attributes.data_type}`,
+        source: edge.source,
+        data_type: node_attributes.data_type,
+        passed:
+          column.metadata?.grai?.node_attributes.data_type ===
+          node_attributes.data_type,
+        preserved: edge_attributes?.preserves_data_type ?? false,
+      })
+
+    return res
+  }, [])
+
 export const columnProperties = (column: Column) => {
   const attributes = column.metadata?.grai?.node_attributes
 
@@ -112,11 +165,18 @@ export const columnProperties = (column: Column) => {
   return properties
 }
 
+export const columnRequirements = (column: Column, properties: string[]) =>
+  column.requirements_edges.map(edge => ({
+    source: edge.source,
+    tests: columnEdges(column, properties),
+  }))
+
 export const enrichColumn = (column: Column): EnrichedColumn => {
   const properties = columnProperties(column)
   const tests = columnTests(column, properties)
+  const requirements = columnRequirements(column, properties)
 
-  return { ...column, properties, tests }
+  return { ...column, properties, tests, requirements }
 }
 
 export const enrichColumns = (columns: Column[]) => columns.map(enrichColumn)
