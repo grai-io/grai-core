@@ -1,15 +1,14 @@
 import { gql, useQuery } from "@apollo/client"
-import { Box } from "@mui/material"
 import PageLayout from "components/layout/PageLayout"
 import CommitHeader from "components/reports/commit/CommitHeader"
 import GraphError from "components/utils/GraphError"
 import useWorkspace from "helpers/useWorkspace"
-import Graph from "components/graph/Graph"
 import NotFound from "pages/NotFound"
 import React from "react"
 import { useParams } from "react-router-dom"
 import { GetCommit, GetCommitVariables } from "./__generated__/GetCommit"
 import resultsToErrors from "helpers/resultsToErrors"
+import ReportBody from "components/reports/ReportBody"
 
 export const GET_COMMIT = gql`
   query GetCommit(
@@ -121,15 +120,7 @@ const Commit: React.FC = () => {
         repository={data.workspace.repository}
         commit={commit}
       />
-      <Box
-        sx={{
-          height: "calc(100vh - 186.002px)",
-          width: "100%",
-          backgroundColor: theme => theme.palette.grey[100],
-        }}
-      >
-        <Graph tables={tables} edges={edges} errors={errors} limitGraph />
-      </Box>
+      <ReportBody tables={tables} edges={edges} errors={errors} />
     </PageLayout>
   )
 }
