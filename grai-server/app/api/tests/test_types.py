@@ -248,6 +248,14 @@ async def test_table(test_context):
         workspace=workspace, metadata={"grai": {"node_type": "Table"}}, name=uuid.uuid4()
     )
 
+    column = await Node.objects.acreate(
+        workspace=workspace, metadata={"grai": {"node_type": "Column"}}, name=uuid.uuid4()
+    )
+
+    edge = await Edge.objects.acreate(
+        workspace=workspace, source=table, destination=column, metadata={"grai": {"edge_type": "TableToColumn"}}
+    )
+
     query = """
         query Workspace($workspaceId: ID!, $tableId: ID!) {
           workspace(id: $workspaceId) {
@@ -256,6 +264,9 @@ async def test_table(test_context):
                 id
                 columns {
                   id
+                  requirements_edges {
+                    id
+                  }
                 }
             }
           }

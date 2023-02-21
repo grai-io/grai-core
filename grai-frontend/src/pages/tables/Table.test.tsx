@@ -82,3 +82,59 @@ test("lineage", async () => {
 
   await user.click(screen.getByRole("tab", { name: /Lineage/i }))
 })
+
+test("expand all", async () => {
+  render(<Table />, {
+    withRouter: true,
+  })
+
+  await waitFor(() => {
+    expect(screen.getByText("Profile")).toBeInTheDocument()
+  })
+
+  await userEvent.click(
+    screen.getByRole("button", { name: /Expand all rows/i })
+  )
+
+  await userEvent.click(
+    screen.getByRole("button", { name: /Collapse all rows/i })
+  )
+})
+
+test("click row", async () => {
+  const user = userEvent.setup()
+
+  render(<Table />, {
+    withRouter: true,
+  })
+
+  await waitFor(() => {
+    expect(screen.getByText("Profile")).toBeInTheDocument()
+  })
+
+  await waitFor(() => {
+    expect(screen.getAllByText("Hello World")).toBeTruthy()
+  })
+
+  await user.click(
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+    screen.getByTestId("columns-table").querySelectorAll("tbody > tr")[0]
+  )
+
+  await user.click(
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+    screen.getByTestId("columns-table").querySelectorAll("tbody > tr")[0]
+  )
+})
+
+test("search", async () => {
+  render(<Table />, {
+    withRouter: true,
+  })
+
+  await waitFor(() => {
+    expect(screen.getByText("Profile")).toBeInTheDocument()
+  })
+
+  await userEvent.type(screen.getByRole("textbox"), "Search")
+})
