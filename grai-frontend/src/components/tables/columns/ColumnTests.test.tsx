@@ -158,3 +158,38 @@ test("renders data type", async () => {
 
   expect(screen.getByText("Data Type: number")).toBeInTheDocument()
 })
+
+test("renders repeated", async () => {
+  const column = {
+    id: "1",
+    name: "column",
+    display_name: "column",
+    metadata: null,
+    requirements_edges: [],
+    tests: [
+      {
+        text: "Unique",
+        passed: true,
+        type: "unique",
+        source: {
+          name: "s1",
+          display_name: "s1",
+        },
+      },
+      {
+        text: "Unique",
+        passed: true,
+        type: "unique",
+        source: {
+          name: "s2",
+          display_name: "s2",
+        },
+      },
+    ],
+    properties: [],
+  }
+
+  render(<ColumnTests column={column} />)
+
+  expect(screen.getByText("Unique")).toBeInTheDocument()
+})

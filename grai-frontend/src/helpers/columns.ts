@@ -39,7 +39,7 @@ export interface Column {
 
 export interface EnrichedColumn extends Column {
   properties: string[]
-  tests: Requirement[]
+  tests: Test[]
 }
 
 interface Source {
@@ -47,7 +47,7 @@ interface Source {
   display_name: string
 }
 
-type Requirement = {
+export type Test = {
   type: string
   text: string
   data_type?: string
@@ -56,7 +56,7 @@ type Requirement = {
 }
 
 export const columnTests = (column: Column, properties: string[]) =>
-  column.requirements_edges.reduce<Requirement[]>((res, edge) => {
+  column.requirements_edges.reduce<Test[]>((res, edge) => {
     const edge_attributes = edge.metadata?.grai?.edge_attributes
     const node_attributes = edge.source.metadata.grai?.node_attributes
 
