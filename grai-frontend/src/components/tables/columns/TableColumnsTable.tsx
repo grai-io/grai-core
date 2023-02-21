@@ -6,6 +6,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material"
+import { enrichColumns } from "helpers/columns"
 import React from "react"
 import theme from "theme"
 import ColumnProperties from "./ColumnProperties"
@@ -65,6 +66,8 @@ const TableColumnsTable: React.FC<TableColumnsTableProps> = ({
       )
     : columns
 
+  const enrichedColumns = enrichColumns(filteredColumns)
+
   return (
     <Table sx={{ mt: 1 }}>
       <TableHead sx={{ backgroundColor: theme.palette.grey[100] }}>
@@ -77,7 +80,7 @@ const TableColumnsTable: React.FC<TableColumnsTableProps> = ({
         </TableRow>
       </TableHead>
       <TableBody>
-        {filteredColumns.map((column, index) => (
+        {enrichedColumns.map((column, index) => (
           <TableRow key={column.id}>
             <TableCell sx={{ color: theme.palette.grey[500], pr: 0 }}>
               {index}
@@ -86,10 +89,10 @@ const TableColumnsTable: React.FC<TableColumnsTableProps> = ({
             <TableCell>
               {column.metadata?.grai?.node_attributes.data_type}
             </TableCell>
-            <TableCell>
+            <TableCell sx={{ py: 0 }}>
               <ColumnProperties column={column} />
             </TableCell>
-            <TableCell>
+            <TableCell sx={{ py: 0 }}>
               <ColumnTests column={column} />
             </TableCell>
           </TableRow>

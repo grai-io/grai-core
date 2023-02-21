@@ -1,28 +1,28 @@
+import { enrichColumn } from "helpers/columns"
 import React from "react"
 import { render, screen } from "testing"
 import ColumnTests from "./ColumnTests"
 
 test("renders empty", async () => {
-  const column = {
+  const column = enrichColumn({
     id: "1",
     name: "column",
     display_name: "column",
     metadata: null,
     requirements_edges: [],
-  }
+  })
 
   render(<ColumnTests column={column} />)
 })
 
 test("renders none", async () => {
-  const column = {
+  const column = enrichColumn({
     id: "1",
     name: "column",
     display_name: "column",
     metadata: null,
     requirements_edges: [
       {
-        id: "1",
         metadata: {
           grai: {
             edge_attributes: {},
@@ -40,20 +40,25 @@ test("renders none", async () => {
         },
       },
     ],
-  }
+  })
 
   render(<ColumnTests column={column} />)
 })
 
 test("renders nullable", async () => {
-  const column = {
+  const column = enrichColumn({
     id: "1",
     name: "column",
     display_name: "column",
-    metadata: null,
+    metadata: {
+      grai: {
+        node_attributes: {
+          is_nullable: false,
+        },
+      },
+    },
     requirements_edges: [
       {
-        id: "1",
         metadata: {
           grai: {
             edge_attributes: {
@@ -75,7 +80,7 @@ test("renders nullable", async () => {
         },
       },
     ],
-  }
+  })
 
   render(<ColumnTests column={column} />)
 
@@ -83,14 +88,13 @@ test("renders nullable", async () => {
 })
 
 test("renders unique", async () => {
-  const column = {
+  const column = enrichColumn({
     id: "1",
     name: "column",
     display_name: "column",
     metadata: null,
     requirements_edges: [
       {
-        id: "1",
         metadata: {
           grai: {
             edge_attributes: {
@@ -112,7 +116,7 @@ test("renders unique", async () => {
         },
       },
     ],
-  }
+  })
 
   render(<ColumnTests column={column} />)
 
@@ -120,14 +124,13 @@ test("renders unique", async () => {
 })
 
 test("renders data type", async () => {
-  const column = {
+  const column = enrichColumn({
     id: "1",
     name: "column",
     display_name: "column",
     metadata: null,
     requirements_edges: [
       {
-        id: "1",
         metadata: {
           grai: {
             edge_attributes: {
@@ -149,7 +152,7 @@ test("renders data type", async () => {
         },
       },
     ],
-  }
+  })
 
   render(<ColumnTests column={column} />)
 

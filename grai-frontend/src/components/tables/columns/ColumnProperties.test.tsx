@@ -1,21 +1,22 @@
+import { enrichColumn } from "helpers/columns"
 import React from "react"
 import { render, screen } from "testing"
 import ColumnProperties from "./ColumnProperties"
 
 test("renders", async () => {
-  const column = {
+  const column = enrichColumn({
     id: "1",
     name: "column",
     display_name: "column",
     metadata: null,
     requirements_edges: [],
-  }
+  })
 
   render(<ColumnProperties column={column} />)
 })
 
 test("renders empty", async () => {
-  const column = {
+  const column = enrichColumn({
     id: "1",
     name: "column",
     display_name: "column",
@@ -25,13 +26,13 @@ test("renders empty", async () => {
       },
     },
     requirements_edges: [],
-  }
+  })
 
   render(<ColumnProperties column={column} />)
 })
 
 test("renders not null", async () => {
-  const column = {
+  const column = enrichColumn({
     id: "1",
     name: "column",
     display_name: "column",
@@ -43,7 +44,7 @@ test("renders not null", async () => {
       },
     },
     requirements_edges: [],
-  }
+  })
 
   render(<ColumnProperties column={column} />)
 
@@ -51,7 +52,7 @@ test("renders not null", async () => {
 })
 
 test("renders unique", async () => {
-  const column = {
+  const column = enrichColumn({
     id: "1",
     name: "column",
     display_name: "column",
@@ -63,7 +64,7 @@ test("renders unique", async () => {
       },
     },
     requirements_edges: [],
-  }
+  })
 
   render(<ColumnProperties column={column} />)
 
@@ -71,7 +72,7 @@ test("renders unique", async () => {
 })
 
 test("renders primary key", async () => {
-  const column = {
+  const column = enrichColumn({
     id: "1",
     name: "column",
     display_name: "column",
@@ -83,7 +84,7 @@ test("renders primary key", async () => {
       },
     },
     requirements_edges: [],
-  }
+  })
 
   render(<ColumnProperties column={column} />)
 
