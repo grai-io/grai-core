@@ -162,8 +162,8 @@ class GraphAnalyzer:
 
             new_path = [*path, test_node]
 
-            test_node_is_unique = node_meta.node_attributes.is_nullable
-            if test_node_is_unique is not None and test_node_is_unique != is_nullable:
+            test_node_is_nullable = node_meta.node_attributes.is_nullable
+            if test_node_is_nullable is not None and test_node_is_nullable != is_nullable:
                 yield new_path
             else:
                 yield from self.traverse_null_violations(test_node, is_nullable, path=new_path)
