@@ -45,7 +45,8 @@ class PostgresConnector:
         self.password = password if password is not None else get_from_env("password")
         self.namespace = namespace if namespace is not None else get_from_env("namespace", "default")
 
-        # Combo allows a user to use the context manager
+        # Combo allows the connection manager to guarantee the connector returns to it's previous connection
+        # status after __exit__ is called.
         self._connection = None
         self._is_connected = False
 
