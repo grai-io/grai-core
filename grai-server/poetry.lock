@@ -670,14 +670,14 @@ pygments = ["pygments (>=2.2.0)"]
 
 [[package]]
 name = "django"
-version = "4.1.5"
+version = "4.1.7"
 description = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
 category = "main"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "Django-4.1.5-py3-none-any.whl", hash = "sha256:4b214a05fe4c99476e99e2445c8b978c8369c18d4dea8e22ec412862715ad763"},
-    {file = "Django-4.1.5.tar.gz", hash = "sha256:ff56ebd7ead0fd5dbe06fe157b0024a7aaea2e0593bb3785fb594cf94dad58ef"},
+    {file = "Django-4.1.7-py3-none-any.whl", hash = "sha256:f2f431e75adc40039ace496ad3b9f17227022e8b11566f4b363da44c7e44761e"},
+    {file = "Django-4.1.7.tar.gz", hash = "sha256:44f714b81c5f190d9d2ddad01a532fe502fa01c4cb8faf1d081f4264ed15dcd8"},
 ]
 
 [package.dependencies]
@@ -1041,6 +1041,18 @@ docs = ["furo (>=2022.12.7)", "sphinx (>=5.3)", "sphinx-autodoc-typehints (>=1.1
 testing = ["covdefaults (>=2.2.2)", "coverage (>=7.0.1)", "pytest (>=7.2)", "pytest-cov (>=4)", "pytest-timeout (>=2.1)"]
 
 [[package]]
+name = "fivetran"
+version = "0.7.0"
+description = ""
+category = "main"
+optional = false
+python-versions = ">=3.9.13,<4.0.0"
+files = [
+    {file = "fivetran-0.7.0-py3-none-any.whl", hash = "sha256:4555b70fc66a3954dff484190a1d63ec41a6f272e60dcddaba81325211b84b81"},
+    {file = "fivetran-0.7.0.tar.gz", hash = "sha256:f397b3c7e97c07edd3f680aec4e644b5e99d733adff22b91368e48fb55336334"},
+]
+
+[[package]]
 name = "ghapi"
 version = "1.0.3"
 description = "A python client for the GitHub API"
@@ -1380,6 +1392,27 @@ grai-client = ">=0.2.0,<0.3.0"
 grai-schemas = ">=0.1.7,<0.2.0"
 networkx = ">=2.8.3,<3.0.0"
 pydantic = ">=1.9.1,<2.0.0"
+
+[[package]]
+name = "grai-source-fivetran"
+version = "0.0.1"
+description = ""
+category = "main"
+optional = false
+python-versions = ">=3.9.13,<4.0.0"
+files = [
+    {file = "grai_source_fivetran-0.0.1-py3-none-any.whl", hash = "sha256:634aed106623ff8581a4f8811459aebfc195b558c8486139db213206801904de"},
+    {file = "grai_source_fivetran-0.0.1.tar.gz", hash = "sha256:b43c1a76b5257711378752ab9a5250be9068948d26e819e03107122d42e98351"},
+]
+
+[package.dependencies]
+fivetran = ">=0.7.0,<0.8.0"
+grai-client = ">=0.2.0,<0.3.0"
+grai-schemas = ">=0.1.10,<0.2.0"
+multimethod = ">=1.8,<2.0"
+pydantic = ">=1.9.1,<2.0.0"
+python-dotenv = ">=0.21.1,<0.22.0"
+requests = ">=2.28.1,<3.0.0"
 
 [[package]]
 name = "grai-source-mssql"
@@ -2430,6 +2463,21 @@ files = [
 ]
 
 [[package]]
+name = "python-dotenv"
+version = "0.21.1"
+description = "Read key-value pairs from a .env file and set them as environment variables"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "python-dotenv-0.21.1.tar.gz", hash = "sha256:1c93de8f636cde3ce377292818d0e440b6e45a82f215c3744979151fa8151c49"},
+    {file = "python_dotenv-0.21.1-py3-none-any.whl", hash = "sha256:41e12e0318bebc859fcc4d97d4db8d20ad21721a6aa5047dd59f090391cb549a"},
+]
+
+[package.extras]
+cli = ["click (>=5.0)"]
+
+[[package]]
 name = "python3-openid"
 version = "3.2.0"
 description = "OpenID support for modern servers and consumers."
@@ -3015,4 +3063,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "9a0298d9fdee388ee85ee6095ba75b103835c97ba961341d43584e2a23c8f019"
+content-hash = "b76746f8224e25ddf1ea591909bbaac4e82df6f9d1d24b6c8d851103911e4708"
