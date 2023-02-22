@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import typing
 from typing import Dict, List, Literal, Optional, Union
 
 from pydantic import BaseModel, Field
@@ -11,47 +12,9 @@ from grai_source_dbt.models.shared import (
     DBTNodeColumn,
     NodeDeps,
 )
-from grai_source_dbt.models.tests import Test
 
-
-class Table(DBTNode):
-    table_schema: str = Field(alias="schema")
-
-    #### Grai Specific ####
-    tests: Optional[List[Test]] = []
-
-    @property
-    def full_name(self):
-        return f"{self.table_schema}.{self.name}"
-
-
-class Model(Table):
-    resource_type: Literal["model"]
-
-
-class Source(Table):
-    resource_type: Literal["source"]
-    identifier: str
-    depends_on: NodeDeps = NodeDeps(nodes=[], macros=[])
-
-    @property
-    def full_name(self):
-        return f"{self.table_schema}.{self.identifier}"
-
-
-class Seed(DBTNode):
-    table_schema: str = Field(alias="schema")
-    path: str
-    original_file_path: str
-    resource_type: Literal["seed"]
-
-    #### Grai Specific ####
-    tests: Optional[List[Test]] = []
-
-
-class Snapshot(DBTNode):
-    resource_type: Literal["snapshot"]
-    depends_on: NodeDeps = NodeDeps(nodes=[], macros=[])
+if typing.TYPE_CHECKING:
+    from grai_source_dbt.loaders import NodeTypes
 
 
 class Column(ID):
@@ -68,20 +31,20 @@ class Column(ID):
     resource_type: Literal["column"] = "column"
 
     #### Grai Specific ####
-    tests: Optional[List[Test]] = []
+    tests: List = []
 
     @property
     def full_name(self):
         return f"{self.table_schema}.{self.table_name}.{self.name}"
 
     @classmethod
-    def from_table_column(cls, table: DBTNode, column: DBTNodeColumn) -> "Column":
+    def from_table_column(cls, table: NodeTypes, column, namespace) -> "Column":
         attrs = {
             "table_unique_id": table.unique_id,
             "table_name": table.name,
-            "table_schema": table.node_schema,
+            "table_schema": table.schema_,
             "database": table.database,
-            "namespace": table.namespace,
+            "namespace": namespace,
             "package_name": table.package_name,
         }
         attrs.update(column.dict())
@@ -94,17 +57,35 @@ class Column(ID):
     def __hash__(self):
         return hash((self.table_unique_id, self.name))
 
+    class Config:
+        validate_assignment = True
 
-SupportedDBTTypes = Union[Model, Source, Seed, Snapshot]
-GraiNodeTypes = Union[Model, Source, Seed, Column]
+
+class EdgeTerminus(BaseModel):
+    name: str
+    namespace: str
+
+    @property
+    def identifier(self):
+        return f"{self.namespace}:{self.name}"
+
+    class Config:
+        validate_assignment = True
 
 
 class Edge(BaseModel):
-    source: GraiNodeTypes
-    destination: GraiNodeTypes
+    source: EdgeTerminus
+    destination: EdgeTerminus
     definition: Optional[str]
     constraint_type: Constraint
     metadata: Optional[Dict] = None
 
     def __hash__(self):
         return hash((self.source, self.destination))
+
+    @property
+    def name(self):
+        return f"{self.source.identifier} -> {self.destination.identifier}"
+
+    class Config:
+        validate_assignment = True

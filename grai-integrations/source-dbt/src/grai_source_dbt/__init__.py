@@ -1,2 +1,10 @@
-from grai_source_dbt import adapters, base, loader, models, package_definitions, utils
+from grai_source_dbt import (
+    adapters,
+    base,
+    loaders,
+    models,
+    package_definitions,
+    processor,
+    utils,
+)
 from grai_source_dbt.package_definitions import config
