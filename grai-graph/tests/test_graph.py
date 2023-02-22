@@ -118,6 +118,20 @@ class TestUniqueness(unittest.TestCase):
     @get_nodes(n=4)
     def test_skip_violation(self, a, b, c, d):
         """Test failures should be detected even multiple jumps from the source node"""
+        d.node_attributes.is_unique = True
+        mock_structure = {
+            a: [("b", self.preserves_unique)],
+            b: [("c", self.preserves_unique)],
+            c: [("d", self.preserves_unique)],
+            d: [],
+        }
+        G = get_analysis_from_map(mock_structure)
+        results = G.test_unique_violations(name="a", namespace=DEFAULT_NAMESPACE, expects_unique=False)
+        assert len(results) == 1 and results[0][-1].spec.name is "d", results
+
+    @get_nodes(n=4)
+    def test_skip_violation_inverse(self, a, b, c, d):
+        """Test failures should be detected even multiple jumps from the source node"""
         d.node_attributes.is_unique = False
         mock_structure = {
             a: [("b", self.preserves_unique)],
@@ -127,19 +141,19 @@ class TestUniqueness(unittest.TestCase):
         }
         G = get_analysis_from_map(mock_structure)
         results = G.test_unique_violations(name="a", namespace=DEFAULT_NAMESPACE, expects_unique=True)
-        assert len(results) == 1 and results[0][-1].spec.name is "d", results
+        assert len(results) == 0, results
 
     @get_nodes(n=3)
     def test_triangle_violation(self, a, b, c):
         """Tests ought to be able to fail following multiple different paths through lineage"""
-        c.node_attributes.is_unique = False
+        c.node_attributes.is_unique = True
         mock_structure = {
             a: [("b", self.preserves_unique), ("c", self.preserves_unique)],
             b: [("c", self.preserves_unique)],
             c: [],
         }
         G = get_analysis_from_map(mock_structure)
-        results = G.test_unique_violations(name="a", namespace=DEFAULT_NAMESPACE, expects_unique=True)
+        results = G.test_unique_violations(name="a", namespace=DEFAULT_NAMESPACE, expects_unique=False)
         assert len(results) == 2 and results[0][-1].spec.name is "c" and results[0][-1].spec.name is "c"
 
 
@@ -247,6 +261,22 @@ class TestNullable(unittest.TestCase):
         results = G.test_nullable_violations(name="a", namespace=DEFAULT_NAMESPACE, is_nullable=True)
         assert (
             len(results) == 1 and results[0][-1].spec.name is "d"
+        ), "Test failure not detected multiple steps from source node"
+
+    @get_nodes(n=4)
+    def test_nullable_skip_violation_inverse(self, a, b, c, d):
+        """Test failures should be detected even multiple jumps from the source node"""
+        d.node_attributes.is_nullable = True
+        mock_structure = {
+            a: [("b", self.preserves_nullable)],
+            b: [("c", self.preserves_nullable)],
+            c: [("d", self.preserves_nullable)],
+            d: [],
+        }
+        G = get_analysis_from_map(mock_structure)
+        results = G.test_nullable_violations(name="a", namespace=DEFAULT_NAMESPACE, is_nullable=False)
+        assert (
+            len(results) == 0
         ), "Test failure not detected multiple steps from source node"
 
     @get_nodes(n=3)
