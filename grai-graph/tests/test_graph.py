@@ -275,9 +275,7 @@ class TestNullable(unittest.TestCase):
         }
         G = get_analysis_from_map(mock_structure)
         results = G.test_nullable_violations(name="a", namespace=DEFAULT_NAMESPACE, is_nullable=False)
-        assert (
-            len(results) == 0
-        ), "Test failure not detected multiple steps from source node"
+        assert len(results) == 0, "Test failure not detected multiple steps from source node"
 
     @get_nodes(n=3)
     def test_triangle_violation(self, a, b, c):
