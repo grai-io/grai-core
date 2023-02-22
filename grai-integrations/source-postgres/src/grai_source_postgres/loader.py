@@ -44,13 +44,20 @@ class PostgresConnector:
         self.user = user if user is not None else get_from_env("user")
         self.password = password if password is not None else get_from_env("password")
         self.namespace = namespace if namespace is not None else get_from_env("namespace", "default")
+
+        # Combo allows a user to use the context manager
         self._connection = None
+        self._is_connected = False
 
     def __enter__(self):
-        return self.connect()
+        if not self._is_connected:
+            self.connect()
+
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.close()
+        if not self._is_connected:
+            self.close()
 
     @property
     def connection_string(self) -> str:
@@ -61,6 +68,7 @@ class PostgresConnector:
     def connect(self):
         if self._connection is None:
             self._connection = psycopg2.connect(self.connection_string)
+            self._is_connected = True
         return self
 
     @property
@@ -72,11 +80,12 @@ class PostgresConnector:
     def close(self) -> None:
         self.connection.close()
         self._connection = None
+        self._is_connected = False
 
     def query_runner(self, query: str, param_dict: Dict = {}) -> List[Dict]:
-        with self.connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cursor:
-            cursor.execute(query, param_dict)
-            result = cursor.fetchall()
+        cursor = self.connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cursor.execute(query, param_dict)
+        result = cursor.fetchall()
         return [dict(item) for item in result]
 
     @cached_property
@@ -105,22 +114,46 @@ class PostgresConnector:
         Creates and returns a list of dictionaries for the specified
         schema.table in the database connected to.
         """
-
         query = f"""
-            SELECT c.COLUMN_NAME,
-                   c.DATA_TYPE,
-                   c.IS_NULLABLE,
-                   c.COLUMN_DEFAULT,
-                   c.TABLE_NAME AS "table",
-                   c.TABLE_SCHEMA AS "schema",
-                   tc.CONSTRAINT_TYPE AS "column_constraint"
+            SELECT c.conname                                         AS constraint_name,
+                   c.contype                                         AS constraint_type,
+                   sch.nspname                                       AS "schema",
+                   tbl.relname                                       AS "table",
+                   col.attname                                       AS "column"
+            FROM pg_constraint c
+                   LEFT JOIN LATERAL UNNEST(c.conkey) WITH ORDINALITY AS u(attnum, attposition) ON TRUE
+                   JOIN pg_class tbl ON tbl.oid = c.conrelid
+                   JOIN pg_namespace sch ON sch.oid = tbl.relnamespace
+                   LEFT JOIN pg_attribute col ON (col.attrelid = tbl.oid AND col.attnum = u.attnum)
+            WHERE sch.nspname!='pg_catalog'
+            ORDER BY "schema", "table";
+        """
+        query = f"""
+            SELECT
+                c.TABLE_SCHEMA AS "schema",
+                c.TABLE_NAME AS "table",
+                c.COLUMN_NAME,
+                c.DATA_TYPE,
+                c.IS_NULLABLE,
+                c.COLUMN_DEFAULT,
+                con.column_constraint
             FROM INFORMATION_SCHEMA.COLUMNS c
-            LEFT JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE cu
-                ON c.TABLE_NAME = cu.TABLE_NAME
-                AND c.TABLE_SCHEMA = cu.TABLE_SCHEMA
-                AND c.COLUMN_NAME = cu.COLUMN_NAME
-            LEFT JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
-                ON cu.CONSTRAINT_NAME = tc.CONSTRAINT_NAME
+            LEFT JOIN (
+                SELECT c.conname                                         AS constraint_name,
+                       c.contype                                         AS column_constraint,
+                       sch.nspname                                       AS "schema",
+                       tbl.relname                                       AS "table",
+                       col.attname                                       AS "column"
+                FROM pg_constraint c
+                       LEFT JOIN LATERAL UNNEST(c.conkey) WITH ORDINALITY AS u(attnum, attposition) ON TRUE
+                       JOIN pg_class tbl ON tbl.oid = c.conrelid
+                       JOIN pg_namespace sch ON sch.oid = tbl.relnamespace
+                       LEFT JOIN pg_attribute col ON (col.attrelid = tbl.oid AND col.attnum = u.attnum)
+                WHERE sch.nspname!='pg_catalog'
+            ) con ON con.schema=c.table_schema
+                  AND con.table=c.table_name
+                  AND con.column=c.column_name
+            WHERE c.table_schema not in ('pg_catalog', 'information_schema')
         """
         return [Column(**result, namespace=self.namespace) for result in self.query_runner(query)]
 

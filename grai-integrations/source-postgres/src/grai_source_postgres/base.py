@@ -10,7 +10,7 @@ from grai_source_postgres.package_definitions import config
 
 
 def get_nodes_and_edges(connector: PostgresConnector, version: Literal["v1"]) -> Tuple[List[Node], List[Edge]]:
-    with connector.connect() as conn:
+    with connector as conn:
         nodes, edges = conn.get_nodes_and_edges()
 
     nodes = adapt_to_client(nodes, version)
