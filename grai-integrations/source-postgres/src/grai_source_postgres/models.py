@@ -41,10 +41,12 @@ class ColumnID(ID):
 
 
 class ColumnConstraint(Enum):
-    primary_key = "PRIMARY KEY"
-    unique = "UNIQUE"
-    foreign_key = "FOREIGN KEY"
-    check = "CHECK"
+    primary_key = "p"
+    unique = "u"
+    foreign_key = "f"
+    check = "c"
+    trigger = "t"
+    exclusion = "x"
 
 
 UNIQUE_COLUMN_CONSTRAINTS = {ColumnConstraint.primary_key.value, ColumnConstraint.unique.value}
