@@ -23,7 +23,7 @@ class GraphAnalyzer:
     def test_delete_node(self, namespace: str, name: str):
         return list(self.downstream_nodes(namespace, name))
 
-    def test_type_change(self, namespace: str, name: str, new_type: bool) -> List[List[NodeTypes]]:
+    def test_data_type_change(self, namespace: str, name: str, new_type: bool) -> List[Tuple[List[NodeTypes], bool]]:
         """
 
         :param namespace:
@@ -42,7 +42,7 @@ class GraphAnalyzer:
 
     def traverse_data_type_violations(
         self, node: NodeTypes, new_type: str, path: Optional[List] = None
-    ) -> List[List[NodeTypes]]:
+    ) -> Generator[Tuple[List[NodeTypes], bool], None, None]:
         if path is None:
             path = [node]
 
@@ -64,26 +64,14 @@ class GraphAnalyzer:
             new_path = [*path, test_node]
 
             test_node_data_type = node_meta.node_attributes.data_type
-            if test_node_data_type is not None and test_node_data_type != new_type:
-                yield new_path
-            else:
-                yield from self.traverse_data_type_violations(test_node, new_type, path=new_path)
+            if test_node_data_type is not None:
+                yield (new_path, test_node_data_type != new_type)
 
-    def column_predecessors(self, namespace: str, name: str):
-        node_id = self.graph.get_node_id(namespace, name)
-        predecessors = (self.graph.get_node(node_id=node_id) for node_id in self.graph.graph.predecessors(node_id))
-        col_predecessors = tuple(node for node in predecessors if node.spec.metadata.grai.node_type == "Column")
-        return col_predecessors
-
-    def column_successors(self, namespace: str, name: str):
-        node_id = self.graph.get_node_id(namespace, name)
-        successors = (self.graph.get_node(node_id=node_id) for node_id in self.graph.graph.successors(node_id))
-        col_successors = tuple(node for node in successors if node.spec.metadata.grai.node_type == "Column")
-        return col_successors
+            yield from self.traverse_data_type_violations(test_node, new_type, path=new_path)
 
     def traverse_unique_violations(
         self, node: NodeTypes, expects_unique: bool, path: Optional[List] = None
-    ) -> List[List[NodeTypes]]:
+    ) -> Generator[Tuple[List[NodeTypes], bool], None, None]:
         if path is None:
             path = [node]
 
@@ -105,12 +93,14 @@ class GraphAnalyzer:
             test_node_is_unique = node_meta.node_attributes.is_unique
             new_path = [*path, test_node]
 
-            if test_node_is_unique is not None and test_node_is_unique != expects_unique:
-                yield new_path
-            else:
-                yield from self.traverse_unique_violations(test_node, expects_unique, path=new_path)
+            if test_node_is_unique is not None:
+                yield (new_path, test_node_is_unique != expects_unique)
 
-    def test_unique_violations(self, namespace: str, name: str, expects_unique: bool) -> List[List[NodeTypes]]:
+            yield from self.traverse_unique_violations(test_node, expects_unique, path=new_path)
+
+    def test_unique_violations(
+        self, namespace: str, name: str, expects_unique: bool
+    ) -> List[Tuple[List[NodeTypes], bool]]:
         """
 
         :param namespace:
@@ -175,3 +165,15 @@ class GraphAnalyzer:
         affected_nodes = self.traverse_null_violations(current_node, is_nullable)
 
         return list(affected_nodes)
+
+    def column_predecessors(self, namespace: str, name: str):
+        node_id = self.graph.get_node_id(namespace, name)
+        predecessors = (self.graph.get_node(node_id=node_id) for node_id in self.graph.graph.predecessors(node_id))
+        col_predecessors = tuple(node for node in predecessors if node.spec.metadata.grai.node_type == "Column")
+        return col_predecessors
+
+    def column_successors(self, namespace: str, name: str):
+        node_id = self.graph.get_node_id(namespace, name)
+        successors = (self.graph.get_node(node_id=node_id) for node_id in self.graph.graph.successors(node_id))
+        col_successors = tuple(node for node in successors if node.spec.metadata.grai.node_type == "Column")
+        return col_successors

@@ -194,15 +194,15 @@ class TestResultCacheBase:
                 continue
             yield node
 
-    def type_tests(self) -> Dict[NodeV1, List[TypeTestResult]]:
+    def data_type_tests(self) -> Dict[NodeV1, List[TypeTestResult]]:
         result_map = {}
 
         for node in self.new_columns:
             result = node.spec.metadata.grai.node_attributes.data_type
-            affected_nodes = self.analysis.test_type_change(
+            affected_nodes = self.analysis.test_data_type_change(
                 namespace=node.spec.namespace, name=node.spec.name, new_type=result
             )
-            result_map[node] = [TypeTestResult(node, path) for path in affected_nodes]
+            result_map[node] = [TypeTestResult(node, path, test_pass) for (path, test_pass) in affected_nodes]
 
         return result_map
 
@@ -216,7 +216,7 @@ class TestResultCacheBase:
                 name=node.spec.name,
                 expects_unique=result,
             )
-            result_map[node] = [UniqueTestResult(node, path) for path in affected_nodes]
+            result_map[node] = [UniqueTestResult(node, path, test_pass) for (path, test_pass) in affected_nodes]
 
         return result_map
 
@@ -260,7 +260,7 @@ class TestResultCacheBase:
         tests = chain(
             self.unique_tests().items(),
             self.null_tests().items(),
-            # self.type_tests().items(),
+            # self.data_type_tests().items(),
         )
 
         results: Dict[NodeV1, List[TestResult]] = {}
