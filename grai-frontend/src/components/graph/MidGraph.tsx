@@ -188,8 +188,6 @@ const MidGraph: React.FC<GraphProps> = ({
     return res
   }, [])
 
-  console.log("singleEdges", singleEdges)
-
   return (
     <BaseGraph
       initialNodes={initialTables}
