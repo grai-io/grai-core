@@ -49,13 +49,11 @@ NodeTypes = Union[
 ]
 SourceTypes = Union[ParsedSourceDefinition]
 
-set_extra_fields([*get_args(NodeTypes), SourceTypes])
-
 
 class ManifestLoaderV1(BaseManifestLoader):
     @cached_property
     def test_resources(self):
-        test_gen = (test for test in self.manifest.nodes.values() if test.resource_type.value == "test")
+        test_gen = (test for test in self.manifest.nodes.values() if test.resource_type == "test")
         col_to_tests = {}
         for test in test_gen:
             if getattr(test, "column_name", None) is not None:
@@ -69,17 +67,14 @@ class ManifestLoaderV1(BaseManifestLoader):
     def node_map(self):
         node_resource_types = {"model", "seed"}
         node_map = {
-            node_id: node
-            for node_id, node in self.manifest.nodes.items()
-            if node.resource_type.value in node_resource_types
+            node_id: node for node_id, node in self.manifest.nodes.items() if node.resource_type in node_resource_types
         }
-        node_map.update(self.manifest.sources)
         return node_map
 
     @cached_property
     def columns(self):
         columns = {}
-        for node in self.node_map.values():
+        for node in chain(self.node_map.values(), self.manifest.sources.values()):
             for column in node.columns.values():
                 column = Column.from_table_column(node, column, self.namespace)
                 if column.unique_id in self.test_resources:
@@ -89,7 +84,7 @@ class ManifestLoaderV1(BaseManifestLoader):
 
     @property
     def nodes(self) -> List:
-        nodes = list(chain(self.node_map.values(), self.columns.values()))
+        nodes = list(chain(self.node_map.values(), self.columns.values(), self.manifest.sources.values()))
         return list(nodes)
 
     def make_edge(self, source, destination, constraint_type, definition: bool = False) -> Edge:
@@ -100,7 +95,7 @@ class ManifestLoaderV1(BaseManifestLoader):
                 constraint_type=constraint_type,
                 source=source_terminus,
                 destination=destination_terminus,
-                definition=source.raw_sql,
+                definition=destination.compiled_sql if hasattr(destination, "compiled_sql") else destination.raw_sql,
             )
         else:
             return Edge(
@@ -111,16 +106,23 @@ class ManifestLoaderV1(BaseManifestLoader):
 
     @property
     def edges(self) -> List[Edge]:
-        def get_edges():
-            for table in self.node_map.values():
-                for column in table.columns.values():
-                    column = self.columns[(table.unique_id, column.name)]
-                    edge = self.make_edge(table, column, Constraint("bt"))
-                    yield edge
-                if hasattr(table, "depends_on"):
-                    for parent_str in table.depends_on.nodes:
-                        source_node = self.node_map[parent_str]
-                        edge = self.make_edge(source_node, table, Constraint("dbtm"), True)
-                        yield edge
+        result = []
+        for table in self.node_map.values():
+            for column in table.columns.values():
+                column = self.columns[(table.unique_id, column.name)]
+                edge = self.make_edge(table, column, Constraint("bt"))
+                result.append(edge)
 
-        return list(get_edges())
+            for parent_str in table.depends_on.nodes:
+                source_node = (
+                    self.node_map[parent_str] if parent_str in self.node_map else self.manifest.sources[parent_str]
+                )
+                edge = self.make_edge(source_node, table, Constraint("dbtm"), True)
+                result.append(edge)
+
+        for table in self.manifest.sources.values():
+            for column in table.columns.values():
+                column = self.columns[(table.unique_id, column.name)]
+                edge = self.make_edge(table, column, Constraint("bt"))
+                result.append(edge)
+        return result

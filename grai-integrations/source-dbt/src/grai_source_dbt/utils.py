@@ -17,9 +17,14 @@ def full_name(obj: Any) -> str:
         raise NotImplementedError(message) from e
 
 
+def set_loader_config_fields(obj: BaseModel):
+    obj.Config.extra = Extra.allow
+    obj.Config.use_enum_values = True
+
+
 def set_extra_fields(obj: Union[BaseModel, Sequence[BaseModel]]) -> None:
     if isinstance(obj, BaseModel):
-        obj.Config.extra = Extra.allow
+        set_loader_config_fields(obj)
     elif isinstance(obj, Sequence):
         for item in obj:
-            item.Config.extra = Extra.allow
+            set_loader_config_fields(item)

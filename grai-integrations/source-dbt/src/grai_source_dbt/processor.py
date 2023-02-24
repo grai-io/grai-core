@@ -40,9 +40,12 @@ class ManifestProcessor:
         return self.loader.manifest
 
     @classmethod
-    def load(cls, file: str, namespace: str) -> "ManifestProcessor":
-        with open(file, "r") as f:
-            manifest_dict = json.load(f)
+    def load(cls, manifest_obj: Union[str, dict], namespace: str) -> "ManifestProcessor":
+        if isinstance(manifest_obj, str):
+            with open(manifest_obj, "r") as f:
+                manifest_dict = json.load(f)
+        else:
+            manifest_dict = manifest_obj
 
         version = get_dbt_schema_version(manifest_dict)
         if version not in cls.MANIFEST_MAP:
