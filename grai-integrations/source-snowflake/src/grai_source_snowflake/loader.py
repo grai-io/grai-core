@@ -137,6 +137,7 @@ class SnowflakeConnector:
         query = f"""
             SELECT column_name, data_type, is_nullable, column_default, table_schema, table_name
             FROM information_schema.columns
+            WHERE table_schema != 'INFORMATION_SCHEMA'
         """
 
         res = [{k.lower(): v for k, v in result.items()} for result in self.query_runner(query)]
