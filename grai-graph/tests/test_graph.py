@@ -288,7 +288,7 @@ class TestDataType(unittest.TestCase):
             b: [],
         }
         G = get_analysis_from_map(mock_structure)
-        results = G.test_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="bool")
+        results = G.test_data_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="bool")
         assert len(results) == 0
 
     @get_nodes(n=2)
@@ -299,7 +299,7 @@ class TestDataType(unittest.TestCase):
             b: [],
         }
         G = get_analysis_from_map(mock_structure)
-        results = G.test_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="bool")
+        results = G.test_data_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="bool")
         assert len(results) == 0
 
     @get_nodes(n=3)
@@ -311,7 +311,7 @@ class TestDataType(unittest.TestCase):
             c: [],
         }
         G = get_analysis_from_map(mock_structure)
-        results = G.test_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="bool")
+        results = G.test_data_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="bool")
         assert len(results) == 0
 
     @get_nodes(n=3)
@@ -323,7 +323,7 @@ class TestDataType(unittest.TestCase):
             c: [],
         }
         G = get_analysis_from_map(mock_structure)
-        results = G.test_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="bool")
+        results = G.test_data_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="bool")
         assert len(results) == 0
 
     @get_nodes(n=3)
@@ -336,7 +336,7 @@ class TestDataType(unittest.TestCase):
             c: [],
         }
         G = get_analysis_from_map(mock_structure)
-        results = G.test_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="bool")
+        results = G.test_data_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="bool")
         assert len(results) == 0
 
     # @get_nodes(n=3)
@@ -349,7 +349,7 @@ class TestDataType(unittest.TestCase):
     #         c: [],
     #     }
     #     G = get_analysis_from_map(mock_structure)
-    #     results = G.test_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="int")
+    #     results = G.test_data_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="int")
     #
     #     assert len(results) == 1 and results[0][-1].spec.name is "a", results
 
@@ -365,7 +365,7 @@ class TestDataType(unittest.TestCase):
         }
         G = get_analysis_from_map(mock_structure)
 
-        results = G.test_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="int")
+        results = G.test_data_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="int")
         assert (
             len(results) == 1 and results[0][-1].spec.name is "d"
         ), "Test failure not detected multiple steps from source node"
@@ -380,5 +380,5 @@ class TestDataType(unittest.TestCase):
             c: [],
         }
         G = get_analysis_from_map(mock_structure)
-        results = G.test_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="int")
+        results = G.test_data_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="int")
         assert len(results) == 2 and results[0][-1].spec.name is "c" and results[0][-1].spec.name is "c"
