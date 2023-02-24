@@ -1,5 +1,5 @@
 import uuid
-from typing import List, Optional, Union
+from typing import Generator, List, Optional, Union
 
 import networkx as nx
 from grai_schemas.base import Node as NodeTypes
@@ -130,7 +130,7 @@ class GraphAnalyzer:
 
     def traverse_null_violations(
         self, node: NodeTypes, is_nullable: bool, path: Optional[List] = None
-    ) -> List[NodeTypes]:
+    ) -> Generator[List[NodeTypes], None, None]:
         if path is None:
             path = [node]
 
@@ -157,7 +157,7 @@ class GraphAnalyzer:
             else:
                 yield from self.traverse_null_violations(test_node, is_nullable, path=new_path)
 
-    def test_nullable_violations(self, namespace: str, name: str, is_nullable: bool) -> List[NodeTypes]:
+    def test_nullable_violations(self, namespace: str, name: str, is_nullable: bool) -> List[List[NodeTypes]]:
         """
         :param namespace:
         :param name:
