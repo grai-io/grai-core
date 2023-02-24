@@ -1,7 +1,4 @@
 from typing import Union, get_args
-from grai_source_dbt.loaders.v1 import ManifestLoaderV1
-from grai_source_dbt.models.grai import Edge, EdgeTerminus
-from grai_source_dbt.utils import full_name
 
 from dbt_artifacts_parser.parsers.manifest.manifest_v8 import (
     AnalysisNode,
@@ -17,7 +14,9 @@ from dbt_artifacts_parser.parsers.manifest.manifest_v8 import (
     SqlNode,
 )
 
-from grai_source_dbt.utils import set_extra_fields
+from grai_source_dbt.loaders.v1 import ManifestLoaderV1
+from grai_source_dbt.models.grai import Edge, EdgeTerminus
+from grai_source_dbt.utils import full_name, set_extra_fields
 
 NodeTypes = Union[
     AnalysisNode,
@@ -32,6 +31,7 @@ NodeTypes = Union[
 ]
 
 SourceTypes = SourceDefinition
+
 
 class ManifestLoaderV8(ManifestLoaderV1):
     def make_edge(self, source, destination, constraint_type, definition: bool = False) -> Edge:
