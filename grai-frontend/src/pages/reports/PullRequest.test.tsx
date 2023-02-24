@@ -1,5 +1,10 @@
 import { GraphQLError } from "graphql"
-import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
+import {
+  columnNode,
+  destinationTable,
+  sourceTable,
+  spareTable,
+} from "helpers/testNodes"
 import React from "react"
 import { render, screen, waitFor } from "testing"
 import PullRequest, { GET_PULL_REQUEST } from "./PullRequest"
@@ -93,9 +98,9 @@ test("renders errors", async () => {
                 id: "2",
                 is_active: true,
                 data_source: "test",
-                source: sourceTable,
+                source: columnNode,
                 destination: destinationTable,
-                metadata: { grai: { constraint_type: "dbt_model" } },
+                metadata: { grai: { edge_type: "ColumnToColumn" } },
               },
             ],
           },
@@ -114,6 +119,10 @@ test("renders errors", async () => {
     expect(
       screen.getByRole("heading", { name: /Pull Request Title/i })
     ).toBeTruthy()
+  })
+
+  await waitFor(() => {
+    expect(screen.getByText("Errors")).toBeTruthy()
   })
 })
 
