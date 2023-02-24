@@ -103,6 +103,7 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
         }}
       >
         <Handle
+          id="all"
           type="target"
           position={"left" as Position}
           style={{
@@ -189,6 +190,7 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
           </Stack>
         )}
         <Handle
+          id="all"
           type="source"
           position={"right" as Position}
           style={{

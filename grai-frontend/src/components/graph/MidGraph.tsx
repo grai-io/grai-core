@@ -152,11 +152,12 @@ const MidGraph: React.FC<GraphProps> = ({
       if (sourceTable.id === destinationTable.id) return null
 
       const sourceHandle = expanded.includes(sourceTable.id)
-        ? sourceTable.columns.find(c => c.id === edge.source)?.name
-        : null
+        ? sourceTable.columns.find(c => c.id === edge.source)?.name ?? "all"
+        : "all"
       const targetHandle = expanded.includes(destinationTable.id)
-        ? destinationTable.columns.find(c => c.id === edge.target)?.name
-        : null
+        ? destinationTable.columns.find(c => c.id === edge.target)?.name ??
+          "all"
+        : "all"
 
       return {
         ...edge,
