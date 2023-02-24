@@ -118,16 +118,3 @@ services:
     depends_on:
       - redis
       - db
-  db2:
-    image: postgres:14.3-alpine
-    environment:
-      - POSTGRES_USER=docker
-      - POSTGRES_PASSWORD=docker
-      - POSTGRES_DB=docker
-    ports:
-      - 5433:5432
-    healthcheck:
-      test: "pg_isready -U docker"
-      interval: 2s
-      timeout: 2s
-      retries: 15

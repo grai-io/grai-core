@@ -11,7 +11,7 @@ BUILD_DIRECTORY="."
 build_ghcr:  ## Build image and upload to ghcr
 	# echo $CR_PAT | docker login ghcr.io -u ieaves --password-stdin
 	docker buildx build \
-		--platform linux/amd64,linux/arm64 \
+		--platform linux/arm64,linux/amd64 \
 		-t $(GHCR_REPOSITORY):latest \
 		-t $(GHCR_REPOSITORY):$(APP_VERSION) \
 		--output=type=registry,dest=$(GHCR_REPOSITORY)\

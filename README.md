@@ -53,8 +53,8 @@ We currently support pre-built connectors for a variety of sources including
 
 <center>
 
-|            | connectors | install                              |
-| ---------- | ---------- | ------------------------------------ |
+|            |  integrations  | install                              |
+| ---------- |  ------------  | ------------------------------------ |
 | <img src="resources/snowflake.png" alt= “” width="30" height="30"> | Snowflake  | `pip install grai-source-snowflake`  |
 | <img src="resources/bigquery.svg" alt= “” width="30" height="30">  | BigQuery   | `pip install grai-source-bigquery`   |
 | <img src="resources/postgres.png" alt= “” width="30" height="30">  | Postgres   | `pip install grai-source-postgres`   |
