@@ -169,10 +169,29 @@ const MidGraph: React.FC<GraphProps> = ({
     })
     .filter(notEmpty)
 
+  const singleEdges = transformedEdges.reduce<RFEdge<any>[]>((res, edge) => {
+    const existing = res.find(
+      e =>
+        e.source === edge.source &&
+        e.target === edge.target &&
+        e.sourceHandle === edge.sourceHandle &&
+        e.targetHandle === edge.targetHandle
+    )
+    if (existing && edge.data?.errors) {
+      existing.type = "error"
+      existing.data.errors = (existing.data.errors ?? []).concat(
+        edge.data?.errors
+      )
+    } else {
+      res.push(edge)
+    }
+    return res
+  }, [])
+
   return (
     <BaseGraph
       initialNodes={initialTables}
-      initialEdges={transformedEdges}
+      initialEdges={singleEdges}
       expanded={expanded}
       errors={!!errors}
       controlOptions={controlOptions}
