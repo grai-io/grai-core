@@ -55,7 +55,6 @@ class ManifestLoaderV7(ManifestLoaderV1):
         source_terminus = EdgeTerminus(name=full_name(source), namespace=self.namespace)
         destination_terminus = EdgeTerminus(name=full_name(destination), namespace=self.namespace)
         if definition:
-            breakpoint()
             return Edge(
                 constraint_type=constraint_type,
                 source=source_terminus,
