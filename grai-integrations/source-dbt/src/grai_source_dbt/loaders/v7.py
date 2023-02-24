@@ -59,7 +59,7 @@ class ManifestLoaderV7(ManifestLoaderV1):
                 constraint_type=constraint_type,
                 source=source_terminus,
                 destination=destination_terminus,
-                definition=source.raw_code,
+                definition=destination.compiled_code if hasattr(destination, "compiled_code") else destination.raw_code,
             )
         else:
             return Edge(
