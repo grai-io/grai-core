@@ -22,6 +22,7 @@ from dbt_artifacts_parser.parsers.manifest.manifest_v1 import (
     ParsedSnapshotNode,
     ParsedSourceDefinition,
 )
+from grai_schemas.v1.metadata.edges import EdgeTypeLabels
 
 from grai_source_dbt.loaders.base import BaseManifestLoader
 from grai_source_dbt.models.grai import Column, Edge, EdgeTerminus
@@ -87,7 +88,7 @@ class ManifestLoaderV1(BaseManifestLoader):
         nodes = list(chain(self.node_map.values(), self.columns.values(), self.manifest.sources.values()))
         return list(nodes)
 
-    def make_edge(self, source, destination, constraint_type, definition: bool = False) -> Edge:
+    def make_edge(self, source, destination, constraint_type, edge_type, definition: bool = False) -> Edge:
         source_terminus = EdgeTerminus(name=full_name(source), namespace=self.namespace)
         destination_terminus = EdgeTerminus(name=full_name(destination), namespace=self.namespace)
         if definition:
@@ -96,12 +97,14 @@ class ManifestLoaderV1(BaseManifestLoader):
                 source=source_terminus,
                 destination=destination_terminus,
                 definition=destination.compiled_sql if hasattr(destination, "compiled_sql") else destination.raw_sql,
+                edge_type=edge_type,
             )
         else:
             return Edge(
                 constraint_type=constraint_type,
                 source=source_terminus,
                 destination=destination_terminus,
+                edge_type=edge_type,
             )
 
     @property
@@ -110,19 +113,19 @@ class ManifestLoaderV1(BaseManifestLoader):
         for table in self.node_map.values():
             for column in table.columns.values():
                 column = self.columns[(table.unique_id, column.name)]
-                edge = self.make_edge(table, column, Constraint("bt"))
+                edge = self.make_edge(table, column, Constraint("bt"), EdgeTypeLabels.table_to_column)
                 result.append(edge)
 
             for parent_str in table.depends_on.nodes:
                 source_node = (
                     self.node_map[parent_str] if parent_str in self.node_map else self.manifest.sources[parent_str]
                 )
-                edge = self.make_edge(source_node, table, Constraint("dbtm"), True)
+                edge = self.make_edge(source_node, table, Constraint("dbtm"), EdgeTypeLabels.table_to_table, True)
                 result.append(edge)
 
         for table in self.manifest.sources.values():
             for column in table.columns.values():
                 column = self.columns[(table.unique_id, column.name)]
-                edge = self.make_edge(table, column, Constraint("bt"))
+                edge = self.make_edge(table, column, Constraint("bt"), EdgeTypeLabels.table_to_column)
                 result.append(edge)
         return result

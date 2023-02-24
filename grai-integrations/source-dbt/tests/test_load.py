@@ -3,7 +3,7 @@ from grai_schemas import config as core_config
 from grai_schemas.v1 import EdgeV1, NodeV1
 from grai_schemas.v1.metadata.edges import ColumnToColumnMetadata
 from grai_schemas.v1.metadata.edges import Metadata as EdgeV1Metadata
-from grai_schemas.v1.metadata.edges import TableToColumnMetadata
+from grai_schemas.v1.metadata.edges import TableToColumnMetadata, TableToTableMetadata
 from grai_schemas.v1.metadata.nodes import Metadata as NodeV1Metadata
 
 from grai_source_dbt.adapters import adapt_to_client
@@ -119,6 +119,12 @@ class TestProcessors:
         assert (
             len(destination_ids - node_ids) == 0
         ), f"Edge destinations {destination_ids - node_ids} missing from node list"
+
+    def test_has_table_to_column_metadata(self, processor):
+        assert any(isinstance(edge.spec.metadata.grai, TableToColumnMetadata) for edge in processor.adapted_edges)
+
+    def test_has_table_to_table_metadata(self, processor):
+        assert any(isinstance(edge.spec.metadata.grai, TableToTableMetadata) for edge in processor.adapted_edges)
 
     def test_all_bt_edges_have_table_to_column_metadata(self, processor):
         bt_edges = (

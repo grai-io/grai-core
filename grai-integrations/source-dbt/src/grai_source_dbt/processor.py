@@ -53,5 +53,5 @@ class ManifestProcessor:
             raise NotImplementedError(message)
 
         manifest_obj = parse_manifest(manifest_dict)
-        manifest = MANIFEST_MAP[version](manifest_obj, namespace)
+        manifest = cls.MANIFEST_MAP[version](manifest_obj, namespace)
         return ManifestProcessor(manifest)
