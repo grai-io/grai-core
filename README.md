@@ -39,7 +39,7 @@ Grai makes it easy to understand and test how your data relates across databases
 
 ## How it works
 
-- Automatically build column level lineage spanning your warehouse and production services with integrations for `dbt`, `Snowflake`, `Fivetran` and more (see below).
+- Automatically build column level lineage spanning your warehouse and production services with connectors for `dbt`, `Snowflake`, `Fivetran` and more (see below).
 - Get alerts in your CI/CD workflows whenever changes to a production system will impact your warehouse or dbt projects with [GitHub Actions](https://github.com/grai-io/grai-actions-server).
 - Self host the project or run it in the [Grai Cloud](https://app.grai.io) for free.
 
@@ -49,7 +49,7 @@ We currently support pre-built connectors for a variety of sources including
 
 <center>
 
-|                                                                    | integrations | install                             |
+|                                                                    | connector    | install                             |
 | ------------------------------------------------------------------ | ------------ | ----------------------------------- |
 | <img src="resources/snowflake.png" alt= “” width="30" height="30"> | Snowflake    | `pip install grai-source-snowflake` |
 | <img src="resources/bigquery.svg" alt= “” width="30" height="30">  | BigQuery     | `pip install grai-source-bigquery`  |
@@ -66,7 +66,7 @@ We currently support pre-built connectors for a variety of sources including
 
 You can find a full quickstart guide in the [documentation](https://docs.grai.io/quick-start) which covers deploying your own instance of Grai and getting set up with your first connector in python.
 
-### Docker
+### Running Locally
 
 You can always find pre-built images of the backend server at `ghcr.io/grai-io/grai-core/grai-server:latest` and the frontend at `ghcr.io/grai-io/grai-core/grai-frontend:latest`, however, if you prefer to build from source, you can do so with docker compose.
 
@@ -90,6 +90,19 @@ After logging in and connecting a data source you'll be greeted with a lineage g
 ![](resources/frontend.png)
 
 For more information about using the web application check out the [getting started guide](https://docs.grai.io/web-app/getting-started).
+
+### Other Deployment Mechanisms
+
+You can find example configurations for docker compose and Kubernetes in the [examples](/examples/deployment) folder.
+
+#### Helm
+
+We also publish a set of [Helm charts](https://charts.grai.io/) which are available if you prefer.
+
+```
+helm repo add grai https://charts.grai.io
+helm install grai grai/grai
+```
 
 ## Other Features
 
