@@ -195,33 +195,21 @@ class TestResultCacheBase:
             yield node
 
     def type_tests(self) -> Dict[NodeV1, List[TypeTestResult]]:
-        errors = False
-
         result_map = {}
-        for node in self.new_columns:
-            try:
-                original_node = self.graph.get_node(name=node.spec.name, namespace=node.spec.namespace)
-            except:
-                # This is a new node
-                continue
 
+        for node in self.new_columns:
             result = node.spec.metadata.grai.node_attributes.data_type
             affected_nodes = self.analysis.test_type_change(
                 namespace=node.spec.namespace, name=node.spec.name, new_type=result
             )
             result_map[node] = [TypeTestResult(node, path) for path in affected_nodes]
+
         return result_map
 
     def unique_tests(self) -> Dict[NodeV1, List[UniqueTestResult]]:
-        errors = False
         result_map = {}
-        for node in self.new_columns:
-            try:
-                original_node = self.graph.get_node(name=node.spec.name, namespace=node.spec.namespace)
-            except:
-                # This is a new node
-                continue
 
+        for node in self.new_columns:
             result = node.spec.metadata.grai.node_attributes.is_unique
             affected_nodes = self.analysis.test_unique_violations(
                 namespace=node.spec.namespace,
@@ -229,23 +217,19 @@ class TestResultCacheBase:
                 expects_unique=result,
             )
             result_map[node] = [UniqueTestResult(node, path) for path in affected_nodes]
+
         return result_map
 
     def null_tests(self) -> Dict[NodeV1, List[NullableTestResult]]:
-        errors = False
         result_map = {}
-        for node in self.new_columns:
-            try:
-                original_node = self.graph.get_node(name=node.spec.name, namespace=node.spec.namespace)
-            except:
-                # This is a new node
-                continue
 
+        for node in self.new_columns:
             result = node.spec.metadata.grai.node_attributes.is_nullable
             affected_nodes = self.analysis.test_nullable_violations(
                 namespace=node.spec.namespace, name=node.spec.name, is_nullable=result
             )
             result_map[node] = [NullableTestResult(node, path, test_pass) for (path, test_pass) in affected_nodes]
+
         return result_map
 
     def test_results(self) -> Dict[NodeV1, List[TestResult]]:

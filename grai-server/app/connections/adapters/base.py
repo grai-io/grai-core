@@ -10,6 +10,7 @@ from lineage.models import Edge, Node
 
 from .tools import TestResultCacheBase
 
+
 class BaseAdapter(ABC):
     run: Run
 

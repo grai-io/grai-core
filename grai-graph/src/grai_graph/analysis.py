@@ -1,5 +1,4 @@
-import uuid
-from typing import Generator, List, Optional, Union, Tuple
+from typing import Generator, List, Optional, Tuple
 
 import networkx as nx
 from grai_schemas.base import Node as NodeTypes
@@ -155,10 +154,12 @@ class GraphAnalyzer:
 
             if test_node_is_nullable is not None:
                 yield (new_path, test_node_is_nullable != is_nullable)
-            
+
             yield from self.traverse_null_violations(test_node, is_nullable, path=new_path)
 
-    def test_nullable_violations(self, namespace: str, name: str, is_nullable: bool) -> List[Tuple[List[NodeTypes], bool]]:
+    def test_nullable_violations(
+        self, namespace: str, name: str, is_nullable: bool
+    ) -> List[Tuple[List[NodeTypes], bool]]:
         """
         :param namespace:
         :param name:
