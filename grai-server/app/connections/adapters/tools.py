@@ -35,12 +35,13 @@ class TestResult(ABC):
 
     type: str
 
-    def __init__(self, node: NodeV1, test_path: List[NodeV1]):
+    def __init__(self, node: NodeV1, test_path: List[NodeV1], test_pass: bool = False):
         self.node = node
         self.failing_node = test_path[-1]
         self.test_path = test_path
         self.node_name = build_node_name(self.node)
         self.failing_node_name = build_node_name(self.failing_node)
+        self.test_pass = test_pass
 
     @abstractmethod
     def message(self) -> str:
@@ -69,6 +70,7 @@ class TestResult(ABC):
             "node_name": self.node_name,
             "failing_node_name": self.failing_node_name,
             "message": self.message(),
+            "test_pass": self.test_pass,
         }  # "test_path": self.test_path
 
 
@@ -243,7 +245,7 @@ class TestResultCacheBase:
             affected_nodes = self.analysis.test_nullable_violations(
                 namespace=node.spec.namespace, name=node.spec.name, is_nullable=result
             )
-            result_map[node] = [NullableTestResult(node, path) for path in affected_nodes]
+            result_map[node] = [NullableTestResult(node, path, test_pass) for (path, test_pass) in affected_nodes]
         return result_map
 
     def test_results(self) -> Dict[NodeV1, List[TestResult]]:
