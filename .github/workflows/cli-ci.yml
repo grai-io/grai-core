@@ -71,7 +71,6 @@ jobs:
           --health-interval 2s
           --health-retries 10
           --health-start-period 30s
-          --pull always
     steps:
       - uses: actions/checkout@v3
 
