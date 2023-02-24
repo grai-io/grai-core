@@ -29,6 +29,7 @@
 
 ## Introduction
 
+
 **Data lineage made simple.**
 Grai makes it easy to understand and test how your data relates across databases, warehouses, APIs and dashboards.
 
