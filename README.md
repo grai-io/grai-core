@@ -72,7 +72,7 @@ You can always find pre-built images of the backend server at `ghcr.io/grai-io/g
 
 ```
 git clone https://github.com/grai-io/grai-core
-cp examples/deployment/docker-compose/docker-compose.yml .
+cp examples/deployment/docker-compose/docker-compose.yml
 docker compose up
 ```
 
