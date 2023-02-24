@@ -5,6 +5,7 @@ from dbt_artifacts_parser.parsers.version_map import ArtifactTypes
 from grai_source_dbt.loaders import base, utils, v1, v2, v3, v4, v5, v6, v7, v8
 from grai_source_dbt.loaders.v1 import ManifestLoaderV1
 from grai_source_dbt.loaders.v7 import ManifestLoaderV7
+from grai_source_dbt.loaders.v8 import ManifestLoaderV8
 from grai_source_dbt.utils import full_name, set_extra_fields
 
 ManifestTypes = Union[
@@ -47,7 +48,7 @@ MANIFEST_MAP = {
     ArtifactTypes.MANIFEST_V5.value.dbt_schema_version: ManifestLoaderV1,
     ArtifactTypes.MANIFEST_V6.value.dbt_schema_version: ManifestLoaderV1,
     ArtifactTypes.MANIFEST_V7.value.dbt_schema_version: ManifestLoaderV7,
-    ArtifactTypes.MANIFEST_V8.value.dbt_schema_version: ManifestLoaderV7,
+    ArtifactTypes.MANIFEST_V8.value.dbt_schema_version: ManifestLoaderV8,
 }
 
 
