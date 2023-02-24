@@ -6,11 +6,9 @@ on:
       - "grai-client/**"
       - "grai-server/**"
 
-
 concurrency:
   group: ${{ github.ref }}-cli-ci
   cancel-in-progress: true
-
 
 env:
   py_ver: "3.10"
@@ -73,6 +71,7 @@ jobs:
           --health-interval 2s
           --health-retries 10
           --health-start-period 30s
+          --pull always
     steps:
       - uses: actions/checkout@v3
 
