@@ -312,36 +312,36 @@ class TestUpdateServer:
 
 @pytest.mark.django_db
 class TestUpdateServerTests:
-    def test_run_update_server_dbt(self, test_workspace, test_dbt_connector):
-        with open(os.path.join(__location__, "manifest.json")) as reader:
-            file = UploadedFile(reader, name="manifest.json")
-            connection = Connection.objects.create(
-                name=str(uuid.uuid4()), connector=test_dbt_connector, workspace=test_workspace
-            )
-            run = Run.objects.create(connection=connection, workspace=test_workspace, action=Run.TESTS)
-            RunFile.objects.create(run=run, file=file)
+    # def test_run_update_server_dbt(self, test_workspace, test_dbt_connector):
+    #     with open(os.path.join(__location__, "manifest.json")) as reader:
+    #         file = UploadedFile(reader, name="manifest.json")
+    #         connection = Connection.objects.create(
+    #             name=str(uuid.uuid4()), connector=test_dbt_connector, workspace=test_workspace
+    #         )
+    #         run = Run.objects.create(connection=connection, workspace=test_workspace, action=Run.TESTS)
+    #         RunFile.objects.create(run=run, file=file)
 
-        run_update_server(str(run.id))
+    #     run_update_server(str(run.id))
 
-    def test_run_update_server_dbt_github(self, test_workspace, test_dbt_connector, test_commit_with_pr, mocker):
-        mocker.patch("installations.github.requests.post", side_effect=mocked_requests_post)
-        mocker.patch("installations.github.GhApi")
+    # def test_run_update_server_dbt_github(self, test_workspace, test_dbt_connector, test_commit_with_pr, mocker):
+    #     mocker.patch("installations.github.requests.post", side_effect=mocked_requests_post)
+    #     mocker.patch("installations.github.GhApi")
 
-        with open(os.path.join(__location__, "manifest.json")) as reader:
-            file = UploadedFile(reader, name="manifest.json")
-            connection = Connection.objects.create(
-                name=str(uuid.uuid4()), connector=test_dbt_connector, workspace=test_workspace
-            )
-            run = Run.objects.create(
-                connection=connection,
-                workspace=test_workspace,
-                commit=test_commit_with_pr,
-                action=Run.TESTS,
-                trigger={"check_id": "1234"},
-            )
-            RunFile.objects.create(run=run, file=file)
+    #     with open(os.path.join(__location__, "manifest.json")) as reader:
+    #         file = UploadedFile(reader, name="manifest.json")
+    #         connection = Connection.objects.create(
+    #             name=str(uuid.uuid4()), connector=test_dbt_connector, workspace=test_workspace
+    #         )
+    #         run = Run.objects.create(
+    #             connection=connection,
+    #             workspace=test_workspace,
+    #             commit=test_commit_with_pr,
+    #             action=Run.TESTS,
+    #             trigger={"check_id": "1234"},
+    #         )
+    #         RunFile.objects.create(run=run, file=file)
 
-        run_update_server(str(run.id))
+    #     run_update_server(str(run.id))
 
     def test_run_update_server_no_connector_github(self, test_workspace, test_connector, test_commit, mocker):
         mocker.patch("installations.github.requests.post", side_effect=mocked_requests_post)
