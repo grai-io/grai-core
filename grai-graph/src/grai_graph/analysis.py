@@ -46,9 +46,6 @@ class GraphAnalyzer:
     ) -> List[List[NodeTypes]]:
         if path is None:
             path = [node]
-        data_type = node.spec.metadata.grai.node_attributes.data_type
-        # if data_type is not None and data_type != new_type:
-        #     yield path
 
         node_id = self.graph.get_node_id(node.spec.namespace, node.spec.name)
         for test_node in self.column_successors(node.spec.namespace, node.spec.name):
@@ -90,10 +87,6 @@ class GraphAnalyzer:
     ) -> List[List[NodeTypes]]:
         if path is None:
             path = [node]
-
-        node_is_unique = node.spec.metadata.grai.node_attributes.is_unique
-        # if node_is_unique is not None and node_is_unique != expects_unique:
-        #     yield path
 
         node_id = self.graph.get_node_id(node.spec.namespace, node.spec.name)
         for test_node in self.column_successors(node.spec.namespace, node.spec.name):
@@ -141,10 +134,6 @@ class GraphAnalyzer:
         if path is None:
             path = [node]
 
-        node_is_nullable = node.spec.metadata.grai.node_attributes.is_nullable
-        # if node_is_nullable is not None and node_is_nullable != is_nullable:
-        #     yield path
-
         node_id = self.graph.get_node_id(node.spec.namespace, node.spec.name)
         for test_node in self.column_successors(node.spec.namespace, node.spec.name):
             test_node_id = self.graph.get_node_id(test_node.spec.namespace, test_node.spec.name)
@@ -162,8 +151,8 @@ class GraphAnalyzer:
 
             new_path = [*path, test_node]
 
-            test_node_is_unique = node_meta.node_attributes.is_nullable
-            if test_node_is_unique is not None and test_node_is_unique != is_nullable:
+            test_node_is_nullable = node_meta.node_attributes.is_nullable
+            if test_node_is_nullable is not None and test_node_is_nullable != is_nullable:
                 yield new_path
             else:
                 yield from self.traverse_null_violations(test_node, is_nullable, path=new_path)
