@@ -5,18 +5,14 @@ class DbtAdapter(BaseAdapter):
     def get_nodes_and_edges(self):
         import json
 
-        from grai_source_dbt.adapters import adapt_to_client
-        from grai_source_dbt.loader import DBTGraph, Manifest
+        from grai_source_dbt.processor import ManifestProcessor
+
+        namespace = self.run.connection.namespace
 
         runFile = self.run.files.first()
 
         with runFile.file.open("r") as f:
-            data = json.load(f)
+            manifest_obj = json.load(f)
 
-        manifest = Manifest(**data)
-        dbt_graph = DBTGraph(manifest, namespace=self.run.connection.namespace)
-
-        nodes = adapt_to_client(dbt_graph.nodes, "v1")
-        edges = adapt_to_client(dbt_graph.edges, "v1")
-
-        return nodes, edges
+        manifest = ManifestProcessor.load(manifest_obj, namespace)
+        return manifest.adapted_nodes, manifest.adapted_edges
