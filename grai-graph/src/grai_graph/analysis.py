@@ -60,7 +60,7 @@ class GraphAnalyzer:
         :param expects_unique: can't evaluate anything in the case of None
         :return:
         """
-        node_id=self.graph.get_node_id(namespace, name)
+        node_id = self.graph.get_node_id(namespace, name)
 
         if node_id is None:
             return []
@@ -113,7 +113,7 @@ class GraphAnalyzer:
         :param expects_unique: can't evaluate anything in the case of None
         :return:
         """
-        node_id=self.graph.get_node_id(namespace, name)
+        node_id = self.graph.get_node_id(namespace, name)
 
         if node_id is None:
             return []
@@ -166,7 +166,7 @@ class GraphAnalyzer:
         :param is_nullable: can't evaluate anything in the case of None
         :return:
         """
-        node_id=self.graph.get_node_id(namespace, name)
+        node_id = self.graph.get_node_id(namespace, name)
 
         if node_id is None:
             return []
