@@ -31,3 +31,13 @@ def test_nullable_test_result(test_node_v1):
 
     assert result.type == "Nullable"
     assert result.test_pass == False
+
+
+@pytest.mark.django_db
+def test_test_result_to_json(test_node_v1):
+    result = NullableTestResult(test_node_v1, [test_node_v1])
+
+    dict = result.toJSON()
+
+    assert dict["type"] == "Nullable"
+    assert dict["test_pass"] == False
