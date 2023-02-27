@@ -3,7 +3,7 @@ name: Review App
 on:
   pull_request:
     paths:
-      - "grai-frontend/**"
+      - "none/**" #skip for now
 
 concurrency:
   group: ${{ github.ref }}-review-app
