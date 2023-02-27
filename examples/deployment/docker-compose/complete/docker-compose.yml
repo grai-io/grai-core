@@ -1,0 +1,107 @@
+version: "3.7"
+
+services:
+  db:
+    image: postgres:14.3-alpine
+    environment:
+    - POSTGRES_USER=grai
+    - POSTGRES_PASSWORD=grai
+    - POSTGRES_DB=grai
+    ports:
+    - 5432:5432
+    healthcheck:
+      test: "pg_isready -U grai"
+      interval: 2s
+      timeout: 2s
+      retries: 15
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    ports:
+    - "6379:6379"
+
+  the_guide:
+    image: ghcr.io/grai-io/grai-core/grai-server:latest
+    ports:
+      - 8000:8000
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=grai
+      - DB_USER=grai
+      - DB_PASSWORD=grai
+      - DJANGO_SUPERUSER_USERNAME=null@grai.io
+      - DJANGO_SUPERUSER_PASSWORD=super_secret
+      - DJANGO_SUPERUSER_WORKSPACE=default
+      - SERVER_HOST=localhost
+      - FRONTEND_HOST=localhost
+      - FRONTEND_URL=http://localhost:3000
+    depends_on:
+      - redis
+      - db
+    healthcheck:
+      test: "curl -f -v -H 'Accept: application/json' http://localhost:8000/health/"
+      interval: 2s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  frontend:
+    image: ghcr.io/grai-io/grai-core/grai-frontend:latest
+    ports:
+      - 3000:80
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+    depends_on:
+      - the_guide
+
+  celery_worker:
+    image: ghcr.io/grai-io/grai-core/grai-server:latest
+    command: /start-celeryworker
+    environment:
+    - DB_HOST=db
+    - DB_PORT=5432
+    - DB_NAME=grai
+    - DB_USER=grai
+    - DB_PASSWORD=grai
+    - DJANGO_SUPERUSER_USERNAME=null@grai.io
+    - DJANGO_SUPERUSER_PASSWORD=super_secret
+    - DJANGO_SUPERUSER_WORKSPACE=default
+    - SERVER_HOST=localhost
+    - FRONTEND_HOST=localhost
+    - FRONTEND_URL=http://localhost:3000
+    - CELERY_BROKER=redis://redis:6379/0
+    - CELERY_BACKEND=redis://redis:6379/0
+    depends_on:
+    - redis
+    - db
+    scale: 1
+
+  celery_beat_worker:
+    image: ghcr.io/grai-io/grai-core/grai-server:latest
+    command: /start-celerybeat
+    environment:
+    - DB_HOST=db
+    - DB_PORT=5432
+    - DB_NAME=grai
+    - DB_USER=grai
+    - DB_PASSWORD=grai
+    - DJANGO_SUPERUSER_USERNAME=null@grai.io
+    - DJANGO_SUPERUSER_PASSWORD=super_secret
+    - DJANGO_SUPERUSER_WORKSPACE=default
+    - SERVER_HOST=localhost
+    - FRONTEND_HOST=localhost
+    - FRONTEND_URL=http://localhost:3000
+    - CELERY_BROKER=redis://redis:6379/0
+    - CELERY_BACKEND=redis://redis:6379/0
+    depends_on:
+    - redis
+    - db
+
+  flower:
+    image: mher/flower
+    ports:
+    - 5557:5555
+    environment:
+    - CELERY_BROKER_URL=redis://redis:6379/0
