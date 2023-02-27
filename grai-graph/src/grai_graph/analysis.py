@@ -23,23 +23,6 @@ class GraphAnalyzer:
     def test_delete_node(self, namespace: str, name: str):
         return list(self.downstream_nodes(namespace, name))
 
-    def test_data_type_change(self, namespace: str, name: str, new_type: bool) -> List[Tuple[List[NodeTypes], bool]]:
-        """
-
-        :param namespace:
-        :param name:
-        :param expects_unique: can't evaluate anything in the case of None
-        :return:
-        """
-        current_node = self.graph.get_node(node_id=self.graph.get_node_id(namespace, name))
-        assert (
-            current_node.spec.metadata.grai.node_type == "Column"
-        ), "Unique violation tests can only be applied to columns"
-
-        # Only looks downstream
-        affected_nodes = self.traverse_data_type_violations(current_node, new_type)
-        return list(affected_nodes)
-
     def traverse_data_type_violations(
         self, node: NodeTypes, new_type: str, path: Optional[List] = None
     ) -> Generator[Tuple[List[NodeTypes], bool], None, None]:
@@ -68,6 +51,28 @@ class GraphAnalyzer:
                 yield (new_path, test_node_data_type != new_type)
 
             yield from self.traverse_data_type_violations(test_node, new_type, path=new_path)
+
+    def test_data_type_change(self, namespace: str, name: str, new_type: bool) -> List[Tuple[List[NodeTypes], bool]]:
+        """
+
+        :param namespace:
+        :param name:
+        :param expects_unique: can't evaluate anything in the case of None
+        :return:
+        """
+        node_id=self.graph.get_node_id(namespace, name)
+
+        if node_id is None:
+            return []
+
+        current_node = self.graph.get_node(node_id=node_id)
+        assert (
+            current_node.spec.metadata.grai.node_type == "Column"
+        ), "Unique violation tests can only be applied to columns"
+
+        # Only looks downstream
+        affected_nodes = self.traverse_data_type_violations(current_node, new_type)
+        return list(affected_nodes)
 
     def traverse_unique_violations(
         self, node: NodeTypes, expects_unique: bool, path: Optional[List] = None
@@ -108,7 +113,12 @@ class GraphAnalyzer:
         :param expects_unique: can't evaluate anything in the case of None
         :return:
         """
-        current_node = self.graph.get_node(node_id=self.graph.get_node_id(namespace, name))
+        node_id=self.graph.get_node_id(namespace, name)
+
+        if node_id is None:
+            return []
+
+        current_node = self.graph.get_node(node_id=node_id)
         assert (
             current_node.spec.metadata.grai.node_type == "Column"
         ), "Unique violation tests can only be applied to columns"
@@ -156,7 +166,12 @@ class GraphAnalyzer:
         :param is_nullable: can't evaluate anything in the case of None
         :return:
         """
-        current_node = self.graph.get_node(node_id=self.graph.get_node_id(namespace, name))
+        node_id=self.graph.get_node_id(namespace, name)
+
+        if node_id is None:
+            return []
+
+        current_node = self.graph.get_node(node_id=node_id)
         assert (
             current_node.spec.metadata.grai.node_type == "Column"
         ), "Unique violation tests can only be applied to columns"
