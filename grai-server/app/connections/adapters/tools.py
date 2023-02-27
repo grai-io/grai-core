@@ -255,17 +255,3 @@ class TestResultCacheBase:
         test_failures = list(chain.from_iterable(self.test_results().values()))
         summary = TestSummary(test_failures)
         return summary
-
-    def test_results(self) -> Dict[NodeV1, List[TestResult]]:
-        tests = chain(
-            self.unique_tests().items(),
-            self.null_tests().items(),
-            # self.data_type_tests().items(),
-        )
-
-        results: Dict[NodeV1, List[TestResult]] = {}
-        for key, values in tests:
-            results.setdefault(key, [])
-            results[key].extend(values)
-
-        return results
