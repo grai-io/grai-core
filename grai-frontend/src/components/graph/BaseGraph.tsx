@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react"
+import Elk, { ElkNode } from "elkjs"
 import ReactFlow, {
   Controls,
   Edge,
@@ -10,7 +11,6 @@ import ReactFlow, {
   ReactFlowProvider,
 } from "reactflow"
 import "reactflow/dist/style.css"
-import Elk, { ElkNode } from "elkjs"
 import theme from "theme"
 import Loading from "components/layout/Loading"
 import BaseNode from "./BaseNode"
