@@ -154,10 +154,12 @@ class Connection(TenantModel):
 class Run(TenantModel):
     TESTS = "tests"
     UPDATE = "update"
+    VALIDATE = "validate"
 
     RUN_ACTIONS = [
         (TESTS, "tests"),
         (UPDATE, "update"),
+        (VALIDATE, "validate"),
     ]
 
     tenant_id = "workspace_id"

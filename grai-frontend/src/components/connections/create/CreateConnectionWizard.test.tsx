@@ -4,9 +4,8 @@ import { UserEvent } from "@testing-library/user-event/dist/types/setup/setup"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
 import { GET_CONNECTORS } from "./ConnectorSelect"
-import CreateConnectionWizard, {
-  CREATE_CONNECTION,
-} from "./CreateConnectionWizard"
+import CreateConnectionWizard from "./CreateConnectionWizard"
+import { CREATE_CONNECTION } from "./SetupConnection"
 
 jest.setTimeout(30000)
 

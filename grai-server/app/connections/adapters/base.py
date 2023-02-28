@@ -17,6 +17,11 @@ class BaseAdapter(ABC):
     def get_nodes_and_edges(self):
         raise NotImplementedError(f"No get_nodes_and_edges implemented for {type(self)}")
 
+    def run_validate(self, run: Run):
+        self.run = run
+
+        self.get_nodes_and_edges()
+
     def run_update(self, run: Run):
         self.run = run
 

@@ -27,9 +27,10 @@ class Mutation:
         namespace: str,
         name: str,
         metadata: JSON,
-        secrets: Optional[JSON],
-        schedules: Optional[JSON],
-        is_active: Optional[bool],
+        secrets: Optional[JSON] = None,
+        schedules: Optional[JSON] = None,
+        is_active: bool = True,
+        temp: bool = False,
     ) -> Connection:
         workspace = await get_workspace(info, workspaceId)
 
@@ -41,7 +42,8 @@ class Mutation:
             metadata=metadata,
             secrets=secrets,
             schedules=schedules,
-            is_active=is_active if is_active is not None else True,
+            is_active=is_active,
+            temp=temp,
         )
 
         return connection
@@ -51,12 +53,13 @@ class Mutation:
         self,
         info: Info,
         id: strawberry.ID,
-        namespace: str,
-        name: str,
-        metadata: JSON,
-        secrets: Optional[JSON],
-        schedules: Optional[JSON],
-        is_active: Optional[bool],
+        namespace: Optional[str] = None,
+        name: Optional[str] = None,
+        metadata: Optional[JSON] = None,
+        secrets: Optional[JSON] = None,
+        schedules: Optional[JSON] = None,
+        is_active: Optional[bool] = None,
+        temp: Optional[bool] = None,
     ) -> Connection:
         user = get_user(info)
 
@@ -65,16 +68,23 @@ class Mutation:
         except ConnectionModel.DoesNotExist:
             raise Exception("Can't find connection")
 
-        mergedSecrets = dict()
-        mergedSecrets.update(connection.secrets if connection.secrets else {})
-        mergedSecrets.update(secrets if secrets else {})
-
-        connection.namespace = namespace
-        connection.name = name
-        connection.metadata = metadata
-        connection.secrets = mergedSecrets
-        connection.schedules = schedules
-        connection.is_active = is_active
+        if namespace is not None:
+            connection.namespace = namespace
+        if name is not None:
+            connection.name = name
+        if metadata is not None:
+            connection.metadata = metadata
+        if secrets is not None:
+            mergedSecrets = dict()
+            mergedSecrets.update(connection.secrets if connection.secrets else {})
+            mergedSecrets.update(secrets if secrets else {})
+            connection.secrets = mergedSecrets
+        if schedules is not None:
+            connection.schedules = schedules
+        if is_active is not None:
+            connection.is_active = is_active
+        if temp is not None:
+            connection.temp = temp
         await sync_to_async(connection.save)()
 
         return connection
@@ -84,7 +94,8 @@ class Mutation:
         self,
         info: Info,
         connectionId: strawberry.ID,
-    ) -> Connection:
+        action: str = "update",
+    ) -> Run:
         user = get_user(info)
 
         try:
@@ -99,11 +110,14 @@ class Mutation:
             workspace_id=connection.workspace_id,
             user=user,
             status="queued",
+            action=action,
         )
 
         run_update_server.delay(run.id)
 
-        return connection
+        run.connection = connection
+
+        return run
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def uploadConnectorFile(

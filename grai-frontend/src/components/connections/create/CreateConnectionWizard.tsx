@@ -1,76 +1,14 @@
 import React, { useState } from "react"
-import { gql, useMutation } from "@apollo/client"
 import useWorkspace from "helpers/useWorkspace"
-import { useSnackbar } from "notistack"
 import WizardLayout, { WizardSteps } from "components/wizards/WizardLayout"
-import {
-  CreateConnection,
-  CreateConnectionVariables,
-} from "./__generated__/CreateConnection"
-import { NewConnection } from "./__generated__/NewConnection"
 import ConnectorSelectTab from "./ConnectorSelectTab"
 import SetSchedule from "./SetSchedule"
-import SetupConnection from "./SetupConnection"
+import SetupConnection, { Values } from "./SetupConnection"
 import TestConnection from "./TestConnection"
-import { ConnectorType } from "../ConnectionsForm"
 import { Connector } from "../connectors/ConnectorCard"
 
-export const CREATE_CONNECTION = gql`
-  mutation CreateConnection(
-    $workspaceId: ID!
-    $connectorId: ID!
-    $namespace: String!
-    $name: String!
-    $metadata: JSON!
-    $secrets: JSON
-    $schedules: JSON
-    $is_active: Boolean
-  ) {
-    createConnection(
-      workspaceId: $workspaceId
-      connectorId: $connectorId
-      namespace: $namespace
-      name: $name
-      metadata: $metadata
-      secrets: $secrets
-      schedules: $schedules
-      is_active: $is_active
-    ) {
-      id
-      connector {
-        id
-        name
-      }
-      namespace
-      name
-      metadata
-      is_active
-      created_at
-      updated_at
-    }
-  }
-`
-
-export type CronValue = {
-  minutes: string
-  hours: string
-  day_of_week: string
-  day_of_month: string
-  month_of_year: string
-}
-
-export type SchedulesValues = {
-  type: string | null
-  cron?: CronValue
-}
-
-export type Values = {
-  connector: ConnectorType | null
-  namespace: string
-  name: string
-  metadata: any
-  secrets: any
-  schedules: SchedulesValues | null
+export interface Connection extends Values {
+  id: string
 }
 
 type CreateConnectionWizardProps = {
@@ -81,85 +19,13 @@ const CreateConnectionWizard: React.FC<CreateConnectionWizardProps> = ({
   workspaceId,
 }) => {
   const { workspaceNavigate } = useWorkspace()
-  const { enqueueSnackbar } = useSnackbar()
 
-  const [createConnection, { loading, error }] = useMutation<
-    CreateConnection,
-    CreateConnectionVariables
-  >(CREATE_CONNECTION, {
-    update(cache, { data }) {
-      cache.modify({
-        id: cache.identify({
-          id: workspaceId,
-          __typename: "Workspace",
-        }),
-        fields: {
-          connections(existingConnections = []) {
-            if (!data?.createConnection) return
-
-            const newConnection = cache.writeFragment<NewConnection>({
-              data: data.createConnection,
-              fragment: gql`
-                fragment NewConnection on Connection {
-                  id
-                  connector {
-                    id
-                    name
-                  }
-                  namespace
-                  name
-                  metadata
-                  is_active
-                  created_at
-                  updated_at
-                }
-              `,
-            })
-            return [...existingConnections, newConnection]
-          },
-        },
-      })
-    },
-  })
-
-  const defaultValues: Values = {
-    connector: null,
-    namespace: "default",
-    name: "",
-    metadata: null,
-    secrets: null,
-    schedules: null,
-  }
-
-  const [values, setValues] = useState<Values>(defaultValues)
-
-  const handleSubmit = () => {
-    createConnection({
-      variables: {
-        workspaceId,
-        connectorId: values.connector?.id as string,
-        namespace: values.namespace,
-        name: values.name,
-        metadata: values.metadata,
-        secrets: values.secrets,
-        schedules: values.schedules,
-        is_active: true,
-      },
-    })
-      .then(res =>
-        workspaceNavigate(`connections/${res.data?.createConnection.id}`)
-      )
-      .then(() => enqueueSnackbar("Connection created"))
-      .catch(() => {})
-  }
+  const [connector, setConnector] = useState<Connector | null>(null)
+  const [connection, setConnection] = useState<Connection | null>(null)
 
   const handleSelect =
     (setActiveStep: (step: number) => void) => (connector: Connector) => {
-      setValues({
-        ...values,
-        connector,
-        name: connector.name,
-      })
+      setConnector(connector)
       setActiveStep(1)
     }
 
@@ -175,31 +41,42 @@ const CreateConnectionWizard: React.FC<CreateConnectionWizardProps> = ({
     },
     {
       title: "Setup connection",
-      element: opts => (
-        <SetupConnection
-          workspaceId={workspaceId}
-          opts={opts}
-          values={values}
-          setValues={setValues}
-        />
-      ),
+      element: opts =>
+        connector && (
+          <SetupConnection
+            workspaceId={workspaceId}
+            connector={connector}
+            connection={connection}
+            setConnection={setConnection}
+            opts={opts}
+          />
+        ),
     },
     {
       title: "Test connection",
-      element: opts => <TestConnection opts={opts} values={values} />,
+      element: opts =>
+        connector &&
+        connection && (
+          <TestConnection
+            workspaceId={workspaceId}
+            opts={opts}
+            connector={connector}
+            connection={connection}
+          />
+        ),
     },
     {
       title: "Set schedule",
-      element: opts => (
-        <SetSchedule
-          opts={opts}
-          values={values}
-          setValues={setValues}
-          error={error}
-          loading={loading}
-          onSubmit={handleSubmit}
-        />
-      ),
+      element: opts =>
+        connection && (
+          <SetSchedule
+            opts={opts}
+            connection={connection}
+            onComplete={() =>
+              connection && workspaceNavigate(`connections/${connection.id}`)
+            }
+          />
+        ),
     },
   ]
 

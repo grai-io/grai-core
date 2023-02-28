@@ -115,7 +115,9 @@ async def test_update_connection(test_context):
             "namespace": "default",
             "name": name,
             "metadata": {},
-            "secrets": None,
+            "secrets": {
+                "a": "hello",
+            },
             "schedules": None,
             "is_active": False,
         },
@@ -244,6 +246,37 @@ async def test_update_connection_no_membership(test_context):
         == """[GraphQLError("Can't find connection", locations=[SourceLocation(line=3, column=13)], path=['updateConnection'])]"""
     )
     assert result.data is None
+
+
+@pytest.mark.django_db
+async def test_update_connection_temp(test_context):
+    context, organisation, workspace, user = test_context
+    connection = await generate_connection(workspace, temp=True)
+
+    mutation = """
+        mutation UpdateConnection($id: ID!, $temp: Boolean) {
+            updateConnection(id: $id, temp: $temp) {
+                id
+                temp
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "id": str(connection.id),
+            "temp": True,
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["updateConnection"] == {
+        "id": str(connection.id),
+        "temp": True,
+    }
+    assert connection.temp is True
 
 
 @pytest.mark.django_db

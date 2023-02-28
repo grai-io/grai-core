@@ -1,7 +1,6 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { render, screen, fireEvent } from "testing"
-import { Values } from "./CreateConnectionWizard"
 import SetupConnection from "./SetupConnection"
 
 const opts = {
@@ -22,21 +21,9 @@ test("renders", async () => {
     <SetupConnection
       workspaceId="1"
       opts={opts}
-      values={{
-        connector: {
-          id: "1",
-          name: "Test Connector",
-          metadata: null,
-        },
-        namespace: "",
-        name: "",
-        metadata: undefined,
-        secrets: undefined,
-        schedules: null,
-      }}
-      setValues={function (values: Values): void {
-        throw new Error("Function not implemented.")
-      }}
+      connector={{ id: "1", name: "Test Connector", metadata: null }}
+      connection={null}
+      setConnection={() => {}}
     />,
     {
       withRouter: true,
@@ -51,26 +38,18 @@ test("renders file", async () => {
     <SetupConnection
       workspaceId="1"
       opts={opts}
-      values={{
-        connector: {
-          id: "1",
-          name: "Test File Connector",
-          metadata: {
-            file: {
-              name: "manifest.json",
-              extension: "json",
-            },
+      connector={{
+        id: "1",
+        name: "Test File Connector",
+        metadata: {
+          file: {
+            name: "manifest.json",
+            extension: "json",
           },
         },
-        namespace: "",
-        name: "",
-        metadata: undefined,
-        secrets: undefined,
-        schedules: null,
       }}
-      setValues={function (values: Values): void {
-        throw new Error("Function not implemented.")
-      }}
+      connection={null}
+      setConnection={() => {}}
     />,
     {
       withRouter: true,
@@ -85,26 +64,18 @@ test("renders file yaml", async () => {
     <SetupConnection
       workspaceId="1"
       opts={opts}
-      values={{
-        connector: {
-          id: "1",
-          name: "Test YAML Connector",
-          metadata: {
-            file: {
-              name: "yaml",
-              extension: "yaml",
-            },
+      connector={{
+        id: "1",
+        name: "Test YAML Connector",
+        metadata: {
+          file: {
+            name: "yaml",
+            extension: "yaml",
           },
         },
-        namespace: "",
-        name: "",
-        metadata: undefined,
-        secrets: undefined,
-        schedules: null,
       }}
-      setValues={function (values: Values): void {
-        throw new Error("Function not implemented.")
-      }}
+      connection={null}
+      setConnection={() => {}}
     />,
     {
       withRouter: true,
@@ -121,26 +92,18 @@ test("upload file", async () => {
     <SetupConnection
       workspaceId="1"
       opts={opts}
-      values={{
-        connector: {
-          id: "1",
-          name: "Test File Connector",
-          metadata: {
-            file: {
-              name: "manifest.json",
-              extension: "json",
-            },
+      connector={{
+        id: "1",
+        name: "Test File Connector",
+        metadata: {
+          file: {
+            name: "manifest.json",
+            extension: "json",
           },
         },
-        namespace: "",
-        name: "",
-        metadata: undefined,
-        secrets: undefined,
-        schedules: null,
       }}
-      setValues={function (values: Values): void {
-        throw new Error("Function not implemented.")
-      }}
+      connection={null}
+      setConnection={() => {}}
     />,
     {
       withRouter: true,
@@ -173,26 +136,18 @@ test("upload wrong file", async () => {
     <SetupConnection
       workspaceId="1"
       opts={opts}
-      values={{
-        connector: {
-          id: "1",
-          name: "Test File Connector",
-          metadata: {
-            file: {
-              name: "manifest.json",
-              extension: "json",
-            },
+      connector={{
+        id: "1",
+        name: "Test File Connector",
+        metadata: {
+          file: {
+            name: "manifest.json",
+            extension: "json",
           },
         },
-        namespace: "",
-        name: "",
-        metadata: undefined,
-        secrets: undefined,
-        schedules: null,
       }}
-      setValues={function (values: Values): void {
-        throw new Error("Function not implemented.")
-      }}
+      connection={null}
+      setConnection={() => {}}
     />,
     {
       withRouter: true,

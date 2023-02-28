@@ -36,6 +36,4 @@ export interface CreateConnectionVariables {
   name: string;
   metadata: any;
   secrets?: any | null;
-  schedules?: any | null;
-  is_active?: boolean | null;
 }
