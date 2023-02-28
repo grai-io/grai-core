@@ -1,4 +1,4 @@
-import { ErrorOutline } from "@mui/icons-material"
+import { CheckCircleOutline, ErrorOutline } from "@mui/icons-material"
 import {
   Alert,
   AlertTitle,
@@ -11,15 +11,16 @@ import React, { useState } from "react"
 import { EdgeProps, getBezierPath, EdgeLabelRenderer } from "reactflow"
 import theme from "theme"
 
-interface Error {
+interface Test {
   message: string
+  test_pass?: boolean
 }
 
-export type ErrorData = {
-  errors?: Error[]
+export type TestData = {
+  tests?: Test[]
 }
 
-const ErrorEdge: React.FC<EdgeProps<ErrorData>> = ({
+const TestEdge: React.FC<EdgeProps<TestData>> = ({
   id,
   sourceX,
   sourceY,
@@ -42,6 +43,12 @@ const ErrorEdge: React.FC<EdgeProps<ErrorData>> = ({
 
   const toggleExpand = () => setExpand(!expand)
 
+  const errorCount = data?.tests?.filter(test => !test.test_pass).length
+  const passCount = data?.tests?.filter(test => test.test_pass).length
+
+  const hasError = errorCount ? errorCount > 0 : false
+  const hasPass = passCount ? passCount > 0 : false
+
   return (
     <>
       <path
@@ -49,12 +56,12 @@ const ErrorEdge: React.FC<EdgeProps<ErrorData>> = ({
         className="react-flow__edge-path"
         d={edgePath}
         style={{
-          stroke: theme.palette.error.main,
+          stroke: hasError ? theme.palette.error.main : undefined,
         }}
       />
       <EdgeLabelRenderer>
         <Alert
-          severity="error"
+          severity={hasError ? "error" : "success"}
           icon={false}
           onClick={toggleExpand}
           sx={{
@@ -62,14 +69,25 @@ const ErrorEdge: React.FC<EdgeProps<ErrorData>> = ({
             position: "absolute",
             transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
             zIndex: 20,
-            width: 225,
+            width: expand ? 225 : undefined,
             overflowWrap: "break-word",
           }}
           className="nodrag nopan"
+          data-testid="test-edge"
         >
           <Box sx={{ display: "flex" }}>
-            <ErrorOutline sx={{ mr: 1 }} />
-            <AlertTitle sx={{ mt: 0.1 }}>Errors</AlertTitle>
+            {hasError && (
+              <>
+                <ErrorOutline sx={{ mr: 1 }} />
+                <AlertTitle sx={{ mt: 0.1 }}>{errorCount}</AlertTitle>
+              </>
+            )}
+            {hasPass && (
+              <>
+                <CheckCircleOutline sx={{ mr: 1 }} />
+                <AlertTitle sx={{ mt: 0.1 }}>{passCount}</AlertTitle>
+              </>
+            )}
           </Box>
           {expand && (
             <>
@@ -81,9 +99,9 @@ const ErrorEdge: React.FC<EdgeProps<ErrorData>> = ({
                 }}
               />
               <Stack spacing={1}>
-                {data?.errors?.map((error, index) => (
+                {data?.tests?.map((test, index) => (
                   <Typography variant="body2" key={index}>
-                    {error.message}
+                    {test.message}
                   </Typography>
                 ))}
               </Stack>
@@ -95,4 +113,4 @@ const ErrorEdge: React.FC<EdgeProps<ErrorData>> = ({
   )
 }
 
-export default ErrorEdge
+export default TestEdge
