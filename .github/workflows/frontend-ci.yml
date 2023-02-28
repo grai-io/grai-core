@@ -45,6 +45,8 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
 
   build:
+    needs: [test]
+
     runs-on: ubuntu-latest
 
     defaults:
