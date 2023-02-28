@@ -4,6 +4,7 @@ import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
 import { RUN_CONNECTION } from "components/connections/ConnectionRun"
 import Connection, { GET_CONNECTION } from "./Connection"
+import { GET_PROFILE } from "components/layout/ProfileMenu"
 
 test("renders", async () => {
   render(<Connection />, {
@@ -15,10 +16,27 @@ test("renders", async () => {
   })
 })
 
+const profileMock = {
+  request: {
+    query: GET_PROFILE,
+  },
+  result: {
+    data: {
+      profile: {
+        id: "1",
+        username: "test@example.com",
+        first_name: "Test",
+        last_name: "Example",
+      },
+    },
+  },
+}
+
 test("refresh", async () => {
   const user = userEvent.setup()
 
   const mocks = [
+    profileMock,
     {
       request: {
         query: GET_CONNECTION,
@@ -161,6 +179,7 @@ test("refresh no last_sucessful_run", async () => {
   const user = userEvent.setup()
 
   const mocks = [
+    profileMock,
     {
       request: {
         query: GET_CONNECTION,
@@ -289,6 +308,7 @@ test("refresh no last_sucessful_run", async () => {
 
 test("error", async () => {
   const mocks = [
+    profileMock,
     {
       request: {
         query: GET_CONNECTION,
@@ -313,6 +333,7 @@ test("error", async () => {
 
 test("not found", async () => {
   const mocks = [
+    profileMock,
     {
       request: {
         query: GET_CONNECTION,
