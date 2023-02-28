@@ -1,5 +1,10 @@
 import React, { useState } from "react"
 import {
+  CancelOutlined,
+  CheckCircleOutline,
+  CheckOutlined,
+} from "@mui/icons-material"
+import {
   Box,
   Card,
   CardContent,
@@ -10,13 +15,8 @@ import {
 } from "@mui/material"
 import { EdgeProps, getBezierPath, EdgeLabelRenderer } from "reactflow"
 import theme from "theme"
-import TestsSummary from "./tests/TestsSummary"
-import {
-  CancelOutlined,
-  CheckCircleOutline,
-  CheckOutlined,
-} from "@mui/icons-material"
 import TestSection from "./tests/TestSection"
+import TestsSummary from "./tests/TestsSummary"
 
 interface Test {
   message: string

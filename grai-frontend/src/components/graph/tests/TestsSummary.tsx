@@ -1,5 +1,5 @@
-import { Box, lighten } from "@mui/material"
 import React, { useState } from "react"
+import { Box, lighten } from "@mui/material"
 
 type TestsSummaryProps = {
   errorCount: number
