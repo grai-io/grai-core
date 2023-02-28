@@ -38,7 +38,6 @@ def mocked_requests_post(*args, **kwargs):
             pass
 
         def json(self):
-            print(f"returning json2: {self.json_data}")
             return self.json_data
 
     return MockResponse({"token": "tokenvalue", "expires_at": "1234"}, 200)
@@ -54,8 +53,6 @@ def mocked_requests_post_no_token(*args, **kwargs):
             pass
 
         def json(self):
-            print(f"returning json: {self.json_data}")
-
             return self.json_data
 
     return MockResponse({"token": None, "expires_at": None, "message": "something went wrong"}, 200)
