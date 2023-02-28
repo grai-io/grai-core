@@ -1,13 +1,13 @@
 import React from "react"
-import { getQueriesForElement, render, screen, waitFor } from "testing"
+import userEvent from "@testing-library/user-event"
 import ReactFlow, {
   Edge,
   EdgeTypes,
   Position,
   ReactFlowProvider,
 } from "reactflow"
+import { getQueriesForElement, render, screen, waitFor } from "testing"
 import TestEdge, { TestData } from "./TestEdge"
-import userEvent from "@testing-library/user-event"
 
 test("renders", async () => {
   render(
