@@ -1,5 +1,5 @@
-import { Grid } from "@mui/material"
 import React from "react"
+import { Grid } from "@mui/material"
 import HomeCard from "./HomeCard"
 
 const HomeCards: React.FC = () => (

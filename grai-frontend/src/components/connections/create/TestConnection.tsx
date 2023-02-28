@@ -1,3 +1,4 @@
+import React from "react"
 import { ArrowForward, CheckCircle } from "@mui/icons-material"
 import {
   Grid,
@@ -11,7 +12,6 @@ import {
 import WizardBottomBar from "components/wizards/WizardBottomBar"
 import { ElementOptions } from "components/wizards/WizardLayout"
 import WizardSubtitle from "components/wizards/WizardSubtitle"
-import React from "react"
 import CreateConnectionHelp from "./CreateConnectionHelp"
 import { Values } from "./CreateConnectionWizard"
 

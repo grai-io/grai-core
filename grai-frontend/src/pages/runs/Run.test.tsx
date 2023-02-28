@@ -1,5 +1,5 @@
-import { GraphQLError } from "graphql"
 import React from "react"
+import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
 import Run, { GET_RUN } from "./Run"
 

@@ -1,6 +1,6 @@
+import React, { ChangeEvent } from "react"
 import { Close, Search } from "@mui/icons-material"
 import { Box, TextField, InputAdornment } from "@mui/material"
-import React, { ChangeEvent } from "react"
 
 type SearchControlProps = {
   value: string | null

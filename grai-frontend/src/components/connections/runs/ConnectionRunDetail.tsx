@@ -1,9 +1,9 @@
+import React from "react"
 import { Box, Stack, Tooltip, Typography } from "@mui/material"
-import NodeDetailRow from "components/layout/NodeDetailRow"
-import RunStatus from "components/runs/RunStatus"
 import { durationAgo } from "helpers/runDuration"
 import { DateTime } from "luxon"
-import React from "react"
+import NodeDetailRow from "components/layout/NodeDetailRow"
+import RunStatus from "components/runs/RunStatus"
 
 interface Run {
   id: string

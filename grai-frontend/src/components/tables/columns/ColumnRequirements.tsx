@@ -1,7 +1,7 @@
+import React from "react"
 import { Check, Close } from "@mui/icons-material"
 import { Chip, Stack } from "@mui/material"
 import { Edge } from "helpers/columns"
-import React from "react"
 
 const getType = (edge: Edge) => {
   if (!edge.preserved) return { color: "default" as const }

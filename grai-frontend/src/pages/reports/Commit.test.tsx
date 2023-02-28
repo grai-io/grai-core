@@ -1,6 +1,6 @@
+import React from "react"
 import { GraphQLError } from "graphql"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
-import React from "react"
 import { render, screen, waitFor } from "testing"
 import Commit, { GET_COMMIT } from "./Commit"
 

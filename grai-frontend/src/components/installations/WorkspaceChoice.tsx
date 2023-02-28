@@ -1,8 +1,8 @@
-import { gql, useMutation } from "@apollo/client"
-import WorkspaceList, { Workspace } from "components/workspaces/WorkspaceList"
-import { useSnackbar } from "notistack"
 import React from "react"
+import { gql, useMutation } from "@apollo/client"
+import { useSnackbar } from "notistack"
 import { useNavigate } from "react-router-dom"
+import WorkspaceList, { Workspace } from "components/workspaces/WorkspaceList"
 import {
   AddInstallation,
   AddInstallationVariables,

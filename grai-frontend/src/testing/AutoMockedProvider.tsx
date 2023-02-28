@@ -1,11 +1,11 @@
 import React, { ReactNode } from "react"
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client"
 import { SchemaLink } from "@apollo/client/link/schema"
+import { MockedProvider, MockedResponse } from "@apollo/client/testing"
 import { addMocksToSchema, IMocks } from "@graphql-tools/mock"
 import { makeExecutableSchema } from "@graphql-tools/schema"
 import { buildClientSchema, printSchema } from "graphql/utilities"
 import introspectionResult from "./schema.json"
-import { MockedProvider, MockedResponse } from "@apollo/client/testing"
 
 type AutoMockedProviderProps = {
   children: ReactNode

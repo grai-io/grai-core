@@ -1,3 +1,4 @@
+import React from "react"
 import { KeyboardBackspace, ContentCopy } from "@mui/icons-material"
 import {
   Box,
@@ -7,13 +8,12 @@ import {
   IconButton,
   Divider,
 } from "@mui/material"
+import useWorkspace from "helpers/useWorkspace"
+import { Link } from "react-router-dom"
 import ConnectionRun, {
   Connection as BaseConnection,
   RunResult,
 } from "components/connections/ConnectionRun"
-import useWorkspace from "helpers/useWorkspace"
-import React from "react"
-import { Link } from "react-router-dom"
 import RunStatus from "./RunStatus"
 
 interface Connector {

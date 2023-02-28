@@ -1,13 +1,13 @@
+import React from "react"
 import { gql, useQuery } from "@apollo/client"
 import { Container } from "@mui/material"
-import React from "react"
 import { useLocation } from "react-router-dom"
 import Loading from "components/layout/Loading"
-import { GetWorkspaces } from "./__generated__/GetWorkspaces"
 import GraphError from "components/utils/GraphError"
-import WorkspaceNotFound from "components/workspaces/WorkspaceNotFound"
-import WorkspaceList from "components/workspaces/WorkspaceList"
 import CreateWorkspace from "components/workspaces/CreateWorkspace"
+import WorkspaceList from "components/workspaces/WorkspaceList"
+import WorkspaceNotFound from "components/workspaces/WorkspaceNotFound"
+import { GetWorkspaces } from "./__generated__/GetWorkspaces"
 
 export const GET_WORKSPACES = gql`
   query GetWorkspaces {

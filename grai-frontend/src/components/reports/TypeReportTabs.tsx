@@ -1,6 +1,6 @@
+import React from "react"
 import { Box, Tab, Tabs } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
-import React from "react"
 import { Link } from "react-router-dom"
 import { Repository } from "./ReportBreadcrumbs"
 

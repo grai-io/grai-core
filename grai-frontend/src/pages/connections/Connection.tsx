@@ -1,18 +1,18 @@
-import { gql, useQuery } from "@apollo/client"
 import React from "react"
+import { gql, useQuery } from "@apollo/client"
+import useRunPolling from "helpers/runPolling"
+import useWorkspace from "helpers/useWorkspace"
 import { useParams } from "react-router-dom"
 import NotFound from "pages/NotFound"
+import ConnectionContent from "components/connections/ConnectionContent"
+import ConnectionHeader from "components/connections/ConnectionHeader"
+import ConnectionTabs from "components/connections/ConnectionTabs"
+import PageLayout from "components/layout/PageLayout"
+import GraphError from "components/utils/GraphError"
 import {
   GetConnection,
   GetConnectionVariables,
 } from "./__generated__/GetConnection"
-import GraphError from "components/utils/GraphError"
-import PageLayout from "components/layout/PageLayout"
-import ConnectionHeader from "components/connections/ConnectionHeader"
-import ConnectionContent from "components/connections/ConnectionContent"
-import ConnectionTabs from "components/connections/ConnectionTabs"
-import useWorkspace from "helpers/useWorkspace"
-import useRunPolling from "helpers/runPolling"
 
 export const GET_CONNECTION = gql`
   query GetConnection(

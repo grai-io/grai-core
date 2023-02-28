@@ -1,5 +1,5 @@
-import { Alert, AlertTitle, Typography, Box } from "@mui/material"
 import React from "react"
+import { Alert, AlertTitle, Typography, Box } from "@mui/material"
 
 type WorkspaceNotFoundProps = {
   organisationName: string

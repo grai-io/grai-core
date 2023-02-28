@@ -1,15 +1,15 @@
 /* istanbul ignore file */
 import React, { lazy, Suspense } from "react"
 import { Routes as BrowerRoutes, Route } from "react-router-dom"
+import WorkspaceRedirect from "pages/workspaces/WorkspaceRedirect"
+import Loading from "components/layout/Loading"
+import PageLayout from "components/layout/PageLayout"
+import SettingsLayout from "components/settings/SettingsLayout"
+import SuspenseOutlet from "components/utils/SuspenseOutlet"
+import WorkspaceProvider from "components/utils/WorkspaceProvider"
 import GuestRoute from "./components/auth/GuestRoute"
 import PrivateRoute from "./components/auth/PrivateRoute"
 import NotFound from "./pages/NotFound"
-import WorkspaceProvider from "components/utils/WorkspaceProvider"
-import PageLayout from "components/layout/PageLayout"
-import Loading from "components/layout/Loading"
-import SuspenseOutlet from "components/utils/SuspenseOutlet"
-import SettingsLayout from "components/settings/SettingsLayout"
-import WorkspaceRedirect from "pages/workspaces/WorkspaceRedirect"
 
 const Index = lazy(() => import("./pages/Index"))
 const Workspaces = lazy(() => import("./pages/workspaces/Workspaces"))

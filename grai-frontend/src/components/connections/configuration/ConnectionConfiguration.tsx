@@ -1,7 +1,7 @@
-import { Grid } from "@mui/material"
 import React from "react"
-import CreateConnectionHelp from "../create/CreateConnectionHelp"
+import { Grid } from "@mui/material"
 import UpdateConnectionForm, { Connection } from "./UpdateConnectionForm"
+import CreateConnectionHelp from "../create/CreateConnectionHelp"
 
 type ConnectionConfigurationProps = {
   connection: Connection

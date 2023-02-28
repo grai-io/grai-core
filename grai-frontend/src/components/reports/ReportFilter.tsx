@@ -1,6 +1,6 @@
+import React from "react"
 import { Stack } from "@mui/material"
 import getRepoFromParams from "helpers/getRepoFromParams"
-import React from "react"
 import { useSearchParams } from "react-router-dom"
 import BranchFilter, { Branch } from "./filters/BranchFilter"
 import RepositoryFilter from "./filters/RepositoryFilter"

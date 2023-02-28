@@ -3,15 +3,15 @@ import React, { ReactElement, ReactNode } from "react"
 import { MockedResponse } from "@apollo/client/testing"
 import { ThemeProvider } from "@mui/material"
 import { render, RenderOptions } from "@testing-library/react"
+import casual from "casual"
 import { SnackbarProvider } from "notistack"
 import { HelmetProvider } from "react-helmet-async"
 import { MemoryRouter, Route, Routes } from "react-router-dom"
 import theme from "theme"
-import AutoMockedProvider from "./AutoMockedProvider"
-import casual from "casual"
-import AuthMock from "./AuthMock"
 import GuestRoute from "components/auth/GuestRoute"
 import WorkspaceProvider from "components/utils/WorkspaceProvider"
+import AuthMock from "./AuthMock"
+import AutoMockedProvider from "./AutoMockedProvider"
 
 const mockResolvers = {
   Date: () => "2019-12-31",

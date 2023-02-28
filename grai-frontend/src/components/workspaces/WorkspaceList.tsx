@@ -1,3 +1,4 @@
+import React, { useState } from "react"
 import { ApolloError } from "@apollo/client"
 import {
   Card,
@@ -10,9 +11,8 @@ import {
   ListItemText,
   CircularProgress,
 } from "@mui/material"
-import GraphError from "components/utils/GraphError"
-import React, { useState } from "react"
 import { Link } from "react-router-dom"
+import GraphError from "components/utils/GraphError"
 
 export interface Organisation {
   id: string

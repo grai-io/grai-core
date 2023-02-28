@@ -1,5 +1,5 @@
-import { TableRow, TableCell, Typography } from "@mui/material"
 import React, { ReactNode } from "react"
+import { TableRow, TableCell, Typography } from "@mui/material"
 import theme from "theme"
 
 type NodeDetailRowProps = {

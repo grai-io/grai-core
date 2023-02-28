@@ -1,7 +1,7 @@
+import React from "react"
 import { CallSplit, OpenInNew } from "@mui/icons-material"
 import { Box, Link, Typography } from "@mui/material"
 import { durationAgo } from "helpers/runDuration"
-import React from "react"
 import PullRequestBreadcrumbs, {
   Repository as BaseRepository,
 } from "./PullRequestBreadcrumbs"

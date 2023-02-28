@@ -1,8 +1,8 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
+import { ReactFlowProvider } from "reactflow"
 import { fireEvent, render, screen, waitFor } from "testing"
 import BaseNode, { BaseNodeData } from "./BaseNode"
-import { ReactFlowProvider } from "reactflow"
 
 const data: BaseNodeData = {
   id: "1234",

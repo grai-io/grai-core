@@ -1,5 +1,5 @@
-import { AppBar, Toolbar, Container, Typography, Box } from "@mui/material"
 import React, { ReactNode } from "react"
+import { AppBar, Toolbar, Container, Typography, Box } from "@mui/material"
 
 type WizardSubtitleProps = {
   title?: string | null

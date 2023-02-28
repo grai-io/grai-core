@@ -1,8 +1,8 @@
-import { Stack, Box, Button, Typography } from "@mui/material"
-import NodeDetailRow from "components/layout/NodeDetailRow"
-import useWorkspace from "helpers/useWorkspace"
 import React from "react"
+import { Stack, Box, Button, Typography } from "@mui/material"
+import useWorkspace from "helpers/useWorkspace"
 import { Link } from "react-router-dom"
+import NodeDetailRow from "components/layout/NodeDetailRow"
 
 interface Dependency {
   id: string

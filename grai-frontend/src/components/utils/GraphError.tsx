@@ -1,8 +1,8 @@
 import React from "react"
 import { ApolloError } from "@apollo/client"
 import { Alert, AlertTitle } from "@mui/material"
-import { Navigate } from "react-router-dom"
 import useWorkspace from "helpers/useWorkspace"
+import { Navigate } from "react-router-dom"
 
 type GraphErrorProps = {
   error: ApolloError

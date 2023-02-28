@@ -1,13 +1,12 @@
 import React, { useState } from "react"
 import { gql, useQuery } from "@apollo/client"
-import TablesHeader from "components/tables/TablesHeader"
 import { Box } from "@mui/material"
-import GraphError from "components/utils/GraphError"
-import PageLayout from "components/layout/PageLayout"
 import useWorkspace from "helpers/useWorkspace"
-
-import { GetTables, GetTablesVariables } from "./__generated__/GetTables"
+import PageLayout from "components/layout/PageLayout"
+import TablesHeader from "components/tables/TablesHeader"
 import TablesTable from "components/tables/TablesTable"
+import GraphError from "components/utils/GraphError"
+import { GetTables, GetTablesVariables } from "./__generated__/GetTables"
 
 export const GET_TABLES = gql`
   query GetTables($organisationName: String!, $workspaceName: String!) {

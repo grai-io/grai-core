@@ -1,10 +1,10 @@
-import Tabs, { Tab } from "components/tabs/Tabs"
 import React from "react"
+import Tabs, { Tab } from "components/tabs/Tabs"
 import ConnectionConfiguration from "./configuration/ConnectionConfiguration"
 import { Connection as BaseConnection } from "./configuration/UpdateConnectionForm"
 import ConnectionRunsTable, { Run } from "./runs/ConnectionRunsTable"
-import EditScheduleForm from "./schedule/EditScheduleForm"
 import { Connection as ScheduleConnection } from "./schedule/ConnectionSchedule"
+import EditScheduleForm from "./schedule/EditScheduleForm"
 
 interface Connection extends BaseConnection, ScheduleConnection {
   runs: Run[]

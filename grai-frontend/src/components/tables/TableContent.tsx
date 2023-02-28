@@ -1,9 +1,9 @@
-import { Box } from "@mui/material"
 import React from "react"
-import TableLineage from "../../components/tables/TableLineage"
-import TableProfile, { TableInterface } from "./TableProfile"
-import Tabs from "components/tabs/Tabs"
 import { BarChart, Mediation, TableRows } from "@mui/icons-material"
+import { Box } from "@mui/material"
+import Tabs from "components/tabs/Tabs"
+import TableProfile, { TableInterface } from "./TableProfile"
+import TableLineage from "../../components/tables/TableLineage"
 
 type TableContentProps = {
   table: TableInterface

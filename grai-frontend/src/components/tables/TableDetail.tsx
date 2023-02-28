@@ -1,7 +1,7 @@
-import { Card, Table, TableBody } from "@mui/material"
-import NodeDetailRow from "components/layout/NodeDetailRow"
-import valueToString from "helpers/valueToString"
 import React from "react"
+import { Card, Table, TableBody } from "@mui/material"
+import valueToString from "helpers/valueToString"
+import NodeDetailRow from "components/layout/NodeDetailRow"
 
 interface TableInterface {
   name: string

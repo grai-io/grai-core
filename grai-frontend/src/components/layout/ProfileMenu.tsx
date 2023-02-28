@@ -1,3 +1,4 @@
+import React from "react"
 import { gql, useApolloClient, useQuery } from "@apollo/client"
 import { AccountCircle, Settings, Business, Logout } from "@mui/icons-material"
 import {
@@ -10,18 +11,17 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material"
+import useWorkspace from "helpers/useWorkspace"
 import PopupState, {
   bindMenu,
   bindTrigger,
   InjectedProps,
 } from "material-ui-popup-state"
-import React from "react"
+import posthog from "posthog"
 import { Link } from "react-router-dom"
+import useAuth from "components/auth/useAuth"
 import GraphError from "components/utils/GraphError"
 import { GetProfileMenu } from "./__generated__/GetProfileMenu"
-import useWorkspace from "helpers/useWorkspace"
-import useAuth from "components/auth/useAuth"
-import posthog from "posthog"
 
 export const GET_PROFILE = gql`
   query GetProfileMenu {

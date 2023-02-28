@@ -1,6 +1,6 @@
+import React, { ReactNode } from "react"
 import { Box } from "@mui/material"
 import ErrorBoundary from "components/utils/ErrorBoundary"
-import React, { ReactNode } from "react"
 import AppTopBar from "./AppTopBar"
 import Loading from "./Loading"
 

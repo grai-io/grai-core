@@ -1,23 +1,23 @@
+import React, { useState } from "react"
 import { gql, useMutation } from "@apollo/client"
 import { LoadingButton } from "@mui/lab"
 import { Grid, TextField, Typography } from "@mui/material"
+import { clearWorkspace } from "helpers/cache"
+import useWorkspace from "helpers/useWorkspace"
+import { useSnackbar } from "notistack"
+import { Accept } from "react-dropzone"
 import FileUpload from "components/form/FileUpload"
 import Form from "components/form/Form"
 import GraphError from "components/utils/GraphError"
 import WizardBottomBar from "components/wizards/WizardBottomBar"
 import { ElementOptions } from "components/wizards/WizardLayout"
 import WizardSubtitle from "components/wizards/WizardSubtitle"
-import { clearWorkspace } from "helpers/cache"
-import useWorkspace from "helpers/useWorkspace"
-import { useSnackbar } from "notistack"
-import React, { useState } from "react"
-import { Accept } from "react-dropzone"
-import { ConnectorType } from "../ConnectionsForm"
-import CreateConnectionHelp from "./CreateConnectionHelp"
 import {
   UploadConnectorFile,
   UploadConnectorFileVariables,
 } from "./__generated__/UploadConnectorFile"
+import CreateConnectionHelp from "./CreateConnectionHelp"
+import { ConnectorType } from "../ConnectionsForm"
 
 export const UPLOAD_CONNECTOR_FILE = gql`
   mutation UploadConnectorFile(

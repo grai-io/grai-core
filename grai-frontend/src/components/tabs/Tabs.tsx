@@ -1,5 +1,5 @@
-import { Box, Tab as BaseTab, Tabs as BaseTabs } from "@mui/material"
 import React, { JSXElementConstructor, ReactElement, ReactNode } from "react"
+import { Box, Tab as BaseTab, Tabs as BaseTabs } from "@mui/material"
 import { Link, useLocation } from "react-router-dom"
 
 export type Tab = {

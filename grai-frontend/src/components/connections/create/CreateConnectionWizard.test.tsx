@@ -1,7 +1,7 @@
+import React from "react"
 import userEvent from "@testing-library/user-event"
 import { UserEvent } from "@testing-library/user-event/dist/types/setup/setup"
 import { GraphQLError } from "graphql"
-import React from "react"
 import { render, screen, waitFor } from "testing"
 import { GET_CONNECTORS } from "./ConnectorSelect"
 import CreateConnectionWizard, {

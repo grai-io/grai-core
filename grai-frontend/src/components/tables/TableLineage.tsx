@@ -1,15 +1,15 @@
+import React, { useState } from "react"
 import { gql, useQuery } from "@apollo/client"
 import { Alert, Box } from "@mui/material"
-import React, { useState } from "react"
+import useWorkspace from "helpers/useWorkspace"
 import theme from "theme"
-import Loading from "components/layout/Loading"
 import Graph from "components/graph/Graph"
+import Loading from "components/layout/Loading"
 import GraphError from "components/utils/GraphError"
 import {
   GetTablesAndEdgesTableLineage,
   GetTablesAndEdgesTableLineageVariables,
 } from "./__generated__/GetTablesAndEdgesTableLineage"
-import useWorkspace from "helpers/useWorkspace"
 
 const GET_TABLES_AND_EDGES = gql`
   query GetTablesAndEdgesTableLineage(

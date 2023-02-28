@@ -1,7 +1,7 @@
+import React from "react"
 import { Check, Close } from "@mui/icons-material"
 import { Chip, Stack } from "@mui/material"
 import { EnrichedColumn, Test } from "helpers/columns"
-import React from "react"
 
 type ColumnTestsProps = {
   column: EnrichedColumn

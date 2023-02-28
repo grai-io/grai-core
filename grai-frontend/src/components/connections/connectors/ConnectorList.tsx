@@ -1,5 +1,5 @@
-import { Typography, Grid } from "@mui/material"
 import React from "react"
+import { Typography, Grid } from "@mui/material"
 import ConnectorCard, { Connector } from "./ConnectorCard"
 
 type ConnectorListProps = {

@@ -1,3 +1,4 @@
+import React from "react"
 import { AccountCircle } from "@mui/icons-material"
 import {
   Table,
@@ -10,12 +11,11 @@ import {
   Avatar,
   Box,
 } from "@mui/material"
-import Loading from "components/layout/Loading"
-import RunStatus from "components/runs/RunStatus"
 import { durationAgo } from "helpers/runDuration"
 import useWorkspace from "helpers/useWorkspace"
 import { DateTime } from "luxon"
-import React from "react"
+import Loading from "components/layout/Loading"
+import RunStatus from "components/runs/RunStatus"
 
 interface Branch {
   reference: string

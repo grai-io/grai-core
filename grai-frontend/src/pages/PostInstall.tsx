@@ -1,10 +1,10 @@
+import React from "react"
 import { gql, useQuery } from "@apollo/client"
 import { Container } from "@mui/material"
+import { useSearchParams } from "react-router-dom"
 import WorkspaceChoice from "components/installations/WorkspaceChoice"
 import Loading from "components/layout/Loading"
 import GraphError from "components/utils/GraphError"
-import React from "react"
-import { useSearchParams } from "react-router-dom"
 import { GetWorkspacesPostInstall } from "./__generated__/GetWorkspacesPostInstall"
 
 export const GET_WORKSPACES = gql`
