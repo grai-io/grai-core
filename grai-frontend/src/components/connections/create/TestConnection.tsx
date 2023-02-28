@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react"
+import { gql, useMutation } from "@apollo/client"
 import { ArrowForward } from "@mui/icons-material"
 import { Grid, Button } from "@mui/material"
+import GraphError from "components/utils/GraphError"
 import WizardBottomBar from "components/wizards/WizardBottomBar"
 import { ElementOptions } from "components/wizards/WizardLayout"
 import WizardSubtitle from "components/wizards/WizardSubtitle"
-import CreateConnectionHelp from "./CreateConnectionHelp"
-import { Connection } from "./CreateConnectionWizard"
-import { Connector } from "../connectors/ConnectorCard"
-import { gql, useMutation } from "@apollo/client"
-import ValidationRun from "./ValidationRun"
 import {
   ValidateConnection,
   ValidateConnectionVariables,
 } from "./__generated__/ValidateConnection"
-import GraphError from "components/utils/GraphError"
+import CreateConnectionHelp from "./CreateConnectionHelp"
+import { Connection } from "./CreateConnectionWizard"
+import ValidationRun from "./ValidationRun"
+import { Connector } from "../connectors/ConnectorCard"
 
 export const CREATE_RUN = gql`
   mutation ValidateConnection($connectionId: ID!) {

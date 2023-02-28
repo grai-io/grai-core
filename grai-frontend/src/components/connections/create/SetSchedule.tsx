@@ -14,13 +14,13 @@ import GraphError from "components/utils/GraphError"
 import WizardBottomBar from "components/wizards/WizardBottomBar"
 import { ElementOptions } from "components/wizards/WizardLayout"
 import WizardSubtitle from "components/wizards/WizardSubtitle"
-import SetCron from "./SetCron"
-import ScheduleHelp from "../schedule/ScheduleHelp"
-import { Connection } from "./CreateConnectionWizard"
 import {
   UpdateConnectionInitialSchedule,
   UpdateConnectionInitialScheduleVariables,
 } from "./__generated__/UpdateConnectionInitialSchedule"
+import { Connection } from "./CreateConnectionWizard"
+import SetCron from "./SetCron"
+import ScheduleHelp from "../schedule/ScheduleHelp"
 
 export const UPDATE_CONNECTION = gql`
   mutation UpdateConnectionInitialSchedule(

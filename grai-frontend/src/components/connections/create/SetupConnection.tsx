@@ -1,27 +1,27 @@
 import React, { useState } from "react"
+import { gql, useMutation } from "@apollo/client"
 import { ArrowForward } from "@mui/icons-material"
+import { LoadingButton } from "@mui/lab"
 import { Grid, TextField } from "@mui/material"
 import Form from "components/form/Form"
+import GraphError from "components/utils/GraphError"
 import WizardBottomBar from "components/wizards/WizardBottomBar"
 import { ElementOptions } from "components/wizards/WizardLayout"
 import WizardSubtitle from "components/wizards/WizardSubtitle"
-import ConnectionFile from "./ConnectionFile"
-import CreateConnectionHelp from "./CreateConnectionHelp"
-import ConnectionsMetadata from "../ConnectionsMetadata"
-import { Connector } from "../connectors/ConnectorCard"
-import { gql, useMutation } from "@apollo/client"
-import { NewConnection } from "./__generated__/NewConnection"
 import {
   CreateConnection,
   CreateConnectionVariables,
 } from "./__generated__/CreateConnection"
-import { LoadingButton } from "@mui/lab"
-import GraphError from "components/utils/GraphError"
-import { Connection } from "./CreateConnectionWizard"
+import { NewConnection } from "./__generated__/NewConnection"
 import {
   UpdateConnectionInitial,
   UpdateConnectionInitialVariables,
 } from "./__generated__/UpdateConnectionInitial"
+import ConnectionFile from "./ConnectionFile"
+import CreateConnectionHelp from "./CreateConnectionHelp"
+import { Connection } from "./CreateConnectionWizard"
+import ConnectionsMetadata from "../ConnectionsMetadata"
+import { Connector } from "../connectors/ConnectorCard"
 
 export const CREATE_CONNECTION = gql`
   mutation CreateConnection(

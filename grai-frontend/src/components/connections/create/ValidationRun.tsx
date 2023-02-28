@@ -1,3 +1,4 @@
+import React, { useEffect } from "react"
 import { gql, useQuery } from "@apollo/client"
 import { CheckCircle, ArrowForward } from "@mui/icons-material"
 import {
@@ -13,13 +14,12 @@ import Loading from "components/layout/Loading"
 import GraphError from "components/utils/GraphError"
 import WizardBottomBar from "components/wizards/WizardBottomBar"
 import { ElementOptions } from "components/wizards/WizardLayout"
-import React, { useEffect } from "react"
-import { Connector } from "../connectors/ConnectorCard"
-import CreateConnectionHelp from "./CreateConnectionHelp"
 import {
   GetRunValidation,
   GetRunValidationVariables,
 } from "./__generated__/GetRunValidation"
+import CreateConnectionHelp from "./CreateConnectionHelp"
+import { Connector } from "../connectors/ConnectorCard"
 
 export const GET_RUN = gql`
   query GetRunValidation($workspaceId: ID!, $runId: ID!) {
