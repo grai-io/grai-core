@@ -26,6 +26,7 @@
     "casual": "^1.6.2",
     "dayjs": "^1.11.6",
     "elkjs": "^0.8.2",
+    "eslint": "^8.35.0",
     "eslint-plugin-import": "^2.27.5",
     "graphql": "^16.6.0",
     "luxon": "^3.2.1",
@@ -55,55 +56,6 @@
     "bundlewatch": "bundlewatch",
     "download:schema": "npx apollo client:download-schema --endpoint=http://127.0.0.1:8000/graphql/ src/testing/schema.json",
     "generate:types": "npx apollo client:codegen --target typescript --localSchemaFile src/testing/schema.json"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ],
-    "plugins": [
-      "import"
-    ],
-    "rules": {
-      "import/first": "error",
-      "import/newline-after-import": "error",
-      "import/no-duplicates": "error",
-      "import/order": [
-        "warn",
-        {
-          "groups": [
-            "builtin",
-            "external",
-            "internal"
-          ],
-          "pathGroups": [
-            {
-              "pattern": "react",
-              "group": "external",
-              "position": "before"
-            },
-            {
-              "pattern": "pages/**",
-              "group": "internal",
-              "position": "before"
-            },
-            {
-              "pattern": "components/**",
-              "group": "internal",
-              "position": "before"
-            }
-          ],
-          "pathGroupsExcludedImportTypes": [
-            "react"
-          ],
-          "newlines-between": "never",
-          "alphabetize": {
-            "order": "asc",
-            "caseInsensitive": true
-          }
-        }
-      ]
-    }
   },
   "browserslist": {
     "production": [
