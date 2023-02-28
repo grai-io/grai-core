@@ -24,6 +24,8 @@ jobs:
         uses: actions/setup-node@v3
       - name: Install dependencies
         run: npm ci
+      - name: Install eslint
+        run: npm install eslint
       - name: Lint Action
         uses: wearerequired/lint-action@v2.3.0
         with:
