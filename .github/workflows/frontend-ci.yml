@@ -31,7 +31,7 @@ jobs:
         with:
           auto_fix: true
           eslint: true
-          eslint_dir: "./grai-frontend"
+          # eslint_dir: "./grai-frontend"
           eslint_command_prefix: cd grai-frontend && npx --no-install
           # prettier: true
           continue_on_error: false
