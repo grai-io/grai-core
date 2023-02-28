@@ -5,7 +5,7 @@ import { Edge as RFEdge, Node as RFNode } from "reactflow"
 import BaseGraph from "./BaseGraph"
 import { BaseNodeData } from "./BaseNode"
 import { ControlOptions } from "./controls/GraphControls"
-import { ErrorData } from "./ErrorEdge"
+import { TestData } from "./TestEdge"
 
 export interface GraiNodeMetadata {
   node_type?: "Table" | "Column" | null
@@ -19,6 +19,7 @@ export interface Error {
   destination: string
   test: string
   message: string
+  test_pass: boolean
 }
 
 export interface Column {
@@ -108,8 +109,8 @@ const MidGraph: React.FC<GraphProps> = ({
       }
     })
 
-  const initialEdges: RFEdge<ErrorData>[] = edges.map(edge => {
-    const edgeErrors = errors?.filter(
+  const initialEdges: RFEdge<TestData>[] = edges.map(edge => {
+    const edgeTests = errors?.filter(
       error =>
         error.sourceId === edge.source.id &&
         error.destinationId === edge.destination.id
@@ -125,9 +126,9 @@ const MidGraph: React.FC<GraphProps> = ({
       //   height: 40,
       // },
       data: {
-        errors: edgeErrors,
+        tests: edgeTests,
       },
-      type: edgeErrors && edgeErrors.length > 0 ? "error" : undefined,
+      type: edgeTests && edgeTests.length > 0 ? "error" : undefined,
       labelStyle: { fill: "red", fontWeight: 700 },
       zIndex: 10,
     }
@@ -169,24 +170,28 @@ const MidGraph: React.FC<GraphProps> = ({
     })
     .filter(notEmpty)
 
-  const singleEdges = transformedEdges.reduce<RFEdge<any>[]>((res, edge) => {
-    const existing = res.find(
-      e =>
-        e.source === edge.source &&
-        e.target === edge.target &&
-        e.sourceHandle === edge.sourceHandle &&
-        e.targetHandle === edge.targetHandle
-    )
-    if (existing && edge.data?.errors) {
-      existing.type = "error"
-      existing.data.errors = (existing.data.errors ?? []).concat(
-        edge.data?.errors
+  const singleEdges = transformedEdges.reduce<RFEdge<TestData>[]>(
+    (res, edge) => {
+      const existing = res.find(
+        e =>
+          e.source === edge.source &&
+          e.target === edge.target &&
+          e.sourceHandle === edge.sourceHandle &&
+          e.targetHandle === edge.targetHandle
       )
-    } else {
-      res.push(edge)
-    }
-    return res
-  }, [])
+      if (existing && edge.data?.tests) {
+        existing.type = "test"
+        existing.data = {
+          ...existing.data,
+          tests: (existing.data?.tests ?? []).concat(edge.data?.tests),
+        }
+      } else {
+        res.push(edge)
+      }
+      return res
+    },
+    []
+  )
 
   return (
     <BaseGraph

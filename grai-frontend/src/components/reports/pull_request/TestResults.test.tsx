@@ -9,6 +9,7 @@ test("renders", async () => {
       destination: "d1",
       test: "t1",
       message: "test message",
+      test_pass: false,
     },
   ]
 

@@ -15,7 +15,7 @@ import theme from "theme"
 import Loading from "components/layout/Loading"
 import BaseNode from "./BaseNode"
 import GraphControls, { ControlOptions } from "./controls/GraphControls"
-import ErrorEdge from "./ErrorEdge"
+import TestEdge from "./TestEdge"
 
 const DEFAULT_WIDTH = 300
 const DEFAULT_HEIGHT = 110
@@ -25,7 +25,7 @@ const nodeTypes = {
 }
 
 const edgeTypes: EdgeTypes = {
-  error: ErrorEdge,
+  test: TestEdge,
 }
 
 export const createGraphLayout = async (

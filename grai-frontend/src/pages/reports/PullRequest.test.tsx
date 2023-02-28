@@ -92,7 +92,7 @@ test("renders errors", async () => {
                 data_source: "test",
                 source: sourceTable,
                 destination: destinationTable,
-                metadata: { grai: { constraint_type: "dbt_model" } },
+                metadata: { grai: { edge_type: "TableToTable" } },
               },
               {
                 id: "2",
@@ -122,7 +122,7 @@ test("renders errors", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByText("Errors")).toBeTruthy()
+    expect(screen.getByTestId("test-edge")).toBeTruthy()
   })
 })
 

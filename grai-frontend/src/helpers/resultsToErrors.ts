@@ -13,6 +13,7 @@ export interface Result {
   failing_node_name: string
   type: string
   message: string
+  test_pass: boolean
 }
 
 const resultsToErrors = (results: Result[] | undefined): Error[] | null =>
@@ -22,6 +23,7 @@ const resultsToErrors = (results: Result[] | undefined): Error[] | null =>
         destination: result.failing_node.name,
         test: result.type,
         message: result.message,
+        test_pass: result.test_pass,
       }))
     : null
 

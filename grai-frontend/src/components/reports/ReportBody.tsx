@@ -18,7 +18,12 @@ const ReportBody: React.FC<ReportBodyProps> = ({ tables, edges, errors }) => {
   const [display, setDisplay] = useState(false)
 
   useEffect(() => {
-    setSearchParams({ ...searchParams, limitGraph: "true" })
+    setSearchParams(
+      { ...searchParams, limitGraph: "true" },
+      {
+        replace: true,
+      }
+    )
     setDisplay(true)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
