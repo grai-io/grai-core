@@ -4,8 +4,7 @@ import { Alert, Box, Button, TextField, Typography } from "@mui/material"
 import Form from "components/form/Form"
 import GraphError from "components/utils/GraphError"
 import React, { useState } from "react"
-import { Link } from "react-router-dom"
-import { useLocation } from "react-router-dom"
+import { useLocation, Link } from "react-router-dom"
 import {
   CompleteSignup,
   CompleteSignupVariables,

@@ -26,6 +26,7 @@
     "casual": "^1.6.2",
     "dayjs": "^1.11.6",
     "elkjs": "^0.8.2",
+    "eslint-plugin-import": "^2.27.5",
     "graphql": "^16.6.0",
     "luxon": "^3.2.1",
     "material-ui-popup-state": "^5.0.4",
@@ -59,7 +60,15 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "plugins": [
+      "import"
+    ],
+    "rules": {
+      "import/first": "error",
+      "import/newline-after-import": "error",
+      "import/no-duplicates": "error"
+    }
   },
   "browserslist": {
     "production": [
