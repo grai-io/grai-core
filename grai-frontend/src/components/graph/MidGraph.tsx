@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react"
-import BaseGraph from "./BaseGraph"
-import { Edge as RFEdge, Node as RFNode } from "reactflow"
-import notEmpty from "helpers/notEmpty"
 import { Edge, EnhancedTable } from "helpers/graph"
-import { ErrorData } from "./ErrorEdge"
+import notEmpty from "helpers/notEmpty"
+import { Edge as RFEdge, Node as RFNode } from "reactflow"
+import BaseGraph from "./BaseGraph"
 import { BaseNodeData } from "./BaseNode"
 import { ControlOptions } from "./controls/GraphControls"
+import { ErrorData } from "./ErrorEdge"
 
 export interface GraiNodeMetadata {
   node_type?: "Table" | "Column" | null

@@ -1,13 +1,13 @@
 import React, { useState } from "react"
+import { gql, useMutation } from "@apollo/client"
 import { LoadingButton } from "@mui/lab"
 import { Box, TextField } from "@mui/material"
-import Form from "components/form/Form"
-import { Link } from "react-router-dom"
-import GraphError from "components/utils/GraphError"
-import { gql, useMutation } from "@apollo/client"
-import useAuth from "./useAuth"
-import { Login, LoginVariables } from "./__generated__/Login"
 import posthog from "posthog"
+import { Link } from "react-router-dom"
+import Form from "components/form/Form"
+import GraphError from "components/utils/GraphError"
+import { Login, LoginVariables } from "./__generated__/Login"
+import useAuth from "./useAuth"
 
 export const LOGIN = gql`
   mutation Login($username: String!, $password: String!) {

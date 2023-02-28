@@ -1,3 +1,4 @@
+import React from "react"
 import {
   Box,
   Card,
@@ -8,7 +9,6 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material"
-import React from "react"
 
 export interface Connector {
   id: string

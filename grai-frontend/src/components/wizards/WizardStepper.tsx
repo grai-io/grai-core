@@ -1,3 +1,4 @@
+import React from "react"
 import { CheckCircle } from "@mui/icons-material"
 import {
   Stepper,
@@ -10,7 +11,6 @@ import {
   SxProps,
   Theme,
 } from "@mui/material"
-import React from "react"
 import { WizardSteps } from "./WizardLayout"
 
 const QontoConnector = styled(StepConnector)(({ theme }) => ({

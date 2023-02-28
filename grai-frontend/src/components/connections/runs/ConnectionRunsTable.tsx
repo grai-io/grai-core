@@ -1,3 +1,4 @@
+import React from "react"
 import {
   Table,
   TableHead,
@@ -7,16 +8,15 @@ import {
   Typography,
   Tooltip,
 } from "@mui/material"
-import React from "react"
-import theme from "theme"
 import {
   durationAgo,
   runDurationString,
   runQueuedString,
 } from "helpers/runDuration"
-import { DateTime } from "luxon"
-import RunStatus from "components/runs/RunStatus"
 import useWorkspace from "helpers/useWorkspace"
+import { DateTime } from "luxon"
+import theme from "theme"
+import RunStatus from "components/runs/RunStatus"
 
 interface User {
   id: string

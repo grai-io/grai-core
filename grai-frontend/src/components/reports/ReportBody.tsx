@@ -1,12 +1,11 @@
-import { Box } from "@mui/material"
-import Graph from "components/graph/Graph"
-import Tabs from "components/tabs/Tabs"
 import React, { useEffect, useState } from "react"
-import TestResults from "./pull_request/TestResults"
-import { Error } from "components/graph/Graph"
-import { Table } from "components/graph/MidGraph"
+import { Box } from "@mui/material"
 import { Edge } from "helpers/graph"
 import { useSearchParams } from "react-router-dom"
+import Graph, { Error } from "components/graph/Graph"
+import { Table } from "components/graph/MidGraph"
+import Tabs from "components/tabs/Tabs"
+import TestResults from "./pull_request/TestResults"
 
 type ReportBodyProps = {
   tables: Table[]

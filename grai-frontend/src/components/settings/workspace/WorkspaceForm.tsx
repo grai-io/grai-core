@@ -1,10 +1,10 @@
+import React, { useState } from "react"
 import { gql, useMutation } from "@apollo/client"
 import { LoadingButton } from "@mui/lab"
 import { Box, Grid, TextField, Typography } from "@mui/material"
+import { useSnackbar } from "notistack"
 import Form from "components/form/Form"
 import GraphError from "components/utils/GraphError"
-import { useSnackbar } from "notistack"
-import React, { useState } from "react"
 import {
   UpdateWorkspace,
   UpdateWorkspaceVariables,

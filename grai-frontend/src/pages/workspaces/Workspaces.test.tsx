@@ -1,7 +1,7 @@
-import { GraphQLError } from "graphql"
 import React from "react"
-import Workspaces, { GET_WORKSPACES } from "./Workspaces"
+import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
+import Workspaces, { GET_WORKSPACES } from "./Workspaces"
 
 test("renders", async () => {
   render(<Workspaces />, {

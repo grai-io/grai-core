@@ -1,6 +1,6 @@
 /* istanbul ignore file */
-import { ApolloClient, gql, NormalizedCacheObject } from "@apollo/client"
 import { createContext, ReactNode } from "react"
+import { ApolloClient, gql, NormalizedCacheObject } from "@apollo/client"
 import { Logout } from "./__generated__/Logout"
 
 export const LOGOUT = gql`

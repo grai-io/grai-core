@@ -1,3 +1,4 @@
+import React, { useState } from "react"
 import { gql, useMutation } from "@apollo/client"
 import {
   Alert,
@@ -6,16 +7,15 @@ import {
   DialogContent,
   Typography,
 } from "@mui/material"
-import React, { useState } from "react"
 import DialogTitle from "components/dialogs/DialogTitle"
 import CopyButton from "components/utils/CopyButton"
-import CreateKeyForm from "./CreateKeyForm"
+import GraphError from "components/utils/GraphError"
 import {
   CreateApiKey,
   CreateApiKeyVariables,
 } from "./__generated__/CreateApiKey"
-import GraphError from "components/utils/GraphError"
 import { NewApiKey } from "./__generated__/NewApiKey"
+import CreateKeyForm from "./CreateKeyForm"
 
 export const CREATE_API_KEY = gql`
   mutation CreateApiKey($name: String!, $workspaceId: ID!) {

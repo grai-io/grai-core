@@ -1,6 +1,6 @@
-import { Box, Button, Stack, Typography } from "@mui/material"
-import { Add, Refresh } from "@mui/icons-material"
 import React from "react"
+import { Add, Refresh } from "@mui/icons-material"
+import { Box, Button, Stack, Typography } from "@mui/material"
 import { Link } from "react-router-dom"
 
 type ConnectionsHeaderProps = {

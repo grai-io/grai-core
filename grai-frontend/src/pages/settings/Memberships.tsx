@@ -1,12 +1,12 @@
+import React from "react"
 import { gql, useQuery } from "@apollo/client"
 import { Box } from "@mui/material"
+import useWorkspace from "helpers/useWorkspace"
+import NotFound from "pages/NotFound"
 import MembershipsHeader from "components/settings/memberships/MembershipsHeader"
 import MembershipsTable from "components/settings/memberships/MembershipsTable"
 import SettingsLayout from "components/settings/SettingsLayout"
 import GraphError from "components/utils/GraphError"
-import useWorkspace from "helpers/useWorkspace"
-import NotFound from "pages/NotFound"
-import React from "react"
 import {
   GetMemberships,
   GetMembershipsVariables,

@@ -1,13 +1,13 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
+import useWorkspace from "helpers/useWorkspace"
 import { useParams } from "react-router-dom"
 import NotFound from "pages/NotFound"
-import TableHeader from "components/tables/TableHeader"
-import TableContent from "components/tables/TableContent"
-import GraphError from "components/utils/GraphError"
 import PageLayout from "components/layout/PageLayout"
+import TableContent from "components/tables/TableContent"
+import TableHeader from "components/tables/TableHeader"
+import GraphError from "components/utils/GraphError"
 import { GetTable, GetTableVariables } from "./__generated__/GetTable"
-import useWorkspace from "helpers/useWorkspace"
 
 export const GET_TABLE = gql`
   query GetTable(

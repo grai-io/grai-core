@@ -1,3 +1,4 @@
+import React from "react"
 import {
   Alert,
   AlertTitle,
@@ -9,14 +10,13 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material"
-import NodeDetailRow from "components/layout/NodeDetailRow"
 import {
   durationAgo,
   runDurationString,
   runQueuedString,
 } from "helpers/runDuration"
 import { DateTime } from "luxon"
-import React from "react"
+import NodeDetailRow from "components/layout/NodeDetailRow"
 
 interface RunMetadata {
   error: string

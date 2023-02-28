@@ -1,6 +1,6 @@
+import React, { useState } from "react"
 import { Check, ContentCopy } from "@mui/icons-material"
 import { IconButton } from "@mui/material"
-import React, { useState } from "react"
 
 type CopyButtonProps = {
   text: string

@@ -1,9 +1,9 @@
-import { Box, Stack } from "@mui/material"
 import React from "react"
-import StepsControl, { StepsControlOptions } from "./StepsControl"
-import SearchControl from "./SearchControl"
-import LimitGraphControl from "./LimitGraphControl"
+import { Box, Stack } from "@mui/material"
 import useSearchParams from "helpers/useSearchParams"
+import LimitGraphControl from "./LimitGraphControl"
+import SearchControl from "./SearchControl"
+import StepsControl, { StepsControlOptions } from "./StepsControl"
 
 export type ControlOptions = {
   steps?: StepsControlOptions

@@ -1,3 +1,4 @@
+import React from "react"
 import { GraphQLError } from "graphql"
 import {
   columnNode,
@@ -5,7 +6,6 @@ import {
   sourceTable,
   spareTable,
 } from "helpers/testNodes"
-import React from "react"
 import { render, screen, waitFor } from "testing"
 import PullRequest, { GET_PULL_REQUEST } from "./PullRequest"
 

@@ -1,8 +1,8 @@
 import React from "react"
-import notEmpty from "helpers/notEmpty"
 import { Edge } from "helpers/graph"
-import MidGraph, { Column, Table } from "./MidGraph"
+import notEmpty from "helpers/notEmpty"
 import { ControlOptions } from "./controls/GraphControls"
+import MidGraph, { Column, Table } from "./MidGraph"
 
 export interface Error {
   source: string

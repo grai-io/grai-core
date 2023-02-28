@@ -1,6 +1,6 @@
+import React from "react"
 import { Remove, Add } from "@mui/icons-material"
 import { Box, Button, TextField, InputAdornment } from "@mui/material"
-import React from "react"
 
 export type StepsControlOptions = {
   value: number

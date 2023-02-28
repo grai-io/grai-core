@@ -1,3 +1,4 @@
+import React from "react"
 import {
   Table,
   TableHead,
@@ -7,15 +8,14 @@ import {
   Typography,
   Tooltip,
 } from "@mui/material"
-import Loading from "components/layout/Loading"
 import {
   durationAgo,
   runQueuedString,
   runDurationString,
 } from "helpers/runDuration"
 import { DateTime } from "luxon"
-import React from "react"
 import { useNavigate } from "react-router-dom"
+import Loading from "components/layout/Loading"
 import RunStatus from "./RunStatus"
 
 interface Connection {

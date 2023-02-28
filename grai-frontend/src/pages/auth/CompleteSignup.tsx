@@ -1,6 +1,6 @@
+import React from "react"
 import { Container, Box, Card, CardContent } from "@mui/material"
 import CompleteSignupForm from "components/auth/CompleteSignupForm"
-import React from "react"
 
 const CompleteSignup: React.FC = () => (
   <Container sx={{ pt: 10 }} maxWidth="xs">

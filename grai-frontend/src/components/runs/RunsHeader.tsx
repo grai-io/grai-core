@@ -1,6 +1,6 @@
+import React from "react"
 import { Refresh } from "@mui/icons-material"
 import { Box, Typography, Button } from "@mui/material"
-import React from "react"
 
 type RunsHeaderProps = {
   onRefresh?: () => void

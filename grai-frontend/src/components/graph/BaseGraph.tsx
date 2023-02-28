@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react"
+import Elk, { ElkNode } from "elkjs"
 import ReactFlow, {
   Controls,
   Edge,
@@ -10,12 +11,11 @@ import ReactFlow, {
   ReactFlowProvider,
 } from "reactflow"
 import "reactflow/dist/style.css"
-import Elk, { ElkNode } from "elkjs"
-import BaseNode from "./BaseNode"
 import theme from "theme"
 import Loading from "components/layout/Loading"
-import ErrorEdge from "./ErrorEdge"
+import BaseNode from "./BaseNode"
 import GraphControls, { ControlOptions } from "./controls/GraphControls"
+import ErrorEdge from "./ErrorEdge"
 
 const DEFAULT_WIDTH = 300
 const DEFAULT_HEIGHT = 110

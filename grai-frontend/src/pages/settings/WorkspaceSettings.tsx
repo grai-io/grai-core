@@ -1,10 +1,10 @@
+import React from "react"
 import { gql, useQuery } from "@apollo/client"
+import useWorkspace from "helpers/useWorkspace"
+import NotFound from "pages/NotFound"
 import SettingsLayout from "components/settings/SettingsLayout"
 import WorkspaceForm from "components/settings/workspace/WorkspaceForm"
 import GraphError from "components/utils/GraphError"
-import useWorkspace from "helpers/useWorkspace"
-import NotFound from "pages/NotFound"
-import React from "react"
 import {
   GetWorkspaceSettingsW,
   GetWorkspaceSettingsWVariables,

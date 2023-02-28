@@ -1,8 +1,8 @@
 import React from "react"
-import TableProfile, { TableInterface } from "./TableProfile"
-import Tabs from "components/tabs/Tabs"
 import { BarChart, Mediation, TableRows } from "@mui/icons-material"
-import TableLineage from "./TableLineage"
+import Tabs from "components/tabs/Tabs"
+import TableProfile, { TableInterface } from "./TableProfile"
+import TableLineage from "../../components/tables/TableLineage"
 
 type TableContentProps = {
   table: TableInterface

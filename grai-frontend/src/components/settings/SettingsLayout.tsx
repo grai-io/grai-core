@@ -1,6 +1,6 @@
+import React, { ReactNode } from "react"
 import { Box, Toolbar } from "@mui/material"
 import Loading from "components/layout/Loading"
-import React, { ReactNode } from "react"
 import SettingsAppBar from "./SettingsAppBar"
 import SettingsDrawer from "./SettingsDrawer"
 

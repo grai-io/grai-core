@@ -1,10 +1,10 @@
+import React from "react"
 import { gql, useQuery } from "@apollo/client"
 import Loading from "components/layout/Loading"
 import GraphError from "components/utils/GraphError"
-import React from "react"
+import { GetConnectors } from "./__generated__/GetConnectors"
 import { Connector } from "../connectors/ConnectorCard"
 import ConnectorList from "../connectors/ConnectorList"
-import { GetConnectors } from "./__generated__/GetConnectors"
 
 export const GET_CONNECTORS = gql`
   query GetConnectors {

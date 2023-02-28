@@ -24,8 +24,19 @@ jobs:
         uses: actions/setup-node@v3
       - name: Install dependencies
         run: npm ci
-      - name: Run lint
-        run: npm run lint
+      - name: Install eslint
+        run: npm install eslint
+      - name: Lint Action
+        uses: wearerequired/lint-action@v2.3.0
+        with:
+          auto_fix: true
+          eslint: true
+          eslint_dir: "./grai-frontend"
+          eslint_command_prefix: npx --no-install
+          eslint_args: "src/**/*.{ts,tsx,test.tsx}"
+          # prettier: true
+          continue_on_error: false
+          git_email: "github-actions[bot]@users.noreply.github.com"
       - name: Run npm tests
         run: npm test -- --coverage
       - name: Upload coverage to Codecov
@@ -35,6 +46,8 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
 
   build:
+    needs: [test]
+
     runs-on: ubuntu-latest
 
     defaults:

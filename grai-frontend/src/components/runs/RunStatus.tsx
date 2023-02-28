@@ -1,3 +1,4 @@
+import React, { JSXElementConstructor, ReactElement } from "react"
 import { Check, Close, HourglassEmpty } from "@mui/icons-material"
 import {
   Box,
@@ -9,7 +10,6 @@ import {
 } from "@mui/material"
 import { OverridableStringUnion } from "@mui/types"
 import useWorkspace from "helpers/useWorkspace"
-import React, { JSXElementConstructor, ReactElement } from "react"
 
 type Status = {
   label?: string

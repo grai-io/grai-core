@@ -1,5 +1,5 @@
-import { GraphQLError } from "graphql"
 import React from "react"
+import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
 import Home, { GET_WORKSPACE } from "./Home"
 import Workspaces, { GET_WORKSPACES } from "./workspaces/Workspaces"

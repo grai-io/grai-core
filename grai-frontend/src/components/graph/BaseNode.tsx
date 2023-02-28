@@ -1,7 +1,7 @@
+import React from "react"
 import { ArrowDropDown, ArrowDropUp } from "@mui/icons-material"
 import { Box, Divider, Menu, MenuItem, Stack, Typography } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
-import React from "react"
 import { Handle, Position } from "reactflow"
 import theme from "theme"
 import DataSourceIcon from "./DataSourceIcon"

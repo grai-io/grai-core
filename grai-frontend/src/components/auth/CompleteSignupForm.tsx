@@ -1,11 +1,10 @@
+import React, { useState } from "react"
 import { gql, useMutation } from "@apollo/client"
 import { LoadingButton } from "@mui/lab"
 import { Alert, Box, Button, TextField, Typography } from "@mui/material"
+import { useLocation, Link } from "react-router-dom"
 import Form from "components/form/Form"
 import GraphError from "components/utils/GraphError"
-import React, { useState } from "react"
-import { Link } from "react-router-dom"
-import { useLocation } from "react-router-dom"
 import {
   CompleteSignup,
   CompleteSignupVariables,

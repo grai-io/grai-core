@@ -1,14 +1,14 @@
+import React from "react"
 import { ArrowForward } from "@mui/icons-material"
 import { Button, Grid, TextField } from "@mui/material"
 import Form from "components/form/Form"
 import WizardBottomBar from "components/wizards/WizardBottomBar"
 import { ElementOptions } from "components/wizards/WizardLayout"
 import WizardSubtitle from "components/wizards/WizardSubtitle"
-import React from "react"
-import ConnectionsMetadata from "../ConnectionsMetadata"
 import ConnectionFile from "./ConnectionFile"
 import CreateConnectionHelp from "./CreateConnectionHelp"
 import { Values } from "./CreateConnectionWizard"
+import ConnectionsMetadata from "../ConnectionsMetadata"
 
 type SetupConnectionProps = {
   workspaceId: string

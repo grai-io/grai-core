@@ -1,16 +1,16 @@
+import React from "react"
 import { gql, useQuery } from "@apollo/client"
+import useWorkspace from "helpers/useWorkspace"
+import { useParams } from "react-router-dom"
+import NotFound from "pages/NotFound"
 import Loading from "components/layout/Loading"
 import GraphError from "components/utils/GraphError"
-import useWorkspace from "helpers/useWorkspace"
-import NotFound from "pages/NotFound"
-import React from "react"
-import { useParams } from "react-router-dom"
-import { Repository } from "./CommitBreadcrumbs"
-import CommitsTable from "./CommitsTable"
 import {
   GetBranchCommits,
   GetBranchCommitsVariables,
 } from "./__generated__/GetBranchCommits"
+import { Repository } from "./CommitBreadcrumbs"
+import CommitsTable from "./CommitsTable"
 
 export const GET_BRANCH_COMMITS = gql`
   query GetBranchCommits(

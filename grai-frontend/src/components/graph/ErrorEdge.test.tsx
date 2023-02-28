@@ -1,6 +1,6 @@
 import React from "react"
-import { render } from "testing"
 import { Position, ReactFlowProvider } from "reactflow"
+import { render } from "testing"
 import ErrorEdge from "./ErrorEdge"
 
 test("renders", async () => {

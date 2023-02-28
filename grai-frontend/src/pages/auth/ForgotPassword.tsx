@@ -1,7 +1,7 @@
-import { Container, Box, Card, CardContent } from "@mui/material"
-import RequestPasswordResetForm from "components/auth/RequestPasswordResetForm"
 import React from "react"
+import { Container, Box, Card, CardContent } from "@mui/material"
 import { Link } from "react-router-dom"
+import RequestPasswordResetForm from "components/auth/RequestPasswordResetForm"
 
 const ForgotPassword: React.FC = () => (
   <Container sx={{ pt: 10 }} maxWidth="xs">

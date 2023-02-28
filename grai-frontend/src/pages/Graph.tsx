@@ -1,16 +1,16 @@
 import React from "react"
-import { Alert, Box } from "@mui/material"
-import GraphComponent, { Error } from "components/graph/Graph"
 import { gql, useQuery } from "@apollo/client"
-import theme from "theme"
+import { Alert, Box } from "@mui/material"
+import useWorkspace from "helpers/useWorkspace"
 import { useSearchParams } from "react-router-dom"
-import GraphError from "components/utils/GraphError"
+import theme from "theme"
+import GraphComponent, { Error } from "components/graph/Graph"
 import PageLayout from "components/layout/PageLayout"
+import GraphError from "components/utils/GraphError"
 import {
   GetTablesAndEdges,
   GetTablesAndEdgesVariables,
 } from "./__generated__/GetTablesAndEdges"
-import useWorkspace from "helpers/useWorkspace"
 
 export const GET_TABLES_AND_EDGES = gql`
   query GetTablesAndEdges($organisationName: String!, $workspaceName: String!) {

@@ -1,8 +1,7 @@
-import userEvent from "@testing-library/user-event"
 import React from "react"
+import userEvent from "@testing-library/user-event"
 import { render, screen, fireEvent } from "testing"
 import { Values } from "./CreateConnectionWizard"
-
 import SetupConnection from "./SetupConnection"
 
 const opts = {

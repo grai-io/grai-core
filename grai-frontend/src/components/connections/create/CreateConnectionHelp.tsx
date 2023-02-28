@@ -1,9 +1,9 @@
+import React from "react"
 import { Link } from "@mui/material"
+import useWorkspace from "helpers/useWorkspace"
+import { Link as RouterLink } from "react-router-dom"
 import HelpItem from "components/help/HelpItem"
 import HelpSection from "components/help/HelpSection"
-import useWorkspace from "helpers/useWorkspace"
-import React from "react"
-import { Link as RouterLink } from "react-router-dom"
 
 interface Connector {
   name: string
