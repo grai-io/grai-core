@@ -13,9 +13,9 @@ import ReactFlow, {
 import "reactflow/dist/style.css"
 import theme from "theme"
 import Loading from "components/layout/Loading"
+import BaseNode from "./BaseNode"
 import GraphControls, { ControlOptions } from "./controls/GraphControls"
 import TestEdge from "./TestEdge"
-import BaseNode from "./BaseNode"
 
 const DEFAULT_WIDTH = 300
 const DEFAULT_HEIGHT = 110
