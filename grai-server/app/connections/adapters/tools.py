@@ -35,12 +35,13 @@ class TestResult(ABC):
 
     type: str
 
-    def __init__(self, node: NodeV1, test_path: List[NodeV1]):
+    def __init__(self, node: NodeV1, test_path: List[NodeV1], test_pass: bool = False):
         self.node = node
         self.failing_node = test_path[-1]
         self.test_path = test_path
         self.node_name = build_node_name(self.node)
         self.failing_node_name = build_node_name(self.failing_node)
+        self.test_pass = test_pass
 
     @abstractmethod
     def message(self) -> str:
@@ -69,6 +70,7 @@ class TestResult(ABC):
             "node_name": self.node_name,
             "failing_node_name": self.failing_node_name,
             "message": self.message(),
+            "test_pass": self.test_pass,
         }  # "test_path": self.test_path
 
 
@@ -192,58 +194,42 @@ class TestResultCacheBase:
                 continue
             yield node
 
-    def type_tests(self) -> Dict[NodeV1, List[TypeTestResult]]:
-        errors = False
-
+    def data_type_tests(self) -> Dict[NodeV1, List[TypeTestResult]]:
         result_map = {}
-        for node in self.new_columns:
-            try:
-                original_node = self.graph.get_node(name=node.spec.name, namespace=node.spec.namespace)
-            except:
-                # This is a new node
-                continue
 
+        for node in self.new_columns:
             result = node.spec.metadata.grai.node_attributes.data_type
-            affected_nodes = self.analysis.test_type_change(
+            affected_nodes = self.analysis.test_data_type_change(
                 namespace=node.spec.namespace, name=node.spec.name, new_type=result
             )
-            result_map[node] = [TypeTestResult(node, path) for path in affected_nodes]
+            result_map[node] = [TypeTestResult(node, path, test_pass) for (path, test_pass) in affected_nodes]
+
         return result_map
 
     def unique_tests(self) -> Dict[NodeV1, List[UniqueTestResult]]:
-        errors = False
         result_map = {}
-        for node in self.new_columns:
-            try:
-                original_node = self.graph.get_node(name=node.spec.name, namespace=node.spec.namespace)
-            except:
-                # This is a new node
-                continue
 
+        for node in self.new_columns:
             result = node.spec.metadata.grai.node_attributes.is_unique
             affected_nodes = self.analysis.test_unique_violations(
                 namespace=node.spec.namespace,
                 name=node.spec.name,
                 expects_unique=result,
             )
-            result_map[node] = [UniqueTestResult(node, path) for path in affected_nodes]
+            result_map[node] = [UniqueTestResult(node, path, test_pass) for (path, test_pass) in affected_nodes]
+
         return result_map
 
     def null_tests(self) -> Dict[NodeV1, List[NullableTestResult]]:
-        errors = False
         result_map = {}
-        for node in self.new_columns:
-            try:
-                original_node = self.graph.get_node(name=node.spec.name, namespace=node.spec.namespace)
-            except:
-                # This is a new node
-                continue
 
+        for node in self.new_columns:
             result = node.spec.metadata.grai.node_attributes.is_nullable
             affected_nodes = self.analysis.test_nullable_violations(
                 namespace=node.spec.namespace, name=node.spec.name, is_nullable=result
             )
-            result_map[node] = [NullableTestResult(node, path) for path in affected_nodes]
+            result_map[node] = [NullableTestResult(node, path, test_pass) for (path, test_pass) in affected_nodes]
+
         return result_map
 
     def test_results(self) -> Dict[NodeV1, List[TestResult]]:
@@ -269,17 +255,3 @@ class TestResultCacheBase:
         test_failures = list(chain.from_iterable(self.test_results().values()))
         summary = TestSummary(test_failures)
         return summary
-
-    def test_results(self) -> Dict[NodeV1, List[TestResult]]:
-        tests = chain(
-            self.unique_tests().items(),
-            self.null_tests().items(),
-            # self.type_tests().items(),
-        )
-
-        results: Dict[NodeV1, List[TestResult]] = {}
-        for key, values in tests:
-            results.setdefault(key, [])
-            results[key].extend(values)
-
-        return results

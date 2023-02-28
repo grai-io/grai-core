@@ -38,7 +38,6 @@ const GraphControls: React.FC<GraphControlsProps> = ({
           position: "absolute",
           top: 10,
           left: 10,
-          width: "100%",
           pointerEvents: "all",
           zIndex: 30,
         }}
