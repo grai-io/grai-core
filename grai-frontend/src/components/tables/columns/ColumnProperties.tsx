@@ -1,6 +1,6 @@
+import React from "react"
 import { Chip, Stack } from "@mui/material"
 import { EnrichedColumn } from "helpers/columns"
-import React from "react"
 
 type ColumnPropertiesProps = {
   column: EnrichedColumn

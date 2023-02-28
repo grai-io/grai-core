@@ -1,8 +1,8 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
+import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
 import LoginForm, { LOGIN } from "./LoginForm"
-import { GraphQLError } from "graphql"
 
 test("submit", async () => {
   const user = userEvent.setup()

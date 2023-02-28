@@ -1,6 +1,6 @@
+import React from "react"
 import { Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
-import React from "react"
 import { Repository } from "../ReportBreadcrumbs"
 
 interface Branch {

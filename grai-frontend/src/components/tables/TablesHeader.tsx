@@ -1,3 +1,4 @@
+import React, { ChangeEvent } from "react"
 import { Refresh, Search } from "@mui/icons-material"
 import {
   Box,
@@ -7,7 +8,6 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material"
-import React, { ChangeEvent } from "react"
 
 type TablesHeaderProps = {
   search?: string | null

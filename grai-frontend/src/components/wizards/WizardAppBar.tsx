@@ -1,6 +1,6 @@
+import React from "react"
 import { Close } from "@mui/icons-material"
 import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material"
-import React from "react"
 import { WizardSteps } from "./WizardLayout"
 import WizardStepper from "./WizardStepper"
 

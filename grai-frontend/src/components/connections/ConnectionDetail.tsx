@@ -1,6 +1,6 @@
+import React from "react"
 import { Card, Table, TableBody } from "@mui/material"
 import NodeDetailRow from "components/layout/NodeDetailRow"
-import React from "react"
 import ConnectionSchedule, {
   Connection as BaseConnection,
 } from "./schedule/ConnectionSchedule"

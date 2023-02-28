@@ -1,7 +1,7 @@
+import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
-import React from "react"
 import { render, screen, waitFor } from "testing"
 import Graph, { GET_TABLES_AND_EDGES } from "./Graph"
 

@@ -1,14 +1,14 @@
+import React from "react"
 import { gql, useQuery } from "@apollo/client"
 import { Box } from "@mui/material"
+import useWorkspace from "helpers/useWorkspace"
+import { useParams } from "react-router-dom"
+import NotFound from "pages/NotFound"
 import PageLayout from "components/layout/PageLayout"
 import PullRequestTable from "components/reports/pull_request/PullRequestTable"
 import ReportHeader from "components/reports/ReportHeader"
 import ReportTabs from "components/reports/TypeReportTabs"
 import GraphError from "components/utils/GraphError"
-import useWorkspace from "helpers/useWorkspace"
-import NotFound from "pages/NotFound"
-import React from "react"
-import { useParams } from "react-router-dom"
 import {
   GetPullRequests,
   GetPullRequestsVariables,

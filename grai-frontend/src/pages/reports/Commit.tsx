@@ -1,14 +1,14 @@
+import React from "react"
 import { gql, useQuery } from "@apollo/client"
+import resultsToErrors from "helpers/resultsToErrors"
+import useWorkspace from "helpers/useWorkspace"
+import { useParams } from "react-router-dom"
+import NotFound from "pages/NotFound"
 import PageLayout from "components/layout/PageLayout"
 import CommitHeader from "components/reports/commit/CommitHeader"
-import GraphError from "components/utils/GraphError"
-import useWorkspace from "helpers/useWorkspace"
-import NotFound from "pages/NotFound"
-import React from "react"
-import { useParams } from "react-router-dom"
-import { GetCommit, GetCommitVariables } from "./__generated__/GetCommit"
-import resultsToErrors from "helpers/resultsToErrors"
 import ReportBody from "components/reports/ReportBody"
+import GraphError from "components/utils/GraphError"
+import { GetCommit, GetCommitVariables } from "./__generated__/GetCommit"
 
 export const GET_COMMIT = gql`
   query GetCommit(

@@ -1,6 +1,6 @@
+import React, { useCallback, useState } from "react"
 import { Close } from "@mui/icons-material"
 import { Box, Alert } from "@mui/material"
-import React, { useCallback, useState } from "react"
 import { Accept, FileRejection, useDropzone } from "react-dropzone"
 
 type FileUploadProps = {

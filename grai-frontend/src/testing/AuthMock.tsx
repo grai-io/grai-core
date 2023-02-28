@@ -1,6 +1,6 @@
 /* istanbul ignore file */
-import AuthContext from "components/auth/AuthContext"
 import React, { ReactNode, useState } from "react"
+import AuthContext from "components/auth/AuthContext"
 
 type AuthMockProps = {
   initialLoggedIn: boolean

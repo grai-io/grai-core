@@ -1,13 +1,13 @@
+import React from "react"
 import { gql, useQuery } from "@apollo/client"
 import { Box } from "@mui/material"
-import React from "react"
+import useWorkspace from "helpers/useWorkspace"
+import NotFound from "pages/NotFound"
 import ApiKeysHeader from "components/settings/apiKeys/ApiKeysHeader"
 import ApiKeysTable from "components/settings/apiKeys/ApiKeysTable"
 import SettingsLayout from "components/settings/SettingsLayout"
-import { GetApiKeys, GetApiKeysVariables } from "./__generated__/GetApiKeys"
 import GraphError from "components/utils/GraphError"
-import useWorkspace from "helpers/useWorkspace"
-import NotFound from "pages/NotFound"
+import { GetApiKeys, GetApiKeysVariables } from "./__generated__/GetApiKeys"
 
 export const GET_API_KEYS = gql`
   query GetApiKeys($organisationName: String!, $workspaceName: String!) {

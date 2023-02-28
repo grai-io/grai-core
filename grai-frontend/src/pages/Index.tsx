@@ -1,5 +1,5 @@
-import { gql, useQuery } from "@apollo/client"
 import React from "react"
+import { gql, useQuery } from "@apollo/client"
 import { Navigate } from "react-router-dom"
 import Loading from "components/layout/Loading"
 import GraphError from "components/utils/GraphError"

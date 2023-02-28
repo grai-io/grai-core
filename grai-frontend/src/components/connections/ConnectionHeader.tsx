@@ -1,3 +1,4 @@
+import React from "react"
 import { ContentCopy, KeyboardBackspace } from "@mui/icons-material"
 import {
   Box,
@@ -7,10 +8,9 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material"
-import RunStatus from "components/runs/RunStatus"
 import useWorkspace from "helpers/useWorkspace"
-import React from "react"
 import { Link } from "react-router-dom"
+import RunStatus from "components/runs/RunStatus"
 import ConnectionRun, { Connection as BaseConnection } from "./ConnectionRun"
 
 interface Connection extends BaseConnection {

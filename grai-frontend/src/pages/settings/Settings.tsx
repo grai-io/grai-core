@@ -1,5 +1,6 @@
 import React from "react"
-import SettingsLayout from "components/settings/SettingsLayout"
+import { gql, useQuery } from "@apollo/client"
+import { AccountCircle, Business, People, VpnKey } from "@mui/icons-material"
 import {
   Card,
   CardActionArea,
@@ -9,16 +10,15 @@ import {
   Grid,
   Typography,
 } from "@mui/material"
-import { AccountCircle, Business, People, VpnKey } from "@mui/icons-material"
-import { Link } from "react-router-dom"
-import { gql, useQuery } from "@apollo/client"
 import useWorkspace from "helpers/useWorkspace"
+import { Link } from "react-router-dom"
+import NotFound from "pages/NotFound"
+import SettingsLayout from "components/settings/SettingsLayout"
 import GraphError from "components/utils/GraphError"
 import {
   GetWorkspaceSettings,
   GetWorkspaceSettingsVariables,
 } from "./__generated__/GetWorkspaceSettings"
-import NotFound from "pages/NotFound"
 
 export const GET_WORKSPACE = gql`
   query GetWorkspaceSettings(

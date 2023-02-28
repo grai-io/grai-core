@@ -1,19 +1,19 @@
-import { gql, useMutation } from "@apollo/client"
-import WizardLayout, { WizardSteps } from "components/wizards/WizardLayout"
 import React, { useState } from "react"
-import { ConnectorType } from "../ConnectionsForm"
-import { Connector } from "../connectors/ConnectorCard"
+import { gql, useMutation } from "@apollo/client"
+import useWorkspace from "helpers/useWorkspace"
+import { useSnackbar } from "notistack"
+import WizardLayout, { WizardSteps } from "components/wizards/WizardLayout"
 import {
   CreateConnection,
   CreateConnectionVariables,
 } from "./__generated__/CreateConnection"
+import { NewConnection } from "./__generated__/NewConnection"
+import ConnectorSelectTab from "./ConnectorSelectTab"
 import SetSchedule from "./SetSchedule"
 import SetupConnection from "./SetupConnection"
 import TestConnection from "./TestConnection"
-import ConnectorSelectTab from "./ConnectorSelectTab"
-import { useSnackbar } from "notistack"
-import useWorkspace from "helpers/useWorkspace"
-import { NewConnection } from "./__generated__/NewConnection"
+import { ConnectorType } from "../ConnectionsForm"
+import { Connector } from "../connectors/ConnectorCard"
 
 export const CREATE_CONNECTION = gql`
   mutation CreateConnection(

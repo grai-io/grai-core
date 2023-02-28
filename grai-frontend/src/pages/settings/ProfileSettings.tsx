@@ -1,9 +1,9 @@
 import React from "react"
-import SettingsLayout from "components/settings/SettingsLayout"
 import { gql, useQuery } from "@apollo/client"
-import GraphError from "components/utils/GraphError"
 import NotFound from "pages/NotFound"
 import ProfileForm from "components/settings/profile/ProfileForm"
+import SettingsLayout from "components/settings/SettingsLayout"
+import GraphError from "components/utils/GraphError"
 import { GetProfile } from "./__generated__/GetProfile"
 
 export const GET_PROFILE = gql`

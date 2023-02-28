@@ -1,3 +1,4 @@
+import React from "react"
 import { ExpandLess, ExpandMore } from "@mui/icons-material"
 import {
   Table,
@@ -8,7 +9,6 @@ import {
   Typography,
 } from "@mui/material"
 import { enrichColumns } from "helpers/columns"
-import React from "react"
 import theme from "theme"
 import ColumnProperties from "./ColumnProperties"
 import ColumnRequirements from "./ColumnRequirements"

@@ -1,10 +1,10 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
+import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
 import RequestPasswordResetForm, {
   REQUEST_PASSWORD_RESET,
 } from "./RequestPasswordResetForm"
-import { GraphQLError } from "graphql"
 
 test("submit", async () => {
   const user = userEvent.setup()

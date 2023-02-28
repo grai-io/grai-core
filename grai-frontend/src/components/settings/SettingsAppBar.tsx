@@ -1,7 +1,7 @@
+import React from "react"
 import { Close } from "@mui/icons-material"
 import { AppBar, IconButton, Toolbar, Typography } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
-import React from "react"
 import { useNavigate } from "react-router-dom"
 
 const SettingsAppBar: React.FC = () => {

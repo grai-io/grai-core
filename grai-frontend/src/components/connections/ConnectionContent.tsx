@@ -1,5 +1,5 @@
-import { Box, Card, Grid, Table, TableBody } from "@mui/material"
 import React from "react"
+import { Box, Card, Grid, Table, TableBody } from "@mui/material"
 import ConnectionDetail from "./ConnectionDetail"
 import ConnectionRunDetail from "./runs/ConnectionRunDetail"
 import { Connection as BaseConnection } from "./schedule/ConnectionSchedule"

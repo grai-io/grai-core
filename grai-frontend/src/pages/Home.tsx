@@ -1,3 +1,5 @@
+import React from "react"
+import { gql, useQuery } from "@apollo/client"
 import { Search } from "@mui/icons-material"
 import {
   Box,
@@ -6,11 +8,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material"
-import React from "react"
+import useWorkspace from "helpers/useWorkspace"
 import HomeCards from "components/home/HomeCards"
 import PageLayout from "components/layout/PageLayout"
-import { gql, useQuery } from "@apollo/client"
-import useWorkspace from "helpers/useWorkspace"
 import GraphError from "components/utils/GraphError"
 import {
   GetWorkspaceHome,

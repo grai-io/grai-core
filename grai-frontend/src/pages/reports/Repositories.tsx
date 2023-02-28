@@ -1,12 +1,12 @@
+import React from "react"
 import { useQuery } from "@apollo/client"
 import { Container } from "@mui/material"
+import gql from "graphql-tag"
+import useWorkspace from "helpers/useWorkspace"
+import { useParams } from "react-router"
 import PageLayout from "components/layout/PageLayout"
 import RepositoryList from "components/reports/repositories/RepositoryList"
 import GraphError from "components/utils/GraphError"
-import gql from "graphql-tag"
-import useWorkspace from "helpers/useWorkspace"
-import React from "react"
-import { useParams } from "react-router"
 import {
   GetRepositories,
   GetRepositoriesVariables,

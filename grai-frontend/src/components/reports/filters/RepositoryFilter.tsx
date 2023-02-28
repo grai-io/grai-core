@@ -1,6 +1,6 @@
+import React from "react"
 import { Autocomplete, Box, InputAdornment, TextField } from "@mui/material"
 import useSearchParams from "helpers/useSearchParams"
-import React from "react"
 
 export interface Repository {
   type: string

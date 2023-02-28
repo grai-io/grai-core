@@ -1,11 +1,11 @@
+import React from "react"
 import { gql, useMutation } from "@apollo/client"
 import { useSnackbar } from "notistack"
-import React from "react"
-import ConnectionsForm, { Values } from "../ConnectionsForm"
 import {
   UpdateConnection,
   UpdateConnectionVariables,
 } from "./__generated__/UpdateConnection"
+import ConnectionsForm, { Values } from "../ConnectionsForm"
 
 export const UPDATE_CONNECTION = gql`
   mutation UpdateConnection(

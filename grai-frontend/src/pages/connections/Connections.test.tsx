@@ -1,8 +1,8 @@
 import React from "react"
+import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
 import Connections, { GET_CONNECTIONS } from "./Connections"
-import userEvent from "@testing-library/user-event"
 
 test("renders", async () => {
   render(<Connections />, {

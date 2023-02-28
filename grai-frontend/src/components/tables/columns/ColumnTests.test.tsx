@@ -1,5 +1,5 @@
-import { enrichColumn } from "helpers/columns"
 import React from "react"
+import { enrichColumn } from "helpers/columns"
 import { render, screen } from "testing"
 import ColumnTests from "./ColumnTests"
 

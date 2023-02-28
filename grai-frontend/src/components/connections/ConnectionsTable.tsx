@@ -1,3 +1,4 @@
+import React from "react"
 import {
   Table,
   TableBody,
@@ -5,13 +6,12 @@ import {
   TableRow,
   Typography,
 } from "@mui/material"
-import React from "react"
 import { useNavigate } from "react-router-dom"
 import Loading from "components/layout/Loading"
-import TableCell from "components/tables/TableCell"
-import ConnectionsMenu from "./ConnectionsMenu"
-import { Connection as BaseConnection } from "./ConnectionRun"
 import RunStatus from "components/runs/RunStatus"
+import TableCell from "components/tables/TableCell"
+import { Connection as BaseConnection } from "./ConnectionRun"
+import ConnectionsMenu from "./ConnectionsMenu"
 
 interface Connector {
   id: string

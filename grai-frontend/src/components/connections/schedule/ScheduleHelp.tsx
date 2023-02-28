@@ -1,7 +1,7 @@
+import React from "react"
 import { Link } from "@mui/material"
 import HelpItem from "components/help/HelpItem"
 import HelpSection from "components/help/HelpSection"
-import React from "react"
 
 const ScheduleHelp: React.FC = () => (
   <HelpSection>

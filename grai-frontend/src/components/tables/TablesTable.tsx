@@ -1,3 +1,4 @@
+import React from "react"
 import {
   Table,
   TableBody,
@@ -6,7 +7,6 @@ import {
   TableRow,
   Typography,
 } from "@mui/material"
-import React from "react"
 import { useNavigate } from "react-router-dom"
 import { Table as TableInterface } from "pages/tables/Tables"
 import Loading from "components/layout/Loading"

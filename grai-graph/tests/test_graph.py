@@ -113,7 +113,7 @@ class TestUniqueness(unittest.TestCase):
     #     G = get_analysis_from_map(mock_structure)
     #     results = G.test_unique_violations(name="a", namespace=DEFAULT_NAMESPACE, expects_unique=False)
     #
-    #     assert len(results) == 1 and results[0][-1].spec.name is "a", results
+    #     assert len(results) == 1 and results[0][0][-1].spec.name is "a", results
 
     @get_nodes(n=4)
     def test_skip_violation(self, a, b, c, d):
@@ -127,7 +127,7 @@ class TestUniqueness(unittest.TestCase):
         }
         G = get_analysis_from_map(mock_structure)
         results = G.test_unique_violations(name="a", namespace=DEFAULT_NAMESPACE, expects_unique=True)
-        assert len(results) == 1 and results[0][-1].spec.name is "d", results
+        assert len(results) == 1 and results[0][0][-1].spec.name is "d", results
 
     @get_nodes(n=3)
     def test_triangle_violation(self, a, b, c):
@@ -140,7 +140,7 @@ class TestUniqueness(unittest.TestCase):
         }
         G = get_analysis_from_map(mock_structure)
         results = G.test_unique_violations(name="a", namespace=DEFAULT_NAMESPACE, expects_unique=True)
-        assert len(results) == 2 and results[0][-1].spec.name is "c" and results[0][-1].spec.name is "c"
+        assert len(results) == 2 and results[0][0][-1].spec.name is "c" and results[1][0][-1].spec.name is "c"
 
 
 class TestNullable(unittest.TestCase):
@@ -246,7 +246,7 @@ class TestNullable(unittest.TestCase):
         G = get_analysis_from_map(mock_structure)
         results = G.test_nullable_violations(name="a", namespace=DEFAULT_NAMESPACE, is_nullable=True)
         assert (
-            len(results) == 1 and results[0][-1].spec.name is "d"
+            len(results) == 1 and results[0][0][-1].spec.name is "d"
         ), "Test failure not detected multiple steps from source node"
 
     @get_nodes(n=3)
@@ -260,7 +260,7 @@ class TestNullable(unittest.TestCase):
         }
         G = get_analysis_from_map(mock_structure)
         results = G.test_nullable_violations(name="a", namespace=DEFAULT_NAMESPACE, is_nullable=True)
-        assert len(results) == 2 and results[0][-1].spec.name is "c" and results[0][-1].spec.name is "c"
+        assert len(results) == 2 and results[0][0][-1].spec.name is "c" and results[1][0][-1].spec.name is "c"
 
 
 class TestDataType(unittest.TestCase):
@@ -288,7 +288,7 @@ class TestDataType(unittest.TestCase):
             b: [],
         }
         G = get_analysis_from_map(mock_structure)
-        results = G.test_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="bool")
+        results = G.test_data_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="bool")
         assert len(results) == 0
 
     @get_nodes(n=2)
@@ -299,7 +299,7 @@ class TestDataType(unittest.TestCase):
             b: [],
         }
         G = get_analysis_from_map(mock_structure)
-        results = G.test_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="bool")
+        results = G.test_data_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="bool")
         assert len(results) == 0
 
     @get_nodes(n=3)
@@ -311,7 +311,7 @@ class TestDataType(unittest.TestCase):
             c: [],
         }
         G = get_analysis_from_map(mock_structure)
-        results = G.test_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="bool")
+        results = G.test_data_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="bool")
         assert len(results) == 0
 
     @get_nodes(n=3)
@@ -323,7 +323,7 @@ class TestDataType(unittest.TestCase):
             c: [],
         }
         G = get_analysis_from_map(mock_structure)
-        results = G.test_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="bool")
+        results = G.test_data_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="bool")
         assert len(results) == 0
 
     @get_nodes(n=3)
@@ -336,7 +336,7 @@ class TestDataType(unittest.TestCase):
             c: [],
         }
         G = get_analysis_from_map(mock_structure)
-        results = G.test_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="bool")
+        results = G.test_data_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="bool")
         assert len(results) == 0
 
     # @get_nodes(n=3)
@@ -349,9 +349,9 @@ class TestDataType(unittest.TestCase):
     #         c: [],
     #     }
     #     G = get_analysis_from_map(mock_structure)
-    #     results = G.test_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="int")
+    #     results = G.test_data_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="int")
     #
-    #     assert len(results) == 1 and results[0][-1].spec.name is "a", results
+    #     assert len(results) == 1 and results[0][0][-1].spec.name is "a", results
 
     @get_nodes(n=4)
     def test_skip_violation(self, a, b, c, d):
@@ -365,9 +365,9 @@ class TestDataType(unittest.TestCase):
         }
         G = get_analysis_from_map(mock_structure)
 
-        results = G.test_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="int")
+        results = G.test_data_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="int")
         assert (
-            len(results) == 1 and results[0][-1].spec.name is "d"
+            len(results) == 1 and results[0][0][-1].spec.name is "d"
         ), "Test failure not detected multiple steps from source node"
 
     @get_nodes(n=3)
@@ -380,5 +380,5 @@ class TestDataType(unittest.TestCase):
             c: [],
         }
         G = get_analysis_from_map(mock_structure)
-        results = G.test_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="int")
-        assert len(results) == 2 and results[0][-1].spec.name is "c" and results[0][-1].spec.name is "c"
+        results = G.test_data_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="int")
+        assert len(results) == 2 and results[0][0][-1].spec.name is "c" and results[1][0][-1].spec.name is "c"

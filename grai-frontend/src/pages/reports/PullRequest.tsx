@@ -1,17 +1,17 @@
-import { gql, useQuery } from "@apollo/client"
-import PageLayout from "components/layout/PageLayout"
-import GraphError from "components/utils/GraphError"
-import useWorkspace from "helpers/useWorkspace"
-import NotFound from "pages/NotFound"
 import React from "react"
+import { gql, useQuery } from "@apollo/client"
+import resultsToErrors from "helpers/resultsToErrors"
+import useWorkspace from "helpers/useWorkspace"
 import { useParams } from "react-router-dom"
+import NotFound from "pages/NotFound"
+import PageLayout from "components/layout/PageLayout"
 import PullRequestHeader from "components/reports/pull_request/PullRequestHeader"
+import ReportBody from "components/reports/ReportBody"
+import GraphError from "components/utils/GraphError"
 import {
   GetPullRequest,
   GetPullRequestVariables,
 } from "./__generated__/GetPullRequest"
-import resultsToErrors from "helpers/resultsToErrors"
-import ReportBody from "components/reports/ReportBody"
 
 export const GET_PULL_REQUEST = gql`
   query GetPullRequest(

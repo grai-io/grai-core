@@ -1,5 +1,5 @@
-import { GraphQLError } from "graphql"
 import React from "react"
+import { GraphQLError } from "graphql"
 import { render, waitFor, screen } from "testing"
 import ConnectorSelect, { GET_CONNECTORS } from "./ConnectorSelect"
 

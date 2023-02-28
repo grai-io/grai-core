@@ -1,7 +1,7 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { render, screen } from "testing"
 import { ReactFlowProvider } from "reactflow"
+import { render, screen } from "testing"
 import GraphControls from "./GraphControls"
 
 test("renders", async () => {

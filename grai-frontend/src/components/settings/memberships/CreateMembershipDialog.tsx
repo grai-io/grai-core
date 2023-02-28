@@ -1,15 +1,15 @@
+import React from "react"
 import { gql, useMutation } from "@apollo/client"
 import { Dialog, DialogContent } from "@mui/material"
-import React from "react"
+import { useSnackbar } from "notistack"
 import DialogTitle from "components/dialogs/DialogTitle"
-import CreateKeyForm, { Values } from "./CreateMembershipForm"
 import GraphError from "components/utils/GraphError"
 import {
   CreateMembership,
   CreateMembershipVariables,
 } from "./__generated__/CreateMembership"
-import { useSnackbar } from "notistack"
 import { NewMembership } from "./__generated__/NewMembership"
+import CreateKeyForm, { Values } from "./CreateMembershipForm"
 
 export const CREATE_MEMBERSHIP = gql`
   mutation CreateMembership(

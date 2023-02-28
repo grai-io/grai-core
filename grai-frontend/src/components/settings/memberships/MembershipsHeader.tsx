@@ -1,6 +1,6 @@
+import React, { useState } from "react"
 import { Add } from "@mui/icons-material"
 import { Box, Button, Typography } from "@mui/material"
-import React, { useState } from "react"
 import CreateMembershipDialog from "./CreateMembershipDialog"
 
 type MembershipsHeaderProps = {

@@ -1,15 +1,15 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
-import ConnectionsTable from "components/connections/ConnectionsTable"
+import { Box } from "@mui/material"
+import useWorkspace from "helpers/useWorkspace"
 import ConnectionsHeader from "components/connections/ConnectionsHeader"
+import ConnectionsTable from "components/connections/ConnectionsTable"
+import PageLayout from "components/layout/PageLayout"
+import GraphError from "components/utils/GraphError"
 import {
   GetConnections,
   GetConnectionsVariables,
 } from "./__generated__/GetConnections"
-import { Box } from "@mui/material"
-import GraphError from "components/utils/GraphError"
-import PageLayout from "components/layout/PageLayout"
-import useWorkspace from "helpers/useWorkspace"
 
 //Extra parameters required to make cache update work on connection run
 export const GET_CONNECTIONS = gql`

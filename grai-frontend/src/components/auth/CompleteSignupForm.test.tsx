@@ -1,7 +1,7 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { render, screen, waitFor } from "testing"
 import { GraphQLError } from "graphql"
+import { render, screen, waitFor } from "testing"
 import CompleteSignupForm, { COMPLETE_SIGNUP } from "./CompleteSignupForm"
 
 test("submit", async () => {

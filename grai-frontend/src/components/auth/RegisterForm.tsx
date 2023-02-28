@@ -1,12 +1,12 @@
 import React, { useState } from "react"
+import { gql, useMutation } from "@apollo/client"
 import { LoadingButton } from "@mui/lab"
 import { TextField } from "@mui/material"
-import Form from "components/form/Form"
-import useAuth from "./useAuth"
-import GraphError from "components/utils/GraphError"
-import { gql, useMutation } from "@apollo/client"
-import { Register, RegisterVariables } from "./__generated__/Register"
 import posthog from "posthog"
+import Form from "components/form/Form"
+import GraphError from "components/utils/GraphError"
+import { Register, RegisterVariables } from "./__generated__/Register"
+import useAuth from "./useAuth"
 
 export const REGISTER = gql`
   mutation Register($username: String!, $name: String!, $password: String!) {
