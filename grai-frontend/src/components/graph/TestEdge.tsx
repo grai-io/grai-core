@@ -1,18 +1,6 @@
 import React, { useState } from "react"
-import {
-  CancelOutlined,
-  CheckCircleOutline,
-  CheckOutlined,
-} from "@mui/icons-material"
-import {
-  Box,
-  Card,
-  CardContent,
-  Divider,
-  lighten,
-  Stack,
-  Typography,
-} from "@mui/material"
+import { CancelOutlined, CheckCircleOutline } from "@mui/icons-material"
+import { Box, Card, CardContent, lighten } from "@mui/material"
 import { EdgeProps, getBezierPath, EdgeLabelRenderer } from "reactflow"
 import theme from "theme"
 import TestSection from "./tests/TestSection"

@@ -1,5 +1,4 @@
 import React, { ReactNode } from "react"
-import { CheckCircleOutline } from "@mui/icons-material"
 import { Box, Typography, Divider, Stack, SxProps } from "@mui/material"
 
 interface Test {
