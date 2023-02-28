@@ -19,6 +19,7 @@ export interface Error {
   destination: string
   test: string
   message: string
+  test_pass: boolean
 }
 
 export interface Column {

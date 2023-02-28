@@ -1,15 +1,22 @@
 import React, { useState } from "react"
-import { CheckCircleOutline, ErrorOutline } from "@mui/icons-material"
 import {
-  Alert,
-  AlertTitle,
   Box,
+  Card,
+  CardContent,
   Divider,
+  lighten,
   Stack,
   Typography,
 } from "@mui/material"
 import { EdgeProps, getBezierPath, EdgeLabelRenderer } from "reactflow"
 import theme from "theme"
+import TestsSummary from "./tests/TestsSummary"
+import {
+  CancelOutlined,
+  CheckCircleOutline,
+  CheckOutlined,
+} from "@mui/icons-material"
+import TestSection from "./tests/TestSection"
 
 interface Test {
   message: string
@@ -43,11 +50,8 @@ const TestEdge: React.FC<EdgeProps<TestData>> = ({
 
   const toggleExpand = () => setExpand(!expand)
 
-  const errorCount = data?.tests?.filter(test => !test.test_pass).length
-  const passCount = data?.tests?.filter(test => test.test_pass).length
-
-  const hasError = errorCount ? errorCount > 0 : false
-  const hasPass = passCount ? passCount > 0 : false
+  const errorCount = data?.tests?.filter(test => !test.test_pass).length ?? 0
+  const passCount = data?.tests?.filter(test => test.test_pass).length ?? 0
 
   return (
     <>
@@ -56,13 +60,14 @@ const TestEdge: React.FC<EdgeProps<TestData>> = ({
         className="react-flow__edge-path"
         d={edgePath}
         style={{
-          stroke: hasError ? theme.palette.error.main : undefined,
+          stroke:
+            errorCount > 0
+              ? lighten(theme.palette.error.light, 0.3)
+              : undefined,
         }}
       />
       <EdgeLabelRenderer>
-        <Alert
-          severity={hasError ? "error" : "success"}
-          icon={false}
+        <Box
           onClick={toggleExpand}
           sx={{
             pointerEvents: "all",
@@ -71,43 +76,44 @@ const TestEdge: React.FC<EdgeProps<TestData>> = ({
             zIndex: 20,
             width: expand ? 225 : undefined,
             overflowWrap: "break-word",
+            p: 0,
+            cursor: "pointer",
           }}
           className="nodrag nopan"
           data-testid="test-edge"
         >
-          <Box sx={{ display: "flex" }}>
-            {hasError && (
-              <>
-                <ErrorOutline sx={{ mr: 1 }} />
-                <AlertTitle sx={{ mt: 0.1 }}>{errorCount}</AlertTitle>
-              </>
-            )}
-            {hasPass && (
-              <>
-                <CheckCircleOutline sx={{ mr: 1 }} />
-                <AlertTitle sx={{ mt: 0.1 }}>{passCount}</AlertTitle>
-              </>
-            )}
-          </Box>
-          {expand && (
-            <>
-              <Divider
-                sx={{
-                  mt: 0.5,
-                  mb: 1,
-                  borderColor: "rgba(95, 33, 32, 0.25)",
-                }}
-              />
-              <Stack spacing={1}>
-                {data?.tests?.map((test, index) => (
-                  <Typography variant="body2" key={index}>
-                    {test.message}
-                  </Typography>
-                ))}
-              </Stack>
-            </>
+          {expand ? (
+            <Card variant="outlined">
+              <CardContent sx={{ py: 1, "&:last-child": { pb: 1 } }}>
+                <TestSection
+                  tests={data?.tests?.filter(t => !t.test_pass)}
+                  type="Failures"
+                  icon={
+                    <CancelOutlined
+                      sx={{ color: theme => theme.palette.error.main }}
+                    />
+                  }
+                />
+                <TestSection
+                  tests={data?.tests?.filter(t => t.test_pass)}
+                  type="Passes"
+                  icon={
+                    <CheckCircleOutline
+                      sx={{ color: theme => theme.palette.success.main }}
+                    />
+                  }
+                  sx={{ mt: 2 }}
+                />
+              </CardContent>
+            </Card>
+          ) : (
+            <TestsSummary
+              errorCount={errorCount}
+              passCount={passCount}
+              data-testid="test-edge"
+            />
           )}
-        </Alert>
+        </Box>
       </EdgeLabelRenderer>
     </>
   )
