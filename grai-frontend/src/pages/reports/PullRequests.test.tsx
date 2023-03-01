@@ -28,8 +28,8 @@ test("click row", async () => {
     expect(screen.getAllByText(/Hello world/i)).toBeTruthy()
   })
 
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
   await act(
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
     async () => await user.click(container.querySelectorAll("tbody > tr")[0])
   )
 

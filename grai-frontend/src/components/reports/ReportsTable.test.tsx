@@ -133,8 +133,8 @@ test("row click", async () => {
 
   expect(screen.getByText("Success")).toBeInTheDocument()
 
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
   await act(
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
     async () => await user.click(container.querySelectorAll("tbody > tr")[0])
   )
 
@@ -152,8 +152,8 @@ test("row click no pr", async () => {
 
   expect(screen.getByText("Success")).toBeInTheDocument()
 
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
   await act(
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
     async () => await user.click(container.querySelectorAll("tbody > tr")[1])
   )
 
@@ -169,8 +169,8 @@ test("row click no commit", async () => {
 
   expect(screen.getByText("Success")).toBeInTheDocument()
 
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
   await act(
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
     async () => await user.click(container.querySelectorAll("tbody > tr")[2])
   )
 
