@@ -16,7 +16,7 @@ from .models import Connection, Connector, Run
 
 
 @shared_task
-def run_update_server(runId):
+def process_run(runId):
     print(f"Task starting {runId}")
     run = Run.objects.get(pk=runId)
     execute_run(run)

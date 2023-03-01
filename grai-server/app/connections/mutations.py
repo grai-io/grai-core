@@ -13,7 +13,7 @@ from connections.models import Connection as ConnectionModel
 from connections.models import Connector as ConnectorModel
 from connections.models import Run as RunModel
 from connections.models import RunFile as RunFileModel
-from connections.tasks import run_update_server
+from connections.tasks import process_run
 
 
 @strawberry.type
@@ -113,7 +113,7 @@ class Mutation:
             action=action,
         )
 
-        run_update_server.delay(run.id)
+        process_run.delay(run.id)
 
         run.connection = connection
 
@@ -143,6 +143,6 @@ class Mutation:
         runFile.file = file
         await sync_to_async(runFile.save)()
 
-        run_update_server.delay(run.id)
+        process_run.delay(run.id)
 
         return run

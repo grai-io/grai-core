@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from common.permissions.multitenant import Multitenant
-from connections.tasks import run_update_server
+from connections.tasks import process_run
 from installations.github import Github
 from installations.models import Branch, Commit, PullRequest, Repository
 from rest_framework import routers
@@ -165,7 +165,7 @@ def create_run(request):
 
     run = Run.objects.create(connection=connection, status="queued", commit=commit, trigger=trigger, action=action)
 
-    run_update_server.delay(run.id)
+    process_run.delay(run.id)
 
     return Response({"id": run.id})
 
