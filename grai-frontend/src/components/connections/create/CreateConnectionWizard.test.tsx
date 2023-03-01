@@ -277,6 +277,9 @@ test("submit", async () => {
 
   expect(screen.getByText("Test connection to PostgreSQL")).toBeInTheDocument()
 
+  // eslint-disable-next-line testing-library/no-wait-for-empty-callback
+  await waitFor(() => {})
+
   await act(
     async () =>
       await user.click(screen.getByRole("button", { name: /continue/i }))
