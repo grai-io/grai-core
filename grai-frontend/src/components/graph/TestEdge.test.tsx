@@ -6,7 +6,7 @@ import ReactFlow, {
   Position,
   ReactFlowProvider,
 } from "reactflow"
-import { act, getQueriesForElement, render, screen, waitFor } from "testing"
+import { act, render, screen, waitFor } from "testing"
 import TestEdge, { TestData } from "./TestEdge"
 
 test("renders", async () => {

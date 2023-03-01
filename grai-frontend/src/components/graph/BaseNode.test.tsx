@@ -201,7 +201,7 @@ test("context menu", async () => {
     }
   )
 
-  await act(() => fireEvent.contextMenu(screen.getByText("Node Label")))
+  fireEvent.contextMenu(screen.getByText("Node Label"))
 
   await act(async () => await user.keyboard("{escape}"))
 })
@@ -218,7 +218,7 @@ test("context menu show lineage", async () => {
     }
   )
 
-  await act(() => fireEvent.contextMenu(screen.getByText("Node Label")))
+  fireEvent.contextMenu(screen.getByText("Node Label"))
 
   await act(async () => await user.click(screen.getAllByRole("menuitem")[0]))
 })
@@ -235,7 +235,7 @@ test("context menu show upstream dependents", async () => {
     }
   )
 
-  await act(() => fireEvent.contextMenu(screen.getByText("Node Label")))
+  fireEvent.contextMenu(screen.getByText("Node Label"))
 
   await act(
     async () =>
@@ -257,7 +257,7 @@ test("context menu show downstream dependents", async () => {
     }
   )
 
-  await act(() => fireEvent.contextMenu(screen.getByText("Node Label")))
+  fireEvent.contextMenu(screen.getByText("Node Label"))
 
   await act(
     async () =>
@@ -277,7 +277,7 @@ test("context menu show profile", async () => {
     { routes: ["/:organisationName/:workspaceName/tables/:nodeId"] }
   )
 
-  await act(() => fireEvent.contextMenu(screen.getByText("Node Label")))
+  fireEvent.contextMenu(screen.getByText("Node Label"))
 
   await act(
     async () =>
