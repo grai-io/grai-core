@@ -3,6 +3,7 @@ import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
 import Home, { GET_WORKSPACE } from "./Home"
 import Workspaces, { GET_WORKSPACES } from "./workspaces/Workspaces"
+import profileMock from "testing/profileMock"
 
 test("renders", async () => {
   render(<Home />, {
@@ -21,6 +22,7 @@ test("renders", async () => {
 
 test("error", async () => {
   const mocks = [
+    profileMock,
     {
       request: {
         query: GET_WORKSPACE,
@@ -44,6 +46,7 @@ test("error", async () => {
 
 test("no workspace", async () => {
   const mocks = [
+    profileMock,
     {
       request: {
         query: GET_WORKSPACE,
@@ -69,6 +72,7 @@ test("no workspace", async () => {
 
 test("missing workspace", async () => {
   const mocks = [
+    profileMock,
     {
       request: {
         query: GET_WORKSPACE,

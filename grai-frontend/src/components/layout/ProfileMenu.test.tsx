@@ -1,6 +1,6 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { render, screen, waitFor } from "testing"
+import { act, render, screen, waitFor } from "testing"
 import ProfileMenu from "./ProfileMenu"
 
 test("renders", async () => {
@@ -27,7 +27,9 @@ test("open", async () => {
     expect(screen.getByTestId("profile-menu-open")).toBeTruthy()
   })
 
-  await user.click(screen.getByTestId("profile-menu-open"))
+  await act(
+    async () => await user.click(screen.getByTestId("profile-menu-open"))
+  )
 
   await waitFor(() => {
     expect(screen.getByText("Hello World")).toBeInTheDocument()
@@ -49,11 +51,13 @@ test("logout", async () => {
     expect(screen.getByTestId("profile-menu-open")).toBeTruthy()
   })
 
-  await user.click(screen.getByTestId("profile-menu-open"))
+  await act(
+    async () => await user.click(screen.getByTestId("profile-menu-open"))
+  )
 
   await waitFor(() => {
     expect(screen.getByText("Logout")).toBeInTheDocument()
   })
 
-  await user.click(screen.getByText("Logout"))
+  await act(async () => await user.click(screen.getByText("Logout")))
 })

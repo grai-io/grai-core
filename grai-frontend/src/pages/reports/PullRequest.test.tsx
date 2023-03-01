@@ -8,6 +8,7 @@ import {
 } from "helpers/testNodes"
 import { render, screen, waitFor } from "testing"
 import PullRequest, { GET_PULL_REQUEST } from "./PullRequest"
+import profileMock from "testing/profileMock"
 
 test("renders", async () => {
   render(<PullRequest />, {
@@ -25,6 +26,7 @@ test("renders", async () => {
 
 test("renders errors", async () => {
   const mocks = [
+    profileMock,
     {
       request: {
         query: GET_PULL_REQUEST,
@@ -128,6 +130,7 @@ test("renders errors", async () => {
 
 test("not found", async () => {
   const mocks = [
+    profileMock,
     {
       request: {
         query: GET_PULL_REQUEST,
@@ -180,6 +183,7 @@ test("not found", async () => {
 
 test("error", async () => {
   const mocks = [
+    profileMock,
     {
       request: {
         query: GET_PULL_REQUEST,

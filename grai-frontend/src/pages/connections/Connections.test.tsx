@@ -1,8 +1,9 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { act, render, screen, waitFor } from "testing"
 import Connections, { GET_CONNECTIONS } from "./Connections"
+import profileMock from "testing/profileMock"
 
 test("renders", async () => {
   render(<Connections />, {
@@ -29,7 +30,9 @@ test("refresh", async () => {
     expect(screen.getByRole("heading", { name: /Connections/i })).toBeTruthy()
   })
 
-  await user.click(screen.getByTestId("connection-refresh"))
+  await act(
+    async () => await user.click(screen.getByTestId("connection-refresh"))
+  )
 
   // eslint-disable-next-line testing-library/no-wait-for-empty-callback
   await waitFor(() => {})
@@ -37,6 +40,7 @@ test("refresh", async () => {
 
 test("error", async () => {
   const mocks = [
+    profileMock,
     {
       request: {
         query: GET_CONNECTIONS,

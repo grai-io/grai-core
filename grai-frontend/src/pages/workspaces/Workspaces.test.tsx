@@ -31,9 +31,14 @@ test("no workspaces", async () => {
 
   render(<Workspaces />, { mocks, withRouter: true })
 
-  await waitFor(() => {
-    screen.getByRole("heading", { name: /Create a workspace/i })
-  })
+  await waitFor(() =>
+    expect(screen.getByRole("progressbar")).toBeInTheDocument()
+  )
+  await waitFor(() => expect(screen.queryByRole("progressbar")).toBeFalsy())
+
+  await waitFor(() =>
+    expect(screen.getByRole("heading", { name: /Create a workspace/i }))
+  )
 })
 
 test("error", async () => {

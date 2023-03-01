@@ -1,6 +1,6 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { render, screen, fireEvent } from "testing"
+import { render, screen, fireEvent, waitFor, act } from "testing"
 import SetupConnection from "./SetupConnection"
 
 const opts = {
@@ -31,6 +31,30 @@ test("renders", async () => {
   )
 
   expect(screen.getByText("Connect to Test Connector")).toBeInTheDocument()
+})
+
+test("submit", async () => {
+  const user = userEvent.setup()
+
+  render(
+    <SetupConnection
+      workspaceId="1"
+      opts={opts}
+      connector={{ id: "1", name: "Test Connector", metadata: null }}
+      connection={null}
+      setConnection={() => {}}
+    />,
+    {
+      withRouter: true,
+    }
+  )
+
+  expect(screen.getByText("Connect to Test Connector")).toBeInTheDocument()
+
+  await act(
+    async () =>
+      await user.click(screen.getByRole("button", { name: /continue/i }))
+  )
 })
 
 test("renders file", async () => {
@@ -106,7 +130,7 @@ test("upload file", async () => {
       setConnection={() => {}}
     />,
     {
-      withRouter: true,
+      routes: ["/:organisationName/:workspaceName/runs/:runId"],
     }
   )
 
@@ -124,9 +148,20 @@ test("upload file", async () => {
   fireEvent.drop(inputEl)
   expect(await screen.findByText("ping.json")).toBeInTheDocument()
 
-  await user.type(screen.getByRole("textbox", { name: /namespace/i }), "test")
+  await act(
+    async () =>
+      await user.type(
+        screen.getByRole("textbox", { name: /namespace/i }),
+        "test"
+      )
+  )
 
-  await user.click(screen.getByRole("button", { name: /finish/i }))
+  await act(
+    async () =>
+      await user.click(screen.getByRole("button", { name: /finish/i }))
+  )
+
+  await waitFor(() => expect(screen.getByText("New Page")))
 })
 
 test("upload wrong file", async () => {

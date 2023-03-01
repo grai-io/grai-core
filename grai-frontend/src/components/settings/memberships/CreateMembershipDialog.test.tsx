@@ -1,7 +1,7 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { act, render, screen, waitFor } from "testing"
 import CreateMembershipDialog, {
   CREATE_MEMBERSHIP,
 } from "./CreateMembershipDialog"
@@ -33,12 +33,17 @@ test("submit", async () => {
     expect(screen.getByText("Invite user")).toBeInTheDocument()
   })
 
-  await user.type(
-    screen.getByRole("textbox", { name: /email/i }),
-    "email@grai.io"
+  await act(
+    async () =>
+      await user.type(
+        screen.getByRole("textbox", { name: /email/i }),
+        "email@grai.io"
+      )
   )
 
-  await user.click(screen.getByRole("button", { name: /Save/i }))
+  await act(
+    async () => await user.click(screen.getByRole("button", { name: /Save/i }))
+  )
 })
 
 test("error", async () => {
@@ -69,12 +74,17 @@ test("error", async () => {
     expect(screen.getByText("Invite user")).toBeInTheDocument()
   })
 
-  await user.type(
-    screen.getByRole("textbox", { name: /email/i }),
-    "email@grai.io"
+  await act(
+    async () =>
+      await user.type(
+        screen.getByRole("textbox", { name: /email/i }),
+        "email@grai.io"
+      )
   )
 
-  await user.click(screen.getByRole("button", { name: /Save/i }))
+  await act(
+    async () => await user.click(screen.getByRole("button", { name: /Save/i }))
+  )
 
   await waitFor(() => {
     expect(screen.getByText("Error!")).toBeInTheDocument()

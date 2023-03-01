@@ -1,10 +1,10 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { act, render, screen, waitFor } from "testing"
 import { RUN_CONNECTION } from "components/connections/ConnectionRun"
 import Connection, { GET_CONNECTION } from "./Connection"
-import { GET_PROFILE } from "components/layout/ProfileMenu"
+import profileMock from "testing/profileMock"
 
 test("renders", async () => {
   render(<Connection />, {
@@ -15,22 +15,6 @@ test("renders", async () => {
     expect(screen.getAllByText("Connection 1")).toBeTruthy()
   })
 })
-
-const profileMock = {
-  request: {
-    query: GET_PROFILE,
-  },
-  result: {
-    data: {
-      profile: {
-        id: "1",
-        username: "test@example.com",
-        first_name: "Test",
-        last_name: "Example",
-      },
-    },
-  },
-}
 
 test("refresh", async () => {
   const user = userEvent.setup()
@@ -168,7 +152,7 @@ test("refresh", async () => {
     expect(screen.getAllByText("Connection 1")).toBeTruthy()
   })
 
-  await user.click(screen.getByTestId("PlayArrowIcon"))
+  await act(async () => await user.click(screen.getByTestId("PlayArrowIcon")))
 
   await waitFor(() => {
     expect(screen.getAllByText("Success")).toBeTruthy()
@@ -299,7 +283,7 @@ test("refresh no last_sucessful_run", async () => {
     expect(screen.getAllByText("Connection 1")).toBeTruthy()
   })
 
-  await user.click(screen.getByTestId("PlayArrowIcon"))
+  await act(async () => await user.click(screen.getByTestId("PlayArrowIcon")))
 
   await waitFor(() => {
     expect(screen.getAllByText("Success")).toBeTruthy()

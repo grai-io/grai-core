@@ -1,6 +1,6 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { render, screen } from "testing"
+import { act, render, screen } from "testing"
 import UpdateConnectionForm, { UPDATE_CONNECTION } from "./UpdateConnectionForm"
 
 const connection = {
@@ -109,19 +109,36 @@ test("submit", async () => {
     { mocks: [createMock] }
   )
 
-  await user.type(screen.getByRole("textbox", { name: "Namespace" }), "default")
-
-  await user.type(
-    screen.getByRole("textbox", { name: "Name" }),
-    "test connection"
+  await act(
+    async () =>
+      await user.type(
+        screen.getByRole("textbox", { name: "Namespace" }),
+        "default"
+      )
   )
 
-  await user.type(screen.getByRole("textbox", { name: "Field 1" }), "value1")
+  await act(
+    async () =>
+      await user.type(
+        screen.getByRole("textbox", { name: "Name" }),
+        "test connection"
+      )
+  )
+
+  await act(
+    async () =>
+      await user.type(
+        screen.getByRole("textbox", { name: "Field 1" }),
+        "value1"
+      )
+  )
 
   // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
   const secretField = container.querySelector("input[type=password]")
 
-  if (secretField) await user.type(secretField, "value2")
+  if (secretField) await act(async () => await user.type(secretField, "value2"))
 
-  await user.click(screen.getByRole("button", { name: /save/i }))
+  await act(
+    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+  )
 })

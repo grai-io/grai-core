@@ -1,6 +1,6 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { render, screen } from "testing"
+import { act, render, screen } from "testing"
 import ApiKeyMenu from "./ApiKeyMenu"
 
 const apiKey = {
@@ -21,5 +21,5 @@ test("renders", async () => {
 
   render(<ApiKeyMenu apiKey={apiKey} />)
 
-  await user.click(screen.getByTestId("MoreHorizIcon"))
+  await act(async () => await user.click(screen.getByTestId("MoreHorizIcon")))
 })

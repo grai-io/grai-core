@@ -43,8 +43,8 @@ const WorkspaceChoice: React.FC<WorkspaceChoiceProps> = ({
         installationId,
       },
     })
-      .then(() => navigate(`/${workspace.organisation.name}/${workspace.name}`))
       .then(() => enqueueSnackbar("Github updated"))
+      .then(() => navigate(`/${workspace.organisation.name}/${workspace.name}`))
 
       .catch(() => {})
 

@@ -1,7 +1,7 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { act, render, screen, waitFor } from "testing"
 import ResetPasswordForm, { RESET_PASSWORD } from "./ResetPasswordForm"
 
 test("submit", async () => {
@@ -12,9 +12,14 @@ test("submit", async () => {
     path: "/",
   })
 
-  await user.type(screen.getByTestId("password"), "password")
+  await act(
+    async () => await user.type(screen.getByTestId("password"), "password")
+  )
 
-  await user.click(screen.getByRole("button", { name: /submit/i }))
+  await act(
+    async () =>
+      await user.click(screen.getByRole("button", { name: /submit/i }))
+  )
 
   await waitFor(() => {
     expect(screen.getByText("Password reset, please login")).toBeInTheDocument()
@@ -46,9 +51,14 @@ test("error", async () => {
     mocks,
   })
 
-  await user.type(screen.getByTestId("password"), "password")
+  await act(
+    async () => await user.type(screen.getByTestId("password"), "password")
+  )
 
-  await user.click(screen.getByRole("button", { name: /submit/i }))
+  await act(
+    async () =>
+      await user.click(screen.getByRole("button", { name: /submit/i }))
+  )
 
   await waitFor(() => {
     expect(screen.getByText("Error!")).toBeInTheDocument()

@@ -1,8 +1,9 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { act, render, screen, waitFor } from "testing"
 import Table, { GET_TABLE } from "./Table"
+import profileMock from "testing/profileMock"
 
 test("renders", async () => {
   render(<Table />, {
@@ -16,6 +17,7 @@ test("renders", async () => {
 
 test("error", async () => {
   const mocks = [
+    profileMock,
     {
       request: {
         query: GET_TABLE,
@@ -40,6 +42,7 @@ test("error", async () => {
 
 test("not found", async () => {
   const mocks = [
+    profileMock,
     {
       request: {
         query: GET_TABLE,
@@ -80,10 +83,14 @@ test("lineage", async () => {
     expect(screen.getAllByText("Lineage")).toBeTruthy()
   })
 
-  await user.click(screen.getByRole("tab", { name: /Lineage/i }))
+  await act(
+    async () => await user.click(screen.getByRole("tab", { name: /Lineage/i }))
+  )
 })
 
 test("expand all", async () => {
+  const user = userEvent.setup()
+
   render(<Table />, {
     withRouter: true,
   })
@@ -92,12 +99,16 @@ test("expand all", async () => {
     expect(screen.getByText("Profile")).toBeInTheDocument()
   })
 
-  await userEvent.click(
-    screen.getByRole("button", { name: /Expand all rows/i })
+  await act(
+    async () =>
+      await user.click(screen.getByRole("button", { name: /Expand all rows/i }))
   )
 
-  await userEvent.click(
-    screen.getByRole("button", { name: /Collapse all rows/i })
+  await act(
+    async () =>
+      await user.click(
+        screen.getByRole("button", { name: /Collapse all rows/i })
+      )
   )
 })
 
@@ -116,18 +127,26 @@ test("click row", async () => {
     expect(screen.getAllByText("Hello World")).toBeTruthy()
   })
 
-  await user.click(
-    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-    screen.getByTestId("columns-table").querySelectorAll("tbody > tr")[0]
+  await act(
+    async () =>
+      await user.click(
+        // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+        screen.getByTestId("columns-table").querySelectorAll("tbody > tr")[0]
+      )
   )
 
-  await user.click(
-    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-    screen.getByTestId("columns-table").querySelectorAll("tbody > tr")[0]
+  await act(
+    async () =>
+      await user.click(
+        // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+        screen.getByTestId("columns-table").querySelectorAll("tbody > tr")[0]
+      )
   )
 })
 
 test("search", async () => {
+  const user = userEvent.setup()
+
   render(<Table />, {
     withRouter: true,
   })
@@ -136,5 +155,5 @@ test("search", async () => {
     expect(screen.getByText("Profile")).toBeInTheDocument()
   })
 
-  await userEvent.type(screen.getByRole("textbox"), "Search")
+  await act(async () => await user.type(screen.getByRole("textbox"), "Search"))
 })

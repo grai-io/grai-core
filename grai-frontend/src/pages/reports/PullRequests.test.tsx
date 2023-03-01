@@ -1,8 +1,9 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { act, render, screen, waitFor } from "testing"
 import PullRequests, { GET_PULL_REQUESTS } from "./PullRequests"
+import profileMock from "testing/profileMock"
 
 test("renders", async () => {
   render(<PullRequests />, {
@@ -28,13 +29,16 @@ test("click row", async () => {
   })
 
   // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-  await user.click(container.querySelectorAll("tbody > tr")[0])
+  await act(
+    async () => await user.click(container.querySelectorAll("tbody > tr")[0])
+  )
 
   expect(screen.getByText("New Page")).toBeInTheDocument()
 })
 
 test("not found", async () => {
   const mocks = [
+    profileMock,
     {
       request: {
         query: GET_PULL_REQUESTS,
@@ -70,6 +74,7 @@ test("not found", async () => {
 
 test("error", async () => {
   const mocks = [
+    profileMock,
     {
       request: {
         query: GET_PULL_REQUESTS,

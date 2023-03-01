@@ -1,7 +1,7 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { act, render, screen, waitFor } from "testing"
 import WorkspaceChoice, { ADD_INSTALLATION } from "./WorkspaceChoice"
 
 const workspaces = [
@@ -44,7 +44,10 @@ test("renders", async () => {
     expect(screen.getAllByText("Workspace1")).toBeTruthy()
   })
 
-  await user.click(screen.getByRole("button", { name: /Workspace1/i }))
+  await act(
+    async () =>
+      await user.click(screen.getByRole("button", { name: /Workspace1/i }))
+  )
 
   await waitFor(() => {
     expect(screen.getByText("New Page")).toBeInTheDocument()
@@ -79,7 +82,10 @@ test("error", async () => {
     expect(screen.getAllByText("Workspace1")).toBeTruthy()
   })
 
-  await user.click(screen.getByRole("button", { name: /Workspace1/i }))
+  await act(
+    async () =>
+      await user.click(screen.getByRole("button", { name: /Workspace1/i }))
+  )
 
   await waitFor(() => {
     expect(screen.getByText("Error!")).toBeInTheDocument()

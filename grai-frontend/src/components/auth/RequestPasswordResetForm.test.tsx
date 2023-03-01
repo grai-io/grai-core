@@ -1,7 +1,7 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { act, render, screen, waitFor } from "testing"
 import RequestPasswordResetForm, {
   REQUEST_PASSWORD_RESET,
 } from "./RequestPasswordResetForm"
@@ -13,12 +13,18 @@ test("submit", async () => {
     withRouter: true,
   })
 
-  await user.type(
-    screen.getByRole("textbox", { name: /email/i }),
-    "email@grai.io"
+  await act(
+    async () =>
+      await user.type(
+        screen.getByRole("textbox", { name: /email/i }),
+        "email@grai.io"
+      )
   )
 
-  await user.click(screen.getByRole("button", { name: /submit/i }))
+  await act(
+    async () =>
+      await user.click(screen.getByRole("button", { name: /submit/i }))
+  )
 
   await waitFor(() => {
     expect(screen.getByText("Password reset email sent")).toBeInTheDocument()
@@ -44,12 +50,18 @@ test("error", async () => {
 
   render(<RequestPasswordResetForm />, { mocks })
 
-  await user.type(
-    screen.getByRole("textbox", { name: /email/i }),
-    "email@grai.io"
+  await act(
+    async () =>
+      await user.type(
+        screen.getByRole("textbox", { name: /email/i }),
+        "email@grai.io"
+      )
   )
 
-  await user.click(screen.getByRole("button", { name: /submit/i }))
+  await act(
+    async () =>
+      await user.click(screen.getByRole("button", { name: /submit/i }))
+  )
 
   await waitFor(() => {
     expect(screen.getByText("Error!")).toBeInTheDocument()

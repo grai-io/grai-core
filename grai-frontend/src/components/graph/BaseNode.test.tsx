@@ -1,7 +1,7 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { ReactFlowProvider } from "reactflow"
-import { fireEvent, render, screen, waitFor } from "testing"
+import { act, fireEvent, render, screen, waitFor } from "testing"
 import BaseNode, { BaseNodeData } from "./BaseNode"
 
 const data: BaseNodeData = {
@@ -184,7 +184,9 @@ test("expand", async () => {
     }
   )
 
-  await user.click(screen.getByTestId("ArrowDropDownIcon"))
+  await act(
+    async () => await user.click(screen.getByTestId("ArrowDropDownIcon"))
+  )
 })
 
 test("context menu", async () => {
@@ -199,9 +201,9 @@ test("context menu", async () => {
     }
   )
 
-  fireEvent.contextMenu(screen.getByText("Node Label"))
+  await act(() => fireEvent.contextMenu(screen.getByText("Node Label")))
 
-  await user.keyboard("{escape}")
+  await act(async () => await user.keyboard("{escape}"))
 })
 
 test("context menu show lineage", async () => {
@@ -216,9 +218,9 @@ test("context menu show lineage", async () => {
     }
   )
 
-  fireEvent.contextMenu(screen.getByText("Node Label"))
+  await act(() => fireEvent.contextMenu(screen.getByText("Node Label")))
 
-  await user.click(screen.getAllByRole("menuitem")[0])
+  await act(async () => await user.click(screen.getAllByRole("menuitem")[0]))
 })
 
 test("context menu show upstream dependents", async () => {
@@ -233,10 +235,13 @@ test("context menu show upstream dependents", async () => {
     }
   )
 
-  fireEvent.contextMenu(screen.getByText("Node Label"))
+  await act(() => fireEvent.contextMenu(screen.getByText("Node Label")))
 
-  await user.click(
-    screen.getByRole("menuitem", { name: /Show upstream dependents/i })
+  await act(
+    async () =>
+      await user.click(
+        screen.getByRole("menuitem", { name: /Show upstream dependents/i })
+      )
   )
 })
 
@@ -252,10 +257,13 @@ test("context menu show downstream dependents", async () => {
     }
   )
 
-  fireEvent.contextMenu(screen.getByText("Node Label"))
+  await act(() => fireEvent.contextMenu(screen.getByText("Node Label")))
 
-  await user.click(
-    screen.getByRole("menuitem", { name: /Show downstream dependents/i })
+  await act(
+    async () =>
+      await user.click(
+        screen.getByRole("menuitem", { name: /Show downstream dependents/i })
+      )
   )
 })
 
@@ -269,10 +277,13 @@ test("context menu show profile", async () => {
     { routes: ["/:organisationName/:workspaceName/tables/:nodeId"] }
   )
 
-  fireEvent.contextMenu(screen.getByText("Node Label"))
+  await act(() => fireEvent.contextMenu(screen.getByText("Node Label")))
 
-  await user.click(
-    screen.getByRole("menuitem", { name: /Show profile for this table/i })
+  await act(
+    async () =>
+      await user.click(
+        screen.getByRole("menuitem", { name: /Show profile for this table/i })
+      )
   )
 
   await waitFor(() => {

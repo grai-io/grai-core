@@ -2,6 +2,7 @@ import React from "react"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
 import Repositories, { GET_REPOSITORIES } from "./Repositories"
+import profileMock from "testing/profileMock"
 
 test("renders", async () => {
   render(<Repositories />, {
@@ -21,6 +22,7 @@ test("renders", async () => {
 
 test("error", async () => {
   const mocks = [
+    profileMock,
     {
       request: {
         query: GET_REPOSITORIES,
@@ -50,6 +52,7 @@ test("error", async () => {
 
 test("empty", async () => {
   const mocks = [
+    profileMock,
     {
       request: {
         query: GET_REPOSITORIES,
