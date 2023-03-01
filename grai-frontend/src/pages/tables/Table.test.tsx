@@ -3,8 +3,8 @@ import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
 import profileMock from "testing/profileMock"
-import Table, { GET_TABLE } from "./Table"
 import { GET_TABLES_AND_EDGES } from "components/tables/TableLineage"
+import Table, { GET_TABLE } from "./Table"
 
 const tableMock = {
   request: {
