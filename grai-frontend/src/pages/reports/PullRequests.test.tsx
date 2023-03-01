@@ -19,9 +19,7 @@ test("click row", async () => {
   const user = userEvent.setup()
 
   const { container } = render(<PullRequests />, {
-    routes: [
-      "/undefined/undefined/reports//Hello World/Hello World/pulls/Hello World",
-    ],
+    routes: ["/undefined/undefined/reports//:owner/:repo/pulls/:reference"],
   })
 
   await waitFor(() => {

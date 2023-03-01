@@ -11,7 +11,7 @@ import {
   GetTablesAndEdgesTableLineageVariables,
 } from "./__generated__/GetTablesAndEdgesTableLineage"
 
-const GET_TABLES_AND_EDGES = gql`
+export const GET_TABLES_AND_EDGES = gql`
   query GetTablesAndEdgesTableLineage(
     $organisationName: String!
     $workspaceName: String!

@@ -34,7 +34,7 @@ test("row click", async () => {
     path: "/:organisationName/:workspaceName/reports/:type/:owner/:repo",
     route: "/org/demo/reports/github/owner/repo",
     routes: [
-      "/:organisationName/:workspaceName/reports/:type/:owner/:repo/commits/Hello world",
+      "/:organisationName/:workspaceName/reports/:type/:owner/:repo/commits/:reference",
     ],
   })
 

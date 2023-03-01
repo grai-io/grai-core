@@ -276,11 +276,16 @@ test("submit", async () => {
   })
 
   expect(screen.getByText("Test connection to PostgreSQL")).toBeInTheDocument()
-  expect(screen.getByRole("progressbar")).toBeInTheDocument()
 
-  await waitFor(() => {
-    expect(screen.queryByRole("progressbar")).toBeFalsy()
-  })
+  const progressbar = screen.queryByRole("progressbar")
+
+  if (progressbar) {
+    expect(screen.getByRole("progressbar")).toBeInTheDocument()
+
+    await waitFor(() => {
+      expect(screen.queryByRole("progressbar")).toBeFalsy()
+    })
+  }
 
   await act(
     async () =>

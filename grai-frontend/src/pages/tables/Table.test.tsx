@@ -4,9 +4,63 @@ import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
 import profileMock from "testing/profileMock"
 import Table, { GET_TABLE } from "./Table"
+import { GET_TABLES_AND_EDGES } from "components/tables/TableLineage"
+
+const tableMock = {
+  request: {
+    query: GET_TABLE,
+    variables: {
+      organisationName: "",
+      workspaceName: "",
+      tableId: "",
+    },
+  },
+  result: {
+    data: {
+      workspace: {
+        id: "1",
+        table: {
+          id: "1",
+          namespace: "default",
+          name: "Table1",
+          display_name: "Table1",
+          is_active: true,
+          data_source: "test",
+          metadata: {},
+          columns: [
+            {
+              id: "1",
+              name: "Column1",
+              display_name: "Column1",
+              requirements_edges: [],
+              metadata: {},
+            },
+          ],
+          source_tables: [
+            {
+              id: "2",
+              name: "Table2",
+              display_name: "Table2",
+            },
+          ],
+          destination_tables: [
+            {
+              id: "3",
+              name: "Table3",
+              display_name: "Table3",
+            },
+          ],
+        },
+      },
+    },
+  },
+}
+
+const mocks = [profileMock, tableMock]
 
 test("renders", async () => {
   render(<Table />, {
+    mocks,
     withRouter: true,
   })
 
@@ -75,7 +129,31 @@ test("not found", async () => {
 test("lineage", async () => {
   const user = userEvent.setup()
 
+  const mocks = [
+    profileMock,
+    tableMock,
+    {
+      request: {
+        query: GET_TABLES_AND_EDGES,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+        },
+      },
+      result: {
+        data: {
+          workspace: {
+            id: "1",
+            tables: [],
+            other_edges: [],
+          },
+        },
+      },
+    },
+  ]
+
   render(<Table />, {
+    mocks,
     withRouter: true,
   })
 
@@ -92,6 +170,7 @@ test("expand all", async () => {
   const user = userEvent.setup()
 
   render(<Table />, {
+    mocks,
     withRouter: true,
   })
 
@@ -116,6 +195,7 @@ test("click row", async () => {
   const user = userEvent.setup()
 
   render(<Table />, {
+    mocks,
     withRouter: true,
   })
 
@@ -124,7 +204,7 @@ test("click row", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getAllByText("Hello World")).toBeTruthy()
+    expect(screen.getAllByText("Table1")).toBeTruthy()
   })
 
   await act(
@@ -148,6 +228,7 @@ test("search", async () => {
   const user = userEvent.setup()
 
   render(<Table />, {
+    mocks,
     withRouter: true,
   })
 
