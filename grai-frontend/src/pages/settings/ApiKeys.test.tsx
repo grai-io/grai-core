@@ -1,8 +1,8 @@
 import React from "react"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
-import ApiKeys, { GET_API_KEYS } from "./ApiKeys"
 import profileMock from "testing/profileMock"
+import ApiKeys, { GET_API_KEYS } from "./ApiKeys"
 
 test("renders", async () => {
   render(<ApiKeys />, {

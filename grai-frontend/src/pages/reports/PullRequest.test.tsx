@@ -7,8 +7,8 @@ import {
   spareTable,
 } from "helpers/testNodes"
 import { render, screen, waitFor } from "testing"
-import PullRequest, { GET_PULL_REQUEST } from "./PullRequest"
 import profileMock from "testing/profileMock"
+import PullRequest, { GET_PULL_REQUEST } from "./PullRequest"
 
 test("renders", async () => {
   render(<PullRequest />, {
