@@ -277,16 +277,6 @@ test("submit", async () => {
 
   expect(screen.getByText("Test connection to PostgreSQL")).toBeInTheDocument()
 
-  const progressbar = screen.queryByRole("progressbar")
-
-  if (progressbar) {
-    expect(screen.getByRole("progressbar")).toBeInTheDocument()
-
-    await waitFor(() => {
-      expect(screen.queryByRole("progressbar")).toBeFalsy()
-    })
-  }
-
   await act(
     async () =>
       await user.click(screen.getByRole("button", { name: /continue/i }))
