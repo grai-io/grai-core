@@ -2,8 +2,8 @@ import React from "react"
 import { GraphQLError } from "graphql"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
 import { render, screen, waitFor } from "testing"
-import Commit, { GET_COMMIT } from "./Commit"
 import profileMock from "testing/profileMock"
+import Commit, { GET_COMMIT } from "./Commit"
 
 test("renders", async () => {
   render(<Commit />, {

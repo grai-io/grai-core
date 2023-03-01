@@ -3,8 +3,8 @@ import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
 import { act, render, screen, waitFor } from "testing"
-import Graph, { GET_TABLES_AND_EDGES } from "./Graph"
 import profileMock from "testing/profileMock"
+import Graph, { GET_TABLES_AND_EDGES } from "./Graph"
 
 const mocks = [
   profileMock,

@@ -1,8 +1,8 @@
 import React from "react"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
-import Memberships, { GET_MEMBERSHIPS } from "./Memberships"
 import profileMock from "testing/profileMock"
+import Memberships, { GET_MEMBERSHIPS } from "./Memberships"
 
 test("renders", async () => {
   render(<Memberships />, {

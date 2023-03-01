@@ -2,8 +2,8 @@ import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
-import Settings, { GET_WORKSPACE } from "./Settings"
 import profileMock from "testing/profileMock"
+import Settings, { GET_WORKSPACE } from "./Settings"
 
 test("renders", async () => {
   const user = userEvent.setup()

@@ -1,8 +1,8 @@
 import React from "react"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
-import Run, { GET_RUN } from "./Run"
 import profileMock from "testing/profileMock"
+import Run, { GET_RUN } from "./Run"
 
 test("renders", async () => {
   render(<Run />, {

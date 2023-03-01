@@ -31,9 +31,7 @@ test("no workspaces", async () => {
 
   render(<Workspaces />, { mocks, withRouter: true })
 
-  await waitFor(() =>
-    expect(screen.getByRole("progressbar")).toBeInTheDocument()
-  )
+  await screen.findByRole("progressbar")
   await waitFor(() => expect(screen.queryByRole("progressbar")).toBeFalsy())
 
   await waitFor(() =>

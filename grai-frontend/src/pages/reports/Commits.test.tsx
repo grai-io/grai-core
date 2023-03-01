@@ -3,8 +3,8 @@ import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
 import { act, render, screen, waitFor } from "testing"
-import Commits, { GET_COMMITS } from "./Commits"
 import profileMock from "testing/profileMock"
+import Commits, { GET_COMMITS } from "./Commits"
 
 test("renders", async () => {
   render(<Commits />, {

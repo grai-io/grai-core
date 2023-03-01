@@ -2,9 +2,9 @@ import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
+import profileMock from "testing/profileMock"
 import { UPDATE_WORKSPACE } from "components/settings/workspace/WorkspaceForm"
 import WorkspaceSettings, { GET_WORKSPACE } from "./WorkspaceSettings"
-import profileMock from "testing/profileMock"
 
 test("renders", async () => {
   render(<WorkspaceSettings />, {

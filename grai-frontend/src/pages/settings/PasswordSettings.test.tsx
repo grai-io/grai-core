@@ -2,8 +2,8 @@ import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
-import PasswordSettings, { UPDATE_PASSWORD } from "./PasswordSettings"
 import profileMock from "testing/profileMock"
+import PasswordSettings, { UPDATE_PASSWORD } from "./PasswordSettings"
 
 test("renders", async () => {
   render(<PasswordSettings />, {

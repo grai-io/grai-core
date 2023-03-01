@@ -1,8 +1,8 @@
 import React from "react"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
-import ProfileSettings, { GET_PROFILE } from "./ProfileSettings"
 import profileMock from "testing/profileMock"
+import ProfileSettings, { GET_PROFILE } from "./ProfileSettings"
 
 test("renders", async () => {
   render(<ProfileSettings />, {

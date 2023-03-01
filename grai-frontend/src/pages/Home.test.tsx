@@ -1,9 +1,9 @@
 import React from "react"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
+import profileMock from "testing/profileMock"
 import Home, { GET_WORKSPACE } from "./Home"
 import Workspaces, { GET_WORKSPACES } from "./workspaces/Workspaces"
-import profileMock from "testing/profileMock"
 
 test("renders", async () => {
   render(<Home />, {
