@@ -288,6 +288,9 @@ async def test_run_connection(test_context):
         mutation RunConnection($connectionId: ID!) {
             runConnection(connectionId: $connectionId) {
                 id
+                connection {
+                    id
+                }
             }
         }
     """
@@ -301,7 +304,7 @@ async def test_run_connection(test_context):
     )
 
     assert result.errors is None
-    assert result.data["runConnection"] == {
+    assert result.data["runConnection"]["connection"] == {
         "id": str(connection.id),
     }
 
@@ -344,6 +347,9 @@ async def test_run_connection_postgres(test_context):
         mutation RunConnection($connectionId: ID!) {
             runConnection(connectionId: $connectionId) {
                 id
+                connection {
+                    id
+                }
             }
         }
     """
@@ -357,6 +363,6 @@ async def test_run_connection_postgres(test_context):
     )
 
     assert result.errors is None
-    assert result.data["runConnection"] == {
+    assert result.data["runConnection"]["connection"] == {
         "id": str(connection.id),
     }
