@@ -1,7 +1,6 @@
 import React from "react"
 import { GraphQLError } from "graphql"
 import { render, waitFor, screen, act } from "testing"
-import ConnectorSelect, { GET_CONNECTORS } from "./ConnectorSelect"
 import SetSchedule, { UPDATE_CONNECTION } from "./SetSchedule"
 import userEvent from "@testing-library/user-event"
 
