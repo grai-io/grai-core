@@ -1,7 +1,7 @@
 import React from "react"
+import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
 import ValidationRun, { GET_RUN } from "./ValidationRun"
-import { GraphQLError } from "graphql"
 
 const opts = {
   activeStep: 0,

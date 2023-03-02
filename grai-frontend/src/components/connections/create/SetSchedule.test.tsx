@@ -1,8 +1,8 @@
 import React from "react"
+import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { render, waitFor, screen, act } from "testing"
 import SetSchedule, { UPDATE_CONNECTION } from "./SetSchedule"
-import userEvent from "@testing-library/user-event"
 
 const opts = {
   activeStep: 0,
