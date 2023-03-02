@@ -57,6 +57,36 @@ test("submit", async () => {
   )
 })
 
+test("submit update", async () => {
+  const user = userEvent.setup()
+
+  render(
+    <SetupConnection
+      workspaceId="1"
+      opts={opts}
+      connector={{ id: "1", name: "Test Connector", metadata: null }}
+      connection={{
+        id: "1",
+        namespace: "default",
+        name: "connection 1",
+        metadata: {},
+        secrets: {},
+      }}
+      setConnection={() => {}}
+    />,
+    {
+      withRouter: true,
+    }
+  )
+
+  expect(screen.getByText("Connect to Test Connector")).toBeInTheDocument()
+
+  await act(
+    async () =>
+      await user.click(screen.getByRole("button", { name: /continue/i }))
+  )
+})
+
 test("renders file", async () => {
   render(
     <SetupConnection
