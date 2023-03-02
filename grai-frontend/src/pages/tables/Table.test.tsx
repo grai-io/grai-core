@@ -6,7 +6,7 @@ import profileMock from "testing/profileMock"
 import { GET_TABLES_AND_EDGES } from "components/tables/TableLineage"
 import Table, { GET_TABLE } from "./Table"
 
-const tableMock = {
+export const tableMock = {
   request: {
     query: GET_TABLE,
     variables: {
@@ -132,6 +132,7 @@ test("lineage", async () => {
   const mocks = [
     profileMock,
     tableMock,
+    tableMock,
     {
       request: {
         query: GET_TABLES_AND_EDGES,
@@ -144,7 +145,25 @@ test("lineage", async () => {
         data: {
           workspace: {
             id: "1",
-            tables: [],
+            tables: [
+              {
+                id: "2",
+                namespace: "default",
+                name: "Table2",
+                display_name: "Table2",
+                data_source: "test",
+                metadata: {},
+                columns: [],
+                source_tables: [
+                  {
+                    id: "1",
+                    name: "Table1",
+                    display_name: "Table1",
+                  },
+                ],
+                destination_tables: [],
+              },
+            ],
             other_edges: [],
           },
         },
@@ -164,6 +183,10 @@ test("lineage", async () => {
   await act(
     async () => await user.click(screen.getByRole("tab", { name: /Lineage/i }))
   )
+
+  await waitFor(() => {
+    expect(screen.getByTestId("table-lineage")).toBeInTheDocument()
+  })
 })
 
 test("expand all", async () => {
