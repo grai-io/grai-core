@@ -6,7 +6,7 @@ from decouple import config
 from django.core.files.uploadedfile import UploadedFile
 
 from connections.models import Connection, Connector, Run, RunFile
-from connections.tasks import run_connection_schedule, process_run
+from connections.tasks import process_run, run_connection_schedule
 from installations.models import Branch, Commit, PullRequest, Repository
 from installations.tests.test_github import mocked_requests_post
 from lineage.models import Node
