@@ -277,8 +277,12 @@ test("submit", async () => {
 
   expect(screen.getByText("Test connection to PostgreSQL")).toBeInTheDocument()
 
-  // eslint-disable-next-line testing-library/no-wait-for-empty-callback
-  await waitFor(() => {})
+  const progressbar = screen.queryByRole("progressbar")
+
+  if (progressbar) {
+    // eslint-disable-next-line jest/no-conditional-expect
+    await waitFor(() => expect(screen.queryByRole("progressbar")).toBeFalsy())
+  }
 
   await act(
     async () =>
