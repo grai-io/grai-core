@@ -3,10 +3,10 @@ import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
 import profileMock from "testing/profileMock"
+import { tableMock } from "pages/tables/Table.test"
 import TableLineage, {
   GET_TABLES_AND_EDGES,
 } from "components/tables/TableLineage"
-import { tableMock } from "pages/tables/Table.test"
 
 const table = {
   id: "1",
