@@ -1,6 +1,6 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { render, screen } from "testing"
+import { act, render, screen } from "testing"
 import SearchControl from "./SearchControl"
 
 test("renders", async () => {
@@ -23,7 +23,9 @@ test("change", async () => {
 
   expect(value).toEqual(null)
 
-  await user.type(screen.getByRole("textbox"), "SearchString")
+  await act(
+    async () => await user.type(screen.getByRole("textbox"), "SearchString")
+  )
 
   expect(value).toEqual("g")
 })
@@ -40,7 +42,7 @@ test("clear", async () => {
 
   expect(screen.getByTestId("CloseIcon")).toBeInTheDocument()
 
-  await user.click(screen.getByTestId("CloseIcon"))
+  await act(async () => await user.click(screen.getByTestId("CloseIcon")))
 
   expect(value).toEqual(null)
 })

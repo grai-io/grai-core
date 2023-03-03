@@ -1,6 +1,6 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { render, screen, waitFor } from "testing"
+import { act, render, screen, waitFor } from "testing"
 import ConnectionsMetadata from "./ConnectionsMetadata"
 
 const defaultProps = {
@@ -47,9 +47,12 @@ test("normal field", async () => {
     expect(screen.getAllByText("Field 1")).toBeTruthy()
   })
 
-  await user.type(
-    screen.getByRole("textbox", { name: /Field 1/i }),
-    "field value"
+  await act(
+    async () =>
+      await user.type(
+        screen.getByRole("textbox", { name: /Field 1/i }),
+        "field value"
+      )
   )
 })
 
@@ -78,7 +81,9 @@ test("secret field", async () => {
     expect(screen.getAllByText("Field 1")).toBeTruthy()
   })
 
-  await user.type(screen.getByLabelText("Field 1"), "field value")
+  await act(
+    async () => await user.type(screen.getByLabelText("Field 1"), "field value")
+  )
 })
 
 test("no label", async () => {

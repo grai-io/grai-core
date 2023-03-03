@@ -6,7 +6,7 @@ from decouple import config
 from django.core.files.uploadedfile import UploadedFile
 
 from connections.models import Connection, Connector, Run, RunFile
-from connections.tasks import run_connection_schedule, run_update_server
+from connections.tasks import process_run, run_connection_schedule
 from installations.models import Branch, Commit, PullRequest, Repository
 from installations.tests.test_github import mocked_requests_post
 from lineage.models import Node
@@ -137,7 +137,7 @@ class TestUpdateServer:
         )
         run = Run.objects.create(connection=connection, workspace=test_workspace)
 
-        run_update_server(str(run.id))
+        process_run(str(run.id))
 
     def test_run_update_server_postgres_no_host(self, test_workspace, test_postgres_connector):
         connection = Connection.objects.create(
@@ -150,7 +150,7 @@ class TestUpdateServer:
         run = Run.objects.create(connection=connection, workspace=test_workspace)
 
         with pytest.raises(Exception) as e_info:
-            run_update_server(str(run.id))
+            process_run(str(run.id))
 
         assert (
             str(e_info.value)
@@ -164,7 +164,7 @@ class TestUpdateServer:
         run = Run.objects.create(connection=connection, workspace=test_workspace)
 
         with pytest.raises(Exception) as e_info:
-            run_update_server(str(run.id))
+            process_run(str(run.id))
 
         assert str(e_info.value) == "No connector found for: Connector"
 
@@ -177,7 +177,7 @@ class TestUpdateServer:
             run = Run.objects.create(connection=connection, workspace=test_workspace)
             RunFile.objects.create(run=run, file=file)
 
-            run_update_server(str(run.id))
+            process_run(str(run.id))
 
     def test_run_update_server_fivetran(self, test_workspace, test_fivetran_connector, mocker):
         mocker.patch("grai_source_fivetran.loader.FivetranConnector")
@@ -194,7 +194,7 @@ class TestUpdateServer:
 
         run = Run.objects.create(connection=connection, workspace=test_workspace)
 
-        run_update_server(str(run.id))
+        process_run(str(run.id))
 
     def test_run_update_server_fivetran_extras(self, test_workspace, test_fivetran_connector, mocker):
         mocker.patch("grai_source_fivetran.loader.FivetranConnector")
@@ -215,7 +215,7 @@ class TestUpdateServer:
 
         run = Run.objects.create(connection=connection, workspace=test_workspace)
 
-        run_update_server(str(run.id))
+        process_run(str(run.id))
 
     def test_run_update_server_mysql(self, test_workspace, test_mysql_connector, mocker):
         mocker.patch("grai_source_mysql.loader.MySQLConnector")
@@ -237,7 +237,7 @@ class TestUpdateServer:
 
         run = Run.objects.create(connection=connection, workspace=test_workspace)
 
-        run_update_server(str(run.id))
+        process_run(str(run.id))
 
     def test_run_update_server_yaml_file(self, test_workspace, test_yaml_file_connector):
         Node.objects.create(workspace=test_workspace, namespace="default", name="table1")
@@ -250,7 +250,7 @@ class TestUpdateServer:
             run = Run.objects.create(connection=connection, workspace=test_workspace)
             RunFile.objects.create(run=run, file=file)
 
-            run_update_server(str(run.id))
+            process_run(str(run.id))
 
     def test_snowflake_no_account(self, test_workspace, test_snowflake_connector, mocker):
         mock = mocker.patch("grai_source_snowflake.base.get_nodes_and_edges")
@@ -272,7 +272,7 @@ class TestUpdateServer:
         )
         run = Run.objects.create(connection=connection, workspace=test_workspace)
 
-        run_update_server(str(run.id))
+        process_run(str(run.id))
 
     def test_mssql_no_account(self, test_workspace, test_mssql_connector, mocker):
         mock = mocker.patch("grai_source_mssql.base.get_nodes_and_edges")
@@ -292,7 +292,7 @@ class TestUpdateServer:
         )
         run = Run.objects.create(connection=connection, workspace=test_workspace)
 
-        run_update_server(str(run.id))
+        process_run(str(run.id))
 
     def test_bigquery_no_project(self, test_workspace, test_bigquery_connector, mocker):
         mock = mocker.patch("grai_source_bigquery.base.get_nodes_and_edges")
@@ -307,12 +307,12 @@ class TestUpdateServer:
         )
         run = Run.objects.create(connection=connection, workspace=test_workspace)
 
-        run_update_server(str(run.id))
+        process_run(str(run.id))
 
 
 @pytest.mark.django_db
-class TestUpdateServerTests:
-    def test_run_update_server_dbt(self, test_workspace, test_dbt_connector):
+class TestTests:
+    def test_dbt(self, test_workspace, test_dbt_connector):
         with open(os.path.join(__location__, "manifest.json")) as reader:
             file = UploadedFile(reader, name="manifest.json")
             connection = Connection.objects.create(
@@ -321,9 +321,9 @@ class TestUpdateServerTests:
             run = Run.objects.create(connection=connection, workspace=test_workspace, action=Run.TESTS)
             RunFile.objects.create(run=run, file=file)
 
-        run_update_server(str(run.id))
+        process_run(str(run.id))
 
-    def test_run_update_server_dbt_github(self, test_workspace, test_dbt_connector, test_commit_with_pr, mocker):
+    def test_dbt_github(self, test_workspace, test_dbt_connector, test_commit_with_pr, mocker):
         mocker.patch("installations.github.requests.post", side_effect=mocked_requests_post)
         mocker.patch("installations.github.GhApi")
 
@@ -341,9 +341,9 @@ class TestUpdateServerTests:
             )
             RunFile.objects.create(run=run, file=file)
 
-        run_update_server(str(run.id))
+        process_run(str(run.id))
 
-    def test_run_update_server_no_connector_github(self, test_workspace, test_connector, test_commit, mocker):
+    def test_no_connector_github(self, test_workspace, test_connector, test_commit, mocker):
         mocker.patch("installations.github.requests.post", side_effect=mocked_requests_post)
         mocker.patch("installations.github.GhApi")
 
@@ -357,13 +357,27 @@ class TestUpdateServerTests:
         )
 
         with pytest.raises(Exception) as e_info:
-            run_update_server(str(run.id))
+            process_run(str(run.id))
 
         assert str(e_info.value) == "No connector found for: Connector"
 
 
 @pytest.mark.django_db
-def test_run_update_server_incorrect_action(test_workspace, test_yaml_file_connector):
+class TestValidateTests:
+    def test_validate_dbt(self, test_workspace, test_dbt_connector):
+        with open(os.path.join(__location__, "manifest.json")) as reader:
+            file = UploadedFile(reader, name="manifest.json")
+            connection = Connection.objects.create(
+                name=str(uuid.uuid4()), connector=test_dbt_connector, workspace=test_workspace
+            )
+            run = Run.objects.create(connection=connection, workspace=test_workspace, action=Run.VALIDATE)
+            RunFile.objects.create(run=run, file=file)
+
+        process_run(str(run.id))
+
+
+@pytest.mark.django_db
+def test_process_run_incorrect_action(test_workspace, test_yaml_file_connector):
     Node.objects.create(workspace=test_workspace, namespace="default", name="table1")
 
     with open(os.path.join(__location__, "test.yaml")) as reader:
@@ -375,7 +389,7 @@ def test_run_update_server_incorrect_action(test_workspace, test_yaml_file_conne
         RunFile.objects.create(run=run, file=file)
 
         with pytest.raises(Exception) as e_info:
-            run_update_server(str(run.id))
+            process_run(str(run.id))
 
         assert str(e_info.value) == "Incorrect run action Incorrect found, accepted values: tests, update"
 

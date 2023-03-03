@@ -2,10 +2,12 @@ import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
-import { render, screen, waitFor } from "testing"
+import { act, render, screen, waitFor } from "testing"
+import profileMock from "testing/profileMock"
 import Graph, { GET_TABLES_AND_EDGES } from "./Graph"
 
 const mocks = [
+  profileMock,
   {
     request: {
       query: GET_TABLES_AND_EDGES,
@@ -146,6 +148,7 @@ test("renders with limitGraph", async () => {
 
 test("error", async () => {
   const mocks = [
+    profileMock,
     {
       request: {
         query: GET_TABLES_AND_EDGES,
@@ -169,6 +172,7 @@ test("error", async () => {
 
 test("no nodes", async () => {
   const mocks = [
+    profileMock,
     {
       request: {
         query: GET_TABLES_AND_EDGES,
@@ -227,5 +231,7 @@ test("search", async () => {
     expect(screen.getByText("N2 Node")).toBeInTheDocument()
   })
 
-  await user.type(screen.getByTestId("search-input"), "search")
+  await act(
+    async () => await user.type(screen.getByTestId("search-input"), "search")
+  )
 })

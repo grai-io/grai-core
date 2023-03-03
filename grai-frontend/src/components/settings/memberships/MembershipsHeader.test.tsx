@@ -1,6 +1,6 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { render, screen, waitFor } from "testing"
+import { act, render, screen, waitFor } from "testing"
 import MembershipsHeader from "./MembershipsHeader"
 
 test("renders", async () => {
@@ -24,7 +24,10 @@ test("open", async () => {
     expect(screen.getByText("Memberships")).toBeInTheDocument()
   })
 
-  await user.click(screen.getByRole("button", { name: /Invite user/i }))
+  await act(
+    async () =>
+      await user.click(screen.getByRole("button", { name: /Invite user/i }))
+  )
 
-  await user.click(screen.getByTestId("CloseIcon"))
+  await act(async () => await user.click(screen.getByTestId("CloseIcon")))
 })

@@ -1,6 +1,7 @@
 import React from "react"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
+import profileMock from "testing/profileMock"
 import Reports, { GET_REPORTS } from "./Reports"
 
 test("renders", async () => {
@@ -11,10 +12,13 @@ test("renders", async () => {
   await waitFor(() => {
     expect(screen.getByRole("heading", { name: /Reports/i })).toBeTruthy()
   })
+
+  await screen.findAllByText("Hello World")
 })
 
 test("error", async () => {
   const mocks = [
+    profileMock,
     {
       request: {
         query: GET_REPORTS,

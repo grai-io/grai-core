@@ -11,7 +11,7 @@ import {
   GetTablesAndEdgesTableLineageVariables,
 } from "./__generated__/GetTablesAndEdgesTableLineage"
 
-const GET_TABLES_AND_EDGES = gql`
+export const GET_TABLES_AND_EDGES = gql`
   query GetTablesAndEdgesTableLineage(
     $organisationName: String!
     $workspaceName: String!
@@ -81,25 +81,28 @@ const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
   if (loading) return <Loading />
 
   const tables = data?.workspace.tables
-  const edges = data?.workspace.other_edges ?? []
 
-  if (!tables) return <Alert>No tables found</Alert>
+  if (!tables || tables.length === 0) return <Alert>No tables found</Alert>
 
-  const visibleTables: string[] = [table.id]
+  const edges = data.workspace.other_edges
 
-  for (var i = 0; i < value; i++) {
-    const tablesToAdd = tables.filter(
-      t =>
-        t.source_tables.some(sourceTable =>
-          visibleTables.includes(sourceTable.id)
-        ) ||
-        t.destination_tables.some(destinationTable =>
-          visibleTables.includes(destinationTable.id)
-        )
-    )
-
-    visibleTables.push(...tablesToAdd.map(t => t.id))
-  }
+  const visibleTables: string[] = [...Array(value).keys()].reduce(
+    (res, value) =>
+      res.concat(
+        tables
+          .filter(
+            t =>
+              t.source_tables.some(sourceTable =>
+                res.includes(sourceTable.id)
+              ) ||
+              t.destination_tables.some(destinationTable =>
+                res.includes(destinationTable.id)
+              )
+          )
+          .map(t => t.id)
+      ),
+    [table.id]
+  )
 
   const hiddenTables = tables.filter(t => !visibleTables.includes(t.id))
 
@@ -111,6 +114,7 @@ const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
         backgroundColor: theme.palette.grey[100],
         mt: 2,
       }}
+      data-testid="table-lineage"
     >
       <Graph
         tables={tables}

@@ -1,6 +1,6 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { render, screen, waitFor } from "testing"
+import { act, render, screen, waitFor } from "testing"
 import ConnectionsMenu from "./ConnectionsMenu"
 
 const connection = {
@@ -23,9 +23,9 @@ test("edit", async () => {
     routes: ["/:organisationName/:workspaceName/connections/:connectionId"],
   })
 
-  await user.click(screen.getByTestId("MoreHorizIcon"))
+  await act(async () => await user.click(screen.getByTestId("MoreHorizIcon")))
 
-  await user.click(screen.getByTestId("EditIcon"))
+  await act(async () => await user.click(screen.getByTestId("EditIcon")))
 
   await waitFor(() => {
     expect(screen.getByText("New Page")).toBeInTheDocument()

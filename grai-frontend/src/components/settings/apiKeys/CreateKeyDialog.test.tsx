@@ -1,7 +1,7 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { act, render, screen, waitFor } from "testing"
 import CreateKeyDialog, { CREATE_API_KEY } from "./CreateKeyDialog"
 
 test("renders", async () => {
@@ -17,15 +17,20 @@ test("submit", async () => {
 
   render(<CreateKeyDialog workspaceId="1" open={true} onClose={() => {}} />)
 
-  await user.type(screen.getByRole("textbox", { name: /name/i }), "key 3")
+  await act(
+    async () =>
+      await user.type(screen.getByRole("textbox", { name: /name/i }), "key 3")
+  )
 
-  await user.click(screen.getByRole("button", { name: /save/i }))
+  await act(
+    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+  )
 
   await waitFor(() => {
     expect(screen.getByText("API key created")).toBeInTheDocument()
   })
 
-  await user.click(screen.getByTestId("CloseIcon"))
+  await act(async () => await user.click(screen.getByTestId("CloseIcon")))
 
   expect(screen.queryByText("API key created")).toBeFalsy()
 })
@@ -52,9 +57,14 @@ test("submit error", async () => {
     mocks,
   })
 
-  await user.type(screen.getByRole("textbox", { name: /name/i }), "key 4")
+  await act(
+    async () =>
+      await user.type(screen.getByRole("textbox", { name: /name/i }), "key 4")
+  )
 
-  await user.click(screen.getByRole("button", { name: /save/i }))
+  await act(
+    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+  )
 
   await waitFor(() => {
     expect(screen.getByText("Error!")).toBeInTheDocument()

@@ -1,7 +1,8 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { act, render, screen, waitFor } from "testing"
+import profileMock from "testing/profileMock"
 import { RUN_CONNECTION } from "components/connections/ConnectionRun"
 import Connection, { GET_CONNECTION } from "./Connection"
 
@@ -19,6 +20,7 @@ test("refresh", async () => {
   const user = userEvent.setup()
 
   const mocks = [
+    profileMock,
     {
       request: {
         query: GET_CONNECTION,
@@ -112,32 +114,35 @@ test("refresh", async () => {
         data: {
           runConnection: {
             id: "1",
-            last_run: {
+            connection: {
               id: "1",
-              status: "success",
-              created_at: "12243",
-              started_at: null,
-              finished_at: null,
-              metadata: {},
-              user: {
+              last_run: {
                 id: "1",
-                first_name: null,
-                last_name: null,
+                status: "success",
+                created_at: "12243",
+                started_at: null,
+                finished_at: null,
+                metadata: {},
+                user: {
+                  id: "1",
+                  first_name: null,
+                  last_name: null,
+                },
               },
-            },
-            last_successful_run: {
-              id: "1",
-              status: "success",
-              started_at: null,
-              finished_at: null,
-              metadata: {},
-              user: {
+              last_successful_run: {
                 id: "1",
-                first_name: null,
-                last_name: null,
+                status: "success",
+                started_at: null,
+                finished_at: null,
+                metadata: {},
+                user: {
+                  id: "1",
+                  first_name: null,
+                  last_name: null,
+                },
               },
+              runs: [],
             },
-            runs: [],
           },
         },
       },
@@ -150,7 +155,7 @@ test("refresh", async () => {
     expect(screen.getAllByText("Connection 1")).toBeTruthy()
   })
 
-  await user.click(screen.getByTestId("PlayArrowIcon"))
+  await act(async () => await user.click(screen.getByTestId("PlayArrowIcon")))
 
   await waitFor(() => {
     expect(screen.getAllByText("Success")).toBeTruthy()
@@ -161,6 +166,7 @@ test("refresh no last_sucessful_run", async () => {
   const user = userEvent.setup()
 
   const mocks = [
+    profileMock,
     {
       request: {
         query: GET_CONNECTION,
@@ -242,32 +248,35 @@ test("refresh no last_sucessful_run", async () => {
         data: {
           runConnection: {
             id: "1",
-            last_run: {
+            connection: {
               id: "1",
-              status: "success",
-              created_at: "12243",
-              started_at: null,
-              finished_at: null,
-              metadata: {},
-              user: {
+              last_run: {
                 id: "1",
-                first_name: null,
-                last_name: null,
+                status: "success",
+                created_at: "12243",
+                started_at: null,
+                finished_at: null,
+                metadata: {},
+                user: {
+                  id: "1",
+                  first_name: null,
+                  last_name: null,
+                },
               },
-            },
-            last_successful_run: {
-              id: "1",
-              status: "success",
-              started_at: null,
-              finished_at: null,
-              metadata: {},
-              user: {
+              last_successful_run: {
                 id: "1",
-                first_name: null,
-                last_name: null,
+                status: "success",
+                started_at: null,
+                finished_at: null,
+                metadata: {},
+                user: {
+                  id: "1",
+                  first_name: null,
+                  last_name: null,
+                },
               },
+              runs: [],
             },
-            runs: [],
           },
         },
       },
@@ -280,7 +289,7 @@ test("refresh no last_sucessful_run", async () => {
     expect(screen.getAllByText("Connection 1")).toBeTruthy()
   })
 
-  await user.click(screen.getByTestId("PlayArrowIcon"))
+  await act(async () => await user.click(screen.getByTestId("PlayArrowIcon")))
 
   await waitFor(() => {
     expect(screen.getAllByText("Success")).toBeTruthy()
@@ -289,6 +298,7 @@ test("refresh no last_sucessful_run", async () => {
 
 test("error", async () => {
   const mocks = [
+    profileMock,
     {
       request: {
         query: GET_CONNECTION,
@@ -313,6 +323,7 @@ test("error", async () => {
 
 test("not found", async () => {
   const mocks = [
+    profileMock,
     {
       request: {
         query: GET_CONNECTION,

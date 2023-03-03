@@ -889,6 +889,16 @@
                   "ofType": null
                 },
                 "defaultValue": "null"
+              },
+              {
+                "name": "action",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": "null"
               }
             ],
             "type": {
@@ -5678,7 +5688,7 @@
                   "name": "JSON",
                   "ofType": null
                 },
-                "defaultValue": null
+                "defaultValue": "null"
               },
               {
                 "name": "schedules",
@@ -5688,17 +5698,35 @@
                   "name": "JSON",
                   "ofType": null
                 },
-                "defaultValue": null
+                "defaultValue": "null"
               },
               {
                 "name": "is_active",
                 "description": null,
                 "type": {
-                  "kind": "SCALAR",
-                  "name": "Boolean",
-                  "ofType": null
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  }
                 },
-                "defaultValue": null
+                "defaultValue": "true"
+              },
+              {
+                "name": "temp",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": "false"
               }
             ],
             "type": {
@@ -5735,43 +5763,31 @@
                 "name": "namespace",
                 "description": null,
                 "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
                 },
-                "defaultValue": null
+                "defaultValue": "null"
               },
               {
                 "name": "name",
                 "description": null,
                 "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
                 },
-                "defaultValue": null
+                "defaultValue": "null"
               },
               {
                 "name": "metadata",
                 "description": null,
                 "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "JSON",
-                    "ofType": null
-                  }
+                  "kind": "SCALAR",
+                  "name": "JSON",
+                  "ofType": null
                 },
-                "defaultValue": null
+                "defaultValue": "null"
               },
               {
                 "name": "secrets",
@@ -5781,7 +5797,7 @@
                   "name": "JSON",
                   "ofType": null
                 },
-                "defaultValue": null
+                "defaultValue": "null"
               },
               {
                 "name": "schedules",
@@ -5791,7 +5807,7 @@
                   "name": "JSON",
                   "ofType": null
                 },
-                "defaultValue": null
+                "defaultValue": "null"
               },
               {
                 "name": "is_active",
@@ -5801,7 +5817,17 @@
                   "name": "Boolean",
                   "ofType": null
                 },
-                "defaultValue": null
+                "defaultValue": "null"
+              },
+              {
+                "name": "temp",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                },
+                "defaultValue": "null"
               }
             ],
             "type": {
@@ -5833,6 +5859,20 @@
                   }
                 },
                 "defaultValue": null
+              },
+              {
+                "name": "action",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": "\"update\""
               }
             ],
             "type": {
@@ -5840,7 +5880,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "Connection",
+                "name": "Run",
                 "ofType": null
               }
             },

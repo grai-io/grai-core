@@ -99,7 +99,7 @@ async def generate_connector():
     return await Connector.objects.acreate(name=generate_connector_name())
 
 
-async def generate_connection(workspace: Workspace, connector: Connector = None):
+async def generate_connection(workspace: Workspace, connector: Connector = None, temp: bool = False):
     connector = connector if connector else await generate_connector()
 
     return await Connection.objects.acreate(
@@ -109,4 +109,5 @@ async def generate_connection(workspace: Workspace, connector: Connector = None)
         name=generate_connection_name(),
         metadata={},
         secrets={},
+        temp=temp,
     )

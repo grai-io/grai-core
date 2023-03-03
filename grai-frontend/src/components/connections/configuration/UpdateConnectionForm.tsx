@@ -15,7 +15,7 @@ export const UPDATE_CONNECTION = gql`
     $metadata: JSON!
     $secrets: JSON
     $schedules: JSON
-    $is_active: Boolean
+    $is_active: Boolean!
   ) {
     updateConnection(
       id: $connectionId

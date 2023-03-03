@@ -418,7 +418,11 @@ class Workspace:
     # Runs
     @gql.django.field
     def runs(
-        self, owner: Optional[str] = None, repo: Optional[str] = None, branch: Optional[str] = None
+        self,
+        owner: Optional[str] = None,
+        repo: Optional[str] = None,
+        branch: Optional[str] = None,
+        action: Optional[str] = None,
     ) -> List["Run"]:
         q_filter = Q(workspace=self)
 
@@ -427,6 +431,9 @@ class Workspace:
 
         if branch:
             q_filter &= Q(commit__branch__reference=branch)
+
+        if action:
+            q_filter &= Q(action=action)
 
         return RunModel.objects.order_by("-created_at").filter(q_filter)
 

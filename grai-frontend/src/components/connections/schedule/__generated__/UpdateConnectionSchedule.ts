@@ -30,5 +30,5 @@ export interface UpdateConnectionScheduleVariables {
   metadata: any;
   secrets?: any | null;
   schedules?: any | null;
-  is_active?: boolean | null;
+  is_active: boolean;
 }

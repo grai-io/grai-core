@@ -19,43 +19,46 @@ export const RUN_CONNECTION = gql`
   mutation RunConnection($connectionId: ID!) {
     runConnection(connectionId: $connectionId) {
       id
-      last_run {
+      connection {
         id
-        status
-        created_at
-        started_at
-        finished_at
-        metadata
-        user {
+        last_run {
           id
-          first_name
-          last_name
+          status
+          created_at
+          started_at
+          finished_at
+          metadata
+          user {
+            id
+            first_name
+            last_name
+          }
         }
-      }
-      last_successful_run {
-        id
-        status
-        started_at
-        finished_at
-        metadata
-        user {
+        last_successful_run {
           id
-          first_name
-          last_name
+          status
+          started_at
+          finished_at
+          metadata
+          user {
+            id
+            first_name
+            last_name
+          }
         }
-      }
-      runs {
-        id
-        status
-        created_at
-        started_at
-        finished_at
-        user {
+        runs {
           id
-          first_name
-          last_name
+          status
+          created_at
+          started_at
+          finished_at
+          user {
+            id
+            first_name
+            last_name
+          }
+          metadata
         }
-        metadata
       }
     }
   }
@@ -136,20 +139,24 @@ const ConnectionRun: React.FC<ConnectionRunProps> = ({
     runConnection({
       optimisticResponse: {
         runConnection: {
-          id: connection.id,
-          __typename: "Connection",
-          runs: [tmpRun, ...connection.runs.map(runToTypedRun)],
-          last_successful_run: connection.last_successful_run
-            ? runToTypedRun(connection.last_successful_run)
-            : null,
-          last_run: tmpRun,
+          id: "temp",
+          connection: {
+            id: connection.id,
+            __typename: "Connection",
+            runs: [tmpRun, ...connection.runs.map(runToTypedRun)],
+            last_successful_run: connection.last_successful_run
+              ? runToTypedRun(connection.last_successful_run)
+              : null,
+            last_run: tmpRun,
+          },
+          __typename: "Run",
         },
       },
     }).then(
       data =>
         onRun &&
-        data.data?.runConnection.last_run &&
-        onRun(data.data.runConnection.last_run)
+        data.data?.runConnection.connection.last_run &&
+        onRun(data.data.runConnection.connection.last_run)
     )
 
   const loading2 =

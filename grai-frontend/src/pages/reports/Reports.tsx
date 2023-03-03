@@ -41,7 +41,7 @@ export const GET_REPORTS = gql`
         id
         name
       }
-      runs(owner: $owner, repo: $repo, branch: $branch) {
+      runs(owner: $owner, repo: $repo, branch: $branch, action: "tests") {
         id
         status
         connection {

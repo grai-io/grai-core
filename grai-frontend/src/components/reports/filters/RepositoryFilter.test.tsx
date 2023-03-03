@@ -1,6 +1,6 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { fireEvent, render, screen, waitFor, within } from "testing"
+import { act, fireEvent, render, screen, waitFor, within } from "testing"
 import RepositoryFilter from "./RepositoryFilter"
 
 const repositories = [
@@ -75,5 +75,5 @@ test("clear", async () => {
 
   const autocomplete = screen.getByTestId("autocomplete")
   autocomplete.focus()
-  await user.click(screen.getByTitle("Clear"))
+  await act(async () => await user.click(screen.getByTitle("Clear")))
 })

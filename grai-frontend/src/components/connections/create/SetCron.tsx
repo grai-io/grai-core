@@ -1,18 +1,17 @@
 import React, { ChangeEvent } from "react"
 import { Divider, FormLabel, TextField } from "@mui/material"
-import { CronValue, SchedulesValues, Values } from "./CreateConnectionWizard"
+import { CronValue, Values } from "./SetSchedule"
 
 type SetCronProps = {
-  schedules: SchedulesValues
   values: Values
   setValues: (values: Values) => void
 }
 
-const SetCron: React.FC<SetCronProps> = ({ schedules, values, setValues }) => {
+const SetCron: React.FC<SetCronProps> = ({ values, setValues }) => {
   const setCron =
     (field: keyof CronValue) => (event: ChangeEvent<HTMLInputElement>) => {
-      let cron: CronValue = values?.schedules?.cron
-        ? { ...values.schedules.cron }
+      let cron: CronValue = values?.cron
+        ? { ...values.cron }
         : {
             minutes: "*",
             hours: "*",
@@ -23,10 +22,7 @@ const SetCron: React.FC<SetCronProps> = ({ schedules, values, setValues }) => {
 
       cron[field] = event.target.value
 
-      setValues({
-        ...values,
-        schedules: { ...schedules, cron },
-      })
+      values && setValues({ ...values, cron })
     }
 
   return (
@@ -37,7 +33,7 @@ const SetCron: React.FC<SetCronProps> = ({ schedules, values, setValues }) => {
         label="Minutes"
         helperText='Cron minutes to run. Use "*" for all. (Example: "0,30")'
         margin="normal"
-        value={values.schedules?.cron?.minutes ?? ""}
+        value={values?.cron?.minutes ?? ""}
         onChange={setCron("minutes")}
         fullWidth
       />
@@ -45,7 +41,7 @@ const SetCron: React.FC<SetCronProps> = ({ schedules, values, setValues }) => {
         label="Hours"
         helperText='Cron hours to run. Use "*" for all. (Example: "8,20")'
         margin="normal"
-        value={values.schedules?.cron?.hours ?? ""}
+        value={values?.cron?.hours ?? ""}
         onChange={setCron("hours")}
         fullWidth
       />
@@ -53,7 +49,7 @@ const SetCron: React.FC<SetCronProps> = ({ schedules, values, setValues }) => {
         label="Days of the week"
         helperText='Cron days of the week to run. Use "*" for all. (Example: "0,5")'
         margin="normal"
-        value={values.schedules?.cron?.day_of_week ?? ""}
+        value={values?.cron?.day_of_week ?? ""}
         onChange={setCron("day_of_week")}
         fullWidth
       />
@@ -61,7 +57,7 @@ const SetCron: React.FC<SetCronProps> = ({ schedules, values, setValues }) => {
         label="Days of the month"
         helperText='Cron days of the month to run. Use "*" for all. (Example: "1,15")'
         margin="normal"
-        value={values.schedules?.cron?.day_of_month ?? ""}
+        value={values?.cron?.day_of_month ?? ""}
         onChange={setCron("day_of_month")}
         fullWidth
       />
@@ -69,7 +65,7 @@ const SetCron: React.FC<SetCronProps> = ({ schedules, values, setValues }) => {
         label="Months of the year"
         helperText='Cron months of the year to run. Use "*" for all. (Example: "0,6")'
         margin="normal"
-        value={values.schedules?.cron?.month_of_year ?? ""}
+        value={values?.cron?.month_of_year ?? ""}
         onChange={setCron("month_of_year")}
         fullWidth
       />

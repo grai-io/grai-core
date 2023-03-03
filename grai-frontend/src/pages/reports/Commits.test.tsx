@@ -2,7 +2,8 @@ import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
-import { render, screen, waitFor } from "testing"
+import { act, render, screen, waitFor } from "testing"
+import profileMock from "testing/profileMock"
 import Commits, { GET_COMMITS } from "./Commits"
 
 test("renders", async () => {
@@ -33,7 +34,7 @@ test("row click", async () => {
     path: "/:organisationName/:workspaceName/reports/:type/:owner/:repo",
     route: "/org/demo/reports/github/owner/repo",
     routes: [
-      "/:organisationName/:workspaceName/reports/:type/:owner/:repo/commits/Hello world",
+      "/:organisationName/:workspaceName/reports/:type/:owner/:repo/commits/:reference",
     ],
   })
 
@@ -41,14 +42,17 @@ test("row click", async () => {
     expect(screen.getAllByText(/Hello world/i)).toBeTruthy()
   })
 
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-  await user.click(container.querySelectorAll("tbody > tr")[0])
+  await act(
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+    async () => await user.click(container.querySelectorAll("tbody > tr")[0])
+  )
 
   expect(screen.getByText("New Page")).toBeInTheDocument()
 })
 
 test("not found", async () => {
   const mocks = [
+    profileMock,
     {
       request: {
         query: GET_COMMITS,
@@ -95,6 +99,7 @@ test("not found", async () => {
 
 test("error", async () => {
   const mocks = [
+    profileMock,
     {
       request: {
         query: GET_COMMITS,

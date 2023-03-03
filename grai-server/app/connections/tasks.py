@@ -16,7 +16,7 @@ from .models import Connection, Connector, Run
 
 
 @shared_task
-def run_update_server(runId):
+def process_run(runId):
     print(f"Task starting {runId}")
     run = Run.objects.get(pk=runId)
     execute_run(run)
@@ -77,6 +77,8 @@ def execute_run(run: Run):
         elif run.action == Run.TESTS:
             results, message = adapter.run_tests(run)
             run.metadata = {"results": results}
+        elif run.action == Run.VALIDATE:
+            adapter.run_validate(run)
         else:
             raise NoActionError(f"Incorrect run action {run.action} found, accepted values: tests, update")
 

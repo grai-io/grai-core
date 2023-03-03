@@ -2,11 +2,13 @@ import React from "react"
 import userEvent from "@testing-library/user-event"
 import { UserEvent } from "@testing-library/user-event/dist/types/setup/setup"
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { act, render, screen, waitFor } from "testing"
 import { GET_CONNECTORS } from "./ConnectorSelect"
-import CreateConnectionWizard, {
-  CREATE_CONNECTION,
-} from "./CreateConnectionWizard"
+import CreateConnectionWizard from "./CreateConnectionWizard"
+import { UPDATE_CONNECTION } from "./SetSchedule"
+import { CREATE_CONNECTION } from "./SetupConnection"
+import { CREATE_RUN } from "./TestConnection"
+import { GET_RUN } from "./ValidationRun"
 
 jest.setTimeout(30000)
 
@@ -89,7 +91,10 @@ const submit = async (user: UserEvent, container: HTMLElement) => {
     expect(screen.getByRole("button", { name: /PostgreSQL/i })).toBeTruthy()
   })
 
-  await user.click(screen.getByRole("button", { name: /PostgreSQL/i }))
+  await act(
+    async () =>
+      await user.click(screen.getByRole("button", { name: /PostgreSQL/i }))
+  )
 
   await waitFor(() => {
     expect(screen.queryByText("Select a connector")).toBeFalsy()
@@ -97,49 +102,51 @@ const submit = async (user: UserEvent, container: HTMLElement) => {
 
   expect(screen.getByText("Connect to PostgreSQL")).toBeInTheDocument()
 
-  await user.type(screen.getByRole("textbox", { name: "Namespace" }), "default")
+  await act(
+    async () =>
+      await user.type(
+        screen.getByRole("textbox", { name: "Namespace" }),
+        "default"
+      )
+  )
 
-  await user.type(
-    screen.getByRole("textbox", { name: "Name" }),
-    "test connection"
+  await act(
+    async () =>
+      await user.type(
+        screen.getByRole("textbox", { name: "Name" }),
+        "test connection"
+      )
   )
-  await user.type(
-    screen.getByRole("textbox", { name: "Database Name" }),
-    "test"
+  await act(
+    async () =>
+      await user.type(
+        screen.getByRole("textbox", { name: "Database Name" }),
+        "test"
+      )
   )
-  await user.type(screen.getByRole("textbox", { name: "user" }), "test")
-  await user.type(screen.getByRole("textbox", { name: "host" }), "test")
-  await user.type(screen.getByRole("textbox", { name: "port" }), "5432")
+  await act(
+    async () =>
+      await user.type(screen.getByRole("textbox", { name: "user" }), "test")
+  )
+  await act(
+    async () =>
+      await user.type(screen.getByRole("textbox", { name: "host" }), "test")
+  )
+  await act(
+    async () =>
+      await user.type(screen.getByRole("textbox", { name: "port" }), "5432")
+  )
 
   // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
   const secretField = container.querySelector("input[type=password]")
 
-  if (secretField) await user.type(secretField, "password")
+  if (secretField)
+    await act(async () => await user.type(secretField, "password"))
 
-  await user.click(screen.getByRole("button", { name: /continue/i }))
-
-  await waitFor(() => {
-    expect(screen.queryByText("Connect to PostgreSQL")).toBeFalsy()
-  })
-
-  expect(screen.getByText("Test connection to PostgreSQL")).toBeInTheDocument()
-
-  await user.click(screen.getByRole("button", { name: /continue/i }))
-
-  await waitFor(() => {
-    expect(screen.queryByText("Test connection to PostgreSQL")).toBeFalsy()
-  })
-
-  expect(
-    screen.getByText("Set a schedule for this connection")
-  ).toBeInTheDocument()
-
-  await user.click(screen.getByTestId("cron-expression"))
-
-  await user.type(screen.getByRole("textbox", { name: "Minutes" }), "10,30")
-  await user.type(screen.getByRole("textbox", { name: "Hours" }), "1,8")
-
-  await user.click(screen.getByRole("button", { name: /finish/i }))
+  await act(
+    async () =>
+      await user.click(screen.getByRole("button", { name: /continue/i }))
+  )
 }
 
 test("submit", async () => {
@@ -155,17 +162,6 @@ test("submit", async () => {
         name: "PostgreSQLtest connection",
         metadata: { dbname: "test", user: "test", host: "test", port: "5432" },
         secrets: { password: "password" },
-        schedules: {
-          type: "cron",
-          cron: {
-            minutes: "10,30",
-            hours: "*1,8",
-            day_of_week: "*",
-            day_of_month: "*",
-            month_of_year: "*",
-          },
-        },
-        is_active: true,
       },
     },
     result: {
@@ -190,12 +186,132 @@ test("submit", async () => {
     },
   }
 
+  const validateMock = {
+    request: {
+      query: CREATE_RUN,
+      variables: {
+        connectionId: "1",
+      },
+    },
+    result: {
+      data: {
+        runConnection: {
+          __typename: "RunType",
+          id: "1",
+          status: "queued",
+        },
+      },
+    },
+  }
+
+  const getRunMock = {
+    request: {
+      query: GET_RUN,
+      variables: {
+        workspaceId: "1",
+        runId: "1",
+      },
+    },
+    result: {
+      data: {
+        workspace: {
+          id: "1",
+          run: {
+            id: "1",
+            status: "success",
+          },
+        },
+      },
+    },
+  }
+
+  const updateMock = {
+    request: {
+      query: UPDATE_CONNECTION,
+      variables: {
+        id: "1",
+        schedules: {
+          type: "cron",
+          cron: {
+            minutes: "10,30",
+            hours: "*1,8",
+            day_of_week: "*",
+            day_of_month: "*",
+            month_of_year: "*",
+          },
+        },
+        is_active: true,
+      },
+    },
+    result: {
+      data: {
+        updateConnection: {
+          __typename: "ConnectionType",
+          id: "1",
+          schedules: {
+            type: "cron",
+            cron: {
+              minutes: "10,30",
+              hours: "*1,8",
+              day_of_week: "*",
+              day_of_month: "*",
+              month_of_year: "*",
+            },
+          },
+          is_active: true,
+        },
+      },
+    },
+  }
+
   const { container } = render(<CreateConnectionWizard workspaceId="1" />, {
     routes: ["/:organisationName/:workspaceName/connections/:connectionId"],
-    mocks: [connectorsMock, createMock],
+    mocks: [connectorsMock, createMock, validateMock, getRunMock, updateMock],
   })
 
   await submit(user, container)
+
+  await waitFor(() => {
+    expect(screen.queryByText("Connect to PostgreSQL")).toBeFalsy()
+  })
+
+  expect(screen.getByText("Test connection to PostgreSQL")).toBeInTheDocument()
+
+  const progressbar = screen.queryByRole("progressbar")
+
+  if (progressbar) {
+    // eslint-disable-next-line jest/no-conditional-expect
+    await waitFor(() => expect(screen.queryByRole("progressbar")).toBeFalsy())
+  }
+
+  await act(
+    async () =>
+      await user.click(screen.getByRole("button", { name: /continue/i }))
+  )
+
+  await waitFor(() => {
+    expect(screen.queryByText("Test connection to PostgreSQL")).toBeFalsy()
+  })
+
+  expect(
+    screen.getByText("Set a schedule for this connection")
+  ).toBeInTheDocument()
+
+  await act(async () => await user.click(screen.getByTestId("cron-expression")))
+
+  await act(
+    async () =>
+      await user.type(screen.getByRole("textbox", { name: "Minutes" }), "10,30")
+  )
+  await act(
+    async () =>
+      await user.type(screen.getByRole("textbox", { name: "Hours" }), "1,8")
+  )
+
+  await act(
+    async () =>
+      await user.click(screen.getByRole("button", { name: /finish/i }))
+  )
 
   await waitFor(() => {
     expect(screen.queryByText("Set a schedule for this connection")).toBeFalsy()
@@ -217,17 +333,6 @@ test("error", async () => {
         name: "PostgreSQLtest connection",
         metadata: { dbname: "test", user: "test", host: "test", port: "5432" },
         secrets: { password: "password" },
-        schedules: {
-          type: "cron",
-          cron: {
-            minutes: "10,30",
-            hours: "*1,8",
-            day_of_week: "*",
-            day_of_month: "*",
-            month_of_year: "*",
-          },
-        },
-        is_active: true,
       },
     },
     result: {

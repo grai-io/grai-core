@@ -1,7 +1,7 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { act, render, screen, waitFor } from "testing"
 import ProfileForm, { UPDATE_PROFILE } from "./ProfileForm"
 
 const profile = {
@@ -71,10 +71,18 @@ test("submit", async () => {
     ).toHaveValue("example")
   })
 
-  await user.type(screen.getByRole("textbox", { name: /First Name/i }), "a")
-  await user.type(screen.getByRole("textbox", { name: /Last Name/i }), "b")
+  await act(
+    async () =>
+      await user.type(screen.getByRole("textbox", { name: /First Name/i }), "a")
+  )
+  await act(
+    async () =>
+      await user.type(screen.getByRole("textbox", { name: /Last Name/i }), "b")
+  )
 
-  await user.click(screen.getByRole("button", { name: /save/i }))
+  await act(
+    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+  )
 })
 
 test("error", async () => {
@@ -121,10 +129,18 @@ test("error", async () => {
     ).toHaveValue("example")
   })
 
-  await user.type(screen.getByRole("textbox", { name: /First Name/i }), "a")
-  await user.type(screen.getByRole("textbox", { name: /Last Name/i }), "b")
+  await act(
+    async () =>
+      await user.type(screen.getByRole("textbox", { name: /First Name/i }), "a")
+  )
+  await act(
+    async () =>
+      await user.type(screen.getByRole("textbox", { name: /Last Name/i }), "b")
+  )
 
-  await user.click(screen.getByRole("button", { name: /save/i }))
+  await act(
+    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+  )
 
   await waitFor(() => {
     expect(screen.getByText("Error!")).toBeInTheDocument()

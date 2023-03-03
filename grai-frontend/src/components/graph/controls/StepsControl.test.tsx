@@ -1,6 +1,6 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { render, screen } from "testing"
+import { act, render, screen } from "testing"
 import StepsControl from "./StepsControl"
 
 test("renders", async () => {
@@ -40,7 +40,7 @@ test("plus", async () => {
   expect(screen.getByTestId("AddIcon")).toBeInTheDocument()
   expect(screen.getByTestId("RemoveIcon")).toBeInTheDocument()
 
-  await user.click(screen.getByTestId("AddIcon"))
+  await act(async () => await user.click(screen.getByTestId("AddIcon")))
 
   expect(value).toEqual(2)
 })
@@ -65,7 +65,7 @@ test("minus", async () => {
   expect(screen.getByTestId("AddIcon")).toBeInTheDocument()
   expect(screen.getByTestId("RemoveIcon")).toBeInTheDocument()
 
-  await user.click(screen.getByTestId("RemoveIcon"))
+  await act(async () => await user.click(screen.getByTestId("RemoveIcon")))
 
   expect(value).toEqual(1)
 })
@@ -87,7 +87,7 @@ test("change", async () => {
 
   expect(value).toEqual(1)
 
-  await user.type(screen.getByRole("textbox"), "1")
+  await act(async () => await user.type(screen.getByRole("textbox"), "1"))
 
   expect(value).toEqual(11)
 })

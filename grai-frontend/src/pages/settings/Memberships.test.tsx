@@ -1,6 +1,7 @@
 import React from "react"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
+import profileMock from "testing/profileMock"
 import Memberships, { GET_MEMBERSHIPS } from "./Memberships"
 
 test("renders", async () => {
@@ -19,6 +20,7 @@ test("renders", async () => {
 
 test("error", async () => {
   const mocks = [
+    profileMock,
     {
       request: {
         query: GET_MEMBERSHIPS,
@@ -42,6 +44,7 @@ test("error", async () => {
 
 test("empty", async () => {
   const mocks = [
+    profileMock,
     {
       request: {
         query: GET_MEMBERSHIPS,
@@ -74,6 +77,7 @@ test("empty", async () => {
 
 test("no workspace", async () => {
   const mocks = [
+    profileMock,
     {
       request: {
         query: GET_MEMBERSHIPS,

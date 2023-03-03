@@ -1,7 +1,7 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { ReactFlowProvider } from "reactflow"
-import { render, screen } from "testing"
+import { act, render, screen } from "testing"
 import GraphControls from "./GraphControls"
 
 test("renders", async () => {
@@ -43,6 +43,12 @@ test("renders errors", async () => {
 
   expect(screen.getByText("Limit Graph")).toBeInTheDocument()
 
-  await user.click(screen.getByRole("button", { name: /Limit Graph/i }))
-  await user.click(screen.getByRole("button", { name: /Limit Graph/i }))
+  await act(
+    async () =>
+      await user.click(screen.getByRole("button", { name: /Limit Graph/i }))
+  )
+  await act(
+    async () =>
+      await user.click(screen.getByRole("button", { name: /Limit Graph/i }))
+  )
 })

@@ -1,7 +1,8 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { act, render, screen, waitFor } from "testing"
+import profileMock from "testing/profileMock"
 import Tables, { GET_TABLES } from "./Tables"
 
 test("renders", async () => {
@@ -20,6 +21,7 @@ test("renders", async () => {
 
 test("error", async () => {
   const mocks = [
+    profileMock,
     {
       request: {
         query: GET_TABLES,
@@ -52,7 +54,7 @@ test("search", async () => {
     expect(screen.getAllByText("Hello World")).toBeTruthy()
   })
 
-  await user.type(screen.getByRole("textbox"), "Search")
+  await act(async () => await user.type(screen.getByRole("textbox"), "Search"))
 
   await waitFor(() => {
     expect(screen.getByRole("textbox")).toHaveValue("Search")
@@ -70,7 +72,7 @@ test("refresh", async () => {
     withRouter: true,
   })
 
-  await user.click(screen.getByTestId("tables-refresh"))
+  await act(async () => await user.click(screen.getByTestId("tables-refresh")))
 
   // eslint-disable-next-line testing-library/no-wait-for-empty-callback
   await waitFor(() => {})
@@ -87,14 +89,17 @@ test("click row", async () => {
     expect(screen.getAllByText("Hello World")).toBeTruthy()
   })
 
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-  await user.click(container.querySelectorAll("tbody > tr")[0])
+  await act(
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+    async () => await user.click(container.querySelectorAll("tbody > tr")[0])
+  )
 
   expect(screen.getByText("New Page")).toBeInTheDocument()
 })
 
 test("no tables", async () => {
   const mocks = [
+    profileMock,
     {
       request: {
         query: GET_TABLES,

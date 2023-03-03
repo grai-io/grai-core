@@ -1,6 +1,6 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { render, screen } from "testing"
+import { act, render, screen } from "testing"
 import ReportsTable from "./ReportsTable"
 
 const runs = [
@@ -133,8 +133,10 @@ test("row click", async () => {
 
   expect(screen.getByText("Success")).toBeInTheDocument()
 
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-  await user.click(container.querySelectorAll("tbody > tr")[0])
+  await act(
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+    async () => await user.click(container.querySelectorAll("tbody > tr")[0])
+  )
 
   expect(screen.getByText("New Page")).toBeInTheDocument()
 })
@@ -150,8 +152,10 @@ test("row click no pr", async () => {
 
   expect(screen.getByText("Success")).toBeInTheDocument()
 
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-  await user.click(container.querySelectorAll("tbody > tr")[1])
+  await act(
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+    async () => await user.click(container.querySelectorAll("tbody > tr")[1])
+  )
 
   expect(screen.getByText("New Page")).toBeInTheDocument()
 })
@@ -165,8 +169,10 @@ test("row click no commit", async () => {
 
   expect(screen.getByText("Success")).toBeInTheDocument()
 
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-  await user.click(container.querySelectorAll("tbody > tr")[2])
+  await act(
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+    async () => await user.click(container.querySelectorAll("tbody > tr")[2])
+  )
 
   expect(screen.getByText("New Page")).toBeInTheDocument()
 })

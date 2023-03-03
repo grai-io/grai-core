@@ -1,6 +1,6 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { render, screen } from "testing"
+import { act, render, screen } from "testing"
 import RunStatus from "./RunStatus"
 
 const run = {
@@ -25,7 +25,7 @@ test("navigate", async () => {
 
   expect(screen.getByText("Success")).toBeInTheDocument()
 
-  await user.click(screen.getByTestId("CheckIcon"))
+  await act(async () => await user.click(screen.getByTestId("CheckIcon")))
 
   expect(screen.getByText("New Page")).toBeInTheDocument()
 })

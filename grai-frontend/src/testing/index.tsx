@@ -19,6 +19,7 @@ const mockResolvers = {
   PaginatorInfo: () => ({ currentPage: 1, total: 20 }),
   JSON: () => ({}),
   UUID: () => casual.uuid,
+  ID: () => casual.uuid,
   Connection: () => ({
     name: "Connection 1",
   }),
@@ -28,6 +29,18 @@ const mockResolvers = {
         node_type: "Table",
       },
     },
+  }),
+  Repository: () => ({
+    repo: casual.word,
+  }),
+  PullRequest: () => ({
+    reference: casual.integer(1, 100),
+  }),
+  Branch: () => ({
+    reference: casual.integer(1, 100),
+  }),
+  Commit: () => ({
+    reference: casual.integer(1, 100),
   }),
 }
 

@@ -6,7 +6,7 @@ import ReactFlow, {
   Position,
   ReactFlowProvider,
 } from "reactflow"
-import { getQueriesForElement, render, screen, waitFor } from "testing"
+import { act, render, screen, waitFor } from "testing"
 import TestEdge, { TestData } from "./TestEdge"
 
 test("renders", async () => {
@@ -102,7 +102,7 @@ test("expand", async () => {
     expect(screen.getByTestId("test-edge")).toBeTruthy()
   })
 
-  await user.click(screen.getByTestId("test-edge"))
+  await act(async () => await user.click(screen.getByTestId("test-edge")))
 })
 
 test("renders only success", async () => {
@@ -144,5 +144,5 @@ test("renders only success", async () => {
     expect(screen.getByTestId("test-edge")).toBeTruthy()
   })
 
-  await user.click(screen.getByTestId("test-edge"))
+  await act(async () => await user.click(screen.getByTestId("test-edge")))
 })

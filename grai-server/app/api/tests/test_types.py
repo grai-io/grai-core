@@ -707,6 +707,48 @@ async def test_workspace_runs_filter_by_branch(test_context, test_branch, test_c
 
 
 @pytest.mark.django_db
+async def test_workspace_runs_filter_by_action(test_context):
+    context, organisation, workspace, user = test_context
+
+    connector = await Connector.objects.acreate(name=str(uuid.uuid4()))
+    connection = await Connection.objects.acreate(
+        workspace=workspace,
+        connector=connector,
+        namespace="default",
+        name=uuid.uuid4(),
+        metadata={},
+        secrets={},
+    )
+    run = await Run.objects.acreate(workspace=workspace, connection=connection, status="success", action=Run.TESTS)
+    await Run.objects.acreate(workspace=workspace, connection=connection, status="success", action=Run.VALIDATE)
+
+    query = """
+        query Workspace($workspaceId: ID!, $action: String) {
+            workspace(id: $workspaceId) {
+                id
+                runs(action: $action) {
+                    id
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "action": Run.TESTS,
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert len(result.data["workspace"]["runs"]) == 1
+    assert result.data["workspace"]["runs"][0]["id"] == str(run.id)
+
+
+@pytest.mark.django_db
 async def test_workspace_memberships(test_context):
     context, organisation, workspace, user = test_context
 
