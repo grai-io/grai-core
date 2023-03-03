@@ -114,32 +114,35 @@ test("refresh", async () => {
         data: {
           runConnection: {
             id: "1",
-            last_run: {
+            connection: {
               id: "1",
-              status: "success",
-              created_at: "12243",
-              started_at: null,
-              finished_at: null,
-              metadata: {},
-              user: {
+              last_run: {
                 id: "1",
-                first_name: null,
-                last_name: null,
+                status: "success",
+                created_at: "12243",
+                started_at: null,
+                finished_at: null,
+                metadata: {},
+                user: {
+                  id: "1",
+                  first_name: null,
+                  last_name: null,
+                },
               },
-            },
-            last_successful_run: {
-              id: "1",
-              status: "success",
-              started_at: null,
-              finished_at: null,
-              metadata: {},
-              user: {
+              last_successful_run: {
                 id: "1",
-                first_name: null,
-                last_name: null,
+                status: "success",
+                started_at: null,
+                finished_at: null,
+                metadata: {},
+                user: {
+                  id: "1",
+                  first_name: null,
+                  last_name: null,
+                },
               },
+              runs: [],
             },
-            runs: [],
           },
         },
       },
@@ -245,32 +248,35 @@ test("refresh no last_sucessful_run", async () => {
         data: {
           runConnection: {
             id: "1",
-            last_run: {
+            connection: {
               id: "1",
-              status: "success",
-              created_at: "12243",
-              started_at: null,
-              finished_at: null,
-              metadata: {},
-              user: {
+              last_run: {
                 id: "1",
-                first_name: null,
-                last_name: null,
+                status: "success",
+                created_at: "12243",
+                started_at: null,
+                finished_at: null,
+                metadata: {},
+                user: {
+                  id: "1",
+                  first_name: null,
+                  last_name: null,
+                },
               },
-            },
-            last_successful_run: {
-              id: "1",
-              status: "success",
-              started_at: null,
-              finished_at: null,
-              metadata: {},
-              user: {
+              last_successful_run: {
                 id: "1",
-                first_name: null,
-                last_name: null,
+                status: "success",
+                started_at: null,
+                finished_at: null,
+                metadata: {},
+                user: {
+                  id: "1",
+                  first_name: null,
+                  last_name: null,
+                },
               },
+              runs: [],
             },
-            runs: [],
           },
         },
       },

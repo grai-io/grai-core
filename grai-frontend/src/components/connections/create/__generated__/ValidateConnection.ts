@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface ValidateConnection_runConnection {
-  __typename: "Connection";
+  __typename: "Run";
   id: any;
 }
 

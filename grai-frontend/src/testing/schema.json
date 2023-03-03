@@ -889,6 +889,16 @@
                   "ofType": null
                 },
                 "defaultValue": "null"
+              },
+              {
+                "name": "action",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": "null"
               }
             ],
             "type": {
@@ -5870,7 +5880,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "Connection",
+                "name": "Run",
                 "ofType": null
               }
             },
