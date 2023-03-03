@@ -64,7 +64,7 @@ services:
     volumes:
       - ./nginx-uffizzi:/etc/nginx
       
-  celery_worker:
+  celery-worker:
     image: "${SERVER_IMAGE}"
     command: 
     - "/start-celeryworker"
@@ -88,7 +88,7 @@ services:
             limits:
               memory: 2000M      
   
-  celery_beat_worker:
+  celery-beat-worker:
     image: "${SERVER_IMAGE}"
     volumes:
       - ./grai-server/app/:/usr/src/app/
