@@ -255,8 +255,8 @@ class TestResultCacheBase:
 
         results: Dict[NodeV1, List[TestResult]] = {}
         for key, values in tests:
-            failuers = list(filter(lambda x: not x.test_pass, values))
-            if len(failuers) > 0:
+            failures = list(filter(lambda x: not x.test_pass, values))
+            if len(failures) > 0:
                 results.setdefault(key, [])
                 results[key].extend(values)
 
