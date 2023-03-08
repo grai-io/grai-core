@@ -6,6 +6,7 @@ import Graph, { Error } from "components/graph/Graph"
 import { Table } from "components/graph/MidGraph"
 import Tabs from "components/tabs/Tabs"
 import TestResults from "./pull_request/TestResults"
+import ReportResult from "./results/ReportResult"
 
 type ReportBodyProps = {
   tables: Table[]
@@ -33,41 +34,44 @@ const ReportBody: React.FC<ReportBodyProps> = ({ tables, edges, errors }) => {
     searchParams.get("limitGraph")?.toLowerCase() === "true"
 
   return (
-    <Tabs
-      tabs={[
-        {
-          value: "graph",
-          label: "Graph",
-          element: (
-            <Box
-              sx={{
-                height: "calc(100vh - 275px)",
-                mt: 2,
-                width: "100%",
-                backgroundColor: theme => theme.palette.grey[100],
-              }}
-            >
-              <Graph
-                tables={tables}
-                edges={edges}
-                errors={errors}
-                limitGraph={limitGraph}
-              />
-            </Box>
-          ),
-        },
-        {
-          value: "failed-tests",
-          label: "Failed",
-          element: <TestResults errors={errors} />,
-        },
-        {
-          value: "all-tests",
-          label: "All",
-          disabled: true,
-        },
-      ]}
-    />
+    <>
+      <ReportResult errors={errors} />
+      <Tabs
+        tabs={[
+          {
+            value: "graph",
+            label: "Graph",
+            element: (
+              <Box
+                sx={{
+                  height: "calc(100vh - 275px)",
+                  mt: 2,
+                  width: "100%",
+                  backgroundColor: theme => theme.palette.grey[100],
+                }}
+              >
+                <Graph
+                  tables={tables}
+                  edges={edges}
+                  errors={errors}
+                  limitGraph={limitGraph}
+                />
+              </Box>
+            ),
+          },
+          {
+            value: "failed-tests",
+            label: "Failed",
+            element: <TestResults errors={errors} />,
+          },
+          {
+            value: "all-tests",
+            label: "All",
+            disabled: true,
+          },
+        ]}
+      />
+    </>
   )
 }
 
