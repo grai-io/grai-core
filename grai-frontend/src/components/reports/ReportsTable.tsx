@@ -16,6 +16,8 @@ import useWorkspace from "helpers/useWorkspace"
 import { DateTime } from "luxon"
 import Loading from "components/layout/Loading"
 import RunStatus from "components/runs/RunStatus"
+import RunFailures, { Run as RunWithMetadata } from "./results/RunFailures"
+import RunSuccessRate from "./results/RunSuccessRate"
 
 interface Branch {
   reference: string
@@ -57,7 +59,7 @@ interface User {
   last_name: string
 }
 
-interface Run {
+interface Run extends RunWithMetadata {
   id: string
   status: string
   connection: Connection
@@ -99,6 +101,8 @@ const ReportsTable: React.FC<ReportsTableProps> = ({ runs, loading }) => {
           <TableCell>Trigger</TableCell>
           <TableCell>Status</TableCell>
           <TableCell sx={{ textAlign: "right" }}>Started</TableCell>
+          <TableCell sx={{ textAlign: "right" }}>Failures</TableCell>
+          <TableCell sx={{ textAlign: "right" }}>Success Rate</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -187,6 +191,12 @@ const ReportsTable: React.FC<ReportsTableProps> = ({ runs, loading }) => {
                   </Typography>
                 </Tooltip>
               </Box>
+            </TableCell>
+            <TableCell sx={{ textAlign: "right" }}>
+              <RunFailures run={run} />
+            </TableCell>
+            <TableCell sx={{ textAlign: "right" }}>
+              <RunSuccessRate run={run} />
             </TableCell>
           </TableRow>
         ))}

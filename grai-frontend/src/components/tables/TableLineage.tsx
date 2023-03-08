@@ -86,7 +86,7 @@ const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
 
   const edges = data.workspace.other_edges
 
-  const visibleTables: string[] = [...Array(value).keys()].reduce(
+  const visibleTables: string[] = Array.from(Array(value).keys()).reduce(
     (res, value) =>
       res.concat(
         tables
