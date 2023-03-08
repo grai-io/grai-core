@@ -57,6 +57,12 @@ interface User {
   last_name: string
 }
 
+interface RunMetadata {
+  results?: {
+    test_pass?: boolean
+  }[]
+}
+
 interface Run {
   id: string
   status: string
@@ -66,6 +72,7 @@ interface Run {
   finished_at: string | null
   user: User | null
   commit: Commit | null
+  metadata: RunMetadata | null
 }
 
 type ReportsTableProps = {
@@ -99,6 +106,8 @@ const ReportsTable: React.FC<ReportsTableProps> = ({ runs, loading }) => {
           <TableCell>Trigger</TableCell>
           <TableCell>Status</TableCell>
           <TableCell sx={{ textAlign: "right" }}>Started</TableCell>
+          <TableCell sx={{ textAlign: "right" }}>Failures</TableCell>
+          <TableCell sx={{ textAlign: "right" }}>Success Rate</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -187,6 +196,23 @@ const ReportsTable: React.FC<ReportsTableProps> = ({ runs, loading }) => {
                   </Typography>
                 </Tooltip>
               </Box>
+            </TableCell>
+            <TableCell sx={{ textAlign: "right" }}>
+              {run.metadata?.results?.filter(test => !test.test_pass).length}
+            </TableCell>
+            <TableCell sx={{ textAlign: "right" }}>
+              {run.metadata?.results?.length &&
+                run.metadata?.results?.length > 0 && (
+                  <>
+                    {(
+                      ((run.metadata.results.filter(test => test.test_pass)
+                        .length ?? 0) /
+                        run.metadata.results.length) *
+                      100
+                    ).toFixed(2)}
+                    %
+                  </>
+                )}
             </TableCell>
           </TableRow>
         ))}

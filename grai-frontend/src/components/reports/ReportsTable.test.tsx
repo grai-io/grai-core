@@ -41,6 +41,16 @@ const runs = [
         repo: "repo",
       },
     },
+    metadata: {
+      results: [
+        {
+          test_pass: true,
+        },
+        {
+          test_pass: false,
+        },
+      ],
+    },
   },
   {
     id: "2",
@@ -76,6 +86,13 @@ const runs = [
         repo: "repo",
       },
     },
+    metadata: {
+      results: [
+        {
+          test_pass: true,
+        },
+      ],
+    },
   },
   {
     id: "3",
@@ -95,6 +112,13 @@ const runs = [
     finished_at: "1243",
     user: null,
     commit: null,
+    metadata: {
+      results: [
+        {
+          test_pass: false,
+        },
+      ],
+    },
   },
 ]
 
