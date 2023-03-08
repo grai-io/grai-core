@@ -5,8 +5,8 @@ import { useSearchParams } from "react-router-dom"
 import Graph, { Error } from "components/graph/Graph"
 import { Table } from "components/graph/MidGraph"
 import Tabs from "components/tabs/Tabs"
-import TestResults from "./pull_request/TestResults"
 import ReportResult from "./results/ReportResult"
+import TestResults from "./results/TestResults"
 
 type ReportBodyProps = {
   tables: Table[]
@@ -62,12 +62,16 @@ const ReportBody: React.FC<ReportBodyProps> = ({ tables, edges, errors }) => {
           {
             value: "failed-tests",
             label: "Failed",
-            element: <TestResults errors={errors} />,
+            element: (
+              <TestResults
+                errors={errors?.filter(error => !error.test_pass) ?? null}
+              />
+            ),
           },
           {
             value: "all-tests",
             label: "All",
-            disabled: true,
+            element: <TestResults errors={errors} />,
           },
         ]}
       />
