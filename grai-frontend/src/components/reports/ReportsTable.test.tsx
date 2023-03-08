@@ -151,7 +151,7 @@ test("row click", async () => {
 
   const { container } = render(<ReportsTable runs={runs} />, {
     routes: [
-      "/:organisationName/:workspaceName/reports/github/owner/repo/pulls/123",
+      "/:organisationName/:workspaceName/reports/github/owner/reports/1",
     ],
   })
 
@@ -170,7 +170,7 @@ test("row click no pr", async () => {
 
   const { container } = render(<ReportsTable runs={runs} />, {
     routes: [
-      "/:organisationName/:workspaceName/reports/github/owner/repo/commits/abcd1",
+      "/:organisationName/:workspaceName/reports/github/owner/reports/2",
     ],
   })
 
@@ -188,7 +188,7 @@ test("row click no commit", async () => {
   const user = userEvent.setup()
 
   const { container } = render(<ReportsTable runs={runs} />, {
-    routes: ["/:organisationName/:workspaceName/runs/3"],
+    routes: ["/:organisationName/:workspaceName/reports/3"],
   })
 
   expect(screen.getByText("Success")).toBeInTheDocument()
