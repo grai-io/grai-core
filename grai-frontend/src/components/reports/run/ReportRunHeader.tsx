@@ -1,8 +1,8 @@
 import React from "react"
-import { Box, Link, Typography } from "@mui/material"
-import RunBreadcrumbs, { Repository } from "./RunBreadcrumbs"
-import { durationAgo } from "helpers/runDuration"
 import { CallSplit, OpenInNew } from "@mui/icons-material"
+import { Box, Link, Typography } from "@mui/material"
+import { durationAgo } from "helpers/runDuration"
+import RunBreadcrumbs, { Repository } from "./RunBreadcrumbs"
 
 interface PullRequest {
   reference: string
