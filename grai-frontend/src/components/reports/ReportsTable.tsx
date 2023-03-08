@@ -78,16 +78,10 @@ type ReportsTableProps = {
 const ReportsTable: React.FC<ReportsTableProps> = ({ runs, loading }) => {
   const { workspaceNavigate } = useWorkspace()
 
-  const getLink = (run: Run): string => {
-    if (!run.commit) return `runs/${run.id}`
-
-    const start = `reports/${run.commit.repository.type}/${run.commit.repository.owner}/${run.commit.repository.repo}`
-
-    if (run.commit.pull_request)
-      return `${start}/pulls/${run.commit.pull_request.reference}`
-
-    return `${start}/commits/${run.commit.reference}`
-  }
+  const getLink = (run: Run): string =>
+    run.commit
+      ? `reports/${run.commit.repository.type}/${run.commit.repository.owner}/reports/${run.id}`
+      : `reports/${run.id}`
 
   const handleNavigate = (run: Run) => () => workspaceNavigate(getLink(run))
 
