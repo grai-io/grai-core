@@ -2,6 +2,8 @@ import React from "react"
 import { Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
 import { Repository } from "../ReportBreadcrumbs"
+import RunFailures, { Run } from "../results/RunFailures"
+import RunSuccessRate from "../results/RunSuccessRate"
 
 interface Branch {
   reference: string
@@ -17,6 +19,7 @@ interface Commit {
   title: string | null
   branch: Branch
   pull_request: PullRequest | null
+  last_successful_run: Run | null
 }
 
 type CommitsTableProps = {
@@ -40,6 +43,8 @@ const CommitsTable: React.FC<CommitsTableProps> = ({
           <TableCell />
           <TableCell>Branch</TableCell>
           <TableCell>Pull Request</TableCell>
+          <TableCell sx={{ textAlign: "right" }}>Failures</TableCell>
+          <TableCell sx={{ textAlign: "right" }}>Success Rate</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -58,6 +63,12 @@ const CommitsTable: React.FC<CommitsTableProps> = ({
             <TableCell>{commit.reference.slice(0, 7)}</TableCell>
             <TableCell>{commit.branch.reference}</TableCell>
             <TableCell>{commit.pull_request?.title}</TableCell>
+            <TableCell sx={{ textAlign: "right" }}>
+              <RunFailures run={commit.last_successful_run} />
+            </TableCell>
+            <TableCell sx={{ textAlign: "right" }}>
+              <RunSuccessRate run={commit.last_successful_run} />
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>

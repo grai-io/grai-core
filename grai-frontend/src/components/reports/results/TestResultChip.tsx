@@ -1,6 +1,6 @@
 import React from "react"
-import { Chip } from "@mui/material"
 import { Cancel, CheckCircle } from "@mui/icons-material"
+import { Chip } from "@mui/material"
 
 type TestResultChipProps = {
   testPass: boolean
