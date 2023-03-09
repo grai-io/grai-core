@@ -21,7 +21,7 @@ async def test_node(test_workspace):
 
 @pytest.mark.django_db
 async def test_upload_connector_file_yaml(test_context, test_node):
-    context, test_organisation, workspace, test_user = test_context
+    context, test_organisation, workspace, test_user, membership = test_context
 
     info = Info
     info.context = context
@@ -44,7 +44,7 @@ async def test_upload_connector_file_yaml(test_context, test_node):
 
 # @pytest.mark.django_db
 # async def test_upload_connector_file_no_connector(test_context, test_node):
-#     context, test_organisation, workspace, test_user = test_context
+#     context, test_organisation, workspace, test_user, membership = test_context
 
 #     info = Info
 #     info.context = context
@@ -67,7 +67,7 @@ async def test_upload_connector_file_yaml(test_context, test_node):
 
 @pytest.mark.django_db
 async def test_upload_connector_file_dbt(test_context, test_node):
-    context, test_organisation, workspace, test_user = test_context
+    context, test_organisation, workspace, test_user, membership = test_context
 
     info = Info
     info.context = context

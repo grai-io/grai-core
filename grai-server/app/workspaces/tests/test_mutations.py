@@ -1,6 +1,7 @@
 import uuid
 
 import pytest
+from asgiref.sync import sync_to_async
 from django.contrib.auth import get_user_model
 
 from api.schema import schema
@@ -17,7 +18,6 @@ from api.tests.common import (
     test_workspace,
 )
 from workspaces.models import WorkspaceAPIKey
-from asgiref.sync import sync_to_async
 
 
 @pytest.mark.asyncio
