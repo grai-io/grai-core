@@ -30,6 +30,7 @@
     "eslint-plugin-import": "^2.27.5",
     "graphql": "^16.6.0",
     "luxon": "^3.2.1",
+    "material-ui-confirm": "^3.0.8",
     "material-ui-popup-state": "^5.0.4",
     "notistack": "^2.0.8",
     "posthog-js": "^1.45.1",

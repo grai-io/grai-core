@@ -28,9 +28,14 @@ interface Key {
 type ApiKeysTableProps = {
   keys: Key[]
   loading?: boolean
+  workspaceId?: string
 }
 
-const ApiKeysTable: React.FC<ApiKeysTableProps> = ({ keys, loading }) => (
+const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
+  keys,
+  loading,
+  workspaceId,
+}) => (
   <Table>
     <TableHead>
       <TableRow sx={{ backgroundColor: theme => theme.palette.grey[100] }}>
@@ -53,7 +58,7 @@ const ApiKeysTable: React.FC<ApiKeysTableProps> = ({ keys, loading }) => (
           <TableCell>{key.expiry_date}</TableCell>
           <TableCell>{key.revoked ? "Yes" : ""}</TableCell>
           <TableCell sx={{ py: 0, px: 1 }}>
-            <ApiKeyMenu apiKey={key} />
+            <ApiKeyMenu apiKey={key} workspaceId={workspaceId} />
           </TableCell>
         </TableRow>
       ))}
