@@ -54,14 +54,11 @@ const MembershipDelete: React.FC<MembershipDeleteProps> = ({
           __typename: "Workspace",
         }),
         fields: {
-          memberships(existingMemberships, { readField }) {
-            if (!data?.deleteMembership) return
-
-            return existingMemberships.filter(
+          memberships: (existingMemberships, { readField }) =>
+            existingMemberships.filter(
               (keyRef: any) =>
-                data.deleteMembership.id !== readField("id", keyRef)
-            )
-          },
+                data?.deleteMembership.id !== readField("id", keyRef)
+            ),
         },
       })
     },
