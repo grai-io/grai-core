@@ -1,5 +1,6 @@
 /* istanbul ignore file */
 import React, { ReactElement, ReactNode } from "react"
+import { InMemoryCache } from "@apollo/client"
 import { MockedResponse } from "@apollo/client/testing"
 import { ThemeProvider } from "@mui/material"
 import { render, RenderOptions } from "@testing-library/react"
@@ -13,7 +14,6 @@ import GuestRoute from "components/auth/GuestRoute"
 import WorkspaceProvider from "components/utils/WorkspaceProvider"
 import AuthMock from "./AuthMock"
 import AutoMockedProvider from "./AutoMockedProvider"
-import { InMemoryCache } from "@apollo/client"
 
 const mockResolvers = {
   Date: () => "2019-12-31",
