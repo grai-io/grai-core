@@ -37,13 +37,13 @@ const ApiKeyMenu: React.FC<ApiKeyMenuProps> = ({ apiKey, workspaceId }) => {
               },
             }}
           >
-            <MenuItem>
+            <MenuItem disabled>
               <ListItemIcon>
                 <Edit />
               </ListItemIcon>
               <ListItemText primary="Edit" />
             </MenuItem>
-            <MenuItem>
+            <MenuItem disabled>
               <ListItemIcon>
                 <DeleteOutline />
               </ListItemIcon>
