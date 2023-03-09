@@ -86,7 +86,7 @@ test("submit", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByText("Workspace Settings")).toBeInTheDocument()
+    expect(screen.getAllByText("Workspace Settings")).toBeTruthy()
   })
 
   await waitFor(() => {
