@@ -11,11 +11,11 @@ from django.template.loader import render_to_string
 from strawberry.types import Info
 
 from api.common import IsAuthenticated, get_user, get_workspace
-from api.types import KeyResult, Membership, Workspace
+from api.types import KeyResult, Membership, Workspace, WorkspaceAPIKey
 from workspaces.models import Membership as MembershipModel
 from workspaces.models import Organisation as OrganisationModel
 from workspaces.models import Workspace as WorkspaceModel
-from workspaces.models import WorkspaceAPIKey
+from workspaces.models import WorkspaceAPIKey as WorkspaceAPIKeyModel
 
 
 @strawberry.type
@@ -39,17 +39,6 @@ class Mutation:
         await MembershipModel.objects.acreate(user=user, workspace=workspace, role="admin")
 
         return workspace
-
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def createApiKey(self, info: Info, name: str, workspaceId: strawberry.ID) -> KeyResult:
-        user = get_user(info)
-        workspace = await get_workspace(info, workspaceId)
-
-        api_key, key = await sync_to_async(WorkspaceAPIKey.objects.create_key)(
-            name=name, created_by=user, workspace=workspace
-        )
-
-        return KeyResult(key=key, api_key=api_key)
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def updateWorkspace(
@@ -108,3 +97,24 @@ class Mutation:
         )
 
         return membership
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def createApiKey(self, info: Info, name: str, workspaceId: strawberry.ID) -> KeyResult:
+        user = get_user(info)
+        workspace = await get_workspace(info, workspaceId)
+
+        api_key, key = await sync_to_async(WorkspaceAPIKeyModel.objects.create_key)(
+            name=name, created_by=user, workspace=workspace
+        )
+
+        return KeyResult(key=key, api_key=api_key)
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def deleteApiKey(self, id: strawberry.ID) -> WorkspaceAPIKey:
+        api_key = await WorkspaceAPIKeyModel.objects.aget(id=id)
+
+        await sync_to_async(api_key.delete)()
+
+        api_key.id = id
+
+        return api_key

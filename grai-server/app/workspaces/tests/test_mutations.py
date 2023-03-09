@@ -16,6 +16,8 @@ from api.tests.common import (
     test_user,
     test_workspace,
 )
+from workspaces.models import WorkspaceAPIKey
+from asgiref.sync import sync_to_async
 
 
 @pytest.mark.asyncio
@@ -86,36 +88,6 @@ async def test_create_workspace_existing_organisation(test_context):
     assert result.data["createWorkspace"]["name"] == "Test Workspace"
     assert result.data["createWorkspace"]["organisation"]["id"] == str(organisation.id)
     assert result.data["createWorkspace"]["organisation"]["name"] == organisation.name
-
-
-@pytest.mark.django_db
-async def test_create_api_key(test_context):
-    context, organisation, workspace, user = test_context
-
-    mutation = """
-        mutation CreateApiKey($workspaceId: ID!, $name: String!) {
-            createApiKey(workspaceId: $workspaceId, name: $name) {
-                key
-                api_key {
-                    id
-                    name
-                }
-            }
-        }
-    """
-
-    result = await schema.execute(
-        mutation,
-        variable_values={
-            "workspaceId": str(workspace.id),
-            "name": "test api key",
-        },
-        context_value=context,
-    )
-
-    assert result.errors is None
-    assert result.data["createApiKey"]["key"] != None
-    assert result.data["createApiKey"]["api_key"]["name"] == "test api key"
 
 
 @pytest.mark.django_db
@@ -214,3 +186,62 @@ async def test_create_membership_existing_user(test_context):
         "id": str(user.id),
         "username": user.username,
     }
+
+
+@pytest.mark.django_db
+async def test_create_api_key(test_context):
+    context, organisation, workspace, user = test_context
+
+    mutation = """
+        mutation CreateApiKey($workspaceId: ID!, $name: String!) {
+            createApiKey(workspaceId: $workspaceId, name: $name) {
+                key
+                api_key {
+                    id
+                    name
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "name": "test api key",
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["createApiKey"]["key"] != None
+    assert result.data["createApiKey"]["api_key"]["name"] == "test api key"
+
+
+@pytest.mark.django_db
+async def test_delete_api_key(test_context):
+    context, organisation, workspace, user = test_context
+
+    mutation = """
+        mutation DeleteApiKey($id: ID!) {
+            deleteApiKey(id: $id) {
+                id
+                name
+            }
+        }
+    """
+
+    api_key, key = await sync_to_async(WorkspaceAPIKey.objects.create_key)(
+        name="test api key", created_by=user, workspace=workspace
+    )
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "id": str(api_key.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["deleteApiKey"]["id"] == str(api_key.id)
