@@ -4,6 +4,7 @@ import { MockedResponse } from "@apollo/client/testing"
 import { ThemeProvider } from "@mui/material"
 import { render, RenderOptions } from "@testing-library/react"
 import casual from "casual"
+import { ConfirmProvider } from "material-ui-confirm"
 import { SnackbarProvider } from "notistack"
 import { HelmetProvider } from "react-helmet-async"
 import { MemoryRouter, Route, Routes } from "react-router-dom"
@@ -12,7 +13,6 @@ import GuestRoute from "components/auth/GuestRoute"
 import WorkspaceProvider from "components/utils/WorkspaceProvider"
 import AuthMock from "./AuthMock"
 import AutoMockedProvider from "./AutoMockedProvider"
-import { ConfirmProvider } from "material-ui-confirm"
 
 const mockResolvers = {
   Date: () => "2019-12-31",
