@@ -1,5 +1,6 @@
 /* istanbul ignore file */
 import React, { ReactElement, ReactNode } from "react"
+import { InMemoryCache } from "@apollo/client"
 import { MockedResponse } from "@apollo/client/testing"
 import { ThemeProvider } from "@mui/material"
 import { render, RenderOptions } from "@testing-library/react"
@@ -63,6 +64,8 @@ type CustomRenderOptions = RenderOptions & {
   mocks?: readonly MockedResponse<Record<string, any>>[]
 }
 
+export const cache = new InMemoryCache()
+
 const customRender = (ui: ReactElement, options?: CustomRenderOptions) => {
   if (options?.withRouter || options?.path || options?.route || options?.routes)
     return renderWithRouter(ui, options)
@@ -81,7 +84,11 @@ const basicRender = (
           <ConfirmProvider>
             <ThemeProvider theme={theme}>
               <AuthMock initialLoggedIn={loggedIn}>
-                <AutoMockedProvider mockResolvers={mockResolvers} mocks={mocks}>
+                <AutoMockedProvider
+                  mockResolvers={mockResolvers}
+                  mocks={mocks}
+                  cache={cache}
+                >
                   {props.children}
                 </AutoMockedProvider>
               </AuthMock>
@@ -108,7 +115,11 @@ const renderWithRouter = (
     wrapper: props => (
       <HelmetProvider>
         <ThemeProvider theme={theme}>
-          <AutoMockedProvider mockResolvers={mockResolvers} mocks={mocks}>
+          <AutoMockedProvider
+            mockResolvers={mockResolvers}
+            mocks={mocks}
+            cache={cache}
+          >
             <MemoryRouter initialEntries={initialEntries ?? [route]}>
               <AuthMock initialLoggedIn={loggedIn}>
                 <SnackbarProvider maxSnack={3} hideIconVariant>

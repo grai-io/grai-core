@@ -11,12 +11,14 @@ type AutoMockedProviderProps = {
   children: ReactNode
   mockResolvers?: IMocks
   mocks?: readonly MockedResponse<Record<string, any>>[]
+  cache: InMemoryCache
 }
 
 const AutoMockedProvider: React.FC<AutoMockedProviderProps> = ({
   children,
   mockResolvers,
   mocks,
+  cache,
 }) => {
   if (mocks)
     return (
@@ -44,7 +46,7 @@ const AutoMockedProvider: React.FC<AutoMockedProviderProps> = ({
   // 4) Define ApolloClient (client variable used below)
   const client = new ApolloClient({
     link: new SchemaLink({ schema: schemaWithMocks }),
-    cache: new InMemoryCache(),
+    cache,
   })
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>

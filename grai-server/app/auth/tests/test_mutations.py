@@ -97,7 +97,7 @@ async def test_login_bad_password(test_basic_context):
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_logout(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     mutation = """
         mutation Logout {
@@ -151,7 +151,7 @@ async def test_register(test_basic_context):
 
 @pytest.mark.django_db
 async def test_update_profile(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     mutation = """
         mutation UpdateProfile($first_name: String!, $last_name: String!) {
@@ -182,7 +182,7 @@ async def test_update_profile(test_context):
 
 @pytest.mark.django_db
 async def test_update_password(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     user.set_password("old_password")
     await sync_to_async(user.save)()
@@ -212,7 +212,7 @@ async def test_update_password(test_context):
 
 @pytest.mark.django_db
 async def test_update_password_wrong_password(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     user.set_password("old_password")
     await sync_to_async(user.save)()
@@ -289,7 +289,7 @@ async def test_request_password_reset_no_user():
 
 @pytest.mark.django_db
 async def test_reset_password(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     token = default_token_generator.make_token(user)
 
@@ -314,7 +314,7 @@ async def test_reset_password(test_context):
 
 @pytest.mark.django_db
 async def test_reset_password_invalid_token(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     mutation = """
         mutation ResetPassword($token: String!, $uid: String!, $password: String!) {
@@ -367,7 +367,7 @@ async def test_reset_password_no_user():
 
 @pytest.mark.django_db
 async def test_complete_signup(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     token = default_token_generator.make_token(user)
 
@@ -402,7 +402,7 @@ async def test_complete_signup(test_context):
 
 @pytest.mark.django_db
 async def test_complete_signup_invalid_token(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     mutation = """
         mutation CompleteSignup($token: String!, $uid: String!, $first_name: String!, $last_name: String!, $password: String!) {

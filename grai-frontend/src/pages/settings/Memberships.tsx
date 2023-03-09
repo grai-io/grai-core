@@ -58,6 +58,7 @@ const Memberships: React.FC = () => {
         <MembershipsTable
           memberships={data?.workspace?.memberships ?? []}
           loading={loading}
+          workspaceId={workspace?.id}
         />
       </Box>
     </SettingsLayout>

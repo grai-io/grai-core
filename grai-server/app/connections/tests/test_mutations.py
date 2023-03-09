@@ -18,7 +18,7 @@ from api.tests.common import (
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_create_connection(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     connector = await generate_connector()
 
@@ -55,7 +55,7 @@ async def test_create_connection(test_context):
 
 @pytest.mark.django_db
 async def test_create_connection_no_membership(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     workspace2 = await generate_workspace(organisation)
 
@@ -94,7 +94,7 @@ async def test_create_connection_no_membership(test_context):
 
 @pytest.mark.django_db
 async def test_update_connection(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
     connection = await generate_connection(workspace)
 
     mutation = """
@@ -133,7 +133,7 @@ async def test_update_connection(test_context):
 
 @pytest.mark.django_db
 async def test_update_connection_with_schedule(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
     connection = await generate_connection(workspace)
 
     mutation = """
@@ -179,7 +179,7 @@ async def test_update_connection_with_schedule(test_context):
 
 @pytest.mark.django_db
 async def test_update_connection_with_incorrect_schedule(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
     connection = await generate_connection(workspace)
 
     mutation = """
@@ -214,7 +214,7 @@ async def test_update_connection_with_incorrect_schedule(test_context):
 
 @pytest.mark.django_db
 async def test_update_connection_no_membership(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
     workspace2 = await generate_workspace(organisation)
     connection = await generate_connection(workspace2)
 
@@ -250,7 +250,7 @@ async def test_update_connection_no_membership(test_context):
 
 @pytest.mark.django_db
 async def test_update_connection_temp(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
     connection = await generate_connection(workspace, temp=True)
 
     mutation = """
@@ -281,7 +281,7 @@ async def test_update_connection_temp(test_context):
 
 @pytest.mark.django_db
 async def test_run_connection(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
     connection = await generate_connection(workspace)
 
     mutation = """
@@ -311,7 +311,7 @@ async def test_run_connection(test_context):
 
 @pytest.mark.django_db
 async def test_run_connection_no_membership(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
     workspace2 = await generate_workspace(organisation)
     connection = await generate_connection(workspace2)
 
@@ -340,7 +340,7 @@ async def test_run_connection_no_membership(test_context):
 
 @pytest.mark.django_db
 async def test_run_connection_postgres(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
     connection = await generate_connection(workspace)
 
     mutation = """

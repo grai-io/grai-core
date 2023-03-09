@@ -32,7 +32,7 @@ async def test_add_installation(test_context, mocker):
     github_instance.get_repos.return_value = [repo]
     mock.return_value = github_instance
 
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     mutation = """
         mutation AddInstallation($workspaceId: ID!, $installationId: Int!) {
@@ -62,7 +62,7 @@ async def test_add_installation_no_repos(test_context, mocker):
     github_instance.get_repos.return_value = []
     mock.return_value = github_instance
 
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     mutation = """
         mutation AddInstallation($workspaceId: ID!, $installationId: Int!) {

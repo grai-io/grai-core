@@ -681,14 +681,14 @@ http = ["httpx"]
 
 [[package]]
 name = "dbt-artifacts-parser"
-version = "0.2.4"
+version = "0.2.5"
 description = "A dbt artifacts parser in python"
 category = "main"
 optional = false
 python-versions = ">=3.7.0"
 files = [
-    {file = "dbt-artifacts-parser-0.2.4.tar.gz", hash = "sha256:21314afba0a8edb8fc318cb624134ae1fc5a81dd851b12c62c6d692c92a639ce"},
-    {file = "dbt_artifacts_parser-0.2.4-py3-none-any.whl", hash = "sha256:597ac9914da70e0eac74d1462ee67779cf803f8d3b99d7c0d0f7cea0bd759dfe"},
+    {file = "dbt-artifacts-parser-0.2.5.tar.gz", hash = "sha256:174c6b5f44e41b1bbd0055d7a1439bc07a2be445aca26948382f3ab427b8228c"},
+    {file = "dbt_artifacts_parser-0.2.5-py3-none-any.whl", hash = "sha256:2a8332f7605001cc92f8fbb261cc0bd8551f3e2f624abb2d61ad92b064b41e45"},
 ]
 
 [package.dependencies]
@@ -3289,19 +3289,19 @@ files = [
 
 [[package]]
 name = "strawberry-django-plus"
-version = "1.35.2"
+version = "2.0.6"
 description = "Enhanced Strawberry GraphQL integration with Django"
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "strawberry_django_plus-1.35.2-py3-none-any.whl", hash = "sha256:28c783dd32aa5de799f9a3a7631cec2456099ee9de8ca9233c1c30c0099b6147"},
-    {file = "strawberry_django_plus-1.35.2.tar.gz", hash = "sha256:3b5646d2a312fd559dbb3980acc346045ff7b7cae998b9a7634cc2db83119c1a"},
+    {file = "strawberry_django_plus-2.0.6-py3-none-any.whl", hash = "sha256:639515bd51bf472bcd7bf5dd469f26c6085f34edb1c86c85c1cb8093283bb63f"},
+    {file = "strawberry_django_plus-2.0.6.tar.gz", hash = "sha256:90ed3baaeb7b7e3ac5e0e6ce17b0e2d07a991cbd7160dca61268cda784f41f37"},
 ]
 
 [package.dependencies]
 django = ">=3.2"
-strawberry-graphql = ">=0.140.3"
+strawberry-graphql = ">=0.161.0"
 strawberry-graphql-django = ">=0.8"
 typing-extensions = ">=4.2.0"
 
@@ -3311,14 +3311,14 @@ enum = ["django-choices-field (>=2.0)"]
 
 [[package]]
 name = "strawberry-graphql"
-version = "0.159.1"
+version = "0.161.1"
 description = "A library for creating GraphQL APIs"
 category = "main"
 optional = false
 python-versions = ">=3.7,<4.0"
 files = [
-    {file = "strawberry_graphql-0.159.1-py3-none-any.whl", hash = "sha256:f16c3efcb3b33e8f35ddbbe640e61e67efeeeb05d313416ae10336b8d2c7a69b"},
-    {file = "strawberry_graphql-0.159.1.tar.gz", hash = "sha256:25b56e294ed032e69c066fe0ac802a724f4364c2d70d903e6a9b41d8c62f5add"},
+    {file = "strawberry_graphql-0.161.1-py3-none-any.whl", hash = "sha256:7cb994355fec90640f05c154817d8fe424e16fcb3364809d11855493e036ee69"},
+    {file = "strawberry_graphql-0.161.1.tar.gz", hash = "sha256:4e865fb6ca32806bb9c60bc3ffabb3239d2e21d3efafe2938c22812b88d9aad6"},
 ]
 
 [package.dependencies]
@@ -3564,4 +3564,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "0fa58b5e40cbb70eae6582adfde3d73c55f0db209fad0cd1943c6b3949162b62"
+content-hash = "dbabdbd31caa596f5b7fa48d4ecf3c0ca570cd8a6f92ca619a286efa620979c0"
