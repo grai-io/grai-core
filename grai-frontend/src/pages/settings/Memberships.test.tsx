@@ -1,10 +1,10 @@
 import React from "react"
+import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
 import profileMock from "testing/profileMock"
-import Memberships, { GET_MEMBERSHIPS } from "./Memberships"
-import userEvent from "@testing-library/user-event"
 import { DELETE_MEMBERSHIP } from "components/settings/memberships/MembershipDelete"
+import Memberships, { GET_MEMBERSHIPS } from "./Memberships"
 
 test("renders", async () => {
   render(<Memberships />, {
