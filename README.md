@@ -45,20 +45,20 @@ Grai makes it easy to understand and test how your data relates across databases
 
 ### Connectors
 
-We currently support pre-built connectors for a variety of sources including
+We currently support pre-built integrations for a variety of sources including
 
 <center>
 
-|                                                                    | connector  | install                             |
-| ------------------------------------------------------------------ | ---------- | ----------------------------------- |
-| <img src="resources/snowflake.png" alt= “” width="30" height="30"> | Snowflake  | `pip install grai-source-snowflake` |
-| <img src="resources/bigquery.svg" alt= “” width="30" height="30">  | BigQuery   | `pip install grai-source-bigquery`  |
-| <img src="resources/postgres.png" alt= “” width="30" height="30">  | Postgres   | `pip install grai-source-postgres`  |
-| <img src="resources/mysql.png" alt= “” width="30" height="30">     | MySQL      | `pip install grai-source-mysql`     |
-| <img src="resources/mssql.png" alt= “” width="30" height="30">     | SQL Server | `pip install grai-source-mssql`     |
-| <img src="resources/dbt.png" alt= “” width="30" height="30">       | dbt        | `pip install grai-source-dbt`       |
-| <img src="resources/fivetran.png" alt= “” width="30" height="30">  | Fivetran   | `pip install grai-source-fivetran`  |
-| <img src="resources/csv.png" alt= “” width="30" height="30">       | csv        | `pip install grai-source-flat-file` |
+|                                                                    | integration | install                             |
+| ------------------------------------------------------------------ | ----------- | ----------------------------------- |
+| <img src="resources/snowflake.png" alt= “” width="30" height="30"> | Snowflake   | `pip install grai-source-snowflake` |
+| <img src="resources/bigquery.svg" alt= “” width="30" height="30">  | BigQuery    | `pip install grai-source-bigquery`  |
+| <img src="resources/postgres.png" alt= “” width="30" height="30">  | Postgres    | `pip install grai-source-postgres`  |
+| <img src="resources/mysql.png" alt= “” width="30" height="30">     | MySQL       | `pip install grai-source-mysql`     |
+| <img src="resources/mssql.png" alt= “” width="30" height="30">     | SQL Server  | `pip install grai-source-mssql`     |
+| <img src="resources/dbt.png" alt= “” width="30" height="30">       | dbt         | `pip install grai-source-dbt`       |
+| <img src="resources/fivetran.png" alt= “” width="30" height="30">  | Fivetran    | `pip install grai-source-fivetran`  |
+| <img src="resources/csv.png" alt= “” width="30" height="30">       | csv         | `pip install grai-source-flat-file` |
 
 </center>
 
