@@ -19,7 +19,7 @@ from .common import (
 
 @pytest.mark.django_db
 async def test_workspace_run(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     connector = await Connector.objects.acreate(name="Connector 4")
     connection = await Connection.objects.acreate(
@@ -64,7 +64,7 @@ async def test_workspace_run(test_context):
 
 @pytest.mark.django_db
 async def test_workspace_connection_run(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     connector = await Connector.objects.acreate(name="Connector 5")
     connection = await Connection.objects.acreate(
@@ -130,7 +130,7 @@ async def test_workspace_connection_run(test_context):
 
 @pytest.mark.django_db
 async def test_tables(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     query = """
         query Workspace($workspaceId: ID!) {
@@ -154,7 +154,7 @@ async def test_tables(test_context):
 
 @pytest.mark.django_db
 async def test_workspace_nodes(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     node = await Node.objects.acreate(workspace=workspace)
 
@@ -184,7 +184,7 @@ async def test_workspace_nodes(test_context):
 
 @pytest.mark.django_db
 async def test_workspace_node(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     node = await Node.objects.acreate(workspace=workspace)
 
@@ -215,7 +215,7 @@ async def test_workspace_node(test_context):
 
 @pytest.mark.django_db
 async def test_tables_pagination(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     query = """
         query Workspace($workspaceId: ID!) {
@@ -242,7 +242,7 @@ async def test_tables_pagination(test_context):
 
 @pytest.mark.django_db
 async def test_table(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     table = await Node.objects.acreate(
         workspace=workspace, metadata={"grai": {"node_type": "Table"}}, name=uuid.uuid4()
@@ -289,7 +289,7 @@ async def test_table(test_context):
 
 @pytest.mark.django_db
 async def test_other_edges(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     query = """
         query Workspace($workspaceId: ID!) {
@@ -316,7 +316,7 @@ async def test_other_edges(test_context):
 
 @pytest.mark.django_db
 async def test_workspace_edges(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     source = await Node.objects.acreate(workspace=workspace, name="source")
     destination = await Node.objects.acreate(workspace=workspace, name="destination")
@@ -351,7 +351,7 @@ async def test_workspace_edges(test_context):
 
 @pytest.mark.django_db
 async def test_workspace_edge(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     source = await Node.objects.acreate(workspace=workspace, name="source")
     destination = await Node.objects.acreate(workspace=workspace, name="destination")
@@ -435,7 +435,7 @@ async def generate_two_tables(workspace: Workspace):
 
 @pytest.mark.django_db
 async def test_table_source_tables(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     table, related_table = await generate_two_tables(workspace)
 
@@ -471,7 +471,7 @@ async def test_table_source_tables(test_context):
 
 @pytest.mark.django_db
 async def test_table_destination_tables(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     table, related_table = await generate_two_tables(workspace)
 
@@ -507,7 +507,7 @@ async def test_table_destination_tables(test_context):
 
 @pytest.mark.django_db
 async def test_tables_count(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     await Node.objects.acreate(workspace=workspace, metadata={"grai": {"node_type": "Table"}}, name=uuid.uuid4())
 
@@ -535,7 +535,7 @@ async def test_tables_count(test_context):
 
 @pytest.mark.django_db
 async def test_other_edges_count(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     await Node.objects.acreate(
         workspace=workspace,
@@ -567,7 +567,7 @@ async def test_other_edges_count(test_context):
 
 @pytest.mark.django_db
 async def test_workspace_connections(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     connector = await Connector.objects.acreate(name=f"Connector - {uuid.uuid4()}")
     connection = await Connection.objects.acreate(workspace=workspace, connector=connector)
@@ -602,7 +602,7 @@ async def test_workspace_connections(test_context):
 
 @pytest.mark.django_db
 async def test_workspace_runs(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     query = """
         query Workspace($workspaceId: ID!) {
@@ -629,7 +629,7 @@ async def test_workspace_runs(test_context):
 
 @pytest.mark.django_db
 async def test_workspace_runs_filter_by_repo(test_context, test_commit):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     connector = await Connector.objects.acreate(name=str(uuid.uuid4()))
     connection = await Connection.objects.acreate(
@@ -669,7 +669,7 @@ async def test_workspace_runs_filter_by_repo(test_context, test_commit):
 
 @pytest.mark.django_db
 async def test_workspace_runs_filter_by_branch(test_context, test_branch, test_commit):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     connector = await Connector.objects.acreate(name=str(uuid.uuid4()))
     connection = await Connection.objects.acreate(
@@ -708,7 +708,7 @@ async def test_workspace_runs_filter_by_branch(test_context, test_branch, test_c
 
 @pytest.mark.django_db
 async def test_workspace_runs_filter_by_action(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     connector = await Connector.objects.acreate(name=str(uuid.uuid4()))
     connection = await Connection.objects.acreate(
@@ -750,7 +750,7 @@ async def test_workspace_runs_filter_by_action(test_context):
 
 @pytest.mark.django_db
 async def test_workspace_memberships(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     query = """
         query Workspace($workspaceId: ID!) {
@@ -831,7 +831,7 @@ async def test_commit_with_pr(test_workspace, test_repository, test_branch, test
 
 @pytest.mark.django_db
 async def test_workspace_repositories(test_context, test_repository):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     query = """
         query Workspace($workspaceId: ID!) {
@@ -865,7 +865,7 @@ async def test_workspace_repositories(test_context, test_repository):
 
 @pytest.mark.django_db
 async def test_workspace_repositories_filter(test_context, test_repository):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     query = """
         query Workspace($workspaceId: ID!, $type: String!, $owner: String!, $repo: String!) {
@@ -902,7 +902,7 @@ async def test_workspace_repositories_filter(test_context, test_repository):
 
 @pytest.mark.django_db
 async def test_workspace_repository_by_id(test_context, test_repository):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     query = """
         query Workspace($workspaceId: ID!, $repositoryId: ID!) {
@@ -934,7 +934,7 @@ async def test_workspace_repository_by_id(test_context, test_repository):
 
 @pytest.mark.django_db
 async def test_workspace_repository_by_reference(test_context, test_repository):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     query = """
         query Workspace($workspaceId: ID!, $type: String!, $owner: String!, $repo: String!) {
@@ -971,7 +971,7 @@ async def test_workspace_repository_by_reference(test_context, test_repository):
 
 @pytest.mark.django_db
 async def test_workspace_branches(test_context, test_branch):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     query = """
         query Workspace($workspaceId: ID!) {
@@ -1001,7 +1001,7 @@ async def test_workspace_branches(test_context, test_branch):
 
 @pytest.mark.django_db
 async def test_workspace_branch_by_id(test_context, test_branch):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     query = """
         query Workspace($workspaceId: ID!, $branchId: ID!) {
@@ -1029,7 +1029,7 @@ async def test_workspace_branch_by_id(test_context, test_branch):
 
 @pytest.mark.django_db
 async def test_workspace_branch_by_reference(test_context, test_branch):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     query = """
         query Workspace($workspaceId: ID!, $reference: String!) {
@@ -1060,7 +1060,7 @@ async def test_workspace_branch_by_reference(test_context, test_branch):
 
 @pytest.mark.django_db
 async def test_workspace_pull_requests(test_context, test_pull_request):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     query = """
         query Workspace($workspaceId: ID!) {
@@ -1092,7 +1092,7 @@ async def test_workspace_pull_requests(test_context, test_pull_request):
 
 @pytest.mark.django_db
 async def test_workspace_pull_request_by_id(test_context, test_pull_request):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     query = """
         query Workspace($workspaceId: ID!, $pull_requestId: ID!) {
@@ -1122,7 +1122,7 @@ async def test_workspace_pull_request_by_id(test_context, test_pull_request):
 
 @pytest.mark.django_db
 async def test_workspace_pull_request_by_reference(test_context, test_pull_request):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     query = """
         query Workspace($workspaceId: ID!, $reference: String!) {
@@ -1155,7 +1155,7 @@ async def test_workspace_pull_request_by_reference(test_context, test_pull_reque
 
 @pytest.mark.django_db
 async def test_workspace_commits(test_context, test_commit):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     query = """
         query Workspace($workspaceId: ID!) {
@@ -1187,7 +1187,7 @@ async def test_workspace_commits(test_context, test_commit):
 
 @pytest.mark.django_db
 async def test_workspace_commit_by_id(test_context, test_commit):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     query = """
         query Workspace($workspaceId: ID!, $commitId: ID!) {
@@ -1217,7 +1217,7 @@ async def test_workspace_commit_by_id(test_context, test_commit):
 
 @pytest.mark.django_db
 async def test_workspace_commit_by_reference(test_context, test_commit):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     query = """
         query Workspace($workspaceId: ID!, $reference: String!) {
@@ -1250,7 +1250,7 @@ async def test_workspace_commit_by_reference(test_context, test_commit):
 
 @pytest.mark.django_db
 async def test_repository_branch_by_id(test_context, test_repository, test_branch):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     query = """
         query Workspace($workspaceId: ID!, $repositoryId: ID!, $branchId: ID!) {
@@ -1284,7 +1284,7 @@ async def test_repository_branch_by_id(test_context, test_repository, test_branc
 
 @pytest.mark.django_db
 async def test_repository_branch_by_reference(test_context, test_repository, test_branch):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     query = """
         query Workspace($workspaceId: ID!, $repositoryId: ID!, $reference: String!) {
@@ -1318,7 +1318,7 @@ async def test_repository_branch_by_reference(test_context, test_repository, tes
 
 @pytest.mark.django_db
 async def test_repository_pull_request_by_id(test_context, test_repository, test_pull_request):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     query = """
         query Workspace($workspaceId: ID!, $repositoryId: ID!, $pullRequestId: ID!) {
@@ -1352,7 +1352,7 @@ async def test_repository_pull_request_by_id(test_context, test_repository, test
 
 @pytest.mark.django_db
 async def test_repository_pull_request_by_reference(test_context, test_repository, test_pull_request):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     query = """
         query Workspace($workspaceId: ID!, $repositoryId: ID!, $reference: String!) {
@@ -1386,7 +1386,7 @@ async def test_repository_pull_request_by_reference(test_context, test_repositor
 
 @pytest.mark.django_db
 async def test_repository_commit_by_id(test_context, test_repository, test_commit):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     query = """
         query Workspace($workspaceId: ID!, $repositoryId: ID!, $commitId: ID!) {
@@ -1420,7 +1420,7 @@ async def test_repository_commit_by_id(test_context, test_repository, test_commi
 
 @pytest.mark.django_db
 async def test_repository_commit_by_reference(test_context, test_repository, test_commit):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     query = """
         query Workspace($workspaceId: ID!, $repositoryId: ID!, $reference: String!) {
@@ -1454,7 +1454,7 @@ async def test_repository_commit_by_reference(test_context, test_repository, tes
 
 @pytest.mark.django_db
 async def test_branch_last_commit(test_context, test_repository, test_branch, test_commit):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     query = """
         query Workspace($workspaceId: ID!, $repositoryId: ID!, $branchId: ID!) {
@@ -1492,7 +1492,7 @@ async def test_branch_last_commit(test_context, test_repository, test_branch, te
 
 @pytest.mark.django_db
 async def test_pull_request_last_commit(test_context, test_repository, test_pull_request, test_commit_with_pr):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     query = """
         query Workspace($workspaceId: ID!, $repositoryId: ID!, $pullRequestId: ID!) {
@@ -1530,7 +1530,7 @@ async def test_pull_request_last_commit(test_context, test_repository, test_pull
 
 @pytest.mark.django_db
 async def test_commit_last_run(test_context, test_commit):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     connector = await Connector.objects.acreate(name=str(uuid.uuid4()))
     connection = await Connection.objects.acreate(

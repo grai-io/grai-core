@@ -23,7 +23,7 @@ from asgiref.sync import sync_to_async
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_create_workspace(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     mutation = """
         mutation CreateWorkspace($organisationName: String!, $name: String!) {
@@ -59,7 +59,7 @@ async def test_create_workspace(test_context):
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_create_workspace_existing_organisation(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     mutation = """
         mutation CreateWorkspace($organisationId: ID!, $name: String!) {
@@ -92,7 +92,7 @@ async def test_create_workspace_existing_organisation(test_context):
 
 @pytest.mark.django_db
 async def test_update_workspace(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     mutation = """
         mutation UpdateWorkspace($id: ID!, $name: String!) {
@@ -121,7 +121,7 @@ async def test_update_workspace(test_context):
 
 @pytest.mark.django_db
 async def test_create_membership(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     mutation = """
         mutation CreateMembership($workspaceId: ID!, $role: String!, $email: String!) {
@@ -153,7 +153,7 @@ async def test_create_membership(test_context):
 
 @pytest.mark.django_db
 async def test_create_membership_existing_user(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
     User = get_user_model()
     user = await User.objects.acreate(username=generate_username())
 
@@ -189,8 +189,32 @@ async def test_create_membership_existing_user(test_context):
 
 
 @pytest.mark.django_db
+async def test_delete_membership(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    mutation = """
+        mutation DeleteMembership($id: ID!) {
+            deleteMembership(id: $id) {
+                id
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "id": str(membership.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["deleteMembership"]["id"] == str(membership.id)
+
+
+@pytest.mark.django_db
 async def test_create_api_key(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     mutation = """
         mutation CreateApiKey($workspaceId: ID!, $name: String!) {
@@ -220,7 +244,7 @@ async def test_create_api_key(test_context):
 
 @pytest.mark.django_db
 async def test_delete_api_key(test_context):
-    context, organisation, workspace, user = test_context
+    context, organisation, workspace, user, membership = test_context
 
     mutation = """
         mutation DeleteApiKey($id: ID!) {

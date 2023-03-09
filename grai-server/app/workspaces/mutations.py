@@ -99,6 +99,19 @@ class Mutation:
         return membership
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def deleteMembership(
+        self,
+        id: strawberry.ID,
+    ) -> Membership:
+        membership = await MembershipModel.objects.aget(id=id)
+
+        await sync_to_async(membership.delete)()
+
+        membership.id = id
+
+        return membership
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def createApiKey(self, info: Info, name: str, workspaceId: strawberry.ID) -> KeyResult:
         user = get_user(info)
         workspace = await get_workspace(info, workspaceId)
