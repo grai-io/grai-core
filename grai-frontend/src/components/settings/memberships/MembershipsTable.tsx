@@ -8,13 +8,14 @@ import {
   Typography,
 } from "@mui/material"
 import Loading from "components/layout/Loading"
+import MembershipMenu from "./MembershipMenu"
 // import MembershipMenu from "./MembershipMenu"
 
 interface User {
   id: string
   username: string | null
-  first_name: string
-  last_name: string
+  first_name: string | null
+  last_name: string | null
 }
 
 interface Membership {
@@ -28,11 +29,13 @@ interface Membership {
 type MembershipsTableProps = {
   memberships: Membership[]
   loading?: boolean
+  workspaceId?: string
 }
 
 const MembershipsTable: React.FC<MembershipsTableProps> = ({
   memberships,
   loading,
+  workspaceId,
 }) => (
   <Table>
     <TableHead>
@@ -56,7 +59,7 @@ const MembershipsTable: React.FC<MembershipsTableProps> = ({
           <TableCell>{membership.is_active ? "Yes" : "No"}</TableCell>
           <TableCell>{membership.created_at}</TableCell>
           <TableCell sx={{ py: 0, px: 1 }}>
-            {/* <MembershipMenu membership={key} /> */}
+            <MembershipMenu membership={membership} workspaceId={workspaceId} />
           </TableCell>
         </TableRow>
       ))}
