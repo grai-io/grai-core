@@ -1,5 +1,5 @@
 import React from "react"
-import { MoreHoriz, Edit, Delete, DeleteOutline } from "@mui/icons-material"
+import { MoreHoriz, Edit, DeleteOutline } from "@mui/icons-material"
 import {
   IconButton,
   Menu,
@@ -8,17 +8,19 @@ import {
   ListItemText,
 } from "@mui/material"
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state"
+import ApiKeyDelete from "./ApiKeyDelete"
 
-interface ApiKey {
+export interface ApiKey {
   id: string
   name: string
 }
 
 type ApiKeyMenuProps = {
   apiKey: ApiKey
+  workspaceId?: string
 }
 
-const ApiKeyMenu: React.FC<ApiKeyMenuProps> = ({ apiKey }) => {
+const ApiKeyMenu: React.FC<ApiKeyMenuProps> = ({ apiKey, workspaceId }) => {
   return (
     <PopupState variant="popover">
       {popupState => (
@@ -47,12 +49,11 @@ const ApiKeyMenu: React.FC<ApiKeyMenuProps> = ({ apiKey }) => {
               </ListItemIcon>
               <ListItemText primary="Revoke" />
             </MenuItem>
-            <MenuItem>
-              <ListItemIcon>
-                <Delete />
-              </ListItemIcon>
-              <ListItemText primary="Delete" />
-            </MenuItem>
+            <ApiKeyDelete
+              apiKey={apiKey}
+              onClose={popupState.close}
+              workspaceId={workspaceId}
+            />
           </Menu>
         </>
       )}
