@@ -20,45 +20,43 @@ type ApiKeyMenuProps = {
   workspaceId?: string
 }
 
-const ApiKeyMenu: React.FC<ApiKeyMenuProps> = ({ apiKey, workspaceId }) => {
-  return (
-    <PopupState variant="popover">
-      {popupState => (
-        <>
-          <IconButton size="small" {...bindTrigger(popupState)}>
-            <MoreHoriz />
-          </IconButton>
+const ApiKeyMenu: React.FC<ApiKeyMenuProps> = ({ apiKey, workspaceId }) => (
+  <PopupState variant="popover">
+    {popupState => (
+      <>
+        <IconButton size="small" {...bindTrigger(popupState)}>
+          <MoreHoriz />
+        </IconButton>
 
-          <Menu
-            {...bindMenu(popupState)}
-            PaperProps={{
-              sx: {
-                width: 200,
-              },
-            }}
-          >
-            <MenuItem disabled>
-              <ListItemIcon>
-                <Edit />
-              </ListItemIcon>
-              <ListItemText primary="Edit" />
-            </MenuItem>
-            <MenuItem disabled>
-              <ListItemIcon>
-                <DeleteOutline />
-              </ListItemIcon>
-              <ListItemText primary="Revoke" />
-            </MenuItem>
-            <ApiKeyDelete
-              apiKey={apiKey}
-              onClose={popupState.close}
-              workspaceId={workspaceId}
-            />
-          </Menu>
-        </>
-      )}
-    </PopupState>
-  )
-}
+        <Menu
+          {...bindMenu(popupState)}
+          PaperProps={{
+            sx: {
+              width: 200,
+            },
+          }}
+        >
+          <MenuItem disabled>
+            <ListItemIcon>
+              <Edit />
+            </ListItemIcon>
+            <ListItemText primary="Edit" />
+          </MenuItem>
+          <MenuItem disabled>
+            <ListItemIcon>
+              <DeleteOutline />
+            </ListItemIcon>
+            <ListItemText primary="Revoke" />
+          </MenuItem>
+          <ApiKeyDelete
+            apiKey={apiKey}
+            onClose={popupState.close}
+            workspaceId={workspaceId}
+          />
+        </Menu>
+      </>
+    )}
+  </PopupState>
+)
 
 export default ApiKeyMenu
