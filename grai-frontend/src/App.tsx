@@ -1,6 +1,7 @@
 import React from "react"
 import { Close } from "@mui/icons-material"
 import { CssBaseline, IconButton, ThemeProvider } from "@mui/material"
+import { ConfirmProvider } from "material-ui-confirm"
 import { SnackbarKey, SnackbarProvider } from "notistack"
 import { BrowserRouter } from "react-router-dom"
 import PosthogProvider from "components/PosthogProvider"
@@ -20,21 +21,27 @@ const App: React.FC = () => {
       <CssBaseline />
       <ThemeProvider theme={theme}>
         <BackendProvider>
-          <SnackbarProvider
-            ref={notistackRef}
-            maxSnack={3}
-            hideIconVariant
-            action={key => (
-              <IconButton onClick={onClickDismiss(key)}>
-                <Close />
-              </IconButton>
-            )}
+          <ConfirmProvider
+            defaultOptions={{
+              confirmationButtonProps: { autoFocus: true },
+            }}
           >
-            <BrowserRouter>
-              <PosthogProvider />
-              <Routes />
-            </BrowserRouter>
-          </SnackbarProvider>
+            <SnackbarProvider
+              ref={notistackRef}
+              maxSnack={3}
+              hideIconVariant
+              action={key => (
+                <IconButton onClick={onClickDismiss(key)}>
+                  <Close />
+                </IconButton>
+              )}
+            >
+              <BrowserRouter>
+                <PosthogProvider />
+                <Routes />
+              </BrowserRouter>
+            </SnackbarProvider>
+          </ConfirmProvider>
         </BackendProvider>
       </ThemeProvider>
     </div>
