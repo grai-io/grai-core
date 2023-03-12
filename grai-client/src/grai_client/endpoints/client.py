@@ -45,9 +45,9 @@ class BaseClient(abc.ABC):
         self.port = port
         self.insecure = insecure
 
-        self.default_payload = {}
-        self.default_headers = {}
-        self.default_request_args = {}
+        self.default_payload: Dict = dict()
+        self.default_headers: Dict = dict()
+        self.default_request_args: Dict = dict()
         self.session = requests.Session()
 
         if protocol is None:

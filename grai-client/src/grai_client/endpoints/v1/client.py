@@ -23,14 +23,14 @@ class ClientV1(BaseClient):
         self.workspace_endpoint = f"{self.api}{self._workspace_endpoint}"
         self.is_authenticated_endpoint = f"{self.api}{self._is_authenticated_endpoint}"
 
-        self._workspace = workspace
+        self._workspace = str(workspace) if workspace is not None else None
 
     def check_authentication(self) -> requests.Response:
         result = self.session.get(self.is_authenticated_endpoint, headers=self.auth_headers)
         return result
 
     @property
-    def workspace(self) -> str:
+    def workspace(self) -> Optional[str]:
         return self._workspace
 
     @workspace.setter
