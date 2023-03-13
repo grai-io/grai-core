@@ -2,7 +2,7 @@ import React from "react"
 import { render, screen, waitFor } from "@testing-library/react"
 import App from "./App"
 
-test("renders learn react link", async () => {
+test("renders", async () => {
   render(<App />)
 
   expect(screen.getByRole("progressbar")).toBeInTheDocument()

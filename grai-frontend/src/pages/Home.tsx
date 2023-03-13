@@ -17,6 +17,7 @@ import {
   GetWorkspaceHomeVariables,
 } from "./__generated__/GetWorkspaceHome"
 import NotFound from "./NotFound"
+import SearchDialog from "components/search/SearchDialog"
 
 export const GET_WORKSPACE = gql`
   query GetWorkspaceHome($organisationName: String!, $workspaceName: String!) {
@@ -29,6 +30,8 @@ export const GET_WORKSPACE = gql`
 
 const Home: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
+
+  const [search, setSearch] = React.useState(false)
 
   const { loading, error, data } = useQuery<
     GetWorkspaceHome,
@@ -59,6 +62,7 @@ const Home: React.FC = () => {
         </Typography>
         <TextField
           placeholder="Search data assets"
+          onClick={() => setSearch(true)}
           sx={{ width: 750, mb: 15 }}
           InputProps={{
             endAdornment: (
@@ -70,6 +74,11 @@ const Home: React.FC = () => {
         />
         <HomeCards />
       </Container>
+      <SearchDialog
+        open={search}
+        onClose={() => setSearch(false)}
+        workspaceId={workspace.id}
+      />
     </PageLayout>
   )
 }

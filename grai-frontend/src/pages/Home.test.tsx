@@ -1,9 +1,20 @@
-import React from "react"
+import React, { ReactNode } from "react"
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { act, render, screen, waitFor } from "testing"
 import profileMock from "testing/profileMock"
 import Home, { GET_WORKSPACE } from "./Home"
 import Workspaces, { GET_WORKSPACES } from "./workspaces/Workspaces"
+import userEvent from "@testing-library/user-event"
+
+jest.mock("react-instantsearch-hooks-web", () => ({
+  InstantSearch: ({ children }: { children: ReactNode }) => children,
+  useHits: () => ({ hits: [] }),
+  useSearchBox: () => ({
+    query: "",
+    refine: jest.fn(),
+    clear: jest.fn(),
+  }),
+}))
 
 test("renders", async () => {
   render(<Home />, {
@@ -18,6 +29,32 @@ test("renders", async () => {
 
   // eslint-disable-next-line testing-library/no-wait-for-empty-callback
   await waitFor(() => {})
+})
+
+test("search", async () => {
+  const user = userEvent.setup()
+
+  render(<Home />, {
+    withRouter: true,
+  })
+
+  await waitFor(() => {
+    expect(
+      screen.getByRole("heading", { name: /Welcome to Grai/i })
+    ).toBeTruthy()
+  })
+
+  await waitFor(() => {
+    expect(screen.getByRole("textbox")).toBeTruthy()
+  })
+
+  await act(async () => await user.click(screen.getByRole("textbox")))
+
+  await act(async () => await user.type(screen.getByRole("textbox"), "test"))
+
+  await act(
+    async () => await user.click(screen.getByRole("button", { name: /close/i }))
+  )
 })
 
 test("error", async () => {
