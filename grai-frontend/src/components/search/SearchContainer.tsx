@@ -1,14 +1,14 @@
-import { gql, useQuery } from "@apollo/client"
-import Loading from "components/layout/Loading"
-import GraphError from "components/utils/GraphError"
 import React from "react"
-import SearchForm from "./SearchForm"
+import { gql, useQuery } from "@apollo/client"
 import algoliasearch from "algoliasearch/lite"
 import { InstantSearch } from "react-instantsearch-hooks-web"
+import Loading from "components/layout/Loading"
+import GraphError from "components/utils/GraphError"
 import {
   GetSearchKey,
   GetSearchKeyVariables,
 } from "./__generated__/GetSearchKey"
+import SearchForm from "./SearchForm"
 
 export const GET_SEARCH_KEY = gql`
   query GetSearchKey($workspaceId: ID!) {

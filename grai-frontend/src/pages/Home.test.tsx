@@ -1,10 +1,10 @@
 import React, { ReactNode } from "react"
+import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
 import profileMock from "testing/profileMock"
 import Home, { GET_WORKSPACE } from "./Home"
 import Workspaces, { GET_WORKSPACES } from "./workspaces/Workspaces"
-import userEvent from "@testing-library/user-event"
 
 jest.mock("react-instantsearch-hooks-web", () => ({
   InstantSearch: ({ children }: { children: ReactNode }) => children,

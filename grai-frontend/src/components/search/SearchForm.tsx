@@ -1,8 +1,8 @@
-import { Divider, Box, List } from "@mui/material"
 import React from "react"
-import SearchTextbox from "./SearchTextbox"
+import { Divider, Box, List } from "@mui/material"
 import { useHits, useSearchBox } from "react-instantsearch-hooks-web"
 import SearchHitRow, { SearchHit } from "./SearchHitRow"
+import SearchTextbox from "./SearchTextbox"
 
 type SearchFormProps = {
   onClose: () => void

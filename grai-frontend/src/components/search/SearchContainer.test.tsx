@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react"
+import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
-import userEvent from "@testing-library/user-event"
 import SearchContainer, { GET_SEARCH_KEY } from "./SearchContainer"
 
 const onClose = jest.fn()
