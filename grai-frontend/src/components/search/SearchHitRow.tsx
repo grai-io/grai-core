@@ -1,9 +1,9 @@
+import React from "react"
 import { ListAlt, ViewColumn } from "@mui/icons-material"
 import { ListItemButton, ListItemIcon, ListItemText } from "@mui/material"
-import React from "react"
-import { Link } from "react-router-dom"
-import type { BaseHit } from "instantsearch.js"
 import useWorkspace from "helpers/useWorkspace"
+import type { BaseHit } from "instantsearch.js"
+import { Link } from "react-router-dom"
 
 export interface SearchHit extends BaseHit {
   id: string

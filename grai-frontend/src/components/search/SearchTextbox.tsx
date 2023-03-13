@@ -1,6 +1,6 @@
+import React from "react"
 import { Close, Search } from "@mui/icons-material"
 import { Box, Button, InputAdornment, TextField } from "@mui/material"
-import React from "react"
 import { useSearchBox } from "react-instantsearch-hooks-web"
 
 type SearchTextboxProps = {

@@ -11,13 +11,13 @@ import {
 import useWorkspace from "helpers/useWorkspace"
 import HomeCards from "components/home/HomeCards"
 import PageLayout from "components/layout/PageLayout"
+import SearchDialog from "components/search/SearchDialog"
 import GraphError from "components/utils/GraphError"
 import {
   GetWorkspaceHome,
   GetWorkspaceHomeVariables,
 } from "./__generated__/GetWorkspaceHome"
 import NotFound from "./NotFound"
-import SearchDialog from "components/search/SearchDialog"
 
 export const GET_WORKSPACE = gql`
   query GetWorkspaceHome($organisationName: String!, $workspaceName: String!) {
