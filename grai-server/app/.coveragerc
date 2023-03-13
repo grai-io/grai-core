@@ -1,0 +1,5 @@
+[run]
+omit =
+  *tests*
+  *migrations*
+  the_guide/settings/*

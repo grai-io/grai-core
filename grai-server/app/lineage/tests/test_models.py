@@ -35,6 +35,60 @@ def test_node_created(create_workspace):
     assert node.is_active
     assert isinstance(node.created_at, datetime.datetime)
     assert isinstance(node.updated_at, datetime.datetime)
+    assert node.search_type() == "Node"
+    assert node.table_id() is None
+
+
+@pytest.mark.django_db
+def test_table_table_id(create_workspace):
+    metadata = {
+        "grai": {
+            "node_type": "Table",
+        }
+    }
+
+    node = Node.objects.create(
+        namespace="temp", name="a", data_source="test", workspace=create_workspace, metadata=metadata
+    )
+
+    assert node.id == uuid.UUID(str(node.id))
+    assert node.name == "a"
+    assert node.namespace == "temp"
+    assert node.data_source == "test"
+    assert node.display_name == "a"
+    assert node.is_active
+    assert isinstance(node.created_at, datetime.datetime)
+    assert isinstance(node.updated_at, datetime.datetime)
+    assert node.search_type() == "Table"
+    assert node.table_id() == node.id
+
+
+@pytest.mark.django_db
+def test_column_table_id(create_workspace):
+    metadata = {
+        "grai": {
+            "node_type": "Column",
+        }
+    }
+
+    node = Node.objects.create(
+        namespace="temp", name="a", data_source="test", workspace=create_workspace, metadata=metadata
+    )
+    table = Node.objects.create(namespace="temp", name="b", data_source="test", workspace=create_workspace)
+    Edge.objects.create(
+        source=table, destination=node, workspace=create_workspace, metadata={"grai": {"edge_type": "TableToColumn"}}
+    )
+
+    assert node.id == uuid.UUID(str(node.id))
+    assert node.name == "a"
+    assert node.namespace == "temp"
+    assert node.data_source == "test"
+    assert node.display_name == "a"
+    assert node.is_active
+    assert isinstance(node.created_at, datetime.datetime)
+    assert isinstance(node.updated_at, datetime.datetime)
+    assert node.search_type() == "Column"
+    assert str(node.table_id()) == str(table.id)
 
 
 @pytest.mark.django_db

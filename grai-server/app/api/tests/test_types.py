@@ -393,6 +393,32 @@ async def test_workspace_edge(test_context):
     assert result.data["workspace"]["edge"]["destination"]["id"] == str(destination.id)
 
 
+@pytest.mark.django_db
+async def test_workspace_search_key(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!) {
+            workspace(id: $workspaceId) {
+            id
+            search_key
+          }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["search_key"] is not None
+
+
 async def generate_table_with_column(workspace: Workspace):
     table = await Node.objects.acreate(
         workspace=workspace,
