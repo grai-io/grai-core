@@ -4,79 +4,82 @@ import pytest
 from grai_schemas.v1 import EdgeV1, NodeV1
 from requests import RequestException
 
-from grai_client.endpoints.v1.client import ClientV1
-from grai_client.schemas.schema import Schema
-from grai_client.testing.schema import (
-    mock_v1_edge,
-    mock_v1_edge_and_nodes,
-    mock_v1_node,
-)
-from grai_client.utilities.tests import get_test_client
-
-client = get_test_client()
+from grai_client.endpoints.utilities import is_valid_uuid
+from grai_client.schemas.workspace import Workspace
+from grai_client.testing.schema import mock_v1_edge_and_nodes, mock_v1_node
 
 
-@cache
-def get_test_node():
-    test_node = mock_v1_node()
-    client.post(test_node)
-    return test_node
+def test_client_has_workspace_uuid(client):
+    assert isinstance(client.workspace, str) and is_valid_uuid(client.workspace)
 
 
-def test_get_nodes():
+def test_authentication(client):
+    response = client.check_authentication()
+    assert response.status_code == 200
+
+
+def test_get_workspace_by_name(client):
+    resp = client.get("workspace", "default")
+    assert isinstance(resp, Workspace)
+    assert resp.name == "default"
+
+
+def test_get_workspace_by_ref(client):
+    resp = client.get("workspace", "default/default")
+    assert isinstance(resp, Workspace)
+
+
+def test_get_nodes(client):
     nodes = client.get("node")
     assert all(isinstance(node, NodeV1) for node in nodes)
 
 
-def test_get_nodes_by_name():
-    test_node = get_test_node()
-    result = client.get("node", test_node.spec.name)
+def test_get_nodes_by_name(client, node_v1):
+    result = client.get("node", node_v1.spec.name)
     assert len(result) == 1, result
-    assert result[0].spec.name == test_node.spec.name
+    assert result[0].spec.name == node_v1.spec.name
 
 
-def test_get_nodes_by_name_namespace():
-    test_node = get_test_node()
-    result = client.get("node", test_node.spec.name, test_node.spec.namespace)
-    assert result.spec.name == test_node.spec.name
-    assert result.spec.namespace == test_node.spec.namespace
+def test_get_nodes_by_name_namespace(client, node_v1):
+    result = client.get("node", node_v1.spec.name, node_v1.spec.namespace)
+    assert result.spec.name == node_v1.spec.name
+    assert result.spec.namespace == node_v1.spec.namespace
 
 
-def test_get_nodes_by_namespace():
-    test_node = get_test_node()
-    result = client.get("node", "*", test_node.spec.namespace)
+def test_get_nodes_by_namespace(client, node_v1):
+    result = client.get("node", "*", node_v1.spec.namespace)
     assert isinstance(result, list)
     assert len(result) == 1  # node namespace is a uuid and therefore unique
-    assert result[0].spec.name == test_node.spec.name
-    assert result[0].spec.namespace == test_node.spec.namespace
+    assert result[0].spec.name == node_v1.spec.name
+    assert result[0].spec.namespace == node_v1.spec.namespace
 
 
-def test_get_edges():
+def test_get_edges(client):
     result = client.get("edge")
     assert all(isinstance(edge, EdgeV1) for edge in result)
 
 
-def test_post_node():
+def test_post_node(client):
     test_node = mock_v1_node()
     result = client.post(test_node)
     assert isinstance(result, NodeV1)
 
 
-def test_post_node_with_payload_options():
+def test_post_node_with_payload_options(client):
     test_node = mock_v1_node()
     options = {"payload": {"is_active": False}}
     result = client.post(test_node, options=options)
     assert result.spec.is_active is False
 
 
-def test_post_edge():
+def test_post_edge(client):
     test_edge, test_nodes = mock_v1_edge_and_nodes()
     client.post(test_nodes)
     result = client.post(test_edge)
     assert isinstance(result, EdgeV1)
 
 
-def test_delete_node():
+def test_delete_node(client):
     test_node = mock_v1_node()
     test_node = client.post(test_node)
     assert client.get(test_node)
@@ -85,7 +88,7 @@ def test_delete_node():
         result = client.get(test_node)
 
 
-def test_delete_edge():
+def test_delete_edge(client):
     test_edge, test_nodes = mock_v1_edge_and_nodes()
     test_nodes = client.post(test_nodes)
     test_edge = client.post(test_edge)
@@ -99,7 +102,7 @@ def test_delete_edge():
     client.delete(test_nodes)
 
 
-def test_patch_node():
+def test_patch_node(client):
     test_node = mock_v1_node()
     test_node = client.post(test_node)
 
@@ -110,7 +113,7 @@ def test_patch_node():
     client.delete(test_node)
 
 
-def test_patch_edge():
+def test_patch_edge(client):
     test_edge, test_nodes = mock_v1_edge_and_nodes()
     test_nodes = client.post(test_nodes)
     test_edge = client.post(test_edge)

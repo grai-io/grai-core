@@ -1,6 +1,6 @@
 import abc
 import sys
-from typing import Any, Dict, List, Optional, Sequence, TypeVar, Union
+from typing import Any, Dict, List, Literal, Optional, Sequence, TypeVar, Union
 from uuid import UUID
 
 import requests
@@ -34,25 +34,34 @@ class ClientOptions(BaseModel):
         return id(cls)
 
 
+PROTOCOL = Optional[Union[Literal["http"], Literal["https"]]]
+
+
 class BaseClient(abc.ABC):
     id: str = "base"
 
-    def __init__(self, host: str, port: str):
+    def __init__(self, host: str, port: str = "443", protocol: PROTOCOL = None, insecure: bool = False):
         self.host = host
         self.port = port
+        self.insecure = insecure
 
-        self.default_payload = {}
-        self.default_headers = {}
-        self.default_request_args = {}
+        self.default_payload: Dict = dict()
+        self.default_headers: Dict = dict()
+        self.default_request_args: Dict = dict()
         self.session = requests.Session()
 
-        prefix = "https" if self.port == "443" else "http"
-        self.url = f"{prefix}://{self.host}:{self.port}"
+        if protocol is None:
+            protocol = "http" if insecure else "https"
+        self.protocol = protocol
+
+        self.url = f"{self.protocol}://{self.host}:{self.port}"
         self.api = f"{self.url}"
+        self.health_endpoint = f"{self.url}/health/"
         self._auth_headers: Optional[Dict[str, str]] = None
 
-        if not self.check_server_status():
-            raise Exception(f"Server at {self.url} is not responding.")
+        resp = self.server_health_status()
+        if resp.status_code != 200:
+            raise Exception(f"Error connecting to server at {self.url}. Received response {resp.json()}")
 
     def default_options(self):
         return ClientOptions(
@@ -63,9 +72,8 @@ class BaseClient(abc.ABC):
             }
         )
 
-    def check_server_status(self) -> bool:
-        resp = self.session.get(f"{self.url}/health/", timeout=30)
-        return resp.status_code == 200
+    def server_health_status(self) -> requests.Response:
+        return self.session.get(self.health_endpoint)
 
     def build_url(self, endpoint: str) -> str:
         return f"{self.api}{endpoint}"
@@ -82,18 +90,31 @@ class BaseClient(abc.ABC):
         self,
         username: Optional[str] = None,
         password: Optional[str] = None,
-        token: Optional[str] = None,
         api_key: Optional[str] = None,
     ) -> None:
-        if username and password:
+        # Deprecated
+        return self.authenticate(username, password, api_key)
+
+    def authenticate(
+        self,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+        api_key: Optional[str] = None,
+    ) -> None:
+        if api_key is not None:
+            self._auth_headers = APIKeyHeader(api_key).headers
+            self.session.auth = None
+        elif username and password:
             self.session.auth = (username, password)
             self._auth_headers = {}
-        elif token:
-            self._auth_headers = UserTokenHeader(token).headers
-        elif api_key:
-            self._auth_headers = APIKeyHeader(api_key).headers
         else:
-            raise Exception("Authentication requires either a user token, api key, or username/password combination.")
+            raise Exception("Authentication requires either an api key, or username/password combination.")
+
+        resp = self.check_authentication()
+        if resp.status_code != 200:
+            raise Exception(
+                f"Unable to authenticate connection to the server with the provided credentials. Received status_code: {resp.status_code}"
+            )
 
     @abc.abstractmethod
     def check_authentication(self) -> requests.Response:

@@ -10,6 +10,6 @@ def get_test_client():
     password = os.environ.get("GRAI_PASSWORD", "super_secret")
     workspace = os.environ.get("GRAI_WORKSPACE", "default")
 
-    client = ClientV1(host, port, workspace=workspace)
-    client.set_authentication_headers(username=username, password=password)
+    client = ClientV1(host, port, workspace=workspace, insecure=True)
+    client.authenticate(username=username, password=password)
     return client
