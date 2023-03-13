@@ -1,8 +1,11 @@
 import datetime
+import time
 from typing import List, Optional
 
 import strawberry
 import strawberry_django
+from algoliasearch.search_client import SearchClient
+from django.conf import settings
 from django.db.models import Prefetch, Q
 from strawberry.scalars import JSON
 from strawberry_django.filters import FilterLookup
@@ -553,6 +556,16 @@ class Workspace:
             CommitModel.objects.get(id=id)
             if id is not None
             else CommitModel.objects.get(workspace=self, reference=reference)
+        )
+
+    # Algolia search key
+    @gql.django.field
+    def search_key(self) -> str:
+        valid_until = int(time.time()) + 3600
+
+        return SearchClient.generate_secured_api_key(
+            settings.ALGOLIA_SEARCH_KEY,
+            {"filters": f"workspace_id:{str(self.id)}", "validUntil": valid_until, "restrictIndices": "main"},
         )
 
 

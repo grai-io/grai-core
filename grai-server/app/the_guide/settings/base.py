@@ -110,6 +110,7 @@ THIRD_PARTY_APPS = [
     "health_check.contrib.migrations",
     "django_celery_beat",
     "storages",
+    "algoliasearch_django",
 ]
 
 THE_GUIDE_APPS = [
@@ -282,3 +283,9 @@ AWS_STORAGE_BUCKET_NAME = config("AWS_STORAGE_BUCKET_NAME", None)
 
 GITHUB_APP_ID = config("GITHUB_APP_ID", None)
 GITHUB_PRIVATE_KEY = config("GITHUB_PRIVATE_KEY", None)
+
+ALGOLIA_APPLICATION_ID = config("ALGOLIA_APPLICATION_ID", None)
+ALGOLIA_ADMIN_KEY = config("ALGOLIA_ADMIN_KEY", None)
+ALGOLIA_SEARCH_KEY = config("ALGOLIA_SEARCH_KEY", None)
+
+ALGOLIA = {"APPLICATION_ID": ALGOLIA_APPLICATION_ID, "API_KEY": ALGOLIA_ADMIN_KEY}
