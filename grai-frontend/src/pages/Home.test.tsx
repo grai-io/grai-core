@@ -53,6 +53,10 @@ test("search", async () => {
 
   fireEvent.click(screen.getByRole("textbox"))
 
+  await waitFor(() => {
+    expect(screen.getByRole("textbox")).toBeInTheDocument()
+  })
+
   await act(async () => await user.type(screen.getByRole("textbox"), "test"))
 
   await act(
