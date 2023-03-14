@@ -400,7 +400,7 @@ async def test_workspace_edge(test_context):
 async def test_workspace_search_key(test_context, mocker):
     mock = mocker.patch("api.types.Search")
     search_client = MagicMock()
-    search_client.generate_secured_api_key.return_value = "search_key2"
+    search_client.generate_secured_api_key.return_value = "search_key"
     mock.return_value = search_client
 
     context, organisation, workspace, user, membership = test_context
@@ -424,7 +424,7 @@ async def test_workspace_search_key(test_context, mocker):
 
     assert result.errors is None
     assert result.data["workspace"]["id"] == str(workspace.id)
-    assert result.data["workspace"]["search_key"] == "search_key2"
+    assert result.data["workspace"]["search_key"] == "search_key"
 
 
 async def generate_table_with_column(workspace: Workspace):
