@@ -1,6 +1,9 @@
 import uuid
+from unittest import mock
+from unittest.mock import MagicMock
 
 import pytest
+from algoliasearch.search_client import SearchClient
 
 from api.schema import schema
 from connections.models import Connection, Connector, Run
@@ -391,6 +394,37 @@ async def test_workspace_edge(test_context):
     assert result.data["workspace"]["edge"]["id"] == str(edge.id)
     assert result.data["workspace"]["edge"]["source"]["id"] == str(source.id)
     assert result.data["workspace"]["edge"]["destination"]["id"] == str(destination.id)
+
+
+@pytest.mark.django_db
+async def test_workspace_search_key(test_context, mocker):
+    mock = mocker.patch("api.types.Search")
+    search_client = MagicMock()
+    search_client.generate_secured_api_key.return_value = "search_key"
+    mock.return_value = search_client
+
+    context, organisation, workspace, user, membership = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                search_key
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["search_key"] == "search_key"
 
 
 async def generate_table_with_column(workspace: Workspace):

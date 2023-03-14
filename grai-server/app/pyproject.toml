@@ -43,6 +43,7 @@ grai-source-mssql = "^0.0.5"
 grai-source-bigquery = "^0.0.1"
 grai-source-postgres = "^0.1.13"
 grai-source-snowflake = "^0.0.15"
+algoliasearch-django = "^2.0.0"
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.10.1"

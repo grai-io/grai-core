@@ -18,6 +18,9 @@ jobs:
       run:
         working-directory: grai-frontend
 
+    env:
+      REACT_APP_ALGOLIA_APP_ID: test
+
     steps:
       - uses: actions/checkout@master
       - name: Use latest Node.js

@@ -31,6 +31,17 @@ class Node(TenantModel):
     #     "users.User", related_name="created_by", on_delete=models.PROTECT
     # )
 
+    def search_type(self):
+        return self.metadata.get("grai", {}).get("node_type", "Node")
+
+    def table_id(self):
+        if self.search_type() == "Table":
+            return self.id
+
+        if self.search_type() == "Column":
+            table = self.destination_edges.filter(metadata__grai__edge_type="TableToColumn").first()
+            return table.source.id if table is not None else None
+
     def save(self, *args, **kwargs):
         self.set_names()
         super().save(*args, **kwargs)

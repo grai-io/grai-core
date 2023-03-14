@@ -112,6 +112,15 @@ THIRD_PARTY_APPS = [
     "storages",
 ]
 
+ALGOLIA_APPLICATION_ID = config("ALGOLIA_APPLICATION_ID", None)
+ALGOLIA_ADMIN_KEY = config("ALGOLIA_ADMIN_KEY", None)
+ALGOLIA_SEARCH_KEY = config("ALGOLIA_SEARCH_KEY", None)
+
+ALGOLIA = {"APPLICATION_ID": ALGOLIA_APPLICATION_ID, "API_KEY": ALGOLIA_ADMIN_KEY}
+
+if ALGOLIA_APPLICATION_ID is not None:
+    THIRD_PARTY_APPS += ["algoliasearch_django"]
+
 THE_GUIDE_APPS = [
     "lineage",
     "connections",
