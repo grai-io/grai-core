@@ -348,14 +348,14 @@ testing = ["covdefaults (>=2.2.2)", "coverage (>=7.0.1)", "pytest (>=7.2)", "pyt
 
 [[package]]
 name = "grai-client"
-version = "0.2.3"
+version = "0.2.4"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_client-0.2.3-py3-none-any.whl", hash = "sha256:0f14100806de70ebebd818ed29bcff6554954f52fc9cc7f71e5a0732902afca2"},
-    {file = "grai_client-0.2.3.tar.gz", hash = "sha256:49e0a4b874de7ace9c250b409bbb5c5f1dd4eaa0c4b2f0c9a95d3a39c81400bc"},
+    {file = "grai_client-0.2.4-py3-none-any.whl", hash = "sha256:83f4abfeb5c9f76cb14b5c4a272c924903286ee19bac23b577e8efee7e73d24b"},
+    {file = "grai_client-0.2.4.tar.gz", hash = "sha256:4f70f33bcad44d6ee792ca03cd8645f8bfbd4795eb17e94b14e74a5a65815035"},
 ]
 
 [package.dependencies]
@@ -1155,4 +1155,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "cf019e277bdb8af0539df6ab222113ef1f04286781ff1264c54202dd9c5d2ad4"
+content-hash = "458ec7cfc3f782ac95f66fc18cd03e8cde8214ede1b596882b2a304f3ac17dff"
