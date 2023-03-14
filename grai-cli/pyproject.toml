@@ -17,10 +17,11 @@ typer = "^0.7.0"
 confuse = "^2.0.0"
 requests = "^2.28.1"
 pydantic = "^1.10.2"
-grai-client = "^0.2.0"
+grai-client = "^0.2.4"
 posthog = "^2.2.0"
 rich = "^12.6.0"
 grai-schemas = "^0.1.5"
+pydantic-yaml = "^0.11.1"
 
 [tool.isort]
 profile = "black"

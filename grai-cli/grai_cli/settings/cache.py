@@ -10,7 +10,7 @@ from grai_cli.settings.config import config
 class GraiCache:
     def __init__(self):
         self.cache_filename = "cache"
-        self.cache_file = os.path.join(config.config_dir(), self.cache_filename)
+        self.cache_file = os.path.join(config.handler.config_dir, self.cache_filename)
 
         with self.cache as cache:
             self.first_install = cache.get("first_install", True)
@@ -23,9 +23,11 @@ class GraiCache:
                 cache["telemetry_id"] = uuid.uuid4()
             self.telemetry_id = cache["telemetry_id"]
 
-            if self.run_config_init or not config.has_configfile:
-                message = f"No config file found in ({config.config_filename}). You can create one by running \
-                    `grai config init`."
+            if self.run_config_init or not config.handler.has_config_file:
+                message = (
+                    f"No config file found in ({config.handler.config_file}). CLI is operating using default values. "
+                    f"You can create a new config file by running `grai config init`."
+                )
                 typer.echo(message)
                 cache["run_config_init"] = False
             self.run_config_init = cache["run_config_init"]

@@ -226,14 +226,12 @@ def client_post_url(
     payload: Dict,
     options: ClientOptions = ClientOptions(),
 ) -> requests.Response:
-    headers = client.auth_headers
     headers = {
         **client.auth_headers,
         "Content-Type": "application/json",
         **options.headers,
     }
     payload = {**payload, **options.payload}
-
     response = client.session.post(url, data=serialize_obj(payload), headers=headers)  # , **options.request_args
 
     response_status_check(response)
