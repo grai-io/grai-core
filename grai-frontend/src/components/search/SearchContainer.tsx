@@ -28,7 +28,7 @@ const SearchContainer: React.FC<SearchContainerProps> = ({
   onClose,
   workspaceId,
 }) => {
-  const { loading, error, data } = useQuery<
+  const { loading, error, data, refetch } = useQuery<
     GetSearchKey,
     GetSearchKeyVariables
   >(GET_SEARCH_KEY, {
@@ -48,9 +48,17 @@ const SearchContainer: React.FC<SearchContainerProps> = ({
     data.workspace.search_key
   )
 
+  const handleError = (error: Error) => {
+    if (
+      error.message ===
+      '"validUntil" parameter expired (less than current date)'
+    )
+      refetch()
+  }
+
   return (
     <InstantSearch searchClient={searchClient} indexName="main">
-      <SearchForm onClose={onClose} />
+      <SearchForm onClose={onClose} onError={handleError} />
     </InstantSearch>
   )
 }

@@ -10,12 +10,20 @@ type SearchTextboxProps = {
 const SearchTextbox: React.FC<SearchTextboxProps> = ({ onClose }) => {
   const { query, refine, clear } = useSearchBox()
 
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      refine(event.target.value)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <Box sx={{ display: "flex" }}>
       <TextField
         variant="standard"
         value={query}
-        onChange={e => refine(e.target.value)}
+        onChange={handleChange}
         placeholder="Search"
         fullWidth
         autoFocus

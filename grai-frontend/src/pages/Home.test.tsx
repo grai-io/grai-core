@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, render, screen, waitFor } from "testing"
+import { act, fireEvent, render, screen, waitFor } from "testing"
 import profileMock from "testing/profileMock"
 import Home, { GET_WORKSPACE } from "./Home"
 import Workspaces, { GET_WORKSPACES } from "./workspaces/Workspaces"
@@ -13,6 +13,9 @@ jest.mock("react-instantsearch-hooks-web", () => ({
     query: "",
     refine: jest.fn(),
     clear: jest.fn(),
+  }),
+  useInstantSearch: () => ({
+    error: undefined,
   }),
 }))
 
@@ -48,7 +51,7 @@ test("search", async () => {
     expect(screen.getByRole("textbox")).toBeTruthy()
   })
 
-  await act(async () => await user.click(screen.getByRole("textbox")))
+  await act(() => fireEvent.click(screen.getByRole("textbox")))
 
   await act(async () => await user.type(screen.getByRole("textbox"), "test"))
 

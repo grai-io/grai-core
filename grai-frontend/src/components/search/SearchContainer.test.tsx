@@ -14,6 +14,9 @@ jest.mock("react-instantsearch-hooks-web", () => ({
     refine: jest.fn(),
     clear: jest.fn(),
   }),
+  useInstantSearch: () => ({
+    error: undefined,
+  }),
 }))
 
 test("renders", async () => {
@@ -46,6 +49,9 @@ jest.mock("react-instantsearch-hooks-web", () => ({
     query: "test",
     refine: jest.fn(),
     clear: jest.fn(),
+  }),
+  useInstantSearch: () => ({
+    error: undefined,
   }),
 }))
 
