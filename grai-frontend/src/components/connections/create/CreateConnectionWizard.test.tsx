@@ -284,6 +284,10 @@ test("submit", async () => {
     await waitFor(() => expect(screen.queryByRole("progressbar")).toBeFalsy())
   }
 
+  await waitFor(() => {
+    expect(screen.getByRole("button", { name: /continue/i })).toBeEnabled()
+  })
+
   await act(
     async () =>
       await user.click(screen.getByRole("button", { name: /continue/i }))
