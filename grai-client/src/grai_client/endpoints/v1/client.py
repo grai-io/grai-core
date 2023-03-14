@@ -23,14 +23,14 @@ class ClientV1(BaseClient):
         self.workspace_endpoint = f"{self.api}{self._workspace_endpoint}"
         self.is_authenticated_endpoint = f"{self.api}{self._is_authenticated_endpoint}"
 
-        self._workspace = workspace
+        self._workspace = str(workspace) if workspace is not None else None
 
     def check_authentication(self) -> requests.Response:
-        result = requests.get(self.is_authenticated_endpoint, headers=self.auth_headers)
+        result = self.session.get(self.is_authenticated_endpoint, headers=self.auth_headers)
         return result
 
     @property
-    def workspace(self) -> str:
+    def workspace(self) -> Optional[str]:
         return self._workspace
 
     @workspace.setter
@@ -40,22 +40,35 @@ class ClientV1(BaseClient):
             self.default_payload.pop("workspace", None)
             return
 
-        if isinstance(workspace, UUID):
-            workspace = str(workspace)
+        if is_valid_uuid(workspace):
+            workspace = workspace
         elif isinstance(workspace, str):
-            if not is_valid_uuid(workspace):
-                result = self.get("workspace", workspace)
+            result = self.get("workspace", workspace)
 
-                if result is None:
-                    raise Exception(f"No workspace matching `name={workspace}`")
-                else:
-                    workspace = str(result.id)
+            if result is None:
+                raise Exception(f"No workspace matching `name={workspace}`")
+            else:
+                workspace = result.id
         else:
             raise TypeError("Workspace must be either a string, uuid, or None.")
 
-        self._workspace = workspace
+        self._workspace = str(workspace)
         self.default_payload["workspace"] = self._workspace
 
-    def set_authentication_headers(self, *args, **kwargs):
-        super().set_authentication_headers(*args, **kwargs)
+    def authenticate(
+        self,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+        api_key: Optional[str] = None,
+    ) -> None:
+        super().authenticate(username, password, api_key)
         self.workspace = self.workspace
+
+    def set_authentication_headers(
+        self,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+        api_key: Optional[str] = None,
+    ) -> None:
+        # Deprecated
+        self.authenticate(username, password, api_key)
