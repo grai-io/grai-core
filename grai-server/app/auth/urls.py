@@ -14,12 +14,12 @@ from rest_framework.authentication import (
 )
 
 
-class OncePerSecondUserThrottle(UserRateThrottle):
-    rate = "1/sec"
+class TenPerSecondUserThrottle(UserRateThrottle):
+    rate = "10/sec"
 
 
 @api_view(["GET"])
-@throttle_classes([OncePerSecondUserThrottle])
+@throttle_classes([TenPerSecondUserThrottle])
 @authentication_classes(
     [
         SessionAuthentication,
