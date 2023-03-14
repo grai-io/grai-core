@@ -206,6 +206,7 @@ jobs:
       REACT_APP_SERVER_URL: ${{ secrets.REACT_APP_SERVER_URL }}
       REACT_APP_POSTHOG_API_KEY: ${{ secrets.REACT_APP_POSTHOG_API_KEY }}
       REACT_APP_POSTHOG_HOST: https://ph.grai.io
+      REACT_APP_ALGOLIA_APP_ID: ${{ secrets.REACT_APP_ALGOLIA_APP_ID }}
 
     defaults:
       run:
