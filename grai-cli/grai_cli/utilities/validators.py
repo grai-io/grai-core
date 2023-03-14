@@ -11,6 +11,12 @@ def username_callback(inp: str):
     return inp
 
 
+def workspace_callback(inp: str):
+    if len(inp) == 0:
+        raise typer.BadParameter("workspace is invalid for <reasons>")
+    return inp
+
+
 def password_callback(inp: str):
     def password_is_valid(inp: str):
         # TODO
@@ -42,3 +48,13 @@ def port_callback(inp: str):
             raise error
 
     return str(int_inp)
+
+
+def insecure_callback(inp: str):
+    error = typer.BadParameter(f"{inp} is not a valid value for insecure, should be either True or False.")
+    try:
+        bool(inp)
+    except:
+        raise error
+
+    return str(inp)

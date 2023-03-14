@@ -19,7 +19,7 @@ class OncePerSecondUserThrottle(UserRateThrottle):
 
 
 @api_view(["GET"])
-@throttle_classes([OncePerSecondUserThrottle])
+# @throttle_classes([OncePerSecondUserThrottle])
 @authentication_classes(
     [
         SessionAuthentication,
