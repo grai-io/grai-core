@@ -51,7 +51,7 @@ test("search", async () => {
     expect(screen.getByRole("textbox")).toBeTruthy()
   })
 
-  await act(() => fireEvent.click(screen.getByRole("textbox")))
+  fireEvent.click(screen.getByRole("textbox"))
 
   await act(async () => await user.type(screen.getByRole("textbox"), "test"))
 
