@@ -1,20 +1,14 @@
 import os
 import subprocess
 
+from grai_cli.settings.config import BasicAuthSettings, ServerSettingsV1
+
 
 def prep_test_auth():
     from grai_cli import config
 
-    host = os.environ.get("GRAI_HOST", None)
-    port = os.environ.get("GRAI_PORT", None)
-
-    config["auth"]["username"].set("null@grai.io")
-    config["auth"]["password"].set("super_secret")
-
-    if host:
-        config["server"]["host"].set(host)
-    if port:
-        config["server"]["port"].set(port)
+    config.server = ServerSettingsV1(host="localhost", port="8000", insecure=True, workspace="default")
+    config.auth = BasicAuthSettings(username="null@grai.io", password="super_secret")
 
 
 def disable_telemetry():

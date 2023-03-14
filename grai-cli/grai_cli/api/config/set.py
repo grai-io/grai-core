@@ -4,25 +4,30 @@ from typing import Callable
 import typer
 
 from grai_cli.api.config.setup import set_app
-from grai_cli.utilities.utilities import get_config_view, writes_config
+from grai_cli.settings.config import config
 from grai_cli.utilities.validators import (
     host_callback,
+    insecure_callback,
     password_callback,
     port_callback,
     username_callback,
+    workspace_callback,
 )
 
 
 def setter_helper(path: str) -> Callable:
-    name = path.split(".")[-1]
+    path_elems = path.split(".")
+    name = path_elems[-1]
 
     def set_function_maker(fn: Callable) -> Callable:
         @set_app.command(name)
-        @writes_config
         @wraps(fn)
         def set_function(*args, **kwargs):
-            view = get_config_view(path)
-            view.set(kwargs.pop(name))
+            item = config
+            for sub_path in path_elems[:-1]:
+                item = getattr(item, sub_path)
+            setattr(item, name, kwargs.pop(name))
+            config.save()
 
         return set_function
 
@@ -64,20 +69,6 @@ def _(
     pass
 
 
-@setter_helper("auth.token")
-def _(
-    token: str = typer.Option(
-        ...,
-        hide_input=True,
-        prompt=True,
-        prompt_required=True,
-        confirmation_prompt=True,
-    )
-):
-    """Sets config value for auth.token"""
-    pass
-
-
 @setter_helper("server.host")
 def _(host: str = typer.Argument(..., callback=host_callback)):
     """Sets config value for server.host"""
@@ -90,7 +81,13 @@ def _(port: str = typer.Argument(..., callback=port_callback)):
     pass
 
 
-@setter_helper("context.namespace")
-def _(namespace: str = typer.Argument(...)):
-    """Sets config value for context.namespace"""
+@setter_helper("server.insecure")
+def _(insecure: str = typer.Argument(..., callback=insecure_callback)):
+    """Sets config value for server.insecure"""
+    pass
+
+
+@setter_helper("server.workspace")
+def _(workspace: str = typer.Argument(..., callback=workspace_callback)):
+    """Sets config value for server.workspace"""
     pass
