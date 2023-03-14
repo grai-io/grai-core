@@ -19,11 +19,12 @@ def get_default_client() -> BaseClient:
     _clients: Dict[str, Type[BaseClient]] = {
         "v1": ClientV1,
     }
-    host = config.grab("server.host")
-    port = config.grab("server.port")
-    workspace = config.grab("server.workspace")
+    host = config.server.host
+    port = config.server.port
+    workspace = config.server.workspace
+    insecure = config.server.insecure
 
-    client = _clients[config.grab("server.api_version")](host, port, workspace=workspace)
+    client = _clients[config.server.api_version](host=host, port=port, workspace=workspace, insecure=insecure)
 
     authenticate(client)
     return client

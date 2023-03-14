@@ -109,19 +109,19 @@ def write_yaml(
         dump_yaml(data, path)
 
 
-def writes_config(fn: Callable) -> Callable:
-    @wraps(fn)
-    def inner(*args, **kwargs):
-        write_config = kwargs.pop("write_config", True)
-        config_location = kwargs.pop("config_location", config.config_filename)
-
-        result = fn(*args, **kwargs)
-        if write_config:
-            with open(config_location, "w") as file:
-                file.write(config.dump(redact=False))
-        return result
-
-    return inner
+# def writes_config(fn: Callable) -> Callable:
+#     @wraps(fn)
+#     def inner(*args, **kwargs):
+#         write_config = kwargs.pop("write_config", True)
+#         config_location = kwargs.pop("config_location", config.handler.config_file)
+#
+#         result = fn(*args, **kwargs)
+#         if write_config:
+#             with open(config_location, "w") as file:
+#                 file.write(config.dump(redact=False))
+#         return result
+#
+#     return inner
 
 
 def get_config_view(config_field: str):

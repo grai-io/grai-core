@@ -34,7 +34,7 @@ The connector comes equipped with the client library already but we will need a 
 ```python
 from grai_client.endpoints.v1.client import ClientV1
 
-client = ClientV1('localhost', '8000')
+client = ClientV1('localhost', '8000', insecure=True)
 client.set_authentication_headers(username='null@grai.io', password='super_secret')
 ```
 

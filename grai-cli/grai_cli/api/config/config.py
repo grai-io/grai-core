@@ -1,19 +1,20 @@
 import typer
 
 from grai_cli.api.config.setup import config_app
-from grai_cli.settings.config import config
+from grai_cli.settings.config import BasicAuthSettings, ServerSettingsV1, config
 from grai_cli.utilities import utilities
 from grai_cli.utilities.styling import GraiColors, default_styler, strip_style
 from grai_cli.utilities.validators import (
     host_callback,
+    insecure_callback,
     password_callback,
     port_callback,
     username_callback,
+    workspace_callback,
 )
 
 
 @config_app.command("init")
-@utilities.writes_config
 def cli_init_config(
     username: str = typer.Option(..., prompt=True, callback=username_callback, prompt_required=True),
     password: str = typer.Option(
@@ -25,32 +26,37 @@ def cli_init_config(
         callback=strip_style(password_callback),
     ),
     host: str = typer.Option(
-        default=default_styler(config["server"]["host"].get(str)),
+        default=default_styler(config.server.host),
         prompt="Server host",
         prompt_required=True,
         callback=strip_style(host_callback),
     ),
     port: str = typer.Option(
-        default=default_styler(config["server"]["port"].get(str)),
+        default=default_styler(config.server.port),
         prompt="Server port",
         prompt_required=True,
         callback=strip_style(port_callback),
     ),
-    # config_location: str = typer.Option(
-    #     default=default_styler(config.config_filename),
-    #     prompt="Config path",
-    #     prompt_required=True,
-    #     callback=strip_style(lambda x: x),
-    # ),
+    insecure: str = typer.Option(
+        default=default_styler("False"),
+        prompt="insecure connection",
+        prompt_required=True,
+        callback=strip_style(insecure_callback),
+    ),
+    workspace: str = typer.Option(
+        default=default_styler(config.server.workspace),
+        prompt="The Grai workspace for this config",
+        prompt_required=True,
+        callback=strip_style(workspace_callback),
+    ),
 ):
     """Initialize a new config file"""
-    config["auth"]["username"].set(username)
-    config["auth"]["password"].set(password)
-    config["server"]["host"].set(host)
-    config["server"]["port"].set(port)
+    config.auth = BasicAuthSettings(username=username, password=password)
+    config.server = ServerSettingsV1(host=host, port=port, insecure=bool(insecure), workspace=workspace)
+    config.save()
 
 
 @config_app.command(help="Print config to console")
 def view():
-    """Initialize a new config file"""
+    """View the current config file"""
     utilities.print(config.view())

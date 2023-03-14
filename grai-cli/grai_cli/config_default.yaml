@@ -2,3 +2,4 @@ server:
     host: localhost
     port: '8000'
     workspace: 'default'
+    insecure: True

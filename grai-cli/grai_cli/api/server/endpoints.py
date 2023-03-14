@@ -103,6 +103,7 @@ def apply(
     # TODO: Edges don't have a human readable unique identifier
     client = get_default_client()
     specs = validate_file(file)
+
     if dry_run:
         for spec in specs:
             utilities.print(spec)

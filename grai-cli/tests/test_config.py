@@ -1,30 +1,31 @@
 import importlib
 import os
+import uuid
 
 import grai_cli
 
 
 def test_missing_config_file():
-    """Package loads even without config file"""
-    if not os.path.exists(grai_cli.config.config_filename):
+    """config loads even without config file"""
+    if not os.path.exists(grai_cli.config.handler.config_file):
         # Config file doesn't exist and the package loaded, all good I guess.
         return
 
-    os.rename(grai_cli.config.config_filename, "temp")
+    file_name = str(uuid.uuid4())
+    os.rename(grai_cli.config.handler.config_file, file_name)
     try:
         importlib.reload(grai_cli)
-        grai_cli.config.reload()
+        # grai_cli.settings.config.GraiConfig()
     except:
         raise
     finally:
-        if os.path.exists("temp") and not os.path.exists(grai_cli.config.config_filename):
-            os.rename("temp", grai_cli.config.config_filename)
+        os.rename(file_name, grai_cli.config.handler.config_file)
 
 
 def test_default_config_values():
     """Package loads correct default config values"""
-    default_host = grai_cli.config["server"]["host"].get(str)
-    default_port = grai_cli.config["server"]["port"].get(str)
+    default_host = grai_cli.config.server.host
+    default_port = grai_cli.config.server.port
 
     assert default_host == "localhost"
     assert default_port == "8000"

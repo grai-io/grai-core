@@ -21,21 +21,12 @@ def get_jwt(self, username: str, password: str) -> Dict:
 
 
 def authenticate_with_username(client: BaseClient) -> BaseClient:
-    username = config.grab("auth.username")
-    password = config.grab("auth.password")
-    client.set_authentication_headers(username=username, password=password)
-    return client
-
-
-def authenticate_with_token(client: BaseClient) -> BaseClient:
-    token = config.grab("auth.token")
-    client.set_authentication_headers(token=token)
+    client.authenticate(username=config.auth.username, password=config.auth.password.get_secret_value())
     return client
 
 
 def authenticate_with_api_key(client: BaseClient) -> BaseClient:
-    api_key = config.grab("auth.api_key")
-    client.set_authentication_headers(api_key=api_key)
+    client.authenticate(api_key=config.auth.api_key.get_secret_value())
     return client
 
 
@@ -43,11 +34,10 @@ def authenticate_with_api_key(client: BaseClient) -> BaseClient:
 def authenticate(client: BaseClient) -> BaseClient:
     auth_modes = {
         "username": authenticate_with_username,
-        "token": authenticate_with_token,
         "api_key": authenticate_with_api_key,
     }
 
-    auth_mode_id = config.grab("auth.authentication_mode")
+    auth_mode_id = config.auth.authentication_mode
     auth_mode = auth_modes[auth_mode_id]
     client = auth_mode(client)
     return client
