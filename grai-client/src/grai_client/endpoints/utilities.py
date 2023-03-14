@@ -3,7 +3,7 @@ import json
 import pathlib
 import sys
 import uuid
-from typing import Any, Dict, TypeVar
+from typing import Any, Dict, TypeVar, Union
 from uuid import UUID
 
 import orjson
@@ -21,7 +21,10 @@ P = ParamSpec("P")
 T = TypeVar("T")
 
 
-def is_valid_uuid(val):
+def is_valid_uuid(val: Union[str, UUID]):
+    if isinstance(val, UUID):
+        return True
+
     try:
         uuid.UUID(str(val))
         return True

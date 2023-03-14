@@ -31,5 +31,5 @@ def get_edge_label_url(client: ClientV1, obj: EdgeLabels) -> str:
 
 
 @ClientV1.get_url.register
-def get_edge_label_url(client: ClientV1, obj: WorkspaceLabels) -> str:
+def get_workspace_label_url(client: ClientV1, obj: WorkspaceLabels) -> str:
     return client.workspace_endpoint
