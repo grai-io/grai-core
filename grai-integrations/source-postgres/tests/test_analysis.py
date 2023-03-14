@@ -13,7 +13,7 @@ test_credentials = {
 }
 
 
-client = ClientV1("localhost", "8000", workspace="default")
+client = ClientV1("localhost", "8000", workspace="default", insecure=True)
 client.set_authentication_headers("null@grai.io", "super_secret")
 
 
