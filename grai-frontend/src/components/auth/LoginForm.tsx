@@ -1,9 +1,9 @@
 import React, { useState } from "react"
 import { gql, useMutation } from "@apollo/client"
 import { LoadingButton } from "@mui/lab"
-import { Box, TextField } from "@mui/material"
+import { Box, Link, TextField } from "@mui/material"
 import posthog from "posthog"
-import { Link } from "react-router-dom"
+import { Link as RouterLink } from "react-router-dom"
 import Form from "components/form/Form"
 import GraphError from "components/utils/GraphError"
 import { Login, LoginVariables } from "./__generated__/Login"
@@ -73,7 +73,18 @@ const LoginForm: React.FC = () => {
           }
         />
         <Box sx={{ m: 1 }}>
-          <Link to="/forgot" style={{ textDecoration: "none", fontSize: 14 }}>
+          <Link
+            component={RouterLink}
+            to="/forgot"
+            sx={{
+              textDecoration: "none",
+              fontSize: 14,
+              color: "blue",
+              "&:hover": {
+                color: theme => theme.palette.grey[900],
+              },
+            }}
+          >
             Forgot your password?
           </Link>
         </Box>

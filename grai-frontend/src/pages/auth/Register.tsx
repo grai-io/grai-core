@@ -1,13 +1,13 @@
 import React from "react"
 import {
   Box,
-  Button,
   Card,
   CardContent,
   Container,
+  Link,
   Typography,
 } from "@mui/material"
-import { Link } from "react-router-dom"
+import { Link as RouterLink } from "react-router-dom"
 import RegisterForm from "components/auth/RegisterForm"
 
 const Register: React.FC = () => (
@@ -21,13 +21,59 @@ const Register: React.FC = () => (
           Register for an account
         </Typography>
         <RegisterForm />
+        <Typography
+          variant="body2"
+          sx={{ color: theme => theme.palette.grey[600], lineHeight: 1.5 }}
+        >
+          By creating an account, you agree to our{" "}
+          <Link
+            href="https://www.grai.io/terms"
+            sx={{
+              textDecoration: "none",
+              color: theme => theme.palette.grey[900],
+              "&:hover": {
+                textDecoration: "underline",
+              },
+            }}
+            target="_blank"
+          >
+            Terms of Service
+          </Link>{" "}
+          and{" "}
+          <Link
+            href="https://www.grai.io/privacy"
+            sx={{
+              textDecoration: "none",
+              color: theme => theme.palette.grey[900],
+              "&:hover": {
+                textDecoration: "underline",
+              },
+            }}
+            target="_blank"
+          >
+            Privacy Policy
+          </Link>
+          .
+        </Typography>
       </CardContent>
     </Card>
     <Box sx={{ display: "flex", ml: 2, mt: 2 }}>
-      <Typography sx={{ mt: 0.8 }}>Already have an account?</Typography>
-      <Button component={Link} to="/login">
-        Login
-      </Button>
+      <Typography sx={{ mt: 0.8 }}>
+        Already have an account?{" "}
+        <Link
+          component={RouterLink}
+          to="/login"
+          sx={{
+            textDecoration: "none",
+            color: "blue",
+            "&:hover": {
+              color: theme => theme.palette.grey[900],
+            },
+          }}
+        >
+          Login
+        </Link>
+      </Typography>
     </Box>
   </Container>
 )
