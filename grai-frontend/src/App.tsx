@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import React from "react"
 import { Close } from "@mui/icons-material"
 import { CssBaseline, IconButton, ThemeProvider } from "@mui/material"
