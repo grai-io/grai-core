@@ -50,6 +50,10 @@ const Home: React.FC = () => {
 
   if (!workspace) return <NotFound />
 
+  const handleClose = () => {
+    setSearch(false)
+  }
+
   return (
     <PageLayout>
       <Container maxWidth="lg" sx={{ textAlign: "center" }}>
@@ -63,6 +67,7 @@ const Home: React.FC = () => {
         <TextField
           placeholder="Search data assets"
           onClick={() => setSearch(true)}
+          disabled
           sx={{ width: 750, mb: 15 }}
           InputProps={{
             endAdornment: (
@@ -76,7 +81,7 @@ const Home: React.FC = () => {
       </Container>
       <SearchDialog
         open={search}
-        onClose={() => setSearch(false)}
+        onClose={handleClose}
         workspaceId={workspace.id}
       />
     </PageLayout>

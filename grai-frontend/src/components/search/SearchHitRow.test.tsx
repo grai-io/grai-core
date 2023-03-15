@@ -10,9 +10,10 @@ jest.mock("react-instantsearch-hooks-web", () => ({
     refine: jest.fn(),
     clear: jest.fn(),
   }),
+  useInstantSearch: () => ({
+    error: undefined,
+  }),
 }))
-jest.mock("algoliasearch")
-jest.mock("instantsearch.js")
 
 test("renders table", async () => {
   const hit = {

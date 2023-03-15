@@ -15,6 +15,7 @@ export interface SearchHit extends BaseHit {
 
 type SearchHitProps = {
   hit: SearchHit
+  selected?: boolean
 }
 
 const types = [
@@ -30,7 +31,7 @@ const types = [
   },
 ]
 
-const SearchHitRow: React.FC<SearchHitProps> = ({ hit }) => {
+const SearchHitRow: React.FC<SearchHitProps> = ({ hit, selected }) => {
   const { routePrefix } = useWorkspace()
 
   const type = types.find(type => type.name === hit.search_type)
@@ -39,7 +40,7 @@ const SearchHitRow: React.FC<SearchHitProps> = ({ hit }) => {
   const to = route ? `${routePrefix}${route}` : ""
 
   return (
-    <ListItemButton key={hit.id} component={Link} to={to}>
+    <ListItemButton key={hit.id} component={Link} to={to} selected={selected}>
       <ListItemIcon>{type?.icon}</ListItemIcon>
       <ListItemText primary={hit.display_name} secondary={hit.name} />
     </ListItemButton>
