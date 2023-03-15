@@ -7,8 +7,8 @@ import {
   Link,
   Typography,
 } from "@mui/material"
-import LoginForm from "components/auth/LoginForm"
 import { Link as RouterLink } from "react-router-dom"
+import LoginForm from "components/auth/LoginForm"
 
 const Login: React.FC = () => (
   <Container sx={{ pt: 10 }} maxWidth="xs">
