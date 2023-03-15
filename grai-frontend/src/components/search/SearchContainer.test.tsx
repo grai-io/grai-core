@@ -1,13 +1,13 @@
 import React, { ReactNode } from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
+import { act, fireEvent, render, screen, waitFor } from "testing"
+import SearchContainer, { GET_SEARCH_KEY } from "./SearchContainer"
 import {
   useInstantSearch,
   useHits,
   useSearchBox,
 } from "react-instantsearch-hooks-web"
-import { act, fireEvent, render, screen, waitFor } from "testing"
-import SearchContainer, { GET_SEARCH_KEY } from "./SearchContainer"
 
 const onClose = jest.fn()
 
@@ -99,6 +99,36 @@ test("renders results", async () => {
 
   await waitFor(() => {
     expect(screen.getByText("New Page")).toBeInTheDocument()
+  })
+})
+
+test("renders no results", async () => {
+  ;(useInstantSearch as jest.Mock).mockReturnValue({
+    error: undefined,
+  })
+  ;(useHits as jest.Mock).mockReturnValue({
+    hits: [],
+  })
+  ;(useSearchBox as jest.Mock).mockReturnValue({
+    query: "test",
+    refine: jest.fn(),
+    clear: jest.fn(),
+  })
+
+  const user = userEvent.setup()
+
+  render(<SearchContainer onClose={onClose} workspaceId="1" />, {
+    withRouter: true,
+  })
+
+  await waitFor(() => {
+    expect(screen.getByRole("textbox")).toBeTruthy()
+  })
+
+  await act(async () => await user.type(screen.getByRole("textbox"), "test"))
+
+  await waitFor(() => {
+    expect(screen.getByText("No search results")).toBeTruthy()
   })
 })
 

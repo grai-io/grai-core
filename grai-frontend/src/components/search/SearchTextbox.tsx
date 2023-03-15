@@ -10,13 +10,8 @@ type SearchTextboxProps = {
 const SearchTextbox: React.FC<SearchTextboxProps> = ({ onClose }) => {
   const { query, refine, clear } = useSearchBox()
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    try {
-      refine(event.target.value)
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+    refine(event.target.value)
 
   return (
     <Box sx={{ display: "flex" }}>
