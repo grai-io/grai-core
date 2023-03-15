@@ -1,7 +1,6 @@
 import React from "react"
 import {
   Box,
-  Button,
   Card,
   CardContent,
   Container,
@@ -29,7 +28,13 @@ const Register: React.FC = () => (
           By creating an account, you agree to our{" "}
           <Link
             href="https://www.grai.io/terms"
-            sx={{ textDecoration: "none" }}
+            sx={{
+              textDecoration: "none",
+              color: theme => theme.palette.grey[900],
+              "&:hover": {
+                textDecoration: "underline",
+              },
+            }}
             target="_blank"
           >
             Terms of Service
@@ -37,7 +42,13 @@ const Register: React.FC = () => (
           and{" "}
           <Link
             href="https://www.grai.io/privacy"
-            sx={{ textDecoration: "none" }}
+            sx={{
+              textDecoration: "none",
+              color: theme => theme.palette.grey[900],
+              "&:hover": {
+                textDecoration: "underline",
+              },
+            }}
             target="_blank"
           >
             Privacy Policy
@@ -47,10 +58,22 @@ const Register: React.FC = () => (
       </CardContent>
     </Card>
     <Box sx={{ display: "flex", ml: 2, mt: 2 }}>
-      <Typography sx={{ mt: 0.8 }}>Already have an account?</Typography>
-      <Button component={RouterLink} to="/login">
-        Login
-      </Button>
+      <Typography sx={{ mt: 0.8 }}>
+        Already have an account?{" "}
+        <Link
+          component={RouterLink}
+          to="/login"
+          sx={{
+            textDecoration: "none",
+            color: "blue",
+            "&:hover": {
+              color: theme => theme.palette.grey[900],
+            },
+          }}
+        >
+          Login
+        </Link>
+      </Typography>
     </Box>
   </Container>
 )
