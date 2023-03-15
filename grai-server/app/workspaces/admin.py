@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.admin import DateFieldListFilter
 
 from lineage.models import Edge, Node
 
@@ -20,9 +21,10 @@ class MembershipInline(admin.TabularInline):
 
 
 class WorkspaceAdmin(admin.ModelAdmin):
-    list_display = ("id", "name", "organisation")
+    list_display = ("id", "name", "organisation", "created_at")
 
     list_filter = (
+        ("created_at", DateFieldListFilter),
         ("organisation", admin.RelatedOnlyFieldListFilter),
         "name",
     )

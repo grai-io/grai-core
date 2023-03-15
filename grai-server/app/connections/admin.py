@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.admin import DateFieldListFilter
 from django.db.models import JSONField
 
 from common.admin.fields.json_widget import PrettyJSONWidget
@@ -38,12 +39,14 @@ class ConnectionAdmin(admin.ModelAdmin):
         "namespace",
         "is_active",
         "created_by",
+        "created_at",
     )
 
     search_fields = ["id", "namespace", "name"]
     list_filter = (
-        ("connector", admin.RelatedOnlyFieldListFilter),
         ("workspace", admin.RelatedOnlyFieldListFilter),
+        ("created_at", DateFieldListFilter),
+        ("connector", admin.RelatedOnlyFieldListFilter),
         ("created_by", admin.RelatedOnlyFieldListFilter),
         "namespace",
         "is_active",
@@ -70,6 +73,7 @@ class RunAdmin(admin.ModelAdmin):
 
     list_filter = (
         "status",
+        ("started_at", DateFieldListFilter),
         ("connection", admin.RelatedOnlyFieldListFilter),
         "workspace",
     )
