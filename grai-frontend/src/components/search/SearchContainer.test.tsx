@@ -6,7 +6,7 @@ import {
   useHits,
   useSearchBox,
 } from "react-instantsearch-hooks-web"
-import { act, fireEvent, render, screen, waitFor } from "testing"
+import { act, render, screen, waitFor } from "testing"
 import SearchContainer, { GET_SEARCH_KEY } from "./SearchContainer"
 
 const onClose = jest.fn()
