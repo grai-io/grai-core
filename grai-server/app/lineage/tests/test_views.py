@@ -116,7 +116,7 @@ def test_post_node(api_key, create_workspace, api_client):
 def test_post_node_second_workspace(auto_login_user):
     client, user = auto_login_user()
 
-    organisation = Organisation.objects.create(name="Test Organisation")
+    organisation = Organisation.objects.create(name=str(uuid.uuid4()))
 
     first_workspace = Workspace.objects.create(name="first", organisation=organisation)
     second_workspace = Workspace.objects.create(name="second", organisation=organisation)
