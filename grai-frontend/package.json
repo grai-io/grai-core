@@ -12,6 +12,8 @@
     "@mui/icons-material": "^5.10.16",
     "@mui/lab": "^5.0.0-alpha.105",
     "@mui/material": "^5.10.11",
+    "@sentry/react": "^7.43.0",
+    "@sentry/tracing": "^7.43.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.0",
