@@ -1,5 +1,6 @@
 /* istanbul ignore file */
 import React, { lazy, Suspense } from "react"
+import * as Sentry from "@sentry/react"
 import { Routes as BrowerRoutes, Route } from "react-router-dom"
 import WorkspaceRedirect from "pages/workspaces/WorkspaceRedirect"
 import Loading from "components/layout/Loading"
@@ -50,9 +51,11 @@ const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"))
 const PasswordReset = lazy(() => import("./pages/auth/PasswordReset"))
 const CompleteSignup = lazy(() => import("./pages/auth/CompleteSignup"))
 
+const SentryRoutes = Sentry.withSentryReactRouterV6Routing(BrowerRoutes)
+
 const Routes: React.FC = () => (
   <Suspense fallback={<Loading />}>
-    <BrowerRoutes>
+    <SentryRoutes>
       <Route element={<PrivateRoute />}>
         <Route element={<SuspenseOutlet fallback={<PageLayout loading />} />}>
           <Route index element={<Index />} />
@@ -137,7 +140,7 @@ const Routes: React.FC = () => (
       </Route>
 
       <Route path="*" element={<NotFound />} />
-    </BrowerRoutes>
+    </SentryRoutes>
   </Suspense>
 )
 
