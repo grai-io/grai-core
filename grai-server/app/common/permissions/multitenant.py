@@ -12,8 +12,9 @@ class BasePermission(permissions.BasePermission):
             return workspace
 
         if guess and request.user and not request.user.is_anonymous:
-            if request.GET.get("workspace", None):
-                id = request.GET.get("workspace")
+            id = request.GET.get("workspace", request.POST.get("workspace", None))
+
+            if id:
                 return self.get_workspace_from_id(request, id)
 
             if request.user.memberships and request.user.memberships.first():
