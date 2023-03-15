@@ -1,13 +1,13 @@
 import React, { ReactNode } from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, fireEvent, render, screen, waitFor } from "testing"
-import SearchContainer, { GET_SEARCH_KEY } from "./SearchContainer"
 import {
   useInstantSearch,
   useHits,
   useSearchBox,
 } from "react-instantsearch-hooks-web"
+import { act, fireEvent, render, screen, waitFor } from "testing"
+import SearchContainer, { GET_SEARCH_KEY } from "./SearchContainer"
 
 const onClose = jest.fn()
 
