@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.admin import DateFieldListFilter
 from django.db.models import JSONField
 
 from common.admin.fields.json_widget import PrettyJSONWidget
@@ -45,12 +46,14 @@ class NodeAdmin(admin.ModelAdmin):
         "data_source",
         "workspace",
         "is_active",
+        "created_at",
     )
 
     search_fields = ["id", "namespace", "name", "display_name", "data_source"]
 
     list_filter = (
         "workspace",
+        ("created_at", DateFieldListFilter),
         "namespace",
         "is_active",
         "data_source",
@@ -76,12 +79,14 @@ class EdgeAdmin(admin.ModelAdmin):
         "data_source",
         "workspace",
         "is_active",
+        "created_at",
     )
 
     search_fields = ["id", "namespace", "name", "display_name", "data_source"]
 
     list_filter = (
         "workspace",
+        ("created_at", DateFieldListFilter),
         "namespace",
         "is_active",
         "data_source",
