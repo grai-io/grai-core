@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.admin import DateFieldListFilter
+from django.db.models import Count, Q
 
 from lineage.models import Edge, Node
 
@@ -21,7 +22,21 @@ class MembershipInline(admin.TabularInline):
 
 
 class WorkspaceAdmin(admin.ModelAdmin):
-    list_display = ("id", "name", "organisation", "created_at")
+    def node_count(self, obj):
+        return "{0:,}".format(obj.node_count)
+
+    def connection_count(self, obj):
+        return "{0:,}".format(obj.connection_count)
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        queryset = queryset.annotate(
+            node_count=Count("nodes", distinct=True),
+            connection_count=Count("connections", distinct=True, filter=Q(connections__temp=False)),
+        )
+        return queryset
+
+    list_display = ("id", "name", "organisation", "node_count", "connection_count", "created_at")
 
     list_filter = (
         ("created_at", DateFieldListFilter),
