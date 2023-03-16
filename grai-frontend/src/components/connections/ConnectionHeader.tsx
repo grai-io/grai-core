@@ -12,8 +12,8 @@ import {
 import useWorkspace from "helpers/useWorkspace"
 import { Link } from "react-router-dom"
 import RunStatus from "components/runs/RunStatus"
-import ConnectionRun, { Connection as BaseConnection } from "./ConnectionRun"
 import ConnectionMenu from "./ConnectionMenu"
+import ConnectionRun, { Connection as BaseConnection } from "./ConnectionRun"
 
 interface Connection extends BaseConnection {
   name: string

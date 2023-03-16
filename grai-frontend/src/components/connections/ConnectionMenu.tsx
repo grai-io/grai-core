@@ -1,3 +1,4 @@
+import React from "react"
 import { MoreHoriz } from "@mui/icons-material"
 import { IconButton, Menu } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
@@ -6,7 +7,6 @@ import PopupState, {
   bindTrigger,
   InjectedProps,
 } from "material-ui-popup-state"
-import React from "react"
 import ConnectionDelete, { Connection } from "./ConnectionDelete"
 
 type ConnectionMenuProps = {
