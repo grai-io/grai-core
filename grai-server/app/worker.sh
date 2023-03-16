@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export BEGIN_LOGGING="False"
+
 set -o errexit
 set -o nounset
 
