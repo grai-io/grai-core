@@ -189,6 +189,40 @@ async def test_create_membership_existing_user(test_context):
 
 
 @pytest.mark.django_db
+async def test_create_memberships(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    mutation = """
+        mutation CreateMemberships($workspaceId: ID!, $role: String!, $emails: [String!]!) {
+            createMemberships(workspaceId: $workspaceId, role: $role, emails: $emails) {
+                id
+                role
+                user {
+                    id
+                    username
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "role": "admin",
+            "emails": ["test@example.com", "test2@example.com"],
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["createMemberships"][0]["role"] == "admin"
+    assert result.data["createMemberships"][0]["user"]["username"] == "test@example.com"
+    assert result.data["createMemberships"][1]["role"] == "admin"
+    assert result.data["createMemberships"][1]["user"]["username"] == "test2@example.com"
+
+
+@pytest.mark.django_db
 async def test_update_membership(test_context):
     context, organisation, workspace, user, membership = test_context
 

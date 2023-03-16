@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 
 import strawberry
 from asgiref.sync import sync_to_async
@@ -16,6 +16,42 @@ from workspaces.models import Membership as MembershipModel
 from workspaces.models import Organisation as OrganisationModel
 from workspaces.models import Workspace as WorkspaceModel
 from workspaces.models import WorkspaceAPIKey as WorkspaceAPIKeyModel
+
+
+async def createSingleMembership(workspace: WorkspaceModel, email: str, role: str) -> MembershipModel:
+    UserModel = get_user_model()
+
+    user = None
+
+    try:
+        user = await UserModel.objects.aget(username=email)
+        email_template_name = "workspaces/invite_user_email.txt"
+        subject = "Grai Workspace Invite"
+    except UserModel.DoesNotExist:
+        user = await UserModel.objects.acreate(username=email)
+        email_template_name = "workspaces/new_user_email.txt"
+        subject = "Grai Invite"
+
+    membership = await sync_to_async(MembershipModel.objects.create)(role=role, user=user, workspace=workspace)
+
+    c = {
+        "email": user.username,
+        "base_url": config("FRONTEND_URL", "http://localhost:3000"),
+        "uid": user.pk,
+        "user": user,
+        "token": default_token_generator.make_token(user),
+    }
+    email_message = render_to_string(email_template_name, c)
+
+    send_mail(
+        subject,
+        email_message,
+        settings.EMAIL_FROM,
+        [user.username],
+        fail_silently=False,
+    )
+
+    return membership
 
 
 @strawberry.type
@@ -64,39 +100,19 @@ class Mutation:
     ) -> Membership:
         workspace = await get_workspace(info, workspaceId)
 
-        UserModel = get_user_model()
+        return await createSingleMembership(workspace, email, role)
 
-        user = None
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def createMemberships(
+        self,
+        info: Info,
+        workspaceId: strawberry.ID,
+        role: str,
+        emails: List[str],
+    ) -> List[Membership]:
+        workspace = await get_workspace(info, workspaceId)
 
-        try:
-            user = await UserModel.objects.aget(username=email)
-            email_template_name = "workspaces/invite_user_email.txt"
-            subject = "Grai Workspace Invite"
-        except UserModel.DoesNotExist:
-            user = await UserModel.objects.acreate(username=email)
-            email_template_name = "workspaces/new_user_email.txt"
-            subject = "Grai Invite"
-
-        membership = await sync_to_async(MembershipModel.objects.create)(role=role, user=user, workspace=workspace)
-
-        c = {
-            "email": user.username,
-            "base_url": config("FRONTEND_URL", "http://localhost:3000"),
-            "uid": user.pk,
-            "user": user,
-            "token": default_token_generator.make_token(user),
-        }
-        email_message = render_to_string(email_template_name, c)
-
-        send_mail(
-            subject,
-            email_message,
-            settings.EMAIL_FROM,
-            [user.username],
-            fail_silently=False,
-        )
-
-        return membership
+        return [await createSingleMembership(workspace, email, role) for email in emails]
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def updateMembership(
