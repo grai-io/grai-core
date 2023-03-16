@@ -8,7 +8,10 @@ import {
   UpdateMembership,
   UpdateMembershipVariables,
 } from "./__generated__/UpdateMembership"
-import EditMembershipForm, { Membership, Values } from "./EditMembershipForm"
+import EditMembershipForm, {
+  Membership,
+  Values,
+} from "./forms/EditMembershipForm"
 
 export const UPDATE_MEMBERSHIP = gql`
   mutation UpdateMembership($id: ID!, $role: String!, $is_active: Boolean!) {

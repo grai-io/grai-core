@@ -5,11 +5,10 @@ import {
   Checkbox,
   FormControlLabel,
   FormGroup,
-  ListItemText,
-  MenuItem,
   TextField,
 } from "@mui/material"
 import Form from "components/form/Form"
+import MembershipRole from "./MembershipRole"
 
 export type Values = {
   role: string
@@ -51,32 +50,12 @@ const EditMembershipForm: React.FC<EditMembershipFormProps> = ({
         required
         margin="normal"
       />
-      <TextField
-        select
-        value={values.role}
-        onChange={event => setValues({ ...values, role: event.target.value })}
-        fullWidth
+      <MembershipRole
         required
-        margin="normal"
         disabled={loading}
-        inputProps={{ "data-testid": "role-select" }}
-      >
-        <MenuItem value="admin">
-          <ListItemText
-            primary="Admin"
-            secondary="Can add and remove members"
-          />
-        </MenuItem>
-        <MenuItem value="member">
-          <ListItemText
-            primary="Member"
-            secondary="Can edit but not add or remove members"
-          />
-        </MenuItem>
-        <MenuItem value="read_only">
-          <ListItemText primary="Read Only" secondary="Can only view data" />
-        </MenuItem>
-      </TextField>
+        value={values.role}
+        onChange={role => setValues({ ...values, role })}
+      />
       <FormGroup sx={{ pl: 1 }}>
         <FormControlLabel
           control={

@@ -7,17 +7,11 @@
 // GraphQL mutation operation: UpdateMembership
 // ====================================================
 
-export interface UpdateMembership_updateMembership_user {
-  __typename: "User";
-  id: any;
-  username: string | null;
-}
-
 export interface UpdateMembership_updateMembership {
   __typename: "Membership";
   id: any;
   role: string;
-  user: UpdateMembership_updateMembership_user;
+  is_active: boolean;
 }
 
 export interface UpdateMembership {

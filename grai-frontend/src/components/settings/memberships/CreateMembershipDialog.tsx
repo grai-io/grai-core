@@ -5,25 +5,29 @@ import { useSnackbar } from "notistack"
 import DialogTitle from "components/dialogs/DialogTitle"
 import GraphError from "components/utils/GraphError"
 import {
-  CreateMembership,
-  CreateMembershipVariables,
-} from "./__generated__/CreateMembership"
+  CreateMemberships,
+  CreateMembershipsVariables,
+} from "./__generated__/CreateMemberships"
 import { NewMembership } from "./__generated__/NewMembership"
-import CreateMembershipForm, { Values } from "./CreateMembershipForm"
+import CreateMembershipForm, { Values } from "./forms/CreateMembershipForm"
 
-export const CREATE_MEMBERSHIP = gql`
-  mutation CreateMembership(
+export const CREATE_MEMBERSHIPS = gql`
+  mutation CreateMemberships(
     $role: String!
-    $email: String!
+    $emails: [String!]!
     $workspaceId: ID!
   ) {
-    createMembership(role: $role, email: $email, workspaceId: $workspaceId) {
+    createMemberships(role: $role, emails: $emails, workspaceId: $workspaceId) {
       id
       role
       user {
         id
         username
+        first_name
+        last_name
       }
+      is_active
+      created_at
     }
   }
 `
@@ -41,10 +45,10 @@ const CreateMembershipDialog: React.FC<CreateMembershipDialogProps> = ({
 }) => {
   const { enqueueSnackbar } = useSnackbar()
 
-  const [createMembership, { loading, error }] = useMutation<
-    CreateMembership,
-    CreateMembershipVariables
-  >(CREATE_MEMBERSHIP, {
+  const [createMemberships, { loading, error }] = useMutation<
+    CreateMemberships,
+    CreateMembershipsVariables
+  >(CREATE_MEMBERSHIPS, {
     update(cache, { data }) {
       cache.modify({
         id: cache.identify({
@@ -53,22 +57,23 @@ const CreateMembershipDialog: React.FC<CreateMembershipDialogProps> = ({
         }),
         fields: {
           memberships(existingMemberships = []) {
-            if (!data?.createMembership) return
-
-            const newMembership = cache.writeFragment<NewMembership>({
-              data: data.createMembership,
-              fragment: gql`
-                fragment NewMembership on Membership {
-                  id
-                  role
-                  user {
-                    id
-                    username
-                  }
-                }
-              `,
-            })
-            return [...existingMemberships, newMembership]
+            const newMemberships =
+              data?.createMemberships.map(data =>
+                cache.writeFragment<NewMembership>({
+                  data,
+                  fragment: gql`
+                    fragment NewMembership on Membership {
+                      id
+                      role
+                      user {
+                        id
+                        username
+                      }
+                    }
+                  `,
+                })
+              ) ?? []
+            return [...existingMemberships, ...newMemberships]
           },
         },
       })
@@ -76,7 +81,7 @@ const CreateMembershipDialog: React.FC<CreateMembershipDialogProps> = ({
   })
 
   const handleSubmit = (values: Values) =>
-    createMembership({
+    createMemberships({
       variables: {
         ...values,
         workspaceId,

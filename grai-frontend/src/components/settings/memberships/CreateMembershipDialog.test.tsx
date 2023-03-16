@@ -1,9 +1,9 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, render, screen, waitFor } from "testing"
+import { act, fireEvent, render, screen, waitFor } from "testing"
 import CreateMembershipDialog, {
-  CREATE_MEMBERSHIP,
+  CREATE_MEMBERSHIPS,
 } from "./CreateMembershipDialog"
 
 test("renders", async () => {
@@ -34,8 +34,14 @@ test("submit", async () => {
   })
 
   await act(
-    async () => await user.type(screen.getByRole("textbox"), "email@grai.io")
+    async () => await user.type(screen.getByRole("combobox"), "email@grai.io")
   )
+
+  await act(async () => await user.keyboard("{enter}"))
+
+  fireEvent.change(screen.getByTestId("role-select"), {
+    target: { value: "admin" },
+  })
 
   await act(
     async () => await user.click(screen.getByRole("button", { name: /Save/i }))
@@ -48,10 +54,10 @@ test("error", async () => {
   const mocks = [
     {
       request: {
-        query: CREATE_MEMBERSHIP,
+        query: CREATE_MEMBERSHIPS,
         variables: {
           role: "member",
-          email: "email@grai.io",
+          emails: ["email@grai.io"],
           workspaceId: "1",
         },
       },
@@ -71,8 +77,10 @@ test("error", async () => {
   })
 
   await act(
-    async () => await user.type(screen.getByRole("textbox"), "email@grai.io")
+    async () => await user.type(screen.getByRole("combobox"), "email@grai.io")
   )
+
+  await act(async () => await user.keyboard("{enter}"))
 
   await act(
     async () => await user.click(screen.getByRole("button", { name: /Save/i }))
