@@ -18,7 +18,10 @@ def query_obj_from_param_string(
     client: ClientV1, base_url: str, options=ClientOptions(), **kwargs
 ) -> Optional[List[Dict]]:
     supported_params = ["name", "namespace"]
-    query = "&".join([f"{param}={kwargs[param]}" for param in supported_params if param in kwargs])
+    query = (
+        "&".join([f"{param}={kwargs[param]}" for param in supported_params if param in kwargs])
+        + f"&workspace={options.payload['workspace']}"
+    )
     url = f"{base_url}?{query}"
     resp = client.get(url, options=options).json()
     num_results = len(resp)
@@ -35,7 +38,7 @@ def get_node_from_id(
 ) -> Optional[Dict]:
     base_url = client.get_url(grai_type)
     if grai_type.id is not None:
-        url = f"{base_url}{grai_type.id}"
+        url = f"{base_url}{grai_type.id}?workspace={options.payload['workspace']}"
         resp = client.get(url, options=options).json()
     else:
         resp = query_obj_from_param_string(
@@ -76,7 +79,7 @@ def _get_nodes_by_name(
     name: str,
     options: ClientOptions = ClientOptions(),
 ) -> Optional[List[NodeV1]]:
-    url = f"{client.get_url(grai_type)}?name={name}"
+    url = f"{client.get_url(grai_type)}?name={name}&workspace={options.payload['workspace']}"
     resp = client.get(url, options=options).json()
     num_results = len(resp)
     if num_results == 0:
@@ -91,7 +94,7 @@ def _get_nodes_by_uuid(
     name: str,
     options: ClientOptions = ClientOptions(),
 ) -> Optional[NodeV1]:
-    url = f"{client.get_url(grai_type)}{name}"
+    url = f"{client.get_url(grai_type)}{name}?workspace={options.payload['workspace']}"
 
     resp = client.get(url, options=options).json()
     return NodeV1.from_spec(resp)
@@ -142,7 +145,7 @@ def get_nodes_by_name_and_namespace(
 def get_node_by_label_v1(
     client: ClientV1, grai_type: NodeLabels, options: ClientOptions = ClientOptions()
 ) -> List[NodeV1]:
-    url = client.get_url(grai_type)
+    url = f"{client.get_url(grai_type)}?workspace={options.payload['workspace']}"
     resp = client.get(url, options=options).json()
     return [NodeV1.from_spec(obj) for obj in resp]
 
@@ -151,10 +154,10 @@ def get_node_by_label_v1(
 def get_edge_v1(client: ClientV1, grai_type: EdgeV1, options: ClientOptions = ClientOptions()) -> Optional[EdgeV1]:
     base_url = client.get_url(grai_type)
     if grai_type.spec.id is not None:
-        url = f"{base_url}{grai_type.spec.id}"
+        url = f"{base_url}{grai_type.spec.id}?workspace={options.payload['workspace']}"
         resp = client.get(url, options=options).json()
     else:
-        url = f"{base_url}?name={grai_type.spec.name}&namespace={grai_type.spec.namespace}"
+        url = f"{base_url}?name={grai_type.spec.name}&namespace={grai_type.spec.namespace}&workspace={options.payload['workspace']}"
         resp = client.get(url, options=options).json()
         if len(resp) == 0:
             return None
@@ -169,7 +172,7 @@ def get_edge_v1(client: ClientV1, grai_type: EdgeV1, options: ClientOptions = Cl
 def get_edge_by_label_v1(
     client: ClientV1, grai_type: EdgeLabels, options: ClientOptions = ClientOptions()
 ) -> List[EdgeV1]:
-    url = client.get_url(grai_type)
+    url = f"{client.get_url(grai_type)}?workspace={options.payload['workspace']}"
     resp = client.get(url, options=options).json()
 
     for r in resp:
