@@ -55,10 +55,20 @@ class Workspace(TenantModel):
 
 
 class Membership(TenantModel):
+    ADMIN = "admin"
+    MEMBER = "member"
+    READ_ONLY = "read_only"
+
+    ROLES = [
+        (ADMIN, "admin"),
+        (MEMBER, "member"),
+        (READ_ONLY, "read_only"),
+    ]
+
     tenant_id = "workspace_id"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    role = models.CharField(max_length=255)
+    role = models.CharField(max_length=255, choices=ROLES, default=MEMBER)
     is_active = models.BooleanField(default=True)
     user = models.ForeignKey(
         "users.User",
