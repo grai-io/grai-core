@@ -80,7 +80,7 @@ test("error", async () => {
     async () => await user.type(screen.getByRole("combobox"), "email@grai.io")
   )
 
-  await act(async () => await user.keyboard("{enter}"))
+  await act(async () => await user.keyboard("{tab}"))
 
   await act(
     async () => await user.click(screen.getByRole("button", { name: /Save/i }))

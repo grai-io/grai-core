@@ -20,7 +20,13 @@ const MultipleEmails: React.FC<MultipleEmailsProps> = ({ value, onChange }) => {
         ))
       }
       renderInput={params => (
-        <TextField {...params} placeholder="Enter emails" />
+        <TextField
+          {...params}
+          placeholder="Enter emails"
+          onBlur={event =>
+            event.target.value && onChange([...value, event.target.value])
+          }
+        />
       )}
     />
   )
