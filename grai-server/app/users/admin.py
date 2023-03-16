@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.admin import DateFieldListFilter
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
 from django.utils.translation import gettext_lazy as _
@@ -56,8 +57,8 @@ class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = User
-    list_display = ("username", "first_name", "last_name", "is_staff", "is_superuser")
-    list_filter = ("is_staff", "is_superuser")
+    list_display = ("username", "first_name", "last_name", "is_staff", "is_superuser", "created_at")
+    list_filter = ("is_staff", "is_superuser", ("created_at", DateFieldListFilter))
     search_fields = ["username", "first_name", "last_name"]
 
     inlines = [
