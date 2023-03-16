@@ -9,7 +9,7 @@ import {
   CreateMembershipVariables,
 } from "./__generated__/CreateMembership"
 import { NewMembership } from "./__generated__/NewMembership"
-import CreateKeyForm, { Values } from "./CreateMembershipForm"
+import CreateMembershipForm, { Values } from "./CreateMembershipForm"
 
 export const CREATE_MEMBERSHIP = gql`
   mutation CreateMembership(
@@ -28,13 +28,13 @@ export const CREATE_MEMBERSHIP = gql`
   }
 `
 
-type CreateKeyDialogProps = {
+type CreateMembershipDialogProps = {
   workspaceId: string
   open: boolean
   onClose: () => void
 }
 
-const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({
+const CreateMembershipDialog: React.FC<CreateMembershipDialogProps> = ({
   workspaceId,
   open,
   onClose,
@@ -91,10 +91,10 @@ const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({
       <DialogTitle onClose={onClose}>Invite users</DialogTitle>
       <DialogContent>
         {error && <GraphError error={error} />}
-        <CreateKeyForm onSubmit={handleSubmit} loading={loading} />
+        <CreateMembershipForm onSubmit={handleSubmit} loading={loading} />
       </DialogContent>
     </Dialog>
   )
 }
 
-export default CreateKeyDialog
+export default CreateMembershipDialog
