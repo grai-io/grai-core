@@ -1,5 +1,5 @@
 import React from "react"
-import { Delete, Edit, MoreHoriz } from "@mui/icons-material"
+import { Edit, MoreHoriz } from "@mui/icons-material"
 import {
   IconButton,
   ListItemIcon,
@@ -9,6 +9,7 @@ import {
 } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
 import PopupState, { bindMenu, bindTrigger } from "material-ui-popup-state"
+import ConnectionDelete from "./ConnectionDelete"
 import ConnectionRun, { Connection } from "./ConnectionRun"
 
 type ConnectionsMenuProps = {
@@ -52,12 +53,11 @@ const ConnectionsMenu: React.FC<ConnectionsMenuProps> = ({
               menuItem
               disabled //Need to handle menu close without stopping query and handle polling
             />
-            <MenuItem disabled>
-              <ListItemIcon>
-                <Delete />
-              </ListItemIcon>
-              <ListItemText primary="Delete" />
-            </MenuItem>
+            <ConnectionDelete
+              connection={connection}
+              onClose={popupState.close}
+              workspaceId={workspaceId}
+            />
           </Menu>
         </>
       )}

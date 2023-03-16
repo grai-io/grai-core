@@ -13,6 +13,7 @@ from api.tests.common import (
     test_user,
     test_workspace,
 )
+from connections.models import Connection
 
 
 @pytest.mark.asyncio
@@ -366,3 +367,33 @@ async def test_run_connection_postgres(test_context):
     assert result.data["runConnection"]["connection"] == {
         "id": str(connection.id),
     }
+
+
+@pytest.mark.django_db
+async def test_delete_connection(test_context):
+    context, organisation, workspace, user, membership = test_context
+    connection = await generate_connection(workspace)
+
+    mutation = """
+        mutation DeleteConnection($id: ID!) {
+            deleteConnection(id: $id) {
+                id
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "id": str(connection.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["deleteConnection"]["id"] == str(connection.id)
+
+    with pytest.raises(Exception) as e_info:
+        await Connection.objects.aget(id=connection.id)
+
+    assert str(e_info.value) == "Connection matching query does not exist."
