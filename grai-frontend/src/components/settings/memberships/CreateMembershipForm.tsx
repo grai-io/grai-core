@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { LoadingButton } from "@mui/lab"
-import { TextField } from "@mui/material"
+import { Box, ListItemText, MenuItem, TextField } from "@mui/material"
 import Form from "components/form/Form"
 
 export type Values = {
@@ -18,7 +18,7 @@ const CreateMembershipForm: React.FC<CreateMembershipFormProps> = ({
   loading,
 }) => {
   const [values, setValues] = useState<Values>({
-    role: "admin",
+    role: "member",
     email: "",
   })
 
@@ -27,22 +27,49 @@ const CreateMembershipForm: React.FC<CreateMembershipFormProps> = ({
   return (
     <Form onSubmit={handleSubmit}>
       <TextField
-        label="Email"
         value={values.email}
         onChange={event => setValues({ ...values, email: event.target.value })}
         fullWidth
         required
         margin="normal"
         disabled={loading}
+        placeholder="Enter emails"
       />
-      <LoadingButton
-        variant="contained"
-        type="submit"
-        sx={{ mt: 2 }}
-        loading={loading}
+      <TextField
+        select
+        value={values.role}
+        onChange={event => setValues({ ...values, role: event.target.value })}
+        fullWidth
+        required
+        margin="normal"
+        disabled={loading}
       >
-        Save
-      </LoadingButton>
+        <MenuItem value="admin">
+          <ListItemText
+            primary="Admin"
+            secondary="Can add and remove members"
+          />
+        </MenuItem>
+        <MenuItem value="member">
+          <ListItemText
+            primary="Member"
+            secondary="Can edit but not add or remove members"
+          />
+        </MenuItem>
+        <MenuItem value="read_only">
+          <ListItemText primary="Read Only" secondary="Can only view data" />
+        </MenuItem>
+      </TextField>
+      <Box sx={{ textAlign: "right" }}>
+        <LoadingButton
+          variant="contained"
+          type="submit"
+          sx={{ mt: 2, color: "white", minWidth: 80 }}
+          loading={loading}
+        >
+          Save
+        </LoadingButton>
+      </Box>
     </Form>
   )
 }

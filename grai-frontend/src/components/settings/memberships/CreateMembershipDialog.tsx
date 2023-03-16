@@ -88,7 +88,7 @@ const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle onClose={onClose}>Invite user</DialogTitle>
+      <DialogTitle onClose={onClose}>Invite users</DialogTitle>
       <DialogContent>
         {error && <GraphError error={error} />}
         <CreateKeyForm onSubmit={handleSubmit} loading={loading} />

@@ -15,7 +15,7 @@ test("renders", async () => {
   )
 
   await waitFor(() => {
-    expect(screen.getByText("Invite user")).toBeInTheDocument()
+    expect(screen.getByText("Invite users")).toBeInTheDocument()
   })
 })
 
@@ -30,15 +30,11 @@ test("submit", async () => {
   )
 
   await waitFor(() => {
-    expect(screen.getByText("Invite user")).toBeInTheDocument()
+    expect(screen.getByText("Invite users")).toBeInTheDocument()
   })
 
   await act(
-    async () =>
-      await user.type(
-        screen.getByRole("textbox", { name: /email/i }),
-        "email@grai.io"
-      )
+    async () => await user.type(screen.getByRole("textbox"), "email@grai.io")
   )
 
   await act(
@@ -54,7 +50,7 @@ test("error", async () => {
       request: {
         query: CREATE_MEMBERSHIP,
         variables: {
-          role: "admin",
+          role: "member",
           email: "email@grai.io",
           workspaceId: "1",
         },
@@ -71,15 +67,11 @@ test("error", async () => {
   )
 
   await waitFor(() => {
-    expect(screen.getByText("Invite user")).toBeInTheDocument()
+    expect(screen.getByText("Invite users")).toBeInTheDocument()
   })
 
   await act(
-    async () =>
-      await user.type(
-        screen.getByRole("textbox", { name: /email/i }),
-        "email@grai.io"
-      )
+    async () => await user.type(screen.getByRole("textbox"), "email@grai.io")
   )
 
   await act(
