@@ -82,6 +82,7 @@ interface Run {
 
 export interface Connection {
   id: string
+  name: string
   last_run: Run | null
   last_successful_run: Run | null
   runs: Run[]
