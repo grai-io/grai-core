@@ -189,6 +189,70 @@ async def test_create_membership_existing_user(test_context):
 
 
 @pytest.mark.django_db
+async def test_create_memberships(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    mutation = """
+        mutation CreateMemberships($workspaceId: ID!, $role: String!, $emails: [String!]!) {
+            createMemberships(workspaceId: $workspaceId, role: $role, emails: $emails) {
+                id
+                role
+                user {
+                    id
+                    username
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "role": "admin",
+            "emails": ["test@example.com", "test2@example.com"],
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["createMemberships"][0]["role"] == "admin"
+    assert result.data["createMemberships"][0]["user"]["username"] == "test@example.com"
+    assert result.data["createMemberships"][1]["role"] == "admin"
+    assert result.data["createMemberships"][1]["user"]["username"] == "test2@example.com"
+
+
+@pytest.mark.django_db
+async def test_update_membership(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    mutation = """
+        mutation UpdateMembership($id: ID!, $role: String!, $is_active: Boolean!) {
+            updateMembership(id: $id, role: $role, is_active: $is_active) {
+                id
+                role
+                is_active
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "id": str(membership.id),
+            "role": "admin",
+            "is_active": False,
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["updateMembership"]["id"] == str(membership.id)
+    assert result.data["updateMembership"]["role"] == "admin"
+    assert result.data["updateMembership"]["is_active"] is False
+
+
+@pytest.mark.django_db
 async def test_delete_membership(test_context):
     context, organisation, workspace, user, membership = test_context
 

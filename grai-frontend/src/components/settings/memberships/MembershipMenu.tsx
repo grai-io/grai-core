@@ -1,14 +1,9 @@
 import React from "react"
-import { MoreHoriz, Edit } from "@mui/icons-material"
-import {
-  IconButton,
-  Menu,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
-} from "@mui/material"
+import { MoreHoriz } from "@mui/icons-material"
+import { IconButton, Menu } from "@mui/material"
 import PopupState, { bindMenu, bindTrigger } from "material-ui-popup-state"
-import MembershipDelete, { Membership } from "./MembershipDelete"
+import MembershipDelete from "./MembershipDelete"
+import MembershipEdit, { Membership } from "./MembershipEdit"
 
 type MembershipMenuProps = {
   membership: Membership
@@ -34,12 +29,7 @@ const MembershipMenu: React.FC<MembershipMenuProps> = ({
             },
           }}
         >
-          <MenuItem disabled>
-            <ListItemIcon>
-              <Edit />
-            </ListItemIcon>
-            <ListItemText primary="Edit" />
-          </MenuItem>
+          <MembershipEdit membership={membership} onClose={popupState.close} />
           <MembershipDelete
             membership={membership}
             onClose={popupState.close}
