@@ -99,6 +99,22 @@ class Mutation:
         return membership
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def updateMembership(
+        self,
+        id: strawberry.ID,
+        role: str,
+        is_active: bool,
+    ) -> Membership:
+        membership = await MembershipModel.objects.aget(id=id)
+
+        membership.role = role
+        membership.is_active = is_active
+
+        await sync_to_async(membership.save)()
+
+        return membership
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def deleteMembership(
         self,
         id: strawberry.ID,
