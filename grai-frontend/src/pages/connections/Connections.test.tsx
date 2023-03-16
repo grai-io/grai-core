@@ -3,8 +3,8 @@ import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
 import profileMock from "testing/profileMock"
-import Connections, { GET_CONNECTIONS } from "./Connections"
 import { DELETE_CONNECTION } from "components/connections/ConnectionDelete"
+import Connections, { GET_CONNECTIONS } from "./Connections"
 
 test("renders", async () => {
   render(<Connections />, {

@@ -3,9 +3,9 @@ import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
 import profileMock from "testing/profileMock"
+import { DELETE_CONNECTION } from "components/connections/ConnectionDelete"
 import { RUN_CONNECTION } from "components/connections/ConnectionRun"
 import Connection, { GET_CONNECTION } from "./Connection"
-import { DELETE_CONNECTION } from "components/connections/ConnectionDelete"
 
 test("renders", async () => {
   render(<Connection />, {
