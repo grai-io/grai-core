@@ -5,6 +5,7 @@ import {
   Button,
   Divider,
   IconButton,
+  Stack,
   Tooltip,
   Typography,
 } from "@mui/material"
@@ -12,6 +13,7 @@ import useWorkspace from "helpers/useWorkspace"
 import { Link } from "react-router-dom"
 import RunStatus from "components/runs/RunStatus"
 import ConnectionRun, { Connection as BaseConnection } from "./ConnectionRun"
+import ConnectionMenu from "./ConnectionMenu"
 
 interface Connection extends BaseConnection {
   name: string
@@ -59,11 +61,14 @@ const ConnectionHeader: React.FC<ConnectionHeaderProps> = ({
             <RunStatus run={connection.last_run} link sx={{ ml: 2 }} />
           )}
         </Box>
-        <ConnectionRun
-          connection={connection}
-          workspaceId={workspaceId}
-          onRun={onRun}
-        />
+        <Stack direction="row" spacing={2}>
+          <ConnectionRun
+            connection={connection}
+            workspaceId={workspaceId}
+            onRun={onRun}
+          />
+          <ConnectionMenu connection={connection} workspaceId={workspaceId} />
+        </Stack>
       </Box>
       <Divider />
     </>

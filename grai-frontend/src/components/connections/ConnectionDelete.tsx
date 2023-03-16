@@ -25,7 +25,7 @@ export interface Connection {
 type ConnectionDeleteProps = {
   connection: Connection
   workspaceId?: string
-  onClose: () => void
+  onClose: (deleted: boolean) => void
 }
 
 const ConnectionDelete: React.FC<ConnectionDeleteProps> = ({
@@ -66,7 +66,8 @@ const ConnectionDelete: React.FC<ConnectionDeleteProps> = ({
     })
       .then(() => deleteConnection())
       .then(() => enqueueSnackbar("Connection deleted", { variant: "success" }))
-      .finally(() => onClose())
+      .then(() => onClose(true))
+      .catch(() => onClose(false))
 
   return (
     <MenuItem onClick={handleDelete}>
