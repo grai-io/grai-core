@@ -20,6 +20,7 @@
             "name": "MySQL",
             "slug": "mysql",
             "metadata": {
+                "docs_url": "https://docs.grai.io/integrations/mysql",
                 "fields": [
                     {
                         "name": "host",
@@ -61,6 +62,7 @@
             "name": "Google BigQuery",
             "slug": "bigquery",
             "metadata": {
+                "docs_url": "https://docs.grai.io/integrations/bigquery",
                 "fields": [
                     {
                         "name": "project",
@@ -120,6 +122,7 @@
             "name": "Microsoft SQL Server",
             "slug": "mssql",
             "metadata": {
+                "docs_url": "https://docs.grai.io/integrations/mssql",
                 "fields": [
                     {
                         "name": "host",
@@ -160,6 +163,7 @@
             "name": "PostgreSQL",
             "slug": "postgres",
             "metadata": {
+                "docs_url": "https://docs.grai.io/integrations/postgres",
                 "fields": [
                     {
                         "name": "host",
@@ -221,6 +225,7 @@
             "name": "Snowflake",
             "slug": "snowflake",
             "metadata": {
+                "docs_url": "https://docs.grai.io/integrations/snowflake",
                 "fields": [
                     {
                         "name": "account",
@@ -268,6 +273,7 @@
         "fields": {
             "name": "Fivetran",
             "metadata": {
+                "docs_url": "https://docs.grai.io/integrations/fivetran",
                 "fields": [
                     {
                         "name": "api_key",
