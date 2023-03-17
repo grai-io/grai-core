@@ -1,8 +1,8 @@
 import React from "react"
+import { Info } from "@mui/icons-material"
 import { InputAdornment, TextField, Tooltip } from "@mui/material"
 import { ConnectorType, ConnectorMetadataField } from "./ConnectionsForm"
 import PasswordField from "./fields/PasswordField"
-import { Info } from "@mui/icons-material"
 
 type ConnectionsMetadataProps = {
   connector: ConnectorType
