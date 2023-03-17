@@ -7,9 +7,9 @@ import {
   TableRow,
   Typography,
 } from "@mui/material"
+import { DateTime } from "luxon"
 import Loading from "components/layout/Loading"
 import MembershipMenu from "./MembershipMenu"
-// import MembershipMenu from "./MembershipMenu"
 
 interface User {
   id: string
@@ -57,7 +57,11 @@ const MembershipsTable: React.FC<MembershipsTableProps> = ({
           </TableCell>
           <TableCell>{membership.role}</TableCell>
           <TableCell>{membership.is_active ? "Yes" : "No"}</TableCell>
-          <TableCell>{membership.created_at}</TableCell>
+          <TableCell>
+            {DateTime.fromISO(membership.created_at).toLocaleString(
+              DateTime.DATETIME_MED
+            )}
+          </TableCell>
           <TableCell sx={{ py: 0, px: 1 }}>
             <MembershipMenu membership={membership} workspaceId={workspaceId} />
           </TableCell>
