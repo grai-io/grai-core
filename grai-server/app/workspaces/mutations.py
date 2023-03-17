@@ -1,3 +1,4 @@
+import datetime
 from typing import List, Optional
 
 import strawberry
@@ -144,12 +145,17 @@ class Mutation:
         return membership
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def createApiKey(self, info: Info, name: str, workspaceId: strawberry.ID) -> KeyResult:
+    async def createApiKey(
+        self, info: Info, workspaceId: strawberry.ID, name: str, expiry_date: Optional[datetime.datetime] = None
+    ) -> KeyResult:
         user = get_user(info)
         workspace = await get_workspace(info, workspaceId)
 
         api_key, key = await sync_to_async(WorkspaceAPIKeyModel.objects.create_key)(
-            name=name, created_by=user, workspace=workspace
+            name=name,
+            created_by=user,
+            workspace=workspace,
+            expiry_date=expiry_date,
         )
 
         return KeyResult(key=key, api_key=api_key)

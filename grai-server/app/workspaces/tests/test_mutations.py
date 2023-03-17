@@ -307,6 +307,72 @@ async def test_create_api_key(test_context):
 
 
 @pytest.mark.django_db
+async def test_create_api_key_expiry_date(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    mutation = """
+        mutation CreateApiKey($workspaceId: ID!, $name: String!, $expiry_date: DateTime) {
+            createApiKey(workspaceId: $workspaceId, name: $name, expiry_date: $expiry_date) {
+                key
+                api_key {
+                    id
+                    name
+                    expiry_date
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "name": "test api key",
+            "expiry_date": "2020-01-01",
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["createApiKey"]["key"] != None
+    assert result.data["createApiKey"]["api_key"]["name"] == "test api key"
+    assert result.data["createApiKey"]["api_key"]["expiry_date"] == "2020-01-01T00:00:00"
+
+
+@pytest.mark.django_db
+async def test_create_api_key_expiry_date_long(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    mutation = """
+        mutation CreateApiKey($workspaceId: ID!, $name: String!, $expiry_date: DateTime) {
+            createApiKey(workspaceId: $workspaceId, name: $name, expiry_date: $expiry_date) {
+                key
+                api_key {
+                    id
+                    name
+                    expiry_date
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "name": "test api key",
+            "expiry_date": "2023-03-24T00:00:00.000+00:00",
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["createApiKey"]["key"] != None
+    assert result.data["createApiKey"]["api_key"]["name"] == "test api key"
+    assert result.data["createApiKey"]["api_key"]["expiry_date"] == "2023-03-24T00:00:00+00:00"
+
+
+@pytest.mark.django_db
 async def test_delete_api_key(test_context):
     context, organisation, workspace, user, membership = test_context
 
