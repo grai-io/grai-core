@@ -2,7 +2,7 @@ import datetime
 import uuid
 from typing import get_args
 
-from grai_client.endpoints.utilities import serialize_obj
+from grai_client.endpoints.utilities import add_query_params, serialize_obj
 
 
 def make_v1_node():
@@ -30,3 +30,17 @@ def test_serialize_obj():
     obj = make_v1_node()
     json = serialize_obj(obj)
     assert isinstance(json, (str, bytes)), type(json)
+
+
+def test_add_query_params_no_initial_query():
+    url = "www.grai.io"
+    params = {"okay": "computer"}
+    new_url = add_query_params(url, params)
+    assert new_url == "www.grai.io?okay=computer"
+
+
+def test_add_query_params_with_initial_query():
+    url = "www.grai.io/?weird=fishes"
+    params = {"okay": "computer"}
+    new_url = add_query_params(url, params)
+    assert new_url == "www.grai.io/?weird=fishes&okay=computer"

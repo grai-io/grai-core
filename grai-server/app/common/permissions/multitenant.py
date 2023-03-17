@@ -12,20 +12,19 @@ class BasePermission(permissions.BasePermission):
             return workspace
 
         if guess and request.user and not request.user.is_anonymous:
-            if request.GET.get("workspace", None):
-                id = request.GET.get("workspace")
+            id = request.GET.get("workspace", request.data.get("workspace", None))
+
+            if id:
                 return self.get_workspace_from_id(request, id)
 
             if request.user.memberships and request.user.memberships.first():
-                id = str(request.user.memberships.first().workspace_id)
-                return self.get_workspace_from_id(request, id)
+                return request.user.memberships.first().workspace
 
     def get_workspace_from_header(self, request):
         header = request.headers.get("Authorization")
 
         if header:
             [type, key] = header.split()
-            # TODO: Consider handling Bearer token here
             if type == "Api-Key":
                 try:
                     api_key = WorkspaceAPIKey.objects.get_from_key(key)

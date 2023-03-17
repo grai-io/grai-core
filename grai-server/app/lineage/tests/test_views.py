@@ -6,6 +6,7 @@ import django.db.utils
 import pytest
 from django.urls import reverse
 
+from lineage.models import Node
 from lineage.urls import app_name
 from workspaces.models import Membership, Organisation, Workspace, WorkspaceAPIKey
 
@@ -109,6 +110,31 @@ def test_post_node(api_key, create_workspace, api_client):
     api_client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
     response = create_node(api_client, create_workspace)
     assert response.status_code == 201
+
+
+@pytest.mark.django_db
+def test_post_node_second_workspace(auto_login_user):
+    client, user = auto_login_user()
+
+    organisation = Organisation.objects.create(name=str(uuid.uuid4()))
+
+    first_workspace = Workspace.objects.create(name="first", organisation=organisation)
+    second_workspace = Workspace.objects.create(name="second", organisation=organisation)
+
+    Membership.objects.create(role="admin", user=user, workspace=first_workspace)
+    Membership.objects.create(role="admin", user=user, workspace=second_workspace)
+
+    response = create_node(client, first_workspace)
+    assert response.status_code == 201
+    id = response.json()["id"]
+    node = Node.objects.get(id=id)
+    assert str(node.workspace_id) == str(first_workspace.id)
+
+    response = create_node(client, second_workspace)
+    assert response.status_code == 201
+    id = response.json()["id"]
+    node = Node.objects.get(id=id)
+    assert str(node.workspace_id) == str(second_workspace.id)
 
 
 @pytest.mark.django_db

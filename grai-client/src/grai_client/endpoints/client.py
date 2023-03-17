@@ -9,7 +9,11 @@ from pydantic import BaseModel
 
 from grai_client.authentication import APIKeyHeader, UserTokenHeader
 from grai_client.endpoints.rest import delete, get, patch, post
-from grai_client.endpoints.utilities import response_status_check, serialize_obj
+from grai_client.endpoints.utilities import (
+    add_query_params,
+    response_status_check,
+    serialize_obj,
+)
 from grai_client.schemas.schema import GraiType
 
 if sys.version_info < (3, 10):
@@ -204,6 +208,9 @@ def patch_sequence(
 @get.register
 def client_get_url(client: BaseClient, url: str, options: ClientOptions = ClientOptions()) -> requests.Response:
     headers = {**client.auth_headers, **options.headers}
+
+    if "workspace" in options.payload:
+        url = add_query_params(url, {"workspace": options.payload["workspace"]})
 
     response = client.session.get(url, headers=headers, **options.request_args)
     response_status_check(response)
