@@ -14,6 +14,8 @@ import GuestRoute from "components/auth/GuestRoute"
 import WorkspaceProvider from "components/utils/WorkspaceProvider"
 import AuthMock from "./AuthMock"
 import AutoMockedProvider from "./AutoMockedProvider"
+import { LocalizationProvider } from "@mui/x-date-pickers"
+import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
 
 const mockResolvers = {
   Date: () => "2019-12-31",
@@ -83,15 +85,17 @@ const basicRender = (
         <SnackbarProvider>
           <ConfirmProvider>
             <ThemeProvider theme={theme}>
-              <AuthMock initialLoggedIn={loggedIn}>
-                <AutoMockedProvider
-                  mockResolvers={mockResolvers}
-                  mocks={mocks}
-                  cache={cache}
-                >
-                  {props.children}
-                </AutoMockedProvider>
-              </AuthMock>
+              <LocalizationProvider dateAdapter={AdapterLuxon}>
+                <AuthMock initialLoggedIn={loggedIn}>
+                  <AutoMockedProvider
+                    mockResolvers={mockResolvers}
+                    mocks={mocks}
+                    cache={cache}
+                  >
+                    {props.children}
+                  </AutoMockedProvider>
+                </AuthMock>
+              </LocalizationProvider>
             </ThemeProvider>
           </ConfirmProvider>
         </SnackbarProvider>
@@ -115,46 +119,48 @@ const renderWithRouter = (
     wrapper: props => (
       <HelmetProvider>
         <ThemeProvider theme={theme}>
-          <AutoMockedProvider
-            mockResolvers={mockResolvers}
-            mocks={mocks}
-            cache={cache}
-          >
-            <MemoryRouter initialEntries={initialEntries ?? [route]}>
-              <AuthMock initialLoggedIn={loggedIn}>
-                <SnackbarProvider maxSnack={3} hideIconVariant>
-                  <ConfirmProvider>
-                    <Routes>
-                      <Route element={<WorkspaceProvider />}>
-                        {guestRoute ? (
-                          <Route element={<GuestRoute />}>
-                            <Route path={path} element={props.children} />
-                          </Route>
-                        ) : (
-                          <Route path={path} element={props.children} />
-                        )}
-                        {routes.map(route =>
-                          typeof route === "string" ? (
-                            <Route
-                              key={route}
-                              path={route}
-                              element={<>New Page</>}
-                            />
+          <LocalizationProvider dateAdapter={AdapterLuxon}>
+            <AutoMockedProvider
+              mockResolvers={mockResolvers}
+              mocks={mocks}
+              cache={cache}
+            >
+              <MemoryRouter initialEntries={initialEntries ?? [route]}>
+                <AuthMock initialLoggedIn={loggedIn}>
+                  <SnackbarProvider maxSnack={3} hideIconVariant>
+                    <ConfirmProvider>
+                      <Routes>
+                        <Route element={<WorkspaceProvider />}>
+                          {guestRoute ? (
+                            <Route element={<GuestRoute />}>
+                              <Route path={path} element={props.children} />
+                            </Route>
                           ) : (
-                            <Route
-                              key={route.path}
-                              path={route.path}
-                              element={route.element}
-                            />
-                          )
-                        )}
-                      </Route>
-                    </Routes>
-                  </ConfirmProvider>
-                </SnackbarProvider>
-              </AuthMock>
-            </MemoryRouter>
-          </AutoMockedProvider>
+                            <Route path={path} element={props.children} />
+                          )}
+                          {routes.map(route =>
+                            typeof route === "string" ? (
+                              <Route
+                                key={route}
+                                path={route}
+                                element={<>New Page</>}
+                              />
+                            ) : (
+                              <Route
+                                key={route.path}
+                                path={route.path}
+                                element={route.element}
+                              />
+                            )
+                          )}
+                        </Route>
+                      </Routes>
+                    </ConfirmProvider>
+                  </SnackbarProvider>
+                </AuthMock>
+              </MemoryRouter>
+            </AutoMockedProvider>
+          </LocalizationProvider>
         </ThemeProvider>
       </HelmetProvider>
     ),

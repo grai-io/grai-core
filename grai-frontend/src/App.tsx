@@ -2,6 +2,8 @@
 import React from "react"
 import { Close } from "@mui/icons-material"
 import { CssBaseline, IconButton, ThemeProvider } from "@mui/material"
+import { LocalizationProvider } from "@mui/x-date-pickers"
+import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
 import * as Sentry from "@sentry/react"
 import { BrowserTracing } from "@sentry/tracing"
 import { ConfirmProvider } from "material-ui-confirm"
@@ -46,29 +48,31 @@ const App: React.FC = () => {
     <div>
       <CssBaseline />
       <ThemeProvider theme={theme}>
-        <BackendProvider>
-          <ConfirmProvider
-            defaultOptions={{
-              confirmationButtonProps: { autoFocus: true },
-            }}
-          >
-            <SnackbarProvider
-              ref={notistackRef}
-              maxSnack={3}
-              hideIconVariant
-              action={key => (
-                <IconButton onClick={onClickDismiss(key)}>
-                  <Close />
-                </IconButton>
-              )}
+        <LocalizationProvider dateAdapter={AdapterLuxon}>
+          <BackendProvider>
+            <ConfirmProvider
+              defaultOptions={{
+                confirmationButtonProps: { autoFocus: true },
+              }}
             >
-              <BrowserRouter>
-                <PosthogProvider />
-                <Routes />
-              </BrowserRouter>
-            </SnackbarProvider>
-          </ConfirmProvider>
-        </BackendProvider>
+              <SnackbarProvider
+                ref={notistackRef}
+                maxSnack={3}
+                hideIconVariant
+                action={key => (
+                  <IconButton onClick={onClickDismiss(key)}>
+                    <Close />
+                  </IconButton>
+                )}
+              >
+                <BrowserRouter>
+                  <PosthogProvider />
+                  <Routes />
+                </BrowserRouter>
+              </SnackbarProvider>
+            </ConfirmProvider>
+          </BackendProvider>
+        </LocalizationProvider>
       </ThemeProvider>
     </div>
   )

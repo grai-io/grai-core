@@ -12,7 +12,9 @@ const keys = [
     expiry_date: null,
     created_by: {
       id: "1",
-      username: "edward",
+      username: "test@example.com",
+      first_name: "test",
+      last_name: "user",
     },
   },
   {
@@ -21,10 +23,12 @@ const keys = [
     prefix: "1234a",
     created: "2021-01-21",
     revoked: true,
-    expiry_date: null,
+    expiry_date: "2020-01-01T00:00:00",
     created_by: {
-      id: "1",
-      username: "edward",
+      id: "2",
+      username: "test2@example.com",
+      first_name: null,
+      last_name: null,
     },
   },
 ]

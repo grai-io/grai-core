@@ -12,6 +12,7 @@
     "@mui/icons-material": "^5.10.16",
     "@mui/lab": "^5.0.0-alpha.105",
     "@mui/material": "^5.10.11",
+    "@mui/x-date-pickers": "^6.0.2",
     "@sentry/react": "^7.43.0",
     "@sentry/tracing": "^7.43.0",
     "@testing-library/jest-dom": "^5.16.5",

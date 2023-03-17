@@ -7,12 +7,15 @@ import {
   TableRow,
   Typography,
 } from "@mui/material"
+import { DateTime } from "luxon"
 import Loading from "components/layout/Loading"
 import ApiKeyMenu from "./ApiKeyMenu"
 
 interface User {
   id: string
   username: string | null
+  first_name: string | null
+  last_name: string | null
 }
 
 interface Key {
@@ -53,9 +56,20 @@ const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
         <TableRow key={key.id}>
           <TableCell sx={{ pl: 1 }}>{key.name}</TableCell>
           <TableCell>{key.prefix}***********</TableCell>
-          <TableCell>{key.created}</TableCell>
-          <TableCell>{key.created_by.username}</TableCell>
-          <TableCell>{key.expiry_date}</TableCell>
+          <TableCell>
+            {DateTime.fromISO(key.created).toLocaleString(DateTime.DATE_MED)}
+          </TableCell>
+          <TableCell>
+            {key.created_by.first_name
+              ? `${key.created_by.first_name} ${key.created_by.last_name}`
+              : key.created_by.username}
+          </TableCell>
+          <TableCell>
+            {key.expiry_date &&
+              DateTime.fromISO(key.expiry_date).toLocaleString(
+                DateTime.DATE_MED
+              )}
+          </TableCell>
           <TableCell>{key.revoked ? "Yes" : ""}</TableCell>
           <TableCell sx={{ py: 0, px: 1 }}>
             <ApiKeyMenu apiKey={key} workspaceId={workspaceId} />
