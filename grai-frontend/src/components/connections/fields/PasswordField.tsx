@@ -7,6 +7,7 @@ type PasswordFieldProps = {
   onChange: (event: ChangeEvent<HTMLInputElement>) => void
   required?: boolean
   edit?: boolean
+  helperText?: string | null
 }
 
 const PasswordField: React.FC<PasswordFieldProps> = ({
@@ -15,6 +16,7 @@ const PasswordField: React.FC<PasswordFieldProps> = ({
   onChange,
   required,
   edit,
+  helperText,
 }) => {
   const [show, setShow] = useState(!edit)
 
@@ -28,6 +30,7 @@ const PasswordField: React.FC<PasswordFieldProps> = ({
         margin="normal"
         required={required}
         type="password"
+        helperText={helperText}
         fullWidth
         disabled
         InputProps={{
@@ -48,6 +51,7 @@ const PasswordField: React.FC<PasswordFieldProps> = ({
       margin="normal"
       required={required}
       type="password"
+      helperText={helperText}
       fullWidth
     />
   )

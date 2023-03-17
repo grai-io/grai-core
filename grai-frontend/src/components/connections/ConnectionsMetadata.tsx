@@ -52,6 +52,7 @@ const ConnectionsMetadata: React.FC<ConnectionsMetadataProps> = ({
             onChange={event => handleChangeMetadata(event.target.value, field)}
             margin="normal"
             required={field.required}
+            helperText={field.helper_text}
             fullWidth
           />
         ))}
@@ -64,6 +65,7 @@ const ConnectionsMetadata: React.FC<ConnectionsMetadataProps> = ({
             value={secrets && secrets[field.name]}
             onChange={event => handleChangeSecrets(event.target.value, field)}
             required={field.required}
+            helperText={field.helper_text}
             edit={edit}
           />
         ))}
