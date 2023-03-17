@@ -3,6 +3,8 @@ import React, { ReactElement, ReactNode } from "react"
 import { InMemoryCache } from "@apollo/client"
 import { MockedResponse } from "@apollo/client/testing"
 import { ThemeProvider } from "@mui/material"
+import { LocalizationProvider } from "@mui/x-date-pickers"
+import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
 import { render, RenderOptions } from "@testing-library/react"
 import casual from "casual"
 import { ConfirmProvider } from "material-ui-confirm"
@@ -14,8 +16,6 @@ import GuestRoute from "components/auth/GuestRoute"
 import WorkspaceProvider from "components/utils/WorkspaceProvider"
 import AuthMock from "./AuthMock"
 import AutoMockedProvider from "./AutoMockedProvider"
-import { LocalizationProvider } from "@mui/x-date-pickers"
-import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
 
 const mockResolvers = {
   Date: () => "2019-12-31",
