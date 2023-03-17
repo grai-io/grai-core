@@ -5747,6 +5747,20 @@
             "description": null,
             "args": [
               {
+                "name": "workspaceId",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              },
+              {
                 "name": "name",
                 "description": null,
                 "type": {
@@ -5761,18 +5775,14 @@
                 "defaultValue": null
               },
               {
-                "name": "workspaceId",
+                "name": "expiry_date",
                 "description": null,
                 "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "ID",
-                    "ofType": null
-                  }
+                  "kind": "SCALAR",
+                  "name": "DateTime",
+                  "ofType": null
                 },
-                "defaultValue": null
+                "defaultValue": "null"
               }
             ],
             "type": {

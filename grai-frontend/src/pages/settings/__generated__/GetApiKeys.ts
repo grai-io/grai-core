@@ -11,6 +11,8 @@ export interface GetApiKeys_workspace_api_keys_created_by {
   __typename: "User";
   id: any;
   username: string | null;
+  first_name: string;
+  last_name: string;
 }
 
 export interface GetApiKeys_workspace_api_keys {
