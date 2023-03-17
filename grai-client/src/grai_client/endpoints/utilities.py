@@ -2,6 +2,7 @@ import datetime
 import json
 import pathlib
 import sys
+import urllib
 import uuid
 from typing import Any, Dict, TypeVar, Union
 from uuid import UUID
@@ -83,3 +84,10 @@ def serialize_obj(obj: Dict) -> bytes:
 def serialize_obj_fallback(obj: Dict) -> str:
     json_obj = json.dumps(obj, cls=GraiEncoder)
     return json_obj
+
+
+def add_query_params(url: str, params: dict) -> str:
+    url_parts = urllib.parse.urlparse(url)
+    query = dict(urllib.parse.parse_qsl(url_parts.query))
+    query.update(params)
+    return url_parts._replace(query=urllib.parse.urlencode(query)).geturl()
