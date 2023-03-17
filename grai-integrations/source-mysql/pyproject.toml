@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai_source_mysql"
-version = "0.0.5"
+version = "0.0.6"
 description = ""
 authors = ["Tony Lewis <tony@grai.io>"]
 license = "Elastic-2.0"
@@ -10,11 +10,11 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.8"
 pydantic = "^1.9.1"
-grai-client = "^0.2.0"
+grai-client = "^0.2.6"
 PyYAML = "^6.0"
 multimethod = "^1.8"
 mysql-connector-python = "^8.0.31"
-grai-schemas = "^0.1.0"
+grai-schemas = "^0.1.10"
 
 [tool.poetry.group.dev.dependencies]
 black = "^22.6.0"
