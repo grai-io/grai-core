@@ -14,6 +14,7 @@ export interface ConnectorMetadataField {
 }
 
 export interface ConnectorMetadata {
+  docs_url?: string | null
   fields?: ConnectorMetadataField[]
   file?: {
     name?: string | null
