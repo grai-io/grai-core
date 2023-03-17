@@ -35,7 +35,7 @@ const ConnectionDetail: React.FC<ConnectionDetailProps> = ({ connection }) => (
     <Table>
       <TableBody>
         <NodeDetailRow label="id" value={connection.id} />
-        <NodeDetailRow label="Connector" value={connection.connector.name} />
+        <NodeDetailRow label="Integration" value={connection.connector.name} />
         <ConnectionSchedule connection={connection} />
       </TableBody>
     </Table>
