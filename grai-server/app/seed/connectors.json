@@ -20,6 +20,7 @@
             "name": "MySQL",
             "slug": "mysql",
             "metadata": {
+                "docs_url": "https://docs.grai.io/integrations/mysql",
                 "fields": [
                     {
                         "name": "host",
@@ -61,10 +62,12 @@
             "name": "Google BigQuery",
             "slug": "bigquery",
             "metadata": {
+                "docs_url": "https://docs.grai.io/integrations/bigquery",
                 "fields": [
                     {
                         "name": "project",
-                        "required": true
+                        "required": true,
+                        "helper_text": "GCP project id"
                     },
                     {
                         "name": "dataset",
@@ -73,7 +76,8 @@
                     {
                         "name": "credentials",
                         "required": true,
-                        "secret": true
+                        "secret": true,
+                        "helper_text": "JSON credentials for service account, see Credentials in docs"
                     }
                 ]
             },
@@ -120,6 +124,7 @@
             "name": "Microsoft SQL Server",
             "slug": "mssql",
             "metadata": {
+                "docs_url": "https://docs.grai.io/integrations/mssql",
                 "fields": [
                     {
                         "name": "host",
@@ -160,6 +165,7 @@
             "name": "PostgreSQL",
             "slug": "postgres",
             "metadata": {
+                "docs_url": "https://docs.grai.io/integrations/postgres",
                 "fields": [
                     {
                         "name": "host",
@@ -221,10 +227,12 @@
             "name": "Snowflake",
             "slug": "snowflake",
             "metadata": {
+                "docs_url": "https://docs.grai.io/integrations/snowflake",
                 "fields": [
                     {
                         "name": "account",
-                        "required": true
+                        "required": true,
+                        "helper_text": "Snowflake account, the characters in front of .snowflakecomputing.com"
                     },
                     {
                         "name": "user",
@@ -268,6 +276,7 @@
         "fields": {
             "name": "Fivetran",
             "metadata": {
+                "docs_url": "https://docs.grai.io/integrations/fivetran",
                 "fields": [
                     {
                         "name": "api_key",

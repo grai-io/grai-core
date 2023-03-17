@@ -57,7 +57,7 @@ const RunsTable: React.FC<RunsTableProps> = ({ runs, loading }) => {
         <TableRow sx={{ backgroundColor: theme => theme.palette.grey[100] }}>
           <TableCell>id</TableCell>
           <TableCell>Connection</TableCell>
-          <TableCell>Connector</TableCell>
+          <TableCell>Integration</TableCell>
           <TableCell>User</TableCell>
           <TableCell>Status</TableCell>
           <TableCell sx={{ textAlign: "right" }}>Started</TableCell>

@@ -35,6 +35,7 @@ test("normal field", async () => {
           {
             name: "field1",
             label: "Field 1",
+            helper_text: "Helper text",
           },
         ],
       },
@@ -69,6 +70,7 @@ test("secret field", async () => {
             name: "field1",
             label: "Field 1",
             secret: true,
+            helper_text: "Helper text",
           },
         ],
       },

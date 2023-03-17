@@ -11,9 +11,11 @@ export interface ConnectorMetadataField {
   secret?: boolean
   required?: boolean
   default?: string | number
+  helper_text?: string | null
 }
 
 export interface ConnectorMetadata {
+  docs_url?: string | null
   fields?: ConnectorMetadataField[]
   file?: {
     name?: string | null
