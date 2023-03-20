@@ -20,25 +20,3 @@ if not settings.DISABLE_TELEMETRY:
     )
     with configure_scope() as scope:
         scope.set_tag("posthog_org_id", settings.USER_ID)
-
-
-# class TelemetryConfig(AppConfig):
-#     default_auto_field = "django.db.models.BigAutoField"
-#     name = "telemetry"
-#
-#     def ready(self):
-#         posthog.disabled = settings.DISABLE_TELEMETRY
-#
-#         posthog.project_api_key = settings.POSTHOG_PROJECT_API_KEY
-#         posthog.host = settings.POSTHOG_HOST
-#
-#         group_properties = {
-#             "name": "grai-server",
-#         }
-#         if not settings.DISABLE_TELEMETRY and os.environ.get("BEGIN_LOGGING") == "True":
-#             print("OOPSIES, HOW MANY TIMES WE WILL BE HERE: ", os.environ.get("BEGIN_LOGGING", "a_default"))
-#             posthog.capture(
-#                 settings.USER_ID,
-#                 event="Server Deployment",
-#                 groups={"package": "id:grai-server", "name": "grai-server", "version": settings.SERVER_VERSION},
-#             )

@@ -1,8 +1,8 @@
 import os
-import re
+
 import subprocess
 from pathlib import Path
-
+import warnings
 from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -31,6 +31,22 @@ def get_server_version():
     return ver
 
 
+def cast_string_to_bool(default: bool = True):
+    yes_values = {"true", "yes", "y"}
+    no_values = {"false", "no", "n"}
+
+    def inner(value: str | bool) -> bool:
+        if isinstance(value, bool):
+            return value
+        elif value.lower() in yes_values:
+            return True
+        elif value.lower() in no_values:
+            warnings.warn(f"Unrecognized boolean value `{value}`, defaulting to `{default}`")
+            return default
+
+    return inner
+
+
 SERVER_VERSION = get_server_version()
 DEBUG = config("DEBUG", default=False, cast=bool)
 TEMPLATE_DEBUG = config("TEMPLATE_DEBUG", default=DEBUG, cast=bool)
@@ -44,7 +60,7 @@ DISABLE_HTTP = config("DISABLE_HTTP", default=False)
 
 POSTHOG_HOST = config("POSTHOG_HOST", default="https://app.posthog.com")
 POSTHOG_PROJECT_API_KEY = config("POSTHOG_PROJECT_API_KEY", default="phc_Q8OCDm0JpCwt4Akk3pMybuBWniWPfOsJzRrdxWjAnjE")
-ALLOWED_TO_LOG_POSTHOG = True
+DISABLE_POSTHOG = config("DISABLE_POSTHOG", default=False, cast=cast_string_to_bool(False))
 
 SENTRY_DSN = config(
     "SENTRY_DSN", default="https://3ef0d6800e084eae8b3a8f4ee4be1d3d@o4503978528407552.ingest.sentry.io/4503978529456128"

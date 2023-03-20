@@ -33,4 +33,4 @@ done <<< "$fixtures"
 # These should be set to false first if we don't want workers to log their deployment
 python manage.py shell < "init.py"
 
-exec "$@" & python manage.py shell < "init.py"
+exec "$@"

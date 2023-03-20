@@ -8,7 +8,7 @@ from ..settings.base import *
 SECRET_KEY = config("SECRET_KEY")  # Default secret_key generated in entrypoint.sh
 USER_ID = hashlib.md5(SECRET_KEY.encode()).hexdigest()
 
-DISABLE_TELEMETRY = config("DISABLE_TELEMETRY", False)
+DISABLE_TELEMETRY = config("DISABLE_TELEMETRY", default=False, cast=cast_string_to_bool(False))
 
 CSRF_COOKIE_SAMESITE = "None"
 SESSION_COOKIE_SAMESITE = "None"
