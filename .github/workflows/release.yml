@@ -1,0 +1,160 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  py_ver: "3.11"
+  poetry_ver: "1.3.1"
+  SECRET_KEY: "fixed-test-key-that-doesnt-matter"
+
+jobs:
+  get-poetry-version:
+    runs-on: ubuntu-latest
+
+    outputs:
+      poetry-version: ${{ env.poetry_semver }}
+      tag-exists: ${{ steps.check-tag.outputs.exists }}
+
+    steps:
+      - name: Get poetry version
+        run: |
+          echo "POETRY_SEMVER=poetry version --short" >> $GITHUB_ENV
+          echo ${{env.poetry_semver}}
+      - uses: mukunku/tag-exists-action@v1.2.0
+        id: checkTag
+        with:
+          tag: ${{env.poetry_semver}}
+      - run: echo ${{steps.checkTag.outputs.exists}}
+
+  lint-server:
+    runs-on: ubuntu-latest
+
+    needs: get-poetry-version
+
+    if: ${{needs.get-poetry-version.outputs.exists}} == 'false'
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - name: Install Python
+        id: setup-python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "${{ env.py_ver }}"
+
+      - run: pip install black isort
+
+      - working-directory: "grai-server/app"
+        run: |
+          black . --check
+        # isort . --profile black --check
+
+  tests-server:
+    needs: lint-server
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./grai-server/app
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: grai
+          POSTGRES_PASSWORD: grai
+          POSTGRES_DB: grai
+        ports:
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 2s --health-timeout 5s --health-retries 15
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "${{ env.py_ver }}"
+
+      - name: Install package
+        run: |
+          pip install pytest pytest_asyncio pytest-django pytest-mock coverage
+          pip install .
+
+      - name: Tests
+        env:
+          DEBUG: False
+          DB_HOST: "127.0.0.1"
+          DB_PORT: "5432"
+          DB_USER: grai
+          DB_NAME: grai
+          DB_PASSWORD: grai
+          GITHUB_PRIVATE_KEY: installations/tests/sample.private-key.pem
+        run: |
+          python manage.py migrate --noinput
+          coverage run -m pytest
+          coverage xml
+
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          flags: grai-server
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  build-server:
+    needs: [lint-server, tests-server]
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    defaults:
+      run:
+        working-directory: grai-server/app
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ env.poetry_semver }}
+          commit: ${{ github.sha }}
+          generateReleaseNotes: true
+          makeLatest: true
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GH_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/${{ github.repository }}/grai-server
+          # tags: |
+          #   type=raw,value=cloud,priority=100
+          #   type=sha,prefix=,format=long,priority=100
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@master
+
+      - name: Build
+        uses: docker/build-push-action@v3
+        with:
+          context: grai-server/app
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
