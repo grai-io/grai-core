@@ -15,6 +15,7 @@ const icons: Icons = {
   "grai-source-snowflake": "/images/snowflake-logo.png",
   "grai-source-mssql": "/images/mssql-logo.png",
   "grai-source-bigquery": "/images/bigquery-logo.png",
+  "grai-source-mysql": "/images/mysql-logo.png",
 }
 
 const DataSourceIcon: React.FC<DataSourceIconProps> = ({ dataSource }) => {
