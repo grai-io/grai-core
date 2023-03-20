@@ -18,6 +18,10 @@ jobs:
       # poetry-version: ${{ env.POETRY_SEMVER }}
       tag-exists: ${{ steps.check-tag.outputs.exists }}
 
+    defaults:
+      run:
+        working-directory: ./grai-server/app
+
     steps:
       - uses: actions/setup-python@v4
         with:
