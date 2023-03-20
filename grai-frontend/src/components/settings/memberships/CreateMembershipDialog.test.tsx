@@ -1,9 +1,9 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, render, screen, waitFor } from "testing"
+import { act, fireEvent, render, screen, waitFor } from "testing"
 import CreateMembershipDialog, {
-  CREATE_MEMBERSHIP,
+  CREATE_MEMBERSHIPS,
 } from "./CreateMembershipDialog"
 
 test("renders", async () => {
@@ -15,7 +15,7 @@ test("renders", async () => {
   )
 
   await waitFor(() => {
-    expect(screen.getByText("Invite user")).toBeInTheDocument()
+    expect(screen.getByText("Invite users")).toBeInTheDocument()
   })
 })
 
@@ -30,16 +30,18 @@ test("submit", async () => {
   )
 
   await waitFor(() => {
-    expect(screen.getByText("Invite user")).toBeInTheDocument()
+    expect(screen.getByText("Invite users")).toBeInTheDocument()
   })
 
   await act(
-    async () =>
-      await user.type(
-        screen.getByRole("textbox", { name: /email/i }),
-        "email@grai.io"
-      )
+    async () => await user.type(screen.getByRole("combobox"), "email@grai.io")
   )
+
+  await act(async () => await user.keyboard("{enter}"))
+
+  fireEvent.change(screen.getByTestId("role-select"), {
+    target: { value: "admin" },
+  })
 
   await act(
     async () => await user.click(screen.getByRole("button", { name: /Save/i }))
@@ -52,10 +54,10 @@ test("error", async () => {
   const mocks = [
     {
       request: {
-        query: CREATE_MEMBERSHIP,
+        query: CREATE_MEMBERSHIPS,
         variables: {
-          role: "admin",
-          email: "email@grai.io",
+          role: "member",
+          emails: ["email@grai.io"],
           workspaceId: "1",
         },
       },
@@ -71,16 +73,14 @@ test("error", async () => {
   )
 
   await waitFor(() => {
-    expect(screen.getByText("Invite user")).toBeInTheDocument()
+    expect(screen.getByText("Invite users")).toBeInTheDocument()
   })
 
   await act(
-    async () =>
-      await user.type(
-        screen.getByRole("textbox", { name: /email/i }),
-        "email@grai.io"
-      )
+    async () => await user.type(screen.getByRole("combobox"), "email@grai.io")
   )
+
+  await act(async () => await user.keyboard("{tab}"))
 
   await act(
     async () => await user.click(screen.getByRole("button", { name: /Save/i }))

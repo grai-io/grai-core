@@ -1,5 +1,6 @@
 import React from "react"
-import { TextField } from "@mui/material"
+import { Info } from "@mui/icons-material"
+import { InputAdornment, TextField, Tooltip } from "@mui/material"
 import { ConnectorType, ConnectorMetadataField } from "./ConnectionsForm"
 import PasswordField from "./fields/PasswordField"
 
@@ -52,6 +53,15 @@ const ConnectionsMetadata: React.FC<ConnectionsMetadataProps> = ({
             onChange={event => handleChangeMetadata(event.target.value, field)}
             margin="normal"
             required={field.required}
+            InputProps={{
+              endAdornment: field.helper_text ? (
+                <InputAdornment position="end" sx={{ cursor: "pointer" }}>
+                  <Tooltip title={field.helper_text}>
+                    <Info />
+                  </Tooltip>
+                </InputAdornment>
+              ) : null,
+            }}
             fullWidth
           />
         ))}
@@ -64,6 +74,7 @@ const ConnectionsMetadata: React.FC<ConnectionsMetadataProps> = ({
             value={secrets && secrets[field.name]}
             onChange={event => handleChangeSecrets(event.target.value, field)}
             required={field.required}
+            helperText={field.helper_text}
             edit={edit}
           />
         ))}

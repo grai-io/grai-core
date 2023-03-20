@@ -7,6 +7,9 @@ import HelpSection from "components/help/HelpSection"
 
 interface Connector {
   name: string
+  metadata?: {
+    docs_url?: string | null
+  } | null
 }
 
 type CreateConnectionHelpProps = {
@@ -22,8 +25,13 @@ const CreateConnectionHelp: React.FC<CreateConnectionHelpProps> = ({
     <HelpSection>
       <HelpItem title="Read our docs">
         Not sure where to start? Check out the{" "}
-        <Link href="https://docs.grai.io">docs for {connector?.name}</Link> for
-        step-by-step instructions.
+        <Link
+          href={connector?.metadata?.docs_url ?? "https://docs.grai.io"}
+          target="_blank"
+        >
+          docs for {connector?.name}
+        </Link>{" "}
+        for step-by-step instructions.
       </HelpItem>
       <HelpItem title="Invite a teammate">
         If you're missing credentials or connection info,{" "}

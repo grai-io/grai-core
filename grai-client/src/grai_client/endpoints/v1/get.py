@@ -19,6 +19,7 @@ def query_obj_from_param_string(
 ) -> Optional[List[Dict]]:
     supported_params = ["name", "namespace"]
     query = "&".join([f"{param}={kwargs[param]}" for param in supported_params if param in kwargs])
+
     url = f"{base_url}?{query}"
     resp = client.get(url, options=options).json()
     num_results = len(resp)

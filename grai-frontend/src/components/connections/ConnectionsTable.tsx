@@ -44,7 +44,7 @@ const ConnectionsTable: React.FC<ConnectionsTableProps> = ({
         <TableRow sx={{ backgroundColor: theme => theme.palette.grey[100] }}>
           <TableCell>Name</TableCell>
           <TableCell>Namespace</TableCell>
-          <TableCell>Connector</TableCell>
+          <TableCell>Integration</TableCell>
           <TableCell>Active</TableCell>
           <TableCell>Status</TableCell>
           <TableCell sx={{ width: 0 }} />

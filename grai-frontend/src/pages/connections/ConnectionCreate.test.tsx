@@ -11,5 +11,5 @@ test("renders", async () => {
     expect(screen.getByText("Create Connection")).toBeInTheDocument()
   })
 
-  expect(screen.getByText("Select a connector")).toBeInTheDocument()
+  expect(screen.getByText("Select an integration")).toBeInTheDocument()
 })

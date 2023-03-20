@@ -189,6 +189,70 @@ async def test_create_membership_existing_user(test_context):
 
 
 @pytest.mark.django_db
+async def test_create_memberships(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    mutation = """
+        mutation CreateMemberships($workspaceId: ID!, $role: String!, $emails: [String!]!) {
+            createMemberships(workspaceId: $workspaceId, role: $role, emails: $emails) {
+                id
+                role
+                user {
+                    id
+                    username
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "role": "admin",
+            "emails": ["test@example.com", "test2@example.com"],
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["createMemberships"][0]["role"] == "admin"
+    assert result.data["createMemberships"][0]["user"]["username"] == "test@example.com"
+    assert result.data["createMemberships"][1]["role"] == "admin"
+    assert result.data["createMemberships"][1]["user"]["username"] == "test2@example.com"
+
+
+@pytest.mark.django_db
+async def test_update_membership(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    mutation = """
+        mutation UpdateMembership($id: ID!, $role: String!, $is_active: Boolean!) {
+            updateMembership(id: $id, role: $role, is_active: $is_active) {
+                id
+                role
+                is_active
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "id": str(membership.id),
+            "role": "admin",
+            "is_active": False,
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["updateMembership"]["id"] == str(membership.id)
+    assert result.data["updateMembership"]["role"] == "admin"
+    assert result.data["updateMembership"]["is_active"] is False
+
+
+@pytest.mark.django_db
 async def test_delete_membership(test_context):
     context, organisation, workspace, user, membership = test_context
 
@@ -240,6 +304,72 @@ async def test_create_api_key(test_context):
     assert result.errors is None
     assert result.data["createApiKey"]["key"] != None
     assert result.data["createApiKey"]["api_key"]["name"] == "test api key"
+
+
+@pytest.mark.django_db
+async def test_create_api_key_expiry_date(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    mutation = """
+        mutation CreateApiKey($workspaceId: ID!, $name: String!, $expiry_date: DateTime) {
+            createApiKey(workspaceId: $workspaceId, name: $name, expiry_date: $expiry_date) {
+                key
+                api_key {
+                    id
+                    name
+                    expiry_date
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "name": "test api key",
+            "expiry_date": "2020-01-01",
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["createApiKey"]["key"] != None
+    assert result.data["createApiKey"]["api_key"]["name"] == "test api key"
+    assert result.data["createApiKey"]["api_key"]["expiry_date"] == "2020-01-01T00:00:00"
+
+
+@pytest.mark.django_db
+async def test_create_api_key_expiry_date_long(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    mutation = """
+        mutation CreateApiKey($workspaceId: ID!, $name: String!, $expiry_date: DateTime) {
+            createApiKey(workspaceId: $workspaceId, name: $name, expiry_date: $expiry_date) {
+                key
+                api_key {
+                    id
+                    name
+                    expiry_date
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "name": "test api key",
+            "expiry_date": "2023-03-24T00:00:00.000+00:00",
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["createApiKey"]["key"] != None
+    assert result.data["createApiKey"]["api_key"]["name"] == "test api key"
+    assert result.data["createApiKey"]["api_key"]["expiry_date"] == "2023-03-24T00:00:00+00:00"
 
 
 @pytest.mark.django_db

@@ -17,7 +17,7 @@ test("renders", async () => {
     withRouter: true,
   })
 
-  expect(screen.getByText("Select a connector")).toBeInTheDocument()
+  expect(screen.getByText("Select an integration")).toBeInTheDocument()
 })
 
 test("close", async () => {
@@ -27,12 +27,12 @@ test("close", async () => {
     routes: ["/:organisationName/:workspaceName/connections"],
   })
 
-  expect(screen.getByText("Select a connector")).toBeInTheDocument()
+  expect(screen.getByText("Select an integration")).toBeInTheDocument()
 
   user.click(screen.getByTestId("CloseIcon"))
 
   await waitFor(() => {
-    expect(screen.queryByText("Select a connector")).toBeFalsy()
+    expect(screen.queryByText("Select an integration")).toBeFalsy()
   })
 
   expect(screen.getByText("New Page")).toBeInTheDocument()
@@ -85,7 +85,7 @@ const connectorsMock = {
 }
 
 const submit = async (user: UserEvent, container: HTMLElement) => {
-  expect(screen.getByText("Select a connector")).toBeInTheDocument()
+  expect(screen.getByText("Select an integration")).toBeInTheDocument()
 
   await waitFor(() => {
     expect(screen.getByRole("button", { name: /PostgreSQL/i })).toBeTruthy()
@@ -97,7 +97,7 @@ const submit = async (user: UserEvent, container: HTMLElement) => {
   )
 
   await waitFor(() => {
-    expect(screen.queryByText("Select a connector")).toBeFalsy()
+    expect(screen.queryByText("Select an integration")).toBeFalsy()
   })
 
   expect(screen.getByText("Connect to PostgreSQL")).toBeInTheDocument()

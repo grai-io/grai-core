@@ -1,8 +1,9 @@
 import React from "react"
 import { LoadingButton } from "@mui/lab"
-import { TextField } from "@mui/material"
+import { Box, TextField } from "@mui/material"
 import Form from "components/form/Form"
-import { Values } from "./CreateKeyDialog"
+import ExpirationField from "./ExpirationField"
+import { Values } from "../CreateKeyDialog"
 
 type CreateKeyFormProps = {
   onSubmit: () => void
@@ -30,14 +31,20 @@ const CreateKeyForm: React.FC<CreateKeyFormProps> = ({
         margin="normal"
         disabled={loading}
       />
-      <LoadingButton
-        variant="contained"
-        type="submit"
-        sx={{ mt: 2 }}
-        loading={loading}
-      >
-        Save
-      </LoadingButton>
+      <ExpirationField
+        value={values.expiry_date}
+        onChange={value => setValues({ ...values, expiry_date: value })}
+      />
+      <Box sx={{ textAlign: "right" }}>
+        <LoadingButton
+          variant="contained"
+          type="submit"
+          sx={{ mt: 2, color: "white", minWidth: 80 }}
+          loading={loading}
+        >
+          Save
+        </LoadingButton>
+      </Box>
     </Form>
   )
 }

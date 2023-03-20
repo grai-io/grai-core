@@ -22,7 +22,7 @@ const MembershipsHeader: React.FC<MembershipsHeaderProps> = ({
       </Typography>
       <Box>
         <Button variant="outlined" startIcon={<Add />} onClick={handleOpen}>
-          Invite user
+          Invite users
         </Button>
       </Box>
       <CreateMembershipDialog

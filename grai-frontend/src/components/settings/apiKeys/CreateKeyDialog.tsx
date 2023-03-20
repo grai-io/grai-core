@@ -7,6 +7,7 @@ import {
   DialogContent,
   Typography,
 } from "@mui/material"
+import { DateTime } from "luxon"
 import DialogTitle from "components/dialogs/DialogTitle"
 import CopyButton from "components/utils/CopyButton"
 import GraphError from "components/utils/GraphError"
@@ -15,15 +16,26 @@ import {
   CreateApiKeyVariables,
 } from "./__generated__/CreateApiKey"
 import { NewApiKey } from "./__generated__/NewApiKey"
-import CreateKeyForm from "./CreateKeyForm"
+import CreateKeyForm from "./forms/CreateKeyForm"
+import { ExpiryDate } from "./forms/ExpirationField"
 
 export const CREATE_API_KEY = gql`
-  mutation CreateApiKey($name: String!, $workspaceId: ID!) {
-    createApiKey(name: $name, workspaceId: $workspaceId) {
+  mutation CreateApiKey(
+    $workspaceId: ID!
+    $name: String!
+    $expiry_date: DateTime
+  ) {
+    createApiKey(
+      workspaceId: $workspaceId
+      name: $name
+      expiry_date: $expiry_date
+    ) {
       key
       api_key {
         id
         name
+        expiry_date
+        revoked
       }
     }
   }
@@ -31,6 +43,24 @@ export const CREATE_API_KEY = gql`
 
 export type Values = {
   name: string
+  expiry_date: ExpiryDate
+}
+
+const defaultValues = {
+  name: "",
+  expiry_date: 30,
+}
+
+const expiryDateToString = (
+  expiry_date: Values["expiry_date"]
+): string | null => {
+  if (!expiry_date || expiry_date === "none" || expiry_date === "custom")
+    return null
+
+  if (typeof expiry_date === "number")
+    return DateTime.local().plus({ days: expiry_date }).toISO()
+
+  return expiry_date.toISO()
 }
 
 type CreateKeyDialogProps = {
@@ -45,9 +75,7 @@ const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({
   onClose,
 }) => {
   const [key, setKey] = useState<string>()
-  const [values, setValues] = useState<Values>({
-    name: "",
-  })
+  const [values, setValues] = useState<Values>(defaultValues)
 
   const [createApiKey, { loading, error }] = useMutation<
     CreateApiKey,
@@ -82,7 +110,8 @@ const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({
   const handleSubmit = () =>
     createApiKey({
       variables: {
-        ...values,
+        name: values.name,
+        expiry_date: expiryDateToString(values.expiry_date),
         workspaceId,
       },
     })
@@ -91,9 +120,7 @@ const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({
       .catch(err => {})
 
   const handleClose = () => {
-    setValues({
-      name: "",
-    })
+    setValues(defaultValues)
     setKey(undefined)
     onClose()
   }

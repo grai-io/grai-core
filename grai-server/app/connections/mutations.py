@@ -120,6 +120,19 @@ class Mutation:
         return run
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def deleteConnection(
+        self,
+        id: strawberry.ID,
+    ) -> Connection:
+        connection = await ConnectionModel.objects.aget(id=id)
+
+        await sync_to_async(connection.delete)()
+
+        connection.id = id
+
+        return connection
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def uploadConnectorFile(
         self,
         info: Info,

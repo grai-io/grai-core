@@ -23,6 +23,8 @@ export const GET_API_KEYS = gql`
         created_by {
           id
           username
+          first_name
+          last_name
         }
       }
     }

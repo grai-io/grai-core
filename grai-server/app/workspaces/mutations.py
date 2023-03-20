@@ -1,4 +1,5 @@
-from typing import Optional
+import datetime
+from typing import List, Optional
 
 import strawberry
 from asgiref.sync import sync_to_async
@@ -16,6 +17,42 @@ from workspaces.models import Membership as MembershipModel
 from workspaces.models import Organisation as OrganisationModel
 from workspaces.models import Workspace as WorkspaceModel
 from workspaces.models import WorkspaceAPIKey as WorkspaceAPIKeyModel
+
+
+async def createSingleMembership(workspace: WorkspaceModel, email: str, role: str) -> MembershipModel:
+    UserModel = get_user_model()
+
+    user = None
+
+    try:
+        user = await UserModel.objects.aget(username=email)
+        email_template_name = "workspaces/invite_user_email.txt"
+        subject = "Grai Workspace Invite"
+    except UserModel.DoesNotExist:
+        user = await UserModel.objects.acreate(username=email)
+        email_template_name = "workspaces/new_user_email.txt"
+        subject = "Grai Invite"
+
+    membership = await sync_to_async(MembershipModel.objects.create)(role=role, user=user, workspace=workspace)
+
+    c = {
+        "email": user.username,
+        "base_url": config("FRONTEND_URL", "http://localhost:3000"),
+        "uid": user.pk,
+        "user": user,
+        "token": default_token_generator.make_token(user),
+    }
+    email_message = render_to_string(email_template_name, c)
+
+    send_mail(
+        subject,
+        email_message,
+        settings.EMAIL_FROM,
+        [user.username],
+        fail_silently=False,
+    )
+
+    return membership
 
 
 @strawberry.type
@@ -64,37 +101,33 @@ class Mutation:
     ) -> Membership:
         workspace = await get_workspace(info, workspaceId)
 
-        UserModel = get_user_model()
+        return await createSingleMembership(workspace, email, role)
 
-        user = None
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def createMemberships(
+        self,
+        info: Info,
+        workspaceId: strawberry.ID,
+        role: str,
+        emails: List[str],
+    ) -> List[Membership]:
+        workspace = await get_workspace(info, workspaceId)
 
-        try:
-            user = await UserModel.objects.aget(username=email)
-            email_template_name = "workspaces/invite_user_email.txt"
-            subject = "Grai Workspace Invite"
-        except UserModel.DoesNotExist:
-            user = await UserModel.objects.acreate(username=email)
-            email_template_name = "workspaces/new_user_email.txt"
-            subject = "Grai Invite"
+        return [await createSingleMembership(workspace, email, role) for email in emails]
 
-        membership = await sync_to_async(MembershipModel.objects.create)(role=role, user=user, workspace=workspace)
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def updateMembership(
+        self,
+        id: strawberry.ID,
+        role: str,
+        is_active: bool,
+    ) -> Membership:
+        membership = await MembershipModel.objects.aget(id=id)
 
-        c = {
-            "email": user.username,
-            "base_url": config("FRONTEND_URL", "http://localhost:3000"),
-            "uid": user.pk,
-            "user": user,
-            "token": default_token_generator.make_token(user),
-        }
-        email_message = render_to_string(email_template_name, c)
+        membership.role = role
+        membership.is_active = is_active
 
-        send_mail(
-            subject,
-            email_message,
-            settings.EMAIL_FROM,
-            [user.username],
-            fail_silently=False,
-        )
+        await sync_to_async(membership.save)()
 
         return membership
 
@@ -112,12 +145,17 @@ class Mutation:
         return membership
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def createApiKey(self, info: Info, name: str, workspaceId: strawberry.ID) -> KeyResult:
+    async def createApiKey(
+        self, info: Info, workspaceId: strawberry.ID, name: str, expiry_date: Optional[datetime.datetime] = None
+    ) -> KeyResult:
         user = get_user(info)
         workspace = await get_workspace(info, workspaceId)
 
         api_key, key = await sync_to_async(WorkspaceAPIKeyModel.objects.create_key)(
-            name=name, created_by=user, workspace=workspace
+            name=name,
+            created_by=user,
+            workspace=workspace,
+            expiry_date=expiry_date,
         )
 
         return KeyResult(key=key, api_key=api_key)

@@ -3,11 +3,17 @@ from typing import Any, Dict, List, Literal, Sequence, Type
 from grai_client.schemas.schema import Schema
 from grai_schemas import config as base_config
 from grai_schemas.generics import DefaultValue
-from grai_schemas.v1.metadata.edges import EdgeTypeLabels, GenericEdgeMetadataV1
+from grai_schemas.v1.metadata.edges import (
+    ColumnToColumnMetadata,
+    EdgeTypeLabels,
+    GenericEdgeMetadataV1,
+    TableToColumnMetadata,
+    TableToTableMetadata,
+)
 from grai_schemas.v1.metadata.nodes import ColumnMetadata, NodeTypeLabels, TableMetadata
 from multimethod import multimethod
 
-from grai_source_mysql.models import ID, Column, Edge, Table
+from grai_source_mysql.models import ID, Column, ColumnID, Edge, Table, TableID
 from grai_source_mysql.package_definitions import config
 
 
@@ -53,6 +59,20 @@ def build_grai_metadata_from_node(current: Table, version: Literal["v1"] = "v1")
 
 @build_grai_metadata.register
 def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> GenericEdgeMetadataV1:
+    data = {"version": version}
+
+    if isinstance(current.source, TableID):
+        if isinstance(current.destination, ColumnID):
+            data["edge_type"] = EdgeTypeLabels.table_to_column.value
+            return TableToColumnMetadata(**data)
+        elif isinstance(current.destination, TableID):
+            data["edge_type"] = EdgeTypeLabels.table_to_table.value
+            return TableToTableMetadata(**data)
+    elif isinstance(current.source, ColumnID):
+        if isinstance(current.destination, ColumnID):
+            data["edge_type"] = EdgeTypeLabels.column_to_column.value
+            return ColumnToColumnMetadata(**data)
+
     data = {"version": version, "edge_type": EdgeTypeLabels.generic.value}
     return GenericEdgeMetadataV1(**data)
 

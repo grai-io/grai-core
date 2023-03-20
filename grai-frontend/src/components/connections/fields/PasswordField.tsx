@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useState } from "react"
-import { Button, InputAdornment, TextField } from "@mui/material"
+import { Info } from "@mui/icons-material"
+import { Button, InputAdornment, TextField, Tooltip } from "@mui/material"
 
 type PasswordFieldProps = {
   label: string
@@ -7,6 +8,7 @@ type PasswordFieldProps = {
   onChange: (event: ChangeEvent<HTMLInputElement>) => void
   required?: boolean
   edit?: boolean
+  helperText?: string | null
 }
 
 const PasswordField: React.FC<PasswordFieldProps> = ({
@@ -15,6 +17,7 @@ const PasswordField: React.FC<PasswordFieldProps> = ({
   onChange,
   required,
   edit,
+  helperText,
 }) => {
   const [show, setShow] = useState(!edit)
 
@@ -28,6 +31,7 @@ const PasswordField: React.FC<PasswordFieldProps> = ({
         margin="normal"
         required={required}
         type="password"
+        helperText={helperText}
         fullWidth
         disabled
         InputProps={{
@@ -48,6 +52,15 @@ const PasswordField: React.FC<PasswordFieldProps> = ({
       margin="normal"
       required={required}
       type="password"
+      InputProps={{
+        endAdornment: helperText ? (
+          <InputAdornment position="end" sx={{ cursor: "pointer" }}>
+            <Tooltip title={helperText}>
+              <Info />
+            </Tooltip>
+          </InputAdornment>
+        ) : null,
+      }}
       fullWidth
     />
   )

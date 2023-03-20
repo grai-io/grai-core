@@ -15,11 +15,11 @@ const ConnectorSelectTab: React.FC<ConnectorSelectTabProps> = ({
   onSelect,
 }) => (
   <>
-    <WizardSubtitle title="Select a connector" />
+    <WizardSubtitle title="Select an integration" />
     <ConnectorSelect onSelect={onSelect} />
     <WizardBottomBar
       opts={opts}
-      actionText="Click on a connector to continue"
+      actionText="Click on an integration to continue"
     />
   </>
 )
