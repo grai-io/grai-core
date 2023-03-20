@@ -126,7 +126,7 @@ jobs:
 
       - uses: ncipollo/release-action@v1
         with:
-          tag: ${{ env.poetry_semver }}
+          tag: ${{ needs.get-poetry-version.outputs.poetry-version }}
           commit: ${{ github.sha }}
           generateReleaseNotes: true
           makeLatest: true
