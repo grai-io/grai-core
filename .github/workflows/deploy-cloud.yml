@@ -5,7 +5,7 @@ on:
     branches:
       - master
     files:
-      - "grai-client/**"
+      - "grai-frontend/**"
       - "grai-server/**"
 
 concurrency:
