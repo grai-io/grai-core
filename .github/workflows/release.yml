@@ -23,6 +23,8 @@ jobs:
         working-directory: ./grai-server/app
 
     steps:
+      - uses: actions/checkout@v3
+
       - uses: actions/setup-python@v4
         with:
           python-version: "${{ env.py_ver }}"
