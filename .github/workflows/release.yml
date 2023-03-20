@@ -15,14 +15,14 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      poetry-version: ${{ env.POETRY_SEMVER }}
+      # poetry-version: ${{ env.POETRY_SEMVER }}
       tag-exists: ${{ steps.check-tag.outputs.exists }}
 
     steps:
       - name: Get poetry version
         run: |
-          echo "POETRY_SEMVER=poetry version --short" >> $GITHUB_ENV
-          echo ${{env.POETRY_SEMVER}}
+          echo "POETRY_SEMVER=$(poetry version --short)" >> $GITHUB_ENV
+          echo "poetry-version=$(poetry version --short)" >> $GITHUB_OUTPUT
       - uses: mukunku/tag-exists-action@v1.2.0
         id: checkTag
         with:
