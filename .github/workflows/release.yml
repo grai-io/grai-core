@@ -19,6 +19,13 @@ jobs:
       tag-exists: ${{ steps.check-tag.outputs.exists }}
 
     steps:
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "${{ env.py_ver }}"
+
+      - name: Install poetry
+        run: pip install poetry==${{ env.poetry_ver }}
+
       - name: Get poetry version
         run: |
           echo "POETRY_SEMVER=$(poetry version --short)" >> $GITHUB_ENV
