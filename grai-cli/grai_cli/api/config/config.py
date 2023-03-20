@@ -39,7 +39,7 @@ def cli_init_config(
     ),
     insecure: str = typer.Option(
         default=default_styler("False"),
-        prompt="insecure connection",
+        prompt="Insecure connection (i.e. http)?",
         prompt_required=True,
         callback=strip_style(insecure_callback),
     ),
@@ -52,7 +52,7 @@ def cli_init_config(
 ):
     """Initialize a new config file"""
     config.auth = BasicAuthSettings(username=username, password=password)
-    config.server = ServerSettingsV1(host=host, port=port, insecure=bool(insecure), workspace=workspace)
+    config.server = ServerSettingsV1(host=host, port=port, insecure=insecure, workspace=workspace)
     config.save()
 
 
