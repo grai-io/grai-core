@@ -116,20 +116,6 @@ class PostgresConnector:
         schema.table in the database connected to.
         """
         query = f"""
-            SELECT c.conname                                         AS constraint_name,
-                   c.contype                                         AS constraint_type,
-                   sch.nspname                                       AS "schema",
-                   tbl.relname                                       AS "table",
-                   col.attname                                       AS "column"
-            FROM pg_constraint c
-                   LEFT JOIN LATERAL UNNEST(c.conkey) WITH ORDINALITY AS u(attnum, attposition) ON TRUE
-                   JOIN pg_class tbl ON tbl.oid = c.conrelid
-                   JOIN pg_namespace sch ON sch.oid = tbl.relnamespace
-                   LEFT JOIN pg_attribute col ON (col.attrelid = tbl.oid AND col.attnum = u.attnum)
-            WHERE sch.nspname!='pg_catalog'
-            ORDER BY "schema", "table";
-        """
-        query = f"""
             SELECT
                 c.TABLE_SCHEMA AS "schema",
                 c.TABLE_NAME AS "table",

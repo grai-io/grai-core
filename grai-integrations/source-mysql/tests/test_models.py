@@ -5,19 +5,15 @@ import pytest
 from grai_source_mysql.models import Column, Edge, Table
 
 column_params = [
-    {"name": "test", "namespace": "test", "data_type": "integer", "is_nullable": True},
-    {
-        "column_name": "test",
-        "namespace": "test",
-        "data_type": "integer",
-        "is_nullable": True,
-    },
+    {"name": "test", "namespace": "test", "data_type": "integer", "is_nullable": True, "column_key": "PRI"},
+    {"column_name": "test", "namespace": "test", "data_type": "integer", "is_nullable": True, "column_key": "UNI"},
     {
         "column_name": "test",
         "namespace": "test",
         "data_type": "integer",
         "is_nullable": True,
         "default_value": 2,
+        "column_key": "MUL",
     },
     {
         "column_name": "test",
@@ -25,6 +21,7 @@ column_params = [
         "data_type": "integer",
         "is_nullable": True,
         "column_default": 2,
+        "column_key": "",
     },
 ]
 shared = {"table": "test_table", "schema": "test_schema"}

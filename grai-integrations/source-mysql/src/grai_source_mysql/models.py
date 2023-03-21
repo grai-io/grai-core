@@ -40,6 +40,17 @@ class ColumnID(ID):
         return values
 
 
+# https://dev.mysql.com/doc/mysql-infoschema-excerpt/8.0/en/information-schema-columns-table.html
+class ColumnKey(Enum):
+    NOT_INDEXED = ""
+    PRIMARY_KEY = "PRI"
+    UNIQUE = "UNI"
+    NON_UNIQUE_INDEX = "MUL"
+
+
+UNIQUE_COLUMN_CONSTRAINTS = {ColumnKey.PRIMARY_KEY.value, ColumnKey.UNIQUE.value}
+
+
 class Column(MysqlNode):
     name: str = Field(alias="column_name")
     table: str
@@ -48,18 +59,14 @@ class Column(MysqlNode):
     is_nullable: bool
     namespace: str
     default_value: Any = Field(alias="column_default")
-    is_pk: Optional[bool] = False
-    full_name: Optional[str] = None
+    column_key: ColumnKey
 
     class Config:
         allow_population_by_field_name = True
 
-    @validator("full_name", always=True)
-    def make_full_name(cls, full_name, values):
-        if full_name is not None:
-            return full_name
-        result = f"{values['column_schema']}.{values['table']}.{values['name']}"
-        return result
+    @property
+    def full_name(self) -> str:
+        return f"{self.column_schema}.{self.table}.{self.name}"
 
 
 class Constraint(str, Enum):

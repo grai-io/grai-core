@@ -33,14 +33,14 @@ table_values = [(item, "v1", NodeV1) for item in tables]
 
 def test_building_nodes():
     with connection.connect() as conn:
-        tables = conn.get_tables()
+        tables = conn.tables
 
     assert len(tables) > 0
 
 
 def test_building_edges():
     with connection.connect() as conn:
-        edges = conn.get_foreign_keys()
+        edges = conn.foreign_keys
 
     assert len(edges) > 0, edges
 

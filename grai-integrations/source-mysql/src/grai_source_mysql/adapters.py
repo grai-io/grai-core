@@ -13,7 +13,16 @@ from grai_schemas.v1.metadata.edges import (
 from grai_schemas.v1.metadata.nodes import ColumnMetadata, NodeTypeLabels, TableMetadata
 from multimethod import multimethod
 
-from grai_source_mysql.models import ID, Column, ColumnID, Edge, Table, TableID
+from grai_source_mysql.models import (
+    ID,
+    UNIQUE_COLUMN_CONSTRAINTS,
+    Column,
+    ColumnID,
+    ColumnKey,
+    Edge,
+    Table,
+    TableID,
+)
 from grai_source_mysql.package_definitions import config
 
 
@@ -39,7 +48,8 @@ def build_grai_metadata_from_column(current: Column, version: Literal["v1"] = "v
             "data_type": current.data_type,
             "default_value": default_value,
             "is_nullable": current.is_nullable,
-            "is_primary_key": current.is_pk,
+            "is_primary_key": current.column_key.value == ColumnKey.PRIMARY_KEY.value,
+            "is_unique": current.column_key.value in UNIQUE_COLUMN_CONSTRAINTS,
         },
     }
 
