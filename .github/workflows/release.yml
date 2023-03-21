@@ -357,7 +357,7 @@ jobs:
         id: docker-build
         uses: docker/build-push-action@v3
         with:
-          context: grai-frontend/app
+          context: grai-frontend
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
