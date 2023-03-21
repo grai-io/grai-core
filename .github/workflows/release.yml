@@ -124,7 +124,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
 
   build-server:
-    needs: [lint-server, tests-server]
+    needs: [get-poetry-version, lint-server, tests-server]
 
     runs-on: ubuntu-latest
 
@@ -137,6 +137,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
+      - run: echo ${{ needs.get-poetry-version.outputs.poetry-version }}
 
       - uses: ncipollo/release-action@v1
         with:
