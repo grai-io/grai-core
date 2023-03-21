@@ -50,11 +50,15 @@ def port_callback(inp: str):
     return str(int_inp)
 
 
-def insecure_callback(inp: str):
+def insecure_callback(inp: str) -> str:
     error = typer.BadParameter(f"{inp} is not a valid value for insecure, should be either True or False.")
-    try:
-        bool(inp)
-    except:
+    TRUE = {"true", "yes", "y"}
+    FALSE = {"false", "no", "n"}
+    lowered_inp = inp.lower()
+    if lowered_inp in TRUE:
+        return "True"
+    elif lowered_inp in FALSE:
+        return "False"
+    else:
+        error = typer.BadParameter(f"'{inp}' is not a valid value for insecure, should be either True or False.")
         raise error
-
-    return str(inp)
