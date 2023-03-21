@@ -11,7 +11,8 @@ env:
   SECRET_KEY: "fixed-test-key-that-doesnt-matter"
 
 defaults:
-  runs-on: ubuntu-latest
+  jobs:
+    runs-on: ubuntu-latest
 
 jobs:
   get-poetry-version:
