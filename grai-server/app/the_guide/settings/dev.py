@@ -7,7 +7,7 @@ from ..settings.base import *
 SECRET_KEY = "This-Is-A-Test_key"
 USER_ID = hashlib.md5(SECRET_KEY.encode()).hexdigest()
 
-DISABLE_TELEMETRY = True
+DISABLE_TELEMETRY = config("DISABLE_TELEMETRY", default=True, cast=cast_string_to_bool(True))
 
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
