@@ -10,10 +10,11 @@ env:
   poetry_ver: "1.3.1"
   SECRET_KEY: "fixed-test-key-that-doesnt-matter"
 
+defaults:
+  runs-on: ubuntu-latest
+
 jobs:
   get-poetry-version:
-    runs-on: ubuntu-latest
-
     outputs:
       poetry-version: ${{ steps.poetry-version.outputs.poetry-version }}
       tag-exists: ${{ steps.check-tag.outputs.exists }}
@@ -44,12 +45,6 @@ jobs:
       - run: echo ${{steps.checkTag.outputs.exists}}
 
   lint-server:
-    runs-on: ubuntu-latest
-
-    needs: get-poetry-version
-
-    if: ${{needs.get-poetry-version.outputs.exists}} == 'false'
-
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v3
@@ -69,7 +64,6 @@ jobs:
 
   tests-server:
     needs: lint-server
-    runs-on: ubuntu-latest
 
     defaults:
       run:
@@ -126,10 +120,11 @@ jobs:
   build-server:
     needs: [get-poetry-version, lint-server, tests-server]
 
-    runs-on: ubuntu-latest
-
     permissions:
       contents: write
+
+    outputs:
+      image-digest: ${{ steps.docker-build.outputs.digest }}
 
     defaults:
       run:
@@ -138,9 +133,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - run: echo ${{ needs.get-poetry-version.outputs.poetry-version }}
-
       - uses: ncipollo/release-action@v1
+        if: ${{needs.get-poetry-version.outputs.exists}} == 'false'
         with:
           tag: ${{ needs.get-poetry-version.outputs.poetry-version }}
           commit: ${{ github.sha }}
@@ -155,22 +149,201 @@ jobs:
           password: ${{ secrets.GH_TOKEN }}
 
       - name: Extract metadata (tags, labels) for Docker
+        if: ${{needs.get-poetry-version.outputs.exists}} == 'false'
         id: meta
         uses: docker/metadata-action@v4
         with:
           images: ghcr.io/${{ github.repository }}/grai-server
           tags: |
-            type=raw,value=${{ needs.get-poetry-version.outputs.poetry-version }},priority=100
+            type=raw,value=cloud,priority=100
             type=raw,value=latest,priority=100
+            type=raw,value=${{ needs.get-poetry-version.outputs.poetry-version }},priority=100
+
+      - name: Extract metadata (tags, labels) for Docker
+        if: ${{needs.get-poetry-version.outputs.exists}} == 'true'
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/${{ github.repository }}/grai-server
+          tags: |
+            type=raw,value=cloud,priority=100
 
       - name: Set up Docker Buildx
-        id: buildx
         uses: docker/setup-buildx-action@master
 
       - name: Build
+        id: docker-build
         uses: docker/build-push-action@v3
         with:
           context: grai-server/app
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/amd64,linux/arm64
+
+  deploy-server:
+    needs: [build-frontend, build-server]
+
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Deploy to Kubernetes cluster - api
+        uses: ianbelcher/eks-kubectl-action@master
+        with:
+          cluster_name: ${{ secrets.CLUSTER_NAME }}
+          args: set image deployment/api-prod api=ghcr.io/${{ github.repository }}/grai-server@${{ needs.build-server.outputs.image-digest }}
+
+      - name: Deploy to Kubernetes cluster - celery
+        uses: ianbelcher/eks-kubectl-action@master
+        with:
+          cluster_name: ${{ secrets.CLUSTER_NAME }}
+          args: set image deployment/celery-worker-prod celery-worker=ghcr.io/${{ github.repository }}/grai-server@${{ needs.build-server.outputs.image-digest }}
+
+      - name: Deploy to Kubernetes cluster - celery beat
+        uses: ianbelcher/eks-kubectl-action@master
+        with:
+          cluster_name: ${{ secrets.CLUSTER_NAME }}
+          args: set image deployment/celery-beat-worker-prod celery-beat-worker=ghcr.io/${{ github.repository }}/grai-server@${{ needs.build-server.outputs.image-digest }}
+
+      - name: Verify deployment
+        uses: ianbelcher/eks-kubectl-action@master
+        with:
+          cluster_name: ${{ secrets.CLUSTER_NAME }}
+          args: rollout status deployment/api-prod
+
+  tests-frontend:
+    defaults:
+      run:
+        working-directory: grai-frontend
+
+    env:
+      REACT_APP_ALGOLIA_APP_ID: test
+
+    steps:
+      - uses: actions/checkout@master
+      - name: Use latest Node.js
+        uses: actions/setup-node@v3
+      - name: Install dependencies
+        run: npm ci
+      - name: Run lint
+        run: npm run lint
+      - name: Run npm tests
+        run: npm test -- --coverage
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          flags: grai-frontend
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  build-frontend:
+    needs: tests-frontend
+
+    env:
+      REACT_APP_SERVER_URL: ${{ secrets.REACT_APP_SERVER_URL }}
+      REACT_APP_POSTHOG_API_KEY: ${{ secrets.REACT_APP_POSTHOG_API_KEY }}
+      REACT_APP_POSTHOG_HOST: https://ph.grai.io
+      REACT_APP_ALGOLIA_APP_ID: ${{ secrets.REACT_APP_ALGOLIA_APP_ID }}
+      REACT_APP_SENTRY_DSN: ${{ secrets.REACT_APP_SENTRY_DSN }}
+
+    defaults:
+      run:
+        working-directory: grai-frontend
+
+    steps:
+      - uses: actions/checkout@master
+      - name: Use latest Node.js
+        uses: actions/setup-node@v3
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Setup environment variables
+        run: ./env.sh
+      - uses: actions/upload-artifact@master
+        with:
+          name: frontend-build
+          path: "./grai-frontend/build"
+      - name: Run bundlewatch
+        run: npm run bundlewatch
+        env:
+          BUNDLEWATCH_GITHUB_TOKEN: ${{ secrets.BUNDLEWATCH_GITHUB_TOKEN }}
+
+  deploy-frontend:
+    needs: [build-frontend, build-server]
+
+    defaults:
+      run:
+        working-directory: grai-frontend
+
+    steps:
+      - uses: actions/download-artifact@master
+        with:
+          name: frontend-build
+          path: "./grai-frontend/build"
+
+      - name: Copy to s3
+        uses: prewk/s3-cp-action@v2
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          source: "./grai-frontend/build"
+          dest: s3://${{ secrets.APP_BUCKET }}
+          flags: --recursive
+
+      - name: Invalidate CloudFront
+        uses: chetan/invalidate-cloudfront-action@v2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          DISTRIBUTION: ${{ secrets.AWS_CF_DISTRIBUTION }}
+          PATHS: "/*"
+          AWS_REGION: "us-east-1"
+
+  package-frontend:
+    needs: [get-poetry-version, tests-frontend]
+
+    if: ${{needs.get-poetry-version.outputs.exists}} == 'false'
+
+    permissions:
+      contents: write
+
+    defaults:
+      run:
+        working-directory: grai-frontend
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GH_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/${{ github.repository }}/grai-frontend
+          tags: |
+            type=raw,value=latest,priority=100
+            type=raw,value=${{ needs.get-poetry-version.outputs.poetry-version }},priority=100
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@master
+
+      - name: Build
+        id: docker-build
+        uses: docker/build-push-action@v3
+        with:
+          context: grai-frontend/app
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/amd64,linux/arm64
