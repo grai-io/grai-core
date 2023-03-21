@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      # poetry-version: ${{ env.POETRY_SEMVER }}
+      poetry-version: ${{ steps.poetry-version.outputs.poetry-version }}
       tag-exists: ${{ steps.check-tag.outputs.exists }}
 
     defaults:
@@ -33,6 +33,7 @@ jobs:
         run: pip install poetry==${{ env.poetry_ver }}
 
       - name: Get poetry version
+        id: poetry-version
         run: |
           echo "POETRY_SEMVER=$(poetry version --short)" >> $GITHUB_ENV
           echo "poetry-version=$(poetry version --short)" >> $GITHUB_OUTPUT
