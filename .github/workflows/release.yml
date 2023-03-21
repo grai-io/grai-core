@@ -166,7 +166,7 @@ jobs:
 
       - name: Extract metadata (tags, labels) for Docker
         if: ${{needs.get-poetry-version.outputs.exists}} == 'true'
-        id: meta
+        id: meta-cloud
         uses: docker/metadata-action@v4
         with:
           images: ghcr.io/${{ github.repository }}/grai-server
@@ -182,8 +182,8 @@ jobs:
         with:
           context: grai-server/app
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta.outputs.tags || steps.meta-cloud.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels || steps.meta-cloud.outputs.labels }}
           platforms: linux/amd64,linux/arm64
 
   deploy-server:
