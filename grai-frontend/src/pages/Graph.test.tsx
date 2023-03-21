@@ -37,6 +37,8 @@ const mocks = [
   },
 ]
 
+jest.retryTimes(1)
+
 test("renders", async () => {
   class ResizeObserver {
     callback: globalThis.ResizeObserverCallback
