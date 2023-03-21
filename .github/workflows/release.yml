@@ -36,12 +36,10 @@ jobs:
         id: poetry-version
         run: |
           echo "POETRY_SEMVER=v$(poetry version --short)" >> $GITHUB_ENV
-          echo "poetry-version=v$(poetry version --short)" >> $GITHUB_OUTPUT
       - uses: mukunku/tag-exists-action@v1.2.0
-        id: checkTag
+        id: check-tag
         with:
-          tag: ${{env.POETRY_SEMVER}}
-      - run: echo ${{steps.checkTag.outputs.exists}}
+          tag: ${{ steps.poetry-version.outputs.poetry-version }}
 
   lint-server:
     runs-on: ubuntu-latest
