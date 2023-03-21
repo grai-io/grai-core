@@ -35,8 +35,8 @@ jobs:
       - name: Get poetry version
         id: poetry-version
         run: |
-          echo "POETRY_SEMVER=$(poetry version --short)" >> $GITHUB_ENV
-          echo "poetry-version=$(poetry version --short)" >> $GITHUB_OUTPUT
+          echo "POETRY_SEMVER=v$(poetry version --short)" >> $GITHUB_ENV
+          echo "poetry-version=v$(poetry version --short)" >> $GITHUB_OUTPUT
       - uses: mukunku/tag-exists-action@v1.2.0
         id: checkTag
         with:
@@ -159,9 +159,9 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ghcr.io/${{ github.repository }}/grai-server
-          # tags: |
-          #   type=raw,value=cloud,priority=100
-          #   type=sha,prefix=,format=long,priority=100
+          tags: |
+            type=raw,value=${{ needs.get-poetry-version.outputs.poetry-version }},priority=100
+            type=raw,value=latest,priority=100
 
       - name: Set up Docker Buildx
         id: buildx
