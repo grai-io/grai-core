@@ -178,13 +178,15 @@ jobs:
 
       - name: Build
         id: docker-build
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: grai-server/app
           push: true
           tags: ${{ steps.meta.outputs.tags || steps.meta-cloud.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels || steps.meta-cloud.outputs.labels }}
-          # platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   deploy-server:
     runs-on: ubuntu-latest
@@ -355,10 +357,12 @@ jobs:
 
       - name: Build
         id: docker-build
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: grai-frontend
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          # platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
