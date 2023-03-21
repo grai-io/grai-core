@@ -35,7 +35,8 @@ jobs:
       - name: Get poetry version
         id: poetry-version
         run: |
-          echo "POETRY_SEMVER=v$(poetry version --short)" >> $GITHUB_ENV
+          echo "poetry-version=$(poetry version --short)" >> $GITHUB_OUTPUT
+
       - uses: mukunku/tag-exists-action@v1.2.0
         id: check-tag
         with:
