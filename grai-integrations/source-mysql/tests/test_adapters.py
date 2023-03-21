@@ -18,7 +18,7 @@ columns = [
         data_type="integer",
         is_nullable=True,
         default_value="Orange",
-        is_pk=True,
+        column_key="PRI",
     )
 ]
 column_values = [(item, "v1", NodeV1) for item in columns]
@@ -28,6 +28,25 @@ column_values = [(item, "v1", NodeV1) for item in columns]
 def test_column_adapter(item, version, target):
     result = adapt_to_client(item, version)
     assert isinstance(result, target)
+
+
+def test_column_metadata():
+    col = Column(
+        name="test",
+        namespace="tests",
+        table="test",
+        schema="test",
+        data_type="integer",
+        is_nullable=True,
+        default_value="Orange",
+        column_key="PRI",
+    )
+    adapted_col = adapt_to_client(col, "v1")
+    node_attributes = adapted_col.spec.metadata.grai.node_attributes
+    assert node_attributes.is_unique
+    assert node_attributes.is_primary_key
+    assert node_attributes.data_type == "integer"
+    assert node_attributes.default_value.default_value == "Orange"
 
 
 tables = [
