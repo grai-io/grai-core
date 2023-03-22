@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - master
+    paths:
+      - ".github/workflows/release.yml"
+      - "grai-server/**"
+      - "grai-frontend/**"
 
 env:
   py_ver: "3.11"
@@ -41,41 +45,6 @@ jobs:
         id: check-tag
         with:
           tag: ${{ steps.poetry-version.outputs.poetry-version }}
-
-      - name: Check if tag exists
-        run: |
-          echo ${{steps.check-tag.outputs.exists}}
-          echo ${{steps.check-tag.outputs.exists}} == 'false'
-
-      - name: Runs if tag does not exist
-        if: ${{steps.check-tag.outputs.exists}} == 'false'
-        run: |
-          echo "Tag does not exist"
-
-      - name: Runs if tag does not exist2
-        if: ${{steps.check-tag.outputs.exists == 'false' }}
-        run: |
-          echo "Tag does not exist2"
-
-      - name: Runs if tag does not exist3
-        if: ${{steps.check-tag.outputs.exists == false }}
-        run: |
-          echo "Tag does not exist3"
-
-      - name: Runs if tag does exist
-        if: ${{steps.check-tag.outputs.exists}} == 'true'
-        run: |
-          echo "Tag does exist"
-
-      - name: Runs if tag does exist2
-        if: ${{steps.check-tag.outputs.exists == 'true' }}
-        run: |
-          echo "Tag does exist2"
-
-      - name: Runs if tag does exist3
-        if: ${{steps.check-tag.outputs.exists == true }}
-        run: |
-          echo "Tag does exist3"
 
   lint-server:
     runs-on: ubuntu-latest
@@ -154,7 +123,9 @@ jobs:
           flags: grai-server
           token: ${{ secrets.CODECOV_TOKEN }}
 
-  build-server:
+  build-server-release:
+    if: ${{needs.get-poetry-version.outputs.tag-exists == 'false' }}
+
     runs-on: ubuntu-latest
 
     needs: [get-poetry-version, lint-server, tests-server]
@@ -172,13 +143,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Check if tag exists
-        run: |
-          echo ${{needs.get-poetry-version.outputs.tag-exists}}
-          echo ${{needs.get-poetry-version.outputs.tag-exists == 'false' }}
-
       - uses: ncipollo/release-action@v1
-        if: ${{needs.get-poetry-version.outputs.tag-exists == 'false' }}
         with:
           tag: ${{ needs.get-poetry-version.outputs.poetry-version }}
           commit: ${{ github.sha }}
@@ -193,7 +158,6 @@ jobs:
           password: ${{ secrets.GH_TOKEN }}
 
       - name: Extract metadata (tags, labels) for Docker
-        if: ${{needs.get-poetry-version.outputs.tag-exists == 'false' }}
         id: meta
         uses: docker/metadata-action@v4
         with:
@@ -203,9 +167,50 @@ jobs:
             type=raw,value=latest,priority=100
             type=raw,value=${{ needs.get-poetry-version.outputs.poetry-version }},priority=100
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@master
+
+      - name: Build
+        id: docker-build
+        uses: docker/build-push-action@v4
+        with:
+          context: grai-server/app
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  build-server-cloud:
+    if: ${{needs.get-poetry-version.outputs.tag-exists == 'true' }}
+
+    runs-on: ubuntu-latest
+
+    needs: [get-poetry-version, lint-server, tests-server]
+
+    permissions:
+      contents: write
+
+    outputs:
+      image-digest: ${{ steps.docker-build.outputs.digest }}
+
+    defaults:
+      run:
+        working-directory: grai-server/app
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GH_TOKEN }}
+
       - name: Extract metadata (tags, labels) for Docker
-        if: ${{needs.get-poetry-version.outputs.tag-exists == 'true' }}
-        id: meta-cloud
+        id: meta
         uses: docker/metadata-action@v4
         with:
           images: ghcr.io/${{ github.repository }}/grai-server
@@ -221,16 +226,15 @@ jobs:
         with:
           context: grai-server/app
           push: true
-          tags: ${{ steps.meta.outputs.tags || steps.meta-cloud.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels || steps.meta-cloud.outputs.labels }}
-          platforms: linux/amd64,linux/arm64
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
   deploy-server:
     runs-on: ubuntu-latest
 
-    needs: [build-frontend, build-server]
+    needs: [build-frontend, build-server-cloud, build-server-release]
 
     steps:
       - name: Configure AWS credentials
