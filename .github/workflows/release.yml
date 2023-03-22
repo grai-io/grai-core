@@ -35,7 +35,7 @@ jobs:
       - name: Get poetry version
         id: poetry-version
         run: |
-          echo "poetry-version=$(poetry version --short)" >> $GITHUB_OUTPUT
+          echo "poetry-version=v$(poetry version --short)" >> $GITHUB_OUTPUT
 
       - uses: mukunku/tag-exists-action@v1.2.0
         id: check-tag
@@ -138,7 +138,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - uses: ncipollo/release-action@v1
-        if: ${{needs.get-poetry-version.outputs.exists}} == 'false'
+        if: ${{needs.get-poetry-version.outputs.tag-exists}} == 'false'
         with:
           tag: ${{ needs.get-poetry-version.outputs.poetry-version }}
           commit: ${{ github.sha }}
@@ -153,7 +153,7 @@ jobs:
           password: ${{ secrets.GH_TOKEN }}
 
       - name: Extract metadata (tags, labels) for Docker
-        if: ${{needs.get-poetry-version.outputs.exists}} == 'false'
+        if: ${{needs.get-poetry-version.outputs.tag-exists}} == 'false'
         id: meta
         uses: docker/metadata-action@v4
         with:
@@ -164,7 +164,7 @@ jobs:
             type=raw,value=${{ needs.get-poetry-version.outputs.poetry-version }},priority=100
 
       - name: Extract metadata (tags, labels) for Docker
-        if: ${{needs.get-poetry-version.outputs.exists}} == 'true'
+        if: ${{needs.get-poetry-version.outputs.tag-exists}} == 'true'
         id: meta-cloud
         uses: docker/metadata-action@v4
         with:
