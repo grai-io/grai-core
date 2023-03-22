@@ -91,7 +91,10 @@ class MySQLConnector:
             ORDER BY table_schema, table_name
         """
         res = ({k.lower(): v for k, v in result.items()} for result in self.query_runner(query))
-        return [Table(**result, namespace=self.namespace) for result in res]
+        tables = [Table(**result, namespace=self.namespace) for result in res]
+        for table in tables:
+            table.columns = self.get_table_columns(table)
+        return tables
 
     @cached_property
     def columns(self) -> List[Column]:
