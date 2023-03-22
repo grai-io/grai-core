@@ -1,7 +1,7 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, fireEvent, render, screen, waitFor, within } from "testing"
+import { act, fireEvent, render, screen, waitFor } from "testing"
 import EditMembershipDialog, { UPDATE_MEMBERSHIP } from "./EditMembershipDialog"
 
 const membership = {

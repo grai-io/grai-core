@@ -1,5 +1,5 @@
 # pull official base image
-FROM python:3.11-slim-buster AS build
+FROM python:3.11-slim-buster AS python-base
 
 LABEL org.opencontainers.image.source="https://github.com/grai-io/grai-core"
 
@@ -14,14 +14,14 @@ ARG PYTHONDONTWRITEBYTECODE="1" \
     PIP_NO_CACHE_DIR="off" \
     PIP_DISABLE_PIP_VERSION_CHECK="on" \
     PIP_DEFAULT_TIMEOUT="100" \
-    POETRY_VERSION="1.3.1"
+    POETRY_VERSION="1.4.1"
 
 # libpq-dev, and gcc are used to install psycopg2.
 # netcat is used to wait for the database to be ready.
 # curl is used to support healthchecks
 # unixodbc-dev, g++ are required for pyodbc (note gcc should come with g++)
 RUN apt update \
-    && apt install -y \
+    && apt install --no-install-recommends -y \
     apt-utils \
     netcat \
     libpq-dev \
@@ -38,7 +38,6 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
     && apt-get update \
     && ACCEPT_EULA=Y apt-get install -y msodbcsql18
 
-
 COPY pyproject.toml poetry.lock ./
 
 RUN pip install "poetry==$POETRY_VERSION"
@@ -50,15 +49,14 @@ RUN poetry config virtualenvs.create false  \
 
 
 COPY ./worker.sh /start-celeryworker
-RUN sed -i 's/\r$//g' /start-celeryworker \
-    && chmod +x /start-celeryworker
-
 COPY ./beat.sh /start-celerybeat
-RUN sed -i 's/\r$//g' /start-celerybeat \
-    && chmod +x /start-celerybeat
-
 COPY ./entrypoint.sh /usr/src/app/entrypoint.sh
-RUN sed -i 's/\r$//g' /usr/src/app/entrypoint.sh \
+
+RUN sed -i 's/\r$//g' /start-celerybeat \
+    && chmod +x /start-celerybeat \
+    && sed -i 's/\r$//g' /start-celeryworker \
+    && chmod +x /start-celeryworker \
+    && sed -i 's/\r$//g' /usr/src/app/entrypoint.sh \
     && chmod +x /usr/src/app/entrypoint.sh
 
 COPY . .

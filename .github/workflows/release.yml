@@ -236,6 +236,8 @@ jobs:
 
     needs: [build-frontend, build-server-cloud, build-server-release]
 
+    if: ${{ always() && needs.build-frontend.result == 'success' && (needs.build-server-cloud.result == 'success' || needs.build-server-release.result == 'success') }}
+
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
@@ -333,6 +335,8 @@ jobs:
     runs-on: ubuntu-latest
 
     needs: [build-frontend, build-server-cloud, build-server-release]
+
+    if: ${{ always() && needs.build-frontend.result == 'success' && (needs.build-server-cloud.result == 'success' || needs.build-server-release.result == 'success') }}
 
     defaults:
       run:
