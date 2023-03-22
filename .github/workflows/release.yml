@@ -137,6 +137,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Check if tag exists
+        run: |
+          echo ${{needs.get-poetry-version.outputs.tag-exists}}
+          echo ${{needs.get-poetry-version.outputs.tag-exists}} == 'false'
+
       - uses: ncipollo/release-action@v1
         if: ${{needs.get-poetry-version.outputs.tag-exists}} == 'false'
         with:
@@ -323,7 +328,7 @@ jobs:
 
     needs: [get-poetry-version, tests-frontend]
 
-    if: ${{needs.get-poetry-version.outputs.exists}} == 'false'
+    if: ${{needs.get-poetry-version.outputs.tag-exists}} == 'false'
 
     permissions:
       contents: write
