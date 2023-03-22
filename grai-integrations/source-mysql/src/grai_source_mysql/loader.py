@@ -109,6 +109,8 @@ class MySQLConnector:
                    column_default,
                    column_key
             FROM information_schema.columns
+            WHERE table_schema != 'information_schema'
+		    AND table_schema != 'performance_schema'
             ORDER BY ordinal_position
         """
         res = ({k.lower(): v for k, v in result.items()} for result in self.query_runner(query))
