@@ -1,6 +1,6 @@
 from functools import cached_property
 from itertools import chain
-from typing import List, Type, Union, get_args
+from typing import Dict, List, Tuple, Type, TypeVar, Union, get_args
 
 from dbt_artifacts_parser.parsers.manifest.manifest_v1 import (
     CompiledAnalysisNode,
@@ -51,11 +51,17 @@ NodeTypes = Union[
 SourceTypes = Union[ParsedSourceDefinition]
 
 
+TestType = Union[ParsedDataTestNode, CompiledDataTestNode, CompiledSchemaTestNode, ParsedSchemaTestNode]
+ColumnType = TypeVar("ColumnType")
+NodeType = TypeVar("NodeType")
+DBTNodeType = TypeVar("DBTNodeType")
+
+
 class ManifestLoaderV1(BaseManifestLoader):
     @cached_property
-    def test_resources(self):
+    def test_resources(self) -> Dict[Tuple[str, str], List[TestType]]:
         test_gen = (test for test in self.manifest.nodes.values() if test.resource_type == "test")
-        col_to_tests = {}
+        col_to_tests: Dict[Tuple[str, str], List[TestType]] = dict()
         for test in test_gen:
             if getattr(test, "column_name", None) is not None:
                 for node_id in test.depends_on.nodes:
@@ -65,7 +71,7 @@ class ManifestLoaderV1(BaseManifestLoader):
         return col_to_tests
 
     @cached_property
-    def node_map(self):
+    def node_map(self) -> Dict[str, DBTNodeType]:
         node_resource_types = {"model", "seed"}
         node_map = {
             node_id: node for node_id, node in self.manifest.nodes.items() if node.resource_type in node_resource_types
@@ -73,7 +79,7 @@ class ManifestLoaderV1(BaseManifestLoader):
         return node_map
 
     @cached_property
-    def columns(self):
+    def columns(self) -> Dict[Tuple[str, str], ColumnType]:
         columns = {}
         for node in chain(self.node_map.values(), self.manifest.sources.values()):
             for column in node.columns.values():
@@ -84,7 +90,7 @@ class ManifestLoaderV1(BaseManifestLoader):
         return columns
 
     @property
-    def nodes(self) -> List:
+    def nodes(self) -> List[NodeType]:
         nodes = list(chain(self.node_map.values(), self.columns.values(), self.manifest.sources.values()))
         return list(nodes)
 
@@ -116,12 +122,14 @@ class ManifestLoaderV1(BaseManifestLoader):
                 edge = self.make_edge(table, column, Constraint("bt"), EdgeTypeLabels.table_to_column)
                 result.append(edge)
 
-            for parent_str in table.depends_on.nodes:
-                source_node = (
-                    self.node_map[parent_str] if parent_str in self.node_map else self.manifest.sources[parent_str]
-                )
-                edge = self.make_edge(source_node, table, Constraint("dbtm"), EdgeTypeLabels.table_to_table, True)
-                result.append(edge)
+            # Seeds don't have depends_on and will error without this check.
+            if hasattr(table.depends_on, "nodes"):
+                for parent_str in table.depends_on.nodes:
+                    source_node = (
+                        self.node_map[parent_str] if parent_str in self.node_map else self.manifest.sources[parent_str]
+                    )
+                    edge = self.make_edge(source_node, table, Constraint("dbtm"), EdgeTypeLabels.table_to_table, True)
+                    result.append(edge)
 
         for table in self.manifest.sources.values():
             for column in table.columns.values():
