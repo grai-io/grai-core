@@ -42,6 +42,26 @@ jobs:
         with:
           tag: ${{ steps.poetry-version.outputs.poetry-version }}
 
+      - name: Check if tag exists
+        run: |
+          echo ${{steps.check-tag.outputs.exists}}
+          echo ${{steps.check-tag.outputs.exists}} == 'false'
+
+      - name: Runs if tag does not exist
+        if: ${{steps.check-tag.outputs.exists}} == 'false'
+        run: |
+          echo "Tag does not exist"
+
+      - name: Runs if tag does not exist2
+        if: ${{steps.check-tag.outputs.exists == 'false' }}
+        run: |
+          echo "Tag does not exist2"
+
+      - name: Runs if tag does not exist3
+        if: ${{steps.check-tag.outputs.exists == false }}
+        run: |
+          echo "Tag does not exist3"
+
   lint-server:
     runs-on: ubuntu-latest
 
