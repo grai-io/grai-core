@@ -62,6 +62,21 @@ jobs:
         run: |
           echo "Tag does not exist3"
 
+      - name: Runs if tag does exist
+        if: ${{steps.check-tag.outputs.exists}} == 'true'
+        run: |
+          echo "Tag does exist"
+
+      - name: Runs if tag does exist2
+        if: ${{steps.check-tag.outputs.exists == 'true' }}
+        run: |
+          echo "Tag does exist2"
+
+      - name: Runs if tag does exist3
+        if: ${{steps.check-tag.outputs.exists == true }}
+        run: |
+          echo "Tag does exist3"
+
   lint-server:
     runs-on: ubuntu-latest
 
@@ -160,10 +175,10 @@ jobs:
       - name: Check if tag exists
         run: |
           echo ${{needs.get-poetry-version.outputs.tag-exists}}
-          echo ${{needs.get-poetry-version.outputs.tag-exists}} == 'false'
+          echo ${{needs.get-poetry-version.outputs.tag-exists == 'false' }}
 
       - uses: ncipollo/release-action@v1
-        if: ${{needs.get-poetry-version.outputs.tag-exists}} == 'false'
+        if: ${{needs.get-poetry-version.outputs.tag-exists == 'false' }}
         with:
           tag: ${{ needs.get-poetry-version.outputs.poetry-version }}
           commit: ${{ github.sha }}
@@ -178,7 +193,7 @@ jobs:
           password: ${{ secrets.GH_TOKEN }}
 
       - name: Extract metadata (tags, labels) for Docker
-        if: ${{needs.get-poetry-version.outputs.tag-exists}} == 'false'
+        if: ${{needs.get-poetry-version.outputs.tag-exists == 'false' }}
         id: meta
         uses: docker/metadata-action@v4
         with:
@@ -189,7 +204,7 @@ jobs:
             type=raw,value=${{ needs.get-poetry-version.outputs.poetry-version }},priority=100
 
       - name: Extract metadata (tags, labels) for Docker
-        if: ${{needs.get-poetry-version.outputs.tag-exists}} == 'true'
+        if: ${{needs.get-poetry-version.outputs.tag-exists == 'true' }}
         id: meta-cloud
         uses: docker/metadata-action@v4
         with:
@@ -348,7 +363,7 @@ jobs:
 
     needs: [get-poetry-version, tests-frontend]
 
-    if: ${{needs.get-poetry-version.outputs.tag-exists}} == 'false'
+    if: ${{needs.get-poetry-version.outputs.tag-exists == 'false' }}
 
     permissions:
       contents: write
