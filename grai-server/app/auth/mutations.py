@@ -101,7 +101,7 @@ class Mutation:
             }
             email_message = render_to_string(email_template_name, c)
 
-            send_mail(
+            await sync_to_async(send_mail)(
                 subject,
                 email_message,
                 settings.EMAIL_FROM,

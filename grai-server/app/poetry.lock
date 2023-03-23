@@ -798,6 +798,21 @@ files = [
 Django = ">=3.2"
 
 [[package]]
+name = "django-email-log"
+version = "1.3.0"
+description = "Django email backend that logs all emails"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "django-email-log-1.3.0.tar.gz", hash = "sha256:5c7d40bf9ddcd7be7207b387f004d2c5ff2f3facda9dbde33720fd4a8cdbf071"},
+    {file = "django_email_log-1.3.0-py3-none-any.whl", hash = "sha256:44176063fe37924cc2c7c01836c8a121c8313f5417ce04839c11e3f2d1610227"},
+]
+
+[package.dependencies]
+Django = ">=2.2.0"
+
+[[package]]
 name = "django-extensions"
 version = "3.2.1"
 description = "Extensions for Django"
@@ -3595,4 +3610,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "2143a77c83c82731065a6fa95bb927bb5968feb4984c2d80c873c9bf1c1dddb5"
+content-hash = "a6dd21f152544d95f69e315de196271652368e09e3e66a7c98c7a9e2a4c6e6bd"
