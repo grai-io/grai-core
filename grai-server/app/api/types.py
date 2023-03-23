@@ -22,6 +22,7 @@ from installations.models import PullRequest as PullRequestModel
 from installations.models import Repository as RepositoryModel
 from lineage.models import Edge as EdgeModel
 from lineage.models import Node as NodeModel
+from notifications.models import Alert as AlertModel
 from users.models import User as UserModel
 from workspaces.models import Membership as MembershipModel
 from workspaces.models import Organisation as OrganisationModel
@@ -558,6 +559,15 @@ class Workspace:
             else CommitModel.objects.get(workspace=self, reference=reference)
         )
 
+    # Alerts
+    @gql.django.field
+    def alerts(self) -> List["Alert"]:
+        return AlertModel.objects.filter(workspace=self)
+
+    @gql.django.field
+    def alert(self, id: strawberry.ID) -> "Alert":
+        return AlertModel.objects.get(id=id)
+
     # Algolia search key
     @gql.django.field
     def search_key(self) -> str:
@@ -754,3 +764,14 @@ class Commit:
     @gql.django.field
     def last_successful_run(self) -> Optional["Run"]:
         return RunModel.objects.filter(commit=self.id, status="success").order_by("-created_at").first()
+
+
+@gql.django.type(AlertModel)
+class Alert:
+    id: auto
+    name: auto
+    channel: auto
+    channel_metadata: JSON
+    triggers: JSON
+    is_active: auto
+    created_at: auto

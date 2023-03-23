@@ -1,8 +1,8 @@
 import os
 import time
+
 import posthog
 from django.conf import settings
-
 
 posthog.disabled = settings.DISABLE_TELEMETRY
 posthog.project_api_key = settings.POSTHOG_PROJECT_API_KEY
