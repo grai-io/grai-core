@@ -1,25 +1,26 @@
-from connections.models import Run
+from connections.models import Run, RunFile
 from connections.task_helpers import get_node
 
 from .base import BaseAdapter
+from grai_schemas.v1 import NodeV1, EdgeV1
 
 
 class YamlFileAdapter(BaseAdapter):
-    def run_update(self, run: Run):
+    def validate_file(self, runFile: RunFile):
         import yaml
         from grai_schemas.schema import Schema
 
+        with runFile.file.open("r") as f:
+            for item in yaml.safe_load_all(f):
+                yield Schema(entity=item).entity
+
+    def run_update(self, run: Run):
         from lineage.models import Edge, Node
 
         runFile = run.files.first()
 
-        def validate_file():
-            with runFile.file.open("r") as f:
-                for item in yaml.safe_load_all(f):
-                    yield Schema(entity=item).entity
+        entities = self.validate_file(runFile)
 
-        # TODO: Edges don't have a human readable unique identifier
-        entities = validate_file()
         for entity in entities:
             type = entity.type
             values = entity.spec.dict(exclude_none=True)
@@ -43,3 +44,23 @@ class YamlFileAdapter(BaseAdapter):
             except Model.DoesNotExist:
                 values["workspace"] = run.workspace
                 Model.objects.create(**values)
+
+    def get_nodes_and_edges(self):
+        runFile = self.run.files.first()
+
+        entities = self.validate_file(runFile)
+
+        nodes = []
+        edges = []
+
+        for entity in entities:
+            if entity.type == "Node":
+                nodes.append(NodeV1.from_spec(entity.spec))
+            elif entity.type == "Edge":
+                edges.append(EdgeV1.from_spec(entity.spec))
+
+        import warnings
+
+        warnings.warn(UserWarning(f"Nodes count: {len(nodes)}"))
+
+        return nodes, edges

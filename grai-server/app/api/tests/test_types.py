@@ -4,12 +4,12 @@ from unittest.mock import MagicMock
 
 import pytest
 from algoliasearch.search_client import SearchClient
+from notifications.models import Alert
 
 from api.schema import schema
 from connections.models import Connection, Connector, Run
 from installations.models import Branch, Commit, PullRequest, Repository
 from lineage.models import Edge, Node
-from notifications.models import Alert
 from workspaces.models import Workspace
 
 from .common import (

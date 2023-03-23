@@ -1,6 +1,7 @@
 import uuid
 
 import pytest
+from notifications.models import Alert
 
 from api.schema import schema
 from api.tests.common import (
@@ -12,7 +13,6 @@ from api.tests.common import (
     test_user,
     test_workspace,
 )
-from notifications.models import Alert
 
 
 @pytest.mark.asyncio

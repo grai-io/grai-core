@@ -6,6 +6,7 @@ import strawberry
 import strawberry_django
 from django.conf import settings
 from django.db.models import Prefetch, Q
+from notifications.models import Alert as AlertModel
 from strawberry.scalars import JSON
 from strawberry_django.filters import FilterLookup
 from strawberry_django.pagination import OffsetPaginationInput
@@ -22,7 +23,6 @@ from installations.models import PullRequest as PullRequestModel
 from installations.models import Repository as RepositoryModel
 from lineage.models import Edge as EdgeModel
 from lineage.models import Node as NodeModel
-from notifications.models import Alert as AlertModel
 from users.models import User as UserModel
 from workspaces.models import Membership as MembershipModel
 from workspaces.models import Organisation as OrganisationModel

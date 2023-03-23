@@ -42,3 +42,39 @@ class Alert(TenantModel):
         indexes = [
             models.Index(fields=["workspace"]),
         ]
+
+
+# class Notification(TenantModel):
+#     TEST_FAILURE = "test_failure"
+
+#     TRIGGERS = [
+#         (TEST_FAILURE, "test_failure"),
+#     ]
+
+#     tenant_id = "workspace_id"
+
+#     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+#     trigger = models.CharField(max_length=255, choices=TRIGGERS)
+#     name = models.CharField(max_length=255)
+#     channel_metadata = models.JSONField(default=dict)
+#     triggers = models.JSONField(default=dict)
+#     is_active = models.BooleanField(default=True)
+#     workspace = models.ForeignKey(
+#         "workspaces.Workspace",
+#         related_name="alerts",
+#         on_delete=models.CASCADE,
+#     )
+
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now=True)
+
+#     class Meta:
+#         constraints = [
+#             models.UniqueConstraint(
+#                 fields=["workspace", "name"],
+#                 name="Alert unique name per workspace",
+#             )
+#         ]
+#         indexes = [
+#             models.Index(fields=["workspace"]),
+#         ]

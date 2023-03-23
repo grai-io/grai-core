@@ -17,6 +17,10 @@ spec:
   metadata:
     grai:
       node_type: Column
+      node_attributes:
+        data_type: string
+        is_nullable: true
+        is_unique: false
   name: column1
   namespace: default
 type: Node
