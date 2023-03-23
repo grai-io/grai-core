@@ -130,6 +130,8 @@ THIRD_PARTY_APPS = [
     "health_check.contrib.migrations",
     "django_celery_beat",
     "storages",
+    "email_log",
+    "djcelery_email",
 ]
 
 ALGOLIA_APPLICATION_ID = config("ALGOLIA_APPLICATION_ID", None)
@@ -285,7 +287,9 @@ PHONENUMBER_DEFAULT_REGION = "US"
 #     },
 # }
 
-EMAIL_BACKEND = config("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
+EMAIL_BACKEND = "djcelery_email.backends.CeleryEmailBackend"
+CELERY_EMAIL_BACKEND = "email_log.backends.EmailBackend"
+EMAIL_LOG_BACKEND = config("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
 EMAIL_FROM = config("EMAIL_FROM", None)
 AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID", None)
 AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY", None)
