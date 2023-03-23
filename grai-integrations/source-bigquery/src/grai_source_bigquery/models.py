@@ -53,7 +53,7 @@ class Column(BigqueryNode):
     is_nullable: bool
     namespace: str
     default_value: Any = Field(alias="column_default")
-    is_pk: Optional[bool] = False
+    is_pk: Optional[bool]
     full_name: Optional[str] = None
 
     class Config:
