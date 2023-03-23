@@ -764,6 +764,21 @@ argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
 
 [[package]]
+name = "django-appconf"
+version = "1.0.5"
+description = "A helper class for handling configuration defaults of packaged apps gracefully."
+category = "main"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "django-appconf-1.0.5.tar.gz", hash = "sha256:be3db0be6c81fa84742000b89a81c016d70ae66a7ccb620cdef592b1f1a6aaa4"},
+    {file = "django_appconf-1.0.5-py3-none-any.whl", hash = "sha256:ae9f864ee1958c815a965ed63b3fba4874eec13de10236ba063a788f9a17389d"},
+]
+
+[package.dependencies]
+django = "*"
+
+[[package]]
 name = "django-celery-beat"
 version = "2.4.0"
 description = "Database-backed Periodic Tasks."
@@ -781,6 +796,23 @@ Django = ">=2.2,<4.2"
 django-timezone-field = ">=5.0"
 python-crontab = ">=2.3.4"
 tzdata = "*"
+
+[[package]]
+name = "django-celery-email"
+version = "3.0.0"
+description = "An async Django email backend using celery"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "django-celery-email-3.0.0.tar.gz", hash = "sha256:5546cbba80952cc3b8a0ffa4206ce90a4a996a7ffd1c385a2bdb65903ca18ece"},
+    {file = "django_celery_email-3.0.0-py2.py3-none-any.whl", hash = "sha256:0f72da39cb2ea83c69440566e87f27cd72f68f247f98ce99fb29889fcf329406"},
+]
+
+[package.dependencies]
+celery = ">=4.0"
+django = ">=2.2"
+django-appconf = "*"
 
 [[package]]
 name = "django-cors-headers"
@@ -3610,4 +3642,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "a6dd21f152544d95f69e315de196271652368e09e3e66a7c98c7a9e2a4c6e6bd"
+content-hash = "e4770faaf6ff5f5713484596298294c6595bdbbbfceec5fd54e13c7e6b819955"
