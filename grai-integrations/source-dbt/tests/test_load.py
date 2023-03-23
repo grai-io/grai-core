@@ -14,15 +14,28 @@ from grai_source_dbt.processor import ManifestProcessor
 from grai_source_dbt.utils import full_name
 
 
-def manifest_ver(id: str) -> ManifestProcessor:
-    file = f"{get_project_root()}/../tests/resources/{id}/jaffle_shop/manifest.json"
+def resource_path(filename: str, version: str, subproject: str = "jaffle_shop"):
+    file = f"{get_project_root()}/../tests/resources/{version}/{subproject}/{filename}"
+    return file
+
+
+def load_resource(file) -> ManifestProcessor:
     return ManifestProcessor.load(file, "default")
 
 
-processors = [manifest_ver(ver) for ver in SUPPORTED_VERSIONS]
+def manifest_ver(id: str) -> ManifestProcessor:
+    file = resource_path("manifest.json", version=id)
+    return ManifestProcessor.load(file, "default")
 
 
-@pytest.mark.parametrize("processor", processors, ids=SUPPORTED_VERSIONS)
+files = [resource_path("manifest.json", ver) for ver in SUPPORTED_VERSIONS]
+files += [resource_path("manifest-seed.json", "v8")]
+ids = SUPPORTED_VERSIONS + ["v8-seed"]
+
+processors = [load_resource(file) for file in files]
+
+
+@pytest.mark.parametrize("processor", processors, ids=ids)
 class TestProcessors:
     def test_all_manifest_node_full_names_unique(self, processor):
         node_names = {full_name(node) for node in processor.manifest.nodes.values()}
