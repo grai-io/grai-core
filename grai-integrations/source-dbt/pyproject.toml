@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai_source_dbt"
-version = "0.2.4"
+version = "0.2.5"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>", "Edward Louth <edward@grai.io>"]
 license = "Elastic-2.0"
