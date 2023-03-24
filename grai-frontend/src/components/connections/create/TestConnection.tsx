@@ -82,7 +82,7 @@ const TestConnection: React.FC<TestConnectionProps> = ({
             <Button
               variant="contained"
               type="submit"
-              sx={{ minWidth: 120, color: "white" }}
+              sx={{ minWidth: 120 }}
               endIcon={<ArrowForward />}
               disabled
             >
