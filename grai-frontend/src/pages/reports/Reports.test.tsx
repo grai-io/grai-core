@@ -1,9 +1,9 @@
 import React from "react"
+import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
 import profileMock from "testing/profileMock"
 import Reports, { GET_REPORTS } from "./Reports"
-import userEvent from "@testing-library/user-event"
 
 test("renders", async () => {
   render(<Reports />, {
