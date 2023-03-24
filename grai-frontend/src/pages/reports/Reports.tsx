@@ -95,27 +95,32 @@ const Reports: React.FC = () => {
   const branch = searchParams.get("branch")
   const { owner, repo } = getRepoFromParams(searchParams)
 
-  const { loading, error, data } = useQuery<GetReports, GetReportsVariables>(
-    GET_REPORTS,
-    {
-      variables: {
-        organisationName,
-        workspaceName,
-        owner,
-        repo,
-        branch,
-      },
-    }
-  )
+  const { loading, error, data, refetch } = useQuery<
+    GetReports,
+    GetReportsVariables
+  >(GET_REPORTS, {
+    variables: {
+      organisationName,
+      workspaceName,
+      owner,
+      repo,
+      branch,
+    },
+  })
 
   if (error) return <GraphError error={error} />
+
+  const handleRefresh = () => refetch()
 
   return (
     <PageLayout>
       <ReportsHeader />
       <Box sx={{ mx: 3 }}>
         <ReportTabs currentTab="all" />
-        <ReportFilter workspace={data?.workspace ?? null} />
+        <ReportFilter
+          workspace={data?.workspace ?? null}
+          onRefresh={handleRefresh}
+        />
         <ReportsTable runs={data?.workspace.runs ?? null} loading={loading} />
       </Box>
     </PageLayout>

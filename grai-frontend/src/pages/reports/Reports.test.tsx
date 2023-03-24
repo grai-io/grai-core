@@ -1,6 +1,7 @@
 import React from "react"
+import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { act, render, screen, waitFor } from "testing"
 import profileMock from "testing/profileMock"
 import Reports, { GET_REPORTS } from "./Reports"
 
@@ -14,6 +15,24 @@ test("renders", async () => {
   })
 
   await screen.findAllByText("Hello World")
+})
+
+test("refresh", async () => {
+  const user = userEvent.setup()
+
+  render(<Reports />, {
+    withRouter: true,
+  })
+
+  await waitFor(() => {
+    expect(screen.getByRole("heading", { name: /Reports/i })).toBeTruthy()
+  })
+
+  await screen.findAllByText("Hello World")
+
+  await act(async () => {
+    user.click(screen.getByTestId("RefreshIcon"))
+  })
 })
 
 test("error", async () => {
