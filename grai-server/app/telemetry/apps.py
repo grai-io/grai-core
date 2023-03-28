@@ -11,10 +11,33 @@ from sentry_sdk.integrations.django import DjangoIntegration
 
 PostHogIntegration.organization = settings.USER_ID
 
+
+def traces_sampler(ctx):
+    if ctx["parent_sampled"] is not None:
+        # If this transaction has a parent, we usually want to sample it
+        # if and only if its parent was sampled.
+        return ctx["parent_sampled"]
+    op = ctx["transaction_context"]["op"]
+    if "wsgi_environ" in ctx:
+        # Get the URL for WSGI requests
+        url = ctx["wsgi_environ"].get("PATH_INFO", "")
+    elif "asgi_scope" in ctx:
+        # Get the URL for ASGI requests
+        url = ctx["asgi_scope"].get("path", "")
+    else:
+        # Other kinds of transactions don't have a URL
+        url = ""
+    if op == "http.server":
+        # Conditions only relevant to operation "http.server"
+        if url.startswith("/health/"):
+            return 0  # Don't trace any of these transactions
+    return settings.SENTRY_SAMPLE_RATE
+
+
 if not settings.DISABLE_TELEMETRY:
     sentry_sdk.init(
         dsn=settings.SENTRY_DSN,
-        traces_sample_rate=settings.SENTRY_SAMPLE_RATE,
+        traces_sampler=traces_sampler,
         integrations=[DjangoIntegration(), PostHogIntegration()],
         release=f"grai-server@{settings.SERVER_VERSION}",
     )
