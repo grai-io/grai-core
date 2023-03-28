@@ -3,3 +3,4 @@ omit =
   *tests*
   *migrations*
   the_guide/settings/*
+  telemetry/apps.py
