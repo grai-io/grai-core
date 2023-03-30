@@ -108,7 +108,8 @@ const Commit: React.FC = () => {
 
   if (!commit) return <NotFound />
 
-  const errors = resultsToErrors(commit.last_successful_run?.metadata.results)
+  const run = commit.last_successful_run
+  const errors = resultsToErrors(run?.metadata.results)
 
   const tables = data?.workspace.tables
   const edges = data?.workspace.other_edges
@@ -120,7 +121,7 @@ const Commit: React.FC = () => {
         repository={data.workspace.repository}
         commit={commit}
       />
-      <ReportBody tables={tables} edges={edges} errors={errors} />
+      <ReportBody run={run} tables={tables} edges={edges} errors={errors} />
     </PageLayout>
   )
 }

@@ -111,7 +111,7 @@ const Report: React.FC = () => {
   return (
     <PageLayout>
       <ReportRunHeader run={run} />
-      <ReportBody tables={tables} edges={edges} errors={errors} />
+      <ReportBody run={run} tables={tables} edges={edges} errors={errors} />
     </PageLayout>
   )
 }
