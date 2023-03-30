@@ -21,7 +21,7 @@ interface RequirementEdge {
       }
     }
   } | null
-  source: {
+  destination: {
     id: string
     name: string
     display_name: string
@@ -43,7 +43,7 @@ export interface EnrichedColumn extends Column {
   requirements: Requirement[]
 }
 
-interface Source {
+interface Node {
   name: string
   display_name: string
 }
@@ -52,12 +52,12 @@ export type Test = {
   type: string
   text: string
   data_type?: string
-  source: Source
+  destination: Node
   passed: boolean | null
 }
 
 type Requirement = {
-  source: Source
+  destination: Node
   tests: Edge[]
 }
 
@@ -68,7 +68,7 @@ export type Edge = Test & {
 export const columnTests = (column: Column, properties: string[]) =>
   column.requirements_edges.reduce<Test[]>((res, edge) => {
     const edge_attributes = edge.metadata?.grai?.edge_attributes
-    const node_attributes = edge.source.metadata.grai?.node_attributes
+    const node_attributes = edge.destination.metadata.grai?.node_attributes
 
     if (!edge_attributes || !node_attributes) return res
 
@@ -80,7 +80,7 @@ export const columnTests = (column: Column, properties: string[]) =>
       return res.concat({
         type: "not-null",
         text: "Not Null",
-        source: edge.source,
+        destination: edge.destination,
         passed: properties.includes("Not Null"),
       })
 
@@ -89,7 +89,7 @@ export const columnTests = (column: Column, properties: string[]) =>
       return res.concat({
         type: "unique",
         text: "Unique",
-        source: edge.source,
+        destination: edge.destination,
         passed: properties.includes("Unique"),
       })
 
@@ -98,7 +98,7 @@ export const columnTests = (column: Column, properties: string[]) =>
       return res.concat({
         type: "data-type",
         text: `Data Type: ${node_attributes.data_type}`,
-        source: edge.source,
+        destination: edge.destination,
         data_type: node_attributes.data_type,
         passed:
           column.metadata?.grai?.node_attributes.data_type ===
@@ -111,7 +111,7 @@ export const columnTests = (column: Column, properties: string[]) =>
 export const columnEdges = (column: Column, properties: string[]) =>
   column.requirements_edges.reduce<Edge[]>((res, edge) => {
     const edge_attributes = edge.metadata?.grai?.edge_attributes
-    const node_attributes = edge.source.metadata.grai?.node_attributes
+    const node_attributes = edge.destination.metadata.grai?.node_attributes
 
     if (!node_attributes) return res
 
@@ -120,7 +120,7 @@ export const columnEdges = (column: Column, properties: string[]) =>
       return res.concat({
         type: "not-null",
         text: "Not Null",
-        source: edge.source,
+        destination: edge.destination,
         passed: properties.includes("Not Null"),
         preserved: edge_attributes?.preserves_nullable ?? false,
       })
@@ -130,7 +130,7 @@ export const columnEdges = (column: Column, properties: string[]) =>
       return res.concat({
         type: "unique",
         text: "Unique",
-        source: edge.source,
+        destination: edge.destination,
         passed: properties.includes("Unique"),
         preserved: edge_attributes?.preserves_unique ?? false,
       })
@@ -140,7 +140,7 @@ export const columnEdges = (column: Column, properties: string[]) =>
       return res.concat({
         type: "data-type",
         text: `Data Type: ${node_attributes.data_type}`,
-        source: edge.source,
+        destination: edge.destination,
         data_type: node_attributes.data_type,
         passed:
           column.metadata?.grai?.node_attributes.data_type ===
@@ -167,7 +167,7 @@ export const columnProperties = (column: Column) => {
 
 export const columnRequirements = (column: Column, properties: string[]) =>
   column.requirements_edges.map(edge => ({
-    source: edge.source,
+    destination: edge.destination,
     tests: columnEdges(column, properties),
   }))
 

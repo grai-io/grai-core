@@ -28,7 +28,7 @@ test("renders none", async () => {
             edge_attributes: {},
           },
         },
-        source: {
+        destination: {
           id: "2",
           name: "source",
           display_name: "source",
@@ -66,7 +66,7 @@ test("renders nullable", async () => {
             },
           },
         },
-        source: {
+        destination: {
           id: "2",
           name: "source",
           display_name: "source",
@@ -102,7 +102,7 @@ test("renders unique", async () => {
             },
           },
         },
-        source: {
+        destination: {
           id: "2",
           name: "source",
           display_name: "source",
@@ -138,7 +138,7 @@ test("renders data type", async () => {
             },
           },
         },
-        source: {
+        destination: {
           id: "2",
           name: "source",
           display_name: "source",
@@ -171,7 +171,7 @@ test("renders repeated", async () => {
         text: "Unique",
         passed: true,
         type: "unique",
-        source: {
+        destination: {
           name: "s1",
           display_name: "s1",
         },
@@ -180,7 +180,7 @@ test("renders repeated", async () => {
         text: "Unique",
         passed: true,
         type: "unique",
-        source: {
+        destination: {
           name: "s2",
           display_name: "s2",
         },
