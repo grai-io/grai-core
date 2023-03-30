@@ -1,5 +1,6 @@
 import React from "react"
-import { Stack } from "@mui/material"
+import { Refresh } from "@mui/icons-material"
+import { Box, Button, Stack, Tooltip } from "@mui/material"
 import getRepoFromParams from "helpers/getRepoFromParams"
 import { useSearchParams } from "react-router-dom"
 import BranchFilter, { Branch } from "./filters/BranchFilter"
@@ -24,9 +25,13 @@ interface Workspace {
 
 type ReportFilterProps = {
   workspace: Workspace | null
+  onRefresh?: () => void
 }
 
-const ReportFilter: React.FC<ReportFilterProps> = ({ workspace }) => {
+const ReportFilter: React.FC<ReportFilterProps> = ({
+  workspace,
+  onRefresh,
+}) => {
   const [searchParams] = useSearchParams()
   const { owner, repo } = getRepoFromParams(searchParams)
 
@@ -42,13 +47,28 @@ const ReportFilter: React.FC<ReportFilterProps> = ({ workspace }) => {
       )
 
   return (
-    <Stack direction="row" spacing={1}>
-      <RepositoryFilter
-        repositories={repositories ?? []}
-        disabled={!repositories}
-      />
-      <BranchFilter branches={branches ?? []} disabled={!branches} />
-    </Stack>
+    <Box sx={{ display: "flex" }}>
+      <Stack direction="row" spacing={1} sx={{ flexGrow: 1 }}>
+        <RepositoryFilter
+          repositories={repositories ?? []}
+          disabled={!repositories}
+        />
+        <BranchFilter branches={branches ?? []} disabled={!branches} />
+      </Stack>
+      {onRefresh && (
+        <Box>
+          <Tooltip title="Refresh reports">
+            <Button
+              variant="outlined"
+              onClick={onRefresh}
+              sx={{ width: 40, height: 40, minWidth: 0, mt: 2 }}
+            >
+              <Refresh />
+            </Button>
+          </Tooltip>
+        </Box>
+      )}
+    </Box>
   )
 }
 
