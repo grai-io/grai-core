@@ -77,7 +77,7 @@ def execute_run(run: Run):
         elif run.action == Run.TESTS:
             results, message = adapter.run_tests(run)
             run.metadata = {"results": results}
-            failures = list(filter(lambda x: not x.test_pass, results))
+            failures = (result for result in results if not result["test_pass"])
         elif run.action == Run.VALIDATE:
             adapter.run_validate(run)
         else:
@@ -91,7 +91,7 @@ def execute_run(run: Run):
             github = get_github_api(run)
             github.complete_check(
                 check_id=run.trigger["check_id"],
-                conclusion="success" if failures is None or len(failures) == 0 else "failure",
+                conclusion="success" if failures is None or len(list(failures)) == 0 else "failure",
             )
             if run.commit.pull_request:
                 github.post_comment(run.commit.pull_request.reference, message)
