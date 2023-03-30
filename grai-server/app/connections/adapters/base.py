@@ -45,6 +45,13 @@ class BaseAdapter(ABC):
 
         graph = build_graph(nodes, edges, "v1")
 
+        import warnings
+        from grai_client.endpoints.utilities import serialize_obj
+
+        # warnings.warn(UserWarning(f"Nodes count: {len(nodes)}"))
+        warnings.warn(UserWarning(serialize_obj(nodes)))
+        # warnings.warn(UserWarning(serialize_obj(new_edges)))
+
         results = TestResultCacheBase(new_nodes, new_edges, graph)
 
         test_results = list(chain.from_iterable(results.test_results().values()))

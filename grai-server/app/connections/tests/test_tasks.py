@@ -389,17 +389,26 @@ class TestTests:
             namespace="default",
             name="column2",
             display_name="column2",
+            is_active=True,
+            data_source="grai-core-demo",
             metadata={
                 "grai": {
                     "node_type": "Column",
                     "node_attibutes": {
                         "data_type": "string",
+                        "default_value": None,
                         "is_nullable": False,
                         "is_unique": True,
+                        "is_primary_key": False,
                     },
                 }
             },
         )
+
+        import warnings
+        from grai_client.endpoints.utilities import serialize_obj
+
+        warnings.warn(UserWarning(serialize_obj(destination.metadata)))
 
         Edge.objects.create(
             workspace=test_workspace,
