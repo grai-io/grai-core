@@ -110,9 +110,8 @@ const PullRequest: React.FC = () => {
 
   if (!pullRequest) return <NotFound />
 
-  const errors = resultsToErrors(
-    pullRequest.last_commit?.last_successful_run?.metadata.results
-  )
+  const run = pullRequest.last_commit?.last_successful_run ?? null
+  const errors = resultsToErrors(run?.metadata.results)
 
   const tables = data?.workspace.tables
   const edges = data?.workspace.other_edges
@@ -124,7 +123,7 @@ const PullRequest: React.FC = () => {
         repository={data.workspace.repository}
         pullRequest={pullRequest}
       />
-      <ReportBody tables={tables} edges={edges} errors={errors} />
+      <ReportBody run={run} tables={tables} edges={edges} errors={errors} />
     </PageLayout>
   )
 }
