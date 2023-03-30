@@ -2,7 +2,7 @@ import React from "react"
 import { Alert, AlertTitle, Typography } from "@mui/material"
 
 interface RunMetadata {
-  error: string
+  error?: string
 }
 
 export interface Run {
