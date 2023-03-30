@@ -146,10 +146,10 @@ def test_create_run_no_connector(auto_login_user, test_connector):
 
     url = "/api/v1/external-runs/"
 
-    with pytest.raises(Exception) as e_info:
-        client.post(url)
+    response = client.post(url)
 
-    assert str(e_info.value) == "You must provide a connector or connection_id"
+    assert response.status_code == 400
+    assert response.json().get("error") == "You must provide a connector or connection_id"
 
 
 @pytest.mark.django_db
@@ -158,17 +158,17 @@ def test_create_run_no_repo(auto_login_user, test_connector):
 
     url = "/api/v1/external-runs/"
 
-    with pytest.raises(Exception) as e_info:
-        client.post(
-            url,
-            {
-                "connector_name": test_connector.name,
-                "github_owner": "owner",
-                "github_repo": "repo",
-            },
-        )
+    response = client.post(
+        url,
+        {
+            "connector_name": test_connector.name,
+            "github_owner": "owner",
+            "github_repo": "repo",
+        },
+    )
 
-    assert str(e_info.value) == "Repository not found, have you installed the Grai Github App?"
+    assert response.status_code == 400
+    assert response.json().get("error") == "Repository not found, have you installed the Grai Github App?"
 
 
 @pytest.mark.django_db
