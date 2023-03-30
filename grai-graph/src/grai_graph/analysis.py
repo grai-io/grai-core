@@ -48,7 +48,7 @@ class GraphAnalyzer:
 
             test_node_data_type = node_meta.node_attributes.data_type
             if test_node_data_type is not None:
-                yield (new_path, test_node_data_type != new_type)
+                yield (new_path, test_node_data_type == new_type)
 
             yield from self.traverse_data_type_violations(test_node, new_type, path=new_path)
 
@@ -99,7 +99,7 @@ class GraphAnalyzer:
             new_path = [*path, test_node]
 
             if test_node_is_unique is not None:
-                yield (new_path, test_node_is_unique != expects_unique)
+                yield (new_path, test_node_is_unique == expects_unique)
 
             yield from self.traverse_unique_violations(test_node, expects_unique, path=new_path)
 
@@ -153,7 +153,7 @@ class GraphAnalyzer:
             test_node_is_nullable = node_meta.node_attributes.is_nullable
 
             if test_node_is_nullable is not None:
-                yield (new_path, test_node_is_nullable != is_nullable)
+                yield (new_path, test_node_is_nullable == is_nullable)
 
             yield from self.traverse_null_violations(test_node, is_nullable, path=new_path)
 

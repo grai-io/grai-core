@@ -361,19 +361,20 @@ class TestTests:
 
         assert str(e_info.value) == "No connector found for: Connector"
 
-    def test_yaml_github_test_failure(self, test_workspace, test_yaml_file_connector, test_commit_with_pr, mocker):
+    def test_dbt_github_test_failure(self, test_workspace, test_dbt_connector, test_commit_with_pr, mocker):
         mocker.patch("installations.github.requests.post", side_effect=mocked_requests_post)
         mocker.patch("installations.github.GhApi")
 
         source = Node.objects.create(
             workspace=test_workspace,
             namespace="default",
-            name="column1",
-            display_name="column1",
+            name="public.customers.customer_id",
+            display_name="customer_id",
             is_active=True,
             data_source="grai-core-demo",
             metadata={
                 "grai": {
+                    "version": "v1",
                     "node_type": "Column",
                     "node_attibutes": {
                         "data_type": "string",
@@ -393,6 +394,90 @@ class TestTests:
             data_source="grai-core-demo",
             metadata={
                 "grai": {
+                    "version": "v1",
+                    "node_type": "Column",
+                    "node_attributes": {
+                        "data_type": "string",
+                        "default_value": None,
+                        "is_nullable": True,
+                        "is_unique": True,
+                        "is_primary_key": False,
+                    },
+                }
+            },
+        )
+
+        Edge.objects.create(
+            workspace=test_workspace,
+            source=source,
+            destination=destination,
+            is_active=True,
+            data_source="grai-core-demo",
+            name="column1_column2",
+            namespace="default",
+            metadata={
+                "grai": {
+                    "version": "v1",
+                    "edge_type": "ColumnToColumn",
+                    "edge_attributes": {
+                        "preserves_data_type": True,
+                        "preserves_nullable": True,
+                        "preserves_unique": True,
+                    },
+                }
+            },
+        )
+
+        with open(os.path.join(__location__, "manifest.json")) as reader:
+            file = UploadedFile(reader, name="manifest.json")
+            connection = Connection.objects.create(
+                name=str(uuid.uuid4()), connector=test_dbt_connector, workspace=test_workspace
+            )
+            run = Run.objects.create(
+                connection=connection,
+                workspace=test_workspace,
+                commit=test_commit_with_pr,
+                action=Run.TESTS,
+                trigger={"check_id": "1234"},
+            )
+            RunFile.objects.create(run=run, file=file)
+
+        process_run(str(run.id))
+
+    def test_yaml_github_test_failure(self, test_workspace, test_yaml_file_connector, test_commit_with_pr, mocker):
+        mocker.patch("installations.github.requests.post", side_effect=mocked_requests_post)
+        mocker.patch("installations.github.GhApi")
+
+        source = Node.objects.create(
+            workspace=test_workspace,
+            namespace="default",
+            name="column1",
+            display_name="column1",
+            is_active=True,
+            data_source="grai-core-demo",
+            metadata={
+                "grai": {
+                    "version": "v1",
+                    "node_type": "Column",
+                    "node_attibutes": {
+                        "data_type": "string",
+                        "is_nullable": True,
+                        "is_unique": False,
+                    },
+                }
+            },
+        )
+
+        destination = Node.objects.create(
+            workspace=test_workspace,
+            namespace="default",
+            name="column2",
+            display_name="column2",
+            is_active=True,
+            data_source="grai-core-demo",
+            metadata={
+                "grai": {
+                    "version": "v1",
                     "node_type": "Column",
                     "node_attibutes": {
                         "data_type": "string",
@@ -405,11 +490,6 @@ class TestTests:
             },
         )
 
-        import warnings
-        from grai_client.endpoints.utilities import serialize_obj
-
-        warnings.warn(UserWarning(serialize_obj(destination.metadata)))
-
         Edge.objects.create(
             workspace=test_workspace,
             source=source,
@@ -420,6 +500,7 @@ class TestTests:
             namespace="default",
             metadata={
                 "grai": {
+                    "version": "v1",
                     "edge_type": "ColumnToColumn",
                     "edge_attributes": {
                         "preserves_data_type": True,

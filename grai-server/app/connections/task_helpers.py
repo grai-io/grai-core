@@ -282,9 +282,4 @@ def modelToSchema(model, Schema, type):
         spec["source"] = NodeNamedID(**model.source.__dict__)
         spec["destination"] = NodeNamedID(**model.destination.__dict__)
 
-    import warnings
-    from grai_client.endpoints.utilities import serialize_obj
-
-    warnings.warn(UserWarning(serialize_obj(spec["metadata"])))
-
     return Schema.from_spec(spec)

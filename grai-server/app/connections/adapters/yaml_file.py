@@ -59,8 +59,4 @@ class YamlFileAdapter(BaseAdapter):
             elif entity.type == "Edge":
                 edges.append(EdgeV1.from_spec(entity.spec))
 
-        import warnings
-
-        warnings.warn(UserWarning(f"Nodes count: {len(nodes)}"))
-
         return nodes, edges

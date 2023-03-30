@@ -223,47 +223,12 @@ class TestResultCacheBase:
     def null_tests(self) -> Dict[NodeV1, List[NullableTestResult]]:
         result_map = {}
 
-        import warnings
-        from grai_client.endpoints.utilities import serialize_obj
-
-        warnings.warn(UserWarning(serialize_obj(list(self.new_columns))))
-
         for node in self.new_columns:
             result = node.spec.metadata.grai.node_attributes.is_nullable
-            warnings.warn(UserWarning(f"result {result}"))
-
-            node_id = self.graph.get_node_id(node.spec.namespace, node.spec.name)
-            warnings.warn(UserWarning(f"node_id {node_id}"))
-
-            current_node = self.graph.get_node(node_id=node_id)
-            warnings.warn(UserWarning(serialize_obj(current_node)))
-
-            successors = (self.graph.get_node(node_id=node_id) for node_id in self.graph.graph.successors(node_id))
-            warnings.warn(UserWarning(serialize_obj(list(successors))))
-
-            col_successors = (node for node in successors if node.spec.metadata.grai.node_type == "Column")
-            warnings.warn(UserWarning(serialize_obj(list(col_successors))))
-
-            for test_node in col_successors:
-                test_node_id = self.graph.get_node_id(test_node.spec.namespace, test_node.spec.name)
-                edge_data = self.graph.graph[node_id][test_node_id][self.graph._container_key]
-
-                warnings.warn(UserWarning(serialize_obj(edge_data)))
-
-                edge_meta = edge_data.spec.metadata.grai
-                node_meta = test_node.spec.metadata.grai
-
-                if (
-                    hasattr(edge_meta.edge_attributes, "preserves_nullable")
-                    and not edge_meta.edge_attributes.preserves_nullable
-                ):
-                    warnings.warn(UserWarning("edge does not preserve nullable"))
 
             affected_nodes = self.analysis.test_nullable_violations(
                 namespace=node.spec.namespace, name=node.spec.name, is_nullable=result
             )
-
-            warnings.warn(UserWarning(serialize_obj(affected_nodes)))
 
             result_map[node] = [NullableTestResult(node, path, test_pass) for (path, test_pass) in affected_nodes]
 
