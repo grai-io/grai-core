@@ -32,7 +32,7 @@ export const GET_TABLE = gql`
           requirements_edges {
             id
             metadata
-            source {
+            destination {
               id
               name
               display_name

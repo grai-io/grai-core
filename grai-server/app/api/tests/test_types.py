@@ -255,8 +255,16 @@ async def test_table(test_context):
         workspace=workspace, metadata={"grai": {"node_type": "Column"}}, name=uuid.uuid4()
     )
 
-    edge = await Edge.objects.acreate(
+    await Edge.objects.acreate(
         workspace=workspace, source=table, destination=column, metadata={"grai": {"edge_type": "TableToColumn"}}
+    )
+
+    destination = await Node.objects.acreate(
+        workspace=workspace, metadata={"grai": {"node_type": "Column"}}, name=uuid.uuid4()
+    )
+
+    edge = await Edge.objects.acreate(
+        workspace=workspace, source=column, destination=destination, metadata={"grai": {"edge_type": "ColumnToColumn"}}
     )
 
     query = """
@@ -269,6 +277,9 @@ async def test_table(test_context):
                   id
                   requirements_edges {
                     id
+                    destination {
+                        id
+                    }
                   }
                 }
             }
@@ -288,6 +299,11 @@ async def test_table(test_context):
     assert result.errors is None
     assert result.data["workspace"]["id"] == str(workspace.id)
     assert result.data["workspace"]["table"]["id"] == str(table.id)
+    assert result.data["workspace"]["table"]["columns"][0]["id"] == str(column.id)
+    assert result.data["workspace"]["table"]["columns"][0]["requirements_edges"][0]["id"] == str(edge.id)
+    assert result.data["workspace"]["table"]["columns"][0]["requirements_edges"][0]["destination"]["id"] == str(
+        destination.id
+    )
 
 
 @pytest.mark.django_db

@@ -7,7 +7,7 @@
 // GraphQL query operation: GetTable
 // ====================================================
 
-export interface GetTable_workspace_table_columns_requirements_edges_source {
+export interface GetTable_workspace_table_columns_requirements_edges_destination {
   __typename: "Node";
   id: any;
   name: string;
@@ -19,7 +19,7 @@ export interface GetTable_workspace_table_columns_requirements_edges {
   __typename: "Edge";
   id: any;
   metadata: any;
-  source: GetTable_workspace_table_columns_requirements_edges_source;
+  destination: GetTable_workspace_table_columns_requirements_edges_destination;
 }
 
 export interface GetTable_workspace_table_columns {

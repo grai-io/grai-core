@@ -37,7 +37,7 @@ interface RequirementEdge {
       }
     }
   } | null
-  source: {
+  destination: {
     id: string
     name: string
     display_name: string
@@ -82,7 +82,7 @@ const TableColumnsTable: React.FC<TableColumnsTableProps> = ({
           <TableCell>Name</TableCell>
           <TableCell>Data Type</TableCell>
           <TableCell>Properties</TableCell>
-          <TableCell>Tests</TableCell>
+          <TableCell>Downstream Tests</TableCell>
           <TableCell sx={{ width: 0 }} />
         </TableRow>
       </TableHead>
@@ -117,11 +117,11 @@ const TableColumnsTable: React.FC<TableColumnsTableProps> = ({
               {expand &&
                 column.requirements.map(requirement => (
                   <TableRow
-                    key={requirement.source.name}
+                    key={requirement.destination.name}
                     sx={{ backgroundColor: theme => theme.palette.grey[100] }}
                   >
                     <TableCell />
-                    <TableCell>{requirement.source.name}</TableCell>
+                    <TableCell>{requirement.destination.name}</TableCell>
                     <TableCell colSpan={2} />
                     <TableCell sx={{ py: 0 }}>
                       <ColumnRequirements edges={requirement.tests} />

@@ -225,7 +225,7 @@ class Connection:
 class Column(Node):
     @gql.django.field
     def requirements_edges(self) -> List[Edge]:
-        return EdgeModel.objects.filter(destination=self).filter(metadata__grai__edge_type="ColumnToColumn")
+        return EdgeModel.objects.filter(source=self).filter(metadata__grai__edge_type="ColumnToColumn")
 
 
 @gql.django.type(NodeModel, order=NodeOrder, filters=NodeFilter, pagination=True)

@@ -7,7 +7,7 @@ test("renders", async () => {
     {
       type: "unique",
       text: "Unique",
-      source: { name: "s1", display_name: "s1" },
+      destination: { name: "s1", display_name: "s1" },
       passed: true,
       preserved: true,
     },
@@ -25,7 +25,7 @@ test("renders failed", async () => {
     {
       type: "unique",
       text: "Unique",
-      source: { name: "s1", display_name: "s1" },
+      destination: { name: "s1", display_name: "s1" },
       passed: false,
       preserved: true,
     },
@@ -39,7 +39,7 @@ test("renders not preserved", async () => {
     {
       type: "unique",
       text: "Unique",
-      source: { name: "s1", display_name: "s1" },
+      destination: { name: "s1", display_name: "s1" },
       passed: false,
       preserved: false,
     },
