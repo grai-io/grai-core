@@ -17,7 +17,7 @@ import { Connector } from "../connectors/ConnectorCard"
 
 export const CREATE_RUN = gql`
   mutation ValidateConnection($connectionId: ID!) {
-    runConnection(connectionId: $connectionId, action: "validate") {
+    runConnection(connectionId: $connectionId, action: VALIDATE) {
       id
     }
   }

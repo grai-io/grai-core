@@ -31,6 +31,31 @@ from workspaces.models import Workspace as WorkspaceModel
 from workspaces.models import WorkspaceAPIKey as WorkspaceAPIKeyModel
 
 
+@strawberry.input
+class WorkspaceRunFilter:
+    owner: Optional[str] = strawberry.UNSET
+    repo: Optional[str] = strawberry.UNSET
+    branch: Optional[str] = strawberry.UNSET
+    action: Optional["RunAction"] = strawberry.UNSET
+
+
+def get_runs(q_filter: Q, filters: Optional[WorkspaceRunFilter], order: Optional["RunOrder"]):
+    if filters:
+        if filters.owner is not strawberry.UNSET:
+            q_filter &= Q(commit__repository__owner=filters.owner, commit__repository__repo=filters.repo)
+
+        if filters.branch is not strawberry.UNSET:
+            q_filter &= Q(commit__branch__reference=filters.branch)
+
+        if filters.action is not strawberry.UNSET:
+            q_filter &= Q(action=filters.action.value)
+
+    if order:
+        return RunModel.objects.order_by(*generate_order_args(order)).filter(q_filter)
+
+    return RunModel.objects.filter(q_filter)
+
+
 @gql.django.filters.filter(UserModel, lookups=True)
 class UserFilter:
     username: auto
@@ -217,27 +242,12 @@ class Connection:
     @gql.django.field
     def runs(
         self,
-        owner: Optional[str] = strawberry.UNSET,
-        repo: Optional[str] = strawberry.UNSET,
-        branch: Optional[str] = strawberry.UNSET,
-        action: Optional[str] = strawberry.UNSET,
+        filters: Optional["WorkspaceRunFilter"] = strawberry.UNSET,
         order: Optional[RunOrder] = strawberry.UNSET,
     ) -> List["Run"]:
         q_filter = Q(connection=self)
 
-        if owner:
-            q_filter &= Q(commit__repository__owner=owner, commit__repository__repo=repo)
-
-        if branch:
-            q_filter &= Q(commit__branch__reference=branch)
-
-        if action:
-            q_filter &= Q(action=action)
-
-        if order:
-            return RunModel.objects.order_by(*generate_order_args(order)).filter(q_filter)
-
-        return RunModel.objects.filter(q_filter)
+        return get_runs(q_filter, filters, order)
 
     # run: Run = strawberry.django.field
     @gql.django.field
@@ -402,11 +412,10 @@ class Organisation:
 
 
 @strawberry.input
-class WorkspaceRunFilter:
+class WorkspaceRepositoryFilter:
+    type: Optional[str] = strawberry.UNSET
     owner: Optional[str] = strawberry.UNSET
     repo: Optional[str] = strawberry.UNSET
-    branch: Optional[str] = strawberry.UNSET
-    action: Optional["RunAction"] = strawberry.UNSET
 
 
 @gql.django.filters.filter(WorkspaceModel)
@@ -467,20 +476,7 @@ class Workspace:
     ) -> List["Run"]:
         q_filter = Q(workspace=self)
 
-        if filters:
-            if filters.owner is not strawberry.UNSET:
-                q_filter &= Q(commit__repository__owner=filters.owner, commit__repository__repo=filters.repo)
-
-            if filters.branch is not strawberry.UNSET:
-                q_filter &= Q(commit__branch__reference=filters.branch)
-
-            if filters.action is not strawberry.UNSET:
-                q_filter &= Q(action=filters.action.value)
-
-        if order:
-            return RunModel.objects.order_by(*generate_order_args(order)).filter(q_filter)
-
-        return RunModel.objects.filter(q_filter)
+        return get_runs(q_filter, filters, order)
 
     @gql.django.field
     def run(self, id: strawberry.ID) -> "Run":
@@ -533,20 +529,19 @@ class Workspace:
     @gql.django.field
     def repositories(
         self,
-        type: Optional[str] = strawberry.UNSET,
-        owner: Optional[str] = strawberry.UNSET,
-        repo: Optional[str] = strawberry.UNSET,
+        filters: Optional[WorkspaceRepositoryFilter] = strawberry.UNSET,
     ) -> List["Repository"]:
         q_filter = Q(workspace=self)
 
-        if type:
-            q_filter &= Q(type=type)
+        if filters is not strawberry.UNSET:
+            if filters.type is not strawberry.UNSET:
+                q_filter &= Q(type=filters.type)
 
-        if owner:
-            q_filter &= Q(owner=owner)
+            if filters.owner is not strawberry.UNSET:
+                q_filter &= Q(owner=filters.owner)
 
-        if repo:
-            q_filter &= Q(repo=repo)
+            if filters.repo is not strawberry.UNSET:
+                q_filter &= Q(repo=filters.repo)
 
         return RepositoryModel.objects.filter(q_filter)
 
@@ -800,27 +795,12 @@ class Commit:
     @gql.django.field
     def runs(
         self,
-        owner: Optional[str] = strawberry.UNSET,
-        repo: Optional[str] = strawberry.UNSET,
-        branch: Optional[str] = strawberry.UNSET,
-        action: Optional[str] = strawberry.UNSET,
+        filters: Optional["WorkspaceRunFilter"] = strawberry.UNSET,
         order: Optional[RunOrder] = strawberry.UNSET,
     ) -> List["Run"]:
         q_filter = Q(commit=self)
 
-        if owner:
-            q_filter &= Q(commit__repository__owner=owner, commit__repository__repo=repo)
-
-        if branch:
-            q_filter &= Q(commit__branch__reference=branch)
-
-        if action:
-            q_filter &= Q(action=action)
-
-        if order:
-            return RunModel.objects.order_by(*generate_order_args(order)).filter(q_filter)
-
-        return RunModel.objects.filter(q_filter)
+        return get_runs(q_filter, filters, order)
 
     @gql.django.field
     def last_run(self) -> Optional["Run"]:

@@ -42,10 +42,7 @@ export const GET_REPORTS = gql`
         name
       }
       runs(
-        owner: $owner
-        repo: $repo
-        branch: $branch
-        action: "tests"
+        filters: { owner: $owner, repo: $repo, branch: $branch, action: TESTS }
         order: { created_at: DESC }
       ) {
         id

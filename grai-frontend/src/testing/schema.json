@@ -313,7 +313,7 @@
                   "name": "ID",
                   "ofType": null
                 },
-                "defaultValue": null
+                "defaultValue": "null"
               },
               {
                 "name": "reference",
@@ -374,7 +374,7 @@
                   "name": "ID",
                   "ofType": null
                 },
-                "defaultValue": null
+                "defaultValue": "null"
               },
               {
                 "name": "reference",
@@ -664,7 +664,7 @@
                   "name": "ID",
                   "ofType": null
                 },
-                "defaultValue": null
+                "defaultValue": "null"
               },
               {
                 "name": "reference",
@@ -718,31 +718,11 @@
             "description": null,
             "args": [
               {
-                "name": "type",
+                "name": "filters",
                 "description": null,
                 "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                },
-                "defaultValue": null
-              },
-              {
-                "name": "owner",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                },
-                "defaultValue": null
-              },
-              {
-                "name": "repo",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
+                  "kind": "INPUT_OBJECT",
+                  "name": "WorkspaceRepositoryFilter",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -780,7 +760,7 @@
                   "name": "ID",
                   "ofType": null
                 },
-                "defaultValue": null
+                "defaultValue": "null"
               },
               {
                 "name": "type",
@@ -861,41 +841,11 @@
             "description": null,
             "args": [
               {
-                "name": "owner",
+                "name": "filters",
                 "description": null,
                 "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                },
-                "defaultValue": null
-              },
-              {
-                "name": "repo",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                },
-                "defaultValue": null
-              },
-              {
-                "name": "branch",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                },
-                "defaultValue": null
-              },
-              {
-                "name": "action",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
+                  "kind": "INPUT_OBJECT",
+                  "name": "WorkspaceRunFilter",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -2233,7 +2183,7 @@
                   "name": "ID",
                   "ofType": null
                 },
-                "defaultValue": null
+                "defaultValue": "null"
               },
               {
                 "name": "reference",
@@ -2270,7 +2220,7 @@
                   "name": "ID",
                   "ofType": null
                 },
-                "defaultValue": null
+                "defaultValue": "null"
               },
               {
                 "name": "reference",
@@ -2307,7 +2257,7 @@
                   "name": "ID",
                   "ofType": null
                 },
-                "defaultValue": null
+                "defaultValue": "null"
               },
               {
                 "name": "reference",
@@ -2599,41 +2549,11 @@
             "description": null,
             "args": [
               {
-                "name": "owner",
+                "name": "filters",
                 "description": null,
                 "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                },
-                "defaultValue": null
-              },
-              {
-                "name": "repo",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                },
-                "defaultValue": null
-              },
-              {
-                "name": "branch",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                },
-                "defaultValue": null
-              },
-              {
-                "name": "action",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
+                  "kind": "INPUT_OBJECT",
+                  "name": "WorkspaceRunFilter",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -2733,6 +2653,22 @@
               "ofType": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "action",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "RunAction",
                 "ofType": null
               }
             },
@@ -3089,41 +3025,11 @@
             "description": null,
             "args": [
               {
-                "name": "owner",
+                "name": "filters",
                 "description": null,
                 "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                },
-                "defaultValue": null
-              },
-              {
-                "name": "repo",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                },
-                "defaultValue": null
-              },
-              {
-                "name": "branch",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                },
-                "defaultValue": null
-              },
-              {
-                "name": "action",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
+                  "kind": "INPUT_OBJECT",
+                  "name": "WorkspaceRunFilter",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -3288,6 +3194,86 @@
         "inputFields": null,
         "interfaces": null,
         "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "WorkspaceRunFilter",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "owner",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "repo",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "branch",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "action",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "RunAction",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "RunAction",
+        "description": null,
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "TESTS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "UPDATE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "VALIDATE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
         "possibleTypes": null
       },
       {
@@ -4388,6 +4374,47 @@
         ],
         "inputFields": null,
         "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "WorkspaceRepositoryFilter",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "type",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "owner",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "repo",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
         "enumValues": null,
         "possibleTypes": null
       },
@@ -6159,12 +6186,12 @@
                   "kind": "NON_NULL",
                   "name": null,
                   "ofType": {
-                    "kind": "SCALAR",
-                    "name": "String",
+                    "kind": "ENUM",
+                    "name": "RunAction",
                     "ofType": null
                   }
                 },
-                "defaultValue": "\"update\""
+                "defaultValue": "UPDATE"
               }
             ],
             "type": {

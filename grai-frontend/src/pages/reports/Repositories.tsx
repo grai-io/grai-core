@@ -21,7 +21,7 @@ export const GET_REPOSITORIES = gql`
   ) {
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
-      repositories(type: $type, owner: $owner) {
+      repositories(filters: { type: $type, owner: $owner }) {
         id
         type
         owner
