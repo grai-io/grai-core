@@ -66,6 +66,9 @@ export const GET_CONNECTIONS = gql`
             metadata
           }
         }
+        meta {
+          total
+        }
       }
     }
   }
@@ -100,6 +103,7 @@ const Connections: React.FC = () => {
           connections={data?.workspace.connections.data ?? []}
           workspaceId={data?.workspace.id}
           loading={loading}
+          total={data?.workspace.connections.meta.total ?? 0}
         />
       </Box>
     </PageLayout>

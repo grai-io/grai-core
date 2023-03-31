@@ -2,6 +2,7 @@ import React from "react"
 import {
   Table,
   TableBody,
+  TableFooter,
   TableHead,
   TableRow,
   Typography,
@@ -12,6 +13,7 @@ import RunStatus from "components/runs/RunStatus"
 import TableCell from "components/tables/TableCell"
 import { Connection as BaseConnection } from "./ConnectionRun"
 import ConnectionsMenu from "./ConnectionsMenu"
+import TablePagination from "components/table/TablePagination"
 
 interface Connector {
   id: string
@@ -29,12 +31,14 @@ type ConnectionsTableProps = {
   connections: Connection[]
   workspaceId: string
   loading?: boolean
+  total: number
 }
 
 const ConnectionsTable: React.FC<ConnectionsTableProps> = ({
   connections,
   workspaceId,
   loading,
+  total,
 }) => {
   const navigate = useNavigate()
 
@@ -95,6 +99,14 @@ const ConnectionsTable: React.FC<ConnectionsTableProps> = ({
           </TableRow>
         )}
       </TableBody>
+      <TableFooter>
+        <TablePagination
+          count={total}
+          rowsPerPage={1000}
+          page={0}
+          type="connections"
+        />
+      </TableFooter>
     </Table>
   )
 }

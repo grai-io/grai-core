@@ -79,9 +79,15 @@ export interface GetConnections_workspace_connections_data {
   last_successful_run: GetConnections_workspace_connections_data_last_successful_run | null;
 }
 
+export interface GetConnections_workspace_connections_meta {
+  __typename: "PaginationResult";
+  total: number;
+}
+
 export interface GetConnections_workspace_connections {
   __typename: "ConnectionPagination";
   data: GetConnections_workspace_connections_data[];
+  meta: GetConnections_workspace_connections_meta;
 }
 
 export interface GetConnections_workspace {

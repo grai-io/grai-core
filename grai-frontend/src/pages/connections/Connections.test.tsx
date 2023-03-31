@@ -67,6 +67,9 @@ const connectionMock = {
               last_successful_run: null,
             },
           ],
+          meta: {
+            total: 1,
+          },
         },
       },
     },
