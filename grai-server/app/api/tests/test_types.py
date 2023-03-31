@@ -696,7 +696,7 @@ async def test_workspace_runs_filter_by_repo(test_context, test_commit):
         query Workspace($workspaceId: ID!, $owner: String, $repo: String) {
             workspace(id: $workspaceId) {
                 id
-                runs(owner: $owner, repo: $repo) {
+                runs(filters:{owner: $owner, repo: $repo}) {
                     id
                 }
             }
@@ -736,7 +736,7 @@ async def test_workspace_runs_filter_by_branch(test_context, test_branch, test_c
         query Workspace($workspaceId: ID!, $branch: String) {
             workspace(id: $workspaceId) {
                 id
-                runs(branch: $branch) {
+                runs(filters: {branch: $branch}) {
                     id
                 }
             }
@@ -773,10 +773,10 @@ async def test_workspace_runs_filter_by_action(test_context):
     await Run.objects.acreate(workspace=workspace, connection=connection, status="success", action=Run.VALIDATE)
 
     query = """
-        query Workspace($workspaceId: ID!, $action: String) {
+        query Workspace($workspaceId: ID!, $action: RunAction!) {
             workspace(id: $workspaceId) {
                 id
-                runs(action: $action) {
+                runs(filters:{action: $action}) {
                     id
                 }
             }
@@ -787,7 +787,7 @@ async def test_workspace_runs_filter_by_action(test_context):
         query,
         variable_values={
             "workspaceId": str(workspace.id),
-            "action": Run.TESTS,
+            "action": "TESTS",
         },
         context_value=context,
     )

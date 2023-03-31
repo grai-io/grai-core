@@ -1,5 +1,6 @@
 import datetime
 import time
+from enum import Enum
 from typing import List, Optional
 
 import strawberry
@@ -400,6 +401,14 @@ class Organisation:
     name: auto
 
 
+@strawberry.input
+class WorkspaceRunFilter:
+    owner: Optional[str] = strawberry.UNSET
+    repo: Optional[str] = strawberry.UNSET
+    branch: Optional[str] = strawberry.UNSET
+    action: Optional["RunAction"] = strawberry.UNSET
+
+
 @gql.django.filters.filter(WorkspaceModel)
 class WorkspaceFilter:
     id: auto
@@ -453,22 +462,20 @@ class Workspace:
     @gql.django.field
     def runs(
         self,
-        owner: Optional[str] = strawberry.UNSET,
-        repo: Optional[str] = strawberry.UNSET,
-        branch: Optional[str] = strawberry.UNSET,
-        action: Optional[str] = strawberry.UNSET,
+        filters: Optional[WorkspaceRunFilter] = strawberry.UNSET,
         order: Optional[RunOrder] = strawberry.UNSET,
     ) -> List["Run"]:
         q_filter = Q(workspace=self)
 
-        if owner:
-            q_filter &= Q(commit__repository__owner=owner, commit__repository__repo=repo)
+        if filters:
+            if filters.owner is not strawberry.UNSET:
+                q_filter &= Q(commit__repository__owner=filters.owner, commit__repository__repo=filters.repo)
 
-        if branch:
-            q_filter &= Q(commit__branch__reference=branch)
+            if filters.branch is not strawberry.UNSET:
+                q_filter &= Q(commit__branch__reference=filters.branch)
 
-        if action:
-            q_filter &= Q(action=action)
+            if filters.action is not strawberry.UNSET:
+                q_filter &= Q(action=filters.action.value)
 
         if order:
             return RunModel.objects.order_by(*generate_order_args(order)).filter(q_filter)
@@ -546,7 +553,7 @@ class Workspace:
     @gql.django.field
     def repository(
         self,
-        id: Optional[strawberry.ID] = strawberry.UNSET,
+        id: Optional[strawberry.ID] = None,
         type: Optional[str] = strawberry.UNSET,
         owner: Optional[str] = strawberry.UNSET,
         repo: Optional[str] = strawberry.UNSET,
@@ -563,9 +570,7 @@ class Workspace:
         return BranchModel.objects.filter(workspace=self)
 
     @gql.django.field
-    def branch(
-        self, id: Optional[strawberry.ID] = strawberry.UNSET, reference: Optional[str] = strawberry.UNSET
-    ) -> "Branch":
+    def branch(self, id: Optional[strawberry.ID] = None, reference: Optional[str] = strawberry.UNSET) -> "Branch":
         return (
             BranchModel.objects.get(id=id)
             if id is not None
@@ -579,7 +584,7 @@ class Workspace:
 
     @gql.django.field
     def pull_request(
-        self, id: Optional[strawberry.ID] = strawberry.UNSET, reference: Optional[str] = strawberry.UNSET
+        self, id: Optional[strawberry.ID] = None, reference: Optional[str] = strawberry.UNSET
     ) -> "PullRequest":
         return (
             PullRequestModel.objects.get(id=id)
@@ -593,9 +598,7 @@ class Workspace:
         return CommitModel.objects.filter(workspace=self)
 
     @gql.django.field
-    def commit(
-        self, id: Optional[strawberry.ID] = strawberry.UNSET, reference: Optional[str] = strawberry.UNSET
-    ) -> "Commit":
+    def commit(self, id: Optional[strawberry.ID] = None, reference: Optional[str] = strawberry.UNSET) -> "Commit":
         return (
             CommitModel.objects.get(id=id)
             if id is not None
@@ -688,11 +691,19 @@ class BasicResult:
     success: bool
 
 
+@strawberry.enum
+class RunAction(Enum):
+    TESTS = RunModel.TESTS
+    UPDATE = RunModel.UPDATE
+    VALIDATE = RunModel.VALIDATE
+
+
 @gql.django.type(RunModel, order=RunOrder, pagination=True)
 class Run:
     id: auto
     connection: Connection
     status: auto
+    action: RunAction
     metadata: JSON
     created_at: auto
     updated_at: auto
@@ -715,7 +726,7 @@ class Repository:
 
     @gql.django.field
     def pull_request(
-        self, id: Optional[strawberry.ID] = strawberry.UNSET, reference: Optional[str] = strawberry.UNSET
+        self, id: Optional[strawberry.ID] = None, reference: Optional[str] = strawberry.UNSET
     ) -> "PullRequest":
         return (
             PullRequestModel.objects.get(id=id)
@@ -727,9 +738,7 @@ class Repository:
     branches: List["Branch"]
 
     @gql.django.field
-    def branch(
-        self, id: Optional[strawberry.ID] = strawberry.UNSET, reference: Optional[str] = strawberry.UNSET
-    ) -> "Branch":
+    def branch(self, id: Optional[strawberry.ID] = None, reference: Optional[str] = strawberry.UNSET) -> "Branch":
         return (
             BranchModel.objects.get(id=id)
             if id is not None
@@ -740,9 +749,7 @@ class Repository:
     commits: List["Commit"]
 
     @gql.django.field
-    def commit(
-        self, id: Optional[strawberry.ID] = strawberry.UNSET, reference: Optional[str] = strawberry.UNSET
-    ) -> "Commit":
+    def commit(self, id: Optional[strawberry.ID] = None, reference: Optional[str] = strawberry.UNSET) -> "Commit":
         return (
             CommitModel.objects.get(id=id)
             if id is not None
