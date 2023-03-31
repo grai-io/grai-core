@@ -8,6 +8,7 @@ from django.conf import settings
 from django.db.models import Prefetch, Q
 from strawberry.scalars import JSON
 from strawberry_django.filters import FilterLookup
+from strawberry_django.ordering import generate_order_args
 from strawberry_django.pagination import OffsetPaginationInput
 from strawberry_django_plus import gql
 from strawberry_django_plus.gql import auto
@@ -169,6 +170,12 @@ class Connector:
     coming_soon: auto
 
 
+@strawberry_django.ordering.order(RunModel)
+class RunOrder:
+    id: auto
+    created_at: auto
+
+
 @gql.django.filters.filter(ConnectionModel, lookups=True)
 class ConnectionFilter:
     id: auto
@@ -205,7 +212,31 @@ class Connection:
     updated_at: auto
     created_by: User
 
-    runs: List["Run"]
+    # Runs
+    @gql.django.field
+    def runs(
+        self,
+        owner: Optional[str] = None,
+        repo: Optional[str] = None,
+        branch: Optional[str] = None,
+        action: Optional[str] = None,
+        order: Optional[RunOrder] = None,
+    ) -> List["Run"]:
+        q_filter = Q(connection=self)
+
+        if owner:
+            q_filter &= Q(commit__repository__owner=owner, commit__repository__repo=repo)
+
+        if branch:
+            q_filter &= Q(commit__branch__reference=branch)
+
+        if action:
+            q_filter &= Q(action=action)
+
+        if order:
+            return RunModel.objects.order_by(*generate_order_args(order)).filter(q_filter)
+
+        return RunModel.objects.filter(q_filter)
 
     # run: Run = strawberry.django.field
     @gql.django.field
@@ -426,6 +457,7 @@ class Workspace:
         repo: Optional[str] = None,
         branch: Optional[str] = None,
         action: Optional[str] = None,
+        order: Optional[RunOrder] = None,
     ) -> List["Run"]:
         q_filter = Q(workspace=self)
 
@@ -438,7 +470,10 @@ class Workspace:
         if action:
             q_filter &= Q(action=action)
 
-        return RunModel.objects.order_by("-created_at").filter(q_filter)
+        if order:
+            return RunModel.objects.order_by(*generate_order_args(order)).filter(q_filter)
+
+        return RunModel.objects.filter(q_filter)
 
     @gql.django.field
     def run(self, id: strawberry.ID) -> "Run":
@@ -644,12 +679,6 @@ class BasicResult:
     success: bool
 
 
-@strawberry_django.ordering.order(RunModel)
-class RunOrder:
-    id: auto
-    created_at: auto
-
-
 @gql.django.type(RunModel, order=RunOrder, pagination=True)
 class Run:
     id: auto
@@ -745,7 +774,31 @@ class Commit:
     pull_request: Optional["PullRequest"]
     created_at: auto
 
-    runs: List[Run]
+    # Runs
+    @gql.django.field
+    def runs(
+        self,
+        owner: Optional[str] = None,
+        repo: Optional[str] = None,
+        branch: Optional[str] = None,
+        action: Optional[str] = None,
+        order: Optional[RunOrder] = None,
+    ) -> List["Run"]:
+        q_filter = Q(commit=self)
+
+        if owner:
+            q_filter &= Q(commit__repository__owner=owner, commit__repository__repo=repo)
+
+        if branch:
+            q_filter &= Q(commit__branch__reference=branch)
+
+        if action:
+            q_filter &= Q(action=action)
+
+        if order:
+            return RunModel.objects.order_by(*generate_order_args(order)).filter(q_filter)
+
+        return RunModel.objects.filter(q_filter)
 
     @gql.django.field
     def last_run(self) -> Optional["Run"]:

@@ -62,7 +62,7 @@ export const GET_CONNECTION = gql`
             last_name
           }
         }
-        runs(order: { created_at: DESC }) {
+        runs(order: { created_at: DESC }, action: "update") {
           id
           status
           created_at
