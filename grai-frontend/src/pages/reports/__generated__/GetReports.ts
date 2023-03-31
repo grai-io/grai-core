@@ -30,12 +30,6 @@ export interface GetReports_workspace_repositories {
   pull_requests: GetReports_workspace_repositories_pull_requests[];
 }
 
-export interface GetReports_workspace_connections {
-  __typename: "Connection";
-  id: any;
-  name: string;
-}
-
 export interface GetReports_workspace_runs_data_connection_connector {
   __typename: "Connector";
   id: any;
@@ -111,7 +105,6 @@ export interface GetReports_workspace {
   __typename: "Workspace";
   id: any;
   repositories: GetReports_workspace_repositories[];
-  connections: GetReports_workspace_connections[];
   runs: GetReports_workspace_runs;
 }
 
