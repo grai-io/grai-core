@@ -1,7 +1,7 @@
 import React from "react"
 import { Table, TableFooter } from "@mui/material"
 import userEvent from "@testing-library/user-event"
-import { render, screen } from "testing"
+import { act, render, screen } from "testing"
 import TablePagination from "./TablePagination"
 
 test("renders", async () => {
@@ -50,7 +50,9 @@ test("next", async () => {
     </Table>
   )
 
-  await user.click(screen.getByRole("button", { name: /next/i }))
+  await act(
+    async () => await user.click(screen.getByRole("button", { name: /next/i }))
+  )
 })
 
 test("previous", async () => {
@@ -69,5 +71,8 @@ test("previous", async () => {
     </Table>
   )
 
-  await user.click(screen.getByRole("button", { name: /previous/i }))
+  await act(
+    async () =>
+      await user.click(screen.getByRole("button", { name: /previous/i }))
+  )
 })

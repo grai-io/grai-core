@@ -19,9 +19,18 @@ interface TablePaginationActionsProps {
   ) => void
 }
 
-const TablePaginationActions = (props: TablePaginationActionsProps) => {
-  const { count, page, rowsPerPage, onPageChange } = props
+interface TablePaginationActionsExtendedProps
+  extends TablePaginationActionsProps {
+  disabled: boolean
+}
 
+const TablePaginationActions: React.FC<TablePaginationActionsExtendedProps> = ({
+  count,
+  page,
+  rowsPerPage,
+  onPageChange,
+  disabled,
+}) => {
   const handleBackButtonClick = (event: React.MouseEvent<HTMLButtonElement>) =>
     onPageChange(event, page - 1)
 
@@ -32,14 +41,14 @@ const TablePaginationActions = (props: TablePaginationActionsProps) => {
     <Stack direction="row" spacing={1} sx={{ mr: 1 }}>
       <Button
         onClick={handleBackButtonClick}
-        disabled={!onPageChange ?? page === 0}
+        disabled={disabled || page === 0}
         variant="outlined"
       >
         Previous
       </Button>
       <Button
         onClick={handleNextButtonClick}
-        disabled={!onPageChange ?? page >= Math.ceil(count / rowsPerPage) - 1}
+        disabled={disabled || page >= Math.ceil(count / rowsPerPage) - 1}
         variant="outlined"
       >
         Next
@@ -80,8 +89,11 @@ const TablePagination: React.FC<TablePaginationProps> = ({
           page={page}
           labelDisplayedRows={() => null}
           onPageChange={onPageChange ?? (() => {})}
+          /* istanbul ignore next */
           onRowsPerPageChange={() => {}}
-          ActionsComponent={TablePaginationActions}
+          ActionsComponent={(props: TablePaginationActionsProps) => (
+            <TablePaginationActions {...props} disabled={!onPageChange} />
+          )}
         />
       </Box>
     </TableCell>
