@@ -69,7 +69,7 @@ test("not found", async () => {
           workspace: {
             id: "1",
             repository: null,
-            tables: [sourceTable, destinationTable, spareTable],
+            tables: { data: [sourceTable, destinationTable, spareTable] },
             other_edges: [
               {
                 id: "1",

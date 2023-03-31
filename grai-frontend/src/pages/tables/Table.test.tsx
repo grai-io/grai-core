@@ -111,7 +111,7 @@ test("not found", async () => {
           workspace: {
             id: "1",
             table: null,
-            tables: [],
+            tables: { data: [] },
             other_edges: [],
           },
         },
@@ -145,25 +145,27 @@ test("lineage", async () => {
         data: {
           workspace: {
             id: "1",
-            tables: [
-              {
-                id: "2",
-                namespace: "default",
-                name: "Table2",
-                display_name: "Table2",
-                data_source: "test",
-                metadata: {},
-                columns: [],
-                source_tables: [
-                  {
-                    id: "1",
-                    name: "Table1",
-                    display_name: "Table1",
-                  },
-                ],
-                destination_tables: [],
-              },
-            ],
+            tables: {
+              data: [
+                {
+                  id: "2",
+                  namespace: "default",
+                  name: "Table2",
+                  display_name: "Table2",
+                  data_source: "test",
+                  metadata: {},
+                  columns: [],
+                  source_tables: [
+                    {
+                      id: "1",
+                      name: "Table1",
+                      display_name: "Table1",
+                    },
+                  ],
+                  destination_tables: [],
+                },
+              ],
+            },
             other_edges: [],
           },
         },

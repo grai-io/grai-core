@@ -1,34 +1,61 @@
 import datetime
 import time
 from enum import Enum
-from typing import List, Optional
+from typing import Callable, Generic, List, Optional, TypeVar
+from xml.dom import NodeFilter
 
 import strawberry
 import strawberry_django
 from django.conf import settings
 from django.db.models import Prefetch, Q
+from django.db.models.query import QuerySet
 from strawberry.scalars import JSON
 from strawberry_django.filters import FilterLookup
-from strawberry_django.ordering import generate_order_args
 from strawberry_django.pagination import OffsetPaginationInput
 from strawberry_django_plus import gql
 from strawberry_django_plus.gql import auto
 
 from api.search import Search
 from connections.models import Connection as ConnectionModel
-from connections.models import Connector as ConnectorModel
 from connections.models import Run as RunModel
+from connections.types import Connector, ConnectorFilter
 from installations.models import Branch as BranchModel
 from installations.models import Commit as CommitModel
 from installations.models import PullRequest as PullRequestModel
 from installations.models import Repository as RepositoryModel
 from lineage.models import Edge as EdgeModel
 from lineage.models import Node as NodeModel
-from users.models import User as UserModel
+from lineage.types import Edge, Node, NodeFilter, NodeOrder
+from users.types import User, UserFilter
 from workspaces.models import Membership as MembershipModel
-from workspaces.models import Organisation as OrganisationModel
 from workspaces.models import Workspace as WorkspaceModel
 from workspaces.models import WorkspaceAPIKey as WorkspaceAPIKeyModel
+from workspaces.types import Organisation
+
+from .order import apply_order
+from .pagination import Pagination, PaginationResult, apply_pagination
+
+
+@strawberry.enum
+class RunAction(Enum):
+    TESTS = RunModel.TESTS
+    UPDATE = RunModel.UPDATE
+    VALIDATE = RunModel.VALIDATE
+
+
+@gql.django.type(RunModel, order="RunOrder", pagination=True)
+class Run:
+    id: auto
+    connection: "Connection"
+    status: auto
+    action: RunAction
+    metadata: JSON
+    created_at: auto
+    updated_at: auto
+    started_at: Optional[datetime.datetime]
+    finished_at: Optional[datetime.datetime]
+    user: Optional[User]
+    commit: Optional["Commit"]
 
 
 @strawberry.input
@@ -39,161 +66,35 @@ class WorkspaceRunFilter:
     action: Optional["RunAction"] = strawberry.UNSET
 
 
-def get_runs(q_filter: Q, filters: Optional[WorkspaceRunFilter], order: Optional["RunOrder"]):
+def apply_run_filters(queryset: QuerySet, filters: Optional[WorkspaceRunFilter] = strawberry.UNSET):
     if filters:
-        if filters.owner is not strawberry.UNSET:
+        q_filter = Q()
+
+        if filters.owner:
             q_filter &= Q(commit__repository__owner=filters.owner, commit__repository__repo=filters.repo)
 
-        if filters.branch is not strawberry.UNSET:
+        if filters.branch:
             q_filter &= Q(commit__branch__reference=filters.branch)
 
-        if filters.action is not strawberry.UNSET:
+        if filters.action:
             q_filter &= Q(action=filters.action.value)
 
-    if order:
-        return RunModel.objects.order_by(*generate_order_args(order)).filter(q_filter)
+        queryset = queryset.filter(q_filter)
 
-    return RunModel.objects.filter(q_filter)
-
-
-@gql.django.filters.filter(UserModel, lookups=True)
-class UserFilter:
-    username: auto
-    first_name: Optional[str]
-    last_name: Optional[str]
-    created_at: auto
-    updated_at: auto
+    return queryset
 
 
-@strawberry_django.ordering.order(UserModel)
-class UserOrder:
-    username: auto
-    first_name: auto
-    last_name: auto
-    created_at: auto
-    updated_at: auto
+def apply_run_arguments(
+    queryset: QuerySet,
+    filters: Optional[WorkspaceRunFilter] = strawberry.UNSET,
+    order: Optional["RunOrder"] = strawberry.UNSET,
+    pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+) -> QuerySet:
+    queryset = apply_run_filters(queryset, filters)
+    queryset = apply_order(queryset, order)
+    queryset = apply_pagination(queryset, pagination)
 
-
-@gql.django.type(UserModel, order=UserOrder, filters=UserFilter)
-class User:
-    id: auto
-    username: auto
-    first_name: auto
-    last_name: auto
-
-    @gql.field
-    def full_name(self) -> str:
-        return f"{self.first_name} {self.last_name}"
-
-    created_at: auto
-    updated_at: auto
-
-
-@gql.django.filters.filter(NodeModel, lookups=True)
-class NodeFilter:
-    id: auto
-    namespace: auto
-    name: auto
-    display_name: auto
-    data_source: auto
-    is_active: auto
-    created_at: auto
-    updated_at: auto
-    source_edges: "EdgeFilter"
-    destination_edges: "EdgeFilter"
-
-
-@strawberry_django.ordering.order(NodeModel)
-class NodeOrder:
-    id: auto
-    namespace: auto
-    name: auto
-    display_name: auto
-    data_source: auto
-    is_active: auto
-    created_at: auto
-    updated_at: auto
-
-
-@gql.django.type(NodeModel, order=NodeOrder, filters=NodeFilter, pagination=True, only=["id"])
-class Node:
-    id: auto
-    namespace: auto
-    name: auto
-    display_name: auto
-    data_source: auto
-    metadata: JSON
-    is_active: auto
-    source_edges: List["Edge"]
-    destination_edges: List["Edge"]
-
-
-@gql.django.filters.filter(EdgeModel, lookups=True)
-class EdgeFilter:
-    id: auto
-    namespace: auto
-    name: auto
-    display_name: auto
-    data_source: auto
-    is_active: auto
-    source: NodeFilter
-    destination: NodeFilter
-    created_at: auto
-    updated_at: auto
-
-
-@strawberry_django.ordering.order(EdgeModel)
-class EdgeOrder:
-    id: auto
-    namespace: auto
-    name: auto
-    display_name: auto
-    data_source: auto
-    is_active: auto
-    created_at: auto
-    updated_at: auto
-
-
-@gql.django.type(EdgeModel, order=EdgeOrder, filters=EdgeFilter, pagination=True)
-class Edge:
-    id: auto
-    namespace: auto
-    name: auto
-    display_name: auto
-    data_source: auto
-    source: Node = gql.django.field()
-    destination: Node = gql.django.field()
-    metadata: JSON
-    is_active: auto
-    created_at: auto
-    updated_at: auto
-
-
-@gql.django.filters.filter(ConnectorModel, lookups=True)
-class ConnectorFilter:
-    id: auto
-    name: auto
-    is_active: auto
-
-
-@strawberry_django.ordering.order(ConnectorModel)
-class ConnectorOrder:
-    id: auto
-    name: auto
-    is_active: auto
-    category: auto
-    coming_soon: auto
-
-
-@gql.django.type(ConnectorModel, order=ConnectorOrder, filters=ConnectorFilter, pagination=True)
-class Connector:
-    id: auto
-    name: auto
-    metadata: JSON
-    is_active: auto
-    icon: Optional[str]
-    category: Optional[str]
-    coming_soon: auto
+    return queryset
 
 
 @strawberry_django.ordering.order(RunModel)
@@ -244,10 +145,11 @@ class Connection:
         self,
         filters: Optional["WorkspaceRunFilter"] = strawberry.UNSET,
         order: Optional[RunOrder] = strawberry.UNSET,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
     ) -> List["Run"]:
-        q_filter = Q(connection=self)
+        queryset = RunModel.objects.filter(connection=self)
 
-        return get_runs(q_filter, filters, order)
+        return apply_run_arguments(queryset, filters=filters, order=order, pagination=pagination)
 
     # run: Run = strawberry.django.field
     @gql.django.field
@@ -405,12 +307,6 @@ class Table(Node):
         return list(set(tables))
 
 
-@gql.django.type(OrganisationModel)
-class Organisation:
-    id: auto
-    name: auto
-
-
 @strawberry.input
 class WorkspaceRepositoryFilter:
     type: Optional[str] = strawberry.UNSET
@@ -435,6 +331,7 @@ class WorkspaceOrder:
 class Workspace:
     id: auto
     name: auto
+
     created_at: auto
     updated_at: auto
 
@@ -467,16 +364,19 @@ class Workspace:
     def connection(self, id: strawberry.ID) -> Connection:
         return ConnectionModel.objects.get(id=id)
 
-    # Runs
-    @gql.django.field
+    @strawberry.field
     def runs(
         self,
         filters: Optional[WorkspaceRunFilter] = strawberry.UNSET,
         order: Optional[RunOrder] = strawberry.UNSET,
-    ) -> List["Run"]:
-        q_filter = Q(workspace=self)
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination[Run]:
+        queryset = RunModel.objects.filter(workspace=self)
 
-        return get_runs(q_filter, filters, order)
+        def apply_filters(queryset):
+            return apply_run_filters(queryset, filters)
+
+        return Pagination[Run](queryset=queryset, apply_filters=apply_filters, order=order, pagination=pagination)
 
     @gql.django.field
     def run(self, id: strawberry.ID) -> "Run":
@@ -492,19 +392,10 @@ class Workspace:
 
     # Tables
     @gql.django.field
-    def tables(self, pagination: Optional[OffsetPaginationInput] = strawberry.UNSET) -> List[Table]:
-        query_set = NodeModel.objects.filter(workspace_id=self.id, metadata__grai__node_type="Table")
+    def tables(self, pagination: Optional[OffsetPaginationInput] = strawberry.UNSET) -> Pagination[Table]:
+        queryset = NodeModel.objects.filter(workspace_id=self.id, metadata__grai__node_type="Table")
 
-        if pagination:
-            start = pagination.offset
-            stop = start + pagination.limit
-            return query_set[start:stop]
-
-        return query_set
-
-    @gql.django.field
-    def tables_count(self) -> int:
-        return NodeModel.objects.filter(workspace_id=self.id, metadata__grai__node_type="Table").count()
+        return Pagination[Table](queryset=queryset, pagination=pagination)
 
     @gql.django.field
     def table(self, id: strawberry.ID) -> Table:
@@ -686,28 +577,6 @@ class BasicResult:
     success: bool
 
 
-@strawberry.enum
-class RunAction(Enum):
-    TESTS = RunModel.TESTS
-    UPDATE = RunModel.UPDATE
-    VALIDATE = RunModel.VALIDATE
-
-
-@gql.django.type(RunModel, order=RunOrder, pagination=True)
-class Run:
-    id: auto
-    connection: Connection
-    status: auto
-    action: RunAction
-    metadata: JSON
-    created_at: auto
-    updated_at: auto
-    started_at: Optional[datetime.datetime]
-    finished_at: Optional[datetime.datetime]
-    user: Optional[User]
-    commit: Optional["Commit"]
-
-
 @gql.django.type(RepositoryModel)
 class Repository:
     id: auto
@@ -797,10 +666,11 @@ class Commit:
         self,
         filters: Optional["WorkspaceRunFilter"] = strawberry.UNSET,
         order: Optional[RunOrder] = strawberry.UNSET,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
     ) -> List["Run"]:
-        q_filter = Q(commit=self)
+        queryset = RunModel.objects.filter(commit=self)
 
-        return get_runs(q_filter, filters, order)
+        return apply_run_arguments(queryset, filters=filters, order=order, pagination=pagination)
 
     @gql.django.field
     def last_run(self) -> Optional["Run"]:

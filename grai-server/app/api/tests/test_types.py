@@ -565,7 +565,11 @@ async def test_tables_count(test_context):
         query Workspace($workspaceId: ID!) {
           workspace(id: $workspaceId) {
             id
-            tables_count
+            tables {
+                meta {
+                    total
+                }
+            }
           }
         }
     """
@@ -580,7 +584,7 @@ async def test_tables_count(test_context):
 
     assert result.errors is None
     assert result.data["workspace"]["id"] == str(workspace.id)
-    assert result.data["workspace"]["tables_count"] == 1
+    assert result.data["workspace"]["tables"]["meta"]["total"] == 1
 
 
 @pytest.mark.django_db

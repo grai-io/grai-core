@@ -19,26 +19,28 @@ export const GET_TABLES_AND_EDGES = gql`
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       tables {
-        id
-        namespace
-        name
-        display_name
-        data_source
-        metadata
-        columns {
+        data {
           id
+          namespace
           name
           display_name
-        }
-        source_tables {
-          id
-          name
-          display_name
-        }
-        destination_tables {
-          id
-          name
-          display_name
+          data_source
+          metadata
+          columns {
+            id
+            name
+            display_name
+          }
+          source_tables {
+            id
+            name
+            display_name
+          }
+          destination_tables {
+            id
+            name
+            display_name
+          }
         }
       }
       other_edges {
@@ -80,7 +82,7 @@ const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
   if (error) return <GraphError error={error} />
   if (loading) return <Loading />
 
-  const tables = data?.workspace.tables
+  const tables = data?.workspace.tables.data
 
   if (!tables || tables.length === 0) return <Alert>No tables found</Alert>
 

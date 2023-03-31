@@ -46,25 +46,27 @@ export const GET_RUN = gql`
         }
       }
       tables {
-        id
-        namespace
-        name
-        display_name
-        data_source
-        metadata
-        columns {
+        data {
           id
-          name
-        }
-        source_tables {
-          id
+          namespace
           name
           display_name
-        }
-        destination_tables {
-          id
-          name
-          display_name
+          data_source
+          metadata
+          columns {
+            id
+            name
+          }
+          source_tables {
+            id
+            name
+            display_name
+          }
+          destination_tables {
+            id
+            name
+            display_name
+          }
         }
       }
       other_edges {
@@ -105,7 +107,7 @@ const Report: React.FC = () => {
 
   const errors = resultsToErrors(run.metadata.results)
 
-  const tables = data?.workspace.tables
+  const tables = data?.workspace.tables.data
   const edges = data?.workspace.other_edges
 
   return (

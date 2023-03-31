@@ -20,7 +20,7 @@ const mocks = [
       data: {
         workspace: {
           id: "1",
-          tables: [sourceTable, destinationTable, spareTable],
+          tables: { data: [sourceTable, destinationTable, spareTable] },
           other_edges: [
             {
               id: "1",
@@ -187,7 +187,7 @@ test("no nodes", async () => {
         data: {
           workspace: {
             id: "1",
-            tables: null,
+            tables: { data: null },
             other_edges: null,
           },
         },

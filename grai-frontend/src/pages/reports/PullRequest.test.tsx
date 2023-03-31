@@ -86,7 +86,7 @@ test("renders errors", async () => {
                 },
               },
             },
-            tables: [sourceTable, destinationTable, spareTable],
+            tables: { data: [sourceTable, destinationTable, spareTable] },
             other_edges: [
               {
                 id: "1",
@@ -153,7 +153,7 @@ test("not found", async () => {
               repo: "repo",
               pull_request: null,
             },
-            tables: [sourceTable, destinationTable, spareTable],
+            tables: { data: [sourceTable, destinationTable, spareTable] },
             other_edges: [
               {
                 id: "1",

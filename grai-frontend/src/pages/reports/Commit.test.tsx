@@ -51,7 +51,7 @@ test("renders no pr", async () => {
                 pull_request: null,
               },
             },
-            tables: [sourceTable, destinationTable, spareTable],
+            tables: { data: [sourceTable, destinationTable, spareTable] },
             other_edges: [
               {
                 id: "1",
@@ -106,7 +106,7 @@ test("not found", async () => {
               repo: "repo",
               commit: null,
             },
-            tables: [sourceTable, destinationTable, spareTable],
+            tables: { data: [sourceTable, destinationTable, spareTable] },
             other_edges: [
               {
                 id: "1",

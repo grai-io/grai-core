@@ -7,27 +7,27 @@
 // GraphQL query operation: GetTablesAndEdges
 // ====================================================
 
-export interface GetTablesAndEdges_workspace_tables_columns {
+export interface GetTablesAndEdges_workspace_tables_data_columns {
   __typename: "Column";
   id: any;
   name: string;
 }
 
-export interface GetTablesAndEdges_workspace_tables_source_tables {
+export interface GetTablesAndEdges_workspace_tables_data_source_tables {
   __typename: "Table";
   id: any;
   name: string;
   display_name: string;
 }
 
-export interface GetTablesAndEdges_workspace_tables_destination_tables {
+export interface GetTablesAndEdges_workspace_tables_data_destination_tables {
   __typename: "Table";
   id: any;
   name: string;
   display_name: string;
 }
 
-export interface GetTablesAndEdges_workspace_tables {
+export interface GetTablesAndEdges_workspace_tables_data {
   __typename: "Table";
   id: any;
   namespace: string;
@@ -35,9 +35,14 @@ export interface GetTablesAndEdges_workspace_tables {
   display_name: string;
   data_source: string;
   metadata: any;
-  columns: GetTablesAndEdges_workspace_tables_columns[];
-  source_tables: GetTablesAndEdges_workspace_tables_source_tables[];
-  destination_tables: GetTablesAndEdges_workspace_tables_destination_tables[];
+  columns: GetTablesAndEdges_workspace_tables_data_columns[];
+  source_tables: GetTablesAndEdges_workspace_tables_data_source_tables[];
+  destination_tables: GetTablesAndEdges_workspace_tables_data_destination_tables[];
+}
+
+export interface GetTablesAndEdges_workspace_tables {
+  __typename: "TablePagination";
+  data: GetTablesAndEdges_workspace_tables_data[];
 }
 
 export interface GetTablesAndEdges_workspace_other_edges_source {
@@ -61,7 +66,7 @@ export interface GetTablesAndEdges_workspace_other_edges {
 export interface GetTablesAndEdges_workspace {
   __typename: "Workspace";
   id: any;
-  tables: GetTablesAndEdges_workspace_tables[];
+  tables: GetTablesAndEdges_workspace_tables;
   other_edges: GetTablesAndEdges_workspace_other_edges[];
 }
 

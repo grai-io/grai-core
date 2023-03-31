@@ -28,53 +28,55 @@ test("renders", async () => {
         data: {
           workspace: {
             id: "1",
-            tables: [
-              {
-                id: "2",
-                namespace: "default",
-                name: "Table2",
-                display_name: "Table2",
-                data_source: "test",
-                metadata: {},
-                columns: [],
-                source_tables: [
-                  {
-                    id: "1",
-                    name: "Table1",
-                    display_name: "Table1",
-                  },
-                ],
-                destination_tables: [],
-              },
-              {
-                id: "3",
-                namespace: "default",
-                name: "Table3",
-                display_name: "Table3",
-                data_source: "test",
-                metadata: {},
-                columns: [],
-                source_tables: [],
-                destination_tables: [
-                  {
-                    id: "1",
-                    name: "Table1",
-                    display_name: "Table1",
-                  },
-                ],
-              },
-              {
-                id: "4",
-                namespace: "default",
-                name: "Table4",
-                display_name: "Table4",
-                data_source: "test",
-                metadata: {},
-                columns: [],
-                source_tables: [],
-                destination_tables: [],
-              },
-            ],
+            tables: {
+              data: [
+                {
+                  id: "2",
+                  namespace: "default",
+                  name: "Table2",
+                  display_name: "Table2",
+                  data_source: "test",
+                  metadata: {},
+                  columns: [],
+                  source_tables: [
+                    {
+                      id: "1",
+                      name: "Table1",
+                      display_name: "Table1",
+                    },
+                  ],
+                  destination_tables: [],
+                },
+                {
+                  id: "3",
+                  namespace: "default",
+                  name: "Table3",
+                  display_name: "Table3",
+                  data_source: "test",
+                  metadata: {},
+                  columns: [],
+                  source_tables: [],
+                  destination_tables: [
+                    {
+                      id: "1",
+                      name: "Table1",
+                      display_name: "Table1",
+                    },
+                  ],
+                },
+                {
+                  id: "4",
+                  namespace: "default",
+                  name: "Table4",
+                  display_name: "Table4",
+                  data_source: "test",
+                  metadata: {},
+                  columns: [],
+                  source_tables: [],
+                  destination_tables: [],
+                },
+              ],
+            },
             other_edges: [],
           },
         },
@@ -136,7 +138,7 @@ test("no tables", async () => {
         data: {
           workspace: {
             id: "1",
-            tables: [],
+            tables: { data: null },
             other_edges: [],
           },
         },

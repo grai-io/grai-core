@@ -7,28 +7,28 @@
 // GraphQL query operation: GetTablesAndEdgesTableLineage
 // ====================================================
 
-export interface GetTablesAndEdgesTableLineage_workspace_tables_columns {
+export interface GetTablesAndEdgesTableLineage_workspace_tables_data_columns {
   __typename: "Column";
   id: any;
   name: string;
   display_name: string;
 }
 
-export interface GetTablesAndEdgesTableLineage_workspace_tables_source_tables {
+export interface GetTablesAndEdgesTableLineage_workspace_tables_data_source_tables {
   __typename: "Table";
   id: any;
   name: string;
   display_name: string;
 }
 
-export interface GetTablesAndEdgesTableLineage_workspace_tables_destination_tables {
+export interface GetTablesAndEdgesTableLineage_workspace_tables_data_destination_tables {
   __typename: "Table";
   id: any;
   name: string;
   display_name: string;
 }
 
-export interface GetTablesAndEdgesTableLineage_workspace_tables {
+export interface GetTablesAndEdgesTableLineage_workspace_tables_data {
   __typename: "Table";
   id: any;
   namespace: string;
@@ -36,9 +36,14 @@ export interface GetTablesAndEdgesTableLineage_workspace_tables {
   display_name: string;
   data_source: string;
   metadata: any;
-  columns: GetTablesAndEdgesTableLineage_workspace_tables_columns[];
-  source_tables: GetTablesAndEdgesTableLineage_workspace_tables_source_tables[];
-  destination_tables: GetTablesAndEdgesTableLineage_workspace_tables_destination_tables[];
+  columns: GetTablesAndEdgesTableLineage_workspace_tables_data_columns[];
+  source_tables: GetTablesAndEdgesTableLineage_workspace_tables_data_source_tables[];
+  destination_tables: GetTablesAndEdgesTableLineage_workspace_tables_data_destination_tables[];
+}
+
+export interface GetTablesAndEdgesTableLineage_workspace_tables {
+  __typename: "TablePagination";
+  data: GetTablesAndEdgesTableLineage_workspace_tables_data[];
 }
 
 export interface GetTablesAndEdgesTableLineage_workspace_other_edges_source {
@@ -62,7 +67,7 @@ export interface GetTablesAndEdgesTableLineage_workspace_other_edges {
 export interface GetTablesAndEdgesTableLineage_workspace {
   __typename: "Workspace";
   id: any;
-  tables: GetTablesAndEdgesTableLineage_workspace_tables[];
+  tables: GetTablesAndEdgesTableLineage_workspace_tables;
   other_edges: GetTablesAndEdgesTableLineage_workspace_other_edges[];
 }
 

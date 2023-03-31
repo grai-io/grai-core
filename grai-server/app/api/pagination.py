@@ -1,0 +1,65 @@
+from typing import Callable, Generic, List, Optional, TypeVar
+
+import strawberry
+from django.db.models.query import QuerySet
+from strawberry.field import StrawberryField
+from strawberry_django.pagination import OffsetPaginationInput
+from strawberry_django_plus import gql
+
+from .order import apply_order
+
+
+@gql.type
+class PaginationResult:
+    total: int
+    filtered: int
+    limit: int
+    offset: int
+
+
+T = TypeVar("T")
+
+
+@strawberry.type
+class Pagination(Generic[T]):
+    def __init__(
+        self,
+        queryset: QuerySet,
+        apply_filters: Callable[[QuerySet], QuerySet] = None,
+        order: Optional[StrawberryField] = strawberry.UNSET,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ):
+        self.queryset = queryset
+        self.apply_filters = apply_filters
+        self.order = order
+        self.pagination = pagination
+
+    @strawberry.field
+    def meta(self) -> PaginationResult:
+        total = self.queryset.acount()
+
+        return PaginationResult(
+            total=total,
+            filtered=self.apply_filters(self.queryset).acount() if self.apply_filters else total,
+            limit=self.pagination.limit if self.pagination else None,
+            offset=self.pagination.offset if self.pagination else None,
+        )
+
+    @gql.django.field
+    def data(self) -> List[T]:
+        queryset = self.queryset
+        if self.apply_filters:
+            queryset = self.apply_filters(queryset)
+        queryset = apply_order(queryset, self.order)
+        queryset = apply_pagination(queryset, self.pagination)
+
+        return queryset
+
+
+def apply_pagination(queryset: QuerySet, pagination: Optional[OffsetPaginationInput] = strawberry.UNSET):
+    if pagination:
+        start = pagination.offset
+        stop = start + pagination.limit
+        return queryset[start:stop]
+
+    return queryset

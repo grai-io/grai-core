@@ -45,47 +45,49 @@ export const GET_REPORTS = gql`
         filters: { owner: $owner, repo: $repo, branch: $branch, action: TESTS }
         order: { created_at: DESC }
       ) {
-        id
-        status
-        connection {
+        data {
           id
-          name
-          temp
-          connector {
+          status
+          connection {
             id
             name
-            icon
+            temp
+            connector {
+              id
+              name
+              icon
+            }
           }
-        }
-        commit {
-          id
-          reference
-          title
-          branch {
-            id
-            reference
-          }
-          pull_request {
+          commit {
             id
             reference
             title
+            branch {
+              id
+              reference
+            }
+            pull_request {
+              id
+              reference
+              title
+            }
+            repository {
+              id
+              type
+              owner
+              repo
+            }
           }
-          repository {
+          created_at
+          started_at
+          finished_at
+          user {
             id
-            type
-            owner
-            repo
+            first_name
+            last_name
           }
+          metadata
         }
-        created_at
-        started_at
-        finished_at
-        user {
-          id
-          first_name
-          last_name
-        }
-        metadata
       }
     }
   }
@@ -124,7 +126,10 @@ const Reports: React.FC = () => {
           workspace={data?.workspace ?? null}
           onRefresh={handleRefresh}
         />
-        <ReportsTable runs={data?.workspace.runs ?? null} loading={loading} />
+        <ReportsTable
+          runs={data?.workspace.runs.data ?? null}
+          loading={loading}
+        />
       </Box>
     </PageLayout>
   )
