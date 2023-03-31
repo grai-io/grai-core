@@ -357,8 +357,13 @@ class Workspace:
 
     # Connections
     @gql.django.field
-    def connections(self) -> List["Connection"]:
-        return ConnectionModel.objects.filter(workspace=self, temp=False)
+    def connections(
+        self,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination[Connection]:
+        queryset = ConnectionModel.objects.filter(workspace=self, temp=False)
+
+        return Pagination[Connection](queryset=queryset, pagination=pagination)
 
     @gql.django.field
     def connection(self, id: strawberry.ID) -> Connection:

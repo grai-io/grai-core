@@ -225,7 +225,12 @@ async def test_tables_pagination(test_context):
           workspace(id: $workspaceId) {
             id
             tables(pagination: {offset: 0, limit: 10}) {
-                id
+                data {
+                    id
+                }
+                meta {
+                    total
+                }
             }
           }
         }
@@ -631,9 +636,11 @@ async def test_workspace_connections(test_context):
             workspace(id: $workspaceId) {
                 id
                 connections {
-                    id
-                    connector {
+                    data {
                         id
+                        connector {
+                            id
+                        }
                     }
                 }
             }
@@ -650,8 +657,8 @@ async def test_workspace_connections(test_context):
 
     assert result.errors is None
     assert result.data["workspace"]["id"] == str(workspace.id)
-    assert result.data["workspace"]["connections"][0]["id"] == str(connection.id)
-    assert result.data["workspace"]["connections"][0]["connector"]["id"] == str(connector.id)
+    assert result.data["workspace"]["connections"]["data"][0]["id"] == str(connection.id)
+    assert result.data["workspace"]["connections"]["data"][0]["connector"]["id"] == str(connector.id)
 
 
 @pytest.mark.django_db
@@ -700,7 +707,9 @@ async def test_workspace_runs(test_context):
             workspace(id: $workspaceId) {
                 id
                 runs {
-                    id
+                    data {
+                        id
+                    }
                 }
             }
         }
@@ -738,7 +747,9 @@ async def test_workspace_runs_filter_by_repo(test_context, test_commit):
             workspace(id: $workspaceId) {
                 id
                 runs(filters:{owner: $owner, repo: $repo}) {
-                    id
+                    data {
+                        id
+                    }
                 }
             }
         }
@@ -756,7 +767,7 @@ async def test_workspace_runs_filter_by_repo(test_context, test_commit):
 
     assert result.errors is None
     assert result.data["workspace"]["id"] == str(workspace.id)
-    assert result.data["workspace"]["runs"][0]["id"] == str(run.id)
+    assert result.data["workspace"]["runs"]["data"][0]["id"] == str(run.id)
 
 
 @pytest.mark.django_db
@@ -779,7 +790,9 @@ async def test_workspace_runs_filter_by_branch(test_context, test_branch, test_c
             workspace(id: $workspaceId) {
                 id
                 runs(filters: {branch: $branch}) {
-                    id
+                    data {
+                        id
+                    }
                 }
             }
         }
@@ -796,6 +809,7 @@ async def test_workspace_runs_filter_by_branch(test_context, test_branch, test_c
 
     assert result.errors is None
     assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["runs"]["data"][0]["id"] == str(run.id)
 
 
 @pytest.mark.django_db
@@ -819,7 +833,9 @@ async def test_workspace_runs_filter_by_action(test_context):
             workspace(id: $workspaceId) {
                 id
                 runs(filters:{action: $action}) {
-                    id
+                    data {
+                        id
+                    }
                 }
             }
         }
@@ -837,7 +853,7 @@ async def test_workspace_runs_filter_by_action(test_context):
     assert result.errors is None
     assert result.data["workspace"]["id"] == str(workspace.id)
     assert len(result.data["workspace"]["runs"]) == 1
-    assert result.data["workspace"]["runs"][0]["id"] == str(run.id)
+    assert result.data["workspace"]["runs"]["data"][0]["id"] == str(run.id)
 
 
 @pytest.mark.django_db
@@ -860,7 +876,9 @@ async def test_workspace_runs_order_by_created_at(test_context, test_commit):
             workspace(id: $workspaceId) {
                 id
                 runs(filters:{owner: $owner, repo: $repo}, order: {created_at: DESC}) {
-                    id
+                    data {
+                        id
+                    }
                 }
             }
         }
@@ -878,7 +896,7 @@ async def test_workspace_runs_order_by_created_at(test_context, test_commit):
 
     assert result.errors is None
     assert result.data["workspace"]["id"] == str(workspace.id)
-    assert result.data["workspace"]["runs"][0]["id"] == str(run.id)
+    assert result.data["workspace"]["runs"]["data"][0]["id"] == str(run.id)
 
 
 @pytest.mark.django_db
