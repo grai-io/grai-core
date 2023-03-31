@@ -70,7 +70,7 @@ const TablesTable: React.FC<TablesTableProps> = ({
       <TableFooter>
         <TablePagination
           count={total}
-          rowsPerPage={11}
+          rowsPerPage={1000}
           page={0}
           onPageChange={() => {}}
           type="tables"
