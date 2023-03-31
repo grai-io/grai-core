@@ -10,10 +10,10 @@ import {
 import { useNavigate } from "react-router-dom"
 import Loading from "components/layout/Loading"
 import RunStatus from "components/runs/RunStatus"
+import TablePagination from "components/table/TablePagination"
 import TableCell from "components/tables/TableCell"
 import { Connection as BaseConnection } from "./ConnectionRun"
 import ConnectionsMenu from "./ConnectionsMenu"
-import TablePagination from "components/table/TablePagination"
 
 interface Connector {
   id: string
