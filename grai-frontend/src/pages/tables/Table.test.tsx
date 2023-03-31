@@ -111,7 +111,7 @@ test("not found", async () => {
           workspace: {
             id: "1",
             table: null,
-            tables: { data: [] },
+            tables: { data: null },
             other_edges: [],
           },
         },
