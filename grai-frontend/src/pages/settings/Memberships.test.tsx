@@ -59,7 +59,7 @@ test("empty", async () => {
         data: {
           workspace: {
             id: "1",
-            memberships: [],
+            memberships: { data: [], meta: { total: 0 } },
           },
         },
       },
@@ -122,20 +122,23 @@ test("renders and delete", async () => {
         data: {
           workspace: {
             id: "1",
-            memberships: [
-              {
-                id: "1",
-                role: "admin",
-                user: {
-                  id: "2",
-                  username: "test@example.com",
-                  first_name: "first",
-                  last_name: "last",
+            memberships: {
+              data: [
+                {
+                  id: "1",
+                  role: "admin",
+                  user: {
+                    id: "2",
+                    username: "test@example.com",
+                    first_name: "first",
+                    last_name: "last",
+                  },
+                  is_active: true,
+                  created_at: "2023-02-24T09:18:48.259220+00:00",
                 },
-                is_active: true,
-                created_at: "2023-02-24T09:18:48.259220+00:00",
-              },
-            ],
+              ],
+              meta: { total: 1 },
+            },
           },
         },
       },

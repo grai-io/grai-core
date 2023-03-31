@@ -389,8 +389,13 @@ class Workspace:
 
     # Memberships
     @gql.django.field
-    def memberships(self) -> List["Membership"]:
-        return MembershipModel.objects.filter(workspace=self)
+    def memberships(
+        self,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination["Membership"]:
+        queryset = MembershipModel.objects.filter(workspace=self)
+
+        return Pagination[Membership](queryset=queryset, pagination=pagination)
 
     # Api Keys
     api_keys: List["WorkspaceAPIKey"] = gql.django.field()
@@ -398,25 +403,25 @@ class Workspace:
     # Tables
     @gql.django.field
     def tables(self, pagination: Optional[OffsetPaginationInput] = strawberry.UNSET) -> Pagination[Table]:
-        queryset = NodeModel.objects.filter(workspace_id=self.id, metadata__grai__node_type="Table")
+        queryset = NodeModel.objects.filter(workspace=self, metadata__grai__node_type="Table")
 
         return Pagination[Table](queryset=queryset, pagination=pagination)
 
     @gql.django.field
     def table(self, id: strawberry.ID) -> Table:
-        return NodeModel.objects.filter(id=id, workspace_id=self.id, metadata__grai__node_type="Table")
+        return NodeModel.objects.filter(id=id, workspace=self, metadata__grai__node_type="Table")
 
     # Other edges
     @gql.django.field
     def other_edges(self) -> List[Edge]:
-        return EdgeModel.objects.filter(workspace_id=self.id).exclude(
+        return EdgeModel.objects.filter(workspace=self).exclude(
             metadata__has_key="grai.edge_type", metadata__grai__edge_type="TableToColumn"
         )
 
     @gql.django.field
     def other_edges_count(self) -> int:
         return (
-            EdgeModel.objects.filter(workspace_id=self.id)
+            EdgeModel.objects.filter(workspace=self)
             .exclude(metadata__has_key="grai.edge_type", metadata__grai__edge_type="TableToColumn")
             .count()
         )

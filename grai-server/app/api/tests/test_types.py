@@ -908,10 +908,12 @@ async def test_workspace_memberships(test_context):
             workspace(id: $workspaceId) {
                 id
                 memberships {
-                    id
-                    role
-                    user {
+                    data {
                         id
+                        role
+                        user {
+                            id
+                        }
                     }
                 }
             }
@@ -928,8 +930,9 @@ async def test_workspace_memberships(test_context):
 
     assert result.errors is None
     assert result.data["workspace"]["id"] == str(workspace.id)
-    assert result.data["workspace"]["memberships"][0]["role"] == "admin"
-    assert result.data["workspace"]["memberships"][0]["user"]["id"] == str(user.id)
+    assert result.data["workspace"]["memberships"]["data"][0]["id"] == str(membership.id)
+    assert result.data["workspace"]["memberships"]["data"][0]["role"] == "admin"
+    assert result.data["workspace"]["memberships"]["data"][0]["user"]["id"] == str(user.id)
 
 
 @pytest.fixture

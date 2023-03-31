@@ -3,12 +3,14 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableRow,
   Typography,
 } from "@mui/material"
 import { DateTime } from "luxon"
 import Loading from "components/layout/Loading"
+import TablePagination from "components/table/TablePagination"
 import MembershipMenu from "./MembershipMenu"
 
 interface User {
@@ -30,12 +32,14 @@ type MembershipsTableProps = {
   memberships: Membership[]
   loading?: boolean
   workspaceId?: string
+  total: number
 }
 
 const MembershipsTable: React.FC<MembershipsTableProps> = ({
   memberships,
   loading,
   workspaceId,
+  total,
 }) => (
   <Table>
     <TableHead>
@@ -82,6 +86,14 @@ const MembershipsTable: React.FC<MembershipsTableProps> = ({
         </TableRow>
       )}
     </TableBody>
+    <TableFooter>
+      <TablePagination
+        count={total}
+        rowsPerPage={1000}
+        page={0}
+        type="memberships"
+      />
+    </TableFooter>
   </Table>
 )
 
