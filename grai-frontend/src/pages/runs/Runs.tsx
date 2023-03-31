@@ -12,7 +12,7 @@ export const GET_RUNS = gql`
   query GetRuns($organisationName: String!, $workspaceName: String!) {
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
-      runs {
+      runs(order: { created_at: DESC }) {
         id
         status
         connection {

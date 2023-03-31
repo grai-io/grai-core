@@ -323,7 +323,7 @@
                   "name": "String",
                   "ofType": null
                 },
-                "defaultValue": "null"
+                "defaultValue": null
               }
             ],
             "type": {
@@ -384,7 +384,7 @@
                   "name": "String",
                   "ofType": null
                 },
-                "defaultValue": "null"
+                "defaultValue": null
               }
             ],
             "type": {
@@ -674,7 +674,7 @@
                   "name": "String",
                   "ofType": null
                 },
-                "defaultValue": "null"
+                "defaultValue": null
               }
             ],
             "type": {
@@ -718,34 +718,14 @@
             "description": null,
             "args": [
               {
-                "name": "type",
+                "name": "filters",
                 "description": null,
                 "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
+                  "kind": "INPUT_OBJECT",
+                  "name": "WorkspaceRepositoryFilter",
                   "ofType": null
                 },
-                "defaultValue": "null"
-              },
-              {
-                "name": "owner",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                },
-                "defaultValue": "null"
-              },
-              {
-                "name": "repo",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                },
-                "defaultValue": "null"
+                "defaultValue": null
               }
             ],
             "type": {
@@ -790,7 +770,7 @@
                   "name": "String",
                   "ofType": null
                 },
-                "defaultValue": "null"
+                "defaultValue": null
               },
               {
                 "name": "owner",
@@ -800,7 +780,7 @@
                   "name": "String",
                   "ofType": null
                 },
-                "defaultValue": "null"
+                "defaultValue": null
               },
               {
                 "name": "repo",
@@ -810,7 +790,7 @@
                   "name": "String",
                   "ofType": null
                 },
-                "defaultValue": "null"
+                "defaultValue": null
               }
             ],
             "type": {
@@ -861,44 +841,24 @@
             "description": null,
             "args": [
               {
-                "name": "owner",
+                "name": "filters",
                 "description": null,
                 "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
+                  "kind": "INPUT_OBJECT",
+                  "name": "WorkspaceRunFilter",
                   "ofType": null
                 },
-                "defaultValue": "null"
+                "defaultValue": null
               },
               {
-                "name": "repo",
+                "name": "order",
                 "description": null,
                 "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
+                  "kind": "INPUT_OBJECT",
+                  "name": "RunOrder",
                   "ofType": null
                 },
-                "defaultValue": "null"
-              },
-              {
-                "name": "branch",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                },
-                "defaultValue": "null"
-              },
-              {
-                "name": "action",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                },
-                "defaultValue": "null"
+                "defaultValue": null
               }
             ],
             "type": {
@@ -980,7 +940,7 @@
                   "name": "OffsetPaginationInput",
                   "ofType": null
                 },
-                "defaultValue": "null"
+                "defaultValue": null
               }
             ],
             "type": {
@@ -2233,7 +2193,7 @@
                   "name": "String",
                   "ofType": null
                 },
-                "defaultValue": "null"
+                "defaultValue": null
               }
             ],
             "type": {
@@ -2270,7 +2230,7 @@
                   "name": "String",
                   "ofType": null
                 },
-                "defaultValue": "null"
+                "defaultValue": null
               }
             ],
             "type": {
@@ -2307,7 +2267,7 @@
                   "name": "String",
                   "ofType": null
                 },
-                "defaultValue": "null"
+                "defaultValue": null
               }
             ],
             "type": {
@@ -2561,25 +2521,49 @@
             "deprecationReason": null
           },
           {
+            "name": "last_run",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "Run",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "last_successful_run",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "Run",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "runs",
             "description": null,
             "args": [
+              {
+                "name": "filters",
+                "description": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "WorkspaceRunFilter",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
               {
                 "name": "order",
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
                   "name": "RunOrder",
-                  "ofType": null
-                },
-                "defaultValue": null
-              },
-              {
-                "name": "pagination",
-                "description": null,
-                "type": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "OffsetPaginationInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -2604,65 +2588,10 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
-          },
-          {
-            "name": "last_run",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "OBJECT",
-              "name": "Run",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "last_successful_run",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "OBJECT",
-              "name": "Run",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
           }
         ],
         "inputFields": null,
         "interfaces": [],
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "INPUT_OBJECT",
-        "name": "RunOrder",
-        "description": null,
-        "fields": null,
-        "inputFields": [
-          {
-            "name": "id",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "Ordering",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "created_at",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "Ordering",
-              "ofType": null
-            },
-            "defaultValue": null
-          }
-        ],
-        "interfaces": null,
         "enumValues": null,
         "possibleTypes": null
       },
@@ -2724,6 +2653,22 @@
               "ofType": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "action",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "RunAction",
                 "ofType": null
               }
             },
@@ -3021,51 +2966,6 @@
             "deprecationReason": null
           },
           {
-            "name": "runs",
-            "description": null,
-            "args": [
-              {
-                "name": "order",
-                "description": null,
-                "type": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "RunOrder",
-                  "ofType": null
-                },
-                "defaultValue": null
-              },
-              {
-                "name": "pagination",
-                "description": null,
-                "type": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "OffsetPaginationInput",
-                  "ofType": null
-                },
-                "defaultValue": null
-              }
-            ],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Run",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "last_run",
             "description": null,
             "args": [],
@@ -3115,6 +3015,51 @@
                 "kind": "OBJECT",
                 "name": "Run",
                 "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "runs",
+            "description": null,
+            "args": [
+              {
+                "name": "filters",
+                "description": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "WorkspaceRunFilter",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "order",
+                "description": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "RunOrder",
+                  "ofType": null
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "Run",
+                    "ofType": null
+                  }
+                }
               }
             },
             "isDeprecated": false,
@@ -3247,6 +3192,117 @@
         "description": "The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).",
         "fields": null,
         "inputFields": null,
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "WorkspaceRunFilter",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "owner",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "repo",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "branch",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "action",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "RunAction",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "RunAction",
+        "description": null,
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "TESTS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "UPDATE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "VALIDATE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "RunOrder",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "id",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "Ordering",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "created_at",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "Ordering",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
         "interfaces": null,
         "enumValues": null,
         "possibleTypes": null
@@ -4318,6 +4374,47 @@
         ],
         "inputFields": null,
         "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "WorkspaceRepositoryFilter",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "type",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "owner",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "repo",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
         "enumValues": null,
         "possibleTypes": null
       },
@@ -6089,12 +6186,12 @@
                   "kind": "NON_NULL",
                   "name": null,
                   "ofType": {
-                    "kind": "SCALAR",
-                    "name": "String",
+                    "kind": "ENUM",
+                    "name": "RunAction",
                     "ofType": null
                   }
                 },
-                "defaultValue": "\"update\""
+                "defaultValue": "UPDATE"
               }
             ],
             "type": {

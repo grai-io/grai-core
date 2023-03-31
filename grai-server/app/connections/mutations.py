@@ -8,7 +8,7 @@ from strawberry.scalars import JSON
 from strawberry.types import Info
 
 from api.common import IsAuthenticated, get_user, get_workspace
-from api.types import Connection, Run
+from api.types import Connection, Run, RunAction
 from connections.models import Connection as ConnectionModel
 from connections.models import Connector as ConnectorModel
 from connections.models import Run as RunModel
@@ -94,7 +94,7 @@ class Mutation:
         self,
         info: Info,
         connectionId: strawberry.ID,
-        action: str = "update",
+        action: RunAction = RunModel.UPDATE,
     ) -> Run:
         user = get_user(info)
 

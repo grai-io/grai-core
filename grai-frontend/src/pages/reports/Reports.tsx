@@ -41,7 +41,10 @@ export const GET_REPORTS = gql`
         id
         name
       }
-      runs(owner: $owner, repo: $repo, branch: $branch, action: "tests") {
+      runs(
+        filters: { owner: $owner, repo: $repo, branch: $branch, action: TESTS }
+        order: { created_at: DESC }
+      ) {
         id
         status
         connection {
