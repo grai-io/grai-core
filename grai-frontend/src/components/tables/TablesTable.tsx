@@ -72,7 +72,6 @@ const TablesTable: React.FC<TablesTableProps> = ({
           count={total}
           rowsPerPage={1000}
           page={0}
-          onPageChange={() => {}}
           type="tables"
         />
       </TableFooter>
