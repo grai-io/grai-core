@@ -50,7 +50,7 @@ export interface Column {
   name: string
   display_name: string
   metadata: ColumnMetadata | null
-  requirements_edges: RequirementEdge[]
+  requirements_edges: { data: RequirementEdge[] }
 }
 
 type TableColumnsTableProps = {

@@ -42,22 +42,27 @@ export interface RunConnection_runConnection_connection_last_successful_run {
   user: RunConnection_runConnection_connection_last_successful_run_user | null;
 }
 
-export interface RunConnection_runConnection_connection_runs_user {
+export interface RunConnection_runConnection_connection_runs_data_user {
   __typename: "User";
   id: any;
   first_name: string;
   last_name: string;
 }
 
-export interface RunConnection_runConnection_connection_runs {
+export interface RunConnection_runConnection_connection_runs_data {
   __typename: "Run";
   id: any;
   status: string;
   created_at: any;
   started_at: any | null;
   finished_at: any | null;
-  user: RunConnection_runConnection_connection_runs_user | null;
+  user: RunConnection_runConnection_connection_runs_data_user | null;
   metadata: any;
+}
+
+export interface RunConnection_runConnection_connection_runs {
+  __typename: "RunPagination";
+  data: RunConnection_runConnection_connection_runs_data[];
 }
 
 export interface RunConnection_runConnection_connection {
@@ -65,7 +70,7 @@ export interface RunConnection_runConnection_connection {
   id: any;
   last_run: RunConnection_runConnection_connection_last_run | null;
   last_successful_run: RunConnection_runConnection_connection_last_successful_run | null;
-  runs: RunConnection_runConnection_connection_runs[];
+  runs: RunConnection_runConnection_connection_runs;
 }
 
 export interface RunConnection_runConnection {

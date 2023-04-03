@@ -13,22 +13,27 @@ export interface GetRun_workspace_run_connection_connector {
   name: string;
 }
 
-export interface GetRun_workspace_run_connection_runs_user {
+export interface GetRun_workspace_run_connection_runs_data_user {
   __typename: "User";
   id: any;
   first_name: string;
   last_name: string;
 }
 
-export interface GetRun_workspace_run_connection_runs {
+export interface GetRun_workspace_run_connection_runs_data {
   __typename: "Run";
   id: any;
   status: string;
   created_at: any;
   started_at: any | null;
   finished_at: any | null;
-  user: GetRun_workspace_run_connection_runs_user | null;
+  user: GetRun_workspace_run_connection_runs_data_user | null;
   metadata: any;
+}
+
+export interface GetRun_workspace_run_connection_runs {
+  __typename: "RunPagination";
+  data: GetRun_workspace_run_connection_runs_data[];
 }
 
 export interface GetRun_workspace_run_connection_last_run_user {
@@ -72,7 +77,7 @@ export interface GetRun_workspace_run_connection {
   id: any;
   name: string;
   connector: GetRun_workspace_run_connection_connector;
-  runs: GetRun_workspace_run_connection_runs[];
+  runs: GetRun_workspace_run_connection_runs;
   last_run: GetRun_workspace_run_connection_last_run | null;
   last_successful_run: GetRun_workspace_run_connection_last_successful_run | null;
 }

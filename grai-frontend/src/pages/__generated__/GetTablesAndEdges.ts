@@ -7,27 +7,42 @@
 // GraphQL query operation: GetTablesAndEdges
 // ====================================================
 
-export interface GetTablesAndEdges_workspace_tables_columns {
+export interface GetTablesAndEdges_workspace_tables_data_columns_data {
   __typename: "Column";
   id: any;
   name: string;
 }
 
-export interface GetTablesAndEdges_workspace_tables_source_tables {
+export interface GetTablesAndEdges_workspace_tables_data_columns {
+  __typename: "ColumnDataWrapper";
+  data: GetTablesAndEdges_workspace_tables_data_columns_data[];
+}
+
+export interface GetTablesAndEdges_workspace_tables_data_source_tables_data {
   __typename: "Table";
   id: any;
   name: string;
   display_name: string;
 }
 
-export interface GetTablesAndEdges_workspace_tables_destination_tables {
+export interface GetTablesAndEdges_workspace_tables_data_source_tables {
+  __typename: "TableDataWrapper";
+  data: GetTablesAndEdges_workspace_tables_data_source_tables_data[];
+}
+
+export interface GetTablesAndEdges_workspace_tables_data_destination_tables_data {
   __typename: "Table";
   id: any;
   name: string;
   display_name: string;
 }
 
-export interface GetTablesAndEdges_workspace_tables {
+export interface GetTablesAndEdges_workspace_tables_data_destination_tables {
+  __typename: "TableDataWrapper";
+  data: GetTablesAndEdges_workspace_tables_data_destination_tables_data[];
+}
+
+export interface GetTablesAndEdges_workspace_tables_data {
   __typename: "Table";
   id: any;
   namespace: string;
@@ -35,34 +50,44 @@ export interface GetTablesAndEdges_workspace_tables {
   display_name: string;
   data_source: string;
   metadata: any;
-  columns: GetTablesAndEdges_workspace_tables_columns[];
-  source_tables: GetTablesAndEdges_workspace_tables_source_tables[];
-  destination_tables: GetTablesAndEdges_workspace_tables_destination_tables[];
+  columns: GetTablesAndEdges_workspace_tables_data_columns;
+  source_tables: GetTablesAndEdges_workspace_tables_data_source_tables;
+  destination_tables: GetTablesAndEdges_workspace_tables_data_destination_tables;
 }
 
-export interface GetTablesAndEdges_workspace_other_edges_source {
+export interface GetTablesAndEdges_workspace_tables {
+  __typename: "TablePagination";
+  data: GetTablesAndEdges_workspace_tables_data[];
+}
+
+export interface GetTablesAndEdges_workspace_other_edges_data_source {
   __typename: "Node";
   id: any;
 }
 
-export interface GetTablesAndEdges_workspace_other_edges_destination {
+export interface GetTablesAndEdges_workspace_other_edges_data_destination {
   __typename: "Node";
   id: any;
+}
+
+export interface GetTablesAndEdges_workspace_other_edges_data {
+  __typename: "Edge";
+  id: any;
+  source: GetTablesAndEdges_workspace_other_edges_data_source;
+  destination: GetTablesAndEdges_workspace_other_edges_data_destination;
+  metadata: any;
 }
 
 export interface GetTablesAndEdges_workspace_other_edges {
-  __typename: "Edge";
-  id: any;
-  source: GetTablesAndEdges_workspace_other_edges_source;
-  destination: GetTablesAndEdges_workspace_other_edges_destination;
-  metadata: any;
+  __typename: "EdgePagination";
+  data: GetTablesAndEdges_workspace_other_edges_data[];
 }
 
 export interface GetTablesAndEdges_workspace {
   __typename: "Workspace";
   id: any;
-  tables: GetTablesAndEdges_workspace_tables[];
-  other_edges: GetTablesAndEdges_workspace_other_edges[];
+  tables: GetTablesAndEdges_workspace_tables;
+  other_edges: GetTablesAndEdges_workspace_other_edges;
 }
 
 export interface GetTablesAndEdges {

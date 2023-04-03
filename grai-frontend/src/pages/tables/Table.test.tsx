@@ -27,29 +27,35 @@ export const tableMock = {
           is_active: true,
           data_source: "test",
           metadata: {},
-          columns: [
-            {
-              id: "1",
-              name: "Column1",
-              display_name: "Column1",
-              requirements_edges: [],
-              metadata: {},
-            },
-          ],
-          source_tables: [
-            {
-              id: "2",
-              name: "Table2",
-              display_name: "Table2",
-            },
-          ],
-          destination_tables: [
-            {
-              id: "3",
-              name: "Table3",
-              display_name: "Table3",
-            },
-          ],
+          columns: {
+            data: [
+              {
+                id: "1",
+                name: "Column1",
+                display_name: "Column1",
+                requirements_edges: { data: [] },
+                metadata: {},
+              },
+            ],
+          },
+          source_tables: {
+            data: [
+              {
+                id: "2",
+                name: "Table2",
+                display_name: "Table2",
+              },
+            ],
+          },
+          destination_tables: {
+            data: [
+              {
+                id: "3",
+                name: "Table3",
+                display_name: "Table3",
+              },
+            ],
+          },
         },
       },
     },
@@ -111,8 +117,8 @@ test("not found", async () => {
           workspace: {
             id: "1",
             table: null,
-            tables: [],
-            other_edges: [],
+            tables: { data: null },
+            other_edges: { data: [] },
           },
         },
       },
@@ -145,26 +151,30 @@ test("lineage", async () => {
         data: {
           workspace: {
             id: "1",
-            tables: [
-              {
-                id: "2",
-                namespace: "default",
-                name: "Table2",
-                display_name: "Table2",
-                data_source: "test",
-                metadata: {},
-                columns: [],
-                source_tables: [
-                  {
-                    id: "1",
-                    name: "Table1",
-                    display_name: "Table1",
+            tables: {
+              data: [
+                {
+                  id: "2",
+                  namespace: "default",
+                  name: "Table2",
+                  display_name: "Table2",
+                  data_source: "test",
+                  metadata: {},
+                  columns: { data: [] },
+                  source_tables: {
+                    data: [
+                      {
+                        id: "1",
+                        name: "Table1",
+                        display_name: "Table1",
+                      },
+                    ],
                   },
-                ],
-                destination_tables: [],
-              },
-            ],
-            other_edges: [],
+                  destination_tables: { data: [] },
+                },
+              ],
+            },
+            other_edges: { data: [] },
           },
         },
       },

@@ -30,7 +30,10 @@ const Graph: React.FC<GraphProps> = ({
   controlOptions,
 }) => {
   const columns: Column[] = errors
-    ? tables.reduce<Column[]>((res, table) => res.concat(table.columns), [])
+    ? tables.reduce<Column[]>(
+        (res, table) => res.concat(table.columns.data),
+        []
+      )
     : []
 
   const tablesAndColumns = columns.concat(tables)
@@ -54,7 +57,7 @@ const Graph: React.FC<GraphProps> = ({
     table =>
       errorSourceIds.includes(table.id) ||
       errorDestinationIds.includes(table.id) ||
-      table.columns.filter(
+      table.columns.data.filter(
         column =>
           errorSourceIds.includes(column.id) ||
           errorDestinationIds.includes(column.id)

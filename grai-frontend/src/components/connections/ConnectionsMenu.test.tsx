@@ -6,7 +6,7 @@ import ConnectionsMenu from "./ConnectionsMenu"
 const connection = {
   id: "1",
   name: "Test Connection",
-  runs: [],
+  runs: {data: []},
   last_run: null,
   last_successful_run: null,
 }

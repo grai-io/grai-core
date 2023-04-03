@@ -14,14 +14,14 @@ test("renders", async () => {
     namespace: "default",
     data_source: "test-source",
     display_name: "Table 1",
-    columns: [],
+    columns: { data: [] },
     metadata: {
       grai: {
         node_type: "Table",
       },
     },
-    source_tables: [other_table],
-    destination_tables: [other_table],
+    source_tables: { data: [other_table] },
+    destination_tables: { data: [other_table] },
   }
 
   render(<TableProfile table={table} />, {
@@ -40,14 +40,14 @@ test("renders no sources or destinations", async () => {
     namespace: "default",
     data_source: "test-source",
     display_name: "Table 1",
-    columns: [],
+    columns: { data: [] },
     metadata: {
       grai: {
         node_type: "Table",
       },
     },
-    source_tables: [],
-    destination_tables: [],
+    source_tables: { data: [] },
+    destination_tables: { data: [] },
   }
 
   render(<TableProfile table={table} />, {

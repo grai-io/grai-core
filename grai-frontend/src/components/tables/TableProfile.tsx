@@ -16,10 +16,10 @@ export interface TableInterface {
   namespace: string
   data_source: string
   display_name: string
-  columns: Column[]
+  columns: { data: Column[] }
   metadata: any | null
-  source_tables: BaseTable[]
-  destination_tables: BaseTable[]
+  source_tables: { data: BaseTable[] }
+  destination_tables: { data: BaseTable[] }
 }
 
 type TableProfileProps = {
@@ -38,18 +38,18 @@ const TableProfile: React.FC<TableProfileProps> = ({ table }) => (
             <TableBody>
               <TableDependencies
                 label="Upstream dependencies"
-                dependencies={table.destination_tables}
+                dependencies={table.destination_tables.data}
               />
               <TableDependencies
                 label="Downstream dependencies"
-                dependencies={table.source_tables}
+                dependencies={table.source_tables.data}
               />
             </TableBody>
           </Table>
         </Card>
       </Grid>
     </Grid>
-    <TableColumns columns={table.columns} />
+    <TableColumns columns={table.columns.data} />
   </>
 )
 

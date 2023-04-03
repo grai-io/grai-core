@@ -112,7 +112,12 @@ test("no tables", async () => {
         data: {
           workspace: {
             id: "1234",
-            tables: [],
+            tables: {
+              data: [],
+              meta: {
+                total: 0,
+              },
+            },
           },
         },
       },

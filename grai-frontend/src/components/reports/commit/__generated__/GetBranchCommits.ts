@@ -7,40 +7,45 @@
 // GraphQL query operation: GetBranchCommits
 // ====================================================
 
-export interface GetBranchCommits_workspace_repository_branch_commits_last_successful_run {
+export interface GetBranchCommits_workspace_repository_branch_commits_data_last_successful_run {
   __typename: "Run";
   id: any;
   metadata: any;
 }
 
-export interface GetBranchCommits_workspace_repository_branch_commits_branch {
+export interface GetBranchCommits_workspace_repository_branch_commits_data_branch {
   __typename: "Branch";
   id: any;
   reference: string;
 }
 
-export interface GetBranchCommits_workspace_repository_branch_commits_pull_request {
+export interface GetBranchCommits_workspace_repository_branch_commits_data_pull_request {
   __typename: "PullRequest";
   id: any;
   reference: string;
   title: string | null;
 }
 
-export interface GetBranchCommits_workspace_repository_branch_commits {
+export interface GetBranchCommits_workspace_repository_branch_commits_data {
   __typename: "Commit";
   id: any;
   reference: string;
   title: string | null;
   created_at: any;
-  last_successful_run: GetBranchCommits_workspace_repository_branch_commits_last_successful_run | null;
-  branch: GetBranchCommits_workspace_repository_branch_commits_branch;
-  pull_request: GetBranchCommits_workspace_repository_branch_commits_pull_request | null;
+  last_successful_run: GetBranchCommits_workspace_repository_branch_commits_data_last_successful_run | null;
+  branch: GetBranchCommits_workspace_repository_branch_commits_data_branch;
+  pull_request: GetBranchCommits_workspace_repository_branch_commits_data_pull_request | null;
+}
+
+export interface GetBranchCommits_workspace_repository_branch_commits {
+  __typename: "CommitPagination";
+  data: GetBranchCommits_workspace_repository_branch_commits_data[];
 }
 
 export interface GetBranchCommits_workspace_repository_branch {
   __typename: "Branch";
   id: any;
-  commits: GetBranchCommits_workspace_repository_branch_commits[];
+  commits: GetBranchCommits_workspace_repository_branch_commits;
 }
 
 export interface GetBranchCommits_workspace_repository {

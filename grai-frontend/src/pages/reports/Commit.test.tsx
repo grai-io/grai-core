@@ -51,17 +51,19 @@ test("renders no pr", async () => {
                 pull_request: null,
               },
             },
-            tables: [sourceTable, destinationTable, spareTable],
-            other_edges: [
-              {
-                id: "1",
-                is_active: true,
-                data_source: "test",
-                source: sourceTable,
-                destination: destinationTable,
-                metadata: { grai: { constraint_type: "dbt_model" } },
-              },
-            ],
+            tables: { data: [sourceTable, destinationTable, spareTable] },
+            other_edges: {
+              data: [
+                {
+                  id: "1",
+                  is_active: true,
+                  data_source: "test",
+                  source: sourceTable,
+                  destination: destinationTable,
+                  metadata: { grai: { constraint_type: "dbt_model" } },
+                },
+              ],
+            },
           },
         },
       },
@@ -106,17 +108,19 @@ test("not found", async () => {
               repo: "repo",
               commit: null,
             },
-            tables: [sourceTable, destinationTable, spareTable],
-            other_edges: [
-              {
-                id: "1",
-                is_active: true,
-                data_source: "test",
-                source: sourceTable,
-                destination: destinationTable,
-                metadata: { grai: { constraint_type: "dbt_model" } },
-              },
-            ],
+            tables: { data: [sourceTable, destinationTable, spareTable] },
+            other_edges: {
+              data: [
+                {
+                  id: "1",
+                  is_active: true,
+                  data_source: "test",
+                  source: sourceTable,
+                  destination: destinationTable,
+                  metadata: { grai: { constraint_type: "dbt_model" } },
+                },
+              ],
+            },
           },
         },
       },

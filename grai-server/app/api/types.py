@@ -1,34 +1,60 @@
 import datetime
 import time
 from enum import Enum
-from typing import List, Optional
+from typing import Optional
+from xml.dom import NodeFilter
 
 import strawberry
 import strawberry_django
 from django.conf import settings
 from django.db.models import Prefetch, Q
+from django.db.models.query import QuerySet
 from strawberry.scalars import JSON
 from strawberry_django.filters import FilterLookup
-from strawberry_django.ordering import generate_order_args
 from strawberry_django.pagination import OffsetPaginationInput
 from strawberry_django_plus import gql
 from strawberry_django_plus.gql import auto
 
 from api.search import Search
 from connections.models import Connection as ConnectionModel
-from connections.models import Connector as ConnectorModel
 from connections.models import Run as RunModel
+from connections.types import Connector, ConnectorFilter
 from installations.models import Branch as BranchModel
 from installations.models import Commit as CommitModel
 from installations.models import PullRequest as PullRequestModel
 from installations.models import Repository as RepositoryModel
 from lineage.models import Edge as EdgeModel
 from lineage.models import Node as NodeModel
-from users.models import User as UserModel
+from lineage.types import Edge, Node, NodeFilter, NodeOrder
+from users.types import User, UserFilter
 from workspaces.models import Membership as MembershipModel
-from workspaces.models import Organisation as OrganisationModel
 from workspaces.models import Workspace as WorkspaceModel
 from workspaces.models import WorkspaceAPIKey as WorkspaceAPIKeyModel
+from workspaces.types import Organisation
+
+from .pagination import DataWrapper, Pagination
+
+
+@strawberry.enum
+class RunAction(Enum):
+    TESTS = RunModel.TESTS
+    UPDATE = RunModel.UPDATE
+    VALIDATE = RunModel.VALIDATE
+
+
+@gql.django.type(RunModel, order="RunOrder", pagination=True)
+class Run:
+    id: auto
+    connection: "Connection"
+    status: auto
+    action: RunAction
+    metadata: JSON
+    created_at: auto
+    updated_at: auto
+    started_at: Optional[datetime.datetime]
+    finished_at: Optional[datetime.datetime]
+    user: Optional[User]
+    commit: Optional["Commit"]
 
 
 @strawberry.input
@@ -39,161 +65,22 @@ class WorkspaceRunFilter:
     action: Optional["RunAction"] = strawberry.UNSET
 
 
-def get_runs(q_filter: Q, filters: Optional[WorkspaceRunFilter], order: Optional["RunOrder"]):
+def apply_run_filters(queryset: QuerySet, filters: Optional[WorkspaceRunFilter] = strawberry.UNSET):
     if filters:
-        if filters.owner is not strawberry.UNSET:
+        q_filter = Q()
+
+        if filters.owner:
             q_filter &= Q(commit__repository__owner=filters.owner, commit__repository__repo=filters.repo)
 
-        if filters.branch is not strawberry.UNSET:
+        if filters.branch:
             q_filter &= Q(commit__branch__reference=filters.branch)
 
-        if filters.action is not strawberry.UNSET:
+        if filters.action:
             q_filter &= Q(action=filters.action.value)
 
-    if order:
-        return RunModel.objects.order_by(*generate_order_args(order)).filter(q_filter)
+        queryset = queryset.filter(q_filter)
 
-    return RunModel.objects.filter(q_filter)
-
-
-@gql.django.filters.filter(UserModel, lookups=True)
-class UserFilter:
-    username: auto
-    first_name: Optional[str]
-    last_name: Optional[str]
-    created_at: auto
-    updated_at: auto
-
-
-@strawberry_django.ordering.order(UserModel)
-class UserOrder:
-    username: auto
-    first_name: auto
-    last_name: auto
-    created_at: auto
-    updated_at: auto
-
-
-@gql.django.type(UserModel, order=UserOrder, filters=UserFilter)
-class User:
-    id: auto
-    username: auto
-    first_name: auto
-    last_name: auto
-
-    @gql.field
-    def full_name(self) -> str:
-        return f"{self.first_name} {self.last_name}"
-
-    created_at: auto
-    updated_at: auto
-
-
-@gql.django.filters.filter(NodeModel, lookups=True)
-class NodeFilter:
-    id: auto
-    namespace: auto
-    name: auto
-    display_name: auto
-    data_source: auto
-    is_active: auto
-    created_at: auto
-    updated_at: auto
-    source_edges: "EdgeFilter"
-    destination_edges: "EdgeFilter"
-
-
-@strawberry_django.ordering.order(NodeModel)
-class NodeOrder:
-    id: auto
-    namespace: auto
-    name: auto
-    display_name: auto
-    data_source: auto
-    is_active: auto
-    created_at: auto
-    updated_at: auto
-
-
-@gql.django.type(NodeModel, order=NodeOrder, filters=NodeFilter, pagination=True, only=["id"])
-class Node:
-    id: auto
-    namespace: auto
-    name: auto
-    display_name: auto
-    data_source: auto
-    metadata: JSON
-    is_active: auto
-    source_edges: List["Edge"]
-    destination_edges: List["Edge"]
-
-
-@gql.django.filters.filter(EdgeModel, lookups=True)
-class EdgeFilter:
-    id: auto
-    namespace: auto
-    name: auto
-    display_name: auto
-    data_source: auto
-    is_active: auto
-    source: NodeFilter
-    destination: NodeFilter
-    created_at: auto
-    updated_at: auto
-
-
-@strawberry_django.ordering.order(EdgeModel)
-class EdgeOrder:
-    id: auto
-    namespace: auto
-    name: auto
-    display_name: auto
-    data_source: auto
-    is_active: auto
-    created_at: auto
-    updated_at: auto
-
-
-@gql.django.type(EdgeModel, order=EdgeOrder, filters=EdgeFilter, pagination=True)
-class Edge:
-    id: auto
-    namespace: auto
-    name: auto
-    display_name: auto
-    data_source: auto
-    source: Node = gql.django.field()
-    destination: Node = gql.django.field()
-    metadata: JSON
-    is_active: auto
-    created_at: auto
-    updated_at: auto
-
-
-@gql.django.filters.filter(ConnectorModel, lookups=True)
-class ConnectorFilter:
-    id: auto
-    name: auto
-    is_active: auto
-
-
-@strawberry_django.ordering.order(ConnectorModel)
-class ConnectorOrder:
-    id: auto
-    name: auto
-    is_active: auto
-    category: auto
-    coming_soon: auto
-
-
-@gql.django.type(ConnectorModel, order=ConnectorOrder, filters=ConnectorFilter, pagination=True)
-class Connector:
-    id: auto
-    name: auto
-    metadata: JSON
-    is_active: auto
-    icon: Optional[str]
-    category: Optional[str]
-    coming_soon: auto
+    return queryset
 
 
 @strawberry_django.ordering.order(RunModel)
@@ -239,15 +126,19 @@ class Connection:
     created_by: User
 
     # Runs
-    @gql.django.field
+    @strawberry.field
     def runs(
         self,
-        filters: Optional["WorkspaceRunFilter"] = strawberry.UNSET,
+        filters: Optional[WorkspaceRunFilter] = strawberry.UNSET,
         order: Optional[RunOrder] = strawberry.UNSET,
-    ) -> List["Run"]:
-        q_filter = Q(connection=self)
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination[Run]:
+        queryset = RunModel.objects.filter(connection=self)
 
-        return get_runs(q_filter, filters, order)
+        def apply_filters(queryset):
+            return apply_run_filters(queryset, filters)
+
+        return Pagination[Run](queryset=queryset, apply_filters=apply_filters, order=order, pagination=pagination)
 
     # run: Run = strawberry.django.field
     @gql.django.field
@@ -266,8 +157,13 @@ class Connection:
 @gql.django.type(NodeModel, order=NodeOrder, filters=NodeFilter, pagination=True)
 class Column(Node):
     @gql.django.field
-    def requirements_edges(self) -> List[Edge]:
-        return EdgeModel.objects.filter(source=self).filter(metadata__grai__edge_type="ColumnToColumn")
+    def requirements_edges(
+        self,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination[Edge]:
+        queryset = EdgeModel.objects.filter(source=self).filter(metadata__grai__edge_type="ColumnToColumn")
+
+        return Pagination[Edge](queryset=queryset, pagination=pagination)
 
 
 @gql.django.type(NodeModel, order=NodeOrder, filters=NodeFilter, pagination=True)
@@ -279,8 +175,8 @@ class Table(Node):
             to_attr="edges_list",
         )
     )
-    def columns(self) -> List[Column]:
-        return list(set([edge.destination for edge in self.edges_list]))
+    def columns(self) -> DataWrapper[Column]:
+        return DataWrapper[Column](list(set([edge.destination for edge in self.edges_list])))
 
     @gql.django.field(
         prefetch_related=(
@@ -331,7 +227,7 @@ class Table(Node):
             ),
         )
     )
-    def source_tables(self) -> List["Table"]:
+    def source_tables(self) -> DataWrapper["Table"]:
         tables = []
 
         for source in self.sources_list:
@@ -342,7 +238,7 @@ class Table(Node):
                 for table in source.destination.tables:
                     tables.append(table.source)
 
-        return list(set(tables))
+        return DataWrapper["Table"](list(set(tables)))
 
     @gql.django.field(
         prefetch_related=(
@@ -391,7 +287,7 @@ class Table(Node):
             ),
         )
     )
-    def destination_tables(self) -> List["Table"]:
+    def destination_tables(self) -> DataWrapper["Table"]:
         tables = []
 
         for destination in self.destinations_list:
@@ -402,13 +298,7 @@ class Table(Node):
                 for table in destination.source.tables:
                     tables.append(table.source)
 
-        return list(set(tables))
-
-
-@gql.django.type(OrganisationModel)
-class Organisation:
-    id: auto
-    name: auto
+        return DataWrapper["Table"](list(set(tables)))
 
 
 @strawberry.input
@@ -435,6 +325,7 @@ class WorkspaceOrder:
 class Workspace:
     id: auto
     name: auto
+
     created_at: auto
     updated_at: auto
 
@@ -442,8 +333,13 @@ class Workspace:
 
     # Nodes
     @gql.django.field
-    def nodes(self) -> List["Node"]:
-        return NodeModel.objects.filter(workspace=self)
+    def nodes(
+        self,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination["Node"]:
+        queryset = NodeModel.objects.filter(workspace=self)
+
+        return Pagination[Node](queryset=queryset, pagination=pagination)
 
     @gql.django.field
     def node(self, id: strawberry.ID) -> Node:
@@ -451,8 +347,13 @@ class Workspace:
 
     # Edges
     @gql.django.field
-    def edges(self) -> List["Edge"]:
-        return EdgeModel.objects.filter(workspace=self)
+    def edges(
+        self,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination["Edge"]:
+        queryset = EdgeModel.objects.filter(workspace=self)
+
+        return Pagination[Edge](queryset=queryset, pagination=pagination)
 
     @gql.django.field
     def edge(self, id: strawberry.ID) -> Edge:
@@ -460,23 +361,32 @@ class Workspace:
 
     # Connections
     @gql.django.field
-    def connections(self) -> List["Connection"]:
-        return ConnectionModel.objects.filter(workspace=self, temp=False)
+    def connections(
+        self,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination[Connection]:
+        queryset = ConnectionModel.objects.filter(workspace=self, temp=False)
+
+        return Pagination[Connection](queryset=queryset, pagination=pagination)
 
     @gql.django.field
     def connection(self, id: strawberry.ID) -> Connection:
         return ConnectionModel.objects.get(id=id)
 
     # Runs
-    @gql.django.field
+    @strawberry.field
     def runs(
         self,
         filters: Optional[WorkspaceRunFilter] = strawberry.UNSET,
         order: Optional[RunOrder] = strawberry.UNSET,
-    ) -> List["Run"]:
-        q_filter = Q(workspace=self)
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination[Run]:
+        queryset = RunModel.objects.filter(workspace=self)
 
-        return get_runs(q_filter, filters, order)
+        def apply_filters(queryset):
+            return apply_run_filters(queryset, filters)
+
+        return Pagination[Run](queryset=queryset, apply_filters=apply_filters, order=order, pagination=pagination)
 
     @gql.django.field
     def run(self, id: strawberry.ID) -> "Run":
@@ -484,66 +394,74 @@ class Workspace:
 
     # Memberships
     @gql.django.field
-    def memberships(self) -> List["Membership"]:
-        return MembershipModel.objects.filter(workspace=self)
+    def memberships(
+        self,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination["Membership"]:
+        queryset = MembershipModel.objects.filter(workspace=self)
+
+        return Pagination[Membership](queryset=queryset, pagination=pagination)
 
     # Api Keys
-    api_keys: List["WorkspaceAPIKey"] = gql.django.field()
+    @gql.django.field
+    def api_keys(
+        self,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination["WorkspaceAPIKey"]:
+        queryset = WorkspaceAPIKeyModel.objects.filter(workspace=self)
+
+        return Pagination[WorkspaceAPIKey](queryset=queryset, pagination=pagination)
 
     # Tables
     @gql.django.field
-    def tables(self, pagination: Optional[OffsetPaginationInput] = strawberry.UNSET) -> List[Table]:
-        query_set = NodeModel.objects.filter(workspace_id=self.id, metadata__grai__node_type="Table")
+    def tables(self, pagination: Optional[OffsetPaginationInput] = strawberry.UNSET) -> Pagination[Table]:
+        queryset = NodeModel.objects.filter(workspace=self, metadata__grai__node_type="Table")
 
-        if pagination:
-            start = pagination.offset
-            stop = start + pagination.limit
-            return query_set[start:stop]
-
-        return query_set
-
-    @gql.django.field
-    def tables_count(self) -> int:
-        return NodeModel.objects.filter(workspace_id=self.id, metadata__grai__node_type="Table").count()
+        return Pagination[Table](queryset=queryset, pagination=pagination)
 
     @gql.django.field
     def table(self, id: strawberry.ID) -> Table:
-        return NodeModel.objects.filter(id=id, workspace_id=self.id, metadata__grai__node_type="Table")
+        return NodeModel.objects.filter(id=id, workspace=self, metadata__grai__node_type="Table")
 
     # Other edges
     @gql.django.field
-    def other_edges(self) -> List[Edge]:
-        return EdgeModel.objects.filter(workspace_id=self.id).exclude(
+    def other_edges(
+        self,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination[Edge]:
+        queryset = EdgeModel.objects.filter(workspace=self).exclude(
             metadata__has_key="grai.edge_type", metadata__grai__edge_type="TableToColumn"
         )
 
-    @gql.django.field
-    def other_edges_count(self) -> int:
-        return (
-            EdgeModel.objects.filter(workspace_id=self.id)
-            .exclude(metadata__has_key="grai.edge_type", metadata__grai__edge_type="TableToColumn")
-            .count()
-        )
+        return Pagination[Edge](queryset=queryset, pagination=pagination)
 
     # Repositories
     @gql.django.field
     def repositories(
         self,
         filters: Optional[WorkspaceRepositoryFilter] = strawberry.UNSET,
-    ) -> List["Repository"]:
-        q_filter = Q(workspace=self)
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination["Repository"]:
+        queryset = RepositoryModel.objects.filter(workspace=self)
 
-        if filters is not strawberry.UNSET:
-            if filters.type is not strawberry.UNSET:
-                q_filter &= Q(type=filters.type)
+        def apply_filters(queryset: QuerySet) -> QuerySet:
+            if filters:
+                q_filter = Q()
 
-            if filters.owner is not strawberry.UNSET:
-                q_filter &= Q(owner=filters.owner)
+                if filters.type:
+                    q_filter &= Q(type=filters.type)
 
-            if filters.repo is not strawberry.UNSET:
-                q_filter &= Q(repo=filters.repo)
+                if filters.owner:
+                    q_filter &= Q(owner=filters.owner)
 
-        return RepositoryModel.objects.filter(q_filter)
+                if filters.repo:
+                    q_filter &= Q(repo=filters.repo)
+
+                return queryset.filter(q_filter)
+
+            return queryset
+
+        return Pagination[Repository](queryset=queryset, apply_filters=apply_filters, pagination=pagination)
 
     @gql.django.field
     def repository(
@@ -561,8 +479,13 @@ class Workspace:
 
     # Branches
     @gql.django.field
-    def branches(self) -> List["Branch"]:
-        return BranchModel.objects.filter(workspace=self)
+    def branches(
+        self,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination["Branch"]:
+        queryset = BranchModel.objects.filter(workspace=self)
+
+        return Pagination["Branch"](queryset=queryset, pagination=pagination)
 
     @gql.django.field
     def branch(self, id: Optional[strawberry.ID] = None, reference: Optional[str] = strawberry.UNSET) -> "Branch":
@@ -574,8 +497,13 @@ class Workspace:
 
     # Pull Requests
     @gql.django.field
-    def pull_requests(self) -> List["PullRequest"]:
-        return PullRequestModel.objects.filter(workspace=self)
+    def pull_requests(
+        self,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination["PullRequest"]:
+        queryset = PullRequestModel.objects.filter(workspace=self)
+
+        return Pagination[PullRequest](queryset=queryset, pagination=pagination)
 
     @gql.django.field
     def pull_request(
@@ -589,8 +517,13 @@ class Workspace:
 
     # Commits
     @gql.django.field
-    def commits(self) -> List["Commit"]:
-        return CommitModel.objects.filter(workspace=self)
+    def commits(
+        self,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination["Commit"]:
+        queryset = CommitModel.objects.filter(workspace=self)
+
+        return Pagination[Commit](queryset=queryset, pagination=pagination)
 
     @gql.django.field
     def commit(self, id: Optional[strawberry.ID] = None, reference: Optional[str] = strawberry.UNSET) -> "Commit":
@@ -686,28 +619,6 @@ class BasicResult:
     success: bool
 
 
-@strawberry.enum
-class RunAction(Enum):
-    TESTS = RunModel.TESTS
-    UPDATE = RunModel.UPDATE
-    VALIDATE = RunModel.VALIDATE
-
-
-@gql.django.type(RunModel, order=RunOrder, pagination=True)
-class Run:
-    id: auto
-    connection: Connection
-    status: auto
-    action: RunAction
-    metadata: JSON
-    created_at: auto
-    updated_at: auto
-    started_at: Optional[datetime.datetime]
-    finished_at: Optional[datetime.datetime]
-    user: Optional[User]
-    commit: Optional["Commit"]
-
-
 @gql.django.type(RepositoryModel)
 class Repository:
     id: auto
@@ -717,7 +628,14 @@ class Repository:
     repo: auto
 
     # Pull Requests
-    pull_requests: List["PullRequest"]
+    @gql.django.field
+    def pull_requests(
+        self,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination["PullRequest"]:
+        queryset = PullRequestModel.objects.filter(repository=self)
+
+        return Pagination[PullRequest](queryset=queryset, pagination=pagination)
 
     @gql.django.field
     def pull_request(
@@ -730,7 +648,14 @@ class Repository:
         )
 
     # Branches
-    branches: List["Branch"]
+    @gql.django.field
+    def branches(
+        self,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination["Branch"]:
+        queryset = BranchModel.objects.filter(repository=self)
+
+        return Pagination["Branch"](queryset=queryset, pagination=pagination)
 
     @gql.django.field
     def branch(self, id: Optional[strawberry.ID] = None, reference: Optional[str] = strawberry.UNSET) -> "Branch":
@@ -741,7 +666,14 @@ class Repository:
         )
 
     # Commits
-    commits: List["Commit"]
+    @gql.django.field
+    def commits(
+        self,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination["Commit"]:
+        queryset = CommitModel.objects.filter(repository=self)
+
+        return Pagination[Commit](queryset=queryset, pagination=pagination)
 
     @gql.django.field
     def commit(self, id: Optional[strawberry.ID] = None, reference: Optional[str] = strawberry.UNSET) -> "Commit":
@@ -758,8 +690,25 @@ class Branch:
     reference: auto
     repository: "Repository"
 
-    pull_requests: List["PullRequest"]
-    commits: List["Commit"]
+    # Pull Requests
+    @gql.django.field
+    def pull_requests(
+        self,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination["PullRequest"]:
+        queryset = PullRequestModel.objects.filter(branch=self)
+
+        return Pagination[PullRequest](queryset=queryset, pagination=pagination)
+
+    # Commits
+    @gql.django.field
+    def commits(
+        self,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination["Commit"]:
+        queryset = CommitModel.objects.filter(branch=self)
+
+        return Pagination[Commit](queryset=queryset, pagination=pagination)
 
     @gql.django.field
     def last_commit(self) -> Optional["Commit"]:
@@ -774,7 +723,15 @@ class PullRequest:
     repository: "Repository"
     branch: "Branch"
 
-    commits: List["Commit"]
+    # Commits
+    @gql.django.field
+    def commits(
+        self,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination["Commit"]:
+        queryset = CommitModel.objects.filter(pull_request=self)
+
+        return Pagination[Commit](queryset=queryset, pagination=pagination)
 
     @gql.django.field
     def last_commit(self) -> Optional["Commit"]:
@@ -792,15 +749,19 @@ class Commit:
     created_at: auto
 
     # Runs
-    @gql.django.field
+    @strawberry.field
     def runs(
         self,
-        filters: Optional["WorkspaceRunFilter"] = strawberry.UNSET,
+        filters: Optional[WorkspaceRunFilter] = strawberry.UNSET,
         order: Optional[RunOrder] = strawberry.UNSET,
-    ) -> List["Run"]:
-        q_filter = Q(commit=self)
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination[Run]:
+        queryset = RunModel.objects.filter(commit=self)
 
-        return get_runs(q_filter, filters, order)
+        def apply_filters(queryset):
+            return apply_run_filters(queryset, filters)
+
+        return Pagination[Run](queryset=queryset, apply_filters=apply_filters, order=order, pagination=pagination)
 
     @gql.django.field
     def last_run(self) -> Optional["Run"]:

@@ -26,7 +26,7 @@ test("renders connection", async () => {
       name: "Connection1",
       last_run: null,
       last_successful_run: null,
-      runs: [],
+      runs: { data: [] },
       connector: {
         id: "1",
         name: "Connector",

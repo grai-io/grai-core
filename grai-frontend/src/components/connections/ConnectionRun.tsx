@@ -47,17 +47,19 @@ export const RUN_CONNECTION = gql`
           }
         }
         runs {
-          id
-          status
-          created_at
-          started_at
-          finished_at
-          user {
+          data {
             id
-            first_name
-            last_name
+            status
+            created_at
+            started_at
+            finished_at
+            user {
+              id
+              first_name
+              last_name
+            }
+            metadata
           }
-          metadata
         }
       }
     }
@@ -85,7 +87,7 @@ export interface Connection {
   name: string
   last_run: Run | null
   last_successful_run: Run | null
-  runs: Run[]
+  runs: { data: Run[] }
 }
 
 export interface RunResult {
@@ -144,7 +146,10 @@ const ConnectionRun: React.FC<ConnectionRunProps> = ({
           connection: {
             id: connection.id,
             __typename: "Connection",
-            runs: [tmpRun, ...connection.runs.map(runToTypedRun)],
+            runs: {
+              data: [tmpRun, ...connection.runs.data.map(runToTypedRun)],
+              __typename: "RunPagination",
+            },
             last_successful_run: connection.last_successful_run
               ? runToTypedRun(connection.last_successful_run)
               : null,

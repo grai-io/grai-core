@@ -28,27 +28,31 @@ export const GET_COMMITS = gql`
         owner
         repo
         commits {
-          id
-          reference
-          title
-          created_at
-          last_successful_run {
-            id
-            metadata
-          }
-          branch {
-            id
-            reference
-          }
-          pull_request {
+          data {
             id
             reference
             title
+            created_at
+            last_successful_run {
+              id
+              metadata
+            }
+            branch {
+              id
+              reference
+            }
+            pull_request {
+              id
+              reference
+              title
+            }
           }
         }
         branches {
-          id
-          reference
+          data {
+            id
+            reference
+          }
         }
       }
     }
@@ -89,7 +93,7 @@ const Commits: React.FC = () => {
       <ReportHeader type={type} repository={repository} />
       <Box sx={{ px: 2 }}>
         <ReportTabs currentTab="commits" type={type} repository={repository} />
-        <BranchFilter branches={repository.branches} />
+        <BranchFilter branches={repository.branches.data} />
         {branchReference ? (
           <CommitsList
             type={type}
@@ -98,7 +102,7 @@ const Commits: React.FC = () => {
           />
         ) : (
           <CommitsTable
-            commits={repository.commits}
+            commits={repository.commits.data}
             type={type}
             repository={repository}
           />

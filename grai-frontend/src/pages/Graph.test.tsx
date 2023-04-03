@@ -20,17 +20,19 @@ const mocks = [
       data: {
         workspace: {
           id: "1",
-          tables: [sourceTable, destinationTable, spareTable],
-          other_edges: [
-            {
-              id: "1",
-              is_active: true,
-              data_source: "test",
-              source: sourceTable,
-              destination: destinationTable,
-              metadata: { grai: { constraint_type: "dbt_model" } },
-            },
-          ],
+          tables: { data: [sourceTable, destinationTable, spareTable] },
+          other_edges: {
+            data: [
+              {
+                id: "1",
+                is_active: true,
+                data_source: "test",
+                source: sourceTable,
+                destination: destinationTable,
+                metadata: { grai: { constraint_type: "dbt_model" } },
+              },
+            ],
+          },
         },
       },
     },
@@ -187,8 +189,8 @@ test("no nodes", async () => {
         data: {
           workspace: {
             id: "1",
-            tables: null,
-            other_edges: null,
+            tables: { data: null },
+            other_edges: { data: null },
           },
         },
       },

@@ -34,7 +34,7 @@ export interface Column {
   name: string
   display_name: string
   metadata: ColumnMetadata | null
-  requirements_edges: RequirementEdge[]
+  requirements_edges: { data: RequirementEdge[] }
 }
 
 export interface EnrichedColumn extends Column {
@@ -66,7 +66,7 @@ export type Edge = Test & {
 }
 
 export const columnTests = (column: Column, properties: string[]) =>
-  column.requirements_edges.reduce<Test[]>((res, edge) => {
+  column.requirements_edges.data.reduce<Test[]>((res, edge) => {
     const edge_attributes = edge.metadata?.grai?.edge_attributes
     const node_attributes = edge.destination.metadata.grai?.node_attributes
 
@@ -109,7 +109,7 @@ export const columnTests = (column: Column, properties: string[]) =>
   }, [])
 
 export const columnEdges = (column: Column, properties: string[]) =>
-  column.requirements_edges.reduce<Edge[]>((res, edge) => {
+  column.requirements_edges.data.reduce<Edge[]>((res, edge) => {
     const edge_attributes = edge.metadata?.grai?.edge_attributes
     const node_attributes = edge.destination.metadata.grai?.node_attributes
 
@@ -166,7 +166,7 @@ export const columnProperties = (column: Column) => {
 }
 
 export const columnRequirements = (column: Column, properties: string[]) =>
-  column.requirements_edges.map(edge => ({
+  column.requirements_edges.data.map(edge => ({
     destination: edge.destination,
     tests: columnEdges(column, properties),
   }))

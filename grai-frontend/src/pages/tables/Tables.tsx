@@ -13,13 +13,18 @@ export const GET_TABLES = gql`
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       tables {
-        id
-        namespace
-        name
-        display_name
-        is_active
-        data_source
-        metadata
+        data {
+          id
+          namespace
+          name
+          display_name
+          is_active
+          data_source
+          metadata
+        }
+        meta {
+          total
+        }
       }
     }
   }
@@ -50,7 +55,7 @@ const Tables: React.FC = () => {
 
   if (error) return <GraphError error={error} />
 
-  const tables = data?.workspace?.tables ?? []
+  const tables = data?.workspace?.tables.data ?? []
 
   const handleRefresh = () => refetch()
 
@@ -68,7 +73,11 @@ const Tables: React.FC = () => {
         onRefresh={handleRefresh}
       />
       <Box sx={{ px: 3 }}>
-        <TablesTable tables={filteredTables} loading={loading} />
+        <TablesTable
+          tables={filteredTables}
+          loading={loading}
+          total={data?.workspace.tables.meta.total ?? 0}
+        />
       </Box>
     </PageLayout>
   )

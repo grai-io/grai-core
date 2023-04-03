@@ -23,69 +23,73 @@ export const GET_REPORTS = gql`
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       repositories {
-        id
-        type
-        owner
-        repo
-        branches {
+        data {
           id
-          reference
+          type
+          owner
+          repo
+          branches {
+            data {
+              id
+              reference
+            }
+          }
+          pull_requests {
+            data {
+              id
+              reference
+              title
+            }
+          }
         }
-        pull_requests {
-          id
-          reference
-          title
-        }
-      }
-      connections {
-        id
-        name
       }
       runs(
         filters: { owner: $owner, repo: $repo, branch: $branch, action: TESTS }
         order: { created_at: DESC }
       ) {
-        id
-        status
-        connection {
+        data {
           id
-          name
-          temp
-          connector {
+          status
+          connection {
             id
             name
-            icon
+            temp
+            connector {
+              id
+              name
+              icon
+            }
           }
-        }
-        commit {
-          id
-          reference
-          title
-          branch {
-            id
-            reference
-          }
-          pull_request {
+          commit {
             id
             reference
             title
+            branch {
+              id
+              reference
+            }
+            pull_request {
+              id
+              reference
+              title
+            }
+            repository {
+              id
+              type
+              owner
+              repo
+            }
           }
-          repository {
+          created_at
+          started_at
+          finished_at
+          user {
             id
-            type
-            owner
-            repo
+            first_name
+            last_name
           }
+          metadata
         }
-        created_at
-        started_at
-        finished_at
-        user {
-          id
-          first_name
-          last_name
-        }
-        metadata
       }
     }
   }
@@ -124,7 +128,10 @@ const Reports: React.FC = () => {
           workspace={data?.workspace ?? null}
           onRefresh={handleRefresh}
         />
-        <ReportsTable runs={data?.workspace.runs ?? null} loading={loading} />
+        <ReportsTable
+          runs={data?.workspace.runs.data ?? null}
+          loading={loading}
+        />
       </Box>
     </PageLayout>
   )

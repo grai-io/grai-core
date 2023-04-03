@@ -48,36 +48,46 @@ export const GET_PULL_REQUEST = gql`
         }
       }
       tables {
-        id
-        namespace
-        name
-        display_name
-        data_source
-        metadata
-        columns {
+        data {
           id
-          name
-        }
-        source_tables {
-          id
+          namespace
           name
           display_name
-        }
-        destination_tables {
-          id
-          name
-          display_name
+          data_source
+          metadata
+          columns {
+            data {
+              id
+              name
+            }
+          }
+          source_tables {
+            data {
+              id
+              name
+              display_name
+            }
+          }
+          destination_tables {
+            data {
+              id
+              name
+              display_name
+            }
+          }
         }
       }
       other_edges {
-        id
-        source {
+        data {
           id
+          source {
+            id
+          }
+          destination {
+            id
+          }
+          metadata
         }
-        destination {
-          id
-        }
-        metadata
       }
     }
   }
@@ -113,8 +123,8 @@ const PullRequest: React.FC = () => {
   const run = pullRequest.last_commit?.last_successful_run ?? null
   const errors = resultsToErrors(run?.metadata.results)
 
-  const tables = data?.workspace.tables
-  const edges = data?.workspace.other_edges
+  const tables = data?.workspace.tables.data
+  const edges = data?.workspace.other_edges.data
 
   return (
     <PageLayout>

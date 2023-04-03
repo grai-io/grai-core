@@ -13,8 +13,8 @@ export interface Table extends BaseTable {
 }
 
 export interface EnhancedTable extends BaseTable {
-  source_tables: BaseTable[]
-  destination_tables: BaseTable[]
+  source_tables: { data: BaseTable[] }
+  destination_tables: { data: BaseTable[] }
 }
 
 export interface Edge {
