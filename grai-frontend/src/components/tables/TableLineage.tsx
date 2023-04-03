@@ -27,19 +27,25 @@ export const GET_TABLES_AND_EDGES = gql`
           data_source
           metadata
           columns {
-            id
-            name
-            display_name
+            data {
+              id
+              name
+              display_name
+            }
           }
           source_tables {
-            id
-            name
-            display_name
+            data {
+              id
+              name
+              display_name
+            }
           }
           destination_tables {
-            id
-            name
-            display_name
+            data {
+              id
+              name
+              display_name
+            }
           }
         }
       }
@@ -96,10 +102,10 @@ const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
         tables
           .filter(
             t =>
-              t.source_tables.some(sourceTable =>
+              t.source_tables.data.some(sourceTable =>
                 res.includes(sourceTable.id)
               ) ||
-              t.destination_tables.some(destinationTable =>
+              t.destination_tables.data.some(destinationTable =>
                 res.includes(destinationTable.id)
               )
           )

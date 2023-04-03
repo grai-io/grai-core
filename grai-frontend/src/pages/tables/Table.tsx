@@ -26,32 +26,38 @@ export const GET_TABLE = gql`
         data_source
         metadata
         columns {
-          id
-          name
-          display_name
-          requirements_edges {
-            data {
-              id
-              metadata
-              destination {
+          data {
+            id
+            name
+            display_name
+            requirements_edges {
+              data {
                 id
-                name
-                display_name
                 metadata
+                destination {
+                  id
+                  name
+                  display_name
+                  metadata
+                }
               }
             }
+            metadata
           }
-          metadata
         }
         source_tables {
-          id
-          name
-          display_name
+          data {
+            id
+            name
+            display_name
+          }
         }
         destination_tables {
-          id
-          name
-          display_name
+          data {
+            id
+            name
+            display_name
+          }
         }
       }
     }

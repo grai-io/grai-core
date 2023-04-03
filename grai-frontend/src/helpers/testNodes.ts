@@ -24,9 +24,9 @@ export const sourceTable = {
       node_type: "Table",
     },
   },
-  columns: [columnNode],
-  source_tables: [],
-  destination_tables: [],
+  columns: { data: [columnNode] },
+  source_tables: { data: [] },
+  destination_tables: { data: [] },
 }
 
 export const destinationTable = {
@@ -41,9 +41,9 @@ export const destinationTable = {
       node_type: "Table",
     },
   },
-  columns: [],
-  source_tables: [],
-  destination_tables: [],
+  columns: { data: [] },
+  source_tables: { data: [] },
+  destination_tables: { data: [] },
 }
 
 export const spareTable = {
@@ -58,7 +58,7 @@ export const spareTable = {
       node_type: "Table",
     },
   },
-  columns: [],
-  source_tables: [],
-  destination_tables: [],
+  columns: { data: [] },
+  source_tables: { data: [] },
+  destination_tables: { data: [] },
 }

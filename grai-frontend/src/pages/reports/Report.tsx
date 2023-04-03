@@ -54,18 +54,24 @@ export const GET_RUN = gql`
           data_source
           metadata
           columns {
-            id
-            name
+            data {
+              id
+              name
+            }
           }
           source_tables {
-            id
-            name
-            display_name
+            data {
+              id
+              name
+              display_name
+            }
           }
           destination_tables {
-            id
-            name
-            display_name
+            data {
+              id
+              name
+              display_name
+            }
           }
         }
       }

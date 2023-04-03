@@ -1,7 +1,7 @@
 import datetime
 import time
 from enum import Enum
-from typing import Callable, Generic, List, Optional, TypeVar
+from typing import Optional
 from xml.dom import NodeFilter
 
 import strawberry
@@ -32,8 +32,7 @@ from workspaces.models import Workspace as WorkspaceModel
 from workspaces.models import WorkspaceAPIKey as WorkspaceAPIKeyModel
 from workspaces.types import Organisation
 
-from .order import apply_order
-from .pagination import Pagination, PaginationResult, apply_pagination
+from .pagination import DataWrapper, Pagination
 
 
 @strawberry.enum
@@ -176,8 +175,8 @@ class Table(Node):
             to_attr="edges_list",
         )
     )
-    def columns(self) -> List[Column]:
-        return list(set([edge.destination for edge in self.edges_list]))
+    def columns(self) -> DataWrapper[Column]:
+        return DataWrapper[Column](list(set([edge.destination for edge in self.edges_list])))
 
     @gql.django.field(
         prefetch_related=(
@@ -228,7 +227,7 @@ class Table(Node):
             ),
         )
     )
-    def source_tables(self) -> List["Table"]:
+    def source_tables(self) -> DataWrapper["Table"]:
         tables = []
 
         for source in self.sources_list:
@@ -239,7 +238,7 @@ class Table(Node):
                 for table in source.destination.tables:
                     tables.append(table.source)
 
-        return list(set(tables))
+        return DataWrapper["Table"](list(set(tables)))
 
     @gql.django.field(
         prefetch_related=(
@@ -288,7 +287,7 @@ class Table(Node):
             ),
         )
     )
-    def destination_tables(self) -> List["Table"]:
+    def destination_tables(self) -> DataWrapper["Table"]:
         tables = []
 
         for destination in self.destinations_list:
@@ -299,7 +298,7 @@ class Table(Node):
                 for table in destination.source.tables:
                     tables.append(table.source)
 
-        return list(set(tables))
+        return DataWrapper["Table"](list(set(tables)))
 
 
 @strawberry.input

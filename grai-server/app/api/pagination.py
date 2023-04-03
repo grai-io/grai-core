@@ -63,3 +63,13 @@ def apply_pagination(queryset: QuerySet, pagination: Optional[OffsetPaginationIn
         return queryset[start:stop]
 
     return queryset
+
+
+@strawberry.type
+class DataWrapper(Generic[T]):
+    def __init__(self, data: List[T]):
+        self.data = data
+
+    @gql.django.field
+    def data(self) -> List[T]:
+        return self.data

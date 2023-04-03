@@ -281,12 +281,14 @@ async def test_table(test_context):
             table(id: $tableId) {
                 id
                 columns {
-                  id
-                  requirements_edges {
                     data {
-                        id
-                        destination {
+                    id
+                    requirements_edges {
+                        data {
                             id
+                            destination {
+                                id
+                            }
                         }
                     }
                   }
@@ -308,11 +310,13 @@ async def test_table(test_context):
     assert result.errors is None
     assert result.data["workspace"]["id"] == str(workspace.id)
     assert result.data["workspace"]["table"]["id"] == str(table.id)
-    assert result.data["workspace"]["table"]["columns"][0]["id"] == str(column.id)
-    assert result.data["workspace"]["table"]["columns"][0]["requirements_edges"]["data"][0]["id"] == str(edge.id)
-    assert result.data["workspace"]["table"]["columns"][0]["requirements_edges"]["data"][0]["destination"]["id"] == str(
-        destination.id
+    assert result.data["workspace"]["table"]["columns"]["data"][0]["id"] == str(column.id)
+    assert result.data["workspace"]["table"]["columns"]["data"][0]["requirements_edges"]["data"][0]["id"] == str(
+        edge.id
     )
+    assert result.data["workspace"]["table"]["columns"]["data"][0]["requirements_edges"]["data"][0]["destination"][
+        "id"
+    ] == str(destination.id)
 
 
 @pytest.mark.django_db
@@ -509,9 +513,11 @@ async def test_table_source_tables(test_context):
             table(id: $tableId) {
                 id
                 source_tables {
-                  id
-                  name
-                  display_name
+                    data {
+                    id
+                    name
+                    display_name
+                    }
                 }
             }
           }
@@ -545,9 +551,11 @@ async def test_table_destination_tables(test_context):
             table(id: $tableId) {
                 id
                 destination_tables {
-                  id
-                  name
-                  display_name
+                    data {
+                    id
+                    name
+                    display_name
+                    }
                 }
             }
           }

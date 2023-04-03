@@ -37,15 +37,17 @@ test("renders", async () => {
                   display_name: "Table2",
                   data_source: "test",
                   metadata: {},
-                  columns: [],
-                  source_tables: [
-                    {
-                      id: "1",
-                      name: "Table1",
-                      display_name: "Table1",
-                    },
-                  ],
-                  destination_tables: [],
+                  columns: { data: [] },
+                  source_tables: {
+                    data: [
+                      {
+                        id: "1",
+                        name: "Table1",
+                        display_name: "Table1",
+                      },
+                    ],
+                  },
+                  destination_tables: { data: [] },
                 },
                 {
                   id: "3",
@@ -54,15 +56,17 @@ test("renders", async () => {
                   display_name: "Table3",
                   data_source: "test",
                   metadata: {},
-                  columns: [],
-                  source_tables: [],
-                  destination_tables: [
-                    {
-                      id: "1",
-                      name: "Table1",
-                      display_name: "Table1",
-                    },
-                  ],
+                  columns: { data: [] },
+                  source_tables: { data: [] },
+                  destination_tables: {
+                    data: [
+                      {
+                        id: "1",
+                        name: "Table1",
+                        display_name: "Table1",
+                      },
+                    ],
+                  },
                 },
                 {
                   id: "4",
@@ -71,9 +75,9 @@ test("renders", async () => {
                   display_name: "Table4",
                   data_source: "test",
                   metadata: {},
-                  columns: [],
-                  source_tables: [],
-                  destination_tables: [],
+                  columns: { data: [] },
+                  source_tables: { data: [] },
+                  destination_tables: { data: [] },
                 },
               ],
             },
