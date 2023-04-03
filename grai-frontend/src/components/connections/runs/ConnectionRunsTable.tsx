@@ -34,7 +34,7 @@ export interface Run {
 }
 
 type ConnectionRunsTableProps = {
-  runs: Run[]
+  runs: { data: Run[] }
 }
 
 const ConnectionRunsTable: React.FC<ConnectionRunsTableProps> = ({ runs }) => {
@@ -54,7 +54,7 @@ const ConnectionRunsTable: React.FC<ConnectionRunsTableProps> = ({ runs }) => {
         </TableRow>
       </TableHead>
       <TableBody>
-        {runs.map((run, index) => (
+        {runs.data.map((run, index) => (
           <TableRow
             key={run.id}
             hover
@@ -88,7 +88,7 @@ const ConnectionRunsTable: React.FC<ConnectionRunsTableProps> = ({ runs }) => {
             </TableCell>
           </TableRow>
         ))}
-        {runs.length === 0 && (
+        {runs.data.length === 0 && (
           <TableRow>
             <TableCell colSpan={99} sx={{ textAlign: "center", py: 10 }}>
               <Typography>No runs found</Typography>

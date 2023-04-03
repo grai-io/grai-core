@@ -30,22 +30,24 @@ export const GET_BRANCH_COMMITS = gql`
         branch(reference: $reference) {
           id
           commits {
-            id
-            reference
-            title
-            created_at
-            last_successful_run {
-              id
-              metadata
-            }
-            branch {
-              id
-              reference
-            }
-            pull_request {
+            data {
               id
               reference
               title
+              created_at
+              last_successful_run {
+                id
+                metadata
+              }
+              branch {
+                id
+                reference
+              }
+              pull_request {
+                id
+                reference
+                title
+              }
             }
           }
         }
@@ -91,7 +93,7 @@ const CommitsList: React.FC<CommitsListProps> = ({
 
   return (
     <CommitsTable
-      commits={branch.commits}
+      commits={branch.commits.data}
       type={type}
       repository={repository}
     />

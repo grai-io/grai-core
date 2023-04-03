@@ -166,7 +166,9 @@ async def test_workspace_nodes(test_context):
             workspace(id: $workspaceId) {
                 id
                 nodes {
-                    id
+                    data {
+                        id
+                    }
                 }
             }
         }
@@ -182,7 +184,7 @@ async def test_workspace_nodes(test_context):
 
     assert result.errors is None
     assert result.data["workspace"]["id"] == str(workspace.id)
-    assert result.data["workspace"]["nodes"][0]["id"] == str(node.id)
+    assert result.data["workspace"]["nodes"]["data"][0]["id"] == str(node.id)
 
 
 @pytest.mark.django_db
@@ -281,9 +283,11 @@ async def test_table(test_context):
                 columns {
                   id
                   requirements_edges {
-                    id
-                    destination {
+                    data {
                         id
+                        destination {
+                            id
+                        }
                     }
                   }
                 }
@@ -305,8 +309,8 @@ async def test_table(test_context):
     assert result.data["workspace"]["id"] == str(workspace.id)
     assert result.data["workspace"]["table"]["id"] == str(table.id)
     assert result.data["workspace"]["table"]["columns"][0]["id"] == str(column.id)
-    assert result.data["workspace"]["table"]["columns"][0]["requirements_edges"][0]["id"] == str(edge.id)
-    assert result.data["workspace"]["table"]["columns"][0]["requirements_edges"][0]["destination"]["id"] == str(
+    assert result.data["workspace"]["table"]["columns"][0]["requirements_edges"]["data"][0]["id"] == str(edge.id)
+    assert result.data["workspace"]["table"]["columns"][0]["requirements_edges"]["data"][0]["destination"]["id"] == str(
         destination.id
     )
 
@@ -356,7 +360,9 @@ async def test_workspace_edges(test_context):
             workspace(id: $workspaceId) {
             id
             edges {
-                id
+                data {
+                    id
+                }
             }
           }
         }
@@ -372,7 +378,7 @@ async def test_workspace_edges(test_context):
 
     assert result.errors is None
     assert result.data["workspace"]["id"] == str(workspace.id)
-    assert result.data["workspace"]["edges"][0]["id"] == str(edge.id)
+    assert result.data["workspace"]["edges"]["data"][0]["id"] == str(edge.id)
 
 
 @pytest.mark.django_db
@@ -646,7 +652,9 @@ async def test_workspace_connection_runs(test_context, test_commit):
                 connection(id: $connectionId) {
                     id
                     runs {
-                        id
+                        data {
+                            id
+                        }
                     }
                 }
             }
@@ -665,7 +673,7 @@ async def test_workspace_connection_runs(test_context, test_commit):
     assert result.errors is None
     assert result.data["workspace"]["id"] == str(workspace.id)
     assert result.data["workspace"]["connection"]["id"] == str(connection.id)
-    assert result.data["workspace"]["connection"]["runs"][0]["id"] == str(run.id)
+    assert result.data["workspace"]["connection"]["runs"]["data"][0]["id"] == str(run.id)
 
 
 @pytest.mark.django_db
@@ -1106,8 +1114,10 @@ async def test_workspace_branches(test_context, test_branch):
             workspace(id: $workspaceId) {
                 id
                 branches {
-                    id
-                    reference
+                    data{
+                        id
+                        reference
+                    }
                 }
             }
         }
@@ -1123,8 +1133,8 @@ async def test_workspace_branches(test_context, test_branch):
 
     assert result.errors is None
     assert result.data["workspace"]["id"] == str(workspace.id)
-    assert result.data["workspace"]["branches"][0]["id"] == str(test_branch.id)
-    assert result.data["workspace"]["branches"][0]["reference"] == test_branch.reference
+    assert result.data["workspace"]["branches"]["data"][0]["id"] == str(test_branch.id)
+    assert result.data["workspace"]["branches"]["data"][0]["reference"] == test_branch.reference
 
 
 @pytest.mark.django_db
@@ -1195,9 +1205,11 @@ async def test_workspace_pull_requests(test_context, test_pull_request):
             workspace(id: $workspaceId) {
                 id
                 pull_requests {
-                    id
-                    reference
-                    title
+                    data {
+                        id
+                        reference
+                        title
+                    }
                 }
             }
         }
@@ -1213,9 +1225,9 @@ async def test_workspace_pull_requests(test_context, test_pull_request):
 
     assert result.errors is None
     assert result.data["workspace"]["id"] == str(workspace.id)
-    assert result.data["workspace"]["pull_requests"][0]["id"] == str(test_pull_request.id)
-    assert result.data["workspace"]["pull_requests"][0]["reference"] == test_pull_request.reference
-    assert result.data["workspace"]["pull_requests"][0]["title"] == test_pull_request.title
+    assert result.data["workspace"]["pull_requests"]["data"][0]["id"] == str(test_pull_request.id)
+    assert result.data["workspace"]["pull_requests"]["data"][0]["reference"] == test_pull_request.reference
+    assert result.data["workspace"]["pull_requests"]["data"][0]["title"] == test_pull_request.title
 
 
 @pytest.mark.django_db
@@ -1290,9 +1302,11 @@ async def test_workspace_commits(test_context, test_commit):
             workspace(id: $workspaceId) {
                 id
                 commits {
-                    id
-                    reference
-                    title
+                    data {
+                        id
+                        reference
+                        title
+                    }
                 }
             }
         }
@@ -1308,9 +1322,9 @@ async def test_workspace_commits(test_context, test_commit):
 
     assert result.errors is None
     assert result.data["workspace"]["id"] == str(workspace.id)
-    assert result.data["workspace"]["commits"][0]["id"] == str(test_commit.id)
-    assert result.data["workspace"]["commits"][0]["reference"] == test_commit.reference
-    assert result.data["workspace"]["commits"][0]["title"] == test_commit.title
+    assert result.data["workspace"]["commits"]["data"][0]["id"] == str(test_commit.id)
+    assert result.data["workspace"]["commits"]["data"][0]["reference"] == test_commit.reference
+    assert result.data["workspace"]["commits"]["data"][0]["title"] == test_commit.title
 
 
 @pytest.mark.django_db
@@ -1680,7 +1694,9 @@ async def test_commit_runs(test_context, test_commit):
                 commit(id: $commitId) {
                     id
                     runs {
-                        id
+                        data {
+                            id
+                        }
                     }
                 }
             }
@@ -1696,7 +1712,7 @@ async def test_commit_runs(test_context, test_commit):
     assert result.errors is None
     assert result.data["workspace"]["id"] == str(workspace.id)
     assert result.data["workspace"]["commit"]["id"] == str(test_commit.id)
-    assert result.data["workspace"]["commit"]["runs"][0]["id"] == str(run.id)
+    assert result.data["workspace"]["commit"]["runs"]["data"][0]["id"] == str(run.id)
 
 
 @pytest.mark.django_db

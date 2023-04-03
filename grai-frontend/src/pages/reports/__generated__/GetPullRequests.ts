@@ -7,33 +7,38 @@
 // GraphQL query operation: GetPullRequests
 // ====================================================
 
-export interface GetPullRequests_workspace_repository_pull_requests_last_commit_last_successful_run {
+export interface GetPullRequests_workspace_repository_pull_requests_data_last_commit_last_successful_run {
   __typename: "Run";
   id: any;
   metadata: any;
 }
 
-export interface GetPullRequests_workspace_repository_pull_requests_last_commit {
+export interface GetPullRequests_workspace_repository_pull_requests_data_last_commit {
   __typename: "Commit";
   id: any;
   reference: string;
   created_at: any;
-  last_successful_run: GetPullRequests_workspace_repository_pull_requests_last_commit_last_successful_run | null;
+  last_successful_run: GetPullRequests_workspace_repository_pull_requests_data_last_commit_last_successful_run | null;
 }
 
-export interface GetPullRequests_workspace_repository_pull_requests_branch {
+export interface GetPullRequests_workspace_repository_pull_requests_data_branch {
   __typename: "Branch";
   id: any;
   reference: string;
 }
 
-export interface GetPullRequests_workspace_repository_pull_requests {
+export interface GetPullRequests_workspace_repository_pull_requests_data {
   __typename: "PullRequest";
   id: any;
   reference: string;
   title: string | null;
-  last_commit: GetPullRequests_workspace_repository_pull_requests_last_commit | null;
-  branch: GetPullRequests_workspace_repository_pull_requests_branch;
+  last_commit: GetPullRequests_workspace_repository_pull_requests_data_last_commit | null;
+  branch: GetPullRequests_workspace_repository_pull_requests_data_branch;
+}
+
+export interface GetPullRequests_workspace_repository_pull_requests {
+  __typename: "PullRequestPagination";
+  data: GetPullRequests_workspace_repository_pull_requests_data[];
 }
 
 export interface GetPullRequests_workspace_repository {
@@ -41,7 +46,7 @@ export interface GetPullRequests_workspace_repository {
   id: any;
   owner: string;
   repo: string;
-  pull_requests: GetPullRequests_workspace_repository_pull_requests[];
+  pull_requests: GetPullRequests_workspace_repository_pull_requests;
 }
 
 export interface GetPullRequests_workspace {

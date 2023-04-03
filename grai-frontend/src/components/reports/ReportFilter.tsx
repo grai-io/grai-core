@@ -15,8 +15,8 @@ interface Repository {
   type: string
   owner: string
   repo: string
-  branches: Branch[]
-  pull_requests: PullRequest[]
+  branches: { data: Branch[] }
+  pull_requests: { data: PullRequest[] }
 }
 
 interface Workspace {
@@ -40,9 +40,9 @@ const ReportFilter: React.FC<ReportFilterProps> = ({
   const branches = owner
     ? workspace?.repositories.data.find(
         repository => repository.owner === owner && repository.repo === repo
-      )?.branches
+      )?.branches.data
     : workspace?.repositories.data.reduce<Branch[]>(
-        (res, repository) => res.concat(repository.branches),
+        (res, repository) => res.concat(repository.branches.data),
         []
       )
 

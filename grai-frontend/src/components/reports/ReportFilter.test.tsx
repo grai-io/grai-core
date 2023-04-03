@@ -9,47 +9,55 @@ const workspace = {
         type: "github",
         owner: "owner",
         repo: "repo",
-        branches: [
-          {
-            reference: "branch1",
-          },
-          {
-            reference: "branch2",
-          },
-        ],
-        pull_requests: [
-          {
-            reference: "pr1",
-            title: "pr1title",
-          },
-          {
-            reference: "pr2",
-            title: "pr2title",
-          },
-        ],
+        branches: {
+          data: [
+            {
+              reference: "branch1",
+            },
+            {
+              reference: "branch2",
+            },
+          ],
+        },
+        pull_requests: {
+          data: [
+            {
+              reference: "pr1",
+              title: "pr1title",
+            },
+            {
+              reference: "pr2",
+              title: "pr2title",
+            },
+          ],
+        },
       },
       {
         type: "github",
         owner: "owner",
         repo: "repo2",
-        branches: [
-          {
-            reference: "branch3",
-          },
-          {
-            reference: "branch4",
-          },
-        ],
-        pull_requests: [
-          {
-            reference: "pr3",
-            title: "pr3title",
-          },
-          {
-            reference: "pr3",
-            title: "pr3title",
-          },
-        ],
+        branches: {
+          data: [
+            {
+              reference: "branch3",
+            },
+            {
+              reference: "branch4",
+            },
+          ],
+        },
+        pull_requests: {
+          data: [
+            {
+              reference: "pr3",
+              title: "pr3title",
+            },
+            {
+              reference: "pr3",
+              title: "pr3title",
+            },
+          ],
+        },
       },
     ],
   },

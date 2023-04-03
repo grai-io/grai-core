@@ -29,13 +29,17 @@ export const GET_REPORTS = gql`
           owner
           repo
           branches {
-            id
-            reference
+            data {
+              id
+              reference
+            }
           }
           pull_requests {
-            id
-            reference
-            title
+            data {
+              id
+              reference
+              title
+            }
           }
         }
       }

@@ -7,17 +7,27 @@
 // GraphQL query operation: GetReports
 // ====================================================
 
-export interface GetReports_workspace_repositories_data_branches {
+export interface GetReports_workspace_repositories_data_branches_data {
   __typename: "Branch";
   id: any;
   reference: string;
 }
 
-export interface GetReports_workspace_repositories_data_pull_requests {
+export interface GetReports_workspace_repositories_data_branches {
+  __typename: "BranchPagination";
+  data: GetReports_workspace_repositories_data_branches_data[];
+}
+
+export interface GetReports_workspace_repositories_data_pull_requests_data {
   __typename: "PullRequest";
   id: any;
   reference: string;
   title: string | null;
+}
+
+export interface GetReports_workspace_repositories_data_pull_requests {
+  __typename: "PullRequestPagination";
+  data: GetReports_workspace_repositories_data_pull_requests_data[];
 }
 
 export interface GetReports_workspace_repositories_data {
@@ -26,8 +36,8 @@ export interface GetReports_workspace_repositories_data {
   type: string;
   owner: string;
   repo: string;
-  branches: GetReports_workspace_repositories_data_branches[];
-  pull_requests: GetReports_workspace_repositories_data_pull_requests[];
+  branches: GetReports_workspace_repositories_data_branches;
+  pull_requests: GetReports_workspace_repositories_data_pull_requests;
 }
 
 export interface GetReports_workspace_repositories {

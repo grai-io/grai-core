@@ -32,7 +32,7 @@ export const tableMock = {
               id: "1",
               name: "Column1",
               display_name: "Column1",
-              requirements_edges: [],
+              requirements_edges: { data: [] },
               metadata: {},
             },
           ],

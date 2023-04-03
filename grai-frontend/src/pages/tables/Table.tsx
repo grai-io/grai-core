@@ -30,13 +30,15 @@ export const GET_TABLE = gql`
           name
           display_name
           requirements_edges {
-            id
-            metadata
-            destination {
+            data {
               id
-              name
-              display_name
               metadata
+              destination {
+                id
+                name
+                display_name
+                metadata
+              }
             }
           }
           metadata

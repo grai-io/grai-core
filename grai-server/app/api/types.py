@@ -140,16 +140,19 @@ class Connection:
     created_by: User
 
     # Runs
-    @gql.django.field
+    @strawberry.field
     def runs(
         self,
-        filters: Optional["WorkspaceRunFilter"] = strawberry.UNSET,
+        filters: Optional[WorkspaceRunFilter] = strawberry.UNSET,
         order: Optional[RunOrder] = strawberry.UNSET,
         pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
-    ) -> List["Run"]:
+    ) -> Pagination[Run]:
         queryset = RunModel.objects.filter(connection=self)
 
-        return apply_run_arguments(queryset, filters=filters, order=order, pagination=pagination)
+        def apply_filters(queryset):
+            return apply_run_filters(queryset, filters)
+
+        return Pagination[Run](queryset=queryset, apply_filters=apply_filters, order=order, pagination=pagination)
 
     # run: Run = strawberry.django.field
     @gql.django.field
@@ -168,8 +171,10 @@ class Connection:
 @gql.django.type(NodeModel, order=NodeOrder, filters=NodeFilter, pagination=True)
 class Column(Node):
     @gql.django.field
-    def requirements_edges(self) -> List[Edge]:
-        return EdgeModel.objects.filter(source=self).filter(metadata__grai__edge_type="ColumnToColumn")
+    def requirements_edges(self) -> Pagination[Edge]:
+        queryset = EdgeModel.objects.filter(source=self).filter(metadata__grai__edge_type="ColumnToColumn")
+
+        return Pagination[Edge](queryset=queryset)
 
 
 @gql.django.type(NodeModel, order=NodeOrder, filters=NodeFilter, pagination=True)
@@ -339,8 +344,10 @@ class Workspace:
 
     # Nodes
     @gql.django.field
-    def nodes(self) -> List["Node"]:
-        return NodeModel.objects.filter(workspace=self)
+    def nodes(self) -> Pagination["Node"]:
+        queryset = NodeModel.objects.filter(workspace=self)
+
+        return Pagination[Node](queryset=queryset)
 
     @gql.django.field
     def node(self, id: strawberry.ID) -> Node:
@@ -348,8 +355,10 @@ class Workspace:
 
     # Edges
     @gql.django.field
-    def edges(self) -> List["Edge"]:
-        return EdgeModel.objects.filter(workspace=self)
+    def edges(self) -> Pagination["Edge"]:
+        queryset = EdgeModel.objects.filter(workspace=self)
+
+        return Pagination[Edge](queryset=queryset)
 
     @gql.django.field
     def edge(self, id: strawberry.ID) -> Edge:
@@ -369,6 +378,7 @@ class Workspace:
     def connection(self, id: strawberry.ID) -> Connection:
         return ConnectionModel.objects.get(id=id)
 
+    # Runs
     @strawberry.field
     def runs(
         self,
@@ -398,7 +408,11 @@ class Workspace:
         return Pagination[Membership](queryset=queryset, pagination=pagination)
 
     # Api Keys
-    api_keys: List["WorkspaceAPIKey"] = gql.django.field()
+    @gql.django.field
+    def api_keys(self) -> Pagination["WorkspaceAPIKey"]:
+        queryset = WorkspaceAPIKeyModel.objects.filter(workspace=self)
+
+        return Pagination[WorkspaceAPIKey](queryset=queryset)
 
     # Tables
     @gql.django.field
@@ -463,8 +477,10 @@ class Workspace:
 
     # Branches
     @gql.django.field
-    def branches(self) -> List["Branch"]:
-        return BranchModel.objects.filter(workspace=self)
+    def branches(self) -> Pagination["Branch"]:
+        queryset = BranchModel.objects.filter(workspace=self)
+
+        return Pagination["Branch"](queryset=queryset)
 
     @gql.django.field
     def branch(self, id: Optional[strawberry.ID] = None, reference: Optional[str] = strawberry.UNSET) -> "Branch":
@@ -476,8 +492,10 @@ class Workspace:
 
     # Pull Requests
     @gql.django.field
-    def pull_requests(self) -> List["PullRequest"]:
-        return PullRequestModel.objects.filter(workspace=self)
+    def pull_requests(self) -> Pagination["PullRequest"]:
+        queryset = PullRequestModel.objects.filter(workspace=self)
+
+        return Pagination[PullRequest](queryset=queryset)
 
     @gql.django.field
     def pull_request(
@@ -491,8 +509,10 @@ class Workspace:
 
     # Commits
     @gql.django.field
-    def commits(self) -> List["Commit"]:
-        return CommitModel.objects.filter(workspace=self)
+    def commits(self) -> Pagination["Commit"]:
+        queryset = CommitModel.objects.filter(workspace=self)
+
+        return Pagination[Commit](queryset=queryset)
 
     @gql.django.field
     def commit(self, id: Optional[strawberry.ID] = None, reference: Optional[str] = strawberry.UNSET) -> "Commit":
@@ -597,7 +617,11 @@ class Repository:
     repo: auto
 
     # Pull Requests
-    pull_requests: List["PullRequest"]
+    @gql.django.field
+    def pull_requests(self) -> Pagination["PullRequest"]:
+        queryset = PullRequestModel.objects.filter(repository=self)
+
+        return Pagination[PullRequest](queryset=queryset)
 
     @gql.django.field
     def pull_request(
@@ -610,7 +634,11 @@ class Repository:
         )
 
     # Branches
-    branches: List["Branch"]
+    @gql.django.field
+    def branches(self) -> Pagination["Branch"]:
+        queryset = BranchModel.objects.filter(repository=self)
+
+        return Pagination["Branch"](queryset=queryset)
 
     @gql.django.field
     def branch(self, id: Optional[strawberry.ID] = None, reference: Optional[str] = strawberry.UNSET) -> "Branch":
@@ -621,7 +649,11 @@ class Repository:
         )
 
     # Commits
-    commits: List["Commit"]
+    @gql.django.field
+    def commits(self) -> Pagination["Commit"]:
+        queryset = CommitModel.objects.filter(repository=self)
+
+        return Pagination[Commit](queryset=queryset)
 
     @gql.django.field
     def commit(self, id: Optional[strawberry.ID] = None, reference: Optional[str] = strawberry.UNSET) -> "Commit":
@@ -638,8 +670,19 @@ class Branch:
     reference: auto
     repository: "Repository"
 
-    pull_requests: List["PullRequest"]
-    commits: List["Commit"]
+    # Pull Requests
+    @gql.django.field
+    def pull_requests(self) -> Pagination["PullRequest"]:
+        queryset = PullRequestModel.objects.filter(branch=self)
+
+        return Pagination[PullRequest](queryset=queryset)
+
+    # Commits
+    @gql.django.field
+    def commits(self) -> Pagination["Commit"]:
+        queryset = CommitModel.objects.filter(branch=self)
+
+        return Pagination[Commit](queryset=queryset)
 
     @gql.django.field
     def last_commit(self) -> Optional["Commit"]:
@@ -654,7 +697,12 @@ class PullRequest:
     repository: "Repository"
     branch: "Branch"
 
-    commits: List["Commit"]
+    # Commits
+    @gql.django.field
+    def commits(self) -> Pagination["Commit"]:
+        queryset = CommitModel.objects.filter(pull_request=self)
+
+        return Pagination[Commit](queryset=queryset)
 
     @gql.django.field
     def last_commit(self) -> Optional["Commit"]:
@@ -672,16 +720,19 @@ class Commit:
     created_at: auto
 
     # Runs
-    @gql.django.field
+    @strawberry.field
     def runs(
         self,
-        filters: Optional["WorkspaceRunFilter"] = strawberry.UNSET,
+        filters: Optional[WorkspaceRunFilter] = strawberry.UNSET,
         order: Optional[RunOrder] = strawberry.UNSET,
         pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
-    ) -> List["Run"]:
+    ) -> Pagination[Run]:
         queryset = RunModel.objects.filter(commit=self)
 
-        return apply_run_arguments(queryset, filters=filters, order=order, pagination=pagination)
+        def apply_filters(queryset):
+            return apply_run_filters(queryset, filters)
+
+        return Pagination[Run](queryset=queryset, apply_filters=apply_filters, order=order, pagination=pagination)
 
     @gql.django.field
     def last_run(self) -> Optional["Run"]:

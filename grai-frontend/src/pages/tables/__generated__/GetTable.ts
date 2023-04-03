@@ -7,7 +7,7 @@
 // GraphQL query operation: GetTable
 // ====================================================
 
-export interface GetTable_workspace_table_columns_requirements_edges_destination {
+export interface GetTable_workspace_table_columns_requirements_edges_data_destination {
   __typename: "Node";
   id: any;
   name: string;
@@ -15,11 +15,16 @@ export interface GetTable_workspace_table_columns_requirements_edges_destination
   metadata: any;
 }
 
-export interface GetTable_workspace_table_columns_requirements_edges {
+export interface GetTable_workspace_table_columns_requirements_edges_data {
   __typename: "Edge";
   id: any;
   metadata: any;
-  destination: GetTable_workspace_table_columns_requirements_edges_destination;
+  destination: GetTable_workspace_table_columns_requirements_edges_data_destination;
+}
+
+export interface GetTable_workspace_table_columns_requirements_edges {
+  __typename: "EdgePagination";
+  data: GetTable_workspace_table_columns_requirements_edges_data[];
 }
 
 export interface GetTable_workspace_table_columns {
@@ -27,7 +32,7 @@ export interface GetTable_workspace_table_columns {
   id: any;
   name: string;
   display_name: string;
-  requirements_edges: GetTable_workspace_table_columns_requirements_edges[];
+  requirements_edges: GetTable_workspace_table_columns_requirements_edges;
   metadata: any;
 }
 

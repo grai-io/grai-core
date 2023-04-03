@@ -7,7 +7,7 @@ import { Connection as ScheduleConnection } from "./schedule/ConnectionSchedule"
 import EditScheduleForm from "./schedule/EditScheduleForm"
 
 interface Connection extends BaseConnection, ScheduleConnection {
-  runs: Run[]
+  runs: { data: Run[] }
 }
 
 type ConnectionTabsProps = {

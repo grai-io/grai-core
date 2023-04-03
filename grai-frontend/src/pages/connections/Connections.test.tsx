@@ -62,7 +62,7 @@ const connectionMock = {
                 id: "1",
                 name: "Connector 1",
               },
-              runs: [],
+              runs: { data: [] },
               last_run: null,
               last_successful_run: null,
             },

@@ -9,7 +9,7 @@ test("renders", async () => {
     name: "column",
     display_name: "column",
     metadata: null,
-    requirements_edges: [],
+    requirements_edges: { data: [] },
   })
 
   render(<ColumnProperties column={column} />)
@@ -25,7 +25,7 @@ test("renders empty", async () => {
         node_attributes: {},
       },
     },
-    requirements_edges: [],
+    requirements_edges: { data: [] },
   })
 
   render(<ColumnProperties column={column} />)
@@ -43,7 +43,7 @@ test("renders not null", async () => {
         },
       },
     },
-    requirements_edges: [],
+    requirements_edges: { data: [] },
   })
 
   render(<ColumnProperties column={column} />)
@@ -63,7 +63,7 @@ test("renders unique", async () => {
         },
       },
     },
-    requirements_edges: [],
+    requirements_edges: { data: [] },
   })
 
   render(<ColumnProperties column={column} />)
@@ -83,7 +83,7 @@ test("renders primary key", async () => {
         },
       },
     },
-    requirements_edges: [],
+    requirements_edges: { data: [] },
   })
 
   render(<ColumnProperties column={column} />)
