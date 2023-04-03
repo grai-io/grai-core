@@ -21,20 +21,22 @@ test("renders", async () => {
         data: {
           workspace: {
             id: "1",
-            repositories: [
-              {
-                id: "1",
-                type: "github",
-                owner: "owner",
-                repo: "repo1",
-              },
-              {
-                id: "1",
-                type: "github",
-                owner: "owner",
-                repo: "repo2",
-              },
-            ],
+            repositories: {
+              data: [
+                {
+                  id: "1",
+                  type: "github",
+                  owner: "owner",
+                  repo: "repo1",
+                },
+                {
+                  id: "1",
+                  type: "github",
+                  owner: "owner",
+                  repo: "repo2",
+                },
+              ],
+            },
           },
         },
       },
@@ -108,7 +110,7 @@ test("empty", async () => {
         data: {
           workspace: {
             id: "1",
-            repositories: null,
+            repositories: { data: null },
           },
         },
       },

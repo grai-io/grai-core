@@ -7,7 +7,7 @@
 // GraphQL query operation: GetRepositories
 // ====================================================
 
-export interface GetRepositories_workspace_repositories {
+export interface GetRepositories_workspace_repositories_data {
   __typename: "Repository";
   id: any;
   type: string;
@@ -15,10 +15,15 @@ export interface GetRepositories_workspace_repositories {
   repo: string;
 }
 
+export interface GetRepositories_workspace_repositories {
+  __typename: "RepositoryPagination";
+  data: GetRepositories_workspace_repositories_data[];
+}
+
 export interface GetRepositories_workspace {
   __typename: "Workspace";
   id: any;
-  repositories: GetRepositories_workspace_repositories[];
+  repositories: GetRepositories_workspace_repositories;
 }
 
 export interface GetRepositories {

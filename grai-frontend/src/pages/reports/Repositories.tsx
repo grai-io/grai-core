@@ -22,10 +22,12 @@ export const GET_REPOSITORIES = gql`
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       repositories(filters: { type: $type, owner: $owner }) {
-        id
-        type
-        owner
-        repo
+        data {
+          id
+          type
+          owner
+          repo
+        }
       }
     }
   }
@@ -53,7 +55,9 @@ const Repositories: React.FC = () => {
   return (
     <PageLayout>
       <Container maxWidth="sm" sx={{ mt: 20 }}>
-        <RepositoryList repositories={data?.workspace.repositories ?? []} />
+        <RepositoryList
+          repositories={data?.workspace.repositories.data ?? []}
+        />
       </Container>
     </PageLayout>
   )

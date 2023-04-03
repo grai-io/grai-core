@@ -23,18 +23,20 @@ export const GET_REPORTS = gql`
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       repositories {
-        id
-        type
-        owner
-        repo
-        branches {
+        data {
           id
-          reference
-        }
-        pull_requests {
-          id
-          reference
-          title
+          type
+          owner
+          repo
+          branches {
+            id
+            reference
+          }
+          pull_requests {
+            id
+            reference
+            title
+          }
         }
       }
       runs(

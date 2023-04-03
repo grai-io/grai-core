@@ -425,20 +425,27 @@ class Workspace:
     def repositories(
         self,
         filters: Optional[WorkspaceRepositoryFilter] = strawberry.UNSET,
-    ) -> List["Repository"]:
-        q_filter = Q(workspace=self)
+    ) -> Pagination["Repository"]:
+        queryset = RepositoryModel.objects.filter(workspace=self)
 
-        if filters is not strawberry.UNSET:
-            if filters.type is not strawberry.UNSET:
-                q_filter &= Q(type=filters.type)
+        def apply_filters(queryset: QuerySet) -> QuerySet:
+            if filters:
+                q_filter = Q()
 
-            if filters.owner is not strawberry.UNSET:
-                q_filter &= Q(owner=filters.owner)
+                if filters.type:
+                    q_filter &= Q(type=filters.type)
 
-            if filters.repo is not strawberry.UNSET:
-                q_filter &= Q(repo=filters.repo)
+                if filters.owner:
+                    q_filter &= Q(owner=filters.owner)
 
-        return RepositoryModel.objects.filter(q_filter)
+                if filters.repo:
+                    q_filter &= Q(repo=filters.repo)
+
+                return queryset.filter(q_filter)
+
+            return queryset
+
+        return Pagination[Repository](queryset=queryset, apply_filters=apply_filters)
 
     @gql.django.field
     def repository(
