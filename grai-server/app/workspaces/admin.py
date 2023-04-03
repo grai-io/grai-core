@@ -16,6 +16,16 @@ def empty_workspace(modeladmin, request, queryset):
         Node.objects.filter(workspace=workspace).delete()
 
 
+@admin.action(description="Enable search")
+def enable_search(modeladmin, request, queryset):
+    queryset.update(search_enabled=True)
+
+
+@admin.action(description="Disable search")
+def disable_search(modeladmin, request, queryset):
+    queryset.update(search_enabled=False)
+
+
 class MembershipInline(admin.TabularInline):
     model = Membership
     extra = 0
@@ -36,11 +46,12 @@ class WorkspaceAdmin(admin.ModelAdmin):
         )
         return queryset
 
-    list_display = ("id", "name", "organisation", "node_count", "connection_count", "created_at")
+    list_display = ("id", "name", "organisation", "node_count", "connection_count", "search_enabled", "created_at")
 
     list_filter = (
         ("created_at", DateFieldListFilter),
         ("organisation", admin.RelatedOnlyFieldListFilter),
+        "search_enabled",
         "name",
     )
 
@@ -50,7 +61,7 @@ class WorkspaceAdmin(admin.ModelAdmin):
         MembershipInline,
     ]
 
-    actions = [empty_workspace]
+    actions = [empty_workspace, enable_search, disable_search]
 
 
 class OrganisationAdmin(admin.ModelAdmin):

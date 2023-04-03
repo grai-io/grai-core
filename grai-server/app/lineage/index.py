@@ -17,8 +17,12 @@ class NodeIndex(AlgoliaIndex):
         "is_active",
         "table_id",
     )
+
     settings = {
         "searchableAttributes": ["id", "namespace", "name", "display_name", "data_source"],
         "attributesForFaceting": ["workspace_id"],
     }
+
     index_name = "main"
+
+    should_index = "search_enabled"
