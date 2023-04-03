@@ -913,6 +913,43 @@ async def test_workspace_memberships(test_context):
     assert result.data["workspace"]["memberships"]["data"][0]["user"]["id"] == str(user.id)
 
 
+@pytest.mark.django_db
+async def test_workspace_api_keys(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                api_keys {
+                    data {
+                        id
+                        name
+                        prefix
+                        revoked
+                        expiry_date
+                        created
+                    }
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    # assert result.data["workspace"]["memberships"]["data"][0]["id"] == str(membership.id)
+    # assert result.data["workspace"]["memberships"]["data"][0]["role"] == "admin"
+    # assert result.data["workspace"]["memberships"]["data"][0]["user"]["id"] == str(user.id)
+
+
 @pytest.fixture
 async def test_repository(test_workspace):
     return await Repository.objects.acreate(
@@ -1049,6 +1086,21 @@ async def test_workspace_repository_by_id(test_context, test_repository):
                     type
                     owner
                     repo
+                    pull_requests {
+                        data {
+                            id
+                        }
+                    }
+                    branches {
+                        data {
+                            id
+                        }
+                    }
+                    commits {
+                        data {
+                            id
+                        }
+                    }
                 }
             }
         }
@@ -1148,6 +1200,16 @@ async def test_workspace_branch_by_id(test_context, test_branch):
                 branch(id: $branchId) {
                     id
                     reference
+                    pull_requests {
+                        data {
+                            id
+                        }
+                    }
+                    commits {
+                        data {
+                            id
+                        }
+                    }
                 }
             }
         }
@@ -1242,6 +1304,11 @@ async def test_workspace_pull_request_by_id(test_context, test_pull_request):
                     id
                     reference
                     title
+                    commits {
+                        data {
+                            id
+                        }
+                    }
                 }
             }
         }

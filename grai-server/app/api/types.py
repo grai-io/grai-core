@@ -84,19 +84,6 @@ def apply_run_filters(queryset: QuerySet, filters: Optional[WorkspaceRunFilter] 
     return queryset
 
 
-def apply_run_arguments(
-    queryset: QuerySet,
-    filters: Optional[WorkspaceRunFilter] = strawberry.UNSET,
-    order: Optional["RunOrder"] = strawberry.UNSET,
-    pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
-) -> QuerySet:
-    queryset = apply_run_filters(queryset, filters)
-    queryset = apply_order(queryset, order)
-    queryset = apply_pagination(queryset, pagination)
-
-    return queryset
-
-
 @strawberry_django.ordering.order(RunModel)
 class RunOrder:
     id: auto
