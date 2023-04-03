@@ -34,6 +34,9 @@ class Node(TenantModel):
     def search_type(self):
         return self.metadata.get("grai", {}).get("node_type", "Node")
 
+    def search_enabled(self):
+        return self.workspace.search_enabled
+
     def table_id(self):
         if self.search_type() == "Table":
             return self.id
