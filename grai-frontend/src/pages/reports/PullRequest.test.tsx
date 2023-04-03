@@ -87,24 +87,26 @@ test("renders errors", async () => {
               },
             },
             tables: { data: [sourceTable, destinationTable, spareTable] },
-            other_edges: [
-              {
-                id: "1",
-                is_active: true,
-                data_source: "test",
-                source: sourceTable,
-                destination: destinationTable,
-                metadata: { grai: { edge_type: "TableToTable" } },
-              },
-              {
-                id: "2",
-                is_active: true,
-                data_source: "test",
-                source: columnNode,
-                destination: destinationTable,
-                metadata: { grai: { edge_type: "ColumnToColumn" } },
-              },
-            ],
+            other_edges: {
+              data: [
+                {
+                  id: "1",
+                  is_active: true,
+                  data_source: "test",
+                  source: sourceTable,
+                  destination: destinationTable,
+                  metadata: { grai: { edge_type: "TableToTable" } },
+                },
+                {
+                  id: "2",
+                  is_active: true,
+                  data_source: "test",
+                  source: columnNode,
+                  destination: destinationTable,
+                  metadata: { grai: { edge_type: "ColumnToColumn" } },
+                },
+              ],
+            },
           },
         },
       },
@@ -154,16 +156,18 @@ test("not found", async () => {
               pull_request: null,
             },
             tables: { data: [sourceTable, destinationTable, spareTable] },
-            other_edges: [
-              {
-                id: "1",
-                is_active: true,
-                data_source: "test",
-                source: sourceTable,
-                destination: destinationTable,
-                metadata: { grai: { constraint_type: "dbt_model" } },
-              },
-            ],
+            other_edges: {
+              data: [
+                {
+                  id: "1",
+                  is_active: true,
+                  data_source: "test",
+                  source: sourceTable,
+                  destination: destinationTable,
+                  metadata: { grai: { constraint_type: "dbt_model" } },
+                },
+              ],
+            },
           },
         },
       },

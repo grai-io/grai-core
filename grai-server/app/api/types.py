@@ -413,18 +413,12 @@ class Workspace:
 
     # Other edges
     @gql.django.field
-    def other_edges(self) -> List[Edge]:
-        return EdgeModel.objects.filter(workspace=self).exclude(
+    def other_edges(self) -> Pagination[Edge]:
+        queryset = EdgeModel.objects.filter(workspace=self).exclude(
             metadata__has_key="grai.edge_type", metadata__grai__edge_type="TableToColumn"
         )
 
-    @gql.django.field
-    def other_edges_count(self) -> int:
-        return (
-            EdgeModel.objects.filter(workspace=self)
-            .exclude(metadata__has_key="grai.edge_type", metadata__grai__edge_type="TableToColumn")
-            .count()
-        )
+        return Pagination[Edge](queryset=queryset)
 
     # Repositories
     @gql.django.field

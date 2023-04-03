@@ -77,7 +77,7 @@ test("renders", async () => {
                 },
               ],
             },
-            other_edges: [],
+            other_edges: { data: [] },
           },
         },
       },
@@ -139,7 +139,7 @@ test("no tables", async () => {
           workspace: {
             id: "1",
             tables: { data: null },
-            other_edges: [],
+            other_edges: { data: [] },
           },
         },
       },

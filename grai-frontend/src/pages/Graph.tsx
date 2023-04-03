@@ -41,14 +41,16 @@ export const GET_TABLES_AND_EDGES = gql`
         }
       }
       other_edges {
-        id
-        source {
+        data {
           id
+          source {
+            id
+          }
+          destination {
+            id
+          }
+          metadata
         }
-        destination {
-          id
-        }
-        metadata
       }
     }
   }
@@ -77,7 +79,7 @@ const Graph: React.FC = () => {
     searchParams.get("limitGraph")?.toLowerCase() === "true" && !!errors
 
   const tables = data?.workspace.tables.data
-  const edges = data?.workspace.other_edges ?? []
+  const edges = data?.workspace.other_edges.data ?? []
 
   if (!tables) return <Alert>No tables found</Alert>
 

@@ -83,22 +83,27 @@ export interface GetCommit_workspace_tables {
   data: GetCommit_workspace_tables_data[];
 }
 
-export interface GetCommit_workspace_other_edges_source {
+export interface GetCommit_workspace_other_edges_data_source {
   __typename: "Node";
   id: any;
 }
 
-export interface GetCommit_workspace_other_edges_destination {
+export interface GetCommit_workspace_other_edges_data_destination {
   __typename: "Node";
   id: any;
+}
+
+export interface GetCommit_workspace_other_edges_data {
+  __typename: "Edge";
+  id: any;
+  source: GetCommit_workspace_other_edges_data_source;
+  destination: GetCommit_workspace_other_edges_data_destination;
+  metadata: any;
 }
 
 export interface GetCommit_workspace_other_edges {
-  __typename: "Edge";
-  id: any;
-  source: GetCommit_workspace_other_edges_source;
-  destination: GetCommit_workspace_other_edges_destination;
-  metadata: any;
+  __typename: "EdgePagination";
+  data: GetCommit_workspace_other_edges_data[];
 }
 
 export interface GetCommit_workspace {
@@ -106,7 +111,7 @@ export interface GetCommit_workspace {
   id: any;
   repository: GetCommit_workspace_repository;
   tables: GetCommit_workspace_tables;
-  other_edges: GetCommit_workspace_other_edges[];
+  other_edges: GetCommit_workspace_other_edges;
 }
 
 export interface GetCommit {

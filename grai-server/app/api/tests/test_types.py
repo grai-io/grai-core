@@ -320,7 +320,9 @@ async def test_other_edges(test_context):
           workspace(id: $workspaceId) {
             id
             other_edges {
-                id
+                data {
+                    id
+                }
             }
           }
         }
@@ -590,38 +592,6 @@ async def test_tables_count(test_context):
     assert result.errors is None
     assert result.data["workspace"]["id"] == str(workspace.id)
     assert result.data["workspace"]["tables"]["meta"]["total"] == 1
-
-
-@pytest.mark.django_db
-async def test_other_edges_count(test_context):
-    context, organisation, workspace, user, membership = test_context
-
-    await Node.objects.acreate(
-        workspace=workspace,
-        metadata={"grai": {"node_type": "Table"}},
-        name=uuid.uuid4(),
-    )
-
-    query = """
-        query Workspace($workspaceId: ID!) {
-          workspace(id: $workspaceId) {
-            id
-            other_edges_count
-          }
-        }
-    """
-
-    result = await schema.execute(
-        query,
-        variable_values={
-            "workspaceId": str(workspace.id),
-        },
-        context_value=context,
-    )
-
-    assert result.errors is None
-    assert result.data["workspace"]["id"] == str(workspace.id)
-    assert result.data["workspace"]["other_edges_count"] == 0
 
 
 @pytest.mark.django_db

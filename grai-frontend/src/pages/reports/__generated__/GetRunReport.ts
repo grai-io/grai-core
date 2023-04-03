@@ -83,22 +83,27 @@ export interface GetRunReport_workspace_tables {
   data: GetRunReport_workspace_tables_data[];
 }
 
-export interface GetRunReport_workspace_other_edges_source {
+export interface GetRunReport_workspace_other_edges_data_source {
   __typename: "Node";
   id: any;
 }
 
-export interface GetRunReport_workspace_other_edges_destination {
+export interface GetRunReport_workspace_other_edges_data_destination {
   __typename: "Node";
   id: any;
+}
+
+export interface GetRunReport_workspace_other_edges_data {
+  __typename: "Edge";
+  id: any;
+  source: GetRunReport_workspace_other_edges_data_source;
+  destination: GetRunReport_workspace_other_edges_data_destination;
+  metadata: any;
 }
 
 export interface GetRunReport_workspace_other_edges {
-  __typename: "Edge";
-  id: any;
-  source: GetRunReport_workspace_other_edges_source;
-  destination: GetRunReport_workspace_other_edges_destination;
-  metadata: any;
+  __typename: "EdgePagination";
+  data: GetRunReport_workspace_other_edges_data[];
 }
 
 export interface GetRunReport_workspace {
@@ -106,7 +111,7 @@ export interface GetRunReport_workspace {
   id: any;
   run: GetRunReport_workspace_run;
   tables: GetRunReport_workspace_tables;
-  other_edges: GetRunReport_workspace_other_edges[];
+  other_edges: GetRunReport_workspace_other_edges;
 }
 
 export interface GetRunReport {

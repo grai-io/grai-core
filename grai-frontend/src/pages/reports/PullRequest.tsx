@@ -72,14 +72,16 @@ export const GET_PULL_REQUEST = gql`
         }
       }
       other_edges {
-        id
-        source {
+        data {
           id
+          source {
+            id
+          }
+          destination {
+            id
+          }
+          metadata
         }
-        destination {
-          id
-        }
-        metadata
       }
     }
   }
@@ -116,7 +118,7 @@ const PullRequest: React.FC = () => {
   const errors = resultsToErrors(run?.metadata.results)
 
   const tables = data?.workspace.tables.data
-  const edges = data?.workspace.other_edges
+  const edges = data?.workspace.other_edges.data
 
   return (
     <PageLayout>

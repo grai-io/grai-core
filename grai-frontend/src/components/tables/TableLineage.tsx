@@ -44,14 +44,16 @@ export const GET_TABLES_AND_EDGES = gql`
         }
       }
       other_edges {
-        id
-        source {
+        data {
           id
+          source {
+            id
+          }
+          destination {
+            id
+          }
+          metadata
         }
-        destination {
-          id
-        }
-        metadata
       }
     }
   }
@@ -86,7 +88,7 @@ const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
 
   if (!tables || tables.length === 0) return <Alert>No tables found</Alert>
 
-  const edges = data.workspace.other_edges
+  const edges = data.workspace.other_edges.data
 
   const visibleTables: string[] = Array.from(Array(value).keys()).reduce(
     (res, value) =>

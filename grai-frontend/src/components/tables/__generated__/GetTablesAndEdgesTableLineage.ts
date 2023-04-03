@@ -46,29 +46,34 @@ export interface GetTablesAndEdgesTableLineage_workspace_tables {
   data: GetTablesAndEdgesTableLineage_workspace_tables_data[];
 }
 
-export interface GetTablesAndEdgesTableLineage_workspace_other_edges_source {
+export interface GetTablesAndEdgesTableLineage_workspace_other_edges_data_source {
   __typename: "Node";
   id: any;
 }
 
-export interface GetTablesAndEdgesTableLineage_workspace_other_edges_destination {
+export interface GetTablesAndEdgesTableLineage_workspace_other_edges_data_destination {
   __typename: "Node";
   id: any;
+}
+
+export interface GetTablesAndEdgesTableLineage_workspace_other_edges_data {
+  __typename: "Edge";
+  id: any;
+  source: GetTablesAndEdgesTableLineage_workspace_other_edges_data_source;
+  destination: GetTablesAndEdgesTableLineage_workspace_other_edges_data_destination;
+  metadata: any;
 }
 
 export interface GetTablesAndEdgesTableLineage_workspace_other_edges {
-  __typename: "Edge";
-  id: any;
-  source: GetTablesAndEdgesTableLineage_workspace_other_edges_source;
-  destination: GetTablesAndEdgesTableLineage_workspace_other_edges_destination;
-  metadata: any;
+  __typename: "EdgePagination";
+  data: GetTablesAndEdgesTableLineage_workspace_other_edges_data[];
 }
 
 export interface GetTablesAndEdgesTableLineage_workspace {
   __typename: "Workspace";
   id: any;
   tables: GetTablesAndEdgesTableLineage_workspace_tables;
-  other_edges: GetTablesAndEdgesTableLineage_workspace_other_edges[];
+  other_edges: GetTablesAndEdgesTableLineage_workspace_other_edges;
 }
 
 export interface GetTablesAndEdgesTableLineage {

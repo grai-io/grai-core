@@ -52,16 +52,18 @@ test("renders no pr", async () => {
               },
             },
             tables: { data: [sourceTable, destinationTable, spareTable] },
-            other_edges: [
-              {
-                id: "1",
-                is_active: true,
-                data_source: "test",
-                source: sourceTable,
-                destination: destinationTable,
-                metadata: { grai: { constraint_type: "dbt_model" } },
-              },
-            ],
+            other_edges: {
+              data: [
+                {
+                  id: "1",
+                  is_active: true,
+                  data_source: "test",
+                  source: sourceTable,
+                  destination: destinationTable,
+                  metadata: { grai: { constraint_type: "dbt_model" } },
+                },
+              ],
+            },
           },
         },
       },
@@ -107,16 +109,18 @@ test("not found", async () => {
               commit: null,
             },
             tables: { data: [sourceTable, destinationTable, spareTable] },
-            other_edges: [
-              {
-                id: "1",
-                is_active: true,
-                data_source: "test",
-                source: sourceTable,
-                destination: destinationTable,
-                metadata: { grai: { constraint_type: "dbt_model" } },
-              },
-            ],
+            other_edges: {
+              data: [
+                {
+                  id: "1",
+                  is_active: true,
+                  data_source: "test",
+                  source: sourceTable,
+                  destination: destinationTable,
+                  metadata: { grai: { constraint_type: "dbt_model" } },
+                },
+              ],
+            },
           },
         },
       },
