@@ -48,8 +48,9 @@ def build_grai_metadata_from_column(current: Column, version: Literal["v1"] = "v
         "node_attributes": {
             "data_type": current.data_type,
             "default_value": default_value,
-            "is_nullable": current.is_nullable,
-            "is_primary_key": current.is_pk,
+            "is_nullable": None if current.is_nullable else False,  # Only not-nullable is definitive.
+            # "is_primary_key": current.is_pk, # This is getting a default value right now
+            # "is_unique": # Not support in BQ
         },
     }
     return ColumnMetadata(**data)
