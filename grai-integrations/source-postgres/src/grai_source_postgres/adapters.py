@@ -87,11 +87,11 @@ def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") 
 
 
 @multimethod
-def build_postgres_metadata(current: Any, desired: Any) -> None:
+def build_app_metadata(current: Any, desired: Any) -> None:
     raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)} for value {current}")
 
 
-@build_postgres_metadata.register
+@build_app_metadata.register
 def build_metadata_from_column(current: Column, version: Literal["v1"] = "v1") -> Dict:
     data = {
         "table_name": current.table,
@@ -101,7 +101,7 @@ def build_metadata_from_column(current: Column, version: Literal["v1"] = "v1") -
     return data
 
 
-@build_postgres_metadata.register
+@build_app_metadata.register
 def build_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> Dict:
     data = {
         "definition": current.definition,
@@ -112,7 +112,7 @@ def build_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> Di
     return data
 
 
-@build_postgres_metadata.register
+@build_app_metadata.register
 def build_metadata_from_node(current: Table, version: Literal["v1"] = "v1") -> Dict:
     data = {
         "schema": current.table_schema,
@@ -123,9 +123,13 @@ def build_metadata_from_node(current: Table, version: Literal["v1"] = "v1") -> D
 
 
 def build_metadata(obj, version):
+    integration_meta = build_app_metadata(obj, version)
+    base_metadata = build_grai_metadata(obj, version)
+    integration_meta["grai"] = base_metadata
+
     return {
-        base_config.metadata_id: build_grai_metadata(obj, version),
-        config.metadata_id: build_postgres_metadata(obj, version),
+        base_config.metadata_id: base_metadata,
+        config.metadata_id: integration_meta,
     }
 
 
