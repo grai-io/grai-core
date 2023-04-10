@@ -40,7 +40,7 @@ tables = [
         namespace="tests",
         table_schema="test",
         columns=[],
-        table_type="TEMPORARY TABLE",
+        table_type="BASE TABLE",
         table_dataset="a_db",
         metadata={"thing": "here"},
     )
