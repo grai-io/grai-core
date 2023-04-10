@@ -71,13 +71,13 @@ def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") 
 
 
 @multimethod
-def build_dbt_metadata(current: Any, version: Any) -> None:
+def build_app_metadata(current: Any, version: Any) -> None:
     raise NotImplementedError(
         f"No objects of type `{type(current)}` have an implementation of `build_dbt_metadata` for version `{version}`."
     )
 
 
-@build_dbt_metadata.register
+@build_app_metadata.register
 def build_metadata_from_column(current: Column, version: Literal["v1"] = "v1") -> Dict:
     data = {
         "description": current.description,
@@ -91,7 +91,7 @@ def build_metadata_from_column(current: Column, version: Literal["v1"] = "v1") -
     return data
 
 
-@build_dbt_metadata.register
+@build_app_metadata.register
 def build_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> Dict:
     data = {
         "definition": current.definition,
@@ -101,7 +101,7 @@ def build_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> Di
     return data
 
 
-@build_dbt_metadata.register
+@build_app_metadata.register
 def build_metadata_from_node(current: AllDbtNodeTypes, version: Literal["v1"] = "v1") -> Dict:
     return current.dict()
 
@@ -110,7 +110,7 @@ def build_metadata_from_node(current: AllDbtNodeTypes, version: Literal["v1"] = 
 
 
 def build_metadata(obj, version):
-    integration_meta = build_dbt_metadata(obj, version)
+    integration_meta = build_app_metadata(obj, version)
     base_metadata = build_grai_metadata(obj, version)
     integration_meta["grai"] = base_metadata
 
