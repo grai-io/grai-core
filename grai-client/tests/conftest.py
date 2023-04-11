@@ -1,16 +1,26 @@
+import os
+
 import pytest
 
+from grai_client.endpoints.v1.client import ClientV1
 from grai_client.testing.schema import (
     mock_v1_edge,
     mock_v1_edge_and_nodes,
     mock_v1_node,
 )
-from grai_client.utilities.tests import get_test_client
 
 
 @pytest.fixture(scope="session")
 def client():
-    return get_test_client()
+    host = os.environ.get("GRAI_HOST", "localhost")
+    port = os.environ.get("GRAI_PORT", "8000")
+    username = os.environ.get("GRAI_USERNAME", "null@grai.io")
+    password = os.environ.get("GRAI_PASSWORD", "super_secret")
+    workspace = os.environ.get("GRAI_WORKSPACE", "default")
+
+    client = ClientV1(host, port, workspace=workspace, insecure=True)
+    client.authenticate(username=username, password=password)
+    return client
 
 
 @pytest.fixture(scope="session")
