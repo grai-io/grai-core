@@ -34,8 +34,6 @@ ids = SUPPORTED_VERSIONS + ["v8-seed", "v8-manifest"]
 
 processors = [load_resource(file) for file in files]
 
-breakpoint()
-
 
 @pytest.mark.parametrize("processor", processors, ids=ids)
 class TestProcessors:
