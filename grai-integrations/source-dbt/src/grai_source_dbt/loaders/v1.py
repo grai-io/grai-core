@@ -27,7 +27,7 @@ from grai_schemas.v1.metadata.edges import EdgeTypeLabels
 from grai_source_dbt.loaders.base import BaseManifestLoader
 from grai_source_dbt.models.grai import Column, Edge, EdgeTerminus
 from grai_source_dbt.models.shared import Constraint
-from grai_source_dbt.utils import full_name, set_extra_fields
+from grai_source_dbt.utils import full_name
 
 NodeTypes = Union[
     CompiledAnalysisNode,
@@ -72,7 +72,7 @@ class ManifestLoaderV1(BaseManifestLoader):
 
     @cached_property
     def node_map(self) -> Dict[str, DBTNodeType]:
-        node_resource_types = {"model", "seed"}
+        node_resource_types = {"model", "seed", "snapshot"}
         node_map = {
             node_id: node for node_id, node in self.manifest.nodes.items() if node.resource_type in node_resource_types
         }
@@ -125,9 +125,12 @@ class ManifestLoaderV1(BaseManifestLoader):
             # Seeds don't have depends_on and will error without this check.
             if hasattr(table.depends_on, "nodes"):
                 for parent_str in table.depends_on.nodes:
-                    source_node = (
-                        self.node_map[parent_str] if parent_str in self.node_map else self.manifest.sources[parent_str]
-                    )
+                    if parent_str in self.node_map:
+                        source_node = self.node_map[parent_str]
+                    elif parent_str in self.manifest.sources:
+                        source_node = self.manifest.sources[parent_str]
+                    else:
+                        continue
                     edge = self.make_edge(source_node, table, Constraint("dbtm"), EdgeTypeLabels.table_to_table, True)
                     result.append(edge)
 
