@@ -31,7 +31,7 @@
     "casual": "^1.6.2",
     "dayjs": "^1.11.6",
     "elkjs": "^0.8.2",
-    "eslint": "^8.37.0",
+    "eslint": "^8.38.0",
     "eslint-plugin-import": "^2.27.5",
     "graphql": "^16.6.0",
     "luxon": "^3.2.1",
