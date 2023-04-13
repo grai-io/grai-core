@@ -29,10 +29,12 @@ def manifest_ver(id: str) -> ManifestProcessor:
 
 
 files = [resource_path("manifest.json", ver) for ver in SUPPORTED_VERSIONS]
-files += [resource_path("manifest-seed.json", "v8")]
-ids = SUPPORTED_VERSIONS + ["v8-seed"]
+files += [resource_path("manifest-seed.json", "v8"), resource_path("manifest-snapshot.json", "v8")]
+ids = SUPPORTED_VERSIONS + ["v8-seed", "v8-manifest"]
 
 processors = [load_resource(file) for file in files]
+
+breakpoint()
 
 
 @pytest.mark.parametrize("processor", processors, ids=ids)
