@@ -73,6 +73,7 @@ def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") 
     elif isinstance(current.source, Column):
         if isinstance(current.destination, Column):
             data["edge_type"] = EdgeTypeLabels.column_to_column.value
+            data.update({"preserves_data_type": True, "preserves_nullable": True, "preserves_unique": True})
             return ColumnToColumnMetadata(**data)
 
     data["edge_type"] = EdgeTypeLabels.generic.value
