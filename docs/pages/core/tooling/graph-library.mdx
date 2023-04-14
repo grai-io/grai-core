@@ -1,0 +1,49 @@
+---
+title: 'Graph Library'
+description: Dynamically interact with the data lineage graph for your organization.
+---
+
+# Graph Library
+
+Dynamically interact with the data lineage graph for your organization.
+
+```shell
+pip install grai-graph
+```
+
+### Lineage Exploration
+
+You can now run deeper exploration and counterfactuals using the python library. First import the library, including graph, analysis and visualizations.
+
+```python
+from grai_graph import graph, analysis, visualizations
+
+```
+
+#### Counterfactuals
+
+You can now run several counterfactual analyses from the graph library. These allow you to see the downstream impact of changes **before** they impact your dashboards and jobs.
+
+For instance maybe we wanted to find out all of the data which would be impacted by deleting the id column on the lineage_node table.
+
+```python
+affected_nodes = analysis.test_delete_node(namespace='default', name='public.lineage_node.id')
+for node in affected_nodes:
+    print(node.spec.name)
+```
+
+Or to test changing the data type from uuid to int.
+
+```python
+nodes = analysis.test_type_change(namespace='default', name='public.lineage_node.id', new_type='int')
+for node in nodes:
+    print(node.spec.name)
+```
+
+You can also determine what nodes are downstream from a particular node:
+
+```python
+downstream_nodes = analysis.downstream_nodes(namespace='default', name='public.lineage_node.id')
+for node in downstream_nodes:
+    print(node.spec.name)
+```

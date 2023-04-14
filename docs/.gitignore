@@ -26,3 +26,18 @@ yarn-error.log*
 
 /public/env-config.js
 env-config.js
+
+# Sentry
+.sentryclirc
+
+# Sentry
+next.config.original.js
+
+# Sentry
+.sentryclirc
+
+# Sentry
+next.config.original.js
+
+# Sentry
+next.config.wizardcopy.js
