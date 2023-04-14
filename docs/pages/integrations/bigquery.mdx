@@ -1,0 +1,74 @@
+---
+title: 'BigQuery'
+description: Grai BigQuery IOntegration
+---
+
+The BigQuery integration synchronizes metadata from your BigQuery datawarehouse into the data lineage graph.
+
+## Web App
+
+![BigQuery](./resources/webapp/bigquery.png)
+
+### Fields
+
+| Field       | Value                                                                 | Example         |
+| ----------- | --------------------------------------------------------------------- | --------------- |
+| Name        | Name for connection                                                   | Google BigQuery |
+| Namespace   | Namespace for the connect, see [namespace](/concepts/namespace)       | default         |
+| project     | GCP project id                                                        | grai-demo       |
+| dataset     | BigQuery Dataset Id                                                   | jaffle_shop     |
+| credentials | JSON credentials for service account, see [Credentials](#credentials) |                 |
+
+### Credentials
+
+1. Create a service account [https://cloud.google.com/iam/docs/creating-managing-service-accounts](https://cloud.google.com/iam/docs/creating-managing-service-accounts).
+
+2. Add the following permissions to your service account:
+
+- BigQuery Data Viewer
+- BigQuery Job User
+
+3. Generate json credentials for your service account [https://developers.google.com/workspace/guides/create-credentials#service-account](https://developers.google.com/workspace/guides/create-credentials#service-account).
+
+4. Copy and paste the json into the [credentials] field.
+
+
+## Python Library
+
+### Installation
+
+Install BigQuery Grai package with pip
+
+```shell
+pip install grai-source-bigquery
+```
+
+This installs the Grai BigQuery integration, which is now ready to run in python
+
+### Connecting & Syncing
+
+The integrations comes equipped with the client library already but we will need a python terminal or Jupyter Notebook to execute a few commands to establish a connection and begin querying the server.
+
+Spin up your favorite python terminal then:
+
+```
+import os
+from grai_source_bigquery.base import update_server
+```
+
+For now we will use the default user credentials though you are free to create a new user / api keys from the server admin interface at http://localhost:8000/admin.
+
+```
+client = ClientV1("localhost","8000")
+client.set_authentication_headers("null@grai.io","super_secret")
+```
+
+Now we can update the server with data from any BigQuery source. In order to do so you will need to pass credentials and namespace into the update_server function.
+Namespace is used to uniquely identify the nodes and when used consistently will allow you to add to the node from any source.
+
+Using example variables, in order to update the server with your metadata, simply run:
+
+```
+update_server(client, project="[your_project]", dataset="[your_dataset]]", credentials="[your_credentials]", namespace="[your_grai_namespace]")
+
+```

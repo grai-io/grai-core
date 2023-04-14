@@ -1,0 +1,13 @@
+{
+    "dbt": "dbt",
+    "fivetran": "Fivetran",
+    "postgres": "PostgreSQL",
+    "mysql": "MySQL",
+    "mssql": "Microsoft SQL Server",
+    "snowflake": "Snowflake",
+    "bigquery": "BigQuery",
+    "flat-file": "Flat File",
+    "yaml": "YAML",
+    "other-sources": "Other Sources",
+    "support-status": "Support Status"
+}

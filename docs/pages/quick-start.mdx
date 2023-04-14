@@ -1,0 +1,80 @@
+---
+title: "Quick Start"
+description: Get started testing your data pipelines
+---
+
+> This quickstart guide assumes a local installation, but Grai can be installed anywhere.<br />
+> Or come and [explore](https://www.grai.io/signup/) our cloud based offering
+
+# What we'll cover here
+
+In order to build your data lineage chart you will need to run Grai server and client, and download metadata from your data tools.
+
+This will take less than five minutes and invovles three easy steps:
+
+- Launch the Grai Server
+- Install the Grai Connector for your data sources
+- Update the server with your source metadata
+
+### Step 1: Clone the repository and run locally
+
+```shell
+git clone https://github.com/grai-io/grai-core.git
+cd grai-core/grai-server
+docker compose up
+```
+
+This sets up three containers running
+
+- (1) an instance of postgres running on port 5432
+- (2) an api server running on 8000 which you should see it available at [http://localhost:8000](http://localhost:8000) and
+- (3) your frontend at [http://localhost:3000](http://localhost:3000).
+
+These settings are all configurable.
+
+Your default login credentials, are:
+
+```
+username: null@grai.io
+password: super_secret
+```
+
+### Step 2: Pick your data source and install out-of-the-box integrations:
+
+For this example
+
+```shell
+pip install grai-source-postgres
+```
+
+### Step 3: Update the server with your source metadata:
+
+The integration comes equipped with the client library already but we will need a python terminal or Jupyter Notebook to execute a few commands to establish a connection and begin querying the server.
+
+Spin up your favorite python terminal then:
+
+```
+import os
+from grai_source_postgres.base import update_server
+```
+
+For now we will use the default user credentials though you are free to create a new user / api keys from the server admin interface at http://localhost:8000/admin.
+
+```
+client = ClientV1("localhost","8000")
+client.set_authentication_headers("null@grai.io","super_secret")
+```
+
+Now we can update the server with data from any postgres source.
+In order to do so you will need to pass credentials and namespace into the update_server function.
+Namespace is used to uniquely identify the nodes and when used consistently will allow you to add to the node from any source.
+
+Using example variables, in order to update the server with your metadata, simply run:
+
+```
+update_server(client, dbname='grai', user='grai', password='grai', namespace='default', host='localhost', port='8000')
+```
+
+## Using Lineage
+
+Once your nodes and edges are setup, you can go ahead and use your lineage!

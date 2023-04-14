@@ -1,0 +1,12 @@
+{
+    "index":  "Home",
+    "introduction": "What is Grai?",
+    "quickstart": "Quick Start",
+    "community": "Community",
+    "examples": "Examples",
+    "concepts": "Key Concepts",
+    "tooling": "Tooling",
+    "integrations": "Integrations",
+    "server": "Server",
+    "web-app": "Web App"
+}

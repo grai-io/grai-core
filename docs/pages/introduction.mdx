@@ -1,0 +1,56 @@
+---
+title: 'What is Grai?'
+description: Introducing Grai, the open-source data lineage and testing toolkit for data teams that need more reliability.
+---
+
+Grai is an open-source and self-hosted Data Lineage Platform. With Grai, your and your engineering and data teams can validate your data, in git, without meetings.
+
+
+Grai is based on **five** key concepts
+- Active Testing
+- Nodes
+- Edges
+- Metadata
+- Automatic Integrations
+
+
+
+## Active Testing
+
+Passive tests, like unit tests, are a critical software development best practice.
+However, unit tests only run against your existing codebase, they do little to tell you how a change will affect others who depend on your software.
+In practice that means passive test will only alert you to an issue after the change has made it to production and caused an issue.
+Active tests on the other hand, alert you to breaking changes before they make it to production.
+This allows you to actively manage your pipelines, confident that every change has been vetted for impact across the entire organization.
+
+## Nodes
+
+Nodes are the first concept to understand about your data lineage graph.
+They can represent anything in your data pipeline from columns and tables to BI dashboards and API endpoints.
+By combining them together we can build a graph representing the relationship between data throughout your organization.
+Most out of the box integrations concentrate on representing tables, views and columns, however, they can represent whatever you need simply by using the [client](/tooling/client) to communicate with the server.
+
+This flexibility is, in part, the power of Grai - a node can be anything, limited only by your needs and imagination.
+
+## Edges
+
+Edges are the second significant concept to understand about data lineage.
+At heart, edges simply connect two nodes.
+This might be a view which references an underlying table, a column that belongs to a table, or a foreign key relationship between two columns in a database.
+
+Much like a node, an edge reprsent anything that connects two nodes, and can store any arbitrary data like a SQL script describing the conversion between two nodes.
+
+## Metadata
+
+Metadata is contextual information about your data.
+Grai does not store your data itself, whether in the open-source version or on the cloud, just the data **about** your data.
+For instance, what tables and columns you have, what format is your data stored in, or the date it was last refreshed and who changed it.
+
+Grai operates a **completely flexible strucutre** which means you can add and manage any fields you like, or update them however and whenever you need.
+
+## Automatic Integrations
+
+We provide autommatic integrations to access metadata from common sources.
+Like many other open-source projects, some of our integrations are built in house by our team, while others are built by the community.
+Anything contributed back to the core project will receive maintenance and support by the Grai team.
+Come and join us in [Slack](https://join.slack.com/t/graicommunity/shared_invite/zt-1il70kfeb-TaCm5fwHg_quWCpKNYyj6w).
