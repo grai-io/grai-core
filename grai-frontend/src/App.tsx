@@ -26,6 +26,7 @@ const App: React.FC = () => {
     Sentry.init({
       dsn: process.env.REACT_APP_SENTRY_DSN,
       integrations: [
+        new Sentry.Replay(),
         new BrowserTracing({
           routingInstrumentation: Sentry.reactRouterV6Instrumentation(
             React.useEffect,
@@ -37,6 +38,8 @@ const App: React.FC = () => {
         }),
       ],
       tracesSampleRate: 1.0,
+      replaysSessionSampleRate: 0,
+      replaysOnErrorSampleRate: 1.0,
     })
 
   const notistackRef = React.createRef<any>()
