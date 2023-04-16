@@ -3,15 +3,24 @@ title: Fivetran
 description: Grai integration for fivetran to automatically extract connection metadata.
 ---
 
-import { Callout } from 'nextra-theme-docs'
+import { Callout } from "nextra-theme-docs";
+import { FivetranLogoIcon } from "../../../components/Integrations";
+import Image from "next/image";
 
+<br/>
+<FivetranLogoIcon/>
 # Fivetran
 
 The Fivetran integration synchronizes your Fivetran connection metadata into the lineage graph.
 
 ## Web App
 
-![fivetran](./resources/webapp/fivetran.png)
+<Image
+  src="/images/docs/core/integrations/fivetran.png"
+  height={600}
+  width={1200}
+/>
+
 
 ### Fields
 
@@ -30,14 +39,13 @@ The Fivetran integration synchronizes your Fivetran connection metadata into the
 
 Follow [https://fivetran.com/docs/rest-api/getting-started](https://fivetran.com/docs/rest-api/getting-started) to generate an api key.
 
-
 ## Python Library
 
 ### Installation
 
 Install Fivetran Grai package with pip
 
-```shell
+```shell copy
 pip install grai-source-fivetran
 ```
 
@@ -49,14 +57,14 @@ The integration comes equipped with the client library already but we will need 
 
 Spin up your favorite python terminal then:
 
-```python
+```python copy
 import os
 from grai_source_fivetran.base import update_server
 ```
 
 For now we will use the default user credentials though you are free to create a new user / api keys from the server admin interface at http://localhost:8000/admin.
 
-```python
+```python copy
 client = ClientV1("localhost","8000")
 client.set_authentication_headers("null@grai.io","super_secret")
 ```
@@ -66,10 +74,9 @@ In order to do so you will need to pass credentials and namespace information fo
 If you wish to put all fivetran data into a single namespace you can provide a single `default_namespace` value or customize your
 namespace organization by passing a dictionary to the `namespaces` parameter.
 
-
 <Callout type="info" emoji="ℹ️">
     The `namespaces` dictionary should map fivetran connection id's to source and destination grai namespaces, e.g.
-    ```python
+    ```python copy
         {<fivetran_connection_id>: {
             'source': [source_namespace],
             'destination': [destination_namespace]}
@@ -77,9 +84,8 @@ namespace organization by passing a dictionary to the `namespaces` parameter.
     ```
 </Callout>
 
-
 Using example variables, in order to update the server with your metadata, simply run:
 
-```python
+```python copy
 update_server(client, default_namespace=[your_namespace], api_key=[your_fivetran_api_key], api_secret=[your_fivetran_api_secret])
 ```

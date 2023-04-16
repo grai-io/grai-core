@@ -3,17 +3,17 @@ title: "Connections"
 description: Connections store the information needed to access data lineage from a particular data store or data tool
 ---
 
-import { Callout } from 'nextra-theme-docs'
+import { Callout } from "nextra-theme-docs";
+import Image from "next/image";
 
 # Connections
 
 Connections store the information needed to access data lineage from a particular data store or data tool using one of the pre-built integrations.
 
-
 <Callout type="info" emoji="ℹ️">
-    For the full list of web-app supported integrations see the [support status page](/integrations/support-status)
+  For the full list of web-app supported integrations see the [support status
+  page](/core/integrations/support-status)
 </Callout>
-
 
 ## The Connection Interface
 
@@ -21,18 +21,27 @@ Adding new connections is as simple as providing the connection credentials requ
 Although the specific required credentials vary from source to source you can see an example of the Postgres interface below.
 
 ### Postgres
+<br/>
 
-![Postgres](./resources/postgres.png)
-
+<Image
+  src="/images/docs/core/webapp/postgres.png"
+  height={600}
+  width={1200}
+/>
 
 Next we will walk through everything you need to know to add new connections.
-
 
 ## View connections
 
 Select connections from the top menu to view your existing connections.
 
-![Connections](./resources/connections.png)
+<br/>
+<Image
+  src="/images/docs/core/webapp/connections.png"
+  height={600}
+  width={1200}
+/>
+
 
 ## Add a connection
 
@@ -40,7 +49,12 @@ Select connections from the top menu to view your existing connections.
 
 2. Click Add Connection
 
-![Add Connection](./resources/add-connection.png)
+<br/>
+<Image
+  src="/images/docs/core/webapp/add-connection.png"
+  height={200}
+  width={200}
+/>
 
 3. Choose the connection type from the list of supported data sources
 
@@ -55,7 +69,8 @@ Select connections from the top menu to view your existing connections.
 8. Press Refresh on the Connection and wait for it to run
 
 <Callout type="info" emoji="ℹ️">
-    If the run errors you should be able to see the errors by clicking on the status or the table row.
+  If the run errors you should be able to see the errors by clicking on the
+  status or the table row.
 </Callout>
 
 9. Go to the Graph or Tables page to see your data
@@ -64,28 +79,53 @@ Select connections from the top menu to view your existing connections.
 
 Each time your conneciton is run, either manually or through a schedule, details are recorded, allowing you to see the status of the run and view any issues.
 
-![Runs](./resources/runs.png)
+<br/>
+<Image
+  src="/images/docs/core/webapp/runs.png"
+  height={600}
+  width={1200}
+/>
 
 ### Manually trigger a run
 
 Click the refresh button to manually trigger a run which will refresh the data lineage with information from this particular connection.
 
-![Refresh Button](./resources/refresh.png)
+<br/>
+<Image
+  src="/images/docs/core/webapp/refresh.png"
+  height={100}
+  width={100}
+/>
 
 ### Run detail
 
 Clicking on a run gives more detail, including any errors.
 
-![Run Detail](./resources/run.png)
+<Image
+  src="/images/docs/core/webapp/run.png"
+  height={600}
+  width={1200}
+/>
+
 
 ## Edit connection
 
 A connection's configuration can be edited under the configuration tab.
 
-![Configuration](./resources/configuration.png)
+<br/>
+<Image
+  src="/images/docs/core/webapp/configuration.png"
+  height={600}
+  width={1200}
+/>
 
 ## Edit schedule
 
 A connection can be set to run on a fixed schedule or only manually. Edit the schedule under the schedule tab.
 
-![Schedule](./resources/schedule.png)
+<br/>
+<Image
+  src="/images/docs/core/webapp/schedule.png"
+  height={600}
+  width={1200}
+/>

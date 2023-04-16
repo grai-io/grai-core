@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useState, useEffect } from "react";
 import { DocsThemeConfig, useConfig } from "nextra-theme-docs";
@@ -7,86 +6,92 @@ import HeaderLogo from "./components/HeaderLogo";
 import { Slack, Github } from "./components/Social";
 
 const config: DocsThemeConfig = {
-    project: {
-      link: 'https://github.com/grai-io/grai-core',
-    },
+  project: {
+    link: "https://github.com/grai-io/grai-core",
+  },
 
-    docsRepositoryBase: 'https://github.com/grai-io/grai-core/tree/master/docs',
-    useNextSeoProps() {
-      const { frontMatter } = useConfig();
-      return {
-        titleTemplate: "%s – Grai",
-        description:
-          frontMatter.description || "Data lineage you can use",
-      };
-    },
-    head: () => {
+  docsRepositoryBase: "https://github.com/grai-io/grai-core/tree/master/docs",
+  useNextSeoProps() {
+    const { frontMatter } = useConfig();
+    return {
+      titleTemplate: "%s – Grai",
+      description: frontMatter.description || "Data lineage you can use",
+    };
+  },
+  head: () => {
+    const { asPath, defaultLocale, locale } = useRouter();
+    const { frontMatter } = useConfig();
+    return (
+      <>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" href="/logo512.png" />
+        <meta property="og:url" content={`https://docs.grai.io${asPath}`} />
+        <meta property="og:title" content={frontMatter.title || "Nextra"} />
+        <meta
+          property="og:description"
+          content={frontMatter.description || "The next site builder"}
+        />
+      </>
+    );
+  },
+  darkMode: true,
+  primaryHue: { dark: 265, light: 265 },
+  logo: HeaderLogo,
+  logoLink: "https://www.grai.io",
 
-      const { asPath, defaultLocale, locale } = useRouter()
-      const { frontMatter } = useConfig()
-      return (
-        <>
-          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          // TODO: Fix the favicon
-          <link rel="icon" href="/img/favicon.png" />
-          <meta property="og:url" content={`https://docs.grai.io${asPath}`} />
-          <meta property="og:title" content={frontMatter.title || 'Nextra'} />
-          <meta property="og:description" content={frontMatter.description || 'The next site builder'} />
-        </>
-      );
-    },
-    darkMode: true,
-    primaryHue: {'dark': 265, 'light': 265},
-    logo: HeaderLogo,
-    logoLink: "https://www.grai.io",
-
-    sidebar: {
-        defaultMenuCollapseLevel: 0,
-    },
-    footer: {
-      text:
-        <span>
-          Copywrite © {new Date().getFullYear()}  <a href="https://grai.io" target="_blank">Grai.io</a>.
-        </span>,
-    },
-    chat: {
-      link: 'https://join.slack.com/t/graicommunity/signup',
-      icon: Slack
-    },
-    banner: {
-      key: 'live-cloud',
-      text: <a href="https://grai.io" target="_blank">
+  sidebar: {
+    defaultMenuCollapseLevel: 1,
+  },
+  footer: {
+    text: (
+      <span>
+        Copyright © {new Date().getFullYear()}{" "}
+        <a href="https://grai.io" target="_blank">
+          Grai.io
+        </a>
+        .
+      </span>
+    ),
+  },
+  chat: {
+    link: "https://join.slack.com/t/graicommunity/signup",
+    icon: Slack,
+  },
+  banner: {
+    key: "live-cloud",
+    text: (
+      <a href="https://grai.io" target="_blank">
         🎉 Grai cloud is now live. Read more →
-      </a>,
+      </a>
+    ),
+  },
+  editLink: {
+    text: "Edit this page on GitHub",
+  },
+  feedback: {
+    useLink() {
+      return "https://github.com/grai-io/grai-core/issues";
     },
-    editLink: {
-      text: 'Edit this page on GitHub',
-    },
-    feedback: {
-      useLink() {
-        return 'https://github.com/grai-io/grai-core/tree/master'
-      }
-    },
-    navigation: {
-      prev: true,
-      next: true
-    },
-    gitTimestamp({ timestamp }) {
-      const [dateString, setDateString] = useState(timestamp.toISOString());
+  },
+  navigation: {
+    prev: true,
+    next: true,
+  },
+  gitTimestamp({ timestamp }) {
+    const [dateString, setDateString] = useState(timestamp.toISOString());
 
-      useEffect(() => {
-        setDateString(
-          timestamp.toLocaleDateString(navigator.language, {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-          })
-        );
-      }, [timestamp]);
+    useEffect(() => {
+      setDateString(
+        timestamp.toLocaleDateString(navigator.language, {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })
+      );
+    }, [timestamp]);
 
-      return <>Last updated on {dateString}</>;
-    },
+    return <>Last updated on {dateString}</>;
+  },
 };
-
 
 export default config;

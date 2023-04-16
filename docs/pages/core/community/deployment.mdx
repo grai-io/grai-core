@@ -1,9 +1,9 @@
 ---
-title: 'Deployment and testing'
+title: "Deployment and testing"
 description: Getting started with local testing
 ---
 
-import { Callout } from 'nextra-theme-docs'
+import { Callout } from "nextra-theme-docs";
 
 # Deployment
 
@@ -15,14 +15,13 @@ Once you have a clone of the core repository you can begin active development.
 2. [Poetry](https://python-poetry.org/docs/#installation)
 3. [Docker](https://docs.docker.com/engine/install/)
 
-
 ## Running the Server and frontend
 
 We maintain an up to date docker-compose script for development purposes under
 the `grai-server` folder of the monorepo.
 In order to deploy an instance locally you can do the following
 
-```shell
+```shell copy
 cd grai-core/grai-server
 docker compose up
 ```
@@ -33,7 +32,7 @@ running at `localhost:8000` and the frontend on `localhost:3000`.
 
 The default login credentials are
 
-```
+``` copy
 username: null@grai.io
 password: super_secret
 ```
@@ -42,11 +41,11 @@ password: super_secret
 
 Grai relies on the following background services.
 
-* [PostgresQL](https://www.postgresql.org/) as the core database
-* [Redis](https://redis.com/) for cacheing
-* [Celery](https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html) for job scheduling and worker execution
-* [Flower](https://flower.readthedocs.io/en/latest/) for monitoring of Celery tasks
-* [Django](https://www.djangoproject.com/) for our backend web framework
+- [PostgresQL](https://www.postgresql.org/) as the core database
+- [Redis](https://redis.com/) for cacheing
+- [Celery](https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html) for job scheduling and worker execution
+- [Flower](https://flower.readthedocs.io/en/latest/) for monitoring of Celery tasks
+- [Django](https://www.djangoproject.com/) for our backend web framework
 
 The frontend is [Typescript](https://www.typescriptlang.org/) and [React](https://reactjs.org/)
 
@@ -63,14 +62,14 @@ applicable to the other python libraries and integrations.
 
 Although all of our python libraries are installable through pip
 
-```shell
+```shell copy
 cd grai-core/grai-integrations/source-postgres
 pip install -e .
 ```
 
 We recommend using poetry to manage your installations like so.
 
-```shell
+```shell copy
 cd grai-core/grai-integrations/source-postgres
 poetry install
 ```
@@ -79,14 +78,12 @@ This will create a new virtual environment with all required dependencies for th
 You can run command inside this virtual environment by prefixing commands with `poetry run`,
 e.g. `poetry run python` will place in you the python interpreter for your environment.
 
-
 ### Testing
 
 We use pytest in all of our python applications and you can run tests in your
 virtual environment with this command.
 
-
-```shell
+```shell copy
 poetry run pytest
 ```
 
@@ -95,7 +92,7 @@ docker-compose file in the root of the integration subdirectory.
 In these cases you should use Docker to spin up an instance of the needed containers
 before running the test commands.
 
-```shell
+```shell copy
 docker compose up
 poetry run pytest
 ```
@@ -103,12 +100,11 @@ poetry run pytest
 ### Continuous Integration
 
 <Callout type="info" emoji="ℹ️">
-    Github Actions definition files are available in the root directory of the project
-    under `.github/workflows`
+  GitHub Actions definition files are available in the root directory of the
+  project under `.github/workflows`
 </Callout>
 
-
-Each of these testing steps will run a CI job built using Github Actions.
+Each of these testing steps will run a CI job built using GitHub Actions.
 For new integrations we ask that you add an action which runs Linting, and unit tests
 on every pull request.
 
@@ -118,10 +114,10 @@ on every pull request.
 
 Our Python libraries all follow a consistent style guide consisting of
 
-* [Black](https://github.com/psf/black) for linting
-    * We use a line-width of 120 characters not 81
-* [MyPy](https://github.com/python/mypy) for static type checking
-* [isort](https://pycqa.github.io/isort/) for standardized import ordering
+- [Black](https://github.com/psf/black) for linting
+  - We use a line-width of 120 characters not 81
+- [MyPy](https://github.com/python/mypy) for static type checking
+- [isort](https://pycqa.github.io/isort/) for standardized import ordering
 
 ### Pre-Commit
 

@@ -1,26 +1,31 @@
 ---
-title: 'dbt'
+title: "dbt"
 description: Grai integration for dbt to automatically access metadata.
 ---
 
+import { DbtLogoIcon } from "../../../components/Integrations";
+import Image from "next/image";
+
+<br/>
+<DbtLogoIcon/>
 # dbt
 
 The DBT integration updates metadata from your DBT manifest into the data lineage graph.
 
-
 ## Web App
 
+<Image
+  src="/images/docs/core/integrations/dbt.png"
+  height={600}
+  width={1200}
+/>
 
-![dbt](./resources/webapp/dbt.png)
 
 ### Fields
 
-| Field     | Value                                                           | Example |
-| --------- | --------------------------------------------------------------- | ------- |
-| Namespace | Namespace for the connect, see [namespace](/concepts/namespace) | default |
-
-
-
+| Field     | Value                                                                 | Example |
+| --------- | --------------------------------------------------------------------- | ------- |
+| Namespace | Namespace for the connect, see [namespaces](/core/concepts/namespace) | default |
 
 ## Python Library
 
@@ -28,7 +33,7 @@ The DBT integration updates metadata from your DBT manifest into the data lineag
 
 Install dbt Grai package with pip
 
-```shell
+```shell copy
 pip install grai-source-dbt
 ```
 
@@ -40,14 +45,14 @@ The integration comes equipped with the client library already but we will need 
 
 Spin up your favorite python terminal then:
 
-```python
+```python copy
 import os
 from grai_source_dbt.base import update_server
 ```
 
 For now we will use the default user credentials though you are free to create a new user / api keys from the server admin interface at http://localhost:8000/admin.
 
-```python
+```python copy
 client = ClientV1("localhost","8000")
 client.set_authentication_headers("null@grai.io","super_secret")
 ```
@@ -56,19 +61,19 @@ Now we can update the server with data from any dbt source. In order to do so yo
 
 Using example variables, in order to update the server with your metadata, simply run:
 
-```python
+```python copy
 update_server(client, manifest_file=[path_to_your_manifest_file], namespace=[your_namespace])
 ```
 
 ## DBT Manifest Version Support
 
 | Manifest Version | Status |
-| :---------: | :----: |
-| v1 | ✅ |
-| v2 | ✅ |
-| v3 | ✅ |
-| v4 | ✅ |
-| v5 | ✅ |
-| v6 | ✅ |
-| v7 | ✅ |
-| v8 | ✅ |
+| :--------------: | :----: |
+|        v1        |   ✅   |
+|        v2        |   ✅   |
+|        v3        |   ✅   |
+|        v4        |   ✅   |
+|        v5        |   ✅   |
+|        v6        |   ✅   |
+|        v7        |   ✅   |
+|        v8        |   ✅   |

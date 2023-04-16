@@ -17,7 +17,7 @@ Grai uses OS specific search paths to find it's configuration file
 * **Windows**: `%APPDATA%\grai` where the APPDATA environment variable falls back to `%HOME%\AppData\Roaming` if undefined
 
 
-```shell
+```shell copy
 pip install grai-cli
 grai config init
 ```
@@ -26,19 +26,19 @@ grai config init
 To confirm that your settings are working with your server:
 
 
-```shell
+```shell copy
 grai client is_authenticated
 ```
 
 The Grai CLI has a range of commands to explore your data. For more details type
 
-```shell
+```shell copy
 grai --help
 ```
 
 To apply a configuration by file name:
 
-```shell
+```shell copy
 grai apply <file name>
 ```
 
@@ -47,19 +47,19 @@ You can also use the flag --d for a dry run before committing your changes.
 
 To adjust or view config settings which were set above use the config command, for instance to view your settings:
 
-```shell
+```shell copy
 grai config view
 ```
 
 To get details about your lineage, such as querying for nodes and edges, use "grai get [noun]".
 For example, if you wanted to query for all of the nodes in your graph you would type
 
-```shell
+```shell copy
 grai get nodes
 ```
 
 or if you wanted to search for a specific node named "customer.name" you would instead
 
-```shell
+```shell copy
 grai get nodes customer.name
 ```

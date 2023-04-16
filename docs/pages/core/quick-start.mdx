@@ -3,15 +3,14 @@ description: Get started testing your data pipelines
 title: Quick Start
 ---
 
-import { Callout } from 'nextra-theme-docs'
+import { Callout } from "nextra-theme-docs";
 
 # Quick Start
 
 <Callout type="info" emoji="ℹ️">
-    This quickstart guide assumes a local installation, but Grai can be installed anywhere.
-    Or come and [explore](https://www.grai.io/signup/) on the cloud.
+  This quickstart guide assumes a local installation, but Grai can be installed
+  anywhere. Or come and [explore](https://app.grai.io/register/) on the cloud.
 </Callout>
-
 
 # What we'll cover here
 
@@ -25,7 +24,7 @@ This will take less than five minutes and invovles three easy steps:
 
 ### Step 1: Clone the repository and run locally
 
-```shell
+```shell copy
 git clone https://github.com/grai-io/grai-core.git
 cd grai-core/grai-server
 docker compose up
@@ -41,7 +40,7 @@ These settings are all configurable.
 
 Your default login credentials, are:
 
-```
+``` copy
 username: null@grai.io
 password: super_secret
 ```
@@ -50,7 +49,7 @@ password: super_secret
 
 For this example
 
-```shell
+```shell copy
 pip install grai-source-postgres
 ```
 
@@ -60,14 +59,14 @@ The integration comes equipped with the client library already but we will need 
 
 Spin up your favorite python terminal then:
 
-```python
+```python copy
 import os
 from grai_source_postgres.base import update_server
 ```
 
 For now we will use the default user credentials though you are free to create a new user / api keys from the server admin interface at http://localhost:8000/admin.
 
-```
+```python copy
 client = ClientV1("localhost","8000")
 client.set_authentication_headers("null@grai.io","super_secret")
 ```
@@ -78,7 +77,7 @@ Namespace is used to uniquely identify the nodes and when used consistently will
 
 Using example variables, in order to update the server with your metadata, simply run:
 
-```python
+```python copy
 update_server(client, dbname='grai', user='grai', password='grai', namespace='default', host='localhost', port='8000')
 ```
 

@@ -1,5 +1,5 @@
 ---
-title: 'Flat File'
+title: "Flat File"
 description: Flat file integration
 ---
 
@@ -7,17 +7,13 @@ description: Flat file integration
 
 The Flat File integration is used to upload a single flat file (like csv, parquet, and feather) into the data lineage graph.
 
-
 ## Web App
-
-{/* ![flat-file](./resources/webapp/flat-file.png) */}
 
 ### Fields
 
-| Field     | Value                                                           | Example |
-| --------- | --------------------------------------------------------------- | ------- |
-| Namespace | Namespace for the connect, see [namespace](/concepts/namespace) | default |
-
+| Field     | Value                                                                 | Example |
+| --------- | --------------------------------------------------------------------- | ------- |
+| Namespace | Namespace for the connect, see [namespaces](/core/concepts/namespace) | default |
 
 ## Python Library
 
@@ -25,7 +21,7 @@ The Flat File integration is used to upload a single flat file (like csv, parque
 
 Install Flat File Grai package with pip
 
-```shell
+```shell copy
 pip install grai-source-flatfile
 ```
 
@@ -35,20 +31,20 @@ The integration comes equipped with the client library already but we will need 
 
 Spin up your favorite python terminal then:
 
-```python
+```python copy
 import os
 from grai_source_flatfile.base import update_server
 ```
 
 For now we will use the default user credentials though you are free to create a new user / api keys from the server admin interface at http://localhost:8000/admin.
 
-```python
+```python copy
 client = ClientV1("localhost","8000")
 client.set_authentication_headers("null@grai.io","super_secret")
 ```
 
 Now we can update the server with data from any postgres source. In order to do so you will need to pass credentials and namespace into the update_server function. Namespace is used to uniquely identify the nodes and when used consistently will allow you to add to the node from any source.
 
-```python
+```python copy
 update_server(client, [flat_file fields])
 ```

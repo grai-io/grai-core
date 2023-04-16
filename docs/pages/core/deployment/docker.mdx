@@ -1,0 +1,144 @@
+---
+title: Deploying Grai with Docker
+description: Deploying Grai with Docker
+---
+
+import { Callout, Steps } from "nextra-theme-docs";
+
+# Introduction
+
+Grai consists of multiple different independent services including
+
+### Server
+
+- Postgres + Django
+- Redis
+- Celery + Celery Beat
+- flower
+
+For more information about the server see [Grai Server](/core/server/).
+
+
+### Web App
+
+For more information about the web app see [Grai Web App](/core/web-app/)
+
+### Container Registry
+
+We maintain up to date docker images for all of the Grai services on GitHub's Container Registry `ghcr`
+
+| Service | Image | Tags |
+|---------|-------| ---- |
+| Server | ghcr.io/grai-io/grai-core/grai-server | latest, semver |
+| Web App | ghcr.io/grai-io/grai-core/grai-frontend | latest, semver |
+
+<br/>
+
+# Deployment
+
+## Dependencies
+
+Before you begin, make sure have access to both `docker` and `docker-compose` on your machine.
+
+
+<Callout>
+  If you haven't used Docker before, we recommend you check out the [Docker Getting Started Guide](https://docs.docker.com/get-started/).
+  For more installation about Docker Compose, see the [Docker Compose Installation Guide](https://docs.docker.com/compose/install/).
+  If you are on Windows, you may need to install [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install-win10) to run Docker.
+</Callout>
+
+
+## Running the Server and frontend
+
+We maintain a variety of up to date docker-compose deployment scripts in version control [here](https://github.com/grai-io/grai-core/tree/master/examples/deployment/docker-compose).
+Which you can always use for reference.
+
+### Minimal
+
+The minimal configuration is a good starting point for testing out Grai.
+It's composed of only the bare minimum number of services required to run the server and frontend.
+You can find a reference to the minimal configuration [here](https://github.com/grai-io/grai-core/blob/master/examples/deployment/docker-compose/minimal/docker-compose.yml).
+
+This will provide a fully functional instance of the Grai application although some of the features like scheduled tasks may operate with reduced functionality.
+
+### Complete
+
+The complete configuration contains all of the services required to run the full Grai application.
+You can find a reference to the complete configuration [here](https://github.com/grai-io/grai-core/blob/master/examples/deployment/docker-compose/complete/docker-compose.yml)
+
+
+### Deploying
+
+Once you've decided which configuration you want to use you can deploy it by running the following steps.
+
+<Steps>
+### Copy the `docker-compose.yml` file
+
+Open a terminal and navigate to whichever directory you intend to work from.
+Then copy your intended `docker-compose.yml` file into the work directory of your terminal
+
+e.g. if you want to use the minimal configuration you would copy the following content into your compose file.
+
+```yaml copy
+version: "3.7"
+
+services:
+  db:
+    image: postgres:14.3-alpine
+    environment:
+    - POSTGRES_USER=grai
+    - POSTGRES_PASSWORD=grai
+    - POSTGRES_DB=grai
+    ports:
+    - 5432:5432
+    healthcheck:
+      test: "pg_isready -U grai"
+      interval: 2s
+      timeout: 2s
+      retries: 15
+
+  the_guide:
+    image: ghcr.io/grai-io/grai-core/grai-server:latest
+    ports:
+      - 8000:8000
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=grai
+      - DB_USER=grai
+      - DB_PASSWORD=grai
+    depends_on:
+      - db
+    healthcheck:
+      test: "curl -f -v -H 'Accept: application/json' http://localhost:8000/health/"
+      interval: 2s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  frontend:
+    image: ghcr.io/grai-io/grai-core/grai-frontend:latest
+    ports:
+      - 3000:80
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+    depends_on:
+      - the_guide
+```
+
+### docker compose up
+
+Once you've copied the compose file into your work directory you can run `docker-compose up` to start the services.
+
+```bash copy
+docker-compose up
+```
+
+It may take a few minutes for the services to start up but once they are running you should be able to access the frontend at `http://localhost:3000` and the server at `http://localhost:8000`.
+
+Under the default configuration, an admin user will be created with the following credentials.
+
+| Username | Password |
+|----------|----------|
+| null@grai.io    | super_secret    |
+</Steps>

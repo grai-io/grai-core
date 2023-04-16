@@ -1,22 +1,32 @@
 ---
-title: 'BigQuery'
+title: "BigQuery"
 description: Grai BigQuery Integration
 ---
 
+import Image from "next/image";
+import { BigQueryLogoIcon } from "../../../components/Integrations";
+
+<br/>
+<BigQueryLogoIcon/>
 # BigQuery
 
 The BigQuery integration synchronizes metadata from your BigQuery datawarehouse into the data lineage graph.
 
+
 ## Web App
 
-![BigQuery](./resources/webapp/bigquery.png)
+<Image
+  src="/images/docs/core/integrations/bigquery.png"
+  height={600}
+  width={1200}
+/>
 
 ### Fields
 
 | Field       | Value                                                                 | Example         |
 | ----------- | --------------------------------------------------------------------- | --------------- |
 | Name        | Name for connection                                                   | Google BigQuery |
-| Namespace   | Namespace for the connect, see [namespace](/concepts/namespace)       | default         |
+| Namespace   | Namespace for the connect, see [namespaces](/core/concepts/namespace) | default         |
 | project     | GCP project id                                                        | grai-demo       |
 | dataset     | BigQuery Dataset Id                                                   | jaffle_shop     |
 | credentials | JSON credentials for service account, see [Credentials](#credentials) |                 |
@@ -34,14 +44,13 @@ The BigQuery integration synchronizes metadata from your BigQuery datawarehouse 
 
 4. Copy and paste the json into the [credentials] field.
 
-
 ## Python Library
 
 ### Installation
 
 Install BigQuery Grai package with pip
 
-```shell
+```shell copy
 pip install grai-source-bigquery
 ```
 
@@ -53,14 +62,14 @@ The integrations comes equipped with the client library already but we will need
 
 Spin up your favorite python terminal then:
 
-```python
+```python copy
 import os
 from grai_source_bigquery.base import update_server
 ```
 
 For now we will use the default user credentials though you are free to create a new user / api keys from the server admin interface at http://localhost:8000/admin.
 
-```python
+```python copy
 client = ClientV1("localhost","8000")
 client.set_authentication_headers("null@grai.io","super_secret")
 ```
@@ -70,6 +79,6 @@ Namespace is used to uniquely identify the nodes and when used consistently will
 
 Using example variables, in order to update the server with your metadata, simply run:
 
-```python
+```python copy
 update_server(client, project="[your_project]", dataset="[your_dataset]]", credentials="[your_credentials]", namespace="[your_grai_namespace]")
 ```

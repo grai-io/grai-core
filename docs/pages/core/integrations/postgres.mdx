@@ -1,30 +1,41 @@
 ---
-title: 'Postgres'
+title: "Postgres"
 description: Grai postgres integration
 ---
 
-import { Callout } from 'nextra-theme-docs'
+import { Callout } from "nextra-theme-docs";
+import { PostgresLogoIcon } from "../../../components/Integrations";
+import Image from "next/image";
 
+<br/>
+<PostgresLogoIcon/>
 # Postgres
+
 ## Web App
 
-![Postgres](./resources/webapp/postgres.png)
+<Image
+  src="/images/docs/core/integrations/postgres.png"
+  height={600}
+  width={1200}
+/>
+
 
 ### Fields
 
-| Field         | Value                                                           | Example                                                  |
-| ------------- | --------------------------------------------------------------- | -------------------------------------------------------- |
-| Name          | Name for connection                                             | Postgres                                                 |
-| Namespace     | Namespace for the connect, see [namespace](/concepts/namespace) | default                                                  |
-| host          | Database host                                                   | sample-database.cudyk77thtpt.us-west-2.rds.amazonaws.com |
-| port          | Database port                                                   | 5432                                                     |
-| Database Name | Database Name                                                   | jaffle_shop                                              |
-| user          | Database user                                                   |                                                          |
-| password      | Database password                                               |                                                          |
+| Field         | Value                                                                 | Example                                                  |
+| ------------- | --------------------------------------------------------------------- | -------------------------------------------------------- |
+| Name          | Name for connection                                                   | Postgres                                                 |
+| Namespace     | Namespace for the connect, see [namespaces](/core/concepts/namespace) | default                                                  |
+| host          | Database host                                                         | sample-database.cudyk77thtpt.us-west-2.rds.amazonaws.com |
+| port          | Database port                                                         | 5432                                                     |
+| Database Name | Database Name                                                         | jaffle_shop                                              |
+| user          | Database user                                                         |                                                          |
+| password      | Database password                                                     |                                                          |
 
 <Callout type="info" emoji="ℹ️">
-    Your database will need to be accessible from wherever you are running the Grai server.
-    If you are using Grai Cloud your database will need to be accessible from the internet.
+  Your database will need to be accessible from wherever you are running the
+  Grai server. If you are using Grai Cloud your database will need to be
+  accessible from the internet.
 </Callout>
 
 ## Python Library
@@ -33,7 +44,7 @@ import { Callout } from 'nextra-theme-docs'
 
 Install Postgres Grai package with pip
 
-```shell
+```shell copy
 pip install grai-source-postgres
 ```
 
@@ -45,14 +56,14 @@ The integration comes equipped with the client library already but we will need 
 
 Spin up your favorite python terminal then:
 
-```python
+```python copy
 import os
 from grai_source_postgres.base import update_server
 ```
 
 For now we will use the default user credentials though you are free to create a new user / api keys from the server admin interface at http://localhost:8000/admin.
 
-```python
+```python copy
 client = ClientV1("localhost","8000")
 client.set_authentication_headers("null@grai.io","super_secret")
 ```
@@ -61,6 +72,6 @@ Now we can update the server with data from any postgres source. In order to do 
 
 Using example variables, in order to update the server with your metadata, simply run:
 
-```python
+```python copy
 update_server(client, dbname=[your_dbname], user=[your_db_username], password=[your_db_password], namespace=[your_grai_namespace], host=[your_db_host], port=[your_db_port])
 ```
