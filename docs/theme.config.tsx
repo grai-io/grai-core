@@ -24,7 +24,6 @@ const config: DocsThemeConfig = {
     return (
       <>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        // TODO: Fix the favicon
         <link rel="icon" href="/logo512.png" />
         <meta property="og:url" content={`https://docs.grai.io${asPath}`} />
         <meta property="og:title" content={frontMatter.title || "Nextra"} />
@@ -46,7 +45,7 @@ const config: DocsThemeConfig = {
   footer: {
     text: (
       <span>
-        Copywrite © {new Date().getFullYear()}{" "}
+        Copyright © {new Date().getFullYear()}{" "}
         <a href="https://grai.io" target="_blank">
           Grai.io
         </a>
