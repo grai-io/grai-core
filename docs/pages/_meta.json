@@ -1,7 +1,4 @@
 {
-    "*": {
-        "type": "page"
-    },
     "index": {
         "display": "hidden",
         "theme": {
@@ -10,6 +7,10 @@
             "toc": true
         }
     },
-    "core":  "core"
-
+    "core": "Core",
+    "api": "api",
+    "test": {
+        "title": "Server API",
+        "href": "https://redocly.github.io/redoc/?nocors&url=https://www.grai.io/schema"
+      }
 }
