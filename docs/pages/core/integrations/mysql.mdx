@@ -1,35 +1,34 @@
 ---
-title: 'MySQL'
+title: "MySQL"
 description: Grai integration for MySQL to automatically access metadata.
 ---
 
-import { Callout } from 'nextra-theme-docs'
+import { Callout } from "nextra-theme-docs";
 
 # MySQL
 
 The MySQL integration synchronizes metadata from your MySQL databases into the data lineage graph.
 
-
 ## Web App
-
 
 ![MySQL](./resources/webapp/mysql.png)
 
 ### Fields
 
-| Field         | Value                                                           | Example                                                  |
-| ------------- | --------------------------------------------------------------- | -------------------------------------------------------- |
-| Name          | Name for connection                                             | Postgres                                                 |
-| Namespace     | Namespace for the connect, see [namespace](/concepts/namespace) | default                                                  |
-| host          | Database host                                                   | sample-database.cudyk77thtpt.us-west-2.rds.amazonaws.com |
-| port          | Database port                                                   | 5432                                                     |
-| Database Name | Database Name                                                   | jaffle_shop                                              |
-| user          | Database user                                                   |                                                          |
-| password      | Database password                                               |                                                          |
+| Field         | Value                                                                 | Example                                                  |
+| ------------- | --------------------------------------------------------------------- | -------------------------------------------------------- |
+| Name          | Name for connection                                                   | Postgres                                                 |
+| Namespace     | Namespace for the connect, see [namespaces](/core/concepts/namespace) | default                                                  |
+| host          | Database host                                                         | sample-database.cudyk77thtpt.us-west-2.rds.amazonaws.com |
+| port          | Database port                                                         | 5432                                                     |
+| Database Name | Database Name                                                         | jaffle_shop                                              |
+| user          | Database user                                                         |                                                          |
+| password      | Database password                                                     |                                                          |
 
 <Callout type="warning" emoji="ℹ️">
-    Your database will need to be accessible from wherever you are running the Grai server.
-    If you are using Grai Cloud your database will need to be accessible from the internet.
+  Your database will need to be accessible from wherever you are running the
+  Grai server. If you are using Grai Cloud your database will need to be
+  accessible from the internet.
 </Callout>
 
 ## Python Library

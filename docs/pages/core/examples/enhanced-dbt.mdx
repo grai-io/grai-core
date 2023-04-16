@@ -3,9 +3,9 @@ title: "Enhanced dbt Tests"
 description: Get started testing your data pipelines
 ---
 
-import { Callout } from 'nextra-theme-docs'
-import Image from 'next/image';
-import { Steps } from 'nextra-theme-docs'
+import { Callout } from "nextra-theme-docs";
+import Image from "next/image";
+import { Steps } from "nextra-theme-docs";
 
 # Enhanced dbt Tests
 
@@ -17,9 +17,9 @@ This guide will walk you through configuring your data lineage graph from scratc
 Finally, we will configure automate testing against the production database using GitHub Actions.
 
 <Callout type="info" emoji="ℹ️">
-  This guide is written based on using [Grai cloud](https://app.grai.io), however, it will run equally well on your own self-hosted implementation.
+  This guide is written based on using [Grai cloud](https://app.grai.io),
+  however, it will run equally well on your own self-hosted implementation.
 </Callout>
-
 
 <Steps>
 
@@ -28,18 +28,17 @@ Finally, we will configure automate testing against the production database usin
 Starting on the home screen selection `Connections` fromt he top of the screen and then `Add Connection`.
 
 <Image
-    src="/images/docs/core/examples/add-connection.png"
-    height={200}
-    width={200}
+  src="/images/docs/core/examples/add-connection.png"
+  height={200}
+  width={200}
 />
-
 
 Now Choose the Snowflake connection button.
 
 <Image
-    src="/images/docs/core/examples/snowflake-connection-button.png"
-    height={200}
-    width={200}
+  src="/images/docs/core/examples/snowflake-connection-button.png"
+  height={200}
+  width={200}
 />
 
 Fill out the the connection details for your Snowflake data warehouse.
@@ -47,22 +46,23 @@ This guide uses test database credentials, so that you can easily follow along.
 Substitute your own credentials as needed.
 
 <Callout type="info" emoji="ℹ️">
-  Notice the Namespace field, this is an important part of the Grai lineage strucutre. This is how you manage two connections pulling from the same source. For more details checkout the [Namespace](/tooling/namespace/) section.
+  Notice the Namespace field, this is an important part of the Grai lineage
+  strucutre. This is how you manage two connections pulling from the same
+  source. For more details checkout the [Namespaces](/core/concepts/namespace/)
+  section.
 </Callout>
 
-
-| Field     | Value            |
-| --------- | ---------------- |
-| Namespace | default          |
-| Name      | Snowflake        |
-| account   | hujwihs-hab96881 |
-| user      | demo             |
-| role      | READ_ONLY        |
-| warehouse | COMPUTE_WH       |
-| database  | GRAI_SAMPLE      |
-| schema    | PUBLIC           |
-| password  | **************** |
-
+| Field     | Value                    |
+| --------- | ------------------------ |
+| Namespace | default                  |
+| Name      | Snowflake                |
+| account   | hujwihs-hab96881         |
+| user      | demo                     |
+| role      | READ_ONLY                |
+| warehouse | COMPUTE_WH               |
+| database  | GRAI_SAMPLE              |
+| schema    | PUBLIC                   |
+| password  | **\*\***\*\*\*\***\*\*** |
 
 Press Continue - if you see an error double check your provided connection credentials.
 
@@ -73,28 +73,27 @@ Press Finish to complete setup.
 Once your new connection is created you should see the connection page.
 Press Refresh in the upper right hand corner to run your connection and populate your data lineage graph.
 
-<br/>
+<br />
 
 <Image
-    src="/images/docs/core/examples/snowflake-connection2.png"
-    height={400}
-    width={800}
+  src="/images/docs/core/examples/snowflake-connection2.png"
+  height={400}
+  width={800}
 />
 
-<br/>
+<br />
 
 The run will take a few seconds to run and then you should see the run complete successfully.
 Now that the connection has completed running you can go to the `Graph` page to see your snowflake tables.
 It will likely looking something like this
 
-<br/>
+<br />
 
 <Image
-    src="/images/docs/core/examples/snowflake-graph.png"
-    height={400}
-    width={800}
+  src="/images/docs/core/examples/snowflake-graph.png"
+  height={400}
+  width={800}
 />
-
 
 Currently, there are no connections between the tables, this is because dbt hasn't set up any foreign keys.
 
@@ -103,21 +102,21 @@ Currently, there are no connections between the tables, this is because dbt hasn
 Again go to the connections page and click "Add Connection."
 This time, choose the dbt connection.
 
-<br/>
+<br />
 
 <Image
-    src="/images/docs/core/examples/dbt-connection.png"
-    height={200}
-    width={200}
+  src="/images/docs/core/examples/dbt-connection.png"
+  height={200}
+  width={200}
 />
 
 Leave the `Namespace` value as default for now.
 For the purposes of this demo, we've created a [manifest.json](https://raw.githubusercontent.com/grai-io/jaffle_shop_snowflake_demo/master/files/manifest.json) file you can use which
 was created by running `dbt compile` on the source [repository](https://github.com/grai-io/jaffle_shop_snowflake_demo).
 
-
 <Callout type="info" emoji="ℹ️">
-    Using the same `Namespace` value for both Snowflake and dbt insures the tables and columns are linked together.
+  Using the same `Namespace` value for both Snowflake and dbt insures the tables
+  and columns are linked together.
 </Callout>
 
 Press Finish to upload the file and run the sync.
@@ -125,32 +124,32 @@ This should take a few seconds before completing successfully.
 
 Finally, check out the graph view again.
 You should now see that your Snowflake tables have been joined together based from the dbt metadata.
- For example where one dbt model depends on another Grai has created a link between the two tables.
+For example where one dbt model depends on another Grai has created a link between the two tables.
 
-<br/>
+<br />
 
 <Image
-    src="/images/docs/core/examples/dbt-graph.png"
-    height={400}
-    width={800}
+  src="/images/docs/core/examples/dbt-graph.png"
+  height={400}
+  width={800}
 />
 
-<br/>
+<br />
 
 ### Connect the Production Database
 
 We will be using postgres for our production database in this instance so again go to the connections page, click "Add Connection"
 This time, choose the postgres connection.
 
-<br/>
+<br />
 
 <Image
-    src="/images/docs/core/examples/postgres-connector-button.png"
-    height={200}
-    width={200}
+  src="/images/docs/core/examples/postgres-connector-button.png"
+  height={200}
+  width={200}
 />
 
-<br/>
+<br />
 
 Enter the following values
 
@@ -164,22 +163,20 @@ Enter the following values
 | port          | 5432                                                     |
 | password      | zfYD%qW2VOfUmK1Y                                         |
 
-
 You're probably getting the hang of this now, but just in case, press continue.
 Assuming your credentials are valid, you can press finish to complete the setup and then refresh to run the connection.
 
-
 If we checkout the Graph page again, we can see that the Postgres tables have been added to the graph.
 
-<br/>
+<br />
 
 <Image
-    src="/images/docs/core/examples/postgres-graph.png"
-    height={400}
-    width={800}
+  src="/images/docs/core/examples/postgres-graph.png"
+  height={400}
+  width={800}
 />
 
-<br/>
+<br />
 
 There should be a number of connections between the Postgres tables, these have been produced from the foreign keys.
 
@@ -188,41 +185,36 @@ There should be a number of connections between the Postgres tables, these have 
 There won't be any links between the Postgres tables and the Snowflake ones.
 Typically, an ETL tool like Fivetran would be used to transfer data between the production database and the data warehouse but for the purposes of this demo we will setup these edges using yaml files.
 
-
 Just like before, `Connections -> Add Connection -> YAML File`
 
 <Image
-    src="/images/docs/core/examples/yaml-file-connection.png"
-    height={200}
-    width={200}
+  src="/images/docs/core/examples/yaml-file-connection.png"
+  height={200}
+  width={200}
 />
 
-
-Again, Leave Namespace as default. Upload the [edges.yaml]((https://github.com/grai-io/jaffle_shop_snowflake_demo/blob/master/files/edges.yaml)) file from the source [repository](https://github.com/grai-io/jaffle_shop_snowflake_demo).
+Again, Leave Namespace as default. Upload the [edges.yaml](<(https://github.com/grai-io/jaffle_shop_snowflake_demo/blob/master/files/edges.yaml)>) file from the source [repository](https://github.com/grai-io/jaffle_shop_snowflake_demo).
 Press Finish and check out the Graph page to see the results.
 
-
-<br/>
+<br />
 
 <Image
-    src="/images/docs/core/examples/yaml-file-graph.png"
-    height={400}
-    width={800}
+  src="/images/docs/core/examples/yaml-file-graph.png"
+  height={400}
+  width={800}
 />
 
-<br/>
-
+<br />
 
 This combination of integrations, and yaml files, allows you to create a complete data lineage graph for your data warehouse no matter what tools you use.
 
-
-### Setup Github action
+### Setup GitHub action
 
 <Callout type="info" emoji="ℹ️">
-  You will need a Github repository for this stage.
-  Forking the example repository might be a good starting point [jaffle_shop_snowflake_demo](https://github.com/grai-io/jaffle_shop_snowflake_demo).
+  You will need a GitHub repository for this stage. Forking the example
+  repository might be a good starting point
+  [jaffle_shop_snowflake_demo](https://github.com/grai-io/jaffle_shop_snowflake_demo).
 </Callout>
-
 
 Now, we are going to use GitHub Actions to automate running tests against our dev database using Grai.
 
@@ -256,19 +248,21 @@ jobs:
 ```
 
 <Callout type="info" emoji="ℹ️">
-  Normally you would use the credentials for the development database that changes with each pull request or commit in order to evaluate your tests.
-  In this case, we've created a sample database for you to use.
+  Normally you would use the credentials for the development database that
+  changes with each pull request or commit in order to evaluate your tests. In
+  this case, we've created a sample database for you to use.
 </Callout>
 
 To finish this off, we will need to find your `Workspace UUID` and create an `API Key` for your Grai account.
 
 #### API Key
+
 To generate an Api Key in the Web App, navigate to `Settings` from the Profile Menu in the top right and select API Keys.
 Press Add API Key and choose a suitable name, for example `demo`, then press Save.
 
 You should record the returned key, as it will not be displayed again.
 This can be copied into the `[API_KEY]` slot in the `grai-actions-demo.yml` file.
-In production you should use a Github action secret to store this value, so that it isn't checked into version control, see [Encrypted secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets).
+In production you should use a GitHub Action secret to store this value, so that it isn't checked into version control, see [Encrypted secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets).
 
 #### `Workspace UUID`
 
@@ -277,14 +271,14 @@ Copy that UUID into the `[WORKSPACE_UUID]` slot in the `grai-actions-demo.yml` f
 
 #### Running the Action
 
-To see the action run you will need to create a pull request in Github.
+To see the action run you will need to create a pull request in GitHub.
 Once the action has run, if you have used the demo database credentials, you should see a number of comments on your PR showing some test failures.
 You can click on the link to view more details on the Web App.
 
 <Image
-    src="/images/docs/core/examples/example-github-comment.png"
-    height={400}
-    width={800}
+  src="/images/docs/core/examples/example-github-comment.png"
+  height={400}
+  width={800}
 />
 
 </Steps>
@@ -292,6 +286,6 @@ You can click on the link to view more details on the Web App.
 ## Wrapping Up
 
 In this tutorial, we have shown how to use Grai to create a data lineage graph, and then use that graph to run tests against a development database.
-We have also shown how to automate this process using Github Actions.
+We have also shown how to automate this process using GitHub Actions.
 
 If you have any questions or feedback, please reach out to us at hello@grai.io and in the meantime, happy data engineering!

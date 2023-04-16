@@ -1,5 +1,5 @@
 ---
-title: 'BigQuery'
+title: "BigQuery"
 description: Grai BigQuery IOntegration
 ---
 
@@ -16,7 +16,7 @@ The BigQuery integration synchronizes metadata from your BigQuery datawarehouse 
 | Field       | Value                                                                 | Example         |
 | ----------- | --------------------------------------------------------------------- | --------------- |
 | Name        | Name for connection                                                   | Google BigQuery |
-| Namespace   | Namespace for the connect, see [namespace](/concepts/namespace)       | default         |
+| Namespace   | Namespace for the connect, see [namespaces](/core/concepts/namespace) | default         |
 | project     | GCP project id                                                        | grai-demo       |
 | dataset     | BigQuery Dataset Id                                                   | jaffle_shop     |
 | credentials | JSON credentials for service account, see [Credentials](#credentials) |                 |
@@ -33,7 +33,6 @@ The BigQuery integration synchronizes metadata from your BigQuery datawarehouse 
 3. Generate json credentials for your service account [https://developers.google.com/workspace/guides/create-credentials#service-account](https://developers.google.com/workspace/guides/create-credentials#service-account).
 
 4. Copy and paste the json into the [credentials] field.
-
 
 ## Python Library
 

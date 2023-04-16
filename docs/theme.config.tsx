@@ -70,7 +70,7 @@ const config: DocsThemeConfig = {
   },
   feedback: {
     useLink() {
-      return "https://github.com/grai-io/grai-core/tree/master";
+      return "https://github.com/grai-io/grai-core/issues";
     },
   },
   navigation: {

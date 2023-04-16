@@ -1,17 +1,18 @@
 ---
-title: "GitHub Actions"
-description: Grai github actions which can be used to test your data pipeline
+title: "GitHub Action"
+description: Grai GitHub Action which can be used to test your data pipeline
 ---
 
-import { Callout } from 'nextra-theme-docs'
+import { Callout } from "nextra-theme-docs";
 
 # GitHub Actions
 
 <Callout type="info" emoji="ℹ️">
-  grai-actions runs inside the Github action, alternatively see [Github Actions Server](./github-actions-server) which runs on the server.
+  grai-actions runs inside the GitHub Action, alternatively see [GitHub Action
+  Server](./github-actions-server) which runs on the server.
 </Callout>
 
-Grai allows you to run a test of your data changes in git using github actions.
+Grai allows you to run a test of your data changes in git using GitHub Actions.
 
 In your repository, create a yaml file at `/.github/workflows/main.yml`
 and populate the file with your action parameters.
@@ -20,8 +21,7 @@ The full documentation for supported actions can be found in [GitHub](https://gi
 The example below works with postgres though there are equivalent implementations for
 each other integration including dbt, MySQL, snowflake, etc...
 
-
-``` yaml
+```yaml
 on: pull_request
 
 jobs:
@@ -35,10 +35,10 @@ jobs:
       - name: prod data
         uses: grai-io/grai-actions/postgres@master
         with:
-          api-key: '[your grai api key]'
-          namespace: '[integration namespace]'
-          db-host: '[host for your grai instance]'
-          db-port: '[port for your grai instance]'
-          db-user: '[database user]'
-          db-password: '[database user password]'
+          api-key: "[your grai api key]"
+          namespace: "[integration namespace]"
+          db-host: "[host for your grai instance]"
+          db-port: "[port for your grai instance]"
+          db-user: "[database user]"
+          db-password: "[database user password]"
 ```

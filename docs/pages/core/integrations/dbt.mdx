@@ -1,5 +1,5 @@
 ---
-title: 'dbt'
+title: "dbt"
 description: Grai integration for dbt to automatically access metadata.
 ---
 
@@ -7,20 +7,15 @@ description: Grai integration for dbt to automatically access metadata.
 
 The DBT integration updates metadata from your DBT manifest into the data lineage graph.
 
-
 ## Web App
-
 
 ![dbt](./resources/webapp/dbt.png)
 
 ### Fields
 
-| Field     | Value                                                           | Example |
-| --------- | --------------------------------------------------------------- | ------- |
-| Namespace | Namespace for the connect, see [namespace](/concepts/namespace) | default |
-
-
-
+| Field     | Value                                                                 | Example |
+| --------- | --------------------------------------------------------------------- | ------- |
+| Namespace | Namespace for the connect, see [namespaces](/core/concepts/namespace) | default |
 
 ## Python Library
 
@@ -63,12 +58,12 @@ update_server(client, manifest_file=[path_to_your_manifest_file], namespace=[you
 ## DBT Manifest Version Support
 
 | Manifest Version | Status |
-| :---------: | :----: |
-| v1 | ✅ |
-| v2 | ✅ |
-| v3 | ✅ |
-| v4 | ✅ |
-| v5 | ✅ |
-| v6 | ✅ |
-| v7 | ✅ |
-| v8 | ✅ |
+| :--------------: | :----: |
+|        v1        |   ✅   |
+|        v2        |   ✅   |
+|        v3        |   ✅   |
+|        v4        |   ✅   |
+|        v5        |   ✅   |
+|        v6        |   ✅   |
+|        v7        |   ✅   |
+|        v8        |   ✅   |

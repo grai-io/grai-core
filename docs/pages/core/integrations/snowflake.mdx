@@ -1,12 +1,11 @@
 ---
-title: 'Snowflake'
+title: "Snowflake"
 description: Grai snowflake integration
 ---
 
 # Snowflake
 
 The Snowflake integration synchronizes metadata from your Snowflake datawarehouse into the data lineage graph.
-
 
 ## Web App
 
@@ -17,7 +16,7 @@ The Snowflake integration synchronizes metadata from your Snowflake datawarehous
 | Field     | Value                                                                   | Example          |
 | --------- | ----------------------------------------------------------------------- | ---------------- |
 | Name      | Name for connection                                                     | Snowflake        |
-| Namespace | Namespace for the connect, see [namespace](/concepts/namespace)         | default          |
+| Namespace | Namespace for the connect, see [namespaces](/core/concepts/namespace)   | default          |
 | account   | Snowflake account, the characters in front of `.snowflakecomputing.com` | hujwihs-hab96881 |
 | user      | Database user                                                           |                  |
 | role      | Snowflake role to use                                                   | READ_ONLY        |
@@ -25,7 +24,6 @@ The Snowflake integration synchronizes metadata from your Snowflake datawarehous
 | database  | Snowflake database                                                      |                  |
 | schema    | Snowflake schema to use (optional)                                      |                  |
 | password  | Database password                                                       |                  |
-
 
 ## Python Library
 
@@ -56,6 +54,7 @@ For now we will use the default user credentials though you are free to create a
 client = ClientV1("localhost","8000")
 client.set_authentication_headers("null@grai.io","super_secret")
 ```
+
 Now we can update the server with data from any snowflake source. In order to do so you will need to pass credentials and namespace into the update_server function. Namespace is used to uniquely identify the nodes and when used consistently will allow you to add to the node from any source.
 
 Using example variables, in order to update the server with your metadata, simply run:

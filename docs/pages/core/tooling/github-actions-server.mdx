@@ -1,22 +1,22 @@
 ---
-title: "Github Actions Server"
-description: Grai github actions which can be used to test your data pipeline
+title: "GitHub Action Server"
+description: Grai GitHub Action which can be used to test your data pipeline
 ---
 
-import { Callout } from 'nextra-theme-docs'
+import { Callout } from "nextra-theme-docs";
 
-
-# GitHub Actions Server
+# GitHub Action Server
 
 <Callout type="info" emoji="ℹ️">
-  grai-actions-server runs on the server, alternatively see [Github Actions](./github-actions) which runs inside the Github action.
+  grai-actions-server runs on the server, alternatively see [GitHub
+  Actions](./github-actions) which runs inside the GitHub Action.
 </Callout>
 
 ## Getting Started
 
 A basic example:
 
-``` yaml
+```yaml
 name: Example Push Action
 
 on: push
@@ -74,11 +74,11 @@ Provide a JSON string representing the connection secrets. The required keys var
 
 ### Google Bigquery
 
-| Field       | Value                                                                                             | Example     |
-| ----------- | ------------------------------------------------------------------------------------------------- | ----------- |
-| project     | GCP project id                                                                                    | grai-demo   |
-| dataset     | Bigquery Dataset Id                                                                               | jaffle_shop |
-| credentials | JSON credentials for service account, see [Credentials](/integrations/bigquery#credentials) |             |
+| Field       | Value                                                                                            | Example     |
+| ----------- | ------------------------------------------------------------------------------------------------ | ----------- |
+| project     | GCP project id                                                                                   | grai-demo   |
+| dataset     | Bigquery Dataset Id                                                                              | jaffle_shop |
+| credentials | JSON credentials for service account, see [Credentials](/core/integrations/bigquery#credentials) |             |
 
 ### Microsoft SQL Server
 
