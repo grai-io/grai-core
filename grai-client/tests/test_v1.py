@@ -29,6 +29,12 @@ def test_get_workspace_by_ref(client):
     assert isinstance(resp, Workspace)
 
 
+def test_get_workspaces(client):
+    resp = client.get("workspace")
+    for r in resp:
+        assert isinstance(r, Workspace)
+
+
 def test_get_nodes(client):
     nodes = client.get("node")
     assert all(isinstance(node, NodeV1) for node in nodes)

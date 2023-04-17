@@ -9,8 +9,9 @@ from uuid import UUID
 
 import orjson
 from grai_schemas.generics import GraiBaseModel
+from httpx import Response
 from pydantic import BaseModel
-from requests import RequestException, Response
+from requests import RequestException
 
 if sys.version_info < (3, 10):
     from typing_extensions import ParamSpec
@@ -37,7 +38,7 @@ def response_status_check(resp: Response) -> Response:
     if resp.status_code in {200, 201, 204}:
         return resp
 
-    message = f"Error: {resp.status_code}. {resp.reason}. {resp.content.decode()}"
+    message = f"Error: {resp.status_code}. {resp.reason_phrase}. {resp.content.decode()}"
     if resp.status_code == 500:
         message = (
             f"{message}"
