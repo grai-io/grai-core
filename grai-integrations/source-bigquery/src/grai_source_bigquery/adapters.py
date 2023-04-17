@@ -13,6 +13,7 @@ from grai_schemas.v1.metadata.edges import (
 )
 from grai_schemas.v1.metadata.nodes import ColumnMetadata, NodeTypeLabels, TableMetadata
 from multimethod import multimethod
+from pydantic import BaseModel
 
 from grai_source_bigquery.models import (
     ID,
@@ -27,7 +28,7 @@ from grai_source_bigquery.package_definitions import config
 
 
 @multimethod
-def build_grai_metadata(current: Any, desired: Any) -> None:
+def build_grai_metadata(current: Any, desired: Any) -> BaseModel:
     raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)} for value {current}")
 
 
@@ -90,11 +91,11 @@ def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") 
 
 
 @multimethod
-def build_bigquery_metadata(current: Any, desired: Any) -> None:
+def build_app_metadata(current: Any, desired: Any) -> None:
     raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)} for value {current}")
 
 
-@build_bigquery_metadata.register
+@build_app_metadata.register
 def build_metadata_from_column(current: Column, version: Literal["v1"] = "v1") -> Dict:
     data = {
         "table_name": current.table,
@@ -104,7 +105,7 @@ def build_metadata_from_column(current: Column, version: Literal["v1"] = "v1") -
     return data
 
 
-@build_bigquery_metadata.register
+@build_app_metadata.register
 def build_metadata_from_table(current: Table, version: Literal["v1"] = "v1") -> Dict:
     data = {
         "schema": current.table_schema,
@@ -113,7 +114,7 @@ def build_metadata_from_table(current: Table, version: Literal["v1"] = "v1") -> 
     return data
 
 
-@build_bigquery_metadata.register
+@build_app_metadata.register
 def build_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> Dict:
     data = {
         "definition": current.definition,
@@ -128,9 +129,13 @@ def build_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> Di
 
 
 def build_metadata(obj, version):
+    integration_meta = build_app_metadata(obj, version)
+    base_metadata = build_grai_metadata(obj, version)
+    integration_meta["grai"] = base_metadata
+
     return {
-        base_config.metadata_id: build_grai_metadata(obj, version),
-        config.metadata_id: build_bigquery_metadata(obj, version),
+        base_config.metadata_id: base_metadata,
+        config.metadata_id: integration_meta,
     }
 
 
