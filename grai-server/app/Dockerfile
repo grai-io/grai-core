@@ -14,7 +14,7 @@ ARG PYTHONDONTWRITEBYTECODE="1" \
     PIP_NO_CACHE_DIR="off" \
     PIP_DISABLE_PIP_VERSION_CHECK="on" \
     PIP_DEFAULT_TIMEOUT="100" \
-    POETRY_VERSION="1.4.1"
+    POETRY_VERSION="1.3.2"
 
 # libpq-dev, and gcc are used to install psycopg2.
 # netcat is used to wait for the database to be ready.
