@@ -1,8 +1,8 @@
-import App, { Container } from 'next/app';
-import { DefaultSeo } from 'next-seo';
+import App, { Container } from "next/app";
+import { DefaultSeo } from "next-seo";
 
 // import your default seo configuration
-import SEO from '../next-seo.config';
+import SEO from "../next-seo.config";
 
 export default class MyApp extends App {
   render() {

@@ -1,5 +1,5 @@
 ---
-title: 'CLI'
+title: "CLI"
 description: Grai command line tools to access and explore your data lineage
 ---
 
@@ -10,21 +10,18 @@ It also allows you to manually create, update, and delete Nodes and Edges from y
 
 Install the CLI and configure your default server credentials (they will be the same as the credentials used for the Client).
 
-
 Grai uses OS specific search paths to find it's configuration file
-* **macOS**: `~/.config/grai` and `~/Library/Application Support/grai`
-* **Unix**: `~/.config/grai` and `/etc/grai`
-* **Windows**: `%APPDATA%\grai` where the APPDATA environment variable falls back to `%HOME%\AppData\Roaming` if undefined
 
+- **macOS**: `~/.config/grai` and `~/Library/Application Support/grai`
+- **Unix**: `~/.config/grai` and `/etc/grai`
+- **Windows**: `%APPDATA%\grai` where the APPDATA environment variable falls back to `%HOME%\AppData\Roaming` if undefined
 
 ```shell copy
 pip install grai-cli
 grai config init
 ```
 
-
 To confirm that your settings are working with your server:
-
 
 ```shell copy
 grai client is_authenticated
@@ -43,7 +40,6 @@ grai apply <file name>
 ```
 
 You can also use the flag --d for a dry run before committing your changes.
-
 
 To adjust or view config settings which were set above use the config command, for instance to view your settings:
 

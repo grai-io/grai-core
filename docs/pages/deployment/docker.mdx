@@ -18,7 +18,6 @@ Grai consists of multiple different independent services including
 
 For more information about the server see [Grai Server](/core/server/).
 
-
 ### Web App
 
 For more information about the web app see [Grai Web App](/core/web-app/)
@@ -27,12 +26,12 @@ For more information about the web app see [Grai Web App](/core/web-app/)
 
 We maintain up to date docker images for all of the Grai services on GitHub's Container Registry `ghcr`
 
-| Service | Image | Tags |
-|---------|-------| ---- |
-| Server | ghcr.io/grai-io/grai-core/grai-server | latest, semver |
+| Service | Image                                   | Tags           |
+| ------- | --------------------------------------- | -------------- |
+| Server  | ghcr.io/grai-io/grai-core/grai-server   | latest, semver |
 | Web App | ghcr.io/grai-io/grai-core/grai-frontend | latest, semver |
 
-<br/>
+<br />
 
 # Deployment
 
@@ -40,13 +39,15 @@ We maintain up to date docker images for all of the Grai services on GitHub's Co
 
 Before you begin, make sure have access to both `docker` and `docker-compose` on your machine.
 
-
 <Callout>
-  If you haven't used Docker before, we recommend you check out the [Docker Getting Started Guide](https://docs.docker.com/get-started/).
-  For more installation about Docker Compose, see the [Docker Compose Installation Guide](https://docs.docker.com/compose/install/).
-  If you are on Windows, you may need to install [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install-win10) to run Docker.
+  If you haven't used Docker before, we recommend you check out the [Docker
+  Getting Started Guide](https://docs.docker.com/get-started/). For more
+  installation about Docker Compose, see the [Docker Compose Installation
+  Guide](https://docs.docker.com/compose/install/). If you are on Windows, you
+  may need to install
+  [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install-win10) to run
+  Docker.
 </Callout>
-
 
 ## Running the Server and frontend
 
@@ -65,7 +66,6 @@ This will provide a fully functional instance of the Grai application although s
 
 The complete configuration contains all of the services required to run the full Grai application.
 You can find a reference to the complete configuration [here](https://github.com/grai-io/grai-core/blob/master/examples/deployment/docker-compose/complete/docker-compose.yml)
-
 
 ### Deploying
 
@@ -86,11 +86,11 @@ services:
   db:
     image: postgres:14.3-alpine
     environment:
-    - POSTGRES_USER=grai
-    - POSTGRES_PASSWORD=grai
-    - POSTGRES_DB=grai
+      - POSTGRES_USER=grai
+      - POSTGRES_PASSWORD=grai
+      - POSTGRES_DB=grai
     ports:
-    - 5432:5432
+      - 5432:5432
     healthcheck:
       test: "pg_isready -U grai"
       interval: 2s
@@ -138,7 +138,8 @@ It may take a few minutes for the services to start up but once they are running
 
 Under the default configuration, an admin user will be created with the following credentials.
 
-| Username | Password |
-|----------|----------|
-| null@grai.io    | super_secret    |
+| Username     | Password     |
+| ------------ | ------------ |
+| null@grai.io | super_secret |
+
 </Steps>
