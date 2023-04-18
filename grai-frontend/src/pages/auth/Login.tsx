@@ -1,47 +1,68 @@
 import React from "react"
-import {
-  Box,
-  Card,
-  CardContent,
-  Container,
-  Link,
-  Typography,
-} from "@mui/material"
-import { Link as RouterLink } from "react-router-dom"
+import { Box, Card, CardContent, Container, Typography } from "@mui/material"
 import LoginForm from "components/auth/LoginForm"
+import Signup from "components/auth/Signup"
 
 const Login: React.FC = () => (
-  <Container sx={{ pt: 10 }} maxWidth="xs">
-    <Box sx={{ mb: 3, ml: 1 }}>
-      <img src="/images/grai-logo.svg" alt="Grai" />
-    </Box>
-    <Card elevation={3}>
-      <CardContent sx={{ p: 5 }}>
-        <Typography variant="h6" sx={{ mb: 2 }}>
-          Sign in to your account
+  <Box
+    sx={{
+      width: "100%",
+      height: "100vh",
+      overflow: "hidden",
+      position: "relative",
+    }}
+  >
+    <Box
+      sx={{
+        backgroundColor: "#8338EC20",
+        width: 810,
+        height: 568,
+        position: "absolute",
+        top: 490,
+        left: -318,
+        borderRadius: "50%",
+        filter: "blur(200px)",
+      }}
+    />
+    <Box
+      sx={{
+        backgroundColor: "#3A86FF20",
+        width: 800,
+        height: 624,
+        position: "absolute",
+        top: 557,
+        right: -300,
+        borderRadius: "50%",
+        filter: "blur(200px)",
+        overflow: "hidden",
+      }}
+    />
+
+    <Container maxWidth="sm" sx={{ pt: 10, maxWidth: { xs: 500 } }}>
+      <Box sx={{ textAlign: "center" }}>
+        <Box sx={{ mb: 5, ml: 1 }}>
+          <img src="/images/grai-logo.svg" alt="Grai" />
+        </Box>
+        <Typography variant="h6" sx={{ fontSize: 36, fontWeight: 800, mb: 5 }}>
+          Welcome Back!
         </Typography>
-        <LoginForm />
-      </CardContent>
-    </Card>
-    <Box sx={{ display: "flex", ml: 2, mt: 2 }}>
-      <Typography sx={{ mt: 0.8 }}>
-        Don't have an account?{" "}
-        <Link
-          component={RouterLink}
-          to="/register"
-          sx={{
-            textDecoration: "none",
-            color: "blue",
-            "&:hover": {
-              color: theme => theme.palette.grey[900],
-            },
-          }}
-        >
-          Sign Up
-        </Link>
-      </Typography>
-    </Box>
-  </Container>
+      </Box>
+      <Card
+        sx={{
+          boxShadow: "0 10px 20px 0 rgb(0 0 0 / 0.04)",
+          borderRadius: "20px",
+          borderColor: "rgba(0, 0, 0, 0.06)",
+          borderWidth: 1,
+          borderStyle: "solid",
+        }}
+      >
+        <CardContent sx={{ p: "20px" }}>
+          <LoginForm />
+        </CardContent>
+      </Card>
+      <Signup />
+    </Container>
+  </Box>
 )
 
 export default Login

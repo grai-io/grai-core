@@ -31,7 +31,8 @@ test("submit", async () => {
   })
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /login/i }))
+    async () =>
+      await user.click(screen.getByRole("button", { name: /log in/i }))
   )
 
   await waitFor(() => {
@@ -78,7 +79,8 @@ test("error", async () => {
   })
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /login/i }))
+    async () =>
+      await user.click(screen.getByRole("button", { name: /log in/i }))
   )
 
   await waitFor(() => {

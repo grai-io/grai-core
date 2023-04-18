@@ -11,7 +11,7 @@ import { createTheme } from "@mui/material/styles"
 
 const theme = createTheme({
   typography: {
-    fontFamily: `"Satoshi", "Roboto", "Helvetica", "Arial", sans-serif`,
+    fontFamily: `"Sora", "Satoshi", "Roboto", "Helvetica", "Arial", sans-serif`,
   },
   palette: {
     primary: {
