@@ -107,7 +107,7 @@ const LoginForm: React.FC = () => {
               textDecoration: "none",
               fontSize: 14,
               fontWeight: 600,
-              color: "1F2A37",
+              fontFamily: `"Sora", "Satoshi", "Roboto", "Helvetica", "Arial", sans-serif`,
               "&:hover": {
                 color: theme => theme.palette.grey[600],
               },
