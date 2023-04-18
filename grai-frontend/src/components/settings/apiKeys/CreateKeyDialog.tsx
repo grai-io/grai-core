@@ -88,7 +88,7 @@ const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({
           __typename: "Workspace",
         }),
         fields: {
-          api_keys(existingApiKeys = []) {
+          api_keys(existingApiKeys = { data: [] }) {
             if (!data?.createApiKey) return
 
             const newApiKey = cache.writeFragment<NewApiKey>({
@@ -100,7 +100,7 @@ const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({
                 }
               `,
             })
-            return [...existingApiKeys, newApiKey]
+            return { data: [...existingApiKeys.data, newApiKey] }
           },
         },
       })

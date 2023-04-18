@@ -128,7 +128,7 @@ const SetupConnection: React.FC<SetupConnectionProps> = ({
               __typename: "Workspace",
             }),
             fields: {
-              connections(existingConnections = []) {
+              connections(existingConnections = { data: [] }) {
                 if (!data?.createConnection) return
 
                 const newConnection = cache.writeFragment<NewConnection>({
@@ -149,7 +149,7 @@ const SetupConnection: React.FC<SetupConnectionProps> = ({
                     }
                   `,
                 })
-                return [...existingConnections, newConnection]
+                return { data: [...existingConnections.data, newConnection] }
               },
             },
           })

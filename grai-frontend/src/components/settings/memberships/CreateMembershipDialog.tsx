@@ -56,7 +56,7 @@ const CreateMembershipDialog: React.FC<CreateMembershipDialogProps> = ({
           __typename: "Workspace",
         }),
         fields: {
-          memberships(existingMemberships = []) {
+          memberships(existingMemberships = { data: [] }) {
             const newMemberships =
               data?.createMemberships.map(data =>
                 cache.writeFragment<NewMembership>({
@@ -73,7 +73,7 @@ const CreateMembershipDialog: React.FC<CreateMembershipDialogProps> = ({
                   `,
                 })
               ) ?? []
-            return [...existingMemberships, ...newMemberships]
+            return { data: [...existingMemberships.data, ...newMemberships] }
           },
         },
       })
