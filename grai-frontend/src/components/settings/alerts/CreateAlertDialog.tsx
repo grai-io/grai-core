@@ -58,7 +58,7 @@ const CreateAlertDialog: React.FC<CreateAlertDialogProps> = ({
           __typename: "Workspace",
         }),
         fields: {
-          alerts(existingApiKeys = []) {
+          alerts(existingApiKeys = { data: [] }) {
             if (!data?.createAlert) return
 
             const newApiKey = cache.writeFragment<NewAlert>({
@@ -75,7 +75,7 @@ const CreateAlertDialog: React.FC<CreateAlertDialogProps> = ({
                 }
               `,
             })
-            return [...existingApiKeys, newApiKey]
+            return { data: [...existingApiKeys.data, newApiKey] }
           },
         },
       })

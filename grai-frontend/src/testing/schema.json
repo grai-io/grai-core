@@ -280,22 +280,25 @@
           {
             "name": "alerts",
             "description": null,
-            "args": [],
+            "args": [
+              {
+                "name": "pagination",
+                "description": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "OffsetPaginationInput",
+                  "ofType": null
+                },
+                "defaultValue": null
+              }
+            ],
             "type": {
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Alert",
-                    "ofType": null
-                  }
-                }
+                "kind": "OBJECT",
+                "name": "AlertPagination",
+                "ofType": null
               }
             },
             "isDeprecated": false,
@@ -1277,7 +1280,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "WorkspaceAPIKeyPagination",
+        "name": "AlertPagination",
         "description": null,
         "fields": [
           {
@@ -1311,7 +1314,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "WorkspaceAPIKey",
+                    "name": "Alert",
                     "ofType": null
                   }
                 }
@@ -1390,6 +1393,57 @@
                 "kind": "SCALAR",
                 "name": "Int",
                 "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "WorkspaceAPIKeyPagination",
+        "description": null,
+        "fields": [
+          {
+            "name": "meta",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "PaginationResult",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "data",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "WorkspaceAPIKey",
+                    "ofType": null
+                  }
+                }
               }
             },
             "isDeprecated": false,

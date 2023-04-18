@@ -1852,7 +1852,9 @@ async def test_alerts(test_context):
             workspace(id: $workspaceId) {
                 id
                 alerts {
-                    id
+                    data {
+                        id
+                    }
                 }
             }
         }
@@ -1866,7 +1868,7 @@ async def test_alerts(test_context):
 
     assert result.errors is None
     assert result.data["workspace"]["id"] == str(workspace.id)
-    assert result.data["workspace"]["alerts"][0]["id"] == str(alert.id)
+    assert result.data["workspace"]["alerts"]["data"][0]["id"] == str(alert.id)
 
 
 @pytest.mark.django_db

@@ -14,13 +14,15 @@ export const GET_ALERTS = gql`
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       alerts {
-        id
-        name
-        channel
-        channel_metadata
-        triggers
-        is_active
-        created_at
+        data {
+          id
+          name
+          channel
+          channel_metadata
+          triggers
+          is_active
+          created_at
+        }
       }
     }
   }
@@ -50,7 +52,7 @@ const Alerts: React.FC = () => {
       <Box sx={{ p: 3 }}>
         <AlertsHeader workspaceId={workspace?.id} />
         <AlertsTable
-          alerts={data?.workspace?.alerts ?? []}
+          alerts={data?.workspace?.alerts.data ?? []}
           loading={loading}
           workspaceId={workspace?.id}
         />

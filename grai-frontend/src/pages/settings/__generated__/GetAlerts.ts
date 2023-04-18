@@ -7,7 +7,7 @@
 // GraphQL query operation: GetAlerts
 // ====================================================
 
-export interface GetAlerts_workspace_alerts {
+export interface GetAlerts_workspace_alerts_data {
   __typename: "Alert";
   id: any;
   name: string;
@@ -18,10 +18,15 @@ export interface GetAlerts_workspace_alerts {
   created_at: any;
 }
 
+export interface GetAlerts_workspace_alerts {
+  __typename: "AlertPagination";
+  data: GetAlerts_workspace_alerts_data[];
+}
+
 export interface GetAlerts_workspace {
   __typename: "Workspace";
   id: any;
-  alerts: GetAlerts_workspace_alerts[];
+  alerts: GetAlerts_workspace_alerts;
 }
 
 export interface GetAlerts {

@@ -536,8 +536,13 @@ class Workspace:
 
     # Alerts
     @gql.django.field
-    def alerts(self) -> List["Alert"]:
-        return AlertModel.objects.filter(workspace=self)
+    def alerts(
+        self,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination["Alert"]:
+        queryset = AlertModel.objects.filter(workspace=self)
+
+        return Pagination[Alert](queryset=queryset, pagination=pagination)
 
     @gql.django.field
     def alert(self, id: strawberry.ID) -> "Alert":
