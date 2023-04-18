@@ -48,11 +48,12 @@ const ConnectionDelete: React.FC<ConnectionDeleteProps> = ({
           __typename: "Workspace",
         }),
         fields: {
-          connections: (existingConnections, { readField }) =>
-            existingConnections.filter(
+          connections: (existingConnections = { data: [] }, { readField }) => ({
+            data: existingConnections.data.filter(
               (keyRef: any) =>
                 data?.deleteConnection.id !== readField("id", keyRef)
             ),
+          }),
         },
       })
     },
