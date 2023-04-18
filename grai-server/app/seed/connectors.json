@@ -275,6 +275,7 @@
         "pk": "a9158bbc-eeca-4b10-806a-1b0a7b997a8f",
         "fields": {
             "name": "Fivetran",
+            "slug": "fivetran",
             "metadata": {
                 "docs_url": "https://docs.grai.io/integrations/fivetran",
                 "fields": [
