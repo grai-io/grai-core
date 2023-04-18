@@ -7,8 +7,8 @@ from grai_schemas.v1.metadata.nodes import ColumnMetadata, TableMetadata
 
 from grai_source_snowflake.adapters import (
     adapt_to_client,
+    build_app_metadata,
     build_grai_metadata,
-    build_snowflake_metadata,
 )
 from grai_source_snowflake.models import Column, ColumnID, Edge, Table, TableID
 from grai_source_snowflake.package_definitions import config

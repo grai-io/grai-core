@@ -28,17 +28,19 @@ export const GET_RUN = gql`
             name
           }
           runs(order: { created_at: DESC }) {
-            id
-            status
-            created_at
-            started_at
-            finished_at
-            user {
+            data {
               id
-              first_name
-              last_name
+              status
+              created_at
+              started_at
+              finished_at
+              user {
+                id
+                first_name
+                last_name
+              }
+              metadata
             }
-            metadata
           }
           last_run {
             id

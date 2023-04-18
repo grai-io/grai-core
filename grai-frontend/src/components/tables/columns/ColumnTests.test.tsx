@@ -9,7 +9,7 @@ test("renders empty", async () => {
     name: "column",
     display_name: "column",
     metadata: null,
-    requirements_edges: [],
+    requirements_edges: { data: [] },
   })
 
   render(<ColumnTests column={column} />)
@@ -21,25 +21,27 @@ test("renders none", async () => {
     name: "column",
     display_name: "column",
     metadata: null,
-    requirements_edges: [
-      {
-        metadata: {
-          grai: {
-            edge_attributes: {},
-          },
-        },
-        source: {
-          id: "2",
-          name: "source",
-          display_name: "source",
+    requirements_edges: {
+      data: [
+        {
           metadata: {
             grai: {
-              node_attributes: {},
+              edge_attributes: {},
+            },
+          },
+          destination: {
+            id: "2",
+            name: "source",
+            display_name: "source",
+            metadata: {
+              grai: {
+                node_attributes: {},
+              },
             },
           },
         },
-      },
-    ],
+      ],
+    },
   })
 
   render(<ColumnTests column={column} />)
@@ -57,29 +59,31 @@ test("renders nullable", async () => {
         },
       },
     },
-    requirements_edges: [
-      {
-        metadata: {
-          grai: {
-            edge_attributes: {
-              preserves_nullable: true,
-            },
-          },
-        },
-        source: {
-          id: "2",
-          name: "source",
-          display_name: "source",
+    requirements_edges: {
+      data: [
+        {
           metadata: {
             grai: {
-              node_attributes: {
-                is_nullable: false,
+              edge_attributes: {
+                preserves_nullable: true,
+              },
+            },
+          },
+          destination: {
+            id: "2",
+            name: "source",
+            display_name: "source",
+            metadata: {
+              grai: {
+                node_attributes: {
+                  is_nullable: false,
+                },
               },
             },
           },
         },
-      },
-    ],
+      ],
+    },
   })
 
   render(<ColumnTests column={column} />)
@@ -93,29 +97,31 @@ test("renders unique", async () => {
     name: "column",
     display_name: "column",
     metadata: null,
-    requirements_edges: [
-      {
-        metadata: {
-          grai: {
-            edge_attributes: {
-              preserves_unique: true,
-            },
-          },
-        },
-        source: {
-          id: "2",
-          name: "source",
-          display_name: "source",
+    requirements_edges: {
+      data: [
+        {
           metadata: {
             grai: {
-              node_attributes: {
-                is_unique: true,
+              edge_attributes: {
+                preserves_unique: true,
+              },
+            },
+          },
+          destination: {
+            id: "2",
+            name: "source",
+            display_name: "source",
+            metadata: {
+              grai: {
+                node_attributes: {
+                  is_unique: true,
+                },
               },
             },
           },
         },
-      },
-    ],
+      ],
+    },
   })
 
   render(<ColumnTests column={column} />)
@@ -129,29 +135,31 @@ test("renders data type", async () => {
     name: "column",
     display_name: "column",
     metadata: null,
-    requirements_edges: [
-      {
-        metadata: {
-          grai: {
-            edge_attributes: {
-              preserves_data_type: true,
-            },
-          },
-        },
-        source: {
-          id: "2",
-          name: "source",
-          display_name: "source",
+    requirements_edges: {
+      data: [
+        {
           metadata: {
             grai: {
-              node_attributes: {
-                data_type: "number",
+              edge_attributes: {
+                preserves_data_type: true,
+              },
+            },
+          },
+          destination: {
+            id: "2",
+            name: "source",
+            display_name: "source",
+            metadata: {
+              grai: {
+                node_attributes: {
+                  data_type: "number",
+                },
               },
             },
           },
         },
-      },
-    ],
+      ],
+    },
   })
 
   render(<ColumnTests column={column} />)
@@ -165,13 +173,13 @@ test("renders repeated", async () => {
     name: "column",
     display_name: "column",
     metadata: null,
-    requirements_edges: [],
+    requirements_edges: { data: [] },
     tests: [
       {
         text: "Unique",
         passed: true,
         type: "unique",
-        source: {
+        destination: {
           name: "s1",
           display_name: "s1",
         },
@@ -180,7 +188,7 @@ test("renders repeated", async () => {
         text: "Unique",
         passed: true,
         type: "unique",
-        source: {
+        destination: {
           name: "s2",
           display_name: "s2",
         },

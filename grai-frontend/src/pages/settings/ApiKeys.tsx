@@ -14,17 +14,19 @@ export const GET_API_KEYS = gql`
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       api_keys {
-        id
-        name
-        prefix
-        created
-        revoked
-        expiry_date
-        created_by {
+        data {
           id
-          username
-          first_name
-          last_name
+          name
+          prefix
+          created
+          revoked
+          expiry_date
+          created_by {
+            id
+            username
+            first_name
+            last_name
+          }
         }
       }
     }
@@ -55,7 +57,7 @@ const ApiKeys: React.FC = () => {
       <Box sx={{ p: 3 }}>
         <ApiKeysHeader workspaceId={workspace?.id} />
         <ApiKeysTable
-          keys={workspace?.api_keys ?? []}
+          keys={workspace?.api_keys.data ?? []}
           loading={loading}
           workspaceId={workspace?.id}
         />

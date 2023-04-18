@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Literal, Sequence, Union
 
+from grai_schemas import config as base_config
 from grai_schemas import config as grai_base_config
-from grai_schemas.schema import Schema
 from grai_schemas.v1 import EdgeV1, NodeV1
 from grai_schemas.v1.metadata.edges import (
     ColumnToColumnMetadata,
@@ -71,13 +71,13 @@ def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") 
 
 
 @multimethod
-def build_dbt_metadata(current: Any, version: Any) -> None:
+def build_app_metadata(current: Any, version: Any) -> None:
     raise NotImplementedError(
         f"No objects of type `{type(current)}` have an implementation of `build_dbt_metadata` for version `{version}`."
     )
 
 
-@build_dbt_metadata.register
+@build_app_metadata.register
 def build_metadata_from_column(current: Column, version: Literal["v1"] = "v1") -> Dict:
     data = {
         "description": current.description,
@@ -91,7 +91,7 @@ def build_metadata_from_column(current: Column, version: Literal["v1"] = "v1") -
     return data
 
 
-@build_dbt_metadata.register
+@build_app_metadata.register
 def build_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> Dict:
     data = {
         "definition": current.definition,
@@ -101,9 +101,23 @@ def build_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> Di
     return data
 
 
-@build_dbt_metadata.register
+@build_app_metadata.register
 def build_metadata_from_node(current: AllDbtNodeTypes, version: Literal["v1"] = "v1") -> Dict:
     return current.dict()
+
+
+# ---
+
+
+def build_metadata(obj, version):
+    integration_meta = build_app_metadata(obj, version)
+    base_metadata = build_grai_metadata(obj, version)
+    integration_meta["grai"] = base_metadata
+
+    return {
+        base_config.metadata_id: base_metadata,
+        config.metadata_id: integration_meta,
+    }
 
 
 @multimethod
@@ -118,10 +132,7 @@ def adapt_table_to_client(current: AllDbtNodeTypes, version: Literal["v1"] = "v1
         "namespace": current.grai_.namespace,
         "display_name": current.name,
         "data_source": config.integration_name,
-        "metadata": {
-            grai_base_config.metadata_id: build_grai_metadata(current, version),
-            config.metadata_id: build_dbt_metadata(current, version),
-        },
+        "metadata": build_metadata(current, version),
     }
     return NodeV1.from_spec(spec_dict)
 
@@ -133,10 +144,7 @@ def adapt_column_to_client(current: Column, version: Literal["v1"] = "v1") -> No
         "namespace": current.namespace,
         "display_name": current.name,
         "data_source": config.integration_name,
-        "metadata": {
-            grai_base_config.metadata_id: build_grai_metadata(current, version),
-            config.metadata_id: build_dbt_metadata(current, version),
-        },
+        "metadata": build_metadata(current, version),
     }
 
     return NodeV1.from_spec(spec_dict)
@@ -156,10 +164,7 @@ def adapt_edge_to_client(current: Edge, version: Literal["v1"] = "v1") -> EdgeV1
             "name": current.destination.name,
             "namespace": current.destination.namespace,
         },
-        "metadata": {
-            grai_base_config.metadata_id: build_grai_metadata(current, version),
-            config.metadata_id: build_dbt_metadata(current, version),
-        },
+        "metadata": build_metadata(current, version),
     }
 
     return EdgeV1.from_spec(spec_dict)

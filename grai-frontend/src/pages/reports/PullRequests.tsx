@@ -29,21 +29,23 @@ export const GET_PULL_REQUESTS = gql`
         owner
         repo
         pull_requests {
-          id
-          reference
-          title
-          last_commit {
+          data {
             id
             reference
-            created_at
-            last_successful_run {
+            title
+            last_commit {
               id
-              metadata
+              reference
+              created_at
+              last_successful_run {
+                id
+                metadata
+              }
             }
-          }
-          branch {
-            id
-            reference
+            branch {
+              id
+              reference
+            }
           }
         }
       }
@@ -83,7 +85,7 @@ const PullRequests: React.FC = () => {
       <Box sx={{ px: 2 }}>
         <ReportTabs currentTab="pulls" type={type} repository={repository} />
         <PullRequestTable
-          pull_requests={repository.pull_requests}
+          pull_requests={repository.pull_requests.data}
           type={type}
           repository={repository}
         />

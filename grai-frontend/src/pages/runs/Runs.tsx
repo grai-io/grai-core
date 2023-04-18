@@ -12,26 +12,28 @@ export const GET_RUNS = gql`
   query GetRuns($organisationName: String!, $workspaceName: String!) {
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
-      runs {
-        id
-        status
-        connection {
+      runs(order: { created_at: DESC }) {
+        data {
           id
-          name
-          connector {
+          status
+          connection {
             id
             name
+            connector {
+              id
+              name
+            }
           }
+          created_at
+          started_at
+          finished_at
+          user {
+            id
+            first_name
+            last_name
+          }
+          metadata
         }
-        created_at
-        started_at
-        finished_at
-        user {
-          id
-          first_name
-          last_name
-        }
-        metadata
       }
     }
   }
@@ -62,7 +64,7 @@ const Runs: React.FC = () => {
           px: 3,
         }}
       >
-        <RunsTable runs={data?.workspace.runs ?? []} loading={loading} />
+        <RunsTable runs={data?.workspace.runs.data ?? []} loading={loading} />
       </Box>
     </PageLayout>
   )

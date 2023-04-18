@@ -35,7 +35,7 @@ interface Connection extends BaseConnection {
   name: string
   namespace: string
   connector: Connector
-  runs: Run[]
+  runs: { data: Run[] }
   last_run: Run | null
   last_successful_run: Run | null
   metadata: any

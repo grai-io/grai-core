@@ -25,6 +25,10 @@ router.register("connectors", ConnectorViewSet, basename="connectors")
 router.register("runs", RunViewSet, basename="runs")
 
 
+class DisplayError(Exception):
+    pass
+
+
 def get_connection(request) -> Connection:
     connection_id = request.POST.get("connection_id")
 
@@ -34,7 +38,7 @@ def get_connection(request) -> Connection:
     connector_name = request.POST.get("connector_name")
 
     if connector_name is None:
-        raise Exception("You must provide a connector or connection_id")
+        raise DisplayError("You must provide a connector or connection_id")
 
     connector = Connector.objects.get(name=connector_name)
 
@@ -63,7 +67,7 @@ def get_commit(
     try:
         repository = Repository.objects.get(owner=owner, repo=repo)
     except Repository.DoesNotExist:
-        raise Exception("Repository not found, have you installed the Grai Github App?")
+        raise DisplayError("Repository not found, have you installed the Grai Github App?")
 
     # Branch
     branch, created = Branch.objects.get_or_create(repository=repository, reference=branch_reference)
@@ -160,14 +164,17 @@ def get_trigger(request, action: str):
 def create_run(request):
     action = request.POST.get("action", "tests")
 
-    connection = get_connection(request)
-    commit, trigger = get_trigger(request, action)
+    try:
+        connection = get_connection(request)
+        commit, trigger = get_trigger(request, action)
 
-    run = Run.objects.create(connection=connection, status="queued", commit=commit, trigger=trigger, action=action)
+        run = Run.objects.create(connection=connection, status="queued", commit=commit, trigger=trigger, action=action)
 
-    process_run.delay(run.id)
+        process_run.delay(run.id)
 
-    return Response({"id": run.id})
+        return Response({"id": run.id})
+    except DisplayError as e:
+        return Response({"error": str(e)}, status=400)
 
 
 urlpatterns = router.urls + [

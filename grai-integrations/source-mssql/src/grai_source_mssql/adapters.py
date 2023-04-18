@@ -47,7 +47,7 @@ def build_grai_metadata_from_column(current: Column, version: Literal["v1"] = "v
         "node_attributes": {
             "data_type": current.data_type,
             "default_value": default_value,
-            "is_nullable": current.is_nullable,
+            "is_nullable": None if current.is_nullable else False,  # Only not-nullable is definitive.
             "is_primary_key": current.column_constraint
             and current.column_constraint.value == ColumnConstraint.primary_key.value,
             "is_unique": current.column_constraint and current.column_constraint.value in UNIQUE_COLUMN_CONSTRAINTS,
@@ -123,9 +123,13 @@ def build_metadata_from_node(current: Table, version: Literal["v1"] = "v1") -> D
 
 
 def build_metadata(obj, version):
+    integration_meta = build_app_metadata(obj, version)
+    base_metadata = build_grai_metadata(obj, version)
+    integration_meta["grai"] = base_metadata
+
     return {
-        base_config.metadata_id: build_grai_metadata(obj, version),
-        config.metadata_id: build_app_metadata(obj, version),
+        base_config.metadata_id: base_metadata,
+        config.metadata_id: integration_meta,
     }
 
 

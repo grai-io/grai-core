@@ -7,7 +7,7 @@ from grai_schemas.v1.metadata.nodes import ColumnMetadata, TableMetadata
 
 from grai_source_bigquery.adapters import (
     adapt_to_client,
-    build_bigquery_metadata,
+    build_app_metadata,
     build_grai_metadata,
 )
 from grai_source_bigquery.models import Column, ColumnID, Edge, Table, TableID
@@ -40,7 +40,7 @@ tables = [
         namespace="tests",
         table_schema="test",
         columns=[],
-        table_type="TEMPORARY TABLE",
+        table_type="BASE TABLE",
         table_dataset="a_db",
         metadata={"thing": "here"},
     )

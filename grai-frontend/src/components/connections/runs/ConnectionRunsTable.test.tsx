@@ -3,20 +3,22 @@ import userEvent from "@testing-library/user-event"
 import { act, render, screen } from "testing"
 import ConnectionRunsTable from "./ConnectionRunsTable"
 
-const runs = [
-  {
-    id: "1",
-    user: {
+const runs = {
+  data: [
+    {
       id: "1",
-      first_name: "user",
-      last_name: "test",
+      user: {
+        id: "1",
+        first_name: "user",
+        last_name: "test",
+      },
+      status: "success",
+      created_at: "1234",
+      started_at: "1234",
+      finished_at: null,
     },
-    status: "success",
-    created_at: "1234",
-    started_at: "1234",
-    finished_at: null,
-  },
-]
+  ],
+}
 
 test("renders", async () => {
   render(<ConnectionRunsTable runs={runs} />, {
@@ -27,7 +29,7 @@ test("renders", async () => {
 })
 
 test("renders empty", async () => {
-  render(<ConnectionRunsTable runs={[]} />, {
+  render(<ConnectionRunsTable runs={{ data: [] }} />, {
     withRouter: true,
   })
 

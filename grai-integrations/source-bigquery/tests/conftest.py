@@ -89,7 +89,7 @@ def table_params(column_params):
             "name": "test",
             "schema": "test",
             "namespace": "test",
-            "table_type": "TEMPORARY TABLE",
+            "table_type": "BASE TABLE",
         },
         {"name": "test", "namespace": "test", "schema": "test", "columns": []},
         {"name": "test", "namespace": "test", "schema": "test", "metadata": {}},

@@ -12,8 +12,10 @@ def get_file_name(file_name: str) -> str:
 
 
 def load_file(file_name: str) -> pd.DataFrame:
-    assert file_name.endswith(".csv"), file_name
-    return pd.read_csv(file_name)
+    loader_map = {".csv": pd.read_csv, ".parquet": pd.read_parquet, ".feather": pd.read_feather}
+    file_ext = os.path.splitext(file_name)[-1]
+    assert file_ext in loader_map, f"{file_ext} not supported. Choose one of {set(loader_map.keys())}"
+    return loader_map[file_ext](file_name)
 
 
 def map_pandas_types(dtype) -> str:

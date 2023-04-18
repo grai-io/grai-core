@@ -3,6 +3,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableRow,
   Typography,
@@ -10,13 +11,19 @@ import {
 import { useNavigate } from "react-router-dom"
 import { Table as TableInterface } from "pages/tables/Tables"
 import Loading from "components/layout/Loading"
+import TablePagination from "components/table/TablePagination"
 
 type TablesTableProps = {
   tables: TableInterface[]
   loading?: boolean
+  total: number
 }
 
-const TablesTable: React.FC<TablesTableProps> = ({ tables, loading }) => {
+const TablesTable: React.FC<TablesTableProps> = ({
+  tables,
+  loading,
+  total,
+}) => {
   const navigate = useNavigate()
 
   return (
@@ -60,6 +67,14 @@ const TablesTable: React.FC<TablesTableProps> = ({ tables, loading }) => {
           </TableRow>
         )}
       </TableBody>
+      <TableFooter>
+        <TablePagination
+          count={total}
+          rowsPerPage={1000}
+          page={0}
+          type="tables"
+        />
+      </TableFooter>
     </Table>
   )
 }

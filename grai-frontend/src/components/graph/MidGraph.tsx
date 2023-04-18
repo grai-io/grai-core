@@ -32,7 +32,7 @@ export interface Table extends EnhancedTable {
   name: string
   display_name: string
   data_source: string
-  columns: Column[]
+  columns: { data: Column[] }
   metadata: {
     grai?: GraiNodeMetadata | null
   } | null
@@ -80,13 +80,13 @@ const MidGraph: React.FC<GraphProps> = ({
           label: table.display_name,
           data_source: table.data_source,
           metadata: table.metadata,
-          columns: table.columns,
+          columns: table.columns.data,
           source_tables: table.source_tables,
-          hiddenSourceTables: table.source_tables
+          hiddenSourceTables: table.source_tables.data
             .filter(t => hidden.includes(t.id))
             .map(t => t.id),
           destination_tables: table.destination_tables,
-          hiddenDestinationTables: table.destination_tables
+          hiddenDestinationTables: table.destination_tables.data
             .filter(t => hidden.includes(t.id))
             .map(t => t.id),
 
@@ -139,24 +139,25 @@ const MidGraph: React.FC<GraphProps> = ({
       const sourceTable = visibleTables.find(
         table =>
           table.id === edge.source ||
-          table.columns.some(column => column.id === edge.source)
+          table.columns.data.some(column => column.id === edge.source)
       )
       if (!sourceTable) return null
 
       const destinationTable = visibleTables.find(
         table =>
           table.id === edge.target ||
-          table.columns.some(column => column.id === edge.target)
+          table.columns.data.some(column => column.id === edge.target)
       )
       if (!destinationTable) return null
 
       if (sourceTable.id === destinationTable.id) return null
 
       const sourceHandle = expanded.includes(sourceTable.id)
-        ? sourceTable.columns.find(c => c.id === edge.source)?.name ?? "all"
+        ? sourceTable.columns.data.find(c => c.id === edge.source)?.name ??
+          "all"
         : "all"
       const targetHandle = expanded.includes(destinationTable.id)
-        ? destinationTable.columns.find(c => c.id === edge.target)?.name ??
+        ? destinationTable.columns.data.find(c => c.id === edge.target)?.name ??
           "all"
         : "all"
 

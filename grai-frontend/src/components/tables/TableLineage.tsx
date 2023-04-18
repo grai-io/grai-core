@@ -19,37 +19,47 @@ export const GET_TABLES_AND_EDGES = gql`
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       tables {
-        id
-        namespace
-        name
-        display_name
-        data_source
-        metadata
-        columns {
+        data {
           id
+          namespace
           name
           display_name
-        }
-        source_tables {
-          id
-          name
-          display_name
-        }
-        destination_tables {
-          id
-          name
-          display_name
+          data_source
+          metadata
+          columns {
+            data {
+              id
+              name
+              display_name
+            }
+          }
+          source_tables {
+            data {
+              id
+              name
+              display_name
+            }
+          }
+          destination_tables {
+            data {
+              id
+              name
+              display_name
+            }
+          }
         }
       }
       other_edges {
-        id
-        source {
+        data {
           id
+          source {
+            id
+          }
+          destination {
+            id
+          }
+          metadata
         }
-        destination {
-          id
-        }
-        metadata
       }
     }
   }
@@ -80,11 +90,11 @@ const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
   if (error) return <GraphError error={error} />
   if (loading) return <Loading />
 
-  const tables = data?.workspace.tables
+  const tables = data?.workspace.tables.data
 
   if (!tables || tables.length === 0) return <Alert>No tables found</Alert>
 
-  const edges = data.workspace.other_edges
+  const edges = data.workspace.other_edges.data
 
   const visibleTables: string[] = Array.from(Array(value).keys()).reduce(
     (res, value) =>
@@ -92,10 +102,10 @@ const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
         tables
           .filter(
             t =>
-              t.source_tables.some(sourceTable =>
+              t.source_tables.data.some(sourceTable =>
                 res.includes(sourceTable.id)
               ) ||
-              t.destination_tables.some(destinationTable =>
+              t.destination_tables.data.some(destinationTable =>
                 res.includes(destinationTable.id)
               )
           )

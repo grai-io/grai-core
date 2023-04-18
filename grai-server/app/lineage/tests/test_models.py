@@ -36,6 +36,7 @@ def test_node_created(create_workspace):
     assert isinstance(node.created_at, datetime.datetime)
     assert isinstance(node.updated_at, datetime.datetime)
     assert node.search_type() == "Node"
+    assert node.search_enabled() == True
     assert node.table_id() is None
 
 

@@ -17,16 +17,21 @@ export const GET_MEMBERSHIPS = gql`
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       memberships {
-        id
-        role
-        user {
+        data {
           id
-          username
-          first_name
-          last_name
+          role
+          user {
+            id
+            username
+            first_name
+            last_name
+          }
+          is_active
+          created_at
         }
-        is_active
-        created_at
+        meta {
+          total
+        }
       }
     }
   }
@@ -56,9 +61,10 @@ const Memberships: React.FC = () => {
       <Box sx={{ p: 3 }}>
         <MembershipsHeader workspaceId={workspace?.id} />
         <MembershipsTable
-          memberships={data?.workspace?.memberships ?? []}
+          memberships={data?.workspace?.memberships.data ?? []}
           loading={loading}
           workspaceId={workspace?.id}
+          total={data?.workspace?.memberships.meta.total ?? 0}
         />
       </Box>
     </SettingsLayout>

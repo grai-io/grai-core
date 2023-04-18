@@ -17,36 +17,46 @@ export const GET_TABLES_AND_EDGES = gql`
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       tables {
-        id
-        namespace
-        name
-        display_name
-        data_source
-        metadata
-        columns {
+        data {
           id
-          name
-        }
-        source_tables {
-          id
+          namespace
           name
           display_name
-        }
-        destination_tables {
-          id
-          name
-          display_name
+          data_source
+          metadata
+          columns {
+            data {
+              id
+              name
+            }
+          }
+          source_tables {
+            data {
+              id
+              name
+              display_name
+            }
+          }
+          destination_tables {
+            data {
+              id
+              name
+              display_name
+            }
+          }
         }
       }
       other_edges {
-        id
-        source {
+        data {
           id
+          source {
+            id
+          }
+          destination {
+            id
+          }
+          metadata
         }
-        destination {
-          id
-        }
-        metadata
       }
     }
   }
@@ -74,8 +84,8 @@ const Graph: React.FC = () => {
   const limitGraph: boolean =
     searchParams.get("limitGraph")?.toLowerCase() === "true" && !!errors
 
-  const tables = data?.workspace.tables
-  const edges = data?.workspace.other_edges ?? []
+  const tables = data?.workspace.tables.data
+  const edges = data?.workspace.other_edges.data ?? []
 
   if (!tables) return <Alert>No tables found</Alert>
 

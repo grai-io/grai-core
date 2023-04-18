@@ -30,7 +30,7 @@ const memberships = [
 ]
 
 test("renders", async () => {
-  render(<MembershipsTable memberships={memberships} />, {
+  render(<MembershipsTable memberships={memberships} total={2} />, {
     withRouter: true,
   })
 
@@ -38,7 +38,7 @@ test("renders", async () => {
 })
 
 test("empty", async () => {
-  render(<MembershipsTable memberships={[]} />, {
+  render(<MembershipsTable memberships={[]} total={0} />, {
     withRouter: true,
   })
 
@@ -46,7 +46,7 @@ test("empty", async () => {
 })
 
 test("loading", async () => {
-  render(<MembershipsTable memberships={[]} loading />, {
+  render(<MembershipsTable memberships={[]} loading total={0} />, {
     withRouter: true,
   })
 

@@ -47,7 +47,7 @@ def build_grai_metadata_from_column(current: Column, version: Literal["v1"] = "v
         "node_attributes": {
             "data_type": current.data_type,
             "default_value": default_value,
-            "is_nullable": current.is_nullable,
+            "is_nullable": None if current.is_nullable else False,  # Only not-nullable is definitive.
             "is_primary_key": current.column_key.value == ColumnKey.PRIMARY_KEY.value,
             "is_unique": current.column_key.value in UNIQUE_COLUMN_CONSTRAINTS,
         },
@@ -88,11 +88,11 @@ def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") 
 
 
 @multimethod
-def build_mysql_metadata(current: Any, desired: Any) -> None:
+def build_app_metadata(current: Any, desired: Any) -> None:
     raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)} for value {current}")
 
 
-@build_mysql_metadata.register
+@build_app_metadata.register
 def build_metadata_from_column(current: Column, version: Literal["v1"] = "v1") -> Dict:
     data = {
         "table_name": current.table,
@@ -102,7 +102,7 @@ def build_metadata_from_column(current: Column, version: Literal["v1"] = "v1") -
     return data
 
 
-@build_mysql_metadata.register
+@build_app_metadata.register
 def build_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> Dict:
     data = {
         "definition": current.definition,
@@ -113,7 +113,7 @@ def build_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> Di
     return data
 
 
-@build_mysql_metadata.register
+@build_app_metadata.register
 def build_metadata_from_node(current: Table, version: Literal["v1"] = "v1") -> Dict:
     data = {
         "schema": current.table_schema,
@@ -122,9 +122,13 @@ def build_metadata_from_node(current: Table, version: Literal["v1"] = "v1") -> D
 
 
 def build_metadata(obj, version):
+    integration_meta = build_app_metadata(obj, version)
+    base_metadata = build_grai_metadata(obj, version)
+    integration_meta["grai"] = base_metadata
+
     return {
-        base_config.metadata_id: build_grai_metadata(obj, version),
-        config.metadata_id: build_mysql_metadata(obj, version),
+        base_config.metadata_id: base_metadata,
+        config.metadata_id: integration_meta,
     }
 
 

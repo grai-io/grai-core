@@ -48,36 +48,46 @@ export const GET_PULL_REQUEST = gql`
         }
       }
       tables {
-        id
-        namespace
-        name
-        display_name
-        data_source
-        metadata
-        columns {
+        data {
           id
-          name
-        }
-        source_tables {
-          id
+          namespace
           name
           display_name
-        }
-        destination_tables {
-          id
-          name
-          display_name
+          data_source
+          metadata
+          columns {
+            data {
+              id
+              name
+            }
+          }
+          source_tables {
+            data {
+              id
+              name
+              display_name
+            }
+          }
+          destination_tables {
+            data {
+              id
+              name
+              display_name
+            }
+          }
         }
       }
       other_edges {
-        id
-        source {
+        data {
           id
+          source {
+            id
+          }
+          destination {
+            id
+          }
+          metadata
         }
-        destination {
-          id
-        }
-        metadata
       }
     }
   }
@@ -110,12 +120,11 @@ const PullRequest: React.FC = () => {
 
   if (!pullRequest) return <NotFound />
 
-  const errors = resultsToErrors(
-    pullRequest.last_commit?.last_successful_run?.metadata.results
-  )
+  const run = pullRequest.last_commit?.last_successful_run ?? null
+  const errors = resultsToErrors(run?.metadata.results)
 
-  const tables = data?.workspace.tables
-  const edges = data?.workspace.other_edges
+  const tables = data?.workspace.tables.data
+  const edges = data?.workspace.other_edges.data
 
   return (
     <PageLayout>
@@ -124,7 +133,7 @@ const PullRequest: React.FC = () => {
         repository={data.workspace.repository}
         pullRequest={pullRequest}
       />
-      <ReportBody tables={tables} edges={edges} errors={errors} />
+      <ReportBody run={run} tables={tables} edges={edges} errors={errors} />
     </PageLayout>
   )
 }

@@ -7,7 +7,7 @@
 // GraphQL query operation: GetTables
 // ====================================================
 
-export interface GetTables_workspace_tables {
+export interface GetTables_workspace_tables_data {
   __typename: "Table";
   id: any;
   namespace: string;
@@ -18,10 +18,21 @@ export interface GetTables_workspace_tables {
   metadata: any;
 }
 
+export interface GetTables_workspace_tables_meta {
+  __typename: "PaginationResult";
+  total: number;
+}
+
+export interface GetTables_workspace_tables {
+  __typename: "TablePagination";
+  data: GetTables_workspace_tables_data[];
+  meta: GetTables_workspace_tables_meta;
+}
+
 export interface GetTables_workspace {
   __typename: "Workspace";
   id: any;
-  tables: GetTables_workspace_tables[];
+  tables: GetTables_workspace_tables;
 }
 
 export interface GetTables {

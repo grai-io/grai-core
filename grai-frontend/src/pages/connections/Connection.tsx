@@ -62,18 +62,20 @@ export const GET_CONNECTION = gql`
             last_name
           }
         }
-        runs(order: { created_at: DESC }) {
-          id
-          status
-          created_at
-          started_at
-          finished_at
-          user {
+        runs(order: { created_at: DESC }, filters: { action: UPDATE }) {
+          data {
             id
-            first_name
-            last_name
+            status
+            created_at
+            started_at
+            finished_at
+            user {
+              id
+              first_name
+              last_name
+            }
+            metadata
           }
-          metadata
         }
       }
     }

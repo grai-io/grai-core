@@ -13,7 +13,7 @@ const connections = [
       id: "1",
       name: "connector 1",
     },
-    runs: [],
+    runs: { data: [] },
     last_run: null,
     last_successful_run: null,
   },
@@ -26,26 +26,32 @@ const connections = [
       id: "1",
       name: "connector 1",
     },
-    runs: [],
+    runs: { data: [] },
     last_run: null,
     last_successful_run: null,
   },
 ]
 
 test("renders", async () => {
-  render(<ConnectionsTable connections={connections} workspaceId="1" />, {
-    withRouter: true,
-  })
+  render(
+    <ConnectionsTable connections={connections} workspaceId="1" total={0} />,
+    {
+      withRouter: true,
+    }
+  )
 })
 
 test("renders loading", async () => {
-  render(<ConnectionsTable connections={[]} workspaceId="1" loading />, {
-    withRouter: true,
-  })
+  render(
+    <ConnectionsTable connections={[]} workspaceId="1" loading total={0} />,
+    {
+      withRouter: true,
+    }
+  )
 })
 
 test("renders empty", async () => {
-  render(<ConnectionsTable connections={[]} workspaceId="1" />, {
+  render(<ConnectionsTable connections={[]} workspaceId="1" total={0} />, {
     withRouter: true,
   })
 
@@ -56,7 +62,7 @@ test("click row", async () => {
   const user = userEvent.setup()
 
   const { container } = render(
-    <ConnectionsTable connections={connections} workspaceId="1" />,
+    <ConnectionsTable connections={connections} workspaceId="1" total={0} />,
     {
       routes: ["/:nodeId"],
     }

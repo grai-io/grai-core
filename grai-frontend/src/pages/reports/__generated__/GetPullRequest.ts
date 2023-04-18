@@ -44,27 +44,42 @@ export interface GetPullRequest_workspace_repository {
   pull_request: GetPullRequest_workspace_repository_pull_request;
 }
 
-export interface GetPullRequest_workspace_tables_columns {
+export interface GetPullRequest_workspace_tables_data_columns_data {
   __typename: "Column";
   id: any;
   name: string;
 }
 
-export interface GetPullRequest_workspace_tables_source_tables {
+export interface GetPullRequest_workspace_tables_data_columns {
+  __typename: "ColumnDataWrapper";
+  data: GetPullRequest_workspace_tables_data_columns_data[];
+}
+
+export interface GetPullRequest_workspace_tables_data_source_tables_data {
   __typename: "Table";
   id: any;
   name: string;
   display_name: string;
 }
 
-export interface GetPullRequest_workspace_tables_destination_tables {
+export interface GetPullRequest_workspace_tables_data_source_tables {
+  __typename: "TableDataWrapper";
+  data: GetPullRequest_workspace_tables_data_source_tables_data[];
+}
+
+export interface GetPullRequest_workspace_tables_data_destination_tables_data {
   __typename: "Table";
   id: any;
   name: string;
   display_name: string;
 }
 
-export interface GetPullRequest_workspace_tables {
+export interface GetPullRequest_workspace_tables_data_destination_tables {
+  __typename: "TableDataWrapper";
+  data: GetPullRequest_workspace_tables_data_destination_tables_data[];
+}
+
+export interface GetPullRequest_workspace_tables_data {
   __typename: "Table";
   id: any;
   namespace: string;
@@ -72,35 +87,45 @@ export interface GetPullRequest_workspace_tables {
   display_name: string;
   data_source: string;
   metadata: any;
-  columns: GetPullRequest_workspace_tables_columns[];
-  source_tables: GetPullRequest_workspace_tables_source_tables[];
-  destination_tables: GetPullRequest_workspace_tables_destination_tables[];
+  columns: GetPullRequest_workspace_tables_data_columns;
+  source_tables: GetPullRequest_workspace_tables_data_source_tables;
+  destination_tables: GetPullRequest_workspace_tables_data_destination_tables;
 }
 
-export interface GetPullRequest_workspace_other_edges_source {
+export interface GetPullRequest_workspace_tables {
+  __typename: "TablePagination";
+  data: GetPullRequest_workspace_tables_data[];
+}
+
+export interface GetPullRequest_workspace_other_edges_data_source {
   __typename: "Node";
   id: any;
 }
 
-export interface GetPullRequest_workspace_other_edges_destination {
+export interface GetPullRequest_workspace_other_edges_data_destination {
   __typename: "Node";
   id: any;
+}
+
+export interface GetPullRequest_workspace_other_edges_data {
+  __typename: "Edge";
+  id: any;
+  source: GetPullRequest_workspace_other_edges_data_source;
+  destination: GetPullRequest_workspace_other_edges_data_destination;
+  metadata: any;
 }
 
 export interface GetPullRequest_workspace_other_edges {
-  __typename: "Edge";
-  id: any;
-  source: GetPullRequest_workspace_other_edges_source;
-  destination: GetPullRequest_workspace_other_edges_destination;
-  metadata: any;
+  __typename: "EdgePagination";
+  data: GetPullRequest_workspace_other_edges_data[];
 }
 
 export interface GetPullRequest_workspace {
   __typename: "Workspace";
   id: any;
   repository: GetPullRequest_workspace_repository;
-  tables: GetPullRequest_workspace_tables[];
-  other_edges: GetPullRequest_workspace_other_edges[];
+  tables: GetPullRequest_workspace_tables;
+  other_edges: GetPullRequest_workspace_other_edges;
 }
 
 export interface GetPullRequest {

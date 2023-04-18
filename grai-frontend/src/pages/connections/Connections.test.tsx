@@ -51,21 +51,26 @@ const connectionMock = {
     data: {
       workspace: {
         id: "1",
-        connections: [
-          {
-            id: "1",
-            namespace: "default",
-            name: "Connection 1",
-            is_active: true,
-            connector: {
+        connections: {
+          data: [
+            {
               id: "1",
-              name: "Connector 1",
+              namespace: "default",
+              name: "Connection 1",
+              is_active: true,
+              connector: {
+                id: "1",
+                name: "Connector 1",
+              },
+              runs: { data: [] },
+              last_run: null,
+              last_successful_run: null,
             },
-            runs: [],
-            last_run: null,
-            last_successful_run: null,
+          ],
+          meta: {
+            total: 1,
           },
-        ],
+        },
       },
     },
   },

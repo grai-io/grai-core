@@ -7,14 +7,21 @@ import { Table } from "components/graph/MidGraph"
 import Tabs from "components/tabs/Tabs"
 import ReportResult from "./results/ReportResult"
 import TestResults from "./results/TestResults"
+import RunLog, { Run } from "./run/RunLog"
 
 type ReportBodyProps = {
+  run: Run | null
   tables: Table[]
   edges: Edge[]
   errors: Error[] | null
 }
 
-const ReportBody: React.FC<ReportBodyProps> = ({ tables, edges, errors }) => {
+const ReportBody: React.FC<ReportBodyProps> = ({
+  run,
+  tables,
+  edges,
+  errors,
+}) => {
   const [searchParams, setSearchParams] = useSearchParams()
   const [display, setDisplay] = useState(false)
 
@@ -72,6 +79,11 @@ const ReportBody: React.FC<ReportBodyProps> = ({ tables, edges, errors }) => {
             value: "all-tests",
             label: "All",
             element: <TestResults errors={errors} />,
+          },
+          {
+            value: "log",
+            label: "Log",
+            element: run && <RunLog run={run} />,
           },
         ]}
       />

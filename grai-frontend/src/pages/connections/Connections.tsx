@@ -17,52 +17,59 @@ export const GET_CONNECTIONS = gql`
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       connections {
-        id
-        namespace
-        name
-        is_active
-        connector {
+        data {
           id
+          namespace
           name
-        }
-        runs(order: { created_at: DESC }) {
-          id
-          status
-          created_at
-          started_at
-          finished_at
-          user {
+          is_active
+          connector {
             id
-            first_name
-            last_name
+            name
           }
-          metadata
-        }
-        last_run {
-          id
-          status
-          created_at
-          started_at
-          finished_at
-          user {
+          runs(order: { created_at: DESC }) {
+            data {
+              id
+              status
+              created_at
+              started_at
+              finished_at
+              user {
+                id
+                first_name
+                last_name
+              }
+              metadata
+            }
+          }
+          last_run {
             id
-            first_name
-            last_name
+            status
+            created_at
+            started_at
+            finished_at
+            user {
+              id
+              first_name
+              last_name
+            }
+            metadata
           }
-          metadata
-        }
-        last_successful_run {
-          id
-          status
-          created_at
-          started_at
-          finished_at
-          user {
+          last_successful_run {
             id
-            first_name
-            last_name
+            status
+            created_at
+            started_at
+            finished_at
+            user {
+              id
+              first_name
+              last_name
+            }
+            metadata
           }
-          metadata
+        }
+        meta {
+          total
         }
       }
     }
@@ -95,9 +102,10 @@ const Connections: React.FC = () => {
         }}
       >
         <ConnectionsTable
-          connections={data?.workspace.connections ?? []}
+          connections={data?.workspace.connections.data ?? []}
           workspaceId={data?.workspace.id}
           loading={loading}
+          total={data?.workspace.connections.meta.total ?? 0}
         />
       </Box>
     </PageLayout>
