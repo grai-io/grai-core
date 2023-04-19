@@ -27,6 +27,10 @@ jobs:
     permissions:
       contents: write
 
+    defaults:
+      run:
+        working-directory: docs
+
     steps:
       - uses: actions/checkout@v3
 
