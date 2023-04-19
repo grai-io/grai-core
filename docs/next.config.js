@@ -19,3 +19,9 @@ module.exports = withSentryConfig(
   { silent: true },
   { hideSourceMaps: true }
 );
+
+module.exports = {
+  images: {
+    unoptimized: true,
+  },
+};
