@@ -1,0 +1,70 @@
+---
+title: Deploying Grai with Kubernetes
+description: Deploying Grai with Kubernetes
+---
+
+# Kubernetes
+
+We maintain up to date deployment scripts for Kubernetes in version control [here](https://github.com/grai-io/grai-core/blob/master/examples/deployment/k8s/deployment.yaml)
+which you can always use for reference.
+
+For a very simple deployment, you can use the following:
+
+```yaml copy
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grai
+spec:
+  template:
+    spec:
+      containers:
+        - name: server
+          image: ghcr.io/grai-io/grai-core/grai-server:latest
+          imagePullPolicy: Always
+          command: ["/bin/sh", "-c"]
+          args:
+            [
+              "/usr/src/app/entrypoint.sh gunicorn --bind 0.0.0.0:8000 the_guide.wsgi",
+            ]
+          env:
+            - name: SERVER_HOST
+              value: "your-server-host.com"
+            - name: FRONTEND_HOST
+              value: "your-frontend-host.com"
+            - name: DJANGO_SUPERUSER_USERNAME
+              value: "null@grai.io"
+            - name: DJANGO_SUPERUSER_PASSWORD
+              value: "super_secret"
+          readinessProbe:
+            tcpSocket:
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+        - name: db-pod
+          image: postgres:14.3-alpine
+          env:
+            - name: POSTGRES_USER
+              value: grai
+            - name: POSTGRES_PASSWORD
+              value: grai
+            - name: POSTGRES_DB
+              value: grai
+        - name: frontend
+          image: ghcr.io/grai-io/grai-core/grai-frontend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          env:
+            - name: REACT_APP_SERVER_URL
+              value: "your-frontend-host.com"
+```

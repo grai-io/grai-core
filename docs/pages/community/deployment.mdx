@@ -1,0 +1,126 @@
+---
+title: "Deployment and testing"
+description: Getting started with local testing
+---
+
+import { Callout } from "nextra-theme-docs";
+
+# Deployment
+
+Once you have a clone of the core repository you can begin active development.
+
+## Dependencies
+
+1. [Git](https://git-scm.com/)
+2. [Poetry](https://python-poetry.org/docs/#installation)
+3. [Docker](https://docs.docker.com/engine/install/)
+
+## Running the Server and frontend
+
+We maintain an up to date docker-compose script for development purposes under
+the `grai-server` folder of the monorepo.
+In order to deploy an instance locally you can do the following
+
+```shell copy
+cd grai-core/grai-server
+docker compose up
+```
+
+It may take a minute for all of the services to deploy depending on your machine
+so give it a moment but you will soon have access to an instance of the server
+running at `localhost:8000` and the frontend on `localhost:3000`.
+
+The default login credentials are
+
+```copy
+username: null@grai.io
+password: super_secret
+```
+
+### Services
+
+Grai relies on the following background services.
+
+- [PostgresQL](https://www.postgresql.org/) as the core database
+- [Redis](https://redis.com/) for cacheing
+- [Celery](https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html) for job scheduling and worker execution
+- [Flower](https://flower.readthedocs.io/en/latest/) for monitoring of Celery tasks
+- [Django](https://www.djangoproject.com/) for our backend web framework
+
+The frontend is [Typescript](https://www.typescriptlang.org/) and [React](https://reactjs.org/)
+
+## Integrations
+
+You'll find all of the integration code under the `grai-integrations` directory.
+Each is a python application which you can install locally without any dependencies other than python.
+However, we use poetry extensively for managing our libraries.
+
+We will be using the postgres integration as an example below but all of this is equally
+applicable to the other python libraries and integrations.
+
+### Installing a dev environment
+
+Although all of our python libraries are installable through pip
+
+```shell copy
+cd grai-core/grai-integrations/source-postgres
+pip install -e .
+```
+
+We recommend using poetry to manage your installations like so.
+
+```shell copy
+cd grai-core/grai-integrations/source-postgres
+poetry install
+```
+
+This will create a new virtual environment with all required dependencies for the integration.
+You can run command inside this virtual environment by prefixing commands with `poetry run`,
+e.g. `poetry run python` will place in you the python interpreter for your environment.
+
+### Testing
+
+We use pytest in all of our python applications and you can run tests in your
+virtual environment with this command.
+
+```shell copy
+poetry run pytest
+```
+
+Some integrations might depend on a database instance in which case there will be a
+docker-compose file in the root of the integration subdirectory.
+In these cases you should use Docker to spin up an instance of the needed containers
+before running the test commands.
+
+```shell copy
+docker compose up
+poetry run pytest
+```
+
+### Continuous Integration
+
+<Callout type="info" emoji="ℹ️">
+  GitHub Actions definition files are available in the root directory of the
+  project under `.github/workflows`
+</Callout>
+
+Each of these testing steps will run a CI job built using GitHub Actions.
+For new integrations we ask that you add an action which runs Linting, and unit tests
+on every pull request.
+
+## Miscellaneous
+
+### Style Guide
+
+Our Python libraries all follow a consistent style guide consisting of
+
+- [Black](https://github.com/psf/black) for linting
+  - We use a line-width of 120 characters not 81
+- [MyPy](https://github.com/python/mypy) for static type checking
+- [isort](https://pycqa.github.io/isort/) for standardized import ordering
+
+### Pre-Commit
+
+There are pre-commit hooks available across the repository.
+If you're unfamiliar with pre-commit hooks you don't need to worry about this
+though you can find out more about them [here](https://pre-commit.com/).

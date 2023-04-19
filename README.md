@@ -124,10 +124,10 @@ The client library provides programmatic access to the data lineage server. You 
 pip install grai-client
 ```
 
-To work with the client, learn more [here](https://docs.grai.io/tooling/client).
+To work with the client, learn more [here](https://docs.grai.io/core/tooling/client).
 
 ## Community
 
 Come and join our [Slack](https://join.slack.com/t/graicommunity/shared_invite/zt-1il70kfeb-TaCm5fwHg_quWCpKNYyj6w)! We're on hand for support, help or just to hang out and chat.
 
-To stay looped into updates, join our [email list](https://www.grai.io/signup/).
+To stay looped into updates, join our [email list](https://www.grai.io).
