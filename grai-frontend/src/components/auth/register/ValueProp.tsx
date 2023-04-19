@@ -10,18 +10,19 @@ import {
 } from "@mui/lab"
 import { Box, Typography, styled } from "@mui/material"
 
-const StyledTimelineContent = styled(TimelineContent)(() => ({
+const StyledTimelineContent = styled(TimelineContent)(theme => ({
   fontSize: 20,
   color: "#818792",
+  paddingTop: theme.theme.spacing(3),
 }))
 
 const DotBox = styled(Box)(theme => ({
-  width: 48,
-  height: 48,
+  width: 40,
+  height: 40,
   fontSize: 24,
   fontWeight: "bold",
   textAlign: "center",
-  paddingTop: theme.theme.spacing(0.75),
+  paddingTop: theme.theme.spacing(0.25),
 }))
 
 const StyledTimelineDot = styled(TimelineDot)(() => ({
@@ -49,22 +50,18 @@ const ValueProp: React.FC = () => (
           <StyledTimelineDot variant="outlined">
             <DotBox>1</DotBox>
           </StyledTimelineDot>
-          <TimelineConnector sx={{ height: 20 }} />
+          <TimelineConnector sx={{ height: 15 }} />
         </TimelineSeparator>
-        <StyledTimelineContent sx={{ pt: 3.5 }}>
-          Connect your data sources
-        </StyledTimelineContent>
+        <StyledTimelineContent>Connect your data sources</StyledTimelineContent>
       </TimelineItem>
       <TimelineItem>
         <TimelineSeparator>
           <StyledTimelineDot variant="outlined">
             <DotBox>2</DotBox>
           </StyledTimelineDot>
-          <TimelineConnector sx={{ height: 20 }} />
+          <TimelineConnector sx={{ height: 15 }} />
         </TimelineSeparator>
-        <StyledTimelineContent sx={{ pt: 3.5 }}>
-          Integrate with GitHub
-        </StyledTimelineContent>
+        <StyledTimelineContent>Integrate with GitHub</StyledTimelineContent>
       </TimelineItem>
       <TimelineItem>
         <TimelineSeparator>
@@ -72,7 +69,7 @@ const ValueProp: React.FC = () => (
             <DotBox>3</DotBox>
           </StyledTimelineDot>
         </TimelineSeparator>
-        <StyledTimelineContent sx={{ pt: 3.5 }}>
+        <StyledTimelineContent>
           Open a pull request and run tests
         </StyledTimelineContent>
       </TimelineItem>
