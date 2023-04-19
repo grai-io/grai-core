@@ -1,8 +1,8 @@
 import os
-
 import subprocess
-from pathlib import Path
 import warnings
+from pathlib import Path
+
 from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -147,6 +147,7 @@ THE_GUIDE_APPS = [
     "lineage",
     "connections",
     "installations",
+    "notifications",
     "workspaces",
     "users",
     "telemetry",

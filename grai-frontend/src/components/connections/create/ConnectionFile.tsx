@@ -148,7 +148,7 @@ const ConnectionFile: React.FC<ConnectionFileProps> = ({
         <LoadingButton
           variant="contained"
           type="submit"
-          sx={{ minWidth: 120, color: "white" }}
+          sx={{ minWidth: 120 }}
           disabled={!values.file}
           loading={loading}
         >

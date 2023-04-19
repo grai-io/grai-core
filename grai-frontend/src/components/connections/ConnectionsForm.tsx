@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import { ApolloError } from "@apollo/client"
 import { LoadingButton } from "@mui/lab"
 import { TextField } from "@mui/material"
 import Form from "components/form/Form"
@@ -41,7 +42,7 @@ export type Values = {
 type ConnectionsFormProps = {
   defaultValues: Values
   onSubmit: (values: Values) => void
-  error?: any
+  error?: ApolloError
   loading?: boolean
   edit?: boolean
 }

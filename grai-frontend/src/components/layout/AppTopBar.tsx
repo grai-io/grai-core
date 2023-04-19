@@ -16,28 +16,28 @@ const AppTopBar: React.FC = () => {
         <Button
           component={Link}
           to={`${routePrefix}/graph`}
-          sx={{ my: 2, color: "inherit" }}
+          sx={{ my: 2, color: theme => theme.palette.secondary.main }}
         >
           Graph
         </Button>
         <Button
           component={Link}
           to={`${routePrefix}/tables`}
-          sx={{ my: 2, color: "inherit" }}
+          sx={{ my: 2, color: theme => theme.palette.secondary.main }}
         >
           Tables
         </Button>
         <Button
           component={Link}
           to={`${routePrefix}/connections`}
-          sx={{ my: 2, color: "inherit" }}
+          sx={{ my: 2, color: theme => theme.palette.secondary.main }}
         >
           Connections
         </Button>
         <Button
           component={Link}
           to={`${routePrefix}/reports`}
-          sx={{ my: 2, color: "inherit" }}
+          sx={{ my: 2, color: theme => theme.palette.secondary.main }}
         >
           Reports
         </Button>

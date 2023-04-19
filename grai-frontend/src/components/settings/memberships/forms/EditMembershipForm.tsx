@@ -73,7 +73,7 @@ const EditMembershipForm: React.FC<EditMembershipFormProps> = ({
         <LoadingButton
           variant="contained"
           type="submit"
-          sx={{ mt: 2, color: "white", minWidth: 80 }}
+          sx={{ mt: 2, minWidth: 80 }}
           loading={loading}
         >
           Save

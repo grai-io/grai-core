@@ -1,6 +1,12 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
-import { AccountCircle, Business, People, VpnKey } from "@mui/icons-material"
+import {
+  AccountCircle,
+  Business,
+  Notifications,
+  People,
+  VpnKey,
+} from "@mui/icons-material"
 import {
   Card,
   CardActionArea,
@@ -72,6 +78,16 @@ const pages = [
       />
     ),
     to: "memberships",
+  },
+  {
+    label: "Alerts",
+    icon: (
+      <Notifications
+        fontSize="large"
+        sx={{ color: theme => theme.palette.grey[500] }}
+      />
+    ),
+    to: "alerts",
   },
 ]
 

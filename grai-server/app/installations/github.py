@@ -1,5 +1,5 @@
 import time
-from datetime import datetime
+from django.utils import timezone
 from typing import Optional
 
 import jwt
@@ -84,16 +84,14 @@ class Github:
         return check
 
     def start_check(self, check_id: int):
-        return self.api.checks.update(
-            check_run_id=check_id, status="in_progress", started_at=datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-        )
+        return self.api.checks.update(check_run_id=check_id, status="in_progress", started_at=timezone.now())
 
     def complete_check(self, check_id: int, conclusion: str = "success"):
         return self.api.checks.update(
             check_run_id=check_id,
             status="completed",
             conclusion=conclusion,
-            completed_at=datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"),
+            completed_at=timezone.now(),
         )
 
     def get_repos(self):
