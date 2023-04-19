@@ -1,0 +1,56 @@
+name: GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/gh-pages.yml"
+      - "docs/**"
+  pull_request:
+    paths:
+      - ".github/workflows/gh-pages.yml"
+      - "docs/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NEXT_PUBLIC_POSTHOG_KEY: ${{ secrets.REACT_APP_POSTHOG_API_KEY }}
+  NEXT_PUBLIC_POSTHOG_HOST: https://ph.grai.io
+
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.12.1"
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - run: npm ci --force
+      - run: npm run build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        # if: ${{ github.ref == 'refs/heads/main' }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          cname: docs2.grai.io
+          publish_branch: gh-pages
