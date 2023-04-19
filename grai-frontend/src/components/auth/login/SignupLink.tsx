@@ -2,21 +2,18 @@ import React from "react"
 import { Card, Link, Typography } from "@mui/material"
 import { Link as RouterLink } from "react-router-dom"
 
-const Signup: React.FC = () => (
+const SignupLink: React.FC = () => (
   <Card
     elevation={0}
     sx={{
       pl: 2,
       mt: 2,
       height: "72px",
-
       backgroundColor: "transparent",
       borderRadius: "20px",
-      borderColor: "transparent",
+      borderColor: "#3A86FF12",
       borderWidth: "2px",
       borderStyle: "solid",
-      background:
-        "linear-gradient(white, white) padding-box, linear-gradient(to right, #8338EC12, #3A86FF12) border-box",
     }}
   >
     <Typography
@@ -45,4 +42,4 @@ const Signup: React.FC = () => (
   </Card>
 )
 
-export default Signup
+export default SignupLink

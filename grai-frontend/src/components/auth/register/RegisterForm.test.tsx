@@ -16,18 +16,10 @@ test("renders", async () => {
   })
 
   await act(
-    async () =>
-      await user.type(
-        screen.getByRole("textbox", { name: /name/i }),
-        "Test User"
-      )
+    async () => await user.type(screen.getByTestId("name"), "Test User")
   )
   await act(
-    async () =>
-      await user.type(
-        screen.getByRole("textbox", { name: /email/i }),
-        "email@grai.io"
-      )
+    async () => await user.type(screen.getByTestId("email"), "email@grai.io")
   )
   await act(
     async () => await user.type(screen.getByTestId("password"), "password")
@@ -39,7 +31,7 @@ test("renders", async () => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /register/i }))
+      await user.click(screen.getByRole("button", { name: /get started/i }))
   )
 
   await waitFor(() => {
@@ -72,18 +64,10 @@ test("error", async () => {
   })
 
   await act(
-    async () =>
-      await user.type(
-        screen.getByRole("textbox", { name: /name/i }),
-        "Test User"
-      )
+    async () => await user.type(screen.getByTestId("name"), "Test User")
   )
   await act(
-    async () =>
-      await user.type(
-        screen.getByRole("textbox", { name: /email/i }),
-        "email@grai.io"
-      )
+    async () => await user.type(screen.getByTestId("email"), "email@grai.io")
   )
   await act(
     async () => await user.type(screen.getByTestId("password"), "password")
@@ -95,7 +79,7 @@ test("error", async () => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /register/i }))
+      await user.click(screen.getByRole("button", { name: /get started/i }))
   )
 
   await waitFor(() => {

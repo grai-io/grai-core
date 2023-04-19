@@ -1,7 +1,7 @@
 import React from "react"
 import { Box, Card, CardContent, Container, Typography } from "@mui/material"
-import LoginForm from "components/auth/LoginForm"
-import Signup from "components/auth/Signup"
+import LoginForm from "components/auth/login/LoginForm"
+import SignupLink from "components/auth/login/SignupLink"
 
 const Login: React.FC = () => (
   <Box
@@ -22,6 +22,7 @@ const Login: React.FC = () => (
         left: -318,
         borderRadius: "50%",
         filter: "blur(200px)",
+        zIndex: -1,
       }}
     />
     <Box
@@ -35,6 +36,7 @@ const Login: React.FC = () => (
         borderRadius: "50%",
         filter: "blur(200px)",
         overflow: "hidden",
+        zIndex: -1,
       }}
     />
 
@@ -60,7 +62,7 @@ const Login: React.FC = () => (
           <LoginForm />
         </CardContent>
       </Card>
-      <Signup />
+      <SignupLink />
     </Container>
   </Box>
 )

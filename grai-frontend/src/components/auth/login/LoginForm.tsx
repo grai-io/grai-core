@@ -7,7 +7,7 @@ import { Link as RouterLink } from "react-router-dom"
 import Form from "components/form/Form"
 import GraphError from "components/utils/GraphError"
 import { Login, LoginVariables } from "./__generated__/Login"
-import useAuth from "./useAuth"
+import useAuth from "../useAuth"
 
 export const LOGIN = gql`
   mutation Login($username: String!, $password: String!) {
