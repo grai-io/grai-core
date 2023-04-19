@@ -16,11 +16,7 @@ test("submit", async () => {
   })
 
   await act(
-    async () =>
-      await user.type(
-        screen.getByRole("textbox", { name: /email/i }),
-        "email@grai.io"
-      )
+    async () => await user.type(screen.getByTestId("email"), "email@grai.io")
   )
   await act(
     async () => await user.type(screen.getByTestId("password"), "password")
@@ -64,11 +60,7 @@ test("error", async () => {
   })
 
   await act(
-    async () =>
-      await user.type(
-        screen.getByRole("textbox", { name: /email/i }),
-        "email@grai.io"
-      )
+    async () => await user.type(screen.getByTestId("email"), "email@grai.io")
   )
   await act(
     async () => await user.type(screen.getByTestId("password"), "password")

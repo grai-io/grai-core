@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { gql, useMutation } from "@apollo/client"
 import { LoadingButton } from "@mui/lab"
-import { Box, Link, TextField } from "@mui/material"
+import { Box, InputLabel, Link, TextField, styled } from "@mui/material"
 import posthog from "posthog"
 import { Link as RouterLink } from "react-router-dom"
 import Form from "components/form/Form"
@@ -19,6 +19,13 @@ export const LOGIN = gql`
     }
   }
 `
+
+const StyledInputLabel = styled(InputLabel)(theme => ({
+  fontWeight: 600,
+  fontSize: 14,
+  color: "#263238",
+  marginBottom: theme.theme.spacing(1),
+}))
 
 type Values = {
   username: string
@@ -45,40 +52,34 @@ const LoginForm: React.FC = () => {
     <Box>
       <Form onSubmit={handleSubmit}>
         {error && <GraphError error={error} />}
+        <StyledInputLabel>Email</StyledInputLabel>
         <TextField
-          id="email"
-          label="Email"
+          inputProps={{ "data-testid": "email" }}
           placeholder="yourname@mail.com"
           type="email"
           fullWidth
-          margin="normal"
           required
           value={values.username}
           disabled={loading}
           onChange={event =>
             setValues({ ...values, username: event.target.value })
           }
-          sx={{ mt: 1 }}
-          InputLabelProps={{
-            shrink: true,
-            required: false,
-            sx: {
-              fontWeight: 600,
-              transform: "translate(14px, -9px)",
-              fontSize: 14,
-            },
-          }}
           InputProps={{
             sx: { borderRadius: "8px" },
           }}
         />
+        <StyledInputLabel
+          sx={{
+            mt: 2,
+          }}
+        >
+          Password
+        </StyledInputLabel>
         <TextField
           inputProps={{ "data-testid": "password" }}
-          label="Password"
           placeholder="********"
           type="password"
           fullWidth
-          margin="normal"
           required
           value={values.password}
           disabled={loading}
@@ -86,20 +87,11 @@ const LoginForm: React.FC = () => {
           onChange={event =>
             setValues({ ...values, password: event.target.value })
           }
-          InputLabelProps={{
-            shrink: true,
-            required: false,
-            sx: {
-              fontWeight: 600,
-              transform: "translate(14px, -9px)",
-              fontSize: 14,
-            },
-          }}
           InputProps={{
             sx: { borderRadius: "8px" },
           }}
         />
-        <Box sx={{ m: 1 }}>
+        <Box sx={{ mt: 2, mb: 2 }}>
           <Link
             component={RouterLink}
             to="/forgot"
