@@ -78,10 +78,11 @@ const AppDrawer: React.FC = () => {
               <ListItemIcon>
                 <Box
                   sx={{
-                    backgroundColor:
-                      location.pathname === `${routePrefix}/${page.path}`
-                        ? "#8338EC80"
-                        : null,
+                    backgroundColor: location.pathname.startsWith(
+                      `${routePrefix}/${page.path}`
+                    )
+                      ? "#8338EC80"
+                      : null,
                     borderRadius: "8px",
                     height: 48,
                     mr: "16px",
