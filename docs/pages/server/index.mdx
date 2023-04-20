@@ -1,0 +1,21 @@
+---
+title: Server
+description: Everything you need to know about the Grai Server
+---
+
+# Grai Server
+
+Grai relies on the following background services.
+
+- [PostgresQL](https://www.postgresql.org/) as the core database
+- [Redis](https://redis.com/) for cacheing
+- [Celery](https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html) for job scheduling and worker execution
+- [Flower](https://flower.readthedocs.io/en/latest/) for monitoring of Celery tasks
+- [Django](https://www.djangoproject.com/) for our backend web framework
+
+You'll find the default admin login credentials below but these should be changed immediately in a production setting.
+
+```copy
+username: null@grai.io
+password: super_secret
+```

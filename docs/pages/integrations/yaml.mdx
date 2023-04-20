@@ -1,0 +1,54 @@
+---
+title: "YAML"
+description: Grai yaml integration
+---
+
+import { YamlLogoIcon } from "../../components/Integrations";
+import Image from "next/image";
+
+<br />
+<YamlLogoIcon width={120} height={120} />
+
+Every aspect of Grai can be serialized to yaml.
+This allows you to manage your entire data lineage as code, backup your lineage in version control, or create and edit nodes/edges in code.
+
+## Web App
+
+The YAML File integration is used to upload a single YAML file, which needs to have the correct Grai format.
+
+<Image
+  src="/images/docs/core/integrations/yaml-file.png"
+  height={600}
+  width={1200}
+/>
+
+### Fields
+
+| Field     | Value                                                                 | Example |
+| --------- | --------------------------------------------------------------------- | ------- |
+| Namespace | Namespace for the connect, see [namespaces](/core/concepts/namespace) | default |
+
+## CLI
+
+You can create, edit, and delete lineage in yaml through the CLI.
+Let's say you wanted to add an `is_really_important` flag to the metadata on the `customer_id` column of the `customers` table.
+In that case we might write a yaml definition like this
+
+```yaml copy
+type: Node
+version: v1
+spec:
+  name: "customers.customer_id"
+  namespace: default
+  is_active: true
+  data_source: postgres
+  display_name: "Customer ID"
+  metadata:
+    is_really_important: true
+```
+
+We could then update the server with this new information through the CLI
+
+```shell copy
+grai apply <node_file>
+```

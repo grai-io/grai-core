@@ -3,6 +3,7 @@ import {
   AccountCircle,
   Business,
   KeyboardArrowLeft,
+  Notifications,
   People,
   VpnKey,
 } from "@mui/icons-material"
@@ -85,6 +86,17 @@ const SettingsDrawer: React.FC = () => {
                 <People />
               </ListItemIcon>
               <ListItemText primary="Users" />
+            </ListItemButton>
+          </ListItem>
+          <ListItem sx={{ py: 0 }}>
+            <ListItemButton
+              component={Link}
+              to={`${routePrefix}/settings/alerts`}
+            >
+              <ListItemIcon sx={{ minWidth: 0, mr: 2 }}>
+                <Notifications />
+              </ListItemIcon>
+              <ListItemText primary="Alerts" />
             </ListItemButton>
           </ListItem>
         </List>

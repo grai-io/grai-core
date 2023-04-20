@@ -1,4 +1,4 @@
-from datetime import datetime
+from django.utils import timezone
 
 from celery import shared_task
 from connections.adapters.base import BaseAdapter
@@ -11,6 +11,7 @@ from connections.adapters.postgres import PostgresAdapter
 from connections.adapters.snowflake import SnowflakeAdapter
 from connections.adapters.yaml_file import YamlFileAdapter
 from installations.github import Github
+from notifications.notifications import send_notification
 
 from .models import Connection, Connector, Run
 
@@ -59,7 +60,7 @@ def get_github_api(run: Run):
 def execute_run(run: Run):
     # Set run status to running
     run.status = "running"
-    run.started_at = datetime.now()
+    run.started_at = timezone.now()
     run.save()
 
     if run.commit and run.trigger:
@@ -78,13 +79,17 @@ def execute_run(run: Run):
             results, message = adapter.run_tests(run)
             run.metadata = {"results": results}
             failures = (result for result in results if not result["test_pass"])
+
+            if len(list(failures)) > 0:
+                send_notification.delay("test_failure", "Test failures")
+
         elif run.action == Run.VALIDATE:
             adapter.run_validate(run)
         else:
             raise NoActionError(f"Incorrect run action {run.action} found, accepted values: tests, update")
 
         run.status = "success"
-        run.finished_at = datetime.now()
+        run.finished_at = timezone.now()
         run.save()
 
         if run.commit and run.trigger:
@@ -98,7 +103,7 @@ def execute_run(run: Run):
     except Exception as e:
         run.metadata = {"error": str(e)}
         run.status = "error"
-        run.finished_at = datetime.now()
+        run.finished_at = timezone.now()
         run.save()
 
         if run.commit and run.trigger:

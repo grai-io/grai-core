@@ -81,7 +81,7 @@ const WorkspaceForm: React.FC = () => {
         type="submit"
         size="large"
         loading={loading}
-        sx={{ height: 56, my: 2, color: "white" }}
+        sx={{ height: 56, my: 2 }}
       >
         SAVE
       </LoadingButton>

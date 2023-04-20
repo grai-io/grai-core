@@ -4,6 +4,7 @@ from unittest.mock import MagicMock
 
 import pytest
 from algoliasearch.search_client import SearchClient
+from notifications.models import Alert
 
 from api.schema import schema
 from connections.models import Connection, Connector, Run
@@ -1838,3 +1839,61 @@ async def test_commit_last_run(test_context, test_commit):
     assert result.data["workspace"]["commit"]["id"] == str(test_commit.id)
     assert result.data["workspace"]["commit"]["last_run"]["id"] == str(last_run.id)
     assert result.data["workspace"]["commit"]["last_successful_run"]["id"] == str(successful_run.id)
+
+
+@pytest.mark.django_db
+async def test_alerts(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    alert = await Alert.objects.acreate(workspace=workspace, name=str(uuid.uuid4()), channel="email")
+
+    query = """
+        query Workspace($workspaceId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                alerts {
+                    data {
+                        id
+                    }
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={"workspaceId": str(workspace.id)},
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["alerts"]["data"][0]["id"] == str(alert.id)
+
+
+@pytest.mark.django_db
+async def test_alert(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    alert = await Alert.objects.acreate(workspace=workspace, name=str(uuid.uuid4()), channel="email")
+
+    query = """
+        query Workspace($workspaceId: ID!, $alertId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                alert(id: $alertId) {
+                    id
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={"workspaceId": str(workspace.id), "alertId": str(alert.id)},
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["alert"]["id"] == str(alert.id)

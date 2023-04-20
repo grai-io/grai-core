@@ -1,3 +1,4 @@
+from notifications.mutations import Mutation as NotificationMutation
 from strawberry.schema.config import StrawberryConfig
 from strawberry.tools import merge_types
 from strawberry_django_plus import gql
@@ -9,7 +10,7 @@ from connections.mutations import Mutation as ConnectionMutation
 from installations.mutations import Mutation as InstallationMutation
 from workspaces.mutations import Mutation as WorkspaceMutation
 
-mutations = (AuthMutation, InstallationMutation, WorkspaceMutation, ConnectionMutation)
+mutations = (AuthMutation, InstallationMutation, WorkspaceMutation, ConnectionMutation, NotificationMutation)
 Mutation = merge_types("Mutation", mutations)
 
 schema = gql.Schema(

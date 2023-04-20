@@ -225,9 +225,11 @@ class TestResultCacheBase:
 
         for node in self.new_columns:
             result = node.spec.metadata.grai.node_attributes.is_nullable
+
             affected_nodes = self.analysis.test_nullable_violations(
                 namespace=node.spec.namespace, name=node.spec.name, is_nullable=result
             )
+
             result_map[node] = [NullableTestResult(node, path, test_pass) for (path, test_pass) in affected_nodes]
 
         return result_map

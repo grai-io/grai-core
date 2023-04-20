@@ -106,7 +106,7 @@ const ValidationRun: React.FC<ValidationRunProps> = ({
           <Button
             variant="contained"
             type="submit"
-            sx={{ minWidth: 120, color: "white" }}
+            sx={{ minWidth: 120 }}
             endIcon={<ArrowForward />}
             onClick={opts.forwardStep}
           >
@@ -147,7 +147,7 @@ const ValidationRun: React.FC<ValidationRunProps> = ({
         <Button
           variant="contained"
           type="submit"
-          sx={{ minWidth: 120, color: "white" }}
+          sx={{ minWidth: 120 }}
           endIcon={<ArrowForward />}
           disabled
         >

@@ -1,13 +1,14 @@
 import datetime
 import time
 from enum import Enum
-from typing import Optional
+from typing import List, Optional
 from xml.dom import NodeFilter
 
 import strawberry
 import strawberry_django
 from django.conf import settings
 from django.db.models import Prefetch, Q
+from notifications.models import Alert as AlertModel
 from django.db.models.query import QuerySet
 from strawberry.scalars import JSON
 from strawberry_django.filters import FilterLookup
@@ -533,6 +534,20 @@ class Workspace:
             else CommitModel.objects.get(workspace=self, reference=reference)
         )
 
+    # Alerts
+    @gql.django.field
+    def alerts(
+        self,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination["Alert"]:
+        queryset = AlertModel.objects.filter(workspace=self)
+
+        return Pagination[Alert](queryset=queryset, pagination=pagination)
+
+    @gql.django.field
+    def alert(self, id: strawberry.ID) -> "Alert":
+        return AlertModel.objects.get(id=id)
+
     # Algolia search key
     @gql.django.field
     def search_key(self) -> str:
@@ -770,3 +785,14 @@ class Commit:
     @gql.django.field
     def last_successful_run(self) -> Optional["Run"]:
         return RunModel.objects.filter(commit=self.id, status="success").order_by("-created_at").first()
+
+
+@gql.django.type(AlertModel)
+class Alert:
+    id: auto
+    name: auto
+    channel: auto
+    channel_metadata: JSON
+    triggers: JSON
+    is_active: auto
+    created_at: auto

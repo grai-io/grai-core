@@ -161,7 +161,7 @@ const SetSchedule: React.FC<SetScheduleProps> = ({
         <LoadingButton
           variant="contained"
           type="submit"
-          sx={{ minWidth: 120, color: "white" }}
+          sx={{ minWidth: 120 }}
           loading={loading}
           onClick={handleSubmit}
         >
