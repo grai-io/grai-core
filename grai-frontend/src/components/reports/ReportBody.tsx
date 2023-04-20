@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { Box } from "@mui/material"
-import { Edge } from "helpers/graph"
 import { useSearchParams } from "react-router-dom"
+import { Edge } from "helpers/graph"
 import Graph, { Error } from "components/graph/Graph"
 import { Table } from "components/graph/MidGraph"
 import Tabs from "components/tabs/Tabs"

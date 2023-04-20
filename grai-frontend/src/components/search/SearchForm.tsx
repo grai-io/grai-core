@@ -5,12 +5,12 @@ import {
   SubdirectoryArrowLeft,
 } from "@mui/icons-material"
 import { Divider, Box, List, Typography } from "@mui/material"
-import useWorkspace from "helpers/useWorkspace"
 import {
   useHits,
   useSearchBox,
   useInstantSearch,
 } from "react-instantsearch-hooks-web"
+import useWorkspace from "helpers/useWorkspace"
 import SearchHitRow, { SearchHit } from "./SearchHitRow"
 import SearchTextbox from "./SearchTextbox"
 

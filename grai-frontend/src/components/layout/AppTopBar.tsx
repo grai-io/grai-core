@@ -1,7 +1,7 @@
 import React from "react"
 import { AppBar, Toolbar, Button, Box } from "@mui/material"
-import useWorkspace from "helpers/useWorkspace"
 import { Link } from "react-router-dom"
+import useWorkspace from "helpers/useWorkspace"
 import ProfileMenu from "./ProfileMenu"
 
 const AppTopBar: React.FC = () => {

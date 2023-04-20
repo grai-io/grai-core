@@ -11,9 +11,9 @@ import {
   Avatar,
   Box,
 } from "@mui/material"
+import { DateTime } from "luxon"
 import { durationAgo } from "helpers/runDuration"
 import useWorkspace from "helpers/useWorkspace"
-import { DateTime } from "luxon"
 import Loading from "components/layout/Loading"
 import RunStatus from "components/runs/RunStatus"
 import RunFailures, { Run as RunWithMetadata } from "./results/RunFailures"
