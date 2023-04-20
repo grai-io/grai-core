@@ -10,6 +10,7 @@ from connections.adapters.mysql import MySQLAdapter
 from connections.adapters.postgres import PostgresAdapter
 from connections.adapters.snowflake import SnowflakeAdapter
 from connections.adapters.yaml_file import YamlFileAdapter
+from connections.adapater.redshift import RedshiftAdapter
 from installations.github import Github
 from notifications.notifications import send_notification
 
@@ -47,6 +48,8 @@ def get_adapter(slug: str) -> BaseAdapter:
         return FivetranAdapter()
     elif slug == Connector.MYSQL:
         return MySQLAdapter()
+    elif slug == Connector.REDSHIFT:
+        return RedshiftAdapter()
 
     raise NoConnectorError(f"No connector found for: {slug}")
 
