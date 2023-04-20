@@ -18,16 +18,12 @@ from grai_source_redshift.models import (
 
 
 class RedshiftConfig(BaseSettings):
-    user: Optional[str] = (None,)
-    password: Optional[SecretStr] = (None,)
-    database: Optional[str] = (None,)
-    host: Optional[str] = (None,)
-    port: Optional[int] = (5439,)
+    user: Optional[str] = None
+    password: Optional[SecretStr] = None
+    database: Optional[str] = None
+    host: Optional[str] = None
+    port: Optional[int] = 5439
     namespace: Optional[str] = None
-
-    @validator("endpoint")
-    def validate_endpoint(cls, value):
-        return value.rstrip("/")
 
     class Config:
         env_prefix = "grai_redshift_"
@@ -37,12 +33,13 @@ class RedshiftConfig(BaseSettings):
 class RedshiftConnector:
     def __init__(
         self,
+        namespace: str,
         user: Optional[str] = None,
         password: Optional[str] = None,
         database: Optional[str] = None,
         host: Optional[str] = None,
         port: Optional[Union[str, int]] = None,
-        namespace: Optional[str] = None,
+        redshift_namespace: Optional[str] = None,
         **kwargs,
     ):
         passthrough_kwargs = {
@@ -51,8 +48,10 @@ class RedshiftConnector:
             "database": database,
             "host": host,
             "port": port,
-            "namespace": namespace,
+            "namespace": redshift_namespace,
         }
+
+        self.namespace = namespace
         self.config = RedshiftConfig(**{k: v for k, v in passthrough_kwargs.items() if v is not None})
         self.redshift_params: [Dict[str, Any]] = kwargs
         self._connection: Optional[Connection] = None
@@ -69,15 +68,12 @@ class RedshiftConnector:
             self.close()
 
     def connect(self):
+        conn_params = {k: v for k, v in self.config.dict().items() if v is not None}
+        if "password" in conn_params:
+            conn_params["password"] = conn_params["password"].get_secret_value()
+
         if self._connection is None:
-            self._connection = redshift_connector.connect(
-                host=self.config.host,
-                port=self.config.port,
-                database=self.config.database,
-                user=self.config.user,
-                password=self.config.password.get_secret_value(),
-                **self.redshift_params,
-            )
+            self._connection = redshift_connector.connect(**conn_params, **self.redshift_params)
             self._is_connected = True
         return self
 
@@ -107,13 +103,13 @@ class RedshiftConnector:
         """
 
         query = """
-            SELECT table_schema, table_name, table_type
+            SELECT table_catalog, table_schema, table_name, table_type
             FROM information_schema.tables
-            WHERE table_schema != 'pg_catalog'
-            AND table_schema != 'information_schema'
+            WHERE table_schema NOT IN ('pg_catalog', 'information_schema', 'pg_internal')
             ORDER BY table_schema, table_name
         """
-        tables = [Table(**result, namespace=self.config.namespace) for result in self.query_runner(query)]
+
+        tables = [Table(**result, namespace=self.namespace) for result in self.query_runner(query)]
         for table in tables:
             table.columns = self.get_table_columns(table)
         return tables
@@ -125,33 +121,20 @@ class RedshiftConnector:
         schema.table in the database connected to.
         """
         query = f"""
-            SELECT
-                c.TABLE_SCHEMA AS "schema",
-                c.TABLE_NAME AS "table",
-                c.COLUMN_NAME,
-                c.DATA_TYPE,
-                c.IS_NULLABLE,
-                c.COLUMN_DEFAULT,
-                con.column_constraint
-            FROM INFORMATION_SCHEMA.COLUMNS c
-            LEFT JOIN (
-                SELECT c.conname                                         AS constraint_name,
-                       c.contype                                         AS column_constraint,
-                       sch.nspname                                       AS "schema",
-                       tbl.relname                                       AS "table",
-                       col.attname                                       AS "column"
-                FROM pg_constraint c
-                       LEFT JOIN LATERAL UNNEST(c.conkey) WITH ORDINALITY AS u(attnum, attposition) ON TRUE
-                       JOIN pg_class tbl ON tbl.oid = c.conrelid
-                       JOIN pg_namespace sch ON sch.oid = tbl.relnamespace
-                       LEFT JOIN pg_attribute col ON (col.attrelid = tbl.oid AND col.attnum = u.attnum)
-                WHERE sch.nspname!='pg_catalog'
-            ) con ON con.schema=c.table_schema
-                  AND con.table=c.table_name
-                  AND con.column=c.column_name
-            WHERE c.table_schema not in ('pg_catalog', 'information_schema')
+            SELECT table_catalog,
+                   table_schema AS schema,
+                   table_name,
+                   column_name,
+                   column_default,
+                   is_nullable,
+                   data_type,
+                   character_maximum_length,
+                   numeric_precision
+            FROM information_schema.columns
+            WHERE table_schema NOT IN ('pg_catalog', 'information_schema', 'pg_internal')
+            ORDER BY ordinal_position;
         """
-        return [Column(**result, namespace=self.config.namespace) for result in self.query_runner(query)]
+        return [Column(**result, namespace=self.namespace) for result in self.query_runner(query)]
 
     def get_table_columns(self, table: Table):
         table_id = (table.table_schema, table.name)
@@ -176,35 +159,36 @@ class RedshiftConnector:
         :param table:
         :return:
         """
-        # query is from https://dba.stackexchange.com/questions/36979/retrieving-all-pk-and-fk/37068#37068
-        # Only need constraint_types == 'f' for foreign keys but the others might be useful someday.
+        # query is from https://alberton.info/postgresql_meta_info.html
+        # detailed constraint info section
         query = """
-            SELECT c.conname                                         AS constraint_name,
-                   c.contype                                         AS constraint_type,
-                   sch.nspname                                       AS "self_schema",
-                   tbl.relname                                       AS "self_table",
-                   ARRAY_AGG(col.attname ORDER BY u.attposition)     AS "self_columns",
-                   f_sch.nspname                                     AS "foreign_schema",
-                   f_tbl.relname                                     AS "foreign_table",
-                   ARRAY_AGG(f_col.attname ORDER BY f_u.attposition) AS "foreign_columns",
-                   pg_get_constraintdef(c.oid)                       AS definition
-            FROM pg_constraint c
-                   LEFT JOIN LATERAL UNNEST(c.conkey) WITH ORDINALITY AS u(attnum, attposition) ON TRUE
-                   LEFT JOIN LATERAL UNNEST(c.confkey) WITH ORDINALITY AS f_u(attnum, attposition) ON f_u.attposition = u.attposition
-                   JOIN pg_class tbl ON tbl.oid = c.conrelid
-                   JOIN pg_namespace sch ON sch.oid = tbl.relnamespace
-                   LEFT JOIN pg_attribute col ON (col.attrelid = tbl.oid AND col.attnum = u.attnum)
-                   LEFT JOIN pg_class f_tbl ON f_tbl.oid = c.confrelid
-                   LEFT JOIN pg_namespace f_sch ON f_sch.oid = f_tbl.relnamespace
-                   LEFT JOIN pg_attribute f_col ON (f_col.attrelid = f_tbl.oid AND f_col.attnum = f_u.attnum)
-            GROUP BY constraint_name, constraint_type, "self_schema", "self_table", definition, "foreign_schema", "foreign_table"
-            ORDER BY "self_schema", "self_table";
+            SELECT tc.constraint_name,
+                   tc.constraint_type,
+                   tc.table_catalog AS self_catalog,
+                   tc.table_schema AS self_schema,
+                   tc.table_name AS self_table,
+                   kcu.column_name AS self_column,
+                   ccu.table_catalog AS foreign_catalog,
+                   ccu.table_schema AS foreign_schema,
+                   ccu.table_name AS foreign_table,
+                   ccu.column_name AS foreign_column
+                 FROM information_schema.table_constraints tc
+            LEFT JOIN information_schema.key_column_usage kcu
+                   ON tc.constraint_catalog = kcu.constraint_catalog
+                  AND tc.constraint_schema = kcu.constraint_schema
+                  AND tc.constraint_name = kcu.constraint_name
+            LEFT JOIN information_schema.referential_constraints rc
+                   ON tc.constraint_catalog = rc.constraint_catalog
+                  AND tc.constraint_schema = rc.constraint_schema
+                  AND tc.constraint_name = rc.constraint_name
+            LEFT JOIN information_schema.constraint_column_usage ccu
+                   ON rc.unique_constraint_catalog = ccu.constraint_catalog
+                  AND rc.unique_constraint_schema = ccu.constraint_schema
+                  AND rc.unique_constraint_name = ccu.constraint_name
         """
-        addtl_args = {
-            "namespace": self.config.namespace,
-        }
+        addtl_args = {"namespace": self.namespace}
         results = self.query_runner(query)
-        filtered_results = (result for result in results if result["constraint_type"] == "f")
+        filtered_results = (result for result in results if result["constraint_type"] == "FOREIGN KEY")
         return [EdgeQuery(**fk, **addtl_args).to_edge() for fk in filtered_results]
 
     def get_nodes(self) -> List[RedshiftNode]:

@@ -6,16 +6,7 @@ from grai_source_redshift.loader import RedshiftConnector
 
 @pytest.fixture
 def connection() -> RedshiftConnector:
-    test_credentials = {
-        "host": "localhost",
-        "dbname": "grai",
-        "user": "grai",
-        "password": "grai",
-        "port": "5432",
-        "namespace": "test",
-    }
-
-    connection = RedshiftConnector(**test_credentials)
+    connection = RedshiftConnector(namespace="default")
     return connection
 
 

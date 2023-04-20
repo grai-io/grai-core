@@ -19,6 +19,7 @@ class ID(RedshiftNode):
 
 class TableID(ID):
     table_schema: str
+    name: str
 
     @root_validator(pre=True)
     def make_full_name(cls, values):
@@ -31,6 +32,7 @@ class TableID(ID):
 class ColumnID(ID):
     table_schema: str
     table_name: str
+    name: str
 
     @root_validator(pre=True)
     def make_full_name(cls, values):
@@ -54,7 +56,7 @@ UNIQUE_COLUMN_CONSTRAINTS = {ColumnConstraint.primary_key.value, ColumnConstrain
 
 class Column(RedshiftNode):
     name: str = Field(alias="column_name")
-    table: str
+    table: str = Field(alias="table_name")
     column_schema: str = Field(alias="schema")
     data_type: str
     is_nullable: bool
@@ -71,13 +73,13 @@ class Column(RedshiftNode):
     def make_full_name(cls, full_name, values):
         if full_name is not None:
             return full_name
-        result = f"{values['column_schema']}.{values['table']}.{values['name']}"
+        result = f"{values['table']}.{values['table']}.{values['name']}"
         return result
 
 
 class Constraint(str, Enum):
-    foreign_key = "f"
-    primary_key = "p"
+    foreign_key = "FOREIGN KEY"
+    primary_key = "PRIMARY KEY"
     belongs_to = "bt"
 
 
@@ -141,28 +143,25 @@ class EdgeQuery(BaseModel):
     constraint_type: str
     self_schema: str
     self_table: str
-    self_columns: List[str]
+    self_column: str
     foreign_schema: str
     foreign_table: str
-    foreign_columns: List[str]
-    definition: str
+    foreign_column: str
 
     def to_edge(self) -> Edge:
-        assert len(self.self_columns) == 1 and len(self.foreign_columns) == 1
         destination = ColumnID(
             table_schema=self.self_schema,
             table_name=self.self_table,
-            name=self.self_columns[0],
+            name=self.self_column,
             namespace=self.namespace,
         )
         source = ColumnID(
             table_schema=self.foreign_schema,
             table_name=self.foreign_table,
-            name=self.foreign_columns[0],
+            name=self.foreign_column,
             namespace=self.namespace,
         )
         return Edge(
-            definition=self.definition,
             source=source,
             destination=destination,
             constraint_type=self.constraint_type,

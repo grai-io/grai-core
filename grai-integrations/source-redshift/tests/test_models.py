@@ -27,7 +27,7 @@ column_params = [
         "column_default": 2,
     },
 ]
-shared = {"table": "test_table", "schema": "test_schema"}
+shared = {"table": "test_table", "schema": "test_schema", "table_catalog": "test_catalog"}
 for param in column_params:
     param.update(shared)
 
@@ -92,13 +92,13 @@ def make_column_id():
 edge_params = [
     {
         "definition": "test",
-        "constraint_type": "p",
+        "constraint_type": "PRIMARY KEY",
         "destination": make_column_id(),
         "source": make_column_id(),
     },
     {
         "definition": "test",
-        "constraint_type": "f",
+        "constraint_type": "FOREIGN KEY",
         "destination": make_column_id(),
         "source": make_column_id(),
     },

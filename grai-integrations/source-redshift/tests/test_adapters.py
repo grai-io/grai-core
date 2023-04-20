@@ -54,7 +54,7 @@ def test_table_adapter(item, version, target):
 
 source = ColumnID(table_schema="schema", table_name="table", name="id", namespace="test")
 destination = ColumnID(table_schema="schema", table_name="table", name="id2", namespace="test")
-edges = [Edge(source=source, destination=destination, definition="thing", constraint_type="f")]
+edges = [Edge(source=source, destination=destination, definition="thing", constraint_type="FOREIGN KEY")]
 edge_values = [(item, "v1", EdgeV1) for item in edges]
 
 
