@@ -36,6 +36,9 @@ const TableColumns: React.FC<TableColumnsProps> = ({ columns }) => {
                 </InputAdornment>
               ),
             }}
+            inputProps={{
+              "data-testid": "search",
+            }}
             sx={{ minWidth: 350 }}
           />
         </Box>

@@ -211,6 +211,10 @@ test("expand all", async () => {
     expect(screen.getByText("Profile")).toBeInTheDocument()
   })
 
+  await waitFor(() => {
+    expect(screen.getByText("Last updated at")).toBeInTheDocument()
+  })
+
   await act(
     async () =>
       await user.click(screen.getByRole("button", { name: /Expand all rows/i }))
@@ -269,5 +273,11 @@ test("search", async () => {
     expect(screen.getByText("Profile")).toBeInTheDocument()
   })
 
-  await act(async () => await user.type(screen.getByRole("textbox"), "Search"))
+  await waitFor(() => {
+    expect(screen.getByText("Last updated at")).toBeInTheDocument()
+  })
+
+  await act(
+    async () => await user.type(screen.getByTestId("search"), "Search Columns")
+  )
 })

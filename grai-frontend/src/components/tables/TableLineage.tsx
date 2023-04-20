@@ -119,7 +119,7 @@ const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
   return (
     <Box
       sx={{
-        height: "calc(100vh - 226px)",
+        height: "calc(100vh - 160px)",
         width: "100%",
         backgroundColor: theme.palette.grey[100],
         mt: 2,

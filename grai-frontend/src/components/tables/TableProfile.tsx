@@ -1,5 +1,5 @@
 import React from "react"
-import { Card, Grid, Table, TableBody } from "@mui/material"
+import { Box, Card, Grid, Table, TableBody } from "@mui/material"
 import TableColumns from "./columns/TableColumns"
 import { Column } from "./columns/TableColumnsTable"
 import TableDependencies from "./TableDependencies"
@@ -27,7 +27,7 @@ type TableProfileProps = {
 }
 
 const TableProfile: React.FC<TableProfileProps> = ({ table }) => (
-  <>
+  <Box>
     <Grid container spacing={3} sx={{ pt: 3 }}>
       <Grid item md={6}>
         <TableDetail table={table} />
@@ -50,7 +50,7 @@ const TableProfile: React.FC<TableProfileProps> = ({ table }) => (
       </Grid>
     </Grid>
     <TableColumns columns={table.columns.data} />
-  </>
+  </Box>
 )
 
 export default TableProfile
