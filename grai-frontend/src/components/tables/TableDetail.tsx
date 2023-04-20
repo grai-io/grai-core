@@ -26,7 +26,11 @@ const TableDetail: React.FC<TableDetailProps> = ({ table }) => (
         <NodeDetailRow label="Data Source" value={table.data_source} />
         {table.metadata &&
           Object.entries(table.metadata).map(([key, value]) => (
-            <NodeDetailRow key={key} label={key} value={valueToString(value)} />
+            <NodeDetailRow
+              key={key}
+              label={key}
+              value={valueToString(value).substring(0, 500)}
+            />
           ))}
       </TableBody>
     </Table>
