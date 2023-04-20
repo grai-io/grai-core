@@ -1,4 +1,6 @@
 import React, { useState } from "react"
+import { useApolloClient } from "@apollo/client"
+import { Business, Logout, Settings } from "@mui/icons-material"
 import {
   List,
   ListItem,
@@ -9,11 +11,9 @@ import {
   Divider,
 } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
-import { Link } from "react-router-dom"
-import { Business, Logout, Settings } from "@mui/icons-material"
-import useAuth from "components/auth/useAuth"
-import { useApolloClient } from "@apollo/client"
 import posthog from "posthog"
+import { Link } from "react-router-dom"
+import useAuth from "components/auth/useAuth"
 
 const ProfileMenuDrawer: React.FC = () => {
   const [open, setOpen] = useState(false)
