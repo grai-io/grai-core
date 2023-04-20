@@ -8,6 +8,6 @@ test("renders", async () => {
   expect(screen.getByRole("progressbar")).toBeInTheDocument()
 
   await waitFor(() => {
-    expect(screen.getByText(/Sign in to your account/i)).toBeInTheDocument()
+    expect(screen.getByText(/Welcome back!/i)).toBeInTheDocument()
   })
 })

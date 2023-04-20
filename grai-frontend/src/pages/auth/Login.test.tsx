@@ -8,8 +8,6 @@ test("renders", async () => {
   })
 
   await waitFor(() => {
-    expect(
-      screen.getByRole("heading", { name: /Sign in to your account/i })
-    ).toBeTruthy()
+    expect(screen.getByRole("heading", { name: /Welcome Back!/i })).toBeTruthy()
   })
 })

@@ -2,25 +2,24 @@ import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
-import LoginForm, { LOGIN } from "./LoginForm"
+import RegisterForm, { REGISTER } from "./RegisterForm"
 
-test("submit", async () => {
+test("renders", async () => {
   const user = userEvent.setup()
 
-  render(<LoginForm />, {
+  render(<RegisterForm />, {
     guestRoute: true,
     loggedIn: false,
-    path: "/login",
-    route: "/login",
+    path: "/register",
+    route: "/register",
     routes: ["/"],
   })
 
   await act(
-    async () =>
-      await user.type(
-        screen.getByRole("textbox", { name: /email/i }),
-        "email@grai.io"
-      )
+    async () => await user.type(screen.getByTestId("name"), "Test User")
+  )
+  await act(
+    async () => await user.type(screen.getByTestId("email"), "email@grai.io")
   )
   await act(
     async () => await user.type(screen.getByTestId("password"), "password")
@@ -31,7 +30,8 @@ test("submit", async () => {
   })
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /login/i }))
+    async () =>
+      await user.click(screen.getByRole("button", { name: /get started/i }))
   )
 
   await waitFor(() => {
@@ -45,8 +45,9 @@ test("error", async () => {
   const mocks = [
     {
       request: {
-        query: LOGIN,
+        query: REGISTER,
         variables: {
+          name: "Test User",
           username: "email@grai.io",
           password: "password",
         },
@@ -57,17 +58,16 @@ test("error", async () => {
     },
   ]
 
-  render(<LoginForm />, {
+  render(<RegisterForm />, {
     withRouter: true,
     mocks,
   })
 
   await act(
-    async () =>
-      await user.type(
-        screen.getByRole("textbox", { name: /email/i }),
-        "email@grai.io"
-      )
+    async () => await user.type(screen.getByTestId("name"), "Test User")
+  )
+  await act(
+    async () => await user.type(screen.getByTestId("email"), "email@grai.io")
   )
   await act(
     async () => await user.type(screen.getByTestId("password"), "password")
@@ -78,7 +78,8 @@ test("error", async () => {
   })
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /login/i }))
+    async () =>
+      await user.click(screen.getByRole("button", { name: /get started/i }))
   )
 
   await waitFor(() => {
