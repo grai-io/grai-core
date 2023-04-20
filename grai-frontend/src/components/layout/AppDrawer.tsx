@@ -10,6 +10,7 @@ import {
 } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
 import { Link, useLocation } from "react-router-dom"
+import ProfileMenuDrawer from "./ProfileMenuDrawer"
 
 const pages = [
   {
@@ -99,29 +100,7 @@ const AppDrawer: React.FC = () => {
           </ListItem>
         ))}
       </List>
-      <List>
-        <ListItem disablePadding>
-          <ListItemButton component={Link} to={`${routePrefix}/settings`}>
-            <ListItemIcon>
-              <Box
-                sx={{
-                  borderRadius: "8px",
-                  height: 48,
-                  mr: "16px",
-                }}
-              >
-                <img src="/icons/profile.svg" alt="Profile" />
-              </Box>
-            </ListItemIcon>
-            <ListItemText
-              primary="Profile"
-              primaryTypographyProps={{
-                sx: { fontWeight: 600, color: "#FFFFFF80" },
-              }}
-            />
-          </ListItemButton>
-        </ListItem>
-      </List>
+      <ProfileMenuDrawer />
     </Drawer>
   )
 }
