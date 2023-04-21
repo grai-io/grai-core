@@ -14,7 +14,8 @@
                     },
                     {
                         "name": "port",
-                        "required": true
+                        "default": 5439,
+                        "required": false
                     },
                     {
                         "name": "database",
@@ -30,9 +31,12 @@
                         "required": true
                     },
                     {
-                        "name": "redshift_password",
-                        "secret": true,
+                        "name": "namespace",
                         "required": true
+                    },
+                    {
+                        "name": "redshift_namespace",
+                        "required": false
                     }
                 ]
             },

@@ -258,8 +258,9 @@ class TestUpdateServer:
                 "port": 5432,
                 "database": "grai",
                 "user": "grai",
+                "redshift_namespace": "grai",
             },
-            secrets={"password": "grai", "redshift_password": "grai"},
+            secrets={"password": "grai"},
         )
 
         run = Run.objects.create(connection=connection, workspace=test_workspace)
