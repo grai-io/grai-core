@@ -1,13 +1,16 @@
 import React from "react"
 import { Card, Table, TableBody } from "@mui/material"
-import valueToString from "helpers/valueToString"
+import { JsonView, defaultStyles } from "react-json-view-lite"
 import NodeDetailRow from "components/layout/NodeDetailRow"
+import "react-json-view-lite/dist/index.css"
+
+type Metadata = { [k: string]: any } | null
 
 interface TableInterface {
   name: string
   namespace: string
   data_source: string
-  metadata?: any | null
+  metadata?: Metadata
 }
 
 type TableDetailProps = {
@@ -24,10 +27,15 @@ const TableDetail: React.FC<TableDetailProps> = ({ table }) => (
         <NodeDetailRow label="Name" value={table.name} />
         <NodeDetailRow label="Namespace" value={table.namespace} />
         <NodeDetailRow label="Data Source" value={table.data_source} />
-        {table.metadata &&
-          Object.entries(table.metadata).map(([key, value]) => (
-            <NodeDetailRow key={key} label={key} value={valueToString(value)} />
-          ))}
+        <NodeDetailRow label="Metadata">
+          {table.metadata && (
+            <JsonView
+              data={table.metadata}
+              shouldInitiallyExpand={level => level < 1}
+              style={{ ...defaultStyles, container: "" }}
+            />
+          )}
+        </NodeDetailRow>
       </TableBody>
     </Table>
   </Card>
