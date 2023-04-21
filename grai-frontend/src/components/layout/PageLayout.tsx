@@ -19,7 +19,14 @@ const PageLayout: React.FC<PageLayoutProps> = ({
     <AppDrawer />
     {loading && <Loading />}
     <ErrorBoundary>
-      <Box sx={{ padding: padding ? 3 : undefined, flexGrow: 1 }}>
+      <Box
+        sx={{
+          padding: padding ? 3 : undefined,
+          flexGrow: 1,
+          backgroundColor: "#F8F8F8",
+          minHeight: "100vh",
+        }}
+      >
         {children}
       </Box>
     </ErrorBoundary>

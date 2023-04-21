@@ -3,11 +3,13 @@ import { gql, useQuery } from "@apollo/client"
 import { Search } from "@mui/icons-material"
 import {
   Box,
-  Container,
+  Button,
+  Card,
   InputAdornment,
   TextField,
   Typography,
 } from "@mui/material"
+import { Link } from "react-router-dom"
 import useWorkspace from "helpers/useWorkspace"
 import HomeCards from "components/home/HomeCards"
 import PageLayout from "components/layout/PageLayout"
@@ -56,29 +58,72 @@ const Home: React.FC = () => {
 
   return (
     <PageLayout>
-      <Container maxWidth="lg" sx={{ textAlign: "center" }}>
-        <Box sx={{ mt: 15 }}>
-          <img src="/logo512.png" width="75px" height="75px" alt="logo" />
-        </Box>
-
-        <Typography variant="h4" sx={{ mt: 2, mb: 15 }}>
-          Welcome to Grai
-        </Typography>
-        <TextField
-          placeholder="Search data assets"
-          onClick={() => setSearch(true)}
-          disabled
-          sx={{ width: 750, mb: 15 }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <Search />
-              </InputAdornment>
-            ),
+      <Box sx={{ padding: "24px" }}>
+        <Card
+          elevation={0}
+          sx={{
+            borderRadius: "20px",
+            borderColor: "#8338EC",
+            borderWidth: "3px",
+            borderStyle: "solid",
+            padding: "16px",
+            height: "470px",
+            mb: "24px",
           }}
-        />
+        >
+          <Box sx={{ display: "flex" }}>
+            <Box sx={{ flexGrow: 1 }} />
+            <Button
+              component={Link}
+              to="settings/memberships"
+              variant="outlined"
+              startIcon={<img src="/icons/person-add.svg" alt="Person Add" />}
+              sx={{
+                color: "#8338EC",
+                fontSize: "16px",
+                fontWeight: 600,
+                borderColor: "#8338EC24",
+                borderRadius: "8px",
+                py: 1,
+                px: 3,
+                boxShadow: "0 4px 6px #8338EC10",
+              }}
+            >
+              Invite User
+            </Button>
+          </Box>
+          <Box sx={{ textAlign: "center" }}>
+            <Box>
+              <img src="/logo512.png" width="64px" height="64px" alt="logo" />
+            </Box>
+            <Typography
+              variant="h4"
+              sx={{
+                color: "#1F2A37",
+                fontSize: 36,
+                fontWeight: 800,
+                mt: "20px",
+              }}
+            >
+              Welcome to Grai
+            </Typography>
+            <TextField
+              placeholder="Search data assets"
+              onClick={() => setSearch(true)}
+              disabled
+              sx={{ width: 620, mb: 15, mt: "40px" }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <Search />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Box>
+        </Card>
         <HomeCards />
-      </Container>
+      </Box>
       <SearchDialog
         open={search}
         onClose={handleClose}
