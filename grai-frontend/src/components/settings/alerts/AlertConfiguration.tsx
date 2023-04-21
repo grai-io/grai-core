@@ -1,7 +1,7 @@
 import React from "react"
 import { gql, useMutation } from "@apollo/client"
-import useWorkspace from "helpers/useWorkspace"
 import { useSnackbar } from "notistack"
+import useWorkspace from "helpers/useWorkspace"
 import { UpdateAlert, UpdateAlertVariables } from "./__generated__/UpdateAlert"
 import EditAlertForm, {
   Alert as BaseAlert,

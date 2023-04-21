@@ -1,8 +1,8 @@
 import React from "react"
 import { Close } from "@mui/icons-material"
 import { AppBar, IconButton, Toolbar, Typography } from "@mui/material"
-import useWorkspace from "helpers/useWorkspace"
 import { useNavigate } from "react-router-dom"
+import useWorkspace from "helpers/useWorkspace"
 
 const SettingsAppBar: React.FC = () => {
   const { routePrefix } = useWorkspace()

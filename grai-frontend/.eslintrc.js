@@ -31,6 +31,11 @@ module.exports = {
             position: "before",
           },
           {
+            pattern: "helpers/**",
+            group: "internal",
+            position: "before",
+          },
+          {
             pattern: "components/**",
             group: "internal",
             position: "before",

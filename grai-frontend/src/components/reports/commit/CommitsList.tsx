@@ -1,8 +1,8 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
-import useWorkspace from "helpers/useWorkspace"
 import { useParams } from "react-router-dom"
 import NotFound from "pages/NotFound"
+import useWorkspace from "helpers/useWorkspace"
 import Loading from "components/layout/Loading"
 import GraphError from "components/utils/GraphError"
 import {

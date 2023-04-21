@@ -1,7 +1,7 @@
 import React from "react"
 import { Box, Stack, Tooltip, Typography } from "@mui/material"
-import { durationAgo } from "helpers/runDuration"
 import { DateTime } from "luxon"
+import { durationAgo } from "helpers/runDuration"
 import NodeDetailRow from "components/layout/NodeDetailRow"
 import RunStatus from "components/runs/RunStatus"
 

@@ -1,13 +1,13 @@
 import React from "react"
 import { GraphQLError } from "graphql"
+import { render, screen, waitFor } from "testing"
+import profileMock from "testing/profileMock"
 import {
   columnNode,
   destinationTable,
   sourceTable,
   spareTable,
 } from "helpers/testNodes"
-import { render, screen, waitFor } from "testing"
-import profileMock from "testing/profileMock"
 import PullRequest, { GET_PULL_REQUEST } from "./PullRequest"
 
 test("renders", async () => {

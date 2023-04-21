@@ -1,9 +1,9 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
 import { act, render, screen, waitFor } from "testing"
 import profileMock from "testing/profileMock"
+import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
 import Graph, { GET_TABLES_AND_EDGES } from "./Graph"
 
 const mocks = [
