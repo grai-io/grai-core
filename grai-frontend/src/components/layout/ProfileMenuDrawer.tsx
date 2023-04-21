@@ -10,9 +10,9 @@ import {
   ListItemText,
   Divider,
 } from "@mui/material"
-import useWorkspace from "helpers/useWorkspace"
 import posthog from "posthog"
 import { Link } from "react-router-dom"
+import useWorkspace from "helpers/useWorkspace"
 import useAuth from "components/auth/useAuth"
 
 const ProfileMenuDrawer: React.FC = () => {

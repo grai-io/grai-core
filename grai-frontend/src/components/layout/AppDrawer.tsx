@@ -8,8 +8,8 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material"
-import useWorkspace from "helpers/useWorkspace"
 import { Link, useLocation } from "react-router-dom"
+import useWorkspace from "helpers/useWorkspace"
 import ProfileMenuDrawer from "./ProfileMenuDrawer"
 
 const pages = [
