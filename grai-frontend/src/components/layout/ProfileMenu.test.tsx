@@ -4,7 +4,7 @@ import { act, render, screen, waitFor } from "testing"
 import ProfileMenu from "./ProfileMenu"
 
 test("renders", async () => {
-  render(<ProfileMenu />, {
+  render(<ProfileMenu expand />, {
     withRouter: true,
   })
 
@@ -16,7 +16,7 @@ test("renders", async () => {
 test("open", async () => {
   const user = userEvent.setup()
 
-  render(<ProfileMenu />, {
+  render(<ProfileMenu expand />, {
     withRouter: true,
   })
 
@@ -36,7 +36,7 @@ test("open", async () => {
 test("logout", async () => {
   const user = userEvent.setup()
 
-  render(<ProfileMenu />, {
+  render(<ProfileMenu expand />, {
     withRouter: true,
   })
 

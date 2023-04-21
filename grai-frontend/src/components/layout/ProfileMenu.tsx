@@ -2,7 +2,6 @@ import React, { useState } from "react"
 import { useApolloClient } from "@apollo/client"
 import { Business, Logout, Settings } from "@mui/icons-material"
 import {
-  List,
   ListItem,
   ListItemButton,
   ListItemIcon,
@@ -15,7 +14,11 @@ import { Link } from "react-router-dom"
 import useWorkspace from "helpers/useWorkspace"
 import useAuth from "components/auth/useAuth"
 
-const ProfileMenu: React.FC = () => {
+type ProfileMenuProps = {
+  expand?: boolean
+}
+
+const ProfileMenu: React.FC<ProfileMenuProps> = ({ expand }) => {
   const [open, setOpen] = useState(false)
 
   const { routePrefix } = useWorkspace()
@@ -31,7 +34,7 @@ const ProfileMenu: React.FC = () => {
 
   if (open) {
     return (
-      <List>
+      <>
         <ListItem disablePadding>
           <ListItemButton onClick={() => setOpen(false)}>
             <ListItemIcon>
@@ -45,12 +48,14 @@ const ProfileMenu: React.FC = () => {
                 <img src="/icons/profile.svg" alt="Profile" />
               </Box>
             </ListItemIcon>
-            <ListItemText
-              primary="Profile"
-              primaryTypographyProps={{
-                sx: { fontWeight: 600, color: "#FFFFFF80" },
-              }}
-            />
+            {expand && (
+              <ListItemText
+                primary="Profile"
+                primaryTypographyProps={{
+                  sx: { fontWeight: 600, color: "#FFFFFF80" },
+                }}
+              />
+            )}
           </ListItemButton>
         </ListItem>
         <Divider sx={{ backgroundColor: "#FFFFFF80", mx: 2 }} />
@@ -70,12 +75,14 @@ const ProfileMenu: React.FC = () => {
                 <Settings sx={{ color: "#FFFFFF95" }} />
               </Box>
             </ListItemIcon>
-            <ListItemText
-              primary="Settings"
-              primaryTypographyProps={{
-                sx: { fontWeight: 600, color: "#FFFFFF80" },
-              }}
-            />
+            {expand && (
+              <ListItemText
+                primary="Settings"
+                primaryTypographyProps={{
+                  sx: { fontWeight: 600, color: "#FFFFFF80" },
+                }}
+              />
+            )}
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
@@ -94,12 +101,14 @@ const ProfileMenu: React.FC = () => {
                 <Business sx={{ color: "#FFFFFF95" }} />
               </Box>
             </ListItemIcon>
-            <ListItemText
-              primary="Workspaces"
-              primaryTypographyProps={{
-                sx: { fontWeight: 600, color: "#FFFFFF80" },
-              }}
-            />
+            {expand && (
+              <ListItemText
+                primary="Workspaces"
+                primaryTypographyProps={{
+                  sx: { fontWeight: 600, color: "#FFFFFF80" },
+                }}
+              />
+            )}
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
@@ -118,42 +127,44 @@ const ProfileMenu: React.FC = () => {
                 <Logout sx={{ color: "#FFFFFF95" }} />
               </Box>
             </ListItemIcon>
-            <ListItemText
-              primary="Logout"
-              primaryTypographyProps={{
-                sx: { fontWeight: 600, color: "#FFFFFF80" },
-              }}
-            />
+            {expand && (
+              <ListItemText
+                primary="Logout"
+                primaryTypographyProps={{
+                  sx: { fontWeight: 600, color: "#FFFFFF80" },
+                }}
+              />
+            )}
           </ListItemButton>
         </ListItem>
-      </List>
+      </>
     )
   }
 
   return (
-    <List>
-      <ListItem disablePadding>
-        <ListItemButton onClick={() => setOpen(true)}>
-          <ListItemIcon>
-            <Box
-              sx={{
-                borderRadius: "8px",
-                height: 48,
-                mr: "16px",
-              }}
-            >
-              <img src="/icons/profile.svg" alt="Profile" />
-            </Box>
-          </ListItemIcon>
+    <ListItem disablePadding>
+      <ListItemButton onClick={() => setOpen(true)}>
+        <ListItemIcon>
+          <Box
+            sx={{
+              borderRadius: "8px",
+              height: 48,
+              mr: "16px",
+            }}
+          >
+            <img src="/icons/profile.svg" alt="Profile" />
+          </Box>
+        </ListItemIcon>
+        {expand && (
           <ListItemText
             primary="Profile"
             primaryTypographyProps={{
               sx: { fontWeight: 600, color: "#FFFFFF80" },
             }}
           />
-        </ListItemButton>
-      </ListItem>
-    </List>
+        )}
+      </ListItemButton>
+    </ListItem>
   )
 }
 

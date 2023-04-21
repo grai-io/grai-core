@@ -1,4 +1,5 @@
 import React from "react"
+import { KeyboardArrowLeft, KeyboardArrowRight } from "@mui/icons-material"
 import {
   Box,
   Drawer,
@@ -9,8 +10,9 @@ import {
   ListItemText,
 } from "@mui/material"
 import { Link, useLocation } from "react-router-dom"
+import useLocalState from "helpers/useLocalState"
 import useWorkspace from "helpers/useWorkspace"
-import ProfileMenuDrawer from "./ProfileMenu"
+import ProfileMenu from "./ProfileMenu"
 
 const pages = [
   {
@@ -39,11 +41,13 @@ const pages = [
   },
 ]
 
-const drawerWidth = 224
-
 const AppDrawer: React.FC = () => {
   const { routePrefix } = useWorkspace()
   const location = useLocation()
+
+  const [expand, setExpand] = useLocalState("app-drawer", true)
+
+  const drawerWidth = expand ? 224 : 81
 
   return (
     <Drawer
@@ -67,7 +71,11 @@ const AppDrawer: React.FC = () => {
       <List>
         <ListItem disablePadding>
           <ListItemButton component={Link} to={`${routePrefix}`}>
-            <img src="/images/grai-logo-single.svg" alt="Grai" />
+            {expand ? (
+              <img src="/images/grai-logo-white.svg" alt="Grai" />
+            ) : (
+              <img src="/images/grai-icon.svg" alt="Grai" />
+            )}
           </ListItemButton>
         </ListItem>
       </List>
@@ -91,17 +99,66 @@ const AppDrawer: React.FC = () => {
                   <img src={page.icon} alt={page.alt} />
                 </Box>
               </ListItemIcon>
+              {expand && (
+                <ListItemText
+                  primary={page.title}
+                  primaryTypographyProps={{
+                    sx: { fontWeight: 600, color: "#FFFFFF80" },
+                  }}
+                />
+              )}
+            </ListItemButton>
+          </ListItem>
+        ))}
+        <ProfileMenu expand={expand} />
+      </List>
+      <List>
+        {expand ? (
+          <ListItem disablePadding>
+            <ListItemButton onClick={() => setExpand(false)}>
+              <ListItemIcon>
+                <Box
+                  sx={{
+                    borderRadius: "8px",
+                    height: 48,
+                    width: 48,
+                    textAlign: "center",
+                    pt: "10px",
+                    mr: "16px",
+                  }}
+                >
+                  <KeyboardArrowLeft sx={{ color: "#FFFFFF95" }} />
+                </Box>
+              </ListItemIcon>
               <ListItemText
-                primary={page.title}
+                primary="Collapse"
                 primaryTypographyProps={{
                   sx: { fontWeight: 600, color: "#FFFFFF80" },
                 }}
               />
             </ListItemButton>
           </ListItem>
-        ))}
+        ) : (
+          <ListItem disablePadding>
+            <ListItemButton onClick={() => setExpand(true)}>
+              <ListItemIcon>
+                <Box
+                  sx={{
+                    borderRadius: "8px",
+                    height: 48,
+                    width: 48,
+                    textAlign: "center",
+                    pt: "10px",
+                    mr: "16px",
+                  }}
+                >
+                  <KeyboardArrowRight sx={{ color: "#FFFFFF95" }} />
+                </Box>
+              </ListItemIcon>
+            </ListItemButton>
+          </ListItem>
+        )}
       </List>
-      <ProfileMenuDrawer />
     </Drawer>
   )
 }
