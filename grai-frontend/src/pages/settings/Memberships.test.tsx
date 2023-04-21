@@ -2,7 +2,6 @@ import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
-import profileMock from "testing/profileMock"
 import { DELETE_MEMBERSHIP } from "components/settings/memberships/MembershipDelete"
 import Memberships, { GET_MEMBERSHIPS } from "./Memberships"
 
@@ -22,7 +21,6 @@ test("renders", async () => {
 
 test("error", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_MEMBERSHIPS,
@@ -46,7 +44,6 @@ test("error", async () => {
 
 test("empty", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_MEMBERSHIPS,
@@ -79,7 +76,6 @@ test("empty", async () => {
 
 test("no workspace", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_MEMBERSHIPS,
@@ -109,7 +105,6 @@ test("renders and delete", async () => {
   const user = userEvent.setup()
 
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_MEMBERSHIPS,

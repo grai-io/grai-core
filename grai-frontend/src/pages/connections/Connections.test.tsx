@@ -2,7 +2,6 @@ import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
-import profileMock from "testing/profileMock"
 import { DELETE_CONNECTION } from "components/connections/ConnectionDelete"
 import Connections, { GET_CONNECTIONS } from "./Connections"
 
@@ -80,7 +79,6 @@ test("delete", async () => {
   const user = userEvent.setup()
 
   const mocks = [
-    profileMock,
     connectionMock,
     {
       request: {
@@ -131,7 +129,6 @@ test("cancel delete", async () => {
   const user = userEvent.setup()
 
   const mocks = [
-    profileMock,
     connectionMock,
     {
       request: {
@@ -180,7 +177,6 @@ test("cancel delete", async () => {
 
 test("error", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_CONNECTIONS,

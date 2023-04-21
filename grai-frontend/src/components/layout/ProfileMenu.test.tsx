@@ -9,11 +9,8 @@ test("renders", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByTestId("profile-menu-open")).toBeTruthy()
+    expect(screen.getByText("Profile")).toBeTruthy()
   })
-
-  // eslint-disable-next-line testing-library/no-wait-for-empty-callback
-  await waitFor(() => {})
 })
 
 test("open", async () => {
@@ -24,20 +21,16 @@ test("open", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByTestId("profile-menu-open")).toBeTruthy()
+    expect(screen.getByText("Profile")).toBeTruthy()
   })
 
-  await act(
-    async () => await user.click(screen.getByTestId("profile-menu-open"))
-  )
-
-  await waitFor(() => {
-    expect(screen.getByText("Hello World")).toBeInTheDocument()
-  })
+  await act(async () => await user.click(screen.getByText("Profile")))
 
   await waitFor(() => {
     expect(screen.getByText("Settings")).toBeInTheDocument()
   })
+
+  await act(async () => await user.click(screen.getByText("Profile")))
 })
 
 test("logout", async () => {
@@ -48,12 +41,10 @@ test("logout", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByTestId("profile-menu-open")).toBeTruthy()
+    expect(screen.getByText("Profile")).toBeTruthy()
   })
 
-  await act(
-    async () => await user.click(screen.getByTestId("profile-menu-open"))
-  )
+  await act(async () => await user.click(screen.getByText("Profile")))
 
   await waitFor(() => {
     expect(screen.getByText("Logout")).toBeInTheDocument()

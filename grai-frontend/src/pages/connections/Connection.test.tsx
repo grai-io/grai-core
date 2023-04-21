@@ -2,7 +2,6 @@ import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
-import profileMock from "testing/profileMock"
 import { DELETE_CONNECTION } from "components/connections/ConnectionDelete"
 import { RUN_CONNECTION } from "components/connections/ConnectionRun"
 import Connection, { GET_CONNECTION } from "./Connection"
@@ -21,7 +20,6 @@ test("refresh", async () => {
   const user = userEvent.setup()
 
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_CONNECTION,
@@ -170,7 +168,6 @@ test("refresh no last_sucessful_run", async () => {
   const user = userEvent.setup()
 
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_CONNECTION,
@@ -307,7 +304,6 @@ test("delete", async () => {
   const user = userEvent.setup()
 
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_CONNECTION,
@@ -414,7 +410,6 @@ test("delete", async () => {
 
 test("error", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_CONNECTION,
@@ -439,7 +434,6 @@ test("error", async () => {
 
 test("not found", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_CONNECTION,

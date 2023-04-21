@@ -1,7 +1,6 @@
 import React from "react"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
-import profileMock from "testing/profileMock"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
 import Report, { GET_RUN } from "./Report"
 
@@ -21,7 +20,6 @@ test("renders", async () => {
 
 test("not found", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_RUN,
@@ -68,7 +66,6 @@ test("not found", async () => {
 
 test("error", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_RUN,

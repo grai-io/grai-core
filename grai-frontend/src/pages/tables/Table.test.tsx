@@ -2,7 +2,6 @@ import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
-import profileMock from "testing/profileMock"
 import { GET_TABLES_AND_EDGES } from "components/tables/TableLineage"
 import Table, { GET_TABLE } from "./Table"
 
@@ -62,7 +61,7 @@ export const tableMock = {
   },
 }
 
-const mocks = [profileMock, tableMock]
+const mocks = [tableMock]
 
 test("renders", async () => {
   render(<Table />, {
@@ -77,7 +76,6 @@ test("renders", async () => {
 
 test("error", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_TABLE,
@@ -102,7 +100,6 @@ test("error", async () => {
 
 test("not found", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_TABLE,
@@ -136,7 +133,6 @@ test("lineage", async () => {
   const user = userEvent.setup()
 
   const mocks = [
-    profileMock,
     tableMock,
     tableMock,
     {

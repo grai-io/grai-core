@@ -1,7 +1,6 @@
 import React from "react"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
-import profileMock from "testing/profileMock"
 import ProfileSettings, { GET_PROFILE } from "./ProfileSettings"
 
 test("renders", async () => {
@@ -16,7 +15,6 @@ test("renders", async () => {
 
 test("error", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_PROFILE,
@@ -36,7 +34,6 @@ test("error", async () => {
 
 test("not found", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_PROFILE,

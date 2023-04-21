@@ -2,7 +2,6 @@ import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
-import profileMock from "testing/profileMock"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
 import Commits, { GET_COMMITS } from "./Commits"
 
@@ -52,7 +51,6 @@ test("row click", async () => {
 
 test("not found", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_COMMITS,
@@ -101,7 +99,6 @@ test("not found", async () => {
 
 test("error", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_COMMITS,

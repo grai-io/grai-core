@@ -10,7 +10,7 @@ import {
 } from "@mui/material"
 import { Link, useLocation } from "react-router-dom"
 import useWorkspace from "helpers/useWorkspace"
-import ProfileMenuDrawer from "./ProfileMenuDrawer"
+import ProfileMenuDrawer from "./ProfileMenu"
 
 const pages = [
   {
