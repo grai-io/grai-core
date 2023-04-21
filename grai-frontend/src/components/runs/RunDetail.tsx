@@ -10,12 +10,12 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material"
+import { DateTime } from "luxon"
 import {
   durationAgo,
   runDurationString,
   runQueuedString,
 } from "helpers/runDuration"
-import { DateTime } from "luxon"
 import NodeDetailRow from "components/layout/NodeDetailRow"
 
 interface RunMetadata {

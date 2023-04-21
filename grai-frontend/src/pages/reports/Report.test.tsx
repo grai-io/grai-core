@@ -1,8 +1,8 @@
 import React from "react"
 import { GraphQLError } from "graphql"
-import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
 import { render, screen, waitFor } from "testing"
 import profileMock from "testing/profileMock"
+import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
 import Report, { GET_RUN } from "./Report"
 
 test("renders", async () => {
