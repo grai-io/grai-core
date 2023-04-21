@@ -12,6 +12,7 @@ import {
 import { Link } from "react-router-dom"
 import useWorkspace from "helpers/useWorkspace"
 import HomeCards from "components/home/HomeCards"
+import { GraiLogo, PersonAdd } from "components/icons"
 import PageLayout from "components/layout/PageLayout"
 import SearchDialog from "components/search/SearchDialog"
 import GraphError from "components/utils/GraphError"
@@ -77,7 +78,7 @@ const Home: React.FC = () => {
               component={Link}
               to="settings/memberships"
               variant="outlined"
-              startIcon={<img src="/icons/person-add.svg" alt="Person Add" />}
+              startIcon={<PersonAdd />}
               sx={{
                 color: "#8338EC",
                 fontSize: "16px",
@@ -94,7 +95,7 @@ const Home: React.FC = () => {
           </Box>
           <Box sx={{ textAlign: "center" }}>
             <Box>
-              <img src="/logo512.png" width="64px" height="64px" alt="logo" />
+              <GraiLogo />
             </Box>
             <Typography
               variant="h4"

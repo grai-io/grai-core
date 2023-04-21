@@ -13,6 +13,7 @@ import posthog from "posthog"
 import { Link } from "react-router-dom"
 import useWorkspace from "helpers/useWorkspace"
 import useAuth from "components/auth/useAuth"
+import Profile from "components/icons/Profile"
 
 type ProfileMenuProps = {
   expand?: boolean
@@ -45,7 +46,7 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({ expand }) => {
                   mr: "16px",
                 }}
               >
-                <img src="/icons/profile.svg" alt="Profile" />
+                <Profile />
               </Box>
             </ListItemIcon>
             {expand && (
@@ -152,7 +153,7 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({ expand }) => {
               mr: "16px",
             }}
           >
-            <img src="/icons/profile.svg" alt="Profile" />
+            <Profile />
           </Box>
         </ListItemIcon>
         {expand && (

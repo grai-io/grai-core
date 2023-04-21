@@ -3,6 +3,7 @@ import { Box, Container, Grid } from "@mui/material"
 import LoginLink from "components/auth/register/LoginLink"
 import RegisterCard from "components/auth/register/RegisterCard"
 import ValueProp from "components/auth/register/ValueProp"
+import GraiLogo from "components/icons/GraiLogo"
 
 const Register: React.FC = () => (
   <Box
@@ -15,7 +16,7 @@ const Register: React.FC = () => (
   >
     <Container sx={{ pt: 10 }} maxWidth="lg">
       <Box sx={{ mb: 3, ml: -1 }}>
-        <img src="/images/grai-logo.svg" alt="Grai" />
+        <GraiLogo />
       </Box>
       <Grid container spacing={16}>
         <Grid item xs={12} md={6}>

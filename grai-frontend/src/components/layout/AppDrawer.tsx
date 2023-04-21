@@ -12,31 +12,39 @@ import {
 import { Link, useLocation } from "react-router-dom"
 import useLocalState from "helpers/useLocalState"
 import useWorkspace from "helpers/useWorkspace"
+import {
+  Connections,
+  GraiIcon,
+  GraiLogoWhite,
+  Graph,
+  Reports,
+  Tables,
+} from "components/icons"
 import ProfileMenu from "./ProfileMenu"
 
 const pages = [
   {
     title: "Graph",
     path: "graph",
-    icon: "/icons/graph.svg",
+    icon: <Graph />,
     alt: "Graph",
   },
   {
     title: "Tables",
     path: "tables",
-    icon: "/icons/tables.svg",
+    icon: <Tables />,
     alt: "Tables",
   },
   {
     title: "Connections",
     path: "connections",
-    icon: "/icons/connections.svg",
+    icon: <Connections />,
     alt: "Connections",
   },
   {
     title: "Reports",
     path: "reports",
-    icon: "/icons/reports.svg",
+    icon: <Reports />,
     alt: "Reports",
   },
 ]
@@ -71,11 +79,7 @@ const AppDrawer: React.FC = () => {
       <List>
         <ListItem disablePadding>
           <ListItemButton component={Link} to={`${routePrefix}`}>
-            {expand ? (
-              <img src="/images/grai-logo-white.svg" alt="Grai" />
-            ) : (
-              <img src="/images/grai-icon.svg" alt="Grai" />
-            )}
+            {expand ? <GraiLogoWhite /> : <GraiIcon />}
           </ListItemButton>
         </ListItem>
       </List>
@@ -96,7 +100,7 @@ const AppDrawer: React.FC = () => {
                     mr: "16px",
                   }}
                 >
-                  <img src={page.icon} alt={page.alt} />
+                  {page.icon}
                 </Box>
               </ListItemIcon>
               {expand && (

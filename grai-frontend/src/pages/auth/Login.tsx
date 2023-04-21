@@ -2,6 +2,7 @@ import React from "react"
 import { Box, Card, CardContent, Container, Typography } from "@mui/material"
 import LoginForm from "components/auth/login/LoginForm"
 import SignupLink from "components/auth/login/SignupLink"
+import GraiLogo from "components/icons/GraiLogo"
 
 const Login: React.FC = () => (
   <Box
@@ -43,7 +44,7 @@ const Login: React.FC = () => (
     <Container maxWidth="sm" sx={{ pt: 10, maxWidth: { xs: 500 } }}>
       <Box sx={{ textAlign: "center" }}>
         <Box sx={{ mb: 5, ml: 1 }}>
-          <img src="/images/grai-logo.svg" alt="Grai" />
+          <GraiLogo />
         </Box>
         <Typography variant="h6" sx={{ fontSize: 36, fontWeight: 800, mb: 5 }}>
           Welcome Back!

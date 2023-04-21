@@ -1,5 +1,6 @@
 import React from "react"
 import { Grid } from "@mui/material"
+import { Connections2 } from "components/icons"
 import HomeCard from "./HomeCard"
 
 const HomeCards: React.FC = () => (
@@ -17,14 +18,7 @@ const HomeCards: React.FC = () => (
       <HomeCard
         text="Add Connection"
         color="#8338EC"
-        icon={
-          <img
-            src="/icons/connections2.svg"
-            alt="Connections"
-            width="40px"
-            height="40px"
-          />
-        }
+        icon={<Connections2 />}
         to="connections/create"
       />
     </Grid>
