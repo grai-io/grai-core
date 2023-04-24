@@ -1,13 +1,13 @@
 import React, { useState } from "react"
 import { gql, useMutation } from "@apollo/client"
 import { LoadingButton } from "@mui/lab"
-import { Box, Link, TextField } from "@mui/material"
+import { Box, InputLabel, Link, TextField, styled } from "@mui/material"
 import posthog from "posthog"
 import { Link as RouterLink } from "react-router-dom"
 import Form from "components/form/Form"
 import GraphError from "components/utils/GraphError"
 import { Login, LoginVariables } from "./__generated__/Login"
-import useAuth from "./useAuth"
+import useAuth from "../useAuth"
 
 export const LOGIN = gql`
   mutation Login($username: String!, $password: String!) {
@@ -19,6 +19,13 @@ export const LOGIN = gql`
     }
   }
 `
+
+const StyledInputLabel = styled(InputLabel)(theme => ({
+  fontWeight: 600,
+  fontSize: 14,
+  color: "#263238",
+  marginBottom: theme.theme.spacing(1),
+}))
 
 type Values = {
   username: string
@@ -42,28 +49,37 @@ const LoginForm: React.FC = () => {
       .catch(() => {})
 
   return (
-    <Box sx={{ pb: 2 }}>
+    <Box>
       <Form onSubmit={handleSubmit}>
         {error && <GraphError error={error} />}
+        <StyledInputLabel>Email</StyledInputLabel>
         <TextField
-          id="email"
-          label="Email"
+          inputProps={{ "data-testid": "email" }}
+          placeholder="yourname@mail.com"
           type="email"
           fullWidth
-          margin="normal"
           required
           value={values.username}
           disabled={loading}
           onChange={event =>
             setValues({ ...values, username: event.target.value })
           }
+          InputProps={{
+            sx: { borderRadius: "8px" },
+          }}
         />
+        <StyledInputLabel
+          sx={{
+            mt: 2,
+          }}
+        >
+          Password
+        </StyledInputLabel>
         <TextField
           inputProps={{ "data-testid": "password" }}
-          label="Password"
+          placeholder="********"
           type="password"
           fullWidth
-          margin="normal"
           required
           value={values.password}
           disabled={loading}
@@ -71,17 +87,21 @@ const LoginForm: React.FC = () => {
           onChange={event =>
             setValues({ ...values, password: event.target.value })
           }
+          InputProps={{
+            sx: { borderRadius: "8px" },
+          }}
         />
-        <Box sx={{ m: 1 }}>
+        <Box sx={{ mt: 2, mb: 2 }}>
           <Link
             component={RouterLink}
             to="/forgot"
             sx={{
               textDecoration: "none",
               fontSize: 14,
-              color: "blue",
+              fontWeight: 600,
+              fontFamily: `"Sora", "Satoshi", "Roboto", "Helvetica", "Arial", sans-serif`,
               "&:hover": {
-                color: theme => theme.palette.grey[900],
+                color: theme => theme.palette.grey[600],
               },
             }}
           >
@@ -94,9 +114,18 @@ const LoginForm: React.FC = () => {
           type="submit"
           size="large"
           loading={loading}
-          sx={{ height: 56, mt: 2 }}
+          sx={{
+            height: 56,
+            mt: 2,
+            color: "white",
+            backgroundColor: "#FC6016",
+            fontSize: 18,
+            fontWeight: 600,
+            borderRadius: "8px",
+            boxShadow: "0px 4px 6px #FC601620",
+          }}
         >
-          LOGIN
+          Log In
         </LoadingButton>
       </Form>
     </Box>

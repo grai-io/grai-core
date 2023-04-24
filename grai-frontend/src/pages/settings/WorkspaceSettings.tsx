@@ -1,7 +1,7 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
-import useWorkspace from "helpers/useWorkspace"
 import NotFound from "pages/NotFound"
+import useWorkspace from "helpers/useWorkspace"
 import SettingsLayout from "components/settings/SettingsLayout"
 import WorkspaceForm from "components/settings/workspace/WorkspaceForm"
 import GraphError from "components/utils/GraphError"

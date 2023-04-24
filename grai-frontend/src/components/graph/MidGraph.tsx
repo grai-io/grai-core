@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
+import { Edge as RFEdge, Node as RFNode } from "reactflow"
 import { Edge, EnhancedTable } from "helpers/graph"
 import notEmpty from "helpers/notEmpty"
-import { Edge as RFEdge, Node as RFNode } from "reactflow"
 import BaseGraph from "./BaseGraph"
 import { BaseNodeData } from "./BaseNode"
 import { ControlOptions } from "./controls/GraphControls"

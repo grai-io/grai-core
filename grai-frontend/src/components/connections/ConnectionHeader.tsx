@@ -9,8 +9,8 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material"
-import useWorkspace from "helpers/useWorkspace"
 import { Link } from "react-router-dom"
+import useWorkspace from "helpers/useWorkspace"
 import RunStatus from "components/runs/RunStatus"
 import ConnectionMenu from "./ConnectionMenu"
 import ConnectionRun, { Connection as BaseConnection } from "./ConnectionRun"

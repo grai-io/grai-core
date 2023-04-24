@@ -11,7 +11,6 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material"
-import useWorkspace from "helpers/useWorkspace"
 import PopupState, {
   bindMenu,
   bindTrigger,
@@ -19,6 +18,7 @@ import PopupState, {
 } from "material-ui-popup-state"
 import posthog from "posthog"
 import { Link } from "react-router-dom"
+import useWorkspace from "helpers/useWorkspace"
 import useAuth from "components/auth/useAuth"
 import GraphError from "components/utils/GraphError"
 import { GetProfileMenu } from "./__generated__/GetProfileMenu"
