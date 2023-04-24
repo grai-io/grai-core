@@ -22,8 +22,7 @@ class RedshiftConfig(BaseSettings):
     password: Optional[SecretStr] = None
     database: Optional[str] = None
     host: Optional[str] = None
-    port: Optional[int] = 5439
-    namespace: Optional[str] = None
+    port: Optional[int] = None
 
     class Config:
         env_prefix = "grai_redshift_"
@@ -39,7 +38,6 @@ class RedshiftConnector:
         database: Optional[str] = None,
         host: Optional[str] = None,
         port: Optional[Union[str, int]] = None,
-        redshift_namespace: Optional[str] = None,
         **kwargs,
     ):
         passthrough_kwargs = {
@@ -48,7 +46,6 @@ class RedshiftConnector:
             "database": database,
             "host": host,
             "port": port,
-            "namespace": redshift_namespace,
         }
 
         self.namespace = namespace

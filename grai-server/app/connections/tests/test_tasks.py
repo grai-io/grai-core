@@ -258,7 +258,6 @@ class TestUpdateServer:
                 "port": 5432,
                 "database": "grai",
                 "user": "grai",
-                "redshift_namespace": "grai",
             },
             secrets={"password": "grai"},
         )

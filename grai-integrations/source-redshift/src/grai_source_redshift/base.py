@@ -20,7 +20,7 @@ def get_nodes_and_edges(connector: RedshiftConnector, version: Literal["v1"]) ->
 
 def update_server(
     client: BaseClient,
-    dbname: Optional[str] = None,
+    database: Optional[str] = None,
     namespace: Optional[str] = None,
     user: Optional[str] = None,
     password: Optional[str] = None,
@@ -28,7 +28,7 @@ def update_server(
     port: Optional[str] = None,
 ):
     conn = RedshiftConnector(
-        dbname=dbname,
+        database=database,
         user=user,
         password=password,
         host=host,

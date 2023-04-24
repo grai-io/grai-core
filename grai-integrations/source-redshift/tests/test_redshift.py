@@ -25,7 +25,6 @@ def test_config_from_env_vars():
         "GRAI_REDSHIFT_DATABASE": "grai",
         "GRAI_REDSHIFT_USER": "user",
         "GRAI_REDSHIFT_PASSWORD": "pw",
-        "GRAI_REDSHIFT_NAMESPACE": "test",
         "GRAI_REDSHIFT_PORT": "8000",
     }
     for k, v in env_vars.items():
@@ -37,4 +36,3 @@ def test_config_from_env_vars():
     assert conf.database == "grai"
     assert conf.user == "user"
     assert conf.password.get_secret_value() == "pw"
-    assert conf.namespace == "test"
