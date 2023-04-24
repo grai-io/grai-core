@@ -32,7 +32,7 @@
                     },
                     {
                         "name": "namespace",
-                        "required": true,
+                        "required": true
                     }
                 ]
             },
