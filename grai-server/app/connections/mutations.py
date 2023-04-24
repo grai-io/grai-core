@@ -110,7 +110,7 @@ class Mutation:
             workspace_id=connection.workspace_id,
             user=user,
             status="queued",
-            action=action,
+            action=action if isinstance(action, str) else action.value,
         )
 
         process_run.delay(run.id)
