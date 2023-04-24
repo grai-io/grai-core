@@ -86,7 +86,7 @@ def execute_run(run: Run):
             if len(list(failures)) > 0:
                 send_notification.delay("test_failure", "Test failures")
 
-        elif run.action == "RunAction.VALIDATE":
+        elif run.action == Run.VALIDATE:
             adapter.run_validate(run)
         else:
             raise NoActionError(f"Incorrect run action {run.action} found, accepted values: tests, update, validate")
