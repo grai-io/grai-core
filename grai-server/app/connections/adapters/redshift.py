@@ -15,7 +15,7 @@ class RedshiftAdapter(BaseAdapter):
             database=metadata["database"],
             user=metadata["user"],
             password=secrets["password"],
-            redshift_namespace=secrets["redshift_namespace"],
+            redshift_namespace=metadata.get("redshift_namespace"),
             namespace=self.run.connection.namespace,
         )
 
