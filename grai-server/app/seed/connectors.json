@@ -15,7 +15,7 @@
                     {
                         "name": "port",
                         "default": 5439,
-                        "required": false
+                        "required": true
                     },
                     {
                         "name": "database",
@@ -28,10 +28,6 @@
                     {
                         "name": "password",
                         "secret": true,
-                        "required": true
-                    },
-                    {
-                        "name": "namespace",
                         "required": true
                     },
                     {
