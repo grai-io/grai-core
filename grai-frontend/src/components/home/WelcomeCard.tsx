@@ -37,7 +37,7 @@ const WelcomeCard: React.FC<WelcomeCardProps> = ({ search, setSearch }) => (
         height: 444,
         position: "absolute",
         top: 252,
-        left: -300,
+        left: -200,
         borderRadius: "50%",
         filter: "blur(200px)",
       }}
@@ -96,7 +96,16 @@ const WelcomeCard: React.FC<WelcomeCardProps> = ({ search, setSearch }) => (
         placeholder="Search data assets"
         onClick={() => setSearch(true)}
         disabled
-        sx={{ width: 620, mb: 15, mt: "40px" }}
+        sx={{
+          width: 620,
+          mb: 15,
+          mt: "100px",
+          input: {
+            "&::placeholder": {
+              opacity: 1,
+            },
+          },
+        }}
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">

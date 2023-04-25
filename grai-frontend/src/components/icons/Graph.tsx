@@ -11,26 +11,26 @@ const Graph: React.FC = () => (
     <path
       d="M30 32V22"
       stroke="white"
-      stroke-opacity="0.72"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeOpacity="0.72"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M24 32V16"
       stroke="white"
-      stroke-opacity="0.72"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeOpacity="0.72"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M18 32V26"
       stroke="white"
-      stroke-opacity="0.72"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeOpacity="0.72"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 )

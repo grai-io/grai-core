@@ -3,6 +3,7 @@ import { gql, useQuery } from "@apollo/client"
 import { Box } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
 import HomeCards from "components/home/HomeCards"
+import ReportsCard from "components/home/ReportsCard"
 import WelcomeCard from "components/home/WelcomeCard"
 import PageLayout from "components/layout/PageLayout"
 import SearchDialog from "components/search/SearchDialog"
@@ -53,6 +54,7 @@ const Home: React.FC = () => {
       <Box sx={{ padding: "24px" }}>
         <WelcomeCard search={search} setSearch={setSearch} />
         <HomeCards />
+        <ReportsCard />
       </Box>
       <SearchDialog
         open={search}
