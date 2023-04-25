@@ -11,6 +11,7 @@ export interface GetRunValidation_workspace_run {
   __typename: "Run";
   id: any;
   status: string;
+  metadata: any;
 }
 
 export interface GetRunValidation_workspace {
