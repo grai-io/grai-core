@@ -14,9 +14,19 @@ interface Connection {
   temp: boolean
 }
 
+interface Repository {
+  owner: string
+  repo: string
+}
+
+interface Commit {
+  repository: Repository
+}
+
 interface Report {
   id: string
   connection: Connection
+  commit: Commit | null
 }
 
 type ReportCardProps = {
@@ -68,7 +78,10 @@ const ReportCard: React.FC<ReportCardProps> = ({ report }) => {
                 ? report.connection.connector.name
                 : report.connection.name}
             </Typography>
-            <Typography sx={{ pt: 0.5 }}>grai-io/grai-core</Typography>
+            <Typography sx={{ pt: 0.5 }}>
+              {report.commit &&
+                `${report.commit.repository.owner}/${report.commit.repository.repo}`}
+            </Typography>
           </Box>
         </Box>
       </CardActionArea>
