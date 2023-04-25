@@ -17,8 +17,8 @@ import {
   ListItemText,
   Toolbar,
 } from "@mui/material"
-import useWorkspace from "helpers/useWorkspace"
 import { Link } from "react-router-dom"
+import useWorkspace from "helpers/useWorkspace"
 
 const drawerWidth = 300
 

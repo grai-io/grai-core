@@ -1,6 +1,6 @@
 import React from "react"
-import { enrichColumn } from "helpers/columns"
 import { render, screen } from "testing"
+import { enrichColumn } from "helpers/columns"
 import ColumnProperties from "./ColumnProperties"
 
 test("renders", async () => {

@@ -8,13 +8,13 @@ import {
   Typography,
   Tooltip,
 } from "@mui/material"
+import { DateTime } from "luxon"
+import { useNavigate } from "react-router-dom"
 import {
   durationAgo,
   runQueuedString,
   runDurationString,
 } from "helpers/runDuration"
-import { DateTime } from "luxon"
-import { useNavigate } from "react-router-dom"
 import Loading from "components/layout/Loading"
 import RunStatus from "./RunStatus"
 

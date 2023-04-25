@@ -7,8 +7,8 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material"
-import useWorkspace from "helpers/useWorkspace"
 import PopupState, { bindMenu, bindTrigger } from "material-ui-popup-state"
+import useWorkspace from "helpers/useWorkspace"
 import ConnectionDelete from "./ConnectionDelete"
 import ConnectionRun, { Connection } from "./ConnectionRun"
 

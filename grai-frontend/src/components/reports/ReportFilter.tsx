@@ -1,8 +1,8 @@
 import React from "react"
 import { Refresh } from "@mui/icons-material"
 import { Box, Button, Stack, Tooltip } from "@mui/material"
-import getRepoFromParams from "helpers/getRepoFromParams"
 import { useSearchParams } from "react-router-dom"
+import getRepoFromParams from "helpers/getRepoFromParams"
 import BranchFilter, { Branch } from "./filters/BranchFilter"
 import RepositoryFilter from "./filters/RepositoryFilter"
 

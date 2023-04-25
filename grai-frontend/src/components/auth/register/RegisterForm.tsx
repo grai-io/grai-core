@@ -1,12 +1,12 @@
 import React, { useState } from "react"
 import { gql, useMutation } from "@apollo/client"
 import { LoadingButton } from "@mui/lab"
-import { TextField } from "@mui/material"
+import { InputLabel, TextField, styled } from "@mui/material"
 import posthog from "posthog"
 import Form from "components/form/Form"
 import GraphError from "components/utils/GraphError"
 import { Register, RegisterVariables } from "./__generated__/Register"
-import useAuth from "./useAuth"
+import useAuth from "../useAuth"
 
 export const REGISTER = gql`
   mutation Register($username: String!, $name: String!, $password: String!) {
@@ -18,6 +18,14 @@ export const REGISTER = gql`
     }
   }
 `
+
+const StyledInputLabel = styled(InputLabel)(theme => ({
+  fontWeight: 600,
+  fontSize: 14,
+  color: "#263238",
+  marginTop: theme.theme.spacing(2),
+  marginBottom: theme.theme.spacing(1),
+}))
 
 type FormValues = {
   username: string
@@ -48,38 +56,47 @@ const RegisterForm: React.FC = () => {
   return (
     <Form onSubmit={handleSubmit}>
       {error && <GraphError error={error} />}
+      <StyledInputLabel>Name</StyledInputLabel>
       <TextField
-        id="name"
-        label="Name"
         fullWidth
-        margin="normal"
         required
+        placeholder="Insert your name"
+        inputProps={{ "data-testid": "name" }}
         value={values.name}
         onChange={event => setValues({ ...values, name: event.target.value })}
+        InputProps={{
+          sx: { borderRadius: "8px" },
+        }}
       />
+      <StyledInputLabel>Email</StyledInputLabel>
       <TextField
-        id="email"
-        label="Email"
+        placeholder="yourname@mail.com"
+        inputProps={{ "data-testid": "email" }}
         type="email"
         fullWidth
-        margin="normal"
         required
         value={values.username}
         onChange={event =>
           setValues({ ...values, username: event.target.value })
         }
+        InputProps={{
+          sx: { borderRadius: "8px" },
+        }}
       />
+      <StyledInputLabel>Password</StyledInputLabel>
       <TextField
+        placeholder="********"
         inputProps={{ "data-testid": "password" }}
-        label="Password"
         type="password"
         fullWidth
-        margin="normal"
         required
         value={values.password}
         onChange={event =>
           setValues({ ...values, password: event.target.value })
         }
+        InputProps={{
+          sx: { borderRadius: "8px" },
+        }}
       />
       <LoadingButton
         variant="contained"
@@ -87,9 +104,18 @@ const RegisterForm: React.FC = () => {
         type="submit"
         size="large"
         loading={loading}
-        sx={{ height: 56, my: 2 }}
+        sx={{
+          height: 56,
+          my: 3,
+          color: "white",
+          backgroundColor: "#FC6016",
+          fontSize: 18,
+          fontWeight: 600,
+          borderRadius: "8px",
+          boxShadow: "0px 4px 6px #FC601620",
+        }}
       >
-        REGISTER
+        Get Started
       </LoadingButton>
     </Form>
   )
