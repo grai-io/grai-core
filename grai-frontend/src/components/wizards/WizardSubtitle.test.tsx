@@ -13,7 +13,7 @@ test("renders title", async () => {
 })
 
 test("renders title icon", async () => {
-  render(<WizardSubtitle title="Test Title" icon="/images/file-icon.png" />)
+  render(<WizardSubtitle title="Test Title" icon="/icons/file-icon.png" />)
 
   expect(screen.getByText("Test Title")).toBeInTheDocument()
 })

@@ -1,0 +1,66 @@
+name: Redshift Integration CI
+
+on:
+  pull_request:
+    paths:
+      - "grai-integrations/source-redshift/**"
+      - "grai-client/**"
+      - "grai-server/**"
+
+
+concurrency:
+  group: ${{ github.ref }}-redshift-ci
+  cancel-in-progress: true
+
+
+env:
+  py_ver: "3.10"
+  poetry_ver: "1.2.2"
+  project_dir: "grai-integrations/source-redshift"
+  GRAI_REDSHIFT_USER: "admin"
+  GRAI_REDSHIFT_PASSWORD: "${{ secrets.redshift_password }}"
+  GRAI_REDSHIFT_HOST: "${{ secrets.redshift_host }}"
+  GRAI_REDSHIFT_DATABASE: "dev"
+  GRAI_REDSHIFT_PORT: "5439"
+
+
+jobs:
+  lint-integration-redshift:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.project_dir }}
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - name: Install Python
+        id: setup-python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "${{ env.py_ver }}"
+
+      - run: pip install black isort
+
+      - run: |
+          black . --check
+          isort . --profile black --check
+
+  tests-integration-redshift:
+    needs: lint-integration-redshift
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.project_dir }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "${{ env.py_ver }}"
+
+      - run: |
+          pip install pytest
+          pip install .
+
+      - run: pytest
