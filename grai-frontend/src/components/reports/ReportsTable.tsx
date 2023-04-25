@@ -139,7 +139,7 @@ const ReportsTable: React.FC<ReportsTableProps> = ({ runs, loading }) => {
               {run.commit && (
                 <Box sx={{ display: "flex" }}>
                   <Avatar
-                    src="/images/github-logo.png"
+                    src="/icons/github.png"
                     sx={{ width: 24, height: 24, mr: 1 }}
                   />
 
