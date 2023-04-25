@@ -14,20 +14,13 @@ test("renders", async () => {
   await act(
     async () =>
       await user.type(
-        screen.getByRole("textbox", { name: /organisation name/i }),
+        screen.getByRole("textbox", { name: /name/i }),
         "TestOrganisation"
-      )
-  )
-  await act(
-    async () =>
-      await user.type(
-        screen.getByRole("textbox", { name: /workspace name/i }),
-        "TestWorkspace"
       )
   )
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+    async () => await user.click(screen.getByRole("button", { name: /next/i }))
   )
 
   await waitFor(() => {
@@ -43,7 +36,7 @@ test("error", async () => {
       request: {
         query: CREATE_WORKSPACE,
         variables: {
-          name: "TestWorkspace",
+          name: "default",
           organisationName: "TestOrganisation",
         },
       },
@@ -61,20 +54,13 @@ test("error", async () => {
   await act(
     async () =>
       await user.type(
-        screen.getByRole("textbox", { name: /organisation name/i }),
+        screen.getByRole("textbox", { name: /name/i }),
         "TestOrganisation"
-      )
-  )
-  await act(
-    async () =>
-      await user.type(
-        screen.getByRole("textbox", { name: /workspace name/i }),
-        "TestWorkspace"
       )
   )
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+    async () => await user.click(screen.getByRole("button", { name: /next/i }))
   )
 
   await waitFor(() => {

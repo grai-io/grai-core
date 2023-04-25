@@ -4,12 +4,12 @@ import WorkspaceForm from "./WorkspaceForm"
 
 const CreateWorkspace: React.FC = () => {
   return (
-    <Container maxWidth="sm" sx={{ mt: 20 }}>
+    <Container maxWidth="xs" sx={{ mt: 20 }}>
       <img src="/images/grai-logo.svg" alt="Grai" />
       <Card elevation={3} sx={{ mt: 2 }}>
         <CardContent sx={{ p: 5 }}>
           <Typography variant="h6" sx={{ mb: 1 }}>
-            Create a workspace
+            Create an organisation
           </Typography>
           <WorkspaceForm />
         </CardContent>

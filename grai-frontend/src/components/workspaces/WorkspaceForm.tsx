@@ -35,7 +35,7 @@ const WorkspaceForm: React.FC = () => {
 
   const [values, setValues] = useState<FormValues>({
     organisationName: "",
-    name: "",
+    name: "default",
   })
 
   const [createWorkspace, { loading, error }] = useMutation<
@@ -57,7 +57,7 @@ const WorkspaceForm: React.FC = () => {
       {error && <GraphError error={error} />}
       <TextField
         id="organisationName"
-        label="Organisation Name"
+        label="Name"
         fullWidth
         margin="normal"
         required
@@ -65,15 +65,6 @@ const WorkspaceForm: React.FC = () => {
         onChange={event =>
           setValues({ ...values, organisationName: event.target.value })
         }
-      />
-      <TextField
-        id="name"
-        label="Workspace Name"
-        fullWidth
-        margin="normal"
-        required
-        value={values.name}
-        onChange={event => setValues({ ...values, name: event.target.value })}
       />
       <LoadingButton
         variant="contained"
@@ -83,7 +74,7 @@ const WorkspaceForm: React.FC = () => {
         loading={loading}
         sx={{ height: 56, my: 2 }}
       >
-        SAVE
+        NEXT
       </LoadingButton>
     </Form>
   )
