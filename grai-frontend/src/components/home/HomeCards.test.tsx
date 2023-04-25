@@ -1,30 +1,16 @@
 import React from "react"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
-import ReportsCard, { GET_REPORTS } from "./ReportsCard"
+import HomeCards, { GET_COUNTS } from "./HomeCards"
 
 test("renders", async () => {
-  render(<ReportsCard />, {
-    withRouter: true,
-  })
-
-  await waitFor(() => {
-    expect(
-      screen.getByRole("heading", { name: /Latest Reports/i })
-    ).toBeTruthy()
-  })
-
-  await screen.findAllByText("Connection 1")
-})
-
-test("empty", async () => {
   const mocks = [
     {
       request: {
-        query: GET_REPORTS,
+        query: GET_COUNTS,
         variables: {
-          organisationName: "org",
-          workspaceName: "demo",
+          organisationName: "",
+          workspaceName: "",
         },
       },
       result: {
@@ -32,7 +18,19 @@ test("empty", async () => {
           workspace: {
             id: "1",
             runs: {
-              data: [],
+              meta: {
+                total: 38,
+              },
+            },
+            tables: {
+              meta: {
+                total: 2,
+              },
+            },
+            connections: {
+              meta: {
+                total: 1,
+              },
             },
           },
         },
@@ -40,22 +38,23 @@ test("empty", async () => {
     },
   ]
 
-  render(<ReportsCard />, {
+  render(<HomeCards />, {
+    withRouter: true,
     mocks,
-    path: "/:organisationName/:workspaceName/reports",
-    route: "/org/demo/reports",
   })
 
   await waitFor(() => {
-    expect(screen.getByText(/No reports/i)).toBeInTheDocument()
+    expect(screen.getByRole("heading", { name: /Tables/i })).toBeTruthy()
   })
+
+  await screen.findAllByText("38")
 })
 
 test("error", async () => {
   const mocks = [
     {
       request: {
-        query: GET_REPORTS,
+        query: GET_COUNTS,
         variables: {
           organisationName: "org",
           workspaceName: "demo",
@@ -67,7 +66,7 @@ test("error", async () => {
     },
   ]
 
-  render(<ReportsCard />, {
+  render(<HomeCards />, {
     mocks,
     path: "/:organisationName/:workspaceName/reports",
     route: "/org/demo/reports",
