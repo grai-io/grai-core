@@ -207,6 +207,7 @@
             "name": "dbt",
             "slug": "dbt",
             "metadata": {
+                "docs_url": "https://docs.grai.io/integrations/dbt",
                 "file": {
                     "name": "manifest.json",
                     "extension": "json"
@@ -335,6 +336,7 @@
             "name": "YAML File",
             "slug": "yaml_file",
             "metadata": {
+                "docs_url": "https://docs.grai.io/integrations/yaml",
                 "file": {
                     "name": "yaml",
                     "extension": "yaml"
