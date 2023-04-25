@@ -4,6 +4,7 @@ import { Alert, Box } from "@mui/material"
 import { useSearchParams } from "react-router-dom"
 import theme from "theme"
 import useWorkspace from "helpers/useWorkspace"
+import EmptyGraph from "components/graph/EmptyGraph"
 import GraphComponent, { Error } from "components/graph/Graph"
 import PageLayout from "components/layout/PageLayout"
 import GraphError from "components/utils/GraphError"
@@ -11,7 +12,6 @@ import {
   GetTablesAndEdges,
   GetTablesAndEdgesVariables,
 } from "./__generated__/GetTablesAndEdges"
-import EmptyGraph from "components/graph/EmptyGraph"
 
 export const GET_TABLES_AND_EDGES = gql`
   query GetTablesAndEdges($organisationName: String!, $workspaceName: String!) {
