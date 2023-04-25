@@ -6,7 +6,7 @@ import ResetPasswordForm from "components/auth/ResetPasswordForm"
 const PasswordReset: React.FC = () => (
   <Container sx={{ pt: 10 }} maxWidth="xs">
     <Box sx={{ mb: 3, ml: 1 }}>
-      <img src="/images/grai-logo.svg" alt="Grai" />
+      <img src="/icons/grai/grai-logo.svg" alt="Grai" />
     </Box>
     <Card elevation={3}>
       <CardContent sx={{ p: 5 }}>

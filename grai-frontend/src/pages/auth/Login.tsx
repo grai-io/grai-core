@@ -43,7 +43,7 @@ const Login: React.FC = () => (
     <Container maxWidth="sm" sx={{ pt: 10, maxWidth: { xs: 500 } }}>
       <Box sx={{ textAlign: "center" }}>
         <Box sx={{ mb: 5, ml: 1 }}>
-          <img src="/images/grai-logo.svg" alt="Grai" />
+          <img src="/icons/grai/grai-logo.svg" alt="Grai" />
         </Box>
         <Typography variant="h6" sx={{ fontSize: 36, fontWeight: 800, mb: 5 }}>
           Welcome Back!

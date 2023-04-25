@@ -36,7 +36,7 @@ const Workspaces: React.FC = () => {
 
   return (
     <Container maxWidth="sm" sx={{ mt: 20 }}>
-      <img src="/images/grai-logo.svg" alt="Grai" />
+      <img src="/icons/grai/grai-logo.svg" alt="Grai" />
       {location.state?.workspaceNotFound && (
         <WorkspaceNotFound
           organisationName={location.state.organisationName}
