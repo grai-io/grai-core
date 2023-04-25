@@ -90,11 +90,19 @@ const ReportsCard: React.FC = () => {
       sx={{ mt: "24px", borderRadius: "20px", padding: "24px" }}
       elevation={0}
     >
-      <Box sx={{ display: "flex" }}>
-        <Typography sx={{ fontWeight: 800, fontSize: "20px", flexGrow: 1 }}>
+      <Box sx={{ display: "flex", mb: 2 }}>
+        <Typography
+          sx={{ fontWeight: 800, fontSize: "20px", flexGrow: 1 }}
+          variant="h5"
+        >
           Latest Reports
         </Typography>
-        <Button component={Link} to="reports">
+        <Button
+          component={Link}
+          to="reports"
+          size="large"
+          sx={{ color: "#8338EC", fontWeight: 600, fontSize: "16px", mt: -1 }}
+        >
           Explore all Reports
         </Button>
       </Box>
