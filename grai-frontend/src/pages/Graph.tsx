@@ -1,7 +1,7 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
-import { Alert, Box } from "@mui/material"
-import { useSearchParams } from "react-router-dom"
+import { Alert, Box, Button, Typography } from "@mui/material"
+import { useSearchParams, Link } from "react-router-dom"
 import theme from "theme"
 import useWorkspace from "helpers/useWorkspace"
 import GraphComponent, { Error } from "components/graph/Graph"
@@ -63,7 +63,7 @@ export const GET_TABLES_AND_EDGES = gql`
 `
 
 const Graph: React.FC = () => {
-  const { organisationName, workspaceName } = useWorkspace()
+  const { organisationName, workspaceName, routePrefix } = useWorkspace()
   const [searchParams] = useSearchParams()
 
   const { loading, error, data } = useQuery<
@@ -98,12 +98,37 @@ const Graph: React.FC = () => {
           backgroundColor: theme.palette.grey[100],
         }}
       >
-        <GraphComponent
-          tables={tables}
-          edges={edges}
-          errors={errors}
-          limitGraph={limitGraph}
-        />
+        {tables.length > 0 ? (
+          <GraphComponent
+            tables={tables}
+            edges={edges}
+            errors={errors}
+            limitGraph={limitGraph}
+          />
+        ) : (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100%",
+              flexDirection: "column",
+            }}
+          >
+            <Typography sx={{ pb: 3 }}>Your graph is empty!</Typography>
+            <Typography>
+              To get started{" "}
+              <Button
+                component={Link}
+                to={`${routePrefix}/connections/create`}
+                variant="outlined"
+                sx={{ ml: 1 }}
+              >
+                Add Connection
+              </Button>
+            </Typography>
+          </Box>
+        )}
       </Box>
     </PageLayout>
   )
