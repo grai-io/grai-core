@@ -4,6 +4,7 @@ import { Alert, Box } from "@mui/material"
 import { useSearchParams } from "react-router-dom"
 import theme from "theme"
 import useWorkspace from "helpers/useWorkspace"
+import EmptyGraph from "components/graph/EmptyGraph"
 import GraphComponent, { Error } from "components/graph/Graph"
 import PageLayout from "components/layout/PageLayout"
 import GraphError from "components/utils/GraphError"
@@ -98,12 +99,16 @@ const Graph: React.FC = () => {
           backgroundColor: theme.palette.grey[100],
         }}
       >
-        <GraphComponent
-          tables={tables}
-          edges={edges}
-          errors={errors}
-          limitGraph={limitGraph}
-        />
+        {tables.length > 0 ? (
+          <GraphComponent
+            tables={tables}
+            edges={edges}
+            errors={errors}
+            limitGraph={limitGraph}
+          />
+        ) : (
+          <EmptyGraph />
+        )}
       </Box>
     </PageLayout>
   )

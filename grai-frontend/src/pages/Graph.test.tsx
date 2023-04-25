@@ -69,6 +69,58 @@ test("renders", async () => {
   })
 })
 
+test("renders empty", async () => {
+  class ResizeObserver {
+    callback: globalThis.ResizeObserverCallback
+
+    constructor(callback: globalThis.ResizeObserverCallback) {
+      this.callback = callback
+    }
+
+    observe(target: Element) {
+      this.callback([{ target } as globalThis.ResizeObserverEntry], this)
+    }
+
+    unobserve() {}
+
+    disconnect() {}
+  }
+
+  window.ResizeObserver = ResizeObserver
+
+  render(<Graph />, {
+    path: ":organisationName/:workspaceName/graph",
+    route: "/default/demo/graph",
+    mocks: [
+      profileMock,
+      {
+        request: {
+          query: GET_TABLES_AND_EDGES,
+          variables: {
+            organisationName: "default",
+            workspaceName: "demo",
+          },
+        },
+        result: {
+          data: {
+            workspace: {
+              id: "1",
+              tables: { data: [] },
+              other_edges: {
+                data: [],
+              },
+            },
+          },
+        },
+      },
+    ],
+  })
+
+  await waitFor(() => {
+    expect(screen.getByText("Your graph is empty!")).toBeInTheDocument()
+  })
+})
+
 // test("expand", async () => {
 //   const user = userEvent.setup()
 

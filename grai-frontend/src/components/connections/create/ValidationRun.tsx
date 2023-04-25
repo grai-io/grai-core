@@ -1,6 +1,6 @@
 import React, { useEffect } from "react"
 import { gql, useQuery } from "@apollo/client"
-import { CheckCircle, ArrowForward } from "@mui/icons-material"
+import { CheckCircle, ArrowForward, Cancel } from "@mui/icons-material"
 import {
   Grid,
   Box,
@@ -28,6 +28,7 @@ export const GET_RUN = gql`
       run(id: $runId) {
         id
         status
+        metadata
       }
     }
   }
@@ -61,16 +62,18 @@ const ValidationRun: React.FC<ValidationRunProps> = ({
   })
 
   const success = data?.workspace.run.status === "success"
+  const runError = data?.workspace.run.status === "error"
 
   useEffect(() => {
     startPolling(1000)
 
     if (success) stopPolling()
+    if (runError) stopPolling()
 
     return () => {
       stopPolling()
     }
-  }, [success, startPolling, stopPolling])
+  }, [success, runError, startPolling, stopPolling])
 
   if (error) return <GraphError error={error} />
   if (loading) return <Loading />
@@ -89,13 +92,13 @@ const ValidationRun: React.FC<ValidationRunProps> = ({
                 SUCCESS
               </Typography>
               <Typography variant="body2" sx={{ ml: 5 }}>
-                Validate ability to access PostgreSQL
+                Validation Passed
               </Typography>
             </Box>
             <Divider sx={{ mt: 2, mb: 3 }} />
             <Alert severity="success">
               <AlertTitle>All tests successfully passed!</AlertTitle>Continue to
-              complete setting up your PostgreSQL connection.
+              complete setting up your connection.
             </Alert>
           </Grid>
           <Grid item md={4} sx={{}}>
@@ -121,23 +124,40 @@ const ValidationRun: React.FC<ValidationRunProps> = ({
     <>
       <Grid container sx={{ mt: 5 }}>
         <Grid item md={8} sx={{ pr: 3 }}>
-          <Box sx={{ display: "flex" }}>
-            <CheckCircle color="success" />
-            <Typography
-              variant="body2"
-              sx={{ ml: 2, color: theme => theme.palette.success.main }}
-            >
-              RUNNING
-            </Typography>
-            <Typography variant="body2" sx={{ ml: 5 }}>
-              Running
-            </Typography>
-          </Box>
-          {/* <Divider sx={{ mt: 2, mb: 3 }} />
-          <Alert severity="success">
-            <AlertTitle>All tests successfully passed!</AlertTitle>Continue to
-            complete setting up your PostgreSQL connection.
-          </Alert> */}
+          {runError ? (
+            <>
+              <Box sx={{ display: "flex" }}>
+                <Cancel color="error" />
+                <Typography
+                  variant="body2"
+                  sx={{ ml: 2, color: theme => theme.palette.error.main }}
+                >
+                  ERROR
+                </Typography>
+                <Typography variant="body2" sx={{ ml: 5 }}>
+                  Validation Failed
+                </Typography>
+              </Box>
+              <Divider sx={{ mt: 2, mb: 3 }} />
+              <Alert severity="error">
+                <AlertTitle>Validation log</AlertTitle>
+                {data.workspace.run.metadata.error}
+              </Alert>
+            </>
+          ) : (
+            <Box sx={{ display: "flex" }}>
+              <CheckCircle color="success" />
+              <Typography
+                variant="body2"
+                sx={{ ml: 2, color: theme => theme.palette.success.main }}
+              >
+                RUNNING
+              </Typography>
+              <Typography variant="body2" sx={{ ml: 5 }}>
+                Validating connection
+              </Typography>
+            </Box>
+          )}
         </Grid>
         <Grid item md={4} sx={{}}>
           <CreateConnectionHelp connector={connector} />
