@@ -29,10 +29,6 @@
                         "name": "password",
                         "secret": true,
                         "required": true
-                    },
-                    {
-                        "name": "namespace",
-                        "required": true
                     }
                 ]
             },
