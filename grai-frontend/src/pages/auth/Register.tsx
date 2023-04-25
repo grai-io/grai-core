@@ -15,7 +15,7 @@ const Register: React.FC = () => (
   >
     <Container sx={{ pt: 10 }} maxWidth="lg">
       <Box sx={{ mb: 3, ml: -1 }}>
-        <img src="/images/grai-logo.svg" alt="Grai" />
+        <img src="/icons/grai/grai-logo.svg" alt="Grai" />
       </Box>
       <Grid container spacing={16}>
         <Grid item xs={12} md={6}>

@@ -10,12 +10,13 @@ interface Icons {
 }
 
 const icons: Icons = {
-  "grai-source-dbt": "/images/dbt-logo.png",
-  "grai-source-postgres": "/images/postgres-logo.svg",
-  "grai-source-snowflake": "/images/snowflake-logo.png",
-  "grai-source-mssql": "/images/mssql-logo.png",
-  "grai-source-bigquery": "/images/bigquery-logo.png",
-  "grai-source-mysql": "/images/mysql-logo.png",
+  "grai-source-dbt": "/icons/data-sources/dbt.png",
+  "grai-source-postgres": "/icons/data-sources/postgres.png",
+  "grai-source-snowflake": "/icons/data-sources/snowflake.png",
+  "grai-source-mssql": "/icons/data-sources/mssql.png",
+  "grai-source-bigquery": "/icons/data-sources/bigquery.png",
+  "grai-source-mysql": "/icons/data-sources/mysql.png",
+  "grai-source-redshift": "/icons/data-sources/redshift.png",
 }
 
 const DataSourceIcon: React.FC<DataSourceIconProps> = ({ dataSource }) => {
