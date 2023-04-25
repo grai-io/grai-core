@@ -92,7 +92,6 @@ test("renders empty", async () => {
     path: ":organisationName/:workspaceName/graph",
     route: "/default/demo/graph",
     mocks: [
-      profileMock,
       {
         request: {
           query: GET_TABLES_AND_EDGES,
