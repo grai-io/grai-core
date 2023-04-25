@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Any, Literal, Optional, Union
+from typing import Any, List, Literal, Optional, Union
 
 from grai_schemas.generics import DefaultValue, HashableBaseModel
 from grai_schemas.v1.generics import GraiBaseModel, V1Mixin
@@ -18,6 +18,7 @@ class SourceType(Enum):
 class GenericNodeMetadataV1(V1Mixin):
     node_type: Literal["Node"]
     node_attributes: dict = {}
+    tags: Optional[List[str]]
 
 
 class ColumnAttributes(GraiBaseModel):

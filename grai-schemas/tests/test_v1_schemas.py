@@ -20,7 +20,7 @@ def make_v1_node():
             "display_name": "ouch",
             "is_active": True,
             "metadata": {
-                "grai": {"node_type": "Node", "node_attributes": {}},
+                "grai": {"node_type": "Node", "node_attributes": {}, "tags": ["pii", "phi"]},
                 "test_dict": {"a": "b"},
                 "test_list": [1, 2, 3],
                 "test_tuple": (4, 5, 6),
@@ -49,7 +49,7 @@ def make_v1_edge():
             },
             "is_active": True,
             "metadata": {
-                "grai": {"edge_type": "Edge", "edge_attributes": {}},
+                "grai": {"edge_type": "Edge", "edge_attributes": {}, "tags": ["pii", "phi"]},
             },
         },
     }
