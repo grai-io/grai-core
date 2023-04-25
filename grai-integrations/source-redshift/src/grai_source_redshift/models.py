@@ -73,7 +73,7 @@ class Column(RedshiftNode):
     def make_full_name(cls, full_name, values):
         if full_name is not None:
             return full_name
-        result = f"{values['table']}.{values['table']}.{values['name']}"
+        result = f"{values['column_schema']}.{values['table']}.{values['name']}"
         return result
 
 

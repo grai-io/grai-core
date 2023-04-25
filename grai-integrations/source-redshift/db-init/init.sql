@@ -26,5 +26,5 @@ payment_method TEXT NOT NULL,
 amount INT NOT NULL,
 CONSTRAINT fk_orders
     FOREIGN KEY(order_id)
-    REFERENCES db.customers(id)
+    REFERENCES db.orders(id)
 );

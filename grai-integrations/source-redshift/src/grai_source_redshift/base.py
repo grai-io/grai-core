@@ -20,8 +20,8 @@ def get_nodes_and_edges(connector: RedshiftConnector, version: Literal["v1"]) ->
 
 def update_server(
     client: BaseClient,
+    namespace: str,
     database: Optional[str] = None,
-    namespace: Optional[str] = None,
     user: Optional[str] = None,
     password: Optional[str] = None,
     host: Optional[str] = None,
@@ -36,5 +36,6 @@ def update_server(
         namespace=namespace,
     )
     nodes, edges = get_nodes_and_edges(conn, client.id)
+
     update(client, nodes)
     update(client, edges)

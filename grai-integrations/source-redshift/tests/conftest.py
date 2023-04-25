@@ -14,3 +14,13 @@ def connection() -> RedshiftConnector:
 def nodes_and_edges(connection):
     nodes, edges = get_nodes_and_edges(connection, "v1")
     return nodes, edges
+
+
+@pytest.fixture
+def nodes(nodes_and_edges):
+    return nodes_and_edges[0]
+
+
+@pytest.fixture
+def edges(nodes_and_edges):
+    return nodes_and_edges[1]

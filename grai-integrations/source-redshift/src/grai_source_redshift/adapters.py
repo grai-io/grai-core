@@ -84,6 +84,12 @@ def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") 
         if isinstance(current.destination, ColumnID):
             data["edge_type"] = EdgeTypeLabels.column_to_column.value
             return ColumnToColumnMetadata(**data)
+    else:
+        message = (
+            "No edge metadata implementation for edge with source type "
+            f"{type(current.source)} and destination type {type(current.destination)}"
+        )
+        raise NotImplementedError()
 
 
 @multimethod

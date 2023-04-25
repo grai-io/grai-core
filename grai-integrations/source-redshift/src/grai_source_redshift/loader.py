@@ -119,7 +119,7 @@ class RedshiftConnector:
         """
         query = f"""
             SELECT table_catalog,
-                   table_schema AS schema,
+                   table_schema AS column_schema,
                    table_name,
                    column_name,
                    column_default,

@@ -1,6 +1,6 @@
  [tool.poetry]
 name = "grai_source_redshift"
-version = "0.0.1"
+version = "0.0.3"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>"]
 license = "Elastic-2.0"
@@ -23,11 +23,11 @@ types-PyYAML = "^6.0.11"
 types-psycopg2 = "^2.9.18"
 pytest = "^7.2.0"
 
- [tool.isort]
+   [tool.isort]
 profile = "black"
 known_first_party = "grai_source_redshift"
 
- [tool.black]
+   [tool.black]
 line-length = 120
 
 [build-system]
