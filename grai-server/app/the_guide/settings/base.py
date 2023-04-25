@@ -121,7 +121,6 @@ THIRD_PARTY_APPS = [
     "social_django",
     "rest_framework_simplejwt",
     "django_extensions",
-    "rest_framework.authtoken",
     "rest_framework_api_key",
     "health_check",
     "health_check.db",

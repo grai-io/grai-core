@@ -37,6 +37,5 @@ def check_authentication(request):
 
 
 urlpatterns = [
-    path("api-token/", views.obtain_auth_token),
     path("is-authenticated/", check_authentication),
 ]
