@@ -1,5 +1,5 @@
 import React from "react"
-import { PersonAdd, Search } from "@mui/icons-material"
+import { Search } from "@mui/icons-material"
 import {
   Card,
   Box,
@@ -9,7 +9,7 @@ import {
   InputAdornment,
 } from "@mui/material"
 import { Link } from "react-router-dom"
-import { GraiLogo } from "components/icons"
+import { GraiLogo, PersonAdd } from "components/icons"
 
 type WelcomeCardProps = {
   search: boolean
