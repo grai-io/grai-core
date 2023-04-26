@@ -2,7 +2,6 @@ from django.db.models import Q
 from rest_framework.authentication import (
     BasicAuthentication,
     SessionAuthentication,
-    TokenAuthentication,
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
@@ -20,7 +19,6 @@ from workspaces.permissions import HasWorkspaceAPIKey
 class NodeViewSet(ModelViewSet):
     authentication_classes = [
         SessionAuthentication,
-        TokenAuthentication,
         BasicAuthentication,
         JWTAuthentication,
     ]
@@ -46,7 +44,6 @@ class NodeViewSet(ModelViewSet):
 class EdgeViewSet(ModelViewSet):
     authentication_classes = [
         SessionAuthentication,
-        TokenAuthentication,
         BasicAuthentication,
         JWTAuthentication,
     ]
