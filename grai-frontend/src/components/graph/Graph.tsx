@@ -19,6 +19,7 @@ type GraphProps = {
   limitGraph?: boolean
   initialHidden?: string[]
   controlOptions?: ControlOptions
+  loading?: boolean
 }
 
 const Graph: React.FC<GraphProps> = ({
@@ -28,6 +29,7 @@ const Graph: React.FC<GraphProps> = ({
   limitGraph,
   initialHidden,
   controlOptions,
+  loading,
 }) => {
   const columns: Column[] = errors
     ? tables.reduce<Column[]>(
@@ -81,6 +83,7 @@ const Graph: React.FC<GraphProps> = ({
       errors={enrichedErrors}
       initialHidden={initialHidden2}
       controlOptions={controlOptions}
+      loading={loading}
     />
   )
 }

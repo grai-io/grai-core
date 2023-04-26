@@ -88,7 +88,6 @@ const Graph: React.FC = () => {
   })
 
   if (error) return <GraphError error={error} />
-  if (loading) return <PageLayout loading />
 
   const errorsQS = searchParams.get("errors")
   const errors: Error[] | null = errorsQS ? JSON.parse(errorsQS) : null
@@ -109,12 +108,13 @@ const Graph: React.FC = () => {
           backgroundColor: theme.palette.grey[100],
         }}
       >
-        {total > 0 ? (
+        {total > 0 || loading ? (
           <GraphComponent
             tables={tables}
             edges={edges}
             errors={errors}
             limitGraph={limitGraph}
+            loading={loading}
           />
         ) : (
           <EmptyGraph />

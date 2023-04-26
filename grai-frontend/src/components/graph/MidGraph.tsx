@@ -44,6 +44,7 @@ type GraphProps = {
   errors?: Error[] | null
   initialHidden?: string[]
   controlOptions?: ControlOptions
+  loading?: boolean
 }
 
 const position = { x: 0, y: 0 }
@@ -54,6 +55,7 @@ const MidGraph: React.FC<GraphProps> = ({
   errors,
   initialHidden,
   controlOptions,
+  loading,
 }) => {
   const [hidden, setHidden] = useState<string[]>(initialHidden ?? [])
   const [expanded, setExpanded] = useState<string[]>([])
@@ -203,6 +205,7 @@ const MidGraph: React.FC<GraphProps> = ({
       controlOptions={controlOptions}
       search={search}
       onSearch={setSearch}
+      loading={loading}
     />
   )
 }
