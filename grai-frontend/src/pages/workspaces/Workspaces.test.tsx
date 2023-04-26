@@ -35,7 +35,7 @@ test("no workspaces", async () => {
   await waitFor(() => expect(screen.queryByRole("progressbar")).toBeFalsy())
 
   await waitFor(() =>
-    expect(screen.getByRole("heading", { name: /Create a workspace/i }))
+    expect(screen.getByRole("heading", { name: /Create an organisation/i }))
   )
 })
 
