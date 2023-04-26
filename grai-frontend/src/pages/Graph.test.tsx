@@ -5,39 +5,66 @@ import { act, render, screen, waitFor } from "testing"
 import profileMock from "testing/profileMock"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
 import Graph, { GET_TABLES_AND_EDGES } from "./Graph"
+import { GET_FILTERS } from "components/graph/controls/filter/FilterControl"
 
-const mocks = [
-  profileMock,
-  {
-    request: {
-      query: GET_TABLES_AND_EDGES,
-      variables: {
-        organisationName: "default",
-        workspaceName: "demo",
-      },
+export const filtersMock = {
+  request: {
+    query: GET_FILTERS,
+    variables: {
+      organisationName: "default",
+      workspaceName: "demo",
     },
-    result: {
-      data: {
-        workspace: {
-          id: "1",
-          tables: { data: [sourceTable, destinationTable, spareTable] },
-          other_edges: {
-            data: [
-              {
-                id: "1",
-                is_active: true,
-                data_source: "test",
-                source: sourceTable,
-                destination: destinationTable,
-                metadata: { grai: { constraint_type: "dbt_model" } },
-              },
-            ],
-          },
+  },
+  result: {
+    data: {
+      workspace: {
+        id: "1",
+        filters: {
+          data: [],
         },
       },
     },
   },
-]
+}
+
+const tablesMock = {
+  request: {
+    query: GET_TABLES_AND_EDGES,
+    variables: {
+      organisationName: "default",
+      workspaceName: "demo",
+      filters: { filter: null },
+    },
+  },
+  result: {
+    data: {
+      workspace: {
+        id: "1",
+        tables: {
+          data: [sourceTable, destinationTable, spareTable],
+          meta: { total: 3 },
+        },
+        other_edges: {
+          data: [
+            {
+              id: "1",
+              is_active: true,
+              data_source: "test",
+              source: sourceTable,
+              destination: destinationTable,
+              metadata: { grai: { constraint_type: "dbt_model" } },
+            },
+          ],
+        },
+        filters: {
+          data: [],
+        },
+      },
+    },
+  },
+}
+
+const mocks = [profileMock, filtersMock, tablesMock]
 
 jest.retryTimes(1)
 
@@ -101,14 +128,18 @@ test("renders empty", async () => {
           variables: {
             organisationName: "default",
             workspaceName: "demo",
+            filters: { filter: null },
           },
         },
         result: {
           data: {
             workspace: {
               id: "1",
-              tables: { data: [] },
+              tables: { data: [], meta: { total: 0 } },
               other_edges: {
+                data: [],
+              },
+              filters: {
                 data: [],
               },
             },
@@ -164,10 +195,15 @@ test("renders with errors", async () => {
     path: "/:organisationName/:workspaceName/graph",
     route:
       "/default/demo/graph?errors=%5B%7B%22source%22%3A%20%22a%22%2C%20%22destination%22%3A%20%22b%22%2C%20%22test%22%3A%20%22nullable%22%2C%20%22message%22%3A%20%22not%20null%22%7D%5D",
+    mocks,
   })
 
   await waitFor(() => {
-    expect(screen.getAllByText("Hello World")).toBeTruthy()
+    expect(screen.getAllByText("N1")).toBeTruthy()
+  })
+
+  await waitFor(() => {
+    expect(screen.getAllByText(/1/i)).toBeTruthy()
   })
 })
 
@@ -211,6 +247,7 @@ test("error", async () => {
         variables: {
           organisationName: "",
           workspaceName: "",
+          filters: { filter: null },
         },
       },
       result: {
@@ -229,20 +266,25 @@ test("error", async () => {
 test("no nodes", async () => {
   const mocks = [
     profileMock,
+    filtersMock,
     {
       request: {
         query: GET_TABLES_AND_EDGES,
         variables: {
           organisationName: "",
           workspaceName: "",
+          filters: { filter: null },
         },
       },
       result: {
         data: {
           workspace: {
             id: "1",
-            tables: { data: null },
+            tables: { data: null, meta: { total: 0 } },
             other_edges: { data: null },
+            filters: {
+              data: [],
+            },
           },
         },
       },
@@ -252,7 +294,7 @@ test("no nodes", async () => {
   render(<Graph />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getByText("No tables found")).toBeInTheDocument()
+    expect(screen.getByText("Your graph is empty!")).toBeInTheDocument()
   })
 })
 

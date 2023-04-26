@@ -89,6 +89,12 @@ export const GET_PULL_REQUEST = gql`
           metadata
         }
       }
+      filters {
+        data {
+          id
+          name
+        }
+      }
     }
   }
 `

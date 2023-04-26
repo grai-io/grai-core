@@ -66,6 +66,12 @@ export const GET_TABLES_AND_EDGES = gql`
           metadata
         }
       }
+      filters {
+        data {
+          id
+          name
+        }
+      }
     }
   }
 `
@@ -73,6 +79,8 @@ export const GET_TABLES_AND_EDGES = gql`
 const Graph: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
   const [searchParams] = useSearchParams()
+
+  const filter = searchParams.get("filter") ?? null
 
   const { loading, error, data } = useQuery<
     GetTablesAndEdges,
@@ -82,7 +90,7 @@ const Graph: React.FC = () => {
       organisationName,
       workspaceName,
       filters: {
-        filter: searchParams.get("filter"),
+        filter,
       },
     },
   })
