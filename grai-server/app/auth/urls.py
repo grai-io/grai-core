@@ -1,8 +1,5 @@
 from django.urls import path
-from rest_framework.authentication import (
-    BasicAuthentication,
-    SessionAuthentication,
-)
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.decorators import (
     api_view,
     authentication_classes,

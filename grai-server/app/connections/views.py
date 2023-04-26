@@ -1,7 +1,4 @@
-from rest_framework.authentication import (
-    BasicAuthentication,
-    SessionAuthentication,
-)
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework_api_key.permissions import HasAPIKey

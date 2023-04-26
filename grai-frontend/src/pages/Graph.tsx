@@ -1,6 +1,6 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
-import { Alert, Box } from "@mui/material"
+import { Box } from "@mui/material"
 import { useSearchParams } from "react-router-dom"
 import theme from "theme"
 import useWorkspace from "helpers/useWorkspace"
@@ -14,10 +14,14 @@ import {
 } from "./__generated__/GetTablesAndEdges"
 
 export const GET_TABLES_AND_EDGES = gql`
-  query GetTablesAndEdges($organisationName: String!, $workspaceName: String!) {
+  query GetTablesAndEdges(
+    $organisationName: String!
+    $workspaceName: String!
+    $filters: WorkspaceTableFilter
+  ) {
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
-      tables {
+      tables(filters: $filters) {
         data {
           id
           namespace
@@ -45,6 +49,9 @@ export const GET_TABLES_AND_EDGES = gql`
               display_name
             }
           }
+        }
+        meta {
+          total
         }
       }
       other_edges {
@@ -74,6 +81,9 @@ const Graph: React.FC = () => {
     variables: {
       organisationName,
       workspaceName,
+      filters: {
+        filter: searchParams.get("filter"),
+      },
     },
   })
 
@@ -85,10 +95,10 @@ const Graph: React.FC = () => {
   const limitGraph: boolean =
     searchParams.get("limitGraph")?.toLowerCase() === "true" && !!errors
 
-  const tables = data?.workspace.tables.data
+  const tables = data?.workspace.tables.data ?? []
   const edges = data?.workspace.other_edges.data ?? []
 
-  if (!tables) return <Alert>No tables found</Alert>
+  const total = data?.workspace.tables.meta.total ?? 0
 
   return (
     <PageLayout>
@@ -99,7 +109,7 @@ const Graph: React.FC = () => {
           backgroundColor: theme.palette.grey[100],
         }}
       >
-        {tables.length > 0 ? (
+        {total > 0 ? (
           <GraphComponent
             tables={tables}
             edges={edges}

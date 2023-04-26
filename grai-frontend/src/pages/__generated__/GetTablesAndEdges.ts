@@ -3,6 +3,8 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
+import { WorkspaceTableFilter } from "./../../../__generated__/globalTypes";
+
 // ====================================================
 // GraphQL query operation: GetTablesAndEdges
 // ====================================================
@@ -55,9 +57,15 @@ export interface GetTablesAndEdges_workspace_tables_data {
   destination_tables: GetTablesAndEdges_workspace_tables_data_destination_tables;
 }
 
+export interface GetTablesAndEdges_workspace_tables_meta {
+  __typename: "PaginationResult";
+  total: number;
+}
+
 export interface GetTablesAndEdges_workspace_tables {
   __typename: "TablePagination";
   data: GetTablesAndEdges_workspace_tables_data[];
+  meta: GetTablesAndEdges_workspace_tables_meta;
 }
 
 export interface GetTablesAndEdges_workspace_other_edges_data_source {
@@ -97,4 +105,5 @@ export interface GetTablesAndEdges {
 export interface GetTablesAndEdgesVariables {
   organisationName: string;
   workspaceName: string;
+  filters?: WorkspaceTableFilter | null;
 }

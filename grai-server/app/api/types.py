@@ -1,15 +1,15 @@
 import datetime
 import time
 from enum import Enum
-from typing import List, Optional
+from typing import Optional
 from xml.dom import NodeFilter
 
 import strawberry
 import strawberry_django
 from django.conf import settings
 from django.db.models import Prefetch, Q
-from notifications.models import Alert as AlertModel
 from django.db.models.query import QuerySet
+from notifications.models import Alert as AlertModel
 from strawberry.scalars import JSON
 from strawberry_django.filters import FilterLookup
 from strawberry_django.pagination import OffsetPaginationInput
@@ -24,9 +24,11 @@ from installations.models import Branch as BranchModel
 from installations.models import Commit as CommitModel
 from installations.models import PullRequest as PullRequestModel
 from installations.models import Repository as RepositoryModel
+from lineage.filter import apply_table_filter
 from lineage.models import Edge as EdgeModel
+from lineage.models import Filter as FilterModel
 from lineage.models import Node as NodeModel
-from lineage.types import Edge, Node, NodeFilter, NodeOrder
+from lineage.types import Edge, Filter, Node, NodeFilter, NodeOrder
 from users.types import User, UserFilter
 from workspaces.models import Membership as MembershipModel
 from workspaces.models import Workspace as WorkspaceModel
@@ -82,6 +84,11 @@ def apply_run_filters(queryset: QuerySet, filters: Optional[WorkspaceRunFilter] 
         queryset = queryset.filter(q_filter)
 
     return queryset
+
+
+@strawberry.input
+class WorkspaceTableFilter:
+    filter: Optional[strawberry.ID] = strawberry.UNSET
 
 
 @strawberry_django.ordering.order(RunModel)
@@ -415,8 +422,19 @@ class Workspace:
 
     # Tables
     @gql.django.field
-    def tables(self, pagination: Optional[OffsetPaginationInput] = strawberry.UNSET) -> Pagination[Table]:
+    async def tables(
+        self,
+        filters: Optional[WorkspaceTableFilter] = strawberry.UNSET,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination[Table]:
         queryset = NodeModel.objects.filter(workspace=self, metadata__grai__node_type="Table")
+
+        if filters.filter:
+            filter = await FilterModel.objects.aget(id=filters.filter)
+
+            filteredQueryset = apply_table_filter(queryset, filter)
+
+            return Pagination[Table](queryset=queryset, filteredQueryset=filteredQueryset, pagination=pagination)
 
         return Pagination[Table](queryset=queryset, pagination=pagination)
 
@@ -559,6 +577,20 @@ class Workspace:
             settings.ALGOLIA_SEARCH_KEY,
             {"filters": f"workspace_id:{str(self.id)}", "validUntil": valid_until, "restrictIndices": "main"},
         )
+
+    # Filters
+    @strawberry.field
+    def filters(
+        self,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination[Filter]:
+        queryset = FilterModel.objects.filter(workspace=self)
+
+        return Pagination[Filter](queryset=queryset, pagination=pagination)
+
+    @gql.django.field
+    def filter(self, id: strawberry.ID) -> "Filter":
+        return FilterModel.objects.get(id=id)
 
 
 @gql.django.filters.filter(MembershipModel, lookups=True)
