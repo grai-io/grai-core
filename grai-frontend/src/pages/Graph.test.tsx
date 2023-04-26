@@ -4,8 +4,8 @@ import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
 import profileMock from "testing/profileMock"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
-import Graph, { GET_TABLES_AND_EDGES } from "./Graph"
 import { GET_FILTERS } from "components/graph/controls/filter/FilterControl"
+import Graph, { GET_TABLES_AND_EDGES } from "./Graph"
 
 export const filtersMock = {
   request: {
