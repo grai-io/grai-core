@@ -13,15 +13,6 @@ class AuthHeader(abc.ABC):
         pass
 
 
-class UserTokenHeader(AuthHeader):
-    def __init__(self, token: str):
-        self.token = token
-
-    @property
-    def headers(self) -> Dict[str, str]:
-        return {"Authorization": f"Token {self.token}"}
-
-
 class APIKeyHeader(AuthHeader):
     def __init__(self, api_key: str):
         self.api_key = api_key
