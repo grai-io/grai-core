@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai_source_mysql"
-version = "0.0.11"
+version = "0.0.12"
 description = ""
 authors = ["Tony Lewis <tony@grai.io>"]
 license = "Elastic-2.0"
