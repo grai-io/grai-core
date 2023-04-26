@@ -1525,21 +1525,21 @@ grpc = ["grpcio (>=1.44.0,<2.0.0dev)"]
 
 [[package]]
 name = "grai-client"
-version = "0.2.7"
+version = "0.2.8"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_client-0.2.7-py3-none-any.whl", hash = "sha256:6ae8aff287c5839ff2ba57d81a395371350e24eb73c4dfff960952b9034a179e"},
-    {file = "grai_client-0.2.7.tar.gz", hash = "sha256:372d188a371d72687ae7a887c778f971412923c76f86c7c326c46ee10a7034d5"},
+    {file = "grai_client-0.2.8-py3-none-any.whl", hash = "sha256:eddfe7fb375e1232048c24f40950dd42058b2206ff79e98e0e3ae9323ef4239a"},
+    {file = "grai_client-0.2.8.tar.gz", hash = "sha256:d36508da364260a7b63ce6736390af423bda1394697556b03951c6801f6d3988"},
 ]
 
 [package.dependencies]
 brotli = ">=1.0.9,<2.0.0"
-grai-schemas = ">=0.1.8,<0.2.0"
+grai-schemas = ">=0.1.11,<0.2.0"
 httpx = ">=0.23.3,<0.24.0"
-multimethod = "1.9"
+multimethod = ">=1.9,<2.0"
 orjson = ">=3.8.3,<4.0.0"
 pydantic = ">=1.9.1,<2.0.0"
 pyyaml = ">=6.0,<7.0"
@@ -1572,13 +1572,15 @@ version = "0.1.11"
 description = ""
 category = "main"
 optional = false
-python-versions = "*"
-files = []
-develop = true
+python-versions = ">=3.8,<4.0"
+files = [
+    {file = "grai_schemas-0.1.11-py3-none-any.whl", hash = "sha256:c344b8564ee75b3edbb0ec4c1d0fd6bd02cc7bf2eb736005fe3c0aeb2139d6a9"},
+    {file = "grai_schemas-0.1.11.tar.gz", hash = "sha256:cf42db263ffaf2935b9d8c6cb158786ff6aa6b29a7986243a6ea7f99001967a8"},
+]
 
-[package.source]
-type = "directory"
-url = "../../grai-schemas"
+[package.dependencies]
+multimethod = ">=1.9.1,<2.0.0"
+pydantic = ">=1.10.4,<2.0.0"
 
 [[package]]
 name = "grai-source-bigquery"
@@ -2316,14 +2318,14 @@ files = [
 
 [[package]]
 name = "multimethod"
-version = "1.9"
+version = "1.9.1"
 description = "Multiple argument dispatching."
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "multimethod-1.9-py3-none-any.whl", hash = "sha256:59cb8ffec7449bd5557993c8d84e788fe04aca9c94b3b181ba8429ab954c24df"},
-    {file = "multimethod-1.9.tar.gz", hash = "sha256:cb1b87815732984172d6802bbfea81d68bfa2a0d5a562fb212ae7d59bad7a455"},
+    {file = "multimethod-1.9.1-py3-none-any.whl", hash = "sha256:52f8f1f2b9d5a4c7adfdcc114dbeeebe3245a4420801e8807e26522a79fb6bc2"},
+    {file = "multimethod-1.9.1.tar.gz", hash = "sha256:1589bf52ca294667fd15527ea830127c763f5bfc38562e3642591ffd0fd9d56f"},
 ]
 
 [[package]]
@@ -2638,14 +2640,14 @@ files = [
 
 [[package]]
 name = "pip"
-version = "23.1.1"
+version = "23.1.2"
 description = "The PyPA recommended tool for installing Python packages."
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "pip-23.1.1-py3-none-any.whl", hash = "sha256:3d8d72fa0714e93c9d3c2a0ede91e898c64596e0fa7d4523f72dd95728efc418"},
-    {file = "pip-23.1.1.tar.gz", hash = "sha256:c95b53d309f903f33dfe5fd37e502a5c3a05ee3454d518e45df522a4f091b728"},
+    {file = "pip-23.1.2-py3-none-any.whl", hash = "sha256:3ef6ac33239e4027d9a5598a381b9d30880a1477e50039db2eac6e8a8f6d1b18"},
+    {file = "pip-23.1.2.tar.gz", hash = "sha256:0e7c86f486935893c708287b30bd050a36ac827ec7fe5e43fe7cb198dd835fba"},
 ]
 
 [[package]]
@@ -3355,14 +3357,14 @@ full = ["numpy", "pandas"]
 
 [[package]]
 name = "requests"
-version = "2.28.2"
+version = "2.29.0"
 description = "Python HTTP for Humans."
 category = "main"
 optional = false
-python-versions = ">=3.7, <4"
+python-versions = ">=3.7"
 files = [
-    {file = "requests-2.28.2-py3-none-any.whl", hash = "sha256:64299f4909223da747622c030b781c0d7811e359c37124b4bd368fb8c6518baa"},
-    {file = "requests-2.28.2.tar.gz", hash = "sha256:98b1b2782e3c6c4904938b84c0eb932721069dfdb9134313beff7c83c2df24bf"},
+    {file = "requests-2.29.0-py3-none-any.whl", hash = "sha256:e8f3c9be120d3333921d213eef078af392fba3933ab7ed2d1cba3b56f2568c3b"},
+    {file = "requests-2.29.0.tar.gz", hash = "sha256:f2e34a75f4749019bb0e3effb66683630e4ffeaf75819fb51bebef1bf5aef059"},
 ]
 
 [package.dependencies]
@@ -3691,14 +3693,14 @@ test = ["pytest", "pytest-cov"]
 
 [[package]]
 name = "strawberry-django-plus"
-version = "2.3.1"
+version = "2.3.2"
 description = "Enhanced Strawberry GraphQL integration with Django"
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "strawberry_django_plus-2.3.1-py3-none-any.whl", hash = "sha256:51149cd064441a6e79cf5c477d7d28aae4b0fb0b6fe1c98c3540c58a1fc7c2b7"},
-    {file = "strawberry_django_plus-2.3.1.tar.gz", hash = "sha256:2e3762a2d6f83bf66699888e42115b1371db66961f087c0311d7d89d0932e0ab"},
+    {file = "strawberry_django_plus-2.3.2-py3-none-any.whl", hash = "sha256:302be29d478ebf415f3858e9acb51209cd56045b97181073a1602fa6ab4eee1b"},
+    {file = "strawberry_django_plus-2.3.2.tar.gz", hash = "sha256:7a0fd41d8c0040a7bfc4f5cecb779a2196b8d32bbb54aa1fddc6d4e64edb716a"},
 ]
 
 [package.dependencies]
@@ -3937,4 +3939,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "69309978e5452536cbc3f6a3718fdb09ff9ea32f6b897cd27d60ee6ba0387755"
+content-hash = "bc23f898b093faac43265c9db8193a3aa2f9ecf137a3bad086701137fca991e3"
