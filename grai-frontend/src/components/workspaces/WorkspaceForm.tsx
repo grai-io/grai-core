@@ -35,7 +35,7 @@ const WorkspaceForm: React.FC = () => {
 
   const [values, setValues] = useState<FormValues>({
     organisationName: "",
-    name: "default",
+    name: "production",
   })
 
   const [createWorkspace, { loading, error }] = useMutation<
