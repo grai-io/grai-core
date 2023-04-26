@@ -52,6 +52,7 @@ def build_grai_metadata_from_column(current: Column, version: Literal["v1"] = "v
             and current.column_constraint.value == ColumnConstraint.primary_key.value,
             "is_unique": current.column_constraint and current.column_constraint.value in UNIQUE_COLUMN_CONSTRAINTS,
         },
+        "tags": [config.metadata_id],
     }
 
     return ColumnMetadata(**data)
@@ -63,6 +64,7 @@ def build_grai_metadata_from_node(current: Table, version: Literal["v1"] = "v1")
         "version": version,
         "node_type": NodeTypeLabels.table.value,
         "node_attributes": {},
+        "tags": [config.metadata_id],
     }
 
     return TableMetadata(**data)
@@ -70,7 +72,7 @@ def build_grai_metadata_from_node(current: Table, version: Literal["v1"] = "v1")
 
 @build_grai_metadata.register
 def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> GenericEdgeMetadataV1:
-    data = {"version": version}
+    data = {"version": version, "tags": [config.metadata_id]}
 
     if isinstance(current.source, TableID):
         if isinstance(current.destination, ColumnID):

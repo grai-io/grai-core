@@ -19,26 +19,23 @@ def test_create_default_value():
     assert value.data_type == "int"
 
 
-def test_create_default_value_from_parent_class():
+class TestDefaultValuesFromParent:
     class DefaultTest(BaseModel):
         test: DefaultValue
 
-    result = DefaultTest(test=DefaultValue())
-    value = result.test
-    assert value.default_value is None
-    assert value.has_default_value is None
-    assert value.data_type is None
+    def test_create_default_test_value_empty(self):
+        result = self.DefaultTest(test=DefaultValue())
+        value = result.test
+        assert value.default_value is None
+        assert value.has_default_value is None
+        assert value.data_type is None
 
-
-def test_create_default_value_from_parent_class():
-    class DefaultTest(BaseModel):
-        test: DefaultValue
-
-    result = DefaultTest(test={"has_default_value": False})
-    value = result.test
-    assert value.default_value is None
-    assert value.has_default_value is False
-    assert value.data_type is None
+    def test_create_default_test_value(self):
+        result = self.DefaultTest(test={"has_default_value": False})
+        value = result.test
+        assert value.default_value is None
+        assert value.has_default_value is False
+        assert value.data_type is None
 
 
 @pytest.mark.xfail
