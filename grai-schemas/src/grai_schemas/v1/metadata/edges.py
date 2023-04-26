@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Literal, Optional, Union
+from typing import Dict, List, Literal, Optional, Union
 
 from grai_schemas.v1.generics import V1Mixin
 
@@ -14,6 +14,7 @@ class EdgeTypeLabels(Enum):
 class GenericEdgeMetadataV1(V1Mixin):
     edge_type: Literal["Edge"]
     edge_attributes: dict = {}
+    tags: Optional[List[str]]
 
 
 class TableToColumnAttributes(V1Mixin):
