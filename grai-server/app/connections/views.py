@@ -1,7 +1,6 @@
 from rest_framework.authentication import (
     BasicAuthentication,
     SessionAuthentication,
-    TokenAuthentication,
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
@@ -24,7 +23,6 @@ from workspaces.permissions import HasWorkspaceAPIKey
 class ConnectionViewSet(ModelViewSet):
     authentication_classes = [
         SessionAuthentication,
-        TokenAuthentication,
         BasicAuthentication,
         JWTAuthentication,
     ]
@@ -51,7 +49,6 @@ class ConnectionViewSet(ModelViewSet):
 class ConnectorViewSet(ReadOnlyModelViewSet):
     authentication_classes = [
         SessionAuthentication,
-        TokenAuthentication,
         BasicAuthentication,
         JWTAuthentication,
     ]
@@ -77,7 +74,6 @@ class ConnectorViewSet(ReadOnlyModelViewSet):
 class RunViewSet(ReadOnlyModelViewSet):
     authentication_classes = [
         SessionAuthentication,
-        TokenAuthentication,
         BasicAuthentication,
         JWTAuthentication,
     ]
