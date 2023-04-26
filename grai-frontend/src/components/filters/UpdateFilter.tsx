@@ -1,7 +1,8 @@
 import React from "react"
 import { gql, useMutation } from "@apollo/client"
 import { Box } from "@mui/material"
-import FilterForm from "components/graph/controls/filter/FilterForm"
+import { useSnackbar } from "notistack"
+import FilterForm, { Values } from "components/filters/FilterForm"
 import GraphError from "components/utils/GraphError"
 import {
   UpdateFilter as UpdateFilterType,
@@ -10,17 +11,19 @@ import {
 import { Filter as FilterType } from "./FilterRow"
 
 export const UPDATE_FILTER = gql`
-  mutation UpdateFilter($id: ID!, $metadata: JSON!) {
-    updateFilter(id: $id, metadata: $metadata) {
+  mutation UpdateFilter($id: ID!, $name: String!, $metadata: JSON!) {
+    updateFilter(id: $id, name: $name, metadata: $metadata) {
       id
       name
       metadata
+      created_at
     }
   }
 `
 
 interface Filter {
   id: string
+  name: string | null
   metadata: FilterType[]
 }
 
@@ -29,19 +32,26 @@ type UpdateFilterProps = {
 }
 
 const UpdateFilter: React.FC<UpdateFilterProps> = ({ filter }) => {
+  const { enqueueSnackbar } = useSnackbar()
+
   const [updateFilter, { loading, error }] = useMutation<
     UpdateFilterType,
     UpdateFilterVariables
   >(UPDATE_FILTER)
 
-  const handleSave = (filters: FilterType[]) =>
-    updateFilter({ variables: { id: filter.id, metadata: filters } })
+  const handleSave = (values: Values) =>
+    updateFilter({ variables: { id: filter.id, ...values } }).then(() =>
+      enqueueSnackbar("Filter updated")
+    )
 
   return (
     <Box sx={{ p: 3 }}>
       {error && <GraphError error={error} />}
       <FilterForm
-        defaultFilters={filter.metadata}
+        defaultValues={{
+          name: filter.name ?? "",
+          metadata: filter.metadata,
+        }}
         onSave={handleSave}
         loading={loading}
       />

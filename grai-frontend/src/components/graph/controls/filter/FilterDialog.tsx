@@ -1,7 +1,7 @@
 import React from "react"
 import { Box, Dialog } from "@mui/material"
 import DialogTitle from "components/dialogs/DialogTitle"
-import FilterForm from "./FilterForm"
+import FilterForm from "../../../filters/FilterForm"
 
 type FilterDialogProps = {
   open: boolean
@@ -13,7 +13,7 @@ const FilterDialog: React.FC<FilterDialogProps> = ({ open, onClose }) => {
     <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
       <DialogTitle onClose={onClose}>Filter</DialogTitle>
       <Box sx={{ p: 3, pt: 1 }}>
-        <FilterForm onClose={onClose} />
+        <FilterForm onClose={onClose} onSave={() => {}} />
       </Box>
     </Dialog>
   )
