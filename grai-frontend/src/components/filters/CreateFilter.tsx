@@ -56,7 +56,13 @@ const CreateFilter: React.FC<CreateFilterProps> = ({ workspaceId }) => {
                 }
               `,
             })
-            return { data: [...existingFilters.data, newFilter] }
+            return {
+              data: [...existingFilters.data, newFilter],
+              meta: {
+                total: existingFilters.meta.total + 1,
+                __typename: "FilterPagination",
+              },
+            }
           },
         },
       })
