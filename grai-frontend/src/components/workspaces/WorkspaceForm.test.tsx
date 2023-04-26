@@ -36,7 +36,7 @@ test("error", async () => {
       request: {
         query: CREATE_WORKSPACE,
         variables: {
-          name: "default",
+          name: "production",
           organisationName: "TestOrganisation",
         },
       },
