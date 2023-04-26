@@ -1,8 +1,8 @@
 from typing import Any, Dict, List, Literal, Sequence, Type
 
-from grai_client.schemas.schema import Schema
 from grai_schemas import config as base_config
 from grai_schemas.generics import DefaultValue
+from grai_schemas.schema import Schema
 from grai_schemas.v1.metadata.edges import (
     ColumnToColumnMetadata,
     EdgeTypeLabels,

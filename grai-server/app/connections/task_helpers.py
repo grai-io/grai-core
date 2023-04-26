@@ -11,6 +11,7 @@ from grai_schemas.v1.node import NodeNamedID
 from multimethod import multimethod
 from pydantic import BaseModel
 
+from grai_schemas.utilities import merge
 from lineage.models import Edge as EdgeModel
 from lineage.models import Node as NodeModel
 from workspaces.models import Workspace
@@ -28,55 +29,13 @@ def to_dict(instance):
     return data
 
 
-atomic = Union[int, float, complex, str, bool, uuid.UUID]
-
-
-@multimethod
-def merge(a, b):
-    raise Exception()
-
-
-@merge.register
-def merge_atomic(a: Any, b: Any):
-    return b
-
-
-@merge.register
-def merge_missing(a: Any, b: None):
-    return a
-
-
-@merge.register
-def merge_dicts(a: dict, b: dict):
-    result = {**a}
-    for k, v in b.items():
-        result[k] = merge(result[k], v) if k in result else v
-
-    return result
-
-
-@merge.register
-def merge_seq(a: list, b: list):
-    return [*a, *b]
-
-
-@merge.register
-def merge_seq(a: tuple, b: tuple):
-    return *a, *b
-
-
-@merge.register
-def merge_set(a: set, b: set):
-    return b | a
-
-
 @merge.register
 def merge_node_left(a: Any, b: NodeModel):
     raise Exception()
 
 
 @merge.register
-def merge_node_dict(a: models.Model, b: Dict):
+def merge_node_dict(a: models.Model, b: Dict) -> models.Model:
     assert all(hasattr(a, key) for key in b.keys()), "Can't merge dictionary into model with unknown keys"
     a_copy = deepcopy(a)
     for b_key, b_value in b.items():
@@ -86,20 +45,9 @@ def merge_node_dict(a: models.Model, b: Dict):
 
 
 @merge.register
-def merge_node_node(a: models.Model, b: models.Model):
+def merge_node_node(a: models.Model, b: models.Model) -> models.Model:
     assert isinstance(a, type(b))
     return type(a)(merge(to_dict(a), to_dict(b)))
-
-
-@merge.register
-def merge_pydantic(a: BaseModel, b: Any):
-    merged = merge(a.dict(), b)
-    return type(a)(**merged)
-
-
-@merge.register
-def merge_pydantic_right(a: Any, b: BaseModel):
-    return merge(a, b.dict())
 
 
 def get_node(workspace: Workspace, grai_type: dict) -> NodeModel:
