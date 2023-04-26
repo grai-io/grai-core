@@ -429,7 +429,7 @@ class Workspace:
     ) -> Pagination[Table]:
         queryset = NodeModel.objects.filter(workspace=self, metadata__grai__node_type="Table")
 
-        if filters.filter:
+        if filters and filters.filter:
             filter = await FilterModel.objects.aget(id=filters.filter)
 
             filteredQueryset = apply_table_filter(queryset, filter)
