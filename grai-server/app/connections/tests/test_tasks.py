@@ -56,6 +56,11 @@ def test_mysql_connector():
 
 
 @pytest.fixture
+def test_redshift_connector():
+    return Connector.objects.create(name=Connector.REDSHIFT, slug=Connector.REDSHIFT)
+
+
+@pytest.fixture
 def test_dbt_connector():
     connector, created = Connector.objects.get_or_create(name=Connector.DBT, slug=Connector.DBT)
 
@@ -230,6 +235,28 @@ class TestUpdateServer:
                 "host": config("DB_HOST", "localhost"),
                 "port": 5432,
                 "dbname": "grai",
+                "user": "grai",
+            },
+            secrets={"password": "grai"},
+        )
+
+        run = Run.objects.create(connection=connection, workspace=test_workspace)
+
+        process_run(str(run.id))
+
+    def test_run_update_server_redshift(self, test_workspace, test_redshift_connector, mocker):
+        mocker.patch("grai_source_redshift.loader.RedshiftConnector")
+        mock = mocker.patch("grai_source_redshift.base.get_nodes_and_edges")
+        mock.return_value = [[], []]
+
+        connection = Connection.objects.create(
+            name="C1",
+            connector=test_redshift_connector,
+            workspace=test_workspace,
+            metadata={
+                "host": config("DB_HOST", "localhost"),
+                "port": 5432,
+                "database": "grai",
                 "user": "grai",
             },
             secrets={"password": "grai"},
@@ -557,7 +584,7 @@ def test_process_run_incorrect_action(test_workspace, test_yaml_file_connector):
         with pytest.raises(Exception) as e_info:
             process_run(str(run.id))
 
-        assert str(e_info.value) == "Incorrect run action Incorrect found, accepted values: tests, update"
+        assert str(e_info.value) == "Incorrect run action Incorrect found, accepted values: tests, update, validate"
 
 
 @pytest.mark.django_db

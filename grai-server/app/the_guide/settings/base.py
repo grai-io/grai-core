@@ -121,7 +121,6 @@ THIRD_PARTY_APPS = [
     "social_django",
     "rest_framework_simplejwt",
     "django_extensions",
-    "rest_framework.authtoken",
     "rest_framework_api_key",
     "health_check",
     "health_check.db",
@@ -185,7 +184,6 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
         "rest_framework.authentication.SessionAuthentication",
-        "rest_framework.authentication.TokenAuthentication",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }

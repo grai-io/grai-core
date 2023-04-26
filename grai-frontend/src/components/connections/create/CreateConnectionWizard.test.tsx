@@ -219,6 +219,7 @@ test("submit", async () => {
           run: {
             id: "1",
             status: "success",
+            metadata: {},
           },
         },
       },

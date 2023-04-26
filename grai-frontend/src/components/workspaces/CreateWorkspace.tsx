@@ -5,7 +5,7 @@ import WorkspaceForm from "./WorkspaceForm"
 const CreateWorkspace: React.FC = () => {
   return (
     <Container maxWidth="xs" sx={{ mt: 20 }}>
-      <img src="/images/grai-logo.svg" alt="Grai" />
+      <img src="/icons/grai/grai-logo.svg" alt="Grai" />
       <Card elevation={3} sx={{ mt: 2 }}>
         <CardContent sx={{ p: 5 }}>
           <Typography variant="h6" sx={{ mb: 1 }}>

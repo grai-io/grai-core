@@ -15,6 +15,7 @@ class Connector(models.Model):
     BIGQUERY = "bigquery"
     FIVETRAN = "fivetran"
     MYSQL = "mysql"
+    REDSHIFT = "redshift"
 
     CONNECTOR_SLUGS = [
         (POSTGRESQL, "postgres"),
@@ -25,6 +26,7 @@ class Connector(models.Model):
         (BIGQUERY, "bigquery"),
         (FIVETRAN, "fivetran"),
         (MYSQL, "mysql"),
+        (REDSHIFT, "redshift"),
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
