@@ -93,6 +93,7 @@ const FilterControl: React.FC = () => {
             }}
           />
         )}
+        data-testid="filter-control"
         sx={{ backgroundColor: "white", width: 250 }}
       />
       {error && <GraphError error={error} />}

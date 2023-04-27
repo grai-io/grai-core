@@ -6,6 +6,7 @@ import profileMock from "testing/profileMock"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
 import { GET_FILTERS } from "components/graph/controls/filter/FilterControl"
 import Graph, { GET_TABLES_AND_EDGES } from "./Graph"
+import { input } from "testing/autocomplete"
 
 export const filtersMock = {
   request: {
@@ -20,7 +21,13 @@ export const filtersMock = {
       workspace: {
         id: "1",
         filters: {
-          data: [],
+          data: [
+            {
+              id: "1",
+              name: "test",
+              metadata: [],
+            },
+          ],
         },
       },
     },
@@ -332,4 +339,39 @@ test("search", async () => {
   await act(
     async () => await user.type(screen.getByTestId("search-input"), "search")
   )
+})
+
+test("filter", async () => {
+  class ResizeObserver {
+    callback: globalThis.ResizeObserverCallback
+
+    constructor(callback: globalThis.ResizeObserverCallback) {
+      this.callback = callback
+    }
+
+    observe(target: Element) {
+      this.callback([{ target } as globalThis.ResizeObserverEntry], this)
+    }
+
+    unobserve() {}
+
+    disconnect() {}
+  }
+
+  window.ResizeObserver = ResizeObserver
+
+  render(<Graph />, {
+    path: ":organisationName/:workspaceName/graph",
+    route: "/default/demo/graph",
+    mocks,
+  })
+
+  await waitFor(() => {
+    expect(screen.getByText("N2 Node")).toBeInTheDocument()
+  })
+
+  input(screen.getByTestId("filter-control"), "te")
+
+  // eslint-disable-next-line testing-library/no-wait-for-empty-callback
+  await waitFor(() => {})
 })

@@ -99,16 +99,21 @@ const FilterRow: React.FC<FilterRowProps> = ({
     <Grid container spacing={1} sx={{ mt: 0.5 }}>
       <Grid item md={3}>
         <Autocomplete
+          openOnFocus
+          autoSelect
           options={types}
           value={types.find(type => type.value === filter.type) ?? null}
           onChange={(event, newValue) =>
             onChange({ ...filter, type: newValue?.value ?? null })
           }
           renderInput={params => <TextField {...params} />}
+          data-testid="autocomplete-property"
         />
       </Grid>
       <Grid item md={3}>
         <Autocomplete
+          openOnFocus
+          autoSelect
           options={fields}
           value={fields.find(field => field.value === filter.field) ?? null}
           onChange={(event, newValue) =>
@@ -116,10 +121,13 @@ const FilterRow: React.FC<FilterRowProps> = ({
           }
           renderInput={params => <TextField {...params} />}
           getOptionDisabled={option => option.disabled ?? false}
+          data-testid="autocomplete-field"
         />
       </Grid>
       <Grid item md={3}>
         <Autocomplete
+          openOnFocus
+          autoSelect
           options={operators}
           value={
             operators.find(operator => operator.value === filter.operator) ??
@@ -129,16 +137,20 @@ const FilterRow: React.FC<FilterRowProps> = ({
             onChange({ ...filter, operator: newValue?.value ?? null })
           }
           renderInput={params => <TextField {...params} />}
+          data-testid="autocomplete-operator"
         />
       </Grid>
       <Grid item md={2}>
         <Autocomplete
+          openOnFocus
+          autoSelect
           options={tags}
           value={tags.find(tag => tag.value === filter.value) ?? null}
           onChange={(event, newValue) =>
             onChange({ ...filter, value: newValue?.value ?? null })
           }
           renderInput={params => <TextField {...params} />}
+          data-testid="autocomplete-value"
         />
       </Grid>
       <Grid item md={1}>

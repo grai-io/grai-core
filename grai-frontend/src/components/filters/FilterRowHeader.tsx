@@ -1,7 +1,7 @@
 import React from "react"
 import { Grid, Typography } from "@mui/material"
 
-const FilterHeader: React.FC = () => (
+const FilterRowHeader: React.FC = () => (
   <Grid container spacing={1}>
     <Grid item md={3}>
       <Typography>Property</Typography>
@@ -18,4 +18,4 @@ const FilterHeader: React.FC = () => (
   </Grid>
 )
 
-export default FilterHeader
+export default FilterRowHeader

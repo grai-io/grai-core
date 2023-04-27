@@ -1,5 +1,5 @@
 import React from "react"
-import FilterHeader from "components/graph/controls/filter/FilterHeader"
+import FilterRowHeader from "components/filters/FilterRowHeader"
 import FilterRow, { Filter } from "./FilterRow"
 
 type FilterRowsProps = {
@@ -22,7 +22,7 @@ const FilterRows: React.FC<FilterRowsProps> = ({ filters, onChange }) => {
 
   return (
     <>
-      <FilterHeader />
+      <FilterRowHeader />
       {filters.map((filter, index) => (
         <FilterRow
           key={index}
