@@ -432,7 +432,7 @@ class Workspace:
         if filters and filters.filter:
             filter = await FilterModel.objects.aget(id=filters.filter)
 
-            filteredQueryset = apply_table_filter(queryset, filter)
+            filteredQueryset = await apply_table_filter(queryset, filter)
 
             return Pagination[Table](queryset=queryset, filteredQueryset=filteredQueryset, pagination=pagination)
 
