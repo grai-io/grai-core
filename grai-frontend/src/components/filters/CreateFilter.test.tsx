@@ -1,6 +1,6 @@
+import userEvent from "@testing-library/user-event"
 import { act, render, screen } from "testing"
 import CreateFilter from "./CreateFilter"
-import userEvent from "@testing-library/user-event"
 
 test("renders", async () => {
   render(<CreateFilter workspaceId="1" />, {

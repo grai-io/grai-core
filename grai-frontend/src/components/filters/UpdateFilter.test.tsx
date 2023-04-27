@@ -1,7 +1,7 @@
-import { act, render, screen, waitFor } from "testing"
-import UpdateFilter, { UPDATE_FILTER } from "./UpdateFilter"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
+import { act, render, screen, waitFor } from "testing"
+import UpdateFilter, { UPDATE_FILTER } from "./UpdateFilter"
 
 const filter = {
   id: "1",
