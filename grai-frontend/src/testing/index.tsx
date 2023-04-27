@@ -46,6 +46,9 @@ const mockResolvers = {
   Commit: () => ({
     reference: casual.integer(1, 100),
   }),
+  Filter: () => ({
+    metadata: [],
+  }),
 }
 
 type RouteType =
