@@ -48,7 +48,7 @@ def test_filter(test_workspace, test_user):
 def test_none(test_filter, test_workspace):
     table = Node.objects.create(workspace=test_workspace, metadata={"grai": {"node_type": "Table"}}, name=uuid.uuid4())
 
-    queryset = Node.objects
+    queryset = Node.objects.filter(workspace=test_workspace)
 
     result = apply_table_filter(queryset, test_filter)
     assert result is not None
@@ -71,7 +71,7 @@ def test_table_tags_contains(test_workspace, test_user):
         created_by=test_user,
     )
 
-    queryset = Node.objects
+    queryset = Node.objects.filter(workspace=test_workspace)
 
     result = apply_table_filter(queryset, filter)
     assert result is not None
@@ -92,7 +92,7 @@ def test_table_tags_contains_miss(test_workspace, test_user):
         created_by=test_user,
     )
 
-    queryset = Node.objects
+    queryset = Node.objects.filter(workspace=test_workspace)
 
     result = apply_table_filter(queryset, filter)
     assert result is not None
