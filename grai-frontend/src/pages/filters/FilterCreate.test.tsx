@@ -13,6 +13,7 @@ test("renders", async () => {
     expect(screen.getByText("Create Filter")).toBeInTheDocument()
   })
 
+  // eslint-disable-next-line testing-library/no-wait-for-empty-callback
   await waitFor(() => {})
 })
 
