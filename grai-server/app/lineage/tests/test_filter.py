@@ -45,26 +45,28 @@ def test_filter(test_workspace, test_user):
 
 
 @pytest.mark.django_db
-def test_none(test_filter, test_workspace):
-    table = Node.objects.create(workspace=test_workspace, metadata={"grai": {"node_type": "Table"}}, name=uuid.uuid4())
+async def test_none(test_filter, test_workspace):
+    table = await Node.objects.acreate(
+        workspace=test_workspace, metadata={"grai": {"node_type": "Table"}}, name=uuid.uuid4()
+    )
 
     queryset = Node.objects.filter(workspace=test_workspace)
 
-    result = apply_table_filter(queryset, test_filter)
-    assert result is not None
+    queryset = await apply_table_filter(queryset, test_filter)
+    result = await sync_to_async(list)(queryset)
     assert len(result) == 1
     assert str(result[0].id) == str(table.id)
 
 
 @pytest.mark.django_db
-def test_table_tags_contains(test_workspace, test_user):
-    table = Node.objects.create(
+async def test_table_tags_contains(test_workspace, test_user):
+    table = await Node.objects.acreate(
         workspace=test_workspace,
         metadata={"grai": {"node_type": "Table", "tags": ["grai-source-postgres"]}},
         name=uuid.uuid4(),
     )
 
-    filter = Filter.objects.create(
+    filter = await Filter.objects.acreate(
         workspace=test_workspace,
         name=str(uuid.uuid4()),
         metadata=[{"field": "tag", "operator": "contains", "type": "table", "value": "grai-source-postgres"}],
@@ -73,19 +75,19 @@ def test_table_tags_contains(test_workspace, test_user):
 
     queryset = Node.objects.filter(workspace=test_workspace)
 
-    result = apply_table_filter(queryset, filter)
-    assert result is not None
+    queryset = await apply_table_filter(queryset, filter)
+    result = await sync_to_async(list)(queryset)
     assert len(result) == 1
     assert str(result[0].id) == str(table.id)
 
 
 @pytest.mark.django_db
-def test_table_tags_contains_miss(test_workspace, test_user):
-    table = Node.objects.create(
+async def test_table_tags_contains_miss(test_workspace, test_user):
+    await Node.objects.acreate(
         workspace=test_workspace, metadata={"grai": {"node_type": "Table", "tags": []}}, name=uuid.uuid4()
     )
 
-    filter = Filter.objects.create(
+    filter = await Filter.objects.acreate(
         workspace=test_workspace,
         name=str(uuid.uuid4()),
         metadata=[{"field": "tag", "operator": "contains", "type": "table", "value": "grai-source-postgres"}],
@@ -94,6 +96,7 @@ def test_table_tags_contains_miss(test_workspace, test_user):
 
     queryset = Node.objects.filter(workspace=test_workspace)
 
-    result = apply_table_filter(queryset, filter)
+    queryset = await apply_table_filter(queryset, filter)
+    result = await sync_to_async(list)(queryset)
     assert result is not None
     assert len(result) == 0
