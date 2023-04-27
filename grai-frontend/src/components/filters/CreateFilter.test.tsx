@@ -1,7 +1,7 @@
 import userEvent from "@testing-library/user-event"
 import { act, render, screen } from "testing"
-import CreateFilter from "./CreateFilter"
 import { input } from "testing/autocomplete"
+import CreateFilter from "./CreateFilter"
 
 test("renders", async () => {
   render(<CreateFilter workspaceId="1" />, {

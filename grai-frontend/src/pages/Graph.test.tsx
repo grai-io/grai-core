@@ -2,11 +2,11 @@ import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
+import { input } from "testing/autocomplete"
 import profileMock from "testing/profileMock"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
 import { GET_FILTERS } from "components/graph/controls/filter/FilterControl"
 import Graph, { GET_TABLES_AND_EDGES } from "./Graph"
-import { input } from "testing/autocomplete"
 
 export const filtersMock = {
   request: {
