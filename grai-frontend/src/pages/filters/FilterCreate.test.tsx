@@ -1,8 +1,8 @@
 import React from "react"
-import { render, screen, waitFor } from "testing"
-import FilterCreate, { GET_WORKSPACE } from "./FilterCreate"
-import profileMock from "testing/profileMock"
 import { GraphQLError } from "graphql"
+import { render, screen, waitFor } from "testing"
+import profileMock from "testing/profileMock"
+import FilterCreate, { GET_WORKSPACE } from "./FilterCreate"
 
 test("renders", async () => {
   render(<FilterCreate />, {
