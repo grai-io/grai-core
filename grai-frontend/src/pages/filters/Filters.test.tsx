@@ -20,6 +20,45 @@ test("renders", async () => {
   })
 })
 
+test("empty", async () => {
+  render(<Filters />, {
+    withRouter: true,
+    mocks: [
+      profileMock,
+      {
+        request: {
+          query: GET_FILTERS,
+          variables: {
+            organisationName: "",
+            workspaceName: "",
+          },
+        },
+        result: {
+          data: {
+            workspace: {
+              id: "1",
+              filters: {
+                data: [],
+                meta: {
+                  total: 0,
+                },
+              },
+            },
+          },
+        },
+      },
+    ],
+  })
+
+  await waitFor(() => {
+    expect(screen.getByRole("heading", { name: /Filters/i })).toBeTruthy()
+  })
+
+  await waitFor(() => {
+    expect(screen.getAllByText("No filters found")).toBeTruthy()
+  })
+})
+
 test("refresh", async () => {
   const user = userEvent.setup()
 
@@ -35,6 +74,25 @@ test("refresh", async () => {
 
   // eslint-disable-next-line testing-library/no-wait-for-empty-callback
   await waitFor(() => {})
+})
+
+test("row click", async () => {
+  const user = userEvent.setup()
+
+  const { container } = render(<Filters />, {
+    routes: ["/:filterId"],
+  })
+
+  await waitFor(() => {
+    expect(screen.getAllByText(/Hello world/i)).toBeTruthy()
+  })
+
+  await act(
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+    async () => await user.click(container.querySelectorAll("tbody > tr")[0])
+  )
+
+  expect(screen.getByText("New Page")).toBeInTheDocument()
 })
 
 // const filterMock = {

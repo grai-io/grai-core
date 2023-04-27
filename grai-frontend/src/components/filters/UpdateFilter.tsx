@@ -40,9 +40,9 @@ const UpdateFilter: React.FC<UpdateFilterProps> = ({ filter }) => {
   >(UPDATE_FILTER)
 
   const handleSave = (values: Values) =>
-    updateFilter({ variables: { id: filter.id, ...values } }).then(() =>
-      enqueueSnackbar("Filter updated")
-    )
+    updateFilter({ variables: { id: filter.id, ...values } })
+      .then(() => enqueueSnackbar("Filter updated"))
+      .catch(() => {})
 
   return (
     <Box sx={{ p: 3 }}>
