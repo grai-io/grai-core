@@ -98,6 +98,14 @@ const Connections: React.FC = () => {
 
   if (error) return <GraphError error={error} />
 
+  const connections = data?.workspace.connections.data ?? []
+
+  const filteredConnections = search
+    ? connections.filter(connection =>
+        connection.name.toLowerCase().includes(search.toLowerCase())
+      )
+    : connections
+
   return (
     <PageLayout>
       <PageHeader
@@ -126,7 +134,7 @@ const Connections: React.FC = () => {
           onRefresh={handleRefresh}
         />
         <ConnectionsTable
-          connections={data?.workspace.connections.data ?? []}
+          connections={filteredConnections}
           workspaceId={data?.workspace.id}
           loading={loading}
           total={data?.workspace.connections.meta.total ?? 0}
