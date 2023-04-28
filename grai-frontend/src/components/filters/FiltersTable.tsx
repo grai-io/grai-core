@@ -16,10 +16,17 @@ import Loading from "components/layout/Loading"
 import TablePagination from "components/table/TablePagination"
 import TableCell from "components/tables/TableCell"
 
+interface User {
+  id: string
+  username: string | null
+  first_name: string
+  last_name: string
+}
 interface Filter {
   id: string
   name: string | null
   created_at: string
+  created_by: User
 }
 
 type FiltersTableProps = {
@@ -43,6 +50,7 @@ const FiltersTable: React.FC<FiltersTableProps> = ({
         <TableRow sx={{ backgroundColor: theme => theme.palette.grey[100] }}>
           <TableCell>Name</TableCell>
           <TableCell sx={{ textAlign: "right" }}>Created</TableCell>
+          <TableCell>User</TableCell>
           <TableCell sx={{ width: 0 }} />
         </TableRow>
       </TableHead>
@@ -68,6 +76,7 @@ const FiltersTable: React.FC<FiltersTableProps> = ({
                 </Tooltip>
               </Box>
             </TableCell>
+            <TableCell>{filter.created_by.first_name}</TableCell>
             <TableCell sx={{ py: 0, px: 1 }} stopPropagation>
               {/* <ConnectionsMenu
                 connection={connection}

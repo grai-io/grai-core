@@ -1922,6 +1922,12 @@ async def test_filters(test_context):
                 filters {
                     data {
                         id
+                        name
+                        created_at
+                        created_by {
+                            id
+                            username
+                        }
                     }
                 }
             }
@@ -1937,6 +1943,7 @@ async def test_filters(test_context):
     assert result.errors is None
     assert result.data["workspace"]["id"] == str(workspace.id)
     assert result.data["workspace"]["filters"]["data"][0]["id"] == str(filter.id)
+    assert result.data["workspace"]["filters"]["data"][0]["created_by"]["id"] == str(user.id)
 
 
 @pytest.mark.django_db

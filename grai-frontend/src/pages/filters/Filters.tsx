@@ -17,6 +17,12 @@ export const GET_FILTERS = gql`
           id
           name
           created_at
+          created_by {
+            id
+            username
+            first_name
+            last_name
+          }
         }
         meta {
           total

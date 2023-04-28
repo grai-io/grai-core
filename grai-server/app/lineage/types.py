@@ -1,5 +1,7 @@
 from typing import List
 
+from users.types import User
+
 import strawberry_django
 from strawberry.scalars import JSON
 from strawberry_django_plus import gql
@@ -97,3 +99,4 @@ class Filter:
     metadata: JSON
     created_at: auto
     updated_at: auto
+    created_by: User
