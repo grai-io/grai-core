@@ -1,11 +1,14 @@
 import React from "react"
 import { Box, SxProps, Typography } from "@mui/material"
+import PageHeaderTabs, { Tab } from "./PageHeaderTabs"
 
 type PageHeaderProps = {
   title: string
   status?: React.ReactNode
   buttons?: React.ReactNode
-  tabs?: React.ReactNode
+  tabs?: Tab[]
+  currentTab?: string
+  setTab?: (tab: string) => void
   sx?: SxProps
   BoxProps?: {
     sx?: SxProps
@@ -17,6 +20,8 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   status,
   buttons,
   tabs,
+  currentTab,
+  setTab,
   sx,
   BoxProps,
 }) => (
@@ -52,7 +57,9 @@ const PageHeader: React.FC<PageHeaderProps> = ({
       <Box sx={{ flexGrow: 1 }} />
       <Box>{buttons}</Box>
     </Box>
-    {tabs}
+    {tabs && currentTab && setTab && (
+      <PageHeaderTabs tabs={tabs} currentTab={currentTab} setTab={setTab} />
+    )}
   </Box>
 )
 

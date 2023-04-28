@@ -2,13 +2,13 @@ import React from "react"
 import { gql, useQuery } from "@apollo/client"
 import { useSearchParams } from "react-router-dom"
 import getRepoFromParams from "helpers/getRepoFromParams"
+import useTabs from "helpers/useTabs"
 import useWorkspace from "helpers/useWorkspace"
-import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
+import PageTabs from "components/layout/PageTabs"
 import ReportFilter from "components/reports/ReportFilter"
 import ReportsTable from "components/reports/ReportsTable"
-import ReportTabs from "components/reports/ReportTabs"
 import GraphError from "components/utils/GraphError"
 import { GetReports, GetReportsVariables } from "./__generated__/GetReports"
 
@@ -99,6 +99,8 @@ const Reports: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
   const [searchParams] = useSearchParams()
 
+  const { currentTab, setTab } = useTabs("all")
+
   const branch = searchParams.get("branch")
   const { owner, repo } = getRepoFromParams(searchParams)
 
@@ -119,19 +121,44 @@ const Reports: React.FC = () => {
 
   const handleRefresh = () => refetch()
 
+  const tabs = [
+    {
+      label: "All",
+      value: "all",
+      component: (
+        <>
+          <ReportFilter
+            workspace={data?.workspace ?? null}
+            onRefresh={handleRefresh}
+          />
+          <ReportsTable
+            runs={data?.workspace.runs.data ?? null}
+            loading={loading}
+          />
+        </>
+      ),
+    },
+    {
+      label: "Pulls",
+      value: "pulls",
+      disabled: true,
+    },
+    {
+      label: "Commits",
+      value: "commits",
+      disabled: true,
+    },
+  ]
+
   return (
     <PageLayout>
-      <PageHeader title="Reports" tabs={<ReportTabs currentTab="all" />} />
-      <PageContent>
-        <ReportFilter
-          workspace={data?.workspace ?? null}
-          onRefresh={handleRefresh}
-        />
-        <ReportsTable
-          runs={data?.workspace.runs.data ?? null}
-          loading={loading}
-        />
-      </PageContent>
+      <PageHeader
+        title="Reports"
+        tabs={tabs}
+        currentTab={currentTab}
+        setTab={setTab}
+      />
+      <PageTabs tabs={tabs} currentTab={currentTab} />
     </PageLayout>
   )
 }

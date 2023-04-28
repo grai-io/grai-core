@@ -4,23 +4,22 @@ import { Box, Stack, Tooltip } from "@mui/material"
 import { useParams } from "react-router-dom"
 import NotFound from "pages/NotFound"
 import useRunPolling from "helpers/runPolling"
+import useTabs from "helpers/useTabs"
 import useWorkspace from "helpers/useWorkspace"
-import ConnectionContent from "components/connections/ConnectionContent"
-import ConnectionHeader from "components/connections/ConnectionHeader"
+import ConnectionConfiguration from "components/connections/configuration/ConnectionConfiguration"
 import ConnectionMenu from "components/connections/ConnectionMenu"
 import ConnectionRun from "components/connections/ConnectionRun"
-import ConnectionTabs from "components/connections/ConnectionTabs"
-import PageContent from "components/layout/PageContent"
+import ConnectionRunsTable from "components/connections/runs/ConnectionRunsTable"
+import EditScheduleForm from "components/connections/schedule/EditScheduleForm"
 import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
+import PageTabs from "components/layout/PageTabs"
+import RunStatus from "components/runs/RunStatus"
 import GraphError from "components/utils/GraphError"
 import {
   GetConnection,
   GetConnectionVariables,
 } from "./__generated__/GetConnection"
-import RunStatus from "components/runs/RunStatus"
-import ConnectionTabs2 from "components/connections/ConnectionTabs2"
-import ConnectionRunsTable from "components/connections/runs/ConnectionRunsTable"
 
 export const GET_CONNECTION = gql`
   query GetConnection(
@@ -95,6 +94,8 @@ const Connection: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
   const { connectionId } = useParams()
 
+  const { currentTab, setTab } = useTabs("runs")
+
   const { loading, error, data, startPolling, stopPolling } = useQuery<
     GetConnection,
     GetConnectionVariables
@@ -119,6 +120,34 @@ const Connection: React.FC = () => {
   if (!workspace || !connection) return <NotFound />
 
   const handleRun = () => startPolling(1000)
+
+  const tabs = [
+    {
+      value: "runs",
+      label: "Runs",
+      component: <ConnectionRunsTable runs={connection.runs} />,
+    },
+    {
+      value: "configuration",
+      label: "Configuration",
+      component: <ConnectionConfiguration connection={connection} />,
+    },
+    {
+      value: "schedule",
+      label: "Schedule",
+      component: <EditScheduleForm connection={connection} />,
+    },
+    {
+      value: "activity",
+      label: "Activity",
+      disabled: true,
+    },
+    {
+      value: "alerts",
+      label: "Alerts",
+      disabled: true,
+    },
+  ]
 
   return (
     <PageLayout>
@@ -165,11 +194,11 @@ const Connection: React.FC = () => {
             />
           </Stack>
         }
-        tabs={<ConnectionTabs2 />}
+        tabs={tabs}
+        currentTab={currentTab}
+        setTab={setTab}
       />
-      <PageContent>
-        <ConnectionRunsTable runs={connection.runs} />
-      </PageContent>
+      <PageTabs tabs={tabs} currentTab={currentTab} />
     </PageLayout>
   )
 }

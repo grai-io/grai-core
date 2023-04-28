@@ -1,23 +1,24 @@
 import React, { useEffect, useState } from "react"
 import { gql, useQuery } from "@apollo/client"
+import { Box, Stack, Typography } from "@mui/material"
 import { useParams } from "react-router-dom"
 import NotFound from "pages/NotFound"
 import resultsToErrors from "helpers/resultsToErrors"
+import { durationAgo } from "helpers/runDuration"
+import useSearchParams from "helpers/useSearchParams"
+import useTabs from "helpers/useTabs"
 import useWorkspace from "helpers/useWorkspace"
+import Graph from "components/graph/Graph"
+import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
-import ReportBody from "components/reports/ReportBody"
-import ReportRunHeader from "components/reports/run/ReportRunHeader"
+import PageTabs from "components/layout/PageTabs"
+import TestResults from "components/reports/results/TestResults"
+import RunLog from "components/reports/run/RunLog"
 import GraphError from "components/utils/GraphError"
 import {
   GetRunReport,
   GetRunReportVariables,
 } from "./__generated__/GetRunReport"
-import PageHeader from "components/layout/PageHeader"
-import ReportTabs2 from "components/reports/ReportTabs2"
-import { Box, Stack, Typography } from "@mui/material"
-import { durationAgo } from "helpers/runDuration"
-import Graph from "components/graph/Graph"
-import useSearchParams from "helpers/useSearchParams"
 
 export const GET_RUN = gql`
   query GetRunReport(
@@ -104,6 +105,8 @@ const Report: React.FC = () => {
   const { searchParams, setSearchParams } = useSearchParams()
   const [display, setDisplay] = useState(false)
 
+  const { currentTab, setTab } = useTabs("graph")
+
   useEffect(() => {
     setSearchParams(
       { ...searchParams, limitGraph: "true" },
@@ -146,11 +149,55 @@ const Report: React.FC = () => {
 
   if (!display) return null
 
+  const tabs = [
+    {
+      value: "graph",
+      label: "Graph",
+      noWrapper: true,
+      component: (
+        <Box
+          sx={{
+            height: "calc(100vh - 144px)",
+            backgroundColor: theme => theme.palette.grey[100],
+          }}
+        >
+          <Graph
+            tables={tables}
+            edges={edges}
+            errors={errors}
+            limitGraph={limitGraph}
+          />
+        </Box>
+      ),
+    },
+    {
+      value: "failed-tests",
+      label: "Failed",
+      component: (
+        <TestResults
+          errors={errors?.filter(error => !error.test_pass) ?? null}
+        />
+      ),
+    },
+    {
+      value: "all-tests",
+      label: "All",
+      component: <TestResults errors={errors} />,
+    },
+    {
+      value: "log",
+      label: "Log",
+      component: run && <RunLog run={run} />,
+    },
+  ]
+
   return (
     <PageLayout>
       <PageHeader
         title={`Run ${run.id.slice(0, 6)}`}
-        tabs={<ReportTabs2 />}
+        tabs={tabs}
+        currentTab={currentTab}
+        setTab={setTab}
         status={
           run.created_at && (
             <Typography>{`about ${durationAgo(
@@ -173,18 +220,7 @@ const Report: React.FC = () => {
           </Stack>
         }
       />
-      <Box
-        sx={{
-          height: "calc(100vh - 144px)",
-        }}
-      >
-        <Graph
-          tables={tables}
-          edges={edges}
-          errors={errors}
-          limitGraph={limitGraph}
-        />
-      </Box>
+      <PageTabs tabs={tabs} currentTab={currentTab} />
     </PageLayout>
   )
 }
