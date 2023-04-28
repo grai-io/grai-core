@@ -27,13 +27,13 @@ const TablesTable: React.FC<TablesTableProps> = ({
   const navigate = useNavigate()
 
   return (
-    <Table>
+    <Table sx={{ mb: -1 }}>
       <TableHead>
-        <TableRow sx={{ backgroundColor: theme => theme.palette.grey[100] }}>
-          <TableCell>Name</TableCell>
-          <TableCell>Namespace</TableCell>
-          <TableCell>Data Source</TableCell>
-          <TableCell>Active</TableCell>
+        <TableRow>
+          <TableCell sx={{ fontWeight: 700 }}>Name</TableCell>
+          <TableCell sx={{ fontWeight: 700 }}>Namespace</TableCell>
+          <TableCell sx={{ fontWeight: 700 }}>Data Source</TableCell>
+          <TableCell sx={{ fontWeight: 700 }}>Active</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>

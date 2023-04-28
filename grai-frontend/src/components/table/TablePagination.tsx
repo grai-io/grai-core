@@ -76,7 +76,7 @@ const TablePagination: React.FC<TablePaginationProps> = ({
   type,
 }) => (
   <TableRow>
-    <TableCell colSpan={99} sx={{ p: 0 }}>
+    <TableCell colSpan={99} sx={{ p: 0, borderBottom: "none" }}>
       <Box sx={{ display: "flex" }}>
         <Typography variant="body2" sx={{ flexGrow: 1, m: 2 }}>
           {count} {type ?? (count !== 1 ? "rows" : "row")}
