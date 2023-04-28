@@ -1,12 +1,12 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
-import { Box } from "@mui/material"
 import { useSearchParams } from "react-router-dom"
 import getRepoFromParams from "helpers/getRepoFromParams"
 import useWorkspace from "helpers/useWorkspace"
+import PageContent from "components/layout/PageContent"
+import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
 import ReportFilter from "components/reports/ReportFilter"
-import ReportsHeader from "components/reports/ReportsHeader"
 import ReportsTable from "components/reports/ReportsTable"
 import ReportTabs from "components/reports/ReportTabs"
 import GraphError from "components/utils/GraphError"
@@ -121,9 +121,8 @@ const Reports: React.FC = () => {
 
   return (
     <PageLayout>
-      <ReportsHeader />
-      <Box sx={{ mx: 3 }}>
-        <ReportTabs currentTab="all" />
+      <PageHeader title="Reports" tabs={<ReportTabs currentTab="all" />} />
+      <PageContent>
         <ReportFilter
           workspace={data?.workspace ?? null}
           onRefresh={handleRefresh}
@@ -132,7 +131,7 @@ const Reports: React.FC = () => {
           runs={data?.workspace.runs.data ?? null}
           loading={loading}
         />
-      </Box>
+      </PageContent>
     </PageLayout>
   )
 }

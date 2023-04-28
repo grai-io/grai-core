@@ -70,7 +70,7 @@ test("refresh", async () => {
     withRouter: true,
   })
 
-  await act(async () => await user.click(screen.getByTestId("tables-refresh")))
+  await act(async () => await user.click(screen.getByTestId("table-refresh")))
 
   // eslint-disable-next-line testing-library/no-wait-for-empty-callback
   await waitFor(() => {})

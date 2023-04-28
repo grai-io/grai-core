@@ -88,15 +88,21 @@ const ReportsTable: React.FC<ReportsTableProps> = ({ runs, loading }) => {
   return (
     <Table>
       <TableHead>
-        <TableRow sx={{ backgroundColor: theme => theme.palette.grey[100] }}>
-          <TableCell>id</TableCell>
-          <TableCell>Connection</TableCell>
-          <TableCell>Repository</TableCell>
-          <TableCell>Trigger</TableCell>
-          <TableCell>Status</TableCell>
-          <TableCell sx={{ textAlign: "right" }}>Started</TableCell>
-          <TableCell sx={{ textAlign: "right" }}>Failures</TableCell>
-          <TableCell sx={{ textAlign: "right" }}>Success Rate</TableCell>
+        <TableRow>
+          <TableCell sx={{ fontWeight: 700 }}>id</TableCell>
+          <TableCell sx={{ fontWeight: 700 }}>Connection</TableCell>
+          <TableCell sx={{ fontWeight: 700 }}>Repository</TableCell>
+          <TableCell sx={{ fontWeight: 700 }}>Trigger</TableCell>
+          <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
+          <TableCell sx={{ fontWeight: 700, textAlign: "right" }}>
+            Started
+          </TableCell>
+          <TableCell sx={{ fontWeight: 700, textAlign: "right" }}>
+            Failures
+          </TableCell>
+          <TableCell sx={{ fontWeight: 700, textAlign: "right" }}>
+            Success Rate
+          </TableCell>
         </TableRow>
       </TableHead>
       <TableBody>

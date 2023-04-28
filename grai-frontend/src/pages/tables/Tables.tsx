@@ -4,7 +4,7 @@ import useWorkspace from "helpers/useWorkspace"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
-import TablesHeader from "components/tables/TablesHeader"
+import TableHeader from "components/table/TableHeader"
 import TablesTable from "components/tables/TablesTable"
 import GraphError from "components/utils/GraphError"
 import { GetTables, GetTablesVariables } from "./__generated__/GetTables"
@@ -70,7 +70,7 @@ const Tables: React.FC = () => {
     <PageLayout>
       <PageHeader title="Tables" />
       <PageContent>
-        <TablesHeader
+        <TableHeader
           search={search}
           onSearch={setSearch}
           onRefresh={handleRefresh}

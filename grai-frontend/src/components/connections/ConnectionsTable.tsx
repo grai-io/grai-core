@@ -43,14 +43,14 @@ const ConnectionsTable: React.FC<ConnectionsTableProps> = ({
   const navigate = useNavigate()
 
   return (
-    <Table>
+    <Table sx={{ mb: -1 }}>
       <TableHead>
-        <TableRow sx={{ backgroundColor: theme => theme.palette.grey[100] }}>
-          <TableCell>Name</TableCell>
-          <TableCell>Namespace</TableCell>
-          <TableCell>Integration</TableCell>
-          <TableCell>Active</TableCell>
-          <TableCell>Status</TableCell>
+        <TableRow>
+          <TableCell sx={{ fontWeight: 700 }}>Name</TableCell>
+          <TableCell sx={{ fontWeight: 700 }}>Namespace</TableCell>
+          <TableCell sx={{ fontWeight: 700 }}>Integration</TableCell>
+          <TableCell sx={{ fontWeight: 700 }}>Active</TableCell>
+          <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
           <TableCell sx={{ width: 0 }} />
         </TableRow>
       </TableHead>

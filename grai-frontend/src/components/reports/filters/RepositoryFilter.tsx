@@ -1,5 +1,5 @@
 import React from "react"
-import { Autocomplete, Box, InputAdornment, TextField } from "@mui/material"
+import { Autocomplete, InputAdornment, TextField } from "@mui/material"
 import useSearchParams from "helpers/useSearchParams"
 
 export interface Repository {
@@ -36,32 +36,30 @@ const RepositoryFilter: React.FC<RepositoryFilterProps> = ({
       : null) ?? null
 
   return (
-    <Box sx={{ py: 2, display: "flex" }}>
-      <Autocomplete
-        disablePortal
-        disabled={disabled}
-        options={repositories}
-        getOptionLabel={option => `${option.owner}/${option.repo}`}
-        value={value}
-        onChange={handleChange}
-        sx={{ minWidth: 350 }}
-        data-testid="autocomplete"
-        renderInput={params => (
-          <TextField
-            {...params}
-            size="small"
-            InputProps={{
-              ...params.InputProps,
-              startAdornment: (
-                <InputAdornment position="start" sx={{ ml: 1 }}>
-                  Repository
-                </InputAdornment>
-              ),
-            }}
-          />
-        )}
-      />
-    </Box>
+    <Autocomplete
+      disablePortal
+      disabled={disabled}
+      options={repositories}
+      getOptionLabel={option => `${option.owner}/${option.repo}`}
+      value={value}
+      onChange={handleChange}
+      sx={{ minWidth: 350 }}
+      data-testid="autocomplete"
+      renderInput={params => (
+        <TextField
+          {...params}
+          size="small"
+          InputProps={{
+            ...params.InputProps,
+            startAdornment: (
+              <InputAdornment position="start" sx={{ ml: 1 }}>
+                Repository
+              </InputAdornment>
+            ),
+          }}
+        />
+      )}
+    />
   )
 }
 

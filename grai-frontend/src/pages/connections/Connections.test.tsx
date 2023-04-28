@@ -30,9 +30,7 @@ test("refresh", async () => {
     expect(screen.getByRole("heading", { name: /Connections/i })).toBeTruthy()
   })
 
-  await act(
-    async () => await user.click(screen.getByTestId("connection-refresh"))
-  )
+  await act(async () => await user.click(screen.getByTestId("table-refresh")))
 
   // eslint-disable-next-line testing-library/no-wait-for-empty-callback
   await waitFor(() => {})
