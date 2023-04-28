@@ -91,11 +91,23 @@ export interface GetTablesAndEdges_workspace_other_edges {
   data: GetTablesAndEdges_workspace_other_edges_data[];
 }
 
+export interface GetTablesAndEdges_workspace_filters_data {
+  __typename: "Filter";
+  id: any;
+  name: string | null;
+}
+
+export interface GetTablesAndEdges_workspace_filters {
+  __typename: "FilterPagination";
+  data: GetTablesAndEdges_workspace_filters_data[];
+}
+
 export interface GetTablesAndEdges_workspace {
   __typename: "Workspace";
   id: any;
   tables: GetTablesAndEdges_workspace_tables;
   other_edges: GetTablesAndEdges_workspace_other_edges;
+  filters: GetTablesAndEdges_workspace_filters;
 }
 
 export interface GetTablesAndEdges {

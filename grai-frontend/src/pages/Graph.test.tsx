@@ -5,7 +5,7 @@ import { act, render, screen, waitFor } from "testing"
 import { input } from "testing/autocomplete"
 import profileMock from "testing/profileMock"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
-import { GET_FILTERS } from "components/graph/controls/filter/FilterControl"
+import { GET_FILTERS } from "components/graph/controls/FilterControl"
 import Graph, { GET_TABLES_AND_EDGES } from "./Graph"
 
 export const filtersMock = {
@@ -412,6 +412,7 @@ test("filter", async () => {
   render(<Graph />, {
     path: ":organisationName/:workspaceName/graph",
     route: "/default/demo/graph",
+    routes: ["/:organisationName/:workspaceName/filters/create"],
     mocks: [profileMock, filtersMock, tablesMock, tablesMockWithFilter],
   })
 
@@ -419,8 +420,9 @@ test("filter", async () => {
     expect(screen.getByText("N2 Node")).toBeInTheDocument()
   })
 
-  input(screen.getByTestId("filter-control"), "te")
+  input(screen.getByTestId("filter-control"))
 
-  // eslint-disable-next-line testing-library/no-wait-for-empty-callback
-  await waitFor(() => {})
+  await waitFor(() => {
+    expect(screen.getByText("New Page")).toBeInTheDocument()
+  })
 })

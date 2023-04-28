@@ -12,6 +12,7 @@ export interface UpdateFilter_updateFilter {
   id: any;
   name: string | null;
   metadata: any;
+  created_at: any;
 }
 
 export interface UpdateFilter {
@@ -20,5 +21,6 @@ export interface UpdateFilter {
 
 export interface UpdateFilterVariables {
   id: string;
+  name: string;
   metadata: any;
 }

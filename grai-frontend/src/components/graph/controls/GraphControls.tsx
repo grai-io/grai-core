@@ -1,7 +1,7 @@
 import React from "react"
 import { Box, Stack } from "@mui/material"
 import useSearchParams from "helpers/useSearchParams"
-import FilterControl from "./filter/FilterControl"
+import FilterControl from "./FilterControl"
 import LimitGraphControl from "./LimitGraphControl"
 import SearchControl from "./SearchControl"
 import StepsControl, { StepsControlOptions } from "./StepsControl"
