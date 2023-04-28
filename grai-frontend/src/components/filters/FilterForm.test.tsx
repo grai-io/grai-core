@@ -10,11 +10,13 @@ test("renders", async () => {
 })
 
 test("close", async () => {
+  const user = userEvent.setup()
+
   render(<FilterForm onSave={() => {}} onClose={() => {}} />)
 
   await screen.findAllByText("Cancel")
 
   await act(async () => {
-    userEvent.click(screen.getByTestId("CloseIcon"))
+    user.click(screen.getByTestId("CloseIcon"))
   })
 })
