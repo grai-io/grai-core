@@ -6,12 +6,14 @@ type TableHeaderProps = {
   search?: string | null
   onSearch?: (value: string) => void
   onRefresh?: () => void
+  rightButtons?: React.ReactNode
 }
 
 const TableHeader: React.FC<TableHeaderProps> = ({
   search,
   onSearch,
   onRefresh,
+  rightButtons,
 }) => {
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) =>
     onSearch && onSearch(event.target.value)
@@ -50,6 +52,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
           </Button>
         </Tooltip>
       )}
+      {rightButtons}
     </Box>
   )
 }

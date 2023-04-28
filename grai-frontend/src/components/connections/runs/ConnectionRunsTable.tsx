@@ -41,16 +41,22 @@ const ConnectionRunsTable: React.FC<ConnectionRunsTableProps> = ({ runs }) => {
   const { workspaceNavigate } = useWorkspace()
 
   return (
-    <Table sx={{ mt: 1 }}>
-      <TableHead sx={{ backgroundColor: theme => theme.palette.grey[100] }}>
+    <Table>
+      <TableHead>
         <TableRow>
           <TableCell sx={{ width: 0 }} />
-          <TableCell>id</TableCell>
-          <TableCell>User</TableCell>
-          <TableCell>Status</TableCell>
-          <TableCell sx={{ textAlign: "right" }}>Started</TableCell>
-          <TableCell sx={{ textAlign: "right" }}>Queued</TableCell>
-          <TableCell sx={{ textAlign: "right" }}>Duration</TableCell>
+          <TableCell sx={{ fontWeight: 700 }}>id</TableCell>
+          <TableCell sx={{ fontWeight: 700 }}>User</TableCell>
+          <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
+          <TableCell sx={{ fontWeight: 700, textAlign: "right" }}>
+            Started
+          </TableCell>
+          <TableCell sx={{ fontWeight: 700, textAlign: "right" }}>
+            Queued
+          </TableCell>
+          <TableCell sx={{ fontWeight: 700, textAlign: "right" }}>
+            Duration
+          </TableCell>
         </TableRow>
       </TableHead>
       <TableBody>

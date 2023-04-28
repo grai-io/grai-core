@@ -1,6 +1,7 @@
-import React, { ChangeEvent, useState } from "react"
-import { CloseFullscreen, OpenInFull, SearchRounded } from "@mui/icons-material"
-import { Box, Button, InputAdornment, TextField } from "@mui/material"
+import React, { useState } from "react"
+import { CloseFullscreen, OpenInFull } from "@mui/icons-material"
+import { Button } from "@mui/material"
+import TableHeader from "components/table/TableHeader"
 import TableColumnsTable, { Column } from "./TableColumnsTable"
 
 type TableColumnsProps = {
@@ -11,9 +12,6 @@ const TableColumns: React.FC<TableColumnsProps> = ({ columns }) => {
   const [search, setSearch] = useState<string | null>(null)
   const [expanded, setExpanded] = useState<string[]>([])
 
-  const handleSearch = (event: ChangeEvent<HTMLInputElement>) =>
-    setSearch(event.target.value)
-
   const handleExpand = (id: string, expand: boolean) =>
     setExpanded(expand ? [...expanded, id] : expanded.filter(e => e !== id))
   const handleExpandAll = () => setExpanded(columns.map(column => column.id))
@@ -21,29 +19,11 @@ const TableColumns: React.FC<TableColumnsProps> = ({ columns }) => {
 
   return (
     <>
-      <Box sx={{ display: "flex", mt: 3 }}>
-        <Box sx={{ flexGrow: 1 }}>
-          <TextField
-            placeholder="Search Columns"
-            variant="outlined"
-            size="small"
-            value={search ?? ""}
-            onChange={handleSearch}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <SearchRounded />
-                </InputAdornment>
-              ),
-            }}
-            inputProps={{
-              "data-testid": "search",
-            }}
-            sx={{ minWidth: 350 }}
-          />
-        </Box>
-        <Box>
-          {expanded.length > 0 ? (
+      <TableHeader
+        search={search}
+        onSearch={setSearch}
+        rightButtons={
+          expanded.length > 0 ? (
             <Button
               variant="outlined"
               startIcon={<CloseFullscreen />}
@@ -59,9 +39,9 @@ const TableColumns: React.FC<TableColumnsProps> = ({ columns }) => {
             >
               Expand all rows
             </Button>
-          )}
-        </Box>
-      </Box>
+          )
+        }
+      />
       <TableColumnsTable
         search={search}
         columns={columns}

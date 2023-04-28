@@ -190,6 +190,7 @@ const ConnectionRun: React.FC<ConnectionRunProps> = ({
       loading={loading2}
       loadingPosition="start"
       data-testid="connection-run"
+      sx={{ height: "40px" }}
     >
       {(loading2 && connection.last_run?.status) || "Run"}
     </LoadingButton>

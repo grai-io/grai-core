@@ -274,6 +274,7 @@ test("search", async () => {
   })
 
   await act(
-    async () => await user.type(screen.getByTestId("search"), "Search Columns")
+    async () =>
+      await user.type(screen.getByTestId("table-search"), "Search Columns")
   )
 })

@@ -11,9 +11,7 @@ const ReportTabs: React.FC<ReportTabsProps> = ({ currentTab }) => {
   const { routePrefix } = useWorkspace()
 
   return (
-    <Box
-      sx={{ borderBottom: 1, borderColor: "divider", mb: "-24px", mt: "24px" }}
-    >
+    <Box sx={{ mb: "-24px", mt: "24px" }}>
       <Tabs
         value={currentTab}
         sx={{

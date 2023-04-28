@@ -1,11 +1,16 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
+import { Grid, Card, Table as BaseTable, TableBody } from "@mui/material"
 import { useParams } from "react-router-dom"
 import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
+import PageContent from "components/layout/PageContent"
+import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
-import TableContent from "components/tables/TableContent"
-import TableHeader from "components/tables/TableHeader"
+import TableColumns from "components/tables/columns/TableColumns"
+import TableDependencies from "components/tables/TableDependencies"
+import TableDetail from "components/tables/TableDetail"
+import TableTabs from "components/tables/TableTabs"
 import GraphError from "components/utils/GraphError"
 import { GetTable, GetTableVariables } from "./__generated__/GetTable"
 
@@ -88,8 +93,33 @@ const Table: React.FC = () => {
 
   return (
     <PageLayout>
-      <TableHeader table={table} />
-      <TableContent table={table} />
+      <PageHeader title={table.display_name} tabs={<TableTabs />} />
+      <PageContent>
+        <Grid container spacing={3}>
+          <Grid item md={6}>
+            <TableDetail table={table} />
+          </Grid>
+          <Grid item md={6}>
+            <Card variant="outlined" sx={{ borderRadius: 0, borderBottom: 0 }}>
+              <BaseTable>
+                <TableBody>
+                  <TableDependencies
+                    label="Upstream dependencies"
+                    dependencies={table.destination_tables.data}
+                  />
+                  <TableDependencies
+                    label="Downstream dependencies"
+                    dependencies={table.source_tables.data}
+                  />
+                </TableBody>
+              </BaseTable>
+            </Card>
+          </Grid>
+        </Grid>
+      </PageContent>
+      <PageContent>
+        <TableColumns columns={table.columns.data} />
+      </PageContent>
     </PageLayout>
   )
 }

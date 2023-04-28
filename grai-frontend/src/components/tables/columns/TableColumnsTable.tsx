@@ -76,13 +76,13 @@ const TableColumnsTable: React.FC<TableColumnsTableProps> = ({
 
   return (
     <Table sx={{ mt: 1 }} data-testid="columns-table">
-      <TableHead sx={{ backgroundColor: theme.palette.grey[100] }}>
+      <TableHead>
         <TableRow>
           <TableCell sx={{ width: 0 }} />
-          <TableCell>Name</TableCell>
-          <TableCell>Data Type</TableCell>
-          <TableCell>Properties</TableCell>
-          <TableCell>Downstream Tests</TableCell>
+          <TableCell sx={{ fontWeight: 700 }}>Name</TableCell>
+          <TableCell sx={{ fontWeight: 700 }}>Data Type</TableCell>
+          <TableCell sx={{ fontWeight: 700 }}>Properties</TableCell>
+          <TableCell sx={{ fontWeight: 700 }}>Downstream Tests</TableCell>
           <TableCell sx={{ width: 0 }} />
         </TableRow>
       </TableHead>

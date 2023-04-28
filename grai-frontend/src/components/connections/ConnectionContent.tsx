@@ -1,5 +1,5 @@
 import React from "react"
-import { Box, Card, Grid, Table, TableBody } from "@mui/material"
+import { Card, Grid, Table, TableBody } from "@mui/material"
 import ConnectionDetail from "./ConnectionDetail"
 import ConnectionRunDetail from "./runs/ConnectionRunDetail"
 import { Connection as BaseConnection } from "./schedule/ConnectionSchedule"
@@ -48,26 +48,24 @@ type ConnectionContentProps = {
 const ConnectionContent: React.FC<ConnectionContentProps> = ({
   connection,
 }) => (
-  <Box sx={{ px: 2, py: 1 }}>
-    <Grid container spacing={3} sx={{ py: 3 }}>
-      <Grid item md={6}>
-        <ConnectionDetail connection={connection} />
-      </Grid>
-      <Grid item md={6}>
-        <Card variant="outlined" sx={{ borderRadius: 0, borderBottom: 0 }}>
-          <Table>
-            <TableBody>
-              <ConnectionRunDetail label="Last Run" run={connection.last_run} />
-              <ConnectionRunDetail
-                label="Last Successful Run"
-                run={connection.last_successful_run}
-              />
-            </TableBody>
-          </Table>
-        </Card>
-      </Grid>
+  <Grid container spacing={3}>
+    <Grid item md={6}>
+      <ConnectionDetail connection={connection} />
     </Grid>
-  </Box>
+    <Grid item md={6}>
+      <Card variant="outlined" sx={{ borderRadius: 0, borderBottom: 0 }}>
+        <Table>
+          <TableBody>
+            <ConnectionRunDetail label="Last Run" run={connection.last_run} />
+            <ConnectionRunDetail
+              label="Last Successful Run"
+              run={connection.last_successful_run}
+            />
+          </TableBody>
+        </Table>
+      </Card>
+    </Grid>
+  </Grid>
 )
 
 export default ConnectionContent
