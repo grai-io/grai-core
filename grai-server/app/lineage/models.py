@@ -127,3 +127,29 @@ class Edge(TenantModel):
             models.Index(fields=["workspace", "is_active"]),
             models.Index(fields=["workspace", "namespace", "name"]),
         ]
+
+
+class Filter(TenantModel):
+    tenant_id = "workspace_id"
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+    )
+    metadata = models.JSONField(default=dict)
+
+    workspace = models.ForeignKey(
+        "workspaces.Workspace",
+        related_name="filters",
+        on_delete=models.CASCADE,
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(
+        "users.User",
+        related_name="filters",
+        on_delete=models.CASCADE,
+    )

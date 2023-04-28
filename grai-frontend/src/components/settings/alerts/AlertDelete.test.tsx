@@ -1,7 +1,8 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { act, render, screen } from "testing"
-import AlertDelete from "./AlertDelete"
+import { GraphQLError } from "graphql"
+import { act, render, screen, waitFor } from "testing"
+import AlertDelete, { DELETE_ALERT } from "./AlertDelete"
 
 const alert = {
   id: "1",
@@ -33,4 +34,40 @@ test("delete", async () => {
     async () =>
       await user.click(screen.getByRole("button", { name: /delete/i }))
   )
+})
+
+test("error", async () => {
+  const user = userEvent.setup()
+
+  render(<AlertDelete alert={alert} onClose={() => {}} />, {
+    mocks: [
+      {
+        request: {
+          query: DELETE_ALERT,
+          variables: {
+            id: alert.id,
+          },
+        },
+        result: {
+          errors: [new GraphQLError("Error!")],
+        },
+      },
+    ],
+  })
+
+  await act(
+    async () =>
+      await user.click(screen.getByRole("menuitem", { name: /delete/i }))
+  )
+
+  await act(
+    async () =>
+      await user.click(screen.getByRole("button", { name: /delete/i }))
+  )
+
+  await waitFor(() => {
+    expect(
+      screen.getByText("Failed to delete alert ApolloError: Error!")
+    ).toBeInTheDocument()
+  })
 })

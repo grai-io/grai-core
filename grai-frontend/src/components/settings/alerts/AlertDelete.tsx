@@ -55,7 +55,8 @@ const AlertDelete: React.FC<AlertDeleteProps> = ({
     }
   )
 
-  const handleDelete = () =>
+  const handleDelete = () => {
+    onClose()
     confirm({
       title: "Delete Alert",
       description: `Are you sure you wish to delete the ${alert.name} alert?`,
@@ -63,7 +64,12 @@ const AlertDelete: React.FC<AlertDeleteProps> = ({
     })
       .then(() => deleteAlert())
       .then(() => enqueueSnackbar("Alert deleted", { variant: "success" }))
-      .finally(() => onClose())
+      .catch(error =>
+        enqueueSnackbar(`Failed to delete alert ${error}`, {
+          variant: "error",
+        })
+      )
+  }
 
   return (
     <MenuItem onClick={handleDelete}>
