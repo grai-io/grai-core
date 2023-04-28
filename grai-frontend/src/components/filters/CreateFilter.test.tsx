@@ -37,7 +37,7 @@ test("submit", async () => {
   input(screen.getByTestId("autocomplete-property"))
   input(screen.getByTestId("autocomplete-field"))
   input(screen.getByTestId("autocomplete-operator"))
-  input(screen.getByTestId("autocomplete-value"))
+  input(screen.getByTestId("autocomplete-value"), "t")
 
   await act(
     async () => await user.click(screen.getByRole("button", { name: /save/i }))

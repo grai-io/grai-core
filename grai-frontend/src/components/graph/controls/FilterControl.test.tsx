@@ -97,7 +97,9 @@ test("select filter", async () => {
   // eslint-disable-next-line testing-library/no-wait-for-empty-callback
   await waitFor(() => {})
 
-  await user.click(screen.getByTestId("CloseIcon"))
+  await act(async () => {
+    await user.click(screen.getByTestId("CloseIcon"))
+  })
 
   // eslint-disable-next-line testing-library/no-wait-for-empty-callback
   await waitFor(() => {})
@@ -115,8 +117,14 @@ test("empty", async () => {
       },
       result: {
         data: {
-          filters: {
-            data: [],
+          workspace: {
+            id: "1",
+            filters: {
+              data: [],
+            },
+            tags: {
+              data: [],
+            },
           },
         },
       },
