@@ -65,7 +65,8 @@ const MembershipDelete: React.FC<MembershipDeleteProps> = ({
     },
   })
 
-  const handleDelete = () =>
+  const handleDelete = () => {
+    onClose()
     confirm({
       title: "Delete Membership",
       description: `Are you sure you wish to delete the ${
@@ -77,7 +78,12 @@ const MembershipDelete: React.FC<MembershipDeleteProps> = ({
     })
       .then(() => deleteMembership())
       .then(() => enqueueSnackbar("Membership deleted", { variant: "success" }))
-      .finally(() => onClose())
+      .catch(error =>
+        enqueueSnackbar(`Failed to delete membership ${error}`, {
+          variant: "error",
+        })
+      )
+  }
 
   return (
     <MenuItem onClick={handleDelete}>

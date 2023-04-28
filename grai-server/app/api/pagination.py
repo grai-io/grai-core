@@ -25,11 +25,13 @@ class Pagination(Generic[T]):
     def __init__(
         self,
         queryset: QuerySet,
+        filteredQueryset: Optional[QuerySet] = None,
         apply_filters: Callable[[QuerySet], QuerySet] = None,
         order: Optional[StrawberryField] = strawberry.UNSET,
         pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
     ):
         self.queryset = queryset
+        self.filteredQueryset = filteredQueryset
         self.apply_filters = apply_filters
         self.order = order
         self.pagination = pagination
@@ -47,8 +49,8 @@ class Pagination(Generic[T]):
 
     @gql.django.field
     def data(self) -> List[T]:
-        queryset = self.queryset
-        if self.apply_filters:
+        queryset = self.filteredQueryset if self.filteredQueryset is not None else self.queryset
+        if self.filteredQueryset is None and self.apply_filters:
             queryset = self.apply_filters(queryset)
         queryset = apply_order(queryset, self.order)
         queryset = apply_pagination(queryset, self.pagination)

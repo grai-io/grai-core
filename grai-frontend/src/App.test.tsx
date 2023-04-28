@@ -8,6 +8,10 @@ test("renders", async () => {
   expect(screen.getByRole("progressbar")).toBeInTheDocument()
 
   await waitFor(() => {
+    expect(screen.queryByRole("progressbar")).not.toBeInTheDocument()
+  })
+
+  await waitFor(() => {
     expect(screen.getByText(/Welcome back!/i)).toBeInTheDocument()
   })
 })

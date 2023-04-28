@@ -6,7 +6,7 @@ import ConnectionsMenu from "./ConnectionsMenu"
 const connection = {
   id: "1",
   name: "Test Connection",
-  runs: {data: []},
+  runs: { data: [] },
   last_run: null,
   last_successful_run: null,
 }
@@ -21,7 +21,7 @@ test("edit", async () => {
   const user = userEvent.setup()
 
   render(<ConnectionsMenu connection={connection} workspaceId="1" />, {
-    routes: ["/:organisationName/:workspaceName/connections/:connectionId"],
+    routes: ["/:connectionId"],
   })
 
   await act(async () => await user.click(screen.getByTestId("MoreHorizIcon")))

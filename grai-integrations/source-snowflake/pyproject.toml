@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai_source_snowflake"
-version = "0.0.17"
+version = "0.0.18"
 description = ""
 authors = ["Tony Lewis <tony@grai.io>", "Edward Louth <edward@grai.io>"]
 license = "ELv2"

@@ -25,6 +25,7 @@ def build_grai_metadata_from_column(current: Column, version: Literal["v1"] = "v
             "data_type": current.data_type,
             "is_nullable": current.is_nullable,
         },
+        "tags": [config.metadata_id],
     }
 
     return ColumnMetadata(**data)
@@ -36,6 +37,7 @@ def build_grai_metadata_from_node(current: Table, version: Literal["v1"] = "v1")
         "version": version,
         "node_type": NodeTypeLabels.table.value,
         "node_attributes": {},
+        "tags": [config.metadata_id],
     }
 
     return TableMetadata(**data)
@@ -45,6 +47,7 @@ def build_grai_metadata_from_node(current: Table, version: Literal["v1"] = "v1")
 def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> TableToColumnMetadata:
     data = {
         "version": version,
+        "tags": [config.metadata_id],
     }
     return TableToColumnMetadata(edge_type=EdgeTypeLabels.table_to_column.value, **data)
 

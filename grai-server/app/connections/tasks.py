@@ -8,6 +8,7 @@ from connections.adapters.fivetran import FivetranAdapter
 from connections.adapters.mssql import MssqlAdapter
 from connections.adapters.mysql import MySQLAdapter
 from connections.adapters.postgres import PostgresAdapter
+from connections.adapters.redshift import RedshiftAdapter
 from connections.adapters.snowflake import SnowflakeAdapter
 from connections.adapters.yaml_file import YamlFileAdapter
 from installations.github import Github
@@ -47,6 +48,8 @@ def get_adapter(slug: str) -> BaseAdapter:
         return FivetranAdapter()
     elif slug == Connector.MYSQL:
         return MySQLAdapter()
+    elif slug == Connector.REDSHIFT:
+        return RedshiftAdapter()
 
     raise NoConnectorError(f"No connector found for: {slug}")
 
@@ -86,7 +89,7 @@ def execute_run(run: Run):
         elif run.action == Run.VALIDATE:
             adapter.run_validate(run)
         else:
-            raise NoActionError(f"Incorrect run action {run.action} found, accepted values: tests, update")
+            raise NoActionError(f"Incorrect run action {run.action} found, accepted values: tests, update, validate")
 
         run.status = "success"
         run.finished_at = timezone.now()

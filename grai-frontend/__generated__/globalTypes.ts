@@ -7,6 +7,10 @@
 // START Enums and Input Objects
 //==============================================================
 
+export interface WorkspaceTableFilter {
+  filter?: string | null;
+}
+
 //==============================================================
 // END Enums and Input Objects
 //==============================================================

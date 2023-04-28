@@ -1,8 +1,4 @@
-from rest_framework.authentication import (
-    BasicAuthentication,
-    SessionAuthentication,
-    TokenAuthentication,
-)
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -19,7 +15,6 @@ from workspaces.serializers import MembershipSerializer, WorkspaceSerializer
 class WorkspaceViewSet(ReadOnlyModelViewSet):
     authentication_classes = [
         SessionAuthentication,
-        TokenAuthentication,
         BasicAuthentication,
         JWTAuthentication,
     ]
@@ -58,7 +53,6 @@ class WorkspaceViewSet(ReadOnlyModelViewSet):
 class MembershipViewSet(ReadOnlyModelViewSet):
     authentication_classes = [
         SessionAuthentication,
-        TokenAuthentication,
         BasicAuthentication,
         JWTAuthentication,
     ]

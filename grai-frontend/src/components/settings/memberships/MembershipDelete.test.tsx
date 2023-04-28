@@ -1,7 +1,8 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { act, render, screen } from "testing"
-import MembershipDelete from "./MembershipDelete"
+import { GraphQLError } from "graphql"
+import { act, render, screen, waitFor } from "testing"
+import MembershipDelete, { DELETE_MEMBERSHIP } from "./MembershipDelete"
 
 const membership = {
   id: "1",
@@ -73,4 +74,40 @@ test("delete", async () => {
     async () =>
       await user.click(screen.getByRole("button", { name: /delete/i }))
   )
+})
+
+test("error", async () => {
+  const user = userEvent.setup()
+
+  render(<MembershipDelete membership={membership} onClose={() => {}} />, {
+    mocks: [
+      {
+        request: {
+          query: DELETE_MEMBERSHIP,
+          variables: {
+            id: membership.id,
+          },
+        },
+        result: {
+          errors: [new GraphQLError("Error!")],
+        },
+      },
+    ],
+  })
+
+  await act(
+    async () =>
+      await user.click(screen.getByRole("menuitem", { name: /delete/i }))
+  )
+
+  await act(
+    async () =>
+      await user.click(screen.getByRole("button", { name: /delete/i }))
+  )
+
+  await waitFor(() => {
+    expect(
+      screen.getByText("Failed to delete membership ApolloError: Error!")
+    ).toBeInTheDocument()
+  })
 })

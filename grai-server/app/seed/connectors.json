@@ -4,11 +4,38 @@
         "pk": "24f36cac-a9bc-4663-9613-5c2c2f63cfe5",
         "fields": {
             "name": "Amazon Redshift",
-            "metadata": {},
+            "slug": "redshift",
+            "metadata": {
+                "docs_url": "https://docs.grai.io/integrations/redshift",
+                "fields": [
+                    {
+                        "name": "host",
+                        "required": true
+                    },
+                    {
+                        "name": "port",
+                        "default": 5439,
+                        "required": true
+                    },
+                    {
+                        "name": "database",
+                        "required": true
+                    },
+                    {
+                        "name": "user",
+                        "required": true
+                    },
+                    {
+                        "name": "password",
+                        "secret": true,
+                        "required": true
+                    }
+                ]
+            },
             "is_active": true,
-            "icon": "https://cdn.sanity.io/images/pwmfmi47/production/f3e8edc5f92315c09202e01a28f206e777084c12-512x512.svg",
+            "icon": "/icons/data-sources/redshift.png",
             "category": "databases",
-            "coming_soon": true,
+            "coming_soon": false,
             "created_at": "2023-01-11T21:15:56.544Z",
             "updated_at": "2023-01-11T21:15:56.544Z"
         }
@@ -48,7 +75,7 @@
                 ]
             },
             "is_active": true,
-            "icon": "https://cdn.sanity.io/images/pwmfmi47/production/e4d7a37a2425ce7e012e23fdb4f53d985e18a4a3-1280x1280.png",
+            "icon": "/icons/data-sources/mysql.png",
             "category": "databases",
             "coming_soon": false,
             "created_at": "2023-01-11T21:16:48.728Z",
@@ -82,7 +109,7 @@
                 ]
             },
             "is_active": true,
-            "icon": "https://cdn.sanity.io/images/pwmfmi47/production/2a4f3d940e21dfa356bd993177586dab5e1b628f-2500x2500.svg",
+            "icon": "/icons/data-sources/bigquery.png",
             "category": "databases",
             "coming_soon": false,
             "created_at": "2023-01-11T21:16:09.411Z",
@@ -110,7 +137,7 @@
             "name": "Stitch",
             "metadata": {},
             "is_active": true,
-            "icon": "/images/stitch-logo.png",
+            "icon": "/icons/data-sources/stitch.png",
             "category": "data tools",
             "coming_soon": true,
             "created_at": "2023-01-11T21:17:27.425Z",
@@ -151,7 +178,7 @@
                 ]
             },
             "is_active": true,
-            "icon": "https://cdn.sanity.io/images/pwmfmi47/production/95bced9d0a4f668ceea0442a15c2cb4fdcb38b7e-452x452.png",
+            "icon": "/icons/data-sources/mssql.png",
             "category": "databases",
             "coming_soon": false,
             "created_at": "2023-01-11T21:16:21.900Z",
@@ -193,7 +220,7 @@
                 ]
             },
             "is_active": true,
-            "icon": "https://cdn.sanity.io/images/pwmfmi47/production/245cb2ccbc976d6dc38d90456ca1fd7cdbcb2dc6-2424x2500.svg",
+            "icon": "/icons/data-sources/postgres.png",
             "category": "databases",
             "coming_soon": false,
             "created_at": "2022-12-12T10:54:33.501Z",
@@ -207,13 +234,14 @@
             "name": "dbt",
             "slug": "dbt",
             "metadata": {
+                "docs_url": "https://docs.grai.io/integrations/dbt",
                 "file": {
                     "name": "manifest.json",
                     "extension": "json"
                 }
             },
             "is_active": true,
-            "icon": "/images/dbt-logo.png",
+            "icon": "/icons/data-sources/dbt.png",
             "category": "data tools",
             "coming_soon": false,
             "created_at": "2023-01-11T21:17:01.683Z",
@@ -263,7 +291,7 @@
                 ]
             },
             "is_active": true,
-            "icon": "https://cdn.sanity.io/images/pwmfmi47/production/a4ac9f5f978ab2446fc17bf116067cb7c74116a2-960x952.png",
+            "icon": "/icons/data-sources/snowflake.png",
             "category": "databases",
             "coming_soon": false,
             "created_at": "2023-01-11T21:15:40.178Z",
@@ -307,7 +335,7 @@
                 ]
             },
             "is_active": true,
-            "icon": "/images/fivetran-logo.png",
+            "icon": "/icons/data-sources/fivetran.png",
             "category": "data tools",
             "coming_soon": false,
             "created_at": "2023-01-11T21:17:16.264Z",
@@ -321,7 +349,7 @@
             "name": "Flat File",
             "metadata": {},
             "is_active": true,
-            "icon": "/images/file-icon.png",
+            "icon": "/icons/file-icon.png",
             "category": null,
             "coming_soon": true,
             "created_at": "2023-01-11T21:17:47.540Z",
@@ -335,13 +363,14 @@
             "name": "YAML File",
             "slug": "yaml_file",
             "metadata": {
+                "docs_url": "https://docs.grai.io/integrations/yaml",
                 "file": {
                     "name": "yaml",
                     "extension": "yaml"
                 }
             },
             "is_active": true,
-            "icon": "/images/file-icon.png",
+            "icon": "/icons/file-icon.png",
             "category": null,
             "coming_soon": false,
             "created_at": "2023-01-11T21:17:47.540Z",
