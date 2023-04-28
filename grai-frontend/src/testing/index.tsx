@@ -49,6 +49,9 @@ const mockResolvers = {
   Filter: () => ({
     metadata: [],
   }),
+  StrDataWrapper: () => ({
+    data: ["tag1", "tag2"],
+  }),
 }
 
 type RouteType =
