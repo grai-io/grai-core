@@ -1,10 +1,5 @@
 from django.urls import path
-from rest_framework.authentication import (
-    BasicAuthentication,
-    SessionAuthentication,
-    TokenAuthentication,
-)
-from rest_framework.authtoken import views
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.decorators import (
     api_view,
     authentication_classes,
@@ -29,7 +24,6 @@ class TenPerSecondUserThrottle(UserRateThrottle):
 @authentication_classes(
     [
         SessionAuthentication,
-        TokenAuthentication,
         BasicAuthentication,
         JWTAuthentication,
     ]
@@ -40,6 +34,5 @@ def check_authentication(request):
 
 
 urlpatterns = [
-    path("api-token/", views.obtain_auth_token),
     path("is-authenticated/", check_authentication),
 ]

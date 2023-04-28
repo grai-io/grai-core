@@ -105,6 +105,9 @@ test("renders errors", async () => {
                 },
               ],
             },
+            filters: {
+              data: [],
+            },
           },
         },
       },
@@ -164,6 +167,9 @@ test("not found", async () => {
                   metadata: { grai: { constraint_type: "dbt_model" } },
                 },
               ],
+            },
+            filters: {
+              data: [],
             },
           },
         },

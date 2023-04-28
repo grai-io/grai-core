@@ -4,7 +4,7 @@ from django.db.models import JSONField
 
 from common.admin.fields.json_widget import PrettyJSONWidget
 
-from .models import Edge, Node
+from .models import Edge, Filter, Node
 
 
 class EdgeInline(admin.TabularInline):
@@ -97,5 +97,23 @@ class EdgeAdmin(admin.ModelAdmin):
     formfield_overrides = {JSONField: {"widget": PrettyJSONWidget}}
 
 
+class FilterAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "name",
+        "created_at",
+    )
+
+    search_fields = ["id", "name"]
+
+    list_filter = (
+        "workspace",
+        ("created_at", DateFieldListFilter),
+    )
+
+    formfield_overrides = {JSONField: {"widget": PrettyJSONWidget}}
+
+
 admin.site.register(Node, NodeAdmin)
 admin.site.register(Edge, EdgeAdmin)
+admin.site.register(Filter, FilterAdmin)

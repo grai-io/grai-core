@@ -549,6 +549,33 @@ tomli = {version = ">=1.0.0", markers = "python_version < \"3.11\""}
 testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "pygments (>=2.7.2)", "requests", "xmlschema"]
 
 [[package]]
+name = "pytest-durations"
+version = "1.2.0"
+description = "Pytest plugin reporting fixtures and test functions execution time."
+category = "dev"
+optional = false
+python-versions = ">=3.6.2"
+files = [
+    {file = "pytest-durations-1.2.0.tar.gz", hash = "sha256:75793f7c2c393a947de4a92cc205e8dcb3d7fcde492628926cca97eb8e87077d"},
+    {file = "pytest_durations-1.2.0-py3-none-any.whl", hash = "sha256:210c649d989fdf8e864b7f614966ca2c8be5b58a5224d60089a43618c146d7fb"},
+]
+
+[package.dependencies]
+pytest = ">=4.6"
+
+[[package]]
+name = "pytest-execution-timer"
+version = "0.1.0"
+description = "A timer for the phases of Pytest's execution."
+category = "dev"
+optional = false
+python-versions = ">=3.7,<4.0"
+files = [
+    {file = "pytest-execution-timer-0.1.0.tar.gz", hash = "sha256:26b47da77d9e7b31ff5f22e57d636f3b3226dc7144ba524f32283bed08e94dce"},
+    {file = "pytest_execution_timer-0.1.0-py3-none-any.whl", hash = "sha256:bde5fe67548eed0151ed4f9583fc2fe51bf066fd73a3a77a37a2951b33265b3c"},
+]
+
+[[package]]
 name = "pyyaml"
 version = "6.0"
 description = "YAML parser and emitter for Python"
@@ -688,4 +715,4 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "786ec565c9658d5dd05b41262a4e028b91e716bef821729449e89a1ed1c26eee"
+content-hash = "e4f3639f4bda1de7a9c86702b04c0687447f782c9c882c989baa6f5208c807d7"

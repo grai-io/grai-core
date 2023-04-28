@@ -1,7 +1,7 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { ReactFlowProvider } from "reactflow"
-import { act, render, screen } from "testing"
+import { act, render, screen, waitFor } from "testing"
 import GraphControls from "./GraphControls"
 
 test("renders", async () => {
@@ -11,6 +11,10 @@ test("renders", async () => {
 
   expect(screen.getByTestId("SearchIcon")).toBeInTheDocument()
   expect(screen.queryByText("Limit Graph")).toBeFalsy()
+
+  await waitFor(() => {
+    expect(screen.queryByRole("progressbar")).not.toBeInTheDocument()
+  })
 })
 
 test("renders options", async () => {

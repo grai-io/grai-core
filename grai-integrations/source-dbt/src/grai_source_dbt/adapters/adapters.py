@@ -46,20 +46,21 @@ def build_grai_metadata_from_column(current: Column, version: Literal["v1"] = "v
         "version": version,
         "node_type": NodeTypeLabels.column.value,
         "node_attributes": ColumnAttributes(**node_attributes),
+        "tags": [config.metadata_id],
     }
     return ColumnMetadata(**data)
 
 
 @build_grai_metadata.register
 def build_grai_metadata_from_node(current: AllDbtNodeTypes, version: Literal["v1"] = "v1") -> TableMetadata:
-    data = {"version": version, "node_type": NodeTypeLabels.table.value}
+    data = {"version": version, "node_type": NodeTypeLabels.table.value, "tags": [config.metadata_id]}
 
     return TableMetadata(**data)
 
 
 @build_grai_metadata.register
 def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> GenericEdgeMetadataV1:
-    data = {"version": version, "edge_type": current.edge_type.value}
+    data = {"version": version, "edge_type": current.edge_type.value, "tags": [config.metadata_id]}
     if current.edge_type == EdgeTypeLabels.table_to_table:
         return TableToTableMetadata(**data)
     elif current.edge_type == EdgeTypeLabels.column_to_column:

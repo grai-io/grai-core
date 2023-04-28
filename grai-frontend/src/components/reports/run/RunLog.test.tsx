@@ -1,5 +1,5 @@
 import React from "react"
-import { render, screen, waitFor } from "testing"
+import { render, screen } from "testing"
 import RunLog from "./RunLog"
 
 test("renders", async () => {

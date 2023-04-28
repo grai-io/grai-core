@@ -1,6 +1,6 @@
 import React from "react"
 import { ChevronLeft, Close } from "@mui/icons-material"
-import { DialogTitle, IconButton, Tooltip } from "@mui/material"
+import { DialogTitle as BaseTitle, IconButton, Tooltip } from "@mui/material"
 
 export interface DialogTitleProps {
   children?: React.ReactNode
@@ -8,7 +8,7 @@ export interface DialogTitleProps {
   onBack?: () => void
 }
 
-const BootstrapDialogTitle: React.FC<DialogTitleProps> = ({
+const DialogTitle: React.FC<DialogTitleProps> = ({
   children,
   onClose,
   onBack,
@@ -17,7 +17,7 @@ const BootstrapDialogTitle: React.FC<DialogTitleProps> = ({
   const handleClose = () => onClose && onClose({}, "backdropClick")
 
   return (
-    <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+    <BaseTitle sx={{ m: 0, p: 2 }} {...other}>
       {onBack && (
         <Tooltip title="Back">
           <IconButton
@@ -52,8 +52,8 @@ const BootstrapDialogTitle: React.FC<DialogTitleProps> = ({
           </IconButton>
         </Tooltip>
       )}
-    </DialogTitle>
+    </BaseTitle>
   )
 }
 
-export default BootstrapDialogTitle
+export default DialogTitle

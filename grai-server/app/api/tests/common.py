@@ -9,6 +9,8 @@ from django.contrib.auth import get_user_model
 from django.http.request import HttpRequest
 
 from connections.models import Connection, Connector
+from lineage.models import Filter
+from users.models import User
 from workspaces.models import Membership, Organisation, Workspace
 
 
@@ -110,4 +112,13 @@ async def generate_connection(workspace: Workspace, connector: Connector = None,
         metadata={},
         secrets={},
         temp=temp,
+    )
+
+
+async def generate_filter(workspace: Workspace, user: User):
+    return await Filter.objects.acreate(
+        workspace=workspace,
+        name=generate_connection_name(),
+        metadata={},
+        created_by=user,
     )

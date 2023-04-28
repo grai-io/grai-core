@@ -1,10 +1,10 @@
 import time
-from django.utils import timezone
 from typing import Optional
 
 import jwt
 import requests
 from django.conf import settings
+from django.utils import timezone
 from ghapi.all import GhApi
 
 from installations.models import Repository

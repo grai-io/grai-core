@@ -120,12 +120,24 @@ export interface GetPullRequest_workspace_other_edges {
   data: GetPullRequest_workspace_other_edges_data[];
 }
 
+export interface GetPullRequest_workspace_filters_data {
+  __typename: "Filter";
+  id: any;
+  name: string | null;
+}
+
+export interface GetPullRequest_workspace_filters {
+  __typename: "FilterPagination";
+  data: GetPullRequest_workspace_filters_data[];
+}
+
 export interface GetPullRequest_workspace {
   __typename: "Workspace";
   id: any;
   repository: GetPullRequest_workspace_repository;
   tables: GetPullRequest_workspace_tables;
   other_edges: GetPullRequest_workspace_other_edges;
+  filters: GetPullRequest_workspace_filters;
 }
 
 export interface GetPullRequest {

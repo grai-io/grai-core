@@ -9,7 +9,7 @@ from notifications.models import Alert
 from api.schema import schema
 from connections.models import Connection, Connector, Run
 from installations.models import Branch, Commit, PullRequest, Repository
-from lineage.models import Edge, Node
+from lineage.models import Edge, Filter, Node
 from workspaces.models import Workspace
 
 from .common import (
@@ -136,12 +136,18 @@ async def test_workspace_connection_run(test_context):
 async def test_tables(test_context):
     context, organisation, workspace, user, membership = test_context
 
+    table = await Node.objects.acreate(
+        workspace=workspace, metadata={"grai": {"node_type": "Table"}}, name=uuid.uuid4()
+    )
+
     query = """
         query Workspace($workspaceId: ID!) {
           workspace(id: $workspaceId) {
             id
             tables {
-                id
+                data {
+                    id
+                }
             }
           }
         }
@@ -154,6 +160,10 @@ async def test_tables(test_context):
         },
         context_value=context,
     )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["tables"]["data"][0]["id"] == str(table.id)
 
 
 @pytest.mark.django_db
@@ -1897,3 +1907,132 @@ async def test_alert(test_context):
     assert result.errors is None
     assert result.data["workspace"]["id"] == str(workspace.id)
     assert result.data["workspace"]["alert"]["id"] == str(alert.id)
+
+
+@pytest.mark.django_db
+async def test_filters(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    filter = await Filter.objects.acreate(workspace=workspace, name=str(uuid.uuid4()), metadata={}, created_by=user)
+
+    query = """
+        query Workspace($workspaceId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                filters {
+                    data {
+                        id
+                        name
+                        created_at
+                        created_by {
+                            id
+                            username
+                        }
+                    }
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={"workspaceId": str(workspace.id)},
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["filters"]["data"][0]["id"] == str(filter.id)
+    assert result.data["workspace"]["filters"]["data"][0]["created_by"]["id"] == str(user.id)
+
+
+@pytest.mark.django_db
+async def test_filter(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    filter = await Filter.objects.acreate(workspace=workspace, name=str(uuid.uuid4()), metadata={}, created_by=user)
+
+    query = """
+        query Workspace($workspaceId: ID!, $filterId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                filter(id: $filterId) {
+                    id
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={"workspaceId": str(workspace.id), "filterId": str(filter.id)},
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["filter"]["id"] == str(filter.id)
+
+
+@pytest.mark.django_db
+async def test_tables_filtered(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    table = await Node.objects.acreate(
+        workspace=workspace, metadata={"grai": {"node_type": "Table"}}, name=uuid.uuid4()
+    )
+
+    filter = await Filter.objects.acreate(workspace=workspace, name=str(uuid.uuid4()), metadata={}, created_by=user)
+
+    query = """
+        query Workspace($workspaceId: ID!, $filters: WorkspaceTableFilter) {
+          workspace(id: $workspaceId) {
+            id
+            tables(filters: $filters) {
+                data{
+                    id
+                }
+            }
+          }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "filters": {
+                "filter": str(filter.id),
+            },
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["tables"]["data"][0]["id"] == str(table.id)
+
+
+@pytest.mark.django_db
+async def test_tags(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!) {
+          workspace(id: $workspaceId) {
+            id
+            tags {
+                data
+            }
+          }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={"workspaceId": str(workspace.id)},
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)

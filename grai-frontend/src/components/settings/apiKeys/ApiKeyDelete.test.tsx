@@ -1,7 +1,8 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { act, render, screen } from "testing"
-import ApiKeyDelete from "./ApiKeyDelete"
+import { GraphQLError } from "graphql"
+import { act, render, screen, waitFor } from "testing"
+import ApiKeyDelete, { DELETE_API_KEY } from "./ApiKeyDelete"
 
 const apiKey = {
   id: "1",
@@ -57,4 +58,40 @@ test("delete", async () => {
     async () =>
       await user.click(screen.getByRole("button", { name: /delete/i }))
   )
+})
+
+test("error", async () => {
+  const user = userEvent.setup()
+
+  render(<ApiKeyDelete apiKey={apiKey} onClose={() => {}} />, {
+    mocks: [
+      {
+        request: {
+          query: DELETE_API_KEY,
+          variables: {
+            id: apiKey.id,
+          },
+        },
+        result: {
+          errors: [new GraphQLError("Error!")],
+        },
+      },
+    ],
+  })
+
+  await act(
+    async () =>
+      await user.click(screen.getByRole("menuitem", { name: /delete/i }))
+  )
+
+  await act(
+    async () =>
+      await user.click(screen.getByRole("button", { name: /delete/i }))
+  )
+
+  await waitFor(() => {
+    expect(
+      screen.getByText("Failed to delete API key ApolloError: Error!")
+    ).toBeInTheDocument()
+  })
 })

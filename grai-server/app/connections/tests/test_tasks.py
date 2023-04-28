@@ -9,7 +9,7 @@ from connections.models import Connection, Connector, Run, RunFile
 from connections.tasks import process_run, run_connection_schedule
 from installations.models import Branch, Commit, PullRequest, Repository
 from installations.tests.test_github import mocked_requests_post
-from lineage.models import Node, Edge
+from lineage.models import Edge, Node
 from workspaces.models import Organisation, Workspace
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))

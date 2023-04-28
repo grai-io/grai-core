@@ -157,7 +157,7 @@ test("missing workspace", async () => {
 
   await waitFor(() => {
     expect(
-      screen.getByRole("heading", { name: /Create a workspace/i })
+      screen.getByRole("heading", { name: /Create an organisation/i })
     ).toBeInTheDocument()
   })
 })

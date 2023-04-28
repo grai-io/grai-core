@@ -8,9 +8,9 @@ from connections.adapters.fivetran import FivetranAdapter
 from connections.adapters.mssql import MssqlAdapter
 from connections.adapters.mysql import MySQLAdapter
 from connections.adapters.postgres import PostgresAdapter
+from connections.adapters.redshift import RedshiftAdapter
 from connections.adapters.snowflake import SnowflakeAdapter
 from connections.adapters.yaml_file import YamlFileAdapter
-from connections.adapters.redshift import RedshiftAdapter
 from installations.github import Github
 from notifications.notifications import send_notification
 

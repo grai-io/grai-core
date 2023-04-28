@@ -126,6 +126,7 @@ type BaseGraphProps = {
   controlOptions?: ControlOptions
   search: string | null
   onSearch: (input: string | null) => void
+  loading?: boolean
 }
 
 const BaseGraph: React.FC<BaseGraphProps> = ({
@@ -136,6 +137,7 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
   controlOptions,
   search,
   onSearch,
+  loading,
 }) => {
   const [nodes, setNodes] = useState<Node[]>()
   const [edges, setEdges] = useState<Edge[]>(initialEdges)
@@ -243,6 +245,7 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
         fitView
       >
         <Controls showInteractive={false} />
+        {loading && <Loading />}
       </ReactFlow>
     </ReactFlowProvider>
   )
