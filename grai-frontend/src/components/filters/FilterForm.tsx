@@ -19,6 +19,7 @@ export type Values = {
 }
 
 type FilterFormProps = {
+  tags: string[]
   defaultValues?: Values
   onClose?: () => void
   onSave: (values: Values) => void
@@ -26,6 +27,7 @@ type FilterFormProps = {
 }
 
 const FilterForm: React.FC<FilterFormProps> = ({
+  tags,
   defaultValues,
   onClose,
   onSave,
@@ -54,7 +56,11 @@ const FilterForm: React.FC<FilterFormProps> = ({
         margin="normal"
         sx={{ mb: 3, minWidth: 450 }}
       />
-      <FilterRows filters={values.metadata} onChange={handleChangeFilters} />
+      <FilterRows
+        filters={values.metadata}
+        onChange={handleChangeFilters}
+        tags={tags}
+      />
 
       <Stack spacing={2} direction="row" sx={{ mt: 3 }}>
         <Button

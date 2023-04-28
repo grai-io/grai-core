@@ -4,7 +4,7 @@ import { input } from "testing/autocomplete"
 import CreateFilter from "./CreateFilter"
 
 test("renders", async () => {
-  render(<CreateFilter workspaceId="1" />, {
+  render(<CreateFilter workspaceId="1" tags={[]} />, {
     withRouter: true,
   })
 
@@ -14,7 +14,7 @@ test("renders", async () => {
 test("submit", async () => {
   const user = userEvent.setup()
 
-  render(<CreateFilter workspaceId="1" />, {
+  render(<CreateFilter workspaceId="1" tags={[]} />, {
     withRouter: true,
     routes: ["/:organisationName/:workspaceName/filters/:filterId"],
   })

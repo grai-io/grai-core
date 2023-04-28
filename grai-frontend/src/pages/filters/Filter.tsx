@@ -23,6 +23,9 @@ export const GET_FILTER = gql`
         metadata
         created_at
       }
+      tags {
+        data
+      }
     }
   }
 `
@@ -52,7 +55,7 @@ const Filter: React.FC = () => {
   return (
     <PageLayout>
       <FilterHeader filter={filter} />
-      <UpdateFilter filter={filter} />
+      <UpdateFilter filter={filter} tags={data?.workspace?.tags.data} />
     </PageLayout>
   )
 }

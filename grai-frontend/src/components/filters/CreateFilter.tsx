@@ -24,9 +24,10 @@ export const CREATE_FILTER = gql`
 
 type CreateFilterProps = {
   workspaceId: string
+  tags: string[]
 }
 
-const CreateFilter: React.FC<CreateFilterProps> = ({ workspaceId }) => {
+const CreateFilter: React.FC<CreateFilterProps> = ({ workspaceId, tags }) => {
   const { routePrefix } = useWorkspace()
   const { enqueueSnackbar } = useSnackbar()
   const navigate = useNavigate()
@@ -84,7 +85,7 @@ const CreateFilter: React.FC<CreateFilterProps> = ({ workspaceId }) => {
   return (
     <>
       {error && <GraphError error={error} />}
-      <FilterForm onSave={handleSave} loading={loading} />
+      <FilterForm onSave={handleSave} loading={loading} tags={tags} />
     </>
   )
 }

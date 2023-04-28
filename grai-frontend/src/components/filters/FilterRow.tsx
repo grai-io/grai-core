@@ -74,13 +74,6 @@ const operators = [
   },
 ]
 
-const tags = [
-  {
-    value: "grai-source-postgres",
-    label: "grai-source-postgres",
-  },
-]
-
 export type Filter = {
   type: string | null
   field: string | null
@@ -92,12 +85,14 @@ type FilterRowProps = {
   filter: Filter
   onChange: (filter: Filter) => void
   onRemove: () => void
+  tags: string[]
 }
 
 const FilterRow: React.FC<FilterRowProps> = ({
   filter,
   onChange,
   onRemove,
+  tags,
 }) => {
   return (
     <Grid container spacing={1} sx={{ mt: 0.5 }}>
@@ -150,9 +145,9 @@ const FilterRow: React.FC<FilterRowProps> = ({
           openOnFocus
           autoSelect
           options={tags}
-          value={tags.find(tag => tag.value === filter.value) ?? null}
+          value={filter.value ?? null}
           onChange={(event, newValue) =>
-            onChange({ ...filter, value: newValue?.value ?? null })
+            onChange({ ...filter, value: newValue })
           }
           renderInput={params => <TextField {...params} />}
           data-testid="autocomplete-value"

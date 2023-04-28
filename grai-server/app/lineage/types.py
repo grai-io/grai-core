@@ -1,7 +1,5 @@
 from typing import List
 
-from users.types import User
-
 import strawberry_django
 from strawberry.scalars import JSON
 from strawberry_django_plus import gql
@@ -10,6 +8,7 @@ from strawberry_django_plus.gql import auto
 from lineage.models import Edge as EdgeModel
 from lineage.models import Filter as FilterModel
 from lineage.models import Node as NodeModel
+from users.types import User
 
 
 @gql.django.filters.filter(NodeModel, lookups=True)

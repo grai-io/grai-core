@@ -29,9 +29,10 @@ interface Filter {
 
 type UpdateFilterProps = {
   filter: Filter
+  tags: string[]
 }
 
-const UpdateFilter: React.FC<UpdateFilterProps> = ({ filter }) => {
+const UpdateFilter: React.FC<UpdateFilterProps> = ({ filter, tags }) => {
   const { enqueueSnackbar } = useSnackbar()
 
   const [updateFilter, { loading, error }] = useMutation<
@@ -54,6 +55,7 @@ const UpdateFilter: React.FC<UpdateFilterProps> = ({ filter }) => {
         }}
         onSave={handleSave}
         loading={loading}
+        tags={tags}
       />
     </Box>
   )

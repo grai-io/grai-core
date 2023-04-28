@@ -24,7 +24,7 @@ from installations.models import Branch as BranchModel
 from installations.models import Commit as CommitModel
 from installations.models import PullRequest as PullRequestModel
 from installations.models import Repository as RepositoryModel
-from lineage.filter import apply_table_filter
+from lineage.filter import apply_table_filter, get_tags
 from lineage.models import Edge as EdgeModel
 from lineage.models import Filter as FilterModel
 from lineage.models import Node as NodeModel
@@ -591,6 +591,15 @@ class Workspace:
     @gql.django.field
     def filter(self, id: strawberry.ID) -> "Filter":
         return FilterModel.objects.get(id=id)
+
+    # Tags
+    @strawberry.field
+    def tags(
+        self,
+    ) -> DataWrapper[str]:
+        data = get_tags(self)
+
+        return DataWrapper[str](data=data)
 
 
 @gql.django.filters.filter(MembershipModel, lookups=True)

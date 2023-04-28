@@ -1,6 +1,11 @@
+from typing import List
+
 from asgiref.sync import sync_to_async
+from django.db import connection
 from django.db.models import Q
 from django.db.models.query import QuerySet
+
+from workspaces.models import Workspace
 
 from .models import Filter, Node
 
@@ -79,3 +84,20 @@ async def apply_table_filter(queryset: QuerySet, filter: Filter):
             raise Exception("Unknown filter type: " + row["type"])
 
     return queryset.filter(q_filter)
+
+
+def get_tags(workspace: Workspace) -> List[str]:
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """SELECT DISTINCT tags #>> '{}'
+FROM
+(
+    SELECT id, JSONB_ARRAY_ELEMENTS((metadata->'grai'->>'tags')::jsonb) AS tags
+    FROM public.lineage_node
+    WHERE workspace_id = %s
+) AS foo""",
+            [workspace.id],
+        )
+        rows = cursor.fetchall()
+
+    return list([row[0] for row in rows])

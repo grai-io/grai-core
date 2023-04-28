@@ -2011,3 +2011,28 @@ async def test_tables_filtered(test_context):
     assert result.errors is None
     assert result.data["workspace"]["id"] == str(workspace.id)
     assert result.data["workspace"]["tables"]["data"][0]["id"] == str(table.id)
+
+
+@pytest.mark.django_db
+async def test_tags(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!) {
+          workspace(id: $workspaceId) {
+            id
+            tags {
+                data
+            }
+          }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={"workspaceId": str(workspace.id)},
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
