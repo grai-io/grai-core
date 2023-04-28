@@ -1,22 +1,18 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { act, render, screen, waitFor } from "testing"
-import MembershipDelete, { DELETE_MEMBERSHIP } from "./MembershipDelete"
 import { GraphQLError } from "graphql"
+import ConnectionDelete, { DELETE_CONNECTION } from "./ConnectionDelete"
 
-const membership = {
+const connection = {
   id: "1",
-  user: {
-    username: "test@example.com",
-    first_name: "first",
-    last_name: "last",
-  },
+  name: "Test Connection",
 }
 
 test("renders", async () => {
   const user = userEvent.setup()
 
-  render(<MembershipDelete membership={membership} onClose={() => {}} />)
+  render(<ConnectionDelete connection={connection} onClose={() => {}} />)
 
   await act(
     async () =>
@@ -36,7 +32,7 @@ test("renders no name", async () => {
 
   const user = userEvent.setup()
 
-  render(<MembershipDelete membership={membership} onClose={() => {}} />)
+  render(<ConnectionDelete connection={connection} onClose={() => {}} />)
 
   await act(
     async () =>
@@ -44,26 +40,10 @@ test("renders no name", async () => {
   )
 })
 
-// test("cancel", async () => {
-//   const user = userEvent.setup()
-
-//   render(<MembershipDelete membership={membership} onClose={() => {}} />)
-
-//   await act(
-//     async () =>
-//       await user.click(screen.getByRole("menuitem", { name: /delete/i }))
-//   )
-
-//   await act(
-//     async () =>
-//       await user.click(screen.getByRole("button", { name: /cancel/i }))
-//   )
-// })
-
 test("delete", async () => {
   const user = userEvent.setup()
 
-  render(<MembershipDelete membership={membership} onClose={() => {}} />)
+  render(<ConnectionDelete connection={connection} onClose={() => {}} />)
 
   await act(
     async () =>
@@ -79,13 +59,13 @@ test("delete", async () => {
 test("error", async () => {
   const user = userEvent.setup()
 
-  render(<MembershipDelete membership={membership} onClose={() => {}} />, {
+  render(<ConnectionDelete connection={connection} onClose={() => {}} />, {
     mocks: [
       {
         request: {
-          query: DELETE_MEMBERSHIP,
+          query: DELETE_CONNECTION,
           variables: {
-            id: membership.id,
+            id: connection.id,
           },
         },
         result: {
@@ -107,7 +87,7 @@ test("error", async () => {
 
   await waitFor(() => {
     expect(
-      screen.getByText("Failed to delete membership ApolloError: Error!")
+      screen.getByText("Failed to delete connection ApolloError: Error!")
     ).toBeInTheDocument()
   })
 })

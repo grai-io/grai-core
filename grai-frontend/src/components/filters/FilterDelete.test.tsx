@@ -1,7 +1,8 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { act, render, screen } from "testing"
-import FilterDelete from "./FilterDelete"
+import { act, render, screen, waitFor } from "testing"
+import FilterDelete, { DELETE_FILTER } from "./FilterDelete"
+import { GraphQLError } from "graphql"
 
 const filter = {
   id: "1",
@@ -33,4 +34,40 @@ test("delete", async () => {
     async () =>
       await user.click(screen.getByRole("button", { name: /delete/i }))
   )
+})
+
+test("error", async () => {
+  const user = userEvent.setup()
+
+  render(<FilterDelete filter={filter} onClose={() => {}} />, {
+    mocks: [
+      {
+        request: {
+          query: DELETE_FILTER,
+          variables: {
+            id: filter.id,
+          },
+        },
+        result: {
+          errors: [new GraphQLError("Error!")],
+        },
+      },
+    ],
+  })
+
+  await act(
+    async () =>
+      await user.click(screen.getByRole("menuitem", { name: /delete/i }))
+  )
+
+  await act(
+    async () =>
+      await user.click(screen.getByRole("button", { name: /delete/i }))
+  )
+
+  await waitFor(() => {
+    expect(
+      screen.getByText("Failed to delete filter ApolloError: Error!")
+    ).toBeInTheDocument()
+  })
 })

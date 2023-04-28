@@ -68,7 +68,11 @@ const FilterDelete: React.FC<FilterDeleteProps> = ({
     })
       .then(() => deleteFilter())
       .then(() => enqueueSnackbar("Filter deleted", { variant: "success" }))
-      .catch(() => {})
+      .catch(error =>
+        enqueueSnackbar(`Failed to delete filter ${error}`, {
+          variant: "error",
+        })
+      )
   }
 
   return (

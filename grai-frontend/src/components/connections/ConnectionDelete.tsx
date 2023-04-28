@@ -68,7 +68,11 @@ const ConnectionDelete: React.FC<ConnectionDeleteProps> = ({
     })
       .then(() => deleteConnection())
       .then(() => enqueueSnackbar("Connection deleted", { variant: "success" }))
-      .catch(() => {})
+      .catch(error =>
+        enqueueSnackbar(`Failed to delete connection ${error}`, {
+          variant: "error",
+        })
+      )
   }
 
   return (

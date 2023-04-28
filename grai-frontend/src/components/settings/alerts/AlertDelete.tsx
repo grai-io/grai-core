@@ -64,7 +64,11 @@ const AlertDelete: React.FC<AlertDeleteProps> = ({
     })
       .then(() => deleteAlert())
       .then(() => enqueueSnackbar("Alert deleted", { variant: "success" }))
-      .catch(() => {})
+      .catch(error =>
+        enqueueSnackbar(`Failed to delete alert ${error}`, {
+          variant: "error",
+        })
+      )
   }
 
   return (
