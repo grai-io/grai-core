@@ -10,18 +10,22 @@ const types = [
   {
     value: "parent",
     label: "Has Parent",
+    disabled: true,
   },
   {
     value: "no-parent",
     label: "No Parent",
+    disabled: true,
   },
   {
     value: "child",
     label: "Has Child",
+    disabled: true,
   },
   {
     value: "no-child",
     label: "No Child",
+    disabled: true,
   },
   {
     value: "ancestor",
@@ -107,6 +111,7 @@ const FilterRow: React.FC<FilterRowProps> = ({
             onChange({ ...filter, type: newValue?.value ?? null })
           }
           renderInput={params => <TextField {...params} />}
+          getOptionDisabled={option => option.disabled ?? false}
           data-testid="autocomplete-property"
         />
       </Grid>
