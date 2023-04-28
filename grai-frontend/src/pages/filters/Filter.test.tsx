@@ -57,6 +57,7 @@ test("not found", async () => {
           workspace: {
             id: "1",
             filter: null,
+            tags: { data: ["tag1"] },
           },
         },
       },

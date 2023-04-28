@@ -8,7 +8,7 @@ import {
   MenuItem,
 } from "@mui/material"
 import PopupState, { bindMenu, bindTrigger } from "material-ui-popup-state"
-import useWorkspace from "helpers/useWorkspace"
+import { Link } from "react-router-dom"
 import FilterDelete, { Filter } from "./FilterDelete"
 
 type FiltersMenuProps = {
@@ -16,41 +16,37 @@ type FiltersMenuProps = {
   workspaceId: string
 }
 
-const FiltersMenu: React.FC<FiltersMenuProps> = ({ filter, workspaceId }) => {
-  const { workspaceNavigate } = useWorkspace()
+const FiltersMenu: React.FC<FiltersMenuProps> = ({ filter, workspaceId }) => (
+  <PopupState variant="popover">
+    {popupState => (
+      <>
+        <IconButton size="small" {...bindTrigger(popupState)}>
+          <MoreHoriz />
+        </IconButton>
 
-  return (
-    <PopupState variant="popover">
-      {popupState => (
-        <>
-          <IconButton size="small" {...bindTrigger(popupState)}>
-            <MoreHoriz />
-          </IconButton>
-
-          <Menu
-            {...bindMenu(popupState)}
-            PaperProps={{
-              sx: {
-                width: 200,
-              },
-            }}
-          >
-            <MenuItem onClick={() => workspaceNavigate(`filters/${filter.id}`)}>
-              <ListItemIcon>
-                <Edit />
-              </ListItemIcon>
-              <ListItemText primary="Edit" />
-            </MenuItem>
-            <FilterDelete
-              filter={filter}
-              onClose={popupState.close}
-              workspaceId={workspaceId}
-            />
-          </Menu>
-        </>
-      )}
-    </PopupState>
-  )
-}
+        <Menu
+          {...bindMenu(popupState)}
+          PaperProps={{
+            sx: {
+              width: 200,
+            },
+          }}
+        >
+          <MenuItem component={Link} to={filter.id}>
+            <ListItemIcon>
+              <Edit />
+            </ListItemIcon>
+            <ListItemText primary="Edit" />
+          </MenuItem>
+          <FilterDelete
+            filter={filter}
+            onClose={popupState.close}
+            workspaceId={workspaceId}
+          />
+        </Menu>
+      </>
+    )}
+  </PopupState>
+)
 
 export default FiltersMenu
