@@ -15,6 +15,7 @@ import { durationAgo } from "helpers/runDuration"
 import Loading from "components/layout/Loading"
 import TablePagination from "components/table/TablePagination"
 import TableCell from "components/tables/TableCell"
+import FiltersMenu from "./FiltersMenu"
 
 interface User {
   id: string
@@ -78,10 +79,7 @@ const FiltersTable: React.FC<FiltersTableProps> = ({
             </TableCell>
             <TableCell>{filter.created_by.first_name}</TableCell>
             <TableCell sx={{ py: 0, px: 1 }} stopPropagation>
-              {/* <ConnectionsMenu
-                connection={connection}
-                workspaceId={workspaceId}
-              /> */}
+              <FiltersMenu filter={filter} workspaceId={workspaceId} />
             </TableCell>
           </TableRow>
         ))}

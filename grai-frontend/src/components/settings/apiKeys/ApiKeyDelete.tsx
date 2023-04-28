@@ -59,7 +59,8 @@ const ApiKeyDelete: React.FC<ApiKeyDeleteProps> = ({
     }
   )
 
-  const handleDelete = () =>
+  const handleDelete = () => {
+    onClose()
     confirm({
       title: "Delete API Key",
       description: `Are you sure you wish to delete the ${apiKey.name} key?`,
@@ -67,7 +68,8 @@ const ApiKeyDelete: React.FC<ApiKeyDeleteProps> = ({
     })
       .then(() => deleteApiKey())
       .then(() => enqueueSnackbar("API Key deleted", { variant: "success" }))
-      .finally(() => onClose())
+      .catch(() => {})
+  }
 
   return (
     <MenuItem onClick={handleDelete}>

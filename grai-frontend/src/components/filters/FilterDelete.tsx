@@ -4,39 +4,42 @@ import { Delete } from "@mui/icons-material"
 import { MenuItem, ListItemIcon, ListItemText } from "@mui/material"
 import { useConfirm } from "material-ui-confirm"
 import { useSnackbar } from "notistack"
-import { DeleteAlert, DeleteAlertVariables } from "./__generated__/DeleteAlert"
+import {
+  DeleteFilter,
+  DeleteFilterVariables,
+} from "./__generated__/DeleteFilter"
 
-export const DELETE_ALERT = gql`
-  mutation DeleteAlert($id: ID!) {
-    deleteAlert(id: $id) {
+export const DELETE_FILTER = gql`
+  mutation DeleteFilter($id: ID!) {
+    deleteFilter(id: $id) {
       id
     }
   }
 `
 
-export interface Alert {
+export interface Filter {
   id: string
-  name: string
+  name: string | null
 }
 
-type AlertDeleteProps = {
-  alert: Alert
+type FilterDeleteProps = {
+  filter: Filter
   workspaceId?: string
-  onClose: () => void
+  onClose: (deleted: boolean) => void
 }
 
-const AlertDelete: React.FC<AlertDeleteProps> = ({
-  alert,
+const FilterDelete: React.FC<FilterDeleteProps> = ({
+  filter,
   workspaceId,
   onClose,
 }) => {
   const confirm = useConfirm()
   const { enqueueSnackbar } = useSnackbar()
 
-  const [deleteAlert] = useMutation<DeleteAlert, DeleteAlertVariables>(
-    DELETE_ALERT,
+  const [deleteFilter] = useMutation<DeleteFilter, DeleteFilterVariables>(
+    DELETE_FILTER,
     {
-      variables: { id: alert.id },
+      variables: { id: filter.id },
       update(cache, { data }) {
         cache.modify({
           id: cache.identify({
@@ -44,11 +47,12 @@ const AlertDelete: React.FC<AlertDeleteProps> = ({
             __typename: "Workspace",
           }),
           fields: {
-            alerts: (existingAlerts, { readField }) =>
-              existingAlerts.filter(
+            filters: (existingFilters = { data: [] }, { readField }) => ({
+              data: existingFilters.data.filter(
                 (keyRef: any) =>
-                  data?.deleteAlert.id !== readField("id", keyRef)
+                  data?.deleteFilter.id !== readField("id", keyRef)
               ),
+            }),
           },
         })
       },
@@ -56,14 +60,14 @@ const AlertDelete: React.FC<AlertDeleteProps> = ({
   )
 
   const handleDelete = () => {
-    onClose()
+    onClose(true)
     confirm({
-      title: "Delete Alert",
-      description: `Are you sure you wish to delete the ${alert.name} alert?`,
+      title: "Delete Filter",
+      description: `Are you sure you wish to delete the ${filter.name} filter?`,
       confirmationText: "Delete",
     })
-      .then(() => deleteAlert())
-      .then(() => enqueueSnackbar("Alert deleted", { variant: "success" }))
+      .then(() => deleteFilter())
+      .then(() => enqueueSnackbar("Filter deleted", { variant: "success" }))
       .catch(() => {})
   }
 
@@ -77,4 +81,4 @@ const AlertDelete: React.FC<AlertDeleteProps> = ({
   )
 }
 
-export default AlertDelete
+export default FilterDelete
