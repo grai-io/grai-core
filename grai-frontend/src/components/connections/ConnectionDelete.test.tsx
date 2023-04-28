@@ -1,7 +1,7 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { act, render, screen, waitFor } from "testing"
 import { GraphQLError } from "graphql"
+import { act, render, screen, waitFor } from "testing"
 import ConnectionDelete, { DELETE_CONNECTION } from "./ConnectionDelete"
 
 const connection = {

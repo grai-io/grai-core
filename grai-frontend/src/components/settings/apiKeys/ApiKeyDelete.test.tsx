@@ -1,8 +1,8 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
+import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
 import ApiKeyDelete, { DELETE_API_KEY } from "./ApiKeyDelete"
-import { GraphQLError } from "graphql"
 
 const apiKey = {
   id: "1",
