@@ -64,7 +64,56 @@ const tablesMock = {
           ],
         },
         filters: {
-          data: [],
+          data: [
+            {
+              id: "1",
+              name: "test",
+              metadata: [],
+            },
+          ],
+        },
+      },
+    },
+  },
+}
+
+const tablesMockWithFilter = {
+  request: {
+    query: GET_TABLES_AND_EDGES,
+    variables: {
+      organisationName: "default",
+      workspaceName: "demo",
+      filters: { filter: "1" },
+    },
+  },
+  result: {
+    data: {
+      workspace: {
+        id: "1",
+        tables: {
+          data: [sourceTable, destinationTable, spareTable],
+          meta: { total: 3 },
+        },
+        other_edges: {
+          data: [
+            {
+              id: "1",
+              is_active: true,
+              data_source: "test",
+              source: sourceTable,
+              destination: destinationTable,
+              metadata: { grai: { constraint_type: "dbt_model" } },
+            },
+          ],
+        },
+        filters: {
+          data: [
+            {
+              id: "1",
+              name: "test",
+              metadata: [],
+            },
+          ],
         },
       },
     },
@@ -363,7 +412,7 @@ test("filter", async () => {
   render(<Graph />, {
     path: ":organisationName/:workspaceName/graph",
     route: "/default/demo/graph",
-    mocks,
+    mocks: [profileMock, filtersMock, tablesMock, tablesMockWithFilter],
   })
 
   await waitFor(() => {
