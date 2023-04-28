@@ -10,7 +10,7 @@ const filter = {
 }
 
 test("renders", async () => {
-  render(<UpdateFilter filter={filter} tags={[]} />, {
+  render(<UpdateFilter filter={filter} tags={[]} workspaceId="1" />, {
     withRouter: true,
   })
 
@@ -24,7 +24,7 @@ test("renders null name", async () => {
     metadata: [],
   }
 
-  render(<UpdateFilter filter={filter} tags={[]} />, {
+  render(<UpdateFilter filter={filter} tags={[]} workspaceId="1" />, {
     withRouter: true,
   })
 
@@ -34,7 +34,7 @@ test("renders null name", async () => {
 test("submit", async () => {
   const user = userEvent.setup()
 
-  render(<UpdateFilter filter={filter} tags={[]} />, {
+  render(<UpdateFilter filter={filter} tags={[]} workspaceId="1" />, {
     withRouter: true,
   })
 
@@ -54,7 +54,7 @@ test("submit", async () => {
 test("submit error", async () => {
   const user = userEvent.setup()
 
-  render(<UpdateFilter filter={filter} tags={[]} />, {
+  render(<UpdateFilter filter={filter} tags={[]} workspaceId="1" />, {
     withRouter: true,
     mocks: [
       {

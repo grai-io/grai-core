@@ -55,7 +55,11 @@ const Filter: React.FC = () => {
   return (
     <PageLayout>
       <FilterHeader filter={filter} />
-      <UpdateFilter filter={filter} tags={data?.workspace?.tags.data} />
+      <UpdateFilter
+        filter={filter}
+        tags={data?.workspace?.tags.data}
+        workspaceId={data?.workspace.id}
+      />
     </PageLayout>
   )
 }

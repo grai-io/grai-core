@@ -30,15 +30,30 @@ interface Filter {
 type UpdateFilterProps = {
   filter: Filter
   tags: string[]
+  workspaceId: string
 }
 
-const UpdateFilter: React.FC<UpdateFilterProps> = ({ filter, tags }) => {
+const UpdateFilter: React.FC<UpdateFilterProps> = ({
+  filter,
+  tags,
+  workspaceId,
+}) => {
   const { enqueueSnackbar } = useSnackbar()
 
   const [updateFilter, { loading, error }] = useMutation<
     UpdateFilterType,
     UpdateFilterVariables
-  >(UPDATE_FILTER)
+  >(UPDATE_FILTER, {
+    update(cache) {
+      cache.evict({
+        id: cache.identify({
+          id: workspaceId,
+          __typename: "Workspace",
+        }),
+        fieldName: "tables",
+      })
+    },
+  })
 
   const handleSave = (values: Values) =>
     updateFilter({ variables: { id: filter.id, ...values } })
