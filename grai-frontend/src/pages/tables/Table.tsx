@@ -1,18 +1,16 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
-import { Grid, Card, Table as BaseTable, TableBody } from "@mui/material"
 import { useParams } from "react-router-dom"
 import NotFound from "pages/NotFound"
-import useTabs from "helpers/useTabs"
 import useWorkspace from "helpers/useWorkspace"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
 import PageTabs from "components/layout/PageTabs"
 import TableColumns from "components/tables/columns/TableColumns"
-import TableDependencies from "components/tables/TableDependencies"
-import TableDetail from "components/tables/TableDetail"
 import TableLineage from "components/tables/TableLineage"
+import TableProfile from "components/tables/TableProfile"
+import TabState from "components/tabs/TabState"
 import GraphError from "components/utils/GraphError"
 import { GetTable, GetTableVariables } from "./__generated__/GetTable"
 
@@ -75,8 +73,6 @@ const Table: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
   const { tableId } = useParams()
 
-  const { currentTab, setTab } = useTabs({ defaultTab: "profile" })
-
   const { loading, error, data } = useQuery<GetTable, GetTableVariables>(
     GET_TABLE,
     {
@@ -102,30 +98,7 @@ const Table: React.FC = () => {
       component: (
         <>
           <PageContent>
-            <Grid container spacing={3}>
-              <Grid item md={6}>
-                <TableDetail table={table} />
-              </Grid>
-              <Grid item md={6}>
-                <Card
-                  variant="outlined"
-                  sx={{ borderRadius: 0, borderBottom: 0 }}
-                >
-                  <BaseTable>
-                    <TableBody>
-                      <TableDependencies
-                        label="Upstream dependencies"
-                        dependencies={table.destination_tables.data}
-                      />
-                      <TableDependencies
-                        label="Downstream dependencies"
-                        dependencies={table.source_tables.data}
-                      />
-                    </TableBody>
-                  </BaseTable>
-                </Card>
-              </Grid>
-            </Grid>
+            <TableProfile table={table} />
           </PageContent>
           <PageContent>
             <TableColumns columns={table.columns.data} />
@@ -149,13 +122,10 @@ const Table: React.FC = () => {
 
   return (
     <PageLayout>
-      <PageHeader
-        title={table.display_name}
-        tabs={tabs}
-        currentTab={currentTab}
-        setTab={setTab}
-      />
-      <PageTabs tabs={tabs} currentTab={currentTab} />
+      <TabState tabs={tabs}>
+        <PageHeader title={table.display_name} tabs />
+        <PageTabs />
+      </TabState>
     </PageLayout>
   )
 }

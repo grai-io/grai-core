@@ -1,34 +1,23 @@
 import React from "react"
 import { Tab as TabComponent, Tabs } from "@mui/material"
+import useTabState from "components/tabs/useTabState"
 
-export interface Tab {
-  value: string
-  label: string
-  disabled?: boolean
+const PageHeaderTabs: React.FC = () => {
+  const { currentTab, setTab, tabs } = useTabState()
+
+  return (
+    <Tabs value={currentTab ?? tabs[0].value} sx={{ mt: "24px", mb: "-24px" }}>
+      {tabs.map(tab => (
+        <TabComponent
+          key={tab.value}
+          label={tab.label}
+          value={tab.value}
+          onClick={() => setTab(tab.value)}
+          disabled={tab.disabled}
+        />
+      ))}
+    </Tabs>
+  )
 }
-
-type PageHeaderTabsProps = {
-  tabs: Tab[]
-  currentTab: string
-  setTab: (tab: string) => void
-}
-
-const PageHeaderTabs: React.FC<PageHeaderTabsProps> = ({
-  tabs,
-  currentTab,
-  setTab,
-}) => (
-  <Tabs value={currentTab} sx={{ mt: "24px", mb: "-24px" }}>
-    {tabs.map(tab => (
-      <TabComponent
-        key={tab.value}
-        label={tab.label}
-        value={tab.value}
-        onClick={() => setTab(tab.value)}
-        disabled={tab.disabled}
-      />
-    ))}
-  </Tabs>
-)
 
 export default PageHeaderTabs

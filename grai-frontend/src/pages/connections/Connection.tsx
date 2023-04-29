@@ -4,7 +4,6 @@ import { Box, Stack, Tooltip } from "@mui/material"
 import { useParams } from "react-router-dom"
 import NotFound from "pages/NotFound"
 import useRunPolling from "helpers/runPolling"
-import useTabs from "helpers/useTabs"
 import useWorkspace from "helpers/useWorkspace"
 import ConnectionConfiguration from "components/connections/configuration/ConnectionConfiguration"
 import ConnectionMenu from "components/connections/ConnectionMenu"
@@ -15,6 +14,7 @@ import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
 import PageTabs from "components/layout/PageTabs"
 import RunStatus from "components/runs/RunStatus"
+import TabState from "components/tabs/TabState"
 import GraphError from "components/utils/GraphError"
 import {
   GetConnection,
@@ -94,8 +94,6 @@ const Connection: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
   const { connectionId } = useParams()
 
-  const { currentTab, setTab } = useTabs({ defaultTab: "runs" })
-
   const { loading, error, data, startPolling, stopPolling } = useQuery<
     GetConnection,
     GetConnectionVariables
@@ -151,54 +149,54 @@ const Connection: React.FC = () => {
 
   return (
     <PageLayout>
-      <PageHeader
-        title={connection.name}
-        status={
-          <>
-            {connection.last_run && (
-              <RunStatus run={connection.last_run} link sx={{ mr: 3 }} />
-            )}
-            {connection.connector.icon && (
-              <Tooltip title={connection.connector.name}>
-                <Box
-                  sx={{
-                    borderRadius: "8px",
-                    border: "1px solid rgba(0, 0, 0, 0.08)",
-                    height: "48px",
-                    width: "48px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <img
-                    src={connection.connector.icon}
-                    alt={`${connection.connector.name} logo`}
-                    style={{ height: 32, width: 32 }}
-                  />
-                </Box>
-              </Tooltip>
-            )}
-          </>
-        }
-        buttons={
-          <Stack direction="row" spacing={2}>
-            <ConnectionRun
-              connection={connection}
-              workspaceId={workspace.id}
-              onRun={handleRun}
-            />
-            <ConnectionMenu
-              connection={connection}
-              workspaceId={workspace.id}
-            />
-          </Stack>
-        }
-        tabs={tabs}
-        currentTab={currentTab}
-        setTab={setTab}
-      />
-      <PageTabs tabs={tabs} currentTab={currentTab} />
+      <TabState tabs={tabs}>
+        <PageHeader
+          title={connection.name}
+          status={
+            <>
+              {connection.last_run && (
+                <RunStatus run={connection.last_run} link sx={{ mr: 3 }} />
+              )}
+              {connection.connector.icon && (
+                <Tooltip title={connection.connector.name}>
+                  <Box
+                    sx={{
+                      borderRadius: "8px",
+                      border: "1px solid rgba(0, 0, 0, 0.08)",
+                      height: "48px",
+                      width: "48px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <img
+                      src={connection.connector.icon}
+                      alt={`${connection.connector.name} logo`}
+                      style={{ height: 32, width: 32 }}
+                    />
+                  </Box>
+                </Tooltip>
+              )}
+            </>
+          }
+          buttons={
+            <Stack direction="row" spacing={2}>
+              <ConnectionRun
+                connection={connection}
+                workspaceId={workspace.id}
+                onRun={handleRun}
+              />
+              <ConnectionMenu
+                connection={connection}
+                workspaceId={workspace.id}
+              />
+            </Stack>
+          }
+          tabs
+        />
+        <PageTabs />
+      </TabState>
     </PageLayout>
   )
 }

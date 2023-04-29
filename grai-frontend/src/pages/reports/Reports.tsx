@@ -2,13 +2,13 @@ import React from "react"
 import { gql, useQuery } from "@apollo/client"
 import { useSearchParams } from "react-router-dom"
 import getRepoFromParams from "helpers/getRepoFromParams"
-import useTabs from "helpers/useTabs"
 import useWorkspace from "helpers/useWorkspace"
 import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
 import PageTabs from "components/layout/PageTabs"
 import ReportFilter from "components/reports/ReportFilter"
 import ReportsTable from "components/reports/ReportsTable"
+import TabState from "components/tabs/TabState"
 import GraphError from "components/utils/GraphError"
 import { GetReports, GetReportsVariables } from "./__generated__/GetReports"
 
@@ -99,8 +99,6 @@ const Reports: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
   const [searchParams] = useSearchParams()
 
-  const { currentTab, setTab } = useTabs({ defaultTab: "all" })
-
   const branch = searchParams.get("branch")
   const { owner, repo } = getRepoFromParams(searchParams)
 
@@ -152,13 +150,10 @@ const Reports: React.FC = () => {
 
   return (
     <PageLayout>
-      <PageHeader
-        title="Reports"
-        tabs={tabs}
-        currentTab={currentTab}
-        setTab={setTab}
-      />
-      <PageTabs tabs={tabs} currentTab={currentTab} />
+      <TabState tabs={tabs}>
+        <PageHeader title="Reports" tabs />
+        <PageTabs />
+      </TabState>
     </PageLayout>
   )
 }

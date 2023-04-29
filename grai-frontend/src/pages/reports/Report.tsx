@@ -6,7 +6,6 @@ import NotFound from "pages/NotFound"
 import resultsToErrors from "helpers/resultsToErrors"
 import { durationAgo } from "helpers/runDuration"
 import useSearchParams from "helpers/useSearchParams"
-import useTabs from "helpers/useTabs"
 import useWorkspace from "helpers/useWorkspace"
 import Graph from "components/graph/Graph"
 import PageHeader from "components/layout/PageHeader"
@@ -14,6 +13,7 @@ import PageLayout from "components/layout/PageLayout"
 import PageTabs from "components/layout/PageTabs"
 import TestResults from "components/reports/results/TestResults"
 import RunLog from "components/reports/run/RunLog"
+import TabState from "components/tabs/TabState"
 import GraphError from "components/utils/GraphError"
 import {
   GetRunReport,
@@ -105,8 +105,6 @@ const Report: React.FC = () => {
   const { searchParams, setSearchParams } = useSearchParams()
   const [display, setDisplay] = useState(false)
 
-  const { currentTab, setTab } = useTabs({ defaultTab: "graph" })
-
   useEffect(() => {
     setSearchParams(
       { ...searchParams, limitGraph: "true" },
@@ -193,34 +191,34 @@ const Report: React.FC = () => {
 
   return (
     <PageLayout>
-      <PageHeader
-        title={`Run ${run.id.slice(0, 6)}`}
-        tabs={tabs}
-        currentTab={currentTab}
-        setTab={setTab}
-        status={
-          run.created_at && (
-            <Typography>{`about ${durationAgo(
-              run.created_at,
-              1,
-              true
-            )} ago `}</Typography>
-          )
-        }
-        buttons={
-          <Stack direction="row" spacing={1}>
-            <Typography>Failures</Typography>
-            <Typography sx={{ mr: 3 }}>{failureCount}</Typography>
-            <Typography>Passes</Typography>
-            <Typography sx={{ mr: 3 }}>{passCount}</Typography>
-            <Typography>Success Rate</Typography>
-            <Typography sx={{ mr: 3 }}>
-              {total > 0 ? (passCount / total) * 100 + "%" : "-"}
-            </Typography>
-          </Stack>
-        }
-      />
-      <PageTabs tabs={tabs} currentTab={currentTab} />
+      <TabState tabs={tabs}>
+        <PageHeader
+          title={`Run ${run.id.slice(0, 6)}`}
+          tabs
+          status={
+            run.created_at && (
+              <Typography>{`about ${durationAgo(
+                run.created_at,
+                1,
+                true
+              )} ago `}</Typography>
+            )
+          }
+          buttons={
+            <Stack direction="row" spacing={1}>
+              <Typography>Failures</Typography>
+              <Typography sx={{ mr: 3 }}>{failureCount}</Typography>
+              <Typography>Passes</Typography>
+              <Typography sx={{ mr: 3 }}>{passCount}</Typography>
+              <Typography>Success Rate</Typography>
+              <Typography sx={{ mr: 3 }}>
+                {total > 0 ? (passCount / total) * 100 + "%" : "-"}
+              </Typography>
+            </Stack>
+          }
+        />
+        <PageTabs />
+      </TabState>
     </PageLayout>
   )
 }

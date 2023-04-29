@@ -1,13 +1,13 @@
 import React, { useState } from "react"
 import { gql, useQuery } from "@apollo/client"
 import useWorkspace from "helpers/useWorkspace"
+import PageContent from "components/layout/PageContent"
+import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
 import RunsTable from "components/runs/RunsTable"
+import TableHeader from "components/table/TableHeader"
 import GraphError from "components/utils/GraphError"
 import { GetRuns, GetRunsVariables } from "./__generated__/GetRuns"
-import PageHeader from "components/layout/PageHeader"
-import PageContent from "components/layout/PageContent"
-import TableHeader from "components/table/TableHeader"
 
 export const GET_RUNS = gql`
   query GetRuns($organisationName: String!, $workspaceName: String!) {

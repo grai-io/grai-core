@@ -10,7 +10,7 @@ const useTabs = ({ defaultTab, searchKey }: TabsProps) => {
 
   const finalSearchKey = searchKey ?? "tab"
 
-  const currentTab = searchParams.get(finalSearchKey) ?? defaultTab ?? ""
+  const currentTab = searchParams.get(finalSearchKey) ?? defaultTab ?? null
   const setTab = (tab: string) => {
     setSearchParams({ ...searchParams, [finalSearchKey]: tab })
   }

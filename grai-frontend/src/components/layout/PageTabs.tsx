@@ -1,21 +1,11 @@
-import React, { ReactNode } from "react"
+import React from "react"
+import useTabState from "components/tabs/useTabState"
 import PageContent from "./PageContent"
 
-interface Tab {
-  value: string
-  component?: ReactNode
-  noWrapper?: boolean
-}
+const PageTabs: React.FC = () => {
+  const { currentTab, tabs } = useTabState()
 
-type PageTabsProps = {
-  tabs: Tab[]
-  currentTab: string
-}
-
-const PageTabs: React.FC<PageTabsProps> = ({ tabs, currentTab }) => {
-  const tab = tabs.find(tab => tab.value === currentTab)
-
-  if (!tab) return null
+  const tab = tabs.find(tab => tab.value === currentTab) ?? tabs[0]
 
   if (tab.noWrapper) return <>{tab.component}</>
 
