@@ -25,7 +25,7 @@ test("navigate", async () => {
 
   expect(screen.getByText("Success")).toBeInTheDocument()
 
-  await act(async () => await user.click(screen.getByTestId("CheckIcon")))
+  await act(async () => await user.click(screen.getByText("Success")))
 
   expect(screen.getByText("New Page")).toBeInTheDocument()
 })
