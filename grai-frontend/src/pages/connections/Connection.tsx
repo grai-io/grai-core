@@ -94,7 +94,7 @@ const Connection: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
   const { connectionId } = useParams()
 
-  const { currentTab, setTab } = useTabs("runs")
+  const { currentTab, setTab } = useTabs({ defaultTab: "runs" })
 
   const { loading, error, data, startPolling, stopPolling } = useQuery<
     GetConnection,

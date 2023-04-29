@@ -105,7 +105,7 @@ const Report: React.FC = () => {
   const { searchParams, setSearchParams } = useSearchParams()
   const [display, setDisplay] = useState(false)
 
-  const { currentTab, setTab } = useTabs("graph")
+  const { currentTab, setTab } = useTabs({ defaultTab: "graph" })
 
   useEffect(() => {
     setSearchParams(

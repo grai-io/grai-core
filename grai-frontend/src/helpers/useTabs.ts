@@ -1,13 +1,19 @@
-import { useState } from "react"
+import useSearchParams from "./useSearchParams"
 
-const useTabs = (defaultTab: string = "") => {
-  //TODO: replace with route query parameter
+type TabsProps = {
+  defaultTab?: string
+  searchKey?: string
+}
 
-  const [currentTab, setTab] = useState<string>(defaultTab)
+const useTabs = ({ defaultTab, searchKey }: TabsProps) => {
+  const { searchParams, setSearchParams } = useSearchParams()
 
-  // const currentTab = defaultTab
+  const finalSearchKey = searchKey ?? "tab"
 
-  // const setTab = (tab: string) => {}
+  const currentTab = searchParams.get(finalSearchKey) ?? defaultTab ?? ""
+  const setTab = (tab: string) => {
+    setSearchParams({ ...searchParams, [finalSearchKey]: tab })
+  }
 
   return { currentTab, setTab }
 }

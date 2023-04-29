@@ -99,7 +99,7 @@ const Reports: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
   const [searchParams] = useSearchParams()
 
-  const { currentTab, setTab } = useTabs("all")
+  const { currentTab, setTab } = useTabs({ defaultTab: "all" })
 
   const branch = searchParams.get("branch")
   const { owner, repo } = getRepoFromParams(searchParams)

@@ -75,7 +75,7 @@ const Table: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
   const { tableId } = useParams()
 
-  const { currentTab, setTab } = useTabs("profile")
+  const { currentTab, setTab } = useTabs({ defaultTab: "profile" })
 
   const { loading, error, data } = useQuery<GetTable, GetTableVariables>(
     GET_TABLE,
