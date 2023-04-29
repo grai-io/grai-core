@@ -1,5 +1,5 @@
 import React, { JSXElementConstructor, ReactElement } from "react"
-import { Check, Close, HourglassEmpty } from "@mui/icons-material"
+import { HourglassEmpty } from "@mui/icons-material"
 import {
   Box,
   Chip,
@@ -43,7 +43,7 @@ type RunStatusProps = {
 
 const RunStatus: React.FC<RunStatusProps> = ({
   run,
-  variant = "outlined",
+  variant = "filled",
   size,
   link,
   onClick,
@@ -71,12 +71,10 @@ const RunStatus: React.FC<RunStatusProps> = ({
     },
     success: {
       label: "Success",
-      icon: <Check />,
       color: "success",
     },
     error: {
       label: "Error",
-      icon: <Close />,
       color: "error",
     },
   }

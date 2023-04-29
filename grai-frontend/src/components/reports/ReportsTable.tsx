@@ -171,7 +171,15 @@ const ReportsTable: React.FC<ReportsTableProps> = ({ runs, loading }) => {
               )}
             </TableCell>
             <TableCell sx={{ py: 0 }}>
-              <RunStatus run={run} size="small" sx={{ cursor: "pointer" }} />
+              <RunStatus
+                run={run}
+                sx={{
+                  cursor: "pointer",
+                  borderRadius: "100px",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                }}
+              />
             </TableCell>
             <TableCell sx={{ textAlign: "right" }}>
               <Box>

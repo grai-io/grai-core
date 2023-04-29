@@ -79,7 +79,15 @@ const RunsTable: React.FC<RunsTableProps> = ({ runs, loading }) => {
             <TableCell>{run.connection?.connector.name}</TableCell>
             <TableCell>{run.user?.first_name}</TableCell>
             <TableCell sx={{ py: 0 }}>
-              <RunStatus run={run} size="small" sx={{ cursor: "pointer" }} />
+              <RunStatus
+                run={run}
+                sx={{
+                  cursor: "pointer",
+                  borderRadius: "100px",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                }}
+              />
             </TableCell>
             <TableCell sx={{ textAlign: "right" }}>
               <Tooltip
