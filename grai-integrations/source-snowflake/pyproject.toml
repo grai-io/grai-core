@@ -1,12 +1,17 @@
 [tool.poetry]
 name = "grai_source_snowflake"
-version = "0.0.18"
+version = "0.0.19"
 description = ""
 authors = ["Tony Lewis <tony@grai.io>", "Edward Louth <edward@grai.io>"]
 license = "ELv2"
 packages = [
     { include = "grai_source_snowflake", from = "src" },
 ]
+readme = "README.md"
+homepage = "https://www.grai.io/"
+repository = "https://github.com/grai-io/grai-core/grai-integrations/source-snowflake"
+documentation = "https://docs.grai.io/"
+
 [tool.poetry.dependencies]
 python = "^3.8"
 pydantic = "^1.9.1"

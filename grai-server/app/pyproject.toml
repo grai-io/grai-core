@@ -1,9 +1,13 @@
 [tool.poetry]
 name = "the_guide"
-version = "0.1.21"
+version = "0.1.22"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>", "Edward Louth <edward@grai.io>"]
 license = "Elastic-2.0"
+readme = "README.md"
+homepage = "https://www.grai.io/"
+repository = "https://github.com/grai-io/grai-core/grai-server"
+documentation = "https://docs.grai.io/"
 
 [tool.poetry.dependencies]
 python = "^3.11"

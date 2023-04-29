@@ -1,11 +1,14 @@
 [tool.poetry]
 name = "grai-cli"
-version = "0.1.8"
+version = "0.1.9"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>"]
 license = "Elastic-2.0"
 readme = "README.md"
 packages = [{include = "grai_cli"}]
+homepage = "https://www.grai.io/"
+repository = "https://github.com/grai-io/grai-core/grai-cli"
+documentation = "https://docs.grai.io/"
 
 [tool.poetry.scripts]
 grai = "grai_cli.api.entrypoint:app"

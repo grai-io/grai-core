@@ -1,43 +1,33 @@
-# the_guide
+# Grai Server (aka The Guide)
 
-# Installation
+> There is a theory which states that if ever anyone discovers exactly what the Universe is for and why it is here, it will instantly disappear and be replaced by something even more bizarre and inexplicable. There is another theory which states that this has already happened.
+> - Douglas Adams, The Hitchhiker's Guide To the Galaxy
 
-Install Kubectl
-```
-brew install kubectl
-```
 
-Install Kustomize
-```
-brew install kustomize
-```
+The guide is the core server library exposed as part of Grai.
 
-Install  kustomize-sops-rs
-```
-curl -sL https://github.com/jaysonsantos/kustomize-sops-rs/raw/main/install.sh | bash -s
-```
+# Introduction
 
-Install KSOPS
-https://github.com/viaduct-ai/kustomize-sops
+Grai consists of multiple different independent services including
 
-```
-echo "export XDG_CONFIG_HOME=\$HOME/.config" >> $HOME/.bashrc
-source $HOME/.bashrc
-# Verify the $XDG_CONFIG_HOME environment variable exists then run
-source <(curl -s https://raw.githubusercontent.com/viaduct-ai/kustomize-sops/master/scripts/install-ksops-archive.sh)
+### Server
 
-```
-# Uses sops &
+- Postgres + Django
+- Redis
+- Celery + Celery Beat
+- flower
 
-# gitops config
-Uses flux for gitops. Config steps:
+For more information about the server see [Grai Server](/core/server/).
 
-```
-flux bootstrap github \
-  --owner=grai-io\
-  --repository=the_guide \
-  --branch=<organization default branch> \
-  --team=<team1-slug> \
-  --team=<team2-slug> \
-  --path=./clusters/my-cluster
-```
+### Web App
+
+For more information about the web app see [Grai Web App](/core/web-app/)
+
+### Container Registry
+
+We maintain up to date docker images for all of the Grai services on GitHub's Container Registry `ghcr`
+
+| Service | Image                                   | Tags           |
+| ------- | --------------------------------------- | -------------- |
+| Server  | ghcr.io/grai-io/grai-core/grai-server   | latest, semver |
+| Web App | ghcr.io/grai-io/grai-core/grai-frontend | latest, semver |
