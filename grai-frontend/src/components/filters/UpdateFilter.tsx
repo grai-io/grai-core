@@ -1,6 +1,5 @@
 import React from "react"
 import { gql, useMutation } from "@apollo/client"
-import { Box } from "@mui/material"
 import { useSnackbar } from "notistack"
 import FilterForm, { Values } from "components/filters/FilterForm"
 import GraphError from "components/utils/GraphError"
@@ -61,7 +60,7 @@ const UpdateFilter: React.FC<UpdateFilterProps> = ({
       .catch(() => {})
 
   return (
-    <Box sx={{ p: 3 }}>
+    <>
       {error && <GraphError error={error} />}
       <FilterForm
         defaultValues={{
@@ -72,7 +71,7 @@ const UpdateFilter: React.FC<UpdateFilterProps> = ({
         loading={loading}
         tags={tags}
       />
-    </Box>
+    </>
   )
 }
 

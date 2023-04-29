@@ -46,11 +46,11 @@ const ConnectionsTable: React.FC<ConnectionsTableProps> = ({
     <Table sx={{ mb: -1 }}>
       <TableHead>
         <TableRow>
-          <TableCell sx={{ fontWeight: 700 }}>Name</TableCell>
-          <TableCell sx={{ fontWeight: 700 }}>Namespace</TableCell>
-          <TableCell sx={{ fontWeight: 700 }}>Integration</TableCell>
-          <TableCell sx={{ fontWeight: 700 }}>Active</TableCell>
-          <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
+          <TableCell>Name</TableCell>
+          <TableCell>Namespace</TableCell>
+          <TableCell>Integration</TableCell>
+          <TableCell>Active</TableCell>
+          <TableCell>Status</TableCell>
           <TableCell sx={{ width: 0 }} />
         </TableRow>
       </TableHead>

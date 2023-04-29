@@ -6,9 +6,12 @@ import useRunPolling from "helpers/runPolling"
 import useWorkspace from "helpers/useWorkspace"
 import PageLayout from "components/layout/PageLayout"
 import RunDetail from "components/runs/RunDetail"
-import RunHeader from "components/runs/RunHeader"
 import GraphError from "components/utils/GraphError"
 import { GetRun, GetRunVariables } from "./__generated__/GetRun"
+import PageHeader from "components/layout/PageHeader"
+import ConnectionRun, { RunResult } from "components/connections/ConnectionRun"
+import PageContent from "components/layout/PageContent"
+import RunStatus from "components/runs/RunStatus"
 
 export const GET_RUN = gql`
   query GetRun(
@@ -87,7 +90,7 @@ export const GET_RUN = gql`
 `
 
 const Run: React.FC = () => {
-  const { organisationName, workspaceName } = useWorkspace()
+  const { organisationName, workspaceName, workspaceNavigate } = useWorkspace()
   const { runId } = useParams()
 
   const { loading, error, data, startPolling, stopPolling } = useQuery<
@@ -112,10 +115,29 @@ const Run: React.FC = () => {
 
   if (!run) return <NotFound />
 
+  const handleRun = (run: RunResult) => workspaceNavigate(`runs/${run.id}`)
+
   return (
     <PageLayout>
-      <RunHeader run={run} workspaceId={data.workspace.id} />
-      <RunDetail run={run} />
+      <PageHeader
+        title={
+          (run.connection ? run.connection.name + "/" : null) +
+          run.id.slice(0, 6)
+        }
+        status={<RunStatus run={run} sx={{ ml: 2 }} />}
+        buttons={
+          run.connection && (
+            <ConnectionRun
+              connection={run.connection}
+              workspaceId={data.workspace.id}
+              onRun={handleRun}
+            />
+          )
+        }
+      />
+      <PageContent>
+        <RunDetail run={run} />
+      </PageContent>
     </PageLayout>
   )
 }

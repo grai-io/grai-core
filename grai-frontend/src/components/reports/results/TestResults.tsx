@@ -11,11 +11,11 @@ const TestResults: React.FC<TestResultsProps> = ({ errors }) => (
   <Table>
     <TableHead>
       <TableRow>
-        <TableCell sx={{ fontWeight: 700 }}>Changed Node</TableCell>
-        <TableCell sx={{ fontWeight: 700 }}>Dependency</TableCell>
-        <TableCell sx={{ fontWeight: 700 }}>Test</TableCell>
-        <TableCell sx={{ fontWeight: 700 }}>Result</TableCell>
-        <TableCell sx={{ fontWeight: 700 }}>Message</TableCell>
+        <TableCell>Changed Node</TableCell>
+        <TableCell>Dependency</TableCell>
+        <TableCell>Test</TableCell>
+        <TableCell>Result</TableCell>
+        <TableCell>Message</TableCell>
       </TableRow>
     </TableHead>
     <TableBody>

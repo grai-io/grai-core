@@ -30,10 +30,10 @@ const TablesTable: React.FC<TablesTableProps> = ({
     <Table sx={{ mb: -1 }}>
       <TableHead>
         <TableRow>
-          <TableCell sx={{ fontWeight: 700 }}>Name</TableCell>
-          <TableCell sx={{ fontWeight: 700 }}>Namespace</TableCell>
-          <TableCell sx={{ fontWeight: 700 }}>Data Source</TableCell>
-          <TableCell sx={{ fontWeight: 700 }}>Active</TableCell>
+          <TableCell>Name</TableCell>
+          <TableCell>Namespace</TableCell>
+          <TableCell>Data Source</TableCell>
+          <TableCell>Active</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>

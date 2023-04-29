@@ -1,10 +1,11 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
-import { Box, Typography } from "@mui/material"
 import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
 import CreateFilter from "components/filters/CreateFilter"
 import Loading from "components/layout/Loading"
+import PageContent from "components/layout/PageContent"
+import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
 import GraphError from "components/utils/GraphError"
 
@@ -42,10 +43,10 @@ const FilterCreate: React.FC = () => {
 
   return (
     <PageLayout>
-      <Box sx={{ p: 3 }}>
-        <Typography variant="h6">Create Filter</Typography>
+      <PageHeader title="Create Filter" />
+      <PageContent>
         <CreateFilter workspaceId={workspace.id} tags={workspace.tags.data} />
-      </Box>
+      </PageContent>
     </PageLayout>
   )
 }
