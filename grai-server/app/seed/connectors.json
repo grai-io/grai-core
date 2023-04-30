@@ -284,10 +284,6 @@
                         "name": "database",
                         "required": true
                     },
-                    {
-                        "name": "schema",
-                        "required": false
-                    }
                 ]
             },
             "is_active": true,
