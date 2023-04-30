@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { createContext } from "react"
 import { Tab } from "./TabState"
 

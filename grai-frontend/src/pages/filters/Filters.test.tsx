@@ -252,3 +252,25 @@ test("error", async () => {
     expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })
+
+test("search", async () => {
+  const user = userEvent.setup()
+
+  render(<Filters />, {
+    withRouter: true,
+  })
+
+  await waitFor(() => {
+    expect(screen.getAllByText("Hello World")).toBeTruthy()
+  })
+
+  await act(async () => await user.type(screen.getByRole("textbox"), "Search"))
+
+  await waitFor(() => {
+    expect(screen.getByRole("textbox")).toHaveValue("Search")
+  })
+
+  await waitFor(() => {
+    expect(screen.getByText("No filters found")).toBeInTheDocument()
+  })
+})
