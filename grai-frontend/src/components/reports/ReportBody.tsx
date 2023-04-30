@@ -53,8 +53,6 @@ const ReportBody: React.FC<ReportBodyProps> = ({
                 sx={{
                   height: "calc(100vh - 290px)",
                   mt: 2,
-                  width: "100%",
-                  backgroundColor: theme => theme.palette.grey[100],
                 }}
               >
                 <Graph
