@@ -2,7 +2,7 @@
 name = "grai_source_snowflake"
 version = "0.0.19"
 description = ""
-authors = ["Tony Lewis <tony@grai.io>", "Edward Louth <edward@grai.io>"]
+authors = ["Ian Eaves <ian@grai.io>", "Edward Louth <edward@grai.io>"]
 license = "ELv2"
 packages = [
     { include = "grai_source_snowflake", from = "src" },
