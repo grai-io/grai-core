@@ -9,7 +9,7 @@ packages = [
 ]
 readme = "README.md"
 homepage = "https://www.grai.io/"
-repository = "https://github.com/grai-io/grai-core/grai-client"
+repository = "https://github.com/grai-io/grai-core/tree/master/grai-client"
 documentation = "https://docs.grai.io/"
 
 [tool.poetry.dependencies]

@@ -7,7 +7,7 @@ license = "Elastic-2.0"
 packages = [{ include = "grai_schemas", from = "src" },]
 readme = "README.md"
 homepage = "https://www.grai.io/"
-repository = "https://github.com/grai-io/grai-core/grai-schemas"
+repository = "https://github.com/grai-io/grai-core/tree/master/grai-schemas"
 documentation = "https://docs.grai.io/"
 
 [tool.poetry.dependencies]

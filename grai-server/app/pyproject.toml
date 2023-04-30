@@ -6,7 +6,7 @@ authors = ["Ian Eaves <ian@grai.io>", "Edward Louth <edward@grai.io>"]
 license = "Elastic-2.0"
 readme = "README.md"
 homepage = "https://www.grai.io/"
-repository = "https://github.com/grai-io/grai-core/grai-server"
+repository = "https://github.com/grai-io/grai-core/tree/master/grai-server"
 documentation = "https://docs.grai.io/"
 
 [tool.poetry.dependencies]

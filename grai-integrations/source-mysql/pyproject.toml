@@ -9,7 +9,7 @@ packages = [
 ]
 readme = "README.md"
 homepage = "https://www.grai.io/"
-repository = "https://github.com/grai-io/grai-core/grai-integrations/source-mysql"
+repository = "https://github.com/grai-io/grai-core/tree/master/grai-integrations/source-mysql"
 documentation = "https://docs.grai.io/"
 
 [tool.poetry.dependencies]
