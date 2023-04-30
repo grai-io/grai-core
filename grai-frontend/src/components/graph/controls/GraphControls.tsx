@@ -37,8 +37,8 @@ const GraphControls: React.FC<GraphControlsProps> = ({
         direction="row"
         sx={{
           position: "absolute",
-          top: 10,
-          left: 10,
+          top: "24px",
+          left: "24px",
           pointerEvents: "all",
           zIndex: 30,
         }}

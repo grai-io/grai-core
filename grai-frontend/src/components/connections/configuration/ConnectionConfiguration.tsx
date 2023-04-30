@@ -10,7 +10,7 @@ type ConnectionConfigurationProps = {
 const ConnectionConfiguration: React.FC<ConnectionConfigurationProps> = ({
   connection,
 }) => (
-  <Grid container sx={{ mt: 5 }}>
+  <Grid container>
     <Grid item md={8} sx={{ pr: 3 }}>
       <UpdateConnectionForm connection={connection} />
     </Grid>

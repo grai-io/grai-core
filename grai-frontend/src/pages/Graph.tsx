@@ -111,7 +111,7 @@ const Graph: React.FC = () => {
     <PageLayout>
       <Box
         sx={{
-          height: "calc(100vh - 70px)",
+          height: "100vh",
           width: "100%",
           backgroundColor: theme.palette.grey[100],
         }}

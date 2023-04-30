@@ -1,14 +1,14 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
-import { Box } from "@mui/material"
 import { useSearchParams } from "react-router-dom"
 import getRepoFromParams from "helpers/getRepoFromParams"
 import useWorkspace from "helpers/useWorkspace"
+import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
+import PageTabs from "components/layout/PageTabs"
 import ReportFilter from "components/reports/ReportFilter"
-import ReportsHeader from "components/reports/ReportsHeader"
 import ReportsTable from "components/reports/ReportsTable"
-import ReportTabs from "components/reports/ReportTabs"
+import TabState from "components/tabs/TabState"
 import GraphError from "components/utils/GraphError"
 import { GetReports, GetReportsVariables } from "./__generated__/GetReports"
 
@@ -119,20 +119,41 @@ const Reports: React.FC = () => {
 
   const handleRefresh = () => refetch()
 
+  const tabs = [
+    {
+      label: "All",
+      value: "all",
+      component: (
+        <>
+          <ReportFilter
+            workspace={data?.workspace ?? null}
+            onRefresh={handleRefresh}
+          />
+          <ReportsTable
+            runs={data?.workspace.runs.data ?? null}
+            loading={loading}
+          />
+        </>
+      ),
+    },
+    {
+      label: "Pulls",
+      value: "pulls",
+      disabled: true,
+    },
+    {
+      label: "Commits",
+      value: "commits",
+      disabled: true,
+    },
+  ]
+
   return (
     <PageLayout>
-      <ReportsHeader />
-      <Box sx={{ mx: 3 }}>
-        <ReportTabs currentTab="all" />
-        <ReportFilter
-          workspace={data?.workspace ?? null}
-          onRefresh={handleRefresh}
-        />
-        <ReportsTable
-          runs={data?.workspace.runs.data ?? null}
-          loading={loading}
-        />
-      </Box>
+      <TabState tabs={tabs}>
+        <PageHeader title="Reports" tabs />
+        <PageTabs />
+      </TabState>
     </PageLayout>
   )
 }

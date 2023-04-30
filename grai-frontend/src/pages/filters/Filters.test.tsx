@@ -2,7 +2,6 @@ import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
-import profileMock from "testing/profileMock"
 // import { DELETE_FILTER } from "components/filters/FilterDelete"
 import Filters, { GET_FILTERS } from "./Filters"
 
@@ -24,7 +23,6 @@ test("empty", async () => {
   render(<Filters />, {
     withRouter: true,
     mocks: [
-      profileMock,
       {
         request: {
           query: GET_FILTERS,
@@ -70,7 +68,7 @@ test("refresh", async () => {
     expect(screen.getByRole("heading", { name: /Filters/i })).toBeTruthy()
   })
 
-  await act(async () => await user.click(screen.getByTestId("filter-refresh")))
+  await act(async () => await user.click(screen.getByTestId("table-refresh")))
 
   // eslint-disable-next-line testing-library/no-wait-for-empty-callback
   await waitFor(() => {})
@@ -136,7 +134,6 @@ test("row click", async () => {
 //   const user = userEvent.setup()
 
 //   const mocks = [
-//     profileMock,
 //     filterMock,
 //     {
 //       request: {
@@ -187,7 +184,6 @@ test("row click", async () => {
 //   const user = userEvent.setup()
 
 //   const mocks = [
-//     profileMock,
 //     filterMock,
 //     {
 //       request: {
@@ -236,7 +232,6 @@ test("row click", async () => {
 
 test("error", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_FILTERS,
@@ -255,5 +250,27 @@ test("error", async () => {
 
   await waitFor(() => {
     expect(screen.getByText("Error!")).toBeInTheDocument()
+  })
+})
+
+test("search", async () => {
+  const user = userEvent.setup()
+
+  render(<Filters />, {
+    withRouter: true,
+  })
+
+  await waitFor(() => {
+    expect(screen.getAllByText("Hello World")).toBeTruthy()
+  })
+
+  await act(async () => await user.type(screen.getByRole("textbox"), "Search"))
+
+  await waitFor(() => {
+    expect(screen.getByRole("textbox")).toHaveValue("Search")
+  })
+
+  await waitFor(() => {
+    expect(screen.getByText("No filters found")).toBeInTheDocument()
   })
 })

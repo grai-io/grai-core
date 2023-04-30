@@ -1,13 +1,20 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
+import { Box, Stack, Tooltip } from "@mui/material"
 import { useParams } from "react-router-dom"
 import NotFound from "pages/NotFound"
 import useRunPolling from "helpers/runPolling"
 import useWorkspace from "helpers/useWorkspace"
-import ConnectionContent from "components/connections/ConnectionContent"
-import ConnectionHeader from "components/connections/ConnectionHeader"
-import ConnectionTabs from "components/connections/ConnectionTabs"
+import ConnectionConfiguration from "components/connections/configuration/ConnectionConfiguration"
+import ConnectionMenu from "components/connections/ConnectionMenu"
+import ConnectionRun from "components/connections/ConnectionRun"
+import ConnectionRunsTable from "components/connections/runs/ConnectionRunsTable"
+import EditScheduleForm from "components/connections/schedule/EditScheduleForm"
+import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
+import PageTabs from "components/layout/PageTabs"
+import RunStatus from "components/runs/RunStatus"
+import TabState from "components/tabs/TabState"
 import GraphError from "components/utils/GraphError"
 import {
   GetConnection,
@@ -30,6 +37,7 @@ export const GET_CONNECTION = gql`
           id
           name
           metadata
+          icon
         }
         metadata
         schedules
@@ -104,21 +112,91 @@ const Connection: React.FC = () => {
   if (error) return <GraphError error={error} />
   if (loading) return <PageLayout loading />
 
+  const workspace = data?.workspace
   const connection = data?.workspace?.connection
 
-  if (!connection) return <NotFound />
+  if (!workspace || !connection) return <NotFound />
 
   const handleRun = () => startPolling(1000)
 
+  const tabs = [
+    {
+      value: "runs",
+      label: "Runs",
+      component: <ConnectionRunsTable runs={connection.runs} />,
+    },
+    {
+      value: "configuration",
+      label: "Configuration",
+      component: <ConnectionConfiguration connection={connection} />,
+    },
+    {
+      value: "schedule",
+      label: "Schedule",
+      component: <EditScheduleForm connection={connection} />,
+    },
+    {
+      value: "activity",
+      label: "Activity",
+      disabled: true,
+    },
+    {
+      value: "alerts",
+      label: "Alerts",
+      disabled: true,
+    },
+  ]
+
   return (
     <PageLayout>
-      <ConnectionHeader
-        connection={connection}
-        workspaceId={data.workspace.id}
-        onRun={handleRun}
-      />
-      <ConnectionContent connection={connection} />
-      <ConnectionTabs connection={connection} />
+      <TabState tabs={tabs}>
+        <PageHeader
+          title={connection.name}
+          status={
+            <>
+              {connection.last_run && (
+                <RunStatus run={connection.last_run} link sx={{ mr: 3 }} />
+              )}
+              {connection.connector.icon && (
+                <Tooltip title={connection.connector.name}>
+                  <Box
+                    sx={{
+                      borderRadius: "8px",
+                      border: "1px solid rgba(0, 0, 0, 0.08)",
+                      height: "48px",
+                      width: "48px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <img
+                      src={connection.connector.icon}
+                      alt={`${connection.connector.name} logo`}
+                      style={{ height: 32, width: 32 }}
+                    />
+                  </Box>
+                </Tooltip>
+              )}
+            </>
+          }
+          buttons={
+            <Stack direction="row" spacing={2}>
+              <ConnectionRun
+                connection={connection}
+                workspaceId={workspace.id}
+                onRun={handleRun}
+              />
+              <ConnectionMenu
+                connection={connection}
+                workspaceId={workspace.id}
+              />
+            </Stack>
+          }
+          tabs
+        />
+        <PageTabs />
+      </TabState>
     </PageLayout>
   )
 }

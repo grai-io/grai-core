@@ -3,8 +3,9 @@ import { gql, useQuery } from "@apollo/client"
 import { useParams } from "react-router-dom"
 import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
-import FilterHeader from "components/filters/FilterHeader"
 import UpdateFilter from "components/filters/UpdateFilter"
+import PageContent from "components/layout/PageContent"
+import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
 import GraphError from "components/utils/GraphError"
 import { GetFilter, GetFilterVariables } from "./__generated__/GetFilter"
@@ -54,12 +55,14 @@ const Filter: React.FC = () => {
 
   return (
     <PageLayout>
-      <FilterHeader filter={filter} />
-      <UpdateFilter
-        filter={filter}
-        tags={data?.workspace?.tags.data}
-        workspaceId={data?.workspace.id}
-      />
+      <PageHeader title={filter.name ?? ""} />
+      <PageContent>
+        <UpdateFilter
+          filter={filter}
+          tags={data?.workspace?.tags.data}
+          workspaceId={data?.workspace.id}
+        />
+      </PageContent>
     </PageLayout>
   )
 }

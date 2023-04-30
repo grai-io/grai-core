@@ -1,9 +1,10 @@
 import React, { useState } from "react"
 import { gql, useQuery } from "@apollo/client"
-import { Box } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
+import PageContent from "components/layout/PageContent"
+import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
-import TablesHeader from "components/tables/TablesHeader"
+import TableHeader from "components/table/TableHeader"
 import TablesTable from "components/tables/TablesTable"
 import GraphError from "components/utils/GraphError"
 import { GetTables, GetTablesVariables } from "./__generated__/GetTables"
@@ -67,18 +68,19 @@ const Tables: React.FC = () => {
 
   return (
     <PageLayout>
-      <TablesHeader
-        search={search}
-        onSearch={setSearch}
-        onRefresh={handleRefresh}
-      />
-      <Box sx={{ px: 3 }}>
+      <PageHeader title="Tables" />
+      <PageContent>
+        <TableHeader
+          search={search}
+          onSearch={setSearch}
+          onRefresh={handleRefresh}
+        />
         <TablesTable
           tables={filteredTables}
           loading={loading}
           total={data?.workspace.tables.meta.total ?? 0}
         />
-      </Box>
+      </PageContent>
     </PageLayout>
   )
 }

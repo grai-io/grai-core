@@ -30,7 +30,11 @@ const NodeDetailRow: React.FC<NodeDetailRowProps> = ({
       </Typography>
     </TableCell>
     <TableCell sx={{ textAlign: right ? "right" : undefined }}>
-      {value && <Typography variant="body2">{value}</Typography>}
+      {value && (
+        <Typography variant="body2" sx={{ overflowWrap: "break-word" }}>
+          {value}
+        </Typography>
+      )}
       {children}
     </TableCell>
   </TableRow>

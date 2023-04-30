@@ -41,8 +41,8 @@ const ConnectionRunsTable: React.FC<ConnectionRunsTableProps> = ({ runs }) => {
   const { workspaceNavigate } = useWorkspace()
 
   return (
-    <Table sx={{ mt: 1 }}>
-      <TableHead sx={{ backgroundColor: theme => theme.palette.grey[100] }}>
+    <Table>
+      <TableHead>
         <TableRow>
           <TableCell sx={{ width: 0 }} />
           <TableCell>id</TableCell>

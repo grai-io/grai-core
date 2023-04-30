@@ -2,7 +2,6 @@ import React from "react"
 import {
   Alert,
   AlertTitle,
-  Box,
   Card,
   Grid,
   Table,
@@ -41,8 +40,8 @@ type RunDetailProps = {
 }
 
 const RunDetail: React.FC<RunDetailProps> = ({ run }) => (
-  <Box sx={{ p: 3 }}>
-    <Grid container spacing={3} sx={{ py: 3 }}>
+  <>
+    <Grid container spacing={3}>
       <Grid item md={6}>
         <Card variant="outlined" sx={{ borderRadius: 0, borderBottom: 0 }}>
           <Table>
@@ -92,7 +91,7 @@ const RunDetail: React.FC<RunDetailProps> = ({ run }) => (
         ))}
       </Alert>
     )}
-  </Box>
+  </>
 )
 
 export default RunDetail

@@ -1,15 +1,10 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
-import { Search } from "@mui/icons-material"
-import {
-  Box,
-  Container,
-  InputAdornment,
-  TextField,
-  Typography,
-} from "@mui/material"
+import { Box } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
 import HomeCards from "components/home/HomeCards"
+import ReportsCard from "components/home/ReportsCard"
+import WelcomeCard from "components/home/WelcomeCard"
 import PageLayout from "components/layout/PageLayout"
 import SearchDialog from "components/search/SearchDialog"
 import GraphError from "components/utils/GraphError"
@@ -56,29 +51,11 @@ const Home: React.FC = () => {
 
   return (
     <PageLayout>
-      <Container maxWidth="lg" sx={{ textAlign: "center" }}>
-        <Box sx={{ mt: 15 }}>
-          <img src="/logo512.png" width="75px" height="75px" alt="logo" />
-        </Box>
-
-        <Typography variant="h4" sx={{ mt: 2, mb: 15 }}>
-          Welcome to Grai
-        </Typography>
-        <TextField
-          placeholder="Search data assets"
-          onClick={() => setSearch(true)}
-          disabled
-          sx={{ width: 750, mb: 15 }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <Search />
-              </InputAdornment>
-            ),
-          }}
-        />
+      <Box sx={{ padding: "24px" }}>
+        <WelcomeCard search={search} setSearch={setSearch} />
         <HomeCards />
-      </Container>
+        <ReportsCard />
+      </Box>
       <SearchDialog
         open={search}
         onClose={handleClose}

@@ -2,6 +2,7 @@ import React from "react"
 import { gql, useQuery } from "@apollo/client"
 import { Container } from "@mui/material"
 import { useLocation } from "react-router-dom"
+import GraiLogo from "components/icons/GraiLogo"
 import Loading from "components/layout/Loading"
 import GraphError from "components/utils/GraphError"
 import CreateWorkspace from "components/workspaces/CreateWorkspace"
@@ -36,7 +37,7 @@ const Workspaces: React.FC = () => {
 
   return (
     <Container maxWidth="sm" sx={{ mt: 20 }}>
-      <img src="/icons/grai/grai-logo.svg" alt="Grai" />
+      <GraiLogo />
       {location.state?.workspaceNotFound && (
         <WorkspaceNotFound
           organisationName={location.state.organisationName}

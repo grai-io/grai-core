@@ -1,7 +1,6 @@
 import React from "react"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
-import profileMock from "testing/profileMock"
 import ApiKeys, { GET_API_KEYS } from "./ApiKeys"
 
 test("renders", async () => {
@@ -22,7 +21,6 @@ test("renders", async () => {
 
 test("error", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_API_KEYS,
@@ -46,7 +44,6 @@ test("error", async () => {
 
 test("no workspace", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_API_KEYS,

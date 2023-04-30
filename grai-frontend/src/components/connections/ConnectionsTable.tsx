@@ -43,9 +43,9 @@ const ConnectionsTable: React.FC<ConnectionsTableProps> = ({
   const navigate = useNavigate()
 
   return (
-    <Table>
+    <Table sx={{ mb: -1 }}>
       <TableHead>
-        <TableRow sx={{ backgroundColor: theme => theme.palette.grey[100] }}>
+        <TableRow>
           <TableCell>Name</TableCell>
           <TableCell>Namespace</TableCell>
           <TableCell>Integration</TableCell>

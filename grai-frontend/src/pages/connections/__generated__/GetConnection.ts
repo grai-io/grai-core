@@ -12,6 +12,7 @@ export interface GetConnection_workspace_connection_connector {
   id: any;
   name: string;
   metadata: any;
+  icon: string | null;
 }
 
 export interface GetConnection_workspace_connection_last_run_user {

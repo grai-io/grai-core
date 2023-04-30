@@ -1,7 +1,6 @@
 import React, { useState } from "react"
 import { gql, useQuery } from "@apollo/client"
 import { Alert, Box } from "@mui/material"
-import theme from "theme"
 import useWorkspace from "helpers/useWorkspace"
 import Graph from "components/graph/Graph"
 import Loading from "components/layout/Loading"
@@ -119,10 +118,7 @@ const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
   return (
     <Box
       sx={{
-        height: "calc(100vh - 226px)",
-        width: "100%",
-        backgroundColor: theme.palette.grey[100],
-        mt: 2,
+        height: "calc(100vh - 144px)",
       }}
       data-testid="table-lineage"
     >

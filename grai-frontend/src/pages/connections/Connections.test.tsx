@@ -2,7 +2,6 @@ import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
-import profileMock from "testing/profileMock"
 import { DELETE_CONNECTION } from "components/connections/ConnectionDelete"
 import Connections, { GET_CONNECTIONS } from "./Connections"
 
@@ -31,9 +30,7 @@ test("refresh", async () => {
     expect(screen.getByRole("heading", { name: /Connections/i })).toBeTruthy()
   })
 
-  await act(
-    async () => await user.click(screen.getByTestId("connection-refresh"))
-  )
+  await act(async () => await user.click(screen.getByTestId("table-refresh")))
 
   // eslint-disable-next-line testing-library/no-wait-for-empty-callback
   await waitFor(() => {})
@@ -80,7 +77,6 @@ test("delete", async () => {
   const user = userEvent.setup()
 
   const mocks = [
-    profileMock,
     connectionMock,
     {
       request: {
@@ -131,7 +127,6 @@ test("cancel delete", async () => {
   const user = userEvent.setup()
 
   const mocks = [
-    profileMock,
     connectionMock,
     {
       request: {
@@ -180,7 +175,6 @@ test("cancel delete", async () => {
 
 test("error", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_CONNECTIONS,
@@ -199,5 +193,27 @@ test("error", async () => {
 
   await waitFor(() => {
     expect(screen.getByText("Error!")).toBeInTheDocument()
+  })
+})
+
+test("search", async () => {
+  const user = userEvent.setup()
+
+  render(<Connections />, {
+    withRouter: true,
+  })
+
+  await waitFor(() => {
+    expect(screen.getAllByText("Hello World")).toBeTruthy()
+  })
+
+  await act(async () => await user.type(screen.getByRole("textbox"), "Search"))
+
+  await waitFor(() => {
+    expect(screen.getByRole("textbox")).toHaveValue("Search")
+  })
+
+  await waitFor(() => {
+    expect(screen.getByText("No connections found")).toBeInTheDocument()
   })
 })

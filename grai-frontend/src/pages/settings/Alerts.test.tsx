@@ -1,7 +1,6 @@
 import React from "react"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
-import profileMock from "testing/profileMock"
 import Alerts, { GET_ALERTS } from "./Alerts"
 
 test("renders", async () => {
@@ -20,7 +19,6 @@ test("renders", async () => {
 
 test("error", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_ALERTS,
@@ -44,7 +42,6 @@ test("error", async () => {
 
 test("no workspace", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_ALERTS,

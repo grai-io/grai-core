@@ -8,9 +8,9 @@ type TestResultsProps = {
 }
 
 const TestResults: React.FC<TestResultsProps> = ({ errors }) => (
-  <Table sx={{ mt: 2 }}>
+  <Table>
     <TableHead>
-      <TableRow sx={{ backgroundColor: theme => theme.palette.grey[100] }}>
+      <TableRow>
         <TableCell>Changed Node</TableCell>
         <TableCell>Dependency</TableCell>
         <TableCell>Test</TableCell>

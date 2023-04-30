@@ -1,7 +1,6 @@
 import React from "react"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
-import profileMock from "testing/profileMock"
 import FilterCreate, { GET_WORKSPACE } from "./FilterCreate"
 
 test("renders", async () => {
@@ -19,7 +18,6 @@ test("renders", async () => {
 
 test("not found", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_WORKSPACE,
@@ -45,7 +43,6 @@ test("not found", async () => {
 
 test("error", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_WORKSPACE,

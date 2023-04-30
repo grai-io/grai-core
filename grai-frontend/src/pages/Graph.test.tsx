@@ -3,7 +3,6 @@ import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
 import { input } from "testing/autocomplete"
-import profileMock from "testing/profileMock"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
 import { GET_FILTERS } from "components/graph/controls/FilterControl"
 import Graph, { GET_TABLES_AND_EDGES } from "./Graph"
@@ -120,7 +119,7 @@ const tablesMockWithFilter = {
   },
 }
 
-const mocks = [profileMock, filtersMock, tablesMock]
+const mocks = [filtersMock, tablesMock]
 
 jest.retryTimes(1)
 
@@ -177,7 +176,6 @@ test("renders empty", async () => {
     path: ":organisationName/:workspaceName/graph",
     route: "/default/demo/graph",
     mocks: [
-      profileMock,
       {
         request: {
           query: GET_TABLES_AND_EDGES,
@@ -296,7 +294,6 @@ test("renders with limitGraph", async () => {
 
 test("error", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_TABLES_AND_EDGES,
@@ -321,7 +318,6 @@ test("error", async () => {
 
 test("no nodes", async () => {
   const mocks = [
-    profileMock,
     filtersMock,
     {
       request: {
@@ -413,7 +409,7 @@ test("filter", async () => {
     path: ":organisationName/:workspaceName/graph",
     route: "/default/demo/graph",
     routes: ["/:organisationName/:workspaceName/filters/create"],
-    mocks: [profileMock, filtersMock, tablesMock, tablesMockWithFilter],
+    mocks: [filtersMock, tablesMock, tablesMockWithFilter],
   })
 
   await waitFor(() => {

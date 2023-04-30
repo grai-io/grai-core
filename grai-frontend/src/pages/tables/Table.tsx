@@ -3,9 +3,14 @@ import { gql, useQuery } from "@apollo/client"
 import { useParams } from "react-router-dom"
 import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
+import PageContent from "components/layout/PageContent"
+import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
-import TableContent from "components/tables/TableContent"
-import TableHeader from "components/tables/TableHeader"
+import PageTabs from "components/layout/PageTabs"
+import TableColumns from "components/tables/columns/TableColumns"
+import TableLineage from "components/tables/TableLineage"
+import TableProfile from "components/tables/TableProfile"
+import TabState from "components/tabs/TabState"
 import GraphError from "components/utils/GraphError"
 import { GetTable, GetTableVariables } from "./__generated__/GetTable"
 
@@ -86,10 +91,41 @@ const Table: React.FC = () => {
 
   if (!table) return <NotFound />
 
+  const tabs = [
+    {
+      label: "Profile",
+      value: "profile",
+      component: (
+        <>
+          <PageContent>
+            <TableProfile table={table} />
+          </PageContent>
+          <PageContent>
+            <TableColumns columns={table.columns.data} />
+          </PageContent>
+        </>
+      ),
+      noWrapper: true,
+    },
+    {
+      label: "Sample",
+      value: "sample",
+      disabled: true,
+    },
+    {
+      label: "Lineage",
+      value: "lineage",
+      component: <TableLineage table={table} />,
+      noWrapper: true,
+    },
+  ]
+
   return (
     <PageLayout>
-      <TableHeader table={table} />
-      <TableContent table={table} />
+      <TabState tabs={tabs}>
+        <PageHeader title={table.display_name} tabs />
+        <PageTabs />
+      </TabState>
     </PageLayout>
   )
 }

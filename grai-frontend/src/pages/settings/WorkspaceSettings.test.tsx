@@ -2,7 +2,6 @@ import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
-import profileMock from "testing/profileMock"
 import { UPDATE_WORKSPACE } from "components/settings/workspace/WorkspaceForm"
 import WorkspaceSettings, { GET_WORKSPACE } from "./WorkspaceSettings"
 
@@ -22,7 +21,6 @@ test("renders", async () => {
 
 test("error", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_WORKSPACE,
@@ -50,7 +48,6 @@ test("error", async () => {
 
 test("not found", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_WORKSPACE,
@@ -113,7 +110,6 @@ test("submit error", async () => {
   const user = userEvent.setup()
 
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_WORKSPACE,

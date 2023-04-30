@@ -2,7 +2,6 @@ import React, { ReactNode } from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, fireEvent, render, screen, waitFor } from "testing"
-import profileMock from "testing/profileMock"
 import Home, { GET_WORKSPACE } from "./Home"
 import Workspaces, { GET_WORKSPACES } from "./workspaces/Workspaces"
 
@@ -66,7 +65,6 @@ test("search", async () => {
 
 test("error", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_WORKSPACE,
@@ -90,7 +88,6 @@ test("error", async () => {
 
 test("no workspace", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_WORKSPACE,
@@ -116,7 +113,6 @@ test("no workspace", async () => {
 
 test("missing workspace", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_WORKSPACE,

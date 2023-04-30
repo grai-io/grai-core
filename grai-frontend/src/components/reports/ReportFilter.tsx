@@ -47,7 +47,7 @@ const ReportFilter: React.FC<ReportFilterProps> = ({
       )
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", mb: "24px" }}>
       <Stack direction="row" spacing={1} sx={{ flexGrow: 1 }}>
         <RepositoryFilter
           repositories={repositories ?? []}
@@ -61,7 +61,7 @@ const ReportFilter: React.FC<ReportFilterProps> = ({
             <Button
               variant="outlined"
               onClick={onRefresh}
-              sx={{ width: 40, height: 40, minWidth: 0, mt: 2 }}
+              sx={{ width: 40, height: 40, minWidth: 0 }}
             >
               <Refresh />
             </Button>

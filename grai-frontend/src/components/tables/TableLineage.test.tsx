@@ -1,7 +1,6 @@
 import React from "react"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
-import profileMock from "testing/profileMock"
 import { tableMock } from "pages/tables/Table.test"
 import TableLineage, {
   GET_TABLES_AND_EDGES,
@@ -14,7 +13,6 @@ const table = {
 
 test("renders", async () => {
   const mocks = [
-    profileMock,
     tableMock,
     {
       request: {
@@ -100,7 +98,6 @@ test("renders", async () => {
 
 test("error", async () => {
   const mocks = [
-    profileMock,
     tableMock,
     {
       request: {
@@ -128,7 +125,6 @@ test("error", async () => {
 
 test("no tables", async () => {
   const mocks = [
-    profileMock,
     tableMock,
     {
       request: {

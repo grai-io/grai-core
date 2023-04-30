@@ -21,6 +21,13 @@ const theme = createTheme({
     secondary: {
       main: "#FFB567",
     },
+    success: {
+      main: "#31C48D24",
+    },
+    error: {
+      main: "#F0525224",
+      contrastText: "#1F2A37",
+    },
     // pgrey: {
     //     main: '#aaabb8',
     // },
@@ -42,6 +49,15 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           textTransform: "inherit",
+        },
+      },
+    },
+    MuiTableHead: {
+      styleOverrides: {
+        root: {
+          "& th": {
+            fontWeight: 700,
+          },
         },
       },
     },

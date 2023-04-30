@@ -1,7 +1,6 @@
 import React from "react"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
-import profileMock from "testing/profileMock"
 // import { DELETE_FILTER } from "components/filters/FilterDelete"
 import Filter, { GET_FILTER } from "./Filter"
 
@@ -17,7 +16,6 @@ test("renders", async () => {
 
 test("error", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_FILTER,
@@ -42,7 +40,6 @@ test("error", async () => {
 
 test("not found", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_FILTER,

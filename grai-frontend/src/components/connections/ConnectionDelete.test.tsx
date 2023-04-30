@@ -21,15 +21,6 @@ test("renders", async () => {
 })
 
 test("renders no name", async () => {
-  const membership = {
-    id: "1",
-    user: {
-      username: "test@example.com",
-      first_name: null,
-      last_name: null,
-    },
-  }
-
   const user = userEvent.setup()
 
   render(<ConnectionDelete connection={connection} onClose={() => {}} />)

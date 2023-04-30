@@ -2,7 +2,6 @@ import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
-import profileMock from "testing/profileMock"
 import Tables, { GET_TABLES } from "./Tables"
 
 test("renders", async () => {
@@ -21,7 +20,6 @@ test("renders", async () => {
 
 test("error", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_TABLES,
@@ -72,7 +70,7 @@ test("refresh", async () => {
     withRouter: true,
   })
 
-  await act(async () => await user.click(screen.getByTestId("tables-refresh")))
+  await act(async () => await user.click(screen.getByTestId("table-refresh")))
 
   // eslint-disable-next-line testing-library/no-wait-for-empty-callback
   await waitFor(() => {})
@@ -99,7 +97,6 @@ test("click row", async () => {
 
 test("no tables", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_TABLES,

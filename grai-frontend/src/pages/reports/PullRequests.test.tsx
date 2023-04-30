@@ -2,7 +2,6 @@ import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
-import profileMock from "testing/profileMock"
 import PullRequests, { GET_PULL_REQUESTS } from "./PullRequests"
 
 test("renders", async () => {
@@ -36,7 +35,6 @@ test("click row", async () => {
 
 test("not found", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_PULL_REQUESTS,
@@ -72,7 +70,6 @@ test("not found", async () => {
 
 test("error", async () => {
   const mocks = [
-    profileMock,
     {
       request: {
         query: GET_PULL_REQUESTS,

@@ -76,7 +76,7 @@ const TableColumnsTable: React.FC<TableColumnsTableProps> = ({
 
   return (
     <Table sx={{ mt: 1 }} data-testid="columns-table">
-      <TableHead sx={{ backgroundColor: theme.palette.grey[100] }}>
+      <TableHead>
         <TableRow>
           <TableCell sx={{ width: 0 }} />
           <TableCell>Name</TableCell>

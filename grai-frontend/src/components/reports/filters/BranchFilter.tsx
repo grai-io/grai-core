@@ -1,5 +1,5 @@
 import React from "react"
-import { Autocomplete, Box, InputAdornment, TextField } from "@mui/material"
+import { Autocomplete, InputAdornment, TextField } from "@mui/material"
 import useSearchParams from "helpers/useSearchParams"
 
 export interface Branch {
@@ -24,32 +24,30 @@ const BranchFilter: React.FC<BranchFilterProps> = ({ branches, disabled }) => {
     null
 
   return (
-    <Box sx={{ py: 2, display: "flex" }}>
-      <Autocomplete
-        disablePortal
-        disabled={disabled}
-        options={branches}
-        getOptionLabel={option => option.reference}
-        value={value}
-        onChange={handleChange}
-        sx={{ minWidth: 350 }}
-        data-testid="autocomplete"
-        renderInput={params => (
-          <TextField
-            {...params}
-            size="small"
-            InputProps={{
-              ...params.InputProps,
-              startAdornment: (
-                <InputAdornment position="start" sx={{ ml: 1 }}>
-                  Branch
-                </InputAdornment>
-              ),
-            }}
-          />
-        )}
-      />
-    </Box>
+    <Autocomplete
+      disablePortal
+      disabled={disabled}
+      options={branches}
+      getOptionLabel={option => option.reference}
+      value={value}
+      onChange={handleChange}
+      sx={{ minWidth: 350 }}
+      data-testid="autocomplete"
+      renderInput={params => (
+        <TextField
+          {...params}
+          size="small"
+          InputProps={{
+            ...params.InputProps,
+            startAdornment: (
+              <InputAdornment position="start" sx={{ ml: 1 }}>
+                Branch
+              </InputAdornment>
+            ),
+          }}
+        />
+      )}
+    />
   )
 }
 

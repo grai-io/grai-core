@@ -10,7 +10,6 @@ import {
   TextField,
   FormGroup,
   Checkbox,
-  Box,
 } from "@mui/material"
 import { useSnackbar } from "notistack"
 import Form from "components/form/Form"
@@ -115,106 +114,104 @@ const EditScheduleForm: React.FC<EditScheduleFormProps> = ({ connection }) => {
   }
 
   return (
-    <Box sx={{ mt: 3 }}>
-      <Form onSubmit={handleSubmit}>
-        {error && <GraphError error={error} />}
-        <FormControl>
-          <FormLabel sx={{ mb: 1 }}>Schedule type</FormLabel>
-          <RadioGroup
-            value={values.type}
-            onChange={event =>
-              setValues({
-                ...values,
-                type: event.target.value,
-              })
-            }
-          >
-            <FormControlLabel value="" control={<Radio />} label="Manual" />
-            <FormControlLabel
-              value="interval"
-              control={<Radio />}
-              label="Interval"
-              disabled
-            />
-            <FormControlLabel
-              value="custom"
-              control={<Radio />}
-              label="Custom recurrence"
-              disabled
-            />
-            <FormControlLabel
-              value="cron"
-              control={<Radio />}
-              label="Cron expression"
-            />
-          </RadioGroup>
-        </FormControl>
-        {values.type === "cron" && (
-          <>
-            <TextField
-              label="Minutes"
-              helperText='Cron minutes to run. Use "*" for all. (Example: "0,30")'
-              margin="normal"
-              value={values.cron?.minutes ?? ""}
-              onChange={event => setCron("minutes", event.target.value)}
-              fullWidth
-            />
-            <TextField
-              label="Hours"
-              helperText='Cron hours to run. Use "*" for all. (Example: "8,20")'
-              margin="normal"
-              value={values.cron?.hours ?? ""}
-              onChange={event => setCron("minutes", event.target.value)}
-              fullWidth
-            />
-            <TextField
-              label="Days of the week"
-              helperText='Cron days of the week to run. Use "*" for all. (Example: "0,5")'
-              margin="normal"
-              value={values.cron?.day_of_week ?? ""}
-              onChange={event => setCron("day_of_week", event.target.value)}
-              fullWidth
-            />
-            <TextField
-              label="Days of the month"
-              helperText='Cron days of the month to run. Use "*" for all. (Example: "1,15")'
-              margin="normal"
-              value={values.cron?.day_of_month ?? ""}
-              onChange={event => setCron("day_of_month", event.target.value)}
-              fullWidth
-            />
-            <TextField
-              label="Months of the year"
-              helperText='Cron months of the year to run. Use "*" for all. (Example: "0,6")'
-              margin="normal"
-              value={values.cron?.month_of_year ?? ""}
-              onChange={event => setCron("month_of_year", event.target.value)}
-              fullWidth
-            />
-          </>
-        )}
-        <FormGroup>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={values.type === "" ? false : is_active}
-                onChange={event => setIsActive(event.target.checked)}
-                disabled={values.type === ""}
-              />
-            }
-            label="Enabled"
-          />
-        </FormGroup>
-        <LoadingButton
-          variant="contained"
-          type="submit"
-          loading={loading}
-          sx={{ mt: 2 }}
+    <Form onSubmit={handleSubmit}>
+      {error && <GraphError error={error} />}
+      <FormControl>
+        <FormLabel sx={{ mb: 1 }}>Schedule type</FormLabel>
+        <RadioGroup
+          value={values.type}
+          onChange={event =>
+            setValues({
+              ...values,
+              type: event.target.value,
+            })
+          }
         >
-          Save
-        </LoadingButton>
-      </Form>
-    </Box>
+          <FormControlLabel value="" control={<Radio />} label="Manual" />
+          <FormControlLabel
+            value="interval"
+            control={<Radio />}
+            label="Interval"
+            disabled
+          />
+          <FormControlLabel
+            value="custom"
+            control={<Radio />}
+            label="Custom recurrence"
+            disabled
+          />
+          <FormControlLabel
+            value="cron"
+            control={<Radio />}
+            label="Cron expression"
+          />
+        </RadioGroup>
+      </FormControl>
+      {values.type === "cron" && (
+        <>
+          <TextField
+            label="Minutes"
+            helperText='Cron minutes to run. Use "*" for all. (Example: "0,30")'
+            margin="normal"
+            value={values.cron?.minutes ?? ""}
+            onChange={event => setCron("minutes", event.target.value)}
+            fullWidth
+          />
+          <TextField
+            label="Hours"
+            helperText='Cron hours to run. Use "*" for all. (Example: "8,20")'
+            margin="normal"
+            value={values.cron?.hours ?? ""}
+            onChange={event => setCron("minutes", event.target.value)}
+            fullWidth
+          />
+          <TextField
+            label="Days of the week"
+            helperText='Cron days of the week to run. Use "*" for all. (Example: "0,5")'
+            margin="normal"
+            value={values.cron?.day_of_week ?? ""}
+            onChange={event => setCron("day_of_week", event.target.value)}
+            fullWidth
+          />
+          <TextField
+            label="Days of the month"
+            helperText='Cron days of the month to run. Use "*" for all. (Example: "1,15")'
+            margin="normal"
+            value={values.cron?.day_of_month ?? ""}
+            onChange={event => setCron("day_of_month", event.target.value)}
+            fullWidth
+          />
+          <TextField
+            label="Months of the year"
+            helperText='Cron months of the year to run. Use "*" for all. (Example: "0,6")'
+            margin="normal"
+            value={values.cron?.month_of_year ?? ""}
+            onChange={event => setCron("month_of_year", event.target.value)}
+            fullWidth
+          />
+        </>
+      )}
+      <FormGroup>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={values.type === "" ? false : is_active}
+              onChange={event => setIsActive(event.target.checked)}
+              disabled={values.type === ""}
+            />
+          }
+          label="Enabled"
+        />
+      </FormGroup>
+      <LoadingButton
+        variant="contained"
+        type="submit"
+        loading={loading}
+        sx={{ mt: 2 }}
+      >
+        Save
+      </LoadingButton>
+    </Form>
   )
 }
 

@@ -46,9 +46,9 @@ const FiltersTable: React.FC<FiltersTableProps> = ({
   const navigate = useNavigate()
 
   return (
-    <Table>
+    <Table sx={{ mb: -1 }}>
       <TableHead>
-        <TableRow sx={{ backgroundColor: theme => theme.palette.grey[100] }}>
+        <TableRow>
           <TableCell>Name</TableCell>
           <TableCell sx={{ textAlign: "right" }}>Created</TableCell>
           <TableCell>User</TableCell>

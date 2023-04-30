@@ -1,12 +1,19 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { gql, useQuery } from "@apollo/client"
+import { Box, Stack, Typography } from "@mui/material"
 import { useParams } from "react-router-dom"
 import NotFound from "pages/NotFound"
 import resultsToErrors from "helpers/resultsToErrors"
+import { durationAgo } from "helpers/runDuration"
+import useSearchParams from "helpers/useSearchParams"
 import useWorkspace from "helpers/useWorkspace"
+import Graph from "components/graph/Graph"
+import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
-import ReportBody from "components/reports/ReportBody"
-import ReportRunHeader from "components/reports/run/ReportRunHeader"
+import PageTabs from "components/layout/PageTabs"
+import TestResults from "components/reports/results/TestResults"
+import RunLog from "components/reports/run/RunLog"
+import TabState from "components/tabs/TabState"
 import GraphError from "components/utils/GraphError"
 import {
   GetRunReport,
@@ -95,6 +102,19 @@ const Report: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
   const { reportId } = useParams()
 
+  const { searchParams, setSearchParams } = useSearchParams()
+  const [display, setDisplay] = useState(false)
+
+  useEffect(() => {
+    setSearchParams(
+      { ...searchParams, limitGraph: "true" },
+      {
+        replace: true,
+      }
+    )
+    setDisplay(true)
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   const { loading, error, data } = useQuery<
     GetRunReport,
     GetRunReportVariables
@@ -118,10 +138,87 @@ const Report: React.FC = () => {
   const tables = data?.workspace.tables.data
   const edges = data?.workspace.other_edges.data
 
+  const failureCount = errors?.filter(error => !error.test_pass).length ?? 0
+  const passCount = errors?.filter(error => error.test_pass).length ?? 0
+  const total = failureCount + passCount
+
+  const limitGraph: boolean =
+    searchParams.get("limitGraph")?.toLowerCase() === "true"
+
+  if (!display) return null
+
+  const tabs = [
+    {
+      value: "graph",
+      label: "Graph",
+      noWrapper: true,
+      component: (
+        <Box
+          sx={{
+            height: "calc(100vh - 144px)",
+            backgroundColor: theme => theme.palette.grey[100],
+          }}
+        >
+          <Graph
+            tables={tables}
+            edges={edges}
+            errors={errors}
+            limitGraph={limitGraph}
+          />
+        </Box>
+      ),
+    },
+    {
+      value: "failed-tests",
+      label: "Failed",
+      component: (
+        <TestResults
+          errors={errors?.filter(error => !error.test_pass) ?? null}
+        />
+      ),
+    },
+    {
+      value: "all-tests",
+      label: "All",
+      component: <TestResults errors={errors} />,
+    },
+    {
+      value: "log",
+      label: "Log",
+      component: run && <RunLog run={run} />,
+    },
+  ]
+
   return (
     <PageLayout>
-      <ReportRunHeader run={run} />
-      <ReportBody run={run} tables={tables} edges={edges} errors={errors} />
+      <TabState tabs={tabs}>
+        <PageHeader
+          title={`Run ${run.id.slice(0, 6)}`}
+          tabs
+          status={
+            run.created_at && (
+              <Typography>{`about ${durationAgo(
+                run.created_at,
+                1,
+                true
+              )} ago `}</Typography>
+            )
+          }
+          buttons={
+            <Stack direction="row" spacing={1}>
+              <Typography>Failures</Typography>
+              <Typography sx={{ mr: 3 }}>{failureCount}</Typography>
+              <Typography>Passes</Typography>
+              <Typography sx={{ mr: 3 }}>{passCount}</Typography>
+              <Typography>Success Rate</Typography>
+              <Typography sx={{ mr: 3 }}>
+                {total > 0 ? (passCount / total) * 100 + "%" : "-"}
+              </Typography>
+            </Stack>
+          }
+        />
+        <PageTabs />
+      </TabState>
     </PageLayout>
   )
 }
