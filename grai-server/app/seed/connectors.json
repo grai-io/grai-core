@@ -283,7 +283,7 @@
                     {
                         "name": "database",
                         "required": true
-                    },
+                    }
                 ]
             },
             "is_active": true,
