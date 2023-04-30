@@ -1,12 +1,16 @@
 [tool.poetry]
 name = "grai-client"
-version = "0.2.8"
+version = "0.2.9"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>"]
 license = "Elastic-2.0"
 packages = [
     { include = "grai_client", from = "src" },
 ]
+readme = "README.md"
+homepage = "https://www.grai.io/"
+repository = "https://github.com/grai-io/grai-core/tree/master/grai-client"
+documentation = "https://docs.grai.io/"
 
 [tool.poetry.dependencies]
 python = "^3.8"

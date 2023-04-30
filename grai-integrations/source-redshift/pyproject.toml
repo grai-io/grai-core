@@ -1,12 +1,17 @@
- [tool.poetry]
+[tool.poetry]
 name = "grai_source_redshift"
-version = "0.0.4"
+version = "0.0.5"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>"]
 license = "Elastic-2.0"
 packages = [
     { include = "grai_source_redshift", from = "src" },
 ]
+readme = "README.md"
+homepage = "https://www.grai.io/"
+repository = "https://github.com/grai-io/grai-core/tree/master/grai-integrations/source-redshift"
+documentation = "https://docs.grai.io/"
+
 [tool.poetry.dependencies]
 python = "^3.8"
 grai-client = "^0.2.4"

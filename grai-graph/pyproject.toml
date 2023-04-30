@@ -1,9 +1,13 @@
 [tool.poetry]
 name = "grai-graph"
-version = "0.2.1"
+version = "0.2.2"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>"]
 license = "Elastic-2.0"
+readme = "README.md"
+homepage = "https://www.grai.io/"
+repository = "https://github.com/grai-io/grai-core/tree/master/grai-graph"
+documentation = "https://docs.grai.io/"
 
 [tool.poetry.dependencies]
 python = "^3.8"
