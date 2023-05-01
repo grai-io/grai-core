@@ -4,15 +4,16 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
 const { withSentryConfig } = require("@sentry/nextjs");
 
-const withNextra = require("nextra")({
+const nextConfig = require("nextra")({
   theme: "nextra-theme-docs",
   themeConfig: "./theme.config.tsx",
 });
 
-module.exports = withNextra({
-  images: {
-    unoptimized: true,
-  },
+
+module.exports = nextConfig({
+  // i18n doesn't work with output: export
+  // output: 'export',
+
   i18n: {
     locales: ['en-US'],
     defaultLocale: 'en-US',
@@ -22,11 +23,12 @@ module.exports = withNextra({
         defaultLocale: "en-US",
       },
     ]
-  }
+  },
+  // images: {
+  //   unoptimized: true,
+  // },
 });
 
-// If you have other Next.js configurations, you can pass them as the parameter:
-// module.exports = withNextra({ /* other next.js config */ })
 
 module.exports = withSentryConfig(
   module.exports,
