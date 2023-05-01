@@ -1,5 +1,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
+import { DefaultSeo } from 'next-seo';
+import SEO from '../next-seo.config';
 
 import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
@@ -27,9 +29,10 @@ export default function App({ Component, pageProps }) {
       router.events.off("routeChangeComplete", handleRouteChange);
     };
   }, []);
-
+  // return the component with a PostHog provider and SEO
   return (
     <PostHogProvider client={posthog}>
+      <DefaultSeo {...SEO} />
       <Component {...pageProps} />
     </PostHogProvider>
   );
