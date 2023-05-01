@@ -10,8 +10,8 @@ export default {
     site: "@Grai_io",
     cardType: "summary_large_image",
   },
-  languageAlternates:[{
-    hrefLang: 'en-US',
-    href: process.env.WEB_URI,
-  }]
+  // languageAlternates:[{
+  //   hrefLang: 'en-US',
+  //   href: process.env.WEB_URI,
+  // }]
 };

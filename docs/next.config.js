@@ -11,22 +11,22 @@ const nextConfig = require("nextra")({
 
 
 module.exports = nextConfig({
-  // i18n doesn't work with output: export
+  // i18n doesn't work with static site generation
   // output: 'export',
 
-  i18n: {
-    locales: ['en-US'],
-    defaultLocale: 'en-US',
-    domains: [
-      {
-        domain: "docs.grai.io",
-        defaultLocale: "en-US",
-      },
-    ]
-  },
-  // images: {
-  //   unoptimized: true,
+  // i18n: {
+  //   locales: ['en-US'],
+  //   defaultLocale: 'en-US',
+  //   domains: [
+  //     {
+  //       domain: "docs.grai.io",
+  //       defaultLocale: "en-US",
+  //     },
+  //   ]
   // },
+  images: {
+    unoptimized: true,
+  },
 });
 
 
