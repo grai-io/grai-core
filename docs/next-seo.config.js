@@ -6,8 +6,12 @@ export default {
     siteName: "Grai Docs",
   },
   twitter: {
-    handle: "@handle",
-    site: "@site",
+    handle: "@Grai_io",
+    site: "@Grai_io",
     cardType: "summary_large_image",
   },
+  languageAlternates:[{
+    hrefLang: 'en-US',
+    href: process.env.WEB_URI,
+  }]
 };

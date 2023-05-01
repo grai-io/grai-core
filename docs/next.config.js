@@ -13,6 +13,16 @@ module.exports = withNextra({
   images: {
     unoptimized: true,
   },
+  i18n: {
+    locales: ['en-US'],
+    defaultLocale: 'en-US',
+    domains: [
+      {
+        domain: "docs.grai.io",
+        defaultLocale: "en-US",
+      },
+    ]
+  }
 });
 
 // If you have other Next.js configurations, you can pass them as the parameter:
