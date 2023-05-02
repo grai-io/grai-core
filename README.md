@@ -145,6 +145,6 @@ Check us out at www.grai.io
 
 Sign up for our Newsletter Grai Matters [email list](https://www.grai.io).
 
-<a href="https://github.com/uselotus/lotus/graphs/contributors">
+<a href="https://github.com/grai-io/grai-core/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=grai-io/grai-core" />
 </a>
