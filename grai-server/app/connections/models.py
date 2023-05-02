@@ -94,14 +94,8 @@ class Connection(TenantModel):
         return self.name
 
     class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["workspace", "namespace", "name"],
-                name="Node namespaces/name uniqueness - Connection",
-            )
-        ]
         indexes = [
-            models.Index(fields=["workspace", "namespace", "name"]),
+            models.Index(fields=["workspace", "name"]),
         ]
 
     def save(self, *args, **kwargs):
