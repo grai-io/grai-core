@@ -66,11 +66,11 @@ def execute_run(run: Run):
     run.started_at = timezone.now()
     run.save()
 
-    if run.commit and run.trigger:
-        github = get_github_api(run)
-        github.start_check(check_id=run.trigger["check_id"])
-
     try:
+        if run.commit and run.trigger:
+            github = get_github_api(run)
+            github.start_check(check_id=run.trigger["check_id"])
+
         failures = None
 
         connector = run.connection.connector
