@@ -212,7 +212,7 @@ const Report: React.FC = () => {
               <Typography sx={{ mr: 3 }}>{passCount}</Typography>
               <Typography>Success Rate</Typography>
               <Typography sx={{ mr: 3 }}>
-                {total > 0 ? (passCount / total) * 100 + "%" : "-"}
+                {total > 0 ? ((passCount / total) * 100).toFixed(2) + "%" : "-"}
               </Typography>
             </Stack>
           }
