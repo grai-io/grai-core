@@ -73,3 +73,33 @@ test("no workspace", async () => {
     ).toBeInTheDocument()
   })
 })
+
+test("renders no installations", async () => {
+  const mocks = [
+    {
+      request: {
+        query: GET_REPOSITORIES,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+        },
+      },
+      result: {
+        data: {
+          workspace: {
+            id: "1",
+            repositories: {
+              data: [],
+            },
+          },
+        },
+      },
+    },
+  ]
+
+  render(<Installations />, { mocks, withRouter: true })
+
+  await waitFor(() => {
+    expect(screen.getByText("Connect GitHub")).toBeInTheDocument()
+  })
+})
