@@ -4,28 +4,31 @@
 
 <p align="center">
   <a href="https://join.slack.com/t/graicommunity/shared_invite/zt-1il70kfeb-TaCm5fwHg_quWCpKNYyj6w">
-    <img src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white" height=22/>
+    <img src="https://img.shields.io/badge/slack-Grai-FFB567.svg?logo=slack&labelColor=351D36" alt="Join Grai on Slack" height="22">
   </a>
    <a href="https://github.com/grai-io/grai-core">
-    <img src="https://img.shields.io/github/issues/grai-io/grai-core?style=flat-square" height=22/>
-  </a>
-  </a>
-   <a href="https://github.com/grai-io/grai-core">
-    <img src="https://img.shields.io/github/languages/top/grai-io/grai-core?style=flat-square" height=22/>
+    <img src="https://img.shields.io/github/issues/grai-io/grai-core?style=flat-square" height="22" alt="Open Issues""/>
   </a>
   </a>
    <a href="https://github.com/grai-io/grai-core">
-    <img src="https://img.shields.io/pypi/pyversions/grai-graph?style=for-the-badge" height=22/>
+    <img src="https://img.shields.io/github/languages/top/grai-io/grai-core?style=flat-square" height="22" alt="Python fraction of codebase"/>
+  </a>
+  </a>
+   <a href="https://github.com/grai-io/grai-core">
+    <img src="https://img.shields.io/pypi/pyversions/grai-graph?style=for-the-badge" height="22" alt="Supported python versions"/>
   </a>
   <a href=https://www.ycombinator.com/launches/H8h-grai-open-source-version-control-for-metadata target='_blank'>
-    <img alt=Launch YC: ✨ Grai - Open-source   version control for metadata src=https://www.ycombinator.com/launches/H8h-grai-open-source-version-control-for-metadata/upvote_embed.svg height=22/>
+    <img alt="Launch YC: ✨ Grai - Open-source version control for metadata" src="https://www.ycombinator.com/launches/H8h-grai-open-source-version-control-for-metadata/upvote_embed.svg" height=22/>
    </a>
 </p>
 
-<p align="left">
-  <a href="https://docs.grai.io/" title="Grai Documentation"> Docs </a> |
-  <a href="https://www.grai.io" title="Grai Homepage"> Website </a>
-</p>
+<h3 align="center">
+  <a href="https://docs.grai.io/"><b>Documentation</b></a> &bull;
+  <a href="https://www.grai.io" title="Grai Homepage"> Website </a> &bull;
+  <a href="https://join.slack.com/t/graicommunity/shared_invite/zt-1il70kfeb-TaCm5fwHg_quWCpKNYyj6w"><b>Slack Community</b></a> &bull;
+  <a href="https://calendly.com/grai-founders"><b>Want to Chat?</b></a>
+</h3>
+
 
 ## Introduction
 
@@ -128,8 +131,20 @@ pip install grai-client
 
 To work with the client, learn more [here](https://docs.grai.io/core/tooling/client).
 
+## Repo Activity
+
+![Alt](https://repobeats.axiom.co/api/embed/31e89b7eda9ea0ebad3005fff55589496f79dc2d.svg "Repobeats analytics image")
+
 ## Community
 
-Come and join our [Slack](https://join.slack.com/t/graicommunity/shared_invite/zt-1il70kfeb-TaCm5fwHg_quWCpKNYyj6w)! We're on hand for support, help or just to hang out and chat.
+Email us: founders@grai.io
 
-To stay looped into updates, join our [email list](https://www.grai.io).
+Join us on Slack:  <a href="https://join.slack.com/t/graicommunity/shared_invite/zt-1il70kfeb-TaCm5fwHg_quWCpKNYyj6w"><img src="https://img.shields.io/badge/slack-Grai-FFB567.svg?logo=slack&labelColor=351D36" alt="Join Grai on Slack"></a>
+
+Check us out at www.grai.io
+
+Sign up for our Newsletter Grai Matters [email list](https://www.grai.io).
+
+<a href="https://github.com/uselotus/lotus/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=grai-io/grai-core" />
+</a>
