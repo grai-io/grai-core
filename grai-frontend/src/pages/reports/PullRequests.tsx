@@ -1,13 +1,14 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
-import { Box } from "@mui/material"
 import { useParams } from "react-router-dom"
 import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
+import PageContent from "components/layout/PageContent"
+import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
 import PullRequestTable from "components/reports/pull_request/PullRequestTable"
-import ReportHeader from "components/reports/ReportHeader"
-import ReportTabs from "components/reports/TypeReportTabs"
+import ReportBreadcrumbs from "components/reports/ReportBreadcrumbs"
+import TypeReportTabs from "components/reports/TypeReportTabs"
 import GraphError from "components/utils/GraphError"
 import {
   GetPullRequests,
@@ -81,15 +82,22 @@ const PullRequests: React.FC = () => {
 
   return (
     <PageLayout>
-      <ReportHeader type={type} repository={repository} />
-      <Box sx={{ px: 2 }}>
-        <ReportTabs currentTab="pulls" type={type} repository={repository} />
+      <PageHeader
+        breadcrumbs={<ReportBreadcrumbs type={type} repository={repository} />}
+      >
+        <TypeReportTabs
+          currentTab="pulls"
+          type={type}
+          repository={repository}
+        />
+      </PageHeader>
+      <PageContent>
         <PullRequestTable
           pull_requests={repository.pull_requests.data}
           type={type}
           repository={repository}
         />
-      </Box>
+      </PageContent>
     </PageLayout>
   )
 }

@@ -11,6 +11,7 @@ export interface GetCommit_workspace_repository_commit_last_successful_run {
   __typename: "Run";
   id: any;
   metadata: any;
+  created_at: any;
 }
 
 export interface GetCommit_workspace_repository_commit_branch {

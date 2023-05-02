@@ -31,7 +31,7 @@ const BranchFilter: React.FC<BranchFilterProps> = ({ branches, disabled }) => {
       getOptionLabel={option => option.reference}
       value={value}
       onChange={handleChange}
-      sx={{ minWidth: 350 }}
+      sx={{ width: 350, mb: "24px" }}
       data-testid="autocomplete"
       renderInput={params => (
         <TextField

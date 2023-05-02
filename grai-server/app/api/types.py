@@ -314,6 +314,7 @@ class WorkspaceRepositoryFilter:
     type: Optional[str] = strawberry.UNSET
     owner: Optional[str] = strawberry.UNSET
     repo: Optional[str] = strawberry.UNSET
+    installed: Optional[bool] = strawberry.UNSET
 
 
 @gql.django.filters.filter(WorkspaceModel)
@@ -475,6 +476,9 @@ class Workspace:
 
                 if filters.repo:
                     q_filter &= Q(repo=filters.repo)
+
+                if filters.installed is not strawberry.UNSET:
+                    q_filter &= Q(installation_id__isnull=not filters.installed)
 
                 return queryset.filter(q_filter)
 

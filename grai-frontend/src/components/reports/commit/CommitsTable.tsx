@@ -38,7 +38,7 @@ const CommitsTable: React.FC<CommitsTableProps> = ({
   return (
     <Table>
       <TableHead>
-        <TableRow sx={{ backgroundColor: theme => theme.palette.grey[100] }}>
+        <TableRow>
           <TableCell>Name</TableCell>
           <TableCell />
           <TableCell>Branch</TableCell>

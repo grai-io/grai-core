@@ -11,6 +11,7 @@ export interface GetPullRequest_workspace_repository_pull_request_last_commit_la
   __typename: "Run";
   id: any;
   metadata: any;
+  created_at: any;
 }
 
 export interface GetPullRequest_workspace_repository_pull_request_last_commit {

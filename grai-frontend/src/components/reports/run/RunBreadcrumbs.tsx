@@ -19,7 +19,7 @@ const RunBreadcrumbs: React.FC<RunBreadcrumbsProps> = ({ repository }) => {
   const routeStart = `${routePrefix}/reports/${repository.type}`
 
   return (
-    <Breadcrumbs>
+    <Breadcrumbs sx={{ mt: -1, mb: 1 }}>
       <Link
         underline="hover"
         color="inherit"

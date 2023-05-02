@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import {
   AccountCircle,
   Business,
+  CloudQueue,
   KeyboardArrowLeft,
   Notifications,
   People,
@@ -97,6 +98,17 @@ const SettingsDrawer: React.FC = () => {
                 <Notifications />
               </ListItemIcon>
               <ListItemText primary="Alerts" />
+            </ListItemButton>
+          </ListItem>
+          <ListItem sx={{ py: 0 }}>
+            <ListItemButton
+              component={Link}
+              to={`${routePrefix}/settings/installations`}
+            >
+              <ListItemIcon sx={{ minWidth: 0, mr: 2 }}>
+                <CloudQueue />
+              </ListItemIcon>
+              <ListItemText primary="Installations" />
             </ListItemButton>
           </ListItem>
         </List>

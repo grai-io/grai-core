@@ -3,10 +3,12 @@ import { Box, SxProps, Typography } from "@mui/material"
 import PageHeaderTabs from "./PageHeaderTabs"
 
 type PageHeaderProps = {
-  title: string
+  title?: string
+  breadcrumbs?: React.ReactNode
   status?: React.ReactNode
   buttons?: React.ReactNode
   tabs?: boolean
+  children?: React.ReactNode
   sx?: SxProps
   BoxProps?: {
     sx?: SxProps
@@ -15,9 +17,11 @@ type PageHeaderProps = {
 
 const PageHeader: React.FC<PageHeaderProps> = ({
   title,
+  breadcrumbs,
   status,
   buttons,
   tabs,
+  children,
   sx,
   BoxProps,
 }) => (
@@ -30,6 +34,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
       ...sx,
     }}
   >
+    {breadcrumbs && <Box sx={{ mt: -1, mb: 2 }}> {breadcrumbs} </Box>}
     <Box
       sx={{
         display: "flex",
@@ -53,6 +58,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
       <Box sx={{ flexGrow: 1 }} />
       <Box>{buttons}</Box>
     </Box>
+    {children}
     {tabs && <PageHeaderTabs />}
   </Box>
 )

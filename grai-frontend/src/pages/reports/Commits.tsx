@@ -1,15 +1,16 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
-import { Box } from "@mui/material"
 import { useParams, useSearchParams } from "react-router-dom"
 import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
+import PageContent from "components/layout/PageContent"
+import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
 import CommitsList from "components/reports/commit/CommitsList"
 import CommitsTable from "components/reports/commit/CommitsTable"
 import BranchFilter from "components/reports/filters/BranchFilter"
-import ReportHeader from "components/reports/ReportHeader"
-import ReportTabs from "components/reports/TypeReportTabs"
+import ReportBreadcrumbs from "components/reports/ReportBreadcrumbs"
+import TypeReportTabs from "components/reports/TypeReportTabs"
 import GraphError from "components/utils/GraphError"
 import { GetCommits, GetCommitsVariables } from "./__generated__/GetCommits"
 
@@ -90,9 +91,16 @@ const Commits: React.FC = () => {
 
   return (
     <PageLayout>
-      <ReportHeader type={type} repository={repository} />
-      <Box sx={{ px: 2 }}>
-        <ReportTabs currentTab="commits" type={type} repository={repository} />
+      <PageHeader
+        breadcrumbs={<ReportBreadcrumbs type={type} repository={repository} />}
+      >
+        <TypeReportTabs
+          currentTab="commits"
+          type={type}
+          repository={repository}
+        />
+      </PageHeader>
+      <PageContent>
         <BranchFilter branches={repository.branches.data} />
         {branchReference ? (
           <CommitsList
@@ -107,7 +115,7 @@ const Commits: React.FC = () => {
             repository={repository}
           />
         )}
-      </Box>
+      </PageContent>
     </PageLayout>
   )
 }
