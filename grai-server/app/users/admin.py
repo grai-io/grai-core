@@ -4,7 +4,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
 from django.utils.translation import gettext_lazy as _
 
-from users.models import User
+from .models import User, Audit
 from workspaces.models import Membership
 
 from .forms import CustomUserChangeForm, CustomUserCreationForm
@@ -63,5 +63,19 @@ class CustomUserAdmin(UserAdmin):
     ]
 
 
+class AuditAdmin(admin.ModelAdmin):
+    list_display = ("user", "event", "created_at")
+    list_filter = ("event", ("created_at", DateFieldListFilter))
+    search_fields = ["user__username", "user__first_name", "user__last_name"]
+    readonly_fields = ("user", "event", "created_at", "metadata")
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
 admin.site.unregister(Group)
 admin.site.register(User, CustomUserAdmin)
+admin.site.register(Audit, AuditAdmin)
