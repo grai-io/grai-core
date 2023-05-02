@@ -25,7 +25,11 @@ export const tableMock = {
           display_name: "Table1",
           is_active: true,
           data_source: "test",
-          metadata: {},
+          metadata: {
+            grai: {
+              tags: ["tag1", "tag2"],
+            },
+          },
           columns: {
             data: [
               {
