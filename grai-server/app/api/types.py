@@ -477,7 +477,7 @@ class Workspace:
                 if filters.repo:
                     q_filter &= Q(repo=filters.repo)
 
-                if filters.installed:
+                if filters.installed is not strawberry.UNSET:
                     q_filter &= Q(installation_id__isnull=not filters.installed)
 
                 return queryset.filter(q_filter)

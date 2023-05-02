@@ -1061,7 +1061,7 @@ async def test_workspace_repositories_filter(test_context, test_repository):
         query Workspace($workspaceId: ID!, $type: String!, $owner: String!, $repo: String!) {
             workspace(id: $workspaceId) {
                 id
-                repositories(filters:{type: $type, owner: $owner, repo: $repo}) {
+                repositories(filters:{type: $type, owner: $owner, repo: $repo, installed: false}) {
                     data {
                         id
                         type
