@@ -175,9 +175,6 @@ const ReportsTable: React.FC<ReportsTableProps> = ({ runs, loading }) => {
                 run={run}
                 sx={{
                   cursor: "pointer",
-                  borderRadius: "100px",
-                  fontSize: "14px",
-                  fontWeight: 600,
                 }}
               />
             </TableCell>

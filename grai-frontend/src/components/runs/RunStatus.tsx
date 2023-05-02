@@ -85,7 +85,7 @@ const RunStatus: React.FC<RunStatusProps> = ({
       variant={variant}
       size={size}
       onClick={handleClick}
-      sx={sx}
+      sx={{ fontWeight: 600, borderRadius: "100px", fontSize: "14px", ...sx }}
       {...status[run.status]}
     />
   )

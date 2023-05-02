@@ -1,4 +1,4 @@
-import { createTheme } from "@mui/material/styles"
+import { alpha, createTheme } from "@mui/material/styles"
 
 // declare module '@material-ui/core/styles/createPalette' {
 //   interface Palette {
@@ -22,10 +22,11 @@ const theme = createTheme({
       main: "#FFB567",
     },
     success: {
-      main: "#31C48D24",
+      main: "#31C48D",
+      contrastText: "#1F2A37",
     },
     error: {
-      main: "#F0525224",
+      main: "#F05252",
       contrastText: "#1F2A37",
     },
     // pgrey: {
@@ -59,6 +60,16 @@ const theme = createTheme({
             fontWeight: 700,
           },
         },
+      },
+    },
+    MuiChip: {
+      styleOverrides: {
+        colorSuccess: theme => ({
+          backgroundColor: alpha(theme.theme.palette.success.main, 0.24),
+        }),
+        colorError: theme => ({
+          backgroundColor: alpha(theme.theme.palette.error.main, 0.24),
+        }),
       },
     },
   },
