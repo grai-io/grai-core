@@ -84,14 +84,16 @@ class Github:
         return check
 
     def start_check(self, check_id: int):
-        return self.api.checks.update(check_run_id=check_id, status="in_progress", started_at=timezone.now())
+        return self.api.checks.update(
+            check_run_id=check_id, status="in_progress", started_at=timezone.now().isoformat()
+        )
 
     def complete_check(self, check_id: int, conclusion: str = "success"):
         return self.api.checks.update(
             check_run_id=check_id,
             status="completed",
             conclusion=conclusion,
-            completed_at=timezone.now(),
+            completed_at=timezone.now().isoformat(),
         )
 
     def get_repos(self):
