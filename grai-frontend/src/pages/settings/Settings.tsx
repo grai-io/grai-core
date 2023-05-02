@@ -3,6 +3,7 @@ import { gql, useQuery } from "@apollo/client"
 import {
   AccountCircle,
   Business,
+  CloudQueue,
   Notifications,
   People,
   VpnKey,
@@ -88,6 +89,16 @@ const pages = [
       />
     ),
     to: "alerts",
+  },
+  {
+    label: "Installations",
+    icon: (
+      <CloudQueue
+        fontSize="large"
+        sx={{ color: theme => theme.palette.grey[500] }}
+      />
+    ),
+    to: "installations",
   },
 ]
 

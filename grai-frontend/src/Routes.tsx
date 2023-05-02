@@ -50,6 +50,7 @@ const Memberships = lazy(() => import("./pages/settings/Memberships"))
 const PostInstall = lazy(() => import("./pages/PostInstall"))
 const Alerts = lazy(() => import("./pages/settings/Alerts"))
 const Alert = lazy(() => import("./pages/settings/Alert"))
+const Installations = lazy(() => import("./pages/settings/Installations"))
 
 const Login = lazy(() => import("./pages/auth/Login"))
 const Register = lazy(() => import("./pages/auth/Register"))
@@ -137,6 +138,7 @@ const Routes: React.FC = () => (
                 <Route index element={<Alerts />} />
                 <Route path=":alertId" element={<Alert />} />
               </Route>
+              <Route path="installations" element={<Installations />} />
               <Route path="*" element={<NotFound />} />
             </Route>
             <Route path="*" element={<NotFound />} />
