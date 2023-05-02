@@ -7,21 +7,18 @@ import NotFound from "pages/NotFound"
 import resultsToErrors from "helpers/resultsToErrors"
 import { durationAgo } from "helpers/runDuration"
 import useWorkspace from "helpers/useWorkspace"
-import Graph from "components/graph/Graph"
 import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
 import PageTabs from "components/layout/PageTabs"
 import ReportResult from "components/layout/ReportResult"
 import PullRequestBreadcrumbs from "components/reports/pull_request/PullRequestBreadcrumbs"
-import TestResults from "components/reports/results/TestResults"
-import RunLog from "components/reports/run/RunLog"
+import reportTabs from "components/reports/reportTabs"
 import TabState from "components/tabs/TabState"
 import GraphError from "components/utils/GraphError"
 import {
   GetPullRequest,
   GetPullRequestVariables,
 } from "./__generated__/GetPullRequest"
-import reportTabs from "components/reports/reportTabs"
 
 export const GET_PULL_REQUEST = gql`
   query GetPullRequest(

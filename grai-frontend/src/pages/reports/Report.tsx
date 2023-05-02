@@ -8,21 +8,18 @@ import resultsToErrors from "helpers/resultsToErrors"
 import { durationAgo } from "helpers/runDuration"
 import useSearchParams from "helpers/useSearchParams"
 import useWorkspace from "helpers/useWorkspace"
-import Graph from "components/graph/Graph"
 import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
 import PageTabs from "components/layout/PageTabs"
+import reportTabs from "components/reports/reportTabs"
 import ReportResult from "components/reports/results/ReportResult"
-import TestResults from "components/reports/results/TestResults"
 import RunBreadcrumbs from "components/reports/run/RunBreadcrumbs"
-import RunLog from "components/reports/run/RunLog"
 import TabState from "components/tabs/TabState"
 import GraphError from "components/utils/GraphError"
 import {
   GetRunReport,
   GetRunReportVariables,
 } from "./__generated__/GetRunReport"
-import reportTabs from "components/reports/reportTabs"
 
 export const GET_RUN = gql`
   query GetRunReport(

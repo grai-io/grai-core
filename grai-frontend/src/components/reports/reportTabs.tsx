@@ -1,9 +1,9 @@
 import { Box } from "@mui/material"
+import { Edge } from "helpers/graph"
 import Graph, { Error } from "components/graph/Graph"
+import { Table } from "components/graph/MidGraph"
 import TestResults from "./results/TestResults"
 import RunLog, { Run } from "./run/RunLog"
-import { Edge } from "helpers/graph"
-import { Table } from "components/graph/MidGraph"
 
 type ReportTabInput = {
   tables: Table[]
