@@ -1,9 +1,9 @@
 import React from "react"
+import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
 import Report, { GET_RUN } from "./Report"
-import userEvent from "@testing-library/user-event"
 
 test("renders", async () => {
   render(<Report />, {

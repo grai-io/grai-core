@@ -14,12 +14,12 @@ import PageLayout from "components/layout/PageLayout"
 import PageTabs from "components/layout/PageTabs"
 import ReportResult from "components/layout/ReportResult"
 import CommitBreadcrumbs from "components/reports/commit/CommitBreadcrumbs"
+import reportTabs from "components/reports/reportTabs"
 import TestResults from "components/reports/results/TestResults"
 import RunLog from "components/reports/run/RunLog"
 import TabState from "components/tabs/TabState"
 import GraphError from "components/utils/GraphError"
 import { GetCommit, GetCommitVariables } from "./__generated__/GetCommit"
-import reportTabs from "components/reports/reportTabs"
 
 export const GET_COMMIT = gql`
   query GetCommit(

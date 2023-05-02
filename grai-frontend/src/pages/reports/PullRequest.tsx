@@ -13,6 +13,7 @@ import PageLayout from "components/layout/PageLayout"
 import PageTabs from "components/layout/PageTabs"
 import ReportResult from "components/layout/ReportResult"
 import PullRequestBreadcrumbs from "components/reports/pull_request/PullRequestBreadcrumbs"
+import reportTabs from "components/reports/reportTabs"
 import TestResults from "components/reports/results/TestResults"
 import RunLog from "components/reports/run/RunLog"
 import TabState from "components/tabs/TabState"
@@ -21,7 +22,6 @@ import {
   GetPullRequest,
   GetPullRequestVariables,
 } from "./__generated__/GetPullRequest"
-import reportTabs from "components/reports/reportTabs"
 
 export const GET_PULL_REQUEST = gql`
   query GetPullRequest(
