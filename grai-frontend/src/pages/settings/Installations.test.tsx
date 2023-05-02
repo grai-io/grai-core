@@ -1,8 +1,8 @@
 import React from "react"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
-import Installations from "./Installations"
 import { GET_REPOSITORIES } from "components/settings/installations/GitHubInstallation"
+import Installations from "./Installations"
 
 test("renders", async () => {
   render(<Installations />, {

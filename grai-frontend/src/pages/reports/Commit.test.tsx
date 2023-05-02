@@ -3,6 +3,7 @@ import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
 import Commit, { GET_COMMIT } from "./Commit"
+import { filtersMock } from "pages/Graph.test"
 
 test("renders", async () => {
   render(<Commit />, {
@@ -16,6 +17,7 @@ test("renders", async () => {
 
 test("renders no pr", async () => {
   const mocks = [
+    filtersMock,
     {
       request: {
         query: GET_COMMIT,
@@ -83,6 +85,7 @@ test("renders no pr", async () => {
 
 test("not found", async () => {
   const mocks = [
+    filtersMock,
     {
       request: {
         query: GET_COMMIT,
@@ -137,6 +140,7 @@ test("not found", async () => {
 
 test("error", async () => {
   const mocks = [
+    filtersMock,
     {
       request: {
         query: GET_COMMIT,

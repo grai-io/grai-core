@@ -1,8 +1,9 @@
 import React from "react"
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { act, render, screen, waitFor } from "testing"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
 import Report, { GET_RUN } from "./Report"
+import userEvent from "@testing-library/user-event"
 
 test("renders", async () => {
   render(<Report />, {
@@ -15,6 +16,30 @@ test("renders", async () => {
 
   await waitFor(() => {
     expect(screen.getByText("Failed")).toBeTruthy()
+  })
+})
+
+test("renders failed", async () => {
+  const user = userEvent.setup()
+
+  render(<Report />, {
+    withRouter: true,
+  })
+
+  await waitFor(() => {
+    expect(screen.getByText("Failures")).toBeTruthy()
+  })
+
+  await waitFor(() => {
+    expect(screen.getByText("Failed")).toBeTruthy()
+  })
+
+  await act(async () => {
+    await user.click(screen.getByText("Failed"))
+  })
+
+  await waitFor(() => {
+    expect(screen.getByText("Changed Node")).toBeTruthy()
   })
 })
 

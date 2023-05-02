@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { gql, useQuery } from "@apollo/client"
-import { Box, Stack, Typography } from "@mui/material"
+import { CallSplit, OpenInNew } from "@mui/icons-material"
+import { Box, Link, Typography } from "@mui/material"
 import { useParams } from "react-router-dom"
 import NotFound from "pages/NotFound"
 import resultsToErrors from "helpers/resultsToErrors"
@@ -11,7 +12,9 @@ import Graph from "components/graph/Graph"
 import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
 import PageTabs from "components/layout/PageTabs"
+import ReportResult from "components/reports/results/ReportResult"
 import TestResults from "components/reports/results/TestResults"
+import RunBreadcrumbs from "components/reports/run/RunBreadcrumbs"
 import RunLog from "components/reports/run/RunLog"
 import TabState from "components/tabs/TabState"
 import GraphError from "components/utils/GraphError"
@@ -19,6 +22,7 @@ import {
   GetRunReport,
   GetRunReportVariables,
 } from "./__generated__/GetRunReport"
+import reportTabs from "components/reports/reportTabs"
 
 export const GET_RUN = gql`
   query GetRunReport(
@@ -138,62 +142,21 @@ const Report: React.FC = () => {
   const tables = data?.workspace.tables.data
   const edges = data?.workspace.other_edges.data
 
-  const failureCount = errors?.filter(error => !error.test_pass).length ?? 0
-  const passCount = errors?.filter(error => error.test_pass).length ?? 0
-  const total = failureCount + passCount
-
   const limitGraph: boolean =
     searchParams.get("limitGraph")?.toLowerCase() === "true"
 
   if (!display) return null
 
-  const tabs = [
-    {
-      value: "graph",
-      label: "Graph",
-      noWrapper: true,
-      component: (
-        <Box
-          sx={{
-            height: "calc(100vh - 144px)",
-            backgroundColor: theme => theme.palette.grey[100],
-          }}
-        >
-          <Graph
-            tables={tables}
-            edges={edges}
-            errors={errors}
-            limitGraph={limitGraph}
-          />
-        </Box>
-      ),
-    },
-    {
-      value: "failed-tests",
-      label: "Failed",
-      component: (
-        <TestResults
-          errors={errors?.filter(error => !error.test_pass) ?? null}
-        />
-      ),
-    },
-    {
-      value: "all-tests",
-      label: "All",
-      component: <TestResults errors={errors} />,
-    },
-    {
-      value: "log",
-      label: "Log",
-      component: run && <RunLog run={run} />,
-    },
-  ]
+  const tabs = reportTabs({ tables, edges, errors, limitGraph, run })
 
   return (
     <PageLayout>
       <TabState tabs={tabs}>
         <PageHeader
           title={`Run ${run.id.slice(0, 6)}`}
+          breadcrumbs={
+            run.commit && <RunBreadcrumbs repository={run.commit.repository} />
+          }
           tabs
           status={
             run.created_at && (
@@ -204,19 +167,38 @@ const Report: React.FC = () => {
               )} ago `}</Typography>
             )
           }
-          buttons={
-            <Stack direction="row" spacing={1}>
-              <Typography>Failures</Typography>
-              <Typography sx={{ mr: 3 }}>{failureCount}</Typography>
-              <Typography>Passes</Typography>
-              <Typography sx={{ mr: 3 }}>{passCount}</Typography>
-              <Typography>Success Rate</Typography>
-              <Typography sx={{ mr: 3 }}>
-                {total > 0 ? ((passCount / total) * 100).toFixed(2) + "%" : "-"}
+          buttons={<ReportResult errors={errors} />}
+        >
+          {run.commit && (
+            <Box sx={{ display: "flex", mt: 2 }}>
+              <Typography variant="body2" sx={{ display: "flex" }}>
+                {run.commit?.pull_request && (
+                  <Link
+                    href={`https://github.com/${run.commit.repository.owner}/${run.commit.repository.repo}/pull/${run.commit.pull_request.reference}`}
+                    target="_blank"
+                    underline="hover"
+                    sx={{ display: "flex", alignItems: "center", ml: 0.5 }}
+                  >
+                    <span>
+                      {run.commit.pull_request.title} #
+                      {run.commit.pull_request.reference}
+                    </span>
+                    <OpenInNew sx={{ fontSize: 15, ml: 0.25 }} />
+                  </Link>
+                )}
               </Typography>
-            </Stack>
-          }
-        />
+              {run.commit?.branch && (
+                <Typography
+                  variant="body2"
+                  sx={{ ml: 1, display: "flex", alignItems: "center" }}
+                >
+                  <CallSplit sx={{ fontSize: 15, mx: 0.25 }} />
+                  {run.commit.branch.reference}
+                </Typography>
+              )}
+            </Box>
+          )}
+        </PageHeader>
         <PageTabs />
       </TabState>
     </PageLayout>

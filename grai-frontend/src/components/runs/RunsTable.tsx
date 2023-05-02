@@ -54,7 +54,7 @@ const RunsTable: React.FC<RunsTableProps> = ({ runs, loading }) => {
   return (
     <Table>
       <TableHead>
-        <TableRow sx={{ backgroundColor: theme => theme.palette.grey[100] }}>
+        <TableRow>
           <TableCell>id</TableCell>
           <TableCell>Connection</TableCell>
           <TableCell>Integration</TableCell>

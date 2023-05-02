@@ -18,7 +18,7 @@ const TypeReportTabs: React.FC<TypeReportTabsProps> = ({
   const { routePrefix } = useWorkspace()
 
   return (
-    <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+    <Box sx={{ mb: "-24px", mt: "24px" }}>
       <Tabs
         value={currentTab}
         sx={{

@@ -55,6 +55,7 @@ test("renders errors", async () => {
                   created_at: "",
                   last_successful_run: {
                     id: "1",
+                    created_at: "",
                     metadata: {
                       results: [
                         {
