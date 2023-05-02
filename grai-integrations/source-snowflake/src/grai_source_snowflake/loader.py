@@ -45,7 +45,6 @@ class SnowflakeConnector:
         warehouse: Optional[str] = None,
         role: Optional[str] = None,
         database: Optional[str] = None,
-        schema: Optional[str] = None,
         namespace: Optional[str] = None,
         **kwargs,
     ):
@@ -55,7 +54,6 @@ class SnowflakeConnector:
         self.warehouse = get_from_env("warehouse") if warehouse is None else warehouse
         self.role = get_from_env("role", required=False) if role is None else role
         self.database = get_from_env("database", required=False) if database is None else database
-        self.schema = get_from_env("schema", required=False) if schema is None else schema
         self.namespace = get_from_env("namespace", "default") if namespace is None else namespace
         self.additional_conn_kwargs = kwargs
         self._connection: Optional[snowflake.connector.SnowflakeConnection] = None
@@ -68,6 +66,11 @@ class SnowflakeConnector:
 
     @property
     def connection_dict(self) -> Dict[str, str]:
+        """Builds connection parameters for Snowflake
+
+        Full documentation of the API available here
+        https://docs.snowflake.com/en/developer-guide/python-connector/python-connector-api#label-snowflake-connector-methods
+        """
         connection_keys = [
             "account",
             "user",
@@ -75,7 +78,6 @@ class SnowflakeConnector:
             "warehouse",
             "role",
             "database",
-            "schema",
         ]
         return {key: value for key in connection_keys if (value := getattr(self, key)) is not None}
 
