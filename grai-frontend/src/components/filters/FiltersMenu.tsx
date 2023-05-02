@@ -14,9 +14,14 @@ import FilterDelete, { Filter } from "./FilterDelete"
 type FiltersMenuProps = {
   filter: Filter
   workspaceId: string
+  edit?: boolean
 }
 
-const FiltersMenu: React.FC<FiltersMenuProps> = ({ filter, workspaceId }) => (
+const FiltersMenu: React.FC<FiltersMenuProps> = ({
+  filter,
+  workspaceId,
+  edit,
+}) => (
   <PopupState variant="popover">
     {popupState => (
       <>
@@ -32,12 +37,14 @@ const FiltersMenu: React.FC<FiltersMenuProps> = ({ filter, workspaceId }) => (
             },
           }}
         >
-          <MenuItem component={Link} to={filter.id}>
-            <ListItemIcon>
-              <Edit />
-            </ListItemIcon>
-            <ListItemText primary="Edit" />
-          </MenuItem>
+          {edit && (
+            <MenuItem component={Link} to={filter.id}>
+              <ListItemIcon>
+                <Edit />
+              </ListItemIcon>
+              <ListItemText primary="Edit" />
+            </MenuItem>
+          )}
           <FilterDelete
             filter={filter}
             onClose={popupState.close}

@@ -3,6 +3,7 @@ import { gql, useQuery } from "@apollo/client"
 import { useParams } from "react-router-dom"
 import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
+import FiltersMenu from "components/filters/FiltersMenu"
 import UpdateFilter from "components/filters/UpdateFilter"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
@@ -55,7 +56,12 @@ const Filter: React.FC = () => {
 
   return (
     <PageLayout>
-      <PageHeader title={filter.name ?? ""} />
+      <PageHeader
+        title={filter.name ?? ""}
+        buttons={
+          <FiltersMenu workspaceId={data.workspace.id} filter={filter} />
+        }
+      />
       <PageContent>
         <UpdateFilter
           filter={filter}

@@ -79,7 +79,7 @@ const FiltersTable: React.FC<FiltersTableProps> = ({
             </TableCell>
             <TableCell>{filter.created_by.first_name}</TableCell>
             <TableCell sx={{ py: 0, px: 1 }} stopPropagation>
-              <FiltersMenu filter={filter} workspaceId={workspaceId} />
+              <FiltersMenu filter={filter} workspaceId={workspaceId} edit />
             </TableCell>
           </TableRow>
         ))}
