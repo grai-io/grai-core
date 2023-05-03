@@ -177,6 +177,28 @@ def create_run(request):
         return Response({"error": str(e)}, status=400)
 
 
+@api_view(["POST"])
+def dbt_cloud(request):
+    body = json.loads(request.body)
+
+    if body.get("data", {}).get("runStatus") != "Success":
+        return Response({"status": "not-success"})
+
+    try:
+        connection = Connection.objects.get(connector__slug=Connector.DBT_CLOUD, metadata__job_id=body["data"]["jobId"])
+    except Connection.DoesNotExist:
+        return Response({"error": "Connection not found"}, status=400)
+
+    run = Run.objects.create(
+        workspace=connection.workspace, connection=connection, status="queued", trigger=body, action=Run.UPDATE
+    )
+
+    process_run.delay(run.id)
+
+    return Response({"status": "ok"})
+
+
 urlpatterns = router.urls + [
     path("external-runs/", create_run),
+    path("dbt-cloud/", dbt_cloud),
 ]
