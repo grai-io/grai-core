@@ -1,0 +1,17 @@
+
+version: "3.7"
+
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=grai
+      - POSTGRES_PASSWORD=grai
+      - POSTGRES_DB=grai
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: "pg_isready -U grai"
+      interval: 2s
+      timeout: 2s
+      retries: 15

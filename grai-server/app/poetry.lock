@@ -219,18 +219,18 @@ uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
 name = "boto3"
-version = "1.26.124"
+version = "1.26.125"
 description = "The AWS SDK for Python"
 category = "main"
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "boto3-1.26.124-py3-none-any.whl", hash = "sha256:ec53175eaf818dfe1eec33f7e165eca957744c1d8a82047a9efbcce9547e5cc9"},
-    {file = "boto3-1.26.124.tar.gz", hash = "sha256:4847855cfa4ff272eb66cf1fc9542068ada6d4816d56573cc9cafde51962d0ef"},
+    {file = "boto3-1.26.125-py3-none-any.whl", hash = "sha256:6648aff15d19927cd26db47eb56362ccd313a1ddbd7aaa3235ef05d05d398252"},
+    {file = "boto3-1.26.125.tar.gz", hash = "sha256:fe8248b80c4f0fdaed8b8779467c4431a5e52177e02ccd137d51ec51194ebb00"},
 ]
 
 [package.dependencies]
-botocore = ">=1.29.124,<1.30.0"
+botocore = ">=1.29.125,<1.30.0"
 jmespath = ">=0.7.1,<2.0.0"
 s3transfer = ">=0.6.0,<0.7.0"
 
@@ -239,14 +239,14 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "botocore"
-version = "1.29.124"
+version = "1.29.125"
 description = "Low-level, data-driven core of boto 3."
 category = "main"
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "botocore-1.29.124-py3-none-any.whl", hash = "sha256:cbcbd5b084952d332d7b8170577f10509e3e7b3b6abbc2920b1c27e93ad2ab25"},
-    {file = "botocore-1.29.124.tar.gz", hash = "sha256:ebe8a83dd1db18180774ce45b1911959c60bb1843ea0db610231495527a3518a"},
+    {file = "botocore-1.29.125-py3-none-any.whl", hash = "sha256:ac87b63e9aa4231cd28941945024a0c4470c184c60334ebe5e1cae3544c785ed"},
+    {file = "botocore-1.29.125.tar.gz", hash = "sha256:3005a7ffee083315e69938acdf1bfeaf9e21fe1fe1643d6573ee817721f4ffcd"},
 ]
 
 [package.dependencies]
@@ -1618,6 +1618,24 @@ files = [
 dbt-artifacts-parser = ">=0.2.4,<0.3.0"
 grai-client = ">=0.2.0,<0.3.0"
 grai-schemas = ">=0.1.10,<0.2.0"
+pydantic = ">=1.9.1,<2.0.0"
+
+[[package]]
+name = "grai-source-dbt-cloud"
+version = "0.0.1"
+description = ""
+category = "main"
+optional = false
+python-versions = ">=3.8,<4.0"
+files = [
+    {file = "grai_source_dbt_cloud-0.0.1-py3-none-any.whl", hash = "sha256:5c182fbcf3e39279f6b4c03aa3567768aceda687ec35a82461b5e20c8c406199"},
+    {file = "grai_source_dbt_cloud-0.0.1.tar.gz", hash = "sha256:6207c73372deff1abf607277dd3772555c37c74d8983a36c6436f963ccdb993b"},
+]
+
+[package.dependencies]
+grai-client = ">=0.2.0,<0.3.0"
+grai-schemas = ">=0.1.10,<0.2.0"
+grai-source-dbt = ">=0.2.9,<0.3.0"
 pydantic = ">=1.9.1,<2.0.0"
 
 [[package]]
@@ -3710,14 +3728,14 @@ enum = ["django-choices-field (>=2.0)"]
 
 [[package]]
 name = "strawberry-graphql"
-version = "0.176.1"
+version = "0.176.3"
 description = "A library for creating GraphQL APIs"
 category = "main"
 optional = false
 python-versions = ">=3.7,<4.0"
 files = [
-    {file = "strawberry_graphql-0.176.1-py3-none-any.whl", hash = "sha256:ec7f6df4187e429b8bb5df96aa361253708eb212f8f7d28a8c0550a7f0aa274f"},
-    {file = "strawberry_graphql-0.176.1.tar.gz", hash = "sha256:707ee63ed5b94595ca8de0be42819fc5e470dcd65ca337f233177c98e1ab9423"},
+    {file = "strawberry_graphql-0.176.3-py3-none-any.whl", hash = "sha256:3266b9429a700ec53535bd0b483d977bc589f0a2ab19b82d796b49e9ee650a7c"},
+    {file = "strawberry_graphql-0.176.3.tar.gz", hash = "sha256:423dc7f5cbad1fd672dc1b7ae6c79cd13956c1677f12c98a755b7edc4470c5c1"},
 ]
 
 [package.dependencies]
@@ -3934,4 +3952,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "7d31c71098566c41f5b1f3de3abb547fbe78822ff4208d5230987da976ad7388"
+content-hash = "0058bcfab81b5ed93bc0c6e25b695ae7c4c8cce526e3732c22788a1e028b5d00"

@@ -250,6 +250,30 @@
     },
     {
         "model": "connections.connector",
+        "pk": "6de22766-66ec-4553-99ac-0f860f6883d6",
+        "fields": {
+            "name": "dbt Cloud",
+            "slug": "dbt_cloud",
+            "metadata": {
+                "docs_url": "https://docs.grai.io/integrations/dbt-cloud",
+                "fields": [
+                    {
+                        "name": "api_key",
+                        "secret": true,
+                        "required": true
+                    }
+                ]
+            },
+            "is_active": true,
+            "icon": "/icons/data-sources/dbt.png",
+            "category": "data tools",
+            "coming_soon": false,
+            "created_at": "2023-05-03T09:51:00.000Z",
+            "updated_at": "2023-05-03T09:51:00.000Z"
+        }
+    },
+    {
+        "model": "connections.connector",
         "pk": "a80c528e-5149-4c0b-8e48-2fa995641d49",
         "fields": {
             "name": "Snowflake",

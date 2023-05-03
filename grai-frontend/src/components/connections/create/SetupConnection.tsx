@@ -112,8 +112,8 @@ const SetupConnection: React.FC<SetupConnectionProps> = ({
     connection ?? {
       name: connector.name,
       namespace: "default",
-      metadata: null,
-      secrets: null,
+      metadata: {},
+      secrets: {},
     }
   )
 
