@@ -185,9 +185,16 @@ def dbt_cloud(request):
         return Response({"status": "not-success"})
 
     try:
-        connection = Connection.objects.get(connector__slug=Connector.DBT_CLOUD, metadata__job_id=body["data"]["jobId"])
+        connection = Connection.objects.get(
+            connector__slug=Connector.DBT_CLOUD,
+            schedules__type="dbt-cloud",
+            schedules__dbt_cloud__job_id=body["data"]["jobId"],
+        )
     except Connection.DoesNotExist:
-        return Response({"error": "Connection not found"}, status=400)
+        return Response({"status": "Connection not found"})
+
+    if not connection.is_active:
+        return Response({"status": "Connection not active"})
 
     run = Run.objects.create(
         workspace=connection.workspace, connection=connection, status="queued", trigger=body, action=Run.UPDATE

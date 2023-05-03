@@ -62,6 +62,9 @@ type CronValue = {
 type Values = {
   type: string | null
   cron?: CronValue
+  dbt_cloud?: {
+    job_id: string
+  }
 }
 
 type EditScheduleFormProps = {
@@ -145,6 +148,13 @@ const EditScheduleForm: React.FC<EditScheduleFormProps> = ({ connection }) => {
             control={<Radio />}
             label="Cron expression"
           />
+          {connection.connector.metadata.schedules?.includes("dbt-cloud") && (
+            <FormControlLabel
+              value="dbt-cloud"
+              control={<Radio />}
+              label="dbt Cloud"
+            />
+          )}
         </RadioGroup>
       </FormControl>
       {values.type === "cron" && (
@@ -187,6 +197,22 @@ const EditScheduleForm: React.FC<EditScheduleFormProps> = ({ connection }) => {
             margin="normal"
             value={values.cron?.month_of_year ?? ""}
             onChange={event => setCron("month_of_year", event.target.value)}
+            fullWidth
+          />
+        </>
+      )}
+      {values.type === "dbt-cloud" && (
+        <>
+          <TextField
+            label="Job ID"
+            margin="normal"
+            value={values.dbt_cloud?.job_id ?? ""}
+            onChange={event =>
+              setValues({
+                ...values,
+                dbt_cloud: { job_id: event.target.value },
+              })
+            }
             fullWidth
           />
         </>

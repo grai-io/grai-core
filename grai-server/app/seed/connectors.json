@@ -262,6 +262,9 @@
                         "secret": true,
                         "required": true
                     }
+                ],
+                "schedules": [
+                    "dbt-cloud"
                 ]
             },
             "is_active": true,

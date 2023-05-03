@@ -10,6 +10,9 @@ const connection = {
   namespace: "default",
   name: "c1",
   metadata: {},
+  connector: {
+    metadata: {},
+  },
 }
 
 test("renders", async () => {
@@ -28,6 +31,9 @@ test("renders with schedule", async () => {
     namespace: "default",
     name: "c1",
     metadata: {},
+    connector: {
+      metadata: {},
+    },
   }
 
   render(<EditScheduleForm connection={connection} />)

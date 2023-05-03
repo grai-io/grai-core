@@ -15,6 +15,13 @@ interface ConnectionScheduleItem {
   cron?: CronValue
 }
 
+interface Connector {
+  metadata: ConnectorMetadata
+}
+
+interface ConnectorMetadata {
+  schedules?: string[]
+}
 export interface Connection {
   id: string
   schedules: ConnectionScheduleItem | null
@@ -22,6 +29,7 @@ export interface Connection {
   namespace: string
   name: string
   metadata: any
+  connector: Connector
 }
 
 type ConnectionScheduleProps = {
