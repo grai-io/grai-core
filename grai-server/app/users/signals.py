@@ -6,7 +6,10 @@ from .models import Audit
 
 
 def request_to_metadata(request: HttpRequest) -> dict:
-    return dict(request.headers)
+    try:
+        return dict(request.headers)
+    except TypeError:
+        return {}
 
 
 @receiver(user_logged_in)
