@@ -46,6 +46,11 @@ def test_bigquery_connector():
 
 
 @pytest.fixture
+def test_dbt_cloud_connector():
+    return Connector.objects.create(name=Connector.DBT_CLOUD, slug=Connector.DBT_CLOUD)
+
+
+@pytest.fixture
 def test_fivetran_connector():
     return Connector.objects.create(name=Connector.FIVETRAN, slug=Connector.FIVETRAN)
 
@@ -331,6 +336,21 @@ class TestUpdateServer:
             workspace=test_workspace,
             metadata={"project": "a", "dataset": "dataset"},
             secrets={"credentials": {}},
+        )
+        run = Run.objects.create(connection=connection, workspace=test_workspace)
+
+        process_run(str(run.id))
+
+    def test_dbt_cloud_no_project(self, test_workspace, test_dbt_cloud_connector, mocker):
+        mock = mocker.patch("grai_source_dbt_cloud.base.get_nodes_and_edges")
+        mock.return_value = [[], []]
+
+        connection = Connection.objects.create(
+            name="C2",
+            connector=test_dbt_cloud_connector,
+            workspace=test_workspace,
+            metadata={},
+            secrets={"api_key": "abc1234"},
         )
         run = Run.objects.create(connection=connection, workspace=test_workspace)
 
