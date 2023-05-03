@@ -159,8 +159,6 @@ class Connection(TenantModel):
                     "job_ids": [int(schedule.get("job_id"))],
                 }
 
-                print(schedule)
-
                 webhook_id = schedule.get("webhook_id")
 
                 if webhook_id:
