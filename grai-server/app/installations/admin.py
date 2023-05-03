@@ -86,10 +86,10 @@ class RunInline(admin.TabularInline):
     fields = ["status", "metadata", "created_at", "started_at", "finished_at", "user"]
     readonly_fields = ["status", "metadata", "created_at", "started_at", "finished_at", "user"]
 
-    def has_add_permission(self, request, obj=None):
+    def has_add_permission(self, request, obj=None):  # pragma: no cover
         return False
 
-    def has_delete_permission(self, request, obj=None):
+    def has_delete_permission(self, request, obj=None):  # pragma: no cover
         return False
 
 

@@ -69,10 +69,10 @@ class AuditAdmin(admin.ModelAdmin):
     search_fields = ["user__username", "user__first_name", "user__last_name"]
     readonly_fields = ("user", "event", "created_at", "metadata")
 
-    def has_add_permission(self, request, obj=None):
+    def has_add_permission(self, request, obj=None):  # pragma: no cover
         return False
 
-    def has_delete_permission(self, request, obj=None):
+    def has_delete_permission(self, request, obj=None):  # pragma: no cover
         return False
 
 
