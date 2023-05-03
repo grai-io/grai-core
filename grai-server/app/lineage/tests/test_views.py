@@ -249,7 +249,8 @@ class TestNodeUserAuth:
         assert response.status_code == 403
 
     @pytest.mark.django_db
-    def test_no_auth(self, client, create_workspace):
+    def test_no_auth(self, auto_login_user, create_workspace):
+        client, user = auto_login_user()
         client.logout()
         response = create_node(client, create_workspace)
         assert response.status_code == 403
@@ -446,7 +447,8 @@ class TestEdgeUserAuth:
         assert response.status_code == 403
 
     @pytest.mark.django_db
-    def test_no_auth(self, client, test_nodes, create_workspace):
+    def test_no_auth(self, auto_login_user, test_nodes, create_workspace):
+        client, user = auto_login_user()
         client.logout()
         response = create_edge_with_node_ids(client, create_workspace, *test_nodes)
         assert response.status_code == 403

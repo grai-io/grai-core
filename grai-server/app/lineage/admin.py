@@ -11,10 +11,10 @@ class EdgeInline(admin.TabularInline):
     model = Edge
     extra = 0
 
-    def has_add_permission(self, request, obj=None):
+    def has_add_permission(self, request, obj=None):  # pragma: no cover
         return False
 
-    def has_delete_permission(self, request, obj=None):
+    def has_delete_permission(self, request, obj=None):  # pragma: no cover
         return False
 
 

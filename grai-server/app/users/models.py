@@ -59,3 +59,23 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+
+
+class Audit(models.Model):
+    LOGIN = "login"
+    LOGOUT = "logout"
+
+    AUDIT_EVENTS = [
+        (LOGIN, "login"),
+        (LOGOUT, "logout"),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(
+        "users.User",
+        related_name="audits",
+        on_delete=models.CASCADE,
+    )
+    event = models.CharField(max_length=255, choices=AUDIT_EVENTS)
+    metadata = models.JSONField(default=dict)
+    created_at = models.DateTimeField(auto_now_add=True)
