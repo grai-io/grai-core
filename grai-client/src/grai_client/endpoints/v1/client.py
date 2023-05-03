@@ -2,6 +2,7 @@ import asyncio
 from typing import Optional, Union
 from uuid import UUID, uuid4
 
+import httpx
 from httpx import Response
 
 from grai_client.endpoints.client import BaseClient
@@ -27,7 +28,8 @@ class ClientV1(BaseClient):
         self._workspace = str(workspace) if workspace is not None else None
 
     def check_authentication(self) -> Response:
-        return asyncio.run(self.session.get(self.is_authenticated_endpoint, headers=self.auth_headers))
+        return httpx.get(self.is_authenticated_endpoint, headers=self.auth_headers, auth=self.auth)
+        # return asyncio.run(self.session.get(self.is_authenticated_endpoint, headers=self.auth_headers))
 
     @property
     def workspace(self) -> Optional[str]:

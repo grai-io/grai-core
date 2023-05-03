@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai-client"
-version = "0.2.9"
+version = "0.2.10"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>"]
 license = "Elastic-2.0"
@@ -20,8 +20,9 @@ multimethod = "^1.9"
 orjson = "^3.8.3"
 pyyaml = "^6.0"
 grai-schemas = "^0.1.11"
-httpx = "^0.23.3"
+httpx = {extras = ["http2"], version = "^0.24.0"}
 brotli = "^1.0.9"
+tqdm = "^4.65.0"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^0.971"
