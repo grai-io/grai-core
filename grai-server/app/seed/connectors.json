@@ -307,10 +307,6 @@
                     {
                         "name": "database",
                         "required": true
-                    },
-                    {
-                        "name": "schema",
-                        "required": false
                     }
                 ]
             },

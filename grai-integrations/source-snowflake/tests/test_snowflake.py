@@ -22,7 +22,6 @@ def test_connector_from_env_vars():
         "GRAI_SNOWFLAKE_PASSWORD": "pw",
         "GRAI_SNOWFLAKE_ROLE": "baller",
         "GRAI_SNOWFLAKE_WAREHOUSE": "its-huge",
-        "GRAI_SNOWFLAKE_SCHEMA": "PUBLIC",
     }
     for k, v in env_vars.items():
         os.environ[k] = v
@@ -34,7 +33,6 @@ def test_connector_from_env_vars():
     assert conn.database == "grai"
     assert conn.role == "baller"
     assert conn.warehouse == "its-huge"
-    assert conn.schema == "PUBLIC"
 
 
 class TestLiveSnowflakeIfHasDotEnv(unittest.TestCase):

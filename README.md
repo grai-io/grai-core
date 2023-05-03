@@ -143,7 +143,7 @@ Join us on Slack:  <a href="https://join.slack.com/t/graicommunity/shared_invite
 
 Check us out at www.grai.io
 
-Sign up for our Newsletter Grai Matters [email list](https://www.grai.io).
+Sign up for our Newsletter `Grai Matters` [email list](https://share.hsforms.com/1npxxxm7USl-wUiKMtZoqwgdtk55).
 
 <a href="https://github.com/grai-io/grai-core/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=grai-io/grai-core" />

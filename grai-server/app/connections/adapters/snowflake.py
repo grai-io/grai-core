@@ -16,7 +16,6 @@ class SnowflakeAdapter(BaseAdapter):
             role=metadata["role"],
             warehouse=metadata.get("warehouse"),
             database=metadata.get("database"),
-            schema=metadata.get("schema"),
             namespace=self.run.connection.namespace,
         )
 
