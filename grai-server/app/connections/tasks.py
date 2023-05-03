@@ -4,6 +4,7 @@ from celery import shared_task
 from connections.adapters.base import BaseAdapter
 from connections.adapters.bigquery import BigqueryAdapter
 from connections.adapters.dbt import DbtAdapter
+from connections.adapters.dbt_cloud import DbtCloudAdapter
 from connections.adapters.fivetran import FivetranAdapter
 from connections.adapters.mssql import MssqlAdapter
 from connections.adapters.mysql import MySQLAdapter
@@ -38,6 +39,8 @@ def get_adapter(slug: str) -> BaseAdapter:
         return SnowflakeAdapter()
     elif slug == Connector.DBT:
         return DbtAdapter()
+    elif slug == Connector.DBT_CLOUD:
+        return DbtCloudAdapter()
     elif slug == Connector.YAMLFILE:
         return YamlFileAdapter()
     elif slug == Connector.MSSQL:

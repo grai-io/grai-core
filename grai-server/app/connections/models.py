@@ -10,6 +10,7 @@ class Connector(models.Model):
     POSTGRESQL = "postgres"
     SNOWFLAKE = "snowflake"
     DBT = "dbt"
+    DBT_CLOUD = "dbt_cloud"
     YAMLFILE = "yaml_file"
     MSSQL = "mssql"
     BIGQUERY = "bigquery"
@@ -21,6 +22,7 @@ class Connector(models.Model):
         (POSTGRESQL, "postgres"),
         (SNOWFLAKE, "snowflake"),
         (DBT, "dbt"),
+        (DBT_CLOUD, "dbt_cloud"),
         (YAMLFILE, "yaml_file"),
         (MSSQL, "mssql"),
         (BIGQUERY, "bigquery"),

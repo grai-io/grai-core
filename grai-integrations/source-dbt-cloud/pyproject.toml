@@ -18,7 +18,6 @@ python = "^3.8"
 pydantic = "^1.9.1"
 grai-client = "^0.2.0"
 grai-schemas = "^0.1.10"
-dbt-artifacts-parser = "^0.2.4"
 grai-source-dbt = "^0.2.9"
 
 [tool.poetry.group.dev.dependencies]
