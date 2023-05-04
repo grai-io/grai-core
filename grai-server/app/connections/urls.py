@@ -221,5 +221,5 @@ def dbt_cloud(request):
 
 urlpatterns = router.urls + [
     path("external-runs/", create_run),
-    path("dbt-cloud/", dbt_cloud),
+    path("dbt-cloud/", dbt_cloud, name="dbt-cloud"),
 ]

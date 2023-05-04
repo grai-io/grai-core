@@ -1,6 +1,8 @@
 from dbtc import dbtCloudClient
 
 from connections.models import Connection
+from django.urls import reverse
+from django.conf import settings
 
 
 def save(model: Connection):
@@ -12,10 +14,12 @@ def save(model: Connection):
 
     client = dbtCloudClient(api_key=api_key)
 
+    client_url = f"{settings.NGROK_URL}{reverse('connections:dbt-cloud')}"
+
     payload = {
         "event_types": ["job.run.completed"],
         "name": "Grai Webhook",
-        "client_url": "https://7bfa-82-4-89-233.ngrok-free.app/api/v1/dbt-cloud/",
+        "client_url": client_url,
         "active": True,
         "description": "A webhook for when jobs are completed",
         "job_ids": [int(schedule.get("job_id"))],
