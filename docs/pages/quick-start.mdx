@@ -62,12 +62,13 @@ Spin up your favorite python terminal then:
 ```python copy
 import os
 from grai_source_postgres.base import update_server
+from grai_client.endpoints.v1.client import ClientV1
 ```
 
 For now we will use the default user credentials though you are free to create a new user / api keys from the server admin interface at http://localhost:8000/admin.
 
 ```python copy
-client = ClientV1("localhost","8000")
+client = ClientV1(host='localhost', port='8000', insecure=True)
 client.set_authentication_headers("null@grai.io","super_secret")
 ```
 

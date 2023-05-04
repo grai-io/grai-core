@@ -23,7 +23,7 @@ Most interactions with the server will start with a client instance like so
 ```python copy
 from grai_client.endpoints.v1.client import ClientV1
 
-client = ClientV1(host='api.grai.io', port='443')
+client = ClientV1(host='api.grai.io', port='443', insecure=True)
 client.set_authentication_headers(username='[your_username]', password='[your_password]')
 ```
 
@@ -44,9 +44,11 @@ For example, if you wanted to create a new node in your lineage you could do the
 from grai_schemas.v1 import NodeV1
 
 my_node = NodeV1.from_spec({
-    is_active = True,
-    data_source = 'dbt',
-    display_name = 'A Super Cool Node',
+    'name': 'node01',
+    'namespace': 'default',
+    'is_active': True,
+    'data_source': 'dbt',
+    'display_name': 'A Super Cool Node',
 })
 
 client.post(my_node)
