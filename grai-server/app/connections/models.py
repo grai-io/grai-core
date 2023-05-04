@@ -110,32 +110,15 @@ class Connection(TenantModel):
                 pass
 
             elif type == "cron":
-                from django_celery_beat.models import CrontabSchedule, PeriodicTask
+                from connections.schedules.cron import save
 
-                cron = self.schedules["cron"]
+                save(self)
 
-                schedule, _ = CrontabSchedule.objects.get_or_create(
-                    minute=cron["minutes"],  # TODO: Get from schedule
-                    hour=cron["hours"],
-                    day_of_week="*",
-                    day_of_month="*",
-                    month_of_year="*",
-                    # timezone=zoneinfo.ZoneInfo("Canada/Pacific"),
-                )
+            elif type == "dbt-cloud":
+                from connections.schedules.dbt_cloud import save
 
-                if self.task:
-                    self.task.crontab = schedule
-                    self.task.kwargs = json.dumps({"connectionId": str(self.id)})
-                    self.task.enabled = self.is_active
-                    self.task.save()
-                else:
-                    self.task = PeriodicTask.objects.create(
-                        crontab=schedule,
-                        name=f"{self.name}-{str(self.id)}",
-                        task="connections.tasks.run_connection_schedule",
-                        kwargs=json.dumps({"connectionId": str(self.id)}),
-                        enabled=self.is_active,
-                    )
+                save(self)
+
             else:
                 raise Exception("Schedule type not found")
 

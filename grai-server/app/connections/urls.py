@@ -1,3 +1,5 @@
+import hashlib
+import hmac
 import json
 import uuid
 
@@ -177,6 +179,47 @@ def create_run(request):
         return Response({"error": str(e)}, status=400)
 
 
+def validate_webhook(request, secret: str):
+    auth_header = request.headers.get("authorization", None)
+    # secret = os.environ['MY_DBT_CLOUD_AUTH_TOKEN'].encode('utf-8')
+    signature = hmac.new(secret.encode("utf-8"), request.body, hashlib.sha256).hexdigest()
+    return signature == auth_header
+
+
+@api_view(["POST"])
+def dbt_cloud(request):
+    body = json.loads(request.body)
+
+    if body.get("data", {}).get("runStatus") != "Success":
+        return Response({"status": "not-success"})
+
+    try:
+        connection = Connection.objects.get(
+            connector__slug=Connector.DBT_CLOUD,
+            schedules__type="dbt-cloud",
+            schedules__dbt_cloud__job_id=body["data"]["jobId"],
+        )
+    except Connection.DoesNotExist:
+        return Response({"status": "Connection not found"})
+
+    is_valid = validate_webhook(request, connection.schedules.get("dbt_cloud", {}).get("hmac_secret"))
+
+    if not is_valid:
+        raise Exception("Invalid dbt cloud webhook signature")
+
+    if not connection.is_active:
+        return Response({"status": "Connection not active"})
+
+    run = Run.objects.create(
+        workspace=connection.workspace, connection=connection, status="queued", trigger=body, action=Run.UPDATE
+    )
+
+    process_run.delay(run.id)
+
+    return Response({"status": "ok"})
+
+
 urlpatterns = router.urls + [
     path("external-runs/", create_run),
+    path("dbt-cloud/", dbt_cloud, name="dbt-cloud"),
 ]

@@ -10,6 +10,9 @@ const connection = {
   namespace: "default",
   name: "c1",
   metadata: {},
+  connector: {
+    metadata: {},
+  },
 }
 
 test("renders", async () => {
@@ -28,6 +31,9 @@ test("renders with schedule", async () => {
     namespace: "default",
     name: "c1",
     metadata: {},
+    connector: {
+      metadata: {},
+    },
   }
 
   render(<EditScheduleForm connection={connection} />)
@@ -94,6 +100,43 @@ test("submit cron", async () => {
   )
 })
 
+test("submit dbt cloud", async () => {
+  const user = userEvent.setup()
+
+  const connection = {
+    id: "1",
+    schedules: {
+      type: "cron",
+    },
+    is_active: false,
+    namespace: "default",
+    name: "c1",
+    metadata: {},
+    connector: {
+      metadata: {
+        schedules: ["dbt-cloud"],
+      },
+    },
+  }
+
+  render(<EditScheduleForm connection={connection} />)
+
+  expect(screen.getByText("Schedule type")).toBeInTheDocument()
+
+  await act(async () => await user.click(screen.getByLabelText("dbt Cloud")))
+
+  await act(
+    async () =>
+      await user.type(screen.getByRole("textbox", { name: /job id/i }), "1234")
+  )
+
+  await act(async () => await user.click(screen.getByLabelText("Enabled")))
+
+  await act(
+    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+  )
+})
+
 test("error", async () => {
   const user = userEvent.setup()
 
@@ -109,6 +152,9 @@ test("error", async () => {
           name: "c1",
           metadata: {},
           secrets: {},
+          connector: {
+            metadata: {},
+          },
         },
       },
       result: {

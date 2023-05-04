@@ -13,7 +13,7 @@ test("renders", async () => {
     connector: {
       id: "1",
       name: "c1",
-      metadata: null,
+      metadata: {},
     },
   }
 
@@ -48,7 +48,7 @@ test("renders cron", async () => {
     connector: {
       id: "1",
       name: "c1",
-      metadata: null,
+      metadata: {},
     },
   }
 
