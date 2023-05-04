@@ -219,18 +219,18 @@ uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
 name = "boto3"
-version = "1.26.125"
+version = "1.26.126"
 description = "The AWS SDK for Python"
 category = "main"
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "boto3-1.26.125-py3-none-any.whl", hash = "sha256:6648aff15d19927cd26db47eb56362ccd313a1ddbd7aaa3235ef05d05d398252"},
-    {file = "boto3-1.26.125.tar.gz", hash = "sha256:fe8248b80c4f0fdaed8b8779467c4431a5e52177e02ccd137d51ec51194ebb00"},
+    {file = "boto3-1.26.126-py3-none-any.whl", hash = "sha256:a0a049d16dabf559bd86d4622a985549154c6918f779f373fb7588bd3cf1272d"},
+    {file = "boto3-1.26.126.tar.gz", hash = "sha256:ea7dc518399106ee300b867596c92d2b7b498ee7721db935915cdd53339a9f92"},
 ]
 
 [package.dependencies]
-botocore = ">=1.29.125,<1.30.0"
+botocore = ">=1.29.126,<1.30.0"
 jmespath = ">=0.7.1,<2.0.0"
 s3transfer = ">=0.6.0,<0.7.0"
 
@@ -239,14 +239,14 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "botocore"
-version = "1.29.125"
+version = "1.29.126"
 description = "Low-level, data-driven core of boto 3."
 category = "main"
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "botocore-1.29.125-py3-none-any.whl", hash = "sha256:ac87b63e9aa4231cd28941945024a0c4470c184c60334ebe5e1cae3544c785ed"},
-    {file = "botocore-1.29.125.tar.gz", hash = "sha256:3005a7ffee083315e69938acdf1bfeaf9e21fe1fe1643d6573ee817721f4ffcd"},
+    {file = "botocore-1.29.126-py3-none-any.whl", hash = "sha256:a2c5cedb26b364386d02f9ed0a3492da6a322a82e539e54600fbc7190a49660d"},
+    {file = "botocore-1.29.126.tar.gz", hash = "sha256:e7549da5d69b37e8e1f63fcc18fbb9b23f05db8dcb4118019497eee4dad57ff7"},
 ]
 
 [package.dependencies]
@@ -826,14 +826,14 @@ files = [
 
 [[package]]
 name = "django"
-version = "4.2"
+version = "4.2.1"
 description = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
 category = "main"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "Django-4.2-py3-none-any.whl", hash = "sha256:ad33ed68db9398f5dfb33282704925bce044bef4261cd4fb59e4e7f9ae505a78"},
-    {file = "Django-4.2.tar.gz", hash = "sha256:c36e2ab12824e2ac36afa8b2515a70c53c7742f0d6eaefa7311ec379558db997"},
+    {file = "Django-4.2.1-py3-none-any.whl", hash = "sha256:066b6debb5ac335458d2a713ed995570536c8b59a580005acb0732378d5eb1ee"},
+    {file = "Django-4.2.1.tar.gz", hash = "sha256:7efa6b1f781a6119a10ac94b4794ded90db8accbe7802281cd26f8664ffed59c"},
 ]
 
 [package.dependencies]
@@ -1656,13 +1656,14 @@ pydantic = ">=1.9.1,<2.0.0"
 
 [[package]]
 name = "grai-source-dbt-cloud"
-version = "0.0.2a4"
+version = "0.0.2"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_source_dbt_cloud-0.0.2a4-py3-none-any.whl", hash = "sha256:8f2f61e5b4a8aee222e30cfc9ee060c900301581212d66fd515d6940baa2f2c9"},
+    {file = "grai_source_dbt_cloud-0.0.2-py3-none-any.whl", hash = "sha256:2fcf4ede5d9e6ab19679d3d1310dfcd8d515adcf375139a7a76a47b31267f1bc"},
+    {file = "grai_source_dbt_cloud-0.0.2.tar.gz", hash = "sha256:a15690518197297d3a4c19193d5f1af3336d591ed3ba098ea77e4a8bd8cc288a"},
 ]
 
 [package.dependencies]
@@ -1671,10 +1672,6 @@ grai-client = ">=0.2.0,<0.3.0"
 grai-schemas = ">=0.1.10,<0.2.0"
 grai-source-dbt = ">=0.2.9,<0.3.0"
 pydantic = ">=1.9.1,<2.0.0"
-
-[package.source]
-type = "file"
-url = "../../grai-integrations/source-dbt-cloud/dist/grai_source_dbt_cloud-0.0.2a4-py3-none-any.whl"
 
 [[package]]
 name = "grai-source-fivetran"
@@ -4102,4 +4099,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "e2615b5fd440721099fdd665a7c4a2ec4b370258f5b142c2ee80b33a1b86a6dc"
+content-hash = "1a0ae002977530e288658af57632dd2f46b724ce56c42c4c9916926712881055"

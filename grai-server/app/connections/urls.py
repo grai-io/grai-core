@@ -182,7 +182,7 @@ def create_run(request):
 def validate_webhook(request, secret: str):
     auth_header = request.headers.get("authorization", None)
     # secret = os.environ['MY_DBT_CLOUD_AUTH_TOKEN'].encode('utf-8')
-    signature = hmac.new(secret, request.body, hashlib.sha256).hexdigest()
+    signature = hmac.new(secret.encode("utf-8"), request.body, hashlib.sha256).hexdigest()
     return signature == auth_header
 
 
