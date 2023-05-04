@@ -610,6 +610,21 @@ files = [
 ]
 
 [[package]]
+name = "commonmark"
+version = "0.9.1"
+description = "Python parser for the CommonMark Markdown spec"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "commonmark-0.9.1-py2.py3-none-any.whl", hash = "sha256:da2f38c92590f83de410ba1a3cbceafbc74fee9def35f9251ba9a971d6d66fd9"},
+    {file = "commonmark-0.9.1.tar.gz", hash = "sha256:452f9dc859be7f06631ddcb328b6919c67984aca654e5fefb3914d54691aed60"},
+]
+
+[package.extras]
+test = ["flake8 (==3.7.8)", "hypothesis (==3.55.3)"]
+
+[[package]]
 name = "coverage"
 version = "7.2.5"
 description = "Code coverage measurement for Python"
@@ -777,6 +792,25 @@ pydantic = ">=1.6"
 [package.extras]
 dev = ["build (==0.7.0)", "flit (==3.7.1)", "pdoc3 (>=0.9.2)", "pyyaml (>=5.3)", "yapf (>=0.29.0)"]
 test = ["black (==21.9b0)", "flake8 (>=3.8.3,<4.0.0)", "isort (>=5.0.6,<6.0.0)", "mypy (==0.910)", "pylint (>=2.12.0)", "pytest (>=6.2.4,<7.0.0)", "yapf (>=0.29.0)"]
+
+[[package]]
+name = "dbtc"
+version = "0.4.2"
+description = "An unaffiliated python wrapper for dbt Cloud APIs"
+category = "main"
+optional = false
+python-versions = ">=3.8,<4.0"
+files = [
+    {file = "dbtc-0.4.2-py3-none-any.whl", hash = "sha256:0b9189e286093bc3eb95f855106ff7fd4b6d6c8bd1ee001938d3eda07ab0d8a4"},
+    {file = "dbtc-0.4.2.tar.gz", hash = "sha256:00880cd7391b7654114670777af03d981ccb17014561db9923d6f3bd81411066"},
+]
+
+[package.dependencies]
+pydantic = ">=1.10.5,<2.0.0"
+requests = ">=2.27.1,<3.0.0"
+rudder-sdk-python = ">=1.0.6,<2.0.0"
+sgqlc = ">=15.0,<16.0"
+typer = {version = ">=0.6.1,<0.7.0", extras = ["all"]}
 
 [[package]]
 name = "defusedxml"
@@ -1622,21 +1656,25 @@ pydantic = ">=1.9.1,<2.0.0"
 
 [[package]]
 name = "grai-source-dbt-cloud"
-version = "0.0.1"
+version = "0.0.2a4"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_source_dbt_cloud-0.0.1-py3-none-any.whl", hash = "sha256:5c182fbcf3e39279f6b4c03aa3567768aceda687ec35a82461b5e20c8c406199"},
-    {file = "grai_source_dbt_cloud-0.0.1.tar.gz", hash = "sha256:6207c73372deff1abf607277dd3772555c37c74d8983a36c6436f963ccdb993b"},
+    {file = "grai_source_dbt_cloud-0.0.2a4-py3-none-any.whl", hash = "sha256:8f2f61e5b4a8aee222e30cfc9ee060c900301581212d66fd515d6940baa2f2c9"},
 ]
 
 [package.dependencies]
+dbtc = ">=0.4.2,<0.5.0"
 grai-client = ">=0.2.0,<0.3.0"
 grai-schemas = ">=0.1.10,<0.2.0"
 grai-source-dbt = ">=0.2.9,<0.3.0"
 pydantic = ">=1.9.1,<2.0.0"
+
+[package.source]
+type = "file"
+url = "../../grai-integrations/source-dbt-cloud/dist/grai_source_dbt_cloud-0.0.2a4-py3-none-any.whl"
 
 [[package]]
 name = "grai-source-fivetran"
@@ -2972,6 +3010,21 @@ dotenv = ["python-dotenv (>=0.10.4)"]
 email = ["email-validator (>=1.0.3)"]
 
 [[package]]
+name = "pygments"
+version = "2.15.1"
+description = "Pygments is a syntax highlighting package written in Python."
+category = "main"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "Pygments-2.15.1-py3-none-any.whl", hash = "sha256:db2db3deb4b4179f399a09054b023b6a586b76499d36965813c71aa8ed7b5fd1"},
+    {file = "Pygments-2.15.1.tar.gz", hash = "sha256:8ace4d3c1dd481894b2005f560ead0f9f19ee64fe983366be1a21e171d12775c"},
+]
+
+[package.extras]
+plugins = ["importlib-metadata"]
+
+[[package]]
 name = "pyjwt"
 version = "2.6.0"
 description = "JSON Web Token implementation in Python"
@@ -3428,6 +3481,25 @@ idna = {version = "*", optional = true, markers = "extra == \"idna2008\""}
 idna2008 = ["idna"]
 
 [[package]]
+name = "rich"
+version = "12.6.0"
+description = "Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal"
+category = "main"
+optional = false
+python-versions = ">=3.6.3,<4.0.0"
+files = [
+    {file = "rich-12.6.0-py3-none-any.whl", hash = "sha256:a4eb26484f2c82589bd9a17c73d32a010b1e29d89f1604cd9bf3a2097b81bb5e"},
+    {file = "rich-12.6.0.tar.gz", hash = "sha256:ba3a3775974105c221d31141f2c116f4fd65c5ceb0698657a11e9f295ec93fd0"},
+]
+
+[package.dependencies]
+commonmark = ">=0.9.0,<0.10.0"
+pygments = ">=2.6.0,<3.0.0"
+
+[package.extras]
+jupyter = ["ipywidgets (>=7.5.1,<8.0.0)"]
+
+[[package]]
 name = "rsa"
 version = "4.9"
 description = "Pure-Python RSA implementation"
@@ -3457,6 +3529,28 @@ files = [
 [package.extras]
 docs = ["ryd"]
 jinja2 = ["ruamel.yaml.jinja2 (>=0.2)"]
+
+[[package]]
+name = "rudder-sdk-python"
+version = "1.0.6"
+description = "RudderStack is an open-source Segment alternative written in Go, built for the enterprise."
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "rudder-sdk-python-1.0.6.tar.gz", hash = "sha256:6df30f38ba6f97f8c0c8f7fbde671a138f1eb2100ca98f098e87a2a6a8743c5a"},
+    {file = "rudder_sdk_python-1.0.6-py2.py3-none-any.whl", hash = "sha256:c7d6d3604f12ea927670e9148d8d601f1009e5ab7918966ef22b433e2b1caa61"},
+]
+
+[package.dependencies]
+backoff = ">=2.1"
+monotonic = ">=1.5"
+python-dateutil = ">2.1"
+requests = ">=2.7,<3.0"
+six = ">=1.4"
+
+[package.extras]
+test = ["coverage (==4.5.4)", "flake8 (==3.7.9)", "mock (==2.0.0)", "pylint (==1.9.3)"]
 
 [[package]]
 name = "s3transfer"
@@ -3549,6 +3643,38 @@ files = [
 docs = ["furo", "jaraco.packaging (>=9)", "jaraco.tidelift (>=1.4)", "pygments-github-lexers (==0.0.5)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-favicon", "sphinx-hoverxref (<2)", "sphinx-inline-tabs", "sphinx-lint", "sphinx-notfound-page (==0.8.3)", "sphinx-reredirects", "sphinxcontrib-towncrier"]
 testing = ["build[virtualenv]", "filelock (>=3.4.0)", "flake8 (<5)", "flake8-2020", "ini2toml[lite] (>=0.9)", "jaraco.envs (>=2.2)", "jaraco.path (>=3.2.0)", "pip (>=19.1)", "pip-run (>=8.8)", "pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=1.3)", "pytest-flake8", "pytest-mypy (>=0.9.1)", "pytest-perf", "pytest-timeout", "pytest-xdist", "tomli-w (>=1.0.0)", "virtualenv (>=13.0.0)", "wheel"]
 testing-integration = ["build[virtualenv]", "filelock (>=3.4.0)", "jaraco.envs (>=2.2)", "jaraco.path (>=3.2.0)", "pytest", "pytest-enabler", "pytest-xdist", "tomli", "virtualenv (>=13.0.0)", "wheel"]
+
+[[package]]
+name = "sgqlc"
+version = "15.0"
+description = "Simple GraphQL Client"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "sgqlc-15.0-py3-none-any.whl", hash = "sha256:6705ed48683cd48b3c3252ca737be67abb7bc790ac5749c0d806c3f36320f720"},
+    {file = "sgqlc-15.0.tar.gz", hash = "sha256:c74c9e657ee7409486aaccbffddf369c048b8b262e15b3516d96c51b86bde176"},
+]
+
+[package.dependencies]
+graphql-core = "*"
+
+[package.extras]
+requests = ["requests"]
+sphinx = ["sphinx", "sphinx-argparse"]
+websocket = ["websocket-client"]
+
+[[package]]
+name = "shellingham"
+version = "1.5.0.post1"
+description = "Tool to Detect Surrounding Shell"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "shellingham-1.5.0.post1-py2.py3-none-any.whl", hash = "sha256:368bf8c00754fd4f55afb7bbb86e272df77e4dc76ac29dbcbb81a59e9fc15744"},
+    {file = "shellingham-1.5.0.post1.tar.gz", hash = "sha256:823bc5fb5c34d60f285b624e7264f4dda254bc803a3774a147bf99c0e3004a28"},
+]
 
 [[package]]
 name = "six"
@@ -3804,6 +3930,30 @@ files = [
 ]
 
 [[package]]
+name = "typer"
+version = "0.6.1"
+description = "Typer, build great CLIs. Easy to code. Based on Python type hints."
+category = "main"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "typer-0.6.1-py3-none-any.whl", hash = "sha256:54b19e5df18654070a82f8c2aa1da456a4ac16a2a83e6dcd9f170e291c56338e"},
+    {file = "typer-0.6.1.tar.gz", hash = "sha256:2d5720a5e63f73eaf31edaa15f6ab87f35f0690f8ca233017d7d23d743a91d73"},
+]
+
+[package.dependencies]
+click = ">=7.1.1,<9.0.0"
+colorama = {version = ">=0.4.3,<0.5.0", optional = true, markers = "extra == \"all\""}
+rich = {version = ">=10.11.0,<13.0.0", optional = true, markers = "extra == \"all\""}
+shellingham = {version = ">=1.3.0,<2.0.0", optional = true, markers = "extra == \"all\""}
+
+[package.extras]
+all = ["colorama (>=0.4.3,<0.5.0)", "rich (>=10.11.0,<13.0.0)", "shellingham (>=1.3.0,<2.0.0)"]
+dev = ["autoflake (>=1.3.1,<2.0.0)", "flake8 (>=3.8.3,<4.0.0)", "pre-commit (>=2.17.0,<3.0.0)"]
+doc = ["mdx-include (>=1.4.1,<2.0.0)", "mkdocs (>=1.1.2,<2.0.0)", "mkdocs-material (>=8.1.4,<9.0.0)"]
+test = ["black (>=22.3.0,<23.0.0)", "coverage (>=5.2,<6.0)", "isort (>=5.0.6,<6.0.0)", "mypy (==0.910)", "pytest (>=4.4.0,<5.4.0)", "pytest-cov (>=2.10.0,<3.0.0)", "pytest-sugar (>=0.9.4,<0.10.0)", "pytest-xdist (>=1.32.0,<2.0.0)", "rich (>=10.11.0,<13.0.0)", "shellingham (>=1.3.0,<2.0.0)"]
+
+[[package]]
 name = "types-pytz"
 version = "2023.3.0.0"
 description = "Typing stubs for pytz"
@@ -3952,4 +4102,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "0058bcfab81b5ed93bc0c6e25b695ae7c4c8cce526e3732c22788a1e028b5d00"
+content-hash = "d3633eac424cdd377459cf9e5d68f410e0e63eb09e2f7ed00d52aaa1064ec575"
