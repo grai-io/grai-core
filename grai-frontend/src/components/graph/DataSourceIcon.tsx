@@ -22,15 +22,22 @@ const icons: Icons = {
 const DataSourceIcon: React.FC<DataSourceIconProps> = ({ dataSource }) => {
   const icon = icons[dataSource]
 
-  if (!icon) return null
-
   return (
-    <Box sx={{ pt: 0.75, pr: 1 }}>
-      <img
-        src={icon}
-        alt={`${dataSource} logo`}
-        style={{ height: 20, width: 20 }}
-      />
+    <Box
+      sx={{
+        m: "10px",
+        border: "1px solid rgba(0, 0, 0, 0.08)",
+        borderRadius: "8px",
+        height: "48px",
+        width: "48px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      {icon && (
+        <img src={icon} alt={`${dataSource} logo`} height={32} width={32} />
+      )}
     </Box>
   )
 }

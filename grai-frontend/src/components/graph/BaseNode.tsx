@@ -1,6 +1,6 @@
 import React from "react"
-import { ArrowDropDown, ArrowDropUp } from "@mui/icons-material"
-import { Box, Divider, Menu, MenuItem, Stack, Typography } from "@mui/material"
+import { ExpandLess, ExpandMore } from "@mui/icons-material"
+import { Box, Menu, MenuItem, Stack, Typography, lighten } from "@mui/material"
 import { Handle, Position } from "reactflow"
 import theme from "theme"
 import useWorkspace from "helpers/useWorkspace"
@@ -71,13 +71,13 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
   }
 
   const borderColor = data.highlight
-    ? theme.palette.primary.contrastText
+    ? theme.palette.secondary.main
     : data.searchDim
     ? "#999"
-    : "#555"
+    : "rgba(0, 0, 0, 0.08)"
 
   const backgroundColor = data.searchHighlight
-    ? theme.palette.info.light
+    ? lighten(theme.palette.info.light, 0.5)
     : "white"
 
   const color = data.searchDim
@@ -94,9 +94,11 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
           fontSize: 12,
           borderWidth: 1,
           borderStyle: "solid",
-          borderRadius: 1,
+          borderRadius: "12px",
+          boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.06)",
           borderColor,
           minWidth: 300,
+          minHeight: 68,
           cursor: "auto",
           backgroundColor,
           color,
@@ -107,14 +109,14 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
           type="target"
           position={"left" as Position}
           style={{
-            left: -2,
+            left: 0,
             border: 0,
             backgroundColor: "transparent",
             color: "transparent",
           }}
           isConnectable={false}
         />
-        <Box sx={{ p: 2, py: 1 }}>
+        <Box>
           {data.hiddenDestinationTables.length > 0 && (
             <HiddenTableButton
               position="left"
@@ -126,24 +128,57 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
           )}
           <Box sx={{ display: "flex" }}>
             <DataSourceIcon dataSource={data.data_source} />
-            <Typography variant="h6">{data.label}</Typography>
-          </Box>
-          {data.columns.length > 0 && (
-            <>
-              <Divider sx={{ mt: 0.5, mb: 1 }} />
-              <Box sx={{ display: "flex" }}>
-                <Typography sx={{ flexGrow: 1 }}>
-                  {data.columns.length} Column{data.columns.length > 1 && "s"}
-                </Typography>
+            <Box sx={{ flexGrow: 1 }}>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 600,
+                  fontSize: "16px",
+                  lineHeight: "150%",
+                  mt: "12px",
+                }}
+              >
+                {data.label}
+              </Typography>
+              <Typography
+                sx={{
+                  fontWeight: 400,
+                  fontSize: "12px",
+                  lineHeight: "150%",
+                  mt: "2px",
+                }}
+              >
+                {data.columns.length > 0 &&
+                  `${data.columns.length} Column${
+                    data.columns.length > 1 && "s"
+                  }`}
+              </Typography>
+            </Box>
+            {data.columns.length > 0 && (
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
                 <Box
-                  sx={{ cursor: "pointer" }}
+                  sx={{
+                    cursor: "pointer",
+                    mr: "12px",
+                    color: "#8338EC",
+                  }}
                   onClick={() => data.onExpand(!data.expanded)}
                 >
-                  {data.expanded ? <ArrowDropUp /> : <ArrowDropDown />}
+                  {data.expanded ? (
+                    <ExpandLess fontSize="large" />
+                  ) : (
+                    <ExpandMore fontSize="large" />
+                  )}
                 </Box>
               </Box>
-            </>
-          )}
+            )}
+          </Box>
         </Box>
         {data.expanded && (
           <Stack direction="column" spacing={1} sx={{ px: 1, pb: 1, mt: -0.5 }}>
@@ -151,10 +186,8 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
               <Box
                 key={column.name}
                 sx={{
-                  borderStyle: "solid",
-                  borderWidth: 1,
-                  borderColor: "divider",
-                  borderRadius: 1,
+                  border: "1px solid rgba(0, 0, 0, 0.08)",
+                  borderRadius: "8px",
                   p: 1,
                 }}
               >
@@ -164,7 +197,7 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
                   type="target"
                   position={"left" as Position}
                   style={{
-                    top: 108 + index * 50,
+                    top: 86 + index * 50,
                     left: 10,
                     border: 0,
                     backgroundColor: "transparent",
@@ -177,7 +210,7 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
                   type="source"
                   position={"right" as Position}
                   style={{
-                    top: 108 + index * 50,
+                    top: 86 + index * 50,
                     right: 10,
                     border: 0,
                     backgroundColor: "transparent",

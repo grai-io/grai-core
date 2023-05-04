@@ -184,9 +184,7 @@ test("expand", async () => {
     }
   )
 
-  await act(
-    async () => await user.click(screen.getByTestId("ArrowDropDownIcon"))
-  )
+  await act(async () => await user.click(screen.getByTestId("ExpandMoreIcon")))
 })
 
 test("context menu", async () => {

@@ -186,7 +186,7 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
 
           elem.style = {
             ...elem.style,
-            stroke: highlight ? theme.palette.primary.contrastText : undefined,
+            stroke: highlight ? theme.palette.secondary.main : undefined,
           }
 
           return elem
