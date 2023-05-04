@@ -16,20 +16,20 @@ const HiddenTableButton: React.FC<HiddenTableButtonProps> = ({
     onClick={onClick}
     sx={{
       zIndex: 20,
-      width: 25,
-      minWidth: 30,
-      height: 30,
-      p: 0.5,
+      width: 40,
+      minWidth: 40,
+      height: 40,
       position: "absolute",
-      left: position === "left" ? -29 : null,
-      right: position === "right" ? -29 : null,
-      top: "calc(50% - 15px)",
+      left: position === "left" ? -48 : null,
+      right: position === "right" ? -48 : null,
+      top: "calc(50% - 20px)",
+      border: "1px solid rgba(131, 56, 236, 0.24)",
+      borderRadius: "8px",
+      boxShadow: "0px 4px 6px rgba(131, 56, 236, 0.1)",
       backgroundColor: "white",
-      borderRadius: 0,
-      borderColor: "rgb(85, 85, 85)",
     }}
   >
-    <Add />
+    <Add sx={{ color: "#8338EC" }} />
   </Button>
 )
 
