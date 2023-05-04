@@ -110,91 +110,15 @@ class Connection(TenantModel):
                 pass
 
             elif type == "cron":
-                from django_celery_beat.models import CrontabSchedule, PeriodicTask
+                from connections.schedules.cron import save
 
-                cron = self.schedules["cron"]
-
-                schedule, _ = CrontabSchedule.objects.get_or_create(
-                    minute=cron["minutes"],  # TODO: Get from schedule
-                    hour=cron["hours"],
-                    day_of_week="*",
-                    day_of_month="*",
-                    month_of_year="*",
-                    # timezone=zoneinfo.ZoneInfo("Canada/Pacific"),
-                )
-
-                if self.task:
-                    self.task.crontab = schedule
-                    self.task.kwargs = json.dumps({"connectionId": str(self.id)})
-                    self.task.enabled = self.is_active
-                    self.task.save()
-                else:
-                    self.task = PeriodicTask.objects.create(
-                        crontab=schedule,
-                        name=f"{self.name}-{str(self.id)}",
-                        task="connections.tasks.run_connection_schedule",
-                        kwargs=json.dumps({"connectionId": str(self.id)}),
-                        enabled=self.is_active,
-                    )
+                save(self)
 
             elif type == "dbt-cloud":
-                import requests
+                from connections.schedules.dbt_cloud import save
 
-                schedule = self.schedules.get("dbt_cloud")
+                save(self)
 
-                assert schedule is not None
-
-                base_url = "https://cloud.getdbt.com/api"
-
-                headers = {
-                    "Authorization": f"Token {self.secrets.get('api_key')}",
-                }
-
-                data = {
-                    "event_types": ["job.run.completed"],
-                    "name": "Grai Webhook",
-                    "client_url": "https://7bfa-82-4-89-233.ngrok-free.app/api/v1/dbt-cloud/",
-                    "active": True,
-                    "description": "A webhook for when jobs are completed",
-                    "job_ids": [int(schedule.get("job_id"))],
-                }
-
-                webhook_id = schedule.get("webhook_id")
-
-                if webhook_id:
-                    account_id = schedule.get("account_id")
-                    assert account_id is not None
-
-                    url = f"{base_url}/v3/accounts/{account_id}/webhooks/subscription/{webhook_id}"
-                    response = requests.put(url, json=data, headers=headers)
-
-                    if response.status_code != 200:
-                        message = f"Error: {response.status_code}. {response.content.decode()}"
-                        raise Exception(message)
-
-                else:
-                    response = requests.get(f"{base_url}/v2/accounts", headers=headers)
-                    account_id = response.json().get("data")[0].get("id")
-
-                    url = f"{base_url}/v3/accounts/{account_id}/webhooks/subscriptions"
-
-                    response = requests.post(url, json=data, headers=headers)
-
-                    if response.status_code != 201:
-                        message = f"Error: {response.status_code}. {response.content.decode()}"
-                        raise Exception(message)
-
-                    response_data = response.json().get("data")
-                    assert response_data is not None
-
-                    schedule.update(
-                        {
-                            "webhook_id": response_data.get("id"),
-                            "hmac_secret": response_data.get("hmac_secret"),
-                            "account_id": account_id,
-                        }
-                    )
-                    self.schedules.update({"dbt_cloud": schedule})
             else:
                 raise Exception("Schedule type not found")
 
