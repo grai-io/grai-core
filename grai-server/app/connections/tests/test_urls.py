@@ -1,3 +1,6 @@
+import hashlib
+import hmac
+import json
 import types
 import uuid
 from unittest.mock import MagicMock
@@ -58,6 +61,11 @@ def auto_login_user(client, create_user, test_password, create_workspace):
 @pytest.fixture
 def test_connector():
     return Connector.objects.create(name=uuid.uuid4(), slug=uuid.uuid4())
+
+
+@pytest.fixture
+def test_dbt_cloud_connector():
+    return Connector.objects.create(name=Connector.DBT_CLOUD, slug=Connector.DBT_CLOUD)
 
 
 @pytest.fixture
@@ -291,3 +299,251 @@ def test_create_run_connector_with_existing_pull_request(
     assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
     run = response.json()
     assert run["id"] is not None
+
+
+@pytest.fixture
+def hmac_secret():
+    return "74d5de51a03ccbea9936aea756b2cc044d3816de"
+
+
+@pytest.fixture
+def test_connection_dbt_cloud(create_workspace, test_dbt_cloud_connector, hmac_secret, mocker):
+    mock = mocker.patch("connections.schedules.dbt_cloud.dbtCloudClient")
+
+    dbt_cloud = types.SimpleNamespace()
+
+    cloud = MagicMock()
+    cloud.list_accounts.return_value = {"data": [{"id": 165072, "name": "test"}]}
+    cloud.create_webhook.return_value = {
+        "data": {
+            "id": "1234webhook",
+            "hmac_secret": hmac_secret,
+        }
+    }
+
+    dbt_cloud.cloud = cloud
+
+    mock.return_value = dbt_cloud
+
+    workspace = create_workspace
+
+    connection = Connection.objects.create(
+        workspace=workspace,
+        connector=test_dbt_cloud_connector,
+        name=str(uuid.uuid4()),
+        secrets={"api_key": "1234"},
+        schedules={"dbt_cloud": {"job_id": "282191"}, "type": "dbt-cloud"},
+    )
+
+    return connection
+
+
+@pytest.mark.django_db
+def test_dbt_cloud(test_connection_dbt_cloud, client, hmac_secret):
+    url = "/api/v1/dbt-cloud/"
+
+    body = {
+        "accountId": 165072,
+        "eventId": "wev_2PK5yEfjdZ7MJ78tUwedcI8TVWt",
+        "timestamp": "2023-05-04T09:39:44.49564295Z",
+        "eventType": "job.run.completed",
+        "webhookId": "wsu_2PK4VE772408oHuYxq9BYDN6ONi",
+        "webhookName": "Grai Webhook",
+        "data": {
+            "jobId": "282191",
+            "jobName": "Production",
+            "runId": "146889586",
+            "environmentId": "189767",
+            "environmentName": "Production",
+            "dbtVersion": "1.4.6",
+            "projectName": "Internal",
+            "projectId": "242841",
+            "runStatus": "Success",
+            "runStatusCode": 10,
+            "runStatusMessage": "None",
+            "runReason": "Kicked off from the UI by edward@grai.io",
+            "runStartedAt": "2023-05-04T09:39:02Z",
+            "runFinishedAt": "2023-05-04T09:39:38Z",
+        },
+    }
+
+    signature = hmac.new(hmac_secret.encode("utf-8"), json.dumps(body).encode("utf-8"), hashlib.sha256).hexdigest()
+
+    response = client.post(
+        url,
+        body,
+        headers={"authorization": signature},
+        content_type="application/json",
+    )
+    assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
+    data = response.json()
+    assert data["status"] == "ok"
+
+
+@pytest.mark.django_db
+def test_dbt_cloud_not_success(test_connection_dbt_cloud, client, hmac_secret):
+    url = "/api/v1/dbt-cloud/"
+
+    body = {
+        "accountId": 165072,
+        "eventId": "wev_2PK5yEfjdZ7MJ78tUwedcI8TVWt",
+        "timestamp": "2023-05-04T09:39:44.49564295Z",
+        "eventType": "job.run.completed",
+        "webhookId": "wsu_2PK4VE772408oHuYxq9BYDN6ONi",
+        "webhookName": "Grai Webhook",
+        "data": {
+            "jobId": "282191",
+            "jobName": "Production",
+            "runId": "146889586",
+            "environmentId": "189767",
+            "environmentName": "Production",
+            "dbtVersion": "1.4.6",
+            "projectName": "Internal",
+            "projectId": "242841",
+            "runStatus": "Running",
+            "runStatusCode": 10,
+            "runStatusMessage": "None",
+            "runReason": "Kicked off from the UI by edward@grai.io",
+            "runStartedAt": "2023-05-04T09:39:02Z",
+            "runFinishedAt": "2023-05-04T09:39:38Z",
+        },
+    }
+
+    signature = hmac.new(hmac_secret.encode("utf-8"), json.dumps(body).encode("utf-8"), hashlib.sha256).hexdigest()
+
+    response = client.post(
+        url,
+        body,
+        headers={"authorization": signature},
+        content_type="application/json",
+    )
+    assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
+    data = response.json()
+    assert data["status"] == "not-success"
+
+
+@pytest.mark.django_db
+def test_dbt_cloud_no_connection(client, hmac_secret):
+    url = "/api/v1/dbt-cloud/"
+
+    body = {
+        "accountId": 165072,
+        "eventId": "wev_2PK5yEfjdZ7MJ78tUwedcI8TVWt",
+        "timestamp": "2023-05-04T09:39:44.49564295Z",
+        "eventType": "job.run.completed",
+        "webhookId": "wsu_2PK4VE772408oHuYxq9BYDN6ONi",
+        "webhookName": "Grai Webhook",
+        "data": {
+            "jobId": "282170",
+            "jobName": "Production",
+            "runId": "146889586",
+            "environmentId": "189767",
+            "environmentName": "Production",
+            "dbtVersion": "1.4.6",
+            "projectName": "Internal",
+            "projectId": "242841",
+            "runStatus": "Success",
+            "runStatusCode": 10,
+            "runStatusMessage": "None",
+            "runReason": "Kicked off from the UI by edward@grai.io",
+            "runStartedAt": "2023-05-04T09:39:02Z",
+            "runFinishedAt": "2023-05-04T09:39:38Z",
+        },
+    }
+
+    signature = hmac.new(hmac_secret.encode("utf-8"), json.dumps(body).encode("utf-8"), hashlib.sha256).hexdigest()
+
+    response = client.post(
+        url,
+        body,
+        headers={"authorization": signature},
+        content_type="application/json",
+    )
+    assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
+    data = response.json()
+    assert data["status"] == "Connection not found"
+
+
+@pytest.mark.django_db
+def test_dbt_cloud_incorrect_signature(test_connection_dbt_cloud, client):
+    url = "/api/v1/dbt-cloud/"
+
+    body = {
+        "accountId": 165072,
+        "eventId": "wev_2PK5yEfjdZ7MJ78tUwedcI8TVWt",
+        "timestamp": "2023-05-04T09:39:44.49564295Z",
+        "eventType": "job.run.completed",
+        "webhookId": "wsu_2PK4VE772408oHuYxq9BYDN6ONi",
+        "webhookName": "Grai Webhook",
+        "data": {
+            "jobId": "282191",
+            "jobName": "Production",
+            "runId": "146889586",
+            "environmentId": "189767",
+            "environmentName": "Production",
+            "dbtVersion": "1.4.6",
+            "projectName": "Internal",
+            "projectId": "242841",
+            "runStatus": "Success",
+            "runStatusCode": 10,
+            "runStatusMessage": "None",
+            "runReason": "Kicked off from the UI by edward@grai.io",
+            "runStartedAt": "2023-05-04T09:39:02Z",
+            "runFinishedAt": "2023-05-04T09:39:38Z",
+        },
+    }
+
+    with pytest.raises(Exception) as e_info:
+        client.post(
+            url,
+            body,
+            headers={"authorization": "signature"},
+            content_type="application/json",
+        )
+
+    assert str(e_info.value) == "Invalid dbt cloud webhook signature"
+
+
+@pytest.mark.django_db
+def test_dbt_cloud_not_active(test_connection_dbt_cloud, client, hmac_secret):
+    test_connection_dbt_cloud.is_active = False
+    test_connection_dbt_cloud.save()
+
+    url = "/api/v1/dbt-cloud/"
+
+    body = {
+        "accountId": 165072,
+        "eventId": "wev_2PK5yEfjdZ7MJ78tUwedcI8TVWt",
+        "timestamp": "2023-05-04T09:39:44.49564295Z",
+        "eventType": "job.run.completed",
+        "webhookId": "wsu_2PK4VE772408oHuYxq9BYDN6ONi",
+        "webhookName": "Grai Webhook",
+        "data": {
+            "jobId": "282191",
+            "jobName": "Production",
+            "runId": "146889586",
+            "environmentId": "189767",
+            "environmentName": "Production",
+            "dbtVersion": "1.4.6",
+            "projectName": "Internal",
+            "projectId": "242841",
+            "runStatus": "Success",
+            "runStatusCode": 10,
+            "runStatusMessage": "None",
+            "runReason": "Kicked off from the UI by edward@grai.io",
+            "runStartedAt": "2023-05-04T09:39:02Z",
+            "runFinishedAt": "2023-05-04T09:39:38Z",
+        },
+    }
+
+    signature = hmac.new(hmac_secret.encode("utf-8"), json.dumps(body).encode("utf-8"), hashlib.sha256).hexdigest()
+
+    response = client.post(
+        url,
+        body,
+        headers={"authorization": signature},
+        content_type="application/json",
+    )
+    assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
+    data = response.json()
+    assert data["status"] == "Connection not active"

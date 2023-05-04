@@ -1,5 +1,7 @@
 import datetime
+import types
 import uuid
+from unittest.mock import MagicMock
 
 import pytest
 from django_celery_beat.models import PeriodicTask
@@ -164,3 +166,78 @@ class TestConnection:
             PeriodicTask.objects.get(id=task.id)
 
         assert str(e_info.value) == "PeriodicTask matching query does not exist."
+
+    @pytest.mark.django_db
+    def test_connection_created_dbt_cloud(self, mocker):
+        organisation = Organisation.objects.create(name="O1")
+        workspace = Workspace.objects.create(name="W1", organisation=organisation)
+        connector = Connector.objects.create(name=Connector.DBT_CLOUD, slug=Connector.DBT_CLOUD)
+
+        hmac_secret = "74d5de51a03ccbea9936aea756b2cc044d3816de"
+
+        mock = mocker.patch("connections.schedules.dbt_cloud.dbtCloudClient")
+
+        dbt_cloud = types.SimpleNamespace()
+
+        cloud = MagicMock()
+        cloud.list_accounts.return_value = {"data": [{"id": 165072, "name": "test"}]}
+        cloud.create_webhook.return_value = {
+            "data": {
+                "id": "1234webhook",
+                "hmac_secret": hmac_secret,
+            }
+        }
+
+        dbt_cloud.cloud = cloud
+
+        mock.return_value = dbt_cloud
+
+        connection = Connection.objects.create(
+            workspace=workspace,
+            connector=connector,
+            name=str(uuid.uuid4()),
+            secrets={"api_key": "1234"},
+            schedules={"dbt_cloud": {"job_id": "282191"}, "type": "dbt-cloud"},
+        )
+
+        assert connection.schedules.get("dbt_cloud", {}).get("hmac_secret") == hmac_secret
+
+    @pytest.mark.django_db
+    def test_connection_updated_dbt_cloud(self, mocker):
+        organisation = Organisation.objects.create(name="O1")
+        workspace = Workspace.objects.create(name="W1", organisation=organisation)
+        connector = Connector.objects.create(name=Connector.DBT_CLOUD, slug=Connector.DBT_CLOUD)
+
+        hmac_secret = "74d5de51a03ccbea9936aea756b2cc044d3816de"
+
+        mock = mocker.patch("connections.schedules.dbt_cloud.dbtCloudClient")
+
+        dbt_cloud = types.SimpleNamespace()
+
+        cloud = MagicMock()
+        cloud.list_accounts.return_value = {"data": [{"id": 165072, "name": "test"}]}
+        cloud.create_webhook.return_value = {
+            "data": {
+                "id": "1234webhook",
+                "hmac_secret": hmac_secret,
+            }
+        }
+
+        dbt_cloud.cloud = cloud
+
+        mock.return_value = dbt_cloud
+
+        connection = Connection.objects.create(
+            workspace=workspace,
+            connector=connector,
+            name=str(uuid.uuid4()),
+            secrets={"api_key": "1234"},
+            schedules={"dbt_cloud": {"job_id": "282191"}, "type": "dbt-cloud"},
+        )
+
+        assert connection.schedules.get("dbt_cloud", {}).get("hmac_secret") == hmac_secret
+
+        connection.name = "New Name"
+        connection.save()
+
+        assert connection.name == "New Name"

@@ -30,7 +30,7 @@ def save(model: Connection):
         client.cloud.update_webhook(account_id=account_id, webhook_id=webhook_id, payload=payload)
 
     else:
-        accounts = client.cloud.list_accounts()["data"]
+        accounts = client.cloud.list_accounts().get("data")
         account_id = accounts[0]["id"]
 
         response = client.cloud.create_webhook(account_id=account_id, payload=payload)
