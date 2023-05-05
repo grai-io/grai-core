@@ -31,7 +31,7 @@ const HomeCardContent: React.FC<HomeCardContentProps> = ({
         mr: 3,
       }}
     >
-      {count && (
+      {count !== undefined && (
         <Typography sx={{ fontSize: 38, fontWeight: "bold" }}>
           {count}
         </Typography>
