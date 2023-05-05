@@ -1,9 +1,8 @@
 import uuid
-from unittest import mock
 from unittest.mock import MagicMock
 
 import pytest
-from algoliasearch.search_client import SearchClient
+from django.test import override_settings
 from notifications.models import Alert
 
 from api.schema import schema
@@ -440,6 +439,7 @@ async def test_workspace_edge(test_context):
     assert result.data["workspace"]["edge"]["destination"]["id"] == str(destination.id)
 
 
+@override_settings(ALGOLIA_SEARCH_KEY="apikey1")
 @pytest.mark.django_db
 async def test_workspace_search_key(test_context, mocker):
     mock = mocker.patch("api.types.Search")
@@ -469,6 +469,33 @@ async def test_workspace_search_key(test_context, mocker):
     assert result.errors is None
     assert result.data["workspace"]["id"] == str(workspace.id)
     assert result.data["workspace"]["search_key"] == "search_key"
+
+
+@pytest.mark.django_db
+async def test_workspace_search_key_no_env(test_context, mocker):
+    context, organisation, workspace, user, membership = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                search_key
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+        },
+        context_value=context,
+    )
+
+    assert (
+        str(result.errors)
+        == "[GraphQLError('Alogia not setup', locations=[SourceLocation(line=5, column=17)], path=['workspace', 'search_key'])]"
+    )
 
 
 async def generate_table_with_column(workspace: Workspace):
