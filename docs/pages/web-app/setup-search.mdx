@@ -1,0 +1,38 @@
+---
+title: Search
+description: Configuring search in Grai
+---
+
+import { Callout } from "nextra-theme-docs";
+
+# Configuring Search
+
+If appropriately configured, Grai has a powerful search function.
+
+<Callout type="info" emoji="ℹ️">
+  Search is setup for you with Grai cloud, making it easy to get started.
+</Callout>
+
+## Algolia
+
+Grai search is powered by Algolia. To get started you will need to create an account on Algolia at [https://www.algolia.com/users/sign_up](https://www.algolia.com/users/sign_up).
+
+You will need to set the following environment variables:
+
+| Variable      | Value                                          |
+| ------------- | ---------------------------------------------- |
+| ALGOLIA_APPLICATION_ID | This is your unique application identifier. It's used to identify you when using Algolia's API. |
+| ALGOLIA_ADMIN_KEY    | This is the ADMIN API key. Please keep it secret and use it ONLY from your backend: this key is used to create, update and DELETE your indices. You can also use it to manage your API keys. |
+| ALGOLIA_SEARCH_KEY | This is the public API key to use in your frontend code. This key is only usable for search queries and sending data to the Insights API. |
+
+## Indexing
+
+To index your existing content, you will need to run the following command:
+
+```bash
+python manage.py algolia_reindex
+```
+
+## More details
+
+For more information about the Grai Algolia integration see [https://www.algolia.com/doc/framework-integration/django/setup](https://www.algolia.com/doc/framework-integration/django/setup).
