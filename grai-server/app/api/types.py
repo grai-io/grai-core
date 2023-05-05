@@ -573,12 +573,17 @@ class Workspace:
     # Algolia search key
     @gql.django.field
     def search_key(self) -> str:
+        api_key = settings.ALGOLIA_SEARCH_KEY
+
+        if not api_key:
+            raise Exception("Alogia not setup")
+
         client = Search()
 
         valid_until = int(time.time()) + 3600
 
         return client.generate_secured_api_key(
-            settings.ALGOLIA_SEARCH_KEY,
+            api_key,
             {"filters": f"workspace_id:{str(self.id)}", "validUntil": valid_until, "restrictIndices": "main"},
         )
 
