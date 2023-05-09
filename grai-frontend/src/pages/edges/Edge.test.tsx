@@ -155,6 +155,19 @@ test("lineage", async () => {
                   },
                   destination_tables: { data: [] },
                 },
+                {
+                  id: "10",
+                  namespace: "default",
+                  name: "Table10",
+                  display_name: "Table10",
+                  data_source: "test",
+                  metadata: {},
+                  columns: { data: [] },
+                  source_tables: {
+                    data: [],
+                  },
+                  destination_tables: { data: [] },
+                },
               ],
             },
             other_edges: { data: [] },
@@ -179,5 +192,43 @@ test("lineage", async () => {
 
   await waitFor(() => {
     expect(screen.getByTestId("edge-lineage")).toBeInTheDocument()
+  })
+})
+
+test("lineage error", async () => {
+  const user = userEvent.setup()
+
+  const mocks = [
+    edgeMock,
+    edgeMock,
+    {
+      request: {
+        query: GET_TABLES_AND_EDGES,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+        },
+      },
+      result: {
+        errors: [new GraphQLError("Error!")],
+      },
+    },
+  ]
+
+  render(<Edge />, {
+    mocks,
+    withRouter: true,
+  })
+
+  await waitFor(() => {
+    expect(screen.getAllByText("Lineage")).toBeTruthy()
+  })
+
+  await act(
+    async () => await user.click(screen.getByRole("tab", { name: /Lineage/i }))
+  )
+
+  await waitFor(() => {
+    expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })

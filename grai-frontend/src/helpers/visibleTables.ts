@@ -39,3 +39,31 @@ const getHiddenTables = (
 }
 
 export default getHiddenTables
+
+interface Edge {
+  source: {
+    id: string
+  }
+  destination: {
+    id: string
+  }
+}
+
+interface TableWithColumns {
+  id: string
+  columns: {
+    data: {
+      id: string
+    }[]
+  }
+}
+
+export const getEdgeTables = (tables: TableWithColumns[], edge: Edge) =>
+  tables.filter(
+    t =>
+      t.id === edge.source.id ||
+      t.id === edge.destination.id ||
+      t.columns.data.some(
+        c => c.id === edge.source.id || c.id === edge.destination.id
+      )
+  )

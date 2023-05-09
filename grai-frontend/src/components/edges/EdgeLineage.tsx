@@ -6,7 +6,7 @@ import {
   GetTablesAndEdgesVariables,
 } from "pages/__generated__/GetTablesAndEdges"
 import useWorkspace from "helpers/useWorkspace"
-import getHiddenTables from "helpers/visibleTables"
+import getHiddenTables, { getEdgeTables } from "helpers/visibleTables"
 import Graph from "components/graph/Graph"
 import Loading from "components/layout/Loading"
 import GraphError from "components/utils/GraphError"
@@ -101,16 +101,7 @@ const EdgeLineage: React.FC<EdgeLineageProps> = ({ edge }) => {
 
   const edges = data.workspace.other_edges.data
 
-  const startTables = tables
-    .filter(
-      t =>
-        t.id === edge.source.id ||
-        t.id === edge.destination.id ||
-        t.columns.data.some(
-          c => c.id === edge.source.id || c.id === edge.destination.id
-        )
-    )
-    .map(t => t.id)
+  const startTables = getEdgeTables(tables, edge).map(t => t.id)
 
   const hiddenTables = getHiddenTables(tables, value - 1, startTables).map(
     n => n.id
