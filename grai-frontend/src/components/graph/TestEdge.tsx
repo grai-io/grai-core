@@ -57,6 +57,7 @@ const TestEdge: React.FC<EdgeProps<TestData>> = ({
               : undefined,
         }}
         onDoubleClick={() => workspaceNavigate(`edges/${id}`)}
+        data-testid="test-edge-path"
       />
       <EdgeLabelRenderer>
         <Box
