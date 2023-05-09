@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { gql, useQuery } from "@apollo/client"
 import { Alert, Box } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
+import getHiddenTables from "helpers/visibleTables"
 import Graph from "components/graph/Graph"
 import Loading from "components/layout/Loading"
 import GraphError from "components/utils/GraphError"
@@ -9,7 +10,6 @@ import {
   GetTablesAndEdgesTableLineage,
   GetTablesAndEdgesTableLineageVariables,
 } from "./__generated__/GetTablesAndEdgesTableLineage"
-import getHiddenTables from "helpers/visibleTables"
 
 export const GET_TABLES_AND_EDGES = gql`
   query GetTablesAndEdgesTableLineage(

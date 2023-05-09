@@ -6,10 +6,10 @@ import {
   GetTablesAndEdgesVariables,
 } from "pages/__generated__/GetTablesAndEdges"
 import useWorkspace from "helpers/useWorkspace"
+import getHiddenTables from "helpers/visibleTables"
 import Graph from "components/graph/Graph"
 import Loading from "components/layout/Loading"
 import GraphError from "components/utils/GraphError"
-import getHiddenTables from "helpers/visibleTables"
 
 export const GET_TABLES_AND_EDGES = gql`
   query GetTablesAndEdgesEdgeLineage(

@@ -2,8 +2,8 @@ import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
-import Edge, { GET_EDGE } from "./Edge"
 import { GET_TABLES_AND_EDGES } from "components/edges/EdgeLineage"
+import Edge, { GET_EDGE } from "./Edge"
 
 export const edgeMock = {
   request: {

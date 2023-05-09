@@ -78,11 +78,6 @@ const Edge: React.FC = () => {
       noWrapper: true,
     },
     {
-      label: "Sample",
-      value: "sample",
-      disabled: true,
-    },
-    {
       label: "Lineage",
       value: "lineage",
       component: <EdgeLineage edge={edge} />,
