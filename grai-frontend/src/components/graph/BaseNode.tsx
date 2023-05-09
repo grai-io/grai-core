@@ -90,6 +90,7 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
     <>
       <Box
         onContextMenu={handleContextMenu}
+        onDoubleClick={() => workspaceNavigate(`tables/${data.id}`)}
         sx={{
           fontSize: 12,
           borderWidth: 1,

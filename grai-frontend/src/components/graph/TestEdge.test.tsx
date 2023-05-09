@@ -6,7 +6,7 @@ import ReactFlow, {
   Position,
   ReactFlowProvider,
 } from "reactflow"
-import { act, render, screen, waitFor } from "testing"
+import { act, fireEvent, render, screen, waitFor } from "testing"
 import TestEdge, { TestData } from "./TestEdge"
 
 test("renders", async () => {
@@ -145,4 +145,52 @@ test("renders only success", async () => {
   })
 
   await act(async () => await user.click(screen.getByTestId("test-edge")))
+})
+
+test("double click", async () => {
+  const user = userEvent.setup()
+
+  const nodes = [
+    { id: "1", position: { x: 0, y: 0 }, data: { label: "1" } },
+    { id: "2", position: { x: 0, y: 100 }, data: { label: "2" } },
+  ]
+
+  const edges: Edge<TestData>[] = [
+    {
+      id: "e1-2",
+      source: "1",
+      target: "2",
+      type: "test",
+      data: {
+        tests: [
+          {
+            message: "Pass Message",
+            test_pass: true,
+          },
+          {
+            message: "Pass Message2",
+            test_pass: true,
+          },
+        ],
+      },
+    },
+  ]
+
+  const edgeTypes: EdgeTypes = {
+    test: TestEdge,
+  }
+
+  render(<ReactFlow nodes={nodes} edges={edges} edgeTypes={edgeTypes} />, {
+    routes: ["/:organisationName/:workspaceName/edges/:edgeId"],
+  })
+
+  await waitFor(() => {
+    expect(screen.getByTestId("test-edge-path")).toBeTruthy()
+  })
+
+  fireEvent.dblClick(screen.getByTestId("test-edge-path"))
+
+  await waitFor(() => {
+    expect(screen.getByText("New Page")).toBeInTheDocument()
+  })
 })

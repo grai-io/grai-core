@@ -130,7 +130,7 @@ const MidGraph: React.FC<GraphProps> = ({
       data: {
         tests: edgeTests,
       },
-      type: edgeTests && edgeTests.length > 0 ? "error" : undefined,
+      type: "test",
       labelStyle: { fill: "red", fontWeight: 700 },
       zIndex: 10,
     }

@@ -288,3 +288,18 @@ test("context menu show profile", async () => {
     expect(screen.getByText("New Page")).toBeInTheDocument()
   })
 })
+
+test("double click", async () => {
+  render(
+    <ReactFlowProvider>
+      <BaseNode data={data} />
+    </ReactFlowProvider>,
+    { routes: ["/:organisationName/:workspaceName/tables/:nodeId"] }
+  )
+
+  fireEvent.dblClick(screen.getByText("Node Label"))
+
+  await waitFor(() => {
+    expect(screen.getByText("New Page")).toBeInTheDocument()
+  })
+})

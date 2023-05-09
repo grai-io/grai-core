@@ -1,5 +1,9 @@
 import React from "react"
-import { KeyboardArrowLeft, KeyboardArrowRight } from "@mui/icons-material"
+import {
+  KeyboardArrowLeft,
+  KeyboardArrowRight,
+  Link as LinkIcon,
+} from "@mui/icons-material"
 import {
   Box,
   Drawer,
@@ -34,6 +38,23 @@ const pages = [
     path: "tables",
     icon: <Tables />,
     alt: "Tables",
+  },
+  {
+    title: "Edges",
+    path: "edges",
+    icon: (
+      <Box sx={{ p: "12px" }}>
+        <LinkIcon
+          sx={{
+            color: "white",
+            fontSize: 20,
+            width: 24,
+            height: 20,
+          }}
+        />
+      </Box>
+    ),
+    alt: "Edges",
   },
   {
     title: "Connections",

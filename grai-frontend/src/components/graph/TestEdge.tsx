@@ -3,6 +3,7 @@ import { CancelOutlined, CheckCircleOutline } from "@mui/icons-material"
 import { Box, Card, CardContent, lighten } from "@mui/material"
 import { EdgeProps, getBezierPath, EdgeLabelRenderer } from "reactflow"
 import theme from "theme"
+import useWorkspace from "helpers/useWorkspace"
 import TestSection from "./tests/TestSection"
 import TestsSummary from "./tests/TestsSummary"
 
@@ -25,6 +26,8 @@ const TestEdge: React.FC<EdgeProps<TestData>> = ({
   targetPosition,
   data,
 }) => {
+  const { workspaceNavigate } = useWorkspace()
+
   const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
     sourceY,
@@ -53,6 +56,8 @@ const TestEdge: React.FC<EdgeProps<TestData>> = ({
               ? lighten(theme.palette.error.light, 0.3)
               : undefined,
         }}
+        onDoubleClick={() => workspaceNavigate(`edges/${id}`)}
+        data-testid="test-edge-path"
       />
       <EdgeLabelRenderer>
         <Box

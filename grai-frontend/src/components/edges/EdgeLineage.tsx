@@ -1,18 +1,18 @@
 import React, { useState } from "react"
 import { gql, useQuery } from "@apollo/client"
 import { Alert, Box } from "@mui/material"
+import {
+  GetTablesAndEdges,
+  GetTablesAndEdgesVariables,
+} from "pages/__generated__/GetTablesAndEdges"
 import useWorkspace from "helpers/useWorkspace"
-import getHiddenTables from "helpers/visibleTables"
+import getHiddenTables, { getEdgeTables } from "helpers/visibleTables"
 import Graph from "components/graph/Graph"
 import Loading from "components/layout/Loading"
 import GraphError from "components/utils/GraphError"
-import {
-  GetTablesAndEdgesTableLineage,
-  GetTablesAndEdgesTableLineageVariables,
-} from "./__generated__/GetTablesAndEdgesTableLineage"
 
 export const GET_TABLES_AND_EDGES = gql`
-  query GetTablesAndEdgesTableLineage(
+  query GetTablesAndEdgesEdgeLineage(
     $organisationName: String!
     $workspaceName: String!
   ) {
@@ -65,21 +65,26 @@ export const GET_TABLES_AND_EDGES = gql`
   }
 `
 
-interface Table {
+interface Node {
   id: string
-  display_name: string
 }
 
-type TableLineageProps = {
-  table: Table
+interface Edge {
+  id: string
+  source: Node
+  destination: Node
 }
 
-const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
+type EdgeLineageProps = {
+  edge: Edge
+}
+
+const EdgeLineage: React.FC<EdgeLineageProps> = ({ edge }) => {
   const [value, setValue] = useState(1)
   const { organisationName, workspaceName } = useWorkspace()
   const { loading, error, data } = useQuery<
-    GetTablesAndEdgesTableLineage,
-    GetTablesAndEdgesTableLineageVariables
+    GetTablesAndEdges,
+    GetTablesAndEdgesVariables
   >(GET_TABLES_AND_EDGES, {
     variables: {
       organisationName,
@@ -96,14 +101,18 @@ const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
 
   const edges = data.workspace.other_edges.data
 
-  const hiddenTables = getHiddenTables(tables, value, [table.id]).map(n => n.id)
+  const startTables = getEdgeTables(tables, edge).map(t => t.id)
+
+  const hiddenTables = getHiddenTables(tables, value - 1, startTables).map(
+    n => n.id
+  )
 
   return (
     <Box
       sx={{
         height: "calc(100vh - 144px)",
       }}
-      data-testid="table-lineage"
+      data-testid="edge-lineage"
     >
       <Graph
         tables={tables}
@@ -120,4 +129,4 @@ const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
   )
 }
 
-export default TableLineage
+export default EdgeLineage
