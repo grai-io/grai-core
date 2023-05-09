@@ -10,25 +10,30 @@
                 "fields": [
                     {
                         "name": "host",
-                        "required": true
+                        "required": true,
+                        "order": 0
                     },
                     {
                         "name": "port",
                         "default": 5439,
-                        "required": true
+                        "required": true,
+                        "order": 1
                     },
                     {
                         "name": "database",
-                        "required": true
+                        "required": true,
+                        "order": 2
                     },
                     {
                         "name": "user",
-                        "required": true
+                        "required": true,
+                        "order": 3
                     },
                     {
                         "name": "password",
                         "secret": true,
-                        "required": true
+                        "required": true,
+                        "order": 4
                     }
                 ]
             },
@@ -51,26 +56,31 @@
                 "fields": [
                     {
                         "name": "host",
-                        "required": true
+                        "required": true,
+                        "order": 0
                     },
                     {
                         "name": "port",
                         "default": 3306,
-                        "required": true
+                        "required": true,
+                        "order": 1
                     },
                     {
                         "name": "dbname",
                         "label": "Database Name",
-                        "required": true
+                        "required": true,
+                        "order": 2
                     },
                     {
                         "name": "user",
-                        "required": true
+                        "required": true,
+                        "order": 3
                     },
                     {
                         "name": "password",
                         "secret": true,
-                        "required": true
+                        "required": true,
+                        "order": 4
                     }
                 ]
             },
@@ -94,17 +104,20 @@
                     {
                         "name": "project",
                         "required": true,
-                        "helper_text": "GCP project id"
+                        "helper_text": "GCP project id",
+                        "order": 0
                     },
                     {
                         "name": "dataset",
-                        "required": true
+                        "required": true,
+                        "order": 1
                     },
                     {
                         "name": "credentials",
                         "required": true,
                         "secret": true,
-                        "helper_text": "JSON credentials for service account, see Credentials in docs"
+                        "helper_text": "JSON credentials for service account, see Credentials in docs",
+                        "order": 2
                     }
                 ]
             },
@@ -155,25 +168,30 @@
                 "fields": [
                     {
                         "name": "host",
-                        "required": true
-                    },
-                    {
-                        "name": "port",
-                        "default": 1433,
-                        "required": false
+                        "required": true,
+                        "order": 0
                     },
                     {
                         "name": "database",
-                        "required": true
+                        "required": true,
+                        "order": 1
                     },
                     {
                         "name": "user",
-                        "required": true
+                        "required": true,
+                        "order": 2
                     },
                     {
                         "name": "password",
                         "secret": true,
-                        "required": true
+                        "required": true,
+                        "order": 3
+                    },
+                    {
+                        "name": "port",
+                        "default": 1433,
+                        "required": false,
+                        "order": 4
                     }
                 ]
             },
@@ -196,26 +214,31 @@
                 "fields": [
                     {
                         "name": "host",
-                        "required": true
+                        "required": true,
+                        "order": 0
                     },
                     {
                         "name": "port",
                         "default": 5432,
-                        "required": true
+                        "required": true,
+                        "order": 1
                     },
                     {
                         "name": "dbname",
                         "label": "Database Name",
-                        "required": true
+                        "required": true,
+                        "order": 2
                     },
                     {
                         "name": "user",
-                        "required": true
+                        "required": true,
+                        "order": 3
                     },
                     {
                         "name": "password",
                         "secret": true,
-                        "required": true
+                        "required": true,
+                        "order": 4
                     }
                 ]
             },
@@ -260,7 +283,8 @@
                     {
                         "name": "api_key",
                         "secret": true,
-                        "required": true
+                        "required": true,
+                        "order": 0
                     }
                 ],
                 "schedules": [
@@ -287,29 +311,35 @@
                     {
                         "name": "account",
                         "required": true,
-                        "helper_text": "Snowflake account, the characters in front of .snowflakecomputing.com"
+                        "helper_text": "Snowflake account, the characters in front of .snowflakecomputing.com",
+                        "order": 0
                     },
                     {
                         "name": "user",
-                        "required": true
+                        "required": true,
+                        "order": 1
                     },
                     {
                         "name": "password",
                         "secret": true,
-                        "required": true
+                        "required": true,
+                        "order": 2
                     },
                     {
                         "name": "role",
-                        "required": true
+                        "required": true,
+                        "order": 3
                     },
                     {
                         "name": "warehouse",
                         "default": "COMPUTE_WH",
-                        "required": true
+                        "required": true,
+                        "order": 4
                     },
                     {
                         "name": "database",
-                        "required": true
+                        "required": true,
+                        "order": 5
                     }
                 ]
             },
@@ -332,28 +362,34 @@
                 "fields": [
                     {
                         "name": "api_key",
-                        "required": true
+                        "required": true,
+                        "order": 0
                     },
                     {
                         "name": "api_secret",
                         "required": true,
-                        "secret": true
+                        "secret": true,
+                        "order": 1
                     },
                     {
                         "name": "namespaces",
-                        "required": false
+                        "required": false,
+                        "order": 2
                     },
                     {
                         "name": "endpoint",
-                        "required": false
+                        "required": false,
+                        "order": 3
                     },
                     {
                         "name": "limit",
-                        "required": false
+                        "required": false,
+                        "order": 4
                     },
                     {
                         "name": "parallelization",
-                        "required": false
+                        "required": false,
+                        "order": 5
                     }
                 ]
             },
