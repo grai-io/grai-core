@@ -13,6 +13,7 @@ export interface ConnectorMetadataField {
   required?: boolean
   default?: string | number
   helper_text?: string | null
+  order?: number
 }
 
 export interface ConnectorMetadata {

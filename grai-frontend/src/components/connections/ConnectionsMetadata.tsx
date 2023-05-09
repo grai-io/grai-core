@@ -39,45 +39,46 @@ const ConnectionsMetadata: React.FC<ConnectionsMetadataProps> = ({
     onChangeSecrets(newValue)
   }
 
-  const fields = connector.metadata?.fields
+  const fields = [...(connector.metadata?.fields ?? [])]
 
   return (
     <>
       {fields
-        ?.filter(f => !f.secret)
-        .map(field => (
-          <TextField
-            key={field.name}
-            label={field.label ?? field.name}
-            value={(metadata && metadata[field.name]) ?? ""}
-            onChange={event => handleChangeMetadata(event.target.value, field)}
-            margin="normal"
-            required={field.required}
-            InputProps={{
-              endAdornment: field.helper_text ? (
-                <InputAdornment position="end" sx={{ cursor: "pointer" }}>
-                  <Tooltip title={field.helper_text}>
-                    <Info />
-                  </Tooltip>
-                </InputAdornment>
-              ) : null,
-            }}
-            fullWidth
-          />
-        ))}
-      {fields
-        ?.filter(f => f.secret)
-        .map(field => (
-          <PasswordField
-            key={field.name}
-            label={field.label ?? field.name}
-            value={secrets && secrets[field.name]}
-            onChange={event => handleChangeSecrets(event.target.value, field)}
-            required={field.required}
-            helperText={field.helper_text}
-            edit={edit}
-          />
-        ))}
+        ?.sort((a, b) => ((a.order ?? 0) > (b.order ?? 0) ? 1 : -1))
+        .map(field =>
+          field.secret ? (
+            <PasswordField
+              key={field.name}
+              label={field.label ?? field.name}
+              value={secrets && secrets[field.name]}
+              onChange={event => handleChangeSecrets(event.target.value, field)}
+              required={field.required}
+              helperText={field.helper_text}
+              edit={edit}
+            />
+          ) : (
+            <TextField
+              key={field.name}
+              label={field.label ?? field.name}
+              value={(metadata && metadata[field.name]) ?? ""}
+              onChange={event =>
+                handleChangeMetadata(event.target.value, field)
+              }
+              margin="normal"
+              required={field.required}
+              InputProps={{
+                endAdornment: field.helper_text ? (
+                  <InputAdornment position="end" sx={{ cursor: "pointer" }}>
+                    <Tooltip title={field.helper_text}>
+                      <Info />
+                    </Tooltip>
+                  </InputAdornment>
+                ) : null,
+              }}
+              fullWidth
+            />
+          )
+        )}
     </>
   )
 }
