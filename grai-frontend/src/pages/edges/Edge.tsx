@@ -3,6 +3,7 @@ import { gql, useQuery } from "@apollo/client"
 import { useParams } from "react-router-dom"
 import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
+import EdgeLineage from "components/edges/EdgeLineage"
 import EdgeProfile from "components/edges/EdgeProfile"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
@@ -84,7 +85,7 @@ const Edge: React.FC = () => {
     {
       label: "Lineage",
       value: "lineage",
-      // component: <TableLineage table={table} />,
+      component: <EdgeLineage edge={edge} />,
       noWrapper: true,
     },
   ]

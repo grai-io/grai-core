@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
 import Edge, { GET_EDGE } from "./Edge"
+import { GET_TABLES_AND_EDGES } from "components/edges/EdgeLineage"
 
 export const edgeMock = {
   request: {
@@ -112,5 +113,71 @@ test("not found", async () => {
 
   await waitFor(() => {
     expect(screen.getAllByText("Page not found")).toBeTruthy()
+  })
+})
+
+test("lineage", async () => {
+  const user = userEvent.setup()
+
+  const mocks = [
+    edgeMock,
+    edgeMock,
+    {
+      request: {
+        query: GET_TABLES_AND_EDGES,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+        },
+      },
+      result: {
+        data: {
+          workspace: {
+            id: "1",
+            tables: {
+              data: [
+                {
+                  id: "2",
+                  namespace: "default",
+                  name: "Table2",
+                  display_name: "Table2",
+                  data_source: "test",
+                  metadata: {},
+                  columns: { data: [] },
+                  source_tables: {
+                    data: [
+                      {
+                        id: "1",
+                        name: "Table1",
+                        display_name: "Table1",
+                      },
+                    ],
+                  },
+                  destination_tables: { data: [] },
+                },
+              ],
+            },
+            other_edges: { data: [] },
+          },
+        },
+      },
+    },
+  ]
+
+  render(<Edge />, {
+    mocks,
+    withRouter: true,
+  })
+
+  await waitFor(() => {
+    expect(screen.getAllByText("Lineage")).toBeTruthy()
+  })
+
+  await act(
+    async () => await user.click(screen.getByRole("tab", { name: /Lineage/i }))
+  )
+
+  await waitFor(() => {
+    expect(screen.getByTestId("edge-lineage")).toBeInTheDocument()
   })
 })
