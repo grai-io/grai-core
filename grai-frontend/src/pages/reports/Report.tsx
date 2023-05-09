@@ -14,6 +14,7 @@ import PageTabs from "components/layout/PageTabs"
 import ReportResult from "components/reports/ReportResult"
 import reportTabs from "components/reports/reportTabs"
 import RunBreadcrumbs from "components/reports/run/RunBreadcrumbs"
+import RunStatus from "components/runs/RunStatus"
 import TabState from "components/tabs/TabState"
 import GraphError from "components/utils/GraphError"
 import {
@@ -31,6 +32,7 @@ export const GET_RUN = gql`
       id
       run(id: $runId) {
         id
+        status
         metadata
         created_at
         commit {
@@ -156,13 +158,16 @@ const Report: React.FC = () => {
           }
           tabs
           status={
-            run.created_at && (
-              <Typography>{`about ${durationAgo(
-                run.created_at,
-                1,
-                true
-              )} ago `}</Typography>
-            )
+            <>
+              <RunStatus run={run} />
+              {run.created_at && (
+                <Typography sx={{ ml: 2 }}>{`about ${durationAgo(
+                  run.created_at,
+                  1,
+                  true
+                )} ago `}</Typography>
+              )}
+            </>
           }
           buttons={<ReportResult errors={errors} />}
         >

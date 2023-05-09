@@ -49,7 +49,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
           fontSize: "32px",
           lineHeight: "48px",
           color: "#1F2A37",
-          mr: 3,
+          mr: 2,
         }}
       >
         {title}
