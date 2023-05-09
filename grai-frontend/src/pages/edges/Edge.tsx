@@ -3,6 +3,8 @@ import { gql, useQuery } from "@apollo/client"
 import { useParams } from "react-router-dom"
 import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
+import EdgeProfile from "components/edges/EdgeProfile"
+import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
 import PageTabs from "components/layout/PageTabs"
@@ -67,12 +69,9 @@ const Edge: React.FC = () => {
       value: "profile",
       component: (
         <>
-          {/* <PageContent>
-            <TableProfile table={table} />
-          </PageContent>
           <PageContent>
-            <TableColumns columns={table.columns.data} />
-          </PageContent> */}
+            <EdgeProfile edge={edge} />
+          </PageContent>
         </>
       ),
       noWrapper: true,

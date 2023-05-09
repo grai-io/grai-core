@@ -56,7 +56,7 @@ test("renders", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByText("Edge1")).toBeInTheDocument()
+    expect(screen.getAllByText("Edge1")).toBeTruthy()
   })
 })
 
