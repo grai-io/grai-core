@@ -40,6 +40,7 @@ export interface GetRunReport_workspace_run_commit {
 export interface GetRunReport_workspace_run {
   __typename: "Run";
   id: any;
+  status: string;
   metadata: any;
   created_at: any;
   commit: GetRunReport_workspace_run_commit | null;
