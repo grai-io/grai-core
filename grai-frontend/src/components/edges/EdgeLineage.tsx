@@ -112,7 +112,7 @@ const EdgeLineage: React.FC<EdgeLineageProps> = ({ edge }) => {
     )
     .map(t => t.id)
 
-  const hiddenTables = getHiddenTables(tables, value, startTables).map(
+  const hiddenTables = getHiddenTables(tables, value - 1, startTables).map(
     n => n.id
   )
 

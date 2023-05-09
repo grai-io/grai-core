@@ -17,7 +17,7 @@ const getHiddenTables = (
   value: number,
   startTables: string[]
 ) => {
-  const visibleTables: string[] = Array.from(Array(value - 1).keys()).reduce(
+  const visibleTables: string[] = Array.from(Array(value).keys()).reduce(
     (res, value) =>
       res.concat(
         tables
