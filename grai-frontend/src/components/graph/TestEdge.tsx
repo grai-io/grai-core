@@ -5,6 +5,7 @@ import { EdgeProps, getBezierPath, EdgeLabelRenderer } from "reactflow"
 import theme from "theme"
 import TestSection from "./tests/TestSection"
 import TestsSummary from "./tests/TestsSummary"
+import useWorkspace from "helpers/useWorkspace"
 
 interface Test {
   message: string
@@ -25,6 +26,8 @@ const TestEdge: React.FC<EdgeProps<TestData>> = ({
   targetPosition,
   data,
 }) => {
+  const { workspaceNavigate } = useWorkspace()
+
   const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
     sourceY,
@@ -53,6 +56,7 @@ const TestEdge: React.FC<EdgeProps<TestData>> = ({
               ? lighten(theme.palette.error.light, 0.3)
               : undefined,
         }}
+        onDoubleClick={() => workspaceNavigate(`edges/${id}`)}
       />
       <EdgeLabelRenderer>
         <Box
