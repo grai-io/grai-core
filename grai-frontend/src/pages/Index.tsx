@@ -32,10 +32,11 @@ const Index: React.FC = () => {
     return (
       <Navigate
         to={`/${firstWorkspace.organisation.name}/${firstWorkspace.name}`}
+        replace
       />
     )
 
-  return <Navigate to="/workspaces" />
+  return <Navigate to="/workspaces" replace />
 }
 
 export default Index
