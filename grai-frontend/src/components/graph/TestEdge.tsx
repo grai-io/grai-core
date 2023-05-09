@@ -3,9 +3,9 @@ import { CancelOutlined, CheckCircleOutline } from "@mui/icons-material"
 import { Box, Card, CardContent, lighten } from "@mui/material"
 import { EdgeProps, getBezierPath, EdgeLabelRenderer } from "reactflow"
 import theme from "theme"
+import useWorkspace from "helpers/useWorkspace"
 import TestSection from "./tests/TestSection"
 import TestsSummary from "./tests/TestsSummary"
-import useWorkspace from "helpers/useWorkspace"
 
 interface Test {
   message: string
