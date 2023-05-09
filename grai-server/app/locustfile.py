@@ -1,10 +1,15 @@
 from locust import HttpUser, between, task
 
-headers = {"Authorization": "Token kIgnpnGR.2y4QfYc1ea966nFYyjCUPX2FotcBfMxp"}
+# headers = {"Authorization": "Api-Key kIgnpnGR.2y4QfYc1ea966nFYyjCUPX2FotcBfMxp"} # localhost
+headers = {"Authorization": "Api-Key mrQ0XbZu.nG0znSOEnb0KoOluICxA7pcT4Oq3EfiB"}  # cloud
 
 
 class WebsiteUser(HttpUser):
     wait_time = between(5, 15)
+
+    @task
+    def health(self):
+        self.client.get("/health/")
 
     @task
     def admin(self):
@@ -13,6 +18,14 @@ class WebsiteUser(HttpUser):
     @task
     def admin_with_headers(self):
         self.client.get("/admin/", headers=headers)
+
+    @task
+    def nodes(self):
+        self.client.get("/api/v1/lineage/nodes/", headers=headers)
+
+    @task
+    def edges(self):
+        self.client.get("/api/v1/lineage/edges/", headers=headers)
 
 
 # from locust import HttpLocust, TaskSet, task
