@@ -30,9 +30,9 @@ class DbtCloudConnector:
 
         account = self.get_default_acount()
 
-        runs = self.client.cloud.list_runs(account_id=account["id"], order_by="id", limit=100)
+        runs = self.get_runs(account_id=account["id"])
 
-        return runs["data"]
+        return runs
 
     def load_client(self):
         self.client = dbtCloudClient(api_key=self.api_key)
@@ -41,3 +41,21 @@ class DbtCloudConnector:
         accounts = self.client.cloud.list_accounts()
 
         return accounts["data"][0]
+
+    def get_runs(self, account_id: str):
+        runs = []
+
+        offset = 0
+        limit = 100
+
+        while True:
+            result = self.client.cloud.list_runs(account_id=account_id, order_by="id", limit=limit, offset=offset)
+
+            runs.extend(result["data"])
+
+            if result["extra"]["pagination"]["total_count"] <= len(runs):
+                break
+
+            offset += 100
+
+        return runs
