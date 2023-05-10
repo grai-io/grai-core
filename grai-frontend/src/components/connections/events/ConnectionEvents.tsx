@@ -9,6 +9,7 @@ import {
   GetConnectionEvents,
   GetConnectionEventsVariables,
 } from "./__generated__/GetConnectionEvents"
+import ConnectionEventPlots from "./ConnectionEventPlots"
 import ConnectionEventsTable from "./ConnectionEventsTable"
 
 export const GET_CONNECTION_EVENTS = gql`
@@ -110,7 +111,7 @@ const ConnectionEvents: React.FC<ConnectionEventsProps> = ({ connection }) => {
   return (
     <>
       <PageContent>
-        <h1>Connection Graph</h1>
+        <ConnectionEventPlots events={events} />
       </PageContent>
       <PageContent>
         <ConnectionEventsTable
