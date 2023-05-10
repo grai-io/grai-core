@@ -26,9 +26,9 @@ from installations.models import PullRequest as PullRequestModel
 from installations.models import Repository as RepositoryModel
 from lineage.filter import apply_table_filter, get_tags
 from lineage.models import Edge as EdgeModel
+from lineage.models import Event as EventModel
 from lineage.models import Filter as FilterModel
 from lineage.models import Node as NodeModel
-from lineage.models import Event as EventModel
 from lineage.types import Edge, Filter, Node, NodeFilter, NodeOrder
 from users.types import User, UserFilter
 from workspaces.models import Membership as MembershipModel
@@ -103,6 +103,7 @@ class WorkspaceTableFilter:
 @gql.django.type(EventModel)
 class Event:
     id: auto
+    date: auto
     status: auto
     connection: "Connection"
     metadata: JSON

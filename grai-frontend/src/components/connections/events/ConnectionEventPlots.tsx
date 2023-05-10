@@ -1,12 +1,12 @@
 import React from "react"
-import { Box } from "@mui/material"
+import { Box, lighten } from "@mui/material"
 import { ResponsiveCalendar } from "@nivo/calendar"
 import { DateTime } from "luxon"
 import theme from "theme"
 
 interface Event {
   id: string
-  metadata: any
+  date: string
   status: string
 }
 
@@ -19,10 +19,7 @@ const ConnectionEventPlots: React.FC<ConnectionEventPlotsProps> = ({
 }) => {
   const transformedEvents = events.map(event => ({
     status: event.status,
-    created_at: DateTime.fromFormat(
-      event.metadata.grai_source_dbt_cloud.created_at,
-      "yyyy-MM-dd HH:mm:ss.uZZ"
-    ).toFormat("yyyy-MM-dd"),
+    created_at: DateTime.fromISO(event.date).toFormat("yyyy-MM-dd"),
   }))
 
   type Dates = {
@@ -64,11 +61,11 @@ const ConnectionEventPlots: React.FC<ConnectionEventPlotsProps> = ({
         emptyColor="#eeeeee"
         colors={[
           "blue",
-          theme.palette.error.main,
+          lighten(theme.palette.error.main, 0.25),
           "orange",
-          theme.palette.success.main,
+          lighten(theme.palette.success.main, 0.25),
         ]}
-        margin={{ top: 40, right: 40, bottom: 40, left: 40 }}
+        margin={{ top: 20, left: 10 }}
         yearSpacing={40}
         monthBorderColor="#ffffff"
         dayBorderWidth={2}

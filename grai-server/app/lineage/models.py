@@ -169,6 +169,7 @@ class Event(TenantModel):
     tenant_id = "workspace_id"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    date = models.DateTimeField()
     status = models.CharField(max_length=255, choices=EVENT_STATUS, default="success")
     metadata = models.JSONField(default=dict)
 

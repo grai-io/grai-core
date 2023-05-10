@@ -54,9 +54,9 @@ export interface GetConnectionEvents_workspace_connection_last_successful_run {
 export interface GetConnectionEvents_workspace_connection_events_data {
   __typename: "Event";
   id: any;
+  date: any;
   status: string;
   created_at: any;
-  metadata: any;
 }
 
 export interface GetConnectionEvents_workspace_connection_events_meta {

@@ -8,11 +8,12 @@ import {
   TableRow,
 } from "@mui/material"
 import TablePagination from "components/table/TablePagination"
+import { DateTime } from "luxon"
 
 interface Event {
   id: string
   status: string
-  created_at: string
+  date: string
 }
 
 type ConnectionEventsTableProps = {
@@ -29,7 +30,7 @@ const ConnectionEventsTable: React.FC<ConnectionEventsTableProps> = ({
       <TableRow>
         <TableCell>id</TableCell>
         <TableCell>Status</TableCell>
-        <TableCell>Created At</TableCell>
+        <TableCell>Date</TableCell>
       </TableRow>
     </TableHead>
     <TableBody>
@@ -37,7 +38,11 @@ const ConnectionEventsTable: React.FC<ConnectionEventsTableProps> = ({
         <TableRow key={event.id}>
           <TableCell>{event.id}</TableCell>
           <TableCell>{event.status}</TableCell>
-          <TableCell>{event.created_at}</TableCell>
+          <TableCell>
+            {DateTime.fromISO(event.date).toLocaleString(
+              DateTime.DATETIME_FULL
+            )}
+          </TableCell>
         </TableRow>
       ))}
     </TableBody>

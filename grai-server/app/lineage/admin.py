@@ -4,7 +4,7 @@ from django.db.models import JSONField
 
 from common.admin.fields.json_widget import PrettyJSONWidget
 
-from .models import Edge, Filter, Node, Event
+from .models import Edge, Event, Filter, Node
 
 
 class EdgeInline(admin.TabularInline):

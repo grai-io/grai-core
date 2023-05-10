@@ -6,7 +6,7 @@ from grai_schemas.v1 import EdgeV1, NodeV1
 
 from connections.models import Run
 from connections.task_helpers import modelToSchema, update
-from lineage.models import Edge, Node, Event
+from lineage.models import Edge, Event, Node
 
 from .tools import TestResultCacheBase
 
@@ -73,6 +73,7 @@ class BaseAdapter(ABC):
             if event["id"] not in existing_event_ids:
                 connection.events.create(
                     workspace=run.workspace,
+                    date=event["created_at"],
                     status=Event.SUCCESS if event["status"] == 10 else Event.ERROR,
                     metadata={
                         "grai_source_dbt_cloud": event,

@@ -64,9 +64,9 @@ export const GET_CONNECTION_EVENTS = gql`
         events {
           data {
             id
+            date
             status
             created_at
-            metadata
           }
           meta {
             total
