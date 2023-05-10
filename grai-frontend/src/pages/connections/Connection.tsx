@@ -8,6 +8,7 @@ import useWorkspace from "helpers/useWorkspace"
 import ConnectionConfiguration from "components/connections/configuration/ConnectionConfiguration"
 import ConnectionMenu from "components/connections/ConnectionMenu"
 import ConnectionRun from "components/connections/ConnectionRun"
+import ConnectionEvents from "components/connections/events/ConnectionEvents"
 import ConnectionRunsTable from "components/connections/runs/ConnectionRunsTable"
 import EditScheduleForm from "components/connections/schedule/EditScheduleForm"
 import PageHeader from "components/layout/PageHeader"
@@ -74,6 +75,7 @@ export const GET_CONNECTION = gql`
           data {
             id
             status
+            action
             created_at
             started_at
             finished_at
@@ -134,6 +136,12 @@ const Connection: React.FC = () => {
       value: "schedule",
       label: "Schedule",
       component: <EditScheduleForm connection={connection} />,
+    },
+    {
+      value: "events",
+      label: "Events",
+      component: <ConnectionEvents connection={connection} />,
+      noWrapper: true,
     },
     {
       value: "activity",

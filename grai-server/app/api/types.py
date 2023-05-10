@@ -28,6 +28,7 @@ from lineage.filter import apply_table_filter, get_tags
 from lineage.models import Edge as EdgeModel
 from lineage.models import Filter as FilterModel
 from lineage.models import Node as NodeModel
+from lineage.models import Event as EventModel
 from lineage.types import Edge, Filter, Node, NodeFilter, NodeOrder
 from users.types import User, UserFilter
 from workspaces.models import Membership as MembershipModel
@@ -46,12 +47,19 @@ class RunAction(Enum):
     EVENTS = RunModel.EVENTS
 
 
+@strawberry.enum
+class EventStatus(Enum):
+    SUCCESS = EventModel.SUCCESS
+    ERROR = EventModel.ERROR
+    CANCELLED = EventModel.CANCELLED
+
+
 @gql.django.type(RunModel, order="RunOrder", pagination=True)
 class Run:
     id: auto
     connection: "Connection"
     status: auto
-    action: RunAction
+    action: auto
     metadata: JSON
     created_at: auto
     updated_at: auto
@@ -90,6 +98,15 @@ def apply_run_filters(queryset: QuerySet, filters: Optional[WorkspaceRunFilter] 
 @strawberry.input
 class WorkspaceTableFilter:
     filter: Optional[strawberry.ID] = strawberry.UNSET
+
+
+@gql.django.type(EventModel)
+class Event:
+    id: auto
+    status: auto
+    connection: "Connection"
+    metadata: JSON
+    created_at: auto
 
 
 @strawberry_django.ordering.order(RunModel)
@@ -161,6 +178,15 @@ class Connection:
     @gql.django.field
     def last_successful_run(self) -> Optional["Run"]:
         return RunModel.objects.filter(connection=self.id, status="success").order_by("-created_at").first()
+
+    # Events
+    @strawberry.field
+    def events(
+        self,
+    ) -> Pagination[Event]:
+        queryset = EventModel.objects.filter(connection=self)
+
+        return Pagination[Event](queryset=queryset)
 
 
 @gql.django.type(NodeModel, order=NodeOrder, filters=NodeFilter, pagination=True)

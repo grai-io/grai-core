@@ -62,6 +62,7 @@ export interface GetConnection_workspace_connection_runs_data {
   __typename: "Run";
   id: any;
   status: string;
+  action: string;
   created_at: any;
   started_at: any | null;
   finished_at: any | null;
