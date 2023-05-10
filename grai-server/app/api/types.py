@@ -43,6 +43,7 @@ class RunAction(Enum):
     TESTS = RunModel.TESTS
     UPDATE = RunModel.UPDATE
     VALIDATE = RunModel.VALIDATE
+    EVENTS = RunModel.EVENTS
 
 
 @gql.django.type(RunModel, order="RunOrder", pagination=True)

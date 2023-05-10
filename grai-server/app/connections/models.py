@@ -136,11 +136,13 @@ class Run(TenantModel):
     TESTS = "tests"
     UPDATE = "update"
     VALIDATE = "validate"
+    EVENTS = "events"
 
     RUN_ACTIONS = [
         (TESTS, "tests"),
         (UPDATE, "update"),
         (VALIDATE, "validate"),
+        (EVENTS, "events"),
     ]
 
     tenant_id = "workspace_id"

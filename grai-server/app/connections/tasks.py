@@ -81,6 +81,7 @@ def execute_run(run: Run):
 
         if run.action == Run.UPDATE:
             adapter.run_update(run)
+
         elif run.action == Run.TESTS:
             results, message = adapter.run_tests(run)
             run.metadata = {"results": results}
@@ -91,6 +92,10 @@ def execute_run(run: Run):
 
         elif run.action == Run.VALIDATE:
             adapter.run_validate(run)
+
+        elif run.action == Run.EVENTS:
+            adapter.run_events(run)
+
         else:
             raise NoActionError(f"Incorrect run action {run.action} found, accepted values: tests, update, validate")
 

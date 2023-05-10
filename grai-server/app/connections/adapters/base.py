@@ -6,7 +6,7 @@ from grai_schemas.v1 import EdgeV1, NodeV1
 
 from connections.models import Run
 from connections.task_helpers import modelToSchema, update
-from lineage.models import Edge, Node
+from lineage.models import Edge, Node, Event
 
 from .tools import TestResultCacheBase
 
@@ -16,6 +16,9 @@ class BaseAdapter(ABC):
 
     def get_nodes_and_edges(self):
         raise NotImplementedError(f"No get_nodes_and_edges implemented for {type(self)}")
+
+    def get_events(self):
+        raise NotImplementedError(f"No get_events implemented for {type(self)}")
 
     def run_validate(self, run: Run):
         self.run = run
@@ -56,3 +59,22 @@ class BaseAdapter(ABC):
             message = results.consolidated_summary().message(run)
 
         return test_list, message
+
+    def run_events(self, run: Run):
+        self.run = run
+
+        events = self.get_events()
+
+        connection = run.connection
+
+        existing_event_ids = connection.events.values_list("metadata__grai_source_dbt_cloud__id", flat=True)
+
+        for event in events:
+            if event["id"] not in existing_event_ids:
+                connection.events.create(
+                    workspace=run.workspace,
+                    status=Event.SUCCESS if event["status"] == 10 else Event.ERROR,
+                    metadata={
+                        "grai_source_dbt_cloud": event,
+                    },
+                )

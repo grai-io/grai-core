@@ -1656,14 +1656,13 @@ pydantic = ">=1.9.1,<2.0.0"
 
 [[package]]
 name = "grai-source-dbt-cloud"
-version = "0.0.2"
+version = "0.0.3a1"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_source_dbt_cloud-0.0.2-py3-none-any.whl", hash = "sha256:2fcf4ede5d9e6ab19679d3d1310dfcd8d515adcf375139a7a76a47b31267f1bc"},
-    {file = "grai_source_dbt_cloud-0.0.2.tar.gz", hash = "sha256:a15690518197297d3a4c19193d5f1af3336d591ed3ba098ea77e4a8bd8cc288a"},
+    {file = "grai_source_dbt_cloud-0.0.3a1-py3-none-any.whl", hash = "sha256:bd472cc60754562afd3ae4edce924f2db2d459a50730aff0422ce89a36bf3c51"},
 ]
 
 [package.dependencies]
@@ -1672,6 +1671,10 @@ grai-client = ">=0.2.0,<0.3.0"
 grai-schemas = ">=0.1.10,<0.2.0"
 grai-source-dbt = ">=0.2.9,<0.3.0"
 pydantic = ">=1.9.1,<2.0.0"
+
+[package.source]
+type = "file"
+url = "../../grai-integrations/source-dbt-cloud/dist/grai_source_dbt_cloud-0.0.3a1-py3-none-any.whl"
 
 [[package]]
 name = "grai-source-fivetran"
@@ -4099,4 +4102,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "1a0ae002977530e288658af57632dd2f46b724ce56c42c4c9916926712881055"
+content-hash = "6b2ccc34d71ca7f87c4088d64441f1d5329ed6482bc49b97213c758aaf0a32aa"

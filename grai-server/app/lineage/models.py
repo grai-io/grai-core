@@ -172,6 +172,14 @@ class Event(TenantModel):
     status = models.CharField(max_length=255, choices=EVENT_STATUS, default="success")
     metadata = models.JSONField(default=dict)
 
+    connection = models.ForeignKey(
+        "connections.Connection",
+        related_name="events",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+    )
+
     nodes = models.ManyToManyField(Node)
 
     workspace = models.ForeignKey(

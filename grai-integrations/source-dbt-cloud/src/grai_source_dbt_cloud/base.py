@@ -8,6 +8,12 @@ from grai_source_dbt_cloud.loader import DbtCloudConnector
 from grai_source_dbt.adapters import adapt_to_client
 
 
+def get_events(connector: DbtCloudConnector, version: str = "v1"):
+    events = connector.get_events()
+
+    return events
+
+
 def get_nodes_and_edges(connector: DbtCloudConnector, version: str = "v1") -> Tuple[List[Node], List[Edge]]:
     nodes, edges = connector.get_nodes_and_edges()
 
