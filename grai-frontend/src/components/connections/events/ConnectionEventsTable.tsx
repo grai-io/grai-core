@@ -7,8 +7,8 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material"
-import TablePagination from "components/table/TablePagination"
 import { DateTime } from "luxon"
+import TablePagination from "components/table/TablePagination"
 
 interface Event {
   id: string
