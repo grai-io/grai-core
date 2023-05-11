@@ -75,7 +75,6 @@ export const GET_CONNECTION = gql`
           data {
             id
             status
-            action
             created_at
             started_at
             finished_at

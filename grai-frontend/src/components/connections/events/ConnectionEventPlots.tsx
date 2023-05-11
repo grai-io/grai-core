@@ -1,21 +1,10 @@
 import React from "react"
 import { Box, Divider, lighten } from "@mui/material"
 import { ResponsiveCalendar } from "@nivo/calendar"
-import {
-  Chart as ChartJS,
-  LinearScale,
-  TimeScale,
-  PointElement,
-  LineElement,
-  Tooltip,
-  Legend,
-  ChartData,
-  ChartOptions,
-} from "chart.js"
 import { DateTime } from "luxon"
 import theme from "theme"
-import "chartjs-adapter-luxon"
-import { Scatter } from "react-chartjs-2"
+import DailyChart from "./charts/DailyChart"
+import HourlyChart from "./charts/HourlyChart"
 
 interface Event {
   id: string
@@ -25,10 +14,12 @@ interface Event {
 
 type ConnectionEventPlotsProps = {
   events: Event[]
+  responsive?: boolean
 }
 
 const ConnectionEventPlots: React.FC<ConnectionEventPlotsProps> = ({
   events,
+  responsive,
 }) => {
   const transformedEvents = events.map(event => ({
     status: event.status,
@@ -65,88 +56,6 @@ const ConnectionEventPlots: React.FC<ConnectionEventPlotsProps> = ({
     value: values.error ? (values.success ? 2 : 1) : 3,
   }))
 
-  ChartJS.register(
-    LinearScale,
-    TimeScale,
-    PointElement,
-    LineElement,
-    Tooltip,
-    Legend
-  )
-
-  const options: ChartOptions<"scatter"> = {
-    scales: {
-      x: {
-        type: "time" as const,
-        time: {
-          unit: "hour" as const,
-          tooltipFormat: "H:MM",
-          displayFormats: {
-            hour: "H:mm",
-          },
-        },
-        grid: {
-          display: false,
-        },
-        border: {
-          display: false,
-        },
-        ticks: {
-          stepSize: 2,
-          padding: 30,
-        },
-        position: "top",
-      },
-      y: {
-        type: "time" as const,
-        time: {
-          unit: "day" as const,
-          tooltipFormat: "DDD",
-        },
-        grid: {
-          display: false,
-        },
-        border: {
-          display: false,
-        },
-        ticks: {
-          padding: 30,
-        },
-      },
-    },
-    plugins: {
-      legend: {
-        display: false,
-      },
-    },
-  }
-
-  const datasets: ChartData<
-    "scatter",
-    {
-      x: string
-      y: Date
-    }[],
-    unknown
-  > = {
-    datasets: [
-      {
-        label: "A dataset",
-        data: events.map(event => ({
-          x: DateTime.fromISO(event.date).toFormat("HH:mm:ss"),
-          y: DateTime.fromISO(event.date).startOf("day").toJSDate(),
-        })),
-        pointBackgroundColor: events.map(event =>
-          event.status === "success"
-            ? theme.palette.success.main
-            : theme.palette.error.main
-        ),
-        borderWidth: 0,
-        pointRadius: 5,
-      },
-    ],
-  }
-
   return (
     <>
       <Box sx={{ height: 400 }}>
@@ -180,9 +89,11 @@ const ConnectionEventPlots: React.FC<ConnectionEventPlotsProps> = ({
           ]}
         />
       </Box>
+      <Divider sx={{ my: 5 }} />
+      <DailyChart events={data} responsive={responsive} />
       <Divider sx={{ mt: 5 }} />
       <Box sx={{ mt: 3 }}>
-        <Scatter options={options} data={datasets} />
+        <HourlyChart events={events} responsive={responsive} />
       </Box>
     </>
   )

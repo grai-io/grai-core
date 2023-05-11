@@ -83,9 +83,13 @@ interface Connection {
 
 type ConnectionEventsProps = {
   connection: Connection
+  responsive?: boolean
 }
 
-const ConnectionEvents: React.FC<ConnectionEventsProps> = ({ connection }) => {
+const ConnectionEvents: React.FC<ConnectionEventsProps> = ({
+  connection,
+  responsive,
+}) => {
   const { organisationName, workspaceName } = useWorkspace()
 
   const { loading, error, data } = useQuery<
@@ -111,7 +115,7 @@ const ConnectionEvents: React.FC<ConnectionEventsProps> = ({ connection }) => {
   return (
     <>
       <PageContent>
-        <ConnectionEventPlots events={events} />
+        <ConnectionEventPlots events={events} responsive={responsive} />
       </PageContent>
       <PageContent>
         <ConnectionEventsTable
