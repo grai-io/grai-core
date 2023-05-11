@@ -9,7 +9,7 @@ WORKDIR /app
 
 # Cache and Install dependencies
 COPY package.json package-lock.json ./
-RUN npm install
+RUN npm install --production
 RUN npm cache clean --force
 
 # Copy app files
