@@ -1,8 +1,16 @@
-from typing import Optional
+from typing import List, Optional
 
 from dbtc import dbtCloudClient
 
 from grai_source_dbt.processor import ManifestProcessor
+
+
+class Event:
+    def __init__(self, reference: str, date: str, status: str, metadata: dict):
+        self.reference = reference
+        self.date = date
+        self.status = status
+        self.metadata = metadata
 
 
 class DbtCloudConnector:
@@ -25,14 +33,21 @@ class DbtCloudConnector:
 
         return manifest.adapted_nodes, manifest.adapted_edges
 
-    def get_events(self):
+    def get_events(self) -> List[Event]:
         self.load_client()
 
         account = self.get_default_acount()
 
         runs = self.get_runs(account_id=account["id"])
 
-        return runs
+        events = []
+
+        for run in runs:
+            status = "success" if run["status"] == 10 else "error"
+
+            events.append(Event(reference=run["id"], date=run["created_at"], status=status, metadata=run))
+
+        return events
 
     def load_client(self):
         self.client = dbtCloudClient(api_key=self.api_key)

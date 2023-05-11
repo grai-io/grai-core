@@ -67,15 +67,14 @@ class BaseAdapter(ABC):
 
         connection = run.connection
 
-        existing_event_ids = connection.events.values_list("metadata__grai_source_dbt_cloud__id", flat=True)
+        existing_event_references = connection.events.values_list("reference", flat=True)
 
         for event in events:
-            if event["id"] not in existing_event_ids:
+            if str(event.reference) not in existing_event_references:
                 connection.events.create(
                     workspace=run.workspace,
-                    date=event["created_at"],
-                    status=Event.SUCCESS if event["status"] == 10 else Event.ERROR,
-                    metadata={
-                        "grai_source_dbt_cloud": event,
-                    },
+                    reference=event.reference,
+                    date=event.date,
+                    status=event.status,
+                    metadata=event.metadata,
                 )
