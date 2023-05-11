@@ -1,0 +1,34 @@
+---
+title: dbt Cloud
+description: Grai integration for dbt Cloud to automatically extract metadata.
+---
+
+import { Callout } from "nextra-theme-docs";
+import { DbtLogoIcon } from "../../components/Integrations";
+import Image from "next/image";
+import InlineLogo from "../../components/InlineLogo";
+
+<InlineLogo logo={<DbtLogoIcon />} title="dbt Cloud" />
+
+The dbt Cloud integration synchronizes your dbt metadata into the lineage graph.
+
+## Web App
+
+<Image
+  src="/images/docs/core/integrations/dbt-cloud.png"
+  height={600}
+  width={1200}
+  alt="dbt Cloud Integration"
+/>
+
+### Fields
+
+| Field     | Value                                                              | Example  |
+| --------- | ------------------------------------------------------------------ | -------- |
+| Name      | Name for connection                                                | Fivetran |
+| Namespace | Namespace for the connection, see [namespace](/concepts/namespace) | default  |
+| api_key   | dbt Cloud api key, see [api key](#apikey)                          |          |
+
+### ApiKey
+
+Follow [https://docs.getdbt.com/docs/dbt-cloud-apis/user-tokens](https://docs.getdbt.com/docs/dbt-cloud-apis/user-tokens) to generate an api key.

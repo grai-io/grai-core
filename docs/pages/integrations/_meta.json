@@ -1,5 +1,6 @@
 {
   "dbt": "dbt",
+  "dbt-cloud": "dbt Cloud",
   "fivetran": "Fivetran",
   "postgres": "PostgreSQL",
   "mysql": "MySQL",
