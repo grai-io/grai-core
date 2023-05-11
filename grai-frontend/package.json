@@ -93,7 +93,7 @@
   },
   "jest": {
     "transformIgnorePatterns": [
-      "/node_modules/(?!chartjs-adapter-luxon|@nivo/calendar|d3-color)"
+      "/node_modules/(?!chartjs-adapter-luxon|@nivo/calendar|d3-color|reactflow|react-json-view-lite)"
     ]
   }
 }
