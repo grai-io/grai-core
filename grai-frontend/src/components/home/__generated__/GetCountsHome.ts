@@ -9,7 +9,7 @@
 
 export interface GetCountsHome_workspace_runs_meta {
   __typename: "PaginationResult";
-  total: number;
+  filtered: number;
 }
 
 export interface GetCountsHome_workspace_runs {

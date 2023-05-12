@@ -19,7 +19,7 @@ test("renders", async () => {
             id: "1",
             runs: {
               meta: {
-                total: 38,
+                filtered: 38,
               },
             },
             tables: {
