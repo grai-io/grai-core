@@ -1,4 +1,5 @@
 import uuid
+from datetime import date
 from unittest.mock import MagicMock
 
 import pytest
@@ -8,7 +9,7 @@ from notifications.models import Alert
 from api.schema import schema
 from connections.models import Connection, Connector, Run
 from installations.models import Branch, Commit, PullRequest, Repository
-from lineage.models import Edge, Filter, Node
+from lineage.models import Edge, Event, Filter, Node
 from workspaces.models import Workspace
 
 from .common import (
@@ -1876,6 +1877,54 @@ async def test_commit_last_run(test_context, test_commit):
     assert result.data["workspace"]["commit"]["id"] == str(test_commit.id)
     assert result.data["workspace"]["commit"]["last_run"]["id"] == str(last_run.id)
     assert result.data["workspace"]["commit"]["last_successful_run"]["id"] == str(successful_run.id)
+
+
+@pytest.mark.django_db
+async def test_connection_events(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    connector = await Connector.objects.acreate(name=str(uuid.uuid4()))
+    connection = await Connection.objects.acreate(
+        workspace=workspace,
+        connector=connector,
+        namespace="default",
+        name=uuid.uuid4(),
+        metadata={},
+        secrets={},
+    )
+
+    event = await Event.objects.acreate(
+        workspace=workspace, reference="test-123", date=date.today(), connection=connection
+    )
+
+    query = """
+        query Workspace($workspaceId: ID!, $connectionId: ID!) {
+          workspace(id: $workspaceId) {
+            id
+            connection(id: $connectionId) {
+                id
+                events {
+                    data {
+                        id
+                    }
+                }
+            }
+          }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "connectionId": str(connection.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["connection"]["events"]["data"][0]["id"] == str(event.id)
 
 
 @pytest.mark.django_db

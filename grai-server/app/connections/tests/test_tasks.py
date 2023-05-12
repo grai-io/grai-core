@@ -1,9 +1,11 @@
 import os
 import uuid
+from datetime import date
 
 import pytest
 from decouple import config
 from django.core.files.uploadedfile import UploadedFile
+from grai_source_dbt_cloud.loader import Event
 
 from connections.models import Connection, Connector, Run, RunFile
 from connections.tasks import process_run, run_connection_schedule
@@ -634,3 +636,21 @@ class TestConnectionSchedule:
         with pytest.raises(Exception) as e_info:
             run_connection_schedule(str(connection.id))
         assert str(e_info.value) == "No connector found for: Connector"
+
+
+@pytest.mark.django_db
+class TestEventsTests:
+    def test_dbt_cloud(self, test_workspace, test_dbt_cloud_connector, mocker):
+        mock = mocker.patch("grai_source_dbt_cloud.base.get_events")
+        mock.return_value = [Event(reference="1234", date=date.today(), metadata={}, status="success")]
+
+        connection = Connection.objects.create(
+            name="C2",
+            connector=test_dbt_cloud_connector,
+            workspace=test_workspace,
+            metadata={},
+            secrets={"api_key": "abc1234"},
+        )
+        run = Run.objects.create(connection=connection, workspace=test_workspace, action=Run.EVENTS)
+
+        process_run(str(run.id))

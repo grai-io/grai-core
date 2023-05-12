@@ -15,10 +15,10 @@ class BaseAdapter(ABC):
     run: Run
 
     def get_nodes_and_edges(self):
-        raise NotImplementedError(f"No get_nodes_and_edges implemented for {type(self)}")
+        raise NotImplementedError(f"No get_nodes_and_edges implemented for {type(self)}")  # pragma: no cover
 
     def get_events(self):
-        raise NotImplementedError(f"No get_events implemented for {type(self)}")
+        raise NotImplementedError(f"No get_events implemented for {type(self)}")  # pragma: no cover
 
     def run_validate(self, run: Run):
         self.run = run
