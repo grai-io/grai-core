@@ -111,7 +111,7 @@ const AppDrawer: React.FC = () => {
               <ListItemIcon>
                 <Box
                   sx={{
-                    backgroundColor: location.pathname.startsWith(
+                    backgroundColor: decodeURI(location.pathname).startsWith(
                       `${routePrefix}/${page.path}`
                     )
                       ? "#8338EC80"
