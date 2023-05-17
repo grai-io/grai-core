@@ -606,7 +606,7 @@ def test_process_run_incorrect_action(test_workspace, test_yaml_file_connector):
         with pytest.raises(Exception) as e_info:
             process_run(str(run.id))
 
-        assert str(e_info.value) == "Incorrect run action Incorrect found, accepted values: tests, update, validate"
+        assert str(e_info.value) == "Incorrect run action Incorrect found, accepted values: tests, update, validate, events, events_all"
 
 
 @pytest.mark.django_db
