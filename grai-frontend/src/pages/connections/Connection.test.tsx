@@ -42,6 +42,7 @@ test("refresh", async () => {
                 name: "c1",
                 metadata: {},
                 icon: null,
+                events: true,
               },
               metadata: {},
               schedules: null,
@@ -110,6 +111,7 @@ test("refresh", async () => {
         query: RUN_CONNECTION,
         variables: {
           connectionId: "1",
+          action: "UPDATE",
         },
       },
       result: {
@@ -191,6 +193,7 @@ test("refresh no last_sucessful_run", async () => {
                 name: "c1",
                 metadata: {},
                 icon: null,
+                events: false,
               },
               metadata: {},
               schedules: null,
@@ -247,6 +250,7 @@ test("refresh no last_sucessful_run", async () => {
         query: RUN_CONNECTION,
         variables: {
           connectionId: "1",
+          action: "UPDATE",
         },
       },
       result: {
@@ -328,6 +332,7 @@ test("delete", async () => {
                 name: "c1",
                 metadata: null,
                 icon: null,
+                events: true,
               },
               metadata: null,
               schedules: null,
