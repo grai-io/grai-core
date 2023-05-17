@@ -62,10 +62,16 @@ class Mutation:
         self,
         info: Info,
         name: str,
-        organisationId: Optional[strawberry.ID] = None,
-        organisationName: Optional[str] = None,
+        organisationId: Optional[strawberry.ID] = strawberry.UNSET,
+        organisationName: Optional[str] = strawberry.UNSET,
     ) -> Workspace:
         user = get_user(info)
+
+        if "/" in name:
+            raise Exception("Name contains forward slash")
+
+        if organisationName is not None and "/" in organisationName:
+            raise Exception("Organisation name contains forward slash")
 
         organisation = (
             await OrganisationModel.objects.aget(id=organisationId)
