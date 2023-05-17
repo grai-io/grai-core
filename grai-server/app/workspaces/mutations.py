@@ -13,6 +13,7 @@ from strawberry.types import Info
 
 from api.common import IsAuthenticated, get_user, get_workspace
 from api.types import KeyResult, Membership, Workspace, WorkspaceAPIKey
+from api.validation import validate_no_slash
 from workspaces.models import Membership as MembershipModel
 from workspaces.models import Organisation as OrganisationModel
 from workspaces.models import Workspace as WorkspaceModel
@@ -67,11 +68,8 @@ class Mutation:
     ) -> Workspace:
         user = get_user(info)
 
-        if "/" in name:
-            raise Exception("Name contains forward slash")
-
-        if organisationName is not None and "/" in organisationName:
-            raise Exception("Organisation name contains forward slash")
+        validate_no_slash(name, "Workspace name")
+        validate_no_slash(organisationName, "Organisation name")
 
         organisation = (
             await OrganisationModel.objects.aget(id=organisationId)
