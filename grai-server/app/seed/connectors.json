@@ -294,6 +294,7 @@
             "is_active": true,
             "icon": "/icons/data-sources/dbt.png",
             "category": "data tools",
+            "events": true,
             "coming_soon": false,
             "created_at": "2023-05-03T09:51:00.000Z",
             "updated_at": "2023-05-03T09:51:00.000Z"

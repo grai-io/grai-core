@@ -96,8 +96,13 @@ def execute_run(run: Run):
         elif run.action == Run.EVENTS:
             adapter.run_events(run)
 
+        elif run.action == Run.EVENTS_ALL:
+            adapter.run_events(run, all=True)
+
         else:
-            raise NoActionError(f"Incorrect run action {run.action} found, accepted values: tests, update, validate")
+            raise NoActionError(
+                f"Incorrect run action {run.action} found, accepted values: tests, update, validate, events, events_all"
+            )
 
         run.status = "success"
         run.finished_at = timezone.now()

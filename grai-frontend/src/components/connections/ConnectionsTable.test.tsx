@@ -12,6 +12,7 @@ const connections = [
     connector: {
       id: "1",
       name: "connector 1",
+      events: true,
     },
     runs: { data: [] },
     last_run: null,
@@ -25,6 +26,7 @@ const connections = [
     connector: {
       id: "1",
       name: "connector 1",
+      events: false,
     },
     runs: { data: [] },
     last_run: null,

@@ -29,6 +29,7 @@ export const GET_CONNECTIONS = gql`
           connector {
             id
             name
+            events
           }
           runs(order: { created_at: DESC }) {
             data {

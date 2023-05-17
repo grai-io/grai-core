@@ -7,6 +7,13 @@
 // START Enums and Input Objects
 //==============================================================
 
+export enum RunAction {
+  EVENTS = "EVENTS",
+  TESTS = "TESTS",
+  UPDATE = "UPDATE",
+  VALIDATE = "VALIDATE",
+}
+
 export interface WorkspaceTableFilter {
   filter?: string | null;
 }

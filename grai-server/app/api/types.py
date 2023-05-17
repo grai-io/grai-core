@@ -45,6 +45,7 @@ class RunAction(Enum):
     UPDATE = RunModel.UPDATE
     VALIDATE = RunModel.VALIDATE
     EVENTS = RunModel.EVENTS
+    EVENTS_ALL = RunModel.EVENTS_ALL
 
 
 @strawberry.enum

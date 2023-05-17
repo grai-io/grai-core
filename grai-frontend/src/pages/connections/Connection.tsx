@@ -37,6 +37,7 @@ export const GET_CONNECTION = gql`
         connector {
           id
           name
+          events
           metadata
           icon
         }

@@ -60,7 +60,7 @@ class BaseAdapter(ABC):
 
         return test_list, message
 
-    def run_events(self, run: Run):
+    def run_events(self, run: Run, all: bool = False):
         self.run = run
 
         events = self.get_events()
