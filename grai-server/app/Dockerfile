@@ -62,4 +62,4 @@ RUN sed -i 's/\r$//g' /start-celerybeat \
 COPY . .
 
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
-CMD gunicorn the_guide.wsgi -b 0.0.0.0:8000 -w 2
+CMD gunicorn the_guide.wsgi -b 0.0.0.0:8000 -w 2 --thread 2

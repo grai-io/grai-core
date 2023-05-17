@@ -34,6 +34,7 @@ def update(client: BaseClient, items: List[T], active_items: Optional[List[T]] =
     updated_items = [
         merge(item_map[k], current_item_map[k]) for k in updated_item_keys if item_map[k] != current_item_map[k]
     ]
+
     # client.patch(deactivated_items)
     client.patch(updated_items)
     client.post(new_items)

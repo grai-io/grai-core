@@ -21,7 +21,6 @@ async def post_edge_v1(
     client: ClientV1, grai_type: EdgeV1, options: ClientOptions = ClientOptions()
 ) -> Optional[EdgeV1]:
     url = client.get_url(grai_type)
-
     source, destination = await asyncio.gather(
         process_node_id(client, grai_type.spec.source), process_node_id(client, grai_type.spec.destination)
     )
