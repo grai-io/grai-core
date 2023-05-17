@@ -14,6 +14,7 @@ from typing import (
 )
 
 import httpx
+import tqdm
 from httpx import BasicAuth, Request, Response
 from multimethod import multimethod
 from pydantic import BaseModel
@@ -88,8 +89,8 @@ class BaseClient(abc.ABC):
             raise Exception(f"Error connecting to server at {self.url}. Received response {resp.json()}")
 
     def get_session(self) -> httpx.AsyncClient:
-        limits = httpx.Limits(max_keepalive_connections=None, max_connections=None)
-        client_args = {"timeout": 120, "http2": True, "limits": limits}
+        client_args = {"timeout": None, "http2": True}
+        # client_args['limits'] = httpx.Limits(max_keepalive_connections=None, max_connections=None)
         client_args |= self.httpx_async_client_args if self.httpx_async_client_args is not None else {}
 
         session = httpx.AsyncClient(**client_args)
@@ -221,7 +222,14 @@ async def post_sequence(
     objs: Sequence,
     options: ClientOptions = ClientOptions(),
 ) -> List[T]:
-    result = await tqdm_asyncio.gather(*[post(client, obj, options=options) for obj in objs])
+    # result = await tqdm_asyncio.gather(*[post(client, obj, options=options) for obj in objs])
+
+    tasks = [asyncio.create_task(post(client, obj, options=options)) for obj in objs]
+    for task in tqdm.tqdm(asyncio.as_completed(tasks)):
+        await task
+
+    result = [t.result() for t in tasks]
+
     return result
 
 
@@ -272,9 +280,7 @@ async def client_post_url(
         **options.headers,
     }
     payload = {**payload, **options.payload}
-    response = await client.session.post(
-        url, content=serialize_obj(payload), headers=headers
-    )  # , **options.request_args
+    response = await client.session.post(url, content=serialize_obj(payload), headers=headers, **options.request_args)
 
     response_status_check(response)
     return response
