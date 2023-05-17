@@ -13,6 +13,7 @@ from strawberry.types import Info
 
 from api.common import IsAuthenticated, get_user, get_workspace
 from api.types import KeyResult, Membership, Workspace, WorkspaceAPIKey
+from api.validation import validate_no_slash
 from workspaces.models import Membership as MembershipModel
 from workspaces.models import Organisation as OrganisationModel
 from workspaces.models import Workspace as WorkspaceModel
@@ -62,10 +63,13 @@ class Mutation:
         self,
         info: Info,
         name: str,
-        organisationId: Optional[strawberry.ID] = None,
-        organisationName: Optional[str] = None,
+        organisationId: Optional[strawberry.ID] = strawberry.UNSET,
+        organisationName: Optional[str] = strawberry.UNSET,
     ) -> Workspace:
         user = get_user(info)
+
+        validate_no_slash(name, "Workspace name")
+        validate_no_slash(organisationName, "Organisation name")
 
         organisation = (
             await OrganisationModel.objects.aget(id=organisationId)
@@ -84,6 +88,8 @@ class Mutation:
         id: strawberry.ID,
         name: str,
     ) -> Workspace:
+        validate_no_slash(name, "Workspace name")
+
         workspace = await get_workspace(info, id)
 
         workspace.name = name
