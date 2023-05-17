@@ -88,6 +88,8 @@ class Mutation:
         id: strawberry.ID,
         name: str,
     ) -> Workspace:
+        validate_no_slash(name, "Workspace name")
+
         workspace = await get_workspace(info, id)
 
         workspace.name = name
