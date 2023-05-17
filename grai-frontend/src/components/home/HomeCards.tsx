@@ -16,7 +16,7 @@ export const GET_COUNTS = gql`
       id
       runs(filters: { action: TESTS }) {
         meta {
-          total
+          filtered
         }
       }
       tables {
@@ -65,7 +65,7 @@ const HomeCards: React.FC = () => {
       </Grid>
       <Grid item md={3}>
         <HomeCard
-          count={data?.workspace.runs.meta.total}
+          count={data?.workspace.runs.meta.filtered}
           text="Reports"
           color="#8338EC"
         />

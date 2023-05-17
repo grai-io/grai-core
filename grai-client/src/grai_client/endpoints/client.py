@@ -1,12 +1,24 @@
 import abc
 import asyncio
 import sys
-from typing import Any, Dict, List, Literal, Optional, Sequence, TypeVar, Union
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    List,
+    Literal,
+    Optional,
+    Sequence,
+    TypeVar,
+    Union,
+)
 
 import httpx
+import tqdm
 from httpx import BasicAuth, Request, Response
 from multimethod import multimethod
 from pydantic import BaseModel
+from tqdm.asyncio import tqdm_asyncio
 
 from grai_client.authentication import APIKeyHeader
 from grai_client.endpoints.rest import delete, get, patch, post
@@ -51,7 +63,7 @@ class BaseClient(abc.ABC):
         port: str = "443",
         protocol: PROTOCOL = None,
         insecure: bool = False,
-        httpx_async_client: Optional[httpx.AsyncClient] = None,
+        httpx_async_client_args: Optional[Dict[str, Any]] = None,
     ):
         self.host = host
         self.port = port
@@ -60,7 +72,8 @@ class BaseClient(abc.ABC):
         self.default_payload: Dict = dict()
         self.default_headers: Dict = dict()
         self.default_request_args: Dict = dict()
-        self.session = httpx.AsyncClient(timeout=120) if httpx_async_client is None else httpx_async_client
+        self.session = None
+        self.httpx_async_client_args = httpx_async_client_args
 
         if protocol is None:
             protocol = "http" if insecure else "https"
@@ -68,12 +81,21 @@ class BaseClient(abc.ABC):
 
         self.url = f"{self.protocol}://{self.host}:{self.port}"
         self.api = f"{self.url}"
-        self.health_endpoint = f"{self.url}/health/"
+        self.health_endpoint = f"{self.url}/health"
         self._auth_headers: Optional[Dict[str, str]] = None
-
+        self.auth: Optional[BasicAuth] = None
         resp = self.server_health_status()
         if resp.status_code != 200:
             raise Exception(f"Error connecting to server at {self.url}. Received response {resp.json()}")
+
+    def get_session(self) -> httpx.AsyncClient:
+        client_args = {"timeout": None, "http2": True}
+        # client_args['limits'] = httpx.Limits(max_keepalive_connections=None, max_connections=None)
+        client_args |= self.httpx_async_client_args if self.httpx_async_client_args is not None else {}
+
+        session = httpx.AsyncClient(**client_args)
+        session.auth = self.auth
+        return session
 
     def default_options(self):
         return ClientOptions(
@@ -113,9 +135,9 @@ class BaseClient(abc.ABC):
     ) -> None:
         if api_key is not None:
             self._auth_headers = APIKeyHeader(api_key).headers
-            self.session.auth = None
+            self.auth = None
         elif username and password:
-            self.session.auth = BasicAuth(username, password)
+            self.auth = BasicAuth(username, password)
             self._auth_headers = {}
         else:
             raise Exception("Authentication requires either an api key, or username/password combination.")
@@ -154,21 +176,25 @@ class BaseClient(abc.ABC):
 
         return default_options
 
+    async def session_manager(self, async_func: Callable, *args, options: OptionType = None, **kwargs):
+        async with self.get_session() as session:
+            self.session = session
+            options = self.prep_options(options)
+            result = await async_func(self, *args, options=options, **kwargs)
+        self.session = None
+        return result
+
     def get(self, *args, options: OptionType = None, **kwargs):
-        options = self.prep_options(options)
-        return asyncio.run(get(self, *args, options=options, **kwargs))
+        return asyncio.run(self.session_manager(get, *args, options=options, **kwargs))
 
     def post(self, *args, options: OptionType = None, **kwargs):
-        options = self.prep_options(options)
-        return asyncio.run(post(self, *args, options=options, **kwargs))
+        return asyncio.run(self.session_manager(post, *args, options=options, **kwargs))
 
     def patch(self, *args, options: OptionType = None, **kwargs):
-        options = self.prep_options(options)
-        return asyncio.run(patch(self, *args, options=options, **kwargs))
+        return asyncio.run(self.session_manager(patch, *args, options=options, **kwargs))
 
     def delete(self, *args, options: OptionType = None, **kwargs):
-        options = self.prep_options(options)
-        return asyncio.run(delete(self, *args, options=options, **kwargs))
+        return asyncio.run(self.session_manager(delete, *args, options=options, **kwargs))
 
 
 @get.register
@@ -177,7 +203,7 @@ async def get_sequence(
     objs: Sequence,
     options: ClientOptions = ClientOptions(),
 ) -> Sequence[T]:
-    result = await asyncio.gather(*[get(client, obj, options=options) for obj in objs])
+    result = await tqdm_asyncio.gather(*[get(client, obj, options=options) for obj in objs])
     return result
 
 
@@ -187,7 +213,7 @@ async def delete_sequence(
     objs: Sequence,
     options: ClientOptions = ClientOptions(),
 ) -> None:
-    await asyncio.gather(*[delete(client, obj, options=options) for obj in objs])
+    await tqdm_asyncio.gather(*[delete(client, obj, options=options) for obj in objs])
 
 
 @post.register
@@ -196,7 +222,14 @@ async def post_sequence(
     objs: Sequence,
     options: ClientOptions = ClientOptions(),
 ) -> List[T]:
-    result = await asyncio.gather(*[post(client, obj, options=options) for obj in objs])
+    # result = await tqdm_asyncio.gather(*[post(client, obj, options=options) for obj in objs])
+
+    tasks = [asyncio.create_task(post(client, obj, options=options)) for obj in objs]
+    for task in tqdm.tqdm(asyncio.as_completed(tasks)):
+        await task
+
+    result = [t.result() for t in tasks]
+
     return result
 
 
@@ -206,7 +239,7 @@ async def patch_sequence(
     objs: Sequence,
     options: ClientOptions = ClientOptions(),
 ) -> List[T]:
-    result = await asyncio.gather(*[patch(client, obj, options=options) for obj in objs])
+    result = await tqdm_asyncio.gather(*[patch(client, obj, options=options) for obj in objs])
     return result
 
 
@@ -247,9 +280,7 @@ async def client_post_url(
         **options.headers,
     }
     payload = {**payload, **options.payload}
-    response = await client.session.post(
-        url, content=serialize_obj(payload), headers=headers
-    )  # , **options.request_args
+    response = await client.session.post(url, content=serialize_obj(payload), headers=headers, **options.request_args)
 
     response_status_check(response)
     return response
