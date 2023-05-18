@@ -1,7 +1,7 @@
 import os
 from functools import cached_property
 from itertools import chain
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 import psycopg2
 import psycopg2.extras
@@ -144,7 +144,7 @@ class PostgresConnector:
         """
         return [Column(**result, namespace=self.namespace) for result in self.query_runner(query)]
 
-    def get_table_columns(self, table: Table):
+    def get_table_columns(self, table: Table) -> List[Column]:
         table_id = (table.table_schema, table.name)
         if table_id in self.column_map:
             return self.column_map[table_id]
@@ -152,8 +152,8 @@ class PostgresConnector:
             raise Exception(f"No columns found for table with schema={table.table_schema} and name={table.name}")
 
     @cached_property
-    def column_map(self):
-        result_map = {}
+    def column_map(self) -> Dict[Tuple[str, str], List[Column]]:
+        result_map: Dict[Tuple[str, str], List[Column]] = {}
         for col in self.columns:
             table_id = (col.column_schema, col.table)
             result_map.setdefault(table_id, [])
@@ -196,15 +196,16 @@ class PostgresConnector:
         }
         results = self.query_runner(query)
         filtered_results = (result for result in results if result["constraint_type"] == "f")
-        return [EdgeQuery(**fk, **addtl_args).to_edge() for fk in filtered_results]
+        result = (EdgeQuery(**fk, **addtl_args).to_edge() for fk in filtered_results)
+        return [r for r in result if r is not None]
 
     def get_nodes(self) -> List[PostgresNode]:
         return list(chain(self.tables, self.columns))
 
-    def get_edges(self):
+    def get_edges(self) -> List[Edge]:
         return [edge for edge in chain(*[t.get_edges() for t in self.tables], self.foreign_keys) if edge is not None]
 
-    def get_nodes_and_edges(self):
+    def get_nodes_and_edges(self) -> Tuple[List[PostgresNode], List[Edge]]:
         nodes = self.get_nodes()
         edges = self.get_edges()
 

@@ -120,7 +120,7 @@ class MySQLConnector:
 
         return [Column(**result, namespace=self.namespace) for result in res]
 
-    def get_table_columns(self, table: Table):
+    def get_table_columns(self, table: Table) -> List[Column]:
         table_id = (table.table_schema, table.name)
         if table_id in self.column_map:
             return self.column_map[table_id]
@@ -128,8 +128,8 @@ class MySQLConnector:
             raise Exception(f"No columns found for table with schema={table.table_schema} and name={table.name}")
 
     @cached_property
-    def column_map(self):
-        result_map = {}
+    def column_map(self) -> Dict[Tuple[str, str], List[Column]]:
+        result_map: Dict[Tuple[str, str], List[Column]] = {}
         for col in self.columns:
             table_id = (col.column_schema, col.table)
             result_map.setdefault(table_id, [])
@@ -183,17 +183,17 @@ class MySQLConnector:
             item["self_columns"] = list(item["self_columns"].split(",")) if item["self_columns"] else []
             item["foreign_columns"] = list(item["foreign_columns"].split(",")) if item["foreign_columns"] else []
 
-        res = ({k.lower(): v for k, v in result.items()} for result in res)
-
-        filtered_results = (result for result in res if result["constraint_type"] == "f")
-
-        return [EdgeQuery(**fk, **addtl_args).to_edge() for fk in filtered_results]
+        res_gen = ({k.lower(): v for k, v in result.items()} for result in res)
+        filtered_results = (result for result in res_gen if result["constraint_type"] == "f")
+        edge_query_gen = (EdgeQuery(**fk, **addtl_args).to_edge() for fk in filtered_results)
+        edges = [edge for edge in edge_query_gen if edge is not None]
+        return edges
 
     def get_nodes(self) -> List[MysqlNode]:
         return list(chain(self.tables, self.columns))
 
     def get_edges(self) -> List[Edge]:
-        return list(chain(*[t.get_edges() for t in self.tables], self.foreign_keys))
+        return [edge for edge in chain(*[t.get_edges() for t in self.tables], self.foreign_keys) if edge is not None]
 
     def get_nodes_and_edges(self) -> Tuple[List[MysqlNode], List[Edge]]:
         nodes = self.get_nodes()

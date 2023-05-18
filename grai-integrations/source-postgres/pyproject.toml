@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai_source_postgres"
-version = "0.1.19"
+version = "0.1.20"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>"]
 license = "Elastic-2.0"
