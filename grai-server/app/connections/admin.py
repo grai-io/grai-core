@@ -71,6 +71,7 @@ class RunFileInline(admin.TabularInline):
     def has_delete_permission(self, request, obj=None):  # pragma: no cover
         return False
 
+
 class RunAdmin(admin.ModelAdmin):
     list_display = (
         "id",
