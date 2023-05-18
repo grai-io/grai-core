@@ -88,10 +88,11 @@ class BaseAdapter(ABC):
                 )
 
                 if event.nodes:
-                  for name in event.nodes:
-                      try:
-                        node = Node.objects.get(workspace=run.workspace, namespace=run.connection.namespace, name=name)
+                    nodes = Node.objects.filter(
+                        workspace=run.workspace, namespace=run.connection.namespace, name__in=event.nodes
+                    )
 
-                        event_model.nodes.add(node)
-                      except:
-                          print(f"Issue finding node with name: {name}")
+                    if len(nodes) != len(event.nodes):
+                        print("Some nodes not found")
+
+                    event_model.nodes.add(*nodes)

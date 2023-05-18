@@ -1,8 +1,10 @@
 from datetime import datetime
+from functools import lru_cache
 from typing import List, Optional
 
 from dbtc import dbtCloudClient
 
+from grai_source_dbt.adapters import adapt_to_client
 from grai_source_dbt.processor import ManifestProcessor
 
 
@@ -47,7 +49,7 @@ class DbtCloudConnector:
         for run in runs:
             if last_event_date and datetime.fromisoformat(run["created_at"]) < last_event_date:
                 break
-            
+
             nodes = self.get_run_nodes(account_id=account["id"], run_id=run["id"])
 
             status = "success" if run["status"] == 10 else "error"
@@ -57,17 +59,43 @@ class DbtCloudConnector:
         return events
 
     def get_run_nodes(self, account_id: str, run_id: str) -> List[str]:
+        def get_adapted_node_map(manifest):
+            @lru_cache
+            def inner(unique_id: str) -> str:
+                return adapt_to_client(manifest.loader.node_map[unique_id]).spec.name
+
+            return inner
+
+        run_results = None
+
         try:
-          run_results = self.client.cloud.get_run_artifact(account_id=account_id, run_id=run_id, path="run_results.json")
-          manifest_obj = self.client.cloud.get_run_artifact(account_id=account_id, run_id=run_id, path="manifest.json")
+            run_results = self.client.cloud.get_run_artifact(
+                account_id=account_id, run_id=run_id, path="run_results.json"
+            )
 
-          unique_ids = [result["unique_id"] for result in run_results["results"] if not result["unique_id"].startswith("test.")]
-
-          manifest = ManifestProcessor.load(manifest_obj, self.namespace)
-
-          return [manifest.loader.node_map[unique_id].full_name for unique_id in unique_ids]
         except:
-          print(f"Something has gone wrong, no run_results.json for run {run_id}")
+            print(f"Something has gone wrong, no run_results.json for run {run_id}")
+
+            return []
+
+        try:
+            manifest_obj = self.client.cloud.get_run_artifact(
+                account_id=account_id, run_id=run_id, path="manifest.json"
+            )
+        except:
+            print(f"Something has gone wrong, no manifest.json for run {run_id}")
+
+            return []
+
+        unique_ids = [
+            result["unique_id"] for result in run_results["results"] if not result["unique_id"].startswith("test.")
+        ]
+
+        manifest = ManifestProcessor.load(manifest_obj, self.namespace)
+
+        name_mapper = get_adapted_node_map(manifest=manifest)
+
+        return [name_mapper(unique_id) for unique_id in unique_ids]
 
     def load_client(self):
         self.client = dbtCloudClient(api_key=self.api_key)
@@ -84,7 +112,9 @@ class DbtCloudConnector:
         limit = 100
 
         while True:
-            result = self.client.cloud.list_runs(account_id=account_id, order_by="-created_at", limit=limit, offset=offset)
+            result = self.client.cloud.list_runs(
+                account_id=account_id, order_by="-created_at", limit=limit, offset=offset
+            )
 
             runs.extend(result["data"])
 
