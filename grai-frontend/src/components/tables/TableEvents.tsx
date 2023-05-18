@@ -30,6 +30,7 @@ export const GET_TABLE_EVENTS = gql`
               connector {
                 id
                 name
+                icon
               }
             }
           }
@@ -79,6 +80,7 @@ const events = tableData.events.data
         <ConnectionEventsTable
           events={events}
           total={tableData.events.meta.total}
+          connections
         />
       </PageContent>
     </>

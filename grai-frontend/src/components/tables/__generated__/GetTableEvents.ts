@@ -11,6 +11,7 @@ export interface GetTableEvents_workspace_table_events_data_connection_connector
   __typename: "Connector";
   id: any;
   name: string;
+  icon: string | null;
 }
 
 export interface GetTableEvents_workspace_table_events_data_connection {

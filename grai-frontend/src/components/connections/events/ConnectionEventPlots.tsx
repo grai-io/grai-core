@@ -3,7 +3,6 @@ import { Box, Divider, lighten } from "@mui/material"
 import { ResponsiveCalendar } from "@nivo/calendar"
 import { DateTime } from "luxon"
 import theme from "theme"
-import DailyChart from "./charts/DailyChart"
 import HourlyChart from "./charts/HourlyChart"
 
 interface Event {
@@ -89,8 +88,6 @@ const ConnectionEventPlots: React.FC<ConnectionEventPlotsProps> = ({
           ]}
         />
       </Box>
-      <Divider sx={{ my: 5 }} />
-      <DailyChart events={data} responsive={responsive} />
       <Divider sx={{ mt: 5 }} />
       <Box sx={{ mt: 3 }}>
         <HourlyChart events={events} responsive={responsive} />
