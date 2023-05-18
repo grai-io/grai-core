@@ -7,7 +7,10 @@ import ConnectionEventsTable from "components/connections/events/ConnectionEvent
 import Loading from "components/layout/Loading"
 import PageContent from "components/layout/PageContent"
 import GraphError from "components/utils/GraphError"
-import { GetTableEvents, GetTableEventsVariables } from "./__generated__/GetTableEvents"
+import {
+  GetTableEvents,
+  GetTableEventsVariables,
+} from "./__generated__/GetTableEvents"
 
 export const GET_TABLE_EVENTS = gql`
   query GetTableEvents(
@@ -49,32 +52,36 @@ interface Table {
 
 type TableEventsProps = {
   table: Table
+  responsive?: boolean
 }
 
-const TableEvents: React.FC<TableEventsProps> = ({table}) => {
-const { organisationName, workspaceName } = useWorkspace()
+const TableEvents: React.FC<TableEventsProps> = ({ table, responsive }) => {
+  const { organisationName, workspaceName } = useWorkspace()
 
-const { loading, error, data } = useQuery<GetTableEvents, GetTableEventsVariables>(GET_TABLE_EVENTS, {
-  variables: {
-    organisationName,
-    workspaceName,
-    tableId: table.id,
-  },
-})
+  const { loading, error, data } = useQuery<
+    GetTableEvents,
+    GetTableEventsVariables
+  >(GET_TABLE_EVENTS, {
+    variables: {
+      organisationName,
+      workspaceName,
+      tableId: table.id,
+    },
+  })
 
-if (error) return <GraphError error={error} />
-if (loading) return <Loading />
+  if (error) return <GraphError error={error} />
+  if (loading) return <Loading />
 
-const tableData = data?.workspace?.table
+  const tableData = data?.workspace?.table
 
-if (!tableData) return <NotFound />
+  if (!tableData) return <NotFound />
 
-const events = tableData.events.data
+  const events = tableData.events.data
 
   return (
     <>
       <PageContent>
-        <ConnectionEventPlots events={events} responsive />
+        <ConnectionEventPlots events={events} responsive={responsive} />
       </PageContent>
       <PageContent>
         <ConnectionEventsTable
