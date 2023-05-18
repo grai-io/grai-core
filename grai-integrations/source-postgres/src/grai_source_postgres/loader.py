@@ -202,7 +202,7 @@ class PostgresConnector:
         return list(chain(self.tables, self.columns))
 
     def get_edges(self):
-        return list(chain(*[t.get_edges() for t in self.tables], self.foreign_keys))
+        return [edge for edge in chain(*[t.get_edges() for t in self.tables], self.foreign_keys) if edge is not None]
 
     def get_nodes_and_edges(self):
         nodes = self.get_nodes()
