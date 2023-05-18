@@ -1,5 +1,6 @@
 from abc import ABC
 from itertools import chain
+from typing import Optional
 
 from grai_graph.graph import build_graph
 from grai_schemas.v1 import EdgeV1, NodeV1
@@ -10,6 +11,8 @@ from lineage.models import Edge, Event, Node
 
 from .tools import TestResultCacheBase
 
+from django.db.models import Max
+
 
 class BaseAdapter(ABC):
     run: Run
@@ -17,7 +20,7 @@ class BaseAdapter(ABC):
     def get_nodes_and_edges(self):
         raise NotImplementedError(f"No get_nodes_and_edges implemented for {type(self)}")  # pragma: no cover
 
-    def get_events(self):
+    def get_events(self, last_event_date):
         raise NotImplementedError(f"No get_events implemented for {type(self)}")  # pragma: no cover
 
     def run_validate(self, run: Run):
@@ -63,7 +66,12 @@ class BaseAdapter(ABC):
     def run_events(self, run: Run, all: bool = False):
         self.run = run
 
-        events = self.get_events()
+        last_event_date = None
+
+        if not all:
+            last_event_date = Event.objects.filter(connection=run.connection).aggregate(Max("date"))["date__max"]
+
+        events = self.get_events(last_event_date)
 
         connection = run.connection
 
@@ -71,10 +79,19 @@ class BaseAdapter(ABC):
 
         for event in events:
             if str(event.reference) not in existing_event_references:
-                connection.events.create(
+                event_model = connection.events.create(
                     workspace=run.workspace,
                     reference=event.reference,
                     date=event.date,
                     status=event.status,
                     metadata=event.metadata,
                 )
+
+                if event.nodes:
+                  for name in event.nodes:
+                      try:
+                        node = Node.objects.get(workspace=run.workspace, namespace=run.connection.namespace, name=name)
+
+                        event_model.nodes.add(node)
+                      except:
+                          print(f"Issue finding node with name: {name}")

@@ -1,3 +1,4 @@
+from typing import Optional
 from .base import BaseAdapter
 
 
@@ -16,7 +17,7 @@ class DbtCloudAdapter(BaseAdapter):
 
         return get_nodes_and_edges(conn, "v1")
 
-    def get_events(self):
+    def get_events(self, last_event_date):
         from grai_source_dbt_cloud.base import get_events
         from grai_source_dbt_cloud.loader import DbtCloudConnector
 
@@ -28,4 +29,4 @@ class DbtCloudAdapter(BaseAdapter):
             namespace=namespace,
         )
 
-        return get_events(conn, "v1")
+        return get_events(conn, last_event_date)
