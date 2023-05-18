@@ -31,7 +31,7 @@ def to_dict(instance):
 
 @merge.register
 def merge_node_left(a: Any, b: NodeModel):
-    raise Exception()
+    raise Exception("Merge node left error")
 
 
 @merge.register
