@@ -29,7 +29,13 @@ from grai_source_fivetran.fivetran_api.api_models import (
     V1DestinationsDestinationIdGetResponse,
     V1GroupsGetResponse,
 )
-from grai_source_fivetran.models import Column, Edge, NamespaceIdentifier, Table
+from grai_source_fivetran.models import (
+    Column,
+    Edge,
+    NamespaceIdentifier,
+    NodeTypes,
+    Table,
+)
 
 T = TypeVar("T")
 P = ParamSpec("P")
@@ -270,7 +276,7 @@ class FivetranConnector(FivetranAPI):
         self.tables: Dict[str, TableMetadataResponse] = {item.id: item for seq in tables for item in seq}
         self.columns: Dict[str, ColumnMetadataResponse] = {item.id: item for seq in columns for item in seq}
 
-    def get_nodes_and_edges(self):
+    def get_nodes_and_edges(self) -> Tuple[List[NodeTypes], List[Edge]]:
         # table.parent_id -> schema.id
         # column.parent_id -> table.id
         tables = {

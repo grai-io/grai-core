@@ -154,8 +154,10 @@ class EdgeQuery(BaseModel):
     foreign_columns: List[str]
     definition: str
 
-    def to_edge(self) -> Edge:
-        assert len(self.self_columns) == 1 and len(self.foreign_columns) == 1
+    def to_edge(self) -> Optional[Edge]:
+        if not len(self.self_columns) == 1 and len(self.foreign_columns) == 1:
+            return None
+
         destination = ColumnID(
             table_schema=self.self_schema,
             table_name=self.self_table,

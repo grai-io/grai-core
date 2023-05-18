@@ -3,7 +3,7 @@ import warnings
 from enum import Enum
 from functools import cached_property
 from itertools import chain
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 import pydantic
 import pyodbc
@@ -277,15 +277,17 @@ class MsSQLConnector:
                     "foreign_columns": list(item["foreign_columns"].split(",")),
                 }
             )
-        return [EdgeQuery(**fk).to_edge() for fk in res]
+        result = [EdgeQuery(**fk).to_edge() for fk in res]
+        result = [r for r in result if r is not None]
+        return result
 
     def get_nodes(self) -> List[MsSqlNode]:
         return list(chain(self.tables, self.columns))
 
-    def get_edges(self):
+    def get_edges(self) -> List[Edge]:
         return list(chain(*[t.get_edges() for t in self.tables], self.foreign_keys))
 
-    def get_nodes_and_edges(self):
+    def get_nodes_and_edges(self) -> Tuple[List[MsSqlNode, List[Edge]]]:
         nodes = self.get_nodes()
         edges = self.get_edges()
 

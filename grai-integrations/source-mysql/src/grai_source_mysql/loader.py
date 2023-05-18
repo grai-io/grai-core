@@ -120,7 +120,7 @@ class MySQLConnector:
 
         return [Column(**result, namespace=self.namespace) for result in res]
 
-    def get_table_columns(self, table: Table):
+    def get_table_columns(self, table: Table) -> List[Column]:
         table_id = (table.table_schema, table.name)
         if table_id in self.column_map:
             return self.column_map[table_id]
@@ -128,7 +128,7 @@ class MySQLConnector:
             raise Exception(f"No columns found for table with schema={table.table_schema} and name={table.name}")
 
     @cached_property
-    def column_map(self):
+    def column_map(self) -> Dict[Tuple[str, str], List[Column]]:
         result_map = {}
         for col in self.columns:
             table_id = (col.column_schema, col.table)
@@ -187,13 +187,15 @@ class MySQLConnector:
 
         filtered_results = (result for result in res if result["constraint_type"] == "f")
 
-        return [EdgeQuery(**fk, **addtl_args).to_edge() for fk in filtered_results]
+        result = [EdgeQuery(**fk, **addtl_args).to_edge() for fk in filtered_results]
+        result = [r for r in result if r is not None]
+        return result
 
     def get_nodes(self) -> List[MysqlNode]:
         return list(chain(self.tables, self.columns))
 
     def get_edges(self) -> List[Edge]:
-        return list(chain(*[t.get_edges() for t in self.tables], self.foreign_keys))
+        return [edge for edge in chain(*[t.get_edges() for t in self.tables], self.foreign_keys) if edge is not None]
 
     def get_nodes_and_edges(self) -> Tuple[List[MysqlNode], List[Edge]]:
         nodes = self.get_nodes()

@@ -127,7 +127,7 @@ class BigqueryConnector:
         return [Column(**result, **addtl_args) for result in res]
 
     @cached_property
-    def column_map(self):
+    def column_map(self) -> Dict[Tuple[str, str], List[Column]]:
         result_map = {}
         for col in self.columns:
             table_id = (col.column_schema, col.table)
@@ -135,7 +135,7 @@ class BigqueryConnector:
             result_map[table_id].append(col)
         return result_map
 
-    def get_table_columns(self, table: Table):
+    def get_table_columns(self, table: Table) -> List[Column]:
         table_id = (table.table_schema, table.name)
         if table_id in self.column_map:
             return self.column_map[table_id]
@@ -152,7 +152,7 @@ class BigqueryConnector:
         return list(chain(self.tables, self.columns))
 
     def get_edges(self) -> List[Edge]:
-        return list(chain(*[t.get_edges() for t in self.tables]))
+        return [item for item in chain(*[t.get_edges() for t in self.tables]) if item is not None]
 
     def get_nodes_and_edges(self) -> Tuple[List[BigqueryNode], List[Edge]]:
         nodes = self.get_nodes()
