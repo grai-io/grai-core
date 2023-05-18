@@ -8,12 +8,12 @@ import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
 import PageTabs from "components/layout/PageTabs"
 import TableColumns from "components/tables/columns/TableColumns"
+import TableEvents from "components/tables/TableEvents"
 import TableLineage from "components/tables/TableLineage"
 import TableProfile from "components/tables/TableProfile"
 import TabState from "components/tabs/TabState"
 import GraphError from "components/utils/GraphError"
 import { GetTable, GetTableVariables } from "./__generated__/GetTable"
-import TableEvents from "components/tables/TableEvents"
 
 export const GET_TABLE = gql`
   query GetTable(

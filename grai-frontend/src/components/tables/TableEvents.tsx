@@ -1,12 +1,12 @@
+import React from "react"
 import { gql, useQuery } from "@apollo/client"
+import NotFound from "pages/NotFound"
+import useWorkspace from "helpers/useWorkspace"
 import ConnectionEventPlots from "components/connections/events/ConnectionEventPlots"
 import ConnectionEventsTable from "components/connections/events/ConnectionEventsTable"
 import Loading from "components/layout/Loading"
 import PageContent from "components/layout/PageContent"
 import GraphError from "components/utils/GraphError"
-import useWorkspace from "helpers/useWorkspace"
-import NotFound from "pages/NotFound"
-import React from "react"
 import { GetTableEvents, GetTableEventsVariables } from "./__generated__/GetTableEvents"
 
 export const GET_TABLE_EVENTS = gql`
