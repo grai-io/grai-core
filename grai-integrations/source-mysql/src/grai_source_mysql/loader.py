@@ -129,7 +129,7 @@ class MySQLConnector:
 
     @cached_property
     def column_map(self) -> Dict[Tuple[str, str], List[Column]]:
-        result_map = {}
+        result_map: Dict[Tuple[str, str], List[Column]] = {}
         for col in self.columns:
             table_id = (col.column_schema, col.table)
             result_map.setdefault(table_id, [])
@@ -183,13 +183,11 @@ class MySQLConnector:
             item["self_columns"] = list(item["self_columns"].split(",")) if item["self_columns"] else []
             item["foreign_columns"] = list(item["foreign_columns"].split(",")) if item["foreign_columns"] else []
 
-        res = ({k.lower(): v for k, v in result.items()} for result in res)
-
-        filtered_results = (result for result in res if result["constraint_type"] == "f")
-
-        result = [EdgeQuery(**fk, **addtl_args).to_edge() for fk in filtered_results]
-        result = [r for r in result if r is not None]
-        return result
+        res_gen = ({k.lower(): v for k, v in result.items()} for result in res)
+        filtered_results = (result for result in res_gen if result["constraint_type"] == "f")
+        edge_query_gen = (EdgeQuery(**fk, **addtl_args).to_edge() for fk in filtered_results)
+        edges = [edge for edge in edge_query_gen if edge is not None]
+        return edges
 
     def get_nodes(self) -> List[MysqlNode]:
         return list(chain(self.tables, self.columns))

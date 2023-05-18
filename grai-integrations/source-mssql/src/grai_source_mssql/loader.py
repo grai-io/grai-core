@@ -134,8 +134,8 @@ class MsSQLConnector:
             "additional_connection_strings": additional_connection_strings,
         }
         user_provided_connection_params = {k: v for k, v in connection_values.items() if v is not None}
-        self.config = ConnectorSettings(**user_provided_connection_params)
-        self._connection = None
+        self.config: ConnectorSettings = ConnectorSettings(**user_provided_connection_params)
+        self._connection: Optional[pyodbc.connect] = None
 
     def __enter__(self):
         return self.connect()
@@ -143,7 +143,7 @@ class MsSQLConnector:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close()
 
-    def connect(self):
+    def connect(self) -> pyodbc.connect:
         if self._connection is None:
             self._connection = pyodbc.connect(self.config.connection_string())
         return self
@@ -178,8 +178,8 @@ class MsSQLConnector:
 	        SELECT TABLE_SCHEMA, TABLE_NAME, TABLE_TYPE
             FROM INFORMATION_SCHEMA.TABLES
         """
-        tables = ({k.lower(): v for k, v in result.items()} for result in self.query_runner(query))
-        tables = [Table(**result, namespace=self.config.namespace) for result in tables]
+        table_gen = ({k.lower(): v for k, v in result.items()} for result in self.query_runner(query))
+        tables = [Table(**result, namespace=self.config.namespace) for result in table_gen]
         for table in tables:
             table.columns = self.get_table_columns(table)
         return tables
@@ -219,15 +219,15 @@ class MsSQLConnector:
         return result
 
     @cached_property
-    def column_map(self):
-        result_map = {}
+    def column_map(self) -> Dict[Tuple[str, str], List[Column]]:
+        result_map: Dict[Tuple[str, str], List[Column]] = {}
         for col in self.columns:
             table_id = (col.column_schema, col.table)
             result_map.setdefault(table_id, [])
             result_map[table_id].append(col)
         return result_map
 
-    def get_table_columns(self, table: Table):
+    def get_table_columns(self, table: Table) -> List[Column]:
         table_id = (table.table_schema, table.name)
         if table_id in self.column_map:
             return self.column_map[table_id]
@@ -278,16 +278,15 @@ class MsSQLConnector:
                 }
             )
         result = [EdgeQuery(**fk).to_edge() for fk in res]
-        result = [r for r in result if r is not None]
-        return result
+        return [r for r in result if r is not None]
 
     def get_nodes(self) -> List[MsSqlNode]:
         return list(chain(self.tables, self.columns))
 
     def get_edges(self) -> List[Edge]:
-        return list(chain(*[t.get_edges() for t in self.tables], self.foreign_keys))
+        return [edge for edge in chain(*[t.get_edges() for t in self.tables], self.foreign_keys) if edge is not None]
 
-    def get_nodes_and_edges(self) -> Tuple[List[MsSqlNode, List[Edge]]]:
+    def get_nodes_and_edges(self) -> Tuple[List[MsSqlNode], List[Edge]]:
         nodes = self.get_nodes()
         edges = self.get_edges()
 

@@ -87,6 +87,9 @@ def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") 
             data["edge_type"] = EdgeTypeLabels.column_to_column.value
             return ColumnToColumnMetadata(**data)
 
+    data["edge_type"] = EdgeTypeLabels.generic.value
+    return GenericEdgeMetadataV1(**data)
+
 
 @multimethod
 def build_app_metadata(current: Any, desired: Any) -> None:

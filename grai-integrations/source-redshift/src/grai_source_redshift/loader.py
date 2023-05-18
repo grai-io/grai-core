@@ -50,7 +50,7 @@ class RedshiftConnector:
 
         self.namespace = namespace
         self.config = RedshiftConfig(**{k: v for k, v in passthrough_kwargs.items() if v is not None})
-        self.redshift_params: [Dict[str, Any]] = kwargs
+        self.redshift_params: Dict[str, Any] = kwargs
         self._connection: Optional[Connection] = None
         self._is_connected: Optional[bool] = None
 
@@ -142,7 +142,7 @@ class RedshiftConnector:
 
     @cached_property
     def column_map(self) -> Dict[Tuple[str, str], List[Column]]:
-        result_map = {}
+        result_map: Dict[Tuple[str, str], List[Column]] = {}
         for col in self.columns:
             table_id = (col.column_schema, col.table)
             result_map.setdefault(table_id, [])

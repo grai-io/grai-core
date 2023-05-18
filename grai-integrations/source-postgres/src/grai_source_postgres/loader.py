@@ -153,7 +153,7 @@ class PostgresConnector:
 
     @cached_property
     def column_map(self) -> Dict[Tuple[str, str], List[Column]]:
-        result_map = {}
+        result_map: Dict[Tuple[str, str], List[Column]] = {}
         for col in self.columns:
             table_id = (col.column_schema, col.table)
             result_map.setdefault(table_id, [])
