@@ -3,12 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-enum RunAction {
-  EVENTS = "EVENTS",
-  TESTS = "TESTS",
-  UPDATE = "UPDATE",
-  VALIDATE = "VALIDATE",
-}
+import { RunAction } from "./../../../../__generated__/globalTypes";
 
 // ====================================================
 // GraphQL mutation operation: RunConnection

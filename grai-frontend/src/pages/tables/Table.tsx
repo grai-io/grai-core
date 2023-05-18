@@ -13,6 +13,7 @@ import TableProfile from "components/tables/TableProfile"
 import TabState from "components/tabs/TabState"
 import GraphError from "components/utils/GraphError"
 import { GetTable, GetTableVariables } from "./__generated__/GetTable"
+import TableEvents from "components/tables/TableEvents"
 
 export const GET_TABLE = gql`
   query GetTable(
@@ -62,6 +63,21 @@ export const GET_TABLE = gql`
             id
             name
             display_name
+          }
+        }
+        events {
+          data {
+            id
+            date
+            status
+            connection {
+              id
+              name
+              connector {
+                id
+                name
+              }
+            }
           }
         }
       }
@@ -118,6 +134,12 @@ const Table: React.FC = () => {
       component: <TableLineage table={table} />,
       noWrapper: true,
     },
+    {
+      label: 'Events',
+      value: 'events',
+      component: <TableEvents table={table} />,
+      noWrapper: true,
+    }
   ]
 
   return (

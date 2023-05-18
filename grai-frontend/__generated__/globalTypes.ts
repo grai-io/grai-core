@@ -9,6 +9,7 @@
 
 export enum RunAction {
   EVENTS = "EVENTS",
+  EVENTS_ALL = "EVENTS_ALL",
   TESTS = "TESTS",
   UPDATE = "UPDATE",
   VALIDATE = "VALIDATE",

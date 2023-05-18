@@ -37,19 +37,6 @@ class NodeOrder:
     updated_at: auto
 
 
-@gql.django.type(NodeModel, order=NodeOrder, filters=NodeFilter, pagination=True, only=["id"])
-class Node:
-    id: auto
-    namespace: auto
-    name: auto
-    display_name: auto
-    data_source: auto
-    metadata: JSON
-    is_active: auto
-    source_edges: List["Edge"]
-    destination_edges: List["Edge"]
-
-
 @gql.django.filters.filter(EdgeModel, lookups=True)
 class EdgeFilter:
     id: auto
@@ -71,21 +58,6 @@ class EdgeOrder:
     name: auto
     display_name: auto
     data_source: auto
-    is_active: auto
-    created_at: auto
-    updated_at: auto
-
-
-@gql.django.type(EdgeModel, order=EdgeOrder, filters=EdgeFilter, pagination=True)
-class Edge:
-    id: auto
-    namespace: auto
-    name: auto
-    display_name: auto
-    data_source: auto
-    source: Node = gql.django.field()
-    destination: Node = gql.django.field()
-    metadata: JSON
     is_active: auto
     created_at: auto
     updated_at: auto

@@ -3486,6 +3486,12 @@
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "EVENTS_ALL",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "possibleTypes": null
@@ -4128,6 +4134,22 @@
                     "ofType": null
                   }
                 }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "events",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "EventPagination",
+                "ofType": null
               }
             },
             "isDeprecated": false,
@@ -5798,6 +5820,22 @@
             "deprecationReason": null
           },
           {
+            "name": "events",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "EventPagination",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "columns",
             "description": null,
             "args": [],
@@ -6108,6 +6146,22 @@
                     "ofType": null
                   }
                 }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "events",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "EventPagination",
+                "ofType": null
               }
             },
             "isDeprecated": false,
@@ -6863,7 +6917,7 @@
                   "name": "ID",
                   "ofType": null
                 },
-                "defaultValue": "null"
+                "defaultValue": null
               },
               {
                 "name": "organisationName",
@@ -6873,7 +6927,7 @@
                   "name": "String",
                   "ofType": null
                 },
-                "defaultValue": "null"
+                "defaultValue": null
               }
             ],
             "type": {
