@@ -23,7 +23,7 @@ type ConnectionRunButtonProps = {
   onRun: (type: string) => void
   disabled?: boolean
   loading?: boolean
-  events: boolean
+  events?: boolean
   status: string | null
 }
 
@@ -37,16 +37,7 @@ const ConnectionRunButton: React.FC<ConnectionRunButtonProps> = ({
   const [open, setOpen] = useState(false)
   const anchorRef = useRef<HTMLDivElement>(null)
 
-  const handleClose = (event: Event) => {
-    if (
-      anchorRef.current &&
-      anchorRef.current.contains(event.target as HTMLElement)
-    ) {
-      return
-    }
-
-    setOpen(false)
-  }
+  const handleClose = (event: Event) => setOpen(false)
 
   const handleToggle = () => {
     setOpen(prevOpen => !prevOpen)
