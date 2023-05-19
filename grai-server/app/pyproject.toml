@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "the_guide"
-version = "0.1.24"
+version = "0.1.25"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>", "Edward Louth <edward@grai.io>"]
 license = "Elastic-2.0"
@@ -41,7 +41,7 @@ grai-graph = "^0.2.1"
 grai-schemas = "^0.1.11"
 grai-source-dbt = "^0.2.9"
 grai-source-dbt-cloud = "^0.0.2"
-grai-source-fivetran = "^0.0.5"
+grai-source-fivetran = "^0.0.6"
 grai-source-mysql = "^0.0.13"
 grai-source-mssql = "^0.0.9"
 grai-source-bigquery = "^0.0.5"
