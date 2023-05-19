@@ -23,7 +23,7 @@ export const GET_TABLES_AND_EDGES = gql`
   ) {
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
-      tables(filters: $filters, pagination: { limit: 1000, offset: $offset }) {
+      tables(filters: $filters, pagination: { limit: 500, offset: $offset }) {
         data {
           id
           namespace
