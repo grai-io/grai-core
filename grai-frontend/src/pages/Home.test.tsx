@@ -50,7 +50,7 @@ test("search", async () => {
     expect(screen.getByRole("textbox")).toBeTruthy()
   })
 
-  fireEvent.click(screen.getByRole("textbox"))
+  fireEvent.mouseDown(screen.getByRole("textbox"))
 
   await waitFor(() => {
     expect(screen.getByRole("textbox")).toBeInTheDocument()

@@ -17,12 +17,16 @@ type TablesTableProps = {
   tables: TableInterface[]
   loading?: boolean
   total: number
+  page: number
+  onPageChange: (page: number) => void
 }
 
 const TablesTable: React.FC<TablesTableProps> = ({
   tables,
   loading,
   total,
+  page,
+  onPageChange,
 }) => {
   const navigate = useNavigate()
 
@@ -70,9 +74,10 @@ const TablesTable: React.FC<TablesTableProps> = ({
       <TableFooter>
         <TablePagination
           count={total}
-          rowsPerPage={1000}
-          page={0}
+          rowsPerPage={20}
+          page={page}
           type="tables"
+          onPageChange={onPageChange}
         />
       </TableFooter>
     </Table>

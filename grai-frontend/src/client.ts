@@ -1,6 +1,7 @@
 /* istanbul ignore file */
 import { ApolloClient, from, InMemoryCache } from "@apollo/client"
 import { onError } from "@apollo/client/link/error"
+import DebounceLink from "apollo-link-debounce"
 import { createUploadLink } from "apollo-upload-client"
 
 declare global {
@@ -8,6 +9,8 @@ declare global {
     _env_: any
   }
 }
+
+const DEFAULT_DEBOUNCE_TIMEOUT = 100
 
 const make_client = (logoutUser: () => void) => {
   const baseURL =
@@ -28,7 +31,11 @@ const make_client = (logoutUser: () => void) => {
 
   return new ApolloClient({
     cache: new InMemoryCache(),
-    link: from([errorLink, uploadLink]),
+    link: from([
+      new DebounceLink(DEFAULT_DEBOUNCE_TIMEOUT),
+      errorLink,
+      uploadLink,
+    ]),
     connectToDevTools: true,
   })
 }

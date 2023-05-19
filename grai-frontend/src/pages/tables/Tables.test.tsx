@@ -26,6 +26,8 @@ test("error", async () => {
         variables: {
           organisationName: "",
           workspaceName: "",
+          offset: 0,
+          search: undefined,
         },
       },
       result: {
@@ -44,18 +46,93 @@ test("error", async () => {
 test("search", async () => {
   const user = userEvent.setup()
 
+  const mocks = [
+    {
+      request: {
+        query: GET_TABLES,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+          offset: 0,
+          search: undefined,
+        },
+      },
+      result: {
+        data: {
+          workspace: {
+            id: "1234",
+            tables: {
+              data: [],
+              meta: {
+                total: 0,
+                filtered: 0,
+              },
+            },
+          },
+        },
+      },
+    },
+    {
+      request: {
+        query: GET_TABLES,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+          offset: 0,
+          search: "S",
+        },
+      },
+      result: {
+        data: {
+          workspace: {
+            id: "1234",
+            tables: {
+              data: [],
+              meta: {
+                total: 0,
+                filtered: 0,
+              },
+            },
+          },
+        },
+      },
+    },
+    {
+      request: {
+        query: GET_TABLES,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+          offset: 0,
+          search: "Se",
+        },
+      },
+      result: {
+        data: {
+          workspace: {
+            id: "1234",
+            tables: {
+              data: [],
+              meta: {
+                total: 0,
+                filtered: 0,
+              },
+            },
+          },
+        },
+      },
+    },
+  ]
+
   render(<Tables />, {
+    mocks,
     withRouter: true,
   })
 
-  await waitFor(() => {
-    expect(screen.getAllByText("Hello World")).toBeTruthy()
-  })
-
-  await act(async () => await user.type(screen.getByRole("textbox"), "Search"))
+  await act(async () => await user.type(screen.getByRole("textbox"), "Se"))
 
   await waitFor(() => {
-    expect(screen.getByRole("textbox")).toHaveValue("Search")
+    expect(screen.getByRole("textbox")).toHaveValue("Se")
   })
 
   await waitFor(() => {
@@ -103,6 +180,8 @@ test("no tables", async () => {
         variables: {
           organisationName: "",
           workspaceName: "",
+          offset: 0,
+          search: undefined,
         },
       },
       result: {
@@ -113,6 +192,7 @@ test("no tables", async () => {
               data: [],
               meta: {
                 total: 0,
+                filtered: 0,
               },
             },
           },

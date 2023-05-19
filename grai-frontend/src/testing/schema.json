@@ -1051,6 +1051,16 @@
                   "ofType": null
                 },
                 "defaultValue": null
+              },
+              {
+                "name": "search",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null
               }
             ],
             "type": {
@@ -6646,7 +6656,7 @@
                   "name": "ID",
                   "ofType": null
                 },
-                "defaultValue": "null"
+                "defaultValue": null
               },
               {
                 "name": "organisationName",
@@ -6656,7 +6666,7 @@
                   "name": "String",
                   "ofType": null
                 },
-                "defaultValue": "null"
+                "defaultValue": null
               }
             ],
             "type": {

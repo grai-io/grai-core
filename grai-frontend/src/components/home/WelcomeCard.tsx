@@ -94,7 +94,7 @@ const WelcomeCard: React.FC<WelcomeCardProps> = ({ search, setSearch }) => (
       </Typography>
       <TextField
         placeholder="Search data assets"
-        onClick={() => setSearch(true)}
+        onMouseDown={() => setSearch(true)}
         disabled
         sx={{
           width: 620,
