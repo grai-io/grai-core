@@ -14,10 +14,11 @@ export const GET_TABLES = gql`
     $organisationName: String!
     $workspaceName: String!
     $offset: Int
+    $search: String
   ) {
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
-      tables(pagination: { limit: 20, offset: $offset }) {
+      tables(pagination: { limit: 20, offset: $offset }, search: $search) {
         data {
           id
           namespace
@@ -28,6 +29,7 @@ export const GET_TABLES = gql`
           metadata
         }
         meta {
+          filtered
           total
         }
       }
@@ -57,6 +59,7 @@ const Tables: React.FC = () => {
       organisationName,
       workspaceName,
       offset: page * 20,
+      search,
     },
   })
 
@@ -65,12 +68,10 @@ const Tables: React.FC = () => {
   const tables = data?.workspace?.tables.data ?? []
 
   const handleRefresh = () => refetch()
-
-  const filteredTables = search
-    ? tables.filter(table =>
-        table.name.toLowerCase().includes(search.toLowerCase())
-      )
-    : tables
+  const handleSearch = (value: string) => {
+    setSearch(value)
+    setPage(0)
+  }
 
   return (
     <PageLayout>
@@ -78,13 +79,13 @@ const Tables: React.FC = () => {
       <PageContent>
         <TableHeader
           search={search}
-          onSearch={setSearch}
+          onSearch={handleSearch}
           onRefresh={handleRefresh}
         />
         <TablesTable
-          tables={filteredTables}
+          tables={tables}
           loading={loading}
-          total={data?.workspace.tables.meta.total ?? 0}
+          total={data?.workspace.tables.meta.filtered ?? 0}
           page={page}
           onPageChange={setPage}
         />

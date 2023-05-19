@@ -427,8 +427,12 @@ class Workspace:
         self,
         filters: Optional[WorkspaceTableFilter] = strawberry.UNSET,
         pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+        search: Optional[str] = strawberry.UNSET,
     ) -> Pagination[Table]:
         queryset = NodeModel.objects.filter(workspace=self, metadata__grai__node_type="Table")
+
+        if search:
+            queryset = queryset.filter(name__icontains=search)
 
         if filters and filters.filter:
             filter = await FilterModel.objects.aget(id=filters.filter)

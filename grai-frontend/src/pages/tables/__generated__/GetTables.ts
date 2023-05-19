@@ -20,6 +20,7 @@ export interface GetTables_workspace_tables_data {
 
 export interface GetTables_workspace_tables_meta {
   __typename: "PaginationResult";
+  filtered: number;
   total: number;
 }
 
@@ -43,4 +44,5 @@ export interface GetTablesVariables {
   organisationName: string;
   workspaceName: string;
   offset?: number | null;
+  search?: string | null;
 }
