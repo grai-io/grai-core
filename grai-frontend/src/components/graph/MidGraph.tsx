@@ -33,9 +33,6 @@ export interface Table extends EnhancedTable {
   display_name: string
   data_source: string
   columns: { data: Column[] }
-  metadata: {
-    grai?: GraiNodeMetadata | null
-  } | null
 }
 
 type GraphProps = {
@@ -81,7 +78,6 @@ const MidGraph: React.FC<GraphProps> = ({
           name: table.name,
           label: table.display_name,
           data_source: table.data_source,
-          metadata: table.metadata,
           columns: table.columns.data,
           source_tables: table.source_tables,
           hiddenSourceTables: table.source_tables.data

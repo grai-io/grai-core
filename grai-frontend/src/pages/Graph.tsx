@@ -26,11 +26,9 @@ export const GET_TABLES_AND_EDGES = gql`
       tables(filters: $filters, pagination: { limit: 500, offset: $offset }) {
         data {
           id
-          namespace
           name
           display_name
           data_source
-          metadata
           columns {
             data {
               id
@@ -65,13 +63,6 @@ export const GET_TABLES_AND_EDGES = gql`
           destination {
             id
           }
-          metadata
-        }
-      }
-      filters {
-        data {
-          id
-          name
         }
       }
     }
