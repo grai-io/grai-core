@@ -1,7 +1,7 @@
 import os
 from functools import cached_property
 from itertools import chain
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 import redshift_connector
 from pydantic import BaseSettings, SecretStr, validator
@@ -50,7 +50,7 @@ class RedshiftConnector:
 
         self.namespace = namespace
         self.config = RedshiftConfig(**{k: v for k, v in passthrough_kwargs.items() if v is not None})
-        self.redshift_params: [Dict[str, Any]] = kwargs
+        self.redshift_params: Dict[str, Any] = kwargs
         self._connection: Optional[Connection] = None
         self._is_connected: Optional[bool] = None
 
@@ -141,8 +141,8 @@ class RedshiftConnector:
             raise Exception(f"No columns found for table with schema={table.table_schema} and name={table.name}")
 
     @cached_property
-    def column_map(self):
-        result_map = {}
+    def column_map(self) -> Dict[Tuple[str, str], List[Column]]:
+        result_map: Dict[Tuple[str, str], List[Column]] = {}
         for col in self.columns:
             table_id = (col.column_schema, col.table)
             result_map.setdefault(table_id, [])
@@ -186,15 +186,16 @@ class RedshiftConnector:
         addtl_args = {"namespace": self.namespace}
         results = self.query_runner(query)
         filtered_results = (result for result in results if result["constraint_type"] == "FOREIGN KEY")
-        return [EdgeQuery(**fk, **addtl_args).to_edge() for fk in filtered_results]
+        result = [EdgeQuery(**fk, **addtl_args).to_edge() for fk in filtered_results]
+        return [r for r in result if r is not None]
 
     def get_nodes(self) -> List[RedshiftNode]:
         return list(chain(self.tables, self.columns))
 
-    def get_edges(self):
+    def get_edges(self) -> List[Edge]:
         return list(chain(*[t.get_edges() for t in self.tables], self.foreign_keys))
 
-    def get_nodes_and_edges(self):
+    def get_nodes_and_edges(self) -> Tuple[List[RedshiftNode], List[Edge]]:
         nodes = self.get_nodes()
         edges = self.get_edges()
 

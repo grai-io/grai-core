@@ -1,4 +1,5 @@
 from typing import Any, Dict, List, Literal, Sequence
+from warnings import warn
 
 from grai_client.schemas.schema import Schema
 from grai_schemas import config as base_config
@@ -86,12 +87,15 @@ def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") 
         if isinstance(current.destination, ColumnID):
             data["edge_type"] = EdgeTypeLabels.column_to_column.value
             return ColumnToColumnMetadata(**data)
-    else:
-        message = (
-            "No edge metadata implementation for edge with source type "
-            f"{type(current.source)} and destination type {type(current.destination)}"
-        )
-        raise NotImplementedError()
+
+    message = (
+        "No edge metadata implementation for edge with source type "
+        f"{type(current.source)} and destination type {type(current.destination)}."
+        "Fell back on generic metadata."
+    )
+    warn(message)
+    data["edge_type"] = EdgeTypeLabels.generic.value
+    return GenericEdgeMetadataV1(**data)
 
 
 @multimethod

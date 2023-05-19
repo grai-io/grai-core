@@ -28,8 +28,8 @@ services:
     deploy:
           resources:
             limits:
-              memory: 2000M  
-  
+              memory: 2000M
+
   db:
     image: postgres
     environment:
@@ -37,8 +37,8 @@ services:
       - POSTGRES_PASSWORD=grai
       - POSTGRES_DB=grai
     ports:
-      - 5432:5432   
-  
+      - 5432:5432
+
   frontend:
     image: "${FRONTEND_IMAGE}"
     entrypoint: /bin/sh
@@ -48,25 +48,25 @@ services:
     deploy:
           resources:
             limits:
-              memory: 2000M 
-  
+              memory: 2000M
+
   redis:
     image: redis:7-alpine
     ports:
-      - "6379:6379" 
+      - "6379:6379"
     deploy:
           resources:
             limits:
-              memory: 500M             
-              
+              memory: 500M
+
   nginx:
     image: nginx:alpine
     volumes:
       - ./nginx-uffizzi:/etc/nginx
-      
+
   celery-worker:
     image: "${SERVER_IMAGE}"
-    command: 
+    command:
     - "/start-celeryworker"
     volumes:
       - ./grai-server/app/:/usr/src/app/
@@ -82,12 +82,12 @@ services:
       - SERVER_HOST=localhost
       - CELERY_BROKER=redis://127.0.0.1:6379/0
       - CELERY_BACKEND=redis://127.0.0.1:6379/0
-      - SECRET_KEY="123456789" 
+      - SECRET_KEY="123456789"
     deploy:
           resources:
             limits:
-              memory: 2000M      
-  
+              memory: 2000M
+
   celery-beat-worker:
     image: "${SERVER_IMAGE}"
     volumes:
@@ -104,13 +104,13 @@ services:
       - SERVER_HOST=localhost
       - CELERY_BROKER=redis://127.0.0.1:6379/0
       - CELERY_BACKEND=redis://127.0.0.1:6379/0
-      - SECRET_KEY="123456789" 
-    command: 
+      - SECRET_KEY="123456789"
+    command:
     - "/start-celerybeat"
     deploy:
           resources:
             limits:
-              memory: 2000M            
+              memory: 2000M
 
   flower:
     image: mher/flower
@@ -121,4 +121,4 @@ services:
     deploy:
           resources:
             limits:
-              memory: 2000M   
+              memory: 2000M

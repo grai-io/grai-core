@@ -37,12 +37,12 @@ class Pagination(Generic[T]):
         self.pagination = pagination
 
     @strawberry.field
-    def meta(self) -> PaginationResult:
-        total = self.queryset.acount()
+    async def meta(self) -> PaginationResult:
+        total = await self.queryset.acount()
 
         return PaginationResult(
             total=total,
-            filtered=self.apply_filters(self.queryset).acount() if self.apply_filters else total,
+            filtered=await self.apply_filters(self.queryset).acount() if self.apply_filters else total,
             limit=self.pagination.limit if self.pagination else None,
             offset=self.pagination.offset if self.pagination else None,
         )

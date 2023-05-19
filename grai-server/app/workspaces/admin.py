@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.contrib.admin import DateFieldListFilter
 from django.db.models import Count, Q
+from django.urls import reverse
+from django.utils.html import format_html
 
 from lineage.models import Edge, Node
 
@@ -55,7 +57,7 @@ class WorkspaceAdmin(admin.ModelAdmin):
         "name",
     )
 
-    search_fields = ["id", "name"]
+    search_fields = ["id", "name", "organisation__name"]
 
     inlines = [
         MembershipInline,
@@ -64,8 +66,25 @@ class WorkspaceAdmin(admin.ModelAdmin):
     actions = [empty_workspace, enable_search, disable_search]
 
 
+class WorkspaceInline(admin.TabularInline):
+    model = Workspace
+    extra = 0
+
+    def view(self):
+        return format_html(
+            '<a href="{}">{}</a>', reverse("admin:workspaces_workspace_change", args=(self.id,)), self.name
+        )
+
+    fields = ("name", view)
+    readonly_fields = (view,)
+
+
 class OrganisationAdmin(admin.ModelAdmin):
     search_fields = ["id", "name"]
+
+    inlines = [
+        WorkspaceInline,
+    ]
 
 
 admin.site.register(Organisation, OrganisationAdmin)

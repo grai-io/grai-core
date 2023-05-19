@@ -158,8 +158,8 @@ class SnowflakeConnector:
         return [Column(**result, **addtl_args) for result in res]
 
     @cached_property
-    def column_map(self):
-        result_map = {}
+    def column_map(self) -> Dict[Tuple[str, str], List[Column]]:
+        result_map: Dict[Tuple[str, str], List[Column]] = {}
         for col in self.columns:
             table_id = (col.column_schema, col.table)
             result_map.setdefault(table_id, [])
@@ -218,16 +218,16 @@ class SnowflakeConnector:
             item["foreign_columns"] = item["foreign_columns"].split(",")
 
         res = ({k.lower(): v for k, v in result.items()} for result in imported_keys)
-        fks = [EdgeQuery(**fk, **addtl_args).to_edge() for fk in res]
-
-        return fks
+        edge_gen = (EdgeQuery(**fk, **addtl_args).to_edge() for fk in res)
+        edges = [edge for edge in edge_gen if edge is not None]
+        return edges
 
     def get_nodes(self) -> List[SnowflakeNode]:
         # return list(chain(self.tables, *[t.columns for t in self.tables]))
         return list(chain(self.tables, self.columns))
 
     def get_edges(self) -> List[Edge]:
-        edges = list(chain(*[t.get_edges() for t in self.tables], self.foreign_keys))
+        edges = [edge for edge in chain(*[t.get_edges() for t in self.tables], self.foreign_keys) if edge is not None]
         return edges
 
     def get_nodes_and_edges(self) -> Tuple[List[SnowflakeNode], List[Edge]]:
