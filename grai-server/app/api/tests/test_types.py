@@ -2041,6 +2041,38 @@ async def test_tables_filtered(test_context):
 
 
 @pytest.mark.django_db
+async def test_tables_searched(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    name = str(uuid.uuid4())
+
+    table = await Node.objects.acreate(workspace=workspace, metadata={"grai": {"node_type": "Table"}}, name=name)
+
+    query = """
+        query Workspace($workspaceId: ID!, $search: String) {
+          workspace(id: $workspaceId) {
+            id
+            tables(search: $search) {
+                data{
+                    id
+                }
+            }
+          }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={"workspaceId": str(workspace.id), "search": name},
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["tables"]["data"][0]["id"] == str(table.id)
+
+
+@pytest.mark.django_db
 async def test_tags(test_context):
     context, organisation, workspace, user, membership = test_context
 
