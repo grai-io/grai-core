@@ -645,7 +645,7 @@ class TestConnectionSchedule:
 class TestEventsTests:
     def test_dbt_cloud(self, test_workspace, test_dbt_cloud_connector, mocker):
         mock = mocker.patch("grai_source_dbt_cloud.base.get_events")
-        mock.return_value = [Event(reference="1234", date=date.today(), metadata={}, status="success")]
+        mock.return_value = [Event(reference="1234", date=date.today(), metadata={}, status="success", nodes=[])]
 
         connection = Connection.objects.create(
             name="C2",
