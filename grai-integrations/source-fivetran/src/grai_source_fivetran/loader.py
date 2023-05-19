@@ -1,4 +1,5 @@
 import asyncio
+import json
 from itertools import chain
 from typing import (
     Any,
@@ -170,6 +171,11 @@ class FivetranAPI:
         data, response = self.make_request(self.session.get, url)
         return V1ConnectorsConnectorIdSchemasSchemaTablesTableColumnsGetResponse(**data)
 
+    def get_connectors(self) -> List[ConnectorResponse]:
+        groups = {group.id: group for group in self.get_all_groups() if group.id is not None}
+        connectors = [conn for group_id in groups.keys() for conn in self.get_group_connectors(group_id)]
+        return connectors
+
 
 async def caller(semaphore: asyncio.Semaphore, func: Callable[..., T], *args, **kwargs) -> T:
     result = func(*args, **kwargs)
@@ -207,7 +213,7 @@ class SourceDestinationDict(TypedDict):
     destination: str
 
 
-NamespaceTypes = Union[Dict[str, str], SourceDestinationDict]
+NamespaceTypes = Union[Dict[str, Union[str, SourceDestinationDict]], str]
 
 
 class FivetranConnector(FivetranAPI):
@@ -219,7 +225,41 @@ class FivetranConnector(FivetranAPI):
         *args,
         **kwargs,
     ):
-        if namespaces is None and default_namespace is None:
+        super().__init__(*args, **kwargs)
+        self.parallelization = parallelization
+        self.semaphore = asyncio.Semaphore(self.parallelization)
+        self.http_runner = parallelize_http(self.semaphore)
+        self.default_namespace = default_namespace
+
+        self.connectors = {conn.id: conn for conn in self.get_connectors() if conn.id is not None}
+        self.namespace_map = self._build_namespace_map(namespaces)
+        if self.default_namespace is None:
+            self.connectors = {k: v for k, v in self.connectors.items() if k in self.namespace_map}
+
+        self.table_to_conn_map: Dict[str, str] = {}
+        self.column_to_conn_map: Dict[str, str] = {}
+        self.schemas: Dict[str, SchemaMetadataResponse] = {}
+        self.tables: Dict[str, TableMetadataResponse] = {}
+        self.columns: Dict[str, ColumnMetadataResponse] = {}
+
+    def build_lineage(self):
+        connector_ids = [[conn_id] for conn_id in self.connectors.keys()]
+        schemas = self.http_runner(self.get_schemas, arg_list=connector_ids)
+        tables = self.http_runner(self.get_tables, arg_list=connector_ids)
+        columns = self.http_runner(self.get_columns, arg_list=connector_ids)
+
+        for conn_id, t_res, c_res in zip(self.connectors.keys(), tables, columns):
+            for table in t_res:
+                self.table_to_conn_map.setdefault(table.id, conn_id)
+            for column in c_res:
+                self.column_to_conn_map.setdefault(column.id, conn_id)
+
+        self.schemas.update({item.id: item for seq in schemas for item in seq})
+        self.tables.update({item.id: item for seq in tables for item in seq})
+        self.columns.update({item.id: item for seq in columns for item in seq})
+
+    def _build_namespace_map(self, namespace_map: Optional[NamespaceTypes]) -> Dict[str, NamespaceIdentifier]:
+        if namespace_map is None and self.default_namespace is None:
             message = (
                 f"The FivetranGraiMapper requires a not null value for `default_namespace` and/or `namespaces. "
                 f"These values are used to identify which Fivetran connection id's belong to which associated "
@@ -228,57 +268,38 @@ class FivetranConnector(FivetranAPI):
                 "namespace} or {connection_id -> {source: namespace, destination: namespace}}"
             )
             raise ValueError(message)
-        elif namespaces is not None:
-            assert all(isinstance(v, (dict, str)) for v in namespaces.values())
-            assert all(isinstance(v, SourceDestinationDict) for v in namespaces.values() if isinstance(v, dict))
+        elif isinstance(namespace_map, str):
+            namespace_map = json.loads(namespace_map)
+
+        if namespace_map is None:
+            namespace_map = {}
         else:
-            namespaces = {}
+            message = (
+                "The namespaces object should be a dictionary whose id's are Fivetran connector id's and whose values "
+                "identify the Grai namespace associated with either the source or destination of the connector. "
+                "The values can either be provided as a dictionary with the keys 'source' and 'destination' or ",
+                "as strings identifying the Grai namespace you'd like to associate with both the source "
+                "and destination.",
+            )
+            assert all(isinstance(v, (dict, str)) for v in namespace_map.values()), message
+            assert all(
+                isinstance(v, SourceDestinationDict) for v in namespace_map.values() if isinstance(v, dict)
+            ), message
 
-        super().__init__(*args, **kwargs)
-        self.parallelization = parallelization
-        self.semaphore = asyncio.Semaphore(self.parallelization)
-        self.http_runner = parallelize_http(self.semaphore)
-
-        self.groups = {group.id: group for group in self.get_all_groups() if group.id is not None}
-        self.connectors = {
-            conn.id: conn
-            for group_id in self.groups.keys()
-            for conn in self.get_group_connectors(group_id)
-            if conn.id is not None
-        }
-
-        if default_namespace is None:
-            self.connectors = {k: v for k, v in self.connectors.items() if v in namespaces}
-        else:
-            namespaces = {**namespaces}  # avoid modifying the users original argument
+        if self.default_namespace is not None:
+            namespace_map = namespace_map.copy()  # avoid modifying the users original argument
             for k in self.connectors.keys():
-                namespaces.setdefault(k, default_namespace)
+                namespace_map.setdefault(k, self.default_namespace)
 
-        self.namespace_map = {
+        return {
             k: NamespaceIdentifier(source=v, destination=v) if isinstance(v, str) else NamespaceIdentifier(**v)
-            for k, v in namespaces.items()
+            for k, v in namespace_map.items()
         }
-
-        connector_ids = [[conn_id] for conn_id in self.connectors.keys()]
-        schemas = self.http_runner(self.get_schemas, arg_list=connector_ids)
-        tables = self.http_runner(self.get_tables, arg_list=connector_ids)
-        columns = self.http_runner(self.get_columns, arg_list=connector_ids)
-
-        self.table_to_conn_map = {}
-        self.column_to_conn_map = {}
-        for conn_id, t_res, c_res in zip(self.connectors.keys(), tables, columns):
-            for table in t_res:
-                self.table_to_conn_map.setdefault(table.id, conn_id)
-            for column in c_res:
-                self.column_to_conn_map.setdefault(column.id, conn_id)
-
-        self.schemas: Dict[str, SchemaMetadataResponse] = {item.id: item for seq in schemas for item in seq}
-        self.tables: Dict[str, TableMetadataResponse] = {item.id: item for seq in tables for item in seq}
-        self.columns: Dict[str, ColumnMetadataResponse] = {item.id: item for seq in columns for item in seq}
 
     def get_nodes_and_edges(self) -> Tuple[List[NodeTypes], List[Edge]]:
         # table.parent_id -> schema.id
         # column.parent_id -> table.id
+        self.build_lineage()
         tables = {
             table.id: Table.from_fivetran_models(
                 self.schemas[table.parent_id],

@@ -7,9 +7,18 @@ from grai_source_fivetran.mock_tools import MockFivetranObjects
 
 
 # You may need to create a .env file to run these tests
-@pytest.fixture
+@pytest.fixture(scope="session")
 def api():
     return FivetranAPI()
+
+
+@pytest.fixture
+def connector_kwargs():
+    return {
+        "api_key": "test_key",
+        "api_secret": "test_secret",
+        "endpoint": "http://www.fivetran.com/",
+    }
 
 
 @pytest.fixture
