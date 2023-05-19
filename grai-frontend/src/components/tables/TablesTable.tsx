@@ -30,11 +30,6 @@ const TablesTable: React.FC<TablesTableProps> = ({
 }) => {
   const navigate = useNavigate()
 
-  const handlePageChange = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null,
-    newPage: number
-  ) => onPageChange(newPage)
-
   return (
     <Table sx={{ mb: -1 }}>
       <TableHead>
@@ -82,7 +77,7 @@ const TablesTable: React.FC<TablesTableProps> = ({
           rowsPerPage={20}
           page={page}
           type="tables"
-          onPageChange={handlePageChange}
+          onPageChange={onPageChange}
         />
       </TableFooter>
     </Table>

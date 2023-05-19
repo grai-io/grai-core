@@ -61,10 +61,7 @@ type TablePaginationProps = {
   count: number
   rowsPerPage: number
   page: number
-  onPageChange?: (
-    event: React.MouseEvent<HTMLButtonElement> | null,
-    page: number
-  ) => void
+  onPageChange?: (page: number) => void
   type?: string
 }
 
@@ -88,7 +85,9 @@ const TablePagination: React.FC<TablePaginationProps> = ({
           rowsPerPage={rowsPerPage}
           page={page}
           labelDisplayedRows={() => null}
-          onPageChange={onPageChange ?? (() => {})}
+          onPageChange={(event, newPage) =>
+            onPageChange ? onPageChange(newPage) : () => {}
+          }
           /* istanbul ignore next */
           onRowsPerPageChange={() => {}}
           ActionsComponent={(props: TablePaginationActionsProps) => (
