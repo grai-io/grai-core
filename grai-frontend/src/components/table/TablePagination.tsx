@@ -88,7 +88,7 @@ const TablePagination: React.FC<TablePaginationProps> = ({
           onPageChange={(event, newPage) =>
             onPageChange ? onPageChange(newPage) : () => {}
           }
-          /* istanbul ignore next */
+          /* c8 ignore next */
           onRowsPerPageChange={() => {}}
           ActionsComponent={(props: TablePaginationActionsProps) => (
             <TablePaginationActions {...props} disabled={!onPageChange} />
