@@ -407,7 +407,7 @@ class Workspace:
         self,
         pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
     ) -> Pagination["Membership"]:
-        queryset = MembershipModel.objects.filter(workspace=self)
+        queryset = MembershipModel.objects.filter(workspace=self).filter(hidden=False)
 
         return Pagination[Membership](queryset=queryset, pagination=pagination)
 

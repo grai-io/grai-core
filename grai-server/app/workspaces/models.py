@@ -81,6 +81,7 @@ class Membership(TenantModel):
         related_name="memberships",
         on_delete=models.PROTECT,
     )
+    hidden = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
