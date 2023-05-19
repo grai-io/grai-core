@@ -35,20 +35,20 @@ export const GET_TABLES_AND_EDGES = gql`
               name
             }
           }
-          source_tables {
-            data {
-              id
-              name
-              display_name
-            }
-          }
-          destination_tables {
-            data {
-              id
-              name
-              display_name
-            }
-          }
+          # source_tables {
+          #   data {
+          #     id
+          #     name
+          #     display_name
+          #   }
+          # }
+          # destination_tables {
+          #   data {
+          #     id
+          #     name
+          #     display_name
+          #   }
+          # }
         }
         meta {
           total
@@ -159,7 +159,11 @@ const Graph: React.FC = () => {
       >
         {total > 0 || loading ? (
           <GraphComponent
-            tables={tables}
+            tables={tables.map(t => ({
+              ...t,
+              source_tables: { data: [] },
+              destination_tables: { data: [] },
+            }))}
             edges={edges}
             errors={errors}
             limitGraph={limitGraph}

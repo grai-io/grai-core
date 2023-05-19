@@ -20,30 +20,6 @@ export interface GetTablesAndEdges_workspace_tables_data_columns {
   data: GetTablesAndEdges_workspace_tables_data_columns_data[];
 }
 
-export interface GetTablesAndEdges_workspace_tables_data_source_tables_data {
-  __typename: "Table";
-  id: any;
-  name: string;
-  display_name: string;
-}
-
-export interface GetTablesAndEdges_workspace_tables_data_source_tables {
-  __typename: "TableDataWrapper";
-  data: GetTablesAndEdges_workspace_tables_data_source_tables_data[];
-}
-
-export interface GetTablesAndEdges_workspace_tables_data_destination_tables_data {
-  __typename: "Table";
-  id: any;
-  name: string;
-  display_name: string;
-}
-
-export interface GetTablesAndEdges_workspace_tables_data_destination_tables {
-  __typename: "TableDataWrapper";
-  data: GetTablesAndEdges_workspace_tables_data_destination_tables_data[];
-}
-
 export interface GetTablesAndEdges_workspace_tables_data {
   __typename: "Table";
   id: any;
@@ -51,8 +27,6 @@ export interface GetTablesAndEdges_workspace_tables_data {
   display_name: string;
   data_source: string;
   columns: GetTablesAndEdges_workspace_tables_data_columns;
-  source_tables: GetTablesAndEdges_workspace_tables_data_source_tables;
-  destination_tables: GetTablesAndEdges_workspace_tables_data_destination_tables;
 }
 
 export interface GetTablesAndEdges_workspace_tables_meta {
