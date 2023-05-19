@@ -38,6 +38,7 @@ class ConnectionAdmin(admin.ModelAdmin):
         "workspace",
         "namespace",
         "is_active",
+        "temp",
         "created_by",
         "created_at",
     )
@@ -50,6 +51,7 @@ class ConnectionAdmin(admin.ModelAdmin):
         ("created_by", admin.RelatedOnlyFieldListFilter),
         "namespace",
         "is_active",
+        "temp",
     )
 
     formfield_overrides = {JSONField: {"widget": PrettyJSONWidget}}
