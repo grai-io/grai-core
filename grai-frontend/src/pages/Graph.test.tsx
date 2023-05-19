@@ -40,6 +40,7 @@ const tablesMock = {
       organisationName: "default",
       workspaceName: "demo",
       filters: { filter: null },
+      offset: 0,
     },
   },
   result: {
@@ -73,6 +74,9 @@ const tablesMock = {
         },
       },
     },
+    meta: {
+      total: 100,
+    },
   },
 }
 
@@ -83,6 +87,7 @@ const tablesMockWithFilter = {
       organisationName: "default",
       workspaceName: "demo",
       filters: { filter: "1" },
+      offset: 0,
     },
   },
   result: {
@@ -183,6 +188,7 @@ test("renders empty", async () => {
             organisationName: "default",
             workspaceName: "demo",
             filters: { filter: null },
+            offset: 0,
           },
         },
         result: {
@@ -301,6 +307,7 @@ test("error", async () => {
           organisationName: "",
           workspaceName: "",
           filters: { filter: null },
+          offset: 0,
         },
       },
       result: {
@@ -326,6 +333,7 @@ test("no nodes", async () => {
           organisationName: "",
           workspaceName: "",
           filters: { filter: null },
+          offset: 0,
         },
       },
       result: {
