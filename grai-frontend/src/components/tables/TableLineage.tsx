@@ -21,11 +21,9 @@ export const GET_TABLES_AND_EDGES = gql`
       tables {
         data {
           id
-          namespace
           name
           display_name
           data_source
-          metadata
           columns {
             data {
               id
@@ -58,7 +56,6 @@ export const GET_TABLES_AND_EDGES = gql`
           destination {
             id
           }
-          metadata
         }
       }
     }
