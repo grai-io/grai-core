@@ -51,6 +51,7 @@ class Workspace(TenantModel):
             )
         ]
         indexes = [
+            models.Index(fields=["name"]),
             models.Index(fields=["organisation", "name"]),
         ]
 

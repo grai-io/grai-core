@@ -66,6 +66,7 @@ class Node(TenantModel):
         ]
         indexes = [
             models.Index(fields=["workspace", "namespace", "name"]),
+            models.Index("workspace", models.F("metadata__grai__node_type"), name="lineage_node_type"),
         ]
 
 
@@ -126,6 +127,10 @@ class Edge(TenantModel):
         indexes = [
             models.Index(fields=["workspace", "is_active"]),
             models.Index(fields=["workspace", "namespace", "name"]),
+            models.Index(fields=["workspace", "source", "destination"]),
+            models.Index("workspace", models.F("metadata__grai__edge_type"), name="lineage_edge_type"),
+            models.Index(models.F("metadata__grai__edge_type"), "source", name="lineage_edge_type_source"),
+            models.Index(models.F("metadata__grai__edge_type"), "destination", name="lineage_edge_type_destination"),
         ]
 
 

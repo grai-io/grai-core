@@ -441,6 +441,8 @@ class Workspace:
 
             return Pagination[Table](queryset=queryset, filteredQueryset=filteredQueryset, pagination=pagination)
 
+        print(queryset.query)
+
         return Pagination[Table](queryset=queryset, pagination=pagination)
 
     @gql.django.field
@@ -453,9 +455,11 @@ class Workspace:
         self,
         pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
     ) -> Pagination[Edge]:
-        queryset = EdgeModel.objects.filter(workspace=self).exclude(
-            metadata__has_key="grai.edge_type", metadata__grai__edge_type="TableToColumn"
+        queryset = EdgeModel.objects.filter(workspace=self).filter(
+            metadata__grai__edge_type__in=["TableToTable", "ColumnToColumn"]
         )
+
+        print(queryset.query)
 
         return Pagination[Edge](queryset=queryset, pagination=pagination)
 
