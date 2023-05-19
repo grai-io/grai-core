@@ -17,14 +17,23 @@ type TablesTableProps = {
   tables: TableInterface[]
   loading?: boolean
   total: number
+  page: number
+  onPageChange: (page: number) => void
 }
 
 const TablesTable: React.FC<TablesTableProps> = ({
   tables,
   loading,
   total,
+  page,
+  onPageChange,
 }) => {
   const navigate = useNavigate()
+
+  const handlePageChange = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null,
+    newPage: number
+  ) => onPageChange(newPage)
 
   return (
     <Table sx={{ mb: -1 }}>
@@ -70,9 +79,10 @@ const TablesTable: React.FC<TablesTableProps> = ({
       <TableFooter>
         <TablePagination
           count={total}
-          rowsPerPage={1000}
-          page={0}
+          rowsPerPage={20}
+          page={page}
           type="tables"
+          onPageChange={handlePageChange}
         />
       </TableFooter>
     </Table>

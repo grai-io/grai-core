@@ -10,10 +10,14 @@ import GraphError from "components/utils/GraphError"
 import { GetTables, GetTablesVariables } from "./__generated__/GetTables"
 
 export const GET_TABLES = gql`
-  query GetTables($organisationName: String!, $workspaceName: String!) {
+  query GetTables(
+    $organisationName: String!
+    $workspaceName: String!
+    $offset: Int
+  ) {
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
-      tables {
+      tables(pagination: { limit: 20, offset: $offset }) {
         data {
           id
           namespace
@@ -43,6 +47,7 @@ export interface Table {
 const Tables: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
   const [search, setSearch] = useState<string>()
+  const [page, setPage] = useState<number>(0)
 
   const { loading, error, data, refetch } = useQuery<
     GetTables,
@@ -51,6 +56,7 @@ const Tables: React.FC = () => {
     variables: {
       organisationName,
       workspaceName,
+      offset: page * 20,
     },
   })
 
@@ -79,6 +85,8 @@ const Tables: React.FC = () => {
           tables={filteredTables}
           loading={loading}
           total={data?.workspace.tables.meta.total ?? 0}
+          page={page}
+          onPageChange={setPage}
         />
       </PageContent>
     </PageLayout>

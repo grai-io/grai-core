@@ -42,4 +42,5 @@ export interface GetTables {
 export interface GetTablesVariables {
   organisationName: string;
   workspaceName: string;
+  offset?: number | null;
 }
