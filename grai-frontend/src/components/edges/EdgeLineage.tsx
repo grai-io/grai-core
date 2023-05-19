@@ -1,15 +1,15 @@
 import React, { useState } from "react"
 import { gql, useQuery } from "@apollo/client"
 import { Alert, Box } from "@mui/material"
-import {
-  GetTablesAndEdges,
-  GetTablesAndEdgesVariables,
-} from "pages/__generated__/GetTablesAndEdges"
 import useWorkspace from "helpers/useWorkspace"
 import getHiddenTables, { getEdgeTables } from "helpers/visibleTables"
 import Graph from "components/graph/Graph"
 import Loading from "components/layout/Loading"
 import GraphError from "components/utils/GraphError"
+import {
+  GetTablesAndEdgesEdgeLineage,
+  GetTablesAndEdgesEdgeLineageVariables,
+} from "./__generated__/GetTablesAndEdgesEdgeLineage"
 
 export const GET_TABLES_AND_EDGES = gql`
   query GetTablesAndEdgesEdgeLineage(
@@ -83,8 +83,8 @@ const EdgeLineage: React.FC<EdgeLineageProps> = ({ edge }) => {
   const [value, setValue] = useState(1)
   const { organisationName, workspaceName } = useWorkspace()
   const { loading, error, data } = useQuery<
-    GetTablesAndEdges,
-    GetTablesAndEdgesVariables
+    GetTablesAndEdgesEdgeLineage,
+    GetTablesAndEdgesEdgeLineageVariables
   >(GET_TABLES_AND_EDGES, {
     variables: {
       organisationName,

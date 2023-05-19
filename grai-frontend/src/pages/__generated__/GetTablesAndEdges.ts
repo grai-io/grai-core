@@ -118,4 +118,5 @@ export interface GetTablesAndEdgesVariables {
   organisationName: string;
   workspaceName: string;
   filters?: WorkspaceTableFilter | null;
+  offset: number;
 }

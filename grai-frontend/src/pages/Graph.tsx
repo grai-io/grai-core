@@ -4,6 +4,7 @@ import { Box } from "@mui/material"
 import { useSearchParams } from "react-router-dom"
 import theme from "theme"
 import useWorkspace from "helpers/useWorkspace"
+import { ControlOptions } from "components/graph/controls/GraphControls"
 import EmptyGraph from "components/graph/EmptyGraph"
 import GraphComponent, { Error } from "components/graph/Graph"
 import PageLayout from "components/layout/PageLayout"
@@ -18,10 +19,11 @@ export const GET_TABLES_AND_EDGES = gql`
     $organisationName: String!
     $workspaceName: String!
     $filters: WorkspaceTableFilter
+    $offset: Int!
   ) {
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
-      tables(filters: $filters) {
+      tables(filters: $filters, pagination: { limit: 1000, offset: $offset }) {
         data {
           id
           namespace
@@ -82,7 +84,7 @@ const Graph: React.FC = () => {
 
   const filter = searchParams.get("filter") ?? null
 
-  const { loading, error, data } = useQuery<
+  const { loading, error, data, fetchMore } = useQuery<
     GetTablesAndEdges,
     GetTablesAndEdgesVariables
   >(GET_TABLES_AND_EDGES, {
@@ -92,6 +94,7 @@ const Graph: React.FC = () => {
       filters: {
         filter,
       },
+      offset: 0,
     },
   })
 
@@ -106,6 +109,53 @@ const Graph: React.FC = () => {
   const edges = data?.workspace.other_edges.data ?? []
 
   const total = data?.workspace.tables.meta.total ?? 0
+
+  // if (total > tables.length) {
+  //   fetchMore({
+  //     variables: {
+  //       offset: tables.length,
+  //     },
+  //     updateQuery: (prevResult, { fetchMoreResult }) => ({
+  //       workspace: {
+  //         ...fetchMoreResult.workspace,
+  //         tables: {
+  //           ...fetchMoreResult.workspace.tables,
+  //           data: [
+  //             ...prevResult.workspace.tables.data,
+  //             ...fetchMoreResult.workspace.tables.data,
+  //           ],
+  //         },
+  //       },
+  //     }),
+  //   })
+  // }
+
+  const controlOptions: ControlOptions = {}
+
+  if (total > tables.length) {
+    controlOptions.loadMore = {
+      count: tables.length,
+      total,
+      onLoadMore: () =>
+        fetchMore({
+          variables: {
+            offset: tables.length,
+          },
+          updateQuery: (prevResult, { fetchMoreResult }) => ({
+            workspace: {
+              ...fetchMoreResult.workspace,
+              tables: {
+                ...fetchMoreResult.workspace.tables,
+                data: [
+                  ...prevResult.workspace.tables.data,
+                  ...fetchMoreResult.workspace.tables.data,
+                ],
+              },
+            },
+          }),
+        }),
+    }
+  }
 
   return (
     <PageLayout>
@@ -123,6 +173,7 @@ const Graph: React.FC = () => {
             errors={errors}
             limitGraph={limitGraph}
             loading={loading}
+            controlOptions={controlOptions}
           />
         ) : (
           <EmptyGraph />
