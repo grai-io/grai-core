@@ -1,7 +1,23 @@
 import React, { useRef, useState } from "react"
-import { ArrowDropDown, PlayArrow } from "@mui/icons-material"
+import {
+  ArrowDropDown,
+  CalendarMonth,
+  EventRepeat,
+  PlayArrow,
+} from "@mui/icons-material"
 import { LoadingButton } from "@mui/lab"
-import { Button, ButtonGroup, ClickAwayListener, Grow, ListItemIcon, ListItemText, MenuItem, MenuList, Paper, Popper } from "@mui/material"
+import {
+  Button,
+  ButtonGroup,
+  ClickAwayListener,
+  Grow,
+  ListItemIcon,
+  ListItemText,
+  MenuItem,
+  MenuList,
+  Paper,
+  Popper,
+} from "@mui/material"
 
 type ConnectionRunButtonProps = {
   onRun: (type: string) => void
@@ -11,24 +27,30 @@ type ConnectionRunButtonProps = {
   status: string | null
 }
 
-const ConnectionRunButton: React.FC<ConnectionRunButtonProps> = ({onRun, disabled, loading, events, status}) => {
-    const [open, setOpen] = useState(false)
-    const anchorRef = useRef<HTMLDivElement>(null)
+const ConnectionRunButton: React.FC<ConnectionRunButtonProps> = ({
+  onRun,
+  disabled,
+  loading,
+  events,
+  status,
+}) => {
+  const [open, setOpen] = useState(false)
+  const anchorRef = useRef<HTMLDivElement>(null)
 
-const handleClose = (event: Event) => {
-  if (
-    anchorRef.current &&
-    anchorRef.current.contains(event.target as HTMLElement)
-  ) {
-    return
+  const handleClose = (event: Event) => {
+    if (
+      anchorRef.current &&
+      anchorRef.current.contains(event.target as HTMLElement)
+    ) {
+      return
+    }
+
+    setOpen(false)
   }
 
-  setOpen(false)
-}
-
-const handleToggle = () => {
-  setOpen(prevOpen => !prevOpen)
-}
+  const handleToggle = () => {
+    setOpen(prevOpen => !prevOpen)
+  }
 
   const handleClick = (type: string) => () => {
     setOpen(false)
@@ -84,13 +106,13 @@ const handleToggle = () => {
                   <MenuList id="split-button-menu" autoFocusItem>
                     <MenuItem onClick={handleClick("EVENTS")}>
                       <ListItemIcon>
-                        <PlayArrow />
+                        <CalendarMonth />
                       </ListItemIcon>
                       <ListItemText primary="Run Events" />
                     </MenuItem>
                     <MenuItem onClick={handleClick("EVENTS_ALL")}>
                       <ListItemIcon>
-                        <PlayArrow />
+                        <EventRepeat />
                       </ListItemIcon>
                       <ListItemText primary="Run All Events" />
                     </MenuItem>
