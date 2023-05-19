@@ -61,6 +61,10 @@ const Tables: React.FC = () => {
       offset: page * 20,
       search,
     },
+    context: {
+      debounceKey: "tables",
+      debounceTimeout: 1000,
+    },
   })
 
   if (error) return <GraphError error={error} />
