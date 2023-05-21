@@ -41,19 +41,20 @@ def test_get_nodes(client):
 
 
 def test_get_nodes_by_name(client, node_v1):
-    result = client.get("node", node_v1.spec.name)
+    result = client.get("node", name=node_v1.spec.name)
     assert len(result) == 1, result
     assert result[0].spec.name == node_v1.spec.name
 
 
 def test_get_nodes_by_name_namespace(client, node_v1):
-    result = client.get("node", node_v1.spec.name, node_v1.spec.namespace)
-    assert result.spec.name == node_v1.spec.name
-    assert result.spec.namespace == node_v1.spec.namespace
+    result = client.get("node", name=node_v1.spec.name, namespace=node_v1.spec.namespace)
+    assert len(result) == 1, result
+    assert result[0].spec.name == node_v1.spec.name
+    assert result[0].spec.namespace == node_v1.spec.namespace
 
 
 def test_get_nodes_by_namespace(client, node_v1):
-    result = client.get("node", "*", node_v1.spec.namespace)
+    result = client.get("node", namespace=node_v1.spec.namespace)
     assert isinstance(result, list)
     assert len(result) == 1  # node namespace is a uuid and therefore unique
     assert result[0].spec.name == node_v1.spec.name

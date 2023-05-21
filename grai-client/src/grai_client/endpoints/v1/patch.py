@@ -6,6 +6,7 @@ from grai_schemas.v1 import EdgeV1, NodeV1
 from grai_client.endpoints.client import ClientOptions
 from grai_client.endpoints.rest import get, patch
 from grai_client.endpoints.v1.client import ClientV1
+from grai_client.endpoints.v1.get import finalize_edge
 from grai_client.endpoints.v1.utils import process_node_id
 
 T = TypeVar("T", NodeV1, EdgeV1)
@@ -35,16 +36,15 @@ async def patch_edge_v1(
         current = await get(client, grai_type)
         grai_type.spec.id = current.spec.id
 
-    url = f"{client.get_url(grai_type)}{grai_type.spec.id}/"
-
     source, destination = await asyncio.gather(
-        process_node_id(client, grai_type.spec.source), process_node_id(client, grai_type.spec.destination)
+        process_node_id(client, grai_type.spec.source, options),
+        process_node_id(client, grai_type.spec.destination, options),
     )
 
     payload = grai_type.spec.dict(exclude_none=True)
-    payload["source"] = source.id
-    payload["destination"] = destination.id
+    payload |= {"source": source.id, "destination": destination.id}
 
+    url = f"{client.get_url(grai_type)}{grai_type.spec.id}/"
     response = await patch(client, url, payload, options=options)
     response = response.json()
     if response is None:

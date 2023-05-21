@@ -4,7 +4,7 @@ from typing import Optional
 from grai_schemas.v1 import EdgeV1, NodeV1
 
 from grai_client.endpoints.client import ClientOptions
-from grai_client.endpoints.rest import post
+from grai_client.endpoints.rest import get, post
 from grai_client.endpoints.v1.client import ClientV1
 from grai_client.endpoints.v1.utils import process_node_id
 
@@ -22,7 +22,8 @@ async def post_edge_v1(
 ) -> Optional[EdgeV1]:
     url = client.get_url(grai_type)
     source, destination = await asyncio.gather(
-        process_node_id(client, grai_type.spec.source), process_node_id(client, grai_type.spec.destination)
+        process_node_id(client, grai_type.spec.source, options),
+        process_node_id(client, grai_type.spec.destination, options),
     )
 
     payload = grai_type.spec.dict(exclude_none=True)
