@@ -62,7 +62,7 @@ async def get_from_node_named_id(
     client: ClientV1, grai_type: NodeNamedID, options: ClientOptions = ClientOptions()
 ) -> Optional[NodeV1]:
     options = options.copy()
-    options.query_args |= {"name": grai_type.name, "namespace": grai_type.namespace}
+    options.query_args = {**options.query_args, "name": grai_type.name, "namespace": grai_type.namespace}
 
     result = await get(client, "Node", options=options)
 
@@ -131,11 +131,11 @@ async def get_from_edge_uuid_id(
 
 
 @get.register
-async def get_from_node_named_id(
+async def get_from_edge_named_id(
     client: ClientV1, grai_type: EdgeNamedID, options: ClientOptions = ClientOptions()
 ) -> Optional[EdgeV1]:
     options = options.copy()
-    options.query_args |= {"name": grai_type.name, "namespace": grai_type.namespace}
+    options.query_args = {**options.query_args, "name": grai_type.name, "namespace": grai_type.namespace}
 
     resp = await get(client, "Edge", options=options)
 
@@ -199,5 +199,5 @@ async def get_workspace_by_name_v1(
             f"We were unable to identify a unique workspace matching `{name}` because more than one result was "
             f"returned. This may be the result of belonging to multiple organizations with identical workspace "
             f"names. You can narrow your query by instead providing a workspace ref composed of  "
-            "{org-name}/{workspace-name}.",
+            "{org-name}/{workspace-name} or the UUID of the desired workspace.",
         )

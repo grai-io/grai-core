@@ -41,8 +41,7 @@ async def patch_edge_v1(
         process_node_id(client, grai_type.spec.destination, options),
     )
 
-    payload = grai_type.spec.dict(exclude_none=True)
-    payload |= {"source": source.id, "destination": destination.id}
+    payload = {**grai_type.spec.dict(exclude_none=True), "source": source.id, "destination": destination.id}
 
     url = f"{client.get_url(grai_type)}{grai_type.spec.id}/"
     response = await patch(client, url, payload, options=options)

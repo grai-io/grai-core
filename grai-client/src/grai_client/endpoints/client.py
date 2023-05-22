@@ -3,10 +3,10 @@ import asyncio
 import json
 import sys
 import warnings
-from functools import wraps
 from typing import (
     Any,
     Callable,
+    Coroutine,
     Dict,
     Iterable,
     List,
@@ -14,18 +14,19 @@ from typing import (
     Optional,
     Sequence,
     Tuple,
+    Type,
     TypeVar,
     Union,
 )
 from urllib.parse import urlparse
 
 import httpx
-import tqdm
 from grai_schemas.base import Edge, Node
 from httpx import BasicAuth, Request, Response
 from multimethod import multimethod
 from pydantic import BaseModel
 from tqdm.asyncio import tqdm_asyncio
+from tqdm.autonotebook import tqdm
 
 from grai_client.authentication import APIKeyHeader
 from grai_client.endpoints.rest import delete, get, patch, post
@@ -66,10 +67,10 @@ class ClientOptions(BaseModel):
         elif not isinstance(other, ClientOptions):
             raise NotImplementedError(f"Unrecognized options type: {type(other)}")
 
-        payload = self.payload | other.payload
-        request_args = self.request_args | other.request_args
-        headers = self.headers | other.headers
-        query_args = self.query_args | other.query_args
+        payload = {**self.payload, **other.payload}
+        request_args = {**self.request_args, **other.request_args}
+        headers = {**self.headers, **other.headers}
+        query_args = {**self.query_args, **other.query_args}
         return ClientOptions(payload=payload, request_args=request_args, headers=headers, query_args=query_args)
 
 
@@ -171,7 +172,7 @@ def validate_connection_arguments(
 
 
 class BaseClient(abc.ABC):
-    id: Literal["base"] = "base"
+    id = "base"
 
     def __init__(
         self,
@@ -211,9 +212,12 @@ class BaseClient(abc.ABC):
             raise Exception(f"Error connecting to server at {self.url}. Received response {resp.json()}")
 
     def get_session(self) -> httpx.AsyncClient:
-        client_args = {"timeout": None, "http2": True}
-        # client_args['limits'] = httpx.Limits(max_keepalive_connections=None, max_connections=None)
-        client_args |= self.httpx_async_client_args if self.httpx_async_client_args is not None else {}
+        client_args = {
+            "timeout": None,
+            "http2": True,
+            "limits": httpx.Limits(max_keepalive_connections=3, max_connections=3),
+        }
+        client_args.update(self.httpx_async_client_args if self.httpx_async_client_args is not None else {})
 
         session = httpx.AsyncClient(**client_args)
         session.auth = self.auth
@@ -279,7 +283,7 @@ class BaseClient(abc.ABC):
             options = ClientOptions()
 
         options = self.default_options + options
-        options.query_args |= kwargs
+        options.query_args = {**options.query_args, **kwargs}
 
         async with self.get_session() as session:
             self.session = session
@@ -301,28 +305,64 @@ class BaseClient(abc.ABC):
 
 
 # ----- Sequence Functions ----- #
-def type_segmentation(objs: Sequence, priority_order) -> Tuple[List[int], Iterable[T]]:
-    obj_idx_map = {}
+
+
+def type_segmentation(
+    objs: Sequence, priority_order: Optional[Tuple[Type[T]]]
+) -> List[Tuple[List[int], Union[Sequence[T], Iterable[T]], Type[T]]]:
+    if priority_order is None:
+        return [(list(range(len(objs))), objs, Any)]
+
+    obj_idx_map: Dict[Type[T], List[int]] = {}
     for idx, obj in enumerate(objs):
-        obj_type = type(obj)
+        obj_type: Type[T] = type(obj)
         obj_idx_map.setdefault(obj_type, [])
         obj_idx_map[obj_type].append(idx)
 
+    result_iter: List[Tuple[List[int], Iterable[T], Type[T]]] = []
     for prioritized_type in priority_order:
         type_keys = [obj_type for obj_type in obj_idx_map.keys() if issubclass(obj_type, prioritized_type)]
         for obj_type in type_keys:
             idx = obj_idx_map.pop(obj_type)
-            yield idx, (objs[i] for i in idx)
+            result_iter.append((idx, (objs[i] for i in idx), obj_type))
 
     for obj_type, idx in obj_idx_map.items():
-        yield idx, (objs[i] for i in idx)
+        result_iter.append((idx, (objs[i] for i in idx), obj_type))
+
+    return result_iter
 
 
-def segmented_caller(func: Callable, priority_order: Tuple = (Node, Edge)) -> SegmentedCallerType:
-    async def inner(client: BaseClient, objs: Sequence[T], options: ClientOptions) -> List[T]:
+PRIORITY_ORDER_MAP = {
+    "post": (Node, Edge),
+    "delete": (Edge, Node),
+    "patch": None,
+    "get": None,
+}
+
+
+def segmented_caller(
+    func: Callable[[BaseClient, Sequence[T], ClientOptions], R], priority_order: Optional[Tuple] = None
+) -> Callable[[BaseClient, Sequence[T], ClientOptions], Coroutine[Any, Any, list[Optional[T]]]]:
+    if priority_order is None:
+        priority_order = PRIORITY_ORDER_MAP.get(func.__name__, ())
+
+    async def inner(client: BaseClient, objs: Sequence[T], options: ClientOptions) -> List[R]:
         final_result = [None] * len(objs)
-        for idx, iter_obj in type_segmentation(objs, priority_order):
-            result = await asyncio.gather(*[func(client, obj, options=options) for obj in iter_obj])
+        pbar = tqdm(
+            type_segmentation(objs, priority_order),
+            desc=func.__name__.capitalize(),
+            # colour='#ffb567',
+            position=0,
+        )
+        for idx, iter_obj, obj_type in pbar:
+            result = await tqdm_asyncio.gather(
+                *[func(client, obj, options) for obj in iter_obj],
+                desc=obj_type.__name__,
+                unit=f" {obj_type.__name__}",
+                # colour='#8338ec',
+                position=1,
+                leave=True,
+            )
             for i, obj in zip(idx, result):
                 final_result[i] = obj
         return final_result
@@ -336,7 +376,8 @@ async def get_sequence(
     objs: Sequence,
     options: ClientOptions = ClientOptions(),
 ) -> Sequence[T]:
-    result = await tqdm_asyncio.gather(*[get(client, obj, options=options) for obj in objs])
+    segmented_delete = segmented_caller(get)
+    result = await segmented_delete(client, objs, options)
     return result
 
 
@@ -346,7 +387,7 @@ async def delete_sequence(
     objs: Sequence,
     options: ClientOptions = ClientOptions(),
 ) -> None:
-    segmented_delete = segmented_caller(patch, priority_order=(Edge, Node))
+    segmented_delete = segmented_caller(delete)
     result = await segmented_delete(client, objs, options)
     return None
 
@@ -380,8 +421,6 @@ async def patch_sequence(
 async def client_get_url(client: BaseClient, url: str, options: ClientOptions = ClientOptions()) -> Response:
     headers = {**client.auth_headers, **options.headers}
 
-    # if "workspace" in options.payload:
-    #     url = add_query_params(url, {"workspace": options.payload["workspace"]})
     if options.query_args:
         url = add_query_params(url, options.query_args)
     response = await client.session.get(url, headers=headers, **options.request_args)
