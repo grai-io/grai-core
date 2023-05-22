@@ -1,7 +1,7 @@
 import datetime
 import time
 from enum import Enum
-from typing import Optional
+from typing import List, Optional
 from xml.dom import NodeFilter
 
 import strawberry
@@ -617,6 +617,119 @@ class Workspace:
         data = get_tags(self)
 
         return DataWrapper[str](data=data)
+
+    @gql.django.field
+    def graph(self) -> List["GraphTable"]:
+        import redis
+
+        r = redis.Redis(host="localhost", port=6379, db=0)
+
+        result = r.graph(f"lineage:{str(self.id)}").query(
+            f"""
+OPTIONAL MATCH (table:Table)-[:TABLE_TO_COLUMN]->(column:Column)
+RETURN table,
+    COLLECT(
+        {{
+            root: column,
+            destinations: [d=(column)-[:COLUMN_TO_COLUMN]->(:Column) | d],
+            sources: [s=(:Column)-[:COLUMN_TO_COLUMN]->(column) | s]
+        }}) AS columns,
+    (table)-[:TABLE_TO_TABLE]->(:Table) AS destinations,
+    (:Table)-[:TABLE_TO_TABLE]->(table:Table) AS sources
+"""
+        )
+
+        tables = []
+
+        for node in result.result_set:
+            table = node[0]
+            columns_data = node[1]
+            destinations_data = node[2]
+            sources_data = node[3]
+
+            columns = []
+
+            for column_data in columns_data:
+                root = column_data.get("root")
+
+                if not root:
+                    continue
+
+                column = root
+
+                destinations = []
+
+                for destination_data in column_data.get("destinations"):
+                    destination = destination_data._nodes[1]
+
+                    destinations.append(GraphNode(id=destination.properties["id"], name=destination.properties["name"]))
+
+                sources = []
+
+                for source_data in column_data.get("sources"):
+                    source = source_data._nodes[0]
+
+                    sources.append(GraphNode(id=source.properties["id"], name=source.properties["name"]))
+
+                columns.append(
+                    GraphColumn(
+                        id=column.properties["id"],
+                        name=column.properties["name"],
+                        sources=sources,
+                        destinations=destinations,
+                    )
+                )
+
+            destinations = []
+
+            for destination_data in destinations_data:
+                destination = destination_data._nodes[1]
+
+                destinations.append(GraphNode(id=destination.properties["id"], name=destination.properties["name"]))
+
+            sources = []
+
+            for source_data in sources_data:
+                source = source_data._nodes[0]
+
+                sources.append(GraphNode(id=source.properties["id"], name=source.properties["name"]))
+
+            tables.append(
+                GraphTable(
+                    id=table.properties["id"],
+                    name=table.properties["name"],
+                    namespace=table.properties["namespace"],
+                    columns=columns,
+                    sources=sources,
+                    destinations=destinations,
+                )
+            )
+
+        return tables
+
+
+@strawberry.type
+class GraphTable:
+    id: str
+    name: str
+    namespace: str
+    columns: List["GraphColumn"]
+    sources: List["GraphNode"]
+    destinations: List["GraphNode"]
+
+
+@strawberry.type
+class GraphColumn:
+    id: str
+    name: str
+    sources: List["GraphNode"]
+    destinations: List["GraphNode"]
+
+
+@strawberry.type
+class GraphNode:
+    id: str
+    name: str
 
 
 @gql.django.filters.filter(MembershipModel, lookups=True)
