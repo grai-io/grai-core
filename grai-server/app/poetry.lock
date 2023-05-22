@@ -1006,14 +1006,14 @@ phonenumberslite = ["phonenumberslite (>=7.0.2)"]
 
 [[package]]
 name = "django-ses"
-version = "3.4.1"
+version = "3.5.0"
 description = "A Django email backend for Amazon's Simple Email Service"
 category = "main"
 optional = false
 python-versions = ">=3.7,<4.0"
 files = [
-    {file = "django_ses-3.4.1-py3-none-any.whl", hash = "sha256:3e798fbb4507664c6160b3c5ed6daafb94781cecd965601a3e002eccdd224f7f"},
-    {file = "django_ses-3.4.1.tar.gz", hash = "sha256:900b4c27a8fdebf93f2f583b8ed1171d6cfd67c5aa796a5dd39358780652c257"},
+    {file = "django_ses-3.5.0-py3-none-any.whl", hash = "sha256:3522fe531155eb06bb015b3b36324c059194450633b33f9bd5bc9d1328822fe2"},
+    {file = "django_ses-3.5.0.tar.gz", hash = "sha256:dc1644f50608fbf3a64f085a371c61d56d68eba3c5efa69651f13dc3ba05049d"},
 ]
 
 [package.dependencies]
@@ -4250,4 +4250,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "938c181e877bf8f032fbc01ca45f31ad8b1fd55433334b868b4068c0d5830695"
+content-hash = "e8b9ee408ae087d8aaaede6c515a12f7f5f81e2cad821d418adc588ab89af0ea"
