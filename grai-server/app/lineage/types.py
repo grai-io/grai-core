@@ -1,5 +1,6 @@
 from typing import List
 
+import strawberry
 import strawberry_django
 from strawberry.scalars import JSON
 from strawberry_django_plus import gql
@@ -99,3 +100,24 @@ class Filter:
     created_at: auto
     updated_at: auto
     created_by: User
+
+
+@strawberry.type
+class GraphTable:
+    id: str
+    name: str
+    namespace: str
+    data_source: str
+    columns: List["GraphColumn"]
+    sources: List[str]
+    destinations: List[str]
+    all_destinations: List[str]
+    all_sources: List[str]
+
+
+@strawberry.type
+class GraphColumn:
+    id: str
+    name: str
+    sources: List[str]
+    destinations: List[str]

@@ -3,6 +3,7 @@ import { Edge as RFEdge, Node as RFNode } from "reactflow"
 import notEmpty from "helpers/notEmpty"
 import BaseGraph from "./BaseGraph"
 import { BaseNodeData } from "./BaseNode"
+import { ControlOptions } from "./controls/GraphControls"
 
 const position = { x: 0, y: 0 }
 
@@ -20,6 +21,8 @@ interface Table {
   columns: Column[]
   sources?: string[]
   destinations: string[]
+  all_destinations?: string[]
+  all_sources?: string[]
 }
 
 type Graph2Props = {
@@ -27,6 +30,8 @@ type Graph2Props = {
   errors: any
   loading?: boolean
   limitGraph?: boolean
+  controlOptions?: ControlOptions
+  throwMissingTable?: boolean
 }
 
 const Graph2: React.FC<Graph2Props> = ({
@@ -34,6 +39,8 @@ const Graph2: React.FC<Graph2Props> = ({
   errors,
   loading,
   limitGraph,
+  controlOptions,
+  throwMissingTable,
 }) => {
   const [hidden, setHidden] = useState<string[]>([])
   const [expanded, setExpanded] = useState<string[]>([])
@@ -54,15 +61,12 @@ const Graph2: React.FC<Graph2Props> = ({
           label: table.name,
           data_source: table.data_source,
           columns: table.columns,
-          source_tables: table.sources,
-          hiddenSourceTables: (table.sources ?? []).filter(t =>
-            hidden.includes(t)
+          hiddenSourceTables: (table.all_destinations ?? []).filter(
+            t => !tables.map(t => t.id).includes(t)
           ),
-          destination_tables: table.destinations,
-          hiddenDestinationTables: table.destinations.filter(t =>
-            hidden.includes(t)
+          hiddenDestinationTables: (table.all_sources ?? []).filter(
+            t => !tables.map(t => t.id).includes(t)
           ),
-
           expanded: expanded.includes(table.id),
           onExpand(value: boolean) {
             setExpanded(
@@ -85,7 +89,7 @@ const Graph2: React.FC<Graph2Props> = ({
   const getTable = (id: string) => {
     const table = tables.find(table => table.columns.some(col => col.id === id))
 
-    if (!table) throw new Error(`Table not found ${id}`)
+    if (!table && throwMissingTable) throw new Error(`Table not found ${id}`)
 
     return table
   }
@@ -133,6 +137,9 @@ const Graph2: React.FC<Graph2Props> = ({
       }>(
         (res, destinationId) => {
           const destinationTable = getTable(destinationId)
+
+          if (!destinationTable) return res
+
           const destinationExpanded = expanded.includes(destinationTable.id)
 
           destinationExpanded
@@ -171,6 +178,9 @@ const Graph2: React.FC<Graph2Props> = ({
             tableRes.concat(
               column.destinations.reduce<RFEdge[]>((res, destination) => {
                 const destinationTable = getTable(destination)
+
+                if (!destinationTable) return res
+
                 const destinationExpanded = expanded.includes(
                   destinationTable.id
                 )
@@ -193,6 +203,8 @@ const Graph2: React.FC<Graph2Props> = ({
           .map(destination => {
             const destinationTable = getTable(destination)
 
+            if (!destinationTable) return null
+
             return generateEdge(table.id, "all", destinationTable.id, "all")
           })
           .filter(notEmpty)
@@ -209,6 +221,7 @@ const Graph2: React.FC<Graph2Props> = ({
       search={search}
       onSearch={setSearch}
       loading={loading}
+      controlOptions={controlOptions}
     />
   )
 }

@@ -4,6 +4,8 @@ from enum import Enum
 from typing import List, Optional
 from xml.dom import NodeFilter
 
+from lineage.graph import get_graph_result, get_filtered_graph_result
+
 import strawberry
 import strawberry_django
 from django.conf import settings
@@ -34,6 +36,7 @@ from workspaces.models import Membership as MembershipModel
 from workspaces.models import Workspace as WorkspaceModel
 from workspaces.models import WorkspaceAPIKey as WorkspaceAPIKeyModel
 from workspaces.types import Organisation
+from lineage.types import GraphTable
 
 from .pagination import DataWrapper, Pagination
 
@@ -619,101 +622,14 @@ class Workspace:
         return DataWrapper[str](data=data)
 
     @gql.django.field
-    def graph(self) -> List["GraphTable"]:
-        import redis
+    def graph(
+        self, table_id: Optional[strawberry.ID] = strawberry.UNSET, n: Optional[int] = strawberry.UNSET
+    ) -> List["GraphTable"]:
+        if table_id:
+            print("Get filtered graph")
+            return get_filtered_graph_result(self.id, table_id, n)
 
-        r = redis.Redis(host="localhost", port=6379, db=0, socket_timeout=10000)
-
-        result = r.graph(f"lineage:{str(self.id)}").query(
-            f"""
-MATCH (table:Table)
-OPTIONAL MATCH (table:Table)-[:TABLE_TO_COLUMN]->(column:Column)
-OPTIONAL MATCH (column)-[:COLUMN_TO_COLUMN]->(column_destination:Column)
-OPTIONAL MATCH (table)-[:TABLE_TO_TABLE]->(destination:Table)
-WITH
-    table,
-    COLLECT(destination.id) AS destinations,
-    column,
-    collect(column_destination.id) as column_destinations
-WITH
-    table,
-    destinations,
-    collect({{
-        id: column.id,
-        name: column.name,
-        column_destinations: column_destinations
-    }}) AS columns
-WITH
-    table,
-    {{
-        id: table.id,
-        name: table.name,
-        namespace: table.namespace,
-        data_source: table.data_source,
-        columns: columns,
-        destinations: destinations
-    }} AS tables
-RETURN tables
-""",
-            timeout=10000,
-        )
-
-        tables = []
-
-        for node in result.result_set:
-            table = node[0]
-
-            columns = [
-                GraphColumn(
-                    id=column.get("id"),
-                    name=column.get("name"),
-                    sources=[],
-                    # destinations=[],
-                    destinations=column.get("column_destinations", []),
-                )
-                for column in table.get("columns")
-                if column.get("id")
-            ]
-
-            tables.append(
-                GraphTable(
-                    id=table.get("id"),
-                    name=table.get("name"),
-                    namespace=table.get("namespace"),
-                    data_source=table.get("data_source"),
-                    columns=columns,
-                    sources=[],
-                    # destinations=[],
-                    destinations=table.get("destinations", []),
-                )
-            )
-
-        return tables
-
-
-@strawberry.type
-class GraphTable:
-    id: str
-    name: str
-    namespace: str
-    data_source: str
-    columns: List["GraphColumn"]
-    sources: List["GraphNode"]
-    destinations: List[str]
-
-
-@strawberry.type
-class GraphColumn:
-    id: str
-    name: str
-    sources: List["GraphNode"]
-    destinations: List[str]
-
-
-@strawberry.type
-class GraphNode:
-    id: str
-    name: str
+        return get_graph_result(self.id)
 
 
 @gql.django.filters.filter(MembershipModel, lookups=True)

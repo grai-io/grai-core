@@ -11,12 +11,20 @@ class Command(BaseCommand):
     def add_arguments(self, parser: CommandParser) -> None:
         parser.add_argument("workspace_id", type=str)
 
+        parser.add_argument(
+            "--delete",
+            action="store_true",
+        )
+
     def handle(self, *args, **options) -> None:
         workspace_id = options["workspace_id"]
         try:
             self.workspace = Workspace.objects.get(pk=workspace_id)
         except Workspace.DoesNotExist:
             raise CommandError('workspace "%s" does not exist' % workspace_id)
+
+        if options["delete"]:
+            self.clear_cache()
 
         self.build_cache()
 
@@ -71,3 +79,9 @@ class Command(BaseCommand):
                 r.graph(f"lineage:{str(self.workspace.id)}").query(
                     f"MATCH (source:Table), (destination:Table) WHERE source.id = '{str(source_table_edge.source_id)}' AND destination.id = '{str(destination_table_edge.source_id)}' MERGE (source)-[r:TABLE_TO_TABLE_COPY]->(destination)"
                 )
+
+    def clear_cache(self):
+        r = redis.Redis(host="localhost", port=6379, db=0)
+        r.delete(f"lineage:{str(self.workspace.id)}")
+
+        self.stdout.write(self.style.SUCCESS('Successfully cleared cache for workspace "%s"' % self.workspace.name))

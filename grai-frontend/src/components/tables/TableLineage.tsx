@@ -2,61 +2,36 @@ import React, { useState } from "react"
 import { gql, useQuery } from "@apollo/client"
 import { Alert, Box } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
-import getHiddenTables from "helpers/visibleTables"
-import Graph from "components/graph/Graph"
 import Loading from "components/layout/Loading"
 import GraphError from "components/utils/GraphError"
 import {
   GetTablesAndEdgesTableLineage,
   GetTablesAndEdgesTableLineageVariables,
 } from "./__generated__/GetTablesAndEdgesTableLineage"
+import Graph2 from "components/graph/Graph2"
 
 export const GET_TABLES_AND_EDGES = gql`
   query GetTablesAndEdgesTableLineage(
     $organisationName: String!
     $workspaceName: String!
+    $tableId: ID!
+    $n: Int!
   ) {
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
-      tables {
-        data {
+      graph(table_id: $tableId, n: $n) {
+        id
+        name
+        namespace
+        data_source
+        columns {
           id
           name
-          display_name
-          data_source
-          columns {
-            data {
-              id
-              name
-              display_name
-            }
-          }
-          source_tables {
-            data {
-              id
-              name
-              display_name
-            }
-          }
-          destination_tables {
-            data {
-              id
-              name
-              display_name
-            }
-          }
+          destinations
         }
-      }
-      other_edges {
-        data {
-          id
-          source {
-            id
-          }
-          destination {
-            id
-          }
-        }
+        destinations
+        all_destinations
+        all_sources
       }
     }
   }
@@ -74,6 +49,7 @@ type TableLineageProps = {
 const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
   const [value, setValue] = useState(1)
   const { organisationName, workspaceName } = useWorkspace()
+
   const { loading, error, data } = useQuery<
     GetTablesAndEdgesTableLineage,
     GetTablesAndEdgesTableLineageVariables
@@ -81,19 +57,17 @@ const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
     variables: {
       organisationName,
       workspaceName,
+      tableId: table.id,
+      n: value,
     },
   })
 
   if (error) return <GraphError error={error} />
   if (loading) return <Loading />
 
-  const tables = data?.workspace.tables.data
+  const tables = data?.workspace.graph
 
   if (!tables || tables.length === 0) return <Alert>No tables found</Alert>
-
-  const edges = data.workspace.other_edges.data
-
-  const hiddenTables = getHiddenTables(tables, value, [table.id]).map(n => n.id)
 
   return (
     <Box
@@ -102,10 +76,10 @@ const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
       }}
       data-testid="table-lineage"
     >
-      <Graph
+      <Graph2
         tables={tables}
-        edges={edges}
-        initialHidden={hiddenTables}
+        errors={false}
+        // initialHidden={hiddenTables}
         controlOptions={{
           steps: {
             value,
