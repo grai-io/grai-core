@@ -622,22 +622,25 @@ class Workspace:
     def graph(self) -> List["GraphTable"]:
         import redis
 
-        r = redis.Redis(host="localhost", port=6379, db=0)
+        r = redis.Redis(host="localhost", port=6379, db=0, socket_timeout=10000)
 
         result = r.graph(f"lineage:{str(self.id)}").query(
             f"""
+MATCH (table:Table)
 OPTIONAL MATCH (table:Table)-[:TABLE_TO_COLUMN]->(column:Column)
 RETURN table,
     COLLECT(
         {{
             root: column,
-            destinations: [d=(column)-[:COLUMN_TO_COLUMN]->(:Column) | d],
-            sources: [s=(:Column)-[:COLUMN_TO_COLUMN]->(column) | s]
+            destinations: [d=(column)-[:COLUMN_TO_COLUMN]->(:Column) | d]
         }}) AS columns,
-    (table)-[:TABLE_TO_TABLE]->(:Table) AS destinations,
-    (:Table)-[:TABLE_TO_TABLE]->(table:Table) AS sources
-"""
+    (table)-[:TABLE_TO_TABLE]->(:Table) AS destinations
+""",
+            timeout=10000,
         )
+
+        # sources: [s=(:Column)-[:COLUMN_TO_COLUMN]->(column) | s]
+        # (:Table)-[:TABLE_TO_TABLE]->(table:Table) AS sources
 
         tables = []
 
@@ -645,7 +648,7 @@ RETURN table,
             table = node[0]
             columns_data = node[1]
             destinations_data = node[2]
-            sources_data = node[3]
+            # sources_data = node[3]
 
             columns = []
 
@@ -664,18 +667,18 @@ RETURN table,
 
                     destinations.append(GraphNode(id=destination.properties["id"], name=destination.properties["name"]))
 
-                sources = []
+                # sources = []
 
-                for source_data in column_data.get("sources"):
-                    source = source_data._nodes[0]
+                # for source_data in column_data.get("sources"):
+                #     source = source_data._nodes[0]
 
-                    sources.append(GraphNode(id=source.properties["id"], name=source.properties["name"]))
+                #     sources.append(GraphNode(id=source.properties["id"], name=source.properties["name"]))
 
                 columns.append(
                     GraphColumn(
                         id=column.properties["id"],
                         name=column.properties["name"],
-                        sources=sources,
+                        sources=[],
                         destinations=destinations,
                     )
                 )
@@ -687,20 +690,21 @@ RETURN table,
 
                 destinations.append(GraphNode(id=destination.properties["id"], name=destination.properties["name"]))
 
-            sources = []
+            # sources = []
 
-            for source_data in sources_data:
-                source = source_data._nodes[0]
+            # for source_data in sources_data:
+            #     source = source_data._nodes[0]
 
-                sources.append(GraphNode(id=source.properties["id"], name=source.properties["name"]))
+            #     sources.append(GraphNode(id=source.properties["id"], name=source.properties["name"]))
 
             tables.append(
                 GraphTable(
                     id=table.properties["id"],
                     name=table.properties["name"],
                     namespace=table.properties["namespace"],
+                    data_source=table.properties["data_source"],
                     columns=columns,
-                    sources=sources,
+                    sources=[],
                     destinations=destinations,
                 )
             )
@@ -713,6 +717,7 @@ class GraphTable:
     id: str
     name: str
     namespace: str
+    data_source: str
     columns: List["GraphColumn"]
     sources: List["GraphNode"]
     destinations: List["GraphNode"]

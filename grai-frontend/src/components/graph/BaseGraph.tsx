@@ -151,7 +151,7 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
       .catch(err => console.error(err))
   }, [initialNodes, initialEdges, expanded])
 
-  if (!nodes) return <Loading />
+  if (!nodes) return <Loading message="BaseGraph" />
 
   const highlightPath = (node: Node, nodes?: Node[], edges?: Edge[]) => {
     if (node && nodes && edges) {

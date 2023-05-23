@@ -8,6 +8,7 @@ import DataSourceIcon from "./DataSourceIcon"
 import HiddenTableButton from "./HiddenTableButton"
 
 interface Column {
+  id: string
   display_name?: string | null
   name: string
 }
@@ -194,7 +195,7 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
               >
                 <Typography>{column.display_name ?? column.name}</Typography>
                 <Handle
-                  id={column.name}
+                  id={column.id}
                   type="target"
                   position={"left" as Position}
                   style={{
@@ -207,7 +208,7 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
                   isConnectable={false}
                 />
                 <Handle
-                  id={column.name}
+                  id={column.id}
                   type="source"
                   position={"right" as Position}
                   style={{

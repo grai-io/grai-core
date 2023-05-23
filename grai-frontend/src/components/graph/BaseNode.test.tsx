@@ -11,6 +11,7 @@ const data: BaseNodeData = {
   highlight: false,
   columns: [
     {
+      id: "1",
       display_name: "c1",
       name: "c1",
     },
@@ -63,6 +64,7 @@ test("renders multiple columns", async () => {
           columns: [
             ...data.columns,
             {
+              id: "2",
               name: "c2",
             },
           ],
