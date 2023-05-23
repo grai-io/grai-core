@@ -1,8 +1,11 @@
 import redis
 
-from django.core.management.base import BaseCommand, CommandError, CommandParser
+from django_multitenant.utils import set_current_tenant
+from django_tqdm import BaseCommand
+from django.core.management.base import CommandError, CommandParser
 
 from workspaces.models import Workspace
+from query_chunk import chunk
 
 
 class Command(BaseCommand):
@@ -20,8 +23,13 @@ class Command(BaseCommand):
         workspace_id = options["workspace_id"]
         try:
             self.workspace = Workspace.objects.get(pk=workspace_id)
+
+            set_current_tenant(self.workspace)
+
         except Workspace.DoesNotExist:
             raise CommandError('workspace "%s" does not exist' % workspace_id)
+
+        self.redis_connection = redis.Redis(host="localhost", port=6379, db=0)
 
         if options["delete"]:
             self.clear_cache()
@@ -34,9 +42,9 @@ class Command(BaseCommand):
         def escape_string(input: str):
             return input.replace("'", "\\'")
 
-        r = redis.Redis(host="localhost", port=6379, db=0)
+        node_tqdm = self.tqdm(total=self.workspace.nodes.count())
 
-        for node in self.workspace.nodes.all():
+        for node in chunk(self.workspace.nodes.all(), 10000):
             node_type = node.metadata["grai"]["node_type"]
             node_name = escape_string(node.name)
 
@@ -44,28 +52,32 @@ class Command(BaseCommand):
                 node_namespace = escape_string(node.namespace)
                 node_data_source = escape_string(node.data_source)
 
-                r.graph(f"lineage:{str(self.workspace.id)}").query(
+                self.redis_connection.graph(f"lineage:{str(self.workspace.id)}").query(
                     f"MERGE (table:Table {{id: '{str(node.id)}'}}) ON CREATE SET table.name = '{node_name}', table.namespace = '{node_namespace}', table.data_source = '{node_data_source}' ON MATCH SET table.name = '{node_name}', table.namespace = '{node_namespace}', table.data_source = '{node_data_source}'"
                 )
 
             elif node_type == "Column":
-                r.graph(f"lineage:{str(self.workspace.id)}").query(
+                self.redis_connection.graph(f"lineage:{str(self.workspace.id)}").query(
                     f"MERGE (column:Column {{id: '{str(node.id)}'}}) ON CREATE SET column.name = '{node_name}' ON MATCH SET column.name = '{node_name}'"
                 )
 
-        for edge in self.workspace.edges.all():
+            node_tqdm.update(1)
+
+        edge_tqdm = self.tqdm(total=self.workspace.edges.count())
+
+        for edge in chunk(self.workspace.edges.all(), 10000):
             edge_type = edge.metadata["grai"]["edge_type"]
 
             if edge_type == "TableToColumn":
-                r.graph(f"lineage:{str(self.workspace.id)}").query(
+                self.redis_connection.graph(f"lineage:{str(self.workspace.id)}").query(
                     f"MATCH (table:Table), (column:Column) WHERE table.id = '{str(edge.source_id)}' AND column.id = '{str(edge.destination_id)}' MERGE (table)-[r:TABLE_TO_COLUMN]->(column)"
                 )
             elif edge_type == "TableToTable":
-                r.graph(f"lineage:{str(self.workspace.id)}").query(
+                self.redis_connection.graph(f"lineage:{str(self.workspace.id)}").query(
                     f"MATCH (source:Table), (destination:Table) WHERE source.id = '{str(edge.source_id)}' AND destination.id = '{str(edge.destination_id)}' MERGE (source)-[r:TABLE_TO_TABLE]->(destination)"
                 )
             elif edge_type == "ColumnToColumn":
-                r.graph(f"lineage:{str(self.workspace.id)}").query(
+                self.redis_connection.graph(f"lineage:{str(self.workspace.id)}").query(
                     f"MATCH (source:Column), (destination:Column) WHERE source.id = '{str(edge.source_id)}' AND destination.id = '{str(edge.destination_id)}' MERGE (source)-[r:COLUMN_TO_COLUMN]->(destination)"
                 )
 
@@ -76,12 +88,13 @@ class Command(BaseCommand):
                     metadata__grai__edge_type="TableToColumn"
                 ).first()
 
-                r.graph(f"lineage:{str(self.workspace.id)}").query(
+                self.redis_connection.graph(f"lineage:{str(self.workspace.id)}").query(
                     f"MATCH (source:Table), (destination:Table) WHERE source.id = '{str(source_table_edge.source_id)}' AND destination.id = '{str(destination_table_edge.source_id)}' MERGE (source)-[r:TABLE_TO_TABLE_COPY]->(destination)"
                 )
 
+            edge_tqdm.update(1)
+
     def clear_cache(self):
-        r = redis.Redis(host="localhost", port=6379, db=0)
-        r.delete(f"lineage:{str(self.workspace.id)}")
+        self.redis_connection.delete(f"lineage:{str(self.workspace.id)}")
 
         self.stdout.write(self.style.SUCCESS('Successfully cleared cache for workspace "%s"' % self.workspace.name))
