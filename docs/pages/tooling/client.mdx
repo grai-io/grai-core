@@ -23,8 +23,7 @@ Most interactions with the server will start with a client instance like so
 ```python copy
 from grai_client.endpoints.v1.client import ClientV1
 
-client = ClientV1(host='api.grai.io', port='443', insecure=True)
-client.set_authentication_headers(username='[your_username]', password='[your_password]')
+client = ClientV1(host='api.grai.io', port='443', insecure=True, username='[your_username]', password='[your_password]')
 ```
 
 Now that you have an instance of a client and have authenticated the client with the server

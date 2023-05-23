@@ -3,6 +3,7 @@ import asyncio
 import json
 import sys
 import warnings
+from functools import wraps
 from typing import (
     Any,
     Callable,
@@ -22,13 +23,13 @@ from urllib.parse import urlparse
 
 import httpx
 from grai_schemas.base import Edge, Node
-from httpx import BasicAuth, Request, Response
+from httpx import Auth, BasicAuth, Request, Response
 from multimethod import multimethod
-from pydantic import BaseModel
+from pydantic import BaseModel, SecretStr
 from tqdm.asyncio import tqdm_asyncio
 from tqdm.autonotebook import tqdm
 
-from grai_client.authentication import APIKeyHeader
+from grai_client.authentication import APIKeyAuth
 from grai_client.endpoints.rest import delete, get, patch, post
 from grai_client.endpoints.utilities import (
     add_query_params,
@@ -171,8 +172,55 @@ def validate_connection_arguments(
     return url, host, port, protocol, insecure
 
 
+class AuthValues(BaseModel):
+    username: Optional[str] = None
+    password: Optional[SecretStr] = None
+    api_key: Optional[SecretStr] = None
+
+    def is_valid(self) -> bool:
+        return self.api_key is not None or (self.username is not None and self.password is not None)
+
+    def get_auth(self) -> Auth:
+        if self.api_key is not None:
+            auth = APIKeyAuth(self.api_key.get_secret_value())
+        elif self.username is not None and self.password is not None:
+            auth = BasicAuth(self.username, self.password.get_secret_value())
+        else:
+            message = "Auth requires either a not null value for api_key, or username and password."
+            raise Exception(message)
+        return auth
+
+
+def async_requires_auth(func):
+    @wraps(func)
+    async def wrapper(self, *args, **kwargs):
+        if self.is_authenticated:
+            return await func(self, *args, **kwargs)
+        else:
+            raise Exception("This method requires authentication. Call `authenticate` first.")
+
+    return wrapper
+
+
+def requires_auth(func):
+    @wraps(func)
+    def wrapper(self, *args, **kwargs):
+        if self.is_authenticated:
+            return func(self, *args, **kwargs)
+        else:
+            raise Exception("This method requires authentication. Call `authenticate` first.")
+
+    return wrapper
+
+
 class BaseClient(abc.ABC):
     id = "base"
+    api: str
+    health_endpoint: str
+    node_endpoint: str
+    edge_endpoint: str
+    workspace_endpoint: str
+    is_authenticated_endpoint: str
 
     def __init__(
         self,
@@ -182,6 +230,9 @@ class BaseClient(abc.ABC):
         insecure: Optional[bool] = None,
         url: Optional[str] = None,
         httpx_async_client_args: Optional[Union[Dict[str, Any], str]] = None,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+        api_key: Optional[str] = None,
     ):
         # TODO: Should require keyword arguments
         validated_args = validate_connection_arguments(url, host, port, protocol, insecure)
@@ -195,6 +246,12 @@ class BaseClient(abc.ABC):
         self.insecure: bool = validated_args[4]
         self.httpx_async_client_args: Dict[str, Any] = httpx_async_client_args
 
+        self.health_endpoint: str = f"{self.url}/health"
+
+        self.is_authenticated: bool = False
+        self.init_auth_values: AuthValues = AuthValues(username=username, password=password, api_key=api_key)
+        self._auth: Optional[Auth] = None
+
         self.default_payload: Dict[str, str] = dict()
         self.default_headers: Dict[str, str] = dict()
         self.default_request_args: Dict[str, str] = dict()
@@ -202,13 +259,7 @@ class BaseClient(abc.ABC):
 
         self.session: Optional[httpx.AsyncClient] = None
 
-        self.api: str = f"{self.url}"
-        self.health_endpoint: str = f"{self.url}/health"
-        self._auth_headers: Optional[Dict[str, str]] = None
-        self.auth: Optional[BasicAuth] = None
-
-        resp = self.server_health_status()
-        if resp.status_code != 200:
+        if (resp := self.server_health_status()).status_code != 200:
             raise Exception(f"Error connecting to server at {self.url}. Received response {resp.json()}")
 
     def get_session(self) -> httpx.AsyncClient:
@@ -237,14 +288,37 @@ class BaseClient(abc.ABC):
     def server_health_status(self) -> Response:
         return httpx.get(self.health_endpoint)
 
-    def build_url(self, endpoint: str) -> str:
-        return f"{self.api}{endpoint}"
-
     @property
-    def auth_headers(self) -> Dict:
-        if self._auth_headers is None:
+    def auth(self) -> Auth:
+        if self._auth is None:
+            # if self._init_auth_values.is_valid():
+            #     self.auth = self._init_auth_values.get_auth()
+            # else:
             raise Exception("Client not authenticated. Please call `authenticate` with your credentials first")
-        return self._auth_headers
+        return self._auth
+
+    @auth.setter
+    def auth(self, auth: Auth) -> None:
+        old_auth = self._auth
+        if not isinstance(auth, Auth):
+            raise TypeError(f"Expected an instance of `httpx.Auth` not {type(auth)}")
+        self._auth = auth
+
+        try:
+            resp = self.check_authentication()
+        except Exception as e:
+            self._auth = old_auth
+            raise e
+
+        if resp.status_code != 200:
+            message = (
+                f"Unable to authenticate connection to the server with the provided credentials. ",
+                f"Received status_code: {resp.status_code}",
+            )
+            self._auth = old_auth
+            raise Exception(message)
+
+        self.is_authenticated = True
 
     def authenticate(
         self,
@@ -252,23 +326,8 @@ class BaseClient(abc.ABC):
         password: Optional[str] = None,
         api_key: Optional[str] = None,
     ) -> None:
-        if api_key is not None:
-            self._auth_headers = APIKeyHeader(api_key).headers
-            self.auth = None
-        elif username and password:
-            self.auth = BasicAuth(username, password)
-            self._auth_headers = {}
-        else:
-            raise Exception("Authentication requires either an api key, or username/password combination.")
-
-        resp = self.check_authentication()
-        if resp.status_code != 200:
-            message = (
-                f"Unable to authenticate connection to the server with the provided credentials. ",
-                f"Received status_code: {resp.status_code}",
-            )
-
-            raise Exception(message)
+        auth_values = AuthValues(username=username, password=password, api_key=api_key)
+        self.auth = auth_values.get_auth()
 
     @abc.abstractmethod
     def check_authentication(self) -> Response:
@@ -291,15 +350,19 @@ class BaseClient(abc.ABC):
         self.session = None
         return result
 
+    @requires_auth
     def get(self, *args, options: Optional[OptionType] = None, **kwargs):
         return asyncio.run(self.session_manager(get, *args, options=options, **kwargs))
 
+    @requires_auth
     def post(self, *args, options: Optional[OptionType] = None, **kwargs):
         return asyncio.run(self.session_manager(post, *args, options=options, **kwargs))
 
+    @requires_auth
     def patch(self, *args, options: Optional[OptionType] = None, **kwargs):
         return asyncio.run(self.session_manager(patch, *args, options=options, **kwargs))
 
+    @requires_auth
     def delete(self, *args, options: Optional[OptionType] = None, **kwargs):
         return asyncio.run(self.session_manager(delete, *args, options=options, **kwargs))
 
@@ -419,20 +482,16 @@ async def patch_sequence(
 
 @get.register
 async def client_get_url(client: BaseClient, url: str, options: ClientOptions = ClientOptions()) -> Response:
-    headers = {**client.auth_headers, **options.headers}
-
     if options.query_args:
         url = add_query_params(url, options.query_args)
-    response = await client.session.get(url, headers=headers, **options.request_args)
+    response = await client.session.get(url, headers=options.headers, **options.request_args)
     response_status_check(response)
     return response
 
 
 @delete.register
 async def client_delete_url(client: BaseClient, url: str, options: ClientOptions = ClientOptions()) -> Response:
-    headers = {**client.auth_headers, **options.headers}
-
-    response = await client.session.delete(url, headers=headers, **options.request_args)
+    response = await client.session.delete(url, headers=options.headers, **options.request_args)
     response_status_check(response)
     return response
 
@@ -445,7 +504,6 @@ async def client_post_url(
     options: ClientOptions = ClientOptions(),
 ) -> Response:
     headers = {
-        **client.auth_headers,
         "Content-Type": "application/json",
         **options.headers,
     }
@@ -464,7 +522,6 @@ async def client_patch_url(
     options: ClientOptions = ClientOptions(),
 ) -> Response:
     headers = {
-        **client.auth_headers,
         "Content-Type": "application/json",
         **options.headers,
     }

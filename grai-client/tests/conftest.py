@@ -11,14 +11,30 @@ from grai_client.testing.schema import (
 
 
 @pytest.fixture(scope="session")
-def client():
-    host = os.environ.get("GRAI_HOST", "localhost")
-    port = os.environ.get("GRAI_PORT", "8000")
-    username = os.environ.get("GRAI_USERNAME", "null@grai.io")
-    password = os.environ.get("GRAI_PASSWORD", "super_secret")
-    workspace = os.environ.get("GRAI_WORKSPACE", "default")
+def client_params():
+    params = {
+        "host": os.environ.get("GRAI_HOST", "localhost"),
+        "port": os.environ.get("GRAI_PORT", "8000"),
+        "username": os.environ.get("GRAI_USERNAME", "null@grai.io"),
+        "password": os.environ.get("GRAI_PASSWORD", "super_secret"),
+        "workspace": os.environ.get("GRAI_WORKSPACE", "default"),
+        "insecure": True,
+    }
+    return params
 
-    client = ClientV1(host, port, workspace=workspace, insecure=True)
+
+@pytest.fixture(scope="session")
+def client(client_params):
+    host, port, username, password, workspace, insecure = (
+        client_params["host"],
+        client_params["port"],
+        client_params["username"],
+        client_params["password"],
+        client_params["workspace"],
+        client_params["insecure"],
+    )
+
+    client = ClientV1(host, port, workspace=workspace, insecure=insecure)
     client.authenticate(username=username, password=password)
     return client
 

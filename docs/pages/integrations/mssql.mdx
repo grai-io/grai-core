@@ -72,8 +72,7 @@ from grai_source_mssql.base import update_server
 For now we will use the default user credentials though you are free to create a new user / api keys from the server admin interface at http://localhost:8000/admin.
 
 ```python copy
-client = ClientV1("localhost","8000")
-client.set_authentication_headers("null@grai.io","super_secret")
+client = ClientV1("localhost", "8000", username="null@grai.io", password="super_secret")
 ```
 
 Now we can update the server with data from any mssql source. In order to do so you will need to pass credentials and namespace into the update_server function. Namespace is used to uniquely identify the nodes and when used consistently will allow you to add to the node from any source.

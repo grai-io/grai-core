@@ -14,7 +14,7 @@
 #
 #
 # client = ClientV1("localhost", "8000", workspace="default", insecure=True)
-# client.set_authentication_headers("null@grai.io", "super_secret")
+# client.authenticate(username="null@grai.io", password="super_secret")
 #
 #
 # def test_update():

@@ -6,8 +6,22 @@ from grai_schemas.v1 import EdgeV1, NodeV1
 from requests import RequestException
 
 from grai_client.endpoints.utilities import is_valid_uuid
+from grai_client.endpoints.v1.client import ClientV1
 from grai_client.schemas.workspace import Workspace
 from grai_client.testing.schema import mock_v1_edge_and_nodes, mock_v1_node
+
+
+def test_client_auth_from_init(client_params):
+    client = ClientV1(**client_params)
+    assert client.is_authenticated
+
+
+def test_client_auth_from_authenticate(client_params):
+    client_params = {**client_params}
+    username, password = client_params.pop("username"), client_params.pop("password")
+    client = ClientV1(**client_params)
+    client.authenticate(username=username, password=password)
+    assert client.is_authenticated
 
 
 def test_client_has_workspace_uuid(client):

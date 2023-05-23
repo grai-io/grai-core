@@ -25,10 +25,13 @@ class ClientV1(BaseClient):
         self.workspace_endpoint = f"{self.api}{self._workspace_endpoint}"
         self.is_authenticated_endpoint = f"{self.api}{self._is_authenticated_endpoint}"
 
-        self._workspace = str(workspace) if workspace is not None else None
+        self._workspace = str(workspace) if isinstance(workspace, (str, UUID)) else None
+
+        if self.init_auth_values.is_valid():
+            self.authenticate(**self.init_auth_values.dict())
 
     def check_authentication(self) -> Response:
-        return httpx.get(self.is_authenticated_endpoint, headers=self.auth_headers, auth=self.auth)
+        return httpx.get(self.is_authenticated_endpoint, auth=self.auth)
 
     @property
     def workspace(self) -> Optional[str]:

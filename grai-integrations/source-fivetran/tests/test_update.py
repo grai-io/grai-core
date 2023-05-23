@@ -9,8 +9,8 @@ from grai_source_fivetran.loader import FivetranConnector
 #
 # def test_load_from_remote():
 #     dotenv.load_dotenv()
-#     # client = ClientV1("localhost", "8000")
-#     # client.set_authentication_headers("null@grai.io", "super_secret")
+#     # client = ClientV1("localhost", "8000", username="null@grai.io", password="super_secret")
+#     # client.authenticate(username="null@grai.io", password="super_secret")
 #     kwargs = {"default_namespace": 'default_namespace'}
 #     # breakpoint()
 #     connector = FivetranConnector(**kwargs)

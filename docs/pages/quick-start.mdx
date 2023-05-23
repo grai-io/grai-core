@@ -68,8 +68,7 @@ from grai_client.endpoints.v1.client import ClientV1
 For now we will use the default user credentials though you are free to create a new user / api keys from the server admin interface at http://localhost:8000/admin.
 
 ```python copy
-client = ClientV1(host='localhost', port='8000', insecure=True)
-client.set_authentication_headers("null@grai.io","super_secret")
+client = ClientV1(host='localhost', port='8000', insecure=True, username="null@grai.io", password="super_secret")
 ```
 
 Now we can update the server with data from any postgres source.
