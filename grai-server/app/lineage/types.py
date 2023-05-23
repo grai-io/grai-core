@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 import strawberry
 import strawberry_django
@@ -104,6 +104,28 @@ class Filter:
 
 @strawberry.type
 class GraphTable:
+    def __init__(
+        self,
+        id: str,
+        name: str,
+        namespace: str,
+        data_source: str,
+        columns: List["GraphColumn"],
+        sources: List[str],
+        destinations: List[str],
+        all_destinations: Optional[List[str]] = None,
+        all_sources: Optional[List[str]] = None,
+    ):
+        self.id = id
+        self.name = name
+        self.namespace = namespace
+        self.data_source = data_source
+        self.columns = columns
+        self.sources = sources
+        self.destinations = destinations
+        self.all_destinations = all_destinations
+        self.all_sources = all_sources
+
     id: str
     name: str
     namespace: str
@@ -111,8 +133,8 @@ class GraphTable:
     columns: List["GraphColumn"]
     sources: List[str]
     destinations: List[str]
-    all_destinations: List[str]
-    all_sources: List[str]
+    all_destinations: Optional[List[str]]
+    all_sources: Optional[List[str]]
 
 
 @strawberry.type

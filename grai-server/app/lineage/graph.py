@@ -66,8 +66,6 @@ RETURN tables
                 columns=columns,
                 sources=[],
                 destinations=table.get("destinations", []),
-                all_destinations=[],
-                all_sources=[],
             )
         )
 

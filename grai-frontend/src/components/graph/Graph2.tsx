@@ -21,8 +21,8 @@ interface Table {
   columns: Column[]
   sources?: string[]
   destinations: string[]
-  all_destinations?: string[]
-  all_sources?: string[]
+  all_destinations?: string[] | null
+  all_sources?: string[] | null
 }
 
 type Graph2Props = {

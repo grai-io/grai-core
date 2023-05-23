@@ -22,7 +22,8 @@ export interface GetTablesAndEdgesTableLineage_workspace_graph {
   data_source: string;
   columns: GetTablesAndEdgesTableLineage_workspace_graph_columns[];
   destinations: string[];
-  all_destinations: string[];
+  all_destinations: string[] | null;
+  all_sources: string[] | null;
 }
 
 export interface GetTablesAndEdgesTableLineage_workspace {

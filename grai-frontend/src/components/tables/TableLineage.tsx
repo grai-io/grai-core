@@ -2,13 +2,13 @@ import React, { useState } from "react"
 import { gql, useQuery } from "@apollo/client"
 import { Alert, Box } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
+import Graph2 from "components/graph/Graph2"
 import Loading from "components/layout/Loading"
 import GraphError from "components/utils/GraphError"
 import {
   GetTablesAndEdgesTableLineage,
   GetTablesAndEdgesTableLineageVariables,
 } from "./__generated__/GetTablesAndEdgesTableLineage"
-import Graph2 from "components/graph/Graph2"
 
 export const GET_TABLES_AND_EDGES = gql`
   query GetTablesAndEdgesTableLineage(
