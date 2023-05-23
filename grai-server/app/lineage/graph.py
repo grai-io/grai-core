@@ -78,44 +78,47 @@ def get_filtered_graph_result(workspace_id: str, table_id: str, n: int) -> List[
 
     result = r.graph(f"lineage:{str(workspace_id)}").query(
         f"""
-MATCH (firsttable:Table {{id: '{table_id}'}})
-OPTIONAL MATCH (firsttable:Table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*0..{n}]-(table:Table)
-OPTIONAL MATCH (table:Table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY]->(all_destinations:Table)
-OPTIONAL MATCH (all_sources:Table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY]->(table:Table)
-OPTIONAL MATCH (table:Table)-[:TABLE_TO_COLUMN]->(column:Column)
-OPTIONAL MATCH (column)-[:COLUMN_TO_COLUMN]->(column_destination:Column)
-OPTIONAL MATCH (table)-[:TABLE_TO_TABLE]->(destination:Table)
-WITH
-    table,
-    COLLECT(destination.id) AS destinations,
-    column,
-    collect(column_destination.id) as column_destinations,
-    collect(all_destinations.id) as all_destinations,
-    collect(all_sources.id) as all_sources
-WITH
-    table,
-    destinations,
-    all_destinations,
-    all_sources,
-    collect({{
-        id: column.id,
-        name: column.name,
-        column_destinations: column_destinations
-    }}) AS columns
-WITH
-    table,
-    {{
-        id: table.id,
-        name: table.name,
-        namespace: table.namespace,
-        data_source: table.data_source,
-        columns: columns,
-        destinations: destinations,
-        all_destinations: all_destinations,
-        all_sources: all_sources
-    }} AS tables
-RETURN tables
-""",
+            MATCH (firsttable:Table {{id: $table}})
+            OPTIONAL MATCH (firsttable:Table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*0..{n}]-(table:Table)
+            OPTIONAL MATCH (table:Table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY]->(all_destinations:Table)
+            OPTIONAL MATCH (all_sources:Table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY]->(table:Table)
+            OPTIONAL MATCH (table:Table)-[:TABLE_TO_COLUMN]->(column:Column)
+            OPTIONAL MATCH (column)-[:COLUMN_TO_COLUMN]->(column_destination:Column)
+            OPTIONAL MATCH (table)-[:TABLE_TO_TABLE]->(destination:Table)
+            WITH
+                table,
+                COLLECT(destination.id) AS destinations,
+                column,
+                collect(column_destination.id) as column_destinations,
+                collect(all_destinations.id) as all_destinations,
+                collect(all_sources.id) as all_sources
+            WITH
+                table,
+                destinations,
+                all_destinations,
+                all_sources,
+                collect({{
+                    id: column.id,
+                    name: column.name,
+                    column_destinations: column_destinations
+                }}) AS columns
+            WITH
+                table,
+                {{
+                    id: table.id,
+                    name: table.name,
+                    namespace: table.namespace,
+                    data_source: table.data_source,
+                    columns: columns,
+                    destinations: destinations,
+                    all_destinations: all_destinations,
+                    all_sources: all_sources
+                }} AS tables
+            RETURN tables
+        """,
+        {
+            "table": table_id,
+        },
         timeout=10000,
     )
 
