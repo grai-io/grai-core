@@ -6,15 +6,11 @@ import { BaseNodeData } from "./BaseNode"
 
 const position = { x: 0, y: 0 }
 
-interface NodeId {
-  id: string
-}
-
 interface Column {
   id: string
   name: string
-  sources?: NodeId[]
-  destinations: NodeId[]
+  sources?: string[]
+  destinations: string[]
 }
 
 interface Table {
@@ -22,8 +18,8 @@ interface Table {
   name: string
   data_source: string
   columns: Column[]
-  sources?: NodeId[]
-  destinations: NodeId[]
+  sources?: string[]
+  destinations: string[]
 }
 
 type Graph2Props = {
@@ -59,13 +55,13 @@ const Graph2: React.FC<Graph2Props> = ({
           data_source: table.data_source,
           columns: table.columns,
           source_tables: table.sources,
-          hiddenSourceTables: (table.sources ?? [])
-            .filter(t => hidden.includes(t.id))
-            .map(t => t.id),
+          hiddenSourceTables: (table.sources ?? []).filter(t =>
+            hidden.includes(t)
+          ),
           destination_tables: table.destinations,
-          hiddenDestinationTables: table.destinations
-            .filter(t => hidden.includes(t.id))
-            .map(t => t.id),
+          hiddenDestinationTables: table.destinations.filter(t =>
+            hidden.includes(t)
+          ),
 
           expanded: expanded.includes(table.id),
           onExpand(value: boolean) {
@@ -89,7 +85,7 @@ const Graph2: React.FC<Graph2Props> = ({
   const getTable = (id: string) => {
     const table = tables.find(table => table.columns.some(col => col.id === id))
 
-    if (!table) throw new Error("Table not found")
+    if (!table) throw new Error(`Table not found ${id}`)
 
     return table
   }
@@ -121,7 +117,7 @@ const Graph2: React.FC<Graph2Props> = ({
       const otherColumnIds = table.columns.reduce<Set<string>>(
         (res, column) => {
           const columnEdges = column.destinations.reduce<Set<string>>(
-            (tableRes, destination) => tableRes.add(destination.id),
+            (tableRes, destination) => tableRes.add(destination),
             new Set()
           )
           Array.from(columnEdges).forEach(id => res.add(id))
@@ -156,7 +152,7 @@ const Graph2: React.FC<Graph2Props> = ({
       )
 
       table.destinations.forEach(destination =>
-        destinationEdges.tables.add(destination.id)
+        destinationEdges.tables.add(destination)
       )
 
       const edges = destinationEdges.edges.concat(
@@ -174,7 +170,7 @@ const Graph2: React.FC<Graph2Props> = ({
           (tableRes, column) =>
             tableRes.concat(
               column.destinations.reduce<RFEdge[]>((res, destination) => {
-                const destinationTable = getTable(destination.id)
+                const destinationTable = getTable(destination)
                 const destinationExpanded = expanded.includes(
                   destinationTable.id
                 )
@@ -184,7 +180,7 @@ const Graph2: React.FC<Graph2Props> = ({
                     table.id,
                     column.id,
                     destinationTable.id,
-                    destinationExpanded ? destination.id : "all"
+                    destinationExpanded ? destination : "all"
                   )
                 )
               }, [])
@@ -195,7 +191,7 @@ const Graph2: React.FC<Graph2Props> = ({
       .concat(
         table.destinations
           .map(destination => {
-            const destinationTable = getTable(destination.id)
+            const destinationTable = getTable(destination)
 
             return generateEdge(table.id, "all", destinationTable.id, "all")
           })

@@ -7,21 +7,11 @@
 // GraphQL query operation: GetTablesAndEdges
 // ====================================================
 
-export interface GetTablesAndEdges_workspace_graph_columns_destinations {
-  __typename: "GraphNode";
-  id: string;
-}
-
 export interface GetTablesAndEdges_workspace_graph_columns {
   __typename: "GraphColumn";
   id: string;
   name: string;
-  destinations: GetTablesAndEdges_workspace_graph_columns_destinations[];
-}
-
-export interface GetTablesAndEdges_workspace_graph_destinations {
-  __typename: "GraphNode";
-  id: string;
+  destinations: string[];
 }
 
 export interface GetTablesAndEdges_workspace_graph {
@@ -31,7 +21,7 @@ export interface GetTablesAndEdges_workspace_graph {
   namespace: string;
   data_source: string;
   columns: GetTablesAndEdges_workspace_graph_columns[];
-  destinations: GetTablesAndEdges_workspace_graph_destinations[];
+  destinations: string[];
 }
 
 export interface GetTablesAndEdges_workspace {

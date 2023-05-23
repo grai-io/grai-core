@@ -29,62 +29,10 @@ export const GET_TABLES_AND_EDGES = gql`
         columns {
           id
           name
-          # sources {
-          #   id
-          # }
-          destinations {
-            id
-          }
+          destinations
         }
-        # sources {
-        #   id
-        # }
-        destinations {
-          id
-        }
+        destinations
       }
-      # tables(filters: $filters, pagination: { limit: 500, offset: $offset }) {
-      #   data {
-      #     id
-      #     name
-      #     display_name
-      #     data_source
-      #     columns {
-      #       data {
-      #         id
-      #         name
-      #       }
-      #     }
-      #     # source_tables {
-      #     #   data {
-      #     #     id
-      #     #     name
-      #     #     display_name
-      #     #   }
-      #     # }
-      #     # destination_tables {
-      #     #   data {
-      #     #     id
-      #     #     name
-      #     #     display_name
-      #     #   }
-      #     # }
-      #   }
-      #   meta {
-      #     total
-      #   }
-      # }
-      # other_edges {
-      #   data {
-      #     id
-      #     source {
-      #       id
-      #     }
-      #     destination {
-      #       id
-      #     }
-      #   }
-      # }
     }
   }
 `

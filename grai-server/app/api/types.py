@@ -628,84 +628,63 @@ class Workspace:
             f"""
 MATCH (table:Table)
 OPTIONAL MATCH (table:Table)-[:TABLE_TO_COLUMN]->(column:Column)
-RETURN table,
-    COLLECT(
-        {{
-            root: column,
-            destinations: [d=(column)-[:COLUMN_TO_COLUMN]->(:Column) | d]
-        }}) AS columns,
-    (table)-[:TABLE_TO_TABLE]->(:Table) AS destinations
+OPTIONAL MATCH (column)-[:COLUMN_TO_COLUMN]->(column_destination:Column)
+OPTIONAL MATCH (table)-[:TABLE_TO_TABLE]->(destination:Table)
+WITH
+    table,
+    COLLECT(destination.id) AS destinations,
+    column,
+    collect(column_destination.id) as column_destinations
+WITH
+    table,
+    destinations,
+    collect({{
+        id: column.id,
+        name: column.name,
+        column_destinations: column_destinations
+    }}) AS columns
+WITH
+    table,
+    {{
+        id: table.id,
+        name: table.name,
+        namespace: table.namespace,
+        data_source: table.data_source,
+        columns: columns,
+        destinations: destinations
+    }} AS tables
+RETURN tables
 """,
             timeout=10000,
         )
-
-        # sources: [s=(:Column)-[:COLUMN_TO_COLUMN]->(column) | s]
-        # (:Table)-[:TABLE_TO_TABLE]->(table:Table) AS sources
 
         tables = []
 
         for node in result.result_set:
             table = node[0]
-            columns_data = node[1]
-            destinations_data = node[2]
-            # sources_data = node[3]
 
-            columns = []
-
-            for column_data in columns_data:
-                root = column_data.get("root")
-
-                if not root:
-                    continue
-
-                column = root
-
-                destinations = []
-
-                for destination_data in column_data.get("destinations"):
-                    destination = destination_data._nodes[1]
-
-                    destinations.append(GraphNode(id=destination.properties["id"], name=destination.properties["name"]))
-
-                # sources = []
-
-                # for source_data in column_data.get("sources"):
-                #     source = source_data._nodes[0]
-
-                #     sources.append(GraphNode(id=source.properties["id"], name=source.properties["name"]))
-
-                columns.append(
-                    GraphColumn(
-                        id=column.properties["id"],
-                        name=column.properties["name"],
-                        sources=[],
-                        destinations=destinations,
-                    )
+            columns = [
+                GraphColumn(
+                    id=column.get("id"),
+                    name=column.get("name"),
+                    sources=[],
+                    # destinations=[],
+                    destinations=column.get("column_destinations", []),
                 )
-
-            destinations = []
-
-            for destination_data in destinations_data:
-                destination = destination_data._nodes[1]
-
-                destinations.append(GraphNode(id=destination.properties["id"], name=destination.properties["name"]))
-
-            # sources = []
-
-            # for source_data in sources_data:
-            #     source = source_data._nodes[0]
-
-            #     sources.append(GraphNode(id=source.properties["id"], name=source.properties["name"]))
+                for column in table.get("columns")
+                if column.get("id")
+            ]
 
             tables.append(
                 GraphTable(
-                    id=table.properties["id"],
-                    name=table.properties["name"],
-                    namespace=table.properties["namespace"],
-                    data_source=table.properties["data_source"],
+                    id=table.get("id"),
+                    name=table.get("name"),
+                    namespace=table.get("namespace"),
+                    data_source=table.get("data_source"),
                     columns=columns,
                     sources=[],
-                    destinations=destinations,
+                    # destinations=[],
+                    destinations=table.get("destinations", []),
                 )
             )
 
@@ -720,7 +699,7 @@ class GraphTable:
     data_source: str
     columns: List["GraphColumn"]
     sources: List["GraphNode"]
-    destinations: List["GraphNode"]
+    destinations: List[str]
 
 
 @strawberry.type
@@ -728,7 +707,7 @@ class GraphColumn:
     id: str
     name: str
     sources: List["GraphNode"]
-    destinations: List["GraphNode"]
+    destinations: List[str]
 
 
 @strawberry.type

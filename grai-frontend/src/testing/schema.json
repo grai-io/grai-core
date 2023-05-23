@@ -5206,8 +5206,8 @@
                   "kind": "NON_NULL",
                   "name": null,
                   "ofType": {
-                    "kind": "OBJECT",
-                    "name": "GraphNode",
+                    "kind": "SCALAR",
+                    "name": "String",
                     "ofType": null
                   }
                 }
@@ -5297,8 +5297,8 @@
                   "kind": "NON_NULL",
                   "name": null,
                   "ofType": {
-                    "kind": "OBJECT",
-                    "name": "GraphNode",
+                    "kind": "SCALAR",
+                    "name": "String",
                     "ofType": null
                   }
                 }
