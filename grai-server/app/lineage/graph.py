@@ -1,7 +1,8 @@
 from typing import List
+
 import redis
 
-from .types import GraphTable, GraphColumn
+from .types import GraphColumn, GraphTable
 
 
 def get_graph_result(workspace_id: str) -> List["GraphTable"]:

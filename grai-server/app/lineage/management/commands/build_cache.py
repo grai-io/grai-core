@@ -1,11 +1,10 @@
 import redis
-
+from django.core.management.base import CommandError, CommandParser
 from django_multitenant.utils import set_current_tenant
 from django_tqdm import BaseCommand
-from django.core.management.base import CommandError, CommandParser
+from query_chunk import chunk
 
 from workspaces.models import Workspace
-from query_chunk import chunk
 
 
 class Command(BaseCommand):
@@ -39,26 +38,37 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS('Successfully built cache for workspace "%s"' % self.workspace.name))
 
     def build_cache(self):
-        def escape_string(input: str):
-            return input.replace("'", "\\'")
-
         node_tqdm = self.tqdm(total=self.workspace.nodes.count())
 
         for node in chunk(self.workspace.nodes.all(), 10000):
             node_type = node.metadata["grai"]["node_type"]
-            node_name = escape_string(node.name)
 
             if node_type == "Table":
-                node_namespace = escape_string(node.namespace)
-                node_data_source = escape_string(node.data_source)
-
                 self.redis_connection.graph(f"lineage:{str(self.workspace.id)}").query(
-                    f"MERGE (table:Table {{id: '{str(node.id)}'}}) ON CREATE SET table.name = '{node_name}', table.namespace = '{node_namespace}', table.data_source = '{node_data_source}' ON MATCH SET table.name = '{node_name}', table.namespace = '{node_namespace}', table.data_source = '{node_data_source}'"
+                    f"""
+                        MERGE (table:Table {{id: $id}})
+                        ON CREATE SET table.name = $name, table.namespace = $namespace, table.data_source = $data_source
+                        ON MATCH SET table.name = $name, table.namespace = $namespace, table.data_source = $data_source
+                    """,
+                    {
+                        "id": str(node.id),
+                        "name": node.name,
+                        "namespace": node.namespace,
+                        "data_source": node.data_source,
+                    },
                 )
 
             elif node_type == "Column":
                 self.redis_connection.graph(f"lineage:{str(self.workspace.id)}").query(
-                    f"MERGE (column:Column {{id: '{str(node.id)}'}}) ON CREATE SET column.name = '{node_name}' ON MATCH SET column.name = '{node_name}'"
+                    f"""
+                        MERGE (column:Column {{id: $id}})
+                        ON CREATE SET column.name = $name
+                        ON MATCH SET column.name = $name
+                    """,
+                    {
+                        "id": str(node.id),
+                        "name": node.name,
+                    },
                 )
 
             node_tqdm.update(1)
@@ -70,15 +80,42 @@ class Command(BaseCommand):
 
             if edge_type == "TableToColumn":
                 self.redis_connection.graph(f"lineage:{str(self.workspace.id)}").query(
-                    f"MATCH (table:Table), (column:Column) WHERE table.id = '{str(edge.source_id)}' AND column.id = '{str(edge.destination_id)}' MERGE (table)-[r:TABLE_TO_COLUMN]->(column)"
+                    f"""
+                        MATCH (table:Table), (column:Column)
+                        WHERE table.id = $source
+                        AND column.id = $destination
+                        MERGE (table)-[r:TABLE_TO_COLUMN]->(column)
+                    """,
+                    {
+                        "source": str(edge.source_id),
+                        "destination": str(edge.destination_id),
+                    },
                 )
             elif edge_type == "TableToTable":
                 self.redis_connection.graph(f"lineage:{str(self.workspace.id)}").query(
-                    f"MATCH (source:Table), (destination:Table) WHERE source.id = '{str(edge.source_id)}' AND destination.id = '{str(edge.destination_id)}' MERGE (source)-[r:TABLE_TO_TABLE]->(destination)"
+                    f"""
+                        MATCH (source:Table), (destination:Table)
+                        WHERE source.id = $source
+                        AND destination.id = $destination
+                        MERGE (source)-[r:TABLE_TO_TABLE]->(destination)
+                    """,
+                    {
+                        "source": str(edge.source_id),
+                        "destination": str(edge.destination_id),
+                    },
                 )
             elif edge_type == "ColumnToColumn":
                 self.redis_connection.graph(f"lineage:{str(self.workspace.id)}").query(
-                    f"MATCH (source:Column), (destination:Column) WHERE source.id = '{str(edge.source_id)}' AND destination.id = '{str(edge.destination_id)}' MERGE (source)-[r:COLUMN_TO_COLUMN]->(destination)"
+                    f"""
+                        MATCH (source:Column), (destination:Column)
+                        WHERE source.id = $source
+                        AND destination.id = $destination
+                        MERGE (source)-[r:COLUMN_TO_COLUMN]->(destination)
+                    """,
+                    {
+                        "source": str(edge.source_id),
+                        "destination": str(edge.destination_id),
+                    },
                 )
 
                 source_table_edge = edge.source.destination_edges.filter(
