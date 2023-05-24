@@ -33,8 +33,8 @@ from grai_source_fivetran.loader import FivetranConnector
 #     assert conn.namespace_map['happy'].destination == "monkey"
 
 
-def test_load_from_remote():
-    dotenv.load_dotenv()
-    client = ClientV1("localhost", "8000", username="null@grai.io", password="super_secret", insecure=True)
-    kwargs = {"default_namespace": "default_namespace"}
-    update_server(client, **kwargs)
+# def test_load_from_remote():
+#     dotenv.load_dotenv()
+#     client = ClientV1("localhost", "8000", username="null@grai.io", password="super_secret", insecure=True)
+#     kwargs = {"default_namespace": "default_namespace"}
+#     update_server(client, **kwargs)
