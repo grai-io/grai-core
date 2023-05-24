@@ -420,7 +420,7 @@ def segmented_caller(
                 position=1,
                 leave=True,
             )
-            result = (func(client, obj, options) for obj in inner_pbar)
+            result = [func(client, obj, options) for obj in inner_pbar]
 
             for i, obj in zip(index, result):
                 final_result[i] = obj
