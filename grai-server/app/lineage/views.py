@@ -30,11 +30,12 @@ class NodeViewSet(ModelViewSet):
             return self.type.objects
 
         q_filter = Q()
-        supported_filters = ["is_active", "namespace", "name"]
-        for filter_name in supported_filters:
-            if condition := self.request.query_params.get(filter_name):
-                q_filter &= Q(**{filter_name: condition})
-
+        query_params = self.request.query_params
+        supported_filters = ["is_active", "namespace", "name", "display_name", "created_at", "updated_at"]
+        starts_with_filters = ("metadata", "created_at", "updated_at")
+        for filter_name, filter_value in query_params.items():
+            if filter_name in supported_filters or filter_name.startswith(starts_with_filters):
+                q_filter &= Q(**{filter_name: filter_value})
         return self.type.objects.filter(q_filter)
 
 
@@ -54,9 +55,11 @@ class EdgeViewSet(ModelViewSet):
             return self.type.objects
 
         q_filter = Q()
-        supported_filters = ["source", "destination", "is_active", "name", "namespace"]
-        for filter_name in supported_filters:
-            if condition := self.request.query_params.get(filter_name):
-                q_filter &= Q(**{filter_name: condition})
+        query_params = self.request.query_params
+        supported_filters = {"source", "destination", "is_active", "name", "namespace", "display_name"}
+        starts_with_filters = ("metadata", "created_at", "updated_at")
+        for filter_name, filter_value in query_params.items():
+            if filter_name in supported_filters or filter_name.startswith(starts_with_filters):
+                q_filter &= Q(**{filter_name: filter_value})
 
         return self.type.objects.filter(q_filter)

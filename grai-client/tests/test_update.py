@@ -34,8 +34,9 @@ def test_update_nodes(versioned_client):
 def test_update_node_creation(client):
     nodes = [mock_v1_node() for _ in range(1)]
     namespace = nodes[0].spec.namespace
+    name = nodes[0].spec.name
     update(client, nodes)
-    new_nodes = client.get(nodes[0].type, "*", namespace)
+    new_nodes = client.get(nodes[0].type, name=name, namespace=namespace)
     assert len(new_nodes) == len(nodes)
 
 
@@ -43,11 +44,11 @@ def test_update_node_update(client):
     nodes = [mock_v1_node() for _ in range(1)]
     namespace = nodes[0].spec.namespace
     update(client, nodes)
-    new_nodes = client.get(nodes[0].type, "*", namespace)
+    new_nodes = client.get(nodes[0].type, namespace=namespace)
     assert len(new_nodes) == len(nodes)
 
     update(client, nodes)
-    new_nodes = client.get(nodes[0].type, "*", namespace)
+    new_nodes = client.get(nodes[0].type, namespace=namespace)
     assert len(new_nodes) == len(nodes)
 
 
@@ -55,11 +56,11 @@ def test_update_node_deactivate(client):
     nodes = [mock_v1_node() for _ in range(1)]
     namespace = nodes[0].spec.namespace
     update(client, nodes)
-    new_nodes = client.get(nodes[0].type, "*", namespace)
+    new_nodes = client.get(nodes[0].type, namespace=namespace)
     assert len(new_nodes) == len(nodes)
     for node in nodes:
         node.spec.is_active = False
     update(client, nodes)
-    new_nodes = client.get(nodes[0].type, "*", namespace)
+    new_nodes = client.get(nodes[0].type, namespace=namespace)
     assert len(new_nodes) == len(nodes)
     assert all(node.spec.is_active for node in new_nodes)

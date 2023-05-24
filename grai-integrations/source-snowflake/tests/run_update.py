@@ -9,7 +9,7 @@ dotenv.load_dotenv()
 
 def test_update_server():
     client = ClientV1(host="localhost", port="8000")
-    client.set_authentication_headers(username="null@grai.io", password="super_secret")
+    client.authenticate(username="null@grai.io", password="super_secret")
     update_server(client)
     # connector = SnowflakeConnector()
     # with connector as conn:

@@ -5,9 +5,7 @@ from grai_client.endpoints.rest import get
 from grai_client.endpoints.v1.client import ClientV1
 
 
-async def process_node_id(
-    client: ClientV1, grai_type: NodeIdTypes, options: ClientOptions = ClientOptions()
-) -> NodeIdTypes:
+def process_node_id(client: ClientV1, grai_type: NodeIdTypes, options: ClientOptions = ClientOptions()) -> NodeIdTypes:
     """
     Process a NodeID object, either by returning if it has a known id, or by getting
     the id from the server.
@@ -15,7 +13,7 @@ async def process_node_id(
     if grai_type.id is not None:
         return grai_type
 
-    server_node = await get(client, grai_type, options=options)
+    server_node = get(client, grai_type, options=options)
     if server_node is None:
         if grai_type.id is None:
             message = (

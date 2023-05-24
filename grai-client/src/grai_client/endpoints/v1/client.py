@@ -1,5 +1,4 @@
-import asyncio
-from typing import Optional, Union
+from typing import Literal, Optional, Union
 from uuid import UUID, uuid4
 
 import httpx
@@ -10,7 +9,7 @@ from grai_client.endpoints.utilities import is_valid_uuid
 
 
 class ClientV1(BaseClient):
-    id = "v1"
+    id: Literal["v1"] = "v1"
     base = "/api/v1/"
     _node_endpoint = "lineage/nodes/"
     _edge_endpoint = "lineage/edges/"
@@ -25,11 +24,13 @@ class ClientV1(BaseClient):
         self.workspace_endpoint = f"{self.api}{self._workspace_endpoint}"
         self.is_authenticated_endpoint = f"{self.api}{self._is_authenticated_endpoint}"
 
-        self._workspace = str(workspace) if workspace is not None else None
+        self._workspace = str(workspace) if isinstance(workspace, (str, UUID)) else None
+
+        if self.init_auth_values.is_valid():
+            self.authenticate(**self.init_auth_values.dict())
 
     def check_authentication(self) -> Response:
-        return httpx.get(self.is_authenticated_endpoint, headers=self.auth_headers, auth=self.auth)
-        # return asyncio.run(self.session.get(self.is_authenticated_endpoint, headers=self.auth_headers))
+        return httpx.get(self.is_authenticated_endpoint, auth=self.auth)
 
     @property
     def workspace(self) -> Optional[str]:
@@ -39,7 +40,7 @@ class ClientV1(BaseClient):
     def workspace(self, workspace: Optional[Union[str, UUID]]):
         if workspace is None:
             self._workspace = workspace
-            self.default_payload.pop("workspace", None)
+            self.default_query_args.pop("workspace", None)
             return
 
         if is_valid_uuid(workspace):
@@ -55,7 +56,7 @@ class ClientV1(BaseClient):
             raise TypeError("Workspace must be either a string, uuid, or None.")
 
         self._workspace = str(workspace)
-        self.default_payload["workspace"] = self._workspace
+        self.default_query_args["workspace"] = self._workspace
 
     def authenticate(
         self,
@@ -65,12 +66,3 @@ class ClientV1(BaseClient):
     ) -> None:
         super().authenticate(username, password, api_key)
         self.workspace = self.workspace
-
-    def set_authentication_headers(
-        self,
-        username: Optional[str] = None,
-        password: Optional[str] = None,
-        api_key: Optional[str] = None,
-    ) -> None:
-        # Deprecated
-        self.authenticate(username, password, api_key)
