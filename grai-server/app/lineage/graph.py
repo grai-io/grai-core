@@ -16,9 +16,9 @@ OPTIONAL MATCH (column)-[:COLUMN_TO_COLUMN]->(column_destination:Column)
 OPTIONAL MATCH (table)-[:TABLE_TO_TABLE]->(destination:Table)
 WITH
     table,
-    COLLECT(destination.id) AS destinations,
+    COLLECT(distinct destination.id) AS destinations,
     column,
-    collect(column_destination.id) as column_destinations
+    collect(distinct column_destination.id) as column_destinations
 WITH
     table,
     destinations,
@@ -87,11 +87,11 @@ def get_filtered_graph_result(workspace_id: str, table_id: str, n: int) -> List[
             OPTIONAL MATCH (table)-[:TABLE_TO_TABLE]->(destination:Table)
             WITH
                 table,
-                COLLECT(destination.id) AS destinations,
+                COLLECT(distinct destination.id) AS destinations,
                 column,
-                collect(column_destination.id) as column_destinations,
-                collect(all_destinations.id) as all_destinations,
-                collect(all_sources.id) as all_sources
+                collect(distinct column_destination.id) as column_destinations,
+                collect(distinct all_destinations.id) as all_destinations,
+                collect(distinct all_sources.id) as all_sources
             WITH
                 table,
                 destinations,
