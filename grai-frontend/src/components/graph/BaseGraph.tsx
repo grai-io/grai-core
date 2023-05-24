@@ -32,9 +32,6 @@ export const createGraphLayout = async (
   initialNodes: Node[],
   initialEdges: Edge[]
 ) => {
-  const nodes: ElkNode[] = []
-  const edges: any[] = []
-
   const elk = new Elk({
     defaultLayoutOptions: {
       "elk.algorithm": "layered",
@@ -46,27 +43,22 @@ export const createGraphLayout = async (
     },
   })
 
-  initialNodes.forEach(node =>
-    nodes.push({
-      id: node.id,
-      width: DEFAULT_WIDTH,
-      height:
-        DEFAULT_HEIGHT +
-        (node.data.expanded ? node.data.columns.length * 42 + 100 : 0),
-    })
-  )
-
-  initialEdges.forEach(edge =>
-    edges.push({
-      id: edge.id,
-      target: edge.target,
-      source: edge.source,
-    })
-  )
+  const children: ElkNode[] = initialNodes.map(node => ({
+    id: node.id,
+    width: DEFAULT_WIDTH,
+    height:
+      DEFAULT_HEIGHT +
+      (node.data.expanded ? node.data.columns.length * 42 + 100 : 0),
+  }))
+  const edges: any[] = initialEdges.map(edge => ({
+    id: edge.id,
+    target: edge.target,
+    source: edge.source,
+  }))
 
   const newGraph = await elk.layout({
     id: "root",
-    children: nodes,
+    children,
     edges,
   })
 
@@ -140,7 +132,7 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
   loading,
 }) => {
   const [nodes, setNodes] = useState<Node[]>()
-  const [edges, setEdges] = useState<Edge[]>(initialEdges)
+  const [edges, setEdges] = useState<Edge[]>()
 
   useEffect(() => {
     createGraphLayout(initialNodes, initialEdges)
@@ -177,7 +169,7 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
       )
 
       setEdges(prevEdges =>
-        prevEdges.map(elem => {
+        prevEdges?.map(elem => {
           const highlight =
             incomerIds.includes(elem.target) ||
             (incomerIds.includes(elem.source) && node.id === elem.target) ||
@@ -208,7 +200,7 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
       })
     )
 
-    setEdges((prevEdges: Edge[]) =>
+    setEdges((prevEdges: Edge[] | undefined) =>
       prevEdges?.map(edge => {
         edge.animated = false
         edge.style = {
