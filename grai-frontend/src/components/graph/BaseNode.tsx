@@ -118,69 +118,61 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
           }}
           isConnectable={false}
         />
-        <Box>
-          {data.hiddenDestinationTables.length > 0 && (
-            <HiddenTableButton
-              position="left"
-              onClick={handleShowDestinations}
-            />
-          )}
-          {data.hiddenSourceTables.length > 0 && (
-            <HiddenTableButton position="right" onClick={handleShowSources} />
-          )}
-          <Box sx={{ display: "flex" }}>
-            <DataSourceIcon dataSource={data.data_source} />
-            <Box sx={{ flexGrow: 1 }}>
-              <Typography
-                variant="h6"
-                sx={{
-                  fontWeight: 600,
-                  fontSize: "16px",
-                  lineHeight: "150%",
-                  mt: "12px",
-                }}
-              >
-                {data.label}
-              </Typography>
-              <Typography
-                sx={{
-                  fontWeight: 400,
-                  fontSize: "12px",
-                  lineHeight: "150%",
-                  mt: "2px",
-                }}
-              >
-                {data.columns.length > 0 &&
-                  `${data.columns.length} Column${
-                    data.columns.length > 1 && "s"
-                  }`}
-              </Typography>
-            </Box>
-            {data.columns.length > 0 && (
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Box
-                  sx={{
-                    cursor: "pointer",
-                    mr: "12px",
-                    color: "#8338EC",
-                  }}
-                  onClick={() => data.onExpand(!data.expanded)}
-                >
-                  {data.expanded ? (
-                    <ExpandLess fontSize="large" />
-                  ) : (
-                    <ExpandMore fontSize="large" />
-                  )}
-                </Box>
-              </Box>
-            )}
+
+        {data.hiddenDestinationTables.length > 0 && (
+          <HiddenTableButton position="left" onClick={handleShowDestinations} />
+        )}
+        {data.hiddenSourceTables.length > 0 && (
+          <HiddenTableButton position="right" onClick={handleShowSources} />
+        )}
+        <Box sx={{ display: "flex" }}>
+          <DataSourceIcon dataSource={data.data_source} />
+          <Box sx={{ flexGrow: 1 }}>
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: 600,
+                fontSize: "16px",
+                lineHeight: "150%",
+                mt: "12px",
+                mr: "12px",
+              }}
+            >
+              {data.label}
+            </Typography>
+            <Typography
+              sx={{
+                fontWeight: 400,
+                fontSize: "12px",
+                lineHeight: "150%",
+                mt: "2px",
+              }}
+            >
+              {data.columns.length > 0 &&
+                `${data.columns.length} Column${
+                  data.columns.length > 1 && "s"
+                }`}
+            </Typography>
           </Box>
+          {data.columns.length > 0 && (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                mr: "12px",
+                color: "#8338EC",
+              }}
+              onClick={() => data.onExpand(!data.expanded)}
+            >
+              {data.expanded ? (
+                <ExpandLess fontSize="large" />
+              ) : (
+                <ExpandMore fontSize="large" />
+              )}
+            </Box>
+          )}
         </Box>
         {data.expanded && (
           <Stack direction="column" spacing={1} sx={{ px: 1, pb: 1, mt: -0.5 }}>
