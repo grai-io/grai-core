@@ -17,7 +17,7 @@ import BaseNode from "./BaseNode"
 import GraphControls, { ControlOptions } from "./controls/GraphControls"
 import TestEdge from "./TestEdge"
 
-const DEFAULT_WIDTH = 300
+// const DEFAULT_WIDTH = 300
 const DEFAULT_HEIGHT = 110
 
 const nodeTypes = {
@@ -45,10 +45,14 @@ export const createGraphLayout = async (
 
   const children: ElkNode[] = initialNodes.map(node => ({
     id: node.id,
-    width: DEFAULT_WIDTH,
+    width:
+      Math.max(
+        node.data.label.length * 5,
+        ...node.data.columns.map((c: any) => c.name.length * 4)
+      ) + 200,
     height:
       DEFAULT_HEIGHT +
-      (node.data.expanded ? node.data.columns.length * 42 + 100 : 0),
+      (node.data.expanded ? node.data.columns.length * 50 + 100 : 0),
   }))
   const edges: any[] = initialEdges.map(edge => ({
     id: edge.id,
