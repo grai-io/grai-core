@@ -1,5 +1,4 @@
 import abc
-import asyncio
 import json
 import sys
 import warnings
@@ -23,10 +22,9 @@ from urllib.parse import urlparse
 
 import httpx
 from grai_schemas.base import Edge, Node
-from httpx import Auth, BasicAuth, Request, Response
+from httpx import Auth, BasicAuth, QueryParams, Request, Response
 from multimethod import multimethod
 from pydantic import BaseModel, SecretStr
-from tqdm.asyncio import tqdm_asyncio
 from tqdm.autonotebook import tqdm
 
 from grai_client.authentication import APIKeyAuth
@@ -193,9 +191,9 @@ class AuthValues(BaseModel):
 
 def async_requires_auth(func):
     @wraps(func)
-    async def wrapper(self, *args, **kwargs):
+    def wrapper(self, *args, **kwargs):
         if self.is_authenticated:
-            return await func(self, *args, **kwargs)
+            return func(self, *args, **kwargs)
         else:
             raise Exception("This method requires authentication. Call `authenticate` first.")
 
@@ -229,22 +227,22 @@ class BaseClient(abc.ABC):
         protocol: Optional[ProtocolType] = None,
         insecure: Optional[bool] = None,
         url: Optional[str] = None,
-        httpx_async_client_args: Optional[Union[Dict[str, Any], str]] = None,
+        httpx_client_args: Optional[Union[Dict[str, Any], str]] = None,
         username: Optional[str] = None,
         password: Optional[str] = None,
         api_key: Optional[str] = None,
     ):
         # TODO: Should require keyword arguments
         validated_args = validate_connection_arguments(url, host, port, protocol, insecure)
-        if isinstance(httpx_async_client_args, str):
-            httpx_async_client_args = json.loads(httpx_async_client_args)
+        if isinstance(httpx_client_args, str):
+            httpx_client_args = json.loads(httpx_client_args)
 
         self.url: str = validated_args[0]
         self.host: str = validated_args[1]
         self.port: Optional[str] = validated_args[2]
         self.protocol: ProtocolType = validated_args[3]
         self.insecure: bool = validated_args[4]
-        self.httpx_async_client_args: Dict[str, Any] = httpx_async_client_args
+        self.httpx_client_args: Dict[str, Any] = httpx_client_args
 
         self.health_endpoint: str = f"{self.url}/health"
 
@@ -257,20 +255,16 @@ class BaseClient(abc.ABC):
         self.default_request_args: Dict[str, str] = dict()
         self.default_query_args: Dict[str, str] = dict()
 
-        self.session: Optional[httpx.AsyncClient] = None
+        self.session: Optional[httpx.Client] = None
 
         if (resp := self.server_health_status()).status_code != 200:
             raise Exception(f"Error connecting to server at {self.url}. Received response {resp.json()}")
 
-    def get_session(self) -> httpx.AsyncClient:
-        client_args = {
-            "timeout": None,
-            "http2": True,
-            "limits": httpx.Limits(max_keepalive_connections=3, max_connections=3),
-        }
-        client_args.update(self.httpx_async_client_args if self.httpx_async_client_args is not None else {})
+    def get_session(self) -> httpx.Client:
+        client_args = {"timeout": None, "http2": True, "params": QueryParams(**self.default_query_args)}
+        client_args.update(self.httpx_client_args if self.httpx_client_args is not None else {})
 
-        session = httpx.AsyncClient(**client_args)
+        session = httpx.Client(**client_args)
         session.auth = self.auth
         return session
 
@@ -337,34 +331,34 @@ class BaseClient(abc.ABC):
     def get_url(self, grai_type: Any) -> str:
         raise NotImplementedError(f"No url method implemented for type {type(grai_type)}")
 
-    async def session_manager(self, async_func: Callable, *args, options: Optional[OptionType] = None, **kwargs):
+    def session_manager(self, func: Callable, *args, options: Optional[OptionType] = None, **kwargs):
         if options is None:
             options = ClientOptions()
 
         options = self.default_options + options
         options.query_args = {**options.query_args, **kwargs}
 
-        async with self.get_session() as session:
+        with self.get_session() as session:
             self.session = session
-            result = await async_func(self, *args, options=options)
+            result = func(self, *args, options=options)
         self.session = None
         return result
 
     @requires_auth
     def get(self, *args, options: Optional[OptionType] = None, **kwargs):
-        return asyncio.run(self.session_manager(get, *args, options=options, **kwargs))
+        return self.session_manager(get, *args, options=options, **kwargs)
 
     @requires_auth
     def post(self, *args, options: Optional[OptionType] = None, **kwargs):
-        return asyncio.run(self.session_manager(post, *args, options=options, **kwargs))
+        return self.session_manager(post, *args, options=options, **kwargs)
 
     @requires_auth
     def patch(self, *args, options: Optional[OptionType] = None, **kwargs):
-        return asyncio.run(self.session_manager(patch, *args, options=options, **kwargs))
+        return self.session_manager(patch, *args, options=options, **kwargs)
 
     @requires_auth
     def delete(self, *args, options: Optional[OptionType] = None, **kwargs):
-        return asyncio.run(self.session_manager(delete, *args, options=options, **kwargs))
+        return self.session_manager(delete, *args, options=options, **kwargs)
 
 
 # ----- Sequence Functions ----- #
@@ -405,11 +399,11 @@ PRIORITY_ORDER_MAP = {
 
 def segmented_caller(
     func: Callable[[BaseClient, Sequence[T], ClientOptions], R], priority_order: Optional[Tuple] = None
-) -> Callable[[BaseClient, Sequence[T], ClientOptions], Coroutine[Any, Any, list[Optional[T]]]]:
+) -> Callable[[BaseClient, Sequence[T], ClientOptions], list[R]]:
     if priority_order is None:
         priority_order = PRIORITY_ORDER_MAP.get(func.__name__, ())
 
-    async def inner(client: BaseClient, objs: Sequence[T], options: ClientOptions) -> List[R]:
+    def inner(client: BaseClient, objs: Sequence[T], options: ClientOptions) -> List[R]:
         final_result = [None] * len(objs)
         pbar = tqdm(
             type_segmentation(objs, priority_order),
@@ -417,16 +411,18 @@ def segmented_caller(
             # colour='#ffb567',
             position=0,
         )
-        for idx, iter_obj, obj_type in pbar:
-            result = await tqdm_asyncio.gather(
-                *[func(client, obj, options) for obj in iter_obj],
+        for index, iter_obj, obj_type in pbar:
+            inner_pbar = tqdm(
+                iter_obj,
                 desc=obj_type.__name__,
                 unit=f" {obj_type.__name__}",
                 # colour='#8338ec',
                 position=1,
                 leave=True,
             )
-            for i, obj in zip(idx, result):
+            result = (func(client, obj, options) for obj in inner_pbar)
+
+            for i, obj in zip(index, result):
                 final_result[i] = obj
         return final_result
 
@@ -434,46 +430,46 @@ def segmented_caller(
 
 
 @get.register
-async def get_sequence(
+def get_sequence(
     client: BaseClient,
     objs: Sequence,
     options: ClientOptions = ClientOptions(),
 ) -> Sequence[T]:
-    segmented_delete = segmented_caller(get)
-    result = await segmented_delete(client, objs, options)
+    segmented_get = segmented_caller(get)
+    result = segmented_get(client, objs, options)
     return result
 
 
 @delete.register
-async def delete_sequence(
+def delete_sequence(
     client: BaseClient,
     objs: Sequence,
     options: ClientOptions = ClientOptions(),
 ) -> None:
     segmented_delete = segmented_caller(delete)
-    result = await segmented_delete(client, objs, options)
+    result = segmented_delete(client, objs, options)
     return None
 
 
 @post.register
-async def post_sequence(
+def post_sequence(
     client: BaseClient,
-    objs: Sequence[T],
+    objs: Sequence,
     options: ClientOptions = ClientOptions(),
 ) -> List[T]:
     segmented_post = segmented_caller(post)
-    result = await segmented_post(client, objs, options)
+    result = segmented_post(client, objs, options)
     return result
 
 
 @patch.register
-async def patch_sequence(
+def patch_sequence(
     client: BaseClient,
     objs: Sequence,
     options: ClientOptions = ClientOptions(),
 ) -> List[T]:
     segmented_patch = segmented_caller(patch)
-    result = await segmented_patch(client, objs, options)
+    result = segmented_patch(client, objs, options)
     return result
 
 
@@ -481,23 +477,23 @@ async def patch_sequence(
 
 
 @get.register
-async def client_get_url(client: BaseClient, url: str, options: ClientOptions = ClientOptions()) -> Response:
+def client_get_url(client: BaseClient, url: str, options: ClientOptions = ClientOptions()) -> Response:
     if options.query_args:
         url = add_query_params(url, options.query_args)
-    response = await client.session.get(url, headers=options.headers, **options.request_args)
+    response = client.session.get(url, headers=options.headers, **options.request_args)
     response_status_check(response)
     return response
 
 
 @delete.register
-async def client_delete_url(client: BaseClient, url: str, options: ClientOptions = ClientOptions()) -> Response:
-    response = await client.session.delete(url, headers=options.headers, **options.request_args)
+def client_delete_url(client: BaseClient, url: str, options: ClientOptions = ClientOptions()) -> Response:
+    response = client.session.delete(url, headers=options.headers, **options.request_args)
     response_status_check(response)
     return response
 
 
 @post.register
-async def client_post_url(
+def client_post_url(
     client: BaseClient,
     url: str,
     payload: Dict,
@@ -508,14 +504,15 @@ async def client_post_url(
         **options.headers,
     }
     payload = {**payload, **options.payload}
-    response = await client.session.post(url, content=serialize_obj(payload), headers=headers, **options.request_args)
+
+    response = client.session.post(url, content=serialize_obj(payload), headers=headers, **options.request_args)
 
     response_status_check(response)
     return response
 
 
 @patch.register
-async def client_patch_url(
+def client_patch_url(
     client: BaseClient,
     url: str,
     payload: Dict,
@@ -527,7 +524,7 @@ async def client_patch_url(
     }
     payload = {**payload, **options.payload}
 
-    response = await client.session.patch(url, content=serialize_obj(payload), headers=headers, **options.request_args)
+    response = client.session.patch(url, content=serialize_obj(payload), headers=headers, **options.request_args)
 
     response_status_check(response)
     return response

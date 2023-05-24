@@ -1,4 +1,3 @@
-import asyncio
 from typing import Dict, List, Literal, Optional, TypeVar, Union
 from uuid import UUID
 
@@ -18,23 +17,21 @@ X = TypeVar("X")
 
 
 @get.register
-async def get_node_by_label_v1(
+def get_node_by_label_v1(
     client: ClientV1, grai_type: NodeLabels, options: ClientOptions = ClientOptions()
 ) -> List[NodeV1]:
     url = client.get_url(grai_type)
-    resp = await get(client, url, options=options)
+    resp = get(client, url, options=options)
     return [NodeV1.from_spec(obj) for obj in resp.json()]
 
 
 @get.register
-async def get_node_v1(
-    client: ClientV1, grai_type: NodeV1, options: ClientOptions = ClientOptions()
-) -> Optional[NodeV1]:
-    return await get(client, grai_type.spec, options)
+def get_node_v1(client: ClientV1, grai_type: NodeV1, options: ClientOptions = ClientOptions()) -> Optional[NodeV1]:
+    return get(client, grai_type.spec, options)
 
 
 @get.register
-async def get_nodes_by_uuid_str_id(
+def get_nodes_by_uuid_str_id(
     client: ClientV1,
     grai_type: NodeLabels,
     node_uuid: Union[str, UUID],
@@ -45,26 +42,26 @@ async def get_nodes_by_uuid_str_id(
 
     url = f"{client.get_url(grai_type)}{node_uuid}/"
 
-    resp = await get(client, url, options=options)
+    resp = get(client, url, options=options)
     resp = resp.json()
     return NodeV1.from_spec(resp)
 
 
 @get.register
-async def get_from_node_uuid_id(
+def get_from_node_uuid_id(
     client: ClientV1, grai_type: NodeUuidID, options: ClientOptions = ClientOptions()
 ) -> Optional[NodeV1]:
-    return await get(client, "Node", grai_type.id, options=options)
+    return get(client, "Node", grai_type.id, options=options)
 
 
 @get.register
-async def get_from_node_named_id(
+def get_from_node_named_id(
     client: ClientV1, grai_type: NodeNamedID, options: ClientOptions = ClientOptions()
 ) -> Optional[NodeV1]:
     options = options.copy()
     options.query_args = {**options.query_args, "name": grai_type.name, "namespace": grai_type.namespace}
 
-    result = await get(client, "Node", options=options)
+    result = get(client, "Node", options=options)
 
     num_results = len(result)
     if num_results == 0:
@@ -84,24 +81,24 @@ async def get_from_node_named_id(
 # ----- Edges ----- #
 
 
-async def finalize_edge(client: ClientV1, resp: Dict, options: ClientOptions = ClientOptions()) -> EdgeV1:
-    nodes = await asyncio.gather(get(client, "node", resp["source"]), get(client, "node", resp["destination"]))
+def finalize_edge(client: ClientV1, resp: Dict, options: ClientOptions = ClientOptions()) -> EdgeV1:
+    nodes = [get(client, "node", resp["source"]), get(client, "node", resp["destination"])]
     resp["source"] = nodes[0].spec
     resp["destination"] = nodes[1].spec
     return EdgeV1.from_spec(resp)
 
 
 @get.register
-async def get_edge_by_label_v1(
+def get_edge_by_label_v1(
     client: ClientV1, grai_type: EdgeLabels, options: ClientOptions = ClientOptions()
 ) -> List[EdgeV1]:
     url = client.get_url(grai_type)
-    resp = await get(client, url, options=options)
-    return await asyncio.gather(*[finalize_edge(client, edge) for edge in resp.json()])
+    resp = get(client, url, options=options)
+    return [finalize_edge(client, edge) for edge in resp.json()]
 
 
 @get.register
-async def get_edge_by_uuid_str_id(
+def get_edge_by_uuid_str_id(
     client: ClientV1,
     grai_type: EdgeLabels,
     edge_uuid: Union[str, UUID],
@@ -112,38 +109,36 @@ async def get_edge_by_uuid_str_id(
 
     url = f"{client.get_url(grai_type)}{edge_uuid}/"
 
-    resp = await get(client, url, options=options)
-    return await finalize_edge(client, resp.json(), options)
+    resp = get(client, url, options=options)
+    return finalize_edge(client, resp.json(), options)
 
 
 @get.register
-async def get_edge_v1(
-    client: ClientV1, grai_type: EdgeV1, options: ClientOptions = ClientOptions()
-) -> Optional[EdgeV1]:
-    return await get(client, grai_type.spec, options)
+def get_edge_v1(client: ClientV1, grai_type: EdgeV1, options: ClientOptions = ClientOptions()) -> Optional[EdgeV1]:
+    return get(client, grai_type.spec, options)
 
 
 @get.register
-async def get_from_edge_uuid_id(
+def get_from_edge_uuid_id(
     client: ClientV1, grai_type: EdgeUuidID, options: ClientOptions = ClientOptions()
 ) -> Optional[EdgeV1]:
-    return await get(client, "Edge", grai_type.id, options=options)
+    return get(client, "Edge", grai_type.id, options=options)
 
 
 @get.register
-async def get_from_edge_named_id(
+def get_from_edge_named_id(
     client: ClientV1, grai_type: EdgeNamedID, options: ClientOptions = ClientOptions()
 ) -> Optional[EdgeV1]:
     options = options.copy()
     options.query_args = {**options.query_args, "name": grai_type.name, "namespace": grai_type.namespace}
 
-    resp = await get(client, "Edge", options=options)
+    resp = get(client, "Edge", options=options)
 
     num_results = len(resp)
     if num_results == 0:
         return None
     elif num_results == 1:
-        return await finalize_edge(client, resp[0])
+        return finalize_edge(client, resp[0])
     else:
         message = (
             f"An edge query for name={grai_type.name}, namespace={grai_type.namespace} in the "
@@ -158,12 +153,12 @@ async def get_from_edge_named_id(
 
 
 @get.register
-async def get_all_workspaces(
+def get_all_workspaces(
     client: ClientV1,
     grai_type: WorkspaceLabels,
     options: ClientOptions = ClientOptions(),
 ) -> Optional[List[Workspace]]:
-    resp = await get(client, client.get_url(grai_type), options=options)
+    resp = get(client, client.get_url(grai_type), options=options)
     resp = resp.json()
 
     if len(resp) == 0:
@@ -173,7 +168,7 @@ async def get_all_workspaces(
 
 
 @get.register
-async def get_workspace_by_name_v1(
+def get_workspace_by_name_v1(
     client: ClientV1,
     grai_type: WorkspaceLabels,
     name: str,
@@ -186,7 +181,7 @@ async def get_workspace_by_name_v1(
         url = f"{client.get_url(grai_type)}?ref={name}"
     else:
         url = f"{client.get_url(grai_type)}?name={name}"
-    resp = await get(client, url, options=options)
+    resp = get(client, url, options=options)
     resp = resp.json()
 
     num_resp = len(resp)

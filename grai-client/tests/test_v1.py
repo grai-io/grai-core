@@ -188,4 +188,5 @@ def test_edge_hash(client):
         obj.spec.id = None
     client.post(test_nodes)
     new_edge = client.post(test_edge)
+
     assert hash(new_edge) == hash(test_edge)
