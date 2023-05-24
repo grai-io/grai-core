@@ -56,9 +56,10 @@ class GraphCache:
                     MATCH (table:Table), (column:Column)
                     WHERE table.id = $source
                     AND column.id = $destination
-                    MERGE (table)-[r:TABLE_TO_COLUMN]->(column)
+                    MERGE (table)-[r:TABLE_TO_COLUMN {{id: $id}}]->(column)
                 """,
                 {
+                    "id": str(edge.id),
                     "source": str(edge.source_id),
                     "destination": str(edge.destination_id),
                 },
@@ -69,9 +70,10 @@ class GraphCache:
                     MATCH (source:Table), (destination:Table)
                     WHERE source.id = $source
                     AND destination.id = $destination
-                    MERGE (source)-[r:TABLE_TO_TABLE]->(destination)
+                    MERGE (source)-[r:TABLE_TO_TABLE {{id: $id}}]->(destination)
                 """,
                 {
+                    "id": str(edge.id),
                     "source": str(edge.source_id),
                     "destination": str(edge.destination_id),
                 },
@@ -82,9 +84,10 @@ class GraphCache:
                     MATCH (source:Column), (destination:Column)
                     WHERE source.id = $source
                     AND destination.id = $destination
-                    MERGE (source)-[r:COLUMN_TO_COLUMN]->(destination)
+                    MERGE (source)-[r:COLUMN_TO_COLUMN {{id: $id}}]->(destination)
                 """,
                 {
+                    "id": str(edge.id),
                     "source": str(edge.source_id),
                     "destination": str(edge.destination_id),
                 },

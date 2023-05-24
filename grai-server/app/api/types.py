@@ -25,7 +25,7 @@ from installations.models import Commit as CommitModel
 from installations.models import PullRequest as PullRequestModel
 from installations.models import Repository as RepositoryModel
 from lineage.filter import apply_table_filter, get_tags
-from lineage.graph import get_filtered_graph_result, get_graph_result
+from lineage.graph import get_filtered_graph_result, get_graph_result, get_edge_filtered_graph_result
 from lineage.models import Edge as EdgeModel
 from lineage.models import Filter as FilterModel
 from lineage.models import Node as NodeModel
@@ -621,11 +621,16 @@ class Workspace:
 
     @gql.django.field
     def graph(
-        self, table_id: Optional[strawberry.ID] = strawberry.UNSET, n: Optional[int] = strawberry.UNSET
+        self,
+        table_id: Optional[strawberry.ID] = strawberry.UNSET,
+        n: Optional[int] = strawberry.UNSET,
+        edge_id: Optional[strawberry.ID] = strawberry.UNSET,
     ) -> List["GraphTable"]:
         if table_id:
-            print("Get filtered graph")
             return get_filtered_graph_result(self.id, table_id, n)
+
+        if edge_id:
+            return get_edge_filtered_graph_result(self.id, edge_id, n)
 
         return get_graph_result(self.id)
 

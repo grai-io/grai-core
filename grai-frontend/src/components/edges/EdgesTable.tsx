@@ -76,7 +76,7 @@ const EdgesTable: React.FC<EdgesTableProps> = ({ edges, loading, total }) => {
           count={total}
           rowsPerPage={1000}
           page={0}
-          type="tables"
+          type="edges"
         />
       </TableFooter>
     </Table>
