@@ -158,9 +158,9 @@ const Graph2: React.FC<Graph2Props> = ({
         { tables: new Set(), edges: [] }
       )
 
-      table.destinations.forEach(destination =>
-        destinationEdges.tables.add(destination)
-      )
+      table.destinations
+        .filter(destination => tables.map(t => t.id).includes(destination))
+        .forEach(destination => destinationEdges.tables.add(destination))
 
       const edges = destinationEdges.edges.concat(
         Array.from(destinationEdges.tables).map(destinationTableId =>
@@ -200,13 +200,8 @@ const Graph2: React.FC<Graph2Props> = ({
       )
       .concat(
         table.destinations
-          .map(destination => {
-            const destinationTable = getTable(destination)
-
-            if (!destinationTable) return null
-
-            return generateEdge(table.id, "all", destinationTable.id, "all")
-          })
+          .filter(destination => tables.map(t => t.id).includes(destination))
+          .map(destination => generateEdge(table.id, "all", destination, "all"))
           .filter(notEmpty)
       )
   }, [])
