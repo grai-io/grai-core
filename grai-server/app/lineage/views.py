@@ -1,40 +1,12 @@
 from django.db.models import Q
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import action
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from typing import Optional, Dict
 from common.permissions.multitenant import Multitenant
 from lineage.models import Edge, Node
 from lineage.serializers import EdgeSerializer, NodeSerializer
 from workspaces.permissions import HasWorkspaceAPIKey
-from grai_schemas.v1.node import NodeNamedID
-import json
-from pydantic import BaseModel
-
-# Creating the user id automatically
-# https://stackoverflow.com/questions/30582263/setting-user-id-automatically-on-post-in-django-rest
-
-
-def parse_named_node(payload: str) -> Optional[NodeNamedID]:
-    if isinstance(payload, str):
-        try:
-            data = json.loads(payload)
-        except:
-            return None
-
-    else:
-        data = payload
-    try:
-        return NodeNamedID(**payload)
-    except Exception as e:
-        message = (
-            f"Invalid node naming convention. Received an unexpected payload `{payload}`. "
-            f"Expected a JSON string with the following keys: `namespace`, `name`."
-        )
-
-        raise Exception(message) from e
 
 
 class NodeViewSet(ModelViewSet):
