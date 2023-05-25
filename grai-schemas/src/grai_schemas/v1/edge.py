@@ -5,6 +5,7 @@ from grai_schemas.v1.generics import GraiBaseModel, NamedID, UuidID
 from grai_schemas.v1.metadata.edges import GenericEdgeMetadataV1, Metadata
 from grai_schemas.v1.metadata.metadata import MetadataV1
 from grai_schemas.v1.node import NodeIdTypes
+from grai_schemas.v1.source import SourceSpec
 
 
 class EdgeNamedID(NamedID):
@@ -20,7 +21,7 @@ EdgeIdTypes = Union[EdgeUuidID, EdgeNamedID]
 
 class BaseSpec(GraiBaseModel):
     display_name: Optional[str]
-    data_source: str
+    data_sources: Optional[List[Union[str, UUID, SourceSpec]]]
     source: NodeIdTypes
     destination: NodeIdTypes
     is_active: Optional[bool] = True
