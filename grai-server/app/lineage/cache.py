@@ -21,8 +21,8 @@ class GraphCache:
 
         if node_type == "Table":
             self.manager.graph(f"lineage:{str(self.workspace.id)}").query(
-                f"""
-                    MERGE (table:Table {{id: $id}})
+                """
+                    MERGE (table:Table {id: $id})
                     ON CREATE SET table.name = $name, table.namespace = $namespace, table.data_source = $data_source
                     ON MATCH SET table.name = $name, table.namespace = $namespace, table.data_source = $data_source
                 """,
@@ -36,8 +36,8 @@ class GraphCache:
 
         elif node_type == "Column":
             self.manager.graph(f"lineage:{str(self.workspace.id)}").query(
-                f"""
-                    MERGE (column:Column {{id: $id}})
+                """
+                    MERGE (column:Column {id: $id})
                     ON CREATE SET column.name = $name
                     ON MATCH SET column.name = $name
                 """,
@@ -52,11 +52,11 @@ class GraphCache:
 
         if edge_type == "TableToColumn":
             self.manager.graph(f"lineage:{str(self.workspace.id)}").query(
-                f"""
+                """
                     MATCH (table:Table), (column:Column)
                     WHERE table.id = $source
                     AND column.id = $destination
-                    MERGE (table)-[r:TABLE_TO_COLUMN {{id: $id}}]->(column)
+                    MERGE (table)-[r:TABLE_TO_COLUMN {id: $id}]->(column)
                 """,
                 {
                     "id": str(edge.id),
@@ -66,11 +66,11 @@ class GraphCache:
             )
         elif edge_type == "TableToTable":
             self.manager.graph(f"lineage:{str(self.workspace.id)}").query(
-                f"""
+                """
                     MATCH (source:Table), (destination:Table)
                     WHERE source.id = $source
                     AND destination.id = $destination
-                    MERGE (source)-[r:TABLE_TO_TABLE {{id: $id}}]->(destination)
+                    MERGE (source)-[r:TABLE_TO_TABLE {id: $id}]->(destination)
                 """,
                 {
                     "id": str(edge.id),
@@ -80,11 +80,11 @@ class GraphCache:
             )
         elif edge_type == "ColumnToColumn":
             self.manager.graph(f"lineage:{str(self.workspace.id)}").query(
-                f"""
+                """
                     MATCH (source:Column), (destination:Column)
                     WHERE source.id = $source
                     AND destination.id = $destination
-                    MERGE (source)-[r:COLUMN_TO_COLUMN {{id: $id}}]->(destination)
+                    MERGE (source)-[r:COLUMN_TO_COLUMN {id: $id}]->(destination)
                 """,
                 {
                     "id": str(edge.id),
@@ -99,7 +99,7 @@ class GraphCache:
             ).first()
 
             self.manager.graph(f"lineage:{str(self.workspace.id)}").query(
-                f"""
+                """
                   MATCH (source:Table), (destination:Table)
                   WHERE source.id = $source
                   AND destination.id = $destination

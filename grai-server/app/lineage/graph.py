@@ -9,7 +9,7 @@ def get_graph_result(workspace_id: str) -> List["GraphTable"]:
     r = redis.Redis(host="localhost", port=6379, db=0)
 
     result = r.graph(f"lineage:{str(workspace_id)}").query(
-        f"""
+        """
 MATCH (table:Table)
 OPTIONAL MATCH (table:Table)-[:TABLE_TO_COLUMN]->(column:Column)
 OPTIONAL MATCH (column)-[:COLUMN_TO_COLUMN]->(column_destination:Column)
@@ -22,21 +22,21 @@ WITH
 WITH
     table,
     destinations,
-    collect({{
+    collect({
         id: column.id,
         name: column.name,
         column_destinations: column_destinations
-    }}) AS columns
+    }) AS columns
 WITH
     table,
-    {{
+    {
         id: table.id,
         name: table.name,
         namespace: table.namespace,
         data_source: table.data_source,
         columns: columns,
         destinations: destinations
-    }} AS tables
+    } AS tables
 RETURN tables
 """,
         timeout=10000,
