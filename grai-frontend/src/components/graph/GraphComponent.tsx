@@ -1,9 +1,41 @@
 import React, { useState } from "react"
+import { gql, useLazyQuery } from "@apollo/client"
 import { Edge as RFEdge, Node as RFNode } from "reactflow"
 import notEmpty from "helpers/notEmpty"
+import useWorkspace from "helpers/useWorkspace"
+import {
+  GetGraphLoadTable,
+  GetGraphLoadTableVariables,
+} from "./__generated__/GetGraphLoadTable"
 import BaseGraph from "./BaseGraph"
 import { BaseNodeData } from "./BaseNode"
 import { ControlOptions } from "./controls/GraphControls"
+
+export const GET_GRAPH_LOAD_TABLE = gql`
+  query GetGraphLoadTable(
+    $organisationName: String!
+    $workspaceName: String!
+    $tableId: ID!
+  ) {
+    workspace(organisationName: $organisationName, name: $workspaceName) {
+      id
+      graph(table_id: $tableId, n: 0) {
+        id
+        name
+        namespace
+        data_source
+        columns {
+          id
+          name
+          destinations
+        }
+        destinations
+        all_destinations
+        all_sources
+      }
+    }
+  }
+`
 
 const position = { x: 0, y: 0 }
 
@@ -50,52 +82,76 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
   controlOptions,
   throwMissingTable,
 }) => {
-  const [hidden, setHidden] = useState<string[]>([])
+  const { organisationName, workspaceName } = useWorkspace()
+
+  const [loadedTables, setLoadedTables] = useState<Table[]>([])
   const [expanded, setExpanded] = useState<string[]>([])
   const [search, setSearch] = useState<string | null>(null)
 
-  const initialTables: RFNode<BaseNodeData>[] = tables
-    .filter(table => !hidden.includes(table.id))
-    .map(table => {
-      const searchMatch = search
-        ? table.name.toLowerCase().includes(search.toLowerCase())
-        : false
+  const [loadTable] = useLazyQuery<
+    GetGraphLoadTable,
+    GetGraphLoadTableVariables
+  >(GET_GRAPH_LOAD_TABLE)
 
-      return {
+  const handleLoadTable = async (tables: string[]) => {
+    //TODO: Switch to multi table query with manual cache checking
+    const results = await Promise.all(
+      tables.map(tableId =>
+        loadTable({
+          variables: {
+            organisationName,
+            workspaceName,
+            tableId,
+          },
+        }).then(res => res.data?.workspace.graph[0])
+      )
+    )
+
+    setLoadedTables([...loadedTables, ...results.filter(notEmpty)])
+  }
+
+  const allTables = tables.concat(loadedTables)
+
+  const initialTables: RFNode<BaseNodeData>[] = allTables.map(table => {
+    const searchMatch = search
+      ? table.name.toLowerCase().includes(search.toLowerCase())
+      : false
+
+    return {
+      id: table.id,
+      data: {
         id: table.id,
-        data: {
-          id: table.id,
-          name: table.name,
-          label: table.name,
-          data_source: table.data_source,
-          columns: table.columns,
-          hiddenSourceTables: (table.all_destinations ?? []).filter(
-            t => !tables.map(t => t.id).includes(t)
-          ),
-          hiddenDestinationTables: (table.all_sources ?? []).filter(
-            t => !tables.map(t => t.id).includes(t)
-          ),
-          expanded: expanded.includes(table.id),
-          onExpand(value: boolean) {
-            setExpanded(
-              value
-                ? expanded.concat(table.id)
-                : expanded.filter(e => e !== table.id)
-            )
-          },
-          onShow(values: string[]) {
-            setHidden([...hidden.filter(a => !values.includes(a))])
-          },
-          highlight: false,
-          searchHighlight: searchMatch,
-          searchDim: search ? !searchMatch : false,
+        name: table.name,
+        label: table.name,
+        data_source: table.data_source,
+        columns: table.columns,
+        hiddenSourceTables: (table.all_destinations ?? []).filter(
+          t => !allTables.map(t => t.id).includes(t)
+        ),
+        hiddenDestinationTables: (table.all_sources ?? []).filter(
+          t => !allTables.map(t => t.id).includes(t)
+        ),
+        expanded: expanded.includes(table.id),
+        onExpand(value: boolean) {
+          setExpanded(
+            value
+              ? expanded.concat(table.id)
+              : expanded.filter(e => e !== table.id)
+          )
         },
-        position,
-      }
-    })
+        onShow: handleLoadTable,
+        highlight: false,
+        searchHighlight: searchMatch,
+        searchDim: search ? !searchMatch : false,
+      },
+      position,
+    }
+  })
 
   const getTable = (id: string) => {
-    const table = tables.find(table => table.columns.some(col => col.id === id))
+    const table = allTables.find(table =>
+      table.columns.some(col => col.id === id)
+    )
 
     if (!table && throwMissingTable) throw new Error(`Table not found ${id}`)
 
@@ -121,7 +177,7 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
     zIndex: 10,
   })
 
-  const edges = tables.reduce<RFEdge[]>((res, table) => {
+  const edges = allTables.reduce<RFEdge[]>((res, table) => {
     const tableExpanded = expanded.includes(table.id)
 
     if (!tableExpanded) {
@@ -167,7 +223,7 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
       )
 
       table.destinations
-        .filter(destination => tables.map(t => t.id).includes(destination))
+        .filter(destination => allTables.map(t => t.id).includes(destination))
         .forEach(destination => destinationEdges.tables.add(destination))
 
       const edges = destinationEdges.edges.concat(
@@ -208,7 +264,7 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
       )
       .concat(
         table.destinations
-          .filter(destination => tables.map(t => t.id).includes(destination))
+          .filter(destination => allTables.map(t => t.id).includes(destination))
           .map(destination => generateEdge(table.id, "all", destination, "all"))
           .filter(notEmpty)
       )
