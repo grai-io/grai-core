@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { gql, useQuery } from "@apollo/client"
 import { Alert, Box } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
-import Graph2 from "components/graph/Graph2"
+import GraphComponent from "components/graph/GraphComponent"
 import Loading from "components/layout/Loading"
 import GraphError from "components/utils/GraphError"
 import {
@@ -76,7 +76,7 @@ const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
       }}
       data-testid="table-lineage"
     >
-      <Graph2
+      <GraphComponent
         tables={tables}
         errors={false}
         // initialHidden={hiddenTables}

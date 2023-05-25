@@ -1,4 +1,4 @@
-import { Error } from "components/graph/Graph"
+import { Error } from "components/graph/GraphComponent"
 
 interface Node {
   id: string

@@ -5,8 +5,7 @@ import { useSearchParams } from "react-router-dom"
 import theme from "theme"
 import useWorkspace from "helpers/useWorkspace"
 import EmptyGraph from "components/graph/EmptyGraph"
-import { Error } from "components/graph/Graph"
-import Graph2 from "components/graph/Graph2"
+import GraphComponent, { Error } from "components/graph/GraphComponent"
 import PageLayout from "components/layout/PageLayout"
 import GraphError from "components/utils/GraphError"
 import {
@@ -76,7 +75,7 @@ const Graph: React.FC = () => {
         }}
       >
         {total > 0 || loading ? (
-          <Graph2
+          <GraphComponent
             tables={tables}
             errors={errors}
             limitGraph={limitGraph}

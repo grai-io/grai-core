@@ -45,80 +45,21 @@ export interface GetPullRequest_workspace_repository {
   pull_request: GetPullRequest_workspace_repository_pull_request;
 }
 
-export interface GetPullRequest_workspace_tables_data_columns_data {
-  __typename: "Column";
-  id: any;
+export interface GetPullRequest_workspace_graph_columns {
+  __typename: "GraphColumn";
+  id: string;
   name: string;
+  destinations: string[];
 }
 
-export interface GetPullRequest_workspace_tables_data_columns {
-  __typename: "ColumnDataWrapper";
-  data: GetPullRequest_workspace_tables_data_columns_data[];
-}
-
-export interface GetPullRequest_workspace_tables_data_source_tables_data {
-  __typename: "Table";
-  id: any;
+export interface GetPullRequest_workspace_graph {
+  __typename: "GraphTable";
+  id: string;
   name: string;
-  display_name: string;
-}
-
-export interface GetPullRequest_workspace_tables_data_source_tables {
-  __typename: "TableDataWrapper";
-  data: GetPullRequest_workspace_tables_data_source_tables_data[];
-}
-
-export interface GetPullRequest_workspace_tables_data_destination_tables_data {
-  __typename: "Table";
-  id: any;
-  name: string;
-  display_name: string;
-}
-
-export interface GetPullRequest_workspace_tables_data_destination_tables {
-  __typename: "TableDataWrapper";
-  data: GetPullRequest_workspace_tables_data_destination_tables_data[];
-}
-
-export interface GetPullRequest_workspace_tables_data {
-  __typename: "Table";
-  id: any;
   namespace: string;
-  name: string;
-  display_name: string;
   data_source: string;
-  metadata: any;
-  columns: GetPullRequest_workspace_tables_data_columns;
-  source_tables: GetPullRequest_workspace_tables_data_source_tables;
-  destination_tables: GetPullRequest_workspace_tables_data_destination_tables;
-}
-
-export interface GetPullRequest_workspace_tables {
-  __typename: "TablePagination";
-  data: GetPullRequest_workspace_tables_data[];
-}
-
-export interface GetPullRequest_workspace_other_edges_data_source {
-  __typename: "Node";
-  id: any;
-}
-
-export interface GetPullRequest_workspace_other_edges_data_destination {
-  __typename: "Node";
-  id: any;
-}
-
-export interface GetPullRequest_workspace_other_edges_data {
-  __typename: "Edge";
-  id: any;
-  source: GetPullRequest_workspace_other_edges_data_source;
-  destination: GetPullRequest_workspace_other_edges_data_destination;
-  metadata: any;
-}
-
-export interface GetPullRequest_workspace_other_edges {
-  __typename: "EdgePagination";
-  data: GetPullRequest_workspace_other_edges_data[];
+  columns: GetPullRequest_workspace_graph_columns[];
+  destinations: string[];
 }
 
 export interface GetPullRequest_workspace_filters_data {
@@ -136,8 +77,7 @@ export interface GetPullRequest_workspace {
   __typename: "Workspace";
   id: any;
   repository: GetPullRequest_workspace_repository;
-  tables: GetPullRequest_workspace_tables;
-  other_edges: GetPullRequest_workspace_other_edges;
+  graph: GetPullRequest_workspace_graph[];
   filters: GetPullRequest_workspace_filters;
 }
 

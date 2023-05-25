@@ -1,25 +1,16 @@
 import { Box } from "@mui/material"
-import { Edge } from "helpers/graph"
-import Graph, { Error } from "components/graph/Graph"
-import { Table } from "components/graph/MidGraph"
+import GraphComponent, { Error, Table } from "components/graph/GraphComponent"
 import TestResults from "./results/TestResults"
 import RunLog, { Run } from "./run/RunLog"
 
 type ReportTabInput = {
   tables: Table[]
-  edges: Edge[]
   errors: Error[] | null
   limitGraph: boolean
   run: Run | null
 }
 
-const reportTabs = ({
-  tables,
-  edges,
-  errors,
-  limitGraph,
-  run,
-}: ReportTabInput) => [
+const reportTabs = ({ tables, errors, limitGraph, run }: ReportTabInput) => [
   {
     value: "graph",
     label: "Graph",
@@ -30,9 +21,8 @@ const reportTabs = ({
           height: "calc(100vh - 212px)",
         }}
       >
-        <Graph
+        <GraphComponent
           tables={tables}
-          edges={edges}
           errors={errors}
           limitGraph={limitGraph}
         />

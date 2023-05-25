@@ -7,6 +7,14 @@ import { ControlOptions } from "./controls/GraphControls"
 
 const position = { x: 0, y: 0 }
 
+export interface Error {
+  source: string
+  destination: string
+  test: string
+  message: string
+  test_pass: boolean
+}
+
 interface Column {
   id: string
   name: string
@@ -14,7 +22,7 @@ interface Column {
   destinations: string[]
 }
 
-interface Table {
+export interface Table {
   id: string
   name: string
   data_source: string
@@ -25,7 +33,7 @@ interface Table {
   all_sources?: string[] | null
 }
 
-type Graph2Props = {
+type GraphComponentProps = {
   tables: Table[]
   errors: any
   loading?: boolean
@@ -34,7 +42,7 @@ type Graph2Props = {
   throwMissingTable?: boolean
 }
 
-const Graph2: React.FC<Graph2Props> = ({
+const GraphComponent: React.FC<GraphComponentProps> = ({
   tables,
   errors,
   loading,
@@ -221,4 +229,4 @@ const Graph2: React.FC<Graph2Props> = ({
   )
 }
 
-export default Graph2
+export default GraphComponent

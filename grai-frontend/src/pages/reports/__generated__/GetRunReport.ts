@@ -46,88 +46,28 @@ export interface GetRunReport_workspace_run {
   commit: GetRunReport_workspace_run_commit | null;
 }
 
-export interface GetRunReport_workspace_tables_data_columns_data {
-  __typename: "Column";
-  id: any;
+export interface GetRunReport_workspace_graph_columns {
+  __typename: "GraphColumn";
+  id: string;
   name: string;
+  destinations: string[];
 }
 
-export interface GetRunReport_workspace_tables_data_columns {
-  __typename: "ColumnDataWrapper";
-  data: GetRunReport_workspace_tables_data_columns_data[];
-}
-
-export interface GetRunReport_workspace_tables_data_source_tables_data {
-  __typename: "Table";
-  id: any;
+export interface GetRunReport_workspace_graph {
+  __typename: "GraphTable";
+  id: string;
   name: string;
-  display_name: string;
-}
-
-export interface GetRunReport_workspace_tables_data_source_tables {
-  __typename: "TableDataWrapper";
-  data: GetRunReport_workspace_tables_data_source_tables_data[];
-}
-
-export interface GetRunReport_workspace_tables_data_destination_tables_data {
-  __typename: "Table";
-  id: any;
-  name: string;
-  display_name: string;
-}
-
-export interface GetRunReport_workspace_tables_data_destination_tables {
-  __typename: "TableDataWrapper";
-  data: GetRunReport_workspace_tables_data_destination_tables_data[];
-}
-
-export interface GetRunReport_workspace_tables_data {
-  __typename: "Table";
-  id: any;
   namespace: string;
-  name: string;
-  display_name: string;
   data_source: string;
-  metadata: any;
-  columns: GetRunReport_workspace_tables_data_columns;
-  source_tables: GetRunReport_workspace_tables_data_source_tables;
-  destination_tables: GetRunReport_workspace_tables_data_destination_tables;
-}
-
-export interface GetRunReport_workspace_tables {
-  __typename: "TablePagination";
-  data: GetRunReport_workspace_tables_data[];
-}
-
-export interface GetRunReport_workspace_other_edges_data_source {
-  __typename: "Node";
-  id: any;
-}
-
-export interface GetRunReport_workspace_other_edges_data_destination {
-  __typename: "Node";
-  id: any;
-}
-
-export interface GetRunReport_workspace_other_edges_data {
-  __typename: "Edge";
-  id: any;
-  source: GetRunReport_workspace_other_edges_data_source;
-  destination: GetRunReport_workspace_other_edges_data_destination;
-  metadata: any;
-}
-
-export interface GetRunReport_workspace_other_edges {
-  __typename: "EdgePagination";
-  data: GetRunReport_workspace_other_edges_data[];
+  columns: GetRunReport_workspace_graph_columns[];
+  destinations: string[];
 }
 
 export interface GetRunReport_workspace {
   __typename: "Workspace";
   id: any;
   run: GetRunReport_workspace_run;
-  tables: GetRunReport_workspace_tables;
-  other_edges: GetRunReport_workspace_other_edges;
+  graph: GetRunReport_workspace_graph[];
 }
 
 export interface GetRunReport {

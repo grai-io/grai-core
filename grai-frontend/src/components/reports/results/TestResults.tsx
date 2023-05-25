@@ -1,6 +1,6 @@
 import React from "react"
 import { Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material"
-import { Error } from "components/graph/Graph"
+import { Error } from "components/graph/GraphComponent"
 import TestResultChip from "./TestResultChip"
 
 type TestResultsProps = {

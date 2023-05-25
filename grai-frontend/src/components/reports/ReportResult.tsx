@@ -1,6 +1,6 @@
 import React from "react"
 import { Stack, Typography } from "@mui/material"
-import { Error } from "components/graph/Graph"
+import { Error } from "components/graph/GraphComponent"
 
 type ReportResultProps = { errors: Error[] | null }
 

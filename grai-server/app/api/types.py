@@ -25,7 +25,11 @@ from installations.models import Commit as CommitModel
 from installations.models import PullRequest as PullRequestModel
 from installations.models import Repository as RepositoryModel
 from lineage.filter import apply_table_filter, get_tags
-from lineage.graph import get_filtered_graph_result, get_graph_result, get_edge_filtered_graph_result
+from lineage.graph import (
+    get_edge_filtered_graph_result,
+    get_filtered_graph_result,
+    get_graph_result,
+)
 from lineage.models import Edge as EdgeModel
 from lineage.models import Filter as FilterModel
 from lineage.models import Node as NodeModel
@@ -441,8 +445,6 @@ class Workspace:
             filteredQueryset = await apply_table_filter(queryset, filter)
 
             return Pagination[Table](queryset=queryset, filteredQueryset=filteredQueryset, pagination=pagination)
-
-        print(queryset.query)
 
         return Pagination[Table](queryset=queryset, pagination=pagination)
 
