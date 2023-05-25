@@ -12,7 +12,6 @@ const data: BaseNodeData = {
   columns: [
     {
       id: "1",
-      display_name: "c1",
       name: "c1",
     },
   ],

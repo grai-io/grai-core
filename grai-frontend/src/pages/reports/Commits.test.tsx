@@ -2,7 +2,6 @@ import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
-import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
 import Commits, { GET_COMMITS } from "./Commits"
 
 test("renders", async () => {
@@ -67,19 +66,6 @@ test("not found", async () => {
           workspace: {
             id: "1",
             repository: null,
-            tables: { data: [sourceTable, destinationTable, spareTable] },
-            other_edges: {
-              data: [
-                {
-                  id: "1",
-                  is_active: true,
-                  data_source: "test",
-                  source: sourceTable,
-                  destination: destinationTable,
-                  metadata: { grai: { constraint_type: "dbt_model" } },
-                },
-              ],
-            },
           },
         },
       },

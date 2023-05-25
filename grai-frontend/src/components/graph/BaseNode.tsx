@@ -9,7 +9,6 @@ import HiddenTableButton from "./HiddenTableButton"
 
 interface Column {
   id: string
-  display_name?: string | null
   name: string
 }
 
@@ -185,7 +184,7 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
                   p: 1,
                 }}
               >
-                <Typography>{column.display_name ?? column.name}</Typography>
+                <Typography>{column.name}</Typography>
                 <Handle
                   id={column.id}
                   type="target"

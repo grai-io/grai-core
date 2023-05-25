@@ -20,66 +20,46 @@ test("renders", async () => {
         variables: {
           organisationName: "",
           workspaceName: "",
+          tableId: "1",
+          n: 1,
         },
       },
       result: {
         data: {
           workspace: {
             id: "1",
-            tables: {
-              data: [
-                {
-                  id: "2",
-                  namespace: "default",
-                  name: "Table2",
-                  display_name: "Table2",
-                  data_source: "test",
-                  metadata: {},
-                  columns: { data: [] },
-                  source_tables: {
-                    data: [
-                      {
-                        id: "1",
-                        name: "Table1",
-                        display_name: "Table1",
-                      },
-                    ],
-                  },
-                  destination_tables: { data: [] },
-                },
-                {
-                  id: "3",
-                  namespace: "default",
-                  name: "Table3",
-                  display_name: "Table3",
-                  data_source: "test",
-                  metadata: {},
-                  columns: { data: [] },
-                  source_tables: { data: [] },
-                  destination_tables: {
-                    data: [
-                      {
-                        id: "1",
-                        name: "Table1",
-                        display_name: "Table1",
-                      },
-                    ],
-                  },
-                },
-                {
-                  id: "4",
-                  namespace: "default",
-                  name: "Table4",
-                  display_name: "Table4",
-                  data_source: "test",
-                  metadata: {},
-                  columns: { data: [] },
-                  source_tables: { data: [] },
-                  destination_tables: { data: [] },
-                },
-              ],
-            },
-            other_edges: { data: [] },
+            graph: [
+              {
+                id: "2",
+                name: "Table2",
+                namespace: "default",
+                data_source: "test",
+                columns: [],
+                destinations: [],
+                all_destinations: [],
+                all_sources: ["1"],
+              },
+              {
+                id: "3",
+                name: "Table3",
+                namespace: "default",
+                data_source: "test",
+                columns: [],
+                destinations: ["1"],
+                all_destinations: ["1"],
+                all_sources: [],
+              },
+              {
+                id: "4",
+                name: "Table4",
+                namespace: "default",
+                data_source: "test",
+                columns: [],
+                destinations: [],
+                all_destinations: [],
+                all_sources: [],
+              },
+            ],
           },
         },
       },
@@ -105,6 +85,8 @@ test("error", async () => {
         variables: {
           organisationName: "",
           workspaceName: "",
+          tableId: "1",
+          n: 1,
         },
       },
       result: {
@@ -132,14 +114,15 @@ test("no tables", async () => {
         variables: {
           organisationName: "",
           workspaceName: "",
+          tableId: "1",
+          n: 1,
         },
       },
       result: {
         data: {
           workspace: {
             id: "1",
-            tables: { data: null },
-            other_edges: { data: [] },
+            graph: [],
           },
         },
       },

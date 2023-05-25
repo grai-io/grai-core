@@ -1,12 +1,7 @@
 import React from "react"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
-import {
-  columnNode,
-  destinationTable,
-  sourceTable,
-  spareTable,
-} from "helpers/testNodes"
+import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
 import PullRequest, { GET_PULL_REQUEST } from "./PullRequest"
 
 test("renders", async () => {
@@ -85,27 +80,7 @@ test("renders errors", async () => {
                 },
               },
             },
-            tables: { data: [sourceTable, destinationTable, spareTable] },
-            other_edges: {
-              data: [
-                {
-                  id: "1",
-                  is_active: true,
-                  data_source: "test",
-                  source: sourceTable,
-                  destination: destinationTable,
-                  metadata: { grai: { edge_type: "TableToTable" } },
-                },
-                {
-                  id: "2",
-                  is_active: true,
-                  data_source: "test",
-                  source: columnNode,
-                  destination: destinationTable,
-                  metadata: { grai: { edge_type: "ColumnToColumn" } },
-                },
-              ],
-            },
+            graph: [sourceTable, destinationTable, spareTable],
             filters: {
               data: [],
             },
@@ -156,19 +131,7 @@ test("not found", async () => {
               repo: "repo",
               pull_request: null,
             },
-            tables: { data: [sourceTable, destinationTable, spareTable] },
-            other_edges: {
-              data: [
-                {
-                  id: "1",
-                  is_active: true,
-                  data_source: "test",
-                  source: sourceTable,
-                  destination: destinationTable,
-                  metadata: { grai: { constraint_type: "dbt_model" } },
-                },
-              ],
-            },
+            graph: [sourceTable, destinationTable, spareTable],
             filters: {
               data: [],
             },

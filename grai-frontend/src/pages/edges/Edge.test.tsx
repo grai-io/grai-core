@@ -128,49 +128,36 @@ test("lineage", async () => {
         variables: {
           organisationName: "",
           workspaceName: "",
+          edgeId: "1",
+          n: 0,
         },
       },
       result: {
         data: {
           workspace: {
             id: "1",
-            tables: {
-              data: [
-                {
-                  id: "2",
-                  namespace: "default",
-                  name: "Table2",
-                  display_name: "Table2",
-                  data_source: "test",
-                  metadata: {},
-                  columns: { data: [] },
-                  source_tables: {
-                    data: [
-                      {
-                        id: "1",
-                        name: "Table1",
-                        display_name: "Table1",
-                      },
-                    ],
-                  },
-                  destination_tables: { data: [] },
-                },
-                {
-                  id: "10",
-                  namespace: "default",
-                  name: "Table10",
-                  display_name: "Table10",
-                  data_source: "test",
-                  metadata: {},
-                  columns: { data: [] },
-                  source_tables: {
-                    data: [],
-                  },
-                  destination_tables: { data: [] },
-                },
-              ],
-            },
-            other_edges: { data: [] },
+            graph: [
+              {
+                id: "2",
+                namespace: "default",
+                name: "Table2",
+                data_source: "test",
+                columns: [],
+                destinations: [],
+                all_destinations: [],
+                all_sources: [],
+              },
+              {
+                id: "10",
+                namespace: "default",
+                name: "Table10",
+                data_source: "test",
+                columns: [],
+                destinations: [],
+                all_destinations: [],
+                all_sources: [],
+              },
+            ],
           },
         },
       },
@@ -207,6 +194,8 @@ test("lineage error", async () => {
         variables: {
           organisationName: "",
           workspaceName: "",
+          edgeId: "1",
+          n: 0,
         },
       },
       result: {
