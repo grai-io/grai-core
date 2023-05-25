@@ -53,7 +53,7 @@ class Node(TenantModel):
     def save(self, *args, **kwargs):
         self.set_names()
         super().save(*args, **kwargs)
-        self.cache_node()
+        self.cache_model()
 
     def set_names(self, *args, **kwargs):
         if not self.display_name:
@@ -111,7 +111,7 @@ class Edge(TenantModel):
     def save(self, *args, **kwargs):
         self.set_names()
         super().save(*args, **kwargs)
-        self.cache_edge()
+        self.cache_model()
 
     def set_names(self):
         if not self.name:

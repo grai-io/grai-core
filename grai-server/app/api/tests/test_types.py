@@ -29,7 +29,7 @@ async def test_workspace_run(test_context):
         workspace=workspace,
         connector=connector,
         namespace="default",
-        name=uuid.uuid4(),
+        name=str(uuid.uuid4()),
         metadata={},
         secrets={},
     )
@@ -74,7 +74,7 @@ async def test_workspace_connection_run(test_context):
         workspace=workspace,
         connector=connector,
         namespace="default",
-        name=uuid.uuid4(),
+        name=str(uuid.uuid4()),
         metadata={},
         secrets={},
     )
@@ -136,7 +136,7 @@ async def test_tables(test_context):
     context, organisation, workspace, user, membership = test_context
 
     table = await Node.objects.acreate(
-        workspace=workspace, metadata={"grai": {"node_type": "Table"}}, name=uuid.uuid4()
+        workspace=workspace, metadata={"grai": {"node_type": "Table"}}, name=str(uuid.uuid4())
     )
 
     query = """
@@ -265,11 +265,11 @@ async def test_table(test_context):
     context, organisation, workspace, user, membership = test_context
 
     table = await Node.objects.acreate(
-        workspace=workspace, metadata={"grai": {"node_type": "Table"}}, name=uuid.uuid4()
+        workspace=workspace, metadata={"grai": {"node_type": "Table"}}, name=str(uuid.uuid4())
     )
 
     column = await Node.objects.acreate(
-        workspace=workspace, metadata={"grai": {"node_type": "Column"}}, name=uuid.uuid4()
+        workspace=workspace, metadata={"grai": {"node_type": "Column"}}, name=str(uuid.uuid4())
     )
 
     await Edge.objects.acreate(
@@ -277,7 +277,7 @@ async def test_table(test_context):
     )
 
     destination = await Node.objects.acreate(
-        workspace=workspace, metadata={"grai": {"node_type": "Column"}}, name=uuid.uuid4()
+        workspace=workspace, metadata={"grai": {"node_type": "Column"}}, name=str(uuid.uuid4())
     )
 
     edge = await Edge.objects.acreate(
@@ -618,7 +618,7 @@ async def test_table_destination_tables(test_context):
 async def test_tables_count(test_context):
     context, organisation, workspace, user, membership = test_context
 
-    await Node.objects.acreate(workspace=workspace, metadata={"grai": {"node_type": "Table"}}, name=uuid.uuid4())
+    await Node.objects.acreate(workspace=workspace, metadata={"grai": {"node_type": "Table"}}, name=str(uuid.uuid4()))
 
     query = """
         query Workspace($workspaceId: ID!) {
@@ -760,7 +760,7 @@ async def test_workspace_runs_filter_by_repo(test_context, test_commit):
         workspace=workspace,
         connector=connector,
         namespace="default",
-        name=uuid.uuid4(),
+        name=str(uuid.uuid4()),
         metadata={},
         secrets={},
     )
@@ -803,7 +803,7 @@ async def test_workspace_runs_filter_by_branch(test_context, test_branch, test_c
         workspace=workspace,
         connector=connector,
         namespace="default",
-        name=uuid.uuid4(),
+        name=str(uuid.uuid4()),
         metadata={},
         secrets={},
     )
@@ -845,7 +845,7 @@ async def test_workspace_runs_filter_by_action(test_context):
         workspace=workspace,
         connector=connector,
         namespace="default",
-        name=uuid.uuid4(),
+        name=str(uuid.uuid4()),
         metadata={},
         secrets={},
     )
@@ -889,7 +889,7 @@ async def test_workspace_runs_order_by_created_at(test_context, test_commit):
         workspace=workspace,
         connector=connector,
         namespace="default",
-        name=uuid.uuid4(),
+        name=str(uuid.uuid4()),
         metadata={},
         secrets={},
     )
@@ -1792,7 +1792,7 @@ async def test_commit_runs(test_context, test_commit):
         workspace=workspace,
         connector=connector,
         namespace="default",
-        name=uuid.uuid4(),
+        name=str(uuid.uuid4()),
         metadata={},
         secrets={},
     )
@@ -1837,7 +1837,7 @@ async def test_commit_last_run(test_context, test_commit):
         workspace=workspace,
         connector=connector,
         namespace="default",
-        name=uuid.uuid4(),
+        name=str(uuid.uuid4()),
         metadata={},
         secrets={},
     )
@@ -2006,7 +2006,7 @@ async def test_tables_filtered(test_context):
     context, organisation, workspace, user, membership = test_context
 
     table = await Node.objects.acreate(
-        workspace=workspace, metadata={"grai": {"node_type": "Table"}}, name=uuid.uuid4()
+        workspace=workspace, metadata={"grai": {"node_type": "Table"}}, name=str(uuid.uuid4())
     )
 
     filter = await Filter.objects.acreate(workspace=workspace, name=str(uuid.uuid4()), metadata={}, created_by=user)

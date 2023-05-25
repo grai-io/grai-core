@@ -206,7 +206,7 @@ def test_duplicate_edge_nodes(api_key, create_workspace, api_client):
 def create_workspace(name=None):
     organisation = Organisation.objects.create(name="Test Organisation3")
 
-    return Workspace.objects.create(name=uuid.uuid4() if name is None else name, organisation=organisation)
+    return Workspace.objects.create(name=str(uuid.uuid4()) if name is None else name, organisation=organisation)
 
 
 @pytest.fixture

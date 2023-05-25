@@ -17,12 +17,12 @@ class GraphCache:
         self.manager.delete(f"lineage:{str(self.workspace.id)}")
 
     def cache_node(self, node):
-        node_type = node.metadata["grai"]["node_type"]
+        node_type = node.metadata.get("grai", {}).get("node_type")
 
         if node_type == "Table":
             self.manager.graph(f"lineage:{str(self.workspace.id)}").query(
-                """
-                    MERGE (table:Table {id: $id})
+                f"""
+                    MERGE (table:Table {{id: $id}})
                     ON CREATE SET table.name = $name, table.namespace = $namespace, table.data_source = $data_source
                     ON MATCH SET table.name = $name, table.namespace = $namespace, table.data_source = $data_source
                 """,
@@ -48,7 +48,7 @@ class GraphCache:
             )
 
     def cache_edge(self, edge):
-        edge_type = edge.metadata["grai"]["edge_type"]
+        edge_type = edge.metadata.get("grai", {}).get("edge_type")
 
         if edge_type == "TableToColumn":
             self.manager.graph(f"lineage:{str(self.workspace.id)}").query(
@@ -97,6 +97,9 @@ class GraphCache:
             destination_table_edge = edge.destination.destination_edges.filter(
                 metadata__grai__edge_type="TableToColumn"
             ).first()
+
+            if not source_table_edge or not destination_table_edge:
+                return
 
             self.manager.graph(f"lineage:{str(self.workspace.id)}").query(
                 """
