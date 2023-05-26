@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai-client"
-version = "0.2.11"
+version = "0.2.12"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>"]
 license = "Elastic-2.0"
@@ -24,6 +24,7 @@ httpx = {extras = ["http2"], version = "^0.24.0"}
 brotli = "^1.0.9"
 tqdm = "^4.65.0"
 trio = "^0.22.0"
+more-itertools = "^9.1.0"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^0.971"
@@ -33,6 +34,7 @@ pytest = "^7.2.0"
 types-requests = "^2.28.11.5"
 types-pyyaml = "^6.0.12.2"
 pre-commit = "^2.20.0"
+pdoc = "^13.1.1"
 
 [tool.isort]
 profile = "black"

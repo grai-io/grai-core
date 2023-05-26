@@ -26,6 +26,8 @@ test("error", async () => {
         variables: {
           organisationName: "",
           workspaceName: "",
+          offset: 0,
+          search: undefined,
         },
       },
       result: {
@@ -44,18 +46,119 @@ test("error", async () => {
 test("search", async () => {
   const user = userEvent.setup()
 
+  const mocks = [
+    {
+      request: {
+        query: GET_EDGES,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+          offset: 0,
+          search: undefined,
+        },
+      },
+      result: {
+        data: {
+          workspace: {
+            id: "1234",
+            edges: {
+              data: [
+                {
+                  id: "1",
+                  namespace: "default",
+                  name: "Edge 1",
+                  display_name: "Edge 1",
+                  is_active: true,
+                  data_source: "test",
+                  metadata: {},
+                  source: {
+                    id: "1",
+                    namespace: "default",
+                    name: "source 1",
+                    display_name: "source 1",
+                  },
+                  destination: {
+                    id: "2",
+                    namespace: "default",
+                    name: "source 1",
+                    display_name: "source 1",
+                  },
+                },
+              ],
+              meta: {
+                filtered: 0,
+                total: 0,
+              },
+            },
+          },
+        },
+      },
+    },
+    {
+      request: {
+        query: GET_EDGES,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+          offset: 0,
+          search: "S",
+        },
+      },
+      result: {
+        data: {
+          workspace: {
+            id: "1234",
+            edges: {
+              data: [],
+              meta: {
+                filtered: 0,
+                total: 0,
+              },
+            },
+          },
+        },
+      },
+    },
+    {
+      request: {
+        query: GET_EDGES,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+          offset: 0,
+          search: "Se",
+        },
+      },
+      result: {
+        data: {
+          workspace: {
+            id: "1234",
+            edges: {
+              data: [],
+              meta: {
+                filtered: 0,
+                total: 0,
+              },
+            },
+          },
+        },
+      },
+    },
+  ]
+
   render(<Edges />, {
     withRouter: true,
+    mocks,
   })
 
   await waitFor(() => {
-    expect(screen.getAllByText("Hello World")).toBeTruthy()
+    expect(screen.getAllByText("Edge 1")).toBeTruthy()
   })
 
-  await act(async () => await user.type(screen.getByRole("textbox"), "Search"))
+  await act(async () => await user.type(screen.getByRole("textbox"), "Se"))
 
   await waitFor(() => {
-    expect(screen.getByRole("textbox")).toHaveValue("Search")
+    expect(screen.getByRole("textbox")).toHaveValue("Se")
   })
 
   await waitFor(() => {
@@ -103,6 +206,8 @@ test("no edges", async () => {
         variables: {
           organisationName: "",
           workspaceName: "",
+          offset: 0,
+          search: undefined,
         },
       },
       result: {
@@ -112,6 +217,7 @@ test("no edges", async () => {
             edges: {
               data: [],
               meta: {
+                filtered: 0,
                 total: 0,
               },
             },

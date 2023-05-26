@@ -25,9 +25,17 @@ type EdgesTableProps = {
   edges: Edge[]
   loading?: boolean
   total: number
+  page: number
+  onPageChange: (page: number) => void
 }
 
-const EdgesTable: React.FC<EdgesTableProps> = ({ edges, loading, total }) => {
+const EdgesTable: React.FC<EdgesTableProps> = ({
+  edges,
+  loading,
+  total,
+  page,
+  onPageChange,
+}) => {
   const navigate = useNavigate()
 
   return (
@@ -74,9 +82,10 @@ const EdgesTable: React.FC<EdgesTableProps> = ({ edges, loading, total }) => {
       <TableFooter>
         <TablePagination
           count={total}
-          rowsPerPage={1000}
-          page={0}
+          rowsPerPage={20}
+          page={page}
           type="edges"
+          onPageChange={onPageChange}
         />
       </TableFooter>
     </Table>

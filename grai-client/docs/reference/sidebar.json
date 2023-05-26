@@ -1,0 +1,26 @@
+{
+  "items": [
+    {
+      "items": [
+        {
+          "items": [
+            {
+              "items": [
+                "reference/grai_client/endpoints/v1/utils"
+              ],
+              "label": "grai_client.endpoints.v1",
+              "type": "category"
+            },
+            "reference/grai_client/endpoints/utilities"
+          ],
+          "label": "grai_client.endpoints",
+          "type": "category"
+        }
+      ],
+      "label": "grai_client",
+      "type": "category"
+    }
+  ],
+  "label": "Reference",
+  "type": "category"
+}

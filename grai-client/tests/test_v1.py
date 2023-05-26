@@ -1,12 +1,27 @@
 from functools import cache
+from uuid import UUID
 
 import pytest
 from grai_schemas.v1 import EdgeV1, NodeV1
 from requests import RequestException
 
 from grai_client.endpoints.utilities import is_valid_uuid
+from grai_client.endpoints.v1.client import ClientV1
 from grai_client.schemas.workspace import Workspace
 from grai_client.testing.schema import mock_v1_edge_and_nodes, mock_v1_node
+
+
+def test_client_auth_from_init(client_params):
+    client = ClientV1(**client_params)
+    assert client.is_authenticated
+
+
+def test_client_auth_from_authenticate(client_params):
+    client_params = {**client_params}
+    username, password = client_params.pop("username"), client_params.pop("password")
+    client = ClientV1(**client_params)
+    client.authenticate(username=username, password=password)
+    assert client.is_authenticated
 
 
 def test_client_has_workspace_uuid(client):
@@ -41,19 +56,20 @@ def test_get_nodes(client):
 
 
 def test_get_nodes_by_name(client, node_v1):
-    result = client.get("node", node_v1.spec.name)
+    result = client.get("node", name=node_v1.spec.name)
     assert len(result) == 1, result
     assert result[0].spec.name == node_v1.spec.name
 
 
 def test_get_nodes_by_name_namespace(client, node_v1):
-    result = client.get("node", node_v1.spec.name, node_v1.spec.namespace)
-    assert result.spec.name == node_v1.spec.name
-    assert result.spec.namespace == node_v1.spec.namespace
+    result = client.get("node", name=node_v1.spec.name, namespace=node_v1.spec.namespace)
+    assert len(result) == 1, result
+    assert result[0].spec.name == node_v1.spec.name
+    assert result[0].spec.namespace == node_v1.spec.namespace
 
 
 def test_get_nodes_by_namespace(client, node_v1):
-    result = client.get("node", "*", node_v1.spec.namespace)
+    result = client.get("node", namespace=node_v1.spec.namespace)
     assert isinstance(result, list)
     assert len(result) == 1  # node namespace is a uuid and therefore unique
     assert result[0].spec.name == node_v1.spec.name
@@ -85,6 +101,14 @@ def test_post_edge(client):
     assert isinstance(result, EdgeV1)
 
 
+def test_mixed_type_post(client):
+    test_edge, test_nodes = mock_v1_edge_and_nodes()
+    results = client.post([test_edge, *test_nodes])
+    assert len(results) == 3
+    assert all(isinstance(result, (EdgeV1, NodeV1)) for result in results)
+    assert all(isinstance(result.spec.id, UUID) for result in results)
+
+
 def test_delete_node(client):
     test_node = mock_v1_node()
     test_node = client.post(test_node)
@@ -106,6 +130,15 @@ def test_delete_edge(client):
         result = client.get(test_edge)
 
     client.delete(test_nodes)
+
+
+@pytest.mark.xfail(raises=RequestException, reason='Error: 404. Not Found. {"detail":"Not found."}')
+def test_delete_mixed_type(client):
+    test_edge, test_nodes = mock_v1_edge_and_nodes()
+    objs = [test_edge, *test_nodes]
+    objs = client.post(objs)
+    client.delete(objs)
+    _ = client.get(objs)
 
 
 def test_patch_node(client):
@@ -131,6 +164,17 @@ def test_patch_edge(client):
     client.delete(test_nodes)
 
 
+def test_patch_mixed_type(client):
+    test_edge, test_nodes = mock_v1_edge_and_nodes()
+    test_nodes = client.post(test_nodes)
+    test_edge = client.post(test_edge)
+    objs = [test_edge, *test_nodes]
+    for obj in objs:
+        obj.spec.is_active = False
+    updated_objs = client.patch(objs)
+    assert all(obj.spec.is_active is False for obj in updated_objs)
+
+
 def test_node_hash(client):
     test_node = mock_v1_node()
     test_node.spec.id = None
@@ -144,4 +188,5 @@ def test_edge_hash(client):
         obj.spec.id = None
     client.post(test_nodes)
     new_edge = client.post(test_edge)
+
     assert hash(new_edge) == hash(test_edge)

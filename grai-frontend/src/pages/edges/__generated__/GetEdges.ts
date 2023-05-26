@@ -38,6 +38,7 @@ export interface GetEdges_workspace_edges_data {
 
 export interface GetEdges_workspace_edges_meta {
   __typename: "PaginationResult";
+  filtered: number;
   total: number;
 }
 
@@ -60,4 +61,6 @@ export interface GetEdges {
 export interface GetEdgesVariables {
   organisationName: string;
   workspaceName: string;
+  offset?: number | null;
+  search?: string | null;
 }

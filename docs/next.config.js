@@ -4,6 +4,7 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
 const { withSentryConfig } = require("@sentry/nextjs");
 
+
 const nextConfig = require("nextra")({
   theme: "nextra-theme-docs",
   themeConfig: "./theme.config.tsx",

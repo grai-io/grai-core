@@ -21,7 +21,7 @@ from grai_client.endpoints.v1.client import ClientV1
 #     }
 #
 #     client = ClientV1("localhost", "8000", workspace="default")
-#     client.set_authentication_headers("null@grai.io", "super_secret")
+#     client.authenticate(username="null@grai.io", password="super_secret")
 #     return client
 
 

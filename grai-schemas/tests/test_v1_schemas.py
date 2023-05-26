@@ -83,3 +83,11 @@ def test_v1_edge_typing(test_type, result):
     obj_dict = make_v1_edge()
     obj = Schema(entity=obj_dict)
     assert isinstance(obj.entity, test_type) == result, f"{type(obj)}=={test_type} should be {result}"
+
+
+# test adding a new field to the metadata of a node
+def test_adding_new_field_to_metadata():
+    node_dict = make_v1_node()
+    obj = Schema(entity=node_dict)
+    obj.entity.spec.metadata["new_field"] = "new_value"
+    assert obj.entity.spec.metadata["new_field"] == "new_value"
