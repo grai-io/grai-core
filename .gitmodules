@@ -1,0 +1,6 @@
+[submodule "actions/grai-actions"]
+	path = actions/grai-actions
+	url = https://github.com/grai-io/grai-actions
+[submodule "actions/grai-actions-server"]
+	path = actions/grai-actions-server
+	url = https://github.com/grai-io/grai-actions-server
