@@ -2,7 +2,7 @@ from typing import Iterable, List, Optional, Sequence
 
 from django.db import models
 
-from .cache import GraphCache
+from .graph_cache import GraphCache
 
 
 class CacheManager(models.Manager):

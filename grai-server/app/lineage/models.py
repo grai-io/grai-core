@@ -5,7 +5,7 @@ from django.db.models import F, Q
 from django_multitenant.fields import TenantForeignKey
 from django_multitenant.models import TenantModel
 
-from .cache import GraphCache
+from .graph_cache import GraphCache
 from .managers import CacheManager
 
 

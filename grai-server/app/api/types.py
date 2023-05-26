@@ -4,6 +4,8 @@ from enum import Enum
 from typing import List, Optional
 from xml.dom import NodeFilter
 
+from lineage.graph_cache import GraphCache
+
 import strawberry
 import strawberry_django
 from django.conf import settings
@@ -25,15 +27,10 @@ from installations.models import Commit as CommitModel
 from installations.models import PullRequest as PullRequestModel
 from installations.models import Repository as RepositoryModel
 from lineage.filter import apply_table_filter, get_tags
-from lineage.graph import (
-    get_edge_filtered_graph_result,
-    get_filtered_graph_result,
-    get_graph_result,
-)
 from lineage.models import Edge as EdgeModel
 from lineage.models import Filter as FilterModel
 from lineage.models import Node as NodeModel
-from lineage.types import Edge, Filter, GraphTable, Node, NodeFilter, NodeOrder
+from lineage.types import Edge, Filter, Node, NodeFilter, NodeOrder
 from users.types import User, UserFilter
 from workspaces.models import Membership as MembershipModel
 from workspaces.models import Workspace as WorkspaceModel
@@ -41,6 +38,8 @@ from workspaces.models import WorkspaceAPIKey as WorkspaceAPIKeyModel
 from workspaces.types import Organisation
 
 from .pagination import DataWrapper, Pagination
+
+from lineage.graph_types import GraphTable
 
 
 @strawberry.enum
@@ -627,14 +626,16 @@ class Workspace:
         table_id: Optional[strawberry.ID] = strawberry.UNSET,
         n: Optional[int] = strawberry.UNSET,
         edge_id: Optional[strawberry.ID] = strawberry.UNSET,
-    ) -> List["GraphTable"]:
+    ) -> List[GraphTable]:
+        graph = GraphCache(workspace=self)
+
         if table_id:
-            return get_filtered_graph_result(self.id, table_id, n)
+            return graph.get_filtered_graph_result(table_id, n)
 
         if edge_id:
-            return get_edge_filtered_graph_result(self.id, edge_id, n)
+            return graph.get_edge_filtered_graph_result(edge_id, n)
 
-        return get_graph_result(self.id)
+        return graph.get_graph_result()
 
 
 @gql.django.filters.filter(MembershipModel, lookups=True)

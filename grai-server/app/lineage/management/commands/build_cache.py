@@ -3,7 +3,7 @@ from django_multitenant.utils import set_current_tenant
 from django_tqdm import BaseCommand
 from query_chunk import chunk
 
-from lineage.cache import GraphCache
+from lineage.graph_cache import GraphCache
 from workspaces.models import Workspace
 
 
