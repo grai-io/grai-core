@@ -164,7 +164,7 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
     target: string,
     targetHandle: string
   ) => ({
-    id: `${source}-${target}`,
+    id: `${source}-${sourceHandle}-${target}-${targetHandle}`,
     source,
     sourceHandle,
     target,
