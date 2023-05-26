@@ -123,7 +123,7 @@ class GraphCache:
                 },
             )
 
-    def get_graph_result(self, where: str = None) -> List[GraphTable]:
+    def get_graph_result(self, where: str = "") -> List[GraphTable]:
         result = self.query(
             f"""
                 MATCH (table:Table)
