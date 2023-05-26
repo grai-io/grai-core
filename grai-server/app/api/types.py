@@ -629,17 +629,22 @@ class Workspace:
         return DataWrapper[str](data=data)
 
     @gql.django.field
-    def graph(
+    async def graph(
         self,
-        filter: Optional[GraphFilter] = strawberry.UNSET,
+        filters: Optional[GraphFilter] = strawberry.UNSET,
     ) -> List[GraphTable]:
         graph = GraphCache(workspace=self)
 
-        if filter and filter.table_id:
-            return graph.get_filtered_graph_result(filter.table_id, filter.n)
+        if filters and filters.table_id:
+            return graph.get_table_filtered_graph_result(filters.table_id, filters.n)
 
-        if filter and filter.edge_id:
-            return graph.get_edge_filtered_graph_result(filter.edge_id, filter.n)
+        if filters and filters.edge_id:
+            return graph.get_edge_filtered_graph_result(filters.edge_id, filters.n)
+
+        if filters and filters.filter:
+            filter = await FilterModel.objects.aget(id=filters.filter)
+
+            return graph.get_filtered_graph_result(filter)
 
         return graph.get_graph_result()
 

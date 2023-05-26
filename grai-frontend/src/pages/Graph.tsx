@@ -17,10 +17,11 @@ export const GET_TABLES_AND_EDGES = gql`
   query GetTablesAndEdges(
     $organisationName: String!
     $workspaceName: String! # $filters: WorkspaceTableFilter # $offset: Int!
+    $filters: GraphFilter
   ) {
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
-      graph {
+      graph(filters: $filters) {
         id
         name
         display_name
@@ -42,7 +43,7 @@ const Graph: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
   const [searchParams] = useSearchParams()
 
-  // const filter = searchParams.get("filter") ?? null
+  const filter = searchParams.get("filter") ?? null
 
   const { loading, error, data } = useQuery<
     GetTablesAndEdges,
@@ -51,9 +52,9 @@ const Graph: React.FC = () => {
     variables: {
       organisationName,
       workspaceName,
-      // filters: {
-      //   filter,
-      // },
+      filters: {
+        filter,
+      },
     },
   })
 

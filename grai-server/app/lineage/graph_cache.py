@@ -122,10 +122,11 @@ class GraphCache:
                 },
             )
 
-    def get_graph_result(self) -> List[GraphTable]:
+    def get_graph_result(self, where: str = None) -> List[GraphTable]:
         result = self.query(
-            """
+            f"""
                 MATCH (table:Table)
+                {where}
                 OPTIONAL MATCH (table:Table)-[:TABLE_TO_COLUMN]->(column:Column)
                 OPTIONAL MATCH (column)-[:COLUMN_TO_COLUMN]->(column_destination:Column)
                 OPTIONAL MATCH (table)-[:TABLE_TO_TABLE]->(destination:Table)
@@ -137,15 +138,15 @@ class GraphCache:
                 WITH
                     table,
                     destinations,
-                    collect({
+                    collect({{
                         id: column.id,
                         name: column.name,
                         display_name: column.display_name,
                         column_destinations: column_destinations
-                    }) AS columns
+                    }}) AS columns
                 WITH
                     table,
-                    {
+                    {{
                         id: table.id,
                         name: table.name,
                         display_name: table.display_name,
@@ -153,9 +154,9 @@ class GraphCache:
                         data_source: table.data_source,
                         columns: columns,
                         destinations: destinations
-                    } AS tables
+                    }} AS tables
                 RETURN tables
-    """,
+            """,
             timeout=10000,
         )
 
@@ -190,6 +191,19 @@ class GraphCache:
             )
 
         return tables
+
+    def get_filtered_graph_result(self, filter):
+        where = []
+
+        for row in filter.metadata:
+            if row["type"] == "table":
+                if row["field"] == "tag":
+                    if row["operator"] == "contains":
+                        where.append(f"'{row['value']}' IN table.tags")
+
+        where_clause = f"WHERE ({'), ('.join(where)})"
+
+        return self.get_graph_result(where=where_clause)
 
     def get_with_step_graph_result(self, n: int, parameters: any = {}, where: str = None) -> List["GraphTable"]:
         result = self.query(
@@ -273,7 +287,7 @@ class GraphCache:
 
         return tables
 
-    def get_filtered_graph_result(self, table_id: str, n: int) -> List["GraphTable"]:
+    def get_table_filtered_graph_result(self, table_id: str, n: int) -> List["GraphTable"]:
         parameters = {"table": table_id}
         where = "WHERE firsttable.id = $table"
 

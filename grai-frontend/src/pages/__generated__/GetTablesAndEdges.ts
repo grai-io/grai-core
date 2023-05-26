@@ -3,6 +3,8 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
+import { GraphFilter } from "./../../../__generated__/globalTypes";
+
 // ====================================================
 // GraphQL query operation: GetTablesAndEdges
 // ====================================================
@@ -39,4 +41,5 @@ export interface GetTablesAndEdges {
 export interface GetTablesAndEdgesVariables {
   organisationName: string;
   workspaceName: string;
+  filters?: GraphFilter | null;
 }

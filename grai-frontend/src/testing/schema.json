@@ -638,7 +638,7 @@
             "description": null,
             "args": [
               {
-                "name": "filter",
+                "name": "filters",
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
