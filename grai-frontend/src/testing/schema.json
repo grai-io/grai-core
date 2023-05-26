@@ -5264,7 +5264,7 @@
             "deprecationReason": null
           },
           {
-            "name": "all_destinations",
+            "name": "table_destinations",
             "description": null,
             "args": [],
             "type": {
@@ -5284,7 +5284,7 @@
             "deprecationReason": null
           },
           {
-            "name": "all_sources",
+            "name": "table_sources",
             "description": null,
             "args": [],
             "type": {

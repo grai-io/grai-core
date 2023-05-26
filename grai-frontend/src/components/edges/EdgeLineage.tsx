@@ -32,8 +32,8 @@ export const GET_TABLES_AND_EDGES = gql`
           destinations
         }
         destinations
-        all_destinations
-        all_sources
+        table_destinations
+        table_sources
       }
     }
   }

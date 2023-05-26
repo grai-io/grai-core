@@ -114,8 +114,8 @@ class GraphTable:
         columns: List["GraphColumn"],
         sources: List[str],
         destinations: List[str],
-        all_destinations: Optional[List[str]] = None,
-        all_sources: Optional[List[str]] = None,
+        table_destinations: Optional[List[str]] = None,
+        table_sources: Optional[List[str]] = None,
     ):
         self.id = id
         self.name = name
@@ -125,8 +125,8 @@ class GraphTable:
         self.columns = columns
         self.sources = sources
         self.destinations = destinations
-        self.all_destinations = all_destinations
-        self.all_sources = all_sources
+        self.table_destinations = table_destinations
+        self.table_sources = table_sources
 
     id: str
     name: str
@@ -136,8 +136,8 @@ class GraphTable:
     columns: List["GraphColumn"]
     sources: List[str]
     destinations: List[str]
-    all_destinations: Optional[List[str]]
-    all_sources: Optional[List[str]]
+    table_destinations: Optional[List[str]]
+    table_sources: Optional[List[str]]
 
 
 @strawberry.type

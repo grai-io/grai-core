@@ -84,8 +84,8 @@ def get_filtered_graph_result(workspace_id: str, table_id: str, n: int) -> List[
         f"""
             MATCH (firsttable:Table {{id: $table}})
             OPTIONAL MATCH (firsttable:Table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*0..{n}]-(table:Table)
-            OPTIONAL MATCH (table:Table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY]->(all_destinations:Table)
-            OPTIONAL MATCH (all_sources:Table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY]->(table:Table)
+            OPTIONAL MATCH (table:Table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY]->(table_destinations:Table)
+            OPTIONAL MATCH (table_sources:Table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY]->(table:Table)
             OPTIONAL MATCH (table:Table)-[:TABLE_TO_COLUMN]->(column:Column)
             OPTIONAL MATCH (column)-[:COLUMN_TO_COLUMN]->(column_destination:Column)
             OPTIONAL MATCH (table)-[:TABLE_TO_TABLE]->(destination:Table)
@@ -94,13 +94,13 @@ def get_filtered_graph_result(workspace_id: str, table_id: str, n: int) -> List[
                 COLLECT(distinct destination.id) AS destinations,
                 column,
                 collect(distinct column_destination.id) as column_destinations,
-                collect(distinct all_destinations.id) as all_destinations,
-                collect(distinct all_sources.id) as all_sources
+                collect(distinct table_destinations.id) as table_destinations,
+                collect(distinct table_sources.id) as table_sources
             WITH
                 table,
                 destinations,
-                all_destinations,
-                all_sources,
+                table_destinations,
+                table_sources,
                 collect({{
                     id: column.id,
                     name: column.name,
@@ -117,8 +117,8 @@ def get_filtered_graph_result(workspace_id: str, table_id: str, n: int) -> List[
                     data_source: table.data_source,
                     columns: columns,
                     destinations: destinations,
-                    all_destinations: all_destinations,
-                    all_sources: all_sources
+                    table_destinations: table_destinations,
+                    table_sources: table_sources
                 }} AS tables
             RETURN tables
         """,
@@ -155,8 +155,8 @@ def get_filtered_graph_result(workspace_id: str, table_id: str, n: int) -> List[
                 columns=columns,
                 sources=[],
                 destinations=table.get("destinations"),
-                all_destinations=table.get("all_destinations"),
-                all_sources=table.get("all_sources"),
+                table_destinations=table.get("table_destinations"),
+                table_sources=table.get("table_sources"),
             )
         )
 
@@ -170,8 +170,8 @@ def get_edge_filtered_graph_result(workspace_id: str, edge_id: str, n: int = 1) 
         f"""
             MATCH ()-[{{id: $edge}}]-(firsttable:Table)
             OPTIONAL MATCH (firsttable:Table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*0..{n}]-(table:Table)
-            OPTIONAL MATCH (table:Table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY]->(all_destinations:Table)
-            OPTIONAL MATCH (all_sources:Table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY]->(table:Table)
+            OPTIONAL MATCH (table:Table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY]->(table_destinations:Table)
+            OPTIONAL MATCH (table_sources:Table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY]->(table:Table)
             OPTIONAL MATCH (table:Table)-[:TABLE_TO_COLUMN]->(column:Column)
             OPTIONAL MATCH (column)-[:COLUMN_TO_COLUMN]->(column_destination:Column)
             OPTIONAL MATCH (table)-[:TABLE_TO_TABLE]->(destination:Table)
@@ -180,13 +180,13 @@ def get_edge_filtered_graph_result(workspace_id: str, edge_id: str, n: int = 1) 
                 COLLECT(distinct destination.id) AS destinations,
                 column,
                 collect(distinct column_destination.id) as column_destinations,
-                collect(distinct all_destinations.id) as all_destinations,
-                collect(distinct all_sources.id) as all_sources
+                collect(distinct table_destinations.id) as table_destinations,
+                collect(distinct table_sources.id) as table_sources
             WITH
                 table,
                 destinations,
-                all_destinations,
-                all_sources,
+                table_destinations,
+                table_sources,
                 collect({{
                     id: column.id,
                     name: column.name,
@@ -203,15 +203,15 @@ def get_edge_filtered_graph_result(workspace_id: str, edge_id: str, n: int = 1) 
                     data_source: table.data_source,
                     columns: columns,
                     destinations: destinations,
-                    all_destinations: all_destinations,
-                    all_sources: all_sources
+                    table_destinations: table_destinations,
+                    table_sources: table_sources
                 }} AS tables
             RETURN tables
             UNION
             MATCH ()-[{{id: $edge}}]-(:Column)-[:TABLE_TO_COLUMN]-(firsttable:Table)
             OPTIONAL MATCH (firsttable:Table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*0..{n}]-(table:Table)
-            OPTIONAL MATCH (table:Table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY]->(all_destinations:Table)
-            OPTIONAL MATCH (all_sources:Table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY]->(table:Table)
+            OPTIONAL MATCH (table:Table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY]->(table_destinations:Table)
+            OPTIONAL MATCH (table_sources:Table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY]->(table:Table)
             OPTIONAL MATCH (table:Table)-[:TABLE_TO_COLUMN]->(column:Column)
             OPTIONAL MATCH (column)-[:COLUMN_TO_COLUMN]->(column_destination:Column)
             OPTIONAL MATCH (table)-[:TABLE_TO_TABLE]->(destination:Table)
@@ -220,13 +220,13 @@ def get_edge_filtered_graph_result(workspace_id: str, edge_id: str, n: int = 1) 
                 COLLECT(distinct destination.id) AS destinations,
                 column,
                 collect(distinct column_destination.id) as column_destinations,
-                collect(distinct all_destinations.id) as all_destinations,
-                collect(distinct all_sources.id) as all_sources
+                collect(distinct table_destinations.id) as table_destinations,
+                collect(distinct table_sources.id) as table_sources
             WITH
                 table,
                 destinations,
-                all_destinations,
-                all_sources,
+                table_destinations,
+                table_sources,
                 collect({{
                     id: column.id,
                     name: column.name,
@@ -243,8 +243,8 @@ def get_edge_filtered_graph_result(workspace_id: str, edge_id: str, n: int = 1) 
                     data_source: table.data_source,
                     columns: columns,
                     destinations: destinations,
-                    all_destinations: all_destinations,
-                    all_sources: all_sources
+                    table_destinations: table_destinations,
+                    table_sources: table_sources
                 }} AS tables
             RETURN tables
         """,
@@ -281,8 +281,8 @@ def get_edge_filtered_graph_result(workspace_id: str, edge_id: str, n: int = 1) 
                 columns=columns,
                 sources=[],
                 destinations=table.get("destinations"),
-                all_destinations=table.get("all_destinations"),
-                all_sources=table.get("all_sources"),
+                table_destinations=table.get("table_destinations"),
+                table_sources=table.get("table_sources"),
             )
         )
 

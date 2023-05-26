@@ -32,8 +32,8 @@ export const GET_GRAPH_LOAD_TABLE = gql`
           destinations
         }
         destinations
-        all_destinations
-        all_sources
+        table_destinations
+        table_sources
       }
     }
   }
@@ -65,8 +65,8 @@ export interface Table extends NodeWithName {
   columns: Column[]
   sources?: string[]
   destinations: string[]
-  all_destinations?: string[] | null
-  all_sources?: string[] | null
+  table_destinations?: string[] | null
+  table_sources?: string[] | null
 }
 
 type GraphComponentProps = {
@@ -147,10 +147,10 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
         label: table.display_name,
         data_source: table.data_source,
         columns: table.columns,
-        hiddenSourceTables: (table.all_destinations ?? []).filter(
+        hiddenSourceTables: (table.table_destinations ?? []).filter(
           t => !allTables.map(t => t.id).includes(t)
         ),
-        hiddenDestinationTables: (table.all_sources ?? []).filter(
+        hiddenDestinationTables: (table.table_sources ?? []).filter(
           t => !allTables.map(t => t.id).includes(t)
         ),
         expanded: expanded.includes(table.id),
