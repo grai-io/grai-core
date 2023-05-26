@@ -39,8 +39,7 @@ const tablesMock = {
     variables: {
       organisationName: "default",
       workspaceName: "demo",
-      // filters: { filter: null },
-      // offset: 0,
+      filters: { filter: null },
     },
   },
   result: {
@@ -71,8 +70,7 @@ const tablesMockWithFilter = {
     variables: {
       organisationName: "default",
       workspaceName: "demo",
-      // filters: { filter: "1" },
-      // offset: 0,
+      filters: { filter: "1" },
     },
   },
   result: {
@@ -151,24 +149,21 @@ test("renders empty", async () => {
     path: ":organisationName/:workspaceName/graph",
     route: "/default/demo/graph",
     mocks: [
+      filtersMock,
       {
         request: {
           query: GET_TABLES_AND_EDGES,
           variables: {
             organisationName: "default",
             workspaceName: "demo",
-            // filters: { filter: null },
-            // offset: 0,
+            filters: { filter: null },
           },
         },
         result: {
           data: {
             workspace: {
               id: "1",
-              tables: { data: [], meta: { total: 0 } },
-              other_edges: {
-                data: [],
-              },
+              graph: [],
               filters: {
                 data: [],
               },
@@ -276,8 +271,7 @@ test("error", async () => {
         variables: {
           organisationName: "",
           workspaceName: "",
-          // filters: { filter: null },
-          // offset: 0,
+          filters: { filter: null },
         },
       },
       result: {
@@ -302,8 +296,7 @@ test("no nodes", async () => {
         variables: {
           organisationName: "",
           workspaceName: "",
-          // filters: { filter: null },
-          // offset: 0,
+          filters: { filter: null },
         },
       },
       result: {
@@ -384,9 +377,9 @@ test("filter", async () => {
 
   render(<Graph />, {
     path: ":organisationName/:workspaceName/graph",
-    route: "/default/demo/graph",
-    routes: ["/:organisationName/:workspaceName/filters/create"],
-    mocks: [filtersMock, tablesMock, tablesMockWithFilter],
+    route: "/default/demo/graph?filter=1",
+    routes: ["/:organisationName/:workspaceName/filters"],
+    mocks: [filtersMock, tablesMock, tablesMock, tablesMockWithFilter],
   })
 
   await waitFor(() => {
