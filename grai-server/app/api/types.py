@@ -359,8 +359,18 @@ class Workspace:
     def edges(
         self,
         pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+        search: Optional[str] = strawberry.UNSET,
     ) -> Pagination["Edge"]:
         queryset = EdgeModel.objects.filter(workspace=self)
+
+        if search:
+            queryset = queryset.filter(
+                Q(id__icontains=search)
+                | Q(name__icontains=search)
+                | Q(destination__name__icontains=search)
+                | Q(source__name__icontains=search)
+                | Q(data_source__icontains=search)
+            )
 
         return Pagination[Edge](queryset=queryset, pagination=pagination)
 
