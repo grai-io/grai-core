@@ -194,15 +194,40 @@ class GraphCache:
         return tables
 
     def get_filtered_graph_result(self, filter):
+        match = []
         where = []
 
         for row in filter.metadata:
+            value = row["value"]
+
             if row["type"] == "table":
                 if row["field"] == "tag":
                     if row["operator"] == "contains":
-                        where.append(f"'{row['value']}' IN table.tags")
+                        where.append(f"'{value}' IN table.tags")
+            elif row["type"] == "ancestor":
+                if row["field"] == "tag":
+                    if row["operator"] == "contains":
+                        match.append("MATCH (table)<-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*]-(othertable:Table)")
+                        where.append(f"'{value}' IN othertable.tags")
+            elif row["type"] == "no-ancestor":
+                if row["field"] == "tag":
+                    if row["operator"] == "contains":
+                        # where.append(f"(table)<-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*]-(othertable:Table) AND '{value}' IN othertable.tags")
+                        pass
+            elif row["type"] == "descendant":
+                if row["field"] == "tag":
+                    if row["operator"] == "contains":
+                        match.append("MATCH (table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*]->(othertable:Table)")
+                        where.append(f"'{value}' IN othertable.tags")
+            elif row["type"] == "no-descendant":
+                if row["field"] == "tag":
+                    if row["operator"] == "contains":
+                        # where.append(f"(table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*]->(othertable:Table) AND '{value}' IN othertable.tags")
+                        pass
+            else:
+                raise Exception("Unknown filter type: " + row["type"])
 
-        where_clause = f"WHERE ({'), ('.join(where)})"
+        where_clause = f"{' '.join(match)} WHERE ({') AND ('.join(where)})"
 
         return self.get_graph_result(where=where_clause)
 
