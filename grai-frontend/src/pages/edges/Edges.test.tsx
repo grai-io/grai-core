@@ -155,10 +155,10 @@ test("search", async () => {
     expect(screen.getAllByText("Edge 1")).toBeTruthy()
   })
 
-  await act(async () => await user.type(screen.getByRole("textbox"), "Search"))
+  await act(async () => await user.type(screen.getByRole("textbox"), "Se"))
 
   await waitFor(() => {
-    expect(screen.getByRole("textbox")).toHaveValue("Search")
+    expect(screen.getByRole("textbox")).toHaveValue("Se")
   })
 
   await waitFor(() => {
