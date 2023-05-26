@@ -28,7 +28,7 @@ class GraphCache:
                 """,
                 {
                     "id": str(node.id),
-                    "name": node.name,
+                    "name": node.display_name if node.display_name else node.name,
                     "namespace": node.namespace,
                     "data_source": node.data_source,
                 },
@@ -43,7 +43,7 @@ class GraphCache:
                 """,
                 {
                     "id": str(node.id),
-                    "name": node.name,
+                    "name": node.display_name if node.display_name else node.name,
                 },
             )
 
