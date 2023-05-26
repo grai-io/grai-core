@@ -108,6 +108,7 @@ class GraphTable:
         self,
         id: str,
         name: str,
+        display_name: str,
         namespace: str,
         data_source: str,
         columns: List["GraphColumn"],
@@ -118,6 +119,7 @@ class GraphTable:
     ):
         self.id = id
         self.name = name
+        self.display_name = display_name
         self.namespace = namespace
         self.data_source = data_source
         self.columns = columns
@@ -128,6 +130,7 @@ class GraphTable:
 
     id: str
     name: str
+    display_name: str
     namespace: str
     data_source: str
     columns: List["GraphColumn"]
@@ -141,5 +144,6 @@ class GraphTable:
 class GraphColumn:
     id: str
     name: str
+    display_name: str
     sources: List[str]
     destinations: List[str]

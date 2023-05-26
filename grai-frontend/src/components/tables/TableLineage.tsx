@@ -22,11 +22,13 @@ export const GET_TABLES_AND_EDGES = gql`
       graph(table_id: $tableId, n: $n) {
         id
         name
+        display_name
         namespace
         data_source
         columns {
           id
           name
+          display_name
           destinations
         }
         destinations
@@ -78,8 +80,6 @@ const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
     >
       <GraphComponent
         tables={tables}
-        errors={false}
-        // initialHidden={hiddenTables}
         controlOptions={{
           steps: {
             value,

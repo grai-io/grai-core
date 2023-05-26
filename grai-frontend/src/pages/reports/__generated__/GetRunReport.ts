@@ -50,6 +50,7 @@ export interface GetRunReport_workspace_graph_columns {
   __typename: "GraphColumn";
   id: string;
   name: string;
+  display_name: string;
   destinations: string[];
 }
 
@@ -57,6 +58,7 @@ export interface GetRunReport_workspace_graph {
   __typename: "GraphTable";
   id: string;
   name: string;
+  display_name: string;
   namespace: string;
   data_source: string;
   columns: GetRunReport_workspace_graph_columns[];

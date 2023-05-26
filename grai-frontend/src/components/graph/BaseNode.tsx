@@ -9,7 +9,7 @@ import HiddenTableButton from "./HiddenTableButton"
 
 interface Column {
   id: string
-  name: string
+  display_name: string
 }
 
 export type BaseNodeData = {
@@ -177,14 +177,14 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
           <Stack direction="column" spacing={1} sx={{ px: 1, pb: 1, mt: -0.5 }}>
             {data.columns.map((column, index) => (
               <Box
-                key={column.name}
+                key={column.id}
                 sx={{
                   border: "1px solid rgba(0, 0, 0, 0.08)",
                   borderRadius: "8px",
                   p: 1,
                 }}
               >
-                <Typography>{column.name}</Typography>
+                <Typography>{column.display_name}</Typography>
                 <Handle
                   id={column.id}
                   type="target"

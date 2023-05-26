@@ -11,6 +11,7 @@ export interface GetTablesAndEdges_workspace_graph_columns {
   __typename: "GraphColumn";
   id: string;
   name: string;
+  display_name: string;
   destinations: string[];
 }
 
@@ -18,6 +19,7 @@ export interface GetTablesAndEdges_workspace_graph {
   __typename: "GraphTable";
   id: string;
   name: string;
+  display_name: string;
   namespace: string;
   data_source: string;
   columns: GetTablesAndEdges_workspace_graph_columns[];

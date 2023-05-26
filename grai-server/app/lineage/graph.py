@@ -25,6 +25,7 @@ WITH
     collect({
         id: column.id,
         name: column.name,
+        display_name: column.display_name,
         column_destinations: column_destinations
     }) AS columns
 WITH
@@ -32,6 +33,7 @@ WITH
     {
         id: table.id,
         name: table.name,
+        display_name: table.display_name,
         namespace: table.namespace,
         data_source: table.data_source,
         columns: columns,
@@ -51,6 +53,7 @@ RETURN tables
             GraphColumn(
                 id=column.get("id"),
                 name=column.get("name"),
+                display_name=column.get("display_name"),
                 sources=[],
                 destinations=column.get("column_destinations", []),
             )
@@ -62,6 +65,7 @@ RETURN tables
             GraphTable(
                 id=table.get("id"),
                 name=table.get("name"),
+                display_name=table.get("display_name"),
                 namespace=table.get("namespace"),
                 data_source=table.get("data_source"),
                 columns=columns,
@@ -100,6 +104,7 @@ def get_filtered_graph_result(workspace_id: str, table_id: str, n: int) -> List[
                 collect({{
                     id: column.id,
                     name: column.name,
+                    display_name: column.display_name,
                     column_destinations: column_destinations
                 }}) AS columns
             WITH
@@ -107,6 +112,7 @@ def get_filtered_graph_result(workspace_id: str, table_id: str, n: int) -> List[
                 {{
                     id: table.id,
                     name: table.name,
+                    display_name: table.display_name,
                     namespace: table.namespace,
                     data_source: table.data_source,
                     columns: columns,
@@ -131,6 +137,7 @@ def get_filtered_graph_result(workspace_id: str, table_id: str, n: int) -> List[
             GraphColumn(
                 id=column.get("id"),
                 name=column.get("name"),
+                display_name=column.get("display_name"),
                 sources=[],
                 destinations=column.get("column_destinations"),
             )
@@ -142,6 +149,7 @@ def get_filtered_graph_result(workspace_id: str, table_id: str, n: int) -> List[
             GraphTable(
                 id=table.get("id"),
                 name=table.get("name"),
+                display_name=table.get("display_name"),
                 namespace=table.get("namespace"),
                 data_source=table.get("data_source"),
                 columns=columns,
@@ -182,6 +190,7 @@ def get_edge_filtered_graph_result(workspace_id: str, edge_id: str, n: int = 1) 
                 collect({{
                     id: column.id,
                     name: column.name,
+                    display_name: column.display_name,
                     column_destinations: column_destinations
                 }}) AS columns
             WITH
@@ -189,6 +198,7 @@ def get_edge_filtered_graph_result(workspace_id: str, edge_id: str, n: int = 1) 
                 {{
                     id: table.id,
                     name: table.name,
+                    display_name: table.display_name,
                     namespace: table.namespace,
                     data_source: table.data_source,
                     columns: columns,
@@ -220,6 +230,7 @@ def get_edge_filtered_graph_result(workspace_id: str, edge_id: str, n: int = 1) 
                 collect({{
                     id: column.id,
                     name: column.name,
+                    display_name: column.display_name,
                     column_destinations: column_destinations
                 }}) AS columns
             WITH
@@ -227,6 +238,7 @@ def get_edge_filtered_graph_result(workspace_id: str, edge_id: str, n: int = 1) 
                 {{
                     id: table.id,
                     name: table.name,
+                    display_name: table.display_name,
                     namespace: table.namespace,
                     data_source: table.data_source,
                     columns: columns,
@@ -251,6 +263,7 @@ def get_edge_filtered_graph_result(workspace_id: str, edge_id: str, n: int = 1) 
             GraphColumn(
                 id=column.get("id"),
                 name=column.get("name"),
+                display_name=table.get("display_name"),
                 sources=[],
                 destinations=column.get("column_destinations"),
             )
@@ -262,6 +275,7 @@ def get_edge_filtered_graph_result(workspace_id: str, edge_id: str, n: int = 1) 
             GraphTable(
                 id=table.get("id"),
                 name=table.get("name"),
+                display_name=table.get("display_name"),
                 namespace=table.get("namespace"),
                 data_source=table.get("data_source"),
                 columns=columns,

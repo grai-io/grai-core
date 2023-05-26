@@ -57,11 +57,13 @@ export const GET_COMMIT = gql`
       graph {
         id
         name
+        display_name
         namespace
         data_source
         columns {
           id
           name
+          display_name
           destinations
         }
         destinations

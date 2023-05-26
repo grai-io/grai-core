@@ -5,7 +5,7 @@ import { useSearchParams } from "react-router-dom"
 import theme from "theme"
 import useWorkspace from "helpers/useWorkspace"
 import EmptyGraph from "components/graph/EmptyGraph"
-import GraphComponent, { Error } from "components/graph/GraphComponent"
+import GraphComponent, { ResultError } from "components/graph/GraphComponent"
 import PageLayout from "components/layout/PageLayout"
 import GraphError from "components/utils/GraphError"
 import {
@@ -23,11 +23,13 @@ export const GET_TABLES_AND_EDGES = gql`
       graph {
         id
         name
+        display_name
         namespace
         data_source
         columns {
           id
           name
+          display_name
           destinations
         }
         destinations
@@ -58,7 +60,7 @@ const Graph: React.FC = () => {
   if (error) return <GraphError error={error} />
 
   const errorsQS = searchParams.get("errors")
-  const errors: Error[] | null = errorsQS ? JSON.parse(errorsQS) : null
+  const errors: ResultError[] | null = errorsQS ? JSON.parse(errorsQS) : null
   const limitGraph: boolean =
     searchParams.get("limitGraph")?.toLowerCase() === "true" && !!errors
 

@@ -58,11 +58,13 @@ export const GET_PULL_REQUEST = gql`
       graph {
         id
         name
+        display_name
         namespace
         data_source
         columns {
           id
           name
+          display_name
           destinations
         }
         destinations

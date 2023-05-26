@@ -1,4 +1,4 @@
-import { Error } from "components/graph/GraphComponent"
+import { ResultError } from "components/graph/GraphComponent"
 
 interface Node {
   id: string
@@ -16,7 +16,7 @@ export interface Result {
   test_pass: boolean
 }
 
-const resultsToErrors = (results: Result[] | undefined): Error[] | null =>
+const resultsToErrors = (results: Result[] | undefined): ResultError[] | null =>
   results
     ? results.map(result => ({
         source: result.node.name,

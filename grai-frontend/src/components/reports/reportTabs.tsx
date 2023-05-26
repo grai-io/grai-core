@@ -1,11 +1,14 @@
 import { Box } from "@mui/material"
-import GraphComponent, { Error, Table } from "components/graph/GraphComponent"
+import GraphComponent, {
+  ResultError,
+  Table,
+} from "components/graph/GraphComponent"
 import TestResults from "./results/TestResults"
 import RunLog, { Run } from "./run/RunLog"
 
 type ReportTabInput = {
   tables: Table[]
-  errors: Error[] | null
+  errors: ResultError[] | null
   limitGraph: boolean
   run: Run | null
 }

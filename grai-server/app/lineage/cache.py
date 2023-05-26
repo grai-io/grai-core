@@ -21,14 +21,15 @@ class GraphCache:
 
         if node_type == "Table":
             self.manager.graph(f"lineage:{str(self.workspace.id)}").query(
-                f"""
-                    MERGE (table:Table {{id: $id}})
-                    ON CREATE SET table.name = $name, table.namespace = $namespace, table.data_source = $data_source
-                    ON MATCH SET table.name = $name, table.namespace = $namespace, table.data_source = $data_source
+                """
+                    MERGE (table:Table {id: $id})
+                    ON CREATE SET table.name = $name, table.display_name = $display_name, table.namespace = $namespace, table.data_source = $data_source
+                    ON MATCH SET table.name = $name, table.display_name = $display_name, table.namespace = $namespace, table.data_source = $data_source
                 """,
                 {
                     "id": str(node.id),
-                    "name": node.display_name if node.display_name else node.name,
+                    "name": node.name,
+                    "display_name": node.display_name,
                     "namespace": node.namespace,
                     "data_source": node.data_source,
                 },
@@ -38,12 +39,13 @@ class GraphCache:
             self.manager.graph(f"lineage:{str(self.workspace.id)}").query(
                 """
                     MERGE (column:Column {id: $id})
-                    ON CREATE SET column.name = $name
-                    ON MATCH SET column.name = $name
+                    ON CREATE SET column.name = $name, column.display_name = $display_name
+                    ON MATCH SET column.name = $name, column.display_name = $display_name
                 """,
                 {
                     "id": str(node.id),
-                    "name": node.display_name if node.display_name else node.name,
+                    "name": node.name,
+                    "display_name": node.display_name,
                 },
             )
 

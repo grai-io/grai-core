@@ -12,7 +12,7 @@ const data: BaseNodeData = {
   columns: [
     {
       id: "1",
-      name: "c1",
+      display_name: "c1",
     },
   ],
   hiddenSourceTables: ["a"],
@@ -64,7 +64,7 @@ test("renders multiple columns", async () => {
             ...data.columns,
             {
               id: "2",
-              name: "c2",
+              display_name: "c2",
             },
           ],
           expanded: true,

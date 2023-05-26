@@ -22,11 +22,13 @@ export const GET_GRAPH_LOAD_TABLE = gql`
       graph(table_id: $tableId, n: 0) {
         id
         name
+        display_name
         namespace
         data_source
         columns {
           id
           name
+          display_name
           destinations
         }
         destinations
@@ -39,7 +41,7 @@ export const GET_GRAPH_LOAD_TABLE = gql`
 
 const position = { x: 0, y: 0 }
 
-export interface Error {
+export interface ResultError {
   source: string
   destination: string
   test: string
@@ -47,16 +49,18 @@ export interface Error {
   test_pass: boolean
 }
 
-interface Column {
+interface NodeWithName {
   id: string
   name: string
+}
+interface Column extends NodeWithName {
+  display_name: string
   sources?: string[]
   destinations: string[]
 }
 
-export interface Table {
-  id: string
-  name: string
+export interface Table extends NodeWithName {
+  display_name: string
   data_source: string
   columns: Column[]
   sources?: string[]
@@ -67,7 +71,7 @@ export interface Table {
 
 type GraphComponentProps = {
   tables: Table[]
-  errors: any
+  errors?: ResultError[] | null
   loading?: boolean
   limitGraph?: boolean
   controlOptions?: ControlOptions
@@ -110,6 +114,24 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
     setLoadedTables([...loadedTables, ...results.filter(notEmpty)])
   }
 
+  const columns: NodeWithName[] = errors
+    ? tables.reduce<NodeWithName[]>(
+        (res, table) => res.concat(table.columns),
+        []
+      )
+    : []
+
+  const tablesAndColumns = columns.concat(tables)
+
+  const nameToNode = (name: string) =>
+    tablesAndColumns.find(n => n.name.toLowerCase() === name.toLowerCase())
+
+  const enrichedErrors = errors?.map(error => ({
+    ...error,
+    sourceId: nameToNode(error.source)?.id,
+    destinationId: nameToNode(error.destination)?.id,
+  }))
+
   const allTables = tables.concat(loadedTables)
 
   const initialTables: RFNode<BaseNodeData>[] = allTables.map(table => {
@@ -122,7 +144,7 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
       data: {
         id: table.id,
         name: table.name,
-        label: table.name,
+        label: table.display_name,
         data_source: table.data_source,
         columns: table.columns,
         hiddenSourceTables: (table.all_destinations ?? []).filter(
@@ -148,7 +170,7 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
     }
   })
 
-  const getTable = (id: string) => {
+  const getTableFromColumnId = (id: string) => {
     const table = allTables.find(table =>
       table.columns.some(col => col.id === id)
     )
@@ -162,16 +184,15 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
     source: string,
     sourceHandle: string,
     target: string,
-    targetHandle: string
+    targetHandle: string,
+    tests: ResultError[] = []
   ) => ({
     id: `${source}-${sourceHandle}-${target}-${targetHandle}`,
     source,
     sourceHandle,
     target,
     targetHandle,
-    // data: {
-    //   tests: edgeTests,
-    // },
+    data: { tests },
     type: "test",
     labelStyle: { fill: "red", fontWeight: 700 },
     zIndex: 10,
@@ -181,7 +202,6 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
     const tableExpanded = expanded.includes(table.id)
 
     if (!tableExpanded) {
-      // List of either column Ids or tableIds depending on whether the other table is expanded
       const otherColumnIds = table.columns.reduce<Set<string>>(
         (res, column) => {
           const columnEdges = column.destinations.reduce<Set<string>>(
@@ -196,11 +216,11 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
       )
 
       const destinationEdges = Array.from(otherColumnIds).reduce<{
-        tables: Set<string>
+        tables: Set<Table>
         edges: RFEdge[]
       }>(
         (res, destinationId) => {
-          const destinationTable = getTable(destinationId)
+          const destinationTable = getTableFromColumnId(destinationId)
 
           if (!destinationTable) return res
 
@@ -212,10 +232,15 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
                   table.id,
                   "all",
                   destinationTable.id,
-                  destinationId
+                  destinationId,
+                  enrichedErrors?.filter(
+                    error =>
+                      table.columns.some(col => error.sourceId === col.id) &&
+                      error.destinationId === destinationId
+                  )
                 )
               )
-            : res.tables.add(destinationTable.id)
+            : res.tables.add(destinationTable)
 
           return res
         },
@@ -223,12 +248,25 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
       )
 
       table.destinations
-        .filter(destination => allTables.map(t => t.id).includes(destination))
+        .map(destinationId => allTables.find(t => t.id === destinationId))
+        .filter(notEmpty)
         .forEach(destination => destinationEdges.tables.add(destination))
 
       const edges = destinationEdges.edges.concat(
-        Array.from(destinationEdges.tables).map(destinationTableId =>
-          generateEdge(table.id, "all", destinationTableId, "all")
+        Array.from(destinationEdges.tables).map(destinationTable =>
+          generateEdge(
+            table.id,
+            "all",
+            destinationTable.id,
+            "all",
+            enrichedErrors?.filter(
+              error =>
+                table.columns.some(col => error.sourceId === col.id) &&
+                destinationTable.columns.some(
+                  col => error.destinationId === col.id
+                )
+            )
+          )
         )
       )
 
@@ -241,7 +279,7 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
           (tableRes, column) =>
             tableRes.concat(
               column.destinations.reduce<RFEdge[]>((res, destination) => {
-                const destinationTable = getTable(destination)
+                const destinationTable = getTableFromColumnId(destination)
 
                 if (!destinationTable) return res
 
@@ -254,7 +292,12 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
                     table.id,
                     column.id,
                     destinationTable.id,
-                    destinationExpanded ? destination : "all"
+                    destinationExpanded ? destination : "all",
+                    enrichedErrors?.filter(
+                      error =>
+                        error.sourceId === column.id &&
+                        error.destinationId === destination
+                    )
                   )
                 )
               }, [])
@@ -265,7 +308,19 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
       .concat(
         table.destinations
           .filter(destination => allTables.map(t => t.id).includes(destination))
-          .map(destination => generateEdge(table.id, "all", destination, "all"))
+          .map(destination =>
+            generateEdge(
+              table.id,
+              "all",
+              destination,
+              "all",
+              enrichedErrors?.filter(
+                error =>
+                  error.sourceId === table.id &&
+                  error.destinationId === destination
+              )
+            )
+          )
           .filter(notEmpty)
       )
   }, [])
