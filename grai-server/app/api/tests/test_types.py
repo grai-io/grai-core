@@ -396,6 +396,49 @@ async def test_workspace_edges(test_context):
 
 
 @pytest.mark.django_db
+async def test_edges_searched(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    name = str(uuid.uuid4())
+
+    source = await Node.objects.acreate(workspace=workspace, name="source")
+    destination = await Node.objects.acreate(workspace=workspace, name="destination")
+
+    edge = await Edge.objects.acreate(
+        workspace=workspace,
+        source=source,
+        destination=destination,
+        metadata={
+            "grai": {"edge_type": "Edge"},
+        },
+        name=name,
+    )
+
+    query = """
+        query Workspace($workspaceId: ID!, $search: String) {
+          workspace(id: $workspaceId) {
+            id
+            edges(search: $search) {
+                data{
+                    id
+                }
+            }
+          }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={"workspaceId": str(workspace.id), "search": name},
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["edges"]["data"][0]["id"] == str(edge.id)
+
+
+@pytest.mark.django_db
 async def test_workspace_edge(test_context):
     context, organisation, workspace, user, membership = test_context
 
