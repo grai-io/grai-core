@@ -2,6 +2,7 @@ from typing import List
 from .graph_types import GraphColumn, GraphTable
 import redis
 from redis import Redis
+from django.conf import settings
 
 from workspaces.models import Workspace
 
@@ -13,7 +14,7 @@ class GraphCache:
     def __init__(self, workspace: Workspace):
         self.workspace = workspace
 
-        self.manager = redis.Redis(host="localhost", port=6379, db=0)
+        self.manager = redis.Redis(host=settings.REDIS_GRAPH_CACHE_HOST, port=settings.REDIS_GRAPH_CACHE_PORT, db=0)
 
     def query(self, query: str, parameters: any = {}, timeout: int = None):
         return self.manager.graph(f"lineage:{str(self.workspace.id)}").query(query, parameters, timeout=timeout)
