@@ -314,6 +314,14 @@ class Table(Node):
 
 
 @strawberry.input
+class GraphFilter:
+    table_id: Optional[strawberry.ID] = strawberry.UNSET
+    edge_id: Optional[strawberry.ID] = strawberry.UNSET
+    n: Optional[int] = strawberry.UNSET
+    filter: Optional[strawberry.ID] = strawberry.UNSET
+
+
+@strawberry.input
 class WorkspaceRepositoryFilter:
     type: Optional[str] = strawberry.UNSET
     owner: Optional[str] = strawberry.UNSET
@@ -623,17 +631,15 @@ class Workspace:
     @gql.django.field
     def graph(
         self,
-        table_id: Optional[strawberry.ID] = strawberry.UNSET,
-        n: Optional[int] = strawberry.UNSET,
-        edge_id: Optional[strawberry.ID] = strawberry.UNSET,
+        filter: Optional[GraphFilter] = strawberry.UNSET,
     ) -> List[GraphTable]:
         graph = GraphCache(workspace=self)
 
-        if table_id:
-            return graph.get_filtered_graph_result(table_id, n)
+        if filter and filter.table_id:
+            return graph.get_filtered_graph_result(filter.table_id, filter.n)
 
-        if edge_id:
-            return graph.get_edge_filtered_graph_result(edge_id, n)
+        if filter and filter.edge_id:
+            return graph.get_edge_filtered_graph_result(filter.edge_id, filter.n)
 
         return graph.get_graph_result()
 

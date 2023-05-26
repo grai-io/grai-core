@@ -19,7 +19,7 @@ export const GET_TABLES_AND_EDGES = gql`
   ) {
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
-      graph(table_id: $tableId, n: $n) {
+      graph(filter: { table_id: $tableId, n: $n }) {
         id
         name
         display_name

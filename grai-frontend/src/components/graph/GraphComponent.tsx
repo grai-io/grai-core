@@ -19,7 +19,7 @@ export const GET_GRAPH_LOAD_TABLE = gql`
   ) {
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
-      graph(table_id: $tableId, n: 0) {
+      graph(filter: { table_id: $tableId, n: 0 }) {
         id
         name
         display_name
