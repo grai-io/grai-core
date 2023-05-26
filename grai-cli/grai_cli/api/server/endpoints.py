@@ -33,11 +33,11 @@ def get_nodes(
         if namespace is None:
             result = client.get("Node")
         else:
-            result = client.get("Node", "*", namespace)
+            result = client.get("Node", namespace=namespace)
     elif namespace is None:
-        result = client.get("Node", name)
+        result = client.get("Node", name=name)
     else:
-        result = client.get("Node", name, namespace)
+        result = client.get("Node", name=name, namespace=namespace)
 
     if print:
         utilities.print(result)
@@ -83,7 +83,7 @@ def get_workspaces(
     if name is None:
         result = client.get("workspaces")
     else:
-        result = client.get("workspaces", name)
+        result = client.get("workspaces", name=name)
 
     if print:
         utilities.print(result)

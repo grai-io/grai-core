@@ -6,7 +6,6 @@
           "items": [
             {
               "items": [
-                "reference/grai_client/endpoints/v1/client",
                 "reference/grai_client/endpoints/v1/utils"
               ],
               "label": "grai_client.endpoints.v1",

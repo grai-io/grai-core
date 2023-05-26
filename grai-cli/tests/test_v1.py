@@ -34,6 +34,7 @@ def test_get_by_name_and_namespace(runner):
         write_yaml(node_dict, file.name)
         result = runner.invoke(app, ["apply", file.name])
         result = get_nodes(name=name, namespace=namespace, print=False)
+        result = result[0]
         assert isinstance(result, NodeV1)
         assert result.spec.name == name and result.spec.namespace == namespace
 

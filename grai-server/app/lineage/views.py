@@ -3,14 +3,10 @@ from rest_framework.authentication import BasicAuthentication, SessionAuthentica
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.authentication import JWTAuthentication
-
 from common.permissions.multitenant import Multitenant
 from lineage.models import Edge, Node
 from lineage.serializers import EdgeSerializer, NodeSerializer
 from workspaces.permissions import HasWorkspaceAPIKey
-
-# Creating the user id automatically
-# https://stackoverflow.com/questions/30582263/setting-user-id-automatically-on-post-in-django-rest
 
 
 class NodeViewSet(ModelViewSet):
@@ -49,6 +45,32 @@ class EdgeViewSet(ModelViewSet):
 
     serializer_class = EdgeSerializer
     type = Edge
+
+    # def create(self, request, *args, **kwargs):
+    #     source = parse_named_node(request.data["source"])
+    #     destination = parse_named_node(request.data["destination"])
+    #
+    #     if source is not None or destination is not None:
+    #         if hasattr(request.data, "_mutable"):
+    #             request.data._mutable = True
+    #
+    #     match (source, destination):
+    #         case (NodeNamedID(), None):
+    #             node = Node.objects.get(Q(name=source.name) & Q(namespace=source.namespace))
+    #             request.data["source"] = node.id
+    #         case (None, NodeNamedID()):
+    #             node = Node.objects.get(Q(name=destination.name) & Q(namespace=destination.namespace))
+    #             request.data["destination"] = node.id
+    #         case (NodeNamedID(), NodeNamedID()):
+    #             q_filter = Q(name=source.name) & Q(namespace=source.namespace)
+    #             q_filter |= Q(name=destination.name) & Q(namespace=destination.namespace)
+    #             model_source, model_destination = Node.objects.filter(q_filter)
+    #             request.data["source"] = model_source.id
+    #             request.data["destination"] = model_destination.id
+    #         case _:
+    #             pass
+    #
+    #     return super().create(request, *args, **kwargs)
 
     def get_queryset(self):
         if len(self.request.query_params) == 0:

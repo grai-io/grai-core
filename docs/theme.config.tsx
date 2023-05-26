@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import HeaderLogo from "./components/HeaderLogo";
 import { Slack, Github } from "./components/Social";
 
+
 const config: DocsThemeConfig = {
   project: {
     link: "https://github.com/grai-io/grai-core",
@@ -54,11 +55,13 @@ const config: DocsThemeConfig = {
     ),
   },
   chat: {
-    link: "https://join.slack.com/t/graicommunity/signup",
+    link: "https://join.slack.com/t/graicommunity/shared_invite/zt-1il70kfeb-TaCm5fwHg_quWCpKNYyj6w",
     icon: Slack,
   },
+
   banner: {
-    key: "live-cloud",
+    key: "live-cloud", // key should be updated when the banner content changes
+    dismissible: true,
     text: (
       <a href="https://grai.io" target="_blank">
         🎉 Grai cloud is now live. Read more →
@@ -92,6 +95,9 @@ const config: DocsThemeConfig = {
 
     return <>Last updated on {dateString}</>;
   },
+  search: {
+    placeholder: "Search Grai's Docs",
+  }
 };
 
 export default config;
