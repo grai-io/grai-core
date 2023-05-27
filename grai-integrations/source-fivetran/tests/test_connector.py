@@ -1,3 +1,4 @@
+import pytest
 from grai_schemas import config as core_config
 from grai_schemas.v1 import EdgeV1, NodeV1
 from grai_schemas.v1.metadata.edges import ColumnToColumnMetadata
@@ -7,7 +8,7 @@ from grai_schemas.v1.metadata.nodes import ColumnMetadata
 from grai_schemas.v1.metadata.nodes import Metadata as NodeV1Metadata
 from grai_schemas.v1.metadata.nodes import NodeTypeLabels, TableMetadata
 
-from grai_source_fivetran.loader import FivetranConnector
+from grai_source_fivetran.loader import FivetranConnector, build_namespace_map
 from grai_source_fivetran.models import Edge, NodeTypes
 from grai_source_fivetran.package_definitions import config
 
@@ -18,6 +19,19 @@ def test_loader_node_types(app_nodes):
 
 def test_loader_edge_types(app_edges):
     assert all(isinstance(edge, Edge) for edge in app_edges)
+
+
+class TestNamespaceMap:
+    def test_namespace_map_from_json(self):
+        json_str = '{"conn_id": {"source": "test_source", "destination": "test_destination"}}'
+        namespace_map = build_namespace_map({}, json_str, "temp")
+        assert len(namespace_map.keys()) > 0
+
+    @pytest.mark.xfail
+    def test_namespace_map_from_invalid_json(self):
+        json_str = "'test'"
+        namespace_map = build_namespace_map({}, json_str, "temp")
+        assert len(namespace_map.keys()) > 0
 
 
 class TestConnector:
