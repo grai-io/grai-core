@@ -37,3 +37,9 @@ jobs:
 
     - name: Commit update
       uses: stefanzweifel/git-auto-commit-action@v4
+
+    - name: Dispatch to primary docs build
+      uses: peter-evans/repository-dispatch@v2
+      with:
+        repository: grai-io/grai-core
+        event-type: build-docs

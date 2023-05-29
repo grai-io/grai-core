@@ -91,15 +91,3 @@ def test_adding_new_field_to_metadata():
     obj = Schema(entity=node_dict)
     obj.entity.spec.metadata["new_field"] = "new_value"
     assert obj.entity.spec.metadata["new_field"] == "new_value"
-
-
-def test_thing():
-    edge_dict = {
-        "name": "pg_dbt_edge",
-        "namespace": "Xero",
-        "source": {"name": "xero_test.invoice_line_item", "namespace": "Xero"},
-        "destination": {"name": "xero_integration_tests_1.xero_invoice_line_item_data", "namespace": "Xero"},
-        "data_source": "test",
-    }
-    breakpoint()
-    edge = EdgeV1.from_spec(edge_dict)
