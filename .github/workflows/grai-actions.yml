@@ -1,0 +1,31 @@
+name: 'Build Docs'
+
+on:
+  # Allows you to run this workflow manually from the Actions tab or through HTTP API
+  workflow_dispatch:
+
+jobs:
+  sync:
+    name: 'Build Docs'
+    runs-on: ubuntu-latest
+
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout repository and submodules
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    # Update references
+    - name: Git Sumbodule Update
+      run: |
+        git pull --recurse-submodules
+        git submodule update --remote --recursive
+
+    - name: Commit update
+      uses: stefanzweifel/git-auto-commit-action@v4
