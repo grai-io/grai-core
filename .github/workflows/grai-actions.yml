@@ -19,6 +19,7 @@ jobs:
     - name: Checkout repository and submodules
       uses: actions/checkout@v2
       with:
+        token: ${{ secrets.CI_TOKEN }}
         submodules: recursive
 
     # Update references
@@ -26,6 +27,13 @@ jobs:
       run: |
         git pull --recurse-submodules
         git submodule update --remote --recursive
+
+    # Build the docs
+    - name: Build Action Docs
+      run: |
+        cd actions
+        pip install -r requirements.txt
+        python update-docs.py
 
     - name: Commit update
       uses: stefanzweifel/git-auto-commit-action@v4

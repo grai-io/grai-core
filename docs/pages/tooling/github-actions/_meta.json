@@ -1,0 +1,1 @@
+{"bigquery": "BigQuery", "dbt": "dbt", "fivetran": "Fivetran", "flat-file": "Flat File", "mssql": "SQL Server", "mysql": "MySQL", "postgres": "PostgreSQL", "redshift": "Redshift", "snowflake": "Snowflake"}
