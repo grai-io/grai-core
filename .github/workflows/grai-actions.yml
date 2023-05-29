@@ -37,3 +37,5 @@ jobs:
 
     - name: Commit update
       uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        create_branch: true
