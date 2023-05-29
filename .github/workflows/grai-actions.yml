@@ -39,3 +39,4 @@ jobs:
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
         create_branch: true
+        commit_message: "Update github action docs"
