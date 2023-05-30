@@ -145,36 +145,27 @@ test("lineage", async () => {
         variables: {
           organisationName: "",
           workspaceName: "",
+          tableId: "1",
+          n: 1,
         },
       },
       result: {
         data: {
           workspace: {
             id: "1",
-            tables: {
-              data: [
-                {
-                  id: "2",
-                  namespace: "default",
-                  name: "Table2",
-                  display_name: "Table2",
-                  data_source: "test",
-                  metadata: {},
-                  columns: { data: [] },
-                  source_tables: {
-                    data: [
-                      {
-                        id: "1",
-                        name: "Table1",
-                        display_name: "Table1",
-                      },
-                    ],
-                  },
-                  destination_tables: { data: [] },
-                },
-              ],
-            },
-            other_edges: { data: [] },
+            graph: [
+              {
+                id: "2",
+                name: "Table2",
+                display_name: "Table2",
+                namespace: "default",
+                data_source: "test",
+                columns: [],
+                destinations: [],
+                table_destinations: [],
+                table_sources: ["1"],
+              },
+            ],
           },
         },
       },

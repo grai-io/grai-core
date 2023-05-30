@@ -55,47 +55,19 @@ export const GET_RUN = gql`
           }
         }
       }
-      tables {
-        data {
+      graph {
+        id
+        name
+        display_name
+        namespace
+        data_source
+        columns {
           id
-          namespace
           name
           display_name
-          data_source
-          metadata
-          columns {
-            data {
-              id
-              name
-            }
-          }
-          source_tables {
-            data {
-              id
-              name
-              display_name
-            }
-          }
-          destination_tables {
-            data {
-              id
-              name
-              display_name
-            }
-          }
+          destinations
         }
-      }
-      other_edges {
-        data {
-          id
-          source {
-            id
-          }
-          destination {
-            id
-          }
-          metadata
-        }
+        destinations
       }
     }
   }
@@ -138,15 +110,14 @@ const Report: React.FC = () => {
 
   const errors = resultsToErrors(run.metadata.results)
 
-  const tables = data?.workspace.tables.data
-  const edges = data?.workspace.other_edges.data
+  const tables = data?.workspace.graph
 
   const limitGraph: boolean =
     searchParams.get("limitGraph")?.toLowerCase() === "true"
 
   if (!display) return null
 
-  const tabs = reportTabs({ tables, edges, errors, limitGraph, run })
+  const tabs = reportTabs({ tables, errors, limitGraph, run })
 
   return (
     <PageLayout>

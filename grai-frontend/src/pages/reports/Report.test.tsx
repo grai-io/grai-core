@@ -59,19 +59,7 @@ test("not found", async () => {
           workspace: {
             id: "1",
             run: null,
-            tables: { data: [sourceTable, destinationTable, spareTable] },
-            other_edges: {
-              data: [
-                {
-                  id: "1",
-                  is_active: true,
-                  data_source: "test",
-                  source: sourceTable,
-                  destination: destinationTable,
-                  metadata: { grai: { constraint_type: "dbt_model" } },
-                },
-              ],
-            },
+            graph: [sourceTable, destinationTable, spareTable],
           },
         },
       },

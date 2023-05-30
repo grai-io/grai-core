@@ -3,13 +3,11 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { GraphFilter } from "./../../../__generated__/globalTypes";
-
 // ====================================================
-// GraphQL query operation: GetTablesAndEdges
+// GraphQL query operation: GetGraphLoadTable
 // ====================================================
 
-export interface GetTablesAndEdges_workspace_graph_columns {
+export interface GetGraphLoadTable_workspace_graph_columns {
   __typename: "GraphColumn";
   id: string;
   name: string;
@@ -17,29 +15,31 @@ export interface GetTablesAndEdges_workspace_graph_columns {
   destinations: string[];
 }
 
-export interface GetTablesAndEdges_workspace_graph {
+export interface GetGraphLoadTable_workspace_graph {
   __typename: "GraphTable";
   id: string;
   name: string;
   display_name: string;
   namespace: string;
   data_source: string;
-  columns: GetTablesAndEdges_workspace_graph_columns[];
+  columns: GetGraphLoadTable_workspace_graph_columns[];
   destinations: string[];
+  table_destinations: string[] | null;
+  table_sources: string[] | null;
 }
 
-export interface GetTablesAndEdges_workspace {
+export interface GetGraphLoadTable_workspace {
   __typename: "Workspace";
   id: any;
-  graph: GetTablesAndEdges_workspace_graph[];
+  graph: GetGraphLoadTable_workspace_graph[];
 }
 
-export interface GetTablesAndEdges {
-  workspace: GetTablesAndEdges_workspace;
+export interface GetGraphLoadTable {
+  workspace: GetGraphLoadTable_workspace;
 }
 
-export interface GetTablesAndEdgesVariables {
+export interface GetGraphLoadTableVariables {
   organisationName: string;
   workspaceName: string;
-  filters?: GraphFilter | null;
+  tableId: string;
 }

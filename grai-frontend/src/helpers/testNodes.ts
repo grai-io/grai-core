@@ -1,64 +1,49 @@
-export const columnNode = {
-  id: "3",
-  namespace: "default",
-  name: "N3",
-  display_name: "N3 Node",
-  is_active: true,
-  data_source: "test",
-  metadata: {
-    grai: {
-      node_type: "Column",
-    },
-  },
-}
-
 export const sourceTable = {
   id: "1",
   namespace: "default",
   name: "N1",
   display_name: "N1",
-  is_active: true,
   data_source: "test",
-  metadata: {
-    grai: {
-      node_type: "Table",
+  columns: [
+    {
+      id: "c1",
+      name: "N3",
+      display_name: "N3 Node",
+      destinations: ["c2"],
     },
-  },
-  columns: { data: [columnNode] },
-  source_tables: { data: [] },
-  destination_tables: { data: [] },
+  ],
+  destinations: [],
+  table_destinations: ["2"],
+  table_sources: [],
 }
 
 export const destinationTable = {
   id: "2",
   namespace: "default",
-  name: "N2",
+  name: "N2 Node",
   display_name: "N2 Node",
-  is_active: true,
   data_source: "test",
-  metadata: {
-    grai: {
-      node_type: "Table",
+  columns: [
+    {
+      id: "c2",
+      name: "C2 Column",
+      display_name: "C2 Column",
+      destinations: [],
     },
-  },
-  columns: { data: [] },
-  source_tables: { data: [] },
-  destination_tables: { data: [] },
+  ],
+  destinations: [],
+  table_destinations: [],
+  table_sources: ["1"],
 }
 
 export const spareTable = {
   id: "3",
   namespace: "default",
   name: "N3",
-  display_name: "N3 Node",
-  is_active: true,
+  display_name: "N3",
   data_source: "test",
-  metadata: {
-    grai: {
-      node_type: "Table",
-    },
-  },
-  columns: { data: [] },
-  source_tables: { data: [] },
-  destination_tables: { data: [] },
+  columns: [],
+  destinations: [],
+  table_destinations: [],
+  table_sources: [],
 }

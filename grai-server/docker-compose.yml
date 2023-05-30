@@ -107,10 +107,10 @@ services:
     command: ["postgres", "-c", "log_statement=all"]
 
   redis:
-    image: redis:7-alpine
-    restart: always
+    image: redis/redis-stack:latest
     ports:
-      - "6379:6379"
+      - 6379:6379
+      - 8001:8001
 
   flower:
     image: mher/flower

@@ -5,9 +5,14 @@ from django.db.models import F, Q
 from django_multitenant.fields import TenantForeignKey
 from django_multitenant.models import TenantModel
 
+from .graph_cache import GraphCache
+from .managers import CacheManager
+
 
 # Create your models here.
 class Node(TenantModel):
+    objects = CacheManager()
+
     tenant_id = "workspace_id"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -48,11 +53,18 @@ class Node(TenantModel):
     def save(self, *args, **kwargs):
         self.set_names()
         super().save(*args, **kwargs)
+        self.cache_model()
 
     def set_names(self, *args, **kwargs):
         if not self.display_name:
             self.display_name = self.name
         return self
+
+    def cache_model(self, cache: GraphCache = None):
+        if cache is None:
+            cache = GraphCache(self.workspace)
+
+        cache.cache_node(self)
 
     def __str__(self):
         return f"{self.display_name}"
@@ -71,6 +83,8 @@ class Node(TenantModel):
 
 
 class Edge(TenantModel):
+    objects = CacheManager()
+
     tenant_id = "workspace_id"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -97,6 +111,7 @@ class Edge(TenantModel):
     def save(self, *args, **kwargs):
         self.set_names()
         super().save(*args, **kwargs)
+        self.cache_model()
 
     def set_names(self):
         if not self.name:
@@ -104,6 +119,12 @@ class Edge(TenantModel):
         if not self.display_name:
             self.display_name = self.name
         return self
+
+    def cache_model(self, cache: GraphCache = None):
+        if cache is None:
+            cache = GraphCache(self.workspace)
+
+        cache.cache_edge(self)
 
     def __str__(self):
         return f"{self.source} -> {self.destination}"
