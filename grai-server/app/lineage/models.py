@@ -2,7 +2,6 @@ import uuid
 
 from django.db import models
 from django.db.models import F, Q
-from django_multitenant.fields import TenantForeignKey
 from django_multitenant.models import TenantModel
 
 from .graph_cache import GraphCache
@@ -93,8 +92,8 @@ class Edge(TenantModel):
     display_name = models.CharField(max_length=255)
 
     data_source = models.CharField(max_length=255)
-    source = TenantForeignKey("Node", related_name="source_edges", on_delete=models.PROTECT)
-    destination = TenantForeignKey("Node", related_name="destination_edges", on_delete=models.PROTECT)
+    source = models.ForeignKey("Node", related_name="source_edges", on_delete=models.PROTECT)
+    destination = models.ForeignKey("Node", related_name="destination_edges", on_delete=models.PROTECT)
     metadata = models.JSONField(default=dict)
     is_active = models.BooleanField(default=True)
 
