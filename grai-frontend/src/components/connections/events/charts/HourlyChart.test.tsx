@@ -1,6 +1,6 @@
 import React from "react"
 import { DateTime } from "luxon"
-import { render, screen, waitFor } from "testing"
+import { render } from "testing"
 import HourlyChart from "./HourlyChart"
 
 const events = [

@@ -2,18 +2,6 @@ import React from "react"
 import userEvent from "@testing-library/user-event"
 import { act, render, screen, waitFor } from "testing"
 import ConnectionRunButton from "./ConnectionRunButton"
-import ConnectionsMenu from "./ConnectionsMenu"
-
-const connection = {
-  id: "1",
-  name: "Test Connection",
-  runs: { data: [] },
-  last_run: null,
-  last_successful_run: null,
-  connector: {
-    events: true,
-  },
-}
 
 test("renders", async () => {
   render(<ConnectionRunButton onRun={() => {}} status={null} />)
