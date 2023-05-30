@@ -38,6 +38,7 @@ class Connector(models.Model):
     is_active = models.BooleanField(default=True)
     icon = models.CharField(max_length=255, blank=True, null=True)
     category = models.CharField(max_length=255, blank=True, null=True)
+    events = models.BooleanField(default=False)
     coming_soon = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -136,11 +137,15 @@ class Run(TenantModel):
     TESTS = "tests"
     UPDATE = "update"
     VALIDATE = "validate"
+    EVENTS = "events"
+    EVENTS_ALL = "events_all"
 
     RUN_ACTIONS = [
         (TESTS, "tests"),
         (UPDATE, "update"),
         (VALIDATE, "validate"),
+        (EVENTS, "events"),
+        (EVENTS_ALL, "events_all"),
     ]
 
     tenant_id = "workspace_id"

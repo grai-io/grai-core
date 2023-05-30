@@ -1,6 +1,6 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
-import { Box, Stack, Tooltip } from "@mui/material"
+import { Stack } from "@mui/material"
 import { useParams } from "react-router-dom"
 import NotFound from "pages/NotFound"
 import useRunPolling from "helpers/runPolling"
@@ -8,8 +8,10 @@ import useWorkspace from "helpers/useWorkspace"
 import ConnectionConfiguration from "components/connections/configuration/ConnectionConfiguration"
 import ConnectionMenu from "components/connections/ConnectionMenu"
 import ConnectionRun from "components/connections/ConnectionRun"
+import ConnectionEvents from "components/connections/events/ConnectionEvents"
 import ConnectionRunsTable from "components/connections/runs/ConnectionRunsTable"
 import EditScheduleForm from "components/connections/schedule/EditScheduleForm"
+import ConnectorIcon from "components/connectors/ConnectorIcon"
 import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
 import PageTabs from "components/layout/PageTabs"
@@ -36,6 +38,7 @@ export const GET_CONNECTION = gql`
         connector {
           id
           name
+          events
           metadata
           icon
         }
@@ -136,6 +139,12 @@ const Connection: React.FC = () => {
       component: <EditScheduleForm connection={connection} />,
     },
     {
+      value: "events",
+      label: "Events",
+      component: <ConnectionEvents connection={connection} />,
+      noWrapper: true,
+    },
+    {
       value: "activity",
       label: "Activity",
       disabled: true,
@@ -157,27 +166,9 @@ const Connection: React.FC = () => {
               {connection.last_run && (
                 <RunStatus run={connection.last_run} link sx={{ mr: 3 }} />
               )}
-              {connection.connector.icon && (
-                <Tooltip title={connection.connector.name}>
-                  <Box
-                    sx={{
-                      borderRadius: "8px",
-                      border: "1px solid rgba(0, 0, 0, 0.08)",
-                      height: "48px",
-                      width: "48px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <img
-                      src={connection.connector.icon}
-                      alt={`${connection.connector.name} logo`}
-                      style={{ height: 32, width: 32 }}
-                    />
-                  </Box>
-                </Tooltip>
-              )}
+
+                <ConnectorIcon connector={connection.connector} />
+
             </>
           }
           buttons={

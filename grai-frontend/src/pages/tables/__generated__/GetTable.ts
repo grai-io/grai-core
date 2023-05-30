@@ -65,6 +65,32 @@ export interface GetTable_workspace_table_destination_tables {
   data: GetTable_workspace_table_destination_tables_data[];
 }
 
+export interface GetTable_workspace_table_events_data_connection_connector {
+  __typename: "Connector";
+  id: any;
+  name: string;
+}
+
+export interface GetTable_workspace_table_events_data_connection {
+  __typename: "Connection";
+  id: any;
+  name: string;
+  connector: GetTable_workspace_table_events_data_connection_connector;
+}
+
+export interface GetTable_workspace_table_events_data {
+  __typename: "Event";
+  id: any;
+  date: any;
+  status: string;
+  connection: GetTable_workspace_table_events_data_connection;
+}
+
+export interface GetTable_workspace_table_events {
+  __typename: "EventPagination";
+  data: GetTable_workspace_table_events_data[];
+}
+
 export interface GetTable_workspace_table {
   __typename: "Table";
   id: any;
@@ -77,6 +103,7 @@ export interface GetTable_workspace_table {
   columns: GetTable_workspace_table_columns;
   source_tables: GetTable_workspace_table_source_tables;
   destination_tables: GetTable_workspace_table_destination_tables;
+  events: GetTable_workspace_table_events;
 }
 
 export interface GetTable_workspace {

@@ -59,6 +59,9 @@ export const tableMock = {
               },
             ],
           },
+          events: {
+            data: [],
+          },
         },
       },
     },

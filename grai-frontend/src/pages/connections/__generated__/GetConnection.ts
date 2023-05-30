@@ -11,6 +11,7 @@ export interface GetConnection_workspace_connection_connector {
   __typename: "Connector";
   id: any;
   name: string;
+  events: boolean;
   metadata: any;
   icon: string | null;
 }

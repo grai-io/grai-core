@@ -1,9 +1,11 @@
 import os
 import uuid
+from datetime import date
 
 import pytest
 from decouple import config
 from django.core.files.uploadedfile import UploadedFile
+from grai_source_dbt_cloud.loader import Event
 
 from connections.models import Connection, Connector, Run, RunFile
 from connections.tasks import process_run, run_connection_schedule
@@ -604,7 +606,10 @@ def test_process_run_incorrect_action(test_workspace, test_yaml_file_connector):
         with pytest.raises(Exception) as e_info:
             process_run(str(run.id))
 
-        assert str(e_info.value) == "Incorrect run action Incorrect found, accepted values: tests, update, validate"
+        assert (
+            str(e_info.value)
+            == "Incorrect run action Incorrect found, accepted values: tests, update, validate, events, events_all"
+        )
 
 
 @pytest.mark.django_db
@@ -634,3 +639,43 @@ class TestConnectionSchedule:
         with pytest.raises(Exception) as e_info:
             run_connection_schedule(str(connection.id))
         assert str(e_info.value) == "No connector found for: Connector"
+
+
+@pytest.mark.django_db
+class TestEventsTests:
+    def test_dbt_cloud(self, test_workspace, test_dbt_cloud_connector, mocker):
+        mock = mocker.patch("grai_source_dbt_cloud.base.get_events")
+        mock.return_value = [Event(reference="1234", date=date.today(), metadata={}, status="success", nodes=[])]
+
+        connection = Connection.objects.create(
+            name="C2",
+            connector=test_dbt_cloud_connector,
+            workspace=test_workspace,
+            metadata={},
+            secrets={"api_key": "abc1234"},
+        )
+        run = Run.objects.create(connection=connection, workspace=test_workspace, action=Run.EVENTS)
+
+        process_run(str(run.id))
+
+
+@pytest.mark.django_db
+class TestEventsAllTests:
+    def test_dbt_cloud(self, test_workspace, test_dbt_cloud_connector, mocker):
+        node = Node.objects.create(workspace=test_workspace, name=str(uuid.uuid4()))
+
+        mock = mocker.patch("grai_source_dbt_cloud.base.get_events")
+        mock.return_value = [
+            Event(reference="1234", date=date.today(), metadata={}, status="success", nodes=[str(node.id)])
+        ]
+
+        connection = Connection.objects.create(
+            name="C2",
+            connector=test_dbt_cloud_connector,
+            workspace=test_workspace,
+            metadata={},
+            secrets={"api_key": "abc1234"},
+        )
+        run = Run.objects.create(connection=connection, workspace=test_workspace, action=Run.EVENTS_ALL)
+
+        process_run(str(run.id))

@@ -18,6 +18,7 @@ import ConnectionsMenu from "./ConnectionsMenu"
 interface Connector {
   id: string
   name: string
+  events: boolean
 }
 
 interface Connection extends BaseConnection {

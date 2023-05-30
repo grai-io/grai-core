@@ -179,3 +179,42 @@ class Filter(TenantModel):
         related_name="filters",
         on_delete=models.CASCADE,
     )
+
+
+class Event(TenantModel):
+    SUCCESS = "success"
+    ERROR = "error"
+    CANCELLED = "cancelled"
+
+    EVENT_STATUS = [
+        (SUCCESS, "success"),
+        (ERROR, "error"),
+        (CANCELLED, "cancelled"),
+    ]
+
+    tenant_id = "workspace_id"
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    reference = models.CharField(max_length=255)
+    date = models.DateTimeField()
+    status = models.CharField(max_length=255, choices=EVENT_STATUS, default="success")
+    metadata = models.JSONField(default=dict)
+
+    connection = models.ForeignKey(
+        "connections.Connection",
+        related_name="events",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+    )
+
+    nodes = models.ManyToManyField(Node)
+
+    workspace = models.ForeignKey(
+        "workspaces.Workspace",
+        related_name="events",
+        on_delete=models.CASCADE,
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

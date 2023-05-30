@@ -9,6 +9,9 @@ const connection = {
   runs: { data: [] },
   last_run: null,
   last_successful_run: null,
+  connector: {
+    events: true,
+  }
 }
 
 test("renders", async () => {

@@ -28,9 +28,10 @@ from lineage.filter import apply_table_filter, get_tags
 from lineage.graph_cache import GraphCache
 from lineage.graph_types import GraphTable
 from lineage.models import Edge as EdgeModel
+from lineage.models import Event as EventModel
 from lineage.models import Filter as FilterModel
 from lineage.models import Node as NodeModel
-from lineage.types import Edge, Filter, Node, NodeFilter, NodeOrder
+from lineage.types import EdgeFilter, EdgeOrder, Filter, NodeFilter, NodeOrder
 from users.types import User, UserFilter
 from workspaces.models import Membership as MembershipModel
 from workspaces.models import Workspace as WorkspaceModel
@@ -45,6 +46,62 @@ class RunAction(Enum):
     TESTS = RunModel.TESTS
     UPDATE = RunModel.UPDATE
     VALIDATE = RunModel.VALIDATE
+    EVENTS = RunModel.EVENTS
+    EVENTS_ALL = RunModel.EVENTS_ALL
+
+
+@strawberry.enum
+class EventStatus(Enum):
+    SUCCESS = EventModel.SUCCESS
+    ERROR = EventModel.ERROR
+    CANCELLED = EventModel.CANCELLED
+
+
+@gql.django.type(EventModel)
+class Event:
+    id: auto
+    date: auto
+    status: auto
+    connection: "Connection"
+    metadata: JSON
+    created_at: auto
+
+
+@gql.django.type(NodeModel, order=NodeOrder, filters=NodeFilter, pagination=True, only=["id"])
+class Node:
+    id: auto
+    namespace: auto
+    name: auto
+    display_name: auto
+    data_source: auto
+    metadata: JSON
+    is_active: auto
+    source_edges: List["Edge"]
+    destination_edges: List["Edge"]
+
+    # Events
+    @strawberry.field
+    def events(
+        self,
+    ) -> Pagination[Event]:
+        queryset = EventModel.objects.filter(nodes=self)
+
+        return Pagination[Event](queryset=queryset)
+
+
+@gql.django.type(EdgeModel, order=EdgeOrder, filters=EdgeFilter, pagination=True)
+class Edge:
+    id: auto
+    namespace: auto
+    name: auto
+    display_name: auto
+    data_source: auto
+    source: Node = gql.django.field()
+    destination: Node = gql.django.field()
+    metadata: JSON
+    is_active: auto
+    created_at: auto
+    updated_at: auto
 
 
 @gql.django.type(RunModel, order="RunOrder", pagination=True)
@@ -52,7 +109,7 @@ class Run:
     id: auto
     connection: "Connection"
     status: auto
-    action: RunAction
+    action: auto
     metadata: JSON
     created_at: auto
     updated_at: auto
@@ -162,6 +219,15 @@ class Connection:
     @gql.django.field
     def last_successful_run(self) -> Optional["Run"]:
         return RunModel.objects.filter(connection=self.id, status="success").order_by("-created_at").first()
+
+    # Events
+    @strawberry.field
+    def events(
+        self,
+    ) -> Pagination[Event]:
+        queryset = EventModel.objects.filter(connection=self)
+
+        return Pagination[Event](queryset=queryset)
 
 
 @gql.django.type(NodeModel, order=NodeOrder, filters=NodeFilter, pagination=True)

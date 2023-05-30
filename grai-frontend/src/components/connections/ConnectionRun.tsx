@@ -1,7 +1,6 @@
 import React from "react"
 import { gql, useMutation } from "@apollo/client"
 import { PlayArrow } from "@mui/icons-material"
-import { LoadingButton } from "@mui/lab"
 import {
   MenuItem,
   ListItemIcon,
@@ -14,10 +13,18 @@ import {
   RunConnection,
   RunConnectionVariables,
 } from "./__generated__/RunConnection"
+import ConnectionRunButton from "./ConnectionRunButton"
+
+enum RunAction {
+  EVENTS = "EVENTS",
+  TESTS = "TESTS",
+  UPDATE = "UPDATE",
+  VALIDATE = "VALIDATE",
+}
 
 export const RUN_CONNECTION = gql`
-  mutation RunConnection($connectionId: ID!) {
-    runConnection(connectionId: $connectionId) {
+  mutation RunConnection($connectionId: ID!, $action: RunAction) {
+    runConnection(connectionId: $connectionId, action: $action) {
       id
       connection {
         id
@@ -82,12 +89,17 @@ interface Run {
   metadata: any
 }
 
+interface Connector {
+  events: boolean
+}
+
 export interface Connection {
   id: string
   name: string
   last_run: Run | null
   last_successful_run: Run | null
   runs: { data: Run[] }
+  connector: Connector
 }
 
 export interface RunResult {
@@ -119,9 +131,6 @@ const ConnectionRun: React.FC<ConnectionRunProps> = ({
     RunConnection,
     RunConnectionVariables
   >(RUN_CONNECTION, {
-    variables: {
-      connectionId: connection.id,
-    },
     update(cache) {
       clearWorkspace(cache, workspaceId)
     },
@@ -138,8 +147,14 @@ const ConnectionRun: React.FC<ConnectionRunProps> = ({
     user: null,
   }
 
-  const handleClick = () =>
+  const handleClick = () => handleRun("update")
+
+  const handleRun = (action: string) =>
     runConnection({
+      variables: {
+        connectionId: connection.id,
+        action: action as RunAction,
+      },
       optimisticResponse: {
         runConnection: {
           id: "temp",
@@ -181,20 +196,7 @@ const ConnectionRun: React.FC<ConnectionRunProps> = ({
       </MenuItem>
     )
 
-  return (
-    <LoadingButton
-      onClick={handleClick}
-      variant="outlined"
-      startIcon={<PlayArrow />}
-      disabled={disabled}
-      loading={loading2}
-      loadingPosition="start"
-      data-testid="connection-run"
-      sx={{ height: "40px" }}
-    >
-      {(loading2 && connection.last_run?.status) || "Run"}
-    </LoadingButton>
-  )
+  return <ConnectionRunButton onRun={handleRun} disabled={disabled} loading={loading2} status={connection.last_run?.status ?? null} events={connection.connector.events}/>
 }
 
 export default ConnectionRun

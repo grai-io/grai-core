@@ -34,6 +34,7 @@ test("renders errors", async () => {
               connector: {
                 id: "1",
                 name: "Test Connector",
+                events: true,
               },
               connection: {
                 id: "1",
@@ -41,6 +42,7 @@ test("renders errors", async () => {
                 connector: {
                   id: "1",
                   name: "connector 1",
+                  events: false,
                 },
                 runs: { data: [] },
                 last_run: null,

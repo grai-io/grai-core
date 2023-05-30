@@ -92,6 +92,7 @@ const WelcomeCard: React.FC<WelcomeCardProps> = ({ search, setSearch }) => (
       >
         Welcome to Grai
       </Typography>
+
       <TextField
         placeholder="Search data assets"
         onMouseDown={() => setSearch(true)}

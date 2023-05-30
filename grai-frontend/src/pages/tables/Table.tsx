@@ -8,6 +8,7 @@ import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
 import PageTabs from "components/layout/PageTabs"
 import TableColumns from "components/tables/columns/TableColumns"
+import TableEvents from "components/tables/TableEvents"
 import TableLineage from "components/tables/TableLineage"
 import TableProfile from "components/tables/TableProfile"
 import TabState from "components/tabs/TabState"
@@ -64,6 +65,21 @@ export const GET_TABLE = gql`
             display_name
           }
         }
+        events {
+          data {
+            id
+            date
+            status
+            connection {
+              id
+              name
+              connector {
+                id
+                name
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -118,6 +134,12 @@ const Table: React.FC = () => {
       component: <TableLineage table={table} />,
       noWrapper: true,
     },
+    {
+      label: 'Events',
+      value: 'events',
+      component: <TableEvents table={table} />,
+      noWrapper: true,
+    }
   ]
 
   return (

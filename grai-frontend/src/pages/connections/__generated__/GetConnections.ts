@@ -11,6 +11,7 @@ export interface GetConnections_workspace_connections_data_connector {
   __typename: "Connector";
   id: any;
   name: string;
+  events: boolean;
 }
 
 export interface GetConnections_workspace_connections_data_runs_data_user {

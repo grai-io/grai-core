@@ -3,6 +3,14 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
+export enum RunAction {
+  EVENTS = "EVENTS",
+  EVENTS_ALL = "EVENTS_ALL",
+  TESTS = "TESTS",
+  UPDATE = "UPDATE",
+  VALIDATE = "VALIDATE",
+}
+
 // ====================================================
 // GraphQL mutation operation: RunConnection
 // ====================================================
@@ -85,4 +93,5 @@ export interface RunConnection {
 
 export interface RunConnectionVariables {
   connectionId: string;
+  action?: RunAction | null;
 }

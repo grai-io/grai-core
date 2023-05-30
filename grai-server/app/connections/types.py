@@ -21,6 +21,7 @@ class ConnectorOrder:
     name: auto
     is_active: auto
     category: auto
+    events: auto
     coming_soon: auto
 
 
@@ -32,4 +33,5 @@ class Connector:
     is_active: auto
     icon: Optional[str]
     category: Optional[str]
+    events: auto
     coming_soon: auto
