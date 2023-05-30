@@ -2,12 +2,12 @@ from multimethod import multimethod
 
 
 @multimethod
-async def get():
+def get():
     raise NotImplementedError()
 
 
 @multimethod
-async def post():
+def post():
     raise NotImplementedError()
 
 

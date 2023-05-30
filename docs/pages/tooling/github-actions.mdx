@@ -1,44 +1,39 @@
 ---
-title: "GitHub Action"
-description: Grai GitHub Action which can be used to test your data pipeline
+title: Grai Actions
+description: Documentation for Grai's GitHub actions.
 ---
 
-import { Callout } from "nextra-theme-docs";
+# Grai Actions
 
-# GitHub Actions
 
-<Callout type="info" emoji="ℹ️">
-  grai-actions runs inside the GitHub Action, alternatively see [GitHub Action
-  Server](./github-actions-server) which runs on the server.
-</Callout>
+## Shared Fields
 
-Grai allows you to run a test of your data changes in git using GitHub Actions.
+All actions share some common fields listed below.
 
-In your repository, create a yaml file at `/.github/workflows/main.yml`
-and populate the file with your action parameters.
 
-The full documentation for supported actions can be found in [GitHub](https://github.com/grai-io/grai-actions)
-The example below works with postgres though there are equivalent implementations for
-each other integration including dbt, MySQL, snowflake, etc...
+### Authentication
 
-```yaml copy
-on: pull_request
+| Field              | Required | Default             | Description                                                                                           |
+|--------------------|----------|---------------------|-------------------------------------------------------------------------------------------------------|
+| api-key            | no       |                     | Your Grai API key.                                                                                    |
+| grai-user          | no       |                     | Your Gri username.                                                                                    |
+| grai-password      | no       |                     | Your Gri password.                                                                                    |
+| workspace          | no       |                     | Your Grai workspace name                                                                              |
 
-jobs:
-  test:
-    name: Evaluate local actions
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+You must provider either `api-key` or `grai-user` **and** `grai-password`.
+If you're account is associated with multiple workspaces and you're using username/password authentication you must 
+also provide your desired `workspace`.
 
-      - name: prod data
-        uses: grai-io/grai-actions/postgres@master
-        with:
-          api-key: "[your grai api key]"
-          namespace: "[integration namespace]"
-          db-host: "[host for your grai instance]"
-          db-port: "[port for your grai instance]"
-          db-user: "[database user]"
-          db-password: "[database user password]"
-```
+
+### Other Parameters
+
+| Field              | Required | Default            | Description                                                                                           |
+|--------------------|----------|--------------------|-------------------------------------------------------------------------------------------------------|
+| namespace          | yes      |                    | The Grai namespace for the connection                                                                 |
+| client-host        | no       | api.grai.io        | Hostname for the api of your Grai instance.                                                           |
+| client-port        | no       |                    | Port for the api of your Grai Instance.                                                               |
+| grai-frontend-host | no       | https://app.grai.io | The URL for your frontend instance of Grai. This might include a port depending on your configuration |
+| action             | no       | tests              | Which action to perform. Can be `tests` or `update`                                                   |
+| github-token       | no       | `${{github.token}}` | The GITHUB_TOKEN secret for your repository                                                           |
+
+

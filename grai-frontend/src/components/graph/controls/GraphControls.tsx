@@ -3,11 +3,13 @@ import { Box, Stack } from "@mui/material"
 import useSearchParams from "helpers/useSearchParams"
 import FilterControl from "./FilterControl"
 import LimitGraphControl from "./LimitGraphControl"
+import LoadMoreControl, { LoadMoreControlOptions } from "./LoadMoreControl"
 import SearchControl from "./SearchControl"
 import StepsControl, { StepsControlOptions } from "./StepsControl"
 
 export type ControlOptions = {
   steps?: StepsControlOptions
+  loadMore?: LoadMoreControlOptions
 }
 
 type GraphControlsProps = {
@@ -32,9 +34,7 @@ const GraphControls: React.FC<GraphControlsProps> = ({
 
   return (
     <Box sx={{ position: "relative" }}>
-      <Stack
-        spacing={1}
-        direction="row"
+      <Box
         sx={{
           position: "absolute",
           top: "24px",
@@ -43,13 +43,19 @@ const GraphControls: React.FC<GraphControlsProps> = ({
           zIndex: 30,
         }}
       >
-        {errors && (
-          <LimitGraphControl value={limitGraph} onChange={handleToggleLimit} />
-        )}
-        {options?.steps && <StepsControl options={options.steps} />}
-        <SearchControl value={search} onChange={onSearch} />
-        <FilterControl />
-      </Stack>
+        <Stack spacing={1} direction="row">
+          {errors && (
+            <LimitGraphControl
+              value={limitGraph}
+              onChange={handleToggleLimit}
+            />
+          )}
+          {options?.steps && <StepsControl options={options.steps} />}
+          <SearchControl value={search} onChange={onSearch} />
+          <FilterControl />
+        </Stack>
+        {options?.loadMore && <LoadMoreControl options={options.loadMore} />}
+      </Box>
     </Box>
   )
 }

@@ -104,6 +104,7 @@ services:
       interval: 2s
       timeout: 2s
       retries: 15
+    command: ["postgres", "-c", "log_statement=all"]
 
   redis:
     image: redis:7-alpine

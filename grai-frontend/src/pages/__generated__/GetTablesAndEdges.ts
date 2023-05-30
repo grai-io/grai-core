@@ -20,41 +20,13 @@ export interface GetTablesAndEdges_workspace_tables_data_columns {
   data: GetTablesAndEdges_workspace_tables_data_columns_data[];
 }
 
-export interface GetTablesAndEdges_workspace_tables_data_source_tables_data {
-  __typename: "Table";
-  id: any;
-  name: string;
-  display_name: string;
-}
-
-export interface GetTablesAndEdges_workspace_tables_data_source_tables {
-  __typename: "TableDataWrapper";
-  data: GetTablesAndEdges_workspace_tables_data_source_tables_data[];
-}
-
-export interface GetTablesAndEdges_workspace_tables_data_destination_tables_data {
-  __typename: "Table";
-  id: any;
-  name: string;
-  display_name: string;
-}
-
-export interface GetTablesAndEdges_workspace_tables_data_destination_tables {
-  __typename: "TableDataWrapper";
-  data: GetTablesAndEdges_workspace_tables_data_destination_tables_data[];
-}
-
 export interface GetTablesAndEdges_workspace_tables_data {
   __typename: "Table";
   id: any;
-  namespace: string;
   name: string;
   display_name: string;
   data_source: string;
-  metadata: any;
   columns: GetTablesAndEdges_workspace_tables_data_columns;
-  source_tables: GetTablesAndEdges_workspace_tables_data_source_tables;
-  destination_tables: GetTablesAndEdges_workspace_tables_data_destination_tables;
 }
 
 export interface GetTablesAndEdges_workspace_tables_meta {
@@ -83,7 +55,6 @@ export interface GetTablesAndEdges_workspace_other_edges_data {
   id: any;
   source: GetTablesAndEdges_workspace_other_edges_data_source;
   destination: GetTablesAndEdges_workspace_other_edges_data_destination;
-  metadata: any;
 }
 
 export interface GetTablesAndEdges_workspace_other_edges {
@@ -91,23 +62,11 @@ export interface GetTablesAndEdges_workspace_other_edges {
   data: GetTablesAndEdges_workspace_other_edges_data[];
 }
 
-export interface GetTablesAndEdges_workspace_filters_data {
-  __typename: "Filter";
-  id: any;
-  name: string | null;
-}
-
-export interface GetTablesAndEdges_workspace_filters {
-  __typename: "FilterPagination";
-  data: GetTablesAndEdges_workspace_filters_data[];
-}
-
 export interface GetTablesAndEdges_workspace {
   __typename: "Workspace";
   id: any;
   tables: GetTablesAndEdges_workspace_tables;
   other_edges: GetTablesAndEdges_workspace_other_edges;
-  filters: GetTablesAndEdges_workspace_filters;
 }
 
 export interface GetTablesAndEdges {
@@ -118,4 +77,5 @@ export interface GetTablesAndEdgesVariables {
   organisationName: string;
   workspaceName: string;
   filters?: WorkspaceTableFilter | null;
+  offset: number;
 }

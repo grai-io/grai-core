@@ -13,6 +13,6 @@ from grai_graph import graph
 #
 # def test_v1_client_monkeypatch():
 #     client = ClientV1(**client_configs)
-#     client.set_authentication_headers(**auth)
+#     client.authenticate(**auth)
 #     G = client.build_graph()
 #     assert isinstance(G.graph, nx.DiGraph)

@@ -42,20 +42,22 @@ def create_edge_with_node_ids(client, workspace, source=None, destination=None, 
     return response
 
 
-# def create_edge_without_node_ids(client, source=None, destination=None, data_source="test", **kwargs):
-#     if source is None:
-#         source = create_node(client).json()
-#     if destination is None:
-#         destination = create_node(client).json()
-#     args = {"data_source": data_source,
-#             "source": {k: source[k] for k in ['name', 'namespace']},
-#             "destination": {k: destination[k] for k in ['name', 'namespace']}}
-#
-#     print(args)
-#     url = reverse("graph:edges-list")
-#     response = client.post(url, args, **kwargs)
-#     print(response.request.d)
-#     return response
+def create_edge_without_node_ids(client, workspace, source=None, destination=None, data_source="test", **kwargs):
+    if source is None:
+        source = create_node(client, workspace).json()
+    if destination is None:
+        destination = create_node(client, workspace).json()
+    args = {
+        "data_source": data_source,
+        "source": {k: source[k] for k in ["name", "namespace"]},
+        "destination": {k: destination[k] for k in ["name", "namespace"]},
+        "namespace": "default",
+        "workspace": str(workspace.id),
+    }
+    url = reverse("graph:edges-list")
+
+    response = client.post(url, data=json.dumps(args), **kwargs, content_type="application/json")
+    return response
 
 
 @pytest.fixture
@@ -182,6 +184,13 @@ def test_delete_node(api_key, create_workspace, api_client):
 def test_post_edge(api_key, create_workspace, api_client):
     api_client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
     response = create_edge_with_node_ids(api_client, create_workspace)
+    assert response.status_code == 201
+
+
+@pytest.mark.django_db
+def test_post_edge_without_ids(api_key, create_workspace, api_client):
+    api_client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
+    response = create_edge_without_node_ids(api_client, create_workspace)
     assert response.status_code == 201
 
 

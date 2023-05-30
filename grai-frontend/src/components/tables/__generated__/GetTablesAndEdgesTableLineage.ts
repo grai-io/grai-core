@@ -46,11 +46,9 @@ export interface GetTablesAndEdgesTableLineage_workspace_tables_data_destination
 export interface GetTablesAndEdgesTableLineage_workspace_tables_data {
   __typename: "Table";
   id: any;
-  namespace: string;
   name: string;
   display_name: string;
   data_source: string;
-  metadata: any;
   columns: GetTablesAndEdgesTableLineage_workspace_tables_data_columns;
   source_tables: GetTablesAndEdgesTableLineage_workspace_tables_data_source_tables;
   destination_tables: GetTablesAndEdgesTableLineage_workspace_tables_data_destination_tables;
@@ -76,7 +74,6 @@ export interface GetTablesAndEdgesTableLineage_workspace_other_edges_data {
   id: any;
   source: GetTablesAndEdgesTableLineage_workspace_other_edges_data_source;
   destination: GetTablesAndEdgesTableLineage_workspace_other_edges_data_destination;
-  metadata: any;
 }
 
 export interface GetTablesAndEdgesTableLineage_workspace_other_edges {

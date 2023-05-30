@@ -1,8 +1,9 @@
-import asyncio
 from typing import Dict, List, Literal, Optional, TypeVar, Union
+from uuid import UUID
 
 from grai_schemas.v1 import EdgeV1, NodeV1
-from grai_schemas.v1.node import NodeIdTypes, NodeNamedID, NodeUuidID
+from grai_schemas.v1.edge import EdgeNamedID, EdgeUuidID
+from grai_schemas.v1.node import NodeNamedID, NodeUuidID
 
 from grai_client.endpoints.client import ClientOptions
 from grai_client.endpoints.rest import get
@@ -15,195 +16,149 @@ T = TypeVar("T", NodeV1, EdgeV1)
 X = TypeVar("X")
 
 
-async def query_obj_from_param_string(
-    client: ClientV1, base_url: str, options=ClientOptions(), **kwargs
-) -> Optional[List[Dict]]:
-    supported_params = ["name", "namespace"]
-    query = "&".join([f"{param}={kwargs[param]}" for param in supported_params if param in kwargs])
-
-    url = f"{base_url}?{query}"
-    resp = await get(client, url, options=options)
-    resp = resp.json()
-
-    num_results = len(resp)
-    if num_results == 0:
-        return None
-    else:
-        return resp
-
-
-async def get_node_from_id(
-    client: ClientV1,
-    grai_type: NodeIdTypes,
-    options: Optional[ClientOptions] = ClientOptions(),
-) -> Optional[Dict]:
-    base_url = client.get_url(grai_type)
-    if grai_type.id is not None:
-        url = f"{base_url}{grai_type.id}/"
-        resp = await get(client, url, options=options)
-        resp = resp.json()
-    else:
-        resp = await query_obj_from_param_string(
-            client, base_url, options=options, name=grai_type.name, namespace=grai_type.namespace
-        )
-
-        if resp is None:
-            return None
-        elif len(resp) == 1:
-            return resp[0]
-        else:
-            message = (
-                f"Server query for node returned {len(resp)} results but only one was expected. This "
-                f"is a defensive error that should never arise, if you see it please contact the maintainers."
-            )
-            raise Exception(message)
-
-    return resp
+@get.register
+def get_node_by_label_v1(
+    client: ClientV1, grai_type: NodeLabels, options: ClientOptions = ClientOptions()
+) -> List[NodeV1]:
+    url = client.get_url(grai_type)
+    resp = get(client, url, options=options)
+    return [NodeV1.from_spec(obj) for obj in resp.json()]
 
 
 @get.register
-async def get_from_node_id(
-    client: ClientV1, grai_type: NodeIdTypes, options: ClientOptions = ClientOptions()
-) -> Optional[NodeV1]:
-    spec = await get_node_from_id(client, grai_type, options=options)
-    return NodeV1.from_spec(spec) if isinstance(spec, dict) else spec
+def get_node_v1(client: ClientV1, grai_type: NodeV1, options: ClientOptions = ClientOptions()) -> Optional[NodeV1]:
+    return get(client, grai_type.spec, options)
 
 
 @get.register
-async def get_node_v1(
-    client: ClientV1, grai_type: NodeV1, options: ClientOptions = ClientOptions()
-) -> Optional[NodeV1]:
-    spec = await get_node_from_id(client, grai_type.spec, options)
-    return NodeV1.from_spec(spec) if isinstance(spec, dict) else spec
-
-
-async def _get_nodes_by_name(
+def get_nodes_by_uuid_str_id(
     client: ClientV1,
     grai_type: NodeLabels,
-    name: str,
+    node_uuid: Union[str, UUID],
     options: ClientOptions = ClientOptions(),
-) -> Optional[List[NodeV1]]:
-    url = f"{client.get_url(grai_type)}?name={name}"
-    resp = await get(client, url, options=options)
-    resp = resp.json()
-    num_results = len(resp)
-    if num_results == 0:
-        return None
-    else:
-        return [NodeV1.from_spec(obj) for obj in resp]
+) -> NodeV1:
+    if not is_valid_uuid(node_uuid):
+        raise ValueError(f"The provided node id {node_uuid} is not a valid uuid.")
 
+    url = f"{client.get_url(grai_type)}{node_uuid}/"
 
-async def _get_nodes_by_uuid(
-    client: ClientV1,
-    grai_type: NodeLabels,
-    name: str,
-    options: ClientOptions = ClientOptions(),
-) -> Optional[NodeV1]:
-    url = f"{client.get_url(grai_type)}{name}/"
-
-    resp = await get(client, url, options=options)
+    resp = get(client, url, options=options)
     resp = resp.json()
     return NodeV1.from_spec(resp)
 
 
 @get.register
-async def get_nodes_by_str(
-    client: ClientV1,
-    grai_type: NodeLabels,
-    name: str,
-    options: ClientOptions = ClientOptions(),
-) -> Optional[Union[List[NodeV1], NodeV1]]:
-    if is_valid_uuid(name):
-        return await _get_nodes_by_uuid(client, grai_type, name, options=options)
-    else:
-        return await _get_nodes_by_name(client, grai_type, name, options=options)
-
-
-@get.register
-async def get_nodes_by_namespace(
-    client: ClientV1,
-    grai_type: NodeLabels,
-    name: Literal["*"],
-    namespace: str,
-    options: ClientOptions = ClientOptions(),
-) -> Optional[List[NodeV1]]:
-    base_url = client.get_url(grai_type)
-    results = await query_obj_from_param_string(client, base_url, options=options, namespace=namespace)
-    if results is None:
-        return results
-
-    return [NodeV1.from_spec(result) for result in results]
-
-
-@get.register
-async def get_nodes_by_name_and_namespace(
-    client: ClientV1,
-    grai_type: NodeLabels,
-    name: str,
-    namespace: str,
-    options: ClientOptions = ClientOptions(),
+def get_from_node_uuid_id(
+    client: ClientV1, grai_type: NodeUuidID, options: ClientOptions = ClientOptions()
 ) -> Optional[NodeV1]:
-    node_id = NodeNamedID(name=name, namespace=namespace)
-    return await get(client, node_id, options=options)
+    return get(client, "Node", grai_type.id, options=options)
 
 
 @get.register
-async def get_node_by_label_v1(
-    client: ClientV1, grai_type: NodeLabels, options: ClientOptions = ClientOptions()
-) -> List[NodeV1]:
-    url = client.get_url(grai_type)
-    resp = await get(client, url, options=options)
-    resp = resp.json()
-    return [NodeV1.from_spec(obj) for obj in resp]
+def get_from_node_named_id(
+    client: ClientV1, grai_type: NodeNamedID, options: ClientOptions = ClientOptions()
+) -> Optional[NodeV1]:
+    options = options.copy()
+    options.query_args = {**options.query_args, "name": grai_type.name, "namespace": grai_type.namespace}
 
+    result = get(client, "Node", options=options)
 
-@get.register
-async def get_edge_v1(
-    client: ClientV1, grai_type: EdgeV1, options: ClientOptions = ClientOptions()
-) -> Optional[EdgeV1]:
-    base_url = client.get_url(grai_type)
-    if grai_type.spec.id is not None:
-        url = f"{base_url}{grai_type.spec.id}/"
-        resp = await get(client, url, options=options)
-        resp = resp.json()
+    num_results = len(result)
+    if num_results == 0:
+        return None
+    elif num_results == 1:
+        return result[0]
     else:
-        url = f"{base_url}?name={grai_type.spec.name}&namespace={grai_type.spec.namespace}"
-        resp = await get(client, url, options=options)
-        resp = resp.json()
-        if len(resp) == 0:
-            return None
-        resp = resp[0]
+        message = (
+            f"A node query for name={grai_type.name}, namespace={grai_type.namespace} in the "
+            f"workspace={options.query_args.get('workspace', '<unknown workspace>')} returned more than one result. "
+            f"This is a defensive error which should not be triggered. If you encounter it "
+            "please open an issue at www.github.com/grai-io/grai-core/issues"
+        )
+        raise Exception(message)
 
-    nodes = await asyncio.gather(get(client, "node", resp["source"]), get(client, "node", resp["destination"]))
+
+# ----- Edges ----- #
+
+
+def finalize_edge(client: ClientV1, resp: Dict, options: ClientOptions = ClientOptions()) -> EdgeV1:
+    nodes = [get(client, "node", resp["source"]), get(client, "node", resp["destination"])]
     resp["source"] = nodes[0].spec
     resp["destination"] = nodes[1].spec
     return EdgeV1.from_spec(resp)
 
 
 @get.register
-async def get_edge_by_label_v1(
+def get_edge_by_label_v1(
     client: ClientV1, grai_type: EdgeLabels, options: ClientOptions = ClientOptions()
 ) -> List[EdgeV1]:
     url = client.get_url(grai_type)
-    resp = await get(client, url, options=options)
-    resp = resp.json()
-
-    groups = [asyncio.gather(get(client, "node", r["source"]), get(client, "node", r["destination"])) for r in resp]
-    nodes_groups = await asyncio.gather(*groups)
-    for r, node in zip(resp, nodes_groups):
-        r["source"] = node[0].spec
-        r["destination"] = node[1].spec
-
-    return [EdgeV1.from_spec(obj) for obj in resp]
+    resp = get(client, url, options=options)
+    return [finalize_edge(client, edge) for edge in resp.json()]
 
 
 @get.register
-async def get_all_workspaces(
+def get_edge_by_uuid_str_id(
+    client: ClientV1,
+    grai_type: EdgeLabels,
+    edge_uuid: Union[str, UUID],
+    options: ClientOptions = ClientOptions(),
+) -> EdgeV1:
+    if not is_valid_uuid(edge_uuid):
+        raise ValueError(f"The provided node id {edge_uuid} is not a valid uuid.")
+
+    url = f"{client.get_url(grai_type)}{edge_uuid}/"
+
+    resp = get(client, url, options=options)
+    return finalize_edge(client, resp.json(), options)
+
+
+@get.register
+def get_edge_v1(client: ClientV1, grai_type: EdgeV1, options: ClientOptions = ClientOptions()) -> Optional[EdgeV1]:
+    return get(client, grai_type.spec, options)
+
+
+@get.register
+def get_from_edge_uuid_id(
+    client: ClientV1, grai_type: EdgeUuidID, options: ClientOptions = ClientOptions()
+) -> Optional[EdgeV1]:
+    return get(client, "Edge", grai_type.id, options=options)
+
+
+@get.register
+def get_from_edge_named_id(
+    client: ClientV1, grai_type: EdgeNamedID, options: ClientOptions = ClientOptions()
+) -> Optional[EdgeV1]:
+    options = options.copy()
+    options.query_args = {**options.query_args, "name": grai_type.name, "namespace": grai_type.namespace}
+
+    resp = get(client, "Edge", options=options)
+
+    num_results = len(resp)
+    if num_results == 0:
+        return None
+    elif num_results == 1:
+        return finalize_edge(client, resp[0])
+    else:
+        message = (
+            f"An edge query for name={grai_type.name}, namespace={grai_type.namespace} in the "
+            f"workspace={options.query_args.get('workspace', '<unknown workspace>')} returned more than one result. "
+            f"This is a defensive error which should not be triggered. If you encounter it "
+            "please open an issue at www.github.com/grai-io/grai-core/issues"
+        )
+        raise Exception(message)
+
+
+# ----- Workspaces ------ #
+
+
+@get.register
+def get_all_workspaces(
     client: ClientV1,
     grai_type: WorkspaceLabels,
     options: ClientOptions = ClientOptions(),
 ) -> Optional[List[Workspace]]:
-    resp = await get(client, client.get_url(grai_type), options=options)
+    resp = get(client, client.get_url(grai_type), options=options)
     resp = resp.json()
 
     if len(resp) == 0:
@@ -213,7 +168,7 @@ async def get_all_workspaces(
 
 
 @get.register
-async def get_workspace_by_name_v1(
+def get_workspace_by_name_v1(
     client: ClientV1,
     grai_type: WorkspaceLabels,
     name: str,
@@ -226,7 +181,7 @@ async def get_workspace_by_name_v1(
         url = f"{client.get_url(grai_type)}?ref={name}"
     else:
         url = f"{client.get_url(grai_type)}?name={name}"
-    resp = await get(client, url, options=options)
+    resp = get(client, url, options=options)
     resp = resp.json()
 
     num_resp = len(resp)
@@ -239,5 +194,5 @@ async def get_workspace_by_name_v1(
             f"We were unable to identify a unique workspace matching `{name}` because more than one result was "
             f"returned. This may be the result of belonging to multiple organizations with identical workspace "
             f"names. You can narrow your query by instead providing a workspace ref composed of  "
-            "{org-name}/{workspace-name}.",
+            "{org-name}/{workspace-name} or the UUID of the desired workspace.",
         )

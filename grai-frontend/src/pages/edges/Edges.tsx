@@ -10,10 +10,15 @@ import GraphError from "components/utils/GraphError"
 import { GetEdges, GetEdgesVariables } from "./__generated__/GetEdges"
 
 export const GET_EDGES = gql`
-  query GetEdges($organisationName: String!, $workspaceName: String!) {
+  query GetEdges(
+    $organisationName: String!
+    $workspaceName: String!
+    $offset: Int
+    $search: String
+  ) {
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
-      edges {
+      edges(pagination: { limit: 20, offset: $offset }, search: $search) {
         data {
           id
           namespace
@@ -36,6 +41,7 @@ export const GET_EDGES = gql`
           }
         }
         meta {
+          filtered
           total
         }
       }
@@ -46,6 +52,7 @@ export const GET_EDGES = gql`
 const Edges: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
   const [search, setSearch] = useState<string>()
+  const [page, setPage] = useState<number>(0)
 
   const { loading, error, data, refetch } = useQuery<
     GetEdges,
@@ -54,6 +61,12 @@ const Edges: React.FC = () => {
     variables: {
       organisationName,
       workspaceName,
+      offset: page * 20,
+      search,
+    },
+    context: {
+      debounceKey: "edges",
+      debounceTimeout: 1000,
     },
   })
 
@@ -62,12 +75,6 @@ const Edges: React.FC = () => {
   const edges = data?.workspace?.edges.data ?? []
 
   const handleRefresh = () => refetch()
-
-  const filteredEdges = search
-    ? edges.filter(edge =>
-        edge.name.toLowerCase().includes(search.toLowerCase())
-      )
-    : edges
 
   return (
     <PageLayout>
@@ -79,9 +86,11 @@ const Edges: React.FC = () => {
           onRefresh={handleRefresh}
         />
         <EdgesTable
-          edges={filteredEdges}
+          edges={edges}
           loading={loading}
-          total={data?.workspace.edges.meta.total ?? 0}
+          total={data?.workspace.edges.meta.filtered ?? 0}
+          page={page}
+          onPageChange={setPage}
         />
       </PageContent>
     </PageLayout>

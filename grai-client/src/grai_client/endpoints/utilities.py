@@ -4,7 +4,7 @@ import pathlib
 import sys
 import urllib
 import uuid
-from typing import Any, Dict, TypeVar, Union
+from typing import Any, Dict, Literal, Optional, TypeVar, Union
 from uuid import UUID
 
 import orjson

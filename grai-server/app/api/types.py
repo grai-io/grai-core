@@ -427,8 +427,18 @@ class Workspace:
     def edges(
         self,
         pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+        search: Optional[str] = strawberry.UNSET,
     ) -> Pagination["Edge"]:
         queryset = EdgeModel.objects.filter(workspace=self)
+
+        if search:
+            queryset = queryset.filter(
+                Q(id__icontains=search)
+                | Q(name__icontains=search)
+                | Q(destination__name__icontains=search)
+                | Q(source__name__icontains=search)
+                | Q(data_source__icontains=search)
+            )
 
         return Pagination[Edge](queryset=queryset, pagination=pagination)
 
@@ -495,8 +505,12 @@ class Workspace:
         self,
         filters: Optional[WorkspaceTableFilter] = strawberry.UNSET,
         pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+        search: Optional[str] = strawberry.UNSET,
     ) -> Pagination[Table]:
         queryset = NodeModel.objects.filter(workspace=self, metadata__grai__node_type="Table")
+
+        if search:
+            queryset = queryset.filter(name__icontains=search)
 
         if filters and filters.filter:
             filter = await FilterModel.objects.aget(id=filters.filter)
@@ -504,6 +518,8 @@ class Workspace:
             filteredQueryset = await apply_table_filter(queryset, filter)
 
             return Pagination[Table](queryset=queryset, filteredQueryset=filteredQueryset, pagination=pagination)
+
+        print(queryset.query)
 
         return Pagination[Table](queryset=queryset, pagination=pagination)
 
@@ -517,9 +533,11 @@ class Workspace:
         self,
         pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
     ) -> Pagination[Edge]:
-        queryset = EdgeModel.objects.filter(workspace=self).exclude(
-            metadata__has_key="grai.edge_type", metadata__grai__edge_type="TableToColumn"
+        queryset = EdgeModel.objects.filter(workspace=self).filter(
+            metadata__grai__edge_type__in=["TableToTable", "ColumnToColumn"]
         )
+
+        print(queryset.query)
 
         return Pagination[Edge](queryset=queryset, pagination=pagination)
 
