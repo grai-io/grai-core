@@ -657,3 +657,21 @@ class TestEventsTests:
         run = Run.objects.create(connection=connection, workspace=test_workspace, action=Run.EVENTS)
 
         process_run(str(run.id))
+
+
+@pytest.mark.django_db
+class TestEventsAllTests:
+    def test_dbt_cloud(self, test_workspace, test_dbt_cloud_connector, mocker):
+        mock = mocker.patch("grai_source_dbt_cloud.base.get_events")
+        mock.return_value = [Event(reference="1234", date=date.today(), metadata={}, status="success", nodes=[])]
+
+        connection = Connection.objects.create(
+            name="C2",
+            connector=test_dbt_cloud_connector,
+            workspace=test_workspace,
+            metadata={},
+            secrets={"api_key": "abc1234"},
+        )
+        run = Run.objects.create(connection=connection, workspace=test_workspace, action=Run.EVENTS_ALL)
+
+        process_run(str(run.id))

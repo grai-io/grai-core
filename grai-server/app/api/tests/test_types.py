@@ -1971,6 +1971,61 @@ async def test_connection_events(test_context):
 
 
 @pytest.mark.django_db
+async def test_node_events(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    node = await Node.objects.acreate(workspace=workspace, name=str(uuid.uuid4()))
+
+    connector = await Connector.objects.acreate(name=str(uuid.uuid4()))
+    connection = await Connection.objects.acreate(
+        workspace=workspace,
+        connector=connector,
+        namespace="default",
+        name=uuid.uuid4(),
+        metadata={},
+        secrets={},
+    )
+
+    event = await Event.objects.acreate(
+        workspace=workspace,
+        reference="test-123",
+        date=date.today(),
+        connection=connection,
+    )
+
+    await event.nodes.aadd(node)
+
+    query = """
+        query Workspace($workspaceId: ID!, $nodeId: ID!) {
+          workspace(id: $workspaceId) {
+            id
+            node(id: $nodeId) {
+                id
+                events {
+                    data {
+                        id
+                    }
+                }
+            }
+          }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "nodeId": str(node.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["node"]["events"]["data"][0]["id"] == str(event.id)
+
+
+@pytest.mark.django_db
 async def test_alerts(test_context):
     context, organisation, workspace, user, membership = test_context
 
