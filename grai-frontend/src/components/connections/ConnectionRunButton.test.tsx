@@ -1,8 +1,8 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { act, render, screen, waitFor } from "testing"
-import ConnectionsMenu from "./ConnectionsMenu"
 import ConnectionRunButton from "./ConnectionRunButton"
+import ConnectionsMenu from "./ConnectionsMenu"
 
 const connection = {
   id: "1",
