@@ -2,7 +2,6 @@ import json
 import uuid
 
 from django.db import models
-from django_multitenant.fields import TenantForeignKey
 from django_multitenant.models import TenantModel
 
 
@@ -151,7 +150,7 @@ class Run(TenantModel):
     tenant_id = "workspace_id"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    connection = TenantForeignKey(
+    connection = models.ForeignKey(
         "Connection",
         related_name="runs",
         on_delete=models.CASCADE,
