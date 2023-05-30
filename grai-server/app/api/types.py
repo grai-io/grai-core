@@ -4,8 +4,6 @@ from enum import Enum
 from typing import List, Optional
 from xml.dom import NodeFilter
 
-from lineage.graph_cache import GraphCache
-
 import strawberry
 import strawberry_django
 from django.conf import settings
@@ -27,6 +25,8 @@ from installations.models import Commit as CommitModel
 from installations.models import PullRequest as PullRequestModel
 from installations.models import Repository as RepositoryModel
 from lineage.filter import apply_table_filter, get_tags
+from lineage.graph_cache import GraphCache
+from lineage.graph_types import GraphTable
 from lineage.models import Edge as EdgeModel
 from lineage.models import Filter as FilterModel
 from lineage.models import Node as NodeModel
@@ -38,8 +38,6 @@ from workspaces.models import WorkspaceAPIKey as WorkspaceAPIKeyModel
 from workspaces.types import Organisation
 
 from .pagination import DataWrapper, Pagination
-
-from lineage.graph_types import GraphTable
 
 
 @strawberry.enum

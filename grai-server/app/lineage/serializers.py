@@ -1,12 +1,12 @@
+import json
 import uuid
+from typing import Optional
 
-from django.db.models import fields
+from django.db.models import Q, fields
+from grai_schemas.v1.node import NodeNamedID
 
 from rest_framework import serializers
-from grai_schemas.v1.node import NodeNamedID
-import json
-from typing import Optional
-from django.db.models import Q
+
 from .models import Edge, Node
 
 

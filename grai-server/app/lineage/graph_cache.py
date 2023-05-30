@@ -1,10 +1,12 @@
 from typing import List
-from .graph_types import GraphColumn, GraphTable
+
 import redis
-from redis import Redis
 from django.conf import settings
+from redis import Redis
 
 from workspaces.models import Workspace
+
+from .graph_types import GraphColumn, GraphTable
 
 
 class GraphCache:
@@ -188,12 +190,17 @@ class GraphCache:
                     columns=columns,
                     sources=[],
                     destinations=table.get("destinations", []),
+                    table_destinations=[],
+                    table_sources=[],
                 )
             )
 
         return tables
 
     def get_filtered_graph_result(self, filter):
+        if len(filter.metadata) == 0:
+            return self.get_graph_result()
+
         match = []
         where = []
 

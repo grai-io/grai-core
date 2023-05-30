@@ -41,6 +41,13 @@ def test_node_created(create_workspace):
 
 
 @pytest.mark.django_db
+def test_node_bulk_update(create_workspace):
+    node = Node.objects.create(namespace="temp", name="a", data_source="test", workspace=create_workspace)
+
+    Node.objects.bulk_update([node], ["name"])
+
+
+@pytest.mark.django_db
 def test_table_table_id(create_workspace):
     metadata = {
         "grai": {
