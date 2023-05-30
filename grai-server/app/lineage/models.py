@@ -2,7 +2,6 @@ import uuid
 
 from django.db import models
 from django.db.models import F, Q
-from django_multitenant.fields import TenantForeignKey
 from django_multitenant.models import TenantModel
 
 from .graph_cache import GraphCache
@@ -93,8 +92,8 @@ class Edge(TenantModel):
     display_name = models.CharField(max_length=255)
 
     data_source = models.CharField(max_length=255)
-    source = TenantForeignKey("Node", related_name="source_edges", on_delete=models.PROTECT)
-    destination = TenantForeignKey("Node", related_name="destination_edges", on_delete=models.PROTECT)
+    source = models.ForeignKey("Node", related_name="source_edges", on_delete=models.PROTECT)
+    destination = models.ForeignKey("Node", related_name="destination_edges", on_delete=models.PROTECT)
     metadata = models.JSONField(default=dict)
     is_active = models.BooleanField(default=True)
 
@@ -218,3 +217,33 @@ class Event(TenantModel):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class Source(TenantModel):
+    tenant_id = "workspace_id"
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=255)
+
+    workspace = models.ForeignKey(
+        "workspaces.Workspace",
+        related_name="sources",
+        on_delete=models.CASCADE,
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    nodes = models.ManyToManyField(Node)
+    # edges = models.ManyToManyField(Edge)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["workspace", "name"],
+                name="Source name uniqueness",
+            ),
+        ]
+        indexes = [
+            models.Index(fields=["workspace", "name"]),
+        ]
