@@ -4,8 +4,6 @@ from enum import Enum
 from typing import List, Optional
 from xml.dom import NodeFilter
 
-from lineage.types import EdgeFilter, EdgeOrder
-
 import strawberry
 import strawberry_django
 from django.conf import settings
@@ -31,7 +29,7 @@ from lineage.models import Edge as EdgeModel
 from lineage.models import Event as EventModel
 from lineage.models import Filter as FilterModel
 from lineage.models import Node as NodeModel
-from lineage.types import Filter, NodeFilter, NodeOrder
+from lineage.types import EdgeFilter, EdgeOrder, Filter, NodeFilter, NodeOrder
 from users.types import User, UserFilter
 from workspaces.models import Membership as MembershipModel
 from workspaces.models import Workspace as WorkspaceModel
