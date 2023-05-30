@@ -1,8 +1,8 @@
 from typing import Any, Dict, List, Literal, Sequence, Type, Union
 
-from grai_client.schemas.schema import Schema
 from grai_schemas import config as base_config
 from grai_schemas.generics import DefaultValue
+from grai_schemas.v1 import EdgeV1, NodeV1
 from grai_schemas.v1.metadata.edges import EdgeTypeLabels, TableToColumnMetadata
 from grai_schemas.v1.metadata.nodes import ColumnMetadata, NodeTypeLabels, TableMetadata
 from multimethod import multimethod
@@ -102,7 +102,7 @@ def adapt_column_to_client(current: Union[Table, Column], version: Literal["v1"]
         "data_source": config.integration_name,
         "metadata": build_metadata(current, version),
     }
-    return Schema.to_model(spec_dict, version=version, typing_type="Node")
+    return NodeV1.from_spec(spec_dict)
 
 
 def make_name(node1: ID, node2: ID) -> str:
@@ -127,7 +127,7 @@ def adapt_column_to_client(current: Edge, version: Literal["v1"] = "v1"):
         },
         "metadata": build_metadata(current, version),
     }
-    return Schema.to_model(spec_dict, version=version, typing_type="Node")
+    return EdgeV1.from_spec(spec_dict)
 
 
 @adapt_to_client.register

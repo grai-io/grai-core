@@ -2,5 +2,5 @@
   "client": "Client Library",
   "cli": "CLI",
   "github-actions": "GitHub Actions",
-  "github-actions-server": "GitHub Actions Server"
+  "github-actions-server": "GitHub Actions Server",
 }

@@ -216,6 +216,45 @@ class SourceDestinationDict(TypedDict):
 NamespaceTypes = Union[Dict[str, Union[str, SourceDestinationDict]], str]
 
 
+def build_namespace_map(
+    connectors: Dict, namespace_map: Union[str, Optional[NamespaceTypes]], default_namespace: Optional[str]
+) -> Dict[str, NamespaceIdentifier]:
+    if namespace_map is None and default_namespace is None:
+        message = (
+            f"The FivetranGraiMapper requires a not null value for `default_namespace` and/or `namespaces. "
+            f"These values are used to identify which Fivetran connection id's belong to which associated "
+            f"Grai namespace. `default_namespace` will map a single namespace to ALL connection id's."
+            "This behavior can be overridden by `namespaces` which maps {connection_id -> "
+            "namespace} or {connection_id -> {source: namespace, destination: namespace}}"
+        )
+        raise ValueError(message)
+    elif isinstance(namespace_map, str):
+        namespace_map = json.loads(namespace_map)
+
+    if namespace_map is None:
+        namespace_map = {}
+    else:
+        message = (
+            "The namespaces object should be a dictionary whose id's are Fivetran connector id's and whose values "
+            "identify the Grai namespace associated with either the source or destination of the connector. "
+            "The values can either be provided as a dictionary with the keys 'source' and 'destination' or ",
+            "as strings identifying the Grai namespace you'd like to associate with both the source "
+            "and destination.",
+        )
+        assert all(isinstance(v, (dict, str)) for v in namespace_map.values()), message
+        assert all("source" in v and "destination" in v for v in namespace_map.values() if isinstance(v, dict)), message
+
+    if default_namespace is not None:
+        namespace_map = namespace_map.copy()  # avoid modifying the users original argument
+        for k in connectors.keys():
+            namespace_map.setdefault(k, default_namespace)
+
+    return {
+        k: NamespaceIdentifier(source=v, destination=v) if isinstance(v, str) else NamespaceIdentifier(**v)
+        for k, v in namespace_map.items()
+    }
+
+
 class FivetranConnector(FivetranAPI):
     def __init__(
         self,
@@ -232,7 +271,7 @@ class FivetranConnector(FivetranAPI):
         self.default_namespace = default_namespace
 
         self.connectors = {conn.id: conn for conn in self.get_connectors() if conn.id is not None}
-        self.namespace_map = self._build_namespace_map(namespaces)
+        self.namespace_map = build_namespace_map(self.connectors, namespaces, self.default_namespace)
         if self.default_namespace is None:
             self.connectors = {k: v for k, v in self.connectors.items() if k in self.namespace_map}
 
@@ -257,44 +296,6 @@ class FivetranConnector(FivetranAPI):
         self.schemas.update({item.id: item for seq in schemas for item in seq})
         self.tables.update({item.id: item for seq in tables for item in seq})
         self.columns.update({item.id: item for seq in columns for item in seq})
-
-    def _build_namespace_map(self, namespace_map: Optional[NamespaceTypes]) -> Dict[str, NamespaceIdentifier]:
-        if namespace_map is None and self.default_namespace is None:
-            message = (
-                f"The FivetranGraiMapper requires a not null value for `default_namespace` and/or `namespaces. "
-                f"These values are used to identify which Fivetran connection id's belong to which associated "
-                f"Grai namespace. `default_namespace` will map a single namespace to ALL connection id's."
-                "This behavior can be overridden by `namespaces` which maps {connection_id -> "
-                "namespace} or {connection_id -> {source: namespace, destination: namespace}}"
-            )
-            raise ValueError(message)
-        elif isinstance(namespace_map, str):
-            namespace_map = json.loads(namespace_map)
-
-        if namespace_map is None:
-            namespace_map = {}
-        else:
-            message = (
-                "The namespaces object should be a dictionary whose id's are Fivetran connector id's and whose values "
-                "identify the Grai namespace associated with either the source or destination of the connector. "
-                "The values can either be provided as a dictionary with the keys 'source' and 'destination' or ",
-                "as strings identifying the Grai namespace you'd like to associate with both the source "
-                "and destination.",
-            )
-            assert all(isinstance(v, (dict, str)) for v in namespace_map.values()), message
-            assert all(
-                isinstance(v, SourceDestinationDict) for v in namespace_map.values() if isinstance(v, dict)
-            ), message
-
-        if self.default_namespace is not None:
-            namespace_map = namespace_map.copy()  # avoid modifying the users original argument
-            for k in self.connectors.keys():
-                namespace_map.setdefault(k, self.default_namespace)
-
-        return {
-            k: NamespaceIdentifier(source=v, destination=v) if isinstance(v, str) else NamespaceIdentifier(**v)
-            for k, v in namespace_map.items()
-        }
 
     def get_nodes_and_edges(self) -> Tuple[List[NodeTypes], List[Edge]]:
         # table.parent_id -> schema.id
