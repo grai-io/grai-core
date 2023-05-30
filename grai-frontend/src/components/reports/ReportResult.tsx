@@ -1,8 +1,8 @@
 import React from "react"
 import { Stack, Typography } from "@mui/material"
-import { Error } from "components/graph/Graph"
+import { ResultError } from "components/graph/GraphComponent"
 
-type ReportResultProps = { errors: Error[] | null }
+type ReportResultProps = { errors: ResultError[] | null }
 
 const ReportResult: React.FC<ReportResultProps> = ({ errors }) => {
   const failureCount = errors?.filter(error => !error.test_pass).length ?? 0

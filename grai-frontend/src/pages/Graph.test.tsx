@@ -40,29 +40,13 @@ const tablesMock = {
       organisationName: "default",
       workspaceName: "demo",
       filters: { filter: null },
-      offset: 0,
     },
   },
   result: {
     data: {
       workspace: {
         id: "1",
-        tables: {
-          data: [sourceTable, destinationTable, spareTable],
-          meta: { total: 3 },
-        },
-        other_edges: {
-          data: [
-            {
-              id: "1",
-              is_active: true,
-              data_source: "test",
-              source: sourceTable,
-              destination: destinationTable,
-              metadata: { grai: { constraint_type: "dbt_model" } },
-            },
-          ],
-        },
+        graph: [sourceTable, destinationTable, spareTable],
         filters: {
           data: [
             {
@@ -87,29 +71,13 @@ const tablesMockWithFilter = {
       organisationName: "default",
       workspaceName: "demo",
       filters: { filter: "1" },
-      offset: 0,
     },
   },
   result: {
     data: {
       workspace: {
         id: "1",
-        tables: {
-          data: [sourceTable, destinationTable, spareTable],
-          meta: { total: 3 },
-        },
-        other_edges: {
-          data: [
-            {
-              id: "1",
-              is_active: true,
-              data_source: "test",
-              source: sourceTable,
-              destination: destinationTable,
-              metadata: { grai: { constraint_type: "dbt_model" } },
-            },
-          ],
-        },
+        graph: [sourceTable, destinationTable, spareTable],
         filters: {
           data: [
             {
@@ -124,7 +92,7 @@ const tablesMockWithFilter = {
   },
 }
 
-const mocks = [filtersMock, tablesMock]
+const mocks = [filtersMock, tablesMock, tablesMock]
 
 jest.retryTimes(1)
 
@@ -181,6 +149,7 @@ test("renders empty", async () => {
     path: ":organisationName/:workspaceName/graph",
     route: "/default/demo/graph",
     mocks: [
+      filtersMock,
       {
         request: {
           query: GET_TABLES_AND_EDGES,
@@ -188,17 +157,13 @@ test("renders empty", async () => {
             organisationName: "default",
             workspaceName: "demo",
             filters: { filter: null },
-            offset: 0,
           },
         },
         result: {
           data: {
             workspace: {
               id: "1",
-              tables: { data: [], meta: { total: 0 } },
-              other_edges: {
-                data: [],
-              },
+              graph: [],
               filters: {
                 data: [],
               },
@@ -307,7 +272,6 @@ test("error", async () => {
           organisationName: "",
           workspaceName: "",
           filters: { filter: null },
-          offset: 0,
         },
       },
       result: {
@@ -333,15 +297,13 @@ test("no nodes", async () => {
           organisationName: "",
           workspaceName: "",
           filters: { filter: null },
-          offset: 0,
         },
       },
       result: {
         data: {
           workspace: {
             id: "1",
-            tables: { data: null, meta: { total: 0 } },
-            other_edges: { data: null },
+            graph: [],
             filters: {
               data: [],
             },
@@ -415,9 +377,9 @@ test("filter", async () => {
 
   render(<Graph />, {
     path: ":organisationName/:workspaceName/graph",
-    route: "/default/demo/graph",
-    routes: ["/:organisationName/:workspaceName/filters/create"],
-    mocks: [filtersMock, tablesMock, tablesMockWithFilter],
+    route: "/default/demo/graph?filter=1",
+    routes: ["/:organisationName/:workspaceName/filters"],
+    mocks: [filtersMock, tablesMock, tablesMock, tablesMockWithFilter],
   })
 
   await waitFor(() => {

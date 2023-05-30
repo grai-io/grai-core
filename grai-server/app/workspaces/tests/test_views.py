@@ -8,7 +8,7 @@ from workspaces.models import Membership, Organisation, Workspace, WorkspaceAPIK
 
 @pytest.fixture
 def create_organisation(name: str = None):
-    return Organisation.objects.create(name=uuid.uuid4() if name is None else name)
+    return Organisation.objects.create(name=str(uuid.uuid4()) if name is None else name)
 
 
 @pytest.fixture

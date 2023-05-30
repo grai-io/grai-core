@@ -43,29 +43,29 @@ test("renders queued", async () => {
 })
 
 test("renders success", async () => {
-  const mocks = [
-    {
-      request: {
-        query: GET_RUN,
-        variables: {
-          workspaceId: "1",
-          runId: "1",
-        },
+  const mock = {
+    request: {
+      query: GET_RUN,
+      variables: {
+        workspaceId: "1",
+        runId: "1",
       },
-      result: {
-        data: {
-          workspace: {
+    },
+    result: {
+      data: {
+        workspace: {
+          id: "1",
+          run: {
             id: "1",
-            run: {
-              id: "1",
-              status: "success",
-              metadata: {},
-            },
+            status: "success",
+            metadata: {},
           },
         },
       },
     },
-  ]
+  }
+
+  const mocks = [mock, mock]
 
   render(
     <ValidationRun

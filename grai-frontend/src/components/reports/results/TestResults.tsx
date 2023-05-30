@@ -1,10 +1,10 @@
 import React from "react"
 import { Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material"
-import { Error } from "components/graph/Graph"
+import { ResultError } from "components/graph/GraphComponent"
 import TestResultChip from "./TestResultChip"
 
 type TestResultsProps = {
-  errors: Error[] | null
+  errors: ResultError[] | null
 }
 
 const TestResults: React.FC<TestResultsProps> = ({ errors }) => (

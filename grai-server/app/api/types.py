@@ -25,6 +25,8 @@ from installations.models import Commit as CommitModel
 from installations.models import PullRequest as PullRequestModel
 from installations.models import Repository as RepositoryModel
 from lineage.filter import apply_table_filter, get_tags
+from lineage.graph_cache import GraphCache
+from lineage.graph_types import GraphTable
 from lineage.models import Edge as EdgeModel
 from lineage.models import Event as EventModel
 from lineage.models import Filter as FilterModel
@@ -376,6 +378,14 @@ class Table(Node):
 
 
 @strawberry.input
+class GraphFilter:
+    table_id: Optional[strawberry.ID] = strawberry.UNSET
+    edge_id: Optional[strawberry.ID] = strawberry.UNSET
+    n: Optional[int] = strawberry.UNSET
+    filter: Optional[strawberry.ID] = strawberry.UNSET
+
+
+@strawberry.input
 class WorkspaceRepositoryFilter:
     type: Optional[str] = strawberry.UNSET
     owner: Optional[str] = strawberry.UNSET
@@ -516,8 +526,6 @@ class Workspace:
             filteredQueryset = await apply_table_filter(queryset, filter)
 
             return Pagination[Table](queryset=queryset, filteredQueryset=filteredQueryset, pagination=pagination)
-
-        print(queryset.query)
 
         return Pagination[Table](queryset=queryset, pagination=pagination)
 
@@ -693,6 +701,26 @@ class Workspace:
         data = get_tags(self)
 
         return DataWrapper[str](data=data)
+
+    @gql.django.field
+    async def graph(
+        self,
+        filters: Optional[GraphFilter] = strawberry.UNSET,
+    ) -> List[GraphTable]:
+        graph = GraphCache(workspace=self)
+
+        if filters and filters.table_id:
+            return graph.get_table_filtered_graph_result(filters.table_id, filters.n)
+
+        if filters and filters.edge_id:
+            return graph.get_edge_filtered_graph_result(filters.edge_id, filters.n)
+
+        if filters and filters.filter:
+            filter = await FilterModel.objects.aget(id=filters.filter)
+
+            return graph.get_filtered_graph_result(filter)
+
+        return graph.get_graph_result()
 
 
 @gql.django.filters.filter(MembershipModel, lookups=True)

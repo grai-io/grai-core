@@ -11,7 +11,7 @@ from workspaces.models import Organisation, Workspace
 
 @pytest.fixture
 def create_organisation(name: str = None):
-    return Organisation.objects.create(name=uuid.uuid4() if name is None else name)
+    return Organisation.objects.create(name=str(uuid.uuid4()) if name is None else name)
 
 
 @pytest.fixture
@@ -38,6 +38,13 @@ def test_node_created(create_workspace):
     assert node.search_type() == "Node"
     assert node.search_enabled() == True
     assert node.table_id() is None
+
+
+@pytest.mark.django_db
+def test_node_bulk_update(create_workspace):
+    node = Node.objects.create(namespace="temp", name="a", data_source="test", workspace=create_workspace)
+
+    Node.objects.bulk_update([node], ["name"])
 
 
 @pytest.mark.django_db

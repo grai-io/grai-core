@@ -14,7 +14,7 @@ from workspaces.models import Membership, Organisation, Workspace
 
 @pytest.fixture
 def create_organisation(name: str = None):
-    return Organisation.objects.create(name=uuid.uuid4() if name is None else name)
+    return Organisation.objects.create(name=str(uuid.uuid4()) if name is None else name)
 
 
 @pytest.fixture
@@ -60,7 +60,7 @@ def auto_login_user(client, create_user, test_password, create_workspace):
 
 @pytest.fixture
 def test_connector():
-    return Connector.objects.create(name=uuid.uuid4(), slug=uuid.uuid4())
+    return Connector.objects.create(name=str(uuid.uuid4()), slug=str(uuid.uuid4()))
 
 
 @pytest.fixture
@@ -118,7 +118,7 @@ def test_commit_with_pr(create_workspace, test_repository, test_branch, test_pul
 def test_create_run_connection(auto_login_user, test_connector):
     client, user, workspace = auto_login_user()
 
-    connection = Connection.objects.create(workspace=workspace, connector=test_connector, name=uuid.uuid4())
+    connection = Connection.objects.create(workspace=workspace, connector=test_connector, name=str(uuid.uuid4()))
 
     url = "/api/v1/external-runs/"
     response = client.post(
