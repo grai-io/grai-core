@@ -1,12 +1,12 @@
 /* istanbul ignore file */
 import React, { ReactElement, ReactNode } from "react"
-import { InMemoryCache } from "@apollo/client"
 import { MockedResponse } from "@apollo/client/testing"
 import { ThemeProvider } from "@mui/material"
 import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
 import { render, RenderOptions } from "@testing-library/react"
 import casual from "casual"
+import { cache } from "client"
 import { ConfirmProvider } from "material-ui-confirm"
 import { SnackbarProvider } from "notistack"
 import { HelmetProvider } from "react-helmet-async"
@@ -71,8 +71,6 @@ type CustomRenderOptions = RenderOptions & {
   guestRoute?: boolean
   mocks?: readonly MockedResponse<Record<string, any>>[]
 }
-
-export const cache = new InMemoryCache()
 
 const customRender = (ui: ReactElement, options?: CustomRenderOptions) => {
   if (options?.withRouter || options?.path || options?.route || options?.routes)

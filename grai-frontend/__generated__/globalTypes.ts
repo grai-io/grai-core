@@ -15,18 +15,11 @@ export enum RunAction {
   VALIDATE = "VALIDATE",
 }
 
-export interface WorkspaceTableFilter {
-  table_id?: string | null
-  edge_id?: string | null
-  n?: number | null
-  filter?: string | null
-}
-
 export interface GraphFilter {
-  table_id?: string | null
-  edge_id?: string | null
-  n?: number | null
-  filter?: string | null
+  table_id?: string | null;
+  edge_id?: string | null;
+  n?: number | null;
+  filter?: string | null;
 }
 
 //==============================================================

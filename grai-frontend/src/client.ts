@@ -12,6 +12,8 @@ declare global {
 
 const DEFAULT_DEBOUNCE_TIMEOUT = 100
 
+export const cache = new InMemoryCache()
+
 const make_client = (logoutUser: () => void) => {
   const baseURL =
     window._env_?.REACT_APP_SERVER_URL ??
@@ -30,7 +32,7 @@ const make_client = (logoutUser: () => void) => {
   })
 
   return new ApolloClient({
-    cache: new InMemoryCache(),
+    cache,
     link: from([
       new DebounceLink(DEFAULT_DEBOUNCE_TIMEOUT),
       errorLink,
