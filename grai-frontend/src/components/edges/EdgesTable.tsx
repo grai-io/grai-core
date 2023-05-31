@@ -17,7 +17,7 @@ interface Edge {
   name: string
   display_name: string
   namespace: string
-  data_source: string
+  // data_source: string
   is_active: boolean
 }
 
@@ -60,7 +60,7 @@ const EdgesTable: React.FC<EdgesTableProps> = ({
           >
             <TableCell>{edge.display_name ?? edge.name}</TableCell>
             <TableCell>{edge.namespace}</TableCell>
-            <TableCell>{edge.data_source}</TableCell>
+            {/* <TableCell>{edge.data_source}</TableCell> */}
             <TableCell>{edge.is_active ? "Yes" : "No"}</TableCell>
           </TableRow>
         ))}

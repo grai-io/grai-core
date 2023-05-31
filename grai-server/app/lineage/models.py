@@ -18,8 +18,6 @@ class Node(TenantModel):
     namespace = models.CharField(max_length=255, default="default")
     name = models.CharField(max_length=255)
     display_name = models.CharField(max_length=255)
-
-    data_source = models.CharField(max_length=255)
     metadata = models.JSONField(default=dict)
     is_active = models.BooleanField(default=True)
 
@@ -77,7 +75,11 @@ class Node(TenantModel):
         ]
         indexes = [
             models.Index(fields=["workspace", "namespace", "name"]),
-            models.Index("workspace", models.F("metadata__grai__node_type"), name="lineage_node_type"),
+            models.Index(
+                "workspace",
+                models.F("metadata__grai__node_type"),
+                name="lineage_node_type",
+            ),
         ]
 
 
@@ -90,12 +92,11 @@ class Edge(TenantModel):
     name = models.CharField(max_length=255)
     namespace = models.CharField(max_length=255, default="default")
     display_name = models.CharField(max_length=255)
-
-    data_source = models.CharField(max_length=255)
-    source = models.ForeignKey("Node", related_name="source_edges", on_delete=models.PROTECT)
-    destination = models.ForeignKey("Node", related_name="destination_edges", on_delete=models.PROTECT)
     metadata = models.JSONField(default=dict)
     is_active = models.BooleanField(default=True)
+
+    source = models.ForeignKey("Node", related_name="source_edges", on_delete=models.PROTECT)
+    destination = models.ForeignKey("Node", related_name="destination_edges", on_delete=models.PROTECT)
 
     workspace = models.ForeignKey(
         "workspaces.Workspace",
@@ -148,9 +149,21 @@ class Edge(TenantModel):
             models.Index(fields=["workspace", "is_active"]),
             models.Index(fields=["workspace", "namespace", "name"]),
             models.Index(fields=["workspace", "source", "destination"]),
-            models.Index("workspace", models.F("metadata__grai__edge_type"), name="lineage_edge_type"),
-            models.Index(models.F("metadata__grai__edge_type"), "source", name="lineage_edge_type_source"),
-            models.Index(models.F("metadata__grai__edge_type"), "destination", name="lineage_edge_type_destination"),
+            models.Index(
+                "workspace",
+                models.F("metadata__grai__edge_type"),
+                name="lineage_edge_type",
+            ),
+            models.Index(
+                models.F("metadata__grai__edge_type"),
+                "source",
+                name="lineage_edge_type_source",
+            ),
+            models.Index(
+                models.F("metadata__grai__edge_type"),
+                "destination",
+                name="lineage_edge_type_destination",
+            ),
         ]
 
 
@@ -235,7 +248,7 @@ class Source(TenantModel):
     updated_at = models.DateTimeField(auto_now=True)
 
     nodes = models.ManyToManyField(Node)
-    # edges = models.ManyToManyField(Edge)
+    edges = models.ManyToManyField(Edge, related_name="data_sources")
 
     class Meta:
         constraints = [

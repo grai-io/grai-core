@@ -14,7 +14,6 @@ export interface GetTables_workspace_tables_data {
   name: string;
   display_name: string;
   is_active: boolean;
-  data_source: string;
   metadata: any;
 }
 

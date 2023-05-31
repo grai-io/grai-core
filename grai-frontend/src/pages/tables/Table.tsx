@@ -29,7 +29,6 @@ export const GET_TABLE = gql`
         name
         display_name
         is_active
-        data_source
         metadata
         columns {
           data {
@@ -135,11 +134,11 @@ const Table: React.FC = () => {
       noWrapper: true,
     },
     {
-      label: 'Events',
-      value: 'events',
+      label: "Events",
+      value: "events",
       component: <TableEvents table={table} />,
       noWrapper: true,
-    }
+    },
   ]
 
   return (

@@ -13,7 +13,7 @@ export interface TableInterface {
   id: string
   name: string
   namespace: string
-  data_source: string
+  // data_source: string
   display_name: string
   columns: { data: Column[] }
   metadata: any | null

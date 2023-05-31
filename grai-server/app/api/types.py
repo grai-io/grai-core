@@ -73,7 +73,6 @@ class Node:
     namespace: auto
     name: auto
     display_name: auto
-    data_source: auto
     metadata: JSON
     is_active: auto
     source_edges: List["Edge"]
@@ -95,7 +94,6 @@ class Edge:
     namespace: auto
     name: auto
     display_name: auto
-    data_source: auto
     source: Node = gql.django.field()
     destination: Node = gql.django.field()
     metadata: JSON
@@ -499,7 +497,6 @@ class Workspace:
                 | Q(name__icontains=search)
                 | Q(destination__name__icontains=search)
                 | Q(source__name__icontains=search)
-                | Q(data_source__icontains=search)
             )
 
         return Pagination[Edge](queryset=queryset, pagination=pagination)

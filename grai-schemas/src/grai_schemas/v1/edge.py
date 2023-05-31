@@ -20,7 +20,6 @@ EdgeIdTypes = Union[EdgeUuidID, EdgeNamedID]
 
 class BaseSpec(GraiBaseModel):
     display_name: Optional[str]
-    data_source: str
     source: NodeIdTypes
     destination: NodeIdTypes
     is_active: Optional[bool] = True

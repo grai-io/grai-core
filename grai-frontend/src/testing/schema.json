@@ -3679,22 +3679,6 @@
             "deprecationReason": null
           },
           {
-            "name": "data_source",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "metadata",
             "description": null,
             "args": [],
@@ -3896,16 +3880,6 @@
           },
           {
             "name": "display_name",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "StrFilterLookup",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "data_source",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -4410,16 +4384,6 @@
             "defaultValue": null
           },
           {
-            "name": "data_source",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "StrFilterLookup",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
             "name": "is_active",
             "description": null,
             "type": {
@@ -4718,16 +4682,6 @@
             "defaultValue": null
           },
           {
-            "name": "data_source",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "Ordering",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
             "name": "is_active",
             "description": null,
             "type": {
@@ -4840,22 +4794,6 @@
           },
           {
             "name": "display_name",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "data_source",
             "description": null,
             "args": [],
             "type": {
@@ -6346,22 +6284,6 @@
             "deprecationReason": null
           },
           {
-            "name": "data_source",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "metadata",
             "description": null,
             "args": [],
@@ -6663,22 +6585,6 @@
           },
           {
             "name": "display_name",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "data_source",
             "description": null,
             "args": [],
             "type": {

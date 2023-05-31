@@ -1654,19 +1654,22 @@ vis = ["matplotlib (>=3.5.2,<4.0.0)", "pydot (>=1.4.2,<2.0.0)"]
 
 [[package]]
 name = "grai-schemas"
-version = "0.1.12"
+version = "0.1.13a2"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_schemas-0.1.12-py3-none-any.whl", hash = "sha256:29dffc3b9400dae369918c0c8574fcbb535ed1333cf410748611d5c6e954a6bf"},
-    {file = "grai_schemas-0.1.12.tar.gz", hash = "sha256:b8b0354fdbe9bad02c32ee2cdef363fe89622f295b1f972749c2048167ec8ec6"},
+    {file = "grai_schemas-0.1.13a2-py3-none-any.whl", hash = "sha256:06bafee76c7064ceed55a09f38b3e28741fc65dbe8a8dbb63dcb545ca05aac70"},
 ]
 
 [package.dependencies]
 multimethod = ">=1.9.1,<2.0.0"
 pydantic = ">=1.10.4,<2.0.0"
+
+[package.source]
+type = "file"
+url = "../../grai-schemas/dist/grai_schemas-0.1.13a2-py3-none-any.whl"
 
 [[package]]
 name = "grai-source-bigquery"
@@ -4300,4 +4303,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "d7cd3e571525ca197d9e24e4dd5d23dd5b06c62ed68c8dce52aee67633da3a19"
+content-hash = "e8baaaeb9dae8621134e26aa5aacd8284b23cbdbfa4c80ab48cfd844e81756ac"

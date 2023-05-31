@@ -20,7 +20,6 @@ NodeIdTypes = Union[NodeUuidID, NodeNamedID]
 
 class BaseSpec(GraiBaseModel):
     is_active: Optional[bool] = True
-    data_source: str
     display_name: Optional[str]
     workspace: Optional[UUID]
     metadata: MetadataV1 = MetadataV1(grai=GenericNodeMetadataV1(node_type="Node"))

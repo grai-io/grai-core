@@ -25,7 +25,6 @@ class SourceEdgeInline(EdgeInline):
     fields = [
         "name",
         "namespace",
-        "data_source",
         "destination",
         "metadata",
         "is_active",
@@ -33,7 +32,6 @@ class SourceEdgeInline(EdgeInline):
     readonly_fields = [
         "name",
         "namespace",
-        "data_source",
         "destination",
         "metadata",
         "is_active",
@@ -44,11 +42,10 @@ class DestinationEdgeInline(EdgeInline):
     fk_name = "destination"
     verbose_name = "Destination Edge"
     verbose_name_plural = "Destination Edges"
-    fields = ["name", "namespace", "data_source", "source", "metadata", "is_active"]
+    fields = ["name", "namespace", "source", "metadata", "is_active"]
     readonly_fields = [
         "name",
         "namespace",
-        "data_source",
         "source",
         "metadata",
         "is_active",
@@ -64,20 +61,18 @@ class NodeAdmin(admin.ModelAdmin):
         "id",
         "namespace",
         "final_name",
-        "data_source",
         "workspace",
         "is_active",
         "created_at",
     )
 
-    search_fields = ["id", "namespace", "name", "display_name", "data_source"]
+    search_fields = ["id", "namespace", "name", "display_name"]
 
     list_filter = (
         "workspace",
         ("created_at", DateFieldListFilter),
         "namespace",
         "is_active",
-        "data_source",
     )
 
     formfield_overrides = {JSONField: {"widget": PrettyJSONWidget}}
@@ -97,20 +92,18 @@ class EdgeAdmin(admin.ModelAdmin):
         "id",
         "namespace",
         "final_name",
-        "data_source",
         "workspace",
         "is_active",
         "created_at",
     )
 
-    search_fields = ["id", "namespace", "name", "display_name", "data_source"]
+    search_fields = ["id", "namespace", "name", "display_name"]
 
     list_filter = (
         "workspace",
         ("created_at", DateFieldListFilter),
         "namespace",
         "is_active",
-        "data_source",
         ("source", admin.RelatedOnlyFieldListFilter),
         ("destination", admin.RelatedOnlyFieldListFilter),
     )

@@ -98,7 +98,6 @@ export interface GetTable_workspace_table {
   name: string;
   display_name: string;
   is_active: boolean;
-  data_source: string;
   metadata: any;
   columns: GetTable_workspace_table_columns;
   source_tables: GetTable_workspace_table_source_tables;

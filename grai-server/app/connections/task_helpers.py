@@ -14,7 +14,7 @@ from pydantic import BaseModel
 
 from lineage.models import Edge as EdgeModel
 from lineage.models import Node as NodeModel
-from lineage.models import Source as SourceModel
+from lineage.models import Source
 from workspaces.models import Workspace
 
 T = TypeVar("T")
@@ -153,7 +153,7 @@ def get_edge_nodes_from_database(items, workspace):
 #     Model.objects.bulk_create(new_items)
 
 
-def process_updates(workspace, source: SourceModel, Model, items, active_items=None):
+def process_updates(workspace, source: Source, Model, items, active_items=None):
     if not items:
         return
 
@@ -213,22 +213,27 @@ def process_updates(workspace, source: SourceModel, Model, items, active_items=N
 
 def update(
     workspace: Workspace,
-    source: SourceModel,
+    source: Source,
     items: List[T],
     active_items: Optional[List[T]] = None,
 ):
     if not items:
         return
     Model = NodeModel if items[0].type == "Node" else EdgeModel
-    new_items, deactivated_items, updated_items = process_updates(workspace, source, Model, items, active_items)
-    # breakpoint()
-    # Model.objects.bulk_update(
-    #     [schemaToModel(item) for item in deactivated_items], ["is_active"]
-    # )
-    Model.objects.bulk_update(updated_items, ["metadata"])
-    Model.objects.bulk_create(new_items)
 
-    source.nodes.add(*new_items) if items[0].type == "Node" else None
+    new_items, deactivated_items, updated_items = process_updates(workspace, source, Model, items, active_items)
+
+    Model.objects.bulk_create(new_items)
+    Model.objects.bulk_update(updated_items, ["metadata"])
+
+    relationship = source.nodes if items[0].type == "Node" else source.edges
+
+    relationship.add(*new_items, *updated_items)
+
+    # if len(deactivated_items) > 0:
+    relationship.remove(*deactivated_items)
+    NodeModel.objects.filter(workspace=workspace, source=None).delete()
+    EdgeModel.objects.filter(workspace=workspace, data_sources=None).delete()
 
 
 def modelToSchema(model, Schema, type):

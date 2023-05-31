@@ -17,7 +17,6 @@ class NodeFilter:
     namespace: auto
     name: auto
     display_name: auto
-    data_source: auto
     is_active: auto
     created_at: auto
     updated_at: auto
@@ -31,7 +30,6 @@ class NodeOrder:
     namespace: auto
     name: auto
     display_name: auto
-    data_source: auto
     is_active: auto
     created_at: auto
     updated_at: auto
@@ -43,7 +41,6 @@ class EdgeFilter:
     namespace: auto
     name: auto
     display_name: auto
-    data_source: auto
     is_active: auto
     source: NodeFilter
     destination: NodeFilter
@@ -57,7 +54,6 @@ class EdgeOrder:
     namespace: auto
     name: auto
     display_name: auto
-    data_source: auto
     is_active: auto
     created_at: auto
     updated_at: auto
