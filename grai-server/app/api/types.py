@@ -106,12 +106,6 @@ class Edge:
     updated_at: auto
 
 
-@gql.django.type(SourceModel, pagination=True)
-class Source:
-    id: auto
-    name: auto
-
-
 @gql.django.type(RunModel, order="RunOrder", pagination=True)
 class Run:
     id: auto
@@ -178,7 +172,7 @@ class ConnectionFilter:
     id: auto
     namespace: auto
     name: auto
-    source: Source
+    source: "Source"
     credential: Credential
     connector: ConnectorFilter
     is_active: auto
@@ -203,6 +197,7 @@ class Connection:
     connector: Connector
     namespace: auto
     name: auto
+    metadata: JSON
     schedules: Optional[JSON]
     is_active: auto
     temp: auto
@@ -218,7 +213,7 @@ class Connection:
         order: Optional[RunOrder] = strawberry.UNSET,
         pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
     ) -> Pagination[Run]:
-        queryset = RunModel.objects.filter(connection=self)
+        queryset = RunModel.objects.filter(credential__connections=self)
 
         def apply_filters(queryset):
             return apply_run_filters(queryset, filters)
@@ -232,11 +227,13 @@ class Connection:
 
     @gql.django.field
     def last_run(self) -> Optional["Run"]:
-        return RunModel.objects.filter(connection=self.id).order_by("-created_at").first()
+        return RunModel.objects.filter(credential__connections=self.id).order_by("-created_at").first()
 
     @gql.django.field
     def last_successful_run(self) -> Optional["Run"]:
-        return RunModel.objects.filter(connection=self.id, status="success").order_by("-created_at").first()
+        return (
+            RunModel.objects.filter(credential__connections=self.id, status="success").order_by("-created_at").first()
+        )
 
     # Events
     @strawberry.field
@@ -246,6 +243,30 @@ class Connection:
         queryset = EventModel.objects.filter(connection=self)
 
         return Pagination[Event](queryset=queryset)
+
+
+@gql.django.type(SourceModel, pagination=True)
+class Source:
+    id: auto
+    name: auto
+
+    @strawberry.field
+    def nodes(
+        self,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination[Node]:
+        queryset = NodeModel.objects.filter(source=self)
+
+        return Pagination[Node](queryset=queryset, pagination=pagination)
+
+    @strawberry.field
+    def connections(
+        self,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination[Connection]:
+        queryset = ConnectionModel.objects.filter(source=self)
+
+        return Pagination[Connection](queryset=queryset, pagination=pagination)
 
 
 @gql.django.type(NodeModel, order=NodeOrder, filters=NodeFilter, pagination=True)
@@ -706,6 +727,7 @@ class Workspace:
 
         return DataWrapper[str](data=data)
 
+    # Graph
     @gql.django.field
     async def graph(
         self,
@@ -725,6 +747,20 @@ class Workspace:
             return graph.get_filtered_graph_result(filter)
 
         return graph.get_graph_result()
+
+    # Sources
+    @strawberry.field
+    def sources(
+        self,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination[Source]:
+        queryset = SourceModel.objects.filter(workspace=self)
+
+        return Pagination[Source](queryset=queryset, pagination=pagination)
+
+    @gql.django.field
+    def source(self, id: strawberry.ID) -> Source:
+        return SourceModel.objects.get(id=id)
 
 
 @gql.django.filters.filter(MembershipModel, lookups=True)
