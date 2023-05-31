@@ -1,6 +1,5 @@
 /* istanbul ignore file */
 import React, { ReactElement, ReactNode } from "react"
-import { InMemoryCache } from "@apollo/client"
 import { MockedResponse } from "@apollo/client/testing"
 import { ThemeProvider } from "@mui/material"
 import { LocalizationProvider } from "@mui/x-date-pickers"
@@ -16,6 +15,7 @@ import GuestRoute from "components/auth/GuestRoute"
 import WorkspaceProvider from "components/utils/WorkspaceProvider"
 import AuthMock from "./AuthMock"
 import AutoMockedProvider from "./AutoMockedProvider"
+import { cache } from "client"
 
 const mockResolvers = {
   Date: () => "2019-12-31",
@@ -71,8 +71,6 @@ type CustomRenderOptions = RenderOptions & {
   guestRoute?: boolean
   mocks?: readonly MockedResponse<Record<string, any>>[]
 }
-
-export const cache = new InMemoryCache()
 
 const customRender = (ui: ReactElement, options?: CustomRenderOptions) => {
   if (options?.withRouter || options?.path || options?.route || options?.routes)

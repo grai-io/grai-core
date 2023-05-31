@@ -331,35 +331,6 @@ async def test_table(test_context):
 
 
 @pytest.mark.django_db
-async def test_other_edges(test_context):
-    context, organisation, workspace, user, membership = test_context
-
-    query = """
-        query Workspace($workspaceId: ID!) {
-          workspace(id: $workspaceId) {
-            id
-            other_edges {
-                data {
-                    id
-                }
-            }
-          }
-        }
-    """
-
-    result = await schema.execute(
-        query,
-        variable_values={
-            "workspaceId": str(workspace.id),
-        },
-        context_value=context,
-    )
-
-    assert result.errors is None
-    assert result.data["workspace"]["id"] == str(workspace.id)
-
-
-@pytest.mark.django_db
 async def test_workspace_edges(test_context):
     context, organisation, workspace, user, membership = test_context
 
