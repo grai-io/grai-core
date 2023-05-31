@@ -7,8 +7,9 @@ from strawberry.types import Info
 
 from api.common import IsAuthenticated, get_user, get_workspace
 
-from .models import Filter as FilterModel
+from .models import Filter as FilterModel, Source as SourceModel
 from .types import Filter
+from api.types import Source
 
 
 @strawberry.type
@@ -69,3 +70,24 @@ class Mutation:
         filter.id = id
 
         return filter
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def updateSource(
+        self,
+        info: Info,
+        id: strawberry.ID,
+        name: Optional[str] = None,
+    ) -> Source:
+        user = get_user(info)
+
+        try:
+            source = await SourceModel.objects.aget(pk=id, workspace__memberships__user_id=user.id)
+        except SourceModel.DoesNotExist:
+            raise Exception("Can't find source")
+
+        if name is not None:
+            source.name = name
+
+        await sync_to_async(source.save)()
+
+        return source

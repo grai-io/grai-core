@@ -57,6 +57,12 @@ const pages = [
     alt: "Edges",
   },
   {
+    title: "Sources",
+    path: "sources",
+    icon: <Connections />,
+    alt: "Sources",
+  },
+  {
     title: "Connections",
     path: "connections",
     icon: <Connections />,

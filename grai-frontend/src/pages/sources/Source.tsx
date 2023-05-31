@@ -1,0 +1,112 @@
+import React from "react"
+import { gql, useQuery } from "@apollo/client"
+import { MoreHoriz } from "@mui/icons-material"
+import { useParams } from "react-router-dom"
+import NotFound from "pages/NotFound"
+import useWorkspace from "helpers/useWorkspace"
+// import SourceMenu from "components/sources/SourceMenu"
+import Loading from "components/layout/Loading"
+import PageHeader from "components/layout/PageHeader"
+import PageLayout from "components/layout/PageLayout"
+import PageTabs from "components/layout/PageTabs"
+import SourceDetail from "components/sources/SourceDetail"
+import TabState from "components/tabs/TabState"
+import GraphError from "components/utils/GraphError"
+import { GetSource, GetSourceVariables } from "./__generated__/GetSource"
+
+export const GET_SOURCE = gql`
+  query GetSource(
+    $organisationName: String!
+    $workspaceName: String!
+    $sourceId: ID!
+  ) {
+    workspace(organisationName: $organisationName, name: $workspaceName) {
+      id
+      source(id: $sourceId) {
+        id
+        name
+        connections {
+          data {
+            id
+            name
+            connector {
+              id
+              name
+              icon
+            }
+            last_run {
+              id
+              status
+            }
+          }
+        }
+      }
+    }
+  }
+`
+
+const Source: React.FC = () => {
+  const { organisationName, workspaceName } = useWorkspace()
+  const { sourceId } = useParams()
+
+  const { loading, error, data } = useQuery<GetSource, GetSourceVariables>(
+    GET_SOURCE,
+    {
+      variables: {
+        organisationName,
+        workspaceName,
+        sourceId: sourceId ?? "",
+      },
+    }
+  )
+
+  if (error) return <GraphError error={error} />
+  if (loading) return <Loading />
+
+  const workspace = data?.workspace
+  const source = data?.workspace?.source
+
+  if (!workspace || !source) return <NotFound />
+
+  const tabs = [
+    {
+      value: "configuration",
+      label: "Configuration",
+      component: <SourceDetail source={source} workspaceId={workspace.id} />,
+      noWrapper: true,
+    },
+    {
+      value: "tables",
+      label: "Tables",
+      // component: <EditScheduleForm source={source} />,
+      disabled: true,
+    },
+    {
+      value: "lineage",
+      label: "Lineage",
+      // component: <EditScheduleForm source={source} />,
+      disabled: true,
+    },
+  ]
+
+  return (
+    <PageLayout>
+      <TabState tabs={tabs}>
+        <PageHeader
+          title={source.name}
+          buttons={<MoreHoriz />}
+          // buttons={
+          //     // <SourceMenu
+          //     //   source={source}
+          //     //   workspaceId={workspace.id}
+          //     // />
+          // }
+          tabs
+        />
+        <PageTabs />
+      </TabState>
+    </PageLayout>
+  )
+}
+
+export default Source
