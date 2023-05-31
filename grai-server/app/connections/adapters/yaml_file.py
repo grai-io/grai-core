@@ -46,7 +46,8 @@ class YamlFileAdapter(BaseAdapter):
                 values["workspace"] = run.workspace
                 record = Model.objects.create(**values)
 
-            run.source.nodes.add(record) if type == "Node" else None
+            relationship = run.source.nodes if type == "Node" else run.source.edges
+            relationship.add(record)
 
     def get_nodes_and_edges(self):
         runFile = self.run.files.first()

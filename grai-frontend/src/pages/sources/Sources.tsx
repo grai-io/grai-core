@@ -25,6 +25,11 @@ export const GET_SOURCES = gql`
               total
             }
           }
+          edges {
+            meta {
+              total
+            }
+          }
           connections(filters: { temp: false }) {
             data {
               id

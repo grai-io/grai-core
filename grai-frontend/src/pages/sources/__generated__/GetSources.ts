@@ -17,6 +17,16 @@ export interface GetSources_workspace_sources_data_nodes {
   meta: GetSources_workspace_sources_data_nodes_meta;
 }
 
+export interface GetSources_workspace_sources_data_edges_meta {
+  __typename: "PaginationResult";
+  total: number;
+}
+
+export interface GetSources_workspace_sources_data_edges {
+  __typename: "EdgePagination";
+  meta: GetSources_workspace_sources_data_edges_meta;
+}
+
 export interface GetSources_workspace_sources_data_connections_data_connector {
   __typename: "Connector";
   id: any;
@@ -48,6 +58,7 @@ export interface GetSources_workspace_sources_data {
   id: any;
   name: string;
   nodes: GetSources_workspace_sources_data_nodes;
+  edges: GetSources_workspace_sources_data_edges;
   connections: GetSources_workspace_sources_data_connections;
 }
 

@@ -219,21 +219,23 @@ def update(
 ):
     if not items:
         return
-    Model = NodeModel if items[0].type == "Node" else EdgeModel
+
+    type = items[0].type
+
+    Model = NodeModel if type == "Node" else EdgeModel
+    relationship = source.nodes if type == "Node" else source.edges
 
     new_items, deactivated_items, updated_items = process_updates(workspace, source, Model, items, active_items)
 
     Model.objects.bulk_create(new_items)
     Model.objects.bulk_update(updated_items, ["metadata"])
 
-    relationship = source.nodes if items[0].type == "Node" else source.edges
-
     relationship.add(*new_items, *updated_items)
 
-    # if len(deactivated_items) > 0:
-    relationship.remove(*deactivated_items)
-    NodeModel.objects.filter(workspace=workspace, source=None).delete()
-    EdgeModel.objects.filter(workspace=workspace, data_sources=None).delete()
+    if len(deactivated_items) > 0:
+        relationship.remove(*deactivated_items)
+        NodeModel.objects.filter(workspace=workspace, source=None).delete()
+        EdgeModel.objects.filter(workspace=workspace, data_sources=None).delete()
 
 
 def modelToSchema(model, Schema, type):

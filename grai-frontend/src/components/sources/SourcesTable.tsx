@@ -47,6 +47,11 @@ interface Source {
       total: number
     }
   }
+  edges: {
+    meta: {
+      total: number
+    }
+  }
   connections: {
     data: Connection[]
   }
@@ -73,7 +78,9 @@ const SourcesTable: React.FC<SourcesTableProps> = ({
       <TableHead>
         <TableRow>
           <TableCell>Name</TableCell>
-          <TableCell>Nodes</TableCell>
+          <TableCell sx={{ width: 0, textAlign: "right" }}>Nodes</TableCell>
+          <TableCell sx={{ width: 0, textAlign: "right" }}>Edges</TableCell>
+          <TableCell />
           <TableCell>Connections</TableCell>
           <TableCell sx={{ width: 0 }} />
         </TableRow>
@@ -87,7 +94,13 @@ const SourcesTable: React.FC<SourcesTableProps> = ({
             onClick={() => navigate(source.id)}
           >
             <TableCell>{source.name}</TableCell>
-            <TableCell>{source.nodes.meta.total}</TableCell>
+            <TableCell sx={{ textAlign: "right" }}>
+              {source.nodes.meta.total}
+            </TableCell>
+            <TableCell sx={{ textAlign: "right" }}>
+              {source.edges.meta.total}
+            </TableCell>
+            <TableCell />
             <TableCell sx={{ p: 1 }} stopPropagation>
               {source.connections.data.map(connection => (
                 <Card

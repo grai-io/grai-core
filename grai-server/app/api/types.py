@@ -276,6 +276,15 @@ class Source:
 
         return Pagination[Node](queryset=queryset, pagination=pagination)
 
+    @gql.django.field
+    def edges(
+        self,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination[Edge]:
+        queryset = EdgeModel.objects.filter(data_sources=self)
+
+        return Pagination[Edge](queryset=queryset, pagination=pagination)
+
     @strawberry.field
     def connections(
         self,
