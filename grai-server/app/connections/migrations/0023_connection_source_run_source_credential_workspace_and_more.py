@@ -3,7 +3,6 @@
 from django.db import migrations, models
 import django.db.models.deletion
 from lineage.models import Source
-from connections.models import Credential
 
 
 def create_sources(apps, schema_editor):
@@ -19,36 +18,6 @@ def create_sources(apps, schema_editor):
 
         connection.source_id = source.id
         connection.save()
-
-
-def create_credentials(apps, schema_editor):
-    # We can't import the Person model directly as it may be a newer
-    # version than this migration expects. We use the historical version.
-    Connection = apps.get_model("connections", "Connection")
-    for connection in Connection.objects.all():
-        credential = Credential()
-        credential.workspace_id = connection.workspace_id
-        credential.name = connection.name
-        credential.metadata = connection.metadata
-        credential.secrets = connection.secrets
-        credential.save()
-
-        connection.credential_id = credential.id
-        connection.save()
-
-
-def add_credential_to_run(apps, schema_editor):
-    # We can't import the Person model directly as it may be a newer
-    # version than this migration expects. We use the historical version.
-    from connections.models import Run
-
-    Connection = apps.get_model("connections", "Connection")
-
-    for run in Run.objects.all():
-        connection = Connection.objects.get(runs__id=str(run.id))
-
-        run.credential_id = connection.credential_id
-        run.save()
 
 
 def add_source_to_run(apps, schema_editor):
@@ -68,7 +37,5 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunPython(create_sources),
-        migrations.RunPython(create_credentials),
-        migrations.RunPython(add_credential_to_run),
         migrations.RunPython(add_source_to_run),
     ]

@@ -7998,6 +7998,26 @@
                 "defaultValue": null
               },
               {
+                "name": "sourceId",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "sourceName",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
                 "name": "secrets",
                 "description": null,
                 "type": {
@@ -8292,6 +8312,26 @@
                     "name": "Upload",
                     "ofType": null
                   }
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "sourceId",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "sourceName",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
                 },
                 "defaultValue": null
               }

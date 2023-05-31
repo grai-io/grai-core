@@ -14,6 +14,23 @@ from connections.models import Connector as ConnectorModel
 from connections.models import Run as RunModel
 from connections.models import RunFile as RunFileModel
 from connections.tasks import process_run
+from lineage.models import Source as SourceModel
+from workspaces.models import Workspace as WorkspaceModel
+
+
+async def resolve_sourceId(
+    workspace: WorkspaceModel,
+    sourceId: Optional[strawberry.ID],
+    sourceName: Optional[str],
+) -> strawberry.ID:
+    if sourceId:
+        return sourceId
+
+    if sourceName:
+        source, created = await SourceModel.objects.aget_or_create(workspace=workspace, name=sourceName)
+        return source.id
+
+    raise Exception("Must provide either sourceId or sourceName")
 
 
 @strawberry.type
@@ -27,16 +44,20 @@ class Mutation:
         namespace: str,
         name: str,
         metadata: JSON,
+        sourceId: Optional[strawberry.ID] = strawberry.UNSET,
+        sourceName: Optional[str] = strawberry.UNSET,
         secrets: Optional[JSON] = None,
         schedules: Optional[JSON] = None,
         is_active: bool = True,
         temp: bool = False,
     ) -> Connection:
         workspace = await get_workspace(info, workspaceId)
+        sourceId = await resolve_sourceId(workspace, sourceId, sourceName)
 
         connection = await ConnectionModel.objects.acreate(
             workspace=workspace,
             connector_id=connectorId,
+            source_id=sourceId,
             namespace=namespace,
             name=name,
             metadata=metadata,
@@ -140,18 +161,31 @@ class Mutation:
         namespace: str,
         connectorId: strawberry.ID,
         file: Upload,
+        sourceId: Optional[strawberry.ID] = strawberry.UNSET,
+        sourceName: Optional[str] = strawberry.UNSET,
     ) -> Run:
         user = get_user(info)
         workspace = await get_workspace(info, workspaceId)
         connector = await ConnectorModel.objects.aget(pk=connectorId)
+        sourceId = await resolve_sourceId(workspace, sourceId, sourceName)
+
         connection = await ConnectionModel.objects.acreate(
             connector=connector,
             workspace=workspace,
+            source_id=sourceId,
             name=f"{connector.name} {uuid.uuid4()}",
             temp=True,
             namespace=namespace,
+            metadata={},
+            secrets={},
         )
-        run = await RunModel.objects.acreate(workspace=workspace, connection=connection, status="queued", user=user)
+        run = await RunModel.objects.acreate(
+            workspace=workspace,
+            connection=connection,
+            status="queued",
+            user=user,
+            source_id=sourceId,
+        )
         runFile = RunFileModel(run=run)
         runFile.file = file
         await sync_to_async(runFile.save)()

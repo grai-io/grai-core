@@ -50,4 +50,5 @@ export interface UploadConnectorFileVariables {
   connectorId: string;
   namespace: string;
   file: any;
+  sourceName: string;
 }

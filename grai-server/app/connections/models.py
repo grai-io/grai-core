@@ -66,11 +66,8 @@ class Connection(TenantModel):
         related_name="connections",
         on_delete=models.PROTECT,
     )
-    credential = models.ForeignKey(
-        "Credential",
-        related_name="connections",
-        on_delete=models.PROTECT,
-    )
+    metadata = models.JSONField(default=dict)
+    secrets = models.JSONField(default=dict, blank=True, null=True)
     schedules = models.JSONField(default=dict, blank=True, null=True)
     task = models.ForeignKey(
         "django_celery_beat.PeriodicTask",
@@ -139,24 +136,6 @@ class Connection(TenantModel):
             task.delete()
 
 
-class Credential(TenantModel):
-    tenant_id = "workspace_id"
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    type = models.CharField(max_length=255)
-    metadata = models.JSONField(default=dict)
-    secrets = models.JSONField(default=dict, blank=True, null=True)
-
-    workspace = models.ForeignKey(
-        "workspaces.Workspace",
-        related_name="credentials",
-        on_delete=models.CASCADE,
-    )
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-
 class Run(TenantModel):
     TESTS = "tests"
     UPDATE = "update"
@@ -180,8 +159,8 @@ class Run(TenantModel):
         related_name="runs",
         on_delete=models.PROTECT,
     )
-    credential = models.ForeignKey(
-        "Credential",
+    connection = models.ForeignKey(
+        "Connection",
         related_name="runs",
         on_delete=models.PROTECT,
         blank=True,

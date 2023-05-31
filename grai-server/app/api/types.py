@@ -37,7 +37,6 @@ from workspaces.models import Workspace as WorkspaceModel
 from workspaces.models import WorkspaceAPIKey as WorkspaceAPIKeyModel
 from workspaces.types import Organisation
 from lineage.models import Source as SourceModel
-from connections.models import Credential as CredentialModel
 
 from .pagination import DataWrapper, Pagination
 
@@ -133,7 +132,10 @@ def apply_run_filters(queryset: QuerySet, filters: Optional[WorkspaceRunFilter] 
         q_filter = Q()
 
         if filters.owner:
-            q_filter &= Q(commit__repository__owner=filters.owner, commit__repository__repo=filters.repo)
+            q_filter &= Q(
+                commit__repository__owner=filters.owner,
+                commit__repository__repo=filters.repo,
+            )
 
         if filters.branch:
             q_filter &= Q(commit__branch__reference=filters.branch)
@@ -157,22 +159,12 @@ class RunOrder:
     created_at: auto
 
 
-@gql.django.type(CredentialModel, pagination=True)
-class Credential:
-    id: auto
-    type: auto
-    metadata: JSON
-    created_at: auto
-    updated_at: auto
-
-
 @gql.django.filters.filter(ConnectionModel, lookups=True)
 class ConnectionFilter:
     id: auto
     namespace: auto
     name: auto
     source: "Source"
-    credential: Credential
     connector: ConnectorFilter
     is_active: auto
     created_at: auto
@@ -212,12 +204,17 @@ class Connection:
         order: Optional[RunOrder] = strawberry.UNSET,
         pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
     ) -> Pagination[Run]:
-        queryset = RunModel.objects.filter(credential__connections=self)
+        queryset = RunModel.objects.filter(connection=self)
 
         def apply_filters(queryset):
             return apply_run_filters(queryset, filters)
 
-        return Pagination[Run](queryset=queryset, apply_filters=apply_filters, order=order, pagination=pagination)
+        return Pagination[Run](
+            queryset=queryset,
+            apply_filters=apply_filters,
+            order=order,
+            pagination=pagination,
+        )
 
     # run: Run = strawberry.django.field
     @gql.django.field
@@ -226,13 +223,11 @@ class Connection:
 
     @gql.django.field
     def last_run(self) -> Optional["Run"]:
-        return RunModel.objects.filter(credential__connections=self.id).order_by("-created_at").first()
+        return RunModel.objects.filter(connection=self.id).order_by("-created_at").first()
 
     @gql.django.field
     def last_successful_run(self) -> Optional["Run"]:
-        return (
-            RunModel.objects.filter(credential__connections=self.id, status="success").order_by("-created_at").first()
-        )
+        return RunModel.objects.filter(connection=self.id, status="success").order_by("-created_at").first()
 
     # Events
     @strawberry.field
@@ -529,7 +524,12 @@ class Workspace:
         def apply_filters(queryset):
             return apply_run_filters(queryset, filters)
 
-        return Pagination[Run](queryset=queryset, apply_filters=apply_filters, order=order, pagination=pagination)
+        return Pagination[Run](
+            queryset=queryset,
+            apply_filters=apply_filters,
+            order=order,
+            pagination=pagination,
+        )
 
     @gql.django.field
     def run(self, id: strawberry.ID) -> "Run":
@@ -573,7 +573,11 @@ class Workspace:
 
             filteredQueryset = await apply_table_filter(queryset, filter)
 
-            return Pagination[Table](queryset=queryset, filteredQueryset=filteredQueryset, pagination=pagination)
+            return Pagination[Table](
+                queryset=queryset,
+                filteredQueryset=filteredQueryset,
+                pagination=pagination,
+            )
 
         return Pagination[Table](queryset=queryset, pagination=pagination)
 
@@ -637,7 +641,11 @@ class Workspace:
         return Pagination["Branch"](queryset=queryset, pagination=pagination)
 
     @gql.django.field
-    def branch(self, id: Optional[strawberry.ID] = None, reference: Optional[str] = strawberry.UNSET) -> "Branch":
+    def branch(
+        self,
+        id: Optional[strawberry.ID] = None,
+        reference: Optional[str] = strawberry.UNSET,
+    ) -> "Branch":
         return (
             BranchModel.objects.get(id=id)
             if id is not None
@@ -656,7 +664,9 @@ class Workspace:
 
     @gql.django.field
     def pull_request(
-        self, id: Optional[strawberry.ID] = None, reference: Optional[str] = strawberry.UNSET
+        self,
+        id: Optional[strawberry.ID] = None,
+        reference: Optional[str] = strawberry.UNSET,
     ) -> "PullRequest":
         return (
             PullRequestModel.objects.get(id=id)
@@ -675,7 +685,11 @@ class Workspace:
         return Pagination[Commit](queryset=queryset, pagination=pagination)
 
     @gql.django.field
-    def commit(self, id: Optional[strawberry.ID] = None, reference: Optional[str] = strawberry.UNSET) -> "Commit":
+    def commit(
+        self,
+        id: Optional[strawberry.ID] = None,
+        reference: Optional[str] = strawberry.UNSET,
+    ) -> "Commit":
         return (
             CommitModel.objects.get(id=id)
             if id is not None
@@ -710,7 +724,11 @@ class Workspace:
 
         return client.generate_secured_api_key(
             api_key,
-            {"filters": f"workspace_id:{str(self.id)}", "validUntil": valid_until, "restrictIndices": "main"},
+            {
+                "filters": f"workspace_id:{str(self.id)}",
+                "validUntil": valid_until,
+                "restrictIndices": "main",
+            },
         )
 
     # Filters
@@ -865,7 +883,9 @@ class Repository:
 
     @gql.django.field
     def pull_request(
-        self, id: Optional[strawberry.ID] = None, reference: Optional[str] = strawberry.UNSET
+        self,
+        id: Optional[strawberry.ID] = None,
+        reference: Optional[str] = strawberry.UNSET,
     ) -> "PullRequest":
         return (
             PullRequestModel.objects.get(id=id)
@@ -884,7 +904,11 @@ class Repository:
         return Pagination["Branch"](queryset=queryset, pagination=pagination)
 
     @gql.django.field
-    def branch(self, id: Optional[strawberry.ID] = None, reference: Optional[str] = strawberry.UNSET) -> "Branch":
+    def branch(
+        self,
+        id: Optional[strawberry.ID] = None,
+        reference: Optional[str] = strawberry.UNSET,
+    ) -> "Branch":
         return (
             BranchModel.objects.get(id=id)
             if id is not None
@@ -902,7 +926,11 @@ class Repository:
         return Pagination[Commit](queryset=queryset, pagination=pagination)
 
     @gql.django.field
-    def commit(self, id: Optional[strawberry.ID] = None, reference: Optional[str] = strawberry.UNSET) -> "Commit":
+    def commit(
+        self,
+        id: Optional[strawberry.ID] = None,
+        reference: Optional[str] = strawberry.UNSET,
+    ) -> "Commit":
         return (
             CommitModel.objects.get(id=id)
             if id is not None
@@ -987,7 +1015,12 @@ class Commit:
         def apply_filters(queryset):
             return apply_run_filters(queryset, filters)
 
-        return Pagination[Run](queryset=queryset, apply_filters=apply_filters, order=order, pagination=pagination)
+        return Pagination[Run](
+            queryset=queryset,
+            apply_filters=apply_filters,
+            order=order,
+            pagination=pagination,
+        )
 
     @gql.django.field
     def last_run(self) -> Optional["Run"]:
