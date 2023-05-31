@@ -1,8 +1,11 @@
-FROM node:18-alpine AS builder
+FROM node:18-slim AS builder
 
 LABEL org.opencontainers.image.source="https://github.com/grai-io/grai-core"
 
 ENV NODE_ENV production
+
+# Install python
+RUN apt-get update || : && apt-get install python3 pkg-config libpixman-1-dev libcairo2-dev libpango1.0-dev libgif-dev make g++ -y
 
 # Add a work directory
 WORKDIR /app
