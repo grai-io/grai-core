@@ -4,7 +4,7 @@ from django.db.models import JSONField
 
 from common.admin.fields.json_widget import PrettyJSONWidget
 
-from .models import Edge, Event, Filter, Node
+from .models import Edge, Event, Filter, Node, Source
 
 
 class EdgeInline(admin.TabularInline):
@@ -22,8 +22,22 @@ class SourceEdgeInline(EdgeInline):
     fk_name = "source"
     verbose_name = "Source Edge"
     verbose_name_plural = "Source Edges"
-    fields = ["name", "namespace", "data_source", "destination", "metadata", "is_active"]
-    readonly_fields = ["name", "namespace", "data_source", "destination", "metadata", "is_active"]
+    fields = [
+        "name",
+        "namespace",
+        "data_source",
+        "destination",
+        "metadata",
+        "is_active",
+    ]
+    readonly_fields = [
+        "name",
+        "namespace",
+        "data_source",
+        "destination",
+        "metadata",
+        "is_active",
+    ]
 
 
 class DestinationEdgeInline(EdgeInline):
@@ -31,7 +45,14 @@ class DestinationEdgeInline(EdgeInline):
     verbose_name = "Destination Edge"
     verbose_name_plural = "Destination Edges"
     fields = ["name", "namespace", "data_source", "source", "metadata", "is_active"]
-    readonly_fields = ["name", "namespace", "data_source", "source", "metadata", "is_active"]
+    readonly_fields = [
+        "name",
+        "namespace",
+        "data_source",
+        "source",
+        "metadata",
+        "is_active",
+    ]
 
 
 class NodeAdmin(admin.ModelAdmin):
@@ -118,3 +139,4 @@ admin.site.register(Node, NodeAdmin)
 admin.site.register(Edge, EdgeAdmin)
 admin.site.register(Filter, FilterAdmin)
 admin.site.register(Event)
+admin.site.register(Source)

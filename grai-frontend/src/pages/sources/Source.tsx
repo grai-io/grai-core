@@ -26,7 +26,7 @@ export const GET_SOURCE = gql`
       source(id: $sourceId) {
         id
         name
-        connections {
+        connections(filters: { temp: false }) {
           data {
             id
             name

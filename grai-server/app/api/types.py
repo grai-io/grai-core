@@ -186,6 +186,7 @@ class ConnectionOrder:
 class Connection:
     id: auto
     connector: Connector
+    source: "Source"
     namespace: auto
     name: auto
     metadata: JSON
@@ -244,6 +245,11 @@ class SourceNodeFilter:
     node_type: Optional[str] = strawberry.UNSET
 
 
+@strawberry.input
+class SourceConnectionFilter:
+    temp: Optional[bool] = strawberry.UNSET
+
+
 @gql.django.type(SourceModel, pagination=True)
 class Source:
     id: auto
@@ -259,16 +265,21 @@ class Source:
 
         if filters:
             if filters.node_type:
-                queryset.filter(metadata__grai__node_type=filters.node_type)
+                queryset = queryset.filter(metadata__grai__node_type=filters.node_type)
 
         return Pagination[Node](queryset=queryset, pagination=pagination)
 
     @strawberry.field
     def connections(
         self,
+        filters: Optional[SourceConnectionFilter] = strawberry.UNSET,
         pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
     ) -> Pagination[Connection]:
         queryset = ConnectionModel.objects.filter(source=self)
+
+        if filters:
+            if filters.temp is not strawberry.UNSET:
+                queryset = queryset.filter(temp=filters.temp)
 
         return Pagination[Connection](queryset=queryset, pagination=pagination)
 

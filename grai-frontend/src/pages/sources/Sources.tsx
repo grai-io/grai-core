@@ -25,7 +25,7 @@ export const GET_SOURCES = gql`
               total
             }
           }
-          connections {
+          connections(filters: { temp: false }) {
             data {
               id
               name

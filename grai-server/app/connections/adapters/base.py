@@ -32,8 +32,8 @@ class BaseAdapter(ABC):
 
         nodes, edges = self.get_nodes_and_edges()
 
-        update(self.run.workspace, nodes)
-        update(self.run.workspace, edges)
+        update(self.run.workspace, self.run.source, nodes)
+        update(self.run.workspace, self.run.source, edges)
 
     def run_tests(self, run: Run):
         self.run = run
@@ -88,7 +88,9 @@ class BaseAdapter(ABC):
 
                 if event.nodes:
                     nodes = Node.objects.filter(
-                        workspace=run.workspace, namespace=run.connection.namespace, name__in=event.nodes
+                        workspace=run.workspace,
+                        namespace=run.connection.namespace,
+                        name__in=event.nodes,
                     )
 
                     if len(nodes) != len(event.nodes):

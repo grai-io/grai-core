@@ -13,10 +13,17 @@ export interface UpdateConnectionInitial_updateConnection_connector {
   name: string;
 }
 
+export interface UpdateConnectionInitial_updateConnection_source {
+  __typename: "Source";
+  id: any;
+  name: string;
+}
+
 export interface UpdateConnectionInitial_updateConnection {
   __typename: "Connection";
   id: any;
   connector: UpdateConnectionInitial_updateConnection_connector;
+  source: UpdateConnectionInitial_updateConnection_source;
   namespace: string;
   name: string;
   metadata: any;
@@ -30,6 +37,7 @@ export interface UpdateConnectionInitial {
 
 export interface UpdateConnectionInitialVariables {
   connectionId: string;
+  sourceName: string;
   namespace: string;
   name: string;
   metadata: any;

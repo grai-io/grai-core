@@ -71,6 +71,7 @@ test("submit update", async () => {
         name: "connection 1",
         metadata: {},
         secrets: {},
+        sourceName: "default",
       }}
       setConnection={() => {}}
     />,

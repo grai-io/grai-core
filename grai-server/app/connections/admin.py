@@ -85,6 +85,7 @@ class RunAdmin(admin.ModelAdmin):
     list_display = (
         "id",
         "connection",
+        "source",
         "status",
         "workspace",
         "started_at",

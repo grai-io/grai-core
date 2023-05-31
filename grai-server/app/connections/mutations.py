@@ -74,6 +74,8 @@ class Mutation:
         self,
         info: Info,
         id: strawberry.ID,
+        sourceId: Optional[strawberry.ID] = strawberry.UNSET,
+        sourceName: Optional[str] = strawberry.UNSET,
         namespace: Optional[str] = None,
         name: Optional[str] = None,
         metadata: Optional[JSON] = None,
@@ -88,6 +90,13 @@ class Mutation:
             connection = await ConnectionModel.objects.aget(pk=id, workspace__memberships__user_id=user.id)
         except ConnectionModel.DoesNotExist:
             raise Exception("Can't find connection")
+
+        if sourceId:
+            connection.source_id = sourceId
+        elif sourceName:
+            workspace = await get_workspace(info, connection.workspace_id)
+            sourceId = await resolve_sourceId(workspace, sourceId, sourceName)
+            connection.source_id = sourceId
 
         if namespace is not None:
             connection.namespace = namespace
@@ -129,6 +138,7 @@ class Mutation:
         run = await sync_to_async(RunModel.objects.create)(
             connection=connection,
             workspace_id=connection.workspace_id,
+            source_id=connection.source_id,
             user=user,
             status="queued",
             action=action if isinstance(action, str) else action.value,
