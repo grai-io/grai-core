@@ -6108,6 +6108,16 @@
             "description": null,
             "args": [
               {
+                "name": "filters",
+                "description": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "SourceNodeFilter",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
                 "name": "pagination",
                 "description": null,
                 "type": {
@@ -6133,6 +6143,27 @@
         ],
         "inputFields": null,
         "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "SourceNodeFilter",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "node_type",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
         "enumValues": null,
         "possibleTypes": null
       },

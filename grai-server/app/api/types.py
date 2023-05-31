@@ -2,7 +2,6 @@ import datetime
 import time
 from enum import Enum
 from typing import List, Optional
-from xml.dom import NodeFilter
 
 import strawberry
 import strawberry_django
@@ -245,6 +244,11 @@ class Connection:
         return Pagination[Event](queryset=queryset)
 
 
+@strawberry.input
+class SourceNodeFilter:
+    node_type: Optional[str] = strawberry.UNSET
+
+
 @gql.django.type(SourceModel, pagination=True)
 class Source:
     id: auto
@@ -253,9 +257,14 @@ class Source:
     @strawberry.field
     def nodes(
         self,
+        filters: Optional[SourceNodeFilter] = strawberry.UNSET,
         pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
     ) -> Pagination[Node]:
         queryset = NodeModel.objects.filter(source=self)
+
+        if filters:
+            if filters.node_type:
+                queryset.filter(metadata__grai__node_type=filters.node_type)
 
         return Pagination[Node](queryset=queryset, pagination=pagination)
 

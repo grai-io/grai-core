@@ -10,6 +10,7 @@ import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
 import PageTabs from "components/layout/PageTabs"
 import SourceDetail from "components/sources/SourceDetail"
+import SourceTables from "components/sources/SourceTables"
 import TabState from "components/tabs/TabState"
 import GraphError from "components/utils/GraphError"
 import { GetSource, GetSourceVariables } from "./__generated__/GetSource"
@@ -78,8 +79,7 @@ const Source: React.FC = () => {
     {
       value: "tables",
       label: "Tables",
-      // component: <EditScheduleForm source={source} />,
-      disabled: true,
+      component: <SourceTables source={source} workspaceId={workspace.id} />,
     },
     {
       value: "lineage",
