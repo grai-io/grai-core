@@ -6,6 +6,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
 import { render, RenderOptions } from "@testing-library/react"
 import casual from "casual"
+import { cache } from "client"
 import { ConfirmProvider } from "material-ui-confirm"
 import { SnackbarProvider } from "notistack"
 import { HelmetProvider } from "react-helmet-async"
@@ -15,7 +16,6 @@ import GuestRoute from "components/auth/GuestRoute"
 import WorkspaceProvider from "components/utils/WorkspaceProvider"
 import AuthMock from "./AuthMock"
 import AutoMockedProvider from "./AutoMockedProvider"
-import { cache } from "client"
 
 const mockResolvers = {
   Date: () => "2019-12-31",
