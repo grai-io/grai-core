@@ -143,6 +143,7 @@ class Credential(TenantModel):
     tenant_id = "workspace_id"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    type = models.CharField(max_length=255)
     metadata = models.JSONField(default=dict)
     secrets = models.JSONField(default=dict, blank=True, null=True)
 

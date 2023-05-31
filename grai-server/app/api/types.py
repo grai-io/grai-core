@@ -37,6 +37,8 @@ from workspaces.models import Membership as MembershipModel
 from workspaces.models import Workspace as WorkspaceModel
 from workspaces.models import WorkspaceAPIKey as WorkspaceAPIKeyModel
 from workspaces.types import Organisation
+from lineage.models import Source as SourceModel
+from connections.models import Credential as CredentialModel
 
 from .pagination import DataWrapper, Pagination
 
@@ -104,6 +106,12 @@ class Edge:
     updated_at: auto
 
 
+@gql.django.type(SourceModel, pagination=True)
+class Source:
+    id: auto
+    name: auto
+
+
 @gql.django.type(RunModel, order="RunOrder", pagination=True)
 class Run:
     id: auto
@@ -156,11 +164,22 @@ class RunOrder:
     created_at: auto
 
 
+@gql.django.type(CredentialModel, pagination=True)
+class Credential:
+    id: auto
+    type: auto
+    metadata: JSON
+    created_at: auto
+    updated_at: auto
+
+
 @gql.django.filters.filter(ConnectionModel, lookups=True)
 class ConnectionFilter:
     id: auto
     namespace: auto
     name: auto
+    source: Source
+    credential: Credential
     connector: ConnectorFilter
     is_active: auto
     created_at: auto
@@ -184,7 +203,6 @@ class Connection:
     connector: Connector
     namespace: auto
     name: auto
-    metadata: JSON
     schedules: Optional[JSON]
     is_active: auto
     temp: auto
