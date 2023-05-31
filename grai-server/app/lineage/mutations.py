@@ -72,6 +72,23 @@ class Mutation:
         return filter
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def createSource(
+        self,
+        info: Info,
+        workspaceId: strawberry.ID,
+        name: str,
+    ) -> Source:
+        user = get_user(info)
+        workspace = await get_workspace(info, workspaceId)
+
+        source = await SourceModel.objects.acreate(
+            workspace=workspace,
+            name=name,
+        )
+
+        return source
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def updateSource(
         self,
         info: Info,

@@ -3,7 +3,7 @@ import { gql, useMutation } from "@apollo/client"
 import { Grid } from "@mui/material"
 import { useSnackbar } from "notistack"
 import {
-  UpdateSource,
+  UpdateSource as UpdateSourceType,
   UpdateSourceVariables,
 } from "./__generated__/UpdateSource"
 import SourceForm, { Values } from "./SourceForm"
@@ -22,16 +22,14 @@ export interface Source {
   name: string
 }
 
-type SourceConfigurationProps = {
+type UpdateSourceProps = {
   source: Source
 }
 
-const SourceConfiguration: React.FC<SourceConfigurationProps> = ({
-  source,
-}) => {
+const UpdateSource: React.FC<UpdateSourceProps> = ({ source }) => {
   const { enqueueSnackbar } = useSnackbar()
   const [updateSource, { loading, error }] = useMutation<
-    UpdateSource,
+    UpdateSourceType,
     UpdateSourceVariables
   >(UPDATE_SOURCE)
 
@@ -57,4 +55,4 @@ const SourceConfiguration: React.FC<SourceConfigurationProps> = ({
   )
 }
 
-export default SourceConfiguration
+export default UpdateSource

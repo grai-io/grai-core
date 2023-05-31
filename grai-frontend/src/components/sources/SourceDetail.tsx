@@ -4,14 +4,12 @@ import { Box, Button, Typography } from "@mui/material"
 import { Link } from "react-router-dom"
 import useWorkspace from "helpers/useWorkspace"
 import PageContent from "components/layout/PageContent"
-import SourceConfiguration, {
-  Source as SourceConfigurationType,
-} from "./SourceConfiguration"
 import SourceConnectionsTable, {
   Source as SourceConnectionsTableType,
 } from "./SourceConnectionsTable"
+import UpdateSource, { Source as UpdateSourceType } from "./UpdateSource"
 
-interface Source extends SourceConfigurationType, SourceConnectionsTableType {}
+interface Source extends UpdateSourceType, SourceConnectionsTableType {}
 
 type SourceDetailProps = {
   source: Source
@@ -24,7 +22,7 @@ const SourceDetail: React.FC<SourceDetailProps> = ({ source, workspaceId }) => {
   return (
     <>
       <PageContent>
-        <SourceConfiguration source={source} />
+        <UpdateSource source={source} />
       </PageContent>
       <PageContent>
         <Box sx={{ display: "flex" }}>
