@@ -87,6 +87,15 @@ class Node:
 
         return Pagination[Event](queryset=queryset)
 
+    # Sources
+    @gql.django.field
+    def sources(
+        self,
+    ) -> Pagination["Source"]:
+        queryset = SourceModel.objects.filter(nodes=self)
+
+        return Pagination[Source](queryset=queryset)
+
 
 @gql.django.type(EdgeModel, order=EdgeOrder, filters=EdgeFilter, pagination=True)
 class Edge:
@@ -248,12 +257,12 @@ class SourceConnectionFilter:
     temp: Optional[bool] = strawberry.UNSET
 
 
-@gql.django.type(SourceModel, pagination=True)
+@gql.django.type(SourceModel)
 class Source:
     id: auto
     name: auto
 
-    @strawberry.field
+    @gql.django.field
     def nodes(
         self,
         filters: Optional[SourceNodeFilter] = strawberry.UNSET,

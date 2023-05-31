@@ -29,6 +29,19 @@ class GraphCache:
         self.manager.delete(f"lineage:{str(self.workspace.id)}")
 
     def cache_node(self, node):
+        def get_data_source() -> str:
+            source = node.source_set.first()
+
+            if not source:
+                raise Exception("No source found for node")
+
+            connection = source.connections.first()
+
+            if connection:
+                return f"grai-source-{connection.connector.slug}"
+
+            return source.name
+
         node_type = node.metadata.get("grai", {}).get("node_type")
 
         if node_type == "Table":
@@ -43,7 +56,7 @@ class GraphCache:
                     "name": node.name,
                     "display_name": node.display_name,
                     "namespace": node.namespace,
-                    "data_source": "",
+                    "data_source": get_data_source(),
                     "tags": node.metadata.get("grai", {}).get("tags"),
                 },
             )

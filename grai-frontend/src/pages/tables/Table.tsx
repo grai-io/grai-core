@@ -64,6 +64,12 @@ export const GET_TABLE = gql`
             display_name
           }
         }
+        sources {
+          data {
+            id
+            name
+          }
+        }
         events {
           data {
             id

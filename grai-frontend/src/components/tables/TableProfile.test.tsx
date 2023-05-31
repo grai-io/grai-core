@@ -22,6 +22,14 @@ test("renders", async () => {
     },
     source_tables: { data: [other_table] },
     destination_tables: { data: [other_table] },
+    sources: {
+      data: [
+        {
+          id: "1",
+          name: "source 1",
+        },
+      ],
+    },
   }
 
   render(<TableProfile table={table} />, {
@@ -48,6 +56,9 @@ test("renders no sources or destinations", async () => {
     },
     source_tables: { data: [] },
     destination_tables: { data: [] },
+    sources: {
+      data: [],
+    },
   }
 
   render(<TableProfile table={table} />, {
