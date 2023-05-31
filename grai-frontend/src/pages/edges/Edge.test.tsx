@@ -101,8 +101,7 @@ test("not found", async () => {
           workspace: {
             id: "1",
             edge: null,
-            edges: { data: null },
-            other_edges: { data: [] },
+            graph: [],
           },
         },
       },

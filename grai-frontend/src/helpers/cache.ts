@@ -27,13 +27,6 @@ export const clearWorkspace = (cache: ApolloCache<any>, id: string) => {
       id,
       __typename: "Workspace",
     }),
-    fieldName: "other_edges",
-  })
-  cache.evict({
-    id: cache.identify({
-      id,
-      __typename: "Workspace",
-    }),
     fieldName: "graph",
   })
 }
