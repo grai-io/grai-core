@@ -1,9 +1,9 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { screen, fireEvent, waitFor, act, render } from "testing"
-import SetupConnection from "./SetupConnection"
-import { UPLOAD_CONNECTOR_FILE } from "./ConnectionFile"
 import { GraphQLError } from "graphql"
+import { screen, fireEvent, waitFor, act, render } from "testing"
+import { UPLOAD_CONNECTOR_FILE } from "./ConnectionFile"
+import SetupConnection from "./SetupConnection"
 
 const opts = {
   activeStep: 0,
