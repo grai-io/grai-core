@@ -14,11 +14,14 @@ class EdgeTypeLabels(Enum):
     table_to_table = "TableToTable"
 
 
+EdgeTypeLabelLiterals = Literal["Generic", "TableToColumn", "ColumnToColumn", "TableToTable"]
+
+
 class BaseEdgeMetadataV1(V1Mixin):
     """ """
 
     type: Literal["EdgeV1"] = "EdgeV1"
-    edge_type: str
+    edge_type: EdgeTypeLabelLiterals
     edge_attributes: GenericAttributes
     tags: Optional[List[str]]
 

@@ -9,9 +9,12 @@ from grai_schemas.v1.metadata.generics import GenericAttributes
 class NodeTypeLabels(Enum):
     """ """
 
-    generic = "Generic"
-    table = "Table"
-    column = "Column"
+    generic: Literal["Generic"] = "Generic"
+    table: Literal["Table"] = "Table"
+    column: Literal["Column"] = "Column"
+
+
+NodeTypeLabelLiterals = Literal["Generic", "Table", "Column"]
 
 
 class SourceType(Enum):
@@ -24,7 +27,7 @@ class BaseNodeMetadataV1(V1Mixin):
     """ """
 
     type: Literal["NodeV1"] = "NodeV1"
-    node_type: str
+    node_type: NodeTypeLabelLiterals
     node_attributes: GenericAttributes
     tags: Optional[List[str]]
 
