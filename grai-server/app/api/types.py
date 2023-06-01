@@ -533,20 +533,6 @@ class Workspace:
     def table(self, id: strawberry.ID) -> Table:
         return NodeModel.objects.filter(id=id, workspace=self, metadata__grai__node_type="Table")
 
-    # Other edges
-    @gql.django.field
-    def other_edges(
-        self,
-        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
-    ) -> Pagination[Edge]:
-        queryset = EdgeModel.objects.filter(workspace=self).filter(
-            metadata__grai__edge_type__in=["TableToTable", "ColumnToColumn"]
-        )
-
-        print(queryset.query)
-
-        return Pagination[Edge](queryset=queryset, pagination=pagination)
-
     # Repositories
     @gql.django.field
     def repositories(
