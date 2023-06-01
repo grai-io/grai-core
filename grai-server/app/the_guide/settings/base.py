@@ -131,6 +131,7 @@ THIRD_PARTY_APPS = [
     "storages",
     "email_log",
     "djcelery_email",
+    "drf_spectacular",
 ]
 
 ALGOLIA_APPLICATION_ID = config("ALGOLIA_APPLICATION_ID", None)

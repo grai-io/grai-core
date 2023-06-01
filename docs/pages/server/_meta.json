@@ -1,6 +1,9 @@
 {
   "index": "Background",
   "settings": "Settings",
-  "rest-api": "Rest API",
+  "rest-api": {
+    "title": "Rest API",
+    "href": "https://api.grai.io/api/v1/redoc/"
+  },
   "graphql-api": "GraphQL API"
 }
