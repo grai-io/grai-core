@@ -32,7 +32,7 @@ class BaseSpec(GraiBaseModel):
     destination: NodeIdTypes
     is_active: Optional[bool] = True
     workspace: Optional[UUID]
-    metadata: MetadataV1 = None
+    metadata: MetadataV1 = MetadataV1(grai=GenericEdgeMetadataV1(edge_type="Generic"))
 
     def __str__(self):
         return f"Edge[Node({self.source}) -> Node({self.destination})]"
@@ -42,10 +42,10 @@ class BaseSpec(GraiBaseModel):
         if isinstance(v, MetadataV1):
             return v
         elif isinstance(v, dict):
-            v.setdefault("grai", GenericEdgeMetadataV1(edge_type="Edge"))
+            v.setdefault("grai", GenericEdgeMetadataV1(edge_type="Generic"))
             return MetadataV1(**v)
         elif v is None:
-            return MetadataV1(grai=GenericEdgeMetadataV1(edge_type="Edge"))
+            return MetadataV1(grai=GenericEdgeMetadataV1(edge_type="Generic"))
         raise ValueError(f"Invalid metadata: {v}. Expected either None, a dict, or a MetadataV1 instance.")
 
 

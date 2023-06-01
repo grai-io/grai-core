@@ -1,5 +1,6 @@
 from grai_schemas.base import GraiMetadata
 from grai_schemas.v1.metadata.edges import (
+    BaseEdgeMetadataV1,
     ColumnToColumnAttributes,
     ColumnToColumnMetadata,
     GenericEdgeMetadataV1,
@@ -9,7 +10,9 @@ from grai_schemas.v1.metadata.edges import (
     TableToColumnAttributes,
     TableToColumnMetadata,
 )
+from grai_schemas.v1.metadata.generics import GenericAttributes
 from grai_schemas.v1.metadata.nodes import (
+    BaseNodeMetadataV1,
     ColumnAttributes,
     ColumnMetadata,
     GenericNodeMetadataV1,
@@ -20,12 +23,12 @@ from grai_schemas.v1.metadata.nodes import TableAttributes, TableMetadata
 
 def test_distinguishes_generic_node_metadata():
     """ """
-    spec = {"grai": {"node_type": "Node", "node_attributes": {}}}
+    spec = {"grai": {"node_type": "Generic", "node_attributes": {}}}
 
     obj = GraiMetadata(**spec)
     assert isinstance(obj.grai, GraiNodeMetadata)
     assert isinstance(obj.grai, GenericNodeMetadataV1)
-    assert isinstance(obj.grai.node_attributes, dict)
+    assert isinstance(obj.grai.node_attributes, GenericAttributes)
 
 
 def test_distinguishes_column_metadata():
@@ -34,7 +37,7 @@ def test_distinguishes_column_metadata():
 
     obj = GraiMetadata(**spec)
     assert isinstance(obj.grai, GraiNodeMetadata)
-    assert isinstance(obj.grai, GenericNodeMetadataV1)
+    assert isinstance(obj.grai, BaseNodeMetadataV1)
     assert isinstance(obj.grai, ColumnMetadata)
     assert isinstance(obj.grai.node_attributes, ColumnAttributes)
 
@@ -45,7 +48,7 @@ def test_distinguishes_table_metadata():
 
     obj = GraiMetadata(**spec)
     assert isinstance(obj.grai, GraiNodeMetadata)
-    assert isinstance(obj.grai, GenericNodeMetadataV1)
+    assert isinstance(obj.grai, BaseNodeMetadataV1)
     assert isinstance(obj.grai, TableMetadata)
     assert isinstance(obj.grai.node_attributes, TableAttributes)
 
@@ -54,7 +57,7 @@ def test_distinguishes_generic_edge_metadata():
     """ """
     spec = {
         "grai": {
-            "edge_type": "Edge",
+            "edge_type": "Generic",
             "edge_attributes": {},
         }
     }
@@ -62,7 +65,7 @@ def test_distinguishes_generic_edge_metadata():
     obj = GraiMetadata(**spec)
     assert isinstance(obj.grai, GraiEdgeMetadata)
     assert isinstance(obj.grai, GenericEdgeMetadataV1)
-    assert isinstance(obj.grai.edge_attributes, dict)
+    assert isinstance(obj.grai.edge_attributes, GenericAttributes)
 
 
 def test_distinguishes_column_to_column_metadata():
@@ -76,7 +79,7 @@ def test_distinguishes_column_to_column_metadata():
 
     obj = GraiMetadata(**spec)
     assert isinstance(obj.grai, GraiEdgeMetadata)
-    assert isinstance(obj.grai, GenericEdgeMetadataV1)
+    assert isinstance(obj.grai, BaseEdgeMetadataV1)
     assert isinstance(obj.grai, ColumnToColumnMetadata)
     assert isinstance(obj.grai.edge_attributes, ColumnToColumnAttributes)
 
@@ -89,9 +92,8 @@ def test_metadata_distinguishes_table_to_column_metadata():
             "edge_attributes": {},
         }
     }
-
     obj = GraiMetadata(**spec)
     assert isinstance(obj.grai, GraiEdgeMetadata)
-    assert isinstance(obj.grai, GenericEdgeMetadataV1)
+    assert isinstance(obj.grai, BaseEdgeMetadataV1)
     assert isinstance(obj.grai, TableToColumnMetadata)
     assert isinstance(obj.grai.edge_attributes, TableToColumnAttributes)

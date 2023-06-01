@@ -30,7 +30,7 @@ def make_v1_node():
             "display_name": "ouch",
             "is_active": True,
             "metadata": {
-                "grai": {"node_type": "Node", "node_attributes": {}, "tags": ["pii", "phi"]},
+                "grai": {"node_type": "Generic", "node_attributes": {}, "tags": ["pii", "phi"]},
                 **extra_metadata(),
             },
         },
@@ -58,7 +58,7 @@ def make_v1_edge():
             },
             "is_active": True,
             "metadata": {
-                "grai": {"edge_type": "Edge", "edge_attributes": {}, "tags": ["pii", "phi"]},
+                "grai": {"edge_type": "Generic", "edge_attributes": {}, "tags": ["pii", "phi"]},
                 **extra_metadata(),
             },
         },

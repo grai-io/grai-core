@@ -3,12 +3,13 @@ from typing import Any, List, Literal, Optional, Union
 
 from grai_schemas.generics import DefaultValue, HashableBaseModel
 from grai_schemas.v1.generics import GraiBaseModel, V1Mixin
+from grai_schemas.v1.metadata.generics import GenericAttributes
 
 
 class NodeTypeLabels(Enum):
     """ """
 
-    generic = "Node"
+    generic = "Generic"
     table = "Table"
     column = "Column"
 
@@ -19,16 +20,21 @@ class SourceType(Enum):
     database = "SQL"
 
 
-class GenericNodeMetadataV1(V1Mixin):
+class BaseNodeMetadataV1(V1Mixin):
     """ """
 
     type: Literal["NodeV1"] = "NodeV1"
-    node_type: Literal["Node"]
-    node_attributes: dict = {}
+    node_type: str
+    node_attributes: GenericAttributes
     tags: Optional[List[str]]
 
 
-class ColumnAttributes(GraiBaseModel):
+class GenericNodeMetadataV1(BaseNodeMetadataV1):
+    node_type: Literal["Generic"]
+    node_attributes: GenericAttributes = GenericAttributes()
+
+
+class ColumnAttributes(V1Mixin, GenericAttributes):
     """ """
 
     data_type: Optional[str]  # This will need to be standardized
@@ -38,20 +44,20 @@ class ColumnAttributes(GraiBaseModel):
     is_primary_key: Optional[bool]
 
 
-class ColumnMetadata(GenericNodeMetadataV1):
+class ColumnMetadata(BaseNodeMetadataV1):
     """ """
 
     node_type: Literal["Column"]
     node_attributes: ColumnAttributes = ColumnAttributes()
 
 
-class TableAttributes(HashableBaseModel):
+class TableAttributes(V1Mixin, GenericAttributes):
     """ """
 
     pass
 
 
-class TableMetadata(GenericNodeMetadataV1):
+class TableMetadata(BaseNodeMetadataV1):
     """ """
 
     node_type: Literal["Table"]
