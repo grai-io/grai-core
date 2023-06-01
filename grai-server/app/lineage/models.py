@@ -260,3 +260,6 @@ class Source(TenantModel):
         indexes = [
             models.Index(fields=["workspace", "name"]),
         ]
+
+    def __str__(self):
+        return self.name

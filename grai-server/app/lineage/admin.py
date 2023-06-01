@@ -1,10 +1,13 @@
 from django.contrib import admin
 from django.contrib.admin import DateFieldListFilter
 from django.db.models import JSONField
+from django.urls import reverse
+from django.utils.html import format_html
 
 from common.admin.fields.json_widget import PrettyJSONWidget
 
 from .models import Edge, Event, Filter, Node, Source
+from connections.models import Connection
 
 
 class EdgeInline(admin.TabularInline):
@@ -128,8 +131,47 @@ class FilterAdmin(admin.ModelAdmin):
     formfield_overrides = {JSONField: {"widget": PrettyJSONWidget}}
 
 
+class ConnectionInline(admin.TabularInline):
+    model = Connection
+    extra = 0
+
+    fields = [
+        "name",
+    ]
+
+    def view(self):
+        return format_html(
+            '<a href="{}">{}</a>',
+            reverse("admin:connections_connection_change", args=(self.id,)),
+            self.name,
+        )
+
+    fields = ("name", view)
+    readonly_fields = (view,)
+
+
+class SourceAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "name",
+        "workspace",
+        "created_at",
+    )
+
+    search_fields = ["id", "name"]
+
+    list_filter = (
+        "workspace",
+        ("created_at", DateFieldListFilter),
+    )
+
+    inlines = [
+        ConnectionInline,
+    ]
+
+
 admin.site.register(Node, NodeAdmin)
 admin.site.register(Edge, EdgeAdmin)
 admin.site.register(Filter, FilterAdmin)
 admin.site.register(Event)
-admin.site.register(Source)
+admin.site.register(Source, SourceAdmin)
