@@ -106,6 +106,7 @@ const ConnectionFile: React.FC<ConnectionFileProps> = ({
         workspaceNavigate(`runs/${res.data?.uploadConnectorFile.id}`)
       )
       .then(() => enqueueSnackbar("File uploaded"))
+      .catch(() => {})
 
   const accept: Accept =
     connector.metadata?.file?.extension === "json"

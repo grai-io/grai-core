@@ -1,7 +1,9 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { render, screen, fireEvent, waitFor, act } from "testing"
+import { screen, fireEvent, waitFor, act, render } from "testing"
 import SetupConnection from "./SetupConnection"
+import { UPLOAD_CONNECTOR_FILE } from "./ConnectionFile"
+import { GraphQLError } from "graphql"
 
 const opts = {
   activeStep: 0,
@@ -189,6 +191,14 @@ test("upload file", async () => {
 
   await act(
     async () =>
+      await user.type(
+        screen.getByRole("textbox", { name: /source/i }),
+        "test-source"
+      )
+  )
+
+  await act(
+    async () =>
       await user.click(screen.getByRole("button", { name: /finish/i }))
   )
 
@@ -237,66 +247,73 @@ test("upload wrong file", async () => {
   ).toBeInTheDocument()
 })
 
-// test("upload file error", async () => {
-//   const user = userEvent.setup()
+test("upload file error", async () => {
+  const user = userEvent.setup()
 
-//   const mock = {
-//     request: {
-//       query: UPLOAD_CONNECTOR_FILE,
-//       variables: {
-//         workspaceId: "",
-//         connectorId: "1",
-//         file: { path: "ping.json" },
-//         namespace: "defaulttest",
-//       },
-//     },
-//     result: {
-//       errors: [new GraphQLError("Error!")],
-//     },
-//   }
+  const file = new File(["file"], "ping.json", {
+    type: "application/json",
+  })
 
-//   renderWithMocks(
-//     <SetupConnection
-//       opts={opts}
-//       values={{
-//         connector: {
-//           id: "1",
-//           name: "Test File Connector",
-//           metadata: {
-//             file: {
-//               name: "manifest.json",
-//               extension: "json",
-//             },
-//           },
-//         },
-//         namespace: "",
-//         name: "",
-//         metadata: undefined,
-//         secrets: undefined,
-//         schedules: null,
-//       }}
-//       setValues={function (values: Values): void {
-//         throw new Error("Function not implemented.")
-//       }}
-//     />,
-//     [mock]
-//   )
+  const mocks = [
+    {
+      request: {
+        query: UPLOAD_CONNECTOR_FILE,
+        variables: {
+          workspaceId: "1",
+          connectorId: "1",
+          file,
+          namespace: "defaulttest",
+          sourceName: "Test File Connector",
+        },
+      },
+      result: {
+        errors: [new GraphQLError("Error!")],
+      },
+    },
+  ]
 
-//   expect(screen.getByText("Connect to Test File Connector")).toBeInTheDocument()
+  render(
+    <SetupConnection
+      workspaceId="1"
+      opts={opts}
+      connector={{
+        id: "1",
+        name: "Test File Connector",
+        metadata: {
+          file: {
+            name: "manifest.json",
+            extension: "json",
+          },
+        },
+      }}
+      connection={null}
+      setConnection={() => {}}
+    />,
+    { withRouter: true, mocks }
+  )
 
-//   window.URL.createObjectURL = jest.fn().mockImplementation(() => "url")
+  expect(screen.getByText("Connect to Test File Connector")).toBeInTheDocument()
 
-//   const inputEl = screen.getByTestId("drop-input")
-//   const file = new File(["file"], "ping.json", {
-//     type: "application/json",
-//   })
-//   Object.defineProperty(inputEl, "files", {
-//     value: [file],
-//   })
-//   fireEvent.drop(inputEl)
-//   expect(await screen.findByText("ping.json")).toBeInTheDocument()
+  window.URL.createObjectURL = jest.fn().mockImplementation(() => "url")
 
-//   await user.type(screen.getByRole("textbox", { name: /namespace/i }), "test")
+  const inputEl = screen.getByTestId("drop-input")
 
-//   await user.click(screen.getByRole("button", { name: /finish/i }))
-// })
+  Object.defineProperty(inputEl, "files", {
+    value: [file],
+  })
+  fireEvent.drop(inputEl)
+  expect(await screen.findByText("ping.json")).toBeInTheDocument()
+
+  await act(
+    async () =>
+      await user.type(
+        screen.getByRole("textbox", { name: /namespace/i }),
+        "test"
+      )
+  )
+
+  await act(
+    async () =>
+      await user.click(screen.getByRole("button", { name: /finish/i }))
+  )
+})
