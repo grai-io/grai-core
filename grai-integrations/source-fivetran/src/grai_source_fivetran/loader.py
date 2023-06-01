@@ -43,20 +43,44 @@ P = ParamSpec("P")
 
 
 class FiveTranConfig(BaseSettings):
+    """ """
+
     endpoint: str = "https://api.fivetran.com/v1"
     api_key: SecretStr
     api_secret: SecretStr
 
     @validator("endpoint")
     def validate_endpoint(cls, value):
+        """
+
+        Args:
+            value:
+
+        Returns:
+
+        Raises:
+
+        """
         return value.rstrip("/")
 
     class Config:
+        """ """
+
         env_prefix = "grai_fivetran_"
         env_file = ".env"
 
 
 def has_data_items(item: Dict) -> bool:
+    """
+
+    Args:
+        item (Dict):
+
+    Returns:
+
+    Raises:
+
+    """
     if item.get("data", None) is None:
         return False
     elif item["data"].get("items", None) is None:
@@ -66,6 +90,8 @@ def has_data_items(item: Dict) -> bool:
 
 
 class FivetranAPI:
+    """ """
+
     def __init__(
         self,
         api_key: Optional[str] = None,
@@ -96,6 +122,20 @@ class FivetranAPI:
         params: Optional[Dict] = None,
         **kwargs,
     ) -> Dict:
+        """
+
+        Args:
+            request (Callable[..., requests.Response]):
+            url (str):
+            headers (Optional[Dict], optional):  (Default value = None)
+            params (Optional[Dict], optional):  (Default value = None)
+            **kwargs:
+
+        Returns:
+
+        Raises:
+
+        """
         params = self.session.params if params is None else {**self.session.params, **params}
         headers = self.session.headers if headers is None else {**self.session.headers, **headers}
         result = request(url, params=params, headers=headers, **kwargs)
@@ -110,7 +150,32 @@ class FivetranAPI:
         params: Optional[Dict] = None,
         **kwargs,
     ) -> Iterable[Dict]:
+        """
+
+        Args:
+            request (Callable[..., requests.Response]):
+            url (str):
+            headers (Optional[Dict], optional):  (Default value = None)
+            params (Optional[Dict], optional):  (Default value = None)
+            **kwargs:
+
+        Returns:
+
+        Raises:
+
+        """
+
         def has_cursor(item: Dict) -> bool:
+            """
+
+            Args:
+                item (Dict):
+
+            Returns:
+
+            Raises:
+
+            """
             if item.get("data", {}).get("nextCursor", None) is not None:
                 return True
             return False
@@ -129,37 +194,123 @@ class FivetranAPI:
         headers: Optional[Dict] = None,
         params: Optional[Dict] = None,
     ) -> List[Dict]:
+        """
+
+        Args:
+            url (str):
+            headers (Optional[Dict], optional):  (Default value = None)
+            params (Optional[Dict], optional):  (Default value = None)
+
+        Returns:
+
+        Raises:
+
+        """
         query = self.paginated_query(self.session.get, url, params=params, headers=headers)
         data = (page["data"]["items"] for page in query if has_data_items(page))
         results = [item for items in data for item in items]
         return results
 
     def get_tables(self, connector_id: str, limit: Optional[int] = None) -> List[TableMetadataResponse]:
+        """
+
+        Args:
+            connector_id (str):
+            limit (Optional[int], optional):  (Default value = None)
+
+        Returns:
+
+        Raises:
+
+        """
         url = f"{self.config.endpoint}/metadata/connectors/{connector_id}/tables"
         return [TableMetadataResponse(**item) for item in self.get_paginated_data_items(url)]
 
     def get_columns(self, connector_id: str, limit: Optional[int] = None) -> List[ColumnMetadataResponse]:
+        """
+
+        Args:
+            connector_id (str):
+            limit (Optional[int], optional):  (Default value = None)
+
+        Returns:
+
+        Raises:
+
+        """
         url = f"{self.config.endpoint}/metadata/connectors/{connector_id}/columns"
         return [ColumnMetadataResponse(**item) for item in self.get_paginated_data_items(url)]
 
     def get_schemas(self, connector_id: str, limit: Optional[int] = None) -> List[SchemaMetadataResponse]:
+        """
+
+        Args:
+            connector_id (str):
+            limit (Optional[int], optional):  (Default value = None)
+
+        Returns:
+
+        Raises:
+
+        """
         url = f"{self.config.endpoint}/metadata/connectors/{connector_id}/schemas"
         return [SchemaMetadataResponse(**item) for item in self.get_paginated_data_items(url)]
 
     def get_all_groups(self, limit: Optional[int] = None) -> List[GroupResponse]:
+        """
+
+        Args:
+            limit (Optional[int], optional):  (Default value = None)
+
+        Returns:
+
+        Raises:
+
+        """
         url = f"{self.config.endpoint}/groups"
         return [GroupResponse(**item) for item in self.get_paginated_data_items(url)]
 
     def get_group_connectors(self, group_id: str, limit: Optional[int] = None) -> List[ConnectorResponse]:
+        """
+
+        Args:
+            group_id (str):
+            limit (Optional[int], optional):  (Default value = None)
+
+        Returns:
+
+        Raises:
+
+        """
         url = f"{self.config.endpoint}/groups/{group_id}/connectors"
         return [ConnectorResponse(**item) for item in self.get_paginated_data_items(url)]
 
     def get_destination_metadata(self, destination_id: str) -> V1DestinationsDestinationIdGetResponse:
+        """
+
+        Args:
+            destination_id (str):
+
+        Returns:
+
+        Raises:
+
+        """
         url = f"{self.config.endpoint}/destinations/{destination_id}"
         data, response = self.make_request(self.session.get, url)
         return V1DestinationsDestinationIdGetResponse(**data)
 
     def get_connector_metadata(self, connector_id: str) -> V1ConnectorsConnectorIdSchemasGetResponse:
+        """
+
+        Args:
+            connector_id (str):
+
+        Returns:
+
+        Raises:
+
+        """
         url = f"{self.config.endpoint}/connectors/{connector_id}/schemas"
         data, response = self.make_request(self.session.get, url)
         return V1ConnectorsConnectorIdSchemasGetResponse(**data)
@@ -167,17 +318,51 @@ class FivetranAPI:
     def get_source_table_column_metadata(
         self, connector_id: str, schema: str, table: str
     ) -> V1ConnectorsConnectorIdSchemasSchemaTablesTableColumnsGetResponse:
+        """
+
+        Args:
+            connector_id (str):
+            schema (str):
+            table (str):
+
+        Returns:
+
+        Raises:
+
+        """
         url = f"{self.config.endpoint}/connectors/{connector_id}/schemas/{schema}/tables/{table}/columns"
         data, response = self.make_request(self.session.get, url)
         return V1ConnectorsConnectorIdSchemasSchemaTablesTableColumnsGetResponse(**data)
 
     def get_connectors(self) -> List[ConnectorResponse]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         groups = {group.id: group for group in self.get_all_groups() if group.id is not None}
         connectors = [conn for group_id in groups.keys() for conn in self.get_group_connectors(group_id)]
         return connectors
 
 
 async def caller(semaphore: asyncio.Semaphore, func: Callable[..., T], *args, **kwargs) -> T:
+    """
+
+    Args:
+        semaphore (asyncio.Semaphore):
+        func (Callable[..., T]):
+        *args:
+        **kwargs:
+
+    Returns:
+
+    Raises:
+
+    """
     result = func(*args, **kwargs)
 
     async with semaphore:
@@ -187,11 +372,34 @@ async def caller(semaphore: asyncio.Semaphore, func: Callable[..., T], *args, **
 
 
 def parallelize_http(semaphore):
+    """
+
+    Args:
+        semaphore:
+
+    Returns:
+
+    Raises:
+
+    """
+
     async def parallel(
         func: Callable[P, T],
         arg_list: Iterable[Sequence[Any]],
         kwarg_list: Optional[Sequence[Dict[str, Any]]] = None,
     ) -> Tuple[T]:
+        """
+
+        Args:
+            func (Callable[P, T]):
+            arg_list (Iterable[Sequence[Any]]):
+            kwarg_list (Optional[Sequence[Dict[str, Any]]], optional):  (Default value = None)
+
+        Returns:
+
+        Raises:
+
+        """
         arg_list = list(arg_list) if not isinstance(arg_list, list) else arg_list
         kwarg_list = [{}] * len(arg_list) if kwarg_list is None else kwarg_list
         assert len(arg_list) == len(kwarg_list)
@@ -203,12 +411,26 @@ def parallelize_http(semaphore):
         arg_list: Iterable[Sequence[Any]],
         kwarg_list: Optional[Sequence[Dict[str, Any]]] = None,
     ) -> List[T]:
+        """
+
+        Args:
+            func (Callable[P, T]):
+            arg_list (Iterable[Sequence[Any]]):
+            kwarg_list (Optional[Sequence[Dict[str, Any]]], optional):  (Default value = None)
+
+        Returns:
+
+        Raises:
+
+        """
         return asyncio.run(parallel(func, arg_list, kwarg_list))
 
     return inner
 
 
 class SourceDestinationDict(TypedDict):
+    """ """
+
     source: str
     destination: str
 
@@ -219,6 +441,18 @@ NamespaceTypes = Union[Dict[str, Union[str, SourceDestinationDict]], str]
 def build_namespace_map(
     connectors: Dict, namespace_map: Union[str, Optional[NamespaceTypes]], default_namespace: Optional[str]
 ) -> Dict[str, NamespaceIdentifier]:
+    """
+
+    Args:
+        connectors (Dict):
+        namespace_map (Union[str, Optional[NamespaceTypes]]):
+        default_namespace (Optional[str]):
+
+    Returns:
+
+    Raises:
+
+    """
     if namespace_map is None and default_namespace is None:
         message = (
             f"The FivetranGraiMapper requires a not null value for `default_namespace` and/or `namespaces. "
@@ -256,6 +490,8 @@ def build_namespace_map(
 
 
 class FivetranConnector(FivetranAPI):
+    """ """
+
     def __init__(
         self,
         namespaces: Optional[NamespaceTypes] = None,
@@ -282,6 +518,7 @@ class FivetranConnector(FivetranAPI):
         self.columns: Dict[str, ColumnMetadataResponse] = {}
 
     def build_lineage(self):
+        """ """
         connector_ids = [[conn_id] for conn_id in self.connectors.keys()]
         schemas = self.http_runner(self.get_schemas, arg_list=connector_ids)
         tables = self.http_runner(self.get_tables, arg_list=connector_ids)
@@ -298,6 +535,15 @@ class FivetranConnector(FivetranAPI):
         self.columns.update({item.id: item for seq in columns for item in seq})
 
     def get_nodes_and_edges(self) -> Tuple[List[NodeTypes], List[Edge]]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         # table.parent_id -> schema.id
         # column.parent_id -> table.id
         self.build_lineage()

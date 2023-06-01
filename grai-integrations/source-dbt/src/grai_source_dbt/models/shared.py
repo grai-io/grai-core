@@ -8,6 +8,8 @@ from pydantic import BaseModel, Field
 
 
 class ManifestMetadata(BaseModel):
+    """ """
+
     dbt_schema_version: str
     dbt_version: str
     generated_at: str
@@ -20,17 +22,23 @@ class ManifestMetadata(BaseModel):
 
 
 class ID(BaseModel):
+    """ """
+
     name: str
     namespace: Optional[str]
     package_name: str
 
 
 class Constraint(str, Enum):
+    """ """
+
     belongs_to = "bt"
     dbt_model = "dbtm"
 
 
 class DbtResourceType(str, Enum):
+    """ """
+
     model = "model"
     seed = "seed"
     source = "source"
@@ -40,6 +48,8 @@ class DbtResourceType(str, Enum):
 
 
 class DbtMaterializationType(str, Enum):
+    """ """
+
     table = "table"
     view = "view"
     incremental = "incremental"
@@ -49,15 +59,21 @@ class DbtMaterializationType(str, Enum):
 
 
 class NodeDeps(BaseModel):
+    """ """
+
     nodes: List[str]
     macros: List[str]  # TODO: macros not currently tested
 
 
 class NodeConfig(BaseModel):
+    """ """
+
     materialized: Optional[DbtMaterializationType]
 
 
 class DBTNodeColumn(BaseModel):
+    """ """
+
     name: str
     description: Optional[str]
     meta: Dict
@@ -67,15 +83,21 @@ class DBTNodeColumn(BaseModel):
 
 
 class NodeChecksum(BaseModel):
+    """ """
+
     name: str
     checksum: str
 
 
 class NodeDocs(BaseModel):
+    """ """
+
     show: bool
 
 
 class DBTNode(ID):
+    """ """
+
     unique_id: str
     root_path: str
     path: Optional[str]
@@ -103,6 +125,15 @@ class DBTNode(ID):
 
     @property
     def tag_list(self) -> List[str]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         return [self.tags] if isinstance(self.tags, str) else self.tags
 
     def __hash__(self):
@@ -110,4 +141,5 @@ class DBTNode(ID):
 
     @property
     def full_name(self):
+        """ """
         return f"{self.node_schema}.{self.name}"

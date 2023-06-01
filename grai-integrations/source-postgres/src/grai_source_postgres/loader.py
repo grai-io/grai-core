@@ -17,6 +17,18 @@ from grai_source_postgres.models import (
 
 
 def get_from_env(label: str, default: Optional[Any] = None, validator: Callable = None):
+    """
+
+    Args:
+        label (str):
+        default (Optional[Any], optional):  (Default value = None)
+        validator (Callable, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
+    """
     env_key = f"GRAI_POSTGRES_{label.upper()}"
     result = os.getenv(env_key, default)
     if result is None:
@@ -29,6 +41,8 @@ def get_from_env(label: str, default: Optional[Any] = None, validator: Callable 
 
 
 class PostgresConnector:
+    """ """
+
     def __init__(
         self,
         dbname: Optional[str] = None,
@@ -62,11 +76,21 @@ class PostgresConnector:
 
     @property
     def connection_string(self) -> str:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         return (
             f"dbname={self.dbname} host='{self.host}' user='{self.user}' password='{self.password}' port='{self.port}'"
         )
 
     def connect(self):
+        """ """
         if self._connection is None:
             self._connection = psycopg2.connect(self.connection_string)
             self._is_connected = True
@@ -74,16 +98,37 @@ class PostgresConnector:
 
     @property
     def connection(self):
+        """ """
         if self._connection is None:
             raise Exception("Not connected, call `.connect()")
         return self._connection
 
     def close(self) -> None:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         self.connection.close()
         self._connection = None
         self._is_connected = False
 
     def query_runner(self, query: str, param_dict: Dict = {}) -> List[Dict]:
+        """
+
+        Args:
+            query (str):
+            param_dict (Dict, optional):  (Default value = {})
+
+        Returns:
+
+        Raises:
+
+        """
         cursor = self.connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         cursor.execute(query, param_dict)
         result = cursor.fetchall()
@@ -91,10 +136,16 @@ class PostgresConnector:
 
     @cached_property
     def tables(self) -> List[Table]:
-        """
-        Create and return a list of dictionaries with the
+        """Create and return a list of dictionaries with the
         schemas and names of tables in the database
         connected to by the connection argument.
+
+        Args:
+
+        Returns:
+
+        Raises:
+
         """
 
         query = """
@@ -111,9 +162,15 @@ class PostgresConnector:
 
     @cached_property
     def columns(self) -> List[Column]:
-        """
-        Creates and returns a list of dictionaries for the specified
+        """Creates and returns a list of dictionaries for the specified
         schema.table in the database connected to.
+
+        Args:
+
+        Returns:
+
+        Raises:
+
         """
         query = f"""
             SELECT
@@ -145,6 +202,16 @@ class PostgresConnector:
         return [Column(**result, namespace=self.namespace) for result in self.query_runner(query)]
 
     def get_table_columns(self, table: Table) -> List[Column]:
+        """
+
+        Args:
+            table (Table):
+
+        Returns:
+
+        Raises:
+
+        """
         table_id = (table.table_schema, table.name)
         if table_id in self.column_map:
             return self.column_map[table_id]
@@ -153,6 +220,15 @@ class PostgresConnector:
 
     @cached_property
     def column_map(self) -> Dict[Tuple[str, str], List[Column]]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         result_map: Dict[Tuple[str, str], List[Column]] = {}
         for col in self.columns:
             table_id = (col.column_schema, col.table)
@@ -163,9 +239,13 @@ class PostgresConnector:
     @cached_property
     def foreign_keys(self) -> List[Edge]:
         """This needs to be tested / evaluated
-        :param connection:
-        :param table:
-        :return:
+
+        Args:
+
+        Returns:
+
+        Raises:
+
         """
         # query is from https://dba.stackexchange.com/questions/36979/retrieving-all-pk-and-fk/37068#37068
         # Only need constraint_types == 'f' for foreign keys but the others might be useful someday.
@@ -200,12 +280,39 @@ class PostgresConnector:
         return [r for r in result if r is not None]
 
     def get_nodes(self) -> List[PostgresNode]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         return list(chain(self.tables, self.columns))
 
     def get_edges(self) -> List[Edge]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         return [edge for edge in chain(*[t.get_edges() for t in self.tables], self.foreign_keys) if edge is not None]
 
     def get_nodes_and_edges(self) -> Tuple[List[PostgresNode], List[Edge]]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         nodes = self.get_nodes()
         edges = self.get_edges()
 

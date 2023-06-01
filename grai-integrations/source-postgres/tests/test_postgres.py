@@ -20,6 +20,7 @@ connection = PostgresConnector(**test_credentials)
 
 
 def test_building_nodes():
+    """ """
     with connection.connect() as conn:
         tables = conn.tables
 
@@ -27,6 +28,7 @@ def test_building_nodes():
 
 
 def test_building_edges():
+    """ """
     with connection.connect() as conn:
         edges = conn.foreign_keys
 
@@ -34,6 +36,7 @@ def test_building_edges():
 
 
 def test_connector_from_env_vars():
+    """ """
     env_vars = {
         "GRAI_POSTGRES_HOST": "localhost",
         "GRAI_POSTGRES_DBNAME": "grai",

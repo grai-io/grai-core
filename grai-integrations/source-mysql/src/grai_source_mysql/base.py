@@ -9,6 +9,17 @@ from grai_source_mysql.loader import MySQLConnector
 
 
 def get_nodes_and_edges(connector: MySQLConnector, version: Literal["v1"]) -> Tuple[List[Node], List[Edge]]:
+    """
+
+    Args:
+        connector (MySQLConnector):
+        version (Literal["v1"]):
+
+    Returns:
+
+    Raises:
+
+    """
     with connector.connect() as conn:
         nodes, edges = conn.get_nodes_and_edges()
 
@@ -26,6 +37,22 @@ def update_server(
     host: Optional[str] = None,
     port: Optional[str] = None,
 ):
+    """
+
+    Args:
+        client (BaseClient):
+        dbname (Optional[str], optional):  (Default value = None)
+        namespace (Optional[str], optional):  (Default value = None)
+        user (Optional[str], optional):  (Default value = None)
+        password (Optional[str], optional):  (Default value = None)
+        host (Optional[str], optional):  (Default value = None)
+        port (Optional[str], optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
+    """
     conn = MySQLConnector(dbname=dbname, user=user, password=password, host=host, port=port)
     nodes, edges = get_nodes_and_edges(conn, client.id)
     update(client, nodes)

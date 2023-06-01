@@ -13,6 +13,8 @@ if typing.TYPE_CHECKING:
 
 
 class BaseManifestLoader(ABC):
+    """ """
+
     def __init__(self, manifest: ManifestTypes, namespace: str, *args, **kwargs):
         self.manifest = manifest
         self.namespace = namespace
@@ -25,9 +27,11 @@ class BaseManifestLoader(ABC):
     @property
     @abstractmethod
     def nodes(self):
+        """ """
         raise NotImplementedError
 
     @property
     @abstractmethod
     def edges(self):
+        """ """
         raise NotImplementedError

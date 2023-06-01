@@ -13,6 +13,8 @@ from grai_source_dbt.models.grai import Column, Edge
 
 
 class ManifestProcessor:
+    """ """
+
     MANIFEST_MAP = MANIFEST_MAP
 
     def __init__(self, loader: BaseManifestLoader):
@@ -21,26 +23,82 @@ class ManifestProcessor:
 
     @cached_property
     def adapted_nodes(self) -> List[NodeV1]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         return adapt_to_client(self.loader.nodes, "v1")
 
     @cached_property
     def adapted_edges(self) -> List[EdgeV1]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         return adapt_to_client(self.loader.edges, "v1")
 
     @property
     def nodes(self) -> List[Union[AllDbtNodeTypes, Column]]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         return self.loader.nodes
 
     @property
     def edges(self) -> List[Edge]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         return self.loader.edges
 
     @property
     def manifest(self) -> ManifestTypes:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         return self.loader.manifest
 
     @classmethod
     def load(cls, manifest_obj: Union[str, dict], namespace: str) -> "ManifestProcessor":
+        """
+
+        Args:
+            manifest_obj (Union[str, dict]):
+            namespace (str):
+
+        Returns:
+
+        Raises:
+
+        """
         if isinstance(manifest_obj, str):
             with open(manifest_obj, "r") as f:
                 manifest_dict = json.load(f)

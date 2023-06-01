@@ -15,17 +15,25 @@ ENV_PREFIX = "GRAI_MSSQL_"
 
 
 class BaseSettings(pydantic.BaseSettings):
+    """ """
+
     class Config:
+        """ """
+
         env_prefix = ENV_PREFIX
 
 
 class Protocol(Enum):
+    """ """
+
     TCP = "tcp"
     ICP = "Icp"
     NP = "NP"
 
 
 class MsSqlSettings(BaseSettings):
+    """ """
+
     driver: Optional[str] = None
     database: Optional[str] = None
     server: Optional[str] = None
@@ -41,12 +49,23 @@ class MsSqlSettings(BaseSettings):
 
     @validator("protocol")
     def validate_protocol(cls, value):
+        """
+
+        Args:
+            value:
+
+        Returns:
+
+        Raises:
+
+        """
         if value is None:
             return Protocol.TCP
 
         return Protocol(value)
 
     def connection_string(self):
+        """ """
         connection_attributes = [f"DRIVER={self.driver}"]
         if self.trusted_connection:
             connection_attributes.append("Trusted_Connection=yes")
@@ -76,6 +95,16 @@ class MsSqlSettings(BaseSettings):
 
     @validator("driver")
     def validate_driver(cls, value):
+        """
+
+        Args:
+            value:
+
+        Returns:
+
+        Raises:
+
+        """
         available_drivers = pyodbc.drivers()
         if value is None:
             message = f"Running the MS Server connector requires either a `driver` parameter or {ENV_PREFIX}DRIVER environment variable. Normally we would attempt to detect an available driver installed on your system, however, in this case none were found. "
@@ -89,7 +118,16 @@ class MsSqlSettings(BaseSettings):
 
     @root_validator(pre=True)
     def parse_empty_values(cls, values):
-        """Empty strings should be treated as missing"""
+        """Empty strings should be treated as missing
+
+        Args:
+            values:
+
+        Returns:
+
+        Raises:
+
+        """
         new_values = values.copy()
         for k, v in values.items():
             if v == "":
@@ -98,14 +136,20 @@ class MsSqlSettings(BaseSettings):
 
 
 class MsSqlGraiSettings(BaseSettings):
+    """ """
+
     namespace: str = "default"
 
 
 class ConnectorSettings(MsSqlSettings, MsSqlGraiSettings):
+    """ """
+
     pass
 
 
 class MsSQLConnector:
+    """ """
+
     def __init__(
         self,
         driver: Optional[str] = None,
@@ -144,21 +188,51 @@ class MsSQLConnector:
         self.close()
 
     def connect(self) -> pyodbc.connect:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         if self._connection is None:
             self._connection = pyodbc.connect(self.config.connection_string())
         return self
 
     @property
     def connection(self):
+        """ """
         if self._connection is None:
             raise Exception("Not connected, call `.connect()")
         return self._connection
 
     def close(self) -> None:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         self.connection.close()
         self._connection = None
 
     def query_runner(self, query: str, params: List = []) -> List[Dict]:
+        """
+
+        Args:
+            query (str):
+            params (List, optional):  (Default value = [])
+
+        Returns:
+
+        Raises:
+
+        """
         cursor = self.connection.cursor()
         # queries must be parameterized with ?
         # https://github.com/mkleehammer/pyodbc/wiki/Getting-started#parameters
@@ -168,10 +242,16 @@ class MsSQLConnector:
 
     @cached_property
     def tables(self) -> List[Table]:
-        """
-        Create and return a list of dictionaries with the
+        """Create and return a list of dictionaries with the
         schemas and names of tables in the database
         connected to by the connection argument.
+
+        Args:
+
+        Returns:
+
+        Raises:
+
         """
 
         query = """
@@ -186,9 +266,15 @@ class MsSQLConnector:
 
     @cached_property
     def columns(self) -> List[Column]:
-        """
-        Creates and returns a list of dictionaries for the specified
+        """Creates and returns a list of dictionaries for the specified
         schema.table in the database connected to.
+
+        Args:
+
+        Returns:
+
+        Raises:
+
         """
         query = f"""
             SELECT c.COLUMN_NAME,
@@ -220,6 +306,15 @@ class MsSQLConnector:
 
     @cached_property
     def column_map(self) -> Dict[Tuple[str, str], List[Column]]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         result_map: Dict[Tuple[str, str], List[Column]] = {}
         for col in self.columns:
             table_id = (col.column_schema, col.table)
@@ -228,6 +323,16 @@ class MsSQLConnector:
         return result_map
 
     def get_table_columns(self, table: Table) -> List[Column]:
+        """
+
+        Args:
+            table (Table):
+
+        Returns:
+
+        Raises:
+
+        """
         table_id = (table.table_schema, table.name)
         if table_id in self.column_map:
             return self.column_map[table_id]
@@ -237,9 +342,13 @@ class MsSQLConnector:
     @cached_property
     def foreign_keys(self) -> List[Edge]:
         """This needs to be tested / evaluated
-        :param connection:
-        :param table:
-        :return:
+
+        Args:
+
+        Returns:
+
+        Raises:
+
         """
 
         query = """
@@ -281,12 +390,39 @@ class MsSQLConnector:
         return [r for r in result if r is not None]
 
     def get_nodes(self) -> List[MsSqlNode]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         return list(chain(self.tables, self.columns))
 
     def get_edges(self) -> List[Edge]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         return [edge for edge in chain(*[t.get_edges() for t in self.tables], self.foreign_keys) if edge is not None]
 
     def get_nodes_and_edges(self) -> Tuple[List[MsSqlNode], List[Edge]]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         nodes = self.get_nodes()
         edges = self.get_edges()
 

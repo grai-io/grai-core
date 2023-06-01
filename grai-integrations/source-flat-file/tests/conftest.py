@@ -15,6 +15,7 @@ from grai_source_flat_file.base import get_nodes_and_edges
 
 @pytest.fixture
 def mock_data():
+    """ """
     n = 10
     test_data = {"a": range(n), "b": ["t"] * n}
     return pd.DataFrame(test_data)
@@ -22,6 +23,16 @@ def mock_data():
 
 @pytest.fixture
 def mock_get_nodes_and_edges(mock_data):
+    """
+
+    Args:
+        mock_data:
+
+    Returns:
+
+    Raises:
+
+    """
     file_name = "test.csv"
     namespace = "test"
 

@@ -5,24 +5,42 @@ from pydantic import BaseModel, Field, root_validator, validator
 
 
 class RedshiftNode(BaseModel):
+    """ """
+
     pass
 
 
 class ID(RedshiftNode):
+    """ """
+
     name: str
     namespace: str
     full_name: str
 
     class Config:
+        """ """
+
         extra = "forbid"
 
 
 class TableID(ID):
+    """ """
+
     table_schema: str
     name: str
 
     @root_validator(pre=True)
     def make_full_name(cls, values):
+        """
+
+        Args:
+            values:
+
+        Returns:
+
+        Raises:
+
+        """
         full_name = values.get("full_name", None)
         if values.get("full_name", None) is None:
             values["full_name"] = f"{values['table_schema']}.{values['name']}"
@@ -30,12 +48,24 @@ class TableID(ID):
 
 
 class ColumnID(ID):
+    """ """
+
     table_schema: str
     table_name: str
     name: str
 
     @root_validator(pre=True)
     def make_full_name(cls, values):
+        """
+
+        Args:
+            values:
+
+        Returns:
+
+        Raises:
+
+        """
         full_name = values.get("full_name", None)
         if values.get("full_name", None) is None:
             values["full_name"] = f"{values['table_schema']}.{values['table_name']}.{values['name']}"
@@ -43,6 +73,8 @@ class ColumnID(ID):
 
 
 class ColumnConstraint(Enum):
+    """ """
+
     primary_key = "p"
     unique = "u"
     foreign_key = "f"
@@ -55,6 +87,8 @@ UNIQUE_COLUMN_CONSTRAINTS = {ColumnConstraint.primary_key.value, ColumnConstrain
 
 
 class Column(RedshiftNode):
+    """ """
+
     name: str = Field(alias="column_name")
     table: str = Field(alias="table_name")
     column_schema: str = Field(alias="schema")
@@ -67,10 +101,23 @@ class Column(RedshiftNode):
     full_name: Optional[str] = None
 
     class Config:
+        """ """
+
         allow_population_by_field_name = True
 
     @validator("full_name", always=True)
     def make_full_name(cls, full_name, values):
+        """
+
+        Args:
+            full_name:
+            values:
+
+        Returns:
+
+        Raises:
+
+        """
         if full_name is not None:
             return full_name
         result = f"{values['column_schema']}.{values['table']}.{values['name']}"
@@ -78,12 +125,16 @@ class Column(RedshiftNode):
 
 
 class Constraint(str, Enum):
+    """ """
+
     foreign_key = "FOREIGN KEY"
     primary_key = "PRIMARY KEY"
     belongs_to = "bt"
 
 
 class Edge(BaseModel):
+    """ """
+
     source: Union[ColumnID, TableID]
     destination: Union[ColumnID, TableID]
     definition: Optional[str]
@@ -92,6 +143,8 @@ class Edge(BaseModel):
 
 
 class TableType(str, Enum):
+    """ """
+
     Table = "BASE TABLE"
     View = "VIEW"
     ForeignTable = "FOREIGN"
@@ -99,6 +152,8 @@ class TableType(str, Enum):
 
 
 class Table(RedshiftNode):
+    """ """
+
     name: str = Field(alias="table_name")
     table_schema: str = Field(alias="schema")
     table_type: TableType
@@ -108,16 +163,30 @@ class Table(RedshiftNode):
     full_name: Optional[str] = None
 
     class Config:
+        """ """
+
         allow_population_by_field_name = True
 
     @validator("full_name", always=True)
     def make_full_name(cls, full_name, values):
+        """
+
+        Args:
+            full_name:
+            values:
+
+        Returns:
+
+        Raises:
+
+        """
         if full_name is not None:
             return full_name
 
         return f"{values['table_schema']}.{values['name']}"
 
     def get_edges(self):
+        """ """
         return [
             Edge(
                 constraint_type=Constraint("bt"),
@@ -138,6 +207,8 @@ class Table(RedshiftNode):
 
 
 class EdgeQuery(BaseModel):
+    """ """
+
     namespace: str
     constraint_name: str
     constraint_type: str
@@ -149,6 +220,15 @@ class EdgeQuery(BaseModel):
     foreign_column: str
 
     def to_edge(self) -> Edge:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         destination = ColumnID(
             table_schema=self.self_schema,
             table_name=self.self_table,

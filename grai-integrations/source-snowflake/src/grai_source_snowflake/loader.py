@@ -16,6 +16,16 @@ from grai_source_snowflake.models import (
 
 
 def string_is_quoted(string: str) -> bool:
+    """
+
+    Args:
+        string (str):
+
+    Returns:
+
+    Raises:
+
+    """
     return string.startswith('"') and string.endswith('"')
 
 
@@ -25,6 +35,19 @@ def get_from_env(
     required: bool = True,
     validator: Optional[Callable] = None,
 ):
+    """
+
+    Args:
+        label (str):
+        default (Optional[Any], optional):  (Default value = None)
+        required (bool, optional):  (Default value = True)
+        validator (Optional[Callable], optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
+    """
     env_key = f"GRAI_SNOWFLAKE_{label.upper()}"
     result = os.getenv(env_key, default)
     if result is None and required:
@@ -37,6 +60,8 @@ def get_from_env(
 
 
 class SnowflakeConnector:
+    """ """
+
     def __init__(
         self,
         account: Optional[str] = None,
@@ -70,6 +95,13 @@ class SnowflakeConnector:
 
         Full documentation of the API available here
         https://docs.snowflake.com/en/developer-guide/python-connector/python-connector-api#label-snowflake-connector-methods
+
+        Args:
+
+        Returns:
+
+        Raises:
+
         """
         connection_keys = [
             "account",
@@ -82,31 +114,75 @@ class SnowflakeConnector:
         return {key: value for key in connection_keys if (value := getattr(self, key)) is not None}
 
     def connect(self) -> "SnowflakeConnector":
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         if self._connection is None:
             self._connection = snowflake.connector.connect(**self.connection_dict, **self.additional_conn_kwargs)
         return self
 
     @property
     def connection(self) -> snowflake.connector.SnowflakeConnection:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         if self._connection is None:
             raise Exception("Not connected, call `.connect()")
         return self._connection
 
     def close(self) -> None:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         self.connection.close()
         self._connection = None
 
     def query_runner(self, query: str, param_dict: Dict = {}) -> List[Dict]:
+        """
+
+        Args:
+            query (str):
+            param_dict (Dict, optional):  (Default value = {})
+
+        Returns:
+
+        Raises:
+
+        """
         dict_cursor = self.connection.cursor(snowflake.connector.DictCursor)
         dict_cursor.execute(query, param_dict)
         return dict_cursor.fetchall()  # type: ignore
 
     @cached_property
     def tables(self) -> List[Table]:
-        """
-        Create and return a list of dictionaries with the
+        """Create and return a list of dictionaries with the
         schemas and names of tables in the database
         connected to by the connection argument.
+
+        Args:
+
+        Returns:
+
+        Raises:
+
         """
         query = """
 	        SELECT table_schema, table_name, table_type
@@ -128,12 +204,28 @@ class SnowflakeConnector:
 
     @cached_property
     def columns(self) -> List[Column]:
-        """
-        Creates and returns a list of dictionaries for the specified
+        """Creates and returns a list of dictionaries for the specified
         schema.table in the database connected to.
+
+        Args:
+
+        Returns:
+
+        Raises:
+
         """
 
         def quoted_table_name(table_name: str) -> str:
+            """
+
+            Args:
+                table_name (str):
+
+            Returns:
+
+            Raises:
+
+            """
             return table_name if table_name.startswith('"') and table_name.endswith('"') else f"'{table_name.upper()}'"
 
         query = f"""
@@ -159,6 +251,15 @@ class SnowflakeConnector:
 
     @cached_property
     def column_map(self) -> Dict[Tuple[str, str], List[Column]]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         result_map: Dict[Tuple[str, str], List[Column]] = {}
         for col in self.columns:
             table_id = (col.column_schema, col.table)
@@ -167,6 +268,16 @@ class SnowflakeConnector:
         return result_map
 
     def get_table_columns(self, table: Table):
+        """
+
+        Args:
+            table (Table):
+
+        Returns:
+
+        Raises:
+
+        """
         table_id = (table.table_schema, table.name)
         if table_id in self.column_map:
             return self.column_map[table_id]
@@ -182,9 +293,13 @@ class SnowflakeConnector:
     @cached_property
     def foreign_keys(self) -> List[Edge]:
         """This needs to be tested / evaluated
-        :param connection:
-        :param table:
-        :return:
+
+        Args:
+
+        Returns:
+
+        Raises:
+
         """
         # This query only returns foreign keys, there is also exported keys and primary keys.
         # Information schema itself doesn't carry the column for foreign keys
@@ -223,14 +338,41 @@ class SnowflakeConnector:
         return edges
 
     def get_nodes(self) -> List[SnowflakeNode]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         # return list(chain(self.tables, *[t.columns for t in self.tables]))
         return list(chain(self.tables, self.columns))
 
     def get_edges(self) -> List[Edge]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         edges = [edge for edge in chain(*[t.get_edges() for t in self.tables], self.foreign_keys) if edge is not None]
         return edges
 
     def get_nodes_and_edges(self) -> Tuple[List[SnowflakeNode], List[Edge]]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         nodes = self.get_nodes()
         edges = self.get_edges()
         return nodes, edges

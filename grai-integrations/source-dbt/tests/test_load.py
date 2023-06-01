@@ -15,15 +15,47 @@ from grai_source_dbt.utils import full_name
 
 
 def resource_path(filename: str, version: str, subproject: str = "jaffle_shop"):
+    """
+
+    Args:
+        filename (str):
+        version (str):
+        subproject (str, optional):  (Default value = "jaffle_shop")
+
+    Returns:
+
+    Raises:
+
+    """
     file = f"{get_project_root()}/../tests/resources/{version}/{subproject}/{filename}"
     return file
 
 
 def load_resource(file) -> ManifestProcessor:
+    """
+
+    Args:
+        file:
+
+    Returns:
+
+    Raises:
+
+    """
     return ManifestProcessor.load(file, "default")
 
 
 def manifest_ver(id: str) -> ManifestProcessor:
+    """
+
+    Args:
+        id (str):
+
+    Returns:
+
+    Raises:
+
+    """
     file = resource_path("manifest.json", version=id)
     return ManifestProcessor.load(file, "default")
 
@@ -37,15 +69,47 @@ processors = [load_resource(file) for file in files]
 
 @pytest.mark.parametrize("processor", processors, ids=ids)
 class TestProcessors:
+    """ """
+
     def test_all_manifest_node_full_names_unique(self, processor):
+        """
+
+        Args:
+            processor:
+
+        Returns:
+
+        Raises:
+
+        """
         node_names = {full_name(node) for node in processor.manifest.nodes.values()}
         assert len(node_names) == len(processor.manifest.nodes)
 
     def test_all_manifest_source_full_names_unique(self, processor):
+        """
+
+        Args:
+            processor:
+
+        Returns:
+
+        Raises:
+
+        """
         node_names = {full_name(node) for node in processor.manifest.sources.values()}
         assert len(node_names) == len(processor.manifest.sources)
 
     def test_all_manifest_source_and_node_full_names_unique(self, processor):
+        """
+
+        Args:
+            processor:
+
+        Returns:
+
+        Raises:
+
+        """
         node_names = {full_name(node) for node in processor.manifest.nodes.values()}
         source_names = {full_name(node) for node in processor.manifest.sources.values()}
         assert (len(node_names) + len(source_names)) == (
@@ -53,17 +117,57 @@ class TestProcessors:
         )
 
     def test_all_manifest_node_and_column_full_names_unique(self, processor):
+        """
+
+        Args:
+            processor:
+
+        Returns:
+
+        Raises:
+
+        """
         node_names = {full_name(node) for node in processor.manifest.nodes.values()}
         column_names = {column.full_name for column in processor.loader.columns.values()}
         assert (len(node_names) + len(column_names)) == (len(processor.manifest.nodes) + len(processor.loader.columns))
 
     def test_graph_nodes_created(self, processor):
+        """
+
+        Args:
+            processor:
+
+        Returns:
+
+        Raises:
+
+        """
         assert len(processor.nodes) > 0
 
     def test_graph_edges_created(self, processor):
+        """
+
+        Args:
+            processor:
+
+        Returns:
+
+        Raises:
+
+        """
         assert len(processor.edges) > 0
 
     def validate_adapter_for_node_types(self, processor):
+        """
+
+        Args:
+            processor:
+
+        Returns:
+
+        Raises:
+
+        """
         seen_types = []
         for node in processor.nodes.values():
             node_type = type(node)
@@ -73,6 +177,16 @@ class TestProcessors:
                 raise Exception(f"Failed to adapt node type: {node_type}")
 
     def validate_adapter_for_edge_types(self, processor):
+        """
+
+        Args:
+            processor:
+
+        Returns:
+
+        Raises:
+
+        """
         seen_types = []
         for edge in processor.edges.values():
             edge_type = type(edge)
@@ -82,39 +196,139 @@ class TestProcessors:
                 raise Exception(f"Failed to adapt node type: {edge_type}")
 
     def test_v1_adapted_nodes_have_name(self, processor):
+        """
+
+        Args:
+            processor:
+
+        Returns:
+
+        Raises:
+
+        """
         assert all(node.spec.name is not None for node in processor.adapted_nodes)
 
     def test_v1_adapted_nodes_have_namespace(self, processor):
+        """
+
+        Args:
+            processor:
+
+        Returns:
+
+        Raises:
+
+        """
         assert all(node.spec.namespace is not None for node in processor.adapted_nodes)
 
     def test_v1_adapted_edge_source_has_name(self, processor):
+        """
+
+        Args:
+            processor:
+
+        Returns:
+
+        Raises:
+
+        """
         assert all(edge.spec.source.name is not None for edge in processor.adapted_edges)
 
     def test_v1_adapted_edge_source_has_namespace(self, processor):
+        """
+
+        Args:
+            processor:
+
+        Returns:
+
+        Raises:
+
+        """
         assert all(edge.spec.source.namespace is not None for edge in processor.adapted_edges)
 
     def test_v1_adapted_edge_destination_has_name(self, processor):
+        """
+
+        Args:
+            processor:
+
+        Returns:
+
+        Raises:
+
+        """
         assert all(edge.spec.destination.name is not None for edge in processor.adapted_edges)
 
     def test_v1_adapted_edge_destination_has_namespace(self, processor):
+        """
+
+        Args:
+            processor:
+
+        Returns:
+
+        Raises:
+
+        """
         assert all(edge.spec.destination.namespace is not None for edge in processor.adapted_edges)
 
     def test_v1_adapt_nodes(self, processor):
+        """
+
+        Args:
+            processor:
+
+        Returns:
+
+        Raises:
+
+        """
         test_type = NodeV1
         for item in processor.adapted_nodes:
             assert isinstance(item, test_type), f"{type(item)} is not of type {test_type}"
 
     def test_v1_adapt_edges(self, processor):
+        """
+
+        Args:
+            processor:
+
+        Returns:
+
+        Raises:
+
+        """
         test_type = EdgeV1
         for item in processor.adapted_edges:
             assert isinstance(item, test_type), f"{type(item)} is not of type {test_type}"
 
     def test_v1_adapted_edge_sources_have_nodes(self, processor):
+        """
+
+        Args:
+            processor:
+
+        Returns:
+
+        Raises:
+
+        """
         node_ids = {(n.spec.namespace, n.spec.name) for n in processor.adapted_nodes}
         edge_source_ids = {(n.spec.source.namespace, n.spec.source.name) for n in processor.adapted_edges}
         assert len(edge_source_ids - node_ids) == 0, "All edge sources should exist in the node list"
 
     def test_v1_adapted_edge_destination_have_nodes(self, processor):
+        """
+
+        Args:
+            processor:
+
+        Returns:
+
+        Raises:
+
+        """
         node_ids = {(n.spec.namespace, n.spec.name) for n in processor.adapted_nodes}
         edge_destination_ids = {
             (n.spec.destination.namespace, n.spec.destination.name) for n in processor.adapted_edges
@@ -122,6 +336,16 @@ class TestProcessors:
         assert len(edge_destination_ids - node_ids) == 0, "All edge destinations should exist in the node list"
 
     def test_get_nodes_and_edges(self, processor):
+        """
+
+        Args:
+            processor:
+
+        Returns:
+
+        Raises:
+
+        """
         nodes, edges = processor.adapted_nodes, processor.adapted_edges
 
         node_ids = {(node.spec.name, node.spec.namespace) for node in nodes}
@@ -134,12 +358,42 @@ class TestProcessors:
         ), f"Edge destinations {destination_ids - node_ids} missing from node list"
 
     def test_has_table_to_column_metadata(self, processor):
+        """
+
+        Args:
+            processor:
+
+        Returns:
+
+        Raises:
+
+        """
         assert any(isinstance(edge.spec.metadata.grai, TableToColumnMetadata) for edge in processor.adapted_edges)
 
     def test_has_table_to_table_metadata(self, processor):
+        """
+
+        Args:
+            processor:
+
+        Returns:
+
+        Raises:
+
+        """
         assert any(isinstance(edge.spec.metadata.grai, TableToTableMetadata) for edge in processor.adapted_edges)
 
     def test_all_bt_edges_have_table_to_column_metadata(self, processor):
+        """
+
+        Args:
+            processor:
+
+        Returns:
+
+        Raises:
+
+        """
         bt_edges = (
             edge for edge in processor.adapted_edges if edge.spec.metadata.grai_source_dbt["constraint_type"] == "bt"
         )
@@ -147,6 +401,16 @@ class TestProcessors:
             assert isinstance(edge.metadata.grai, TableToColumnMetadata)
 
     def test_all_dbtm_edges_have_column_to_column_metadata(self, processor):
+        """
+
+        Args:
+            processor:
+
+        Returns:
+
+        Raises:
+
+        """
         bt_edges = (
             edge for edge in processor.adapted_edges if edge.spec.metadata.grai_source_dbt["constraint_type"] == "dbtm"
         )
@@ -154,6 +418,16 @@ class TestProcessors:
             assert isinstance(edge.metadata.grai, ColumnToColumnMetadata)
 
     def test_metadata_has_core_metadata_ids(self, processor):
+        """
+
+        Args:
+            processor:
+
+        Returns:
+
+        Raises:
+
+        """
         nodes, edges = processor.adapted_nodes, processor.adapted_edges
         for node in nodes:
             assert hasattr(node.spec.metadata, core_config.metadata_id)
@@ -162,6 +436,16 @@ class TestProcessors:
             assert hasattr(edge.spec.metadata, core_config.metadata_id)
 
     def test_metadata_has_dbt_metadata_id(self, processor):
+        """
+
+        Args:
+            processor:
+
+        Returns:
+
+        Raises:
+
+        """
         nodes, edges = processor.adapted_nodes, processor.adapted_edges
         for node in nodes:
             assert hasattr(node.spec.metadata, config.metadata_id)
@@ -170,6 +454,16 @@ class TestProcessors:
             assert hasattr(edge.spec.metadata, config.metadata_id)
 
     def test_metadata_is_core_compliant(self, processor):
+        """
+
+        Args:
+            processor:
+
+        Returns:
+
+        Raises:
+
+        """
         nodes, edges = processor.adapted_nodes, processor.adapted_edges
 
         for node in nodes:

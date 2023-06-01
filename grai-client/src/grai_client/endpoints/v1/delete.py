@@ -7,6 +7,18 @@ from grai_client.endpoints.v1.client import ClientV1
 
 @delete.register
 def delete_node_v1(client: ClientV1, grai_type: NodeV1, options: ClientOptions = ClientOptions()):
+    """
+
+    Args:
+        client (ClientV1):
+        grai_type (NodeV1):
+        options (ClientOptions, optional):  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
     if grai_type.spec.id is None:
         grai_type = get(client, grai_type)
         if grai_type is None:
@@ -17,6 +29,18 @@ def delete_node_v1(client: ClientV1, grai_type: NodeV1, options: ClientOptions =
 
 @delete.register
 def delete_edge_v1(client: ClientV1, grai_type: EdgeV1, options: ClientOptions = ClientOptions()):
+    """
+
+    Args:
+        client (ClientV1):
+        grai_type (EdgeV1):
+        options (ClientOptions, optional):  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
     if grai_type.spec.id is None:
         grai_type = get(client, grai_type)
         if grai_type is None:

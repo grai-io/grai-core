@@ -3,10 +3,14 @@ from pydantic import BaseModel
 
 
 class TestMerge:
+    """ """
+
     def test_merge_pydantic(self):
         """test that two BaseModels can be successfully merged into a dictionary"""
 
         class Model(BaseModel):
+            """ """
+
             a: int
             b: int
 
@@ -19,6 +23,8 @@ class TestMerge:
         """test that a BaseModel can be successfully merged into a dictionary"""
 
         class Model(BaseModel):
+            """ """
+
             a: int
             b: int
 
@@ -31,6 +37,8 @@ class TestMerge:
         """test that a dictionary can be successfully merged into a BaseModel"""
 
         class Model(BaseModel):
+            """ """
+
             a: int
             b: int
 

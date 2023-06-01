@@ -20,6 +20,16 @@ table_values = [(item, "v1", NodeV1) for item in tables]
 
 
 def test_building_tables(connection):
+    """
+
+    Args:
+        connection:
+
+    Returns:
+
+    Raises:
+
+    """
     with connection.connect() as conn:
         result = conn.tables
 
@@ -30,6 +40,16 @@ def test_building_tables(connection):
 
 
 def test_building_columns(connection):
+    """
+
+    Args:
+        connection:
+
+    Returns:
+
+    Raises:
+
+    """
     with connection.connect() as conn:
         result = conn.columns
 
@@ -37,6 +57,16 @@ def test_building_columns(connection):
 
 
 def test_building_foreign_keys(connection):
+    """
+
+    Args:
+        connection:
+
+    Returns:
+
+    Raises:
+
+    """
     with connection.connect() as conn:
         result = conn.foreign_keys
 
@@ -44,12 +74,32 @@ def test_building_foreign_keys(connection):
 
 
 def test_building_nodes(connection):
+    """
+
+    Args:
+        connection:
+
+    Returns:
+
+    Raises:
+
+    """
     with connection.connect() as conn:
         result = conn.get_nodes()
     assert len(result) > 0
 
 
 def test_building_edges(connection):
+    """
+
+    Args:
+        connection:
+
+    Returns:
+
+    Raises:
+
+    """
     with connection.connect() as conn:
         result = conn.get_edges()
 
@@ -58,6 +108,7 @@ def test_building_edges(connection):
 
 @pytest.mark.filterwarnings("ignore:Specified driver")
 def test_connector_from_env_vars():
+    """ """
     env_vars = {
         "GRAI_MSSQL_DATABASE": "localhost",
         "GRAI_MSSQL_SERVER": "grai",

@@ -51,7 +51,23 @@ SourceTypes = Union[ParsedSourceDefinition]
 
 
 class ManifestLoaderV7(ManifestLoaderV1):
+    """ """
+
     def make_edge(self, source, destination, constraint_type, edge_type, definition: bool = False) -> Edge:
+        """
+
+        Args:
+            source:
+            destination:
+            constraint_type:
+            edge_type:
+            definition (bool, optional):  (Default value = False)
+
+        Returns:
+
+        Raises:
+
+        """
         source_terminus = EdgeTerminus(name=full_name(source), namespace=self.namespace)
         destination_terminus = EdgeTerminus(name=full_name(destination), namespace=self.namespace)
         if definition:

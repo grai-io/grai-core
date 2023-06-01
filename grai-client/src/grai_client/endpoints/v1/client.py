@@ -9,6 +9,8 @@ from grai_client.endpoints.utilities import is_valid_uuid
 
 
 class ClientV1(BaseClient):
+    """ """
+
     id: Literal["v1"] = "v1"
     base = "/api/v1/"
     _node_endpoint = "lineage/nodes/"
@@ -30,14 +32,42 @@ class ClientV1(BaseClient):
             self.authenticate(**self.init_auth_values.dict())
 
     def check_authentication(self) -> Response:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         return httpx.get(self.is_authenticated_endpoint, auth=self.auth)
 
     @property
     def workspace(self) -> Optional[str]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         return self._workspace
 
     @workspace.setter
     def workspace(self, workspace: Optional[Union[str, UUID]]):
+        """
+
+        Args:
+            workspace (Optional[Union[str, UUID]]):
+
+        Returns:
+
+        Raises:
+
+        """
         if workspace is None:
             self._workspace = workspace
             self.default_query_args.pop("workspace", None)
@@ -64,5 +94,17 @@ class ClientV1(BaseClient):
         password: Optional[str] = None,
         api_key: Optional[str] = None,
     ) -> None:
+        """
+
+        Args:
+            username (Optional[str], optional):  (Default value = None)
+            password (Optional[str], optional):  (Default value = None)
+            api_key (Optional[str], optional):  (Default value = None)
+
+        Returns:
+
+        Raises:
+
+        """
         super().authenticate(username, password, api_key)
         self.workspace = self.workspace

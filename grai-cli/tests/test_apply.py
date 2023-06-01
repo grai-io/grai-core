@@ -13,11 +13,13 @@ from grai_cli.utilities.utilities import write_yaml
 
 
 def get_temp_file():
+    """ """
     fname = os.urandom(24).hex()
     return os.path.join(tempfile.gettempdir(), fname)
 
 
 def make_v1_node():
+    """ """
     node = {
         "version": "v1",
         "type": "Node",
@@ -31,6 +33,17 @@ def make_v1_node():
 
 
 def make_v1_edge(source_id, destination_id):
+    """
+
+    Args:
+        source_id:
+        destination_id:
+
+    Returns:
+
+    Raises:
+
+    """
     node = {
         "version": "v1",
         "type": "Edge",
@@ -46,6 +59,16 @@ def make_v1_edge(source_id, destination_id):
 
 
 def test_apply_single_node(runner):
+    """
+
+    Args:
+        runner:
+
+    Returns:
+
+    Raises:
+
+    """
     with tempfile.NamedTemporaryFile("w+") as file:
         node_dict = make_v1_node()
         write_yaml(node_dict, file.name)
@@ -54,6 +77,16 @@ def test_apply_single_node(runner):
 
 
 def test_apply_multi_node(runner):
+    """
+
+    Args:
+        runner:
+
+    Returns:
+
+    Raises:
+
+    """
     with tempfile.NamedTemporaryFile("w+") as file:
         file_name = pathlib.Path(file.name)
         nodes = [make_v1_node() for i in range(5)]
@@ -63,6 +96,16 @@ def test_apply_multi_node(runner):
 
 
 def test_create_and_get_nodes(runner):
+    """
+
+    Args:
+        runner:
+
+    Returns:
+
+    Raises:
+
+    """
     with tempfile.NamedTemporaryFile("w+") as file:
         nodes = [make_v1_node() for i in range(2)]
         write_yaml(nodes, file.name)
@@ -76,6 +119,16 @@ def test_create_and_get_nodes(runner):
 
 
 def test_delete_single_node(runner):
+    """
+
+    Args:
+        runner:
+
+    Returns:
+
+    Raises:
+
+    """
     with tempfile.NamedTemporaryFile("w+") as file:
         file_name = pathlib.Path(file.name)
         node_dict = make_v1_node()

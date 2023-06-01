@@ -12,6 +12,7 @@ from grai_cli.utilities.utilities import merge_dicts, write_yaml
 
 @client_app.command("is_authenticated", help="Verify auth credentials are valid")
 def is_authenticated():
+    """ """
     client = get_default_client()
     authentication_status = client.check_authentication()
     if authentication_status.status_code == 200:
@@ -28,6 +29,19 @@ def get_nodes(
     print: bool = True,
     to_file: Optional[Path] = None,
 ):
+    """
+
+    Args:
+        name (Optional[str], optional):  (Default value = None)
+        namespace (Optional[str], optional):  (Default value = None)
+        print (bool, optional):  (Default value = True)
+        to_file (Optional[Path], optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
+    """
     client = get_default_client()
     if name is None:
         if namespace is None:
@@ -54,6 +68,19 @@ def get_nodes_cli(
     print: bool = typer.Option(True, "--p", help=f"Print nodes to console"),
     to_file: Optional[Path] = typer.Option(None, "--f", help="Write nodes to file"),
 ):
+    """
+
+    Args:
+        name (Optional[str], optional):  (Default value = typer.Argument(None))
+        namespace (Optional[str], optional):  (Default value = typer.Option(None, "--namespace", "-n", help="Namespace of node"))
+        print (bool, optional):  (Default value = typer.Option(True, "--p", help=f"Print nodes to console"))
+        to_file (Optional[Path], optional):  (Default value = typer.Option(None, "--f", help="Write nodes to file"))
+
+    Returns:
+
+    Raises:
+
+    """
     return get_nodes(name=name, namespace=namespace, print=print, to_file=to_file)
 
 
@@ -62,6 +89,17 @@ def get_edges(
     print: bool = typer.Option(True, "--p", help=f"Print edges to console"),
     to_file: Optional[Path] = typer.Option(None, "--f", help="Write edges to file"),
 ):
+    """
+
+    Args:
+        print (bool, optional):  (Default value = typer.Option(True, "--p", help=f"Print edges to console"))
+        to_file (Optional[Path], optional):  (Default value = typer.Option(None, "--f", help="Write edges to file"))
+
+    Returns:
+
+    Raises:
+
+    """
     client = get_default_client()
     result = client.get("Edge")
 
@@ -79,6 +117,18 @@ def get_workspaces(
     print: bool = typer.Option(True, "--p", help=f"Print workspaces to console"),
     to_file: Optional[Path] = typer.Option(None, "--f", help="Write workspaces to file"),
 ):
+    """
+
+    Args:
+        name (str, optional):  (Default value = typer.Argument(None))
+        print (bool, optional):  (Default value = typer.Option(True, "--p", help=f"Print workspaces to console"))
+        to_file (Optional[Path], optional):  (Default value = typer.Option(None, "--f", help="Write workspaces to file"))
+
+    Returns:
+
+    Raises:
+
+    """
     client = get_default_client()
     if name is None:
         result = client.get("workspaces")
@@ -98,6 +148,17 @@ def apply(
     file: Path = typer.Argument(...),
     dry_run: bool = typer.Option(False, "--d", help="Dry run of file application"),
 ):
+    """
+
+    Args:
+        file (Path, optional):  (Default value = typer.Argument(...))
+        dry_run (bool, optional):  (Default value = typer.Option(False, "--d", help="Dry run of file application"))
+
+    Returns:
+
+    Raises:
+
+    """
     from grai_client.schemas.schema import validate_file
 
     # TODO: Edges don't have a human readable unique identifier
@@ -124,6 +185,17 @@ def delete(
     file: Path = typer.Argument(...),
     dry_run: bool = typer.Option(False, "--d", help="Dry run of file application"),
 ):
+    """
+
+    Args:
+        file (Path, optional):  (Default value = typer.Argument(...))
+        dry_run (bool, optional):  (Default value = typer.Option(False, "--d", help="Dry run of file application"))
+
+    Returns:
+
+    Raises:
+
+    """
     from grai_client.schemas.schema import validate_file
 
     # TODO: Edges don't have a human readable unique identifier

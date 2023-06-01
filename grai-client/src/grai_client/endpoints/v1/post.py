@@ -10,6 +10,18 @@ from grai_client.endpoints.v1.utils import process_node_id
 
 @post.register
 def post_node_v1(client: ClientV1, grai_type: NodeV1, options: ClientOptions = ClientOptions()) -> NodeV1:
+    """
+
+    Args:
+        client (ClientV1):
+        grai_type (NodeV1):
+        options (ClientOptions, optional):  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
     url = client.get_url(grai_type)
     response = post(client, url, grai_type.spec.dict(exclude_none=True), options=options)
     return NodeV1.from_spec(response.json())
@@ -17,6 +29,18 @@ def post_node_v1(client: ClientV1, grai_type: NodeV1, options: ClientOptions = C
 
 @post.register
 def post_edge_v1(client: ClientV1, grai_type: EdgeV1, options: ClientOptions = ClientOptions()) -> Optional[EdgeV1]:
+    """
+
+    Args:
+        client (ClientV1):
+        grai_type (EdgeV1):
+        options (ClientOptions, optional):  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
     url = client.get_url(grai_type)
     # source, destination = asyncio.gather(
     #     process_node_id(client, grai_type.spec.source, options),

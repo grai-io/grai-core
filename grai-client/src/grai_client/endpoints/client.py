@@ -51,6 +51,8 @@ ProtocolType = Union[Literal["http"], Literal["https"]]
 
 
 class ClientOptions(BaseModel):
+    """ """
+
     payload: Dict = {}
     request_args: Dict = {}
     headers: Dict = {}
@@ -80,6 +82,20 @@ def validate_connection_arguments(
     protocol: Optional[ProtocolType] = None,
     insecure: Optional[bool] = None,
 ) -> Tuple[str, str, Optional[str], ProtocolType, bool]:
+    """
+
+    Args:
+        url (Optional[str], optional):  (Default value = None)
+        host (Optional[str], optional):  (Default value = None)
+        port (Optional[str], optional):  (Default value = None)
+        protocol (Optional[ProtocolType], optional):  (Default value = None)
+        insecure (Optional[bool], optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
+    """
     if url is not None:
         # derive from url
         parsed_url = urlparse(url)
@@ -171,14 +187,34 @@ def validate_connection_arguments(
 
 
 class AuthValues(BaseModel):
+    """ """
+
     username: Optional[str] = None
     password: Optional[SecretStr] = None
     api_key: Optional[SecretStr] = None
 
     def is_valid(self) -> bool:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         return self.api_key is not None or (self.username is not None and self.password is not None)
 
     def get_auth(self) -> Auth:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         if self.api_key is not None:
             auth = APIKeyAuth(self.api_key.get_secret_value())
         elif self.username is not None and self.password is not None:
@@ -190,8 +226,30 @@ class AuthValues(BaseModel):
 
 
 def async_requires_auth(func):
+    """
+
+    Args:
+        func:
+
+    Returns:
+
+    Raises:
+
+    """
+
     @wraps(func)
     def wrapper(self, *args, **kwargs):
+        """
+
+        Args:
+            *args:
+            **kwargs:
+
+        Returns:
+
+        Raises:
+
+        """
         if self.is_authenticated:
             return func(self, *args, **kwargs)
         else:
@@ -201,8 +259,30 @@ def async_requires_auth(func):
 
 
 def requires_auth(func):
+    """
+
+    Args:
+        func:
+
+    Returns:
+
+    Raises:
+
+    """
+
     @wraps(func)
     def wrapper(self, *args, **kwargs):
+        """
+
+        Args:
+            *args:
+            **kwargs:
+
+        Returns:
+
+        Raises:
+
+        """
         if self.is_authenticated:
             return func(self, *args, **kwargs)
         else:
@@ -212,6 +292,8 @@ def requires_auth(func):
 
 
 class BaseClient(abc.ABC):
+    """ """
+
     id = "base"
     api: str
     health_endpoint: str
@@ -261,6 +343,15 @@ class BaseClient(abc.ABC):
             raise Exception(f"Error connecting to server at {self.url}. Received response {resp.json()}")
 
     def get_session(self) -> httpx.Client:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         client_args = {"timeout": None, "http2": True, "params": QueryParams(**self.default_query_args)}
         client_args.update(self.httpx_client_args if self.httpx_client_args is not None else {})
 
@@ -270,6 +361,15 @@ class BaseClient(abc.ABC):
 
     @property
     def default_options(self) -> ClientOptions:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         return ClientOptions(
             **{
                 "payload": self.default_payload,
@@ -280,10 +380,28 @@ class BaseClient(abc.ABC):
         )
 
     def server_health_status(self) -> Response:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         return httpx.get(self.health_endpoint)
 
     @property
     def auth(self) -> Auth:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         if self._auth is None:
             # if self._init_auth_values.is_valid():
             #     self.auth = self._init_auth_values.get_auth()
@@ -293,6 +411,16 @@ class BaseClient(abc.ABC):
 
     @auth.setter
     def auth(self, auth: Auth) -> None:
+        """
+
+        Args:
+            auth (Auth):
+
+        Returns:
+
+        Raises:
+
+        """
         old_auth = self._auth
         if not isinstance(auth, Auth):
             raise TypeError(f"Expected an instance of `httpx.Auth` not {type(auth)}")
@@ -320,18 +448,62 @@ class BaseClient(abc.ABC):
         password: Optional[str] = None,
         api_key: Optional[str] = None,
     ) -> None:
+        """
+
+        Args:
+            username (Optional[str], optional):  (Default value = None)
+            password (Optional[str], optional):  (Default value = None)
+            api_key (Optional[str], optional):  (Default value = None)
+
+        Returns:
+
+        Raises:
+
+        """
         auth_values = AuthValues(username=username, password=password, api_key=api_key)
         self.auth = auth_values.get_auth()
 
     @abc.abstractmethod
     def check_authentication(self) -> Response:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         raise NotImplementedError(f"No authentication implemented for {type(self)}")
 
     @multimethod
     def get_url(self, grai_type: Any) -> str:
+        """
+
+        Args:
+            grai_type (Any):
+
+        Returns:
+
+        Raises:
+
+        """
         raise NotImplementedError(f"No url method implemented for type {type(grai_type)}")
 
     def session_manager(self, func: Callable, *args, options: Optional[OptionType] = None, **kwargs):
+        """
+
+        Args:
+            func (Callable):
+            *args:
+            options (Optional[OptionType], optional):  (Default value = None)
+            **kwargs:
+
+        Returns:
+
+        Raises:
+
+        """
         if options is None:
             options = ClientOptions()
 
@@ -346,18 +518,66 @@ class BaseClient(abc.ABC):
 
     @requires_auth
     def get(self, *args, options: Optional[OptionType] = None, **kwargs):
+        """
+
+        Args:
+            *args:
+            options (Optional[OptionType], optional):  (Default value = None)
+            **kwargs:
+
+        Returns:
+
+        Raises:
+
+        """
         return self.session_manager(get, *args, options=options, **kwargs)
 
     @requires_auth
     def post(self, *args, options: Optional[OptionType] = None, **kwargs):
+        """
+
+        Args:
+            *args:
+            options (Optional[OptionType], optional):  (Default value = None)
+            **kwargs:
+
+        Returns:
+
+        Raises:
+
+        """
         return self.session_manager(post, *args, options=options, **kwargs)
 
     @requires_auth
     def patch(self, *args, options: Optional[OptionType] = None, **kwargs):
+        """
+
+        Args:
+            *args:
+            options (Optional[OptionType], optional):  (Default value = None)
+            **kwargs:
+
+        Returns:
+
+        Raises:
+
+        """
         return self.session_manager(patch, *args, options=options, **kwargs)
 
     @requires_auth
     def delete(self, *args, options: Optional[OptionType] = None, **kwargs):
+        """
+
+        Args:
+            *args:
+            options (Optional[OptionType], optional):  (Default value = None)
+            **kwargs:
+
+        Returns:
+
+        Raises:
+
+        """
         return self.session_manager(delete, *args, options=options, **kwargs)
 
 
@@ -367,6 +587,17 @@ class BaseClient(abc.ABC):
 def type_segmentation(
     objs: Sequence, priority_order: Optional[Tuple[Type[T]]]
 ) -> List[Tuple[List[int], Union[Sequence[T], Iterable[T]], Type[T]]]:
+    """
+
+    Args:
+        objs (Sequence):
+        priority_order (Optional[Tuple[Type[T]]]):
+
+    Returns:
+
+    Raises:
+
+    """
     if priority_order is None:
         return [(list(range(len(objs))), objs, Any)]
 
@@ -400,10 +631,35 @@ PRIORITY_ORDER_MAP = {
 def segmented_caller(
     func: Callable[[BaseClient, Sequence[T], ClientOptions], R], priority_order: Optional[Tuple] = None
 ) -> Callable[[BaseClient, Sequence[T], ClientOptions], list[R]]:
+    """
+
+    Args:
+        func (Callable[[BaseClient, Sequence[T]):
+        ClientOptions]:
+        R]:
+        priority_order (Optional[Tuple], optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
+    """
     if priority_order is None:
         priority_order = PRIORITY_ORDER_MAP.get(func.__name__, ())
 
     def inner(client: BaseClient, objs: Sequence[T], options: ClientOptions) -> List[R]:
+        """
+
+        Args:
+            client (BaseClient):
+            objs (Sequence[T]):
+            options (ClientOptions):
+
+        Returns:
+
+        Raises:
+
+        """
         final_result = [None] * len(objs)
         pbar = tqdm(
             type_segmentation(objs, priority_order),
@@ -435,6 +691,18 @@ def get_sequence(
     objs: Sequence,
     options: ClientOptions = ClientOptions(),
 ) -> Sequence[T]:
+    """
+
+    Args:
+        client (BaseClient):
+        objs (Sequence):
+        options (ClientOptions, optional):  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
     segmented_get = segmented_caller(get)
     result = segmented_get(client, objs, options)
     return result
@@ -446,6 +714,18 @@ def delete_sequence(
     objs: Sequence,
     options: ClientOptions = ClientOptions(),
 ) -> None:
+    """
+
+    Args:
+        client (BaseClient):
+        objs (Sequence):
+        options (ClientOptions, optional):  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
     segmented_delete = segmented_caller(delete)
     result = segmented_delete(client, objs, options)
     return None
@@ -457,6 +737,18 @@ def post_sequence(
     objs: Sequence,
     options: ClientOptions = ClientOptions(),
 ) -> List[T]:
+    """
+
+    Args:
+        client (BaseClient):
+        objs (Sequence):
+        options (ClientOptions, optional):  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
     segmented_post = segmented_caller(post)
     result = segmented_post(client, objs, options)
     return result
@@ -468,6 +760,18 @@ def patch_sequence(
     objs: Sequence,
     options: ClientOptions = ClientOptions(),
 ) -> List[T]:
+    """
+
+    Args:
+        client (BaseClient):
+        objs (Sequence):
+        options (ClientOptions, optional):  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
     segmented_patch = segmented_caller(patch)
     result = segmented_patch(client, objs, options)
     return result
@@ -478,6 +782,18 @@ def patch_sequence(
 
 @get.register
 def client_get_url(client: BaseClient, url: str, options: ClientOptions = ClientOptions()) -> Response:
+    """
+
+    Args:
+        client (BaseClient):
+        url (str):
+        options (ClientOptions, optional):  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
     if options.query_args:
         url = add_query_params(url, options.query_args)
     response = client.session.get(url, headers=options.headers, **options.request_args)
@@ -487,6 +803,18 @@ def client_get_url(client: BaseClient, url: str, options: ClientOptions = Client
 
 @delete.register
 def client_delete_url(client: BaseClient, url: str, options: ClientOptions = ClientOptions()) -> Response:
+    """
+
+    Args:
+        client (BaseClient):
+        url (str):
+        options (ClientOptions, optional):  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
     response = client.session.delete(url, headers=options.headers, **options.request_args)
     response_status_check(response)
     return response
@@ -499,6 +827,19 @@ def client_post_url(
     payload: Dict,
     options: ClientOptions = ClientOptions(),
 ) -> Response:
+    """
+
+    Args:
+        client (BaseClient):
+        url (str):
+        payload (Dict):
+        options (ClientOptions, optional):  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
     headers = {
         "Content-Type": "application/json",
         **options.headers,
@@ -518,6 +859,19 @@ def client_patch_url(
     payload: Dict,
     options: ClientOptions = ClientOptions(),
 ) -> Response:
+    """
+
+    Args:
+        client (BaseClient):
+        url (str):
+        payload (Dict):
+        options (ClientOptions, optional):  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
     headers = {
         "Content-Type": "application/json",
         **options.headers,

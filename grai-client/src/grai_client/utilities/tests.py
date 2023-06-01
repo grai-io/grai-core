@@ -2,6 +2,7 @@ import os
 
 
 def get_test_client():
+    """ """
     from grai_client.endpoints.v1.client import ClientV1
 
     host = os.environ.get("GRAI_HOST", "localhost")

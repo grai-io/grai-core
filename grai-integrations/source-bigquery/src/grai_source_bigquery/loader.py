@@ -16,6 +16,19 @@ def get_from_env(
     required: bool = True,
     validator: Optional[Callable] = None,
 ):
+    """
+
+    Args:
+        label (str):
+        default (Optional[Any], optional):  (Default value = None)
+        required (bool, optional):  (Default value = True)
+        validator (Optional[Callable], optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
+    """
     env_key = f"GRAI_BIGQUERY_{label.upper()}"
     result = os.getenv(env_key, default)
     if result is None and required:
@@ -28,6 +41,8 @@ def get_from_env(
 
 
 class BigqueryConnector:
+    """ """
+
     def __init__(
         self,
         namespace: Optional[str] = None,
@@ -52,6 +67,15 @@ class BigqueryConnector:
         self.close()
 
     def connect(self) -> "BigqueryConnector":
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         if self._connection is None:
             credentials = None
 
@@ -64,23 +88,58 @@ class BigqueryConnector:
 
     @property
     def connection(self) -> bigquery.Client:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         if self._connection is None:
             raise Exception("Not connected, call `.connect()")
         return self._connection
 
     def close(self) -> None:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         self.connection.close()
         self._connection = None
 
     def query_runner(self, query: str, param_dict: Dict = {}) -> List[Dict]:
+        """
+
+        Args:
+            query (str):
+            param_dict (Dict, optional):  (Default value = {})
+
+        Returns:
+
+        Raises:
+
+        """
         return self.connection.query(query)
 
     @cached_property
     def tables(self) -> List[Table]:
-        """
-        Create and return a list of dictionaries with the
+        """Create and return a list of dictionaries with the
         schemas and names of tables in the database
         connected to by the connection argument.
+
+        Args:
+
+        Returns:
+
+        Raises:
+
         """
         query = f"""
 	        SELECT table_schema, table_name, table_type
@@ -102,9 +161,15 @@ class BigqueryConnector:
 
     @cached_property
     def columns(self) -> List[Column]:
-        """
-        Creates and returns a list of dictionaries for the specified
+        """Creates and returns a list of dictionaries for the specified
         schema.table in the database connected to.
+
+        Args:
+
+        Returns:
+
+        Raises:
+
         """
 
         query = f"""
@@ -128,6 +193,15 @@ class BigqueryConnector:
 
     @cached_property
     def column_map(self) -> Dict[Tuple[str, str], List[Column]]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         result_map: Dict[Tuple[str, str], List[Column]] = {}
         for col in self.columns:
             table_id = (col.column_schema, col.table)
@@ -136,6 +210,16 @@ class BigqueryConnector:
         return result_map
 
     def get_table_columns(self, table: Table) -> List[Column]:
+        """
+
+        Args:
+            table (Table):
+
+        Returns:
+
+        Raises:
+
+        """
         table_id = (table.table_schema, table.name)
         if table_id in self.column_map:
             return self.column_map[table_id]
@@ -149,12 +233,39 @@ class BigqueryConnector:
             raise Exception(f"No columns found for table with schema={schema} and name={name}")
 
     def get_nodes(self) -> List[BigqueryNode]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         return list(chain(self.tables, self.columns))
 
     def get_edges(self) -> List[Edge]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         return [item for item in chain(*[t.get_edges() for t in self.tables]) if item is not None]
 
     def get_nodes_and_edges(self) -> Tuple[List[BigqueryNode], List[Edge]]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         nodes = self.get_nodes()
         edges = self.get_edges()
         return nodes, edges

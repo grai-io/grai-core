@@ -10,6 +10,8 @@ if importlib.util.find_spec("rich") is not None:
 
 
 class GraiColors:
+    """ """
+
     mango = (255, 181, 103)
     polo = (191, 210, 235)
     kobi = (241, 215, 224)
@@ -18,14 +20,58 @@ class GraiColors:
 
 
 def prompt_styler(*args, **kwargs) -> Callable[[str], str]:
+    """
+
+    Args:
+        *args:
+        **kwargs:
+
+    Returns:
+
+    Raises:
+
+    """
+
     def inner(inp: str) -> str:
+        """
+
+        Args:
+            inp (str):
+
+        Returns:
+
+        Raises:
+
+        """
         return typer.style(inp, *args, **kwargs)
 
     return inner
 
 
 def strip_style(fn: Callable[[str], str]) -> Callable[[str], str]:
+    """
+
+    Args:
+        fn (Callable[[str]):
+        str]:
+
+    Returns:
+
+    Raises:
+
+    """
+
     def inner(inp: str) -> str:
+        """
+
+        Args:
+            inp (str):
+
+        Returns:
+
+        Raises:
+
+        """
         return fn(typer.unstyle(inp))
 
     return inner

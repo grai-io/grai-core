@@ -6,6 +6,15 @@ from grai_source_mysql.loader import MySQLConnector
 
 @pytest.fixture
 def connection() -> MySQLConnector:
+    """
+
+    Args:
+
+    Returns:
+
+    Raises:
+
+    """
     test_credentials = {
         "host": "localhost",
         "dbname": "grai",
@@ -20,5 +29,15 @@ def connection() -> MySQLConnector:
 
 @pytest.fixture
 def nodes_and_edges(connection):
+    """
+
+    Args:
+        connection:
+
+    Returns:
+
+    Raises:
+
+    """
     nodes, edges = get_nodes_and_edges(connection, "v1")
     return nodes, edges

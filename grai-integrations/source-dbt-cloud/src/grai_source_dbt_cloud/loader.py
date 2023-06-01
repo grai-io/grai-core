@@ -9,6 +9,8 @@ from grai_source_dbt.processor import ManifestProcessor
 
 
 class Event:
+    """ """
+
     def __init__(self, reference: str, date: str, status: str, metadata: dict, nodes: List[str]):
         self.reference = reference
         self.date = date
@@ -18,6 +20,8 @@ class Event:
 
 
 class DbtCloudConnector:
+    """ """
+
     def __init__(
         self,
         api_key: str,
@@ -27,6 +31,7 @@ class DbtCloudConnector:
         self.namespace = namespace
 
     def get_nodes_and_edges(self):
+        """ """
         self.load_client()
 
         account = self.get_default_acount()
@@ -38,6 +43,16 @@ class DbtCloudConnector:
         return manifest.adapted_nodes, manifest.adapted_edges
 
     def get_events(self, last_event_date) -> List[Event]:
+        """
+
+        Args:
+            last_event_date:
+
+        Returns:
+
+        Raises:
+
+        """
         self.load_client()
 
         account = self.get_default_acount()
@@ -59,9 +74,42 @@ class DbtCloudConnector:
         return events
 
     def get_run_nodes(self, account_id: str, run_id: str) -> List[str]:
+        """
+
+        Args:
+            account_id (str):
+            run_id (str):
+
+        Returns:
+
+        Raises:
+
+        """
+
         def get_adapted_node_map(manifest):
+            """
+
+            Args:
+                manifest:
+
+            Returns:
+
+            Raises:
+
+            """
+
             @lru_cache
             def inner(unique_id: str) -> str:
+                """
+
+                Args:
+                    unique_id (str):
+
+                Returns:
+
+                Raises:
+
+                """
                 return adapt_to_client(manifest.loader.node_map[unique_id]).spec.name
 
             return inner
@@ -98,14 +146,27 @@ class DbtCloudConnector:
         return [name_mapper(unique_id) for unique_id in unique_ids]
 
     def load_client(self):
+        """ """
         self.client = dbtCloudClient(api_key=self.api_key)
 
     def get_default_acount(self):
+        """ """
         accounts = self.client.cloud.list_accounts()
 
         return accounts["data"][0]
 
     def get_runs(self, account_id: str, last_event_date):
+        """
+
+        Args:
+            account_id (str):
+            last_event_date:
+
+        Returns:
+
+        Raises:
+
+        """
         runs = []
 
         offset = 0

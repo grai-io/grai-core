@@ -13,6 +13,18 @@ T = TypeVar("T", NodeV1, EdgeV1)
 
 @patch.register
 def patch_node_v1(client: ClientV1, grai_type: NodeV1, options: ClientOptions = ClientOptions()) -> Optional[NodeV1]:
+    """
+
+    Args:
+        client (ClientV1):
+        grai_type (NodeV1):
+        options (ClientOptions, optional):  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
     if grai_type.spec.id is None:
         current = get(client, grai_type)
         grai_type.spec.id = current.spec.id
@@ -27,6 +39,18 @@ def patch_node_v1(client: ClientV1, grai_type: NodeV1, options: ClientOptions = 
 
 @patch.register
 def patch_edge_v1(client: ClientV1, grai_type: EdgeV1, options: ClientOptions = ClientOptions()) -> Optional[EdgeV1]:
+    """
+
+    Args:
+        client (ClientV1):
+        grai_type (EdgeV1):
+        options (ClientOptions, optional):  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
     if grai_type.spec.id is None:
         current = get(client, grai_type)
         grai_type.spec.id = current.spec.id

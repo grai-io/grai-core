@@ -50,7 +50,25 @@ def cli_init_config(
         callback=strip_style(workspace_callback),
     ),
 ):
-    """Initialize a new config file"""
+    """Initialize a new config file
+
+    Args:
+        username (str, optional):  (Default value = typer.Option(..., prompt=True, callback=username_callback, prompt_required=True))
+        password (str, optional):  (Default value = typer.Option(...,prompt=True,prompt_required=True,hide_input=True,confirmation_prompt=True,callback=strip_style(password_callback))
+        ):
+        host (str, optional):  (Default value = typer.Option(default=default_styler(config.server.host))
+        prompt:  (Default value = "The Grai workspace for this config")
+        prompt_required:  (Default value = True)
+        callback:  (Default value = strip_style(workspace_callback))
+        port (str, optional):  (Default value = typer.Option(default=default_styler(config.server.port))
+        insecure (str, optional):  (Default value = typer.Option(default=default_styler("False"))
+        workspace (str, optional):  (Default value = typer.Option(default=default_styler(config.server.workspace))
+
+    Returns:
+
+    Raises:
+
+    """
     config.auth = BasicAuthSettings(username=username, password=password)
     config.server = ServerSettingsV1(host=host, port=port, insecure=insecure, workspace=workspace)
     config.save()

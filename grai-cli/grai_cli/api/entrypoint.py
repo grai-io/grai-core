@@ -8,6 +8,17 @@ from grai_cli.utilities.utilities import HAS_RICH, default_callback
 
 
 def result_callback(*args, **kwargs):
+    """
+
+    Args:
+        *args:
+        **kwargs:
+
+    Returns:
+
+    Raises:
+
+    """
     ctx = click.get_current_context()
     command_path = ctx.meta["command_path"]
     if command_path and command_path[0] != "telemetry":
@@ -30,8 +41,16 @@ def callback(
     ctx: typer.Context,
     telemetry: Optional[bool] = typer.Option(None, show_default=False, help="Enable or disable telemetry"),
 ):
-    """
-    Grai CLI
+    """Grai CLI
+
+    Args:
+        ctx (typer.Context):
+        telemetry (Optional[bool], optional):  (Default value = typer.Option(None, show_default=False, help="Enable or disable telemetry"))
+
+    Returns:
+
+    Raises:
+
     """
 
     if telemetry is not None:

@@ -9,6 +9,8 @@ from multimethod import multimethod
 
 
 class GraphManifest:
+    """ """
+
     def __init__(self, nodes: Sequence[NodeTypes], edges: Sequence[EdgeTypes]):
         self.nodes: Sequence[NodeTypes] = nodes
         self.edges: Sequence[EdgeTypes] = edges
@@ -19,10 +21,23 @@ class GraphManifest:
             self.node_index[node.spec.namespace].setdefault(node.spec.name, node)
 
     def get_node(self, namespace: str, name: str) -> Optional[NodeTypes]:
+        """
+
+        Args:
+            namespace (str):
+            name (str):
+
+        Returns:
+
+        Raises:
+
+        """
         return self.node_index.get(namespace, {}).get(name, None)
 
 
 class Graph:
+    """ """
+
     _container_key = "obj"
 
     def __init__(self, manifest):
@@ -32,9 +47,11 @@ class Graph:
         self.graph.add_edges_from(self.add_edges_from_manifest())
 
     def add_nodes_from_manifest(self):
+        """ """
         return ((hash(node.spec), {self._container_key: node}) for node in self.manifest.nodes)
 
     def add_edges_from_manifest(self):
+        """ """
         return (
             (
                 hash(edge.spec.source),
@@ -46,6 +63,17 @@ class Graph:
 
     @lru_cache
     def get_node_id(self, namespace: str, name: str) -> Optional[int]:
+        """
+
+        Args:
+            namespace (str):
+            name (str):
+
+        Returns:
+
+        Raises:
+
+        """
         node = self.manifest.get_node(namespace, name)
         return hash(node.spec) if node is not None else node
 
@@ -55,6 +83,18 @@ class Graph:
         name: Optional[str] = None,
         node_id: Optional[int] = None,
     ) -> GraiType:
+        """
+
+        Args:
+            namespace (Optional[str], optional): (Default value = None)
+            name (Optional[str], optional): (Default value = None)
+            node_id (Optional[int], optional): (Default value = None)
+
+        Returns:
+
+        Raises:
+
+        """
         if namespace and name:
             node_id = self.get_node_id(namespace, name)
             if node_id is None:
@@ -65,12 +105,34 @@ class Graph:
         return self.graph.nodes.get(node_id)[self._container_key]
 
     def label(self, namespace: str, name: str) -> str:
+        """
+
+        Args:
+            namespace (str):
+            name (str):
+
+        Returns:
+
+        Raises:
+
+        """
         return self.get_node(namespace, name).spec.display_name
 
     def id_label(self, node_id: int) -> str:
+        """
+
+        Args:
+            node_id (int):
+
+        Returns:
+
+        Raises:
+
+        """
         return self.get_node(node_id=node_id).spec.display_name
 
     def relabeled_graph(self):
+        """ """
         label_map = {hash(node.spec): f"{node.spec.namespace}-{node.spec.name}" for node in self.manifest.nodes}
         nodes = label_map.values()
         edges = (
@@ -90,26 +152,86 @@ class Graph:
 
 @multimethod
 def process_items(vals: Any, version: Any, type: Any) -> List[GraiType]:
+    """
+
+    Args:
+        vals (Any):
+        version (Any):
+        type (Any):
+
+    Returns:
+
+    Raises:
+
+    """
     message = f"Process items does not have an implementation for " f"{vals=}, {version=}, {type=}"
     raise NotImplementedError(message)
 
 
 @process_items.register
 def process_dict(dict_item: Dict, version: str, type: str) -> GraiType:
+    """
+
+    Args:
+        dict_item (Dict):
+        version (str):
+        type (str):
+
+    Returns:
+
+    Raises:
+
+    """
     return Schema.to_model(dict_item, version, type)
 
 
 @process_items.register
 def process_node(item: GraiType, version: str, type: str) -> GraiType:
+    """
+
+    Args:
+        item (GraiType):
+        version (str):
+        type (str):
+
+    Returns:
+
+    Raises:
+
+    """
     return item
 
 
 @process_items.register
 def process_sequence(item_iter: Sequence, version: str, type: str) -> List[GraiType]:
+    """
+
+    Args:
+        item_iter (Sequence):
+        version (str):
+        type (str):
+
+    Returns:
+
+    Raises:
+
+    """
     return [process_items(item, version, type) for item in item_iter]
 
 
 def build_graph(nodes: List[Dict], edges: List[Dict], version: str) -> Graph:
+    """
+
+    Args:
+        nodes (List[Dict]):
+        edges (List[Dict]):
+        version (str):
+
+    Returns:
+
+    Raises:
+
+    """
     nodes = process_items(nodes, version, "Node")
     edges = process_items(edges, version, "Edge")
     manifest = GraphManifest(nodes, edges)
