@@ -261,6 +261,8 @@ class SourceConnectionFilter:
 class Source:
     id: auto
     name: auto
+    created_at: auto
+    updated_at: auto
 
     @gql.django.field
     def nodes(

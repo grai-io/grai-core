@@ -9,8 +9,11 @@ from api.tests.common import (
     test_organisation,
     test_user,
     test_workspace,
+    generate_source,
 )
-from lineage.models import Filter
+from lineage.models import Filter, Source
+
+##### FILTER #####
 
 
 @pytest.mark.asyncio
@@ -179,3 +182,162 @@ async def test_delete_filter(test_context):
         await Filter.objects.aget(id=filter.id)
 
     assert str(e_info.value) == "Filter matching query does not exist."
+
+
+##### SOURCES #####
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_create_source(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    mutation = """
+        mutation CreateSource($workspaceId: ID!, $name: String!) {
+            createSource(workspaceId: $workspaceId, name: $name) {
+                id
+                name
+                created_at
+            }
+        }
+    """
+
+    name = generate_connection_name()
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "name": name,
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["createSource"]["id"] != None
+    assert result.data["createSource"]["name"] == name
+
+
+@pytest.mark.django_db
+async def test_create_source_no_membership(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    workspace2 = await generate_workspace(organisation)
+
+    mutation = """
+        mutation CreateSource($workspaceId: ID!, $name: String!) {
+            createSource(workspaceId: $workspaceId, name: $name) {
+                id
+                name
+                created_at
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "workspaceId": str(workspace2.id),
+            "name": generate_connection_name(),
+        },
+        context_value=context,
+    )
+
+    assert (
+        str(result.errors)
+        == """[GraphQLError("Can\'t find workspace", locations=[SourceLocation(line=3, column=13)], path=[\'createSource\'])]"""
+    )
+    assert result.data is None
+
+
+@pytest.mark.django_db
+async def test_update_source(test_context):
+    context, organisation, workspace, user, membership = test_context
+    source = await generate_source(workspace)
+
+    mutation = """
+        mutation UpdateSource($id: ID!, $name: String!) {
+            updateSource(id: $id, name: $name) {
+                id
+                name
+                created_at
+            }
+        }
+    """
+
+    name = generate_connection_name()
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "id": str(source.id),
+            "name": name,
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["updateSource"]["id"] == str(source.id)
+    assert result.data["updateSource"]["name"] == name
+
+
+@pytest.mark.django_db
+async def test_update_source_no_membership(test_context):
+    context, organisation, workspace, user, membership = test_context
+    workspace2 = await generate_workspace(organisation)
+    source = await generate_source(workspace2)
+
+    mutation = """
+        mutation UpdateSource($id: ID!, $name: String!) {
+            updateSource(id: $id, name: $name) {
+                id
+                name
+                created_at
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "id": str(source.id),
+            "name": generate_connection_name(),
+        },
+        context_value=context,
+    )
+
+    assert (
+        str(result.errors)
+        == """[GraphQLError("Can't find source", locations=[SourceLocation(line=3, column=13)], path=['updateSource'])]"""
+    )
+    assert result.data is None
+
+
+@pytest.mark.django_db
+async def test_delete_source(test_context):
+    context, organisation, workspace, user, membership = test_context
+    source = await generate_source(workspace)
+
+    mutation = """
+        mutation DeleteSource($id: ID!) {
+            deleteSource(id: $id) {
+                id
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "id": str(source.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["deleteSource"]["id"] == str(source.id)
+
+    with pytest.raises(Exception) as e_info:
+        await Source.objects.aget(id=source.id)
+
+    assert str(e_info.value) == "Source matching query does not exist."

@@ -154,12 +154,48 @@ def test_create_run_connection(auto_login_user, test_connector, test_source):
         url,
         {
             "connection_id": str(connection.id),
-            "source_name": "test",
         },
     )
     assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
     run = response.json()
     assert run["id"] is not None
+
+
+@pytest.mark.django_db
+def test_create_run_connector_existing_source(auto_login_user, test_connector):
+    client, user, workspace = auto_login_user()
+
+    source = Source.objects.create(
+        workspace=workspace,
+        name=str(uuid.uuid4()),
+    )
+
+    url = "/api/v1/external-runs/"
+    response = client.post(
+        url,
+        {
+            "connector_name": test_connector.name,
+            "source_id": str(source.id),
+        },
+    )
+    assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
+    run = response.json()
+    assert run["id"] is not None
+
+
+@pytest.mark.django_db
+def test_create_run_connector_missing_source(auto_login_user, test_connector, test_source):
+    client, user, workspace = auto_login_user()
+
+    url = "/api/v1/external-runs/"
+    response = client.post(
+        url,
+        {
+            "connector_name": test_connector.name,
+        },
+    )
+    assert response.status_code == 400
+    assert response.json().get("error") == "You must provide a source_id or source_name"
 
 
 @pytest.mark.django_db

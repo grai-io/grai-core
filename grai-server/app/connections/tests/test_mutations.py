@@ -13,6 +13,7 @@ from api.tests.common import (
     test_user,
     test_workspace,
     test_source,
+    generate_source,
 )
 from connections.models import Connection
 from lineage.models import Source
@@ -214,6 +215,94 @@ async def test_update_connection(test_context):
         "id": str(connection.id),
         "name": name,
     }
+
+
+@pytest.mark.django_db
+async def test_update_connection_source_name(test_context):
+    context, organisation, workspace, user, membership = test_context
+    connection = await generate_connection(workspace)
+
+    mutation = """
+        mutation UpdateConnection($id: ID!, $namespace: String!, $name: String!, $metadata: JSON!, $secrets: JSON, $schedules: JSON, $is_active: Boolean, $sourceName: String) {
+            updateConnection(id: $id, namespace: $namespace, name: $name, metadata: $metadata, secrets: $secrets, schedules: $schedules, is_active: $is_active, sourceName: $sourceName) {
+                id
+                name
+                source {
+                    id
+                    name
+                }
+            }
+        }
+    """
+
+    name = generate_connection_name()
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "id": str(connection.id),
+            "namespace": "default",
+            "name": name,
+            "metadata": {},
+            "secrets": {
+                "a": "hello",
+            },
+            "schedules": None,
+            "is_active": False,
+            "sourceName": "test2",
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["updateConnection"]["id"] == str(connection.id)
+    assert result.data["updateConnection"]["name"] == name
+    assert result.data["updateConnection"]["source"]["name"] == "test2"
+
+
+@pytest.mark.django_db
+async def test_update_connection_source_name(test_context):
+    context, organisation, workspace, user, membership = test_context
+    connection = await generate_connection(workspace)
+
+    source = await generate_source(workspace)
+
+    mutation = """
+        mutation UpdateConnection($id: ID!, $namespace: String!, $name: String!, $metadata: JSON!, $secrets: JSON, $schedules: JSON, $is_active: Boolean, $sourceId: ID!) {
+            updateConnection(id: $id, namespace: $namespace, name: $name, metadata: $metadata, secrets: $secrets, schedules: $schedules, is_active: $is_active, sourceId: $sourceId) {
+                id
+                name
+                source {
+                    id
+                    name
+                }
+            }
+        }
+    """
+
+    name = generate_connection_name()
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "id": str(connection.id),
+            "namespace": "default",
+            "name": name,
+            "metadata": {},
+            "secrets": {
+                "a": "hello",
+            },
+            "schedules": None,
+            "is_active": False,
+            "sourceId": str(source.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["updateConnection"]["id"] == str(connection.id)
+    assert result.data["updateConnection"]["name"] == name
+    assert result.data["updateConnection"]["source"]["id"] == str(source.id)
 
 
 @pytest.mark.django_db

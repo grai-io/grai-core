@@ -50,6 +50,25 @@ async def test_source(test_workspace):
     return source
 
 
+@pytest.fixture
+async def test_connector():
+    connector = await Connector.objects.acreate(name=str(uuid.uuid4()))
+
+    return connector
+
+
+@pytest.fixture
+async def test_connection(test_connector, test_workspace, test_source):
+    connection = await Connection.objects.acreate(
+        workspace=test_workspace,
+        connector=test_connector,
+        name=str(uuid.uuid4()),
+        source=test_source,
+    )
+
+    return connection
+
+
 @pytest_asyncio.fixture
 async def test_context(test_organisation, test_workspace, test_user):
     membership = await Membership.objects.acreate(user=test_user, workspace=test_workspace, role="admin")
