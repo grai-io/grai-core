@@ -24,6 +24,16 @@ T = TypeVar("T")
 
 
 def is_valid_uuid(val: Union[str, UUID]):
+    """
+
+    Args:
+        val (Union[str, UUID]):
+
+    Returns:
+
+    Raises:
+
+    """
     if isinstance(val, UUID):
         return True
 
@@ -35,6 +45,16 @@ def is_valid_uuid(val: Union[str, UUID]):
 
 
 def response_status_check(resp: Response) -> Response:
+    """
+
+    Args:
+        resp (Response):
+
+    Returns:
+
+    Raises:
+
+    """
     if resp.status_code in {200, 201, 204}:
         return resp
 
@@ -50,6 +70,16 @@ def response_status_check(resp: Response) -> Response:
 
 
 def orjson_defaults(obj: Any) -> Any:
+    """
+
+    Args:
+        obj (Any):
+
+    Returns:
+
+    Raises:
+
+    """
     if isinstance(obj, set):
         return list(obj)
     elif isinstance(obj, (pathlib.PosixPath, pathlib.WindowsPath)):
@@ -64,6 +94,16 @@ class GraiEncoder(json.JSONEncoder):
     """Needed for the base python json implementation"""
 
     def default(self, obj: Any) -> Any:
+        """
+
+        Args:
+            obj (Any):
+
+        Returns:
+
+        Raises:
+
+        """
         if isinstance(obj, (UUID, pathlib.PosixPath, pathlib.WindowsPath)):
             return str(obj)
         elif isinstance(obj, (GraiBaseModel, BaseModel)):
@@ -78,16 +118,47 @@ class GraiEncoder(json.JSONEncoder):
 
 
 def serialize_obj(obj: Dict) -> bytes:
+    """
+
+    Args:
+        obj (Dict):
+
+    Returns:
+
+    Raises:
+
+    """
     json_obj = orjson.dumps(obj, default=orjson_defaults)
     return json_obj
 
 
 def serialize_obj_fallback(obj: Dict) -> str:
+    """
+
+    Args:
+        obj (Dict):
+
+    Returns:
+
+    Raises:
+
+    """
     json_obj = json.dumps(obj, cls=GraiEncoder)
     return json_obj
 
 
 def add_query_params(url: str, params: dict) -> str:
+    """
+
+    Args:
+        url (str):
+        params (dict):
+
+    Returns:
+
+    Raises:
+
+    """
     url_parts = urllib.parse.urlparse(url)
     query = dict(urllib.parse.parse_qsl(url_parts.query))
     query.update(params)

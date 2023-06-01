@@ -14,6 +14,7 @@ from grai_cli.utilities.utilities import write_yaml
 
 
 def make_v1_node():
+    """ """
     node = {
         "version": "v1",
         "type": "Node",
@@ -27,6 +28,16 @@ def make_v1_node():
 
 
 def test_get_by_name_and_namespace(runner):
+    """
+
+    Args:
+        runner:
+
+    Returns:
+
+    Raises:
+
+    """
     with tempfile.NamedTemporaryFile("w+") as file:
         node_dict = make_v1_node()
         name = node_dict["spec"]["name"]
@@ -40,6 +51,16 @@ def test_get_by_name_and_namespace(runner):
 
 
 def test_get_by_namespace(runner):
+    """
+
+    Args:
+        runner:
+
+    Returns:
+
+    Raises:
+
+    """
     with tempfile.NamedTemporaryFile("w+") as file:
         node_dict = make_v1_node()
         namespace = node_dict["spec"]["namespace"]

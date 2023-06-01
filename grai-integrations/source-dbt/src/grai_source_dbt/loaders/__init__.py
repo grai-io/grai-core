@@ -31,11 +31,31 @@ set_extra_fields(AllDbtNodeInstances)
 
 @full_name.register
 def node_full_name(obj: NodeTypes) -> str:
+    """
+
+    Args:
+        obj (NodeTypes):
+
+    Returns:
+
+    Raises:
+
+    """
     return f"{obj.schema_}.{obj.name}"
 
 
 @full_name.register
 def source_full_name(obj: SourceTypes) -> str:
+    """
+
+    Args:
+        obj (SourceTypes):
+
+    Returns:
+
+    Raises:
+
+    """
     return f"{obj.schema_}.{obj.identifier}"
 
 

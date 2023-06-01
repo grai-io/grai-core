@@ -20,6 +20,8 @@ if typing.TYPE_CHECKING:
 
 
 class Column(ID):
+    """ """
+
     name: str
     description: Optional[str]
     meta: Dict
@@ -37,10 +39,23 @@ class Column(ID):
 
     @property
     def full_name(self):
+        """ """
         return f"{self.table_schema}.{self.table_name}.{self.name}"
 
     @classmethod
     def from_table_column(cls, table: NodeTypes, column, namespace) -> "Column":
+        """
+
+        Args:
+            table (NodeTypes):
+            column:
+            namespace:
+
+        Returns:
+
+        Raises:
+
+        """
         attrs = {
             "table_unique_id": table.unique_id,
             "table_name": table.name,
@@ -54,28 +69,38 @@ class Column(ID):
 
     @property
     def unique_id(self):
+        """ """
         return self.table_unique_id, self.name
 
     def __hash__(self):
         return hash((self.table_unique_id, self.name))
 
     class Config:
+        """ """
+
         validate_assignment = True
 
 
 class EdgeTerminus(BaseModel):
+    """ """
+
     name: str
     namespace: str
 
     @property
     def identifier(self):
+        """ """
         return f"{self.namespace}:{self.name}"
 
     class Config:
+        """ """
+
         validate_assignment = True
 
 
 class Edge(BaseModel):
+    """ """
+
     source: EdgeTerminus
     destination: EdgeTerminus
     definition: Optional[str]
@@ -88,7 +113,10 @@ class Edge(BaseModel):
 
     @property
     def name(self):
+        """ """
         return f"{self.source.identifier} -> {self.destination.identifier}"
 
     class Config:
+        """ """
+
         validate_assignment = True

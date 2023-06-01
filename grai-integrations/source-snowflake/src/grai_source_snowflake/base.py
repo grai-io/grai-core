@@ -9,6 +9,17 @@ from grai_source_snowflake.loader import SnowflakeConnector
 
 
 def get_nodes_and_edges(connector: SnowflakeConnector, version: Literal["v1"]) -> Tuple[List[Node], List[Edge]]:
+    """
+
+    Args:
+        connector (SnowflakeConnector):
+        version (Literal["v1"]):
+
+    Returns:
+
+    Raises:
+
+    """
     if version != "v1":
         raise NotImplementedError(f"No available implementation for client version {version}")
 
@@ -31,6 +42,24 @@ def update_server(
     database: Optional[str] = None,
     schema: Optional[str] = None,
 ) -> None:
+    """
+
+    Args:
+        client (BaseClient):
+        namespace (Optional[str], optional):  (Default value = None)
+        account (Optional[str], optional):  (Default value = None)
+        user (Optional[str], optional):  (Default value = None)
+        password (Optional[str], optional):  (Default value = None)
+        role (Optional[str], optional):  (Default value = None)
+        warehouse (Optional[str], optional):  (Default value = None)
+        database (Optional[str], optional):  (Default value = None)
+        schema (Optional[str], optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
+    """
     conn = SnowflakeConnector(
         account=account,
         user=user,

@@ -26,6 +26,18 @@ column_values = [(item, "v1", NodeV1) for item in columns]
 
 @pytest.mark.parametrize("item,version,target", column_values)
 def test_column_adapter(item, version, target):
+    """
+
+    Args:
+        item:
+        version:
+        target:
+
+    Returns:
+
+    Raises:
+
+    """
     result = adapt_to_client(item, version)
     assert isinstance(result, target)
 
@@ -48,6 +60,18 @@ table_values = [(item, "v1", NodeV1) for item in tables]
 
 @pytest.mark.parametrize("item,version,target", table_values)
 def test_table_adapter(item, version, target):
+    """
+
+    Args:
+        item:
+        version:
+        target:
+
+    Returns:
+
+    Raises:
+
+    """
     result = adapt_to_client(item, version)
     assert isinstance(result, target), f"Adapter failed for {item}"
 
@@ -59,11 +83,14 @@ edge_values = [(item, "v1", EdgeV1) for item in edges]
 
 
 def test_column_vs_edge_id():
+    """ """
     from typing import Union
 
     from pydantic import BaseModel
 
     class Temp(BaseModel):
+        """ """
+
         item: Union[ColumnID, TableID]
 
     data = {"table_name": "test", "table_schema": "test2", "name": "test3", "namespace": "test3"}
@@ -73,32 +100,58 @@ def test_column_vs_edge_id():
 
 @pytest.mark.xfail
 def test_table_id_is_column_id():
+    """ """
     data = {"table_name": "test", "table_schema": "test2", "name": "test3", "namespace": "test3"}
     TableID(**data)
 
 
 def test_make_table_metadata():
+    """ """
     metadata = build_grai_metadata(tables[0], "v1")
     assert isinstance(metadata, TableMetadata)
 
 
 def test_make_column_metadata():
+    """ """
     metadata = build_grai_metadata(columns[0], "v1")
     assert isinstance(metadata, ColumnMetadata)
 
 
 def test_make_edge_metadata():
+    """ """
     metadata = build_grai_metadata(edges[0], "v1")
     assert isinstance(metadata, ColumnToColumnMetadata)
 
 
 @pytest.mark.parametrize("item,version,target", edge_values)
 def test_edge_adapter(item, version, target):
+    """
+
+    Args:
+        item:
+        version:
+        target:
+
+    Returns:
+
+    Raises:
+
+    """
     result = adapt_to_client(item, version)
     assert isinstance(result, target)
 
 
 def test_metadata_has_core_metadata_ids(nodes_and_edges):
+    """
+
+    Args:
+        nodes_and_edges:
+
+    Returns:
+
+    Raises:
+
+    """
     nodes, edges = nodes_and_edges
     for node in nodes:
         assert hasattr(node.spec.metadata, core_config.metadata_id)
@@ -108,6 +161,16 @@ def test_metadata_has_core_metadata_ids(nodes_and_edges):
 
 
 def test_metadata_has_postgres_metadata_id(nodes_and_edges):
+    """
+
+    Args:
+        nodes_and_edges:
+
+    Returns:
+
+    Raises:
+
+    """
     nodes, edges = nodes_and_edges
     for node in nodes:
         assert hasattr(node.spec.metadata, config.metadata_id)
@@ -117,6 +180,16 @@ def test_metadata_has_postgres_metadata_id(nodes_and_edges):
 
 
 def test_metadata_is_core_compliant(nodes_and_edges):
+    """
+
+    Args:
+        nodes_and_edges:
+
+    Returns:
+
+    Raises:
+
+    """
     nodes, edges = nodes_and_edges
 
     for node in nodes:

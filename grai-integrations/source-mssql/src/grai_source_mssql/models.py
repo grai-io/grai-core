@@ -5,23 +5,41 @@ from pydantic import BaseModel, Field, root_validator, validator
 
 
 class MsSqlNode(BaseModel):
+    """ """
+
     pass
 
 
 class ID(MsSqlNode):
+    """ """
+
     name: str
     namespace: str
     full_name: str
 
     class Config:
+        """ """
+
         extra = "forbid"
 
 
 class TableID(ID):
+    """ """
+
     table_schema: str
 
     @root_validator(pre=True)
     def make_full_name(cls, values):
+        """
+
+        Args:
+            values:
+
+        Returns:
+
+        Raises:
+
+        """
         full_name = values.get("full_name", None)
         if values.get("full_name", None) is None:
             values["full_name"] = f"{values['table_schema']}.{values['name']}"
@@ -29,11 +47,23 @@ class TableID(ID):
 
 
 class ColumnID(ID):
+    """ """
+
     table_schema: str
     table_name: str
 
     @root_validator(pre=True)
     def make_full_name(cls, values):
+        """
+
+        Args:
+            values:
+
+        Returns:
+
+        Raises:
+
+        """
         full_name = values.get("full_name", None)
         if values.get("full_name", None) is None:
             values["full_name"] = f"{values['table_schema']}.{values['table_name']}.{values['name']}"
@@ -41,6 +71,8 @@ class ColumnID(ID):
 
 
 class ColumnConstraint(Enum):
+    """ """
+
     primary_key = "PRIMARY KEY"
     unique = "UNIQUE"
     foreign_key = "FOREIGN KEY"
@@ -51,6 +83,8 @@ UNIQUE_COLUMN_CONSTRAINTS = {ColumnConstraint.primary_key.value, ColumnConstrain
 
 
 class Column(MsSqlNode):
+    """ """
+
     name: str = Field(alias="column_name")
     table: str = Field(alias="table_name")
     column_schema: str = Field(alias="table_schema")
@@ -63,10 +97,23 @@ class Column(MsSqlNode):
     full_name: Optional[str] = None
 
     class Config:
+        """ """
+
         allow_population_by_field_name = True
 
     @validator("full_name", always=True)
     def make_full_name(cls, full_name, values):
+        """
+
+        Args:
+            full_name:
+            values:
+
+        Returns:
+
+        Raises:
+
+        """
         if full_name is not None:
             return full_name
         result = f"{values['column_schema']}.{values['table']}.{values['name']}"
@@ -74,12 +121,16 @@ class Column(MsSqlNode):
 
 
 class Constraint(str, Enum):
+    """ """
+
     foreign_key = "f"
     primary_key = "p"
     belongs_to = "bt"
 
 
 class Edge(BaseModel):
+    """ """
+
     source: Union[ColumnID, TableID]
     destination: Union[ColumnID, TableID]
     definition: Optional[str]
@@ -88,6 +139,8 @@ class Edge(BaseModel):
 
 
 class Table(MsSqlNode):
+    """ """
+
     name: str = Field(alias="table_name")
     table_schema: str = Field(alias="schema")
     namespace: str
@@ -96,15 +149,29 @@ class Table(MsSqlNode):
     full_name: Optional[str] = None
 
     class Config:
+        """ """
+
         allow_population_by_field_name = True
 
     @validator("full_name", always=True)
     def make_full_name(cls, full_name, values):
+        """
+
+        Args:
+            full_name:
+            values:
+
+        Returns:
+
+        Raises:
+
+        """
         if full_name is not None:
             return full_name
         return f"{values['table_schema']}.{values['name']}"
 
     def get_edges(self):
+        """ """
         return [
             Edge(
                 constraint_type=Constraint("bt"),
@@ -125,6 +192,8 @@ class Table(MsSqlNode):
 
 
 class EdgeQuery(BaseModel):
+    """ """
+
     namespace: str
     constraint_name: str
     constraint_type: str
@@ -137,6 +206,15 @@ class EdgeQuery(BaseModel):
     definition: str
 
     def to_edge(self) -> Optional[Edge]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         if not len(self.self_columns) == 1 and len(self.foreign_columns) == 1:
             return None
 

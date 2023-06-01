@@ -23,10 +23,21 @@ from grai_graph.utils import (
 
 
 def get_node_id(node):
+    """
+
+    Args:
+        node:
+
+    Returns:
+
+    Raises:
+
+    """
     return {"name": node.name, "namespace": node.namespace}
 
 
 def test_v1_build_graph():
+    """ """
     edges = []
     nodes = []
     for i in range(4):
@@ -38,16 +49,50 @@ def test_v1_build_graph():
 
 
 class TestUniqueness(unittest.TestCase):
+    """ """
+
     preserves_unique = ColumnToColumnAttributes(preserves_unique=True)
     violates_unique = ColumnToColumnAttributes(preserves_unique=False)
     unknown_unique = ColumnToColumnAttributes()
 
     def get_nodes(n: int = 3):
+        """
+
+        Args:
+            n (int, optional): (Default value = 3)
+
+        Returns:
+
+        Raises:
+
+        """
         variables = "abcdefghijklmnopqrstuvwxyz"
         extra_kwargs = {char: TestNodeObj(name=char, node_attributes={}) for char in variables[0:n]}
 
         def inner(fn):
+            """
+
+            Args:
+                fn:
+
+            Returns:
+
+            Raises:
+
+            """
+
             def wraps(*args, **kwargs):
+                """
+
+                Args:
+                    *args:
+                    **kwargs:
+
+                Returns:
+
+                Raises:
+
+                """
                 return fn(*args, **kwargs, **extra_kwargs)
 
             return wraps
@@ -56,7 +101,17 @@ class TestUniqueness(unittest.TestCase):
 
     @get_nodes(n=2)
     def test_table_to_column_information(self, a, b):
-        """We don't know anything about node nullableness to evaluate failure or success"""
+        """We don't know anything about node nullableness to evaluate failure or success
+
+        Args:
+            a:
+            b:
+
+        Returns:
+
+        Raises:
+
+        """
         mock_structure = {
             a: [("b", TableToColumnAttributes())],
             b: [],
@@ -67,7 +122,17 @@ class TestUniqueness(unittest.TestCase):
 
     @get_nodes(n=2)
     def test_table_to_table_information(self, a, b):
-        """We don't know anything about node nullableness to evaluate failure or success"""
+        """We don't know anything about node nullableness to evaluate failure or success
+
+        Args:
+            a:
+            b:
+
+        Returns:
+
+        Raises:
+
+        """
         mock_structure = {
             a: [("b", TableToTableAttributes())],
             b: [],
@@ -78,7 +143,18 @@ class TestUniqueness(unittest.TestCase):
 
     @get_nodes(n=3)
     def test_no_node_information(self, a, b, c):
-        """We don't know anything about node uniqueness to evaluate failure or success"""
+        """We don't know anything about node uniqueness to evaluate failure or success
+
+        Args:
+            a:
+            b:
+            c:
+
+        Returns:
+
+        Raises:
+
+        """
         mock_structure = {
             a: [("b", self.preserves_unique)],
             b: [("c", self.preserves_unique)],
@@ -90,7 +166,18 @@ class TestUniqueness(unittest.TestCase):
 
     @get_nodes(n=3)
     def test_violates_unique(self, a, b, c):
-        """If the edge doesn't preserve unique we can't say with certainty whether the test ought to fail"""
+        """If the edge doesn't preserve unique we can't say with certainty whether the test ought to fail
+
+        Args:
+            a:
+            b:
+            c:
+
+        Returns:
+
+        Raises:
+
+        """
         a.node_attributes.is_unique = True
         mock_structure = {
             a: [("b", self.violates_unique)],
@@ -117,7 +204,19 @@ class TestUniqueness(unittest.TestCase):
 
     @get_nodes(n=4)
     def test_skip_violation(self, a, b, c, d):
-        """Test failures should be detected even multiple jumps from the source node"""
+        """Test failures should be detected even multiple jumps from the source node
+
+        Args:
+            a:
+            b:
+            c:
+            d:
+
+        Returns:
+
+        Raises:
+
+        """
         d.node_attributes.is_unique = False
         mock_structure = {
             a: [("b", self.preserves_unique)],
@@ -131,7 +230,18 @@ class TestUniqueness(unittest.TestCase):
 
     @get_nodes(n=3)
     def test_triangle_violation(self, a, b, c):
-        """Tests ought to be able to fail following multiple different paths through lineage"""
+        """Tests ought to be able to fail following multiple different paths through lineage
+
+        Args:
+            a:
+            b:
+            c:
+
+        Returns:
+
+        Raises:
+
+        """
         c.node_attributes.is_unique = False
         mock_structure = {
             a: [("b", self.preserves_unique), ("c", self.preserves_unique)],
@@ -144,16 +254,50 @@ class TestUniqueness(unittest.TestCase):
 
 
 class TestNullable(unittest.TestCase):
+    """ """
+
     preserves_nullable = ColumnToColumnAttributes(preserves_nullable=True)
     violates_nullable = ColumnToColumnAttributes(preserves_nullable=False)
     unknown_nullable = ColumnToColumnAttributes()
 
     def get_nodes(n: int = 3):
+        """
+
+        Args:
+            n (int, optional): (Default value = 3)
+
+        Returns:
+
+        Raises:
+
+        """
         variables = "abcdefghijklmnopqrstuvwxyz"
         extra_kwargs = {char: TestNodeObj(name=char, node_attributes={}) for char in variables[0:n]}
 
         def inner(fn):
+            """
+
+            Args:
+                fn:
+
+            Returns:
+
+            Raises:
+
+            """
+
             def wraps(*args, **kwargs):
+                """
+
+                Args:
+                    *args:
+                    **kwargs:
+
+                Returns:
+
+                Raises:
+
+                """
                 return fn(*args, **kwargs, **extra_kwargs)
 
             return wraps
@@ -162,7 +306,17 @@ class TestNullable(unittest.TestCase):
 
     @get_nodes(n=2)
     def test_table_to_column_information(self, a, b):
-        """We don't know anything about node nullableness to evaluate failure or success"""
+        """We don't know anything about node nullableness to evaluate failure or success
+
+        Args:
+            a:
+            b:
+
+        Returns:
+
+        Raises:
+
+        """
         mock_structure = {
             a: [("b", TableToColumnAttributes())],
             b: [],
@@ -173,7 +327,17 @@ class TestNullable(unittest.TestCase):
 
     @get_nodes(n=2)
     def test_table_to_table_information(self, a, b):
-        """We don't know anything about node nullableness to evaluate failure or success"""
+        """We don't know anything about node nullableness to evaluate failure or success
+
+        Args:
+            a:
+            b:
+
+        Returns:
+
+        Raises:
+
+        """
         mock_structure = {
             a: [("b", TableToTableAttributes())],
             b: [],
@@ -184,7 +348,18 @@ class TestNullable(unittest.TestCase):
 
     @get_nodes(n=3)
     def test_no_node_information(self, a, b, c):
-        """We don't know anything about node nullableness to evaluate failure or success"""
+        """We don't know anything about node nullableness to evaluate failure or success
+
+        Args:
+            a:
+            b:
+            c:
+
+        Returns:
+
+        Raises:
+
+        """
         mock_structure = {
             a: [("b", self.preserves_nullable)],
             b: [("c", self.preserves_nullable)],
@@ -196,7 +371,18 @@ class TestNullable(unittest.TestCase):
 
     @get_nodes(n=3)
     def test_no_node_or_edge_information(self, a, b, c):
-        """We don't know anything about node nullableness to evaluate failure or success"""
+        """We don't know anything about node nullableness to evaluate failure or success
+
+        Args:
+            a:
+            b:
+            c:
+
+        Returns:
+
+        Raises:
+
+        """
         mock_structure = {
             a: [("b", self.unknown_nullable)],
             b: [("c", self.unknown_nullable)],
@@ -208,7 +394,18 @@ class TestNullable(unittest.TestCase):
 
     @get_nodes(n=3)
     def test_violates_nullable(self, a, b, c):
-        """If the edge doesn't preserve nullable we can't say with certainty whether the test ought to fail"""
+        """If the edge doesn't preserve nullable we can't say with certainty whether the test ought to fail
+
+        Args:
+            a:
+            b:
+            c:
+
+        Returns:
+
+        Raises:
+
+        """
         a.node_attributes.is_nullable = True
         mock_structure = {
             a: [("b", self.violates_nullable)],
@@ -235,7 +432,19 @@ class TestNullable(unittest.TestCase):
 
     @get_nodes(n=4)
     def test_nullable_skip_violation(self, a, b, c, d):
-        """Test failures should be detected even multiple jumps from the source node"""
+        """Test failures should be detected even multiple jumps from the source node
+
+        Args:
+            a:
+            b:
+            c:
+            d:
+
+        Returns:
+
+        Raises:
+
+        """
         d.node_attributes.is_nullable = False
         mock_structure = {
             a: [("b", self.preserves_nullable)],
@@ -251,7 +460,18 @@ class TestNullable(unittest.TestCase):
 
     @get_nodes(n=3)
     def test_triangle_violation(self, a, b, c):
-        """Tests ought to be able to fail following multiple different paths through lineage"""
+        """Tests ought to be able to fail following multiple different paths through lineage
+
+        Args:
+            a:
+            b:
+            c:
+
+        Returns:
+
+        Raises:
+
+        """
         c.node_attributes.is_nullable = False
         mock_structure = {
             a: [("b", self.preserves_nullable), ("c", self.preserves_nullable)],
@@ -264,16 +484,50 @@ class TestNullable(unittest.TestCase):
 
 
 class TestDataType(unittest.TestCase):
+    """ """
+
     preserves_data_type = ColumnToColumnAttributes(preserves_data_type=True)
     violates_data_type = ColumnToColumnAttributes(preserves_data_type=False)
     unknown_data_type = ColumnToColumnAttributes()
 
     def get_nodes(n: int = 3):
+        """
+
+        Args:
+            n (int, optional): (Default value = 3)
+
+        Returns:
+
+        Raises:
+
+        """
         variables = "abcdefghijklmnopqrstuvwxyz"
         extra_kwargs = {char: TestNodeObj(name=char, node_attributes={}) for char in variables[0:n]}
 
         def inner(fn):
+            """
+
+            Args:
+                fn:
+
+            Returns:
+
+            Raises:
+
+            """
+
             def wraps(*args, **kwargs):
+                """
+
+                Args:
+                    *args:
+                    **kwargs:
+
+                Returns:
+
+                Raises:
+
+                """
                 return fn(*args, **kwargs, **extra_kwargs)
 
             return wraps
@@ -282,7 +536,17 @@ class TestDataType(unittest.TestCase):
 
     @get_nodes(n=2)
     def test_table_to_column_information(self, a, b):
-        """We don't know anything about node nullableness to evaluate failure or success"""
+        """We don't know anything about node nullableness to evaluate failure or success
+
+        Args:
+            a:
+            b:
+
+        Returns:
+
+        Raises:
+
+        """
         mock_structure = {
             a: [("b", TableToColumnAttributes())],
             b: [],
@@ -293,7 +557,17 @@ class TestDataType(unittest.TestCase):
 
     @get_nodes(n=2)
     def test_table_to_table_information(self, a, b):
-        """We don't know anything about node nullableness to evaluate failure or success"""
+        """We don't know anything about node nullableness to evaluate failure or success
+
+        Args:
+            a:
+            b:
+
+        Returns:
+
+        Raises:
+
+        """
         mock_structure = {
             a: [("b", TableToTableAttributes())],
             b: [],
@@ -304,7 +578,18 @@ class TestDataType(unittest.TestCase):
 
     @get_nodes(n=3)
     def test_no_node_information(self, a, b, c):
-        """We don't know anything about node nullableness to evaluate failure or success"""
+        """We don't know anything about node nullableness to evaluate failure or success
+
+        Args:
+            a:
+            b:
+            c:
+
+        Returns:
+
+        Raises:
+
+        """
         mock_structure = {
             a: [("b", self.preserves_data_type)],
             b: [("c", self.preserves_data_type)],
@@ -316,7 +601,18 @@ class TestDataType(unittest.TestCase):
 
     @get_nodes(n=3)
     def test_no_node_or_edge_information(self, a, b, c):
-        """We don't know anything about node nullableness to evaluate failure or success"""
+        """We don't know anything about node nullableness to evaluate failure or success
+
+        Args:
+            a:
+            b:
+            c:
+
+        Returns:
+
+        Raises:
+
+        """
         mock_structure = {
             a: [("b", self.preserves_data_type)],
             b: [("c", self.preserves_data_type)],
@@ -328,7 +624,18 @@ class TestDataType(unittest.TestCase):
 
     @get_nodes(n=3)
     def test_violates_nullable(self, a, b, c):
-        """If the edge doesn't preserve nullable we can't say with certainty whether the test ought to fail"""
+        """If the edge doesn't preserve nullable we can't say with certainty whether the test ought to fail
+
+        Args:
+            a:
+            b:
+            c:
+
+        Returns:
+
+        Raises:
+
+        """
         a.node_attributes.data_type = "bool"
         mock_structure = {
             a: [("b", self.violates_data_type)],
@@ -355,7 +662,19 @@ class TestDataType(unittest.TestCase):
 
     @get_nodes(n=4)
     def test_skip_violation(self, a, b, c, d):
-        """Test failures should be detected even multiple jumps from the source node"""
+        """Test failures should be detected even multiple jumps from the source node
+
+        Args:
+            a:
+            b:
+            c:
+            d:
+
+        Returns:
+
+        Raises:
+
+        """
         d.node_attributes.data_type = "bool"
         mock_structure = {
             a: [("b", self.preserves_data_type)],
@@ -372,7 +691,18 @@ class TestDataType(unittest.TestCase):
 
     @get_nodes(n=3)
     def test_triangle_violation(self, a, b, c):
-        """Tests ought to be able to fail following multiple different paths through lineage"""
+        """Tests ought to be able to fail following multiple different paths through lineage
+
+        Args:
+            a:
+            b:
+            c:
+
+        Returns:
+
+        Raises:
+
+        """
         c.node_attributes.data_type = "bool"
         mock_structure = {
             a: [("b", self.preserves_data_type), ("c", self.preserves_data_type)],

@@ -5,23 +5,41 @@ from pydantic import BaseModel, Field, root_validator, validator
 
 
 class MysqlNode(BaseModel):
+    """ """
+
     pass
 
 
 class ID(MysqlNode):
+    """ """
+
     name: str
     namespace: str
     full_name: str
 
     class Config:
+        """ """
+
         extra = "forbid"
 
 
 class TableID(ID):
+    """ """
+
     table_schema: str
 
     @root_validator(pre=True)
     def make_full_name(cls, values):
+        """
+
+        Args:
+            values:
+
+        Returns:
+
+        Raises:
+
+        """
         full_name = values.get("full_name", None)
         if values.get("full_name", None) is None:
             values["full_name"] = f"{values['table_schema']}.{values['name']}"
@@ -29,11 +47,23 @@ class TableID(ID):
 
 
 class ColumnID(ID):
+    """ """
+
     table_schema: str
     table_name: str
 
     @root_validator(pre=True)
     def make_full_name(cls, values):
+        """
+
+        Args:
+            values:
+
+        Returns:
+
+        Raises:
+
+        """
         full_name = values.get("full_name", None)
         if values.get("full_name", None) is None:
             values["full_name"] = f"{values['table_schema']}.{values['table_name']}.{values['name']}"
@@ -42,6 +72,8 @@ class ColumnID(ID):
 
 # https://dev.mysql.com/doc/mysql-infoschema-excerpt/8.0/en/information-schema-columns-table.html
 class ColumnKey(Enum):
+    """ """
+
     NOT_INDEXED = ""
     PRIMARY_KEY = "PRI"
     UNIQUE = "UNI"
@@ -52,6 +84,8 @@ UNIQUE_COLUMN_CONSTRAINTS = {ColumnKey.PRIMARY_KEY.value, ColumnKey.UNIQUE.value
 
 
 class Column(MysqlNode):
+    """ """
+
     name: str = Field(alias="column_name")
     table: str
     column_schema: str = Field(alias="schema")
@@ -62,20 +96,35 @@ class Column(MysqlNode):
     column_key: ColumnKey
 
     class Config:
+        """ """
+
         allow_population_by_field_name = True
 
     @property
     def full_name(self) -> str:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         return f"{self.column_schema}.{self.table}.{self.name}"
 
 
 class Constraint(str, Enum):
+    """ """
+
     foreign_key = "f"
     primary_key = "p"
     belongs_to = "bt"
 
 
 class Edge(BaseModel):
+    """ """
+
     source: Union[ColumnID, TableID]
     destination: Union[ColumnID, TableID]
     definition: Optional[str]
@@ -84,6 +133,8 @@ class Edge(BaseModel):
 
 
 class Table(MysqlNode):
+    """ """
+
     name: str = Field(alias="table_name")
     table_schema: str = Field(alias="schema")
     namespace: str
@@ -92,15 +143,29 @@ class Table(MysqlNode):
     full_name: Optional[str] = None
 
     class Config:
+        """ """
+
         allow_population_by_field_name = True
 
     @validator("full_name", always=True)
     def make_full_name(cls, full_name, values):
+        """
+
+        Args:
+            full_name:
+            values:
+
+        Returns:
+
+        Raises:
+
+        """
         if full_name is not None:
             return full_name
         return f"{values['table_schema']}.{values['name']}"
 
     def get_edges(self):
+        """ """
         return [
             Edge(
                 constraint_type=Constraint("bt"),
@@ -121,6 +186,8 @@ class Table(MysqlNode):
 
 
 class EdgeQuery(BaseModel):
+    """ """
+
     namespace: str
     constraint_name: str
     constraint_type: str
@@ -133,6 +200,15 @@ class EdgeQuery(BaseModel):
     definition: str
 
     def to_edge(self) -> Optional[Edge]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         if not len(self.self_columns) == 1 and len(self.foreign_columns) == 1:
             return None
         destination = ColumnID(

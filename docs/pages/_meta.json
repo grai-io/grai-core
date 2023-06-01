@@ -9,5 +9,6 @@
   "server": "Server",
   "web-app": "Web App",
   "deployment": "Deployment",
-  "examples": "Examples"
+  "examples": "Examples",
+  "api-docs": "API"
 }

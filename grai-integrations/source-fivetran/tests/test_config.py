@@ -4,6 +4,7 @@ from grai_source_fivetran.loader import FiveTranConfig
 
 
 def test_load_config_from_env_variables():
+    """ """
     env_vars = {
         "GRAI_FIVETRAN_ENDPOINT": "http://www.fivetran.com",
         "GRAI_FIVETRAN_API_KEY": "test_key",
@@ -20,6 +21,7 @@ def test_load_config_from_env_variables():
 
 
 def test_load_config_arguments():
+    """ """
     config = FiveTranConfig(api_key="test_key", api_secret="test_secret", endpoint="http://www.fivetran.com")
     assert config.endpoint == "http://www.fivetran.com"
     assert config.api_key.get_secret_value() == "test_key"
@@ -27,11 +29,13 @@ def test_load_config_arguments():
 
 
 def test_config_has_default_endpoint():
+    """ """
     config = FiveTranConfig(api_key="test_key", api_secret="test_secret")
     assert config.endpoint == "https://api.fivetran.com/v1"
 
 
 def test_config_endpoint_handles_trailing_slash():
+    """ """
     config = FiveTranConfig(
         api_key="test_key",
         api_secret="test_secret",

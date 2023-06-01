@@ -8,6 +8,8 @@ from grai_cli.settings.config import config
 
 
 class GraiCache:
+    """ """
+
     def __init__(self):
         self.cache_filename = "cache"
         self.cache_file = os.path.join(config.handler.config_dir, self.cache_filename)
@@ -43,15 +45,38 @@ class GraiCache:
 
     @property
     def cache(self):
+        """ """
         return shelve.open(self.cache_file)
 
     def set(self, key, value):
+        """
+
+        Args:
+            key:
+            value:
+
+        Returns:
+
+        Raises:
+
+        """
         super().__setattr__(key, value)
 
         with self.cache as cache:
             cache[key] = value
 
     def get(self, key, default=None):
+        """
+
+        Args:
+            key:
+            default:  (Default value = None)
+
+        Returns:
+
+        Raises:
+
+        """
         with self.cache as cache:
             if default:
                 return cache[key]

@@ -8,10 +8,14 @@ from grai_schemas.v1.node import NodeIdTypes
 
 
 class EdgeNamedID(NamedID):
+    """ """
+
     pass
 
 
 class EdgeUuidID(UuidID):
+    """ """
+
     pass
 
 
@@ -19,6 +23,8 @@ EdgeIdTypes = Union[EdgeUuidID, EdgeNamedID]
 
 
 class BaseSpec(GraiBaseModel):
+    """ """
+
     display_name: Optional[str]
     data_source: str
     source: NodeIdTypes
@@ -32,10 +38,14 @@ class BaseSpec(GraiBaseModel):
 
 
 class NamedSpec(EdgeNamedID, BaseSpec):
+    """ """
+
     pass
 
 
 class IDSpec(EdgeUuidID, BaseSpec):
+    """ """
+
     pass
 
 
@@ -43,12 +53,24 @@ EdgeSpec = Union[IDSpec, NamedSpec]
 
 
 class EdgeV1(GraiBaseModel):
+    """ """
+
     type: Literal["Edge"]
     version: Literal["v1"]
     spec: EdgeSpec
 
     @classmethod
     def from_spec(cls, spec_dict: Dict) -> "EdgeV1":
+        """
+
+        Args:
+            spec_dict (Dict):
+
+        Returns:
+
+        Raises:
+
+        """
         return cls(version="v1", type="Edge", spec=spec_dict)
 
     def __hash__(self):

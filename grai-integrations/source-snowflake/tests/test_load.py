@@ -2,36 +2,116 @@ from grai_schemas.v1 import EdgeV1, NodeV1
 
 
 def test_v1_adapted_nodes_have_name(v1_adapted_nodes):
+    """
+
+    Args:
+        v1_adapted_nodes:
+
+    Returns:
+
+    Raises:
+
+    """
     assert all(node.spec.name is not None for node in v1_adapted_nodes)
 
 
 def test_v1_adapted_nodes_have_namespace(v1_adapted_nodes):
+    """
+
+    Args:
+        v1_adapted_nodes:
+
+    Returns:
+
+    Raises:
+
+    """
     assert all(node.spec.namespace is not None for node in v1_adapted_nodes)
 
 
 def test_v1_adapted_edge_source_has_name(v1_adapted_edges):
+    """
+
+    Args:
+        v1_adapted_edges:
+
+    Returns:
+
+    Raises:
+
+    """
     assert all(edge.spec.source.name is not None for edge in v1_adapted_edges)
 
 
 def test_v1_adapted_edge_source_has_namespace(v1_adapted_edges):
+    """
+
+    Args:
+        v1_adapted_edges:
+
+    Returns:
+
+    Raises:
+
+    """
     assert all(edge.spec.source.namespace is not None for edge in v1_adapted_edges)
 
 
 def test_v1_adapted_edge_destination_has_name(v1_adapted_edges):
+    """
+
+    Args:
+        v1_adapted_edges:
+
+    Returns:
+
+    Raises:
+
+    """
     assert all(edge.spec.destination.name is not None for edge in v1_adapted_edges)
 
 
 def test_v1_adapted_edge_destination_has_namespace(v1_adapted_edges):
+    """
+
+    Args:
+        v1_adapted_edges:
+
+    Returns:
+
+    Raises:
+
+    """
     assert all(edge.spec.destination.namespace is not None for edge in v1_adapted_edges)
 
 
 def test_v1_adapt_nodes(v1_adapted_nodes):
+    """
+
+    Args:
+        v1_adapted_nodes:
+
+    Returns:
+
+    Raises:
+
+    """
     test_type = NodeV1
     for item in v1_adapted_nodes:
         assert isinstance(item, test_type), f"{type(item)} is not of type {test_type}"
 
 
 def test_v1_adapt_edges(v1_adapted_edges):
+    """
+
+    Args:
+        v1_adapted_edges:
+
+    Returns:
+
+    Raises:
+
+    """
     test_type = EdgeV1
     for item in v1_adapted_edges:
         assert isinstance(item, test_type), f"{type(item)} is not of type {test_type}"

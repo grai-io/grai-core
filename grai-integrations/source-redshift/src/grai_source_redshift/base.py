@@ -10,6 +10,17 @@ from grai_source_redshift.package_definitions import config
 
 
 def get_nodes_and_edges(connector: RedshiftConnector, version: Literal["v1"]) -> Tuple[List[Node], List[Edge]]:
+    """
+
+    Args:
+        connector (RedshiftConnector):
+        version (Literal["v1"]):
+
+    Returns:
+
+    Raises:
+
+    """
     with connector as conn:
         nodes, edges = conn.get_nodes_and_edges()
 
@@ -27,6 +38,22 @@ def update_server(
     host: Optional[str] = None,
     port: Optional[str] = None,
 ):
+    """
+
+    Args:
+        client (BaseClient):
+        namespace (str):
+        database (Optional[str], optional):  (Default value = None)
+        user (Optional[str], optional):  (Default value = None)
+        password (Optional[str], optional):  (Default value = None)
+        host (Optional[str], optional):  (Default value = None)
+        port (Optional[str], optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
+    """
     conn = RedshiftConnector(
         database=database,
         user=user,

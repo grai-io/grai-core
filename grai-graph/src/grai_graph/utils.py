@@ -20,6 +20,8 @@ DEFAULT_NAMESPACE = "test"
 
 
 class TestNodeObj(BaseModel):
+    """ """
+
     name: str
     namespace: Optional[str] = DEFAULT_NAMESPACE
     node_attributes: Optional[ColumnAttributes] = None
@@ -29,6 +31,16 @@ class TestNodeObj(BaseModel):
 
 
 def mock_v1_node(node: Union[str, TestNodeObj]):
+    """
+
+    Args:
+        node (Union[str, TestNodeObj]):
+
+    Returns:
+
+    Raises:
+
+    """
     if isinstance(node, str):
         node = TestNodeObj(name=node)
 
@@ -56,6 +68,18 @@ def mock_v1_edge(
     destination_node: Union[str, TestNodeObj],
     metadata={},
 ):
+    """
+
+    Args:
+        source_node (Union[str, TestNodeObj]):
+        destination_node (Union[str, TestNodeObj]):
+        metadata:  (Default value = {})
+
+    Returns:
+
+    Raises:
+
+    """
     if isinstance(source_node, str):
         source_node = TestNodeObj(name=source_node)
     if isinstance(destination_node, str):
@@ -87,6 +111,17 @@ def mock_v1_edge(
 
 
 def build_graph_from_map(map: Dict[Union[str, TestNodeObj], List[Tuple[str, ColumnToColumnAttributes]]]) -> graph.Graph:
+    """
+
+    Args:
+        map (Dict[Union[str, TestNodeObj]):
+        List]]]:
+
+    Returns:
+
+    Raises:
+
+    """
     nodes = [node if isinstance(node, TestNodeObj) else TestNodeObj(name=node) for node in map.keys()]
     node_name_map = {node.name: node for node in nodes}
     nodes = [mock_v1_node(node) for node in nodes]
@@ -103,5 +138,16 @@ def build_graph_from_map(map: Dict[Union[str, TestNodeObj], List[Tuple[str, Colu
 def get_analysis_from_map(
     map: Dict[Union[str, TestNodeObj], Dict[ColumnToColumnAttributes, List[str]]]
 ) -> analysis.GraphAnalyzer:
+    """
+
+    Args:
+        map (Dict[Union[str, TestNodeObj]):
+        Dict]]]:
+
+    Returns:
+
+    Raises:
+
+    """
     graph = build_graph_from_map(map)
     return analysis.GraphAnalyzer(graph)

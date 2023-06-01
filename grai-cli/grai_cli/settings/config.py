@@ -9,6 +9,8 @@ from pydantic_yaml import YamlModel, YamlModelMixin, YamlStrEnum
 
 
 class ConfigDirHandler:
+    """ """
+
     DEFAULT_CONFIG_FILE_NAMES = ["config.yaml", "config.yml"]
 
     def __init__(self):
@@ -40,6 +42,7 @@ class ConfigDirHandler:
 
     @property
     def config_content(self):
+        """ """
         if isinstance(self._config_content, dict):
             return self._config_content
         elif not self.has_config_file:
@@ -51,15 +54,35 @@ class ConfigDirHandler:
 
     @config_content.setter
     def config_content(self, value: Dict):
+        """
+
+        Args:
+            value (Dict):
+
+        Returns:
+
+        Raises:
+
+        """
         if not isinstance(value, dict):
             raise Exception("config_content must be a dictionary")
         self._config_content = value
 
     def save_content(self):
+        """ """
         with open(self.config_file, "w") as file:
             yaml.safe_dump(self._config_content, file)
 
     def get_config_dir(self) -> str:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         env_config_dir = os.environ.get("GRAI_CLI_CONFIG_DIR", None)
 
         if env_config_dir is not None and os.path.exists(env_config_dir):
@@ -73,6 +96,15 @@ class ConfigDirHandler:
         return self.default_config_path
 
     def get_config_file(self) -> Optional[str]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         for file_name in self.DEFAULT_CONFIG_FILE_NAMES:
             file = os.path.join(self.config_dir, file_name)
             if os.path.exists(file):
@@ -83,6 +115,16 @@ class ConfigDirHandler:
 
 
 def unredact(obj: Any) -> Any:
+    """
+
+    Args:
+        obj (Any):
+
+    Returns:
+
+    Raises:
+
+    """
     if isinstance(obj, dict):
         return {k: unredact(v) for k, v in obj.items()}
     elif isinstance(obj, SecretStr):
@@ -95,6 +137,16 @@ config_handler = ConfigDirHandler()
 
 
 def yaml_config_settings_source(settings: BaseSettings) -> dict[str, Any]:
+    """
+
+    Args:
+        settings (BaseSettings):
+
+    Returns:
+
+    Raises:
+
+    """
     if not config_handler.has_config_file:
         return {}
     file = config_handler.config_file
@@ -104,6 +156,8 @@ def yaml_config_settings_source(settings: BaseSettings) -> dict[str, Any]:
 
 
 class ServerSettingsV1(BaseModel):
+    """ """
+
     api_version: Literal["v1"] = "v1"
     host: str = "localhost"
     port: str = "8000"
@@ -111,46 +165,64 @@ class ServerSettingsV1(BaseModel):
     insecure: bool = False
 
     class Config:
+        """ """
+
         validate_assignment = True
 
 
 class AuthModeSettings(BaseModel):
+    """ """
+
     authentication_mode: str
 
     class Config:
+        """ """
+
         validate_assignment = True
 
 
 class BasicAuthSettings(AuthModeSettings):
+    """ """
+
     authentication_mode: Literal["username"] = "username"
     username: str
     password: SecretStr
 
 
 class ApiKeySettings(AuthModeSettings):
+    """ """
+
     authentication_mode: Literal["api_key"] = "api_key"
     api_key: SecretStr
 
 
 class ContextSettings(BaseModel):
+    """ """
+
     namespace: str = "default"
 
 
 class GraiConfig(YamlModelMixin, BaseSettings):
+    """ """
+
     server: Union[ServerSettingsV1]
     auth: Union[BasicAuthSettings, ApiKeySettings]
     # context: Optional[ContextSettings]
     handler: ConfigDirHandler = config_handler
 
     def save(self):
+        """ """
         values = unredact(self.dict(exclude={"handler"}))
         with open(self.handler.config_file, "w") as f:
             yaml.dump(values, f)
 
     def view(self):
+        """ """
         return self.yaml(exclude={"handler"})
 
     class Config:
+        """ """
+
         env_prefix = "grai_"
         validate_assignment = True
         fields = {"server": {}, "auth": {"exclude": {"authentication_mode"}}, "context": {}}
@@ -162,6 +234,18 @@ class GraiConfig(YamlModelMixin, BaseSettings):
             env_settings,
             file_secret_settings,
         ):
+            """
+
+            Args:
+                init_settings:
+                env_settings:
+                file_secret_settings:
+
+            Returns:
+
+            Raises:
+
+            """
             return (
                 init_settings,
                 env_settings,

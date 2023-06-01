@@ -7,6 +7,17 @@ from grai_source_dbt.adapters.adapters import build_app_metadata
 
 @build_app_metadata.register
 def build_metadata_from_node(current: ParsedSourceDefinition, version: Literal["v1"] = "v1") -> Dict:
+    """
+
+    Args:
+        current (ParsedSourceDefinition):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
     data = {
         "description": current.description,
         "dbt_resource_type": current.resource_type,

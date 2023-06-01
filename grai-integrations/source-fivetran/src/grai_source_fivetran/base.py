@@ -10,6 +10,17 @@ from grai_source_fivetran.loader import FivetranConnector, NamespaceTypes
 
 
 def validate_nodes_and_edges(nodes: List[Node], edges: List[Edge]):
+    """
+
+    Args:
+        nodes (List[Node]):
+        edges (List[Edge]):
+
+    Returns:
+
+    Raises:
+
+    """
     node_hashes = [hash(node) for node in nodes]
     if (n_hashes := len(set(node_hashes))) == len(nodes):
         message = (
@@ -22,6 +33,17 @@ def validate_nodes_and_edges(nodes: List[Node], edges: List[Edge]):
 
 
 def get_nodes_and_edges(connector: FivetranConnector, version: Literal["v1"]) -> Tuple[List[Node], List[Edge]]:
+    """
+
+    Args:
+        connector (FivetranConnector):
+        version (Literal["v1"]):
+
+    Returns:
+
+    Raises:
+
+    """
     nodes, edges = connector.get_nodes_and_edges()
 
     nodes = adapt_to_client(nodes, version)
@@ -40,6 +62,23 @@ def update_server(
     limit: Optional[int] = None,
     parallelization: Optional[int] = None,
 ):
+    """
+
+    Args:
+        client (BaseClient):
+        namespaces (Optional[NamespaceTypes], optional):  (Default value = None)
+        default_namespace (Optional[str], optional):  (Default value = None)
+        api_key (Optional[str], optional):  (Default value = None)
+        api_secret (Optional[str], optional):  (Default value = None)
+        endpoint (Optional[str], optional):  (Default value = None)
+        limit (Optional[int], optional):  (Default value = None)
+        parallelization (Optional[int], optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
+    """
     kwargs = {
         "namespaces": namespaces,
         "default_namespace": default_namespace,

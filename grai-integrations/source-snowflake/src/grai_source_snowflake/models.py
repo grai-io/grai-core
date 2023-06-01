@@ -5,40 +5,80 @@ from pydantic import BaseModel, Field, root_validator, validator
 
 
 class SnowflakeNode(BaseModel):
+    """ """
+
     pass
 
 
 class ID(SnowflakeNode):
+    """ """
+
     name: str
     namespace: str
     full_name: str
 
     class Config:
+        """ """
+
         extra = "forbid"
 
 
 class TableID(ID):
+    """ """
+
     table_schema: str
 
     @root_validator(pre=True)
     def make_full_name(cls, values: Dict) -> Dict:
+        """
+
+        Args:
+            values (Dict):
+
+        Returns:
+
+        Raises:
+
+        """
         if values.get("full_name", None) is None:
             values["full_name"] = f"{values['table_schema']}.{values['name']}"
         return values
 
 
 def validate_quoted_string(string: str) -> str:
+    """
+
+    Args:
+        string (str):
+
+    Returns:
+
+    Raises:
+
+    """
     if string.startswith('"') and string.endswith('"'):
         return string
     return string.lower()
 
 
 class ColumnID(ID):
+    """ """
+
     table_schema: str
     table_name: str
 
     @root_validator(pre=True)
     def make_full_name(cls, values: Dict) -> Dict:
+        """
+
+        Args:
+            values (Dict):
+
+        Returns:
+
+        Raises:
+
+        """
         full_name = values.get("full_name", None)
         if values.get("full_name", None) is None:
             values["full_name"] = f"{values['table_schema']}.{values['table_name']}.{values['name']}"
@@ -46,10 +86,22 @@ class ColumnID(ID):
 
     @validator("table_name")
     def validate_name(cls, value):
+        """
+
+        Args:
+            value:
+
+        Returns:
+
+        Raises:
+
+        """
         return validate_quoted_string(value)
 
 
 class Column(SnowflakeNode):
+    """ """
+
     name: str = Field(alias="column_name")
     table: str
     column_schema: str = Field(alias="schema")
@@ -61,10 +113,23 @@ class Column(SnowflakeNode):
     full_name: Optional[str] = None
 
     class Config:
+        """ """
+
         allow_population_by_field_name = True
 
     @validator("full_name", always=True)
     def make_full_name(cls, full_name: Optional[str], values: Dict) -> str:
+        """
+
+        Args:
+            full_name (Optional[str]):
+            values (Dict):
+
+        Returns:
+
+        Raises:
+
+        """
         if full_name is not None:
             return full_name
         result = f"{values['column_schema']}.{values['table']}.{values['name']}"
@@ -72,16 +137,30 @@ class Column(SnowflakeNode):
 
     @validator("name", "table")
     def validate_name(cls, value):
+        """
+
+        Args:
+            value:
+
+        Returns:
+
+        Raises:
+
+        """
         return validate_quoted_string(value)
 
 
 class Constraint(str, Enum):
+    """ """
+
     foreign_key = "f"
     primary_key = "p"
     belongs_to = "bt"
 
 
 class Edge(BaseModel):
+    """ """
+
     source: Union[ColumnID, TableID]
     destination: Union[ColumnID, TableID]
     definition: Optional[str]
@@ -90,12 +169,16 @@ class Edge(BaseModel):
 
 
 class TableType(str, Enum):
+    """ """
+
     Table = "BASE TABLE"
     View = "VIEW"
     TemporaryTable = "TEMPORARY TABLE"
 
 
 class Table(SnowflakeNode):
+    """ """
+
     name: str = Field(alias="table_name")
     table_schema: str = Field(alias="schema")
     table_type: TableType
@@ -106,14 +189,28 @@ class Table(SnowflakeNode):
     full_name: Optional[str] = None
 
     class Config:
+        """ """
+
         allow_population_by_field_name = True
 
     @property
     def id(self):
+        """ """
         return self.table_schema, self.name
 
     @validator("full_name", always=True)
     def make_full_name(cls, full_name: Optional[str], values: Dict) -> str:
+        """
+
+        Args:
+            full_name (Optional[str]):
+            values (Dict):
+
+        Returns:
+
+        Raises:
+
+        """
         if full_name is not None:
             return full_name
 
@@ -121,9 +218,28 @@ class Table(SnowflakeNode):
 
     @validator("name")
     def validate_name(cls, value):
+        """
+
+        Args:
+            value:
+
+        Returns:
+
+        Raises:
+
+        """
         return validate_quoted_string(value)
 
     def get_edges(self) -> List[Edge]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         return [
             Edge(
                 constraint_type=Constraint("bt"),
@@ -144,6 +260,8 @@ class Table(SnowflakeNode):
 
 
 class EdgeQuery(BaseModel):
+    """ """
+
     namespace: str
     constraint_name: str
     constraint_type: str
@@ -156,6 +274,15 @@ class EdgeQuery(BaseModel):
     definition: str
 
     def to_edge(self) -> Optional[Edge]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         if not len(self.self_columns) == 1 and len(self.foreign_columns) == 1:
             return None
 

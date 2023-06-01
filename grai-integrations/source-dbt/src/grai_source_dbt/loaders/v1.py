@@ -58,8 +58,19 @@ DBTNodeType = TypeVar("DBTNodeType")
 
 
 class ManifestLoaderV1(BaseManifestLoader):
+    """ """
+
     @cached_property
     def test_resources(self) -> Dict[Tuple[str, str], List[TestType]]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         test_gen = (test for test in self.manifest.nodes.values() if test.resource_type == "test")
         col_to_tests: Dict[Tuple[str, str], List[TestType]] = dict()
         for test in test_gen:
@@ -72,6 +83,15 @@ class ManifestLoaderV1(BaseManifestLoader):
 
     @cached_property
     def node_map(self) -> Dict[str, DBTNodeType]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         node_resource_types = {"model", "seed", "snapshot"}
         node_map = {
             node_id: node for node_id, node in self.manifest.nodes.items() if node.resource_type in node_resource_types
@@ -80,6 +100,15 @@ class ManifestLoaderV1(BaseManifestLoader):
 
     @cached_property
     def columns(self) -> Dict[Tuple[str, str], ColumnType]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         columns = {}
         for node in chain(self.node_map.values(), self.manifest.sources.values()):
             for column in node.columns.values():
@@ -91,10 +120,33 @@ class ManifestLoaderV1(BaseManifestLoader):
 
     @property
     def nodes(self) -> List[NodeType]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         nodes = list(chain(self.node_map.values(), self.columns.values(), self.manifest.sources.values()))
         return list(nodes)
 
     def make_edge(self, source, destination, constraint_type, edge_type, definition: bool = False) -> Edge:
+        """
+
+        Args:
+            source:
+            destination:
+            constraint_type:
+            edge_type:
+            definition (bool, optional):  (Default value = False)
+
+        Returns:
+
+        Raises:
+
+        """
         source_terminus = EdgeTerminus(name=full_name(source), namespace=self.namespace)
         destination_terminus = EdgeTerminus(name=full_name(destination), namespace=self.namespace)
         if definition:
@@ -115,6 +167,15 @@ class ManifestLoaderV1(BaseManifestLoader):
 
     @property
     def edges(self) -> List[Edge]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         result = []
         for table in self.node_map.values():
             for column in table.columns.values():

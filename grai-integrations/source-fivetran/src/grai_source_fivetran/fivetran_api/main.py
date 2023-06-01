@@ -144,8 +144,16 @@ def approve_certificate(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: TrustCertificateRequest = None,
 ) -> V1CertificatesPostResponse:
-    """
-    Approve a certificate
+    """Approve a certificate
+
+    Args:
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (TrustCertificateRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -159,8 +167,16 @@ def create_connector(
     accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
     body: NewConnectorRequestV1 = None,
 ) -> Union[None, V1ConnectorsPostResponse]:
-    """
-    Create a Connector
+    """Create a Connector
+
+    Args:
+        accept (Optional[str], optional):  (Default value = Header("application/json;version=2", alias="Accept"))
+        body (NewConnectorRequestV1, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -170,8 +186,16 @@ def connector_details(
     connector_id: str = Path(..., alias="connectorId"),
     accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
 ) -> V1ConnectorsConnectorIdGetResponse:
-    """
-    Retrieve Connector Details
+    """Retrieve Connector Details
+
+    Args:
+        connector_id (str, optional):  (Default value = Path(..., alias="connectorId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json;version=2", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -184,8 +208,16 @@ def delete_connector(
     connector_id: str = Path(..., alias="connectorId"),
     accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
 ) -> V1ConnectorsConnectorIdDeleteResponse:
-    """
-    Delete a Connector
+    """Delete a Connector
+
+    Args:
+        connector_id (str, optional):  (Default value = Path(..., alias="connectorId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json;version=2", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -196,8 +228,17 @@ def modify_connector(
     accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
     body: UpdateConnectorRequest = None,
 ) -> V1ConnectorsConnectorIdPatchResponse:
-    """
-    Modify a Connector
+    """Modify a Connector
+
+    Args:
+        connector_id (str, optional):  (Default value = Path(..., alias="connectorId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json;version=2", alias="Accept"))
+        body (UpdateConnectorRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -211,8 +252,17 @@ def connect_card(
     accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
     body: ConnectCardConfigRequest = None,
 ) -> V1ConnectorsConnectorIdConnectCardPostResponse:
-    """
-    Connect Card
+    """Connect Card
+
+    Args:
+        connector_id (str, optional):  (Default value = Path(..., alias="connectorId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json;version=2", alias="Accept"))
+        body (ConnectCardConfigRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -225,8 +275,16 @@ def connect_card_token(
     connector_id: str = Path(..., alias="connectorId"),
     accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
 ) -> CreatePbfTokenResponse:
-    """
-    Connect Card Token
+    """Connect Card Token
+
+    Args:
+        connector_id (str, optional):  (Default value = Path(..., alias="connectorId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json;version=2", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -240,8 +298,17 @@ def resync_connector(
     accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
     body: ResyncConnectorRequest = None,
 ) -> V1ConnectorsConnectorIdResyncPostResponse:
-    """
-    Re-sync Connector Data (Historical Sync)
+    """Re-sync Connector Data (Historical Sync)
+
+    Args:
+        connector_id (str, optional):  (Default value = Path(..., alias="connectorId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json;version=2", alias="Accept"))
+        body (ResyncConnectorRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -254,8 +321,16 @@ def connector_schema_config(
     connector_id: str = Path(..., alias="connectorId"),
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1ConnectorsConnectorIdSchemasGetResponse:
-    """
-    Retrieve a Connector Schema Config
+    """Retrieve a Connector Schema Config
+
+    Args:
+        connector_id (str, optional):  (Default value = Path(..., alias="connectorId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -269,8 +344,17 @@ def modify_connector_schema_config(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: StandardConfigUpdateRequest = None,
 ) -> V1ConnectorsConnectorIdSchemasPatchResponse:
-    """
-    Modify a Connector Schema Config
+    """Modify a Connector Schema Config
+
+    Args:
+        connector_id (str, optional):  (Default value = Path(..., alias="connectorId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (StandardConfigUpdateRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -284,8 +368,17 @@ def reload_connector_schema_config(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: ReloadStandardConfigRequest = None,
 ) -> V1ConnectorsConnectorIdSchemasReloadPostResponse:
-    """
-    Reload a Connector Schema Config
+    """Reload a Connector Schema Config
+
+    Args:
+        connector_id (str, optional):  (Default value = Path(..., alias="connectorId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (ReloadStandardConfigRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -299,8 +392,17 @@ def resync_tables(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: V1ConnectorsConnectorIdSchemasTablesResyncPostRequest = None,
 ) -> V1ConnectorsConnectorIdSchemasTablesResyncPostResponse:
-    """
-    Re-sync Connector Table Data
+    """Re-sync Connector Table Data
+
+    Args:
+        connector_id (str, optional):  (Default value = Path(..., alias="connectorId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (V1ConnectorsConnectorIdSchemasTablesResyncPostRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -315,8 +417,18 @@ def modify_connector_database_schema_config(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: SchemaUpdateRequest = None,
 ) -> V1ConnectorsConnectorIdSchemasSchemaNamePatchResponse:
-    """
-    Modify a Connector Database Schema Config
+    """Modify a Connector Database Schema Config
+
+    Args:
+        connector_id (str, optional):  (Default value = Path(..., alias="connectorId"))
+        schema_name (str, optional):  (Default value = Path(..., alias="schemaName"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (SchemaUpdateRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -332,8 +444,19 @@ def modify_connector_table_config(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: TableUpdateRequest = None,
 ) -> V1ConnectorsConnectorIdSchemasSchemaNameTablesTableNamePatchResponse:
-    """
-    Modify a Connector Table Config
+    """Modify a Connector Table Config
+
+    Args:
+        connector_id (str, optional):  (Default value = Path(..., alias="connectorId"))
+        schema_name (str, optional):  (Default value = Path(..., alias="schemaName"))
+        table_name (str, optional):  (Default value = Path(..., alias="tableName"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (TableUpdateRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -350,8 +473,20 @@ def modify_connector_column_config(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: ColumnUpdateRequest = None,
 ) -> V1ConnectorsConnectorIdSchemasSchemaNameTablesTableNameColumnsColumnNamePatchResponse:
-    """
-    Modify a Connector Column Config
+    """Modify a Connector Column Config
+
+    Args:
+        connector_id (str, optional):  (Default value = Path(..., alias="connectorId"))
+        schema_name (str, optional):  (Default value = Path(..., alias="schemaName"))
+        table_name (str, optional):  (Default value = Path(..., alias="tableName"))
+        column_name (str, optional):  (Default value = Path(..., alias="columnName"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (ColumnUpdateRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -366,8 +501,18 @@ def connector_column_config(
     table: str = ...,
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1ConnectorsConnectorIdSchemasSchemaTablesTableColumnsGetResponse:
-    """
-    Retrieve Source Table Columns Config
+    """Retrieve Source Table Columns Config
+
+    Args:
+        connector_id (str, optional):  (Default value = Path(..., alias="connectorId"))
+        schema (str, optional):  (Default value = ...)
+        table (str, optional):  (Default value = ...)
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -381,8 +526,17 @@ def sync_connector(
     accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
     body: SyncConnectorRequest = None,
 ) -> V1ConnectorsConnectorIdSyncPostResponse:
-    """
-    Sync Connector Data
+    """Sync Connector Data
+
+    Args:
+        connector_id (str, optional):  (Default value = Path(..., alias="connectorId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json;version=2", alias="Accept"))
+        body (SyncConnectorRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -396,8 +550,17 @@ def run_setup_tests(
     accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
     body: RunSetupTestsRequest = None,
 ) -> V1ConnectorsConnectorIdTestPostResponse:
-    """
-    Run connector setup tests
+    """Run connector setup tests
+
+    Args:
+        connector_id (str, optional):  (Default value = Path(..., alias="connectorId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json;version=2", alias="Accept"))
+        body (RunSetupTestsRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -407,8 +570,16 @@ def dbt_model_details(
     model_id: str = Path(..., alias="modelId"),
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1DbtModelsModelIdGetResponse:
-    """
-    Retrieve DBT Model Details
+    """Retrieve DBT Model Details
+
+    Args:
+        model_id (str, optional):  (Default value = Path(..., alias="modelId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -420,8 +591,18 @@ def list_dbt_projects(
     limit: Optional[int] = None,
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1DbtProjectsGetResponse:
-    """
-    List All DBT Projects
+    """List All DBT Projects
+
+    Args:
+        group_id (Optional[str], optional):  (Default value = None)
+        cursor (Optional[str], optional):  (Default value = None)
+        limit (Optional[int], optional):  (Default value = None)
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -435,8 +616,16 @@ def create_dbt_project(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: NewDbtProjectRequest = None,
 ) -> Union[None, V1DbtProjectsPostResponse]:
-    """
-    Create DBT Project
+    """Create DBT Project
+
+    Args:
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (NewDbtProjectRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -446,8 +635,16 @@ def dbt_project_details(
     project_id: str = Path(..., alias="projectId"),
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1DbtProjectsProjectIdGetResponse:
-    """
-    Retrieve DBT Project Details
+    """Retrieve DBT Project Details
+
+    Args:
+        project_id (str, optional):  (Default value = Path(..., alias="projectId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -462,8 +659,18 @@ def list_dbt_project_models(
     limit: Optional[int] = None,
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1DbtProjectsProjectIdModelsGetResponse:
-    """
-    List All DBT Models
+    """List All DBT Models
+
+    Args:
+        project_id (str, optional):  (Default value = Path(..., alias="projectId"))
+        cursor (Optional[str], optional):  (Default value = None)
+        limit (Optional[int], optional):  (Default value = None)
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -476,8 +683,16 @@ def test_dbt_project(
     project_id: str = Path(..., alias="projectId"),
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1DbtProjectsProjectIdTestPostResponse:
-    """
-    Test DBT Project
+    """Test DBT Project
+
+    Args:
+        project_id (str, optional):  (Default value = Path(..., alias="projectId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -492,8 +707,18 @@ def list_dbt_project_transformations(
     limit: Optional[int] = None,
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1DbtProjectsProjectIdTransformationsGetResponse:
-    """
-    List All DBT Transformations
+    """List All DBT Transformations
+
+    Args:
+        project_id (str, optional):  (Default value = Path(..., alias="projectId"))
+        cursor (Optional[str], optional):  (Default value = None)
+        limit (Optional[int], optional):  (Default value = None)
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -508,8 +733,17 @@ def create_dbt_transformation(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: NewTransformationRequest = None,
 ) -> Union[None, V1DbtProjectsProjectIdTransformationsPostResponse]:
-    """
-    Create DBT Transformation
+    """Create DBT Transformation
+
+    Args:
+        project_id (str, optional):  (Default value = Path(..., alias="projectId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (NewTransformationRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -522,8 +756,16 @@ def dbt_transformation_details(
     transformation_id: str = Path(..., alias="transformationId"),
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1DbtTransformationsTransformationIdGetResponse:
-    """
-    Retrieve DBT Transformation Details
+    """Retrieve DBT Transformation Details
+
+    Args:
+        transformation_id (str, optional):  (Default value = Path(..., alias="transformationId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -536,8 +778,16 @@ def delete_dbt_transformation(
     transformation_id: str = Path(..., alias="transformationId"),
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1DbtTransformationsTransformationIdDeleteResponse:
-    """
-    Delete DBT Transformation
+    """Delete DBT Transformation
+
+    Args:
+        transformation_id (str, optional):  (Default value = Path(..., alias="transformationId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -551,8 +801,17 @@ def modify_dbt_transformation(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: UpdateTransformationRequest = None,
 ) -> V1DbtTransformationsTransformationIdPatchResponse:
-    """
-    Modify DBT Transformation
+    """Modify DBT Transformation
+
+    Args:
+        transformation_id (str, optional):  (Default value = Path(..., alias="transformationId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (UpdateTransformationRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -566,8 +825,16 @@ def create_destination(
     accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
     body: NewDestinationRequest = None,
 ) -> Union[None, V1DestinationsPostResponse]:
-    """
-    Create destination
+    """Create destination
+
+    Args:
+        accept (Optional[str], optional):  (Default value = Header("application/json;version=2", alias="Accept"))
+        body (NewDestinationRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -580,8 +847,16 @@ def destination_details(
     destination_id: str = Path(..., alias="destinationId"),
     accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
 ) -> V1DestinationsDestinationIdGetResponse:
-    """
-    Retrieve Destination Details
+    """Retrieve Destination Details
+
+    Args:
+        destination_id (str, optional):  (Default value = Path(..., alias="destinationId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json;version=2", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -594,8 +869,16 @@ def delete_destination(
     destination_id: str = Path(..., alias="destinationId"),
     accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
 ) -> V1DestinationsDestinationIdDeleteResponse:
-    """
-    Delete a destination
+    """Delete a destination
+
+    Args:
+        destination_id (str, optional):  (Default value = Path(..., alias="destinationId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json;version=2", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -609,8 +892,17 @@ def modify_destination(
     accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
     body: UpdateDestinationRequest = None,
 ) -> V1DestinationsDestinationIdPatchResponse:
-    """
-    Modify a Destination
+    """Modify a Destination
+
+    Args:
+        destination_id (str, optional):  (Default value = Path(..., alias="destinationId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json;version=2", alias="Accept"))
+        body (UpdateDestinationRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -624,8 +916,17 @@ def run_destination_setup_tests(
     accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
     body: RunSetupTestsRequest = None,
 ) -> V1DestinationsDestinationIdTestPostResponse:
-    """
-    Run Destination Setup Tests
+    """Run Destination Setup Tests
+
+    Args:
+        destination_id (str, optional):  (Default value = Path(..., alias="destinationId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json;version=2", alias="Accept"))
+        body (RunSetupTestsRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -635,8 +936,16 @@ def approve_fingerprint(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: TrustFingerprintRequest = None,
 ) -> V1FingerprintsPostResponse:
-    """
-    Approve a fingerprint
+    """Approve a fingerprint
+
+    Args:
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (TrustFingerprintRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -647,8 +956,17 @@ def list_all_groups(
     limit: Optional[int] = None,
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1GroupsGetResponse:
-    """
-    List All Groups
+    """List All Groups
+
+    Args:
+        cursor (Optional[str], optional):  (Default value = None)
+        limit (Optional[int], optional):  (Default value = None)
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -662,8 +980,16 @@ def create_group(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: NewGroupRequest = None,
 ) -> Union[None, V1GroupsPostResponse]:
-    """
-    Create a Group
+    """Create a Group
+
+    Args:
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (NewGroupRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -673,8 +999,16 @@ def group_details(
     group_id: str = Path(..., alias="groupId"),
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1GroupsGroupIdGetResponse:
-    """
-    Retrieve Group Details
+    """Retrieve Group Details
+
+    Args:
+        group_id (str, optional):  (Default value = Path(..., alias="groupId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -684,8 +1018,16 @@ def delete_group(
     group_id: str = Path(..., alias="groupId"),
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1GroupsGroupIdDeleteResponse:
-    """
-    Delete a group
+    """Delete a group
+
+    Args:
+        group_id (str, optional):  (Default value = Path(..., alias="groupId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -696,8 +1038,17 @@ def modify_group(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: UpdateGroupRequest = None,
 ) -> V1GroupsGroupIdPatchResponse:
-    """
-    Modify a Group
+    """Modify a Group
+
+    Args:
+        group_id (str, optional):  (Default value = Path(..., alias="groupId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (UpdateGroupRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -713,8 +1064,19 @@ def list_all_connectors_in_group(
     limit: Optional[int] = None,
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1GroupsGroupIdConnectorsGetResponse:
-    """
-    List All Connectors within a Group
+    """List All Connectors within a Group
+
+    Args:
+        group_id (str, optional):  (Default value = Path(..., alias="groupId"))
+        schema (Optional[str], optional):  (Default value = None)
+        cursor (Optional[str], optional):  (Default value = None)
+        limit (Optional[int], optional):  (Default value = None)
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -726,8 +1088,18 @@ def list_all_users_in_group(
     limit: Optional[int] = None,
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1GroupsGroupIdUsersGetResponse:
-    """
-    List All Users within a Group
+    """List All Users within a Group
+
+    Args:
+        group_id (str, optional):  (Default value = Path(..., alias="groupId"))
+        cursor (Optional[str], optional):  (Default value = None)
+        limit (Optional[int], optional):  (Default value = None)
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -738,8 +1110,17 @@ def add_user_to_group(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: AddUserToGroupRequest = None,
 ) -> V1GroupsGroupIdUsersPostResponse:
-    """
-    Add a User to a Group
+    """Add a User to a Group
+
+    Args:
+        group_id (str, optional):  (Default value = Path(..., alias="groupId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (AddUserToGroupRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -753,8 +1134,17 @@ def delete_user_from_group(
     user_id: str = Path(..., alias="userId"),
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1GroupsGroupIdUsersUserIdDeleteResponse:
-    """
-    Remove a User from a Group
+    """Remove a User from a Group
+
+    Args:
+        group_id (str, optional):  (Default value = Path(..., alias="groupId"))
+        user_id (str, optional):  (Default value = Path(..., alias="userId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -769,8 +1159,18 @@ def column_metadata(
     limit: Optional[int] = None,
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1MetadataConnectorsConnectorIdColumnsGetResponse:
-    """
-    Retrieve column metadata
+    """Retrieve column metadata
+
+    Args:
+        connector_id (str, optional):  (Default value = Path(..., alias="connectorId"))
+        cursor (Optional[str], optional):  (Default value = None)
+        limit (Optional[int], optional):  (Default value = None)
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -785,8 +1185,18 @@ def schema_metadata(
     limit: Optional[int] = None,
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1MetadataConnectorsConnectorIdSchemasGetResponse:
-    """
-    Retrieve schema metadata
+    """Retrieve schema metadata
+
+    Args:
+        connector_id (str, optional):  (Default value = Path(..., alias="connectorId"))
+        cursor (Optional[str], optional):  (Default value = None)
+        limit (Optional[int], optional):  (Default value = None)
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -801,8 +1211,18 @@ def table_metadata(
     limit: Optional[int] = None,
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1MetadataConnectorsConnectorIdTablesGetResponse:
-    """
-    Retrieve table metadata
+    """Retrieve table metadata
+
+    Args:
+        connector_id (str, optional):  (Default value = Path(..., alias="connectorId"))
+        cursor (Optional[str], optional):  (Default value = None)
+        limit (Optional[int], optional):  (Default value = None)
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -813,8 +1233,17 @@ def metadata_connectors(
     limit: Optional[int] = None,
     accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
 ) -> V1MetadataNameGetResponse:
-    """
-    Retrieve source metadata
+    """Retrieve source metadata
+
+    Args:
+        cursor (Optional[str], optional):  (Default value = None)
+        limit (Optional[int], optional):  (Default value = None)
+        accept (Optional[str], optional):  (Default value = Header("application/json;version=2", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -824,8 +1253,16 @@ def metadata_connector_config(
     service: str,
     accept: Optional[str] = Header("application/json;version=2", alias="Accept"),
 ) -> V1MetadataNameServiceGetResponse:
-    """
-    Retrieve connector configuration metadata
+    """Retrieve connector configuration metadata
+
+    Args:
+        service (str):
+        accept (Optional[str], optional):  (Default value = Header("application/json;version=2", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -836,8 +1273,17 @@ def list_all_roles(
     limit: Optional[int] = None,
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1RolesGetResponse:
-    """
-    List all roles
+    """List all roles
+
+    Args:
+        cursor (Optional[str], optional):  (Default value = None)
+        limit (Optional[int], optional):  (Default value = None)
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -848,8 +1294,17 @@ def list_all_teams(
     limit: Optional[int] = None,
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1TeamsGetResponse:
-    """
-    List all teams
+    """List all teams
+
+    Args:
+        cursor (Optional[str], optional):  (Default value = None)
+        limit (Optional[int], optional):  (Default value = None)
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -859,8 +1314,16 @@ def create_team(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: TeamRequest = None,
 ) -> Union[None, V1TeamsPostResponse]:
-    """
-    Create a team
+    """Create a team
+
+    Args:
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (TeamRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -870,8 +1333,16 @@ def team_details(
     team_id: str = Path(..., alias="teamId"),
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1TeamsTeamIdGetResponse:
-    """
-    Retrieve team details
+    """Retrieve team details
+
+    Args:
+        team_id (str, optional):  (Default value = Path(..., alias="teamId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -881,8 +1352,16 @@ def delete_team(
     team_id: str = Path(..., alias="teamId"),
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1TeamsTeamIdDeleteResponse:
-    """
-    Delete a team
+    """Delete a team
+
+    Args:
+        team_id (str, optional):  (Default value = Path(..., alias="teamId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -893,8 +1372,17 @@ def modify_team(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: TeamRequest = None,
 ) -> V1TeamsTeamIdPatchResponse:
-    """
-    Modify a team
+    """Modify a team
+
+    Args:
+        team_id (str, optional):  (Default value = Path(..., alias="teamId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (TeamRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -906,8 +1394,18 @@ def get_team_memberships_in_connectors(
     limit: Optional[int] = None,
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1TeamsTeamIdConnectorsGetResponse:
-    """
-    List all connector memberships
+    """List all connector memberships
+
+    Args:
+        team_id (str, optional):  (Default value = Path(..., alias="teamId"))
+        cursor (Optional[str], optional):  (Default value = None)
+        limit (Optional[int], optional):  (Default value = None)
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -922,8 +1420,17 @@ def add_team_membership_in_connector(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: MembershipRequest = None,
 ) -> Union[None, V1TeamsTeamIdConnectorsPostResponse]:
-    """
-    Add connector membership
+    """Add connector membership
+
+    Args:
+        team_id (str, optional):  (Default value = Path(..., alias="teamId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (MembershipRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -937,8 +1444,17 @@ def get_team_membership_in_connector(
     connector_id: str = Path(..., alias="connectorId"),
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1TeamsTeamIdConnectorsConnectorIdGetResponse:
-    """
-    Retrieve connector membership
+    """Retrieve connector membership
+
+    Args:
+        team_id (str, optional):  (Default value = Path(..., alias="teamId"))
+        connector_id (str, optional):  (Default value = Path(..., alias="connectorId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -952,8 +1468,17 @@ def delete_team_membership_in_connector(
     connector_id: str = Path(..., alias="connectorId"),
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1TeamsTeamIdConnectorsConnectorIdDeleteResponse:
-    """
-    Delete connector membership
+    """Delete connector membership
+
+    Args:
+        team_id (str, optional):  (Default value = Path(..., alias="teamId"))
+        connector_id (str, optional):  (Default value = Path(..., alias="connectorId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -968,8 +1493,18 @@ def update_team_membership_in_connector(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: UpdateMembershipRequest = None,
 ) -> V1TeamsTeamIdConnectorsConnectorIdPatchResponse:
-    """
-    Update connector membership
+    """Update connector membership
+
+    Args:
+        team_id (str, optional):  (Default value = Path(..., alias="teamId"))
+        connector_id (str, optional):  (Default value = Path(..., alias="connectorId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (UpdateMembershipRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -981,8 +1516,18 @@ def get_team_memberships_in_groups(
     limit: Optional[int] = None,
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1TeamsTeamIdGroupsGetResponse:
-    """
-    List all group memberships
+    """List all group memberships
+
+    Args:
+        team_id (str, optional):  (Default value = Path(..., alias="teamId"))
+        cursor (Optional[str], optional):  (Default value = None)
+        limit (Optional[int], optional):  (Default value = None)
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -997,8 +1542,17 @@ def add_team_membership_in_group(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: MembershipRequest = None,
 ) -> Union[None, V1TeamsTeamIdGroupsPostResponse]:
-    """
-    Add group membership
+    """Add group membership
+
+    Args:
+        team_id (str, optional):  (Default value = Path(..., alias="teamId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (MembershipRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -1012,8 +1566,17 @@ def get_team_membership_in_group(
     group_id: str = Path(..., alias="groupId"),
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1TeamsTeamIdGroupsGroupIdGetResponse:
-    """
-    Retrieve group membership
+    """Retrieve group membership
+
+    Args:
+        team_id (str, optional):  (Default value = Path(..., alias="teamId"))
+        group_id (str, optional):  (Default value = Path(..., alias="groupId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -1027,8 +1590,17 @@ def delete_team_membership_in_group(
     group_id: str = Path(..., alias="groupId"),
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1TeamsTeamIdGroupsGroupIdDeleteResponse:
-    """
-    Delete group membership
+    """Delete group membership
+
+    Args:
+        team_id (str, optional):  (Default value = Path(..., alias="teamId"))
+        group_id (str, optional):  (Default value = Path(..., alias="groupId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -1043,8 +1615,18 @@ def update_team_membership_in_group(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: UpdateMembershipRequest = None,
 ) -> V1TeamsTeamIdGroupsGroupIdPatchResponse:
-    """
-    Update group membership
+    """Update group membership
+
+    Args:
+        team_id (str, optional):  (Default value = Path(..., alias="teamId"))
+        group_id (str, optional):  (Default value = Path(..., alias="groupId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (UpdateMembershipRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -1054,8 +1636,16 @@ def delete_team_membership_in_account(
     team_id: str = Path(..., alias="teamId"),
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1TeamsTeamIdRoleDeleteResponse:
-    """
-    Delete team role in account
+    """Delete team role in account
+
+    Args:
+        team_id (str, optional):  (Default value = Path(..., alias="teamId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -1067,8 +1657,18 @@ def list_users_in_team(
     limit: Optional[int] = None,
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1TeamsTeamIdUsersGetResponse:
-    """
-    List all user memberships
+    """List all user memberships
+
+    Args:
+        team_id (str, optional):  (Default value = Path(..., alias="teamId"))
+        cursor (Optional[str], optional):  (Default value = None)
+        limit (Optional[int], optional):  (Default value = None)
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -1083,8 +1683,17 @@ def add_user_to_team(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: TeamMembershipRequest = None,
 ) -> Union[None, V1TeamsTeamIdUsersPostResponse]:
-    """
-    Add a user to a team
+    """Add a user to a team
+
+    Args:
+        team_id (str, optional):  (Default value = Path(..., alias="teamId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (TeamMembershipRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -1098,8 +1707,17 @@ def get_user_in_team(
     user_id: str = Path(..., alias="userId"),
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1TeamsTeamIdUsersUserIdGetResponse:
-    """
-    Retrieve user membership in a team
+    """Retrieve user membership in a team
+
+    Args:
+        team_id (str, optional):  (Default value = Path(..., alias="teamId"))
+        user_id (str, optional):  (Default value = Path(..., alias="userId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -1113,8 +1731,17 @@ def delete_user_from_team(
     user_id: str = Path(..., alias="userId"),
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1TeamsTeamIdUsersUserIdDeleteResponse:
-    """
-    Delete a user from a team
+    """Delete a user from a team
+
+    Args:
+        team_id (str, optional):  (Default value = Path(..., alias="teamId"))
+        user_id (str, optional):  (Default value = Path(..., alias="userId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -1129,8 +1756,18 @@ def update_user_membership(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: UpdateMembershipRequest = None,
 ) -> V1TeamsTeamIdUsersUserIdPatchResponse:
-    """
-    Modify a user membership
+    """Modify a user membership
+
+    Args:
+        team_id (str, optional):  (Default value = Path(..., alias="teamId"))
+        user_id (str, optional):  (Default value = Path(..., alias="userId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (UpdateMembershipRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -1141,8 +1778,17 @@ def list_all_users(
     limit: Optional[int] = None,
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1UsersGetResponse:
-    """
-    List All Users
+    """List All Users
+
+    Args:
+        cursor (Optional[str], optional):  (Default value = None)
+        limit (Optional[int], optional):  (Default value = None)
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -1152,16 +1798,32 @@ def create_user(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: NewUserRequest = None,
 ) -> Union[None, V1UsersPostResponse]:
-    """
-    Invite a User
+    """Invite a User
+
+    Args:
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (NewUserRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
 
 @app.delete("/v1/users/{id}", response_model=V1UsersIdDeleteResponse)
 def delete_user(id: str, accept: Optional[str] = Header("application/json", alias="Accept")) -> V1UsersIdDeleteResponse:
-    """
-    Delete a user
+    """Delete a user
+
+    Args:
+        id (str):
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -1171,8 +1833,16 @@ def user_details(
     user_id: str = Path(..., alias="userId"),
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1UsersUserIdGetResponse:
-    """
-    Retrieve User Details
+    """Retrieve User Details
+
+    Args:
+        user_id (str, optional):  (Default value = Path(..., alias="userId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -1183,8 +1853,17 @@ def modify_user(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: UpdateUserRequest = None,
 ) -> V1UsersUserIdPatchResponse:
-    """
-    Modify a User
+    """Modify a User
+
+    Args:
+        user_id (str, optional):  (Default value = Path(..., alias="userId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (UpdateUserRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -1196,8 +1875,18 @@ def get_user_memberships_in_connectors(
     limit: Optional[int] = None,
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1UsersUserIdConnectorsGetResponse:
-    """
-    List all connector memberships
+    """List all connector memberships
+
+    Args:
+        user_id (str, optional):  (Default value = Path(..., alias="userId"))
+        cursor (Optional[str], optional):  (Default value = None)
+        limit (Optional[int], optional):  (Default value = None)
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -1212,8 +1901,17 @@ def add_user_membership_in_connector(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: MembershipRequest = None,
 ) -> Union[None, MembershipResponse]:
-    """
-    Add connector membership
+    """Add connector membership
+
+    Args:
+        user_id (str, optional):  (Default value = Path(..., alias="userId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (MembershipRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -1227,8 +1925,17 @@ def get_user_membership_in_connector(
     connector_id: str = Path(..., alias="connectorId"),
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1UsersUserIdConnectorsConnectorIdGetResponse:
-    """
-    Retrieve connector membership
+    """Retrieve connector membership
+
+    Args:
+        user_id (str, optional):  (Default value = Path(..., alias="userId"))
+        connector_id (str, optional):  (Default value = Path(..., alias="connectorId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -1242,8 +1949,17 @@ def delete_user_membership_in_connector(
     connector_id: str = Path(..., alias="connectorId"),
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1UsersUserIdConnectorsConnectorIdDeleteResponse:
-    """
-    Delete connector membership
+    """Delete connector membership
+
+    Args:
+        user_id (str, optional):  (Default value = Path(..., alias="userId"))
+        connector_id (str, optional):  (Default value = Path(..., alias="connectorId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -1258,8 +1974,18 @@ def update_user_membership_in_connector(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: UpdateMembershipRequest = None,
 ) -> V1UsersUserIdConnectorsConnectorIdPatchResponse:
-    """
-    Update connector membership
+    """Update connector membership
+
+    Args:
+        user_id (str, optional):  (Default value = Path(..., alias="userId"))
+        connector_id (str, optional):  (Default value = Path(..., alias="connectorId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (UpdateMembershipRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -1271,8 +1997,18 @@ def get_user_memberships_in_groups(
     limit: Optional[int] = None,
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1UsersUserIdGroupsGetResponse:
-    """
-    List all group memberships
+    """List all group memberships
+
+    Args:
+        user_id (str, optional):  (Default value = Path(..., alias="userId"))
+        cursor (Optional[str], optional):  (Default value = None)
+        limit (Optional[int], optional):  (Default value = None)
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -1287,8 +2023,17 @@ def add_user_membership_in_group(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: MembershipRequest = None,
 ) -> Union[None, V1UsersUserIdGroupsPostResponse]:
-    """
-    Add group membership
+    """Add group membership
+
+    Args:
+        user_id (str, optional):  (Default value = Path(..., alias="userId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (MembershipRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -1302,8 +2047,17 @@ def get_user_membership_in_group(
     group_id: str = Path(..., alias="groupId"),
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1UsersUserIdGroupsGroupIdGetResponse:
-    """
-    Retrieve group membership
+    """Retrieve group membership
+
+    Args:
+        user_id (str, optional):  (Default value = Path(..., alias="userId"))
+        group_id (str, optional):  (Default value = Path(..., alias="groupId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -1317,8 +2071,17 @@ def delete_user_membership_in_group(
     group_id: str = Path(..., alias="groupId"),
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1UsersUserIdGroupsGroupIdDeleteResponse:
-    """
-    Delete group membership
+    """Delete group membership
+
+    Args:
+        user_id (str, optional):  (Default value = Path(..., alias="userId"))
+        group_id (str, optional):  (Default value = Path(..., alias="groupId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -1333,8 +2096,18 @@ def update_user_membership_in_group(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: UpdateMembershipRequest = None,
 ) -> V1UsersUserIdGroupsGroupIdPatchResponse:
-    """
-    Update group membership
+    """Update group membership
+
+    Args:
+        user_id (str, optional):  (Default value = Path(..., alias="userId"))
+        group_id (str, optional):  (Default value = Path(..., alias="groupId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (UpdateMembershipRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -1344,8 +2117,16 @@ def delete_user_membership_in_account(
     user_id: str = Path(..., alias="userId"),
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1UsersUserIdRoleDeleteResponse:
-    """
-    Delete user role in account
+    """Delete user role in account
+
+    Args:
+        user_id (str, optional):  (Default value = Path(..., alias="userId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -1356,8 +2137,17 @@ def list_all_webhooks(
     limit: Optional[int] = None,
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> V1WebhooksGetResponse:
-    """
-    Retrieve the list of webhooks
+    """Retrieve the list of webhooks
+
+    Args:
+        cursor (Optional[str], optional):  (Default value = None)
+        limit (Optional[int], optional):  (Default value = None)
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -1367,8 +2157,16 @@ def create_account_webhook(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: WebhookRequest = None,
 ) -> WebhookResponse:
-    """
-    Create account webhook
+    """Create account webhook
+
+    Args:
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (WebhookRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -1379,8 +2177,17 @@ def create_group_webhook(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: WebhookRequest = None,
 ) -> WebhookResponse:
-    """
-    Create group webhook
+    """Create group webhook
+
+    Args:
+        group_id (str, optional):  (Default value = Path(..., alias="groupId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (WebhookRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -1390,8 +2197,16 @@ def webhook_details(
     webhook_id: str = Path(..., alias="webhookId"),
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> WebhookResponse:
-    """
-    Retrieve webhook details
+    """Retrieve webhook details
+
+    Args:
+        webhook_id (str, optional):  (Default value = Path(..., alias="webhookId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -1401,8 +2216,16 @@ def delete_webhook(
     webhook_id: str = Path(..., alias="webhookId"),
     accept: Optional[str] = Header("application/json", alias="Accept"),
 ) -> Union[None, str]:
-    """
-    Delete webhook
+    """Delete webhook
+
+    Args:
+        webhook_id (str, optional):  (Default value = Path(..., alias="webhookId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -1413,8 +2236,17 @@ def modify_webhook(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: WebhookRequest = None,
 ) -> WebhookResponse:
-    """
-    Update webhook
+    """Update webhook
+
+    Args:
+        webhook_id (str, optional):  (Default value = Path(..., alias="webhookId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (WebhookRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass
 
@@ -1425,7 +2257,16 @@ def test_webhook(
     accept: Optional[str] = Header("application/json", alias="Accept"),
     body: WebhookTestRequest = None,
 ) -> WebhookTestResponse:
-    """
-    Test webhook
+    """Test webhook
+
+    Args:
+        webhook_id (str, optional):  (Default value = Path(..., alias="webhookId"))
+        accept (Optional[str], optional):  (Default value = Header("application/json", alias="Accept"))
+        body (WebhookTestRequest, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
     """
     pass

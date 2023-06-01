@@ -9,4 +9,14 @@ app.add_typer(telemetry_app, name="telemetry")
 
 @telemetry_app.command("log")
 def log(event: str):
+    """
+
+    Args:
+        event (str):
+
+    Returns:
+
+    Raises:
+
+    """
     capture(event)

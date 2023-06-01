@@ -8,6 +8,18 @@ from grai_source_flat_file.loader import build_nodes_and_edges
 
 
 def get_nodes_and_edges(file_name: str, namespace: str, version: str = "v1"):
+    """
+
+    Args:
+        file_name (str):
+        namespace (str):
+        version (str, optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
     if version != "v1":
         raise NotImplementedError(f"No implementation for version {version}")
 
@@ -22,6 +34,18 @@ def update_server(
     file_name: str,
     namespace: Optional[str] = None,
 ):
+    """
+
+    Args:
+        client (BaseClient):
+        file_name (str):
+        namespace (Optional[str], optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
+    """
     nodes, edges = get_nodes_and_edges(file_name, namespace, client.id)
 
     update(client, nodes)

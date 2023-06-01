@@ -19,6 +19,7 @@ from grai_schemas.v1.metadata.nodes import TableAttributes, TableMetadata
 
 
 def test_distinguishes_generic_node_metadata():
+    """ """
     spec = {"grai": {"node_type": "Node", "node_attributes": {}}}
 
     obj = GraiMetadata(**spec)
@@ -28,6 +29,7 @@ def test_distinguishes_generic_node_metadata():
 
 
 def test_distinguishes_column_metadata():
+    """ """
     spec = {"grai": {"node_type": "Column", "node_attributes": {"is_primary_key": True}}}
 
     obj = GraiMetadata(**spec)
@@ -38,6 +40,7 @@ def test_distinguishes_column_metadata():
 
 
 def test_distinguishes_table_metadata():
+    """ """
     spec = {"grai": {"node_type": "Table", "node_attributes": {"is_primary_key": True}}}
 
     obj = GraiMetadata(**spec)
@@ -48,6 +51,7 @@ def test_distinguishes_table_metadata():
 
 
 def test_distinguishes_generic_edge_metadata():
+    """ """
     spec = {
         "grai": {
             "edge_type": "Edge",
@@ -62,6 +66,7 @@ def test_distinguishes_generic_edge_metadata():
 
 
 def test_distinguishes_column_to_column_metadata():
+    """ """
     spec = {
         "grai": {
             "edge_type": "ColumnToColumn",
@@ -77,6 +82,7 @@ def test_distinguishes_column_to_column_metadata():
 
 
 def test_metadata_distinguishes_table_to_column_metadata():
+    """ """
     spec = {
         "grai": {
             "edge_type": "TableToColumn",

@@ -12,6 +12,8 @@ from pydantic import BaseModel, Extra, Field
 
 
 class TrustCertificateRequest(BaseModel):
+    """ """
+
     connector_id: Optional[str] = Field(None, description="The unique identifier for the connector")
     destination_id: Optional[str] = Field(None, description="The unique identifier for the destination.")
     hash: str = Field(..., description="Hash of the certificate.")
@@ -19,6 +21,8 @@ class TrustCertificateRequest(BaseModel):
 
 
 class ConnectCardConfig(BaseModel):
+    """ """
+
     redirect_uri: Optional[str] = Field(
         None,
         description="The URI on your site we redirect the end user to after successful setup. The URI must start with the `https` or `http` prefix. ",
@@ -30,6 +34,8 @@ class ConnectCardConfig(BaseModel):
 
 
 class NodeTypeEnum(Enum):
+    """ """
+
     ARRAY = "ARRAY"
     BINARY = "BINARY"
     BOOLEAN = "BOOLEAN"
@@ -41,10 +47,14 @@ class NodeTypeEnum(Enum):
 
 
 class NodeType(BaseModel):
+    """ """
+
     __root__: Optional[NodeTypeEnum] = None
 
 
 class JsonNode(BaseModel):
+    """ """
+
     object: Optional[bool] = None
     pojo: Optional[bool] = None
     number: Optional[bool] = None
@@ -69,6 +79,8 @@ class JsonNode(BaseModel):
 
 
 class SyncFrequency(Enum):
+    """ """
+
     field_5 = "5"
     field_15 = "15"
     field_30 = "30"
@@ -82,6 +94,8 @@ class SyncFrequency(Enum):
 
 
 class NewConnectorRequestV1(BaseModel):
+    """ """
+
     group_id: Optional[str] = Field(
         None,
         description="The unique identifier for the group within the Fivetran system",
@@ -114,15 +128,21 @@ class NewConnectorRequestV1(BaseModel):
 
 
 class CreatePbfTokenResponse(BaseModel):
+    """ """
+
     token: Optional[str] = Field(None, description="The connect-card auth token")
     connector_id: Optional[str] = Field(None, description="The connector identifier")
 
 
 class ConnectCardConfigRequest(BaseModel):
+    """ """
+
     connect_card_config: Optional[ConnectCardConfig] = None
 
 
 class ResyncConnectorRequest(BaseModel):
+    """ """
+
     scope: Optional[Dict[str, List[str]]] = Field(
         None,
         description="A map containing an array of tables to re-sync for each schema, must be non-empty. The parameter is optional",
@@ -130,6 +150,8 @@ class ResyncConnectorRequest(BaseModel):
 
 
 class RunSetupTestsRequest(BaseModel):
+    """ """
+
     trust_certificates: Optional[bool] = Field(
         None,
         description="Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).",
@@ -141,6 +163,8 @@ class RunSetupTestsRequest(BaseModel):
 
 
 class SyncConnectorRequest(BaseModel):
+    """ """
+
     force: Optional[bool] = Field(
         None,
         description="If force is true and the connector is currently syncing, it will stop the sync and re-run it. If force is false, the connector will sync only if it isn't currently syncing. The default value is false",
@@ -148,6 +172,8 @@ class SyncConnectorRequest(BaseModel):
 
 
 class SyncFrequency1(Enum):
+    """ """
+
     field_5 = "5"
     field_15 = "15"
     field_30 = "30"
@@ -161,11 +187,15 @@ class SyncFrequency1(Enum):
 
 
 class ScheduleType(Enum):
+    """ """
+
     auto = "auto"
     manual = "manual"
 
 
 class UpdateConnectorRequest(BaseModel):
+    """ """
+
     trust_certificates: Optional[bool] = Field(
         None,
         description="Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).",
@@ -212,16 +242,22 @@ class UpdateConnectorRequest(BaseModel):
 
 
 class Alert(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Code")
     message: Optional[str] = Field(None, description="Setup test message")
 
 
 class ConnectCardResponse(BaseModel):
+    """ """
+
     token: Optional[str] = Field(None, description="The connect-card auth token")
     uri: Optional[str] = Field(None, description="The Connect Card URI for the user interface")
 
 
 class ConnectorStatusResponse(BaseModel):
+    """ """
+
     tasks: Optional[List[Alert]] = Field(None, description="The collection of tasks for the connector")
     warnings: Optional[List[Alert]] = Field(None, description="The collection of warnings for the connector")
     schema_status: Optional[str] = Field(None, description="Schema status")
@@ -245,6 +281,8 @@ class ConnectorStatusResponse(BaseModel):
 
 
 class SetupTestResultResponse(BaseModel):
+    """ """
+
     title: Optional[str] = Field(None, description="Setup test title.")
     status: Optional[str] = Field(None, description="The current state of the connector. ")
     message: Optional[str] = Field(None, description="Setup test message.")
@@ -252,12 +290,16 @@ class SetupTestResultResponse(BaseModel):
 
 
 class ConnectorConnectCardResponse(BaseModel):
+    """ """
+
     connect_card: Optional[ConnectCardResponse] = None
     connector_id: Optional[str] = Field(None, description="The connector identifier")
     connect_card_config: Optional[ConnectCardConfig] = None
 
 
 class ReloadStandardConfigRequest(BaseModel):
+    """ """
+
     exclude_mode: Optional[str] = Field(
         None,
         description="Specifies whether all schemas and tables will be enabled or disabled in the standard config",
@@ -265,6 +307,8 @@ class ReloadStandardConfigRequest(BaseModel):
 
 
 class ColumnUpdateRequest(BaseModel):
+    """ """
+
     enabled: Optional[bool] = Field(
         None,
         description="The boolean value specifying whether the sync for the table into the destination is enabled.",
@@ -276,12 +320,16 @@ class ColumnUpdateRequest(BaseModel):
 
 
 class SyncMode(Enum):
+    """ """
+
     SOFT_DELETE = "SOFT_DELETE"
     HISTORY = "HISTORY"
     LIVE = "LIVE"
 
 
 class TableUpdateRequest(BaseModel):
+    """ """
+
     enabled: Optional[bool] = Field(
         None,
         description="The boolean value specifying whether the sync for the table into the destination is enabled.",
@@ -297,18 +345,24 @@ class TableUpdateRequest(BaseModel):
 
 
 class SchemaChangeHandling(Enum):
+    """ """
+
     ALLOW_ALL = "ALLOW_ALL"
     ALLOW_COLUMNS = "ALLOW_COLUMNS"
     BLOCK_ALL = "BLOCK_ALL"
 
 
 class ReasonCode(Enum):
+    """ """
+
     SYSTEM_COLUMN = "SYSTEM_COLUMN"
     DELETED = "DELETED"
     OTHER = "OTHER"
 
 
 class ColumnEnabledPatchSettings(BaseModel):
+    """ """
+
     allowed: Optional[bool] = Field(
         None,
         description="The boolean value specifying whether the enabled property can be modified",
@@ -324,24 +378,32 @@ class ColumnEnabledPatchSettings(BaseModel):
 
 
 class SchemaChangeHandling1(Enum):
+    """ """
+
     ALLOW_ALL = "ALLOW_ALL"
     ALLOW_COLUMNS = "ALLOW_COLUMNS"
     BLOCK_ALL = "BLOCK_ALL"
 
 
 class SyncMode1(Enum):
+    """ """
+
     SOFT_DELETE = "SOFT_DELETE"
     HISTORY = "HISTORY"
     LIVE = "LIVE"
 
 
 class ReasonCode1(Enum):
+    """ """
+
     SYSTEM_TABLE = "SYSTEM_TABLE"
     DELETED = "DELETED"
     OTHER = "OTHER"
 
 
 class TableEnabledPatchSettings(BaseModel):
+    """ """
+
     allowed: Optional[bool] = Field(
         None,
         description="The boolean value specifying whether the enabled property can be modified",
@@ -357,6 +419,8 @@ class TableEnabledPatchSettings(BaseModel):
 
 
 class NewDbtProjectRequest(BaseModel):
+    """ """
+
     group_id: Optional[str] = Field(
         None,
         description="The unique identifier for the Group within the Fivetran system.",
@@ -374,12 +438,16 @@ class NewDbtProjectRequest(BaseModel):
 
 
 class ScheduleType1(Enum):
+    """ """
+
     INTEGRATED = "INTEGRATED"
     TIME_OF_DAY = "TIME_OF_DAY"
     INTERVAL = "INTERVAL"
 
 
 class DaysOfWeekEnum(Enum):
+    """ """
+
     MONDAY = "MONDAY"
     TUESDAY = "TUESDAY"
     WEDNESDAY = "WEDNESDAY"
@@ -390,6 +458,8 @@ class DaysOfWeekEnum(Enum):
 
 
 class TransformationSchedule(BaseModel):
+    """ """
+
     schedule_type: Optional[ScheduleType1] = Field(None, description="Schedule type")
     days_of_week: Optional[List[DaysOfWeekEnum]] = Field(None, description="Days of week", unique_items=True)
     interval: Optional[int] = Field(None, description="Interval.")
@@ -397,6 +467,8 @@ class TransformationSchedule(BaseModel):
 
 
 class UpdateTransformationRequest(BaseModel):
+    """ """
+
     schedule: Optional[TransformationSchedule] = None
     run_tests: Optional[bool] = Field(
         None,
@@ -405,6 +477,8 @@ class UpdateTransformationRequest(BaseModel):
 
 
 class DbtProjectDetailsResponse(BaseModel):
+    """ """
+
     id: Optional[str] = Field(
         None,
         description="The unique identifier for the DBT Model within the Fivetran system.",
@@ -430,6 +504,8 @@ class DbtProjectDetailsResponse(BaseModel):
 
 
 class Status(Enum):
+    """ """
+
     SUCCEEDED = "SUCCEEDED"
     RUNNING = "RUNNING"
     FAILED = "FAILED"
@@ -437,6 +513,8 @@ class Status(Enum):
 
 
 class TransformationDetailsResponse(BaseModel):
+    """ """
+
     id: Optional[str] = Field(
         None,
         description="The unique identifier for the DBT Model within the Fivetran system.",
@@ -463,6 +541,8 @@ class TransformationDetailsResponse(BaseModel):
 
 
 class DbtProjectResponse(BaseModel):
+    """ """
+
     id: Optional[str] = Field(
         None,
         description="The unique identifier for the DBT Model within the Fivetran system.",
@@ -479,6 +559,8 @@ class DbtProjectResponse(BaseModel):
 
 
 class DbtModelResponse(BaseModel):
+    """ """
+
     id: Optional[str] = Field(
         None,
         description="The unique identifier for the DBT Model within the Fivetran system.",
@@ -491,6 +573,8 @@ class DbtModelResponse(BaseModel):
 
 
 class Status1(Enum):
+    """ """
+
     SUCCEEDED = "SUCCEEDED"
     RUNNING = "RUNNING"
     FAILED = "FAILED"
@@ -498,6 +582,8 @@ class Status1(Enum):
 
 
 class TransformationResponse(BaseModel):
+    """ """
+
     id: Optional[str] = Field(
         None,
         description="The unique identifier for the DBT Model within the Fivetran system.",
@@ -522,6 +608,8 @@ class TransformationResponse(BaseModel):
 
 
 class DbtProjectTestResponse(BaseModel):
+    """ """
+
     setup_tests: Optional[List[SetupTestResultResponse]] = Field(None, description="Setup tests results")
     dbt_project_id: Optional[str] = Field(
         None,
@@ -530,6 +618,8 @@ class DbtProjectTestResponse(BaseModel):
 
 
 class Region(Enum):
+    """ """
+
     GCP_US_EAST4 = "GCP_US_EAST4"
     GCP_US_WEST1 = "GCP_US_WEST1"
     GCP_EUROPE_WEST3 = "GCP_EUROPE_WEST3"
@@ -550,6 +640,8 @@ class Region(Enum):
 
 
 class NewDestinationRequest(BaseModel):
+    """ """
+
     group_id: str = Field(
         ...,
         description="The unique identifier for the group within the Fivetran system.",
@@ -586,6 +678,8 @@ class NewDestinationRequest(BaseModel):
 
 
 class Region1(Enum):
+    """ """
+
     GCP_US_EAST4 = "GCP_US_EAST4"
     GCP_US_WEST1 = "GCP_US_WEST1"
     GCP_EUROPE_WEST3 = "GCP_EUROPE_WEST3"
@@ -606,6 +700,8 @@ class Region1(Enum):
 
 
 class UpdateDestinationRequest(BaseModel):
+    """ """
+
     region: Optional[Region1] = Field(
         None,
         description="Data processing location. This is where Fivetran will operate and run computation on data.",
@@ -636,6 +732,8 @@ class UpdateDestinationRequest(BaseModel):
 
 
 class Region2(Enum):
+    """ """
+
     GCP_US_EAST4 = "GCP_US_EAST4"
     GCP_US_WEST1 = "GCP_US_WEST1"
     GCP_EUROPE_WEST3 = "GCP_EUROPE_WEST3"
@@ -656,6 +754,8 @@ class Region2(Enum):
 
 
 class DestinationResponse(BaseModel):
+    """ """
+
     id: Optional[str] = Field(
         None,
         description="The unique identifier for the destination within the Fivetran system",
@@ -687,6 +787,8 @@ class DestinationResponse(BaseModel):
 
 
 class TrustFingerprintRequest(BaseModel):
+    """ """
+
     connector_id: Optional[str] = Field(None, description="The unique identifier for the connector")
     destination_id: Optional[str] = Field(None, description="The unique identifier for the destination")
     hash: str = Field(..., description="Hash of the fingerprint")
@@ -694,6 +796,8 @@ class TrustFingerprintRequest(BaseModel):
 
 
 class AddUserToGroupRequest(BaseModel):
+    """ """
+
     email: Optional[str] = Field(
         None,
         description="The email address that the user has associated with their user profile.",
@@ -705,14 +809,20 @@ class AddUserToGroupRequest(BaseModel):
 
 
 class NewGroupRequest(BaseModel):
+    """ """
+
     name: Optional[str] = Field(None, description="The name of the group within your account.", example="string")
 
 
 class UpdateGroupRequest(BaseModel):
+    """ """
+
     name: Optional[str] = Field(None, description="The name of the group within your account.", example="string")
 
 
 class GroupResponse(BaseModel):
+    """ """
+
     id: Optional[str] = Field(
         None,
         description="The unique identifier for the group within the Fivetran system.",
@@ -724,6 +834,8 @@ class GroupResponse(BaseModel):
 
 
 class ConnectorResponse(BaseModel):
+    """ """
+
     id: Optional[str] = Field(
         None,
         description="The unique identifier for the group within the Fivetran system.",
@@ -780,6 +892,8 @@ class ConnectorResponse(BaseModel):
 
 
 class UserResponse(BaseModel):
+    """ """
+
     id: Optional[str] = Field(
         None,
         description="The unique identifier for the user within the Fivetran system.",
@@ -818,6 +932,8 @@ class UserResponse(BaseModel):
 
 
 class Type(Enum):
+    """ """
+
     API = "API"
     Dbt = "Dbt"
     Marketing = "Marketing"
@@ -841,6 +957,8 @@ class Type(Enum):
 
 
 class MetadataResponse(BaseModel):
+    """ """
+
     id: Optional[str] = Field(None, description="The connector type identifier within the Fivetran system")
     name: Optional[str] = Field(None, description="The connector service name within the Fivetran system")
     type: Optional[Type] = Field(None, description="The connector service type")
@@ -857,6 +975,8 @@ class MetadataResponse(BaseModel):
 
 
 class RoleResponse(BaseModel):
+    """ """
+
     name: Optional[str] = Field(None, description="The role name")
     description: Optional[str] = Field(None, description="The role description")
     scope: Optional[List[str]] = Field(
@@ -868,6 +988,8 @@ class RoleResponse(BaseModel):
 
 
 class ColumnMetadataResponse(BaseModel):
+    """ """
+
     id: Optional[str] = Field(None, description="The unique column identifier")
     name_in_source: Optional[str] = Field(None, description="The column name in the source")
     type_in_destination: Optional[str] = Field(None, description="The column type in the destination")
@@ -886,12 +1008,16 @@ class ColumnMetadataResponse(BaseModel):
 
 
 class SchemaMetadataResponse(BaseModel):
+    """ """
+
     id: Optional[str] = Field(None, description="The unique schema identifier")
     name_in_source: Optional[str] = Field(None, description="The schema name in the source")
     name_in_destination: Optional[str] = Field(None, description="The schema name in the destination")
 
 
 class TableMetadataResponse(BaseModel):
+    """ """
+
     id: Optional[str] = Field(None, description="The unique table identifier")
     name_in_source: Optional[str] = Field(None, description="The table name in the source")
     parent_id: Optional[str] = Field(
@@ -902,6 +1028,8 @@ class TableMetadataResponse(BaseModel):
 
 
 class MembershipRequest(BaseModel):
+    """ """
+
     id: str = Field(
         ...,
         description="The unique identifier for the user within the Fivetran system.",
@@ -910,32 +1038,44 @@ class MembershipRequest(BaseModel):
 
 
 class TeamMembershipRequest(BaseModel):
+    """ """
+
     user_id: Optional[str] = Field(None, description="The unique identifier of user")
     role: Optional[str] = Field(None, description="The user's role within the team")
 
 
 class TeamRequest(BaseModel):
+    """ """
+
     name: Optional[str] = Field(None, description="The name of the team within your account")
     description: Optional[str] = Field(None, description="The description of the team within your account")
     role: Optional[str] = Field(None, description="The account role of the team")
 
 
 class UpdateMembershipRequest(BaseModel):
+    """ """
+
     role: str = Field(..., description="The role that you would like to assign to the user ")
 
 
 class MembershipResponse(BaseModel):
+    """ """
+
     id: Optional[str] = Field(None, description="The membership entity unique identifier")
     role: Optional[str] = Field(None, description="The role the user has within the entity")
     created_at: Optional[datetime] = Field(None, description="The date and time the membership was created")
 
 
 class TeamMembershipResponse(BaseModel):
+    """ """
+
     user_id: Optional[str] = Field(None, description="The unique identifier of user")
     role: Optional[str] = Field(None, description="The user's role within the team")
 
 
 class TeamResponse(BaseModel):
+    """ """
+
     id: Optional[str] = Field(None, description="The unique identifier for the team within your account")
     name: Optional[str] = Field(None, description="The name of the team within your account")
     description: Optional[str] = Field(None, description="The description of the team within your account")
@@ -943,6 +1083,8 @@ class TeamResponse(BaseModel):
 
 
 class NewUserRequest(BaseModel):
+    """ """
+
     email: str = Field(
         ...,
         description="The email address that the user has associated with their user profile.",
@@ -960,6 +1102,8 @@ class NewUserRequest(BaseModel):
 
 
 class UpdateUserRequest(BaseModel):
+    """ """
+
     family_name: str = Field(..., description="The last name of the user.", example="string")
     given_name: str = Field(..., description="The first name of the user.", example="string")
     phone: Optional[str] = Field(None, description="The phone number of the user.", example="string")
@@ -972,6 +1116,8 @@ class UpdateUserRequest(BaseModel):
 
 
 class WebhookRequest(BaseModel):
+    """ """
+
     url: Optional[str] = Field(None, description="Your webhooks URL endpoint for your application")
     events: Optional[List[str]] = Field(None, description="The array of event types")
     active: Optional[bool] = Field(
@@ -982,15 +1128,21 @@ class WebhookRequest(BaseModel):
 
 
 class WebhookTestRequest(BaseModel):
+    """ """
+
     event: Optional[str] = Field(None, description="Events")
 
 
 class Type1(Enum):
+    """ """
+
     group = "group"
     account = "account"
 
 
 class WebhookResponse(BaseModel):
+    """ """
+
     id: Optional[str] = Field(None, description="The webhook ID")
     type: Optional[Type1] = Field(None, description="The webhook type")
     url: Optional[str] = Field(None, description="Your webhooks URL endpoint for your application")
@@ -1006,12 +1158,16 @@ class WebhookResponse(BaseModel):
 
 
 class WebhookTestResponse(BaseModel):
+    """ """
+
     succeed: Optional[bool] = Field(None, description="Test result")
     status: Optional[int] = Field(None, description="Test status")
     message: Optional[str] = Field(None, description="Test message")
 
 
 class Config(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, title="")
     tunnel_port: Optional[int] = Field(
         None,
@@ -1044,14 +1200,20 @@ class Config(BaseModel):
 
 
 class AuroraPostgresWarehouseConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config] = Field(None, description="")
 
 
 class AuroraPostgresWarehouseNewDestinationRequest(NewDestinationRequest, AuroraPostgresWarehouseConfigV1):
+    """ """
+
     pass
 
 
 class Config1(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, title="")
     tunnel_port: Optional[int] = Field(
         None,
@@ -1084,14 +1246,20 @@ class Config1(BaseModel):
 
 
 class AuroraWarehouseConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config1] = Field(None, description="")
 
 
 class AuroraWarehouseNewDestinationRequest(NewDestinationRequest, AuroraWarehouseConfigV1):
+    """ """
+
     pass
 
 
 class Config2(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     tunnel_port: Optional[int] = Field(None, description="", title="")
     database: Optional[str] = Field(None, description="", title="")
@@ -1106,14 +1274,20 @@ class Config2(BaseModel):
 
 
 class AzurePostgresWarehouseConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config2] = Field(None, description="")
 
 
 class AzurePostgresWarehouseNewDestinationRequest(NewDestinationRequest, AzurePostgresWarehouseConfigV1):
+    """ """
+
     pass
 
 
 class Config3(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, title="")
     tunnel_port: Optional[int] = Field(
         None,
@@ -1146,14 +1320,20 @@ class Config3(BaseModel):
 
 
 class AzureSqlDataWarehouseConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config3] = Field(None, description="")
 
 
 class AzureSqlDataWarehouseNewDestinationRequest(NewDestinationRequest, AzureSqlDataWarehouseConfigV1):
+    """ """
+
     pass
 
 
 class Config4(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     tunnel_port: Optional[int] = Field(None, description="", title="")
     database: Optional[str] = Field(None, description="", title="")
@@ -1168,14 +1348,20 @@ class Config4(BaseModel):
 
 
 class AzureSqlDatabaseConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config4] = Field(None, description="")
 
 
 class AzureSqlDatabaseNewDestinationRequest(NewDestinationRequest, AzureSqlDatabaseConfigV1):
+    """ """
+
     pass
 
 
 class Config5(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     tunnel_port: Optional[int] = Field(None, description="", title="")
     database: Optional[str] = Field(None, description="", title="")
@@ -1190,14 +1376,20 @@ class Config5(BaseModel):
 
 
 class AzureSqlManagedDbWarehouseConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config5] = Field(None, description="")
 
 
 class AzureSqlManagedDbWarehouseNewDestinationRequest(NewDestinationRequest, AzureSqlManagedDbWarehouseConfigV1):
+    """ """
+
     pass
 
 
 class Config6(BaseModel):
+    """ """
+
     bucket: Optional[str] = Field(
         None,
         description="Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.",
@@ -1217,14 +1409,20 @@ class Config6(BaseModel):
 
 
 class BigQueryConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config6] = Field(None, description="")
 
 
 class BigQueryNewDestinationRequest(NewDestinationRequest, BigQueryConfigV1):
+    """ """
+
     pass
 
 
 class Config7(BaseModel):
+    """ """
+
     create_external_tables: Optional[bool] = Field(None, description="Whether to create external tables", title="")
     connection_type: Optional[Dict[str, Any]] = Field(None, title="")
     port: Optional[int] = Field(None, description="Server port number", title="")
@@ -1241,14 +1439,20 @@ class Config7(BaseModel):
 
 
 class DatabricksConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config7] = Field(None, description="")
 
 
 class DatabricksNewDestinationRequest(NewDestinationRequest, DatabricksConfigV1):
+    """ """
+
     pass
 
 
 class Config8(BaseModel):
+    """ """
+
     bucket: Optional[str] = Field(None, description="", title="")
     secret_key: Optional[str] = Field(None, description="", title="")
     project_id: Optional[str] = Field(None, description="", title="")
@@ -1256,14 +1460,20 @@ class Config8(BaseModel):
 
 
 class ManagedBigQueryConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config8] = Field(None, description="")
 
 
 class ManagedBigQueryNewDestinationRequest(NewDestinationRequest, ManagedBigQueryConfigV1):
+    """ """
+
     pass
 
 
 class Config9(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     tunnel_port: Optional[int] = Field(None, description="", title="")
     database: Optional[str] = Field(None, description="", title="")
@@ -1278,14 +1488,20 @@ class Config9(BaseModel):
 
 
 class MariaRdsWarehouseConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config9] = Field(None, description="")
 
 
 class MariaRdsWarehouseNewDestinationRequest(NewDestinationRequest, MariaRdsWarehouseConfigV1):
+    """ """
+
     pass
 
 
 class Config10(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     tunnel_port: Optional[int] = Field(None, description="", title="")
     database: Optional[str] = Field(None, description="", title="")
@@ -1300,14 +1516,20 @@ class Config10(BaseModel):
 
 
 class MariaWarehouseConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config10] = Field(None, description="")
 
 
 class MariaWarehouseNewDestinationRequest(NewDestinationRequest, MariaWarehouseConfigV1):
+    """ """
+
     pass
 
 
 class Config11(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, title="")
     tunnel_port: Optional[int] = Field(
         None,
@@ -1340,14 +1562,20 @@ class Config11(BaseModel):
 
 
 class MysqlRdsWarehouseConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config11] = Field(None, description="")
 
 
 class MysqlRdsWarehouseNewDestinationRequest(NewDestinationRequest, MysqlRdsWarehouseConfigV1):
+    """ """
+
     pass
 
 
 class Config12(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, title="")
     tunnel_port: Optional[int] = Field(
         None,
@@ -1380,14 +1608,20 @@ class Config12(BaseModel):
 
 
 class MysqlWarehouseConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config12] = Field(None, description="")
 
 
 class MysqlWarehouseNewDestinationRequest(NewDestinationRequest, MysqlWarehouseConfigV1):
+    """ """
+
     pass
 
 
 class Config13(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, title="")
     auth_type: Optional[Dict[str, Any]] = Field(None, title="")
     cluster_region: Optional[str] = Field(None, title="")
@@ -1421,14 +1655,20 @@ class Config13(BaseModel):
 
 
 class PanoplyConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config13] = Field(None, description="")
 
 
 class PanoplyNewDestinationRequest(NewDestinationRequest, PanoplyConfigV1):
+    """ """
+
     pass
 
 
 class Config14(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, title="")
     auth_type: Optional[Dict[str, Any]] = Field(None, title="")
     cluster_region: Optional[str] = Field(None, title="")
@@ -1462,14 +1702,20 @@ class Config14(BaseModel):
 
 
 class PeriscopeWarehouseConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config14] = Field(None, description="")
 
 
 class PeriscopeWarehouseNewDestinationRequest(NewDestinationRequest, PeriscopeWarehouseConfigV1):
+    """ """
+
     pass
 
 
 class Config15(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, title="")
     tunnel_port: Optional[int] = Field(
         None,
@@ -1502,14 +1748,20 @@ class Config15(BaseModel):
 
 
 class PostgresGcpWarehouseConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config15] = Field(None, description="")
 
 
 class PostgresGcpWarehouseNewDestinationRequest(NewDestinationRequest, PostgresGcpWarehouseConfigV1):
+    """ """
+
     pass
 
 
 class Config16(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, title="")
     tunnel_port: Optional[int] = Field(
         None,
@@ -1542,14 +1794,20 @@ class Config16(BaseModel):
 
 
 class PostgresRdsWarehouseConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config16] = Field(None, description="")
 
 
 class PostgresRdsWarehouseNewDestinationRequest(NewDestinationRequest, PostgresRdsWarehouseConfigV1):
+    """ """
+
     pass
 
 
 class Config17(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, title="")
     tunnel_port: Optional[int] = Field(
         None,
@@ -1582,14 +1840,20 @@ class Config17(BaseModel):
 
 
 class PostgresWarehouseConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config17] = Field(None, description="")
 
 
 class PostgresWarehouseNewDestinationRequest(NewDestinationRequest, PostgresWarehouseConfigV1):
+    """ """
+
     pass
 
 
 class Config18(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, title="")
     auth_type: Optional[Dict[str, Any]] = Field(
         None, description="Authentication type. Default value: `PASSWORD`.", title=""
@@ -1641,14 +1905,20 @@ class Config18(BaseModel):
 
 
 class RedshiftConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config18] = Field(None, description="")
 
 
 class RedshiftNewDestinationRequest(NewDestinationRequest, RedshiftConfigV1):
+    """ """
+
     pass
 
 
 class Config19(BaseModel):
+    """ """
+
     snowflake_region: Optional[str] = Field(None, description="", title="")
     role: Optional[str] = Field(
         None,
@@ -1687,14 +1957,20 @@ class Config19(BaseModel):
 
 
 class SnowflakeConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config19] = Field(None, description="")
 
 
 class SnowflakeNewDestinationRequest(NewDestinationRequest, SnowflakeConfigV1):
+    """ """
+
     pass
 
 
 class Config20(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, title="")
     tunnel_port: Optional[int] = Field(
         None,
@@ -1727,14 +2003,20 @@ class Config20(BaseModel):
 
 
 class SqlServerRdsWarehouseConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config20] = Field(None, description="")
 
 
 class SqlServerRdsWarehouseNewDestinationRequest(NewDestinationRequest, SqlServerRdsWarehouseConfigV1):
+    """ """
+
     pass
 
 
 class Config21(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, title="")
     tunnel_port: Optional[int] = Field(
         None,
@@ -1767,115 +2049,171 @@ class Config21(BaseModel):
 
 
 class SqlServerWarehouseConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config21] = Field(None, description="")
 
 
 class SqlServerWarehouseNewDestinationRequest(NewDestinationRequest, SqlServerWarehouseConfigV1):
+    """ """
+
     pass
 
 
 class AuroraPostgresWarehouseDestinationResponse(DestinationResponse, AuroraPostgresWarehouseConfigV1):
+    """ """
+
     pass
 
 
 class AuroraWarehouseDestinationResponse(DestinationResponse, AuroraWarehouseConfigV1):
+    """ """
+
     pass
 
 
 class AzurePostgresWarehouseDestinationResponse(DestinationResponse, AzurePostgresWarehouseConfigV1):
+    """ """
+
     pass
 
 
 class AzureSqlDataWarehouseDestinationResponse(DestinationResponse, AzureSqlDataWarehouseConfigV1):
+    """ """
+
     pass
 
 
 class AzureSqlDatabaseDestinationResponse(DestinationResponse, AzureSqlDatabaseConfigV1):
+    """ """
+
     pass
 
 
 class AzureSqlManagedDbWarehouseDestinationResponse(DestinationResponse, AzureSqlManagedDbWarehouseConfigV1):
+    """ """
+
     pass
 
 
 class BigQueryDestinationResponse(DestinationResponse, BigQueryConfigV1):
+    """ """
+
     pass
 
 
 class DatabricksDestinationResponse(DestinationResponse, DatabricksConfigV1):
+    """ """
+
     pass
 
 
 class ManagedBigQueryDestinationResponse(DestinationResponse, ManagedBigQueryConfigV1):
+    """ """
+
     pass
 
 
 class MariaRdsWarehouseDestinationResponse(DestinationResponse, MariaRdsWarehouseConfigV1):
+    """ """
+
     pass
 
 
 class MariaWarehouseDestinationResponse(DestinationResponse, MariaWarehouseConfigV1):
+    """ """
+
     pass
 
 
 class MysqlRdsWarehouseDestinationResponse(DestinationResponse, MysqlRdsWarehouseConfigV1):
+    """ """
+
     pass
 
 
 class MysqlWarehouseDestinationResponse(DestinationResponse, MysqlWarehouseConfigV1):
+    """ """
+
     pass
 
 
 class PanoplyDestinationResponse(DestinationResponse, PanoplyConfigV1):
+    """ """
+
     pass
 
 
 class PeriscopeWarehouseDestinationResponse(DestinationResponse, PeriscopeWarehouseConfigV1):
+    """ """
+
     pass
 
 
 class PostgresGcpWarehouseDestinationResponse(DestinationResponse, PostgresGcpWarehouseConfigV1):
+    """ """
+
     pass
 
 
 class PostgresRdsWarehouseDestinationResponse(DestinationResponse, PostgresRdsWarehouseConfigV1):
+    """ """
+
     pass
 
 
 class PostgresWarehouseDestinationResponse(DestinationResponse, PostgresWarehouseConfigV1):
+    """ """
+
     pass
 
 
 class RedshiftDestinationResponse(DestinationResponse, RedshiftConfigV1):
+    """ """
+
     pass
 
 
 class SnowflakeDestinationResponse(DestinationResponse, SnowflakeConfigV1):
+    """ """
+
     pass
 
 
 class SqlServerRdsWarehouseDestinationResponse(DestinationResponse, SqlServerRdsWarehouseConfigV1):
+    """ """
+
     pass
 
 
 class SqlServerWarehouseDestinationResponse(DestinationResponse, SqlServerWarehouseConfigV1):
+    """ """
+
     pass
 
 
 class Config22(BaseModel):
+    """ """
+
     api_key: Optional[str] = Field(None, description="Your ActiveCampaign API key.", title="")
     sub_domain: Optional[str] = Field(None, description="Your ActiveCampaign sub-domain.", title="")
 
 
 class ActivecampaignConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config22] = Field(None, description="")
 
 
 class ActivecampaignNewConnectorRequestV1(NewConnectorRequestV1, ActivecampaignConfigV1):
+    """ """
+
     pass
 
 
 class Config23(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -1897,6 +2235,8 @@ class Config23(BaseModel):
 
 
 class Auth(BaseModel):
+    """ """
+
     export_storage_type: Optional[Dict[str, Any]] = Field(None, description="Your cloud storage.")
     csv_definition: Optional[str] = Field(None, description="CSV definition for the CSV export")
     bucket_name: Optional[str] = Field(None, description="Your AWS S3 or GCS bucket.")
@@ -1907,15 +2247,21 @@ class Auth(BaseModel):
 
 
 class AdjustConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config23] = Field(None, description="")
     auth: Optional[Auth] = None
 
 
 class AdjustNewConnectorRequestV1(NewConnectorRequestV1, AdjustConfigV1):
+    """ """
+
     pass
 
 
 class AdobeAnalyticsConfiguration(BaseModel):
+    """ """
+
     report_suites: Optional[List[str]] = Field(
         None,
         description="Specific report suites to sync. Must be populated if `sync_mode` is set to `SpecificReportSuites`.",
@@ -1940,6 +2286,8 @@ class AdobeAnalyticsConfiguration(BaseModel):
 
 
 class Config24(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -1989,14 +2337,20 @@ class Config24(BaseModel):
 
 
 class AdobeAnalyticsConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config24] = Field(None, description="")
 
 
 class AdobeAnalyticsNewConnectorRequestV1(NewConnectorRequestV1, AdobeAnalyticsConfigV1):
+    """ """
+
     pass
 
 
 class Config25(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -2025,14 +2379,20 @@ class Config25(BaseModel):
 
 
 class AdobeAnalyticsDataFeedConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config25] = Field(None, description="")
 
 
 class AdobeAnalyticsDataFeedNewConnectorRequestV1(NewConnectorRequestV1, AdobeAnalyticsDataFeedConfigV1):
+    """ """
+
     pass
 
 
 class Config26(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -2046,14 +2406,20 @@ class Config26(BaseModel):
 
 
 class AdpWorkforceNowConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config26] = Field(None, description="")
 
 
 class AdpWorkforceNowNewConnectorRequestV1(NewConnectorRequestV1, AdpWorkforceNowConfigV1):
+    """ """
+
     pass
 
 
 class Config27(BaseModel):
+    """ """
+
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
         description="Whether to sync all advertisables or specific advertisables. Default value: `AllAdvertisables`.",
@@ -2090,11 +2456,15 @@ class Config27(BaseModel):
 
 
 class ClientAccess(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth1(BaseModel):
+    """ """
+
     refresh_token: Optional[str] = Field(
         None,
         description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
@@ -2103,15 +2473,21 @@ class Auth1(BaseModel):
 
 
 class AdrollConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config27] = Field(None, description="")
     auth: Optional[Auth1] = None
 
 
 class AdrollNewConnectorRequestV1(NewConnectorRequestV1, AdrollConfigV1):
+    """ """
+
     pass
 
 
 class Config28(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -2129,14 +2505,20 @@ class Config28(BaseModel):
 
 
 class AirtableConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config28] = Field(None, description="")
 
 
 class AirtableNewConnectorRequestV1(NewConnectorRequestV1, AirtableConfigV1):
+    """ """
+
     pass
 
 
 class Config29(BaseModel):
+    """ """
+
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
         description="Option to select connector should sync all profiles or specific profiles.",
@@ -2162,11 +2544,15 @@ class Config29(BaseModel):
 
 
 class ClientAccess1(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth2(BaseModel):
+    """ """
+
     refresh_token: Optional[str] = Field(
         None,
         description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
@@ -2175,21 +2561,29 @@ class Auth2(BaseModel):
 
 
 class AmazonAdsConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config29] = Field(None, description="")
     auth: Optional[Auth2] = None
 
 
 class AmazonAdsNewConnectorRequestV1(NewConnectorRequestV1, AmazonAdsConfigV1):
+    """ """
+
     pass
 
 
 class ProjectCredential(BaseModel):
+    """ """
+
     secret_key: Optional[str] = Field(None, description="The secret key of the project.", title="")
     api_key: Optional[str] = Field(None, description="The API key of the project.", title="")
     project: Optional[str] = Field(None, description="The project name you wish to use with Fivetran.", title="")
 
 
 class Config30(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -2200,14 +2594,20 @@ class Config30(BaseModel):
 
 
 class AmplitudeConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config30] = Field(None, description="")
 
 
 class AmplitudeNewConnectorRequestV1(NewConnectorRequestV1, AmplitudeConfigV1):
+    """ """
+
     pass
 
 
 class Config31(BaseModel):
+    """ """
+
     sync_mode: Optional[Dict[str, Any]] = Field(
         None, description="Whether to sync all exports or specific exports.", title=""
     )
@@ -2246,14 +2646,20 @@ class Config31(BaseModel):
 
 
 class AnaplanConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config31] = Field(None, description="")
 
 
 class AnaplanNewConnectorRequestV1(NewConnectorRequestV1, AnaplanConfigV1):
+    """ """
+
     pass
 
 
 class Config32(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -2292,14 +2698,20 @@ class Config32(BaseModel):
 
 
 class ApacheKafkaConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config32] = Field(None, description="")
 
 
 class ApacheKafkaNewConnectorRequestV1(NewConnectorRequestV1, ApacheKafkaConfigV1):
+    """ """
+
     pass
 
 
 class Config33(BaseModel):
+    """ """
+
     sync_mode: Optional[Dict[str, Any]] = Field(None, title="")
     schema_: Optional[str] = Field(
         None,
@@ -2333,21 +2745,29 @@ class Config33(BaseModel):
 
 
 class Auth3(BaseModel):
+    """ """
+
     key_id: Optional[str] = Field(None, description="Apple Search Ads REST API Key ID")
     team_id: Optional[str] = Field(None, description="Apple Search Ads REST API Team ID.")
     client_id: Optional[str] = Field(None, description="Apple Search Ads REST API Client ID")
 
 
 class AppleSearchAdsConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config33] = Field(None, description="")
     auth: Optional[Auth3] = None
 
 
 class AppleSearchAdsNewConnectorRequestV1(NewConnectorRequestV1, AppleSearchAdsConfigV1):
+    """ """
+
     pass
 
 
 class Config34(BaseModel):
+    """ """
+
     access_key_id: Optional[str] = Field(None, description="Your AWS access key ID.", title="")
     bucket: Optional[str] = Field(None, title="")
     schema_: Optional[str] = Field(
@@ -2364,14 +2784,20 @@ class Config34(BaseModel):
 
 
 class AppsflyerConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config34] = Field(None, description="")
 
 
 class AppsflyerNewConnectorRequestV1(NewConnectorRequestV1, AppsflyerConfigV1):
+    """ """
+
     pass
 
 
 class Config35(BaseModel):
+    """ """
+
     sync_mode: Optional[Dict[str, Any]] = Field(
         None, description="Whether to sync all projects or specific projects.", title=""
     )
@@ -2389,11 +2815,15 @@ class Config35(BaseModel):
 
 
 class ClientAccess2(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth4(BaseModel):
+    """ """
+
     refresh_token: Optional[str] = Field(
         None,
         description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
@@ -2402,15 +2832,21 @@ class Auth4(BaseModel):
 
 
 class AsanaConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config35] = Field(None, description="")
     auth: Optional[Auth4] = None
 
 
 class AsanaNewConnectorRequestV1(NewConnectorRequestV1, AsanaConfigV1):
+    """ """
+
     pass
 
 
 class Config36(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
@@ -2451,14 +2887,20 @@ class Config36(BaseModel):
 
 
 class AuroraConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config36] = Field(None, description="")
 
 
 class AuroraNewConnectorRequestV1(NewConnectorRequestV1, AuroraConfigV1):
+    """ """
+
     pass
 
 
 class Config37(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     publication_name: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
@@ -2506,14 +2948,20 @@ class Config37(BaseModel):
 
 
 class AuroraPostgresConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config37] = Field(None, description="")
 
 
 class AuroraPostgresNewConnectorRequestV1(NewConnectorRequestV1, AuroraPostgresConfigV1):
+    """ """
+
     pass
 
 
 class Config38(BaseModel):
+    """ """
+
     bucket: Optional[str] = Field(
         None,
         description="The AWS bucket name which is configured for AWS CloudTrail.",
@@ -2535,14 +2983,20 @@ class Config38(BaseModel):
 
 
 class AwsCloudtrailConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config38] = Field(None, description="")
 
 
 class AwsCloudtrailNewConnectorRequestV1(NewConnectorRequestV1, AwsCloudtrailConfigV1):
+    """ """
+
     pass
 
 
 class Config39(BaseModel):
+    """ """
+
     bucket: Optional[str] = Field(
         None,
         description="The AWS bucket name that is configured for AWS Config.",
@@ -2563,19 +3017,27 @@ class Config39(BaseModel):
 
 
 class AwsInventoryConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config39] = Field(None, description="")
 
 
 class AwsInventoryNewConnectorRequestV1(NewConnectorRequestV1, AwsInventoryConfigV1):
+    """ """
+
     pass
 
 
 class SecretsListItem(BaseModel):
+    """ """
+
     value: Optional[str] = Field(None, description="", title="")
     key: Optional[str] = Field(None, description="", title="")
 
 
 class Config40(BaseModel):
+    """ """
+
     bucket: Optional[str] = Field(None, description="", title="")
     schema_: Optional[str] = Field(
         None,
@@ -2606,14 +3068,20 @@ class Config40(BaseModel):
 
 
 class AwsLambdaConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config40] = Field(None, description="")
 
 
 class AwsLambdaNewConnectorRequestV1(NewConnectorRequestV1, AwsLambdaConfigV1):
+    """ """
+
     pass
 
 
 class Config41(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -2669,14 +3137,20 @@ class Config41(BaseModel):
 
 
 class AwsMskConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config41] = Field(None, description="")
 
 
 class AwsMskNewConnectorRequestV1(NewConnectorRequestV1, AwsMskConfigV1):
+    """ """
+
     pass
 
 
 class Config42(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -2756,14 +3230,20 @@ class Config42(BaseModel):
 
 
 class AzureBlobStorageConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config42] = Field(None, description="")
 
 
 class AzureBlobStorageNewConnectorRequestV1(NewConnectorRequestV1, AzureBlobStorageConfigV1):
+    """ """
+
     pass
 
 
 class Config43(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -2783,19 +3263,27 @@ class Config43(BaseModel):
 
 
 class AzureEventHubConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config43] = Field(None, description="")
 
 
 class AzureEventHubNewConnectorRequestV1(NewConnectorRequestV1, AzureEventHubConfigV1):
+    """ """
+
     pass
 
 
 class SecretsListItem1(BaseModel):
+    """ """
+
     value: Optional[str] = Field(None, description="", title="")
     key: Optional[str] = Field(None, description="", title="")
 
 
 class Config44(BaseModel):
+    """ """
+
     bucket: Optional[str] = Field(None, description="", title="")
     schema_: Optional[str] = Field(
         None,
@@ -2816,14 +3304,20 @@ class Config44(BaseModel):
 
 
 class AzureFunctionConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config44] = Field(None, description="")
 
 
 class AzureFunctionNewConnectorRequestV1(NewConnectorRequestV1, AzureFunctionConfigV1):
+    """ """
+
     pass
 
 
 class Config45(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     publication_name: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
@@ -2871,14 +3365,20 @@ class Config45(BaseModel):
 
 
 class AzurePostgresConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config45] = Field(None, description="")
 
 
 class AzurePostgresNewConnectorRequestV1(NewConnectorRequestV1, AzurePostgresConfigV1):
+    """ """
+
     pass
 
 
 class Config46(BaseModel):
+    """ """
+
     asb_i_p: Optional[str] = Field(None, description="The IP address (or) the URL of ASB namespace", title="asb_ip")
     schema_: Optional[str] = Field(
         None,
@@ -2955,11 +3455,15 @@ class Config46(BaseModel):
 
 
 class ClientAccess3(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth5(BaseModel):
+    """ """
+
     access_token: Optional[str] = Field(
         None,
         description="The long-lived Access token carries the information necessary to access API resources",
@@ -2973,15 +3477,21 @@ class Auth5(BaseModel):
 
 
 class AzureServiceBusConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config46] = Field(None, description="")
     auth: Optional[Auth5] = None
 
 
 class AzureServiceBusNewConnectorRequestV1(NewConnectorRequestV1, AzureServiceBusConfigV1):
+    """ """
+
     pass
 
 
 class Config47(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     agent_user: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(None, description="", title="")
@@ -3023,6 +3533,8 @@ class Config47(BaseModel):
 
 
 class Auth6(BaseModel):
+    """ """
+
     access_token: Optional[str] = Field(
         None,
         description="The long-lived Access token carries the information necessary to access API resources",
@@ -3035,15 +3547,21 @@ class Auth6(BaseModel):
 
 
 class AzureSqlDbConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config47] = Field(None, description="")
     auth: Optional[Auth6] = None
 
 
 class AzureSqlDbNewConnectorRequestV1(NewConnectorRequestV1, AzureSqlDbConfigV1):
+    """ """
+
     pass
 
 
 class Config48(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     agent_user: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(None, description="", title="")
@@ -3069,6 +3587,8 @@ class Config48(BaseModel):
 
 
 class Auth7(BaseModel):
+    """ """
+
     access_token: Optional[str] = Field(
         None,
         description="The long-lived Access token carries the information necessary to access API resources",
@@ -3081,15 +3601,21 @@ class Auth7(BaseModel):
 
 
 class AzureSqlManagedDbConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config48] = Field(None, description="")
     auth: Optional[Auth7] = None
 
 
 class AzureSqlManagedDbNewConnectorRequestV1(NewConnectorRequestV1, AzureSqlManagedDbConfigV1):
+    """ """
+
     pass
 
 
 class Config49(BaseModel):
+    """ """
+
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
         description="Whether to sync all accounts or specific accounts. Default value: `AllAccounts`.",
@@ -3119,11 +3645,15 @@ class Config49(BaseModel):
 
 
 class ClientAccess4(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth8(BaseModel):
+    """ """
+
     refresh_token: Optional[str] = Field(
         None,
         description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
@@ -3132,15 +3662,21 @@ class Auth8(BaseModel):
 
 
 class BingadsConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config49] = Field(None, description="")
     auth: Optional[Auth8] = None
 
 
 class BingadsNewConnectorRequestV1(NewConnectorRequestV1, BingadsConfigV1):
+    """ """
+
     pass
 
 
 class Config50(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -3222,6 +3758,8 @@ class Config50(BaseModel):
 
 
 class Auth9(BaseModel):
+    """ """
+
     access_token: Optional[str] = Field(
         None,
         description="The long-lived Access token carries the information necessary to access API resources",
@@ -3234,15 +3772,21 @@ class Auth9(BaseModel):
 
 
 class BoxConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config50] = Field(None, description="")
     auth: Optional[Auth9] = None
 
 
 class BoxNewConnectorRequestV1(NewConnectorRequestV1, BoxConfigV1):
+    """ """
+
     pass
 
 
 class Config51(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="The contents of your PEM certificate file.", title="")
     schema_: Optional[str] = Field(
         None,
@@ -3255,14 +3799,20 @@ class Config51(BaseModel):
 
 
 class BraintreeConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config51] = Field(None, description="")
 
 
 class BraintreeNewConnectorRequestV1(NewConnectorRequestV1, BraintreeConfigV1):
+    """ """
+
     pass
 
 
 class Config52(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="The contents of your PEM certificate file.", title="")
     schema_: Optional[str] = Field(
         None,
@@ -3275,14 +3825,20 @@ class Config52(BaseModel):
 
 
 class BraintreeSandboxConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config52] = Field(None, description="")
 
 
 class BraintreeSandboxNewConnectorRequestV1(NewConnectorRequestV1, BraintreeSandboxConfigV1):
+    """ """
+
     pass
 
 
 class Config53(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -3292,14 +3848,20 @@ class Config53(BaseModel):
 
 
 class BranchConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config53] = Field(None, description="")
 
 
 class BranchNewConnectorRequestV1(NewConnectorRequestV1, BranchConfigV1):
+    """ """
+
     pass
 
 
 class Config54(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -3352,14 +3914,20 @@ class Config54(BaseModel):
 
 
 class BrazeConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config54] = Field(None, description="")
 
 
 class BrazeNewConnectorRequestV1(NewConnectorRequestV1, BrazeConfigV1):
+    """ """
+
     pass
 
 
 class Config55(BaseModel):
+    """ """
+
     bucket: Optional[str] = Field(None, description="The bucket name for CloudFront.", title="")
     schema_: Optional[str] = Field(
         None,
@@ -3379,14 +3947,20 @@ class Config55(BaseModel):
 
 
 class CloudfrontConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config55] = Field(None, description="")
 
 
 class CloudfrontNewConnectorRequestV1(NewConnectorRequestV1, CloudfrontConfigV1):
+    """ """
+
     pass
 
 
 class Config56(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -3401,14 +3975,20 @@ class Config56(BaseModel):
 
 
 class ConcurConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config56] = Field(None, description="")
 
 
 class ConcurNewConnectorRequestV1(NewConnectorRequestV1, ConcurConfigV1):
+    """ """
+
     pass
 
 
 class Config57(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -3439,14 +4019,20 @@ class Config57(BaseModel):
 
 
 class ConfluentCloudConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config57] = Field(None, description="")
 
 
 class ConfluentCloudNewConnectorRequestV1(NewConnectorRequestV1, ConfluentCloudConfigV1):
+    """ """
+
     pass
 
 
 class Config58(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -3464,14 +4050,20 @@ class Config58(BaseModel):
 
 
 class CoupaConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config58] = Field(None, description="")
 
 
 class CoupaNewConnectorRequestV1(NewConnectorRequestV1, CoupaConfigV1):
+    """ """
+
     pass
 
 
 class Config59(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -3491,14 +4083,20 @@ class Config59(BaseModel):
 
 
 class CriteoConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config59] = Field(None, description="")
 
 
 class CriteoNewConnectorRequestV1(NewConnectorRequestV1, CriteoConfigV1):
+    """ """
+
     pass
 
 
 class Config60(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -3508,14 +4106,20 @@ class Config60(BaseModel):
 
 
 class DelightedConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config60] = Field(None, description="")
 
 
 class DelightedNewConnectorRequestV1(NewConnectorRequestV1, DelightedConfigV1):
+    """ """
+
     pass
 
 
 class Config61(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
@@ -3556,20 +4160,28 @@ class Config61(BaseModel):
 
 
 class DocumentdbConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config61] = Field(None, description="")
 
 
 class DocumentdbNewConnectorRequestV1(NewConnectorRequestV1, DocumentdbConfigV1):
+    """ """
+
     pass
 
 
 class DimensionFilter(BaseModel):
+    """ """
+
     filter_expression: Optional[str] = Field(None, description="", title="")
     match_type: Optional[Dict[str, Any]] = Field(None, description="", title="")
     dimension: Optional[str] = Field(None, description="", title="")
 
 
 class Config62(BaseModel):
+    """ """
+
     dimension_filters: Optional[List[DimensionFilter]] = Field(None, description="", title="")
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
@@ -3621,11 +4233,15 @@ class Config62(BaseModel):
 
 
 class ClientAccess5(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth10(BaseModel):
+    """ """
+
     refresh_token: Optional[str] = Field(
         None,
         description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
@@ -3634,15 +4250,21 @@ class Auth10(BaseModel):
 
 
 class DoubleClickCampaignManagerConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config62] = Field(None, description="")
     auth: Optional[Auth10] = None
 
 
 class DoubleClickCampaignManagerNewConnectorRequestV1(NewConnectorRequestV1, DoubleClickCampaignManagerConfigV1):
+    """ """
+
     pass
 
 
 class Config63(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -3678,11 +4300,15 @@ class Config63(BaseModel):
 
 
 class ClientAccess6(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth11(BaseModel):
+    """ """
+
     refresh_token: Optional[str] = Field(
         None,
         description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
@@ -3691,29 +4317,41 @@ class Auth11(BaseModel):
 
 
 class DoubleClickPublishersConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config63] = Field(None, description="")
     auth: Optional[Auth11] = None
 
 
 class DoubleClickPublishersNewConnectorRequestV1(NewConnectorRequestV1, DoubleClickPublishersConfigV1):
+    """ """
+
     pass
 
 
 class Auth12(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="", title="")
     client_id: Optional[str] = Field(None, description="", title="")
 
 
 class DriftConfigV1(BaseModel):
+    """ """
+
     config: Optional[Dict[str, Any]] = Field(None, description="")
     auth: Optional[Auth12] = Field(None, description="")
 
 
 class DriftNewConnectorRequestV1(NewConnectorRequestV1, DriftConfigV1):
+    """ """
+
     pass
 
 
 class Config64(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -3796,11 +4434,15 @@ class Config64(BaseModel):
 
 
 class ClientAccess7(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth13(BaseModel):
+    """ """
+
     access_token: Optional[str] = Field(
         None,
         description="The long-lived Access token carries the information necessary to access API resources",
@@ -3814,15 +4456,21 @@ class Auth13(BaseModel):
 
 
 class DropboxConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config64] = Field(None, description="")
     auth: Optional[Auth13] = None
 
 
 class DropboxNewConnectorRequestV1(NewConnectorRequestV1, DropboxConfigV1):
+    """ """
+
     pass
 
 
 class Config65(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -3838,11 +4486,15 @@ class Config65(BaseModel):
 
 
 class ClientAccess8(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth14(BaseModel):
+    """ """
+
     refresh_token: Optional[str] = Field(
         None,
         description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
@@ -3851,15 +4503,21 @@ class Auth14(BaseModel):
 
 
 class Dynamics365ConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config65] = Field(None, description="")
     auth: Optional[Auth14] = None
 
 
 class Dynamics365NewConnectorRequestV1(NewConnectorRequestV1, Dynamics365ConfigV1):
+    """ """
+
     pass
 
 
 class Config66(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     agent_user: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(None, description="", title="")
@@ -3897,6 +4555,8 @@ class Config66(BaseModel):
 
 
 class Auth15(BaseModel):
+    """ """
+
     access_token: Optional[str] = Field(
         None,
         description="The long-lived Access token carries the information necessary to access API resources",
@@ -3909,15 +4569,21 @@ class Auth15(BaseModel):
 
 
 class Dynamics365FoConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config66] = Field(None, description="")
     auth: Optional[Auth15] = None
 
 
 class Dynamics365FoNewConnectorRequestV1(NewConnectorRequestV1, Dynamics365FoConfigV1):
+    """ """
+
     pass
 
 
 class Config67(BaseModel):
+    """ """
+
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
         description="Whether to sync all tables in unpacked mode only or specific tables in packed mode. Default value: `UseUnpackedModeOnly`.",
@@ -3946,14 +4612,20 @@ class Config67(BaseModel):
 
 
 class DynamodbConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config67] = Field(None, description="")
 
 
 class DynamodbNewConnectorRequestV1(NewConnectorRequestV1, DynamodbConfigV1):
+    """ """
+
     pass
 
 
 class Config68(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -3963,6 +4635,8 @@ class Config68(BaseModel):
 
 
 class Auth16(BaseModel):
+    """ """
+
     access_token: Optional[str] = Field(
         None,
         description="The long-lived Access token carries the information necessary to access API resources",
@@ -3975,15 +4649,21 @@ class Auth16(BaseModel):
 
 
 class EloquaConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config68] = Field(None, description="")
     auth: Optional[Auth16] = None
 
 
 class EloquaNewConnectorRequestV1(NewConnectorRequestV1, EloquaConfigV1):
+    """ """
+
     pass
 
 
 class Config69(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -4052,14 +4732,20 @@ class Config69(BaseModel):
 
 
 class EmailConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config69] = Field(None, description="")
 
 
 class EmailNewConnectorRequestV1(NewConnectorRequestV1, EmailConfigV1):
+    """ """
+
     pass
 
 
 class Config70(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -4134,14 +4820,20 @@ class Config70(BaseModel):
 
 
 class FacebookConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config70] = Field(None, description="")
 
 
 class FacebookNewConnectorRequestV1(NewConnectorRequestV1, FacebookConfigV1):
+    """ """
+
     pass
 
 
 class Config71(BaseModel):
+    """ """
+
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
         description="Whether to sync all accounts or specific accounts. Default value: `AllAccounts`.",
@@ -4161,14 +4853,20 @@ class Config71(BaseModel):
 
 
 class FacebookAdAccountConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config71] = Field(None, description="")
 
 
 class FacebookAdAccountNewConnectorRequestV1(NewConnectorRequestV1, FacebookAdAccountConfigV1):
+    """ """
+
     pass
 
 
 class CustomTable(BaseModel):
+    """ """
+
     prebuilt_report_name: Optional[str] = Field(
         None,
         description="The report name to which connector will sync the data. [Possible prebuilt_report values](/docs/applications/facebook-ads-insights/api-config#prebuiltreport).",
@@ -4224,6 +4922,8 @@ class CustomTable(BaseModel):
 
 
 class Config72(BaseModel):
+    """ """
+
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
         description="Option to select connector should sync all accounts or specific accounts. [Possible sync_mode values](/docs/applications/facebook-ads-insights/api-config#syncmode).",
@@ -4258,11 +4958,15 @@ class Config72(BaseModel):
 
 
 class ClientAccess9(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth17(BaseModel):
+    """ """
+
     access_token: Optional[str] = Field(
         None,
         description="The long-lived Access token carries the information necessary to access API resources",
@@ -4275,15 +4979,21 @@ class Auth17(BaseModel):
 
 
 class FacebookAdsConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config72] = Field(None, description="")
     auth: Optional[Auth17] = None
 
 
 class FacebookAdsNewConnectorRequestV1(NewConnectorRequestV1, FacebookAdsConfigV1):
+    """ """
+
     pass
 
 
 class Config73(BaseModel):
+    """ """
+
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
         description="Whether to sync all accounts or specific accounts. Default value: `AllPages`.",
@@ -4303,11 +5013,15 @@ class Config73(BaseModel):
 
 
 class ClientAccess10(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth18(BaseModel):
+    """ """
+
     access_token: Optional[str] = Field(
         None,
         description="The long-lived Access token carries the information necessary to access API resources",
@@ -4316,15 +5030,21 @@ class Auth18(BaseModel):
 
 
 class FacebookPagesConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config73] = Field(None, description="")
     auth: Optional[Auth18] = None
 
 
 class FacebookPagesNewConnectorRequestV1(NewConnectorRequestV1, FacebookPagesConfigV1):
+    """ """
+
     pass
 
 
 class Config74(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -4341,11 +5061,15 @@ class Config74(BaseModel):
 
 
 class ClientAccess11(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth19(BaseModel):
+    """ """
+
     refresh_token: Optional[str] = Field(
         None,
         description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
@@ -4354,15 +5078,21 @@ class Auth19(BaseModel):
 
 
 class FinancialForceConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config74] = Field(None, description="")
     auth: Optional[Auth19] = None
 
 
 class FinancialForceNewConnectorRequestV1(NewConnectorRequestV1, FinancialForceConfigV1):
+    """ """
+
     pass
 
 
 class Config75(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -4376,14 +5106,20 @@ class Config75(BaseModel):
 
 
 class FivetranLogConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config75] = Field(None, description="")
 
 
 class FivetranLogNewConnectorRequestV1(NewConnectorRequestV1, FivetranLogConfigV1):
+    """ """
+
     pass
 
 
 class Config76(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -4399,14 +5135,20 @@ class Config76(BaseModel):
 
 
 class FreshdeskConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config76] = Field(None, description="")
 
 
 class FreshdeskNewConnectorRequestV1(NewConnectorRequestV1, FreshdeskConfigV1):
+    """ """
+
     pass
 
 
 class Config77(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -4416,11 +5158,15 @@ class Config77(BaseModel):
 
 
 class ClientAccess12(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth20(BaseModel):
+    """ """
+
     refresh_token: Optional[str] = Field(
         None,
         description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
@@ -4429,15 +5175,21 @@ class Auth20(BaseModel):
 
 
 class FrontConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config77] = Field(None, description="")
     auth: Optional[Auth20] = None
 
 
 class FrontNewConnectorRequestV1(NewConnectorRequestV1, FrontConfigV1):
+    """ """
+
     pass
 
 
 class Config78(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -4518,14 +5270,20 @@ class Config78(BaseModel):
 
 
 class FtpConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config78] = Field(None, description="")
 
 
 class FtpNewConnectorRequestV1(NewConnectorRequestV1, FtpConfigV1):
+    """ """
+
     pass
 
 
 class Config79(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -4537,14 +5295,20 @@ class Config79(BaseModel):
 
 
 class GainsightCustomerSuccessConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config79] = Field(None, description="")
 
 
 class GainsightCustomerSuccessNewConnectorRequestV1(NewConnectorRequestV1, GainsightCustomerSuccessConfigV1):
+    """ """
+
     pass
 
 
 class Config80(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -4631,14 +5395,20 @@ class Config80(BaseModel):
 
 
 class GcsConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config80] = Field(None, description="")
 
 
 class GcsNewConnectorRequestV1(NewConnectorRequestV1, GcsConfigV1):
+    """ """
+
     pass
 
 
 class Config81(BaseModel):
+    """ """
+
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
         description="Whether to sync all repositories or specific repositories.",
@@ -4662,14 +5432,20 @@ class Config81(BaseModel):
 
 
 class GithubConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config81] = Field(None, description="")
 
 
 class GithubNewConnectorRequestV1(NewConnectorRequestV1, GithubConfigV1):
+    """ """
+
     pass
 
 
 class Report(BaseModel):
+    """ """
+
     report_type: Optional[str] = Field(
         None,
         description="The name of the Google Ads report from which the connector will sync the data. [Possible report_type values](https://developers.google.com/adwords/api/docs/appendix/reports#report-types).",
@@ -4688,6 +5464,8 @@ class Report(BaseModel):
 
 
 class Config82(BaseModel):
+    """ """
+
     sync_mode: Optional[Dict[str, Any]] = Field(
         None, description="Whether to sync all accounts or specific accounts.", title=""
     )
@@ -4730,6 +5508,8 @@ class Config82(BaseModel):
 
 
 class ClientAccess13(BaseModel):
+    """ """
+
     developer_token: Optional[str] = Field(None, description="Your approved Developer token to connect to the API.")
     client_secret: Optional[str] = Field(None, description="Client secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
@@ -4737,6 +5517,8 @@ class ClientAccess13(BaseModel):
 
 
 class Auth21(BaseModel):
+    """ """
+
     refresh_token: Optional[str] = Field(
         None,
         description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
@@ -4745,15 +5527,21 @@ class Auth21(BaseModel):
 
 
 class GoogleAdsConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config82] = Field(None, description="")
     auth: Optional[Auth21] = None
 
 
 class GoogleAdsNewConnectorRequestV1(NewConnectorRequestV1, GoogleAdsConfigV1):
+    """ """
+
     pass
 
 
 class Report1(BaseModel):
+    """ """
+
     filter: Optional[str] = Field(
         None,
         description="String parameter restricts the data returned for your report. To use the filters parameter, specify a dimension or metric on which to filter, followed by the filter expression",
@@ -4789,6 +5577,8 @@ class Report1(BaseModel):
 
 
 class Config83(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -4852,11 +5642,15 @@ class Config83(BaseModel):
 
 
 class ClientAccess14(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth22(BaseModel):
+    """ """
+
     refresh_token: Optional[str] = Field(
         None,
         description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
@@ -4865,15 +5659,21 @@ class Auth22(BaseModel):
 
 
 class GoogleAnalyticsConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config83] = Field(None, description="")
     auth: Optional[Auth22] = None
 
 
 class GoogleAnalyticsNewConnectorRequestV1(NewConnectorRequestV1, GoogleAnalyticsConfigV1):
+    """ """
+
     pass
 
 
 class Config84(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -4886,14 +5686,20 @@ class Config84(BaseModel):
 
 
 class GoogleAnalytics360ConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config84] = Field(None, description="")
 
 
 class GoogleAnalytics360NewConnectorRequestV1(NewConnectorRequestV1, GoogleAnalytics360ConfigV1):
+    """ """
+
     pass
 
 
 class Report2(BaseModel):
+    """ """
+
     filter_value: Optional[str] = Field(None, title="")
     prebuilt_report: Optional[Dict[str, Any]] = Field(
         None,
@@ -4916,6 +5722,8 @@ class Report2(BaseModel):
 
 
 class Config85(BaseModel):
+    """ """
+
     sync_mode: Optional[Dict[str, Any]] = Field(
         None, description="Whether to sync all accounts or specific accounts.", title=""
     )
@@ -4948,11 +5756,15 @@ class Config85(BaseModel):
 
 
 class ClientAccess15(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth23(BaseModel):
+    """ """
+
     refresh_token: Optional[str] = Field(
         None,
         description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
@@ -4961,15 +5773,21 @@ class Auth23(BaseModel):
 
 
 class GoogleAnalytics4ConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config85] = Field(None, description="")
     auth: Optional[Auth23] = None
 
 
 class GoogleAnalytics4NewConnectorRequestV1(NewConnectorRequestV1, GoogleAnalytics4ConfigV1):
+    """ """
+
     pass
 
 
 class Config86(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -4982,14 +5800,20 @@ class Config86(BaseModel):
 
 
 class GoogleAnalytics4ExportConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config86] = Field(None, description="")
 
 
 class GoogleAnalytics4ExportNewConnectorRequestV1(NewConnectorRequestV1, GoogleAnalytics4ExportConfigV1):
+    """ """
+
     pass
 
 
 class Config87(BaseModel):
+    """ """
+
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
         description="Whether to sync all accounts or specific accounts. Default value: `ALL_ACCOUNTS`",
@@ -5019,11 +5843,15 @@ class Config87(BaseModel):
 
 
 class ClientAccess16(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth24(BaseModel):
+    """ """
+
     refresh_token: Optional[str] = Field(
         None,
         description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
@@ -5032,20 +5860,28 @@ class Auth24(BaseModel):
 
 
 class GoogleAnalyticsMcfConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config87] = Field(None, description="")
     auth: Optional[Auth24] = None
 
 
 class GoogleAnalyticsMcfNewConnectorRequestV1(NewConnectorRequestV1, GoogleAnalyticsMcfConfigV1):
+    """ """
+
     pass
 
 
 class SecretsListItem2(BaseModel):
+    """ """
+
     value: Optional[str] = Field(None, description="", title="")
     key: Optional[str] = Field(None, description="", title="")
 
 
 class Config88(BaseModel):
+    """ """
+
     bucket: Optional[str] = Field(None, description="", title="")
     schema_: Optional[str] = Field(
         None,
@@ -5065,14 +5901,20 @@ class Config88(BaseModel):
 
 
 class GoogleCloudFunctionConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config88] = Field(None, description="")
 
 
 class GoogleCloudFunctionNewConnectorRequestV1(NewConnectorRequestV1, GoogleCloudFunctionConfigV1):
+    """ """
+
     pass
 
 
 class Config89(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
@@ -5113,14 +5955,20 @@ class Config89(BaseModel):
 
 
 class GoogleCloudMysqlConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config89] = Field(None, description="")
 
 
 class GoogleCloudMysqlNewConnectorRequestV1(NewConnectorRequestV1, GoogleCloudMysqlConfigV1):
+    """ """
+
     pass
 
 
 class Config90(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     publication_name: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
@@ -5168,14 +6016,20 @@ class Config90(BaseModel):
 
 
 class GoogleCloudPostgresqlConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config90] = Field(None, description="")
 
 
 class GoogleCloudPostgresqlNewConnectorRequestV1(NewConnectorRequestV1, GoogleCloudPostgresqlConfigV1):
+    """ """
+
     pass
 
 
 class Config91(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     agent_user: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(None, description="", title="")
@@ -5217,6 +6071,8 @@ class Config91(BaseModel):
 
 
 class Auth25(BaseModel):
+    """ """
+
     access_token: Optional[str] = Field(
         None,
         description="The long-lived Access token carries the information necessary to access API resources",
@@ -5229,15 +6085,21 @@ class Auth25(BaseModel):
 
 
 class GoogleCloudSqlserverConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config91] = Field(None, description="")
     auth: Optional[Auth25] = None
 
 
 class GoogleCloudSqlserverNewConnectorRequestV1(NewConnectorRequestV1, GoogleCloudSqlserverConfigV1):
+    """ """
+
     pass
 
 
 class Config92(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -5293,6 +6155,8 @@ class Config92(BaseModel):
 
 
 class Auth26(BaseModel):
+    """ """
+
     refresh_token: Optional[str] = Field(
         None,
         description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
@@ -5300,15 +6164,21 @@ class Auth26(BaseModel):
 
 
 class GoogleDisplayAndVideo360ConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config92] = Field(None, description="")
     auth: Optional[Auth26] = None
 
 
 class GoogleDisplayAndVideo360NewConnectorRequestV1(NewConnectorRequestV1, GoogleDisplayAndVideo360ConfigV1):
+    """ """
+
     pass
 
 
 class Config93(BaseModel):
+    """ """
+
     service_account: Optional[str] = Field(None, description="", title="")
     schema_: Optional[str] = Field(
         None,
@@ -5391,6 +6261,8 @@ class Config93(BaseModel):
 
 
 class Auth27(BaseModel):
+    """ """
+
     access_token: Optional[str] = Field(
         None,
         description="The long-lived Access token carries the information necessary to access API resources",
@@ -5403,15 +6275,21 @@ class Auth27(BaseModel):
 
 
 class GoogleDriveConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config93] = Field(None, description="")
     auth: Optional[Auth27] = None
 
 
 class GoogleDriveNewConnectorRequestV1(NewConnectorRequestV1, GoogleDriveConfigV1):
+    """ """
+
     pass
 
 
 class Config94(BaseModel):
+    """ """
+
     bucket: Optional[str] = Field(None, description="The Google Cloud Storage source bucket.", title="")
     schema_: Optional[str] = Field(
         None,
@@ -5422,24 +6300,34 @@ class Config94(BaseModel):
 
 
 class ClientAccess17(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth28(BaseModel):
+    """ """
+
     client_access: Optional[ClientAccess17] = None
 
 
 class GooglePlayConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config94] = Field(None, description="")
     auth: Optional[Auth28] = None
 
 
 class GooglePlayNewConnectorRequestV1(NewConnectorRequestV1, GooglePlayConfigV1):
+    """ """
+
     pass
 
 
 class Report3(BaseModel):
+    """ """
+
     aggregation: Optional[Dict[str, Any]] = Field(
         None,
         description="(Optional) Aggregation type. Supported only for the `SEARCH_RESULTS` report type",
@@ -5462,6 +6350,8 @@ class Report3(BaseModel):
 
 
 class Config95(BaseModel):
+    """ """
+
     sync_mode: Optional[Dict[str, Any]] = Field(
         None, description="Whether to sync all sites or specific sites.", title=""
     )
@@ -5489,24 +6379,34 @@ class Config95(BaseModel):
 
 
 class ClientAccess18(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth29(BaseModel):
+    """ """
+
     client_access: Optional[ClientAccess18] = None
 
 
 class GoogleSearchConsoleConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config95] = Field(None, description="")
     auth: Optional[Auth29] = None
 
 
 class GoogleSearchConsoleNewConnectorRequestV1(NewConnectorRequestV1, GoogleSearchConsoleConfigV1):
+    """ """
+
     pass
 
 
 class Config96(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -5536,11 +6436,15 @@ class Config96(BaseModel):
 
 
 class ClientAccess19(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth30(BaseModel):
+    """ """
+
     refresh_token: Optional[str] = Field(
         None,
         description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
@@ -5549,15 +6453,21 @@ class Auth30(BaseModel):
 
 
 class GoogleSheetsConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config96] = Field(None, description="")
     auth: Optional[Auth30] = None
 
 
 class GoogleSheetsNewConnectorRequestV1(NewConnectorRequestV1, GoogleSheetsConfigV1):
+    """ """
+
     pass
 
 
 class Config97(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -5568,14 +6478,20 @@ class Config97(BaseModel):
 
 
 class GreenhouseConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config97] = Field(None, description="")
 
 
 class GreenhouseNewConnectorRequestV1(NewConnectorRequestV1, GreenhouseConfigV1):
+    """ """
+
     pass
 
 
 class Config98(BaseModel):
+    """ """
+
     bucket: Optional[str] = Field(None, description="The S3 bucket name.", title="")
     schema_: Optional[str] = Field(
         None,
@@ -5587,14 +6503,20 @@ class Config98(BaseModel):
 
 
 class HeapConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config98] = Field(None, description="")
 
 
 class HeapNewConnectorRequestV1(NewConnectorRequestV1, HeapConfigV1):
+    """ """
+
     pass
 
 
 class Config99(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -5605,6 +6527,8 @@ class Config99(BaseModel):
 
 
 class Auth31(BaseModel):
+    """ """
+
     access_token: Optional[str] = Field(
         None,
         description="The long-lived Access token carries the information necessary to access API resources",
@@ -5617,15 +6541,21 @@ class Auth31(BaseModel):
 
 
 class HeightConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config99] = Field(None, description="")
     auth: Optional[Auth31] = None
 
 
 class HeightNewConnectorRequestV1(NewConnectorRequestV1, HeightConfigV1):
+    """ """
+
     pass
 
 
 class Config100(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -5635,11 +6565,15 @@ class Config100(BaseModel):
 
 
 class ClientAccess20(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth32(BaseModel):
+    """ """
+
     refresh_token: Optional[str] = Field(
         None,
         description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
@@ -5648,15 +6582,21 @@ class Auth32(BaseModel):
 
 
 class HelpscoutConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config100] = Field(None, description="")
     auth: Optional[Auth32] = None
 
 
 class HelpscoutNewConnectorRequestV1(NewConnectorRequestV1, HelpscoutConfigV1):
+    """ """
+
     pass
 
 
 class Config101(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -5686,14 +6626,20 @@ class Config101(BaseModel):
 
 
 class HerokuKafkaConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config101] = Field(None, description="")
 
 
 class HerokuKafkaNewConnectorRequestV1(NewConnectorRequestV1, HerokuKafkaConfigV1):
+    """ """
+
     pass
 
 
 class Config102(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     publication_name: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
@@ -5741,14 +6687,20 @@ class Config102(BaseModel):
 
 
 class HerokuPostgresConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config102] = Field(None, description="")
 
 
 class HerokuPostgresNewConnectorRequestV1(NewConnectorRequestV1, HerokuPostgresConfigV1):
+    """ """
+
     pass
 
 
 class Config103(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -5758,11 +6710,15 @@ class Config103(BaseModel):
 
 
 class ClientAccess21(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth33(BaseModel):
+    """ """
+
     refresh_token: Optional[str] = Field(
         None,
         description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
@@ -5771,15 +6727,21 @@ class Auth33(BaseModel):
 
 
 class HubspotConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config103] = Field(None, description="")
     auth: Optional[Auth33] = None
 
 
 class HubspotNewConnectorRequestV1(NewConnectorRequestV1, HubspotConfigV1):
+    """ """
+
     pass
 
 
 class Config104(BaseModel):
+    """ """
+
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
         description="Whether to sync all accounts or specific accounts. Default value: `AllAccounts`.",
@@ -5804,24 +6766,34 @@ class Config104(BaseModel):
 
 
 class ClientAccess22(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth34(BaseModel):
+    """ """
+
     client_access: Optional[ClientAccess22] = None
 
 
 class InstagramBusinessConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config104] = Field(None, description="")
     auth: Optional[Auth34] = None
 
 
 class InstagramBusinessNewConnectorRequestV1(NewConnectorRequestV1, InstagramBusinessConfigV1):
+    """ """
+
     pass
 
 
 class Config105(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -5831,14 +6803,20 @@ class Config105(BaseModel):
 
 
 class IntercomConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config105] = Field(None, description="")
 
 
 class IntercomNewConnectorRequestV1(NewConnectorRequestV1, IntercomConfigV1):
+    """ """
+
     pass
 
 
 class Config106(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -5850,14 +6828,20 @@ class Config106(BaseModel):
 
 
 class IterableConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config106] = Field(None, description="")
 
 
 class IterableNewConnectorRequestV1(NewConnectorRequestV1, IterableConfigV1):
+    """ """
+
     pass
 
 
 class Config107(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -5904,14 +6888,20 @@ class Config107(BaseModel):
 
 
 class ItunesConnectConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config107] = Field(None, description="")
 
 
 class ItunesConnectNewConnectorRequestV1(NewConnectorRequestV1, ItunesConnectConfigV1):
+    """ """
+
     pass
 
 
 class Config108(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -5931,14 +6921,20 @@ class Config108(BaseModel):
 
 
 class JiraConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config108] = Field(None, description="")
 
 
 class JiraNewConnectorRequestV1(NewConnectorRequestV1, JiraConfigV1):
+    """ """
+
     pass
 
 
 class Config109(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -5975,14 +6971,20 @@ class Config109(BaseModel):
 
 
 class KinesisConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config109] = Field(None, description="")
 
 
 class KinesisNewConnectorRequestV1(NewConnectorRequestV1, KinesisConfigV1):
+    """ """
+
     pass
 
 
 class Config110(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -5993,14 +6995,20 @@ class Config110(BaseModel):
 
 
 class KlaviyoConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config110] = Field(None, description="")
 
 
 class KlaviyoNewConnectorRequestV1(NewConnectorRequestV1, KlaviyoConfigV1):
+    """ """
+
     pass
 
 
 class Config111(BaseModel):
+    """ """
+
     access_token: Optional[str] = Field(None, description="Your Kustomer API key.", title="")
     schema_: Optional[str] = Field(
         None,
@@ -6013,14 +7021,20 @@ class Config111(BaseModel):
 
 
 class KustomerConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config111] = Field(None, description="")
 
 
 class KustomerNewConnectorRequestV1(NewConnectorRequestV1, KustomerConfigV1):
+    """ """
+
     pass
 
 
 class Config112(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -6031,14 +7045,20 @@ class Config112(BaseModel):
 
 
 class LeverConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config112] = Field(None, description="")
 
 
 class LeverNewConnectorRequestV1(NewConnectorRequestV1, LeverConfigV1):
+    """ """
+
     pass
 
 
 class Config113(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -6048,14 +7068,20 @@ class Config113(BaseModel):
 
 
 class LightSpeedRetailConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config113] = Field(None, description="")
 
 
 class LightSpeedRetailNewConnectorRequestV1(NewConnectorRequestV1, LightSpeedRetailConfigV1):
+    """ """
+
     pass
 
 
 class Config114(BaseModel):
+    """ """
+
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
         description="Whether to sync all accounts or specific accounts. Default value: `AllAccounts`",
@@ -6095,11 +7121,15 @@ class Config114(BaseModel):
 
 
 class ClientAccess23(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth35(BaseModel):
+    """ """
+
     refresh_token: Optional[str] = Field(
         None,
         description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
@@ -6108,15 +7138,21 @@ class Auth35(BaseModel):
 
 
 class LinkedinAdsConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config114] = Field(None, description="")
     auth: Optional[Auth35] = None
 
 
 class LinkedinAdsNewConnectorRequestV1(NewConnectorRequestV1, LinkedinAdsConfigV1):
+    """ """
+
     pass
 
 
 class Config115(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -6126,11 +7162,15 @@ class Config115(BaseModel):
 
 
 class ClientAccess24(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth36(BaseModel):
+    """ """
+
     refresh_token: Optional[str] = Field(
         None,
         description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
@@ -6139,15 +7179,21 @@ class Auth36(BaseModel):
 
 
 class LinkedinCompanyPagesConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config115] = Field(None, description="")
     auth: Optional[Auth36] = None
 
 
 class LinkedinCompanyPagesNewConnectorRequestV1(NewConnectorRequestV1, LinkedinCompanyPagesConfigV1):
+    """ """
+
     pass
 
 
 class Config116(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
@@ -6188,14 +7234,20 @@ class Config116(BaseModel):
 
 
 class MagentoMysqlConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config116] = Field(None, description="")
 
 
 class MagentoMysqlNewConnectorRequestV1(NewConnectorRequestV1, MagentoMysqlConfigV1):
+    """ """
+
     pass
 
 
 class Config117(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
@@ -6236,14 +7288,20 @@ class Config117(BaseModel):
 
 
 class MagentoMysqlRdsConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config117] = Field(None, description="")
 
 
 class MagentoMysqlRdsNewConnectorRequestV1(NewConnectorRequestV1, MagentoMysqlRdsConfigV1):
+    """ """
+
     pass
 
 
 class Config118(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -6253,14 +7311,20 @@ class Config118(BaseModel):
 
 
 class MailchimpConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config118] = Field(None, description="")
 
 
 class MailchimpNewConnectorRequestV1(NewConnectorRequestV1, MailchimpConfigV1):
+    """ """
+
     pass
 
 
 class Config119(BaseModel):
+    """ """
+
     use_api_keys: Optional[bool] = Field(
         None, description="Whether to use multiple API keys for interaction.", title=""
     )
@@ -6279,14 +7343,20 @@ class Config119(BaseModel):
 
 
 class MandrillConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config119] = Field(None, description="")
 
 
 class MandrillNewConnectorRequestV1(NewConnectorRequestV1, MandrillConfigV1):
+    """ """
+
     pass
 
 
 class Config120(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
@@ -6327,14 +7397,20 @@ class Config120(BaseModel):
 
 
 class MariaConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config120] = Field(None, description="")
 
 
 class MariaNewConnectorRequestV1(NewConnectorRequestV1, MariaConfigV1):
+    """ """
+
     pass
 
 
 class Config121(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
@@ -6375,14 +7451,20 @@ class Config121(BaseModel):
 
 
 class MariaAzureConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config121] = Field(None, description="")
 
 
 class MariaAzureNewConnectorRequestV1(NewConnectorRequestV1, MariaAzureConfigV1):
+    """ """
+
     pass
 
 
 class Config122(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
@@ -6423,14 +7505,20 @@ class Config122(BaseModel):
 
 
 class MariaRdsConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config122] = Field(None, description="")
 
 
 class MariaRdsNewConnectorRequestV1(NewConnectorRequestV1, MariaRdsConfigV1):
+    """ """
+
     pass
 
 
 class Config123(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -6445,14 +7533,20 @@ class Config123(BaseModel):
 
 
 class MarinConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config123] = Field(None, description="")
 
 
 class MarinNewConnectorRequestV1(NewConnectorRequestV1, MarinConfigV1):
+    """ """
+
     pass
 
 
 class Config124(BaseModel):
+    """ """
+
     soap_uri: Optional[str] = Field(None, title="")
     schema_: Optional[str] = Field(
         None,
@@ -6475,14 +7569,20 @@ class Config124(BaseModel):
 
 
 class MarketoConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config124] = Field(None, description="")
 
 
 class MarketoNewConnectorRequestV1(NewConnectorRequestV1, MarketoConfigV1):
+    """ """
+
     pass
 
 
 class Config125(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -6492,14 +7592,20 @@ class Config125(BaseModel):
 
 
 class MavenlinkConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config125] = Field(None, description="")
 
 
 class MavenlinkNewConnectorRequestV1(NewConnectorRequestV1, MavenlinkConfigV1):
+    """ """
+
     pass
 
 
 class Config126(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -6514,6 +7620,8 @@ class Config126(BaseModel):
 
 
 class Auth37(BaseModel):
+    """ """
+
     access_token: Optional[str] = Field(
         None,
         description="The long-lived Access token carries the information necessary to access API resources",
@@ -6521,15 +7629,21 @@ class Auth37(BaseModel):
 
 
 class MedalliaConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config126] = Field(None, description="")
     auth: Optional[Auth37] = None
 
 
 class MedalliaNewConnectorRequestV1(NewConnectorRequestV1, MedalliaConfigV1):
+    """ """
+
     pass
 
 
 class Config127(BaseModel):
+    """ """
+
     site_name: Optional[str] = Field(
         None,
         description="The Name of the SharePoint site. The Site Name is the `name` field in the Graph API response for sites.",
@@ -6549,24 +7663,34 @@ class Config127(BaseModel):
 
 
 class ClientAccess25(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth38(BaseModel):
+    """ """
+
     client_access: Optional[ClientAccess25] = None
 
 
 class MicrosoftListsConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config127] = Field(None, description="")
     auth: Optional[Auth38] = None
 
 
 class MicrosoftListsNewConnectorRequestV1(NewConnectorRequestV1, MicrosoftListsConfigV1):
+    """ """
+
     pass
 
 
 class Config128(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -6577,14 +7701,20 @@ class Config128(BaseModel):
 
 
 class MixpanelConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config128] = Field(None, description="")
 
 
 class MixpanelNewConnectorRequestV1(NewConnectorRequestV1, MixpanelConfigV1):
+    """ """
+
     pass
 
 
 class Config129(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, title="")
     packed_mode_tables: Optional[List[str]] = Field(
         None,
@@ -6635,14 +7765,20 @@ class Config129(BaseModel):
 
 
 class MongoConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config129] = Field(None, description="")
 
 
 class MongoNewConnectorRequestV1(NewConnectorRequestV1, MongoConfigV1):
+    """ """
+
     pass
 
 
 class Config130(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, title="")
     packed_mode_tables: Optional[List[str]] = Field(
         None,
@@ -6693,14 +7829,20 @@ class Config130(BaseModel):
 
 
 class MongoShardedConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config130] = Field(None, description="")
 
 
 class MongoShardedNewConnectorRequestV1(NewConnectorRequestV1, MongoShardedConfigV1):
+    """ """
+
     pass
 
 
 class Config131(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
@@ -6741,14 +7883,20 @@ class Config131(BaseModel):
 
 
 class MysqlConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config131] = Field(None, description="")
 
 
 class MysqlNewConnectorRequestV1(NewConnectorRequestV1, MysqlConfigV1):
+    """ """
+
     pass
 
 
 class Config132(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
@@ -6789,14 +7937,20 @@ class Config132(BaseModel):
 
 
 class MysqlAzureConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config132] = Field(None, description="")
 
 
 class MysqlAzureNewConnectorRequestV1(NewConnectorRequestV1, MysqlAzureConfigV1):
+    """ """
+
     pass
 
 
 class Config133(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
         None,
@@ -6837,14 +7991,20 @@ class Config133(BaseModel):
 
 
 class MysqlRdsConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config133] = Field(None, description="")
 
 
 class MysqlRdsNewConnectorRequestV1(NewConnectorRequestV1, MysqlRdsConfigV1):
+    """ """
+
     pass
 
 
 class Config134(BaseModel):
+    """ """
+
     consumer_key: Optional[str] = Field(None, title="")
     schema_: Optional[str] = Field(
         None,
@@ -6865,14 +8025,20 @@ class Config134(BaseModel):
 
 
 class NetsuiteSuiteanalyticsConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config134] = Field(None, description="")
 
 
 class NetsuiteSuiteanalyticsNewConnectorRequestV1(NewConnectorRequestV1, NetsuiteSuiteanalyticsConfigV1):
+    """ """
+
     pass
 
 
 class Config135(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -6897,11 +8063,15 @@ class Config135(BaseModel):
 
 
 class ClientAccess26(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth39(BaseModel):
+    """ """
+
     refresh_token: Optional[str] = Field(
         None,
         description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
@@ -6910,15 +8080,21 @@ class Auth39(BaseModel):
 
 
 class OneDriveConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config135] = Field(None, description="")
     auth: Optional[Auth39] = None
 
 
 class OneDriveNewConnectorRequestV1(NewConnectorRequestV1, OneDriveConfigV1):
+    """ """
+
     pass
 
 
 class Config136(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -6930,11 +8106,15 @@ class Config136(BaseModel):
 
 
 class ClientAccess27(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth40(BaseModel):
+    """ """
+
     refresh_token: Optional[str] = Field(
         None,
         description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
@@ -6943,15 +8123,21 @@ class Auth40(BaseModel):
 
 
 class OptimizelyConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config136] = Field(None, description="")
     auth: Optional[Auth40] = None
 
 
 class OptimizelyNewConnectorRequestV1(NewConnectorRequestV1, OptimizelyConfigV1):
+    """ """
+
     pass
 
 
 class Config137(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     agent_user: Optional[str] = Field(None, title="")
     connection_type: Optional[Dict[str, Any]] = Field(
@@ -6999,14 +8185,20 @@ class Config137(BaseModel):
 
 
 class OracleConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config137] = Field(None, description="")
 
 
 class OracleNewConnectorRequestV1(NewConnectorRequestV1, OracleConfigV1):
+    """ """
+
     pass
 
 
 class Config138(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     agent_user: Optional[str] = Field(None, title="")
     connection_type: Optional[Dict[str, Any]] = Field(
@@ -7054,14 +8246,20 @@ class Config138(BaseModel):
 
 
 class OracleEbsConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config138] = Field(None, description="")
 
 
 class OracleEbsNewConnectorRequestV1(NewConnectorRequestV1, OracleEbsConfigV1):
+    """ """
+
     pass
 
 
 class Config139(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     agent_user: Optional[str] = Field(None, title="")
     connection_type: Optional[Dict[str, Any]] = Field(
@@ -7113,14 +8311,20 @@ class Config139(BaseModel):
 
 
 class OracleHvaConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config139] = Field(None, description="")
 
 
 class OracleHvaNewConnectorRequestV1(NewConnectorRequestV1, OracleHvaConfigV1):
+    """ """
+
     pass
 
 
 class Config140(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     agent_user: Optional[str] = Field(None, title="")
     connection_type: Optional[Dict[str, Any]] = Field(
@@ -7168,14 +8372,20 @@ class Config140(BaseModel):
 
 
 class OracleRacConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config140] = Field(None, description="")
 
 
 class OracleRacNewConnectorRequestV1(NewConnectorRequestV1, OracleRacConfigV1):
+    """ """
+
     pass
 
 
 class Config141(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     agent_user: Optional[str] = Field(None, title="")
     connection_type: Optional[Dict[str, Any]] = Field(
@@ -7223,14 +8433,20 @@ class Config141(BaseModel):
 
 
 class OracleRdsConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config141] = Field(None, description="")
 
 
 class OracleRdsNewConnectorRequestV1(NewConnectorRequestV1, OracleRdsConfigV1):
+    """ """
+
     pass
 
 
 class Config142(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -7243,14 +8459,20 @@ class Config142(BaseModel):
 
 
 class OutbrainConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config142] = Field(None, description="")
 
 
 class OutbrainNewConnectorRequestV1(NewConnectorRequestV1, OutbrainConfigV1):
+    """ """
+
     pass
 
 
 class Config143(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -7260,6 +8482,8 @@ class Config143(BaseModel):
 
 
 class Auth41(BaseModel):
+    """ """
+
     refresh_token: Optional[str] = Field(
         None,
         description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
@@ -7267,15 +8491,21 @@ class Auth41(BaseModel):
 
 
 class OutreachConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config143] = Field(None, description="")
     auth: Optional[Auth41] = None
 
 
 class OutreachNewConnectorRequestV1(NewConnectorRequestV1, OutreachConfigV1):
+    """ """
+
     pass
 
 
 class Config144(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -7290,14 +8520,20 @@ class Config144(BaseModel):
 
 
 class PardotConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config144] = Field(None, description="")
 
 
 class PardotNewConnectorRequestV1(NewConnectorRequestV1, PardotConfigV1):
+    """ """
+
     pass
 
 
 class Config145(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -7309,14 +8545,20 @@ class Config145(BaseModel):
 
 
 class PaypalConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config145] = Field(None, description="")
 
 
 class PaypalNewConnectorRequestV1(NewConnectorRequestV1, PaypalConfigV1):
+    """ """
+
     pass
 
 
 class Config146(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -7328,14 +8570,20 @@ class Config146(BaseModel):
 
 
 class PaypalSandboxConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config146] = Field(None, description="")
 
 
 class PaypalSandboxNewConnectorRequestV1(NewConnectorRequestV1, PaypalSandboxConfigV1):
+    """ """
+
     pass
 
 
 class Config147(BaseModel):
+    """ """
+
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
         description="Whether to sync all App IDs or specific App IDs. Default value: `AllAppIds`.",
@@ -7357,14 +8605,20 @@ class Config147(BaseModel):
 
 
 class PendoConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config147] = Field(None, description="")
 
 
 class PendoNewConnectorRequestV1(NewConnectorRequestV1, PendoConfigV1):
+    """ """
+
     pass
 
 
 class Config148(BaseModel):
+    """ """
+
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
         description="Whether to sync all advertisers or specific advertisers.",
@@ -7409,24 +8663,34 @@ class Config148(BaseModel):
 
 
 class ClientAccess28(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth42(BaseModel):
+    """ """
+
     client_access: Optional[ClientAccess28] = None
 
 
 class PinterestAdsConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config148] = Field(None, description="")
     auth: Optional[Auth42] = None
 
 
 class PinterestAdsNewConnectorRequestV1(NewConnectorRequestV1, PinterestAdsConfigV1):
+    """ """
+
     pass
 
 
 class Config149(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -7439,11 +8703,15 @@ class Config149(BaseModel):
 
 
 class ClientAccess29(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth43(BaseModel):
+    """ """
+
     refresh_token: Optional[str] = Field(
         None,
         description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
@@ -7452,15 +8720,21 @@ class Auth43(BaseModel):
 
 
 class PipedriveConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config149] = Field(None, description="")
     auth: Optional[Auth43] = None
 
 
 class PipedriveNewConnectorRequestV1(NewConnectorRequestV1, PipedriveConfigV1):
+    """ """
+
     pass
 
 
 class Config150(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     publication_name: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
@@ -7508,14 +8782,20 @@ class Config150(BaseModel):
 
 
 class PostgresConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config150] = Field(None, description="")
 
 
 class PostgresNewConnectorRequestV1(NewConnectorRequestV1, PostgresConfigV1):
+    """ """
+
     pass
 
 
 class Config151(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     publication_name: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(
@@ -7563,14 +8843,20 @@ class Config151(BaseModel):
 
 
 class PostgresRdsConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config151] = Field(None, description="")
 
 
 class PostgresRdsNewConnectorRequestV1(NewConnectorRequestV1, PostgresRdsConfigV1):
+    """ """
+
     pass
 
 
 class Config152(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -7586,14 +8872,20 @@ class Config152(BaseModel):
 
 
 class QualtricsConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config152] = Field(None, description="")
 
 
 class QualtricsNewConnectorRequestV1(NewConnectorRequestV1, QualtricsConfigV1):
+    """ """
+
     pass
 
 
 class Config153(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -7603,11 +8895,15 @@ class Config153(BaseModel):
 
 
 class ClientAccess30(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth44(BaseModel):
+    """ """
+
     refresh_token: Optional[str] = Field(
         None,
         description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
@@ -7617,15 +8913,21 @@ class Auth44(BaseModel):
 
 
 class QuickbooksConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config153] = Field(None, description="")
     auth: Optional[Auth44] = None
 
 
 class QuickbooksNewConnectorRequestV1(NewConnectorRequestV1, QuickbooksConfigV1):
+    """ """
+
     pass
 
 
 class Config154(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -7636,14 +8938,20 @@ class Config154(BaseModel):
 
 
 class RechargeConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config154] = Field(None, description="")
 
 
 class RechargeNewConnectorRequestV1(NewConnectorRequestV1, RechargeConfigV1):
+    """ """
+
     pass
 
 
 class Config155(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -7655,14 +8963,20 @@ class Config155(BaseModel):
 
 
 class RecurlyConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config155] = Field(None, description="")
 
 
 class RecurlyNewConnectorRequestV1(NewConnectorRequestV1, RecurlyConfigV1):
+    """ """
+
     pass
 
 
 class CustomReport(BaseModel):
+    """ """
+
     custom_events_included: Optional[bool] = Field(
         None,
         description="The boolean value specifying whether the custom events are included in event conversions report. Default value: `false`",
@@ -7691,6 +9005,8 @@ class CustomReport(BaseModel):
 
 
 class Config156(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -7710,11 +9026,15 @@ class Config156(BaseModel):
 
 
 class ClientAccess31(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth45(BaseModel):
+    """ """
+
     access_token: Optional[str] = Field(
         None,
         description="The long-lived Access token carries the information necessary to access API resources",
@@ -7728,15 +9048,21 @@ class Auth45(BaseModel):
 
 
 class RedditAdsConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config156] = Field(None, description="")
     auth: Optional[Auth45] = None
 
 
 class RedditAdsNewConnectorRequestV1(NewConnectorRequestV1, RedditAdsConfigV1):
+    """ """
+
     pass
 
 
 class Config157(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -7825,14 +9151,20 @@ class Config157(BaseModel):
 
 
 class S3ConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config157] = Field(None, description="")
 
 
 class S3NewConnectorRequestV1(NewConnectorRequestV1, S3ConfigV1):
+    """ """
+
     pass
 
 
 class Config158(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -7849,14 +9181,20 @@ class Config158(BaseModel):
 
 
 class SageIntacctConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config158] = Field(None, description="")
 
 
 class SageIntacctNewConnectorRequestV1(NewConnectorRequestV1, SageIntacctConfigV1):
+    """ """
+
     pass
 
 
 class Config159(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -7872,14 +9210,20 @@ class Config159(BaseModel):
 
 
 class SailthruConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config159] = Field(None, description="")
 
 
 class SailthruNewConnectorRequestV1(NewConnectorRequestV1, SailthruConfigV1):
+    """ """
+
     pass
 
 
 class Config160(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -7896,11 +9240,15 @@ class Config160(BaseModel):
 
 
 class ClientAccess32(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth46(BaseModel):
+    """ """
+
     refresh_token: Optional[str] = Field(
         None,
         description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
@@ -7909,15 +9257,21 @@ class Auth46(BaseModel):
 
 
 class SalesforceConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config160] = Field(None, description="")
     auth: Optional[Auth46] = None
 
 
 class SalesforceNewConnectorRequestV1(NewConnectorRequestV1, SalesforceConfigV1):
+    """ """
+
     pass
 
 
 class Config161(BaseModel):
+    """ """
+
     is_new_package: Optional[bool] = Field(
         None,
         description="Indicates that that your installed package uses OAuth 2.0. Default value: `false`",
@@ -7937,14 +9291,20 @@ class Config161(BaseModel):
 
 
 class SalesforceMarketingCloudConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config161] = Field(None, description="")
 
 
 class SalesforceMarketingCloudNewConnectorRequestV1(NewConnectorRequestV1, SalesforceMarketingCloudConfigV1):
+    """ """
+
     pass
 
 
 class Config162(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -7961,11 +9321,15 @@ class Config162(BaseModel):
 
 
 class ClientAccess33(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth47(BaseModel):
+    """ """
+
     refresh_token: Optional[str] = Field(
         None,
         description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
@@ -7974,15 +9338,21 @@ class Auth47(BaseModel):
 
 
 class SalesforceSandboxConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config162] = Field(None, description="")
     auth: Optional[Auth47] = None
 
 
 class SalesforceSandboxNewConnectorRequestV1(NewConnectorRequestV1, SalesforceSandboxConfigV1):
+    """ """
+
     pass
 
 
 class Config163(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -7995,14 +9365,20 @@ class Config163(BaseModel):
 
 
 class SapBusinessByDesignConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config163] = Field(None, description="")
 
 
 class SapBusinessByDesignNewConnectorRequestV1(NewConnectorRequestV1, SapBusinessByDesignConfigV1):
+    """ """
+
     pass
 
 
 class Config164(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -8042,14 +9418,20 @@ class Config164(BaseModel):
 
 
 class SegmentConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config164] = Field(None, description="")
 
 
 class SegmentNewConnectorRequestV1(NewConnectorRequestV1, SegmentConfigV1):
+    """ """
+
     pass
 
 
 class Config165(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -8060,14 +9442,20 @@ class Config165(BaseModel):
 
 
 class SendgridConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config165] = Field(None, description="")
 
 
 class SendgridNewConnectorRequestV1(NewConnectorRequestV1, SendgridConfigV1):
+    """ """
+
     pass
 
 
 class Config166(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -8082,14 +9470,20 @@ class Config166(BaseModel):
 
 
 class ServicenowConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config166] = Field(None, description="")
 
 
 class ServicenowNewConnectorRequestV1(NewConnectorRequestV1, ServicenowConfigV1):
+    """ """
+
     pass
 
 
 class Config167(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, title="")
     schema_: Optional[str] = Field(
         None,
@@ -8175,14 +9569,20 @@ class Config167(BaseModel):
 
 
 class SftpConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config167] = Field(None, description="")
 
 
 class SftpNewConnectorRequestV1(NewConnectorRequestV1, SftpConfigV1):
+    """ """
+
     pass
 
 
 class Config168(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -8268,11 +9668,15 @@ class Config168(BaseModel):
 
 
 class ClientAccess34(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth48(BaseModel):
+    """ """
+
     refresh_token: Optional[str] = Field(
         None,
         description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
@@ -8281,15 +9685,21 @@ class Auth48(BaseModel):
 
 
 class SharePointConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config168] = Field(None, description="")
     auth: Optional[Auth48] = None
 
 
 class SharePointNewConnectorRequestV1(NewConnectorRequestV1, SharePointConfigV1):
+    """ """
+
     pass
 
 
 class Config169(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -8304,6 +9714,8 @@ class Config169(BaseModel):
 
 
 class Auth49(BaseModel):
+    """ """
+
     access_token: Optional[str] = Field(
         None,
         description="The long-lived Access token carries the information necessary to access API resources",
@@ -8316,15 +9728,21 @@ class Auth49(BaseModel):
 
 
 class ShopifyConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config169] = Field(None, description="")
     auth: Optional[Auth49] = None
 
 
 class ShopifyNewConnectorRequestV1(NewConnectorRequestV1, ShopifyConfigV1):
+    """ """
+
     pass
 
 
 class Config170(BaseModel):
+    """ """
+
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
         description="Whether to sync all organizations or specific organizations. Default value: `AllOrganizations`.",
@@ -8359,11 +9777,15 @@ class Config170(BaseModel):
 
 
 class ClientAccess35(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth50(BaseModel):
+    """ """
+
     refresh_token: Optional[str] = Field(
         None,
         description="The long-lived Refresh token carry the information necessary to get a new access token for API resources.",
@@ -8372,15 +9794,21 @@ class Auth50(BaseModel):
 
 
 class SnapchatAdsConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config170] = Field(None, description="")
     auth: Optional[Auth50] = None
 
 
 class SnapchatAdsNewConnectorRequestV1(NewConnectorRequestV1, SnapchatAdsConfigV1):
+    """ """
+
     pass
 
 
 class Config171(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -8393,14 +9821,20 @@ class Config171(BaseModel):
 
 
 class SnowplowConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config171] = Field(None, description="")
 
 
 class SnowplowNewConnectorRequestV1(NewConnectorRequestV1, SnowplowConfigV1):
+    """ """
+
     pass
 
 
 class Config172(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -8414,14 +9848,20 @@ class Config172(BaseModel):
 
 
 class SplunkConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config172] = Field(None, description="")
 
 
 class SplunkNewConnectorRequestV1(NewConnectorRequestV1, SplunkConfigV1):
+    """ """
+
     pass
 
 
 class Config173(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     agent_user: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(None, description="", title="")
@@ -8463,6 +9903,8 @@ class Config173(BaseModel):
 
 
 class Auth51(BaseModel):
+    """ """
+
     access_token: Optional[str] = Field(
         None,
         description="The long-lived Access token carries the information necessary to access API resources",
@@ -8475,15 +9917,21 @@ class Auth51(BaseModel):
 
 
 class SqlServerConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config173] = Field(None, description="")
     auth: Optional[Auth51] = None
 
 
 class SqlServerNewConnectorRequestV1(NewConnectorRequestV1, SqlServerConfigV1):
+    """ """
+
     pass
 
 
 class Config174(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     agent_user: Optional[str] = Field(None, title="")
     connection_type: Optional[Dict[str, Any]] = Field(None, description="", title="")
@@ -8525,6 +9973,8 @@ class Config174(BaseModel):
 
 
 class Auth52(BaseModel):
+    """ """
+
     access_token: Optional[str] = Field(
         None,
         description="The long-lived Access token carries the information necessary to access API resources",
@@ -8537,15 +9987,21 @@ class Auth52(BaseModel):
 
 
 class SqlServerHvaConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config174] = Field(None, description="")
     auth: Optional[Auth52] = None
 
 
 class SqlServerHvaNewConnectorRequestV1(NewConnectorRequestV1, SqlServerHvaConfigV1):
+    """ """
+
     pass
 
 
 class Config175(BaseModel):
+    """ """
+
     public_key: Optional[str] = Field(None, description="", title="")
     agent_user: Optional[str] = Field(None, description="", title="")
     connection_type: Optional[Dict[str, Any]] = Field(None, description="", title="")
@@ -8587,6 +10043,8 @@ class Config175(BaseModel):
 
 
 class Auth53(BaseModel):
+    """ """
+
     access_token: Optional[str] = Field(
         None,
         description="The long-lived Access token carries the information necessary to access API resources",
@@ -8599,15 +10057,21 @@ class Auth53(BaseModel):
 
 
 class SqlServerRdsConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config175] = Field(None, description="")
     auth: Optional[Auth53] = None
 
 
 class SqlServerRdsNewConnectorRequestV1(NewConnectorRequestV1, SqlServerRdsConfigV1):
+    """ """
+
     pass
 
 
 class Config176(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -8623,14 +10087,20 @@ class Config176(BaseModel):
 
 
 class SquareConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config176] = Field(None, description="")
 
 
 class SquareNewConnectorRequestV1(NewConnectorRequestV1, SquareConfigV1):
+    """ """
+
     pass
 
 
 class Config177(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -8646,6 +10116,8 @@ class Config177(BaseModel):
 
 
 class Auth54(BaseModel):
+    """ """
+
     access_token: Optional[str] = Field(
         None,
         description="The long-lived Access token carries the information necessary to access API resources",
@@ -8653,15 +10125,21 @@ class Auth54(BaseModel):
 
 
 class StripeConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config177] = Field(None, description="")
     auth: Optional[Auth54] = None
 
 
 class StripeNewConnectorRequestV1(NewConnectorRequestV1, StripeConfigV1):
+    """ """
+
     pass
 
 
 class Config178(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -8677,6 +10155,8 @@ class Config178(BaseModel):
 
 
 class Auth55(BaseModel):
+    """ """
+
     access_token: Optional[str] = Field(
         None,
         description="The long-lived Access token carries the information necessary to access API resources",
@@ -8684,15 +10164,21 @@ class Auth55(BaseModel):
 
 
 class StripeTestConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config178] = Field(None, description="")
     auth: Optional[Auth55] = None
 
 
 class StripeTestNewConnectorRequestV1(NewConnectorRequestV1, StripeTestConfigV1):
+    """ """
+
     pass
 
 
 class Config179(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -8707,11 +10193,15 @@ class Config179(BaseModel):
 
 
 class ClientAccess36(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth56(BaseModel):
+    """ """
+
     access_token: Optional[str] = Field(
         None,
         description="The long-lived Access token carries the information necessary to access API resources",
@@ -8720,15 +10210,21 @@ class Auth56(BaseModel):
 
 
 class SurveyMonkeyConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config179] = Field(None, description="")
     auth: Optional[Auth56] = None
 
 
 class SurveyMonkeyNewConnectorRequestV1(NewConnectorRequestV1, SurveyMonkeyConfigV1):
+    """ """
+
     pass
 
 
 class Config180(BaseModel):
+    """ """
+
     sync_mode: Optional[Dict[str, Any]] = Field(
         None, description="Whether to sync all accounts or specific accounts.", title=""
     )
@@ -8749,14 +10245,20 @@ class Config180(BaseModel):
 
 
 class TaboolaConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config180] = Field(None, description="")
 
 
 class TaboolaNewConnectorRequestV1(NewConnectorRequestV1, TaboolaConfigV1):
+    """ """
+
     pass
 
 
 class Config181(BaseModel):
+    """ """
+
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
         description="Whether to sync all advertiser accounts or specific accounts.",
@@ -8781,11 +10283,15 @@ class Config181(BaseModel):
 
 
 class ClientAccess37(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth57(BaseModel):
+    """ """
+
     access_token: Optional[str] = Field(
         None,
         description="The long-lived Access token carries the information necessary to access API resources",
@@ -8794,15 +10300,21 @@ class Auth57(BaseModel):
 
 
 class TiktokAdsConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config181] = Field(None, description="")
     auth: Optional[Auth57] = None
 
 
 class TiktokAdsNewConnectorRequestV1(NewConnectorRequestV1, TiktokAdsConfigV1):
+    """ """
+
     pass
 
 
 class Config182(BaseModel):
+    """ """
+
     sync_mode: Optional[Dict[str, Any]] = Field(
         None, description="Whether to sync all accounts or specific accounts.", title=""
     )
@@ -8822,14 +10334,20 @@ class Config182(BaseModel):
 
 
 class TwilioConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config182] = Field(None, description="")
 
 
 class TwilioNewConnectorRequestV1(NewConnectorRequestV1, TwilioConfigV1):
+    """ """
+
     pass
 
 
 class Config183(BaseModel):
+    """ """
+
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
         description="Whether to sync all accounts or specific accounts. Default value: `AllAccounts`.",
@@ -8856,11 +10374,15 @@ class Config183(BaseModel):
 
 
 class ClientAccess38(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth58(BaseModel):
+    """ """
+
     consumer_key: Optional[str] = Field(None, description="API Key of your app")
     consumer_secret: Optional[str] = Field(None, description="API Secret of your app")
     client_access: Optional[ClientAccess38] = None
@@ -8875,15 +10397,21 @@ class Auth58(BaseModel):
 
 
 class TwitterConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config183] = Field(None, description="")
     auth: Optional[Auth58] = None
 
 
 class TwitterNewConnectorRequestV1(NewConnectorRequestV1, TwitterConfigV1):
+    """ """
+
     pass
 
 
 class Config184(BaseModel):
+    """ """
+
     sync_mode: Optional[Dict[str, Any]] = Field(
         None, description="Whether to sync all accounts or specific accounts.", title=""
     )
@@ -8907,11 +10435,15 @@ class Config184(BaseModel):
 
 
 class ClientAccess39(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth59(BaseModel):
+    """ """
+
     consumer_key: Optional[str] = Field(None, description="API Key of your app")
     consumer_secret: Optional[str] = Field(None, description="API Secret of your app")
     client_access: Optional[ClientAccess39] = None
@@ -8926,15 +10458,21 @@ class Auth59(BaseModel):
 
 
 class TwitterAdsConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config184] = Field(None, description="")
     auth: Optional[Auth59] = None
 
 
 class TwitterAdsNewConnectorRequestV1(NewConnectorRequestV1, TwitterAdsConfigV1):
+    """ """
+
     pass
 
 
 class Config185(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -8944,11 +10482,15 @@ class Config185(BaseModel):
 
 
 class ClientAccess40(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth60(BaseModel):
+    """ """
+
     access_token: Optional[str] = Field(
         None,
         description="The long-lived Access token carries the information necessary to access API resources",
@@ -8961,15 +10503,21 @@ class Auth60(BaseModel):
 
 
 class TypeformConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config185] = Field(None, description="")
     auth: Optional[Auth60] = None
 
 
 class TypeformNewConnectorRequestV1(NewConnectorRequestV1, TypeformConfigV1):
+    """ """
+
     pass
 
 
 class Config186(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -8986,14 +10534,20 @@ class Config186(BaseModel):
 
 
 class UservoiceConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config186] = Field(None, description="")
 
 
 class UservoiceNewConnectorRequestV1(NewConnectorRequestV1, UservoiceConfigV1):
+    """ """
+
     pass
 
 
 class Config187(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -9043,28 +10597,40 @@ class Config187(BaseModel):
 
 
 class WebhooksConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config187] = Field(None, description="")
 
 
 class WebhooksNewConnectorRequestV1(NewConnectorRequestV1, WebhooksConfigV1):
+    """ """
+
     pass
 
 
 class Config188(BaseModel):
+    """ """
+
     consumer_key: Optional[str] = Field(None, description="Your WooCommerce Consumer key.", title="")
     consumer_secret: Optional[str] = Field(None, description="Your WooCommerce Consumer secret.", title="")
     sub_domain: Optional[str] = Field(None, description="Your WooCommerce sub-domain.", title="")
 
 
 class WoocommerceConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config188] = Field(None, description="")
 
 
 class WoocommerceNewConnectorRequestV1(NewConnectorRequestV1, WoocommerceConfigV1):
+    """ """
+
     pass
 
 
 class Config189(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -9083,14 +10649,20 @@ class Config189(BaseModel):
 
 
 class WorkdayConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config189] = Field(None, description="")
 
 
 class WorkdayNewConnectorRequestV1(NewConnectorRequestV1, WorkdayConfigV1):
+    """ """
+
     pass
 
 
 class Config190(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -9103,14 +10675,20 @@ class Config190(BaseModel):
 
 
 class WorkdayHcmConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config190] = Field(None, description="")
 
 
 class WorkdayHcmNewConnectorRequestV1(NewConnectorRequestV1, WorkdayHcmConfigV1):
+    """ """
+
     pass
 
 
 class Config191(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -9120,14 +10698,20 @@ class Config191(BaseModel):
 
 
 class XeroConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config191] = Field(None, description="")
 
 
 class XeroNewConnectorRequestV1(NewConnectorRequestV1, XeroConfigV1):
+    """ """
+
     pass
 
 
 class Config192(BaseModel):
+    """ """
+
     sync_mode: Optional[Dict[str, Any]] = Field(
         None,
         description="Whether to sync all accounts or specific accounts. Default value: `SpecificAccounts`.",
@@ -9152,24 +10736,34 @@ class Config192(BaseModel):
 
 
 class ClientAccess41(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth61(BaseModel):
+    """ """
+
     client_access: Optional[ClientAccess41] = None
 
 
 class YahooGeminiConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config192] = Field(None, description="")
     auth: Optional[Auth61] = None
 
 
 class YahooGeminiNewConnectorRequestV1(NewConnectorRequestV1, YahooGeminiConfigV1):
+    """ """
+
     pass
 
 
 class Config193(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -9194,24 +10788,34 @@ class Config193(BaseModel):
 
 
 class ClientAccess42(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth62(BaseModel):
+    """ """
+
     client_access: Optional[ClientAccess42] = None
 
 
 class YoutubeAnalyticsConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config193] = Field(None, description="")
     auth: Optional[Auth62] = None
 
 
 class YoutubeAnalyticsNewConnectorRequestV1(NewConnectorRequestV1, YoutubeAnalyticsConfigV1):
+    """ """
+
     pass
 
 
 class Config194(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -9229,6 +10833,8 @@ class Config194(BaseModel):
 
 
 class Auth63(BaseModel):
+    """ """
+
     access_token: Optional[str] = Field(
         None,
         description="The long-lived Access token carries the information necessary to access API resources",
@@ -9236,15 +10842,21 @@ class Auth63(BaseModel):
 
 
 class ZendeskConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config194] = Field(None, description="")
     auth: Optional[Auth63] = None
 
 
 class ZendeskNewConnectorRequestV1(NewConnectorRequestV1, ZendeskConfigV1):
+    """ """
+
     pass
 
 
 class Config195(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -9257,6 +10869,8 @@ class Config195(BaseModel):
 
 
 class Auth64(BaseModel):
+    """ """
+
     access_token: Optional[str] = Field(
         None,
         description="The long-lived Access token carries the information necessary to access API resources",
@@ -9264,15 +10878,21 @@ class Auth64(BaseModel):
 
 
 class ZendeskChatConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config195] = Field(None, description="")
     auth: Optional[Auth64] = None
 
 
 class ZendeskChatNewConnectorRequestV1(NewConnectorRequestV1, ZendeskChatConfigV1):
+    """ """
+
     pass
 
 
 class Config196(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -9282,6 +10902,8 @@ class Config196(BaseModel):
 
 
 class Auth65(BaseModel):
+    """ """
+
     access_token: Optional[str] = Field(
         None,
         description="The long-lived Access token carries the information necessary to access API resources",
@@ -9294,15 +10916,21 @@ class Auth65(BaseModel):
 
 
 class ZendeskSellConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config196] = Field(None, description="")
     auth: Optional[Auth65] = None
 
 
 class ZendeskSellNewConnectorRequestV1(NewConnectorRequestV1, ZendeskSellConfigV1):
+    """ """
+
     pass
 
 
 class Config197(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -9319,14 +10947,20 @@ class Config197(BaseModel):
 
 
 class ZendeskSunshineConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config197] = Field(None, description="")
 
 
 class ZendeskSunshineNewConnectorRequestV1(NewConnectorRequestV1, ZendeskSunshineConfigV1):
+    """ """
+
     pass
 
 
 class Config198(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -9337,24 +10971,34 @@ class Config198(BaseModel):
 
 
 class ClientAccess43(BaseModel):
+    """ """
+
     client_secret: Optional[str] = Field(None, description="Client Secret of your client application.")
     client_id: Optional[str] = Field(None, description="Client ID of your client application.")
 
 
 class Auth66(BaseModel):
+    """ """
+
     client_access: Optional[ClientAccess43] = None
 
 
 class ZohoCrmConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config198] = Field(None, description="")
     auth: Optional[Auth66] = None
 
 
 class ZohoCrmNewConnectorRequestV1(NewConnectorRequestV1, ZohoCrmConfigV1):
+    """ """
+
     pass
 
 
 class Config199(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -9376,14 +11020,20 @@ class Config199(BaseModel):
 
 
 class ZuoraConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config199] = Field(None, description="")
 
 
 class ZuoraNewConnectorRequestV1(NewConnectorRequestV1, ZuoraConfigV1):
+    """ """
+
     pass
 
 
 class Config200(BaseModel):
+    """ """
+
     schema_: Optional[str] = Field(
         None,
         alias="schema",
@@ -9405,537 +11055,733 @@ class Config200(BaseModel):
 
 
 class ZuoraSandboxConfigV1(BaseModel):
+    """ """
+
     config: Optional[Config200] = Field(None, description="")
 
 
 class ZuoraSandboxNewConnectorRequestV1(NewConnectorRequestV1, ZuoraSandboxConfigV1):
+    """ """
+
     pass
 
 
 class Data(BaseModel):
+    """ """
+
     items: Optional[List[MembershipResponse]] = Field(None, description="The collection of return items")
     nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1TeamsTeamIdConnectorsGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data] = None
 
 
 class V1TeamsTeamIdConnectorsPostResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[MembershipResponse] = None
 
 
 class V1TeamsTeamIdUsersUserIdGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[TeamMembershipResponse] = None
 
 
 class V1TeamsTeamIdUsersUserIdDeleteResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1TeamsTeamIdUsersUserIdPatchResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
 
 
 class Data1(BaseModel):
+    """ """
+
     items: Optional[List[UserResponse]] = Field(None, description="The collection of return items")
     nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1UsersGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data1] = None
 
 
 class V1UsersPostResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[UserResponse] = None
 
 
 class V1TeamsTeamIdGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[TeamResponse] = None
 
 
 class V1TeamsTeamIdDeleteResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1TeamsTeamIdPatchResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[TeamResponse] = None
 
 
 class V1TeamsTeamIdRoleDeleteResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
 
 
 class Data2(BaseModel):
+    """ """
+
     items: Optional[List[MembershipResponse]] = Field(None, description="The collection of return items")
     nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1UsersUserIdGroupsGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data2] = None
 
 
 class V1UsersUserIdGroupsPostResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[MembershipResponse] = None
 
 
 class Data3(BaseModel):
+    """ """
+
     items: Optional[List[MembershipResponse]] = Field(None, description="The collection of return items")
     nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1TeamsTeamIdGroupsGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data3] = None
 
 
 class V1TeamsTeamIdGroupsPostResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[MembershipResponse] = None
 
 
 class V1CertificatesPostResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1DestinationsPostResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[DestinationResponse] = None
 
 
 class V1UsersIdDeleteResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1UsersUserIdGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[UserResponse] = None
 
 
 class V1UsersUserIdPatchResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[UserResponse] = None
 
 
 class V1GroupsGroupIdGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[GroupResponse] = None
 
 
 class V1GroupsGroupIdDeleteResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1GroupsGroupIdPatchResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[GroupResponse] = None
 
 
 class V1UsersUserIdConnectorsConnectorIdGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[MembershipResponse] = None
 
 
 class V1UsersUserIdConnectorsConnectorIdDeleteResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[MembershipResponse] = None
 
 
 class V1UsersUserIdConnectorsConnectorIdPatchResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[MembershipResponse] = None
 
 
 class V1ConnectorsConnectorIdConnectCardPostResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[ConnectorConnectCardResponse] = None
 
 
 class Data4(BaseModel):
+    """ """
+
     items: Optional[List[MetadataResponse]] = Field(None, description="The collection of return items")
     nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1MetadataNameGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data4] = None
 
 
 class V1DbtTransformationsTransformationIdGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[TransformationDetailsResponse] = None
 
 
 class V1DbtTransformationsTransformationIdDeleteResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1DbtTransformationsTransformationIdPatchResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[TransformationDetailsResponse] = None
 
 
 class V1DbtProjectsProjectIdGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[DbtProjectDetailsResponse] = None
 
 
 class V1TeamsTeamIdGroupsGroupIdGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[MembershipResponse] = None
 
 
 class V1TeamsTeamIdGroupsGroupIdDeleteResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1TeamsTeamIdGroupsGroupIdPatchResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1ConnectorsConnectorIdResyncPostResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1UsersUserIdRoleDeleteResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
 
 
 class Data5(BaseModel):
+    """ """
+
     items: Optional[List[UserResponse]] = Field(None, description="The collection of return items")
     nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1GroupsGroupIdUsersGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data5] = None
 
 
 class V1GroupsGroupIdUsersPostResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1ConnectorsConnectorIdSchemasTablesResyncPostRequest(BaseModel):
+    """ """
+
     pass
 
     class Config:
+        """ """
+
         extra = Extra.allow
 
 
 class V1ConnectorsConnectorIdSchemasTablesResyncPostResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1DestinationsDestinationIdTestPostResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[DestinationResponse] = None
 
 
 class Data6(BaseModel):
+    """ """
+
     items: Optional[List[SchemaMetadataResponse]] = Field(None, description="The collection of return items")
     nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1MetadataConnectorsConnectorIdSchemasGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data6] = None
 
 
 class Data7(BaseModel):
+    """ """
+
     items: Optional[List[GroupResponse]] = Field(None, description="The collection of return items")
     nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1GroupsGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data7] = None
 
 
 class V1GroupsPostResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[GroupResponse] = None
 
 
 class V1FingerprintsPostResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1ConnectorsConnectorIdDeleteResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1MetadataNameServiceGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[MetadataResponse] = None
 
 
 class Data8(BaseModel):
+    """ """
+
     items: Optional[List[TeamResponse]] = Field(None, description="The collection of return items")
     nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1TeamsGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data8] = None
 
 
 class V1TeamsPostResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[TeamResponse] = None
 
 
 class V1DbtProjectsProjectIdTestPostResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[DbtProjectTestResponse] = None
 
 
 class V1ConnectorsConnectorIdSyncPostResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1GroupsGroupIdUsersUserIdDeleteResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
 
 
 class Data9(BaseModel):
+    """ """
+
     items: Optional[List[ColumnMetadataResponse]] = Field(None, description="The collection of return items")
     nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1MetadataConnectorsConnectorIdColumnsGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data9] = None
 
 
 class Data10(BaseModel):
+    """ """
+
     items: Optional[List[TableMetadataResponse]] = Field(None, description="The collection of return items")
     nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1MetadataConnectorsConnectorIdTablesGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data10] = None
 
 
 class Data11(BaseModel):
+    """ """
+
     items: Optional[List[TransformationResponse]] = Field(None, description="The collection of return items")
     nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1DbtProjectsProjectIdTransformationsGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data11] = None
 
 
 class V1DbtProjectsProjectIdTransformationsPostResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[TransformationDetailsResponse] = None
 
 
 class Data12(BaseModel):
+    """ """
+
     items: Optional[List[DbtProjectResponse]] = Field(None, description="The collection of return items")
     nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1DbtProjectsGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data12] = None
 
 
 class V1DbtProjectsPostResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[DbtProjectDetailsResponse] = None
 
 
 class Data13(BaseModel):
+    """ """
+
     items: Optional[List[RoleResponse]] = Field(None, description="The collection of return items")
     nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1RolesGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data13] = None
 
 
 class Data14(BaseModel):
+    """ """
+
     items: Optional[List[DbtModelResponse]] = Field(None, description="The collection of return items")
     nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1DbtProjectsProjectIdModelsGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data14] = None
 
 
 class V1TeamsTeamIdConnectorsConnectorIdGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[MembershipResponse] = None
 
 
 class V1TeamsTeamIdConnectorsConnectorIdDeleteResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1TeamsTeamIdConnectorsConnectorIdPatchResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
 
 
 class Data15(BaseModel):
+    """ """
+
     items: Optional[List[ConnectorResponse]] = Field(None, description="The collection of return items")
     nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1GroupsGroupIdConnectorsGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data15] = None
 
 
 class V1DestinationsDestinationIdGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[DestinationResponse] = None
 
 
 class V1DestinationsDestinationIdDeleteResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1DestinationsDestinationIdPatchResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[DestinationResponse] = None
 
 
 class V1WebhooksGetResponse(BaseModel):
+    """ """
+
     items: Optional[List[WebhookResponse]] = Field(None, description="The collection of return items")
     nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class Data16(BaseModel):
+    """ """
+
     items: Optional[List[TeamMembershipResponse]] = Field(None, description="The collection of return items")
     nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1TeamsTeamIdUsersGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data16] = None
 
 
 class V1TeamsTeamIdUsersPostResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[TeamMembershipResponse] = None
 
 
 class V1UsersUserIdGroupsGroupIdGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[MembershipResponse] = None
 
 
 class V1UsersUserIdGroupsGroupIdDeleteResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
 
 
 class V1UsersUserIdGroupsGroupIdPatchResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
 
 
 class Data17(BaseModel):
+    """ """
+
     items: Optional[List[MembershipResponse]] = Field(None, description="The collection of return items")
     nextCursor: Optional[str] = Field(None, description="The value of the cursor parameter for the next page")
 
 
 class V1UsersUserIdConnectorsGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[Data17] = None
 
 
 class V1DbtModelsModelIdGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[DbtModelResponse] = None
 
 
 class ConnectorResponseV1(BaseModel):
+    """ """
+
     id: Optional[str] = Field(
         None,
         description="The unique identifier for the connector within the Fivetran system",
@@ -9994,6 +11840,8 @@ class ConnectorResponseV1(BaseModel):
 
 
 class SchemaUpdateRequest(BaseModel):
+    """ """
+
     enabled: Optional[bool] = Field(
         None,
         description="The boolean value specifying whether the sync for the table into the destination is enabled.",
@@ -10005,6 +11853,8 @@ class SchemaUpdateRequest(BaseModel):
 
 
 class StandardConfigUpdateRequest(BaseModel):
+    """ """
+
     schemas: Optional[Dict[str, SchemaUpdateRequest]] = Field(
         None,
         description="The set of schemas within your connector schema config that are synced into the destination",
@@ -10016,6 +11866,8 @@ class StandardConfigUpdateRequest(BaseModel):
 
 
 class ColumnConfigResponse(BaseModel):
+    """ """
+
     name_in_destination: Optional[str] = Field(
         None,
         description="The schema name within your destination in accordance with Fivetran conventional rules",
@@ -10032,6 +11884,8 @@ class ColumnConfigResponse(BaseModel):
 
 
 class TableConfigResponse(BaseModel):
+    """ """
+
     sync_mode: Optional[SyncMode1] = Field(
         None,
         description="This field appears in the response if the connector supports switching sync modes for tables",
@@ -10052,6 +11906,8 @@ class TableConfigResponse(BaseModel):
 
 
 class TableColumnsConfigResponse(BaseModel):
+    """ """
+
     columns: Optional[Dict[str, ColumnConfigResponse]] = Field(
         None,
         description="The set of columns within your table schema config that are synced into the destination",
@@ -10059,6 +11915,8 @@ class TableColumnsConfigResponse(BaseModel):
 
 
 class NewTransformationRequest(BaseModel):
+    """ """
+
     dbt_model_id: Optional[str] = Field(
         None,
         description="The unique identifier for the DBT Model within the Fivetran system.",
@@ -10071,756 +11929,1128 @@ class NewTransformationRequest(BaseModel):
 
 
 class ActivecampaignConnectorResponseV1(ConnectorResponseV1, ActivecampaignConfigV1):
+    """ """
+
     pass
 
 
 class AdjustConnectorResponseV1(ConnectorResponseV1, AdjustConfigV1):
+    """ """
+
     pass
 
 
 class AdobeAnalyticsConnectorResponseV1(ConnectorResponseV1, AdobeAnalyticsConfigV1):
+    """ """
+
     pass
 
 
 class AdobeAnalyticsDataFeedConnectorResponseV1(ConnectorResponseV1, AdobeAnalyticsDataFeedConfigV1):
+    """ """
+
     pass
 
 
 class AdpWorkforceNowConnectorResponseV1(ConnectorResponseV1, AdpWorkforceNowConfigV1):
+    """ """
+
     pass
 
 
 class AdrollConnectorResponseV1(ConnectorResponseV1, AdrollConfigV1):
+    """ """
+
     pass
 
 
 class AirtableConnectorResponseV1(ConnectorResponseV1, AirtableConfigV1):
+    """ """
+
     pass
 
 
 class AmazonAdsConnectorResponseV1(ConnectorResponseV1, AmazonAdsConfigV1):
+    """ """
+
     pass
 
 
 class AmplitudeConnectorResponseV1(ConnectorResponseV1, AmplitudeConfigV1):
+    """ """
+
     pass
 
 
 class AnaplanConnectorResponseV1(ConnectorResponseV1, AnaplanConfigV1):
+    """ """
+
     pass
 
 
 class ApacheKafkaConnectorResponseV1(ConnectorResponseV1, ApacheKafkaConfigV1):
+    """ """
+
     pass
 
 
 class AppleSearchAdsConnectorResponseV1(ConnectorResponseV1, AppleSearchAdsConfigV1):
+    """ """
+
     pass
 
 
 class AppsflyerConnectorResponseV1(ConnectorResponseV1, AppsflyerConfigV1):
+    """ """
+
     pass
 
 
 class AsanaConnectorResponseV1(ConnectorResponseV1, AsanaConfigV1):
+    """ """
+
     pass
 
 
 class AuroraConnectorResponseV1(ConnectorResponseV1, AuroraConfigV1):
+    """ """
+
     pass
 
 
 class AuroraPostgresConnectorResponseV1(ConnectorResponseV1, AuroraPostgresConfigV1):
+    """ """
+
     pass
 
 
 class AwsCloudtrailConnectorResponseV1(ConnectorResponseV1, AwsCloudtrailConfigV1):
+    """ """
+
     pass
 
 
 class AwsInventoryConnectorResponseV1(ConnectorResponseV1, AwsInventoryConfigV1):
+    """ """
+
     pass
 
 
 class AwsLambdaConnectorResponseV1(ConnectorResponseV1, AwsLambdaConfigV1):
+    """ """
+
     pass
 
 
 class AwsMskConnectorResponseV1(ConnectorResponseV1, AwsMskConfigV1):
+    """ """
+
     pass
 
 
 class AzureBlobStorageConnectorResponseV1(ConnectorResponseV1, AzureBlobStorageConfigV1):
+    """ """
+
     pass
 
 
 class AzureEventHubConnectorResponseV1(ConnectorResponseV1, AzureEventHubConfigV1):
+    """ """
+
     pass
 
 
 class AzureFunctionConnectorResponseV1(ConnectorResponseV1, AzureFunctionConfigV1):
+    """ """
+
     pass
 
 
 class AzurePostgresConnectorResponseV1(ConnectorResponseV1, AzurePostgresConfigV1):
+    """ """
+
     pass
 
 
 class AzureServiceBusConnectorResponseV1(ConnectorResponseV1, AzureServiceBusConfigV1):
+    """ """
+
     pass
 
 
 class AzureSqlDbConnectorResponseV1(ConnectorResponseV1, AzureSqlDbConfigV1):
+    """ """
+
     pass
 
 
 class AzureSqlManagedDbConnectorResponseV1(ConnectorResponseV1, AzureSqlManagedDbConfigV1):
+    """ """
+
     pass
 
 
 class BingadsConnectorResponseV1(ConnectorResponseV1, BingadsConfigV1):
+    """ """
+
     pass
 
 
 class BoxConnectorResponseV1(ConnectorResponseV1, BoxConfigV1):
+    """ """
+
     pass
 
 
 class BraintreeConnectorResponseV1(ConnectorResponseV1, BraintreeConfigV1):
+    """ """
+
     pass
 
 
 class BraintreeSandboxConnectorResponseV1(ConnectorResponseV1, BraintreeSandboxConfigV1):
+    """ """
+
     pass
 
 
 class BranchConnectorResponseV1(ConnectorResponseV1, BranchConfigV1):
+    """ """
+
     pass
 
 
 class BrazeConnectorResponseV1(ConnectorResponseV1, BrazeConfigV1):
+    """ """
+
     pass
 
 
 class CloudfrontConnectorResponseV1(ConnectorResponseV1, CloudfrontConfigV1):
+    """ """
+
     pass
 
 
 class ConcurConnectorResponseV1(ConnectorResponseV1, ConcurConfigV1):
+    """ """
+
     pass
 
 
 class ConfluentCloudConnectorResponseV1(ConnectorResponseV1, ConfluentCloudConfigV1):
+    """ """
+
     pass
 
 
 class CoupaConnectorResponseV1(ConnectorResponseV1, CoupaConfigV1):
+    """ """
+
     pass
 
 
 class CriteoConnectorResponseV1(ConnectorResponseV1, CriteoConfigV1):
+    """ """
+
     pass
 
 
 class DelightedConnectorResponseV1(ConnectorResponseV1, DelightedConfigV1):
+    """ """
+
     pass
 
 
 class DocumentdbConnectorResponseV1(ConnectorResponseV1, DocumentdbConfigV1):
+    """ """
+
     pass
 
 
 class DoubleClickCampaignManagerConnectorResponseV1(ConnectorResponseV1, DoubleClickCampaignManagerConfigV1):
+    """ """
+
     pass
 
 
 class DoubleClickPublishersConnectorResponseV1(ConnectorResponseV1, DoubleClickPublishersConfigV1):
+    """ """
+
     pass
 
 
 class DriftConnectorResponseV1(ConnectorResponseV1, DriftConfigV1):
+    """ """
+
     pass
 
 
 class DropboxConnectorResponseV1(ConnectorResponseV1, DropboxConfigV1):
+    """ """
+
     pass
 
 
 class Dynamics365ConnectorResponseV1(ConnectorResponseV1, Dynamics365ConfigV1):
+    """ """
+
     pass
 
 
 class Dynamics365FoConnectorResponseV1(ConnectorResponseV1, Dynamics365FoConfigV1):
+    """ """
+
     pass
 
 
 class DynamodbConnectorResponseV1(ConnectorResponseV1, DynamodbConfigV1):
+    """ """
+
     pass
 
 
 class EloquaConnectorResponseV1(ConnectorResponseV1, EloquaConfigV1):
+    """ """
+
     pass
 
 
 class EmailConnectorResponseV1(ConnectorResponseV1, EmailConfigV1):
+    """ """
+
     pass
 
 
 class FacebookConnectorResponseV1(ConnectorResponseV1, FacebookConfigV1):
+    """ """
+
     pass
 
 
 class FacebookAdAccountConnectorResponseV1(ConnectorResponseV1, FacebookAdAccountConfigV1):
+    """ """
+
     pass
 
 
 class FacebookAdsConnectorResponseV1(ConnectorResponseV1, FacebookAdsConfigV1):
+    """ """
+
     pass
 
 
 class FacebookPagesConnectorResponseV1(ConnectorResponseV1, FacebookPagesConfigV1):
+    """ """
+
     pass
 
 
 class FinancialForceConnectorResponseV1(ConnectorResponseV1, FinancialForceConfigV1):
+    """ """
+
     pass
 
 
 class FivetranLogConnectorResponseV1(ConnectorResponseV1, FivetranLogConfigV1):
+    """ """
+
     pass
 
 
 class FreshdeskConnectorResponseV1(ConnectorResponseV1, FreshdeskConfigV1):
+    """ """
+
     pass
 
 
 class FrontConnectorResponseV1(ConnectorResponseV1, FrontConfigV1):
+    """ """
+
     pass
 
 
 class FtpConnectorResponseV1(ConnectorResponseV1, FtpConfigV1):
+    """ """
+
     pass
 
 
 class GainsightCustomerSuccessConnectorResponseV1(ConnectorResponseV1, GainsightCustomerSuccessConfigV1):
+    """ """
+
     pass
 
 
 class GcsConnectorResponseV1(ConnectorResponseV1, GcsConfigV1):
+    """ """
+
     pass
 
 
 class GithubConnectorResponseV1(ConnectorResponseV1, GithubConfigV1):
+    """ """
+
     pass
 
 
 class GoogleAdsConnectorResponseV1(ConnectorResponseV1, GoogleAdsConfigV1):
+    """ """
+
     pass
 
 
 class GoogleAnalyticsConnectorResponseV1(ConnectorResponseV1, GoogleAnalyticsConfigV1):
+    """ """
+
     pass
 
 
 class GoogleAnalytics360ConnectorResponseV1(ConnectorResponseV1, GoogleAnalytics360ConfigV1):
+    """ """
+
     pass
 
 
 class GoogleAnalytics4ConnectorResponseV1(ConnectorResponseV1, GoogleAnalytics4ConfigV1):
+    """ """
+
     pass
 
 
 class GoogleAnalytics4ExportConnectorResponseV1(ConnectorResponseV1, GoogleAnalytics4ExportConfigV1):
+    """ """
+
     pass
 
 
 class GoogleAnalyticsMcfConnectorResponseV1(ConnectorResponseV1, GoogleAnalyticsMcfConfigV1):
+    """ """
+
     pass
 
 
 class GoogleCloudFunctionConnectorResponseV1(ConnectorResponseV1, GoogleCloudFunctionConfigV1):
+    """ """
+
     pass
 
 
 class GoogleCloudMysqlConnectorResponseV1(ConnectorResponseV1, GoogleCloudMysqlConfigV1):
+    """ """
+
     pass
 
 
 class GoogleCloudPostgresqlConnectorResponseV1(ConnectorResponseV1, GoogleCloudPostgresqlConfigV1):
+    """ """
+
     pass
 
 
 class GoogleCloudSqlserverConnectorResponseV1(ConnectorResponseV1, GoogleCloudSqlserverConfigV1):
+    """ """
+
     pass
 
 
 class GoogleDisplayAndVideo360ConnectorResponseV1(ConnectorResponseV1, GoogleDisplayAndVideo360ConfigV1):
+    """ """
+
     pass
 
 
 class GoogleDriveConnectorResponseV1(ConnectorResponseV1, GoogleDriveConfigV1):
+    """ """
+
     pass
 
 
 class GooglePlayConnectorResponseV1(ConnectorResponseV1, GooglePlayConfigV1):
+    """ """
+
     pass
 
 
 class GoogleSearchConsoleConnectorResponseV1(ConnectorResponseV1, GoogleSearchConsoleConfigV1):
+    """ """
+
     pass
 
 
 class GoogleSheetsConnectorResponseV1(ConnectorResponseV1, GoogleSheetsConfigV1):
+    """ """
+
     pass
 
 
 class GreenhouseConnectorResponseV1(ConnectorResponseV1, GreenhouseConfigV1):
+    """ """
+
     pass
 
 
 class HeapConnectorResponseV1(ConnectorResponseV1, HeapConfigV1):
+    """ """
+
     pass
 
 
 class HeightConnectorResponseV1(ConnectorResponseV1, HeightConfigV1):
+    """ """
+
     pass
 
 
 class HelpscoutConnectorResponseV1(ConnectorResponseV1, HelpscoutConfigV1):
+    """ """
+
     pass
 
 
 class HerokuKafkaConnectorResponseV1(ConnectorResponseV1, HerokuKafkaConfigV1):
+    """ """
+
     pass
 
 
 class HerokuPostgresConnectorResponseV1(ConnectorResponseV1, HerokuPostgresConfigV1):
+    """ """
+
     pass
 
 
 class HubspotConnectorResponseV1(ConnectorResponseV1, HubspotConfigV1):
+    """ """
+
     pass
 
 
 class InstagramBusinessConnectorResponseV1(ConnectorResponseV1, InstagramBusinessConfigV1):
+    """ """
+
     pass
 
 
 class IntercomConnectorResponseV1(ConnectorResponseV1, IntercomConfigV1):
+    """ """
+
     pass
 
 
 class IterableConnectorResponseV1(ConnectorResponseV1, IterableConfigV1):
+    """ """
+
     pass
 
 
 class ItunesConnectConnectorResponseV1(ConnectorResponseV1, ItunesConnectConfigV1):
+    """ """
+
     pass
 
 
 class JiraConnectorResponseV1(ConnectorResponseV1, JiraConfigV1):
+    """ """
+
     pass
 
 
 class KinesisConnectorResponseV1(ConnectorResponseV1, KinesisConfigV1):
+    """ """
+
     pass
 
 
 class KlaviyoConnectorResponseV1(ConnectorResponseV1, KlaviyoConfigV1):
+    """ """
+
     pass
 
 
 class KustomerConnectorResponseV1(ConnectorResponseV1, KustomerConfigV1):
+    """ """
+
     pass
 
 
 class LeverConnectorResponseV1(ConnectorResponseV1, LeverConfigV1):
+    """ """
+
     pass
 
 
 class LightSpeedRetailConnectorResponseV1(ConnectorResponseV1, LightSpeedRetailConfigV1):
+    """ """
+
     pass
 
 
 class LinkedinAdsConnectorResponseV1(ConnectorResponseV1, LinkedinAdsConfigV1):
+    """ """
+
     pass
 
 
 class LinkedinCompanyPagesConnectorResponseV1(ConnectorResponseV1, LinkedinCompanyPagesConfigV1):
+    """ """
+
     pass
 
 
 class MagentoMysqlConnectorResponseV1(ConnectorResponseV1, MagentoMysqlConfigV1):
+    """ """
+
     pass
 
 
 class MagentoMysqlRdsConnectorResponseV1(ConnectorResponseV1, MagentoMysqlRdsConfigV1):
+    """ """
+
     pass
 
 
 class MailchimpConnectorResponseV1(ConnectorResponseV1, MailchimpConfigV1):
+    """ """
+
     pass
 
 
 class MandrillConnectorResponseV1(ConnectorResponseV1, MandrillConfigV1):
+    """ """
+
     pass
 
 
 class MariaConnectorResponseV1(ConnectorResponseV1, MariaConfigV1):
+    """ """
+
     pass
 
 
 class MariaAzureConnectorResponseV1(ConnectorResponseV1, MariaAzureConfigV1):
+    """ """
+
     pass
 
 
 class MariaRdsConnectorResponseV1(ConnectorResponseV1, MariaRdsConfigV1):
+    """ """
+
     pass
 
 
 class MarinConnectorResponseV1(ConnectorResponseV1, MarinConfigV1):
+    """ """
+
     pass
 
 
 class MarketoConnectorResponseV1(ConnectorResponseV1, MarketoConfigV1):
+    """ """
+
     pass
 
 
 class MavenlinkConnectorResponseV1(ConnectorResponseV1, MavenlinkConfigV1):
+    """ """
+
     pass
 
 
 class MedalliaConnectorResponseV1(ConnectorResponseV1, MedalliaConfigV1):
+    """ """
+
     pass
 
 
 class MicrosoftListsConnectorResponseV1(ConnectorResponseV1, MicrosoftListsConfigV1):
+    """ """
+
     pass
 
 
 class MixpanelConnectorResponseV1(ConnectorResponseV1, MixpanelConfigV1):
+    """ """
+
     pass
 
 
 class MongoConnectorResponseV1(ConnectorResponseV1, MongoConfigV1):
+    """ """
+
     pass
 
 
 class MongoShardedConnectorResponseV1(ConnectorResponseV1, MongoShardedConfigV1):
+    """ """
+
     pass
 
 
 class MysqlConnectorResponseV1(ConnectorResponseV1, MysqlConfigV1):
+    """ """
+
     pass
 
 
 class MysqlAzureConnectorResponseV1(ConnectorResponseV1, MysqlAzureConfigV1):
+    """ """
+
     pass
 
 
 class MysqlRdsConnectorResponseV1(ConnectorResponseV1, MysqlRdsConfigV1):
+    """ """
+
     pass
 
 
 class NetsuiteSuiteanalyticsConnectorResponseV1(ConnectorResponseV1, NetsuiteSuiteanalyticsConfigV1):
+    """ """
+
     pass
 
 
 class OneDriveConnectorResponseV1(ConnectorResponseV1, OneDriveConfigV1):
+    """ """
+
     pass
 
 
 class OptimizelyConnectorResponseV1(ConnectorResponseV1, OptimizelyConfigV1):
+    """ """
+
     pass
 
 
 class OracleConnectorResponseV1(ConnectorResponseV1, OracleConfigV1):
+    """ """
+
     pass
 
 
 class OracleEbsConnectorResponseV1(ConnectorResponseV1, OracleEbsConfigV1):
+    """ """
+
     pass
 
 
 class OracleHvaConnectorResponseV1(ConnectorResponseV1, OracleHvaConfigV1):
+    """ """
+
     pass
 
 
 class OracleRacConnectorResponseV1(ConnectorResponseV1, OracleRacConfigV1):
+    """ """
+
     pass
 
 
 class OracleRdsConnectorResponseV1(ConnectorResponseV1, OracleRdsConfigV1):
+    """ """
+
     pass
 
 
 class OutbrainConnectorResponseV1(ConnectorResponseV1, OutbrainConfigV1):
+    """ """
+
     pass
 
 
 class OutreachConnectorResponseV1(ConnectorResponseV1, OutreachConfigV1):
+    """ """
+
     pass
 
 
 class PardotConnectorResponseV1(ConnectorResponseV1, PardotConfigV1):
+    """ """
+
     pass
 
 
 class PaypalConnectorResponseV1(ConnectorResponseV1, PaypalConfigV1):
+    """ """
+
     pass
 
 
 class PaypalSandboxConnectorResponseV1(ConnectorResponseV1, PaypalSandboxConfigV1):
+    """ """
+
     pass
 
 
 class PendoConnectorResponseV1(ConnectorResponseV1, PendoConfigV1):
+    """ """
+
     pass
 
 
 class PinterestAdsConnectorResponseV1(ConnectorResponseV1, PinterestAdsConfigV1):
+    """ """
+
     pass
 
 
 class PipedriveConnectorResponseV1(ConnectorResponseV1, PipedriveConfigV1):
+    """ """
+
     pass
 
 
 class PostgresConnectorResponseV1(ConnectorResponseV1, PostgresConfigV1):
+    """ """
+
     pass
 
 
 class PostgresRdsConnectorResponseV1(ConnectorResponseV1, PostgresRdsConfigV1):
+    """ """
+
     pass
 
 
 class QualtricsConnectorResponseV1(ConnectorResponseV1, QualtricsConfigV1):
+    """ """
+
     pass
 
 
 class QuickbooksConnectorResponseV1(ConnectorResponseV1, QuickbooksConfigV1):
+    """ """
+
     pass
 
 
 class RechargeConnectorResponseV1(ConnectorResponseV1, RechargeConfigV1):
+    """ """
+
     pass
 
 
 class RecurlyConnectorResponseV1(ConnectorResponseV1, RecurlyConfigV1):
+    """ """
+
     pass
 
 
 class RedditAdsConnectorResponseV1(ConnectorResponseV1, RedditAdsConfigV1):
+    """ """
+
     pass
 
 
 class S3ConnectorResponseV1(ConnectorResponseV1, S3ConfigV1):
+    """ """
+
     pass
 
 
 class SageIntacctConnectorResponseV1(ConnectorResponseV1, SageIntacctConfigV1):
+    """ """
+
     pass
 
 
 class SailthruConnectorResponseV1(ConnectorResponseV1, SailthruConfigV1):
+    """ """
+
     pass
 
 
 class SalesforceConnectorResponseV1(ConnectorResponseV1, SalesforceConfigV1):
+    """ """
+
     pass
 
 
 class SalesforceMarketingCloudConnectorResponseV1(ConnectorResponseV1, SalesforceMarketingCloudConfigV1):
+    """ """
+
     pass
 
 
 class SalesforceSandboxConnectorResponseV1(ConnectorResponseV1, SalesforceSandboxConfigV1):
+    """ """
+
     pass
 
 
 class SapBusinessByDesignConnectorResponseV1(ConnectorResponseV1, SapBusinessByDesignConfigV1):
+    """ """
+
     pass
 
 
 class SegmentConnectorResponseV1(ConnectorResponseV1, SegmentConfigV1):
+    """ """
+
     pass
 
 
 class SendgridConnectorResponseV1(ConnectorResponseV1, SendgridConfigV1):
+    """ """
+
     pass
 
 
 class ServicenowConnectorResponseV1(ConnectorResponseV1, ServicenowConfigV1):
+    """ """
+
     pass
 
 
 class SftpConnectorResponseV1(ConnectorResponseV1, SftpConfigV1):
+    """ """
+
     pass
 
 
 class SharePointConnectorResponseV1(ConnectorResponseV1, SharePointConfigV1):
+    """ """
+
     pass
 
 
 class ShopifyConnectorResponseV1(ConnectorResponseV1, ShopifyConfigV1):
+    """ """
+
     pass
 
 
 class SnapchatAdsConnectorResponseV1(ConnectorResponseV1, SnapchatAdsConfigV1):
+    """ """
+
     pass
 
 
 class SnowplowConnectorResponseV1(ConnectorResponseV1, SnowplowConfigV1):
+    """ """
+
     pass
 
 
 class SplunkConnectorResponseV1(ConnectorResponseV1, SplunkConfigV1):
+    """ """
+
     pass
 
 
 class SqlServerConnectorResponseV1(ConnectorResponseV1, SqlServerConfigV1):
+    """ """
+
     pass
 
 
 class SqlServerHvaConnectorResponseV1(ConnectorResponseV1, SqlServerHvaConfigV1):
+    """ """
+
     pass
 
 
 class SqlServerRdsConnectorResponseV1(ConnectorResponseV1, SqlServerRdsConfigV1):
+    """ """
+
     pass
 
 
 class SquareConnectorResponseV1(ConnectorResponseV1, SquareConfigV1):
+    """ """
+
     pass
 
 
 class StripeConnectorResponseV1(ConnectorResponseV1, StripeConfigV1):
+    """ """
+
     pass
 
 
 class StripeTestConnectorResponseV1(ConnectorResponseV1, StripeTestConfigV1):
+    """ """
+
     pass
 
 
 class SurveyMonkeyConnectorResponseV1(ConnectorResponseV1, SurveyMonkeyConfigV1):
+    """ """
+
     pass
 
 
 class TaboolaConnectorResponseV1(ConnectorResponseV1, TaboolaConfigV1):
+    """ """
+
     pass
 
 
 class TiktokAdsConnectorResponseV1(ConnectorResponseV1, TiktokAdsConfigV1):
+    """ """
+
     pass
 
 
 class TwilioConnectorResponseV1(ConnectorResponseV1, TwilioConfigV1):
+    """ """
+
     pass
 
 
 class TwitterConnectorResponseV1(ConnectorResponseV1, TwitterConfigV1):
+    """ """
+
     pass
 
 
 class TwitterAdsConnectorResponseV1(ConnectorResponseV1, TwitterAdsConfigV1):
+    """ """
+
     pass
 
 
 class TypeformConnectorResponseV1(ConnectorResponseV1, TypeformConfigV1):
+    """ """
+
     pass
 
 
 class UservoiceConnectorResponseV1(ConnectorResponseV1, UservoiceConfigV1):
+    """ """
+
     pass
 
 
 class WebhooksConnectorResponseV1(ConnectorResponseV1, WebhooksConfigV1):
+    """ """
+
     pass
 
 
 class WoocommerceConnectorResponseV1(ConnectorResponseV1, WoocommerceConfigV1):
+    """ """
+
     pass
 
 
 class WorkdayConnectorResponseV1(ConnectorResponseV1, WorkdayConfigV1):
+    """ """
+
     pass
 
 
 class WorkdayHcmConnectorResponseV1(ConnectorResponseV1, WorkdayHcmConfigV1):
+    """ """
+
     pass
 
 
 class XeroConnectorResponseV1(ConnectorResponseV1, XeroConfigV1):
+    """ """
+
     pass
 
 
 class YahooGeminiConnectorResponseV1(ConnectorResponseV1, YahooGeminiConfigV1):
+    """ """
+
     pass
 
 
 class YoutubeAnalyticsConnectorResponseV1(ConnectorResponseV1, YoutubeAnalyticsConfigV1):
+    """ """
+
     pass
 
 
 class ZendeskConnectorResponseV1(ConnectorResponseV1, ZendeskConfigV1):
+    """ """
+
     pass
 
 
 class ZendeskChatConnectorResponseV1(ConnectorResponseV1, ZendeskChatConfigV1):
+    """ """
+
     pass
 
 
 class ZendeskSellConnectorResponseV1(ConnectorResponseV1, ZendeskSellConfigV1):
+    """ """
+
     pass
 
 
 class ZendeskSunshineConnectorResponseV1(ConnectorResponseV1, ZendeskSunshineConfigV1):
+    """ """
+
     pass
 
 
 class ZohoCrmConnectorResponseV1(ConnectorResponseV1, ZohoCrmConfigV1):
+    """ """
+
     pass
 
 
 class ZuoraConnectorResponseV1(ConnectorResponseV1, ZuoraConfigV1):
+    """ """
+
     pass
 
 
 class ZuoraSandboxConnectorResponseV1(ConnectorResponseV1, ZuoraSandboxConfigV1):
+    """ """
+
     pass
 
 
 class V1ConnectorsConnectorIdTestPostResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[ConnectorResponseV1] = None
 
 
 class V1ConnectorsConnectorIdSchemasSchemaTablesTableColumnsGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[TableColumnsConfigResponse] = None
 
 
 class V1ConnectorsConnectorIdGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[ConnectorResponseV1] = None
 
 
 class V1ConnectorsConnectorIdPatchResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[ConnectorResponseV1] = None
 
 
 class V1ConnectorsPostResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[ConnectorResponseV1] = None
 
 
 class SchemaConfigResponse(BaseModel):
+    """ """
+
     name_in_destination: Optional[str] = Field(
         None,
         description="The schema name within your destination in accordance with Fivetran conventional rules",
@@ -10836,6 +13066,8 @@ class SchemaConfigResponse(BaseModel):
 
 
 class StandardConfigResponse(BaseModel):
+    """ """
+
     enable_new_by_default: Optional[bool] = Field(
         None,
         description="The boolean value specifying whether to enable new schemas, tables, and columns by default",
@@ -10851,36 +13083,48 @@ class StandardConfigResponse(BaseModel):
 
 
 class V1ConnectorsConnectorIdSchemasSchemaNameTablesTableNameColumnsColumnNamePatchResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[StandardConfigResponse] = None
 
 
 class V1ConnectorsConnectorIdSchemasGetResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[StandardConfigResponse] = None
 
 
 class V1ConnectorsConnectorIdSchemasPatchResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[StandardConfigResponse] = None
 
 
 class V1ConnectorsConnectorIdSchemasSchemaNamePatchResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[StandardConfigResponse] = None
 
 
 class V1ConnectorsConnectorIdSchemasReloadPostResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[StandardConfigResponse] = None
 
 
 class V1ConnectorsConnectorIdSchemasSchemaNameTablesTableNamePatchResponse(BaseModel):
+    """ """
+
     code: Optional[str] = Field(None, description="Response status code")
     message: Optional[str] = Field(None, description="Response status text")
     data: Optional[StandardConfigResponse] = None

@@ -6,6 +6,16 @@ from grai_source_redshift.loader import RedshiftConfig, RedshiftConnector
 
 
 def test_building_nodes(connection):
+    """
+
+    Args:
+        connection:
+
+    Returns:
+
+    Raises:
+
+    """
     with connection.connect() as conn:
         tables = conn.tables
 
@@ -13,6 +23,16 @@ def test_building_nodes(connection):
 
 
 def test_building_edges(connection):
+    """
+
+    Args:
+        connection:
+
+    Returns:
+
+    Raises:
+
+    """
     with connection.connect() as conn:
         edges = conn.foreign_keys
 
@@ -20,6 +40,7 @@ def test_building_edges(connection):
 
 
 def test_config_from_env_vars():
+    """ """
     env_vars = {
         "GRAI_REDSHIFT_HOST": "localhost",
         "GRAI_REDSHIFT_DATABASE": "grai",

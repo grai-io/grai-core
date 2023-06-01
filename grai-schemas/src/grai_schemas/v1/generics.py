@@ -5,10 +5,14 @@ from grai_schemas.generics import GraiBaseModel
 
 
 class V1Mixin(GraiBaseModel):
+    """ """
+
     version: Literal["v1"] = "v1"
 
 
 class BaseID(GraiBaseModel):
+    """ """
+
     id: Optional[UUID]
     name: Optional[str]
     namespace: Optional[str]
@@ -22,12 +26,16 @@ class BaseID(GraiBaseModel):
 
 
 class NamedID(BaseID):
+    """ """
+
     name: str
     namespace: str
     id: Optional[UUID]
 
 
 class UuidID(BaseID):
+    """ """
+
     id: UUID
     name: Optional[str]
     namespace: Optional[str]

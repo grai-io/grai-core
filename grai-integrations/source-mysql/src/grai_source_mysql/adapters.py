@@ -28,11 +28,33 @@ from grai_source_mysql.package_definitions import config
 
 @multimethod
 def build_grai_metadata(current: Any, desired: Any) -> None:
+    """
+
+    Args:
+        current (Any):
+        desired (Any):
+
+    Returns:
+
+    Raises:
+
+    """
     raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)} for value {current}")
 
 
 @build_grai_metadata.register
 def build_grai_metadata_from_column(current: Column, version: Literal["v1"] = "v1") -> ColumnMetadata:
+    """
+
+    Args:
+        current (Column):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
     default_value = current.default_value
     if current.default_value is not None:
         default_value = DefaultValue(
@@ -59,6 +81,17 @@ def build_grai_metadata_from_column(current: Column, version: Literal["v1"] = "v
 
 @build_grai_metadata.register
 def build_grai_metadata_from_node(current: Table, version: Literal["v1"] = "v1") -> TableMetadata:
+    """
+
+    Args:
+        current (Table):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
     data = {
         "version": version,
         "node_type": NodeTypeLabels.table.value,
@@ -71,6 +104,17 @@ def build_grai_metadata_from_node(current: Table, version: Literal["v1"] = "v1")
 
 @build_grai_metadata.register
 def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> GenericEdgeMetadataV1:
+    """
+
+    Args:
+        current (Edge):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
     data = {"version": version, "tags": [config.metadata_id]}
 
     if isinstance(current.source, TableID):
@@ -91,11 +135,33 @@ def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") 
 
 @multimethod
 def build_app_metadata(current: Any, desired: Any) -> None:
+    """
+
+    Args:
+        current (Any):
+        desired (Any):
+
+    Returns:
+
+    Raises:
+
+    """
     raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)} for value {current}")
 
 
 @build_app_metadata.register
 def build_metadata_from_column(current: Column, version: Literal["v1"] = "v1") -> Dict:
+    """
+
+    Args:
+        current (Column):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
     data = {
         "table_name": current.table,
         "schema": current.column_schema,
@@ -106,6 +172,17 @@ def build_metadata_from_column(current: Column, version: Literal["v1"] = "v1") -
 
 @build_app_metadata.register
 def build_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> Dict:
+    """
+
+    Args:
+        current (Edge):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
     data = {
         "definition": current.definition,
         "constraint_type": current.constraint_type.name,
@@ -117,6 +194,17 @@ def build_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> Di
 
 @build_app_metadata.register
 def build_metadata_from_node(current: Table, version: Literal["v1"] = "v1") -> Dict:
+    """
+
+    Args:
+        current (Table):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
     data = {
         "schema": current.table_schema,
     }
@@ -124,6 +212,17 @@ def build_metadata_from_node(current: Table, version: Literal["v1"] = "v1") -> D
 
 
 def build_metadata(obj, version):
+    """
+
+    Args:
+        obj:
+        version:
+
+    Returns:
+
+    Raises:
+
+    """
     integration_meta = build_app_metadata(obj, version)
     base_metadata = build_grai_metadata(obj, version)
     integration_meta["grai"] = base_metadata
@@ -136,11 +235,33 @@ def build_metadata(obj, version):
 
 @multimethod
 def adapt_to_client(current: Any, desired: Any):
+    """
+
+    Args:
+        current (Any):
+        desired (Any):
+
+    Returns:
+
+    Raises:
+
+    """
     raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)}")
 
 
 @adapt_to_client.register
 def adapt_column_to_client(current: Column, version: Literal["v1"] = "v1"):
+    """
+
+    Args:
+        current (Column):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
     spec_dict = {
         "name": current.full_name,
         "namespace": current.namespace,
@@ -153,6 +274,17 @@ def adapt_column_to_client(current: Column, version: Literal["v1"] = "v1"):
 
 @adapt_to_client.register
 def adapt_table_to_client(current: Table, version: Literal["v1"] = "v1"):
+    """
+
+    Args:
+        current (Table):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
     spec_dict = {
         "name": current.full_name,
         "namespace": current.namespace,
@@ -164,6 +296,17 @@ def adapt_table_to_client(current: Table, version: Literal["v1"] = "v1"):
 
 
 def make_name(node1: ID, node2: ID) -> str:
+    """
+
+    Args:
+        node1 (ID):
+        node2 (ID):
+
+    Returns:
+
+    Raises:
+
+    """
     node1_name = f"{node1.namespace}:{node1.full_name}"
     node2_name = f"{node2.namespace}:{node2.full_name}"
     return f"{node1_name} -> {node2_name}"
@@ -171,6 +314,17 @@ def make_name(node1: ID, node2: ID) -> str:
 
 @adapt_to_client.register
 def adapt_edge_to_client(current: Edge, version: Literal["v1"] = "v1"):
+    """
+
+    Args:
+        current (Edge):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
     spec_dict = {
         "data_source": "grai-mysql-adapter",
         "name": make_name(current.source, current.destination),
@@ -190,4 +344,15 @@ def adapt_edge_to_client(current: Edge, version: Literal["v1"] = "v1"):
 
 @adapt_to_client.register
 def adapt_list_to_client(objs: Sequence, version: Literal["v1"]) -> List:
+    """
+
+    Args:
+        objs (Sequence):
+        version (Literal["v1"]):
+
+    Returns:
+
+    Raises:
+
+    """
     return [adapt_to_client(item, version) for item in objs]

@@ -9,6 +9,17 @@ from grai_source_mssql.loader import MsSQLConnector
 
 
 def get_nodes_and_edges(connector: MsSQLConnector, version: Literal["v1"]) -> Tuple[List[Node], List[Edge]]:
+    """
+
+    Args:
+        connector (MsSQLConnector):
+        version (Literal["v1"]):
+
+    Returns:
+
+    Raises:
+
+    """
     with connector.connect() as conn:
         nodes, edges = conn.get_nodes_and_edges()
 
@@ -28,6 +39,24 @@ def update_server(
     port: Optional[str] = None,
     additional_connection_strings: Optional[List[str]] = None,
 ):
+    """
+
+    Args:
+        client (BaseClient):
+        database (Optional[str], optional):  (Default value = None)
+        namespace (Optional[str], optional):  (Default value = None)
+        user (Optional[str], optional):  (Default value = None)
+        password (Optional[str], optional):  (Default value = None)
+        protocol (Optional[str], optional):  (Default value = None)
+        host (Optional[str], optional):  (Default value = None)
+        port (Optional[str], optional):  (Default value = None)
+        additional_connection_strings (Optional[List[str]], optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
+    """
     conn = MsSQLConnector(
         database=database,
         user=user,
