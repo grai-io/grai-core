@@ -156,6 +156,7 @@ def finalize_edge(client: ClientV1, resp: Dict, options: ClientOptions = ClientO
 
     """
     nodes = [get(client, "node", resp["source"]), get(client, "node", resp["destination"])]
+
     resp["source"] = nodes[0].spec
     resp["destination"] = nodes[1].spec
     return EdgeV1.from_spec(resp)
@@ -272,7 +273,7 @@ def get_from_edge_named_id(
     if num_results == 0:
         return None
     elif num_results == 1:
-        return finalize_edge(client, resp[0])
+        return resp[0]
     else:
         message = (
             f"An edge query for name={grai_type.name}, namespace={grai_type.namespace} in the "
