@@ -12,13 +12,95 @@ from api.tests.common import (
     test_organisation,
     test_user,
     test_workspace,
+    test_source,
 )
 from connections.models import Connection
+from lineage.models import Source
+import uuid
 
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_create_connection(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    connector = await generate_connector()
+
+    mutation = """
+        mutation CreateConnection($workspaceId: ID!, $connectorId: ID!, $namespace: String!, $name: String!, $metadata: JSON!, $secrets: JSON, $schedules: JSON, $is_active: Boolean, $sourceName: String!) {
+            createConnection(workspaceId: $workspaceId, connectorId: $connectorId, namespace: $namespace, name: $name, metadata: $metadata, secrets: $secrets, schedules: $schedules, is_active: $is_active, sourceName: $sourceName) {
+                id
+                name
+            }
+        }
+    """
+
+    name = generate_connection_name()
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "connectorId": str(connector.id),
+            "namespace": "default",
+            "name": name,
+            "metadata": {},
+            "secrets": None,
+            "schedules": None,
+            "is_active": False,
+            "sourceName": "test",
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["createConnection"]["id"] != None
+    assert result.data["createConnection"]["name"] == name
+
+
+@pytest.mark.django_db
+async def test_create_connection_no_membership(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    workspace2 = await generate_workspace(organisation)
+
+    connector = await generate_connector()
+
+    mutation = """
+        mutation CreateConnection($workspaceId: ID!, $connectorId: ID!, $namespace: String!, $name: String!, $metadata: JSON!, $secrets: JSON, $schedules: JSON, $is_active: Boolean, $sourceName: String!) {
+            createConnection(workspaceId: $workspaceId, connectorId: $connectorId, namespace: $namespace, name: $name, metadata: $metadata, secrets: $secrets, schedules: $schedules, is_active: $is_active, sourceName: $sourceName) {
+                id
+                name
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "workspaceId": str(workspace2.id),
+            "connectorId": str(connector.id),
+            "namespace": "default",
+            "name": generate_connection_name(),
+            "metadata": {},
+            "secrets": None,
+            "schedules": None,
+            "is_active": False,
+            "sourceName": "test",
+        },
+        context_value=context,
+    )
+
+    assert (
+        str(result.errors)
+        == """[GraphQLError("Can\'t find workspace", locations=[SourceLocation(line=3, column=13)], path=[\'createConnection\'])]"""
+    )
+    assert result.data is None
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_create_connection_no_source(test_context):
     context, organisation, workspace, user, membership = test_context
 
     connector = await generate_connector()
@@ -49,48 +131,50 @@ async def test_create_connection(test_context):
         context_value=context,
     )
 
-    assert result.errors is None
-    assert result.data["createConnection"]["id"] != None
-    assert result.data["createConnection"]["name"] == name
+    assert (
+        str(result.errors)
+        == """[GraphQLError('Must provide either sourceId or sourceName', locations=[SourceLocation(line=3, column=13)], path=['createConnection'])]"""
+    )
+    assert result.data is None
 
 
+@pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_create_connection_no_membership(test_context):
+async def test_create_connection_source_id(test_context, test_source):
     context, organisation, workspace, user, membership = test_context
-
-    workspace2 = await generate_workspace(organisation)
 
     connector = await generate_connector()
 
     mutation = """
-        mutation CreateConnection($workspaceId: ID!, $connectorId: ID!, $namespace: String!, $name: String!, $metadata: JSON!, $secrets: JSON, $schedules: JSON, $is_active: Boolean) {
-            createConnection(workspaceId: $workspaceId, connectorId: $connectorId, namespace: $namespace, name: $name, metadata: $metadata, secrets: $secrets, schedules: $schedules, is_active: $is_active) {
+        mutation CreateConnection($workspaceId: ID!, $connectorId: ID!, $namespace: String!, $name: String!, $metadata: JSON!, $secrets: JSON, $schedules: JSON, $is_active: Boolean, $sourceId: ID!) {
+            createConnection(workspaceId: $workspaceId, connectorId: $connectorId, namespace: $namespace, name: $name, metadata: $metadata, secrets: $secrets, schedules: $schedules, is_active: $is_active, sourceId: $sourceId) {
                 id
                 name
             }
         }
     """
 
+    name = generate_connection_name()
+
     result = await schema.execute(
         mutation,
         variable_values={
-            "workspaceId": str(workspace2.id),
+            "workspaceId": str(workspace.id),
             "connectorId": str(connector.id),
             "namespace": "default",
-            "name": generate_connection_name(),
+            "name": name,
             "metadata": {},
             "secrets": None,
             "schedules": None,
             "is_active": False,
+            "sourceId": str(test_source.id),
         },
         context_value=context,
     )
 
-    assert (
-        str(result.errors)
-        == """[GraphQLError("Can\'t find workspace", locations=[SourceLocation(line=3, column=13)], path=[\'createConnection\'])]"""
-    )
-    assert result.data is None
+    assert result.errors is None
+    assert result.data["createConnection"]["id"] != None
+    assert result.data["createConnection"]["name"] == name
 
 
 @pytest.mark.django_db

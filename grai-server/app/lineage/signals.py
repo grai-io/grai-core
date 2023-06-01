@@ -1,7 +1,8 @@
 from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
+
 from .graph_cache import GraphCache
-from .models import Node, Edge, Source
+from .models import Edge, Node, Source
 
 
 @receiver(m2m_changed)
@@ -12,9 +13,6 @@ def post_m2m_changed(sender, instance, action, reverse, model, pk_set, using, **
     if sender.__name__ not in ["Source_nodes", "Source_edges"]:
         return
 
-    if model not in [Node, Edge]:
-        return
-
     graph = GraphCache(instance.workspace)
 
     if model == Node:
@@ -23,9 +21,11 @@ def post_m2m_changed(sender, instance, action, reverse, model, pk_set, using, **
         for node in nodes:
             graph.cache_node(node)
 
-        return
+    elif model == Edge:
+        edges = Edge.objects.filter(pk__in=pk_set)
 
-    edges = Edge.objects.filter(pk__in=pk_set)
+        for edge in edges:
+            graph.cache_edge(edge)
 
-    for edge in edges:
-        graph.cache_edge(edge)
+    else:
+        raise Exception("Unexpected model type")

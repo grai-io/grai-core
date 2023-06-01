@@ -6,10 +6,11 @@ from strawberry.scalars import JSON
 from strawberry.types import Info
 
 from api.common import IsAuthenticated, get_user, get_workspace
-
-from .models import Filter as FilterModel, Source as SourceModel
-from .types import Filter
 from api.types import Source
+
+from .models import Filter as FilterModel
+from .models import Source as SourceModel
+from .types import Filter
 
 
 @strawberry.type

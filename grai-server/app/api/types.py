@@ -30,13 +30,13 @@ from lineage.models import Edge as EdgeModel
 from lineage.models import Event as EventModel
 from lineage.models import Filter as FilterModel
 from lineage.models import Node as NodeModel
+from lineage.models import Source as SourceModel
 from lineage.types import EdgeFilter, EdgeOrder, Filter, NodeFilter, NodeOrder
 from users.types import User, UserFilter
 from workspaces.models import Membership as MembershipModel
 from workspaces.models import Workspace as WorkspaceModel
 from workspaces.models import WorkspaceAPIKey as WorkspaceAPIKeyModel
 from workspaces.types import Organisation
-from lineage.models import Source as SourceModel
 
 from .pagination import DataWrapper, Pagination
 

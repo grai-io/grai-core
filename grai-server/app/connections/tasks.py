@@ -28,7 +28,12 @@ def process_run(runId):
 @shared_task
 def run_connection_schedule(connectionId):
     connection = Connection.objects.get(pk=connectionId)
-    run = Run.objects.create(workspace=connection.workspace, connection=connection, status="queued")
+    run = Run.objects.create(
+        workspace=connection.workspace,
+        connection=connection,
+        status="queued",
+        source=connection.source,
+    )
     execute_run(run)
 
 
@@ -60,7 +65,11 @@ def get_adapter(slug: str) -> BaseAdapter:
 def get_github_api(run: Run):
     repository = run.commit.repository
 
-    return Github(owner=repository.owner, repo=repository.repo, installation_id=repository.installation_id)
+    return Github(
+        owner=repository.owner,
+        repo=repository.repo,
+        installation_id=repository.installation_id,
+    )
 
 
 def execute_run(run: Run):

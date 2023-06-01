@@ -43,6 +43,13 @@ async def test_workspace(test_organisation):
     return workspace
 
 
+@pytest.fixture
+async def test_source(test_workspace):
+    source = await Source.objects.acreate(workspace=test_workspace, name=str(uuid.uuid4()))
+
+    return source
+
+
 @pytest_asyncio.fixture
 async def test_context(test_organisation, test_workspace, test_user):
     membership = await Membership.objects.acreate(user=test_user, workspace=test_workspace, role="admin")
@@ -101,12 +108,24 @@ async def generate_connector():
     return await Connector.objects.acreate(name=generate_connector_name())
 
 
-async def generate_connection(workspace: Workspace, connector: Connector = None, temp: bool = False):
+async def generate_source(workspace: Workspace):
+    return await Source.objects.acreate(workspace=workspace, name=str(uuid.uuid4()))
+
+
+async def generate_connection(
+    workspace: Workspace,
+    connector: Connector = None,
+    source: Source = None,
+    temp: bool = False,
+):
     connector = connector if connector else await generate_connector()
+
+    source = source if source else await generate_source(workspace)
 
     return await Connection.objects.acreate(
         workspace=workspace,
         connector=connector,
+        source=source,
         namespace="default",
         name=generate_connection_name(),
         metadata={},

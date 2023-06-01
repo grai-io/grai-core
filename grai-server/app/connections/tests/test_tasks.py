@@ -11,7 +11,7 @@ from connections.models import Connection, Connector, Run, RunFile
 from connections.tasks import process_run, run_connection_schedule
 from installations.models import Branch, Commit, PullRequest, Repository
 from installations.tests.test_github import mocked_requests_post
-from lineage.models import Edge, Node
+from lineage.models import Edge, Node, Source
 from workspaces.models import Organisation, Workspace
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
@@ -25,6 +25,11 @@ def test_organisation():
 @pytest.fixture
 def test_workspace(test_organisation):
     return Workspace.objects.create(name="W10", organisation=test_organisation)
+
+
+@pytest.fixture
+def test_source(test_workspace):
+    return Source.objects.create(workspace=test_workspace, name=str(uuid.uuid4()))
 
 
 @pytest.fixture
@@ -142,11 +147,12 @@ def test_commit_with_pr(test_workspace, test_repository, test_branch, test_pull_
 
 @pytest.mark.django_db
 class TestUpdateServer:
-    def test_run_update_server_postgres(self, test_workspace, test_postgres_connector):
+    def test_run_update_server_postgres(self, test_workspace, test_postgres_connector, test_source):
         connection = Connection.objects.create(
             name="C1",
             connector=test_postgres_connector,
             workspace=test_workspace,
+            source=test_source,
             metadata={
                 "host": config("DB_HOST", "localhost"),
                 "port": 5432,
@@ -155,19 +161,20 @@ class TestUpdateServer:
             },
             secrets={"password": "grai"},
         )
-        run = Run.objects.create(connection=connection, workspace=test_workspace)
+        run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
 
         process_run(str(run.id))
 
-    def test_run_update_server_postgres_no_host(self, test_workspace, test_postgres_connector):
+    def test_run_update_server_postgres_no_host(self, test_workspace, test_postgres_connector, test_source):
         connection = Connection.objects.create(
             name="C2",
             connector=test_postgres_connector,
             workspace=test_workspace,
+            source=test_source,
             metadata={"host": "a", "port": 5432, "dbname": "grai", "user": "grai"},
             secrets={"password": "grai"},
         )
-        run = Run.objects.create(connection=connection, workspace=test_workspace)
+        run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
 
         with pytest.raises(Exception) as e_info:
             process_run(str(run.id))
@@ -179,29 +186,35 @@ class TestUpdateServer:
             == 'could not translate host name "a" to address: Temporary failure in name resolution\n'
         )
 
-    def test_run_update_server_no_connector(self, test_workspace, test_connector):
-        connection = Connection.objects.create(name="C3", connector=test_connector, workspace=test_workspace)
-        run = Run.objects.create(connection=connection, workspace=test_workspace)
+    def test_run_update_server_no_connector(self, test_workspace, test_connector, test_source):
+        connection = Connection.objects.create(
+            name="C3",
+            connector=test_connector,
+            workspace=test_workspace,
+            source=test_source,
+        )
+        run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
 
         with pytest.raises(Exception) as e_info:
             process_run(str(run.id))
 
         assert str(e_info.value) == "No connector found for: Connector"
 
-    def test_run_update_server_dbt(self, test_workspace, test_dbt_connector):
+    def test_run_update_server_dbt(self, test_workspace, test_dbt_connector, test_source):
         with open(os.path.join(__location__, "manifest.json")) as reader:
             file = UploadedFile(reader, name="manifest.json")
             connection = Connection.objects.create(
                 name=str(uuid.uuid4()),
                 connector=test_dbt_connector,
                 workspace=test_workspace,
+                source=test_source,
             )
-            run = Run.objects.create(connection=connection, workspace=test_workspace)
+            run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
             RunFile.objects.create(run=run, file=file)
 
             process_run(str(run.id))
 
-    def test_run_update_server_fivetran(self, test_workspace, test_fivetran_connector, mocker):
+    def test_run_update_server_fivetran(self, test_workspace, test_fivetran_connector, mocker, test_source):
         mocker.patch("grai_source_fivetran.loader.FivetranConnector")
         mock = mocker.patch("grai_source_fivetran.base.get_nodes_and_edges")
         mock.return_value = [[], []]
@@ -210,15 +223,16 @@ class TestUpdateServer:
             name="C1",
             connector=test_fivetran_connector,
             workspace=test_workspace,
+            source=test_source,
             metadata={"api_key": "abc123"},
             secrets={"api_secret": "abc123"},
         )
 
-        run = Run.objects.create(connection=connection, workspace=test_workspace)
+        run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
 
         process_run(str(run.id))
 
-    def test_run_update_server_fivetran_extras(self, test_workspace, test_fivetran_connector, mocker):
+    def test_run_update_server_fivetran_extras(self, test_workspace, test_fivetran_connector, mocker, test_source):
         mocker.patch("grai_source_fivetran.loader.FivetranConnector")
         mock = mocker.patch("grai_source_fivetran.base.get_nodes_and_edges")
         mock.return_value = [[], []]
@@ -227,6 +241,7 @@ class TestUpdateServer:
             name="C1",
             connector=test_fivetran_connector,
             workspace=test_workspace,
+            source=test_source,
             metadata={
                 "api_key": "abc123",
                 "endpoint": "https://grai.io",
@@ -235,11 +250,11 @@ class TestUpdateServer:
             secrets={"api_secret": "abc123"},
         )
 
-        run = Run.objects.create(connection=connection, workspace=test_workspace)
+        run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
 
         process_run(str(run.id))
 
-    def test_run_update_server_mysql(self, test_workspace, test_mysql_connector, mocker):
+    def test_run_update_server_mysql(self, test_workspace, test_mysql_connector, mocker, test_source):
         mocker.patch("grai_source_mysql.loader.MySQLConnector")
         mock = mocker.patch("grai_source_mysql.base.get_nodes_and_edges")
         mock.return_value = [[], []]
@@ -248,6 +263,7 @@ class TestUpdateServer:
             name="C1",
             connector=test_mysql_connector,
             workspace=test_workspace,
+            source=test_source,
             metadata={
                 "host": config("DB_HOST", "localhost"),
                 "port": 5432,
@@ -257,11 +273,11 @@ class TestUpdateServer:
             secrets={"password": "grai"},
         )
 
-        run = Run.objects.create(connection=connection, workspace=test_workspace)
+        run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
 
         process_run(str(run.id))
 
-    def test_run_update_server_redshift(self, test_workspace, test_redshift_connector, mocker):
+    def test_run_update_server_redshift(self, test_workspace, test_redshift_connector, mocker, test_source):
         mocker.patch("grai_source_redshift.loader.RedshiftConnector")
         mock = mocker.patch("grai_source_redshift.base.get_nodes_and_edges")
         mock.return_value = [[], []]
@@ -270,6 +286,7 @@ class TestUpdateServer:
             name="C1",
             connector=test_redshift_connector,
             workspace=test_workspace,
+            source=test_source,
             metadata={
                 "host": config("DB_HOST", "localhost"),
                 "port": 5432,
@@ -279,11 +296,11 @@ class TestUpdateServer:
             secrets={"password": "grai"},
         )
 
-        run = Run.objects.create(connection=connection, workspace=test_workspace)
+        run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
 
         process_run(str(run.id))
 
-    def test_run_update_server_yaml_file(self, test_workspace, test_yaml_file_connector):
+    def test_run_update_server_yaml_file(self, test_workspace, test_yaml_file_connector, test_source):
         Node.objects.create(workspace=test_workspace, namespace="default", name="table1")
 
         with open(os.path.join(__location__, "test.yaml")) as reader:
@@ -292,13 +309,14 @@ class TestUpdateServer:
                 name=str(uuid.uuid4()),
                 connector=test_yaml_file_connector,
                 workspace=test_workspace,
+                source=test_source,
             )
-            run = Run.objects.create(connection=connection, workspace=test_workspace)
+            run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
             RunFile.objects.create(run=run, file=file)
 
             process_run(str(run.id))
 
-    def test_snowflake_no_account(self, test_workspace, test_snowflake_connector, mocker):
+    def test_snowflake_no_account(self, test_workspace, test_snowflake_connector, mocker, test_source):
         mock = mocker.patch("grai_source_snowflake.base.get_nodes_and_edges")
         mock.return_value = [[], []]
 
@@ -306,6 +324,7 @@ class TestUpdateServer:
             name="C2",
             connector=test_snowflake_connector,
             workspace=test_workspace,
+            source=test_source,
             metadata={
                 "account": "account",
                 "user": "user",
@@ -316,11 +335,11 @@ class TestUpdateServer:
             },
             secrets={"password": "password1234"},
         )
-        run = Run.objects.create(connection=connection, workspace=test_workspace)
+        run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
 
         process_run(str(run.id))
 
-    def test_mssql_no_account(self, test_workspace, test_mssql_connector, mocker):
+    def test_mssql_no_account(self, test_workspace, test_mssql_connector, mocker, test_source):
         mock = mocker.patch("grai_source_mssql.base.get_nodes_and_edges")
         mock.return_value = [[], []]
 
@@ -328,6 +347,7 @@ class TestUpdateServer:
             name="C2",
             connector=test_mssql_connector,
             workspace=test_workspace,
+            source=test_source,
             metadata={
                 "user": "user",
                 "database": "database",
@@ -336,11 +356,11 @@ class TestUpdateServer:
             },
             secrets={"password": "password1234"},
         )
-        run = Run.objects.create(connection=connection, workspace=test_workspace)
+        run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
 
         process_run(str(run.id))
 
-    def test_bigquery_no_project(self, test_workspace, test_bigquery_connector, mocker):
+    def test_bigquery_no_project(self, test_workspace, test_bigquery_connector, mocker, test_source):
         mock = mocker.patch("grai_source_bigquery.base.get_nodes_and_edges")
         mock.return_value = [[], []]
 
@@ -348,14 +368,15 @@ class TestUpdateServer:
             name="C2",
             connector=test_bigquery_connector,
             workspace=test_workspace,
+            source=test_source,
             metadata={"project": "a", "dataset": "dataset"},
             secrets={"credentials": {}},
         )
-        run = Run.objects.create(connection=connection, workspace=test_workspace)
+        run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
 
         process_run(str(run.id))
 
-    def test_dbt_cloud_no_project(self, test_workspace, test_dbt_cloud_connector, mocker):
+    def test_dbt_cloud_no_project(self, test_workspace, test_dbt_cloud_connector, mocker, test_source):
         mock = mocker.patch("grai_source_dbt_cloud.base.get_nodes_and_edges")
         mock.return_value = [[], []]
 
@@ -363,30 +384,44 @@ class TestUpdateServer:
             name="C2",
             connector=test_dbt_cloud_connector,
             workspace=test_workspace,
+            source=test_source,
             metadata={},
             secrets={"api_key": "abc1234"},
         )
-        run = Run.objects.create(connection=connection, workspace=test_workspace)
+        run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
 
         process_run(str(run.id))
 
 
 @pytest.mark.django_db
 class TestTests:
-    def test_dbt(self, test_workspace, test_dbt_connector):
+    def test_dbt(self, test_workspace, test_dbt_connector, test_source):
         with open(os.path.join(__location__, "manifest.json")) as reader:
             file = UploadedFile(reader, name="manifest.json")
             connection = Connection.objects.create(
                 name=str(uuid.uuid4()),
                 connector=test_dbt_connector,
                 workspace=test_workspace,
+                source=test_source,
             )
-            run = Run.objects.create(connection=connection, workspace=test_workspace, action=Run.TESTS)
+            run = Run.objects.create(
+                connection=connection,
+                workspace=test_workspace,
+                action=Run.TESTS,
+                source=test_source,
+            )
             RunFile.objects.create(run=run, file=file)
 
         process_run(str(run.id))
 
-    def test_dbt_github(self, test_workspace, test_dbt_connector, test_commit_with_pr, mocker):
+    def test_dbt_github(
+        self,
+        test_workspace,
+        test_dbt_connector,
+        test_commit_with_pr,
+        mocker,
+        test_source,
+    ):
         mocker.patch("installations.github.requests.post", side_effect=mocked_requests_post)
         mocker.patch("installations.github.GhApi")
 
@@ -396,6 +431,7 @@ class TestTests:
                 name=str(uuid.uuid4()),
                 connector=test_dbt_connector,
                 workspace=test_workspace,
+                source=test_source,
             )
             run = Run.objects.create(
                 connection=connection,
@@ -403,22 +439,29 @@ class TestTests:
                 commit=test_commit_with_pr,
                 action=Run.TESTS,
                 trigger={"check_id": "1234"},
+                source=test_source,
             )
             RunFile.objects.create(run=run, file=file)
 
         process_run(str(run.id))
 
-    def test_no_connector_github(self, test_workspace, test_connector, test_commit, mocker):
+    def test_no_connector_github(self, test_workspace, test_connector, test_commit, mocker, test_source):
         mocker.patch("installations.github.requests.post", side_effect=mocked_requests_post)
         mocker.patch("installations.github.GhApi")
 
-        connection = Connection.objects.create(name="C3", connector=test_connector, workspace=test_workspace)
+        connection = Connection.objects.create(
+            name="C3",
+            connector=test_connector,
+            workspace=test_workspace,
+            source=test_source,
+        )
         run = Run.objects.create(
             connection=connection,
             workspace=test_workspace,
             commit=test_commit,
             action=Run.TESTS,
             trigger={"check_id": "1234"},
+            source=test_source,
         )
 
         with pytest.raises(Exception) as e_info:
@@ -426,7 +469,14 @@ class TestTests:
 
         assert str(e_info.value) == "No connector found for: Connector"
 
-    def test_dbt_github_test_failure(self, test_workspace, test_dbt_connector, test_commit_with_pr, mocker):
+    def test_dbt_github_test_failure(
+        self,
+        test_workspace,
+        test_dbt_connector,
+        test_commit_with_pr,
+        mocker,
+        test_source,
+    ):
         mocker.patch("installations.github.requests.post", side_effect=mocked_requests_post)
         mocker.patch("installations.github.GhApi")
 
@@ -496,6 +546,7 @@ class TestTests:
                 name=str(uuid.uuid4()),
                 connector=test_dbt_connector,
                 workspace=test_workspace,
+                source=test_source,
             )
             run = Run.objects.create(
                 connection=connection,
@@ -503,12 +554,20 @@ class TestTests:
                 commit=test_commit_with_pr,
                 action=Run.TESTS,
                 trigger={"check_id": "1234"},
+                source=test_source,
             )
             RunFile.objects.create(run=run, file=file)
 
         process_run(str(run.id))
 
-    def test_yaml_github_test_failure(self, test_workspace, test_yaml_file_connector, test_commit_with_pr, mocker):
+    def test_yaml_github_test_failure(
+        self,
+        test_workspace,
+        test_yaml_file_connector,
+        test_commit_with_pr,
+        mocker,
+        test_source,
+    ):
         mocker.patch("installations.github.requests.post", side_effect=mocked_requests_post)
         mocker.patch("installations.github.GhApi")
 
@@ -578,6 +637,7 @@ class TestTests:
                 name=str(uuid.uuid4()),
                 connector=test_yaml_file_connector,
                 workspace=test_workspace,
+                source=test_source,
             )
             run = Run.objects.create(
                 connection=connection,
@@ -585,6 +645,7 @@ class TestTests:
                 commit=test_commit_with_pr,
                 action=Run.TESTS,
                 trigger={"check_id": "1234"},
+                source=test_source,
             )
             RunFile.objects.create(run=run, file=file)
 
@@ -593,22 +654,28 @@ class TestTests:
 
 @pytest.mark.django_db
 class TestValidateTests:
-    def test_validate_dbt(self, test_workspace, test_dbt_connector):
+    def test_validate_dbt(self, test_workspace, test_dbt_connector, test_source):
         with open(os.path.join(__location__, "manifest.json")) as reader:
             file = UploadedFile(reader, name="manifest.json")
             connection = Connection.objects.create(
                 name=str(uuid.uuid4()),
                 connector=test_dbt_connector,
                 workspace=test_workspace,
+                source=test_source,
             )
-            run = Run.objects.create(connection=connection, workspace=test_workspace, action=Run.VALIDATE)
+            run = Run.objects.create(
+                connection=connection,
+                workspace=test_workspace,
+                action=Run.VALIDATE,
+                source=test_source,
+            )
             RunFile.objects.create(run=run, file=file)
 
         process_run(str(run.id))
 
 
 @pytest.mark.django_db
-def test_process_run_incorrect_action(test_workspace, test_yaml_file_connector):
+def test_process_run_incorrect_action(test_workspace, test_yaml_file_connector, test_source):
     Node.objects.create(workspace=test_workspace, namespace="default", name="table1")
 
     with open(os.path.join(__location__, "test.yaml")) as reader:
@@ -617,8 +684,14 @@ def test_process_run_incorrect_action(test_workspace, test_yaml_file_connector):
             name=str(uuid.uuid4()),
             connector=test_yaml_file_connector,
             workspace=test_workspace,
+            source=test_source,
         )
-        run = Run.objects.create(connection=connection, workspace=test_workspace, action="Incorrect")
+        run = Run.objects.create(
+            connection=connection,
+            workspace=test_workspace,
+            action="Incorrect",
+            source=test_source,
+        )
         RunFile.objects.create(run=run, file=file)
 
         with pytest.raises(Exception) as e_info:
@@ -632,13 +705,14 @@ def test_process_run_incorrect_action(test_workspace, test_yaml_file_connector):
 
 @pytest.mark.django_db
 class TestConnectionSchedule:
-    def test_run_connection_schedule_postgres(self, test_workspace, test_postgres_connector):
+    def test_run_connection_schedule_postgres(self, test_workspace, test_postgres_connector, test_source):
         connection = Connection.objects.create(
             name="C4",
             connector=test_postgres_connector,
             workspace=test_workspace,
             metadata={"host": "a", "port": 5432, "dbname": "grai", "user": "grai"},
             secrets={"password": "grai"},
+            source=test_source,
         )
 
         with pytest.raises(Exception) as e_info:
@@ -651,8 +725,13 @@ class TestConnectionSchedule:
             == 'could not translate host name "a" to address: Temporary failure in name resolution\n'
         )
 
-    def test_run_connection_schedule_no_connector(self, test_workspace, test_connector):
-        connection = Connection.objects.create(name="C5", connector=test_connector, workspace=test_workspace)
+    def test_run_connection_schedule_no_connector(self, test_workspace, test_connector, test_source):
+        connection = Connection.objects.create(
+            name="C5",
+            connector=test_connector,
+            workspace=test_workspace,
+            source=test_source,
+        )
 
         with pytest.raises(Exception) as e_info:
             run_connection_schedule(str(connection.id))
@@ -661,7 +740,7 @@ class TestConnectionSchedule:
 
 @pytest.mark.django_db
 class TestEventsTests:
-    def test_dbt_cloud(self, test_workspace, test_dbt_cloud_connector, mocker):
+    def test_dbt_cloud(self, test_workspace, test_dbt_cloud_connector, mocker, test_source):
         mock = mocker.patch("grai_source_dbt_cloud.base.get_events")
         mock.return_value = [
             Event(
@@ -679,15 +758,21 @@ class TestEventsTests:
             workspace=test_workspace,
             metadata={},
             secrets={"api_key": "abc1234"},
+            source=test_source,
         )
-        run = Run.objects.create(connection=connection, workspace=test_workspace, action=Run.EVENTS)
+        run = Run.objects.create(
+            connection=connection,
+            workspace=test_workspace,
+            action=Run.EVENTS,
+            source=test_source,
+        )
 
         process_run(str(run.id))
 
 
 @pytest.mark.django_db
 class TestEventsAllTests:
-    def test_dbt_cloud(self, test_workspace, test_dbt_cloud_connector, mocker):
+    def test_dbt_cloud(self, test_workspace, test_dbt_cloud_connector, mocker, test_source):
         node = Node.objects.create(workspace=test_workspace, name=str(uuid.uuid4()))
 
         mock = mocker.patch("grai_source_dbt_cloud.base.get_events")
@@ -707,7 +792,13 @@ class TestEventsAllTests:
             workspace=test_workspace,
             metadata={},
             secrets={"api_key": "abc1234"},
+            source=test_source,
         )
-        run = Run.objects.create(connection=connection, workspace=test_workspace, action=Run.EVENTS_ALL)
+        run = Run.objects.create(
+            connection=connection,
+            workspace=test_workspace,
+            action=Run.EVENTS_ALL,
+            source=test_source,
+        )
 
         process_run(str(run.id))

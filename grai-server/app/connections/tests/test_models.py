@@ -7,7 +7,48 @@ import pytest
 from django_celery_beat.models import PeriodicTask
 
 from connections.models import Connection, Connector, Run
+from lineage.models import Source
 from workspaces.models import Organisation, Workspace
+
+
+@pytest.fixture
+def test_organisation():
+    organisation, created = Organisation.objects.get_or_create(name="Test Organisation")
+
+    return organisation
+
+
+@pytest.fixture
+def test_workspace(test_organisation):
+    workspace = Workspace.objects.create(name=str(uuid.uuid4()), organisation=test_organisation)
+
+    return workspace
+
+
+@pytest.fixture
+def test_source(test_workspace):
+    source = Source.objects.create(name=str(uuid.uuid4()), workspace=test_workspace)
+
+    return source
+
+
+@pytest.fixture
+def test_connector():
+    connector = Connector.objects.create(name=str(uuid.uuid4()))
+
+    return connector
+
+
+@pytest.fixture
+def test_connection(test_connector, test_workspace, test_source):
+    connection = Connection.objects.create(
+        workspace=test_workspace,
+        connector=test_connector,
+        name=str(uuid.uuid4()),
+        source=test_source,
+    )
+
+    return connection
 
 
 @pytest.mark.django_db
@@ -20,13 +61,13 @@ def test_connector_created():
 
 
 @pytest.mark.django_db
-def test_run_created():
-    organisation = Organisation.objects.create(name="O1")
-    workspace = Workspace.objects.create(name="W1", organisation=organisation)
-    connector = Connector.objects.create(name="C1")
-    connection = Connection.objects.create(workspace=workspace, connector=connector, name="Connection 1")
-
-    run = Run.objects.create(workspace=workspace, connection=connection, status="success")
+def test_run_created(test_workspace, test_connection, test_source):
+    run = Run.objects.create(
+        workspace=test_workspace,
+        connection=test_connection,
+        status="success",
+        source=test_source,
+    )
 
     assert run.id == uuid.UUID(str(run.id))
     assert str(run) == str(run.id)
@@ -40,22 +81,26 @@ def test_run_created():
 
 class TestConnection:
     @pytest.mark.django_db
-    def test_connection_created(self):
-        organisation = Organisation.objects.create(name="O1")
-        workspace = Workspace.objects.create(name="W1", organisation=organisation)
-        connector = Connector.objects.create(name="C1")
-        connection = Connection.objects.create(workspace=workspace, connector=connector, name="Connection 1")
+    def test_connection_created(self, test_workspace, test_connector, test_source):
+        connection = Connection.objects.create(
+            workspace=test_workspace,
+            connector=test_connector,
+            name="Connection 1",
+            source=test_source,
+        )
 
         assert connection.id == uuid.UUID(str(connection.id))
         assert str(connection) == "Connection 1"
         assert connection.name == "Connection 1"
 
     @pytest.mark.django_db
-    def test_connection_updated_with_schedule(self):
-        organisation = Organisation.objects.create(name="O1")
-        workspace = Workspace.objects.create(name="W1", organisation=organisation)
-        connector = Connector.objects.create(name="C1")
-        connection = Connection.objects.create(workspace=workspace, connector=connector, name="Connection 1")
+    def test_connection_updated_with_schedule(self, test_workspace, test_connector, test_source):
+        connection = Connection.objects.create(
+            workspace=test_workspace,
+            connector=test_connector,
+            name="Connection 1",
+            source=test_source,
+        )
 
         connection.schedules = {
             "type": "cron",
@@ -76,13 +121,11 @@ class TestConnection:
         assert connection.task is not None
 
     @pytest.mark.django_db
-    def test_connection_updated_with_existing_task(self):
-        organisation = Organisation.objects.create(name="O1")
-        workspace = Workspace.objects.create(name="W1", organisation=organisation)
-        connector = Connector.objects.create(name="C1")
+    def test_connection_updated_with_existing_task(self, test_workspace, test_connector, test_source):
         connection = Connection.objects.create(
-            workspace=workspace,
-            connector=connector,
+            workspace=test_workspace,
+            connector=test_connector,
+            source=test_source,
             name="Connection 1",
             schedules={
                 "type": "cron",
@@ -115,11 +158,13 @@ class TestConnection:
         assert connection.task is not None
 
     @pytest.mark.django_db
-    def test_connection_updated_with_incorrect_schedule(self):
-        organisation = Organisation.objects.create(name="O1")
-        workspace = Workspace.objects.create(name="W1", organisation=organisation)
-        connector = Connector.objects.create(name="C1")
-        connection = Connection.objects.create(workspace=workspace, connector=connector, name="Connection 1")
+    def test_connection_updated_with_incorrect_schedule(self, test_workspace, test_connector, test_source):
+        connection = Connection.objects.create(
+            workspace=test_workspace,
+            connector=test_connector,
+            name="Connection 1",
+            source=test_source,
+        )
 
         connection.schedules = {
             "type": "blah",
@@ -131,11 +176,13 @@ class TestConnection:
         assert str(e_info.value) == "Schedule type not found"
 
     @pytest.mark.django_db
-    def test_connection_updated_remove_schedule(self):
-        organisation = Organisation.objects.create(name="O1")
-        workspace = Workspace.objects.create(name="W1", organisation=organisation)
-        connector = Connector.objects.create(name="C1")
-        connection = Connection.objects.create(workspace=workspace, connector=connector, name="Connection 1")
+    def test_connection_updated_remove_schedule(self, test_workspace, test_connector, test_source):
+        connection = Connection.objects.create(
+            workspace=test_workspace,
+            connector=test_connector,
+            name="Connection 1",
+            source=test_source,
+        )
 
         connection.schedules = {
             "type": "cron",
@@ -168,11 +215,7 @@ class TestConnection:
         assert str(e_info.value) == "PeriodicTask matching query does not exist."
 
     @pytest.mark.django_db
-    def test_connection_created_dbt_cloud(self, mocker):
-        organisation = Organisation.objects.create(name="O1")
-        workspace = Workspace.objects.create(name="W1", organisation=organisation)
-        connector = Connector.objects.create(name=Connector.DBT_CLOUD, slug=Connector.DBT_CLOUD)
-
+    def test_connection_created_dbt_cloud(self, mocker, test_workspace, test_connector, test_source):
         hmac_secret = "74d5de51a03ccbea9936aea756b2cc044d3816de"
 
         mock = mocker.patch("connections.schedules.dbt_cloud.dbtCloudClient")
@@ -193,8 +236,9 @@ class TestConnection:
         mock.return_value = dbt_cloud
 
         connection = Connection.objects.create(
-            workspace=workspace,
-            connector=connector,
+            workspace=test_workspace,
+            connector=test_connector,
+            source=test_source,
             name=str(uuid.uuid4()),
             secrets={"api_key": "1234"},
             schedules={"dbt_cloud": {"job_id": "282191"}, "type": "dbt-cloud"},
@@ -203,11 +247,7 @@ class TestConnection:
         assert connection.schedules.get("dbt_cloud", {}).get("hmac_secret") == hmac_secret
 
     @pytest.mark.django_db
-    def test_connection_updated_dbt_cloud(self, mocker):
-        organisation = Organisation.objects.create(name="O1")
-        workspace = Workspace.objects.create(name="W1", organisation=organisation)
-        connector = Connector.objects.create(name=Connector.DBT_CLOUD, slug=Connector.DBT_CLOUD)
-
+    def test_connection_updated_dbt_cloud(self, mocker, test_workspace, test_connector, test_source):
         hmac_secret = "74d5de51a03ccbea9936aea756b2cc044d3816de"
 
         mock = mocker.patch("connections.schedules.dbt_cloud.dbtCloudClient")
@@ -228,8 +268,9 @@ class TestConnection:
         mock.return_value = dbt_cloud
 
         connection = Connection.objects.create(
-            workspace=workspace,
-            connector=connector,
+            workspace=test_workspace,
+            connector=test_connector,
+            source=test_source,
             name=str(uuid.uuid4()),
             secrets={"api_key": "1234"},
             schedules={"dbt_cloud": {"job_id": "282191"}, "type": "dbt-cloud"},

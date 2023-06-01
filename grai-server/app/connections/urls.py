@@ -15,6 +15,7 @@ from installations.github import Github
 from installations.models import Branch, Commit, PullRequest, Repository
 from rest_framework import routers
 from workspaces.permissions import HasWorkspaceAPIKey
+from lineage.models import Source
 
 from .models import Connection, Connector, Run
 from .views import ConnectionViewSet, ConnectorViewSet, RunViewSet
@@ -31,6 +32,22 @@ class DisplayError(Exception):
     pass
 
 
+def get_source(request) -> Source:
+    source_id = request.POST.get("source_id")
+
+    if source_id:
+        return Source.objects.get(id=source_id)
+
+    source_name = request.POST.get("source_name")
+
+    if source_name is None:
+        raise DisplayError("You must provide a source_id or source_name")
+
+    source, created = Source.objects.get_or_create(name=source_name)
+
+    return source
+
+
 def get_connection(request) -> Connection:
     connection_id = request.POST.get("connection_id")
 
@@ -42,6 +59,8 @@ def get_connection(request) -> Connection:
     if connector_name is None:
         raise DisplayError("You must provide a connector or connection_id")
 
+    source = get_source(request)
+
     connector = Connector.objects.get(name=connector_name)
 
     name = f"{connector.name} {uuid.uuid4()}"
@@ -51,6 +70,7 @@ def get_connection(request) -> Connection:
 
     connection = Connection.objects.create(
         connector=connector,
+        source=source,
         name=name,
         namespace=namespace,
         is_active=True,
@@ -63,7 +83,13 @@ def get_connection(request) -> Connection:
 
 
 def get_commit(
-    owner: str, repo: str, branch_reference: str, pr_reference: str, pr_title: str, head_sha: str, commit_title: str
+    owner: str,
+    repo: str,
+    branch_reference: str,
+    pr_reference: str,
+    pr_title: str,
+    head_sha: str,
+    commit_title: str,
 ):
     # Repository
     try:
@@ -85,7 +111,10 @@ def get_commit(
             pull_request.save()
         except PullRequest.DoesNotExist:
             pull_request = PullRequest.objects.create(
-                repository=repository, reference=pr_reference, branch=branch, title=pr_title
+                repository=repository,
+                reference=pr_reference,
+                branch=branch,
+                title=pr_title,
             )
 
     # Commit
@@ -170,7 +199,14 @@ def create_run(request):
         connection = get_connection(request)
         commit, trigger = get_trigger(request, action)
 
-        run = Run.objects.create(connection=connection, status="queued", commit=commit, trigger=trigger, action=action)
+        run = Run.objects.create(
+            connection=connection,
+            status="queued",
+            commit=commit,
+            trigger=trigger,
+            action=action,
+            source=connection.source,
+        )
 
         process_run.delay(run.id)
 
@@ -211,7 +247,12 @@ def dbt_cloud(request):
         return Response({"status": "Connection not active"})
 
     run = Run.objects.create(
-        workspace=connection.workspace, connection=connection, status="queued", trigger=body, action=Run.UPDATE
+        workspace=connection.workspace,
+        connection=connection,
+        status="queued",
+        trigger=body,
+        action=Run.UPDATE,
+        source=connection.source,
     )
 
     process_run.delay(run.id)
