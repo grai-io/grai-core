@@ -20,7 +20,6 @@ class NodeSerializer(serializers.ModelSerializer):
             "namespace",
             "name",
             "display_name",
-            "data_source",
             "metadata",
             "is_active",
         )
@@ -38,7 +37,6 @@ class EdgeSerializer(serializers.ModelSerializer):
             "name",
             "display_name",
             "namespace",
-            "data_source",
             "metadata",
             "is_active",
             "source",
