@@ -1,8 +1,7 @@
-import React from "react"
+import React, { useState } from "react"
 import { gql, useQuery } from "@apollo/client"
 import { Typography } from "@mui/material"
-import NotFound from "pages/NotFound"
-import Loading from "components/layout/Loading"
+import TableHeader from "components/table/TableHeader"
 import GraphError from "components/utils/GraphError"
 import {
   GetSourceTables,
@@ -11,17 +10,29 @@ import {
 import SourceTablesTable from "./SourceTablesTable"
 
 export const GET_SOURCE_TABLES = gql`
-  query GetSourceTables($workspaceId: ID!, $sourceId: ID!) {
+  query GetSourceTables(
+    $workspaceId: ID!
+    $sourceId: ID!
+    $offset: Int
+    $search: String
+  ) {
     workspace(id: $workspaceId) {
       id
       source(id: $sourceId) {
         id
-        nodes(filters: { node_type: "Table" }) {
+        nodes(
+          filters: { node_type: "Table" }
+          pagination: { limit: 20, offset: $offset }
+          search: $search
+        ) {
           data {
             id
             namespace
             name
             display_name
+          }
+          meta {
+            filtered
           }
         }
       }
@@ -39,33 +50,59 @@ type SourceTablesProps = {
 }
 
 const SourceTables: React.FC<SourceTablesProps> = ({ source, workspaceId }) => {
-  const { loading, error, data } = useQuery<
+  const [search, setSearch] = useState<string>()
+  const [page, setPage] = useState<number>(0)
+
+  const { loading, error, data, refetch } = useQuery<
     GetSourceTables,
     GetSourceTablesVariables
   >(GET_SOURCE_TABLES, {
     variables: {
       workspaceId,
       sourceId: source.id,
+      offset: page * 20,
+      search,
+    },
+    context: {
+      debounceKey: "source-tables",
+      debounceTimeout: 1000,
     },
   })
 
+  const handleRefresh = () => refetch()
+  const handleSearch = (value: string) => {
+    setSearch(value)
+    setPage(0)
+  }
+
   if (error) return <GraphError error={error} />
-  if (loading) return <Loading />
 
-  const workspace = data?.workspace
-  const sourceData = data?.workspace?.source
+  const tables = data?.workspace?.source?.nodes.data ?? []
 
-  if (!workspace || !sourceData) return <NotFound />
-
-  if (sourceData.nodes.data.length === 0) {
+  if (tables.length === 0) {
     return (
       <Typography sx={{ textAlign: "center", p: 5 }}>
-        No tables found!
+        No tables found
       </Typography>
     )
   }
 
-  return <SourceTablesTable tables={sourceData.nodes.data} />
+  return (
+    <>
+      <TableHeader
+        search={search}
+        onSearch={handleSearch}
+        onRefresh={handleRefresh}
+      />
+      <SourceTablesTable
+        tables={tables}
+        total={data?.workspace?.source?.nodes.meta.filtered ?? 0}
+        page={page}
+        onPageChange={setPage}
+        loading={loading}
+      />
+    </>
+  )
 }
 
 export default SourceTables

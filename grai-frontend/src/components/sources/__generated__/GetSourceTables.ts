@@ -15,9 +15,15 @@ export interface GetSourceTables_workspace_source_nodes_data {
   display_name: string;
 }
 
+export interface GetSourceTables_workspace_source_nodes_meta {
+  __typename: "PaginationResult";
+  filtered: number;
+}
+
 export interface GetSourceTables_workspace_source_nodes {
   __typename: "NodePagination";
   data: GetSourceTables_workspace_source_nodes_data[];
+  meta: GetSourceTables_workspace_source_nodes_meta;
 }
 
 export interface GetSourceTables_workspace_source {
@@ -39,4 +45,6 @@ export interface GetSourceTables {
 export interface GetSourceTablesVariables {
   workspaceId: string;
   sourceId: string;
+  offset?: number | null;
+  search?: string | null;
 }

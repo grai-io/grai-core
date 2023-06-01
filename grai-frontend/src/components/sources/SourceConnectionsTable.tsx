@@ -18,27 +18,20 @@ interface Run {
   status: string
 }
 
-interface Connection {
+export interface Connection {
   id: string
   name: string
   connector: Connector
   last_run: Run | null
 }
 
-export interface Source {
-  id: string
-  connections: {
-    data: Connection[]
-  }
-}
-
 type SourceConnectionsTableProps = {
-  source: Source
+  connections: Connection[]
   workspaceId: string
 }
 
 const SourceConnectionsTable: React.FC<SourceConnectionsTableProps> = ({
-  source,
+  connections,
   workspaceId,
 }) => {
   const { routePrefix } = useWorkspace()
@@ -54,7 +47,7 @@ const SourceConnectionsTable: React.FC<SourceConnectionsTableProps> = ({
         </TableRow>
       </TableHead>
       <TableBody>
-        {source.connections.data.map(connection => (
+        {connections.map(connection => (
           <TableRow
             key={connection.id}
             hover
@@ -78,6 +71,13 @@ const SourceConnectionsTable: React.FC<SourceConnectionsTableProps> = ({
             </TableCell>
           </TableRow>
         ))}
+        {connections.length === 0 && (
+          <TableRow>
+            <TableCell colSpan={99} sx={{ textAlign: "center", py: 10 }}>
+              No connections found
+            </TableCell>
+          </TableRow>
+        )}
       </TableBody>
     </Table>
   )

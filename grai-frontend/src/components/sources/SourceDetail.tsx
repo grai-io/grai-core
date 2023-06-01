@@ -4,12 +4,14 @@ import { Box, Button, Typography } from "@mui/material"
 import { Link } from "react-router-dom"
 import useWorkspace from "helpers/useWorkspace"
 import PageContent from "components/layout/PageContent"
-import SourceConnectionsTable, {
-  Source as SourceConnectionsTableType,
-} from "./SourceConnectionsTable"
+import SourceConnectionsTable, { Connection } from "./SourceConnectionsTable"
 import UpdateSource, { Source as UpdateSourceType } from "./UpdateSource"
 
-interface Source extends UpdateSourceType, SourceConnectionsTableType {}
+interface Source extends UpdateSourceType {
+  connections: {
+    data: Connection[]
+  }
+}
 
 type SourceDetailProps = {
   source: Source
@@ -18,6 +20,8 @@ type SourceDetailProps = {
 
 const SourceDetail: React.FC<SourceDetailProps> = ({ source, workspaceId }) => {
   const { routePrefix } = useWorkspace()
+
+  const connections = source.connections.data
 
   return (
     <>
@@ -36,7 +40,10 @@ const SourceDetail: React.FC<SourceDetailProps> = ({ source, workspaceId }) => {
             Add Connection
           </Button>
         </Box>
-        <SourceConnectionsTable source={source} workspaceId={workspaceId} />
+        <SourceConnectionsTable
+          connections={connections}
+          workspaceId={workspaceId}
+        />
       </PageContent>
     </>
   )

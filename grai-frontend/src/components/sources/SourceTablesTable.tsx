@@ -1,7 +1,15 @@
 import React from "react"
-import { Table, TableBody, TableHead, TableRow } from "@mui/material"
+import {
+  Table,
+  TableBody,
+  TableFooter,
+  TableHead,
+  TableRow,
+} from "@mui/material"
 import { useNavigate } from "react-router-dom"
 import useWorkspace from "helpers/useWorkspace"
+import Loading from "components/layout/Loading"
+import TablePagination from "components/table/TablePagination"
 import TableCell from "components/tables/TableCell"
 
 interface SourceTable {
@@ -12,9 +20,19 @@ interface SourceTable {
 
 type SourceTablesTableProps = {
   tables: SourceTable[]
+  loading?: boolean
+  total: number
+  page: number
+  onPageChange: (page: number) => void
 }
 
-const SourceTablesTable: React.FC<SourceTablesTableProps> = ({ tables }) => {
+const SourceTablesTable: React.FC<SourceTablesTableProps> = ({
+  tables,
+  loading,
+  total,
+  page,
+  onPageChange,
+}) => {
   const navigate = useNavigate()
   const { routePrefix } = useWorkspace()
 
@@ -38,7 +56,23 @@ const SourceTablesTable: React.FC<SourceTablesTableProps> = ({ tables }) => {
             <TableCell>{table.namespace}</TableCell>
           </TableRow>
         ))}
+        {loading && (
+          <TableRow>
+            <TableCell colSpan={99}>
+              <Loading />
+            </TableCell>
+          </TableRow>
+        )}
       </TableBody>
+      <TableFooter>
+        <TablePagination
+          count={total}
+          rowsPerPage={20}
+          page={page}
+          onPageChange={onPageChange}
+          type="tables"
+        />
+      </TableFooter>
     </Table>
   )
 }

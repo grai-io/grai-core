@@ -266,6 +266,7 @@ class Source:
     def nodes(
         self,
         filters: Optional[SourceNodeFilter] = strawberry.UNSET,
+        search: Optional[str] = strawberry.UNSET,
         pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
     ) -> Pagination[Node]:
         queryset = NodeModel.objects.filter(source=self)
@@ -273,6 +274,11 @@ class Source:
         if filters:
             if filters.node_type:
                 queryset = queryset.filter(metadata__grai__node_type=filters.node_type)
+
+        if search:
+            queryset = queryset.filter(
+                Q(id__icontains=search) | Q(name__icontains=search) | Q(display_name__icontains=search)
+            )
 
         return Pagination[Node](queryset=queryset, pagination=pagination)
 
