@@ -1,5 +1,4 @@
 import React from "react"
-import { MoreHoriz } from "@mui/icons-material"
 import { Table, TableBody, TableHead, TableRow } from "@mui/material"
 import { useNavigate } from "react-router-dom"
 import useWorkspace from "helpers/useWorkspace"
@@ -25,7 +24,6 @@ const SourceTablesTable: React.FC<SourceTablesTableProps> = ({ tables }) => {
         <TableRow>
           <TableCell>Name</TableCell>
           <TableCell>Namespace</TableCell>
-          <TableCell sx={{ width: 0 }} />
         </TableRow>
       </TableHead>
       <TableBody>
@@ -38,9 +36,6 @@ const SourceTablesTable: React.FC<SourceTablesTableProps> = ({ tables }) => {
           >
             <TableCell>{table.display_name}</TableCell>
             <TableCell>{table.namespace}</TableCell>
-            <TableCell>
-              <MoreHoriz />
-            </TableCell>
           </TableRow>
         ))}
       </TableBody>

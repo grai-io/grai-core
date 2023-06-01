@@ -1,15 +1,14 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
-import { MoreHoriz } from "@mui/icons-material"
 import { useParams } from "react-router-dom"
 import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
-// import SourceMenu from "components/sources/SourceMenu"
 import Loading from "components/layout/Loading"
 import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
 import PageTabs from "components/layout/PageTabs"
 import SourceDetail from "components/sources/SourceDetail"
+import SourceMenu from "components/sources/SourceMenu"
 import SourceTables from "components/sources/SourceTables"
 import TabState from "components/tabs/TabState"
 import GraphError from "components/utils/GraphError"
@@ -94,13 +93,7 @@ const Source: React.FC = () => {
       <TabState tabs={tabs}>
         <PageHeader
           title={source.name}
-          buttons={<MoreHoriz />}
-          // buttons={
-          //     // <SourceMenu
-          //     //   source={source}
-          //     //   workspaceId={workspace.id}
-          //     // />
-          // }
+          buttons={<SourceMenu source={source} workspaceId={workspace.id} />}
           tabs
         />
         <PageTabs />

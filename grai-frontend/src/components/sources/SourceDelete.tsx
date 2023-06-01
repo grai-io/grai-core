@@ -25,13 +25,15 @@ export interface Source {
 type SourceDeleteProps = {
   source: Source
   workspaceId?: string
-  onClose: (deleted: boolean) => void
+  onClose: () => void
+  onDelete?: () => void
 }
 
 const SourceDelete: React.FC<SourceDeleteProps> = ({
   source,
   workspaceId,
   onClose,
+  onDelete,
 }) => {
   const confirm = useConfirm()
   const { enqueueSnackbar } = useSnackbar()
@@ -60,7 +62,7 @@ const SourceDelete: React.FC<SourceDeleteProps> = ({
   )
 
   const handleDelete = () => {
-    onClose(true)
+    onClose()
     confirm({
       title: "Delete Source",
       description: `Are you sure you wish to delete the ${source.name} source?`,
@@ -68,6 +70,7 @@ const SourceDelete: React.FC<SourceDeleteProps> = ({
     })
       .then(() => deleteSource())
       .then(() => enqueueSnackbar("Source deleted", { variant: "success" }))
+      .then(onDelete)
       .catch(error =>
         enqueueSnackbar(`Failed to delete source ${error}`, {
           variant: "error",

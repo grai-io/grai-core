@@ -3,20 +3,17 @@ import { MoreHoriz } from "@mui/icons-material"
 import { IconButton, Menu } from "@mui/material"
 import PopupState, { bindMenu, bindTrigger } from "material-ui-popup-state"
 import useWorkspace from "helpers/useWorkspace"
-import ConnectionDelete, { Connection } from "./ConnectionDelete"
+import SourceDelete, { Source } from "./SourceDelete"
 
-type ConnectionMenuProps = {
-  connection: Connection
+type SourceMenuProps = {
+  source: Source
   workspaceId: string
 }
 
-const ConnectionMenu: React.FC<ConnectionMenuProps> = ({
-  connection,
-  workspaceId,
-}) => {
+const SourceMenu: React.FC<SourceMenuProps> = ({ source, workspaceId }) => {
   const { workspaceNavigate } = useWorkspace()
 
-  const handleDelete = () => workspaceNavigate("connections")
+  const handleDelete = () => workspaceNavigate("sources")
 
   return (
     <PopupState variant="popover">
@@ -34,8 +31,8 @@ const ConnectionMenu: React.FC<ConnectionMenuProps> = ({
               },
             }}
           >
-            <ConnectionDelete
-              connection={connection}
+            <SourceDelete
+              source={source}
               onClose={popupState.close}
               onDelete={handleDelete}
               workspaceId={workspaceId}
@@ -47,4 +44,4 @@ const ConnectionMenu: React.FC<ConnectionMenuProps> = ({
   )
 }
 
-export default ConnectionMenu
+export default SourceMenu
