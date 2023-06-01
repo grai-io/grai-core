@@ -1,7 +1,7 @@
 import uuid
 from copy import deepcopy
 from itertools import chain
-from typing import Any, Dict, List, Optional, Sequence, TypeVar, Union
+from typing import Any, Dict, List, Optional, Sequence, Tuple, TypeVar, Union
 
 from django.db import models
 from django.db.models import Q
@@ -153,9 +153,9 @@ def get_edge_nodes_from_database(items, workspace):
 #     Model.objects.bulk_create(new_items)
 
 
-def process_updates(workspace, source: Source, Model, items, active_items=None):
+def process_updates(workspace, source: Source, Model: T, items, active_items=None) -> Tuple[List[T], List[T], List[T]]:
     if not items:
-        return
+        return [], [], []
 
     type = items[0].type
     Schema = NodeV1 if type == "Node" else EdgeV1

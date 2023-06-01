@@ -261,7 +261,7 @@ async def test_update_connection_source_name(test_context):
 
 
 @pytest.mark.django_db
-async def test_update_connection_source_name(test_context):
+async def test_update_connection_source_id(test_context):
     context, organisation, workspace, user, membership = test_context
     connection = await generate_connection(workspace)
 

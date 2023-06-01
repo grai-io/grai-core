@@ -139,7 +139,7 @@ class ConnectionInline(admin.TabularInline):
         "name",
     ]
 
-    def view(self):
+    def view(self):  # pragma: no cover
         return format_html(
             '<a href="{}">{}</a>',
             reverse("admin:connections_connection_change", args=(self.id,)),

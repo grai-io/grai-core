@@ -200,6 +200,10 @@ class TestUpdate:
         assert db_edge.name == "a_new_place"
 
     @pytest.mark.django_db
+    def test_empty(self, test_workspace, test_source):
+        new, old, updated = process_updates(test_workspace, test_source, Node, None)
+
+    @pytest.mark.django_db
     def test_correct_new_items(self, test_workspace, test_source):
         nodes = [mock_node(test_workspace) for _ in range(2)]
         nodes[0].save()
@@ -234,3 +238,11 @@ class TestUpdate:
 
         assert "test2" in updated
         assert updated["test2"] == 2
+
+    @pytest.mark.django_db
+    def test_deactivated(self, test_workspace, test_source):
+        nodes = [mock_node(test_workspace) for _ in range(2)]
+        nodes[0].save()
+        mock_nodes = [mock_node_schema(node) for node in nodes]
+
+        update(test_workspace, test_source, mock_nodes[:1], mock_nodes)

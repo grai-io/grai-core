@@ -5,7 +5,7 @@ import uuid
 import pytest
 from django_multitenant.utils import set_current_tenant
 
-from lineage.models import Edge, Node
+from lineage.models import Edge, Node, Source
 from workspaces.models import Organisation, Workspace
 
 
@@ -134,3 +134,12 @@ def test_edge_created(create_workspace):
 
     assert edge.source == node_a
     assert edge.destination == node_b
+
+
+@pytest.mark.django_db
+def test_source_created(create_workspace):
+    source = Source.objects.create(workspace=create_workspace, name="Source1")
+
+    assert source.id == uuid.UUID(str(source.id))
+    assert source.name == "Source1"
+    assert str(source) == "Source1"

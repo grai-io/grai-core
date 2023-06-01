@@ -48,7 +48,15 @@ class WorkspaceAdmin(admin.ModelAdmin):
         )
         return queryset
 
-    list_display = ("id", "name", "organisation", "node_count", "connection_count", "search_enabled", "created_at")
+    list_display = (
+        "id",
+        "name",
+        "organisation",
+        "node_count",
+        "connection_count",
+        "search_enabled",
+        "created_at",
+    )
 
     list_filter = (
         ("created_at", DateFieldListFilter),
@@ -70,9 +78,11 @@ class WorkspaceInline(admin.TabularInline):
     model = Workspace
     extra = 0
 
-    def view(self):
+    def view(self):  # pragma: no cover
         return format_html(
-            '<a href="{}">{}</a>', reverse("admin:workspaces_workspace_change", args=(self.id,)), self.name
+            '<a href="{}">{}</a>',
+            reverse("admin:workspaces_workspace_change", args=(self.id,)),
+            self.name,
         )
 
     fields = ("name", view)
