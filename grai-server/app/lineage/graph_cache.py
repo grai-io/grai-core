@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 import redis
 from django.conf import settings
@@ -29,11 +29,11 @@ class GraphCache:
         self.manager.delete(f"lineage:{str(self.workspace.id)}")
 
     def cache_node(self, node):
-        def get_data_source() -> str:
+        def get_data_source() -> Optional[str]:
             source = node.source_set.first()
 
             if not source:
-                raise Exception("No source found for node")
+                return None
 
             connection = source.connections.first()
 

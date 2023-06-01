@@ -18,7 +18,6 @@ def test_node_v1():
         {
             "name": "node1",
             "namespace": "default",
-            "data_source": "test",
             "display_name": "node1",
             "metadata": {"grai": column_metadata.dict()},
         }

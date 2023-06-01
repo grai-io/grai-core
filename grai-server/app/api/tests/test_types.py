@@ -18,11 +18,12 @@ from .common import (
     test_organisation,
     test_user,
     test_workspace,
+    test_source,
 )
 
 
 @pytest.mark.django_db
-async def test_workspace_run(test_context):
+async def test_workspace_run(test_context, test_source):
     context, organisation, workspace, user, membership = test_context
 
     connector = await Connector.objects.acreate(name="Connector 4")
@@ -33,8 +34,15 @@ async def test_workspace_run(test_context):
         name=str(uuid.uuid4()),
         metadata={},
         secrets={},
+        source=test_source,
     )
-    run = await Run.objects.acreate(workspace=workspace, connection=connection, status="success", user=user)
+    run = await Run.objects.acreate(
+        workspace=workspace,
+        connection=connection,
+        status="success",
+        user=user,
+        source=test_source,
+    )
 
     query = """
         query Workspace($workspaceId: ID!, $runId: ID!) {
@@ -67,7 +75,7 @@ async def test_workspace_run(test_context):
 
 
 @pytest.mark.django_db
-async def test_workspace_connection_run(test_context):
+async def test_workspace_connection_run(test_context, test_source):
     context, organisation, workspace, user, membership = test_context
 
     connector = await Connector.objects.acreate(name="Connector 5")
@@ -78,8 +86,15 @@ async def test_workspace_connection_run(test_context):
         name=str(uuid.uuid4()),
         metadata={},
         secrets={},
+        source=test_source,
     )
-    run = await Run.objects.acreate(workspace=workspace, connection=connection, status="success", user=user)
+    run = await Run.objects.acreate(
+        workspace=workspace,
+        connection=connection,
+        status="success",
+        user=user,
+        source=test_source,
+    )
 
     query = """
         query Workspace($workspaceId: ID!, $connectionId: ID!, $runId: ID!) {
@@ -133,12 +148,15 @@ async def test_workspace_connection_run(test_context):
 
 
 @pytest.mark.django_db
-async def test_tables(test_context):
+async def test_tables(test_context, test_source):
     context, organisation, workspace, user, membership = test_context
 
     table = await Node.objects.acreate(
-        workspace=workspace, metadata={"grai": {"node_type": "Table"}}, name=str(uuid.uuid4())
+        workspace=workspace,
+        metadata={"grai": {"node_type": "Table"}},
+        name=str(uuid.uuid4()),
     )
+    await test_source.nodes.aadd(table)
 
     query = """
         query Workspace($workspaceId: ID!) {
@@ -167,10 +185,11 @@ async def test_tables(test_context):
 
 
 @pytest.mark.django_db
-async def test_workspace_nodes(test_context):
+async def test_workspace_nodes(test_context, test_source):
     context, organisation, workspace, user, membership = test_context
 
     node = await Node.objects.acreate(workspace=workspace)
+    await test_source.nodes.aadd(node)
 
     query = """
         query Workspace($workspaceId: ID!) {
@@ -199,10 +218,11 @@ async def test_workspace_nodes(test_context):
 
 
 @pytest.mark.django_db
-async def test_workspace_node(test_context):
+async def test_workspace_node(test_context, test_source):
     context, organisation, workspace, user, membership = test_context
 
     node = await Node.objects.acreate(workspace=workspace)
+    await test_source.nodes.aadd(node)
 
     query = """
         query Workspace($workspaceId: ID!, $nodeId: ID!) {
@@ -262,28 +282,45 @@ async def test_tables_pagination(test_context):
 
 
 @pytest.mark.django_db
-async def test_table(test_context):
+async def test_table(test_context, test_source):
     context, organisation, workspace, user, membership = test_context
 
     table = await Node.objects.acreate(
-        workspace=workspace, metadata={"grai": {"node_type": "Table"}}, name=str(uuid.uuid4())
+        workspace=workspace,
+        metadata={"grai": {"node_type": "Table"}},
+        name=str(uuid.uuid4()),
     )
+    await test_source.nodes.aadd(table)
 
     column = await Node.objects.acreate(
-        workspace=workspace, metadata={"grai": {"node_type": "Column"}}, name=str(uuid.uuid4())
+        workspace=workspace,
+        metadata={"grai": {"node_type": "Column"}},
+        name=str(uuid.uuid4()),
     )
-
-    await Edge.objects.acreate(
-        workspace=workspace, source=table, destination=column, metadata={"grai": {"edge_type": "TableToColumn"}}
-    )
-
-    destination = await Node.objects.acreate(
-        workspace=workspace, metadata={"grai": {"node_type": "Column"}}, name=str(uuid.uuid4())
-    )
+    await test_source.nodes.aadd(column)
 
     edge = await Edge.objects.acreate(
-        workspace=workspace, source=column, destination=destination, metadata={"grai": {"edge_type": "ColumnToColumn"}}
+        workspace=workspace,
+        source=table,
+        destination=column,
+        metadata={"grai": {"edge_type": "TableToColumn"}},
     )
+    await test_source.edges.aadd(edge)
+
+    destination = await Node.objects.acreate(
+        workspace=workspace,
+        metadata={"grai": {"node_type": "Column"}},
+        name=str(uuid.uuid4()),
+    )
+    await test_source.nodes.aadd(destination)
+
+    edge = await Edge.objects.acreate(
+        workspace=workspace,
+        source=column,
+        destination=destination,
+        metadata={"grai": {"edge_type": "ColumnToColumn"}},
+    )
+    await test_source.edges.aadd(edge)
 
     query = """
         query Workspace($workspaceId: ID!, $tableId: ID!) {
@@ -331,15 +368,22 @@ async def test_table(test_context):
 
 
 @pytest.mark.django_db
-async def test_workspace_edges(test_context):
+async def test_workspace_edges(test_context, test_source):
     context, organisation, workspace, user, membership = test_context
 
     source = await Node.objects.acreate(workspace=workspace, name="source")
     destination = await Node.objects.acreate(workspace=workspace, name="destination")
 
+    await test_source.nodes.aadd(source)
+    await test_source.nodes.aadd(destination)
+
     edge = await Edge.objects.acreate(
-        workspace=workspace, source=source, destination=destination, metadata={"grai": {"edge_type": "Edge"}}
+        workspace=workspace,
+        source=source,
+        destination=destination,
+        metadata={"grai": {"edge_type": "Edge"}},
     )
+    await test_source.edges.aadd(edge)
 
     query = """
         query Workspace($workspaceId: ID!) {
@@ -368,13 +412,16 @@ async def test_workspace_edges(test_context):
 
 
 @pytest.mark.django_db
-async def test_edges_searched(test_context):
+async def test_edges_searched(test_context, test_source):
     context, organisation, workspace, user, membership = test_context
 
     name = str(uuid.uuid4())
 
     source = await Node.objects.acreate(workspace=workspace, name="source")
     destination = await Node.objects.acreate(workspace=workspace, name="destination")
+
+    await test_source.nodes.aadd(source)
+    await test_source.nodes.aadd(destination)
 
     edge = await Edge.objects.acreate(
         workspace=workspace,
@@ -385,6 +432,7 @@ async def test_edges_searched(test_context):
         },
         name=name,
     )
+    await test_source.edges.aadd(edge)
 
     query = """
         query Workspace($workspaceId: ID!, $search: String) {
@@ -411,15 +459,23 @@ async def test_edges_searched(test_context):
 
 
 @pytest.mark.django_db
-async def test_workspace_edge(test_context):
+async def test_workspace_edge(test_context, test_source):
     context, organisation, workspace, user, membership = test_context
 
     source = await Node.objects.acreate(workspace=workspace, name="source")
     destination = await Node.objects.acreate(workspace=workspace, name="destination")
 
+    await test_source.nodes.aadd(source)
+    await test_source.nodes.aadd(destination)
+
     edge = await Edge.objects.acreate(
-        workspace=workspace, source=source, destination=destination, metadata={"grai": {"edge_type": "Edge"}}
+        workspace=workspace,
+        source=source,
+        destination=destination,
+        metadata={"grai": {"edge_type": "Edge"}},
     )
+
+    await test_source.edges.aadd(edge)
 
     query = """
         query Workspace($workspaceId: ID!, $edgeId: ID!) {
@@ -540,7 +596,10 @@ async def generate_two_tables(workspace: Workspace):
     related_table, related_table_column = await generate_table_with_column(workspace)
 
     await Edge.objects.acreate(
-        workspace=workspace, source=table, destination=related_table, metadata={"grai": {"edge_type": "TableToTable"}}
+        workspace=workspace,
+        source=table,
+        destination=related_table,
+        metadata={"grai": {"edge_type": "TableToTable"}},
     )
 
     await Edge.objects.acreate(
@@ -633,7 +692,11 @@ async def test_table_destination_tables(test_context):
 async def test_tables_count(test_context):
     context, organisation, workspace, user, membership = test_context
 
-    await Node.objects.acreate(workspace=workspace, metadata={"grai": {"node_type": "Table"}}, name=str(uuid.uuid4()))
+    await Node.objects.acreate(
+        workspace=workspace,
+        metadata={"grai": {"node_type": "Table"}},
+        name=str(uuid.uuid4()),
+    )
 
     query = """
         query Workspace($workspaceId: ID!) {
@@ -662,11 +725,11 @@ async def test_tables_count(test_context):
 
 
 @pytest.mark.django_db
-async def test_workspace_connections(test_context):
+async def test_workspace_connections(test_context, test_source):
     context, organisation, workspace, user, membership = test_context
 
     connector = await Connector.objects.acreate(name=f"Connector - {uuid.uuid4()}")
-    connection = await Connection.objects.acreate(workspace=workspace, connector=connector)
+    connection = await Connection.objects.acreate(workspace=workspace, connector=connector, source=test_source)
 
     query = """
         query Workspace($workspaceId: ID!) {
@@ -699,12 +762,18 @@ async def test_workspace_connections(test_context):
 
 
 @pytest.mark.django_db
-async def test_workspace_connection_runs(test_context, test_commit):
+async def test_workspace_connection_runs(test_context, test_commit, test_source):
     context, organisation, workspace, user, membership = test_context
 
     connector = await Connector.objects.acreate(name=f"Connector - {uuid.uuid4()}")
-    connection = await Connection.objects.acreate(workspace=workspace, connector=connector)
-    run = await Run.objects.acreate(workspace=workspace, commit=test_commit, connection=connection, status="success")
+    connection = await Connection.objects.acreate(workspace=workspace, connector=connector, source=test_source)
+    run = await Run.objects.acreate(
+        workspace=workspace,
+        commit=test_commit,
+        connection=connection,
+        status="success",
+        source=test_source,
+    )
 
     query = """
         query Workspace($workspaceId: ID!, $connectionId: ID!) {
@@ -767,7 +836,7 @@ async def test_workspace_runs(test_context):
 
 
 @pytest.mark.django_db
-async def test_workspace_runs_filter_by_repo(test_context, test_commit):
+async def test_workspace_runs_filter_by_repo(test_context, test_commit, test_source):
     context, organisation, workspace, user, membership = test_context
 
     connector = await Connector.objects.acreate(name=str(uuid.uuid4()))
@@ -778,8 +847,15 @@ async def test_workspace_runs_filter_by_repo(test_context, test_commit):
         name=str(uuid.uuid4()),
         metadata={},
         secrets={},
+        source=test_source,
     )
-    run = await Run.objects.acreate(workspace=workspace, commit=test_commit, connection=connection, status="success")
+    run = await Run.objects.acreate(
+        workspace=workspace,
+        commit=test_commit,
+        connection=connection,
+        status="success",
+        source=test_source,
+    )
 
     query = """
         query Workspace($workspaceId: ID!, $owner: String, $repo: String) {
@@ -810,7 +886,7 @@ async def test_workspace_runs_filter_by_repo(test_context, test_commit):
 
 
 @pytest.mark.django_db
-async def test_workspace_runs_filter_by_branch(test_context, test_branch, test_commit):
+async def test_workspace_runs_filter_by_branch(test_context, test_branch, test_commit, test_source):
     context, organisation, workspace, user, membership = test_context
 
     connector = await Connector.objects.acreate(name=str(uuid.uuid4()))
@@ -821,8 +897,15 @@ async def test_workspace_runs_filter_by_branch(test_context, test_branch, test_c
         name=str(uuid.uuid4()),
         metadata={},
         secrets={},
+        source=test_source,
     )
-    run = await Run.objects.acreate(workspace=workspace, commit=test_commit, connection=connection, status="success")
+    run = await Run.objects.acreate(
+        workspace=workspace,
+        commit=test_commit,
+        connection=connection,
+        status="success",
+        source=test_source,
+    )
 
     query = """
         query Workspace($workspaceId: ID!, $branch: String) {
@@ -852,7 +935,7 @@ async def test_workspace_runs_filter_by_branch(test_context, test_branch, test_c
 
 
 @pytest.mark.django_db
-async def test_workspace_runs_filter_by_action(test_context):
+async def test_workspace_runs_filter_by_action(test_context, test_source):
     context, organisation, workspace, user, membership = test_context
 
     connector = await Connector.objects.acreate(name=str(uuid.uuid4()))
@@ -863,9 +946,22 @@ async def test_workspace_runs_filter_by_action(test_context):
         name=str(uuid.uuid4()),
         metadata={},
         secrets={},
+        source=test_source,
     )
-    run = await Run.objects.acreate(workspace=workspace, connection=connection, status="success", action=Run.TESTS)
-    await Run.objects.acreate(workspace=workspace, connection=connection, status="success", action=Run.VALIDATE)
+    run = await Run.objects.acreate(
+        workspace=workspace,
+        connection=connection,
+        status="success",
+        action=Run.TESTS,
+        source=test_source,
+    )
+    await Run.objects.acreate(
+        workspace=workspace,
+        connection=connection,
+        status="success",
+        action=Run.VALIDATE,
+        source=test_source,
+    )
 
     query = """
         query Workspace($workspaceId: ID!, $action: RunAction!) {
@@ -896,7 +992,7 @@ async def test_workspace_runs_filter_by_action(test_context):
 
 
 @pytest.mark.django_db
-async def test_workspace_runs_order_by_created_at(test_context, test_commit):
+async def test_workspace_runs_order_by_created_at(test_context, test_commit, test_source):
     context, organisation, workspace, user, membership = test_context
 
     connector = await Connector.objects.acreate(name=str(uuid.uuid4()))
@@ -907,8 +1003,15 @@ async def test_workspace_runs_order_by_created_at(test_context, test_commit):
         name=str(uuid.uuid4()),
         metadata={},
         secrets={},
+        source=test_source,
     )
-    run = await Run.objects.acreate(workspace=workspace, commit=test_commit, connection=connection, status="success")
+    run = await Run.objects.acreate(
+        workspace=workspace,
+        commit=test_commit,
+        connection=connection,
+        status="success",
+        source=test_source,
+    )
 
     query = """
         query Workspace($workspaceId: ID!, $owner: String, $repo: String) {
@@ -1014,14 +1117,19 @@ async def test_workspace_api_keys(test_context):
 @pytest.fixture
 async def test_repository(test_workspace):
     return await Repository.objects.acreate(
-        workspace=test_workspace, type=Repository.GITHUB, owner=str(uuid.uuid4()), repo=str(uuid.uuid4())
+        workspace=test_workspace,
+        type=Repository.GITHUB,
+        owner=str(uuid.uuid4()),
+        repo=str(uuid.uuid4()),
     )
 
 
 @pytest.fixture
 async def test_branch(test_workspace, test_repository):
     return await Branch.objects.acreate(
-        workspace=test_workspace, repository=test_repository, reference=str(uuid.uuid4())
+        workspace=test_workspace,
+        repository=test_repository,
+        reference=str(uuid.uuid4()),
     )
 
 
@@ -1169,7 +1277,10 @@ async def test_workspace_repository_by_id(test_context, test_repository):
 
     result = await schema.execute(
         query,
-        variable_values={"workspaceId": str(workspace.id), "repositoryId": str(test_repository.id)},
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "repositoryId": str(test_repository.id),
+        },
         context_value=context,
     )
 
@@ -1278,7 +1389,10 @@ async def test_workspace_branch_by_id(test_context, test_branch):
 
     result = await schema.execute(
         query,
-        variable_values={"workspaceId": str(workspace.id), "branchId": str(test_branch.id)},
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "branchId": str(test_branch.id),
+        },
         context_value=context,
     )
 
@@ -1377,7 +1491,10 @@ async def test_workspace_pull_request_by_id(test_context, test_pull_request):
 
     result = await schema.execute(
         query,
-        variable_values={"workspaceId": str(workspace.id), "pull_requestId": str(test_pull_request.id)},
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "pull_requestId": str(test_pull_request.id),
+        },
         context_value=context,
     )
 
@@ -1474,7 +1591,10 @@ async def test_workspace_commit_by_id(test_context, test_commit):
 
     result = await schema.execute(
         query,
-        variable_values={"workspaceId": str(workspace.id), "commitId": str(test_commit.id)},
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "commitId": str(test_commit.id),
+        },
         context_value=context,
     )
 
@@ -1799,7 +1919,7 @@ async def test_pull_request_last_commit(test_context, test_repository, test_pull
 
 
 @pytest.mark.django_db
-async def test_commit_runs(test_context, test_commit):
+async def test_commit_runs(test_context, test_commit, test_source):
     context, organisation, workspace, user, membership = test_context
 
     connector = await Connector.objects.acreate(name=str(uuid.uuid4()))
@@ -1810,9 +1930,15 @@ async def test_commit_runs(test_context, test_commit):
         name=str(uuid.uuid4()),
         metadata={},
         secrets={},
+        source=test_source,
     )
     run = await Run.objects.acreate(
-        workspace=workspace, connection=connection, commit=test_commit, status="success", user=user
+        workspace=workspace,
+        connection=connection,
+        commit=test_commit,
+        status="success",
+        user=user,
+        source=test_source,
     )
 
     query = """
@@ -1833,7 +1959,10 @@ async def test_commit_runs(test_context, test_commit):
 
     result = await schema.execute(
         query,
-        variable_values={"workspaceId": str(workspace.id), "commitId": str(test_commit.id)},
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "commitId": str(test_commit.id),
+        },
         context_value=context,
     )
 
@@ -1844,7 +1973,7 @@ async def test_commit_runs(test_context, test_commit):
 
 
 @pytest.mark.django_db
-async def test_commit_last_run(test_context, test_commit):
+async def test_commit_last_run(test_context, test_commit, test_source):
     context, organisation, workspace, user, membership = test_context
 
     connector = await Connector.objects.acreate(name=str(uuid.uuid4()))
@@ -1855,12 +1984,23 @@ async def test_commit_last_run(test_context, test_commit):
         name=str(uuid.uuid4()),
         metadata={},
         secrets={},
+        source=test_source,
     )
     successful_run = await Run.objects.acreate(
-        workspace=workspace, connection=connection, commit=test_commit, status="success", user=user
+        workspace=workspace,
+        connection=connection,
+        commit=test_commit,
+        status="success",
+        user=user,
+        source=test_source,
     )
     last_run = await Run.objects.acreate(
-        workspace=workspace, connection=connection, commit=test_commit, status="failure", user=user
+        workspace=workspace,
+        connection=connection,
+        commit=test_commit,
+        status="failure",
+        user=user,
+        source=test_source,
     )
 
     query = """
@@ -1882,7 +2022,10 @@ async def test_commit_last_run(test_context, test_commit):
 
     result = await schema.execute(
         query,
-        variable_values={"workspaceId": str(workspace.id), "commitId": str(test_commit.id)},
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "commitId": str(test_commit.id),
+        },
         context_value=context,
     )
 
@@ -1894,7 +2037,7 @@ async def test_commit_last_run(test_context, test_commit):
 
 
 @pytest.mark.django_db
-async def test_connection_events(test_context):
+async def test_connection_events(test_context, test_source):
     context, organisation, workspace, user, membership = test_context
 
     connector = await Connector.objects.acreate(name=str(uuid.uuid4()))
@@ -1905,10 +2048,14 @@ async def test_connection_events(test_context):
         name=uuid.uuid4(),
         metadata={},
         secrets={},
+        source=test_source,
     )
 
     event = await Event.objects.acreate(
-        workspace=workspace, reference="test-123", date=date.today(), connection=connection
+        workspace=workspace,
+        reference="test-123",
+        date=date.today(),
+        connection=connection,
     )
 
     query = """
@@ -1942,7 +2089,7 @@ async def test_connection_events(test_context):
 
 
 @pytest.mark.django_db
-async def test_node_events(test_context):
+async def test_node_events(test_context, test_source):
     context, organisation, workspace, user, membership = test_context
 
     node = await Node.objects.acreate(workspace=workspace, name=str(uuid.uuid4()))
@@ -1955,6 +2102,7 @@ async def test_node_events(test_context):
         name=uuid.uuid4(),
         metadata={},
         secrets={},
+        source=test_source,
     )
 
     event = await Event.objects.acreate(
@@ -2124,7 +2272,9 @@ async def test_tables_filtered(test_context):
     context, organisation, workspace, user, membership = test_context
 
     table = await Node.objects.acreate(
-        workspace=workspace, metadata={"grai": {"node_type": "Table"}}, name=str(uuid.uuid4())
+        workspace=workspace,
+        metadata={"grai": {"node_type": "Table"}},
+        name=str(uuid.uuid4()),
     )
 
     filter = await Filter.objects.acreate(workspace=workspace, name=str(uuid.uuid4()), metadata={}, created_by=user)

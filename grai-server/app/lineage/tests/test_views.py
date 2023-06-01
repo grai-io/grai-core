@@ -11,11 +11,10 @@ from lineage.urls import app_name
 from workspaces.models import Membership, Organisation, Workspace, WorkspaceAPIKey
 
 
-def create_node(client, workspace, name=None, namespace="default", data_source="test"):
+def create_node(client, workspace, name=None, namespace="default"):
     args = {
         "name": uuid.uuid4() if name is None else name,
         "namespace": namespace,
-        "data_source": data_source,
         "workspace": str(workspace.id),
     }
 
@@ -24,13 +23,12 @@ def create_node(client, workspace, name=None, namespace="default", data_source="
     return response
 
 
-def create_edge_with_node_ids(client, workspace, source=None, destination=None, data_source="test", **kwargs):
+def create_edge_with_node_ids(client, workspace, source=None, destination=None, **kwargs):
     if source is None:
         source = create_node(client, workspace).json()["id"]
     if destination is None:
         destination = create_node(client, workspace).json()["id"]
     args = {
-        "data_source": data_source,
         "source": source,
         "destination": destination,
         "namespace": "default",
@@ -42,13 +40,12 @@ def create_edge_with_node_ids(client, workspace, source=None, destination=None, 
     return response
 
 
-def create_edge_without_node_ids(client, workspace, source=None, destination=None, data_source="test", **kwargs):
+def create_edge_without_node_ids(client, workspace, source=None, destination=None, **kwargs):
     if source is None:
         source = create_node(client, workspace).json()
     if destination is None:
         destination = create_node(client, workspace).json()
     args = {
-        "data_source": data_source,
         "source": {k: source[k] for k in ["name", "namespace"]},
         "destination": {k: destination[k] for k in ["name", "namespace"]},
         "namespace": "default",
@@ -151,7 +148,6 @@ def test_patch_node(api_key, create_workspace, api_client):
         "namespace": "string",
         "name": "strisdfsdfng",
         "display_name": "string",
-        "data_source": "string",
         "metadata": {
             "additionalProp1": "string",
             "additionalProp2": "string",

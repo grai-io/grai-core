@@ -9,7 +9,7 @@ from django.contrib.auth import get_user_model
 from django.http.request import HttpRequest
 
 from connections.models import Connection, Connector
-from lineage.models import Filter
+from lineage.models import Filter, Source
 from users.models import User
 from workspaces.models import Membership, Organisation, Workspace
 
@@ -122,3 +122,10 @@ async def generate_filter(workspace: Workspace, user: User):
         metadata={},
         created_by=user,
     )
+
+
+@pytest_asyncio.fixture
+async def test_source(test_workspace):
+    source = await Source.objects.acreate(name=str(uuid.uuid4()), workspace=test_workspace)
+
+    return source
