@@ -5,6 +5,7 @@ import {
   TableFooter,
   TableHead,
   TableRow,
+  Typography,
 } from "@mui/material"
 import { useNavigate } from "react-router-dom"
 import useWorkspace from "helpers/useWorkspace"
@@ -60,6 +61,13 @@ const SourceTablesTable: React.FC<SourceTablesTableProps> = ({
           <TableRow>
             <TableCell colSpan={99}>
               <Loading />
+            </TableCell>
+          </TableRow>
+        )}
+        {!loading && tables.length === 0 && (
+          <TableRow>
+            <TableCell colSpan={99} sx={{ py: 10, textAlign: "center" }}>
+              <Typography>No tables found</Typography>
             </TableCell>
           </TableRow>
         )}

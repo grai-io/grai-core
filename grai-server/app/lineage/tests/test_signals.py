@@ -1,4 +1,5 @@
 import pytest
+import uuid
 
 from lineage.signals import post_m2m_changed
 from lineage.models import Node, Source
@@ -14,7 +15,7 @@ def test_post_m2m():
 def test_post_m2m_incorrect_model():
     workspace = Workspace.objects.create(
         name="Test Workspace",
-        organisation=Organisation.objects.create(name="Test Organisation"),
+        organisation=Organisation.objects.create(name=str(uuid.uuid4())),
     )
 
     source = Source(workspace=workspace, name="Test Source")

@@ -50,7 +50,7 @@ type SourceTablesProps = {
 }
 
 const SourceTables: React.FC<SourceTablesProps> = ({ source, workspaceId }) => {
-  const [search, setSearch] = useState<string>()
+  const [search, setSearch] = useState<string | null>(null)
   const [page, setPage] = useState<number>(0)
 
   const { loading, error, data, refetch } = useQuery<
@@ -70,6 +70,7 @@ const SourceTables: React.FC<SourceTablesProps> = ({ source, workspaceId }) => {
   })
 
   const handleRefresh = () => refetch()
+
   const handleSearch = (value: string) => {
     setSearch(value)
     setPage(0)
@@ -79,7 +80,7 @@ const SourceTables: React.FC<SourceTablesProps> = ({ source, workspaceId }) => {
 
   const tables = data?.workspace?.source?.nodes.data ?? []
 
-  if (tables.length === 0) {
+  if (tables.length === 0 && !search && !loading) {
     return (
       <Typography sx={{ textAlign: "center", p: 5 }}>
         No tables found
