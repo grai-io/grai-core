@@ -1,5 +1,4 @@
 import React from "react"
-import { MoreHoriz } from "@mui/icons-material"
 import {
   Card,
   CardActionArea,
@@ -17,8 +16,7 @@ import Loading from "components/layout/Loading"
 import RunStatus from "components/runs/RunStatus"
 import TablePagination from "components/table/TablePagination"
 import TableCell from "components/tables/TableCell"
-// import { Source as BaseSource } from "./SourceRun"
-// import SourcesMenu from "./SourcesMenu"
+import SourcesMenu from "./SourcesMenu"
 
 interface Connector {
   id: string
@@ -135,24 +133,8 @@ const SourcesTable: React.FC<SourcesTableProps> = ({
               ))}
             </TableCell>
             <TableCell sx={{ py: 0, px: 1 }} stopPropagation>
-              <MoreHoriz />
-              {/* <SourcesMenu
-                source={source}
-                workspaceId={workspaceId}
-              /> */}
+              <SourcesMenu source={source} workspaceId={workspaceId} />
             </TableCell>
-            {/* <TableCell>{source.namespace}</TableCell>
-            <TableCell>{source.connector.name}</TableCell>
-            <TableCell>{source.is_active ? "Yes" : "No"}</TableCell>
-            <TableCell sx={{ py: 0, px: 1 }} stopPropagation>
-
-            </TableCell>
-            <TableCell sx={{ py: 0, px: 1 }} stopPropagation>
-              <SourcesMenu
-                source={source}
-                workspaceId={workspaceId}
-              />
-            </TableCell> */}
           </TableRow>
         ))}
         {!loading && sources.length === 0 && (

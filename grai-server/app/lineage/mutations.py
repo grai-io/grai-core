@@ -108,3 +108,16 @@ class Mutation:
         await sync_to_async(source.save)()
 
         return source
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def deleteSource(
+        self,
+        id: strawberry.ID,
+    ) -> Source:
+        source = await SourceModel.objects.aget(id=id)
+
+        await sync_to_async(source.delete)()
+
+        source.id = id
+
+        return source
