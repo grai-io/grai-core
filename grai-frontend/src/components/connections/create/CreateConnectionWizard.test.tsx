@@ -159,6 +159,7 @@ test("submit", async () => {
         workspaceId: "1",
         connectorId: "1",
         namespace: "defaultdefault",
+        sourceName: "PostgreSQL",
         name: "PostgreSQLtest connection",
         metadata: { dbname: "test", user: "test", host: "test", port: "5432" },
         secrets: { password: "password" },
@@ -172,6 +173,10 @@ test("submit", async () => {
           connector: {
             id: "1",
             name: "c",
+          },
+          source: {
+            id: "1",
+            name: "PostgreSQL",
           },
           namespace: "default",
           name: "test connection",
@@ -336,6 +341,7 @@ test("error", async () => {
         connectorId: "1",
         namespace: "defaultdefault",
         name: "PostgreSQLtest connection",
+        sourceName: "PostgreSQL",
         metadata: { dbname: "test", user: "test", host: "test", port: "5432" },
         secrets: { password: "password" },
       },

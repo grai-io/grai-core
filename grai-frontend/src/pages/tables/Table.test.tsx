@@ -62,6 +62,9 @@ export const tableMock = {
           events: {
             data: [],
           },
+          sources: {
+            data: [],
+          },
         },
       },
     },
@@ -180,7 +183,7 @@ test("lineage", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getAllByText("Lineage")).toBeTruthy()
+    expect(screen.getByText("Lineage")).toBeInTheDocument()
   })
 
   await act(
