@@ -17,3 +17,4 @@ class MetadataV1(GraiMetadataV1):
         """ """
 
         extra = "allow"
+        allow_mutation = True

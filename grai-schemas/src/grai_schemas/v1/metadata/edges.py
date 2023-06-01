@@ -16,6 +16,7 @@ class EdgeTypeLabels(Enum):
 class GenericEdgeMetadataV1(V1Mixin):
     """ """
 
+    type: Literal["EdgeV1"] = "EdgeV1"
     edge_type: Literal["Edge"]
     edge_attributes: dict = {}
     tags: Optional[List[str]]

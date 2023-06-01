@@ -22,6 +22,7 @@ class SourceType(Enum):
 class GenericNodeMetadataV1(V1Mixin):
     """ """
 
+    type: Literal["NodeV1"] = "NodeV1"
     node_type: Literal["Node"]
     node_attributes: dict = {}
     tags: Optional[List[str]]
