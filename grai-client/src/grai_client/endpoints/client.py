@@ -872,10 +872,7 @@ def client_patch_url(
     Raises:
 
     """
-    headers = {
-        "Content-Type": "application/json",
-        **options.headers,
-    }
+    headers = {"Content-Type": "application/json", **options.headers}
     payload = {**payload, **options.payload}
 
     response = client.session.patch(url, content=serialize_obj(payload), headers=headers, **options.request_args)
