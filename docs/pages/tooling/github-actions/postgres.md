@@ -5,7 +5,7 @@ description: Documentation for Grai's PostgreSQL GitHub action.
 
 # Postgres
 
-The Postgres action depends on the python psycopg2 library.
+The Postgres action depends on the python psycopg2 library. 
 You can find complete documentation about the library [here](https://www.psycopg.org/docs/).
 
 
@@ -43,6 +43,8 @@ jobs:
       with:
         namespace: my_apps_grai_namespace
         api-key: my_grai_api_key
+        action: tests
+        grai-api-url: https://api.grai.io
         db-host: prod.db.com
         db-port: '5432'
         db-database-name: my_database
@@ -50,3 +52,6 @@ jobs:
         db-password: my_password
 
 ```
+
+
+
