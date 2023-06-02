@@ -16,10 +16,11 @@ services:
       retries: 15
 
   redis:
-    image: redis:7-alpine
+    image: redis/redis-stack:latest
     restart: always
     ports:
-      - "6379:6379"
+      - 6379:6379
+      - 8001:8001
 
   the_guide:
     image: ghcr.io/grai-io/grai-core/grai-server:latest
