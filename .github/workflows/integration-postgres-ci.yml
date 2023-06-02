@@ -54,28 +54,19 @@ jobs:
           POSTGRES_PASSWORD: grai
           POSTGRES_DB: grai
         ports:
-          - 5432:5432
+          - 5433:5432
         # needed because the postgres container does not provide a healthcheck
         options: --health-cmd pg_isready --health-interval 2s --health-timeout 5s --health-retries 15
-      the_guide:
-        image: ghcr.io/grai-io/grai-core/grai-server:latest
-        env:
-          DB_USER: grai
-          DB_PASSWORD: grai
-          DB_NAME: grai
-          DB_PORT: "5432"
-          DB_HOST: "postgres"
-          DJANGO_SUPERUSER_USERNAME: null@grai.io
-          DJANGO_SUPERUSER_PASSWORD: super_secret
-        ports:
-          - 8000:8000
-        options: >-
-          --health-cmd "curl -f http://localhost:8000/health/ || exit 1"
-          --health-interval 2s
-          --health-retries 10
-          --health-start-period 30s
     steps:
       - uses: actions/checkout@v3
+      - name: Set up Postgres db
+        working-directory: ${{ env.project_dir }}/dev-database
+        env:
+          POSTGRES_USER: grai
+          POSTGRES_PASSWORD: grai
+          POSTGRES_DB: grai
+        run: |
+          bash init-db.sh
 
       - uses: actions/setup-python@v4
         with:
