@@ -352,7 +352,12 @@ class BaseClient(abc.ABC):
         Raises:
 
         """
-        client_args = {"timeout": None, "http2": True, "params": QueryParams(**self.default_query_args)}
+        client_args = {
+            "timeout": None,
+            "http2": True,
+            "params": QueryParams(**self.default_query_args),
+            "transport": httpx.HTTPTransport(retries=3),
+        }
         client_args.update(self.httpx_client_args if self.httpx_client_args is not None else {})
 
         session = httpx.Client(**client_args)
