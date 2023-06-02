@@ -1,10 +1,12 @@
 version: v1
 type: Edge
 spec:
+    name: test_edge
+    namespace: default
     data_source: test_folder
     source:
-        name: public.lineage_node.id
-        namespace: default
+        name: node3
+        namespace: test
     destination:
         name: node2
         namespace: test
