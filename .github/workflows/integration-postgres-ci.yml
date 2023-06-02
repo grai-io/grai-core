@@ -65,6 +65,8 @@ jobs:
           POSTGRES_USER: grai
           POSTGRES_PASSWORD: grai
           POSTGRES_DB: grai
+          PORT: 5433
+          HOSTgit add   .: postgres
         run: |
           bash init-db.sh
 

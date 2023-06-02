@@ -2,8 +2,8 @@ SCRIPT_DIR=$(dirname -- "$0")/schemas
 PGUSER="${POSTGRES_USER}"
 PGPASSWORD="${POSTGRES_PASSWORD}"
 PG_DB="${POSTGRES_DB}"
-HOST=localhost
-PORT=5432
+HOST="{$HOST-localhost}"
+PORT="{PORT-5433}"
 
 
 for file in $(find $SCRIPT_DIR -type f -name '*.sql' | sort)
