@@ -45,6 +45,7 @@ jobs:
         namespace: my_apps_grai_namespace
         api-key: my_grai_api_key
         action: tests
+        grai-api-url: https://api.grai.io
         manifest-file: ./tests/dbt/manifest.json
 
 ```

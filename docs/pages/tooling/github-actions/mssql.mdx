@@ -51,6 +51,7 @@ jobs:
         namespace: my_apps_grai_namespace
         api-key: my_grai_api_key
         action: tests
+        grai-api-url: https://api.grai.io
         db-user: sa
         db-password: sa_password
         server_connection_string: tcp:myserver,1433
