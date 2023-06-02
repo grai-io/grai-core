@@ -9,5 +9,5 @@ PORT="{PORT-5433}"
 for file in $(find $SCRIPT_DIR -type f -name '*.sql' | sort)
 do
   echo "Executing init script $file"
-  PGPASSWORD=$PGPASSWORD psql -h localhost -p 5432 -U $PGUSER -d $PG_DB  -f $file -W
+  PGPASSWORD=$PGPASSWORD psql -h localhost -p $PORT -U $PGUSER -d $PG_DB  -f $file -W
 done
