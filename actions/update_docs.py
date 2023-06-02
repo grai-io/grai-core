@@ -42,7 +42,8 @@ for doc in documented:
     readme_file = os.path.join(action_root, doc["folder"], "README.md")
     readme = open(readme_file).read()
 
-    output_file = os.path.join(core_actions_docs_root, f"{doc['folder']}.mdx")
+    output_file = os.path.join(core_actions_docs_root, f"{doc['folder']}.md")
+    print(readme_file, output_file)
     new_readme = f"{make_header(doc)}\n\n{readme}"
     write_doc_file(new_readme, output_file)
 
