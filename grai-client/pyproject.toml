@@ -23,7 +23,6 @@ grai-schemas = "^0.1.11"
 httpx = {extras = ["http2"], version = "^0.24.0"}
 brotli = "^1.0.9"
 tqdm = "^4.65.0"
-trio = "^0.22.0"
 more-itertools = "^9.1.0"
 
 [tool.poetry.group.dev.dependencies]
