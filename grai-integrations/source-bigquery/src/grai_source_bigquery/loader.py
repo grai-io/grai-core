@@ -1,13 +1,21 @@
 import json
 import os
+from datetime import datetime, timedelta, timezone
 from functools import cached_property
 from itertools import chain
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
-from google.cloud import bigquery
+from google.cloud import bigquery, logging
 from google.oauth2 import service_account
 
-from grai_source_bigquery.models import BigqueryNode, Column, Edge, Table
+from grai_source_bigquery.models import (
+    BigqueryNode,
+    Column,
+    Constraint,
+    Edge,
+    Table,
+    TableID,
+)
 
 
 def get_from_env(
@@ -38,6 +46,205 @@ def get_from_env(
         )
         raise Exception(message)
     return result if validator is None else validator(result)
+
+
+class LoggingConnector:
+    """ """
+
+    def __init__(
+        self,
+        namespace: Optional[str] = None,
+        project: Optional[str] = None,
+        dataset: Optional[str] = None,
+        credentials: Optional[str] = None,
+    ):
+        self.namespace = get_from_env("namespace", "default") if namespace is None else namespace
+        self.project = get_from_env("project", required=False) if project is None else project
+        self.dataset = get_from_env("dataset", required=False) if dataset is None else dataset
+        self.credentials = get_from_env("credentials", required=False) if credentials is None else credentials
+        self._connection: Optional[logging.Client] = None
+
+    def __enter__(self):
+        return self.connect()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close()
+
+    def connect(self) -> "LoggingConnector":
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
+        if self._connection is None:
+            credentials = None
+
+            if self.credentials:
+                json_acct_info = json.loads(self.credentials, strict=False)
+                credentials = service_account.Credentials.from_service_account_info(json_acct_info)
+
+            self._connection = logging.Client(credentials=credentials, project=self.project)
+        return self
+
+    @property
+    def connection(self) -> logging.Client:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
+        if self._connection is None:
+            raise Exception("Not connected, call `.connect()")
+        return self._connection
+
+    def close(self) -> None:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
+        self.connection.close()
+        self._connection = None
+
+    @cached_property
+    def logs(self) -> List[Any]:
+        """Create and return a list of dictionaries with the
+        schemas and names of tables in the database
+        connected to by the connection argument.
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
+
+        print("Getting logs")
+
+        yesterday = datetime.now(timezone.utc) - timedelta(days=10)
+        time_format = "%Y-%m-%dT%H:%M:%S.%f%z"
+
+        filter_str = (
+            'protoPayload.serviceName="bigquery.googleapis.com"'
+            ' AND resource.type = "bigquery_project"'
+            ' AND protoPayload.methodName="google.cloud.bigquery.v2.JobService.InsertJob"'
+            f' AND timestamp>="{yesterday.strftime(time_format)}"'
+        )
+
+        return self.connection.list_entries(filter_=filter_str, page_size=1000)
+
+    def get_edges(self, existing_nodes) -> List[Edge]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
+
+        def table_string_to_table_id(table_string: str) -> Optional[TableID]:
+            table_string = table_string.split("/")
+
+            schema = table_string[3]
+            name = table_string[5]
+
+            if not any(node.name == name and node.table_schema == schema for node in existing_nodes):
+                print(f"Table {schema}.{name} not found in existing nodes")
+                return None
+
+            return TableID(
+                table_schema=schema,
+                name=name,
+                namespace=self.namespace,
+            )
+
+        print([f"{node.name}.{node.table_schema}" for node in existing_nodes if node is Table])
+
+        edges = []
+
+        for log in self.logs:
+            content = log.to_api_repr()
+
+            destination_table = (
+                content.get("protoPayload", {})
+                .get("metadata", {})
+                .get("jobChange", {})
+                .get("job", {})
+                .get("jobConfig", {})
+                .get("queryConfig", {})
+                .get("destinationTable")
+            ) or (
+                content.get("protoPayload", {})
+                .get("metadata", {})
+                .get("jobInsertion", {})
+                .get("job", {})
+                .get("jobConfig", {})
+                .get("queryConfig", {})
+                .get("destinationTable")
+            )
+
+            if destination_table is None:
+                print("No destination table found")
+                print(content)
+                continue
+
+            destination = table_string_to_table_id(destination_table)
+
+            if destination is None:
+                continue
+
+            referenced_tables = (
+                content.get("protoPayload", {})
+                .get("metadata", {})
+                .get("jobChange", {})
+                .get("job", {})
+                .get("jobStats", {})
+                .get("queryStats", {})
+                .get("referencedTables", [])
+            ) or (
+                content.get("protoPayload", {})
+                .get("metadata", {})
+                .get("jobInsertion", {})
+                .get("job", {})
+                .get("jobStats", {})
+                .get("queryStats", {})
+                .get("referencedTables", [])
+            )
+
+            print(f"Found referenced tables: {len(referenced_tables)}")
+
+            for table in referenced_tables:
+                source = table_string_to_table_id(table)
+
+                if source is None:
+                    continue
+
+                edges.append(
+                    Edge(
+                        constraint_type=Constraint("bqm"),
+                        source=source,
+                        destination=destination,
+                    )
+                )
+
+        print(edges)
+
+        return edges
 
 
 class BigqueryConnector:

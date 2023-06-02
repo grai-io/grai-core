@@ -144,6 +144,7 @@ class Constraint(str, Enum):
     foreign_key = "f"
     primary_key = "p"
     belongs_to = "bt"
+    bigquery_model = "bqm"
 
 
 class Edge(BaseModel):
