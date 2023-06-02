@@ -16,10 +16,11 @@ services:
       retries: 15
 
   redis:
-    image: redis:7-alpine
+    image: redis/redis-stack:latest
     restart: always
     ports:
-      - "6379:6379"
+      - 6379:6379
+      - 8001:8001
 
   the_guide:
     image: ghcr.io/grai-io/grai-core/grai-server:latest
@@ -39,6 +40,7 @@ services:
       - FRONTEND_URL=http://localhost:3000
       - CELERY_BROKER=redis://redis:6379/0
       - CELERY_BACKEND=redis://redis:6379/0
+      - REDIS_GRAPH_CACHE_HOST=redis
     depends_on:
       - redis
       - db
