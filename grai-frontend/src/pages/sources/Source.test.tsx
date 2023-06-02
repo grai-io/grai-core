@@ -3,8 +3,8 @@ import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
 import { GET_SOURCE_TABLES } from "components/sources/SourceTables"
-import Source, { GET_SOURCE } from "./Source"
 import { UPDATE_SOURCE } from "components/sources/UpdateSource"
+import Source, { GET_SOURCE } from "./Source"
 
 test("renders", async () => {
   render(<Source />, {

@@ -1,9 +1,9 @@
 import React from "react"
+import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
-import SourceCreate, { GET_WORKSPACE } from "./SourceCreate"
-import userEvent from "@testing-library/user-event"
 import { CREATE_SOURCE } from "components/sources/CreateSource"
+import SourceCreate, { GET_WORKSPACE } from "./SourceCreate"
 
 test("renders", async () => {
   render(<SourceCreate />, {
