@@ -9,11 +9,33 @@ T = TypeVar("T", Node, Edge)
 
 
 def deactivate(items: List[T]) -> List[T]:
+    """
+
+    Args:
+        items (List[T]):
+
+    Returns:
+
+    Raises:
+
+    """
     updated = [item.update({"spec": {"is_active": False}}) for item in items]
     return updated  # type: ignore
 
 
 def update(client: BaseClient, items: List[T], active_items: Optional[List[T]] = None):
+    """
+
+    Args:
+        client (BaseClient):
+        items (List[T]):
+        active_items (Optional[List[T]], optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
+    """
     if not items:
         return
 

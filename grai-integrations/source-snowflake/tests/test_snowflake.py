@@ -15,6 +15,7 @@ if has_dotenv_file:
 
 
 def test_connector_from_env_vars():
+    """ """
     env_vars = {
         "GRAI_SNOWFLAKE_ACCOUNT": "thing",
         "GRAI_SNOWFLAKE_DATABASE": "grai",
@@ -36,10 +37,13 @@ def test_connector_from_env_vars():
 
 
 class TestLiveSnowflakeIfHasDotEnv(unittest.TestCase):
+    """ """
+
     run_tests = has_dotenv_file
 
     @classmethod
     def test_building_nodes(cls):
+        """ """
         if not cls.run_tests:
             return
 
@@ -51,6 +55,7 @@ class TestLiveSnowflakeIfHasDotEnv(unittest.TestCase):
 
     @classmethod
     def test_building_edges(cls):
+        """ """
         if not cls.run_tests:
             return
 

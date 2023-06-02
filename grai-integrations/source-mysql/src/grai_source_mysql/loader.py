@@ -9,6 +9,18 @@ from grai_source_mysql.models import Column, ColumnID, Edge, EdgeQuery, MysqlNod
 
 
 def get_from_env(label: str, default: Optional[Any] = None, validator: Callable = None):
+    """
+
+    Args:
+        label (str):
+        default (Optional[Any], optional):  (Default value = None)
+        validator (Callable, optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
+    """
     env_key = f"GRAI_MYSQL_{label.upper()}"
     result = os.getenv(env_key, default)
     if result is None:
@@ -21,6 +33,8 @@ def get_from_env(label: str, default: Optional[Any] = None, validator: Callable 
 
 
 class MySQLConnector:
+    """ """
+
     def __init__(
         self,
         dbname: Optional[str] = None,
@@ -46,6 +60,15 @@ class MySQLConnector:
 
     @property
     def connection_dict(self) -> dict:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         return {
             "host": self.host,
             "database": self.dbname,
@@ -55,21 +78,43 @@ class MySQLConnector:
         }
 
     def connect(self):
+        """ """
         if self._connection is None:
             self._connection = mysql.connector.connect(**self.connection_dict)
         return self
 
     @property
     def connection(self):
+        """ """
         if self._connection is None:
             raise Exception("Not connected, call `.connect()")
         return self._connection
 
     def close(self) -> None:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         self.connection.close()
         self._connection = None
 
     def query_runner(self, query: str, param_dict: Dict = {}) -> List[Dict]:
+        """
+
+        Args:
+            query (str):
+            param_dict (Dict, optional):  (Default value = {})
+
+        Returns:
+
+        Raises:
+
+        """
         dict_cursor = self.connection.cursor(dictionary=True)
         dict_cursor.execute(query, param_dict)
         result = dict_cursor.fetchall()
@@ -77,10 +122,16 @@ class MySQLConnector:
 
     @cached_property
     def tables(self) -> List[Table]:
-        """
-        Create and return a list of dictionaries with the
+        """Create and return a list of dictionaries with the
         schemas and names of tables in the database
         connected to by the connection argument.
+
+        Args:
+
+        Returns:
+
+        Raises:
+
         """
 
         query = """
@@ -98,9 +149,15 @@ class MySQLConnector:
 
     @cached_property
     def columns(self) -> List[Column]:
-        """
-        Creates and returns a list of dictionaries for the specified
+        """Creates and returns a list of dictionaries for the specified
         schema.table in the database connected to.
+
+        Args:
+
+        Returns:
+
+        Raises:
+
         """
 
         query = f"""
@@ -121,6 +178,16 @@ class MySQLConnector:
         return [Column(**result, namespace=self.namespace) for result in res]
 
     def get_table_columns(self, table: Table) -> List[Column]:
+        """
+
+        Args:
+            table (Table):
+
+        Returns:
+
+        Raises:
+
+        """
         table_id = (table.table_schema, table.name)
         if table_id in self.column_map:
             return self.column_map[table_id]
@@ -129,6 +196,15 @@ class MySQLConnector:
 
     @cached_property
     def column_map(self) -> Dict[Tuple[str, str], List[Column]]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         result_map: Dict[Tuple[str, str], List[Column]] = {}
         for col in self.columns:
             table_id = (col.column_schema, col.table)
@@ -139,9 +215,13 @@ class MySQLConnector:
     @cached_property
     def foreign_keys(self) -> List[Edge]:
         """This needs to be tested / evaluated
-        :param connection:
-        :param table:
-        :return:
+
+        Args:
+
+        Returns:
+
+        Raises:
+
         """
         # Only need constraint_types == 'f' for foreign keys but the others might be useful someday.
         # Removed schemas, no schemas in mysql
@@ -190,12 +270,39 @@ class MySQLConnector:
         return edges
 
     def get_nodes(self) -> List[MysqlNode]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         return list(chain(self.tables, self.columns))
 
     def get_edges(self) -> List[Edge]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         return [edge for edge in chain(*[t.get_edges() for t in self.tables], self.foreign_keys) if edge is not None]
 
     def get_nodes_and_edges(self) -> Tuple[List[MysqlNode], List[Edge]]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         nodes = self.get_nodes()
         edges = self.get_edges()
 

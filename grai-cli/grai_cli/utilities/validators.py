@@ -6,19 +6,60 @@ default_style_stripper = strip_style(default_styler)
 
 
 def username_callback(inp: str):
+    """
+
+    Args:
+        inp (str):
+
+    Returns:
+
+    Raises:
+
+    """
     if len(inp) == 0:
         raise typer.BadParameter("Password is invalid for <reasons>")
     return inp
 
 
 def workspace_callback(inp: str):
+    """
+
+    Args:
+        inp (str):
+
+    Returns:
+
+    Raises:
+
+    """
     if len(inp) == 0:
         raise typer.BadParameter("workspace is invalid for <reasons>")
     return inp
 
 
 def password_callback(inp: str):
+    """
+
+    Args:
+        inp (str):
+
+    Returns:
+
+    Raises:
+
+    """
+
     def password_is_valid(inp: str):
+        """
+
+        Args:
+            inp (str):
+
+        Returns:
+
+        Raises:
+
+        """
         # TODO
         return True
 
@@ -29,7 +70,28 @@ def password_callback(inp: str):
 
 
 def host_callback(inp: str):
+    """
+
+    Args:
+        inp (str):
+
+    Returns:
+
+    Raises:
+
+    """
+
     def host_is_valid(inp: str):
+        """
+
+        Args:
+            inp (str):
+
+        Returns:
+
+        Raises:
+
+        """
         # TODO
         return True
 
@@ -39,6 +101,16 @@ def host_callback(inp: str):
 
 
 def port_callback(inp: str):
+    """
+
+    Args:
+        inp (str):
+
+    Returns:
+
+    Raises:
+
+    """
     error = typer.BadParameter(f"'{inp}' is not a valid port, should be a number between 1 and 65535")
     if not inp.isnumeric():
         raise error
@@ -51,6 +123,16 @@ def port_callback(inp: str):
 
 
 def insecure_callback(inp: str) -> str:
+    """
+
+    Args:
+        inp (str):
+
+    Returns:
+
+    Raises:
+
+    """
     error = typer.BadParameter(f"{inp} is not a valid value for insecure, should be either True or False.")
     TRUE = {"true", "yes", "y"}
     FALSE = {"false", "no", "n"}

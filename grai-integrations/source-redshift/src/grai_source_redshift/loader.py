@@ -18,6 +18,8 @@ from grai_source_redshift.models import (
 
 
 class RedshiftConfig(BaseSettings):
+    """ """
+
     user: Optional[str] = None
     password: Optional[SecretStr] = None
     database: Optional[str] = None
@@ -25,11 +27,15 @@ class RedshiftConfig(BaseSettings):
     port: Optional[int] = None
 
     class Config:
+        """ """
+
         env_prefix = "grai_redshift_"
         env_file = ".env"
 
 
 class RedshiftConnector:
+    """ """
+
     def __init__(
         self,
         namespace: str,
@@ -65,6 +71,7 @@ class RedshiftConnector:
             self.close()
 
     def connect(self):
+        """ """
         conn_params = {k: v for k, v in self.config.dict().items() if v is not None}
         if "password" in conn_params:
             conn_params["password"] = conn_params["password"].get_secret_value()
@@ -76,16 +83,36 @@ class RedshiftConnector:
 
     @property
     def connection(self):
+        """ """
         if self._connection is None:
             raise Exception("Not connected, call `.connect()")
         return self._connection
 
     def close(self) -> None:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         self.connection.close()
         self._connection = None
         self._is_connected = False
 
     def query_runner(self, query: str) -> List[Dict]:
+        """
+
+        Args:
+            query (str):
+
+        Returns:
+
+        Raises:
+
+        """
         cursor = self.connection.cursor()
         cursor.execute(query)
         columns = [column[0] for column in cursor.description]
@@ -93,10 +120,16 @@ class RedshiftConnector:
 
     @cached_property
     def tables(self) -> List[Table]:
-        """
-        Create and return a list of dictionaries with the
+        """Create and return a list of dictionaries with the
         schemas and names of tables in the database
         connected to by the connection argument.
+
+        Args:
+
+        Returns:
+
+        Raises:
+
         """
 
         query = """
@@ -113,9 +146,15 @@ class RedshiftConnector:
 
     @cached_property
     def columns(self) -> List[Column]:
-        """
-        Creates and returns a list of dictionaries for the specified
+        """Creates and returns a list of dictionaries for the specified
         schema.table in the database connected to.
+
+        Args:
+
+        Returns:
+
+        Raises:
+
         """
         query = f"""
             SELECT table_catalog,
@@ -134,6 +173,16 @@ class RedshiftConnector:
         return [Column(**result, namespace=self.namespace) for result in self.query_runner(query)]
 
     def get_table_columns(self, table: Table):
+        """
+
+        Args:
+            table (Table):
+
+        Returns:
+
+        Raises:
+
+        """
         table_id = (table.table_schema, table.name)
         if table_id in self.column_map:
             return self.column_map[table_id]
@@ -142,6 +191,15 @@ class RedshiftConnector:
 
     @cached_property
     def column_map(self) -> Dict[Tuple[str, str], List[Column]]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         result_map: Dict[Tuple[str, str], List[Column]] = {}
         for col in self.columns:
             table_id = (col.column_schema, col.table)
@@ -152,9 +210,13 @@ class RedshiftConnector:
     @cached_property
     def foreign_keys(self) -> List[Edge]:
         """This needs to be tested / evaluated
-        :param connection:
-        :param table:
-        :return:
+
+        Args:
+
+        Returns:
+
+        Raises:
+
         """
         # query is from https://alberton.info/postgresql_meta_info.html
         # detailed constraint info section
@@ -190,12 +252,39 @@ class RedshiftConnector:
         return [r for r in result if r is not None]
 
     def get_nodes(self) -> List[RedshiftNode]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         return list(chain(self.tables, self.columns))
 
     def get_edges(self) -> List[Edge]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         return list(chain(*[t.get_edges() for t in self.tables], self.foreign_keys))
 
     def get_nodes_and_edges(self) -> Tuple[List[RedshiftNode], List[Edge]]:
+        """
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
         nodes = self.get_nodes()
         edges = self.get_edges()
 

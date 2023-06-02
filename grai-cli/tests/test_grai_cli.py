@@ -9,12 +9,14 @@ runner = CliRunner()
 
 
 def test_disable_telemetry():
+    """ """
     result = runner.invoke(app, ["--no-telemetry"])
     telemetry = cache.get("telemetry_consent")
     assert not telemetry
 
 
 def test_enable_telemetry():
+    """ """
     result = runner.invoke(app, ["--telemetry"])
     telemetry = cache.get("telemetry_consent")
     assert telemetry

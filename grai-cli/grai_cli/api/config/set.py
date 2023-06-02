@@ -16,13 +16,45 @@ from grai_cli.utilities.validators import (
 
 
 def setter_helper(path: str) -> Callable:
+    """
+
+    Args:
+        path (str):
+
+    Returns:
+
+    Raises:
+
+    """
     path_elems = path.split(".")
     name = path_elems[-1]
 
     def set_function_maker(fn: Callable) -> Callable:
+        """
+
+        Args:
+            fn (Callable):
+
+        Returns:
+
+        Raises:
+
+        """
+
         @set_app.command(name)
         @wraps(fn)
         def set_function(*args, **kwargs):
+            """
+
+            Args:
+                *args:
+                **kwargs:
+
+            Returns:
+
+            Raises:
+
+            """
             item = config
             for sub_path in path_elems[:-1]:
                 item = getattr(item, sub_path)
@@ -36,7 +68,16 @@ def setter_helper(path: str) -> Callable:
 
 @setter_helper("auth.username")
 def _(username: str = typer.Argument(..., callback=username_callback)):
-    """Sets config value for auth.username"""
+    """Sets config value for auth.username
+
+    Args:
+        username (str, optional):  (Default value = typer.Argument(..., callback=username_callback))
+
+    Returns:
+
+    Raises:
+
+    """
     pass
 
 
@@ -51,7 +92,16 @@ def _(
         confirmation_prompt=True,
     )
 ):
-    """Sets config value for auth.password"""
+    """Sets config value for auth.password
+
+    Args:
+        password (str, optional):  (Default value = typer.Option(...,hide_input=True,callback=password_callback,prompt=True,prompt_required=True,confirmation_prompt=True,))
+
+    Returns:
+
+    Raises:
+
+    """
     pass
 
 
@@ -65,29 +115,74 @@ def _(
         confirmation_prompt=True,
     )
 ):
-    """Sets config value for auth.api_key"""
+    """Sets config value for auth.api_key
+
+    Args:
+        api_key (str, optional):  (Default value = typer.Option(...,hide_input=True,prompt=True,prompt_required=True,confirmation_prompt=True,))
+
+    Returns:
+
+    Raises:
+
+    """
     pass
 
 
 @setter_helper("server.host")
 def _(host: str = typer.Argument(..., callback=host_callback)):
-    """Sets config value for server.host"""
+    """Sets config value for server.host
+
+    Args:
+        host (str, optional):  (Default value = typer.Argument(..., callback=host_callback))
+
+    Returns:
+
+    Raises:
+
+    """
     pass
 
 
 @setter_helper("server.port")
 def _(port: str = typer.Argument(..., callback=port_callback)):
-    """Sets config value for server.port"""
+    """Sets config value for server.port
+
+    Args:
+        port (str, optional):  (Default value = typer.Argument(..., callback=port_callback))
+
+    Returns:
+
+    Raises:
+
+    """
     pass
 
 
 @setter_helper("server.insecure")
 def _(insecure: str = typer.Argument(..., callback=insecure_callback)):
-    """Sets config value for server.insecure"""
+    """Sets config value for server.insecure
+
+    Args:
+        insecure (str, optional):  (Default value = typer.Argument(..., callback=insecure_callback))
+
+    Returns:
+
+    Raises:
+
+    """
     pass
 
 
 @setter_helper("server.workspace")
 def _(workspace: str = typer.Argument(..., callback=workspace_callback)):
-    """Sets config value for server.workspace"""
+    """Sets config value for server.workspace
+
+    Args:
+        workspace (str, optional):  (Default value = typer.Argument(..., callback=workspace_callback))
+
+    Returns:
+
+    Raises:
+
+    """
     pass

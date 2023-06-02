@@ -12,17 +12,20 @@ def output_graph(
     dpi: Optional[int] = 800,
 ) -> None:
     """Output a graph to a file, either as image or as dot file.
+
     Args:
-        graph: the DiGraph to write or plot
-        file_name: the file name to write to.
-        sort: create a copy of the graph with sorted keys
+        graph (nx.DiGraph): the DiGraph to write or plot
+        file_name (Union[Path, str]): the file name to write to.
+        sort (bool, optional): create a copy of the graph with sorted keys (Default value = True)
         file_format: graphviz output format, if None, the file_name extension is used as format
-            https://graphviz.org/doc/info/output.html
-        dpi: Output image resolution
+    https://graphviz.org/doc/info/output.html (Default value = None)
+        dpi (Optional[int], optional): (Default value = 800)
+
     Returns:
-        Nothing
+
     Raises:
         ValueError when the file_name does not end on .svg, .png or .dot
+
     """
     G = graph.copy()
 
@@ -60,12 +63,17 @@ def plot_graph(
     figsize: Optional[Tuple[int, int]] = None,
 ):
     """
+
     Args:
-        graph: the DiGraph to write or plot
-        dpi: dpi of the matplotlib figure.
-        figsize: figure size
+        graph (nx.DiGraph): the DiGraph to write or plot
+        dpi (int, optional): dpi of the matplotlib figure. (Default value = 800)
+        figsize (Optional[Tuple[int, int]], optional): (Default value = None)
+
     Returns:
-        Displays the image
+        : Displays the image
+
+    Raises:
+
     """
     import os
     import tempfile

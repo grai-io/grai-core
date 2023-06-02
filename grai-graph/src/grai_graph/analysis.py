@@ -7,25 +7,72 @@ from grai_graph.graph import Graph
 
 
 class GraphAnalyzer:
+    """ """
+
     def __init__(self, graph: Graph):
         self.graph = graph
 
     def downstream_nodes(self, namespace: str, name: str):
+        """
+
+        Args:
+            namespace (str):
+            name (str):
+
+        Returns:
+
+        Raises:
+
+        """
         node_id = self.graph.get_node_id(namespace, name)
         downstream = list(nx.bfs_successors(self.graph.graph, node_id))[0][1]
         return [self.graph.get_node(node_id=node) for node in downstream]
 
     def upstream_nodes(self, namespace: str, name: str):
+        """
+
+        Args:
+            namespace (str):
+            name (str):
+
+        Returns:
+
+        Raises:
+
+        """
         node_id = self.graph.get_node_id(namespace, name)
         upstream = list(nx.bfs_predecessors(self.graph.graph, node_id))[0][1]
         return [self.graph.get_node(node_id=node) for node in upstream]
 
     def test_delete_node(self, namespace: str, name: str):
+        """
+
+        Args:
+            namespace (str):
+            name (str):
+
+        Returns:
+
+        Raises:
+
+        """
         return list(self.downstream_nodes(namespace, name))
 
     def traverse_data_type_violations(
         self, node: NodeTypes, new_type: str, path: Optional[List] = None
     ) -> Generator[Tuple[List[NodeTypes], bool], None, None]:
+        """
+
+        Args:
+            node (NodeTypes):
+            new_type (str):
+            path (Optional[List], optional): (Default value = None)
+
+        Returns:
+
+        Raises:
+
+        """
         if path is None:
             path = [node]
 
@@ -55,10 +102,15 @@ class GraphAnalyzer:
     def test_data_type_change(self, namespace: str, name: str, new_type: bool) -> List[Tuple[List[NodeTypes], bool]]:
         """
 
-        :param namespace:
-        :param name:
-        :param expects_unique: can't evaluate anything in the case of None
-        :return:
+        Args:
+            namespace (str):
+            name (str):
+            new_type (bool):
+
+        Returns:
+
+        Raises:
+
         """
         node_id = self.graph.get_node_id(namespace, name)
 
@@ -77,6 +129,18 @@ class GraphAnalyzer:
     def traverse_unique_violations(
         self, node: NodeTypes, expects_unique: bool, path: Optional[List] = None
     ) -> Generator[Tuple[List[NodeTypes], bool], None, None]:
+        """
+
+        Args:
+            node (NodeTypes):
+            expects_unique (bool):
+            path (Optional[List], optional): (Default value = None)
+
+        Returns:
+
+        Raises:
+
+        """
         if path is None:
             path = [node]
 
@@ -108,10 +172,15 @@ class GraphAnalyzer:
     ) -> List[Tuple[List[NodeTypes], bool]]:
         """
 
-        :param namespace:
-        :param name:
-        :param expects_unique: can't evaluate anything in the case of None
-        :return:
+        Args:
+            namespace (str):
+            name (str):
+            expects_unique (bool): can't evaluate anything in the case of None
+
+        Returns:
+
+        Raises:
+
         """
         node_id = self.graph.get_node_id(namespace, name)
 
@@ -130,6 +199,18 @@ class GraphAnalyzer:
     def traverse_null_violations(
         self, node: NodeTypes, is_nullable: bool, path: Optional[List] = None
     ) -> Generator[Tuple[List[NodeTypes], bool], None, None]:
+        """
+
+        Args:
+            node (NodeTypes):
+            is_nullable (bool):
+            path (Optional[List], optional): (Default value = None)
+
+        Returns:
+
+        Raises:
+
+        """
         if path is None:
             path = [node]
 
@@ -161,10 +242,16 @@ class GraphAnalyzer:
         self, namespace: str, name: str, is_nullable: bool
     ) -> List[Tuple[List[NodeTypes], bool]]:
         """
-        :param namespace:
-        :param name:
-        :param is_nullable: can't evaluate anything in the case of None
-        :return:
+
+        Args:
+            namespace (str):
+            name (str):
+            is_nullable (bool): can't evaluate anything in the case of None
+
+        Returns:
+
+        Raises:
+
         """
         node_id = self.graph.get_node_id(namespace, name)
 
@@ -182,12 +269,34 @@ class GraphAnalyzer:
         return list(affected_nodes)
 
     def column_predecessors(self, namespace: str, name: str):
+        """
+
+        Args:
+            namespace (str):
+            name (str):
+
+        Returns:
+
+        Raises:
+
+        """
         node_id = self.graph.get_node_id(namespace, name)
         predecessors = (self.graph.get_node(node_id=node_id) for node_id in self.graph.graph.predecessors(node_id))
         col_predecessors = tuple(node for node in predecessors if node.spec.metadata.grai.node_type == "Column")
         return col_predecessors
 
     def column_successors(self, namespace: str, name: str):
+        """
+
+        Args:
+            namespace (str):
+            name (str):
+
+        Returns:
+
+        Raises:
+
+        """
         node_id = self.graph.get_node_id(namespace, name)
         successors = (self.graph.get_node(node_id=node_id) for node_id in self.graph.graph.successors(node_id))
         col_successors = tuple(node for node in successors if node.spec.metadata.grai.node_type == "Column")

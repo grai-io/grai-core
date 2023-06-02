@@ -9,6 +9,16 @@ from grai_source_flat_file.loader import build_nodes_and_edges
 
 
 def test_build_nodes(mock_data):
+    """
+
+    Args:
+        mock_data:
+
+    Returns:
+
+    Raises:
+
+    """
     file_name = "test.csv"
     namespace = "test"
     mock_data.to_csv(file_name, index=False)
@@ -21,6 +31,16 @@ def test_build_nodes(mock_data):
 
 
 def test_adapt_nodes(mock_data):
+    """
+
+    Args:
+        mock_data:
+
+    Returns:
+
+    Raises:
+
+    """
     file_name = "test.csv"
     namespace = "test"
     mock_data.to_csv(file_name, index=False)

@@ -3,6 +3,7 @@ from uuid import UUID
 
 import pytest
 from grai_schemas.v1 import EdgeV1, NodeV1
+from grai_schemas.v1.edge import EdgeNamedID, EdgeUuidID
 from requests import RequestException
 
 from grai_client.endpoints.utilities import is_valid_uuid
@@ -190,3 +191,12 @@ def test_edge_hash(client):
     new_edge = client.post(test_edge)
 
     assert hash(new_edge) == hash(test_edge)
+
+
+def test_get_edge_by_named_id(client):
+    test_edge, test_nodes = mock_v1_edge_and_nodes()
+    objs = client.post([*test_nodes, test_edge])
+
+    identifier = EdgeNamedID(name=test_edge.spec.name, namespace=test_edge.spec.namespace)
+    result = client.get(identifier)
+    assert hash(result) == hash(test_edge), "Edge should be queryable by named id"

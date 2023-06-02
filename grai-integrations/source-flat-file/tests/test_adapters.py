@@ -8,6 +8,16 @@ from grai_source_flat_file.package_definitions import config
 
 
 def test_metadata_has_core_metadata_ids(mock_get_nodes_and_edges):
+    """
+
+    Args:
+        mock_get_nodes_and_edges:
+
+    Returns:
+
+    Raises:
+
+    """
     nodes, edges = mock_get_nodes_and_edges
     for node in nodes:
         assert hasattr(node.spec.metadata, core_config.metadata_id)
@@ -17,6 +27,16 @@ def test_metadata_has_core_metadata_ids(mock_get_nodes_and_edges):
 
 
 def test_metadata_has_flat_file_metadata_id(mock_get_nodes_and_edges):
+    """
+
+    Args:
+        mock_get_nodes_and_edges:
+
+    Returns:
+
+    Raises:
+
+    """
     nodes, edges = mock_get_nodes_and_edges
     for node in nodes:
         assert hasattr(node.spec.metadata, config.metadata_id)
@@ -26,6 +46,16 @@ def test_metadata_has_flat_file_metadata_id(mock_get_nodes_and_edges):
 
 
 def test_metadata_is_core_compliant(mock_get_nodes_and_edges):
+    """
+
+    Args:
+        mock_get_nodes_and_edges:
+
+    Returns:
+
+    Raises:
+
+    """
     nodes, edges = mock_get_nodes_and_edges
 
     for node in nodes:

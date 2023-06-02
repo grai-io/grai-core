@@ -6,6 +6,16 @@ from pydantic import BaseModel, Extra
 
 @multimethod
 def full_name(obj: Any) -> str:
+    """
+
+    Args:
+        obj (Any):
+
+    Returns:
+
+    Raises:
+
+    """
     # This is a fallback method that will be called if no other method is found
     try:
         return obj.full_name
@@ -18,11 +28,31 @@ def full_name(obj: Any) -> str:
 
 
 def set_loader_config_fields(obj: BaseModel):
+    """
+
+    Args:
+        obj (BaseModel):
+
+    Returns:
+
+    Raises:
+
+    """
     obj.Config.extra = Extra.allow
     obj.Config.use_enum_values = True
 
 
 def set_extra_fields(obj: Union[BaseModel, Sequence[BaseModel]]) -> None:
+    """
+
+    Args:
+        obj (Union[BaseModel, Sequence[BaseModel]]):
+
+    Returns:
+
+    Raises:
+
+    """
     if isinstance(obj, BaseModel):
         set_loader_config_fields(obj)
     elif isinstance(obj, Sequence):

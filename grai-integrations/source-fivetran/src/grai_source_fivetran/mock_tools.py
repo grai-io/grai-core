@@ -15,8 +15,30 @@ if has_faker:
 
 
 def faker_dep_wrapper(fn: Callable[..., T]):
+    """
+
+    Args:
+        fn (Callable[..., T]):
+
+    Returns:
+
+    Raises:
+
+    """
+
     @wraps(fn)
     def inner(*args, **kwargs) -> T:
+        """
+
+        Args:
+            *args:
+            **kwargs:
+
+        Returns:
+
+        Raises:
+
+        """
         if not has_faker:
             raise ModuleNotFoundError("Mock testing tools require `faker`. Try running `pip install faker`")
         return fn(*args, **kwargs)
@@ -25,9 +47,12 @@ def faker_dep_wrapper(fn: Callable[..., T]):
 
 
 class MockFivetranObjects:
+    """ """
+
     @staticmethod
     @faker_dep_wrapper
     def mock_column():
+        """ """
         return Column(
             name=fake.name(),
             namespace=fake.color_name(),
@@ -42,6 +67,7 @@ class MockFivetranObjects:
     @staticmethod
     @faker_dep_wrapper
     def mock_table():
+        """ """
         return Table(
             name=fake.name(),
             namespace=fake.color_name(),
@@ -52,7 +78,28 @@ class MockFivetranObjects:
     @classmethod
     @faker_dep_wrapper
     def mock_edge(cls, type: str = "cc"):
+        """
+
+        Args:
+            type (str, optional):  (Default value = "cc")
+
+        Returns:
+
+        Raises:
+
+        """
+
         def mock_node(type: str):
+            """
+
+            Args:
+                type (str):
+
+            Returns:
+
+            Raises:
+
+            """
             if type == "c":
                 return cls.mock_column()
             elif type == "t":

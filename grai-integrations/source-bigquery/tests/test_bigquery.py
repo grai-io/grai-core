@@ -15,6 +15,7 @@ if has_dotenv_file:
 
 
 def test_connector_from_env_vars():
+    """ """
     env_vars = {
         "GRAI_BIGQUERY_PROJECT": "thing",
         "GRAI_BIGQUERY_DATASET": "grai",
@@ -30,10 +31,13 @@ def test_connector_from_env_vars():
 
 
 class TestLiveBigqueryIfHasDotEnv(unittest.TestCase):
+    """ """
+
     run_tests = has_dotenv_file
 
     @classmethod
     def test_building_nodes(cls):
+        """ """
         if not cls.run_tests:
             return
 
@@ -45,6 +49,7 @@ class TestLiveBigqueryIfHasDotEnv(unittest.TestCase):
 
     @classmethod
     def test_building_edges(cls):
+        """ """
         if not cls.run_tests:
             return
 

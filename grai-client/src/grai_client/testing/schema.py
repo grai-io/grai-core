@@ -14,6 +14,21 @@ def mock_v1_node(
     is_active=True,
     metadata={},
 ):
+    """
+
+    Args:
+        name:  (Default value = None)
+        namespace:  (Default value = None)
+        data_source:  (Default value = None)
+        display_name:  (Default value = None)
+        is_active:  (Default value = True)
+        metadata:  (Default value = {})
+
+    Returns:
+
+    Raises:
+
+    """
     final_metadata = BASE_NODE_METADATA.copy()
     final_metadata.update(metadata)
     node_dict = {
@@ -33,6 +48,7 @@ def mock_v1_node(
 
 
 def mock_node_id():
+    """ """
     return {"name": str(uuid.uuid4()), "namespace": str(uuid.uuid4())}
 
 
@@ -45,6 +61,22 @@ def mock_v1_edge(
     is_active=True,
     metadata={},
 ):
+    """
+
+    Args:
+        name:  (Default value = None)
+        namespace:  (Default value = None)
+        data_source:  (Default value = None)
+        source:  (Default value = None)
+        destination:  (Default value = None)
+        is_active:  (Default value = True)
+        metadata:  (Default value = {})
+
+    Returns:
+
+    Raises:
+
+    """
     final_metadata = BASE_EDGE_METADATA.copy()
     final_metadata.update(metadata)
     edge_dict = {
@@ -65,6 +97,20 @@ def mock_v1_edge(
 
 
 def mock_v1_edge_and_nodes(name=None, data_source=None, is_active=True, metadata={}, namespace=None):
+    """
+
+    Args:
+        name:  (Default value = None)
+        data_source:  (Default value = None)
+        is_active:  (Default value = True)
+        metadata:  (Default value = {})
+        namespace:  (Default value = None)
+
+    Returns:
+
+    Raises:
+
+    """
     final_metadata = BASE_EDGE_METADATA.copy()
     final_metadata.update(metadata)
 

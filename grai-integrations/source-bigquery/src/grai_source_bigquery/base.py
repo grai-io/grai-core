@@ -9,6 +9,17 @@ from grai_source_bigquery.loader import BigqueryConnector
 
 
 def get_nodes_and_edges(connector: BigqueryConnector, version: Literal["v1"]) -> Tuple[List[Node], List[Edge]]:
+    """
+
+    Args:
+        connector (BigqueryConnector):
+        version (Literal["v1"]):
+
+    Returns:
+
+    Raises:
+
+    """
     if version != "v1":
         raise NotImplementedError(f"No available implementation for client version {version}")
 
@@ -27,6 +38,20 @@ def update_server(
     dataset: Optional[str] = None,
     credentials: Optional[str] = None,
 ) -> None:
+    """
+
+    Args:
+        client (BaseClient):
+        namespace (Optional[str], optional):  (Default value = None)
+        project (Optional[str], optional):  (Default value = None)
+        dataset (Optional[str], optional):  (Default value = None)
+        credentials (Optional[str], optional):  (Default value = None)
+
+    Returns:
+
+    Raises:
+
+    """
     conn = BigqueryConnector(
         project=project,
         namespace=namespace,

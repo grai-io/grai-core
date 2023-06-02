@@ -14,6 +14,15 @@ if TYPE_CHECKING:
 
 
 def get_default_client() -> BaseClient:
+    """
+
+    Args:
+
+    Returns:
+
+    Raises:
+
+    """
     from grai_client.endpoints.v1.client import ClientV1
 
     _clients: Dict[str, Type[BaseClient]] = {

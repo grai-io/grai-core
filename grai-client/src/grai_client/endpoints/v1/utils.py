@@ -6,9 +6,18 @@ from grai_client.endpoints.v1.client import ClientV1
 
 
 def process_node_id(client: ClientV1, grai_type: NodeIdTypes, options: ClientOptions = ClientOptions()) -> NodeIdTypes:
-    """
-    Process a NodeID object, either by returning if it has a known id, or by getting
+    """Process a NodeID object, either by returning if it has a known id, or by getting
     the id from the server.
+
+    Args:
+        client (ClientV1):
+        grai_type (NodeIdTypes):
+        options (ClientOptions, optional):  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
     """
     if grai_type.id is not None:
         return grai_type

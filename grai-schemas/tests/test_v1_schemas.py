@@ -9,6 +9,7 @@ from grai_schemas.v1 import EdgeV1, NodeV1
 
 
 def make_v1_node():
+    """ """
     return {
         "type": "Node",
         "version": "v1",
@@ -31,6 +32,7 @@ def make_v1_node():
 
 
 def make_v1_edge():
+    """ """
     return {
         "type": "Edge",
         "version": "v1",
@@ -65,6 +67,17 @@ def make_v1_edge():
     ],
 )
 def test_v1_node_typing(test_type, result):
+    """
+
+    Args:
+        test_type:
+        result:
+
+    Returns:
+
+    Raises:
+
+    """
     obj_dict = make_v1_node()
     obj = Schema(entity=obj_dict)
     assert isinstance(obj.entity, test_type) == result, f"{type(obj)}=={test_type} should be {result}"
@@ -80,6 +93,17 @@ def test_v1_node_typing(test_type, result):
     ],
 )
 def test_v1_edge_typing(test_type, result):
+    """
+
+    Args:
+        test_type:
+        result:
+
+    Returns:
+
+    Raises:
+
+    """
     obj_dict = make_v1_edge()
     obj = Schema(entity=obj_dict)
     assert isinstance(obj.entity, test_type) == result, f"{type(obj)}=={test_type} should be {result}"
@@ -87,6 +111,7 @@ def test_v1_edge_typing(test_type, result):
 
 # test adding a new field to the metadata of a node
 def test_adding_new_field_to_metadata():
+    """ """
     node_dict = make_v1_node()
     obj = Schema(entity=node_dict)
     obj.entity.spec.metadata["new_field"] = "new_value"

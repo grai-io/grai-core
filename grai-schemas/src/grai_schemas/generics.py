@@ -8,27 +8,55 @@ from pydantic import BaseModel, dataclasses, root_validator, validator
 
 
 class HashableBaseModel(BaseModel):
+    """ """
+
     def __hash__(self):
         return id(self)
 
 
 class GraiBaseModel(HashableBaseModel):
+    """ """
+
     # class Config:
     #     frozen = True
 
     def update(self, new_values: Dict) -> BaseModel:
+        """
+
+        Args:
+            new_values (Dict):
+
+        Returns:
+
+        Raises:
+
+        """
         values = self.dict()
         return type(self)(**merge_dicts(values, new_values))
 
     class Config:
+        """ """
+
         json_encoders = {UUID: lambda x: str(x)}
 
 
 class PlaceHolderSchema(GraiBaseModel):
+    """ """
+
     is_active: Optional[bool] = True
 
     @root_validator(pre=True)
     def root_validator_of_placeholder(cls, values):
+        """
+
+        Args:
+            values:
+
+        Returns:
+
+        Raises:
+
+        """
         message = (
             "Something is wrong... I can feel it 😡. You've reached a placeholder schema - "
             "most likely the `version` of your config file doesn't exist yet."
@@ -40,12 +68,24 @@ class PlaceHolderSchema(GraiBaseModel):
 
 
 class DefaultValue(GraiBaseModel):
+    """ """
+
     has_default_value: Optional[bool] = None
     data_type: Optional[str] = None
     default_value: Optional[Any] = None
 
     @root_validator()
     def validate_default_value_root(cls, values):
+        """
+
+        Args:
+            values:
+
+        Returns:
+
+        Raises:
+
+        """
         if isinstance(values, dict):
             has_default_value = values.get("has_default_value", None)
             data_type = values.get("data_type", None)
@@ -72,16 +112,30 @@ class DefaultValue(GraiBaseModel):
 
 
 class PackageConfig(BaseModel):
+    """ """
+
     integration_name: str
     metadata_id: str
 
     @validator("metadata_id")
     def metadata_id_validation(cls, value):
+        """
+
+        Args:
+            value:
+
+        Returns:
+
+        Raises:
+
+        """
         assert (
             "-" not in value
         ), f"Error found in metadata_id: {value}. `-` is a reserved character which should not be used."
         return value
 
     class Config:
+        """ """
+
         validate_assignment = True
         validate_all = True

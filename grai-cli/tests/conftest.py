@@ -12,6 +12,7 @@ from grai_cli.utilities.test import prep_tests
 
 @pytest.fixture(scope="session", autouse=True)
 def setup():
+    """ """
     telemetry_state = cache.get("telemetry_consent")
     has_configfile = config.handler.has_config_file
     temp_name = str(uuid.uuid4())
@@ -35,12 +36,25 @@ def setup():
 
 @pytest.fixture
 def runner():
+    """ """
     return CliRunner()
 
 
 @pytest.fixture
 def v1_node(runner):
+    """
+
+    Args:
+        runner:
+
+    Returns:
+
+    Raises:
+
+    """
+
     def make_v1_node():
+        """ """
         node = {
             "version": "v1",
             "type": "Node",

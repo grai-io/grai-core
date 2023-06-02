@@ -5,6 +5,7 @@ from grai_graph.graph import build_graph
 
 
 def graph_builder(self: BaseClient):
+    """ """
     nodes = self.get("nodes")
     edges = self.get("edges")
     return build_graph(nodes, edges, self.id)

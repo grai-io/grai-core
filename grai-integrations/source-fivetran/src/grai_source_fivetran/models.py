@@ -11,6 +11,8 @@ from grai_source_fivetran.fivetran_api.api_models import (
 
 
 class TableResult(BaseModel):
+    """ """
+
     id: str
     name_in_source: str
     parent_id: str
@@ -18,6 +20,8 @@ class TableResult(BaseModel):
 
 
 class ColumnResult(BaseModel):
+    """ """
+
     id: str
     name_in_source: str
     type_in_source: str
@@ -29,12 +33,16 @@ class ColumnResult(BaseModel):
 
 
 class SchemaResult(BaseModel):
+    """ """
+
     id: str
     name_in_source: str
     name_in_destination: str
 
 
 class DestinationConfig(BaseModel):
+    """ """
+
     host: str
     port: int
     database: str
@@ -44,6 +52,8 @@ class DestinationConfig(BaseModel):
 
 
 class DestinationMetadata(BaseModel):
+    """ """
+
     id: str  # e.x. decent_dropsy
     group_id: str  # e.x. decent_dropsy
     service: str  # e.x. snowflake
@@ -54,12 +64,16 @@ class DestinationMetadata(BaseModel):
 
 
 class ConnectorTablePatchSettings(BaseModel):
+    """ """
+
     allowed: bool
     reason: str
     reason_code: str
 
 
 class ConnectorTableColumnSchema(BaseModel):
+    """ """
+
     name_in_destination: str
     enabled: bool
     hashed: bool
@@ -67,6 +81,8 @@ class ConnectorTableColumnSchema(BaseModel):
 
 
 class ConnectorTableSchema(BaseModel):
+    """ """
+
     sync_mode: str
     name_in_destination: str
     enabled: bool
@@ -75,27 +91,37 @@ class ConnectorTableSchema(BaseModel):
 
 
 class ConnectorSchema(BaseModel):
+    """ """
+
     name_in_destination: str
     enabled: bool
     tables: Dict[str, ConnectorTableSchema]
 
 
 class ConnectorMetadata(BaseModel):
+    """ """
+
     enable_new_by_default: bool
     schema_change_handling: str
     schemas: Dict[str, ConnectorSchema]
 
 
 class SourceTableColumnMetadata(BaseModel):
+    """ """
+
     columns: Dict[str, ConnectorTableColumnSchema]
 
 
 class NamespaceIdentifier(BaseModel):
+    """ """
+
     source: str
     destination: str
 
 
 class Column(BaseModel):
+    """ """
+
     name: str
     namespace: str
     fivetran_id: str
@@ -107,6 +133,7 @@ class Column(BaseModel):
 
     @property
     def full_name(self):
+        """ """
         return f"{self.table_schema}.{self.table_name}.{self.name}"
 
     @classmethod
@@ -117,6 +144,19 @@ class Column(BaseModel):
         column: ColumnMetadataResponse,
         namespace: NamespaceIdentifier,
     ):
+        """
+
+        Args:
+            schema (SchemaMetadataResponse):
+            table (TableMetadataResponse):
+            column (ColumnMetadataResponse):
+            namespace (NamespaceIdentifier):
+
+        Returns:
+
+        Raises:
+
+        """
         source_values = {
             "name": column.name_in_source,
             "fivetran_id": column.id,
@@ -141,6 +181,8 @@ class Column(BaseModel):
 
 
 class Table(BaseModel):
+    """ """
+
     name: str
     namespace: str
     fivetran_id: str
@@ -148,6 +190,7 @@ class Table(BaseModel):
 
     @property
     def full_name(self):
+        """ """
         return f"{self.schema_name}.{self.name}"
 
     @classmethod
@@ -157,6 +200,18 @@ class Table(BaseModel):
         table: TableMetadataResponse,
         namespace: NamespaceIdentifier,
     ):
+        """
+
+        Args:
+            schema (SchemaMetadataResponse):
+            table (TableMetadataResponse):
+            namespace (NamespaceIdentifier):
+
+        Returns:
+
+        Raises:
+
+        """
         source_values = {
             "name": table.name_in_source,
             "schema_name": schema.name_in_source,
@@ -173,6 +228,8 @@ class Table(BaseModel):
 
 
 class Constraint(str, Enum):
+    """ """
+
     belongs_to = "bt"
     copy = "c"
 
@@ -181,6 +238,8 @@ NodeTypes = Union[Column, Table]
 
 
 class Edge(BaseModel):
+    """ """
+
     source: NodeTypes
     destination: NodeTypes
     definition: Optional[str]

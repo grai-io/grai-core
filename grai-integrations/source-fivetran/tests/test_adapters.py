@@ -9,6 +9,7 @@ from grai_source_fivetran.package_definitions import config
 
 
 def mock_edge_values():
+    """ """
     extra_args = {
         "is_primary_key": True,
         "is_foreign_key": False,
@@ -29,6 +30,8 @@ def mock_edge_values():
 
 
 class AdapterTestValues:
+    """ """
+
     columns = [
         Column(
             name="test",
@@ -56,47 +59,143 @@ class AdapterTestValues:
 
 @pytest.mark.parametrize("item,version,target", [(item, "v1", NodeV1) for item in AdapterTestValues.columns])
 def test_column_adapter(item, version, target):
+    """
+
+    Args:
+        item:
+        version:
+        target:
+
+    Returns:
+
+    Raises:
+
+    """
     result = adapt_to_client(item, version)
     assert isinstance(result, target)
 
 
 @pytest.mark.parametrize("item,version,target", [(item, "v1", NodeV1) for item in AdapterTestValues.tables])
 def test_table_adapter(item, version, target):
+    """
+
+    Args:
+        item:
+        version:
+        target:
+
+    Returns:
+
+    Raises:
+
+    """
     result = adapt_to_client(item, version)
     assert isinstance(result, target)
 
 
 @pytest.mark.parametrize("item,version,target", [(item, "v1", EdgeV1) for item in AdapterTestValues.edges])
 def test_edge_adapter(item, version, target):
+    """
+
+    Args:
+        item:
+        version:
+        target:
+
+    Returns:
+
+    Raises:
+
+    """
     result = adapt_to_client(item, version)
     assert isinstance(result, target)
 
 
 def test_node_metadata_has_core_metadata_ids(nodes):
+    """
+
+    Args:
+        nodes:
+
+    Returns:
+
+    Raises:
+
+    """
     for node in nodes:
         assert hasattr(node.spec.metadata, core_config.metadata_id)
 
 
 def test_edge_metadata_has_core_metadata_ids(edges):
+    """
+
+    Args:
+        edges:
+
+    Returns:
+
+    Raises:
+
+    """
     for edge in edges:
         assert hasattr(edge.spec.metadata, core_config.metadata_id)
 
 
 def test_node_metadata_has_app_metadata_id(nodes):
+    """
+
+    Args:
+        nodes:
+
+    Returns:
+
+    Raises:
+
+    """
     for node in nodes:
         assert hasattr(node.spec.metadata, config.metadata_id)
 
 
 def test_edge_metadata_has_app_metadata_id(edges):
+    """
+
+    Args:
+        edges:
+
+    Returns:
+
+    Raises:
+
+    """
     for edge in edges:
         assert hasattr(edge.spec.metadata, config.metadata_id)
 
 
 def test_node_metadata_is_core_compliant(nodes):
+    """
+
+    Args:
+        nodes:
+
+    Returns:
+
+    Raises:
+
+    """
     for node in nodes:
         assert isinstance(getattr(node.spec.metadata, core_config.metadata_id), GraiNodeMetadataV1)
 
 
 def test_edge_metadata_is_core_compliant(edges):
+    """
+
+    Args:
+        edges:
+
+    Returns:
+
+    Raises:
+
+    """
     for edge in edges:
         assert isinstance(getattr(edge.spec.metadata, core_config.metadata_id), GraiEdgeMetadataV1)

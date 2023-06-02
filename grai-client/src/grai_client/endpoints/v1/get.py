@@ -20,6 +20,18 @@ X = TypeVar("X")
 def get_node_by_label_v1(
     client: ClientV1, grai_type: NodeLabels, options: ClientOptions = ClientOptions()
 ) -> List[NodeV1]:
+    """
+
+    Args:
+        client (ClientV1):
+        grai_type (NodeLabels):
+        options (ClientOptions, optional):  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
     url = client.get_url(grai_type)
     resp = get(client, url, options=options)
     return [NodeV1.from_spec(obj) for obj in resp.json()]
@@ -27,6 +39,18 @@ def get_node_by_label_v1(
 
 @get.register
 def get_node_v1(client: ClientV1, grai_type: NodeV1, options: ClientOptions = ClientOptions()) -> Optional[NodeV1]:
+    """
+
+    Args:
+        client (ClientV1):
+        grai_type (NodeV1):
+        options (ClientOptions, optional):  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
     return get(client, grai_type.spec, options)
 
 
@@ -37,6 +61,19 @@ def get_nodes_by_uuid_str_id(
     node_uuid: Union[str, UUID],
     options: ClientOptions = ClientOptions(),
 ) -> NodeV1:
+    """
+
+    Args:
+        client (ClientV1):
+        grai_type (NodeLabels):
+        node_uuid (Union[str, UUID]):
+        options (ClientOptions, optional):  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
     if not is_valid_uuid(node_uuid):
         raise ValueError(f"The provided node id {node_uuid} is not a valid uuid.")
 
@@ -51,6 +88,18 @@ def get_nodes_by_uuid_str_id(
 def get_from_node_uuid_id(
     client: ClientV1, grai_type: NodeUuidID, options: ClientOptions = ClientOptions()
 ) -> Optional[NodeV1]:
+    """
+
+    Args:
+        client (ClientV1):
+        grai_type (NodeUuidID):
+        options (ClientOptions, optional):  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
     return get(client, "Node", grai_type.id, options=options)
 
 
@@ -58,6 +107,18 @@ def get_from_node_uuid_id(
 def get_from_node_named_id(
     client: ClientV1, grai_type: NodeNamedID, options: ClientOptions = ClientOptions()
 ) -> Optional[NodeV1]:
+    """
+
+    Args:
+        client (ClientV1):
+        grai_type (NodeNamedID):
+        options (ClientOptions, optional):  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
     options = options.copy()
     options.query_args = {**options.query_args, "name": grai_type.name, "namespace": grai_type.namespace}
 
@@ -82,7 +143,20 @@ def get_from_node_named_id(
 
 
 def finalize_edge(client: ClientV1, resp: Dict, options: ClientOptions = ClientOptions()) -> EdgeV1:
+    """
+
+    Args:
+        client (ClientV1):
+        resp (Dict):
+        options (ClientOptions, optional):  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
     nodes = [get(client, "node", resp["source"]), get(client, "node", resp["destination"])]
+
     resp["source"] = nodes[0].spec
     resp["destination"] = nodes[1].spec
     return EdgeV1.from_spec(resp)
@@ -92,6 +166,18 @@ def finalize_edge(client: ClientV1, resp: Dict, options: ClientOptions = ClientO
 def get_edge_by_label_v1(
     client: ClientV1, grai_type: EdgeLabels, options: ClientOptions = ClientOptions()
 ) -> List[EdgeV1]:
+    """
+
+    Args:
+        client (ClientV1):
+        grai_type (EdgeLabels):
+        options (ClientOptions, optional):  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
     url = client.get_url(grai_type)
     resp = get(client, url, options=options)
     return [finalize_edge(client, edge) for edge in resp.json()]
@@ -104,6 +190,19 @@ def get_edge_by_uuid_str_id(
     edge_uuid: Union[str, UUID],
     options: ClientOptions = ClientOptions(),
 ) -> EdgeV1:
+    """
+
+    Args:
+        client (ClientV1):
+        grai_type (EdgeLabels):
+        edge_uuid (Union[str, UUID]):
+        options (ClientOptions, optional):  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
     if not is_valid_uuid(edge_uuid):
         raise ValueError(f"The provided node id {edge_uuid} is not a valid uuid.")
 
@@ -115,6 +214,18 @@ def get_edge_by_uuid_str_id(
 
 @get.register
 def get_edge_v1(client: ClientV1, grai_type: EdgeV1, options: ClientOptions = ClientOptions()) -> Optional[EdgeV1]:
+    """
+
+    Args:
+        client (ClientV1):
+        grai_type (EdgeV1):
+        options (ClientOptions, optional):  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
     return get(client, grai_type.spec, options)
 
 
@@ -122,6 +233,18 @@ def get_edge_v1(client: ClientV1, grai_type: EdgeV1, options: ClientOptions = Cl
 def get_from_edge_uuid_id(
     client: ClientV1, grai_type: EdgeUuidID, options: ClientOptions = ClientOptions()
 ) -> Optional[EdgeV1]:
+    """
+
+    Args:
+        client (ClientV1):
+        grai_type (EdgeUuidID):
+        options (ClientOptions, optional):  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
     return get(client, "Edge", grai_type.id, options=options)
 
 
@@ -129,6 +252,18 @@ def get_from_edge_uuid_id(
 def get_from_edge_named_id(
     client: ClientV1, grai_type: EdgeNamedID, options: ClientOptions = ClientOptions()
 ) -> Optional[EdgeV1]:
+    """
+
+    Args:
+        client (ClientV1):
+        grai_type (EdgeNamedID):
+        options (ClientOptions, optional):  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
     options = options.copy()
     options.query_args = {**options.query_args, "name": grai_type.name, "namespace": grai_type.namespace}
 
@@ -138,7 +273,7 @@ def get_from_edge_named_id(
     if num_results == 0:
         return None
     elif num_results == 1:
-        return finalize_edge(client, resp[0])
+        return resp[0]
     else:
         message = (
             f"An edge query for name={grai_type.name}, namespace={grai_type.namespace} in the "
@@ -158,6 +293,18 @@ def get_all_workspaces(
     grai_type: WorkspaceLabels,
     options: ClientOptions = ClientOptions(),
 ) -> Optional[List[Workspace]]:
+    """
+
+    Args:
+        client (ClientV1):
+        grai_type (WorkspaceLabels):
+        options (ClientOptions, optional):  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
     resp = get(client, client.get_url(grai_type), options=options)
     resp = resp.json()
 
@@ -174,6 +321,19 @@ def get_workspace_by_name_v1(
     name: str,
     options: ClientOptions = ClientOptions(),
 ) -> Optional[Workspace]:
+    """
+
+    Args:
+        client (ClientV1):
+        grai_type (WorkspaceLabels):
+        name (str):
+        options (ClientOptions, optional):  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
     if is_valid_uuid(name):
         url = f"{client.get_url(grai_type)}{name}/"
     elif len(name.split("/")) == 2:

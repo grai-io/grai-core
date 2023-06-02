@@ -33,6 +33,17 @@ from grai_source_bigquery.models import Column, Edge, Table
 
 @pytest.fixture
 def mock_get_nodes_and_edges(tables, edges):
+    """
+
+    Args:
+        tables:
+        edges:
+
+    Returns:
+
+    Raises:
+
+    """
     nodes = adapt_to_client(tables, "v1")
     edges = adapt_to_client(edges, "v1")
     return nodes, edges
@@ -40,6 +51,7 @@ def mock_get_nodes_and_edges(tables, edges):
 
 @pytest.fixture
 def column_params():
+    """ """
     column_params = [
         {
             "name": "test",
@@ -76,11 +88,31 @@ def column_params():
 
 @pytest.fixture
 def columns(column_params):
+    """
+
+    Args:
+        column_params:
+
+    Returns:
+
+    Raises:
+
+    """
     return [Column(**params) for params in column_params]
 
 
 @pytest.fixture
 def table_params(column_params):
+    """
+
+    Args:
+        column_params:
+
+    Returns:
+
+    Raises:
+
+    """
     table_params = [
         {"name": "test", "namespace": "test", "schema": "test"},
         {"table_name": "test", "namespace": "test", "table_schema": "test"},
@@ -113,12 +145,25 @@ def table_params(column_params):
 
 @pytest.fixture
 def tables(table_params):
+    """
+
+    Args:
+        table_params:
+
+    Returns:
+
+    Raises:
+
+    """
     return [Table(**params) for params in table_params]
 
 
 @pytest.fixture
 def edge_params():
+    """ """
+
     def make_column_id():
+        """ """
         return {
             "table_schema": "schema",
             "table_name": "table",
@@ -145,4 +190,14 @@ def edge_params():
 
 @pytest.fixture
 def edges(edge_params):
+    """
+
+    Args:
+        edge_params:
+
+    Returns:
+
+    Raises:
+
+    """
     return [Edge(**params) for params in edge_params]

@@ -26,6 +26,17 @@ from grai_source_dbt.utils import full_name
 
 @multimethod
 def build_grai_metadata(current: Any, version: Any) -> None:
+    """
+
+    Args:
+        current (Any):
+        version (Any):
+
+    Returns:
+
+    Raises:
+
+    """
     raise NotImplementedError(
         f"No objects of type `{type(current)}` have no implementation of `build_grai_metadata` for version `{version}`."
     )
@@ -33,6 +44,17 @@ def build_grai_metadata(current: Any, version: Any) -> None:
 
 @build_grai_metadata.register
 def build_grai_metadata_from_column(current: Column, version: Literal["v1"] = "v1") -> ColumnMetadata:
+    """
+
+    Args:
+        current (Column):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
     node_attributes: Dict[str, Union[bool, str]] = dict()
     if current.data_type is not None:
         node_attributes["data_type"] = current.data_type
@@ -53,6 +75,17 @@ def build_grai_metadata_from_column(current: Column, version: Literal["v1"] = "v
 
 @build_grai_metadata.register
 def build_grai_metadata_from_node(current: AllDbtNodeTypes, version: Literal["v1"] = "v1") -> TableMetadata:
+    """
+
+    Args:
+        current (AllDbtNodeTypes):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
     data = {"version": version, "node_type": NodeTypeLabels.table.value, "tags": [config.metadata_id]}
 
     return TableMetadata(**data)
@@ -60,6 +93,17 @@ def build_grai_metadata_from_node(current: AllDbtNodeTypes, version: Literal["v1
 
 @build_grai_metadata.register
 def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> GenericEdgeMetadataV1:
+    """
+
+    Args:
+        current (Edge):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
     data = {"version": version, "edge_type": current.edge_type.value, "tags": [config.metadata_id]}
     if current.edge_type == EdgeTypeLabels.table_to_table:
         return TableToTableMetadata(**data)
@@ -73,6 +117,17 @@ def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") 
 
 @multimethod
 def build_app_metadata(current: Any, version: Any) -> None:
+    """
+
+    Args:
+        current (Any):
+        version (Any):
+
+    Returns:
+
+    Raises:
+
+    """
     raise NotImplementedError(
         f"No objects of type `{type(current)}` have an implementation of `build_dbt_metadata` for version `{version}`."
     )
@@ -80,6 +135,17 @@ def build_app_metadata(current: Any, version: Any) -> None:
 
 @build_app_metadata.register
 def build_metadata_from_column(current: Column, version: Literal["v1"] = "v1") -> Dict:
+    """
+
+    Args:
+        current (Column):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
     data = {
         "description": current.description,
         "data_type": current.data_type,
@@ -94,6 +160,17 @@ def build_metadata_from_column(current: Column, version: Literal["v1"] = "v1") -
 
 @build_app_metadata.register
 def build_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> Dict:
+    """
+
+    Args:
+        current (Edge):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
     data = {
         "definition": current.definition,
         "constraint_type": current.constraint_type.name,
@@ -104,6 +181,17 @@ def build_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> Di
 
 @build_app_metadata.register
 def build_metadata_from_node(current: AllDbtNodeTypes, version: Literal["v1"] = "v1") -> Dict:
+    """
+
+    Args:
+        current (AllDbtNodeTypes):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
     return current.dict()
 
 
@@ -111,6 +199,17 @@ def build_metadata_from_node(current: AllDbtNodeTypes, version: Literal["v1"] = 
 
 
 def build_metadata(obj, version):
+    """
+
+    Args:
+        obj:
+        version:
+
+    Returns:
+
+    Raises:
+
+    """
     integration_meta = build_app_metadata(obj, version)
     base_metadata = build_grai_metadata(obj, version)
     integration_meta["grai"] = base_metadata
@@ -123,11 +222,33 @@ def build_metadata(obj, version):
 
 @multimethod
 def adapt_to_client(current: Any, version: Any) -> None:
+    """
+
+    Args:
+        current (Any):
+        version (Any):
+
+    Returns:
+
+    Raises:
+
+    """
     raise NotImplementedError(f"No objects of type `{type(current)}` have a `{version}` client adapter.")
 
 
 @adapt_to_client.register
 def adapt_table_to_client(current: AllDbtNodeTypes, version: Literal["v1"] = "v1") -> NodeV1:
+    """
+
+    Args:
+        current (AllDbtNodeTypes):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
     spec_dict = {
         "name": current.grai_.full_name,
         "namespace": current.grai_.namespace,
@@ -140,6 +261,17 @@ def adapt_table_to_client(current: AllDbtNodeTypes, version: Literal["v1"] = "v1
 
 @adapt_to_client.register
 def adapt_column_to_client(current: Column, version: Literal["v1"] = "v1") -> NodeV1:
+    """
+
+    Args:
+        current (Column):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
     spec_dict = {
         "name": current.full_name,
         "namespace": current.namespace,
@@ -153,6 +285,17 @@ def adapt_column_to_client(current: Column, version: Literal["v1"] = "v1") -> No
 
 @adapt_to_client.register
 def adapt_edge_to_client(current: Edge, version: Literal["v1"] = "v1") -> EdgeV1:
+    """
+
+    Args:
+        current (Edge):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
     spec_dict = {
         "data_source": config.integration_name,
         "name": current.name,
@@ -173,9 +316,30 @@ def adapt_edge_to_client(current: Edge, version: Literal["v1"] = "v1") -> EdgeV1
 
 @adapt_to_client.register
 def adapt_list_to_client(objs: Sequence, version: Literal["v1"]) -> List[Union[NodeV1, EdgeV1]]:
+    """
+
+    Args:
+        objs (Sequence):
+        version (Literal["v1"]):
+
+    Returns:
+
+    Raises:
+
+    """
     return [adapt_to_client(item, version) for item in objs]
 
 
 @adapt_to_client.register
 def adapt_to_client_default_version(obj: Any):
+    """
+
+    Args:
+        obj (Any):
+
+    Returns:
+
+    Raises:
+
+    """
     return adapt_to_client(obj, version="v1")

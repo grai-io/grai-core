@@ -81,6 +81,7 @@ table_params.append(new_table)
 
 
 def make_column_id():
+    """ """
     return {
         "table_schema": "schema",
         "table_name": "table",
@@ -107,17 +108,47 @@ edge_params = [
 
 @pytest.mark.parametrize("params", column_params)
 def test_columns(params):
+    """
+
+    Args:
+        params:
+
+    Returns:
+
+    Raises:
+
+    """
     table = Column(**params)
     assert isinstance(table, Column)
 
 
 @pytest.mark.parametrize("params", table_params)
 def test_tables(params):
+    """
+
+    Args:
+        params:
+
+    Returns:
+
+    Raises:
+
+    """
     table = Table(**params)
     assert isinstance(table, Table)
 
 
 @pytest.mark.parametrize("params", edge_params)
 def test_edges(params):
+    """
+
+    Args:
+        params:
+
+    Returns:
+
+    Raises:
+
+    """
     table = Edge(**params)
     assert isinstance(table, Edge)

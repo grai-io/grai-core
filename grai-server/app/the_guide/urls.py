@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import include, path
-from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -32,14 +32,15 @@ urlpatterns = [
     path("graphql/", AsyncGraphQLView.as_view(schema=schema)),
     # OpenAPI 3 docs w/ Swagger
     path(
-        "schema/",
-        SpectacularAPIView.as_view(custom_settings=spectacular_settings),
+        "api/v1/schema/",
+        SpectacularAPIView.as_view(),
         name="schema",
     ),
     path(
-        "docs/",
-        SpectacularSwaggerView.as_view(template_name="swagger-ui.html", url_name="schema"),
+        "api/v1/schema/swagger-ui/",
+        SpectacularSwaggerView.as_view(url_name="schema", template_name="swagger-ui.html"),
         name="swagger-ui",
     ),
+    path("api/v1/schema/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
     path("health/", include("health_check.urls"), name="health"),
 ]
