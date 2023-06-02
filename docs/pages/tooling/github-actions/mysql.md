@@ -1,12 +1,12 @@
 ---
-title: PostgreSQL
-description: Documentation for Grai's PostgreSQL GitHub action.
+title: MySQL
+description: Documentation for Grai's MySQL GitHub action.
 ---
 
-# Postgres
+# MySQL
 
-The Postgres action depends on the python psycopg2 library. 
-You can find complete documentation about the library [here](https://www.psycopg.org/docs/).
+The MySQL action depends on the python mysql library.
+You can find complete documentation about the library [here](https://dev.mysql.com/doc/connector-python).
 
 
 ### Fields
@@ -16,7 +16,7 @@ You can find complete documentation about the library [here](https://www.psycopg
 | Field | Required | Default | Description |
 |-----|-----|-----|-----|
 | db-host | yes |  | The database host |
-| db-port | no | 5432 | The database port |
+| db-port | no | 3306 | The database port |
 | db-database-name | yes |  | The database name |
 | db-user | yes |  | The database user |
 | db-password | yes |  | The database password |
@@ -31,26 +31,22 @@ You can find complete documentation about the library [here](https://www.psycopg
 ```yaml copy
 'on':
 - push
-name: PostgreSQL
+name: MySQL
 jobs:
-  test_postgres:
+  test_mysql:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v3
     - name: Run Grai Action
-      uses: grai-core/grai-actions/postgres
+      uses: grai-core/grai-actions/mysql
       with:
         namespace: my_apps_grai_namespace
         api-key: my_grai_api_key
-        action: tests
-        db-host: prod.db.com
-        db-port: '5432'
-        db-database-name: my_database
+        db-host: dev.mysql.com
+        db-port: '3306'
+        db-database-name: my_db
         db-user: my_user
         db-password: my_password
 
 ```
-
-
-

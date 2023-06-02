@@ -893,6 +893,20 @@ tomli = {version = ">=1.0.0", markers = "python_version < \"3.11\""}
 testing = ["argcomplete", "attrs (>=19.2.0)", "hypothesis (>=3.56)", "mock", "nose", "pygments (>=2.7.2)", "requests", "xmlschema"]
 
 [[package]]
+name = "pytest-durations"
+version = "1.2.0"
+description = "Pytest plugin reporting fixtures and test functions execution time."
+optional = false
+python-versions = ">=3.6.2"
+files = [
+    {file = "pytest-durations-1.2.0.tar.gz", hash = "sha256:75793f7c2c393a947de4a92cc205e8dcb3d7fcde492628926cca97eb8e87077d"},
+    {file = "pytest_durations-1.2.0-py3-none-any.whl", hash = "sha256:210c649d989fdf8e864b7f614966ca2c8be5b58a5224d60089a43618c146d7fb"},
+]
+
+[package.dependencies]
+pytest = ">=4.6"
+
+[[package]]
 name = "pyyaml"
 version = "6.0"
 description = "YAML parser and emitter for Python"
@@ -1069,13 +1083,13 @@ files = [
 
 [[package]]
 name = "typing-extensions"
-version = "4.6.2"
+version = "4.6.3"
 description = "Backported and Experimental Type Hints for Python 3.7+"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "typing_extensions-4.6.2-py3-none-any.whl", hash = "sha256:3a8b36f13dd5fdc5d1b16fe317f5668545de77fa0b8e02006381fd49d731ab98"},
-    {file = "typing_extensions-4.6.2.tar.gz", hash = "sha256:06006244c70ac8ee83fa8282cb188f697b8db25bc8b4df07be1873c43897060c"},
+    {file = "typing_extensions-4.6.3-py3-none-any.whl", hash = "sha256:88a4153d8505aabbb4e13aacb7c486c2b4a33ca3b3f807914a9b4c844c471c26"},
+    {file = "typing_extensions-4.6.3.tar.gz", hash = "sha256:d91d5919357fe7f681a9f2b5b4cb2a5f1ef0a1e9f59c4d8ff0d3491e05c0ffd5"},
 ]
 
 [[package]]
@@ -1132,4 +1146,4 @@ test = ["pytest (>=6.0.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "9592c8bc82c78a909d3452f0d500185aebf1622d74bcb9f13927dd24509abab1"
+content-hash = "75c0ca3d1c5952a30fb57a76e0d1a99c701cd3540a7edb73279b40fd7c1a4668"

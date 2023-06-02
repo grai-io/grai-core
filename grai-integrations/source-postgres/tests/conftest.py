@@ -5,7 +5,20 @@ from grai_source_postgres.loader import PostgresConnector
 
 
 @pytest.fixture
-def connection() -> PostgresConnector:
+def conn_credentials() -> dict:
+    test_credentials = {
+        "host": "localhost",
+        "dbname": "grai",
+        "user": "grai",
+        "password": "grai",
+        "port": "5433",
+        "namespace": "test",
+    }
+    return test_credentials
+
+
+@pytest.fixture
+def connection(conn_credentials) -> PostgresConnector:
     """
 
     Args:
@@ -15,16 +28,8 @@ def connection() -> PostgresConnector:
     Raises:
 
     """
-    test_credentials = {
-        "host": "localhost",
-        "dbname": "grai",
-        "user": "grai",
-        "password": "grai",
-        "port": "5432",
-        "namespace": "test",
-    }
 
-    connection = PostgresConnector(**test_credentials)
+    connection = PostgresConnector(**conn_credentials)
     return connection
 
 
