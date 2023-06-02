@@ -1,0 +1,13 @@
+version: "3.7"
+
+services:
+  postgres:
+    image: "postgres:latest"
+    volumes:
+     - ./dev-database/schemas:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_USER: grai
+      POSTGRES_PASSWORD: grai
+      POSTGRES_DB: grai
+    ports:
+      - 5433:5432
