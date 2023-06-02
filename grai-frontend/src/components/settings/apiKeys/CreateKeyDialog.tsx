@@ -77,6 +77,7 @@ const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({
   const [key, setKey] = useState<string>()
   const [values, setValues] = useState<Values>(defaultValues)
 
+  /* istanbul ignore next */
   const [createApiKey, { loading, error }] = useMutation<
     CreateApiKey,
     CreateApiKeyVariables

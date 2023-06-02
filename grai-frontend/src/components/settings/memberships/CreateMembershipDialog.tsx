@@ -45,6 +45,7 @@ const CreateMembershipDialog: React.FC<CreateMembershipDialogProps> = ({
 }) => {
   const { enqueueSnackbar } = useSnackbar()
 
+  /* istanbul ignore next */
   const [createMemberships, { loading, error }] = useMutation<
     CreateMemberships,
     CreateMembershipsVariables

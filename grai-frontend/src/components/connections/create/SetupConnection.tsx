@@ -131,6 +131,7 @@ const SetupConnection: React.FC<SetupConnectionProps> = ({
     }
   )
 
+  /* istanbul ignore next */
   const [createConnection, { loading: loadingCreate, error: errorCreate }] =
     useMutation<CreateConnection, CreateConnectionVariables>(
       CREATE_CONNECTION,

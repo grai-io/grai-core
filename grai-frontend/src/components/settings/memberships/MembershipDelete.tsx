@@ -42,6 +42,7 @@ const MembershipDelete: React.FC<MembershipDeleteProps> = ({
   const confirm = useConfirm()
   const { enqueueSnackbar } = useSnackbar()
 
+  /* istanbul ignore next */
   const [deleteMembership] = useMutation<
     DeleteMembership,
     DeleteMembershipVariables

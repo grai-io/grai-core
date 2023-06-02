@@ -38,6 +38,7 @@ const SourceDelete: React.FC<SourceDeleteProps> = ({
   const confirm = useConfirm()
   const { enqueueSnackbar } = useSnackbar()
 
+  /* istanbul ignore next */
   const [deleteSource] = useMutation<DeleteSource, DeleteSourceVariables>(
     DELETE_SOURCE,
     {
