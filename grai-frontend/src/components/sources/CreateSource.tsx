@@ -50,6 +50,7 @@ const CreateSource: React.FC<CreateSourceProps> = ({ workspaceId }) => {
           navigate(`${routePrefix}/sources/${res.data.createSource.id}`)
       )
       .then(() => enqueueSnackbar("Source created"))
+      .catch(() => {})
 
   return (
     <Grid container>

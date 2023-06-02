@@ -4,6 +4,7 @@ import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
 import { GET_SOURCE_TABLES } from "components/sources/SourceTables"
 import Source, { GET_SOURCE } from "./Source"
+import { UPDATE_SOURCE } from "components/sources/UpdateSource"
 
 test("renders", async () => {
   render(<Source />, {
@@ -92,6 +93,73 @@ const sourceMock = {
     },
   },
 }
+
+test("submit", async () => {
+  const user = userEvent.setup()
+
+  render(<Source />, {
+    withRouter: true,
+  })
+
+  await waitFor(() => {
+    expect(screen.getAllByText("Hello World")).toBeTruthy()
+  })
+
+  await act(
+    async () =>
+      await user.type(
+        screen.getByRole("textbox", { name: /name/i }),
+        "test-source"
+      )
+  )
+
+  await act(
+    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+  )
+})
+
+test("submit error", async () => {
+  const user = userEvent.setup()
+
+  render(<Source />, {
+    mocks: [
+      sourceMock,
+      {
+        request: {
+          query: UPDATE_SOURCE,
+          variables: {
+            sourceId: "1",
+            name: "Source 1test-source",
+          },
+        },
+        result: {
+          errors: [new GraphQLError("Error!")],
+        },
+      },
+    ],
+    withRouter: true,
+  })
+
+  await waitFor(() => {
+    expect(screen.getByText("Source 1")).toBeInTheDocument()
+  })
+
+  await act(
+    async () =>
+      await user.type(
+        screen.getByRole("textbox", { name: /name/i }),
+        "test-source"
+      )
+  )
+
+  await act(
+    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+  )
+
+  await waitFor(() => {
+    expect(screen.getByText("Error!")).toBeInTheDocument()
+  })
+})
 
 test("renders tables", async () => {
   const user = userEvent.setup()
@@ -256,6 +324,25 @@ test("tables click row", async () => {
   await act(
     async () => await user.click(screen.getByRole("tab", { name: /tables/i }))
   )
+
+  await act(
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+    async () => await user.click(container.querySelectorAll("tbody > tr")[0])
+  )
+
+  expect(screen.getByText("New Page")).toBeInTheDocument()
+})
+
+test("connections click row", async () => {
+  const user = userEvent.setup()
+
+  const { container } = render(<Source />, {
+    routes: ["/:organisationName/:workspaceName/connections/:connectionId"],
+  })
+
+  await waitFor(() => {
+    expect(screen.getAllByText("Hello World")).toBeTruthy()
+  })
 
   await act(
     // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access

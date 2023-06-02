@@ -39,7 +39,9 @@ const UpdateSource: React.FC<UpdateSourceProps> = ({ source }) => {
         sourceId: source.id,
         name: values.name,
       },
-    }).then(() => enqueueSnackbar("Source updated"))
+    })
+      .then(() => enqueueSnackbar("Source updated"))
+      .catch(() => {})
 
   return (
     <Grid container>

@@ -1,7 +1,9 @@
 import React from "react"
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { act, render, screen, waitFor } from "testing"
 import SourceCreate, { GET_WORKSPACE } from "./SourceCreate"
+import userEvent from "@testing-library/user-event"
+import { CREATE_SOURCE } from "components/sources/CreateSource"
 
 test("renders", async () => {
   render(<SourceCreate />, {
@@ -10,6 +12,93 @@ test("renders", async () => {
 
   await waitFor(() => {
     expect(screen.getByText("Create Source")).toBeInTheDocument()
+  })
+})
+
+test("submit", async () => {
+  const user = userEvent.setup()
+
+  render(<SourceCreate />, {
+    routes: ["/:organisationName/:workspaceName/sources/:sourceId"],
+  })
+
+  await waitFor(() => {
+    expect(screen.getByText("Create Source")).toBeInTheDocument()
+  })
+
+  await act(
+    async () =>
+      await user.type(
+        screen.getByRole("textbox", { name: /name/i }),
+        "test-source"
+      )
+  )
+
+  await act(
+    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+  )
+
+  expect(screen.getByText("New Page")).toBeInTheDocument()
+})
+
+test("submit error", async () => {
+  const user = userEvent.setup()
+
+  const mocks = [
+    {
+      request: {
+        query: GET_WORKSPACE,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+        },
+      },
+      result: {
+        data: {
+          workspace: {
+            id: "1",
+            name: "Workspace 1",
+          },
+        },
+      },
+    },
+    {
+      request: {
+        query: CREATE_SOURCE,
+        variables: {
+          workspaceId: "1",
+          name: "test-source",
+        },
+      },
+      result: {
+        errors: [new GraphQLError("Error!")],
+      },
+    },
+  ]
+
+  render(<SourceCreate />, {
+    mocks,
+    withRouter: true,
+  })
+
+  await waitFor(() => {
+    expect(screen.getByText("Create Source")).toBeInTheDocument()
+  })
+
+  await act(
+    async () =>
+      await user.type(
+        screen.getByRole("textbox", { name: /name/i }),
+        "test-source"
+      )
+  )
+
+  await act(
+    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+  )
+
+  await waitFor(() => {
+    expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })
 

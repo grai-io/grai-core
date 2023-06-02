@@ -86,6 +86,14 @@ test("submit update", async () => {
 
   await act(
     async () =>
+      await user.type(
+        screen.getByRole("textbox", { name: /source/i }),
+        "test-source"
+      )
+  )
+
+  await act(
+    async () =>
       await user.click(screen.getByRole("button", { name: /continue/i }))
   )
 })
