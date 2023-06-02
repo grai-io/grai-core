@@ -39,6 +39,7 @@ services:
       - FRONTEND_URL=http://localhost:3000
       - CELERY_BROKER=redis://redis:6379/0
       - CELERY_BACKEND=redis://redis:6379/0
+      - REDIS_GRAPH_CACHE_HOST=redis
     depends_on:
       - redis
       - db
