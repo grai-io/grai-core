@@ -8,6 +8,9 @@ from common.permissions.multitenant import Multitenant
 from lineage.models import Edge, Node
 from lineage.serializers import EdgeSerializer, NodeSerializer
 from workspaces.permissions import HasWorkspaceAPIKey
+from django_multitenant.utils import (
+    get_current_tenant,
+)
 
 
 class NodeViewSet(ModelViewSet):
@@ -24,16 +27,23 @@ class NodeViewSet(ModelViewSet):
 
     def get_queryset(self):
         if len(self.request.query_params) == 0:
-            return self.type.objects
+            return self.type.objects.filter(workspace=get_current_tenant())
 
         q_filter = Q()
         query_params = self.request.query_params
-        supported_filters = ["is_active", "namespace", "name", "display_name", "created_at", "updated_at"]
+        supported_filters = [
+            "is_active",
+            "namespace",
+            "name",
+            "display_name",
+            "created_at",
+            "updated_at",
+        ]
         starts_with_filters = ("metadata", "created_at", "updated_at")
         for filter_name, filter_value in query_params.items():
             if filter_name in supported_filters or filter_name.startswith(starts_with_filters):
                 q_filter &= Q(**{filter_name: filter_value})
-        return self.type.objects.filter(q_filter)
+        return self.type.objects.filter(q_filter).filter(workspace=get_current_tenant())
 
 
 class EdgeViewSet(ModelViewSet):
@@ -75,14 +85,21 @@ class EdgeViewSet(ModelViewSet):
 
     def get_queryset(self):
         if len(self.request.query_params) == 0:
-            return self.type.objects
+            return self.type.objects.filter(workspace=get_current_tenant())
 
         q_filter = Q()
         query_params = self.request.query_params
-        supported_filters = {"source", "destination", "is_active", "name", "namespace", "display_name"}
+        supported_filters = {
+            "source",
+            "destination",
+            "is_active",
+            "name",
+            "namespace",
+            "display_name",
+        }
         starts_with_filters = ("metadata", "created_at", "updated_at")
         for filter_name, filter_value in query_params.items():
             if filter_name in supported_filters or filter_name.startswith(starts_with_filters):
                 q_filter &= Q(**{filter_name: filter_value})
 
-        return self.type.objects.filter(q_filter)
+        return self.type.objects.filter(q_filter).filter(workspace=get_current_tenant())
