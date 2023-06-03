@@ -1,11 +1,12 @@
 from typing import Iterable, List, Optional, Sequence
 
 from django.db import models
+from django_multitenant.models import TenantManagerMixin
 
 from .graph_cache import GraphCache
 
 
-class CacheManager(models.Manager):
+class CacheManager(TenantManagerMixin, models.Manager):
     def bulk_create(
         self,
         objs: Iterable,

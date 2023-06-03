@@ -24,13 +24,8 @@ class NodeViewSet(ModelViewSet):
     type = Node
 
     def get_queryset(self):
-        queryset = self.queryset
-        if isinstance(queryset, QuerySet):
-            # Ensure queryset is re-evaluated on each request.
-            queryset = queryset.all()
-
         if len(self.request.query_params) == 0:
-            return queryset
+            return self.type.objects
 
         q_filter = Q()
         query_params = self.request.query_params
@@ -46,7 +41,7 @@ class NodeViewSet(ModelViewSet):
         for filter_name, filter_value in query_params.items():
             if filter_name in supported_filters or filter_name.startswith(starts_with_filters):
                 q_filter &= Q(**{filter_name: filter_value})
-        return queryset.filter(q_filter)
+        return self.type.objects.filter(q_filter)
 
 
 class EdgeViewSet(ModelViewSet):
@@ -87,13 +82,8 @@ class EdgeViewSet(ModelViewSet):
     #     return super().create(request, *args, **kwargs)
 
     def get_queryset(self):
-        queryset = self.queryset
-        if isinstance(queryset, QuerySet):
-            # Ensure queryset is re-evaluated on each request.
-            queryset = queryset.all()
-
         if len(self.request.query_params) == 0:
-            return queryset
+            return self.type.objects
 
         q_filter = Q()
         query_params = self.request.query_params
@@ -110,4 +100,4 @@ class EdgeViewSet(ModelViewSet):
             if filter_name in supported_filters or filter_name.startswith(starts_with_filters):
                 q_filter &= Q(**{filter_name: filter_value})
 
-        return queryset.filter(q_filter).filter(workspace=get_current_tenant())
+        return self.type.objects.filter(q_filter)
