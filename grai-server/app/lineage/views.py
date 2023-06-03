@@ -1,4 +1,5 @@
 from django.db.models import Q
+from django.db.models.query import QuerySet
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
@@ -8,9 +9,6 @@ from common.permissions.multitenant import Multitenant
 from lineage.models import Edge, Node
 from lineage.serializers import EdgeSerializer, NodeSerializer
 from workspaces.permissions import HasWorkspaceAPIKey
-from django_multitenant.utils import (
-    get_current_tenant,
-)
 
 
 class NodeViewSet(ModelViewSet):
@@ -26,8 +24,13 @@ class NodeViewSet(ModelViewSet):
     type = Node
 
     def get_queryset(self):
+        queryset = self.queryset
+        if isinstance(queryset, QuerySet):
+            # Ensure queryset is re-evaluated on each request.
+            queryset = queryset.all()
+
         if len(self.request.query_params) == 0:
-            return self.type.objects.filter(workspace=get_current_tenant())
+            return queryset
 
         q_filter = Q()
         query_params = self.request.query_params
@@ -43,7 +46,7 @@ class NodeViewSet(ModelViewSet):
         for filter_name, filter_value in query_params.items():
             if filter_name in supported_filters or filter_name.startswith(starts_with_filters):
                 q_filter &= Q(**{filter_name: filter_value})
-        return self.type.objects.filter(q_filter).filter(workspace=get_current_tenant())
+        return queryset.filter(q_filter)
 
 
 class EdgeViewSet(ModelViewSet):
@@ -84,8 +87,13 @@ class EdgeViewSet(ModelViewSet):
     #     return super().create(request, *args, **kwargs)
 
     def get_queryset(self):
+        queryset = self.queryset
+        if isinstance(queryset, QuerySet):
+            # Ensure queryset is re-evaluated on each request.
+            queryset = queryset.all()
+
         if len(self.request.query_params) == 0:
-            return self.type.objects.filter(workspace=get_current_tenant())
+            return queryset
 
         q_filter = Q()
         query_params = self.request.query_params
@@ -102,4 +110,4 @@ class EdgeViewSet(ModelViewSet):
             if filter_name in supported_filters or filter_name.startswith(starts_with_filters):
                 q_filter &= Q(**{filter_name: filter_value})
 
-        return self.type.objects.filter(q_filter).filter(workspace=get_current_tenant())
+        return queryset.filter(q_filter).filter(workspace=get_current_tenant())
