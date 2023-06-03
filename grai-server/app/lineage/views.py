@@ -1,5 +1,4 @@
 from django.db.models import Q
-from django.db.models.query import QuerySet
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
