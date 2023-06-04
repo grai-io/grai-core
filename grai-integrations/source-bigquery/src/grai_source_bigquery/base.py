@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional, Tuple
+from typing import List, Literal, Optional, Tuple, Union
 
 from grai_client.endpoints.client import BaseClient
 from grai_client.update import update
@@ -10,8 +10,8 @@ from grai_source_bigquery.loader import BigqueryConnector, LoggingConnector
 
 def get_nodes_and_edges(
     connector: BigqueryConnector,
-    logging_connector: LoggingConnector,
-    version: Literal["v1"],
+    logging_connector: LoggingConnector = None,
+    version: Literal["v1"] = "v1",
 ) -> Tuple[List[Node], List[Edge]]:
     """
 
@@ -30,11 +30,15 @@ def get_nodes_and_edges(
     with connector.connect() as conn:
         nodes, edges = conn.get_nodes_and_edges()
 
-    with logging_connector.connect() as conn:
-        log_edges = conn.get_edges(nodes)
+    log_edges = []
+
+    if logging_connector is not None:
+        with logging_connector.connect() as conn:
+            log_edges = conn.get_edges(nodes)
 
     nodes = adapt_to_client(nodes, version)
     edges = adapt_to_client(edges + log_edges, version)
+
     return nodes, edges
 
 
@@ -42,7 +46,7 @@ def update_server(
     client: BaseClient,
     namespace: Optional[str] = None,
     project: Optional[str] = None,
-    dataset: Optional[str] = None,
+    dataset: Optional[Union[str, List[str]]] = None,
     credentials: Optional[str] = None,
 ) -> None:
     """

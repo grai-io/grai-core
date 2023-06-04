@@ -156,6 +156,16 @@ class Edge(BaseModel):
     constraint_type: Constraint
     metadata: Optional[Dict] = None
 
+    def __hash__(self):
+        """
+
+        Returns:
+
+        Raises:
+
+        """
+        return hash((self.source.full_name, self.destination.full_name, self.constraint_type))
+
 
 class TableType(str, Enum):
     """ """

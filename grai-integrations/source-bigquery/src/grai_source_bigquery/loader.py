@@ -3,7 +3,7 @@ import os
 from datetime import datetime, timedelta, timezone
 from functools import cached_property
 from itertools import chain
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 from google.cloud import bigquery, logging
 from google.oauth2 import service_account
@@ -55,13 +55,15 @@ class LoggingConnector:
         self,
         namespace: Optional[str] = None,
         project: Optional[str] = None,
-        dataset: Optional[str] = None,
+        dataset: Optional[Union[str, List[str]]] = None,
         credentials: Optional[str] = None,
+        window: Optional[int] = None,
     ):
         self.namespace = get_from_env("namespace", "default") if namespace is None else namespace
         self.project = get_from_env("project", required=False) if project is None else project
         self.dataset = get_from_env("dataset", required=False) if dataset is None else dataset
         self.credentials = get_from_env("credentials", required=False) if credentials is None else credentials
+        self.window = int(get_from_env("window", required=False, default=7)) if window is None else window
         self._connection: Optional[logging.Client] = None
 
     def __enter__(self):
@@ -132,9 +134,7 @@ class LoggingConnector:
 
         """
 
-        print("Getting logs")
-
-        yesterday = datetime.now(timezone.utc) - timedelta(days=10)
+        yesterday = datetime.now(timezone.utc) - timedelta(days=self.window)
         time_format = "%Y-%m-%dT%H:%M:%S.%f%z"
 
         filter_str = (
@@ -164,7 +164,6 @@ class LoggingConnector:
             name = table_string[5]
 
             if not any(node.name == name and node.table_schema == schema for node in existing_nodes):
-                print(f"Table {schema}.{name} not found in existing nodes")
                 return None
 
             return TableID(
@@ -173,9 +172,7 @@ class LoggingConnector:
                 namespace=self.namespace,
             )
 
-        print([f"{node.name}.{node.table_schema}" for node in existing_nodes if node is Table])
-
-        edges = []
+        edges = set()
 
         for log in self.logs:
             content = log.to_api_repr()
@@ -199,8 +196,6 @@ class LoggingConnector:
             )
 
             if destination_table is None:
-                print("No destination table found")
-                print(content)
                 continue
 
             destination = table_string_to_table_id(destination_table)
@@ -226,15 +221,16 @@ class LoggingConnector:
                 .get("referencedTables", [])
             )
 
-            print(f"Found referenced tables: {len(referenced_tables)}")
-
             for table in referenced_tables:
+                if destination_table == table:
+                    continue
+
                 source = table_string_to_table_id(table)
 
                 if source is None:
                     continue
 
-                edges.append(
+                edges.add(
                     Edge(
                         constraint_type=Constraint("bqm"),
                         source=source,
@@ -242,9 +238,7 @@ class LoggingConnector:
                     )
                 )
 
-        print(edges)
-
-        return edges
+        return list(edges)
 
 
 class BigqueryConnector:
@@ -254,7 +248,7 @@ class BigqueryConnector:
         self,
         namespace: Optional[str] = None,
         project: Optional[str] = None,
-        dataset: Optional[str] = None,
+        dataset: Optional[Union[str, List[str]]] = None,
         credentials: Optional[str] = None,
         **kwargs,
     ):
@@ -349,7 +343,7 @@ class BigqueryConnector:
 
         """
         query = f"""
-	        SELECT table_schema, table_name, table_type
+            SELECT table_schema, table_name, table_type
             FROM {self.project}.{self.dataset}.INFORMATION_SCHEMA.TABLES
             WHERE table_schema != 'INFORMATION_SCHEMA'
             ORDER BY table_schema, table_name
@@ -463,7 +457,7 @@ class BigqueryConnector:
         """
         return [item for item in chain(*[t.get_edges() for t in self.tables]) if item is not None]
 
-    def get_nodes_and_edges(self) -> Tuple[List[BigqueryNode], List[Edge]]:
+    def _get_nodes_and_edges(self) -> Tuple[List[BigqueryNode], List[Edge]]:
         """
 
         Args:
@@ -475,4 +469,22 @@ class BigqueryConnector:
         """
         nodes = self.get_nodes()
         edges = self.get_edges()
+        return nodes, edges
+
+    def get_nodes_and_edges(self) -> Tuple[List[BigqueryNode], List[Edge]]:
+        datasets = [self.dataset] if isinstance(self.dataset, str) else self.dataset
+
+        nodes = []
+        edges = []
+
+        for dataset in datasets:
+            self.dataset = dataset
+            n, e = self._get_nodes_and_edges()
+            nodes.extend(n)
+            edges.extend(e)
+
+            del self.tables
+            del self.columns
+            del self.column_map
+
         return nodes, edges

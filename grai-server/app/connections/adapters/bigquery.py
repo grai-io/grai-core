@@ -11,15 +11,19 @@ class BigqueryAdapter(BaseAdapter):
 
         conn = BigqueryConnector(
             project=metadata.get("project"),
-            dataset=metadata.get("dataset"),
+            dataset=metadata.get("dataset").split(","),
             credentials=secrets.get("credentials"),
             namespace=self.run.connection.namespace,
         )
-        logging_conn = LoggingConnector(
-            project=metadata.get("project"),
-            dataset=metadata.get("dataset"),
-            credentials=secrets.get("credentials"),
-            namespace=self.run.connection.namespace,
+        logging_conn = (
+            LoggingConnector(
+                project=metadata.get("project"),
+                dataset=metadata.get("dataset"),
+                credentials=secrets.get("credentials"),
+                namespace=self.run.connection.namespace,
+            )
+            if metadata.get("log_parsing")
+            else None
         )
 
         return get_nodes_and_edges(conn, logging_conn, "v1")
