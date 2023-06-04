@@ -1725,13 +1725,14 @@ pydantic = ">=1.10.4,<2.0.0"
 
 [[package]]
 name = "grai-source-bigquery"
-version = "0.1.0a38"
+version = "0.1.0a1"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_source_bigquery-0.1.0a38-py3-none-any.whl", hash = "sha256:cd3635b224cbeb484eb38e4396d6aa6ebf63071d98fb263fcc3ede2f32a55ac5"},
+    {file = "grai_source_bigquery-0.1.0a1-py3-none-any.whl", hash = "sha256:a6f01840aed83ac95123e62303cc850b139f539a5447b6ca45cfb2431e778319"},
+    {file = "grai_source_bigquery-0.1.0a1.tar.gz", hash = "sha256:b8f15601e428675f500f3c82cef5ff6ba40c9a5ff2247cdefb9f3e5eeaab444a"},
 ]
 
 [package.dependencies]
@@ -1742,10 +1743,6 @@ grai-schemas = ">=0.1.9,<0.2.0"
 multimethod = ">=1.8,<2.0"
 pydantic = ">=1.9.1,<2.0.0"
 setuptools = ">=67.1.0,<68.0.0"
-
-[package.source]
-type = "file"
-url = "../../grai-integrations/source-bigquery/dist/grai_source_bigquery-0.1.0a38-py3-none-any.whl"
 
 [[package]]
 name = "grai-source-dbt"
@@ -4376,4 +4373,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "cff18c24a7654e06fa3517dd5bf16cba7fb0d3efe65daf11c01f3ad916ed30d0"
+content-hash = "d529dc947fca42507b3789b7456eb478f811ea3bffeca4a96ca55d6507fdb7a4"
