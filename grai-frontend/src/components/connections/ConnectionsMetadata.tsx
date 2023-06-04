@@ -1,6 +1,14 @@
 import React from "react"
 import { Info } from "@mui/icons-material"
-import { InputAdornment, TextField, Tooltip } from "@mui/material"
+import {
+  Box,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  InputAdornment,
+  TextField,
+  Tooltip,
+} from "@mui/material"
 import { ConnectorType, ConnectorMetadataField } from "./ConnectionsForm"
 import PasswordField from "./fields/PasswordField"
 
@@ -22,7 +30,7 @@ const ConnectionsMetadata: React.FC<ConnectionsMetadataProps> = ({
   edit,
 }) => {
   const handleChangeMetadata = (
-    mValue: string,
+    mValue: string | boolean,
     field: ConnectorMetadataField
   ) => {
     let newValue = { ...metadata }
@@ -56,10 +64,41 @@ const ConnectionsMetadata: React.FC<ConnectionsMetadataProps> = ({
               helperText={field.helper_text}
               edit={edit}
             />
+          ) : field.type && field.type === "boolean" ? (
+            <Box
+              sx={{ display: "flex", alignItems: "center" }}
+              key={field.name}
+            >
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={
+                        (metadata && metadata[field.name]) ??
+                        field.default ??
+                        false
+                      }
+                    />
+                  }
+                  label={field.label ?? field.name}
+                  onChange={(event, checked) =>
+                    handleChangeMetadata(checked, field)
+                  }
+                />
+              </FormGroup>
+              {field.helper_text && (
+                <Tooltip title={field.helper_text}>
+                  <Info
+                    sx={{ color: "rgba(0, 0, 0, 0.54)", cursor: "pointer" }}
+                  />
+                </Tooltip>
+              )}
+            </Box>
           ) : (
             <TextField
               key={field.name}
               label={field.label ?? field.name}
+              type={field.type ?? "text"}
               value={(metadata && metadata[field.name]) ?? ""}
               onChange={event =>
                 handleChangeMetadata(event.target.value, field)

@@ -118,6 +118,24 @@
                         "secret": true,
                         "helper_text": "JSON credentials for service account, see Credentials in docs",
                         "order": 2
+                    },
+                    {
+                        "name": "log_parsing",
+                        "label": "Log Parsing",
+                        "required": false,
+                        "default": false,
+                        "helper_text": "Enable log parsing for BigQuery",
+                        "order": 3,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "log_parsing_window",
+                        "label": "Log Parsing Window",
+                        "required": false,
+                        "default": 7,
+                        "helper_text": "Number of days to parse logs for",
+                        "order": 4,
+                        "type": "number"
                     }
                 ]
             },
