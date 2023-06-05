@@ -164,7 +164,12 @@ class Edge(BaseModel):
         Raises:
 
         """
-        return hash((self.source.full_name, self.destination.full_name, self.constraint_type))
+        return hash(
+            (
+                (self.source.namespace, self.source.full_name),
+                (self.destination.namespace, self.destination.full_name),
+            )
+        )
 
 
 class TableType(str, Enum):
