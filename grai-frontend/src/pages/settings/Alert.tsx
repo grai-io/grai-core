@@ -4,7 +4,6 @@ import { Box } from "@mui/material"
 import { useParams } from "react-router-dom"
 import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
-import Loading from "components/layout/Loading"
 import AlertConfiguration from "components/settings/alerts/AlertConfiguration"
 import AlertHeader from "components/settings/alerts/AlertHeader"
 import SettingsLayout from "components/settings/SettingsLayout"
@@ -49,7 +48,7 @@ const Alert: React.FC = () => {
   )
 
   if (error) return <GraphError error={error} />
-  if (loading) return <Loading />
+  if (loading) return <SettingsLayout loading />
 
   const alert = data?.workspace.alert
 
