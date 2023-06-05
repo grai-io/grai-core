@@ -436,5 +436,47 @@
             "created_at": "2023-01-11T21:17:47.540Z",
             "updated_at": "2023-01-11T21:19:57.027Z"
         }
+    },
+    {
+        "model": "connections.connector",
+        "pk": "612a024c-de4e-4f1d-a7e5-ff616cdd953a",
+        "fields": {
+            "name": "Airflow",
+            "metadata": {},
+            "is_active": true,
+            "icon": "/icons/data-sources/airflow.png",
+            "category": "data tools",
+            "coming_soon": true,
+            "created_at": "2023-06-05T10:00:00.000Z",
+            "updated_at": "2023-06-05T10:00:00.000Z"
+        }
+    },
+    {
+        "model": "connections.connector",
+        "pk": "b92242af-ee22-4734-abc0-772c316dfcc0",
+        "fields": {
+            "name": "Airbyte",
+            "metadata": {},
+            "is_active": true,
+            "icon": "/icons/data-sources/airbyte.png",
+            "category": "data tools",
+            "coming_soon": true,
+            "created_at": "2023-06-05T10:00:00.000Z",
+            "updated_at": "2023-06-05T10:00:00.000Z"
+        }
+    },
+    {
+        "model": "connections.connector",
+        "pk": "b92242af-ee22-4734-abc0-772c316dfcc0",
+        "fields": {
+            "name": "Amazon Aurora",
+            "metadata": {},
+            "is_active": true,
+            "icon": "/icons/data-sources/aurora.png",
+            "category": "databases",
+            "coming_soon": true,
+            "created_at": "2023-06-05T10:00:00.000Z",
+            "updated_at": "2023-06-05T10:00:00.000Z"
+        }
     }
 ]
