@@ -199,10 +199,7 @@ test("submit error", async () => {
     },
   ]
 
-  const { container } = render(
-    <UpdateConnectionForm connection={connection} />,
-    { mocks }
-  )
+  render(<UpdateConnectionForm connection={connection} />, { mocks })
 
   await act(
     async () =>
