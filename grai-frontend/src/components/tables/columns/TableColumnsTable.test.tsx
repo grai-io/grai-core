@@ -8,7 +8,21 @@ const columns: Column[] = [
     name: "col1",
     display_name: "Column 1",
     metadata: null,
-    requirements_edges: { data: [] },
+    requirements_edges: {
+      data: [
+        {
+          metadata: null,
+          destination: {
+            id: "1",
+            name: "col2",
+            display_name: "Column 2",
+            metadata: {
+              grai: null,
+            },
+          },
+        },
+      ],
+    },
   },
 ]
 
@@ -51,4 +65,18 @@ test("search", async () => {
 
   expect(screen.getByText("No columns found")).toBeInTheDocument()
   expect(screen.getByText("Try clearing search")).toBeInTheDocument()
+})
+
+test("expanded", async () => {
+  render(
+    <TableColumnsTable
+      search={null}
+      columns={columns}
+      expanded={["1"]}
+      onExpand={() => {}}
+    />
+  )
+
+  expect(screen.getByText("Column 1")).toBeInTheDocument()
+  expect(screen.getByText("col2")).toBeInTheDocument()
 })
