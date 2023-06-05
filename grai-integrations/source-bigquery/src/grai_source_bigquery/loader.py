@@ -344,7 +344,7 @@ class BigqueryConnector:
         """
         query = f"""
             SELECT table_schema, table_name, table_type
-            FROM {self.project}.{self.dataset}.INFORMATION_SCHEMA.TABLES
+            FROM {self.project}.{self.current_dataset}.INFORMATION_SCHEMA.TABLES
             WHERE table_schema != 'INFORMATION_SCHEMA'
             ORDER BY table_schema, table_name
         """
@@ -352,7 +352,7 @@ class BigqueryConnector:
 
         additional_args = {
             "namespace": self.namespace,
-            "table_dataset": self.dataset,
+            "table_dataset": self.current_dataset,
         }
 
         tables = [Table(**result, **additional_args) for result in res]
@@ -375,7 +375,7 @@ class BigqueryConnector:
 
         query = f"""
             SELECT column_name, data_type, is_nullable, column_default, table_schema, table_name
-            FROM {self.project}.{self.dataset}.INFORMATION_SCHEMA.COLUMNS
+            FROM {self.project}.{self.current_dataset}.INFORMATION_SCHEMA.COLUMNS
         """
 
         res = [{k.lower(): v for k, v in result.items()} for result in self.query_runner(query)]
@@ -478,7 +478,7 @@ class BigqueryConnector:
         edges = []
 
         for dataset in datasets:
-            self.dataset = dataset
+            self.current_dataset = dataset
             n, e = self._get_nodes_and_edges()
             nodes.extend(n)
             edges.extend(e)
