@@ -1,6 +1,6 @@
+import userEvent from "@testing-library/user-event"
 import { act, render, screen } from "testing"
 import CopyButton from "./CopyButton"
-import userEvent from "@testing-library/user-event"
 
 test("renders", async () => {
   render(<CopyButton text="test" />)
