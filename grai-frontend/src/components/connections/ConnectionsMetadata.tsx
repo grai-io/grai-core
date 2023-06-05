@@ -1,16 +1,8 @@
 import React from "react"
-import { Info } from "@mui/icons-material"
-import {
-  Box,
-  Checkbox,
-  FormControlLabel,
-  FormGroup,
-  InputAdornment,
-  TextField,
-  Tooltip,
-} from "@mui/material"
 import { ConnectorType, ConnectorMetadataField } from "./ConnectionsForm"
+import BooleanField from "./fields/BooleanField"
 import PasswordField from "./fields/PasswordField"
+import TextField from "./fields/TextField"
 
 type ConnectionsMetadataProps = {
   connector: ConnectorType
@@ -49,10 +41,13 @@ const ConnectionsMetadata: React.FC<ConnectionsMetadataProps> = ({
 
   const fields = [...(connector.metadata?.fields ?? [])]
 
+  const orderSort = (a: { order?: number }, b: { order?: number }) =>
+    (a.order ?? 0) > (b.order ?? 0) ? 1 : -1
+
   return (
     <>
       {fields
-        ?.sort((a, b) => ((a.order ?? 0) > (b.order ?? 0) ? 1 : -1))
+        ?.sort(orderSort)
         .map(field =>
           field.secret ? (
             <PasswordField
@@ -65,56 +60,24 @@ const ConnectionsMetadata: React.FC<ConnectionsMetadataProps> = ({
               edit={edit}
             />
           ) : field.type && field.type === "boolean" ? (
-            <Box
-              sx={{ display: "flex", alignItems: "center" }}
+            <BooleanField
               key={field.name}
-            >
-              <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={
-                        (metadata && metadata[field.name]) ??
-                        field.default ??
-                        false
-                      }
-                    />
-                  }
-                  label={field.label ?? field.name}
-                  onChange={(event, checked) =>
-                    handleChangeMetadata(checked, field)
-                  }
-                />
-              </FormGroup>
-              {field.helper_text && (
-                <Tooltip title={field.helper_text}>
-                  <Info
-                    sx={{ color: "rgba(0, 0, 0, 0.54)", cursor: "pointer" }}
-                  />
-                </Tooltip>
-              )}
-            </Box>
+              value={
+                (metadata && metadata[field.name]) ?? field.default ?? false
+              }
+              onChange={value => handleChangeMetadata(value, field)}
+              label={field.label ?? field.name}
+              helperText={field.helper_text}
+            />
           ) : (
             <TextField
               key={field.name}
               label={field.label ?? field.name}
-              type={field.type ?? "text"}
+              type={field.type}
               value={(metadata && metadata[field.name]) ?? ""}
-              onChange={event =>
-                handleChangeMetadata(event.target.value, field)
-              }
-              margin="normal"
+              onChange={value => handleChangeMetadata(value, field)}
               required={field.required}
-              InputProps={{
-                endAdornment: field.helper_text ? (
-                  <InputAdornment position="end" sx={{ cursor: "pointer" }}>
-                    <Tooltip title={field.helper_text}>
-                      <Info />
-                    </Tooltip>
-                  </InputAdornment>
-                ) : null,
-              }}
-              fullWidth
+              helperText={field.helper_text}
             />
           )
         )}

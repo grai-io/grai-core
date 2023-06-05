@@ -57,6 +57,38 @@ test("normal field", async () => {
   )
 })
 
+test("number field", async () => {
+  const user = userEvent.setup()
+
+  const props = {
+    ...defaultProps,
+    connector: {
+      ...defaultProps.connector,
+      metadata: {
+        fields: [
+          {
+            name: "field1",
+            label: "Field 1",
+            helper_text: "Helper text",
+            type: "number",
+          },
+        ],
+      },
+    },
+  }
+
+  render(<ConnectionsMetadata {...props} />)
+
+  await waitFor(() => {
+    expect(screen.getAllByText("Field 1")).toBeTruthy()
+  })
+
+  await act(
+    async () =>
+      await user.type(screen.getByRole("spinbutton", { name: /Field 1/i }), "1")
+  )
+})
+
 test("secret field", async () => {
   const user = userEvent.setup()
 
@@ -86,6 +118,39 @@ test("secret field", async () => {
   await act(
     async () => await user.type(screen.getByLabelText("Field 1"), "field value")
   )
+})
+
+test("boolean field", async () => {
+  const user = userEvent.setup()
+
+  const props = {
+    ...defaultProps,
+    connector: {
+      ...defaultProps.connector,
+      metadata: {
+        fields: [
+          {
+            name: "field1",
+            label: "Field 1",
+            helper_text: "Helper text",
+            type: "boolean",
+          },
+        ],
+      },
+    },
+  }
+
+  render(<ConnectionsMetadata {...props} />)
+
+  await waitFor(() => {
+    expect(screen.getByText("Field 1")).toBeInTheDocument()
+  })
+
+  expect(screen.queryByRole("checkbox")).not.toBeChecked()
+
+  await act(async () => {
+    await user.click(screen.getByRole("checkbox"))
+  })
 })
 
 test("no label", async () => {
