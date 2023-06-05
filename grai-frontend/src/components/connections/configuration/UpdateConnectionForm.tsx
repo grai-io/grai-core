@@ -75,7 +75,9 @@ const UpdateConnectionForm: React.FC<UpdateConnectionFormProps> = ({
         schedules: null,
         is_active: true,
       },
-    }).then(() => enqueueSnackbar("Connection updated"))
+    })
+      .then(() => enqueueSnackbar("Connection updated"))
+      .catch(() => {})
 
   const defaultValues: Values = {
     connector: connection.connector,

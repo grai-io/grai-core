@@ -33,6 +33,7 @@ const AlertDelete: React.FC<AlertDeleteProps> = ({
   const confirm = useConfirm()
   const { enqueueSnackbar } = useSnackbar()
 
+  /* istanbul ignore next */
   const [deleteAlert] = useMutation<DeleteAlert, DeleteAlertVariables>(
     DELETE_ALERT,
     {
