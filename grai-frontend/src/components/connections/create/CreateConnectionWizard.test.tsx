@@ -18,6 +18,10 @@ test("renders", async () => {
   })
 
   expect(screen.getByText("Select an integration")).toBeInTheDocument()
+
+  await waitFor(() => {
+    expect(screen.getAllByText("Hello World")).toBeTruthy()
+  })
 })
 
 test("close", async () => {
@@ -29,7 +33,7 @@ test("close", async () => {
 
   expect(screen.getByText("Select an integration")).toBeInTheDocument()
 
-  user.click(screen.getByTestId("CloseIcon"))
+  await act(async () => await user.click(screen.getByTestId("CloseIcon")))
 
   await waitFor(() => {
     expect(screen.queryByText("Select an integration")).toBeFalsy()

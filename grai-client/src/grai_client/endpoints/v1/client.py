@@ -71,6 +71,7 @@ class ClientV1(BaseClient):
         if workspace is None:
             self._workspace = workspace
             self.default_query_args.pop("workspace", None)
+            self.default_payload.pop("workspace", None)
             return
 
         if is_valid_uuid(workspace):
@@ -86,7 +87,8 @@ class ClientV1(BaseClient):
             raise TypeError("Workspace must be either a string, uuid, or None.")
 
         self._workspace = str(workspace)
-        self.default_query_args["workspace"] = self._workspace
+        self.default_query_args["workspace"] = self.workspace
+        self.default_payload["workspace"] = self.workspace
 
     def authenticate(
         self,

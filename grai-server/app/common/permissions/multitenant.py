@@ -24,10 +24,10 @@ class BasePermission(permissions.BasePermission):
         header = request.headers.get("Authorization")
 
         if header:
-            [type, key] = header.split()
-            if type == "Api-Key":
+            split = header.split()
+            if split[0] == "Api-Key":
                 try:
-                    api_key = WorkspaceAPIKey.objects.get_from_key(key)
+                    api_key = WorkspaceAPIKey.objects.get_from_key(split[1])
                     workspace = api_key.workspace
                     if workspace:
                         return workspace

@@ -17,7 +17,7 @@ def client_params():
         "port": os.environ.get("GRAI_PORT", "8000"),
         "username": os.environ.get("GRAI_USERNAME", "null@grai.io"),
         "password": os.environ.get("GRAI_PASSWORD", "super_secret"),
-        "workspace": os.environ.get("GRAI_WORKSPACE", "default"),
+        "workspace": os.environ.get("GRAI_WORKSPACE", "default/default"),
         "insecure": True,
     }
     return params

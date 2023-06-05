@@ -1,20 +1,19 @@
 from typing import Iterable, List, Optional, Sequence
 
 from django.db import models
+from django_multitenant.models import TenantManagerMixin
 
 from .graph_cache import GraphCache
 
 
-class CacheManager(models.Manager):
+class CacheManager(TenantManagerMixin, models.Manager):
     def bulk_create(
         self,
         objs: Iterable,
         batch_size: int = None,
-        ignore_conflicts: bool = False,
-        update_conflicts: Sequence[str] = None,
-        update_fields: Sequence[str] = None,
+        **kwargs,
     ) -> List:
-        result = super().bulk_create(objs, batch_size, ignore_conflicts, update_conflicts, update_fields)
+        result = super().bulk_create(objs, **kwargs)
 
         if len(objs) > 0:
             workspace = objs[0].workspace
@@ -29,9 +28,13 @@ class CacheManager(models.Manager):
         self,
         objs: Iterable,
         fields: Sequence[str],
-        batch_size: int = None,
+        **kwargs,
     ) -> int:
-        result = super().bulk_update(objs, fields, batch_size)
+        result = super().bulk_update(
+            objs,
+            fields,
+            **kwargs,
+        )
 
         if len(objs) > 0:
             workspace = objs[0].workspace

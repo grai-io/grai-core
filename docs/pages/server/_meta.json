@@ -3,7 +3,7 @@
   "settings": "Settings",
   "rest-api": {
     "title": "Rest API",
-    "href": "https://api.grai.io/api/v1/redoc/"
+    "href": "https://api.grai.io/api/v1/schema/redoc/"
   },
   "graphql-api": "GraphQL API"
 }

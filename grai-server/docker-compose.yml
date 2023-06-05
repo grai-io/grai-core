@@ -23,6 +23,7 @@ services:
       - CELERY_BROKER=redis://redis:6379/0
       - CELERY_BACKEND=redis://redis:6379/0
       - DJANGO_SETTINGS_MODULE=the_guide.settings.dev
+      - REDIS_GRAPH_CACHE_HOST=redis
     depends_on:
       - redis
       - db
