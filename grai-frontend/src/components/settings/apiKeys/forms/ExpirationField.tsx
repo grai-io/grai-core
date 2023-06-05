@@ -22,6 +22,8 @@ const ExpirationField: React.FC<ExpirationFieldProps> = ({
 
   const selectValue = isCustom ? "custom" : value
 
+  const dateValue = typeof value === "object" ? value : null
+
   return (
     <>
       <TextField
@@ -47,7 +49,7 @@ const ExpirationField: React.FC<ExpirationFieldProps> = ({
 
       {isCustom && (
         <DatePicker
-          value={value}
+          value={dateValue}
           onChange={value => onChange(value)}
           slots={{
             textField: props => (
