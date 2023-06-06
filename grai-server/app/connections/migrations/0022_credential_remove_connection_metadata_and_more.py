@@ -15,23 +15,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.CreateModel(
-            name="Credential",
-            fields=[
-                ("id", models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ("metadata", models.JSONField(default=dict)),
-                ("secrets", models.JSONField(blank=True, default=dict, null=True)),
-                ("created_at", models.DateTimeField(auto_now_add=True)),
-                ("updated_at", models.DateTimeField(auto_now=True)),
-            ],
-            options={
-                "abstract": False,
-            },
-            bases=(django_multitenant.mixins.TenantModelMixin, models.Model),
-            managers=[
-                ("objects", django_multitenant.models.TenantManager()),
-            ],
-        ),
         migrations.AddField(
             model_name="connection",
             name="source",
@@ -55,35 +38,5 @@ class Migration(migrations.Migration):
                 to="lineage.source",
             ),
             preserve_default=False,
-        ),
-        migrations.AddField(
-            model_name="credential",
-            name="workspace",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, related_name="credentials", to="workspaces.workspace"
-            ),
-        ),
-        migrations.AddField(
-            model_name="connection",
-            name="credential",
-            field=models.ForeignKey(
-                blank=True,
-                null=True,
-                on_delete=django.db.models.deletion.PROTECT,
-                related_name="connections",
-                to="connections.credential",
-            ),
-            preserve_default=False,
-        ),
-        migrations.AddField(
-            model_name="run",
-            name="credential",
-            field=models.ForeignKey(
-                blank=True,
-                null=True,
-                on_delete=django.db.models.deletion.PROTECT,
-                related_name="runs",
-                to="connections.credential",
-            ),
         ),
     ]

@@ -13,7 +13,7 @@ def create_sources(apps, schema_editor):
     for connection in Connection.objects.all():
         source, created = Source.objects.get_or_create(
             workspace_id=connection.workspace_id,
-            name=connection.slug,
+            name=connection.connector.slug,
         )
 
         connection.source_id = source.id
@@ -26,7 +26,7 @@ def add_source_to_run(apps, schema_editor):
     from connections.models import Run
 
     for run in Run.objects.all():
-        run.source_id = run.credential.connections.first().source_id
+        run.source_id = run.connection.source_id
         run.save()
 
 

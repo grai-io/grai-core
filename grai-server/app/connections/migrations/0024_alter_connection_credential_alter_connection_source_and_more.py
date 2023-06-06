@@ -7,41 +7,29 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
     dependencies = [
         ("lineage", "0009_source_source_source_name_uniqueness"),
-        ("connections", "0023_connection_source_run_source_credential_workspace_and_more"),
+        (
+            "connections",
+            "0023_connection_source_run_source_credential_workspace_and_more",
+        ),
     ]
 
     operations = [
         migrations.AlterField(
             model_name="connection",
-            name="credential",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.PROTECT, related_name="connections", to="connections.credential"
-            ),
-        ),
-        migrations.AlterField(
-            model_name="connection",
             name="source",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.PROTECT, related_name="connections", to="lineage.source"
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="connections",
+                to="lineage.source",
             ),
         ),
         migrations.AlterField(
             model_name="run",
             name="source",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.PROTECT, related_name="runs", to="lineage.source"
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="runs",
+                to="lineage.source",
             ),
-        ),
-        migrations.RemoveField(
-            model_name="connection",
-            name="metadata",
-        ),
-        migrations.RemoveField(
-            model_name="connection",
-            name="secrets",
-        ),
-        migrations.RemoveField(
-            model_name="run",
-            name="connection",
         ),
     ]
