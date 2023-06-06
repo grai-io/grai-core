@@ -388,7 +388,7 @@ class LoggingConnector(BigqueryConnector):
 
         return self.logging_connection.list_entries(filter_=filter_str, page_size=1000)
 
-    def get_edges(self, existing_nodes) -> List[Edge]:
+    def get_bigquery_edges(self, existing_nodes: List[BigqueryNode]) -> List[Edge]:
         """
 
         Args:
@@ -483,9 +483,8 @@ class LoggingConnector(BigqueryConnector):
         return list(edges)
 
     def get_nodes_and_edges(self) -> Tuple[List[BigqueryNode], List[Edge]]:
-        nodes = super().get_nodes()
-        edges = super().get_edges()
+        nodes, edges = super().get_nodes_and_edges()
 
-        bigquery_edges = self.get_edges(nodes)
+        bigquery_edges = self.get_bigquery_edges(nodes)
 
         return nodes, edges + bigquery_edges
