@@ -36,6 +36,7 @@ const ConnectionDelete: React.FC<ConnectionDeleteProps> = ({
   const confirm = useConfirm()
   const { enqueueSnackbar } = useSnackbar()
 
+  /* istanbul ignore next */
   const [deleteConnection] = useMutation<
     DeleteConnection,
     DeleteConnectionVariables

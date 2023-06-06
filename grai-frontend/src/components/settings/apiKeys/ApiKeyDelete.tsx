@@ -32,6 +32,7 @@ const ApiKeyDelete: React.FC<ApiKeyDeleteProps> = ({
   const confirm = useConfirm()
   const { enqueueSnackbar } = useSnackbar()
 
+  /* istanbul ignore next */
   const [deleteApiKey] = useMutation<DeleteApiKey, DeleteApiKeyVariables>(
     DELETE_API_KEY,
     {

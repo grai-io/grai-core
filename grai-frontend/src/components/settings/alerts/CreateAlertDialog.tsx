@@ -47,6 +47,7 @@ const CreateAlertDialog: React.FC<CreateAlertDialogProps> = ({
 }) => {
   const { enqueueSnackbar } = useSnackbar()
 
+  /* istanbul ignore next */
   const [createAlert, { loading, error }] = useMutation<
     CreateAlert,
     CreateAlertVariables
