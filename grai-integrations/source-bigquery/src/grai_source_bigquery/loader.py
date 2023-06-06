@@ -396,11 +396,7 @@ class LoggingConnector(BigqueryConnector):
                 f' AND NOT protoPayload.metadata.jobInsertion.job.jobStats.queryStats.referencedTables="projects/grai-demo/datasets/{dataset}/tables/INFORMATION_SCHEMA.COLUMNS"'
             )
 
-        res = self.logging_connection.list_entries(filter_=filter_str, page_size=1000)
-
-        print(res)
-
-        return res
+        return self.logging_connection.list_entries(filter_=filter_str)
 
     def get_bigquery_edges(self, existing_nodes: List[BigqueryNode]) -> List[Edge]:
         """
