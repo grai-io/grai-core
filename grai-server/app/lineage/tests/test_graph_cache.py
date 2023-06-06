@@ -20,6 +20,13 @@ def create_workspace(create_organisation, name: str = None):
 
 
 @pytest.mark.django_db
+async def test_build_cache(create_workspace):
+    client = GraphCache(workspace=create_workspace)
+
+    client.build_cache()
+
+
+@pytest.mark.django_db
 async def test_clear_cache(create_workspace):
     client = GraphCache(workspace=create_workspace)
 
