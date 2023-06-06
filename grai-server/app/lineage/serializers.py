@@ -1,13 +1,9 @@
-import json
-import uuid
-from typing import Optional
-
-from django.db.models import Q, fields
+from django.db.models import Q
 from grai_schemas.v1.node import NodeNamedID
 
 from rest_framework import serializers
 
-from .models import Edge, Node
+from .models import Edge, Node, Source
 
 
 class NodeSerializer(serializers.ModelSerializer):
@@ -67,3 +63,13 @@ class EdgeSerializer(serializers.ModelSerializer):
                 pass
         data = super().to_internal_value(data)
         return data
+
+
+class SourceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Source
+        fields = (
+            "id",
+            "name",
+        )
+        read_only_fields = ("created_at", "updated_at")
