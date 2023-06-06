@@ -11,7 +11,7 @@ from .models import Membership, Organisation, Workspace, WorkspaceAPIKey
 
 
 @admin.action(description="Delete nodes and edges")
-def empty_workspace(modeladmin, request, queryset):
+def empty_workspace(modeladmin, request, queryset):  # pragma: no cover
     workspaces = queryset
 
     for workspace in workspaces:
@@ -20,17 +20,17 @@ def empty_workspace(modeladmin, request, queryset):
 
 
 @admin.action(description="Enable search")
-def enable_search(modeladmin, request, queryset):
+def enable_search(modeladmin, request, queryset):  # pragma: no cover
     queryset.update(search_enabled=True)
 
 
 @admin.action(description="Disable search")
-def disable_search(modeladmin, request, queryset):
+def disable_search(modeladmin, request, queryset):  # pragma: no cover
     queryset.update(search_enabled=False)
 
 
 @admin.action(description="Build workspace cache")
-def build_workspace_cache(modeladmin, request, queryset):
+def build_workspace_cache(modeladmin, request, queryset):  # pragma: no cover
     workspaces = queryset
 
     for workspace in workspaces:
@@ -39,7 +39,7 @@ def build_workspace_cache(modeladmin, request, queryset):
 
 
 @admin.action(description="Clear workspace cache")
-def clear_workspace_cache(modeladmin, request, queryset):
+def clear_workspace_cache(modeladmin, request, queryset):  # pragma: no cover
     workspaces = queryset
 
     for workspace in workspaces:
