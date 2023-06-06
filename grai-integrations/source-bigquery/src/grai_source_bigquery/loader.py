@@ -386,7 +386,21 @@ class LoggingConnector(BigqueryConnector):
             f' AND timestamp>="{yesterday.strftime(time_format)}"'
         )
 
-        return self.logging_connection.list_entries(filter_=filter_str, page_size=1000)
+        datasets = [self.dataset] if isinstance(self.dataset, str) else self.dataset
+
+        for dataset in datasets:
+            filter_str += (
+                f' AND NOT protoPayload.metadata.jobChange.job.jobStats.queryStats.referencedTables="projects/grai-demo/datasets/{dataset}/tables/INFORMATION_SCHEMA.TABLES"'
+                f' AND NOT protoPayload.metadata.jobInsertion.job.jobStats.queryStats.referencedTables="projects/grai-demo/datasets/{dataset}/tables/INFORMATION_SCHEMA.TABLES"'
+                f' AND NOT protoPayload.metadata.jobChange.job.jobStats.queryStats.referencedTables="projects/grai-demo/datasets/{dataset}/tables/INFORMATION_SCHEMA.COLUMNS"'
+                f' AND NOT protoPayload.metadata.jobInsertion.job.jobStats.queryStats.referencedTables="projects/grai-demo/datasets/{dataset}/tables/INFORMATION_SCHEMA.COLUMNS"'
+            )
+
+        res = self.logging_connection.list_entries(filter_=filter_str, page_size=1000)
+
+        print(res)
+
+        return res
 
     def get_bigquery_edges(self, existing_nodes: List[BigqueryNode]) -> List[Edge]:
         """
