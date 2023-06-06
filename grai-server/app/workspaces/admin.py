@@ -3,6 +3,7 @@ from django.contrib.admin import DateFieldListFilter
 from django.db.models import Count, Q
 from django.urls import reverse
 from django.utils.html import format_html
+from lineage.graph_cache import GraphCache
 
 from lineage.models import Edge, Node
 
@@ -28,6 +29,24 @@ def disable_search(modeladmin, request, queryset):
     queryset.update(search_enabled=False)
 
 
+@admin.action(description="Build workspace cache")
+def build_workspace_cache(modeladmin, request, queryset):
+    workspaces = queryset
+
+    for workspace in workspaces:
+        cache = GraphCache(workspace)
+        cache.build_cache()
+
+
+@admin.action(description="Clear workspace cache")
+def clear_workspace_cache(modeladmin, request, queryset):
+    workspaces = queryset
+
+    for workspace in workspaces:
+        cache = GraphCache(workspace)
+        cache.clear_cache()
+
+
 class MembershipInline(admin.TabularInline):
     model = Membership
     extra = 0
@@ -48,7 +67,15 @@ class WorkspaceAdmin(admin.ModelAdmin):
         )
         return queryset
 
-    list_display = ("id", "name", "organisation", "node_count", "connection_count", "search_enabled", "created_at")
+    list_display = (
+        "id",
+        "name",
+        "organisation",
+        "node_count",
+        "connection_count",
+        "search_enabled",
+        "created_at",
+    )
 
     list_filter = (
         ("created_at", DateFieldListFilter),
@@ -63,7 +90,13 @@ class WorkspaceAdmin(admin.ModelAdmin):
         MembershipInline,
     ]
 
-    actions = [empty_workspace, enable_search, disable_search]
+    actions = [
+        empty_workspace,
+        enable_search,
+        disable_search,
+        build_workspace_cache,
+        clear_workspace_cache,
+    ]
 
 
 class WorkspaceInline(admin.TabularInline):
@@ -72,7 +105,9 @@ class WorkspaceInline(admin.TabularInline):
 
     def view(self):
         return format_html(
-            '<a href="{}">{}</a>', reverse("admin:workspaces_workspace_change", args=(self.id,)), self.name
+            '<a href="{}">{}</a>',
+            reverse("admin:workspaces_workspace_change", args=(self.id,)),
+            self.name,
         )
 
     fields = ("name", view)
