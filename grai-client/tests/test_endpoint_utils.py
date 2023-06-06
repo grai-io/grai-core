@@ -160,3 +160,7 @@ class TestCredentialValidation:
         result = "http"
         url, host, port, protocol, insecure = validate_connection_arguments(url="http://app.grai.io:8000")
         assert protocol == result, f"Validated protocol {protocol} did not match expected url {result}"
+
+    def test_url_parsed_localhost(self):
+        url, host, port, protocol, insecure = validate_connection_arguments(url="http://localhost:8000")
+        assert host == "localhost"

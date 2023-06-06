@@ -42,7 +42,7 @@ for doc in documented:
     readme_file = os.path.join(action_root, doc["folder"], "README.md")
     readme = open(readme_file).read()
 
-    output_file = os.path.join(core_actions_docs_root, f"{doc['folder']}.mdx")
+    output_file = os.path.join(core_actions_docs_root, f"{doc['folder']}.md")
     new_readme = f"{make_header(doc)}\n\n{readme}"
     write_doc_file(new_readme, output_file)
 
@@ -53,7 +53,7 @@ index_header_items = ["---", "title: Grai Actions", "description: Documentation 
 index_header = "\n".join(index_header_items)
 index_readme = f"{index_header}\n\n{base_readme}"
 
-index_file = f"{core_actions_docs_root}.mdx"
+index_file = f"{core_actions_docs_root}.md"
 write_doc_file(index_readme, index_file)
 
 _meta_json = {doc["folder"]: doc.get("name", doc["folder"]) for doc in documented}

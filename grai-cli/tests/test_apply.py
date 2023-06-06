@@ -27,6 +27,7 @@ def make_v1_node():
             "name": "name-" + str(uuid.uuid4()),
             "namespace": "namespace-" + str(uuid.uuid4()),
             "data_source": "test",
+            "metadata": {"grai": {"node_type": "Node"}},
         },
     }
     return node
@@ -53,6 +54,7 @@ def make_v1_edge(source_id, destination_id):
             "destination": destination_id,
             "name": "name-" + str(uuid.uuid4()),
             "namespace": "test",
+            "metadata": {"edge_type": "Edge"},
         },
     }
     return node

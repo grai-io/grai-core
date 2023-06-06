@@ -92,5 +92,6 @@ def update_server(
 
     conn = FivetranConnector(**kwargs)
     nodes, edges = get_nodes_and_edges(conn, client.id)
+
     update(client, nodes)
     update(client, edges)
