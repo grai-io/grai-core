@@ -1,7 +1,7 @@
 import json
 import os
 from datetime import datetime, timedelta, timezone
-from functools import cached_property
+from functools import cached_property, lru_cache
 from itertools import chain
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
@@ -136,8 +136,8 @@ class BigqueryConnector:
         """
         return self.connection.query(query)
 
-    @cached_property
-    def tables(self) -> List[Table]:
+    @lru_cache
+    def tables(self, dataset: str) -> List[Table]:
         """Create and return a list of dictionaries with the
         schemas and names of tables in the database
         connected to by the connection argument.
@@ -151,7 +151,7 @@ class BigqueryConnector:
         """
         query = f"""
             SELECT table_schema, table_name, table_type
-            FROM {self.project}.{self.current_dataset}.INFORMATION_SCHEMA.TABLES
+            FROM {self.project}.{dataset}.INFORMATION_SCHEMA.TABLES
             WHERE table_schema != 'INFORMATION_SCHEMA'
             ORDER BY table_schema, table_name
         """
@@ -159,16 +159,16 @@ class BigqueryConnector:
 
         additional_args = {
             "namespace": self.namespace,
-            "table_dataset": self.current_dataset,
+            "table_dataset": dataset,
         }
 
         tables = [Table(**result, **additional_args) for result in res]
         for table in tables:
-            table.columns = self.get_table_columns(table)
+            table.columns = self.get_table_columns(table, dataset)
         return tables
 
-    @cached_property
-    def columns(self) -> List[Column]:
+    @lru_cache
+    def columns(self, dataset: str) -> List[Column]:
         """Creates and returns a list of dictionaries for the specified
         schema.table in the database connected to.
 
@@ -182,7 +182,7 @@ class BigqueryConnector:
 
         query = f"""
             SELECT column_name, data_type, is_nullable, column_default, table_schema, table_name
-            FROM {self.project}.{self.current_dataset}.INFORMATION_SCHEMA.COLUMNS
+            FROM {self.project}.{dataset}.INFORMATION_SCHEMA.COLUMNS
         """
 
         res = [{k.lower(): v for k, v in result.items()} for result in self.query_runner(query)]
@@ -199,8 +199,8 @@ class BigqueryConnector:
         }
         return [Column(**result, **addtl_args) for result in res]
 
-    @cached_property
-    def column_map(self) -> Dict[Tuple[str, str], List[Column]]:
+    @lru_cache
+    def column_map(self, dataset: str) -> Dict[Tuple[str, str], List[Column]]:
         """
 
         Args:
@@ -211,13 +211,13 @@ class BigqueryConnector:
 
         """
         result_map: Dict[Tuple[str, str], List[Column]] = {}
-        for col in self.columns:
+        for col in self.columns(dataset):
             table_id = (col.column_schema, col.table)
             result_map.setdefault(table_id, [])
             result_map[table_id].append(col)
         return result_map
 
-    def get_table_columns(self, table: Table) -> List[Column]:
+    def get_table_columns(self, table: Table, dataset: str) -> List[Column]:
         """
 
         Args:
@@ -229,18 +229,21 @@ class BigqueryConnector:
 
         """
         table_id = (table.table_schema, table.name)
-        if table_id in self.column_map:
-            return self.column_map[table_id]
+
+        column_map = self.column_map(dataset)
+
+        if table_id in column_map:
+            return column_map[table_id]
 
         schema = table_id[0]
         name = table_id[1]
         table_id = (schema, name)
-        if table_id in self.column_map:
-            return self.column_map[table_id]
+        if table_id in column_map:
+            return column_map[table_id]
         else:
             raise Exception(f"No columns found for table with schema={schema} and name={name}")
 
-    def get_nodes(self) -> List[BigqueryNode]:
+    def get_nodes(self, dataset: str) -> List[BigqueryNode]:
         """
 
         Args:
@@ -250,9 +253,9 @@ class BigqueryConnector:
         Raises:
 
         """
-        return list(chain(self.tables, self.columns))
+        return list(chain(self.tables(dataset), self.columns(dataset)))
 
-    def get_edges(self) -> List[Edge]:
+    def get_edges(self, dataset: str) -> List[Edge]:
         """
 
         Args:
@@ -262,7 +265,7 @@ class BigqueryConnector:
         Raises:
 
         """
-        return [item for item in chain(*[t.get_edges() for t in self.tables]) if item is not None]
+        return [item for item in chain(*[t.get_edges() for t in self.tables(dataset)]) if item is not None]
 
     def get_nodes_and_edges(self) -> Tuple[List[BigqueryNode], List[Edge]]:
         """
@@ -280,14 +283,8 @@ class BigqueryConnector:
         edges = []
 
         for dataset in datasets:
-            self.current_dataset = dataset
-
-            nodes.extend(self.get_nodes())
-            edges.extend(self.get_edges())
-
-            del self.tables
-            del self.columns
-            del self.column_map
+            nodes.extend(self.get_nodes(dataset))
+            edges.extend(self.get_edges(dataset))
 
         return nodes, edges
 
