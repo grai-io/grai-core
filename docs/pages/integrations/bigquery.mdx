@@ -22,13 +22,15 @@ The BigQuery integration synchronizes metadata from your BigQuery datawarehouse 
 
 ### Fields
 
-| Field       | Value                                                                 | Example         |
-| ----------- | --------------------------------------------------------------------- | --------------- |
-| Name        | Name for connection                                                   | Google BigQuery |
-| Namespace   | Namespace for the connection, see [namespaces](/concepts/namespace)   | default         |
-| project     | GCP project id                                                        | grai-demo       |
-| dataset     | BigQuery Dataset Id                                                   | jaffle_shop     |
-| credentials | JSON credentials for service account, see [Credentials](#credentials) |                 |
+| Field              | Value                                                                 | Example         |
+| ------------------ | --------------------------------------------------------------------- | --------------- |
+| Name               | Name for connection                                                   | Google BigQuery |
+| Namespace          | Namespace for the connection, see [namespaces](/concepts/namespace)   | default         |
+| project            | GCP project id                                                        | grai-demo       |
+| dataset            | BigQuery Dataset Id, or multiple datasets seperated by a comma (`,`)  | jaffle_shop     |
+| credentials        | JSON credentials for service account, see [Credentials](#credentials) |                 |
+| Log Parsing        | Choose to enable log parsing, see [Lod Parsing](#log-parsing)         |                 |
+| Log Parsing Window | The number of days to read logs from, see [Log Parsing](#log-parsing) | 7               |
 
 ### Credentials
 
@@ -42,6 +44,16 @@ The BigQuery integration synchronizes metadata from your BigQuery datawarehouse 
 3. Generate json credentials for your service account [https://developers.google.com/workspace/guides/create-credentials#service-account](https://developers.google.com/workspace/guides/create-credentials#service-account).
 
 4. Copy and paste the json into the [credentials] field.
+
+### Log Parsing
+
+Optionally the BigQuery integration can read logs from BigQuery to determine which tables are related to each other.
+
+You will need to grant the service account the following additional permission:
+
+- Logs Viewer
+
+Logs are read over a window of one or more days, to capture relevant database logs. For example if you have a daily batch job, you could set the window to one day.
 
 ## Python Library
 
@@ -78,5 +90,9 @@ Namespace is used to uniquely identify the nodes and when used consistently will
 Using example variables, in order to update the server with your metadata, simply run:
 
 ```python copy
-update_server(client, project="[your_project]", dataset="[your_dataset]]", credentials="[your_credentials]", namespace="[your_grai_namespace]")
+update_server(client, project="[your_project]", dataset="[your_dataset]", credentials="[your_credentials]", namespace="[your_grai_namespace]")
+```
+
+```python copy
+update_server(client, project="[your_project]", dataset=["[your_dataset]", "[your_second_dataset]"], credentials="[your_credentials]", namespace="[your_grai_namespace]")
 ```

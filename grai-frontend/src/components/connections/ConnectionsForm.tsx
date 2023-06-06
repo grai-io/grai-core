@@ -14,6 +14,7 @@ export interface ConnectorMetadataField {
   default?: string | number
   helper_text?: string | null
   order?: number
+  type?: string | null
 }
 
 export interface ConnectorMetadata {
