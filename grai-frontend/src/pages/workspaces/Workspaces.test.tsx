@@ -57,3 +57,26 @@ test("error", async () => {
     expect(screen.getByText("Error!")).toBeInTheDocument()
   })
 })
+
+test("not found", async () => {
+  render(<Workspaces />, {
+    withRouter: true,
+    path: "/workspaces",
+    initialEntries: [
+      {
+        pathname: "/workspaces",
+        state: {
+          workspaceNotFound: true,
+          organisationName: "test",
+          workspaceName: "workspace",
+        },
+      },
+    ],
+  })
+
+  await waitFor(() => {
+    expect(
+      screen.getByText("Please contact your administrator")
+    ).toBeInTheDocument()
+  })
+})

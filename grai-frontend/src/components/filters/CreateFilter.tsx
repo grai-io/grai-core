@@ -32,6 +32,7 @@ const CreateFilter: React.FC<CreateFilterProps> = ({ workspaceId, tags }) => {
   const { enqueueSnackbar } = useSnackbar()
   const navigate = useNavigate()
 
+  /* istanbul ignore next */
   const [createFilter, { loading, error }] = useMutation<
     CreateFilterType,
     CreateFilterVariables
