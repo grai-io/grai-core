@@ -478,5 +478,61 @@
             "created_at": "2023-06-05T10:00:00.000Z",
             "updated_at": "2023-06-05T10:00:00.000Z"
         }
+    },
+    {
+        "model": "connections.connector",
+        "pk": "6d3a2356-8160-49a6-a888-956601117835",
+        "fields": {
+            "name": "Apache Spark",
+            "metadata": {},
+            "is_active": true,
+            "icon": "/icons/data-sources/spark.png",
+            "category": "data tools",
+            "coming_soon": true,
+            "created_at": "2023-06-05T10:00:00.000Z",
+            "updated_at": "2023-06-05T10:00:00.000Z"
+        }
+    },
+    {
+        "model": "connections.connector",
+        "pk": "badfb696-bc97-41a9-bec1-2321b17672d1",
+        "fields": {
+            "name": "Kedro",
+            "metadata": {},
+            "is_active": true,
+            "icon": "/icons/data-sources/kedro.png",
+            "category": "data tools",
+            "coming_soon": true,
+            "created_at": "2023-06-05T10:00:00.000Z",
+            "updated_at": "2023-06-05T10:00:00.000Z"
+        }
+    },
+    {
+        "model": "connections.connector",
+        "pk": "019950c5-7907-4ef0-8eb4-92296ce71670",
+        "fields": {
+            "name": "Apache Atlas",
+            "metadata": {},
+            "is_active": true,
+            "icon": "/icons/data-sources/atlas.png",
+            "category": "data tools",
+            "coming_soon": true,
+            "created_at": "2023-06-05T10:00:00.000Z",
+            "updated_at": "2023-06-05T10:00:00.000Z"
+        }
+    },
+    {
+        "model": "connections.connector",
+        "pk": "e8ec1a80-81e7-4184-94cd-4ba53628d431",
+        "fields": {
+            "name": "Apache Iceberg",
+            "metadata": {},
+            "is_active": true,
+            "icon": "/icons/data-sources/iceberg.png",
+            "category": "databases",
+            "coming_soon": true,
+            "created_at": "2023-06-05T10:00:00.000Z",
+            "updated_at": "2023-06-05T10:00:00.000Z"
+        }
     }
 ]
