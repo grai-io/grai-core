@@ -399,13 +399,17 @@ class LoggingConnector(BigqueryConnector):
 
         """
 
+        existing_node_unique_ids = {
+            (node.name, node.table_schema) for node in existing_nodes if isinstance(node, Table)
+        }
+
         def table_string_to_table_id(table_string: str) -> Optional[TableID]:
             table_string = table_string.split("/")
 
             schema = table_string[3]
             name = table_string[5]
 
-            if not any(node.name == name and node.table_schema == schema for node in existing_nodes):
+            if (name, schema) not in existing_node_unique_ids:
                 return None
 
             return TableID(
