@@ -118,10 +118,12 @@ def execute_run(run: Run):
         run.save()
 
         if run.commit and run.trigger:
+            print("Complete Check")
+            print("success" if (failures is None or len(list(failures)) == 0) else "failure")
             github = get_github_api(run)
             github.complete_check(
                 check_id=run.trigger["check_id"],
-                conclusion="success" if failures is None or len(list(failures)) == 0 else "failure",
+                conclusion="success" if (failures is None or len(list(failures)) == 0) else "failure",
             )
             if run.commit.pull_request:
                 github.post_comment(run.commit.pull_request.reference, message)
