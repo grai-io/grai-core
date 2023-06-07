@@ -89,13 +89,21 @@ def test_connector():
 @pytest.fixture
 def test_repository(test_workspace):
     return Repository.objects.create(
-        workspace=test_workspace, owner="test_owner", repo="test_repo", type=Repository.GITHUB, installation_id=1234
+        workspace=test_workspace,
+        owner="test_owner",
+        repo="test_repo",
+        type=Repository.GITHUB,
+        installation_id=1234,
     )
 
 
 @pytest.fixture
 def test_branch(test_workspace, test_repository):
-    return Branch.objects.create(workspace=test_workspace, repository=test_repository, reference=str(uuid.uuid4()))
+    return Branch.objects.create(
+        workspace=test_workspace,
+        repository=test_repository,
+        reference=str(uuid.uuid4()),
+    )
 
 
 @pytest.fixture
@@ -184,7 +192,9 @@ class TestUpdateServer:
         with open(os.path.join(__location__, "manifest.json")) as reader:
             file = UploadedFile(reader, name="manifest.json")
             connection = Connection.objects.create(
-                name=str(uuid.uuid4()), connector=test_dbt_connector, workspace=test_workspace
+                name=str(uuid.uuid4()),
+                connector=test_dbt_connector,
+                workspace=test_workspace,
             )
             run = Run.objects.create(connection=connection, workspace=test_workspace)
             RunFile.objects.create(run=run, file=file)
@@ -279,7 +289,9 @@ class TestUpdateServer:
         with open(os.path.join(__location__, "test.yaml")) as reader:
             file = UploadedFile(reader, name="test.yaml")
             connection = Connection.objects.create(
-                name=str(uuid.uuid4()), connector=test_yaml_file_connector, workspace=test_workspace
+                name=str(uuid.uuid4()),
+                connector=test_yaml_file_connector,
+                workspace=test_workspace,
             )
             run = Run.objects.create(connection=connection, workspace=test_workspace)
             RunFile.objects.create(run=run, file=file)
@@ -321,6 +333,7 @@ class TestUpdateServer:
                 "database": "database",
                 "host": "a",
                 "port": "1443",
+                "driver": "test",
             },
             secrets={"password": "password1234"},
         )
@@ -365,7 +378,9 @@ class TestTests:
         with open(os.path.join(__location__, "manifest.json")) as reader:
             file = UploadedFile(reader, name="manifest.json")
             connection = Connection.objects.create(
-                name=str(uuid.uuid4()), connector=test_dbt_connector, workspace=test_workspace
+                name=str(uuid.uuid4()),
+                connector=test_dbt_connector,
+                workspace=test_workspace,
             )
             run = Run.objects.create(connection=connection, workspace=test_workspace, action=Run.TESTS)
             RunFile.objects.create(run=run, file=file)
@@ -379,7 +394,9 @@ class TestTests:
         with open(os.path.join(__location__, "manifest.json")) as reader:
             file = UploadedFile(reader, name="manifest.json")
             connection = Connection.objects.create(
-                name=str(uuid.uuid4()), connector=test_dbt_connector, workspace=test_workspace
+                name=str(uuid.uuid4()),
+                connector=test_dbt_connector,
+                workspace=test_workspace,
             )
             run = Run.objects.create(
                 connection=connection,
@@ -480,7 +497,9 @@ class TestTests:
         with open(os.path.join(__location__, "manifest.json")) as reader:
             file = UploadedFile(reader, name="manifest.json")
             connection = Connection.objects.create(
-                name=str(uuid.uuid4()), connector=test_dbt_connector, workspace=test_workspace
+                name=str(uuid.uuid4()),
+                connector=test_dbt_connector,
+                workspace=test_workspace,
             )
             run = Run.objects.create(
                 connection=connection,
@@ -563,7 +582,9 @@ class TestTests:
         with open(os.path.join(__location__, "test.yaml")) as reader:
             file = UploadedFile(reader, name="test.yaml")
             connection = Connection.objects.create(
-                name=str(uuid.uuid4()), connector=test_yaml_file_connector, workspace=test_workspace
+                name=str(uuid.uuid4()),
+                connector=test_yaml_file_connector,
+                workspace=test_workspace,
             )
             run = Run.objects.create(
                 connection=connection,
@@ -583,7 +604,9 @@ class TestValidateTests:
         with open(os.path.join(__location__, "manifest.json")) as reader:
             file = UploadedFile(reader, name="manifest.json")
             connection = Connection.objects.create(
-                name=str(uuid.uuid4()), connector=test_dbt_connector, workspace=test_workspace
+                name=str(uuid.uuid4()),
+                connector=test_dbt_connector,
+                workspace=test_workspace,
             )
             run = Run.objects.create(connection=connection, workspace=test_workspace, action=Run.VALIDATE)
             RunFile.objects.create(run=run, file=file)
@@ -598,7 +621,9 @@ def test_process_run_incorrect_action(test_workspace, test_yaml_file_connector):
     with open(os.path.join(__location__, "test.yaml")) as reader:
         file = UploadedFile(reader, name="test.yaml")
         connection = Connection.objects.create(
-            name=str(uuid.uuid4()), connector=test_yaml_file_connector, workspace=test_workspace
+            name=str(uuid.uuid4()),
+            connector=test_yaml_file_connector,
+            workspace=test_workspace,
         )
         run = Run.objects.create(connection=connection, workspace=test_workspace, action="Incorrect")
         RunFile.objects.create(run=run, file=file)
@@ -645,7 +670,15 @@ class TestConnectionSchedule:
 class TestEventsTests:
     def test_dbt_cloud(self, test_workspace, test_dbt_cloud_connector, mocker):
         mock = mocker.patch("grai_source_dbt_cloud.base.get_events")
-        mock.return_value = [Event(reference="1234", date=date.today(), metadata={}, status="success", nodes=[])]
+        mock.return_value = [
+            Event(
+                reference="1234",
+                date=date.today(),
+                metadata={},
+                status="success",
+                nodes=[],
+            )
+        ]
 
         connection = Connection.objects.create(
             name="C2",
@@ -666,7 +699,13 @@ class TestEventsAllTests:
 
         mock = mocker.patch("grai_source_dbt_cloud.base.get_events")
         mock.return_value = [
-            Event(reference="1234", date=date.today(), metadata={}, status="success", nodes=[str(node.id)])
+            Event(
+                reference="1234",
+                date=date.today(),
+                metadata={},
+                status="success",
+                nodes=[str(node.id)],
+            )
         ]
 
         connection = Connection.objects.create(

@@ -15,6 +15,7 @@ class MssqlAdapter(BaseAdapter):
             database=metadata.get("database"),
             host=metadata.get("host"),
             port=metadata.get("port"),
+            driver=metadata.get("driver"),
             namespace=self.run.connection.namespace,
             additional_connection_strings=["TrustServerCertificate=yes"],
         )

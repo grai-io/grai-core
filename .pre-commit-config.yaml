@@ -5,6 +5,7 @@ repos:
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
+        exclude_types: ["json"]
       - id: check-merge-conflict
       - id: check-yaml
         args: [--allow-multiple-documents]
@@ -33,3 +34,7 @@ repos:
         minimum_pre_commit_version: 2.9.2
         require_serial: true
         types_or: [python, pyi]
+        exclude: |
+          (?x)^(
+                .*/migrations/.*.py
+            )$
