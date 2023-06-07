@@ -37,7 +37,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
     - name: Run Grai Action
-      uses: grai-core/grai-actions/flat-file
+      uses: grai-io/grai-actions/flat-file@master
       with:
         namespace: my_apps_grai_namespace
         api-key: my_grai_api_key

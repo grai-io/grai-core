@@ -39,7 +39,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
     - name: Run Grai Action
-      uses: grai-core/grai-actions/mysql
+      uses: grai-io/grai-actions/mysql@master
       with:
         namespace: my_apps_grai_namespace
         api-key: my_grai_api_key
