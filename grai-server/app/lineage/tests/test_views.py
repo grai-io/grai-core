@@ -220,7 +220,7 @@ def test_duplicate_edge_nodes(api_key, create_workspace, api_client):
 
 @pytest.fixture
 def create_workspace(name=None):
-    organisation = Organisation.objects.create(name="Test Organisation3")
+    organisation = Organisation.objects.create(name=str(uuid.uuid4()))
 
     return Workspace.objects.create(name=str(uuid.uuid4()) if name is None else name, organisation=organisation)
 
@@ -276,7 +276,7 @@ class TestNodeUserAuth:
         client, user = auto_login_user()
 
         workspace = Workspace.objects.create(organisation=create_workspace.organisation, name=str(uuid.uuid4()))
-        node = Node.objects.create(workspace=workspace, name=str(uuid.uuid4()), data_source="test")
+        node = Node.objects.create(workspace=workspace, name=str(uuid.uuid4()))
 
         url = f"{reverse('graph:nodes-list')}{node.id}/"
         response = client.get(url, content_type="application/json")

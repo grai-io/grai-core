@@ -18,9 +18,9 @@ class Context(object):
     pass
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def test_organisation():
-    organisation, created = await Organisation.objects.aget_or_create(name="Test Organisation")
+    organisation = await Organisation.objects.acreate(name=str(uuid.uuid4()))
 
     return organisation
 

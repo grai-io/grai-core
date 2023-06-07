@@ -13,7 +13,7 @@ from workspaces.models import Organisation, Workspace
 
 @pytest.fixture
 def test_organisation():
-    organisation, created = Organisation.objects.get_or_create(name="Test Organisation")
+    organisation = Organisation.objects.create(name=str(uuid.uuid4()))
 
     return organisation
 

@@ -5,6 +5,8 @@ from notifications.models import Alert
 
 from api.schema import schema
 from api.tests.common import (
+    generate_connection_name,
+    generate_filter,
     generate_username,
     generate_workspace,
     test_basic_context,
@@ -12,6 +14,7 @@ from api.tests.common import (
     test_organisation,
     test_user,
     test_workspace,
+    generate_source,
 )
 
 
