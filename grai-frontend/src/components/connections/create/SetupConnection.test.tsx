@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { screen, fireEvent, waitFor, act, render } from "testing"
 import { UPLOAD_CONNECTOR_FILE } from "./ConnectionFile"
-import SetupConnection from "./SetupConnection"
+import SetupConnection, { UPDATE_CONNECTION } from "./SetupConnection"
 
 const opts = {
   activeStep: 0,
@@ -96,6 +96,61 @@ test("submit update", async () => {
     async () =>
       await user.click(screen.getByRole("button", { name: /continue/i }))
   )
+})
+
+test("submit update error", async () => {
+  const user = userEvent.setup()
+
+  const mocks = [
+    {
+      request: {
+        query: UPDATE_CONNECTION,
+        variables: {
+          id: "1",
+          namespace: "default",
+          name: "connection 1",
+          metadata: {},
+          secrets: {},
+          connectionId: "1",
+        },
+      },
+      result: {
+        errors: [new GraphQLError("Error!")],
+      },
+    },
+  ]
+
+  render(
+    <SetupConnection
+      workspaceId="1"
+      opts={opts}
+      connector={{ id: "1", name: "Test Connector", metadata: null }}
+      connection={{
+        id: "1",
+        namespace: "default",
+        name: "connection 1",
+        sourceName: "test",
+        metadata: {},
+        secrets: {},
+      }}
+      setConnection={() => {}}
+    />,
+    {
+      mocks,
+      withRouter: true,
+    }
+  )
+
+  expect(screen.getByText("Connect to Test Connector")).toBeInTheDocument()
+
+  await act(
+    async () =>
+      await user.click(screen.getByRole("button", { name: /continue/i }))
+  )
+
+  await waitFor(() => {
+    expect(screen.getByText("Error!")).toBeInTheDocument()
+  })
 })
 
 test("renders file", async () => {
@@ -214,8 +269,6 @@ test("upload file", async () => {
 })
 
 test("upload wrong file", async () => {
-  // const user = userEvent.setup()
-
   render(
     <SetupConnection
       workspaceId="1"
@@ -324,4 +377,31 @@ test("upload file error", async () => {
     async () =>
       await user.click(screen.getByRole("button", { name: /finish/i }))
   )
+
+  await waitFor(() => {
+    expect(screen.getByText("Error!")).toBeInTheDocument()
+  })
+})
+
+test("renders coming soon", async () => {
+  render(
+    <SetupConnection
+      workspaceId="1"
+      opts={opts}
+      connector={{
+        id: "1",
+        name: "Test",
+        metadata: {},
+        coming_soon: true,
+      }}
+      connection={null}
+      setConnection={() => {}}
+    />,
+    {
+      withRouter: true,
+    }
+  )
+
+  expect(screen.getByText("Test Integration")).toBeInTheDocument()
+  expect(screen.getByText("Test coming soon")).toBeInTheDocument()
 })

@@ -272,6 +272,17 @@ class TestNodeUserAuth:
         assert response.status_code == 403
 
     @pytest.mark.django_db
+    def test_no_membership(self, auto_login_user, create_workspace):
+        client, user = auto_login_user()
+
+        workspace = Workspace.objects.create(organisation=create_workspace.organisation, name=str(uuid.uuid4()))
+        node = Node.objects.create(workspace=workspace, name=str(uuid.uuid4()), data_source="test")
+
+        url = f"{reverse('graph:nodes-list')}{node.id}/"
+        response = client.get(url, content_type="application/json")
+        assert response.status_code == 404, response
+
+    @pytest.mark.django_db
     def test_api_key_auth(self, create_workspace, api_client, api_key):
         api_client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
         response = create_node(api_client, create_workspace)
@@ -281,6 +292,13 @@ class TestNodeUserAuth:
     def test_invalid_api_key_auth(self, create_workspace, api_client):
         api_client.credentials(HTTP_AUTHORIZATION=f"Api-Key wrong_api_key")
         response = create_node(api_client, create_workspace)
+        assert response.status_code == 403
+
+    @pytest.mark.django_db
+    def test_api_key_no_membership(self, create_workspace, api_client):
+        api_client.credentials(HTTP_AUTHORIZATION=f"Api-Key {api_key}")
+        workspace = Workspace.objects.create(name=str(uuid.uuid4()), organisation=create_workspace.organisation)
+        response = create_node(api_client, workspace)
         assert response.status_code == 403
 
 
@@ -368,6 +386,15 @@ class TestNodeWithFilter:
         assert result["name"] == node["name"]
         assert result["namespace"] == node["namespace"]
         assert result["id"] == node["id"]
+
+    @pytest.mark.django_db
+    def test_query_by_id_no_membership(self, client):
+        organisation = Organisation.objects.create(name=str(uuid.uuid4()))
+        workspace = Workspace.objects.create(name=str(uuid.uuid4()), organisation=organisation)
+        node = Node.objects.create(name="test", namespace="test", workspace=workspace)
+        url = f"{reverse('graph:nodes-list')}{node.id}/"
+        response = client.get(url, content_type="application/json")
+        assert response.status_code == 403, response
 
 
 class TestEdgesWithFilter:

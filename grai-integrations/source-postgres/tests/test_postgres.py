@@ -4,22 +4,8 @@ import pytest
 
 from grai_source_postgres.loader import PostgresConnector
 
-# Tests only run with a separate postgres container deployed
-# TODO: Mock the DB connection: https://blog.devgenius.io/creating-a-mock-database-for-unittesting-in-python-is-easier-than-you-think-c458e747224b
-test_credentials = {
-    "host": "localhost",
-    "dbname": "grai",
-    "user": "grai",
-    "password": "grai",
-    "port": "5432",
-    "namespace": "test",
-}
 
-
-connection = PostgresConnector(**test_credentials)
-
-
-def test_building_nodes():
+def test_building_nodes(connection):
     """ """
     with connection.connect() as conn:
         tables = conn.tables
@@ -27,7 +13,7 @@ def test_building_nodes():
     assert len(tables) > 0
 
 
-def test_building_edges():
+def test_building_edges(connection):
     """ """
     with connection.connect() as conn:
         edges = conn.foreign_keys

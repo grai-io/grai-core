@@ -352,7 +352,12 @@ class BaseClient(abc.ABC):
         Raises:
 
         """
-        client_args = {"timeout": None, "http2": True, "params": QueryParams(**self.default_query_args)}
+        client_args = {
+            "timeout": None,
+            "http2": True,
+            "params": QueryParams(**self.default_query_args),
+            "transport": httpx.HTTPTransport(retries=3),
+        }
         client_args.update(self.httpx_client_args if self.httpx_client_args is not None else {})
 
         session = httpx.Client(**client_args)
@@ -872,10 +877,7 @@ def client_patch_url(
     Raises:
 
     """
-    headers = {
-        "Content-Type": "application/json",
-        **options.headers,
-    }
+    headers = {"Content-Type": "application/json", **options.headers}
     payload = {**payload, **options.payload}
 
     response = client.session.patch(url, content=serialize_obj(payload), headers=headers, **options.request_args)
