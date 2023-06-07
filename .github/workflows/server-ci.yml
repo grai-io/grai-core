@@ -33,7 +33,7 @@ jobs:
 
       - working-directory: "grai-server/app"
         run: |
-          black . --check
+          black . --check --exclude /migrations/
         # isort . --profile black --check
 
   tests-server:
