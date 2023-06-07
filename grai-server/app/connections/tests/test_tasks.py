@@ -149,7 +149,7 @@ def test_commit_with_pr(test_workspace, test_repository, test_branch, test_pull_
 class TestUpdateServer:
     def test_run_update_server_postgres(self, test_workspace, test_postgres_connector, test_source):
         connection = Connection.objects.create(
-            name="C1",
+            name=str(uuid.uuid4()),
             connector=test_postgres_connector,
             workspace=test_workspace,
             source=test_source,
@@ -167,7 +167,7 @@ class TestUpdateServer:
 
     def test_run_update_server_postgres_no_host(self, test_workspace, test_postgres_connector, test_source):
         connection = Connection.objects.create(
-            name="C2",
+            name=str(uuid.uuid4()),
             connector=test_postgres_connector,
             workspace=test_workspace,
             source=test_source,
@@ -188,7 +188,7 @@ class TestUpdateServer:
 
     def test_run_update_server_no_connector(self, test_workspace, test_connector, test_source):
         connection = Connection.objects.create(
-            name="C3",
+            name=str(uuid.uuid4()),
             connector=test_connector,
             workspace=test_workspace,
             source=test_source,
@@ -220,7 +220,7 @@ class TestUpdateServer:
         mock.return_value = [[], []]
 
         connection = Connection.objects.create(
-            name="C1",
+            name=str(uuid.uuid4()),
             connector=test_fivetran_connector,
             workspace=test_workspace,
             source=test_source,
@@ -238,7 +238,7 @@ class TestUpdateServer:
         mock.return_value = [[], []]
 
         connection = Connection.objects.create(
-            name="C1",
+            name=str(uuid.uuid4()),
             connector=test_fivetran_connector,
             workspace=test_workspace,
             source=test_source,
@@ -260,7 +260,7 @@ class TestUpdateServer:
         mock.return_value = [[], []]
 
         connection = Connection.objects.create(
-            name="C1",
+            name=str(uuid.uuid4()),
             connector=test_mysql_connector,
             workspace=test_workspace,
             source=test_source,
@@ -283,7 +283,7 @@ class TestUpdateServer:
         mock.return_value = [[], []]
 
         connection = Connection.objects.create(
-            name="C1",
+            name=str(uuid.uuid4()),
             connector=test_redshift_connector,
             workspace=test_workspace,
             source=test_source,
@@ -321,7 +321,7 @@ class TestUpdateServer:
         mock.return_value = [[], []]
 
         connection = Connection.objects.create(
-            name="C2",
+            name=str(uuid.uuid4()),
             connector=test_snowflake_connector,
             workspace=test_workspace,
             source=test_source,
@@ -344,7 +344,7 @@ class TestUpdateServer:
         mock.return_value = [[], []]
 
         connection = Connection.objects.create(
-            name="C2",
+            name=str(uuid.uuid4()),
             connector=test_mssql_connector,
             workspace=test_workspace,
             source=test_source,
@@ -353,6 +353,7 @@ class TestUpdateServer:
                 "database": "database",
                 "host": "a",
                 "port": "1443",
+                "driver": "test",
             },
             secrets={"password": "password1234"},
         )
@@ -365,7 +366,7 @@ class TestUpdateServer:
         mock.return_value = [[], []]
 
         connection = Connection.objects.create(
-            name="C2",
+            name=str(uuid.uuid4()),
             connector=test_bigquery_connector,
             workspace=test_workspace,
             source=test_source,
@@ -381,7 +382,7 @@ class TestUpdateServer:
         mock.return_value = [[], []]
 
         connection = Connection.objects.create(
-            name="C2",
+            name=str(uuid.uuid4()),
             connector=test_dbt_cloud_connector,
             workspace=test_workspace,
             source=test_source,
@@ -450,7 +451,7 @@ class TestTests:
         mocker.patch("installations.github.GhApi")
 
         connection = Connection.objects.create(
-            name="C3",
+            name=str(uuid.uuid4()),
             connector=test_connector,
             workspace=test_workspace,
             source=test_source,
@@ -707,7 +708,7 @@ def test_process_run_incorrect_action(test_workspace, test_yaml_file_connector, 
 class TestConnectionSchedule:
     def test_run_connection_schedule_postgres(self, test_workspace, test_postgres_connector, test_source):
         connection = Connection.objects.create(
-            name="C4",
+            name=str(uuid.uuid4()),
             connector=test_postgres_connector,
             workspace=test_workspace,
             metadata={"host": "a", "port": 5432, "dbname": "grai", "user": "grai"},
@@ -727,7 +728,7 @@ class TestConnectionSchedule:
 
     def test_run_connection_schedule_no_connector(self, test_workspace, test_connector, test_source):
         connection = Connection.objects.create(
-            name="C5",
+            name=str(uuid.uuid4()),
             connector=test_connector,
             workspace=test_workspace,
             source=test_source,
@@ -753,7 +754,7 @@ class TestEventsTests:
         ]
 
         connection = Connection.objects.create(
-            name="C2",
+            name=str(uuid.uuid4()),
             connector=test_dbt_cloud_connector,
             workspace=test_workspace,
             metadata={},
@@ -787,7 +788,7 @@ class TestEventsAllTests:
         ]
 
         connection = Connection.objects.create(
-            name="C2",
+            name=str(uuid.uuid4()),
             connector=test_dbt_cloud_connector,
             workspace=test_workspace,
             metadata={},

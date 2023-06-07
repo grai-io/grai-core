@@ -12,6 +12,7 @@ from connections.models import Connection, Connector
 from lineage.models import Filter, Source
 from users.models import User
 from workspaces.models import Membership, Organisation, Workspace
+from notifications.models import Alert
 
 
 class Context(object):
@@ -48,6 +49,20 @@ async def test_source(test_workspace):
     source = await Source.objects.acreate(workspace=test_workspace, name=str(uuid.uuid4()))
 
     return source
+
+
+@pytest_asyncio.fixture
+async def test_alert(test_workspace):
+    alert = await Alert.objects.acreate(
+        workspace=test_workspace,
+        name=str(uuid.uuid4()),
+        channel="email",
+        channel_metadata={},
+        triggers={},
+        is_active=False,
+    )
+
+    return alert
 
 
 @pytest.fixture
