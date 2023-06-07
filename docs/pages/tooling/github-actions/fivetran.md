@@ -5,7 +5,7 @@ description: Documentation for Grai's Fivetran GitHub action.
 
 # Fivetran
 
-The Fivetran Action relies upon access to Fivetran's API endpoint. 
+The Fivetran Action relies upon access to Fivetran's API endpoint.
 This endpoint is configurable if you have a non-standard implementation but should generally be left alone.
 
 Authentication with their services will require an API key and secret but you can find more documentation about generating these values [here](https://fivetran.com/docs/rest-api/getting-started#instructions).
@@ -25,13 +25,13 @@ Authentication with their services will require an API key and secret but you ca
 
 
 The `namespace` field in the Fivetran Action works slightly differently than other action.
-It is used as a default namespace for all connections not specified in the `namespace_map`. 
+It is used as a default namespace for all connections not specified in the `namespace_map`.
 You can find more information about that below.
 
 
 #### Namespace Map
 
-Each Fivetran connection has a connector id and synchronizes from a source to a sync. 
+Each Fivetran connection has a connector id and synchronizes from a source to a sync.
 For example, a sync from your production database to data warehouse would have an associated connector id.
 
 Because the Fivetran Action synchronizes from all of your Fivetran connections it uses the `namespace_map` value to know which connectors belong to which Grai namespaces.
@@ -64,7 +64,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
     - name: Run Grai Action
-      uses: grai-core/grai-actions/fivetran
+      uses: grai-io/grai-actions/fivetran@master
       with:
         namespace: my_apps_grai_namespace
         api-key: my_grai_api_key
@@ -76,6 +76,3 @@ jobs:
           "destination_namespace"}}'
 
 ```
-
-
-

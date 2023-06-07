@@ -5,7 +5,7 @@ description: Documentation for Grai's SQL Server GitHub action.
 
 # Microsoft SQL Server
 
-The SQL Server action depends on the python pyodbc library. 
+The SQL Server action depends on the python pyodbc library.
 You can find complete documentation about the library [here](https://github.com/mkleehammer/pyodbc/wiki).
 
 There are a variety of ways to configure a pyodbc connection depending on your security implementation.
@@ -46,7 +46,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
     - name: Run Grai Action
-      uses: grai-core/grai-actions/mssql
+      uses: grai-io/grai-actions/mssql@master
       with:
         namespace: my_apps_grai_namespace
         api-key: my_grai_api_key
@@ -58,6 +58,3 @@ jobs:
         trust_server_certificate: 'true'
 
 ```
-
-
-

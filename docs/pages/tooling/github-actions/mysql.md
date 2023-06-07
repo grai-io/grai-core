@@ -3,9 +3,9 @@ title: MySQL
 description: Documentation for Grai's MySQL GitHub action.
 ---
 
-# MySQL 
+# MySQL
 
-The MySQL action depends on the python mysql library. 
+The MySQL action depends on the python mysql library.
 You can find complete documentation about the library [here](https://dev.mysql.com/doc/connector-python).
 
 
@@ -39,7 +39,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
     - name: Run Grai Action
-      uses: grai-core/grai-actions/mysql
+      uses: grai-io/grai-actions/mysql@master
       with:
         namespace: my_apps_grai_namespace
         api-key: my_grai_api_key
@@ -52,6 +52,3 @@ jobs:
         db-password: my_password
 
 ```
-
-
-

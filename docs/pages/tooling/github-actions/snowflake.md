@@ -5,7 +5,7 @@ description: Documentation for Grai's Snowflake GitHub action.
 
 # Snowflake
 
-The Snowflake action depends on Snowflake's python connector library. 
+The Snowflake action depends on Snowflake's python connector library.
 You can find complete documentation about the library in the Snowflake docs [here](https://docs.snowflake.com/en/developer-guide/python-connector/python-connector) with more detail about the connector [here](https://docs.snowflake.com/en/developer-guide/python-connector/python-connector-api).
 
 
@@ -41,7 +41,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
     - name: Run Grai Action
-      uses: grai-core/grai-actions/snowflake
+      uses: grai-io/grai-actions/snowflake@master
       with:
         namespace: my_apps_grai_namespace
         api-key: my_grai_api_key
@@ -53,6 +53,3 @@ jobs:
         warehouse: my-warehouse
 
 ```
-
-
-
