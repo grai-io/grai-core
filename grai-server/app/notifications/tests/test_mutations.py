@@ -2,15 +2,19 @@ import uuid
 
 import pytest
 from notifications.models import Alert
+from django_multitenant.utils import set_current_tenant
 
 from api.schema import schema
 from api.tests.common import (
+    generate_connection_name,
+    generate_filter,
     generate_username,
     generate_workspace,
     test_basic_context,
     test_context,
     test_organisation,
     test_user,
+    test_alert,
     test_workspace,
 )
 
@@ -18,6 +22,7 @@ from api.tests.common import (
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_create_alert(test_context):
+    set_current_tenant(None)
     context, organisation, workspace, user, membership = test_context
 
     mutation = """
@@ -54,18 +59,10 @@ async def test_create_alert(test_context):
     assert result.data["createAlert"]["name"] == name
 
 
+@pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_update_alert(test_context):
+async def test_update_alert(test_context, test_alert):
     context, organisation, workspace, user, membership = test_context
-
-    alert = await Alert.objects.acreate(
-        workspace=workspace,
-        name=str(uuid.uuid4()),
-        channel="email",
-        channel_metadata={},
-        triggers={},
-        is_active=False,
-    )
 
     mutation = """
         mutation UpdateAlert($id: ID!, $name: String!, $channel_metadata: JSON!, $triggers: JSON!, $is_active: Boolean) {
@@ -80,13 +77,11 @@ async def test_update_alert(test_context):
         }
     """
 
-    name = str(uuid.uuid4())
-
     result = await schema.execute(
         mutation,
         variable_values={
-            "id": str(alert.id),
-            "name": name,
+            "id": str(test_alert.id),
+            "name": test_alert.name,
             "channel_metadata": {},
             "triggers": {},
             "is_active": True,
@@ -96,8 +91,8 @@ async def test_update_alert(test_context):
 
     assert result.errors is None
     assert result.data["updateAlert"] == {
-        "id": str(alert.id),
-        "name": name,
+        "id": str(test_alert.id),
+        "name": test_alert.name,
         "channel": "email",
         "channel_metadata": {},
         "triggers": {},
@@ -105,18 +100,10 @@ async def test_update_alert(test_context):
     }
 
 
+@pytest.mark.asyncio
 @pytest.mark.django_db
-async def test_delete_alert(test_context):
+async def test_delete_alert(test_context, test_alert):
     context, organisation, workspace, user, membership = test_context
-
-    alert = await Alert.objects.acreate(
-        workspace=workspace,
-        name=str(uuid.uuid4()),
-        channel="email",
-        channel_metadata={},
-        triggers={},
-        is_active=False,
-    )
 
     mutation = """
         mutation DeleteAlert($id: ID!) {
@@ -129,17 +116,17 @@ async def test_delete_alert(test_context):
     result = await schema.execute(
         mutation,
         variable_values={
-            "id": str(alert.id),
+            "id": str(test_alert.id),
         },
         context_value=context,
     )
 
     assert result.errors is None
     assert result.data["deleteAlert"] == {
-        "id": str(alert.id),
+        "id": str(test_alert.id),
     }
 
     with pytest.raises(Exception) as e_info:
-        await Alert.objects.aget(id=alert.id)
+        await Alert.objects.aget(id=test_alert.id)
 
     assert str(e_info.value) == "Alert matching query does not exist."
