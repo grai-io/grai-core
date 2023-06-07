@@ -27,6 +27,20 @@ async def test_organisation():
 
 
 @pytest_asyncio.fixture
+async def test_alert(test_workspace):
+    alert = await Alert.objects.acreate(
+        workspace=test_workspace,
+        name=str(uuid.uuid4()),
+        channel="email",
+        channel_metadata={},
+        triggers={},
+        is_active=False,
+    )
+
+    return alert
+
+
+@pytest_asyncio.fixture
 async def test_user():
     User = get_user_model()
 

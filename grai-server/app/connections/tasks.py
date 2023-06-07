@@ -83,7 +83,7 @@ def execute_run(run: Run):
             github = get_github_api(run)
             github.start_check(check_id=run.trigger["check_id"])
 
-        failures = None
+        has_failures = False
 
         connector = run.connection.connector
         adapter = get_adapter(connector.slug)
@@ -94,9 +94,9 @@ def execute_run(run: Run):
         elif run.action == Run.TESTS:
             results, message = adapter.run_tests(run)
             run.metadata = {"results": results}
-            failures = (result for result in results if not result["test_pass"])
+            has_failures = len(list(result for result in results if not result["test_pass"])) > 0
 
-            if len(list(failures)) > 0:
+            if has_failures:
                 send_notification.delay("test_failure", "Test failures")
 
         elif run.action == Run.VALIDATE:
@@ -118,12 +118,10 @@ def execute_run(run: Run):
         run.save()
 
         if run.commit and run.trigger:
-            print("Complete Check")
-            print("success" if (failures is None or len(list(failures)) == 0) else "failure")
             github = get_github_api(run)
             github.complete_check(
                 check_id=run.trigger["check_id"],
-                conclusion="success" if (failures is None or len(list(failures)) == 0) else "failure",
+                conclusion="failure" if has_failures else "success",
             )
             if run.commit.pull_request:
                 github.post_comment(run.commit.pull_request.reference, message)
