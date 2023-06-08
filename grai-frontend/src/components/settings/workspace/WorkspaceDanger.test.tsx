@@ -1,7 +1,7 @@
-import { act, render, screen, waitFor } from "testing"
-import WorkspaceDanger, { CLEAR_WORKSPACE } from "./WorkspaceDanger"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
+import { act, render, screen, waitFor } from "testing"
+import WorkspaceDanger, { CLEAR_WORKSPACE } from "./WorkspaceDanger"
 
 const workspace = {
   id: "1",
