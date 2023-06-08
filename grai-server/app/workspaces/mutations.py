@@ -18,6 +18,7 @@ from workspaces.models import Membership as MembershipModel
 from workspaces.models import Organisation as OrganisationModel
 from workspaces.models import Workspace as WorkspaceModel
 from workspaces.models import WorkspaceAPIKey as WorkspaceAPIKeyModel
+from lineage.models import Edge, Node
 
 
 async def createSingleMembership(workspace: WorkspaceModel, email: str, role: str) -> MembershipModel:
@@ -98,6 +99,26 @@ class Mutation:
         return workspace
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def clearWorkspace(
+        self,
+        info: Info,
+        id: strawberry.ID,
+    ) -> Workspace:
+        workspace = await get_workspace(info, id)
+
+        edges = Edge.objects.filter(workspace=workspace)
+
+        if await edges.aexists():
+            await sync_to_async(edges._raw_delete)(edges.db)
+
+        nodes = Node.objects.filter(workspace=workspace)
+
+        if await nodes.aexists():
+            await sync_to_async(nodes._raw_delete)(nodes.db)
+
+        return workspace
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def createMembership(
         self,
         info: Info,
@@ -152,7 +173,11 @@ class Mutation:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def createApiKey(
-        self, info: Info, workspaceId: strawberry.ID, name: str, expiry_date: Optional[datetime.datetime] = None
+        self,
+        info: Info,
+        workspaceId: strawberry.ID,
+        name: str,
+        expiry_date: Optional[datetime.datetime] = None,
     ) -> KeyResult:
         user = get_user(info)
         workspace = await get_workspace(info, workspaceId)
