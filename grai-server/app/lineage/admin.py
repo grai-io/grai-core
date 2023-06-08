@@ -107,8 +107,6 @@ class EdgeAdmin(admin.ModelAdmin):
         ("created_at", DateFieldListFilter),
         "namespace",
         "is_active",
-        ("source", admin.RelatedOnlyFieldListFilter),
-        ("destination", admin.RelatedOnlyFieldListFilter),
     )
 
     formfield_overrides = {JSONField: {"widget": PrettyJSONWidget}}

@@ -21,6 +21,7 @@ from .common import (
     test_workspace,
     test_connector,
     test_connection,
+    test_alert,
 )
 
 
@@ -2245,10 +2246,8 @@ async def test_node_events(test_context, test_source):
 
 
 @pytest.mark.django_db
-async def test_alerts(test_context):
+async def test_workspace_alerts(test_context, test_alert):
     context, organisation, workspace, user, membership = test_context
-
-    alert = await Alert.objects.acreate(workspace=workspace, name=str(uuid.uuid4()), channel="email")
 
     query = """
         query Workspace($workspaceId: ID!) {
@@ -2262,7 +2261,6 @@ async def test_alerts(test_context):
             }
         }
     """
-
     result = await schema.execute(
         query,
         variable_values={"workspaceId": str(workspace.id)},
@@ -2271,14 +2269,12 @@ async def test_alerts(test_context):
 
     assert result.errors is None
     assert result.data["workspace"]["id"] == str(workspace.id)
-    assert result.data["workspace"]["alerts"]["data"][0]["id"] == str(alert.id)
+    assert result.data["workspace"]["alerts"]["data"][0]["id"] == str(test_alert.id)
 
 
 @pytest.mark.django_db
-async def test_alert(test_context):
+async def test_workspace_alert(test_context, test_alert):
     context, organisation, workspace, user, membership = test_context
-
-    alert = await Alert.objects.acreate(workspace=workspace, name=str(uuid.uuid4()), channel="email")
 
     query = """
         query Workspace($workspaceId: ID!, $alertId: ID!) {
@@ -2293,13 +2289,16 @@ async def test_alert(test_context):
 
     result = await schema.execute(
         query,
-        variable_values={"workspaceId": str(workspace.id), "alertId": str(alert.id)},
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "alertId": str(test_alert.id),
+        },
         context_value=context,
     )
 
     assert result.errors is None
     assert result.data["workspace"]["id"] == str(workspace.id)
-    assert result.data["workspace"]["alert"]["id"] == str(alert.id)
+    assert result.data["workspace"]["alert"]["id"] == str(test_alert.id)
 
 
 @pytest.mark.django_db

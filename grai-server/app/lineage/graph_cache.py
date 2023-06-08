@@ -7,6 +7,7 @@ from redis import Redis
 from workspaces.models import Workspace
 
 from .graph_types import GraphColumn, GraphTable
+from query_chunk import chunk
 
 
 class GraphCache:
@@ -24,6 +25,13 @@ class GraphCache:
 
     def query(self, query: str, parameters: any = {}, timeout: int = None):
         return self.manager.graph(f"lineage:{str(self.workspace.id)}").query(query, parameters, timeout=timeout)
+
+    def build_cache(self):
+        for node in chunk(self.workspace.nodes.all(), 10000):
+            self.cache_node(node)
+
+        for edge in chunk(self.workspace.edges.all(), 10000):
+            self.cache_edge(edge)
 
     def clear_cache(self):
         self.manager.delete(f"lineage:{str(self.workspace.id)}")

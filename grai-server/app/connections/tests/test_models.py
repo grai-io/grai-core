@@ -13,7 +13,7 @@ from workspaces.models import Organisation, Workspace
 
 @pytest.fixture
 def test_organisation():
-    organisation, created = Organisation.objects.get_or_create(name="Test Organisation")
+    organisation = Organisation.objects.create(name=str(uuid.uuid4()))
 
     return organisation
 
@@ -53,11 +53,13 @@ def test_connection(test_connector, test_workspace, test_source):
 
 @pytest.mark.django_db
 def test_connector_created():
-    connector = Connector.objects.create(name="C1")
+    name = str(uuid.uuid4())
+
+    connector = Connector.objects.create(name=name)
 
     assert connector.id == uuid.UUID(str(connector.id))
-    assert str(connector) == "C1"
-    assert connector.name == "C1"
+    assert str(connector) == name
+    assert connector.name == name
 
 
 @pytest.mark.django_db
@@ -82,23 +84,27 @@ def test_run_created(test_workspace, test_connection, test_source):
 class TestConnection:
     @pytest.mark.django_db
     def test_connection_created(self, test_workspace, test_connector, test_source):
+        name = str(uuid.uuid4())
+
         connection = Connection.objects.create(
             workspace=test_workspace,
             connector=test_connector,
-            name="Connection 1",
+            name=name,
             source=test_source,
         )
 
         assert connection.id == uuid.UUID(str(connection.id))
-        assert str(connection) == "Connection 1"
-        assert connection.name == "Connection 1"
+        assert str(connection) == name
+        assert connection.name == name
 
     @pytest.mark.django_db
     def test_connection_updated_with_schedule(self, test_workspace, test_connector, test_source):
+        name = str(uuid.uuid4())
+
         connection = Connection.objects.create(
             workspace=test_workspace,
             connector=test_connector,
-            name="Connection 1",
+            name=name,
             source=test_source,
         )
 
@@ -116,17 +122,19 @@ class TestConnection:
         connection.save()
 
         assert connection.id == uuid.UUID(str(connection.id))
-        assert str(connection) == "Connection 1"
-        assert connection.name == "Connection 1"
+        assert str(connection) == name
+        assert connection.name == name
         assert connection.task is not None
 
     @pytest.mark.django_db
     def test_connection_updated_with_existing_task(self, test_workspace, test_connector, test_source):
+        name = str(uuid.uuid4())
+
         connection = Connection.objects.create(
             workspace=test_workspace,
             connector=test_connector,
+            name=name,
             source=test_source,
-            name="Connection 1",
             schedules={
                 "type": "cron",
                 "cron": {
@@ -153,16 +161,18 @@ class TestConnection:
         connection.save()
 
         assert connection.id == uuid.UUID(str(connection.id))
-        assert str(connection) == "Connection 1"
-        assert connection.name == "Connection 1"
+        assert str(connection) == name
+        assert connection.name == name
         assert connection.task is not None
 
     @pytest.mark.django_db
     def test_connection_updated_with_incorrect_schedule(self, test_workspace, test_connector, test_source):
+        name = str(uuid.uuid4())
+
         connection = Connection.objects.create(
             workspace=test_workspace,
             connector=test_connector,
-            name="Connection 1",
+            name=name,
             source=test_source,
         )
 
@@ -177,10 +187,12 @@ class TestConnection:
 
     @pytest.mark.django_db
     def test_connection_updated_remove_schedule(self, test_workspace, test_connector, test_source):
+        name = str(uuid.uuid4())
+
         connection = Connection.objects.create(
             workspace=test_workspace,
             connector=test_connector,
-            name="Connection 1",
+            name=name,
             source=test_source,
         )
 
@@ -198,8 +210,8 @@ class TestConnection:
         connection.save()
 
         assert connection.id == uuid.UUID(str(connection.id))
-        assert str(connection) == "Connection 1"
-        assert connection.name == "Connection 1"
+        assert str(connection) == name
+        assert connection.name == name
         assert connection.task is not None
 
         task = connection.task
