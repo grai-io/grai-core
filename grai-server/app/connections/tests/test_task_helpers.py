@@ -79,7 +79,7 @@ def test_edge_v1(test_workspace, test_source_node, test_destination_node):
 
 @pytest.fixture
 def test_source(test_workspace):
-    return Source.objects.create(workspace=test_workspace, name="S1")
+    return Source.objects.create(workspace=test_workspace, name=str(uuid.uuid4()))
 
 
 class TestGetNode:

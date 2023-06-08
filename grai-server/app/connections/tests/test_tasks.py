@@ -188,7 +188,7 @@ class TestUpdateServer:
 
     def test_run_update_server_no_connector(self, test_workspace, test_connector, test_source):
         connection = Connection.objects.create(
-            name="C3",
+            name=str(uuid.uuid4()),
             connector=test_connector,
             workspace=test_workspace,
             source=test_source,
@@ -451,7 +451,7 @@ class TestTests:
         mocker.patch("installations.github.GhApi")
 
         connection = Connection.objects.create(
-            name="C3",
+            name=str(uuid.uuid4()),
             connector=test_connector,
             workspace=test_workspace,
             source=test_source,
@@ -728,7 +728,7 @@ class TestConnectionSchedule:
 
     def test_run_connection_schedule_no_connector(self, test_workspace, test_connector, test_source):
         connection = Connection.objects.create(
-            name="C5",
+            name=str(uuid.uuid4()),
             connector=test_connector,
             workspace=test_workspace,
             source=test_source,
@@ -822,7 +822,7 @@ class TestEventsAllTests:
         ]
 
         connection = Connection.objects.create(
-            name="C2",
+            name=str(uuid.uuid4()),
             connector=test_dbt_cloud_connector,
             workspace=test_workspace,
             metadata={},

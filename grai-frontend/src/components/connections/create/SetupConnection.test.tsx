@@ -1,7 +1,7 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { render, screen, fireEvent, waitFor, act } from "testing"
+import { screen, fireEvent, waitFor, act, render } from "testing"
 import { UPLOAD_CONNECTOR_FILE } from "./ConnectionFile"
 import SetupConnection, { UPDATE_CONNECTION } from "./SetupConnection"
 
@@ -109,6 +109,7 @@ test("submit update error", async () => {
           id: "1",
           namespace: "default",
           name: "connection 1",
+          sourceName: "test",
           metadata: {},
           secrets: {},
           connectionId: "1",
@@ -129,6 +130,7 @@ test("submit update error", async () => {
         id: "1",
         namespace: "default",
         name: "connection 1",
+        sourceName: "test",
         metadata: {},
         secrets: {},
       }}
