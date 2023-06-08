@@ -15,8 +15,15 @@ def empty_workspace(modeladmin, request, queryset):  # pragma: no cover
     workspaces = queryset
 
     for workspace in workspaces:
-        Edge.objects.filter(workspace=workspace).delete()
-        Node.objects.filter(workspace=workspace).delete()
+        edges = Edge.objects.filter(workspace=workspace)
+
+        if edges.exists():
+            edges._raw_delete(edges.db)
+
+        nodes = Node.objects.filter(workspace=workspace)
+
+        if nodes.exists():
+            nodes._raw_delete(nodes.db)
 
 
 @admin.action(description="Enable search")
