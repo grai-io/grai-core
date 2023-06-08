@@ -1,9 +1,9 @@
 import React from "react"
+import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
-import WorkspaceCreate from "./WorkspaceCreate"
-import userEvent from "@testing-library/user-event"
 import { CREATE_WORKSPACE } from "components/workspaces/WorkspaceForm"
+import WorkspaceCreate from "./WorkspaceCreate"
 
 test("renders", async () => {
   render(<WorkspaceCreate />, {

@@ -1,7 +1,7 @@
 import React from "react"
+import userEvent from "@testing-library/user-event"
 import { act, render, screen } from "testing"
 import WorkspaceList from "./WorkspaceList"
-import userEvent from "@testing-library/user-event"
 
 test("renders", async () => {
   const workspaces = [
