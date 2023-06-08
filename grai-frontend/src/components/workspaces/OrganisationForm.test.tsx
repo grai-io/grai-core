@@ -2,12 +2,12 @@ import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
-import WorkspaceForm, { CREATE_WORKSPACE } from "./WorkspaceForm"
+import OrganisationForm, { CREATE_WORKSPACE } from "./OrganisationForm"
 
 test("renders", async () => {
   const user = userEvent.setup()
 
-  render(<WorkspaceForm />, {
+  render(<OrganisationForm />, {
     routes: ["/Hello World/Hello World"],
   })
 
@@ -46,7 +46,7 @@ test("error", async () => {
     },
   ]
 
-  render(<WorkspaceForm />, {
+  render(<OrganisationForm />, {
     withRouter: true,
     mocks,
   })
