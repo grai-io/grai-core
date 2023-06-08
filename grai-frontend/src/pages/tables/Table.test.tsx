@@ -180,7 +180,7 @@ test("lineage", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getAllByText("Lineage")).toBeTruthy()
+    expect(screen.getByText("Lineage")).toBeInTheDocument()
   })
 
   await act(

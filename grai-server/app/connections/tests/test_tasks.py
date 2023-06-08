@@ -19,12 +19,12 @@ __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file
 
 @pytest.fixture
 def test_organisation():
-    return Organisation.objects.create(name="Org1")
+    return Organisation.objects.create(name=str(uuid.uuid4()))
 
 
 @pytest.fixture
 def test_workspace(test_organisation):
-    return Workspace.objects.create(name="W10", organisation=test_organisation)
+    return Workspace.objects.create(name=str(uuid.uuid4()), organisation=test_organisation)
 
 
 @pytest.fixture
@@ -144,7 +144,7 @@ def test_commit_with_pr(test_workspace, test_repository, test_branch, test_pull_
 class TestUpdateServer:
     def test_run_update_server_postgres(self, test_workspace, test_postgres_connector):
         connection = Connection.objects.create(
-            name="C1",
+            name=str(uuid.uuid4()),
             connector=test_postgres_connector,
             workspace=test_workspace,
             metadata={
@@ -161,7 +161,7 @@ class TestUpdateServer:
 
     def test_run_update_server_postgres_no_host(self, test_workspace, test_postgres_connector):
         connection = Connection.objects.create(
-            name="C2",
+            name=str(uuid.uuid4()),
             connector=test_postgres_connector,
             workspace=test_workspace,
             metadata={"host": "a", "port": 5432, "dbname": "grai", "user": "grai"},
@@ -207,7 +207,7 @@ class TestUpdateServer:
         mock.return_value = [[], []]
 
         connection = Connection.objects.create(
-            name="C1",
+            name=str(uuid.uuid4()),
             connector=test_fivetran_connector,
             workspace=test_workspace,
             metadata={"api_key": "abc123"},
@@ -224,7 +224,7 @@ class TestUpdateServer:
         mock.return_value = [[], []]
 
         connection = Connection.objects.create(
-            name="C1",
+            name=str(uuid.uuid4()),
             connector=test_fivetran_connector,
             workspace=test_workspace,
             metadata={
@@ -245,7 +245,7 @@ class TestUpdateServer:
         mock.return_value = [[], []]
 
         connection = Connection.objects.create(
-            name="C1",
+            name=str(uuid.uuid4()),
             connector=test_mysql_connector,
             workspace=test_workspace,
             metadata={
@@ -267,7 +267,7 @@ class TestUpdateServer:
         mock.return_value = [[], []]
 
         connection = Connection.objects.create(
-            name="C1",
+            name=str(uuid.uuid4()),
             connector=test_redshift_connector,
             workspace=test_workspace,
             metadata={
@@ -303,7 +303,7 @@ class TestUpdateServer:
         mock.return_value = [[], []]
 
         connection = Connection.objects.create(
-            name="C2",
+            name=str(uuid.uuid4()),
             connector=test_snowflake_connector,
             workspace=test_workspace,
             metadata={
@@ -325,7 +325,7 @@ class TestUpdateServer:
         mock.return_value = [[], []]
 
         connection = Connection.objects.create(
-            name="C2",
+            name=str(uuid.uuid4()),
             connector=test_mssql_connector,
             workspace=test_workspace,
             metadata={
@@ -346,7 +346,7 @@ class TestUpdateServer:
         mock.return_value = [[], []]
 
         connection = Connection.objects.create(
-            name="C2",
+            name=str(uuid.uuid4()),
             connector=test_bigquery_connector,
             workspace=test_workspace,
             metadata={"project": "a", "dataset": "dataset"},
@@ -361,7 +361,7 @@ class TestUpdateServer:
         mock.return_value = [[], []]
 
         connection = Connection.objects.create(
-            name="C2",
+            name=str(uuid.uuid4()),
             connector=test_dbt_cloud_connector,
             workspace=test_workspace,
             metadata={},
@@ -641,7 +641,7 @@ def test_process_run_incorrect_action(test_workspace, test_yaml_file_connector):
 class TestConnectionSchedule:
     def test_run_connection_schedule_postgres(self, test_workspace, test_postgres_connector):
         connection = Connection.objects.create(
-            name="C4",
+            name=str(uuid.uuid4()),
             connector=test_postgres_connector,
             workspace=test_workspace,
             metadata={"host": "a", "port": 5432, "dbname": "grai", "user": "grai"},
@@ -681,7 +681,7 @@ class TestEventsTests:
         ]
 
         connection = Connection.objects.create(
-            name="C2",
+            name=str(uuid.uuid4()),
             connector=test_dbt_cloud_connector,
             workspace=test_workspace,
             metadata={},
@@ -709,7 +709,7 @@ class TestEventsAllTests:
         ]
 
         connection = Connection.objects.create(
-            name="C2",
+            name=str(uuid.uuid4()),
             connector=test_dbt_cloud_connector,
             workspace=test_workspace,
             metadata={},
