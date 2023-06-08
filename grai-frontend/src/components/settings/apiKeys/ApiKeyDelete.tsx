@@ -69,10 +69,12 @@ const ApiKeyDelete: React.FC<ApiKeyDeleteProps> = ({
     })
       .then(() => deleteApiKey())
       .then(() => enqueueSnackbar("API Key deleted", { variant: "success" }))
-      .catch(error =>
-        enqueueSnackbar(`Failed to delete API key ${error}`, {
-          variant: "error",
-        })
+      .catch(
+        error =>
+          error &&
+          enqueueSnackbar(`Failed to delete API key ${error}`, {
+            variant: "error",
+          })
       )
   }
 
