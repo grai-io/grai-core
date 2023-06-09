@@ -28,7 +28,14 @@ class NodeViewSet(ModelViewSet):
 
         q_filter = Q()
         query_params = self.request.query_params
-        supported_filters = ["is_active", "namespace", "name", "display_name", "created_at", "updated_at"]
+        supported_filters = [
+            "is_active",
+            "namespace",
+            "name",
+            "display_name",
+            "created_at",
+            "updated_at",
+        ]
         starts_with_filters = ("metadata", "created_at", "updated_at")
         for filter_name, filter_value in query_params.items():
             if filter_name in supported_filters or filter_name.startswith(starts_with_filters):
@@ -79,7 +86,14 @@ class EdgeViewSet(ModelViewSet):
 
         q_filter = Q()
         query_params = self.request.query_params
-        supported_filters = {"source", "destination", "is_active", "name", "namespace", "display_name"}
+        supported_filters = {
+            "source",
+            "destination",
+            "is_active",
+            "name",
+            "namespace",
+            "display_name",
+        }
         starts_with_filters = ("metadata", "created_at", "updated_at")
         for filter_name, filter_value in query_params.items():
             if filter_name in supported_filters or filter_name.startswith(starts_with_filters):

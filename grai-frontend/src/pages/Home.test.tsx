@@ -161,3 +161,54 @@ test("missing workspace", async () => {
     ).toBeInTheDocument()
   })
 })
+
+test("no reports", async () => {
+  const mocks = [
+    {
+      request: {
+        query: GET_WORKSPACE,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+        },
+      },
+      result: {
+        data: {
+          workspace: {
+            id: "1",
+            name: "test workspace",
+            runs: {
+              meta: {
+                filtered: 0,
+              },
+            },
+            tables: {
+              meta: {
+                total: 0,
+              },
+            },
+            connections: {
+              meta: {
+                total: 0,
+              },
+            },
+          },
+        },
+      },
+    },
+  ]
+
+  render(<Home />, { mocks, withRouter: true })
+
+  await waitFor(() => {
+    expect(
+      screen.getByRole("heading", { name: /Welcome to Grai/i })
+    ).toBeTruthy()
+  })
+
+  await waitFor(() => {
+    expect(
+      screen.getByRole("heading", { name: /Getting started with Grai/i })
+    ).toBeTruthy()
+  })
+})

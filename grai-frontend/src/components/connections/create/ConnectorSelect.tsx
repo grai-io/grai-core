@@ -53,9 +53,29 @@ const ConnectorSelect: React.FC<ConnectorSelectProps> = ({ onSelect }) => {
     return res
   }, [])
 
+  const databases = categories?.find(c => c.title === "databases")
+  const datatools = categories?.find(c => c.title === "data tools")
+  const others = categories?.filter(
+    c => !["databases", "data tools"].includes(c.title)
+  )
+
   return (
     <>
-      {categories?.map(category => (
+      {databases && (
+        <ConnectorList
+          title={databases.title}
+          connectors={databases.connectors}
+          onSelect={onSelect}
+        />
+      )}
+      {datatools && (
+        <ConnectorList
+          title={datatools.title}
+          connectors={datatools.connectors}
+          onSelect={onSelect}
+        />
+      )}
+      {others?.map(category => (
         <ConnectorList
           key={category.title}
           title={category.title}

@@ -144,6 +144,7 @@ class Constraint(str, Enum):
     foreign_key = "f"
     primary_key = "p"
     belongs_to = "bt"
+    bigquery_model = "bqm"
 
 
 class Edge(BaseModel):
@@ -154,6 +155,21 @@ class Edge(BaseModel):
     definition: Optional[str]
     constraint_type: Constraint
     metadata: Optional[Dict] = None
+
+    def __hash__(self):
+        """
+
+        Returns:
+
+        Raises:
+
+        """
+        return hash(
+            (
+                (self.source.namespace, self.source.full_name),
+                (self.destination.namespace, self.destination.full_name),
+            )
+        )
 
 
 class TableType(str, Enum):

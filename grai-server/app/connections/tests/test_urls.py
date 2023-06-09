@@ -6,6 +6,7 @@ import uuid
 from unittest.mock import MagicMock
 
 import pytest
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from connections.models import Connection, Connector
 from installations.models import Branch, Commit, PullRequest, Repository
@@ -71,13 +72,21 @@ def test_dbt_cloud_connector():
 @pytest.fixture
 def test_repository(create_workspace):
     return Repository.objects.create(
-        workspace=create_workspace, owner="test_owner", repo="test_repo", type=Repository.GITHUB, installation_id=1234
+        workspace=create_workspace,
+        owner="test_owner",
+        repo="test_repo",
+        type=Repository.GITHUB,
+        installation_id=1234,
     )
 
 
 @pytest.fixture
 def test_branch(create_workspace, test_repository):
-    return Branch.objects.create(workspace=create_workspace, repository=test_repository, reference=str(uuid.uuid4()))
+    return Branch.objects.create(
+        workspace=create_workspace,
+        repository=test_repository,
+        reference=str(uuid.uuid4()),
+    )
 
 
 @pytest.fixture
@@ -141,6 +150,25 @@ def test_create_run_connector(auto_login_user, test_connector):
         url,
         {
             "connector_name": test_connector.name,
+        },
+    )
+    assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
+    run = response.json()
+    assert run["id"] is not None
+
+
+@pytest.mark.django_db
+def test_create_run_connector_file(auto_login_user, test_connector):
+    client, user, workspace = auto_login_user()
+
+    file = SimpleUploadedFile("manifest.json", b"file_content", content_type="test/json")
+
+    url = "/api/v1/external-runs/"
+    response = client.post(
+        url,
+        {
+            "connector_name": test_connector.name,
+            "file": file,
         },
     )
     assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
@@ -271,7 +299,13 @@ def test_create_run_connector_with_pull_request(
 
 @pytest.mark.django_db
 def test_create_run_connector_with_existing_pull_request(
-    auto_login_user, test_connector, test_repository, test_branch, test_pull_request, test_commit, mocker
+    auto_login_user,
+    test_connector,
+    test_repository,
+    test_branch,
+    test_pull_request,
+    test_commit,
+    mocker,
 ):
     mock = mocker.patch("connections.urls.Github")
     github_instance = MagicMock()

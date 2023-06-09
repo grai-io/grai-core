@@ -28,7 +28,6 @@ def patch_node_v1(client: ClientV1, grai_type: NodeV1, options: ClientOptions = 
     if grai_type.spec.id is None:
         current = get(client, grai_type)
         grai_type.spec.id = current.spec.id
-
     url = f"{client.get_url(grai_type)}{grai_type.spec.id}/"
     response = patch(client, url, grai_type.spec.dict(exclude_none=True), options=options)
     response = response.json()
