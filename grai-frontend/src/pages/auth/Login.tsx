@@ -56,8 +56,8 @@ const Login: React.FC = () => (
             <GraiLogo />
           </Box>
           <Typography
-            variant="h6"
-            sx={{ fontSize: 36, fontWeight: 800, mb: 5 }}
+            variant="h1"
+            sx={{ fontSize: 36, fontWeight: 800, mb: 5, lineHeight: 1.6 }}
           >
             Welcome Back!
           </Typography>

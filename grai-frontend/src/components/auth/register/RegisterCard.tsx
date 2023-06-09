@@ -13,7 +13,10 @@ const RegisterCard: React.FC = () => (
     }}
   >
     <CardContent sx={{ p: 5 }}>
-      <Typography variant="h6" sx={{ mb: 1, fontWeight: "bold", fontSize: 24 }}>
+      <Typography
+        variant="h1"
+        sx={{ mb: 1, fontWeight: "bold", fontSize: 24, lineHeight: 1.6 }}
+      >
         Register for an account
       </Typography>
       <RegisterForm />
