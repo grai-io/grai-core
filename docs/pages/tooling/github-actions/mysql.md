@@ -30,7 +30,7 @@ You can find complete documentation about the library [here](https://dev.mysql.c
 
 ```yaml copy
 'on':
-- push
+- pull_request
 name: MySQL
 jobs:
   test_mysql:

@@ -32,7 +32,7 @@ You can find complete documentation about the library in the Snowflake docs [her
 
 ```yaml copy
 'on':
-- push
+- pull_request
 name: Snowflake
 jobs:
   test_snowflake:

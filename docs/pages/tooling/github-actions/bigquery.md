@@ -28,7 +28,7 @@ More information can be found about specific connection credentials in Google's 
 
 ```yaml copy
 'on':
-- push
+- pull_request
 name: BigQuery
 jobs:
   test_bigquery:

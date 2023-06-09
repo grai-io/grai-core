@@ -28,7 +28,7 @@ Make sure to include an `- uses: actions/checkout@v3` step in your workflow so t
 
 ```yaml copy
 'on':
-- push
+- pull_request
 name: Flat File
 jobs:
   test_flat-file:

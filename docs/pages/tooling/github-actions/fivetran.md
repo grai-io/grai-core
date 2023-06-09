@@ -55,7 +55,7 @@ You can find connector id's for all of your Fivetran connections in the [API](ht
 
 ```yaml copy
 'on':
-- push
+- pull_request
 name: Fivetran
 jobs:
   test_fivetran:

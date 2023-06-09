@@ -30,7 +30,7 @@ You can find complete documentation about the library [here](https://www.psycopg
 
 ```yaml copy
 'on':
-- push
+- pull_request
 name: PostgreSQL
 jobs:
   test_postgres:

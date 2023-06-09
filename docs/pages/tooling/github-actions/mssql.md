@@ -37,7 +37,7 @@ A standard connection would consist of a host, port, database name, user, and pa
 
 ```yaml copy
 'on':
-- push
+- pull_request
 name: SQL Server
 jobs:
   test_mssql:

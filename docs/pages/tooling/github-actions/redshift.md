@@ -30,7 +30,7 @@ You can find complete documentation about the library in the AWS docs [here](htt
 
 ```yaml copy
 'on':
-- push
+- pull_request
 name: Redshift
 jobs:
   test_redshift:
