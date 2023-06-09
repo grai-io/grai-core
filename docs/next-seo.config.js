@@ -7,8 +7,6 @@ export default {
     images: [
       {
         url: "https://uploads-ssl.webflow.com/6447319aa8cf8e6b22816e04/644e871d9dcb880ad28d3d1c_grai-site.png",
-        width: 800,
-        height: 600,
         alt: "Grai Cloud",
       },
     ],
