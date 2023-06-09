@@ -8,6 +8,7 @@ import * as Sentry from "@sentry/react"
 import { BrowserTracing } from "@sentry/tracing"
 import { ConfirmProvider } from "material-ui-confirm"
 import { SnackbarKey, SnackbarProvider } from "notistack"
+import { HelmetProvider } from "react-helmet-async"
 import {
   BrowserRouter,
   createRoutesFromChildren,
@@ -50,33 +51,35 @@ const App: React.FC = () => {
   return (
     <div>
       <CssBaseline />
-      <ThemeProvider theme={theme}>
-        <LocalizationProvider dateAdapter={AdapterLuxon}>
-          <BackendProvider>
-            <ConfirmProvider
-              defaultOptions={{
-                confirmationButtonProps: { autoFocus: true },
-              }}
-            >
-              <SnackbarProvider
-                ref={notistackRef}
-                maxSnack={3}
-                hideIconVariant
-                action={key => (
-                  <IconButton onClick={onClickDismiss(key)}>
-                    <Close />
-                  </IconButton>
-                )}
+      <HelmetProvider>
+        <ThemeProvider theme={theme}>
+          <LocalizationProvider dateAdapter={AdapterLuxon}>
+            <BackendProvider>
+              <ConfirmProvider
+                defaultOptions={{
+                  confirmationButtonProps: { autoFocus: true },
+                }}
               >
-                <BrowserRouter>
-                  <PosthogProvider />
-                  <Routes />
-                </BrowserRouter>
-              </SnackbarProvider>
-            </ConfirmProvider>
-          </BackendProvider>
-        </LocalizationProvider>
-      </ThemeProvider>
+                <SnackbarProvider
+                  ref={notistackRef}
+                  maxSnack={3}
+                  hideIconVariant
+                  action={key => (
+                    <IconButton onClick={onClickDismiss(key)}>
+                      <Close />
+                    </IconButton>
+                  )}
+                >
+                  <BrowserRouter>
+                    <PosthogProvider />
+                    <Routes />
+                  </BrowserRouter>
+                </SnackbarProvider>
+              </ConfirmProvider>
+            </BackendProvider>
+          </LocalizationProvider>
+        </ThemeProvider>
+      </HelmetProvider>
     </div>
   )
 }
