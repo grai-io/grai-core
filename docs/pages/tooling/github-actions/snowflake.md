@@ -31,26 +31,26 @@ You can find complete documentation about the library in the Snowflake docs [her
 
 
 ```yaml copy
-'on':
-- pull_request
+on:
+  - pull_request
 name: Snowflake
 jobs:
   test_snowflake:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-    - name: Run Grai Action
-      uses: grai-io/grai-actions/snowflake@master
-      with:
-        namespace: my_apps_grai_namespace
-        api-key: my_grai_api_key
-        action: tests
-        grai-api-url: https://api.grai.io
-        db-user: my-user
-        db-password: my-password
-        account: my-account
-        warehouse: my-warehouse
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Run Grai Action
+        uses: grai-io/grai-actions/snowflake@master
+        with:
+          namespace: my_apps_grai_namespace
+          api-key: my_grai_api_key
+          action: tests
+          grai-api-url: https://api.grai.io
+          db-user: my-user
+          db-password: my-password
+          account: my-account
+          warehouse: my-warehouse
 
 ```
 
