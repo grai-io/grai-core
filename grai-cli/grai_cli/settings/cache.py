@@ -1,6 +1,7 @@
 import os
 import shelve
 import uuid
+import warnings
 
 import typer
 
@@ -46,6 +47,16 @@ class GraiCache:
     @property
     def cache(self):
         """ """
+        try:
+            return shelve.open(self.cache_file)
+        except Exception as e:
+            message = (
+                f"Failed to open the cli cache file located at {self.cache_file}. This sometimes indicates cache"
+                f" corruption. We've moved your cache file to {self.cache_file}.bak and replaced it with an empty file."
+            )
+            warnings.warn(message)
+            os.rename(self.cache_file, f"{self.cache_file}.bak")
+
         return shelve.open(self.cache_file)
 
     def set(self, key, value):
