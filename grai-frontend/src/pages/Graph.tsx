@@ -39,7 +39,11 @@ export const GET_TABLES_AND_EDGES = gql`
   }
 `
 
-const Graph: React.FC = () => {
+type GraphProps = {
+  alwaysShow?: boolean
+}
+
+const Graph: React.FC<GraphProps> = ({ alwaysShow }) => {
   const { organisationName, workspaceName } = useWorkspace()
   const [searchParams] = useSearchParams()
 
@@ -83,6 +87,7 @@ const Graph: React.FC = () => {
             errors={errors}
             limitGraph={limitGraph}
             loading={loading}
+            alwaysShow={alwaysShow}
           />
         ) : (
           <EmptyGraph />

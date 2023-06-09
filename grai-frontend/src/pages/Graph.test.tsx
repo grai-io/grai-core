@@ -115,7 +115,7 @@ test("renders", async () => {
 
   window.ResizeObserver = ResizeObserver
 
-  render(<Graph />, {
+  render(<Graph alwaysShow />, {
     path: ":organisationName/:workspaceName/graph",
     route: "/default/demo/graph",
     mocks,
@@ -216,7 +216,7 @@ test("renders with errors", async () => {
 
   window.ResizeObserver = ResizeObserver
 
-  render(<Graph />, {
+  render(<Graph alwaysShow />, {
     path: "/:organisationName/:workspaceName/graph",
     route:
       "/default/demo/graph?errors=%5B%7B%22source%22%3A%20%22a%22%2C%20%22destination%22%3A%20%22b%22%2C%20%22test%22%3A%20%22nullable%22%2C%20%22message%22%3A%20%22not%20null%22%7D%5D",
@@ -233,6 +233,7 @@ test("renders with errors", async () => {
 })
 
 test("renders with limitGraph", async () => {
+  const user = userEvent.setup()
   class ResizeObserver {
     callback: globalThis.ResizeObserverCallback
 
@@ -251,12 +252,28 @@ test("renders with limitGraph", async () => {
 
   window.ResizeObserver = ResizeObserver
 
-  render(<Graph />, {
+  render(<Graph alwaysShow />, {
     path: ":organisationName/:workspaceName/graph",
     route:
       "/default/demo/graph?limitGraph=true&errors=%5B%7B%22source%22%3A%20%22N1%22%2C%20%22destination%22%3A%20%22N2%22%2C%20%22test%22%3A%20%22nullable%22%2C%20%22message%22%3A%20%22not%20null%22%7D%5D",
     mocks,
   })
+
+  // const zoom = document.querySelector("#componentId")
+
+  // if (zoom) {
+  //   await act(async () => {
+  //     await user.click(zoom)
+  //     await user.click(zoom)
+  //     await user.click(zoom)
+  //     await user.click(zoom)
+  //     await user.click(zoom)
+  //   })
+  // }
+
+  // await waitFor(() => {
+  //   expect(screen.getAllByTestId("placeholder")).toBeTruthy()
+  // })
 
   await waitFor(() => {
     expect(screen.getByText("N2 Node")).toBeInTheDocument()
@@ -280,7 +297,7 @@ test("error", async () => {
     },
   ]
 
-  render(<Graph />, { mocks, withRouter: true })
+  render(<Graph alwaysShow />, { mocks, withRouter: true })
 
   await waitFor(() => {
     expect(screen.getByText("Error!")).toBeInTheDocument()
@@ -313,7 +330,7 @@ test("no nodes", async () => {
     },
   ]
 
-  render(<Graph />, { mocks, withRouter: true })
+  render(<Graph alwaysShow />, { mocks, withRouter: true })
 
   await waitFor(() => {
     expect(screen.getByText("Your graph is empty!")).toBeInTheDocument()
@@ -341,7 +358,7 @@ test("search", async () => {
 
   window.ResizeObserver = ResizeObserver
 
-  render(<Graph />, {
+  render(<Graph alwaysShow />, {
     path: ":organisationName/:workspaceName/graph",
     route: "/default/demo/graph",
     mocks,
@@ -375,7 +392,7 @@ test("filter", async () => {
 
   window.ResizeObserver = ResizeObserver
 
-  render(<Graph />, {
+  render(<Graph alwaysShow />, {
     path: ":organisationName/:workspaceName/graph",
     route: "/default/demo/graph?filter=1",
     routes: ["/:organisationName/:workspaceName/filters"],

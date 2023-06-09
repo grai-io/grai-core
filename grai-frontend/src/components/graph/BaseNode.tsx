@@ -26,6 +26,7 @@ export type BaseNodeData = {
   onShow: (values: string[]) => void
   searchHighlight: boolean
   searchDim: boolean
+  alwaysShow?: boolean
 }
 
 interface BaseNodeProps {
@@ -126,7 +127,11 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
         {data.hiddenSourceTables.length > 0 && (
           <HiddenTableButton position="right" onClick={handleShowSources} />
         )}
-        {showContent ? <BaseNodeContent data={data} /> : <Placeholder />}
+        {showContent || data.alwaysShow ? (
+          <BaseNodeContent data={data} />
+        ) : (
+          <Placeholder />
+        )}
         <Handle
           id="all"
           type="source"

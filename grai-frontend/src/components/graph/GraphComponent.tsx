@@ -76,6 +76,7 @@ type GraphComponentProps = {
   limitGraph?: boolean
   controlOptions?: ControlOptions
   throwMissingTable?: boolean
+  alwaysShow?: boolean
 }
 
 const GraphComponent: React.FC<GraphComponentProps> = ({
@@ -85,6 +86,7 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
   limitGraph,
   controlOptions,
   throwMissingTable,
+  alwaysShow,
 }) => {
   const { organisationName, workspaceName } = useWorkspace()
 
@@ -165,6 +167,7 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
         highlight: false,
         searchHighlight: searchMatch,
         searchDim: search ? !searchMatch : false,
+        alwaysShow,
       },
       position,
     }
