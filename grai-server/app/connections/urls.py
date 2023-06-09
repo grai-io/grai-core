@@ -16,7 +16,7 @@ from installations.models import Branch, Commit, PullRequest, Repository
 from rest_framework import routers
 from workspaces.permissions import HasWorkspaceAPIKey
 
-from .models import Connection, Connector, Run
+from .models import Connection, Connector, Run, RunFile
 from .views import ConnectionViewSet, ConnectorViewSet, RunViewSet
 
 app_name = "connections"
@@ -63,7 +63,13 @@ def get_connection(request) -> Connection:
 
 
 def get_commit(
-    owner: str, repo: str, branch_reference: str, pr_reference: str, pr_title: str, head_sha: str, commit_title: str
+    owner: str,
+    repo: str,
+    branch_reference: str,
+    pr_reference: str,
+    pr_title: str,
+    head_sha: str,
+    commit_title: str,
 ):
     # Repository
     try:
@@ -85,7 +91,10 @@ def get_commit(
             pull_request.save()
         except PullRequest.DoesNotExist:
             pull_request = PullRequest.objects.create(
-                repository=repository, reference=pr_reference, branch=branch, title=pr_title
+                repository=repository,
+                reference=pr_reference,
+                branch=branch,
+                title=pr_title,
             )
 
     # Commit
@@ -170,7 +179,20 @@ def create_run(request):
         connection = get_connection(request)
         commit, trigger = get_trigger(request, action)
 
-        run = Run.objects.create(connection=connection, status="queued", commit=commit, trigger=trigger, action=action)
+        run = Run.objects.create(
+            connection=connection,
+            status="queued",
+            commit=commit,
+            trigger=trigger,
+            action=action,
+        )
+
+        file = request.FILES.get("file", None)
+
+        if file:
+            runFile = RunFile(run=run)
+            runFile.file = file
+            runFile.save()
 
         process_run.delay(run.id)
 
@@ -211,7 +233,11 @@ def dbt_cloud(request):
         return Response({"status": "Connection not active"})
 
     run = Run.objects.create(
-        workspace=connection.workspace, connection=connection, status="queued", trigger=body, action=Run.UPDATE
+        workspace=connection.workspace,
+        connection=connection,
+        status="queued",
+        trigger=body,
+        action=Run.UPDATE,
     )
 
     process_run.delay(run.id)
