@@ -40,3 +40,5 @@ line-length = 120
 
 [tool.poetry.extras]
 vis = ["matplotlib", "pydot"]
+
+[tool.poetry_bumpversion.file."src/grai_graph/__init__.py"]

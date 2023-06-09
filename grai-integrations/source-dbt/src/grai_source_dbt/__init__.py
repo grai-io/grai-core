@@ -8,3 +8,5 @@ from grai_source_dbt import (
     utils,
 )
 from grai_source_dbt.package_definitions import config
+
+__version__ = "0.2.9"
