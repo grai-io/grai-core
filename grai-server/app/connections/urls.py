@@ -16,6 +16,7 @@ from rest_framework import routers
 
 from .models import Connection, Connector, Run, RunFile
 from .views import ConnectionViewSet, ConnectorViewSet, RunViewSet
+from workspaces.models import Workspace
 
 app_name = "connections"
 
@@ -133,7 +134,7 @@ def get_trigger(request, action: str):
 
     github = Github(owner=owner, repo=repo)
 
-    workspace = get_current_tenant()
+    workspace = Workspace.objects.get(id=get_current_tenant().id)
     details_url_start = (
         f"https://app.grai.io/{workspace.organisation.name}/{workspace.name}/reports/github/{owner}/{repo}/"
     )
