@@ -54,26 +54,26 @@ You can find connector id's for all of your Fivetran connections in the [API](ht
 
 
 ```yaml copy
-'on':
-- push
+on:
+  - pull_request
 name: Fivetran
 jobs:
   test_fivetran:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-    - name: Run Grai Action
-      uses: grai-io/grai-actions/fivetran@master
-      with:
-        namespace: my_apps_grai_namespace
-        api-key: my_grai_api_key
-        action: tests
-        grai-api-url: https://api.grai.io
-        fivetran-api-key: hHqP5c2nIY0B6fpa
-        fivetran-api-secret: 1234567890abcdef1234567890abcdef
-        namespace-map: '{"operative_combination": {"source": "source_namespace", "destination":
-          "destination_namespace"}}'
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Run Grai Action
+        uses: grai-io/grai-actions/fivetran@master
+        with:
+          namespace: my_apps_grai_namespace
+          api-key: my_grai_api_key
+          action: tests
+          grai-api-url: https://api.grai.io
+          fivetran-api-key: hHqP5c2nIY0B6fpa
+          fivetran-api-secret: 1234567890abcdef1234567890abcdef
+          namespace-map: '{"operative_combination": {"source": "source_namespace",
+            "destination": "destination_namespace"}}'
 
 ```
 

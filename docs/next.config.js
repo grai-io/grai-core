@@ -4,12 +4,10 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
 const { withSentryConfig } = require("@sentry/nextjs");
 
-
 const nextConfig = require("nextra")({
   theme: "nextra-theme-docs",
   themeConfig: "./theme.config.tsx",
 });
-
 
 module.exports = nextConfig({
   // i18n doesn't work with static site generation
@@ -28,8 +26,36 @@ module.exports = nextConfig({
   images: {
     unoptimized: true,
   },
+  async redirects() {
+    return [
+      {
+        source: "/connectors/mysql/",
+        destination: "/integrations/mysql",
+        permanent: true,
+      },
+      {
+        source: "/contributor-guidelines/",
+        destination: "/community/contributor-guidelines",
+        permanent: true,
+      },
+      {
+        source: "/examples/enhanced-dbt/",
+        destination: "/examples/enhanced-dbt",
+        permanent: true,
+      },
+      {
+        source: "/introduction/",
+        destination: "/introduction",
+        permanent: true,
+      },
+      {
+        source: "/web-app/connections/",
+        destination: "/integrations/support-status",
+        permanent: true,
+      },
+    ];
+  },
 });
-
 
 module.exports = withSentryConfig(
   module.exports,

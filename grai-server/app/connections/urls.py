@@ -6,7 +6,6 @@ import uuid
 from django.urls import path
 from django_multitenant.utils import get_current_tenant
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from common.permissions.multitenant import Multitenant
@@ -14,11 +13,11 @@ from connections.tasks import process_run
 from installations.github import Github
 from installations.models import Branch, Commit, PullRequest, Repository
 from rest_framework import routers
-from workspaces.permissions import HasWorkspaceAPIKey
 from lineage.models import Source
 
-from .models import Connection, Connector, Run
+from .models import Connection, Connector, Run, RunFile
 from .views import ConnectionViewSet, ConnectorViewSet, RunViewSet
+from workspaces.models import Workspace
 
 app_name = "connections"
 
@@ -157,7 +156,7 @@ def get_trigger(request, action: str):
 
     github = Github(owner=owner, repo=repo)
 
-    workspace = get_current_tenant()
+    workspace = Workspace.objects.get(id=get_current_tenant().id)
     details_url_start = (
         f"https://app.grai.io/{workspace.organisation.name}/{workspace.name}/reports/github/{owner}/{repo}/"
     )
@@ -193,7 +192,7 @@ def get_trigger(request, action: str):
 
 
 @api_view(["POST"])
-@permission_classes([(HasWorkspaceAPIKey | IsAuthenticated) & Multitenant])
+@permission_classes([Multitenant])
 def create_run(request):
     action = request.POST.get("action", "tests")
 
@@ -209,6 +208,13 @@ def create_run(request):
             action=action,
             source=connection.source,
         )
+
+        file = request.FILES.get("file", None)
+
+        if file:
+            runFile = RunFile(run=run)
+            runFile.file = file
+            runFile.save()
 
         process_run.delay(run.id)
 

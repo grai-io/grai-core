@@ -36,26 +36,26 @@ A standard connection would consist of a host, port, database name, user, and pa
 
 
 ```yaml copy
-'on':
-- push
+on:
+  - pull_request
 name: SQL Server
 jobs:
   test_mssql:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-    - name: Run Grai Action
-      uses: grai-io/grai-actions/mssql@master
-      with:
-        namespace: my_apps_grai_namespace
-        api-key: my_grai_api_key
-        action: tests
-        grai-api-url: https://api.grai.io
-        db-user: sa
-        db-password: sa_password
-        server_connection_string: tcp:myserver,1433
-        trust_server_certificate: 'true'
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Run Grai Action
+        uses: grai-io/grai-actions/mssql@master
+        with:
+          namespace: my_apps_grai_namespace
+          api-key: my_grai_api_key
+          action: tests
+          grai-api-url: https://api.grai.io
+          db-user: sa
+          db-password: sa_password
+          server_connection_string: tcp:myserver,1433
+          trust_server_certificate: 'true'
 
 ```
 

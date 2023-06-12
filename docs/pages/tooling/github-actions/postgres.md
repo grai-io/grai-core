@@ -29,27 +29,27 @@ You can find complete documentation about the library [here](https://www.psycopg
 
 
 ```yaml copy
-'on':
-- push
+on:
+  - pull_request
 name: PostgreSQL
 jobs:
   test_postgres:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-    - name: Run Grai Action
-      uses: grai-io/grai-actions/postgres@master
-      with:
-        namespace: my_apps_grai_namespace
-        api-key: my_grai_api_key
-        action: tests
-        grai-api-url: https://api.grai.io
-        db-host: prod.db.com
-        db-port: '5432'
-        db-database-name: my_database
-        db-user: my_user
-        db-password: my_password
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Run Grai Action
+        uses: grai-io/grai-actions/postgres@master
+        with:
+          namespace: my_apps_grai_namespace
+          api-key: my_grai_api_key
+          action: tests
+          grai-api-url: https://api.grai.io
+          db-host: prod.db.com
+          db-port: '5432'
+          db-database-name: my_database
+          db-user: my_user
+          db-password: my_password
 
 ```
 

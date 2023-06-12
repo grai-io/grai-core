@@ -79,10 +79,12 @@ const MembershipDelete: React.FC<MembershipDeleteProps> = ({
     })
       .then(() => deleteMembership())
       .then(() => enqueueSnackbar("Membership deleted", { variant: "success" }))
-      .catch(error =>
-        enqueueSnackbar(`Failed to delete membership ${error}`, {
-          variant: "error",
-        })
+      .catch(
+        error =>
+          error &&
+          enqueueSnackbar(`Failed to delete membership ${error}`, {
+            variant: "error",
+          })
       )
   }
 

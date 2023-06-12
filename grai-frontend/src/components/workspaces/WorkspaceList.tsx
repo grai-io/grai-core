@@ -1,15 +1,17 @@
 import React, { useState } from "react"
 import { ApolloError } from "@apollo/client"
+import { Add } from "@mui/icons-material"
 import {
   Card,
   Box,
   Typography,
   List,
-  ListSubheader,
   ListItem,
   ListItemButton,
   ListItemText,
   CircularProgress,
+  Button,
+  Divider,
 } from "@mui/material"
 import { Link } from "react-router-dom"
 import GraphError from "components/utils/GraphError"
@@ -73,10 +75,25 @@ const WorkspaceList: React.FC<WorkspaceListProps> = ({
       <Box sx={{ p: 3 }}>
         <Typography variant="h6">Select Workspace</Typography>
         {error && <GraphError error={error} />}
-        <List sx={{ pb: 0 }}>
+        <List>
           {organisations.map(organisation => (
             <React.Fragment key={organisation.id}>
-              <ListSubheader>{organisation.name}</ListSubheader>
+              <ListItem
+                secondaryAction={
+                  <Button
+                    startIcon={<Add />}
+                    component={Link}
+                    to={`/workspaces/create?organisationId=${organisation.id}`}
+                  >
+                    Add Workspace
+                  </Button>
+                }
+              >
+                <Typography sx={{ fontWeight: "bold" }}>
+                  {organisation.name}
+                </Typography>
+              </ListItem>
+              <Divider />
               {organisation.workspaces.map(workspace => (
                 <ListItem key={workspace.id} disablePadding>
                   {link ? (

@@ -27,31 +27,31 @@ More information can be found about specific connection credentials in Google's 
 
 
 ```yaml copy
-'on':
-- push
+on:
+  - pull_request
 name: BigQuery
 jobs:
   test_bigquery:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-    - name: Run Grai Action
-      uses: grai-io/grai-actions/bigquery@master
-      with:
-        namespace: my_apps_grai_namespace
-        api-key: my_grai_api_key
-        action: tests
-        grai-api-url: https://api.grai.io
-        project: my-bigquery-project
-        dataset: my-bigquery-dataset
-        credentials: '{ "type": "service_account", "project_id": "demo", "private_key_id":
-          "your_private_key_id", "private_key": "your_private_key", "client_email":
-          "your@email.iam.gserviceaccount.com", "client_id": "your_client_id", "auth_uri":
-          "https://accounts.google.com/o/oauth2/auth", "token_uri": "https://oauth2.googleapis.com/token",
-          "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-          "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/you%40email.iam.gserviceaccount.com"
-          }'
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Run Grai Action
+        uses: grai-io/grai-actions/bigquery@master
+        with:
+          namespace: my_apps_grai_namespace
+          api-key: my_grai_api_key
+          action: tests
+          grai-api-url: https://api.grai.io
+          project: my-bigquery-project
+          dataset: my-bigquery-dataset
+          credentials: '{ "type": "service_account", "project_id": "demo", "private_key_id":
+            "your_private_key_id", "private_key": "your_private_key", "client_email":
+            "your@email.iam.gserviceaccount.com", "client_id": "your_client_id", "auth_uri":
+            "https://accounts.google.com/o/oauth2/auth", "token_uri": "https://oauth2.googleapis.com/token",
+            "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+            "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/you%40email.iam.gserviceaccount.com"
+            }'
 
 ```
 

@@ -30,23 +30,23 @@ One way to do this is to perform `dbt build` as part of your CI action but there
 
 
 ```yaml copy
-'on':
-- push
+on:
+  - pull_request
 name: dbt
 jobs:
   test_dbt:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-    - name: Run Grai Action
-      uses: grai-io/grai-actions/dbt@master
-      with:
-        namespace: my_apps_grai_namespace
-        api-key: my_grai_api_key
-        action: tests
-        grai-api-url: https://api.grai.io
-        manifest-file: ./tests/dbt/manifest.json
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Run Grai Action
+        uses: grai-io/grai-actions/dbt@master
+        with:
+          namespace: my_apps_grai_namespace
+          api-key: my_grai_api_key
+          action: tests
+          grai-api-url: https://api.grai.io
+          manifest-file: ./tests/dbt/manifest.json
 
 ```
 

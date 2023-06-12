@@ -83,6 +83,17 @@ class GraphCache:
                 },
             )
 
+    def delete_node(self, node):
+        self.query(
+            """
+                MATCH (n {id: $id})
+                DELETE n
+            """,
+            {
+                "id": str(node.id),
+            },
+        )
+
     def cache_edge(self, edge):
         edge_type = edge.metadata.get("grai", {}).get("edge_type")
 
@@ -149,6 +160,17 @@ class GraphCache:
                     "destination": str(destination_table_edge.source_id),
                 },
             )
+
+    def delete_edge(self, edge):
+        self.query(
+            """
+                MATCH ()-[r {id: $id}]-()
+                DELETE r
+            """,
+            {
+                "id": str(edge.id),
+            },
+        )
 
     def get_graph_result(self, where: str = "") -> List[GraphTable]:
         result = self.query(

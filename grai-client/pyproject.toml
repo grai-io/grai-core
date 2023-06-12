@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai-client"
-version = "0.2.15"
+version = "0.2.16"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>"]
 license = "Elastic-2.0"
@@ -46,3 +46,5 @@ line-length = 120
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry_bumpversion.file."src/grai_client/__init__.py"]

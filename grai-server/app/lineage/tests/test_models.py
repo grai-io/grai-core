@@ -77,6 +77,7 @@ def test_column_table_id(create_workspace):
 
     node = Node.objects.create(namespace="temp", name="a", workspace=create_workspace, metadata=metadata)
     table = Node.objects.create(namespace="temp", name="b", workspace=create_workspace)
+
     Edge.objects.create(
         source=table,
         destination=node,
@@ -108,6 +109,21 @@ def test_node_created_from_load(create_workspace):
 
 
 @pytest.mark.django_db
+def test_node_deleted(create_workspace):
+    node = Node.objects.create(namespace="temp", name="a", data_source="test", workspace=create_workspace)
+
+    id = str(node.id)
+
+    assert node.id == uuid.UUID(id)
+
+    node.delete()
+
+    nodes = Node.objects.filter(id=id).all()
+
+    assert len(nodes) == 0
+
+
+@pytest.mark.django_db
 def test_edge_created(create_workspace):
     set_current_tenant(None)
     node_a = Node.objects.create(
@@ -134,6 +150,39 @@ def test_edge_created(create_workspace):
 
     assert edge.source == node_a
     assert edge.destination == node_b
+
+
+@pytest.mark.django_db
+def test_edge_deleted(create_workspace):
+    set_current_tenant(None)
+    node_a = Node.objects.create(
+        namespace="default",
+        name="node_a",
+        data_source="node_source",
+        workspace=create_workspace,
+    )
+    node_b = Node.objects.create(
+        namespace="default",
+        name="node_b",
+        data_source="node_source",
+        workspace=create_workspace,
+    )
+    edge = Edge.objects.create(
+        data_source="edge_source",
+        source_id=node_a.id,
+        destination_id=node_b.id,
+        workspace=create_workspace,
+    )
+
+    id = str(edge.id)
+
+    assert edge.id == uuid.UUID(id)
+
+    edge.delete()
+
+    edges = Edge.objects.filter(id=id).all()
+
+    assert len(edges) == 0
 
 
 @pytest.mark.django_db

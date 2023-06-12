@@ -3,6 +3,7 @@ import { gql, useQuery } from "@apollo/client"
 import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
 import SettingsLayout from "components/settings/SettingsLayout"
+import WorkspaceDanger from "components/settings/workspace/WorkspaceDanger"
 import WorkspaceForm from "components/settings/workspace/WorkspaceForm"
 import GraphError from "components/utils/GraphError"
 import {
@@ -45,6 +46,7 @@ const WorkspaceSettings: React.FC = () => {
   return (
     <SettingsLayout>
       <WorkspaceForm workspace={workspaceModel} />
+      <WorkspaceDanger workspace={workspaceModel} />
     </SettingsLayout>
   )
 }

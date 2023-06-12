@@ -6,6 +6,7 @@ import uuid
 from unittest.mock import MagicMock
 
 import pytest
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from connections.models import Connection, Connector
 from installations.models import Branch, Commit, PullRequest, Repository
@@ -208,6 +209,25 @@ def test_create_run_connector(auto_login_user, test_connector):
         {
             "connector_name": test_connector.name,
             "source_name": "test",
+        },
+    )
+    assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
+    run = response.json()
+    assert run["id"] is not None
+
+
+@pytest.mark.django_db
+def test_create_run_connector_file(auto_login_user, test_connector):
+    client, user, workspace = auto_login_user()
+
+    file = SimpleUploadedFile("manifest.json", b"file_content", content_type="test/json")
+
+    url = "/api/v1/external-runs/"
+    response = client.post(
+        url,
+        {
+            "connector_name": test_connector.name,
+            "file": file,
         },
     )
     assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"

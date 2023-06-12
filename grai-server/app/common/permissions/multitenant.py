@@ -1,3 +1,4 @@
+from typing import Optional
 from django_multitenant.utils import set_current_tenant
 
 from rest_framework import permissions
@@ -5,7 +6,7 @@ from workspaces.models import Workspace, WorkspaceAPIKey
 
 
 class BasePermission(permissions.BasePermission):
-    def get_workspace(self, request, guess: bool = True):
+    def get_workspace(self, request, guess: bool = True) -> Optional[Workspace]:
         workspace = self.get_workspace_from_header(request)
 
         if workspace:
@@ -18,9 +19,9 @@ class BasePermission(permissions.BasePermission):
                 return self.get_workspace_from_id(request, id)
 
             if request.user.memberships and request.user.memberships.first():
-                return request.user.memberships.first().workspace
+                return Workspace(id=request.user.memberships.first().workspace_id)
 
-    def get_workspace_from_header(self, request):
+    def get_workspace_from_header(self, request) -> Optional[Workspace]:
         header = request.headers.get("Authorization")
 
         if header:
@@ -28,13 +29,13 @@ class BasePermission(permissions.BasePermission):
             if split[0] == "Api-Key":
                 try:
                     api_key = WorkspaceAPIKey.objects.get_from_key(split[1])
-                    workspace = api_key.workspace
-                    if workspace:
-                        return workspace
+                    workspace_id = api_key.workspace_id
+                    if workspace_id:
+                        return Workspace(id=workspace_id)
                 except WorkspaceAPIKey.DoesNotExist:
                     pass
 
-    def get_workspace_from_id(self, request, id):
+    def get_workspace_from_id(self, request, id) -> Workspace:
         try:
             return Workspace.objects.get(id=id, memberships__user_id=request.user.id)
         except Workspace.DoesNotExist:
