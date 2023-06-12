@@ -156,7 +156,7 @@ test("renders placeholder", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.queryAllByTestId("placeholder")).toBeTruthy()
+    expect(screen.getAllByTestId("placeholder")).toBeTruthy()
   })
 })
 
@@ -267,7 +267,6 @@ test("renders with errors", async () => {
 })
 
 test("renders with limitGraph", async () => {
-  const user = userEvent.setup()
   class ResizeObserver {
     callback: globalThis.ResizeObserverCallback
 
