@@ -1,8 +1,6 @@
 import datetime
 from typing import List, Optional
 
-from lineage.graph_cache import GraphCache
-
 import strawberry
 from asgiref.sync import sync_to_async
 from decouple import config
@@ -16,11 +14,12 @@ from strawberry.types import Info
 from api.common import IsAuthenticated, get_user, get_workspace
 from api.types import KeyResult, Membership, Workspace, WorkspaceAPIKey
 from api.validation import validate_no_slash
+from lineage.graph_cache import GraphCache
+from lineage.models import Edge, Node
 from workspaces.models import Membership as MembershipModel
 from workspaces.models import Organisation as OrganisationModel
 from workspaces.models import Workspace as WorkspaceModel
 from workspaces.models import WorkspaceAPIKey as WorkspaceAPIKeyModel
-from lineage.models import Edge, Node
 
 
 async def createSingleMembership(workspace: WorkspaceModel, email: str, role: str) -> MembershipModel:
