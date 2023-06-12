@@ -18,8 +18,9 @@ class BasePermission(permissions.BasePermission):
             if id:
                 return self.get_workspace_from_id(request, id)
 
-            if request.user.memberships and request.user.memberships.first():
-                return Workspace(id=request.user.memberships.first().workspace_id)
+            membership = request.user.memberships.first()
+            if membership:
+                return Workspace(id=membership.workspace_id)
 
     def get_workspace_from_header(self, request) -> Optional[Workspace]:
         header = request.headers.get("Authorization")
