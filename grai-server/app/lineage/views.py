@@ -52,10 +52,14 @@ class NodeViewSet(HasSourceViewSet):
             "display_name",
             "created_at",
             "updated_at",
+            "source_name",
         ]
         starts_with_filters = ("metadata", "created_at", "updated_at")
         for filter_name, filter_value in query_params.items():
-            if filter_name in supported_filters or filter_name.startswith(starts_with_filters):
+            if filter_name == "source_name":
+                source = Source.objects.get(name=filter_value)
+                q_filter &= Q(data_sources=source)
+            elif filter_name in supported_filters or filter_name.startswith(starts_with_filters):
                 q_filter &= Q(**{filter_name: filter_value})
         return self.type.objects.filter(q_filter)
 
@@ -110,10 +114,14 @@ class EdgeViewSet(HasSourceViewSet):
             "name",
             "namespace",
             "display_name",
+            "source_name",
         }
         starts_with_filters = ("metadata", "created_at", "updated_at")
         for filter_name, filter_value in query_params.items():
-            if filter_name in supported_filters or filter_name.startswith(starts_with_filters):
+            if filter_name == "source_name":
+                source = Source.objects.get(name=filter_value)
+                q_filter &= Q(data_sources=source)
+            elif filter_name in supported_filters or filter_name.startswith(starts_with_filters):
                 q_filter &= Q(**{filter_name: filter_value})
 
         return self.type.objects.filter(q_filter)
