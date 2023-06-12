@@ -17,8 +17,8 @@ from api.tests.common import (
     test_user,
     test_workspace,
 )
-from workspaces.models import WorkspaceAPIKey
 from lineage.models import Edge, Node
+from workspaces.models import WorkspaceAPIKey
 
 
 @pytest.mark.asyncio
