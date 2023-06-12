@@ -56,7 +56,7 @@ class MembershipViewSet(ReadOnlyModelViewSet):
         BasicAuthentication,
         JWTAuthentication,
     ]
-    permission_classes = [(HasWorkspaceAPIKey | IsAuthenticated) & Multitenant]
+    permission_classes = [Multitenant]
 
     serializer_class = MembershipSerializer
     type = Membership
