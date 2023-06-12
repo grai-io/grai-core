@@ -13,7 +13,7 @@ def post_m2m_changed(sender, instance, action, reverse, model, pk_set, using, **
     if sender.__name__ not in ["Source_nodes", "Source_edges"]:
         return
 
-    graph = GraphCache(instance.workspace)
+    graph = GraphCache(instance.workspace_id)
 
     if model == Node:
         nodes = Node.objects.filter(pk__in=pk_set)

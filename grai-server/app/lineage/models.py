@@ -63,7 +63,7 @@ class Node(TenantModel):
 
     def cache_model(self, cache: GraphCache = None, delete: bool = False):
         if cache is None:
-            cache = GraphCache(self.workspace)
+            cache = GraphCache(self.workspace_id)
 
         if delete:
             cache.delete_node(self)
@@ -133,7 +133,7 @@ class Edge(TenantModel):
 
     def cache_model(self, cache: GraphCache = None, delete: bool = False):
         if cache is None:
-            cache = GraphCache(self.workspace)
+            cache = GraphCache(self.workspace_id)
 
         if delete:
             cache.delete_edge(self)

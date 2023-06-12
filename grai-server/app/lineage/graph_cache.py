@@ -1,21 +1,22 @@
-from typing import List, Optional
+import uuid
+from typing import List, Optional, Union
 
 import redis
 from django.conf import settings
 from redis import Redis
 
 from workspaces.models import Workspace
-
 from .graph_types import GraphColumn, GraphTable
-from query_chunk import chunk
 
 
 class GraphCache:
     manager: Redis
-    workspace: Workspace
+    workspace_id: str
 
-    def __init__(self, workspace: Workspace):
-        self.workspace = workspace
+    def __init__(self, workspace: Union[Workspace, str]):
+        self.workspace_id = (
+            workspace if isinstance(workspace, str) or isinstance(workspace, uuid.UUID) else str(workspace.id)
+        )
 
         self.manager = redis.Redis(
             host=settings.REDIS_GRAPH_CACHE_HOST,
@@ -24,17 +25,7 @@ class GraphCache:
         )
 
     def query(self, query: str, parameters: any = {}, timeout: int = None):
-        return self.manager.graph(f"lineage:{str(self.workspace.id)}").query(query, parameters, timeout=timeout)
-
-    def build_cache(self):
-        for node in chunk(self.workspace.nodes.all(), 10000):
-            self.cache_node(node)
-
-        for edge in chunk(self.workspace.edges.all(), 10000):
-            self.cache_edge(edge)
-
-    def clear_cache(self):
-        self.manager.delete(f"lineage:{str(self.workspace.id)}")
+        return self.manager.graph(f"lineage:{self.workspace_id}").query(query, parameters, timeout=timeout)
 
     def cache_node(self, node):
         def get_data_source() -> Optional[str]:
