@@ -1,6 +1,8 @@
 import datetime
 from typing import List, Optional
 
+from lineage.graph_cache import GraphCache
+
 import strawberry
 from asgiref.sync import sync_to_async
 from decouple import config
@@ -115,6 +117,9 @@ class Mutation:
 
         if await nodes.aexists():
             await sync_to_async(nodes._raw_delete)(nodes.db)
+
+        graph_cache = GraphCache(workspace=workspace)
+        graph_cache.clear_cache()
 
         return workspace
 
