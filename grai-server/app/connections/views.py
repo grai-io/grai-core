@@ -30,7 +30,7 @@ class ConnectionViewSet(ModelViewSet):
     type = Connection
 
     def get_queryset(self):
-        queryset = self.type.objects.all()
+        queryset = self.type.objects
 
         supported_filters = ["is_active", "namespace", "name", "connector"]
         filters = (
@@ -55,7 +55,7 @@ class ConnectorViewSet(ReadOnlyModelViewSet):
     type = Connector
 
     def get_queryset(self):
-        queryset = self.type.objects.all()
+        queryset = self.type.objects
 
         supported_filters = ["is_active", "name"]
         filters = (
