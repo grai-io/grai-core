@@ -83,6 +83,7 @@ jobs:
           GITHUB_PRIVATE_KEY: installations/tests/sample.private-key.pem
         run: |
           python manage.py migrate --noinput
+          pytest
           coverage run -m pytest
           coverage xml
 

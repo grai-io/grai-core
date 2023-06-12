@@ -26,7 +26,7 @@ def test_workspace_created():
     assert workspace.id == uuid.UUID(str(workspace.id))
     assert workspace.name == "abc"
     assert str(workspace) == "O1/abc"
-    assert workspace.ref() == "O1/abc"
+    assert workspace.ref == "O1/abc"
     assert isinstance(workspace.created_at, datetime.datetime)
     assert isinstance(workspace.updated_at, datetime.datetime)
 

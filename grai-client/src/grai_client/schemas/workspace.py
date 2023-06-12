@@ -7,4 +7,5 @@ class Workspace(BaseModel):
     """ """
 
     name: str
+    ref: str
     id: UUID

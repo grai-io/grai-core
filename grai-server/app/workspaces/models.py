@@ -43,6 +43,10 @@ class Workspace(TenantModel):
     def ref(self):
         return f"{self.organisation.name}/{self.name}"
 
+    def save(self, *args, **kwargs):
+        self.ref = f"{self.organisation.name}/{self.name}"
+        super().save(*args, **kwargs)
+
     class Meta:
         constraints = [
             models.UniqueConstraint(
