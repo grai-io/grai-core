@@ -6,15 +6,9 @@ from rest_framework import serializers
 from .models import Edge, Node, Source
 
 
-class BaseSourceSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Source
-        fields = ("id",)
-
-
 class NodeSerializer(serializers.ModelSerializer):
     display_name = serializers.CharField(required=False)
-    source_model = serializers.CharField(required=False)
+    source_name = serializers.CharField(required=False)
 
     class Meta:
         model = Node
@@ -25,7 +19,7 @@ class NodeSerializer(serializers.ModelSerializer):
             "display_name",
             "metadata",
             "is_active",
-            "source_model",
+            "source_name",
         )
         read_only_fields = (
             "created_at",
@@ -33,22 +27,30 @@ class NodeSerializer(serializers.ModelSerializer):
         )
 
     def create(self, validated_data):
-        source = validated_data.pop("source_model")
-        node = Node.objects.create(**validated_data)
+        sourceName = validated_data.pop("source_name", "manual")
+        node, updated = Node.objects.update_or_create(
+            name=validated_data["name"],
+            namespace=validated_data["namespace"],
+            defaults=validated_data,
+        )
 
-        node.data_sources.add(source)
+        source, created = Source.objects.get_or_create(name=sourceName)
+
+        source.nodes.add(node)
 
         return node
 
     def update(self, instance, validated_data):
-        source = validated_data.pop("source_model")
-        instance.data_sources.add(source)
+        sourceName = validated_data.pop("source_name", "manual")
+        source, created = Source.objects.get_or_create(name=sourceName)
+        source.nodes.add(instance)
         return super().update(instance, validated_data)
 
 
 class EdgeSerializer(serializers.ModelSerializer):
     name = serializers.CharField(required=False)
     display_name = serializers.CharField(required=False)
+    source_name = serializers.CharField(required=False)
 
     class Meta:
         model = Edge
@@ -61,7 +63,7 @@ class EdgeSerializer(serializers.ModelSerializer):
             "is_active",
             "source",
             "destination",
-            "data_sources",
+            "source_name",
         )
         read_only_fields = ("created_at", "updated_at")
 
@@ -88,6 +90,26 @@ class EdgeSerializer(serializers.ModelSerializer):
                 pass
         data = super().to_internal_value(data)
         return data
+
+    def create(self, validated_data):
+        sourceName = validated_data.pop("source_name", "manual")
+        edge, updated = Edge.objects.update_or_create(
+            source=validated_data["source"],
+            destination=validated_data["destination"],
+            defaults=validated_data,
+        )
+
+        source, created = Source.objects.get_or_create(name=sourceName)
+
+        source.edges.add(edge)
+
+        return edge
+
+    def update(self, instance, validated_data):
+        sourceName = validated_data.pop("source_name", "manual")
+        source, created = Source.objects.get_or_create(name=sourceName)
+        source.edges.add(instance)
+        return super().update(instance, validated_data)
 
 
 class SourceSerializer(serializers.ModelSerializer):

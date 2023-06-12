@@ -13,22 +13,18 @@ from workspaces.permissions import HasWorkspaceAPIKey
 
 
 class HasSourceViewSet(ModelViewSet):
-    def create(self, request, *args, **kwargs):
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+
         sourceName = request.data.get("source_name", "manual")
-        source, created = Source.objects.get_or_create(name=sourceName)
-        request.data["source"] = str(source.id)
+        source = Source.objects.get(name=sourceName)
 
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        instance.data_sources.remove(source)
 
-        try:
-            serializer.instance = self.get_unique_model(serializer.validated_data)
-        except self.type.DoesNotExist:
-            pass
+        if not instance.data_sources.exists():
+            self.perform_destroy(instance)
 
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class NodeViewSet(HasSourceViewSet):
@@ -62,12 +58,6 @@ class NodeViewSet(HasSourceViewSet):
             if filter_name in supported_filters or filter_name.startswith(starts_with_filters):
                 q_filter &= Q(**{filter_name: filter_value})
         return self.type.objects.filter(q_filter)
-
-    def get_unique_model(self, data):
-        return self.type.objects.get(
-            name=data["name"],
-            namespace=data["namespace"],
-        )
 
 
 class EdgeViewSet(HasSourceViewSet):
@@ -127,12 +117,6 @@ class EdgeViewSet(HasSourceViewSet):
                 q_filter &= Q(**{filter_name: filter_value})
 
         return self.type.objects.filter(q_filter)
-
-    def get_unique_model(self, data):
-        return self.type.objects.get(
-            source_id=data["source"],
-            destination_id=data["destination"],
-        )
 
 
 class SourceViewSet(ModelViewSet):
