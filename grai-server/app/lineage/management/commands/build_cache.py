@@ -1,4 +1,5 @@
 from typing import List
+
 from django.core.management.base import CommandError, CommandParser
 from django_multitenant.utils import set_current_tenant
 from django_tqdm import BaseCommand

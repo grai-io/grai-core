@@ -47,7 +47,7 @@ class WorkspaceViewSet(ReadOnlyModelViewSet):
                 queryset = queryset.filter(name=split[1], organisation__name=split[0])
             else:
                 queryset = queryset.filter(**{filter_name: condition})
-        return queryset
+        return queryset.all()
 
 
 class MembershipViewSet(ReadOnlyModelViewSet):
@@ -72,4 +72,4 @@ class MembershipViewSet(ReadOnlyModelViewSet):
         )
         for filter_name, condition in filters:
             queryset = queryset.filter(**{filter_name: condition})
-        return queryset
+        return queryset.all()

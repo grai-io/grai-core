@@ -3,8 +3,8 @@ from django.contrib.admin import DateFieldListFilter
 from django.db.models import Count, Q
 from django.urls import reverse
 from django.utils.html import format_html
-from lineage.graph_cache import GraphCache
 
+from lineage.graph_cache import GraphCache
 from lineage.models import Edge, Node
 
 from .models import Membership, Organisation, Workspace, WorkspaceAPIKey
@@ -72,7 +72,7 @@ class WorkspaceAdmin(admin.ModelAdmin):
             node_count=Count("nodes", distinct=True),
             connection_count=Count("connections", distinct=True, filter=Q(connections__temp=False)),
         )
-        return queryset
+        return queryset.all()
 
     list_display = (
         "id",

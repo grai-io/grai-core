@@ -1,4 +1,4 @@
-from typing import Iterable, List, Optional, Sequence
+from typing import Iterable, List, Sequence
 
 from django.db import models
 from django_multitenant.models import TenantManagerMixin

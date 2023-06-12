@@ -14,13 +14,13 @@ from workspaces.models import Workspace
 
 from .common import (
     generate_connection,
+    test_alert,
+    test_connection,
+    test_connector,
     test_context,
     test_organisation,
     test_user,
     test_workspace,
-    test_connector,
-    test_connection,
-    test_alert,
 )
 
 

@@ -83,7 +83,7 @@ class TestWorkspacesUserAuth:
         url = reverse("workspaces:workspaces-list")
         response = client.get(url)
         assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
-        workspaces = list(response.json())
+        workspaces = list(response.json()["results"])
         assert len(workspaces) == 1
 
     def test_get_workspaces_by_name(self, auto_login_user, create_organisation, create_workspace2):
@@ -91,7 +91,7 @@ class TestWorkspacesUserAuth:
         url = reverse(f"workspaces:workspaces-list")
         response = client.get(f"{url}?name={workspace.name}")
         assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
-        workspaces = list(response.json())
+        workspaces = list(response.json()["results"])
         assert len(workspaces) == 1
 
     def test_get_workspaces_by_ref(self, auto_login_user, create_organisation, create_workspace2):
@@ -99,7 +99,7 @@ class TestWorkspacesUserAuth:
         url = reverse(f"workspaces:workspaces-list")
         response = client.get(f"{url}?ref={create_organisation.name}/{workspace.name}")
         assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
-        workspaces = list(response.json())
+        workspaces = list(response.json()["results"])
         assert len(workspaces) == 1
 
     def test_get_workspaces_by_ref_incorrect_format(self, auto_login_user, create_organisation, create_workspace2):
@@ -117,7 +117,7 @@ class TestWorkspacesUserAuth:
         url = reverse("workspaces:workspaces-list")
         response = client.get(url)
         assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
-        workspaces = list(response.json())
+        workspaces = list(response.json()["results"])
         assert len(workspaces) == 1
 
 
@@ -128,7 +128,7 @@ class TestWorkspacesApiKeyAuth:
         url = reverse("workspaces:workspaces-list")
         response = api_client.get(url)
         assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
-        workspaces = list(response.json())
+        workspaces = list(response.json()["results"])
         assert len(workspaces) == 1
 
     def test_get_workspaces_wrong_key(self, api_client, api_key, create_organisation):
@@ -137,7 +137,7 @@ class TestWorkspacesApiKeyAuth:
         url = reverse("workspaces:workspaces-list")
         response = api_client.get(url)
         assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
-        workspaces = list(response.json())
+        workspaces = list(response.json()["results"])
         assert len(workspaces) == 1
 
 
