@@ -247,7 +247,7 @@ class Source(TenantModel):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    nodes = models.ManyToManyField(Node)
+    nodes = models.ManyToManyField(Node, related_name="data_sources")
     edges = models.ManyToManyField(Edge, related_name="data_sources")
 
     class Meta:

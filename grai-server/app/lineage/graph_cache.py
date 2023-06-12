@@ -38,7 +38,7 @@ class GraphCache:
 
     def cache_node(self, node):
         def get_data_source() -> Optional[str]:
-            source = node.source_set.first()
+            source = node.data_sources.first()
 
             if not source:
                 return None

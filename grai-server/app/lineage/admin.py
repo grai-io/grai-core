@@ -55,6 +55,16 @@ class DestinationEdgeInline(EdgeInline):
     ]
 
 
+class NodeSourceInline(admin.TabularInline):
+    model = Node.data_sources.through
+    extra = 0
+
+
+class EdgeSourceInline(admin.TabularInline):
+    model = Edge.data_sources.through
+    extra = 0
+
+
 class NodeAdmin(admin.ModelAdmin):
     @admin.display(description="Name")
     def final_name(self, obj):
@@ -83,6 +93,7 @@ class NodeAdmin(admin.ModelAdmin):
     inlines = [
         SourceEdgeInline,
         DestinationEdgeInline,
+        NodeSourceInline,
     ]
 
 
@@ -110,6 +121,8 @@ class EdgeAdmin(admin.ModelAdmin):
     )
 
     formfield_overrides = {JSONField: {"widget": PrettyJSONWidget}}
+
+    inlines = [EdgeSourceInline]
 
 
 class FilterAdmin(admin.ModelAdmin):

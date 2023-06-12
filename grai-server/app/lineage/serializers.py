@@ -6,8 +6,15 @@ from rest_framework import serializers
 from .models import Edge, Node, Source
 
 
+class BaseSourceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Source
+        fields = ("id",)
+
+
 class NodeSerializer(serializers.ModelSerializer):
     display_name = serializers.CharField(required=False)
+    source_model = serializers.CharField(required=False)
 
     class Meta:
         model = Node
@@ -18,8 +25,25 @@ class NodeSerializer(serializers.ModelSerializer):
             "display_name",
             "metadata",
             "is_active",
+            "source_model",
         )
-        read_only_fields = ("created_at", "updated_at")
+        read_only_fields = (
+            "created_at",
+            "updated_at",
+        )
+
+    def create(self, validated_data):
+        source = validated_data.pop("source_model")
+        node = Node.objects.create(**validated_data)
+
+        node.data_sources.add(source)
+
+        return node
+
+    def update(self, instance, validated_data):
+        source = validated_data.pop("source_model")
+        instance.data_sources.add(source)
+        return super().update(instance, validated_data)
 
 
 class EdgeSerializer(serializers.ModelSerializer):
@@ -37,6 +61,7 @@ class EdgeSerializer(serializers.ModelSerializer):
             "is_active",
             "source",
             "destination",
+            "data_sources",
         )
         read_only_fields = ("created_at", "updated_at")
 

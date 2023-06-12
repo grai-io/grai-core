@@ -3,6 +3,8 @@ from rest_framework.authentication import BasicAuthentication, SessionAuthentica
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework import status
+from rest_framework.response import Response
 
 from common.permissions.multitenant import Multitenant
 from lineage.models import Edge, Node, Source
@@ -10,7 +12,26 @@ from lineage.serializers import EdgeSerializer, NodeSerializer, SourceSerializer
 from workspaces.permissions import HasWorkspaceAPIKey
 
 
-class NodeViewSet(ModelViewSet):
+class HasSourceViewSet(ModelViewSet):
+    def create(self, request, *args, **kwargs):
+        sourceName = request.data.get("source_name", "manual")
+        source, created = Source.objects.get_or_create(name=sourceName)
+        request.data["source"] = str(source.id)
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            serializer.instance = self.get_unique_model(serializer.validated_data)
+        except self.type.DoesNotExist:
+            pass
+
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+class NodeViewSet(HasSourceViewSet):
     authentication_classes = [
         SessionAuthentication,
         BasicAuthentication,
@@ -42,8 +63,14 @@ class NodeViewSet(ModelViewSet):
                 q_filter &= Q(**{filter_name: filter_value})
         return self.type.objects.filter(q_filter)
 
+    def get_unique_model(self, data):
+        return self.type.objects.get(
+            name=data["name"],
+            namespace=data["namespace"],
+        )
 
-class EdgeViewSet(ModelViewSet):
+
+class EdgeViewSet(HasSourceViewSet):
     authentication_classes = [
         SessionAuthentication,
         BasicAuthentication,
@@ -100,6 +127,12 @@ class EdgeViewSet(ModelViewSet):
                 q_filter &= Q(**{filter_name: filter_value})
 
         return self.type.objects.filter(q_filter)
+
+    def get_unique_model(self, data):
+        return self.type.objects.get(
+            source_id=data["source"],
+            destination_id=data["destination"],
+        )
 
 
 class SourceViewSet(ModelViewSet):

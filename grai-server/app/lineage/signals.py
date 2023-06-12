@@ -27,5 +27,5 @@ def post_m2m_changed(sender, instance, action, reverse, model, pk_set, using, **
         for edge in edges:
             graph.cache_edge(edge)
 
-    else:
-        raise Exception("Unexpected model type")
+    # else:
+    #     raise Exception("Unexpected model type")
