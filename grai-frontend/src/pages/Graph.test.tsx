@@ -126,6 +126,40 @@ test("renders", async () => {
   })
 })
 
+test("renders placeholder", async () => {
+  class ResizeObserver {
+    callback: globalThis.ResizeObserverCallback
+
+    constructor(callback: globalThis.ResizeObserverCallback) {
+      this.callback = callback
+    }
+
+    observe(target: Element) {
+      this.callback([{ target } as globalThis.ResizeObserverEntry], this)
+    }
+
+    unobserve() {}
+
+    disconnect() {}
+  }
+
+  window.ResizeObserver = ResizeObserver
+
+  render(<Graph />, {
+    path: ":organisationName/:workspaceName/graph",
+    route: "/default/demo/graph",
+    mocks,
+  })
+
+  await waitFor(() => {
+    expect(screen.queryByText("N2 Node")).not.toBeInTheDocument()
+  })
+
+  await waitFor(() => {
+    expect(screen.queryAllByTestId("placeholder")).toBeTruthy()
+  })
+})
+
 test("renders empty", async () => {
   class ResizeObserver {
     callback: globalThis.ResizeObserverCallback
