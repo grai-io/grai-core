@@ -9,6 +9,10 @@ from .models import Edge, Node, Source
 class NodeSerializer(serializers.ModelSerializer):
     display_name = serializers.CharField(required=False)
     source_name = serializers.CharField(required=False)
+    data_sources = serializers.SerializerMethodField(read_only=True)
+
+    def get_data_sources(self, instance):
+        return [item.name for item in instance.data_sources.all()]
 
     class Meta:
         model = Node
@@ -20,6 +24,7 @@ class NodeSerializer(serializers.ModelSerializer):
             "metadata",
             "is_active",
             "source_name",
+            "data_sources",
         )
         read_only_fields = (
             "created_at",
@@ -51,6 +56,10 @@ class EdgeSerializer(serializers.ModelSerializer):
     name = serializers.CharField(required=False)
     display_name = serializers.CharField(required=False)
     source_name = serializers.CharField(required=False)
+    data_sources = serializers.SerializerMethodField(read_only=True)
+
+    def get_data_sources(self, instance):
+        return [item.name for item in instance.data_sources.all()]
 
     class Meta:
         model = Edge
@@ -64,6 +73,7 @@ class EdgeSerializer(serializers.ModelSerializer):
             "source",
             "destination",
             "source_name",
+            "data_sources",
         )
         read_only_fields = ("created_at", "updated_at")
 
