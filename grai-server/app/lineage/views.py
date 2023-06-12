@@ -17,7 +17,7 @@ class NodeViewSet(ModelViewSet):
         JWTAuthentication,
     ]
 
-    permission_classes = [(HasWorkspaceAPIKey | IsAuthenticated) & Multitenant]
+    permission_classes = [Multitenant]
 
     serializer_class = NodeSerializer
     type = Node
@@ -49,7 +49,7 @@ class EdgeViewSet(ModelViewSet):
         BasicAuthentication,
         JWTAuthentication,
     ]
-    permission_classes = [(HasWorkspaceAPIKey | IsAuthenticated) & Multitenant]
+    permission_classes = [Multitenant]
 
     serializer_class = EdgeSerializer
     type = Edge
