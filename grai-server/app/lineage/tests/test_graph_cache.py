@@ -2,8 +2,8 @@ import uuid
 
 import pytest
 
-from lineage.graph_cache import GraphCache
 from workspaces.models import Organisation, Workspace
+from workspaces.admin import ExtendedGraphCache
 from lineage.models import Node, Edge
 
 
@@ -22,7 +22,7 @@ def create_workspace(create_organisation, name: str = None):
 
 @pytest.mark.django_db
 def test_build_cache(create_workspace):
-    client = GraphCache(workspace=create_workspace)
+    client = ExtendedGraphCache(workspace=create_workspace)
 
     node = Node.objects.create(
         workspace=create_workspace,
@@ -39,6 +39,6 @@ def test_build_cache(create_workspace):
 
 @pytest.mark.django_db
 def test_clear_cache(create_workspace):
-    client = GraphCache(workspace=create_workspace)
+    client = ExtendedGraphCache(workspace=create_workspace)
 
     client.clear_cache()
