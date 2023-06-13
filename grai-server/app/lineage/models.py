@@ -5,6 +5,7 @@ from django.db.models import F, Q
 from django_multitenant.models import TenantModel
 
 from .graph_cache import GraphCache
+from .graph_tasks import cache_edge, cache_node
 from .managers import CacheManager
 
 
@@ -64,13 +65,10 @@ class Node(TenantModel):
         return self
 
     def cache_model(self, cache: GraphCache = None, delete: bool = False):
-        if cache is None:
-            cache = GraphCache(self.workspace)
-
-        if delete:
-            cache.delete_node(self)
-        else:
+        if cache:
             cache.cache_node(self)
+        else:
+            cache_node.delay(self.id, delete=delete)
 
     def __str__(self):
         return f"{self.display_name}"
@@ -135,13 +133,10 @@ class Edge(TenantModel):
         return self
 
     def cache_model(self, cache: GraphCache = None, delete: bool = False):
-        if cache is None:
-            cache = GraphCache(self.workspace)
-
-        if delete:
-            cache.delete_edge(self)
-        else:
+        if cache:
             cache.cache_edge(self)
+        else:
+            cache_edge.delay(self.id, delete=delete)
 
     def __str__(self):
         return f"{self.source} -> {self.destination}"
