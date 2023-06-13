@@ -271,7 +271,7 @@ class Source:
         search: Optional[str] = strawberry.UNSET,
         pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
     ) -> Pagination[Node]:
-        queryset = NodeModel.objects.filter(source=self)
+        queryset = NodeModel.objects.filter(data_sources=self)
 
         if filters:
             if filters.node_type:

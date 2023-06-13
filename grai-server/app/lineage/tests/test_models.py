@@ -110,7 +110,7 @@ def test_node_created_from_load(create_workspace):
 
 @pytest.mark.django_db
 def test_node_deleted(create_workspace):
-    node = Node.objects.create(namespace="temp", name="a", data_source="test", workspace=create_workspace)
+    node = Node.objects.create(namespace="temp", name="a", workspace=create_workspace)
 
     id = str(node.id)
 
@@ -158,17 +158,14 @@ def test_edge_deleted(create_workspace):
     node_a = Node.objects.create(
         namespace="default",
         name="node_a",
-        data_source="node_source",
         workspace=create_workspace,
     )
     node_b = Node.objects.create(
         namespace="default",
         name="node_b",
-        data_source="node_source",
         workspace=create_workspace,
     )
     edge = Edge.objects.create(
-        data_source="edge_source",
         source_id=node_a.id,
         destination_id=node_b.id,
         workspace=create_workspace,

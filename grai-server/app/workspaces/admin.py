@@ -3,24 +3,11 @@ from django.contrib.admin import DateFieldListFilter
 from django.db.models import Count, Q
 from django.urls import reverse
 from django.utils.html import format_html
-from lineage.graph_cache import GraphCache
-from query_chunk import chunk
+from lineage.extended_graph_cache import ExtendedGraphCache
 
 from lineage.models import Edge, Node
 
 from .models import Membership, Organisation, Workspace, WorkspaceAPIKey
-
-
-class ExtendedGraphCache(GraphCache):
-    def build_cache(self):
-        for node in chunk(Node.objects.filter(workspace_id=self.workspace_id), 10000):
-            self.cache_node(node)
-
-        for edge in chunk(Edge.objects.filter(workspace_id=self.workspace_id), 10000):
-            self.cache_edge(edge)
-
-    def clear_cache(self):
-        self.manager.delete(f"lineage:{self.workspace_id}")
 
 
 @admin.action(description="Delete nodes and edges")

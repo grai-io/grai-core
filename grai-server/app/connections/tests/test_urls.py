@@ -225,10 +225,7 @@ def test_create_run_connector_file(auto_login_user, test_connector):
     url = "/api/v1/external-runs/"
     response = client.post(
         url,
-        {
-            "connector_name": test_connector.name,
-            "file": file,
-        },
+        {"connector_name": test_connector.name, "file": file, "source_name": "test"},
     )
     assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
     run = response.json()

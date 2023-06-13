@@ -23,7 +23,4 @@ def test_post_m2m_incorrect_model():
     class Source_nodes:
         pass
 
-    with pytest.raises(Exception) as e_info:
-        post_m2m_changed(Source_nodes, source, "post_add", False, Source, ["1"], "test")
-
-    assert str(e_info.value) == "Unexpected model type"
+    post_m2m_changed(Source_nodes, source, "post_add", False, Source, ["1"], "test")

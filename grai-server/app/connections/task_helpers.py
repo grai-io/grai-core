@@ -234,7 +234,7 @@ def update(
 
     if len(deactivated_items) > 0:
         relationship.remove(*deactivated_items)
-        NodeModel.objects.filter(workspace=workspace, source=None).delete()
+        NodeModel.objects.filter(workspace=workspace, data_sources=None).delete()
         EdgeModel.objects.filter(workspace=workspace, data_sources=None).delete()
 
 
