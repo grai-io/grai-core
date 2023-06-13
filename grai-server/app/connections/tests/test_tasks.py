@@ -15,6 +15,7 @@ from lineage.models import Edge, Node
 from workspaces.models import Organisation, Workspace
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+breakpoint()
 
 
 @pytest.fixture
