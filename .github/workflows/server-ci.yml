@@ -81,7 +81,7 @@ jobs:
       - name: Run Migrations
         run: python manage.py migrate --noinput
 
-      - name: Tests
+      - name: Run Coverage Tests
         env:
           GITHUB_PRIVATE_KEY: installations/tests/sample.private-key.pem
         run: |

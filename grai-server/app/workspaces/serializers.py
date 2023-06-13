@@ -6,16 +6,12 @@ from .models import Membership, Workspace
 
 
 class WorkspaceSerializer(serializers.ModelSerializer):
-    ref = serializers.CharField()
+    ref = serializers.ReadOnlyField()
 
     class Meta:
         model = Workspace
-        fields = (
-            "id",
-            "name",
-            "ref",
-        )
-        read_only_fields = ("created_at", "updated_at")
+        fields = ("id", "name", "ref")
+        read_only_fields = ("ref", "created_at", "updated_at")
 
 
 class MembershipSerializer(serializers.ModelSerializer):
