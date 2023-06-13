@@ -1,9 +1,21 @@
 from django.db.models import Q
 from grai_schemas.v1.node import NodeNamedID
+from django_multitenant.utils import get_current_tenant
 
 from rest_framework import serializers
 
 from .models import Edge, Node, Source
+
+
+def get_source(validated_data):
+    sourceName = validated_data.pop("source_name", "manual")
+
+    source = Source.objects.upsert_and_get(
+        conflict_target=["workspace", "name"],
+        fields={"name": sourceName, "workspace": get_current_tenant()},
+    )
+
+    return source
 
 
 class NodeSerializer(serializers.ModelSerializer):
@@ -32,23 +44,23 @@ class NodeSerializer(serializers.ModelSerializer):
         )
 
     def create(self, validated_data):
-        sourceName = validated_data.pop("source_name", "manual")
+        source = get_source(validated_data)
+
         node, updated = Node.objects.update_or_create(
             name=validated_data["name"],
             namespace=validated_data["namespace"],
             defaults=validated_data,
         )
 
-        source, created = Source.objects.get_or_create(name=sourceName)
-
         source.nodes.add(node)
 
         return node
 
     def update(self, instance, validated_data):
-        sourceName = validated_data.pop("source_name", "manual")
-        source, created = Source.objects.get_or_create(name=sourceName)
+        source = get_source(validated_data)
+
         source.nodes.add(instance)
+
         return super().update(instance, validated_data)
 
 
@@ -102,23 +114,23 @@ class EdgeSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        sourceName = validated_data.pop("source_name", "manual")
+        source = get_source(validated_data)
+
         edge, updated = Edge.objects.update_or_create(
             source=validated_data["source"],
             destination=validated_data["destination"],
             defaults=validated_data,
         )
 
-        source, created = Source.objects.get_or_create(name=sourceName)
-
         source.edges.add(edge)
 
         return edge
 
     def update(self, instance, validated_data):
-        sourceName = validated_data.pop("source_name", "manual")
-        source, created = Source.objects.get_or_create(name=sourceName)
+        source = get_source(validated_data)
+
         source.edges.add(instance)
+
         return super().update(instance, validated_data)
 
 

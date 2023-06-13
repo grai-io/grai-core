@@ -5,7 +5,7 @@ from django.db.models import F, Q
 from django_multitenant.models import TenantModel
 
 from .graph_cache import GraphCache
-from .managers import CacheManager
+from .managers import CacheManager, SourceManager
 
 
 # Create your models here.
@@ -247,6 +247,8 @@ class Event(TenantModel):
 
 
 class Source(TenantModel):
+    objects = SourceManager()
+
     tenant_id = "workspace_id"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

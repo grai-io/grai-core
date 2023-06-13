@@ -1,4 +1,5 @@
-from typing import Iterable, List, Optional, Sequence
+from psqlextra.manager import PostgresManager
+from typing import Iterable, List, Sequence
 
 from django.db import models
 from django_multitenant.models import TenantManagerMixin
@@ -44,3 +45,7 @@ class CacheManager(TenantManagerMixin, models.Manager):
                 obj.cache_model(cache)
 
         return result
+
+
+class SourceManager(PostgresManager, TenantManagerMixin):
+    pass

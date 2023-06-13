@@ -208,7 +208,7 @@ def test_create_run_connector(auto_login_user, test_connector):
         url,
         {
             "connector_name": test_connector.name,
-            "source_name": "test",
+            "source_name": "test2",
         },
     )
     assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
@@ -225,7 +225,7 @@ def test_create_run_connector_file(auto_login_user, test_connector):
     url = "/api/v1/external-runs/"
     response = client.post(
         url,
-        {"connector_name": test_connector.name, "file": file, "source_name": "test"},
+        {"connector_name": test_connector.name, "file": file, "source_name": "test3"},
     )
     assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
     run = response.json()
@@ -256,7 +256,7 @@ def test_create_run_no_repo(auto_login_user, test_connector):
             "connector_name": test_connector.name,
             "github_owner": "owner",
             "github_repo": "repo",
-            "source_name": "test",
+            "source_name": "test4",
         },
     )
 
@@ -285,7 +285,7 @@ def test_create_run_connector_with_github(auto_login_user, test_connector, test_
             "github_repo": test_repository.repo,
             "git_branch": "test_branch",
             "git_head_sha": "sha1234",
-            "source_name": "test",
+            "source_name": "test5",
         },
     )
     assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
@@ -316,7 +316,7 @@ def test_create_run_connector_with_commit(
             "github_repo": test_repository.repo,
             "git_branch": test_branch.reference,
             "git_head_sha": test_commit.reference,
-            "source_name": "test",
+            "source_name": "test6",
         },
     )
     assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
@@ -349,7 +349,7 @@ def test_create_run_connector_with_pull_request(
             "git_head_sha": test_commit.reference,
             "github_pr_reference": "123",
             "github_pr_title": "abc",
-            "source_name": "test",
+            "source_name": "test7",
         },
     )
     assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
@@ -388,7 +388,7 @@ def test_create_run_connector_with_existing_pull_request(
             "git_head_sha": test_commit.reference,
             "github_pr_reference": test_pull_request.reference,
             "github_pr_title": test_pull_request.title,
-            "source_name": "test",
+            "source_name": "test8",
         },
     )
     assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"

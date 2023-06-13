@@ -1015,6 +1015,28 @@ phonenumbers = ["phonenumbers (>=7.0.2)"]
 phonenumberslite = ["phonenumberslite (>=7.0.2)"]
 
 [[package]]
+name = "django-postgres-extra"
+version = "2.0.8"
+description = "Bringing all of PostgreSQL's awesomeness to Django."
+category = "main"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "django-postgres-extra-2.0.8.tar.gz", hash = "sha256:9efa08c6f18ed34460af41c6f679bb375b93d12544b1105aa348b787a30b46eb"},
+    {file = "django_postgres_extra-2.0.8-py3-none-any.whl", hash = "sha256:447d5a971759943ee63a9d4cef9c6c1fa290e518611ea521a38b6732681d2f3a"},
+]
+
+[package.dependencies]
+Django = ">=2.0,<5.0"
+python-dateutil = ">=2.8.0,<=3.0.0"
+
+[package.extras]
+analysis = ["autoflake (==1.4)", "autopep8 (==1.6.0)", "black (==22.3.0)", "docformatter (==1.4)", "flake8 (==4.0.1)", "isort (==5.10.0)"]
+docs = ["Sphinx (==2.2.0)", "docutils (<0.18)", "sphinx-rtd-theme (==0.4.3)"]
+publish = ["build (==0.7.0)", "twine (==3.7.1)"]
+test = ["coveralls (==3.3.0)", "dj-database-url (==0.5.0)", "freezegun (==1.1.0)", "psycopg2 (>=2.8.4,<3.0.0)", "pytest (==6.2.5)", "pytest-benchmark (==3.4.1)", "pytest-cov (==3.0.0)", "pytest-django (==4.4.0)", "snapshottest (==0.6.0)", "tox (==3.24.4)"]
+
+[[package]]
 name = "django-query-chunk"
 version = "0.0.1"
 description = "Part QuerySets into small chunks."
@@ -4370,4 +4392,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "576def91a670b584d4f3fb31fc48bc272731983e0a5dd40174e308ad309e35dc"
+content-hash = "395d07f10c7a4093a19a56e3394324d15ba40c044cecb3adb58564bdcbd8654d"

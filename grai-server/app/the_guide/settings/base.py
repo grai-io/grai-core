@@ -63,7 +63,8 @@ POSTHOG_PROJECT_API_KEY = config("POSTHOG_PROJECT_API_KEY", default="phc_Q8OCDm0
 DISABLE_POSTHOG = config("DISABLE_POSTHOG", default=False, cast=cast_string_to_bool(False))
 
 SENTRY_DSN = config(
-    "SENTRY_DSN", default="https://3ef0d6800e084eae8b3a8f4ee4be1d3d@o4503978528407552.ingest.sentry.io/4503978529456128"
+    "SENTRY_DSN",
+    default="https://3ef0d6800e084eae8b3a8f4ee4be1d3d@o4503978528407552.ingest.sentry.io/4503978529456128",
 )
 SENTRY_SAMPLE_RATE = config("SENTRY_SAMPLE_RATE", default=0.2, cast=float)
 
@@ -93,7 +94,7 @@ CORS_ALLOW_ALL_ORIGINS = config("CORS_ALLOW_ALL_ORIGINS", default=default_allow_
 
 DATABASES = {
     "default": {
-        "ENGINE": config("DB_ENGINE", default="django.db.backends.postgresql"),
+        "ENGINE": config("DB_ENGINE", default="psqlextra.backend"),
         "NAME": config("DB_NAME", default="grai"),
         "USER": config("DB_USER", default="grai"),
         "PASSWORD": config("DB_PASSWORD", default="grai"),
@@ -132,6 +133,8 @@ THIRD_PARTY_APPS = [
     "email_log",
     "djcelery_email",
     "drf_spectacular",
+    "django.contrib.postgres",
+    "psqlextra",
 ]
 
 ALGOLIA_APPLICATION_ID = config("ALGOLIA_APPLICATION_ID", None)
