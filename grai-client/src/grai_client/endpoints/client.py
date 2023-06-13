@@ -803,6 +803,7 @@ def client_get_url(client: BaseClient, url: str, options: ClientOptions = Client
         url = add_query_params(url, options.query_args)
 
     response = client.session.get(url, headers=options.headers, **options.request_args)
+
     response_status_check(response)
     return response
 

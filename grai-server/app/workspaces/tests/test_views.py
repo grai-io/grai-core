@@ -86,6 +86,13 @@ class TestWorkspacesUserAuth:
         workspaces = list(response.json())
         assert len(workspaces) == 1
 
+    def test_get_workspace_has_ref(self, auto_login_user):
+        client, user, workspace = auto_login_user()
+        url = reverse("workspaces:workspaces-list")
+        response = client.get(url)
+        workspace = response.json()[0]
+        assert "ref" in workspace, "workspace should have ref"
+
     def test_get_workspaces_by_name(self, auto_login_user, create_organisation, create_workspace2):
         client, user, workspace = auto_login_user()
         url = reverse(f"workspaces:workspaces-list")
