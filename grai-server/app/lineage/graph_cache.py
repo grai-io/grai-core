@@ -81,6 +81,19 @@ class GraphCache:
             },
         )
 
+    def update_node(self, id: str, x: int, y: int):
+        self.query(
+            """
+                MATCH (n {id: $id})
+                SET n.x = $x, n.y = $y
+            """,
+            {
+                "id": id,
+                "x": x,
+                "y": y,
+            },
+        )
+
     def cache_edge(self, edge):
         edge_type = edge.metadata.get("grai", {}).get("edge_type")
 
@@ -159,6 +172,38 @@ class GraphCache:
             },
         )
 
+    def get_tables(self):
+        results = self.query(
+            """
+                MATCH (n:Table)
+                WITH
+                    n,
+                    {
+                        id: n.id
+                    } AS nodes
+                RETURN nodes
+            """
+        ).result_set
+
+        return [result[0] for result in results]
+
+    def get_table_edges(self):
+        results = self.query(
+            """
+                MATCH (source:Table)-[r:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY]->(destination:Table)
+                WITH
+                    r,
+                    {
+                        id: r.id,
+                        source_id: source.id,
+                        destination_id: destination.id
+                    } AS edges
+                RETURN edges
+            """
+        ).result_set
+
+        return [result[0] for result in results]
+
     def get_graph_result(self, where: str = "") -> List[GraphTable]:
         result = self.query(
             f"""
@@ -189,6 +234,8 @@ class GraphCache:
                         display_name: table.display_name,
                         namespace: table.namespace,
                         data_source: table.data_source,
+                        x: table.x,
+                        y: table.y,
                         columns: columns,
                         destinations: destinations
                     }} AS tables
@@ -221,6 +268,8 @@ class GraphCache:
                     display_name=table.get("display_name"),
                     namespace=table.get("namespace"),
                     data_source=table.get("data_source"),
+                    x=table.get("x"),
+                    y=table.get("y"),
                     columns=columns,
                     sources=[],
                     destinations=table.get("destinations", []),
@@ -309,6 +358,8 @@ class GraphCache:
                         display_name: table.display_name,
                         namespace: table.namespace,
                         data_source: table.data_source,
+                        x: table.x,
+                        y: table.y,
                         columns: columns,
                         destinations: destinations,
                         table_destinations: table_destinations,
@@ -344,6 +395,8 @@ class GraphCache:
                     display_name=table.get("display_name"),
                     namespace=table.get("namespace"),
                     data_source=table.get("data_source"),
+                    x=table.get("x"),
+                    y=table.get("y"),
                     columns=columns,
                     sources=[],
                     destinations=table.get("destinations"),

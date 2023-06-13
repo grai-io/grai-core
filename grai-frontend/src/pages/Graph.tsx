@@ -27,6 +27,8 @@ export const GET_TABLES_AND_EDGES = gql`
         display_name
         namespace
         data_source
+        x
+        y
         columns {
           id
           name

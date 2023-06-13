@@ -24,6 +24,8 @@ export const GET_GRAPH_LOAD_TABLE = gql`
         name
         display_name
         namespace
+        x
+        y
         data_source
         columns {
           id
@@ -38,8 +40,6 @@ export const GET_GRAPH_LOAD_TABLE = gql`
     }
   }
 `
-
-const position = { x: 0, y: 0 }
 
 export interface ResultError {
   source: string
@@ -61,6 +61,8 @@ interface Column extends NodeWithName {
 
 export interface Table extends NodeWithName {
   display_name: string
+  x: number
+  y: number
   data_source: string
   columns: Column[]
   sources?: string[]
@@ -169,7 +171,10 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
         searchDim: search ? !searchMatch : false,
         alwaysShow,
       },
-      position,
+      position: {
+        x: table.x,
+        y: table.y,
+      },
     }
   })
 
