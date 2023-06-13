@@ -64,7 +64,7 @@ class MembershipViewSet(ReadOnlyModelViewSet):
     def get_queryset(self):
         queryset = self.type.objects
 
-        supported_filters = ["is_active", "name", "user", "workspace", "role"]
+        supported_filters = ["is_active", "user", "workspace", "role"]
         filters = (
             (filter_name, condition)
             for filter_name in supported_filters
