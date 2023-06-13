@@ -183,7 +183,7 @@ class TestMemberships:
         url = reverse("workspaces:memberships-list")
         response = client.get(url)
         assert response.status_code == 200, f"verb `get` failed on memberships with status {response.status_code}"
-        memberships = list(response.json())
+        memberships = list(response.json()["results"])
         assert len(memberships) == 1
 
     def test_get_memberships_filter_by_is_active(self, auto_login_user):
@@ -191,5 +191,5 @@ class TestMemberships:
         url = reverse("workspaces:memberships-list")
         response = client.get(f"{url}?is_active=1")
         assert response.status_code == 200, f"verb `get` failed on memberships with status {response.status_code}"
-        memberships = list(response.json())
+        memberships = list(response.json()["results"])
         assert len(memberships) == 1
