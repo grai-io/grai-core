@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import ReactFlow, {
   Controls,
   Edge,
@@ -10,7 +10,6 @@ import ReactFlow, {
   ReactFlowProvider,
 } from "reactflow"
 import "reactflow/dist/style.css"
-import theme from "theme"
 import Loading from "components/layout/Loading"
 import BaseNode from "./BaseNode"
 import GraphControls, { ControlOptions } from "./controls/GraphControls"
@@ -74,20 +73,27 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
   onSearch,
   loading,
 }) => {
-  const [nodes, setNodes] = useState<Node[]>()
-  const [edges, setEdges] = useState<Edge[] | undefined>(initialEdges)
+  const [highlighted, setHighlighted] = useState<string[]>([])
 
-  useEffect(() => {
-    setEdges(initialEdges)
-    setNodes(
-      initialNodes.map(node => ({
-        ...node,
-        sourcePosition: "bottom" as Position,
-        targetPosition: "top" as Position,
-        type: "baseNode",
-      }))
-    )
-  }, [initialNodes, initialEdges, expanded])
+  const nodes = initialNodes.map(node => ({
+    ...node,
+    sourcePosition: "bottom" as Position,
+    targetPosition: "top" as Position,
+    type: "baseNode",
+    data: {
+      ...node.data,
+      highlight: highlighted.includes(node.id),
+    },
+  }))
+
+  const edges = initialEdges.map(edge => ({
+    ...edge,
+    data: {
+      ...edge.data,
+      highlight:
+        highlighted.includes(edge.source) || highlighted.includes(edge.target),
+    },
+  }))
 
   if (!nodes) return <Loading />
 
@@ -99,66 +105,11 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
       const incomerIds = allIncomers.map(i => i.id)
       const outgoerIds = allOutgoers.map(o => o.id)
 
-      setNodes(prevNodes =>
-        prevNodes?.map(elem => {
-          if (allOutgoers.length > 0 || allIncomers.length > 0) {
-            const highlight =
-              elem.id === node.id ||
-              incomerIds.includes(elem.id) ||
-              outgoerIds.includes(elem.id)
-
-            elem.data.highlight = highlight
-          }
-
-          return elem
-        })
-      )
-
-      setEdges(prevEdges =>
-        prevEdges?.map(elem => {
-          const highlight =
-            incomerIds.includes(elem.target) ||
-            (incomerIds.includes(elem.source) && node.id === elem.target) ||
-            (outgoerIds.includes(elem.target) && node.id === elem.source) ||
-            outgoerIds.includes(elem.source)
-
-          elem.style = {
-            ...elem.style,
-            stroke: highlight ? theme.palette.secondary.main : undefined,
-          }
-
-          return elem
-        })
-      )
+      setHighlighted([node.id, ...incomerIds, ...outgoerIds])
     }
   }
 
-  const resetNodeStyles = () => {
-    setNodes(prevNodes =>
-      prevNodes?.map(node => {
-        node.data.highlight = false
-        node.style = {
-          ...node.style,
-          opacity: 1,
-        }
-
-        return node
-      })
-    )
-
-    setEdges((prevEdges: Edge[] | undefined) =>
-      prevEdges?.map(edge => {
-        edge.animated = false
-        edge.style = {
-          ...edge.style,
-          stroke: "#b1b1b7",
-          opacity: 1,
-        }
-
-        return edge
-      })
-    )
-  }
+  const resetNodeStyles = () => setHighlighted([])
 
   return (
     <ReactFlowProvider>
