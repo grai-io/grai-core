@@ -43,6 +43,7 @@ def get_nodes(
 
     """
     client = get_default_client()
+
     if name is None:
         if namespace is None:
             result = client.get("Node")

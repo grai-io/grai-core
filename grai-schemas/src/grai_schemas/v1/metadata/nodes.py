@@ -1,12 +1,12 @@
 from enum import Enum
 from typing import Any, List, Literal, Optional, Union
 
-from grai_schemas.generics import DefaultValue, HashableBaseModel
+from grai_schemas.generics import DefaultValue, HashableBaseModel, MalformedMetadata
 from grai_schemas.v1.generics import GraiBaseModel, V1Mixin
 from grai_schemas.v1.metadata.generics import GenericAttributes
 
 
-class NodeTypeLabels(Enum):
+class NodeMetadataTypeLabels(Enum):
     """ """
 
     generic: Literal["Generic"] = "Generic"
@@ -14,7 +14,7 @@ class NodeTypeLabels(Enum):
     column: Literal["Column"] = "Column"
 
 
-NodeTypeLabelLiterals = Literal["Generic", "Table", "Column"]
+NodeMetadataTypeLabelLiterals = Literal["Generic", "Table", "Column"]
 
 
 class SourceType(Enum):
@@ -27,9 +27,16 @@ class BaseNodeMetadataV1(V1Mixin):
     """ """
 
     type: Literal["NodeV1"] = "NodeV1"
-    node_type: NodeTypeLabelLiterals
+    node_type: NodeMetadataTypeLabelLiterals
     node_attributes: GenericAttributes
     tags: Optional[List[str]]
+
+
+class MalformedNodeMetadataV1(MalformedMetadata, BaseNodeMetadataV1):
+    """ """
+
+    node_type: Optional[str] = "Malformed"
+    node_attributes: Optional[Any] = GenericAttributes()
 
 
 class GenericNodeMetadataV1(BaseNodeMetadataV1):

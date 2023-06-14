@@ -1,6 +1,7 @@
 from enum import Enum
-from typing import Dict, List, Literal, Optional, Union
+from typing import Any, Dict, List, Literal, Optional, Union
 
+from grai_schemas.generics import MalformedMetadata
 from grai_schemas.v1.generics import V1Mixin
 from grai_schemas.v1.metadata.generics import GenericAttributes
 
@@ -24,6 +25,11 @@ class BaseEdgeMetadataV1(V1Mixin):
     edge_type: EdgeTypeLabelLiterals
     edge_attributes: GenericAttributes
     tags: Optional[List[str]]
+
+
+class MalformedEdgeMetadataV1(MalformedMetadata, BaseEdgeMetadataV1):
+    edge_type: Optional[str] = "Malformed"
+    edge_attributes: Optional[Any] = GenericAttributes()
 
 
 class GenericEdgeMetadataV1(BaseEdgeMetadataV1):
