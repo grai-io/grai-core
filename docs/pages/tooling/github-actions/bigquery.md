@@ -1,6 +1,6 @@
 ---
-title: BigQuery
-description: Documentation for Grai's BigQuery GitHub action.
+title: BigQuery GitHub Action
+description: Documentation for Grai's BigQuery GitHub Action GitHub action.
 ---
 
 # BigQuery
