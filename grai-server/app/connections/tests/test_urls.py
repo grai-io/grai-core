@@ -6,7 +6,6 @@ import uuid
 from unittest.mock import MagicMock
 
 import pytest
-
 from connections.models import Connection, Connector
 from installations.models import Branch, Commit, PullRequest, Repository
 from workspaces.models import Membership, Organisation, Workspace

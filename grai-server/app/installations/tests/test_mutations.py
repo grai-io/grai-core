@@ -2,8 +2,6 @@ import types
 from unittest.mock import MagicMock
 
 import pytest
-from django_multitenant.utils import set_current_tenant
-
 from api.schema import schema
 from api.tests.common import (
     generate_connection,
@@ -17,6 +15,7 @@ from api.tests.common import (
     test_user,
     test_workspace,
 )
+from django_multitenant.utils import set_current_tenant
 
 
 @pytest.mark.django_db

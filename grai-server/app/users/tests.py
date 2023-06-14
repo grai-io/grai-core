@@ -6,10 +6,9 @@ import pytest
 from django.test import Client
 from django.test.client import RequestFactory
 from django.urls import reverse
-from rest_framework.test import force_authenticate
-
 from lineage.models import Edge, Node
 from lineage.urls import app_name
+from rest_framework.test import force_authenticate
 from users.models import User
 
 

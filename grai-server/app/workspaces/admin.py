@@ -3,7 +3,6 @@ from django.contrib.admin import DateFieldListFilter
 from django.db.models import Count, Q
 from django.urls import reverse
 from django.utils.html import format_html
-
 from lineage.models import Edge, Node
 
 from .models import Membership, Organisation, Workspace, WorkspaceAPIKey

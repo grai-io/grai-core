@@ -2,18 +2,17 @@ import uuid
 from typing import Optional
 
 import strawberry
-from asgiref.sync import sync_to_async
-from strawberry.file_uploads import Upload
-from strawberry.scalars import JSON
-from strawberry.types import Info
-
 from api.common import IsAuthenticated, get_user, get_workspace
 from api.types import Connection, Run, RunAction
+from asgiref.sync import sync_to_async
 from connections.models import Connection as ConnectionModel
 from connections.models import Connector as ConnectorModel
 from connections.models import Run as RunModel
 from connections.models import RunFile as RunFileModel
 from connections.tasks import process_run
+from strawberry.file_uploads import Upload
+from strawberry.scalars import JSON
+from strawberry.types import Info
 
 
 @strawberry.type

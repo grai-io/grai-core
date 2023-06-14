@@ -1,5 +1,4 @@
 import pytest
-
 from api.schema import schema
 from workspaces.models import Workspace
 

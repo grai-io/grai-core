@@ -1,13 +1,12 @@
 from typing import List
 
 import strawberry_django
-from strawberry.scalars import JSON
-from strawberry_django_plus import gql
-from strawberry_django_plus.gql import auto
-
 from lineage.models import Edge as EdgeModel
 from lineage.models import Filter as FilterModel
 from lineage.models import Node as NodeModel
+from strawberry.scalars import JSON
+from strawberry_django_plus import gql
+from strawberry_django_plus.gql import auto
 from users.types import User
 
 

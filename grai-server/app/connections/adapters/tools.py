@@ -2,11 +2,10 @@ from abc import ABC, abstractmethod
 from itertools import chain, pairwise
 from typing import Dict, Iterable, List, Tuple
 
+from connections.models import Run
 from decouple import config
 from grai_graph.analysis import Graph, GraphAnalyzer
 from grai_schemas.v1 import EdgeV1, NodeV1
-
-from connections.models import Run
 
 SEPARATOR_CHAR = "/"
 

@@ -3,17 +3,16 @@ import hmac
 import json
 import uuid
 
-from django.urls import path
-from django_multitenant.utils import get_current_tenant
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-
 from common.permissions.multitenant import Multitenant
 from connections.tasks import process_run
+from django.urls import path
+from django_multitenant.utils import get_current_tenant
 from installations.github import Github
 from installations.models import Branch, Commit, PullRequest, Repository
 from rest_framework import routers
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from workspaces.permissions import HasWorkspaceAPIKey
 
 from .models import Connection, Connector, Run

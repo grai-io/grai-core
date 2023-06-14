@@ -1,12 +1,11 @@
 import pytest
+from connections.adapters.tools import NullableTestResult
 from grai_schemas.v1 import NodeV1
 from grai_schemas.v1.metadata.nodes import (
     ColumnAttributes,
     ColumnMetadata,
     NodeTypeLabels,
 )
-
-from connections.adapters.tools import NullableTestResult
 
 
 @pytest.fixture

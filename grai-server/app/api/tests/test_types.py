@@ -3,13 +3,12 @@ from datetime import date
 from unittest.mock import MagicMock
 
 import pytest
-from django.test import override_settings
-from notifications.models import Alert
-
 from api.schema import schema
 from connections.models import Connection, Connector, Run
+from django.test import override_settings
 from installations.models import Branch, Commit, PullRequest, Repository
 from lineage.models import Edge, Event, Filter, Node
+from notifications.models import Alert
 from workspaces.models import Workspace
 
 from .common import (

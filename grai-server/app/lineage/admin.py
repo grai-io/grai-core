@@ -1,8 +1,7 @@
+from common.admin.fields.json_widget import PrettyJSONWidget
 from django.contrib import admin
 from django.contrib.admin import DateFieldListFilter
 from django.db.models import JSONField
-
-from common.admin.fields.json_widget import PrettyJSONWidget
 
 from .models import Edge, Event, Filter, Node
 

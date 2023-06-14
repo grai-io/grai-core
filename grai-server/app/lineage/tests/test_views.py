@@ -5,7 +5,6 @@ from itertools import product
 import django.db.utils
 import pytest
 from django.urls import reverse
-
 from lineage.models import Node
 from lineage.urls import app_name
 from workspaces.models import Membership, Organisation, Workspace, WorkspaceAPIKey

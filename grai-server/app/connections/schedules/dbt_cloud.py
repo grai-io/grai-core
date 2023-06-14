@@ -1,8 +1,7 @@
+from connections.models import Connection
 from dbtc import dbtCloudClient
 from django.conf import settings
 from django.urls import reverse
-
-from connections.models import Connection
 
 
 def save(model: Connection):

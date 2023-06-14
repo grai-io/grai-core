@@ -6,7 +6,6 @@ import requests
 from django.conf import settings
 from django.utils import timezone
 from ghapi.all import GhApi
-
 from installations.models import Repository
 
 app_id = settings.GITHUB_APP_ID

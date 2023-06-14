@@ -1,7 +1,6 @@
 import uuid
 
 import pytest
-
 from lineage.graph_cache import GraphCache
 from workspaces.models import Organisation, Workspace
 

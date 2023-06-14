@@ -1,9 +1,8 @@
 from typing import List, Optional
 
+from api.types import Connector, User, Workspace
 from strawberry.types import Info
 from strawberry_django_plus import gql
-
-from api.types import Connector, User, Workspace
 from workspaces.models import Workspace as WorkspaceModel
 
 from .common import IsAuthenticated, get_user

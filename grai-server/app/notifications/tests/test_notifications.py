@@ -1,6 +1,5 @@
 import pytest
 from notifications.models import Alert
-
 from notifications.notifications import send_notification
 from workspaces.models import Organisation, Workspace
 

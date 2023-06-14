@@ -3,7 +3,6 @@ from typing import List
 import redis
 from django.conf import settings
 from redis import Redis
-
 from workspaces.models import Workspace
 
 from .graph_types import GraphColumn, GraphTable

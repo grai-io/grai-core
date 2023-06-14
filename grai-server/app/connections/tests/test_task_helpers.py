@@ -1,9 +1,8 @@
 import uuid
 
 import pytest
-from grai_schemas.v1 import EdgeV1, NodeV1
-
 from connections.task_helpers import get_node, process_updates, update
+from grai_schemas.v1 import EdgeV1, NodeV1
 from lineage.models import Edge, Node
 from workspaces.models import Organisation, Workspace
 

@@ -1,3 +1,4 @@
+from common.permissions.multitenant import Multitenant
 from django.urls import path
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.decorators import (
@@ -10,8 +11,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.throttling import UserRateThrottle
 from rest_framework_simplejwt.authentication import JWTAuthentication
-
-from common.permissions.multitenant import Multitenant
 from workspaces.permissions import HasWorkspaceAPIKey
 
 

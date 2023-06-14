@@ -2,6 +2,9 @@ import datetime
 from typing import List, Optional
 
 import strawberry
+from api.common import IsAuthenticated, get_user, get_workspace
+from api.types import KeyResult, Membership, Workspace, WorkspaceAPIKey
+from api.validation import validate_no_slash
 from asgiref.sync import sync_to_async
 from decouple import config
 from django.conf import settings
@@ -10,10 +13,6 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from strawberry.types import Info
-
-from api.common import IsAuthenticated, get_user, get_workspace
-from api.types import KeyResult, Membership, Workspace, WorkspaceAPIKey
-from api.validation import validate_no_slash
 from workspaces.models import Membership as MembershipModel
 from workspaces.models import Organisation as OrganisationModel
 from workspaces.models import Workspace as WorkspaceModel

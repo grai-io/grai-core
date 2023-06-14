@@ -1,5 +1,3 @@
-from django.utils import timezone
-
 from celery import shared_task
 from connections.adapters.base import BaseAdapter
 from connections.adapters.bigquery import BigqueryAdapter
@@ -12,6 +10,7 @@ from connections.adapters.postgres import PostgresAdapter
 from connections.adapters.redshift import RedshiftAdapter
 from connections.adapters.snowflake import SnowflakeAdapter
 from connections.adapters.yaml_file import YamlFileAdapter
+from django.utils import timezone
 from installations.github import Github
 from notifications.notifications import send_notification
 

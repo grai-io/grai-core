@@ -1,13 +1,12 @@
 import os
 
 import pytest
-from django.core.files.uploadedfile import UploadedFile
-from strawberry.types import Info
-
 from api.tests.common import test_context, test_organisation, test_user, test_workspace
 from connections.models import Connector
 from connections.mutations import Mutation
+from django.core.files.uploadedfile import UploadedFile
 from lineage.models import Node
+from strawberry.types import Info
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 

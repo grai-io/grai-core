@@ -1,6 +1,5 @@
-from django.contrib import admin
-
 from connections.models import Run
+from django.contrib import admin
 
 from .models import Branch, Commit, PullRequest, Repository
 

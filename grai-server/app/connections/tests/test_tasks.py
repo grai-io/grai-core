@@ -3,12 +3,11 @@ import uuid
 from datetime import date
 
 import pytest
+from connections.models import Connection, Connector, Run, RunFile
+from connections.tasks import process_run, run_connection_schedule
 from decouple import config
 from django.core.files.uploadedfile import UploadedFile
 from grai_source_dbt_cloud.loader import Event
-
-from connections.models import Connection, Connector, Run, RunFile
-from connections.tasks import process_run, run_connection_schedule
 from installations.models import Branch, Commit, PullRequest, Repository
 from installations.tests.test_github import mocked_requests_post
 from lineage.models import Edge, Node

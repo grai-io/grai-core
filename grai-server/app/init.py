@@ -2,7 +2,6 @@ import os
 
 from decouple import config
 from django.contrib.auth import get_user_model
-
 from workspaces.models import Membership, Organisation, Workspace
 
 ## Init Superuser

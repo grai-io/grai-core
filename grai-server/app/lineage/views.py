@@ -1,12 +1,11 @@
+from common.permissions.multitenant import Multitenant
 from django.db.models import Q
+from lineage.models import Edge, Node
+from lineage.serializers import EdgeSerializer, NodeSerializer
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.authentication import JWTAuthentication
-
-from common.permissions.multitenant import Multitenant
-from lineage.models import Edge, Node
-from lineage.serializers import EdgeSerializer, NodeSerializer
 from workspaces.permissions import HasWorkspaceAPIKey
 
 

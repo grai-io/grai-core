@@ -1,11 +1,10 @@
 from typing import Optional
 
 import strawberry
+from api.common import IsAuthenticated, get_user, get_workspace
 from asgiref.sync import sync_to_async
 from strawberry.scalars import JSON
 from strawberry.types import Info
-
-from api.common import IsAuthenticated, get_user, get_workspace
 
 from .models import Filter as FilterModel
 from .types import Filter

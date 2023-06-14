@@ -4,9 +4,8 @@ import uuid
 from unittest.mock import MagicMock
 
 import pytest
-from django_celery_beat.models import PeriodicTask
-
 from connections.models import Connection, Connector, Run
+from django_celery_beat.models import PeriodicTask
 from workspaces.models import Organisation, Workspace
 
 
