@@ -34,17 +34,17 @@ def test_update_node_patched(client):
 
     new_nodes = client.post(nodes)
     for node in new_nodes:
-        node.spec.metadata.grai.node_attributes["patched"] = True
+        node.spec.metadata.grai.node_attributes.patched = True
 
     update(client, new_nodes)
     new_nodes = client.get(nodes[0].type, namespace=namespace)
 
     assert len(new_nodes) == len(nodes), "Update altered the number of nodes"
     assert all(
-        node.spec.metadata.grai.node_attributes.get("patched", False) for node in new_nodes
+        getattr(node.spec.metadata.grai.node_attributes, "patched", False) for node in new_nodes
     ), "Update did not patch nodes"
     assert all(
-        node.spec.metadata.grai.node_attributes["patched"] is True for node in new_nodes
+        node.spec.metadata.grai.node_attributes.patched is True for node in new_nodes
     ), "Update did not patch nodes correctly"
 
 
