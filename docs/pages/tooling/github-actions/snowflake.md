@@ -1,6 +1,6 @@
 ---
-title: Snowflake
-description: Documentation for Grai's Snowflake GitHub action.
+title: Snowflake GitHub Action
+description: Documentation for Grai's Snowflake GitHub Action GitHub action.
 ---
 
 # Snowflake

@@ -1,6 +1,6 @@
 ---
-title: Fivetran
-description: Documentation for Grai's Fivetran GitHub action.
+title: Fivetran GitHub Action
+description: Documentation for Grai's Fivetran GitHub Action GitHub action.
 ---
 
 # Fivetran

@@ -1,6 +1,6 @@
 ---
-title: Redshift
-description: Documentation for Grai's Redshift GitHub action.
+title: Redshift GitHub Action
+description: Documentation for Grai's Redshift GitHub Action GitHub action.
 ---
 
 # Redshift
