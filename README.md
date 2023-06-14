@@ -1,25 +1,23 @@
 <div align="center">
-  <img src="docs/assets/Grai-Logo-Horizontal-2.png" width="375px"><br>
+  <img src="docs/assets/Grai-Logo-Horizontal-2.png" width="375px"/><br/>
 </div>
 
 <p align="center">
   <a href="https://join.slack.com/t/graicommunity/shared_invite/zt-1il70kfeb-TaCm5fwHg_quWCpKNYyj6w">
-    <img src="https://img.shields.io/badge/slack-Grai-FFB567.svg?logo=slack&labelColor=351D36" alt="Join Grai on Slack" height="22">
+    <img src="https://img.shields.io/badge/slack-Grai-FFB567.svg?logo=slack&labelColor=351D36" alt="Join Grai on Slack" height="22"/>
   </a>
    <a href="https://github.com/grai-io/grai-core">
-    <img src="https://img.shields.io/github/issues/grai-io/grai-core?style=flat-square" height="22" alt="Open Issues""/>
+    <img src="https://img.shields.io/github/issues/grai-io/grai-core?style=flat-square" height="22" alt="Open Issues"/>
   </a>
-  </a>
-   <a href="https://github.com/grai-io/grai-core">
+  <a href="https://github.com/grai-io/grai-core">
     <img src="https://img.shields.io/github/languages/top/grai-io/grai-core?style=flat-square" height="22" alt="Python fraction of codebase"/>
   </a>
-  </a>
-   <a href="https://github.com/grai-io/grai-core">
+  <a href="https://github.com/grai-io/grai-core">
     <img src="https://img.shields.io/pypi/pyversions/grai-graph?style=for-the-badge" height="22" alt="Supported python versions"/>
   </a>
   <a href=https://www.ycombinator.com/launches/H8h-grai-open-source-version-control-for-metadata target='_blank'>
-    <img alt="Launch YC: ✨ Grai - Open-source version control for metadata" src="https://www.ycombinator.com/launches/H8h-grai-open-source-version-control-for-metadata/upvote_embed.svg" height=22/>
-   </a>
+    <img alt="Launch YC: ✨ Grai - Open-source version control for metadata" src="https://www.ycombinator.com/launches/H8h-grai-open-source-version-control-for-metadata/upvote_embed.svg" height="22"/>
+  </a>
 </p>
 
 <h3 align="center">
@@ -52,17 +50,17 @@ We currently support pre-built integrations for a variety of sources including
 
 <center>
 
-|                                                                  | integration           | install                             |
-|------------------------------------------------------------------|-----------------------|-------------------------------------|
+|                                                                   | integration           | install                             |
+|-------------------------------------------------------------------|-----------------------|-------------------------------------|
 | <img src="resources/snowflake.png" alt=“” width="30" height="30"> | Snowflake             | `pip install grai-source-snowflake` |
-| <img src="resources/bigquery.svg" alt=“” width="30" height="30"> | BigQuery              | `pip install grai-source-bigquery`  |
-| <img src="resources/redshift.png" alt=“” width="30" height="30"> | Redshift              | `pip install grai-source-redshift`  |
-| <img src="resources/postgres.png" alt=“” width="30" height="30"> | Postgres              | `pip install grai-source-postgres`  |
-| <img src="resources/mysql.png" alt=“” width="30" height="30">    | MySQL                 | `pip install grai-source-mysql`     |
-| <img src="resources/mssql.png" alt=“” width="30" height="30">    | SQL Server            | `pip install grai-source-mssql`     |
-| <img src="resources/dbt.png" alt=“” width="30" height="30">      | dbt                   | `pip install grai-source-dbt`       |
-| <img src="resources/fivetran.png" alt=“” width="30" height="30"> | Fivetran              | `pip install grai-source-fivetran`  |
-| <img src="resources/csv.png" alt=“” width="30" height="30">      | csv, parquet, feather | `pip install grai-source-flat-file` |
+| <img src="resources/bigquery.svg" alt=“” width="30" height="30">  | BigQuery              | `pip install grai-source-bigquery`  |
+| <img src="resources/redshift.png" alt=“” width="30" height="30">  | Redshift              | `pip install grai-source-redshift`  |
+| <img src="resources/postgres.png" alt=“” width="30" height="30">  | Postgres              | `pip install grai-source-postgres`  |
+| <img src="resources/mysql.png" alt=“” width="30" height="30">     | MySQL                 | `pip install grai-source-mysql`     |
+| <img src="resources/mssql.png" alt=“” width="30" height="30">     | SQL Server            | `pip install grai-source-mssql`     |
+| <img src="resources/dbt.png" alt=“” width="30" height="30">       | dbt                   | `pip install grai-source-dbt`       |
+| <img src="resources/fivetran.png" alt=“” width="30" height="30">  | Fivetran              | `pip install grai-source-fivetran`  |
+| <img src="resources/csv.png" alt=“” width="30" height="30">       | csv, parquet, feather | `pip install grai-source-flat-file` |
 
 
 </center>
@@ -92,7 +90,7 @@ password: super_secret
 
 After logging in and connecting a data source you'll be greeted with a lineage graph looking something like this
 
-![](resources/frontend.png)
+![Frontend](resources/frontend.png)
 
 For more information about using the web application check out the [getting started guide](https://docs.grai.io/web-app/getting-started).
 
@@ -133,7 +131,7 @@ To work with the client, learn more [here](https://docs.grai.io/core/tooling/cli
 
 ## Repo Activity
 
-![Alt](https://repobeats.axiom.co/api/embed/31e89b7eda9ea0ebad3005fff55589496f79dc2d.svg "Repobeats analytics image")
+![Repo activity](https://repobeats.axiom.co/api/embed/31e89b7eda9ea0ebad3005fff55589496f79dc2d.svg "Repobeats analytics image")
 
 ## Community
 
