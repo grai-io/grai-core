@@ -11,15 +11,16 @@ from django.http.request import HttpRequest
 from lineage.models import Filter
 from users.models import User
 from workspaces.models import Membership, Organisation, Workspace
+from notifications.models import Alert
 
 
 class Context(object):
     pass
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def test_organisation():
-    organisation, created = await Organisation.objects.aget_or_create(name="Test Organisation")
+    organisation = await Organisation.objects.acreate(name=str(uuid.uuid4()))
 
     return organisation
 
@@ -40,6 +41,38 @@ async def test_workspace(test_organisation):
     workspace = await Workspace.objects.acreate(name=str(uuid.uuid4()), organisation=test_organisation)
 
     return workspace
+
+
+@pytest_asyncio.fixture
+async def test_alert(test_workspace):
+    alert = await Alert.objects.acreate(
+        workspace=test_workspace,
+        name=str(uuid.uuid4()),
+        channel="email",
+        channel_metadata={},
+        triggers={},
+        is_active=False,
+    )
+
+    return alert
+
+
+@pytest.fixture
+async def test_connector():
+    connector = await Connector.objects.acreate(name=str(uuid.uuid4()))
+
+    return connector
+
+
+@pytest.fixture
+async def test_connection(test_connector, test_workspace):
+    connection = await Connection.objects.acreate(
+        workspace=test_workspace,
+        connector=test_connector,
+        name=str(uuid.uuid4()),
+    )
+
+    return connection
 
 
 @pytest_asyncio.fixture

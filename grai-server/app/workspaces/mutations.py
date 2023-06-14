@@ -13,6 +13,10 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from strawberry.types import Info
+
+from lineage.graph_cache import GraphCache
+from lineage.models import Edge, Node
+
 from workspaces.models import Membership as MembershipModel
 from workspaces.models import Organisation as OrganisationModel
 from workspaces.models import Workspace as WorkspaceModel
@@ -97,6 +101,29 @@ class Mutation:
         return workspace
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def clearWorkspace(
+        self,
+        info: Info,
+        id: strawberry.ID,
+    ) -> Workspace:
+        workspace = await get_workspace(info, id)
+
+        edges = Edge.objects.filter(workspace=workspace)
+
+        if await edges.aexists():
+            await sync_to_async(edges._raw_delete)(edges.db)
+
+        nodes = Node.objects.filter(workspace=workspace)
+
+        if await nodes.aexists():
+            await sync_to_async(nodes._raw_delete)(nodes.db)
+
+        graph_cache = GraphCache(workspace=workspace)
+        graph_cache.clear_cache()
+
+        return workspace
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def createMembership(
         self,
         info: Info,
@@ -151,7 +178,11 @@ class Mutation:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def createApiKey(
-        self, info: Info, workspaceId: strawberry.ID, name: str, expiry_date: Optional[datetime.datetime] = None
+        self,
+        info: Info,
+        workspaceId: strawberry.ID,
+        name: str,
+        expiry_date: Optional[datetime.datetime] = None,
     ) -> KeyResult:
         user = get_user(info)
         workspace = await get_workspace(info, workspaceId)

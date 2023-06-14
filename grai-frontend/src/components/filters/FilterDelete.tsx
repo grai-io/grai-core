@@ -36,6 +36,7 @@ const FilterDelete: React.FC<FilterDeleteProps> = ({
   const confirm = useConfirm()
   const { enqueueSnackbar } = useSnackbar()
 
+  /* istanbul ignore next */
   const [deleteFilter] = useMutation<DeleteFilter, DeleteFilterVariables>(
     DELETE_FILTER,
     {

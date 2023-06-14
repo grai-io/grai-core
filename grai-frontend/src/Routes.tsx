@@ -14,6 +14,7 @@ import NotFound from "./pages/NotFound"
 
 const Index = lazy(() => import("./pages/Index"))
 const Workspaces = lazy(() => import("./pages/workspaces/Workspaces"))
+const WorkspaceCreate = lazy(() => import("./pages/workspaces/WorkspaceCreate"))
 const Home = lazy(() => import("./pages/Home"))
 const Graph = lazy(() => import("./pages/Graph"))
 const Tables = lazy(() => import("./pages/tables/Tables"))
@@ -70,6 +71,7 @@ const Routes: React.FC = () => (
           <Route index element={<Index />} />
           <Route path="/workspaces">
             <Route index element={<Workspaces />} />
+            <Route path="create" element={<WorkspaceCreate />} />
             <Route path=":workspaceId" element={<WorkspaceRedirect />} />
             <Route path=":workspaceId/:rest*" element={<WorkspaceRedirect />} />
           </Route>

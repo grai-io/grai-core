@@ -7,11 +7,9 @@ from rest_framework.decorators import (
     permission_classes,
     throttle_classes,
 )
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.throttling import UserRateThrottle
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from workspaces.permissions import HasWorkspaceAPIKey
 
 
 class TenPerSecondUserThrottle(UserRateThrottle):
@@ -27,7 +25,7 @@ class TenPerSecondUserThrottle(UserRateThrottle):
         JWTAuthentication,
     ]
 )
-@permission_classes([(HasWorkspaceAPIKey | IsAuthenticated) & Multitenant])
+@permission_classes([Multitenant])
 def check_authentication(request):
     return Response({"message": "Authenticated!"})
 

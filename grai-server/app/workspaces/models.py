@@ -38,6 +38,7 @@ class Workspace(TenantModel):
     def __str__(self):
         return f"{self.organisation.name}/{self.name}"
 
+    @property
     def ref(self):
         return f"{self.organisation.name}/{self.name}"
 

@@ -16,6 +16,9 @@ from api.tests.common import (
 )
 from asgiref.sync import sync_to_async
 from django.contrib.auth import get_user_model
+
+from lineage.models import Edge, Node
+
 from workspaces.models import WorkspaceAPIKey
 
 
@@ -116,6 +119,60 @@ async def test_update_workspace(test_context):
         "id": str(workspace.id),
         "name": "Test Workspace 2",
     }
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_clear_workspace(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    mutation = """
+        mutation ClearWorkspace($id: ID!) {
+            clearWorkspace(id: $id) {
+                id
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "id": str(workspace.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["clearWorkspace"]["id"] == str(workspace.id)
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_clear_workspace_with_nodes(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    source = await Node.objects.acreate(workspace=workspace, name=str(uuid.uuid4()))
+    destination = await Node.objects.acreate(workspace=workspace, name=str(uuid.uuid4()))
+    await Edge.objects.acreate(workspace=workspace, source=source, destination=destination)
+
+    mutation = """
+        mutation ClearWorkspace($id: ID!) {
+            clearWorkspace(id: $id) {
+                id
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "id": str(workspace.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["clearWorkspace"]["id"] == str(workspace.id)
 
 
 @pytest.mark.django_db

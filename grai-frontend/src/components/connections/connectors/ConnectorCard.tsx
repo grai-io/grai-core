@@ -29,10 +29,7 @@ const ConnectorCard: React.FC<ConnectorCardProps> = ({
 }) => (
   <Box>
     <Card variant="outlined">
-      <CardActionArea
-        onClick={() => onSelect(connector)}
-        disabled={connector.coming_soon}
-      >
+      <CardActionArea onClick={() => onSelect(connector)}>
         <List>
           <ListItem>
             <ListItemIcon sx={{ minWidth: 45 }}>

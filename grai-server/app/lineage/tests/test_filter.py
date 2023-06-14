@@ -10,7 +10,7 @@ from workspaces.models import Organisation, Workspace
 
 @pytest.fixture
 async def test_organisation():
-    organisation, created = await Organisation.objects.aget_or_create(name="Test Organisation")
+    organisation = await Organisation.objects.acreate(name=str(uuid.uuid4()))
 
     return organisation
 
@@ -46,7 +46,9 @@ def test_filter(test_workspace, test_user):
 @pytest.mark.django_db
 async def test_none(test_filter, test_workspace):
     table = await Node.objects.acreate(
-        workspace=test_workspace, metadata={"grai": {"node_type": "Table"}}, name=str(uuid.uuid4())
+        workspace=test_workspace,
+        metadata={"grai": {"node_type": "Table"}},
+        name=str(uuid.uuid4()),
     )
 
     queryset = Node.objects.filter(workspace=test_workspace)
@@ -68,7 +70,14 @@ async def test_table_tags_contains(test_workspace, test_user):
     filter = await Filter.objects.acreate(
         workspace=test_workspace,
         name=str(uuid.uuid4()),
-        metadata=[{"field": "tag", "operator": "contains", "type": "table", "value": "grai-source-postgres"}],
+        metadata=[
+            {
+                "field": "tag",
+                "operator": "contains",
+                "type": "table",
+                "value": "grai-source-postgres",
+            }
+        ],
         created_by=test_user,
     )
 
@@ -83,13 +92,22 @@ async def test_table_tags_contains(test_workspace, test_user):
 @pytest.mark.django_db
 async def test_table_tags_contains_miss(test_workspace, test_user):
     await Node.objects.acreate(
-        workspace=test_workspace, metadata={"grai": {"node_type": "Table", "tags": []}}, name=str(uuid.uuid4())
+        workspace=test_workspace,
+        metadata={"grai": {"node_type": "Table", "tags": []}},
+        name=str(uuid.uuid4()),
     )
 
     filter = await Filter.objects.acreate(
         workspace=test_workspace,
         name=str(uuid.uuid4()),
-        metadata=[{"field": "tag", "operator": "contains", "type": "table", "value": "grai-source-postgres"}],
+        metadata=[
+            {
+                "field": "tag",
+                "operator": "contains",
+                "type": "table",
+                "value": "grai-source-postgres",
+            }
+        ],
         created_by=test_user,
     )
 
@@ -104,13 +122,22 @@ async def test_table_tags_contains_miss(test_workspace, test_user):
 @pytest.mark.django_db
 async def test_ancestor_tags_contains(test_workspace, test_user):
     await Node.objects.acreate(
-        workspace=test_workspace, metadata={"grai": {"node_type": "Table", "tags": []}}, name=str(uuid.uuid4())
+        workspace=test_workspace,
+        metadata={"grai": {"node_type": "Table", "tags": []}},
+        name=str(uuid.uuid4()),
     )
 
     filter = await Filter.objects.acreate(
         workspace=test_workspace,
         name=str(uuid.uuid4()),
-        metadata=[{"field": "tag", "operator": "contains", "type": "ancestor", "value": "grai-source-postgres"}],
+        metadata=[
+            {
+                "field": "tag",
+                "operator": "contains",
+                "type": "ancestor",
+                "value": "grai-source-postgres",
+            }
+        ],
         created_by=test_user,
     )
 
@@ -122,13 +149,22 @@ async def test_ancestor_tags_contains(test_workspace, test_user):
 @pytest.mark.django_db
 async def test_no_ancestor_tags_contains(test_workspace, test_user):
     await Node.objects.acreate(
-        workspace=test_workspace, metadata={"grai": {"node_type": "Table", "tags": []}}, name=str(uuid.uuid4())
+        workspace=test_workspace,
+        metadata={"grai": {"node_type": "Table", "tags": []}},
+        name=str(uuid.uuid4()),
     )
 
     filter = await Filter.objects.acreate(
         workspace=test_workspace,
         name=str(uuid.uuid4()),
-        metadata=[{"field": "tag", "operator": "contains", "type": "no-ancestor", "value": "grai-source-postgres"}],
+        metadata=[
+            {
+                "field": "tag",
+                "operator": "contains",
+                "type": "no-ancestor",
+                "value": "grai-source-postgres",
+            }
+        ],
         created_by=test_user,
     )
 
@@ -140,13 +176,22 @@ async def test_no_ancestor_tags_contains(test_workspace, test_user):
 @pytest.mark.django_db
 async def test_descendant_tags_contains(test_workspace, test_user):
     await Node.objects.acreate(
-        workspace=test_workspace, metadata={"grai": {"node_type": "Table", "tags": []}}, name=str(uuid.uuid4())
+        workspace=test_workspace,
+        metadata={"grai": {"node_type": "Table", "tags": []}},
+        name=str(uuid.uuid4()),
     )
 
     filter = await Filter.objects.acreate(
         workspace=test_workspace,
         name=str(uuid.uuid4()),
-        metadata=[{"field": "tag", "operator": "contains", "type": "descendant", "value": "grai-source-postgres"}],
+        metadata=[
+            {
+                "field": "tag",
+                "operator": "contains",
+                "type": "descendant",
+                "value": "grai-source-postgres",
+            }
+        ],
         created_by=test_user,
     )
 
@@ -158,13 +203,22 @@ async def test_descendant_tags_contains(test_workspace, test_user):
 @pytest.mark.django_db
 async def test_no_descendant_tags_contains(test_workspace, test_user):
     await Node.objects.acreate(
-        workspace=test_workspace, metadata={"grai": {"node_type": "Table", "tags": []}}, name=str(uuid.uuid4())
+        workspace=test_workspace,
+        metadata={"grai": {"node_type": "Table", "tags": []}},
+        name=str(uuid.uuid4()),
     )
 
     filter = await Filter.objects.acreate(
         workspace=test_workspace,
         name=str(uuid.uuid4()),
-        metadata=[{"field": "tag", "operator": "contains", "type": "no-descendant", "value": "grai-source-postgres"}],
+        metadata=[
+            {
+                "field": "tag",
+                "operator": "contains",
+                "type": "no-descendant",
+                "value": "grai-source-postgres",
+            }
+        ],
         created_by=test_user,
     )
 
@@ -184,7 +238,14 @@ async def test_unsupported_type(test_workspace, test_user):
     filter = await Filter.objects.acreate(
         workspace=test_workspace,
         name=str(uuid.uuid4()),
-        metadata=[{"field": "tag", "operator": "contains", "type": "random", "value": "grai-source-postgres"}],
+        metadata=[
+            {
+                "field": "tag",
+                "operator": "contains",
+                "type": "random",
+                "value": "grai-source-postgres",
+            }
+        ],
         created_by=test_user,
     )
 

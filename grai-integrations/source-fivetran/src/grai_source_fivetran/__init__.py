@@ -6,3 +6,5 @@ from grai_source_fivetran import (
     mock_tools,
     models,
 )
+
+__version__ = "0.0.8"

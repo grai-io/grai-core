@@ -9,34 +9,34 @@ from workspaces.models import Organisation, Workspace
 
 @pytest.fixture
 def test_organisation():
-    return Organisation.objects.create(name="Org1")
+    return Organisation.objects.create(name=str(uuid.uuid4()))
 
 
 @pytest.fixture
 def test_workspace(test_organisation):
-    return Workspace.objects.create(name="W1", organisation=test_organisation)
+    return Workspace.objects.create(name=str(uuid.uuid4()), organisation=test_organisation)
 
 
 @pytest.fixture
 def test_node(test_workspace):
-    return Node.objects.create(workspace=test_workspace, name="N1")
+    return Node.objects.create(workspace=test_workspace, name=str(uuid.uuid4()))
 
 
 @pytest.fixture
 def test_source_node(test_workspace):
-    return Node.objects.create(workspace=test_workspace, name="S1")
+    return Node.objects.create(workspace=test_workspace, name=str(uuid.uuid4()))
 
 
 @pytest.fixture
 def test_destination_node(test_workspace):
-    return Node.objects.create(workspace=test_workspace, name="D1")
+    return Node.objects.create(workspace=test_workspace, name=str(uuid.uuid4()))
 
 
 @pytest.fixture
 def test_edge(test_workspace, test_source_node, test_destination_node):
     return Edge.objects.create(
         workspace=test_workspace,
-        name="N1",
+        name=str(uuid.uuid4()),
         source=test_source_node,
         destination=test_destination_node,
     )

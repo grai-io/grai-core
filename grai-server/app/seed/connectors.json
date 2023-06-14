@@ -118,6 +118,24 @@
                         "secret": true,
                         "helper_text": "JSON credentials for service account, see Credentials in docs",
                         "order": 2
+                    },
+                    {
+                        "name": "log_parsing",
+                        "label": "Log Parsing",
+                        "required": false,
+                        "default": false,
+                        "helper_text": "Enable log parsing for BigQuery",
+                        "order": 3,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "log_parsing_window",
+                        "label": "Log Parsing Window",
+                        "required": false,
+                        "default": 7,
+                        "helper_text": "Number of days to parse logs for",
+                        "order": 4,
+                        "type": "number"
                     }
                 ]
             },
@@ -435,6 +453,104 @@
             "coming_soon": false,
             "created_at": "2023-01-11T21:17:47.540Z",
             "updated_at": "2023-01-11T21:19:57.027Z"
+        }
+    },
+    {
+        "model": "connections.connector",
+        "pk": "612a024c-de4e-4f1d-a7e5-ff616cdd953a",
+        "fields": {
+            "name": "Airflow",
+            "metadata": {},
+            "is_active": true,
+            "icon": "/icons/data-sources/airflow.png",
+            "category": "data tools",
+            "coming_soon": true,
+            "created_at": "2023-06-05T10:00:00.000Z",
+            "updated_at": "2023-06-05T10:00:00.000Z"
+        }
+    },
+    {
+        "model": "connections.connector",
+        "pk": "b92242af-ee22-4734-abc0-772c316dfcc0",
+        "fields": {
+            "name": "Airbyte",
+            "metadata": {},
+            "is_active": true,
+            "icon": "/icons/data-sources/airbyte.png",
+            "category": "data tools",
+            "coming_soon": true,
+            "created_at": "2023-06-05T10:00:00.000Z",
+            "updated_at": "2023-06-05T10:00:00.000Z"
+        }
+    },
+    {
+        "model": "connections.connector",
+        "pk": "b92242af-ee22-4734-abc0-772c316dfcc0",
+        "fields": {
+            "name": "Amazon Aurora",
+            "metadata": {},
+            "is_active": true,
+            "icon": "/icons/data-sources/aurora.png",
+            "category": "databases",
+            "coming_soon": true,
+            "created_at": "2023-06-05T10:00:00.000Z",
+            "updated_at": "2023-06-05T10:00:00.000Z"
+        }
+    },
+    {
+        "model": "connections.connector",
+        "pk": "6d3a2356-8160-49a6-a888-956601117835",
+        "fields": {
+            "name": "Apache Spark",
+            "metadata": {},
+            "is_active": true,
+            "icon": "/icons/data-sources/spark.png",
+            "category": "data tools",
+            "coming_soon": true,
+            "created_at": "2023-06-05T10:00:00.000Z",
+            "updated_at": "2023-06-05T10:00:00.000Z"
+        }
+    },
+    {
+        "model": "connections.connector",
+        "pk": "badfb696-bc97-41a9-bec1-2321b17672d1",
+        "fields": {
+            "name": "Kedro",
+            "metadata": {},
+            "is_active": true,
+            "icon": "/icons/data-sources/kedro.png",
+            "category": "data tools",
+            "coming_soon": true,
+            "created_at": "2023-06-05T10:00:00.000Z",
+            "updated_at": "2023-06-05T10:00:00.000Z"
+        }
+    },
+    {
+        "model": "connections.connector",
+        "pk": "019950c5-7907-4ef0-8eb4-92296ce71670",
+        "fields": {
+            "name": "Apache Atlas",
+            "metadata": {},
+            "is_active": true,
+            "icon": "/icons/data-sources/atlas.png",
+            "category": "data tools",
+            "coming_soon": true,
+            "created_at": "2023-06-05T10:00:00.000Z",
+            "updated_at": "2023-06-05T10:00:00.000Z"
+        }
+    },
+    {
+        "model": "connections.connector",
+        "pk": "e8ec1a80-81e7-4184-94cd-4ba53628d431",
+        "fields": {
+            "name": "Apache Iceberg",
+            "metadata": {},
+            "is_active": true,
+            "icon": "/icons/data-sources/iceberg.png",
+            "category": "databases",
+            "coming_soon": true,
+            "created_at": "2023-06-05T10:00:00.000Z",
+            "updated_at": "2023-06-05T10:00:00.000Z"
         }
     }
 ]

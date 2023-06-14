@@ -25,17 +25,20 @@ export interface Connection {
 type ConnectionDeleteProps = {
   connection: Connection
   workspaceId?: string
-  onClose: (deleted: boolean) => void
+  onClose: () => void
+  onDelete?: () => void
 }
 
 const ConnectionDelete: React.FC<ConnectionDeleteProps> = ({
   connection,
   workspaceId,
   onClose,
+  onDelete,
 }) => {
   const confirm = useConfirm()
   const { enqueueSnackbar } = useSnackbar()
 
+  /* istanbul ignore next */
   const [deleteConnection] = useMutation<
     DeleteConnection,
     DeleteConnectionVariables
@@ -60,7 +63,7 @@ const ConnectionDelete: React.FC<ConnectionDeleteProps> = ({
   })
 
   const handleDelete = () => {
-    onClose(true)
+    onClose()
     confirm({
       title: "Delete Connection",
       description: `Are you sure you wish to delete the ${connection.name} connection?`,
@@ -68,10 +71,13 @@ const ConnectionDelete: React.FC<ConnectionDeleteProps> = ({
     })
       .then(() => deleteConnection())
       .then(() => enqueueSnackbar("Connection deleted", { variant: "success" }))
-      .catch(error =>
-        enqueueSnackbar(`Failed to delete connection ${error}`, {
-          variant: "error",
-        })
+      .then(onDelete)
+      .catch(
+        error =>
+          error &&
+          enqueueSnackbar(`Failed to delete connection ${error}`, {
+            variant: "error",
+          })
       )
   }
 

@@ -42,6 +42,7 @@ const MembershipDelete: React.FC<MembershipDeleteProps> = ({
   const confirm = useConfirm()
   const { enqueueSnackbar } = useSnackbar()
 
+  /* istanbul ignore next */
   const [deleteMembership] = useMutation<
     DeleteMembership,
     DeleteMembershipVariables
@@ -78,10 +79,12 @@ const MembershipDelete: React.FC<MembershipDeleteProps> = ({
     })
       .then(() => deleteMembership())
       .then(() => enqueueSnackbar("Membership deleted", { variant: "success" }))
-      .catch(error =>
-        enqueueSnackbar(`Failed to delete membership ${error}`, {
-          variant: "error",
-        })
+      .catch(
+        error =>
+          error &&
+          enqueueSnackbar(`Failed to delete membership ${error}`, {
+            variant: "error",
+          })
       )
   }
 

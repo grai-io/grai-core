@@ -5,6 +5,7 @@ from django.db.models import F, Q
 from django_multitenant.models import TenantModel
 
 from .graph_cache import GraphCache
+from .graph_tasks import cache_edge, cache_node
 from .managers import CacheManager
 
 
@@ -52,16 +53,20 @@ class Node(TenantModel):
         super().save(*args, **kwargs)
         self.cache_model()
 
+    def delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
+        self.cache_model(delete=True)
+
     def set_names(self, *args, **kwargs):
         if not self.display_name:
             self.display_name = self.name
         return self
 
-    def cache_model(self, cache: GraphCache = None):
-        if cache is None:
-            cache = GraphCache(self.workspace)
-
-        cache.cache_node(self)
+    def cache_model(self, cache: GraphCache = None, delete: bool = False):
+        if cache:
+            cache.cache_node(self)
+        else:
+            cache_node.delay(self.id, delete=delete)
 
     def __str__(self):
         return f"{self.display_name}"
@@ -78,7 +83,11 @@ class Node(TenantModel):
         ]
         indexes = [
             models.Index(fields=["workspace", "namespace", "name"]),
-            models.Index("workspace", models.F("metadata__grai__node_type"), name="lineage_node_type"),
+            models.Index(
+                "workspace",
+                models.F("metadata__grai__node_type"),
+                name="lineage_node_type",
+            ),
         ]
 
 
@@ -111,6 +120,10 @@ class Edge(TenantModel):
         super().save(*args, **kwargs)
         self.cache_model()
 
+    def delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
+        self.cache_model(delete=True)
+
     def set_names(self):
         if not self.name:
             self.name = str(self)
@@ -118,11 +131,11 @@ class Edge(TenantModel):
             self.display_name = self.name
         return self
 
-    def cache_model(self, cache: GraphCache = None):
-        if cache is None:
-            cache = GraphCache(self.workspace)
-
-        cache.cache_edge(self)
+    def cache_model(self, cache: GraphCache = None, delete: bool = False):
+        if cache:
+            cache.cache_edge(self)
+        else:
+            cache_edge.delay(self.id, delete=delete)
 
     def __str__(self):
         return f"{self.source} -> {self.destination}"
@@ -150,9 +163,21 @@ class Edge(TenantModel):
             models.Index(fields=["workspace", "is_active"]),
             models.Index(fields=["workspace", "namespace", "name"]),
             models.Index(fields=["workspace", "source", "destination"]),
-            models.Index("workspace", models.F("metadata__grai__edge_type"), name="lineage_edge_type"),
-            models.Index(models.F("metadata__grai__edge_type"), "source", name="lineage_edge_type_source"),
-            models.Index(models.F("metadata__grai__edge_type"), "destination", name="lineage_edge_type_destination"),
+            models.Index(
+                "workspace",
+                models.F("metadata__grai__edge_type"),
+                name="lineage_edge_type",
+            ),
+            models.Index(
+                models.F("metadata__grai__edge_type"),
+                "source",
+                name="lineage_edge_type_source",
+            ),
+            models.Index(
+                models.F("metadata__grai__edge_type"),
+                "destination",
+                name="lineage_edge_type_destination",
+            ),
         ]
 
 

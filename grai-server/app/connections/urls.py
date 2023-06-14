@@ -10,13 +10,13 @@ from django_multitenant.utils import get_current_tenant
 from installations.github import Github
 from installations.models import Branch, Commit, PullRequest, Repository
 from rest_framework import routers
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from workspaces.permissions import HasWorkspaceAPIKey
 
-from .models import Connection, Connector, Run
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+
+from .models import Connection, Connector, Run, RunFile
 from .views import ConnectionViewSet, ConnectorViewSet, RunViewSet
+from workspaces.models import Workspace
 
 app_name = "connections"
 
@@ -62,7 +62,13 @@ def get_connection(request) -> Connection:
 
 
 def get_commit(
-    owner: str, repo: str, branch_reference: str, pr_reference: str, pr_title: str, head_sha: str, commit_title: str
+    owner: str,
+    repo: str,
+    branch_reference: str,
+    pr_reference: str,
+    pr_title: str,
+    head_sha: str,
+    commit_title: str,
 ):
     # Repository
     try:
@@ -84,7 +90,10 @@ def get_commit(
             pull_request.save()
         except PullRequest.DoesNotExist:
             pull_request = PullRequest.objects.create(
-                repository=repository, reference=pr_reference, branch=branch, title=pr_title
+                repository=repository,
+                reference=pr_reference,
+                branch=branch,
+                title=pr_title,
             )
 
     # Commit
@@ -125,7 +134,7 @@ def get_trigger(request, action: str):
 
     github = Github(owner=owner, repo=repo)
 
-    workspace = get_current_tenant()
+    workspace = Workspace.objects.get(id=get_current_tenant().id)
     details_url_start = (
         f"https://app.grai.io/{workspace.organisation.name}/{workspace.name}/reports/github/{owner}/{repo}/"
     )
@@ -161,7 +170,7 @@ def get_trigger(request, action: str):
 
 
 @api_view(["POST"])
-@permission_classes([(HasWorkspaceAPIKey | IsAuthenticated) & Multitenant])
+@permission_classes([Multitenant])
 def create_run(request):
     action = request.POST.get("action", "tests")
 
@@ -169,7 +178,20 @@ def create_run(request):
         connection = get_connection(request)
         commit, trigger = get_trigger(request, action)
 
-        run = Run.objects.create(connection=connection, status="queued", commit=commit, trigger=trigger, action=action)
+        run = Run.objects.create(
+            connection=connection,
+            status="queued",
+            commit=commit,
+            trigger=trigger,
+            action=action,
+        )
+
+        file = request.FILES.get("file", None)
+
+        if file:
+            runFile = RunFile(run=run)
+            runFile.file = file
+            runFile.save()
 
         process_run.delay(run.id)
 
@@ -210,7 +232,11 @@ def dbt_cloud(request):
         return Response({"status": "Connection not active"})
 
     run = Run.objects.create(
-        workspace=connection.workspace, connection=connection, status="queued", trigger=body, action=Run.UPDATE
+        workspace=connection.workspace,
+        connection=connection,
+        status="queued",
+        trigger=body,
+        action=Run.UPDATE,
     )
 
     process_run.delay(run.id)

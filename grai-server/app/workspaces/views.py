@@ -55,7 +55,7 @@ class MembershipViewSet(ReadOnlyModelViewSet):
         BasicAuthentication,
         JWTAuthentication,
     ]
-    permission_classes = [(HasWorkspaceAPIKey | IsAuthenticated) & Multitenant]
+    permission_classes = [Multitenant]
 
     serializer_class = MembershipSerializer
     type = Membership
@@ -63,7 +63,7 @@ class MembershipViewSet(ReadOnlyModelViewSet):
     def get_queryset(self):
         queryset = self.type.objects
 
-        supported_filters = ["is_active", "name", "user", "workspace", "role"]
+        supported_filters = ["is_active", "user", "workspace", "role"]
         filters = (
             (filter_name, condition)
             for filter_name in supported_filters

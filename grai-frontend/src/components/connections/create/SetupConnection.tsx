@@ -18,6 +18,7 @@ import {
   UpdateConnectionInitialVariables,
 } from "./__generated__/UpdateConnectionInitial"
 import ConnectionFile from "./ConnectionFile"
+import ConnectorComingSoon from "./ConnectorComingSoon"
 import CreateConnectionHelp from "./CreateConnectionHelp"
 import { Connection } from "./CreateConnectionWizard"
 import ConnectionsMetadata from "../ConnectionsMetadata"
@@ -117,6 +118,7 @@ const SetupConnection: React.FC<SetupConnectionProps> = ({
     }
   )
 
+  /* istanbul ignore next */
   const [createConnection, { loading: loadingCreate, error: errorCreate }] =
     useMutation<CreateConnection, CreateConnectionVariables>(
       CREATE_CONNECTION,
@@ -190,6 +192,9 @@ const SetupConnection: React.FC<SetupConnectionProps> = ({
           )
           .then(() => opts.forwardStep())
           .catch(() => {})
+
+  if (connector.coming_soon)
+    return <ConnectorComingSoon connector={connector} opts={opts} />
 
   if (connector.metadata?.file?.name)
     return (

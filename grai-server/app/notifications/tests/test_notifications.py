@@ -1,27 +1,24 @@
+import uuid
 import pytest
 from notifications.models import Alert
 from notifications.notifications import send_notification
-from workspaces.models import Organisation, Workspace
+from api.tests.common import (
+    test_organisation,
+    test_workspace,
+)
 
 
-@pytest.fixture
-def test_organisation():
-    return Organisation.objects.create(name="Org1")
-
-
-@pytest.fixture
-def test_workspace(test_organisation):
-    return Workspace.objects.create(name="W10", organisation=test_organisation)
-
-
+@pytest.mark.asyncio
 @pytest.mark.django_db
 def test_send_notification():
     send_notification("test", "test message")
 
 
+@pytest.mark.asyncio
 @pytest.mark.django_db
 def test_send_notification_with_alerts(test_workspace):
     Alert.objects.create(
+        name=str(uuid.uuid4()),
         workspace=test_workspace,
         channel="email",
         channel_metadata={"emails": []},
@@ -31,9 +28,11 @@ def test_send_notification_with_alerts(test_workspace):
     send_notification("test", "test message")
 
 
+@pytest.mark.asyncio
 @pytest.mark.django_db
 def test_send_notification_with_alerts_no_channel(test_workspace):
     Alert.objects.create(
+        name=str(uuid.uuid4()),
         workspace=test_workspace,
         channel="test",
         triggers={"test": True},

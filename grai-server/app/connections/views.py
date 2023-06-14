@@ -23,7 +23,7 @@ class ConnectionViewSet(ModelViewSet):
         JWTAuthentication,
     ]
 
-    permission_classes = [(HasWorkspaceAPIKey | IsAuthenticated) & Multitenant]
+    permission_classes = [Multitenant]
 
     serializer_class = ConnectionSerializer
     type = Connection
@@ -73,7 +73,7 @@ class RunViewSet(ReadOnlyModelViewSet):
         BasicAuthentication,
         JWTAuthentication,
     ]
-    permission_classes = [(HasWorkspaceAPIKey | IsAuthenticated) & Multitenant]
+    permission_classes = [Multitenant]
 
     serializer_class = RunSerializer
     type = Run

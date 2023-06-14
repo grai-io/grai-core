@@ -1,4 +1,6 @@
 import pytest
+import uuid
+
 from api.schema import schema
 from workspaces.models import Workspace
 
@@ -115,7 +117,7 @@ async def test_workspaces(test_context):
 async def test_workspaces_no_membership(test_context):
     context, organisation, workspace, user, membership = test_context
 
-    await Workspace.objects.acreate(name="Test Workspace2", organisation=organisation)
+    await Workspace.objects.acreate(name=str(uuid.uuid4()), organisation=organisation)
 
     query = """
         query Workspaces {

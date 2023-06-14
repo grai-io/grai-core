@@ -33,6 +33,7 @@ const AlertDelete: React.FC<AlertDeleteProps> = ({
   const confirm = useConfirm()
   const { enqueueSnackbar } = useSnackbar()
 
+  /* istanbul ignore next */
   const [deleteAlert] = useMutation<DeleteAlert, DeleteAlertVariables>(
     DELETE_ALERT,
     {
@@ -64,10 +65,12 @@ const AlertDelete: React.FC<AlertDeleteProps> = ({
     })
       .then(() => deleteAlert())
       .then(() => enqueueSnackbar("Alert deleted", { variant: "success" }))
-      .catch(error =>
-        enqueueSnackbar(`Failed to delete alert ${error}`, {
-          variant: "error",
-        })
+      .catch(
+        error =>
+          error &&
+          enqueueSnackbar(`Failed to delete alert ${error}`, {
+            variant: "error",
+          })
       )
   }
 

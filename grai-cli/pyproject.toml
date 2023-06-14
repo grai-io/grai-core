@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai-cli"
-version = "0.1.12"
+version = "0.1.14"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>"]
 license = "Elastic-2.0"
@@ -45,3 +45,5 @@ devtools = "^0.10.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry_bumpversion.file."grai_cli/__init__.py"]

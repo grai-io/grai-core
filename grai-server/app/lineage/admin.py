@@ -21,8 +21,22 @@ class SourceEdgeInline(EdgeInline):
     fk_name = "source"
     verbose_name = "Source Edge"
     verbose_name_plural = "Source Edges"
-    fields = ["name", "namespace", "data_source", "destination", "metadata", "is_active"]
-    readonly_fields = ["name", "namespace", "data_source", "destination", "metadata", "is_active"]
+    fields = [
+        "name",
+        "namespace",
+        "data_source",
+        "destination",
+        "metadata",
+        "is_active",
+    ]
+    readonly_fields = [
+        "name",
+        "namespace",
+        "data_source",
+        "destination",
+        "metadata",
+        "is_active",
+    ]
 
 
 class DestinationEdgeInline(EdgeInline):
@@ -30,7 +44,14 @@ class DestinationEdgeInline(EdgeInline):
     verbose_name = "Destination Edge"
     verbose_name_plural = "Destination Edges"
     fields = ["name", "namespace", "data_source", "source", "metadata", "is_active"]
-    readonly_fields = ["name", "namespace", "data_source", "source", "metadata", "is_active"]
+    readonly_fields = [
+        "name",
+        "namespace",
+        "data_source",
+        "source",
+        "metadata",
+        "is_active",
+    ]
 
 
 class NodeAdmin(admin.ModelAdmin):
@@ -89,8 +110,6 @@ class EdgeAdmin(admin.ModelAdmin):
         "namespace",
         "is_active",
         "data_source",
-        ("source", admin.RelatedOnlyFieldListFilter),
-        ("destination", admin.RelatedOnlyFieldListFilter),
     )
 
     formfield_overrides = {JSONField: {"widget": PrettyJSONWidget}}

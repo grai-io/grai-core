@@ -1,3 +1,4 @@
+from typing import List
 from django.core.management.base import CommandError, CommandParser
 from django_multitenant.utils import set_current_tenant
 from django_tqdm import BaseCommand
@@ -10,7 +11,7 @@ class Command(BaseCommand):
     help = "Build the lineage cache"
 
     def add_arguments(self, parser: CommandParser) -> None:
-        parser.add_argument("workspace_id", type=str)
+        parser.add_argument("workspace_id", type=str, nargs="?", default=None)
 
         parser.add_argument(
             "--delete",
@@ -19,17 +20,30 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options) -> None:
         workspace_id = options["workspace_id"]
-        try:
-            self.workspace = Workspace.objects.get(pk=workspace_id)
 
-            set_current_tenant(self.workspace)
+        workspaces: List[Workspace] = []
 
-        except Workspace.DoesNotExist:
-            raise CommandError('workspace "%s" does not exist' % workspace_id)
+        if workspace_id:
+            try:
+                workspace = Workspace.objects.get(pk=workspace_id)
+                workspaces = [workspace]
+
+            except Workspace.DoesNotExist:
+                raise CommandError('workspace "%s" does not exist' % workspace_id)
+        else:
+            workspaces = Workspace.objects.all()
+
+        for workspace in workspaces:
+            self.handle_workspace(workspace, options["delete"])
+
+    def handle_workspace(self, workspace: Workspace, delete: bool):
+        self.workspace = workspace
+
+        set_current_tenant(self.workspace)
 
         self.cache = GraphCache(self.workspace)
 
-        if options["delete"]:
+        if delete:
             self.cache.clear_cache()
             self.stdout.write(self.style.SUCCESS('Successfully cleared cache for workspace "%s"' % self.workspace.name))
 

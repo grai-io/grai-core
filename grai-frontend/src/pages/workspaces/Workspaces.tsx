@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom"
 import GraiLogo from "components/icons/GraiLogo"
 import Loading from "components/layout/Loading"
 import GraphError from "components/utils/GraphError"
-import CreateWorkspace from "components/workspaces/CreateWorkspace"
+import CreateOrganisation from "components/workspaces/CreateOrganisation"
 import WorkspaceList from "components/workspaces/WorkspaceList"
 import WorkspaceNotFound from "components/workspaces/WorkspaceNotFound"
 import { GetWorkspaces } from "./__generated__/GetWorkspaces"
@@ -33,7 +33,7 @@ const Workspaces: React.FC = () => {
   if (error) return <GraphError error={error} />
   if (loading) return <Loading />
 
-  if (data?.workspaces.length === 0) return <CreateWorkspace />
+  if (data?.workspaces.length === 0) return <CreateOrganisation />
 
   return (
     <Container maxWidth="sm" sx={{ mt: 20 }}>

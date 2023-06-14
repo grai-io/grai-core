@@ -2,6 +2,7 @@ import React from "react"
 import { gql, useQuery } from "@apollo/client"
 import { Box } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
+import GettingStarted from "components/home/GettingStarted"
 import HomeCards from "components/home/HomeCards"
 import ReportsCard from "components/home/ReportsCard"
 import WelcomeCard from "components/home/WelcomeCard"
@@ -19,6 +20,21 @@ export const GET_WORKSPACE = gql`
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       name
+      runs(filters: { action: TESTS }) {
+        meta {
+          filtered
+        }
+      }
+      tables {
+        meta {
+          total
+        }
+      }
+      connections {
+        meta {
+          total
+        }
+      }
     }
   }
 `
@@ -54,7 +70,9 @@ const Home: React.FC = () => {
       <Box sx={{ padding: "24px" }}>
         <WelcomeCard search={search} setSearch={setSearch} />
         <HomeCards />
-        <ReportsCard />
+        {workspace.connections.meta.total === 0 &&
+          workspace.tables.meta.total === 0 && <GettingStarted />}
+        {workspace.runs.meta.filtered > 0 && <ReportsCard />}
       </Box>
       <SearchDialog
         open={search}

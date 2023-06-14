@@ -1,9 +1,14 @@
 from typing import List, Optional
 
-from api.types import Connector, User, Workspace
 from strawberry.types import Info
 from strawberry_django_plus import gql
+
+import strawberry_django
+from strawberry_django_plus.gql import auto
+
+from api.types import Connector, User, Workspace
 from workspaces.models import Workspace as WorkspaceModel
+from connections.models import Connector as ConnectorModel
 
 from .common import IsAuthenticated, get_user
 
@@ -35,9 +40,18 @@ def get_profile(info: Info) -> User:
     return get_user(info)
 
 
+@strawberry_django.ordering.order(ConnectorModel)
+class ConnectorOrder:
+    id: auto
+    name: auto
+    category: auto
+
+
 @gql.type
 class Query:
     workspaces: List[Workspace] = gql.django.field(resolver=get_workspaces, permission_classes=[IsAuthenticated])
     workspace: Workspace = gql.django.field(resolver=get_workspace, permission_classes=[IsAuthenticated])
-    connectors: List[Connector] = gql.django.field(permission_classes=[IsAuthenticated])
+    connectors: List[Connector] = gql.django.field(
+        permission_classes=[IsAuthenticated], order=ConnectorOrder, pagination=True
+    )
     profile: User = gql.django.field(resolver=get_profile, permission_classes=[IsAuthenticated])

@@ -14,6 +14,12 @@ env:
   py_ver: "3.11"
   poetry_ver: "1.3.1"
   SECRET_KEY: "fixed-test-key-that-doesnt-matter"
+  DB_USER: "grai"
+  DB_PASSWORD: "grai"
+  DB_NAME: "grai"
+  DEBUG: "False"
+  DB_HOST: "127.0.0.1"
+  DB_PORT: "5432"
 
 jobs:
   lint-server:
@@ -33,7 +39,7 @@ jobs:
 
       - working-directory: "grai-server/app"
         run: |
-          black . --check
+          black . --check --exclude /migrations/
         # isort . --profile black --check
 
   tests-server:
@@ -48,9 +54,9 @@ jobs:
       postgres:
         image: postgres:latest
         env:
-          POSTGRES_USER: grai
-          POSTGRES_PASSWORD: grai
-          POSTGRES_DB: grai
+          POSTGRES_USER: ${{ env.DB_USER }}
+          POSTGRES_PASSWORD: ${{ env.DB_PASSWORD }}
+          POSTGRES_DB: ${{ env.DB_NAME }}
         ports:
           - 5432:5432
         # needed because the postgres container does not provide a healthcheck
@@ -72,17 +78,13 @@ jobs:
           pip install pytest pytest_asyncio pytest-django pytest-mock coverage
           pip install .
 
-      - name: Tests
+      - name: Run Migrations
+        run: python manage.py migrate --noinput
+
+      - name: Run Coverage Tests
         env:
-          DEBUG: False
-          DB_HOST: "127.0.0.1"
-          DB_PORT: "5432"
-          DB_USER: grai
-          DB_NAME: grai
-          DB_PASSWORD: grai
           GITHUB_PRIVATE_KEY: installations/tests/sample.private-key.pem
         run: |
-          python manage.py migrate --noinput
           coverage run -m pytest
           coverage xml
 

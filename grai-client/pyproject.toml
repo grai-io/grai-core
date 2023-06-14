@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai-client"
-version = "0.2.13"
+version = "0.2.18"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>"]
 license = "Elastic-2.0"
@@ -23,7 +23,6 @@ grai-schemas = "^0.1.11"
 httpx = {extras = ["http2"], version = "^0.24.0"}
 brotli = "^1.0.9"
 tqdm = "^4.65.0"
-trio = "^0.22.0"
 more-itertools = "^9.1.0"
 
 [tool.poetry.group.dev.dependencies]
@@ -35,6 +34,7 @@ types-requests = "^2.28.11.5"
 types-pyyaml = "^6.0.12.2"
 pre-commit = "^2.20.0"
 pdoc = "^13.1.1"
+pytest-durations = "^1.2.0"
 
 [tool.isort]
 profile = "black"
@@ -46,3 +46,5 @@ line-length = 120
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry_bumpversion.file."src/grai_client/__init__.py"]

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai_source_bigquery"
-version = "0.0.6"
+version = "0.1.0"
 description = ""
 authors = ["Edward Louth <edward@grai.io>"]
 license = "Elastic-2.0"
@@ -20,6 +20,7 @@ multimethod = "^1.8"
 grai-schemas = "^0.1.9"
 google-cloud-bigquery = "^3.5.0"
 setuptools = "^67.1.0"
+google-cloud-logging = "^3.5.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^22.6.0"
@@ -38,3 +39,5 @@ line-length = 120
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry_bumpversion.file."src/grai_source_bigquery/__init__.py"]
