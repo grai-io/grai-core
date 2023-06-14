@@ -1,6 +1,6 @@
 ---
-title: SQL Server
-description: Documentation for Grai's SQL Server GitHub action.
+title: SQL Server GitHub Action
+description: Documentation for Grai's SQL Server GitHub Action GitHub action.
 ---
 
 # Microsoft SQL Server
