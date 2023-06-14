@@ -88,31 +88,27 @@ export const getAllIncomers = (
   node: Node,
   nodes: Node[],
   edges: Edge[]
-): Node[] => {
-  return getIncomers(node, nodes, edges).reduce<Node[]>(
-    (memo, incomer) => [
-      ...memo,
-      incomer,
-      ...getAllIncomers(incomer, nodes, edges),
-    ],
+): Node[] =>
+  getIncomers(node, nodes, edges).reduce<Node[]>(
+    (memo, incomer) =>
+      incomer.id === node.id
+        ? memo
+        : [...memo, incomer, ...getAllIncomers(incomer, nodes, edges)],
     []
   )
-}
 
 export const getAllOutgoers = (
   node: Node,
   nodes: Node[],
   edges: Edge[]
-): Node[] => {
-  return getOutgoers(node, nodes, edges).reduce<Node[]>(
-    (memo, outgoer) => [
-      ...memo,
-      outgoer,
-      ...getAllOutgoers(outgoer, nodes, edges),
-    ],
+): Node[] =>
+  getOutgoers(node, nodes, edges).reduce<Node[]>(
+    (memo, outgoer) =>
+      outgoer.id === node.id
+        ? memo
+        : [...memo, outgoer, ...getAllOutgoers(outgoer, nodes, edges)],
     []
   )
-}
 
 type BaseGraphProps = {
   initialNodes: Node[]
