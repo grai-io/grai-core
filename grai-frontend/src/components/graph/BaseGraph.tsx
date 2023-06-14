@@ -14,6 +14,7 @@ import theme from "theme"
 import Loading from "components/layout/Loading"
 import BaseNode from "./BaseNode"
 import GraphControls, { ControlOptions } from "./controls/GraphControls"
+import GraphDetails from "./GraphDetails"
 import TestEdge from "./TestEdge"
 
 const nodeTypes = {
@@ -30,31 +31,27 @@ export const getAllIncomers = (
   node: Node,
   nodes: Node[],
   edges: Edge[]
-): Node[] => {
-  return getIncomers(node, nodes, edges).reduce<Node[]>(
-    (memo, incomer) => [
-      ...memo,
-      incomer,
-      ...getAllIncomers(incomer, nodes, edges),
-    ],
+): Node[] =>
+  getIncomers(node, nodes, edges).reduce<Node[]>(
+    (memo, incomer) =>
+      incomer.id === node.id
+        ? memo
+        : [...memo, incomer, ...getAllIncomers(incomer, nodes, edges)],
     []
   )
-}
 
 export const getAllOutgoers = (
   node: Node,
   nodes: Node[],
   edges: Edge[]
-): Node[] => {
-  return getOutgoers(node, nodes, edges).reduce<Node[]>(
-    (memo, outgoer) => [
-      ...memo,
-      outgoer,
-      ...getAllOutgoers(outgoer, nodes, edges),
-    ],
+): Node[] =>
+  getOutgoers(node, nodes, edges).reduce<Node[]>(
+    (memo, outgoer) =>
+      outgoer.id === node.id
+        ? memo
+        : [...memo, outgoer, ...getAllOutgoers(outgoer, nodes, edges)],
     []
   )
-}
 
 type BaseGraphProps = {
   initialNodes: Node[]
@@ -79,9 +76,6 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
 }) => {
   const [nodes, setNodes] = useState<Node[]>()
   const [edges, setEdges] = useState<Edge[] | undefined>(initialEdges)
-
-  console.log(initialNodes)
-  console.log(nodes)
 
   useEffect(() => {
     setEdges(initialEdges)
@@ -186,11 +180,12 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
         onPaneClick={() => {
           resetNodeStyles()
         }}
-        fitView
+        // fitView
       >
         <Controls showInteractive={false} />
-        {loading && <Loading />}
       </ReactFlow>
+      {loading && <Loading />}
+      <GraphDetails />
     </ReactFlowProvider>
   )
 }
