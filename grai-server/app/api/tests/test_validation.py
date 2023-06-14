@@ -1,4 +1,5 @@
 import pytest
+
 from api.validation import validate_no_slash
 
 

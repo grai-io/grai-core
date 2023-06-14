@@ -1,6 +1,9 @@
 import uuid
 
 import pytest
+from asgiref.sync import sync_to_async
+from django.contrib.auth import get_user_model
+
 from api.schema import schema
 from api.tests.common import (
     generate_connection,
@@ -14,11 +17,7 @@ from api.tests.common import (
     test_user,
     test_workspace,
 )
-from asgiref.sync import sync_to_async
-from django.contrib.auth import get_user_model
-
 from lineage.models import Edge, Node
-
 from workspaces.models import WorkspaceAPIKey
 
 

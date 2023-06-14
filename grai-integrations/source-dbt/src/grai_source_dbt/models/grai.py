@@ -4,7 +4,7 @@ import typing
 from enum import Enum
 from typing import Dict, List, Literal, Optional, Union
 
-from grai_schemas.v1.metadata.edges import EdgeTypeLabels
+from grai_schemas.v1.metadata.edges import EdgeMetadataTypeLabels
 from pydantic import BaseModel, Field
 
 from grai_source_dbt.models.shared import (
@@ -106,7 +106,7 @@ class Edge(BaseModel):
     definition: Optional[str]
     constraint_type: Constraint
     metadata: Optional[Dict] = None
-    edge_type: EdgeTypeLabels
+    edge_type: EdgeMetadataTypeLabels
 
     def __hash__(self):
         return hash((self.source, self.destination))

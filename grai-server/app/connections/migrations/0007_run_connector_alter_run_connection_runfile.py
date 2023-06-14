@@ -2,10 +2,11 @@
 
 import uuid
 
-import connections.models
 import django.db.models.deletion
 import django_multitenant.fields
 from django.db import migrations, models
+
+import connections.models
 
 
 class Migration(migrations.Migration):

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai_source_bigquery"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 authors = ["Edward Louth <edward@grai.io>"]
 license = "Elastic-2.0"
@@ -15,9 +15,9 @@ documentation = "https://docs.grai.io/"
 [tool.poetry.dependencies]
 python = "^3.8"
 pydantic = "^1.9.1"
-grai-client = "^0.2.0"
+grai-client = "^0.2.18"
 multimethod = "^1.8"
-grai-schemas = "^0.1.9"
+grai-schemas = "^0.1.15"
 google-cloud-bigquery = "^3.5.0"
 setuptools = "^67.1.0"
 google-cloud-logging = "^3.5.0"

@@ -1,4 +1,8 @@
 import pytest
+from asgiref.sync import sync_to_async
+from django.contrib.auth import get_user_model
+from django.contrib.auth.tokens import default_token_generator
+
 from api.schema import schema
 from api.tests.common import (
     generate_connection,
@@ -12,12 +16,10 @@ from api.tests.common import (
     test_user,
     test_workspace,
 )
-from asgiref.sync import sync_to_async
-from django.contrib.auth import get_user_model
-from django.contrib.auth.tokens import default_token_generator
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_login(test_basic_context):
     context = test_basic_context
 
@@ -57,6 +59,7 @@ async def test_login(test_basic_context):
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_login_bad_password(test_basic_context):
     context = test_basic_context
 
@@ -149,6 +152,7 @@ async def test_register(test_basic_context):
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_update_profile(test_context):
     context, organisation, workspace, user, membership = test_context
 
@@ -180,6 +184,7 @@ async def test_update_profile(test_context):
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_update_password(test_context):
     context, organisation, workspace, user, membership = test_context
 
@@ -210,6 +215,7 @@ async def test_update_password(test_context):
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_update_password_wrong_password(test_context):
     context, organisation, workspace, user, membership = test_context
 
@@ -241,6 +247,7 @@ async def test_update_password_wrong_password(test_context):
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_request_password_reset():
     User = get_user_model()
 

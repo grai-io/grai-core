@@ -1,17 +1,18 @@
 import pytest
-from connections.adapters.tools import NullableTestResult
 from grai_schemas.v1 import NodeV1
 from grai_schemas.v1.metadata.nodes import (
     ColumnAttributes,
     ColumnMetadata,
-    NodeTypeLabels,
+    NodeMetadataTypeLabels,
 )
+
+from connections.adapters.tools import NullableTestResult
 
 
 @pytest.fixture
 def test_node_v1():
     metadata = ColumnAttributes(is_nullable=False, is_unique=False, data_type="String")
-    column_metadata = ColumnMetadata(node_type=NodeTypeLabels.column.value, node_attributes=metadata)
+    column_metadata = ColumnMetadata(node_type=NodeMetadataTypeLabels.column.value, node_attributes=metadata)
 
     return NodeV1.from_spec(
         {

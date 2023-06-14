@@ -2,11 +2,12 @@ from abc import ABC
 from itertools import chain
 from typing import Optional
 
-from connections.models import Run
-from connections.task_helpers import modelToSchema, update
 from django.db.models import Max
 from grai_graph.graph import build_graph
 from grai_schemas.v1 import EdgeV1, NodeV1
+
+from connections.models import Run
+from connections.task_helpers import modelToSchema, update
 from lineage.models import Edge, Event, Node
 
 from .tools import TestResultCacheBase

@@ -1,8 +1,10 @@
 import uuid
-from lineage.graph_tasks import cache_node, cache_edge
+
 import pytest
-from workspaces.models import Organisation, Workspace
+
+from lineage.graph_tasks import cache_edge, cache_node
 from lineage.models import Edge, Node
+from workspaces.models import Organisation, Workspace
 
 
 @pytest.fixture

@@ -1,9 +1,10 @@
 import strawberry
+from strawberry.types import Info
+
 from api.common import IsAuthenticated, get_workspace
 from api.types import BasicResult
 from installations.github import Github
 from installations.models import Repository as RepositoryModel
-from strawberry.types import Info
 
 
 @strawberry.type

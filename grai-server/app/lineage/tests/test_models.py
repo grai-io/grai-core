@@ -4,6 +4,7 @@ import uuid
 # Create your tests here.
 import pytest
 from django_multitenant.utils import set_current_tenant
+
 from lineage.models import Edge, Node
 from workspaces.models import Organisation, Workspace
 

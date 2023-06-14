@@ -7,6 +7,7 @@ from unittest.mock import MagicMock
 
 import pytest
 from django.core.files.uploadedfile import SimpleUploadedFile
+
 from connections.models import Connection, Connector
 from installations.models import Branch, Commit, PullRequest, Repository
 from workspaces.models import Membership, Organisation, Workspace

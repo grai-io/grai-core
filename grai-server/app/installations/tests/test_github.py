@@ -2,6 +2,7 @@ import uuid
 
 import pytest
 from django_multitenant.utils import set_current_tenant
+
 from installations.github import Github
 from installations.models import Repository
 from workspaces.models import Organisation, Workspace

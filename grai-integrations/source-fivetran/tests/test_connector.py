@@ -6,7 +6,7 @@ from grai_schemas.v1.metadata.edges import Metadata as EdgeV1Metadata
 from grai_schemas.v1.metadata.edges import TableToColumnMetadata, TableToTableMetadata
 from grai_schemas.v1.metadata.nodes import ColumnMetadata
 from grai_schemas.v1.metadata.nodes import Metadata as NodeV1Metadata
-from grai_schemas.v1.metadata.nodes import NodeTypeLabels, TableMetadata
+from grai_schemas.v1.metadata.nodes import NodeMetadataTypeLabels, TableMetadata
 
 from grai_source_fivetran.loader import FivetranConnector, build_namespace_map
 from grai_source_fivetran.models import Edge, NodeTypes

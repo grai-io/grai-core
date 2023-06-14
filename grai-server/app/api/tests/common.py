@@ -4,14 +4,15 @@ from importlib import import_module
 import pytest
 import pytest_asyncio
 from asgiref.sync import sync_to_async
-from connections.models import Connection, Connector
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.http.request import HttpRequest
+from notifications.models import Alert
+
+from connections.models import Connection, Connector
 from lineage.models import Filter
 from users.models import User
 from workspaces.models import Membership, Organisation, Workspace
-from notifications.models import Alert
 
 
 class Context(object):

@@ -5,7 +5,7 @@ from grai_schemas import config as grai_base_config
 from grai_schemas.v1 import EdgeV1, NodeV1
 from grai_schemas.v1.metadata.edges import (
     ColumnToColumnMetadata,
-    EdgeTypeLabels,
+    EdgeMetadataTypeLabels,
     GenericEdgeMetadataV1,
     TableToColumnMetadata,
     TableToTableMetadata,
@@ -13,7 +13,7 @@ from grai_schemas.v1.metadata.edges import (
 from grai_schemas.v1.metadata.nodes import (
     ColumnAttributes,
     ColumnMetadata,
-    NodeTypeLabels,
+    NodeMetadataTypeLabels,
     TableMetadata,
 )
 from multimethod import multimethod
@@ -66,7 +66,7 @@ def build_grai_metadata_from_column(current: Column, version: Literal["v1"] = "v
             node_attributes["is_unique"] = True
     data = {
         "version": version,
-        "node_type": NodeTypeLabels.column.value,
+        "node_type": NodeMetadataTypeLabels.column.value,
         "node_attributes": ColumnAttributes(**node_attributes),
         "tags": [config.metadata_id],
     }
@@ -86,7 +86,7 @@ def build_grai_metadata_from_node(current: AllDbtNodeTypes, version: Literal["v1
     Raises:
 
     """
-    data = {"version": version, "node_type": NodeTypeLabels.table.value, "tags": [config.metadata_id]}
+    data = {"version": version, "node_type": NodeMetadataTypeLabels.table.value, "tags": [config.metadata_id]}
 
     return TableMetadata(**data)
 
@@ -105,11 +105,11 @@ def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") 
 
     """
     data = {"version": version, "edge_type": current.edge_type.value, "tags": [config.metadata_id]}
-    if current.edge_type == EdgeTypeLabels.table_to_table:
+    if current.edge_type == EdgeMetadataTypeLabels.table_to_table:
         return TableToTableMetadata(**data)
-    elif current.edge_type == EdgeTypeLabels.column_to_column:
+    elif current.edge_type == EdgeMetadataTypeLabels.column_to_column:
         return ColumnToColumnMetadata(**data)
-    elif current.edge_type == EdgeTypeLabels.table_to_column:
+    elif current.edge_type == EdgeMetadataTypeLabels.table_to_column:
         return TableToColumnMetadata(**data)
     else:
         raise NotImplementedError(f"No supported metadata implementation for edge_type {current.edge_type.value}")

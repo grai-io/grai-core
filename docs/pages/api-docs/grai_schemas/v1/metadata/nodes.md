@@ -3,10 +3,10 @@ sidebar_label: nodes
 title: grai_schemas.v1.metadata.nodes
 ---
 
-## NodeTypeLabels Objects
+## NodeMetadataTypeLabels Objects
 
 ```python
-class NodeTypeLabels(Enum)
+class NodeMetadataTypeLabels(Enum)
 ```
 
 

@@ -1,6 +1,4 @@
 import strawberry
-from api.common import IsAuthenticated, get_user
-from api.types import BasicResult, User
 from asgiref.sync import sync_to_async
 from decouple import config
 from django.conf import settings
@@ -11,6 +9,9 @@ from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from strawberry.types import Info
+
+from api.common import IsAuthenticated, get_user
+from api.types import BasicResult, User
 
 
 @strawberry.type

@@ -4,8 +4,9 @@ import uuid
 
 import django.utils.timezone
 import phonenumber_field.modelfields
-import users.models
 from django.db import migrations, models
+
+import users.models
 
 
 class Migration(migrations.Migration):

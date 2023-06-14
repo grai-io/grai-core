@@ -6,7 +6,7 @@ from grai_schemas.v1.generics import V1Mixin
 from grai_schemas.v1.metadata.generics import GenericAttributes
 
 
-class EdgeTypeLabels(Enum):
+class EdgeMetadataTypeLabels(Enum):
     """ """
 
     generic = "Generic"

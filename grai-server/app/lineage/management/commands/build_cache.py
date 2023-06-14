@@ -1,9 +1,11 @@
 from typing import List
+
 from django.core.management.base import CommandError, CommandParser
 from django_multitenant.utils import set_current_tenant
 from django_tqdm import BaseCommand
-from lineage.graph_cache import GraphCache
 from query_chunk import chunk
+
+from lineage.graph_cache import GraphCache
 from workspaces.models import Workspace
 
 

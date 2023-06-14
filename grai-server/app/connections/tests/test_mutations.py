@@ -1,4 +1,5 @@
 import pytest
+
 from api.schema import schema
 from api.tests.common import (
     generate_connection,

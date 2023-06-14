@@ -3,6 +3,7 @@ import uuid
 import pytest
 from asgiref.sync import sync_to_async
 from django.contrib.auth import get_user_model
+
 from lineage.filter import apply_table_filter
 from lineage.models import Filter, Node
 from workspaces.models import Organisation, Workspace

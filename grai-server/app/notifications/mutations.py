@@ -1,12 +1,13 @@
 from typing import Optional
 
 import strawberry
-from api.common import IsAuthenticated, get_workspace
-from api.types import Alert
 from asgiref.sync import sync_to_async
 from notifications.models import Alert as AlertModel
 from strawberry.scalars import JSON
 from strawberry.types import Info
+
+from api.common import IsAuthenticated, get_workspace
+from api.types import Alert
 
 
 @strawberry.type

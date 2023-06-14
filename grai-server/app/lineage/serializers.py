@@ -4,6 +4,7 @@ from typing import Optional
 
 from django.db.models import Q, fields
 from grai_schemas.v1.node import NodeNamedID
+
 from rest_framework import serializers
 
 from .models import Edge, Node

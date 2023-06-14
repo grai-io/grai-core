@@ -9,10 +9,11 @@ from grai_schemas.schema import GraiType
 from grai_schemas.utilities import merge
 from grai_schemas.v1 import EdgeV1, NodeV1
 from grai_schemas.v1.node import NodeNamedID
-from lineage.models import Edge as EdgeModel
-from lineage.models import Node as NodeModel
 from multimethod import multimethod
 from pydantic import BaseModel
+
+from lineage.models import Edge as EdgeModel
+from lineage.models import Node as NodeModel
 from workspaces.models import Workspace
 
 T = TypeVar("T")

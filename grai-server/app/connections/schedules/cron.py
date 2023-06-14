@@ -1,7 +1,8 @@
 import json
 
-from connections.models import Connection
 from django_celery_beat.models import CrontabSchedule, PeriodicTask
+
+from connections.models import Connection
 
 
 def save(model: Connection):

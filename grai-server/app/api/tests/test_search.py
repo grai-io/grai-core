@@ -1,10 +1,12 @@
 from unittest.mock import MagicMock
 
 import pytest
+
 from api.search import Search
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_workspace_search_key(mocker):
     mock = mocker.patch("api.search.SearchClient.generate_secured_api_key")
     search_client = "search_key"

@@ -6,13 +6,20 @@ from xml.dom import NodeFilter
 
 import strawberry
 import strawberry_django
+from django.conf import settings
+from django.db.models import Prefetch, Q
+from django.db.models.query import QuerySet
+from notifications.models import Alert as AlertModel
+from strawberry.scalars import JSON
+from strawberry_django.filters import FilterLookup
+from strawberry_django.pagination import OffsetPaginationInput
+from strawberry_django_plus import gql
+from strawberry_django_plus.gql import auto
+
 from api.search import Search
 from connections.models import Connection as ConnectionModel
 from connections.models import Run as RunModel
 from connections.types import Connector, ConnectorFilter
-from django.conf import settings
-from django.db.models import Prefetch, Q
-from django.db.models.query import QuerySet
 from installations.models import Branch as BranchModel
 from installations.models import Commit as CommitModel
 from installations.models import PullRequest as PullRequestModel
@@ -25,12 +32,6 @@ from lineage.models import Event as EventModel
 from lineage.models import Filter as FilterModel
 from lineage.models import Node as NodeModel
 from lineage.types import EdgeFilter, EdgeOrder, Filter, NodeFilter, NodeOrder
-from notifications.models import Alert as AlertModel
-from strawberry.scalars import JSON
-from strawberry_django.filters import FilterLookup
-from strawberry_django.pagination import OffsetPaginationInput
-from strawberry_django_plus import gql
-from strawberry_django_plus.gql import auto
 from users.types import User, UserFilter
 from workspaces.models import Membership as MembershipModel
 from workspaces.models import Workspace as WorkspaceModel

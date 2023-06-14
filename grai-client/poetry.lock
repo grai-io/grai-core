@@ -335,13 +335,13 @@ testing = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "diff-cover (>=7.5)", "p
 
 [[package]]
 name = "grai-schemas"
-version = "0.1.14"
+version = "0.1.15"
 description = ""
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_schemas-0.1.14-py3-none-any.whl", hash = "sha256:bb5b6b61360d5ade6f5db0f8c855d10549139c1b8dd683cc75c2eb6d4132eedc"},
-    {file = "grai_schemas-0.1.14.tar.gz", hash = "sha256:aea5ed967708c8701a41c78367644c9d0309ed20d6d69e68aa9d5f1644a33830"},
+    {file = "grai_schemas-0.1.15-py3-none-any.whl", hash = "sha256:ac469b5d12d480f6f2bfd2bd9d6618f52aaa5294b80ab055fadd58202aa3b0de"},
+    {file = "grai_schemas-0.1.15.tar.gz", hash = "sha256:9d16b756cb8851cd56a25961f4d3bbb47fc7a3401b82a4fdb99ca5c05683078f"},
 ]
 
 [package.dependencies]
@@ -1146,4 +1146,4 @@ test = ["pytest (>=6.0.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "4d2293923d80068c208670c49998d8779ce514f7cfa78167ebc811af1586cc84"
+content-hash = "628422a56bfc973cdaafacf3ec88aafbf6f341d6654d17a07df23251e225d0f6"

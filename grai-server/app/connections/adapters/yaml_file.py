@@ -1,6 +1,7 @@
+from grai_schemas.v1 import EdgeV1, NodeV1
+
 from connections.models import Run, RunFile
 from connections.task_helpers import get_node
-from grai_schemas.v1 import EdgeV1, NodeV1
 
 from .base import BaseAdapter
 

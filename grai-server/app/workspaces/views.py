@@ -1,8 +1,9 @@
-from common.permissions.multitenant import Multitenant, MultitenantWorkspaces
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework_simplejwt.authentication import JWTAuthentication
+
+from common.permissions.multitenant import Multitenant, MultitenantWorkspaces
 from workspaces.models import Membership, Workspace
 from workspaces.permissions import HasWorkspaceAPIKey
 from workspaces.serializers import MembershipSerializer, WorkspaceSerializer
