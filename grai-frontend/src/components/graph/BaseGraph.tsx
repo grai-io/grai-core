@@ -99,7 +99,7 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
     data: {
       ...edge.data,
       highlight:
-        highlighted.includes(edge.source) || highlighted.includes(edge.target),
+        highlighted.includes(edge.source) && highlighted.includes(edge.target),
     },
   }))
 

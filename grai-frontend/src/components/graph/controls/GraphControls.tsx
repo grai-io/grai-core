@@ -66,19 +66,21 @@ const GraphControls: React.FC<GraphControlsProps> = ({
         <Box sx={{ flexGrow: 1 }} />
         {onRefresh && (
           <Tooltip title="Refresh">
-            <LoadingButton
-              loading={loading}
-              onClick={onRefresh}
-              variant="outlined"
-              sx={{
-                backgroundColor: "white",
-                minWidth: 0,
-                height: "40px",
-                width: "40px",
-              }}
-            >
-              <Refresh />
-            </LoadingButton>
+            <Box>
+              <LoadingButton
+                loading={loading}
+                onClick={onRefresh}
+                variant="outlined"
+                sx={{
+                  backgroundColor: "white",
+                  minWidth: 0,
+                  height: "40px",
+                  width: "40px",
+                }}
+              >
+                <Refresh />
+              </LoadingButton>
+            </Box>
           </Tooltip>
         )}
       </Box>
