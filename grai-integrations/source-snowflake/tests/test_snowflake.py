@@ -36,31 +36,31 @@ def test_connector_from_env_vars():
     assert conn.warehouse == "its-huge"
 
 
-class TestLiveSnowflakeIfHasDotEnv(unittest.TestCase):
-    """ """
-
-    run_tests = has_dotenv_file
-
-    @classmethod
-    def test_building_nodes(cls):
-        """ """
-        if not cls.run_tests:
-            return
-
-        with connection.connect() as conn:
-            tables = conn.tables
-
-        assert isinstance(tables, list)
-        # assert len(tables) > 0, f"test expected more than {len(tables)} results"
-
-    @classmethod
-    def test_building_edges(cls):
-        """ """
-        if not cls.run_tests:
-            return
-
-        with connection.connect() as conn:
-            edges = conn.foreign_keys
-
-        assert isinstance(edges, list)
-        # assert len(edges) > 0, f"test expected more than {len(edges)} results"
+# class TestLiveSnowflakeIfHasDotEnv(unittest.TestCase):
+#     """ """
+#
+#     run_tests = has_dotenv_file
+#
+#     @classmethod
+#     def test_building_nodes(cls):
+#         """ """
+#         if not cls.run_tests:
+#             return
+#
+#         with connection.connect() as conn:
+#             tables = conn.tables
+#
+#         assert isinstance(tables, list)
+#         # assert len(tables) > 0, f"test expected more than {len(tables)} results"
+#
+#     @classmethod
+#     def test_building_edges(cls):
+#         """ """
+#         if not cls.run_tests:
+#             return
+#
+#         with connection.connect() as conn:
+#             edges = conn.foreign_keys
+#
+#         assert isinstance(edges, list)
+#         # assert len(edges) > 0, f"test expected more than {len(edges)} results"

@@ -1,53 +1,69 @@
 from enum import Enum
-from typing import Dict, List, Literal, Optional, Union
+from typing import Any, Dict, List, Literal, Optional, Union
 
+from grai_schemas.generics import MalformedMetadata
 from grai_schemas.v1.generics import V1Mixin
+from grai_schemas.v1.metadata.generics import GenericAttributes
 
 
-class EdgeTypeLabels(Enum):
+class EdgeMetadataTypeLabels(Enum):
     """ """
 
-    generic = "Edge"
+    generic = "Generic"
     table_to_column = "TableToColumn"
     column_to_column = "ColumnToColumn"
     table_to_table = "TableToTable"
 
 
-class GenericEdgeMetadataV1(V1Mixin):
+EdgeTypeLabelLiterals = Literal["Generic", "TableToColumn", "ColumnToColumn", "TableToTable"]
+
+
+class BaseEdgeMetadataV1(V1Mixin):
     """ """
 
-    edge_type: Literal["Edge"]
-    edge_attributes: dict = {}
+    type: Literal["EdgeV1"] = "EdgeV1"
+    edge_type: EdgeTypeLabelLiterals
+    edge_attributes: GenericAttributes
     tags: Optional[List[str]]
 
 
-class TableToColumnAttributes(V1Mixin):
+class MalformedEdgeMetadataV1(MalformedMetadata, BaseEdgeMetadataV1):
+    edge_type: Optional[str] = "Malformed"
+    edge_attributes: Optional[Any] = GenericAttributes()
+
+
+class GenericEdgeMetadataV1(BaseEdgeMetadataV1):
+    edge_type: Literal["Generic"]
+    edge_attributes: GenericAttributes = GenericAttributes()
+
+
+class TableToColumnAttributes(GenericAttributes):
     """ """
 
     pass
 
 
-class TableToColumnMetadata(GenericEdgeMetadataV1):
+class TableToColumnMetadata(BaseEdgeMetadataV1):
     """ """
 
     edge_type: Literal["TableToColumn"]
     edge_attributes: TableToColumnAttributes = TableToColumnAttributes()
 
 
-class TableToTableAttributes(V1Mixin):
+class TableToTableAttributes(GenericAttributes):
     """ """
 
     pass
 
 
-class TableToTableMetadata(GenericEdgeMetadataV1):
+class TableToTableMetadata(BaseEdgeMetadataV1):
     """ """
 
     edge_type: Literal["TableToTable"]
     edge_attributes: TableToTableAttributes = TableToTableAttributes()
 
 
-class ColumnToColumnAttributes(V1Mixin):
+class ColumnToColumnAttributes(GenericAttributes):
     """ """
 
     preserves_data_type: Optional[bool] = None
@@ -55,7 +71,7 @@ class ColumnToColumnAttributes(V1Mixin):
     preserves_unique: Optional[bool] = None
 
 
-class ColumnToColumnMetadata(GenericEdgeMetadataV1):
+class ColumnToColumnMetadata(BaseEdgeMetadataV1):
     """ """
 
     edge_type: Literal["ColumnToColumn"]

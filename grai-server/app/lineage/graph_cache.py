@@ -2,12 +2,12 @@ from typing import List
 
 import redis
 from django.conf import settings
+from query_chunk import chunk
 from redis import Redis
 
 from workspaces.models import Workspace
 
 from .graph_types import GraphColumn, GraphTable
-from query_chunk import chunk
 
 
 class GraphCache:

@@ -2,8 +2,8 @@ import uuid
 
 from grai_schemas.v1 import EdgeV1, NodeV1
 
-BASE_NODE_METADATA = {"grai": {"node_type": "Node", "node_attributes": {}}}
-BASE_EDGE_METADATA = {"grai": {"edge_type": "Edge", "Edge_attributes": {}}}
+BASE_NODE_METADATA = {"grai": {"node_type": "Generic", "node_attributes": {}}}
+BASE_EDGE_METADATA = {"grai": {"edge_type": "Generic", "Edge_attributes": {}}}
 
 
 def mock_v1_node(

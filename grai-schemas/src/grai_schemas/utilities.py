@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import uuid
-from typing import Any, Dict, Generic, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, Generic, TypeVar, Union
 
 from multimethod import multimethod
 from pydantic import BaseModel
@@ -44,7 +44,7 @@ def merge(a, b):
     Raises:
 
     """
-    raise Exception()
+    raise Exception(f"No merge logic for type {type(a)} and {type(b)}")
 
 
 @merge.register

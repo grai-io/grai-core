@@ -13,8 +13,6 @@ from .managers import CacheManager
 class Node(TenantModel):
     objects = CacheManager()
 
-    tenant_id = "workspace_id"
-
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     namespace = models.CharField(max_length=255, default="default")
     name = models.CharField(max_length=255)
@@ -73,6 +71,9 @@ class Node(TenantModel):
     def __str__(self):
         return f"{self.display_name}"
 
+    class TenantMeta:
+        tenant_field_name = "workspace_id"
+
     class Meta:
         constraints = [
             models.UniqueConstraint(
@@ -92,8 +93,6 @@ class Node(TenantModel):
 
 class Edge(TenantModel):
     objects = CacheManager()
-
-    tenant_id = "workspace_id"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
@@ -141,6 +140,9 @@ class Edge(TenantModel):
     def __str__(self):
         return f"{self.source} -> {self.destination}"
 
+    class TenantMeta:
+        tenant_field_name = "workspace_id"
+
     class Meta:
         constraints = [
             models.CheckConstraint(
@@ -180,8 +182,6 @@ class Edge(TenantModel):
 
 
 class Filter(TenantModel):
-    tenant_id = "workspace_id"
-
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(
         max_length=255,
@@ -204,6 +204,9 @@ class Filter(TenantModel):
         on_delete=models.CASCADE,
     )
 
+    class TenantMeta:
+        tenant_field_name = "workspace_id"
+
 
 class Event(TenantModel):
     SUCCESS = "success"
@@ -215,8 +218,6 @@ class Event(TenantModel):
         (ERROR, "error"),
         (CANCELLED, "cancelled"),
     ]
-
-    tenant_id = "workspace_id"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     reference = models.CharField(max_length=255)
@@ -242,3 +243,6 @@ class Event(TenantModel):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class TenantMeta:
+        tenant_field_name = "workspace_id"

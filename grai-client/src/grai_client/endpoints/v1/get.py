@@ -3,17 +3,31 @@ from uuid import UUID
 
 from grai_schemas.v1 import EdgeV1, NodeV1
 from grai_schemas.v1.edge import EdgeNamedID, EdgeUuidID
+from grai_schemas.v1.metadata.metadata import (
+    GraiMalformedEdgeMetadataV1,
+    GraiMalformedNodeMetadataV1,
+)
 from grai_schemas.v1.node import NodeNamedID, NodeUuidID
 
 from grai_client.endpoints.client import ClientOptions
 from grai_client.endpoints.rest import get
-from grai_client.endpoints.utilities import is_valid_uuid
+from grai_client.endpoints.utilities import handles_bad_metadata, is_valid_uuid
 from grai_client.endpoints.v1.client import ClientV1
 from grai_client.schemas.labels import EdgeLabels, NodeLabels, WorkspaceLabels
 from grai_client.schemas.workspace import Workspace
 
 T = TypeVar("T", NodeV1, EdgeV1)
 X = TypeVar("X")
+
+
+@handles_bad_metadata(GraiMalformedNodeMetadataV1)
+def node_builder(resp: Dict[str, X]) -> NodeV1:
+    return NodeV1.from_spec(resp)
+
+
+@handles_bad_metadata(GraiMalformedEdgeMetadataV1)
+def edge_builder(resp: Dict[str, X]) -> EdgeV1:
+    return EdgeV1.from_spec(resp)
 
 
 @get.register
@@ -34,7 +48,7 @@ def get_node_by_label_v1(
     """
     url = client.get_url(grai_type)
     resp = get(client, url, options=options)
-    return [NodeV1.from_spec(obj) for obj in resp.json()]
+    return [node_builder(obj) for obj in resp.json()]
 
 
 @get.register
@@ -81,7 +95,7 @@ def get_nodes_by_uuid_str_id(
 
     resp = get(client, url, options=options)
     resp = resp.json()
-    return NodeV1.from_spec(resp)
+    return node_builder(resp)
 
 
 @get.register
@@ -159,7 +173,7 @@ def finalize_edge(client: ClientV1, resp: Dict, options: ClientOptions = ClientO
 
     resp["source"] = nodes[0].spec
     resp["destination"] = nodes[1].spec
-    return EdgeV1.from_spec(resp)
+    return edge_builder(resp)
 
 
 @get.register

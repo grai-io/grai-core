@@ -1,16 +1,19 @@
 import datetime
 import json
 import pathlib
+import pprint
 import sys
 import urllib
 import uuid
-from typing import Any, Dict, Literal, Optional, TypeVar, Union
+import warnings
+from functools import wraps
+from typing import Any, Callable, Dict, Literal, Optional, TypeVar, Union
 from uuid import UUID
 
 import orjson
 from grai_schemas.generics import GraiBaseModel
 from httpx import Response
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 from requests import RequestException
 
 if sys.version_info < (3, 10):
@@ -163,3 +166,60 @@ def add_query_params(url: str, params: dict) -> str:
     query = dict(urllib.parse.parse_qsl(url_parts.query))
     query.update(params)
     return url_parts._replace(query=urllib.parse.urlencode(query)).geturl()
+
+
+def handles_bad_metadata(fallback_meta: Callable[[Dict], BaseModel]) -> Callable[[Dict], T]:
+    """
+
+    Args:
+        fallback_mea:
+
+    Returns:
+
+    Raises:
+
+    """
+
+    def decorator(fn: Callable[[Dict], T]) -> Callable[[Dict], T]:
+        """ """
+
+        @wraps(fn)
+        def wrapped(arg: Dict) -> T:
+            """
+
+            Args:
+                arg:
+
+            Returns:
+
+            Raises:
+
+            """
+            try:
+                return fn(arg)
+            except ValidationError as e:
+                new_arg = {**arg}
+                metadata = fallback_meta(**new_arg.pop("metadata", {}))
+                new_arg["metadata"] = metadata
+                try:
+                    result = fn(new_arg)
+                except Exception:
+                    message = (
+                        f"Received an invalid object. "
+                        f"Normally this is associated with malformed metadata, "
+                        f"however, the fallback metadata also failed to parse. This is likely a bug, please "
+                        f"submit a bug report at https://github.com/grai-io/grai-core/issues/new. "
+                        f"The original object was: \n\n{pprint.pformat(arg)}"
+                    )
+                    raise Exception(message) from e
+                message = (
+                    f"Malformed metadata detected in a Grai object Fallback metadata was used but this should be "
+                    f"corrected. The problem record was: \n\n{pprint.pformat(arg)}"
+                )
+
+                warnings.warn(message)
+                return result
+
+        return wrapped
+
+    return decorator
