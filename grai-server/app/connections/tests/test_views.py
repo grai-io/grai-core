@@ -1,11 +1,11 @@
 import uuid
 
 import pytest
-from django_multitenant.utils import set_current_tenant
 from django.urls import reverse
+from django_multitenant.utils import set_current_tenant
 
+from connections.models import Connection, Connector
 from workspaces.models import Membership, Organisation, Workspace, WorkspaceAPIKey
-from connections.models import Connector, Connection
 
 
 @pytest.fixture

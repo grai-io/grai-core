@@ -1,10 +1,12 @@
 import abc
 from dataclasses import dataclass
-from typing import Any, Dict, Literal, Optional, Union
+from typing import Any, Dict, Literal, Optional, TypeVar, Union
 from uuid import UUID
 
-from grai_schemas.utilities import merge_dicts
+from grai_schemas.utilities import merge
 from pydantic import BaseModel, dataclasses, root_validator, validator
+
+T = TypeVar("T")
 
 
 class HashableBaseModel(BaseModel):
@@ -32,7 +34,7 @@ class GraiBaseModel(HashableBaseModel):
 
         """
         values = self.dict()
-        return type(self)(**merge_dicts(values, new_values))
+        return type(self)(**merge(values, new_values))
 
     class Config:
         """ """
@@ -139,3 +141,24 @@ class PackageConfig(BaseModel):
 
         validate_assignment = True
         validate_all = True
+
+
+class MalformedMetadata(GraiBaseModel):
+    """ """
+
+    malformed_values: Dict = {}
+
+    @root_validator(pre=True)
+    def validate_malformed(cls, v):
+        """ """
+        return {"malformed_values": {**v}}
+
+    def dict(self, *args, **kwargs):
+        """ """
+        return self.malformed_values
+
+    class Config:
+        """ """
+
+        extra = "allow"
+        allow_mutation = True

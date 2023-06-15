@@ -1,6 +1,6 @@
 ---
-title: Flat File
-description: Documentation for Grai's Flat File GitHub action.
+title: Flat File GitHub Action
+description: Documentation for Grai's Flat File GitHub Action GitHub action.
 ---
 
 # Flat File

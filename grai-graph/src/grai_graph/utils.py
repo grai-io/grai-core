@@ -4,13 +4,13 @@ from grai_schemas.v1 import EdgeV1, NodeV1
 from grai_schemas.v1.metadata.edges import (
     ColumnToColumnAttributes,
     ColumnToColumnMetadata,
-    EdgeTypeLabels,
+    EdgeMetadataTypeLabels,
     GenericEdgeMetadataV1,
 )
 from grai_schemas.v1.metadata.nodes import (
     ColumnAttributes,
     ColumnMetadata,
-    NodeTypeLabels,
+    NodeMetadataTypeLabels,
 )
 from pydantic import BaseModel
 
@@ -56,7 +56,7 @@ def mock_v1_node(node: Union[str, TestNodeObj]):
             "display_name": node.name,
             "is_active": True,
             "metadata": {
-                "grai": ColumnMetadata(node_type=NodeTypeLabels.column.value, node_attributes=metadata).dict()
+                "grai": ColumnMetadata(node_type=NodeMetadataTypeLabels.column.value, node_attributes=metadata).dict()
             },
         },
     }
@@ -101,7 +101,7 @@ def mock_v1_edge(
             "is_active": True,
             "metadata": {
                 "grai": ColumnToColumnMetadata(
-                    edge_type=EdgeTypeLabels.column_to_column.value,
+                    edge_type=EdgeMetadataTypeLabels.column_to_column.value,
                     edge_attributes=metadata,
                 ).dict()
             },

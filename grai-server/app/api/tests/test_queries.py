@@ -15,6 +15,7 @@ from .common import (
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_workspaces_no_login(test_basic_context):
     context = test_basic_context
 
@@ -40,6 +41,7 @@ async def test_workspaces_no_login(test_basic_context):
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_workspace_get(test_context):
     context, organisation, workspace, user, membership = test_context
 
@@ -68,6 +70,7 @@ async def test_workspace_get(test_context):
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_workspace_no_workspace(test_context):
     context, organisation, workspace, user, membership = test_context
 
@@ -96,6 +99,7 @@ async def test_workspace_no_workspace(test_context):
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_workspaces(test_context):
     context, organisation, workspace, user, membership = test_context
 
@@ -115,6 +119,7 @@ async def test_workspaces(test_context):
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_workspaces_no_membership(test_context):
     context, organisation, workspace, user, membership = test_context
 
@@ -136,6 +141,7 @@ async def test_workspaces_no_membership(test_context):
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_profile(test_context):
     context, organisation, workspace, user, membership = test_context
 

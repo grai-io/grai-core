@@ -20,7 +20,7 @@ with open(documented_file) as f:
 
 
 def make_header(doc):
-    name = doc.get("name", doc["folder"])
+    name = doc.get("name", doc["folder"]) + " GitHub Action"
     default_description = f"Documentation for Grai's {name} GitHub action."
     items = [
         "---",
@@ -49,7 +49,12 @@ for doc in documented:
 base_readme = os.path.join(action_root, "base_readme.md")
 base_readme = open(base_readme).read()
 
-index_header_items = ["---", "title: Grai Actions", "description: Documentation for Grai's GitHub actions.", "---"]
+index_header_items = [
+    "---",
+    "title: Grai Actions",
+    "description: Documentation for Grai's GitHub actions.",
+    "---",
+]
 index_header = "\n".join(index_header_items)
 index_readme = f"{index_header}\n\n{base_readme}"
 

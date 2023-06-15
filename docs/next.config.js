@@ -7,30 +7,11 @@ const { withSentryConfig } = require("@sentry/nextjs");
 const nextConfig = require("nextra")({
   theme: "nextra-theme-docs",
   themeConfig: "./theme.config.tsx",
-});
-
-module.exports = nextConfig({
-  // i18n doesn't work with static site generation
-  // output: 'export',
-
-  // i18n: {
-  //   locales: ['en-US'],
-  //   defaultLocale: 'en-US',
-  //   domains: [
-  //     {
-  //       domain: "docs.grai.io",
-  //       defaultLocale: "en-US",
-  //     },
-  //   ]
-  // },
-  images: {
-    unoptimized: true,
-  },
   async redirects() {
     return [
       {
-        source: "/connectors/mysql/",
-        destination: "/integrations/mysql",
+        source: "/connectors/:slug",
+        destination: "/integrations/:slug",
         permanent: true,
       },
       {
@@ -54,6 +35,25 @@ module.exports = nextConfig({
         permanent: true,
       },
     ];
+  },
+});
+
+module.exports = nextConfig({
+  // i18n doesn't work with static site generation
+  // output: 'export',
+
+  // i18n: {
+  //   locales: ['en-US'],
+  //   defaultLocale: 'en-US',
+  //   domains: [
+  //     {
+  //       domain: "docs.grai.io",
+  //       defaultLocale: "en-US",
+  //     },
+  //   ]
+  // },
+  images: {
+    unoptimized: true,
   },
 });
 

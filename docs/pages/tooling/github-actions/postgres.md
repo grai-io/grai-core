@@ -1,6 +1,6 @@
 ---
-title: PostgreSQL
-description: Documentation for Grai's PostgreSQL GitHub action.
+title: PostgreSQL GitHub Action
+description: Documentation for Grai's PostgreSQL GitHub Action GitHub action.
 ---
 
 # Postgres

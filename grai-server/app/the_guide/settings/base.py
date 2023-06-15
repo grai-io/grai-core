@@ -9,7 +9,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 MEDIA_ROOT = str(BASE_DIR.joinpath("media"))
 STATIC_ROOT = "/var/wwww/static"
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
 def clean_hosts(val):
@@ -312,7 +311,14 @@ CORS_ALLOW_CREDENTIALS = True
 CSRF_COOKIE_HTTPONLY = True
 SESSION_COOKIE_HTTPONLY = True
 
-DEFAULT_FILE_STORAGE = config("DEFAULT_FILE_STORAGE", "django.core.files.storage.FileSystemStorage")
+STORAGES = {
+    "default": {
+        "BACKEND": config("DEFAULT_FILE_STORAGE", "django.core.files.storage.FileSystemStorage"),
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 AWS_STORAGE_BUCKET_NAME = config("AWS_STORAGE_BUCKET_NAME", None)
 
 GITHUB_APP_ID = config("GITHUB_APP_ID", None)

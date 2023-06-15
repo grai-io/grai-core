@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai-cli"
-version = "0.1.13"
+version = "0.1.14"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>"]
 license = "Elastic-2.0"
@@ -20,10 +20,10 @@ typer = "^0.7.0"
 confuse = "^2.0.0"
 requests = "^2.28.1"
 pydantic = "^1.10.2"
-grai-client = "^0.2.12"
+grai-client = "^0.2.18"
 posthog = "^2.2.0"
 rich = "^12.6.0"
-grai-schemas = "^0.1.5"
+grai-schemas = "^0.1.13"
 pydantic-yaml = "^0.11.1"
 
 [tool.isort]
