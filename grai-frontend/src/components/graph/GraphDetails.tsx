@@ -5,6 +5,8 @@ const transformSelector = (state: ReactFlowState) => state.transform
 
 const GraphDetails: React.FC = () => {
   const transform = useStore(transformSelector)
+  const width = useStore(state => state.width)
+  const height = useStore(state => state.height)
 
   return (
     <aside>
@@ -17,13 +19,13 @@ const GraphDetails: React.FC = () => {
         [{transform[0].toFixed(2)}, {transform[1].toFixed(2)},{" "}
         {transform[2].toFixed(2)}]
       </div>
-      <div className="title">Nodes</div>
+      {width},{height}
+      {/* <div className="title">Nodes</div> */}
       {/* {nodes.map((node) => (
         <div key={node.id}>
           Node {node.id} - x: {node.position.x.toFixed(2)}, y: {node.position.y.toFixed(2)}
         </div>
       ))} */}
-
       {/* <div className="selectall">
         <button onClick={selectAll}>select all nodes</button>
       </div> */}

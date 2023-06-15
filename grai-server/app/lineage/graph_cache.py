@@ -204,7 +204,7 @@ class GraphCache:
 
         return [result[0] for result in results]
 
-    def get_graph_result(self, where: str = "") -> List[GraphTable]:
+    def get_graph_result(self, parameters: any = {}, where: str = "") -> List[GraphTable]:
         result = self.query(
             f"""
                 MATCH (table:Table)
@@ -241,6 +241,7 @@ class GraphCache:
                     }} AS tables
                 RETURN tables
             """,
+            parameters,
             timeout=10000,
         )
 
@@ -279,6 +280,12 @@ class GraphCache:
             )
 
         return tables
+
+    def get_range_graph_result(self, min_x: int, max_x: int, min_y: int, max_y: int):
+        return self.get_graph_result(
+            parameters={"min_x": min_x, "max_x": max_x, "min_y": min_y, "max_y": max_y},
+            where="WHERE $min_x <= table.x <= $max_x AND $min_y <= table.y <= $max_y",
+        )
 
     def get_filtered_graph_result(self, filter):
         if len(filter.metadata) == 0:

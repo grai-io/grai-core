@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { gql, useLazyQuery } from "@apollo/client"
-import { Edge as RFEdge, Node as RFNode } from "reactflow"
+import { Edge as RFEdge, Node as RFNode, Viewport } from "reactflow"
 import notEmpty from "helpers/notEmpty"
 import useWorkspace from "helpers/useWorkspace"
 import {
@@ -80,6 +80,7 @@ type GraphComponentProps = {
   throwMissingTable?: boolean
   alwaysShow?: boolean
   fitView?: boolean
+  onMove?: (viewport: Viewport) => void
 }
 
 const GraphComponent: React.FC<GraphComponentProps> = ({
@@ -91,6 +92,7 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
   throwMissingTable,
   alwaysShow,
   fitView,
+  onMove,
 }) => {
   const { organisationName, workspaceName } = useWorkspace()
 
@@ -347,6 +349,7 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
       loading={loading}
       controlOptions={controlOptions}
       fitView={fitView}
+      onMove={onMove}
     />
   )
 }

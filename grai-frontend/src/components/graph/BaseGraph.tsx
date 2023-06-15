@@ -8,12 +8,12 @@ import ReactFlow, {
   Node,
   Position,
   ReactFlowProvider,
+  Viewport,
 } from "reactflow"
 import "reactflow/dist/style.css"
 import Loading from "components/layout/Loading"
 import BaseNode from "./BaseNode"
 import GraphControls, { ControlOptions } from "./controls/GraphControls"
-import GraphDetails from "./GraphDetails"
 import TestEdge from "./TestEdge"
 
 const nodeTypes = {
@@ -62,6 +62,7 @@ type BaseGraphProps = {
   onSearch: (input: string | null) => void
   loading?: boolean
   fitView?: boolean
+  onMove?: (viewport: Viewport) => void
 }
 
 const BaseGraph: React.FC<BaseGraphProps> = ({
@@ -74,6 +75,7 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
   onSearch,
   loading,
   fitView,
+  onMove,
 }) => {
   const [highlighted, setHighlighted] = useState<string[]>([])
 
@@ -131,12 +133,12 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
         onPaneClick={() => {
           resetNodeStyles()
         }}
+        onMoveEnd={(_, viewport) => onMove && onMove(viewport)}
         fitView={fitView}
       >
         <Controls showInteractive={false} />
       </ReactFlow>
-      {(loading || !nodes) && <Loading />}
-      <GraphDetails />
+      {loading && <Loading />}
     </ReactFlowProvider>
   )
 }

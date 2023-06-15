@@ -1,11 +1,13 @@
-import React from "react"
-import { gql, useQuery } from "@apollo/client"
-import { Box } from "@mui/material"
+import React, { useCallback, useEffect, useRef, useState } from "react"
+import { gql, useLazyQuery } from "@apollo/client"
 import { useSearchParams } from "react-router-dom"
+import { Viewport } from "reactflow"
 import theme from "theme"
 import useWorkspace from "helpers/useWorkspace"
-import EmptyGraph from "components/graph/EmptyGraph"
-import GraphComponent, { ResultError } from "components/graph/GraphComponent"
+import GraphComponent, {
+  ResultError,
+  Table,
+} from "components/graph/GraphComponent"
 import PageLayout from "components/layout/PageLayout"
 import GraphError from "components/utils/GraphError"
 import {
@@ -48,21 +50,47 @@ type GraphProps = {
 const Graph: React.FC<GraphProps> = ({ alwaysShow }) => {
   const { organisationName, workspaceName } = useWorkspace()
   const [searchParams] = useSearchParams()
+  const [tables, setTables] = useState<Table[]>([])
+  const ref = useRef<HTMLDivElement>(null)
 
   const filter = searchParams.get("filter") ?? null
 
-  const { loading, error, data } = useQuery<
+  const [loadGraph, { error }] = useLazyQuery<
     GetTablesAndEdges,
     GetTablesAndEdgesVariables
-  >(GET_TABLES_AND_EDGES, {
-    variables: {
-      organisationName,
-      workspaceName,
-      filters: {
-        filter,
-      },
-    },
-  })
+  >(GET_TABLES_AND_EDGES)
+
+  const handleMove = useCallback(
+    (viewport: Viewport) =>
+      loadGraph({
+        variables: {
+          organisationName,
+          workspaceName,
+          filters: {
+            filter,
+            min_x: Math.round(-viewport.x / viewport.zoom - 500),
+            max_x: Math.round(
+              (-viewport.x + (ref.current?.clientWidth ?? 0)) / viewport.zoom +
+                500
+            ),
+            min_y: Math.round(-viewport.y / viewport.zoom - 500),
+            max_y: Math.round(
+              (-viewport.y + (ref.current?.clientHeight ?? 0)) / viewport.zoom +
+                500
+            ),
+          },
+        },
+      }).then(res => setTables(res.data?.workspace.graph ?? [])),
+    [filter, loadGraph, organisationName, workspaceName]
+  )
+
+  useEffect(() => {
+    handleMove({
+      x: 0,
+      y: 0,
+      zoom: 1,
+    })
+  }, [handleMove])
 
   if (error) return <GraphError error={error} />
 
@@ -71,30 +99,27 @@ const Graph: React.FC<GraphProps> = ({ alwaysShow }) => {
   const limitGraph: boolean =
     searchParams.get("limitGraph")?.toLowerCase() === "true" && !!errors
 
-  const tables = data?.workspace.graph ?? []
-  const total = tables.length
+  // const tables = data?.workspace.graph ?? []
+  // const total = tables.length
 
   return (
     <PageLayout>
-      <Box
-        sx={{
+      <div
+        ref={ref}
+        style={{
           height: "100vh",
           width: "100%",
           backgroundColor: theme.palette.grey[100],
         }}
       >
-        {total > 0 || loading ? (
-          <GraphComponent
-            tables={tables}
-            errors={errors}
-            limitGraph={limitGraph}
-            loading={loading}
-            alwaysShow={alwaysShow}
-          />
-        ) : (
-          <EmptyGraph />
-        )}
-      </Box>
+        <GraphComponent
+          tables={tables}
+          errors={errors}
+          limitGraph={limitGraph}
+          alwaysShow={alwaysShow}
+          onMove={handleMove}
+        />
+      </div>
     </PageLayout>
   )
 }
