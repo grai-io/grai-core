@@ -206,17 +206,17 @@ uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
 name = "boto3"
-version = "1.26.153"
+version = "1.26.154"
 description = "The AWS SDK for Python"
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "boto3-1.26.153-py3-none-any.whl", hash = "sha256:ec3a4aef45d16d9362191aa245a31059df009cd73668d0c3b15126cfeb5d3fd7"},
-    {file = "boto3-1.26.153.tar.gz", hash = "sha256:92de7eec15adda76abff0580b1e8ca70646470fba4c807934062456d0c5c9171"},
+    {file = "boto3-1.26.154-py3-none-any.whl", hash = "sha256:ee2b3733f40f935da78bf76bc8e82af6e90841406e04605e3b2d765b50cad05e"},
+    {file = "boto3-1.26.154.tar.gz", hash = "sha256:cf1067d101be538f399b685bbe6beb4bfed01095da8497d0c7fa8b8788a65c6b"},
 ]
 
 [package.dependencies]
-botocore = ">=1.29.153,<1.30.0"
+botocore = ">=1.29.154,<1.30.0"
 jmespath = ">=0.7.1,<2.0.0"
 s3transfer = ">=0.6.0,<0.7.0"
 
@@ -225,13 +225,13 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "botocore"
-version = "1.29.153"
+version = "1.29.154"
 description = "Low-level, data-driven core of boto 3."
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "botocore-1.29.153-py3-none-any.whl", hash = "sha256:d6d3294fde297ae76fadb4bafad93ef958f145bb9a502bf7b1e57ff6f8dc4039"},
-    {file = "botocore-1.29.153.tar.gz", hash = "sha256:d59b8e87138581a339b9f84a9e90bc4c1a152cf8ca2adbaad7792a4c4125bffa"},
+    {file = "botocore-1.29.154-py3-none-any.whl", hash = "sha256:b9853f72a3c93f1aa8c9a1636911cdbec3662bca2e04e4ee00437c4f8c9fa2d4"},
+    {file = "botocore-1.29.154.tar.gz", hash = "sha256:a9c7da497ac5f7d4f3e932b4442e7c32cc2936f3a4658165f1528336fc429c3d"},
 ]
 
 [package.dependencies]
@@ -558,19 +558,21 @@ dev = ["coveralls", "pytest (>=3.6)", "pytest-cov", "wheel"]
 
 [[package]]
 name = "click-repl"
-version = "0.2.0"
+version = "0.3.0"
 description = "REPL plugin for Click"
 optional = false
-python-versions = "*"
+python-versions = ">=3.6"
 files = [
-    {file = "click-repl-0.2.0.tar.gz", hash = "sha256:cd12f68d745bf6151210790540b4cb064c7b13e571bc64b6957d98d120dacfd8"},
-    {file = "click_repl-0.2.0-py3-none-any.whl", hash = "sha256:94b3fbbc9406a236f176e0506524b2937e4b23b6f4c0c0b2a0a83f8a64e9194b"},
+    {file = "click-repl-0.3.0.tar.gz", hash = "sha256:17849c23dba3d667247dc4defe1757fff98694e90fe37474f3feebb69ced26a9"},
+    {file = "click_repl-0.3.0-py3-none-any.whl", hash = "sha256:fb7e06deb8da8de86180a33a9da97ac316751c094c6899382da7feeeeb51b812"},
 ]
 
 [package.dependencies]
-click = "*"
-prompt-toolkit = "*"
-six = "*"
+click = ">=7.0"
+prompt-toolkit = ">=3.0.36"
+
+[package.extras]
+testing = ["pytest (>=7.2.1)", "pytest-cov (>=4.0.0)", "tox (>=4.4.3)"]
 
 [[package]]
 name = "colorama"
@@ -2219,13 +2221,13 @@ cryptography = ">=3.1,<3.4.0 || >3.4.0"
 
 [[package]]
 name = "kombu"
-version = "5.3.0"
+version = "5.3.1"
 description = "Messaging library for Python."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "kombu-5.3.0-py3-none-any.whl", hash = "sha256:fa9be55281bb351ba9da582b2a74e3dd5015b8d075b287e4d16f0b2f25fefcc2"},
-    {file = "kombu-5.3.0.tar.gz", hash = "sha256:d084ec1f96f7a7c37ba9e816823bdbc08f0fc7ddb3a5be555805e692102297d8"},
+    {file = "kombu-5.3.1-py3-none-any.whl", hash = "sha256:48ee589e8833126fd01ceaa08f8a2041334e9f5894e5763c8486a550454551e9"},
+    {file = "kombu-5.3.1.tar.gz", hash = "sha256:fbd7572d92c0bf71c112a6b45163153dea5a7b6a701ec16b568c27d0fd2370f2"},
 ]
 
 [package.dependencies]
@@ -2245,7 +2247,7 @@ qpid = ["qpid-python (>=0.26)", "qpid-tools (>=0.26)"]
 redis = ["redis (>=4.5.2)"]
 slmq = ["softlayer-messaging (>=1.0.3)"]
 sqlalchemy = ["sqlalchemy (>=1.4.48,<2.1)"]
-sqs = ["boto3 (>=1.26.143)", "pycurl (==7.43.0.5)", "urllib3 (>=1.26.16)"]
+sqs = ["boto3 (>=1.26.143)", "pycurl (>=7.43.0.5)", "urllib3 (>=1.26.16)"]
 yaml = ["PyYAML (>=3.10)"]
 zookeeper = ["kazoo (>=2.8.0)"]
 
@@ -4002,13 +4004,13 @@ enum = ["django-choices-field (>=2.0)"]
 
 [[package]]
 name = "strawberry-graphql"
-version = "0.185.1"
+version = "0.186.0"
 description = "A library for creating GraphQL APIs"
 optional = false
 python-versions = ">=3.7,<4.0"
 files = [
-    {file = "strawberry_graphql-0.185.1-py3-none-any.whl", hash = "sha256:90d8cd138d7f10e96abf8632eacd3767ec59d0e0afb564d39e275ff341fc5b85"},
-    {file = "strawberry_graphql-0.185.1.tar.gz", hash = "sha256:99e8b18e1a1eb15f6954760e8c3f00c63cca53740be1032c44e3b97b4f5e705e"},
+    {file = "strawberry_graphql-0.186.0-py3-none-any.whl", hash = "sha256:6a788de7f6168cff0577d380070ddc0e79515505c112cf9e9c3396df7374c6c3"},
+    {file = "strawberry_graphql-0.186.0.tar.gz", hash = "sha256:5dddc9deba323a4fe54ecad85e0a6c8cc249cbca3b5d17c34b9c8a55534f9f05"},
 ]
 
 [package.dependencies]
@@ -4254,4 +4256,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "d7b7b118f118d412df5f5c2445e4f4210aa9f850f2b11cbd469bbc980bc14d77"
+content-hash = "51ed8d7dacfc3172f95e39a8d039f0b1105fa703f21313a1a2bb18fceacf843a"

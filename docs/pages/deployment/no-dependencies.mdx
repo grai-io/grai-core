@@ -1,0 +1,135 @@
+---
+title: Deploying Grai without Dependencies
+description: How to run Grai using sqlite and without docker for development purposes.
+---
+
+import { Steps } from 'nextra-theme-docs'
+import { Callout } from 'nextra/components'
+
+# Deploy from source
+
+If you don't have access to Docker or don't want to use it, you can still run Grai using sqlite.
+This is not recommended for production use, but it's fine for development purposes.
+
+## Prerequisites
+
+Insure the machine you're attempting to run Grai on has access to all of the following
+
+* Access to Grai's source code
+* Python 3.8 or higher
+* Either `pip` or `poetry`, and `npm`
+* sqlite3
+
+
+## Caveats and Disclaimers
+
+This guide is not intended for production use.
+We primarily support containerized deployments using docker and kubernetes and we generally recommend you use one
+of those methods.
+If you're unable to use either this guide can be helpful for development purposes though it will not represent a fully
+functional Grai deployment as it does not include dependencies like celery and redis.
+
+
+## Installation
+
+<Steps>
+### Gather source code
+You'll first need to clone Grai's source code. You can do this with the following command:
+
+```bash
+git clone https://www.github.com/grai-io/grai-core
+cd grai-core
+```
+
+### Prepare the Server
+
+You'll need to install Grai's server dependencies.
+If you have `pip` installed, you can do this with the following command:
+
+```bash
+cd grai-server
+pip install .
+```
+
+The server dependencies are now ready.
+
+#### Prepare the Database
+
+<Callout emoji="👾">
+    It might be convenient to create a `.env` file in the `grai-core/grai-server/app` directory with the `DB_ENGINE`
+    variable set to `django.db.backends.sqlite3`. That way you won't need to run export in every new shell you open.
+</Callout>
+
+
+We will be using sqlite for the database where by default Grai uses postgres so we will need to set the environment
+variable `DB_ENGINE` to `django.db.backends.sqlite3`.
+
+```bash
+export DB_ENGINE=django.db.backends.sqlite3
+```
+
+We can now runt the development server.
+
+```bash
+cd app
+python manage.py runserver --settings the_guide.settings.dev --nostatic
+```
+
+At this point you should see a message indicating that the server is running on port 8000 and that you have unapplied migrations.
+Our next step is to run the migrations.
+To do that you'll need to open a new shell in the app directory and run the following command (don't forget to set the
+`DB_ENGINE` env variable):
+
+```bash
+python manage.py migrate --settings the_guide.settings.dev
+```
+
+Finally, we need to create a superuser so we can log into the admin panel.
+
+```bash
+python manage.py createsuperuser --settings the_guide.settings.dev
+```
+
+You should now be able to load the admin panel at `http://localhost:8000/admin` and log in with the credentials you just created.
+
+### Prepare the Web App
+
+<Callout emoji="👾" type="warning">
+    It's unlikely the web app will function without redis, however, you should be able to see the login screen.
+    The server on the other hand, ought to function just fine, allowing you to run integrations and retrieve results
+    using the API, CLI, and integration libraries.
+</Callout>
+
+We will now move over to building and deploying the web app.
+Start by moving to the web app directory.
+
+```bash
+cd ../../grai-frontend
+```
+
+#### Install Dependencies
+
+You can install the web apps dependencies with npm.
+```bash
+npm install
+```
+
+#### Run the Web App
+
+You are now ready to run web app with npm.
+
+```bash
+npm run start
+```
+
+The web app will now be available and running at http://localhost:3000.
+
+### Deploying Redis
+
+If you're a truly motivated person you can deploy redis to get the web app working.
+Redis provides canonical documentation for deployment from source on their [website](https://redis.io/docs/getting-started/installation/install-redis-from-source/).
+
+The server will look for an instance of redis running on port `6379` by default.
+
+
+</Steps>
