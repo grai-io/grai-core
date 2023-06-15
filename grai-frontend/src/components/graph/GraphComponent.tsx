@@ -81,6 +81,8 @@ type GraphComponentProps = {
   alwaysShow?: boolean
   fitView?: boolean
   onMove?: (viewport: Viewport) => void
+  onRefresh?: () => void
+  refreshLoading?: boolean
 }
 
 const GraphComponent: React.FC<GraphComponentProps> = ({
@@ -93,6 +95,8 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
   alwaysShow,
   fitView,
   onMove,
+  onRefresh,
+  refreshLoading,
 }) => {
   const { organisationName, workspaceName } = useWorkspace()
 
@@ -350,6 +354,8 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
       controlOptions={controlOptions}
       fitView={fitView}
       onMove={onMove}
+      onRefresh={onRefresh}
+      refreshLoading={refreshLoading}
     />
   )
 }

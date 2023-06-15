@@ -55,7 +55,7 @@ const Graph: React.FC<GraphProps> = ({ alwaysShow }) => {
 
   const filter = searchParams.get("filter") ?? null
 
-  const [loadGraph, { error }] = useLazyQuery<
+  const [loadGraph, { loading, error, refetch }] = useLazyQuery<
     GetTablesAndEdges,
     GetTablesAndEdgesVariables
   >(GET_TABLES_AND_EDGES)
@@ -99,8 +99,7 @@ const Graph: React.FC<GraphProps> = ({ alwaysShow }) => {
   const limitGraph: boolean =
     searchParams.get("limitGraph")?.toLowerCase() === "true" && !!errors
 
-  // const tables = data?.workspace.graph ?? []
-  // const total = tables.length
+  const handleRefresh = () => refetch()
 
   return (
     <PageLayout>
@@ -118,6 +117,8 @@ const Graph: React.FC<GraphProps> = ({ alwaysShow }) => {
           limitGraph={limitGraph}
           alwaysShow={alwaysShow}
           onMove={handleMove}
+          onRefresh={handleRefresh}
+          refreshLoading={loading}
         />
       </div>
     </PageLayout>

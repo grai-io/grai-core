@@ -63,6 +63,8 @@ type BaseGraphProps = {
   loading?: boolean
   fitView?: boolean
   onMove?: (viewport: Viewport) => void
+  onRefresh?: () => void
+  refreshLoading?: boolean
 }
 
 const BaseGraph: React.FC<BaseGraphProps> = ({
@@ -76,6 +78,8 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
   loading,
   fitView,
   onMove,
+  onRefresh,
+  refreshLoading,
 }) => {
   const [highlighted, setHighlighted] = useState<string[]>([])
 
@@ -120,6 +124,8 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
         options={controlOptions}
         search={search}
         onSearch={onSearch}
+        onRefresh={onRefresh}
+        loading={refreshLoading}
       />
       <ReactFlow
         minZoom={0}
