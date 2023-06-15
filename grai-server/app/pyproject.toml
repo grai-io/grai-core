@@ -68,6 +68,7 @@ djangorestframework-stubs = "^1.7.0"
 pytest-asyncio = "^0.20.3"
 pytest-mock = "^3.10.0"
 django-test-migrations = "^1.3.0"
+coverage = "^7.2.7"
 
 [tool.isort]
 profile = "black"
