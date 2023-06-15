@@ -1,7 +1,7 @@
 from typing import Union
 
 from grai_schemas import v1
-from grai_schemas.generics import GraiBaseModel
+from grai_schemas.generics import GraiBaseModel, MalformedMetadata
 from grai_schemas.v1.metadata import edges as edge_v1
 from grai_schemas.v1.metadata import nodes as node_v1
 

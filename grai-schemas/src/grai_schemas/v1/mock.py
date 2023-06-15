@@ -21,7 +21,7 @@ class MockV1:
                 "display_name": get_human_id() if display_name is None else display_name,
                 "is_active": is_active,
                 "metadata": {
-                    "grai": {"node_type": "Node", "node_attributes": {}, "tags": ["pii", "phi"]},
+                    "grai": {"node_type": "Generic", "node_attributes": {}, "tags": ["pii", "phi"]},
                     "test_dict": {"a": "b"},
                     "test_list": [1, 2, 3],
                     "test_tuple": (4, 5, 6),
@@ -50,7 +50,7 @@ class MockV1:
                 },
                 "is_active": True,
                 "metadata": {
-                    "grai": {"edge_type": "Edge", "edge_attributes": {}, "tags": ["pii", "phi"]},
+                    "grai": {"edge_type": "Generic", "edge_attributes": {}, "tags": ["pii", "phi"]},
                 },
             },
         }

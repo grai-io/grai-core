@@ -19,7 +19,10 @@ def deactivate(items: List[T]) -> List[T]:
     Raises:
 
     """
-    updated = [item.update({"spec": {"is_active": False}}) for item in items]
+    updated = [item for item in items]
+    for item in updated:
+        item.spec.is_active = False
+
     return updated  # type: ignore
 
 
@@ -51,11 +54,18 @@ def update(client: BaseClient, items: List[T], active_items: Optional[List[T]] =
     deactivated_item_keys = current_item_map.keys() - item_map.keys()
     updated_item_keys = item_map.keys() - new_item_keys
 
+    items = [current_item_map[k] for k in deactivated_item_keys]
+
     deactivated_items = deactivate([current_item_map[k] for k in deactivated_item_keys])
     new_items: List[T] = [item_map[k] for k in new_item_keys]
     updated_items = [
         merge(item_map[k], current_item_map[k]) for k in updated_item_keys if item_map[k] != current_item_map[k]
     ]
+
+    # Going to need to deal with invalid deactivated nodes.
+    # new_items are valid by virtue of being created by the caller
+    # updated_items should be valid by virtue of merge logic and the caller providing a valid object.
+    # However, deactivated_items may be invalid if the server provided an invalid object.
 
     # client.patch(deactivated_items)
     client.patch(updated_items)
