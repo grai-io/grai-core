@@ -100,8 +100,13 @@ jobs:
 
       - name: Install package
         run: |
-          pip install pytest pytest_asyncio pytest-django pytest-mock coverage
-          pip install .
+          pip install coverage
+
+      - uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: "${{ env.poetry_ver }}"
+
+      - run: poetry install
 
       - name: Tests
         env:
@@ -113,9 +118,9 @@ jobs:
           DB_PASSWORD: grai
           GITHUB_PRIVATE_KEY: installations/tests/sample.private-key.pem
         run: |
-          python manage.py migrate --noinput
-          coverage run -m pytest
-          coverage xml
+          poetry run python manage.py migrate --noinput
+          poetry run coverage run -m pytest
+          poetry run coverage xml
 
       - name: Upload Coverage to Codecov
         uses: codecov/codecov-action@v3
