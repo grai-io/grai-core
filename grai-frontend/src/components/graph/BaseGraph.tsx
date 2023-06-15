@@ -61,6 +61,7 @@ type BaseGraphProps = {
   search: string | null
   onSearch: (input: string | null) => void
   loading?: boolean
+  fitView?: boolean
 }
 
 const BaseGraph: React.FC<BaseGraphProps> = ({
@@ -72,6 +73,7 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
   search,
   onSearch,
   loading,
+  fitView,
 }) => {
   const [highlighted, setHighlighted] = useState<string[]>([])
 
@@ -94,8 +96,6 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
         highlighted.includes(edge.source) || highlighted.includes(edge.target),
     },
   }))
-
-  if (!nodes) return <Loading />
 
   const highlightPath = (node: Node, nodes?: Node[], edges?: Edge[]) => {
     if (node && nodes && edges) {
@@ -131,11 +131,11 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
         onPaneClick={() => {
           resetNodeStyles()
         }}
-        // fitView
+        fitView={fitView}
       >
         <Controls showInteractive={false} />
       </ReactFlow>
-      {loading && <Loading />}
+      {(loading || !nodes) && <Loading />}
       <GraphDetails />
     </ReactFlowProvider>
   )

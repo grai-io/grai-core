@@ -79,6 +79,7 @@ type GraphComponentProps = {
   controlOptions?: ControlOptions
   throwMissingTable?: boolean
   alwaysShow?: boolean
+  fitView?: boolean
 }
 
 const GraphComponent: React.FC<GraphComponentProps> = ({
@@ -89,6 +90,7 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
   controlOptions,
   throwMissingTable,
   alwaysShow,
+  fitView,
 }) => {
   const { organisationName, workspaceName } = useWorkspace()
 
@@ -344,6 +346,7 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
       onSearch={setSearch}
       loading={loading}
       controlOptions={controlOptions}
+      fitView={fitView}
     />
   )
 }
