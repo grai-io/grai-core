@@ -1,11 +1,11 @@
 import React from "react"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
+import { filtersMock } from "pages/Graph.test"
 import { tableMock } from "pages/tables/Table.test"
 import TableLineage, {
   GET_TABLES_AND_EDGES,
 } from "components/tables/TableLineage"
-import { filtersMock } from "pages/Graph.test"
 
 const table = {
   id: "1",
