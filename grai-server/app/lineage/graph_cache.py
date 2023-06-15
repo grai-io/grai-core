@@ -8,6 +8,8 @@ from redis import Redis
 from workspaces.models import Workspace
 
 from .graph_types import GraphColumn, GraphTable
+from grandalf.graphs import Vertex, Edge, Graph
+from grandalf.layouts import SugiyamaLayout
 
 
 class GraphCache:
@@ -430,3 +432,87 @@ class GraphCache:
         """
 
         return self.get_with_step_graph_result(n, parameters, where)
+
+    def layout_graph(self):
+        nodes = self.get_tables()
+        edges = self.get_table_edges()
+
+        vertexes = {}
+
+        class defaultview(object):
+            w, h = 200, 400
+
+        for node in nodes:
+            vertexes[node["id"]] = Vertex(node["id"])
+
+        V = list(vertexes.values())
+
+        for v in V:
+            v.view = defaultview()
+
+        E = [Edge(vertexes[edge["source_id"]], vertexes[edge["destination_id"]]) for edge in edges]
+
+        g = Graph(V, E)
+
+        print(len(V))
+        print(len(E))
+        print(len(g.C))
+
+        graphs = []
+        single_tables = []
+
+        for graph in g.C:
+            if len(graph.sV) == 1:
+                node = graph.sV[0]
+
+                single_tables.append(node)
+                continue
+
+            sug = SugiyamaLayout(graph)
+            sug.init_all()
+            sug.draw(20)
+
+            minX = 0
+            maxX = 0
+            # minY = 0
+            # maxY = 0
+
+            for vertex in graph.sV:
+                minX = min(minX, vertex.view.xy[1])
+                maxX = max(maxX, vertex.view.xy[1])
+                # minY = min(minY, vertex.view.xy[0])
+                # maxY = max(maxY, vertex.view.xy[0])
+
+            graphs.append(
+                {
+                    "minX": minX,
+                    "maxX": maxX,
+                    # "minY": minY,
+                    # "maxY": maxY,
+                    "nodes": graph.sV,
+                }
+            )
+
+        x = 0
+        y = 0
+
+        for graph in graphs:
+            for v in graph["nodes"]:
+                self.update_node(v.data, v.view.xy[1] + x + graph["minX"], v.view.xy[0])
+
+            x += graph["maxX"] - graph["minX"] + 400
+
+        start_x = x
+        index = 0
+
+        for table in single_tables:
+            self.update_node(table.data, x, y)
+
+            if index > 20:
+                y += 200
+                x = start_x
+                index = 0
+                continue
+
+            x += 500
+            index += 1
