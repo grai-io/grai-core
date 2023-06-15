@@ -33,9 +33,9 @@ We maintain up to date docker images for all of the Grai services on GitHub's Co
 
 <br />
 
-# Deployment
+## Deployment
 
-## Dependencies
+### Dependencies
 
 Before you begin, make sure have access to both `docker` and `docker-compose` on your machine.
 
@@ -49,12 +49,12 @@ Before you begin, make sure have access to both `docker` and `docker-compose` on
   Docker.
 </Callout>
 
-## Running the Server and frontend
+### Running the Server and frontend
 
 We maintain a variety of up to date docker-compose deployment scripts in version control [here](https://github.com/grai-io/grai-core/tree/master/examples/deployment/docker-compose).
 Which you can always use for reference.
 
-### Minimal
+#### Minimal
 
 The minimal configuration is a good starting point for testing out Grai.
 It's composed of only the bare minimum number of services required to run the server and frontend.
@@ -62,17 +62,17 @@ You can find a reference to the minimal configuration [here](https://github.com/
 
 This will provide a fully functional instance of the Grai application although some of the features like scheduled tasks may operate with reduced functionality.
 
-### Complete
+#### Complete
 
 The complete configuration contains all of the services required to run the full Grai application.
 You can find a reference to the complete configuration [here](https://github.com/grai-io/grai-core/blob/master/examples/deployment/docker-compose/complete/docker-compose.yml)
 
-### Deploying
+#### Deploying
 
 Once you've decided which configuration you want to use you can deploy it by running the following steps.
 
 <Steps>
-### Copy the `docker-compose.yml` file
+#### Copy the `docker-compose.yml` file
 
 Open a terminal and navigate to whichever directory you intend to work from.
 Then copy your intended `docker-compose.yml` file into the work directory of your terminal
@@ -126,7 +126,7 @@ services:
       - the_guide
 ```
 
-### docker compose up
+#### docker compose up
 
 Once you've copied the compose file into your work directory you can run `docker-compose up` to start the services.
 

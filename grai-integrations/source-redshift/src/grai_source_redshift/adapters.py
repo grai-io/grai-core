@@ -6,12 +6,16 @@ from grai_schemas import config as base_config
 from grai_schemas.generics import DefaultValue
 from grai_schemas.v1.metadata.edges import (
     ColumnToColumnMetadata,
-    EdgeTypeLabels,
+    EdgeMetadataTypeLabels,
     GenericEdgeMetadataV1,
     TableToColumnMetadata,
     TableToTableMetadata,
 )
-from grai_schemas.v1.metadata.nodes import ColumnMetadata, NodeTypeLabels, TableMetadata
+from grai_schemas.v1.metadata.nodes import (
+    ColumnMetadata,
+    NodeMetadataTypeLabels,
+    TableMetadata,
+)
 from multimethod import multimethod
 
 from grai_source_redshift.models import (
@@ -67,7 +71,7 @@ def build_grai_metadata_from_column(current: Column, version: Literal["v1"] = "v
 
     data = {
         "version": version,
-        "node_type": NodeTypeLabels.column.value,
+        "node_type": NodeMetadataTypeLabels.column.value,
         "node_attributes": {
             "data_type": current.data_type,
             "default_value": default_value,
@@ -97,7 +101,7 @@ def build_grai_metadata_from_node(current: Table, version: Literal["v1"] = "v1")
     """
     data = {
         "version": version,
-        "node_type": NodeTypeLabels.table.value,
+        "node_type": NodeMetadataTypeLabels.table.value,
         "node_attributes": {},
         "tags": [config.metadata_id],
     }
@@ -122,14 +126,14 @@ def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") 
 
     if isinstance(current.source, TableID):
         if isinstance(current.destination, ColumnID):
-            data["edge_type"] = EdgeTypeLabels.table_to_column.value
+            data["edge_type"] = EdgeMetadataTypeLabels.table_to_column.value
             return TableToColumnMetadata(**data)
         elif isinstance(current.destination, TableID):
-            data["edge_type"] = EdgeTypeLabels.table_to_table.value
+            data["edge_type"] = EdgeMetadataTypeLabels.table_to_table.value
             return TableToTableMetadata(**data)
     elif isinstance(current.source, ColumnID):
         if isinstance(current.destination, ColumnID):
-            data["edge_type"] = EdgeTypeLabels.column_to_column.value
+            data["edge_type"] = EdgeMetadataTypeLabels.column_to_column.value
             return ColumnToColumnMetadata(**data)
 
     message = (
@@ -138,7 +142,7 @@ def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") 
         "Fell back on generic metadata."
     )
     warn(message)
-    data["edge_type"] = EdgeTypeLabels.generic.value
+    data["edge_type"] = EdgeMetadataTypeLabels.generic.value
     return GenericEdgeMetadataV1(**data)
 
 

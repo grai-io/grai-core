@@ -1,6 +1,6 @@
 ---
-title: dbt
-description: Documentation for Grai's dbt GitHub action.
+title: dbt GitHub Action
+description: Documentation for Grai's dbt GitHub Action GitHub action.
 ---
 
 # dbt

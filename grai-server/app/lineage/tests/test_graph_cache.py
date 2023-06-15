@@ -3,8 +3,8 @@ import uuid
 import pytest
 
 from lineage.graph_cache import GraphCache
+from lineage.models import Edge, Node
 from workspaces.models import Organisation, Workspace
-from lineage.models import Node, Edge
 
 
 @pytest.fixture

@@ -75,7 +75,7 @@ jobs:
 
       - name: Install package
         run: |
-          pip install pytest pytest_asyncio pytest-django pytest-mock coverage
+          pip install pytest pytest_asyncio pytest-django pytest-mock coverage django_test_migrations
           pip install .
 
       - name: Run Migrations
