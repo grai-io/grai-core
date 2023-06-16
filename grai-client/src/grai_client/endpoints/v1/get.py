@@ -348,7 +348,6 @@ def get_workspace_by_name_v1(
     Raises:
 
     """
-
     if is_valid_uuid(name):
         url = f"{client.get_url(grai_type)}{name}/"
     elif len(name.split("/")) == 2:
@@ -356,8 +355,8 @@ def get_workspace_by_name_v1(
         url = f"{client.get_url(grai_type)}?ref={name}"
     else:
         url = f"{client.get_url(grai_type)}?name={name}"
+    breakpoint()
     resp = get(client, url, options=options)
-    resp = resp.json()
 
     num_resp = len(resp)
     if num_resp == 0:
