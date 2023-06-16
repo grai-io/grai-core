@@ -68,7 +68,6 @@ jobs:
           CELERY_BROKER_URL: redis://redis:6379/0
           CELERY_RESULT_BACKEND: redis://redis:6379/0
           REDIS_GRAPH_CACHE_HOST: redis
-
           DEBUG: true
         ports:
           - 8000:8000
