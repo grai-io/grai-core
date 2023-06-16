@@ -1,8 +1,8 @@
 import React from "react"
 import { GraphQLError } from "graphql"
+import { render, screen, waitFor } from "testing"
 import { filtersMock } from "pages/Graph.test"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
-import { render, screen, waitFor } from "testing"
 import Commit, { GET_COMMIT } from "./Commit"
 
 test("renders", async () => {

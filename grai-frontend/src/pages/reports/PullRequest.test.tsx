@@ -1,7 +1,7 @@
 import React from "react"
 import { GraphQLError } from "graphql"
-import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
 import { render, screen, waitFor } from "testing"
+import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
 import PullRequest, { GET_PULL_REQUEST } from "./PullRequest"
 
 test("renders", async () => {

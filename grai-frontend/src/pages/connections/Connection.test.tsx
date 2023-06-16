@@ -1,9 +1,9 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
+import { act, render, screen, waitFor } from "testing"
 import { DELETE_CONNECTION } from "components/connections/ConnectionDelete"
 import { RUN_CONNECTION } from "components/connections/ConnectionRun"
-import { act, render, screen, waitFor } from "testing"
 import Connection, { GET_CONNECTION } from "./Connection"
 
 test("renders", async () => {

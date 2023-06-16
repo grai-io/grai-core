@@ -8,8 +8,8 @@ import {
   TableRow,
   Typography,
 } from "@mui/material"
-import { enrichColumns } from "helpers/columns"
 import theme from "theme"
+import { enrichColumns } from "helpers/columns"
 import ColumnProperties from "./ColumnProperties"
 import ColumnRequirements from "./ColumnRequirements"
 import ColumnTests from "./ColumnTests"

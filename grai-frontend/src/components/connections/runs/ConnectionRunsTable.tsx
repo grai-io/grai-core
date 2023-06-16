@@ -9,6 +9,7 @@ import {
   Tooltip,
 } from "@mui/material"
 import { DateTime } from "luxon"
+import theme from "theme"
 import {
   durationAgo,
   runDurationString,
@@ -16,7 +17,6 @@ import {
 } from "helpers/runDuration"
 import useWorkspace from "helpers/useWorkspace"
 import RunStatus from "components/runs/RunStatus"
-import theme from "theme"
 
 interface User {
   id: string
