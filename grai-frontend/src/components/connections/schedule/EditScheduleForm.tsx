@@ -101,7 +101,7 @@ const EditScheduleForm: React.FC<EditScheduleFormProps> = ({ connection }) => {
       .catch(err => {})
 
   const setCron = (field: keyof CronValue, value: string) => {
-    let cron: CronValue = values?.cron
+    const cron: CronValue = values?.cron
       ? { ...values.cron }
       : {
           minutes: "*",

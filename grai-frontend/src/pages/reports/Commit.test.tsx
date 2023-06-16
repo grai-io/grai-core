@@ -11,18 +11,21 @@ test("renders", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByRole("heading", { name: /Hello world/i })).toBeTruthy()
+    expect(
+      screen.getAllByRole("heading", { name: /Hello world/i })
+    ).toBeTruthy()
   })
 })
 
 test("renders no pr", async () => {
   const mocks = [
     filtersMock,
+    filtersMock,
     {
       request: {
         query: GET_COMMIT,
         variables: {
-          organisationName: "org",
+          organisationName: "default",
           workspaceName: "demo",
           type: "github",
           owner: "owner",
@@ -61,7 +64,7 @@ test("renders no pr", async () => {
   render(<Commit />, {
     mocks,
     path: "/:organisationName/:workspaceName/reports/:type/:owner/:repo/commits/:reference",
-    route: "/org/demo/reports/github/owner/repo/commits/123",
+    route: "/default/demo/reports/github/owner/repo/commits/123",
   })
 
   await waitFor(() => {
@@ -74,11 +77,12 @@ test("renders no pr", async () => {
 test("not found", async () => {
   const mocks = [
     filtersMock,
+    filtersMock,
     {
       request: {
         query: GET_COMMIT,
         variables: {
-          organisationName: "org",
+          organisationName: "default",
           workspaceName: "demo",
           type: "github",
           owner: "owner",
@@ -106,7 +110,7 @@ test("not found", async () => {
   render(<Commit />, {
     mocks,
     path: "/:organisationName/:workspaceName/reports/:type/:owner/:repo/commits/:reference",
-    route: "/org/demo/reports/github/owner/repo/commits/123",
+    route: "/default/demo/reports/github/owner/repo/commits/123",
   })
 
   await waitFor(() => {
@@ -117,11 +121,12 @@ test("not found", async () => {
 test("error", async () => {
   const mocks = [
     filtersMock,
+    filtersMock,
     {
       request: {
         query: GET_COMMIT,
         variables: {
-          organisationName: "org",
+          organisationName: "default",
           workspaceName: "demo",
           type: "github",
           owner: "owner",
@@ -138,7 +143,7 @@ test("error", async () => {
   render(<Commit />, {
     mocks,
     path: "/:organisationName/:workspaceName/reports/:type/:owner/:repo/commits/:reference",
-    route: "/org/demo/reports/github/owner/repo/commits/123",
+    route: "/default/demo/reports/github/owner/repo/commits/123",
   })
 
   await waitFor(() => {

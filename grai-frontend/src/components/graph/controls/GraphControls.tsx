@@ -1,5 +1,7 @@
 import React from "react"
-import { Box, Stack } from "@mui/material"
+import { Refresh } from "@mui/icons-material"
+import { LoadingButton } from "@mui/lab"
+import { Box, Stack, Tooltip } from "@mui/material"
 import useSearchParams from "helpers/useSearchParams"
 import FilterControl from "./FilterControl"
 import LimitGraphControl from "./LimitGraphControl"
@@ -17,6 +19,8 @@ type GraphControlsProps = {
   options?: ControlOptions
   search: string | null
   onSearch: (input: string | null) => void
+  onRefresh?: () => void
+  loading?: boolean
 }
 
 const GraphControls: React.FC<GraphControlsProps> = ({
@@ -24,6 +28,8 @@ const GraphControls: React.FC<GraphControlsProps> = ({
   options,
   search,
   onSearch,
+  onRefresh,
+  loading,
 }) => {
   const { searchParams, setSearchParam } = useSearchParams()
 
@@ -39,8 +45,10 @@ const GraphControls: React.FC<GraphControlsProps> = ({
           position: "absolute",
           top: "24px",
           left: "24px",
+          right: "24px",
           pointerEvents: "all",
           zIndex: 30,
+          display: "flex",
         }}
       >
         <Stack spacing={1} direction="row">
@@ -55,6 +63,26 @@ const GraphControls: React.FC<GraphControlsProps> = ({
           <FilterControl />
         </Stack>
         {options?.loadMore && <LoadMoreControl options={options.loadMore} />}
+        <Box sx={{ flexGrow: 1 }} />
+        {onRefresh && (
+          <Tooltip title="Refresh">
+            <Box>
+              <LoadingButton
+                loading={loading}
+                onClick={onRefresh}
+                variant="outlined"
+                sx={{
+                  backgroundColor: "white",
+                  minWidth: 0,
+                  height: "40px",
+                  width: "40px",
+                }}
+              >
+                <Refresh />
+              </LoadingButton>
+            </Box>
+          </Tooltip>
+        )}
       </Box>
     </Box>
   )

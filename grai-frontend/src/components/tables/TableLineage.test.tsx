@@ -1,6 +1,7 @@
 import React from "react"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
+import { filtersMock } from "pages/Graph.test"
 import { tableMock } from "pages/tables/Table.test"
 import TableLineage, {
   GET_TABLES_AND_EDGES,
@@ -14,12 +15,14 @@ const table = {
 test("renders", async () => {
   const mocks = [
     tableMock,
+    filtersMock,
+    filtersMock,
     {
       request: {
         query: GET_TABLES_AND_EDGES,
         variables: {
-          organisationName: "",
-          workspaceName: "",
+          organisationName: "default",
+          workspaceName: "demo",
           tableId: "1",
           n: 1,
         },
@@ -35,6 +38,8 @@ test("renders", async () => {
                 display_name: "Table2",
                 namespace: "default",
                 data_source: "test",
+                x: 0,
+                y: 0,
                 columns: [],
                 destinations: [],
                 table_destinations: [],
@@ -46,6 +51,8 @@ test("renders", async () => {
                 display_name: "Table3",
                 namespace: "default",
                 data_source: "test",
+                x: 0,
+                y: 0,
                 columns: [],
                 destinations: ["1"],
                 table_destinations: ["1"],
@@ -57,6 +64,8 @@ test("renders", async () => {
                 display_name: "Table4",
                 namespace: "default",
                 data_source: "test",
+                x: 0,
+                y: 0,
                 columns: [],
                 destinations: [],
                 table_destinations: [],
@@ -72,6 +81,8 @@ test("renders", async () => {
   render(<TableLineage table={table} />, {
     mocks,
     withRouter: true,
+    path: ":organisationName/:workspaceName",
+    route: "/default/demo/",
   })
 
   await waitFor(() => {
@@ -82,12 +93,14 @@ test("renders", async () => {
 test("error", async () => {
   const mocks = [
     tableMock,
+    filtersMock,
+    filtersMock,
     {
       request: {
         query: GET_TABLES_AND_EDGES,
         variables: {
-          organisationName: "",
-          workspaceName: "",
+          organisationName: "default",
+          workspaceName: "demo",
           tableId: "1",
           n: 1,
         },
@@ -101,6 +114,8 @@ test("error", async () => {
   render(<TableLineage table={table} />, {
     mocks,
     withRouter: true,
+    path: ":organisationName/:workspaceName",
+    route: "/default/demo/",
   })
 
   await waitFor(() => {
@@ -111,12 +126,14 @@ test("error", async () => {
 test("no tables", async () => {
   const mocks = [
     tableMock,
+    filtersMock,
+    filtersMock,
     {
       request: {
         query: GET_TABLES_AND_EDGES,
         variables: {
-          organisationName: "",
-          workspaceName: "",
+          organisationName: "default",
+          workspaceName: "demo",
           tableId: "1",
           n: 1,
         },
@@ -135,6 +152,8 @@ test("no tables", async () => {
   render(<TableLineage table={table} />, {
     mocks,
     withRouter: true,
+    path: ":organisationName/:workspaceName",
+    route: "/default/demo/",
   })
 
   await waitFor(() => {

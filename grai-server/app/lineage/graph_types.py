@@ -10,6 +10,8 @@ class GraphTable:
     display_name: str
     namespace: str
     data_source: str
+    x: int
+    y: int
     columns: List["GraphColumn"]
     sources: List[str]
     destinations: List[str]

@@ -4,7 +4,7 @@ const useRunPolling = (
   status: string | undefined,
   startPolling: (interval: number) => void,
   stopPolling: () => void,
-  interval: number = 1000
+  interval = 1000
 ) =>
   useEffect(() => {
     switch (status) {

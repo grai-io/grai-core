@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react"
-import Elk, { ElkNode } from "elkjs"
+import React, { useState } from "react"
 import ReactFlow, {
   Controls,
   Edge,
@@ -9,16 +8,13 @@ import ReactFlow, {
   Node,
   Position,
   ReactFlowProvider,
+  Viewport,
 } from "reactflow"
 import "reactflow/dist/style.css"
-import theme from "theme"
 import Loading from "components/layout/Loading"
 import BaseNode from "./BaseNode"
 import GraphControls, { ControlOptions } from "./controls/GraphControls"
 import TestEdge from "./TestEdge"
-
-// const DEFAULT_WIDTH = 300
-const DEFAULT_HEIGHT = 110
 
 const nodeTypes = {
   baseNode: BaseNode,
@@ -26,60 +22,6 @@ const nodeTypes = {
 
 const edgeTypes: EdgeTypes = {
   test: TestEdge,
-}
-
-export const createGraphLayout = async (
-  initialNodes: Node[],
-  initialEdges: Edge[]
-) => {
-  const elk = new Elk({
-    defaultLayoutOptions: {
-      "elk.algorithm": "layered",
-      // "elk.direction": "RIGHT",
-      "elk.padding": "[top=200,left=100,bottom=25,right=25]",
-      "elk.spacing.nodeNode": "100",
-      "elk.layered.spacing.nodeNodeBetweenLayers": "250",
-      "elk.edgeRouting": "SPLINES",
-    },
-  })
-
-  const children: ElkNode[] = initialNodes.map(node => ({
-    id: node.id,
-    width:
-      Math.max(
-        node.data.label.length * 5,
-        ...node.data.columns.map((c: any) => c.name.length * 4)
-      ) + 200,
-    height:
-      DEFAULT_HEIGHT +
-      (node.data.expanded ? node.data.columns.length * 50 + 100 : 0),
-  }))
-  const edges: any[] = initialEdges.map(edge => ({
-    id: edge.id,
-    target: edge.target,
-    source: edge.source,
-  }))
-
-  const newGraph = await elk.layout({
-    id: "root",
-    children,
-    edges,
-  })
-
-  return initialNodes.map(node => {
-    const gnode = newGraph?.children?.find(n => n.id === node.id)
-    node.sourcePosition = "bottom" as Position
-    node.targetPosition = "top" as Position
-    node.type = "baseNode"
-    if (gnode?.x && gnode?.y && gnode?.width && gnode?.height) {
-      node.position = {
-        x: gnode.x - gnode.width / 2 + Math.random() / 1000,
-        y: gnode.y - gnode.height / 2 + (node.data.expanded ? 120 : 0),
-      }
-    }
-
-    return node
-  })
 }
 
 const proOptions = { hideAttribution: true }
@@ -119,6 +61,10 @@ type BaseGraphProps = {
   search: string | null
   onSearch: (input: string | null) => void
   loading?: boolean
+  fitView?: boolean
+  onMove?: (viewport: Viewport) => void
+  onRefresh?: () => void
+  refreshLoading?: boolean
 }
 
 const BaseGraph: React.FC<BaseGraphProps> = ({
@@ -130,20 +76,32 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
   search,
   onSearch,
   loading,
+  fitView,
+  onMove,
+  onRefresh,
+  refreshLoading,
 }) => {
-  const [nodes, setNodes] = useState<Node[]>()
-  const [edges, setEdges] = useState<Edge[]>()
+  const [highlighted, setHighlighted] = useState<string[]>([])
 
-  useEffect(() => {
-    createGraphLayout(initialNodes, initialEdges)
-      .then(res => {
-        setNodes(res)
-        setEdges(initialEdges)
-      })
-      .catch(err => console.error(err))
-  }, [initialNodes, initialEdges, expanded])
+  const nodes = initialNodes.map(node => ({
+    ...node,
+    sourcePosition: "bottom" as Position,
+    targetPosition: "top" as Position,
+    type: "baseNode",
+    data: {
+      ...node.data,
+      highlight: highlighted.includes(node.id),
+    },
+  }))
 
-  if (!nodes) return <Loading />
+  const edges = initialEdges.map(edge => ({
+    ...edge,
+    data: {
+      ...edge.data,
+      highlight:
+        highlighted.includes(edge.source) && highlighted.includes(edge.target),
+    },
+  }))
 
   const highlightPath = (node: Node, nodes?: Node[], edges?: Edge[]) => {
     if (node && nodes && edges) {
@@ -153,66 +111,11 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
       const incomerIds = allIncomers.map(i => i.id)
       const outgoerIds = allOutgoers.map(o => o.id)
 
-      setNodes(prevNodes =>
-        prevNodes?.map(elem => {
-          if (allOutgoers.length > 0 || allIncomers.length > 0) {
-            const highlight =
-              elem.id === node.id ||
-              incomerIds.includes(elem.id) ||
-              outgoerIds.includes(elem.id)
-
-            elem.data.highlight = highlight
-          }
-
-          return elem
-        })
-      )
-
-      setEdges(prevEdges =>
-        prevEdges?.map(elem => {
-          const highlight =
-            incomerIds.includes(elem.target) ||
-            (incomerIds.includes(elem.source) && node.id === elem.target) ||
-            (outgoerIds.includes(elem.target) && node.id === elem.source) ||
-            outgoerIds.includes(elem.source)
-
-          elem.style = {
-            ...elem.style,
-            stroke: highlight ? theme.palette.secondary.main : undefined,
-          }
-
-          return elem
-        })
-      )
+      setHighlighted([node.id, ...incomerIds, ...outgoerIds])
     }
   }
 
-  const resetNodeStyles = () => {
-    setNodes(prevNodes =>
-      prevNodes?.map(node => {
-        node.data.highlight = false
-        node.style = {
-          ...node.style,
-          opacity: 1,
-        }
-
-        return node
-      })
-    )
-
-    setEdges((prevEdges: Edge[] | undefined) =>
-      prevEdges?.map(edge => {
-        edge.animated = false
-        edge.style = {
-          ...edge.style,
-          stroke: "#b1b1b7",
-          opacity: 1,
-        }
-
-        return edge
-      })
-    )
-  }
+  const resetNodeStyles = () => setHighlighted([])
 
   return (
     <ReactFlowProvider>
@@ -221,6 +124,8 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
         options={controlOptions}
         search={search}
         onSearch={onSearch}
+        onRefresh={onRefresh}
+        loading={refreshLoading}
       />
       <ReactFlow
         minZoom={0}
@@ -234,11 +139,12 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
         onPaneClick={() => {
           resetNodeStyles()
         }}
-        fitView
+        onMoveEnd={(_, viewport) => onMove && onMove(viewport)}
+        fitView={fitView}
       >
         <Controls showInteractive={false} />
-        {loading && <Loading />}
       </ReactFlow>
+      {loading && <Loading />}
     </ReactFlowProvider>
   )
 }

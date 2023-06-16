@@ -3,7 +3,7 @@ import useAuth from "./useAuth"
 
 const PrivateRoute: React.FC = () => {
   const { loggedIn } = useAuth()
-  let location = useLocation()
+  const location = useLocation()
 
   if (!loggedIn) return <Navigate to="/login" state={{ redirect: location }} />
 
