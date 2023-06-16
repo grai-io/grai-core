@@ -17,7 +17,7 @@ from workspaces.permissions import HasWorkspaceAPIKey
 # https://stackoverflow.com/questions/30582263/setting-user-id-automatically-on-post-in-django-rest
 
 
-class ConnectionViewSet(ModelViewSet):
+class AuthenticatedViewSetMixin:
     authentication_classes = [
         SessionAuthentication,
         BasicAuthentication,
@@ -26,6 +26,8 @@ class ConnectionViewSet(ModelViewSet):
 
     permission_classes = [Multitenant]
 
+
+class ConnectionViewSet(AuthenticatedViewSetMixin, ModelViewSet):
     serializer_class = ConnectionSerializer
     type = Connection
 
@@ -43,12 +45,7 @@ class ConnectionViewSet(ModelViewSet):
         return queryset
 
 
-class ConnectorViewSet(ReadOnlyModelViewSet):
-    authentication_classes = [
-        SessionAuthentication,
-        BasicAuthentication,
-        JWTAuthentication,
-    ]
+class ConnectorViewSet(AuthenticatedViewSetMixin, ReadOnlyModelViewSet):
     permission_classes = [HasAPIKey | HasWorkspaceAPIKey | IsAuthenticated]
 
     serializer_class = ConnectorSerializer
@@ -68,13 +65,6 @@ class ConnectorViewSet(ReadOnlyModelViewSet):
         return queryset
 
 
-class RunViewSet(ReadOnlyModelViewSet):
-    authentication_classes = [
-        SessionAuthentication,
-        BasicAuthentication,
-        JWTAuthentication,
-    ]
-    permission_classes = [Multitenant]
-
+class RunViewSet(AuthenticatedViewSetMixin, ReadOnlyModelViewSet):
     serializer_class = RunSerializer
     type = Run

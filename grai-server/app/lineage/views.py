@@ -1,23 +1,36 @@
 from django.db.models import Q
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework import status
-from rest_framework.response import Response
 
 from common.permissions.multitenant import Multitenant
 from lineage.models import Edge, Node, Source
-from lineage.serializers import EdgeSerializer, NodeSerializer, SourceSerializer
-from workspaces.permissions import HasWorkspaceAPIKey
+from lineage.serializers import (
+    EdgeSerializer,
+    NodeSerializer,
+    SourceEdgeSerializer,
+    SourceNodeSerializer,
+    SourceSerializer,
+)
+from rest_framework import status
 
 
-class HasSourceViewSet(ModelViewSet):
+class AuthenticatedViewSetMixin:
+    authentication_classes = [
+        SessionAuthentication,
+        BasicAuthentication,
+        JWTAuthentication,
+    ]
+
+    permission_classes = [Multitenant]
+
+
+class HasSourceViewSetMixin:
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
 
-        sourceName = request.data.get("source_name", "manual")
-        source = Source.objects.get(name=sourceName)
+        source = Source.objects.get(pk=self.kwargs["source_pk"])
 
         instance.data_sources.remove(source)
 
@@ -27,15 +40,7 @@ class HasSourceViewSet(ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class NodeViewSet(HasSourceViewSet):
-    authentication_classes = [
-        SessionAuthentication,
-        BasicAuthentication,
-        JWTAuthentication,
-    ]
-
-    permission_classes = [Multitenant]
-
+class NodeViewSet(AuthenticatedViewSetMixin, ModelViewSet):
     serializer_class = NodeSerializer
     type = Node
 
@@ -64,42 +69,9 @@ class NodeViewSet(HasSourceViewSet):
         return self.type.objects.filter(q_filter)
 
 
-class EdgeViewSet(HasSourceViewSet):
-    authentication_classes = [
-        SessionAuthentication,
-        BasicAuthentication,
-        JWTAuthentication,
-    ]
-    permission_classes = [Multitenant]
-
+class EdgeViewSet(AuthenticatedViewSetMixin, ModelViewSet):
     serializer_class = EdgeSerializer
     type = Edge
-
-    # def create(self, request, *args, **kwargs):
-    #     source = parse_named_node(request.data["source"])
-    #     destination = parse_named_node(request.data["destination"])
-    #
-    #     if source is not None or destination is not None:
-    #         if hasattr(request.data, "_mutable"):
-    #             request.data._mutable = True
-    #
-    #     match (source, destination):
-    #         case (NodeNamedID(), None):
-    #             node = Node.objects.get(Q(name=source.name) & Q(namespace=source.namespace))
-    #             request.data["source"] = node.id
-    #         case (None, NodeNamedID()):
-    #             node = Node.objects.get(Q(name=destination.name) & Q(namespace=destination.namespace))
-    #             request.data["destination"] = node.id
-    #         case (NodeNamedID(), NodeNamedID()):
-    #             q_filter = Q(name=source.name) & Q(namespace=source.namespace)
-    #             q_filter |= Q(name=destination.name) & Q(namespace=destination.namespace)
-    #             model_source, model_destination = Node.objects.filter(q_filter)
-    #             request.data["source"] = model_source.id
-    #             request.data["destination"] = model_destination.id
-    #         case _:
-    #             pass
-    #
-    #     return super().create(request, *args, **kwargs)
 
     def get_queryset(self):
         if len(self.request.query_params) == 0:
@@ -127,15 +99,7 @@ class EdgeViewSet(HasSourceViewSet):
         return self.type.objects.filter(q_filter)
 
 
-class SourceViewSet(ModelViewSet):
-    authentication_classes = [
-        SessionAuthentication,
-        BasicAuthentication,
-        JWTAuthentication,
-    ]
-
-    permission_classes = [(HasWorkspaceAPIKey | IsAuthenticated) & Multitenant]
-
+class SourceViewSet(AuthenticatedViewSetMixin, ModelViewSet):
     serializer_class = SourceSerializer
     type = Source
 
@@ -152,3 +116,17 @@ class SourceViewSet(ModelViewSet):
                 q_filter &= Q(**{filter_name: filter_value})
 
         return self.type.objects.filter(q_filter)
+
+
+class SourceNodeViewSet(HasSourceViewSetMixin, NodeViewSet):
+    serializer_class = SourceNodeSerializer
+
+    def get_queryset(self):
+        return super().get_queryset().filter(data_sources=self.kwargs["source_pk"])
+
+
+class SourceEdgeViewSet(HasSourceViewSetMixin, EdgeViewSet):
+    serializer_class = SourceEdgeSerializer
+
+    def get_queryset(self):
+        return super().get_queryset().filter(data_sources=self.kwargs["source_pk"])
