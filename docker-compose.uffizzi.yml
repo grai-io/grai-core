@@ -43,7 +43,7 @@ services:
     entrypoint: /bin/sh
     command:
       - "-c"
-      - 'VITE_SERVER_URL=$$UFFIZZI_URL/api /usr/share/nginx/html/env.sh && nginx -g "daemon off;"'
+      - 'REACT_APP_SERVER_URL=$$UFFIZZI_URL/api /usr/share/nginx/html/env.sh && nginx -g "daemon off;"'
     deploy:
       resources:
         limits:

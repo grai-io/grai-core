@@ -40,11 +40,11 @@ const SearchContainer: React.FC<SearchContainerProps> = ({
   if (error) return <GraphError error={error} />
   if (loading) return <Loading />
 
-  if (!process.env.VITE_ALGOLIA_APP_ID) return <>No Algolia App Id</>
+  if (!process.env.REACT_APP_ALGOLIA_APP_ID) return <>No Algolia App Id</>
   if (!data?.workspace?.search_key) return <>No Search Key</>
 
   const searchClient = algoliasearch(
-    process.env.VITE_ALGOLIA_APP_ID,
+    process.env.REACT_APP_ALGOLIA_APP_ID,
     data.workspace.search_key
   )
 

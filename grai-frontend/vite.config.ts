@@ -9,9 +9,9 @@ export default defineConfig({
     react(),
     viteTsconfigPaths(),
     EnvironmentPlugin({
-      VITE_SERVER_URL: "http://localhost:8000",
-      VITE_POSTHOG_API_KEY: null,
-      VITE_ALGOLIA_APP_ID: null,
+      REACT_APP_SERVER_URL: "http://localhost:8000",
+      REACT_APP_POSTHOG_API_KEY: null,
+      REACT_APP_ALGOLIA_APP_ID: null,
     }),
   ],
   build: {

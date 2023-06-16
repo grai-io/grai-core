@@ -2,11 +2,12 @@
 import posthog, { Properties } from "posthog-js"
 
 export const posthogApiKey =
-  window._env_?.VITE_POSTHOG_API_KEY ?? process.env.VITE_POSTHOG_API_KEY
+  window._env_?.REACT_APP_POSTHOG_API_KEY ??
+  process.env.REACT_APP_POSTHOG_API_KEY
 
 const posthogHost =
-  window._env_?.VITE_POSTHOG_HOST ??
-  process.env.VITE_POSTHOG_HOST ??
+  window._env_?.REACT_APP_POSTHOG_HOST ??
+  process.env.REACT_APP_POSTHOG_HOST ??
   "https://app.posthog.com"
 
 if (posthogApiKey)

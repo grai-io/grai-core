@@ -16,8 +16,8 @@ export const cache = new InMemoryCache()
 
 const make_client = (logoutUser: () => void) => {
   const baseURL =
-    window._env_?.VITE_SERVER_URL ??
-    process.env.VITE_SERVER_URL ??
+    window._env_?.REACT_APP_SERVER_URL ??
+    process.env.REACT_APP_SERVER_URL ??
     "http://localhost:8000"
 
   const uploadLink = createUploadLink({

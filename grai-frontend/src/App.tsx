@@ -23,9 +23,9 @@ import theme from "./theme"
 import "posthog"
 
 const App: React.FC = () => {
-  if (process.env.VITE_SENTRY_DSN)
+  if (process.env.REACT_APP_SENTRY_DSN)
     Sentry.init({
-      dsn: process.env.VITE_SENTRY_DSN,
+      dsn: process.env.REACT_APP_SENTRY_DSN,
       integrations: [
         new Sentry.Replay(),
         new BrowserTracing({
