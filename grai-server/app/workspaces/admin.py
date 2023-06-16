@@ -60,19 +60,19 @@ class MembershipInline(admin.TabularInline):
 
 
 class WorkspaceAdmin(admin.ModelAdmin):
-    def node_count(self, obj):
+    def node_count(self, obj):  # pragma: no cover
         return "{0:,}".format(obj.node_count)
 
-    def connection_count(self, obj):
+    def connection_count(self, obj):  # pragma: no cover
         return "{0:,}".format(obj.connection_count)
 
-    def get_queryset(self, request):
+    def get_queryset(self, request):  # pragma: no cover
         queryset = super().get_queryset(request)
         queryset = queryset.annotate(
             node_count=Count("nodes", distinct=True),
             connection_count=Count("connections", distinct=True, filter=Q(connections__temp=False)),
         )
-        return queryset
+        return queryset.all()
 
     list_display = (
         "id",

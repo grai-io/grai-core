@@ -346,14 +346,14 @@ class TestNodeWithFilter:
         node = test_full_nodes[1]
         url = self.get_url_by_name(node)
         response = client.get(url)
-        results = response.json()
+        results = response.json()["results"]
         assert len(results) == 1, f"Wrong number of nodes returned in query. Expected 1, got {len(results)}"
 
     def test_query_by_name_is_correct(self, client, test_full_nodes):
         node = test_full_nodes[2]
         url = self.get_url_by_name(node)
         response = client.get(url)
-        results = response.json()[0]
+        results = response.json()["results"][0]
         assert results["name"] == node["name"]
         assert results["namespace"] == node["namespace"]
         assert results["id"] == node["id"]
@@ -410,14 +410,14 @@ class TestEdgesWithFilter:
         edge = test_edges[1]
         url = self.get_url_by_name(edge)
         response = client.get(url)
-        results = response.json()
+        results = response.json()["results"]
         assert len(results) == 1, f"Wrong number of edges returned in query. Expected 1, got {len(results)}"
 
     def test_query_by_name_is_correct(self, client, test_edges):
         edge = test_edges[2]
         url = self.get_url_by_name(edge)
         response = client.get(url)
-        results = response.json()[0]
+        results = response.json()["results"][0]
         assert results["name"] == edge["name"]
         assert results["namespace"] == edge["namespace"]
         assert results["id"] == edge["id"]
@@ -454,14 +454,14 @@ class TestEdgesWithFilter:
         edge = test_edges[1]
         url = self.get_url_by_source_destination(edge)
         response = client.get(url, content_type="application/json")
-        result = response.json()
+        result = response.json()["results"]
         assert len(result) == 1, f"Wrong number of edges returned in query. Expected 1, got {len(result)}"
 
     def test_query_by_source_destination_is_correct(self, client, test_edges):
         edge = test_edges[2]
         url = self.get_url_by_source_destination(edge)
         response = client.get(url)
-        result = response.json()[0]
+        result = response.json()["results"][0]
         assert result["name"] == edge["name"]
         assert result["namespace"] == edge["namespace"]
         assert result["id"] == edge["id"]

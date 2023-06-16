@@ -6,6 +6,7 @@ on:
       - "grai-server/**"
       - ".github/workflows/client-ci.yml"
 
+
 concurrency:
   group: ${{ github.ref }}-client-ci
   cancel-in-progress: true

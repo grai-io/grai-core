@@ -11,7 +11,11 @@ from grai_schemas.v1.node import NodeNamedID, NodeUuidID
 
 from grai_client.endpoints.client import ClientOptions
 from grai_client.endpoints.rest import get
-from grai_client.endpoints.utilities import handles_bad_metadata, is_valid_uuid
+from grai_client.endpoints.utilities import (
+    handles_bad_metadata,
+    is_valid_uuid,
+    paginated,
+)
 from grai_client.endpoints.v1.client import ClientV1
 from grai_client.schemas.labels import EdgeLabels, NodeLabels, WorkspaceLabels
 from grai_client.schemas.workspace import Workspace
@@ -47,8 +51,8 @@ def get_node_by_label_v1(
 
     """
     url = client.get_url(grai_type)
-    resp = get(client, url, options=options)
-    return [node_builder(obj) for obj in resp.json()]
+    resp = paginated(get)(client, url, options)
+    return [node_builder(obj) for obj in resp]
 
 
 @get.register
@@ -134,7 +138,11 @@ def get_from_node_named_id(
 
     """
     options = options.copy()
-    options.query_args = {**options.query_args, "name": grai_type.name, "namespace": grai_type.namespace}
+    options.query_args = {
+        **options.query_args,
+        "name": grai_type.name,
+        "namespace": grai_type.namespace,
+    }
 
     result = get(client, "Node", options=options)
 
@@ -169,7 +177,10 @@ def finalize_edge(client: ClientV1, resp: Dict, options: ClientOptions = ClientO
     Raises:
 
     """
-    nodes = [get(client, "node", resp["source"]), get(client, "node", resp["destination"])]
+    nodes = [
+        get(client, "node", resp["source"]),
+        get(client, "node", resp["destination"]),
+    ]
 
     resp["source"] = nodes[0].spec
     resp["destination"] = nodes[1].spec
@@ -193,8 +204,8 @@ def get_edge_by_label_v1(
 
     """
     url = client.get_url(grai_type)
-    resp = get(client, url, options=options)
-    return [finalize_edge(client, edge) for edge in resp.json()]
+    resp = paginated(get)(client, url, options)
+    return [finalize_edge(client, edge) for edge in resp]
 
 
 @get.register
@@ -279,7 +290,11 @@ def get_from_edge_named_id(
 
     """
     options = options.copy()
-    options.query_args = {**options.query_args, "name": grai_type.name, "namespace": grai_type.namespace}
+    options.query_args = {
+        **options.query_args,
+        "name": grai_type.name,
+        "namespace": grai_type.namespace,
+    }
 
     resp = get(client, "Edge", options=options)
 
@@ -319,8 +334,7 @@ def get_all_workspaces(
     Raises:
 
     """
-    resp = get(client, client.get_url(grai_type), options=options)
-    resp = resp.json()
+    resp = paginated(get)(client, client.get_url(grai_type), options)
 
     if len(resp) == 0:
         return None
@@ -348,16 +362,16 @@ def get_workspace_by_name_v1(
     Raises:
 
     """
-
     if is_valid_uuid(name):
         url = f"{client.get_url(grai_type)}{name}/"
+        return get(client, url, options=options).json()
     elif len(name.split("/")) == 2:
         # this is a ref string i.e. org-name/workspace-name
         url = f"{client.get_url(grai_type)}?ref={name}"
     else:
         url = f"{client.get_url(grai_type)}?name={name}"
-    resp = get(client, url, options=options)
-    resp = resp.json()
+
+    resp = paginated(get)(client, url, options)
 
     num_resp = len(resp)
     if num_resp == 0:
