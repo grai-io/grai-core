@@ -98,6 +98,12 @@ test("error", async () => {
       )
   )
 
+  await waitFor(() => {
+    expect(screen.getByRole("textbox", { name: /name/i })).toHaveValue(
+      "Test AlertTest Alert2"
+    )
+  })
+
   await act(
     async () => await user.type(screen.getByRole("combobox"), "email2@grai.io")
   )

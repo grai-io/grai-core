@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { gql, useLazyQuery } from "@apollo/client"
-import { Edge as RFEdge, Node as RFNode } from "reactflow"
+import { Edge as RFEdge, Node as RFNode, Viewport } from "reactflow"
 import notEmpty from "helpers/notEmpty"
 import useWorkspace from "helpers/useWorkspace"
 import {
@@ -24,6 +24,8 @@ export const GET_GRAPH_LOAD_TABLE = gql`
         name
         display_name
         namespace
+        x
+        y
         data_source
         columns {
           id
@@ -38,8 +40,6 @@ export const GET_GRAPH_LOAD_TABLE = gql`
     }
   }
 `
-
-const position = { x: 0, y: 0 }
 
 export interface ResultError {
   source: string
@@ -61,6 +61,8 @@ interface Column extends NodeWithName {
 
 export interface Table extends NodeWithName {
   display_name: string
+  x: number
+  y: number
   data_source: string
   columns: Column[]
   sources?: string[]
@@ -77,6 +79,10 @@ type GraphComponentProps = {
   controlOptions?: ControlOptions
   throwMissingTable?: boolean
   alwaysShow?: boolean
+  fitView?: boolean
+  onMove?: (viewport: Viewport) => void
+  onRefresh?: () => void
+  refreshLoading?: boolean
 }
 
 const GraphComponent: React.FC<GraphComponentProps> = ({
@@ -87,6 +93,10 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
   controlOptions,
   throwMissingTable,
   alwaysShow,
+  fitView,
+  onMove,
+  onRefresh,
+  refreshLoading,
 }) => {
   const { organisationName, workspaceName } = useWorkspace()
 
@@ -169,7 +179,10 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
         searchDim: search ? !searchMatch : false,
         alwaysShow,
       },
-      position,
+      position: {
+        x: table.x,
+        y: table.y,
+      },
     }
   })
 
@@ -339,6 +352,10 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
       onSearch={setSearch}
       loading={loading}
       controlOptions={controlOptions}
+      fitView={fitView}
+      onMove={onMove}
+      onRefresh={onRefresh}
+      refreshLoading={refreshLoading}
     />
   )
 }

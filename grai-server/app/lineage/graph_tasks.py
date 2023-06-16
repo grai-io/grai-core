@@ -15,6 +15,8 @@ def cache_node(id, delete: bool = False):
     else:
         cache.cache_node(node)
 
+    layout(node.workspace.id)
+
 
 @shared_task
 def cache_edge(id, delete: bool = False):
@@ -27,3 +29,16 @@ def cache_edge(id, delete: bool = False):
         cache.delete_edge(edge)
     else:
         cache.cache_edge(edge)
+
+    layout(edge.workspace.id)
+
+
+@shared_task
+def layout(id):
+    from workspaces.models import Workspace
+
+    workspace = Workspace.objects.get(pk=id)
+
+    cache = GraphCache(workspace)
+
+    cache.layout_graph()

@@ -109,6 +109,7 @@ services:
       - DB_PASSWORD=grai
     depends_on:
       - db
+      - redis
     healthcheck:
       test: "curl -f -v -H 'Accept: application/json' http://localhost:8000/health/"
       interval: 2s
@@ -124,6 +125,13 @@ services:
       - REACT_APP_API_URL=http://localhost:8000
     depends_on:
       - the_guide
+
+  redis:
+    image: redis/redis-stack:latest
+    restart: always
+    ports:
+      - 6379:6379
+      - 8001:8001
 ```
 
 #### docker compose up

@@ -21,6 +21,8 @@ export interface GetTablesAndEdgesTableLineage_workspace_graph {
   name: string;
   display_name: string;
   namespace: string;
+  x: number;
+  y: number;
   data_source: string;
   columns: GetTablesAndEdgesTableLineage_workspace_graph_columns[];
   destinations: string[];

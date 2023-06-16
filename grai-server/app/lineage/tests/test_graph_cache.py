@@ -42,3 +42,50 @@ def test_clear_cache(create_workspace):
     client = GraphCache(workspace=create_workspace)
 
     client.clear_cache()
+
+
+@pytest.mark.django_db
+def test_update_node(create_workspace):
+    client = GraphCache(workspace=create_workspace)
+
+    client.update_node(id="1", x=1, y=1)
+
+
+@pytest.mark.django_db
+def test_layout(create_workspace):
+    source = Node.objects.create(
+        workspace=create_workspace,
+        name=str(uuid.uuid4()),
+        metadata={"grai": {"node_type": "Table"}},
+    )
+    destination = Node.objects.create(
+        workspace=create_workspace,
+        name=str(uuid.uuid4()),
+        metadata={"grai": {"node_type": "Table"}},
+    )
+
+    [
+        Node.objects.create(
+            workspace=create_workspace,
+            name=str(uuid.uuid4()),
+            metadata={"grai": {"node_type": "Table"}},
+        )
+        for i in range(25)
+    ]
+
+    Edge.objects.create(
+        workspace=create_workspace,
+        source=source,
+        destination=destination,
+        metadata={
+            "grai": {
+                "edge_type": "TableToTable",
+            }
+        },
+    )
+
+    client = GraphCache(workspace=create_workspace)
+
+    client.build_cache()
+
+    client.layout_graph()

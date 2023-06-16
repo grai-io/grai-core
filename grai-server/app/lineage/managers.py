@@ -22,6 +22,8 @@ class CacheManager(TenantManagerMixin, models.Manager):
             for obj in objs:
                 obj.cache_model(cache)
 
+            cache.layout_graph()
+
         return result
 
     def bulk_update(
@@ -42,5 +44,7 @@ class CacheManager(TenantManagerMixin, models.Manager):
 
             for obj in objs:
                 obj.cache_model(cache)
+
+            cache.layout_graph()
 
         return result

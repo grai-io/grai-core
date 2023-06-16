@@ -3,7 +3,6 @@ import { gql, useQuery } from "@apollo/client"
 import { Alert, Box } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
 import GraphComponent from "components/graph/GraphComponent"
-import Loading from "components/layout/Loading"
 import GraphError from "components/utils/GraphError"
 import {
   GetTablesAndEdgesEdgeLineage,
@@ -24,6 +23,8 @@ export const GET_TABLES_AND_EDGES = gql`
         name
         display_name
         namespace
+        x
+        y
         data_source
         columns {
           id
@@ -70,11 +71,11 @@ const EdgeLineage: React.FC<EdgeLineageProps> = ({ edge }) => {
   })
 
   if (error) return <GraphError error={error} />
-  if (loading) return <Loading />
 
   const tables = data?.workspace.graph
 
-  if (!tables || tables.length === 0) return <Alert>No tables found</Alert>
+  if (!loading && (!tables || tables.length === 0))
+    return <Alert>No tables found</Alert>
 
   return (
     <Box
@@ -84,7 +85,9 @@ const EdgeLineage: React.FC<EdgeLineageProps> = ({ edge }) => {
       data-testid="edge-lineage"
     >
       <GraphComponent
-        tables={tables}
+        tables={tables ?? []}
+        loading={loading}
+        fitView
         controlOptions={{
           steps: {
             value,

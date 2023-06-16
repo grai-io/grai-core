@@ -25,7 +25,7 @@ const ConnectionsMetadata: React.FC<ConnectionsMetadataProps> = ({
     mValue: string | boolean,
     field: ConnectorMetadataField
   ) => {
-    let newValue = { ...metadata }
+    const newValue = { ...metadata }
     newValue[field.name] = mValue
     onChangeMetadata(newValue)
   }
@@ -34,7 +34,7 @@ const ConnectionsMetadata: React.FC<ConnectionsMetadataProps> = ({
     mValue: string,
     field: ConnectorMetadataField
   ) => {
-    let newValue = { ...secrets }
+    const newValue = { ...secrets }
     newValue[field.name] = mValue
     onChangeSecrets(newValue)
   }
