@@ -383,7 +383,7 @@ async def test_create_api_key_expiry_date(test_context):
         variable_values={
             "workspaceId": str(workspace.id),
             "name": "test api key",
-            "expiry_date": "2020-01-01",
+            "expiry_date": "2023-03-24T00:00:00.000+00:00",
         },
         context_value=context,
     )
@@ -391,7 +391,7 @@ async def test_create_api_key_expiry_date(test_context):
     assert result.errors is None
     assert result.data["createApiKey"]["key"] != None
     assert result.data["createApiKey"]["api_key"]["name"] == "test api key"
-    assert result.data["createApiKey"]["api_key"]["expiry_date"] == "2020-01-01T00:00:00"
+    assert result.data["createApiKey"]["api_key"]["expiry_date"] == "2023-03-24T00:00:00+00:00"
 
 
 @pytest.mark.django_db

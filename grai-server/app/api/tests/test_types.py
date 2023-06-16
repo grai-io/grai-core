@@ -2246,7 +2246,7 @@ async def test_node_events(test_context, test_source):
     event = await Event.objects.acreate(
         workspace=workspace,
         reference="test-123",
-        date=date.today(),
+        date="2023-03-24T00:00:00.000+00:00",
         connection=connection,
     )
 

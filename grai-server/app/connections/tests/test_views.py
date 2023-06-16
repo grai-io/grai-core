@@ -113,7 +113,7 @@ class TestConnectors:
         url = reverse("connections:connectors-list")
         response = client.get(url)
         assert response.status_code == 200, f"verb `get` failed on connectors with status {response.status_code}"
-        connectors = list(response.json())
+        connectors = list(response.json()["results"])
         assert len(connectors) > 0
 
     def test_get_connectors_filter_by_active(self, auto_login_user, test_connector):
@@ -121,7 +121,7 @@ class TestConnectors:
         url = reverse("connections:connectors-list")
         response = client.get(f"{url}?is_active=True")
         assert response.status_code == 200, f"verb `get` failed on connectors with status {response.status_code}"
-        connectors = list(response.json())
+        connectors = list(response.json()["results"])
         assert len(connectors) > 0
 
     def test_get_connectors_filter_by_active_false(self, auto_login_user, test_connector):
@@ -129,7 +129,7 @@ class TestConnectors:
         url = reverse("connections:connectors-list")
         response = client.get(f"{url}?is_active=False")
         assert response.status_code == 200, f"verb `get` failed on connectors with status {response.status_code}"
-        connectors = list(response.json())
+        connectors = list(response.json()["results"])
         assert len(connectors) == 0
 
     def test_get_connector(self, auto_login_user, test_connector):
@@ -147,7 +147,7 @@ class TestConnections:
         url = reverse("connections:connections-list")
         response = client.get(url)
         assert response.status_code == 200, f"verb `get` failed on connections with status {response.status_code}"
-        connections = list(response.json())
+        connections = list(response.json()["results"])
         assert len(connections) == 1
         assert connections[0]["name"] == test_connection.name
 
@@ -156,7 +156,7 @@ class TestConnections:
         url = reverse("connections:connections-list")
         response = client.get(f"{url}?is_active=True")
         assert response.status_code == 200, f"verb `get` failed on connections with status {response.status_code}"
-        connections = list(response.json())
+        connections = list(response.json()["results"])
         assert len(connections) == 1
         assert connections[0]["name"] == test_connection.name
 
@@ -165,7 +165,7 @@ class TestConnections:
         url = reverse("connections:connections-list")
         response = client.get(f"{url}?is_active=False")
         assert response.status_code == 200, f"verb `get` failed on connections with status {response.status_code}"
-        connections = list(response.json())
+        connections = list(response.json()["results"])
         assert len(connections) == 0
 
     def test_get_connections(self, auto_login_user, test_connection):

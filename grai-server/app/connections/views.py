@@ -42,7 +42,7 @@ class ConnectionViewSet(AuthenticatedViewSetMixin, ModelViewSet):
         )
         for filter_name, condition in filters:
             queryset = queryset.filter(**{filter_name: condition})
-        return queryset
+        return queryset.all()
 
 
 class ConnectorViewSet(AuthenticatedViewSetMixin, ReadOnlyModelViewSet):
@@ -62,7 +62,7 @@ class ConnectorViewSet(AuthenticatedViewSetMixin, ReadOnlyModelViewSet):
         )
         for filter_name, condition in filters:
             queryset = queryset.filter(**{filter_name: condition})
-        return queryset
+        return queryset.all()
 
 
 class RunViewSet(AuthenticatedViewSetMixin, ReadOnlyModelViewSet):

@@ -7,11 +7,22 @@ import urllib
 import uuid
 import warnings
 from functools import wraps
-from typing import Any, Callable, Dict, Literal, Optional, TypeVar, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Dict,
+    List,
+    Literal,
+    Optional,
+    Type,
+    TypeVar,
+    Union,
+)
 from uuid import UUID
 
 import orjson
-from grai_schemas.generics import GraiBaseModel
+from grai_schemas.generics import GraiBaseModel, MalformedMetadata
 from httpx import Response
 from pydantic import BaseModel, ValidationError
 from requests import RequestException
@@ -20,6 +31,9 @@ if sys.version_info < (3, 10):
     from typing_extensions import ParamSpec
 else:
     from typing import ParamSpec
+
+if TYPE_CHECKING:
+    from grai_client.endpoints.client import BaseClient, ClientOptions
 
 
 P = ParamSpec("P")
@@ -168,11 +182,40 @@ def add_query_params(url: str, params: dict) -> str:
     return url_parts._replace(query=urllib.parse.urlencode(query)).geturl()
 
 
-def handles_bad_metadata(fallback_meta: Callable[[Dict], BaseModel]) -> Callable[[Dict], T]:
+def paginated(
+    fn: Callable[["BaseClient", str, "ClientOptions"], Response]
+) -> Callable[["BaseClient", str, "ClientOptions"], List[Dict]]:
+    @wraps(fn)
+    def inner(client: "BaseClient", url: str, options: "ClientOptions") -> List[Dict]:
+        """
+
+        Args:
+            client:
+            url:
+            options:
+        """
+        if page := options.pagination.get("page", False):
+            return fn(client, page, options).json()["results"]
+
+        results = []
+        page = url
+        while page:
+            resp = fn(client, page, options).json()
+            results.extend(resp["results"])
+            page = resp["next"]
+
+        return results
+
+    return inner
+
+
+def handles_bad_metadata(
+    fallback_meta: Type[MalformedMetadata],
+) -> Callable[[Callable[[Dict], T]], Callable[[Dict], T]]:
     """
 
     Args:
-        fallback_mea:
+        fallback_meta:
 
     Returns:
 

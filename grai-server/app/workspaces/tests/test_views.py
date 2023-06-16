@@ -83,14 +83,14 @@ class TestWorkspacesUserAuth:
         url = reverse("workspaces:workspaces-list")
         response = client.get(url)
         assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
-        workspaces = list(response.json())
+        workspaces = list(response.json()["results"])
         assert len(workspaces) == 1
 
     def test_get_workspace_has_ref(self, auto_login_user):
         client, user, workspace = auto_login_user()
         url = reverse("workspaces:workspaces-list")
         response = client.get(url)
-        workspace = response.json()[0]
+        workspace = response.json()["results"][0]
         assert "ref" in workspace, "workspace should have ref"
 
     def test_get_workspaces_by_name(self, auto_login_user, create_organisation, create_workspace2):
@@ -98,7 +98,7 @@ class TestWorkspacesUserAuth:
         url = reverse(f"workspaces:workspaces-list")
         response = client.get(f"{url}?name={workspace.name}")
         assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
-        workspaces = list(response.json())
+        workspaces = list(response.json()["results"])
         assert len(workspaces) == 1
 
     def test_get_workspaces_by_ref(self, auto_login_user, create_organisation, create_workspace2):
@@ -106,7 +106,7 @@ class TestWorkspacesUserAuth:
         url = reverse(f"workspaces:workspaces-list")
         response = client.get(f"{url}?ref={create_organisation.name}/{workspace.name}")
         assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
-        workspaces = list(response.json())
+        workspaces = list(response.json()["results"])
         assert len(workspaces) == 1
 
     def test_get_workspaces_by_ref_incorrect_format(self, auto_login_user, create_organisation, create_workspace2):
@@ -124,7 +124,7 @@ class TestWorkspacesUserAuth:
         url = reverse("workspaces:workspaces-list")
         response = client.get(url)
         assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
-        workspaces = list(response.json())
+        workspaces = list(response.json()["results"])
         assert len(workspaces) == 1
 
 
@@ -135,7 +135,7 @@ class TestWorkspacesApiKeyAuth:
         url = reverse("workspaces:workspaces-list")
         response = api_client.get(url)
         assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
-        workspaces = list(response.json())
+        workspaces = list(response.json()["results"])
         assert len(workspaces) == 1
 
     def test_get_workspaces_wrong_key(self, api_client, api_key, create_organisation):
@@ -144,7 +144,7 @@ class TestWorkspacesApiKeyAuth:
         url = reverse("workspaces:workspaces-list")
         response = api_client.get(url)
         assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
-        workspaces = list(response.json())
+        workspaces = list(response.json()["results"])
         assert len(workspaces) == 1
 
 
@@ -190,7 +190,7 @@ class TestMemberships:
         url = reverse("workspaces:memberships-list")
         response = client.get(url)
         assert response.status_code == 200, f"verb `get` failed on memberships with status {response.status_code}"
-        memberships = list(response.json())
+        memberships = list(response.json()["results"])
         assert len(memberships) == 1
 
     def test_get_memberships_filter_by_is_active(self, auto_login_user):
@@ -198,5 +198,5 @@ class TestMemberships:
         url = reverse("workspaces:memberships-list")
         response = client.get(f"{url}?is_active=1")
         assert response.status_code == 200, f"verb `get` failed on memberships with status {response.status_code}"
-        memberships = list(response.json())
+        memberships = list(response.json()["results"])
         assert len(memberships) == 1

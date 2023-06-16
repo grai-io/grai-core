@@ -45,6 +45,9 @@ class NodeViewSet(AuthenticatedViewSetMixin, ModelViewSet):
     type = Node
 
     def get_queryset(self):
+        return self._get_queryset().all()
+
+    def _get_queryset(self):
         if len(self.request.query_params) == 0:
             return self.type.objects
 
@@ -74,6 +77,9 @@ class EdgeViewSet(AuthenticatedViewSetMixin, ModelViewSet):
     type = Edge
 
     def get_queryset(self):
+        return self._get_queryset().all()
+
+    def _get_queryset(self):
         if len(self.request.query_params) == 0:
             return self.type.objects
 
@@ -105,7 +111,7 @@ class SourceViewSet(AuthenticatedViewSetMixin, ModelViewSet):
 
     def get_queryset(self):
         if len(self.request.query_params) == 0:
-            return self.type.objects
+            return self.type.objects.all()
 
         q_filter = Q()
         query_params = self.request.query_params
@@ -115,18 +121,18 @@ class SourceViewSet(AuthenticatedViewSetMixin, ModelViewSet):
             if filter_name in supported_filters or filter_name.startswith(starts_with_filters):
                 q_filter &= Q(**{filter_name: filter_value})
 
-        return self.type.objects.filter(q_filter)
+        return self.type.objects.filter(q_filter).all()
 
 
 class SourceNodeViewSet(HasSourceViewSetMixin, NodeViewSet):
     serializer_class = SourceNodeSerializer
 
     def get_queryset(self):
-        return super().get_queryset().filter(data_sources=self.kwargs["source_pk"])
+        return super()._get_queryset().filter(data_sources=self.kwargs["source_pk"]).all()
 
 
 class SourceEdgeViewSet(HasSourceViewSetMixin, EdgeViewSet):
     serializer_class = SourceEdgeSerializer
 
     def get_queryset(self):
-        return super().get_queryset().filter(data_sources=self.kwargs["source_pk"])
+        return super()._get_queryset().filter(data_sources=self.kwargs["source_pk"]).all()

@@ -91,7 +91,7 @@ class TestCredentialValidation:
 
     def test_default_port(self):
         _, _, port, _, _ = validate_connection_arguments(host="api.grai.io")
-        assert port is None, f"`port` should default to None not {port} when the host is something other than localhost"
+        assert port == "443", f"`port` should default to 443 not {port} when the host is something other than localhost"
 
     def test_default_localhost_port(self):
         _, _, port, _, _ = validate_connection_arguments(host="localhost")
@@ -142,9 +142,9 @@ class TestCredentialValidation:
         assert port == result, f"Validated port {port} did not match expected url {result}"
 
     def test_url_parsed_no_port(self):
-        result = None
+        result = "80"
         url, host, port, protocol, insecure = validate_connection_arguments(url="http://app.grai.io")
-        assert port is None, f"Validated port {port} did not match expected url {result}"
+        assert port == result, f"Validated port {port} did not match expected url {result}"
 
     def test_url_parsed_insecure(self):
         result = True
