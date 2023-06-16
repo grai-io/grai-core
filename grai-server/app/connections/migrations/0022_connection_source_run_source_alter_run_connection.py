@@ -33,7 +33,7 @@ def add_source_to_run(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("lineage", "0009_remove_edge_data_source_remove_node_data_source_and_more"),
+        ("lineage", "0010_remove_edge_data_source_remove_node_data_source_and_more"),
         ("connections", "0021_alter_run_connection"),
     ]
 

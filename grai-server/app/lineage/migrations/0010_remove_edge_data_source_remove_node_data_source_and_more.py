@@ -10,7 +10,7 @@ import uuid
 class Migration(migrations.Migration):
     dependencies = [
         ("workspaces", "0006_workspace_workspaces__name_5adeb1_idx"),
-        ("lineage", "0008_alter_edge_managers_alter_node_managers_and_more"),
+        ("lineage", "0009_migrate_default_lineage_types_to_generic"),
     ]
 
     operations = [

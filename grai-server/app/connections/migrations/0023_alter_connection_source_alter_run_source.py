@@ -6,7 +6,7 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("lineage", "0010_remove_edge_data_source_remove_node_data_source"),
+        ("lineage", "0011_remove_edge_data_source_remove_node_data_source"),
         ("connections", "0022_connection_source_run_source_alter_run_connection"),
     ]
 
