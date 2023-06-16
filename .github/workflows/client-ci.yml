@@ -5,11 +5,9 @@ on:
       - "grai-client/**"
       - "grai-server/**"
 
-
 concurrency:
   group: ${{ github.ref }}-client-ci
   cancel-in-progress: true
-
 
 env:
   py_ver: "3.10"
@@ -65,6 +63,7 @@ jobs:
           DB_HOST: "postgres"
           DJANGO_SUPERUSER_USERNAME: null@grai.io
           DJANGO_SUPERUSER_PASSWORD: super_secret
+          DEBUG: true
         ports:
           - 8000:8000
         options: >-

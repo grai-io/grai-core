@@ -7,13 +7,11 @@ from api.tests.common import test_organisation, test_workspace
 from notifications.notifications import send_notification
 
 
-@pytest.mark.asyncio
 @pytest.mark.django_db
 def test_send_notification():
     send_notification("test", "test message")
 
 
-@pytest.mark.asyncio
 @pytest.mark.django_db
 def test_send_notification_with_alerts(test_workspace):
     Alert.objects.create(
@@ -27,7 +25,6 @@ def test_send_notification_with_alerts(test_workspace):
     send_notification("test", "test message")
 
 
-@pytest.mark.asyncio
 @pytest.mark.django_db
 def test_send_notification_with_alerts_no_channel(test_workspace):
     Alert.objects.create(
