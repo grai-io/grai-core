@@ -1771,15 +1771,12 @@ optional = false
 python-versions = ">=3.8,<4.0"
 files = [
     {file = "grai_schemas-0.1.16a1-py3-none-any.whl", hash = "sha256:29967940883c278d062b78bc2d1e869e878d182384081db65ed4f38b6b1303a3"},
+    {file = "grai_schemas-0.1.16a1.tar.gz", hash = "sha256:e22fc4fc71fca2c7db94d0c3855c96fe45534aff10246a9cbc07f449eb53bbeb"},
 ]
 
 [package.dependencies]
 multimethod = ">=1.9.1,<2.0.0"
 pydantic = ">=1.10.4,<2.0.0"
-
-[package.source]
-type = "file"
-url = "../../grai-schemas/dist/grai_schemas-0.1.16a1-py3-none-any.whl"
 
 [[package]]
 name = "grai-source-bigquery"
@@ -4519,4 +4516,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "2e5c20353287d37ba7805ba4cc61aef78af5ac645ba8948cb7f28836237634fa"
+content-hash = "d5a950761b6ac64ccfe5ca99ed2e4920cd25be177ec9f45dcf5ef507630e8ac8"
