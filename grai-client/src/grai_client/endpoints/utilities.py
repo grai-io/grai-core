@@ -7,7 +7,7 @@ import urllib
 import uuid
 import warnings
 from functools import wraps
-from typing import Any, Callable, Dict, Literal, Optional, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Callable, Dict, Literal, Optional, TypeVar, Union
 from uuid import UUID
 
 import orjson
@@ -21,6 +21,8 @@ if sys.version_info < (3, 10):
 else:
     from typing import ParamSpec
 
+if TYPE_CHECKING:
+    from grai_client.endpoints.client import BaseClient, ClientOptions
 
 P = ParamSpec("P")
 T = TypeVar("T")
@@ -166,6 +168,30 @@ def add_query_params(url: str, params: dict) -> str:
     query = dict(urllib.parse.parse_qsl(url_parts.query))
     query.update(params)
     return url_parts._replace(query=urllib.parse.urlencode(query)).geturl()
+
+
+def paginated(fn: Callable):
+    @wraps(fn)
+    def inner(client: "BaseClient", url: str, options: "ClientOptions"):
+        """
+
+        Args:
+            client:
+            url:
+            options:
+        """
+        if page := options.pagination.get("page", False):
+            resp = client.get(page, options).json()
+            return resp["results"]
+
+        results = []
+        page = url
+        while page:
+            resp = client.get(page, options).json()
+            results.extend(resp["results"])
+            page = resp["next"]
+
+        return results
 
 
 def handles_bad_metadata(fallback_meta: Callable[[Dict], BaseModel]) -> Callable[[Dict], T]:

@@ -73,7 +73,12 @@ class ClientOptions(BaseModel):
         request_args = {**self.request_args, **other.request_args}
         headers = {**self.headers, **other.headers}
         query_args = {**self.query_args, **other.query_args}
-        return ClientOptions(payload=payload, request_args=request_args, headers=headers, query_args=query_args)
+        return ClientOptions(
+            payload=payload,
+            request_args=request_args,
+            headers=headers,
+            query_args=query_args,
+        )
 
 
 def validate_connection_arguments(
@@ -635,7 +640,8 @@ PRIORITY_ORDER_MAP = {
 
 
 def segmented_caller(
-    func: Callable[[BaseClient, Sequence[T], ClientOptions], R], priority_order: Optional[Tuple] = None
+    func: Callable[[BaseClient, Sequence[T], ClientOptions], R],
+    priority_order: Optional[Tuple] = None,
 ) -> Callable[[BaseClient, Sequence[T], ClientOptions], list[R]]:
     """
 
@@ -831,8 +837,8 @@ def client_get_url(client: BaseClient, url: str, options: ClientOptions = Client
     """
     if options.query_args:
         url = add_query_params(url, options.query_args)
-    breakpoint()
-    # return paginated_get(client, url, options)
+
+    return paginated_get(client, url, options)
 
 
 @delete.register

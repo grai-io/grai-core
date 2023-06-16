@@ -134,7 +134,11 @@ def get_from_node_named_id(
 
     """
     options = options.copy()
-    options.query_args = {**options.query_args, "name": grai_type.name, "namespace": grai_type.namespace}
+    options.query_args = {
+        **options.query_args,
+        "name": grai_type.name,
+        "namespace": grai_type.namespace,
+    }
 
     result = get(client, "Node", options=options)
 
@@ -169,7 +173,10 @@ def finalize_edge(client: ClientV1, resp: Dict, options: ClientOptions = ClientO
     Raises:
 
     """
-    nodes = [get(client, "node", resp["source"]), get(client, "node", resp["destination"])]
+    nodes = [
+        get(client, "node", resp["source"]),
+        get(client, "node", resp["destination"]),
+    ]
 
     resp["source"] = nodes[0].spec
     resp["destination"] = nodes[1].spec
@@ -279,7 +286,11 @@ def get_from_edge_named_id(
 
     """
     options = options.copy()
-    options.query_args = {**options.query_args, "name": grai_type.name, "namespace": grai_type.namespace}
+    options.query_args = {
+        **options.query_args,
+        "name": grai_type.name,
+        "namespace": grai_type.namespace,
+    }
 
     resp = get(client, "Edge", options=options)
 
@@ -355,6 +366,7 @@ def get_workspace_by_name_v1(
         url = f"{client.get_url(grai_type)}?ref={name}"
     else:
         url = f"{client.get_url(grai_type)}?name={name}"
+
     resp = get(client, url, options=options)
 
     num_resp = len(resp)
