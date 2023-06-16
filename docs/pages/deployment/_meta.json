@@ -1,4 +1,5 @@
 {
   "docker": "Docker",
-  "kubernetes": "Kubernetes"
+  "kubernetes": "Kubernetes",
+  "no-dependencies": "Source"
 }

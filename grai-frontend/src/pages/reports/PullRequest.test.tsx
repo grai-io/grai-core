@@ -10,7 +10,9 @@ test("renders", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByRole("heading", { name: /Hello world/i })).toBeTruthy()
+    expect(
+      screen.getAllByRole("heading", { name: /Hello world/i })
+    ).toBeTruthy()
   })
 
   await waitFor(() => {

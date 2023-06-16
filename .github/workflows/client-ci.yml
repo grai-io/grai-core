@@ -4,12 +4,11 @@ on:
     paths:
       - "grai-client/**"
       - "grai-server/**"
-
+      - ".github/workflows/client-ci.yml"
 
 concurrency:
   group: ${{ github.ref }}-client-ci
   cancel-in-progress: true
-
 
 env:
   py_ver: "3.10"
@@ -65,6 +64,10 @@ jobs:
           DB_HOST: "postgres"
           DJANGO_SUPERUSER_USERNAME: null@grai.io
           DJANGO_SUPERUSER_PASSWORD: super_secret
+          CELERY_BROKER_URL: redis://redis:6379/0
+          CELERY_RESULT_BACKEND: redis://redis:6379/0
+          REDIS_GRAPH_CACHE_HOST: redis
+          DEBUG: true
         ports:
           - 8000:8000
         options: >-
@@ -72,6 +75,10 @@ jobs:
           --health-interval 2s
           --health-retries 10
           --health-start-period 30s
+      redis:
+        image: redis/redis-stack:latest
+        ports:
+          - 6379:6379
     steps:
       - uses: actions/checkout@v3
 

@@ -21,6 +21,8 @@ export interface GetGraphLoadTable_workspace_graph {
   name: string;
   display_name: string;
   namespace: string;
+  x: number;
+  y: number;
   data_source: string;
   columns: GetGraphLoadTable_workspace_graph_columns[];
   destinations: string[];

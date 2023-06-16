@@ -8,6 +8,8 @@ from redis import Redis
 from workspaces.models import Workspace
 
 from .graph_types import GraphColumn, GraphTable
+from grandalf.graphs import Vertex, Edge, Graph
+from grandalf.layouts import SugiyamaLayout
 
 
 class GraphCache:
@@ -78,6 +80,19 @@ class GraphCache:
             """,
             {
                 "id": str(node.id),
+            },
+        )
+
+    def update_node(self, id: str, x: int, y: int):
+        self.query(
+            """
+                MATCH (n {id: $id})
+                SET n.x = $x, n.y = $y
+            """,
+            {
+                "id": id,
+                "x": x,
+                "y": y,
             },
         )
 
@@ -159,7 +174,39 @@ class GraphCache:
             },
         )
 
-    def get_graph_result(self, where: str = "") -> List[GraphTable]:
+    def get_tables(self):
+        results = self.query(
+            """
+                MATCH (n:Table)
+                WITH
+                    n,
+                    {
+                        id: n.id
+                    } AS nodes
+                RETURN nodes
+            """
+        ).result_set
+
+        return [result[0] for result in results]
+
+    def get_table_edges(self):
+        results = self.query(
+            """
+                MATCH (source:Table)-[r:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY]->(destination:Table)
+                WITH
+                    r,
+                    {
+                        id: r.id,
+                        source_id: source.id,
+                        destination_id: destination.id
+                    } AS edges
+                RETURN edges
+            """
+        ).result_set
+
+        return [result[0] for result in results]
+
+    def get_graph_result(self, parameters: any = {}, where: str = "") -> List[GraphTable]:
         result = self.query(
             f"""
                 MATCH (table:Table)
@@ -189,11 +236,14 @@ class GraphCache:
                         display_name: table.display_name,
                         namespace: table.namespace,
                         data_source: table.data_source,
+                        x: table.x,
+                        y: table.y,
                         columns: columns,
                         destinations: destinations
                     }} AS tables
                 RETURN tables
             """,
+            parameters,
             timeout=10000,
         )
 
@@ -221,6 +271,8 @@ class GraphCache:
                     display_name=table.get("display_name"),
                     namespace=table.get("namespace"),
                     data_source=table.get("data_source"),
+                    x=table.get("x"),
+                    y=table.get("y"),
                     columns=columns,
                     sources=[],
                     destinations=table.get("destinations", []),
@@ -230,6 +282,12 @@ class GraphCache:
             )
 
         return tables
+
+    def get_range_graph_result(self, min_x: int, max_x: int, min_y: int, max_y: int):
+        return self.get_graph_result(
+            parameters={"min_x": min_x, "max_x": max_x, "min_y": min_y, "max_y": max_y},
+            where="WHERE $min_x <= table.x <= $max_x AND $min_y <= table.y <= $max_y",
+        )
 
     def get_filtered_graph_result(self, filter):
         if len(filter.metadata) == 0:
@@ -309,6 +367,8 @@ class GraphCache:
                         display_name: table.display_name,
                         namespace: table.namespace,
                         data_source: table.data_source,
+                        x: table.x,
+                        y: table.y,
                         columns: columns,
                         destinations: destinations,
                         table_destinations: table_destinations,
@@ -344,6 +404,8 @@ class GraphCache:
                     display_name=table.get("display_name"),
                     namespace=table.get("namespace"),
                     data_source=table.get("data_source"),
+                    x=table.get("x"),
+                    y=table.get("y"),
                     columns=columns,
                     sources=[],
                     destinations=table.get("destinations"),
@@ -370,3 +432,87 @@ class GraphCache:
         """
 
         return self.get_with_step_graph_result(n, parameters, where)
+
+    def layout_graph(self):
+        nodes = self.get_tables()
+        edges = self.get_table_edges()
+
+        vertexes = {}
+
+        class defaultview(object):
+            w, h = 200, 400
+
+        for node in nodes:
+            vertexes[node["id"]] = Vertex(node["id"])
+
+        V = list(vertexes.values())
+
+        for v in V:
+            v.view = defaultview()
+
+        E = [Edge(vertexes[edge["source_id"]], vertexes[edge["destination_id"]]) for edge in edges]
+
+        g = Graph(V, E)
+
+        print(len(V))
+        print(len(E))
+        print(len(g.C))
+
+        graphs = []
+        single_tables = []
+
+        for graph in g.C:
+            if len(graph.sV) == 1:
+                node = graph.sV[0]
+
+                single_tables.append(node)
+                continue
+
+            sug = SugiyamaLayout(graph)
+            sug.init_all()
+            sug.draw(20)
+
+            minX = 0
+            maxX = 0
+            # minY = 0
+            # maxY = 0
+
+            for vertex in graph.sV:
+                minX = min(minX, vertex.view.xy[1])
+                maxX = max(maxX, vertex.view.xy[1])
+                # minY = min(minY, vertex.view.xy[0])
+                # maxY = max(maxY, vertex.view.xy[0])
+
+            graphs.append(
+                {
+                    "minX": minX,
+                    "maxX": maxX,
+                    # "minY": minY,
+                    # "maxY": maxY,
+                    "nodes": graph.sV,
+                }
+            )
+
+        x = 0
+        y = 0
+
+        for graph in graphs:
+            for v in graph["nodes"]:
+                self.update_node(v.data, v.view.xy[1] + x + graph["minX"], v.view.xy[0])
+
+            x += graph["maxX"] - graph["minX"] + 400
+
+        start_x = x
+        index = 0
+
+        for table in single_tables:
+            self.update_node(table.data, x, y)
+
+            if index > 20:
+                y += 200
+                x = start_x
+                index = 0
+                continue
+
+            x += 500
+            index += 1

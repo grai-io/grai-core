@@ -60,6 +60,8 @@ export interface GetCommit_workspace_graph {
   name: string;
   display_name: string;
   namespace: string;
+  x: number;
+  y: number;
   data_source: string;
   columns: GetCommit_workspace_graph_columns[];
   destinations: string[];

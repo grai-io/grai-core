@@ -16,6 +16,16 @@ class Command(BaseCommand):
         parser.add_argument("workspace_id", type=str, nargs="?", default=None)
 
         parser.add_argument(
+            "--no-build",
+            action="store_true",
+        )
+
+        parser.add_argument(
+            "--layout",
+            action="store_true",
+        )
+
+        parser.add_argument(
             "--delete",
             action="store_true",
         )
@@ -36,9 +46,14 @@ class Command(BaseCommand):
             workspaces = Workspace.objects.all()
 
         for workspace in workspaces:
-            self.handle_workspace(workspace, options["delete"])
+            self.handle_workspace(
+                workspace,
+                delete=options["delete"],
+                layout=options["layout"],
+                no_build=options["no_build"],
+            )
 
-    def handle_workspace(self, workspace: Workspace, delete: bool):
+    def handle_workspace(self, workspace: Workspace, delete: bool, layout: bool, no_build: bool):
         self.workspace = workspace
 
         set_current_tenant(self.workspace)
@@ -49,9 +64,19 @@ class Command(BaseCommand):
             self.cache.clear_cache()
             self.stdout.write(self.style.SUCCESS('Successfully cleared cache for workspace "%s"' % self.workspace.name))
 
-        self.build_cache()
+        if not no_build:
+            self.build_cache()
 
-        self.stdout.write(self.style.SUCCESS('Successfully built cache for workspace "%s"' % self.workspace.name))
+            self.stdout.write(self.style.SUCCESS('Successfully built cache for workspace "%s"' % self.workspace.name))
+
+        if layout:
+            self.stdout.write(self.style.SUCCESS('Starting layout cache for workspace "%s"' % self.workspace.name))
+
+            self.cache.layout_graph()
+
+            self.stdout.write(
+                self.style.SUCCESS('Successfully layed out cache for workspace "%s"' % self.workspace.name)
+            )
 
     def build_cache(self):
         node_tqdm = self.tqdm(total=self.workspace.nodes.count())
