@@ -6,7 +6,6 @@ x-uffizzi:
     port: 8081
 
 services:
-
   server:
     image: "${SERVER_IMAGE}"
     volumes:
@@ -26,9 +25,9 @@ services:
       - CELERY_BROKER=redis://127.0.0.1:6379/0
       - CELERY_BACKEND=redis://127.0.0.1:6379/0
     deploy:
-          resources:
-            limits:
-              memory: 2000M
+      resources:
+        limits:
+          memory: 2000M
 
   db:
     image: postgres
@@ -43,21 +42,21 @@ services:
     image: "${FRONTEND_IMAGE}"
     entrypoint: /bin/sh
     command:
-         - "-c"
-         - "REACT_APP_SERVER_URL=$$UFFIZZI_URL/api /usr/share/nginx/html/env.sh && nginx -g \"daemon off;\""
+      - "-c"
+      - 'VITE_SERVER_URL=$$UFFIZZI_URL/api /usr/share/nginx/html/env.sh && nginx -g "daemon off;"'
     deploy:
-          resources:
-            limits:
-              memory: 2000M
+      resources:
+        limits:
+          memory: 2000M
 
   redis:
     image: redis:7-alpine
     ports:
       - "6379:6379"
     deploy:
-          resources:
-            limits:
-              memory: 500M
+      resources:
+        limits:
+          memory: 500M
 
   nginx:
     image: nginx:alpine
@@ -67,7 +66,7 @@ services:
   celery-worker:
     image: "${SERVER_IMAGE}"
     command:
-    - "/start-celeryworker"
+      - "/start-celeryworker"
     volumes:
       - ./grai-server/app/:/usr/src/app/
     environment:
@@ -84,9 +83,9 @@ services:
       - CELERY_BACKEND=redis://127.0.0.1:6379/0
       - SECRET_KEY="123456789"
     deploy:
-          resources:
-            limits:
-              memory: 2000M
+      resources:
+        limits:
+          memory: 2000M
 
   celery-beat-worker:
     image: "${SERVER_IMAGE}"
@@ -106,11 +105,11 @@ services:
       - CELERY_BACKEND=redis://127.0.0.1:6379/0
       - SECRET_KEY="123456789"
     command:
-    - "/start-celerybeat"
+      - "/start-celerybeat"
     deploy:
-          resources:
-            limits:
-              memory: 2000M
+      resources:
+        limits:
+          memory: 2000M
 
   flower:
     image: mher/flower
@@ -119,6 +118,6 @@ services:
     environment:
       - CELERY_BROKER_URL=redis://127.0.0.1:6379/0
     deploy:
-          resources:
-            limits:
-              memory: 2000M
+      resources:
+        limits:
+          memory: 2000M

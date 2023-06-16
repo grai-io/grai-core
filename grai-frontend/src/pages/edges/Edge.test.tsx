@@ -1,9 +1,9 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, render, screen, waitFor } from "testing"
 import { filtersMock } from "pages/Graph.test"
 import { GET_TABLES_AND_EDGES } from "components/edges/EdgeLineage"
+import { act, render, screen, waitFor } from "testing"
 import Edge, { GET_EDGE } from "./Edge"
 
 export const edgeMock = {

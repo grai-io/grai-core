@@ -1,28 +1,27 @@
 /* istanbul ignore file */
-import posthog, { Properties } from "posthog-js"
+import posthog, { Properties } from "posthog-js";
 
 export const posthogApiKey =
-  window._env_?.REACT_APP_POSTHOG_API_KEY ??
-  process.env.REACT_APP_POSTHOG_API_KEY
+  window._env_?.VITE_POSTHOG_API_KEY ?? process.env.VITE_POSTHOG_API_KEY;
 
 const posthogHost =
-  window._env_?.REACT_APP_POSTHOG_HOST ??
-  process.env.REACT_APP_POSTHOG_HOST ??
-  "https://app.posthog.com"
+  window._env_?.VITE_POSTHOG_HOST ??
+  process.env.VITE_POSTHOG_HOST ??
+  "https://app.posthog.com";
 
 if (posthogApiKey)
   posthog.init(posthogApiKey, {
     api_host: posthogHost,
-  })
+  });
 
 type Posthog = {
   identify: (
     new_distinct_id?: string | undefined,
     userPropertiesToSet?: Properties | undefined,
     userPropertiesToSetOnce?: Properties | undefined
-  ) => void
-  reset: (reset_device_id?: boolean | undefined) => void
-}
+  ) => void;
+  reset: (reset_device_id?: boolean | undefined) => void;
+};
 
 const resPosthog: Posthog = {
   identify: (
@@ -38,6 +37,6 @@ const resPosthog: Posthog = {
     ),
   reset: (reset_device_id?: boolean | undefined) =>
     posthogApiKey && posthog.reset(reset_device_id),
-}
+};
 
-export default resPosthog
+export default resPosthog;

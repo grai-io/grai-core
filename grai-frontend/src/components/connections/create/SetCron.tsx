@@ -10,7 +10,7 @@ type SetCronProps = {
 const SetCron: React.FC<SetCronProps> = ({ values, setValues }) => {
   const setCron =
     (field: keyof CronValue) => (event: ChangeEvent<HTMLInputElement>) => {
-      let cron: CronValue = values?.cron
+      const cron: CronValue = values?.cron
         ? { ...values.cron }
         : {
             minutes: "*",

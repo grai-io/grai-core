@@ -1,6 +1,6 @@
 import React from "react"
-import { render, screen } from "testing"
 import { enrichColumn } from "helpers/columns"
+import { render, screen } from "testing"
 import ColumnTests from "./ColumnTests"
 
 test("renders empty", async () => {

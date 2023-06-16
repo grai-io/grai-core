@@ -9,11 +9,11 @@ import {
   ListItemText,
   Divider,
 } from "@mui/material"
-import posthog from "posthog"
 import { Link } from "react-router-dom"
 import useWorkspace from "helpers/useWorkspace"
 import useAuth from "components/auth/useAuth"
 import Profile from "components/icons/Profile"
+import posthog from "posthog"
 
 type ProfileMenuProps = {
   expand?: boolean
