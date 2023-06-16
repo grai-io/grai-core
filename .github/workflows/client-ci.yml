@@ -65,6 +65,7 @@ jobs:
           DJANGO_SUPERUSER_USERNAME: null@grai.io
           DJANGO_SUPERUSER_PASSWORD: super_secret
           REDIS_GRAPH_CACHE_HOST: redis
+          DEBUG: true
         ports:
           - 8000:8000
         options: >-
