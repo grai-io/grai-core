@@ -24,6 +24,7 @@ else:
 if TYPE_CHECKING:
     from grai_client.endpoints.client import BaseClient, ClientOptions
 
+
 P = ParamSpec("P")
 T = TypeVar("T")
 
