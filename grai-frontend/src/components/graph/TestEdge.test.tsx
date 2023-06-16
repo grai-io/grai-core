@@ -30,6 +30,31 @@ test("renders", async () => {
   )
 })
 
+test("renders highlight", async () => {
+  const data = {
+    highlight: true,
+  }
+
+  render(
+    <ReactFlowProvider>
+      <svg>
+        <TestEdge
+          id="1"
+          sourceX={100}
+          sourceY={100}
+          targetX={200}
+          targetY={200}
+          sourcePosition={Position.Top}
+          targetPosition={Position.Bottom}
+          source="1"
+          target="2"
+          data={data}
+        />
+      </svg>
+    </ReactFlowProvider>
+  )
+})
+
 test("renders errors", async () => {
   const data = {
     tests: [

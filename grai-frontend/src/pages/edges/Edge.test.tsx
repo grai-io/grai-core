@@ -2,6 +2,7 @@ import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
+import { filtersMock } from "pages/Graph.test"
 import { GET_TABLES_AND_EDGES } from "components/edges/EdgeLineage"
 import Edge, { GET_EDGE } from "./Edge"
 
@@ -9,8 +10,8 @@ export const edgeMock = {
   request: {
     query: GET_EDGE,
     variables: {
-      organisationName: "",
-      workspaceName: "",
+      organisationName: "default",
+      workspaceName: "demo",
       edgeId: "",
     },
   },
@@ -44,12 +45,14 @@ export const edgeMock = {
   },
 }
 
-const mocks = [edgeMock]
+const mocks = [edgeMock, filtersMock, filtersMock]
 
 test("renders", async () => {
   render(<Edge />, {
     mocks,
     withRouter: true,
+    path: ":organisationName/:workspaceName",
+    route: "/default/demo/",
   })
 
   await waitFor(() => {
@@ -121,12 +124,14 @@ test("lineage", async () => {
   const mocks = [
     edgeMock,
     edgeMock,
+    filtersMock,
+    filtersMock,
     {
       request: {
         query: GET_TABLES_AND_EDGES,
         variables: {
-          organisationName: "",
-          workspaceName: "",
+          organisationName: "default",
+          workspaceName: "demo",
           edgeId: "1",
           n: 0,
         },
@@ -142,6 +147,8 @@ test("lineage", async () => {
                 name: "Table2",
                 display_name: "Table2",
                 data_source: "test",
+                x: 0,
+                y: 0,
                 columns: [],
                 destinations: [],
                 table_destinations: [],
@@ -153,6 +160,8 @@ test("lineage", async () => {
                 name: "Table10",
                 display_name: "Table10",
                 data_source: "test",
+                x: 0,
+                y: 0,
                 columns: [],
                 destinations: [],
                 table_destinations: [],
@@ -168,6 +177,8 @@ test("lineage", async () => {
   render(<Edge />, {
     mocks,
     withRouter: true,
+    path: ":organisationName/:workspaceName",
+    route: "/default/demo",
   })
 
   await waitFor(() => {
@@ -189,12 +200,14 @@ test("lineage error", async () => {
   const mocks = [
     edgeMock,
     edgeMock,
+    filtersMock,
+    filtersMock,
     {
       request: {
         query: GET_TABLES_AND_EDGES,
         variables: {
-          organisationName: "",
-          workspaceName: "",
+          organisationName: "default",
+          workspaceName: "demo",
           edgeId: "1",
           n: 0,
         },
@@ -208,6 +221,8 @@ test("lineage error", async () => {
   render(<Edge />, {
     mocks,
     withRouter: true,
+    path: ":organisationName/:workspaceName",
+    route: "/default/demo/",
   })
 
   await waitFor(() => {
@@ -220,5 +235,54 @@ test("lineage error", async () => {
 
   await waitFor(() => {
     expect(screen.getByText("Error!")).toBeInTheDocument()
+  })
+})
+
+test("lineage empty", async () => {
+  const user = userEvent.setup()
+
+  const mocks = [
+    edgeMock,
+    edgeMock,
+    filtersMock,
+    filtersMock,
+    {
+      request: {
+        query: GET_TABLES_AND_EDGES,
+        variables: {
+          organisationName: "default",
+          workspaceName: "demo",
+          edgeId: "1",
+          n: 0,
+        },
+      },
+      result: {
+        data: {
+          workspace: {
+            id: "1",
+            graph: [],
+          },
+        },
+      },
+    },
+  ]
+
+  render(<Edge />, {
+    mocks,
+    withRouter: true,
+    path: ":organisationName/:workspaceName",
+    route: "/default/demo/",
+  })
+
+  await waitFor(() => {
+    expect(screen.getAllByText("Lineage")).toBeTruthy()
+  })
+
+  await act(
+    async () => await user.click(screen.getByRole("tab", { name: /Lineage/i }))
+  )
+
+  await waitFor(() => {
+    expect(screen.getByText("No tables found")).toBeInTheDocument()
   })
 })

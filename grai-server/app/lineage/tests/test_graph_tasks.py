@@ -2,7 +2,7 @@ import uuid
 
 import pytest
 
-from lineage.graph_tasks import cache_edge, cache_node
+from lineage.graph_tasks import cache_edge, cache_node, layout
 from lineage.models import Edge, Node
 from workspaces.models import Organisation, Workspace
 
@@ -60,3 +60,8 @@ def test_cache_edge(test_edge):
 @pytest.mark.django_db
 def test_cache_edge_delete(test_edge):
     cache_edge(test_edge.id, delete=True)
+
+
+@pytest.mark.django_db
+def test_layout(test_workspace):
+    layout(test_workspace.id)

@@ -60,6 +60,8 @@ export const GET_PULL_REQUEST = gql`
         name
         display_name
         namespace
+        x
+        y
         data_source
         columns {
           id
