@@ -5,6 +5,7 @@ on:
       - "grai-cli/**"
       - "grai-client/**"
       - "grai-server/**"
+      - ".github/workflows/cli-ci.yml"
 
 concurrency:
   group: ${{ github.ref }}-cli-ci
@@ -71,6 +72,10 @@ jobs:
           --health-interval 2s
           --health-retries 10
           --health-start-period 30s
+      redis:
+        image: redis/redis-stack:latest
+        ports:
+          - 6379:6379
     steps:
       - uses: actions/checkout@v3
 
