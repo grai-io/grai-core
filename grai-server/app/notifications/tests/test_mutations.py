@@ -1,8 +1,8 @@
 import uuid
 
 import pytest
-from notifications.models import Alert
 from django_multitenant.utils import set_current_tenant
+from notifications.models import Alert
 
 from api.schema import schema
 from api.tests.common import (
@@ -10,11 +10,11 @@ from api.tests.common import (
     generate_filter,
     generate_username,
     generate_workspace,
+    test_alert,
     test_basic_context,
     test_context,
     test_organisation,
     test_user,
-    test_alert,
     test_workspace,
     generate_source,
 )

@@ -14,6 +14,7 @@ interface Test {
 
 export type TestData = {
   tests?: Test[]
+  highlight?: boolean
 }
 
 const TestEdge: React.FC<EdgeProps<TestData>> = ({
@@ -54,6 +55,8 @@ const TestEdge: React.FC<EdgeProps<TestData>> = ({
           stroke:
             errorCount > 0
               ? lighten(theme.palette.error.light, 0.3)
+              : data?.highlight
+              ? theme.palette.secondary.main
               : undefined,
         }}
         onDoubleClick={() => workspaceNavigate(`edges/${id}`)}

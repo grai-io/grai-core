@@ -3,8 +3,12 @@ from typing import Any, Dict, List, Literal, Sequence, Type, Union
 from grai_schemas import config as base_config
 from grai_schemas.generics import DefaultValue
 from grai_schemas.v1 import EdgeV1, NodeV1
-from grai_schemas.v1.metadata.edges import EdgeTypeLabels, TableToColumnMetadata
-from grai_schemas.v1.metadata.nodes import ColumnMetadata, NodeTypeLabels, TableMetadata
+from grai_schemas.v1.metadata.edges import EdgeMetadataTypeLabels, TableToColumnMetadata
+from grai_schemas.v1.metadata.nodes import (
+    ColumnMetadata,
+    NodeMetadataTypeLabels,
+    TableMetadata,
+)
 from multimethod import multimethod
 
 from grai_source_flat_file.models import ID, Column, Edge, Table
@@ -42,7 +46,7 @@ def build_grai_metadata_from_column(current: Column, version: Literal["v1"] = "v
     """
     data = {
         "version": version,
-        "node_type": NodeTypeLabels.column.value,
+        "node_type": NodeMetadataTypeLabels.column.value,
         "node_attributes": {
             "data_type": current.data_type,
             "is_nullable": current.is_nullable,
@@ -68,7 +72,7 @@ def build_grai_metadata_from_node(current: Table, version: Literal["v1"] = "v1")
     """
     data = {
         "version": version,
-        "node_type": NodeTypeLabels.table.value,
+        "node_type": NodeMetadataTypeLabels.table.value,
         "node_attributes": {},
         "tags": [config.metadata_id],
     }
@@ -93,7 +97,7 @@ def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") 
         "version": version,
         "tags": [config.metadata_id],
     }
-    return TableToColumnMetadata(edge_type=EdgeTypeLabels.table_to_column.value, **data)
+    return TableToColumnMetadata(edge_type=EdgeMetadataTypeLabels.table_to_column.value, **data)
 
 
 @multimethod

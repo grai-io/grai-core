@@ -24,8 +24,6 @@ class Organisation(models.Model):
 
 
 class Workspace(TenantModel):
-    tenant_id = "id"
-
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     organisation = models.ForeignKey(
@@ -40,8 +38,12 @@ class Workspace(TenantModel):
     def __str__(self):
         return f"{self.organisation.name}/{self.name}"
 
+    @property
     def ref(self):
         return f"{self.organisation.name}/{self.name}"
+
+    class TenantMeta:
+        tenant_field_name = "id"
 
     class Meta:
         constraints = [

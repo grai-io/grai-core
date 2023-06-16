@@ -22,7 +22,7 @@ from dbt_artifacts_parser.parsers.manifest.manifest_v1 import (
     ParsedSnapshotNode,
     ParsedSourceDefinition,
 )
-from grai_schemas.v1.metadata.edges import EdgeTypeLabels
+from grai_schemas.v1.metadata.edges import EdgeMetadataTypeLabels
 
 from grai_source_dbt.loaders.base import BaseManifestLoader
 from grai_source_dbt.models.grai import Column, Edge, EdgeTerminus
@@ -180,7 +180,7 @@ class ManifestLoaderV1(BaseManifestLoader):
         for table in self.node_map.values():
             for column in table.columns.values():
                 column = self.columns[(table.unique_id, column.name)]
-                edge = self.make_edge(table, column, Constraint("bt"), EdgeTypeLabels.table_to_column)
+                edge = self.make_edge(table, column, Constraint("bt"), EdgeMetadataTypeLabels.table_to_column)
                 result.append(edge)
 
             # Seeds don't have depends_on and will error without this check.
@@ -192,12 +192,14 @@ class ManifestLoaderV1(BaseManifestLoader):
                         source_node = self.manifest.sources[parent_str]
                     else:
                         continue
-                    edge = self.make_edge(source_node, table, Constraint("dbtm"), EdgeTypeLabels.table_to_table, True)
+                    edge = self.make_edge(
+                        source_node, table, Constraint("dbtm"), EdgeMetadataTypeLabels.table_to_table, True
+                    )
                     result.append(edge)
 
         for table in self.manifest.sources.values():
             for column in table.columns.values():
                 column = self.columns[(table.unique_id, column.name)]
-                edge = self.make_edge(table, column, Constraint("bt"), EdgeTypeLabels.table_to_column)
+                edge = self.make_edge(table, column, Constraint("bt"), EdgeMetadataTypeLabels.table_to_column)
                 result.append(edge)
         return result

@@ -13,6 +13,7 @@ from rest_framework_simplejwt.views import (
 from strawberry.django.views import AsyncGraphQLView
 
 from api.schema import schema
+from .views import index
 
 spectacular_settings = {
     "SCHEMA_PATH_PREFIX": "/api/v1/",
@@ -20,6 +21,7 @@ spectacular_settings = {
 
 
 urlpatterns = [
+    path("", index, name="index"),
     path("admin/", admin.site.urls),
     # path("api/v1/health/", include("health.urls"), name="health"),
     path("api/v1/auth/jwttoken/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
@@ -45,6 +47,10 @@ urlpatterns = [
         SpectacularSwaggerView.as_view(url_name="schema", template_name="swagger-ui.html"),
         name="swagger-ui",
     ),
-    path("api/v1/schema/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
+    path(
+        "api/v1/schema/redoc/",
+        SpectacularRedocView.as_view(url_name="schema"),
+        name="redoc",
+    ),
     path("health/", include("health_check.urls"), name="health"),
 ]

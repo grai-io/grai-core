@@ -14,10 +14,10 @@ from installations.github import Github
 from installations.models import Branch, Commit, PullRequest, Repository
 from rest_framework import routers
 from lineage.models import Source
+from workspaces.models import Workspace
 
 from .models import Connection, Connector, Run, RunFile
 from .views import ConnectionViewSet, ConnectorViewSet, RunViewSet
-from workspaces.models import Workspace
 
 app_name = "connections"
 

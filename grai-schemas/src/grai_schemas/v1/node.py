@@ -5,6 +5,7 @@ from grai_schemas.generics import GraiBaseModel
 from grai_schemas.v1.generics import ID, BaseID, NamedID, UuidID
 from grai_schemas.v1.metadata.metadata import MetadataV1
 from grai_schemas.v1.metadata.nodes import GenericNodeMetadataV1
+from pydantic import Field, validator
 
 
 class NodeNamedID(NamedID):
@@ -28,7 +29,18 @@ class BaseSpec(GraiBaseModel):
     is_active: Optional[bool] = True
     display_name: Optional[str]
     workspace: Optional[UUID]
-    metadata: MetadataV1 = MetadataV1(grai=GenericNodeMetadataV1(node_type="Node"))
+    metadata: MetadataV1 = MetadataV1(grai=GenericNodeMetadataV1(node_type="Generic"))
+
+    @validator("metadata", always=True, pre=True)
+    def validate_metadata(cls, v: Optional[Union[Dict, MetadataV1]]) -> MetadataV1:
+        if isinstance(v, MetadataV1):
+            return v
+        elif isinstance(v, dict):
+            v.setdefault("grai", GenericNodeMetadataV1(node_type="Generic"))
+            return MetadataV1(**v)
+        elif v is None:
+            return MetadataV1(grai=GenericNodeMetadataV1(node_type="Generic"))
+        raise ValueError(f"Invalid metadata: {v}. Expected either None, a dict, or a MetadataV1 instance.")
 
 
 class NamedSpec(NodeNamedID, BaseSpec):

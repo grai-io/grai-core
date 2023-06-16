@@ -1,6 +1,6 @@
 ---
-title: MySQL
-description: Documentation for Grai's MySQL GitHub action.
+title: MySQL GitHub Action
+description: Documentation for Grai's MySQL GitHub Action GitHub action.
 ---
 
 # MySQL 

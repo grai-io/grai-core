@@ -2,9 +2,10 @@ from typing import Literal, Optional, Union
 from uuid import UUID
 
 from grai_schemas.generics import GraiBaseModel
+from pydantic import BaseModel
 
 
-class V1Mixin(GraiBaseModel):
+class V1Mixin(BaseModel):
     """ """
 
     version: Literal["v1"] = "v1"

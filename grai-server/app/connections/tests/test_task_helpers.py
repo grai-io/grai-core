@@ -50,7 +50,7 @@ def test_node_v1():
             "name": "node1",
             "namespace": "default",
             "display_name": "node1",
-            "metadata": {"grai": {"node_type": "Node"}},
+            "metadata": {"grai": {"node_type": "Generic"}},
         }
     )
 
@@ -72,7 +72,7 @@ def test_edge_v1(test_workspace, test_source_node, test_destination_node):
                 "namespace": "default",
                 "id": str(test_destination_node.id),
             },
-            "metadata": {"grai": {"edge_type": "Edge"}},
+            "metadata": {"grai": {"edge_type": "Generic"}},
         }
     )
 
@@ -121,7 +121,7 @@ def mock_node(test_workspace):
     return Node(
         workspace=test_workspace,
         name=str(uuid.uuid4()),
-        metadata={"grai": {"node_type": "Node"}},
+        metadata={"grai": {"node_type": "Generic"}},
     )
 
 
@@ -143,7 +143,7 @@ def mock_edge(source, destination, test_workspace):
         name=str(uuid.uuid4()),
         source=source,
         destination=destination,
-        metadata={"grai": {"edge_type": "Edge"}},
+        metadata={"grai": {"edge_type": "Generic"}},
     )
 
 
@@ -234,7 +234,7 @@ class TestUpdate:
         assert updated["test"]["key"] == "this is a test"
         assert "grai" in updated
         assert isinstance(updated["grai"], dict)
-        assert updated["grai"]["node_type"] == "Node"
+        assert updated["grai"]["node_type"] == "Generic"
 
         assert "test2" in updated
         assert updated["test2"] == 2

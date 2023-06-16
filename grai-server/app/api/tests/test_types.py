@@ -13,14 +13,14 @@ from workspaces.models import Workspace
 
 from .common import (
     generate_connection,
+    test_alert,
+    test_connection,
+    test_connector,
     test_context,
     test_organisation,
     test_source,
     test_user,
     test_workspace,
-    test_connector,
-    test_connection,
-    test_alert,
 )
 
 
@@ -149,6 +149,7 @@ async def test_workspace_connection_run(test_context, test_source):
     assert result.data["workspace"]["connection"]["last_successful_run"]["id"] == str(run.id)
 
 
+@pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_tables(test_context, test_source):
     context, organisation, workspace, user, membership = test_context
@@ -245,6 +246,7 @@ async def test_workspace_source(test_context, test_source):
     assert result.data["workspace"]["source"]["id"] == str(test_source.id)
 
 
+@pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_workspace_nodes(test_context, test_source):
     context, organisation, workspace, user, membership = test_context
@@ -278,6 +280,7 @@ async def test_workspace_nodes(test_context, test_source):
     assert result.data["workspace"]["nodes"]["data"][0]["id"] == str(node.id)
 
 
+@pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_workspace_node(test_context, test_source):
     context, organisation, workspace, user, membership = test_context
@@ -350,6 +353,7 @@ async def test_workspace_node_sources(test_context, test_source):
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_tables_pagination(test_context):
     context, organisation, workspace, user, membership = test_context
 
@@ -381,6 +385,7 @@ async def test_tables_pagination(test_context):
     assert result.data["workspace"]["id"] == str(workspace.id)
 
 
+@pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_table(test_context, test_source):
     context, organisation, workspace, user, membership = test_context
@@ -467,6 +472,7 @@ async def test_table(test_context, test_source):
     ] == str(destination.id)
 
 
+@pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_workspace_edges(test_context, test_source):
     context, organisation, workspace, user, membership = test_context
@@ -511,6 +517,7 @@ async def test_workspace_edges(test_context, test_source):
     assert result.data["workspace"]["edges"]["data"][0]["id"] == str(edge.id)
 
 
+@pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_edges_searched(test_context, test_source):
     context, organisation, workspace, user, membership = test_context
@@ -558,6 +565,7 @@ async def test_edges_searched(test_context, test_source):
     assert result.data["workspace"]["edges"]["data"][0]["id"] == str(edge.id)
 
 
+@pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_workspace_edge(test_context, test_source):
     context, organisation, workspace, user, membership = test_context
@@ -612,6 +620,7 @@ async def test_workspace_edge(test_context, test_source):
 
 @override_settings(ALGOLIA_SEARCH_KEY="apikey1")
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_workspace_search_key(test_context, mocker):
     mock = mocker.patch("api.types.Search")
     search_client = MagicMock()
@@ -643,6 +652,7 @@ async def test_workspace_search_key(test_context, mocker):
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_workspace_search_key_no_env(test_context, mocker):
     context, organisation, workspace, user, membership = test_context
 
@@ -713,6 +723,7 @@ async def generate_two_tables(workspace: Workspace):
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_table_source_tables(test_context):
     context, organisation, workspace, user, membership = test_context
 
@@ -751,6 +762,7 @@ async def test_table_source_tables(test_context):
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_table_destination_tables(test_context):
     context, organisation, workspace, user, membership = test_context
 
@@ -789,6 +801,7 @@ async def test_table_destination_tables(test_context):
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_tables_count(test_context):
     context, organisation, workspace, user, membership = test_context
 
@@ -824,6 +837,7 @@ async def test_tables_count(test_context):
     assert result.data["workspace"]["tables"]["meta"]["total"] == 1
 
 
+@pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_workspace_connections(test_context, test_source):
     context, organisation, workspace, user, membership = test_context
@@ -861,6 +875,7 @@ async def test_workspace_connections(test_context, test_source):
     assert result.data["workspace"]["connections"]["data"][0]["connector"]["id"] == str(connector.id)
 
 
+@pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_workspace_connection_runs(test_context, test_commit, test_source):
     context, organisation, workspace, user, membership = test_context
@@ -907,6 +922,7 @@ async def test_workspace_connection_runs(test_context, test_commit, test_source)
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_workspace_runs(test_context):
     context, organisation, workspace, user, membership = test_context
 
@@ -935,6 +951,7 @@ async def test_workspace_runs(test_context):
     assert result.data["workspace"]["id"] == str(workspace.id)
 
 
+@pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_workspace_runs_filter_by_repo(test_context, test_commit, test_source):
     context, organisation, workspace, user, membership = test_context
@@ -985,6 +1002,7 @@ async def test_workspace_runs_filter_by_repo(test_context, test_commit, test_sou
     assert result.data["workspace"]["runs"]["data"][0]["id"] == str(run.id)
 
 
+@pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_workspace_runs_filter_by_branch(test_context, test_branch, test_commit, test_source):
     context, organisation, workspace, user, membership = test_context
@@ -1034,6 +1052,7 @@ async def test_workspace_runs_filter_by_branch(test_context, test_branch, test_c
     assert result.data["workspace"]["runs"]["data"][0]["id"] == str(run.id)
 
 
+@pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_workspace_runs_filter_by_action(test_context, test_source):
     context, organisation, workspace, user, membership = test_context
@@ -1142,6 +1161,7 @@ async def test_workspace_runs_order_by_created_at(test_context, test_commit, tes
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_workspace_memberships(test_context):
     context, organisation, workspace, user, membership = test_context
 
@@ -1178,6 +1198,7 @@ async def test_workspace_memberships(test_context):
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_workspace_api_keys(test_context):
     context, organisation, workspace, user, membership = test_context
 
@@ -1268,6 +1289,7 @@ async def test_commit_with_pr(test_workspace, test_repository, test_branch, test
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_workspace_repositories(test_context, test_repository):
     context, organisation, workspace, user, membership = test_context
 
@@ -1304,6 +1326,7 @@ async def test_workspace_repositories(test_context, test_repository):
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_workspace_repositories_filter(test_context, test_repository):
     context, organisation, workspace, user, membership = test_context
 
@@ -1343,6 +1366,7 @@ async def test_workspace_repositories_filter(test_context, test_repository):
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_workspace_repository_by_id(test_context, test_repository):
     context, organisation, workspace, user, membership = test_context
 
@@ -1393,6 +1417,7 @@ async def test_workspace_repository_by_id(test_context, test_repository):
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_workspace_repository_by_reference(test_context, test_repository):
     context, organisation, workspace, user, membership = test_context
 
@@ -1430,6 +1455,7 @@ async def test_workspace_repository_by_reference(test_context, test_repository):
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_workspace_branches(test_context, test_branch):
     context, organisation, workspace, user, membership = test_context
 
@@ -1462,6 +1488,7 @@ async def test_workspace_branches(test_context, test_branch):
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_workspace_branch_by_id(test_context, test_branch):
     context, organisation, workspace, user, membership = test_context
 
@@ -1503,6 +1530,7 @@ async def test_workspace_branch_by_id(test_context, test_branch):
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_workspace_branch_by_reference(test_context, test_branch):
     context, organisation, workspace, user, membership = test_context
 
@@ -1534,6 +1562,7 @@ async def test_workspace_branch_by_reference(test_context, test_branch):
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_workspace_pull_requests(test_context, test_pull_request):
     context, organisation, workspace, user, membership = test_context
 
@@ -1568,6 +1597,7 @@ async def test_workspace_pull_requests(test_context, test_pull_request):
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_workspace_pull_request_by_id(test_context, test_pull_request):
     context, organisation, workspace, user, membership = test_context
 
@@ -1606,6 +1636,7 @@ async def test_workspace_pull_request_by_id(test_context, test_pull_request):
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_workspace_pull_request_by_reference(test_context, test_pull_request):
     context, organisation, workspace, user, membership = test_context
 
@@ -1639,6 +1670,7 @@ async def test_workspace_pull_request_by_reference(test_context, test_pull_reque
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_workspace_commits(test_context, test_commit):
     context, organisation, workspace, user, membership = test_context
 
@@ -1673,6 +1705,7 @@ async def test_workspace_commits(test_context, test_commit):
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_workspace_commit_by_id(test_context, test_commit):
     context, organisation, workspace, user, membership = test_context
 
@@ -1706,6 +1739,7 @@ async def test_workspace_commit_by_id(test_context, test_commit):
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_workspace_commit_by_reference(test_context, test_commit):
     context, organisation, workspace, user, membership = test_context
 
@@ -1739,6 +1773,7 @@ async def test_workspace_commit_by_reference(test_context, test_commit):
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_repository_branch_by_id(test_context, test_repository, test_branch):
     context, organisation, workspace, user, membership = test_context
 
@@ -1773,6 +1808,7 @@ async def test_repository_branch_by_id(test_context, test_repository, test_branc
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_repository_branch_by_reference(test_context, test_repository, test_branch):
     context, organisation, workspace, user, membership = test_context
 
@@ -1807,6 +1843,7 @@ async def test_repository_branch_by_reference(test_context, test_repository, tes
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_repository_pull_request_by_id(test_context, test_repository, test_pull_request):
     context, organisation, workspace, user, membership = test_context
 
@@ -1841,6 +1878,7 @@ async def test_repository_pull_request_by_id(test_context, test_repository, test
 
 
 @pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_repository_pull_request_by_reference(test_context, test_repository, test_pull_request):
     context, organisation, workspace, user, membership = test_context
 
@@ -2566,18 +2604,15 @@ async def test_graph_filter_filter(test_context):
 
 
 @pytest.mark.django_db
-async def test_workspace_source(test_context, test_source):
+async def test_graph_filter_xy(test_context):
     context, organisation, workspace, user, membership = test_context
 
     query = """
-        query Workspace($workspaceId: ID!, $sourceId: ID!) {
+        query Workspace($workspaceId: ID!) {
             workspace(id: $workspaceId) {
                 id
-                source(id: $sourceId) {
+                graph(filters: {min_x: 0, min_y: 0, max_x: 100, max_y: 100}) {
                     id
-                    name
-                    created_at
-                    updated_at
                 }
             }
         }
@@ -2585,17 +2620,12 @@ async def test_workspace_source(test_context, test_source):
 
     result = await schema.execute(
         query,
-        variable_values={
-            "workspaceId": str(workspace.id),
-            "sourceId": str(test_source.id),
-        },
+        variable_values={"workspaceId": str(workspace.id)},
         context_value=context,
     )
 
     assert result.errors is None
     assert result.data["workspace"]["id"] == str(workspace.id)
-    assert result.data["workspace"]["source"]["id"] == str(test_source.id)
-    assert result.data["workspace"]["source"]["name"] == test_source.name
 
 
 @pytest.mark.django_db

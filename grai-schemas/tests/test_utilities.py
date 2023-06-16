@@ -1,4 +1,7 @@
+import pytest
 from grai_schemas.utilities import merge
+from grai_schemas.v1 import EdgeV1, NodeV1
+from grai_schemas.v1.metadata.metadata import GraiMalformedNodeMetadataV1, MetadataV1
 from pydantic import BaseModel
 
 
@@ -123,3 +126,52 @@ class TestMerge:
         b = 2
 
         assert merge(a, b) == 2
+
+    def test_merge_valid_node_metadata_into_malformed(self):
+        a = GraiMalformedNodeMetadataV1()
+        b = MetadataV1(grai={"node_type": "Generic"})
+
+        assert merge(a, b) == MetadataV1(grai={"node_type": "Generic"})
+
+    def test_merge_valid_edge_metadata_into_malformed(self):
+        a = GraiMalformedNodeMetadataV1()
+        b = MetadataV1(grai={"edge_type": "Generic"})
+
+        assert merge(a, b) == MetadataV1(grai={"edge_type": "Generic"})
+
+    @pytest.mark.xfail
+    def test_marge_malformed_node_metadata_into_valid(self):
+        a = MetadataV1(grai={"node_type": "Generic"})
+        b = GraiMalformedNodeMetadataV1()
+
+        merge(a, b)
+
+    @pytest.mark.xfail
+    def test_marge_malformed_edge_metadata_into_valid(self):
+        a = MetadataV1(grai={"edge_type": "Generic"})
+        b = GraiMalformedNodeMetadataV1()
+
+        merge(a, b)
+
+    def test_merge_full_node_into_malformed_node(self):
+        base_node = {"name": "test", "namespace": "test", "data_source": "test", "metadata": {}}
+
+        a = NodeV1.from_spec(base_node)
+        a.spec.metadata = GraiMalformedNodeMetadataV1()
+        b = NodeV1.from_spec(base_node)
+        assert merge(a, b) == b
+
+    def test_merge_full_edge_into_malformed_node(self):
+        base_edge = {
+            "name": "test",
+            "namespace": "test",
+            "data_source": "test",
+            "source": {"name": "test", "namespace": "test"},
+            "destination": {"name": "test2", "namespace": "test"},
+            "metadata": {},
+        }
+
+        a = EdgeV1.from_spec(base_edge)
+        a.spec.metadata = GraiMalformedNodeMetadataV1()
+        b = EdgeV1.from_spec(base_edge)
+        assert merge(a, b) == b

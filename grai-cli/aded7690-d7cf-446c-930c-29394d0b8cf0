@@ -1,0 +1,9 @@
+auth:
+  password: super_secret
+  username: null@grai.io
+server:
+  api_version: v1
+  host: localhost
+  insecure: true
+  port: '8000'
+  workspace: default

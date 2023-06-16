@@ -5,14 +5,13 @@ from django.db.models import F, Q
 from django_multitenant.models import TenantModel
 
 from .graph_cache import GraphCache
+from .graph_tasks import cache_edge, cache_node
 from .managers import CacheManager, SourceManager
 
 
 # Create your models here.
 class Node(TenantModel):
     objects = CacheManager()
-
-    tenant_id = "workspace_id"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     namespace = models.CharField(max_length=255, default="default")
@@ -62,16 +61,16 @@ class Node(TenantModel):
         return self
 
     def cache_model(self, cache: GraphCache = None, delete: bool = False):
-        if cache is None:
-            cache = GraphCache(self.workspace_id)
-
-        if delete:
-            cache.delete_node(self)
-        else:
+        if cache:
             cache.cache_node(self)
+        else:
+            cache_node.delay(self.id, delete=delete)
 
     def __str__(self):
         return f"{self.display_name}"
+
+    class TenantMeta:
+        tenant_field_name = "workspace_id"
 
     class Meta:
         constraints = [
@@ -92,8 +91,6 @@ class Node(TenantModel):
 
 class Edge(TenantModel):
     objects = CacheManager()
-
-    tenant_id = "workspace_id"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
@@ -132,16 +129,16 @@ class Edge(TenantModel):
         return self
 
     def cache_model(self, cache: GraphCache = None, delete: bool = False):
-        if cache is None:
-            cache = GraphCache(self.workspace_id)
-
-        if delete:
-            cache.delete_edge(self)
-        else:
+        if cache:
             cache.cache_edge(self)
+        else:
+            cache_edge.delay(self.id, delete=delete)
 
     def __str__(self):
         return f"{self.source} -> {self.destination}"
+
+    class TenantMeta:
+        tenant_field_name = "workspace_id"
 
     class Meta:
         constraints = [
@@ -182,8 +179,6 @@ class Edge(TenantModel):
 
 
 class Filter(TenantModel):
-    tenant_id = "workspace_id"
-
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(
         max_length=255,
@@ -206,6 +201,9 @@ class Filter(TenantModel):
         on_delete=models.CASCADE,
     )
 
+    class TenantMeta:
+        tenant_field_name = "workspace_id"
+
 
 class Event(TenantModel):
     SUCCESS = "success"
@@ -217,8 +215,6 @@ class Event(TenantModel):
         (ERROR, "error"),
         (CANCELLED, "cancelled"),
     ]
-
-    tenant_id = "workspace_id"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     reference = models.CharField(max_length=255)
@@ -244,6 +240,9 @@ class Event(TenantModel):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class TenantMeta:
+        tenant_field_name = "workspace_id"
 
 
 class Source(TenantModel):
@@ -279,3 +278,6 @@ class Source(TenantModel):
 
     def __str__(self):
         return self.name
+
+    class TenantMeta:
+        tenant_field_name = "workspace_id"

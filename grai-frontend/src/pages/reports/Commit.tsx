@@ -59,6 +59,8 @@ export const GET_COMMIT = gql`
         name
         display_name
         namespace
+        x
+        y
         data_source
         columns {
           id

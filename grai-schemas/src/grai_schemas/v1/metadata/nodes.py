@@ -1,16 +1,20 @@
 from enum import Enum
 from typing import Any, List, Literal, Optional, Union
 
-from grai_schemas.generics import DefaultValue, HashableBaseModel
+from grai_schemas.generics import DefaultValue, HashableBaseModel, MalformedMetadata
 from grai_schemas.v1.generics import GraiBaseModel, V1Mixin
+from grai_schemas.v1.metadata.generics import GenericAttributes
 
 
-class NodeTypeLabels(Enum):
+class NodeMetadataTypeLabels(Enum):
     """ """
 
-    generic = "Node"
-    table = "Table"
-    column = "Column"
+    generic: Literal["Generic"] = "Generic"
+    table: Literal["Table"] = "Table"
+    column: Literal["Column"] = "Column"
+
+
+NodeMetadataTypeLabelLiterals = Literal["Generic", "Table", "Column"]
 
 
 class SourceType(Enum):
@@ -19,15 +23,28 @@ class SourceType(Enum):
     database = "SQL"
 
 
-class GenericNodeMetadataV1(V1Mixin):
+class BaseNodeMetadataV1(V1Mixin):
     """ """
 
-    node_type: Literal["Node"]
-    node_attributes: dict = {}
+    type: Literal["NodeV1"] = "NodeV1"
+    node_type: NodeMetadataTypeLabelLiterals
+    node_attributes: GenericAttributes
     tags: Optional[List[str]]
 
 
-class ColumnAttributes(GraiBaseModel):
+class MalformedNodeMetadataV1(MalformedMetadata, BaseNodeMetadataV1):
+    """ """
+
+    node_type: Optional[str] = "Malformed"
+    node_attributes: Optional[Any] = GenericAttributes()
+
+
+class GenericNodeMetadataV1(BaseNodeMetadataV1):
+    node_type: Literal["Generic"]
+    node_attributes: GenericAttributes = GenericAttributes()
+
+
+class ColumnAttributes(V1Mixin, GenericAttributes):
     """ """
 
     data_type: Optional[str]  # This will need to be standardized
@@ -37,20 +54,20 @@ class ColumnAttributes(GraiBaseModel):
     is_primary_key: Optional[bool]
 
 
-class ColumnMetadata(GenericNodeMetadataV1):
+class ColumnMetadata(BaseNodeMetadataV1):
     """ """
 
     node_type: Literal["Column"]
     node_attributes: ColumnAttributes = ColumnAttributes()
 
 
-class TableAttributes(HashableBaseModel):
+class TableAttributes(V1Mixin, GenericAttributes):
     """ """
 
     pass
 
 
-class TableMetadata(GenericNodeMetadataV1):
+class TableMetadata(BaseNodeMetadataV1):
     """ """
 
     node_type: Literal["Table"]

@@ -4,6 +4,8 @@ export const sourceTable = {
   name: "N1",
   display_name: "N1",
   data_source: "test",
+  x: 0,
+  y: 0,
   columns: [
     {
       id: "c1",
@@ -23,6 +25,8 @@ export const destinationTable = {
   name: "N2 Node",
   display_name: "N2 Node",
   data_source: "test",
+  x: 0,
+  y: 0,
   columns: [
     {
       id: "c2",
@@ -42,6 +46,8 @@ export const spareTable = {
   name: "N3",
   display_name: "N3",
   data_source: "test",
+  x: 0,
+  y: 0,
   columns: [],
   destinations: [],
   table_destinations: [],

@@ -461,6 +461,10 @@ class GraphFilter:
     edge_id: Optional[strawberry.ID] = strawberry.UNSET
     n: Optional[int] = strawberry.UNSET
     filter: Optional[strawberry.ID] = strawberry.UNSET
+    min_x: Optional[int] = strawberry.UNSET
+    max_x: Optional[int] = strawberry.UNSET
+    min_y: Optional[int] = strawberry.UNSET
+    max_y: Optional[int] = strawberry.UNSET
 
 
 @strawberry.input
@@ -806,6 +810,9 @@ class Workspace:
             filter = await FilterModel.objects.aget(id=filters.filter)
 
             return graph.get_filtered_graph_result(filter)
+
+        if filters and filters.min_x is not None and filters.max_x is not strawberry.UNSET:
+            return graph.get_range_graph_result(filters.min_x, filters.max_x, filters.min_y, filters.max_y)
 
         return graph.get_graph_result()
 

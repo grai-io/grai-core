@@ -2,6 +2,7 @@ import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
+import { filtersMock } from "pages/Graph.test"
 import { GET_TABLES_AND_EDGES } from "components/tables/TableLineage"
 import Table, { GET_TABLE } from "./Table"
 
@@ -9,8 +10,8 @@ export const tableMock = {
   request: {
     query: GET_TABLE,
     variables: {
-      organisationName: "",
-      workspaceName: "",
+      organisationName: "default",
+      workspaceName: "demo",
       tableId: "",
     },
   },
@@ -77,6 +78,8 @@ test("renders", async () => {
   render(<Table />, {
     mocks,
     withRouter: true,
+    path: ":organisationName/:workspaceName",
+    route: "/default/demo/",
   })
 
   await waitFor(() => {
@@ -142,14 +145,16 @@ test("lineage", async () => {
   const user = userEvent.setup()
 
   const mocks = [
+    filtersMock,
+    filtersMock,
     tableMock,
     tableMock,
     {
       request: {
         query: GET_TABLES_AND_EDGES,
         variables: {
-          organisationName: "",
-          workspaceName: "",
+          organisationName: "default",
+          workspaceName: "demo",
           tableId: "1",
           n: 1,
         },
@@ -165,6 +170,8 @@ test("lineage", async () => {
                 display_name: "Table2",
                 namespace: "default",
                 data_source: "test",
+                x: 0,
+                y: 0,
                 columns: [],
                 destinations: [],
                 table_destinations: [],
@@ -180,6 +187,8 @@ test("lineage", async () => {
   render(<Table />, {
     mocks,
     withRouter: true,
+    path: ":organisationName/:workspaceName",
+    route: "/default/demo/",
   })
 
   await waitFor(() => {
@@ -201,6 +210,8 @@ test("expand all", async () => {
   render(<Table />, {
     mocks,
     withRouter: true,
+    path: ":organisationName/:workspaceName",
+    route: "/default/demo/",
   })
 
   await waitFor(() => {
@@ -230,6 +241,8 @@ test("click row", async () => {
   render(<Table />, {
     mocks,
     withRouter: true,
+    path: ":organisationName/:workspaceName",
+    route: "/default/demo/",
   })
 
   await waitFor(() => {
@@ -263,6 +276,8 @@ test("search", async () => {
   render(<Table />, {
     mocks,
     withRouter: true,
+    path: ":organisationName/:workspaceName",
+    route: "/default/demo/",
   })
 
   await waitFor(() => {
