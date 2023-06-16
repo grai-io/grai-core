@@ -1,6 +1,6 @@
 import { fireEvent, within } from "testing"
 
-export const input = (autocomplete: HTMLElement, value: string = "T") => {
+export const input = (autocomplete: HTMLElement, value = "T") => {
   autocomplete.focus()
   const input = within(autocomplete).getByRole("combobox")
   fireEvent.change(input, { target: { value } })

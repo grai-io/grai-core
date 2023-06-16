@@ -36,7 +36,7 @@ const useSearchParams = (): {
     clear?: boolean | null
   ) => void
 } => {
-  let [searchParams, setSearchParams] = baseUseSearchParams()
+  const [searchParams, setSearchParams] = baseUseSearchParams()
 
   const setSearchParam = (
     field: string,

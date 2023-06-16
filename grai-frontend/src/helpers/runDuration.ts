@@ -66,8 +66,8 @@ const periodToText = (
 
 export const durationToString = (
   duration: DurationObjectUnits,
-  length: number = 2,
-  long: boolean = false
+  length = 2,
+  long = false
 ) => {
   if (
     (duration.years ?? 0) +
@@ -80,7 +80,7 @@ export const durationToString = (
   )
     return "0s"
 
-  let res: string[] = []
+  const res: string[] = []
 
   if (duration.years) res.push(periodToText(duration.years, "year", long))
   if (duration.months) res.push(periodToText(duration.months, "month", long))
@@ -95,8 +95,8 @@ export const durationToString = (
 
 export const durationAgo = (
   input: DateTime | string,
-  length: number = 2,
-  long: boolean = true
+  length = 2,
+  long = true
 ) =>
   durationToString(
     Interval.fromDateTimes(
