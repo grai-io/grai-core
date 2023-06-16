@@ -1,8 +1,8 @@
 import React, { ReactNode } from "react"
 import { ApolloProvider } from "@apollo/client"
+import make_client from "client"
 import useLocalStorage from "helpers/useLocalStorage"
 import { AuthProvider } from "components/auth/AuthContext"
-import make_client from "client"
 
 type BackendProviderProps = {
   children: ReactNode

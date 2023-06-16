@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react"
 import { gql, useLazyQuery } from "@apollo/client"
 import { useSearchParams } from "react-router-dom"
 import { Viewport } from "reactflow"
+import theme from "theme"
 import useWorkspace from "helpers/useWorkspace"
 import GraphComponent, {
   ResultError,
@@ -9,7 +10,6 @@ import GraphComponent, {
 } from "components/graph/GraphComponent"
 import PageLayout from "components/layout/PageLayout"
 import GraphError from "components/utils/GraphError"
-import theme from "theme"
 import {
   GetTablesAndEdges,
   GetTablesAndEdgesVariables,
