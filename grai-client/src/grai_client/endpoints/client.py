@@ -8,6 +8,7 @@ from typing import (
     Callable,
     Coroutine,
     Dict,
+    Generator,
     Iterable,
     List,
     Literal,
@@ -18,9 +19,9 @@ from typing import (
     TypeVar,
     Union,
 )
-from urllib.parse import urlparse
 
 import httpx
+from furl import furl
 from grai_schemas.base import Edge, Node
 from httpx import Auth, BasicAuth, QueryParams, Request, Response
 from multimethod import multimethod
@@ -48,6 +49,25 @@ OptionType = Union[Dict, "ClientOptions"]
 ResultTypes = Union[Optional[GraiType], Sequence[Optional[GraiType]]]
 SegmentedCallerType = Callable[["BaseClient", Sequence, "ClientOptions"], List[T]]
 ProtocolType = Union[Literal["http"], Literal["https"]]
+
+
+class HttpxClientManager:
+    def __init__(self, client_args: Dict, auth: Optional[Auth] = None):
+        self.client_args = client_args
+        self.auth = auth
+
+    def __enter__(self):
+        self.client = httpx.Client(**self.client_args)
+        if self.auth is not None:
+            self.client.auth = self.auth
+
+        return self.client
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.client.close()
+
+    def __getattr__(self, item):
+        return getattr(self.client, item)
 
 
 class ClientOptions(BaseModel):
@@ -89,7 +109,7 @@ def validate_connection_arguments(
     port: Optional[str] = None,
     protocol: Optional[ProtocolType] = None,
     insecure: Optional[bool] = None,
-) -> Tuple[str, str, Optional[str], ProtocolType, bool]:
+) -> Tuple[str, str, str, ProtocolType, bool]:
     """
 
     Args:
@@ -104,45 +124,42 @@ def validate_connection_arguments(
     Raises:
 
     """
+
     if url is not None:
         # derive from url
-        parsed_url = urlparse(url)
-        url_protocol = parsed_url.scheme
-        url_host = parsed_url.hostname
-        url_port = str(parsed_url.port) if parsed_url.port is not None else None
-        url_insecure = True if url_protocol == "http" else False
+        parsed_url = furl(url)
 
-        if protocol is not None and url_protocol != protocol:
+        if protocol is not None and parsed_url.scheme != protocol:
             message = (
-                f"The provided url `{url}` uses the protocol {url_protocol}, but you've specified `protocol={protocol}`."
-                f" Because these values differ we've defaulted to the protocol specified in the url"
-            )
-            warnings.warn(message)
-        if host is not None and url_host != host:
-            message = (
-                f"The provided url `{url}` uses the host {url_host}, but you've specified `host={host}`."
-                f" Because these values differ we've defaulted to the host specified in the url"
-            )
-            warnings.warn(message)
-        if port is not None and url_port != port:
-            message = (
-                f"The provided url `{url}` uses the port {url_port} (which may come from it's protocol), but you've "
-                f"specified `port={port}`. Because these values differ we've defaulted to the port "
+                f"The provided url `{url}` uses the protocol {parsed_url.scheme}, but you've specified "
+                f"`protocol={protocol}`. Because these values differ we've defaulted to the protocol "
                 f"specified in the url"
             )
             warnings.warn(message)
-        if insecure is not None and url_insecure != insecure:
+
+        if host is not None and parsed_url.host != host:
             message = (
-                f"The provided url `{url}` uses {'an insecure' if url_insecure else 'a secure'} connection, but you've "
-                f"specified `insecure={insecure}`. Because these values differ we've defaulted to the security level "
-                f"specified in the url."
+                f"The provided url `{url}` uses the host {parsed_url.host}, but you've specified `host={host}`."
+                f" Because these values differ we've defaulted to the host specified in the url"
             )
             warnings.warn(message)
 
-        protocol = url_protocol
-        host = url_host
-        port = url_port
-        insecure = url_insecure
+        if port is not None and parsed_url.port is not None and str(parsed_url.port) != port:
+            message = (
+                f"The provided url `{url}` uses the port {parsed_url.port} (which may come from it's protocol), "
+                f"but you've specified `port={port}`. Because these values differ we've defaulted to the port "
+                f"specified in the url"
+            )
+            warnings.warn(message)
+
+        if insecure is not None and (parsed_url.scheme == "http") and not insecure:
+            message = (
+                f"The provided url `{url}` uses {'an insecure' if (parsed_url.scheme == 'http') else 'a secure'} "
+                f"connection, but you've specified `insecure={insecure}`. Because these values differ we've defaulted "
+                f"to the security level specified in the url."
+            )
+            warnings.warn(message)
+
     else:
         assert host, f"Client connections require at minimum a value for `url` or `host`."
         if port is None and host == "localhost":
@@ -187,11 +204,16 @@ def validate_connection_arguments(
                 raise ValueError(f"Expected a valid integer value for `port` not {port}")
             url = f"{url}:{port}"
 
-    if protocol not in ("http", "https", None):
+        parsed_url = furl(url)
+
+    protocol = parsed_url.scheme
+    port = str(parsed_url.port)
+    insecure = True if parsed_url.scheme == "http" else False
+
+    if protocol not in ("http", "https"):
         message = f"Unexpected `protocol` value: {protocol}, `protocol` must be one of 'http' or 'https'."
         raise ValueError(message)
-
-    return url, host, port, protocol, insecure
+    return url, parsed_url.host, port, protocol, insecure
 
 
 class AuthValues(BaseModel):
@@ -224,13 +246,12 @@ class AuthValues(BaseModel):
 
         """
         if self.api_key is not None:
-            auth = APIKeyAuth(self.api_key.get_secret_value())
+            return APIKeyAuth(self.api_key.get_secret_value())
         elif self.username is not None and self.password is not None:
-            auth = BasicAuth(self.username, self.password.get_secret_value())
+            return BasicAuth(self.username, self.password.get_secret_value())
         else:
             message = "Auth requires either a not null value for api_key, or username and password."
             raise Exception(message)
-        return auth
 
 
 def async_requires_auth(func):
@@ -324,15 +345,20 @@ class BaseClient(abc.ABC):
     ):
         # TODO: Should require keyword arguments
         validated_args = validate_connection_arguments(url, host, port, protocol, insecure)
+
         if isinstance(httpx_client_args, str):
-            httpx_client_args = json.loads(httpx_client_args)
+            clean_client_args = json.loads(httpx_client_args)
+        elif httpx_client_args is None:
+            clean_client_args = {}
+        else:
+            clean_client_args = httpx_client_args
 
         self.url: str = validated_args[0]
         self.host: str = validated_args[1]
-        self.port: Optional[str] = validated_args[2]
+        self.port: str = validated_args[2]
         self.protocol: ProtocolType = validated_args[3]
         self.insecure: bool = validated_args[4]
-        self.httpx_client_args: Dict[str, Any] = httpx_client_args
+        self.httpx_client_args: Dict[str, Any] = clean_client_args
 
         self.health_endpoint: str = f"{self.url}/health"
 
@@ -345,12 +371,12 @@ class BaseClient(abc.ABC):
         self.default_request_args: Dict[str, str] = dict()
         self.default_query_args: Dict[str, str] = dict()
 
-        self.session: Optional[httpx.Client] = None
+        self.session: HttpxClientManager = HttpxClientManager(self.get_session_args())
 
         if (resp := self.server_health_status()).status_code != 200:
             raise Exception(f"Error connecting to server at {self.url}. Received response {resp.json()}")
 
-    def get_session(self) -> httpx.Client:
+    def get_session_args(self) -> Dict:
         """
 
         Args:
@@ -367,10 +393,7 @@ class BaseClient(abc.ABC):
             "transport": httpx.HTTPTransport(retries=3),
         }
         client_args.update(self.httpx_client_args if self.httpx_client_args is not None else {})
-
-        session = httpx.Client(**client_args)
-        session.auth = self.auth
-        return session
+        return client_args
 
     @property
     def default_options(self) -> ClientOptions:
@@ -453,6 +476,7 @@ class BaseClient(abc.ABC):
             self._auth = old_auth
             raise Exception(message)
 
+        self.session.auth = self._auth
         self.is_authenticated = True
 
     def authenticate(
@@ -523,10 +547,8 @@ class BaseClient(abc.ABC):
         options = self.default_options + options
         options.query_args = {**options.query_args, **kwargs}
 
-        with self.get_session() as session:
-            self.session = session
+        with self.session as _:
             result = func(self, *args, options=options)
-        self.session = None
         return result
 
     @requires_auth
@@ -598,8 +620,8 @@ class BaseClient(abc.ABC):
 
 
 def type_segmentation(
-    objs: Sequence, priority_order: Optional[Tuple[Type[T]]]
-) -> List[Tuple[List[int], Union[Sequence[T], Iterable[T]], Type[T]]]:
+    objs: Sequence[T], priority_order: Optional[Tuple[Type[T]]]
+) -> List[Tuple[List[int], Union[Generator[T, None, None], Iterable[T]], str]]:
     """
 
     Args:
@@ -612,7 +634,7 @@ def type_segmentation(
 
     """
     if priority_order is None:
-        return [(list(range(len(objs))), objs, Any)]
+        return [([i for i in range(len(objs))], objs, "Object")]
 
     obj_idx_map: Dict[Type[T], List[int]] = {}
     for idx, obj in enumerate(objs):
@@ -620,15 +642,15 @@ def type_segmentation(
         obj_idx_map.setdefault(obj_type, [])
         obj_idx_map[obj_type].append(idx)
 
-    result_iter: List[Tuple[List[int], Iterable[T], Type[T]]] = []
+    result_iter: List[Tuple[List[int], Union[Generator[T, None, None], Iterable[T]], str]] = []
     for prioritized_type in priority_order:
         type_keys = [obj_type for obj_type in obj_idx_map.keys() if issubclass(obj_type, prioritized_type)]
         for obj_type in type_keys:
-            idx = obj_idx_map.pop(obj_type)
-            result_iter.append((idx, (objs[i] for i in idx), obj_type))
+            idx_list = obj_idx_map.pop(obj_type)
+            result_iter.append((idx_list, (objs[i] for i in idx_list), obj_type.__name__))
 
-    for obj_type, idx in obj_idx_map.items():
-        result_iter.append((idx, (objs[i] for i in idx), obj_type))
+    for obj_type, idx_list in obj_idx_map.items():
+        result_iter.append((idx_list, (objs[i] for i in idx_list), obj_type.__name__))
 
     return result_iter
 
@@ -636,14 +658,14 @@ def type_segmentation(
 PRIORITY_ORDER_MAP = {
     "post": (Node, Edge),
     "delete": (Edge, Node),
-    "patch": None,
-    "get": None,
+    "patch": (),
+    "get": (),
 }
 
 
 def segmented_caller(
     func: Callable[[BaseClient, Sequence[T], ClientOptions], R],
-    priority_order: Optional[Tuple] = None,
+    priority_order: Optional[Tuple[Type[T]]] = None,
 ) -> Callable[[BaseClient, Sequence[T], ClientOptions], list[R]]:
     """
 
@@ -659,7 +681,9 @@ def segmented_caller(
 
     """
     if priority_order is None:
-        priority_order = PRIORITY_ORDER_MAP.get(func.__name__, ())
+        order = PRIORITY_ORDER_MAP.get(func.__name__, ())
+    else:
+        order = priority_order
 
     def inner(client: BaseClient, objs: Sequence[T], options: ClientOptions) -> List[R]:
         """
@@ -674,27 +698,26 @@ def segmented_caller(
         Raises:
 
         """
-        final_result = [None] * len(objs)
+
         pbar = tqdm(
-            type_segmentation(objs, priority_order),
+            type_segmentation(objs, order),
             desc=func.__name__.capitalize(),
             # colour='#ffb567',
             position=0,
         )
-        for index, iter_obj, obj_type in pbar:
+        result_dict = {}
+        for index, iter_obj, label in pbar:
             inner_pbar = tqdm(
                 iter_obj,
-                desc=obj_type.__name__,
-                unit=f" {obj_type.__name__}",
+                desc=label,
+                unit=f" {label}",
                 # colour='#8338ec',
                 position=1,
                 leave=True,
             )
-            result = [func(client, obj, options) for obj in inner_pbar]
+            result_dict.update({i: func(client, obj, options) for i, obj in zip(index, inner_pbar)})
 
-            for i, obj in zip(index, result):
-                final_result[i] = obj
-        return final_result
+        return [result_dict[i] for i in range(len(objs))]
 
     return inner
 

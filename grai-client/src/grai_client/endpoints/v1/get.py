@@ -51,7 +51,7 @@ def get_node_by_label_v1(
 
     """
     url = client.get_url(grai_type)
-    resp = paginated(get)(client, url, options=options)
+    resp = paginated(get)(client, url, options)
     return [node_builder(obj) for obj in resp]
 
 
@@ -204,7 +204,7 @@ def get_edge_by_label_v1(
 
     """
     url = client.get_url(grai_type)
-    resp = paginated(get)(client, url, options=options)
+    resp = paginated(get)(client, url, options)
     return [finalize_edge(client, edge) for edge in resp]
 
 
@@ -334,7 +334,7 @@ def get_all_workspaces(
     Raises:
 
     """
-    resp = paginated(get)(client, client.get_url(grai_type), options=options)
+    resp = paginated(get)(client, client.get_url(grai_type), options)
 
     if len(resp) == 0:
         return None
@@ -371,7 +371,7 @@ def get_workspace_by_name_v1(
     else:
         url = f"{client.get_url(grai_type)}?name={name}"
 
-    resp = paginated(get)(client, url, options=options)
+    resp = paginated(get)(client, url, options)
 
     num_resp = len(resp)
     if num_resp == 0:

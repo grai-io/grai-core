@@ -79,7 +79,7 @@ class ClientV1(BaseClient):
 
             if result is None:
                 raise Exception(f"No workspace found matching `{workspace}`")
-            elif "/" in workspace:  # workspace ref
+            elif isinstance(workspace, str) and "/" in workspace:  # workspace ref
                 if workspace != result.ref:
                     raise Exception(f"No workspace matching `ref={workspace}`")
             elif workspace != result.name:  # workspace name
@@ -90,8 +90,8 @@ class ClientV1(BaseClient):
             raise TypeError("Workspace must be either a string, uuid, or None.")
 
         self._workspace = str(workspace)
-        self.default_query_args["workspace"] = self.workspace
-        self.default_payload["workspace"] = self.workspace
+        self.default_query_args["workspace"] = self._workspace
+        self.default_payload["workspace"] = self._workspace
 
     def authenticate(
         self,

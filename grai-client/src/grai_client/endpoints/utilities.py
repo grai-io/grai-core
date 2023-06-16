@@ -7,11 +7,22 @@ import urllib
 import uuid
 import warnings
 from functools import wraps
-from typing import TYPE_CHECKING, Any, Callable, Dict, Literal, Optional, TypeVar, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Dict,
+    List,
+    Literal,
+    Optional,
+    Type,
+    TypeVar,
+    Union,
+)
 from uuid import UUID
 
 import orjson
-from grai_schemas.generics import GraiBaseModel
+from grai_schemas.generics import GraiBaseModel, MalformedMetadata
 from httpx import Response
 from pydantic import BaseModel, ValidationError
 from requests import RequestException
@@ -171,9 +182,11 @@ def add_query_params(url: str, params: dict) -> str:
     return url_parts._replace(query=urllib.parse.urlencode(query)).geturl()
 
 
-def paginated(fn: Callable):
+def paginated(
+    fn: Callable[["BaseClient", str, "ClientOptions"], Response]
+) -> Callable[["BaseClient", str, "ClientOptions"], List[Dict]]:
     @wraps(fn)
-    def inner(client: "BaseClient", url: str, options: "ClientOptions"):
+    def inner(client: "BaseClient", url: str, options: "ClientOptions") -> List[Dict]:
         """
 
         Args:
@@ -196,11 +209,13 @@ def paginated(fn: Callable):
     return inner
 
 
-def handles_bad_metadata(fallback_meta: Callable[[Dict], BaseModel]) -> Callable[[Dict], T]:
+def handles_bad_metadata(
+    fallback_meta: Type[MalformedMetadata],
+) -> Callable[[Callable[[Dict], T]], Callable[[Dict], T]]:
     """
 
     Args:
-        fallback_mea:
+        fallback_meta:
 
     Returns:
 
