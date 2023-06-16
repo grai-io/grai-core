@@ -4,6 +4,7 @@ on:
     paths:
       - "grai-client/**"
       - "grai-server/**"
+      - ".github/workflows/client-ci.yml"
 
 concurrency:
   group: ${{ github.ref }}-client-ci
