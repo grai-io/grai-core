@@ -182,17 +182,18 @@ def paginated(fn: Callable):
             options:
         """
         if page := options.pagination.get("page", False):
-            resp = client.get(page, options).json()
-            return resp["results"]
+            return fn(client, page, options).json()["results"]
 
         results = []
         page = url
         while page:
-            resp = client.get(page, options).json()
+            resp = fn(client, page, options).json()
             results.extend(resp["results"])
             page = resp["next"]
 
         return results
+
+    return inner
 
 
 def handles_bad_metadata(fallback_meta: Callable[[Dict], BaseModel]) -> Callable[[Dict], T]:

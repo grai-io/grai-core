@@ -73,11 +73,13 @@ class ClientOptions(BaseModel):
         request_args = {**self.request_args, **other.request_args}
         headers = {**self.headers, **other.headers}
         query_args = {**self.query_args, **other.query_args}
+        pagination = {**self.pagination, **other.pagination}
         return ClientOptions(
             payload=payload,
             request_args=request_args,
             headers=headers,
             query_args=query_args,
+            pagination=pagination,
         )
 
 
@@ -792,37 +794,8 @@ def patch_sequence(
 # -------------------------------------------- #
 
 
-def paginated_get(client: BaseClient, url: str, options: ClientOptions) -> List[Dict]:
-    """
-
-    Args:
-        client:
-        url:
-        options:
-    """
-    total_response = []
-
-    if page := options.pagination.get("page", False):
-        url = add_query_params(url, {"page": page})
-        response = client.session.get(url, headers=options.headers, **options.request_args)
-        response_status_check(response)
-        return response.json()["results"]
-
-    page = True
-    while page:
-        response = client.session.get(url, headers=options.headers, **options.request_args)
-        response_status_check(response)
-        response_payload = response.json()
-
-        total_response.extend(response_payload["results"])
-        page = response_payload["next"]
-        url = add_query_params(url, {"page": page})
-
-    return total_response
-
-
 @get.register
-def client_get_url(client: BaseClient, url: str, options: ClientOptions = ClientOptions()) -> List[Dict]:
+def client_get_url(client: BaseClient, url: str, options: ClientOptions = ClientOptions()) -> Response:
     """
 
     Args:
@@ -838,7 +811,9 @@ def client_get_url(client: BaseClient, url: str, options: ClientOptions = Client
     if options.query_args:
         url = add_query_params(url, options.query_args)
 
-    return paginated_get(client, url, options)
+    response = client.session.get(url, headers=options.headers, **options.request_args)
+    response_status_check(response)
+    return response
 
 
 @delete.register
