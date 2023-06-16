@@ -31,7 +31,29 @@ class ChildSourceSerializer(serializers.ModelSerializer):
         }
 
 
-class NodeSerializer(serializers.ModelSerializer):
+class SourceParentMixin:
+    def create(self, validated_data):
+        data_sources = validated_data.pop("data_sources", [])
+
+        instance = super().create(validated_data)
+
+        for data_source in data_sources:
+            source = Source.objects.get(**data_source)
+            self.add_source(instance, source)
+
+        return instance
+
+    def update(self, instance, validated_data):
+        data_sources = validated_data.pop("data_sources", [])
+
+        for data_source in data_sources:
+            source = Source.objects.get(**data_source)
+            self.add_source(instance, source)
+
+        return super().update(instance, validated_data)
+
+
+class NodeSerializer(SourceParentMixin, serializers.ModelSerializer):
     display_name = serializers.CharField(required=False)
     data_sources = ChildSourceSerializer(many=True, required=False)
 
@@ -51,28 +73,11 @@ class NodeSerializer(serializers.ModelSerializer):
             "updated_at",
         )
 
-    def create(self, validated_data):
-        data_sources = validated_data.pop("data_sources", [])
-
-        instance = super().create(validated_data)
-
-        for data_source in data_sources:
-            source = Source.objects.get(**data_source)
-            source.nodes.add(instance)
-
-        return instance
-
-    def update(self, instance, validated_data):
-        data_sources = validated_data.pop("data_sources", [])
-
-        for data_source in data_sources:
-            source = Source.objects.get(**data_source)
-            source.nodes.add(instance)
-
-        return super().update(instance, validated_data)
+    def add_source(self, instance: Node, source: Source):
+        source.nodes.add(instance)
 
 
-class EdgeSerializer(serializers.ModelSerializer):
+class EdgeSerializer(SourceParentMixin, serializers.ModelSerializer):
     name = serializers.CharField(required=False)
     display_name = serializers.CharField(required=False)
     data_sources = ChildSourceSerializer(many=True, required=False)
@@ -119,28 +124,27 @@ class EdgeSerializer(serializers.ModelSerializer):
         data = super().to_internal_value(data)
         return data
 
-    def create(self, validated_data):
-        data_sources = validated_data.pop("data_sources", [])
+    def add_source(self, instance: Edge, source: Source):
+        source.edges.add(instance)
 
-        instance = super().create(validated_data)
 
-        for data_source in data_sources:
-            source = Source.objects.get(**data_source)
-            source.edges.add(instance)
+class SourceChildMixin:
+    def create(self, instance):
+        source = Source.objects.get(pk=self.context["view"].kwargs["source_pk"])
+
+        self.add_source(instance, source)
 
         return instance
 
     def update(self, instance, validated_data):
-        data_sources = validated_data.pop("data_sources", [])
+        source = Source.objects.get(pk=self.context["view"].kwargs["source_pk"])
 
-        for data_source in data_sources:
-            source = Source.objects.get(**data_source)
-            source.edges.add(instance)
+        self.add_source(instance, source)
 
         return super().update(instance, validated_data)
 
 
-class SourceNodeSerializer(serializers.ModelSerializer):
+class SourceNodeSerializer(SourceChildMixin, serializers.ModelSerializer):
     display_name = serializers.CharField(required=False)
 
     class Meta:
@@ -159,27 +163,19 @@ class SourceNodeSerializer(serializers.ModelSerializer):
         )
 
     def create(self, validated_data):
-        node, updated = Node.objects.update_or_create(
+        instance, updated = Node.objects.update_or_create(
             name=validated_data["name"],
             namespace=validated_data["namespace"],
             defaults=validated_data,
         )
 
-        source = Source.objects.get(pk=self.context["view"].kwargs["source_pk"])
+        return super().create(instance)
 
-        source.nodes.add(node)
-
-        return node
-
-    def update(self, instance, validated_data):
-        source = Source.objects.get(pk=self.context["view"].kwargs["source_pk"])
-
+    def add_source(self, instance: Edge, source: Source):
         source.nodes.add(instance)
 
-        return super().update(instance, validated_data)
 
-
-class SourceEdgeSerializer(serializers.ModelSerializer):
+class SourceEdgeSerializer(SourceChildMixin, serializers.ModelSerializer):
     name = serializers.CharField(required=False)
     display_name = serializers.CharField(required=False)
 
@@ -222,21 +218,13 @@ class SourceEdgeSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        source = Source.objects.get(pk=self.context["view"].kwargs["source_pk"])
-
-        edge, updated = Edge.objects.update_or_create(
+        instance, updated = Edge.objects.update_or_create(
             source=validated_data["source"],
             destination=validated_data["destination"],
             defaults=validated_data,
         )
 
-        source.edges.add(edge)
+        return super().create(instance)
 
-        return edge
-
-    def update(self, instance, validated_data):
-        source = Source.objects.get(pk=self.context["view"].kwargs["source_pk"])
-
+    def add_source(self, instance: Edge, source: Source):
         source.edges.add(instance)
-
-        return super().update(instance, validated_data)
