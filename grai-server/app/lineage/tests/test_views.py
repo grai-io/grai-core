@@ -586,14 +586,14 @@ class TestSourceWithFilter:
         source = test_full_sources[1]
         url = self.get_url_by_name(source)
         response = client.get(url)
-        results = response.json()
+        results = response.json()["results"]
         assert len(results) == 1, f"Wrong number of sources returned in query. Expected 1, got {len(results)}"
 
     def test_query_by_name_is_correct(self, client, test_full_sources):
         source = test_full_sources[2]
         url = self.get_url_by_name(source)
         response = client.get(url)
-        results = response.json()[0]
+        results = response.json()["results"][0]
         assert results["name"] == source["name"]
         assert results["id"] == source["id"]
 
