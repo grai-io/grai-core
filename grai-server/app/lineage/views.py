@@ -1,4 +1,5 @@
 from django.db.models import Q
+from django.db.models.query import prefetch_related_objects
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -105,6 +106,39 @@ class EdgeViewSet(AuthenticatedViewSetMixin, ModelViewSet):
         return self.type.objects.filter(q_filter)
 
 
+class UpsertModelMixin:
+    def create(self, request, *args, **kwargs):
+        partial = kwargs.pop("partial", False)
+
+        try:
+            print("Get instance")
+            instance = self.get_upsert_object(request)
+
+        except self.type.DoesNotExist:
+            print("Create")
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=False)
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+        print("update")
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        queryset = self.filter_queryset(self.get_queryset())
+        if queryset._prefetch_related_lookups:
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance,
+            # and then re-prefetch related objects
+            instance._prefetched_objects_cache = {}
+            prefetch_related_objects([instance], *queryset._prefetch_related_lookups)
+
+        return Response(serializer.data)
+
+
 class SourceViewSet(AuthenticatedViewSetMixin, ModelViewSet):
     serializer_class = SourceSerializer
     type = Source
@@ -124,15 +158,21 @@ class SourceViewSet(AuthenticatedViewSetMixin, ModelViewSet):
         return self.type.objects.filter(q_filter).all()
 
 
-class SourceNodeViewSet(HasSourceViewSetMixin, NodeViewSet):
+class SourceNodeViewSet(HasSourceViewSetMixin, UpsertModelMixin, NodeViewSet):
     serializer_class = SourceNodeSerializer
 
     def get_queryset(self):
         return super()._get_queryset().filter(data_sources=self.kwargs["source_pk"]).all()
 
+    def get_upsert_object(self, request):
+        return self.type.objects.get(name=request.data["name"], namespace=request.data["namespace"])
 
-class SourceEdgeViewSet(HasSourceViewSetMixin, EdgeViewSet):
+
+class SourceEdgeViewSet(HasSourceViewSetMixin, UpsertModelMixin, EdgeViewSet):
     serializer_class = SourceEdgeSerializer
 
     def get_queryset(self):
         return super()._get_queryset().filter(data_sources=self.kwargs["source_pk"]).all()
+
+    def get_upsert_object(self, request):
+        return self.type.objects.get(name=request.data["name"], namespace=request.data["namespace"])

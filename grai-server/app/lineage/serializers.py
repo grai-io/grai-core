@@ -1,5 +1,8 @@
+from functools import cached_property
+
 from django.db.models import Q
 from grai_schemas.v1.node import NodeNamedID
+from rest_framework.fields import JSONField
 
 from rest_framework import serializers
 
@@ -129,23 +132,51 @@ class EdgeSerializer(SourceParentMixin, serializers.ModelSerializer):
 
 
 class SourceChildMixin:
-    def create(self, instance):
-        source = Source.objects.get(pk=self.context["view"].kwargs["source_pk"])
+    @cached_property
+    def source_model(self) -> Source:
+        return Source.objects.get(pk=self.context["view"].kwargs["source_pk"])
 
-        self.add_source(instance, source)
+    def create(self, validated_data):
+        instance = super().create(validated_data)
+
+        self.add_source(instance, self.source_model)
 
         return instance
 
     def update(self, instance, validated_data):
-        source = Source.objects.get(pk=self.context["view"].kwargs["source_pk"])
-
-        self.add_source(instance, source)
+        self.add_source(instance, self.source_model)
 
         return super().update(instance, validated_data)
 
 
-class SourceNodeSerializer(SourceChildMixin, serializers.ModelSerializer):
+class SourceMetadataField(JSONField):
+    def to_representation(self, value):
+        return value.get(self.parent.source_model.name)
+
+
+class SourceMetadataMixin:
+    def create(self, validated_data):
+        metadata = validated_data.pop("metadata", {})
+
+        validated_data["metadata"] = {
+            self.source_model.name: metadata,
+        }
+
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        existing = instance.metadata
+
+        new = validated_data.pop("metadata", {})
+
+        existing[self.source_model.name] = new
+
+        return super().update(instance, validated_data)
+
+
+class SourceNodeSerializer(SourceMetadataMixin, SourceChildMixin, serializers.ModelSerializer):
     display_name = serializers.CharField(required=False)
+    metadata = SourceMetadataField()
 
     class Meta:
         model = Node
@@ -162,22 +193,14 @@ class SourceNodeSerializer(SourceChildMixin, serializers.ModelSerializer):
             "updated_at",
         )
 
-    def create(self, validated_data):
-        instance, updated = Node.objects.update_or_create(
-            name=validated_data["name"],
-            namespace=validated_data["namespace"],
-            defaults=validated_data,
-        )
-
-        return super().create(instance)
-
     def add_source(self, instance: Edge, source: Source):
         source.nodes.add(instance)
 
 
-class SourceEdgeSerializer(SourceChildMixin, serializers.ModelSerializer):
+class SourceEdgeSerializer(SourceMetadataMixin, SourceChildMixin, serializers.ModelSerializer):
     name = serializers.CharField(required=False)
     display_name = serializers.CharField(required=False)
+    metadata = SourceMetadataField()
 
     class Meta:
         model = Edge
@@ -216,15 +239,6 @@ class SourceEdgeSerializer(SourceChildMixin, serializers.ModelSerializer):
                 pass
         data = super().to_internal_value(data)
         return data
-
-    def create(self, validated_data):
-        instance, updated = Edge.objects.update_or_create(
-            source=validated_data["source"],
-            destination=validated_data["destination"],
-            defaults=validated_data,
-        )
-
-        return super().create(instance)
 
     def add_source(self, instance: Edge, source: Source):
         source.edges.add(instance)
