@@ -7,7 +7,7 @@ import BaseNodeContent from "./BaseNodeContent"
 import HiddenTableButton from "./HiddenTableButton"
 import Placeholder from "./Placeholder"
 
-const zoomSelector = (s: ReactFlowState) => s.transform[2] >= 0.35
+const zoomSelector = (s: ReactFlowState) => s.transform[2] >= 0.15
 interface Column {
   id: string
   display_name: string
