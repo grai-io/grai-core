@@ -111,11 +111,9 @@ class UpsertModelMixin:
         partial = kwargs.pop("partial", False)
 
         try:
-            print("Get instance")
             instance = self.get_upsert_object(request)
 
         except self.type.DoesNotExist:
-            print("Create")
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=False)
             self.perform_create(serializer)
@@ -123,7 +121,6 @@ class UpsertModelMixin:
 
             return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-        print("update")
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)

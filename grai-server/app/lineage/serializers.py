@@ -81,29 +81,7 @@ class NodeSerializer(SourceParentMixin, serializers.ModelSerializer):
         source.nodes.add(instance)
 
 
-class EdgeSerializer(SourceParentMixin, serializers.ModelSerializer):
-    name = serializers.CharField(required=False)
-    display_name = serializers.CharField(required=False)
-    data_sources = ChildSourceSerializer(many=True, required=False)
-
-    def get_data_sources(self, instance):
-        return [item.name for item in instance.data_sources.all()]
-
-    class Meta:
-        model = Edge
-        fields = (
-            "id",
-            "name",
-            "display_name",
-            "namespace",
-            "metadata",
-            "is_active",
-            "source",
-            "destination",
-            "data_sources",
-        )
-        read_only_fields = ("created_at", "updated_at")
-
+class SourceDestinationMixin:
     def to_internal_value(self, data):
         if isinstance(source := data.get("source"), dict):
             source = NodeNamedID(**source)
@@ -127,6 +105,27 @@ class EdgeSerializer(SourceParentMixin, serializers.ModelSerializer):
                 pass
         data = super().to_internal_value(data)
         return data
+
+
+class EdgeSerializer(SourceParentMixin, SourceDestinationMixin, serializers.ModelSerializer):
+    name = serializers.CharField(required=False)
+    display_name = serializers.CharField(required=False)
+    data_sources = ChildSourceSerializer(many=True, required=False)
+
+    class Meta:
+        model = Edge
+        fields = (
+            "id",
+            "name",
+            "display_name",
+            "namespace",
+            "metadata",
+            "is_active",
+            "source",
+            "destination",
+            "data_sources",
+        )
+        read_only_fields = ("created_at", "updated_at")
 
     def add_source(self, instance: Edge, source: Source):
         source.edges.add(instance)
@@ -201,7 +200,12 @@ class SourceNodeSerializer(SourceMetadataMixin, SourceChildMixin, serializers.Mo
         source.nodes.add(instance)
 
 
-class SourceEdgeSerializer(SourceMetadataMixin, SourceChildMixin, serializers.ModelSerializer):
+class SourceEdgeSerializer(
+    SourceMetadataMixin,
+    SourceChildMixin,
+    SourceDestinationMixin,
+    serializers.ModelSerializer,
+):
     name = serializers.CharField(required=False)
     display_name = serializers.CharField(required=False)
     metadata = SourceMetadataField()
@@ -219,30 +223,6 @@ class SourceEdgeSerializer(SourceMetadataMixin, SourceChildMixin, serializers.Mo
             "destination",
         )
         read_only_fields = ("created_at", "updated_at")
-
-    def to_internal_value(self, data):
-        if isinstance(source := data.get("source"), dict):
-            source = NodeNamedID(**source)
-        if isinstance(destination := data.get("destination"), dict):
-            destination = NodeNamedID(**destination)
-
-        match (source, destination):
-            case (NodeNamedID(), str()):
-                node = Node.objects.get(Q(name=source.name) & Q(namespace=source.namespace))
-                data["source"] = node.id
-            case (str(), NodeNamedID()):
-                node = Node.objects.get(Q(name=destination.name) & Q(namespace=destination.namespace))
-                data["destination"] = node.id
-            case (NodeNamedID(), NodeNamedID()):
-                q_filter = Q(name=source.name) & Q(namespace=source.namespace)
-                q_filter |= Q(name=destination.name) & Q(namespace=destination.namespace)
-                model_source, model_destination = Node.objects.filter(q_filter)
-                data["source"] = model_source.id
-                data["destination"] = model_destination.id
-            case _:
-                pass
-        data = super().to_internal_value(data)
-        return data
 
     def add_source(self, instance: Edge, source: Source):
         source.edges.add(instance)
