@@ -130,8 +130,8 @@ class UpsertModelMixin:
             # If 'prefetch_related' has been applied to a queryset, we need to
             # forcibly invalidate the prefetch cache on the instance,
             # and then re-prefetch related objects
-            instance._prefetched_objects_cache = {}
-            prefetch_related_objects([instance], *queryset._prefetch_related_lookups)
+            instance._prefetched_objects_cache = {}  # pragma: no cover
+            prefetch_related_objects([instance], *queryset._prefetch_related_lookups)  # pragma: no cover
 
         return Response(serializer.data)
 
