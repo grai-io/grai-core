@@ -8,6 +8,7 @@ from redis import Redis
 from workspaces.models import Workspace
 
 from .graph_types import GraphColumn, GraphTable
+from .graph import Clause, GraphQuery, WhereClause
 from grandalf.graphs import Vertex, Edge, Graph
 from grandalf.layouts import SugiyamaLayout
 
@@ -206,11 +207,12 @@ class GraphCache:
 
         return [result[0] for result in results]
 
-    def get_graph_result(self, parameters: any = {}, where: str = "") -> List[GraphTable]:
-        result = self.query(
+    def get_graph_result(
+        self,
+        query: GraphQuery = GraphQuery(clauses=["MATCH (table:Table)"]),
+    ) -> List[GraphTable]:
+        query.add(
             f"""
-                MATCH (table:Table)
-                {where}
                 OPTIONAL MATCH (table:Table)-[:TABLE_TO_COLUMN]->(column:Column)
                 OPTIONAL MATCH (column)-[:COLUMN_TO_COLUMN]->(column_destination:Column)
                 OPTIONAL MATCH (table)-[:TABLE_TO_TABLE]->(destination:Table)
@@ -242,10 +244,10 @@ class GraphCache:
                         destinations: destinations
                     }} AS tables
                 RETURN tables
-            """,
-            parameters,
-            timeout=10000,
+            """
         )
+
+        result = self.query(str(query), query.get_parameters(), timeout=10000)
 
         tables = []
 
@@ -283,15 +285,24 @@ class GraphCache:
 
         return tables
 
-    def get_range_graph_result(self, min_x: int, max_x: int, min_y: int, max_y: int):
-        return self.get_graph_result(
-            parameters={"min_x": min_x, "max_x": max_x, "min_y": min_y, "max_y": max_y},
-            where="WHERE $min_x <= table.x <= $max_x AND $min_y <= table.y <= $max_y",
-        )
+    def filter_by_range(self, min_x: int, max_x: int, min_y: int, max_y: int) -> GraphQuery:
+        clauses = [
+            WhereClause(
+                wheres=["$min_x <= table.x <= $max_x", "$min_y <= table.y <= $max_y"],
+                parameters={
+                    "min_x": min_x,
+                    "max_x": max_x,
+                    "min_y": min_y,
+                    "max_y": max_y,
+                },
+            ),
+        ]
 
-    def get_filtered_graph_result(self, filter):
+        return GraphQuery(clauses=clauses)
+
+    def filter_by_filter(self, filter) -> GraphQuery:
         if len(filter.metadata) == 0:
-            return self.get_graph_result()
+            return None
 
         match = []
         where = []
@@ -326,9 +337,7 @@ class GraphCache:
             else:
                 raise Exception("Unknown filter type: " + row["type"])
 
-        where_clause = f"{' '.join(match)} WHERE ({') AND ('.join(where)})"
-
-        return self.get_graph_result(where=where_clause)
+        return GraphQuery(clauses=[match, [WhereClause(wheres=i) for i in where]])
 
     def get_with_step_graph_result(self, n: int, parameters: any = {}, where: str = None) -> List["GraphTable"]:
         result = self.query(

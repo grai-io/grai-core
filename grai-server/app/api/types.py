@@ -39,6 +39,7 @@ from workspaces.models import WorkspaceAPIKey as WorkspaceAPIKeyModel
 from workspaces.types import Organisation
 
 from .pagination import DataWrapper, Pagination
+from lineage.graph import GraphQuery
 
 
 @strawberry.enum
@@ -730,6 +731,8 @@ class Workspace:
     ) -> List[GraphTable]:
         graph = GraphCache(workspace=self)
 
+        query = GraphQuery(clauses=["MATCH (table:Table)"])
+
         if filters and filters.table_id:
             return graph.get_table_filtered_graph_result(filters.table_id, filters.n)
 
@@ -739,12 +742,15 @@ class Workspace:
         if filters and filters.filter:
             filter = await FilterModel.objects.aget(id=filters.filter)
 
-            return graph.get_filtered_graph_result(filter)
+            clause = graph.filter_by_filter(filter)
+
+            if clause:
+                query.add(clause)
 
         if filters and filters.min_x is not None and filters.max_x is not strawberry.UNSET:
-            return graph.get_range_graph_result(filters.min_x, filters.max_x, filters.min_y, filters.max_y)
+            query.add(graph.filter_by_range(filters.min_x, filters.max_x, filters.min_y, filters.max_y))
 
-        return graph.get_graph_result()
+        return graph.get_graph_result(query=query)
 
 
 @gql.django.filters.filter(MembershipModel, lookups=True)
