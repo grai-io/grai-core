@@ -1,6 +1,7 @@
 from functools import cached_property
 
 from django.db.models import Q
+from grai_schemas.utilities import merge
 from grai_schemas.v1.node import NodeNamedID
 from rest_framework.fields import JSONField
 
@@ -159,6 +160,7 @@ class SourceMetadataMixin:
         metadata = validated_data.pop("metadata", {})
 
         validated_data["metadata"] = {
+            **metadata,
             self.source_model.name: metadata,
         }
 
@@ -167,9 +169,11 @@ class SourceMetadataMixin:
     def update(self, instance, validated_data):
         existing = instance.metadata
 
-        new = validated_data.pop("metadata", {})
+        metadata = validated_data.pop("metadata", {})
 
-        existing[self.source_model.name] = new
+        new = {**metadata, self.source_model.name: metadata}
+
+        instance.metadata = merge(existing, new)
 
         return super().update(instance, validated_data)
 
