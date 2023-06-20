@@ -2,15 +2,15 @@ from typing import List
 
 import redis
 from django.conf import settings
+from grandalf.graphs import Edge, Graph, Vertex
+from grandalf.layouts import SugiyamaLayout
 from query_chunk import chunk
 from redis import Redis
 
 from workspaces.models import Workspace
 
+from .graph import GraphQuery
 from .graph_types import GraphColumn, GraphTable
-from .graph import Clause, GraphQuery, WhereClause
-from grandalf.graphs import Vertex, Edge, Graph
-from grandalf.layouts import SugiyamaLayout
 
 
 class GraphCache:
@@ -209,7 +209,7 @@ class GraphCache:
 
     def get_graph_result(
         self,
-        query: GraphQuery = GraphQuery(clauses=["MATCH (table:Table)"]),
+        query: GraphQuery,
     ) -> List[GraphTable]:
         query.add(
             f"""
@@ -246,6 +246,8 @@ class GraphCache:
                 RETURN tables
             """
         )
+
+        print(str(query), query.get_parameters())
 
         result = self.query(str(query), query.get_parameters(), timeout=10000)
 
@@ -285,27 +287,26 @@ class GraphCache:
 
         return tables
 
-    def filter_by_range(self, min_x: int, max_x: int, min_y: int, max_y: int) -> GraphQuery:
-        clauses = [
-            WhereClause(
-                wheres=["$min_x <= table.x <= $max_x", "$min_y <= table.y <= $max_y"],
-                parameters={
-                    "min_x": min_x,
-                    "max_x": max_x,
-                    "min_y": min_y,
-                    "max_y": max_y,
-                },
-            ),
-        ]
+    def filter_by_range(self, min_x: int, max_x: int, min_y: int, max_y: int, query: GraphQuery) -> GraphQuery:
+        query.where(
+            "$min_x <= table.x <= $max_x",
+            parameters={
+                "min_x": min_x,
+                "max_x": max_x,
+            },
+        ).where(
+            "$min_y <= table.y <= $max_y",
+            parameters={
+                "min_y": min_y,
+                "max_y": max_y,
+            },
+        )
 
-        return GraphQuery(clauses=clauses)
+        return query
 
-    def filter_by_filter(self, filter) -> GraphQuery:
+    def filter_by_filter(self, filter, query: GraphQuery) -> GraphQuery:
         if len(filter.metadata) == 0:
-            return None
-
-        match = []
-        where = []
+            return query
 
         for row in filter.metadata:
             value = row["value"]
@@ -313,12 +314,14 @@ class GraphCache:
             if row["type"] == "table":
                 if row["field"] == "tag":
                     if row["operator"] == "contains":
-                        where.append(f"'{value}' IN table.tags")
+                        query.where(f"'{value}' IN table.tags")
             elif row["type"] == "ancestor":
                 if row["field"] == "tag":
                     if row["operator"] == "contains":
-                        match.append("MATCH (table)<-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*]-(othertable:Table)")
-                        where.append(f"'{value}' IN othertable.tags")
+                        query.match(
+                            "(table)<-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*]-(othertable:Table)",
+                            where=f"'{value}' IN othertable.tags",
+                        )
             elif row["type"] == "no-ancestor":
                 if row["field"] == "tag":
                     if row["operator"] == "contains":
@@ -327,8 +330,10 @@ class GraphCache:
             elif row["type"] == "descendant":
                 if row["field"] == "tag":
                     if row["operator"] == "contains":
-                        match.append("MATCH (table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*]->(othertable:Table)")
-                        where.append(f"'{value}' IN othertable.tags")
+                        query.match(
+                            "(table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*]->(othertable:Table)",
+                            where=f"'{value}' IN othertable.tags",
+                        )
             elif row["type"] == "no-descendant":
                 if row["field"] == "tag":
                     if row["operator"] == "contains":
@@ -337,7 +342,7 @@ class GraphCache:
             else:
                 raise Exception("Unknown filter type: " + row["type"])
 
-        return GraphQuery(clauses=[match, [WhereClause(wheres=i) for i in where]])
+        return query
 
     def get_with_step_graph_result(self, n: int, parameters: any = {}, where: str = None) -> List["GraphTable"]:
         result = self.query(
