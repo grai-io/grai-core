@@ -44,14 +44,19 @@ class Match:
         self.wheres = wrap(where)
         self.parameters = parameters
 
-    def where(self, where: Union[Where, List[Where]]) -> "Match":
+    def where(self, where: Union[str, Where, List[Where]]) -> "Match":
+        if isinstance(where, str):
+            self.wheres.append(Where(where))
+
+            return self
+
         self.wheres.extend(wrap(where))
 
         return self
 
     def __str__(self) -> str:
         return (
-            ("MATCH OPTIONAL " if self.optional else "MATCH ")
+            ("OPTIONAL MATCH " if self.optional else "MATCH ")
             + self.match
             + ((" WHERE " + " AND ".join([str(w) for w in self.wheres])) if self.wheres else "")
         )
