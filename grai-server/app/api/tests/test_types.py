@@ -2430,6 +2430,116 @@ async def test_graph_filter_filter(test_context):
 
 
 @pytest.mark.django_db
+async def test_graph_filter_filter_tags(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    filter = await Filter.objects.acreate(
+        workspace=workspace,
+        name=str(uuid.uuid4()),
+        metadata=[{"type": "table", "field": "tag", "operator": "contains", "value": "test"}],
+        created_by=user,
+    )
+
+    query = """
+        query Workspace($workspaceId: ID!, $filterId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                graph(filters: {filter: $filterId}) {
+                    id
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={"workspaceId": str(workspace.id), "filterId": str(filter.id)},
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+
+
+@pytest.mark.django_db
+async def test_graph_filter_filter_ancestor_tags(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    filter = await Filter.objects.acreate(
+        workspace=workspace,
+        name=str(uuid.uuid4()),
+        metadata=[
+            {
+                "type": "ancestor",
+                "field": "tag",
+                "operator": "contains",
+                "value": "test",
+            }
+        ],
+        created_by=user,
+    )
+
+    query = """
+        query Workspace($workspaceId: ID!, $filterId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                graph(filters: {filter: $filterId}) {
+                    id
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={"workspaceId": str(workspace.id), "filterId": str(filter.id)},
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+
+
+@pytest.mark.django_db
+async def test_graph_filter_filter_descendant_tags(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    filter = await Filter.objects.acreate(
+        workspace=workspace,
+        name=str(uuid.uuid4()),
+        metadata=[
+            {
+                "type": "descendant",
+                "field": "tag",
+                "operator": "contains",
+                "value": "test",
+            }
+        ],
+        created_by=user,
+    )
+
+    query = """
+        query Workspace($workspaceId: ID!, $filterId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                graph(filters: {filter: $filterId}) {
+                    id
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={"workspaceId": str(workspace.id), "filterId": str(filter.id)},
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+
+
+@pytest.mark.django_db
 async def test_graph_filter_xy(test_context):
     context, organisation, workspace, user, membership = test_context
 

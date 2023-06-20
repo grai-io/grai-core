@@ -740,13 +740,13 @@ class Workspace:
         if filters and filters.edge_id:
             return graph.get_edge_filtered_graph_result(filters.edge_id, filters.n)
 
+        if filters and filters.min_x is not None and filters.max_x is not strawberry.UNSET:
+            graph.filter_by_range(filters.min_x, filters.max_x, filters.min_y, filters.max_y, query)
+
         if filters and filters.filter:
             filter = await FilterModel.objects.aget(id=filters.filter)
 
             graph.filter_by_filter(filter, query)
-
-        if filters and filters.min_x is not None and filters.max_x is not strawberry.UNSET:
-            graph.filter_by_range(filters.min_x, filters.max_x, filters.min_y, filters.max_y, query)
 
         return graph.get_graph_result(query=query)
 
