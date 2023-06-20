@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 import redis
 from django.conf import settings
@@ -26,7 +26,7 @@ class GraphCache:
             db=0,
         )
 
-    def query(self, query: str, parameters: any = {}, timeout: int = None):
+    def query(self, query: str, parameters: object = {}, timeout: int = None):
         return self.manager.graph(f"lineage:{str(self.workspace.id)}").query(query, parameters, timeout=timeout)
 
     def build_cache(self):
@@ -344,7 +344,9 @@ class GraphCache:
 
         return query
 
-    def get_with_step_graph_result(self, n: int, parameters: any = {}, where: str = None) -> List["GraphTable"]:
+    def get_with_step_graph_result(
+        self, n: int, parameters: object = {}, where: Optional[str] = None
+    ) -> List["GraphTable"]:
         result = self.query(
             f"""
                 MATCH (firsttable:Table)

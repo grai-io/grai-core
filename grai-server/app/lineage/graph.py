@@ -32,11 +32,15 @@ class Match:
         self,
         match: str,
         optional: bool = False,
-        where: Union[Where, List[Where]] = [],
+        where: Union[str, Where, List[Where]] = [],
         parameters: object = {},
     ):
         self.match = match
         self.optional = optional
+
+        if isinstance(where, str):
+            where = Where(where)
+
         self.wheres = wrap(where)
         self.parameters = parameters
 
