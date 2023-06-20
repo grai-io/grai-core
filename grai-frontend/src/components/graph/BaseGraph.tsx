@@ -1,6 +1,5 @@
 import React, { useState } from "react"
 import ReactFlow, {
-  Controls,
   Edge,
   EdgeTypes,
   getIncomers,
@@ -141,9 +140,7 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
         }}
         onMoveEnd={(_, viewport) => onMove && onMove(viewport)}
         fitView={fitView}
-      >
-        <Controls showInteractive={false} />
-      </ReactFlow>
+      />
       {loading && <Loading />}
     </ReactFlowProvider>
   )
