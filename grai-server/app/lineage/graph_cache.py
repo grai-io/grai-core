@@ -288,15 +288,15 @@ class GraphCache:
         return tables
 
     def filter_by_range(self, min_x: int, max_x: int, min_y: int, max_y: int, query: GraphQuery) -> GraphQuery:
-        query.where(
-            "$min_x <= table.x <= $max_x",
+        query.match(
+            "(table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*0..1]-(d)",
+            where=[
+                "$min_x <= d.x <= $max_x",
+                "$min_y <= d.y <= $max_y",
+            ],
             parameters={
                 "min_x": min_x,
                 "max_x": max_x,
-            },
-        ).where(
-            "$min_y <= table.y <= $max_y",
-            parameters={
                 "min_y": min_y,
                 "max_y": max_y,
             },
