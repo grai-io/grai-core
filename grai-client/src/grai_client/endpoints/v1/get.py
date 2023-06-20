@@ -2,12 +2,13 @@ from typing import Dict, List, Literal, Optional, TypeVar, Union
 from uuid import UUID
 
 from grai_schemas.v1 import EdgeV1, NodeV1
-from grai_schemas.v1.edge import EdgeNamedID, EdgeUuidID
+from grai_schemas.v1.edge import EdgeNamedID, EdgeUuidID, SourcedEdgeSpec, SourcedEdgeV1
 from grai_schemas.v1.metadata.metadata import (
     GraiMalformedEdgeMetadataV1,
     GraiMalformedNodeMetadataV1,
 )
-from grai_schemas.v1.node import NodeNamedID, NodeUuidID
+from grai_schemas.v1.node import NodeNamedID, NodeUuidID, SourcedNodeSpec, SourcedNodeV1
+from grai_schemas.v1.workspace import WorkspaceSpec, WorkspaceV1
 
 from grai_client.endpoints.client import ClientOptions
 from grai_client.endpoints.rest import get
@@ -17,8 +18,13 @@ from grai_client.endpoints.utilities import (
     paginated,
 )
 from grai_client.endpoints.v1.client import ClientV1
-from grai_client.schemas.labels import EdgeLabels, NodeLabels, WorkspaceLabels
-from grai_client.schemas.workspace import Workspace
+from grai_client.schemas.labels import (
+    EdgeLabels,
+    NodeLabels,
+    SourceEdgeLabels,
+    SourceNodeLabels,
+    WorkspaceLabels,
+)
 
 T = TypeVar("T", NodeV1, EdgeV1)
 X = TypeVar("X")
@@ -29,9 +35,22 @@ def node_builder(resp: Dict[str, X]) -> NodeV1:
     return NodeV1.from_spec(resp)
 
 
+@handles_bad_metadata(GraiMalformedNodeMetadataV1)
+def source_node_builder(resp: Dict[str, X]) -> SourcedNodeV1:
+    return SourcedNodeV1.from_spec(resp)
+
+
 @handles_bad_metadata(GraiMalformedEdgeMetadataV1)
 def edge_builder(resp: Dict[str, X]) -> EdgeV1:
     return EdgeV1.from_spec(resp)
+
+
+@handles_bad_metadata(GraiMalformedEdgeMetadataV1)
+def source_edge_builder(resp: Dict[str, X]) -> SourcedEdgeV1:
+    return SourcedEdgeV1.from_spec(resp)
+
+
+# ----- Nodes ----- #
 
 
 @get.register
@@ -41,9 +60,9 @@ def get_node_by_label_v1(
     """
 
     Args:
-        client (ClientV1):
-        grai_type (NodeLabels):
-        options (ClientOptions, optional):  (Default value = ClientOptions())
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
 
     Returns:
 
@@ -60,9 +79,9 @@ def get_node_v1(client: ClientV1, grai_type: NodeV1, options: ClientOptions = Cl
     """
 
     Args:
-        client (ClientV1):
-        grai_type (NodeV1):
-        options (ClientOptions, optional):  (Default value = ClientOptions())
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
 
     Returns:
 
@@ -82,10 +101,10 @@ def get_nodes_by_uuid_str_id(
     """
 
     Args:
-        client (ClientV1):
-        grai_type (NodeLabels):
-        node_uuid (Union[str, UUID]):
-        options (ClientOptions, optional):  (Default value = ClientOptions())
+        client:
+        grai_type:
+        node_uuid:
+        options:  (Default value = ClientOptions())
 
     Returns:
 
@@ -109,9 +128,9 @@ def get_from_node_uuid_id(
     """
 
     Args:
-        client (ClientV1):
-        grai_type (NodeUuidID):
-        options (ClientOptions, optional):  (Default value = ClientOptions())
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
 
     Returns:
 
@@ -128,9 +147,9 @@ def get_from_node_named_id(
     """
 
     Args:
-        client (ClientV1):
-        grai_type (NodeNamedID):
-        options (ClientOptions, optional):  (Default value = ClientOptions())
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
 
     Returns:
 
@@ -161,6 +180,70 @@ def get_from_node_named_id(
         raise Exception(message)
 
 
+# ----- SourcedNode ----- #
+
+
+@get.register
+def get_source_node_by_label_v1(
+    client: ClientV1, grai_type: SourceNodeLabels, options: ClientOptions = ClientOptions()
+) -> List[SourcedNodeV1]:
+    """
+
+    Args:
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
+    url = client.get_url(grai_type)
+    resp = paginated(get)(client, url, options)
+    return [source_node_builder(obj) for obj in resp]
+
+
+@get.register
+def get_source_node_by_source_node_v1(
+    client: ClientV1, grai_type: SourcedNodeV1, options: ClientOptions = ClientOptions()
+) -> Optional[SourcedNodeV1]:
+    """
+
+    Args:
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
+    return get(client, grai_type.spec, options)
+
+
+@get.register
+def get_source_node_by_source_node_v1(
+    client: ClientV1, grai_type: SourcedNodeSpec, options: ClientOptions = ClientOptions()
+) -> Optional[SourcedNodeV1]:
+    """
+
+    Args:
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
+    url = client.get_url(grai_type)
+    resp = get(client, url, options=options).json()
+    return source_node_builder(resp)
+
+
 # ----- Edges ----- #
 
 
@@ -168,9 +251,9 @@ def finalize_edge(client: ClientV1, resp: Dict, options: ClientOptions = ClientO
     """
 
     Args:
-        client (ClientV1):
-        resp (Dict):
-        options (ClientOptions, optional):  (Default value = ClientOptions())
+        client:
+        resp:
+        options:  (Default value = ClientOptions())
 
     Returns:
 
@@ -194,9 +277,9 @@ def get_edge_by_label_v1(
     """
 
     Args:
-        client (ClientV1):
-        grai_type (EdgeLabels):
-        options (ClientOptions, optional):  (Default value = ClientOptions())
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
 
     Returns:
 
@@ -218,10 +301,10 @@ def get_edge_by_uuid_str_id(
     """
 
     Args:
-        client (ClientV1):
-        grai_type (EdgeLabels):
-        edge_uuid (Union[str, UUID]):
-        options (ClientOptions, optional):  (Default value = ClientOptions())
+        client:
+        grai_type:
+        edge_uuid:
+        options:  (Default value = ClientOptions())
 
     Returns:
 
@@ -242,9 +325,9 @@ def get_edge_v1(client: ClientV1, grai_type: EdgeV1, options: ClientOptions = Cl
     """
 
     Args:
-        client (ClientV1):
-        grai_type (EdgeV1):
-        options (ClientOptions, optional):  (Default value = ClientOptions())
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
 
     Returns:
 
@@ -261,9 +344,9 @@ def get_from_edge_uuid_id(
     """
 
     Args:
-        client (ClientV1):
-        grai_type (EdgeUuidID):
-        options (ClientOptions, optional):  (Default value = ClientOptions())
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
 
     Returns:
 
@@ -280,9 +363,9 @@ def get_from_edge_named_id(
     """
 
     Args:
-        client (ClientV1):
-        grai_type (EdgeNamedID):
-        options (ClientOptions, optional):  (Default value = ClientOptions())
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
 
     Returns:
 
@@ -321,13 +404,13 @@ def get_all_workspaces(
     client: ClientV1,
     grai_type: WorkspaceLabels,
     options: ClientOptions = ClientOptions(),
-) -> Optional[List[Workspace]]:
+) -> Optional[List[WorkspaceV1]]:
     """
 
     Args:
-        client (ClientV1):
-        grai_type (WorkspaceLabels):
-        options (ClientOptions, optional):  (Default value = ClientOptions())
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
 
     Returns:
 
@@ -339,49 +422,97 @@ def get_all_workspaces(
     if len(resp) == 0:
         return None
     else:
-        return [Workspace(**item) for item in resp]
+        return [WorkspaceV1.from_spec(item) for item in resp]
 
 
 @get.register
-def get_workspace_by_name_v1(
+def get_workspace_by_uuid(
     client: ClientV1,
     grai_type: WorkspaceLabels,
-    name: str,
+    workspace_id: Union[UUID, str],
     options: ClientOptions = ClientOptions(),
-) -> Optional[Workspace]:
+) -> Optional[WorkspaceV1]:
     """
 
     Args:
-        client (ClientV1):
-        grai_type (WorkspaceLabels):
-        name (str):
-        options (ClientOptions, optional):  (Default value = ClientOptions())
+        client:
+        grai_type:
+        workspace_id:
+        options:  (Default value = ClientOptions())
 
     Returns:
 
     Raises:
 
     """
-    if is_valid_uuid(name):
-        url = f"{client.get_url(grai_type)}{name}/"
-        return get(client, url, options=options).json()
-    elif len(name.split("/")) == 2:
-        # this is a ref string i.e. org-name/workspace-name
-        url = f"{client.get_url(grai_type)}?ref={name}"
-    else:
-        url = f"{client.get_url(grai_type)}?name={name}"
+    url = client.get_url(grai_type)
+    if not is_valid_uuid(workspace_id):
+        message = f"The provided workspace id {workspace_id} is not a valid uuid."
+        raise ValueError(message)
+    url = f"{url}{workspace_id}/"
+    result = get(client, url, options=options)
+    return WorkspaceV1(**result.json())
 
-    resp = paginated(get)(client, url, options)
 
-    num_resp = len(resp)
-    if num_resp == 0:
+@get.register
+def get_workspace_by_workspace_v1(
+    client: ClientV1,
+    grai_type: WorkspaceV1,
+    options: ClientOptions = ClientOptions(),
+) -> Optional[WorkspaceV1]:
+    """
+
+    Args:
+        client:
+        grai_type:
+        name:
+        options:  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
+    return get(client, "Workspace", grai_type.spec, options=options)
+
+
+@get.register
+def get_workspace_by_spec(
+    client: ClientV1,
+    grai_type: WorkspaceSpec,
+    options: ClientOptions = ClientOptions(),
+) -> Optional[WorkspaceV1]:
+    """
+
+    Args:
+        client:
+        grai_type:
+        name:
+        options:  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
+    if grai_type.id is not None:
+        return get(client, "Workspace", grai_type.id, options=options)
+
+    options = options.copy()
+    options.query_args["ref"] = grai_type.ref
+
+    resp = get(client, "Workspace", options)
+
+    if resp is None:
         return None
-    elif num_resp == 1:
-        return Workspace(**resp[0])
+    elif len(resp) == 1:
+        return WorkspaceV1.from_spec(resp[0])
     else:
         raise Exception(
-            f"We were unable to identify a unique workspace matching `{name}` because more than one result was "
-            f"returned. This may be the result of belonging to multiple organizations with identical workspace "
-            f"names. You can narrow your query by instead providing a workspace ref composed of  "
-            "{org-name}/{workspace-name} or the UUID of the desired workspace.",
+            f"We were unable to identify a unique workspace matching ref=`{grai_type.ref}` because more than one result"
+            f" was returned. This looks like a bug in the client library. Please open an issue at "
+            f"www.github.com/grai-io/grai-core/issues."
         )
+
+
+# ----- Sources ------ #

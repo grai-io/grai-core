@@ -1,6 +1,6 @@
 from typing import Optional, TypeVar
 
-from grai_schemas.v1 import EdgeV1, NodeV1
+from grai_schemas.v1 import EdgeV1, NodeV1, SourcedEdgeV1, SourcedNodeV1, WorkspaceV1
 
 from grai_client.endpoints.client import ClientOptions
 from grai_client.endpoints.rest import get, patch
@@ -37,6 +37,27 @@ def patch_node_v1(client: ClientV1, grai_type: NodeV1, options: ClientOptions = 
 
 
 @patch.register
+def patch_sourced_node_v1(
+    client: ClientV1, grai_type: SourcedNodeV1, options: ClientOptions = ClientOptions()
+) -> SourcedNodeV1:
+    """
+
+    Args:
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
+    url = client.get_url(grai_type)
+    response = patch(client, url, grai_type.spec.dict(exclude_none=True), options=options)
+    return SourcedNodeV1.from_spec(response.json())
+
+
+@patch.register
 def patch_edge_v1(client: ClientV1, grai_type: EdgeV1, options: ClientOptions = ClientOptions()) -> Optional[EdgeV1]:
     """
 
@@ -66,3 +87,30 @@ def patch_edge_v1(client: ClientV1, grai_type: EdgeV1, options: ClientOptions = 
     response["source"] = {**payload["source"], "id": response["source"]}
     response["destination"] = {**payload["destination"], "id": response["destination"]}
     return EdgeV1.from_spec(response)
+
+
+@patch.register
+def patch_workspace_v1(
+    client: ClientV1, grai_type: WorkspaceV1, options: ClientOptions = ClientOptions()
+) -> Optional[WorkspaceV1]:
+    """
+
+    Args:
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
+    if grai_type.spec.id is None:
+        current = get(client, grai_type)
+        grai_type.spec.id = current.spec.id
+    url = f"{client.get_url(grai_type)}{grai_type.spec.id}/"
+    response = patch(client, url, grai_type.spec.dict(exclude_none=True), options=options)
+    response = response.json()
+    if response is None:
+        return None
+    return WorkspaceV1.from_spec(response)

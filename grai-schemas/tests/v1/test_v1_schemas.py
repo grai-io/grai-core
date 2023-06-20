@@ -4,8 +4,9 @@ import uuid
 import pytest
 from grai_schemas.base import Edge, Node
 from grai_schemas.schema import Schema
-from grai_schemas.v1 import EdgeV1, NodeV1
+from grai_schemas.v1 import EdgeV1, NodeV1, WorkspaceV1
 from grai_schemas.v1.mock import MockV1
+from pydantic import ValidationError
 
 
 def extra_metadata():
@@ -195,3 +196,31 @@ def test_edge_from_spec_preserves_extra():
     obj = EdgeV1.from_spec(obj_dict)
     assert hasattr(obj.spec.metadata, "test_values")
     assert obj.spec.metadata.test_values == (1, 2, 3)
+
+
+class TestWorkspaceV1:
+    @staticmethod
+    def test_default_workspace_valid_ref():
+        data = MockV1.workspace_dict()["spec"]
+        ws = WorkspaceV1.from_spec(data)
+
+    @staticmethod
+    def test_default_workspace_ref_handling():
+        data = MockV1.workspace_dict()["spec"]
+        data.pop("ref")
+        ws = WorkspaceV1.from_spec(data)
+        assert ws.spec.ref == f"{ws.spec.organisation.name}/{ws.spec.name}"
+
+    @staticmethod
+    @pytest.mark.xfail(raises=ValidationError)
+    def test_default_workspace_bad_ref():
+        data = MockV1.workspace_dict()["spec"]
+        data["ref"] = "test"
+        ws = WorkspaceV1.from_spec(data)
+
+    @staticmethod
+    @pytest.mark.xfail(raises=ValidationError)
+    def test_default_workspace_bad_ref():
+        data = MockV1.workspace_dict()["spec"]
+        data["ref"] = "test/1/2"
+        ws = WorkspaceV1.from_spec(data)

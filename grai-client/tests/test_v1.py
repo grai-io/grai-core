@@ -2,13 +2,13 @@ from functools import cache
 from uuid import UUID
 
 import pytest
-from grai_schemas.v1 import EdgeV1, NodeV1
+from grai_schemas.v1 import EdgeV1, NodeV1, WorkspaceV1
 from grai_schemas.v1.edge import EdgeNamedID, EdgeUuidID
+from grai_schemas.v1.mock import MockV1
 from requests import RequestException
 
 from grai_client.endpoints.utilities import is_valid_uuid
 from grai_client.endpoints.v1.client import ClientV1
-from grai_client.schemas.workspace import Workspace
 from grai_client.testing.schema import mock_v1_edge_and_nodes, mock_v1_node
 
 
@@ -35,20 +35,30 @@ def test_authentication(client):
 
 
 def test_get_workspace_by_name(client):
-    resp = client.get("workspace", "default")
-    assert isinstance(resp, Workspace)
-    assert resp.name == "default"
+    resp = client.get("workspace", name="default")
+    assert len(resp) == 1
+    assert isinstance(resp[0], WorkspaceV1)
+    assert resp[0].spec.name == "default"
 
 
 def test_get_workspace_by_ref(client):
-    resp = client.get("workspace", "default/default")
-    assert isinstance(resp, Workspace)
+    resp = client.get("workspace", ref="default/default")
+    assert len(resp) == 1
+    assert isinstance(resp[0], WorkspaceV1)
+    assert resp[0].spec.ref == "default/default"
 
 
 def test_get_workspaces(client):
     resp = client.get("workspace")
     for r in resp:
-        assert isinstance(r, Workspace)
+        assert isinstance(r, WorkspaceV1)
+
+
+def test_post_workspace(client):
+    workspace = WorkspaceV1(**MockV1.workspace_dict())
+    resp = client.post(workspace)
+    assert isinstance(resp, WorkspaceV1)
+    assert resp == workspace
 
 
 def test_get_nodes(client):
@@ -200,3 +210,15 @@ def test_get_edge_by_named_id(client):
     identifier = EdgeNamedID(name=test_edge.spec.name, namespace=test_edge.spec.namespace)
     result = client.get(identifier)
     assert hash(result) == hash(test_edge), "Edge should be queryable by named id"
+
+
+class TestSourceNode:
+    @classmethod
+    def setup_class(cls, client):
+        cls.mocked_nodes = [MockV1.sourced_node_dict() for _ in range(10)]
+        cls.mocked_nodes = client.post(cls.mocked_nodes)
+
+    def test_get_by_label(self, client):
+        source_node = MockV1.sourced_node_dict()
+        source_node = client.post(source_node)
+        result = client.get()

@@ -5,6 +5,7 @@ from grai_schemas.generics import GraiBaseModel
 from grai_schemas.v1.generics import ID, BaseID, NamedID, UuidID
 from grai_schemas.v1.metadata.metadata import MetadataV1
 from grai_schemas.v1.metadata.nodes import GenericNodeMetadataV1
+from grai_schemas.v1.source import DataSourceMixin, DataSourcesMixin
 from pydantic import Field, validator
 
 
@@ -43,13 +44,48 @@ class BaseSpec(GraiBaseModel):
         raise ValueError(f"Invalid metadata: {v}. Expected either None, a dict, or a MetadataV1 instance.")
 
 
-class NamedSpec(NodeNamedID, BaseSpec):
+class NamedSourceSpec(NodeNamedID, BaseSpec, DataSourceMixin):
     """ """
 
     pass
 
 
-class IDSpec(NodeUuidID, BaseSpec):
+class IDSourceSpec(NodeUuidID, BaseSpec, DataSourceMixin):
+    """ """
+
+    pass
+
+
+SourcedNodeSpec = Union[IDSourceSpec, NamedSourceSpec]
+
+
+class SourcedNodeV1(GraiBaseModel):
+    type: Literal["SourceNode"]
+    version: Literal["v1"]
+    spec: SourcedNodeSpec
+
+    @classmethod
+    def from_spec(cls, spec_dict: Dict) -> "SourcedNodeV1":
+        """
+
+        Args:
+            spec_dict (Dict):
+
+        Returns:
+
+        Raises:
+
+        """
+        return cls(version="v1", type="SourceNode", spec=spec_dict)
+
+
+class NamedSpec(NodeNamedID, BaseSpec, DataSourcesMixin):
+    """ """
+
+    pass
+
+
+class IDSpec(NodeUuidID, BaseSpec, DataSourcesMixin):
     """ """
 
     pass

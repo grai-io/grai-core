@@ -5,7 +5,6 @@ from grai_schemas.v1 import EdgeV1, NodeV1
 from requests import RequestException
 
 from grai_client.endpoints.utilities import is_valid_uuid
-from grai_client.schemas.workspace import Workspace
 from grai_client.testing.schema import mock_v1_edge_and_nodes, mock_v1_node
 
 

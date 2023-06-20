@@ -28,8 +28,8 @@ class BaseEdgeMetadataV1(V1Mixin):
 
 
 class MalformedEdgeMetadataV1(MalformedMetadata, BaseEdgeMetadataV1):
-    edge_type: Optional[str] = "Malformed"
-    edge_attributes: Optional[Any] = GenericAttributes()
+    edge_type: Optional[str] = "Malformed"  # type: ignore
+    edge_attributes: Optional[Any] = GenericAttributes()  # type: ignore
 
 
 class GenericEdgeMetadataV1(BaseEdgeMetadataV1):

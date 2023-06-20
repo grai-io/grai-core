@@ -40,6 +40,9 @@ class GraiBaseModel(HashableBaseModel):
         """ """
 
         json_encoders = {UUID: lambda x: str(x)}
+        validate_all = True
+        validate_assignment = True
+        allow_population_by_field_name = True
 
 
 class PlaceHolderSchema(GraiBaseModel):
@@ -156,9 +159,3 @@ class MalformedMetadata(GraiBaseModel):
     def dict(self, *args, **kwargs):
         """ """
         return self.malformed_values
-
-    class Config:
-        """ """
-
-        extra = "allow"
-        allow_mutation = True

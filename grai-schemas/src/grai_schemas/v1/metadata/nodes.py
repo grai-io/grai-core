@@ -35,8 +35,8 @@ class BaseNodeMetadataV1(V1Mixin):
 class MalformedNodeMetadataV1(MalformedMetadata, BaseNodeMetadataV1):
     """ """
 
-    node_type: Optional[str] = "Malformed"
-    node_attributes: Optional[Any] = GenericAttributes()
+    node_type: Optional[str] = "Malformed"  # type: ignore
+    node_attributes: Optional[Any] = GenericAttributes()  # type: ignore
 
 
 class GenericNodeMetadataV1(BaseNodeMetadataV1):

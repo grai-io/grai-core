@@ -24,10 +24,10 @@ class MetadataV1(GraiMetadataV1):
 class GraiMalformedNodeMetadataV1(MalformedMetadata, MetadataV1):
     """ """
 
-    grai: nodes.MalformedNodeMetadataV1 = nodes.MalformedNodeMetadataV1()
+    grai: nodes.MalformedNodeMetadataV1 = nodes.MalformedNodeMetadataV1()  # type: ignore
 
 
 class GraiMalformedEdgeMetadataV1(MalformedMetadata, MetadataV1):
     """ """
 
-    grai: edges.MalformedEdgeMetadataV1 = edges.MalformedEdgeMetadataV1()
+    grai: edges.MalformedEdgeMetadataV1 = edges.MalformedEdgeMetadataV1()  # type: ignore

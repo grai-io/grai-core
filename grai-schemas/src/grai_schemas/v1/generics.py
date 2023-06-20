@@ -23,7 +23,7 @@ class BaseID(GraiBaseModel):
             raise NotImplementedError(
                 f"Computing a hash for {self} requires both name and namespace for compatibility reasons."
             )
-        return hash(hash(self.name) + hash(self.namespace))
+        return hash((self.name, self.namespace))
 
 
 class NamedID(BaseID):

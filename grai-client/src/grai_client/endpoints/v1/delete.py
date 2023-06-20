@@ -1,4 +1,4 @@
-from grai_schemas.v1 import EdgeV1, NodeV1
+from grai_schemas.v1 import EdgeV1, NodeV1, WorkspaceV1
 
 from grai_client.endpoints.client import ClientOptions
 from grai_client.endpoints.rest import delete, get
@@ -10,9 +10,9 @@ def delete_node_v1(client: ClientV1, grai_type: NodeV1, options: ClientOptions =
     """
 
     Args:
-        client (ClientV1):
-        grai_type (NodeV1):
-        options (ClientOptions, optional):  (Default value = ClientOptions())
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
 
     Returns:
 
@@ -32,9 +32,31 @@ def delete_edge_v1(client: ClientV1, grai_type: EdgeV1, options: ClientOptions =
     """
 
     Args:
-        client (ClientV1):
-        grai_type (EdgeV1):
-        options (ClientOptions, optional):  (Default value = ClientOptions())
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
+    if grai_type.spec.id is None:
+        grai_type = get(client, grai_type)
+        if grai_type is None:
+            return
+    url = f"{client.get_url(grai_type)}{grai_type.spec.id}/"
+    delete(client, url, options=options)
+
+
+@delete.register
+def delete_node_v1(client: ClientV1, grai_type: WorkspaceV1, options: ClientOptions = ClientOptions()):
+    """
+
+    Args:
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
 
     Returns:
 

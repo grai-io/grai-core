@@ -74,18 +74,28 @@ class ClientV1(BaseClient):
             self.default_payload.pop("workspace", None)
             return
 
-        if is_valid_uuid(workspace) or isinstance(workspace, str):
-            result = self.get("workspace", workspace)
+        elif is_valid_uuid(workspace):
+            result = self.get("workspace", workspace).spec
+            if result is None:
+                raise ValueError(f"No workspace found matching `{workspace}`")
+        elif isinstance(workspace, str):
+            if "/" in workspace:  # workspace ref
+                result = self.get("workspace", ref=workspace)
+            else:  # workspace name
+                result = self.get("workspace", name=workspace)
 
             if result is None:
-                raise Exception(f"No workspace found matching `{workspace}`")
-            elif isinstance(workspace, str) and "/" in workspace:  # workspace ref
-                if workspace != result.ref:
-                    raise Exception(f"No workspace matching `ref={workspace}`")
-            elif workspace != result.name:  # workspace name
-                raise Exception(f"No workspace matching `name={workspace}`")
+                raise ValueError(f"No workspace found matching `{workspace}`")
+            elif len(result) > 1:
+                raise ValueError(f"Multiple workspaces found matching workspace ref `{workspace}`")
+            elif workspace != result[0].spec.ref:
+                message = (
+                    f"Although you specified workspace `{workspace}` in the client. We could not identify a "
+                    f"corresponding workspace for the authenticated user in the server."
+                )
+                raise Exception(message)
 
-            workspace = result.id
+            workspace = result[0].spec.id
         else:
             raise TypeError("Workspace must be either a string, uuid, or None.")
 
