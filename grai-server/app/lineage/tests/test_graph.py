@@ -154,7 +154,7 @@ class TestGraphQuery:
         assert query.get_parameters() == {"a": "b"}
 
     def test_match(self):
-        query = GraphQuery().match("(a)")
+        query = GraphQuery().match("(a)", where=[])
 
         assert query.clause[0].match == "(a)"
         assert query.parameters == {}
