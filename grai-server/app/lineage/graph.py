@@ -65,7 +65,8 @@ class Match:
         res = self.parameters
 
         for where in self.wheres:
-            res = res | where.parameters
+            if isinstance(where, Where):
+                res = res | where.parameters
 
         return res
 
@@ -85,7 +86,10 @@ class GraphQuery:
         self,
         match: Union[str, Match, List[Match]],
         where: Union[str, Where, List[Where]] = [],
+        parameters: object = {},
     ) -> "GraphQuery":
+        self.parameters = self.parameters | parameters
+
         if isinstance(match, Match):
             self.clause.append(match)
 

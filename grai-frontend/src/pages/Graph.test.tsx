@@ -7,7 +7,7 @@ import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
 import { GET_FILTERS } from "components/graph/controls/FilterControl"
 import Graph, { GET_TABLES_AND_EDGES } from "./Graph"
 
-const baseFilter = { min_x: -500, max_x: 500, min_y: -500, max_y: 500 }
+const baseFilter = { min_x: -500, max_x: 0, min_y: 0, max_y: 0 }
 
 export const filtersMock = {
   request: {
