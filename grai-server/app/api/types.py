@@ -406,6 +406,17 @@ class WorkspaceRepositoryFilter:
     installed: Optional[bool] = strawberry.UNSET
 
 
+@strawberry.input
+class StringFilter:
+    equals: Optional[str] = strawberry.UNSET
+    contains: Optional[List[str]] = strawberry.UNSET
+
+
+@strawberry.input
+class WorkspaceEdgeFilter:
+    edge_type: Optional[StringFilter] = strawberry.UNSET
+
+
 @gql.django.filters.filter(WorkspaceModel)
 class WorkspaceFilter:
     id: auto
@@ -449,6 +460,7 @@ class Workspace:
         self,
         pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
         search: Optional[str] = strawberry.UNSET,
+        filter: Optional[WorkspaceEdgeFilter] = strawberry.UNSET,
     ) -> Pagination["Edge"]:
         queryset = EdgeModel.objects.filter(workspace=self)
 
@@ -460,6 +472,13 @@ class Workspace:
                 | Q(source__name__icontains=search)
                 | Q(data_source__icontains=search)
             )
+
+        if filter:
+            if filter.edge_type:
+                if filter.edge_type.equals:
+                    queryset = queryset.filter(metadata__grai__edge_type=filter.edge_type.equals)
+                if filter.edge_type.contains:
+                    queryset = queryset.filter(metadata__grai__edge_type__in=filter.edge_type.contains)
 
         return Pagination[Edge](queryset=queryset, pagination=pagination)
 
