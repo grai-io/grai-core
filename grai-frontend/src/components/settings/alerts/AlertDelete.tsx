@@ -45,8 +45,8 @@ const AlertDelete: React.FC<AlertDeleteProps> = ({
             __typename: "Workspace",
           }),
           fields: {
-            alerts: (existingAlerts, { readField }) =>
-              existingAlerts.filter(
+            alerts: (existingAlerts = { data: [] }, { readField }) =>
+              existingAlerts.data.filter(
                 (keyRef: any) =>
                   data?.deleteAlert.id !== readField("id", keyRef)
               ),
