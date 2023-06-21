@@ -17,9 +17,7 @@ const HomeCardContent: React.FC<HomeCardContentProps> = ({
   text,
   to,
 }) => {
-  const countStr = new String(count)
-
-  const fontSize = countStr.length > 2 ? 20 : 38
+  const fontSize = (count?.toString()?.length ?? 0) > 2 ? 20 : 38
 
   return (
     <CardContent sx={{ p: 3, display: "flex", alignItems: "center" }}>
