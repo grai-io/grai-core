@@ -1,15 +1,10 @@
 import os
 
 import pytest
+from grai_schemas.v1 import OrganisationV1, WorkspaceV1
 from grai_schemas.v1.mock import MockV1
-from grai_schemas.v1.workspace import WorkspaceV1
 
 from grai_client.endpoints.v1.client import ClientV1
-from grai_client.testing.schema import (
-    mock_v1_edge,
-    mock_v1_edge_and_nodes,
-    mock_v1_node,
-)
 
 
 @pytest.fixture(scope="session")
@@ -43,22 +38,27 @@ def client(client_params):
 
 @pytest.fixture(scope="session")
 def node_v1(client):
-    test_node = mock_v1_node()
+    test_node = MockV1.node.node()
     test_node = client.post(test_node)
     return test_node
 
 
 @pytest.fixture(scope="session")
 def edge_v1(client):
-    test_edge, test_nodes = mock_v1_edge_and_nodes()
+    test_edge, test_nodes = MockV1.edge.edge_and_nodes()
     nodes = client.post(test_nodes)
     edge = client.post(test_edge)
     return edge
 
 
 @pytest.fixture(scope="session")
-def workspace_v1(client):
-    workspace = client.get("workspace", ref="default/default")[0]
+def organisation_v1(client):
+    return OrganisationV1.from_spec({"name": "default"})
+
+
+@pytest.fixture(scope="session")
+def workspace_v1(client, organisation_v1):
+    workspace = client.get("workspace", ref=f"{organisation_v1.spec.name}/default")[0]
     return workspace
 
 

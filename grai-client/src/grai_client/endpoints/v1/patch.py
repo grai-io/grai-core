@@ -1,12 +1,15 @@
-from typing import Optional, TypeVar
+from typing import Optional, TypeVar, Union
 
-from grai_schemas.v1 import EdgeV1, NodeV1, SourcedEdgeV1, SourcedNodeV1, WorkspaceV1
+from grai_schemas.v1 import EdgeV1, NodeV1, SourcedEdgeV1, SourcedNodeV1, SourceV1
+from grai_schemas.v1.organization import OrganisationSpec, OrganisationV1
+from grai_schemas.v1.workspace import WorkspaceSpec, WorkspaceV1
 
 from grai_client.endpoints.client import ClientOptions
 from grai_client.endpoints.rest import get, patch
 from grai_client.endpoints.v1.client import ClientV1
 from grai_client.endpoints.v1.get import finalize_edge
 from grai_client.endpoints.v1.utils import process_node_id
+from grai_client.errors import NotSupportedError
 
 T = TypeVar("T", NodeV1, EdgeV1)
 
@@ -91,8 +94,8 @@ def patch_edge_v1(client: ClientV1, grai_type: EdgeV1, options: ClientOptions = 
 
 @patch.register
 def patch_workspace_v1(
-    client: ClientV1, grai_type: WorkspaceV1, options: ClientOptions = ClientOptions()
-) -> Optional[WorkspaceV1]:
+    client: ClientV1, grai_type: Union[WorkspaceV1, WorkspaceSpec], options: ClientOptions = ClientOptions()
+):
     """
 
     Args:
@@ -105,12 +108,51 @@ def patch_workspace_v1(
     Raises:
 
     """
+    message = "The patch workspace endpoint is not supported through the REST API."
+    raise NotSupportedError(message)
+
+
+@patch.register
+def patch_organisation_v1(
+    client: ClientV1, grai_type: Union[OrganisationV1, OrganisationSpec], options: ClientOptions = ClientOptions()
+):
+    """
+
+    Args:
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
+    message = "The patch organisation endpoint is not supported through the REST API."
+    raise NotSupportedError(message)
+
+
+@patch.register
+def patch_source_v1(client: ClientV1, grai_type: SourceV1, options: ClientOptions = ClientOptions()) -> SourceV1:
+    """
+
+    Args:
+        client (ClientV1):
+        grai_type (NodeV1):
+        options (ClientOptions, optional):  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
     if grai_type.spec.id is None:
         current = get(client, grai_type)
         grai_type.spec.id = current.spec.id
+
     url = f"{client.get_url(grai_type)}{grai_type.spec.id}/"
+
     response = patch(client, url, grai_type.spec.dict(exclude_none=True), options=options)
     response = response.json()
-    if response is None:
-        return None
-    return WorkspaceV1.from_spec(response)
+    response["workspace"] = client.workspace
+    return SourceV1.from_spec(response)

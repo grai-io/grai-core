@@ -147,7 +147,7 @@ class SourceViewSet(AuthenticatedViewSetMixin, ModelViewSet):
         q_filter = Q()
         query_params = self.request.query_params
         supported_filters = {"name"}
-        starts_with_filters = ("metadata", "created_at", "updated_at")
+        starts_with_filters = ("created_at", "updated_at")
         for filter_name, filter_value in query_params.items():
             if filter_name in supported_filters or filter_name.startswith(starts_with_filters):
                 q_filter &= Q(**{filter_name: filter_value})

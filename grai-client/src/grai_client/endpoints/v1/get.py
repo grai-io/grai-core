@@ -8,6 +8,7 @@ from grai_schemas.v1.metadata.metadata import (
     GraiMalformedNodeMetadataV1,
 )
 from grai_schemas.v1.node import NodeNamedID, NodeUuidID, SourcedNodeSpec, SourcedNodeV1
+from grai_schemas.v1.organization import OrganisationSpec, OrganisationV1
 from grai_schemas.v1.source import SourceSpec, SourceV1
 from grai_schemas.v1.workspace import WorkspaceSpec, WorkspaceV1
 
@@ -19,9 +20,15 @@ from grai_client.endpoints.utilities import (
     paginated,
 )
 from grai_client.endpoints.v1.client import ClientV1
+from grai_client.errors import (
+    InvalidResponseError,
+    NotSupportedError,
+    ObjectNotFoundError,
+)
 from grai_client.schemas.labels import (
     EdgeLabels,
     NodeLabels,
+    OrganisationLabels,
     SourceEdgeLabels,
     SourceLabels,
     SourceNodeLabels,
@@ -77,7 +84,7 @@ def get_node_by_label_v1(
 
 
 @get.register
-def get_node_v1(client: ClientV1, grai_type: NodeV1, options: ClientOptions = ClientOptions()) -> Optional[NodeV1]:
+def get_node_v1(client: ClientV1, grai_type: NodeV1, options: ClientOptions = ClientOptions()) -> NodeV1:
     """
 
     Args:
@@ -124,9 +131,7 @@ def get_nodes_by_uuid_str_id(
 
 
 @get.register
-def get_from_node_uuid_id(
-    client: ClientV1, grai_type: NodeUuidID, options: ClientOptions = ClientOptions()
-) -> Optional[NodeV1]:
+def get_from_node_uuid_id(client: ClientV1, grai_type: NodeUuidID, options: ClientOptions = ClientOptions()) -> NodeV1:
     """
 
     Args:
@@ -145,7 +150,7 @@ def get_from_node_uuid_id(
 @get.register
 def get_from_node_named_id(
     client: ClientV1, grai_type: NodeNamedID, options: ClientOptions = ClientOptions()
-) -> Optional[NodeV1]:
+) -> NodeV1:
     """
 
     Args:
@@ -167,19 +172,20 @@ def get_from_node_named_id(
 
     result = get(client, "Node", options=options)
 
-    num_results = len(result)
-    if num_results == 0:
-        return None
+    if (num_results := len(result)) == 0:
+        raise ObjectNotFoundError(
+            f"No Node found matching name={grai_type.name}, namespace={grai_type.namespace} "
+            f"under the workspace `{client.workspace}`."
+        )
     elif num_results == 1:
         return result[0]
     else:
-        message = (
+        raise InvalidResponseError(
             f"A node query for name={grai_type.name}, namespace={grai_type.namespace} in the "
-            f"workspace={options.query_args.get('workspace', '<unknown workspace>')} returned more than one result. "
+            f"workspace={client.workspace} returned more than one result. "
             f"This is a defensive error which should not be triggered. If you encounter it "
             "please open an issue at www.github.com/grai-io/grai-core/issues"
         )
-        raise Exception(message)
 
 
 # ----- SourcedNode ----- #
@@ -376,7 +382,7 @@ def get_from_edge_uuid_id(
 @get.register
 def get_from_edge_named_id(
     client: ClientV1, grai_type: EdgeNamedID, options: ClientOptions = ClientOptions()
-) -> Optional[EdgeV1]:
+) -> EdgeV1:
     """
 
     Args:
@@ -389,6 +395,9 @@ def get_from_edge_named_id(
     Raises:
 
     """
+    if grai_type.id is not None:
+        return get(client, "Edge", grai_type.id, options=options)
+
     options = options.copy()
     options.query_args = {
         **options.query_args,
@@ -396,21 +405,22 @@ def get_from_edge_named_id(
         "namespace": grai_type.namespace,
     }
 
-    resp = get(client, "Edge", options=options)
+    result = get(client, "Edge", options=options)
 
-    num_results = len(resp)
-    if num_results == 0:
-        return None
+    if (num_results := len(result)) == 0:
+        raise ObjectNotFoundError(
+            f"No Edge found matching name={grai_type.name}, namespace={grai_type.namespace} "
+            f"under the workspace `{client.workspace}`."
+        )
     elif num_results == 1:
-        return resp[0]
+        return result[0]
     else:
-        message = (
-            f"An edge query for name={grai_type.name}, namespace={grai_type.namespace} in the "
-            f"workspace={options.query_args.get('workspace', '<unknown workspace>')} returned more than one result. "
+        raise InvalidResponseError(
+            f"A edge query for name={grai_type.name}, namespace={grai_type.namespace} in the "
+            f"workspace={client.workspace} returned more than one result. "
             f"This is a defensive error which should not be triggered. If you encounter it "
             "please open an issue at www.github.com/grai-io/grai-core/issues"
         )
-        raise Exception(message)
 
 
 # ----- SourcedNode ----- #
@@ -492,6 +502,31 @@ def get_source_node_by_source_node_v1(
     return source_edge_builder(finalized_result)
 
 
+# ----- Organisation ------ #
+
+
+@get.register
+def get_organisation_v1(
+    client: ClientV1,
+    grai_type: Union[OrganisationV1, OrganisationSpec, OrganisationLabels],
+    options: ClientOptions = ClientOptions(),
+):
+    """
+
+    Args:
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
+    message = "The get organisation endpoint is not supported through the REST API."
+    raise NotSupportedError(message)
+
+
 # ----- Workspaces ------ #
 
 
@@ -555,7 +590,7 @@ def get_workspace_by_workspace_v1(
     client: ClientV1,
     grai_type: WorkspaceV1,
     options: ClientOptions = ClientOptions(),
-) -> Optional[WorkspaceV1]:
+) -> WorkspaceV1:
     """
 
     Args:
@@ -569,7 +604,7 @@ def get_workspace_by_workspace_v1(
     Raises:
 
     """
-    return get(client, "Workspace", grai_type.spec, options=options)
+    return get(client, grai_type.spec, options=options)
 
 
 @get.register
@@ -577,7 +612,7 @@ def get_workspace_by_spec(
     client: ClientV1,
     grai_type: WorkspaceSpec,
     options: ClientOptions = ClientOptions(),
-) -> Optional[WorkspaceV1]:
+) -> WorkspaceV1:
     """
 
     Args:
@@ -600,7 +635,8 @@ def get_workspace_by_spec(
     resp = get(client, "Workspace", options)
 
     if resp is None:
-        return None
+        message = f"No Workspace found matching ref={grai_type.ref} under the workspace `{client.workspace}`."
+        raise ObjectNotFoundError(message)
     elif len(resp) == 1:
         return WorkspaceV1.from_spec(resp[0])
     else:
@@ -746,7 +782,7 @@ def get_source_from_source_v1(
     client: ClientV1,
     grai_type: SourceV1,
     options: ClientOptions = ClientOptions(),
-) -> List[SourceV1]:
+) -> SourceV1:
     """
 
     Args:
@@ -767,7 +803,7 @@ def get_source_from_spec(
     client: ClientV1,
     grai_type: SourceSpec,
     options: ClientOptions = ClientOptions(),
-) -> List[SourceV1]:
+) -> SourceV1:
     """
 
     Args:
@@ -780,10 +816,24 @@ def get_source_from_spec(
     Raises:
 
     """
-    url = client.get_url(grai_type)
     if grai_type.id is not None:
-        return get(client, url, grai_type.id, options)
+        return get(client, "Source", grai_type.id, options)
 
+    url = client.get_url(grai_type)
     options = options.copy()
     options.query_args["name"] = grai_type.name
-    return get(client, url, options=options)
+
+    result = paginated(get)(client, url, options=options)
+
+    if (num_results := len(result)) == 0:
+        message = f"No Source found matching name={grai_type.name} under the workspace `{client.workspace}`."
+        raise ObjectNotFoundError(message)
+    elif num_results == 1:
+        return SourceV1.from_spec(result[0])
+    else:
+        raise InvalidResponseError(
+            f"We were unable to identify a unique source matching name=`{grai_type.name}` under the workspace"
+            f"`{client.workspace} because more than one "
+            f"result was returned. This looks like a bug in the client library. Please open an issue at "
+            f"www.github.com/grai-io/grai-core/issues."
+        )

@@ -205,7 +205,7 @@ class TestWorkspaceV1:
     @staticmethod
     def test_default_workspace_missing_ref():
         data = MockV1.workspace.workspace_dict()["spec"]
-        data.pop("ref")
+        data.pop("ref", None)
         ws = WorkspaceV1.from_spec(data)
         assert ws.spec.ref == f"{ws.spec.organisation.name}/{ws.spec.name}"
 
@@ -280,5 +280,5 @@ class TestSourceV1:
     @pytest.mark.xfail(raises=ValidationError)
     def test_source_missing_workspace():
         data = MockV1.source.source_dict()["spec"]
-        data.pop("workspace")
+        data.pop("workspace", None)
         source = SourceV1.from_spec(data)

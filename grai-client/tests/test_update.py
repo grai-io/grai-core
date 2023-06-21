@@ -2,22 +2,24 @@ import datetime
 import uuid
 
 import pytest
+from grai_schemas.v1.mock import MockV1
 
-from grai_client.testing.schema import mock_v1_node
 from grai_client.update import update
 
 
 def test_update_node_creation(client):
     namespace = str(uuid.uuid4())
-    nodes = [mock_v1_node(namespace=namespace) for _ in range(3)]
+    nodes = [MockV1.node.node(namespace=namespace) for _ in range(3)]
     update(client, nodes)
+
     new_nodes = client.get(nodes[0].type, namespace=namespace)
     assert len(new_nodes) == len(nodes), "update did not create nodes"
 
 
 def test_update_is_idempotent(client):
     namespace = str(uuid.uuid4())
-    nodes = [mock_v1_node(namespace=namespace) for _ in range(3)]
+    nodes = [MockV1.node.node(namespace=namespace) for _ in range(3)]
+
     update(client, nodes)
     updated_nodes_1 = client.get(nodes[0].type, namespace=namespace)
     assert len(updated_nodes_1) == len(nodes)
@@ -30,7 +32,7 @@ def test_update_is_idempotent(client):
 
 def test_update_node_patched(client):
     namespace = str(uuid.uuid4())
-    nodes = [mock_v1_node(namespace=namespace) for _ in range(3)]
+    nodes = [MockV1.node.node(namespace=namespace) for _ in range(3)]
 
     new_nodes = client.post(nodes)
     for node in new_nodes:

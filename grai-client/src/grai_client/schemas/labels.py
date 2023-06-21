@@ -1,6 +1,7 @@
 from typing import Literal
 
 EdgeLabels = Literal["edge", "edges", "Edge", "Edges"]
+NodeLabels = Literal["node", "nodes", "Node", "Nodes"]
 SourceEdgeLabels = Literal[
     "sourceedge",
     "sourceedges",
@@ -15,7 +16,6 @@ SourceEdgeLabels = Literal[
     "EdgeSource",
     "EdgeSources",
 ]
-NodeLabels = Literal["node", "nodes", "Node", "Nodes"]
 SourceNodeLabels = Literal[
     "sourcenode",
     "nodesources",
@@ -32,3 +32,4 @@ SourceNodeLabels = Literal[
 ]
 WorkspaceLabels = Literal["workspace", "workspaces", "Workspace", "Workspaces"]
 SourceLabels = Literal["source", "sources", "Source", "Sources"]
+OrganisationLabels = Literal["organisation", "organisations", "Organisation", "Organisations"]

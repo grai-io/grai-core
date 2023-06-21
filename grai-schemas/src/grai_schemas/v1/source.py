@@ -9,22 +9,16 @@ from pydantic import validator
 class SourceSpec(GraiBaseModel):
     id: Optional[UUID]
     name: str
-    workspace: Union[UUID, WorkspaceSpec]
+    workspace: Union[UUID, WorkspaceSpec, None]
 
     @property
     def workspace_id(self) -> Optional[UUID]:
-        return self.workspace if isinstance(self.workspace, UUID) else self.workspace.id
-
-    @validator("workspace", pre=True)
-    def validate_workspace(cls, v):
-        if isinstance(v, str):
-            return v
-        return WorkspaceSpec(**v)
+        return self.workspace.id if isinstance(self.workspace, WorkspaceSpec) else self.workspace
 
     def __hash__(self) -> int:
         if self.workspace_id is None:
             raise ValueError("Cannot hash a source spec without a workspace id")
-        return hash((self.name, self.workspace_id))
+        return hash(self.name)
 
 
 class DataSourceMixin(GraiBaseModel):
@@ -32,7 +26,7 @@ class DataSourceMixin(GraiBaseModel):
 
 
 class DataSourcesMixin(GraiBaseModel):
-    data_sources: Optional[List[Union[str, SourceSpec]]]
+    data_sources: List[Union[UUID, SourceSpec]]
 
 
 class SourceV1(GraiBaseModel):

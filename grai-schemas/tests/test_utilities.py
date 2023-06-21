@@ -154,7 +154,7 @@ class TestMerge:
         merge(a, b)
 
     def test_merge_full_node_into_malformed_node(self):
-        base_node = {"name": "test", "namespace": "test", "data_source": "test", "metadata": {}}
+        base_node = {"name": "test", "namespace": "test", "data_sources": [], "metadata": {}}
 
         a = NodeV1.from_spec(base_node)
         a.spec.metadata = GraiMalformedNodeMetadataV1()
@@ -165,7 +165,7 @@ class TestMerge:
         base_edge = {
             "name": "test",
             "namespace": "test",
-            "data_source": "test",
+            "data_sources": [],
             "source": {"name": "test", "namespace": "test"},
             "destination": {"name": "test2", "namespace": "test"},
             "metadata": {},

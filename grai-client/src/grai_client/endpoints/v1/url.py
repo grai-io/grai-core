@@ -1,7 +1,7 @@
 from typing import Union
 
 from grai_schemas.v1 import EdgeV1, NodeV1, WorkspaceV1
-from grai_schemas.v1.edge import SourcedEdgeV1
+from grai_schemas.v1.edge import EdgeIdTypes, EdgeSpec, SourcedEdgeV1
 from grai_schemas.v1.node import NodeIdTypes, SourcedNodeSpec, SourcedNodeV1
 from grai_schemas.v1.source import SourceSpec, SourceV1
 
@@ -31,7 +31,7 @@ def get_node_url(client: ClientV1, obj: Union[NodeIdTypes, NodeV1, SourcedNodeV1
 
 
 @ClientV1.get_url.register
-def get_edge_url(client: ClientV1, obj: Union[EdgeV1, EdgeLabels]) -> str:
+def get_edge_url(client: ClientV1, obj: Union[EdgeV1, EdgeLabels, EdgeIdTypes, EdgeSpec]) -> str:
     """
 
     Args:

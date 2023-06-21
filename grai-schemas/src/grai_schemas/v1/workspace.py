@@ -57,7 +57,7 @@ class WorkspaceSpec(GraiBaseModel):
                 raise ValueError(message)
         elif re.match(_REF_REGEX, v):
             # TODO: This doesn't cover the case of a user providing a UUID for the organisation
-            if isinstance(values["organisation"], OrganisationSpec):
+            if isinstance(values.get("organisation", None), OrganisationSpec):
                 validated_ref = f"{values['organisation'].name}/{values['name']}"
                 message = (
                     f"Attempted to create a workspace with a `ref` of {v}, but this didn't match the specified "

@@ -4,7 +4,7 @@ import uuid
 from grai_schemas.human_ids import get_human_id
 from grai_schemas.v1.edge import EdgeV1, SourcedEdgeV1
 from grai_schemas.v1.node import NodeV1, SourcedNodeV1
-from grai_schemas.v1.organization import OrganisationV1
+from grai_schemas.v1.organization import OrganisationSpec, OrganisationV1
 from grai_schemas.v1.source import SourceV1
 from grai_schemas.v1.workspace import WorkspaceSpec, WorkspaceV1
 
@@ -36,7 +36,7 @@ class MockNode:
     def sourced_node_dict(cls, **kwargs):
         """ """
         result = {"type": "SourceNode", "version": "v1", "spec": cls.base_node_spec_dict(**kwargs)}
-        result["spec"]["data_source"] = kwargs.get("data_source", get_human_id())
+        result["spec"]["data_source"] = kwargs.get("data_source", MockSource.source_dict()["spec"])
         return result
 
     @classmethod
@@ -48,7 +48,7 @@ class MockNode:
     def node_dict(cls, **kwargs):
         """ """
         result = {"type": "Node", "version": "v1", "spec": cls.base_node_spec_dict(**kwargs)}
-        result["spec"]["data_sources"] = kwargs.get("data_sources", [get_human_id()])
+        result["spec"]["data_sources"] = kwargs.get("data_sources", [MockSource.source_dict()["spec"]])
         return result
 
     @classmethod
@@ -94,7 +94,7 @@ class MockEdge:
             "version": "v1",
             "spec": cls.base_edge_spec_dict(**kwargs),
         }
-        result["spec"]["data_source"] = kwargs.get("data_source", get_human_id())
+        result["spec"]["data_source"] = kwargs.get("data_source", MockSource.source_dict()["spec"])
         return result
 
     @classmethod
@@ -111,13 +111,22 @@ class MockEdge:
             "version": "v1",
             "spec": cls.base_edge_spec_dict(**kwargs),
         }
-        result["spec"]["data_sources"] = kwargs.get("data_sources", [get_human_id()])
+        result["spec"]["data_sources"] = kwargs.get("data_sources", [MockSource.source_dict()["spec"]])
         return result
 
     @classmethod
     def edge(cls, **kwargs):
         """ """
         return EdgeV1(**cls.edge_dict(**kwargs))
+
+    @classmethod
+    def edge_and_nodes(cls, source=None, destination=None, **kwargs):
+        if source is None:
+            source = MockNode.node().spec
+        if destination is None:
+            destination = MockNode.node().spec
+        edge = cls.edge(source=source, destination=destination, **kwargs)
+        return edge, [source, destination]
 
 
 class MockOrganisation:
@@ -169,9 +178,9 @@ class MockWorkspace:
 
         if "ref" in kwargs:
             result["spec"]["ref"] = kwargs["ref"]
-        elif isinstance(kwargs.get("organisation"), dict):
-            result["spec"]["ref"] = f"{result['spec']['organisation']['name']}/{result['spec']['name']}"
-        else:
+        # elif isinstance(kwargs.get("organisation"), dict):
+        #     result["spec"]["ref"] = f"{result['spec']['organisation']['name']}/{result['spec']['name']}"
+        elif not isinstance(result["spec"].get("organisation", None), (OrganisationSpec, dict)):
             message = (
                 "In order to generate a workspace ref you must pass an organisation dict or manually specify the ref"
             )
@@ -193,7 +202,7 @@ class MockSource:
             "spec": {
                 "id": kwargs.get("id", None),
                 "name": kwargs.get("name", get_human_id()),
-                "workspace": kwargs.get("workspace", MockWorkspace.workspace_spec_dict()),
+                # "workspace": kwargs.get("workspace", MockWorkspace.workspace_spec_dict()),
             },
         }
         return result
