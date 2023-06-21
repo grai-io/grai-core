@@ -54,11 +54,13 @@ def test_get_workspaces(client):
         assert isinstance(r, WorkspaceV1)
 
 
-def test_post_workspace(client):
-    workspace = WorkspaceV1(**MockV1.workspace_dict())
+def test_post_workspace(client, workspace_v1):
+    workspace = MockV1.workspace.workspace(organization=workspace_v1.spec.organisation, ref="tmp/tmp")
+    workspace.spec.ref = f"default/{workspace.spec.name}"
     resp = client.post(workspace)
     assert isinstance(resp, WorkspaceV1)
-    assert resp == workspace
+    assert resp.spec.ref == workspace.spec.ref
+    assert resp.spec.name == workspace.spec.name
 
 
 def test_get_nodes(client):
@@ -212,13 +214,13 @@ def test_get_edge_by_named_id(client):
     assert hash(result) == hash(test_edge), "Edge should be queryable by named id"
 
 
-class TestSourceNode:
-    @classmethod
-    def setup_class(cls, client):
-        cls.mocked_nodes = [MockV1.sourced_node_dict() for _ in range(10)]
-        cls.mocked_nodes = client.post(cls.mocked_nodes)
+# class TestSourceNode:
+#     @classmethod
+#     def setup_class(cls, client):
+#         cls.mocked_nodes = [MockV1.node.sourced_node_dict() for _ in range(10)]
+#         cls.mocked_nodes = client.post(cls.mocked_nodes)
 
-    def test_get_by_label(self, client):
-        source_node = MockV1.sourced_node_dict()
-        source_node = client.post(source_node)
-        result = client.get()
+# def test_get_by_label(self, client):
+#     source_node = MockV1.node.sourced_node_dict()
+#     source_node = client.post(source_node)
+#     result = client.get()

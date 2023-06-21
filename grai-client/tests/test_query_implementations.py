@@ -1,13 +1,3 @@
-from functools import cache
-
-import pytest
-from grai_schemas.v1 import EdgeV1, NodeV1
-from requests import RequestException
-
-from grai_client.endpoints.utilities import is_valid_uuid
-from grai_client.testing.schema import mock_v1_edge_and_nodes, mock_v1_node
-
-
 class TestNodeQueries:
     def test_node_id_request(self, client, node_v1):
         result = client.get("node", node_v1.spec.id)
@@ -87,3 +77,33 @@ class TestEdgeQueries:
     def test_edge_created_at_query(self, client, edge_v1):
         result = client.get("edge", created_at__lt="2019-01-01")
         assert len(result) == 0
+
+
+class TestWorkspaces:
+    def test_workspace_id_request(self, client, workspace_v1):
+        result = client.get("workspace", workspace_v1.spec.id)
+        assert result.spec.id == workspace_v1.spec.id
+
+    def test_workspace_name_request(self, client, workspace_v1):
+        result = client.get("workspace", name=workspace_v1.spec.name)
+        assert result[0].spec.id == workspace_v1.spec.id
+
+    def test_workspace_ref_request(self, client, workspace_v1):
+        result = client.get("workspace", ref=workspace_v1.spec.ref)
+        assert result[0].spec.id == workspace_v1.spec.id
+
+
+class TestSources:
+    def test_source_id_request(self, client, source_v1):
+        result = client.get("source", source_v1.spec.id)
+        assert result.spec.id == source_v1.spec.id
+
+    def test_source_name_request(self, client, source_v1):
+        result = client.get("source", name=source_v1.spec.name)
+        assert result[0].spec.id == source_v1.spec.id
+
+
+# class TestSourceNodes:
+#     def test_source_node_id_request(self, client, source_node_v1):
+#         result = client.get("source_node", source_node_v1.spec.id)
+#         assert result.spec.id == source_node_v1.spec.id

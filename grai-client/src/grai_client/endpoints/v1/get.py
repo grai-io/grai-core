@@ -8,6 +8,7 @@ from grai_schemas.v1.metadata.metadata import (
     GraiMalformedNodeMetadataV1,
 )
 from grai_schemas.v1.node import NodeNamedID, NodeUuidID, SourcedNodeSpec, SourcedNodeV1
+from grai_schemas.v1.source import SourceSpec, SourceV1
 from grai_schemas.v1.workspace import WorkspaceSpec, WorkspaceV1
 
 from grai_client.endpoints.client import ClientOptions
@@ -22,6 +23,7 @@ from grai_client.schemas.labels import (
     EdgeLabels,
     NodeLabels,
     SourceEdgeLabels,
+    SourceLabels,
     SourceNodeLabels,
     WorkspaceLabels,
 )
@@ -226,7 +228,7 @@ def get_source_node_by_source_node_v1(
 @get.register
 def get_source_node_by_source_node_v1(
     client: ClientV1, grai_type: SourcedNodeSpec, options: ClientOptions = ClientOptions()
-) -> Optional[SourcedNodeV1]:
+) -> SourcedNodeV1:
     """
 
     Args:
@@ -239,7 +241,20 @@ def get_source_node_by_source_node_v1(
     Raises:
 
     """
-    url = client.get_url(grai_type)
+
+    source_id = (
+        grai_type.data_source.id if grai_type.data_source.id is not None else get(client, grai_type.data_source).spec.id
+    )
+    if grai_type.id is not None:
+        node_id = grai_type.id
+    else:
+        sub_url = client.get_url("Node")
+        sub_options = options.copy()
+        sub_options.query_args.update({"name": grai_type.name, "namespace": grai_type.namespace})
+        node = get(client, sub_url, sub_options)
+        node_id = node.spec.id
+
+    url = f"{client.get_url(grai_type)}/{source_id}/{node_id}/"
     resp = get(client, url, options=options).json()
     return source_node_builder(resp)
 
@@ -247,7 +262,7 @@ def get_source_node_by_source_node_v1(
 # ----- Edges ----- #
 
 
-def finalize_edge(client: ClientV1, resp: Dict, options: ClientOptions = ClientOptions()) -> EdgeV1:
+def finalize_edge(client: ClientV1, resp: Dict, options: ClientOptions = ClientOptions()) -> Dict:
     """
 
     Args:
@@ -267,7 +282,7 @@ def finalize_edge(client: ClientV1, resp: Dict, options: ClientOptions = ClientO
 
     resp["source"] = nodes[0].spec
     resp["destination"] = nodes[1].spec
-    return edge_builder(resp)
+    return resp
 
 
 @get.register
@@ -288,7 +303,8 @@ def get_edge_by_label_v1(
     """
     url = client.get_url(grai_type)
     resp = paginated(get)(client, url, options)
-    return [finalize_edge(client, edge) for edge in resp]
+    finalized_result = (finalize_edge(client, edge) for edge in resp)
+    return [edge_builder(edge) for edge in finalized_result]
 
 
 @get.register
@@ -317,7 +333,8 @@ def get_edge_by_uuid_str_id(
     url = f"{client.get_url(grai_type)}{edge_uuid}/"
 
     resp = get(client, url, options=options)
-    return finalize_edge(client, resp.json(), options)
+    finalized_edge = finalize_edge(client, resp.json(), options)
+    return edge_builder(finalized_edge)
 
 
 @get.register
@@ -396,6 +413,85 @@ def get_from_edge_named_id(
         raise Exception(message)
 
 
+# ----- SourcedNode ----- #
+
+
+@get.register
+def get_source_edge_by_label_v1(
+    client: ClientV1, grai_type: SourceEdgeLabels, options: ClientOptions = ClientOptions()
+) -> List[SourcedEdgeV1]:
+    """
+
+    Args:
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
+    url = client.get_url(grai_type)
+    resp = paginated(get)(client, url, options)
+    finalized_result = (finalize_edge(client, edge) for edge in resp)
+    return [source_edge_builder(edge) for edge in finalized_result]
+
+
+@get.register
+def get_source_node_by_source_node_v1(
+    client: ClientV1, grai_type: SourcedEdgeV1, options: ClientOptions = ClientOptions()
+) -> SourcedEdgeV1:
+    """
+
+    Args:
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
+    return get(client, grai_type.spec, options)
+
+
+@get.register
+def get_source_node_by_source_node_v1(
+    client: ClientV1, grai_type: SourcedEdgeSpec, options: ClientOptions = ClientOptions()
+) -> SourcedEdgeV1:
+    """
+
+    Args:
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
+
+    source_id = (
+        grai_type.data_source.id if grai_type.data_source.id is not None else get(client, grai_type.data_source).spec.id
+    )
+    if grai_type.id is not None:
+        node_id = grai_type.id
+    else:
+        sub_url = client.get_url("Node")
+        sub_options = options.copy()
+        sub_options.query_args.update({"name": grai_type.name, "namespace": grai_type.namespace})
+        node = get(client, sub_url, sub_options)
+        node_id = node.spec.id
+
+    url = f"{client.get_url(grai_type)}/{source_id}/{node_id}/"
+    resp = get(client, url, options=options).json()
+    finalized_result = finalize_edge(client, resp)
+    return source_edge_builder(finalized_result)
+
+
 # ----- Workspaces ------ #
 
 
@@ -451,7 +547,7 @@ def get_workspace_by_uuid(
         raise ValueError(message)
     url = f"{url}{workspace_id}/"
     result = get(client, url, options=options)
-    return WorkspaceV1(**result.json())
+    return WorkspaceV1.from_spec(result.json())
 
 
 @get.register
@@ -515,4 +611,179 @@ def get_workspace_by_spec(
         )
 
 
+# ----- SourcedNode ----- #
+
+
+@get.register
+def get_source_node_by_label_v1(
+    client: ClientV1, grai_type: SourceNodeLabels, options: ClientOptions = ClientOptions()
+) -> List[SourcedNodeV1]:
+    """
+
+    Args:
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
+    url = client.get_url(grai_type)
+    resp = paginated(get)(client, url, options)
+    return [source_node_builder(obj) for obj in resp]
+
+
+@get.register
+def get_source_node_by_source_node_v1(
+    client: ClientV1, grai_type: SourcedNodeV1, options: ClientOptions = ClientOptions()
+) -> Optional[SourcedNodeV1]:
+    """
+
+    Args:
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
+    return get(client, grai_type.spec, options)
+
+
+@get.register
+def get_source_node_by_source_node_v1(
+    client: ClientV1, grai_type: SourcedNodeSpec, options: ClientOptions = ClientOptions()
+) -> SourcedNodeV1:
+    """
+
+    Args:
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
+
+    source_id = (
+        grai_type.data_source.id if grai_type.data_source.id is not None else get(client, grai_type.data_source).spec.id
+    )
+    if grai_type.id is not None:
+        node_id = grai_type.id
+    else:
+        sub_url = client.get_url("Node")
+        sub_options = options.copy()
+        sub_options.query_args.update({"name": grai_type.name, "namespace": grai_type.namespace})
+        node = get(client, sub_url, sub_options)
+        node_id = node.spec.id
+
+    url = f"{client.get_url(grai_type)}/{source_id}/{node_id}/"
+    resp = get(client, url, options=options).json()
+    return source_node_builder(resp)
+
+
 # ----- Sources ------ #
+
+
+@get.register
+def get_all_sources(
+    client: ClientV1,
+    grai_type: SourceLabels,
+    options: ClientOptions = ClientOptions(),
+) -> List[SourceV1]:
+    """
+
+    Args:
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
+    resp = paginated(get)(client, client.get_url(grai_type), options)
+    for item in resp:
+        item["workspace"] = client.workspace
+    return [SourceV1.from_spec(item) for item in resp]
+
+
+@get.register
+def get_source_by_id(
+    client: ClientV1,
+    grai_type: SourceLabels,
+    source_id: Union[str, UUID],
+    options: ClientOptions = ClientOptions(),
+) -> SourceV1:
+    """
+
+    Args:
+        client:
+        grai_type:
+        source_id:
+        options:  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
+    url = f"{client.get_url(grai_type)}{source_id}/"
+    resp = get(client, url, options).json()
+    resp["workspace"] = client.workspace
+    return SourceV1.from_spec(resp)
+
+
+@get.register
+def get_source_from_source_v1(
+    client: ClientV1,
+    grai_type: SourceV1,
+    options: ClientOptions = ClientOptions(),
+) -> List[SourceV1]:
+    """
+
+    Args:
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
+    return get(client, grai_type.spec, options=options)
+
+
+@get.register
+def get_source_from_spec(
+    client: ClientV1,
+    grai_type: SourceSpec,
+    options: ClientOptions = ClientOptions(),
+) -> List[SourceV1]:
+    """
+
+    Args:
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
+    url = client.get_url(grai_type)
+    if grai_type.id is not None:
+        return get(client, url, grai_type.id, options)
+
+    options = options.copy()
+    options.query_args["name"] = grai_type.name
+    return get(client, url, options=options)

@@ -7,7 +7,6 @@ from grai_schemas import (
     utilities,
     v1,
 )
-from grai_schemas.base import GraiBaseModel
 from grai_schemas.package_definitions import config
 
 __version__ = "0.1.15"

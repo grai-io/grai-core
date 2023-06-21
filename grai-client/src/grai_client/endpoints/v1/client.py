@@ -15,6 +15,7 @@ class ClientV1(BaseClient):
     base = "/api/v1/"
     _node_endpoint = "lineage/nodes/"
     _edge_endpoint = "lineage/edges/"
+    _source_endpoint = "lineage/sources/"
     _workspace_endpoint = "workspaces/"
     _is_authenticated_endpoint = "auth/is-authenticated/"
 
@@ -23,6 +24,7 @@ class ClientV1(BaseClient):
         self.api = f"{self.url}{self.base}"
         self.node_endpoint = f"{self.api}{self._node_endpoint}"
         self.edge_endpoint = f"{self.api}{self._edge_endpoint}"
+        self.source_endpoint = f"{self.api}{self._source_endpoint}"
         self.workspace_endpoint = f"{self.api}{self._workspace_endpoint}"
         self.is_authenticated_endpoint = f"{self.api}{self._is_authenticated_endpoint}"
 

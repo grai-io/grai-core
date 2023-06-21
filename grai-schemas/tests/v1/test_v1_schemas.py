@@ -6,6 +6,8 @@ from grai_schemas.base import Edge, Node
 from grai_schemas.schema import Schema
 from grai_schemas.v1 import EdgeV1, NodeV1, WorkspaceV1
 from grai_schemas.v1.mock import MockV1
+from grai_schemas.v1.organization import OrganisationV1
+from grai_schemas.v1.source import SourceV1
 from pydantic import ValidationError
 
 
@@ -67,9 +69,6 @@ def make_v1_edge():
     return {**edge}
 
 
-mocker = MockV1()
-
-
 @pytest.mark.parametrize(
     "test_type,result",
     [
@@ -91,7 +90,7 @@ def test_v1_node_typing(test_type, result):
     Raises:
 
     """
-    obj_dict = mocker.node_dict()
+    obj_dict = MockV1.node.node_dict()
     obj = Schema(entity=obj_dict)
     assert isinstance(obj.entity, test_type) == result, f"{type(obj)}=={test_type} should be {result}"
 
@@ -117,7 +116,7 @@ def test_v1_edge_typing(test_type, result):
     Raises:
 
     """
-    obj_dict = mocker.edge_dict()
+    obj_dict = MockV1.edge.edge_dict()
     obj = Schema(entity=obj_dict)
     assert isinstance(obj.entity, test_type) == result, f"{type(obj)}=={test_type} should be {result}"
 
@@ -125,24 +124,22 @@ def test_v1_edge_typing(test_type, result):
 # test adding a new field to the metadata of a node
 def test_adding_new_field_to_node_metadata():
     """ """
-    obj_dict = make_v1_node()
-    obj = Schema(entity=obj_dict)
-    obj.entity.spec.metadata.new_field = "new_value"
-    assert obj.entity.spec.metadata.new_field == "new_value"
+    obj = MockV1.node.node()
+    obj.spec.metadata.new_field = "new_value"
+    assert obj.spec.metadata.new_field == "new_value"
 
 
 def test_adding_new_field_to_edge_metadata():
     """ """
-    obj_dict = make_v1_edge()
-    obj = Schema(entity=obj_dict)
-    obj.entity.spec.metadata.new_field = "new_value"
-    assert obj.entity.spec.metadata.new_field == "new_value"
+    obj = MockV1.edge.edge()
+    obj.spec.metadata.new_field = "new_value"
+    assert obj.spec.metadata.new_field == "new_value"
 
 
 def test_node_from_spec_no_metadata():
     """ """
 
-    obj_dict = make_v1_node()["spec"]
+    obj_dict = MockV1.node.node_dict()["spec"]
     obj_dict.pop("metadata")
     obj = NodeV1.from_spec(obj_dict)
     assert isinstance(obj, NodeV1)
@@ -152,7 +149,7 @@ def test_node_from_spec_no_metadata():
 
 def test_edge_from_spec_no_metadata():
     """ """
-    obj_dict = make_v1_edge()["spec"]
+    obj_dict = MockV1.edge.edge_dict()["spec"]
     obj_dict.pop("metadata")
     obj = EdgeV1.from_spec(obj_dict)
     assert isinstance(obj, EdgeV1)
@@ -162,7 +159,7 @@ def test_edge_from_spec_no_metadata():
 
 def test_edge_from_spec_no_grai_metadata():
     """ """
-    obj_dict = make_v1_edge()["spec"]
+    obj_dict = MockV1.edge.edge_dict()["spec"]
     obj_dict["metadata"].pop("grai")
     obj = EdgeV1.from_spec(obj_dict)
     assert isinstance(obj, EdgeV1)
@@ -172,7 +169,7 @@ def test_edge_from_spec_no_grai_metadata():
 
 def test_node_from_spec_no_grai_metadata():
     """ """
-    obj_dict = make_v1_node()["spec"]
+    obj_dict = MockV1.node.node_dict()["spec"]
     obj_dict["metadata"].pop("grai")
     obj_dict["metadata"]["test_values"] = (1, 2, 3)
     obj = NodeV1.from_spec(obj_dict)
@@ -183,7 +180,7 @@ def test_node_from_spec_no_grai_metadata():
 
 
 def test_node_from_spec_preserves_extra():
-    obj_dict = make_v1_node()["spec"]
+    obj_dict = MockV1.node.node_dict()["spec"]
     obj_dict["metadata"]["test_values"] = (1, 2, 3)
     obj = NodeV1.from_spec(obj_dict)
     assert hasattr(obj.spec.metadata, "test_values")
@@ -191,7 +188,7 @@ def test_node_from_spec_preserves_extra():
 
 
 def test_edge_from_spec_preserves_extra():
-    obj_dict = make_v1_edge()["spec"]
+    obj_dict = MockV1.edge.edge_dict()["spec"]
     obj_dict["metadata"]["test_values"] = (1, 2, 3)
     obj = EdgeV1.from_spec(obj_dict)
     assert hasattr(obj.spec.metadata, "test_values")
@@ -201,26 +198,87 @@ def test_edge_from_spec_preserves_extra():
 class TestWorkspaceV1:
     @staticmethod
     def test_default_workspace_valid_ref():
-        data = MockV1.workspace_dict()["spec"]
+        data = MockV1.workspace.workspace_dict()["spec"]
         ws = WorkspaceV1.from_spec(data)
+        assert ws.spec.ref == f"{ws.spec.organisation.name}/{ws.spec.name}"
 
     @staticmethod
-    def test_default_workspace_ref_handling():
-        data = MockV1.workspace_dict()["spec"]
+    def test_default_workspace_missing_ref():
+        data = MockV1.workspace.workspace_dict()["spec"]
         data.pop("ref")
         ws = WorkspaceV1.from_spec(data)
         assert ws.spec.ref == f"{ws.spec.organisation.name}/{ws.spec.name}"
 
     @staticmethod
     @pytest.mark.xfail(raises=ValidationError)
+    def test_default_workspace_invalid_ref():
+        data = MockV1.workspace.workspace_dict()["spec"]
+        data["ref"] = "a/invalid/ref"
+        ws = WorkspaceV1.from_spec(data)
+
+    @staticmethod
+    @pytest.mark.xfail(raises=ValidationError)
     def test_default_workspace_bad_ref():
-        data = MockV1.workspace_dict()["spec"]
+        data = MockV1.workspace.workspace_dict()["spec"]
         data["ref"] = "test"
         ws = WorkspaceV1.from_spec(data)
 
     @staticmethod
     @pytest.mark.xfail(raises=ValidationError)
     def test_default_workspace_bad_ref():
-        data = MockV1.workspace_dict()["spec"]
+        data = MockV1.workspace.workspace_dict()["spec"]
         data["ref"] = "test/1/2"
         ws = WorkspaceV1.from_spec(data)
+
+
+class TestOrganisationV1:
+    @staticmethod
+    @pytest.mark.xfail(raises=ValidationError)
+    def test_organisation_valid_name():
+        data = MockV1.organisation.organisation_dict()["spec"]
+        data["name"] = ["test"]
+        org = OrganisationV1.from_spec(data)
+
+    @staticmethod
+    @pytest.mark.xfail(raises=ValidationError)
+    def test_organisation_missing_name():
+        data = MockV1.organisation.organisation_dict()["spec"]
+        data.pop("name")
+        org = OrganisationV1.from_spec(data)
+
+    @staticmethod
+    def test_organisation_missing_id():
+        data = MockV1.organisation.organisation_dict()["spec"]
+        data.pop("id")
+        org = OrganisationV1.from_spec(data)
+        assert org.spec.id is None
+
+    @staticmethod
+    @pytest.mark.xfail(raises=ValidationError)
+    def test_organisation_invalid_id():
+        data = MockV1.organisation.organisation_dict()["spec"]
+        data["id"] = "not_a_uuid"
+        org = OrganisationV1.from_spec(data)
+
+
+class TestSourceV1:
+    @staticmethod
+    def test_source_missing_id():
+        data = MockV1.source.source_dict()["spec"]
+        data.pop("id")
+        source = SourceV1.from_spec(data)
+        assert source.spec.id is None
+
+    @staticmethod
+    @pytest.mark.xfail(raises=ValidationError)
+    def test_source_missing_name():
+        data = MockV1.source.source_dict()["spec"]
+        data.pop("name")
+        source = SourceV1.from_spec(data)
+
+    @staticmethod
+    @pytest.mark.xfail(raises=ValidationError)
+    def test_source_missing_workspace():
+        data = MockV1.source.source_dict()["spec"]
+        data.pop("workspace")
+        source = SourceV1.from_spec(data)

@@ -1,6 +1,8 @@
 import os
 
 import pytest
+from grai_schemas.v1.mock import MockV1
+from grai_schemas.v1.workspace import WorkspaceV1
 
 from grai_client.endpoints.v1.client import ClientV1
 from grai_client.testing.schema import (
@@ -52,3 +54,16 @@ def edge_v1(client):
     nodes = client.post(test_nodes)
     edge = client.post(test_edge)
     return edge
+
+
+@pytest.fixture(scope="session")
+def workspace_v1(client):
+    workspace = client.get("workspace", ref="default/default")[0]
+    return workspace
+
+
+@pytest.fixture(scope="session")
+def source_v1(client, workspace_v1):
+    test_source = MockV1.source.source(workspace=workspace_v1.spec.dict())
+    source = client.post(test_source)
+    return source

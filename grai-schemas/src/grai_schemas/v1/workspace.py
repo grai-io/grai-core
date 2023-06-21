@@ -3,41 +3,22 @@ from typing import Dict, Literal, Optional, Union
 from uuid import UUID
 
 from grai_schemas.generics import GraiBaseModel
-from pydantic import ConstrainedStr, Field, constr, validator
+from grai_schemas.v1.organization import OrganisationSpec
+from pydantic import Field, validator
 
 
-class OrganisationSpec(GraiBaseModel):
-    name: str
-    id: Optional[UUID]
-
-    def __hash__(self) -> int:
-        return hash(self.name)
-
-
-class OrganisationV1(GraiBaseModel):
-    type: Literal["Organisation", "Organization"]
-    version: Literal["v1"] = "v1"
-    spec: OrganisationSpec
-
-    @validator("type")
-    def validate_org_type(cls, v):
-        if v == "Organization":
-            return "Organisation"
-        return v
-
-
-class _DEFAULT_REF_SENTINEL(str):
+class _DefaultRefSentinel(str):
     pass
 
 
-ref_regex = re.compile("^[^/]*/[^/]*$")
+_REF_REGEX = re.compile("^[^/]*/[^/]*$")
 
 
 class WorkspaceSpec(GraiBaseModel):
     id: Optional[UUID]
     name: str
     organisation: Union[UUID, OrganisationSpec] = Field(..., alias="organization")
-    ref: str = _DEFAULT_REF_SENTINEL()  # This keeps mypy happy
+    ref: str = _DefaultRefSentinel()  # This keeps mypy happy
     search_enabled: Optional[bool]
 
     @property
@@ -65,16 +46,25 @@ class WorkspaceSpec(GraiBaseModel):
 
     @validator("ref", always=True, pre=True)
     def validate_ref(cls, v: Optional[str], values, field) -> str:
-        if v is None or isinstance(v, _DEFAULT_REF_SENTINEL):
+        if v is None or isinstance(v, _DefaultRefSentinel):
             if isinstance(values["organisation"], OrganisationSpec):
                 return f"{values['organisation'].name}/{values['name']}"
             else:
                 message = (
                     f"`ref` is a required field when `organisation` is a UUID. Either provide a value for `ref`, or "
-                    f" provide the organization name to `organisation` and `ref` will be automatically generated."
+                    f" provide an OrganizationSpec to organisation and ref will be automatically generated."
                 )
                 raise ValueError(message)
-        elif re.match(ref_regex, v):
+        elif re.match(_REF_REGEX, v):
+            # TODO: This doesn't cover the case of a user providing a UUID for the organisation
+            if isinstance(values["organisation"], OrganisationSpec):
+                validated_ref = f"{values['organisation'].name}/{values['name']}"
+                message = (
+                    f"Attempted to create a workspace with a `ref` of {v}, but this didn't match the specified "
+                    f"organisation name ({values['organisation'].name}) and workspace name ({values['name']}). "
+                )
+                if validated_ref != v:
+                    raise ValueError(message)
             return v
         else:
             message = (
@@ -85,7 +75,7 @@ class WorkspaceSpec(GraiBaseModel):
             raise ValueError(message)
 
     def __hash__(self) -> int:
-        return hash(self.name)
+        return hash(self.ref)
 
 
 class WorkspaceV1(GraiBaseModel):
@@ -109,3 +99,6 @@ class WorkspaceV1(GraiBaseModel):
 
     def __hash__(self) -> int:
         return hash(self.spec)
+
+
+__all__ = ["WorkspaceSpec", "WorkspaceV1"]
