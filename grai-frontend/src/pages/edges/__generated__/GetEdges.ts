@@ -3,6 +3,8 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
+import { WorkspaceEdgeFilter } from "./../../../../__generated__/globalTypes";
+
 // ====================================================
 // GraphQL query operation: GetEdges
 // ====================================================
@@ -63,4 +65,5 @@ export interface GetEdgesVariables {
   workspaceName: string;
   offset?: number | null;
   search?: string | null;
+  filter?: WorkspaceEdgeFilter | null;
 }

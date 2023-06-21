@@ -8,6 +8,7 @@ import PageLayout from "components/layout/PageLayout"
 import TableHeader from "components/table/TableHeader"
 import GraphError from "components/utils/GraphError"
 import { GetEdges, GetEdgesVariables } from "./__generated__/GetEdges"
+import TableFilterChoice from "components/table/TableFilterChoice"
 
 export const GET_EDGES = gql`
   query GetEdges(
@@ -15,10 +16,15 @@ export const GET_EDGES = gql`
     $workspaceName: String!
     $offset: Int
     $search: String
+    $filter: WorkspaceEdgeFilter
   ) {
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
-      edges(pagination: { limit: 20, offset: $offset }, search: $search) {
+      edges(
+        pagination: { limit: 20, offset: $offset }
+        search: $search
+        filter: $filter
+      ) {
         data {
           id
           namespace
@@ -49,10 +55,17 @@ export const GET_EDGES = gql`
   }
 `
 
+type EdgeFilter = {
+  edge_type?: {
+    contains?: string[]
+  }
+}
+
 const Edges: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
   const [search, setSearch] = useState<string>()
   const [page, setPage] = useState<number>(0)
+  const [filter, setFilter] = useState<EdgeFilter>()
 
   const { loading, error, data, refetch } = useQuery<
     GetEdges,
@@ -63,6 +76,7 @@ const Edges: React.FC = () => {
       workspaceName,
       offset: page * 20,
       search,
+      filter,
     },
     context: {
       debounceKey: "edges",
@@ -76,6 +90,9 @@ const Edges: React.FC = () => {
 
   const handleRefresh = () => refetch()
 
+  const handleEdgeTypeChange = (value: string[]) =>
+    setFilter({ ...filter, edge_type: { contains: value } })
+
   return (
     <PageLayout>
       <PageHeader title="Edges" />
@@ -84,7 +101,14 @@ const Edges: React.FC = () => {
           search={search}
           onSearch={setSearch}
           onRefresh={handleRefresh}
-        />
+        >
+          <TableFilterChoice
+            options={["TableToTable", "TableToColumn", "ColumnToColumn"]}
+            placeholder="Edge Type"
+            value={filter?.edge_type?.contains ?? []}
+            onChange={handleEdgeTypeChange}
+          />
+        </TableHeader>
         <EdgesTable
           edges={edges}
           loading={loading}
