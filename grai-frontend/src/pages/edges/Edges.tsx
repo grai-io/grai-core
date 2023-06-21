@@ -5,10 +5,10 @@ import EdgesTable from "components/edges/EdgesTable"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
+import TableFilterChoice from "components/table/TableFilterChoice"
 import TableHeader from "components/table/TableHeader"
 import GraphError from "components/utils/GraphError"
 import { GetEdges, GetEdgesVariables } from "./__generated__/GetEdges"
-import TableFilterChoice from "components/table/TableFilterChoice"
 
 export const GET_EDGES = gql`
   query GetEdges(

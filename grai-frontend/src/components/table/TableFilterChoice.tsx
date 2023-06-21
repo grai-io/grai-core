@@ -1,9 +1,9 @@
+import React from "react"
 import {
   CheckBox as CheckBoxIcon,
   CheckBoxOutlineBlank,
 } from "@mui/icons-material"
 import { Autocomplete, Checkbox, TextField } from "@mui/material"
-import React from "react"
 
 const icon = <CheckBoxOutlineBlank fontSize="small" />
 const checkedIcon = <CheckBoxIcon fontSize="small" />
