@@ -26,7 +26,7 @@ from installations.models import PullRequest as PullRequestModel
 from installations.models import Repository as RepositoryModel
 from lineage.filter import apply_table_filter, get_tags
 from lineage.graph_cache import GraphCache
-from lineage.graph_types import GraphTable
+from lineage.graph_types import GraphTable, BaseGraph
 from lineage.models import Edge as EdgeModel
 from lineage.models import Event as EventModel
 from lineage.models import Filter as FilterModel
@@ -749,6 +749,15 @@ class Workspace:
             graph.filter_by_filter(filter, query)
 
         return graph.get_graph_result(query=query)
+
+    @gql.django.field
+    async def graph_tables(
+        self,
+        search: Optional[str] = strawberry.UNSET,
+    ) -> List[BaseGraph]:
+        graph = GraphCache(workspace=self)
+
+        return graph.get_tables(search=search)
 
 
 @gql.django.filters.filter(MembershipModel, lookups=True)

@@ -1,6 +1,5 @@
 import React, { useState } from "react"
 import ReactFlow, {
-  Controls,
   Edge,
   EdgeTypes,
   getIncomers,
@@ -15,6 +14,7 @@ import Loading from "components/layout/Loading"
 import BaseNode from "./BaseNode"
 import GraphControls, { ControlOptions } from "./controls/GraphControls"
 import TestEdge from "./TestEdge"
+import GraphDrawer from "./drawer/GraphDrawer"
 
 const nodeTypes = {
   baseNode: BaseNode,
@@ -119,14 +119,15 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
 
   return (
     <ReactFlowProvider>
-      <GraphControls
+      {/* <GraphControls
         errors={!!errors}
         options={controlOptions}
         search={search}
         onSearch={onSearch}
         onRefresh={onRefresh}
         loading={refreshLoading}
-      />
+      /> */}
+
       <ReactFlow
         minZoom={0}
         nodes={nodes}
@@ -141,10 +142,14 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
         }}
         onMoveEnd={(_, viewport) => onMove && onMove(viewport)}
         fitView={fitView}
-      >
-        <Controls showInteractive={false} />
-      </ReactFlow>
+      />
       {loading && <Loading />}
+
+      <GraphDrawer
+        onRefresh={onRefresh}
+        loading={refreshLoading}
+        onMove={onMove}
+      />
     </ReactFlowProvider>
   )
 }

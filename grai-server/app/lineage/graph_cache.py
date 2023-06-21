@@ -10,7 +10,7 @@ from redis import Redis
 from workspaces.models import Workspace
 
 from .graph import GraphQuery
-from .graph_types import GraphColumn, GraphTable
+from .graph_types import BaseGraph, GraphColumn, GraphTable
 
 
 class GraphCache:
@@ -175,20 +175,42 @@ class GraphCache:
             },
         )
 
-    def get_tables(self):
+    def get_table_ids(self):
         results = self.query(
             """
                 MATCH (n:Table)
                 WITH
-                    n,
-                    {
-                        id: n.id
-                    } AS nodes
-                RETURN nodes
+                    n.id as ids
+                RETURN ids
             """
         ).result_set
 
         return [result[0] for result in results]
+
+    def get_tables(self, search: Optional[str] = None):
+        query = f"""
+            MATCH (table:Table)
+            {f"WHERE toLower(table.name) CONTAINS toLower('{search}')" if search else ""}
+            WITH
+                table,
+                {{
+                    id: table.id,
+                    name: table.name,
+                    display_name: table.display_name,
+                    namespace: table.namespace,
+                    data_source: table.data_source,
+                    x: table.x,
+                    y: table.y
+                }} AS tables
+            RETURN tables
+            LIMIT 100
+        """
+
+        print(query)
+
+        results = self.query(query).result_set
+
+        return [BaseGraph(**result[0]) for result in results]
 
     def get_table_edges(self):
         results = self.query(
@@ -450,7 +472,7 @@ class GraphCache:
         return self.get_with_step_graph_result(n, parameters, where)
 
     def layout_graph(self):
-        nodes = self.get_tables()
+        table_ids = self.get_table_ids()
         edges = self.get_table_edges()
 
         vertexes = {}
@@ -458,8 +480,8 @@ class GraphCache:
         class defaultview(object):
             w, h = 200, 400
 
-        for node in nodes:
-            vertexes[node["id"]] = Vertex(node["id"])
+        for table_id in table_ids:
+            vertexes[table_id] = Vertex(table_id)
 
         V = list(vertexes.values())
 

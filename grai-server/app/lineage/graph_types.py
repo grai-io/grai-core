@@ -26,3 +26,14 @@ class GraphColumn:
     display_name: str
     sources: List[str]
     destinations: List[str]
+
+
+@strawberry.type
+class BaseGraph:
+    id: str
+    name: str
+    display_name: str
+    namespace: str
+    data_source: str
+    x: int
+    y: int
