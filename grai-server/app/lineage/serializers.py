@@ -36,13 +36,23 @@ class ChildSourceSerializer(serializers.ModelSerializer):
 
 
 class SourceParentMixin:
+    def _get_source(self, data) -> Source:
+        try:
+            return Source.objects.get(**data)
+        except Source.DoesNotExist:
+            raise serializers.ValidationError(
+                f"Source with name '{data['name']}' does not exist"
+                if "name" in data
+                else f"Source with id '{data['id']}' does not exist"
+            )
+
     def create(self, validated_data):
         data_sources = validated_data.pop("data_sources", [])
 
         instance = super().create(validated_data)
 
         for data_source in data_sources:
-            source = Source.objects.get(**data_source)
+            source = self._get_source(data_source)
             instance.data_sources.add(source)
 
         return instance
@@ -54,7 +64,7 @@ class SourceParentMixin:
         existing_source_ids = list(instance.data_sources.values_list("id", flat=True))
 
         for data_source in data_sources:
-            source = Source.objects.get(**data_source)
+            source = self._get_source(data_source)
             instance.data_sources.add(source)
             new_source_ids.append(source.id)
 
