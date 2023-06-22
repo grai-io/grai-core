@@ -566,6 +566,7 @@ async def test_edges_searched(test_context, test_source):
 
 
 @pytest.mark.asyncio
+@pytest.mark.django_db
 async def test_edges_filter_edge_type_equals(test_context):
     context, organisation, workspace, user, membership = test_context
 

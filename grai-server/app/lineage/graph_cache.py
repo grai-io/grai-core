@@ -5,7 +5,6 @@ import redis
 from django.conf import settings
 from grandalf.graphs import Edge, Graph, Vertex
 from grandalf.layouts import SugiyamaLayout
-from query_chunk import chunk
 from redis import Redis
 
 from workspaces.models import Workspace
@@ -30,17 +29,7 @@ class GraphCache:
         )
 
     def query(self, query: str, parameters: object = {}, timeout: int = None):
-        return self.manager.graph(f"lineage:{str(self.workspace.id)}").query(query, parameters, timeout=timeout)
-
-    def build_cache(self):
-        for node in chunk(self.workspace.nodes.all(), 10000):
-            self.cache_node(node)
-
-        for edge in chunk(self.workspace.edges.all(), 10000):
-            self.cache_edge(edge)
-
-    def clear_cache(self):
-        self.manager.delete(f"lineage:{str(self.workspace.id)}")
+        return self.manager.graph(f"lineage:{str(self.workspace_id)}").query(query, parameters, timeout=timeout)
 
     def cache_node(self, node):
         def get_data_source() -> Optional[str]:
