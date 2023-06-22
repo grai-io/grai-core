@@ -26,6 +26,15 @@ export interface GraphFilter {
   max_y?: number | null;
 }
 
+export interface StringFilter {
+  equals?: string | null;
+  contains?: string[] | null;
+}
+
+export interface WorkspaceEdgeFilter {
+  edge_type?: StringFilter | null;
+}
+
 //==============================================================
 // END Enums and Input Objects
 //==============================================================

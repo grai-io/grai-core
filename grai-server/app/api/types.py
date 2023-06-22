@@ -39,6 +39,7 @@ from workspaces.models import WorkspaceAPIKey as WorkspaceAPIKeyModel
 from workspaces.types import Organisation
 
 from .pagination import DataWrapper, Pagination
+from lineage.graph import GraphQuery
 
 
 @strawberry.enum
@@ -475,6 +476,17 @@ class WorkspaceRepositoryFilter:
     installed: Optional[bool] = strawberry.UNSET
 
 
+@strawberry.input
+class StringFilter:
+    equals: Optional[str] = strawberry.UNSET
+    contains: Optional[List[str]] = strawberry.UNSET
+
+
+@strawberry.input
+class WorkspaceEdgeFilter:
+    edge_type: Optional[StringFilter] = strawberry.UNSET
+
+
 @gql.django.filters.filter(WorkspaceModel)
 class WorkspaceFilter:
     id: auto
@@ -518,6 +530,7 @@ class Workspace:
         self,
         pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
         search: Optional[str] = strawberry.UNSET,
+        filter: Optional[WorkspaceEdgeFilter] = strawberry.UNSET,
     ) -> Pagination["Edge"]:
         queryset = EdgeModel.objects.filter(workspace=self)
 
@@ -528,6 +541,13 @@ class Workspace:
                 | Q(destination__name__icontains=search)
                 | Q(source__name__icontains=search)
             )
+
+        if filter:
+            if filter.edge_type:
+                if filter.edge_type.equals:
+                    queryset = queryset.filter(metadata__grai__edge_type=filter.edge_type.equals)
+                if filter.edge_type.contains:
+                    queryset = queryset.filter(metadata__grai__edge_type__in=filter.edge_type.contains)
 
         return Pagination[Edge](queryset=queryset, pagination=pagination)
 
@@ -800,21 +820,24 @@ class Workspace:
     ) -> List[GraphTable]:
         graph = GraphCache(workspace=self)
 
+        query = GraphQuery([], {})
+        query.match("(table:Table)")
+
         if filters and filters.table_id:
             return graph.get_table_filtered_graph_result(filters.table_id, filters.n)
 
         if filters and filters.edge_id:
             return graph.get_edge_filtered_graph_result(filters.edge_id, filters.n)
 
+        if filters and filters.min_x is not None and filters.max_x is not strawberry.UNSET:
+            graph.filter_by_range(filters.min_x, filters.max_x, filters.min_y, filters.max_y, query)
+
         if filters and filters.filter:
             filter = await FilterModel.objects.aget(id=filters.filter)
 
-            return graph.get_filtered_graph_result(filter)
+            graph.filter_by_filter(filter, query)
 
-        if filters and filters.min_x is not None and filters.max_x is not strawberry.UNSET:
-            return graph.get_range_graph_result(filters.min_x, filters.max_x, filters.min_y, filters.max_y)
-
-        return graph.get_graph_result()
+        return graph.get_graph_result(query=query)
 
     # Sources
     @strawberry.field

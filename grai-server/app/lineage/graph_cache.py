@@ -3,13 +3,15 @@ from typing import List, Optional, Union
 
 import redis
 from django.conf import settings
+from grandalf.graphs import Edge, Graph, Vertex
+from grandalf.layouts import SugiyamaLayout
 from query_chunk import chunk
 from redis import Redis
 
 from workspaces.models import Workspace
+
+from .graph import GraphQuery
 from .graph_types import GraphColumn, GraphTable
-from grandalf.graphs import Vertex, Edge, Graph
-from grandalf.layouts import SugiyamaLayout
 
 
 class GraphCache:
@@ -27,8 +29,18 @@ class GraphCache:
             db=0,
         )
 
-    def query(self, query: str, parameters: any = {}, timeout: int = None):
-        return self.manager.graph(f"lineage:{self.workspace_id}").query(query, parameters, timeout=timeout)
+    def query(self, query: str, parameters: object = {}, timeout: int = None):
+        return self.manager.graph(f"lineage:{str(self.workspace.id)}").query(query, parameters, timeout=timeout)
+
+    def build_cache(self):
+        for node in chunk(self.workspace.nodes.all(), 10000):
+            self.cache_node(node)
+
+        for edge in chunk(self.workspace.edges.all(), 10000):
+            self.cache_edge(edge)
+
+    def clear_cache(self):
+        self.manager.delete(f"lineage:{str(self.workspace.id)}")
 
     def cache_node(self, node):
         def get_data_source() -> Optional[str]:
@@ -211,11 +223,12 @@ class GraphCache:
 
         return [result[0] for result in results]
 
-    def get_graph_result(self, parameters: any = {}, where: str = "") -> List[GraphTable]:
-        result = self.query(
+    def get_graph_result(
+        self,
+        query: GraphQuery,
+    ) -> List[GraphTable]:
+        query.add(
             f"""
-                MATCH (table:Table)
-                {where}
                 OPTIONAL MATCH (table:Table)-[:TABLE_TO_COLUMN]->(column:Column)
                 OPTIONAL MATCH (column)-[:COLUMN_TO_COLUMN]->(column_destination:Column)
                 OPTIONAL MATCH (table)-[:TABLE_TO_TABLE]->(destination:Table)
@@ -247,10 +260,12 @@ class GraphCache:
                         destinations: destinations
                     }} AS tables
                 RETURN tables
-            """,
-            parameters,
-            timeout=10000,
+            """
         )
+
+        print(str(query), query.get_parameters())
+
+        result = self.query(str(query), query.get_parameters(), timeout=10000)
 
         tables = []
 
@@ -288,18 +303,26 @@ class GraphCache:
 
         return tables
 
-    def get_range_graph_result(self, min_x: int, max_x: int, min_y: int, max_y: int):
-        return self.get_graph_result(
-            parameters={"min_x": min_x, "max_x": max_x, "min_y": min_y, "max_y": max_y},
-            where="WHERE $min_x <= table.x <= $max_x AND $min_y <= table.y <= $max_y",
+    def filter_by_range(self, min_x: int, max_x: int, min_y: int, max_y: int, query: GraphQuery) -> GraphQuery:
+        query.match(
+            "(table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*0..1]-(d)",
+            where=[
+                "$min_x <= d.x <= $max_x",
+                "$min_y <= d.y <= $max_y",
+            ],
+            parameters={
+                "min_x": min_x,
+                "max_x": max_x,
+                "min_y": min_y,
+                "max_y": max_y,
+            },
         )
 
-    def get_filtered_graph_result(self, filter):
-        if len(filter.metadata) == 0:
-            return self.get_graph_result()
+        return query
 
-        match = []
-        where = []
+    def filter_by_filter(self, filter, query: GraphQuery) -> GraphQuery:
+        if len(filter.metadata) == 0:
+            return query
 
         for row in filter.metadata:
             value = row["value"]
@@ -307,12 +330,14 @@ class GraphCache:
             if row["type"] == "table":
                 if row["field"] == "tag":
                     if row["operator"] == "contains":
-                        where.append(f"'{value}' IN table.tags")
+                        query.where(f"'{value}' IN table.tags")
             elif row["type"] == "ancestor":
                 if row["field"] == "tag":
                     if row["operator"] == "contains":
-                        match.append("MATCH (table)<-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*]-(othertable:Table)")
-                        where.append(f"'{value}' IN othertable.tags")
+                        query.match(
+                            "(table)<-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*]-(othertable:Table)",
+                            where=f"'{value}' IN othertable.tags",
+                        )
             elif row["type"] == "no-ancestor":
                 if row["field"] == "tag":
                     if row["operator"] == "contains":
@@ -321,8 +346,10 @@ class GraphCache:
             elif row["type"] == "descendant":
                 if row["field"] == "tag":
                     if row["operator"] == "contains":
-                        match.append("MATCH (table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*]->(othertable:Table)")
-                        where.append(f"'{value}' IN othertable.tags")
+                        query.match(
+                            "(table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*]->(othertable:Table)",
+                            where=f"'{value}' IN othertable.tags",
+                        )
             elif row["type"] == "no-descendant":
                 if row["field"] == "tag":
                     if row["operator"] == "contains":
@@ -331,11 +358,11 @@ class GraphCache:
             else:
                 raise Exception("Unknown filter type: " + row["type"])
 
-        where_clause = f"{' '.join(match)} WHERE ({') AND ('.join(where)})"
+        return query
 
-        return self.get_graph_result(where=where_clause)
-
-    def get_with_step_graph_result(self, n: int, parameters: any = {}, where: str = None) -> List["GraphTable"]:
+    def get_with_step_graph_result(
+        self, n: int, parameters: object = {}, where: Optional[str] = None
+    ) -> List["GraphTable"]:
         result = self.query(
             f"""
                 MATCH (firsttable:Table)

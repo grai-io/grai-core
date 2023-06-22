@@ -68,15 +68,13 @@ const Graph: React.FC<GraphProps> = ({ alwaysShow }) => {
           workspaceName,
           filters: {
             filter,
-            min_x: Math.round(-viewport.x / viewport.zoom - 500),
+            min_x: Math.round((-viewport.x - 500) / viewport.zoom),
             max_x: Math.round(
-              (-viewport.x + (ref.current?.clientWidth ?? 0)) / viewport.zoom +
-                500
+              (-viewport.x + (ref.current?.clientWidth ?? 0)) / viewport.zoom
             ),
-            min_y: Math.round(-viewport.y / viewport.zoom - 500),
+            min_y: Math.round(-viewport.y / viewport.zoom),
             max_y: Math.round(
-              (-viewport.y + (ref.current?.clientHeight ?? 0)) / viewport.zoom +
-                500
+              (-viewport.y + (ref.current?.clientHeight ?? 0)) / viewport.zoom
             ),
           },
         },
