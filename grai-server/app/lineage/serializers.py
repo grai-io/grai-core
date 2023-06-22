@@ -43,16 +43,23 @@ class SourceParentMixin:
 
         for data_source in data_sources:
             source = Source.objects.get(**data_source)
-            self.add_source(instance, source)
+            instance.data_sources.add(source)
 
         return instance
 
     def update(self, instance, validated_data):
         data_sources = validated_data.pop("data_sources", [])
 
+        new_source_ids = []
+        existing_source_ids = list(instance.data_sources.values_list("id", flat=True))
+
         for data_source in data_sources:
             source = Source.objects.get(**data_source)
-            self.add_source(instance, source)
+            instance.data_sources.add(source)
+            new_source_ids.append(source.id)
+
+        for source in set(existing_source_ids) - set(new_source_ids):
+            instance.data_sources.remove(source)
 
         return super().update(instance, validated_data)
 
@@ -76,9 +83,6 @@ class NodeSerializer(SourceParentMixin, serializers.ModelSerializer):
             "created_at",
             "updated_at",
         )
-
-    def add_source(self, instance: Node, source: Source):
-        source.nodes.add(instance)
 
 
 class SourceDestinationMixin:
@@ -126,9 +130,6 @@ class EdgeSerializer(SourceParentMixin, SourceDestinationMixin, serializers.Mode
             "data_sources",
         )
         read_only_fields = ("created_at", "updated_at")
-
-    def add_source(self, instance: Edge, source: Source):
-        source.edges.add(instance)
 
 
 class SourceChildMixin:
