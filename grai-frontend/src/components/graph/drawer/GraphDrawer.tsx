@@ -1,3 +1,4 @@
+import React from "react"
 import {
   FilterAlt,
   KeyboardArrowLeft,
@@ -18,10 +19,9 @@ import {
   Tab,
   Tooltip,
 } from "@mui/material"
-import useLocalState from "helpers/useLocalState"
-import React from "react"
-import GraphSearch from "./GraphSearch"
 import { Viewport } from "reactflow"
+import useLocalState from "helpers/useLocalState"
+import GraphSearch from "./GraphSearch"
 
 type GraphDrawerProps = {
   loading?: boolean

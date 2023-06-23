@@ -13,8 +13,8 @@ import "reactflow/dist/style.css"
 import Loading from "components/layout/Loading"
 import BaseNode from "./BaseNode"
 import GraphControls, { ControlOptions } from "./controls/GraphControls"
-import TestEdge from "./TestEdge"
 import GraphDrawer from "./drawer/GraphDrawer"
+import TestEdge from "./TestEdge"
 
 const nodeTypes = {
   baseNode: BaseNode,

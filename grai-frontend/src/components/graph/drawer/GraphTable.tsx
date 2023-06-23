@@ -1,6 +1,6 @@
+import React from "react"
 import { TableChart } from "@mui/icons-material"
 import { Box, Typography } from "@mui/material"
-import React from "react"
 
 interface Table {
   id: string

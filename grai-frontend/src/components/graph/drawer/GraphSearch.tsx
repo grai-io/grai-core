@@ -1,15 +1,15 @@
+import React, { useEffect, useState } from "react"
 import { gql, useQuery } from "@apollo/client"
 import { Box, List, TextField } from "@mui/material"
+import { Viewport, useReactFlow, useStore } from "reactflow"
+import useWorkspace from "helpers/useWorkspace"
 import Loading from "components/layout/Loading"
 import GraphError from "components/utils/GraphError"
-import useWorkspace from "helpers/useWorkspace"
-import React, { useEffect, useState } from "react"
 import {
   SearchGraphTables,
   SearchGraphTablesVariables,
 } from "./__generated__/SearchGraphTables"
 import GraphTable from "./GraphTable"
-import { Viewport, useReactFlow, useStore } from "reactflow"
 
 export const SEARCH_TABLES = gql`
   query SearchGraphTables(
