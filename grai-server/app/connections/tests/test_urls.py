@@ -82,7 +82,9 @@ def test_connector():
 
 @pytest.fixture
 def test_dbt_cloud_connector():
-    return Connector.objects.create(name=Connector.DBT_CLOUD, slug=Connector.DBT_CLOUD)
+    connector, created = Connector.objects.get_or_create(name=Connector.DBT_CLOUD, slug=Connector.DBT_CLOUD)
+
+    return connector
 
 
 @pytest.fixture

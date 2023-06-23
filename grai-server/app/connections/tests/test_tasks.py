@@ -34,42 +34,58 @@ def test_source(test_workspace):
 
 @pytest.fixture
 def test_postgres_connector():
-    return Connector.objects.create(name=Connector.POSTGRESQL, slug=Connector.POSTGRESQL)
+    connector, created = Connector.objects.get_or_create(name=Connector.POSTGRESQL, slug=Connector.POSTGRESQL)
+
+    return connector
 
 
 @pytest.fixture
 def test_snowflake_connector():
-    return Connector.objects.create(name=Connector.SNOWFLAKE, slug=Connector.SNOWFLAKE)
+    connector, created = Connector.objects.get_or_create(name=Connector.SNOWFLAKE, slug=Connector.SNOWFLAKE)
+
+    return connector
 
 
 @pytest.fixture
 def test_mssql_connector():
-    return Connector.objects.create(name=Connector.MSSQL, slug=Connector.MSSQL)
+    connector, created = Connector.objects.get_or_create(name=Connector.MSSQL, slug=Connector.MSSQL)
+
+    return connector
 
 
 @pytest.fixture
 def test_bigquery_connector():
-    return Connector.objects.create(name=Connector.BIGQUERY, slug=Connector.BIGQUERY)
+    connector, created = Connector.objects.get_or_create(name=Connector.BIGQUERY, slug=Connector.BIGQUERY)
+
+    return connector
 
 
 @pytest.fixture
 def test_dbt_cloud_connector():
-    return Connector.objects.create(name=Connector.DBT_CLOUD, slug=Connector.DBT_CLOUD)
+    connector, created = Connector.objects.get_or_create(name=Connector.DBT_CLOUD, slug=Connector.DBT_CLOUD)
+
+    return connector
 
 
 @pytest.fixture
 def test_fivetran_connector():
-    return Connector.objects.create(name=Connector.FIVETRAN, slug=Connector.FIVETRAN)
+    connector, created = Connector.objects.get_or_create(name=Connector.FIVETRAN, slug=Connector.FIVETRAN)
+
+    return connector
 
 
 @pytest.fixture
 def test_mysql_connector():
-    return Connector.objects.create(name=Connector.MYSQL, slug=Connector.MYSQL)
+    connector, created = Connector.objects.get_or_create(name=Connector.MYSQL, slug=Connector.MYSQL)
+
+    return connector
 
 
 @pytest.fixture
 def test_redshift_connector():
-    return Connector.objects.create(name=Connector.REDSHIFT, slug=Connector.REDSHIFT)
+    connector, created = Connector.objects.get_or_create(name=Connector.REDSHIFT, slug=Connector.REDSHIFT)
+
+    return connector
 
 
 @pytest.fixture
@@ -88,7 +104,9 @@ def test_yaml_file_connector():
 
 @pytest.fixture
 def test_connector():
-    return Connector.objects.create(name="Connector", slug="Connector")
+    connector, created = Connector.objects.get_or_create(name="Connector", slug="Connector")
+
+    return connector
 
 
 @pytest.fixture
