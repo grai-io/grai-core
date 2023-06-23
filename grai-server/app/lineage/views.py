@@ -63,7 +63,7 @@ class NodeViewSet(AuthenticatedViewSetMixin, ModelViewSet):
             "updated_at",
             "source_name",
         ]
-        starts_with_filters = ("metadata", "created_at", "updated_at")
+        starts_with_filters = ("metadata", "created_at", "updated_at", "data_sources")
         for filter_name, filter_value in query_params.items():
             if filter_name == "source_name":
                 source = Source.objects.get(name=filter_value)

@@ -1,12 +1,14 @@
 from typing import Union
 
-from grai_schemas.v1 import EdgeV1, NodeV1, SourceV1
+from grai_schemas.v1 import EdgeV1, NodeV1, SourcedNodeV1, SourceV1
+from grai_schemas.v1.node import SourcedNodeSpec
 from grai_schemas.v1.organization import OrganisationSpec, OrganisationV1
 from grai_schemas.v1.workspace import WorkspaceSpec, WorkspaceV1
 
 from grai_client.endpoints.client import ClientOptions
 from grai_client.endpoints.rest import delete, get
 from grai_client.endpoints.v1.client import ClientV1
+from grai_client.endpoints.v1.get.node import get_source_and_node_spec
 from grai_client.errors import NotSupportedError
 from grai_client.schemas.labels import (
     EdgeLabels,
@@ -38,6 +40,45 @@ def delete_node_v1(client: ClientV1, grai_type: NodeV1, options: ClientOptions =
         if grai_type is None:
             return
     url = f"{client.get_url(grai_type)}{grai_type.spec.id}/"
+    delete(client, url, options=options)
+
+
+@delete.register
+def delete_source_node_by_source_node_v1(
+    client: ClientV1, grai_type: SourcedNodeV1, options: ClientOptions = ClientOptions()
+):
+    """
+
+    Args:
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
+    delete(client, grai_type.spec, options)
+
+
+@delete.register
+def delete_source_node_spec(client: ClientV1, grai_type: SourcedNodeSpec, options: ClientOptions = ClientOptions()):
+    """
+
+    Args:
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
+
+    source, node = get_source_and_node_spec(client, grai_type)
+    url = client.get_url("SourceNode", source.id, node.id)
     delete(client, url, options=options)
 
 

@@ -111,7 +111,7 @@ class MockEdge:
             "version": "v1",
             "spec": cls.base_edge_spec_dict(**kwargs),
         }
-        result["spec"]["data_sources"] = kwargs.get("data_sources", [MockSource.source_dict()["spec"]])
+        result["spec"]["data_sources"] = kwargs.get("data_sources", [MockSource.source_dict()["spec"]]).copy()
         return result
 
     @classmethod
@@ -121,10 +121,12 @@ class MockEdge:
 
     @classmethod
     def edge_and_nodes(cls, source=None, destination=None, **kwargs):
+        node_kwargs = ["data_sources"]
+        node_kwargs = {k: kwargs[k].copy() for k in node_kwargs if k in kwargs}
         if source is None:
-            source = MockNode.node().spec
+            source = MockNode.node(**node_kwargs).spec
         if destination is None:
-            destination = MockNode.node().spec
+            destination = MockNode.node(**node_kwargs).spec
         edge = cls.edge(source=source, destination=destination, **kwargs)
         return edge, [source, destination]
 

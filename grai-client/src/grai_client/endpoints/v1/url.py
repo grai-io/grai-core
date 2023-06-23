@@ -1,4 +1,5 @@
 from typing import Union
+from uuid import UUID
 
 from grai_schemas.v1 import EdgeV1, NodeV1, WorkspaceV1
 from grai_schemas.v1.edge import EdgeIdTypes, EdgeSpec, SourcedEdgeV1
@@ -9,7 +10,9 @@ from grai_client.endpoints.v1.client import ClientV1
 from grai_client.schemas.labels import (
     EdgeLabels,
     NodeLabels,
+    SourceEdgeLabels,
     SourceLabels,
+    SourceNodeLabels,
     WorkspaceLabels,
 )
 
@@ -59,7 +62,62 @@ def get_sourced_edge_url(client: ClientV1, obj: SourcedEdgeV1) -> str:
     Raises:
 
     """
-    return f"{client.edge_endpoint}/{obj.spec.data_source}/{obj.spec.id}/"
+    return client.source_endpoint
+
+
+@ClientV1.get_url.register
+def get_sourced_node_url(
+    client: ClientV1, type_identifier: Union[SourceNodeLabels, SourcedNodeV1, SourcedNodeSpec], source_id: UUID
+) -> str:
+    """
+
+    Args:
+        client:
+        obj:
+
+    Returns:
+
+    Raises:
+
+    """
+    return f"{client.source_endpoint}{source_id}/nodes/"
+
+
+@ClientV1.get_url.register
+def get_sourced_node_spec_url(
+    client: ClientV1,
+    type_identifier: Union[SourceNodeLabels, SourcedNodeV1, SourcedNodeSpec],
+    source_id: UUID,
+    node_id: UUID,
+) -> str:
+    """
+
+    Args:
+        client:
+        obj:
+
+    Returns:
+
+    Raises:
+
+    """
+    return f"{client.get_url(type_identifier, source_id)}{node_id}/"
+
+
+@ClientV1.get_url.register
+def get_sourced_edge_url(client: ClientV1, type_identifier: SourceEdgeLabels, source_id: UUID) -> str:
+    """
+
+    Args:
+        client:
+        obj:
+
+    Returns:
+
+    Raises:
+
+    """
+    return f"{client.source_endpoint}{source_id}/edges/"
 
 
 @ClientV1.get_url.register

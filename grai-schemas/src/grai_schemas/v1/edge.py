@@ -83,6 +83,9 @@ class SourcedEdgeV1(GraiBaseModel):
         """
         return cls(version="v1", type="SourceEdge", spec=spec_dict)
 
+    def __hash__(self):
+        return hash(self.spec)
+
 
 class NamedSpec(EdgeNamedID, BaseSpec, DataSourcesMixin):
     """ """

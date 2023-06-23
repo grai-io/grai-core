@@ -78,7 +78,7 @@ def update(client: BaseClient, items: List[T], active_items: Optional[List[T]] =
             active_items = []
 
     new_items, updated_items, deactivated_items = compute_graph_changes(items, active_items)
-    breakpoint()
+
     # Going to need to deal with invalid deactivated nodes.
     # new_items are valid by virtue of being created by the caller
     # updated_items should be valid by virtue of merge logic and the caller providing a valid object.

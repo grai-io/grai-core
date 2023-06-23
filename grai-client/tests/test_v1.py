@@ -2,15 +2,15 @@ from functools import cache
 from uuid import UUID, uuid4
 
 import pytest
-from grai_schemas.v1 import EdgeV1, NodeV1, SourceV1, WorkspaceV1
-from grai_schemas.v1.edge import EdgeNamedID, EdgeUuidID
+from grai_schemas.v1 import EdgeV1, NodeV1, SourcedNodeV1, SourceV1, WorkspaceV1
+from grai_schemas.v1.edge import EdgeNamedID, EdgeUuidID, SourcedEdgeSpec, SourcedEdgeV1
+from grai_schemas.v1.metadata.metadata import MetadataV1
 from grai_schemas.v1.mock import MockV1
 from requests import RequestException
 
 from grai_client.endpoints.utilities import is_valid_uuid
 from grai_client.endpoints.v1.client import ClientV1
 from grai_client.errors import NotSupportedError, ObjectNotFoundError
-from grai_client.testing.schema import mock_v1_edge_and_nodes, mock_v1_node
 
 
 def build_mocked_node(client, **kwargs):
@@ -209,15 +209,21 @@ class TestNodesV1:
     def test_get_nodes(client):
         nodes = client.get("node")
         assert all(isinstance(node, NodeV1) for node in nodes)
+        assert all(isinstance(node.spec.metadata, MetadataV1) for node in nodes)
 
     @classmethod
     def test_post_node(cls, client):
         test_node = build_mocked_node(client)
+        sources_names = {s.name for s in test_node.spec.data_sources}
         result = client.post(test_node)
         assert isinstance(result, NodeV1)
         assert result.spec.name == test_node.spec.name
         assert result.spec.namespace == test_node.spec.namespace
         assert result.spec.is_active == test_node.spec.is_active
+
+        assert len(result.spec.data_sources) == len(sources_names)
+        for data_source in result.spec.data_sources:
+            assert data_source.name in sources_names
 
     @classmethod
     def test_patch_node(cls, client):
@@ -282,6 +288,7 @@ class TestEdgesV1:
     def test_get_edges(client):
         result = client.get("edge")
         assert all(isinstance(edge, EdgeV1) for edge in result)
+        assert all(isinstance(edge.spec.metadata, MetadataV1) for edge in result)
 
     @staticmethod
     def test_post_edge(client):
@@ -357,13 +364,188 @@ class TestEdgesV1:
         assert hash(result) == hash(test_edge), "Edge should be queryable by named id"
 
 
-# class TestSourceNode:
-#     @classmethod
-#     def setup_class(cls, client):
-#         cls.mocked_nodes = [MockV1.node.sourced_node_dict() for _ in range(10)]
-#         cls.mocked_nodes = client.post(cls.mocked_nodes)
+@pytest.fixture(scope="module")
+def initial_source_node_test_values(client):
+    source = client.post(MockV1.source.source())
+    init_nodes = client.post([MockV1.node.node(data_sources=[source.spec]) for i in range(3)])
+    return source, init_nodes
 
-# def test_get_by_label(self, client):
-#     source_node = MockV1.node.sourced_node_dict()
-#     source_node = client.post(source_node)
-#     result = client.get()
+
+@pytest.fixture(scope="class", autouse=True)
+def initialize_source_node_tests(request, initial_source_node_test_values):
+    source, init_nodes = initial_source_node_test_values
+    request.cls.source = source
+    request.cls.init_nodes = init_nodes
+    yield
+
+
+class TestSourceNodeV1:
+    @pytest.mark.usefixtures("initialize_source_node_tests")
+    def setup_class(cls):
+        pass
+
+    def mocked_node(self):
+        return MockV1.node.sourced_node(data_source=self.source.spec)
+
+    def test_get_by_label(self, client):
+        source_nodes = client.get("SourceNode", self.source.spec.id)
+        assert len(source_nodes) == len(self.init_nodes)
+        for node in source_nodes:
+            assert isinstance(node, SourcedNodeV1)
+            assert isinstance(node.spec.metadata, MetadataV1)
+
+    def test_get_by_node_source_v1(self, client):
+        test_node = self.init_nodes[0]
+        node = client.get(test_node)
+        assert node.spec.name == test_node.spec.name
+        assert node.spec.namespace == test_node.spec.namespace
+
+    def test_get_by_node_spec(self, client):
+        test_node = self.init_nodes[0]
+        node = client.get(test_node.spec)
+        assert node.spec.name == test_node.spec.name
+        assert node.spec.namespace == test_node.spec.namespace
+
+    def test_post_source_node(self, client):
+        test_node = self.mocked_node()
+        result = client.post(test_node)
+        assert isinstance(result, SourcedNodeV1)
+        assert isinstance(result.spec.metadata, MetadataV1)
+        assert result.spec.id is not None
+        assert result.spec.name == test_node.spec.name
+        assert result.spec.namespace == test_node.spec.namespace
+
+    def test_delete_source_node(self, client):
+        test_node = self.mocked_node()
+        result = client.post(test_node)
+        client.delete(result)
+        with pytest.raises(RequestException):
+            result = client.get(result)
+
+    def test_patch_source_node(self, client):
+        test_node = self.mocked_node()
+        result = client.post(test_node)
+        result.spec.is_active = False
+        result = client.patch(result)
+        assert result.spec.is_active is False
+
+    def test_patch_missing_source_node(self, client):
+        test_node = self.mocked_node()
+        result = client.post(test_node)
+        client.delete(result)
+        with pytest.raises(RequestException):
+            result = client.patch(result)
+
+    def test_patch_missing_source_node_by_name(self, client):
+        test_node = self.mocked_node()
+        result = client.post(test_node)
+        client.delete(result)
+        with pytest.raises(ObjectNotFoundError):
+            result = client.patch(test_node.spec)
+
+    def test_source_node_hash(self, client):
+        test_node = self.mocked_node()
+        test_node.spec.id = None
+        new_node = client.post(test_node)
+        assert hash(new_node) == hash(test_node)
+
+
+@pytest.fixture(scope="module")
+def initial_source_edge_test_values(client):
+    source = client.post(MockV1.source.source())
+
+    mock_results = [MockV1.edge.edge_and_nodes(data_sources=[source.spec]) for i in range(3)]
+    mock_nodes = [item for result in mock_results for item in result[1]]
+    mock_edges = [item[0] for item in mock_results]
+
+    init_nodes = client.post(mock_nodes)
+    init_edges = client.post(mock_edges)
+
+    return source, init_nodes, init_edges
+
+
+@pytest.fixture(scope="class", autouse=True)
+def initialize_source_edge_tests(request, initial_source_edge_test_values):
+    source, init_nodes, init_edges = initial_source_edge_test_values
+    request.cls.source = source
+    request.cls.init_nodes = init_nodes
+    request.cls.init_edges = init_edges
+
+    assert all(source.spec.id == node.spec.data_sources[0].id for node in init_nodes)
+    assert all(source.spec.id == edge.spec.data_sources[0].id for edge in init_edges)
+    print(source.spec.id)
+    yield
+
+
+class TestSourceEdgeV1:
+    @pytest.mark.usefixtures("initialize_source_edge_tests")
+    def setup_class(cls):
+        pass
+
+    def mocked_edge(self):
+        return MockV1.edge.sourced_node(data_source=self.source.spec)
+
+    def test_get_by_label(self, client):
+        print(self.source.spec.id)
+        source_edges = client.get("SourceEdge", self.source.spec.id)
+        assert len(source_edges) == len(self.init_edges)
+        for node in source_edges:
+            assert isinstance(node, SourcedEdgeV1)
+            assert isinstance(node.spec.metadata, MetadataV1)
+
+    #
+    # def test_get_by_node_source_v1(self, client):
+    #     test_node = self.init_nodes[0]
+    #     node = client.get(test_node)
+    #     assert node.spec.name == test_node.spec.name
+    #     assert node.spec.namespace == test_node.spec.namespace
+    #
+    # def test_get_by_node_spec(self, client):
+    #     test_node = self.init_nodes[0]
+    #     node = client.get(test_node.spec)
+    #     assert node.spec.name == test_node.spec.name
+    #     assert node.spec.namespace == test_node.spec.namespace
+    #
+    # def test_post_source_node(self, client):
+    #     test_node = self.mocked_node()
+    #     result = client.post(test_node)
+    #     assert isinstance(result, SourcedNodeV1)
+    #     assert isinstance(result.spec.metadata, MetadataV1)
+    #     assert result.spec.id is not None
+    #     assert result.spec.name == test_node.spec.name
+    #     assert result.spec.namespace == test_node.spec.namespace
+    #
+    # def test_delete_source_node(self, client):
+    #     test_node = self.mocked_node()
+    #     result = client.post(test_node)
+    #     client.delete(result)
+    #     with pytest.raises(RequestException):
+    #         result = client.get(result)
+    #
+    # def test_patch_source_node(self, client):
+    #     test_node = self.mocked_node()
+    #     result = client.post(test_node)
+    #     result.spec.is_active = False
+    #     result = client.patch(result)
+    #     assert result.spec.is_active is False
+    #
+    # def test_patch_missing_source_node(self, client):
+    #     test_node = self.mocked_node()
+    #     result = client.post(test_node)
+    #     client.delete(result)
+    #     with pytest.raises(RequestException):
+    #         result = client.patch(result)
+    #
+    # def test_patch_missing_source_node_by_name(self, client):
+    #     test_node = self.mocked_node()
+    #     result = client.post(test_node)
+    #     client.delete(result)
+    #     with pytest.raises(ObjectNotFoundError):
+    #         result = client.patch(test_node.spec)
+    #
+    # def test_source_node_hash(self, client):
+    #     test_node = self.mocked_node()
+    #     test_node.spec.id = None
+    #     new_node = client.post(test_node)
+    #     assert hash(new_node) == hash(test_node)
+    #

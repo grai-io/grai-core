@@ -37,21 +37,6 @@ def client(client_params):
 
 
 @pytest.fixture(scope="session")
-def node_v1(client):
-    test_node = MockV1.node.node()
-    test_node = client.post(test_node)
-    return test_node
-
-
-@pytest.fixture(scope="session")
-def edge_v1(client):
-    test_edge, test_nodes = MockV1.edge.edge_and_nodes()
-    nodes = client.post(test_nodes)
-    edge = client.post(test_edge)
-    return edge
-
-
-@pytest.fixture(scope="session")
 def organisation_v1(client):
     return OrganisationV1.from_spec({"name": "default"})
 
@@ -67,3 +52,18 @@ def source_v1(client, workspace_v1):
     test_source = MockV1.source.source(workspace=workspace_v1.spec.dict())
     source = client.post(test_source)
     return source
+
+
+@pytest.fixture(scope="session")
+def node_v1(client, source_v1):
+    test_node = MockV1.node.node(data_sources=[source_v1.spec])
+    test_node = client.post(test_node)
+    return test_node
+
+
+@pytest.fixture(scope="session")
+def edge_v1(client, source_v1):
+    test_edge, test_nodes = MockV1.edge.edge_and_nodes(data_sources=[source_v1.spec])
+    nodes = client.post(test_nodes)
+    edge = client.post(test_edge)
+    return edge

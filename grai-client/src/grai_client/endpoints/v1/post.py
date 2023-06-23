@@ -3,9 +3,10 @@ from uuid import UUID
 
 from grai_schemas.v1 import EdgeV1, NodeV1, WorkspaceV1
 from grai_schemas.v1.edge import EdgeSpec, SourcedEdgeV1
-from grai_schemas.v1.node import NodeSpec, SourcedNodeV1
+from grai_schemas.v1.node import NodeSpec, SourcedNodeSpec, SourcedNodeV1
 from grai_schemas.v1.organization import OrganisationSpec, OrganisationV1
 from grai_schemas.v1.source import SourceSpec, SourceV1
+from grai_schemas.v1.workspace import WorkspaceSpec
 
 from grai_client.endpoints.client import ClientOptions
 from grai_client.endpoints.rest import get, post
@@ -25,7 +26,7 @@ def collect_data_sources(data_sources: List[Union[UUID, SourceSpec]]) -> List[Un
     Raises:
 
     """
-    data_sources = []
+    result = []
     for source in data_sources:
         if isinstance(source, UUID):
             source_obj = {"id": source}
@@ -34,9 +35,26 @@ def collect_data_sources(data_sources: List[Union[UUID, SourceSpec]]) -> List[Un
         else:
             raise NotSupportedError(f"Only UUIDs and SourceSpecs are supported not {type(source)}")
 
-        data_sources.append(source_obj)
+        result.append(source_obj)
 
-    return data_sources
+    return result
+
+
+@post.register
+def post_node_by_node_v1(client: ClientV1, grai_type: NodeV1, options: ClientOptions = ClientOptions()) -> NodeV1:
+    """
+
+    Args:
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
+    return post(client, grai_type.spec, options)
 
 
 @post.register
@@ -56,26 +74,8 @@ def post_node_by_spec(client: ClientV1, grai_type: NodeSpec, options: ClientOpti
     url = client.get_url(grai_type)
     payload = grai_type.dict(exclude_none=True)
     payload["data_sources"] = collect_data_sources(grai_type.data_sources)
-
     response = post(client, url, payload, options=options)
     return NodeV1.from_spec(response.json())
-
-
-@post.register
-def post_node_by_spec(client: ClientV1, grai_type: NodeV1, options: ClientOptions = ClientOptions()) -> NodeV1:
-    """
-
-    Args:
-        client:
-        grai_type:
-        options:  (Default value = ClientOptions())
-
-    Returns:
-
-    Raises:
-
-    """
-    return post(client, grai_type.spec, options)
 
 
 @post.register
@@ -94,9 +94,34 @@ def post_sourced_node_v1(
     Raises:
 
     """
-    url = client.get_url(grai_type)
-    response = post(client, url, grai_type.spec.dict(exclude_none=True), options=options)
-    return SourcedNodeV1.from_spec(response.json())
+    return post(client, grai_type.spec, options)
+
+
+@post.register
+def post_sourced_node_v1(
+    client: ClientV1, grai_type: SourcedNodeSpec, options: ClientOptions = ClientOptions()
+) -> SourcedNodeV1:
+    """
+
+    Args:
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
+    source_spec = grai_type.data_source
+    if (source_id := source_spec.id) is None:
+        source_spec = get(client, source_spec).spec
+        source_id = source_spec.id
+
+    url = client.get_url("SourceNode", source_id)
+    response = post(client, url, grai_type.dict(exclude_none=True), options=options).json()
+    response["data_source"] = source_spec
+    return SourcedNodeV1.from_spec(response)
 
 
 @post.register
@@ -146,7 +171,7 @@ def post_edge_by_edge_v1(client: ClientV1, grai_type: EdgeV1, options: ClientOpt
 
 @post.register
 def post_workspace_v1(
-    client: ClientV1, grai_type: WorkspaceV1, options: ClientOptions = ClientOptions()
+    client: ClientV1, grai_type: Union[WorkspaceV1, WorkspaceSpec], options: ClientOptions = ClientOptions()
 ) -> WorkspaceV1:
     """
     Args:
@@ -158,16 +183,17 @@ def post_workspace_v1(
 
     Raises:
     """
+    spec = grai_type.spec if isinstance(grai_type, WorkspaceV1) else grai_type
     url = client.get_url(grai_type)
-    payload = grai_type.spec.dict(exclude_none=True)
+    payload = spec.dict(exclude_none=True)
 
-    if isinstance(grai_type.spec.organisation, UUID):
+    if isinstance(spec.organisation, UUID):
         organisation_id = grai_type.spec.organisation
-    elif isinstance(grai_type.spec.organisation, OrganisationSpec) and grai_type.spec.organisation.id is not None:
-        organisation_id = grai_type.spec.organisation.id
+    elif isinstance(spec.organisation, OrganisationSpec) and spec.organisation.id is not None:
+        organisation_id = spec.organisation.id
     else:
         error_message = (
-            f"An attempt was made to post the workspace `{grai_type.spec.ref}`. Unfortunately, no Organisation id was"
+            f"An attempt was made to post the workspace `{spec.ref}`. Unfortunately, no Organisation id was"
             f"provided as part of the request and the client library does not currently support posting a workspace "
             f"without an organisation id."
         )

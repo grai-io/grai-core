@@ -78,6 +78,9 @@ class SourcedNodeV1(GraiBaseModel):
         """
         return cls(version="v1", type="SourceNode", spec=spec_dict)
 
+    def __hash__(self):
+        return hash(self.spec)
+
 
 class NamedSpec(NodeNamedID, BaseSpec, DataSourcesMixin):
     """ """
