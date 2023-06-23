@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { gql, useMutation } from "@apollo/client"
 import { LoadingButton } from "@mui/lab"
-import { TextField } from "@mui/material"
+import { Checkbox, FormControlLabel, FormGroup, TextField } from "@mui/material"
 import { useSnackbar } from "notistack"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import Form from "components/form/Form"
@@ -12,8 +12,16 @@ import {
 } from "./__generated__/CreateOrganisationWorkspace"
 
 export const CREATE_WORKSPACE = gql`
-  mutation CreateOrganisationWorkspace($organisationId: ID!, $name: String!) {
-    createWorkspace(organisationId: $organisationId, name: $name) {
+  mutation CreateOrganisationWorkspace(
+    $organisationId: ID!
+    $name: String!
+    $sample_data: Boolean!
+  ) {
+    createWorkspace(
+      organisationId: $organisationId
+      name: $name
+      sample_data: $sample_data
+    ) {
       id
       name
       organisation {
@@ -26,6 +34,7 @@ export const CREATE_WORKSPACE = gql`
 
 type FormValues = {
   name: string
+  sample_data: boolean
 }
 
 const WorkspaceForm: React.FC = () => {
@@ -35,6 +44,7 @@ const WorkspaceForm: React.FC = () => {
 
   const [values, setValues] = useState<FormValues>({
     name: "",
+    sample_data: false,
   })
 
   const [createWorkspace, { loading, error }] = useMutation<
@@ -50,7 +60,7 @@ const WorkspaceForm: React.FC = () => {
     createWorkspace({
       variables: {
         organisationId,
-        name: values.name,
+        ...values,
       },
     })
       .then(data => data.data?.createWorkspace)
@@ -70,6 +80,19 @@ const WorkspaceForm: React.FC = () => {
         value={values.name}
         onChange={event => setValues({ ...values, name: event.target.value })}
       />
+      <FormGroup sx={{ my: 2 }}>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={values.sample_data}
+              onChange={(event, checked) =>
+                setValues({ ...values, sample_data: checked })
+              }
+            />
+          }
+          label="Populate with sample data"
+        />
+      </FormGroup>
       <LoadingButton
         variant="contained"
         fullWidth
