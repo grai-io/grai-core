@@ -15,6 +15,12 @@ SourceEdgeLabels = Literal[
     "Edgesources",
     "EdgeSource",
     "EdgeSources",
+    "sourcededge",
+    "sourcededges",
+    "Sourcededge",
+    "Sourcededges",
+    "SourcedEdge",
+    "SourcedEdges",
 ]
 SourceNodeLabels = Literal[
     "sourcenode",
@@ -29,6 +35,12 @@ SourceNodeLabels = Literal[
     "Nodesources",
     "NodeSource",
     "NodeSources",
+    "sourcednode",
+    "sourcednodes",
+    "Sourcednode",
+    "Sourcednodes",
+    "SourcedNode",
+    "SourcedNodes",
 ]
 WorkspaceLabels = Literal["workspace", "workspaces", "Workspace", "Workspaces"]
 SourceLabels = Literal["source", "sources", "Source", "Sources"]

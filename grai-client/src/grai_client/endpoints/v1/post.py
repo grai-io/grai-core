@@ -2,7 +2,7 @@ from typing import Dict, List, Optional, Union
 from uuid import UUID
 
 from grai_schemas.v1 import EdgeV1, NodeV1, WorkspaceV1
-from grai_schemas.v1.edge import EdgeSpec, SourcedEdgeV1
+from grai_schemas.v1.edge import EdgeSpec, SourcedEdgeSpec, SourcedEdgeV1
 from grai_schemas.v1.node import NodeSpec, SourcedNodeSpec, SourcedNodeV1
 from grai_schemas.v1.organization import OrganisationSpec, OrganisationV1
 from grai_schemas.v1.source import SourceSpec, SourceV1
@@ -98,7 +98,7 @@ def post_sourced_node_v1(
 
 
 @post.register
-def post_sourced_node_v1(
+def post_sourced_node_spec(
     client: ClientV1, grai_type: SourcedNodeSpec, options: ClientOptions = ClientOptions()
 ) -> SourcedNodeV1:
     """
@@ -122,6 +122,62 @@ def post_sourced_node_v1(
     response = post(client, url, grai_type.dict(exclude_none=True), options=options).json()
     response["data_source"] = source_spec
     return SourcedNodeV1.from_spec(response)
+
+
+@post.register
+def post_sourced_edge_v1(
+    client: ClientV1, grai_type: SourcedEdgeV1, options: ClientOptions = ClientOptions()
+) -> SourcedEdgeV1:
+    """
+
+    Args:
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
+    return post(client, grai_type.spec, options)
+
+
+@post.register
+def post_sourced_edge_spec(
+    client: ClientV1, grai_type: SourcedEdgeSpec, options: ClientOptions = ClientOptions()
+) -> SourcedEdgeV1:
+    """
+
+    Args:
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
+    source_spec = grai_type.data_source
+    if (source_id := source_spec.id) is None:
+        source_spec = get(client, source_spec).spec
+        source_id = source_spec.id
+
+    url = client.get_url("SourceEdge", source_id)
+    payload = grai_type.dict(exclude_none=True)
+
+    response = post(client, url, payload, options=options).json()
+
+    response.update(
+        {
+            "data_source": source_spec,
+            "source": {**payload["source"], "id": response["source"]},
+            "destination": {**payload["destination"], "id": response["destination"]},
+        }
+    )
+
+    return SourcedEdgeV1.from_spec(response)
 
 
 @post.register

@@ -8,7 +8,11 @@ from grai_client.endpoints.client import ClientOptions
 from grai_client.endpoints.rest import get, get_is_unique, paginated_get
 from grai_client.endpoints.utilities import is_valid_uuid, paginated, validated_uuid
 from grai_client.endpoints.v1.client import ClientV1
-from grai_client.endpoints.v1.get.utils import edge_builder, source_edge_builder
+from grai_client.endpoints.v1.get.utils import (
+    edge_builder,
+    get_source_and_spec,
+    source_edge_builder,
+)
 from grai_client.errors import (
     InvalidResponseError,
     NotSupportedError,
@@ -207,9 +211,9 @@ def get_source_edge_by_label_and_id_v1(
     resp = paginated_get(client, url, options)
 
     result = []
-    for item in resp:
+    for edge in resp:
         edge["data_source"] = source.spec
-        edge = finalize_edge(client, item)
+        edge = finalize_edge(client, edge)
         result.append(source_edge_builder(edge))
     return result
 
@@ -250,19 +254,9 @@ def get_source_edge_by_source_edge_spec(
 
     """
 
-    source_id = (
-        grai_type.data_source.id if grai_type.data_source.id is not None else get(client, grai_type.data_source).spec.id
-    )
-    if grai_type.id is not None:
-        node_id = grai_type.id
-    else:
-        sub_url = client.get_url("Node")
-        sub_options = options.copy()
-        sub_options.query_args.update({"name": grai_type.name, "namespace": grai_type.namespace})
-        node = get(client, sub_url, sub_options)
-        node_id = node.spec.id
+    source, edge = get_source_and_spec(client, grai_type)
 
-    url = f"{client.get_url(grai_type)}/{source_id}/{node_id}/"
+    url = client.get_url("SourceEdge", source.id, edge.id)
     resp = get(client, url, options=options).json()
     finalized_result = finalize_edge(client, resp)
     return source_edge_builder(finalized_result)

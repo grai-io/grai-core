@@ -1,6 +1,7 @@
 from typing import Union
 
 from grai_schemas.v1 import EdgeV1, NodeV1, SourcedNodeV1, SourceV1
+from grai_schemas.v1.edge import SourcedEdgeSpec, SourcedEdgeV1
 from grai_schemas.v1.node import SourcedNodeSpec
 from grai_schemas.v1.organization import OrganisationSpec, OrganisationV1
 from grai_schemas.v1.workspace import WorkspaceSpec, WorkspaceV1
@@ -8,7 +9,7 @@ from grai_schemas.v1.workspace import WorkspaceSpec, WorkspaceV1
 from grai_client.endpoints.client import ClientOptions
 from grai_client.endpoints.rest import delete, get
 from grai_client.endpoints.v1.client import ClientV1
-from grai_client.endpoints.v1.get.node import get_source_and_node_spec
+from grai_client.endpoints.v1.get.utils import get_source_and_spec
 from grai_client.errors import NotSupportedError
 from grai_client.schemas.labels import (
     EdgeLabels,
@@ -77,8 +78,46 @@ def delete_source_node_spec(client: ClientV1, grai_type: SourcedNodeSpec, option
 
     """
 
-    source, node = get_source_and_node_spec(client, grai_type)
+    source, node = get_source_and_spec(client, grai_type)
     url = client.get_url("SourceNode", source.id, node.id)
+    delete(client, url, options=options)
+
+
+@delete.register
+def delete_source_edge_by_source_node_v1(
+    client: ClientV1, grai_type: SourcedEdgeV1, options: ClientOptions = ClientOptions()
+):
+    """
+
+    Args:
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
+    delete(client, grai_type.spec, options)
+
+
+@delete.register
+def delete_source_edge_spec(client: ClientV1, grai_type: SourcedEdgeSpec, options: ClientOptions = ClientOptions()):
+    """
+
+    Args:
+        client:
+        grai_type:
+        options:  (Default value = ClientOptions())
+
+    Returns:
+
+    Raises:
+
+    """
+    source, node = get_source_and_spec(client, grai_type)
+    url = client.get_url("SourceEdge", source.id, node.id)
     delete(client, url, options=options)
 
 
@@ -124,7 +163,7 @@ def delete_workspace_v1(
     """
     message = (
         "The delete workspace endpoint is not supported through the REST API. If you wish to delete a workspace, "
-        "please do so manually through the web application."
+        "please contact support or use the admin interface."
     )
     raise NotSupportedError(message)
 

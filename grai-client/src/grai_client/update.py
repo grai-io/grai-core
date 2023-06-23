@@ -1,29 +1,15 @@
-from typing import Dict, List, Optional, Tuple, TypeVar
+from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
 
 from grai_schemas.base import Edge, Node
 from grai_schemas.utilities import merge, merge_models
+from grai_schemas.v1.edge import EdgeV1, SourcedEdgeV1
+from grai_schemas.v1.node import NodeV1, SourcedNodeV1
+from grai_schemas.v1.source import SourceSpec
+from multimethod import multimethod
 
 from grai_client.endpoints.client import BaseClient
 
-T = TypeVar("T", Node, Edge)
-
-
-def deactivate(items: List[T]) -> List[T]:
-    """
-
-    Args:
-        items:
-
-    Returns:
-
-    Raises:
-
-    """
-    updated = [item for item in items]
-    for item in updated:
-        item.spec.is_active = False
-
-    return updated  # type: ignore
+T = TypeVar("T", SourcedNodeV1, SourcedEdgeV1)
 
 
 def compute_graph_changes(items: List[T], active_items: List[T]) -> Tuple[List[T], List[T], List[T]]:
@@ -42,21 +28,31 @@ def compute_graph_changes(items: List[T], active_items: List[T]) -> Tuple[List[T
     item_map: Dict[int, T] = {hash(item.spec): item for item in items}
 
     new_item_keys = item_map.keys() - active_item_map.keys()
-    deactivated_item_keys = active_item_map.keys() - item_map.keys()
+    deleted_source_item_keys = active_item_map.keys() - item_map.keys()
     updated_item_keys = item_map.keys() - new_item_keys
 
-    items = [active_item_map[k] for k in deactivated_item_keys]
+    deleted_from_sources = [active_item_map[k] for k in deleted_source_item_keys]
 
-    deactivated_items = deactivate([active_item_map[k] for k in deactivated_item_keys])
     new_items: List[T] = [item_map[k] for k in new_item_keys]
-    updated_items = [
-        merge(item_map[k], active_item_map[k]) for k in updated_item_keys if item_map[k] != active_item_map[k]
-    ]
+    updated_items = [item_map[k] for k in updated_item_keys if item_map[k] != active_item_map[k]]
 
-    return new_items, updated_items, deactivated_items
+    return new_items, updated_items, deleted_from_sources
 
 
-def update(client: BaseClient, items: List[T], active_items: Optional[List[T]] = None):
+@multimethod
+def update(*args, **kwargs):
+    """
+
+    Args:
+        client:
+        items:
+        active_items:  (Default value = None)
+    """
+    raise NotImplementedError(f"Updated is not implemented for arguments of typ {[type(arg) for arg in args]}")
+
+
+@multimethod
+def update(client: BaseClient, items: List[Union[NodeV1, EdgeV1]], active_items: Any = None, source: Any = None):
     """
 
     Args:
@@ -72,18 +68,56 @@ def update(client: BaseClient, items: List[T], active_items: Optional[List[T]] =
     if not items:
         return
 
-    if active_items is None:
-        active_items = client.get(items[0].type)
-        if active_items is None:
-            active_items = []
+    raise NotImplementedError(
+        f"Update is not supported for NodeV1 or EdgeV1. Please use SourcedNodeV1 or SourcedEdgeV1 instead."
+    )
 
-    new_items, updated_items, deactivated_items = compute_graph_changes(items, active_items)
+
+@update.register
+def update(
+    client: BaseClient, items: List[T], active_items: Optional[List[T]] = None, source: Optional[SourceSpec] = None
+):
+    """
+
+    Args:
+        client:
+        items:
+        active_items:  (Default value = None)
+        source:  (Default value = None)
+
+    Returns:
+
+    Raises:
+
+    """
+    if not items:
+        return
+    else:
+        item_types = {type(item) for item in items}
+        if len(item_types) != 1:
+            raise ValueError(
+                f"All items provided to `update` must be of the same type. Instead got a mix of types:" f" {item_types}"
+            )
+    if source is None:
+        source = items[0].spec.data_source
+
+    sources = {item.spec.data_source for item in items}
+    if len(sources) != 1:
+        raise ValueError(
+            f"All items provided to `update` must be from the same source. Instead got items from sources:"
+            f" {sources}"
+        )
+
+    if active_items is None:
+        active_items = client.get(items[0].type, source.id)
+
+    new_items, updated_items, deleted_items = compute_graph_changes(items, active_items)
 
     # Going to need to deal with invalid deactivated nodes.
     # new_items are valid by virtue of being created by the caller
     # updated_items should be valid by virtue of merge logic and the caller providing a valid object.
     # However, deactivated_items may be invalid if the server provided an invalid object.
 
-    # client.patch(deactivated_items)
     client.post(new_items)
     client.patch(updated_items)
+    client.delete(deleted_items)

@@ -58,14 +58,7 @@ class MockNode:
 
 
 class MockEdge:
-    default_source = {
-        "namespace": "sou",
-        "name": "rce",
-    }
-    default_destination = {
-        "namespace": "desti",
-        "name": "nation",
-    }
+    node_kwargs = ["data_sources"]
 
     @classmethod
     def edge_metadata_dict(cls):
@@ -76,12 +69,13 @@ class MockEdge:
     @classmethod
     def base_edge_spec_dict(cls, **kwargs):
         """ """
+        node_kwargs = {k: kwargs[k].copy() for k in cls.node_kwargs if k in kwargs}
         return {
             "id": kwargs.get("id", None),
             "name": kwargs.get("name", get_human_id()),
             "namespace": kwargs.get("namespace", get_human_id()),
-            "source": kwargs.get("source", cls.default_source),
-            "destination": kwargs.get("destination", cls.default_destination),
+            "source": kwargs.get("source", MockNode.node(**node_kwargs).spec),
+            "destination": kwargs.get("destination", MockNode.node(**node_kwargs).spec),
             "is_active": kwargs.get("is_active", True),
             "metadata": kwargs.get("metadata", cls.edge_metadata_dict()),
         }
@@ -100,6 +94,8 @@ class MockEdge:
     @classmethod
     def sourced_edge(cls, **kwargs):
         """ """
+        if "data_source" in kwargs:
+            kwargs["data_sources"] = [kwargs["data_source"]]
         return SourcedEdgeV1(**cls.sourced_edge_dict(**kwargs))
 
     @classmethod
@@ -120,14 +116,9 @@ class MockEdge:
         return EdgeV1(**cls.edge_dict(**kwargs))
 
     @classmethod
-    def edge_and_nodes(cls, source=None, destination=None, **kwargs):
-        node_kwargs = ["data_sources"]
-        node_kwargs = {k: kwargs[k].copy() for k in node_kwargs if k in kwargs}
-        if source is None:
-            source = MockNode.node(**node_kwargs).spec
-        if destination is None:
-            destination = MockNode.node(**node_kwargs).spec
-        edge = cls.edge(source=source, destination=destination, **kwargs)
+    def edge_and_nodes(cls, **kwargs):
+        edge = cls.edge(**kwargs)
+        source, destination = edge.spec.source, edge.spec.destination
         return edge, [source, destination]
 
 

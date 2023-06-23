@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple, Union
+from typing import List, Union
 from uuid import UUID
 
 from grai_schemas.v1 import NodeV1, SourcedNodeV1, SourceV1
@@ -7,15 +7,15 @@ from grai_schemas.v1.source import SourceSpec
 
 from grai_client.endpoints.client import ClientOptions
 from grai_client.endpoints.rest import get, get_is_unique, paginated_get
-from grai_client.endpoints.utilities import is_valid_uuid, paginated, validated_uuid
+from grai_client.endpoints.utilities import is_valid_uuid, validated_uuid
 from grai_client.endpoints.v1.client import ClientV1
-from grai_client.endpoints.v1.get.utils import node_builder, source_node_builder
-from grai_client.errors import (
-    InvalidResponseError,
-    NotSupportedError,
-    ObjectNotFoundError,
+from grai_client.endpoints.v1.get.utils import (
+    get_source_and_spec,
+    node_builder,
+    source_node_builder,
 )
-from grai_client.schemas.labels import NodeLabels, SourceEdgeLabels, SourceNodeLabels
+from grai_client.errors import NotSupportedError
+from grai_client.schemas.labels import NodeLabels, SourceNodeLabels
 
 
 @get.register
@@ -168,18 +168,6 @@ def get_source_node_by_label_and_id_v1(
     return [source_node_builder(obj) for obj in resp]
 
 
-def get_source_and_node_spec(client: ClientV1, grai_type: SourcedNodeSpec) -> Tuple[SourceSpec, NodeSpec]:
-    source = grai_type.data_source
-    if source.id is None:
-        source = get_is_unique(client, source).spec
-
-    if (node := grai_type).id is None:
-        sub_options = ClientOptions(query_args={"name": grai_type.name, "namespace": grai_type.namespace})
-        node = get_is_unique(client, "Node", sub_options)
-
-    return source, node
-
-
 @get.register
 def get_source_node_by_source_node_v1(
     client: ClientV1, grai_type: SourcedNodeV1, options: ClientOptions = ClientOptions()
@@ -215,7 +203,7 @@ def get_source_node_by_source_node_spec(
     Raises:
 
     """
-    source, node = get_source_and_node_spec(client, grai_type)
+    source, node = get_source_and_spec(client, grai_type)
 
     url = client.get_url("SourceNode", source.id, node.id)
     resp = get(client, url, options=options).json()

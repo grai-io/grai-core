@@ -12,8 +12,8 @@ class GraiMetadata(GraiBaseModel):
     grai: Union[node_v1.Metadata, edge_v1.Metadata]
 
 
-Node = v1.node.NodeV1
-Edge = v1.edge.EdgeV1
+Node = Union[v1.node.NodeV1, v1.node.SourcedNodeV1]
+Edge = Union[v1.edge.EdgeV1, v1.edge.SourcedEdgeV1]
 
 
 __all__ = ["GraiMetadata"]
