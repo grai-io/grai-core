@@ -90,7 +90,7 @@ Substitute your own credentials as needed.
 Press Continue - if you see an error double check your provided connection credentials.
 
 For now we won't set a schedule for this connection.
-However you could set your connection to run every day insuring your lineage is up to date.
+However you could set your connection to run every day ensuring your lineage is up to date.
 
 Press Finish to complete setup.
 Once your new connection is created you should see the connection page.
@@ -109,7 +109,7 @@ Press Refresh in the upper right hand corner to run your connection and populate
 
 The run will take a few seconds to run and then you should see the run complete successfully.
 Now that the connection has completed running you can go to the `Graph` page to see your BigQuery tables.
-It will likely looking something like this
+It will likely look something like this
 
 <br />
 
@@ -120,7 +120,7 @@ It will likely looking something like this
   alt="BigQuery Graph page"
 />
 
-Currently, there are no connections between the tables, this is because dbt hasn't set up any foreign keys.
+Currently, there are no connections between the tables, this is because BigQuery doesn't have any foreign keys setup.
 
 ### Import dbt Manifest
 
@@ -145,11 +145,11 @@ was created by running `dbt compile` on the source [repository](https://github.c
   and columns are linked together.
 </Callout>
 
-Press Finish to upload the file and run the sync.
+Press Finish to upload the file and run the import.
 This should take a few seconds before completing successfully.
 
 Finally, check out the graph view again.
-You should now see that your BigQuery tables have been joined together based from the dbt metadata.
+You should now see that your BigQuery tables have been joined together based on the dbt metadata.
 For example where one dbt model depends on another Grai has created a link between the two tables.
 
 <br />
@@ -165,8 +165,8 @@ For example where one dbt model depends on another Grai has created a link betwe
 
 ### Connect the Production Database
 
-We will be using postgres for our production database in this instance so again go to the connections page, click "Add Connection"
-This time, choose the postgres connection.
+We will be using Postgres for our production database in this instance so again go to the connections page, click "Add Connection"
+This time, choose the PostgreSQL connection.
 
 <br />
 
@@ -182,19 +182,19 @@ This time, choose the postgres connection.
 Enter the following values
 
 | Field         | Value                                                    |
-| ------------- | -------------------------------------------------------- | --- |
+| ------------- | -------------------------------------------------------- |
 | Namespace     | **prod**                                                 |
 | Name          | PostgreSQL                                               |
 | host          | sample-database.cudyk77thtpt.us-west-2.rds.amazonaws.com |
-| port          | 5432                                                     |     |
+| port          | 5432                                                     |
 | Database Name | jaffle_shop                                              |
 | user          | demo                                                     |
 | password      | zfYD%qW2VOfUmK1Y                                         |
 
-You're probably getting the hang of this now, but just in case, press continue.
-Assuming your credentials are valid, you can press finish to complete the setup and then refresh to run the connection.
+You've probably getting the hang of this now, but just in case, press continue.
+Assuming your credentials are valid, you can press Finish to complete the setup and then run the connection.
 
-If we checkout the Graph page again, we can see that the Postgres tables have been added to the graph.
+If we check out the Graph page, we can see that the Postgres tables have been added to the graph.
 
 <br />
 
@@ -209,7 +209,7 @@ If we checkout the Graph page again, we can see that the Postgres tables have be
 
 There should be a number of connections between the Postgres tables, these have been produced from the foreign keys.
 
-### Connect our Production db to the Data Warehouse
+### Connect our production database to the data warehouse
 
 There won't be any links between the Postgres tables and the BigQuery ones.
 Typically, an ETL tool like Fivetran would be used to transfer data between the production database and the data warehouse but for the purposes of this demo we will setup these edges using yaml files.
@@ -223,7 +223,7 @@ Just like before, `Connections -> Add Connection -> YAML File`
   alt="YAML File Connection button"
 />
 
-Again, Leave Namespace as default. Upload the [edges.yaml](https://github.com/grai-io/jaffle_shop_bigquery_demo/blob/master/files/edges.yaml) file from the source [repository](https://github.com/grai-io/jaffle_shop_bigquery_demo).
+Again, leave Namespace as default. Upload the [edges.yaml](https://github.com/grai-io/jaffle_shop_bigquery_demo/blob/master/files/edges.yaml) file from the source [repository](https://github.com/grai-io/jaffle_shop_bigquery_demo).
 Press Finish and check out the Graph page to see the results.
 
 <br />
