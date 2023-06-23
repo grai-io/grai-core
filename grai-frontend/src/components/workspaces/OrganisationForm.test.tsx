@@ -19,6 +19,8 @@ test("renders", async () => {
       )
   )
 
+  await act(async () => await user.click(screen.getByRole("checkbox")))
+
   await act(
     async () => await user.click(screen.getByRole("button", { name: /next/i }))
   )
@@ -38,6 +40,7 @@ test("error", async () => {
         variables: {
           name: "production",
           organisationName: "TestOrganisation",
+          sample_data: false,
         },
       },
       result: {

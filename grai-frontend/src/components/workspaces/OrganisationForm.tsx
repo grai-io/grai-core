@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { gql, useMutation } from "@apollo/client"
 import { LoadingButton } from "@mui/lab"
-import { TextField } from "@mui/material"
+import { Checkbox, FormControlLabel, FormGroup, TextField } from "@mui/material"
 import { useSnackbar } from "notistack"
 import { useNavigate } from "react-router-dom"
 import Form from "components/form/Form"
@@ -12,8 +12,16 @@ import {
 } from "./__generated__/CreateWorkspace"
 
 export const CREATE_WORKSPACE = gql`
-  mutation CreateWorkspace($organisationName: String!, $name: String!) {
-    createWorkspace(organisationName: $organisationName, name: $name) {
+  mutation CreateWorkspace(
+    $organisationName: String!
+    $name: String!
+    $sample_data: Boolean!
+  ) {
+    createWorkspace(
+      organisationName: $organisationName
+      name: $name
+      sample_data: $sample_data
+    ) {
       id
       name
       organisation {
@@ -27,6 +35,7 @@ export const CREATE_WORKSPACE = gql`
 type FormValues = {
   organisationName: string
   name: string
+  sample_data: boolean
 }
 
 const OrganisationForm: React.FC = () => {
@@ -36,6 +45,7 @@ const OrganisationForm: React.FC = () => {
   const [values, setValues] = useState<FormValues>({
     organisationName: "",
     name: "production",
+    sample_data: false,
   })
 
   const [createWorkspace, { loading, error }] = useMutation<
@@ -66,6 +76,19 @@ const OrganisationForm: React.FC = () => {
           setValues({ ...values, organisationName: event.target.value })
         }
       />
+      <FormGroup sx={{ my: 2 }}>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={values.sample_data}
+              onChange={(event, checked) =>
+                setValues({ ...values, sample_data: checked })
+              }
+            />
+          }
+          label="Populate with sample data"
+        />
+      </FormGroup>
       <LoadingButton
         variant="contained"
         fullWidth

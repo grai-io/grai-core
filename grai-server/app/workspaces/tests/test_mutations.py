@@ -18,6 +18,7 @@ from api.tests.common import (
     test_workspace,
 )
 from lineage.models import Edge, Node
+from connections.models import Connector
 from workspaces.models import WorkspaceAPIKey
 
 
@@ -89,6 +90,54 @@ async def test_create_workspace_existing_organisation(test_context):
     assert result.data["createWorkspace"]["name"] == "Test Workspace"
     assert result.data["createWorkspace"]["organisation"]["id"] == str(organisation.id)
     assert result.data["createWorkspace"]["organisation"]["name"] == organisation.name
+
+
+async def generate_connector(slug: str, name: str):
+    connector, created = await Connector.objects.aget_or_create(slug=slug, name=name)
+
+    return connector
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
+async def test_create_workspace_sample_data(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    await generate_connector(slug="postgres", name="postgres")
+    await generate_connector(slug="bigquery", name="bigquery")
+    await generate_connector(slug="yaml_file", name="yaml_file")
+    await generate_connector(slug="dbt", name="dbt")
+
+    mutation = """
+        mutation CreateWorkspace($organisationName: String!, $name: String!, $sample_data: Boolean!) {
+            createWorkspace(organisationName: $organisationName, name: $name, sample_data: $sample_data) {
+                id
+                name
+                organisation {
+                    id
+                    name
+                }
+            }
+        }
+    """
+
+    organisationName = str(uuid.uuid4())
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "organisationName": organisationName,
+            "name": "Test Workspace",
+            "sample_data": True,
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["createWorkspace"]["id"] is not None
+    assert result.data["createWorkspace"]["name"] == "Test Workspace"
+    assert result.data["createWorkspace"]["organisation"]["id"] is not None
+    assert result.data["createWorkspace"]["organisation"]["name"] == organisationName
 
 
 @pytest.mark.django_db
