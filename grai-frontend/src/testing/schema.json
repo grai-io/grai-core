@@ -7411,6 +7411,16 @@
                 "defaultValue": null
               },
               {
+                "name": "sample_data",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                },
+                "defaultValue": "false"
+              },
+              {
                 "name": "organisationId",
                 "description": null,
                 "type": {

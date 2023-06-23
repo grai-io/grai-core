@@ -1,6 +1,8 @@
 import datetime
 from typing import List, Optional
 
+from .sample_data import SampleData
+
 import strawberry
 from asgiref.sync import sync_to_async
 from decouple import config
@@ -65,6 +67,7 @@ class Mutation:
         self,
         info: Info,
         name: str,
+        sample_data: Optional[bool] = False,
         organisationId: Optional[strawberry.ID] = strawberry.UNSET,
         organisationName: Optional[str] = strawberry.UNSET,
     ) -> Workspace:
@@ -80,6 +83,12 @@ class Mutation:
         )
         workspace = await WorkspaceModel.objects.acreate(organisation=organisation, name=name)
         await MembershipModel.objects.acreate(user=user, workspace=workspace, role="admin")
+
+        print("create_workspace")
+
+        if sample_data:
+            generator = SampleData(workspace)
+            await generator.generate()
 
         return workspace
 
