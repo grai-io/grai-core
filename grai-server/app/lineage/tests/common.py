@@ -8,24 +8,24 @@ from lineage.models import Edge, Node, Source
 
 
 def create_node(client, workspace, name=None, namespace="default", sources=None):
+    if sources is None:
+        sources = [{"id": create_source(client, workspace).json().get("id")}]
+
     args = {
-        "name": uuid.uuid4() if name is None else name,
+        "name": str(uuid.uuid4()) if name is None else name,
         "namespace": namespace,
         "workspace": str(workspace.id),
+        "data_sources": sources,
     }
-
-    if sources is not None:
-        args["data_sources"] = sources
 
     url = reverse("graph:nodes-list")
     response = client.post(url, args, SERVER_NAME="localhost", format="json")
-
     return response
 
 
 def create_source(client, workspace, name=None):
     args = {
-        "name": uuid.uuid4() if name is None else name,
+        "name": str(uuid.uuid4()) if name is None else name,
         "workspace": str(workspace.id),
     }
 
@@ -39,31 +39,36 @@ def create_edge_with_node_ids(client, workspace, source=None, destination=None, 
         source = create_node(client, workspace).json()["id"]
     if destination is None:
         destination = create_node(client, workspace).json()["id"]
+    if sources is None:
+        sources = [{"id": create_source(client, workspace).json().get("id")}]
+
     args = {
         "source": source,
         "destination": destination,
         "namespace": "default",
         "workspace": str(workspace.id),
+        "data_sources": sources,
     }
-
-    if sources is not None:
-        args["data_sources"] = sources
 
     url = reverse("graph:edges-list")
     response = client.post(url, args, format="json", **kwargs)
     return response
 
 
-def create_edge_without_node_ids(client, workspace, source=None, destination=None, **kwargs):
+def create_edge_without_node_ids(client, workspace, source=None, destination=None, sources=None, **kwargs):
     if source is None:
         source = create_node(client, workspace).json()
     if destination is None:
         destination = create_node(client, workspace).json()
+    if sources is None:
+        sources = [{"id": create_source(client, workspace).json().get("id")}]
+
     args = {
         "source": {k: source[k] for k in ["name", "namespace"]},
         "destination": {k: destination[k] for k in ["name", "namespace"]},
         "namespace": "default",
         "workspace": str(workspace.id),
+        "data_sources": sources,
     }
     url = reverse("graph:edges-list")
 
