@@ -76,7 +76,7 @@ const OrganisationForm: React.FC = () => {
           setValues({ ...values, organisationName: event.target.value })
         }
       />
-      <FormGroup sx={{ my: 2 }}>
+      {/* <FormGroup sx={{ my: 2 }}>
         <FormControlLabel
           control={
             <Checkbox
@@ -88,7 +88,7 @@ const OrganisationForm: React.FC = () => {
           }
           label="Populate with sample data"
         />
-      </FormGroup>
+      </FormGroup> */}
       <LoadingButton
         variant="contained"
         fullWidth

@@ -19,7 +19,7 @@ test("renders", async () => {
       )
   )
 
-  await act(async () => await user.click(screen.getByRole("checkbox")))
+  // await act(async () => await user.click(screen.getByRole("checkbox")))
 
   await act(
     async () => await user.click(screen.getByRole("button", { name: /next/i }))
