@@ -17,8 +17,8 @@ from api.tests.common import (
     test_user,
     test_workspace,
 )
-from lineage.models import Edge, Node
 from connections.models import Connector
+from lineage.models import Edge, Node
 from workspaces.models import WorkspaceAPIKey
 
 

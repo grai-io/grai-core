@@ -1,6 +1,7 @@
 import uuid
 from typing import List
 
+from asgiref.sync import sync_to_async
 from django.core.files import File
 
 from connections.models import Connection, Connector, Run, RunFile
@@ -80,8 +81,8 @@ class SampleData:
             runFile.file = file
             await runFile.asave()
 
-        process_run(run.id)
+        await sync_to_async(process_run)(run.id)
 
     async def run_connections(self):
         for connection in self.connections:
-            run_connection_schedule(connection.id)
+            await sync_to_async(run_connection_schedule)(connection.id)
