@@ -64,23 +64,21 @@ class SampleData:
         await self.add_file("workspaces/sample_data/bigquery_edges.yml", "yaml_file")
 
     async def add_file(self, file_path: str, connector_slug: str):
-        local_file = open(file_path, "r", encoding="utf-8")
-        file = File(local_file)
+        with open(file_path, "rb") as local_file:
+            file = File(local_file)
 
-        connector = await Connector.objects.aget(slug=connector_slug)
-        connection = await Connection.objects.acreate(
-            connector=connector,
-            workspace=self.workspace,
-            name=f"{connector.name} {uuid.uuid4()}",
-            temp=True,
-            namespace="default",
-        )
-        run = await Run.objects.acreate(workspace=self.workspace, connection=connection, status="queued")
-        runFile = RunFile(run=run)
-        runFile.file = file
-        await runFile.asave()
-
-        local_file.close()
+            connector = await Connector.objects.aget(slug=connector_slug)
+            connection = await Connection.objects.acreate(
+                connector=connector,
+                workspace=self.workspace,
+                name=f"{connector.name} {uuid.uuid4()}",
+                temp=True,
+                namespace="default",
+            )
+            run = await Run.objects.acreate(workspace=self.workspace, connection=connection, status="queued")
+            runFile = RunFile(run=run)
+            runFile.file = file
+            await runFile.asave()
 
         process_run.delay(run.id)
 
