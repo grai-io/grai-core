@@ -80,8 +80,8 @@ class SampleData:
             runFile.file = file
             await runFile.asave()
 
-        process_run.delay(run.id)
+        process_run(run.id)
 
     async def run_connections(self):
         for connection in self.connections:
-            run_connection_schedule.delay(connection.id)
+            run_connection_schedule(connection.id)
