@@ -6,7 +6,7 @@ from notifications.models import Alert as AlertModel
 from strawberry.scalars import JSON
 from strawberry.types import Info
 
-from api.common import IsAuthenticated, get_workspace
+from api.common import IsAuthenticated, aget_workspace
 from api.types import Alert
 
 
@@ -23,7 +23,7 @@ class Mutation:
         triggers: JSON,
         is_active: Optional[bool] = True,
     ) -> Alert:
-        workspace = await get_workspace(info, workspaceId)
+        workspace = await aget_workspace(info, workspaceId)
 
         alert = await AlertModel.objects.acreate(
             workspace=workspace,

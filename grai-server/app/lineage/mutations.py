@@ -5,7 +5,7 @@ from asgiref.sync import sync_to_async
 from strawberry.scalars import JSON
 from strawberry.types import Info
 
-from api.common import IsAuthenticated, get_user, get_workspace
+from api.common import IsAuthenticated, aget_workspace, get_user
 from api.types import Source
 
 from .models import Filter as FilterModel
@@ -24,7 +24,7 @@ class Mutation:
         metadata: JSON,
     ) -> Filter:
         user = get_user(info)
-        workspace = await get_workspace(info, workspaceId)
+        workspace = await aget_workspace(info, workspaceId)
 
         filter = await FilterModel.objects.acreate(
             workspace=workspace,
@@ -79,8 +79,7 @@ class Mutation:
         workspaceId: strawberry.ID,
         name: str,
     ) -> Source:
-        user = get_user(info)
-        workspace = await get_workspace(info, workspaceId)
+        workspace = await aget_workspace(info, workspaceId)
 
         source = await SourceModel.objects.acreate(
             workspace=workspace,

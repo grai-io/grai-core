@@ -1,6 +1,7 @@
 import uuid
 from typing import List
 
+from asgiref.sync import sync_to_async
 from django.core.files import File
 
 from connections.models import Connection, Connector, Run, RunFile
@@ -64,26 +65,24 @@ class SampleData:
         await self.add_file("workspaces/sample_data/bigquery_edges.yml", "yaml_file")
 
     async def add_file(self, file_path: str, connector_slug: str):
-        local_file = open(file_path)
-        file = File(local_file)
+        with open(file_path, "rb") as local_file:
+            file = File(local_file)
 
-        connector = await Connector.objects.aget(slug=connector_slug)
-        connection = await Connection.objects.acreate(
-            connector=connector,
-            workspace=self.workspace,
-            name=f"{connector.name} {uuid.uuid4()}",
-            temp=True,
-            namespace="default",
-        )
-        run = await Run.objects.acreate(workspace=self.workspace, connection=connection, status="queued")
-        runFile = RunFile(run=run)
-        runFile.file = file
-        await runFile.asave()
+            connector = await Connector.objects.aget(slug=connector_slug)
+            connection = await Connection.objects.acreate(
+                connector=connector,
+                workspace=self.workspace,
+                name=f"{connector.name} {uuid.uuid4()}",
+                temp=True,
+                namespace="default",
+            )
+            run = await Run.objects.acreate(workspace=self.workspace, connection=connection, status="queued")
+            runFile = RunFile(run=run)
+            runFile.file = file
+            await runFile.asave()
 
-        local_file.close()
-
-        process_run.delay(run.id)
+        await sync_to_async(process_run)(run.id)
 
     async def run_connections(self):
         for connection in self.connections:
-            run_connection_schedule.delay(connection.id)
+            await sync_to_async(run_connection_schedule)(connection.id)
