@@ -64,7 +64,7 @@ class SampleData:
         await self.add_file("workspaces/sample_data/bigquery_edges.yml", "yaml_file")
 
     async def add_file(self, file_path: str, connector_slug: str):
-        local_file = open(file_path)
+        local_file = open(file_path, "r", encoding="utf-8")
         file = File(local_file)
 
         connector = await Connector.objects.aget(slug=connector_slug)
