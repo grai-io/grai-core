@@ -1,8 +1,6 @@
 import datetime
 from typing import List, Optional
 
-from .sample_data import SampleData
-
 import strawberry
 from asgiref.sync import sync_to_async
 from decouple import config
@@ -10,10 +8,12 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
+from django.db import IntegrityError, transaction
 from django.template.loader import render_to_string
+from psycopg2 import errorcodes as pg_errorcodes
 from strawberry.types import Info
 
-from api.common import IsAuthenticated, get_user, get_workspace
+from api.common import IsAuthenticated, aget_workspace, get_user, get_workspace
 from api.types import KeyResult, Membership, Workspace, WorkspaceAPIKey
 from api.validation import validate_no_slash
 from lineage.graph_cache import GraphCache
@@ -23,22 +23,27 @@ from workspaces.models import Organisation as OrganisationModel
 from workspaces.models import Workspace as WorkspaceModel
 from workspaces.models import WorkspaceAPIKey as WorkspaceAPIKeyModel
 
+from .sample_data import SampleData
 
-async def createSingleMembership(workspace: WorkspaceModel, email: str, role: str) -> MembershipModel:
+
+def handle_unique_error(exc: IntegrityError, message: str):
+    if exc.__cause__.pgcode == pg_errorcodes.UNIQUE_VIOLATION:
+        raise ValueError(message)
+
+    raise exc
+
+
+def create_single_membership(workspace: WorkspaceModel, email: str, role: str) -> MembershipModel:
     UserModel = get_user_model()
 
     user = None
 
-    try:
-        user = await UserModel.objects.aget(username=email)
-        email_template_name = "workspaces/invite_user_email.txt"
-        subject = "Grai Workspace Invite"
-    except UserModel.DoesNotExist:
-        user = await UserModel.objects.acreate(username=email)
-        email_template_name = "workspaces/new_user_email.txt"
-        subject = "Grai Invite"
+    user, created = UserModel.objects.get_or_create(username=email)
 
-    membership = await sync_to_async(MembershipModel.objects.create)(role=role, user=user, workspace=workspace)
+    email_template_name = "workspaces/new_user_email.txt" if created else "workspaces/invite_user_email.txt"
+    subject = "Grai Invite" if created else "Grai Workspace Invite"
+
+    membership = MembershipModel.objects.create(role=role, user=user, workspace=workspace)
 
     c = {
         "email": user.username,
@@ -49,7 +54,7 @@ async def createSingleMembership(workspace: WorkspaceModel, email: str, role: st
     }
     email_message = render_to_string(email_template_name, c)
 
-    await sync_to_async(send_mail)(
+    send_mail(
         subject,
         email_message,
         settings.EMAIL_FROM,
@@ -71,26 +76,45 @@ class Mutation:
         organisationId: Optional[strawberry.ID] = strawberry.UNSET,
         organisationName: Optional[str] = strawberry.UNSET,
     ) -> Workspace:
-        user = get_user(info)
+        @transaction.atomic
+        def _create_workspace(
+            info: Info,
+            name: str,
+            sample_data: bool,
+            organisationId: str,
+            organisationName: str,
+        ) -> Workspace:
+            user = get_user(info)
 
-        validate_no_slash(name, "Workspace name")
-        validate_no_slash(organisationName, "Organisation name")
+            validate_no_slash(name, "Workspace name")
+            validate_no_slash(organisationName, "Organisation name")
 
-        organisation = (
-            await OrganisationModel.objects.aget(id=organisationId)
-            if organisationId
-            else await OrganisationModel.objects.acreate(name=organisationName)
-        )
-        workspace = await WorkspaceModel.objects.acreate(organisation=organisation, name=name)
-        await MembershipModel.objects.acreate(user=user, workspace=workspace, role="admin")
+            try:
+                organisation = (
+                    OrganisationModel.objects.get(id=organisationId)
+                    if organisationId
+                    else OrganisationModel.objects.create(name=organisationName)
+                )
+            except IntegrityError as exc:
+                handle_unique_error(
+                    exc,
+                    "Organisation name already exists, choose another one, or contact your administrator",
+                )
 
-        print("create_workspace")
+            try:
+                workspace = WorkspaceModel.objects.create(organisation=organisation, name=name)
+            except IntegrityError as exc:
+                handle_unique_error(exc, "Workspace name already exists, choose another one")
 
-        if sample_data:
-            generator = SampleData(workspace)
-            await generator.generate()
+            MembershipModel.objects.create(user=user, workspace=workspace, role="admin")
 
-        return workspace
+            if sample_data:
+                generator = SampleData(workspace)
+                generator.generate()
+
+            return workspace
+
+        return await sync_to_async(_create_workspace)(info, name, sample_data, organisationId, organisationName)
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def updateWorkspace(
@@ -101,7 +125,7 @@ class Mutation:
     ) -> Workspace:
         validate_no_slash(name, "Workspace name")
 
-        workspace = await get_workspace(info, id)
+        workspace = await aget_workspace(info, id)
 
         workspace.name = name
         await sync_to_async(workspace.save)()
@@ -114,7 +138,7 @@ class Mutation:
         info: Info,
         id: strawberry.ID,
     ) -> Workspace:
-        workspace = await get_workspace(info, id)
+        workspace = await aget_workspace(info, id)
 
         edges = Edge.objects.filter(workspace=workspace)
 
@@ -139,9 +163,13 @@ class Mutation:
         role: str,
         email: str,
     ) -> Membership:
-        workspace = await get_workspace(info, workspaceId)
+        @transaction.atomic
+        def _create_membership(info: Info, workspaceId: strawberry.ID, role: str, email: str) -> Membership:
+            workspace = get_workspace(info, workspaceId)
 
-        return await createSingleMembership(workspace, email, role)
+            return create_single_membership(workspace, email, role)
+
+        return await sync_to_async(_create_membership)(info, workspaceId, role, email)
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def createMemberships(
@@ -151,9 +179,18 @@ class Mutation:
         role: str,
         emails: List[str],
     ) -> List[Membership]:
-        workspace = await get_workspace(info, workspaceId)
+        @transaction.atomic
+        def _create_memberships(
+            info: Info,
+            workspaceId: strawberry.ID,
+            role: str,
+            emails: List[str],
+        ) -> List[Membership]:
+            workspace = get_workspace(info, workspaceId)
 
-        return [await createSingleMembership(workspace, email, role) for email in emails]
+            return [create_single_membership(workspace, email, role) for email in emails]
+
+        return await sync_to_async(_create_memberships)(info, workspaceId, role, emails)
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def updateMembership(
@@ -193,7 +230,7 @@ class Mutation:
         expiry_date: Optional[datetime.datetime] = None,
     ) -> KeyResult:
         user = get_user(info)
-        workspace = await get_workspace(info, workspaceId)
+        workspace = await aget_workspace(info, workspaceId)
 
         api_key, key = await sync_to_async(WorkspaceAPIKeyModel.objects.create_key)(
             name=name,

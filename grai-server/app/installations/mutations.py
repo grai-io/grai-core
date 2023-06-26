@@ -1,7 +1,7 @@
 import strawberry
 from strawberry.types import Info
 
-from api.common import IsAuthenticated, get_workspace
+from api.common import IsAuthenticated, aget_workspace
 from api.types import BasicResult
 from installations.github import Github
 from installations.models import Repository as RepositoryModel
@@ -16,7 +16,7 @@ class Mutation:
         workspaceId: strawberry.ID,
         installationId: int,
     ) -> BasicResult:
-        workspace = await get_workspace(info, workspaceId)
+        workspace = await aget_workspace(info, workspaceId)
         github = Github(installation_id=installationId)
         repos = github.get_repos()
 

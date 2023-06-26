@@ -7,7 +7,7 @@ from strawberry.file_uploads import Upload
 from strawberry.scalars import JSON
 from strawberry.types import Info
 
-from api.common import IsAuthenticated, get_user, get_workspace
+from api.common import IsAuthenticated, aget_workspace, get_user, get_workspace
 from api.types import Connection, Run, RunAction
 from connections.models import Connection as ConnectionModel
 from connections.models import Connector as ConnectorModel
@@ -32,7 +32,7 @@ class Mutation:
         is_active: bool = True,
         temp: bool = False,
     ) -> Connection:
-        workspace = await get_workspace(info, workspaceId)
+        workspace = await aget_workspace(info, workspaceId)
 
         connection = await ConnectionModel.objects.acreate(
             workspace=workspace,
@@ -96,28 +96,29 @@ class Mutation:
         connectionId: strawberry.ID,
         action: RunAction = RunModel.UPDATE,
     ) -> Run:
-        user = get_user(info)
+        def _run_connection(info: Info, connectionId: str, action: RunAction) -> Run:
+            user = get_user(info)
 
-        try:
-            connection = await sync_to_async(ConnectionModel.objects.get)(
-                pk=connectionId, workspace__memberships__user_id=user.id
+            try:
+                connection = ConnectionModel.objects.get(pk=connectionId, workspace__memberships__user_id=user.id)
+            except ConnectionModel.DoesNotExist:
+                raise Exception("Can't find connection")
+
+            run = RunModel.objects.create(
+                connection=connection,
+                workspace_id=connection.workspace_id,
+                user=user,
+                status="queued",
+                action=action if isinstance(action, str) else action.value,
             )
-        except ConnectionModel.DoesNotExist:
-            raise Exception("Can't find connection")
 
-        run = await sync_to_async(RunModel.objects.create)(
-            connection=connection,
-            workspace_id=connection.workspace_id,
-            user=user,
-            status="queued",
-            action=action if isinstance(action, str) else action.value,
-        )
+            process_run.delay(run.id)
 
-        process_run.delay(run.id)
+            run.connection = connection
 
-        run.connection = connection
+            return run
 
-        return run
+        return await sync_to_async(_run_connection)(info, connectionId, action)
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def deleteConnection(
@@ -141,21 +142,30 @@ class Mutation:
         connectorId: strawberry.ID,
         file: Upload,
     ) -> Run:
-        user = get_user(info)
-        workspace = await get_workspace(info, workspaceId)
-        connector = await ConnectorModel.objects.aget(pk=connectorId)
-        connection = await ConnectionModel.objects.acreate(
-            connector=connector,
-            workspace=workspace,
-            name=f"{connector.name} {uuid.uuid4()}",
-            temp=True,
-            namespace=namespace,
-        )
-        run = await RunModel.objects.acreate(workspace=workspace, connection=connection, status="queued", user=user)
-        runFile = RunFileModel(run=run)
-        runFile.file = file
-        await sync_to_async(runFile.save)()
+        def _upload_connector_file(
+            info: Info,
+            workspaceId: strawberry.ID,
+            namespace: str,
+            connectorId: strawberry.ID,
+            file: Upload,
+        ):
+            user = get_user(info)
+            workspace = get_workspace(info, workspaceId)
+            connector = ConnectorModel.objects.get(pk=connectorId)
+            connection = ConnectionModel.objects.create(
+                connector=connector,
+                workspace=workspace,
+                name=f"{connector.name} {uuid.uuid4()}",
+                temp=True,
+                namespace=namespace,
+            )
+            run = RunModel.objects.create(workspace=workspace, connection=connection, status="queued", user=user)
+            runFile = RunFileModel(run=run)
+            runFile.file = file
+            runFile.save()
 
-        process_run.delay(run.id)
+            process_run.delay(run.id)
 
-        return run
+            return run
+
+        return await sync_to_async(_upload_connector_file)(info, workspaceId, namespace, connectorId, file)
