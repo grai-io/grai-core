@@ -1,14 +1,14 @@
-from typing import List, Literal, Optional
+from typing import List, Literal, Optional, Tuple
 
 from grai_client.endpoints.client import BaseClient
 from grai_client.update import update
-from grai_schemas.base import Node
+from grai_schemas.base import Node, Edge
 
 from loader import MetabaseConnector
 from adapters import adapt_to_client
 
 
-def get_nodes(connector: MetabaseConnector, version: Literal["v1"]) -> List[Node]:
+def get_nodes_and_edges(connector: MetabaseConnector, version: Literal["v1"]) -> Tuple[List[Node], List[Edge]]:
     """
 
     Args:
@@ -21,9 +21,11 @@ def get_nodes(connector: MetabaseConnector, version: Literal["v1"]) -> List[Node
 
     """
     nodes = connector.get_nodes()
+    edges = connector.get_edges()
 
     nodes = adapt_to_client(nodes, version)
-    return nodes
+    edges = adapt_to_client(edges, version)
+    return nodes, edges
 
 
 def update_server(
@@ -59,8 +61,7 @@ def update_server(
     kwargs = {k: v for k, v in kwargs.items() if v is not None}
 
     conn = MetabaseConnector(**kwargs)
-    nodes = get_nodes(conn, client.id)
+    nodes, edges = get_nodes_and_edges(conn, "v1")
 
     update(client, nodes)
-
-# git commit message - "chore:
+    update(client, edges)

@@ -7,7 +7,7 @@ from pydantic import BaseSettings, SecretStr, validator
 from requests.exceptions import ConnectionError
 from retrying import retry
 
-from models import Question, Table, NodeTypes
+from models import Question, Table, NodeTypes, Edge
 
 
 class MetabaseConfig(BaseSettings):
@@ -166,6 +166,20 @@ class MetabaseConnector(MetabaseAPI):
         )
 
         return list(nodes)
+
+    def get_edges(self) -> List[Edge]:
+        edges = []
+        for question, table in self.question_table_map.items():
+            edges.append(
+                Edge(
+                    source=Question(**self.questions_map[question]),
+                    target=Table(**self.tables_map[table]),
+                    label="question_table",
+                    namespace=self.namespace_map[self.question_db_map[question]],
+                )
+            )
+
+        return edges
 
 
 # if __name__ == "__main__":

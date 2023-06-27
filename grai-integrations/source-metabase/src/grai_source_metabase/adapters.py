@@ -7,10 +7,11 @@ from grai_schemas.v1.metadata.nodes import (
     TableMetadata,
     NodeMetadataTypeLabels,
     GenericNodeMetadataV1,
+    GenericEdgeMetadataV1,
 )
 from multimethod import multimethod
 
-from models import Table, Question
+from models import Table, Question, Edge, NodeTypes
 from package_definitions import config
 
 
@@ -33,7 +34,7 @@ def build_grai_metadata(current: Any, desired: Any) -> None:
 
 @build_grai_metadata.register
 def build_grai_metadata_from_table(
-    current: Table, version: Literal["v1"] = "v1"
+        current: Table, version: Literal["v1"] = "v1"
 ) -> TableMetadata:
     """
 
@@ -58,7 +59,7 @@ def build_grai_metadata_from_table(
 
 @build_grai_metadata.register
 def build_grai_metadata_from_question(
-    current: Question, version: Literal["v1"] = "v1"
+        current: Question, version: Literal["v1"] = "v1"
 ) -> GenericNodeMetadataV1:
     """
 
@@ -81,6 +82,28 @@ def build_grai_metadata_from_question(
     return GenericNodeMetadataV1(**data)
 
 
+@build_grai_metadata.register
+def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> GenericEdgeMetadataV1:
+    """
+
+    Args:
+        current (Edge):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
+    data = {
+        "version": version,
+        "node_type": NodeMetadataTypeLabels.generic.value,
+        "tags": [config.metadata_id],
+    }
+
+    return GenericEdgeMetadataV1(**data)
+
+
 @multimethod
 def build_app_metadata(current: Any, desired: Any) -> None:
     """
@@ -99,8 +122,8 @@ def build_app_metadata(current: Any, desired: Any) -> None:
 
 
 @build_app_metadata.register
-def build_app_method_from_table(
-    current: Table, version: Literal["v1"] = "v1"
+def build_metadata_from_table(
+        current: Table, version: Literal["v1"] = "v1"
 ) -> TableMetadata:
     """
 
@@ -121,8 +144,8 @@ def build_app_method_from_table(
 
 
 @build_app_metadata.register
-def build_app_method_from_question(
-    current: Question, version: Literal["v1"] = "v1"
+def build_metadata_from_question(
+        current: Question, version: Literal["v1"] = "v1"
 ) -> Dict:
     """
 
@@ -136,7 +159,33 @@ def build_app_method_from_question(
 
     """
 
-    return {}
+    return {"name": current.name}
+
+
+@build_app_metadata.register
+def build_metadata_from_edge(
+        current: Edge, version: Literal["v1"] = "v1"
+) -> Dict:
+    """
+
+    Args:
+        current (Edge):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
+
+    data = {
+        "definition": current.definition,
+        "constraint_type": current.constraint_type.name,
+    }
+
+    data |= current.metadata if current.metadata is not None else {}
+
+    return data
 
 
 def build_metadata(obj, version):
@@ -199,8 +248,83 @@ def adapt_table_to_client(current: Table, version: Literal["v1"] = "v1") -> Node
 
 
 @adapt_to_client.register
+def adapt_question_to_client(
+        current: Question, version: Literal["v1"] = "v1"
+) -> NodeV1:
+    """
+
+    Args:
+        current (Question):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
+    spec_dict = {
+        "name": current.name,
+        "namespace": current.namespace,
+        "display_name": current.name,
+        "data_source": config.integration_name,
+        "metadata": build_metadata(current, version),
+    }
+    return Schema.to_model(spec_dict, version=version, typing_type="Node")
+
+
+def make_name(node1: NodeTypes, node2: NodeTypes):
+    """
+
+    Args:
+        node1 (NodeTypes):
+        node2 (NodeTypes):
+
+    Returns:
+
+    Raises:
+
+    """
+    node1_fname = node1.full_name if isinstance(node1, Table) else node1.name
+    node2_fname = node2.full_name if isinstance(node2, Table) else node2.name
+
+    node1_name = f"{node1.namespace}:{node1_fname}"
+    node2_name = f"{node2.namespace}:{node2_fname}"
+
+    return f"{node1_name} -> {node2_name}"
+
+@adapt_to_client.register
+def adapt_edge_to_client(current: Edge, version: Literal["v1"] = "v1") -> EdgeV1:
+    """
+
+    Args:
+        current (Edge):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
+    spec_dict = {
+        "data_source": config.integration_name,
+        "name": make_name(current.source, current.destination),
+        "namespace": current.source.namespace,
+        "source": {
+            "name": current.source.full_name if isinstance(current.source, Table) else current.source.name,
+            "namespace": current.source.namespace,
+        },
+        "destination": {
+            "name": current.destination.full_name if isinstance(current.destination, Table) else current.destination.name,
+            "namespace": current.destination.namespace,
+        },
+        "metadata": build_metadata(current, version),
+    }
+    return Schema.to_model(spec_dict, version=version, typing_type="Edge")
+
+
+@adapt_to_client.register
 def adapt_seq_to_client(
-    objs: Sequence, version: Literal["v1"]
+        objs: Sequence, version: Literal["v1"]
 ) -> List[Union[NodeV1, EdgeV1]]:
     """
 
@@ -218,7 +342,7 @@ def adapt_seq_to_client(
 
 @adapt_to_client.register
 def adapt_list_to_client(
-    objs: List, version: Literal["v1"]
+        objs: List, version: Literal["v1"]
 ) -> List[Union[NodeV1, EdgeV1]]:
     """
 
