@@ -26,7 +26,7 @@ import GraphSearch from "./GraphSearch"
 
 type GraphDrawerProps = {
   search: string
-  onSearch: (search: string) => void
+  onSearch: (search: string | null) => void
   loading?: boolean
   onRefresh?: () => void
   onMove?: (viewport: Viewport) => void
