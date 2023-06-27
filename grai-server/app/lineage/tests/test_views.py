@@ -337,7 +337,6 @@ class TestNodeWithFilter:
         node = test_full_nodes[0]
         url = self.get_url_by_name(node)
         response = client.get(url)
-        print(response)
         assert response.status_code == 200, response
 
     @pytest.mark.django_db

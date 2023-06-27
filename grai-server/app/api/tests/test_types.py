@@ -2403,7 +2403,7 @@ async def test_graph_filter_edge_id(test_context):
 
 
 @pytest.mark.django_db
-async def test_graph_filter_filter(test_context):
+async def test_graph_filter_filters(test_context):
     context, organisation, workspace, user, membership = test_context
 
     filter = await Filter.objects.acreate(workspace=workspace, name=str(uuid.uuid4()), metadata={}, created_by=user)
@@ -2412,7 +2412,7 @@ async def test_graph_filter_filter(test_context):
         query Workspace($workspaceId: ID!, $filterId: ID!) {
             workspace(id: $workspaceId) {
                 id
-                graph(filters: {filter: $filterId}) {
+                graph(filters: {filters: [$filterId]}) {
                     id
                 }
             }
@@ -2430,7 +2430,7 @@ async def test_graph_filter_filter(test_context):
 
 
 @pytest.mark.django_db
-async def test_graph_filter_filter_tags(test_context):
+async def test_graph_filter_filters_tags(test_context):
     context, organisation, workspace, user, membership = test_context
 
     filter = await Filter.objects.acreate(
@@ -2444,7 +2444,7 @@ async def test_graph_filter_filter_tags(test_context):
         query Workspace($workspaceId: ID!, $filterId: ID!) {
             workspace(id: $workspaceId) {
                 id
-                graph(filters: {filter: $filterId}) {
+                graph(filters: {filters: [$filterId]}) {
                     id
                 }
             }
@@ -2462,7 +2462,7 @@ async def test_graph_filter_filter_tags(test_context):
 
 
 @pytest.mark.django_db
-async def test_graph_filter_filter_ancestor_tags(test_context):
+async def test_graph_filter_filters_ancestor_tags(test_context):
     context, organisation, workspace, user, membership = test_context
 
     filter = await Filter.objects.acreate(
@@ -2483,7 +2483,7 @@ async def test_graph_filter_filter_ancestor_tags(test_context):
         query Workspace($workspaceId: ID!, $filterId: ID!) {
             workspace(id: $workspaceId) {
                 id
-                graph(filters: {filter: $filterId}) {
+                graph(filters: {filters: [$filterId]}) {
                     id
                 }
             }
@@ -2501,7 +2501,7 @@ async def test_graph_filter_filter_ancestor_tags(test_context):
 
 
 @pytest.mark.django_db
-async def test_graph_filter_filter_descendant_tags(test_context):
+async def test_graph_filter_filters_descendant_tags(test_context):
     context, organisation, workspace, user, membership = test_context
 
     filter = await Filter.objects.acreate(
@@ -2522,7 +2522,7 @@ async def test_graph_filter_filter_descendant_tags(test_context):
         query Workspace($workspaceId: ID!, $filterId: ID!) {
             workspace(id: $workspaceId) {
                 id
-                graph(filters: {filter: $filterId}) {
+                graph(filters: {filters: [$filterId]}) {
                     id
                 }
             }

@@ -206,8 +206,6 @@ class GraphCache:
             LIMIT 100
         """
 
-        print(query)
-
         results = self.query(query).result_set
 
         return [BaseGraph(**result[0]) for result in results]
@@ -269,8 +267,6 @@ class GraphCache:
             """
         )
 
-        print(str(query), query.get_parameters())
-
         result = self.query(str(query), query.get_parameters(), timeout=10000)
 
         tables = []
@@ -325,6 +321,10 @@ class GraphCache:
         )
 
         return query
+
+    def filter_by_filters(self, filters, query: GraphQuery) -> GraphQuery:
+        for filter in filters:
+            query = self.filter_by_filter(filter, query)
 
     def filter_by_filter(self, filter, query: GraphQuery) -> GraphQuery:
         if len(filter.metadata) == 0:
@@ -491,10 +491,6 @@ class GraphCache:
         E = [Edge(vertexes[edge["source_id"]], vertexes[edge["destination_id"]]) for edge in edges]
 
         g = Graph(V, E)
-
-        print(len(V))
-        print(len(E))
-        print(len(g.C))
 
         graphs = []
         single_tables = []
