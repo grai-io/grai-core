@@ -2296,6 +2296,45 @@ async def test_filters(test_context):
 
 
 @pytest.mark.django_db
+async def test_filters_search(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    name = str(uuid.uuid4())
+
+    filter = await Filter.objects.acreate(workspace=workspace, name=name, metadata={}, created_by=user)
+
+    query = """
+        query Workspace($workspaceId: ID!, $search: String) {
+            workspace(id: $workspaceId) {
+                id
+                filters(search: $search) {
+                    data {
+                        id
+                        name
+                        created_at
+                        created_by {
+                            id
+                            username
+                        }
+                    }
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={"workspaceId": str(workspace.id), "search": name},
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["filters"]["data"][0]["id"] == str(filter.id)
+    assert result.data["workspace"]["filters"]["data"][0]["created_by"]["id"] == str(user.id)
+
+
+@pytest.mark.django_db
 async def test_filter(test_context):
     context, organisation, workspace, user, membership = test_context
 
@@ -2645,6 +2684,31 @@ async def test_graph_filter_xy(test_context):
                     id
                 }
             }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={"workspaceId": str(workspace.id)},
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+
+
+@pytest.mark.django_db
+async def test_graph_tables(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!) {
+          workspace(id: $workspaceId) {
+            id
+            graph_tables {
+                id
+            }
+          }
         }
     """
 
