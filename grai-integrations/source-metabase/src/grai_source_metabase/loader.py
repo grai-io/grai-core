@@ -1,27 +1,13 @@
 import json
 from itertools import chain
+from typing import Optional, Callable, Dict, List
 
 import requests
+from pydantic import BaseSettings, SecretStr, validator
 from requests.exceptions import ConnectionError
 from retrying import retry
 
-from typing import Optional, Callable, Dict, List
-from pydantic import BaseSettings, SecretStr, validator, BaseModel
-
-from models import Question, Table, Constraint, NodeTypes
-
-
-# class Edge(BaseModel):
-#     """ """
-#
-#     source: NodeTypes
-#     destination: NodeTypes
-#     definition: Optional[str]
-#     constraint_type: Constraint
-#     metadata: Optional[Dict] = None
-#
-#     def __hash__(self):
-#         return hash((self.source, self.destination))
+from models import Question, Table, NodeTypes
 
 
 class MetabaseConfig(BaseSettings):
@@ -53,7 +39,9 @@ class MetabaseAPI:
             "endpoint": endpoint,
         }
 
-        self.config = MetabaseConfig(**{k: v for k, v in passthrough_kwargs.items() if v is not None})
+        self.config = MetabaseConfig(
+            **{k: v for k, v in passthrough_kwargs.items() if v is not None}
+        )
 
         self.session = requests.Session()
         self.session.headers.update({"Content-Type": "application/json"})
@@ -95,7 +83,9 @@ class MetabaseAPI:
     #     pass
 
 
-def build_namespace_map_metabase(dbs: Dict, namespace_map, default_namespace: Optional[str]) -> Dict:
+def build_namespace_map_metabase(
+    dbs: Dict, namespace_map, default_namespace: Optional[str]
+) -> Dict:
     if namespace_map is None and default_namespace is None:
         message = "You must provide either a namespace_map or a default_namespace "
 
@@ -116,35 +106,37 @@ def build_namespace_map_metabase(dbs: Dict, namespace_map, default_namespace: Op
 
 
 class MetabaseConnector(MetabaseAPI):
-    # __init__ method
-    #  init placeholder mapping for Question -> Table
-    #  init placeholder mapping for Table -> Database
-    #  init placeholder mapping for Question -> Database
-
-    def __init__(self, namespaces: Optional[Dict] = None, default_namespace: Optional[str] = None, *args, **kwargs):
+    def __init__(
+        self,
+        namespaces: Optional[Dict] = None,
+        default_namespace: Optional[str] = None,
+        *args,
+        **kwargs,
+    ):
         super().__init__(*args, **kwargs)
 
         self.default_namespace = default_namespace
 
         self.tables_map = {table["id"]: table for table in self.get_tables()}
         self.dbs_map = {db["id"]: db for db in self.get_dbs()["data"]}
-        self.questions_map = {question["id"]: question for question in self.get_questions()}
+        self.questions_map = {
+            question["id"]: question for question in self.get_questions()
+        }
 
-        self.namespace_map = build_namespace_map_metabase(self.dbs_map, namespaces, default_namespace)
+        self.namespace_map = build_namespace_map_metabase(
+            self.dbs_map, namespaces, default_namespace
+        )
 
         self.question_table_map = {}
         self.table_db_map = {}
         self.question_db_map = {}
 
-    # build_lineage method
-    #  build mapping for Database (source) -> Question (destination)
-    # build mapping for Table (source) -> Question (destination)
-    # build mapping for Database (source) -> Table (destination)
-
     def build_lineage(self):
         self.tables_map.update({table["id"]: table for table in self.get_tables()})
         self.dbs_map.update({db["id"]: db for db in self.get_dbs()["data"]})
-        self.questions_map.update({question["id"]: question for question in self.get_questions()})
+        self.questions_map.update(
+            {question["id"]: question for question in self.get_questions()}
+        )
 
         self.question_table_map = {
             question["id"]: question["table_id"]
@@ -159,35 +151,29 @@ class MetabaseConnector(MetabaseAPI):
 
     def get_nodes(self) -> List[NodeTypes]:
         for question in self.questions_map.values():
-            question["namespace"] = self.namespace_map[self.question_db_map[question["id"]]]
+            question["namespace"] = self.namespace_map[
+                self.question_db_map[question["id"]]
+            ]
 
         for table in self.tables_map.values():
             table["namespace"] = self.namespace_map[self.table_db_map[table["id"]]]
 
-        # nodes = chain(chain.from_iterable(self.questions_map.values()), self.tables_map.values())
         nodes = chain(
             chain.from_iterable(Table(**table) for table in self.tables_map.values()),
-            chain.from_iterable(Question(**question) for question in self.questions_map.values()),
+            chain.from_iterable(
+                Question(**question) for question in self.questions_map.values()
+            ),
         )
-        # edges = [
-        #     Edge(
-        #         source=NodeTypes.QUESTION,
-        #         destination=NodeTypes.TABLE,
-        #         definition=question["name"],
-        #         constraint_type=Constraint.QUESTION_TABLE,
-        #         metadata={"question_id": question["id"], "table_id": question["table_id"]}
-        #     ) for question in self.questions_map.values() if question["table_id"]
-        # ]
-        #
+
         return list(nodes)
 
 
-if __name__ == "__main__":
-    mb = MetabaseConnector()
-    mb.build_lineage()
-    print(mb.questions_map)
-    # print(mb.question_table_map)
-    # print(mb.table_db_map)
-    # print(mb.question_db_map)
+# if __name__ == "__main__":
+#     mb = MetabaseConnector()
+#     mb.build_lineage()
+#     print(mb.questions_map)
+# print(mb.question_table_map)
+# print(mb.table_db_map)
+# print(mb.question_db_map)
 #     mb = MetabaseAPI()
 #     print(mb.get_dbs())
