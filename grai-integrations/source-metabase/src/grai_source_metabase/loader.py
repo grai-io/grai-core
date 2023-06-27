@@ -42,10 +42,10 @@ class MetabaseAPI:
     """ """
 
     def __init__(
-            self,
-            username: Optional[str] = None,
-            password: Optional[str] = None,
-            endpoint: Optional[str] = None,
+        self,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+        endpoint: Optional[str] = None,
     ):
         passthrough_kwargs = {
             "username": username,
@@ -59,18 +59,14 @@ class MetabaseAPI:
         self.session.headers.update({"Content-Type": "application/json"})
 
     @retry(stop_max_attempt_number=3, wait_fixed=5000)
-    def authenticate(
-            self,
-            request: Callable[..., requests.Response],
-            url: str
-    ):
+    def authenticate(self, request: Callable[..., requests.Response], url: str):
         try:
             response = request(
                 url=url,
                 json={
                     "username": self.config.username.get_secret_value(),
-                    "password": self.config.password.get_secret_value()
-                }
+                    "password": self.config.password.get_secret_value(),
+                },
             )
 
             response.raise_for_status()
@@ -125,9 +121,7 @@ class MetabaseConnector(MetabaseAPI):
     #  init placeholder mapping for Table -> Database
     #  init placeholder mapping for Question -> Database
 
-    def __init__(self, namespaces: Optional[Dict] = None,
-                 default_namespace: Optional[str] = None,
-                *args, **kwargs):
+    def __init__(self, namespaces: Optional[Dict] = None, default_namespace: Optional[str] = None, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.default_namespace = default_namespace
@@ -152,8 +146,11 @@ class MetabaseConnector(MetabaseAPI):
         self.dbs_map.update({db["id"]: db for db in self.get_dbs()["data"]})
         self.questions_map.update({question["id"]: question for question in self.get_questions()})
 
-        self.question_table_map = {question["id"]: question["table_id"] for question in self.get_questions() if
-                                   question["table_id"] and question["archived"] is False}
+        self.question_table_map = {
+            question["id"]: question["table_id"]
+            for question in self.get_questions()
+            if question["table_id"] and question["archived"] is False
+        }
 
         self.table_db_map = {table["id"]: table["db_id"] for table in self.get_tables()}
 
@@ -168,12 +165,10 @@ class MetabaseConnector(MetabaseAPI):
             table["namespace"] = self.namespace_map[self.table_db_map[table["id"]]]
 
         # nodes = chain(chain.from_iterable(self.questions_map.values()), self.tables_map.values())
-        nodes = chain(chain.from_iterable(
-            Table(**table) for table in self.tables_map.values()
-        ), chain.from_iterable(
-            Question(**question) for question in self.questions_map.values()
-
-        ))
+        nodes = chain(
+            chain.from_iterable(Table(**table) for table in self.tables_map.values()),
+            chain.from_iterable(Question(**question) for question in self.questions_map.values()),
+        )
         # edges = [
         #     Edge(
         #         source=NodeTypes.QUESTION,

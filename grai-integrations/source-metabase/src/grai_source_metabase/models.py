@@ -36,10 +36,6 @@ class Table(BaseModel):
         return f"{self.schema}.{self.name}"
 
 
-
-
-
-
 class Constraint(str, Enum):
     """ """
 
