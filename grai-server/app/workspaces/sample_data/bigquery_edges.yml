@@ -1,0 +1,273 @@
+version: v1
+type: Edge
+spec:
+  name: prod.customers
+  namespace: default
+  data_source: demo-edges
+  source:
+    name: prod.customers
+    namespace: prod
+  destination:
+    name: grai_bigquery_demo.raw_customers
+    namespace: default
+  is_active: true
+  metadata:
+    grai:
+      edge_type: TableToTable
+---
+version: v1
+type: Edge
+spec:
+  name: prod.customers.id
+  namespace: default
+  data_source: demo-edges
+  source:
+    name: prod.customers.id
+    namespace: prod
+  destination:
+    name: grai_bigquery_demo.raw_customers.id
+    namespace: default
+  is_active: true
+  metadata:
+    grai:
+      edge_type: TableToColumn
+---
+version: v1
+type: Edge
+spec:
+  name: prod.customers.first_name
+  namespace: default
+  data_source: demo-edges
+  source:
+    name: prod.customers.first_name
+    namespace: prod
+  destination:
+    name: grai_bigquery_demo.raw_customers.first_name
+    namespace: default
+  is_active: true
+  metadata:
+    grai:
+      edge_type: ColumnToColumn
+      edge_attributes:
+        preserves_data_type: true
+        preserves_nullable: true
+        preserves_unique: true
+---
+version: v1
+type: Edge
+spec:
+  name: prod.customers.last_name
+  namespace: default
+  data_source: demo-edges
+  source:
+    name: prod.customers.last_name
+    namespace: prod
+  destination:
+    name: grai_bigquery_demo.raw_customers.last_name
+    namespace: default
+  is_active: true
+  metadata:
+    grai:
+      edge_type: ColumnToColumn
+      edge_attributes:
+        preserves_data_type: true
+        preserves_nullable: true
+        preserves_unique: true
+---
+version: v1
+type: Edge
+spec:
+  name: prod.orders
+  namespace: default
+  data_source: demo-edges
+  source:
+    name: prod.orders
+    namespace: prod
+  destination:
+    name: grai_bigquery_demo.raw_orders
+    namespace: default
+  is_active: true
+  metadata:
+    grai:
+      edge_type: TableToTable
+---
+version: v1
+type: Edge
+spec:
+  name: prod.orders.id
+  namespace: default
+  data_source: demo-edges
+  source:
+    name: prod.orders.id
+    namespace: prod
+  destination:
+    name: grai_bigquery_demo.raw_orders.id
+    namespace: default
+  is_active: true
+  metadata:
+    grai:
+      edge_type: ColumnToColumn
+      edge_attributes:
+        preserves_data_type: true
+        preserves_nullable: true
+        preserves_unique: true
+---
+version: v1
+type: Edge
+spec:
+  name: prod.orders.user_id
+  namespace: default
+  data_source: demo-edges
+  source:
+    name: prod.orders.user_id
+    namespace: prod
+  destination:
+    name: grai_bigquery_demo.raw_orders.user_id
+    namespace: default
+  is_active: true
+  metadata:
+    grai:
+      edge_type: ColumnToColumn
+      edge_attributes:
+        preserves_data_type: true
+        preserves_nullable: true
+        preserves_unique: true
+---
+version: v1
+type: Edge
+spec:
+  name: prod.orders.order_date
+  namespace: default
+  data_source: demo-edges
+  source:
+    name: prod.orders.order_date
+    namespace: prod
+  destination:
+    name: grai_bigquery_demo.raw_orders.order_date
+    namespace: default
+  is_active: true
+  metadata:
+    grai:
+      edge_type: TableToColumn
+---
+version: v1
+type: Edge
+spec:
+  name: prod.orders.status
+  namespace: default
+  data_source: demo-edges
+  source:
+    name: prod.orders.status
+    namespace: prod
+  destination:
+    name: grai_bigquery_demo.raw_orders.status
+    namespace: default
+  is_active: true
+  metadata:
+    grai:
+      edge_type: ColumnToColumn
+      edge_attributes:
+        preserves_data_type: true
+        preserves_nullable: true
+        preserves_unique: true
+---
+version: v1
+type: Edge
+spec:
+  name: prod.payments
+  namespace: default
+  data_source: demo-edges
+  source:
+    name: prod.payments
+    namespace: prod
+  destination:
+    name: grai_bigquery_demo.raw_payments
+    namespace: default
+  is_active: true
+  metadata:
+    grai:
+      edge_type: TableToTable
+---
+version: v1
+type: Edge
+spec:
+  name: prod.payments.id
+  namespace: default
+  data_source: demo-edges
+  source:
+    name: prod.payments.id
+    namespace: prod
+  destination:
+    name: grai_bigquery_demo.raw_payments.id
+    namespace: default
+  is_active: true
+  metadata:
+    grai:
+      edge_type: ColumnToColumn
+      edge_attributes:
+        preserves_data_type: true
+        preserves_nullable: true
+        preserves_unique: true
+---
+version: v1
+type: Edge
+spec:
+  name: prod.payments.order_id
+  namespace: default
+  data_source: demo-edges
+  source:
+    name: prod.payments.order_id
+    namespace: prod
+  destination:
+    name: grai_bigquery_demo.raw_payments.order_id
+    namespace: default
+  is_active: true
+  metadata:
+    grai:
+      edge_type: ColumnToColumn
+      edge_attributes:
+        preserves_data_type: true
+        preserves_nullable: true
+        preserves_unique: true
+---
+version: v1
+type: Edge
+spec:
+  name: prod.payments.payment_method
+  namespace: default
+  data_source: demo-edges
+  source:
+    name: prod.payments.payment_method
+    namespace: prod
+  destination:
+    name: grai_bigquery_demo.raw_payments.payment_method
+    namespace: default
+  is_active: true
+  metadata:
+    grai:
+      edge_type: ColumnToColumn
+      edge_attributes:
+        preserves_data_type: true
+        preserves_nullable: true
+        preserves_unique: true
+---
+version: v1
+type: Edge
+spec:
+  name: prod.payments.amount
+  namespace: default
+  data_source: demo-edges
+  source:
+    name: prod.payments.amount
+    namespace: prod
+  destination:
+    name: grai_bigquery_demo.raw_payments.amount
+    namespace: default
+  is_active: true
+  metadata:
+    grai:
+      edge_type: ColumnToColumn
+      edge_attributes:
+        preserves_data_type: true
+        preserves_nullable: true
+        preserves_unique: true

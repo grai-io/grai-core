@@ -27,4 +27,5 @@ export interface CreateOrganisationWorkspace {
 export interface CreateOrganisationWorkspaceVariables {
   organisationId: string;
   name: string;
+  sample_data: boolean;
 }

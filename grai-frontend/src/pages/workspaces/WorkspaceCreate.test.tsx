@@ -51,6 +51,8 @@ test("submit", async () => {
       )
   )
 
+  await act(async () => await user.click(screen.getByRole("checkbox")))
+
   await act(
     async () => await user.click(screen.getByRole("button", { name: /next/i }))
   )
@@ -70,6 +72,7 @@ test("submit error", async () => {
         variables: {
           name: "TestWorkspace",
           organisationId: "1",
+          sample_data: false,
         },
       },
       result: {

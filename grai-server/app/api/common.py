@@ -22,11 +22,22 @@ def get_user(info: Info):
     return info.context.request.user
 
 
-async def get_workspace(info: Info, workspaceId: strawberry.ID):
+async def aget_workspace(info: Info, workspaceId: strawberry.ID):
     user = get_user(info)
 
     try:
         workspace = await Workspace.objects.aget(pk=workspaceId, memberships__user_id=user.id)
+    except Workspace.DoesNotExist:
+        raise Exception("Can't find workspace")
+
+    return workspace
+
+
+def get_workspace(info: Info, workspaceId: strawberry.ID):
+    user = get_user(info)
+
+    try:
+        workspace = Workspace.objects.get(pk=workspaceId, memberships__user_id=user.id)
     except Workspace.DoesNotExist:
         raise Exception("Can't find workspace")
 

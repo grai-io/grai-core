@@ -7,6 +7,7 @@ type TableHeaderProps = {
   onSearch?: (value: string) => void
   onRefresh?: () => void
   rightButtons?: React.ReactNode
+  children?: React.ReactNode
 }
 
 const TableHeader: React.FC<TableHeaderProps> = ({
@@ -14,13 +15,14 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   onSearch,
   onRefresh,
   rightButtons,
+  children,
 }) => {
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) =>
     onSearch && onSearch(event.target.value)
 
   return (
     <Box sx={{ display: "flex", mb: "24px" }}>
-      <Box sx={{ flexGrow: 1 }}>
+      <Box sx={{ flexGrow: 1, display: "flex" }}>
         {onSearch && (
           <TextField
             placeholder="Search"
@@ -38,6 +40,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
             sx={{ mr: 2, minWidth: 300 }}
           />
         )}
+        {children}
       </Box>
       {onRefresh && (
         <Tooltip title="Refresh table">

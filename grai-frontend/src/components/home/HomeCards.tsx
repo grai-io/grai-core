@@ -54,6 +54,7 @@ const HomeCards: React.FC = () => {
           count={data?.workspace.tables.meta.total}
           text="Tables"
           color="#8338EC"
+          to="tables"
         />
       </Grid>
       <Grid item md={3}>
@@ -61,6 +62,7 @@ const HomeCards: React.FC = () => {
           count={data?.workspace.connections.meta.total}
           text="Connections"
           color="#8338EC"
+          to="connections"
         />
       </Grid>
       <Grid item md={3}>
@@ -68,6 +70,7 @@ const HomeCards: React.FC = () => {
           count={data?.workspace.runs.meta.filtered}
           text="Reports"
           color="#8338EC"
+          to="reports"
         />
       </Grid>
       <Grid item md={3}>
