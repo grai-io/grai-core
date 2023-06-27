@@ -3,9 +3,9 @@ import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
-import Graph, { GET_TABLES_AND_EDGES } from "./Graph"
-import { SEARCH_TABLES } from "components/graph/drawer/GraphSearch"
 import { GET_FILTERS } from "components/graph/drawer/GraphFilters"
+import { SEARCH_TABLES } from "components/graph/drawer/GraphSearch"
+import Graph, { GET_TABLES_AND_EDGES } from "./Graph"
 
 const baseFilter = { min_x: -500, max_x: 0, min_y: 0, max_y: 0 }
 
