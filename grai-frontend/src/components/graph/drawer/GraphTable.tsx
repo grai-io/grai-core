@@ -1,11 +1,18 @@
 import React from "react"
-import { TableChart } from "@mui/icons-material"
-import { Box, Typography } from "@mui/material"
+import {
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Typography,
+} from "@mui/material"
+import DataSourceIcon from "../DataSourceIcon"
 
 interface Table {
   id: string
   name: string
   display_name: string
+  data_source: string
   x: number
   y: number
 }
@@ -13,40 +20,36 @@ interface Table {
 type GraphTableProps = {
   table: Table
   onClick?: () => void
+  selected: boolean
+  onHover?: () => void
 }
 
-const GraphTable: React.FC<GraphTableProps> = ({ table, onClick }) => (
-  <Box
-    sx={{
-      display: "flex",
-      m: 0.5,
-      p: 1,
-      fontSize: 12,
-      borderWidth: 1,
-      borderStyle: "solid",
-      borderRadius: 1,
-      boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.06)",
-      borderColor: "rgba(0, 0, 0, 0.08)",
-      cursor: "pointer",
-      alignItems: "center",
-    }}
-    onClick={onClick}
-  >
-    <TableChart sx={{ mr: 1 }} />
-    <Typography variant="body2" sx={{ overflow: "hidden" }}>
-      {table.display_name}
-    </Typography>
-  </Box>
-  // <ListItem disablePadding>
-  //   <ListItemButton onClick={onClick}>
-  //     <ListItemIcon>
-  //       <TableChart />
-  //     </ListItemIcon>
-  //     <ListItemText
-  //       primary={`${table.display_name} (${table.x}, ${table.y})`}
-  //     />
-  //   </ListItemButton>
-  // </ListItem>
+const GraphTable: React.FC<GraphTableProps> = ({
+  table,
+  onClick,
+  selected,
+  onHover,
+}) => (
+  <ListItem disablePadding divider selected={selected} onMouseEnter={onHover}>
+    <ListItemButton onClick={onClick} sx={{ pl: 1 }}>
+      <ListItemIcon>
+        <DataSourceIcon
+          dataSource={table.data_source}
+          size="small"
+          noMargin
+          noBorder
+          grayscale
+        />
+      </ListItemIcon>
+      <ListItemText
+        primary={
+          <Typography variant="body2" sx={{ overflow: "hidden" }}>
+            {table.display_name}
+          </Typography>
+        }
+      />
+    </ListItemButton>
+  </ListItem>
 )
 
 export default GraphTable

@@ -12,6 +12,7 @@ export interface SearchGraphTables_workspace_graph_tables {
   id: string;
   name: string;
   display_name: string;
+  data_source: string;
   x: number;
   y: number;
 }

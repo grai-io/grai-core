@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { gql, useQuery } from "@apollo/client"
-import { Box, List, TextField } from "@mui/material"
-import { Viewport, useReactFlow, useStore } from "reactflow"
+import { Close } from "@mui/icons-material"
+import { Box, InputAdornment, List, TextField, Tooltip } from "@mui/material"
+import { Viewport, useReactFlow } from "reactflow"
 import useWorkspace from "helpers/useWorkspace"
 import Loading from "components/layout/Loading"
 import GraphError from "components/utils/GraphError"
@@ -23,6 +24,7 @@ export const SEARCH_TABLES = gql`
         id
         name
         display_name
+        data_source
         x
         y
       }
@@ -31,14 +33,20 @@ export const SEARCH_TABLES = gql`
 `
 
 type GraphSearchProps = {
+  search: string
+  onSearch: (search: string | null) => void
   onMove?: (viewport: Viewport) => void
 }
 
-const GraphSearch: React.FC<GraphSearchProps> = ({ onMove }) => {
-  const [search, setSearch] = useState<string>("")
+const GraphSearch: React.FC<GraphSearchProps> = ({
+  search,
+  onSearch,
+  onMove,
+}) => {
   const { organisationName, workspaceName } = useWorkspace()
   const reactFlowInstance = useReactFlow()
   const [center, setCenter] = useState({ x: 0, y: 0 })
+  const [selected, setSelected] = useState(0)
 
   const { loading, error, data } = useQuery<
     SearchGraphTables,
@@ -65,21 +73,66 @@ const GraphSearch: React.FC<GraphSearchProps> = ({ onMove }) => {
     }, 1)
 
     return () => clearTimeout(timer)
-  }, [center])
+  }, [center, onMove, reactFlowInstance])
+
+  const tables = useMemo(() => data?.workspace.graph_tables ?? [], [data])
+
+  const setTableCenter = useCallback(
+    (table: { x: number; y: number }) =>
+      setCenter({ x: table.x + 200, y: table.y }),
+    []
+  )
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.code === "ArrowDown") {
+        setSelected(Math.min(selected + 1, tables.length - 1))
+      }
+      if (event.code === "ArrowUp") {
+        setSelected(Math.max(selected - 1, 0))
+      }
+      if (event.code === "Enter") {
+        setTableCenter(tables[selected])
+      }
+      if (event.code === "Escape") {
+        onSearch(null)
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown)
+
+    // Don't forget to clean up
+    return function cleanup() {
+      document.removeEventListener("keydown", handleKeyDown)
+    }
+  }, [onSearch, selected, tables, setTableCenter])
 
   if (error) return <GraphError error={error} />
 
-  const tables = data?.workspace.graph_tables ?? []
-
   return (
-    <>
+    <Box>
       <Box sx={{ p: 1 }}>
         <TextField
           fullWidth
           size="small"
           placeholder="Search"
           value={search}
-          onChange={event => setSearch(event.target.value)}
+          onChange={event => onSearch(event.target.value)}
+          InputProps={{
+            endAdornment: search !== "" && (
+              <InputAdornment position="end">
+                <Tooltip title="Clear">
+                  <Close
+                    onClick={() => onSearch(null)}
+                    sx={{ color: "divider", cursor: "pointer" }}
+                  />
+                </Tooltip>
+              </InputAdornment>
+            ),
+          }}
+          inputProps={{
+            "data-testid": "search-input",
+          }}
         />
       </Box>
       {loading && <Loading />}
@@ -89,17 +142,23 @@ const GraphSearch: React.FC<GraphSearchProps> = ({ onMove }) => {
           maxHeight: "calc(100vh - 200px)",
           overflowY: "auto",
           overflowX: "hidden",
+          border: 0,
+          borderTop: 1,
+          borderColor: theme => theme.palette.grey[200],
+          borderStyle: "solid",
         }}
       >
-        {tables.map(table => (
+        {tables.map((table, index) => (
           <GraphTable
             key={table.id}
             table={table}
-            onClick={() => setCenter({ x: table.x + 200, y: table.y })}
+            onClick={() => setTableCenter(table)}
+            onHover={() => setSelected(index)}
+            selected={selected === index}
           />
         ))}
       </List>
-    </>
+    </Box>
   )
 }
 

@@ -12,7 +12,7 @@ import ReactFlow, {
 import "reactflow/dist/style.css"
 import Loading from "components/layout/Loading"
 import BaseNode from "./BaseNode"
-import GraphControls, { ControlOptions } from "./controls/GraphControls"
+import { ControlOptions } from "./controls/GraphControls"
 import GraphDrawer from "./drawer/GraphDrawer"
 import TestEdge from "./TestEdge"
 
@@ -149,6 +149,8 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
         onRefresh={onRefresh}
         loading={refreshLoading}
         onMove={onMove}
+        search={search ?? ""}
+        onSearch={onSearch}
       />
     </ReactFlowProvider>
   )

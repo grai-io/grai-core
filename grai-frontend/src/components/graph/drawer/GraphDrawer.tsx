@@ -21,15 +21,20 @@ import {
 } from "@mui/material"
 import { Viewport } from "reactflow"
 import useLocalState from "helpers/useLocalState"
+import GraphFilters from "./GraphFilters"
 import GraphSearch from "./GraphSearch"
 
 type GraphDrawerProps = {
+  search: string
+  onSearch: (search: string) => void
   loading?: boolean
   onRefresh?: () => void
   onMove?: (viewport: Viewport) => void
 }
 
 const GraphDrawer: React.FC<GraphDrawerProps> = ({
+  search,
+  onSearch,
   loading,
   onRefresh,
   onMove,
@@ -95,7 +100,14 @@ const GraphDrawer: React.FC<GraphDrawerProps> = ({
               </TabList>
             </Box>
             <TabPanel value="search" sx={{ p: 0 }}>
-              <GraphSearch onMove={onMove} />
+              <GraphSearch
+                onMove={onMove}
+                search={search}
+                onSearch={onSearch}
+              />
+            </TabPanel>
+            <TabPanel value="filter" sx={{ p: 0 }}>
+              <GraphFilters />
             </TabPanel>
           </TabContext>
         </Box>
