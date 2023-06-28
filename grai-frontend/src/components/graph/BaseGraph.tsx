@@ -12,7 +12,8 @@ import ReactFlow, {
 import "reactflow/dist/style.css"
 import Loading from "components/layout/Loading"
 import BaseNode from "./BaseNode"
-import GraphControls, { ControlOptions } from "./controls/GraphControls"
+import { ControlOptions } from "./controls/GraphControls"
+import GraphDrawer from "./drawer/GraphDrawer"
 import TestEdge from "./TestEdge"
 
 const nodeTypes = {
@@ -118,14 +119,15 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
 
   return (
     <ReactFlowProvider>
-      <GraphControls
+      {/* <GraphControls
         errors={!!errors}
         options={controlOptions}
         search={search}
         onSearch={onSearch}
         onRefresh={onRefresh}
         loading={refreshLoading}
-      />
+      /> */}
+
       <ReactFlow
         minZoom={0}
         nodes={nodes}
@@ -142,6 +144,14 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
         fitView={fitView}
       />
       {loading && <Loading />}
+
+      <GraphDrawer
+        onRefresh={onRefresh}
+        loading={refreshLoading}
+        onMove={onMove}
+        search={search ?? ""}
+        onSearch={onSearch}
+      />
     </ReactFlowProvider>
   )
 }
