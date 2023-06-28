@@ -2,9 +2,9 @@ import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
-import { input } from "testing/autocomplete"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
-import { GET_FILTERS } from "components/graph/controls/FilterControl"
+import { GET_FILTERS } from "components/graph/drawer/GraphFilters"
+import { SEARCH_TABLES } from "components/graph/drawer/GraphSearch"
 import Graph, { GET_TABLES_AND_EDGES } from "./Graph"
 
 const baseFilter = { min_x: -500, max_x: 0, min_y: 0, max_y: 0 }
@@ -15,6 +15,7 @@ export const filtersMock = {
     variables: {
       organisationName: "default",
       workspaceName: "demo",
+      search: "",
     },
   },
   result: {
@@ -42,7 +43,7 @@ const tablesMock = {
       organisationName: "default",
       workspaceName: "demo",
       filters: {
-        filter: null,
+        filters: null,
         ...baseFilter,
       },
     },
@@ -75,7 +76,7 @@ const tablesMockWithFilter = {
     variables: {
       organisationName: "default",
       workspaceName: "demo",
-      filters: { filter: "1", ...baseFilter },
+      filters: { filters: ["1"], ...baseFilter },
     },
   },
   result: {
@@ -97,7 +98,43 @@ const tablesMockWithFilter = {
   },
 }
 
-const mocks = [filtersMock, filtersMock, tablesMock, tablesMock]
+export const searchMock = (search: string = "", graph_tables: any[] = []) => ({
+  request: {
+    query: SEARCH_TABLES,
+    variables: {
+      organisationName: "default",
+      workspaceName: "demo",
+      search,
+    },
+  },
+  result: {
+    data: {
+      workspace: {
+        id: "1",
+        graph_tables,
+      },
+    },
+  },
+})
+
+const mocks = [
+  filtersMock,
+  filtersMock,
+  tablesMock,
+  tablesMock,
+  searchMock(),
+  searchMock(),
+  searchMock("s", [
+    {
+      id: "1",
+      name: "test table",
+      display_name: "test table",
+      data_source: "source",
+      x: 0,
+      y: 0,
+    },
+  ]),
+]
 
 jest.retryTimes(1)
 
@@ -190,13 +227,15 @@ test("renders empty", async () => {
     mocks: [
       filtersMock,
       filtersMock,
+      searchMock(),
+      searchMock(),
       {
         request: {
           query: GET_TABLES_AND_EDGES,
           variables: {
             organisationName: "default",
             workspaceName: "demo",
-            filters: { filter: null, ...baseFilter },
+            filters: { filters: null, ...baseFilter },
           },
         },
         result: {
@@ -329,13 +368,15 @@ test("error", async () => {
         variables: {
           organisationName: "default",
           workspaceName: "demo",
-          filters: { filter: null, ...baseFilter },
+          filters: { filters: null, ...baseFilter },
         },
       },
       result: {
         errors: [new GraphQLError("Error!")],
       },
     },
+    searchMock(),
+    searchMock(),
   ]
 
   render(<Graph alwaysShow />, {
@@ -354,13 +395,15 @@ test("no nodes", async () => {
   const mocks = [
     filtersMock,
     filtersMock,
+    searchMock(),
+    searchMock(),
     {
       request: {
         query: GET_TABLES_AND_EDGES,
         variables: {
           organisationName: "default",
           workspaceName: "demo",
-          filters: { filter: null, ...baseFilter },
+          filters: { filters: null, ...baseFilter },
         },
       },
       result: {
@@ -420,12 +463,26 @@ test("search", async () => {
     expect(screen.getByText("N2 Node")).toBeInTheDocument()
   })
 
+  await act(async () => {
+    await user.click(screen.getByTestId("SearchIcon"))
+  })
+
+  await waitFor(() => {
+    expect(screen.getByTestId("search-input")).toBeInTheDocument()
+  })
+
   await act(
-    async () => await user.type(screen.getByTestId("search-input"), "search")
+    async () => await user.type(screen.getByTestId("search-input"), "s")
   )
+
+  await waitFor(() => {
+    expect(screen.getByText("test table")).toBeInTheDocument()
+  })
 })
 
 test("filter", async () => {
+  const user = userEvent.setup()
+
   class ResizeObserver {
     callback: globalThis.ResizeObserverCallback
 
@@ -454,6 +511,8 @@ test("filter", async () => {
       tablesMock,
       tablesMock,
       tablesMockWithFilter,
+      searchMock(),
+      searchMock(),
     ],
   })
 
@@ -461,7 +520,21 @@ test("filter", async () => {
     expect(screen.getByText("N2 Node")).toBeInTheDocument()
   })
 
-  input(screen.getByTestId("filter-control"))
+  await waitFor(() => {
+    expect(screen.getByTestId("FilterAltIcon")).toBeInTheDocument()
+  })
+
+  await act(async () => {
+    await user.click(screen.getByTestId("FilterAltIcon"))
+  })
+
+  await waitFor(() => {
+    expect(screen.getByText("Manage Filters")).toBeInTheDocument()
+  })
+
+  await act(async () => {
+    await user.click(screen.getByText("Manage Filters"))
+  })
 
   await waitFor(() => {
     expect(screen.getByText("New Page")).toBeInTheDocument()

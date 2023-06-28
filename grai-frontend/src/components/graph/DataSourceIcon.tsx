@@ -3,6 +3,10 @@ import { Box } from "@mui/material"
 
 type DataSourceIconProps = {
   dataSource: string
+  noMargin?: boolean
+  noBorder?: boolean
+  size?: "small" | "medium" | "large"
+  grayscale?: boolean
 }
 
 interface Icons {
@@ -19,24 +23,44 @@ const icons: Icons = {
   "grai-source-redshift": "/icons/data-sources/redshift.png",
 }
 
-const DataSourceIcon: React.FC<DataSourceIconProps> = ({ dataSource }) => {
+const heights = {
+  small: 24,
+  medium: 32,
+  large: 48,
+}
+
+const DataSourceIcon: React.FC<DataSourceIconProps> = ({
+  dataSource,
+  noMargin,
+  noBorder,
+  size,
+  grayscale,
+}) => {
   const icon = icons[dataSource]
+
+  const height = size ? heights[size] : heights.medium
 
   return (
     <Box
       sx={{
-        m: "10px",
-        border: "1px solid rgba(0, 0, 0, 0.08)",
+        m: noMargin ? 0 : "10px",
+        border: noBorder ? null : "1px solid rgba(0, 0, 0, 0.08)",
         borderRadius: "8px",
         height: "48px",
         width: "48px",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        filter: grayscale ? "grayscale(100%)" : null,
       }}
     >
       {icon && (
-        <img src={icon} alt={`${dataSource} logo`} height={32} width={32} />
+        <img
+          src={icon}
+          alt={`${dataSource} logo`}
+          height={height}
+          width={height}
+        />
       )}
     </Box>
   )

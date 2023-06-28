@@ -5,6 +5,7 @@ from typing import List, Optional
 
 import strawberry
 import strawberry_django
+from asgiref.sync import sync_to_async
 from django.conf import settings
 from django.db.models import Prefetch, Q
 from django.db.models.query import QuerySet
@@ -24,8 +25,9 @@ from installations.models import Commit as CommitModel
 from installations.models import PullRequest as PullRequestModel
 from installations.models import Repository as RepositoryModel
 from lineage.filter import apply_table_filter, get_tags
+from lineage.graph import GraphQuery
 from lineage.graph_cache import GraphCache
-from lineage.graph_types import GraphTable
+from lineage.graph_types import BaseGraph, GraphTable
 from lineage.models import Edge as EdgeModel
 from lineage.models import Event as EventModel
 from lineage.models import Filter as FilterModel
@@ -39,7 +41,6 @@ from workspaces.models import WorkspaceAPIKey as WorkspaceAPIKeyModel
 from workspaces.types import Organisation
 
 from .pagination import DataWrapper, Pagination
-from lineage.graph import GraphQuery
 
 
 @strawberry.enum
@@ -461,7 +462,7 @@ class GraphFilter:
     table_id: Optional[strawberry.ID] = strawberry.UNSET
     edge_id: Optional[strawberry.ID] = strawberry.UNSET
     n: Optional[int] = strawberry.UNSET
-    filter: Optional[strawberry.ID] = strawberry.UNSET
+    filters: Optional[List[strawberry.ID]] = strawberry.UNSET
     min_x: Optional[int] = strawberry.UNSET
     max_x: Optional[int] = strawberry.UNSET
     min_y: Optional[int] = strawberry.UNSET
@@ -794,8 +795,12 @@ class Workspace:
     def filters(
         self,
         pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+        search: Optional[str] = strawberry.UNSET,
     ) -> Pagination[Filter]:
         queryset = FilterModel.objects.filter(workspace=self)
+
+        if search:
+            queryset = queryset.filter(name__icontains=search)
 
         return Pagination[Filter](queryset=queryset, pagination=pagination)
 
@@ -832,12 +837,22 @@ class Workspace:
         if filters and filters.min_x is not None and filters.max_x is not strawberry.UNSET:
             graph.filter_by_range(filters.min_x, filters.max_x, filters.min_y, filters.max_y, query)
 
-        if filters and filters.filter:
-            filter = await FilterModel.objects.aget(id=filters.filter)
+        if filters and filters.filters:
+            filter_list = await sync_to_async(FilterModel.objects.filter(id__in=filters.filters).all)()
 
-            graph.filter_by_filter(filter, query)
+            await sync_to_async(graph.filter_by_filters)(filter_list, query)
 
         return graph.get_graph_result(query=query)
+
+    # Graph Tables
+    @gql.django.field
+    async def graph_tables(
+        self,
+        search: Optional[str] = strawberry.UNSET,
+    ) -> List[BaseGraph]:
+        graph = GraphCache(workspace=self)
+
+        return graph.get_tables(search=search)
 
     # Sources
     @strawberry.field

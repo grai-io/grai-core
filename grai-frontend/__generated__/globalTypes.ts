@@ -19,7 +19,7 @@ export interface GraphFilter {
   table_id?: string | null;
   edge_id?: string | null;
   n?: number | null;
-  filter?: string | null;
+  filters?: string[] | null;
   min_x?: number | null;
   max_x?: number | null;
   min_y?: number | null;
