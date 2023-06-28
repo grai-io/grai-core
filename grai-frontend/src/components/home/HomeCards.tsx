@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext } from "react"
 import { gql, useQuery } from "@apollo/client"
 import { Grid } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
@@ -79,6 +79,7 @@ const HomeCards: React.FC = () => {
           color="#8338EC"
           icon={<Connections2 />}
           to="connections/create"
+          className="add-connection"
         />
       </Grid>
     </Grid>

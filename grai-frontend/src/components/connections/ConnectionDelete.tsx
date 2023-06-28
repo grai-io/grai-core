@@ -52,10 +52,12 @@ const ConnectionDelete: React.FC<ConnectionDeleteProps> = ({
         }),
         fields: {
           connections: (existingConnections = { data: [] }, { readField }) => ({
-            data: existingConnections.data.filter(
-              (keyRef: any) =>
-                data?.deleteConnection.id !== readField("id", keyRef)
-            ),
+            data: existingConnections.data
+              ? existingConnections.data.filter(
+                  (keyRef: any) =>
+                    data?.deleteConnection.id !== readField("id", keyRef)
+                )
+              : [],
           }),
         },
       })

@@ -1,5 +1,5 @@
 import React, { ReactNode, useState } from "react"
-import { Container, Toolbar } from "@mui/material"
+import { Box, Container, Toolbar } from "@mui/material"
 import WizardAppBar from "./WizardAppBar"
 
 export type ElementOptions = {
@@ -20,12 +20,14 @@ type WizardLayoutProps = {
   title: string
   steps: WizardSteps
   onClose: () => void
+  className?: string
 }
 
 const WizardLayout: React.FC<WizardLayoutProps> = ({
   title,
   steps,
   onClose,
+  className,
 }) => {
   const [activeStep, setActiveStep] = useState(0)
 
@@ -45,7 +47,7 @@ const WizardLayout: React.FC<WizardLayoutProps> = ({
     typeof step.element === "function" ? step.element(opts) : step.element
 
   return (
-    <>
+    <Box className={className}>
       <WizardAppBar
         title={title}
         steps={steps}
@@ -54,7 +56,7 @@ const WizardLayout: React.FC<WizardLayoutProps> = ({
       />
       <Toolbar />
       <Container maxWidth="lg">{stepElement}</Container>
-    </>
+    </Box>
   )
 }
 

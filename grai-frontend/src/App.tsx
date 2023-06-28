@@ -21,6 +21,17 @@ import BackendProvider from "./providers/BackendProvider"
 import Routes from "./Routes"
 import theme from "./theme"
 import "posthog"
+import { ShepherdTour } from "react-shepherd"
+import newSteps from "./steps"
+
+const tourOptions = {
+  defaultStepOptions: {
+    cancelIcon: {
+      enabled: true,
+    },
+  },
+  useModalOverlay: true,
+}
 
 const App: React.FC = () => {
   if (process.env.REACT_APP_SENTRY_DSN)
@@ -54,29 +65,31 @@ const App: React.FC = () => {
       <HelmetProvider>
         <ThemeProvider theme={theme}>
           <LocalizationProvider dateAdapter={AdapterLuxon}>
-            <BackendProvider>
-              <ConfirmProvider
-                defaultOptions={{
-                  confirmationButtonProps: { autoFocus: true },
-                }}
-              >
-                <SnackbarProvider
-                  ref={notistackRef}
-                  maxSnack={3}
-                  hideIconVariant
-                  action={key => (
-                    <IconButton onClick={onClickDismiss(key)}>
-                      <Close />
-                    </IconButton>
-                  )}
+            <ShepherdTour steps={newSteps} tourOptions={tourOptions}>
+              <BackendProvider>
+                <ConfirmProvider
+                  defaultOptions={{
+                    confirmationButtonProps: { autoFocus: true },
+                  }}
                 >
-                  <BrowserRouter>
-                    <PosthogProvider />
-                    <Routes />
-                  </BrowserRouter>
-                </SnackbarProvider>
-              </ConfirmProvider>
-            </BackendProvider>
+                  <SnackbarProvider
+                    ref={notistackRef}
+                    maxSnack={3}
+                    hideIconVariant
+                    action={key => (
+                      <IconButton onClick={onClickDismiss(key)}>
+                        <Close />
+                      </IconButton>
+                    )}
+                  >
+                    <BrowserRouter>
+                      <PosthogProvider />
+                      <Routes />
+                    </BrowserRouter>
+                  </SnackbarProvider>
+                </ConfirmProvider>
+              </BackendProvider>
+            </ShepherdTour>
           </LocalizationProvider>
         </ThemeProvider>
       </HelmetProvider>

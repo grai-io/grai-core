@@ -151,7 +151,9 @@ const SetupConnection: React.FC<SetupConnectionProps> = ({
                     }
                   `,
                 })
-                return { data: [...existingConnections.data, newConnection] }
+                return {
+                  data: [...(existingConnections.data ?? []), newConnection],
+                }
               },
             },
           })
