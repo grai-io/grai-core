@@ -42,4 +42,4 @@ class GraiIntegrationImplementationV1(ABC):
 
     def update(self):
         update(self.client, self.nodes())
-        update(self.client, self.nodes())
+        update(self.client, self.edges())
