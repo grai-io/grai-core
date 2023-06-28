@@ -33,6 +33,7 @@ const GraphFilter: React.FC<GraphFilterProps> = ({ filter }) => {
   const filters = searchParams.get("filters")?.split(",") ?? []
 
   const checked = filters.includes(filter.id)
+
   const handleToggle = () =>
     setSearchParam(
       "filters",

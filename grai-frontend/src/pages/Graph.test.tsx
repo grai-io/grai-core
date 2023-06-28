@@ -98,7 +98,7 @@ const tablesMockWithFilter = {
   },
 }
 
-const searchMock = (search: string = "") => ({
+export const searchMock = (search: string = "", graph_tables: any[] = []) => ({
   request: {
     query: SEARCH_TABLES,
     variables: {
@@ -111,7 +111,7 @@ const searchMock = (search: string = "") => ({
     data: {
       workspace: {
         id: "1",
-        graph_tables: [],
+        graph_tables,
       },
     },
   },
@@ -124,7 +124,16 @@ const mocks = [
   tablesMock,
   searchMock(),
   searchMock(),
-  searchMock("s"),
+  searchMock("s", [
+    {
+      id: "1",
+      name: "test table",
+      display_name: "test table",
+      data_source: "source",
+      x: 0,
+      y: 0,
+    },
+  ]),
 ]
 
 jest.retryTimes(1)
@@ -465,6 +474,10 @@ test("search", async () => {
   await act(
     async () => await user.type(screen.getByTestId("search-input"), "s")
   )
+
+  await waitFor(() => {
+    expect(screen.getByText("test table")).toBeInTheDocument()
+  })
 })
 
 test("filter", async () => {
