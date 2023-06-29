@@ -1,7 +1,10 @@
 from typing import List, Literal, Optional, Tuple, Union
 
 from grai_client.endpoints.client import BaseClient
-from grai_client.integrations.base import GraiIntegrationImplementationV1
+from grai_client.integrations.base import (
+    GraiIntegrationImplementationV1,
+    SeparateNodesAndEdgesMixin,
+)
 from grai_client.update import update
 from grai_schemas.base import Edge, Node, Source
 
@@ -9,7 +12,7 @@ from grai_source_bigquery.adapters import adapt_to_client
 from grai_source_bigquery.loader import BigqueryConnector, LoggingConnector
 
 
-class BigQueryIntegration(GraiIntegrationImplementationV1):
+class BigQueryIntegration(GraiIntegrationImplementationV1, SeparateNodesAndEdgesMixin):
     def __init__(
         self,
         client: BaseClient,
@@ -21,11 +24,9 @@ class BigQueryIntegration(GraiIntegrationImplementationV1):
         log_parsing: Optional[bool] = False,
         log_parsing_window: Optional[int] = 7,
     ):
-        if client.id != "v1":
-            raise NotImplementedError(f"No available implementation for client version {client.id}")
         super().__init__(client, source_name)
 
-        self.conn = (
+        self.connector = (
             BigqueryConnector(
                 project=project,
                 namespace=namespace,

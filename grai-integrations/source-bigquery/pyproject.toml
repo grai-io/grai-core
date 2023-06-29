@@ -15,9 +15,9 @@ documentation = "https://docs.grai.io/"
 [tool.poetry.dependencies]
 python = "^3.8"
 pydantic = "^1.9.1"
-grai-client = "^0.3.0"
+grai-client = {version = "^0.3.0a2", allow-prereleases = true}
+grai-schemas = {version = "^0.2.0a1", allow-prereleases = true}
 multimethod = "^1.8"
-grai-schemas = "^0.1.15"
 google-cloud-bigquery = "^3.5.0"
 setuptools = "^67.1.0"
 google-cloud-logging = "^3.5.0"

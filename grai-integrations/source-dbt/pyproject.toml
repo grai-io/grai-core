@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai_source_dbt"
-version = "0.2.10"
+version = "0.3.0"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>", "Edward Louth <edward@grai.io>"]
 license = "Elastic-2.0"
@@ -16,8 +16,8 @@ documentation = "https://docs.grai.io/"
 [tool.poetry.dependencies]
 python = "^3.8"
 pydantic = "^1.9.1"
-grai-client = "^0.2.18"
-grai-schemas = "^0.1.15"
+grai-client = {version = "^0.3.0a2", allow-prereleases = true}
+grai-schemas = {version = "^0.2.0a1", allow-prereleases = true}
 dbt-artifacts-parser = "^0.2.4"
 
 [tool.poetry.group.dev.dependencies]
