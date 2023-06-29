@@ -38,4 +38,4 @@ class SnowflakeIntegration(ConnectorMixin, GraiIntegrationImplementationV1):
         )
 
     def adapt_to_client(self, objects):
-        return adapt_to_client(objects, self.source, self.client.version)
+        return adapt_to_client(objects, self.source, self.client.id)
