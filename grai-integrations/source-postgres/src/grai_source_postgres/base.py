@@ -11,7 +11,7 @@ from grai_source_postgres.adapters import adapt_to_client
 from grai_source_postgres.loader import PostgresConnector
 
 
-class PostgresIntegration(GraiIntegrationImplementationV1, ConnectorMixin):
+class PostgresIntegration(ConnectorMixin, GraiIntegrationImplementationV1):
     def __init__(
         self,
         client: BaseClient,

@@ -11,7 +11,7 @@ from grai_source_flat_file.adapters import adapt_to_client
 from grai_source_flat_file.loader import build_nodes_and_edges
 
 
-class DbtIntegration(GraiIntegrationImplementationV1, CombinedNodesAndEdgesMixin):
+class DbtIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementationV1):
     def __init__(self, client: BaseClient, source_name: str, file_name: str, namespace: str):
         super().__init__(client, source_name)
 
@@ -20,6 +20,6 @@ class DbtIntegration(GraiIntegrationImplementationV1, CombinedNodesAndEdgesMixin
 
     def get_nodes_and_edges(self) -> Tuple[List[SourcedNode], List[SourcedEdge]]:
         nodes, edges = build_nodes_and_edges(self.file_name, self.namespace)
-        nodes = adapt_to_client(nodes)
-        edges = adapt_to_client(edges)
+        nodes = adapt_to_client(nodes, self.source, self.client.id)
+        edges = adapt_to_client(edges, self.source, self.client.id)
         return nodes, edges

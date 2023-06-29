@@ -10,7 +10,7 @@ from grai_source_mssql.adapters import adapt_to_client
 from grai_source_mssql.loader import MsSQLConnector
 
 
-class MsSQLIntegration(GraiIntegrationImplementationV1, ConnectorMixin):
+class MsSQLIntegration(ConnectorMixin, GraiIntegrationImplementationV1):
     def __init__(
         self,
         client: BaseClient,

@@ -10,7 +10,7 @@ from grai_source_mysql.adapters import adapt_to_client
 from grai_source_mysql.loader import MySQLConnector
 
 
-class MySQLIntegration(GraiIntegrationImplementationV1, ConnectorMixin):
+class MySQLIntegration(ConnectorMixin, GraiIntegrationImplementationV1):
     def __init__(
         self,
         client: BaseClient,

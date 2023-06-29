@@ -10,7 +10,7 @@ from grai_schemas.base import SourcedEdge, SourcedNode
 from grai_source_dbt.processor import ManifestProcessor
 
 
-class DbtIntegration(GraiIntegrationImplementationV1, CombinedNodesAndEdgesMixin):
+class DbtIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementationV1):
     def __init__(
         self,
         client: BaseClient,

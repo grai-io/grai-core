@@ -10,7 +10,7 @@ from grai_schemas.base import SourcedEdge, SourcedNode
 from grai_source_dbt_cloud.loader import DbtCloudConnector
 
 
-class DbtCloudIntegration(GraiIntegrationImplementationV1, EventMixin, CombinedNodesAndEdgesMixin):
+class DbtCloudIntegration(EventMixin, CombinedNodesAndEdgesMixin, GraiIntegrationImplementationV1):
     def __init__(
         self,
         client: BaseClient,

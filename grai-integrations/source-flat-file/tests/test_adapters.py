@@ -3,7 +3,6 @@ import os
 from grai_schemas import config as core_config
 from grai_schemas.v1.metadata import GraiEdgeMetadataV1, GraiNodeMetadataV1
 
-from grai_source_flat_file.base import get_nodes_and_edges
 from grai_source_flat_file.package_definitions import config
 
 

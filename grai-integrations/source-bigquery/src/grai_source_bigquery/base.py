@@ -12,7 +12,7 @@ from grai_source_bigquery.adapters import adapt_to_client
 from grai_source_bigquery.loader import BigqueryConnector, LoggingConnector
 
 
-class BigQueryIntegration(GraiIntegrationImplementationV1, SeparateNodesAndEdgesMixin):
+class BigQueryIntegration(SeparateNodesAndEdgesMixin, GraiIntegrationImplementationV1):
     def __init__(
         self,
         client: BaseClient,

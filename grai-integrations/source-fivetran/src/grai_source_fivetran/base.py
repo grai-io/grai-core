@@ -11,7 +11,7 @@ from grai_source_fivetran.adapters import adapt_to_client
 from grai_source_fivetran.loader import FivetranConnector, NamespaceTypes
 
 
-class FivetranIntegration(GraiIntegrationImplementationV1, CombinedNodesAndEdgesMixin):
+class FivetranIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementationV1):
     def __init__(
         self,
         client: BaseClient,

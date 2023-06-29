@@ -282,7 +282,23 @@ def adapt_column_to_client(current: Edge, source: SourceSpec, version: Literal["
 
 
 @adapt_to_client.register
-def adapt_list_to_client(objs: Sequence, source: SourceSpec, version: Literal["v1"]) -> List:
+def adapt_sequence_to_client(objs: Sequence, source: SourceSpec, version: Literal["v1"]) -> List:
+    """
+
+    Args:
+        objs (Sequence):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
+    return [adapt_to_client(item, source, version) for item in objs]
+
+
+@adapt_to_client.register
+def adapt_sequence_to_client(objs: Sequence, source: SourceSpec, version: Literal["v1"]) -> List:
     """
 
     Args:

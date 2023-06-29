@@ -10,7 +10,7 @@ from grai_source_redshift.adapters import adapt_to_client
 from grai_source_redshift.loader import RedshiftConnector
 
 
-class RedshiftIntegration(GraiIntegrationImplementationV1, ConnectorMixin):
+class RedshiftIntegration(ConnectorMixin, GraiIntegrationImplementationV1):
     def __init__(
         self,
         client: BaseClient,

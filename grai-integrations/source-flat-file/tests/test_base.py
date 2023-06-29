@@ -30,7 +30,7 @@ def test_build_nodes(mock_data):
         os.remove(file_name)
 
 
-def test_adapt_nodes(mock_data):
+def test_adapt_nodes(mock_data, mock_source):
     """
 
     Args:
@@ -46,7 +46,7 @@ def test_adapt_nodes(mock_data):
     mock_data.to_csv(file_name, index=False)
     try:
         nodes, edges = build_nodes_and_edges(file_name, namespace)
-        nodes = adapt_to_client(nodes)
+        nodes = adapt_to_client(nodes, mock_source, "v1")
     except Exception as e:
         raise e
     finally:
