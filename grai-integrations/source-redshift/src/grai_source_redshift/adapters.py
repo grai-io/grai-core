@@ -25,7 +25,6 @@ from grai_source_redshift.models import (
     Column,
     ColumnConstraint,
     ColumnID,
-    Constraint,
     Edge,
     Table,
     TableID,

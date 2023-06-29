@@ -3,8 +3,8 @@ import json
 import dotenv
 from grai_client.endpoints.v1.client import ClientV1
 
-from grai_source_fivetran.base import get_nodes_and_edges, update_server
-from grai_source_fivetran.loader import FivetranConnector
+# from grai_source_fivetran.base import get_nodes_and_edges, update_server
+# from grai_source_fivetran.loader import FivetranConnector
 
 # def test_load_from_remote():
 #     dotenv.load_dotenv()

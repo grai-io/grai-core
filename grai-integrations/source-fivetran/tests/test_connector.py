@@ -1,6 +1,6 @@
 import pytest
 from grai_schemas import config as core_config
-from grai_schemas.v1 import EdgeV1, NodeV1
+from grai_schemas.v1 import SourcedEdgeV1, SourcedNodeV1
 from grai_schemas.v1.metadata.edges import ColumnToColumnMetadata
 from grai_schemas.v1.metadata.edges import Metadata as EdgeV1Metadata
 from grai_schemas.v1.metadata.edges import TableToColumnMetadata, TableToTableMetadata
@@ -204,7 +204,7 @@ class TestConnector:
         Raises:
 
         """
-        test_type = NodeV1
+        test_type = SourcedNodeV1
         for item in nodes:
             assert isinstance(item, test_type), f"{type(item)} is not of type {test_type}"
 
@@ -219,7 +219,7 @@ class TestConnector:
         Raises:
 
         """
-        test_type = EdgeV1
+        test_type = SourcedEdgeV1
         for item in edges:
             assert isinstance(item, test_type), f"{type(item)} is not of type {test_type}"
 

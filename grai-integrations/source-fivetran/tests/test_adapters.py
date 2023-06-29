@@ -1,6 +1,6 @@
 import pytest
 from grai_schemas import config as core_config
-from grai_schemas.v1 import EdgeV1, NodeV1
+from grai_schemas.v1 import SourcedEdgeV1, SourcedNodeV1
 from grai_schemas.v1.metadata import GraiEdgeMetadataV1, GraiNodeMetadataV1
 
 from grai_source_fivetran.adapters import adapt_to_client
@@ -57,8 +57,11 @@ class AdapterTestValues:
     edges = mock_edge_values()
 
 
-@pytest.mark.parametrize("item,version,target", [(item, "v1", NodeV1) for item in AdapterTestValues.columns])
-def test_column_adapter(item, version, target):
+@pytest.mark.parametrize(
+    "item,version,target",
+    [(item, "v1", SourcedNodeV1) for item in AdapterTestValues.columns],
+)
+def test_column_adapter(item, version, target, mock_source):
     """
 
     Args:
@@ -71,12 +74,15 @@ def test_column_adapter(item, version, target):
     Raises:
 
     """
-    result = adapt_to_client(item, version)
+    result = adapt_to_client(item, mock_source, version)
     assert isinstance(result, target)
 
 
-@pytest.mark.parametrize("item,version,target", [(item, "v1", NodeV1) for item in AdapterTestValues.tables])
-def test_table_adapter(item, version, target):
+@pytest.mark.parametrize(
+    "item,version,target",
+    [(item, "v1", SourcedNodeV1) for item in AdapterTestValues.tables],
+)
+def test_table_adapter(item, version, target, mock_source):
     """
 
     Args:
@@ -89,12 +95,15 @@ def test_table_adapter(item, version, target):
     Raises:
 
     """
-    result = adapt_to_client(item, version)
+    result = adapt_to_client(item, mock_source, version)
     assert isinstance(result, target)
 
 
-@pytest.mark.parametrize("item,version,target", [(item, "v1", EdgeV1) for item in AdapterTestValues.edges])
-def test_edge_adapter(item, version, target):
+@pytest.mark.parametrize(
+    "item,version,target",
+    [(item, "v1", SourcedEdgeV1) for item in AdapterTestValues.edges],
+)
+def test_edge_adapter(item, version, target, mock_source):
     """
 
     Args:
@@ -107,7 +116,7 @@ def test_edge_adapter(item, version, target):
     Raises:
 
     """
-    result = adapt_to_client(item, version)
+    result = adapt_to_client(item, mock_source, version)
     assert isinstance(result, target)
 
 

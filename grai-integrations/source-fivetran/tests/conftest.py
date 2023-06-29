@@ -1,9 +1,20 @@
 import pytest
-from dotenv import load_dotenv
+from grai_schemas.v1.source import SourceSpec
+from grai_schemas.v1.workspace import WorkspaceSpec
 
 from grai_source_fivetran.adapters import adapt_to_client
 from grai_source_fivetran.loader import FivetranAPI, FivetranConnector
 from grai_source_fivetran.mock_tools import MockFivetranObjects
+
+
+@pytest.fixture
+def default_workspace():
+    return WorkspaceSpec(name="default", organization="default")
+
+
+@pytest.fixture
+def mock_source(default_workspace):
+    return SourceSpec(name="BigQueryTest", workspace=default_workspace)
 
 
 # You may need to create a .env file to run these tests
@@ -66,7 +77,7 @@ def app_edges(app_nodes_and_edges):
 
 
 @pytest.fixture
-def nodes_and_edges(app_nodes_and_edges):
+def nodes_and_edges(app_nodes_and_edges, mock_source):
     """
 
     Args:
@@ -77,8 +88,8 @@ def nodes_and_edges(app_nodes_and_edges):
     Raises:
 
     """
-    nodes = adapt_to_client(app_nodes_and_edges[0], "v1")
-    edges = adapt_to_client(app_nodes_and_edges[1], "v1")
+    nodes = adapt_to_client(app_nodes_and_edges[0], mock_source, "v1")
+    edges = adapt_to_client(app_nodes_and_edges[1], mock_source, "v1")
     return nodes, edges
 
 
