@@ -1,6 +1,6 @@
 import pytest
 from grai_schemas import config as core_config
-from grai_schemas.v1 import EdgeV1, NodeV1
+from grai_schemas.v1 import SourcedEdgeV1, SourcedNodeV1
 from grai_schemas.v1.metadata import GraiEdgeMetadataV1, GraiNodeMetadataV1
 from grai_schemas.v1.metadata.edges import ColumnToColumnMetadata, TableToColumnMetadata
 from grai_schemas.v1.metadata.nodes import ColumnMetadata, TableMetadata
@@ -21,11 +21,11 @@ columns = [
         is_pk=True,
     )
 ]
-column_values = [(item, "v1", NodeV1) for item in columns]
+column_values = [(item, "v1", SourcedNodeV1) for item in columns]
 
 
 @pytest.mark.parametrize("item,version,target", column_values)
-def test_column_adapter(item, version, target):
+def test_column_adapter(item, version, target, mock_source):
     """
 
     Args:
@@ -38,7 +38,7 @@ def test_column_adapter(item, version, target):
     Raises:
 
     """
-    result = adapt_to_client(item, version)
+    result = adapt_to_client(item, mock_source, version)
     assert isinstance(result, target)
 
 
@@ -55,11 +55,11 @@ tables = [
     )
     for table_type in table_types
 ]
-table_values = [(item, "v1", NodeV1) for item in tables]
+table_values = [(item, "v1", SourcedNodeV1) for item in tables]
 
 
 @pytest.mark.parametrize("item,version,target", table_values)
-def test_table_adapter(item, version, target):
+def test_table_adapter(item, version, target, mock_source):
     """
 
     Args:
@@ -72,14 +72,14 @@ def test_table_adapter(item, version, target):
     Raises:
 
     """
-    result = adapt_to_client(item, version)
+    result = adapt_to_client(item, mock_source, version)
     assert isinstance(result, target), f"Adapter failed for {item}"
 
 
 source = ColumnID(table_schema="schema", table_name="table", name="id", namespace="test")
 destination = ColumnID(table_schema="schema", table_name="table", name="id2", namespace="test")
 edges = [Edge(source=source, destination=destination, definition="thing", constraint_type="f")]
-edge_values = [(item, "v1", EdgeV1) for item in edges]
+edge_values = [(item, "v1", SourcedEdgeV1) for item in edges]
 
 
 def test_column_vs_edge_id():
@@ -93,7 +93,12 @@ def test_column_vs_edge_id():
 
         item: Union[ColumnID, TableID]
 
-    data = {"table_name": "test", "table_schema": "test2", "name": "test3", "namespace": "test3"}
+    data = {
+        "table_name": "test",
+        "table_schema": "test2",
+        "name": "test3",
+        "namespace": "test3",
+    }
     result = Temp(item=data)
     assert isinstance(result.item, ColumnID)
 
@@ -101,7 +106,12 @@ def test_column_vs_edge_id():
 @pytest.mark.xfail
 def test_table_id_is_column_id():
     """ """
-    data = {"table_name": "test", "table_schema": "test2", "name": "test3", "namespace": "test3"}
+    data = {
+        "table_name": "test",
+        "table_schema": "test2",
+        "name": "test3",
+        "namespace": "test3",
+    }
     TableID(**data)
 
 
@@ -124,7 +134,7 @@ def test_make_edge_metadata():
 
 
 @pytest.mark.parametrize("item,version,target", edge_values)
-def test_edge_adapter(item, version, target):
+def test_edge_adapter(item, version, target, mock_source):
     """
 
     Args:
@@ -137,7 +147,7 @@ def test_edge_adapter(item, version, target):
     Raises:
 
     """
-    result = adapt_to_client(item, version)
+    result = adapt_to_client(item, mock_source, version)
     assert isinstance(result, target)
 
 

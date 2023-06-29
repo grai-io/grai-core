@@ -506,14 +506,14 @@ files = [
 
 [[package]]
 name = "grai-client"
-version = "0.3.0a2"
+version = "0.3.0a3"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_client-0.3.0a2-py3-none-any.whl", hash = "sha256:6c47be6c1f903e5c0dc9f23c5ee2ef0e36a028e78f1df2b8ed9b10d9d156a918"},
-    {file = "grai_client-0.3.0a2.tar.gz", hash = "sha256:d52c5e2ccd35cfad8bae89b68994712dc4ed2df54cf09ffcf2c9a3013833a8c7"},
+    {file = "grai_client-0.3.0a3-py3-none-any.whl", hash = "sha256:271b2d7c7e9859fedf001d40810d418246f43b1e3f75090f522260155d331287"},
+    {file = "grai_client-0.3.0a3.tar.gz", hash = "sha256:84ed8a08bcbb4275c5555b621f84ed59e952465695793463614526eebf012bc8"},
 ]
 
 [package.dependencies]
@@ -1634,4 +1634,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "21cb0018d4fd5978767749231aa7317917cde21774eb67a01f518f45e30af893"
+content-hash = "6ce9b05670cebed685155d488bf6d7d71dd33689ebb1f15037b46305bafe7f50"

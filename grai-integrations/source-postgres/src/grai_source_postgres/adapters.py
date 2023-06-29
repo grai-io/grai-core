@@ -1,8 +1,8 @@
-from typing import Any, Dict, List, Literal, Sequence
+from typing import Any, Dict, List, Literal, Sequence, TypeVar
 
-from grai_client.schemas.schema import Schema
 from grai_schemas import config as base_config
 from grai_schemas.generics import DefaultValue
+from grai_schemas.v1 import SourcedEdgeV1, SourcedNodeV1, SourceV1
 from grai_schemas.v1.metadata.edges import (
     ColumnToColumnMetadata,
     EdgeMetadataTypeLabels,
@@ -15,6 +15,7 @@ from grai_schemas.v1.metadata.nodes import (
     NodeMetadataTypeLabels,
     TableMetadata,
 )
+from grai_schemas.v1.source import SourceSpec
 from multimethod import multimethod
 
 from grai_source_postgres.models import (
@@ -23,12 +24,15 @@ from grai_source_postgres.models import (
     Column,
     ColumnConstraint,
     ColumnID,
-    Constraint,
     Edge,
     Table,
     TableID,
 )
 from grai_source_postgres.package_definitions import config
+
+T = TypeVar("T")
+X = TypeVar("X")
+Y = TypeVar("Y")
 
 
 @multimethod
@@ -258,7 +262,7 @@ def adapt_to_client(current: Any, desired: Any):
 
 
 @adapt_to_client.register
-def adapt_column_to_client(current: Column, version: Literal["v1"] = "v1"):
+def adapt_column_to_client(current: Column, source: SourceSpec, version: Literal["v1"]) -> SourcedNodeV1:
     """
 
     Args:
@@ -274,14 +278,14 @@ def adapt_column_to_client(current: Column, version: Literal["v1"] = "v1"):
         "name": current.full_name,
         "namespace": current.namespace,
         "display_name": current.name,
-        "data_source": config.integration_name,
+        "data_source": source,
         "metadata": build_metadata(current, version),
     }
-    return Schema.to_model(spec_dict, version=version, typing_type="Node")
+    return SourcedNodeV1.from_spec(spec_dict)
 
 
 @adapt_to_client.register
-def adapt_table_to_client(current: Table, version: Literal["v1"] = "v1"):
+def adapt_table_to_client(current: Table, source: SourceSpec, version: Literal["v1"]) -> SourcedNodeV1:
     """
 
     Args:
@@ -297,10 +301,10 @@ def adapt_table_to_client(current: Table, version: Literal["v1"] = "v1"):
         "name": current.full_name,
         "namespace": current.namespace,
         "display_name": current.name,
-        "data_source": config.integration_name,
+        "data_source": source,
         "metadata": build_metadata(current, version),
     }
-    return Schema.to_model(spec_dict, version=version, typing_type="Node")
+    return SourcedNodeV1.from_spec(spec_dict)
 
 
 def make_name(node1: ID, node2: ID) -> str:
@@ -321,7 +325,7 @@ def make_name(node1: ID, node2: ID) -> str:
 
 
 @adapt_to_client.register
-def adapt_edge_to_client(current: Edge, version: Literal["v1"] = "v1"):
+def adapt_edge_to_client(current: Edge, source: SourceSpec, version: Literal["v1"]) -> SourcedEdgeV1:
     """
 
     Args:
@@ -334,7 +338,7 @@ def adapt_edge_to_client(current: Edge, version: Literal["v1"] = "v1"):
 
     """
     spec_dict = {
-        "data_source": config.integration_name,
+        "data_source": source,
         "name": make_name(current.source, current.destination),
         "namespace": current.source.namespace,
         "source": {
@@ -348,11 +352,11 @@ def adapt_edge_to_client(current: Edge, version: Literal["v1"] = "v1"):
         "metadata": build_metadata(current, version),
     }
 
-    return Schema.to_model(spec_dict, version=version, typing_type="Edge")
+    return SourcedEdgeV1.from_spec(spec_dict)
 
 
 @adapt_to_client.register
-def adapt_list_to_client(objs: Sequence, version: Literal["v1"]) -> List:
+def adapt_list_to_client(objs: Sequence, source: SourceSpec, version: Literal["v1"]) -> List:
     """
 
     Args:
@@ -364,4 +368,9 @@ def adapt_list_to_client(objs: Sequence, version: Literal["v1"]) -> List:
     Raises:
 
     """
-    return [adapt_to_client(item, version) for item in objs]
+    return [adapt_to_client(item, source, version) for item in objs]
+
+
+@adapt_to_client.register
+def adapt_source_spec_v1_to_client(obj: X, source: SourceV1, version: Y) -> T:
+    return adapt_to_client(obj, source.spec, version)

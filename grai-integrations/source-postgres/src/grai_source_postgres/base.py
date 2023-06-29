@@ -1,11 +1,13 @@
-from typing import Optional, Union
+from typing import Literal, Optional, Union
 
 from grai_client.endpoints.client import BaseClient
 from grai_client.integrations.base import (
     ConnectorMixin,
     GraiIntegrationImplementationV1,
 )
+from grai_schemas.v1.source import SourceV1
 
+from grai_source_postgres.adapters import adapt_to_client
 from grai_source_postgres.loader import PostgresConnector
 
 
@@ -31,3 +33,6 @@ class PostgresIntegration(GraiIntegrationImplementationV1, ConnectorMixin):
             port=port,
             namespace=namespace,
         )
+
+    def adapt_to_client(self, objects):
+        return adapt_to_client(objects, self.source, self.client.version)

@@ -6,6 +6,7 @@ from grai_client.integrations.base import (
     GraiIntegrationImplementationV1,
 )
 
+from grai_source_snowflake.adapters import adapt_to_client
 from grai_source_snowflake.loader import SnowflakeConnector
 
 
@@ -35,3 +36,6 @@ class SnowflakeIntegration(GraiIntegrationImplementationV1, ConnectorMixin):
             namespace=namespace,
             **kwargs,
         )
+
+    def adapt_to_client(self, objects):
+        return adapt_to_client(objects, self.source, self.client.version)

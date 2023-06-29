@@ -5,7 +5,6 @@ from grai_client.integrations.base import (
     ConnectorMixin,
     GraiIntegrationImplementationV1,
 )
-from grai_schemas.base import SourcedEdge, SourcedNode
 
 from grai_source_mssql.adapters import adapt_to_client
 from grai_source_mssql.loader import MsSQLConnector
@@ -43,3 +42,6 @@ class MsSQLIntegration(GraiIntegrationImplementationV1, ConnectorMixin):
             namespace=namespace,
             additional_connection_strings=additional_connection_strings,
         )
+
+    def adapt_to_client(self, objects):
+        return adapt_to_client(objects, self.source, self.client.version)

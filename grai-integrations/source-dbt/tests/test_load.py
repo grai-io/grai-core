@@ -1,6 +1,6 @@
 import pytest
 from grai_schemas import config as core_config
-from grai_schemas.v1 import EdgeV1, NodeV1
+from grai_schemas.v1 import SourcedEdgeV1, SourcedNodeV1
 from grai_schemas.v1.metadata.edges import ColumnToColumnMetadata
 from grai_schemas.v1.metadata.edges import Metadata as EdgeV1Metadata
 from grai_schemas.v1.metadata.edges import TableToColumnMetadata, TableToTableMetadata
@@ -61,7 +61,10 @@ def manifest_ver(id: str) -> ManifestProcessor:
 
 
 files = [resource_path("manifest.json", ver) for ver in SUPPORTED_VERSIONS]
-files += [resource_path("manifest-seed.json", "v8"), resource_path("manifest-snapshot.json", "v8")]
+files += [
+    resource_path("manifest-seed.json", "v8"),
+    resource_path("manifest-snapshot.json", "v8"),
+]
 ids = SUPPORTED_VERSIONS + ["v8-seed", "v8-manifest"]
 
 processors = [load_resource(file) for file in files]
@@ -284,7 +287,7 @@ class TestProcessors:
         Raises:
 
         """
-        test_type = NodeV1
+        test_type = SourcedNodeV1
         for item in processor.adapted_nodes:
             assert isinstance(item, test_type), f"{type(item)} is not of type {test_type}"
 
@@ -299,7 +302,7 @@ class TestProcessors:
         Raises:
 
         """
-        test_type = EdgeV1
+        test_type = SourcedEdgeV1
         for item in processor.adapted_edges:
             assert isinstance(item, test_type), f"{type(item)} is not of type {test_type}"
 

@@ -3,7 +3,6 @@ from typing import List, Tuple
 
 from grai_schemas.base import Event, SourcedEdge, SourcedNode
 from grai_schemas.v1.source import SourceV1
-from grai_source_mysql.adapters import adapt_to_client
 
 from grai_client.endpoints.v1.client import ClientV1
 from grai_client.update import update
@@ -70,6 +69,6 @@ class ConnectorMixin(CombinedNodesAndEdgesMixin):
         with self.connector.connect() as conn:
             nodes, edges = conn.get_nodes_and_edges()
 
-        nodes = adapt_to_client(nodes, self.source, self.client.version)
-        edges = adapt_to_client(edges, self.source, self.client.version)
+        nodes = self.adapt_to_client(nodes)
+        edges = self.adapt_to_client(edges)
         return nodes, edges

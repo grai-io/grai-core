@@ -1,15 +1,14 @@
-import os
 import warnings
 from enum import Enum
 from functools import cached_property
 from itertools import chain
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple
 
 import pydantic
 import pyodbc
 from pydantic import SecretStr, root_validator, validator
 
-from grai_source_mssql.models import Column, ColumnID, Edge, EdgeQuery, MsSqlNode, Table
+from grai_source_mssql.models import Column, Edge, EdgeQuery, MsSqlNode, Table
 
 ENV_PREFIX = "GRAI_MSSQL_"
 

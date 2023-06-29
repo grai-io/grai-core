@@ -1,5 +1,3 @@
-import os
-
 import pytest
 from grai_schemas.v1.source import SourceSpec
 from grai_schemas.v1.workspace import WorkspaceSpec
