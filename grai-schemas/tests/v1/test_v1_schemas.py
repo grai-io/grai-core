@@ -4,7 +4,7 @@ import uuid
 import pytest
 from grai_schemas.base import Edge, Node
 from grai_schemas.schema import Schema
-from grai_schemas.v1 import EdgeV1, NodeV1, WorkspaceV1
+from grai_schemas.v1 import EdgeV1, NodeV1, SourcedEdgeV1, SourcedNodeV1, WorkspaceV1
 from grai_schemas.v1.mock import MockV1
 from grai_schemas.v1.organization import OrganisationV1
 from grai_schemas.v1.source import SourceV1
@@ -193,6 +193,22 @@ def test_edge_from_spec_preserves_extra():
     obj = EdgeV1.from_spec(obj_dict)
     assert hasattr(obj.spec.metadata, "test_values")
     assert obj.spec.metadata.test_values == (1, 2, 3)
+
+
+def test_node_source_vs_node_hash():
+    node = MockV1.node.node()
+    node_dict = node.spec.dict()
+    node_dict["data_source"] = node_dict.pop("data_sources")[0]
+    source_node = SourcedNodeV1.from_spec(node_dict)
+    assert hash(node) == hash(source_node)
+
+
+def test_edge_source_vs_edge_hash():
+    edge = MockV1.edge.edge()
+    edge_dict = edge.spec.dict()
+    edge_dict["data_source"] = edge_dict.pop("data_sources")[0]
+    source_edge = SourcedEdgeV1.from_spec(edge_dict)
+    assert hash(edge) == hash(source_edge)
 
 
 class TestWorkspaceV1:

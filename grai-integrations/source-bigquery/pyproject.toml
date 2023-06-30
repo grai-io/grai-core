@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai_source_bigquery"
-version = "0.1.2"
+version = "0.1.2-alpha1"
 description = ""
 authors = ["Edward Louth <edward@grai.io>"]
 license = "Elastic-2.0"

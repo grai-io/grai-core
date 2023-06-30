@@ -74,4 +74,7 @@ class TableMetadata(BaseNodeMetadataV1):
     node_attributes: TableAttributes = TableAttributes()
 
 
+x = {"version": "v1", "node_type": NodeMetadataTypeLabels.table.value, "node_attributes": {}, "tags": ["a_tag"]}
+TableMetadata(**x)
+
 Metadata = Union[ColumnMetadata, TableMetadata, GenericNodeMetadataV1]

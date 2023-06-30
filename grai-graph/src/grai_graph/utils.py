@@ -1,6 +1,6 @@
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
-from grai_schemas.v1 import EdgeV1, NodeV1
+from grai_schemas.v1 import EdgeV1, NodeV1, mock
 from grai_schemas.v1.metadata.edges import (
     ColumnToColumnAttributes,
     ColumnToColumnMetadata,
@@ -25,6 +25,7 @@ class TestNodeObj(BaseModel):
     name: str
     namespace: Optional[str] = DEFAULT_NAMESPACE
     node_attributes: Optional[ColumnAttributes] = None
+    data_sources: List[Any] = []
 
     def __hash__(self):
         return hash((self.name, self.namespace))
@@ -44,23 +45,15 @@ def mock_v1_node(node: Union[str, TestNodeObj]):
     if isinstance(node, str):
         node = TestNodeObj(name=node)
 
-    metadata = node.node_attributes if node.node_attributes is not None else {}
-    node_dict = {
-        "type": "Node",
-        "version": "v1",
-        "spec": {
-            "id": None,
-            "name": node.name,
-            "namespace": node.namespace,
-            "data_source": "test_source",
-            "display_name": node.name,
-            "is_active": True,
-            "metadata": {
-                "grai": ColumnMetadata(node_type=NodeMetadataTypeLabels.column.value, node_attributes=metadata).dict()
-            },
-        },
+    node_attributes = node.node_attributes if node.node_attributes is not None else {}
+    metadata = {
+        "grai": ColumnMetadata(node_type=NodeMetadataTypeLabels.column.value, node_attributes=node_attributes).dict()
     }
-    return NodeV1(**node_dict)
+
+    node = mock.MockV1.node.node(
+        id=None, name=node.name, namespace=node.namespace, data_source="test_source", is_active=True, metadata=metadata
+    )
+    return node
 
 
 def mock_v1_edge(
@@ -85,29 +78,23 @@ def mock_v1_edge(
     if isinstance(destination_node, str):
         destination_node = TestNodeObj(name=destination_node)
 
-    edge_dict = {
-        "type": "Edge",
-        "version": "v1",
-        "spec": {
-            "id": None,
-            "name": f"{source_node.namespace}.{source_node.name} -> {destination_node.namespace}.{destination_node.name}",
-            "namespace": source_node.namespace,
-            "data_source": "test_source",
-            "source": {"name": source_node.name, "namespace": source_node.namespace},
-            "destination": {
-                "name": destination_node.name,
-                "namespace": destination_node.namespace,
-            },
-            "is_active": True,
-            "metadata": {
-                "grai": ColumnToColumnMetadata(
-                    edge_type=EdgeMetadataTypeLabels.column_to_column.value,
-                    edge_attributes=metadata,
-                ).dict()
-            },
-        },
+    metadata = {
+        "grai": ColumnToColumnMetadata(
+            edge_type=EdgeMetadataTypeLabels.column_to_column.value,
+            edge_attributes=metadata,
+        )
     }
-    return EdgeV1(**edge_dict)
+    name = f"{source_node.namespace}.{source_node.name} -> {destination_node.namespace}.{destination_node.name}"
+    edge = mock.MockV1.edge.edge(
+        id=None,
+        name=name,
+        namespace=source_node.namespace,
+        source=source_node.dict(),
+        destination=destination_node.dict(),
+        is_active=True,
+        metadata=metadata,
+    )
+    return edge
 
 
 def build_graph_from_map(map: Dict[Union[str, TestNodeObj], List[Tuple[str, ColumnToColumnAttributes]]]) -> graph.Graph:

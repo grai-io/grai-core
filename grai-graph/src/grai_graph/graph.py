@@ -232,6 +232,7 @@ def build_graph(nodes: List[Dict], edges: List[Dict], version: str) -> Graph:
     Raises:
 
     """
+
     nodes = process_items(nodes, version, "Node")
     edges = process_items(edges, version, "Edge")
     manifest = GraphManifest(nodes, edges)
