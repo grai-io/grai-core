@@ -31,17 +31,21 @@ class GraiIntegrationImplementationV1(ABC):
         source_name: Optional[str] = None,
         source: Optional[SourceSpec] = None,
     ):
-        if not client and not source_name:
+        if source:
+            self.source = SourceV1.from_spec(source)
+
+        elif client:
+            if not source_name:
+                raise Exception("A source name must be provided if a client is provided")
+
+            if client.id != "v1":
+                raise NotImplementedError(f"No available implementation for client version {client.id}")
+
+            self.client = client
+            self.source = client.get("Source", name=source_name)
+
+        else:
             raise Exception("Either a client or a source must be provided")
-
-        if client and not source_name:
-            raise Exception("A source name must be provided if a client is provided")
-
-        if client and client.id != "v1":
-            raise NotImplementedError(f"No available implementation for client version {client.id}")
-
-        self.client = client
-        self.source = client.get("Source", name=source_name) if client and source_name else SourceV1.from_spec(source)
 
     @abstractmethod
     def nodes(self) -> List[SourcedNode]:
