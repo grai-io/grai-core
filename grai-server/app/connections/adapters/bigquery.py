@@ -1,4 +1,5 @@
 from .base import BaseAdapter
+from grai_schemas.v1.source import SourceV1
 
 
 class BigqueryAdapter(BaseAdapter):
@@ -8,11 +9,13 @@ class BigqueryAdapter(BaseAdapter):
         metadata = self.run.connection.metadata
         secrets = self.run.connection.secrets
 
-        return BigQueryIntegration.from_source(
-            source={
-                "id": self.run.source.id,
-                "name": self.run.source.name,
-            },
+        return BigQueryIntegration(
+            SourceV1.from_spec(
+                {
+                    "id": self.run.source.id,
+                    "name": self.run.source.name,
+                }
+            ),
             namespace=self.run.connection.namespace,
             project=metadata.get("project"),
             dataset=metadata.get("dataset").split(","),

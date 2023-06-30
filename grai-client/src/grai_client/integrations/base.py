@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import List, Optional, ParamSpec, Tuple
 
 from grai_schemas.base import Event, SourcedEdge, SourcedNode
-from grai_schemas.v1.source import SourceSpec, SourceV1
+from grai_schemas.v1.source import SourceV1
 
 from grai_client.endpoints.client import BaseClient
 from grai_client.update import update
@@ -34,7 +34,7 @@ class GraiIntegrationImplementation(ABC):
         version: Optional[str] = None,
     ):
         self.source = source
-        self.version = version
+        self.version = version if version else "v1"
 
     @abstractmethod
     def nodes(self) -> List[SourcedNode]:
@@ -61,13 +61,6 @@ class GraiIntegrationImplementation(ABC):
         version = client.id
 
         return WithClient(source=source, version=version, *args, **kwargs)
-
-    @classmethod
-    def from_source(cls, source: SourceSpec, version: Optional[str] = None, *args: P.args, **kwargs: P.kwargs):
-        source = SourceV1.from_spec(source)
-        version = version if version else "v1"
-
-        return cls(source=source, version=version, *args, **kwargs)
 
 
 class SeparateNodesAndEdgesMixin:
