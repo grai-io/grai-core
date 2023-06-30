@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Generic, List, Optional, Tuple, TypeVar
+from typing import List, Optional, Tuple
 
 from grai_schemas.base import Event, SourcedEdge, SourcedNode
 from grai_schemas.v1.source import SourceSpec, SourceV1
@@ -21,38 +21,27 @@ class EventMixin(ABC):
         update(self.client, self.events())
 
 
-T = TypeVar("T")
-
-
-class GraiIntegrationImplementationV1(Generic[T], ABC):
+class GraiIntegrationImplementationV1(ABC):
     client: Optional[ClientV1]
     source: SourceV1
-    params: T
 
-    def __init__(self, params: T, source: SourceV1, client: Optional[ClientV1] = None):
-        self.params = params
-        self.client = client
-        self.source = source
+    def __init__(
+        self,
+        client: Optional[ClientV1] = None,
+        source_name: Optional[str] = None,
+        source: Optional[SourceSpec] = None,
+    ):
+        if not client and not source_name:
+            raise Exception("Either a client or a source must be provided")
 
-        self.setup(params)
+        if client and not source_name:
+            raise Exception("A source name must be provided if a client is provided")
 
-    @classmethod
-    def from_client(cls, client: ClientV1, source_name: str, params: T):
-        if client.id != "v1":
+        if client and client.id != "v1":
             raise NotImplementedError(f"No available implementation for client version {client.id}")
 
-        source = client.get("Source", name=source_name)
-
-        return cls(params, source=source, client=client)
-
-    @classmethod
-    def from_source(cls, source: SourceSpec, params: T):
-        source = SourceV1.from_spec(source)
-
-        return cls(params, source=source)
-
-    def setup(self):
-        pass
+        self.client = client
+        self.source = client.get("Source", name=source_name) if client and source_name else SourceV1.from_spec(source)
 
     @abstractmethod
     def nodes(self) -> List[SourcedNode]:
