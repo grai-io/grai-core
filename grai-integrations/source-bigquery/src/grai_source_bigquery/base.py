@@ -1,7 +1,7 @@
 from typing import List, Optional, Union
 
 from grai_client.integrations.base import (
-    GraiIntegrationImplementationV1,
+    GraiIntegrationImplementation,
     SeparateNodesAndEdgesMixin,
 )
 from grai_schemas.v1.source import SourceV1
@@ -10,7 +10,7 @@ from grai_source_bigquery.adapters import adapt_to_client
 from grai_source_bigquery.loader import BigqueryConnector, LoggingConnector
 
 
-class BigQueryIntegration(SeparateNodesAndEdgesMixin, GraiIntegrationImplementationV1):
+class BigQueryIntegration(SeparateNodesAndEdgesMixin, GraiIntegrationImplementation):
     def __init__(
         self,
         source: SourceV1,
