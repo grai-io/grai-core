@@ -508,14 +508,14 @@ pycparser = "*"
 
 [[package]]
 name = "chardet"
-version = "4.0.0"
-description = "Universal encoding detector for Python 2 and 3"
+version = "5.1.0"
+description = "Universal encoding detector for Python 3"
 category = "main"
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+python-versions = ">=3.7"
 files = [
-    {file = "chardet-4.0.0-py2.py3-none-any.whl", hash = "sha256:f864054d66fd9118f2e67044ac8981a54775ec5b67aed0441892edb553d21da5"},
-    {file = "chardet-4.0.0.tar.gz", hash = "sha256:0d6f53a15db4120f2b08c94f11e7d93d2c911ee118b6b30a04ec3ee8310179fa"},
+    {file = "chardet-5.1.0-py3-none-any.whl", hash = "sha256:362777fb014af596ad31334fde1e8c327dfdb076e1960d1694662d46a6917ab9"},
+    {file = "chardet-5.1.0.tar.gz", hash = "sha256:0d62712b956bc154f85fb0a266e2a3c5913c2967e00348701b32411d6def31e5"},
 ]
 
 [[package]]
@@ -1752,14 +1752,14 @@ grpc = ["grpcio (>=1.44.0,<2.0.0.dev0)"]
 
 [[package]]
 name = "grai-client"
-version = "0.3.0a9"
+version = "0.3.0a10"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_client-0.3.0a9-py3-none-any.whl", hash = "sha256:8c448ce77c4a4e7e362941d80cf4618b2c541038e4a0ac58c12d7cac67e5b44a"},
-    {file = "grai_client-0.3.0a9.tar.gz", hash = "sha256:7c6d0ee344f91aed35dc0edeff1b8e37a555415293248ef1daf200434fe5b581"},
+    {file = "grai_client-0.3.0a10-py3-none-any.whl", hash = "sha256:b9217a97a4a0949f666e2ce22a36508ea341e6141cf18b68ec49d476b3be5225"},
+    {file = "grai_client-0.3.0a10.tar.gz", hash = "sha256:1f0388099a6516bbfefaeecf1d142f4e2014012e507078cde3b7769c45e31e13"},
 ]
 
 [package.dependencies]
@@ -1879,20 +1879,17 @@ optional = false
 python-versions = ">=3.9.13,<4.0.0"
 files = [
     {file = "grai_source_fivetran-0.1.0a2-py3-none-any.whl", hash = "sha256:0dd5341e8cd39eb51e1bc11edcf143f55fdf5d0f7554011fb5171aaac119865b"},
+    {file = "grai_source_fivetran-0.1.0a2.tar.gz", hash = "sha256:6c5d209e9fb2daa4c0275909ec5bbc54fca9b4e61237f190210fa4f665081ebe"},
 ]
 
 [package.dependencies]
 fivetran = ">=0.7.0,<0.8.0"
-grai-client = ">=0.3.0a7,<0.4.0"
+grai-client = ">=0.3.0a9,<0.4.0"
 grai-schemas = ">=0.2.0a1,<0.3.0"
 multimethod = ">=1.8,<2.0"
 pydantic = ">=1.9.1,<2.0.0"
 python-dotenv = ">=0.21.1,<0.22.0"
 requests = ">=2.28.1,<3.0.0"
-
-[package.source]
-type = "file"
-url = "../../grai-integrations/source-fivetran/dist/grai_source_fivetran-0.1.0a2-py3-none-any.whl"
 
 [[package]]
 name = "grai-source-flat-file"
@@ -2975,18 +2972,15 @@ asn1crypto = ">=1.5.1"
 
 [[package]]
 name = "packaging"
-version = "21.3"
+version = "23.1"
 description = "Core utilities for Python packages"
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 files = [
-    {file = "packaging-21.3-py3-none-any.whl", hash = "sha256:ef103e05f519cdc783ae24ea4e2e0f508a9c99b2d4969652eed6a2e1ea5bd522"},
-    {file = "packaging-21.3.tar.gz", hash = "sha256:dd47c42927d89ab911e606518907cc2d3a1f38bbd026385970643f9c5b8ecfeb"},
+    {file = "packaging-23.1-py3-none-any.whl", hash = "sha256:994793af429502c4ea2ebf6bf664629d07c1a9fe974af92966e4b8d2df7edc61"},
+    {file = "packaging-23.1.tar.gz", hash = "sha256:a392980d2b6cffa644431898be54b0045151319d1e7ec34f0cfed48767dd334f"},
 ]
-
-[package.dependencies]
-pyparsing = ">=2.0.2,<3.0.5 || >3.0.5"
 
 [[package]]
 name = "pandas"
@@ -3142,26 +3136,25 @@ test = ["coverage", "flake8", "freezegun (==0.3.15)", "mock (>=2.0.0)", "pylint"
 
 [[package]]
 name = "prance"
-version = "0.22.11.4.0"
+version = "0.22.2.22.0"
 description = "Resolving Swagger/OpenAPI 2.0 and 3.0.0 Parser"
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.8"
 files = [
-    {file = "prance-0.22.11.4.0-py3-none-any.whl", hash = "sha256:c15e9ca889b56262e4c2aee354f52918ba5e54f46bb3da42b806d8bbd8255ee9"},
-    {file = "prance-0.22.11.4.0.tar.gz", hash = "sha256:814a523bc1ff18383c12cb523ce44c90fe8792bf5f48d8cc33c9f658276658ed"},
+    {file = "prance-0.22.2.22.0-py3-none-any.whl", hash = "sha256:57deeb67b7e93ef27c1c17845bf3ccb4af288ccfb5748c7e01779c01a8507f27"},
+    {file = "prance-0.22.2.22.0.tar.gz", hash = "sha256:9a83f8a4f5fe0f2d896d238d4bec6b5788b10b94155414b3d88c21c1579b85bf"},
 ]
 
 [package.dependencies]
-chardet = ">=3.0,<5.0"
-packaging = ">=21.3,<22.0"
-requests = ">=2.25,<3.0"
-"ruamel.yaml" = ">=0.17.10,<0.18.0"
-semver = ">=2.13,<3.0"
+chardet = ">=3.0"
+packaging = ">=21.3"
+requests = ">=2.25"
+"ruamel.yaml" = ">=0.17.10"
 six = ">=1.15,<2.0"
 
 [package.extras]
-cli = ["click (>=7.0,<8.0)"]
+cli = ["click (>=7.0)"]
 dev = ["bumpversion (>=0.6)", "pytest (>=6.1)", "pytest-cov (>=2.11)", "sphinx (>=3.4)", "towncrier (>=19.2)", "tox (>=3.4)"]
 flex = ["flex (>=6.13,<7.0)"]
 icu = ["PyICU (>=2.4,<3.0)"]
@@ -4031,18 +4024,6 @@ files = [
 asn1crypto = ">=1.5.1"
 
 [[package]]
-name = "semver"
-version = "2.13.0"
-description = "Python helper for Semantic Versioning (http://semver.org/)"
-category = "main"
-optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-files = [
-    {file = "semver-2.13.0-py2.py3-none-any.whl", hash = "sha256:ced8b23dceb22134307c1b8abfa523da14198793d9787ac838e70e29e77458d4"},
-    {file = "semver-2.13.0.tar.gz", hash = "sha256:fa0fe2722ee1c3f57eac478820c3a5ae2f624af8264cbdf9000c980ff7f75e3f"},
-]
-
-[[package]]
 name = "sentry-sdk"
 version = "1.26.0"
 description = "Python client for Sentry (https://sentry.io)"
@@ -4581,4 +4562,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "46f324654f81d4ffcfea962c65f2b9953830e605b7d5a0c50d9165847d923876"
+content-hash = "7132830f85078151f02101537c824561d5606c84c298beb9ee69d12225957ebd"

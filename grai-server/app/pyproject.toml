@@ -41,7 +41,7 @@ grai-graph = {version = "^0.2.4a2", allow-prereleases = true}
 grai-schemas = {version = "^0.2.0a3", allow-prereleases = true}
 grai-source-dbt = {version = "^0.3.0a2", allow-prereleases = true}
 grai-source-dbt-cloud = {version = "^0.1.0a1", allow-prereleases = true}
-grai-source-fivetran = {path = "../../grai-integrations/source-fivetran/dist/grai_source_fivetran-0.1.0a2-py3-none-any.whl"}
+grai-source-fivetran = {version = "^0.1.0a2", allow-prereleases = true}
 grai-source-mysql = {version = "^0.1.0a1", allow-prereleases = true}
 grai-source-mssql = {version = "^0.1.0a1", allow-prereleases = true}
 grai-source-bigquery = {version = "^0.2.0a5", allow-prereleases = true}
