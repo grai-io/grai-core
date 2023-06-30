@@ -233,9 +233,10 @@ class TestUpdateServer:
             process_run(str(run.id))
 
     def test_run_update_server_fivetran(self, test_workspace, test_fivetran_connector, mocker, test_source):
-        mocker.patch("grai_source_fivetran.loader.FivetranConnector")
-        mock = mocker.patch("grai_source_fivetran.base.get_nodes_and_edges")
-        mock.return_value = [[], []]
+        # mock = mocker.patch(
+        #     "grai_source_fivetran.base.FivetranIntegration.get_nodes_and_edges"
+        # )
+        # mock.return_value = [[], []]
 
         connection = Connection.objects.create(
             name=str(uuid.uuid4()),
@@ -760,7 +761,7 @@ class TestConnectionSchedule:
 @pytest.mark.django_db
 class TestEventsTests:
     def test_dbt_cloud(self, test_workspace, test_dbt_cloud_connector, mocker, test_source):
-        mock = mocker.patch("grai_source_dbt_cloud.base.get_events")
+        mock = mocker.patch("grai_source_dbt_cloud.base.DbtCloudIntegration.events")
         mock.return_value = [
             Event(
                 reference="1234",
@@ -794,7 +795,7 @@ class TestEventsAllTests:
     def test_dbt_cloud(self, test_workspace, test_dbt_cloud_connector, mocker):
         node = Node.objects.create(workspace=test_workspace, name=str(uuid.uuid4()))
 
-        mock = mocker.patch("grai_source_dbt_cloud.base.get_events")
+        mock = mocker.patch("grai_source_dbt_cloud.base.DbtCloudIntegration.events")
         mock.return_value = [
             Event(
                 reference="1234",
@@ -828,7 +829,7 @@ class TestEventsAllTests:
     def test_dbt_cloud(self, test_workspace, test_dbt_cloud_connector, mocker, test_source):
         node = Node.objects.create(workspace=test_workspace, name=str(uuid.uuid4()))
 
-        mock = mocker.patch("grai_source_dbt_cloud.base.get_events")
+        mock = mocker.patch("grai_source_dbt_cloud.base.DbtCloudIntegration.events")
         mock.return_value = [
             Event(
                 reference="1234",

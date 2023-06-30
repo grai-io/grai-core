@@ -6,6 +6,7 @@ from grai_client.integrations.base import (
     GraiIntegrationImplementationV1,
 )
 from grai_schemas.base import SourcedEdge, SourcedNode
+from grai_schemas.v1.source import SourceSpec
 
 from grai_source_fivetran.adapters import adapt_to_client
 from grai_source_fivetran.loader import FivetranConnector, NamespaceTypes
@@ -14,8 +15,9 @@ from grai_source_fivetran.loader import FivetranConnector, NamespaceTypes
 class FivetranIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementationV1):
     def __init__(
         self,
-        client: BaseClient,
-        source_name: str,
+        client: Optional[BaseClient] = None,
+        source_name: Optional[str] = None,
+        source: Optional[SourceSpec] = None,
         namespaces: Optional[NamespaceTypes] = None,
         default_namespace: Optional[str] = None,
         parallelization: int = 10,
@@ -24,7 +26,7 @@ class FivetranIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementat
         endpoint: Optional[str] = None,
         limit: Optional[int] = None,
     ):
-        super().__init__(client, source_name)
+        super().__init__(client, source_name, source)
 
         self.connector = FivetranConnector(
             namespaces=namespaces,
@@ -61,7 +63,7 @@ class FivetranIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementat
     def get_nodes_and_edges(self) -> Tuple[List[SourcedNode], List[SourcedEdge]]:
         nodes, edges = self.connector.get_nodes_and_edges()
 
-        nodes = adapt_to_client(nodes, self.source, self.client.id)
-        edges = adapt_to_client(edges, self.source, self.client.id)
+        nodes = adapt_to_client(nodes, self.source, self.version)
+        edges = adapt_to_client(edges, self.source, self.version)
         self.validate_nodes_and_edges(nodes, edges)
         return nodes, edges

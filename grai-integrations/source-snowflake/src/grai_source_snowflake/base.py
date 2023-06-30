@@ -5,6 +5,7 @@ from grai_client.integrations.base import (
     ConnectorMixin,
     GraiIntegrationImplementationV1,
 )
+from grai_schemas.v1.source import SourceSpec
 
 from grai_source_snowflake.adapters import adapt_to_client
 from grai_source_snowflake.loader import SnowflakeConnector
@@ -13,8 +14,9 @@ from grai_source_snowflake.loader import SnowflakeConnector
 class SnowflakeIntegration(ConnectorMixin, GraiIntegrationImplementationV1):
     def __init__(
         self,
-        client: BaseClient,
-        source_name: str,
+        client: Optional[BaseClient] = None,
+        source_name: Optional[str] = None,
+        source: Optional[SourceSpec] = None,
         account: Optional[str] = None,
         user: Optional[str] = None,
         password: Optional[str] = None,
@@ -24,7 +26,7 @@ class SnowflakeIntegration(ConnectorMixin, GraiIntegrationImplementationV1):
         namespace: Optional[str] = None,
         **kwargs,
     ):
-        super().__init__(client, source_name)
+        super().__init__(client, source_name, source)
 
         self.connector = SnowflakeConnector(
             account=account,
@@ -38,4 +40,4 @@ class SnowflakeIntegration(ConnectorMixin, GraiIntegrationImplementationV1):
         )
 
     def adapt_to_client(self, objects):
-        return adapt_to_client(objects, self.source, self.client.id)
+        return adapt_to_client(objects, self.source, self.version)

@@ -552,14 +552,14 @@ files = [
 
 [[package]]
 name = "grai-client"
-version = "0.3.0a3"
+version = "0.3.0a5"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_client-0.3.0a3-py3-none-any.whl", hash = "sha256:271b2d7c7e9859fedf001d40810d418246f43b1e3f75090f522260155d331287"},
-    {file = "grai_client-0.3.0a3.tar.gz", hash = "sha256:84ed8a08bcbb4275c5555b621f84ed59e952465695793463614526eebf012bc8"},
+    {file = "grai_client-0.3.0a5-py3-none-any.whl", hash = "sha256:8ad7335baeeb2108c565808f21987000a3c5054accb4287ec71195357d9ea3b6"},
+    {file = "grai_client-0.3.0a5.tar.gz", hash = "sha256:65472b19a6c1c8b4af1ec0d935324ec67a6524a495903352ebc5f0cf595b8cc3"},
 ]
 
 [package.dependencies]
@@ -577,14 +577,14 @@ tqdm = ">=4.65.0,<5.0.0"
 
 [[package]]
 name = "grai-schemas"
-version = "0.2.0a1"
+version = "0.2.0a2"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_schemas-0.2.0a1-py3-none-any.whl", hash = "sha256:d48bb967df7646f8e86d882122c73778ed15f76fdd4e5459a2e7447f3392b4bb"},
-    {file = "grai_schemas-0.2.0a1.tar.gz", hash = "sha256:ea1d050c2f6dc825cd51bb8295f4ad7a1cdecbfe3956ccea30a1d04bc075ea5b"},
+    {file = "grai_schemas-0.2.0a2-py3-none-any.whl", hash = "sha256:c2f2fe4d274a99763b6e7772e330b896add017bb5c13846437e870043b8aaff9"},
+    {file = "grai_schemas-0.2.0a2.tar.gz", hash = "sha256:221b2524afd05c35f45a9821bbc6aec2af489206524ef36828e4f44990e9fae9"},
 ]
 
 [package.dependencies]

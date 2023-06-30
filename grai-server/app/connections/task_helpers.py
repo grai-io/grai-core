@@ -7,7 +7,8 @@ from django.db import models
 from django.db.models import Q
 from grai_schemas.schema import GraiType
 from grai_schemas.utilities import merge
-from grai_schemas.v1 import EdgeV1, NodeV1
+from grai_schemas.v1 import SourcedEdgeV1, SourcedNodeV1
+from grai_schemas.v1.source import SourceSpec
 from grai_schemas.v1.node import NodeNamedID
 from multimethod import multimethod
 from pydantic import BaseModel
@@ -158,7 +159,7 @@ def process_updates(workspace, source: Source, Model: T, items, active_items=Non
         return [], [], []
 
     type = items[0].type
-    Schema = NodeV1 if type == "Node" else EdgeV1
+    Schema = SourcedNodeV1 if type in ["Node", "SourceNode"] else SourcedEdgeV1
 
     active_models = get_existing_items([item.spec.dict() for item in items], workspace, Model)
 
@@ -167,8 +168,9 @@ def process_updates(workspace, source: Source, Model: T, items, active_items=Non
 
         for active_model in active_models:
             spec = active_model.__dict__
+            spec["data_source"] = SourceSpec(id=source.id, name=source.name)
 
-            if type == "Edge":
+            if type in ["Edge", "SourceEdge"]:
                 spec["source"] = NodeNamedID(**active_model.source.__dict__)
                 spec["destination"] = NodeNamedID(**active_model.destination.__dict__)
 
@@ -196,9 +198,11 @@ def process_updates(workspace, source: Source, Model: T, items, active_items=Non
         values["workspace"] = workspace
         # values["display_name"] = values["name"]
 
-        if type == "Edge":
+        if type in ["Edge", "SourceEdge"]:
             values["source"] = get_node(workspace, values["source"])
             values["destination"] = get_node(workspace, values["destination"])
+
+        values.pop("data_source")
 
         result = Model(**values)
         result.set_names()
@@ -222,8 +226,8 @@ def update(
 
     type = items[0].type
 
-    Model = NodeModel if type == "Node" else EdgeModel
-    relationship = source.nodes if type == "Node" else source.edges
+    Model = NodeModel if type in ["Node", "SourceNode"] else EdgeModel
+    relationship = source.nodes if type in ["Node", "SourceNode"] else source.edges
 
     new_items, deactivated_items, updated_items = process_updates(workspace, source, Model, items, active_items)
 

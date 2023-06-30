@@ -3,13 +3,16 @@ from .base import BaseAdapter
 
 class RedshiftAdapter(BaseAdapter):
     def get_nodes_and_edges(self):
-        from grai_source_redshift.base import get_nodes_and_edges
-        from grai_source_redshift.loader import RedshiftConnector
+        from grai_source_redshift.base import RedshiftIntegration
 
         metadata = self.run.connection.metadata
         secrets = self.run.connection.secrets
 
-        conn = RedshiftConnector(
+        return RedshiftIntegration(
+            source={
+                "id": self.run.source.id,
+                "name": self.run.source.name,
+            },
             host=metadata["host"],
             port=metadata["port"],
             database=metadata["database"],
@@ -17,5 +20,3 @@ class RedshiftAdapter(BaseAdapter):
             password=secrets["password"],
             namespace=self.run.connection.namespace,
         )
-
-        return get_nodes_and_edges(conn, "v1")

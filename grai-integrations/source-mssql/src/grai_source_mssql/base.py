@@ -5,6 +5,7 @@ from grai_client.integrations.base import (
     ConnectorMixin,
     GraiIntegrationImplementationV1,
 )
+from grai_schemas.v1.source import SourceSpec
 
 from grai_source_mssql.adapters import adapt_to_client
 from grai_source_mssql.loader import MsSQLConnector
@@ -13,8 +14,9 @@ from grai_source_mssql.loader import MsSQLConnector
 class MsSQLIntegration(ConnectorMixin, GraiIntegrationImplementationV1):
     def __init__(
         self,
-        client: BaseClient,
-        source_name: str,
+        client: Optional[BaseClient] = None,
+        source_name: Optional[str] = None,
+        source: Optional[SourceSpec] = None,
         driver: Optional[str] = None,
         user: Optional[str] = None,
         password: Optional[str] = None,
@@ -27,7 +29,7 @@ class MsSQLIntegration(ConnectorMixin, GraiIntegrationImplementationV1):
         namespace: Optional[str] = None,
         additional_connection_strings: Optional[List[str]] = None,
     ):
-        super().__init__(client, source_name)
+        super().__init__(client, source_name, source)
 
         self.connector = MsSQLConnector(
             driver=driver,
@@ -44,4 +46,4 @@ class MsSQLIntegration(ConnectorMixin, GraiIntegrationImplementationV1):
         )
 
     def adapt_to_client(self, objects):
-        return adapt_to_client(objects, self.source, self.client.id)
+        return adapt_to_client(objects, self.source, self.version)

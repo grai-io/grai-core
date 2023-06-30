@@ -5,7 +5,7 @@ from grai_client.integrations.base import (
     ConnectorMixin,
     GraiIntegrationImplementationV1,
 )
-from grai_schemas.v1.source import SourceV1
+from grai_schemas.v1.source import SourceSpec
 
 from grai_source_postgres.adapters import adapt_to_client
 from grai_source_postgres.loader import PostgresConnector
@@ -14,8 +14,9 @@ from grai_source_postgres.loader import PostgresConnector
 class PostgresIntegration(ConnectorMixin, GraiIntegrationImplementationV1):
     def __init__(
         self,
-        client: BaseClient,
-        source_name: str,
+        client: Optional[BaseClient] = None,
+        source_name: Optional[str] = None,
+        source: Optional[SourceSpec] = None,
         dbname: Optional[str] = None,
         user: Optional[str] = None,
         password: Optional[str] = None,
@@ -23,7 +24,7 @@ class PostgresIntegration(ConnectorMixin, GraiIntegrationImplementationV1):
         port: Optional[Union[str, int]] = None,
         namespace: Optional[str] = None,
     ):
-        super().__init__(client, source_name)
+        super().__init__(client, source_name, source)
 
         self.connector = PostgresConnector(
             dbname=dbname,
@@ -35,4 +36,4 @@ class PostgresIntegration(ConnectorMixin, GraiIntegrationImplementationV1):
         )
 
     def adapt_to_client(self, objects):
-        return adapt_to_client(objects, self.source, self.client.id)
+        return adapt_to_client(objects, self.source, self.version)

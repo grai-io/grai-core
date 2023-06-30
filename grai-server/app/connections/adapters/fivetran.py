@@ -2,9 +2,8 @@ from .base import BaseAdapter
 
 
 class FivetranAdapter(BaseAdapter):
-    def get_nodes_and_edges(self):
-        from grai_source_fivetran.base import get_nodes_and_edges
-        from grai_source_fivetran.loader import FivetranConnector
+    def get_integration(self):
+        from grai_source_fivetran.base import FivetranIntegration
 
         metadata = self.run.connection.metadata
         secrets = self.run.connection.secrets
@@ -21,7 +20,11 @@ class FivetranAdapter(BaseAdapter):
 
             return value
 
-        conn = FivetranConnector(
+        return FivetranIntegration(
+            source={
+                "id": self.run.source.id,
+                "name": self.run.source.name,
+            },
             api_key=metadata.get("api_key"),
             api_secret=secrets.get("api_secret"),
             namespaces=metadata.get("namespaces"),
@@ -30,5 +33,3 @@ class FivetranAdapter(BaseAdapter):
             limit=getNumber(metadata.get("limit"), 10000),
             parallelization=getNumber(metadata.get("parallelization"), 10),
         )
-
-        return get_nodes_and_edges(conn, "v1")

@@ -5,6 +5,7 @@ from grai_client.integrations.base import (
     ConnectorMixin,
     GraiIntegrationImplementationV1,
 )
+from grai_schemas.v1.source import SourceSpec
 
 from grai_source_redshift.adapters import adapt_to_client
 from grai_source_redshift.loader import RedshiftConnector
@@ -13,16 +14,17 @@ from grai_source_redshift.loader import RedshiftConnector
 class RedshiftIntegration(ConnectorMixin, GraiIntegrationImplementationV1):
     def __init__(
         self,
-        client: BaseClient,
-        source_name: str,
         namespace: str,
+        client: Optional[BaseClient] = None,
+        source_name: Optional[str] = None,
+        source: Optional[SourceSpec] = None,
         user: Optional[str] = None,
         password: Optional[str] = None,
         database: Optional[str] = None,
         host: Optional[str] = None,
         port: Optional[Union[str, int]] = None,
     ):
-        super().__init__(client, source_name)
+        super().__init__(client, source_name, source)
 
         self.connector = RedshiftConnector(
             user=user,
@@ -34,4 +36,4 @@ class RedshiftIntegration(ConnectorMixin, GraiIntegrationImplementationV1):
         )
 
     def adapt_to_client(self, objects):
-        return adapt_to_client(objects, self.source, self.client.id)
+        return adapt_to_client(objects, self.source, self.version)

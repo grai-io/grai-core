@@ -24,15 +24,18 @@ class EventMixin(ABC):
 class GraiIntegrationImplementationV1(ABC):
     client: Optional[ClientV1]
     source: SourceV1
+    version: str
 
     def __init__(
         self,
         client: Optional[ClientV1] = None,
         source_name: Optional[str] = None,
         source: Optional[SourceSpec] = None,
+        version: Optional[str] = None,
     ):
         if source:
             self.source = SourceV1.from_spec(source)
+            self.version = version if version else "v1"
 
         elif client:
             if not source_name:
@@ -43,6 +46,7 @@ class GraiIntegrationImplementationV1(ABC):
 
             self.client = client
             self.source = client.get("Source", name=source_name)
+            self.version = client.id
 
         else:
             raise Exception("Either a client or a source must be provided")

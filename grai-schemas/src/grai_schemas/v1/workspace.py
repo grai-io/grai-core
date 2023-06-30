@@ -47,7 +47,7 @@ class WorkspaceSpec(GraiBaseModel):
     @validator("ref", always=True, pre=True)
     def validate_ref(cls, v: Optional[str], values, field) -> str:
         if v is None or isinstance(v, _DefaultRefSentinel):
-            if isinstance(values["organisation"], OrganisationSpec):
+            if isinstance(values.get("organisation", None), OrganisationSpec):
                 return f"{values['organisation'].name}/{values['name']}"
             else:
                 message = (

@@ -3,13 +3,16 @@ from .base import BaseAdapter
 
 class SnowflakeAdapter(BaseAdapter):
     def get_nodes_and_edges(self):
-        from grai_source_snowflake.base import get_nodes_and_edges
-        from grai_source_snowflake.loader import SnowflakeConnector
+        from grai_source_snowflake.base import SnowflakeIntegration
 
         metadata = self.run.connection.metadata
         secrets = self.run.connection.secrets
 
-        conn = SnowflakeConnector(
+        return SnowflakeIntegration(
+            source={
+                "id": self.run.source.id,
+                "name": self.run.source.name,
+            },
             account=metadata.get("account"),
             user=metadata.get("user"),
             password=secrets.get("password"),
@@ -18,5 +21,3 @@ class SnowflakeAdapter(BaseAdapter):
             database=metadata.get("database"),
             namespace=self.run.connection.namespace,
         )
-
-        return get_nodes_and_edges(conn, "v1")

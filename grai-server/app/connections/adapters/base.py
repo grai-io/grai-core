@@ -16,11 +16,14 @@ from .tools import TestResultCacheBase
 class BaseAdapter(ABC):
     run: Run
 
+    def get_integration(self):
+        raise NotImplementedError(f"No get_integration implemented for {type(self)}")
+
     def get_nodes_and_edges(self):
-        raise NotImplementedError(f"No get_nodes_and_edges implemented for {type(self)}")  # pragma: no cover
+        return self.get_integration().get_nodes_and_edges()
 
     def get_events(self, last_event_date):
-        raise NotImplementedError(f"No get_events implemented for {type(self)}")  # pragma: no cover
+        return self.get_integration().get_events(last_event_date)
 
     def run_validate(self, run: Run):
         self.run = run

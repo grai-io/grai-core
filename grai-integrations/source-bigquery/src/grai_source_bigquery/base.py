@@ -55,11 +55,11 @@ class BigQueryIntegration(SeparateNodesAndEdgesMixin, GraiIntegrationImplementat
     def nodes(self):
         with self.connector.connect() as conn:
             connector_nodes = conn.nodes()
-            grai_nodes = adapt_to_client(connector_nodes, self.source, self.client.id)
+            grai_nodes = adapt_to_client(connector_nodes, self.source, self.version)
         return grai_nodes
 
     def edges(self):
         with self.connector.connect() as conn:
             connector_edges = conn.edges()
-            grai_edges = adapt_to_client(connector_edges, self.source, self.client.id)
+            grai_edges = adapt_to_client(connector_edges, self.source, self.version)
         return grai_edges
