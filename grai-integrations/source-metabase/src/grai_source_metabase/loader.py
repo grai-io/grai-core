@@ -173,7 +173,6 @@ def build_namespace_map(
 
 
 class MetabaseConnector(MetabaseAPI):
-
     """
     Connector class for interacting with Metabase API and building lineage information.
 
@@ -206,6 +205,10 @@ class MetabaseConnector(MetabaseAPI):
         super().__init__(*args, **kwargs)
 
         self.default_namespace = default_namespace
+
+        # This line creates a list of tables by modifying each table dictionary obtained from the get_tables() method.
+        # It replaces the "schema" key with a new key "schema_name" while preserving the other key-value pairs.
+        # this is because the "schema" key is a reserved keyword in the pydantic.
         self.tables = [
             {**table, "schema_name": table.pop("schema")} for table in self.get_tables()
         ]

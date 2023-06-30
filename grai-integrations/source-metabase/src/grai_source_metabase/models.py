@@ -5,8 +5,6 @@ from pydantic import BaseModel
 
 
 class Question(BaseModel):
-    """ """
-
     id: int
     name: str
     description: str
@@ -20,8 +18,6 @@ class Question(BaseModel):
 
 
 class Table(BaseModel):
-    """ """
-
     id: int
     db_id: int
     name: str
@@ -38,18 +34,14 @@ class Table(BaseModel):
 
 
 class Constraint(str, Enum):
-    """ """
-
     belongs_to = "bt"
-    copy = "c"  # don't think we need this
+    copy = "c"
 
 
 NodeTypes = Union[Question, Table]
 
 
 class Edge(BaseModel):
-    """ """
-
     source: NodeTypes
     destination: NodeTypes
     definition: Optional[str]

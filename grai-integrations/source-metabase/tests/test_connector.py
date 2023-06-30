@@ -294,24 +294,6 @@ class TestConnector:
         for edge in edges:
             assert hasattr(edge.spec.metadata, core_config.metadata_id)
 
-    # def test_metadata_has_dbt_metadata_id(self, nodes, edges):
-    #     """
-    #
-    #     Args:
-    #         nodes:
-    #         edges:
-    #
-    #     Returns:
-    #
-    #     Raises:
-    #
-    #     """
-    #     for node in nodes:
-    #         assert hasattr(node.spec.metadata, config.metadata_id)
-    #
-    #     for edge in edges:
-    #         assert hasattr(edge.spec.metadata, config.metadata_id)
-
     def test_metadata_is_core_compliant(self, nodes, edges):
         """
 

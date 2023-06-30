@@ -10,7 +10,6 @@ config = dotenv_values(".env")
 
 @pytest.fixture(scope="session")
 def api():
-    """ """
     return MetabaseAPI()
 
 
