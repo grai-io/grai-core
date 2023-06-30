@@ -87,6 +87,6 @@ class ConnectorMixin(CombinedNodesAndEdgesMixin):
         with self.connector.connect() as conn:
             nodes, edges = conn.get_nodes_and_edges()
 
-        nodes = self.adapt_to_client(nodes, self.source, self.client.id)
-        edges = self.adapt_to_client(edges, self.source, self.client.id)
+        nodes = self.adapt_to_client(nodes)
+        edges = self.adapt_to_client(edges)
         return nodes, edges

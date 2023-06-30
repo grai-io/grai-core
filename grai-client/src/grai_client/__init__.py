@@ -8,4 +8,4 @@ from grai_client import (
     utilities,
 )
 
-__version__ = "0.3.0-alpha4"
+__version__ = "0.3.0-alpha5"
