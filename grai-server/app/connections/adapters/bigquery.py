@@ -8,7 +8,7 @@ class BigqueryAdapter(BaseAdapter):
         metadata = self.run.connection.metadata
         secrets = self.run.connection.secrets
 
-        return BigQueryIntegration(
+        return BigQueryIntegration.from_source(
             source={
                 "id": self.run.source.id,
                 "name": self.run.source.name,
