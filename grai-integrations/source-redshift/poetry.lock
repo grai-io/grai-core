@@ -91,18 +91,18 @@ uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
 name = "boto3"
-version = "1.26.163"
+version = "1.26.164"
 description = "The AWS SDK for Python"
 category = "main"
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "boto3-1.26.163-py3-none-any.whl", hash = "sha256:61b66b9ab03bf59c26f546c9dca053a888dd3e7e85d49a5de6112232b5e5f6c5"},
-    {file = "boto3-1.26.163.tar.gz", hash = "sha256:341ad62c53f9717cfe5fb2ae33e34f2dd3ee930abaa0fc864a10c018c0c78783"},
+    {file = "boto3-1.26.164-py3-none-any.whl", hash = "sha256:1ff5d0705bfd851d4d9d15460b38d7a9775b8116f68812a4e0f81e3321026813"},
+    {file = "boto3-1.26.164.tar.gz", hash = "sha256:17c58a9e1ba4e9aea1267d6bafc87057687458c3a4f1ef297f67b84dcb463233"},
 ]
 
 [package.dependencies]
-botocore = ">=1.29.163,<1.30.0"
+botocore = ">=1.29.164,<1.30.0"
 jmespath = ">=0.7.1,<2.0.0"
 s3transfer = ">=0.6.0,<0.7.0"
 
@@ -111,14 +111,14 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "botocore"
-version = "1.29.163"
+version = "1.29.164"
 description = "Low-level, data-driven core of boto 3."
 category = "main"
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "botocore-1.29.163-py3-none-any.whl", hash = "sha256:dd0af0de58c12df39e043be3ad864a47d8b8ef10eedde15a73504ff75dcc261b"},
-    {file = "botocore-1.29.163.tar.gz", hash = "sha256:f374bea656bf9025ad685f47e7b8ff9e20b1a2584823855ba1c4c58957768612"},
+    {file = "botocore-1.29.164-py3-none-any.whl", hash = "sha256:e1aeccde63839fc263126ccb5de98fcaf02fc6099fb18bb829085199774e2cec"},
+    {file = "botocore-1.29.164.tar.gz", hash = "sha256:6d23d9448953390b621a9e34169ff1d78ddd7e10921a2dcaa738f84ca2172a36"},
 ]
 
 [package.dependencies]
@@ -378,14 +378,14 @@ six = ">=1.8.0"
 
 [[package]]
 name = "grai-client"
-version = "0.3.0a3"
+version = "0.3.0a5"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_client-0.3.0a3-py3-none-any.whl", hash = "sha256:271b2d7c7e9859fedf001d40810d418246f43b1e3f75090f522260155d331287"},
-    {file = "grai_client-0.3.0a3.tar.gz", hash = "sha256:84ed8a08bcbb4275c5555b621f84ed59e952465695793463614526eebf012bc8"},
+    {file = "grai_client-0.3.0a5-py3-none-any.whl", hash = "sha256:8ad7335baeeb2108c565808f21987000a3c5054accb4287ec71195357d9ea3b6"},
+    {file = "grai_client-0.3.0a5.tar.gz", hash = "sha256:65472b19a6c1c8b4af1ec0d935324ec67a6524a495903352ebc5f0cf595b8cc3"},
 ]
 
 [package.dependencies]
@@ -403,14 +403,14 @@ tqdm = ">=4.65.0,<5.0.0"
 
 [[package]]
 name = "grai-schemas"
-version = "0.2.0a1"
+version = "0.2.0a2"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_schemas-0.2.0a1-py3-none-any.whl", hash = "sha256:d48bb967df7646f8e86d882122c73778ed15f76fdd4e5459a2e7447f3392b4bb"},
-    {file = "grai_schemas-0.2.0a1.tar.gz", hash = "sha256:ea1d050c2f6dc825cd51bb8295f4ad7a1cdecbfe3956ccea30a1d04bc075ea5b"},
+    {file = "grai_schemas-0.2.0a2-py3-none-any.whl", hash = "sha256:c2f2fe4d274a99763b6e7772e330b896add017bb5c13846437e870043b8aaff9"},
+    {file = "grai_schemas-0.2.0a2.tar.gz", hash = "sha256:221b2524afd05c35f45a9821bbc6aec2af489206524ef36828e4f44990e9fae9"},
 ]
 
 [package.dependencies]
