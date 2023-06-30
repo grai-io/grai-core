@@ -11,7 +11,7 @@ from grai_source_flat_file.adapters import adapt_to_client
 from grai_source_flat_file.loader import build_nodes_and_edges
 
 
-class DbtIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementationV1):
+class FlatFileIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementationV1):
     def __init__(self, client: BaseClient, source_name: str, file_name: str, namespace: str):
         super().__init__(client, source_name)
 

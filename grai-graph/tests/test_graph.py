@@ -2,16 +2,14 @@ import unittest
 import uuid
 
 import networkx as nx
-from grai_client.testing.schema import (
-    mock_v1_edge,
-    mock_v1_edge_and_nodes,
-    mock_v1_node,
-)
+from grai_schemas.v1.edge import EdgeV1, SourcedEdgeV1
 from grai_schemas.v1.metadata.edges import (
     ColumnToColumnAttributes,
     TableToColumnAttributes,
     TableToTableAttributes,
 )
+from grai_schemas.v1.mock import MockV1
+from grai_schemas.v1.node import NodeV1, SourcedNodeV1
 
 from grai_graph import graph
 from grai_graph.utils import (
@@ -36,14 +34,28 @@ def get_node_id(node):
     return {"name": node.name, "namespace": node.namespace}
 
 
+def test_v1_build_sourced_graph():
+    """ """
+    edges = []
+    nodes = []
+    for i in range(4):
+        e, n = MockV1.edge.edge_and_nodes()
+        e = e.dict()["spec"]
+        e["data_source"] = e.pop("data_sources")[0]
+        edges.append(SourcedEdgeV1.from_spec(e))
+        nodes.extend([SourcedNodeV1.from_spec({**node.dict(), "data_source": e["data_source"]}) for node in n])
+    G = graph.build_graph(nodes, edges, "v1")
+    assert isinstance(G.graph, nx.DiGraph)
+
+
 def test_v1_build_graph():
     """ """
     edges = []
     nodes = []
     for i in range(4):
-        e, n = mock_v1_edge_and_nodes()
+        e, n = MockV1.edge.edge_and_nodes()
         edges.append(e)
-        nodes.extend(n)
+        nodes.extend([NodeV1.from_spec(node) for node in n])
     G = graph.build_graph(nodes, edges, "v1")
     assert isinstance(G.graph, nx.DiGraph)
 
