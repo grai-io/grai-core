@@ -6,7 +6,7 @@ import pytest
 from grai_schemas.v1.source import SourceSpec
 from grai_schemas.v1.workspace import WorkspaceSpec
 
-from grai_source_flat_file.base import DbtIntegration
+from grai_source_flat_file.base import FlatFileIntegration
 
 # @pytest.fixture
 # def client():
@@ -59,7 +59,7 @@ def mock_get_nodes_and_edges(mock_data):
     try:
         mock_data.to_csv(file_name, index=False)
 
-        integration = DbtIntegration(MockClient(), "test", file_name, namespace)
+        integration = FlatFileIntegration(MockClient(), "test", file_name, namespace)
 
         nodes, edges = integration.get_nodes_and_edges()
     except Exception as e:
