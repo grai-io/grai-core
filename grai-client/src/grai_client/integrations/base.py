@@ -64,7 +64,7 @@ class GraiIntegrationImplementation(ABC):
         source = client.get("Source", name=source_name)
         version = client.id
 
-        return WithClient(source=source, version=version, *args, **kwargs)
+        return WithClient(client=client, source=source, version=version, *args, **kwargs)
 
 
 class SeparateNodesAndEdgesMixin:

@@ -16,7 +16,7 @@ documentation = "https://docs.grai.io/"
 [tool.poetry.dependencies]
 python = "^3.9.13"
 pydantic = "^1.9.1"
-grai-client = {version = "^0.3.0a7", allow-prereleases = true}
+grai-client = {version = "^0.3.0a9", allow-prereleases = true}
 grai-schemas = {version = "^0.2.0a1", allow-prereleases = true}
 multimethod = "^1.8"
 fivetran = "^0.7.0"

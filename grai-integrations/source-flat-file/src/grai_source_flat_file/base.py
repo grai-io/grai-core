@@ -1,12 +1,11 @@
 from typing import List, Optional, Tuple
 
-from grai_client.endpoints.client import BaseClient
 from grai_client.integrations.base import (
     CombinedNodesAndEdgesMixin,
     GraiIntegrationImplementation,
 )
 from grai_schemas.base import SourcedEdge, SourcedNode
-from grai_schemas.v1.source import SourceSpec
+from grai_schemas.v1.source import SourceV1
 
 from grai_source_flat_file.adapters import adapt_to_client
 from grai_source_flat_file.loader import build_nodes_and_edges
@@ -17,11 +16,10 @@ class FlatFileIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementat
         self,
         file_name: str,
         namespace: str,
-        client: Optional[BaseClient] = None,
-        source_name: Optional[str] = None,
-        source: Optional[SourceSpec] = None,
+        source: SourceV1,
+        version: Optional[str] = None,
     ):
-        super().__init__(client, source_name, source)
+        super().__init__(source, version)
 
         self.file_name = file_name
         self.namespace = namespace

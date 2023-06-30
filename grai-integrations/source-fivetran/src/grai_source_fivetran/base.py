@@ -1,12 +1,11 @@
 from typing import List, Optional, Tuple
 
-from grai_client.endpoints.client import BaseClient
 from grai_client.integrations.base import (
     CombinedNodesAndEdgesMixin,
     GraiIntegrationImplementation,
 )
 from grai_schemas.base import SourcedEdge, SourcedNode
-from grai_schemas.v1.source import SourceSpec
+from grai_schemas.v1.source import SourceV1
 
 from grai_source_fivetran.adapters import adapt_to_client
 from grai_source_fivetran.loader import FivetranConnector, NamespaceTypes
@@ -15,9 +14,8 @@ from grai_source_fivetran.loader import FivetranConnector, NamespaceTypes
 class FivetranIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementation):
     def __init__(
         self,
-        client: Optional[BaseClient] = None,
-        source_name: Optional[str] = None,
-        source: Optional[SourceSpec] = None,
+        source: SourceV1,
+        version: Optional[str] = None,
         namespaces: Optional[NamespaceTypes] = None,
         default_namespace: Optional[str] = None,
         parallelization: int = 10,
@@ -26,7 +24,7 @@ class FivetranIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementat
         endpoint: Optional[str] = None,
         limit: Optional[int] = None,
     ):
-        super().__init__(client, source_name, source)
+        super().__init__(source, version)
 
         self.connector = FivetranConnector(
             namespaces=namespaces,

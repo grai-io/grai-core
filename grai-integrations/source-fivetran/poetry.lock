@@ -374,14 +374,14 @@ six = ">=1.8.0"
 
 [[package]]
 name = "grai-client"
-version = "0.3.0a7"
+version = "0.3.0a9"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_client-0.3.0a7-py3-none-any.whl", hash = "sha256:f1066efa39a54b8dbe48200085b0471729b275e486863ef1b901ae550a2b3648"},
-    {file = "grai_client-0.3.0a7.tar.gz", hash = "sha256:39a724eca72c0b60e482a84e850499da973e7b4de600aad83c5f36ba8173877f"},
+    {file = "grai_client-0.3.0a9-py3-none-any.whl", hash = "sha256:8c448ce77c4a4e7e362941d80cf4618b2c541038e4a0ac58c12d7cac67e5b44a"},
+    {file = "grai_client-0.3.0a9.tar.gz", hash = "sha256:7c6d0ee344f91aed35dc0edeff1b8e37a555415293248ef1daf200434fe5b581"},
 ]
 
 [package.dependencies]
@@ -1142,4 +1142,4 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9.13"
-content-hash = "78d912133c5ee703db066f02bd725bb915082ad83416a0613c027a40fa378187"
+content-hash = "9119b1c88bb3f541577732008bfd8145d05a398e217f6a40311e469cc7292e4c"

@@ -43,7 +43,7 @@ class MockClient:
 
 @pytest.fixture
 def nodes_and_edges():
-    integration = RedshiftIntegration(MockClient(), "test", namespace="test")
+    integration = RedshiftIntegration.from_client(client=MockClient(), source_name="test", namespace="test")
 
     nodes, edges = integration.get_nodes_and_edges()
     return nodes, edges

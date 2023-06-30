@@ -59,7 +59,12 @@ def mock_get_nodes_and_edges(mock_data):
     try:
         mock_data.to_csv(file_name, index=False)
 
-        integration = FlatFileIntegration(MockClient(), "test", file_name, namespace)
+        integration = FlatFileIntegration.from_client(
+            client=MockClient(),
+            source_name="test",
+            file_name=file_name,
+            namespace=namespace,
+        )
 
         nodes, edges = integration.get_nodes_and_edges()
     except Exception as e:
