@@ -4,11 +4,13 @@ from grai_client.endpoints.client import BaseClient
 from grai_client.update import update
 from grai_schemas.base import Node, Edge
 
-from loader import MetabaseConnector
 from adapters import adapt_to_client
+from loader import MetabaseConnector
 
 
-def get_nodes_and_edges(connector: MetabaseConnector, version: Literal["v1"]) -> Tuple[List[Node], List[Edge]]:
+def get_nodes_and_edges(
+    connector: MetabaseConnector, version: Literal["v1"]
+) -> Tuple[List[Node], List[Edge]]:
     """
 
     Args:

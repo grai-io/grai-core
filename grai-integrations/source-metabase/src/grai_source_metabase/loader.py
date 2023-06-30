@@ -7,7 +7,7 @@ from pydantic import BaseSettings, SecretStr, validator
 from requests.exceptions import ConnectionError
 from retrying import retry
 
-from models import Question, Table, NodeTypes, Edge
+from src.grai_source_metabase.models import Question, Table, NodeTypes, Edge
 
 
 class MetabaseConfig(BaseSettings):
@@ -20,7 +20,7 @@ class MetabaseConfig(BaseSettings):
         return v.rstrip("/")
 
     class Config:
-        env_prefix = "metabase_"
+        env_prefix = "grai_metabase_"
         env_file = ".env"
 
 
@@ -83,7 +83,7 @@ class MetabaseAPI:
     #     pass
 
 
-def build_namespace_map_metabase(
+def build_namespace_map(
     dbs: Dict, namespace_map, default_namespace: Optional[str]
 ) -> Dict:
     if namespace_map is None and default_namespace is None:
@@ -116,14 +116,16 @@ class MetabaseConnector(MetabaseAPI):
         super().__init__(*args, **kwargs)
 
         self.default_namespace = default_namespace
-
-        self.tables_map = {table["id"]: table for table in self.get_tables()}
+        self.tables = [
+            {**table, "schema_name": table.pop("schema")} for table in self.get_tables()
+        ]
+        self.tables_map = {table["id"]: table for table in self.tables}
         self.dbs_map = {db["id"]: db for db in self.get_dbs()["data"]}
         self.questions_map = {
             question["id"]: question for question in self.get_questions()
         }
 
-        self.namespace_map = build_namespace_map_metabase(
+        self.namespace_map = build_namespace_map(
             self.dbs_map, namespaces, default_namespace
         )
 
@@ -132,7 +134,7 @@ class MetabaseConnector(MetabaseAPI):
         self.question_db_map = {}
 
     def build_lineage(self):
-        self.tables_map.update({table["id"]: table for table in self.get_tables()})
+        self.tables_map.update({table["id"]: table for table in self.tables})
         self.dbs_map.update({db["id"]: db for db in self.get_dbs()["data"]})
         self.questions_map.update(
             {question["id"]: question for question in self.get_questions()}
@@ -144,7 +146,7 @@ class MetabaseConnector(MetabaseAPI):
             if question["table_id"] and question["archived"] is False
         }
 
-        self.table_db_map = {table["id"]: table["db_id"] for table in self.get_tables()}
+        self.table_db_map = {table["id"]: table["db_id"] for table in self.tables}
 
         for question, table in self.question_table_map.items():
             self.question_db_map[question] = self.table_db_map[table]
@@ -180,14 +182,3 @@ class MetabaseConnector(MetabaseAPI):
             )
 
         return edges
-
-
-# if __name__ == "__main__":
-#     mb = MetabaseConnector()
-#     mb.build_lineage()
-#     print(mb.questions_map)
-# print(mb.question_table_map)
-# print(mb.table_db_map)
-# print(mb.question_db_map)
-#     mb = MetabaseAPI()
-#     print(mb.get_dbs())

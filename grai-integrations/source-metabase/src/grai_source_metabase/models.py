@@ -1,6 +1,7 @@
-from pydantic import BaseModel
-from typing import Any, Dict, List, Optional, Union
 from enum import Enum
+from typing import Any, Dict, List, Optional, Union
+
+from pydantic import BaseModel
 
 
 class Question(BaseModel):
@@ -25,7 +26,7 @@ class Table(BaseModel):
     db_id: int
     name: str
     display_name: str
-    schema: str
+    schema_name: str
     description: str
     db: Dict[str, Any]
     entity_type: str
@@ -33,14 +34,14 @@ class Table(BaseModel):
 
     @property
     def full_name(self):
-        return f"{self.schema}.{self.name}"
+        return f"{self.schema_name}.{self.name}"
 
 
 class Constraint(str, Enum):
     """ """
 
     belongs_to = "bt"
-    copy = "c"
+    copy = "c"  # don't think we need this
 
 
 NodeTypes = Union[Question, Table]
