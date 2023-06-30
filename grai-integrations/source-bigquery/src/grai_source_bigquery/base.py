@@ -1,31 +1,20 @@
 from typing import List, Optional, Union
 
-from grai_client.endpoints.client import BaseClient
 from grai_client.integrations.base import (
     GraiIntegrationImplementationV1,
     SeparateNodesAndEdgesMixin,
 )
-from grai_schemas.v1.source import SourceSpec
+from grai_schemas.v1.source import SourceV1
 
 from grai_source_bigquery.adapters import adapt_to_client
 from grai_source_bigquery.loader import BigqueryConnector, LoggingConnector
 
 
-class BigQueryParams:
-    namespace: Optional[str] = None
-    project: Optional[str] = None
-    dataset: Optional[Union[str, List[str]]] = None
-    credentials: Optional[str] = None
-    log_parsing: Optional[bool] = False
-    log_parsing_window: Optional[int] = 7
-
-
 class BigQueryIntegration(SeparateNodesAndEdgesMixin, GraiIntegrationImplementationV1):
     def __init__(
         self,
-        client: Optional[BaseClient] = None,
-        source_name: Optional[str] = None,
-        source: Optional[SourceSpec] = None,
+        source: SourceV1,
+        version: Optional[str] = None,
         namespace: Optional[str] = None,
         project: Optional[str] = None,
         dataset: Optional[Union[str, List[str]]] = None,
@@ -33,7 +22,7 @@ class BigQueryIntegration(SeparateNodesAndEdgesMixin, GraiIntegrationImplementat
         log_parsing: Optional[bool] = False,
         log_parsing_window: Optional[int] = 7,
     ):
-        super().__init__(client, source_name, source)
+        super().__init__(source, version)
 
         self.connector = (
             BigqueryConnector(

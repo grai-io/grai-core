@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
-from typing import List, Optional, Tuple
+from typing import List, Optional, ParamSpec, Tuple
 
 from grai_schemas.base import Event, SourcedEdge, SourcedNode
 from grai_schemas.v1.source import SourceSpec, SourceV1
 
-from grai_client.endpoints.v1.client import ClientV1
+from grai_client.endpoints.client import BaseClient
 from grai_client.update import update
 
 
@@ -21,35 +21,20 @@ class EventMixin(ABC):
         update(self.client, self.events())
 
 
-class GraiIntegrationImplementationV1(ABC):
-    client: Optional[ClientV1]
+P = ParamSpec("P")
+
+
+class GraiIntegrationImplementation(ABC):
     source: SourceV1
     version: str
 
     def __init__(
         self,
-        client: Optional[ClientV1] = None,
-        source_name: Optional[str] = None,
-        source: Optional[SourceSpec] = None,
+        source: SourceV1,
         version: Optional[str] = None,
     ):
-        if source:
-            self.source = SourceV1.from_spec(source)
-            self.version = version if version else "v1"
-
-        elif client:
-            if not source_name:
-                raise Exception("A source name must be provided if a client is provided")
-
-            if client.id != "v1":
-                raise NotImplementedError(f"No available implementation for client version {client.id}")
-
-            self.client = client
-            self.source = client.get("Source", name=source_name)
-            self.version = client.id
-
-        else:
-            raise Exception("Either a client or a source must be provided")
+        self.source = source
+        self.version = version
 
     @abstractmethod
     def nodes(self) -> List[SourcedNode]:
@@ -63,12 +48,26 @@ class GraiIntegrationImplementationV1(ABC):
     def get_nodes_and_edges(self) -> Tuple[List[SourcedNode], List[SourcedEdge]]:
         pass
 
-    def update(self):
-        if not self.client:
-            raise Exception("Cannot update without a client")
+    @classmethod
+    def from_client(cls, client: BaseClient, source_name: str, *args: P.args, **kwargs: P.kwargs):
+        class WithClient(cls):
+            client: BaseClient
 
-        update(self.client, self.nodes())
-        update(self.client, self.edges())
+            def update(self):
+                update(self.client, self.nodes())
+                update(self.client, self.edges())
+
+        source = client.get("Source", name=source_name)
+        version = client.id
+
+        return WithClient(source=source, version=version, *args, **kwargs)
+
+    @classmethod
+    def from_source(cls, source: SourceSpec, version: Optional[str] = None, *args: P.args, **kwargs: P.kwargs):
+        source = SourceV1.from_spec(source)
+        version = version if version else "v1"
+
+        return cls(source=source, version=version, *args, **kwargs)
 
 
 class SeparateNodesAndEdgesMixin:
