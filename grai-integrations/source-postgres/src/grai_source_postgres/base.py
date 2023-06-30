@@ -1,17 +1,14 @@
 from typing import Literal, Optional, Union
 
 from grai_client.endpoints.client import BaseClient
-from grai_client.integrations.base import (
-    ConnectorMixin,
-    GraiIntegrationImplementationV1,
-)
+from grai_client.integrations.base import ConnectorMixin, GraiIntegrationImplementation
 from grai_schemas.v1.source import SourceSpec
 
 from grai_source_postgres.adapters import adapt_to_client
 from grai_source_postgres.loader import PostgresConnector
 
 
-class PostgresIntegration(ConnectorMixin, GraiIntegrationImplementationV1):
+class PostgresIntegration(ConnectorMixin, GraiIntegrationImplementation):
     def __init__(
         self,
         client: Optional[BaseClient] = None,

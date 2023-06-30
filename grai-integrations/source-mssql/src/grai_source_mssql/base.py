@@ -1,17 +1,14 @@
 from typing import List, Optional, Tuple
 
 from grai_client.endpoints.client import BaseClient
-from grai_client.integrations.base import (
-    ConnectorMixin,
-    GraiIntegrationImplementationV1,
-)
+from grai_client.integrations.base import ConnectorMixin, GraiIntegrationImplementation
 from grai_schemas.v1.source import SourceSpec
 
 from grai_source_mssql.adapters import adapt_to_client
 from grai_source_mssql.loader import MsSQLConnector
 
 
-class MsSQLIntegration(ConnectorMixin, GraiIntegrationImplementationV1):
+class MsSQLIntegration(ConnectorMixin, GraiIntegrationImplementation):
     def __init__(
         self,
         client: Optional[BaseClient] = None,

@@ -1,17 +1,14 @@
 from typing import Optional, Union
 
 from grai_client.endpoints.client import BaseClient
-from grai_client.integrations.base import (
-    ConnectorMixin,
-    GraiIntegrationImplementationV1,
-)
+from grai_client.integrations.base import ConnectorMixin, GraiIntegrationImplementation
 from grai_schemas.v1.source import SourceSpec
 
 from grai_source_redshift.adapters import adapt_to_client
 from grai_source_redshift.loader import RedshiftConnector
 
 
-class RedshiftIntegration(ConnectorMixin, GraiIntegrationImplementationV1):
+class RedshiftIntegration(ConnectorMixin, GraiIntegrationImplementation):
     def __init__(
         self,
         namespace: str,

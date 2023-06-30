@@ -10,12 +10,10 @@ class BigqueryAdapter(BaseAdapter):
         secrets = self.run.connection.secrets
 
         return BigQueryIntegration(
-            SourceV1.from_spec(
-                {
-                    "id": self.run.source.id,
-                    "name": self.run.source.name,
-                }
-            ),
+            {
+                "id": self.run.source.id,
+                "name": self.run.source.name,
+            },
             namespace=self.run.connection.namespace,
             project=metadata.get("project"),
             dataset=metadata.get("dataset").split(","),

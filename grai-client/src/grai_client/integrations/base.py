@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import List, Optional, ParamSpec, Tuple
+from typing import List, Optional, ParamSpec, Tuple, Union
 
 from grai_schemas.base import Event, SourcedEdge, SourcedNode
-from grai_schemas.v1.source import SourceV1
+from grai_schemas.v1.source import SourceSpec, SourceV1
 
 from grai_client.endpoints.client import BaseClient
 from grai_client.update import update
@@ -30,10 +30,10 @@ class GraiIntegrationImplementation(ABC):
 
     def __init__(
         self,
-        source: SourceV1,
+        source: Union[SourceV1, SourceSpec],
         version: Optional[str] = None,
     ):
-        self.source = source
+        self.source = source if isinstance(source, SourceV1) else SourceV1.from_spec(source)
         self.version = version if version else "v1"
 
     @abstractmethod
@@ -52,6 +52,10 @@ class GraiIntegrationImplementation(ABC):
     def from_client(cls, client: BaseClient, source_name: str, *args: P.args, **kwargs: P.kwargs):
         class WithClient(cls):
             client: BaseClient
+
+            def __init__(self, client: BaseClient, *args: P.args, **kwargs: P.kwargs):
+                self.client = client
+                super().__init__(*args, **kwargs)
 
             def update(self):
                 update(self.client, self.nodes())

@@ -3,7 +3,7 @@ from typing import List, Optional, Tuple
 from grai_client.endpoints.client import BaseClient
 from grai_client.integrations.base import (
     CombinedNodesAndEdgesMixin,
-    GraiIntegrationImplementationV1,
+    GraiIntegrationImplementation,
 )
 from grai_schemas.base import SourcedEdge, SourcedNode
 from grai_schemas.v1.source import SourceSpec
@@ -12,7 +12,7 @@ from grai_source_flat_file.adapters import adapt_to_client
 from grai_source_flat_file.loader import build_nodes_and_edges
 
 
-class FlatFileIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementationV1):
+class FlatFileIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementation):
     def __init__(
         self,
         file_name: str,

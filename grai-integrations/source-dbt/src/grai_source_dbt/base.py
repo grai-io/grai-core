@@ -3,7 +3,7 @@ from typing import List, Optional, Tuple
 from grai_client.endpoints.client import BaseClient
 from grai_client.integrations.base import (
     CombinedNodesAndEdgesMixin,
-    GraiIntegrationImplementationV1,
+    GraiIntegrationImplementation,
 )
 from grai_schemas.base import SourcedEdge, SourcedNode
 from grai_schemas.v1.source import SourceSpec
@@ -11,7 +11,7 @@ from grai_schemas.v1.source import SourceSpec
 from grai_source_dbt.processor import ManifestProcessor
 
 
-class DbtIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementationV1):
+class DbtIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementation):
     def __init__(
         self,
         manifest_file: str,
