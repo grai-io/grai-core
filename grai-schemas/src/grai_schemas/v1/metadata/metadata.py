@@ -1,11 +1,11 @@
 from typing import Any, Optional, Union
 
-from grai_schemas.generics import GraiBaseModel, MalformedMetadata
+from grai_schemas.generics import GraiBaseModel, MalformedMetadata, Metadata
 from grai_schemas.utilities import merge
 from grai_schemas.v1.metadata import edges, nodes
 
 
-class GraiMetadataV1(GraiBaseModel):
+class GraiMetadataV1(Metadata):
     """ """
 
     grai: Union[edges.Metadata, nodes.Metadata]

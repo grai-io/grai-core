@@ -2,6 +2,7 @@ from grai_schemas.v1 import (
     edge,
     events,
     generics,
+    merge,
     metadata,
     node,
     organization,

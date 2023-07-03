@@ -1,7 +1,9 @@
 import pytest
 from grai_schemas.utilities import merge
 from grai_schemas.v1 import EdgeV1, NodeV1
+from grai_schemas.v1.metadata.edges import BaseEdgeMetadataV1
 from grai_schemas.v1.metadata.metadata import GraiMalformedNodeMetadataV1, MetadataV1
+from grai_schemas.v1.metadata.nodes import BaseNodeMetadataV1
 from pydantic import BaseModel
 
 
@@ -175,3 +177,23 @@ class TestMerge:
         a.spec.metadata = GraiMalformedNodeMetadataV1()
         b = EdgeV1.from_spec(base_edge)
         assert merge(a, b) == b
+
+    def test_merge_node_metadata_tags(self):
+        a = BaseNodeMetadataV1(type="NodeV1", node_type="Generic", node_attributes={}, tags=["1", "2"])
+        b = BaseNodeMetadataV1(type="NodeV1", node_type="Generic", node_attributes={}, tags=["2", "3", "4"])
+
+        c = merge(a, b)
+        assert isinstance(c, BaseNodeMetadataV1)
+        assert len(c.tags) == 4
+        assert len(set(c.tags)) == 4
+        assert {"1", "2", "3", "4"} == set(c.tags)
+
+    def test_merge_edge_metadata_tags(self):
+        a = BaseEdgeMetadataV1(type="EdgeV1", edge_type="Generic", edge_attributes={}, tags=["1", "2"])
+        b = BaseEdgeMetadataV1(type="EdgeV1", edge_type="Generic", edge_attributes={}, tags=["2", "3", "4"])
+
+        c = merge(a, b)
+        assert isinstance(c, BaseEdgeMetadataV1)
+        assert len(c.tags) == 4
+        assert len(set(c.tags)) == 4
+        assert {"1", "2", "3", "4"} == set(c.tags)

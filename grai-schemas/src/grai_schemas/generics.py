@@ -146,6 +146,10 @@ class PackageConfig(BaseModel):
         validate_all = True
 
 
+class Metadata(GraiBaseModel):
+    pass
+
+
 class MalformedMetadata(GraiBaseModel):
     """ """
 
