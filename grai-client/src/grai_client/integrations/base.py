@@ -62,6 +62,12 @@ class GraiIntegrationImplementation(ABC):
                 update(self.client, self.edges())
 
         source = client.get("Source", name=source_name)
+        if (kwargs_version := kwargs.pop("version", None)) is not None:
+            if kwargs_version != client.id:
+                raise Exception(
+                    f"Client version mismatch, the user provided version=`{kwargs_version}` does not match the "
+                    f"client id=`{client.id}`. Either leave `version` empty or set it to the client id."
+                )
         version = client.id
 
         return WithClient(client=client, source=source, version=version, *args, **kwargs)

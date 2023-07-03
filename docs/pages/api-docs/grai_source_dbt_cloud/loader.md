@@ -19,7 +19,7 @@ class DbtCloudConnector()
 
 
 
-#### get\_nodes\_and\_edges
+### get\_nodes\_and\_edges
 
 ```python
 def get_nodes_and_edges()
@@ -27,7 +27,7 @@ def get_nodes_and_edges()
 
 
 
-#### get\_events
+### get\_events
 
 ```python
 def get_events(last_event_date) -> List[Event]
@@ -42,7 +42,7 @@ def get_events(last_event_date) -> List[Event]
 
 
 
-#### get\_run\_nodes
+### get\_run\_nodes
 
 ```python
 def get_run_nodes(account_id: str, run_id: str) -> List[str]
@@ -58,7 +58,7 @@ def get_run_nodes(account_id: str, run_id: str) -> List[str]
 
 
 
-#### load\_client
+### load\_client
 
 ```python
 def load_client()
@@ -66,7 +66,7 @@ def load_client()
 
 
 
-#### get\_default\_acount
+### get\_default\_acount
 
 ```python
 def get_default_acount()
@@ -74,7 +74,7 @@ def get_default_acount()
 
 
 
-#### get\_runs
+### get\_runs
 
 ```python
 def get_runs(account_id: str, last_event_date)

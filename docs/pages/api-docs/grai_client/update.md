@@ -3,15 +3,18 @@ sidebar_label: update
 title: grai_client.update
 ---
 
-## deactivate
+## compute\_graph\_changes
 
 ```python
-def deactivate(items: List[T]) -> List[T]
+def compute_graph_changes(
+        items: List[T],
+        active_items: List[T]) -> Tuple[List[T], List[T], List[T]]
 ```
 
 **Arguments**:
 
-  items (List[T]):
+  items:
+  active_items:
 
 
 **Returns**:
@@ -21,16 +24,53 @@ def deactivate(items: List[T]) -> List[T]
 ## update
 
 ```python
-def update(client: BaseClient,
-           items: List[T],
-           active_items: Optional[List[T]] = None)
+@multimethod
+def update(*args, **kwargs)
 ```
 
 **Arguments**:
 
-  client (BaseClient):
-  items (List[T]):
-- `active_items` _Optional[List[T]], optional_ - (Default value = None)
+  client:
+  items:
+- `active_items` - (Default value = None)
+
+## update
+
+```python
+@multimethod
+def update(client: BaseClient,
+           items: List[Union[NodeV1, EdgeV1]],
+           active_items: Any = None,
+           source: Any = None)
+```
+
+**Arguments**:
+
+  client:
+  items:
+- `active_items` - (Default value = None)
+
+
+**Returns**:
+
+
+
+## update
+
+```python
+@update.register
+def update(client: BaseClient,
+           items: List[T],
+           active_items: Optional[List[T]] = None,
+           source: Optional[SourceSpec] = None)
+```
+
+**Arguments**:
+
+  client:
+  items:
+- `active_items` - (Default value = None)
+- `source` - (Default value = None)
 
 
 **Returns**:

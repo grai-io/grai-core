@@ -19,7 +19,7 @@ class GraiBaseModel(HashableBaseModel)
 
 
 
-#### update
+### update
 
 ```python
 def update(new_values: Dict) -> BaseModel
@@ -34,7 +34,7 @@ def update(new_values: Dict) -> BaseModel
 
 
 
-## Config Objects
+### Config Objects
 
 ```python
 class Config()
@@ -50,7 +50,7 @@ class PlaceHolderSchema(GraiBaseModel)
 
 
 
-#### root\_validator\_of\_placeholder
+### root\_validator\_of\_placeholder
 
 ```python
 @root_validator(pre=True)
@@ -74,7 +74,7 @@ class DefaultValue(GraiBaseModel)
 
 
 
-#### validate\_default\_value\_root
+### validate\_default\_value\_root
 
 ```python
 @root_validator()
@@ -98,7 +98,7 @@ class PackageConfig(BaseModel)
 
 
 
-#### metadata\_id\_validation
+### metadata\_id\_validation
 
 ```python
 @validator("metadata_id")
@@ -114,8 +114,33 @@ def metadata_id_validation(cls, value)
 
 
 
-## Config Objects
+### Config Objects
 
 ```python
 class Config()
+```
+
+
+
+## MalformedMetadata Objects
+
+```python
+class MalformedMetadata(GraiBaseModel)
+```
+
+
+
+### validate\_malformed
+
+```python
+@root_validator(pre=True)
+def validate_malformed(cls, v)
+```
+
+
+
+### dict
+
+```python
+def dict(*args, **kwargs)
 ```

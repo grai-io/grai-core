@@ -20,7 +20,7 @@ def validate_connection_arguments(
     port: Optional[str] = None,
     protocol: Optional[ProtocolType] = None,
     insecure: Optional[bool] = None
-) -> Tuple[str, str, Optional[str], ProtocolType, bool]
+) -> Tuple[str, str, str, ProtocolType, bool]
 ```
 
 **Arguments**:
@@ -110,10 +110,10 @@ class BaseClient(abc.ABC)
 
 
 
-### get\_session
+### get\_session\_args
 
 ```python
-def get_session() -> httpx.Client
+def get_session_args() -> Dict
 ```
 
 **Arguments**:
@@ -331,8 +331,8 @@ def delete(*args, options: Optional[OptionType] = None, **kwargs)
 
 ```python
 def type_segmentation(
-    objs: Sequence, priority_order: Optional[Tuple[Type[T]]]
-) -> List[Tuple[List[int], Union[Sequence[T], Iterable[T]], Type[T]]]
+    objs: Sequence[T], priority_order: Optional[Tuple[Type[T]]]
+) -> List[Tuple[List[int], Union[Generator[T, None, None], Iterable[T]], str]]
 ```
 
 **Arguments**:
@@ -350,7 +350,7 @@ def type_segmentation(
 ```python
 def segmented_caller(
     func: Callable[[BaseClient, Sequence[T], ClientOptions], R],
-    priority_order: Optional[Tuple] = None
+    priority_order: Optional[Tuple[Type[T]]] = None
 ) -> Callable[[BaseClient, Sequence[T], ClientOptions], list[R]]
 ```
 

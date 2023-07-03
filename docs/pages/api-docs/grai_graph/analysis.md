@@ -11,7 +11,7 @@ class GraphAnalyzer()
 
 
 
-#### downstream\_nodes
+### downstream\_nodes
 
 ```python
 def downstream_nodes(namespace: str, name: str)
@@ -27,7 +27,7 @@ def downstream_nodes(namespace: str, name: str)
 
 
 
-#### upstream\_nodes
+### upstream\_nodes
 
 ```python
 def upstream_nodes(namespace: str, name: str)
@@ -43,7 +43,7 @@ def upstream_nodes(namespace: str, name: str)
 
 
 
-#### test\_delete\_node
+### test\_delete\_node
 
 ```python
 def test_delete_node(namespace: str, name: str)
@@ -59,7 +59,7 @@ def test_delete_node(namespace: str, name: str)
 
 
 
-#### traverse\_data\_type\_violations
+### traverse\_data\_type\_violations
 
 ```python
 def traverse_data_type_violations(
@@ -80,7 +80,7 @@ def traverse_data_type_violations(
 
 
 
-#### test\_data\_type\_change
+### test\_data\_type\_change
 
 ```python
 def test_data_type_change(
@@ -99,7 +99,7 @@ def test_data_type_change(
 
 
 
-#### traverse\_unique\_violations
+### traverse\_unique\_violations
 
 ```python
 def traverse_unique_violations(
@@ -120,7 +120,7 @@ def traverse_unique_violations(
 
 
 
-#### test\_unique\_violations
+### test\_unique\_violations
 
 ```python
 def test_unique_violations(
@@ -139,7 +139,7 @@ def test_unique_violations(
 
 
 
-#### traverse\_null\_violations
+### traverse\_null\_violations
 
 ```python
 def traverse_null_violations(
@@ -160,7 +160,7 @@ def traverse_null_violations(
 
 
 
-#### test\_nullable\_violations
+### test\_nullable\_violations
 
 ```python
 def test_nullable_violations(
@@ -179,7 +179,7 @@ def test_nullable_violations(
 
 
 
-#### column\_predecessors
+### column\_predecessors
 
 ```python
 def column_predecessors(namespace: str, name: str)
@@ -195,7 +195,7 @@ def column_predecessors(namespace: str, name: str)
 
 
 
-#### column\_successors
+### column\_successors
 
 ```python
 def column_successors(namespace: str, name: str)

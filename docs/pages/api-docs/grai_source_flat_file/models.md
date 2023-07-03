@@ -19,7 +19,7 @@ class Table(ID)
 
 
 
-#### full\_name
+### full\_name
 
 ```python
 @property
@@ -28,7 +28,7 @@ def full_name()
 
 
 
-#### get\_edges
+### get\_edges
 
 ```python
 def get_edges() -> List["Edge"]
@@ -50,7 +50,7 @@ class Column(ID)
 
 
 
-## Config Objects
+### Config Objects
 
 ```python
 class Config()
@@ -58,7 +58,7 @@ class Config()
 
 
 
-#### full\_name
+### full\_name
 
 ```python
 @property

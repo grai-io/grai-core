@@ -43,27 +43,27 @@ class DestinationMetadata(BaseModel)
 
 
 
-#### id
+### id
 
 e.x. decent_dropsy
 
-#### group\_id
+### group\_id
 
 e.x. decent_dropsy
 
-#### service
+### service
 
 e.x. snowflake
 
-#### region
+### region
 
 e.x. GCP_US_EAST4
 
-#### time\_zone\_offset
+### time\_zone\_offset
 
 e.x. -5
 
-#### setup\_status
+### setup\_status
 
 e.x. connected
 
@@ -131,7 +131,7 @@ class Column(BaseModel)
 
 
 
-#### full\_name
+### full\_name
 
 ```python
 @property
@@ -140,7 +140,7 @@ def full_name()
 
 
 
-#### from\_fivetran\_models
+### from\_fivetran\_models
 
 ```python
 @classmethod
@@ -170,7 +170,7 @@ class Table(BaseModel)
 
 
 
-#### full\_name
+### full\_name
 
 ```python
 @property
@@ -179,7 +179,7 @@ def full_name()
 
 
 
-#### from\_fivetran\_models
+### from\_fivetran\_models
 
 ```python
 @classmethod

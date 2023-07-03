@@ -3,7 +3,7 @@ sidebar_label: mock_tools
 title: grai_source_fivetran.mock_tools
 ---
 
-#### faker\_dep\_wrapper
+## faker\_dep\_wrapper
 
 ```python
 def faker_dep_wrapper(fn: Callable[..., T])
@@ -26,7 +26,7 @@ class MockFivetranObjects()
 
 
 
-#### mock\_column
+### mock\_column
 
 ```python
 @staticmethod
@@ -36,7 +36,7 @@ def mock_column()
 
 
 
-#### mock\_table
+### mock\_table
 
 ```python
 @staticmethod
@@ -46,7 +46,7 @@ def mock_table()
 
 
 
-#### mock\_edge
+### mock\_edge
 
 ```python
 @classmethod

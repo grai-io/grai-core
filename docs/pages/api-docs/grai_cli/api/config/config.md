@@ -3,7 +3,7 @@ sidebar_label: config
 title: grai_cli.api.config.config
 ---
 
-#### cli\_init\_config
+## cli\_init\_config
 
 ```python
 @config_app.command("init")
@@ -65,7 +65,7 @@ Initialize a new config file
 
 
 
-#### view
+## view
 
 ```python
 @config_app.command(help="Print config to console")

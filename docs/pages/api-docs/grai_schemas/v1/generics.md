@@ -3,14 +3,6 @@ sidebar_label: generics
 title: grai_schemas.v1.generics
 ---
 
-## V1Mixin Objects
-
-```python
-class V1Mixin(GraiBaseModel)
-```
-
-
-
 ## BaseID Objects
 
 ```python
