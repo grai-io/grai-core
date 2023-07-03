@@ -367,14 +367,14 @@ test = ["flake8 (==3.7.8)", "hypothesis (==3.55.3)"]
 
 [[package]]
 name = "datamodel-code-generator"
-version = "0.20.0"
+version = "0.21.0"
 description = "Datamodel Code Generator"
 category = "main"
 optional = false
 python-versions = ">=3.7,<4.0"
 files = [
-    {file = "datamodel_code_generator-0.20.0-py3-none-any.whl", hash = "sha256:fdb8dc18fd3a5d2c92e5e3ac473c5a48f3540066941e56fd947d2975cfebd281"},
-    {file = "datamodel_code_generator-0.20.0.tar.gz", hash = "sha256:84dc7d6ae64ca67834b414c107adf3510f46a474ac21467a683aca0a4a8f0806"},
+    {file = "datamodel_code_generator-0.21.0-py3-none-any.whl", hash = "sha256:9247d934ddcaff4a91f23feb55a327b6dfc123464dc32b48554d2d5c4fc0c980"},
+    {file = "datamodel_code_generator-0.21.0.tar.gz", hash = "sha256:5851a885d18f46e50f6ac959a716f49869fe6a46f5101b8872fda515e1cfc7fb"},
 ]
 
 [package.dependencies]
@@ -388,9 +388,9 @@ openapi-spec-validator = ">=0.2.8,<=0.5.2"
 packaging = "*"
 prance = ">=0.18.2,<1.0"
 pydantic = [
-    {version = ">=1.10.0,<2.0.0", extras = ["email"], markers = "python_version >= \"3.11\" and python_version < \"4.0\""},
-    {version = ">=1.5.1,<2.0.0", extras = ["email"], markers = "python_version < \"3.10\""},
-    {version = ">=1.9.0,<2.0.0", extras = ["email"], markers = "python_version >= \"3.10\" and python_version < \"3.11\""},
+    {version = ">=1.10.0,<3.0", extras = ["email"], markers = "python_version >= \"3.11\" and python_version < \"4.0\""},
+    {version = ">=1.5.1,<3.0", extras = ["email"], markers = "python_version < \"3.10\""},
+    {version = ">=1.9.0,<3.0", extras = ["email"], markers = "python_version >= \"3.10\" and python_version < \"3.11\""},
 ]
 PySnooper = ">=0.4.1,<2.0.0"
 toml = ">=0.10.0,<1.0.0"
@@ -495,14 +495,14 @@ idna = ">=2.0.0"
 
 [[package]]
 name = "exceptiongroup"
-version = "1.1.1"
+version = "1.1.2"
 description = "Backport of PEP 654 (exception groups)"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "exceptiongroup-1.1.1-py3-none-any.whl", hash = "sha256:232c37c63e4f682982c8b6459f33a8981039e5fb8756b2074364e5055c498c9e"},
-    {file = "exceptiongroup-1.1.1.tar.gz", hash = "sha256:d484c3090ba2889ae2928419117447a14daf3c1231d5e30d0aae34f354f01785"},
+    {file = "exceptiongroup-1.1.2-py3-none-any.whl", hash = "sha256:e346e69d186172ca7cf029c8c1d16235aa0e04035e5750b4b95039e65204328f"},
+    {file = "exceptiongroup-1.1.2.tar.gz", hash = "sha256:12c3e887d6485d16943a309616de20ae5582633e0a2eda17f4e10fd61c1e8af5"},
 ]
 
 [package.extras]
@@ -552,14 +552,14 @@ files = [
 
 [[package]]
 name = "grai-client"
-version = "0.3.0a9"
+version = "0.3.0a11"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_client-0.3.0a9-py3-none-any.whl", hash = "sha256:8c448ce77c4a4e7e362941d80cf4618b2c541038e4a0ac58c12d7cac67e5b44a"},
-    {file = "grai_client-0.3.0a9.tar.gz", hash = "sha256:7c6d0ee344f91aed35dc0edeff1b8e37a555415293248ef1daf200434fe5b581"},
+    {file = "grai_client-0.3.0a11-py3-none-any.whl", hash = "sha256:43981e8e5d5d9fc1219712506e03619e0d40055d8400ddd563453209132a6e54"},
+    {file = "grai_client-0.3.0a11.tar.gz", hash = "sha256:713d27dd6dae482ac1c00b7a7b901be8a75501b7cbf9f79d412fac8af4eb8338"},
 ]
 
 [package.dependencies]
@@ -593,19 +593,19 @@ pydantic = ">=1.10.4,<2.0.0"
 
 [[package]]
 name = "grai-source-dbt"
-version = "0.3.0a2"
+version = "0.3.0a3"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_source_dbt-0.3.0a2-py3-none-any.whl", hash = "sha256:c9eece6418e8ae0309af48de085994501439bf9cd630e0364ecc2cda4f38e903"},
-    {file = "grai_source_dbt-0.3.0a2.tar.gz", hash = "sha256:860ac3fcd9a95267a3de3d513df977afb720bb7bfb9abe859fcf4ba7c7e6b864"},
+    {file = "grai_source_dbt-0.3.0a3-py3-none-any.whl", hash = "sha256:2c2b9279df911cb0589b4fba9fc3c316cb45edb9ea3b288dba33934ba978f517"},
+    {file = "grai_source_dbt-0.3.0a3.tar.gz", hash = "sha256:f74fd8fb047db669ade0fe01ce613a7452f1368b96ab110375be828b7fe63bea"},
 ]
 
 [package.dependencies]
 dbt-artifacts-parser = ">=0.2.4,<0.3.0"
-grai-client = ">=0.3.0a7,<0.4.0"
+grai-client = ">=0.3.0a10,<0.4.0"
 grai-schemas = ">=0.2.0a1,<0.3.0"
 pydantic = ">=1.9.1,<2.0.0"
 
@@ -1803,14 +1803,14 @@ files = [
 
 [[package]]
 name = "typing-extensions"
-version = "4.7.0"
+version = "4.7.1"
 description = "Backported and Experimental Type Hints for Python 3.7+"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "typing_extensions-4.7.0-py3-none-any.whl", hash = "sha256:5d8c9dac95c27d20df12fb1d97b9793ab8b2af8a3a525e68c80e21060c161771"},
-    {file = "typing_extensions-4.7.0.tar.gz", hash = "sha256:935ccf31549830cda708b42289d44b6f74084d616a00be651601a4f968e77c82"},
+    {file = "typing_extensions-4.7.1-py3-none-any.whl", hash = "sha256:440d5dd3af93b060174bf433bccd69b0babc3b15b1a8dca43789fd7f61514b36"},
+    {file = "typing_extensions-4.7.1.tar.gz", hash = "sha256:b75ddc264f0ba5615db7ba217daeb99701ad295353c45f9e95963337ceeeffb2"},
 ]
 
 [[package]]
@@ -1850,4 +1850,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "a8cf877d0db1380fa2a25cb7b0e405132f1c51e053eb481bd26404bd66b3d34a"
+content-hash = "2eb8fd5e7f4f5abc07412ba4c6425bf560a6ae7e7463c63a1b0e5747c01448c3"

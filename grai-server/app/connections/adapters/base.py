@@ -22,8 +22,8 @@ class BaseAdapter(ABC):
     def get_nodes_and_edges(self):
         return self.get_integration().get_nodes_and_edges()
 
-    def get_events(self, last_event_date):
-        return self.get_integration().get_events(last_event_date)
+    def events(self, last_event_date):
+        return self.get_integration().events(last_event_date)
 
     def run_validate(self, run: Run):
         self.run = run
@@ -73,7 +73,7 @@ class BaseAdapter(ABC):
         if not all:
             last_event_date = Event.objects.filter(connection=run.connection).aggregate(Max("date"))["date__max"]
 
-        events = self.get_events(last_event_date)
+        events = self.events(last_event_date)
 
         connection = run.connection
 

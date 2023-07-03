@@ -9,9 +9,6 @@ from grai_client.update import update
 
 
 class EventMixin(ABC):
-    def __init__(self):
-        raise NotImplementedError("The EventMixin is not yet stable or ready for production use.")
-
     @abstractmethod
     def events(self) -> List[Event]:
         pass

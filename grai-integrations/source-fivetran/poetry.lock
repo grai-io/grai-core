@@ -300,14 +300,14 @@ files = [
 
 [[package]]
 name = "exceptiongroup"
-version = "1.1.1"
+version = "1.1.2"
 description = "Backport of PEP 654 (exception groups)"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "exceptiongroup-1.1.1-py3-none-any.whl", hash = "sha256:232c37c63e4f682982c8b6459f33a8981039e5fb8756b2074364e5055c498c9e"},
-    {file = "exceptiongroup-1.1.1.tar.gz", hash = "sha256:d484c3090ba2889ae2928419117447a14daf3c1231d5e30d0aae34f354f01785"},
+    {file = "exceptiongroup-1.1.2-py3-none-any.whl", hash = "sha256:e346e69d186172ca7cf029c8c1d16235aa0e04035e5750b4b95039e65204328f"},
+    {file = "exceptiongroup-1.1.2.tar.gz", hash = "sha256:12c3e887d6485d16943a309616de20ae5582633e0a2eda17f4e10fd61c1e8af5"},
 ]
 
 [package.extras]
@@ -374,14 +374,14 @@ six = ">=1.8.0"
 
 [[package]]
 name = "grai-client"
-version = "0.3.0a9"
+version = "0.3.0a10"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_client-0.3.0a9-py3-none-any.whl", hash = "sha256:8c448ce77c4a4e7e362941d80cf4618b2c541038e4a0ac58c12d7cac67e5b44a"},
-    {file = "grai_client-0.3.0a9.tar.gz", hash = "sha256:7c6d0ee344f91aed35dc0edeff1b8e37a555415293248ef1daf200434fe5b581"},
+    {file = "grai_client-0.3.0a10-py3-none-any.whl", hash = "sha256:b9217a97a4a0949f666e2ce22a36508ea341e6141cf18b68ec49d476b3be5225"},
+    {file = "grai_client-0.3.0a10.tar.gz", hash = "sha256:1f0388099a6516bbfefaeecf1d142f4e2014012e507078cde3b7769c45e31e13"},
 ]
 
 [package.dependencies]
@@ -1090,14 +1090,14 @@ files = [
 
 [[package]]
 name = "typing-extensions"
-version = "4.7.0"
+version = "4.7.1"
 description = "Backported and Experimental Type Hints for Python 3.7+"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "typing_extensions-4.7.0-py3-none-any.whl", hash = "sha256:5d8c9dac95c27d20df12fb1d97b9793ab8b2af8a3a525e68c80e21060c161771"},
-    {file = "typing_extensions-4.7.0.tar.gz", hash = "sha256:935ccf31549830cda708b42289d44b6f74084d616a00be651601a4f968e77c82"},
+    {file = "typing_extensions-4.7.1-py3-none-any.whl", hash = "sha256:440d5dd3af93b060174bf433bccd69b0babc3b15b1a8dca43789fd7f61514b36"},
+    {file = "typing_extensions-4.7.1.tar.gz", hash = "sha256:b75ddc264f0ba5615db7ba217daeb99701ad295353c45f9e95963337ceeeffb2"},
 ]
 
 [[package]]
@@ -1142,4 +1142,4 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9.13"
-content-hash = "9119b1c88bb3f541577732008bfd8145d05a398e217f6a40311e469cc7292e4c"
+content-hash = "627cb64a056d3cec5c2e2ef88bb67c6b0967ebc5c79b61cc777169010c2cf5c9"

@@ -21,7 +21,7 @@ class MySQLIntegration(ConnectorMixin, GraiIntegrationImplementation):
     ):
         super().__init__(source, version)
 
-        self.connection = MySQLConnector(
+        self.connector = MySQLConnector(
             dbname=dbname,
             user=user,
             password=password,

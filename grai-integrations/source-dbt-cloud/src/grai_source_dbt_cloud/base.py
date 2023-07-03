@@ -10,7 +10,7 @@ from grai_schemas.v1.source import SourceV1
 from grai_source_dbt_cloud.loader import DbtCloudConnector
 
 
-class DbtCloudIntegration(EventMixin, CombinedNodesAndEdgesMixin, GraiIntegrationImplementation):
+class DbtCloudIntegration(CombinedNodesAndEdgesMixin, EventMixin, GraiIntegrationImplementation):
     def __init__(
         self,
         api_key: str,

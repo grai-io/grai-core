@@ -1,10 +1,12 @@
 import os
 import uuid
 from datetime import date
+from unittest import mock
 
 import pytest
 from decouple import config
 from django.core.files.uploadedfile import UploadedFile
+
 from grai_source_dbt_cloud.loader import Event
 
 from connections.models import Connection, Connector, Run, RunFile
@@ -232,11 +234,9 @@ class TestUpdateServer:
 
             process_run(str(run.id))
 
-    def test_run_update_server_fivetran(self, test_workspace, test_fivetran_connector, mocker, test_source):
-        # mock = mocker.patch(
-        #     "grai_source_fivetran.base.FivetranIntegration.get_nodes_and_edges"
-        # )
-        # mock.return_value = [[], []]
+    @mock.patch("grai_source_fivetran.base.FivetranIntegration")
+    def test_run_update_server_fivetran(self, mocked_class, test_workspace, test_fivetran_connector, test_source):
+        mocked_class.return_value.get_nodes_and_edges.return_value = [[], []]
 
         connection = Connection.objects.create(
             name=str(uuid.uuid4()),
@@ -251,10 +251,11 @@ class TestUpdateServer:
 
         process_run(str(run.id))
 
-    def test_run_update_server_fivetran_extras(self, test_workspace, test_fivetran_connector, mocker, test_source):
-        mocker.patch("grai_source_fivetran.loader.FivetranConnector")
-        mock = mocker.patch("grai_source_fivetran.base.get_nodes_and_edges")
-        mock.return_value = [[], []]
+    @mock.patch("grai_source_fivetran.base.FivetranIntegration")
+    def test_run_update_server_fivetran_extras(
+        self, mocked_class, test_workspace, test_fivetran_connector, test_source
+    ):
+        mocked_class.return_value.get_nodes_and_edges.return_value = [[], []]
 
         connection = Connection.objects.create(
             name=str(uuid.uuid4()),
@@ -273,10 +274,9 @@ class TestUpdateServer:
 
         process_run(str(run.id))
 
-    def test_run_update_server_mysql(self, test_workspace, test_mysql_connector, mocker, test_source):
-        mocker.patch("grai_source_mysql.loader.MySQLConnector")
-        mock = mocker.patch("grai_source_mysql.base.get_nodes_and_edges")
-        mock.return_value = [[], []]
+    @mock.patch("grai_source_mysql.base.MySQLIntegration")
+    def test_run_update_server_mysql(self, mocked_class, test_workspace, test_mysql_connector, test_source):
+        mocked_class.return_value.get_nodes_and_edges.return_value = [[], []]
 
         connection = Connection.objects.create(
             name=str(uuid.uuid4()),
@@ -296,10 +296,9 @@ class TestUpdateServer:
 
         process_run(str(run.id))
 
-    def test_run_update_server_redshift(self, test_workspace, test_redshift_connector, mocker, test_source):
-        mocker.patch("grai_source_redshift.loader.RedshiftConnector")
-        mock = mocker.patch("grai_source_redshift.base.get_nodes_and_edges")
-        mock.return_value = [[], []]
+    @mock.patch("grai_source_redshift.base.RedshiftIntegration")
+    def test_run_update_server_redshift(self, mocked_class, test_workspace, test_redshift_connector, test_source):
+        mocked_class.return_value.get_nodes_and_edges.return_value = [[], []]
 
         connection = Connection.objects.create(
             name=str(uuid.uuid4()),
@@ -335,9 +334,9 @@ class TestUpdateServer:
 
             process_run(str(run.id))
 
-    def test_snowflake_no_account(self, test_workspace, test_snowflake_connector, mocker, test_source):
-        mock = mocker.patch("grai_source_snowflake.base.get_nodes_and_edges")
-        mock.return_value = [[], []]
+    @mock.patch("grai_source_snowflake.base.SnowflakeIntegration")
+    def test_snowflake_no_account(self, mocked_class, test_workspace, test_snowflake_connector, test_source):
+        mocked_class.return_value.get_nodes_and_edges.return_value = [[], []]
 
         connection = Connection.objects.create(
             name=str(uuid.uuid4()),
@@ -358,9 +357,9 @@ class TestUpdateServer:
 
         process_run(str(run.id))
 
-    def test_mssql_no_account(self, test_workspace, test_mssql_connector, mocker, test_source):
-        mock = mocker.patch("grai_source_mssql.base.get_nodes_and_edges")
-        mock.return_value = [[], []]
+    @mock.patch("grai_source_mssql.base.MsSQLIntegration")
+    def test_mssql_no_account(self, mocked_class, test_workspace, test_mssql_connector, test_source):
+        mocked_class.return_value.get_nodes_and_edges.return_value = [[], []]
 
         connection = Connection.objects.create(
             name=str(uuid.uuid4()),
@@ -380,9 +379,9 @@ class TestUpdateServer:
 
         process_run(str(run.id))
 
-    def test_bigquery_no_project(self, test_workspace, test_bigquery_connector, mocker, test_source):
-        mock = mocker.patch("grai_source_bigquery.base.get_nodes_and_edges")
-        mock.return_value = [[], []]
+    @mock.patch("grai_source_bigquery.base.BigQueryIntegration")
+    def test_bigquery_no_project(self, mocked_class, test_workspace, test_bigquery_connector, test_source):
+        mocked_class.return_value.get_nodes_and_edges.return_value = [[], []]
 
         connection = Connection.objects.create(
             name=str(uuid.uuid4()),
@@ -396,9 +395,9 @@ class TestUpdateServer:
 
         process_run(str(run.id))
 
-    def test_dbt_cloud_no_project(self, test_workspace, test_dbt_cloud_connector, mocker, test_source):
-        mock = mocker.patch("grai_source_dbt_cloud.base.get_nodes_and_edges")
-        mock.return_value = [[], []]
+    @mock.patch("grai_source_dbt_cloud.base.DbtCloudIntegration")
+    def test_dbt_cloud_no_project(self, mocked_class, test_workspace, test_dbt_cloud_connector, test_source):
+        mocked_class.return_value.get_nodes_and_edges.return_value = [[], []]
 
         connection = Connection.objects.create(
             name=str(uuid.uuid4()),

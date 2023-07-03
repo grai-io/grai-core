@@ -51,6 +51,7 @@ def test_node_v1():
             "namespace": "default",
             "display_name": "node1",
             "metadata": {"grai": {"node_type": "Generic"}},
+            "data_sources": [],
         }
     )
 
@@ -132,6 +133,7 @@ def mock_node_schema(node, metadata={}):
         "display_name": node.display_name,
         "workspace": node.workspace.id,
         "metadata": node.metadata,
+        "data_sources": [],
     }
     spec["metadata"].update(metadata)
     return NodeV1.from_spec(spec)
@@ -164,6 +166,7 @@ def mock_edge_schema(edge):
                 "id": str(edge.destination.id),
             },
             "metadata": edge.metadata,
+            "data_sources": [],
         }
     )
 

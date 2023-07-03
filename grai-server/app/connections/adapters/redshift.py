@@ -2,7 +2,7 @@ from .base import BaseAdapter
 
 
 class RedshiftAdapter(BaseAdapter):
-    def get_nodes_and_edges(self):
+    def get_integration(self):
         from grai_source_redshift.base import RedshiftIntegration
 
         metadata = self.run.connection.metadata

@@ -7,7 +7,7 @@ from django.db import models
 from django.db.models import Q
 from grai_schemas.schema import GraiType
 from grai_schemas.utilities import merge
-from grai_schemas.v1 import SourcedEdgeV1, SourcedNodeV1
+from grai_schemas.v1 import NodeV1, EdgeV1, SourcedEdgeV1, SourcedNodeV1
 from grai_schemas.v1.source import SourceSpec
 from grai_schemas.v1.node import NodeNamedID
 from multimethod import multimethod
@@ -159,7 +159,18 @@ def process_updates(workspace, source: Source, Model: T, items, active_items=Non
         return [], [], []
 
     type = items[0].type
-    Schema = SourcedNodeV1 if type in ["Node", "SourceNode"] else SourcedEdgeV1
+    if type == "Node":
+        Schema = NodeV1
+        sourced = False
+    elif type == "Edge":
+        Schema = EdgeV1
+        sourced = False
+    elif type == "SourcedNode":
+        Schema = SourcedNodeV1
+        sourced = True
+    elif type == "SourcedEdge":
+        Schema = SourcedEdgeV1
+        sourced = True
 
     active_models = get_existing_items([item.spec.dict() for item in items], workspace, Model)
 
@@ -168,7 +179,11 @@ def process_updates(workspace, source: Source, Model: T, items, active_items=Non
 
         for active_model in active_models:
             spec = active_model.__dict__
-            spec["data_source"] = SourceSpec(id=source.id, name=source.name)
+
+            if sourced:
+                spec["data_source"] = SourceSpec(id=source.id, name=source.name)
+            else:
+                spec["data_sources"] = [SourceSpec(id=source.id, name=source.name)]
 
             if type in ["Edge", "SourceEdge"]:
                 spec["source"] = NodeNamedID(**active_model.source.__dict__)
@@ -202,7 +217,10 @@ def process_updates(workspace, source: Source, Model: T, items, active_items=Non
             values["source"] = get_node(workspace, values["source"])
             values["destination"] = get_node(workspace, values["destination"])
 
-        values.pop("data_source")
+        if "data_source" in values:
+            values.pop("data_source")
+        if "data_sources" in values:
+            values.pop("data_sources")
 
         result = Model(**values)
         result.set_names()
@@ -248,5 +266,7 @@ def modelToSchema(model, Schema, type):
     if type == "Edge":
         spec["source"] = NodeNamedID(**model.source.__dict__)
         spec["destination"] = NodeNamedID(**model.destination.__dict__)
+
+    spec["data_sources"] = []
 
     return Schema.from_spec(spec)

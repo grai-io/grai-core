@@ -2,7 +2,7 @@ from .base import BaseAdapter
 
 
 class SnowflakeAdapter(BaseAdapter):
-    def get_nodes_and_edges(self):
+    def get_integration(self):
         from grai_source_snowflake.base import SnowflakeIntegration
 
         metadata = self.run.connection.metadata

@@ -3,12 +3,12 @@ from .base import BaseAdapter
 
 class MySQLAdapter(BaseAdapter):
     def get_integration(self):
-        from grai_source_mysql.base import MysqlIntegration
+        from grai_source_mysql.base import MySQLIntegration
 
         metadata = self.run.connection.metadata
         secrets = self.run.connection.secrets
 
-        return MysqlIntegration(
+        return MySQLIntegration(
             source={
                 "id": self.run.source.id,
                 "name": self.run.source.name,

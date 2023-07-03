@@ -6,6 +6,8 @@ spec:
       node_type: Table
   name: table1
   namespace: default
+  data_sources:
+    - d28aaaa4-b5ad-4265-887b-e310c4739772
 type: Node
 version: v1
 ---
@@ -21,6 +23,8 @@ spec:
         is_unique: false
   name: column1
   namespace: default
+  data_sources:
+    - d28aaaa4-b5ad-4265-887b-e310c4739772
 type: Node
 version: v1
 ---
@@ -38,5 +42,7 @@ spec:
   source:
     name: table1
     namespace: default
+  data_sources:
+    - d28aaaa4-b5ad-4265-887b-e310c4739772
 type: Edge
 version: v1

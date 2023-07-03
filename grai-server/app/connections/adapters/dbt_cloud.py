@@ -2,7 +2,7 @@ from .base import BaseAdapter
 
 
 class DbtCloudAdapter(BaseAdapter):
-    def get_intergration(self):
+    def get_integration(self):
         from grai_source_dbt_cloud.base import DbtCloudIntegration
 
         secrets = self.run.connection.secrets
