@@ -165,10 +165,10 @@ def process_updates(workspace, source: Source, Model: T, items, active_items=Non
     elif type == "Edge":
         Schema = EdgeV1
         sourced = False
-    elif type == "SourcedNode":
+    elif type == "SourceNode":
         Schema = SourcedNodeV1
         sourced = True
-    elif type == "SourcedEdge":
+    elif type == "SourceEdge":
         Schema = SourcedEdgeV1
         sourced = True
 
