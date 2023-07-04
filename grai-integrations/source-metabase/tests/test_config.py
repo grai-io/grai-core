@@ -1,6 +1,6 @@
 import os
 
-from src.grai_source_metabase.loader import MetabaseConfig
+from grai_source_metabase.loader import MetabaseConfig
 
 
 def test_load_config_from_env_variables():

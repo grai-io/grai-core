@@ -2,7 +2,7 @@ import importlib
 from functools import wraps
 from typing import Callable, TypeVar
 
-from src.grai_source_metabase.models import Question, Edge, Table
+from grai_source_metabase.models import Question, Edge, Table
 
 T = TypeVar("T")
 

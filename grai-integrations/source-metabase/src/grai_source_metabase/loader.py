@@ -7,7 +7,7 @@ from pydantic import BaseSettings, SecretStr, validator
 from requests.exceptions import ConnectionError
 from retrying import retry
 
-from src.grai_source_metabase.models import Question, Table, NodeTypes, Edge
+from grai_source_metabase.models import Question, Table, NodeTypes, Edge
 
 _endpoint = "https://data.inv.tech/api"
 

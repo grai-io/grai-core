@@ -1,9 +1,9 @@
 import pytest
 from dotenv import dotenv_values
 
-from src.grai_source_metabase.adapters import adapt_to_client
-from src.grai_source_metabase.loader import MetabaseAPI
-from src.grai_source_metabase.mock_tools import MockMetabaseObjects
+from grai_source_metabase.adapters import adapt_to_client
+from grai_source_metabase.loader import MetabaseAPI
+from grai_source_metabase.mock_tools import MockMetabaseObjects
 
 config = dotenv_values(".env")
 

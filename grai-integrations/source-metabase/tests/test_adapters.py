@@ -3,9 +3,9 @@ from grai_schemas import config as core_config
 from grai_schemas.v1 import NodeV1, EdgeV1
 from grai_schemas.v1.metadata import GraiEdgeMetadataV1, GraiNodeMetadataV1
 
-from src.grai_source_metabase.adapters import adapt_to_client
-from src.grai_source_metabase.models import Table, Question, Edge
-from src.grai_source_metabase.package_definitions import config
+from grai_source_metabase.adapters import adapt_to_client
+from grai_source_metabase.models import Table, Question, Edge
+from grai_source_metabase.package_definitions import config
 
 
 def mock_edge_values(source, destination):
