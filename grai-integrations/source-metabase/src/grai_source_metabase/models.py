@@ -1,4 +1,3 @@
-from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
 from pydantic import BaseModel
@@ -33,11 +32,6 @@ class Table(BaseModel):
         return f"{self.schema_name}.{self.name}"
 
 
-class Constraint(str, Enum):
-    belongs_to = "bt"
-    copy = "c"
-
-
 NodeTypes = Union[Question, Table]
 
 
@@ -45,7 +39,6 @@ class Edge(BaseModel):
     source: NodeTypes
     destination: NodeTypes
     definition: Optional[str]
-    constraint_type: Constraint
     metadata: Optional[Dict] = None
 
     def __hash__(self):
