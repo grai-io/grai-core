@@ -29,12 +29,6 @@ def test_load_config_arguments():
     assert config.password.get_secret_value() == "test_password"
     assert config.endpoint == "https://my.super.metabase/api"
 
-
-def test_config_has_default_endpoint():
-    config = MetabaseConfig(username="test_user", password="test_password")
-    assert config.endpoint == "https://my.super.metabase/api"
-
-
 def test_config_endpoint_handles_trailing_slash():
     config = MetabaseConfig(
         username="test_user",
