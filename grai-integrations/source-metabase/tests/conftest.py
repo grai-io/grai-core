@@ -28,14 +28,10 @@ def connector(connector_kwargs):
     return conn
 
 
-@pytest.fixture
-def app_nodes_and_edges():
-    edges = [MockMetabaseObjects.mock_edge("tq")]
-    nodes = []
-    for edge in edges:
-        nodes.append(edge.source)
-        nodes.append(edge.destination)
-
+@pytest.fixture(scope="session")
+def app_nodes_and_edges(connector):
+    nodes = connector.get_nodes()
+    edges = connector.get_edges()
     return nodes, edges
 
 
