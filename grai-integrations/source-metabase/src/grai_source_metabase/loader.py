@@ -9,11 +9,9 @@ from retrying import retry
 
 from grai_source_metabase.models import Question, Table, NodeTypes, Edge
 
-_endpoint = "https://data.inv.tech/api"
-
 
 class MetabaseConfig(BaseSettings):
-    endpoint: str = _endpoint
+    endpoint: str
     username: SecretStr
     password: SecretStr
 
