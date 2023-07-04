@@ -16,8 +16,10 @@ class MetabaseConfig(BaseSettings):
     password: SecretStr
 
     @validator("endpoint")
-    def validate_endpoint(cls, v):
-        return v.rstrip("/")
+    def validate_endpoint(cls, endpoint: str):
+        if not endpoint.endswith('/api'):
+            raise ValueError("The Metabase API endpoint must end with '/api'")
+        return endpoint
 
     class Config:
         env_prefix = "grai_metabase_"
