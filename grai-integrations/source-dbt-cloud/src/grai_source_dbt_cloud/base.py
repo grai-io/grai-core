@@ -23,6 +23,7 @@ class DbtCloudIntegration(CombinedNodesAndEdgesMixin, EventMixin, GraiIntegratio
         self.connector = DbtCloudConnector(
             namespace=namespace,
             api_key=api_key,
+            source=source,
         )
 
     def get_nodes_and_edges(self) -> Tuple[List[SourcedNode], List[SourcedEdge]]:

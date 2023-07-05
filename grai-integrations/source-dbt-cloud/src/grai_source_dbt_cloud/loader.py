@@ -3,6 +3,7 @@ from functools import lru_cache
 from typing import List, Optional
 
 from dbtc import dbtCloudClient
+from grai_schemas.v1.source import SourceV1
 
 from grai_source_dbt.adapters import adapt_to_client
 from grai_source_dbt.processor import ManifestProcessor
@@ -25,8 +26,10 @@ class DbtCloudConnector:
     def __init__(
         self,
         api_key: str,
+        source: SourceV1,
         namespace: Optional[str] = "default",
     ):
+        self.source = source
         self.api_key = api_key
         self.namespace = namespace
 
@@ -38,7 +41,7 @@ class DbtCloudConnector:
 
         manifest_obj = self.client.cloud.get_most_recent_run_artifact(account_id=account["id"], path="manifest.json")
 
-        manifest = ManifestProcessor.load(manifest_obj, self.namespace)
+        manifest = ManifestProcessor.load(manifest_obj, self.namespace, self.source.spec)
 
         return manifest.adapted_nodes, manifest.adapted_edges
 
@@ -69,7 +72,15 @@ class DbtCloudConnector:
 
             status = "success" if run["status"] == 10 else "error"
 
-            events.append(Event(reference=run["id"], date=run["created_at"], status=status, metadata=run, nodes=nodes))
+            events.append(
+                Event(
+                    reference=run["id"],
+                    date=run["created_at"],
+                    status=status,
+                    metadata=run,
+                    nodes=nodes,
+                )
+            )
 
         return events
 
@@ -174,7 +185,10 @@ class DbtCloudConnector:
 
         while True:
             result = self.client.cloud.list_runs(
-                account_id=account_id, order_by="-created_at", limit=limit, offset=offset
+                account_id=account_id,
+                order_by="-created_at",
+                limit=limit,
+                offset=offset,
             )
 
             runs.extend(result["data"])

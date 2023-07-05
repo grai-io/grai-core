@@ -9,4 +9,4 @@ from grai_source_dbt import (
 )
 from grai_source_dbt.package_definitions import config
 
-__version__ = "0.3.0-alpha3"
+__version__ = "0.3.0-alpha8"
