@@ -17,7 +17,7 @@ class MetabaseConfig(BaseSettings):
 
     @validator("endpoint")
     def validate_endpoint(cls, endpoint: str):
-        if not endpoint.endswith('/api'):
+        if not endpoint.endswith("/api"):
             raise ValueError("The Metabase API endpoint must end with '/api'")
         return endpoint
 
@@ -262,12 +262,16 @@ class MetabaseConnector(MetabaseAPI):
             self.build_lineage()
 
         for question in self.questions_map.values():
-            question["namespace"] = self.default_namespace if self.default_namespace else "default"
+            question["namespace"] = (
+                self.default_namespace if self.default_namespace else "default"
+            )
 
         for table in self.tables_map.values():
             table["namespace"] = self.namespace_map[self.table_db_map[table["id"]]]
 
-        verified_questions = [Question(**question) for question in self.questions_map.values()]
+        verified_questions = [
+            Question(**question) for question in self.questions_map.values()
+        ]
         verified_tables = [Table(**table) for table in self.tables_map.values()]
         nodes = chain(verified_questions, verified_tables)
 

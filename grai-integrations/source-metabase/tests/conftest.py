@@ -3,7 +3,6 @@ from dotenv import dotenv_values
 
 from grai_source_metabase.adapters import adapt_to_client
 from grai_source_metabase.loader import MetabaseAPI, MetabaseConnector
-from grai_source_metabase.mock_tools import MockMetabaseObjects
 
 config = dotenv_values(".env")
 
@@ -24,7 +23,7 @@ def api(connector_kwargs):
 
 @pytest.fixture(scope="session")
 def connector(connector_kwargs):
-    conn = MetabaseConnector(**connector_kwargs, default_namespace='default')
+    conn = MetabaseConnector(**connector_kwargs, default_namespace="default")
     return conn
 
 
