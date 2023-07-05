@@ -51,5 +51,5 @@ class CacheManager(TenantManagerMixin, models.Manager):
         return result
 
 
-class SourceManager(PostgresManager, TenantManagerMixin):
+class SourceManager(TenantManagerMixin, PostgresManager):
     pass
