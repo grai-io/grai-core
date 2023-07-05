@@ -38,7 +38,7 @@ class MockClient:
         self.id = "v1"
 
     def get(self, type, **kwargs):
-        return SourceSpec(id=uuid.uuid4(), **kwargs)
+        return [SourceSpec(id=uuid.uuid4(), **kwargs)]
 
 
 @pytest.fixture
