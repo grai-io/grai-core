@@ -52,7 +52,12 @@ def update(*args, **kwargs):
 
 
 @multimethod
-def update(client: BaseClient, items: List[Union[NodeV1, EdgeV1]], active_items: Any = None, source: Any = None):
+def update(
+    client: BaseClient,
+    items: List[Union[NodeV1, EdgeV1]],
+    active_items: Any = None,
+    source: Any = None,
+):
     """
 
     Args:
@@ -75,7 +80,10 @@ def update(client: BaseClient, items: List[Union[NodeV1, EdgeV1]], active_items:
 
 @update.register
 def update(
-    client: BaseClient, items: List[T], active_items: Optional[List[T]] = None, source: Optional[SourceSpec] = None
+    client: BaseClient,
+    items: List[T],
+    active_items: Optional[List[T]] = None,
+    source: Optional[SourceSpec] = None,
 ):
     """
 

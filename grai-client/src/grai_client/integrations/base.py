@@ -47,18 +47,29 @@ class GraiIntegrationImplementation(ABC):
 
     @classmethod
     def from_client(cls, client: BaseClient, source_name: str, *args: P.args, **kwargs: P.kwargs):
+        def get_source(source_name: str) -> SourceV1:
+            sources = client.get("Source", name=source_name)
+            assert len(sources) == 1, f"Expected 1 source, got {len(sources)}"
+            return sources[0]
+
         class WithClient(cls):
             client: BaseClient
 
-            def __init__(self, client: BaseClient, *args: P.args, **kwargs: P.kwargs):
+            def __init__(
+                self,
+                client: BaseClient,
+                source: SourceV1,
+                version: str,
+                *args: P.args,
+                **kwargs: P.kwargs,
+            ):
                 self.client = client
-                super().__init__(*args, **kwargs)
+                super().__init__(source=source, version=version, *args, **kwargs)
 
             def update(self):
                 update(self.client, self.nodes())
                 update(self.client, self.edges())
 
-        source = client.get("Source", name=source_name)
         if (kwargs_version := kwargs.pop("version", None)) is not None:
             if kwargs_version != client.id:
                 raise Exception(
@@ -66,6 +77,7 @@ class GraiIntegrationImplementation(ABC):
                     f"client id=`{client.id}`. Either leave `version` empty or set it to the client id."
                 )
         version = client.id
+        source = get_source(source_name)
 
         return WithClient(client=client, source=source, version=version, *args, **kwargs)
 
