@@ -4,6 +4,7 @@ from rest_framework.authentication import BasicAuthentication, SessionAuthentica
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from django_multitenant.utils import get_current_tenant
 
 from common.permissions.multitenant import Multitenant
 from lineage.models import Edge, Node, Source
@@ -36,7 +37,8 @@ class HasSourceViewSetMixin:
         instance.data_sources.remove(source)
 
         if not instance.data_sources.exists():
-            self.perform_destroy(instance)
+            instance.is_active = False
+            instance.save()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
