@@ -16,8 +16,6 @@ class SourceSpec(GraiBaseModel):
         return self.workspace.id if isinstance(self.workspace, WorkspaceSpec) else self.workspace
 
     def __hash__(self) -> int:
-        if self.workspace_id is None:
-            raise ValueError("Cannot hash a source spec without a workspace id")
         return hash(self.name)
 
 
