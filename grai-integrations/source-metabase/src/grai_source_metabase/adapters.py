@@ -14,8 +14,8 @@ from grai_schemas.v1.metadata.nodes import (
 )
 from multimethod import multimethod
 
-from src.grai_source_metabase.models import Table, Question, Edge, NodeTypes
-from src.grai_source_metabase.package_definitions import config
+from grai_source_metabase.models import Table, Question, Edge, NodeTypes
+from grai_source_metabase.package_definitions import config
 
 
 def extract_grai_metadata(current, version):

@@ -1,35 +1,36 @@
 import pytest
 from dotenv import dotenv_values
 
-from src.grai_source_metabase.adapters import adapt_to_client
-from src.grai_source_metabase.loader import MetabaseAPI
-from src.grai_source_metabase.mock_tools import MockMetabaseObjects
+from grai_source_metabase.adapters import adapt_to_client
+from grai_source_metabase.loader import MetabaseAPI, MetabaseConnector
 
 config = dotenv_values(".env")
 
 
 @pytest.fixture(scope="session")
-def api():
-    return MetabaseAPI()
-
-
-@pytest.fixture
 def connector_kwargs():
     return {
-        "username": config["metabase_username"],
-        "password": config["metabase_password"],
-        "endpoint": "https://data.inv.tech/api/",
+        "username": config.get("grai_metabase_username", "admin@metabase.local"),
+        "password": config.get("grai_metabase_password", "Metapass123"),
+        "endpoint": config.get("grai_metabase_endpoint", "http://0.0.0.0:3000/api"),
     }
 
 
-@pytest.fixture
-def app_nodes_and_edges():
-    edges = [MockMetabaseObjects.mock_edge("tq")]
-    nodes = []
-    for edge in edges:
-        nodes.append(edge.source)
-        nodes.append(edge.destination)
+@pytest.fixture(scope="session")
+def api(connector_kwargs):
+    return MetabaseAPI(**connector_kwargs)
 
+
+@pytest.fixture(scope="session")
+def connector(connector_kwargs):
+    conn = MetabaseConnector(**connector_kwargs, default_namespace="default")
+    return conn
+
+
+@pytest.fixture(scope="session")
+def app_nodes_and_edges(connector):
+    nodes = connector.get_nodes()
+    edges = connector.get_edges()
     return nodes, edges
 
 

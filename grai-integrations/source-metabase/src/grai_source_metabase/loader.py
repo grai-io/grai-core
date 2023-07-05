@@ -7,19 +7,19 @@ from pydantic import BaseSettings, SecretStr, validator
 from requests.exceptions import ConnectionError
 from retrying import retry
 
-from src.grai_source_metabase.models import Question, Table, NodeTypes, Edge
-
-_endpoint = "https://data.inv.tech/api"
+from grai_source_metabase.models import Question, Table, NodeTypes, Edge
 
 
 class MetabaseConfig(BaseSettings):
-    endpoint: str = _endpoint
+    endpoint: str
     username: SecretStr
     password: SecretStr
 
     @validator("endpoint")
-    def validate_endpoint(cls, v):
-        return v.rstrip("/")
+    def validate_endpoint(cls, endpoint: str):
+        if not endpoint.endswith("/api"):
+            raise ValueError("The Metabase API endpoint must end with '/api'")
+        return endpoint
 
     class Config:
         env_prefix = "grai_metabase_"
@@ -203,6 +203,7 @@ class MetabaseConnector(MetabaseAPI):
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
+        self._lineage_ready = False
 
         self.default_namespace = default_namespace
 
@@ -246,6 +247,8 @@ class MetabaseConnector(MetabaseAPI):
         for question, table in self.question_table_map.items():
             self.question_db_map[question] = self.table_db_map[table]
 
+        self._lineage_ready = True
+
     def get_nodes(self) -> List[NodeTypes]:
         """
         Retrieves the list of nodes representing tables and questions.
@@ -255,20 +258,22 @@ class MetabaseConnector(MetabaseAPI):
 
         """
 
+        if not self._lineage_ready:
+            self.build_lineage()
+
         for question in self.questions_map.values():
-            question["namespace"] = self.namespace_map[
-                self.question_db_map[question["id"]]
-            ]
+            question["namespace"] = (
+                self.default_namespace if self.default_namespace else "default"
+            )
 
         for table in self.tables_map.values():
             table["namespace"] = self.namespace_map[self.table_db_map[table["id"]]]
 
-        nodes = chain(
-            chain.from_iterable(Table(**table) for table in self.tables_map.values()),
-            chain.from_iterable(
-                Question(**question) for question in self.questions_map.values()
-            ),
-        )
+        verified_questions = [
+            Question(**question) for question in self.questions_map.values()
+        ]
+        verified_tables = [Table(**table) for table in self.tables_map.values()]
+        nodes = chain(verified_questions, verified_tables)
 
         return list(nodes)
 
@@ -281,15 +286,17 @@ class MetabaseConnector(MetabaseAPI):
 
         """
 
-        edges = []
-        for question, table in self.question_table_map.items():
-            edges.append(
-                Edge(
-                    source=Question(**self.questions_map[question]),
-                    target=Table(**self.tables_map[table]),
-                    label="question_table",
-                    namespace=self.namespace_map[self.question_db_map[question]],
-                )
-            )
+        if not self._lineage_ready:
+            self.build_lineage()
 
-        return edges
+        edges = (
+            Edge(
+                source=Question(**self.questions_map[question]),
+                target=Table(**self.tables_map[table]),
+                label="question_table",
+                namespace=self.namespace_map[self.question_db_map[question]],
+            )
+            for question, table in self.question_table_map.items()
+        )
+
+        return list(edges)
