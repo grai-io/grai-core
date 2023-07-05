@@ -98,7 +98,11 @@ class TestConnector:
         Raises:
 
         """
-        node_names = {node for node in nodes}
+        node_names = {}
+        for node in nodes:
+            node_names.setdefault(node, 0)
+            node_names[node] += 1
+
         assert len(node_names) == len(nodes)
 
     def test_all_manifest_edge_full_names_unique(self, edges):
@@ -222,6 +226,46 @@ class TestConnector:
         test_type = SourcedEdgeV1
         for item in edges:
             assert isinstance(item, test_type), f"{type(item)} is not of type {test_type}"
+
+    def test_v1_adapted_edge_source_and_destinations_are_unique(self, edges):
+        """
+
+        Args:
+            edges:
+
+        Returns:
+
+        Raises:
+
+        """
+        edge_counts = {}
+        for edge in edges:
+            s_d_id = (
+                (edge.spec.source.namespace, edge.spec.source.name),
+                (edge.spec.destination.namespace, edge.spec.destination.name),
+            )
+            edge_counts.setdefault(s_d_id, 0)
+            edge_counts[s_d_id] += 1
+
+        assert len(edge_counts) == len(edges), "All edge source and destination pairs should be unique"
+
+    def test_v1_adapted_edge_no_loops(self, edges):
+        """
+
+        Args:
+            edges:
+
+        Returns:
+
+        Raises:
+
+        """
+        edge_s_d_ids = {
+            (n.spec.source.namespace, n.spec.source.name): (n.spec.destination.namespace, n.spec.destination.name)
+            for n in edges
+        }
+        for k, v in edge_s_d_ids.items():
+            assert edge_s_d_ids.get(v, None) != k, "A loop was detected between two edges. i.e. A -> B -> A"
 
     def test_v1_adapted_edge_sources_have_nodes(self, nodes, edges):
         """

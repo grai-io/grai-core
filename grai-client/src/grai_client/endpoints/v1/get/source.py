@@ -110,4 +110,4 @@ def get_source_from_spec(
 
     validated_query = expects_unique_query(paginated_get)
     result = validated_query(client, url, options=options)
-    return result
+    return SourceV1.from_spec(result)

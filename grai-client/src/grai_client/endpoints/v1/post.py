@@ -284,6 +284,8 @@ def post_source_v1(client: ClientV1, grai_type: SourceSpec, options: ClientOptio
             raise ValueError(message)
 
     payload = grai_type.dict(exclude_none=True)
+    payload.pop("workspace")
+
     response = post(client, url, payload, options=options).json()
     response["workspace"] = client.workspace
     return SourceV1.from_spec(response)

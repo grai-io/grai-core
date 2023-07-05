@@ -1,20 +1,49 @@
+import uuid
+
+import dotenv
 import pytest
+from grai_client.endpoints.v1.client import ClientV1
 from grai_schemas.v1.source import SourceSpec
 from grai_schemas.v1.workspace import WorkspaceSpec
 
 from grai_source_fivetran.adapters import adapt_to_client
+from grai_source_fivetran.base import FivetranIntegration
 from grai_source_fivetran.loader import FivetranAPI, FivetranConnector
 from grai_source_fivetran.mock_tools import MockFivetranObjects
 
+dotenv.load_dotenv()
 
-@pytest.fixture
+
+@pytest.fixture(scope="session")
 def default_workspace():
     return WorkspaceSpec(name="default", organization="default")
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def mock_source(default_workspace):
     return SourceSpec(name="BigQueryTest", workspace=default_workspace)
+
+
+@pytest.fixture(scope="session")
+def client(mock_source):
+    """ """
+    try:
+        client = ClientV1(url="http://localhost:8000", username="null@grai.io", password="super_secret")
+        if not client.get("Source", name=mock_source.name):
+            client.post(mock_source)
+    except:
+
+        class MockClient:
+            pass
+
+        client = MockClient()
+
+    return client
+
+
+@pytest.fixture(scope="session")
+def run_live(client):
+    return isinstance(client, ClientV1)
 
 
 # You may need to create a .env file to run these tests
@@ -34,7 +63,7 @@ def connector_kwargs():
     }
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def app_nodes_and_edges():
     """ """
     types_to_mock = ["cc", "ct", "tc", "tt"]
@@ -76,20 +105,40 @@ def app_edges(app_nodes_and_edges):
     return app_nodes_and_edges[1]
 
 
-@pytest.fixture
-def nodes_and_edges(app_nodes_and_edges, mock_source):
+@pytest.fixture(scope="session")
+def namespace_map(run_live):
+    if run_live:
+        api = FivetranAPI()
+        namespace_map = {
+            conn.id: {"source": str(uuid.uuid4()), "destination": str(uuid.uuid4())} for conn in api.get_connectors()
+        }
+        return namespace_map
+    else:
+        return {}
+
+
+@pytest.fixture(scope="session")
+def nodes_and_edges(app_nodes_and_edges, client, mock_source, run_live, namespace_map):
     """
 
     Args:
         app_nodes_and_edges:
+        client:
+        mock_source:
+        run_live:
+        namespace_map:
 
     Returns:
 
     Raises:
 
     """
-    nodes = adapt_to_client(app_nodes_and_edges[0], mock_source, "v1")
-    edges = adapt_to_client(app_nodes_and_edges[1], mock_source, "v1")
+    if run_live:
+        conn = FivetranIntegration.from_client(client, source=mock_source, namespaces=namespace_map)
+        nodes, edges = conn.get_nodes_and_edges()
+    else:
+        nodes = adapt_to_client(app_nodes_and_edges[0], mock_source, "v1")
+        edges = adapt_to_client(app_nodes_and_edges[1], mock_source, "v1")
     return nodes, edges
 
 

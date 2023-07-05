@@ -299,7 +299,7 @@ def expects_unique_query(fn) -> Callable[..., T]:
         result = fn(*args, **kwargs)
         if (num_results := len(result)) == 0:
             missing_message = (
-                f"A request to `{fn.__name__}{tuple(args)}` was marked as expecting a single unique response ."
+                f"A request to `{fn.__name__}{tuple(args)}` was marked as expecting a single unique response. "
                 f"However, no results were returned by the server"
             )
             raise ObjectNotFoundError(missing_message)

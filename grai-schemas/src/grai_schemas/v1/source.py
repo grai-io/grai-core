@@ -36,18 +36,18 @@ class SourceV1(GraiBaseModel):
         return hash(self.spec)
 
     @classmethod
-    def from_spec(cls, spec_dict: dict) -> "SourceV1":
+    def from_spec(cls, spec: Union[dict, SourceSpec]) -> "SourceV1":
         """
 
         Args:
-            spec_dict (Dict):
+            spec:
 
         Returns:
 
         Raises:
 
         """
-        return cls(version="v1", type="Source", spec=spec_dict)
+        return cls(version="v1", type="Source", spec=spec)
 
 
 __all__ = ["SourceSpec", "SourceV1", "DataSourceMixin", "DataSourcesMixin"]

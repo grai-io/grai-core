@@ -125,10 +125,10 @@ class FivetranAPI:
         """
 
         Args:
-            request (Callable[..., requests.Response]):
-            url (str):
-            headers (Optional[Dict], optional):  (Default value = None)
-            params (Optional[Dict], optional):  (Default value = None)
+            request:
+            url:
+            headers:  (Default value = None)
+            params:  (Default value = None)
             **kwargs:
 
         Returns:
@@ -153,10 +153,10 @@ class FivetranAPI:
         """
 
         Args:
-            request (Callable[..., requests.Response]):
-            url (str):
-            headers (Optional[Dict], optional):  (Default value = None)
-            params (Optional[Dict], optional):  (Default value = None)
+            request:
+            url:
+            headers:  (Default value = None)
+            params:  (Default value = None)
             **kwargs:
 
         Returns:
@@ -169,7 +169,7 @@ class FivetranAPI:
             """
 
             Args:
-                item (Dict):
+                item):
 
             Returns:
 
@@ -197,9 +197,9 @@ class FivetranAPI:
         """
 
         Args:
-            url (str):
-            headers (Optional[Dict], optional):  (Default value = None)
-            params (Optional[Dict], optional):  (Default value = None)
+            url:
+            headers:  (Default value = None)
+            params:  (Default value = None)
 
         Returns:
 
@@ -215,8 +215,8 @@ class FivetranAPI:
         """
 
         Args:
-            connector_id (str):
-            limit (Optional[int], optional):  (Default value = None)
+            connector_id:
+            limit:  (Default value = None)
 
         Returns:
 
@@ -230,8 +230,8 @@ class FivetranAPI:
         """
 
         Args:
-            connector_id (str):
-            limit (Optional[int], optional):  (Default value = None)
+            connector_id:
+            limit:  (Default value = None)
 
         Returns:
 
@@ -245,8 +245,8 @@ class FivetranAPI:
         """
 
         Args:
-            connector_id (str):
-            limit (Optional[int], optional):  (Default value = None)
+            connector_id:
+            limit:  (Default value = None)
 
         Returns:
 
@@ -260,7 +260,7 @@ class FivetranAPI:
         """
 
         Args:
-            limit (Optional[int], optional):  (Default value = None)
+            limit:  (Default value = None)
 
         Returns:
 
@@ -274,8 +274,8 @@ class FivetranAPI:
         """
 
         Args:
-            group_id (str):
-            limit (Optional[int], optional):  (Default value = None)
+            group_id:
+            limit:  (Default value = None)
 
         Returns:
 
@@ -517,6 +517,10 @@ class FivetranConnector(FivetranAPI):
         self.tables: Dict[str, TableMetadataResponse] = {}
         self.columns: Dict[str, ColumnMetadataResponse] = {}
 
+        self._nodes = None
+        self._edges = None
+        self.lineage_ready = False
+
     def build_lineage(self):
         """ """
         connector_ids = [[conn_id] for conn_id in self.connectors.keys()]
@@ -544,9 +548,13 @@ class FivetranConnector(FivetranAPI):
         Raises:
 
         """
+        if self.lineage_ready:
+            return self._nodes, self._edges
+
+        self.build_lineage()
+
         # table.parent_id -> schema.id
         # column.parent_id -> table.id
-        self.build_lineage()
         tables = {
             table.id: Table.from_fivetran_models(
                 self.schemas[table.parent_id],
@@ -573,6 +581,8 @@ class FivetranConnector(FivetranAPI):
             for col, table in zip(cols, tables[cols[0].fivetran_table_id])
         )
 
-        nodes = chain(chain.from_iterable(tables.values()), *columns)
-        edges = chain(column_edges, table_edges, table_to_column_edges)
-        return list(nodes), list(edges)
+        self._nodes = list(chain(chain.from_iterable(tables.values()), *columns))
+        self._edges = list(chain(column_edges, table_edges, table_to_column_edges))
+        self.lineage_ready = True
+
+        return self._nodes, self._edges

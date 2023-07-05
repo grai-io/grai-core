@@ -4,7 +4,7 @@ from grai_schemas.base import Edge, Node
 from grai_schemas.utilities import merge, merge_models
 from grai_schemas.v1.edge import EdgeV1, SourcedEdgeV1
 from grai_schemas.v1.node import NodeV1, SourcedNodeV1
-from grai_schemas.v1.source import SourceSpec
+from grai_schemas.v1.source import SourceSpec, SourceV1
 from multimethod import multimethod
 
 from grai_client.endpoints.client import BaseClient
@@ -39,51 +39,11 @@ def compute_graph_changes(items: List[T], active_items: List[T]) -> Tuple[List[T
     return new_items, updated_items, deleted_from_sources
 
 
-@multimethod
-def update(*args, **kwargs):
-    """
-
-    Args:
-        client:
-        items:
-        active_items:  (Default value = None)
-    """
-    raise NotImplementedError(f"Updated is not implemented for arguments of typ {[type(arg) for arg in args]}")
-
-
-@multimethod
 def update(
     client: BaseClient,
-    items: List[Union[NodeV1, EdgeV1]],
-    active_items: Any = None,
-    source: Any = None,
-):
-    """
-
-    Args:
-        client:
-        items:
-        active_items:  (Default value = None)
-
-    Returns:
-
-    Raises:
-
-    """
-    if not items:
-        return
-
-    raise NotImplementedError(
-        f"Update is not supported for NodeV1 or EdgeV1. Please use SourcedNodeV1 or SourcedEdgeV1 instead."
-    )
-
-
-@update.register
-def update(
-    client: BaseClient,
-    items: List[T],
+    items: List[Union[SourcedNodeV1, SourcedEdgeV1]],
     active_items: Optional[List[T]] = None,
-    source: Optional[SourceSpec] = None,
+    source: Optional[Union[SourceV1, SourceSpec]] = None,
 ):
     """
 
@@ -106,8 +66,19 @@ def update(
             raise ValueError(
                 f"All items provided to `update` must be of the same type. Instead got a mix of types:" f" {item_types}"
             )
+    if any(isinstance(item, Union[NodeV1, EdgeV1]) for item in items):
+        raise NotImplementedError(
+            f"Update is not supported for NodeV1 or EdgeV1. Please use SourcedNodeV1 or SourcedEdgeV1 instead."
+        )
     if source is None:
-        source = items[0].spec.data_source
+        source_spec = items[0].spec.data_source
+    elif isinstance(source, SourceV1):
+        source_spec = source.spec
+    else:
+        source_spec = source
+
+    if source_spec.id is None:
+        source_spec = client.get(source_spec).spec
 
     sources = {item.spec.data_source for item in items}
     if len(sources) != 1:
@@ -117,7 +88,7 @@ def update(
         )
 
     if active_items is None:
-        active_items = client.get(items[0].type, source.id)
+        active_items = client.get(items[0].type, source_spec.id)
 
     new_items, updated_items, deleted_items = compute_graph_changes(items, active_items)
 

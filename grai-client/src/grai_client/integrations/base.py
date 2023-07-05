@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional, ParamSpec, Tuple, Union
+from uuid import UUID
 
 from grai_schemas.base import Event, SourcedEdge, SourcedNode
 from grai_schemas.v1.source import SourceSpec, SourceV1
@@ -46,12 +47,13 @@ class GraiIntegrationImplementation(ABC):
         pass
 
     @classmethod
-    def from_client(cls, client: BaseClient, source_name: str, *args: P.args, **kwargs: P.kwargs):
-        def get_source(source_name: str) -> SourceV1:
-            sources = client.get("Source", name=source_name)
-            assert len(sources) == 1, f"Expected 1 source, got {len(sources)}"
-            return sources[0]
-
+    def from_client(
+        cls,
+        client: BaseClient,
+        source: Union[SourceV1, SourceSpec, str, UUID] = None,
+        *args: P.args,
+        **kwargs: P.kwargs,
+    ):
         class WithClient(cls):
             client: BaseClient
 
@@ -70,6 +72,13 @@ class GraiIntegrationImplementation(ABC):
                 update(self.client, self.nodes())
                 update(self.client, self.edges())
 
+        if isinstance(source, str):
+            sources = client.get("Source", name=source)
+            assert len(sources) == 1, f"Expected 1 source, got {len(sources)}"
+            source = sources[0]
+        elif isinstance(source, UUID):
+            source = client.get("Source", source)
+
         if (kwargs_version := kwargs.pop("version", None)) is not None:
             if kwargs_version != client.id:
                 raise Exception(
@@ -77,7 +86,6 @@ class GraiIntegrationImplementation(ABC):
                     f"client id=`{client.id}`. Either leave `version` empty or set it to the client id."
                 )
         version = client.id
-        source = get_source(source_name)
 
         return WithClient(client=client, source=source, version=version, *args, **kwargs)
 

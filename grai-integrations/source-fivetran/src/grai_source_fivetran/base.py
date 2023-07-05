@@ -48,13 +48,13 @@ class FivetranIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementat
         Raises:
 
         """
-        node_hashes = [hash(node) for node in nodes]
-        if (n_hashes := len(set(node_hashes))) == len(nodes):
+        node_hashes = {hash(node) for node in nodes}
+        if (n_hashes := len(node_hashes)) != len(nodes):
             message = (
                 f"The Fivetran connection generated {len(nodes) - n_hashes} duplicated nodes. "
                 f"This is likely because there are multiple Fivetran tables with the same name. "
                 f"You can disambiguate these tables by identifying them with different namespaces. Please "
-                f"see the documentation for more information. https://docs.grai.io/tooling/github-actions#fivetran"
+                f"see the documentation for more information. https://docs.grai.io/integrations/fivetran"
             )
             raise ValueError(message)
 
