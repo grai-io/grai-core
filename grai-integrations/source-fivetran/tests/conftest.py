@@ -8,7 +8,7 @@ from grai_schemas.v1.workspace import WorkspaceSpec
 
 from grai_source_fivetran.adapters import adapt_to_client
 from grai_source_fivetran.base import FivetranIntegration
-from grai_source_fivetran.loader import FivetranAPI, FivetranConnector
+from grai_source_fivetran.loader import FivetranAPI
 from grai_source_fivetran.mock_tools import MockFivetranObjects
 
 dotenv.load_dotenv()
@@ -29,9 +29,12 @@ def client(mock_source):
     """ """
     try:
         client = ClientV1(
-            url="http://localhost:8000",
+            "localhost",
+            "8000",
+            insecure=True,
             username="null@grai.io",
             password="super_secret",
+            workspace="default/default",
         )
         if not client.get("Source", name=mock_source.name):
             client.post(mock_source)
