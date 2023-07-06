@@ -10,4 +10,4 @@ from grai_schemas import (
 from grai_schemas.base import GraiBaseModel
 from grai_schemas.package_definitions import config
 
-__version__ = "0.1.15"
+__version__ = "0.1.16"

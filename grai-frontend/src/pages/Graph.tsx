@@ -53,8 +53,6 @@ const Graph: React.FC<GraphProps> = ({ alwaysShow }) => {
   const [tables, setTables] = useState<Table[]>([])
   const ref = useRef<HTMLDivElement>(null)
 
-  const filter = searchParams.get("filter") ?? null
-
   const [loadGraph, { loading, error, refetch }] = useLazyQuery<
     GetTablesAndEdges,
     GetTablesAndEdgesVariables
@@ -67,7 +65,7 @@ const Graph: React.FC<GraphProps> = ({ alwaysShow }) => {
           organisationName,
           workspaceName,
           filters: {
-            filter,
+            filters: searchParams.get("filters")?.split(",") ?? null,
             min_x: Math.round((-viewport.x - 500) / viewport.zoom),
             max_x: Math.round(
               (-viewport.x + (ref.current?.clientWidth ?? 0)) / viewport.zoom
@@ -79,7 +77,7 @@ const Graph: React.FC<GraphProps> = ({ alwaysShow }) => {
           },
         },
       }).then(res => setTables(res.data?.workspace.graph ?? [])),
-    [filter, loadGraph, organisationName, workspaceName]
+    [searchParams, loadGraph, organisationName, workspaceName]
   )
 
   useEffect(() => {
