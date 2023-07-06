@@ -42,7 +42,7 @@ class GraphCache:
     def cache_node(self, node):
         node_type = node.metadata.get("grai", {}).get("node_type")
 
-        if node_type == "Table":
+        if node_type in ["Table", "Query"]:
             self.query(
                 """
                     MERGE (table:Table {id: $id})
