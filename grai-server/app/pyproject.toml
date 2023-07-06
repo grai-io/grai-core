@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "the_guide"
-version = "0.1.32"
+version = "0.1.33"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>", "Edward Louth <edward@grai.io>"]
 license = "Elastic-2.0"
@@ -87,3 +87,5 @@ build-backend = "poetry.core.masonry.api"
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "the_guide.settings.dev"
 asyncio_mode = "auto"
+
+[tool.poetry_bumpversion.file."the_guide/__init__.py"]
