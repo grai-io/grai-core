@@ -8,7 +8,7 @@ services:
       POSTGRES_USER: metabase
       POSTGRES_DB: metabase
     volumes:
-      - ./init/seed.sql:/docker-entrypoint-initdb.d/seed.sql
+      - ./init/init.sql:/docker-entrypoint-initdb.d/seed.sql
 
   metabase:
     image: metabase/metabase:latest
@@ -22,6 +22,9 @@ services:
       MB_DB_PASS: mysecretpassword
       MB_DB_NAME: metabase
       MB_SECRET_KEY: mysecretkey
+      MB_DB_FILE: /metabase-data/metabase.db
+    volumes:
+      - ./init/metabase-data:/metabase-data
     ports:
       - 3000:3000
 

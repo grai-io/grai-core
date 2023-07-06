@@ -1,13 +1,12 @@
 import json
 from itertools import chain
-from typing import Optional, Callable, Dict, List
+from typing import Callable, Dict, List, Optional
 
 import requests
+from grai_source_metabase.models import Edge, NodeTypes, Question, Table
 from pydantic import BaseSettings, SecretStr, validator
 from requests.exceptions import ConnectionError
 from retrying import retry
-
-from grai_source_metabase.models import Question, Table, NodeTypes, Edge
 
 
 class MetabaseConfig(BaseSettings):
@@ -56,9 +55,10 @@ class MetabaseAPI:
 
         self.session = requests.Session()
         self.session.headers.update({"Content-Type": "application/json"})
+        self.session.headers.update(self.authenticate())
 
     @retry(stop_max_attempt_number=3, wait_fixed=5000)
-    def authenticate(self, request: Callable[..., requests.Response], url: str):
+    def authenticate(self) -> Dict[str, str]:
         """
         Authenticates the user and sets the session headers.
 
@@ -71,8 +71,8 @@ class MetabaseAPI:
 
         """
         try:
-            response = request(
-                url=url,
+            response = requests.post(
+                url=f"{self.config.endpoint}/session",
                 json={
                     "username": self.config.username.get_secret_value(),
                     "password": self.config.password.get_secret_value(),
@@ -80,11 +80,13 @@ class MetabaseAPI:
             )
 
             response.raise_for_status()
-            self.session.headers.update({"X-Metabase-Session": response.json()["id"]})
+            return {"X-Metabase-Session": response.json()["id"]}
+
         except ConnectionError as ce:
             raise ce
 
-    def make_request(self, request: Callable[..., requests.Response], url: str):
+    @staticmethod
+    def make_request(request: Callable[..., requests.Response], url: str):
         """
         Makes an authenticated API request and returns the JSON response.
 
@@ -111,9 +113,8 @@ class MetabaseAPI:
             dict: The JSON response containing the list of questions.
 
         """
-
-        self.authenticate(self.session.post, f"{self.config.endpoint}/session")
-        return self.make_request(self.session.get, f"{self.config.endpoint}/card")
+        url = f"{self.config.endpoint}/card"
+        return self.make_request(self.session.get, url)
 
     def get_tables(self):
         """
@@ -123,9 +124,8 @@ class MetabaseAPI:
             dict: The JSON response containing the list of tables.
 
         """
-
-        self.authenticate(self.session.post, f"{self.config.endpoint}/session")
-        return self.make_request(self.session.get, f"{self.config.endpoint}/table")
+        url = f"{self.config.endpoint}/table"
+        return self.make_request(self.session.get, url)
 
     def get_dbs(self):
         """
@@ -135,9 +135,8 @@ class MetabaseAPI:
             dict: The JSON response containing the list of databases.
 
         """
-
-        self.authenticate(self.session.post, f"{self.config.endpoint}/session")
-        return self.make_request(self.session.get, f"{self.config.endpoint}/database")
+        url = f"{self.config.endpoint}/database"
+        return self.make_request(self.session.get, url)
 
     def get_collections(self):
         """
@@ -223,7 +222,6 @@ class MetabaseConnector(MetabaseAPI):
             for question in self.get_questions()
             if question["archived"] is False
         }
-
         self.namespace_map = build_namespace_map(
             self.dbs_map, namespaces, default_namespace
         )
@@ -308,5 +306,4 @@ class MetabaseConnector(MetabaseAPI):
             )
             for question, table in self.question_table_map.items()
         )
-
         return list(edges)
