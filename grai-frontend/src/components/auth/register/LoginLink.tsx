@@ -8,6 +8,7 @@ const LoginLink: React.FC = () => (
     sx={{
       pl: 2,
       mt: 2,
+      mb: 10,
       height: "72px",
       backgroundColor: "transparent",
       borderRadius: "20px",
