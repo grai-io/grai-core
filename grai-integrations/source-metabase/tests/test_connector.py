@@ -1,6 +1,6 @@
 import pytest
 from grai_schemas import config as core_config
-from grai_schemas.v1 import NodeV1, EdgeV1
+from grai_schemas.v1 import EdgeV1, NodeV1
 from grai_schemas.v1.metadata.edges import GenericEdgeMetadataV1
 from grai_schemas.v1.metadata.edges import Metadata as EdgeV1Metadata
 from grai_schemas.v1.metadata.nodes import Metadata as NodeV1Metadata
@@ -202,9 +202,7 @@ class TestConnector:
         """
         test_type = NodeV1
         for item in nodes:
-            assert isinstance(
-                item, test_type
-            ), f"{type(item)} is not of type {test_type}"
+            assert isinstance(item, test_type), f"{type(item)} is not of type {test_type}"
 
     def test_v1_adapt_edges(self, edges):
         """
@@ -219,9 +217,7 @@ class TestConnector:
         """
         test_type = EdgeV1
         for item in edges:
-            assert isinstance(
-                item, test_type
-            ), f"{type(item)} is not of type {test_type}"
+            assert isinstance(item, test_type), f"{type(item)} is not of type {test_type}"
 
     def test_v1_adapted_edge_sources_have_nodes(self, nodes, edges):
         """
@@ -237,9 +233,7 @@ class TestConnector:
         """
         node_ids = {(n.spec.namespace, n.spec.name) for n in nodes}
         edge_source_ids = {(n.spec.source.namespace, n.spec.source.name) for n in edges}
-        assert (
-            len(edge_source_ids - node_ids) == 0
-        ), "All edge sources should exist in the node list"
+        assert len(edge_source_ids - node_ids) == 0, "All edge sources should exist in the node list"
 
     def test_v1_adapted_edge_destination_have_nodes(self, nodes, edges):
         """
@@ -254,12 +248,8 @@ class TestConnector:
 
         """
         node_ids = {(n.spec.namespace, n.spec.name) for n in nodes}
-        edge_destination_ids = {
-            (n.spec.destination.namespace, n.spec.destination.name) for n in edges
-        }
-        assert (
-            len(edge_destination_ids - node_ids) == 0
-        ), "All edge destinations should exist in the node list"
+        edge_destination_ids = {(n.spec.destination.namespace, n.spec.destination.name) for n in edges}
+        assert len(edge_destination_ids - node_ids) == 0, "All edge destinations should exist in the node list"
 
     def test_has_table_to_question_metadata(self, edges):
         """
@@ -272,9 +262,7 @@ class TestConnector:
         Raises:
 
         """
-        assert all(
-            isinstance(edge.spec.metadata.grai, GenericEdgeMetadataV1) for edge in edges
-        )
+        assert all(isinstance(edge.spec.metadata.grai, GenericEdgeMetadataV1) for edge in edges)
 
     def test_metadata_has_core_metadata_ids(self, nodes, edges):
         """
@@ -307,11 +295,7 @@ class TestConnector:
 
         """
         for node in nodes:
-            assert isinstance(
-                getattr(node.spec.metadata, core_config.metadata_id), NodeV1Metadata
-            ), node.spec.metadata
+            assert isinstance(getattr(node.spec.metadata, core_config.metadata_id), NodeV1Metadata), node.spec.metadata
 
         for edge in edges:
-            assert isinstance(
-                getattr(edge.spec.metadata, core_config.metadata_id), EdgeV1Metadata
-            )
+            assert isinstance(getattr(edge.spec.metadata, core_config.metadata_id), EdgeV1Metadata)

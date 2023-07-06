@@ -2,7 +2,7 @@ import importlib
 from functools import wraps
 from typing import Callable, TypeVar
 
-from grai_source_metabase.models import Question, Edge, Table
+from grai_source_metabase.models import Edge, Question, Table
 
 T = TypeVar("T")
 
@@ -39,9 +39,7 @@ def faker_dep_wrapper(fn: Callable[..., T]):
 
         """
         if not has_faker:
-            raise ModuleNotFoundError(
-                "Mock testing tools require `faker`. Try running `pip install faker`"
-            )
+            raise ModuleNotFoundError("Mock testing tools require `faker`. Try running `pip install faker`")
         return fn(*args, **kwargs)
 
     return inner
@@ -68,9 +66,7 @@ class MockMetabaseObjects:
                     "name": "display_name",
                     "base_type": "type/Text",
                     "effective_type": "type/Text",
-                    "fingerprint": {
-                        "global": {"distinct-count": 1, "nil%": 0, "sample": "sample"}
-                    },
+                    "fingerprint": {"global": {"distinct-count": 1, "nil%": 0, "sample": "sample"}},
                 }
             ],
             creator={

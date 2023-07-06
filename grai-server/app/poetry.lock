@@ -1788,6 +1788,25 @@ pydantic = ">=1.9.1,<2.0.0"
 PyYAML = ">=6.0,<7.0"
 
 [[package]]
+name = "grai-source-metabase"
+version = "0.1.0"
+description = ""
+optional = false
+python-versions = ">=3.10,<4.0"
+files = [
+    {file = "grai_source_metabase-0.1.0-py3-none-any.whl", hash = "sha256:e242deb43511846bf62e39ef41fa0141fb8eb44f53d2938dae016d6494346dfb"},
+    {file = "grai_source_metabase-0.1.0.tar.gz", hash = "sha256:3f98c7b835f00849e5a3eed757748f9a39b3900c7b842ab27c18ed86cb63ae5f"},
+]
+
+[package.dependencies]
+grai-client = ">=0.2.19,<0.3.0"
+grai-schemas = ">=0.1.15,<0.2.0"
+multimethod = ">=1.9.1,<2.0.0"
+pydantic = ">=1.10.9,<2.0.0"
+requests = ">=2.31.0,<3.0.0"
+retrying = ">=1.3.4,<2.0.0"
+
+[[package]]
 name = "grai-source-mssql"
 version = "0.0.11"
 description = ""
@@ -3648,6 +3667,20 @@ requests = ">=2.0.0"
 rsa = ["oauthlib[signedtoken] (>=3.0.0)"]
 
 [[package]]
+name = "retrying"
+version = "1.3.4"
+description = "Retrying"
+optional = false
+python-versions = "*"
+files = [
+    {file = "retrying-1.3.4-py3-none-any.whl", hash = "sha256:8cc4d43cb8e1125e0ff3344e9de678fefd85db3b750b81b2240dc0183af37b35"},
+    {file = "retrying-1.3.4.tar.gz", hash = "sha256:345da8c5765bd982b1d1915deb9102fd3d1f7ad16bd84a9700b85f64d24e8f3e"},
+]
+
+[package.dependencies]
+six = ">=1.7.0"
+
+[[package]]
 name = "rfc3339-validator"
 version = "0.1.4"
 description = "A pure python RFC3339 validator"
@@ -4319,4 +4352,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "f4830f3c4b05b8cf184956dde062b9140abee640f399fc05c2dae78be5d34561"
+content-hash = "a24e97a8215109a3f60fa259a0ae59603943e355e85b0fc0e31fa746958f3ba0"

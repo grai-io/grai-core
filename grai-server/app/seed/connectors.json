@@ -372,6 +372,46 @@
     },
     {
         "model": "connections.connector",
+        "pk": "bb3de047-fa4e-4b8e-b4af-d75b1063a1d8",
+        "fields": {
+            "name": "Metabase",
+            "slug": "metabase",
+            "metadata": {
+                "docs_url": "https://docs.grai.io/integrations/metabase",
+                "fields": [
+                    {
+                        "name": "username",
+                        "required": true,
+                        "order": 0
+                    },
+                    {
+                        "name": "password",
+                        "required": true,
+                        "secret": true,
+                        "order": 1
+                    },
+                    {
+                        "name": "namespaces",
+                        "required": false,
+                        "order": 2
+                    },
+                    {
+                        "name": "endpoint",
+                        "required": true,
+                        "order": 3
+                    }
+                ]
+            },
+            "is_active": true,
+            "icon": "/icons/data-sources/metabase.png",
+            "category": "data tools",
+            "coming_soon": false,
+            "created_at": "2023-01-11T21:17:16.264Z",
+            "updated_at": "2023-01-11T21:17:16.264Z"
+        }
+    },
+        {
+        "model": "connections.connector",
         "pk": "a9158bbc-eeca-4b10-806a-1b0a7b997a8f",
         "fields": {
             "name": "Fivetran",

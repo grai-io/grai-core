@@ -2,15 +2,13 @@ from typing import List, Literal, Optional, Tuple
 
 from grai_client.endpoints.client import BaseClient
 from grai_client.update import update
-from grai_schemas.base import Node, Edge
+from grai_schemas.base import Edge, Node
 
-from adapters import adapt_to_client
-from loader import MetabaseConnector
+from grai_source_metabase.adapters import adapt_to_client
+from grai_source_metabase.loader import MetabaseConnector
 
 
-def get_nodes_and_edges(
-    connector: MetabaseConnector, version: Literal["v1"]
-) -> Tuple[List[Node], List[Edge]]:
+def get_nodes_and_edges(connector: MetabaseConnector, version: Literal["v1"]) -> Tuple[List[Node], List[Edge]]:
     """
 
     Args:
@@ -33,7 +31,7 @@ def get_nodes_and_edges(
 def update_server(
     client: BaseClient,
     namespaces: Optional = None,
-    default_namespace: Optional[str] = None,
+    metabase_namespace: Optional[str] = None,
     username: Optional[str] = None,
     password: Optional[str] = None,
     endpoint: Optional[str] = None,
@@ -41,12 +39,12 @@ def update_server(
     """
 
     Args:
-        password: Optional[str]
+        password:
         username: Optional[str]
-        client (BaseClient):
-        namespaces (Optional[NamespaceTypes], optional):  (Default value = None)
-        default_namespace (Optional[str], optional):  (Default value = None)
-        endpoint (Optional[str], optional):  (Default value = None)
+        client:
+        namespaces:  (Default value = None)
+        metabase_namespace:  (Default value = None)
+        endpoint:  (Default value = None)
 
     Returns:
 
@@ -55,7 +53,7 @@ def update_server(
     """
     kwargs = {
         "namespaces": namespaces,
-        "default_namespace": default_namespace,
+        "metabase_namespace": metabase_namespace,
         "username": username,
         "password": password,
         "endpoint": endpoint,
