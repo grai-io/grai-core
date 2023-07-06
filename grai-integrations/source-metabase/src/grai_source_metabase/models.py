@@ -8,10 +8,11 @@ class Question(BaseModel):
     name: str
     creator: Dict[str, Any]
     database_id: int
-    table_id: int | None
-    collection: Dict[str, Any] | None
-    public_uuid: str | None
     namespace: str
+
+    @property
+    def full_name(self):
+        return f"{self.name}.{self.id}"
 
 
 class Table(BaseModel):
