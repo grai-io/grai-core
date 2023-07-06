@@ -1,44 +1,18 @@
-from typing import Any, Dict, List, Literal, Union, Sequence
+from typing import Any, Dict, List, Literal, Sequence, Union
 
 from grai_schemas import config as base_config
 from grai_schemas.schema import Schema
-from grai_schemas.v1 import NodeV1, EdgeV1
-from grai_schemas.v1.metadata.edges import (
-    GenericEdgeMetadataV1,
-    EdgeMetadataTypeLabels,
-)
+from grai_schemas.v1 import EdgeV1, NodeV1
+from grai_schemas.v1.metadata.edges import EdgeMetadataTypeLabels, GenericEdgeMetadataV1
 from grai_schemas.v1.metadata.nodes import (
-    TableMetadata,
-    NodeMetadataTypeLabels,
     GenericNodeMetadataV1,
+    NodeMetadataTypeLabels,
+    TableMetadata,
 )
-from multimethod import multimethod
-
-from grai_source_metabase.models import Table, Question, Edge, NodeTypes
+from grai_source_metabase.models import Edge, NodeTypes, Question, Table
 from grai_source_metabase.package_definitions import config
-
-
-def extract_grai_metadata(current, version):
-    """
-    Extracts the grai metadata from the build_metadata function for a given object.
-
-    Args:
-        current: The object to extract grai metadata from.
-        version: The version of the metadata.
-
-    Returns:
-        Dict: The grai metadata extracted from the build_metadata function.
-
-    Raises:
-        None
-
-    """
-
-    metadata = build_metadata(current, version)
-    if "schema" and "grai" in metadata.get("grai", None):
-        metadata = metadata["grai"]
-
-    return metadata
+from multimethod import multimethod
+from pydantic import BaseModel
 
 
 @multimethod
@@ -172,7 +146,9 @@ def build_app_metadata(current: Any, desired: Any) -> None:
 
 
 @build_app_metadata.register
-def build_metadata_from_table(current: Table, version: Literal["v1"] = "v1") -> Dict:
+def build_metadata_from_table(
+    current: BaseModel, version: Literal["v1"] = "v1"
+) -> Dict:
     """
     Build application-specific metadata for a Table object.
 
@@ -188,33 +164,7 @@ def build_metadata_from_table(current: Table, version: Literal["v1"] = "v1") -> 
 
     """
 
-    data = {
-        "schema": current.schema_name,
-    }
-
-    return data
-
-
-@build_app_metadata.register
-def build_metadata_from_question(
-    current: Question, version: Literal["v1"] = "v1"
-) -> Dict:
-    """
-    Build application-specific metadata for a Question object.
-
-    Args:
-        current (Question): The Question object to build application-specific metadata from.
-        version (Literal["v1"], optional): The version of the metadata to build. Defaults to "v1".
-
-    Returns:
-        Dict: Application-specific metadata object for the Question.
-
-    Raises:
-        None.
-
-    """
-
-    return {"name": current.full_name}
+    return {"raw_object": current.dict()}
 
 
 @build_app_metadata.register
@@ -236,9 +186,9 @@ def build_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> Di
 
     data = {
         "definition": current.definition,
+        "metadata": current.metadata if current.metadata is not None else {},
+        "raw_object": current.dict(),
     }
-
-    data |= current.metadata if current.metadata is not None else {}
 
     return data
 
@@ -258,14 +208,9 @@ def build_metadata(obj, version):
         None.
 
     """
-
-    integration_meta = build_app_metadata(obj, version)
-    base_metadata = build_grai_metadata(obj, version)
-    integration_meta["grai"] = base_metadata
-
     return {
-        base_config.metadata_id: base_metadata,
-        config.metadata_id: integration_meta,
+        base_config.metadata_id: build_grai_metadata(obj, version),
+        config.metadata_id: build_app_metadata(obj, version),
     }
 
 
@@ -311,7 +256,7 @@ def adapt_table_to_client(current: Table, version: Literal["v1"] = "v1") -> Node
         "namespace": current.namespace,
         "display_name": current.name,
         "data_source": config.integration_name,
-        "metadata": extract_grai_metadata(current, version),
+        "metadata": build_metadata(current, version),
     }
 
     return Schema.to_model(spec_dict, version=version, typing_type="Node")
@@ -341,7 +286,7 @@ def adapt_question_to_client(
         "namespace": current.namespace,
         "display_name": current.name,
         "data_source": config.integration_name,
-        "metadata": extract_grai_metadata(current, version),
+        "metadata": build_metadata(current, version),
     }
 
     return Schema.to_model(spec_dict, version=version, typing_type="Node")
@@ -397,7 +342,7 @@ def adapt_edge_to_client(current: Edge, version: Literal["v1"] = "v1") -> EdgeV1
             "name": current.destination.full_name,
             "namespace": current.destination.namespace,
         },
-        "metadata": extract_grai_metadata(current, version),
+        "metadata": build_metadata(current, version),
     }
 
     return Schema.to_model(spec_dict, version=version, typing_type="Edge")
