@@ -22,8 +22,8 @@ services:
       - FRONTEND_URL=http://localhost:3000
       - CELERY_BROKER=redis://redis:6379/0
       - CELERY_BACKEND=redis://redis:6379/0
-      - DJANGO_SETTINGS_MODULE=the_guide.settings.dev
       - REDIS_GRAPH_CACHE_HOST=redis
+      - DJANGO_SETTINGS_MODULE=the_guide.settings.dev
     depends_on:
       - redis
       - db
@@ -53,6 +53,7 @@ services:
       - FRONTEND_URL=http://localhost:3000
       - CELERY_BROKER=redis://redis:6379/0
       - CELERY_BACKEND=redis://redis:6379/0
+      - REDIS_GRAPH_CACHE_HOST=redis
       - DJANGO_SETTINGS_MODULE=the_guide.settings.dev
     depends_on:
       - redis
