@@ -3,10 +3,11 @@ from itertools import chain
 from typing import Callable, Dict, List, Optional, Union
 
 import requests
-from grai_source_metabase.models import Edge, NodeTypes, Question, Table
 from pydantic import BaseSettings, SecretStr, validator
 from requests.exceptions import ConnectionError
 from retrying import retry
+
+from grai_source_metabase.models import Edge, NodeTypes, Question, Table
 
 
 class MetabaseConfig(BaseSettings):
@@ -47,9 +48,7 @@ class MetabaseAPI:
             "endpoint": endpoint,
         }
 
-        self.config = MetabaseConfig(
-            **{k: v for k, v in passthrough_kwargs.items() if v is not None}
-        )
+        self.config = MetabaseConfig(**{k: v for k, v in passthrough_kwargs.items() if v is not None})
         self.api_endpoint = f"{self.config.endpoint}/api"
 
         self.session = requests.Session()
@@ -149,9 +148,7 @@ class MetabaseAPI:
         pass
 
 
-def build_namespace_map(
-    dbs: Dict, namespace_map: Union[str, Dict, None], metabase_namespace: str
-) -> Dict:
+def build_namespace_map(dbs: Dict, namespace_map: Union[str, Dict, None], metabase_namespace: str) -> Dict:
     if isinstance(namespace_map, str):
         namespace_map = json.loads(namespace_map)
     elif namespace_map is None:
@@ -201,22 +198,14 @@ class MetabaseConnector(MetabaseAPI):
         # This line creates a list of tables by modifying each table dictionary obtained from the get_tables() method.
         # It replaces the "schema" key with a new key "schema_name" while preserving the other key-value pairs.
         # this is because the "schema" key is a reserved keyword in the pydantic.
-        self.tables = [
-            {**table, "schema_name": table.pop("schema")} for table in self.get_tables()
-        ]
-        self.tables_map = {
-            table["id"]: table for table in self.tables if table["active"]
-        }
+        self.tables = [{**table, "schema_name": table.pop("schema")} for table in self.get_tables()]
+        self.tables_map = {table["id"]: table for table in self.tables if table["active"]}
         self.dbs_map = {db["id"]: db for db in self.get_dbs()["data"]}
 
         self.questions_map = {
-            question["id"]: question
-            for question in self.get_questions()
-            if question["archived"] is False
+            question["id"]: question for question in self.get_questions() if question["archived"] is False
         }
-        self.namespace_map = build_namespace_map(
-            self.dbs_map, namespaces, self.metabase_namespace
-        )
+        self.namespace_map = build_namespace_map(self.dbs_map, namespaces, self.metabase_namespace)
 
         self.question_table_map = {}
         self.table_db_map = {}
@@ -234,8 +223,7 @@ class MetabaseConnector(MetabaseAPI):
         self.question_table_map = {
             question["id"]: question["table_id"]
             for question in self.questions_map.values()
-            if question["table_id"]
-            and self.tables_map.get(question["table_id"]) is not None
+            if question["table_id"] and self.tables_map.get(question["table_id"]) is not None
         }
 
         self.table_db_map = {
@@ -267,9 +255,7 @@ class MetabaseConnector(MetabaseAPI):
         for table in self.tables_map.values():
             table["namespace"] = self.namespace_map[self.table_db_map[table["id"]]]
 
-        verified_questions = [
-            Question(**question) for question in self.questions_map.values()
-        ]
+        verified_questions = [Question(**question) for question in self.questions_map.values()]
         verified_tables = [Table(**table) for table in self.tables_map.values()]
         nodes = chain(verified_questions, verified_tables)
 

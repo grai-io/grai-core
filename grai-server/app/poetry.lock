@@ -206,17 +206,17 @@ uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
 name = "boto3"
-version = "1.27.1"
+version = "1.28.0"
 description = "The AWS SDK for Python"
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "boto3-1.27.1-py3-none-any.whl", hash = "sha256:0085c1066953e61915b34f24fbdee7117fd2d8b5c9188b9519d47ba84510c067"},
-    {file = "boto3-1.27.1.tar.gz", hash = "sha256:cf43deb4556295219d9de44d1c95921209c90ee25246673b5768aef9d46519cc"},
+    {file = "boto3-1.28.0-py3-none-any.whl", hash = "sha256:ef81f63d38be25137c3ae9c6db2841c4cde82d1c7da9f8cb9f42f410c242d4f2"},
+    {file = "boto3-1.28.0.tar.gz", hash = "sha256:8d43863e4769a5652efc32fd63430df58488cdb3fb85e614461b511358e47ec7"},
 ]
 
 [package.dependencies]
-botocore = ">=1.30.1,<1.31.0"
+botocore = ">=1.31.0,<1.32.0"
 jmespath = ">=0.7.1,<2.0.0"
 s3transfer = ">=0.6.0,<0.7.0"
 
@@ -225,13 +225,13 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "botocore"
-version = "1.30.1"
+version = "1.31.0"
 description = "Low-level, data-driven core of boto 3."
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "botocore-1.30.1-py3-none-any.whl", hash = "sha256:18a32a21bfa9b418b9a38ea5ef4464eba003cbb26fca2cd56e4f51098c5d1a0f"},
-    {file = "botocore-1.30.1.tar.gz", hash = "sha256:4d1ac5a796c5c5c87946f25f3d98764288a0ed848e772a7a47cd134847e885e7"},
+    {file = "botocore-1.31.0-py3-none-any.whl", hash = "sha256:bcb0601fabc9f6fb2f7c592e7c9c4dece69ccd8782bfe6cf991a14f7fa35e6f3"},
+    {file = "botocore-1.31.0.tar.gz", hash = "sha256:db22eea779de7f61621a612c6a36f3ee069a37d4572a9541aa374503447622aa"},
 ]
 
 [package.dependencies]
@@ -1786,6 +1786,25 @@ multimethod = ">=1.8,<2.0"
 pandas = ">=1.4.4,<2.0.0"
 pydantic = ">=1.9.1,<2.0.0"
 PyYAML = ">=6.0,<7.0"
+
+[[package]]
+name = "grai-source-metabase"
+version = "0.1.1"
+description = ""
+optional = false
+python-versions = ">=3.10,<4.0"
+files = [
+    {file = "grai_source_metabase-0.1.1-py3-none-any.whl", hash = "sha256:bdbeb66a763ac8db9af5bf0046493bae2adc7a416546772668ae75d730293a5d"},
+    {file = "grai_source_metabase-0.1.1.tar.gz", hash = "sha256:5be70aefc0c2b9d795079bb719b6290878388429db35bd9276f042546a9cb072"},
+]
+
+[package.dependencies]
+grai-client = ">=0.2.19,<0.3.0"
+grai-schemas = ">=0.1.16,<0.2.0"
+multimethod = ">=1.9.1,<2.0.0"
+pydantic = ">=1.10.9,<2.0.0"
+requests = ">=2.31.0,<3.0.0"
+retrying = ">=1.3.4,<2.0.0"
 
 [[package]]
 name = "grai-source-mssql"
@@ -3648,6 +3667,20 @@ requests = ">=2.0.0"
 rsa = ["oauthlib[signedtoken] (>=3.0.0)"]
 
 [[package]]
+name = "retrying"
+version = "1.3.4"
+description = "Retrying"
+optional = false
+python-versions = "*"
+files = [
+    {file = "retrying-1.3.4-py3-none-any.whl", hash = "sha256:8cc4d43cb8e1125e0ff3344e9de678fefd85db3b750b81b2240dc0183af37b35"},
+    {file = "retrying-1.3.4.tar.gz", hash = "sha256:345da8c5765bd982b1d1915deb9102fd3d1f7ad16bd84a9700b85f64d24e8f3e"},
+]
+
+[package.dependencies]
+six = ">=1.7.0"
+
+[[package]]
 name = "rfc3339-validator"
 version = "0.1.4"
 description = "A pure python RFC3339 validator"
@@ -4319,4 +4352,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "f4830f3c4b05b8cf184956dde062b9140abee640f399fc05c2dae78be5d34561"
+content-hash = "087caf183e3caa7de1c3b756bb62e1aae66ef00119e928e9a71f35e7343bbe17"
