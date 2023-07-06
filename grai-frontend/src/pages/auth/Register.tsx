@@ -19,16 +19,16 @@ const Register: React.FC = () => (
       sx={{
         width: "100%",
         height: "100vh",
-        overflow: "hidden",
+        overflowX: "hidden",
         position: "relative",
       }}
     >
-      <Container sx={{ pt: 10 }} maxWidth="lg">
+      <Container sx={{ pt: { xs: 3, md: 10 } }} maxWidth="lg">
         <Box sx={{ mb: 3, ml: -1 }}>
           <GraiLogo />
         </Box>
         <Grid container spacing={16}>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={0} md={6} display={{ xs: "none", md: "block" }}>
             <ValueProp />
           </Grid>
           <Grid item xs={12} md={6}>
