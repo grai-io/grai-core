@@ -6,13 +6,11 @@ from pydantic import BaseModel
 class Question(BaseModel):
     id: int
     name: str
-    description: str
-    result_metadata: List[Dict[str, Any]]
     creator: Dict[str, Any]
     database_id: int
-    table_id: int
-    collection: Dict[str, Any]
-    public_uuid: str
+    table_id: int | None
+    collection: Dict[str, Any] | None
+    public_uuid: str | None
     namespace: str
 
 
@@ -22,9 +20,7 @@ class Table(BaseModel):
     name: str
     display_name: str
     schema_name: str
-    description: str
     db: Dict[str, Any]
-    entity_type: str
     namespace: str
 
     @property

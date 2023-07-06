@@ -236,7 +236,6 @@ def build_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> Di
 
     data = {
         "definition": current.definition,
-        "constraint_type": current.constraint_type.name,
     }
 
     data |= current.metadata if current.metadata is not None else {}
