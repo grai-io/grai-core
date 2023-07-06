@@ -373,7 +373,7 @@ def get_workspace_by_name_v1(
     else:
         url = f"{client.get_url(grai_type)}?name={name}"
 
-    resp = get(client, url, options).json()
+    resp = paginated(get)(client, url, options)
 
     num_resp = len(resp)
     if num_resp == 0:
