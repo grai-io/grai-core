@@ -17,6 +17,7 @@ class MetabaseConfig(BaseSettings):
 
     @validator("endpoint")
     def validate_endpoint(cls, endpoint: str):
+        endpoint = endpoint.rstrip("/")
         if not endpoint.endswith("/api"):
             raise ValueError("The Metabase API endpoint must end with '/api'")
         return endpoint
@@ -213,10 +214,14 @@ class MetabaseConnector(MetabaseAPI):
         self.tables = [
             {**table, "schema_name": table.pop("schema")} for table in self.get_tables()
         ]
-        self.tables_map = {table["id"]: table for table in self.tables}
+        self.tables_map = {
+            table["id"]: table for table in self.tables if table["active"]
+        }
         self.dbs_map = {db["id"]: db for db in self.get_dbs()["data"]}
         self.questions_map = {
-            question["id"]: question for question in self.get_questions()
+            question["id"]: question
+            for question in self.get_questions()
+            if question["archived"] is False
         }
 
         self.namespace_map = build_namespace_map(
@@ -225,7 +230,7 @@ class MetabaseConnector(MetabaseAPI):
 
         self.question_table_map = {}
         self.table_db_map = {}
-        self.question_db_map = {}
+        # self.question_db_map = {}
 
     def build_lineage(self):
         """
@@ -238,14 +243,19 @@ class MetabaseConnector(MetabaseAPI):
 
         self.question_table_map = {
             question["id"]: question["table_id"]
-            for question in self.get_questions()
-            if question["table_id"] and question["archived"] is False
+            for question in self.questions_map.values()
+            if question["table_id"]
+            and self.tables_map.get(question["table_id"]) is not None
         }
 
-        self.table_db_map = {table["id"]: table["db_id"] for table in self.tables}
+        self.table_db_map = {
+            table["id"]: table["db_id"]
+            for table in self.tables
+            if table["id"] is not None and table["db_id"] is not None
+        }
 
-        for question, table in self.question_table_map.items():
-            self.question_db_map[question] = self.table_db_map[table]
+        # for question, table in self.question_table_map.items():
+        #     self.question_db_map[question] = self.table_db_map[table]
 
         self._lineage_ready = True
 
@@ -292,9 +302,9 @@ class MetabaseConnector(MetabaseAPI):
         edges = (
             Edge(
                 source=Question(**self.questions_map[question]),
-                target=Table(**self.tables_map[table]),
+                destination=Table(**self.tables_map[table]),
                 label="question_table",
-                namespace=self.namespace_map[self.question_db_map[question]],
+                namespace=self.namespace_map[self.table_db_map[table]],
             )
             for question, table in self.question_table_map.items()
         )
