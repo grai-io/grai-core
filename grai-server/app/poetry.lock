@@ -206,17 +206,17 @@ uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
 name = "boto3"
-version = "1.27.1"
+version = "1.28.0"
 description = "The AWS SDK for Python"
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "boto3-1.27.1-py3-none-any.whl", hash = "sha256:0085c1066953e61915b34f24fbdee7117fd2d8b5c9188b9519d47ba84510c067"},
-    {file = "boto3-1.27.1.tar.gz", hash = "sha256:cf43deb4556295219d9de44d1c95921209c90ee25246673b5768aef9d46519cc"},
+    {file = "boto3-1.28.0-py3-none-any.whl", hash = "sha256:ef81f63d38be25137c3ae9c6db2841c4cde82d1c7da9f8cb9f42f410c242d4f2"},
+    {file = "boto3-1.28.0.tar.gz", hash = "sha256:8d43863e4769a5652efc32fd63430df58488cdb3fb85e614461b511358e47ec7"},
 ]
 
 [package.dependencies]
-botocore = ">=1.30.1,<1.31.0"
+botocore = ">=1.31.0,<1.32.0"
 jmespath = ">=0.7.1,<2.0.0"
 s3transfer = ">=0.6.0,<0.7.0"
 
@@ -225,13 +225,13 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "botocore"
-version = "1.30.1"
+version = "1.31.0"
 description = "Low-level, data-driven core of boto 3."
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "botocore-1.30.1-py3-none-any.whl", hash = "sha256:18a32a21bfa9b418b9a38ea5ef4464eba003cbb26fca2cd56e4f51098c5d1a0f"},
-    {file = "botocore-1.30.1.tar.gz", hash = "sha256:4d1ac5a796c5c5c87946f25f3d98764288a0ed848e772a7a47cd134847e885e7"},
+    {file = "botocore-1.31.0-py3-none-any.whl", hash = "sha256:bcb0601fabc9f6fb2f7c592e7c9c4dece69ccd8782bfe6cf991a14f7fa35e6f3"},
+    {file = "botocore-1.31.0.tar.gz", hash = "sha256:db22eea779de7f61621a612c6a36f3ee069a37d4572a9541aa374503447622aa"},
 ]
 
 [package.dependencies]
@@ -1789,18 +1789,18 @@ PyYAML = ">=6.0,<7.0"
 
 [[package]]
 name = "grai-source-metabase"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 optional = false
 python-versions = ">=3.10,<4.0"
 files = [
-    {file = "grai_source_metabase-0.1.0-py3-none-any.whl", hash = "sha256:e242deb43511846bf62e39ef41fa0141fb8eb44f53d2938dae016d6494346dfb"},
-    {file = "grai_source_metabase-0.1.0.tar.gz", hash = "sha256:3f98c7b835f00849e5a3eed757748f9a39b3900c7b842ab27c18ed86cb63ae5f"},
+    {file = "grai_source_metabase-0.1.1-py3-none-any.whl", hash = "sha256:bdbeb66a763ac8db9af5bf0046493bae2adc7a416546772668ae75d730293a5d"},
+    {file = "grai_source_metabase-0.1.1.tar.gz", hash = "sha256:5be70aefc0c2b9d795079bb719b6290878388429db35bd9276f042546a9cb072"},
 ]
 
 [package.dependencies]
 grai-client = ">=0.2.19,<0.3.0"
-grai-schemas = ">=0.1.15,<0.2.0"
+grai-schemas = ">=0.1.16,<0.2.0"
 multimethod = ">=1.9.1,<2.0.0"
 pydantic = ">=1.10.9,<2.0.0"
 requests = ">=2.31.0,<3.0.0"
@@ -4352,4 +4352,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "a24e97a8215109a3f60fa259a0ae59603943e355e85b0fc0e31fa746958f3ba0"
+content-hash = "087caf183e3caa7de1c3b756bb62e1aae66ef00119e928e9a71f35e7343bbe17"

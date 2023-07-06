@@ -7,4 +7,4 @@ from grai_source_metabase import (
     package_definitions,
 )
 
-__version__ = "0.1.1-alpha2"
+__version__ = "0.1.1"

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai-source-metabase"
-version = "0.1.1-alpha2"
+version = "0.1.1"
 description = ""
 authors = ["Elseagle <dowolebolu@gmail.com>"]
 readme = "README.md"
