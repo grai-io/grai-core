@@ -21,6 +21,7 @@ const icons: Icons = {
   "grai-source-bigquery": "/icons/data-sources/bigquery.png",
   "grai-source-mysql": "/icons/data-sources/mysql.png",
   "grai-source-redshift": "/icons/data-sources/redshift.png",
+  "grai-source-metabase": "/icons/data-sources/metabase.png",
 }
 
 const heights = {
