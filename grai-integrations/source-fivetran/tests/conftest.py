@@ -28,13 +28,21 @@ def mock_source(default_workspace):
 def client(mock_source):
     """ """
     try:
-        client = ClientV1(url="http://localhost:8000", username="null@grai.io", password="super_secret")
+        client = ClientV1(
+            url="http://localhost:8000",
+            username="null@grai.io",
+            password="super_secret",
+        )
         if not client.get("Source", name=mock_source.name):
             client.post(mock_source)
     except:
 
         class MockClient:
-            pass
+            def __init__(self):
+                self.id = "v1"
+
+            def get(self, type, **kwargs):
+                return [SourceSpec(id=uuid.uuid4(), **kwargs)]
 
         client = MockClient()
 

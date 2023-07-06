@@ -31,5 +31,5 @@ def test_loader_with_dict_namespaces(mock_source):
 
 def test_load_from_remote_and_update(client, mock_source, namespace_map):
     dotenv.load_dotenv()
-    conn = FivetranIntegration.from_client(client, source=mock_source, namespaces=namespace_map)
+    conn = FivetranIntegration.from_client(client, source_name=mock_source.name, namespaces=namespace_map)
     conn.update()
