@@ -4136,22 +4136,21 @@ starlite = ["starlite (>=1.48.0)"]
 
 [[package]]
 name = "strawberry-graphql-django"
-version = "0.10.2"
+version = "0.9.5"
 description = "Strawberry GraphQL Django extension"
 optional = false
 python-versions = ">=3.7,<4.0"
 files = [
-    {file = "strawberry_graphql_django-0.10.2-py3-none-any.whl", hash = "sha256:460de200c00fe7bf2d611643338ef8062f37ce6560dfc424cb4649bf9895f194"},
-    {file = "strawberry_graphql_django-0.10.2.tar.gz", hash = "sha256:1cd3961598c5d37a1032480183d57c5b5907a9a2a3089bab41122f3e1fc5b4bb"},
+    {file = "strawberry_graphql_django-0.9.5-py3-none-any.whl", hash = "sha256:848418179337c2901d793f938de38726efe320f8e0ba637f9b0c9c686913e80c"},
+    {file = "strawberry_graphql_django-0.9.5.tar.gz", hash = "sha256:c849c5212a9f9daa3281d3fc90a701c26c0a3405be56a3d4a2a6eab6ba1e8a1e"},
 ]
 
 [package.dependencies]
 Django = ">=3.2"
-strawberry-graphql = ">=0.192.1"
+strawberry-graphql = ">=0.184.0"
 
 [package.extras]
 debug-toolbar = ["django-debug-toolbar (>=3.4)"]
-enum = ["django-choices-field (>=2.2.2)"]
 
 [[package]]
 name = "toml"
@@ -4356,4 +4355,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "e76d5213fdeb5be9e1f6514e59b036a0381c702b8825d2bb04fe8c3addd36916"
+content-hash = "f415ba2b566b16c3cab83ed8660796574947b6fb97ff7e05741fc113a012be6c"
