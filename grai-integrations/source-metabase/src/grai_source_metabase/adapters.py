@@ -214,7 +214,7 @@ def build_metadata_from_question(
 
     """
 
-    return {"name": current.name}
+    return {"name": current.full_name}
 
 
 @build_app_metadata.register
@@ -314,7 +314,6 @@ def adapt_table_to_client(current: Table, version: Literal["v1"] = "v1") -> Node
         "metadata": extract_grai_metadata(current, version),
     }
 
-    # print("spec_dict_table", spec_dict)
     return Schema.to_model(spec_dict, version=version, typing_type="Node")
 
 
@@ -337,10 +336,8 @@ def adapt_question_to_client(
 
     """
 
-    # TODO: check if build_metadata has one grai key with correct values before passing it to metadata in spec_dict
-
     spec_dict = {
-        "name": current.name,
+        "name": current.full_name,
         "namespace": current.namespace,
         "display_name": current.name,
         "data_source": config.integration_name,
@@ -365,11 +362,8 @@ def make_name(node1: NodeTypes, node2: NodeTypes) -> str:
         None.
     """
 
-    node1_fname = node1.full_name if isinstance(node1, Table) else node1.name
-    node2_fname = node2.full_name if isinstance(node2, Table) else node2.name
-
-    node1_name = f"{node1.namespace}:{node1_fname}"
-    node2_name = f"{node2.namespace}:{node2_fname}"
+    node1_name = f"{node1.namespace}:{node1.full_name}"
+    node2_name = f"{node2.namespace}:{node2.full_name}"
 
     return f"{node1_name} -> {node2_name}"
 
@@ -396,15 +390,11 @@ def adapt_edge_to_client(current: Edge, version: Literal["v1"] = "v1") -> EdgeV1
         "name": make_name(current.source, current.destination),
         "namespace": current.source.namespace,
         "source": {
-            "name": current.source.full_name
-            if isinstance(current.source, Table)
-            else current.source.name,
+            "name": current.source.full_name,
             "namespace": current.source.namespace,
         },
         "destination": {
-            "name": current.destination.full_name
-            if isinstance(current.destination, Table)
-            else current.destination.name,
+            "name": current.destination.full_name,
             "namespace": current.destination.namespace,
         },
         "metadata": extract_grai_metadata(current, version),
@@ -431,8 +421,9 @@ def adapt_seq_to_client(
         None.
 
     """
-
-    return [adapt_to_client(item, version) for item in objs]
+    entities = [adapt_to_client(item, version) for item in objs]
+    entities = {entity for entity in entities}
+    return list(entities)
 
 
 @adapt_to_client.register
@@ -454,4 +445,6 @@ def adapt_list_to_client(
 
     """
 
-    return [adapt_to_client(item, version) for item in objs]
+    entities = [adapt_to_client(item, version) for item in objs]
+    entities = {entity for entity in entities}
+    return list(entities)
