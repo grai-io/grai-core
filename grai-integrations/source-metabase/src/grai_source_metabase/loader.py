@@ -1,6 +1,6 @@
 import json
 from itertools import chain
-from typing import Callable, Dict, List, Optional
+from typing import Callable, Dict, List, Optional, Union
 
 import requests
 from grai_source_metabase.models import Edge, NodeTypes, Question, Table
@@ -17,8 +17,6 @@ class MetabaseConfig(BaseSettings):
     @validator("endpoint")
     def validate_endpoint(cls, endpoint: str):
         endpoint = endpoint.rstrip("/")
-        if not endpoint.endswith("/api"):
-            raise ValueError("The Metabase API endpoint must end with '/api'")
         return endpoint
 
     class Config:
@@ -52,6 +50,7 @@ class MetabaseAPI:
         self.config = MetabaseConfig(
             **{k: v for k, v in passthrough_kwargs.items() if v is not None}
         )
+        self.api_endpoint = f"{self.config.endpoint}/api"
 
         self.session = requests.Session()
         self.session.headers.update({"Content-Type": "application/json"})
@@ -72,7 +71,7 @@ class MetabaseAPI:
         """
         try:
             response = requests.post(
-                url=f"{self.config.endpoint}/session",
+                url=f"{self.api_endpoint}/session",
                 json={
                     "username": self.config.username.get_secret_value(),
                     "password": self.config.password.get_secret_value(),
@@ -113,7 +112,7 @@ class MetabaseAPI:
             dict: The JSON response containing the list of questions.
 
         """
-        url = f"{self.config.endpoint}/card"
+        url = f"{self.api_endpoint}/card"
         return self.make_request(self.session.get, url)
 
     def get_tables(self):
@@ -124,7 +123,7 @@ class MetabaseAPI:
             dict: The JSON response containing the list of tables.
 
         """
-        url = f"{self.config.endpoint}/table"
+        url = f"{self.api_endpoint}/table"
         return self.make_request(self.session.get, url)
 
     def get_dbs(self):
@@ -135,7 +134,7 @@ class MetabaseAPI:
             dict: The JSON response containing the list of databases.
 
         """
-        url = f"{self.config.endpoint}/database"
+        url = f"{self.api_endpoint}/database"
         return self.make_request(self.session.get, url)
 
     def get_collections(self):
@@ -151,23 +150,16 @@ class MetabaseAPI:
 
 
 def build_namespace_map(
-    dbs: Dict, namespace_map, default_namespace: Optional[str]
+    dbs: Dict, namespace_map: Union[str, Dict, None], metabase_namespace: str
 ) -> Dict:
-    if namespace_map is None and default_namespace is None:
-        message = "You must provide either a namespace_map or a default_namespace "
-
-        raise ValueError(message)
-
-    elif isinstance(namespace_map, str):
+    if isinstance(namespace_map, str):
         namespace_map = json.loads(namespace_map)
-
-    if namespace_map is None:
+    elif namespace_map is None:
         namespace_map = {}
 
-    if default_namespace is not None:
-        namespace_map = namespace_map.copy()
-        for k in dbs.keys():
-            namespace_map.setdefault(k, default_namespace)
+    for k, v in dbs.items():
+        db_id_ns = f"{metabase_namespace}.{k}.{v['name']}"
+        namespace_map.setdefault(k, db_id_ns)
 
     return namespace_map
 
@@ -197,15 +189,14 @@ class MetabaseConnector(MetabaseAPI):
 
     def __init__(
         self,
+        metabase_namespace: str,
         namespaces: Optional[Dict] = None,
-        default_namespace: Optional[str] = None,
         *args,
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
         self._lineage_ready = False
-
-        self.default_namespace = default_namespace
+        self.metabase_namespace = metabase_namespace
 
         # This line creates a list of tables by modifying each table dictionary obtained from the get_tables() method.
         # It replaces the "schema" key with a new key "schema_name" while preserving the other key-value pairs.
@@ -217,13 +208,14 @@ class MetabaseConnector(MetabaseAPI):
             table["id"]: table for table in self.tables if table["active"]
         }
         self.dbs_map = {db["id"]: db for db in self.get_dbs()["data"]}
+
         self.questions_map = {
             question["id"]: question
             for question in self.get_questions()
             if question["archived"] is False
         }
         self.namespace_map = build_namespace_map(
-            self.dbs_map, namespaces, default_namespace
+            self.dbs_map, namespaces, self.metabase_namespace
         )
 
         self.question_table_map = {}
@@ -270,9 +262,7 @@ class MetabaseConnector(MetabaseAPI):
             self.build_lineage()
 
         for question in self.questions_map.values():
-            question["namespace"] = (
-                self.default_namespace if self.default_namespace else "default"
-            )
+            question["namespace"] = self.metabase_namespace
 
         for table in self.tables_map.values():
             table["namespace"] = self.namespace_map[self.table_db_map[table["id"]]]
@@ -301,8 +291,7 @@ class MetabaseConnector(MetabaseAPI):
             Edge(
                 source=Question(**self.questions_map[question]),
                 destination=Table(**self.tables_map[table]),
-                label="question_table",
-                namespace=self.namespace_map[self.table_db_map[table]],
+                namespace=self.questions_map[question]["namespace"],
             )
             for question, table in self.question_table_map.items()
         )

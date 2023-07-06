@@ -1,6 +1,5 @@
 import pytest
 from dotenv import dotenv_values
-
 from grai_source_metabase.adapters import adapt_to_client
 from grai_source_metabase.loader import MetabaseAPI, MetabaseConnector
 
@@ -12,7 +11,8 @@ def connector_kwargs():
     return {
         "username": config.get("grai_metabase_username", "admin@metabase.local"),
         "password": config.get("grai_metabase_password", "Metapass123"),
-        "endpoint": config.get("grai_metabase_endpoint", "http://0.0.0.0:3000/api"),
+        "endpoint": config.get("grai_metabase_endpoint", "http://0.0.0.0:3000"),
+        "metabase_namespace": config.get("grai_metabase_namespace", "metabase_grai"),
     }
 
 
@@ -23,7 +23,7 @@ def api(connector_kwargs):
 
 @pytest.fixture(scope="session")
 def connector(connector_kwargs):
-    conn = MetabaseConnector(**connector_kwargs, default_namespace="default")
+    conn = MetabaseConnector(**connector_kwargs)
     return conn
 
 
