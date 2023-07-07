@@ -3,7 +3,7 @@ sidebar_label: visualizations
 title: grai_graph.visualizations
 ---
 
-#### output\_graph
+## output\_graph
 
 ```python
 def output_graph(graph: nx.DiGraph,
@@ -33,7 +33,7 @@ Output a graph to a file, either as image or as dot file.
 
   ValueError when the file_name does not end on .svg, .png or .dot
 
-#### plot\_graph
+## plot\_graph
 
 ```python
 def plot_graph(graph: nx.DiGraph,

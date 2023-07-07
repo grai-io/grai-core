@@ -19,7 +19,7 @@ class ID(BigqueryNode)
 
 
 
-## Config Objects
+### Config Objects
 
 ```python
 class Config()
@@ -35,7 +35,7 @@ class TableID(ID)
 
 
 
-#### make\_full\_name
+### make\_full\_name
 
 ```python
 @root_validator(pre=True)
@@ -59,7 +59,7 @@ class ColumnID(ID)
 
 
 
-#### make\_full\_name
+### make\_full\_name
 
 ```python
 @root_validator(pre=True)
@@ -75,7 +75,7 @@ def make_full_name(cls, values: Dict) -> Dict
 
 
 
-#### validate\_name
+### validate\_name
 
 ```python
 @validator("table_name")
@@ -99,7 +99,7 @@ class Column(BigqueryNode)
 
 
 
-## Config Objects
+### Config Objects
 
 ```python
 class Config()
@@ -107,7 +107,7 @@ class Config()
 
 
 
-#### make\_full\_name
+### make\_full\_name
 
 ```python
 @validator("full_name", always=True)
@@ -124,7 +124,7 @@ def make_full_name(cls, full_name: Optional[str], values: Dict) -> str
 
 
 
-#### validate\_name
+### validate\_name
 
 ```python
 @validator("name")
@@ -156,6 +156,16 @@ class Edge(BaseModel)
 
 
 
+### \_\_hash\_\_
+
+```python
+def __hash__()
+```
+
+**Returns**:
+
+
+
 ## TableType Objects
 
 ```python
@@ -172,7 +182,7 @@ class Table(BigqueryNode)
 
 
 
-## Config Objects
+### Config Objects
 
 ```python
 class Config()
@@ -180,7 +190,7 @@ class Config()
 
 
 
-#### make\_full\_name
+### make\_full\_name
 
 ```python
 @validator("full_name", always=True)
@@ -197,7 +207,7 @@ def make_full_name(cls, full_name: Optional[str], values: Dict) -> str
 
 
 
-#### validate\_name
+### validate\_name
 
 ```python
 @validator("name")
@@ -213,7 +223,7 @@ def validate_name(cls, value)
 
 
 
-#### get\_edges
+### get\_edges
 
 ```python
 def get_edges() -> List[Edge]
@@ -235,7 +245,7 @@ class EdgeQuery(BaseModel)
 
 
 
-#### to\_edge
+### to\_edge
 
 ```python
 def to_edge() -> Optional[Edge]

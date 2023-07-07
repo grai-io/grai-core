@@ -3,7 +3,7 @@ sidebar_label: commands
 title: grai_cli.api.telemetry.commands
 ---
 
-#### log
+## log
 
 ```python
 @telemetry_app.command("log")

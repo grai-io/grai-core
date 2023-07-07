@@ -3,7 +3,7 @@ sidebar_label: base
 title: grai_source_fivetran.base
 ---
 
-#### validate\_nodes\_and\_edges
+## validate\_nodes\_and\_edges
 
 ```python
 def validate_nodes_and_edges(nodes: List[Node], edges: List[Edge])
@@ -19,7 +19,7 @@ def validate_nodes_and_edges(nodes: List[Node], edges: List[Edge])
 
 
 
-#### get\_nodes\_and\_edges
+## get\_nodes\_and\_edges
 
 ```python
 def get_nodes_and_edges(
@@ -37,7 +37,7 @@ def get_nodes_and_edges(
 
 
 
-#### update\_server
+## update\_server
 
 ```python
 def update_server(client: BaseClient,

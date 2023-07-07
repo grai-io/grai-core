@@ -3,7 +3,7 @@ sidebar_label: telemetry
 title: grai_cli.utilities.telemetry
 ---
 
-#### prep\_posthog
+## prep\_posthog
 
 ```python
 def prep_posthog(posthog)
@@ -18,7 +18,7 @@ def prep_posthog(posthog)
 
 
 
-#### capture
+## capture
 
 ```python
 def capture(event)
@@ -41,7 +41,7 @@ class Telemetry()
 
 
 
-#### capture
+### capture
 
 ```python
 @staticmethod

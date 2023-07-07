@@ -19,10 +19,18 @@ class SourceType(Enum)
 
 
 
-## GenericNodeMetadataV1 Objects
+## BaseNodeMetadataV1 Objects
 
 ```python
-class GenericNodeMetadataV1(V1Mixin)
+class BaseNodeMetadataV1(V1Mixin)
+```
+
+
+
+## MalformedNodeMetadataV1 Objects
+
+```python
+class MalformedNodeMetadataV1(MalformedMetadata, BaseNodeMetadataV1)
 ```
 
 
@@ -30,19 +38,19 @@ class GenericNodeMetadataV1(V1Mixin)
 ## ColumnAttributes Objects
 
 ```python
-class ColumnAttributes(GraiBaseModel)
+class ColumnAttributes(V1Mixin, GenericAttributes)
 ```
 
 
 
-#### data\_type
+### data\_type
 
 This will need to be standardized
 
 ## ColumnMetadata Objects
 
 ```python
-class ColumnMetadata(GenericNodeMetadataV1)
+class ColumnMetadata(BaseNodeMetadataV1)
 ```
 
 
@@ -50,7 +58,7 @@ class ColumnMetadata(GenericNodeMetadataV1)
 ## TableAttributes Objects
 
 ```python
-class TableAttributes(HashableBaseModel)
+class TableAttributes(V1Mixin, GenericAttributes)
 ```
 
 
@@ -58,5 +66,21 @@ class TableAttributes(HashableBaseModel)
 ## TableMetadata Objects
 
 ```python
-class TableMetadata(GenericNodeMetadataV1)
+class TableMetadata(BaseNodeMetadataV1)
+```
+
+
+
+## QueryAttributes Objects
+
+```python
+class QueryAttributes(V1Mixin, GenericAttributes)
+```
+
+
+
+## QueryMetadata Objects
+
+```python
+class QueryMetadata(BaseNodeMetadataV1)
 ```

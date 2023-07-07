@@ -3,7 +3,7 @@ sidebar_label: loader
 title: grai_source_snowflake.loader
 ---
 
-#### string\_is\_quoted
+## string\_is\_quoted
 
 ```python
 def string_is_quoted(string: str) -> bool
@@ -18,7 +18,7 @@ def string_is_quoted(string: str) -> bool
 
 
 
-#### get\_from\_env
+## get\_from\_env
 
 ```python
 def get_from_env(label: str,
@@ -47,7 +47,7 @@ class SnowflakeConnector()
 
 
 
-#### connection\_dict
+### connection\_dict
 
 ```python
 @property
@@ -67,7 +67,7 @@ https://docs.snowflake.com/en/developer-guide/python-connector/python-connector-
 
 
 
-#### connect
+### connect
 
 ```python
 def connect() -> "SnowflakeConnector"
@@ -81,7 +81,7 @@ def connect() -> "SnowflakeConnector"
 
 
 
-#### connection
+### connection
 
 ```python
 @property
@@ -96,7 +96,7 @@ def connection() -> snowflake.connector.SnowflakeConnection
 
 
 
-#### close
+### close
 
 ```python
 def close() -> None
@@ -110,7 +110,7 @@ def close() -> None
 
 
 
-#### query\_runner
+### query\_runner
 
 ```python
 def query_runner(query: str, param_dict: Dict = {}) -> List[Dict]
@@ -126,7 +126,7 @@ def query_runner(query: str, param_dict: Dict = {}) -> List[Dict]
 
 
 
-#### tables
+### tables
 
 ```python
 @cached_property
@@ -145,7 +145,7 @@ connected to by the connection argument.
 
 
 
-#### columns
+### columns
 
 ```python
 @cached_property
@@ -163,7 +163,7 @@ schema.table in the database connected to.
 
 
 
-#### column\_map
+### column\_map
 
 ```python
 @cached_property
@@ -178,7 +178,7 @@ def column_map() -> Dict[Tuple[str, str], List[Column]]
 
 
 
-#### get\_table\_columns
+### get\_table\_columns
 
 ```python
 def get_table_columns(table: Table)
@@ -193,7 +193,7 @@ def get_table_columns(table: Table)
 
 
 
-#### foreign\_keys
+### foreign\_keys
 
 ```python
 @cached_property
@@ -210,7 +210,7 @@ This needs to be tested / evaluated
 
 
 
-#### get\_nodes
+### get\_nodes
 
 ```python
 def get_nodes() -> List[SnowflakeNode]
@@ -224,7 +224,7 @@ def get_nodes() -> List[SnowflakeNode]
 
 
 
-#### get\_edges
+### get\_edges
 
 ```python
 def get_edges() -> List[Edge]
@@ -238,7 +238,7 @@ def get_edges() -> List[Edge]
 
 
 
-#### get\_nodes\_and\_edges
+### get\_nodes\_and\_edges
 
 ```python
 def get_nodes_and_edges() -> Tuple[List[SnowflakeNode], List[Edge]]

@@ -11,7 +11,7 @@ class ConfigDirHandler()
 
 
 
-#### config\_content
+### config\_content
 
 ```python
 @property
@@ -20,7 +20,7 @@ def config_content()
 
 
 
-#### config\_content
+### config\_content
 
 ```python
 @config_content.setter
@@ -36,7 +36,7 @@ def config_content(value: Dict)
 
 
 
-#### save\_content
+### save\_content
 
 ```python
 def save_content()
@@ -44,7 +44,7 @@ def save_content()
 
 
 
-#### get\_config\_dir
+### get\_config\_dir
 
 ```python
 def get_config_dir() -> str
@@ -58,7 +58,7 @@ def get_config_dir() -> str
 
 
 
-#### get\_config\_file
+### get\_config\_file
 
 ```python
 def get_config_file() -> Optional[str]
@@ -72,7 +72,7 @@ def get_config_file() -> Optional[str]
 
 
 
-#### unredact
+## unredact
 
 ```python
 def unredact(obj: Any) -> Any
@@ -87,7 +87,7 @@ def unredact(obj: Any) -> Any
 
 
 
-#### yaml\_config\_settings\_source
+## yaml\_config\_settings\_source
 
 ```python
 def yaml_config_settings_source(settings: BaseSettings) -> dict[str, Any]
@@ -110,7 +110,7 @@ class ServerSettingsV1(BaseModel)
 
 
 
-## Config Objects
+### Config Objects
 
 ```python
 class Config()
@@ -126,7 +126,7 @@ class AuthModeSettings(BaseModel)
 
 
 
-## Config Objects
+### Config Objects
 
 ```python
 class Config()
@@ -166,7 +166,7 @@ class GraiConfig(YamlModelMixin, BaseSettings)
 
 
 
-#### save
+### save
 
 ```python
 def save()
@@ -174,7 +174,7 @@ def save()
 
 
 
-#### view
+### view
 
 ```python
 def view()
@@ -182,7 +182,7 @@ def view()
 
 
 
-## Config Objects
+### Config Objects
 
 ```python
 class Config()

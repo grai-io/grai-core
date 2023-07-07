@@ -1,0 +1,87 @@
+---
+title: Metabase
+description: Grai integration for Metabase to extract Questions and Queries bringing data intelligence into your data observability stack.
+---
+
+import { Callout } from "nextra-theme-docs";
+import { MetabaseIcon } from "../../components/Integrations";
+import Image from "next/image";
+import InlineLogo from "../../components/InlineLogo";
+
+<InlineLogo logo={<MetabaseIcon />} title="Metabase" />
+
+The Metabase integration synchronizes your Metabase Question metadata into the lineage graph.
+In this way you can quickly identify which data is being used by your BI tools, which data is not, and more.
+
+## Web App
+
+<Image
+  src="/images/docs/core/integrations/metabase.png"
+  height={600}
+  width={1200}
+  alt="Metabase Integration Homescreen"
+/>
+
+### Fields
+
+| Field           | Value                                                              | Example  |
+| --------------- | ------------------------------------------------------------------ | -------- |
+| Name            | Name for connection                                                | Metabase |
+| Namespace       | Namespace for the connection, see [namespace](/concepts/namespace) | default  |
+| username        | Username for an authorized Metabase User                           |          |
+| password        | Password of the authorized user                                    |          |
+| namespaces      | An Optional JSON string (see below)                                |          |
+| endpoint        | Optional endpoint if self-hosting fivetran                          |          |
+
+#### Namespaces
+
+<Callout type="info" emoji="ℹ️">
+  If the namespaces field is not provided, Grai will create a default namespace for each databases on your behalf.
+  You can always update the namespaces field later to customize your namespace organization.
+</Callout>
+
+Metabase stores a database id for every database it's configured to query from.
+In order to automatically tie your data lineage together, Grai needs to know which Grai namespace corresponds to each database id.
+The namespaces field should be a JSON string with the Grai namespace for each database id e.g.
+
+```json
+{
+    "<database_id>": "<namespace>"
+}
+```
+
+
+## Python Library
+
+### Installation
+
+Install the Metabase Grai integration with pip
+
+```shell copy
+pip install grai-source-metabase
+```
+
+This installs the Grai Metabase integration, which is now ready to run in python
+
+### Connecting & Syncing
+
+The integration comes equipped with the client library already but we will need a python terminal or Jupyter Notebook to execute a few commands to establish a connection and begin querying the server.
+
+Spin up your favorite python terminal then:
+
+```python copy
+import os
+from grai_source_metabase.base import update_server
+```
+
+For now we will use the default user credentials though you are free to create a new user / api keys from the server admin interface at http://localhost:8000/admin.
+
+```python copy
+client = ClientV1("localhost", "8000", username="null@grai.io", password="super_secret")
+```
+
+Using example variables, in order to update the server with your metadata, simply run:
+
+```python copy
+update_server(client, metabase_namespace=[your_metabase_namespace], username=[your_username], password=[your_password], endpoint=[your_endpoint])
+```

@@ -3,7 +3,7 @@ sidebar_label: base
 title: grai_source_dbt_cloud.base
 ---
 
-#### get\_events
+## get\_events
 
 ```python
 def get_events(connector: DbtCloudConnector, last_event_date: Optional[str])
@@ -19,7 +19,7 @@ def get_events(connector: DbtCloudConnector, last_event_date: Optional[str])
 
 
 
-#### get\_nodes\_and\_edges
+## get\_nodes\_and\_edges
 
 ```python
 def get_nodes_and_edges(connector: DbtCloudConnector,
@@ -36,7 +36,7 @@ def get_nodes_and_edges(connector: DbtCloudConnector,
 
 
 
-#### update\_server
+## update\_server
 
 ```python
 def update_server(client: BaseClient,

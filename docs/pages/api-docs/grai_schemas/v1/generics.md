@@ -6,7 +6,7 @@ title: grai_schemas.v1.generics
 ## V1Mixin Objects
 
 ```python
-class V1Mixin(GraiBaseModel)
+class V1Mixin(BaseModel)
 ```
 
 

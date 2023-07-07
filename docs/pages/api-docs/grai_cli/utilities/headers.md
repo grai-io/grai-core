@@ -3,7 +3,7 @@ sidebar_label: headers
 title: grai_cli.utilities.headers
 ---
 
-#### get\_jwt
+## get\_jwt
 
 ```python
 def get_jwt(self, username: str, password: str) -> Dict
@@ -19,7 +19,7 @@ def get_jwt(self, username: str, password: str) -> Dict
 
 
 
-#### authenticate\_with\_username
+## authenticate\_with\_username
 
 ```python
 def authenticate_with_username(client: BaseClient) -> BaseClient
@@ -34,7 +34,7 @@ def authenticate_with_username(client: BaseClient) -> BaseClient
 
 
 
-#### authenticate\_with\_api\_key
+## authenticate\_with\_api\_key
 
 ```python
 def authenticate_with_api_key(client: BaseClient) -> BaseClient
@@ -49,7 +49,7 @@ def authenticate_with_api_key(client: BaseClient) -> BaseClient
 
 
 
-#### authenticate
+## authenticate
 
 ```python
 def authenticate(client: BaseClient) -> BaseClient
