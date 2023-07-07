@@ -7,12 +7,14 @@ from grai_schemas.v1.metadata.edges import EdgeMetadataTypeLabels, GenericEdgeMe
 from grai_schemas.v1.metadata.nodes import (
     GenericNodeMetadataV1,
     NodeMetadataTypeLabels,
+    QueryMetadata,
     TableMetadata,
 )
-from grai_source_metabase.models import Edge, NodeTypes, Question, Table
-from grai_source_metabase.package_definitions import config
 from multimethod import multimethod
 from pydantic import BaseModel
+
+from grai_source_metabase.models import Edge, NodeTypes, Question, Table
+from grai_source_metabase.package_definitions import config
 
 
 @multimethod
@@ -32,15 +34,11 @@ def build_grai_metadata(current: Any, desired: Any) -> None:
 
     """
 
-    raise NotImplementedError(
-        f"No adapter between {type(current)} and {type(desired)} for value {current}"
-    )
+    raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)} for value {current}")
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_table(
-    current: Table, version: Literal["v1"] = "v1"
-) -> TableMetadata:
+def build_grai_metadata_from_table(current: Table, version: Literal["v1"] = "v1") -> TableMetadata:
     """
     Build grai metadata for a Table object.
 
@@ -67,9 +65,7 @@ def build_grai_metadata_from_table(
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_question(
-    current: Question, version: Literal["v1"] = "v1"
-) -> GenericNodeMetadataV1:
+def build_grai_metadata_from_question(current: Question, version: Literal["v1"] = "v1") -> GenericNodeMetadataV1:
     """
     Build grai metadata for a Question object.
 
@@ -87,18 +83,16 @@ def build_grai_metadata_from_question(
 
     data = {
         "version": version,
-        "node_type": NodeMetadataTypeLabels.generic.value,
+        "node_type": NodeMetadataTypeLabels.query.value,
         "node_attributes": {},
         "tags": [config.metadata_id],
     }
 
-    return GenericNodeMetadataV1(**data)
+    return QueryMetadata(**data)
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_edge(
-    current: Edge, version: Literal["v1"] = "v1"
-) -> GenericEdgeMetadataV1:
+def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> GenericEdgeMetadataV1:
     """
     Build grai metadata for an Edge object.
 
@@ -140,15 +134,11 @@ def build_app_metadata(current: Any, desired: Any) -> None:
 
     """
 
-    raise NotImplementedError(
-        f"No adapter between {type(current)} and {type(desired)} for value {current}"
-    )
+    raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)} for value {current}")
 
 
 @build_app_metadata.register
-def build_metadata_from_table(
-    current: BaseModel, version: Literal["v1"] = "v1"
-) -> Dict:
+def build_metadata_from_table(current: BaseModel, version: Literal["v1"] = "v1") -> Dict:
     """
     Build application-specific metadata for a Table object.
 
@@ -259,13 +249,11 @@ def adapt_table_to_client(current: Table, version: Literal["v1"] = "v1") -> Node
         "metadata": build_metadata(current, version),
     }
 
-    return Schema.to_model(spec_dict, version=version, typing_type="Node")
+    return NodeV1.from_spec(spec_dict)
 
 
 @adapt_to_client.register
-def adapt_question_to_client(
-    current: Question, version: Literal["v1"] = "v1"
-) -> NodeV1:
+def adapt_question_to_client(current: Question, version: Literal["v1"] = "v1") -> NodeV1:
     """
     Adapt a Question object to the desired client format.
 
@@ -289,7 +277,7 @@ def adapt_question_to_client(
         "metadata": build_metadata(current, version),
     }
 
-    return Schema.to_model(spec_dict, version=version, typing_type="Node")
+    return NodeV1.from_spec(spec_dict)
 
 
 def make_name(node1: NodeTypes, node2: NodeTypes) -> str:
@@ -345,13 +333,11 @@ def adapt_edge_to_client(current: Edge, version: Literal["v1"] = "v1") -> EdgeV1
         "metadata": build_metadata(current, version),
     }
 
-    return Schema.to_model(spec_dict, version=version, typing_type="Edge")
+    return EdgeV1.from_spec(spec_dict)
 
 
 @adapt_to_client.register
-def adapt_seq_to_client(
-    objs: Sequence, version: Literal["v1"]
-) -> List[Union[NodeV1, EdgeV1]]:
+def adapt_seq_to_client(objs: Sequence, version: Literal["v1"]) -> List[Union[NodeV1, EdgeV1]]:
     """
     Adapt a sequence of objects to the desired client format.
 
@@ -372,9 +358,7 @@ def adapt_seq_to_client(
 
 
 @adapt_to_client.register
-def adapt_list_to_client(
-    objs: List, version: Literal["v1"]
-) -> List[Union[NodeV1, EdgeV1]]:
+def adapt_list_to_client(objs: List, version: Literal["v1"]) -> List[Union[NodeV1, EdgeV1]]:
     """
     Adapt a list of objects to the desired client format.
 

@@ -1,10 +1,10 @@
 import pytest
 from grai_schemas import config as core_config
-from grai_schemas.v1 import NodeV1, EdgeV1
+from grai_schemas.v1 import EdgeV1, NodeV1
 from grai_schemas.v1.metadata import GraiEdgeMetadataV1, GraiNodeMetadataV1
 
 from grai_source_metabase.adapters import adapt_to_client
-from grai_source_metabase.models import Table, Question, Edge
+from grai_source_metabase.models import Edge, Question, Table
 from grai_source_metabase.package_definitions import config
 
 
@@ -50,9 +50,7 @@ class AdapterTestValues:
     edges = [mock_edge_values(tables[0], questions[0])]
 
 
-@pytest.mark.parametrize(
-    "item, version, target", [(item, "v1", NodeV1) for item in AdapterTestValues.tables]
-)
+@pytest.mark.parametrize("item, version, target", [(item, "v1", NodeV1) for item in AdapterTestValues.tables])
 def test_table_adapter(item, version, target):
     """
 
@@ -91,9 +89,7 @@ def test_question_adapter(item, version, target):
     assert isinstance(result, target)
 
 
-@pytest.mark.parametrize(
-    "item,version,target", [(item, "v1", EdgeV1) for item in AdapterTestValues.edges]
-)
+@pytest.mark.parametrize("item,version,target", [(item, "v1", EdgeV1) for item in AdapterTestValues.edges])
 def test_edge_adapter(item, version, target):
     """
 
@@ -183,9 +179,7 @@ def test_node_metadata_is_core_compliant(nodes):
 
     """
     for node in nodes:
-        assert isinstance(
-            getattr(node.spec.metadata, core_config.metadata_id), GraiNodeMetadataV1
-        )
+        assert isinstance(getattr(node.spec.metadata, core_config.metadata_id), GraiNodeMetadataV1)
 
 
 def test_edge_metadata_is_core_compliant(edges):
@@ -200,6 +194,4 @@ def test_edge_metadata_is_core_compliant(edges):
 
     """
     for edge in edges:
-        assert isinstance(
-            getattr(edge.spec.metadata, core_config.metadata_id), GraiEdgeMetadataV1
-        )
+        assert isinstance(getattr(edge.spec.metadata, core_config.metadata_id), GraiEdgeMetadataV1)

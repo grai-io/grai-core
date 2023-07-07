@@ -12,6 +12,7 @@ from connections.adapters.postgres import PostgresAdapter
 from connections.adapters.redshift import RedshiftAdapter
 from connections.adapters.snowflake import SnowflakeAdapter
 from connections.adapters.yaml_file import YamlFileAdapter
+from connections.adapters.metabase import MetabaseAdapter
 from installations.github import Github
 from notifications.notifications import send_notification
 
@@ -53,6 +54,8 @@ def get_adapter(slug: str) -> BaseAdapter:
         return MySQLAdapter()
     elif slug == Connector.REDSHIFT:
         return RedshiftAdapter()
+    elif slug == Connector.METABASE:
+        return MetabaseAdapter()
 
     raise NoConnectorError(f"No connector found for: {slug}")
 

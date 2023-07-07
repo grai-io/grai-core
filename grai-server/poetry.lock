@@ -1268,6 +1268,21 @@ files = [
 ]
 
 [[package]]
+name = "furl"
+version = "2.1.3"
+description = "URL manipulation made simple."
+optional = false
+python-versions = "*"
+files = [
+    {file = "furl-2.1.3-py2.py3-none-any.whl", hash = "sha256:9ab425062c4217f9802508e45feb4a83e54324273ac4b202f1850363309666c0"},
+    {file = "furl-2.1.3.tar.gz", hash = "sha256:5a6188fe2666c484a12159c18be97a1977a71d632ef5bb867ef15f54af39cc4e"},
+]
+
+[package.dependencies]
+orderedmultidict = ">=1.0.1"
+six = ">=1.8.0"
+
+[[package]]
 name = "genson"
 version = "1.2.2"
 description = "GenSON is a powerful, user-friendly JSON Schema generator."
@@ -1618,18 +1633,19 @@ grpc = ["grpcio (>=1.44.0,<2.0.0.dev0)"]
 
 [[package]]
 name = "grai-client"
-version = "0.2.18"
+version = "0.2.19"
 description = ""
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_client-0.2.18-py3-none-any.whl", hash = "sha256:2447e4818b21d2d7899fc0715b7dcc9164fca21a07026c212a7e5cfd67687ab8"},
-    {file = "grai_client-0.2.18.tar.gz", hash = "sha256:e68b72dace6ffcaf7c6ac5cc237ed37829fdfb217075d4cfdb090b243b1463a7"},
+    {file = "grai_client-0.2.19-py3-none-any.whl", hash = "sha256:fafde05245d55884a8f891491de00c1652114b4ee78a992af83a889723b0983d"},
+    {file = "grai_client-0.2.19.tar.gz", hash = "sha256:19468958744ebdcedda6ff5625b4c47a89752d3b7b5c038c6fc503b653f10d05"},
 ]
 
 [package.dependencies]
 brotli = ">=1.0.9,<2.0.0"
-grai-schemas = ">=0.1.14,<0.2.0"
+furl = ">=2.1.3,<3.0.0"
+grai-schemas = ">=0.1.15,<0.2.0"
 httpx = {version = ">=0.24.0,<0.25.0", extras = ["http2"]}
 more-itertools = ">=9.1.0,<10.0.0"
 multimethod = ">=1.9,<2.0"
@@ -1661,13 +1677,13 @@ vis = ["matplotlib (>=3.5.2,<4.0.0)", "pydot (>=1.4.2,<2.0.0)"]
 
 [[package]]
 name = "grai-schemas"
-version = "0.1.15"
+version = "0.1.16"
 description = ""
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_schemas-0.1.15-py3-none-any.whl", hash = "sha256:ac469b5d12d480f6f2bfd2bd9d6618f52aaa5294b80ab055fadd58202aa3b0de"},
-    {file = "grai_schemas-0.1.15.tar.gz", hash = "sha256:9d16b756cb8851cd56a25961f4d3bbb47fc7a3401b82a4fdb99ca5c05683078f"},
+    {file = "grai_schemas-0.1.16-py3-none-any.whl", hash = "sha256:9d99dcb7cc2877b433d7afe3dd640bbbeefdc96a21e1e2acc03d55c5df8e5b00"},
+    {file = "grai_schemas-0.1.16.tar.gz", hash = "sha256:cac7211bafb0a76263e94f4222d6a5e6e7be0cab9e507ffe7b4914a458f0143a"},
 ]
 
 [package.dependencies]
@@ -1769,6 +1785,25 @@ pydantic = ">=1.9.1,<2.0.0"
 PyYAML = ">=6.0,<7.0"
 
 [[package]]
+name = "grai-source-metabase"
+version = "0.1.0"
+description = ""
+optional = false
+python-versions = ">=3.10,<4.0"
+files = [
+    {file = "grai_source_metabase-0.1.0-py3-none-any.whl", hash = "sha256:e242deb43511846bf62e39ef41fa0141fb8eb44f53d2938dae016d6494346dfb"},
+    {file = "grai_source_metabase-0.1.0.tar.gz", hash = "sha256:3f98c7b835f00849e5a3eed757748f9a39b3900c7b842ab27c18ed86cb63ae5f"},
+]
+
+[package.dependencies]
+grai-client = ">=0.2.19,<0.3.0"
+grai-schemas = ">=0.1.15,<0.2.0"
+multimethod = ">=1.9.1,<2.0.0"
+pydantic = ">=1.10.9,<2.0.0"
+requests = ">=2.31.0,<3.0.0"
+retrying = ">=1.3.4,<2.0.0"
+
+[[package]]
 name = "grai-source-mssql"
 version = "0.0.11"
 description = ""
@@ -1861,6 +1896,23 @@ multimethod = ">=1.8,<2.0"
 pydantic = ">=1.9.1,<2.0.0"
 PyYAML = ">=6.0,<7.0"
 snowflake-connector-python = ">=3.0.0,<4.0.0"
+
+[[package]]
+name = "grandalf"
+version = "0.8"
+description = "Graph and drawing algorithms framework"
+optional = false
+python-versions = "*"
+files = [
+    {file = "grandalf-0.8-py3-none-any.whl", hash = "sha256:793ca254442f4a79252ea9ff1ab998e852c1e071b863593e5383afee906b4185"},
+    {file = "grandalf-0.8.tar.gz", hash = "sha256:2813f7aab87f0d20f334a3162ccfbcbf085977134a17a5b516940a93a77ea974"},
+]
+
+[package.dependencies]
+pyparsing = "*"
+
+[package.extras]
+full = ["numpy", "ply"]
 
 [[package]]
 name = "graphql-core"
@@ -2686,6 +2738,20 @@ openapi-schema-validator = ">=0.3.2,<0.5"
 requests = ["requests"]
 
 [[package]]
+name = "orderedmultidict"
+version = "1.0.1"
+description = "Ordered Multivalue Dictionary"
+optional = false
+python-versions = "*"
+files = [
+    {file = "orderedmultidict-1.0.1-py2.py3-none-any.whl", hash = "sha256:43c839a17ee3cdd62234c47deca1a8508a3f2ca1d0678a3bf791c87cf84adbf3"},
+    {file = "orderedmultidict-1.0.1.tar.gz", hash = "sha256:04070bbb5e87291cc9bfa51df413677faf2141c73c61d2a5f7b26bea3cd882ad"},
+]
+
+[package.dependencies]
+six = ">=1.8.0"
+
+[[package]]
 name = "orjson"
 version = "3.9.1"
 description = "Fast, correct Python JSON library supporting dataclasses, datetimes, and numpy"
@@ -3244,6 +3310,20 @@ docs = ["sphinx (!=5.2.0,!=5.2.0.post0)", "sphinx-rtd-theme"]
 test = ["flaky", "pretend", "pytest (>=3.0.1)"]
 
 [[package]]
+name = "pyparsing"
+version = "3.1.0"
+description = "pyparsing module - Classes and methods to define and execute parsing grammars"
+optional = false
+python-versions = ">=3.6.8"
+files = [
+    {file = "pyparsing-3.1.0-py3-none-any.whl", hash = "sha256:d554a96d1a7d3ddaf7183104485bc19fd80543ad6ac5bdb6426719d766fb06c1"},
+    {file = "pyparsing-3.1.0.tar.gz", hash = "sha256:edb662d6fe322d6e990b1594b5feaeadf806803359e3d4d42f11e295e588f0ea"},
+]
+
+[package.extras]
+diagrams = ["jinja2", "railroad-diagrams"]
+
+[[package]]
 name = "pyrsistent"
 version = "0.19.3"
 description = "Persistent/Functional/Immutable data structures"
@@ -3581,6 +3661,20 @@ requests = ">=2.0.0"
 
 [package.extras]
 rsa = ["oauthlib[signedtoken] (>=3.0.0)"]
+
+[[package]]
+name = "retrying"
+version = "1.3.4"
+description = "Retrying"
+optional = false
+python-versions = "*"
+files = [
+    {file = "retrying-1.3.4-py3-none-any.whl", hash = "sha256:8cc4d43cb8e1125e0ff3344e9de678fefd85db3b750b81b2240dc0183af37b35"},
+    {file = "retrying-1.3.4.tar.gz", hash = "sha256:345da8c5765bd982b1d1915deb9102fd3d1f7ad16bd84a9700b85f64d24e8f3e"},
+]
+
+[package.dependencies]
+six = ">=1.7.0"
 
 [[package]]
 name = "rfc3339-validator"
@@ -4035,18 +4129,18 @@ starlite = ["starlite (>=1.48.0)"]
 
 [[package]]
 name = "strawberry-graphql-django"
-version = "0.9.4"
+version = "0.9.5"
 description = "Strawberry GraphQL Django extension"
 optional = false
 python-versions = ">=3.7,<4.0"
 files = [
-    {file = "strawberry_graphql_django-0.9.4-py3-none-any.whl", hash = "sha256:99ff77019ebb4f0c17beb64b86aff3257cefd5299269542830b52f48e7eafbfd"},
-    {file = "strawberry_graphql_django-0.9.4.tar.gz", hash = "sha256:d3e20eb3106ca329270825aa14c14ecf1e0b3248cc8946dcf90c1ea23f8be8fd"},
+    {file = "strawberry_graphql_django-0.9.5-py3-none-any.whl", hash = "sha256:848418179337c2901d793f938de38726efe320f8e0ba637f9b0c9c686913e80c"},
+    {file = "strawberry_graphql_django-0.9.5.tar.gz", hash = "sha256:c849c5212a9f9daa3281d3fc90a701c26c0a3405be56a3d4a2a6eab6ba1e8a1e"},
 ]
 
 [package.dependencies]
 Django = ">=3.2"
-strawberry-graphql = ">=0.160.0"
+strawberry-graphql = ">=0.184.0"
 
 [package.extras]
 debug-toolbar = ["django-debug-toolbar (>=3.4)"]
@@ -4254,4 +4348,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "d7b7b118f118d412df5f5c2445e4f4210aa9f850f2b11cbd469bbc980bc14d77"
+content-hash = "a24e97a8215109a3f60fa259a0ae59603943e355e85b0fc0e31fa746958f3ba0"
