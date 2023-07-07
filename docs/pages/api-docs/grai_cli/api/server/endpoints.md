@@ -3,7 +3,7 @@ sidebar_label: endpoints
 title: grai_cli.api.server.endpoints
 ---
 
-#### is\_authenticated
+## is\_authenticated
 
 ```python
 @client_app.command("is_authenticated",
@@ -13,7 +13,7 @@ def is_authenticated()
 
 
 
-#### get\_nodes
+## get\_nodes
 
 ```python
 def get_nodes(name: Optional[str] = None,
@@ -34,7 +34,7 @@ def get_nodes(name: Optional[str] = None,
 
 
 
-#### get\_nodes\_cli
+## get\_nodes\_cli
 
 ```python
 @client_get_app.command(
@@ -64,7 +64,7 @@ def get_nodes_cli(
 
 
 
-#### get\_edges
+## get\_edges
 
 ```python
 @client_get_app.command(
@@ -86,7 +86,7 @@ def get_edges(print: bool = typer.Option(True,
 
 
 
-#### get\_workspaces
+## get\_workspaces
 
 ```python
 @client_get_app.command(
@@ -110,7 +110,7 @@ def get_workspaces(name: str = typer.Argument(None),
 
 
 
-#### apply
+## apply
 
 ```python
 @app.command("apply", help="Apply a configuration to The Guide by file name")
@@ -130,7 +130,7 @@ def apply(file: Path = typer.Argument(...),
 
 
 
-#### delete
+## delete
 
 ```python
 @app.command("delete",

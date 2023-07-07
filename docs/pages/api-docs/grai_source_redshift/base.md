@@ -3,7 +3,7 @@ sidebar_label: base
 title: grai_source_redshift.base
 ---
 
-#### get\_nodes\_and\_edges
+## get\_nodes\_and\_edges
 
 ```python
 def get_nodes_and_edges(
@@ -21,7 +21,7 @@ def get_nodes_and_edges(
 
 
 
-#### update\_server
+## update\_server
 
 ```python
 def update_server(client: BaseClient,

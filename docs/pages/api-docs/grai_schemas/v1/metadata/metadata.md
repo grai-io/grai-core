@@ -19,8 +19,24 @@ class MetadataV1(GraiMetadataV1)
 
 
 
-## Config Objects
+### Config Objects
 
 ```python
 class Config()
+```
+
+
+
+## GraiMalformedNodeMetadataV1 Objects
+
+```python
+class GraiMalformedNodeMetadataV1(MalformedMetadata, MetadataV1)
+```
+
+
+
+## GraiMalformedEdgeMetadataV1 Objects
+
+```python
+class GraiMalformedEdgeMetadataV1(MalformedMetadata, MetadataV1)
 ```
