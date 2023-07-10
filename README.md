@@ -61,7 +61,7 @@ We currently support pre-built integrations for a variety of sources including
 | <img src="resources/dbt.png" alt=“” width="30" height="30">       | dbt                   | `pip install grai-source-dbt`       |
 | <img src="resources/fivetran.png" alt=“” width="30" height="30">  | Fivetran              | `pip install grai-source-fivetran`  |
 | <img src="resources/csv.png" alt=“” width="30" height="30">       | csv, parquet, feather | `pip install grai-source-flat-file` |
-
+| <img src="resources/metabase.png" alt=“” width="30" height="30">  | Metabase (alpha)      | `pip install grai-source-metabase`  |
 
 </center>
 

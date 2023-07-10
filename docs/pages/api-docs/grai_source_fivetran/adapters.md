@@ -191,8 +191,9 @@ def adapt_column_to_client(current: Column, source: SourceSpec,
 
 **Arguments**:
 
-  current (Column):
-- `version` _Literal[&quot;v1&quot;], optional_ - (Default value = &quot;v1&quot;)
+  current:
+  source:
+- `version` - (Default value = &quot;v1&quot;)
 
 
 **Returns**:
@@ -209,8 +210,9 @@ def adapt_table_to_client(current: Table, source: SourceSpec,
 
 **Arguments**:
 
-  current (Table):
-- `version` _Literal[&quot;v1&quot;], optional_ - (Default value = &quot;v1&quot;)
+  current:
+  source:
+- `version` - (Default value = &quot;v1&quot;)
 
 
 **Returns**:
@@ -243,8 +245,9 @@ def adapt_edge_to_client(current: Edge, source: SourceSpec,
 
 **Arguments**:
 
-  current (Edge):
-- `version` _Literal[&quot;v1&quot;], optional_ - (Default value = &quot;v1&quot;)
+  current:
+  source:
+- `version` - (Default value = &quot;v1&quot;)
 
 
 **Returns**:
@@ -262,8 +265,8 @@ def adapt_seq_to_client(
 
 **Arguments**:
 
-  objs (Sequence):
-  version (Literal[&quot;v1&quot;]):
+  objs:
+  version:
 
 
 **Returns**:
@@ -281,8 +284,9 @@ def adapt_list_to_client(
 
 **Arguments**:
 
-  objs (List):
-  version (Literal[&quot;v1&quot;]):
+  objs:
+  source:
+  version:
 
 
 **Returns**:

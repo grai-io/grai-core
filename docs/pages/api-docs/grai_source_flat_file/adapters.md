@@ -251,12 +251,12 @@ def adapt_sequence_to_client(objs: Sequence, source: SourceSpec,
 
 
 
-## adapt\_sequence\_to\_client
+## adapt\_list\_to\_client
 
 ```python
 @adapt_to_client.register
-def adapt_sequence_to_client(objs: Sequence, source: SourceSpec,
-                             version: Literal["v1"]) -> List
+def adapt_list_to_client(objs: List, source: SourceSpec,
+                         version: Literal["v1"]) -> List
 ```
 
 **Arguments**:

@@ -2,7 +2,7 @@ import datetime
 from typing import List, Optional
 
 import strawberry
-from asgiref.sync import sync_to_async
+from asgiref.sync import sync_to_async, async_to_sync
 from decouple import config
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -110,7 +110,7 @@ class Mutation:
 
             if sample_data:
                 generator = SampleData(workspace)
-                generator.generate()
+                async_to_sync(generator.generate)()
 
             return workspace
 

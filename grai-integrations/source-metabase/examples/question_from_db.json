@@ -1,0 +1,955 @@
+{
+  "description": null,
+  "archived": false,
+  "collection_position": null,
+  "table_id": null,
+  "result_metadata": [
+    {
+      "display_name": "display_name",
+      "field_ref": [
+        "field",
+        "display_name",
+        {
+          "base-type": "type/Text"
+        }
+      ],
+      "name": "display_name",
+      "base_type": "type/Text",
+      "effective_type": "type/Text",
+      "semantic_type": null,
+      "fingerprint": {
+        "global": {
+          "distinct-count": 286,
+          "nil%": 0
+        },
+        "type": {
+          "type/Text": {
+            "percent-json": 0,
+            "percent-url": 0,
+            "percent-email": 0,
+            "percent-state": 0,
+            "average-length": 14.751748251748252
+          }
+        }
+      }
+    },
+    {
+      "display_name": "first_name",
+      "field_ref": [
+        "field",
+        "first_name",
+        {
+          "base-type": "type/Text"
+        }
+      ],
+      "name": "first_name",
+      "base_type": "type/Text",
+      "effective_type": "type/Text",
+      "semantic_type": "type/Name",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 245,
+          "nil%": 0
+        },
+        "type": {
+          "type/Text": {
+            "percent-json": 0,
+            "percent-url": 0,
+            "percent-email": 0,
+            "percent-state": 0,
+            "average-length": 5.909090909090909
+          }
+        }
+      }
+    },
+    {
+      "display_name": "last_name",
+      "field_ref": [
+        "field",
+        "last_name",
+        {
+          "base-type": "type/Text"
+        }
+      ],
+      "name": "last_name",
+      "base_type": "type/Text",
+      "effective_type": "type/Text",
+      "semantic_type": "type/Name",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 272,
+          "nil%": 0
+        },
+        "type": {
+          "type/Text": {
+            "percent-json": 0,
+            "percent-url": 0,
+            "percent-email": 0,
+            "percent-state": 0,
+            "average-length": 6.7727272727272725
+          }
+        }
+      }
+    },
+    {
+      "display_name": "department",
+      "field_ref": [
+        "field",
+        "department",
+        {
+          "base-type": "type/Text"
+        }
+      ],
+      "name": "department",
+      "base_type": "type/Text",
+      "effective_type": "type/Text",
+      "semantic_type": null,
+      "fingerprint": {
+        "global": {
+          "distinct-count": 15,
+          "nil%": 0
+        },
+        "type": {
+          "type/Text": {
+            "percent-json": 0,
+            "percent-url": 0,
+            "percent-email": 0,
+            "percent-state": 0,
+            "average-length": 10.12937062937063
+          }
+        }
+      }
+    },
+    {
+      "display_name": "operations_department",
+      "field_ref": [
+        "field",
+        "operations_department",
+        {
+          "base-type": "type/Text"
+        }
+      ],
+      "name": "operations_department",
+      "base_type": "type/Text",
+      "effective_type": "type/Text",
+      "semantic_type": null,
+      "fingerprint": {
+        "global": {
+          "distinct-count": 4,
+          "nil%": 0.1818181818181818
+        },
+        "type": {
+          "type/Text": {
+            "percent-json": 0,
+            "percent-url": 0,
+            "percent-email": 0,
+            "percent-state": 0,
+            "average-length": 8.538461538461538
+          }
+        }
+      }
+    },
+    {
+      "display_name": "operations_manager",
+      "field_ref": [
+        "field",
+        "operations_manager",
+        {
+          "base-type": "type/Text"
+        }
+      ],
+      "name": "operations_manager",
+      "base_type": "type/Text",
+      "effective_type": "type/Text",
+      "semantic_type": null,
+      "fingerprint": {
+        "global": {
+          "distinct-count": 6,
+          "nil%": 0.4160839160839161
+        },
+        "type": {
+          "type/Text": {
+            "percent-json": 0,
+            "percent-url": 0,
+            "percent-email": 0,
+            "percent-state": 0,
+            "average-length": 7.881118881118881
+          }
+        }
+      }
+    },
+    {
+      "display_name": "manager_id",
+      "field_ref": [
+        "field",
+        "manager_id",
+        {
+          "base-type": "type/Float"
+        }
+      ],
+      "name": "manager_id",
+      "base_type": "type/Float",
+      "effective_type": "type/Float",
+      "semantic_type": null,
+      "fingerprint": {
+        "global": {
+          "distinct-count": 50,
+          "nil%": 0.003496503496503497
+        },
+        "type": {
+          "type/Number": {
+            "min": 10,
+            "q1": 2044.843824093966,
+            "q3": 3561.7243302996676,
+            "max": 4237,
+            "sd": 1207.3163040267725,
+            "avg": 2649.063157894737
+          }
+        }
+      }
+    },
+    {
+      "display_name": "manager_name",
+      "field_ref": [
+        "field",
+        "manager_name",
+        {
+          "base-type": "type/Text"
+        }
+      ],
+      "name": "manager_name",
+      "base_type": "type/Text",
+      "effective_type": "type/Text",
+      "semantic_type": null,
+      "fingerprint": {
+        "global": {
+          "distinct-count": 50,
+          "nil%": 0.003496503496503497
+        },
+        "type": {
+          "type/Text": {
+            "percent-json": 0,
+            "percent-url": 0,
+            "percent-email": 0,
+            "percent-state": 0,
+            "average-length": 14.713286713286713
+          }
+        }
+      }
+    },
+    {
+      "display_name": "skip_manager_name",
+      "field_ref": [
+        "field",
+        "skip_manager_name",
+        {
+          "base-type": "type/Text"
+        }
+      ],
+      "name": "skip_manager_name",
+      "base_type": "type/Text",
+      "effective_type": "type/Text",
+      "semantic_type": null,
+      "fingerprint": {
+        "global": {
+          "distinct-count": 18,
+          "nil%": 0.02447552447552448
+        },
+        "type": {
+          "type/Text": {
+            "percent-json": 0,
+            "percent-url": 0,
+            "percent-email": 0,
+            "percent-state": 0,
+            "average-length": 14.776223776223777
+          }
+        }
+      }
+    },
+    {
+      "display_name": "skip_skip_manager_name",
+      "field_ref": [
+        "field",
+        "skip_skip_manager_name",
+        {
+          "base-type": "type/Text"
+        }
+      ],
+      "name": "skip_skip_manager_name",
+      "base_type": "type/Text",
+      "effective_type": "type/Text",
+      "semantic_type": null,
+      "fingerprint": {
+        "global": {
+          "distinct-count": 9,
+          "nil%": 0.06643356643356643
+        },
+        "type": {
+          "type/Text": {
+            "percent-json": 0,
+            "percent-url": 0,
+            "percent-email": 0,
+            "percent-state": 0,
+            "average-length": 14.22027972027972
+          }
+        }
+      }
+    },
+    {
+      "display_name": "job_title",
+      "field_ref": [
+        "field",
+        "job_title",
+        {
+          "base-type": "type/Text"
+        }
+      ],
+      "name": "job_title",
+      "base_type": "type/Text",
+      "effective_type": "type/Text",
+      "semantic_type": "type/Title",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 58,
+          "nil%": 0
+        },
+        "type": {
+          "type/Text": {
+            "percent-json": 0,
+            "percent-url": 0,
+            "percent-email": 0,
+            "percent-state": 0,
+            "average-length": 11.405594405594405
+          }
+        }
+      }
+    },
+    {
+      "display_name": "email",
+      "field_ref": [
+        "field",
+        "email",
+        {
+          "base-type": "type/Text"
+        }
+      ],
+      "name": "email",
+      "base_type": "type/Text",
+      "effective_type": "type/Text",
+      "semantic_type": null,
+      "fingerprint": {
+        "global": {
+          "distinct-count": 286,
+          "nil%": 0
+        },
+        "type": {
+          "type/Text": {
+            "percent-json": 0,
+            "percent-url": 0,
+            "percent-email": 1,
+            "percent-state": 0,
+            "average-length": 27.762237762237763
+          }
+        }
+      }
+    },
+    {
+      "display_name": "personal_email",
+      "field_ref": [
+        "field",
+        "personal_email",
+        {
+          "base-type": "type/Text"
+        }
+      ],
+      "name": "personal_email",
+      "base_type": "type/Text",
+      "effective_type": "type/Text",
+      "semantic_type": null,
+      "fingerprint": {
+        "global": {
+          "distinct-count": 277,
+          "nil%": 0.03496503496503497
+        },
+        "type": {
+          "type/Text": {
+            "percent-json": 0,
+            "percent-url": 0,
+            "percent-email": 0.965034965034965,
+            "percent-state": 0,
+            "average-length": 24.62937062937063
+          }
+        }
+      }
+    },
+    {
+      "display_name": "github_username",
+      "field_ref": [
+        "field",
+        "github_username",
+        {
+          "base-type": "type/Text"
+        }
+      ],
+      "name": "github_username",
+      "base_type": "type/Text",
+      "effective_type": "type/Text",
+      "semantic_type": null,
+      "fingerprint": {
+        "global": {
+          "distinct-count": 11,
+          "nil%": 0.965034965034965
+        },
+        "type": {
+          "type/Text": {
+            "percent-json": 0,
+            "percent-url": 0,
+            "percent-email": 0,
+            "percent-state": 0,
+            "average-length": 0.36013986013986016
+          }
+        }
+      }
+    },
+    {
+      "display_name": "greenhouse_candidate_id",
+      "field_ref": [
+        "field",
+        "greenhouse_candidate_id",
+        {
+          "base-type": "type/Float"
+        }
+      ],
+      "name": "greenhouse_candidate_id",
+      "base_type": "type/Float",
+      "effective_type": "type/Float",
+      "semantic_type": null,
+      "fingerprint": {
+        "global": {
+          "distinct-count": 2,
+          "nil%": 0.9965034965034965
+        },
+        "type": {
+          "type/Number": {
+            "min": 9584590101,
+            "q1": 9584590101,
+            "q3": 9584590101,
+            "max": 9584590101,
+            "sd": null,
+            "avg": 9584590101
+          }
+        }
+      }
+    },
+    {
+      "display_name": "creation_date",
+      "field_ref": [
+        "field",
+        "creation_date",
+        {
+          "base-type": "type/DateTimeWithLocalTZ"
+        }
+      ],
+      "name": "creation_date",
+      "base_type": "type/DateTimeWithLocalTZ",
+      "effective_type": "type/DateTimeWithLocalTZ",
+      "semantic_type": null,
+      "fingerprint": {
+        "global": {
+          "distinct-count": 145,
+          "nil%": 0
+        },
+        "type": {
+          "type/DateTime": {
+            "earliest": "2019-10-02T10:00:00Z",
+            "latest": "2023-06-14T10:00:00Z"
+          }
+        }
+      }
+    },
+    {
+      "display_name": "employment_effective_date",
+      "field_ref": [
+        "field",
+        "employment_effective_date",
+        {
+          "base-type": "type/DateTimeWithLocalTZ"
+        }
+      ],
+      "name": "employment_effective_date",
+      "base_type": "type/DateTimeWithLocalTZ",
+      "effective_type": "type/DateTimeWithLocalTZ",
+      "semantic_type": null,
+      "fingerprint": {
+        "global": {
+          "distinct-count": 115,
+          "nil%": 0
+        },
+        "type": {
+          "type/DateTime": {
+            "earliest": "2015-10-01T10:00:00Z",
+            "latest": "2023-06-20T10:00:00Z"
+          }
+        }
+      }
+    },
+    {
+      "display_name": "country",
+      "field_ref": [
+        "field",
+        "country",
+        {
+          "base-type": "type/Text"
+        }
+      ],
+      "name": "country",
+      "base_type": "type/Text",
+      "effective_type": "type/Text",
+      "semantic_type": "type/Country",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 1,
+          "nil%": 0
+        },
+        "type": {
+          "type/Text": {
+            "percent-json": 0,
+            "percent-url": 0,
+            "percent-email": 0,
+            "percent-state": 0,
+            "average-length": 13
+          }
+        }
+      }
+    },
+    {
+      "display_name": "city",
+      "field_ref": [
+        "field",
+        "city",
+        {
+          "base-type": "type/Text"
+        }
+      ],
+      "name": "city",
+      "base_type": "type/Text",
+      "effective_type": "type/Text",
+      "semantic_type": "type/City",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 209,
+          "nil%": 0.08041958041958042
+        },
+        "type": {
+          "type/Text": {
+            "percent-json": 0,
+            "percent-url": 0,
+            "percent-email": 0,
+            "percent-state": 0.01398601398601399,
+            "average-length": 8.545454545454545
+          }
+        }
+      }
+    },
+    {
+      "display_name": "state_province_region",
+      "field_ref": [
+        "field",
+        "state_province_region",
+        {
+          "base-type": "type/Text"
+        }
+      ],
+      "name": "state_province_region",
+      "base_type": "type/Text",
+      "effective_type": "type/Text",
+      "semantic_type": null,
+      "fingerprint": {
+        "global": {
+          "distinct-count": 66,
+          "nil%": 0.003496503496503497
+        },
+        "type": {
+          "type/Text": {
+            "percent-json": 0,
+            "percent-url": 0,
+            "percent-email": 0,
+            "percent-state": 0.993006993006993,
+            "average-length": 2.979020979020979
+          }
+        }
+      }
+    },
+    {
+      "display_name": "city_longitude",
+      "field_ref": [
+        "field",
+        "city_longitude",
+        {
+          "base-type": "type/Float"
+        }
+      ],
+      "name": "city_longitude",
+      "base_type": "type/Float",
+      "effective_type": "type/Float",
+      "semantic_type": "type/Longitude",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 179,
+          "nil%": 0.01398601398601399
+        },
+        "type": {
+          "type/Number": {
+            "min": -157.846,
+            "q1": -115.70693467501637,
+            "q3": -79.0193,
+            "max": -70.09,
+            "sd": 19.17149173380974,
+            "avg": -94.51603003546099
+          }
+        }
+      }
+    },
+    {
+      "display_name": "city_latitude",
+      "field_ref": [
+        "field",
+        "city_latitude",
+        {
+          "base-type": "type/Float"
+        }
+      ],
+      "name": "city_latitude",
+      "base_type": "type/Float",
+      "effective_type": "type/Float",
+      "semantic_type": null,
+      "fingerprint": {
+        "global": {
+          "distinct-count": 183,
+          "nil%": 0.01398601398601399
+        },
+        "type": {
+          "type/Number": {
+            "min": 19.898682,
+            "q1": 33.09336339852801,
+            "q3": 40.793795337486884,
+            "max": 48.4329,
+            "sd": 5.535326457519629,
+            "avg": 36.84998228723404
+          }
+        }
+      }
+    },
+    {
+      "display_name": "site",
+      "field_ref": [
+        "field",
+        "site",
+        {
+          "base-type": "type/Text"
+        }
+      ],
+      "name": "site",
+      "base_type": "type/Text",
+      "effective_type": "type/Text",
+      "semantic_type": null,
+      "fingerprint": {
+        "global": {
+          "distinct-count": 3,
+          "nil%": 0
+        },
+        "type": {
+          "type/Text": {
+            "percent-json": 0,
+            "percent-url": 0,
+            "percent-email": 0,
+            "percent-state": 0,
+            "average-length": 7.531468531468532
+          }
+        }
+      }
+    },
+    {
+      "display_name": "is_offboarded",
+      "field_ref": [
+        "field",
+        "is_offboarded",
+        {
+          "base-type": "type/Boolean"
+        }
+      ],
+      "name": "is_offboarded",
+      "base_type": "type/Boolean",
+      "effective_type": "type/Boolean",
+      "semantic_type": null,
+      "fingerprint": {
+        "global": {
+          "distinct-count": 2,
+          "nil%": 0
+        }
+      }
+    },
+    {
+      "display_name": "termination_date",
+      "field_ref": [
+        "field",
+        "termination_date",
+        {
+          "base-type": "type/DateTimeWithLocalTZ"
+        }
+      ],
+      "name": "termination_date",
+      "base_type": "type/DateTimeWithLocalTZ",
+      "effective_type": "type/DateTimeWithLocalTZ",
+      "semantic_type": null,
+      "fingerprint": {
+        "global": {
+          "distinct-count": 1,
+          "nil%": 1
+        },
+        "type": {
+          "type/DateTime": {
+            "earliest": null,
+            "latest": null
+          }
+        }
+      }
+    },
+    {
+      "display_name": "reason_for_termination",
+      "field_ref": [
+        "field",
+        "reason_for_termination",
+        {
+          "base-type": "type/Text"
+        }
+      ],
+      "name": "reason_for_termination",
+      "base_type": "type/Text",
+      "effective_type": "type/Text",
+      "semantic_type": null,
+      "fingerprint": {
+        "global": {
+          "distinct-count": 1,
+          "nil%": 1
+        },
+        "type": {
+          "type/Text": {
+            "percent-json": 0,
+            "percent-url": 0,
+            "percent-email": 0,
+            "percent-state": 0,
+            "average-length": 0
+          }
+        }
+      }
+    },
+    {
+      "display_name": "accumulated_tenure_years_",
+      "field_ref": [
+        "field",
+        "accumulated_tenure_years_",
+        {
+          "base-type": "type/Float"
+        }
+      ],
+      "name": "accumulated_tenure_years_",
+      "base_type": "type/Float",
+      "effective_type": "type/Float",
+      "semantic_type": null,
+      "fingerprint": {
+        "global": {
+          "distinct-count": 114,
+          "nil%": 0
+        },
+        "type": {
+          "type/Number": {
+            "min": 0,
+            "q1": 0.11971226924187725,
+            "q3": 0.521482818364179,
+            "max": 7.704,
+            "sd": 1.0862222380941418,
+            "avg": 0.6278216783216783
+          }
+        }
+      }
+    },
+    {
+      "display_name": "hibob_id",
+      "field_ref": [
+        "field",
+        "hibob_id",
+        {
+          "base-type": "type/BigInteger"
+        }
+      ],
+      "name": "hibob_id",
+      "base_type": "type/BigInteger",
+      "effective_type": "type/BigInteger",
+      "semantic_type": null,
+      "fingerprint": {
+        "global": {
+          "distinct-count": 286,
+          "nil%": 0
+        },
+        "type": {
+          "type/Number": {
+            "min": 2,
+            "q1": 3408.6190476190477,
+            "q3": 4216.47986734562,
+            "max": 4409,
+            "sd": 981.8885630483801,
+            "avg": 3528.195804195804
+          }
+        }
+      }
+    },
+    {
+      "display_name": "days_off_in_current_cycle",
+      "field_ref": [
+        "field",
+        "days_off_in_current_cycle",
+        {
+          "base-type": "type/Float"
+        }
+      ],
+      "name": "days_off_in_current_cycle",
+      "base_type": "type/Float",
+      "effective_type": "type/Float",
+      "semantic_type": null,
+      "fingerprint": {
+        "global": {
+          "distinct-count": 23,
+          "nil%": 0.6538461538461539
+        },
+        "type": {
+          "type/Number": {
+            "min": 0.5,
+            "q1": 1.613055385446435,
+            "q3": 6.112574113277207,
+            "max": 52,
+            "sd": 7.55701887802459,
+            "avg": 5.606060606060606
+          }
+        }
+      }
+    },
+    {
+      "display_name": "days_off_in_previous_cycle",
+      "field_ref": [
+        "field",
+        "days_off_in_previous_cycle",
+        {
+          "base-type": "type/Float"
+        }
+      ],
+      "name": "days_off_in_previous_cycle",
+      "base_type": "type/Float",
+      "effective_type": "type/Float",
+      "semantic_type": null,
+      "fingerprint": {
+        "global": {
+          "distinct-count": 19,
+          "nil%": 0.7937062937062938
+        },
+        "type": {
+          "type/Number": {
+            "min": 0.5,
+            "q1": 1.273187976463145,
+            "q3": 7.727766710890126,
+            "max": 32,
+            "sd": 7.456977716000349,
+            "avg": 5.762711864406779
+          }
+        }
+      }
+    },
+    {
+      "display_name": "state",
+      "field_ref": [
+        "field",
+        "state",
+        {
+          "base-type": "type/Text"
+        }
+      ],
+      "name": "state",
+      "base_type": "type/Text",
+      "effective_type": "type/Text",
+      "semantic_type": null,
+      "fingerprint": {
+        "global": {
+          "distinct-count": 41,
+          "nil%": 0.01048951048951049
+        },
+        "type": {
+          "type/Text": {
+            "percent-json": 0,
+            "percent-url": 0,
+            "percent-email": 0,
+            "percent-state": 0.986013986013986,
+            "average-length": 8.374125874125873
+          }
+        }
+      }
+    }
+  ],
+  "creator": {
+    "email": "rima.chehade@invisible.email",
+    "first_name": "Rima",
+    "last_login": "2023-06-12T14:58:50.943821Z",
+    "is_qbnewb": false,
+    "is_superuser": true,
+    "id": 1110,
+    "last_name": "Chehade",
+    "date_joined": "2021-08-05T20:36:13.586597Z",
+    "common_name": "Rima Chehade"
+  },
+  "database_id": 5,
+  "enable_embedding": false,
+  "collection_id": 866,
+  "query_type": "native",
+  "name": "US people from Hibob",
+  "creator_id": 1110,
+  "updated_at": "2023-06-15T18:02:57.139058Z",
+  "made_public_by_id": 1110,
+  "embedding_params": null,
+  "cache_ttl": null,
+  "dataset_query": {
+    "type": "native",
+    "native": {
+      "query": "with \r\n\r\npay_cycle as (\r\n    select all_dates,\r\n        case when extract(day FROM all_dates)::int/16+1 = 2 then date_trunc('month',all_dates)\r\n            else date_trunc('month',all_dates) -'1 month'::interval + '15 days'::interval\r\n        end as start_of_cycle,\r\n        \r\n        case when extract(day FROM all_dates)::int/16+1 = 2 then date_trunc('month',all_dates) + '15 days'::interval\r\n            else (date_trunc('month', all_dates) - interval '1 day')::date \r\n        end as end_of_cycle,\r\n        \r\n        case when extract(day FROM all_dates)::int/16+1 = 2 then date_trunc('month',all_dates) - '1 month'::interval + '15 days'::interval\r\n            else date_trunc('month',all_dates) -'1 month'::interval\r\n        end as start_of_previous_cycle,\r\n        \r\n        case when extract(day FROM all_dates)::int/16+1 = 2 then date_trunc('month',all_dates) - '1 day'::interval\r\n            else date_trunc('month',all_dates) - '1 month'::interval + '15 days'::interval\r\n        end as end_of_previous_cycle\r\n        \r\n    from (\r\n        select generate_series('2020-01-01'::timestamp,now(),'1 day') as all_dates\r\n    ) t\r\n    where all_dates = date_trunc('day',now())\r\n), \r\n\r\ntimeoff_current as (\r\n    select email,\r\n      SUM(duration) as days_off_in_current_cycle \r\n    from hibob.timeoff \r\n    cross join pay_cycle \r\n\r\n    where \r\n        day_away >= start_of_cycle \r\n        and day_away <= end_of_cycle \r\n        group by 1\r\n),\r\n\r\ntimeoff_previous as (\r\n    select email,\r\n    SUM(duration) as days_off_in_previous_cycle \r\n    from hibob.timeoff \r\n    cross join pay_cycle \r\n\r\n    where \r\n        day_away >= start_of_previous_cycle \r\n        and day_away <= end_of_previous_cycle \r\n    group by 1\r\n),\r\n\r\nhibob_base as(\r\n    select people.display_name,\r\n        people.first_name,\r\n        people.last_name,\r\n        people.department,\r\n        case \r\n            when people.department = 'Delivery Operations' then 'Operations - Delivery Ops'\r\n            when people.department = 'Delta Operations' then 'Operations - Delta Ops' \r\n            when people.department = 'Growth Operations' then 'Operations - Growth Ops'\r\n            when people.department = 'Data Operations' then 'Operations - Data Ops'\r\n            when people.department = 'Operations' then 'Operations'\r\n        end as operations_department,\r\n        case \r\n            when m.job_title = 'Operations Manager' then m.display_name\r\n            when mm.job_title = 'Operations Manager' then mm.display_name\r\n            when mmm.job_title = 'Operations Manager' then mmm.display_name\r\n            when mmmm.job_title = 'Operations Manager' then mmmm.display_name\r\n            else null \r\n        end as operations_manager,\r\n        people.manager_s_id as manager_id,\r\n        people.reports_to as manager_name,\r\n        m.reports_to as skip_manager_name, \r\n        mm.reports_to as skip_skip_manager_name,\r\n        people.job_title,\r\n        people.email,\r\n        people.personal_email,\r\n        people.github_username,\r\n        people.greenhouse_candidate_id,\r\n        people.creation_date,\r\n        people.employment_effective_date,\r\n        people.country,\r\n        people.city,\r\n        people.state_province_region,\r\n        lat_lng.lng as city_longitude,\r\n        lat_lng.lat as city_latitude,\r\n        people.site,\r\n        case when people.status = 'Active' then false else true end as is_offboarded,\r\n        lifecycle.termination_date,\r\n        lifecycle.reason_for_termination,\r\n        lifecycle.accumulated_tenure_years_,\r\n        people.employee_id as hibob_id\r\n    from hibob.people\r\n    left join hibob.people AS m \r\n        on people.manager_s_id=m.employee_id \r\n    left join hibob.people AS mm\r\n        on m.manager_s_id = mm.employee_id \r\n    left join hibob.people AS mmm\r\n        on mm.manager_s_id = mmm.employee_id \r\n    left join hibob.people AS mmmm\r\n        on mmm.manager_s_id = mmmm.employee_id  \r\n    left join hibob.lifecycle\r\n        on people.employee_id=lifecycle.employee_id\r\n    left join reporting.city_latitude_and_longitude_by_team_member lat_lng\r\n        on lat_lng.email = people.email\r\n),\r\n\r\nfin as (select h.*,\r\n\ttimeoff_current.days_off_in_current_cycle,\r\n\ttimeoff_previous.days_off_in_previous_cycle\r\nfrom hibob_base h\r\nLEFT JOIN timeoff_current \r\n    on h.email=timeoff_current.email\r\nLEFT JOIN timeoff_previous\r\n    on h.email=timeoff_previous.email)\r\n    \r\n  select tb.*,case when length(tb.state_province_region)>=4 and tb.state_province_region<>'Utica' then tb.state_province_region when tb.state_province_region='Utica' then 'New York' when display_name='Scott Downes' then 'Tennessee' when display_name='Martin Santana' Then 'Florida' else base_state.state end as state from (select * from fin where country ilike '%united%states%' and termination_date is null) tb left join public.base_state\r\n     on tb.state_province_region=base_state.abbreviation\r\n     order by 1\r\n     \r\n     /* select state, count(*) from rs group by 1 order by 1\r\n   \r\n    \r\n   select * from master_data.state_classification left join public.base_state on base_state.state=state_classification.state\r\n    left join (select * from fin  where country ilike '%united%states%' and termination_date is null) as fin \r\n    on fin.state_province_region=base_state.abbreviation*/\r\n   \r\n",
+      "template-tags": {}
+    },
+    "database": 5
+  },
+  "id": 6888,
+  "display": "table",
+  "last-edit-info": {
+    "id": 1110,
+    "email": "rima.chehade@invisible.email",
+    "first_name": "Rima",
+    "last_name": "Chehade",
+    "timestamp": "2022-11-23T07:39:38.547771Z"
+  },
+  "visualization_settings": {
+    "table.pivot_column": "github_username",
+    "table.cell_column": "manager_id"
+  },
+  "collection": {
+    "authority_level": null,
+    "description": null,
+    "archived": false,
+    "slug": "finance_team_",
+    "color": "#509EE3",
+    "name": "Finance Team ",
+    "personal_owner_id": null,
+    "id": 866,
+    "location": "/",
+    "namespace": null
+  },
+  "favorite": false,
+  "dataset": false,
+  "created_at": "2022-10-17T16:43:44.064528Z",
+  "public_uuid": "71ca25d3-521a-4897-9d21-53f13abd1307"
+}

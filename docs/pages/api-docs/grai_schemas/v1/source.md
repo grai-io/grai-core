@@ -13,12 +13,12 @@ class SourceV1(GraiBaseModel)
 
 ```python
 @classmethod
-def from_spec(cls, spec_dict: dict) -> "SourceV1"
+def from_spec(cls, spec: Union[dict, SourceSpec]) -> "SourceV1"
 ```
 
 **Arguments**:
 
-  spec_dict (Dict):
+  spec:
 
 
 **Returns**:
