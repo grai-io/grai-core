@@ -3,7 +3,7 @@ sidebar_label: main
 title: grai_source_fivetran.fivetran_api.main
 ---
 
-#### approve\_certificate
+## approve\_certificate
 
 ```python
 @app.post("/v1/certificates", response_model=V1CertificatesPostResponse)
@@ -25,7 +25,7 @@ Approve a certificate
 
 
 
-#### create\_connector
+## create\_connector
 
 ```python
 @app.post(
@@ -54,7 +54,7 @@ Create a Connector
 
 
 
-#### connector\_details
+## connector\_details
 
 ```python
 @app.get("/v1/connectors/{connector_id}",
@@ -77,7 +77,7 @@ Retrieve Connector Details
 
 
 
-#### delete\_connector
+## delete\_connector
 
 ```python
 @app.delete(
@@ -102,7 +102,7 @@ Delete a Connector
 
 
 
-#### modify\_connector
+## modify\_connector
 
 ```python
 @app.patch("/v1/connectors/{connector_id}",
@@ -128,7 +128,7 @@ Modify a Connector
 
 
 
-#### connect\_card
+## connect\_card
 
 ```python
 @app.post(
@@ -156,7 +156,7 @@ Connect Card
 
 
 
-#### connect\_card\_token
+## connect\_card\_token
 
 ```python
 @app.post(
@@ -181,7 +181,7 @@ Connect Card Token
 
 
 
-#### resync\_connector
+## resync\_connector
 
 ```python
 @app.post(
@@ -209,7 +209,7 @@ Re-sync Connector Data (Historical Sync)
 
 
 
-#### connector\_schema\_config
+## connector\_schema\_config
 
 ```python
 @app.get(
@@ -234,7 +234,7 @@ Retrieve a Connector Schema Config
 
 
 
-#### modify\_connector\_schema\_config
+## modify\_connector\_schema\_config
 
 ```python
 @app.patch(
@@ -261,7 +261,7 @@ Modify a Connector Schema Config
 
 
 
-#### reload\_connector\_schema\_config
+## reload\_connector\_schema\_config
 
 ```python
 @app.post(
@@ -288,7 +288,7 @@ Reload a Connector Schema Config
 
 
 
-#### resync\_tables
+## resync\_tables
 
 ```python
 @app.post(
@@ -315,7 +315,7 @@ Re-sync Connector Table Data
 
 
 
-#### modify\_connector\_database\_schema\_config
+## modify\_connector\_database\_schema\_config
 
 ```python
 @app.patch(
@@ -344,7 +344,7 @@ Modify a Connector Database Schema Config
 
 
 
-#### modify\_connector\_table\_config
+## modify\_connector\_table\_config
 
 ```python
 @app.patch(
@@ -376,7 +376,7 @@ Modify a Connector Table Config
 
 
 
-#### modify\_connector\_column\_config
+## modify\_connector\_column\_config
 
 ```python
 @app.patch(
@@ -410,7 +410,7 @@ Modify a Connector Column Config
 
 
 
-#### connector\_column\_config
+## connector\_column\_config
 
 ```python
 @app.get(
@@ -440,7 +440,7 @@ Retrieve Source Table Columns Config
 
 
 
-#### sync\_connector
+## sync\_connector
 
 ```python
 @app.post(
@@ -468,7 +468,7 @@ Sync Connector Data
 
 
 
-#### run\_setup\_tests
+## run\_setup\_tests
 
 ```python
 @app.post(
@@ -496,7 +496,7 @@ Run connector setup tests
 
 
 
-#### dbt\_model\_details
+## dbt\_model\_details
 
 ```python
 @app.get("/v1/dbt/models/{model_id}",
@@ -519,7 +519,7 @@ Retrieve DBT Model Details
 
 
 
-#### list\_dbt\_projects
+## list\_dbt\_projects
 
 ```python
 @app.get("/v1/dbt/projects", response_model=V1DbtProjectsGetResponse)
@@ -545,7 +545,7 @@ List All DBT Projects
 
 
 
-#### create\_dbt\_project
+## create\_dbt\_project
 
 ```python
 @app.post(
@@ -573,7 +573,7 @@ Create DBT Project
 
 
 
-#### dbt\_project\_details
+## dbt\_project\_details
 
 ```python
 @app.get("/v1/dbt/projects/{project_id}",
@@ -596,7 +596,7 @@ Retrieve DBT Project Details
 
 
 
-#### list\_dbt\_project\_models
+## list\_dbt\_project\_models
 
 ```python
 @app.get(
@@ -625,7 +625,7 @@ List All DBT Models
 
 
 
-#### test\_dbt\_project
+## test\_dbt\_project
 
 ```python
 @app.post(
@@ -650,7 +650,7 @@ Test DBT Project
 
 
 
-#### list\_dbt\_project\_transformations
+## list\_dbt\_project\_transformations
 
 ```python
 @app.get(
@@ -679,7 +679,7 @@ List All DBT Transformations
 
 
 
-#### create\_dbt\_transformation
+## create\_dbt\_transformation
 
 ```python
 @app.post(
@@ -711,7 +711,7 @@ Create DBT Transformation
 
 
 
-#### dbt\_transformation\_details
+## dbt\_transformation\_details
 
 ```python
 @app.get(
@@ -736,7 +736,7 @@ Retrieve DBT Transformation Details
 
 
 
-#### delete\_dbt\_transformation
+## delete\_dbt\_transformation
 
 ```python
 @app.delete(
@@ -761,7 +761,7 @@ Delete DBT Transformation
 
 
 
-#### modify\_dbt\_transformation
+## modify\_dbt\_transformation
 
 ```python
 @app.patch(
@@ -788,7 +788,7 @@ Modify DBT Transformation
 
 
 
-#### create\_destination
+## create\_destination
 
 ```python
 @app.post(
@@ -817,7 +817,7 @@ Create destination
 
 
 
-#### destination\_details
+## destination\_details
 
 ```python
 @app.get(
@@ -842,7 +842,7 @@ Retrieve Destination Details
 
 
 
-#### delete\_destination
+## delete\_destination
 
 ```python
 @app.delete(
@@ -867,7 +867,7 @@ Delete a destination
 
 
 
-#### modify\_destination
+## modify\_destination
 
 ```python
 @app.patch(
@@ -895,7 +895,7 @@ Modify a Destination
 
 
 
-#### run\_destination\_setup\_tests
+## run\_destination\_setup\_tests
 
 ```python
 @app.post(
@@ -923,7 +923,7 @@ Run Destination Setup Tests
 
 
 
-#### approve\_fingerprint
+## approve\_fingerprint
 
 ```python
 @app.post("/v1/fingerprints", response_model=V1FingerprintsPostResponse)
@@ -945,7 +945,7 @@ Approve a fingerprint
 
 
 
-#### list\_all\_groups
+## list\_all\_groups
 
 ```python
 @app.get("/v1/groups", response_model=V1GroupsGetResponse)
@@ -969,7 +969,7 @@ List All Groups
 
 
 
-#### create\_group
+## create\_group
 
 ```python
 @app.post(
@@ -997,7 +997,7 @@ Create a Group
 
 
 
-#### group\_details
+## group\_details
 
 ```python
 @app.get("/v1/groups/{group_id}", response_model=V1GroupsGroupIdGetResponse)
@@ -1019,7 +1019,7 @@ Retrieve Group Details
 
 
 
-#### delete\_group
+## delete\_group
 
 ```python
 @app.delete("/v1/groups/{group_id}",
@@ -1042,7 +1042,7 @@ Delete a group
 
 
 
-#### modify\_group
+## modify\_group
 
 ```python
 @app.patch("/v1/groups/{group_id}",
@@ -1067,7 +1067,7 @@ Modify a Group
 
 
 
-#### list\_all\_connectors\_in\_group
+## list\_all\_connectors\_in\_group
 
 ```python
 @app.get(
@@ -1098,7 +1098,7 @@ List All Connectors within a Group
 
 
 
-#### list\_all\_users\_in\_group
+## list\_all\_users\_in\_group
 
 ```python
 @app.get("/v1/groups/{group_id}/users",
@@ -1125,7 +1125,7 @@ List All Users within a Group
 
 
 
-#### add\_user\_to\_group
+## add\_user\_to\_group
 
 ```python
 @app.post("/v1/groups/{group_id}/users",
@@ -1150,7 +1150,7 @@ Add a User to a Group
 
 
 
-#### delete\_user\_from\_group
+## delete\_user\_from\_group
 
 ```python
 @app.delete(
@@ -1177,7 +1177,7 @@ Remove a User from a Group
 
 
 
-#### column\_metadata
+## column\_metadata
 
 ```python
 @app.get(
@@ -1206,7 +1206,7 @@ Retrieve column metadata
 
 
 
-#### schema\_metadata
+## schema\_metadata
 
 ```python
 @app.get(
@@ -1235,7 +1235,7 @@ Retrieve schema metadata
 
 
 
-#### table\_metadata
+## table\_metadata
 
 ```python
 @app.get(
@@ -1264,7 +1264,7 @@ Retrieve table metadata
 
 
 
-#### metadata\_connectors
+## metadata\_connectors
 
 ```python
 @app.get("/v1/metadata/{name}", response_model=V1MetadataNameGetResponse)
@@ -1289,7 +1289,7 @@ Retrieve source metadata
 
 
 
-#### metadata\_connector\_config
+## metadata\_connector\_config
 
 ```python
 @app.get("/v1/metadata/{name}/{service}",
@@ -1313,7 +1313,7 @@ Retrieve connector configuration metadata
 
 
 
-#### list\_all\_roles
+## list\_all\_roles
 
 ```python
 @app.get("/v1/roles", response_model=V1RolesGetResponse)
@@ -1337,7 +1337,7 @@ List all roles
 
 
 
-#### list\_all\_teams
+## list\_all\_teams
 
 ```python
 @app.get("/v1/teams", response_model=V1TeamsGetResponse)
@@ -1361,7 +1361,7 @@ List all teams
 
 
 
-#### create\_team
+## create\_team
 
 ```python
 @app.post("/v1/teams",
@@ -1386,7 +1386,7 @@ Create a team
 
 
 
-#### team\_details
+## team\_details
 
 ```python
 @app.get("/v1/teams/{team_id}", response_model=V1TeamsTeamIdGetResponse)
@@ -1408,7 +1408,7 @@ Retrieve team details
 
 
 
-#### delete\_team
+## delete\_team
 
 ```python
 @app.delete("/v1/teams/{team_id}", response_model=V1TeamsTeamIdDeleteResponse)
@@ -1430,7 +1430,7 @@ Delete a team
 
 
 
-#### modify\_team
+## modify\_team
 
 ```python
 @app.patch("/v1/teams/{team_id}", response_model=V1TeamsTeamIdPatchResponse)
@@ -1453,7 +1453,7 @@ Modify a team
 
 
 
-#### get\_team\_memberships\_in\_connectors
+## get\_team\_memberships\_in\_connectors
 
 ```python
 @app.get("/v1/teams/{team_id}/connectors",
@@ -1480,7 +1480,7 @@ List all connector memberships
 
 
 
-#### add\_team\_membership\_in\_connector
+## add\_team\_membership\_in\_connector
 
 ```python
 @app.post(
@@ -1510,7 +1510,7 @@ Add connector membership
 
 
 
-#### get\_team\_membership\_in\_connector
+## get\_team\_membership\_in\_connector
 
 ```python
 @app.get(
@@ -1537,7 +1537,7 @@ Retrieve connector membership
 
 
 
-#### delete\_team\_membership\_in\_connector
+## delete\_team\_membership\_in\_connector
 
 ```python
 @app.delete(
@@ -1564,7 +1564,7 @@ Delete connector membership
 
 
 
-#### update\_team\_membership\_in\_connector
+## update\_team\_membership\_in\_connector
 
 ```python
 @app.patch(
@@ -1593,7 +1593,7 @@ Update connector membership
 
 
 
-#### get\_team\_memberships\_in\_groups
+## get\_team\_memberships\_in\_groups
 
 ```python
 @app.get("/v1/teams/{team_id}/groups",
@@ -1620,7 +1620,7 @@ List all group memberships
 
 
 
-#### add\_team\_membership\_in\_group
+## add\_team\_membership\_in\_group
 
 ```python
 @app.post(
@@ -1650,7 +1650,7 @@ Add group membership
 
 
 
-#### get\_team\_membership\_in\_group
+## get\_team\_membership\_in\_group
 
 ```python
 @app.get(
@@ -1677,7 +1677,7 @@ Retrieve group membership
 
 
 
-#### delete\_team\_membership\_in\_group
+## delete\_team\_membership\_in\_group
 
 ```python
 @app.delete(
@@ -1704,7 +1704,7 @@ Delete group membership
 
 
 
-#### update\_team\_membership\_in\_group
+## update\_team\_membership\_in\_group
 
 ```python
 @app.patch(
@@ -1733,7 +1733,7 @@ Update group membership
 
 
 
-#### delete\_team\_membership\_in\_account
+## delete\_team\_membership\_in\_account
 
 ```python
 @app.delete("/v1/teams/{team_id}/role",
@@ -1756,7 +1756,7 @@ Delete team role in account
 
 
 
-#### list\_users\_in\_team
+## list\_users\_in\_team
 
 ```python
 @app.get("/v1/teams/{team_id}/users",
@@ -1783,7 +1783,7 @@ List all user memberships
 
 
 
-#### add\_user\_to\_team
+## add\_user\_to\_team
 
 ```python
 @app.post(
@@ -1813,7 +1813,7 @@ Add a user to a team
 
 
 
-#### get\_user\_in\_team
+## get\_user\_in\_team
 
 ```python
 @app.get(
@@ -1840,7 +1840,7 @@ Retrieve user membership in a team
 
 
 
-#### delete\_user\_from\_team
+## delete\_user\_from\_team
 
 ```python
 @app.delete(
@@ -1867,7 +1867,7 @@ Delete a user from a team
 
 
 
-#### update\_user\_membership
+## update\_user\_membership
 
 ```python
 @app.patch(
@@ -1896,7 +1896,7 @@ Modify a user membership
 
 
 
-#### list\_all\_users
+## list\_all\_users
 
 ```python
 @app.get("/v1/users", response_model=V1UsersGetResponse)
@@ -1920,7 +1920,7 @@ List All Users
 
 
 
-#### create\_user
+## create\_user
 
 ```python
 @app.post("/v1/users",
@@ -1946,7 +1946,7 @@ Invite a User
 
 
 
-#### delete\_user
+## delete\_user
 
 ```python
 @app.delete("/v1/users/{id}", response_model=V1UsersIdDeleteResponse)
@@ -1968,7 +1968,7 @@ Delete a user
 
 
 
-#### user\_details
+## user\_details
 
 ```python
 @app.get("/v1/users/{user_id}", response_model=V1UsersUserIdGetResponse)
@@ -1990,7 +1990,7 @@ Retrieve User Details
 
 
 
-#### modify\_user
+## modify\_user
 
 ```python
 @app.patch("/v1/users/{user_id}", response_model=V1UsersUserIdPatchResponse)
@@ -2013,7 +2013,7 @@ Modify a User
 
 
 
-#### get\_user\_memberships\_in\_connectors
+## get\_user\_memberships\_in\_connectors
 
 ```python
 @app.get("/v1/users/{user_id}/connectors",
@@ -2040,7 +2040,7 @@ List all connector memberships
 
 
 
-#### add\_user\_membership\_in\_connector
+## add\_user\_membership\_in\_connector
 
 ```python
 @app.post(
@@ -2070,7 +2070,7 @@ Add connector membership
 
 
 
-#### get\_user\_membership\_in\_connector
+## get\_user\_membership\_in\_connector
 
 ```python
 @app.get(
@@ -2097,7 +2097,7 @@ Retrieve connector membership
 
 
 
-#### delete\_user\_membership\_in\_connector
+## delete\_user\_membership\_in\_connector
 
 ```python
 @app.delete(
@@ -2124,7 +2124,7 @@ Delete connector membership
 
 
 
-#### update\_user\_membership\_in\_connector
+## update\_user\_membership\_in\_connector
 
 ```python
 @app.patch(
@@ -2153,7 +2153,7 @@ Update connector membership
 
 
 
-#### get\_user\_memberships\_in\_groups
+## get\_user\_memberships\_in\_groups
 
 ```python
 @app.get("/v1/users/{user_id}/groups",
@@ -2180,7 +2180,7 @@ List all group memberships
 
 
 
-#### add\_user\_membership\_in\_group
+## add\_user\_membership\_in\_group
 
 ```python
 @app.post(
@@ -2210,7 +2210,7 @@ Add group membership
 
 
 
-#### get\_user\_membership\_in\_group
+## get\_user\_membership\_in\_group
 
 ```python
 @app.get(
@@ -2237,7 +2237,7 @@ Retrieve group membership
 
 
 
-#### delete\_user\_membership\_in\_group
+## delete\_user\_membership\_in\_group
 
 ```python
 @app.delete(
@@ -2264,7 +2264,7 @@ Delete group membership
 
 
 
-#### update\_user\_membership\_in\_group
+## update\_user\_membership\_in\_group
 
 ```python
 @app.patch(
@@ -2293,7 +2293,7 @@ Update group membership
 
 
 
-#### delete\_user\_membership\_in\_account
+## delete\_user\_membership\_in\_account
 
 ```python
 @app.delete("/v1/users/{user_id}/role",
@@ -2316,7 +2316,7 @@ Delete user role in account
 
 
 
-#### list\_all\_webhooks
+## list\_all\_webhooks
 
 ```python
 @app.get("/v1/webhooks", response_model=V1WebhooksGetResponse)
@@ -2340,7 +2340,7 @@ Retrieve the list of webhooks
 
 
 
-#### create\_account\_webhook
+## create\_account\_webhook
 
 ```python
 @app.post("/v1/webhooks/account", response_model=WebhookResponse)
@@ -2361,7 +2361,7 @@ Create account webhook
 
 
 
-#### create\_group\_webhook
+## create\_group\_webhook
 
 ```python
 @app.post("/v1/webhooks/group/{group_id}", response_model=WebhookResponse)
@@ -2384,7 +2384,7 @@ Create group webhook
 
 
 
-#### webhook\_details
+## webhook\_details
 
 ```python
 @app.get("/v1/webhooks/{webhook_id}", response_model=WebhookResponse)
@@ -2406,7 +2406,7 @@ Retrieve webhook details
 
 
 
-#### delete\_webhook
+## delete\_webhook
 
 ```python
 @app.delete("/v1/webhooks/{webhook_id}",
@@ -2432,7 +2432,7 @@ Delete webhook
 
 
 
-#### modify\_webhook
+## modify\_webhook
 
 ```python
 @app.patch("/v1/webhooks/{webhook_id}", response_model=WebhookResponse)
@@ -2455,7 +2455,7 @@ Update webhook
 
 
 
-#### test\_webhook
+## test\_webhook
 
 ```python
 @app.post("/v1/webhooks/{webhook_id}/test", response_model=WebhookTestResponse)

@@ -7112,7 +7112,7 @@ class V1ConnectorsConnectorIdSchemasTablesResyncPostRequest(BaseModel)
 
 
 
-## Config Objects
+### Config Objects
 
 ```python
 class Config()

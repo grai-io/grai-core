@@ -3,7 +3,7 @@ sidebar_label: utilities
 title: grai_cli.utilities.utilities
 ---
 
-#### default\_callback
+## default\_callback
 
 ```python
 def default_callback(ctx: typer.Context)
@@ -18,7 +18,7 @@ def default_callback(ctx: typer.Context)
 
 
 
-#### load\_yaml
+## load\_yaml
 
 ```python
 def load_yaml(file: Union[str, TextIOBase]) -> Dict
@@ -33,7 +33,7 @@ def load_yaml(file: Union[str, TextIOBase]) -> Dict
 
 
 
-#### load\_all\_yaml
+## load\_all\_yaml
 
 ```python
 def load_all_yaml(file: Union[str, TextIOBase]) -> Iterable[Dict]
@@ -48,7 +48,7 @@ def load_all_yaml(file: Union[str, TextIOBase]) -> Iterable[Dict]
 
 
 
-#### prep\_data
+## prep\_data
 
 ```python
 @multimethod
@@ -64,7 +64,7 @@ def prep_data(data: Any) -> Any
 
 
 
-#### \_
+## \_
 
 ```python
 @prep_data.register
@@ -80,7 +80,7 @@ def _(data: Dict) -> Dict
 
 
 
-#### \_
+## \_
 
 ```python
 @prep_data.register
@@ -96,7 +96,7 @@ def _(data: UUID) -> str
 
 
 
-#### \_
+## \_
 
 ```python
 @prep_data.register
@@ -112,7 +112,7 @@ def _(data: BaseModel) -> Dict
 
 
 
-#### \_
+## \_
 
 ```python
 @prep_data.register
@@ -128,7 +128,7 @@ def _(data: List) -> List[Dict]
 
 
 
-#### dump\_yaml
+## dump\_yaml
 
 ```python
 @multimethod
@@ -137,7 +137,7 @@ def dump_yaml()
 
 
 
-#### dump\_individual\_yaml
+## dump\_individual\_yaml
 
 ```python
 @dump_yaml.register
@@ -154,7 +154,7 @@ def dump_individual_yaml(item: Dict, stream: TextIOBase)
 
 
 
-#### dump\_model\_yaml
+## dump\_model\_yaml
 
 ```python
 @dump_yaml.register
@@ -171,7 +171,7 @@ def dump_model_yaml(item: BaseModel, stream: TextIOBase)
 
 
 
-#### dump\_multiple\_yaml
+## dump\_multiple\_yaml
 
 ```python
 @dump_yaml.register
@@ -188,7 +188,7 @@ def dump_multiple_yaml(items: Sequence[Dict], stream: TextIOBase)
 
 
 
-#### dump\_multiple\_yaml
+## dump\_multiple\_yaml
 
 ```python
 @dump_yaml.register
@@ -205,7 +205,7 @@ def dump_multiple_yaml(items: Sequence[BaseModel], stream: TextIOBase)
 
 
 
-#### write\_yaml
+## write\_yaml
 
 ```python
 def write_yaml(data: Union[Sequence, Dict, BaseModel],
@@ -224,7 +224,7 @@ def write_yaml(data: Union[Sequence, Dict, BaseModel],
 
 
 
-#### get\_config\_view
+## get\_config\_view
 
 ```python
 def get_config_view(config_field: str)
@@ -241,7 +241,7 @@ Assumes &lt;config_field&gt; is dot separated i.e. `auth.username`
 
 
 
-#### merge\_dicts
+## merge\_dicts
 
 ```python
 def merge_dicts(dict_a: Dict, dict_b: Dict) -> Dict

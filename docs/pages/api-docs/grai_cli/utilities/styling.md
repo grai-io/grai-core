@@ -11,7 +11,7 @@ class GraiColors()
 
 
 
-#### prompt\_styler
+## prompt\_styler
 
 ```python
 def prompt_styler(*args, **kwargs) -> Callable[[str], str]
@@ -27,7 +27,7 @@ def prompt_styler(*args, **kwargs) -> Callable[[str], str]
 
 
 
-#### strip\_style
+## strip\_style
 
 ```python
 def strip_style(fn: Callable[[str], str]) -> Callable[[str], str]

@@ -3,7 +3,7 @@ sidebar_label: set
 title: grai_cli.api.config.set
 ---
 
-#### setter\_helper
+## setter\_helper
 
 ```python
 def setter_helper(path: str) -> Callable
@@ -18,7 +18,7 @@ def setter_helper(path: str) -> Callable
 
 
 
-#### \_
+## \_
 
 ```python
 @setter_helper("auth.username")
@@ -36,7 +36,7 @@ Sets config value for auth.username
 
 
 
-#### \_
+## \_
 
 ```python
 @setter_helper("auth.password")
@@ -61,7 +61,7 @@ Sets config value for auth.password
 
 
 
-#### \_
+## \_
 
 ```python
 @setter_helper("auth.api_key")
@@ -85,7 +85,7 @@ Sets config value for auth.api_key
 
 
 
-#### \_
+## \_
 
 ```python
 @setter_helper("server.host")
@@ -103,7 +103,7 @@ Sets config value for server.host
 
 
 
-#### \_
+## \_
 
 ```python
 @setter_helper("server.port")
@@ -121,7 +121,7 @@ Sets config value for server.port
 
 
 
-#### \_
+## \_
 
 ```python
 @setter_helper("server.insecure")
@@ -139,7 +139,7 @@ Sets config value for server.insecure
 
 
 
-#### \_
+## \_
 
 ```python
 @setter_helper("server.workspace")

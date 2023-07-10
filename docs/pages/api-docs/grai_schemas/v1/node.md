@@ -51,7 +51,7 @@ class NodeV1(GraiBaseModel)
 
 
 
-#### from\_spec
+### from\_spec
 
 ```python
 @classmethod
