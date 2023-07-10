@@ -275,8 +275,8 @@ class MetabaseConnector(MetabaseAPI):
 
         edges = (
             Edge(
-                source=Question(**self.questions_map[question]),
-                destination=Table(**self.tables_map[table]),
+                source=Table(**self.tables_map[table]),
+                destination=Question(**self.questions_map[question]),
                 namespace=self.questions_map[question]["namespace"],
             )
             for question, table in self.question_table_map.items()
