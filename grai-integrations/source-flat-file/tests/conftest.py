@@ -61,7 +61,7 @@ def mock_get_nodes_and_edges(mock_data):
 
         integration = FlatFileIntegration.from_client(
             client=MockClient(),
-            source_name="test",
+            source="test",
             file_name=file_name,
             namespace=namespace,
         )

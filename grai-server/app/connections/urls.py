@@ -39,8 +39,6 @@ def get_source(request) -> Source:
 
     source_name = request.POST.get("source_name")
 
-    print(source_name)
-
     if source_name is None:
         raise DisplayError("You must provide a source_id or source_name")
 

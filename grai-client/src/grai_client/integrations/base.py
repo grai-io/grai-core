@@ -46,6 +46,10 @@ class GraiIntegrationImplementation(ABC):
     def get_nodes_and_edges(self) -> Tuple[List[SourcedNode], List[SourcedEdge]]:
         pass
 
+    @abstractmethod
+    def is_valid_integration(self) -> bool:
+        pass
+
     @classmethod
     def from_client(
         cls,

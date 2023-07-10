@@ -120,7 +120,9 @@ def get_from_node_spec(client: ClientV1, grai_type: NodeSpec, options: ClientOpt
 
 @get.register
 def get_source_node_by_label_v1(
-    client: ClientV1, grai_type: SourceNodeLabels, options: ClientOptions = ClientOptions()
+    client: ClientV1,
+    grai_type: SourceNodeLabels,
+    options: ClientOptions = ClientOptions(),
 ):
     """
 
@@ -139,7 +141,10 @@ def get_source_node_by_label_v1(
 
 @get.register
 def get_source_node_by_label_and_id_v1(
-    client: ClientV1, grai_type: SourceNodeLabels, source_id: Union[str, UUID], options: ClientOptions = ClientOptions()
+    client: ClientV1,
+    grai_type: SourceNodeLabels,
+    source_id: Union[str, UUID],
+    options: ClientOptions = ClientOptions(),
 ) -> List[SourcedNodeV1]:
     """
 
@@ -158,7 +163,7 @@ def get_source_node_by_label_and_id_v1(
         source: SourceV1 = get_is_unique(client, "Source", name=source_id)
         source_id = source.spec.id
     else:
-        source = get(client, "Source", source_id)
+        source = get(client, "Source", source_id, options=options)
 
     url = client.get_url(grai_type, source_id)
     resp = paginated_get(client, url, options)
@@ -189,7 +194,9 @@ def get_source_node_by_source_node_v1(
 
 @get.register
 def get_source_node_by_source_node_spec(
-    client: ClientV1, grai_type: SourcedNodeSpec, options: ClientOptions = ClientOptions()
+    client: ClientV1,
+    grai_type: SourcedNodeSpec,
+    options: ClientOptions = ClientOptions(),
 ) -> SourcedNodeV1:
     """
 
