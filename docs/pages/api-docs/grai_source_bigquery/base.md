@@ -3,7 +3,7 @@ sidebar_label: base
 title: grai_source_bigquery.base
 ---
 
-#### get\_nodes\_and\_edges
+## get\_nodes\_and\_edges
 
 ```python
 def get_nodes_and_edges(
@@ -21,14 +21,16 @@ def get_nodes_and_edges(
 
 
 
-#### update\_server
+## update\_server
 
 ```python
 def update_server(client: BaseClient,
                   namespace: Optional[str] = None,
                   project: Optional[str] = None,
-                  dataset: Optional[str] = None,
-                  credentials: Optional[str] = None) -> None
+                  dataset: Optional[Union[str, List[str]]] = None,
+                  credentials: Optional[str] = None,
+                  log_parsing: Optional[bool] = False,
+                  log_parsing_window: Optional[int] = 7) -> None
 ```
 
 **Arguments**:

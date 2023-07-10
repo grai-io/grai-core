@@ -11,7 +11,7 @@ class GraphManifest()
 
 
 
-#### get\_node
+### get\_node
 
 ```python
 def get_node(namespace: str, name: str) -> Optional[NodeTypes]
@@ -35,7 +35,7 @@ class Graph()
 
 
 
-#### add\_nodes\_from\_manifest
+### add\_nodes\_from\_manifest
 
 ```python
 def add_nodes_from_manifest()
@@ -43,7 +43,7 @@ def add_nodes_from_manifest()
 
 
 
-#### add\_edges\_from\_manifest
+### add\_edges\_from\_manifest
 
 ```python
 def add_edges_from_manifest()
@@ -51,7 +51,7 @@ def add_edges_from_manifest()
 
 
 
-#### get\_node\_id
+### get\_node\_id
 
 ```python
 @lru_cache
@@ -68,7 +68,7 @@ def get_node_id(namespace: str, name: str) -> Optional[int]
 
 
 
-#### get\_node
+### get\_node
 
 ```python
 def get_node(namespace: Optional[str] = None,
@@ -87,7 +87,7 @@ def get_node(namespace: Optional[str] = None,
 
 
 
-#### label
+### label
 
 ```python
 def label(namespace: str, name: str) -> str
@@ -103,7 +103,7 @@ def label(namespace: str, name: str) -> str
 
 
 
-#### id\_label
+### id\_label
 
 ```python
 def id_label(node_id: int) -> str
@@ -118,7 +118,7 @@ def id_label(node_id: int) -> str
 
 
 
-#### relabeled\_graph
+### relabeled\_graph
 
 ```python
 def relabeled_graph()
@@ -126,7 +126,7 @@ def relabeled_graph()
 
 
 
-#### process\_items
+## process\_items
 
 ```python
 @multimethod
@@ -144,7 +144,7 @@ def process_items(vals: Any, version: Any, type: Any) -> List[GraiType]
 
 
 
-#### process\_dict
+## process\_dict
 
 ```python
 @process_items.register
@@ -162,7 +162,7 @@ def process_dict(dict_item: Dict, version: str, type: str) -> GraiType
 
 
 
-#### process\_node
+## process\_node
 
 ```python
 @process_items.register
@@ -180,7 +180,7 @@ def process_node(item: GraiType, version: str, type: str) -> GraiType
 
 
 
-#### process\_sequence
+## process\_sequence
 
 ```python
 @process_items.register
@@ -199,7 +199,7 @@ def process_sequence(item_iter: Sequence, version: str,
 
 
 
-#### build\_graph
+## build\_graph
 
 ```python
 def build_graph(nodes: List[Dict], edges: List[Dict], version: str) -> Graph

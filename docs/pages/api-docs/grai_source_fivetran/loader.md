@@ -11,7 +11,7 @@ class FiveTranConfig(BaseSettings)
 
 
 
-#### validate\_endpoint
+### validate\_endpoint
 
 ```python
 @validator("endpoint")
@@ -27,7 +27,7 @@ def validate_endpoint(cls, value)
 
 
 
-## Config Objects
+### Config Objects
 
 ```python
 class Config()
@@ -35,7 +35,7 @@ class Config()
 
 
 
-#### has\_data\_items
+## has\_data\_items
 
 ```python
 def has_data_items(item: Dict) -> bool
@@ -58,7 +58,7 @@ class FivetranAPI()
 
 
 
-#### make\_request
+### make\_request
 
 ```python
 def make_request(request: Callable[..., requests.Response],
@@ -81,7 +81,7 @@ def make_request(request: Callable[..., requests.Response],
 
 
 
-#### paginated\_query
+### paginated\_query
 
 ```python
 def paginated_query(request: Callable[..., requests.Response],
@@ -104,7 +104,7 @@ def paginated_query(request: Callable[..., requests.Response],
 
 
 
-#### get\_paginated\_data\_items
+### get\_paginated\_data\_items
 
 ```python
 def get_paginated_data_items(url: str,
@@ -123,7 +123,7 @@ def get_paginated_data_items(url: str,
 
 
 
-#### get\_tables
+### get\_tables
 
 ```python
 def get_tables(connector_id: str,
@@ -140,7 +140,7 @@ def get_tables(connector_id: str,
 
 
 
-#### get\_columns
+### get\_columns
 
 ```python
 def get_columns(connector_id: str,
@@ -157,7 +157,7 @@ def get_columns(connector_id: str,
 
 
 
-#### get\_schemas
+### get\_schemas
 
 ```python
 def get_schemas(connector_id: str,
@@ -174,7 +174,7 @@ def get_schemas(connector_id: str,
 
 
 
-#### get\_all\_groups
+### get\_all\_groups
 
 ```python
 def get_all_groups(limit: Optional[int] = None) -> List[GroupResponse]
@@ -189,7 +189,7 @@ def get_all_groups(limit: Optional[int] = None) -> List[GroupResponse]
 
 
 
-#### get\_group\_connectors
+### get\_group\_connectors
 
 ```python
 def get_group_connectors(group_id: str,
@@ -207,7 +207,7 @@ def get_group_connectors(group_id: str,
 
 
 
-#### get\_destination\_metadata
+### get\_destination\_metadata
 
 ```python
 def get_destination_metadata(
@@ -223,7 +223,7 @@ def get_destination_metadata(
 
 
 
-#### get\_connector\_metadata
+### get\_connector\_metadata
 
 ```python
 def get_connector_metadata(
@@ -239,7 +239,7 @@ def get_connector_metadata(
 
 
 
-#### get\_source\_table\_column\_metadata
+### get\_source\_table\_column\_metadata
 
 ```python
 def get_source_table_column_metadata(
@@ -258,7 +258,7 @@ def get_source_table_column_metadata(
 
 
 
-#### get\_connectors
+### get\_connectors
 
 ```python
 def get_connectors() -> List[ConnectorResponse]
@@ -272,7 +272,7 @@ def get_connectors() -> List[ConnectorResponse]
 
 
 
-#### caller
+## caller
 
 ```python
 async def caller(semaphore: asyncio.Semaphore, func: Callable[..., T], *args,
@@ -291,7 +291,7 @@ async def caller(semaphore: asyncio.Semaphore, func: Callable[..., T], *args,
 
 
 
-#### parallelize\_http
+## parallelize\_http
 
 ```python
 def parallelize_http(semaphore)
@@ -314,7 +314,7 @@ class SourceDestinationDict(TypedDict)
 
 
 
-#### build\_namespace\_map
+## build\_namespace\_map
 
 ```python
 def build_namespace_map(
@@ -341,7 +341,7 @@ class FivetranConnector(FivetranAPI)
 
 
 
-#### build\_lineage
+### build\_lineage
 
 ```python
 def build_lineage()
@@ -349,7 +349,7 @@ def build_lineage()
 
 
 
-#### get\_nodes\_and\_edges
+### get\_nodes\_and\_edges
 
 ```python
 def get_nodes_and_edges() -> Tuple[List[NodeTypes], List[Edge]]

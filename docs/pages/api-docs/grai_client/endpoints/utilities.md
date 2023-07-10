@@ -114,3 +114,20 @@ def add_query_params(url: str, params: dict) -> str
 
 
 **Returns**:
+
+
+
+## handles\_bad\_metadata
+
+```python
+def handles_bad_metadata(
+    fallback_meta: Type[MalformedMetadata]
+) -> Callable[[Callable[[Dict], T]], Callable[[Dict], T]]
+```
+
+**Arguments**:
+
+  fallback_meta:
+
+
+**Returns**:

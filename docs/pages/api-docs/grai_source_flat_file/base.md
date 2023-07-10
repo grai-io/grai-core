@@ -3,7 +3,7 @@ sidebar_label: base
 title: grai_source_flat_file.base
 ---
 
-#### get\_nodes\_and\_edges
+## get\_nodes\_and\_edges
 
 ```python
 def get_nodes_and_edges(file_name: str, namespace: str, version: str = "v1")
@@ -20,7 +20,7 @@ def get_nodes_and_edges(file_name: str, namespace: str, version: str = "v1")
 
 
 
-#### update\_server
+## update\_server
 
 ```python
 def update_server(client: BaseClient,

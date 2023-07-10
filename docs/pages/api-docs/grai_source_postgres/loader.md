@@ -3,7 +3,7 @@ sidebar_label: loader
 title: grai_source_postgres.loader
 ---
 
-#### get\_from\_env
+## get\_from\_env
 
 ```python
 def get_from_env(label: str,
@@ -30,7 +30,7 @@ class PostgresConnector()
 
 
 
-#### connection\_string
+### connection\_string
 
 ```python
 @property
@@ -45,7 +45,7 @@ def connection_string() -> str
 
 
 
-#### connect
+### connect
 
 ```python
 def connect()
@@ -53,7 +53,7 @@ def connect()
 
 
 
-#### connection
+### connection
 
 ```python
 @property
@@ -62,7 +62,7 @@ def connection()
 
 
 
-#### close
+### close
 
 ```python
 def close() -> None
@@ -76,7 +76,7 @@ def close() -> None
 
 
 
-#### query\_runner
+### query\_runner
 
 ```python
 def query_runner(query: str, param_dict: Dict = {}) -> List[Dict]
@@ -92,7 +92,7 @@ def query_runner(query: str, param_dict: Dict = {}) -> List[Dict]
 
 
 
-#### tables
+### tables
 
 ```python
 @cached_property
@@ -111,7 +111,7 @@ connected to by the connection argument.
 
 
 
-#### columns
+### columns
 
 ```python
 @cached_property
@@ -129,7 +129,7 @@ schema.table in the database connected to.
 
 
 
-#### get\_table\_columns
+### get\_table\_columns
 
 ```python
 def get_table_columns(table: Table) -> List[Column]
@@ -144,7 +144,7 @@ def get_table_columns(table: Table) -> List[Column]
 
 
 
-#### column\_map
+### column\_map
 
 ```python
 @cached_property
@@ -159,7 +159,7 @@ def column_map() -> Dict[Tuple[str, str], List[Column]]
 
 
 
-#### foreign\_keys
+### foreign\_keys
 
 ```python
 @cached_property
@@ -176,7 +176,7 @@ This needs to be tested / evaluated
 
 
 
-#### get\_nodes
+### get\_nodes
 
 ```python
 def get_nodes() -> List[PostgresNode]
@@ -190,7 +190,7 @@ def get_nodes() -> List[PostgresNode]
 
 
 
-#### get\_edges
+### get\_edges
 
 ```python
 def get_edges() -> List[Edge]
@@ -204,7 +204,7 @@ def get_edges() -> List[Edge]
 
 
 
-#### get\_nodes\_and\_edges
+### get\_nodes\_and\_edges
 
 ```python
 def get_nodes_and_edges() -> Tuple[List[PostgresNode], List[Edge]]

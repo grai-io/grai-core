@@ -3,7 +3,7 @@ sidebar_label: entrypoint
 title: grai_cli.api.entrypoint
 ---
 
-#### result\_callback
+## result\_callback
 
 ```python
 def result_callback(*args, **kwargs)
@@ -19,7 +19,7 @@ def result_callback(*args, **kwargs)
 
 
 
-#### callback
+## callback
 
 ```python
 @app.callback()

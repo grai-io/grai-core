@@ -11,7 +11,7 @@ class GraiCache()
 
 
 
-#### cache
+### cache
 
 ```python
 @property
@@ -20,7 +20,7 @@ def cache()
 
 
 
-#### set
+### set
 
 ```python
 def set(key, value)
@@ -36,7 +36,7 @@ def set(key, value)
 
 
 
-#### get
+### get
 
 ```python
 def get(key, default=None)
