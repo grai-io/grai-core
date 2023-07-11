@@ -112,7 +112,6 @@ services:
     image: redis/redis-stack:latest
     environment:
       - REDISGRAPH_ARGS=RESULTSET_SIZE 100000
-      # - REDISTIMESERIES_ARGS="RETENTION_POLICY=20"
     ports:
       - 6379:6379
       - 8001:8001
