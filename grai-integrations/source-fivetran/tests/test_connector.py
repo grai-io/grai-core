@@ -8,7 +8,7 @@ from grai_schemas.v1.metadata.nodes import ColumnMetadata
 from grai_schemas.v1.metadata.nodes import Metadata as NodeV1Metadata
 from grai_schemas.v1.metadata.nodes import NodeMetadataTypeLabels, TableMetadata
 
-from grai_source_fivetran.loader import FivetranConnector, build_namespace_map
+from grai_source_fivetran.loader import FivetranConnector, process_base_namespace_map
 from grai_source_fivetran.models import Edge, NodeTypes
 from grai_source_fivetran.package_definitions import config
 
@@ -47,14 +47,14 @@ class TestNamespaceMap:
     def test_namespace_map_from_json(self):
         """ """
         json_str = '{"conn_id": {"source": "test_source", "destination": "test_destination"}}'
-        namespace_map = build_namespace_map({}, json_str, "temp")
+        namespace_map = process_base_namespace_map(json_str)
         assert len(namespace_map.keys()) > 0
 
     @pytest.mark.xfail
     def test_namespace_map_from_invalid_json(self):
         """ """
         json_str = "'test'"
-        namespace_map = build_namespace_map({}, json_str, "temp")
+        namespace_map = process_base_namespace_map(json_str)
         assert len(namespace_map.keys()) > 0
 
 

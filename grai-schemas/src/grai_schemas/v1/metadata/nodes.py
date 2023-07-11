@@ -81,10 +81,10 @@ class TableMetadata(BaseNodeMetadataV1):
     node_attributes: TableAttributes = TableAttributes()
 
 
-class QueryAttributes(V1Mixin, GenericAttributes):
+class QueryAttributes(GenericAttributes):
     """ """
 
-    pass
+    version: Literal["v1"] = "v1"
 
 
 class QueryMetadata(BaseNodeMetadataV1):

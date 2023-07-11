@@ -1,67 +1,50 @@
-from typing import List, Literal, Optional, Tuple
+from typing import Dict, List, Literal, Optional, Tuple, Union
 
 from grai_client.endpoints.client import BaseClient
+from grai_client.integrations.base import GraiIntegrationImplementation
 from grai_client.update import update
-from grai_schemas.base import Edge, Node
+from grai_schemas.base import Edge, Node, SourcedEdge, SourcedNode
+from grai_schemas.v1.source import SourceV1
 
 from grai_source_metabase.adapters import adapt_to_client
 from grai_source_metabase.loader import MetabaseConnector
 
 
-def get_nodes_and_edges(connector: MetabaseConnector, version: Literal["v1"]) -> Tuple[List[Node], List[Edge]]:
-    """
+class MetabaseIntegration(GraiIntegrationImplementation):
+    def __init__(
+        self,
+        source: SourceV1,
+        version: Optional[str] = None,
+        metabase_namespace: Optional[str] = None,
+        namespace_map: Optional[Union[str, Dict[int, str]]] = None,
+        endpoint: Optional[str] = None,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+    ):
+        super().__init__(source, version)
 
-    Args:
-        connector (MetabaseConnector):
-        version (Literal["v1"]):
+        self.connector = MetabaseConnector(
+            metabase_namespace=metabase_namespace,
+            namespace_map=namespace_map,
+            username=username,
+            password=password,
+            endpoint=endpoint,
+        )
 
-    Returns:
+    def ready(self) -> bool:
+        try:
+            self.connector.authenticate()
+            return True
+        except Exception as e:
+            return False
 
-    Raises:
+    def nodes(self) -> List[SourcedNode]:
+        nodes = adapt_to_client(self.connector.get_nodes(), self.source, self.version)
+        return nodes
 
-    """
-    nodes = connector.get_nodes()
-    edges = connector.get_edges()
+    def edges(self) -> List[SourcedEdge]:
+        edges = adapt_to_client(self.connector.get_edges(), self.source, self.version)
+        return edges
 
-    nodes = adapt_to_client(nodes, version)
-    edges = adapt_to_client(edges, version)
-    return nodes, edges
-
-
-def update_server(
-    client: BaseClient,
-    namespaces: Optional = None,
-    metabase_namespace: Optional[str] = None,
-    username: Optional[str] = None,
-    password: Optional[str] = None,
-    endpoint: Optional[str] = None,
-):
-    """
-
-    Args:
-        password:
-        username: Optional[str]
-        client:
-        namespaces:  (Default value = None)
-        metabase_namespace:  (Default value = None)
-        endpoint:  (Default value = None)
-
-    Returns:
-
-    Raises:
-
-    """
-    kwargs = {
-        "namespaces": namespaces,
-        "metabase_namespace": metabase_namespace,
-        "username": username,
-        "password": password,
-        "endpoint": endpoint,
-    }
-    kwargs = {k: v for k, v in kwargs.items() if v is not None}
-
-    conn = MetabaseConnector(**kwargs)
-    nodes, edges = get_nodes_and_edges(conn, "v1")
-
-    update(client, nodes)
-    update(client, edges)
+    def get_nodes_and_edges(self) -> Tuple[List[SourcedNode], List[SourcedEdge]]:
+        return self.nodes(), self.edges()

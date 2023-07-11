@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai-source-metabase"
-version = "0.1.1"
+version = "0.2.0-alpha1"
 description = ""
 authors = ["Elseagle <dowolebolu@gmail.com>"]
 readme = "README.md"
@@ -12,8 +12,8 @@ packages = [
 python = "^3.10"
 pydantic = "^1.10.9"
 requests = "^2.31.0"
-grai-schemas = "^0.1.16"
-grai-client = "^0.2.19"
+grai-schemas = "^0.2.0-alpha4"
+grai-client = "^0.3.0-alpha18"
 multimethod = "^1.9.1"
 retrying = "^1.3.4"
 

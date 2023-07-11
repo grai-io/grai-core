@@ -325,19 +325,19 @@ six = ">=1.8.0"
 
 [[package]]
 name = "grai-client"
-version = "0.2.19"
+version = "0.3.0a19"
 description = ""
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_client-0.2.19-py3-none-any.whl", hash = "sha256:fafde05245d55884a8f891491de00c1652114b4ee78a992af83a889723b0983d"},
-    {file = "grai_client-0.2.19.tar.gz", hash = "sha256:19468958744ebdcedda6ff5625b4c47a89752d3b7b5c038c6fc503b653f10d05"},
+    {file = "grai_client-0.3.0a19-py3-none-any.whl", hash = "sha256:9c8b2b30bfcb7e35ce6f4a19f6c3b056146c808cb0502b6d9f1c260d1bd47069"},
+    {file = "grai_client-0.3.0a19.tar.gz", hash = "sha256:89335908fb0e91ffc69cd1fcd31780e045a659dd95e9dfb41876760bb4ac542c"},
 ]
 
 [package.dependencies]
 brotli = ">=1.0.9,<2.0.0"
 furl = ">=2.1.3,<3.0.0"
-grai-schemas = ">=0.1.15,<0.2.0"
+grai-schemas = ">=0.2.0a1,<0.3.0"
 httpx = {version = ">=0.24.0,<0.25.0", extras = ["http2"]}
 more-itertools = ">=9.1.0,<10.0.0"
 multimethod = ">=1.9,<2.0"
@@ -349,13 +349,13 @@ tqdm = ">=4.65.0,<5.0.0"
 
 [[package]]
 name = "grai-schemas"
-version = "0.1.16"
+version = "0.2.0a4"
 description = ""
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_schemas-0.1.16-py3-none-any.whl", hash = "sha256:9d99dcb7cc2877b433d7afe3dd640bbbeefdc96a21e1e2acc03d55c5df8e5b00"},
-    {file = "grai_schemas-0.1.16.tar.gz", hash = "sha256:cac7211bafb0a76263e94f4222d6a5e6e7be0cab9e507ffe7b4914a458f0143a"},
+    {file = "grai_schemas-0.2.0a4-py3-none-any.whl", hash = "sha256:c0209620697c3eb4dd8b3cb2af230753c1f58c59886ee53efae0c229c1e2a90f"},
+    {file = "grai_schemas-0.2.0a4.tar.gz", hash = "sha256:4e82edc487f864fc6bf75f26d0a123ee1fe95856d03e996a712cfc2f12d97aa1"},
 ]
 
 [package.dependencies]
@@ -901,4 +901,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "ceef5f0f07ff453edb78d827ed46e2440d1b2e88e7a151ef2aaa2d3cc852a99c"
+content-hash = "72677cae31a9745978f64475011adca75f68bed6c3150d319f7d4e92ac63cf3d"

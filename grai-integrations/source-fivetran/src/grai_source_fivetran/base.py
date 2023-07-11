@@ -36,6 +36,13 @@ class FivetranIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementat
             limit=limit,
         )
 
+    def ready(self) -> bool:
+        try:
+            self.connector.has_query_permissions()
+            return True
+        except Exception as e:
+            return False
+
     def validate_nodes_and_edges(self, nodes: List[SourcedNode], edges: List[SourcedEdge]):
         """
 

@@ -47,7 +47,7 @@ class GraiIntegrationImplementation(ABC):
         pass
 
     @abstractmethod
-    def is_valid_integration(self) -> bool:
+    def ready(self) -> bool:
         pass
 
     @classmethod
