@@ -7,7 +7,7 @@ from pydantic import BaseSettings, SecretStr, validator
 from requests.exceptions import ConnectionError
 from retrying import retry
 
-from grai_source_metabase.models import Edge, NodeTypes, Question, Table
+from grai_source_metabase.models import Edge, NodeTypes, Question, Table, Collection
 
 
 class MetabaseConfig(BaseSettings):
@@ -37,10 +37,10 @@ class MetabaseAPI:
     """
 
     def __init__(
-        self,
-        username: Optional[str] = None,
-        password: Optional[str] = None,
-        endpoint: Optional[str] = None,
+            self,
+            username: Optional[str] = None,
+            password: Optional[str] = None,
+            endpoint: Optional[str] = None,
     ):
         passthrough_kwargs = {
             "username": username,
@@ -145,7 +145,8 @@ class MetabaseAPI:
 
         """
 
-        pass
+        url = f"{self.api_endpoint}/collection"
+        return self.make_request(self.session.get, url)
 
 
 def build_namespace_map(dbs: Dict, namespace_map: Union[str, Dict, None], metabase_namespace: str) -> Dict:
@@ -185,11 +186,11 @@ class MetabaseConnector(MetabaseAPI):
     """
 
     def __init__(
-        self,
-        metabase_namespace: str,
-        namespaces: Optional[Dict] = None,
-        *args,
-        **kwargs,
+            self,
+            metabase_namespace: str,
+            namespaces: Optional[Dict] = None,
+            *args,
+            **kwargs,
     ):
         super().__init__(*args, **kwargs)
         self._lineage_ready = False
@@ -201,6 +202,9 @@ class MetabaseConnector(MetabaseAPI):
         self.tables = [{**table, "schema_name": table.pop("schema")} for table in self.get_tables()]
         self.tables_map = {table["id"]: table for table in self.tables if table["active"]}
         self.dbs_map = {db["id"]: db for db in self.get_dbs()["data"]}
+        self.collections_map = {collection["id"]: {k: v for k, v in collection.items() if k != "namespace"} for
+                                collection in self.get_collections() if
+                                collection['id'] != 'root' and collection["archived"] is False}
 
         self.questions_map = {
             question["id"]: question for question in self.get_questions() if question["archived"] is False
@@ -209,6 +213,8 @@ class MetabaseConnector(MetabaseAPI):
 
         self.question_table_map = {}
         self.table_db_map = {}
+        self.question_collection_map = {}
+
         # self.question_db_map = {}
 
     def build_lineage(self):
@@ -232,6 +238,12 @@ class MetabaseConnector(MetabaseAPI):
             if table["id"] is not None and table["db_id"] is not None
         }
 
+        self.question_collection_map = {
+            question["id"]: question["collection_id"]
+            for question in self.questions_map.values()
+            if question["collection_id"] and self.collections_map.get(question["collection_id"]) is not None
+        }
+
         # for question, table in self.question_table_map.items():
         #     self.question_db_map[question] = self.table_db_map[table]
 
@@ -252,12 +264,16 @@ class MetabaseConnector(MetabaseAPI):
         for question in self.questions_map.values():
             question["namespace"] = self.metabase_namespace
 
+        for collection in self.collections_map.values():
+            collection["namespace"] = self.metabase_namespace
+
         for table in self.tables_map.values():
             table["namespace"] = self.namespace_map[self.table_db_map[table["id"]]]
 
         verified_questions = [Question(**question) for question in self.questions_map.values()]
         verified_tables = [Table(**table) for table in self.tables_map.values()]
-        nodes = chain(verified_questions, verified_tables)
+        verified_collections = [Collection(**collection) for collection in self.collections_map.values()]
+        nodes = chain(verified_questions, verified_tables, verified_collections)
 
         return list(nodes)
 
@@ -273,12 +289,24 @@ class MetabaseConnector(MetabaseAPI):
         if not self._lineage_ready:
             self.build_lineage()
 
-        edges = (
+        question_to_table_edges = (
             Edge(
-                source=Table(**self.tables_map[table]),
-                destination=Question(**self.questions_map[question]),
+                source=Question(**self.questions_map[question]),
+                destination=Table(**self.tables_map[table]),
                 namespace=self.questions_map[question]["namespace"],
             )
             for question, table in self.question_table_map.items()
         )
+
+        question_to_collection_edges = (
+            Edge(
+                source=Question(**self.questions_map[question]),
+                destination=Collection(**self.collections_map[collection]),
+                namespace=self.questions_map[question]["namespace"],
+            )
+            for question, collection in self.question_collection_map.items()
+        )
+
+        edges = chain(question_to_table_edges, question_to_collection_edges)
+
         return list(edges)

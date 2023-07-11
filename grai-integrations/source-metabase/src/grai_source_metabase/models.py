@@ -29,7 +29,17 @@ class Table(BaseModel):
         return f"{self.schema_name}.{self.name}"
 
 
-NodeTypes = Union[Question, Table]
+class Collection(BaseModel):
+    id: int
+    name: str
+    namespace: str
+
+    @property
+    def full_name(self):
+        return f"Collection: {self.name}"
+
+
+NodeTypes = Union[Question, Table, Collection]
 
 
 class Edge(BaseModel):
