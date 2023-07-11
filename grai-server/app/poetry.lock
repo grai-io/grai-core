@@ -1716,13 +1716,13 @@ vis = ["matplotlib (>=3.5.2,<4.0.0)", "pydot (>=1.4.2,<2.0.0)"]
 
 [[package]]
 name = "grai-schemas"
-version = "0.2.0a4"
+version = "0.2.0a5"
 description = ""
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_schemas-0.2.0a4-py3-none-any.whl", hash = "sha256:c0209620697c3eb4dd8b3cb2af230753c1f58c59886ee53efae0c229c1e2a90f"},
-    {file = "grai_schemas-0.2.0a4.tar.gz", hash = "sha256:4e82edc487f864fc6bf75f26d0a123ee1fe95856d03e996a712cfc2f12d97aa1"},
+    {file = "grai_schemas-0.2.0a5-py3-none-any.whl", hash = "sha256:d9923e3ef53f59265e258958832b80a4ca5b7658710cf0ae8e23d9129a56332d"},
+    {file = "grai_schemas-0.2.0a5.tar.gz", hash = "sha256:c6fba8318b090f791a390d814baffc2a785c5b31229fdb3c307626b84afc42a3"},
 ]
 
 [package.dependencies]
@@ -4399,4 +4399,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "3ffa8f01cc722d73480115de43c67c077995f6e6a2d13539558324e1ba9d3fac"
+content-hash = "6a20f91808117a2ffba4bb614888cd602a9ec3a730c3b6850974d6e087ee9e03"
