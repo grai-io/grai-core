@@ -99,7 +99,7 @@ const SourcesTable: React.FC<SourcesTableProps> = ({
               {source.edges.meta.total}
             </TableCell>
             <TableCell />
-            <TableCell sx={{ p: 1 }} stopPropagation>
+            <TableCell sx={{ p: 1, pb: 0 }} stopPropagation>
               {source.connections.data.map(connection => (
                 <Card
                   key={connection.id}
@@ -109,6 +109,7 @@ const SourcesTable: React.FC<SourcesTableProps> = ({
                     borderStyle: "solid",
                     borderRadius: "12px",
                     borderColor: "rgba(0, 0, 0, 0.08)",
+                    mb: 1,
                   }}
                 >
                   <CardActionArea
