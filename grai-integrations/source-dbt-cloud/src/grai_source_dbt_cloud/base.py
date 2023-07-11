@@ -33,3 +33,10 @@ class DbtCloudIntegration(CombinedNodesAndEdgesMixin, EventMixin, GraiIntegratio
     def events(self, last_event_date: Optional[str]):
         events = self.connector.get_events(last_event_date=last_event_date)
         return events
+
+    def ready(self) -> bool:
+        try:
+            _ = self.connector.default_account
+            return True
+        except:
+            return False

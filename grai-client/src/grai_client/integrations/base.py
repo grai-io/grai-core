@@ -1,5 +1,6 @@
+import sys
 from abc import ABC, abstractmethod
-from typing import List, Optional, ParamSpec, Tuple, Union
+from typing import List, Optional, Tuple, Union
 from uuid import UUID
 
 from grai_schemas.base import Event, SourcedEdge, SourcedNode
@@ -7,6 +8,11 @@ from grai_schemas.v1.source import SourceSpec, SourceV1
 
 from grai_client.endpoints.client import BaseClient
 from grai_client.update import update
+
+if sys.version_info < (3, 10):
+    from typing_extensions import ParamSpec
+else:
+    from typing import ParamSpec
 
 
 class EventMixin(ABC):

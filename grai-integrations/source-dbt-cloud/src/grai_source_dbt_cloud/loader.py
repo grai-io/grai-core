@@ -1,5 +1,5 @@
 from datetime import datetime
-from functools import lru_cache
+from functools import cached_property, lru_cache
 from typing import List, Optional
 
 from dbtc import dbtCloudClient
@@ -33,13 +33,21 @@ class DbtCloudConnector:
         self.api_key = api_key
         self.namespace = namespace
 
+    @cached_property
+    def client(self) -> dbtCloudClient:
+        return dbtCloudClient(api_key=self.api_key)
+
+    @cached_property
+    def default_account(self) -> dict:
+        """ """
+        accounts = self.client.cloud.list_accounts()
+        return accounts["data"][0]
+
     def get_nodes_and_edges(self):
         """ """
-        self.load_client()
-
-        account = self.get_default_acount()
-
-        manifest_obj = self.client.cloud.get_most_recent_run_artifact(account_id=account["id"], path="manifest.json")
+        manifest_obj = self.client.cloud.get_most_recent_run_artifact(
+            account_id=self.default_account["id"], path="manifest.json"
+        )
 
         manifest = ManifestProcessor.load(manifest_obj, self.namespace, self.source.spec)
 
@@ -56,11 +64,8 @@ class DbtCloudConnector:
         Raises:
 
         """
-        self.load_client()
 
-        account = self.get_default_acount()
-
-        runs = self.get_runs(account_id=account["id"], last_event_date=last_event_date)
+        runs = self.get_runs(account_id=self.default_account["id"], last_event_date=last_event_date)
 
         events = []
 
@@ -68,7 +73,7 @@ class DbtCloudConnector:
             if last_event_date and datetime.fromisoformat(run["created_at"]) < last_event_date:
                 break
 
-            nodes = self.get_run_nodes(account_id=account["id"], run_id=run["id"])
+            nodes = self.get_run_nodes(account_id=self.default_account["id"], run_id=run["id"])
 
             status = "success" if run["status"] == 10 else "error"
 
@@ -155,16 +160,6 @@ class DbtCloudConnector:
         name_mapper = get_adapted_node_map(manifest=manifest)
 
         return [name_mapper(unique_id) for unique_id in unique_ids]
-
-    def load_client(self):
-        """ """
-        self.client = dbtCloudClient(api_key=self.api_key)
-
-    def get_default_acount(self):
-        """ """
-        accounts = self.client.cloud.list_accounts()
-
-        return accounts["data"][0]
 
     def get_runs(self, account_id: str, last_event_date):
         """

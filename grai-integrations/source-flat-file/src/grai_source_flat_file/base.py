@@ -1,3 +1,4 @@
+import os
 from typing import List, Optional, Tuple
 
 from grai_client.integrations.base import (
@@ -8,7 +9,7 @@ from grai_schemas.base import SourcedEdge, SourcedNode
 from grai_schemas.v1.source import SourceV1
 
 from grai_source_flat_file.adapters import adapt_to_client
-from grai_source_flat_file.loader import build_nodes_and_edges
+from grai_source_flat_file.loader import LOADER_MAP, build_nodes_and_edges
 
 
 class FlatFileIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementation):
@@ -29,3 +30,7 @@ class FlatFileIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementat
         nodes = adapt_to_client(nodes, self.source, self.version)
         edges = adapt_to_client(edges, self.source, self.version)
         return nodes, edges
+
+    def ready(self):
+        file_ext = os.path.splitext(self.file_name)[-1]
+        return file_ext in LOADER_MAP
