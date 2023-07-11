@@ -1825,18 +1825,18 @@ PyYAML = ">=6.0,<7.0"
 
 [[package]]
 name = "grai-source-metabase"
-version = "0.2.0a1"
+version = "0.2.0a2"
 description = ""
 optional = false
 python-versions = ">=3.10,<4.0"
 files = [
-    {file = "grai_source_metabase-0.2.0a1-py3-none-any.whl", hash = "sha256:66a1e40e19e6cf9902f28d51b41b98fa114d3d1cc2b3d6da758c876a794312cf"},
-    {file = "grai_source_metabase-0.2.0a1.tar.gz", hash = "sha256:9bc8799a2c4d374ac12e48dad4a4f58930bae72dec38c4be37e2ecf00a6d02e2"},
+    {file = "grai_source_metabase-0.2.0a2-py3-none-any.whl", hash = "sha256:419a8b21d7702cb1db60a98c1cc9965d9f9ed61bc6c90a2c4396d7fbaf988b18"},
+    {file = "grai_source_metabase-0.2.0a2.tar.gz", hash = "sha256:2108dba0ca6e5e80377b30524389112bf15762402b94d7feb68be30a7b602804"},
 ]
 
 [package.dependencies]
 grai-client = ">=0.3.0-alpha18,<0.4.0"
-grai-schemas = ">=0.2.0-alpha4,<0.3.0"
+grai-schemas = ">=0.2.0-alpha5,<0.3.0"
 multimethod = ">=1.9.1,<2.0.0"
 pydantic = ">=1.10.9,<2.0.0"
 requests = ">=2.31.0,<3.0.0"
@@ -4399,4 +4399,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "6a20f91808117a2ffba4bb614888cd602a9ec3a730c3b6850974d6e087ee9e03"
+content-hash = "43af210e230a95593d897df4e6a91961f64904aadc5cd3802667e741ff68daf7"

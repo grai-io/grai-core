@@ -4,9 +4,9 @@ from typing import Callable, Dict, List, Optional, TypedDict, Union
 
 import requests
 from pydantic import (
+    AnyHttpUrl,
     BaseModel,
     BaseSettings,
-    HttpUrl,
     Json,
     SecretStr,
     parse_obj_as,
@@ -19,14 +19,14 @@ from grai_source_metabase.models import Edge, NodeTypes, Question, Table
 
 
 class MetabaseConfig(BaseSettings):
-    endpoint: HttpUrl
+    endpoint: AnyHttpUrl
     username: SecretStr
     password: SecretStr
 
     @validator("endpoint")
     def validate_endpoint(cls, endpoint: str):
         endpoint = endpoint.rstrip("/")
-        return parse_obj_as(HttpUrl, endpoint)
+        return parse_obj_as(AnyHttpUrl, endpoint)
 
     class Config:
         env_prefix = "grai_metabase_"

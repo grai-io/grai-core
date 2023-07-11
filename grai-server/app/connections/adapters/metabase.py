@@ -15,7 +15,7 @@ class MetabaseAdapter(BaseAdapter):
             },
             username=metadata.get("username"),
             password=secrets.get("password"),
-            namespace_map=metadata.get("namespaces"),
+            namespace_map=metadata.get("namespaces") if metadata.get("namespaces") != "" else None,
             metabase_namespace=self.run.connection.namespace,
             endpoint=metadata.get("endpoint"),
         )
