@@ -15,6 +15,7 @@ interface Icons {
 
 const icons: Icons = {
   "grai-source-dbt": "/icons/data-sources/dbt.png",
+  "grai-source-dbt_cloud": "/icons/data-sources/dbt.png",
   "grai-source-postgres": "/icons/data-sources/postgres.png",
   "grai-source-snowflake": "/icons/data-sources/snowflake.png",
   "grai-source-mssql": "/icons/data-sources/mssql.png",
