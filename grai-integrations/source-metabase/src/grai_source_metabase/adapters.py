@@ -13,7 +13,7 @@ from grai_schemas.v1.metadata.nodes import (
 from multimethod import multimethod
 from pydantic import BaseModel
 
-from grai_source_metabase.models import Edge, NodeTypes, Question, Table, Collection
+from grai_source_metabase.models import Edge, NodeTypes, Question, Table, Collection, Dashboard
 from grai_source_metabase.package_definitions import config
 
 
@@ -102,6 +102,30 @@ def build_grai_metadata_from_collection(current: Collection, version: Literal["v
 
     Returns:
         GenericNodeMetadataV1: grai metadata object for the Collection.
+
+    """
+
+    data = {
+        "version": version,
+        "node_type": NodeMetadataTypeLabels.generic.value,
+        "node_attributes": {},
+        "tags": [config.metadata_id],
+    }
+
+    return GenericNodeMetadataV1(**data)
+
+
+@build_grai_metadata.register
+def build_grai_metadata_from_dashboard(current: Dashboard, version: Literal["v1"] = "v1") -> GenericNodeMetadataV1:
+    """
+    Build grai metadata for a Dashboard object.
+
+    Args:
+        current (Dashboard): The Dashboard object to build grai metadata from.
+        version (Literal["v1"], optional): The version of grai metadata to build. Defaults to "v1".
+
+    Returns:
+        GenericNodeMetadataV1: grai metadata object for the Dashboard.
 
     """
 
@@ -303,6 +327,35 @@ def adapt_question_to_client(current: Question, version: Literal["v1"] = "v1") -
 
     return NodeV1.from_spec(spec_dict)
 
+
+@adapt_to_client.register
+def adapt_dashboard_to_client(current: Dashboard, version: Literal["v1"] = "v1") -> NodeV1:
+    """
+    Adapt a Dashboard object to the desired client format.
+
+    Args:
+        current (Dashboard): The Question object to adapt.
+        version (Literal["v1"], optional): The version of the client format to adapt to. Defaults to "v1".
+
+    Returns:
+        NodeV1: Adapted Dashboard object in the desired client format.
+
+    Raises:
+        None.
+
+    """
+
+    spec_dict = {
+        "name": current.full_name,
+        "namespace": current.namespace,
+        "display_name": current.name,
+        "data_source": config.integration_name,
+        "metadata": build_metadata(current, version),
+    }
+
+    return NodeV1.from_spec(spec_dict)
+
+
 @adapt_to_client.register
 def adapt_collection_to_client(current: Collection, version: Literal["v1"] = "v1") -> NodeV1:
     """
@@ -398,9 +451,6 @@ def adapt_seq_to_client(objs: Sequence, version: Literal["v1"]) -> List[Union[No
         None.
 
     """
-    # entities = [adapt_to_client(item, version) for item in objs]
-    # entities = {entity for entity in entities}
-    # return list(entities)
 
     return [adapt_to_client(item, version) for item in objs]
 
@@ -423,4 +473,3 @@ def adapt_list_to_client(objs: List, version: Literal["v1"]) -> List[Union[NodeV
     """
 
     return [adapt_to_client(item, version) for item in objs]
-

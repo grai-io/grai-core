@@ -39,7 +39,17 @@ class Collection(BaseModel):
         return f"Collection: {self.name}"
 
 
-NodeTypes = Union[Question, Table, Collection]
+class Dashboard(BaseModel):
+    id: int
+    name: str
+    namespace: str
+
+    @property
+    def full_name(self):
+        return f"Dashboard: {self.name}"
+
+
+NodeTypes = Union[Question, Table, Collection, Dashboard]
 
 
 class Edge(BaseModel):
