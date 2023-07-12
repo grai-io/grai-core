@@ -177,7 +177,7 @@ class TestOrganisationV1:
     @staticmethod
     @pytest.mark.xfail(raises=NotSupportedError)
     def test_get_all_organisations(client):
-        resp = client.get("organisation")
+        resp = client.get("Organisation")
 
     @staticmethod
     @pytest.mark.xfail(raises=NotSupportedError)

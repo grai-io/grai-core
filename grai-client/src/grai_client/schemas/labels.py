@@ -44,4 +44,13 @@ SourceNodeLabels = Literal[
 ]
 WorkspaceLabels = Literal["workspace", "workspaces", "Workspace", "Workspaces"]
 SourceLabels = Literal["source", "sources", "Source", "Sources"]
-OrganisationLabels = Literal["organisation", "organisations", "Organisation", "Organisations"]
+OrganisationLabels = Literal[
+    "organisation",
+    "organisations",
+    "Organisation",
+    "Organisations",
+    "organization",
+    "organizations",
+    "Organization",
+    "Organizations",
+]
