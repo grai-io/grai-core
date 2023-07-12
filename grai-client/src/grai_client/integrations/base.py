@@ -123,3 +123,8 @@ class ConnectorMixin(CombinedNodesAndEdgesMixin):
         nodes = self.adapt_to_client(nodes)
         edges = self.adapt_to_client(edges)
         return nodes, edges
+
+    def ready(self) -> bool:
+        with self.connector.connect() as _:
+            pass
+        return True

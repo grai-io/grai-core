@@ -27,9 +27,6 @@ class DbtIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementation):
         manifest = ManifestProcessor.load(self.manifest_file, self.namespace, self.source)
         return manifest.adapted_nodes, manifest.adapted_edges
 
-    def ready(self):
-        try:
-            manifest = ManifestProcessor.load(self.manifest_file, self.namespace, self.source)
-            return True
-        except:
-            return False
+    def ready(self) -> bool:
+        _ = ManifestProcessor.load(self.manifest_file, self.namespace, self.source)
+        return True

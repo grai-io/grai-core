@@ -31,6 +31,6 @@ class FlatFileIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementat
         edges = adapt_to_client(edges, self.source, self.version)
         return nodes, edges
 
-    def ready(self):
+    def ready(self) -> bool:
         file_ext = os.path.splitext(self.file_name)[-1]
         return file_ext in LOADER_MAP

@@ -35,8 +35,5 @@ class DbtCloudIntegration(CombinedNodesAndEdgesMixin, EventMixin, GraiIntegratio
         return events
 
     def ready(self) -> bool:
-        try:
-            _ = self.connector.default_account
-            return True
-        except:
-            return False
+        _ = self.connector.default_account
+        return True

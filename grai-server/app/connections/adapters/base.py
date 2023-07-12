@@ -25,10 +25,10 @@ class BaseAdapter(ABC):
     def events(self, last_event_date):
         return self.get_integration().events(last_event_date)
 
-    def run_validate(self, run: Run):
+    def run_validate(self, run: Run) -> bool:
         self.run = run
 
-        self.get_nodes_and_edges()
+        return self.get_integration().ready()
 
     def run_update(self, run: Run):
         self.run = run
