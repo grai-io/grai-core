@@ -96,7 +96,6 @@ def update(
     # new_items are valid by virtue of being created by the caller
     # updated_items should be valid by virtue of merge logic and the caller providing a valid object.
     # However, deactivated_items may be invalid if the server provided an invalid object.
-
     client.post(new_items)
     client.patch(updated_items)
     client.delete(deleted_items)

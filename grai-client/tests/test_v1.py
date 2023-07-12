@@ -10,6 +10,7 @@ from requests import RequestException
 
 from grai_client.endpoints.utilities import is_valid_uuid
 from grai_client.endpoints.v1.client import ClientV1
+from grai_client.endpoints.v1.utils import MockClientV1
 from grai_client.errors import NotSupportedError, ObjectNotFoundError
 
 
@@ -54,6 +55,11 @@ class TestClientV1:
     def test_authentication(client):
         response = client.check_authentication()
         assert response.status_code == 200
+
+    @staticmethod
+    def test_mock_client():
+        client = MockClientV1()
+        assert isinstance(client, ClientV1)
 
 
 class TestWorkspaceV1:
