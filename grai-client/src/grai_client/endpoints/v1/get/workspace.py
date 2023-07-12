@@ -8,6 +8,7 @@ from httpx import Response
 from grai_client.endpoints.client import ClientOptions
 from grai_client.endpoints.rest import get, get_is_unique, paginated_get
 from grai_client.endpoints.utilities import (
+    add_query_params,
     expects_unique_query,
     is_valid_uuid,
     paginated,
@@ -36,6 +37,9 @@ def get_workspace_by_url(
     Raises:
 
     """
+    query_args = {"workspace": client.workspace, **options.query_args}
+    url = add_query_params(url, query_args)
+
     response = client.session.get(url, headers=options.headers, **options.request_args)
     response_status_check(response)
     return response
@@ -72,7 +76,7 @@ def get_workspace_by_uuid(
     grai_type: WorkspaceLabels,
     workspace_id: Union[UUID, str],
     options: ClientOptions = ClientOptions(),
-) -> Optional[WorkspaceV1]:
+) -> WorkspaceV1:
     """
 
     Args:

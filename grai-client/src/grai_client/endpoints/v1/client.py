@@ -93,10 +93,14 @@ class ClientV1(BaseClient):
             else:  # workspace name
                 result = self.get("workspace", name=workspace)
 
-            if result is None:
+            if (num_results := len(result)) == 0:
                 raise ValueError(f"No workspace found matching `{workspace}`")
-            elif len(result) > 1:
-                raise ValueError(f"Multiple workspaces found matching workspace ref `{workspace}`")
+            elif num_results > 1:
+                raise ValueError(
+                    f"Multiple workspaces found matching `{workspace}`"
+                    f"If you've specified a workspace name and belong to multiple organizations, please use the ref "
+                    "which looks like `{organization}/{workspace}` instead of the name to disambiguate."
+                )
             elif workspace != result[0].spec.ref:
                 message = (
                     f"Although you specified workspace `{workspace}` in the client. We could not identify a "
