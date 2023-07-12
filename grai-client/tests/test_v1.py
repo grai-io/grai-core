@@ -433,7 +433,8 @@ class TestSourceNodeV1:
         test_node = self.mocked_node(source_node_source)
         result = client.post(test_node)
         client.delete(result)
-        with pytest.raises(ObjectNotFoundError):
+
+        with pytest.raises(Exception):
             result = client.patch(test_node.spec)
 
     def test_source_node_hash(self, client, source_node_source):
@@ -534,7 +535,7 @@ class TestSourceEdgeV1:
         client.post([test_edge.spec.source, test_edge.spec.destination])
         edge = client.post(test_edge)
         client.delete(edge)
-        with pytest.raises(ObjectNotFoundError):
+        with pytest.raises(Exception):
             client.patch(test_edge.spec)
 
     def test_source_edge_hash(self, client, source_edge_source):

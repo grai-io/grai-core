@@ -350,13 +350,13 @@ six = ">=1.8.0"
 
 [[package]]
 name = "grai-schemas"
-version = "0.2.0a4"
+version = "0.2.0a5"
 description = ""
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_schemas-0.2.0a4-py3-none-any.whl", hash = "sha256:c0209620697c3eb4dd8b3cb2af230753c1f58c59886ee53efae0c229c1e2a90f"},
-    {file = "grai_schemas-0.2.0a4.tar.gz", hash = "sha256:4e82edc487f864fc6bf75f26d0a123ee1fe95856d03e996a712cfc2f12d97aa1"},
+    {file = "grai_schemas-0.2.0a5-py3-none-any.whl", hash = "sha256:d9923e3ef53f59265e258958832b80a4ca5b7658710cf0ae8e23d9129a56332d"},
+    {file = "grai_schemas-0.2.0a5.tar.gz", hash = "sha256:c6fba8318b090f791a390d814baffc2a785c5b31229fdb3c307626b84afc42a3"},
 ]
 
 [package.dependencies]
@@ -1175,4 +1175,4 @@ test = ["pytest (>=6.0.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "77ecb61645b966b35e380d2bf55ea89a3eae98df37f1078a62adcd406dfd2df8"
+content-hash = "de9cbb3140c5b26d74c37379ee8bd7b0465c68344e227b01dc94dcfe8a348fd8"
