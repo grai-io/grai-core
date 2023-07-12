@@ -168,6 +168,20 @@ class GraphCache:
                     "destination": str(destination_table_edge.source_id),
                 },
             )
+        elif edge_type == "Generic":
+            self.query(
+                """
+                    MATCH (source:Table), (destination:Table)
+                    WHERE source.id = $source
+                    AND destination.id = $destination
+                    MERGE (source)-[r:TABLE_TO_TABLE {id: $id}]->(destination)
+                """,
+                {
+                    "id": str(edge.id),
+                    "source": str(edge.source_id),
+                    "destination": str(edge.destination_id),
+                },
+            )
 
     def delete_edge(self, edge):
         self.query(
