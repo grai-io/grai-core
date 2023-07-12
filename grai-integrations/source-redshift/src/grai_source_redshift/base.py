@@ -32,11 +32,3 @@ class RedshiftIntegration(ConnectorMixin, GraiIntegrationImplementation):
 
     def adapt_to_client(self, objects):
         return adapt_to_client(objects, self.source, self.version)
-
-    def ready(self) -> bool:
-        try:
-            with self.connector.connect() as conn:
-                pass
-            return True
-        except:
-            return False

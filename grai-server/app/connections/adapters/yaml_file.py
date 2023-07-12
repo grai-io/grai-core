@@ -75,3 +75,10 @@ class YamlFileAdapter(BaseAdapter):
                 edges.append(EdgeV1.from_spec(entity.spec))
 
         return nodes, edges
+
+    def run_validate(self, run: Run) -> bool:
+        self.run = run
+
+        self.get_nodes_and_edges()
+
+        return True

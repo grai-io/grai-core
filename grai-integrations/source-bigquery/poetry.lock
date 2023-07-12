@@ -339,13 +339,13 @@ grpcio-gcp = ["grpcio-gcp (>=0.2.2,<1.0.dev0)"]
 
 [[package]]
 name = "google-auth"
-version = "2.21.0"
+version = "2.22.0"
 description = "Google Authentication Library"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "google-auth-2.21.0.tar.gz", hash = "sha256:b28e8048e57727e7cf0e5bd8e7276b212aef476654a09511354aa82753b45c66"},
-    {file = "google_auth-2.21.0-py2.py3-none-any.whl", hash = "sha256:da3f18d074fa0f5a7061d99b9af8cee3aa6189c987af7c1b07d94566b6b11268"},
+    {file = "google-auth-2.22.0.tar.gz", hash = "sha256:164cba9af4e6e4e40c3a4f90a1a6c12ee56f14c0b4868d1ca91b32826ab334ce"},
+    {file = "google_auth-2.22.0-py2.py3-none-any.whl", hash = "sha256:d61d1b40897407b574da67da1a833bdc10d5a11642566e506565d1b1a46ba873"},
 ]
 
 [package.dependencies]
@@ -590,19 +590,19 @@ grpc = ["grpcio (>=1.44.0,<2.0.0.dev0)"]
 
 [[package]]
 name = "grai-client"
-version = "0.3.0a19"
+version = "0.3.0a21"
 description = ""
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_client-0.3.0a19-py3-none-any.whl", hash = "sha256:9c8b2b30bfcb7e35ce6f4a19f6c3b056146c808cb0502b6d9f1c260d1bd47069"},
-    {file = "grai_client-0.3.0a19.tar.gz", hash = "sha256:89335908fb0e91ffc69cd1fcd31780e045a659dd95e9dfb41876760bb4ac542c"},
+    {file = "grai_client-0.3.0a21-py3-none-any.whl", hash = "sha256:120f42953bfa5b89da8c3ff789d2cf4c94a3b1079e941664b60062d0f8ca5617"},
+    {file = "grai_client-0.3.0a21.tar.gz", hash = "sha256:d953b3a72f0fde6b343d36a0c603f4d8f25dde42ad2364230672306086542256"},
 ]
 
 [package.dependencies]
 brotli = ">=1.0.9,<2.0.0"
 furl = ">=2.1.3,<3.0.0"
-grai-schemas = ">=0.2.0a1,<0.3.0"
+grai-schemas = ">=0.2.0a5,<0.3.0"
 httpx = {version = ">=0.24.0,<0.25.0", extras = ["http2"]}
 more-itertools = ">=9.1.0,<10.0.0"
 multimethod = ">=1.9,<2.0"
@@ -614,13 +614,13 @@ tqdm = ">=4.65.0,<5.0.0"
 
 [[package]]
 name = "grai-schemas"
-version = "0.2.0a4"
+version = "0.2.0a5"
 description = ""
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_schemas-0.2.0a4-py3-none-any.whl", hash = "sha256:c0209620697c3eb4dd8b3cb2af230753c1f58c59886ee53efae0c229c1e2a90f"},
-    {file = "grai_schemas-0.2.0a4.tar.gz", hash = "sha256:4e82edc487f864fc6bf75f26d0a123ee1fe95856d03e996a712cfc2f12d97aa1"},
+    {file = "grai_schemas-0.2.0a5-py3-none-any.whl", hash = "sha256:d9923e3ef53f59265e258958832b80a4ca5b7658710cf0ae8e23d9129a56332d"},
+    {file = "grai_schemas-0.2.0a5.tar.gz", hash = "sha256:c6fba8318b090f791a390d814baffc2a785c5b31229fdb3c307626b84afc42a3"},
 ]
 
 [package.dependencies]
@@ -1393,4 +1393,4 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "c5ca791d6bccacd94bda07e2987fec3f9bce0588c19921208eff689642262485"
+content-hash = "5606e20342f4694cde92ea28c28e3c89181d977e8e9e79dee9328caa9a5170db"

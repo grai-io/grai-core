@@ -53,10 +53,7 @@ class BigQueryIntegration(SeparateNodesAndEdgesMixin, GraiIntegrationImplementat
             grai_edges = adapt_to_client(connector_edges, self.source, self.version)
         return grai_edges
 
-    def ready(self):
-        try:
-            with self.connector.connect() as conn:
-                pass
-            return True
-        except:
-            return False
+    def ready(self) -> bool:
+        with self.connector.connect() as _:
+            pass
+        return True

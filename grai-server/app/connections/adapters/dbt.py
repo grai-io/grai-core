@@ -1,4 +1,5 @@
 from .base import BaseAdapter
+from connections.models import Run
 
 
 class DbtAdapter(BaseAdapter):
@@ -26,3 +27,10 @@ class DbtAdapter(BaseAdapter):
             ),
         )
         return manifest.adapted_nodes, manifest.adapted_edges
+
+    def run_validate(self, run: Run) -> bool:
+        self.run = run
+
+        self.get_nodes_and_edges()
+
+        return True
