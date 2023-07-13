@@ -1,11 +1,8 @@
-from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
+from typing import Dict, List, Optional, Tuple, TypeVar, Union
 
-from grai_schemas.base import Edge, Node
-from grai_schemas.utilities import merge, merge_models
 from grai_schemas.v1.edge import EdgeV1, SourcedEdgeV1
 from grai_schemas.v1.node import NodeV1, SourcedNodeV1
 from grai_schemas.v1.source import SourceSpec, SourceV1
-from multimethod import multimethod
 
 from grai_client.endpoints.client import BaseClient
 
