@@ -6,10 +6,10 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple, TypeVar, Union
 from django.db import models
 from django.db.models import Q
 from grai_schemas.schema import GraiType
-from grai_schemas.utilities import merge
 from grai_schemas.v1 import NodeV1, EdgeV1, SourcedEdgeV1, SourcedNodeV1
 from grai_schemas.v1.source import SourceSpec
 from grai_schemas.v1.node import NodeNamedID
+from grai_schemas.utilities import merge
 from multimethod import multimethod
 from pydantic import BaseModel
 
@@ -203,6 +203,7 @@ def process_updates(workspace, source: Source, Model: T, items, active_items=Non
         item.spec.is_active = False
 
     new_items = [item_map[k] for k in new_item_keys]
+
     updated_items = [
         merge(item_map[k], current_item_map[k]) for k in updated_item_keys if item_map[k] != current_item_map[k]
     ]
