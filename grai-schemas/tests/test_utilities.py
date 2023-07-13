@@ -131,15 +131,15 @@ class TestMerge:
 
     def test_merge_valid_node_metadata_into_malformed(self):
         a = GraiMalformedNodeMetadataV1()
-        b = MetadataV1(grai={"node_type": "Generic"})
+        b = MetadataV1(grai={"node_type": "Generic"}, sources={})
 
-        assert merge(a, b) == MetadataV1(grai={"node_type": "Generic"})
+        assert merge(a, b) == MetadataV1(grai={"node_type": "Generic"}, sources={})
 
     def test_merge_valid_edge_metadata_into_malformed(self):
         a = GraiMalformedNodeMetadataV1()
-        b = MetadataV1(grai={"edge_type": "Generic"})
+        b = MetadataV1(grai={"edge_type": "Generic"}, sources={})
 
-        assert merge(a, b) == MetadataV1(grai={"edge_type": "Generic"})
+        assert merge(a, b) == MetadataV1(grai={"edge_type": "Generic"}, sources={})
 
     @pytest.mark.xfail
     def test_marge_malformed_node_metadata_into_valid(self):

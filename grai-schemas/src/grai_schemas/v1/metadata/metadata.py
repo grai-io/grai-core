@@ -1,4 +1,4 @@
-from typing import Any, Optional, Union
+from typing import Any, Dict, Optional, Union
 
 from grai_schemas.generics import GraiBaseModel, MalformedMetadata, Metadata
 from grai_schemas.utilities import merge
@@ -11,7 +11,13 @@ class GraiMetadataV1(Metadata):
     grai: Union[edges.Metadata, nodes.Metadata]
 
 
-class MetadataV1(GraiMetadataV1):
+class SourcesMetadataV1(Metadata):
+    """"""
+
+    sources: Dict[str, GraiMetadataV1]
+
+
+class MetadataV1(GraiMetadataV1, SourcesMetadataV1):
     """ """
 
     class Config:
@@ -25,9 +31,11 @@ class GraiMalformedNodeMetadataV1(MalformedMetadata, MetadataV1):
     """ """
 
     grai: nodes.MalformedNodeMetadataV1 = nodes.MalformedNodeMetadataV1()  # type: ignore
+    sources: Dict[str, GraiMetadataV1] = {}
 
 
 class GraiMalformedEdgeMetadataV1(MalformedMetadata, MetadataV1):
     """ """
 
     grai: edges.MalformedEdgeMetadataV1 = edges.MalformedEdgeMetadataV1()  # type: ignore
+    sources: Dict[str, GraiMetadataV1] = {}

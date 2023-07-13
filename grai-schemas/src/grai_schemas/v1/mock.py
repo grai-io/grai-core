@@ -2,207 +2,207 @@ import datetime
 import uuid
 
 from grai_schemas.human_ids import get_human_id
-from grai_schemas.v1.edge import EdgeV1, SourcedEdgeV1
-from grai_schemas.v1.node import NodeV1, SourcedNodeV1
+from grai_schemas.v1.edge import EdgeV1
+from grai_schemas.v1.edge import IDSourceSpec as EdgeIDSourceSpec
+from grai_schemas.v1.edge import IDSpec as EdgeIDSpec
+from grai_schemas.v1.edge import NamedSourceSpec as NamedEdgeSourceSpec
+from grai_schemas.v1.edge import NamedSpec as NamedEdgeSpec
+from grai_schemas.v1.edge import SourcedEdgeSpec, SourcedEdgeV1
+from grai_schemas.v1.node import (
+    IDSourceSpec,
+    IDSpec,
+    NamedSourceSpec,
+    NamedSpec,
+    NodeV1,
+    SourcedNodeSpec,
+    SourcedNodeV1,
+)
 from grai_schemas.v1.organization import OrganisationSpec, OrganisationV1
-from grai_schemas.v1.source import SourceV1
+from grai_schemas.v1.source import SourceSpec, SourceV1
 from grai_schemas.v1.workspace import WorkspaceSpec, WorkspaceV1
+from polyfactory.factories.pydantic_factory import ModelFactory
+
+
+class NodeFactory(ModelFactory[NodeV1]):
+    __model__ = NodeV1
+
+
+class SourcedNodeFactory(ModelFactory[SourcedNodeV1]):
+    __model__ = SourcedNodeV1
+
+
+class NamedNodeSpecFactory(ModelFactory[NamedSpec]):
+    __model__ = NamedSpec
+
+
+class IDNodeSpecFactory(ModelFactory[IDSpec]):
+    __model__ = IDSpec
+
+
+class NamedSourceNodeSpecFactory(ModelFactory[NamedSourceSpec]):
+    __model__ = NamedSourceSpec
+
+
+class IDSourceNodeSpecFactory(ModelFactory[IDSourceSpec]):
+    __model__ = IDSourceSpec
 
 
 class MockNode:
     @classmethod
-    def node_metadata_dict(cls):
-        return {
-            "grai": {"node_type": "Generic", "node_attributes": {}, "tags": ["pii", "phi"]},
-            "test_dict": {"a": "b"},
-            "test_list": [1, 2, 3],
-            "test_tuple": (4, 5, 6),
-            "test_date": datetime.date(2021, 3, 14),
-        }
-
-    @classmethod
-    def base_node_spec_dict(cls, **kwargs):
-        """ """
-        return {
-            "id": kwargs.get("id", None),
-            "name": kwargs.get("name", get_human_id()),
-            "namespace": kwargs.get("namespace", get_human_id()),
-            "display_name": kwargs.get("display_name", get_human_id()),
-            "is_active": kwargs.get("is_active", True),
-            "metadata": kwargs.get("metadata", cls.node_metadata_dict()),
-        }
-
-    @classmethod
-    def sourced_node_dict(cls, **kwargs):
-        """ """
-        result = {"type": "SourceNode", "version": "v1", "spec": cls.base_node_spec_dict(**kwargs)}
-        result["spec"]["data_source"] = kwargs.get("data_source", MockSource.source_dict()["spec"])
-        return result
-
-    @classmethod
     def sourced_node(cls, **kwargs):
         """ """
-        return SourcedNodeV1(**cls.sourced_node_dict(**kwargs))
-
-    @classmethod
-    def node_dict(cls, **kwargs):
-        """ """
-        result = {"type": "Node", "version": "v1", "spec": cls.base_node_spec_dict(**kwargs)}
-        result["spec"]["data_sources"] = kwargs.get("data_sources", [MockSource.source_dict()["spec"]])
-        return result
+        return SourcedNodeFactory.build(factory_use_construct=True, **kwargs)
 
     @classmethod
     def node(cls, **kwargs):
         """ """
-        return NodeV1(**cls.node_dict(**kwargs))
+        return NodeFactory.build(factory_use_construct=True, **kwargs)
+
+    @classmethod
+    def named_node_spec(self, **kwargs):
+        """ """
+        return NamedNodeSpecFactory.build(factory_use_construct=True, **kwargs)
+
+    @classmethod
+    def id_node_spec(self, **kwargs):
+        """ """
+        return IDNodeSpecFactory.build(factory_use_construct=True, **kwargs)
+
+    @classmethod
+    def named_source_node_spec(self, **kwargs):
+        """ """
+        return NamedSourceNodeSpecFactory.build(factory_use_construct=True, **kwargs)
+
+    @classmethod
+    def id_source_node_spec(self, **kwargs):
+        """ """
+        return IDSourceNodeSpecFactory.build(factory_use_construct=True, **kwargs)
+
+
+class EdgeFactory(ModelFactory[EdgeV1]):
+    __model__ = EdgeV1
+
+
+class SourcedEdgeFactory(ModelFactory[SourcedEdgeV1]):
+    __model__ = SourcedEdgeV1
+
+
+class NamedEdgeSpecFactory(ModelFactory[NamedEdgeSpec]):
+    __model__ = NamedEdgeSpec
+
+
+class IDEdgeSpecFactory(ModelFactory[EdgeIDSpec]):
+    __model__ = EdgeIDSpec
+
+
+class NamedEdgeSourceSpecFactory(ModelFactory[NamedEdgeSourceSpec]):
+    __model__ = NamedEdgeSourceSpec
+
+
+class IDEdgeSourceSpecFactory(ModelFactory[EdgeIDSourceSpec]):
+    __model__ = EdgeIDSourceSpec
 
 
 class MockEdge:
-    node_kwargs = ["data_sources"]
-
-    @classmethod
-    def edge_metadata_dict(cls):
-        return {
-            "grai": {"edge_type": "Generic", "edge_attributes": {}, "tags": ["pii", "phi"]},
-        }
-
-    @classmethod
-    def base_edge_spec_dict(cls, **kwargs):
-        """ """
-        node_kwargs = {k: kwargs[k].copy() for k in cls.node_kwargs if k in kwargs}
-        return {
-            "id": kwargs.get("id", None),
-            "name": kwargs.get("name", get_human_id()),
-            "namespace": kwargs.get("namespace", get_human_id()),
-            "source": kwargs.get("source", MockNode.node(**node_kwargs).spec),
-            "destination": kwargs.get("destination", MockNode.node(**node_kwargs).spec),
-            "is_active": kwargs.get("is_active", True),
-            "metadata": kwargs.get("metadata", cls.edge_metadata_dict()),
-        }
-
-    @classmethod
-    def sourced_edge_dict(cls, **kwargs):
-        """ """
-        result = {
-            "type": "SourceEdge",
-            "version": "v1",
-            "spec": cls.base_edge_spec_dict(**kwargs),
-        }
-        result["spec"]["data_source"] = kwargs.get("data_source", MockSource.source_dict()["spec"])
-        return result
-
     @classmethod
     def sourced_edge(cls, **kwargs):
         """ """
-        if "data_source" in kwargs:
-            kwargs["data_sources"] = [kwargs["data_source"]]
-        return SourcedEdgeV1(**cls.sourced_edge_dict(**kwargs))
-
-    @classmethod
-    def edge_dict(cls, **kwargs):
-        """ """
-
-        result = {
-            "type": "Edge",
-            "version": "v1",
-            "spec": cls.base_edge_spec_dict(**kwargs),
-        }
-        result["spec"]["data_sources"] = kwargs.get("data_sources", [MockSource.source_dict()["spec"]]).copy()
-        return result
+        return SourcedEdgeFactory.build(factory_use_construct=True, **kwargs)
 
     @classmethod
     def edge(cls, **kwargs):
         """ """
-        return EdgeV1(**cls.edge_dict(**kwargs))
+        return EdgeFactory.build(factory_use_construct=True, **kwargs)
 
     @classmethod
-    def edge_and_nodes(cls, **kwargs):
-        edge = cls.edge(**kwargs)
-        source, destination = edge.spec.source, edge.spec.destination
-        return edge, [source, destination]
+    def named_edge_spec(cls, **kwargs):
+        """ """
+        return NamedEdgeSpecFactory.build(factory_use_construct=True, **kwargs)
+
+    @classmethod
+    def id_edge_spec(cls, **kwargs):
+        """ """
+        return IDEdgeSpecFactory.build(factory_use_construct=True, **kwargs)
+
+    @classmethod
+    def named_source_edge_spec(cls, **kwargs):
+        """ """
+        return NamedEdgeSourceSpecFactory.build(factory_use_construct=True, **kwargs)
+
+    @classmethod
+    def id_source_edge_spec(cls, **kwargs):
+        """ """
+        return IDEdgeSourceSpecFactory.build(factory_use_construct=True, **kwargs)
+
+
+class OrganisationFactory(ModelFactory[OrganisationV1]):
+    __model__ = OrganisationV1
+
+
+class OrganisationSpecFactory(ModelFactory[OrganisationSpec]):
+    __model__ = OrganisationSpec
 
 
 class MockOrganisation:
     @classmethod
-    def organisation_spec_dict(cls, **kwargs):
-        return {
-            "name": kwargs.get("name", get_human_id()),
-            "id": kwargs.get("id", uuid.uuid4()),
-        }
-
-    @classmethod
-    def organisation_dict(cls, **kwargs):
-        """"""
-        return {
-            "type": "Organisation",
-            "version": "v1",
-            "spec": cls.organisation_spec_dict(**kwargs),
-        }
-
-    @classmethod
     def organisation(cls, **kwargs):
-        """"""
-        return OrganisationV1(**cls.organisation_dict(**kwargs))
+        """ """
+        return OrganisationFactory.build(factory_use_construct=True, **kwargs)
+
+    @classmethod
+    def organisation_spec(cls, **kwargs):
+        """ """
+        return OrganisationSpecFactory.build(factory_use_construct=True, **kwargs)
+
+    @classmethod
+    def organization(cls, **kwargs):
+        """ """
+        return cls.organisation(**kwargs)
+
+    @classmethod
+    def organization_spec(cls, **kwargs):
+        """ """
+        return cls.organisation_spec(**kwargs)
+
+
+class WorkspaceFactory(ModelFactory[WorkspaceV1]):
+    __model__ = WorkspaceV1
+
+
+class WorkspaceSpecFactory(ModelFactory[WorkspaceSpec]):
+    __model__ = WorkspaceSpec
 
 
 class MockWorkspace:
     @classmethod
-    def workspace_spec_dict(cls, **kwargs):
-        result = {
-            "id": kwargs.get("id", None),
-            "name": kwargs.get("name", get_human_id()),
-            "search_enabled": kwargs.get("search_enabled", True),
-        }
-        if "organisation" in kwargs:
-            result["organisation"] = kwargs["organisation"]
-        elif "organization" in kwargs:
-            result["organisation"] = kwargs["organization"]
-        else:
-            result["organisation"] = MockOrganisation.organisation_spec_dict()
-        return result
+    def workspace(cls, **kwargs):
+        """ """
+        return WorkspaceFactory.build(factory_use_construct=True, **kwargs)
 
     @classmethod
     def workspace_spec(cls, **kwargs):
-        return WorkspaceSpec(**cls.workspace_spec_dict(**kwargs))
+        """ """
+        return WorkspaceSpecFactory.build(factory_use_construct=True, **kwargs)
 
-    @classmethod
-    def workspace_dict(cls, **kwargs):
-        result = {"type": "Workspace", "version": "v1", "spec": cls.workspace_spec_dict(**kwargs)}
 
-        if "ref" in kwargs:
-            result["spec"]["ref"] = kwargs["ref"]
-        # elif isinstance(kwargs.get("organisation"), dict):
-        #     result["spec"]["ref"] = f"{result['spec']['organisation']['name']}/{result['spec']['name']}"
-        elif not isinstance(result["spec"].get("organisation", None), (OrganisationSpec, dict)):
-            message = (
-                "In order to generate a workspace ref you must pass an organisation dict or manually specify the ref"
-            )
-            raise ValueError(message)
+class SourceFactory(ModelFactory[SourceV1]):
+    __model__ = SourceV1
 
-        return result
 
-    @classmethod
-    def workspace(cls, **kwargs):
-        return WorkspaceV1(**cls.workspace_dict(**kwargs))
+class SourceSpecFactory(ModelFactory[SourceSpec]):
+    __model__ = SourceSpec
 
 
 class MockSource:
     @classmethod
-    def source_dict(cls, **kwargs):
-        result = {
-            "type": "Source",
-            "version": "v1",
-            "spec": {
-                "id": kwargs.get("id", None),
-                "name": kwargs.get("name", get_human_id()),
-                # "workspace": kwargs.get("workspace", MockWorkspace.workspace_spec_dict()),
-            },
-        }
-        return result
+    def source(cls, **kwargs):
+        """ """
+        return SourceFactory.build(factory_use_construct=True, **kwargs)
 
     @classmethod
-    def source(cls, **kwargs):
-        return SourceV1(**cls.source_dict(**kwargs))
+    def source_spec(cls, **kwargs):
+        """ """
+        return SourceSpecFactory.build(factory_use_construct=True, **kwargs)
 
 
 class MockV1:

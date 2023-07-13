@@ -14,6 +14,7 @@ documentation = "https://docs.grai.io/"
 python = "^3.8"
 pydantic = "^1.10.4"
 multimethod = "^1.9.1"
+polyfactory = "^2.6.1"
 
 [tool.poetry.group.dev.dependencies]
 black = "^22.12.0"

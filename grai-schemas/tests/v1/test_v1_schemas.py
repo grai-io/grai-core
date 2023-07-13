@@ -90,7 +90,7 @@ def test_v1_node_typing(test_type, result):
     Raises:
 
     """
-    obj_dict = MockV1.node.node_dict()
+    obj_dict = MockV1.node.node().dict()
     obj = Schema(entity=obj_dict)
     assert isinstance(obj.entity, test_type) == result, f"{type(obj)}=={test_type} should be {result}"
 
@@ -116,7 +116,7 @@ def test_v1_edge_typing(test_type, result):
     Raises:
 
     """
-    obj_dict = MockV1.edge.edge_dict()
+    obj_dict = MockV1.edge.edge().dict()
     obj = Schema(entity=obj_dict)
     assert isinstance(obj.entity, test_type) == result, f"{type(obj)}=={test_type} should be {result}"
 
@@ -139,7 +139,7 @@ def test_adding_new_field_to_edge_metadata():
 def test_node_from_spec_no_metadata():
     """ """
 
-    obj_dict = MockV1.node.node_dict()["spec"]
+    obj_dict = MockV1.node.node().dict()["spec"]
     obj_dict.pop("metadata")
     obj = NodeV1.from_spec(obj_dict)
     assert isinstance(obj, NodeV1)
@@ -149,7 +149,7 @@ def test_node_from_spec_no_metadata():
 
 def test_edge_from_spec_no_metadata():
     """ """
-    obj_dict = MockV1.edge.edge_dict()["spec"]
+    obj_dict = MockV1.edge.edge().dict()["spec"]
     obj_dict.pop("metadata")
     obj = EdgeV1.from_spec(obj_dict)
     assert isinstance(obj, EdgeV1)
@@ -159,7 +159,7 @@ def test_edge_from_spec_no_metadata():
 
 def test_edge_from_spec_no_grai_metadata():
     """ """
-    obj_dict = MockV1.edge.edge_dict()["spec"]
+    obj_dict = MockV1.edge.edge().dict()["spec"]
     obj_dict["metadata"].pop("grai")
     obj = EdgeV1.from_spec(obj_dict)
     assert isinstance(obj, EdgeV1)
@@ -169,7 +169,7 @@ def test_edge_from_spec_no_grai_metadata():
 
 def test_node_from_spec_no_grai_metadata():
     """ """
-    obj_dict = MockV1.node.node_dict()["spec"]
+    obj_dict = MockV1.node.node().dict()["spec"]
     obj_dict["metadata"].pop("grai")
     obj_dict["metadata"]["test_values"] = (1, 2, 3)
     obj = NodeV1.from_spec(obj_dict)
@@ -180,7 +180,7 @@ def test_node_from_spec_no_grai_metadata():
 
 
 def test_node_from_spec_preserves_extra():
-    obj_dict = MockV1.node.node_dict()["spec"]
+    obj_dict = MockV1.node.node().dict()["spec"]
     obj_dict["metadata"]["test_values"] = (1, 2, 3)
     obj = NodeV1.from_spec(obj_dict)
     assert hasattr(obj.spec.metadata, "test_values")
@@ -188,7 +188,7 @@ def test_node_from_spec_preserves_extra():
 
 
 def test_edge_from_spec_preserves_extra():
-    obj_dict = MockV1.edge.edge_dict()["spec"]
+    obj_dict = MockV1.edge.edge().dict()["spec"]
     obj_dict["metadata"]["test_values"] = (1, 2, 3)
     obj = EdgeV1.from_spec(obj_dict)
     assert hasattr(obj.spec.metadata, "test_values")
@@ -280,7 +280,7 @@ class TestOrganisationV1:
 class TestSourceV1:
     @staticmethod
     def test_source_missing_id():
-        data = MockV1.source.source_dict()["spec"]
+        data = MockV1.source.source().dict()["spec"]
         data.pop("id")
         source = SourceV1.from_spec(data)
         assert source.spec.id is None
