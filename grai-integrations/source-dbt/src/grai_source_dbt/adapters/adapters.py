@@ -345,7 +345,7 @@ def adapt_list_to_client(
 
 
 @adapt_to_client.register
-def adapt_to_client_default_version(obj: Any):
+def adapt_to_client_default_version(obj: Any, source: SourceV1):
     """
 
     Args:
@@ -356,7 +356,7 @@ def adapt_to_client_default_version(obj: Any):
     Raises:
 
     """
-    return adapt_to_client(obj, version="v1")
+    return adapt_to_client(obj, source, "v1")
 
 
 @adapt_to_client.register

@@ -126,7 +126,12 @@ class DbtCloudConnector:
                 Raises:
 
                 """
-                return adapt_to_client(manifest.loader.node_map[unique_id]).spec.name
+                try:
+                    res = adapt_to_client(manifest.loader.node_map[unique_id], self.source.spec, "v1").spec.name
+                except:
+                    raise Exception(f"Could not find node for {unique_id}, account_id: {account_id}, run_id: {run_id}")
+
+                return res
 
             return inner
 
@@ -155,7 +160,7 @@ class DbtCloudConnector:
             result["unique_id"] for result in run_results["results"] if not result["unique_id"].startswith("test.")
         ]
 
-        manifest = ManifestProcessor.load(manifest_obj, self.namespace)
+        manifest = ManifestProcessor.load(manifest_obj, self.namespace, self.source.spec)
 
         name_mapper = get_adapted_node_map(manifest=manifest)
 
