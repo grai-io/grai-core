@@ -1,4 +1,5 @@
 from functools import cached_property
+from typing import Optional
 
 from django.db.models import Q
 from grai_schemas.utilities import merge
@@ -8,6 +9,12 @@ from rest_framework.fields import JSONField
 from rest_framework import serializers
 
 from .models import Edge, Node, Source
+
+
+def merge_tags(a: Optional[list], b: Optional[list]) -> list:
+    a_tag = set(a) if a is not None else set()
+    b_tag = set(b) if b is not None else set()
+    return list(a_tag.union(b_tag))
 
 
 class SourceSerializer(serializers.ModelSerializer):
@@ -170,7 +177,7 @@ class SourceMetadataMixin:
         metadata = validated_data.pop("metadata", {})
 
         validated_data["metadata"] = {
-            **metadata,
+            "grai": metadata.get("grai", {}),
             self.source_model.name: metadata,
         }
 
@@ -178,12 +185,15 @@ class SourceMetadataMixin:
 
     def update(self, instance, validated_data):
         existing = instance.metadata
-
         metadata = validated_data.pop("metadata", {})
 
-        new = {**metadata, self.source_model.name: metadata}
+        grai_metadata = merge(metadata.get("grai", {}), existing.get("grai", {}))
+        grai_metadata["tags"] = merge_tags(existing.get("grai", {}).get("tags"), metadata.get("grai", {}).get("tags"))
 
-        instance.metadata = merge(existing, new)
+        instance.metadata = {
+            "grai": grai_metadata,
+            self.source_model.name: metadata,
+        }
 
         return super().update(instance, validated_data)
 

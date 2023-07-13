@@ -486,13 +486,13 @@ files = [
 
 [[package]]
 name = "grai-client"
-version = "0.3.0a21"
+version = "0.3.0a24"
 description = ""
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_client-0.3.0a21-py3-none-any.whl", hash = "sha256:120f42953bfa5b89da8c3ff789d2cf4c94a3b1079e941664b60062d0f8ca5617"},
-    {file = "grai_client-0.3.0a21.tar.gz", hash = "sha256:d953b3a72f0fde6b343d36a0c603f4d8f25dde42ad2364230672306086542256"},
+    {file = "grai_client-0.3.0a24-py3-none-any.whl", hash = "sha256:843d217a56ed865eee873830db82ffa99c865f2ee4fd380affe1775930cb94e4"},
+    {file = "grai_client-0.3.0a24.tar.gz", hash = "sha256:ece735a08dca78e374d54aec01ea41f2f0e6db9295a069588fcefcc40fa4a069"},
 ]
 
 [package.dependencies]
@@ -1516,13 +1516,13 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
 name = "zipp"
-version = "3.16.0"
+version = "3.16.1"
 description = "Backport of pathlib-compatible object wrapper for zip files"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "zipp-3.16.0-py3-none-any.whl", hash = "sha256:5dadc3ad0a1f825fe42ce1bce0f2fc5a13af2e6b2d386af5b0ff295bc0a287d3"},
-    {file = "zipp-3.16.0.tar.gz", hash = "sha256:1876cb065531855bbe83b6c489dcf69ecc28f1068d8e95959fe8bbc77774c941"},
+    {file = "zipp-3.16.1-py3-none-any.whl", hash = "sha256:0b37c326d826d5ca35f2b9685cd750292740774ef16190008b00a0227c256fe0"},
+    {file = "zipp-3.16.1.tar.gz", hash = "sha256:857b158da2cbf427b376da1c24fd11faecbac5a4ac7523c3607f8a01f94c2ec0"},
 ]
 
 [package.extras]

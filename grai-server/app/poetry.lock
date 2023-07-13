@@ -1672,13 +1672,13 @@ grpc = ["grpcio (>=1.44.0,<2.0.0.dev0)"]
 
 [[package]]
 name = "grai-client"
-version = "0.3.0a21"
+version = "0.3.0a24"
 description = ""
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_client-0.3.0a21-py3-none-any.whl", hash = "sha256:120f42953bfa5b89da8c3ff789d2cf4c94a3b1079e941664b60062d0f8ca5617"},
-    {file = "grai_client-0.3.0a21.tar.gz", hash = "sha256:d953b3a72f0fde6b343d36a0c603f4d8f25dde42ad2364230672306086542256"},
+    {file = "grai_client-0.3.0a24-py3-none-any.whl", hash = "sha256:843d217a56ed865eee873830db82ffa99c865f2ee4fd380affe1775930cb94e4"},
+    {file = "grai_client-0.3.0a24.tar.gz", hash = "sha256:ece735a08dca78e374d54aec01ea41f2f0e6db9295a069588fcefcc40fa4a069"},
 ]
 
 [package.dependencies]
@@ -1751,13 +1751,13 @@ setuptools = ">=67.1.0,<68.0.0"
 
 [[package]]
 name = "grai-source-dbt"
-version = "0.3.0a9"
+version = "0.3.0a11"
 description = ""
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_source_dbt-0.3.0a9-py3-none-any.whl", hash = "sha256:15de81598aec96e00a2464503878802a59ddbac24ac8989c90f52917459c5651"},
-    {file = "grai_source_dbt-0.3.0a9.tar.gz", hash = "sha256:8bff02de03232b0a222e428d4151ee48eac0fd0896b061c8b92ae2903222551e"},
+    {file = "grai_source_dbt-0.3.0a11-py3-none-any.whl", hash = "sha256:5b88a78c955bb342372b1a37da10140982a1d208ec844ec6923d1849c4512f17"},
+    {file = "grai_source_dbt-0.3.0a11.tar.gz", hash = "sha256:12abe272d1a4971ecc4e866f275f8ce0523344ba25200be2503000556a8a5756"},
 ]
 
 [package.dependencies]
@@ -1768,20 +1768,20 @@ pydantic = ">=1.9.1,<2.0.0"
 
 [[package]]
 name = "grai-source-dbt-cloud"
-version = "0.1.0a7"
+version = "0.1.0a8"
 description = ""
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_source_dbt_cloud-0.1.0a7-py3-none-any.whl", hash = "sha256:039566b196daa0890bedfe086823a47488380292e16d6623ec1c29c2710288c1"},
-    {file = "grai_source_dbt_cloud-0.1.0a7.tar.gz", hash = "sha256:4cf07979e0fa1b1bd1128c88d022f982e8233c46dbcf6487054a95b52201fd67"},
+    {file = "grai_source_dbt_cloud-0.1.0a8-py3-none-any.whl", hash = "sha256:af7c7dc2e119085995504dc1c76648900ba8ea8709934b9156060e2f255a2d3d"},
+    {file = "grai_source_dbt_cloud-0.1.0a8.tar.gz", hash = "sha256:284011d16273258d30251ad4d551c6ca96711160fd0168edd9754cf292017720"},
 ]
 
 [package.dependencies]
 dbtc = ">=0.4.2,<0.5.0"
 grai-client = ">=0.3.0a21,<0.4.0"
 grai-schemas = ">=0.2.0a1,<0.3.0"
-grai-source-dbt = ">=0.3.0a7,<0.4.0"
+grai-source-dbt = ">=0.3.0a11,<0.4.0"
 pydantic = ">=1.9.1,<2.0.0"
 
 [[package]]
@@ -3499,13 +3499,13 @@ dev = ["pre-commit", "pytest-asyncio", "tox"]
 
 [[package]]
 name = "python-crontab"
-version = "2.7.1"
+version = "3.0.0"
 description = "Python Crontab API"
 optional = false
 python-versions = "*"
 files = [
-    {file = "python-crontab-2.7.1.tar.gz", hash = "sha256:b21af4647c7bbb848fef2f020616c6b0289dcb9f94b4f991a55310ff9bec5749"},
-    {file = "python_crontab-2.7.1-py3-none-any.whl", hash = "sha256:9c374d1c9d401afdd8dd958f20077f74c158ab3fffb9604296802715e887fe48"},
+    {file = "python-crontab-3.0.0.tar.gz", hash = "sha256:79fb7465039ddfd4fb93d072d6ee0d45c1ac8bf1597f0686ea14fd4361dba379"},
+    {file = "python_crontab-3.0.0-py3-none-any.whl", hash = "sha256:6d5ba3c190ec76e4d252989a1644fcb233dbf53fbc8fceeb9febe1657b9fb1d4"},
 ]
 
 [package.dependencies]
@@ -3652,12 +3652,12 @@ ocsp = ["cryptography (>=36.0.1)", "pyopenssl (==20.0.1)", "requests (>=2.26.0)"
 
 [[package]]
 name = "redshift-connector"
-version = "2.0.912"
+version = "2.0.913"
 description = "Redshift interface library"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "redshift_connector-2.0.912-py3-none-any.whl", hash = "sha256:81c7876442416aebbb7255d9d81cffd7fef230fad97e37cad2f1cda80d1f0781"},
+    {file = "redshift_connector-2.0.913-py3-none-any.whl", hash = "sha256:bd70395c5b7ec9fcae9565daff6bcb88c7d3ea6182dafba2bac6138f68d00582"},
 ]
 
 [package.dependencies]
@@ -3891,13 +3891,13 @@ asn1crypto = ">=1.5.1"
 
 [[package]]
 name = "sentry-sdk"
-version = "1.28.0"
+version = "1.28.1"
 description = "Python client for Sentry (https://sentry.io)"
 optional = false
 python-versions = "*"
 files = [
-    {file = "sentry-sdk-1.28.0.tar.gz", hash = "sha256:2281ba98011cfa9bc9bb15c1074b6dd9f7fdfce94033cd25b50f18f078ffed4c"},
-    {file = "sentry_sdk-1.28.0-py2.py3-none-any.whl", hash = "sha256:b8b363aaa3f3d6a3acc1aa571efa4db29fb440339fed03560bb1276b8d2c2509"},
+    {file = "sentry-sdk-1.28.1.tar.gz", hash = "sha256:dcd88c68aa64dae715311b5ede6502fd684f70d00a7cd4858118f0ba3153a3ae"},
+    {file = "sentry_sdk-1.28.1-py2.py3-none-any.whl", hash = "sha256:6bdb25bd9092478d3a817cb0d01fa99e296aea34d404eac3ca0037faa5c2aa0a"},
 ]
 
 [package.dependencies]
@@ -4399,4 +4399,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "1003ed164af9bec96b0b6fde7e8e4004cab17c3c381c8d0c76cf61f2fd113a1a"
+content-hash = "006d5f90928ebcce0b56de4bd93172fb7e4e37e5ab970b3ef1c861d9b7f87f38"
