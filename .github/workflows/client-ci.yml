@@ -101,6 +101,9 @@ jobs:
         options: --health-cmd pg_isready --health-interval 2s --health-timeout 5s --health-retries 15
       the_guide:
         image: ghcr.io/grai-io/grai-core/grai-server-temp@${{ needs.build-server.outputs.image-digest }}
+        credentials:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GH_TOKEN }}
         env:
           DB_USER: grai
           DB_PASSWORD: grai
