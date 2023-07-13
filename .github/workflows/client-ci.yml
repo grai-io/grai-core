@@ -76,11 +76,14 @@ jobs:
           context: grai-server/app
           push: true
           labels: ${{ steps.meta.outputs.labels }}
+          tags: grai-io/grai-core/grai-server-temp:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
   tests-client:
-    needs: lint-client
+    needs:
+      - lint-client
+      - build-server
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -97,7 +100,7 @@ jobs:
         # needed because the postgres container does not provide a healthcheck
         options: --health-cmd pg_isready --health-interval 2s --health-timeout 5s --health-retries 15
       the_guide:
-        image: ghcr.io/grai-io/grai-core/grai-server:${{ needs.build-server-release.outputs.image-digest }}
+        image: ghcr.io/grai-io/grai-core/grai-server-temp:${{ needs.build-server-release.outputs.image-digest }}
         env:
           DB_USER: grai
           DB_PASSWORD: grai
