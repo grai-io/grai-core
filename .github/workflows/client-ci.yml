@@ -100,7 +100,7 @@ jobs:
         # needed because the postgres container does not provide a healthcheck
         options: --health-cmd pg_isready --health-interval 2s --health-timeout 5s --health-retries 15
       the_guide:
-        image: ghcr.io/grai-io/grai-core/grai-server-temp:${{ needs.build-server-release.outputs.image-digest }}
+        image: ghcr.io/grai-io/grai-core/grai-server-temp:${{ needs.build-server.outputs.image-digest }}
         env:
           DB_USER: grai
           DB_PASSWORD: grai
