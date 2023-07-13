@@ -15,7 +15,7 @@ documentation = "https://docs.grai.io/"
 [tool.poetry.dependencies]
 python = "^3.8"
 grai-client = {version = "^0.3.0a21", allow-prereleases = true}
-grai-schemas = {version = "^0.2.0a1", allow-prereleases = true}
+grai-schemas = {version = "^0.2.0a7", allow-prereleases = true}
 multimethod = "^1.8"
 pydantic = {extras = ["dotenv"], version = "^1.10.7"}
 botocore = "^1.29.153"

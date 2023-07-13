@@ -21,11 +21,7 @@ class SourcesMetadataV1(Metadata):
 class MetadataV1(GraiMetadataV1, SourcesMetadataV1):
     """ """
 
-    class Config:
-        """ """
-
-        extra = "allow"
-        allow_mutation = True
+    pass
 
 
 class GraiMalformedNodeMetadataV1(MalformedMetadata, MetadataV1):

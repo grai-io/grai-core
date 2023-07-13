@@ -87,17 +87,17 @@ uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
 name = "boto3"
-version = "1.28.2"
+version = "1.28.3"
 description = "The AWS SDK for Python"
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "boto3-1.28.2-py3-none-any.whl", hash = "sha256:9933e40dc9ac72deac45cecce2df020e3bf8d0d537538d2b361c17d1cee807cc"},
-    {file = "boto3-1.28.2.tar.gz", hash = "sha256:0d53fe604dc30edded21906bc56b30a7684f0715f4f6897307d53f8184997368"},
+    {file = "boto3-1.28.3-py3-none-any.whl", hash = "sha256:34f07b3fc2503240c0f58114cf3afea91295c7996d084991b78a278a56157c48"},
+    {file = "boto3-1.28.3.tar.gz", hash = "sha256:610369a7f984b58973c097ea649ec81976c04565d39a2d6d3edc280d23b0cb87"},
 ]
 
 [package.dependencies]
-botocore = ">=1.31.2,<1.32.0"
+botocore = ">=1.31.3,<1.32.0"
 jmespath = ">=0.7.1,<2.0.0"
 s3transfer = ">=0.6.0,<0.7.0"
 
@@ -106,13 +106,13 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "botocore"
-version = "1.31.2"
+version = "1.31.3"
 description = "Low-level, data-driven core of boto 3."
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "botocore-1.31.2-py3-none-any.whl", hash = "sha256:d368ac0b58e2b9025b9c397e4a4f86d71788913ee619263506885a866a4f6811"},
-    {file = "botocore-1.31.2.tar.gz", hash = "sha256:67a475bec9e52d495a358b34e219ef7f62907e83b87e5bc712528f998bd46dab"},
+    {file = "botocore-1.31.3-py3-none-any.whl", hash = "sha256:2aa27c75e62bfcf7900cb85283228fcb7df0fa1bdc2ae76dcee90788dd444934"},
+    {file = "botocore-1.31.3.tar.gz", hash = "sha256:744ce853cadc7ae87ba42ef6828194ddec97d606dd4d08b4dfe3d96d5001eb0c"},
 ]
 
 [package.dependencies]
@@ -311,13 +311,13 @@ files = [
 
 [[package]]
 name = "click"
-version = "8.1.4"
+version = "8.1.5"
 description = "Composable command line interface toolkit"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "click-8.1.4-py3-none-any.whl", hash = "sha256:2739815aaa5d2c986a88f1e9230c55e17f0caad3d958a5e13ad0797c166db9e3"},
-    {file = "click-8.1.4.tar.gz", hash = "sha256:b97d0c74955da062a7d4ef92fadb583806a585b2ea81958a81bd72726cbb8e37"},
+    {file = "click-8.1.5-py3-none-any.whl", hash = "sha256:e576aa487d679441d7d30abb87e1b43d24fc53bffb8758443b1a9e1cee504548"},
+    {file = "click-8.1.5.tar.gz", hash = "sha256:4be4b1af8d665c6d942909916d31a213a106800c47d0eeba73d34da3cbc11367"},
 ]
 
 [package.dependencies]
@@ -349,6 +349,21 @@ files = [
 test = ["pytest (>=6)"]
 
 [[package]]
+name = "faker"
+version = "19.1.0"
+description = "Faker is a Python package that generates fake data for you."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "Faker-19.1.0-py3-none-any.whl", hash = "sha256:4b7d5cd0c898f0b64f88fbf0a35aac66762f2273446ba4a4e459985a2e5c8f8c"},
+    {file = "Faker-19.1.0.tar.gz", hash = "sha256:d1eb772faf4a7c458c90b19d3626c40ae3460bd665ad7f5fb7b089e31d1a6dcf"},
+]
+
+[package.dependencies]
+python-dateutil = ">=2.4"
+typing-extensions = {version = ">=3.10.0.1", markers = "python_version <= \"3.8\""}
+
+[[package]]
 name = "furl"
 version = "2.1.3"
 description = "URL manipulation made simple."
@@ -365,13 +380,13 @@ six = ">=1.8.0"
 
 [[package]]
 name = "grai-client"
-version = "0.3.0a21"
+version = "0.3.0a24"
 description = ""
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_client-0.3.0a21-py3-none-any.whl", hash = "sha256:120f42953bfa5b89da8c3ff789d2cf4c94a3b1079e941664b60062d0f8ca5617"},
-    {file = "grai_client-0.3.0a21.tar.gz", hash = "sha256:d953b3a72f0fde6b343d36a0c603f4d8f25dde42ad2364230672306086542256"},
+    {file = "grai_client-0.3.0a24-py3-none-any.whl", hash = "sha256:843d217a56ed865eee873830db82ffa99c865f2ee4fd380affe1775930cb94e4"},
+    {file = "grai_client-0.3.0a24.tar.gz", hash = "sha256:ece735a08dca78e374d54aec01ea41f2f0e6db9295a069588fcefcc40fa4a069"},
 ]
 
 [package.dependencies]
@@ -389,17 +404,18 @@ tqdm = ">=4.65.0,<5.0.0"
 
 [[package]]
 name = "grai-schemas"
-version = "0.2.0a5"
+version = "0.2.0a7"
 description = ""
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_schemas-0.2.0a5-py3-none-any.whl", hash = "sha256:d9923e3ef53f59265e258958832b80a4ca5b7658710cf0ae8e23d9129a56332d"},
-    {file = "grai_schemas-0.2.0a5.tar.gz", hash = "sha256:c6fba8318b090f791a390d814baffc2a785c5b31229fdb3c307626b84afc42a3"},
+    {file = "grai_schemas-0.2.0a7-py3-none-any.whl", hash = "sha256:96e374423174df0f02b738d2174dd5a74224abf6e16cf36e4bf2f4a74d093607"},
+    {file = "grai_schemas-0.2.0a7.tar.gz", hash = "sha256:7b9dcbbfaad4d23fc714d1bf2a8b91c927c131d88ad22ed7f4fba0965b66fd86"},
 ]
 
 [package.dependencies]
 multimethod = ">=1.9.1,<2.0.0"
+polyfactory = ">=2.6.1,<3.0.0"
 pydantic = ">=1.10.4,<2.0.0"
 
 [[package]]
@@ -849,6 +865,27 @@ dev = ["pre-commit", "tox"]
 testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
+name = "polyfactory"
+version = "2.6.1"
+description = "Mock data generation factories"
+optional = false
+python-versions = ">=3.8,<4.0"
+files = [
+    {file = "polyfactory-2.6.1-py3-none-any.whl", hash = "sha256:7de8b78b6e76d9adaab3973c71735447a53f21d5351a83c06c81b5e373ddfe1f"},
+    {file = "polyfactory-2.6.1.tar.gz", hash = "sha256:449c37644b738e464f953a37843b990966e999474ddb39bcb9602c24d52cbb8d"},
+]
+
+[package.dependencies]
+faker = "*"
+typing-extensions = "*"
+
+[package.extras]
+beanie = ["beanie", "pydantic"]
+msgspec = ["msgspec"]
+odmantic = ["odmantic", "pydantic"]
+pydantic = ["pydantic"]
+
+[[package]]
 name = "pydantic"
 version = "1.10.11"
 description = "Data validation and settings management using python type hints"
@@ -1013,12 +1050,12 @@ files = [
 
 [[package]]
 name = "redshift-connector"
-version = "2.0.912"
+version = "2.0.913"
 description = "Redshift interface library"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "redshift_connector-2.0.912-py3-none-any.whl", hash = "sha256:81c7876442416aebbb7255d9d81cffd7fef230fad97e37cad2f1cda80d1f0781"},
+    {file = "redshift_connector-2.0.913-py3-none-any.whl", hash = "sha256:bd70395c5b7ec9fcae9565daff6bcb88c7d3ea6182dafba2bac6138f68d00582"},
 ]
 
 [package.dependencies]
@@ -1219,4 +1256,4 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "69a8116a2001765b63f278c9d734e5e681851e2cc1887ae3b5d765b3ebfb363c"
+content-hash = "ddb1f14bc60d41e00b70be4357203c3950cf08991fdf1a6d83d643a1536f09fc"

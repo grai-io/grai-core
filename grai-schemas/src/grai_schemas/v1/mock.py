@@ -211,9 +211,14 @@ class WorkspaceSpecFactory(ModelFactory[WorkspaceSpec]):
     __model__ = WorkspaceSpec
     __set_as_default_factory_for_type__ = True
 
-    workspace = get_human_id
-    organisation = get_human_id
-    ref = Ignore()
+    name = get_human_id
+    organisation = OrganisationSpecFactory.build
+
+    @post_generated
+    @classmethod
+    def ref(cls, name, organisation) -> str:
+        """ """
+        return f"{organisation.name}/{name}"
 
 
 class WorkspaceFactory(ModelFactory[WorkspaceV1]):
@@ -229,6 +234,7 @@ class MockWorkspace:
     @classmethod
     def workspace_spec(cls, **kwargs):
         """ """
+
         return WorkspaceSpecFactory.build(factory_use_construct=True, **kwargs)
 
 

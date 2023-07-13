@@ -37,14 +37,16 @@ def client(client_params):
 
 
 @pytest.fixture(scope="session")
-def organisation_v1(client):
-    return OrganisationV1.from_spec({"name": "default"})
+def workspace_v1(client):
+    workspace = client.get("workspace", ref=f"default/default")[0]
+    return workspace
 
 
 @pytest.fixture(scope="session")
-def workspace_v1(client, organisation_v1):
-    workspace = client.get("workspace", ref=f"{organisation_v1.spec.name}/default")[0]
-    return workspace
+def organisation_v1(client, workspace_v1):
+    org = OrganisationV1.from_spec({"name": "default"})
+    org.spec.id = workspace_v1.spec.organisation
+    return org
 
 
 @pytest.fixture(scope="session")

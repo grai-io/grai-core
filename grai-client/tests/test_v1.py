@@ -16,8 +16,9 @@ from grai_client.errors import NotSupportedError, ObjectNotFoundError
 
 def build_mocked_node(client, **kwargs):
     node = MockV1.node.node(**kwargs)
-    for source in node.spec.data_sources:
-        source.id = client.post(source).spec.id
+
+    for source in client.post(node.spec.data_sources):
+        source.id = source.spec.id
     return node
 
 
@@ -71,24 +72,24 @@ class TestWorkspaceV1:
             assert isinstance(r, WorkspaceV1)
 
     @staticmethod
-    def test_post_workspace(client, workspace_v1):
-        workspace = MockV1.workspace.workspace(organization=workspace_v1.spec.organisation, ref="tmp/tmp")
-        workspace.spec.ref = f"default/{workspace.spec.name}"
+    def test_post_workspace(client, workspace_v1, organisation_v1):
+        workspace = MockV1.workspace.workspace_spec(organisation=organisation_v1.spec)
+        workspace.ref = f"{organisation_v1.spec.name}/{workspace.name}"
         resp = client.post(workspace)
         assert isinstance(resp, WorkspaceV1)
-        assert resp.spec.ref == workspace.spec.ref
-        assert resp.spec.name == workspace.spec.name
+        assert resp.spec.ref == workspace.ref
+        assert resp.spec.name == workspace.name
 
     @staticmethod
     @pytest.mark.xfail(raises=NotSupportedError)
     def test_delete_workspace(client, workspace_v1):
-        workspace = MockV1.workspace.workspace(organization=workspace_v1.spec.organisation, ref="tmp/tmp")
+        workspace = MockV1.workspace.workspace(organisation=workspace_v1.spec)
         client.delete(workspace)
 
     @staticmethod
     @pytest.mark.xfail(raises=NotSupportedError)
     def test_patch_workspace(client, workspace_v1):
-        workspace = MockV1.workspace.workspace(organization=workspace_v1.spec.organisation, ref="tmp/tmp")
+        workspace = MockV1.workspace.workspace_spec(organisation=workspace_v1.spec)
         resp = client.patch(workspace)
 
     @staticmethod
@@ -106,9 +107,9 @@ class TestWorkspaceV1:
         assert resp.spec.ref == workspace_v1.spec.ref
 
     @staticmethod
-    @pytest.mark.xfail(raises=ObjectNotFoundError)
+    @pytest.mark.xfail(raises=RequestException)
     def test_get_missing_workspace_by_workspace_v1(client, organisation_v1):
-        workspace = MockV1.workspace.workspace(organisation=organisation_v1.spec)
+        workspace = MockV1.workspace.workspace_spec(organisation=organisation_v1.spec)
         resp = client.get(workspace)
 
 
@@ -122,14 +123,14 @@ class TestSourceV1:
 
     @staticmethod
     def test_post_source_v1(client):
-        test_source = MockV1.source.source(workspace=client.workspace)
+        test_source = MockV1.source.source_spec(workspace=client.workspace)
         resp = client.post(test_source)
         assert isinstance(resp, SourceV1)
-        assert resp.spec.name == test_source.spec.name
+        assert resp.spec.name == test_source.name
 
     @staticmethod
     def test_patch_source_v1(client):
-        test_source = MockV1.source.source(workspace=client.workspace)
+        test_source = MockV1.source.source_spec(workspace=client.workspace)
         test_source = client.post(test_source)
         test_source.spec.name = str(uuid4())
         resp = client.patch(test_source)
@@ -139,7 +140,7 @@ class TestSourceV1:
 
     @staticmethod
     def test_delete_source_v1(client):
-        test_source = MockV1.source.source(workspace=client.workspace)
+        test_source = MockV1.source.source_spec(workspace=client.workspace)
         test_source = client.post(test_source)
         client.delete(test_source)
 
@@ -148,7 +149,7 @@ class TestSourceV1:
 
     @staticmethod
     def test_get_source_by_source_v1(client):
-        test_source = MockV1.source.source(workspace=client.workspace)
+        test_source = MockV1.source.source_spec(workspace=client.workspace)
         test_source = client.post(test_source)
         resp = client.get(test_source)
         assert isinstance(resp, SourceV1)
@@ -157,7 +158,7 @@ class TestSourceV1:
 
     @staticmethod
     def test_get_source_by_source_spec(client):
-        test_source = MockV1.source.source(workspace=client.workspace)
+        test_source = MockV1.source.source_spec(workspace=client.workspace)
         test_source = client.post(test_source)
         resp = client.get(test_source.spec)
         assert isinstance(resp, SourceV1)
@@ -166,9 +167,9 @@ class TestSourceV1:
 
     @staticmethod
     def test_get_missing_source(client):
-        test_source = MockV1.source.source(workspace=client.workspace)
+        test_source = MockV1.source.source_spec(workspace=client.workspace)
 
-        with pytest.raises(ObjectNotFoundError):
+        with pytest.raises(RequestException):
             client.get(test_source)
 
     @staticmethod
@@ -219,6 +220,7 @@ class TestNodesV1:
 
     @classmethod
     def test_post_node(cls, client):
+        breakpoint()
         test_node = build_mocked_node(client)
         sources_names = {s.name for s in test_node.spec.data_sources}
         result = client.post(test_node)

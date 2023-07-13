@@ -270,13 +270,13 @@ files = [
 
 [[package]]
 name = "click"
-version = "8.1.4"
+version = "8.1.5"
 description = "Composable command line interface toolkit"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "click-8.1.4-py3-none-any.whl", hash = "sha256:2739815aaa5d2c986a88f1e9230c55e17f0caad3d958a5e13ad0797c166db9e3"},
-    {file = "click-8.1.4.tar.gz", hash = "sha256:b97d0c74955da062a7d4ef92fadb583806a585b2ea81958a81bd72726cbb8e37"},
+    {file = "click-8.1.5-py3-none-any.whl", hash = "sha256:e576aa487d679441d7d30abb87e1b43d24fc53bffb8758443b1a9e1cee504548"},
+    {file = "click-8.1.5.tar.gz", hash = "sha256:4be4b1af8d665c6d942909916d31a213a106800c47d0eeba73d34da3cbc11367"},
 ]
 
 [package.dependencies]
@@ -319,6 +319,21 @@ files = [
 test = ["pytest (>=6)"]
 
 [[package]]
+name = "faker"
+version = "19.1.0"
+description = "Faker is a Python package that generates fake data for you."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "Faker-19.1.0-py3-none-any.whl", hash = "sha256:4b7d5cd0c898f0b64f88fbf0a35aac66762f2273446ba4a4e459985a2e5c8f8c"},
+    {file = "Faker-19.1.0.tar.gz", hash = "sha256:d1eb772faf4a7c458c90b19d3626c40ae3460bd665ad7f5fb7b089e31d1a6dcf"},
+]
+
+[package.dependencies]
+python-dateutil = ">=2.4"
+typing-extensions = {version = ">=3.10.0.1", markers = "python_version <= \"3.8\""}
+
+[[package]]
 name = "filelock"
 version = "3.12.2"
 description = "A platform independent file lock."
@@ -350,17 +365,18 @@ six = ">=1.8.0"
 
 [[package]]
 name = "grai-schemas"
-version = "0.2.0a5"
+version = "0.2.0a7"
 description = ""
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_schemas-0.2.0a5-py3-none-any.whl", hash = "sha256:d9923e3ef53f59265e258958832b80a4ca5b7658710cf0ae8e23d9129a56332d"},
-    {file = "grai_schemas-0.2.0a5.tar.gz", hash = "sha256:c6fba8318b090f791a390d814baffc2a785c5b31229fdb3c307626b84afc42a3"},
+    {file = "grai_schemas-0.2.0a7-py3-none-any.whl", hash = "sha256:96e374423174df0f02b738d2174dd5a74224abf6e16cf36e4bf2f4a74d093607"},
+    {file = "grai_schemas-0.2.0a7.tar.gz", hash = "sha256:7b9dcbbfaad4d23fc714d1bf2a8b91c927c131d88ad22ed7f4fba0965b66fd86"},
 ]
 
 [package.dependencies]
 multimethod = ">=1.9.1,<2.0.0"
+polyfactory = ">=2.6.1,<3.0.0"
 pydantic = ">=1.10.4,<2.0.0"
 
 [[package]]
@@ -816,6 +832,27 @@ dev = ["pre-commit", "tox"]
 testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
+name = "polyfactory"
+version = "2.6.1"
+description = "Mock data generation factories"
+optional = false
+python-versions = ">=3.8,<4.0"
+files = [
+    {file = "polyfactory-2.6.1-py3-none-any.whl", hash = "sha256:7de8b78b6e76d9adaab3973c71735447a53f21d5351a83c06c81b5e373ddfe1f"},
+    {file = "polyfactory-2.6.1.tar.gz", hash = "sha256:449c37644b738e464f953a37843b990966e999474ddb39bcb9602c24d52cbb8d"},
+]
+
+[package.dependencies]
+faker = "*"
+typing-extensions = "*"
+
+[package.extras]
+beanie = ["beanie", "pydantic"]
+msgspec = ["msgspec"]
+odmantic = ["odmantic", "pydantic"]
+pydantic = ["pydantic"]
+
+[[package]]
 name = "pre-commit"
 version = "2.21.0"
 description = "A framework for managing and maintaining multi-language pre-commit hooks."
@@ -934,6 +971,20 @@ files = [
 
 [package.dependencies]
 pytest = ">=4.6"
+
+[[package]]
+name = "python-dateutil"
+version = "2.8.2"
+description = "Extensions to the standard Python datetime module"
+optional = false
+python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
+files = [
+    {file = "python-dateutil-2.8.2.tar.gz", hash = "sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86"},
+    {file = "python_dateutil-2.8.2-py2.py3-none-any.whl", hash = "sha256:961d03dc3453ebbc59dbdea9e4e11c5651520a876d0f4db161e8674aae935da9"},
+]
+
+[package.dependencies]
+six = ">=1.5"
 
 [[package]]
 name = "pyyaml"
@@ -1175,4 +1226,4 @@ test = ["pytest (>=6.0.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "de9cbb3140c5b26d74c37379ee8bd7b0465c68344e227b01dc94dcfe8a348fd8"
+content-hash = "ab1ea10fdd0227ffe2d84fefb2b23bfbe7031f50045153d673c96cadcc118028"

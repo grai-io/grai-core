@@ -201,10 +201,10 @@ def build_metadata(obj, version) -> Dict[str, Dict]:
         None.
 
     """
-    return {
-        base_config.metadata_id: build_grai_metadata(obj, version),
-        config.metadata_id: build_app_metadata(obj, version),
-    }
+    integration_meta = build_app_metadata(obj, version)
+    integration_meta["grai"] = build_grai_metadata(obj, version)
+
+    return integration_meta
 
 
 @multimethod

@@ -144,6 +144,12 @@ class PackageConfig(BaseModel):
 class Metadata(GraiBaseModel):
     pass
 
+    class Config:
+        """ """
+
+        extra = "allow"
+        allow_mutation = True
+
 
 class MalformedMetadata(GraiBaseModel):
     """ """

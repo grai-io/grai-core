@@ -16,10 +16,11 @@ documentation = "https://docs.grai.io/"
 python = "^3.8"
 pydantic = "^1.9.1"
 grai-client = {version = "^0.3.0a21", allow-prereleases = true}
-grai-schemas = {version = "^0.2.0a1", allow-prereleases = true}
+grai-schemas = {version = "^0.2.0a7", allow-prereleases = true}
 PyYAML = "^6.0"
 multimethod = "^1.8"
 pandas = "^1.4.4"
+pyarrow = "^12.0.1"
 
 [tool.poetry.group.dev.dependencies]
 black = "^22.6.0"

@@ -236,13 +236,9 @@ def build_metadata(obj, version):
 
     """
     integration_meta = build_app_metadata(obj, version)
-    base_metadata = build_grai_metadata(obj, version)
-    integration_meta["grai"] = base_metadata
+    integration_meta["grai"] = build_grai_metadata(obj, version)
 
-    return {
-        base_config.metadata_id: base_metadata,
-        config.metadata_id: integration_meta,
-    }
+    return integration_meta
 
 
 @multimethod

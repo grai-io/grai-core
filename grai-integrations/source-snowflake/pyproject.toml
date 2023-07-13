@@ -19,7 +19,7 @@ PyYAML = "^6.0"
 multimethod = "^1.8"
 snowflake-connector-python = "^3.0.0"
 grai-client = {version = "^0.3.0a21", allow-prereleases = true}
-grai-schemas = {version = "^0.2.0a1", allow-prereleases = true}
+grai-schemas = {version = "^0.2.0a7", allow-prereleases = true}
 
 [tool.poetry.group.dev.dependencies]
 black = "^22.6.0"
