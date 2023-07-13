@@ -1,6 +1,8 @@
 import datetime
 import uuid
+from typing import Any, Dict, Generic, Type, TypeVar
 
+from grai_schemas.generics import DefaultValue
 from grai_schemas.human_ids import get_human_id
 from grai_schemas.v1.edge import EdgeV1
 from grai_schemas.v1.edge import IDSourceSpec as EdgeIDSourceSpec
@@ -20,31 +22,62 @@ from grai_schemas.v1.node import (
 from grai_schemas.v1.organization import OrganisationSpec, OrganisationV1
 from grai_schemas.v1.source import SourceSpec, SourceV1
 from grai_schemas.v1.workspace import WorkspaceSpec, WorkspaceV1
+from polyfactory import Ignore, PostGenerated
+from polyfactory.decorators import post_generated
 from polyfactory.factories.pydantic_factory import ModelFactory
+
+T = TypeVar("T")
+
+
+class DefaultValueFactory(ModelFactory[DefaultValue]):
+    __model__ = DefaultValue
+    __set_as_default_factory_for_type__ = True
+
+    has_default_value = PostGenerated(lambda name, values: values["default_value"] is not None)
+
+    @post_generated
+    @classmethod
+    def data_type(cls, default_value) -> str:
+        """ """
+        return None if default_value is None else type(default_value).__name__
+
+
+class NamedNodeSpecFactory(ModelFactory[NamedSpec]):
+    __set_as_default_factory_for_type__ = True
+    __model__ = NamedSpec
+
+    name = get_human_id
+    namespace = get_human_id
+
+
+class IDNodeSpecFactory(ModelFactory[IDSpec]):
+    __set_as_default_factory_for_type__ = True
+    __model__ = IDSpec
 
 
 class NodeFactory(ModelFactory[NodeV1]):
     __model__ = NodeV1
 
-
-class SourcedNodeFactory(ModelFactory[SourcedNodeV1]):
-    __model__ = SourcedNodeV1
-
-
-class NamedNodeSpecFactory(ModelFactory[NamedSpec]):
-    __model__ = NamedSpec
-
-
-class IDNodeSpecFactory(ModelFactory[IDSpec]):
-    __model__ = IDSpec
+    __set_as_default_factory_for_type__ = True
+    spec = NamedNodeSpecFactory.build
 
 
 class NamedSourceNodeSpecFactory(ModelFactory[NamedSourceSpec]):
     __model__ = NamedSourceSpec
 
+    name = get_human_id
+    namespace = get_human_id
+
 
 class IDSourceNodeSpecFactory(ModelFactory[IDSourceSpec]):
     __model__ = IDSourceSpec
+
+
+class SourcedNodeFactory(ModelFactory[SourcedNodeV1]):
+    __model__ = SourcedNodeV1
+
+    __set_as_default_factory_for_type__ = True
+    spec = NamedSourceNodeSpecFactory.build
 
 
 class MockNode:
@@ -79,14 +112,6 @@ class MockNode:
         return IDSourceNodeSpecFactory.build(factory_use_construct=True, **kwargs)
 
 
-class EdgeFactory(ModelFactory[EdgeV1]):
-    __model__ = EdgeV1
-
-
-class SourcedEdgeFactory(ModelFactory[SourcedEdgeV1]):
-    __model__ = SourcedEdgeV1
-
-
 class NamedEdgeSpecFactory(ModelFactory[NamedEdgeSpec]):
     __model__ = NamedEdgeSpec
 
@@ -95,12 +120,26 @@ class IDEdgeSpecFactory(ModelFactory[EdgeIDSpec]):
     __model__ = EdgeIDSpec
 
 
+class EdgeFactory(ModelFactory[EdgeV1]):
+    __model__ = EdgeV1
+
+    __set_as_default_factory_for_type__ = True
+    spec = NamedEdgeSpecFactory.build
+
+
 class NamedEdgeSourceSpecFactory(ModelFactory[NamedEdgeSourceSpec]):
     __model__ = NamedEdgeSourceSpec
 
 
 class IDEdgeSourceSpecFactory(ModelFactory[EdgeIDSourceSpec]):
     __model__ = EdgeIDSourceSpec
+
+
+class SourcedEdgeFactory(ModelFactory[SourcedEdgeV1]):
+    __model__ = SourcedEdgeV1
+
+    __set_as_default_factory_for_type__ = True
+    spec = NamedEdgeSourceSpecFactory.build
 
 
 class MockEdge:
@@ -135,12 +174,15 @@ class MockEdge:
         return IDEdgeSourceSpecFactory.build(factory_use_construct=True, **kwargs)
 
 
-class OrganisationFactory(ModelFactory[OrganisationV1]):
-    __model__ = OrganisationV1
-
-
 class OrganisationSpecFactory(ModelFactory[OrganisationSpec]):
     __model__ = OrganisationSpec
+    __set_as_default_factory_for_type__ = True
+
+    name = get_human_id
+
+
+class OrganisationFactory(ModelFactory[OrganisationV1]):
+    __model__ = OrganisationV1
 
 
 class MockOrganisation:
@@ -165,12 +207,17 @@ class MockOrganisation:
         return cls.organisation_spec(**kwargs)
 
 
-class WorkspaceFactory(ModelFactory[WorkspaceV1]):
-    __model__ = WorkspaceV1
-
-
 class WorkspaceSpecFactory(ModelFactory[WorkspaceSpec]):
     __model__ = WorkspaceSpec
+    __set_as_default_factory_for_type__ = True
+
+    workspace = get_human_id
+    organisation = get_human_id
+    ref = Ignore()
+
+
+class WorkspaceFactory(ModelFactory[WorkspaceV1]):
+    __model__ = WorkspaceV1
 
 
 class MockWorkspace:
@@ -185,12 +232,15 @@ class MockWorkspace:
         return WorkspaceSpecFactory.build(factory_use_construct=True, **kwargs)
 
 
-class SourceFactory(ModelFactory[SourceV1]):
-    __model__ = SourceV1
-
-
 class SourceSpecFactory(ModelFactory[SourceSpec]):
     __model__ = SourceSpec
+    __set_as_default_factory_for_type__ = True
+
+    name = get_human_id
+
+
+class SourceFactory(ModelFactory[SourceV1]):
+    __model__ = SourceV1
 
 
 class MockSource:

@@ -95,11 +95,6 @@ class DefaultValue(GraiBaseModel):
             has_default_value = values.get("has_default_value", None)
             data_type = values.get("data_type", None)
             default_value = values.get("default_value", None)
-        # elif isinstance(values, DefaultValue):
-        #     breakpoint()
-        #     has_default_value = values.has_default_value
-        #     data_type = values.data_type
-        #     default_value = values.default_value
         else:
             raise NotImplementedError(f"No available implementation to produce a DefaultValue from a {type(values)}")
 

@@ -1,4 +1,5 @@
 from typing import Any, Dict, Optional, Union
+from uuid import UUID
 
 from grai_schemas.generics import GraiBaseModel, MalformedMetadata, Metadata
 from grai_schemas.utilities import merge
@@ -14,7 +15,7 @@ class GraiMetadataV1(Metadata):
 class SourcesMetadataV1(Metadata):
     """"""
 
-    sources: Dict[str, GraiMetadataV1]
+    sources: Dict[UUID, GraiMetadataV1]
 
 
 class MetadataV1(GraiMetadataV1, SourcesMetadataV1):
@@ -31,11 +32,11 @@ class GraiMalformedNodeMetadataV1(MalformedMetadata, MetadataV1):
     """ """
 
     grai: nodes.MalformedNodeMetadataV1 = nodes.MalformedNodeMetadataV1()  # type: ignore
-    sources: Dict[str, GraiMetadataV1] = {}
+    sources: Dict[UUID, GraiMetadataV1] = {}
 
 
 class GraiMalformedEdgeMetadataV1(MalformedMetadata, MetadataV1):
     """ """
 
     grai: edges.MalformedEdgeMetadataV1 = edges.MalformedEdgeMetadataV1()  # type: ignore
-    sources: Dict[str, GraiMetadataV1] = {}
+    sources: Dict[UUID, GraiMetadataV1] = {}
