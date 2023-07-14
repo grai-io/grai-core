@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai_schemas"
-version = "0.2.0-alpha8"
+version = "0.2.0-alpha9"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>", "Edward Louth <edward@grai.io>"]
 license = "Elastic-2.0"
@@ -12,7 +12,7 @@ documentation = "https://docs.grai.io/"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-pydantic = "^1.10.4"
+pydantic = "^1.10.11"
 multimethod = "^1.9.1"
 polyfactory = "^2.6.1"
 

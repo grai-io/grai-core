@@ -43,6 +43,7 @@ class GraiBaseModel(HashableBaseModel):
         validate_all = True
         validate_assignment = True
         allow_population_by_field_name = True
+        orm_mode = True
 
 
 class PlaceHolderSchema(GraiBaseModel):
