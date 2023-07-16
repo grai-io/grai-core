@@ -169,7 +169,7 @@ class SourceChildMixin:
 
 class SourceMetadataField(JSONField):
     def to_representation(self, value):
-        return value.get(self.parent.source_model.name)
+        return value.get("sources", {}).get(self.parent.source_model.name)
 
 
 class SourceMetadataMixin:
@@ -178,7 +178,9 @@ class SourceMetadataMixin:
 
         validated_data["metadata"] = {
             "grai": metadata.get("grai", {}),
-            self.source_model.name: metadata,
+            "sources": {
+                self.source_model.name: metadata,
+            },
         }
 
         return super().create(validated_data)
@@ -192,7 +194,9 @@ class SourceMetadataMixin:
 
         instance.metadata = {
             "grai": grai_metadata,
-            self.source_model.name: metadata,
+            "sources": {
+                self.source_model.name: metadata,
+            },
         }
 
         return super().update(instance, validated_data)
