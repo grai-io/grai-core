@@ -37,10 +37,10 @@ class MetabaseAPI:
     """
 
     def __init__(
-            self,
-            username: Optional[str] = None,
-            password: Optional[str] = None,
-            endpoint: Optional[str] = None,
+        self,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+        endpoint: Optional[str] = None,
     ):
         passthrough_kwargs = {
             "username": username,
@@ -148,18 +148,6 @@ class MetabaseAPI:
         url = f"{self.api_endpoint}/collection"
         return self.make_request(self.session.get, url)
 
-    def get_dashboard(self):
-        """
-        Retrieves the list of dashboards from Metabase API
-
-        Returns:
-            dict: The JSON response containing the list of dashboards.
-
-        """
-
-        url = f"{self.api_endpoint}/dashboard"
-        return self.make_request(self.session.get, url)
-
 
 def build_namespace_map(dbs: Dict, namespace_map: Union[str, Dict, None], metabase_namespace: str) -> Dict:
     if isinstance(namespace_map, str):
@@ -197,11 +185,11 @@ class MetabaseConnector(MetabaseAPI):
     """
 
     def __init__(
-            self,
-            metabase_namespace: str,
-            namespaces: Optional[Dict] = None,
-            *args,
-            **kwargs,
+        self,
+        metabase_namespace: str,
+        namespaces: Optional[Dict] = None,
+        *args,
+        **kwargs,
     ):
         super().__init__(*args, **kwargs)
         self._lineage_ready = False
@@ -213,11 +201,10 @@ class MetabaseConnector(MetabaseAPI):
         self.tables = [{**table, "schema_name": table.pop("schema")} for table in self.get_tables()]
         self.tables_map = {table["id"]: table for table in self.tables if table["active"]}
         self.dbs_map = {db["id"]: db for db in self.get_dbs()["data"]}
-        self.collections_map = {collection["id"]: {k: v for k, v in collection.items() if k != "namespace"} for
-                                collection in self.get_collections() if
-                                collection['id'] != 'root' and collection["archived"] is False}
-        self.dashboard_map = {
-            dashboard["id"]: dashboard for dashboard in self.get_dashboard() if dashboard["archived"] is False
+        self.collections_map = {
+            collection["id"]: {k: v for k, v in collection.items() if k != "namespace"}
+            for collection in self.get_collections()
+            if collection["id"] != "root" and collection["archived"] is False
         }
 
         self.questions_map = {
@@ -228,9 +215,6 @@ class MetabaseConnector(MetabaseAPI):
         self.question_table_map = {}
         self.table_db_map = {}
         self.question_collection_map = {}
-        self.dashboard_collection_map = {}
-
-        # self.question_db_map = {}
 
     def build_lineage(self):
         """
@@ -259,15 +243,6 @@ class MetabaseConnector(MetabaseAPI):
             if question["collection_id"] and self.collections_map.get(question["collection_id"]) is not None
         }
 
-        self.dashboard_collection_map = {
-            dashboard["id"]: dashboard["collection_id"]
-            for dashboard in self.dashboard_map.values()
-            if dashboard["collection_id"] and self.collections_map.get(dashboard["collection_id"]) is not None
-        }
-
-        # for question, table in self.question_table_map.items():
-        #     self.question_db_map[question] = self.table_db_map[table]
-
         self._lineage_ready = True
 
     def get_nodes(self) -> List[NodeTypes]:
@@ -288,17 +263,13 @@ class MetabaseConnector(MetabaseAPI):
         for collection in self.collections_map.values():
             collection["namespace"] = self.metabase_namespace
 
-        for dashboard in self.dashboard_map.values():
-            dashboard["namespace"] = self.metabase_namespace
-
         for table in self.tables_map.values():
             table["namespace"] = self.namespace_map[self.table_db_map[table["id"]]]
 
         verified_questions = [Question(**question) for question in self.questions_map.values()]
         verified_tables = [Table(**table) for table in self.tables_map.values()]
         verified_collections = [Collection(**collection) for collection in self.collections_map.values()]
-        verified_dashboards = [Dashboard(**dashboard) for dashboard in self.dashboard_map.values()]
-        nodes = chain(verified_questions, verified_tables, verified_collections, verified_dashboards)
+        nodes = chain(verified_questions, verified_tables, verified_collections)
 
         return list(nodes)
 
@@ -331,15 +302,6 @@ class MetabaseConnector(MetabaseAPI):
             )
             for question, collection in self.question_collection_map.items()
         )
-
-        # collection_to_dashboard_edges = (
-        #     Edge(
-        #         source=Collection(**self.collections_map[collection]),
-        #         destination=Dashboard(**self.dashboard_map[dashboard]),
-        #         namespace=self.dashboard_map[dashboard]["namespace"],
-        #     )
-        #     for dashboard, collection in self.dashboard_collection_map.items()
-        # )
 
         edges = chain(question_to_table_edges, collection_to_question_edges)
         return list(edges)
