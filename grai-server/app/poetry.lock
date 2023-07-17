@@ -206,17 +206,17 @@ uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
 name = "boto3"
-version = "1.28.2"
+version = "1.28.3"
 description = "The AWS SDK for Python"
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "boto3-1.28.2-py3-none-any.whl", hash = "sha256:9933e40dc9ac72deac45cecce2df020e3bf8d0d537538d2b361c17d1cee807cc"},
-    {file = "boto3-1.28.2.tar.gz", hash = "sha256:0d53fe604dc30edded21906bc56b30a7684f0715f4f6897307d53f8184997368"},
+    {file = "boto3-1.28.3-py3-none-any.whl", hash = "sha256:34f07b3fc2503240c0f58114cf3afea91295c7996d084991b78a278a56157c48"},
+    {file = "boto3-1.28.3.tar.gz", hash = "sha256:610369a7f984b58973c097ea649ec81976c04565d39a2d6d3edc280d23b0cb87"},
 ]
 
 [package.dependencies]
-botocore = ">=1.31.2,<1.32.0"
+botocore = ">=1.31.3,<1.32.0"
 jmespath = ">=0.7.1,<2.0.0"
 s3transfer = ">=0.6.0,<0.7.0"
 
@@ -225,13 +225,13 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "botocore"
-version = "1.31.2"
+version = "1.31.3"
 description = "Low-level, data-driven core of boto 3."
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "botocore-1.31.2-py3-none-any.whl", hash = "sha256:d368ac0b58e2b9025b9c397e4a4f86d71788913ee619263506885a866a4f6811"},
-    {file = "botocore-1.31.2.tar.gz", hash = "sha256:67a475bec9e52d495a358b34e219ef7f62907e83b87e5bc712528f998bd46dab"},
+    {file = "botocore-1.31.3-py3-none-any.whl", hash = "sha256:2aa27c75e62bfcf7900cb85283228fcb7df0fa1bdc2ae76dcee90788dd444934"},
+    {file = "botocore-1.31.3.tar.gz", hash = "sha256:744ce853cadc7ae87ba42ef6828194ddec97d606dd4d08b4dfe3d96d5001eb0c"},
 ]
 
 [package.dependencies]
@@ -513,13 +513,13 @@ unicode-backport = ["unicodedata2"]
 
 [[package]]
 name = "click"
-version = "8.1.4"
+version = "8.1.5"
 description = "Composable command line interface toolkit"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "click-8.1.4-py3-none-any.whl", hash = "sha256:2739815aaa5d2c986a88f1e9230c55e17f0caad3d958a5e13ad0797c166db9e3"},
-    {file = "click-8.1.4.tar.gz", hash = "sha256:b97d0c74955da062a7d4ef92fadb583806a585b2ea81958a81bd72726cbb8e37"},
+    {file = "click-8.1.5-py3-none-any.whl", hash = "sha256:e576aa487d679441d7d30abb87e1b43d24fc53bffb8758443b1a9e1cee504548"},
+    {file = "click-8.1.5.tar.gz", hash = "sha256:4be4b1af8d665c6d942909916d31a213a106800c47d0eeba73d34da3cbc11367"},
 ]
 
 [package.dependencies]
@@ -1191,19 +1191,22 @@ markdown = ["types-Markdown (>=0.1.5)"]
 
 [[package]]
 name = "dnspython"
-version = "2.3.0"
+version = "2.4.0"
 description = "DNS toolkit"
 optional = false
-python-versions = ">=3.7,<4.0"
+python-versions = ">=3.8,<4.0"
 files = [
-    {file = "dnspython-2.3.0-py3-none-any.whl", hash = "sha256:89141536394f909066cabd112e3e1a37e4e654db00a25308b0f130bc3152eb46"},
-    {file = "dnspython-2.3.0.tar.gz", hash = "sha256:224e32b03eb46be70e12ef6d64e0be123a64e621ab4c0822ff6d450d52a540b9"},
+    {file = "dnspython-2.4.0-py3-none-any.whl", hash = "sha256:46b4052a55b56beea3a3bdd7b30295c292bd6827dd442348bc116f2d35b17f0a"},
+    {file = "dnspython-2.4.0.tar.gz", hash = "sha256:758e691dbb454d5ccf4e1b154a19e52847f79e21a42fef17b969144af29a4e6c"},
 ]
 
+[package.dependencies]
+httpcore = {version = ">=0.17.3", markers = "python_version >= \"3.8\""}
+sniffio = ">=1.1,<2.0"
+
 [package.extras]
-curio = ["curio (>=1.2,<2.0)", "sniffio (>=1.1,<2.0)"]
-dnssec = ["cryptography (>=2.6,<40.0)"]
-doh = ["h2 (>=4.1.0)", "httpx (>=0.21.1)", "requests (>=2.23.0,<3.0.0)", "requests-toolbelt (>=0.9.1,<0.11.0)"]
+dnssec = ["cryptography (>=2.6,<42.0)"]
+doh = ["h2 (>=4.1.0)", "httpx (>=0.24.1)"]
 doq = ["aioquic (>=0.9.20)"]
 idna = ["idna (>=2.1,<4.0)"]
 trio = ["trio (>=0.14,<0.23)"]
@@ -1261,6 +1264,20 @@ files = [
 [package.dependencies]
 dnspython = ">=2.0.0"
 idna = ">=2.0.0"
+
+[[package]]
+name = "faker"
+version = "19.1.0"
+description = "Faker is a Python package that generates fake data for you."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "Faker-19.1.0-py3-none-any.whl", hash = "sha256:4b7d5cd0c898f0b64f88fbf0a35aac66762f2273446ba4a4e459985a2e5c8f8c"},
+    {file = "Faker-19.1.0.tar.gz", hash = "sha256:d1eb772faf4a7c458c90b19d3626c40ae3460bd665ad7f5fb7b089e31d1a6dcf"},
+]
+
+[package.dependencies]
+python-dateutil = ">=2.4"
 
 [[package]]
 name = "fastcore"
@@ -1536,13 +1553,13 @@ grpc = ["grpcio (>=1.38.0,<2.0dev)"]
 
 [[package]]
 name = "google-cloud-logging"
-version = "3.5.0"
+version = "3.6.0"
 description = "Stackdriver Logging API client library"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "google-cloud-logging-3.5.0.tar.gz", hash = "sha256:f11544a21ea3556f70ebac7bc338ffa8a197913834ecdd8853d176b870823aaa"},
-    {file = "google_cloud_logging-3.5.0-py2.py3-none-any.whl", hash = "sha256:def71f6a7bb6652ce8fee18f0cad8c32157ac606fe1512802254a471bcdfe5e8"},
+    {file = "google-cloud-logging-3.6.0.tar.gz", hash = "sha256:42134223956850ddd64877c88042d31f78658e7b067a5a8e3dd28236b71f3c32"},
+    {file = "google_cloud_logging-3.6.0-py2.py3-none-any.whl", hash = "sha256:6beb843cb88a9bc2f6df94ce69048243ebb360ee06979f5311ea7a0ec09bd097"},
 ]
 
 [package.dependencies]
@@ -1672,23 +1689,22 @@ grpc = ["grpcio (>=1.44.0,<2.0.0.dev0)"]
 
 [[package]]
 name = "grai-client"
-version = "0.3.0a24"
+version = "0.3.0a25"
 description = ""
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_client-0.3.0a24-py3-none-any.whl", hash = "sha256:843d217a56ed865eee873830db82ffa99c865f2ee4fd380affe1775930cb94e4"},
-    {file = "grai_client-0.3.0a24.tar.gz", hash = "sha256:ece735a08dca78e374d54aec01ea41f2f0e6db9295a069588fcefcc40fa4a069"},
+    {file = "grai_client-0.3.0a25-py3-none-any.whl", hash = "sha256:c37335ebc2d3e86950c8de0c6d9af809e07417567610c64f40416b3914877bc9"},
+    {file = "grai_client-0.3.0a25.tar.gz", hash = "sha256:6ebdca260a3a99199c5b303f016c2f02e30913d40859b2c3070cf9b211f8bcee"},
 ]
 
 [package.dependencies]
 brotli = ">=1.0.9,<2.0.0"
 furl = ">=2.1.3,<3.0.0"
-grai-schemas = ">=0.2.0a5,<0.3.0"
+grai-schemas = ">=0.2.0a10,<0.3.0"
 httpx = {version = ">=0.24.0,<0.25.0", extras = ["http2"]}
 more-itertools = ">=9.1.0,<10.0.0"
 multimethod = ">=1.9,<2.0"
-orjson = ">=3.8.3,<4.0.0"
 pydantic = ">=1.9.1,<2.0.0"
 pyyaml = ">=6.0,<7.0"
 requests = ">=2.28.1,<3.0.0"
@@ -1716,18 +1732,20 @@ vis = ["matplotlib (>=3.5.2,<4.0.0)", "pydot (>=1.4.2,<2.0.0)"]
 
 [[package]]
 name = "grai-schemas"
-version = "0.2.0a5"
+version = "0.2.0a10"
 description = ""
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_schemas-0.2.0a5-py3-none-any.whl", hash = "sha256:d9923e3ef53f59265e258958832b80a4ca5b7658710cf0ae8e23d9129a56332d"},
-    {file = "grai_schemas-0.2.0a5.tar.gz", hash = "sha256:c6fba8318b090f791a390d814baffc2a785c5b31229fdb3c307626b84afc42a3"},
+    {file = "grai_schemas-0.2.0a10-py3-none-any.whl", hash = "sha256:fbdbc7437aed8559ab8421c87fb67afef27d964bd000aafd2d0799e69bb4aad2"},
+    {file = "grai_schemas-0.2.0a10.tar.gz", hash = "sha256:19dd1872e71984e7ebc8037da885e2904bee84552a5f1f4da01a08becac95b6c"},
 ]
 
 [package.dependencies]
 multimethod = ">=1.9.1,<2.0.0"
-pydantic = ">=1.10.4,<2.0.0"
+orjson = ">=3.9.2,<4.0.0"
+polyfactory = ">=2.6.1,<3.0.0"
+pydantic = ">=1.10.11,<2.0.0"
 
 [[package]]
 name = "grai-source-bigquery"
@@ -2964,24 +2982,24 @@ files = [
 
 [[package]]
 name = "pip"
-version = "23.1.2"
+version = "23.2"
 description = "The PyPA recommended tool for installing Python packages."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "pip-23.1.2-py3-none-any.whl", hash = "sha256:3ef6ac33239e4027d9a5598a381b9d30880a1477e50039db2eac6e8a8f6d1b18"},
-    {file = "pip-23.1.2.tar.gz", hash = "sha256:0e7c86f486935893c708287b30bd050a36ac827ec7fe5e43fe7cb198dd835fba"},
+    {file = "pip-23.2-py3-none-any.whl", hash = "sha256:78e5353a9dda374b462f2054f83a7b63f3f065c98236a68361845c1b0ee7e35f"},
+    {file = "pip-23.2.tar.gz", hash = "sha256:a160a170f3331d9ca1a0247eb1cd79c758879f1f81158f9cd05bbb5df80bea5c"},
 ]
 
 [[package]]
 name = "platformdirs"
-version = "3.8.1"
+version = "3.9.1"
 description = "A small Python package for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "platformdirs-3.8.1-py3-none-any.whl", hash = "sha256:cec7b889196b9144d088e4c57d9ceef7374f6c39694ad1577a0aab50d27ea28c"},
-    {file = "platformdirs-3.8.1.tar.gz", hash = "sha256:f87ca4fcff7d2b0f81c6a748a77973d7af0f4d526f98f308477c3c436c74d528"},
+    {file = "platformdirs-3.9.1-py3-none-any.whl", hash = "sha256:ad8291ae0ae5072f66c16945166cb11c63394c7a3ad1b1bc9828ca3162da8c2f"},
+    {file = "platformdirs-3.9.1.tar.gz", hash = "sha256:1b42b450ad933e981d56e59f1b97495428c9bd60698baab9f3eb3d00d5822421"},
 ]
 
 [package.extras]
@@ -3002,6 +3020,27 @@ files = [
 [package.extras]
 dev = ["pre-commit", "tox"]
 testing = ["pytest", "pytest-benchmark"]
+
+[[package]]
+name = "polyfactory"
+version = "2.6.2"
+description = "Mock data generation factories"
+optional = false
+python-versions = ">=3.8,<4.0"
+files = [
+    {file = "polyfactory-2.6.2-py3-none-any.whl", hash = "sha256:becdae6720a6df87fb1aa738ba8fa5c26982d72040eb73bf7d938be2637c35b3"},
+    {file = "polyfactory-2.6.2.tar.gz", hash = "sha256:a71016770b643c3bbc26c439cffea13b8510827d6e9e40a857783f8242cb1d8f"},
+]
+
+[package.dependencies]
+faker = "*"
+typing-extensions = "*"
+
+[package.extras]
+beanie = ["beanie", "pydantic"]
+msgspec = ["msgspec"]
+odmantic = ["odmantic", "pydantic"]
+pydantic = ["pydantic"]
 
 [[package]]
 name = "posthog"
@@ -3412,13 +3451,13 @@ files = [
 
 [[package]]
 name = "pysnooper"
-version = "1.1.1"
+version = "1.2.0"
 description = "A poor man's debugger for Python."
 optional = false
 python-versions = "*"
 files = [
-    {file = "PySnooper-1.1.1-py2.py3-none-any.whl", hash = "sha256:378f13d731a3e04d3d0350e5f295bdd0f1b49fc8a8b8bf2067fe1e5290bd20be"},
-    {file = "PySnooper-1.1.1.tar.gz", hash = "sha256:d17dc91cca1593c10230dce45e46b1d3ff0f8910f0c38e941edf6ba1260b3820"},
+    {file = "PySnooper-1.2.0-py2.py3-none-any.whl", hash = "sha256:aa859aa9a746cffc1f35e4ee469d49c3cc5185b5fc0c571feb3af3c94d2eb625"},
+    {file = "PySnooper-1.2.0.tar.gz", hash = "sha256:810669e162a250a066d8662e573adbc5af770e937c5b5578f28bb7355d1c859b"},
 ]
 
 [package.extras]
@@ -4125,35 +4164,14 @@ doc = ["sphinx"]
 test = ["pytest", "pytest-cov"]
 
 [[package]]
-name = "strawberry-django-plus"
-version = "2.6.6"
-description = "Enhanced Strawberry GraphQL integration with Django"
-optional = false
-python-versions = ">=3.8,<4.0"
-files = [
-    {file = "strawberry_django_plus-2.6.6-py3-none-any.whl", hash = "sha256:b6c84b61fef5fb9536cca6f3ae11f1099d5c98762dc20d030498aa070d7ded7f"},
-    {file = "strawberry_django_plus-2.6.6.tar.gz", hash = "sha256:bb0b7e808954e39f87348b6c7ceb53d6ac2816e98a3fd6c90b4a382919c2122e"},
-]
-
-[package.dependencies]
-django = ">=3.2"
-strawberry-graphql = ">=0.187.5"
-strawberry-graphql-django = ">=0.8,<0.10.0"
-typing-extensions = ">=4.2.0"
-
-[package.extras]
-debug-toolbar = ["django-debug-toolbar (>=3.4)"]
-enum = ["django-choices-field (>=2.0)"]
-
-[[package]]
 name = "strawberry-graphql"
-version = "0.194.4"
+version = "0.195.2"
 description = "A library for creating GraphQL APIs"
 optional = false
 python-versions = ">=3.7,<4.0"
 files = [
-    {file = "strawberry_graphql-0.194.4-py3-none-any.whl", hash = "sha256:80d1a4a4b2a5f434cc5d1c489724bc149db2834a37c9c64d2191086876373893"},
-    {file = "strawberry_graphql-0.194.4.tar.gz", hash = "sha256:803e9525c35a216f0e89b76b9d6a934653ca6fa14f7eb42399e57c0c4183afdd"},
+    {file = "strawberry_graphql-0.195.2-py3-none-any.whl", hash = "sha256:559298d59da8632df0a3f45902d534af4b0b0f2a2704ab7b0ab2e4d1ceb25251"},
+    {file = "strawberry_graphql-0.195.2.tar.gz", hash = "sha256:9224e12c718e0ada0f07cf496d71296d79611bb90648cfacd0d47b4183e60956"},
 ]
 
 [package.dependencies]
@@ -4180,21 +4198,22 @@ starlite = ["starlite (>=1.48.0)"]
 
 [[package]]
 name = "strawberry-graphql-django"
-version = "0.9.5"
+version = "0.10.7"
 description = "Strawberry GraphQL Django extension"
 optional = false
 python-versions = ">=3.7,<4.0"
 files = [
-    {file = "strawberry_graphql_django-0.9.5-py3-none-any.whl", hash = "sha256:848418179337c2901d793f938de38726efe320f8e0ba637f9b0c9c686913e80c"},
-    {file = "strawberry_graphql_django-0.9.5.tar.gz", hash = "sha256:c849c5212a9f9daa3281d3fc90a701c26c0a3405be56a3d4a2a6eab6ba1e8a1e"},
+    {file = "strawberry_graphql_django-0.10.7-py3-none-any.whl", hash = "sha256:6c0b0e0921005e5454fb87d363c8b63d59c62a4d9c834fad36a64654deeafe6a"},
+    {file = "strawberry_graphql_django-0.10.7.tar.gz", hash = "sha256:b1e533046d3e3c2d7b885cfad5d120aa2cb306bb388583527be128cfd6a8b529"},
 ]
 
 [package.dependencies]
 Django = ">=3.2"
-strawberry-graphql = ">=0.184.0"
+strawberry-graphql = ">=0.194.1"
 
 [package.extras]
 debug-toolbar = ["django-debug-toolbar (>=3.4)"]
+enum = ["django-choices-field (>=2.2.2)"]
 
 [[package]]
 name = "toml"
@@ -4399,4 +4418,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "006d5f90928ebcce0b56de4bd93172fb7e4e37e5ab970b3ef1c861d9b7f87f38"
+content-hash = "15f1796abf9944181063b67dd8e7f18d65edd62a87ace517b611983087936737"
