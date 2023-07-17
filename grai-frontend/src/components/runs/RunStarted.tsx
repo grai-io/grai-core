@@ -1,7 +1,7 @@
-import { Tooltip, Typography } from "@mui/material"
-import { durationToString } from "helpers/runDuration"
-import { DateTime, Interval } from "luxon"
 import React, { useEffect, useState } from "react"
+import { Tooltip, Typography } from "@mui/material"
+import { DateTime, Interval } from "luxon"
+import { durationToString } from "helpers/runDuration"
 import RunTimings, { Run } from "./RunTimings"
 
 const getDuration = (run: Run) =>

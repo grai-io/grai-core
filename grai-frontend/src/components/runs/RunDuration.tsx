@@ -1,8 +1,8 @@
+import React, { useEffect, useState } from "react"
 import { Tooltip, Typography } from "@mui/material"
 import { DateTime, Interval } from "luxon"
-import React, { useEffect, useState } from "react"
-import RunTimings, { Run } from "./RunTimings"
 import { durationToString, runDurationString } from "helpers/runDuration"
+import RunTimings, { Run } from "./RunTimings"
 
 type RunDurationProps = {
   run: Run

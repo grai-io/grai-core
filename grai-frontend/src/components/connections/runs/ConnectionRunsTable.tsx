@@ -16,10 +16,10 @@ import {
   runQueuedString,
 } from "helpers/runDuration"
 import useWorkspace from "helpers/useWorkspace"
-import RunStatus from "components/runs/RunStatus"
-import RunStarted from "components/runs/RunStarted"
-import RunQueued from "components/runs/RunQueued"
 import RunDuration from "components/runs/RunDuration"
+import RunQueued from "components/runs/RunQueued"
+import RunStarted from "components/runs/RunStarted"
+import RunStatus from "components/runs/RunStatus"
 
 interface User {
   id: string

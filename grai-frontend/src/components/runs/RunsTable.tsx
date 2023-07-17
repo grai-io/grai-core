@@ -16,10 +16,10 @@ import {
   runDurationString,
 } from "helpers/runDuration"
 import Loading from "components/layout/Loading"
-import RunStatus from "./RunStatus"
-import RunStarted from "./RunStarted"
-import RunQueued from "./RunQueued"
 import RunDuration from "./RunDuration"
+import RunQueued from "./RunQueued"
+import RunStarted from "./RunStarted"
+import RunStatus from "./RunStatus"
 
 interface Connection {
   name: string
