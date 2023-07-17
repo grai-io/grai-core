@@ -13,7 +13,7 @@ test("renders", async () => {
   })
 
   expect(
-    screen.getByText("January 1, 2021 at 12:00:00 AM GMT", {
+    screen.getByText("January 1, 2021 at 12:00:00 AM", {
       exact: false,
     })
   ).toBeInTheDocument()
