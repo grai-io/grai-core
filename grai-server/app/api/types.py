@@ -88,7 +88,7 @@ class Node:
         return Pagination[Event](queryset=queryset)
 
     # Sources
-    @gql.django.field
+    @strawberry.django.field
     def sources(
         self,
     ) -> Pagination["Source"]:
@@ -862,7 +862,7 @@ class Workspace:
 
         return Pagination[Source](queryset=queryset, pagination=pagination)
 
-    @gql.django.field
+    @strawberry.django.field
     def source(self, id: strawberry.ID) -> Source:
         return SourceModel.objects.get(id=id)
 
