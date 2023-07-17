@@ -2,6 +2,8 @@ import unittest
 import uuid
 
 import networkx as nx
+import pytest
+from grai_schemas.v1 import OrganisationV1, WorkspaceV1
 from grai_schemas.v1.edge import EdgeV1, SourcedEdgeV1
 from grai_schemas.v1.metadata.edges import (
     ColumnToColumnAttributes,
@@ -39,11 +41,19 @@ def test_v1_build_sourced_graph():
     edges = []
     nodes = []
     for i in range(4):
-        e, n = MockV1.edge.edge_and_nodes()
-        e = e.dict()["spec"]
-        e["data_source"] = e.pop("data_sources")[0]
-        edges.append(SourcedEdgeV1.from_spec(e))
-        nodes.extend([SourcedNodeV1.from_spec({**node.dict(), "data_source": e["data_source"]}) for node in n])
+        s_node = MockV1().node.named_source_node_spec()
+        d_node = MockV1().node.named_source_node_spec()
+        test_edge = MockV1().edge.named_source_edge_spec(
+            source=s_node,
+            destination=d_node,
+        )
+        edges.append(SourcedEdgeV1.from_spec(test_edge))
+        nodes.extend(
+            [
+                SourcedNodeV1.from_spec({**node.dict(), "data_source": test_edge.data_source})
+                for node in [s_node, d_node]
+            ]
+        )
     G = graph.build_graph(nodes, edges, "v1")
     assert isinstance(G.graph, nx.DiGraph)
 
@@ -53,9 +63,15 @@ def test_v1_build_graph():
     edges = []
     nodes = []
     for i in range(4):
-        e, n = MockV1.edge.edge_and_nodes()
-        edges.append(e)
-        nodes.extend([NodeV1.from_spec(node) for node in n])
+        source = MockV1().source.source_spec()
+        s_node = MockV1().node.named_node_spec(id=uuid.uuid4(), data_sources=[source])
+        d_node = MockV1().node.named_node_spec(id=uuid.uuid4(), data_sources=[source])
+        test_edge = MockV1().edge.named_edge_spec(
+            id=uuid.uuid4(), source=s_node, destination=d_node, data_sources=[source]
+        )
+
+        edges.append(EdgeV1.from_spec(test_edge))
+        nodes.extend([NodeV1.from_spec(node) for node in [s_node, d_node]])
     G = graph.build_graph(nodes, edges, "v1")
     assert isinstance(G.graph, nx.DiGraph)
 

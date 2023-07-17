@@ -1,3 +1,4 @@
+import uuid
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 from grai_schemas.v1 import EdgeV1, NodeV1, mock
@@ -47,11 +48,19 @@ def mock_v1_node(node: Union[str, TestNodeObj]):
 
     node_attributes = node.node_attributes if node.node_attributes is not None else {}
     metadata = {
-        "grai": ColumnMetadata(node_type=NodeMetadataTypeLabels.column.value, node_attributes=node_attributes).dict()
+        "grai": ColumnMetadata(
+            node_type=NodeMetadataTypeLabels.column.value,
+            node_attributes=node_attributes,
+        ).dict()
     }
 
-    node = mock.MockV1.node.node(
-        id=None, name=node.name, namespace=node.namespace, data_source="test_source", is_active=True, metadata=metadata
+    node = mock.MockV1().node.node(
+        id=None,
+        name=node.name,
+        namespace=node.namespace,
+        data_source="test_source",
+        is_active=True,
+        metadata=metadata,
     )
     return node
 
@@ -85,7 +94,7 @@ def mock_v1_edge(
         )
     }
     name = f"{source_node.namespace}.{source_node.name} -> {destination_node.namespace}.{destination_node.name}"
-    edge = mock.MockV1.edge.edge(
+    edge = mock.MockV1().edge.edge(
         id=None,
         name=name,
         namespace=source_node.namespace,
