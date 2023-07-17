@@ -1,40 +1,39 @@
 from typing import Optional
 
+import strawberry
 import strawberry_django
-from strawberry_django_plus import gql
-from strawberry_django_plus.gql import auto
 
 from .models import User as UserModel
 
 
-@gql.django.filters.filter(UserModel, lookups=True)
+@strawberry_django.filters.filter(UserModel, lookups=True)
 class UserFilter:
-    username: auto
+    username: strawberry.auto
     first_name: Optional[str]
     last_name: Optional[str]
-    created_at: auto
-    updated_at: auto
+    created_at: strawberry.auto
+    updated_at: strawberry.auto
 
 
 @strawberry_django.ordering.order(UserModel)
 class UserOrder:
-    username: auto
-    first_name: auto
-    last_name: auto
-    created_at: auto
-    updated_at: auto
+    username: strawberry.auto
+    first_name: strawberry.auto
+    last_name: strawberry.auto
+    created_at: strawberry.auto
+    updated_at: strawberry.auto
 
 
-@gql.django.type(UserModel, order=UserOrder, filters=UserFilter)
+@strawberry.django.type(UserModel, order=UserOrder, filters=UserFilter)
 class User:
-    id: auto
-    username: auto
-    first_name: auto
-    last_name: auto
+    id: strawberry.auto
+    username: strawberry.auto
+    first_name: strawberry.auto
+    last_name: strawberry.auto
 
-    @gql.field
+    @strawberry.field
     def full_name(self) -> str:
         return f"{self.first_name} {self.last_name}"
 
-    created_at: auto
-    updated_at: auto
+    created_at: strawberry.auto
+    updated_at: strawberry.auto
