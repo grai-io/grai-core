@@ -8,8 +8,7 @@ type RunQueuedProps = {
   run: Run
 }
 
-const UpdatingDuration = (props: RunQueuedProps) => {
-  const { run } = props
+const UpdatingDuration: React.FC<RunQueuedProps> = ({ run }) => {
   const [duration, setDuration] = useState<Interval | undefined>(undefined)
 
   useEffect(() => {
@@ -27,7 +26,7 @@ const UpdatingDuration = (props: RunQueuedProps) => {
     }
   }, [duration, setDuration, run])
 
-  if (!duration) return "-"
+  if (!duration) return <>"-"</>
 
   const durationString = durationToString(
     duration

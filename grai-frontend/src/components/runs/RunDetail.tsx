@@ -6,16 +6,12 @@ import {
   Grid,
   Table,
   TableBody,
-  Tooltip,
   Typography,
 } from "@mui/material"
-import { DateTime } from "luxon"
-import {
-  durationAgo,
-  runDurationString,
-  runQueuedString,
-} from "helpers/runDuration"
 import NodeDetailRow from "components/layout/NodeDetailRow"
+import RunStarted from "./RunStarted"
+import RunQueued from "./RunQueued"
+import RunDuration from "./RunDuration"
 
 interface RunMetadata {
   error: string
@@ -47,26 +43,14 @@ const RunDetail: React.FC<RunDetailProps> = ({ run }) => (
           <Table>
             <TableBody>
               <NodeDetailRow label="Started" right>
-                <Tooltip
-                  title={DateTime.fromISO(run.created_at).toLocaleString(
-                    DateTime.DATETIME_FULL_WITH_SECONDS
-                  )}
-                >
-                  <Typography variant="body2">
-                    {durationAgo(run.created_at)} ago
-                  </Typography>
-                </Tooltip>
+                <RunStarted run={run} />
               </NodeDetailRow>
-              <NodeDetailRow
-                label="Queued"
-                value={runQueuedString(run)}
-                right
-              />
-              <NodeDetailRow
-                label="Duration"
-                value={runDurationString(run)}
-                right
-              />
+              <NodeDetailRow label="Queued" right>
+                <RunQueued run={run} />
+              </NodeDetailRow>
+              <NodeDetailRow label="Duration" right>
+                <RunDuration run={run} />
+              </NodeDetailRow>
             </TableBody>
           </Table>
         </Card>
