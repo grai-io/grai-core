@@ -17,6 +17,9 @@ import {
 } from "helpers/runDuration"
 import Loading from "components/layout/Loading"
 import RunStatus from "./RunStatus"
+import RunStarted from "./RunStarted"
+import RunQueued from "./RunQueued"
+import RunDuration from "./RunDuration"
 
 interface Connection {
   name: string
@@ -90,21 +93,13 @@ const RunsTable: React.FC<RunsTableProps> = ({ runs, loading }) => {
               />
             </TableCell>
             <TableCell sx={{ textAlign: "right" }}>
-              <Tooltip
-                title={DateTime.fromISO(run.created_at).toLocaleString(
-                  DateTime.DATETIME_FULL_WITH_SECONDS
-                )}
-              >
-                <Typography variant="body2">
-                  {durationAgo(run.created_at)} ago
-                </Typography>
-              </Tooltip>
+              <RunStarted run={run} />
             </TableCell>
             <TableCell sx={{ textAlign: "right" }}>
-              {runQueuedString(run)}
+              <RunQueued run={run} />
             </TableCell>
             <TableCell sx={{ textAlign: "right" }}>
-              {runDurationString(run)}
+              <RunDuration run={run} />
             </TableCell>
           </TableRow>
         ))}
