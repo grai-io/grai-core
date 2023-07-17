@@ -398,19 +398,22 @@ pygments = ["pygments (>=2.2.0)"]
 
 [[package]]
 name = "dnspython"
-version = "2.3.0"
+version = "2.4.0"
 description = "DNS toolkit"
 optional = false
-python-versions = ">=3.7,<4.0"
+python-versions = ">=3.8,<4.0"
 files = [
-    {file = "dnspython-2.3.0-py3-none-any.whl", hash = "sha256:89141536394f909066cabd112e3e1a37e4e654db00a25308b0f130bc3152eb46"},
-    {file = "dnspython-2.3.0.tar.gz", hash = "sha256:224e32b03eb46be70e12ef6d64e0be123a64e621ab4c0822ff6d450d52a540b9"},
+    {file = "dnspython-2.4.0-py3-none-any.whl", hash = "sha256:46b4052a55b56beea3a3bdd7b30295c292bd6827dd442348bc116f2d35b17f0a"},
+    {file = "dnspython-2.4.0.tar.gz", hash = "sha256:758e691dbb454d5ccf4e1b154a19e52847f79e21a42fef17b969144af29a4e6c"},
 ]
 
+[package.dependencies]
+httpcore = {version = ">=0.17.3", markers = "python_version >= \"3.8\""}
+sniffio = ">=1.1,<2.0"
+
 [package.extras]
-curio = ["curio (>=1.2,<2.0)", "sniffio (>=1.1,<2.0)"]
-dnssec = ["cryptography (>=2.6,<40.0)"]
-doh = ["h2 (>=4.1.0)", "httpx (>=0.21.1)", "requests (>=2.23.0,<3.0.0)", "requests-toolbelt (>=0.9.1,<0.11.0)"]
+dnssec = ["cryptography (>=2.6,<42.0)"]
+doh = ["h2 (>=4.1.0)", "httpx (>=0.24.1)"]
 doq = ["aioquic (>=0.9.20)"]
 idna = ["idna (>=2.1,<4.0)"]
 trio = ["trio (>=0.14,<0.23)"]
@@ -501,23 +504,22 @@ files = [
 
 [[package]]
 name = "grai-client"
-version = "0.3.0a24"
+version = "0.3.0a25"
 description = ""
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_client-0.3.0a24-py3-none-any.whl", hash = "sha256:843d217a56ed865eee873830db82ffa99c865f2ee4fd380affe1775930cb94e4"},
-    {file = "grai_client-0.3.0a24.tar.gz", hash = "sha256:ece735a08dca78e374d54aec01ea41f2f0e6db9295a069588fcefcc40fa4a069"},
+    {file = "grai_client-0.3.0a25-py3-none-any.whl", hash = "sha256:c37335ebc2d3e86950c8de0c6d9af809e07417567610c64f40416b3914877bc9"},
+    {file = "grai_client-0.3.0a25.tar.gz", hash = "sha256:6ebdca260a3a99199c5b303f016c2f02e30913d40859b2c3070cf9b211f8bcee"},
 ]
 
 [package.dependencies]
 brotli = ">=1.0.9,<2.0.0"
 furl = ">=2.1.3,<3.0.0"
-grai-schemas = ">=0.2.0a5,<0.3.0"
+grai-schemas = ">=0.2.0a10,<0.3.0"
 httpx = {version = ">=0.24.0,<0.25.0", extras = ["http2"]}
 more-itertools = ">=9.1.0,<10.0.0"
 multimethod = ">=1.9,<2.0"
-orjson = ">=3.8.3,<4.0.0"
 pydantic = ">=1.9.1,<2.0.0"
 pyyaml = ">=6.0,<7.0"
 requests = ">=2.28.1,<3.0.0"
@@ -525,19 +527,20 @@ tqdm = ">=4.65.0,<5.0.0"
 
 [[package]]
 name = "grai-schemas"
-version = "0.2.0a6"
+version = "0.2.0a10"
 description = ""
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_schemas-0.2.0a6-py3-none-any.whl", hash = "sha256:0de56160873f811cd1f1c503d223cafedb6f723754a7ed5fe28d82dc1a1daef5"},
-    {file = "grai_schemas-0.2.0a6.tar.gz", hash = "sha256:2d2b017df0440e6387c355d9072df6feff830d7aac33856dda60497fe03da66c"},
+    {file = "grai_schemas-0.2.0a10-py3-none-any.whl", hash = "sha256:fbdbc7437aed8559ab8421c87fb67afef27d964bd000aafd2d0799e69bb4aad2"},
+    {file = "grai_schemas-0.2.0a10.tar.gz", hash = "sha256:19dd1872e71984e7ebc8037da885e2904bee84552a5f1f4da01a08becac95b6c"},
 ]
 
 [package.dependencies]
 multimethod = ">=1.9.1,<2.0.0"
+orjson = ">=3.9.2,<4.0.0"
 polyfactory = ">=2.6.1,<3.0.0"
-pydantic = ">=1.10.4,<2.0.0"
+pydantic = ">=1.10.11,<2.0.0"
 
 [[package]]
 name = "h11"
@@ -1100,13 +1103,13 @@ files = [
 
 [[package]]
 name = "platformdirs"
-version = "3.8.1"
+version = "3.9.1"
 description = "A small Python package for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "platformdirs-3.8.1-py3-none-any.whl", hash = "sha256:cec7b889196b9144d088e4c57d9ceef7374f6c39694ad1577a0aab50d27ea28c"},
-    {file = "platformdirs-3.8.1.tar.gz", hash = "sha256:f87ca4fcff7d2b0f81c6a748a77973d7af0f4d526f98f308477c3c436c74d528"},
+    {file = "platformdirs-3.9.1-py3-none-any.whl", hash = "sha256:ad8291ae0ae5072f66c16945166cb11c63394c7a3ad1b1bc9828ca3162da8c2f"},
+    {file = "platformdirs-3.9.1.tar.gz", hash = "sha256:1b42b450ad933e981d56e59f1b97495428c9bd60698baab9f3eb3d00d5822421"},
 ]
 
 [package.extras]
@@ -1130,13 +1133,13 @@ testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
 name = "polyfactory"
-version = "2.6.1"
+version = "2.6.2"
 description = "Mock data generation factories"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "polyfactory-2.6.1-py3-none-any.whl", hash = "sha256:7de8b78b6e76d9adaab3973c71735447a53f21d5351a83c06c81b5e373ddfe1f"},
-    {file = "polyfactory-2.6.1.tar.gz", hash = "sha256:449c37644b738e464f953a37843b990966e999474ddb39bcb9602c24d52cbb8d"},
+    {file = "polyfactory-2.6.2-py3-none-any.whl", hash = "sha256:becdae6720a6df87fb1aa738ba8fa5c26982d72040eb73bf7d938be2637c35b3"},
+    {file = "polyfactory-2.6.2.tar.gz", hash = "sha256:a71016770b643c3bbc26c439cffea13b8510827d6e9e40a857783f8242cb1d8f"},
 ]
 
 [package.dependencies]
@@ -1266,13 +1269,13 @@ files = [
 
 [[package]]
 name = "pysnooper"
-version = "1.1.1"
+version = "1.2.0"
 description = "A poor man's debugger for Python."
 optional = false
 python-versions = "*"
 files = [
-    {file = "PySnooper-1.1.1-py2.py3-none-any.whl", hash = "sha256:378f13d731a3e04d3d0350e5f295bdd0f1b49fc8a8b8bf2067fe1e5290bd20be"},
-    {file = "PySnooper-1.1.1.tar.gz", hash = "sha256:d17dc91cca1593c10230dce45e46b1d3ff0f8910f0c38e941edf6ba1260b3820"},
+    {file = "PySnooper-1.2.0-py2.py3-none-any.whl", hash = "sha256:aa859aa9a746cffc1f35e4ee469d49c3cc5185b5fc0c571feb3af3c94d2eb625"},
+    {file = "PySnooper-1.2.0.tar.gz", hash = "sha256:810669e162a250a066d8662e573adbc5af770e937c5b5578f28bb7355d1c859b"},
 ]
 
 [package.extras]
@@ -1567,18 +1570,18 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
 name = "zipp"
-version = "3.16.1"
+version = "3.16.2"
 description = "Backport of pathlib-compatible object wrapper for zip files"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "zipp-3.16.1-py3-none-any.whl", hash = "sha256:0b37c326d826d5ca35f2b9685cd750292740774ef16190008b00a0227c256fe0"},
-    {file = "zipp-3.16.1.tar.gz", hash = "sha256:857b158da2cbf427b376da1c24fd11faecbac5a4ac7523c3607f8a01f94c2ec0"},
+    {file = "zipp-3.16.2-py3-none-any.whl", hash = "sha256:679e51dd4403591b2d6838a48de3d283f3d188412a9782faadf845f298736ba0"},
+    {file = "zipp-3.16.2.tar.gz", hash = "sha256:ebc15946aa78bd63458992fc81ec3b6f7b1e92d51c35e6de1c3804e73b799147"},
 ]
 
 [package.extras]
 docs = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-lint"]
-testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-mypy (>=0.9.1)", "pytest-ruff"]
+testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-ignore-flaky", "pytest-mypy (>=0.9.1)", "pytest-ruff"]
 
 [metadata]
 lock-version = "2.0"
