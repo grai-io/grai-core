@@ -9,9 +9,9 @@ import {
   Typography,
 } from "@mui/material"
 import NodeDetailRow from "components/layout/NodeDetailRow"
-import RunStarted from "./RunStarted"
-import RunQueued from "./RunQueued"
 import RunDuration from "./RunDuration"
+import RunQueued from "./RunQueued"
+import RunStarted from "./RunStarted"
 
 interface RunMetadata {
   error: string
