@@ -7,23 +7,29 @@ from grai_client.update import update
 
 
 @pytest.fixture(scope="module")
-def update_sources(client):
-    sources = [MockV1.source.source() for _ in range(3)]
+def update_sources(client, mock_v1):
+    sources = [mock_v1.source.source() for _ in range(3)]
     return client.post(sources)
 
 
-def test_update_node_creation(client, update_sources):
+def test_update_node_creation(client, update_sources, mock_v1):
     namespace = str(uuid.uuid4())
-    nodes = [MockV1.node.sourced_node(namespace=namespace, data_source=update_sources[0].spec) for _ in range(3)]
+    node_specs = [
+        mock_v1.node.named_source_node_spec(namespace=namespace, data_source=update_sources[0].spec) for _ in range(3)
+    ]
+    nodes = [mock_v1.node.sourced_node(spec=spec) for spec in node_specs]
     update(client, nodes)
 
     new_nodes = client.get(nodes[0].type, update_sources[0].spec.id, namespace=namespace)
     assert len(new_nodes) == len(nodes), "update did not create nodes"
 
 
-def test_update_is_idempotent(client, update_sources):
+def test_update_is_idempotent(client, update_sources, mock_v1):
     namespace = str(uuid.uuid4())
-    nodes = [MockV1.node.sourced_node(namespace=namespace, data_source=update_sources[0].spec) for _ in range(3)]
+    node_specs = [
+        mock_v1.node.named_source_node_spec(namespace=namespace, data_source=update_sources[0].spec) for _ in range(3)
+    ]
+    nodes = [mock_v1.node.sourced_node(spec=spec) for spec in node_specs]
     update(client, nodes)
     updated_nodes_1 = client.get(nodes[0].type, update_sources[0].spec.id, namespace=namespace)
     assert len(updated_nodes_1) == len(nodes)
@@ -38,9 +44,12 @@ def test_update_is_idempotent(client, update_sources):
     assert all(node1 == node2 for node1, node2 in zip(updated_nodes_1, updated_nodes_2)), "update is not idempotent"
 
 
-def test_update_node_patched(client, update_sources):
+def test_update_node_patched(client, update_sources, mock_v1):
     namespace = str(uuid.uuid4())
-    nodes = [MockV1.node.sourced_node(namespace=namespace, data_source=update_sources[0].spec) for _ in range(3)]
+    node_specs = [
+        mock_v1.node.named_source_node_spec(namespace=namespace, data_source=update_sources[0].spec) for _ in range(3)
+    ]
+    nodes = [mock_v1.node.sourced_node(spec=spec) for spec in node_specs]
     new_nodes = client.post(nodes)
     for node in new_nodes:
         node.spec.metadata.grai.node_attributes.patched = True
@@ -58,9 +67,12 @@ def test_update_node_patched(client, update_sources):
 
 
 # TODO: This is known to fail because the update function does not currently support deactivating nodes
-def test_update_node_deletes(client, update_sources):
+def test_update_node_deletes(client, update_sources, mock_v1):
     namespace = str(uuid.uuid4())
-    nodes = [MockV1.node.sourced_node(namespace=namespace, data_source=update_sources[0].spec) for _ in range(3)]
+    node_specs = [
+        mock_v1.node.named_source_node_spec(namespace=namespace, data_source=update_sources[0].spec) for _ in range(3)
+    ]
+    nodes = [mock_v1.node.sourced_node(spec=spec) for spec in node_specs]
     new_nodes = client.post(nodes)
 
     assert len(new_nodes) == len(nodes)

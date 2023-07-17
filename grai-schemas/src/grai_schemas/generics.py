@@ -1,8 +1,7 @@
-import abc
-from dataclasses import dataclass
 from typing import Any, Dict, Literal, Optional, TypeVar, Union
 from uuid import UUID
 
+from grai_schemas.serializers import dump_json, load_json
 from grai_schemas.utilities import merge
 from pydantic import BaseModel, dataclasses, root_validator, validator
 
@@ -39,7 +38,9 @@ class GraiBaseModel(HashableBaseModel):
     class Config:
         """ """
 
-        json_encoders = {UUID: lambda x: str(x)}
+        json_loads = load_json
+        json_dumps = dump_json
+        # json_encoders = {UUID: lambda x: str(x)}
         validate_all = True
         validate_assignment = True
         allow_population_by_field_name = True

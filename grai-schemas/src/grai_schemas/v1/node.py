@@ -3,7 +3,12 @@ from uuid import UUID
 
 from grai_schemas.generics import GraiBaseModel
 from grai_schemas.v1.generics import ID, BaseID, NamedID, UuidID
-from grai_schemas.v1.metadata.metadata import GraiMetadataV1, MetadataV1
+from grai_schemas.v1.metadata.metadata import (
+    GraiMetadataV1,
+    GraiNodeMetadataV1,
+    MetadataV1,
+    NodeMetadataV1,
+)
 from grai_schemas.v1.metadata.nodes import GenericNodeMetadataV1
 from grai_schemas.v1.source import DataSourceMixin, DataSourcesMixin
 from pydantic import Field, validator
@@ -33,17 +38,17 @@ class BaseSpec(GraiBaseModel):
 
 
 class SourcedNodeSpecMetadataMixin(GraiBaseModel):
-    metadata: GraiMetadataV1 = GraiMetadataV1(grai=GenericNodeMetadataV1(node_type="Generic"))
+    metadata: GraiNodeMetadataV1 = GraiNodeMetadataV1(grai=GenericNodeMetadataV1(node_type="Generic"))
 
     @validator("metadata", always=True, pre=True)
-    def validate_metadata(cls, v: Optional[Union[Dict, GraiMetadataV1]]) -> GraiMetadataV1:
-        if isinstance(v, GraiMetadataV1):
+    def validate_metadata(cls, v: Optional[Union[Dict, GraiNodeMetadataV1]]) -> GraiNodeMetadataV1:
+        if isinstance(v, GraiNodeMetadataV1):
             return v
         elif isinstance(v, dict):
             v.setdefault("grai", GenericNodeMetadataV1(node_type="Generic"))
-            return GraiMetadataV1(**v)
+            return GraiNodeMetadataV1(**v)
         elif v is None:
-            return GraiMetadataV1(grai=GenericNodeMetadataV1(node_type="Generic"))
+            return GraiNodeMetadataV1(grai=GenericNodeMetadataV1(node_type="Generic"))
         raise ValueError(f"Invalid metadata: {v}. Expected either None, a dict, or a MetadataV1 instance.")
 
 
@@ -86,18 +91,18 @@ class SourcedNodeV1(GraiBaseModel):
 
 
 class NodeSpecMetadataMixin(GraiBaseModel):
-    metadata: MetadataV1 = MetadataV1(grai=GenericNodeMetadataV1(node_type="Generic"), sources={})
+    metadata: NodeMetadataV1 = NodeMetadataV1(grai=GenericNodeMetadataV1(node_type="Generic"), sources={})
 
     @validator("metadata", always=True, pre=True)
-    def validate_metadata(cls, v: Optional[Union[Dict, MetadataV1]]) -> MetadataV1:
-        if isinstance(v, MetadataV1):
+    def validate_metadata(cls, v: Optional[Union[Dict, NodeMetadataV1]]) -> NodeMetadataV1:
+        if isinstance(v, NodeMetadataV1):
             return v
         elif isinstance(v, dict):
             v.setdefault("grai", GenericNodeMetadataV1(node_type="Generic"))
             v.setdefault("sources", {})
-            return MetadataV1(**v)
+            return NodeMetadataV1(**v)
         elif v is None:
-            return MetadataV1(grai=GenericNodeMetadataV1(node_type="Generic"), sources={})
+            return NodeMetadataV1(grai=GenericNodeMetadataV1(node_type="Generic"), sources={})
         raise ValueError(f"Invalid metadata: {v}. Expected either None, a dict, or a MetadataV1 instance.")
 
 

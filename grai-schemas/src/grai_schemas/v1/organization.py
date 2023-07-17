@@ -14,7 +14,7 @@ class OrganisationSpec(GraiBaseModel):
 
 
 class OrganisationV1(GraiBaseModel):
-    type: Literal["Organisation", "Organization"]
+    type: Literal["Organisation"]
     version: Literal["v1"] = "v1"
     spec: OrganisationSpec
 

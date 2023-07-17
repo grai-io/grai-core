@@ -1,6 +1,6 @@
 import datetime
 import uuid
-from typing import Any, Dict, Generic, Type, TypeVar
+from typing import Any, Dict, Generic, List, Type, TypeVar
 
 from grai_schemas.generics import DefaultValue
 from grai_schemas.human_ids import get_human_id
@@ -10,6 +10,15 @@ from grai_schemas.v1.edge import IDSpec as EdgeIDSpec
 from grai_schemas.v1.edge import NamedSourceSpec as NamedEdgeSourceSpec
 from grai_schemas.v1.edge import NamedSpec as NamedEdgeSpec
 from grai_schemas.v1.edge import SourcedEdgeSpec, SourcedEdgeV1
+from grai_schemas.v1.metadata import edges, nodes
+from grai_schemas.v1.metadata.metadata import (
+    EdgeMetadataV1,
+    GraiEdgeMetadataV1,
+    GraiNodeMetadataV1,
+    NodeMetadataV1,
+    SourcesEdgeMetadataV1,
+    SourcesNodeMetadataV1,
+)
 from grai_schemas.v1.node import (
     IDSourceSpec,
     IDSpec,
@@ -29,6 +38,16 @@ from polyfactory.factories.pydantic_factory import ModelFactory
 T = TypeVar("T")
 
 
+# class MetadataFactory(ModelFactory[MetadataV1]):
+#     __model__ = MetadataV1
+#     __set_as_default_factory_for_type__ = True
+#
+#     @post_generated
+#     @classmethod
+#     def sources(cls, grai) -> Dict[str, GraiMetadataV1]:
+#
+
+
 class DefaultValueFactory(ModelFactory[DefaultValue]):
     __model__ = DefaultValue
     __set_as_default_factory_for_type__ = True
@@ -42,12 +61,57 @@ class DefaultValueFactory(ModelFactory[DefaultValue]):
         return None if default_value is None else type(default_value).__name__
 
 
+class GraiNodeMetadataV1Factory(ModelFactory[GraiNodeMetadataV1]):
+    __model__ = GraiNodeMetadataV1
+    __set_as_default_factory_for_type__ = True
+
+
+class GraiEdgeMetadataV1Factory(ModelFactory[GraiEdgeMetadataV1]):
+    __model__ = GraiEdgeMetadataV1
+    __set_as_default_factory_for_type__ = True
+
+
+class SourcesNodeMetadataV1Factory(ModelFactory[SourcesNodeMetadataV1]):
+    __model__ = SourcesNodeMetadataV1
+    __set_as_default_factory_for_type__ = True
+
+
+class SourcesEdgeMetadataV1Factory(ModelFactory[SourcesEdgeMetadataV1]):
+    __model__ = SourcesEdgeMetadataV1
+    __set_as_default_factory_for_type__ = True
+
+
+class NodeMetadataV1Factory(ModelFactory[NodeMetadataV1]):
+    __model__ = NodeMetadataV1
+    __set_as_default_factory_for_type__ = True
+
+
+class EdgeMetadataV1Factory(ModelFactory[EdgeMetadataV1]):
+    __model__ = EdgeMetadataV1
+    __set_as_default_factory_for_type__ = True
+
+
 class NamedNodeSpecFactory(ModelFactory[NamedSpec]):
     __set_as_default_factory_for_type__ = True
     __model__ = NamedSpec
 
+    id = None
     name = get_human_id
     namespace = get_human_id
+    data_sources = lambda: [SourceSpecFactory.build()]
+
+    @post_generated
+    @classmethod
+    def metadata(cls, data_sources: List[SourceSpec]) -> NodeMetadataV1:
+        """ """
+        sources = {source.name: GraiNodeMetadataV1Factory.build() for source in data_sources}
+        return NodeMetadataV1Factory.build(sources=sources)
+
+    @post_generated
+    @classmethod
+    def is_active(cls, data_sources: List[SourceSpec]) -> bool:
+        """ """
+        return len(data_sources) > 0
 
 
 class IDNodeSpecFactory(ModelFactory[IDSpec]):
@@ -65,6 +129,7 @@ class NodeFactory(ModelFactory[NodeV1]):
 class NamedSourceNodeSpecFactory(ModelFactory[NamedSourceSpec]):
     __model__ = NamedSourceSpec
 
+    id = None
     name = get_human_id
     namespace = get_human_id
 
@@ -81,39 +146,70 @@ class SourcedNodeFactory(ModelFactory[SourcedNodeV1]):
 
 
 class MockNode:
-    @classmethod
-    def sourced_node(cls, **kwargs):
-        """ """
-        return SourcedNodeFactory.build(factory_use_construct=True, **kwargs)
+    def __init__(self, workspace=None, **kwargs):
+        self.workspace = workspace
+        self.kwargs = kwargs
 
-    @classmethod
-    def node(cls, **kwargs):
+    def node(self, **kwargs):
         """ """
+        kwargs.setdefault("spec", self.named_node_spec())
         return NodeFactory.build(factory_use_construct=True, **kwargs)
 
-    @classmethod
     def named_node_spec(self, **kwargs):
         """ """
-        return NamedNodeSpecFactory.build(factory_use_construct=True, **kwargs)
+        base_spec = NamedNodeSpecFactory.build(factory_use_construct=True, **kwargs)
+        if self.workspace:
+            base_spec.workspace = self.workspace.id
+        return base_spec
 
-    @classmethod
     def id_node_spec(self, **kwargs):
         """ """
-        return IDNodeSpecFactory.build(factory_use_construct=True, **kwargs)
+        base_spec = IDNodeSpecFactory.build(factory_use_construct=True, **kwargs)
+        if self.workspace:
+            base_spec.workspace = self.workspace.id
+        return base_spec
 
-    @classmethod
+    def sourced_node(self, **kwargs):
+        """ """
+        kwargs.setdefault("spec", self.named_source_node_spec())
+        return SourcedNodeFactory.build(factory_use_construct=True, **kwargs)
+
     def named_source_node_spec(self, **kwargs):
         """ """
-        return NamedSourceNodeSpecFactory.build(factory_use_construct=True, **kwargs)
+        base_spec = NamedSourceNodeSpecFactory.build(factory_use_construct=True, **kwargs)
 
-    @classmethod
+        if self.workspace:
+            base_spec.workspace = self.workspace.id
+        return base_spec
+
     def id_source_node_spec(self, **kwargs):
         """ """
-        return IDSourceNodeSpecFactory.build(factory_use_construct=True, **kwargs)
+        base_spec = IDSourceNodeSpecFactory.build(factory_use_construct=True, **kwargs)
+
+        if self.workspace:
+            base_spec.workspace = self.workspace.id
+        return base_spec
 
 
 class NamedEdgeSpecFactory(ModelFactory[NamedEdgeSpec]):
     __model__ = NamedEdgeSpec
+    __set_as_default_factory_for_type__ = True
+
+    id = None
+    data_sources = lambda: [SourceSpecFactory.build()]
+
+    @post_generated
+    @classmethod
+    def metadata(cls, data_sources: List[SourceSpec]) -> EdgeMetadataV1:
+        """ """
+        sources = {source.name: GraiEdgeMetadataV1Factory.build() for source in data_sources}
+        return EdgeMetadataV1Factory.build(sources=sources)
+
+    @post_generated
+    @classmethod
+    def is_active(cls, data_sources: List[SourceSpec]) -> bool:
+        """ """
+        return len(data_sources) > 0
 
 
 class IDEdgeSpecFactory(ModelFactory[EdgeIDSpec]):
@@ -129,6 +225,9 @@ class EdgeFactory(ModelFactory[EdgeV1]):
 
 class NamedEdgeSourceSpecFactory(ModelFactory[NamedEdgeSourceSpec]):
     __model__ = NamedEdgeSourceSpec
+    __set_as_default_factory_for_type__ = True
+
+    id = None
 
 
 class IDEdgeSourceSpecFactory(ModelFactory[EdgeIDSourceSpec]):
@@ -143,41 +242,61 @@ class SourcedEdgeFactory(ModelFactory[SourcedEdgeV1]):
 
 
 class MockEdge:
-    @classmethod
-    def sourced_edge(cls, **kwargs):
+    def __init__(self, workspace=None, **kwargs):
+        self.workspace = workspace
+
+    def sourced_edge(self, **kwargs):
         """ """
+        kwargs.setdefault("spec", self.named_source_edge_spec())
         return SourcedEdgeFactory.build(factory_use_construct=True, **kwargs)
 
-    @classmethod
-    def edge(cls, **kwargs):
+    def edge(self, **kwargs):
         """ """
+        kwargs.setdefault("spec", self.named_edge_spec())
         return EdgeFactory.build(factory_use_construct=True, **kwargs)
 
-    @classmethod
-    def named_edge_spec(cls, **kwargs):
+    def named_edge_spec(self, **kwargs):
         """ """
-        return NamedEdgeSpecFactory.build(factory_use_construct=True, **kwargs)
+        base_spec = NamedEdgeSpecFactory.build(factory_use_construct=True, **kwargs)
 
-    @classmethod
-    def id_edge_spec(cls, **kwargs):
-        """ """
-        return IDEdgeSpecFactory.build(factory_use_construct=True, **kwargs)
+        if self.workspace:
+            base_spec.workspace = self.workspace.id
 
-    @classmethod
-    def named_source_edge_spec(cls, **kwargs):
-        """ """
-        return NamedEdgeSourceSpecFactory.build(factory_use_construct=True, **kwargs)
+        return base_spec
 
-    @classmethod
-    def id_source_edge_spec(cls, **kwargs):
+    def id_edge_spec(self, **kwargs):
         """ """
-        return IDEdgeSourceSpecFactory.build(factory_use_construct=True, **kwargs)
+        base_spec = IDEdgeSpecFactory.build(factory_use_construct=True, **kwargs)
+
+        if self.workspace:
+            base_spec.workspace = self.workspace.id
+
+        return base_spec
+
+    def named_source_edge_spec(self, **kwargs):
+        """ """
+        base_spec = NamedEdgeSourceSpecFactory.build(factory_use_construct=True, **kwargs)
+
+        if self.workspace:
+            base_spec.workspace = self.workspace.id
+
+        return base_spec
+
+    def id_source_edge_spec(self, **kwargs):
+        """ """
+        base_spec = IDEdgeSourceSpecFactory.build(factory_use_construct=True, **kwargs)
+
+        if self.workspace:
+            base_spec.workspace = self.workspace.id
+
+        return base_spec
 
 
 class OrganisationSpecFactory(ModelFactory[OrganisationSpec]):
     __model__ = OrganisationSpec
     __set_as_default_factory_for_type__ = True
 
+    id = None
     name = get_human_id
 
 
@@ -211,6 +330,7 @@ class WorkspaceSpecFactory(ModelFactory[WorkspaceSpec]):
     __model__ = WorkspaceSpec
     __set_as_default_factory_for_type__ = True
 
+    id = None
     name = get_human_id
     organisation = OrganisationSpecFactory.build
 
@@ -226,15 +346,18 @@ class WorkspaceFactory(ModelFactory[WorkspaceV1]):
 
 
 class MockWorkspace:
-    @classmethod
-    def workspace(cls, **kwargs):
+    def __init__(self, organisation=None):
+        self.organisation = organisation
+
+    def workspace(self, **kwargs):
         """ """
+        kwargs.setdefault("spec", self.workspace_spec())
         return WorkspaceFactory.build(factory_use_construct=True, **kwargs)
 
-    @classmethod
-    def workspace_spec(cls, **kwargs):
+    def workspace_spec(self, **kwargs):
         """ """
-
+        if self.organisation:
+            kwargs.setdefault("organisation", self.organisation)
         return WorkspaceSpecFactory.build(factory_use_construct=True, **kwargs)
 
 
@@ -242,6 +365,7 @@ class SourceSpecFactory(ModelFactory[SourceSpec]):
     __model__ = SourceSpec
     __set_as_default_factory_for_type__ = True
 
+    id = None
     name = get_human_id
 
 
@@ -250,20 +374,28 @@ class SourceFactory(ModelFactory[SourceV1]):
 
 
 class MockSource:
-    @classmethod
-    def source(cls, **kwargs):
+    def __init__(self, workspace=None):
+        self.workspace = workspace
+
+    def source(self, **kwargs):
         """ """
+        kwargs.setdefault("spec", self.source_spec())
         return SourceFactory.build(factory_use_construct=True, **kwargs)
 
-    @classmethod
-    def source_spec(cls, **kwargs):
+    def source_spec(self, **kwargs):
         """ """
+        if self.workspace:
+            kwargs.setdefault("workspace", self.workspace)
         return SourceSpecFactory.build(factory_use_construct=True, **kwargs)
 
 
 class MockV1:
-    node = MockNode
-    edge = MockEdge
-    organisation = MockOrganisation
-    workspace = MockWorkspace
-    source = MockSource
+    def __init__(self, workspace=None, organisation=None):
+        workspace = workspace.spec if isinstance(workspace, WorkspaceV1) else workspace
+        organisation = organisation.spec if isinstance(organisation, OrganisationV1) else organisation
+
+        self.node = MockNode(workspace=workspace)
+        self.edge = MockEdge(workspace=workspace)
+        self.organisation = MockOrganisation
+        self.workspace = MockWorkspace(organisation=organisation)
+        self.source = MockSource(workspace=workspace)

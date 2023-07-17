@@ -190,16 +190,11 @@ def client_post_url(
     Raises:
 
     """
-    headers = {
-        "Content-Type": "application/json",
-        **options.headers,
-    }
-
+    headers = {"Content-Type": "application/json", **options.headers}
     payload = {**payload, **options.payload}
 
     query_args = {"workspace": client.workspace, **options.query_args}
     url = add_query_params(url, query_args)
-
     response = client.session.post(url, content=serialize_obj(payload), headers=headers, **options.request_args)
 
     response_status_check(response)

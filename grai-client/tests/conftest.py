@@ -43,6 +43,11 @@ def workspace_v1(client):
 
 
 @pytest.fixture(scope="session")
+def mock_v1(workspace_v1):
+    return MockV1(workspace=workspace_v1)
+
+
+@pytest.fixture(scope="session")
 def organisation_v1(client, workspace_v1):
     org = OrganisationV1.from_spec({"name": "default"})
     org.spec.id = workspace_v1.spec.organisation
@@ -50,22 +55,22 @@ def organisation_v1(client, workspace_v1):
 
 
 @pytest.fixture(scope="session")
-def source_v1(client, workspace_v1):
-    test_source = MockV1.source.source(workspace=workspace_v1.spec.dict())
+def source_v1(client, mock_v1, workspace_v1):
+    test_source = MockV1().source.source_spec(workspace=workspace_v1.spec)
     source = client.post(test_source)
     return source
 
 
 @pytest.fixture(scope="session")
-def node_v1(client, source_v1):
-    test_node = MockV1.node.node(data_sources=[source_v1.spec])
-    test_node = client.post(test_node)
-    return test_node
+def node_v1(client, mock_v1, source_v1):
+    test_node = mock_v1.node.named_node_spec(data_sources=[source_v1.spec])
+    return client.post(test_node)
 
 
 @pytest.fixture(scope="session")
-def edge_v1(client, source_v1):
-    test_edge, test_nodes = MockV1.edge.edge_and_nodes(data_sources=[source_v1.spec])
-    nodes = client.post(test_nodes)
-    edge = client.post(test_edge)
-    return edge
+def edge_v1(client, mock_v1, source_v1):
+    s_node = mock_v1.node.named_node_spec(data_sources=[source_v1.spec])
+    d_node = mock_v1.node.named_node_spec(data_sources=[source_v1.spec])
+    test_edge = mock_v1.edge.named_edge_spec(data_sources=[source_v1.spec], source=s_node, destination=d_node)
+    _ = client.post([s_node, d_node])
+    return client.post(test_edge)

@@ -2,7 +2,13 @@ import pytest
 from grai_schemas.utilities import merge
 from grai_schemas.v1 import EdgeV1, NodeV1
 from grai_schemas.v1.metadata.edges import BaseEdgeMetadataV1
-from grai_schemas.v1.metadata.metadata import GraiMalformedNodeMetadataV1, MetadataV1
+from grai_schemas.v1.metadata.metadata import (
+    EdgeMetadataV1,
+    GraiMalformedEdgeMetadataV1,
+    GraiMalformedNodeMetadataV1,
+    MetadataV1,
+    NodeMetadataV1,
+)
 from grai_schemas.v1.metadata.nodes import BaseNodeMetadataV1
 from pydantic import BaseModel
 
@@ -131,29 +137,28 @@ class TestMerge:
 
     def test_merge_valid_node_metadata_into_malformed(self):
         a = GraiMalformedNodeMetadataV1()
-        b = MetadataV1(grai={"node_type": "Generic"}, sources={})
+        b = NodeMetadataV1(grai={"node_type": "Generic"}, sources={})
 
-        assert merge(a, b) == MetadataV1(grai={"node_type": "Generic"}, sources={})
+        assert merge(a, b) == NodeMetadataV1(grai={"node_type": "Generic"}, sources={})
 
     def test_merge_valid_edge_metadata_into_malformed(self):
-        a = GraiMalformedNodeMetadataV1()
-        b = MetadataV1(grai={"edge_type": "Generic"}, sources={})
+        a = GraiMalformedEdgeMetadataV1()
+        b = EdgeMetadataV1(grai={"edge_type": "Generic"}, sources={})
 
-        assert merge(a, b) == MetadataV1(grai={"edge_type": "Generic"}, sources={})
+        assert merge(a, b) == EdgeMetadataV1(grai={"edge_type": "Generic"}, sources={})
 
-    @pytest.mark.xfail
-    def test_marge_malformed_node_metadata_into_valid(self):
-        a = MetadataV1(grai={"node_type": "Generic"})
+    def test_merge_malformed_node_metadata_into_valid(self):
+        a = NodeMetadataV1(grai={"node_type": "Generic"}, sources={})
         b = GraiMalformedNodeMetadataV1()
 
-        merge(a, b)
+        with pytest.raises(ValueError):
+            merge(a, b)
 
-    @pytest.mark.xfail
-    def test_marge_malformed_edge_metadata_into_valid(self):
-        a = MetadataV1(grai={"edge_type": "Generic"})
-        b = GraiMalformedNodeMetadataV1()
-
-        merge(a, b)
+    def test_merge_malformed_edge_metadata_into_valid(self):
+        a = EdgeMetadataV1(grai={"edge_type": "Generic"}, sources={})
+        b = GraiMalformedEdgeMetadataV1()
+        with pytest.raises(ValueError):
+            merge(a, b)
 
     def test_merge_full_node_into_malformed_node(self):
         base_node = {"name": "test", "namespace": "test", "data_sources": [], "metadata": {}}
@@ -174,7 +179,7 @@ class TestMerge:
         }
 
         a = EdgeV1.from_spec(base_edge)
-        a.spec.metadata = GraiMalformedNodeMetadataV1()
+        a.spec.metadata = GraiMalformedEdgeMetadataV1()
         b = EdgeV1.from_spec(base_edge)
         assert merge(a, b) == b
 

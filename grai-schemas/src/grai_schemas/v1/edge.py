@@ -3,7 +3,7 @@ from uuid import UUID
 
 from grai_schemas.v1.generics import GraiBaseModel, NamedID, UuidID
 from grai_schemas.v1.metadata.edges import GenericEdgeMetadataV1, Metadata
-from grai_schemas.v1.metadata.metadata import GraiMetadataV1, MetadataV1
+from grai_schemas.v1.metadata.metadata import EdgeMetadataV1, GraiEdgeMetadataV1
 from grai_schemas.v1.node import NodeIdTypes
 from grai_schemas.v1.source import DataSourceMixin, DataSourcesMixin
 from pydantic import validator
@@ -38,17 +38,17 @@ class BaseSpec(GraiBaseModel):
 
 
 class SourcedEdgeSpecMetadataMixin(GraiBaseModel):
-    metadata: GraiMetadataV1 = GraiMetadataV1(grai=GenericEdgeMetadataV1(edge_type="Generic"))
+    metadata: GraiEdgeMetadataV1 = GraiEdgeMetadataV1(grai=GenericEdgeMetadataV1(edge_type="Generic"))
 
     @validator("metadata", always=True, pre=True)
-    def validate_metadata(cls, v: Optional[Union[Dict, GraiMetadataV1]]) -> GraiMetadataV1:
-        if isinstance(v, GraiMetadataV1):
+    def validate_metadata(cls, v: Optional[Union[Dict, GraiEdgeMetadataV1]]) -> GraiEdgeMetadataV1:
+        if isinstance(v, GraiEdgeMetadataV1):
             return v
         elif isinstance(v, dict):
             v.setdefault("grai", GenericEdgeMetadataV1(edge_type="Generic"))
-            return GraiMetadataV1(**v)
+            return GraiEdgeMetadataV1(**v)
         elif v is None:
-            return GraiMetadataV1(grai=GenericEdgeMetadataV1(edge_type="Generic"))
+            return GraiEdgeMetadataV1(grai=GenericEdgeMetadataV1(edge_type="Generic"))
         raise ValueError(f"Invalid metadata: {v}. Expected either None, a dict, or a MetadataV1 instance.")
 
 
@@ -91,18 +91,18 @@ class SourcedEdgeV1(GraiBaseModel):
 
 
 class EdgeSpecMetadataMixin(GraiBaseModel):
-    metadata: MetadataV1 = MetadataV1(grai=GenericEdgeMetadataV1(edge_type="Generic"), sources={})
+    metadata: EdgeMetadataV1 = EdgeMetadataV1(grai=GenericEdgeMetadataV1(edge_type="Generic"), sources={})
 
     @validator("metadata", always=True, pre=True)
-    def validate_metadata(cls, v: Optional[Union[Dict, MetadataV1]]) -> MetadataV1:
-        if isinstance(v, MetadataV1):
+    def validate_metadata(cls, v: Optional[Union[Dict, EdgeMetadataV1]]) -> EdgeMetadataV1:
+        if isinstance(v, EdgeMetadataV1):
             return v
         elif isinstance(v, dict):
             v.setdefault("grai", GenericEdgeMetadataV1(edge_type="Generic"))
             v.setdefault("sources", {})
-            return MetadataV1(**v)
+            return EdgeMetadataV1(**v)
         elif v is None:
-            return MetadataV1(grai=GenericEdgeMetadataV1(edge_type="Generic"), sources={})
+            return EdgeMetadataV1(grai=GenericEdgeMetadataV1(edge_type="Generic"), sources={})
         raise ValueError(f"Invalid metadata: {v}. Expected either None, a dict, or a MetadataV1 instance.")
 
 

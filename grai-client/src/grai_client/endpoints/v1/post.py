@@ -31,7 +31,7 @@ def collect_data_sources(data_sources: List[Union[UUID, SourceSpec]]) -> List[Un
         if isinstance(source, UUID):
             source_obj = {"id": source}
         elif isinstance(source, SourceSpec):
-            source_obj = source
+            source_obj = {"id": source.id} if source.id else {"name": source.name}
         else:
             raise NotSupportedError(f"Only UUIDs and SourceSpecs are supported not {type(source)}")
 
@@ -74,7 +74,8 @@ def post_node_by_spec(client: ClientV1, grai_type: NodeSpec, options: ClientOpti
     url = client.get_url(grai_type)
     payload = grai_type.dict(exclude_none=True)
     payload["data_sources"] = collect_data_sources(grai_type.data_sources)
-    response = post(client, url, payload, options=options)
+    response = post(client, url, payload, options)
+
     return NodeV1.from_spec(response.json())
 
 

@@ -96,15 +96,17 @@ def response_status_check(resp: Response) -> Response:
     """
     if resp.status_code in {200, 201, 204}:
         return resp
+    elif resp.status_code == 404:
+        raise ObjectNotFoundError(f"Object not found: {resp.url}")
+    else:
+        message = f"Error: {resp.status_code}. {resp.reason_phrase}. {resp.content.decode()}"
 
-    message = f"Error: {resp.status_code}. {resp.reason_phrase}. {resp.content.decode()}"
     if resp.status_code == 500:
         message = (
             f"{message}"
             "If you think this should not be the case it might be a bug, you can "
             "submit a bug report at https://github.com/grai-io/grai-core/issues"
         )
-
     raise RequestException(message)
 
 
@@ -123,7 +125,9 @@ def orjson_defaults(obj: Any) -> Any:
         return list(obj)
     elif isinstance(obj, (pathlib.PosixPath, pathlib.WindowsPath)):
         return str(obj)
-    elif isinstance(obj, (GraiBaseModel, BaseModel)):
+    elif isinstance(obj, GraiBaseModel):
+        return obj.json()
+    elif isinstance(obj, BaseModel):
         return obj.dict()
     else:
         raise Exception(f"No supported JSON serialization format for objects of type {type(obj)}")
