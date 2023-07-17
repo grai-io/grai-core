@@ -1,7 +1,7 @@
-import { Tooltip, Typography } from "@mui/material"
-import { durationToString, runQueuedString } from "helpers/runDuration"
-import { DateTime, Interval } from "luxon"
 import React, { useEffect, useState } from "react"
+import { Tooltip, Typography } from "@mui/material"
+import { DateTime, Interval } from "luxon"
+import { durationToString, runQueuedString } from "helpers/runDuration"
 import RunTimings, { Run } from "./RunTimings"
 
 type RunQueuedProps = {
