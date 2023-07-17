@@ -1,4 +1,3 @@
-import uuid
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 from grai_schemas.v1 import EdgeV1, NodeV1, mock
@@ -8,11 +7,13 @@ from grai_schemas.v1.metadata.edges import (
     EdgeMetadataTypeLabels,
     GenericEdgeMetadataV1,
 )
+from grai_schemas.v1.metadata.metadata import NodeMetadataV1
 from grai_schemas.v1.metadata.nodes import (
     ColumnAttributes,
     ColumnMetadata,
     NodeMetadataTypeLabels,
 )
+from grai_schemas.v1.node import NamedSpec
 from pydantic import BaseModel
 
 from grai_graph import analysis, graph
@@ -98,17 +99,23 @@ def mock_v1_edge(
     }
     name = f"{source_node.namespace}.{source_node.name} -> {destination_node.namespace}.{destination_node.name}"
 
+    node_metadata: NodeMetadataV1 = {
+        "grai": ColumnMetadata(
+            node_type="Column",
+            node_attributes={},
+        ).dict(),
+    }
+
     edge_spec = mock.MockV1().edge.named_edge_spec(
         id=None,
         name=name,
         namespace=source_node.namespace,
-        source=source_node.dict(),
-        destination=destination_node.dict(),
+        source=NamedSpec(**source_node.dict(), metadata=node_metadata),
+        destination=NamedSpec(**destination_node.dict(), metadata=node_metadata),
         is_active=True,
         metadata=metadata,
     )
     edge = mock.MockV1().edge.edge(spec=edge_spec)
-    breakpoint()
     return edge
 
 
