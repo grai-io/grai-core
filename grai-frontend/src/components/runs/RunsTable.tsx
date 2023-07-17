@@ -6,16 +6,12 @@ import {
   TableCell,
   TableBody,
   Typography,
-  Tooltip,
 } from "@mui/material"
-import { DateTime } from "luxon"
 import { useNavigate } from "react-router-dom"
-import {
-  durationAgo,
-  runQueuedString,
-  runDurationString,
-} from "helpers/runDuration"
 import Loading from "components/layout/Loading"
+import RunDuration from "./RunDuration"
+import RunQueued from "./RunQueued"
+import RunStarted from "./RunStarted"
 import RunStatus from "./RunStatus"
 
 interface Connection {
@@ -90,21 +86,13 @@ const RunsTable: React.FC<RunsTableProps> = ({ runs, loading }) => {
               />
             </TableCell>
             <TableCell sx={{ textAlign: "right" }}>
-              <Tooltip
-                title={DateTime.fromISO(run.created_at).toLocaleString(
-                  DateTime.DATETIME_FULL_WITH_SECONDS
-                )}
-              >
-                <Typography variant="body2">
-                  {durationAgo(run.created_at)} ago
-                </Typography>
-              </Tooltip>
+              <RunStarted run={run} />
             </TableCell>
             <TableCell sx={{ textAlign: "right" }}>
-              {runQueuedString(run)}
+              <RunQueued run={run} />
             </TableCell>
             <TableCell sx={{ textAlign: "right" }}>
-              {runDurationString(run)}
+              <RunDuration run={run} />
             </TableCell>
           </TableRow>
         ))}
