@@ -1,20 +1,14 @@
 from functools import cached_property
-from typing import Optional
 
 from django.db.models import Q
 from grai_schemas.utilities import merge
+from grai_schemas.v1.merge import merge_tags
 from grai_schemas.v1.node import NodeNamedID
 from rest_framework.fields import JSONField
 
 from rest_framework import serializers
 
 from .models import Edge, Node, Source
-
-
-def merge_tags(a: Optional[list], b: Optional[list]) -> list:
-    a_tag = set(a) if a is not None else set()
-    b_tag = set(b) if b is not None else set()
-    return list(a_tag.union(b_tag))
 
 
 class SourceSerializer(serializers.ModelSerializer):
