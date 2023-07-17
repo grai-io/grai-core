@@ -4,12 +4,11 @@ import strawberry
 from django.db.models.query import QuerySet
 from strawberry.field import StrawberryField
 from strawberry_django.pagination import OffsetPaginationInput
-from strawberry_django_plus import gql
 
 from .order import apply_order
 
 
-@gql.type
+@strawberry.type
 class PaginationResult:
     total: int
     filtered: int
@@ -47,7 +46,7 @@ class Pagination(Generic[T]):
             offset=self.pagination.offset if self.pagination else None,
         )
 
-    @gql.django.field
+    @strawberry.django.field
     def data(self) -> List[T]:
         queryset = self.filteredQueryset if self.filteredQueryset is not None else self.queryset
         if self.filteredQueryset is None and self.apply_filters:
@@ -72,6 +71,6 @@ class DataWrapper(Generic[T]):
     def __init__(self, data: List[T]):
         self.data = data
 
-    @gql.django.field
+    @strawberry.django.field
     def data(self) -> List[T]:
         return self.data
