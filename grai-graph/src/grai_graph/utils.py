@@ -51,10 +51,11 @@ def mock_v1_node(node: Union[str, TestNodeObj]):
         "grai": ColumnMetadata(
             node_type=NodeMetadataTypeLabels.column.value,
             node_attributes=node_attributes,
-        ).dict()
+        ).dict(),
+        "sources": {},
     }
 
-    node = mock.MockV1().node.node(
+    node_spec = mock.MockV1().node.named_node_spec(
         id=None,
         name=node.name,
         namespace=node.namespace,
@@ -62,6 +63,7 @@ def mock_v1_node(node: Union[str, TestNodeObj]):
         is_active=True,
         metadata=metadata,
     )
+    node = mock.MockV1().node.node(spec=node_spec)
     return node
 
 
@@ -91,10 +93,12 @@ def mock_v1_edge(
         "grai": ColumnToColumnMetadata(
             edge_type=EdgeMetadataTypeLabels.column_to_column.value,
             edge_attributes=metadata,
-        )
+        ),
+        "sources": [],
     }
     name = f"{source_node.namespace}.{source_node.name} -> {destination_node.namespace}.{destination_node.name}"
-    edge = mock.MockV1().edge.edge(
+
+    edge_spec = mock.MockV1().edge.named_edge_spec(
         id=None,
         name=name,
         namespace=source_node.namespace,
@@ -103,6 +107,8 @@ def mock_v1_edge(
         is_active=True,
         metadata=metadata,
     )
+    edge = mock.MockV1().edge.edge(spec=edge_spec)
+    breakpoint()
     return edge
 
 

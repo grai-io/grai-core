@@ -84,43 +84,11 @@ class TestUniqueness(unittest.TestCase):
     unknown_unique = ColumnToColumnAttributes()
 
     def get_nodes(n: int = 3):
-        """
-
-        Args:
-            n (int, optional): (Default value = 3)
-
-        Returns:
-
-        Raises:
-
-        """
         variables = "abcdefghijklmnopqrstuvwxyz"
         extra_kwargs = {char: TestNodeObj(name=char, node_attributes={}) for char in variables[0:n]}
 
         def inner(fn):
-            """
-
-            Args:
-                fn:
-
-            Returns:
-
-            Raises:
-
-            """
-
             def wraps(*args, **kwargs):
-                """
-
-                Args:
-                    *args:
-                    **kwargs:
-
-                Returns:
-
-                Raises:
-
-                """
                 return fn(*args, **kwargs, **extra_kwargs)
 
             return wraps
