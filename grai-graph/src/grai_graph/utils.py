@@ -117,7 +117,8 @@ def mock_v1_edge(
         is_active=True,
         metadata=metadata,
     )
-    edge = mock.MockV1().edge.edge(spec=edge_spec)
+    edge = EdgeV1.from_spec(edge_spec)
+    edge.spec.metadata = metadata
     return edge
 
 
