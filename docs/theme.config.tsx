@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 import HeaderLogo from "./components/HeaderLogo";
 import { Slack, Github } from "./components/Social";
 
-
 const config: DocsThemeConfig = {
   project: {
     link: "https://github.com/grai-io/grai-core",
@@ -96,8 +95,9 @@ const config: DocsThemeConfig = {
     return <>Last updated on {dateString}</>;
   },
   search: {
+    component: undefined,
     placeholder: "Search Grai's Docs",
-  }
+  },
 };
 
 export default config;
