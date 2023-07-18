@@ -1,31 +1,30 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { DefaultSeo } from 'next-seo';
-import SEO from '../next-seo.config';
+import { DefaultSeo } from "next-seo";
+import SEO from "../next-seo.config";
 
 import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
-import { MendableFloatingButton } from '@mendable/search';
+// import { MendableFloatingButton } from '@mendable/search';
 
-
-const MendableSearch = () => {
-  return (
-    <MendableFloatingButton
-      // style={{darkMode:false, accentColor: "#ffffff"}}
-      dialogPlaceholder="What are you looking for?"
-      anon_key={"0b8c6a95-5bfe-4d8e-99ac-c8d3877d4c70"}
-      showSimpleSearch={true}
-      // floatingButtonStyle={{
-      //   backgroundColor: "#6e17e8",
-      //   color: "#ffb567",
-      // }}
-      // icon={""}
-      messageSettings={{
-          prettySources: true,
-      }}
-    />
-  );
-};
+// const MendableSearch = () => {
+//   return (
+//     <MendableFloatingButton
+//       // style={{darkMode:false, accentColor: "#ffffff"}}
+//       dialogPlaceholder="What are you looking for?"
+//       anon_key={"0b8c6a95-5bfe-4d8e-99ac-c8d3877d4c70"}
+//       showSimpleSearch={true}
+//       // floatingButtonStyle={{
+//       //   backgroundColor: "#6e17e8",
+//       //   color: "#ffb567",
+//       // }}
+//       // icon={""}
+//       messageSettings={{
+//           prettySources: true,
+//       }}
+//     />
+//   );
+// };
 
 // Check that PostHog is client-side (used to handle Next.js SSR)
 if (typeof window !== "undefined") {
@@ -53,10 +52,10 @@ export default function App({ Component, pageProps }) {
 
   // return the component with a PostHog provider and SEO
   return (
-      <PostHogProvider client={posthog}>
-        <DefaultSeo {...SEO} />
-        <MendableSearch />
-        <Component {...pageProps} />
-      </PostHogProvider>
+    <PostHogProvider client={posthog}>
+      <DefaultSeo {...SEO} />
+      {/* <MendableSearch /> */}
+      <Component {...pageProps} />
+    </PostHogProvider>
   );
 }
