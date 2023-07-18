@@ -45,8 +45,8 @@ jobs:
       run:
         working-directory: ${{ env.project_dir }}
 
-      env:
-        GRAI_CLI_CONFIG_DIR: ${{ github.workspace }}/${{ env.project_dir }}/tests/config
+    env:
+      GRAI_CLI_CONFIG_DIR: ${{ github.workspace }}/${{ env.project_dir }}/tests/config
 
     services:
       postgres:
