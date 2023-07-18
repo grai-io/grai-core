@@ -44,6 +44,10 @@ jobs:
     defaults:
       run:
         working-directory: ${{ env.project_dir }}
+
+    env:
+      GRAI_CLI_CONFIG_DIR: ${{ github.workspace }}/${{ env.project_dir }}/tests/config
+
     services:
       postgres:
         image: postgres:latest
@@ -55,6 +59,7 @@ jobs:
           - 5432:5432
         # needed because the postgres container does not provide a healthcheck
         options: --health-cmd pg_isready --health-interval 2s --health-timeout 5s --health-retries 15
+
       the_guide:
         image: ghcr.io/grai-io/grai-core/grai-server:latest
         env:
@@ -76,10 +81,12 @@ jobs:
           --health-interval 2s
           --health-retries 10
           --health-start-period 30s
+
       redis:
         image: redis/redis-stack:latest
         ports:
           - 6379:6379
+
     steps:
       - uses: actions/checkout@v3
 
@@ -90,5 +97,7 @@ jobs:
       - run: |
           pip install pytest
           pip install .
+
+      - run: ls ${{ github.workspace }}/${{ env.project_dir }}/tests/config
 
       - run: pytest -s
