@@ -52,7 +52,7 @@ def mock_v1_node(node: Union[str, TestNodeObj]):
         "grai": ColumnMetadata(
             node_type=NodeMetadataTypeLabels.column.value,
             node_attributes=node_attributes,
-        ).dict(),
+        ),
         "sources": {},
     }
 
@@ -64,7 +64,9 @@ def mock_v1_node(node: Union[str, TestNodeObj]):
         is_active=True,
         metadata=metadata,
     )
-    node = mock.MockV1().node.node(spec=node_spec)
+    node = NodeV1.from_spec(node_spec)
+    node.spec.metadata = metadata
+
     return node
 
 
@@ -145,7 +147,7 @@ def build_graph_from_map(map: Dict[Union[str, TestNodeObj], List[Tuple[str, Colu
 
 
 def get_analysis_from_map(
-    map: Dict[Union[str, TestNodeObj], Dict[ColumnToColumnAttributes, List[str]]]
+    map: Dict[Union[str, TestNodeObj], List[Tuple[str, ColumnToColumnAttributes]]]
 ) -> analysis.GraphAnalyzer:
     """
 
