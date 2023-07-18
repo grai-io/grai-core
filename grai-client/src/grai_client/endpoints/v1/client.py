@@ -88,8 +88,10 @@ class ClientV1(BaseClient):
             if result is None:
                 raise ValueError(f"No workspace found matching `{workspace}`")
         elif isinstance(workspace, str):
+            has_ref = False
             if "/" in workspace:  # workspace ref
                 result = self.get("workspace", ref=workspace)
+                has_ref = True
             else:  # workspace name
                 result = self.get("workspace", name=workspace)
 
@@ -101,10 +103,11 @@ class ClientV1(BaseClient):
                     f"If you've specified a workspace name and belong to multiple organizations, please use the ref "
                     "which looks like `{organization}/{workspace}` instead of the name to disambiguate."
                 )
-            elif workspace != result[0].spec.ref:
+            elif (result[0].spec.ref if has_ref else result[0].spec.name) != workspace:
                 message = (
                     f"Although you specified workspace `{workspace}` in the client. We could not identify a "
-                    f"corresponding workspace for the authenticated user in the server."
+                    f"corresponding workspace for the authenticated user in the server. The associated workspace we "
+                    f"identified for the user was {result[0].spec.ref}"
                 )
                 raise Exception(message)
 

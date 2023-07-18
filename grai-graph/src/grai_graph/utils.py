@@ -108,7 +108,6 @@ def mock_v1_edge(
         metadata=metadata,
     )
     edge = mock.MockV1().edge.edge(spec=edge_spec)
-    breakpoint()
     return edge
 
 
