@@ -28,14 +28,12 @@ def get_default_client() -> BaseClient:
     _clients: Dict[str, Type[BaseClient]] = {
         "v1": ClientV1,
     }
-    host = config.server.host
-    port = config.server.port
+    url = config.server.url
     workspace = config.server.workspace
-    insecure = config.server.insecure
 
-    client = _clients[config.server.api_version](host=host, port=port, workspace=workspace, insecure=insecure)
-
+    client = _clients[config.server.api_version](url=url, workspace=workspace)
     authenticate(client)
+
     return client
 
 

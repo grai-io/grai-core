@@ -1,0 +1,7 @@
+auth:
+  password: super_secret
+  username: null@grai.io
+server:
+  api_version: v1
+  url: http://localhost:8000
+  workspace: 'default'

@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Optional
 
 import typer
+from grai_client.schemas.schema import validate_file
 
 from grai_cli.api.entrypoint import app
 from grai_cli.api.server.setup import client_app, client_get_app, get_default_client
@@ -23,12 +24,7 @@ def is_authenticated():
         )
 
 
-def get_nodes(
-    name: Optional[str] = None,
-    namespace: Optional[str] = None,
-    print: bool = True,
-    to_file: Optional[Path] = None,
-):
+def get_nodes(print: bool = True, to_file: Optional[Path] = None, **kwargs):
     """
 
     Args:
@@ -43,16 +39,7 @@ def get_nodes(
 
     """
     client = get_default_client()
-
-    if name is None:
-        if namespace is None:
-            result = client.get("Node")
-        else:
-            result = client.get("Node", namespace=namespace)
-    elif namespace is None:
-        result = client.get("Node", name=name)
-    else:
-        result = client.get("Node", name=name, namespace=namespace)
+    result = client.get("Node", **kwargs)
 
     if print:
         utilities.print(result)
@@ -152,15 +139,14 @@ def apply(
     """
 
     Args:
-        file (Path, optional):  (Default value = typer.Argument(...))
-        dry_run (bool, optional):  (Default value = typer.Option(False, "--d", help="Dry run of file application"))
+        file:  (Default value = typer.Argument(...))
+        dry_run:  (Default value = typer.Option(False, "--d", help="Dry run of file application"))
 
     Returns:
 
     Raises:
 
     """
-    from grai_client.schemas.schema import validate_file
 
     # TODO: Edges don't have a human readable unique identifier
     client = get_default_client()
@@ -172,7 +158,11 @@ def apply(
         typer.Exit()
 
     for spec in specs:
-        record = client.get(spec)
+        try:
+            record = client.get(spec)
+        except:
+            record = None
+
         if record is None:
             client.post(spec)
         else:
