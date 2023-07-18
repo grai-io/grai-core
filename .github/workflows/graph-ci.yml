@@ -1,14 +1,13 @@
-name: CI Workflow for the Grai graph utility
+name: Graph CI
+
 on:
   pull_request:
     paths:
       - "grai-graph/**"
 
-
 concurrency:
   group: ${{ github.ref }}-graph-ci
   cancel-in-progress: true
-
 
 env:
   py_ver: "3.10"
