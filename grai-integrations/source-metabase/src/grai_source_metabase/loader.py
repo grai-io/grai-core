@@ -15,7 +15,14 @@ from pydantic import (
 from requests.exceptions import ConnectionError
 from retrying import retry
 
-from grai_source_metabase.models import Edge, NodeTypes, Question, Table
+from grai_source_metabase.models import (
+    Collection,
+    Dashboard,
+    Edge,
+    NodeTypes,
+    Question,
+    Table,
+)
 
 
 class MetabaseConfig(BaseSettings):
@@ -153,7 +160,8 @@ class MetabaseAPI:
 
         """
 
-        pass
+        url = f"{self.api_endpoint}/collection"
+        return self.make_request(self.session.get, url)
 
 
 def build_namespace_map(default_map: Dict[int, str], dbs: Dict, metabase_namespace: str) -> Dict[int, str]:
@@ -181,7 +189,7 @@ class MetabaseConnector(MetabaseAPI):
         **kwargs: Additional keyword arguments to be passed to the base class constructor.
 
     Attributes:
-        default_namespace (str): The default namespace to be used.
+        metabase_namespace (str): The default namespace to be used.
         tables (List[Dict]): The list of tables retrieved from the Metabase API.
         tables_map (Dict[int, Dict]): A mapping of table IDs to their corresponding table dictionaries.
         dbs_map (Dict[int, Dict]): A mapping of database IDs to their corresponding database dictionaries.
@@ -189,7 +197,6 @@ class MetabaseConnector(MetabaseAPI):
         namespace_map (Dict[int, str]): A mapping of database IDs to their corresponding namespace names.
         question_table_map (Dict[int, int]): A mapping of question IDs to their corresponding table IDs.
         table_db_map (Dict[int, int]): A mapping of table IDs to their corresponding database IDs.
-        question_db_map (Dict[int, int]): A mapping of question IDs to their corresponding database IDs.
 
     """
 
@@ -224,9 +231,6 @@ class MetabaseConnector(MetabaseAPI):
 
     @cached_property
     def tables(self) -> List[Dict]:
-        # This line creates a list of tables by modifying each table dictionary obtained from the get_tables() method.
-        # It replaces the "schema" key with a new key "schema_name" while preserving the other key-value pairs.
-        # this is because the "schema" key is a reserved keyword in the pydantic.
         return [{**table, "schema_name": table.pop("schema")} for table in self.get_tables()]
 
     @cached_property
@@ -240,6 +244,14 @@ class MetabaseConnector(MetabaseAPI):
     @cached_property
     def questions_map(self) -> Dict:
         return {question["id"]: question for question in self.get_questions() if question["archived"] is False}
+
+    @cached_property
+    def collections_map(self) -> Dict:
+        return {
+            collection["id"]: {k: v for k, v in collection.items() if k != "namespace"}
+            for collection in self.get_collections()
+            if collection["id"] != "root" and collection["archived"] is False
+        }
 
     @cached_property
     def question_table_map(self) -> Dict:
@@ -257,6 +269,14 @@ class MetabaseConnector(MetabaseAPI):
             if table["id"] is not None and table["db_id"] is not None
         }
 
+    @cached_property
+    def question_collection_map(self) -> Dict:
+        return {
+            question["id"]: question["collection_id"]
+            for question in self.questions_map.values()
+            if question["collection_id"] and self.collections_map.get(question["collection_id"]) is not None
+        }
+
     def get_nodes(self) -> List[NodeTypes]:
         """
         Retrieves the list of nodes representing tables and questions.
@@ -269,12 +289,16 @@ class MetabaseConnector(MetabaseAPI):
         for question in self.questions_map.values():
             question["namespace"] = self.metabase_namespace
 
+        for collection in self.collections_map.values():
+            collection["namespace"] = self.metabase_namespace
+
         for table in self.tables_map.values():
             table["namespace"] = self.namespace_map[self.table_db_map[table["id"]]]
 
         verified_questions = [Question(**question) for question in self.questions_map.values()]
         verified_tables = [Table(**table) for table in self.tables_map.values()]
-        nodes = chain(verified_questions, verified_tables)
+        verified_collections = [Collection(**collection) for collection in self.collections_map.values()]
+        nodes = chain(verified_questions, verified_tables, verified_collections)
 
         return list(nodes)
 
@@ -286,7 +310,8 @@ class MetabaseConnector(MetabaseAPI):
             List[Edge]: The list of edges.
 
         """
-        edges = (
+
+        question_to_table_edges = (
             Edge(
                 source=Question(**self.questions_map[question]),
                 destination=Table(**self.tables_map[table]),
@@ -294,4 +319,15 @@ class MetabaseConnector(MetabaseAPI):
             )
             for question, table in self.question_table_map.items()
         )
+
+        collection_to_question_edges = (
+            Edge(
+                source=Collection(**self.collections_map[collection]),
+                destination=Question(**self.questions_map[question]),
+                namespace=self.questions_map[question]["namespace"],
+            )
+            for question, collection in self.question_collection_map.items()
+        )
+
+        edges = chain(question_to_table_edges, collection_to_question_edges)
         return list(edges)

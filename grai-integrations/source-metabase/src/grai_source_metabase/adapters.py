@@ -14,7 +14,7 @@ from grai_schemas.v1.source import SourceSpec
 from multimethod import multimethod
 from pydantic import BaseModel
 
-from grai_source_metabase.models import Edge, NodeTypes, Question, Table
+from grai_source_metabase.models import Collection, Edge, NodeTypes, Question, Table
 from grai_source_metabase.package_definitions import config
 
 T = TypeVar("T")
@@ -26,8 +26,8 @@ def build_grai_metadata(current: Any, desired: Any) -> None:
     Build grai metadata for a given object.
 
     Args:
-        current (Any): The object to build grai metadata from.
-        desired (Any): The desired format of the metadata.
+        current: The object to build grai metadata from.
+        desired: The desired format of the metadata.
 
     Returns:
         None: grai metadata object.
@@ -46,8 +46,8 @@ def build_grai_metadata_from_table(current: Table, version: Literal["v1"] = "v1"
     Build grai metadata for a Table object.
 
     Args:
-        current (Table): The Table object to build grai metadata from.
-        version (Literal["v1"], optional): The version of grai metadata to build. Defaults to "v1".
+        current: The Table object to build grai metadata from.
+        version: The version of grai metadata to build. Defaults to "v1".
 
     Returns:
         TableMetadata: grai metadata object for the Table.
@@ -95,13 +95,37 @@ def build_grai_metadata_from_question(current: Question, version: Literal["v1"] 
 
 
 @build_grai_metadata.register
+def build_grai_metadata_from_collection(current: Collection, version: Literal["v1"] = "v1") -> GenericNodeMetadataV1:
+    """
+    Build grai metadata for a Collection object.
+
+    Args:
+        current: The Collection object to build grai metadata from.
+        version: The version of grai metadata to build. Defaults to "v1".
+
+    Returns:
+        GenericNodeMetadataV1: grai metadata object for the Collection.
+
+    """
+
+    data = {
+        "version": version,
+        "node_type": NodeMetadataTypeLabels.generic.value,
+        "node_attributes": {},
+        "tags": [config.metadata_id],
+    }
+
+    return GenericNodeMetadataV1(**data)
+
+
+@build_grai_metadata.register
 def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> GenericEdgeMetadataV1:
     """
     Build grai metadata for an Edge object.
 
     Args:
-        current (Edge): The Edge object to build grai metadata from.
-        version (Literal["v1"], optional): The version of grai metadata to build. Defaults to "v1".
+        current: The Edge object to build grai metadata from.
+        version: The version of grai metadata to build. Defaults to "v1".
 
     Returns:
         GenericEdgeMetadataV1: grai metadata object for the Edge.
@@ -126,8 +150,8 @@ def build_app_metadata(current: Any, desired: Any) -> None:
     Build application-specific metadata for a given object.
 
     Args:
-        current (Any): The object to build application-specific metadata from.
-        desired (Any): The desired format of the metadata.
+        current: The object to build application-specific metadata from.
+        desired: The desired format of the metadata.
 
     Returns:
         None: Application-specific metadata object.
@@ -146,8 +170,8 @@ def build_metadata_from_table(current: BaseModel, version: Literal["v1"] = "v1")
     Build application-specific metadata for a Table object.
 
     Args:
-        current (Table): The Table object to build application-specific metadata from.
-        version (Literal["v1"], optional): The version of the metadata to build. Defaults to "v1".
+        current: The Table object to build application-specific metadata from.
+        version: The version of the metadata to build. Defaults to "v1".
 
     Returns:
         Dict: Application-specific metadata object for the Table.
@@ -285,6 +309,29 @@ def adapt_question_to_client(current: Question, source: SourceSpec, version: Lit
     return SourcedNodeV1.from_spec(spec_dict)
 
 
+@adapt_to_client.register
+def adapt_collection_to_client(current: Collection, source: SourceSpec, version: Literal["v1"] = "v1") -> SourcedNodeV1:
+    """
+    Adapt a Collection object to the desired client format.
+    Args:
+        current:
+        version:
+
+    Returns:
+
+    """
+
+    spec_dict = {
+        "name": current.full_name,
+        "namespace": current.namespace,
+        "display_name": current.name,
+        "data_source": source,
+        "metadata": build_metadata(current, version),
+    }
+
+    return SourcedNodeV1.from_spec(spec_dict)
+
+
 def make_name(node1: NodeTypes, node2: NodeTypes) -> str:
     """
     Creates a name for an edge based on the given nodes.
@@ -359,8 +406,7 @@ def adapt_seq_to_client(objs: Sequence, source: SourceSpec, version: Literal["v1
         None.
 
     """
-    entities = [adapt_to_client(item, source, version) for item in objs]
-    return list(entities)
+    return [adapt_to_client(item, source, version) for item in objs]
 
 
 @adapt_to_client.register
@@ -381,8 +427,7 @@ def adapt_list_to_client(objs: List, source: SourceSpec, version: Literal["v1"])
 
     """
 
-    entities = [adapt_to_client(item, source, version) for item in objs]
-    return list(entities)
+    return [adapt_to_client(item, source, version) for item in objs]
 
 
 @adapt_to_client.register
