@@ -69,6 +69,7 @@ jobs:
           namespace: my_apps_grai_namespace
           api-key: my_grai_api_key
           action: tests
+          source-name: prod-db
           grai-api-url: https://api.grai.io
           fivetran-api-key: hHqP5c2nIY0B6fpa
           fivetran-api-secret: 1234567890abcdef1234567890abcdef
