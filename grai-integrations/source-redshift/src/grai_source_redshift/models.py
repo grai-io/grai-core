@@ -124,6 +124,23 @@ class Column(RedshiftNode):
         return result
 
 
+class LateBindingViewColumn(RedshiftNode):
+    name: str = Field(alias="column_name")
+    table: str = Field(alias="table_name")
+    column_schema: str = Field(alias="schema")
+    namespace: str
+    data_type: str
+
+    class Config:
+        """ """
+
+        allow_population_by_field_name = True
+
+    @property
+    def full_name(self):
+        return f"{self.column_schema}.{self.table}.{self.name}"
+
+
 class Constraint(str, Enum):
     """ """
 
