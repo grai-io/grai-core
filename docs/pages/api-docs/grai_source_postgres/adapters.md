@@ -185,7 +185,8 @@ def adapt_to_client(current: Any, desired: Any)
 
 ```python
 @adapt_to_client.register
-def adapt_column_to_client(current: Column, version: Literal["v1"] = "v1")
+def adapt_column_to_client(current: Column, source: SourceSpec,
+                           version: Literal["v1"]) -> SourcedNodeV1
 ```
 
 **Arguments**:
@@ -202,7 +203,8 @@ def adapt_column_to_client(current: Column, version: Literal["v1"] = "v1")
 
 ```python
 @adapt_to_client.register
-def adapt_table_to_client(current: Table, version: Literal["v1"] = "v1")
+def adapt_table_to_client(current: Table, source: SourceSpec,
+                          version: Literal["v1"]) -> SourcedNodeV1
 ```
 
 **Arguments**:
@@ -235,7 +237,8 @@ def make_name(node1: ID, node2: ID) -> str
 
 ```python
 @adapt_to_client.register
-def adapt_edge_to_client(current: Edge, version: Literal["v1"] = "v1")
+def adapt_edge_to_client(current: Edge, source: SourceSpec,
+                         version: Literal["v1"]) -> SourcedEdgeV1
 ```
 
 **Arguments**:
@@ -252,7 +255,8 @@ def adapt_edge_to_client(current: Edge, version: Literal["v1"] = "v1")
 
 ```python
 @adapt_to_client.register
-def adapt_list_to_client(objs: Sequence, version: Literal["v1"]) -> List
+def adapt_list_to_client(objs: Sequence, source: SourceSpec,
+                         version: Literal["v1"]) -> List
 ```
 
 **Arguments**:

@@ -31,7 +31,6 @@ export const GET_EDGES = gql`
           name
           display_name
           is_active
-          data_source
           metadata
           source {
             id

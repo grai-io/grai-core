@@ -1,7 +1,7 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { render, screen, fireEvent, waitFor, act } from "testing"
+import { screen, fireEvent, waitFor, act, render } from "testing"
 import { UPLOAD_CONNECTOR_FILE } from "./ConnectionFile"
 import SetupConnection, { UPDATE_CONNECTION } from "./SetupConnection"
 
@@ -73,6 +73,7 @@ test("submit update", async () => {
         name: "connection 1",
         metadata: {},
         secrets: {},
+        sourceName: "default",
       }}
       setConnection={() => {}}
     />,
@@ -82,6 +83,14 @@ test("submit update", async () => {
   )
 
   expect(screen.getByText("Connect to Test Connector")).toBeInTheDocument()
+
+  await act(
+    async () =>
+      await user.type(
+        screen.getByRole("textbox", { name: /source/i }),
+        "test-source"
+      )
+  )
 
   await act(
     async () =>
@@ -100,6 +109,7 @@ test("submit update error", async () => {
           id: "1",
           namespace: "default",
           name: "connection 1",
+          sourceName: "test",
           metadata: {},
           secrets: {},
           connectionId: "1",
@@ -120,6 +130,7 @@ test("submit update error", async () => {
         id: "1",
         namespace: "default",
         name: "connection 1",
+        sourceName: "test",
         metadata: {},
         secrets: {},
       }}
@@ -244,6 +255,14 @@ test("upload file", async () => {
 
   await act(
     async () =>
+      await user.type(
+        screen.getByRole("textbox", { name: /source/i }),
+        "test-source"
+      )
+  )
+
+  await act(
+    async () =>
       await user.click(screen.getByRole("button", { name: /finish/i }))
   )
 
@@ -293,8 +312,6 @@ test("upload wrong file", async () => {
 test("upload file error", async () => {
   const user = userEvent.setup()
 
-  window.URL.createObjectURL = jest.fn().mockImplementation(() => "url")
-
   const file = new File(["file"], "ping.json", {
     type: "application/json",
   })
@@ -308,6 +325,7 @@ test("upload file error", async () => {
           connectorId: "1",
           file,
           namespace: "defaulttest",
+          sourceName: "Test File Connector",
         },
       },
       result: {
@@ -333,15 +351,15 @@ test("upload file error", async () => {
       connection={null}
       setConnection={() => {}}
     />,
-    {
-      mocks,
-      withRouter: true,
-    }
+    { withRouter: true, mocks }
   )
 
   expect(screen.getByText("Connect to Test File Connector")).toBeInTheDocument()
 
+  window.URL.createObjectURL = jest.fn().mockImplementation(() => "url")
+
   const inputEl = screen.getByTestId("drop-input")
+
   Object.defineProperty(inputEl, "files", {
     value: [file],
   })

@@ -6,7 +6,10 @@ from django_test_migrations.migrator import Migrator
 
 
 class Migration0009:
-    previous_state_migration = ("lineage", "0008_alter_edge_managers_alter_node_managers_and_more")
+    previous_state_migration = (
+        "lineage",
+        "0008_alter_edge_managers_alter_node_managers_and_more",
+    )
     new_state_migration = ("lineage", "0009_migrate_default_lineage_types_to_generic")
 
     def __init__(self, migrator, old_state_spec=None, new_state_spec=None):
@@ -62,6 +65,8 @@ class Migration0009:
 
 @pytest.mark.django_db()
 def test_0009_forwards_node(migrator):
+    set_current_tenant(None)
+
     migrator = Migration0009(migrator)
 
     node = migrator.old_state.apps.get_model("lineage", "Node")
@@ -96,7 +101,10 @@ def test_0009_backwards_node(migrator):
     migrator = Migration0009(
         migrator,
         old_state_spec=("lineage", "0009_migrate_default_lineage_types_to_generic"),
-        new_state_spec=("lineage", "0008_alter_edge_managers_alter_node_managers_and_more"),
+        new_state_spec=(
+            "lineage",
+            "0008_alter_edge_managers_alter_node_managers_and_more",
+        ),
     )
     node = migrator.old_state.apps.get_model("lineage", "Node")
     migrator.create_node(node, metadata={"grai": {"node_type": "Generic"}})
@@ -115,7 +123,10 @@ def test_0009_backwards_edge(migrator):
     migrator = Migration0009(
         migrator,
         old_state_spec=("lineage", "0009_migrate_default_lineage_types_to_generic"),
-        new_state_spec=("lineage", "0008_alter_edge_managers_alter_node_managers_and_more"),
+        new_state_spec=(
+            "lineage",
+            "0008_alter_edge_managers_alter_node_managers_and_more",
+        ),
     )
     node = migrator.old_state.apps.get_model("lineage", "Node")
     edge = migrator.old_state.apps.get_model("lineage", "Edge")

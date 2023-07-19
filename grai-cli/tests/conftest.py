@@ -1,67 +1,66 @@
-import copy
 import os
-import uuid
 
 import pytest
+from grai_schemas.v1.mock import MockV1
 from typer.testing import CliRunner
 
-from grai_cli.settings.cache import cache
-from grai_cli.settings.config import BasicAuthSettings, ServerSettingsV1, config
-from grai_cli.utilities.test import prep_tests
+mocker = MockV1()
+organisation = mocker.organisation.organisation_spec(name="default")
+workspace = mocker.workspace.workspace_spec(name="default", organisation=organisation)
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(autouse=True)
 def setup():
     """ """
-    telemetry_state = cache.get("telemetry_consent")
-    has_configfile = config.handler.has_config_file
-    temp_name = str(uuid.uuid4())
+    old_config = os.environ.get("GRAI_CLI_CONFIG_DIR")
+    script_dir = os.path.dirname(os.path.realpath(__file__))
+    os.environ["GRAI_CLI_CONFIG_DIR"] = os.path.join(script_dir, "config")
 
+    yield
+
+    if old_config is not None:
+        os.environ["GRAI_CLI_CONFIG_DIR"] = old_config
+    else:
+        del os.environ["GRAI_CLI_CONFIG_DIR"]
+
+    # cache.set("telemetry_consent", telemetry_state)
+
+
+@pytest.fixture()
+def config(setup):
+    from grai_cli.settings.cache import cache
+    from grai_cli.settings.config import GraiConfig
+
+    test_file = os.path.join(os.environ["GRAI_CLI_CONFIG_DIR"], "config.yaml")
+    config = GraiConfig.from_file(test_file)
+    config.handler.config_file = test_file
+    config.handler.config_dir = os.environ["GRAI_CLI_CONFIG_DIR"]
     cache.set("telemetry_consent", False)
+    return config
 
-    if has_configfile:
-        os.rename(config.handler.config_file, temp_name)
-    try:
-        config.server = ServerSettingsV1(host="localhost", port="8000", insecure=True, workspace="default")
-        config.auth = BasicAuthSettings(username="null@grai.io", password="super_secret")
-        config.save()
-        yield
-    finally:
-        if has_configfile:
-            os.rename(temp_name, config.handler.config_file)
-        else:
-            os.remove(config.handler.config_file)
-        cache.set("telemetry_consent", telemetry_state)
+
+@pytest.fixture(scope="session")
+def client():
+    from grai_cli.api.server.setup import get_default_client
+
+    return get_default_client()
+
+
+@pytest.fixture
+def mock_v1():
+    return MockV1(workspace=workspace)
 
 
 @pytest.fixture
 def runner():
     """ """
-    return CliRunner()
+    return CliRunner(env=os.environ)
 
 
 @pytest.fixture
-def v1_node(runner):
-    """
-
-    Args:
-        runner:
-
-    Returns:
-
-    Raises:
-
-    """
-
-    def make_v1_node():
-        """ """
-        node = {
-            "version": "v1",
-            "type": "Node",
-            "spec": {
-                "name": "name-" + str(uuid.uuid4()),
-                "namespace": "namespace-" + str(uuid.uuid4()),
-                "data_source": "test",
-            },
-        }
-        return node
+def v1_node(mock_v1):
+    """ """
+    metadata = {"grai": {"node_type": "Generic"}, "sources": {}}
+    node_spec = mock_v1.node.named_node_spec(metadata=metadata, data_sources=[])
+    node = mock_v1.node.node(spec=node_spec)
+    return node

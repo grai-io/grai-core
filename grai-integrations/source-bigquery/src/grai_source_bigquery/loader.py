@@ -1,7 +1,7 @@
 import json
 import os
 from datetime import datetime, timedelta, timezone
-from functools import cached_property, lru_cache
+from functools import cache, cached_property, lru_cache
 from itertools import chain
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
@@ -62,6 +62,8 @@ class BigqueryConnector:
         self.namespace = get_from_env("namespace", "default") if namespace is None else namespace
         self.project = get_from_env("project", required=False) if project is None else project
         self.dataset = get_from_env("dataset", required=False) if dataset is None else dataset
+        self.datasets = [self.dataset] if isinstance(self.dataset, str) else self.dataset
+
         self.credentials = get_from_env("credentials", required=False) if credentials is None else credentials
         self._connection: Optional[bigquery.connector.BigqueryConnection] = None
 
@@ -267,6 +269,20 @@ class BigqueryConnector:
         """
         return [item for item in chain(*[t.get_edges() for t in self.tables(dataset)]) if item is not None]
 
+    @cache
+    def nodes(self) -> List[BigqueryNode]:
+        nodes = []
+        for dataset in self.datasets:
+            nodes.extend(self.get_nodes(dataset))
+        return nodes
+
+    @cache
+    def edges(self) -> List[Edge]:
+        edges = []
+        for dataset in self.datasets:
+            edges.extend(self.get_edges(dataset))
+        return edges
+
     def get_nodes_and_edges(self) -> Tuple[List[BigqueryNode], List[Edge]]:
         """
 
@@ -277,16 +293,8 @@ class BigqueryConnector:
         Raises:
 
         """
-        datasets = [self.dataset] if isinstance(self.dataset, str) else self.dataset
 
-        nodes = []
-        edges = []
-
-        for dataset in datasets:
-            nodes.extend(self.get_nodes(dataset))
-            edges.extend(self.get_edges(dataset))
-
-        return nodes, edges
+        return self.nodes(), self.edges()
 
 
 class LoggingConnector(BigqueryConnector):
@@ -496,9 +504,14 @@ class LoggingConnector(BigqueryConnector):
 
         return list(edges)
 
+    def nodes(self) -> List[BigqueryNode]:
+        return super().nodes()
+
+    def edges(self) -> List[Edge]:
+        edges = super().edges()
+        bigquery_edges = self.get_bigquery_edges(self.nodes())
+
+        return edges + bigquery_edges
+
     def get_nodes_and_edges(self) -> Tuple[List[BigqueryNode], List[Edge]]:
-        nodes, edges = super().get_nodes_and_edges()
-
-        bigquery_edges = self.get_bigquery_edges(nodes)
-
-        return nodes, edges + bigquery_edges
+        return self.nodes(), self.edges()

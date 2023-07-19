@@ -78,3 +78,6 @@ jobs:
 
       - run: poetry install
       - run: poetry run pytest
+        env:
+          GRAI_FIVETRAN_API_KEY: ${{ secrets.FIVETRAN_API_KEY }}
+          GRAI_FIVETRAN_API_SECRET: ${{ secrets.FIVETRAN_API_SECRET }}

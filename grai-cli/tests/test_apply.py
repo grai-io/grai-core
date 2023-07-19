@@ -26,7 +26,7 @@ def make_v1_node():
         "spec": {
             "name": "name-" + str(uuid.uuid4()),
             "namespace": "namespace-" + str(uuid.uuid4()),
-            "data_source": "test",
+            "data_sources": [],
             "metadata": {"grai": {"node_type": "Generic"}},
         },
     }
@@ -60,7 +60,7 @@ def make_v1_edge(source_id, destination_id):
     return node
 
 
-def test_apply_single_node(runner):
+def test_apply_single_node(runner, v1_node):
     """
 
     Args:
@@ -71,9 +71,9 @@ def test_apply_single_node(runner):
     Raises:
 
     """
+
     with tempfile.NamedTemporaryFile("w+") as file:
-        node_dict = make_v1_node()
-        write_yaml(node_dict, file.name)
+        write_yaml(v1_node, file.name)
         result = runner.invoke(app, ["apply", file.name])
         assert result.exit_code == 0, result
 
@@ -94,7 +94,7 @@ def test_apply_multi_node(runner):
         nodes = [make_v1_node() for i in range(5)]
         write_yaml(nodes, file.name)
         result = runner.invoke(app, ["apply", file.name])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, result
 
 
 def test_create_and_get_nodes(runner):
@@ -136,9 +136,9 @@ def test_delete_single_node(runner):
         node_dict = make_v1_node()
         yaml.dump(node_dict, file)
         result = runner.invoke(app, ["apply", file.name])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, result
         result = runner.invoke(app, ["delete", file.name])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, result
         server_nodes = get_nodes(print=False)
         node_set = {(str(n.spec.name), str(n.spec.namespace)) for n in server_nodes}
         assert (

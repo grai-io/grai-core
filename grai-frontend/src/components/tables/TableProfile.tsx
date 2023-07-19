@@ -9,16 +9,21 @@ interface BaseTable {
   display_name: string
 }
 
+interface Source {
+  id: string
+  name: string
+}
 export interface TableInterface {
   id: string
   name: string
   namespace: string
-  data_source: string
+  // data_source: string
   display_name: string
   columns: { data: Column[] }
   metadata: any | null
   source_tables: { data: BaseTable[] }
   destination_tables: { data: BaseTable[] }
+  sources: { data: Source[] }
 }
 
 type TableProfileProps = {
@@ -41,6 +46,11 @@ const TableProfile: React.FC<TableProfileProps> = ({ table }) => (
             <TableDependencies
               label="Downstream dependencies"
               dependencies={table.source_tables.data}
+            />
+            <TableDependencies
+              label="Sources"
+              dependencies={table.sources.data}
+              routePrefix="sources"
             />
           </TableBody>
         </Table>

@@ -1,17 +1,35 @@
-from grai_schemas.v1 import EdgeV1, NodeV1
-from grai_schemas.v1.node import NodeIdTypes
+from typing import Union
+from uuid import UUID
+
+from grai_schemas.v1.edge import (
+    EdgeIdTypes,
+    EdgeSpec,
+    EdgeV1,
+    SourcedEdgeSpec,
+    SourcedEdgeV1,
+)
+from grai_schemas.v1.node import NodeIdTypes, NodeV1, SourcedNodeSpec, SourcedNodeV1
+from grai_schemas.v1.source import SourceSpec, SourceV1
+from grai_schemas.v1.workspace import WorkspaceSpec, WorkspaceV1
 
 from grai_client.endpoints.v1.client import ClientV1
-from grai_client.schemas.labels import EdgeLabels, NodeLabels, WorkspaceLabels
+from grai_client.schemas.labels import (
+    EdgeLabels,
+    NodeLabels,
+    SourceEdgeLabels,
+    SourceLabels,
+    SourceNodeLabels,
+    WorkspaceLabels,
+)
 
 
 @ClientV1.get_url.register
-def get_node_id_url(client: ClientV1, obj: NodeIdTypes) -> str:
+def get_node_url(client: ClientV1, obj: Union[NodeIdTypes, NodeV1, SourcedNodeV1, SourcedNodeSpec, NodeLabels]) -> str:
     """
 
     Args:
-        client (ClientV1):
-        obj (NodeIdTypes):
+        client:
+        obj:
 
     Returns:
 
@@ -22,28 +40,12 @@ def get_node_id_url(client: ClientV1, obj: NodeIdTypes) -> str:
 
 
 @ClientV1.get_url.register
-def get_node_url(client: ClientV1, obj: NodeV1) -> str:
+def get_edge_url(client: ClientV1, obj: Union[EdgeV1, EdgeLabels, EdgeIdTypes, EdgeSpec]) -> str:
     """
 
     Args:
-        client (ClientV1):
-        obj (NodeV1):
-
-    Returns:
-
-    Raises:
-
-    """
-    return client.node_endpoint
-
-
-@ClientV1.get_url.register
-def get_edge_url(client: ClientV1, obj: EdgeV1) -> str:
-    """
-
-    Args:
-        client (ClientV1):
-        obj (EdgeV1):
+        client:
+        obj:
 
     Returns:
 
@@ -54,44 +56,54 @@ def get_edge_url(client: ClientV1, obj: EdgeV1) -> str:
 
 
 @ClientV1.get_url.register
-def get_node_label_url(client: ClientV1, obj: NodeLabels) -> str:
+def get_sourced_node_url_by_source_id(
+    client: ClientV1, type_identifier: Union[SourceNodeLabels, SourcedNodeV1, SourcedNodeSpec], source_id: UUID
+) -> str:
     """
 
     Args:
-        client (ClientV1):
-        obj (NodeLabels):
+        client:
+        type_identifier:
+        source_id:
 
     Returns:
 
     Raises:
 
     """
-    return client.node_endpoint
+    return f"{client.source_endpoint}{source_id}/nodes/"
 
 
 @ClientV1.get_url.register
-def get_edge_label_url(client: ClientV1, obj: EdgeLabels) -> str:
+def get_sourced_node_url_by_source_and_node_id(
+    client: ClientV1,
+    type_identifier: Union[SourceNodeLabels, SourcedNodeV1, SourcedNodeSpec],
+    source_id: UUID,
+    node_id: UUID,
+) -> str:
     """
 
     Args:
-        client (ClientV1):
-        obj (EdgeLabels):
+        client:
+        type_identifier:
+        source_id:
+        node_id:
 
     Returns:
 
     Raises:
 
     """
-    return client.edge_endpoint
+    return f"{client.get_url(type_identifier, source_id)}{node_id}/"
 
 
 @ClientV1.get_url.register
-def get_workspace_label_url(client: ClientV1, obj: WorkspaceLabels) -> str:
+def get_workspace_url(client: ClientV1, obj: Union[WorkspaceLabels, WorkspaceV1, WorkspaceSpec]) -> str:
     """
 
     Args:
-        client (ClientV1):
-        obj (WorkspaceLabels):
+        client:
+        obj:
 
     Returns:
 
@@ -99,3 +111,60 @@ def get_workspace_label_url(client: ClientV1, obj: WorkspaceLabels) -> str:
 
     """
     return client.workspace_endpoint
+
+
+@ClientV1.get_url.register
+def get_source_url(client: ClientV1, obj: Union[SourceLabels, SourceV1, SourceSpec]) -> str:
+    """
+
+    Args:
+        client:
+        obj:
+
+    Returns:
+
+    Raises:
+
+    """
+    return client.source_endpoint
+
+
+@ClientV1.get_url.register
+def get_sourced_edge_url_by_source_id(
+    client: ClientV1, type_identifier: Union[SourceEdgeLabels, SourcedEdgeV1, SourcedEdgeSpec], source_id: UUID
+) -> str:
+    """
+
+    Args:
+        client:
+        type_identifier:
+        source_id:
+
+    Returns:
+
+    Raises:
+
+    """
+    return f"{client.source_endpoint}{source_id}/edges/"
+
+
+@ClientV1.get_url.register
+def get_sourced_edge_url_by_source_and_edge_id(
+    client: ClientV1,
+    type_identifier: Union[SourceEdgeLabels, SourcedEdgeV1, SourcedEdgeSpec],
+    source_id: UUID,
+    edge_id: UUID,
+) -> str:
+    """
+
+    Args:
+        client:
+        type_identifier:
+        source_id:
+        edge_id
+    Returns:
+
+    Raises:
+
+    """
+    return f"{client.get_url(type_identifier, source_id)}{edge_id}/"

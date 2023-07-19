@@ -6,7 +6,6 @@ on:
       - "grai-server/**"
       - ".github/workflows/client-ci.yml"
 
-
 concurrency:
   group: ${{ github.ref }}-client-ci
   cancel-in-progress: true
@@ -38,8 +37,53 @@ jobs:
           black . --check
           isort . --profile black --check
 
+  build-server:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    outputs:
+      image-digest: ${{ steps.docker-build.outputs.digest }}
+
+    defaults:
+      run:
+        working-directory: grai-server/app
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GH_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/${{ github.repository }}/grai-server-temp
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@master
+
+      - name: Build
+        id: docker-build
+        uses: docker/build-push-action@v4
+        with:
+          context: grai-server/app
+          push: true
+          labels: ${{ steps.meta.outputs.labels }}
+          tags: ghcr.io/grai-io/grai-core/grai-server-temp:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
   tests-client:
-    needs: lint-client
+    needs:
+      - lint-client
+      - build-server
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -56,7 +100,10 @@ jobs:
         # needed because the postgres container does not provide a healthcheck
         options: --health-cmd pg_isready --health-interval 2s --health-timeout 5s --health-retries 15
       the_guide:
-        image: ghcr.io/grai-io/grai-core/grai-server:latest
+        image: ghcr.io/grai-io/grai-core/grai-server-temp@${{ needs.build-server.outputs.image-digest }}
+        credentials:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GH_TOKEN }}
         env:
           DB_USER: grai
           DB_PASSWORD: grai

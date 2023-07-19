@@ -1,11 +1,11 @@
 import pytest
 from grai_schemas import config as core_config
-from grai_schemas.v1 import EdgeV1, NodeV1
+from grai_schemas.v1 import EdgeV1, NodeV1, SourcedEdgeV1, SourcedNodeV1
 from grai_schemas.v1.metadata.edges import GenericEdgeMetadataV1
 from grai_schemas.v1.metadata.edges import Metadata as EdgeV1Metadata
 from grai_schemas.v1.metadata.nodes import Metadata as NodeV1Metadata
 
-from grai_source_metabase.loader import build_namespace_map
+from grai_source_metabase.loader import MetabaseConnector, build_namespace_map
 from grai_source_metabase.models import Edge, NodeTypes
 
 
@@ -37,20 +37,20 @@ def test_loader_edge_types(app_edges):
     assert all(isinstance(edge, Edge) for edge in app_edges)
 
 
-class TestNamespaceMap:
+class TestBuildNamespaceMap:
     """ """
 
     def test_namespace_map_from_json(self):
         """ """
-        json_str = '{"conn_id": "test_destination"}'
-        namespace_map = build_namespace_map({}, json_str, "temp")
+        test_dict = {2: {"name": "test_destination"}}
+        namespace_map = build_namespace_map({1: "B"}, test_dict, "temp")
         assert len(namespace_map.keys()) > 0
 
     @pytest.mark.xfail
     def test_namespace_map_from_invalid_json(self):
         """ """
-        json_str = "'test'"
-        namespace_map = build_namespace_map({}, json_str, "temp")
+        test_dict = {2: {"name": "test_destination"}}
+        namespace_map = build_namespace_map({}, test_dict, "temp")
         assert len(namespace_map.keys()) > 0
 
 
@@ -200,7 +200,7 @@ class TestConnector:
         Raises:
 
         """
-        test_type = NodeV1
+        test_type = SourcedNodeV1
         for item in nodes:
             assert isinstance(item, test_type), f"{type(item)} is not of type {test_type}"
 
@@ -215,7 +215,7 @@ class TestConnector:
         Raises:
 
         """
-        test_type = EdgeV1
+        test_type = SourcedEdgeV1
         for item in edges:
             assert isinstance(item, test_type), f"{type(item)} is not of type {test_type}"
 

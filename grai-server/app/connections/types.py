@@ -1,37 +1,36 @@
 from typing import Optional
 
+import strawberry
 import strawberry_django
 from strawberry.scalars import JSON
-from strawberry_django_plus import gql
-from strawberry_django_plus.gql import auto
 
 from .models import Connector as ConnectorModel
 
 
-@gql.django.filters.filter(ConnectorModel, lookups=True)
+@strawberry_django.filters.filter(ConnectorModel, lookups=True)
 class ConnectorFilter:
-    id: auto
-    name: auto
-    is_active: auto
+    id: strawberry.auto
+    name: strawberry.auto
+    is_active: strawberry.auto
 
 
 @strawberry_django.ordering.order(ConnectorModel)
 class ConnectorOrder:
-    id: auto
-    name: auto
-    is_active: auto
-    category: auto
-    events: auto
-    coming_soon: auto
+    id: strawberry.auto
+    name: strawberry.auto
+    is_active: strawberry.auto
+    category: strawberry.auto
+    events: strawberry.auto
+    coming_soon: strawberry.auto
 
 
-@gql.django.type(ConnectorModel, order=ConnectorOrder, filters=ConnectorFilter, pagination=True)
+@strawberry.django.type(ConnectorModel, order=ConnectorOrder, filters=ConnectorFilter, pagination=True)
 class Connector:
-    id: auto
-    name: auto
+    id: strawberry.auto
+    name: strawberry.auto
     metadata: JSON
-    is_active: auto
+    is_active: strawberry.auto
     icon: Optional[str]
     category: Optional[str]
-    events: auto
-    coming_soon: auto
+    events: strawberry.auto
+    coming_soon: strawberry.auto

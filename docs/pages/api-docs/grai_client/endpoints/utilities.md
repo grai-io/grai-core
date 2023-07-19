@@ -3,6 +3,21 @@ sidebar_label: utilities
 title: grai_client.endpoints.utilities
 ---
 
+## validated\_uuid
+
+```python
+def validated_uuid(val: Union[str, UUID])
+```
+
+**Arguments**:
+
+  val (Union[str, UUID]):
+
+
+**Returns**:
+
+
+
 ## is\_valid\_uuid
 
 ```python
@@ -131,3 +146,11 @@ def handles_bad_metadata(
 
 
 **Returns**:
+
+
+
+## expects\_unique\_query
+
+```python
+def expects_unique_query(fn) -> Callable[..., T]
+```

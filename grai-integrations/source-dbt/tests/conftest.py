@@ -1,5 +1,17 @@
 import pytest
-from grai_client.endpoints.v1.client import ClientV1
+from grai_schemas.v1.source import SourceSpec
+from grai_schemas.v1.workspace import WorkspaceSpec
+
+
+@pytest.fixture
+def default_workspace():
+    return WorkspaceSpec(name="default", organization="default")
+
+
+@pytest.fixture
+def mock_source(default_workspace):
+    return SourceSpec(name="BigQueryTest", workspace=default_workspace)
+
 
 # #from grai_source_dbt.adapters import adapt_to_client
 # from grai_source_dbt.loader import Manifest

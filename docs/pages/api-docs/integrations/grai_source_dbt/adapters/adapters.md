@@ -185,8 +185,8 @@ def adapt_to_client(current: Any, version: Any) -> None
 
 ```python
 @adapt_to_client.register
-def adapt_table_to_client(current: AllDbtNodeTypes,
-                          version: Literal["v1"] = "v1") -> NodeV1
+def adapt_table_to_client(current: AllDbtNodeTypes, source: SourceSpec,
+                          version: Literal["v1"]) -> SourcedNodeV1
 ```
 
 **Arguments**:
@@ -203,8 +203,8 @@ def adapt_table_to_client(current: AllDbtNodeTypes,
 
 ```python
 @adapt_to_client.register
-def adapt_column_to_client(current: Column,
-                           version: Literal["v1"] = "v1") -> NodeV1
+def adapt_column_to_client(current: Column, source: SourceSpec,
+                           version: Literal["v1"]) -> SourcedNodeV1
 ```
 
 **Arguments**:
@@ -221,8 +221,8 @@ def adapt_column_to_client(current: Column,
 
 ```python
 @adapt_to_client.register
-def adapt_edge_to_client(current: Edge,
-                         version: Literal["v1"] = "v1") -> EdgeV1
+def adapt_edge_to_client(current: Edge, source: SourceSpec,
+                         version: Literal["v1"]) -> SourcedEdgeV1
 ```
 
 **Arguments**:
@@ -240,7 +240,8 @@ def adapt_edge_to_client(current: Edge,
 ```python
 @adapt_to_client.register
 def adapt_list_to_client(
-        objs: Sequence, version: Literal["v1"]) -> List[Union[NodeV1, EdgeV1]]
+        objs: Sequence, source: SourceSpec,
+        version: Literal["v1"]) -> List[Union[SourcedNodeV1, SourcedEdgeV1]]
 ```
 
 **Arguments**:

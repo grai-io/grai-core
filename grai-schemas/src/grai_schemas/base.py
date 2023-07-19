@@ -14,3 +14,25 @@ class GraiMetadata(GraiBaseModel):
 
 Node = v1.node.NodeV1
 Edge = v1.edge.EdgeV1
+
+
+SourcedNode = v1.node.SourcedNodeV1
+SourcedEdge = v1.edge.SourcedEdgeV1
+Source = v1.source.SourceV1
+Event = v1.events.EventV1
+Workspace = v1.workspace.WorkspaceV1
+Organisation = v1.organization.OrganisationV1
+
+GraiType = Union[Node, Edge, SourcedNode, SourcedEdge, Source, Event, Workspace, Organisation]
+
+__all__ = [
+    "GraiMetadata",
+    "Node",
+    "Edge",
+    "SourcedNode",
+    "SourcedEdge",
+    "Source",
+    "Workspace",
+    "Organisation",
+    "GraiType",
+]

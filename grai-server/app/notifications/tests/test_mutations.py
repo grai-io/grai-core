@@ -16,6 +16,7 @@ from api.tests.common import (
     test_organisation,
     test_user,
     test_workspace,
+    generate_source,
 )
 
 

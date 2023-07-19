@@ -25,23 +25,11 @@ def cli_init_config(
         confirmation_prompt=True,
         callback=strip_style(password_callback),
     ),
-    host: str = typer.Option(
-        default=default_styler(config.server.host),
-        prompt="Server host",
+    url: str = typer.Option(
+        default=default_styler(config.server.url),
+        prompt="Server URL",
         prompt_required=True,
         callback=strip_style(host_callback),
-    ),
-    port: str = typer.Option(
-        default=default_styler(config.server.port),
-        prompt="Server port",
-        prompt_required=True,
-        callback=strip_style(port_callback),
-    ),
-    insecure: str = typer.Option(
-        default=default_styler("False"),
-        prompt="Insecure connection (i.e. http)?",
-        prompt_required=True,
-        callback=strip_style(insecure_callback),
     ),
     workspace: str = typer.Option(
         default=default_styler(config.server.workspace),
@@ -53,16 +41,11 @@ def cli_init_config(
     """Initialize a new config file
 
     Args:
-        username (str, optional):  (Default value = typer.Option(..., prompt=True, callback=username_callback, prompt_required=True))
-        password (str, optional):  (Default value = typer.Option(...,prompt=True,prompt_required=True,hide_input=True,confirmation_prompt=True,callback=strip_style(password_callback))
+        username:  (Default value = typer.Option(..., prompt=True, callback=username_callback, prompt_required=True))
+        password:  (Default value = typer.Option(...,prompt=True,prompt_required=True,hide_input=True,confirmation_prompt=True,callback=strip_style(password_callback))
         ):
-        host (str, optional):  (Default value = typer.Option(default=default_styler(config.server.host))
-        prompt:  (Default value = "The Grai workspace for this config")
-        prompt_required:  (Default value = True)
-        callback:  (Default value = strip_style(workspace_callback))
-        port (str, optional):  (Default value = typer.Option(default=default_styler(config.server.port))
-        insecure (str, optional):  (Default value = typer.Option(default=default_styler("False"))
-        workspace (str, optional):  (Default value = typer.Option(default=default_styler(config.server.workspace))
+        url:
+        workspace:  (Default value = typer.Option(default=default_styler(config.server.workspace))
 
     Returns:
 
@@ -70,7 +53,7 @@ def cli_init_config(
 
     """
     config.auth = BasicAuthSettings(username=username, password=password)
-    config.server = ServerSettingsV1(host=host, port=port, insecure=insecure, workspace=workspace)
+    config.server = ServerSettingsV1(url=url, workspace=workspace)
     config.save()
 
 

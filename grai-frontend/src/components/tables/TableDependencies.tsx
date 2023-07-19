@@ -9,16 +9,23 @@ interface Dependency {
   display_name: string
 }
 
+interface Source {
+  id: string
+  name: string
+}
+
 type TableDependenciesProps = {
   label: string
-  dependencies: Dependency[]
+  dependencies: (Dependency | Source)[]
+  routePrefix?: string
 }
 
 const TableDependencies: React.FC<TableDependenciesProps> = ({
   label,
   dependencies,
+  routePrefix,
 }) => {
-  const { routePrefix } = useWorkspace()
+  const { routePrefix: workspaceRoutePrefix } = useWorkspace()
 
   return (
     <NodeDetailRow label={label}>
@@ -26,8 +33,13 @@ const TableDependencies: React.FC<TableDependenciesProps> = ({
         <Stack>
           {dependencies.map(table => (
             <Box key={table.id}>
-              <Button component={Link} to={`${routePrefix}/tables/${table.id}`}>
-                {table.display_name}
+              <Button
+                component={Link}
+                to={`${workspaceRoutePrefix}/${routePrefix ?? "tables"}/${
+                  table.id
+                }`}
+              >
+                {"display_name" in table ? table.display_name : table.name}
               </Button>
             </Box>
           ))}

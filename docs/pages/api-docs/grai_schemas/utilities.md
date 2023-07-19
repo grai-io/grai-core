@@ -69,17 +69,17 @@ def merge_missing(a: T, b: None) -> T
 
 
 
-## merge\_dicts
+## merge\_dict\_item
 
 ```python
 @merge.register
-def merge_dicts(a: dict, b: dict) -> dict
+def merge_dict_item(a: Dict, b: Dict) -> Dict
 ```
 
 **Arguments**:
 
-  a (dict):
-  b (dict):
+  a (Dict):
+  b (Dict):
 
 
 **Returns**:

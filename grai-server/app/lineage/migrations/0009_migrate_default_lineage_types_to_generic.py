@@ -12,7 +12,9 @@ def batch_iter(iterable, n=10000):
 class MigrateNode:
     def migrate(self, apps, schema_editor):
         node = apps.get_model("lineage", "Node")
-        ids = node.objects.filter(metadata__grai__node_type="Node").values_list("id", flat=True)
+        ids = node.objects.filter(metadata__grai__node_type="Node").values_list(
+            "id", flat=True
+        )
         for batch in batch_iter(ids):
             nodes = node.objects.filter(id__in=batch)
             for item in nodes:
@@ -21,7 +23,9 @@ class MigrateNode:
 
     def reverse(self, apps, schema_editor):
         node = apps.get_model("lineage", "Node")
-        ids = node.objects.filter(metadata__grai__node_type="Generic").values_list("id", flat=True)
+        ids = node.objects.filter(metadata__grai__node_type="Generic").values_list(
+            "id", flat=True
+        )
         for batch in batch_iter(ids):
             nodes = node.objects.filter(id__in=batch)
             for item in nodes:
@@ -32,7 +36,9 @@ class MigrateNode:
 class MigrateEdge:
     def migrate(self, apps, schema_editor):
         edge = apps.get_model("lineage", "Edge")
-        ids = edge.objects.filter(metadata__grai__edge_type="Edge").values_list("id", flat=True)
+        ids = edge.objects.filter(metadata__grai__edge_type="Edge").values_list(
+            "id", flat=True
+        )
         for batch in batch_iter(ids):
             edges = edge.objects.filter(id__in=batch)
             for item in edges:
@@ -41,7 +47,9 @@ class MigrateEdge:
 
     def reverse(self, apps, schema_editor):
         edge = apps.get_model("lineage", "Edge")
-        ids = edge.objects.filter(metadata__grai__edge_type="Generic").values_list("id", flat=True)
+        ids = edge.objects.filter(metadata__grai__edge_type="Generic").values_list(
+            "id", flat=True
+        )
         for batch in batch_iter(ids):
             edges = edge.objects.filter(id__in=batch)
             for item in edges:

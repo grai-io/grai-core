@@ -4,7 +4,13 @@ import pytest
 from django.core.files.uploadedfile import UploadedFile
 from strawberry.types import Info
 
-from api.tests.common import test_context, test_organisation, test_user, test_workspace
+from api.tests.common import (
+    test_context,
+    test_organisation,
+    test_user,
+    test_workspace,
+    test_source,
+)
 from connections.models import Connector
 from connections.mutations import Mutation
 from lineage.models import Node
@@ -20,7 +26,7 @@ async def test_node(test_workspace):
 
 
 @pytest.mark.django_db
-async def test_upload_connector_file_yaml(test_context, test_node):
+async def test_upload_connector_file_yaml(test_context):
     context, test_organisation, workspace, test_user, membership = test_context
 
     info = Info
@@ -39,6 +45,31 @@ async def test_upload_connector_file_yaml(test_context, test_node):
             namespace="default",
             connectorId=str(connector.id),
             file=file,
+            sourceName="test",
+        )
+
+
+@pytest.mark.django_db
+async def test_upload_connector_file_yaml_source_id(test_context, test_source):
+    context, test_organisation, workspace, test_user, membership = test_context
+
+    info = Info
+    info.context = context
+
+    connector, created = await Connector.objects.aget_or_create(name=Connector.YAMLFILE, slug=Connector.YAMLFILE)
+
+    with open(os.path.join(__location__, "test.yaml")) as reader:
+        file = UploadedFile(reader, name="test.yaml")
+
+        mutation = Mutation()
+
+        await mutation.uploadConnectorFile(
+            info=info,
+            workspaceId=str(workspace.id),
+            namespace="default",
+            connectorId=str(connector.id),
+            file=file,
+            sourceId=str(test_source.id),
         )
 
 
@@ -85,4 +116,5 @@ async def test_upload_connector_file_dbt(test_context, test_node):
             namespace="default",
             connectorId=str(connector.id),
             file=file,
+            sourceName="test",
         )

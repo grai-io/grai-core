@@ -1,24 +1,39 @@
-import json
+from functools import cached_property
 from itertools import chain
-from typing import Callable, Dict, List, Optional, Union
+from typing import Callable, Dict, List, Optional, TypedDict, Union
 
 import requests
-from pydantic import BaseSettings, SecretStr, validator
+from pydantic import (
+    AnyHttpUrl,
+    BaseModel,
+    BaseSettings,
+    Json,
+    SecretStr,
+    parse_obj_as,
+    validator,
+)
 from requests.exceptions import ConnectionError
 from retrying import retry
 
-from grai_source_metabase.models import Edge, NodeTypes, Question, Table, Collection, Dashboard
+from grai_source_metabase.models import (
+    Collection,
+    Dashboard,
+    Edge,
+    NodeTypes,
+    Question,
+    Table,
+)
 
 
 class MetabaseConfig(BaseSettings):
-    endpoint: str
+    endpoint: AnyHttpUrl
     username: SecretStr
     password: SecretStr
 
     @validator("endpoint")
     def validate_endpoint(cls, endpoint: str):
         endpoint = endpoint.rstrip("/")
-        return endpoint
+        return parse_obj_as(AnyHttpUrl, endpoint)
 
     class Config:
         env_prefix = "grai_metabase_"
@@ -149,17 +164,18 @@ class MetabaseAPI:
         return self.make_request(self.session.get, url)
 
 
-def build_namespace_map(dbs: Dict, namespace_map: Union[str, Dict, None], metabase_namespace: str) -> Dict:
-    if isinstance(namespace_map, str):
-        namespace_map = json.loads(namespace_map)
-    elif namespace_map is None:
-        namespace_map = {}
+def build_namespace_map(default_map: Dict[int, str], dbs: Dict, metabase_namespace: str) -> Dict[int, str]:
+    namespace_map = default_map.copy()
 
     for k, v in dbs.items():
         db_id_ns = f"{metabase_namespace}.{k}.{v['name']}"
         namespace_map.setdefault(k, db_id_ns)
 
     return namespace_map
+
+
+class NamespaceMapJsonModel(BaseModel):
+    json_obj: Json[Dict[int, str]]
 
 
 class MetabaseConnector(MetabaseAPI):
@@ -187,63 +203,79 @@ class MetabaseConnector(MetabaseAPI):
     def __init__(
         self,
         metabase_namespace: str,
-        namespaces: Optional[Dict] = None,
+        namespace_map: Optional[Union[str, Dict[int, str]]] = None,
         *args,
         **kwargs,
     ):
+        if namespace_map is None:
+            namespace_map = {}
+        elif isinstance(namespace_map, str):
+            try:
+                namespace_map = NamespaceMapJsonModel(json_obj=namespace_map).json_obj
+            except Exception as e:
+                message = (
+                    f"There was an error parsing the value provided in namespace_map. When providing namespace_map "
+                    f"it must be either a dictionary whose keys are database id's in metabase and values are namespace "
+                    f"strings in Grai for the corresponding database or a JSON string of the same. "
+                    f"In this case we received a JSON string but it did not parse to Dict[int, str] as expected."
+                )
+                raise ValueError(message) from e
+
         super().__init__(*args, **kwargs)
-        self._lineage_ready = False
+        self.base_namespace_map = namespace_map
         self.metabase_namespace = metabase_namespace
 
-        # This line creates a list of tables by modifying each table dictionary obtained from the get_tables() method.
-        # It replaces the "schema" key with a new key "schema_name" while preserving the other key-value pairs.
-        # this is because the "schema" key is a reserved keyword in the pydantic.
-        self.tables = [{**table, "schema_name": table.pop("schema")} for table in self.get_tables()]
-        self.tables_map = {table["id"]: table for table in self.tables if table["active"]}
-        self.dbs_map = {db["id"]: db for db in self.get_dbs()["data"]}
-        self.collections_map = {
+    @cached_property
+    def namespace_map(self):
+        return build_namespace_map(self.base_namespace_map, self.dbs_map, self.metabase_namespace)
+
+    @cached_property
+    def tables(self) -> List[Dict]:
+        return [{**table, "schema_name": table.pop("schema")} for table in self.get_tables()]
+
+    @cached_property
+    def tables_map(self) -> Dict:
+        return {table["id"]: table for table in self.tables if table["active"]}
+
+    @cached_property
+    def dbs_map(self) -> Dict:
+        return {db["id"]: db for db in self.get_dbs()["data"]}
+
+    @cached_property
+    def questions_map(self) -> Dict:
+        return {question["id"]: question for question in self.get_questions() if question["archived"] is False}
+
+    @cached_property
+    def collections_map(self) -> Dict:
+        return {
             collection["id"]: {k: v for k, v in collection.items() if k != "namespace"}
             for collection in self.get_collections()
             if collection["id"] != "root" and collection["archived"] is False
         }
 
-        self.questions_map = {
-            question["id"]: question for question in self.get_questions() if question["archived"] is False
-        }
-        self.namespace_map = build_namespace_map(self.dbs_map, namespaces, self.metabase_namespace)
-
-        self.question_table_map = {}
-        self.table_db_map = {}
-        self.question_collection_map = {}
-
-    def build_lineage(self):
-        """
-        Builds the lineage information by updating the mappings and maps.
-
-        This method updates the `tables_map`, `dbs_map`, `questions_map`, `question_table_map`, `table_db_map`,
-        and `question_db_map` attributes.
-
-        """
-
-        self.question_table_map = {
+    @cached_property
+    def question_table_map(self) -> Dict:
+        return {
             question["id"]: question["table_id"]
             for question in self.questions_map.values()
             if question["table_id"] and self.tables_map.get(question["table_id"]) is not None
         }
 
-        self.table_db_map = {
+    @cached_property
+    def table_db_map(self) -> Dict:
+        return {
             table["id"]: table["db_id"]
             for table in self.tables
             if table["id"] is not None and table["db_id"] is not None
         }
 
-        self.question_collection_map = {
+    @cached_property
+    def question_collection_map(self) -> Dict:
+        return {
             question["id"]: question["collection_id"]
             for question in self.questions_map.values()
             if question["collection_id"] and self.collections_map.get(question["collection_id"]) is not None
         }
-
-        self._lineage_ready = True
 
     def get_nodes(self) -> List[NodeTypes]:
         """
@@ -253,9 +285,6 @@ class MetabaseConnector(MetabaseAPI):
             List[NodeTypes]: The list of nodes.
 
         """
-
-        if not self._lineage_ready:
-            self.build_lineage()
 
         for question in self.questions_map.values():
             question["namespace"] = self.metabase_namespace
@@ -281,9 +310,6 @@ class MetabaseConnector(MetabaseAPI):
             List[Edge]: The list of edges.
 
         """
-
-        if not self._lineage_ready:
-            self.build_lineage()
 
         question_to_table_edges = (
             Edge(

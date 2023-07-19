@@ -1,9 +1,8 @@
-import os
-from itertools import chain
-
 import pytest
+from grai_schemas.v1.source import SourceSpec
+from grai_schemas.v1.workspace import WorkspaceSpec
 
-from grai_source_snowflake.base import adapt_to_client, get_nodes_and_edges
+from grai_source_snowflake.base import adapt_to_client
 from grai_source_snowflake.loader import SnowflakeConnector
 from grai_source_snowflake.models import Column, Edge, Table
 
@@ -30,6 +29,16 @@ from grai_source_snowflake.models import Column, Edge, Table
 # def nodes_and_edges(connection):
 #     nodes, edges = get_nodes_and_edges(connection, "v1")
 #     return nodes, edges
+
+
+@pytest.fixture
+def default_workspace():
+    return WorkspaceSpec(name="default", organization="default")
+
+
+@pytest.fixture
+def mock_source(default_workspace):
+    return SourceSpec(name="SnowflakeTest", workspace=default_workspace)
 
 
 @pytest.fixture
@@ -218,7 +227,7 @@ def edges(edge_params):
 
 
 @pytest.fixture
-def mock_get_nodes_and_edges(tables, edges):
+def mock_get_nodes_and_edges(tables, edges, mock_source):
     """
 
     Args:
@@ -230,6 +239,6 @@ def mock_get_nodes_and_edges(tables, edges):
     Raises:
 
     """
-    nodes = adapt_to_client(tables, "v1")
-    edges = adapt_to_client(edges, "v1")
+    nodes = adapt_to_client(tables, mock_source, "v1")
+    edges = adapt_to_client(edges, mock_source, "v1")
     return nodes, edges

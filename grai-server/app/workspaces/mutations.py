@@ -16,7 +16,7 @@ from strawberry.types import Info
 from api.common import IsAuthenticated, aget_workspace, get_user, get_workspace
 from api.types import KeyResult, Membership, Workspace, WorkspaceAPIKey
 from api.validation import validate_no_slash
-from lineage.graph_cache import GraphCache
+from lineage.extended_graph_cache import ExtendedGraphCache
 from lineage.models import Edge, Node
 from workspaces.models import Membership as MembershipModel
 from workspaces.models import Organisation as OrganisationModel
@@ -150,7 +150,7 @@ class Mutation:
         if await nodes.aexists():
             await sync_to_async(nodes._raw_delete)(nodes.db)
 
-        graph_cache = GraphCache(workspace=workspace)
+        graph_cache = ExtendedGraphCache(workspace=workspace)
         graph_cache.clear_cache()
 
         return workspace

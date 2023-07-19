@@ -9,7 +9,7 @@ type Metadata = { [k: string]: any } | null
 interface TableInterface {
   name: string
   namespace: string
-  data_source: string
+  // data_source: string
   metadata?: Metadata
 }
 
@@ -26,7 +26,7 @@ const TableDetail: React.FC<TableDetailProps> = ({ table }) => (
         <NodeDetailRow label="# of columns" />
         <NodeDetailRow label="Name" value={table.name} />
         <NodeDetailRow label="Namespace" value={table.namespace} />
-        <NodeDetailRow label="Data Source" value={table.data_source} />
+        {/* <NodeDetailRow label="Data Source" value={table.data_source} /> */}
         <NodeDetailRow label="Tags">
           <Stack direction="row" spacing={1}>
             {(table.metadata?.grai?.tags ?? []).map((tag: string) => (

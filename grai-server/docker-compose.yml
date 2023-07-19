@@ -110,6 +110,8 @@ services:
 
   redis:
     image: redis/redis-stack:latest
+    environment:
+      - REDISGRAPH_ARGS=RESULTSET_SIZE 100000
     ports:
       - 6379:6379
       - 8001:8001

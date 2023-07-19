@@ -1,8 +1,7 @@
-import abc
-from dataclasses import dataclass
 from typing import Any, Dict, Literal, Optional, TypeVar, Union
 from uuid import UUID
 
+from grai_schemas.serializers import dump_json, load_json
 from grai_schemas.utilities import merge
 from pydantic import BaseModel, dataclasses, root_validator, validator
 
@@ -39,7 +38,13 @@ class GraiBaseModel(HashableBaseModel):
     class Config:
         """ """
 
-        json_encoders = {UUID: lambda x: str(x)}
+        json_loads = load_json
+        json_dumps = dump_json
+        # json_encoders = {UUID: lambda x: str(x)}
+        validate_all = True
+        validate_assignment = True
+        allow_population_by_field_name = True
+        orm_mode = True
 
 
 class PlaceHolderSchema(GraiBaseModel):
@@ -92,11 +97,6 @@ class DefaultValue(GraiBaseModel):
             has_default_value = values.get("has_default_value", None)
             data_type = values.get("data_type", None)
             default_value = values.get("default_value", None)
-        # elif isinstance(values, DefaultValue):
-        #     breakpoint()
-        #     has_default_value = values.has_default_value
-        #     data_type = values.data_type
-        #     default_value = values.default_value
         else:
             raise NotImplementedError(f"No available implementation to produce a DefaultValue from a {type(values)}")
 
@@ -143,6 +143,16 @@ class PackageConfig(BaseModel):
         validate_all = True
 
 
+class Metadata(GraiBaseModel):
+    pass
+
+    class Config:
+        """ """
+
+        extra = "allow"
+        allow_mutation = True
+
+
 class MalformedMetadata(GraiBaseModel):
     """ """
 
@@ -156,9 +166,3 @@ class MalformedMetadata(GraiBaseModel):
     def dict(self, *args, **kwargs):
         """ """
         return self.malformed_values
-
-    class Config:
-        """ """
-
-        extra = "allow"
-        allow_mutation = True

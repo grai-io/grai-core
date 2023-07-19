@@ -1,8 +1,12 @@
 from enum import Enum
 from typing import Any, List, Literal, Optional, Union
 
-from grai_schemas.generics import DefaultValue, HashableBaseModel, MalformedMetadata
-from grai_schemas.v1.generics import GraiBaseModel, V1Mixin
+from grai_schemas.generics import (
+    DefaultValue,
+    GraiBaseModel,
+    HashableBaseModel,
+    MalformedMetadata,
+)
 from grai_schemas.v1.metadata.generics import GenericAttributes
 
 
@@ -24,10 +28,11 @@ class SourceType(Enum):
     database = "SQL"
 
 
-class BaseNodeMetadataV1(V1Mixin):
+class BaseNodeMetadataV1(GraiBaseModel):
     """ """
 
     type: Literal["NodeV1"] = "NodeV1"
+    version: Literal["v1"] = "v1"
     node_type: NodeMetadataTypeLabelLiterals
     node_attributes: GenericAttributes
     tags: Optional[List[str]]
@@ -36,8 +41,8 @@ class BaseNodeMetadataV1(V1Mixin):
 class MalformedNodeMetadataV1(MalformedMetadata, BaseNodeMetadataV1):
     """ """
 
-    node_type: Optional[str] = "Malformed"
-    node_attributes: Optional[Any] = GenericAttributes()
+    node_type: Optional[str] = "Malformed"  # type: ignore
+    node_attributes: Optional[Any] = GenericAttributes()  # type: ignore
 
 
 class GenericNodeMetadataV1(BaseNodeMetadataV1):
@@ -45,9 +50,10 @@ class GenericNodeMetadataV1(BaseNodeMetadataV1):
     node_attributes: GenericAttributes = GenericAttributes()
 
 
-class ColumnAttributes(V1Mixin, GenericAttributes):
+class ColumnAttributes(GenericAttributes):
     """ """
 
+    version: Literal["v1"] = "v1"
     data_type: Optional[str]  # This will need to be standardized
     default_value: Optional[DefaultValue]
     is_nullable: Optional[bool]
@@ -62,10 +68,10 @@ class ColumnMetadata(BaseNodeMetadataV1):
     node_attributes: ColumnAttributes = ColumnAttributes()
 
 
-class TableAttributes(V1Mixin, GenericAttributes):
+class TableAttributes(GenericAttributes):
     """ """
 
-    pass
+    version: Literal["v1"] = "v1"
 
 
 class TableMetadata(BaseNodeMetadataV1):
@@ -75,10 +81,10 @@ class TableMetadata(BaseNodeMetadataV1):
     node_attributes: TableAttributes = TableAttributes()
 
 
-class QueryAttributes(V1Mixin, GenericAttributes):
+class QueryAttributes(GenericAttributes):
     """ """
 
-    pass
+    version: Literal["v1"] = "v1"
 
 
 class QueryMetadata(BaseNodeMetadataV1):

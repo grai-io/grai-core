@@ -1,8 +1,8 @@
 from notifications.mutations import Mutation as NotificationMutation
+import strawberry
 from strawberry.schema.config import StrawberryConfig
 from strawberry.tools import merge_types
-from strawberry_django_plus import gql
-from strawberry_django_plus.optimizer import DjangoOptimizerExtension
+from strawberry_django.optimizer import DjangoOptimizerExtension
 
 from api.queries import Query
 from auth.mutations import Mutation as AuthMutation
@@ -21,7 +21,7 @@ mutations = (
 )
 Mutation = merge_types("Mutation", mutations)
 
-schema = gql.Schema(
+schema = strawberry.Schema(
     query=Query,
     mutation=Mutation,
     extensions=[

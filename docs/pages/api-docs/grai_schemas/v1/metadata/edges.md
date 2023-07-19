@@ -14,10 +14,24 @@ class EdgeMetadataTypeLabels(Enum)
 ## BaseEdgeMetadataV1 Objects
 
 ```python
-class BaseEdgeMetadataV1(V1Mixin)
+class BaseEdgeMetadataV1(GraiBaseModel)
 ```
 
 
+
+## MalformedEdgeMetadataV1 Objects
+
+```python
+class MalformedEdgeMetadataV1(MalformedMetadata, BaseEdgeMetadataV1)
+```
+
+### edge\_type
+
+type: ignore
+
+### edge\_attributes
+
+type: ignore
 
 ## TableToColumnAttributes Objects
 

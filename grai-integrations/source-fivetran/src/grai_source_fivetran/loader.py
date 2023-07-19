@@ -17,7 +17,7 @@ from typing import (
 )
 
 import requests
-from pydantic import BaseModel, BaseSettings, SecretStr, validator
+from pydantic import BaseModel, BaseSettings, Json, SecretStr, validator
 
 from grai_source_fivetran.fivetran_api.api_models import (
     ColumnMetadataResponse,
@@ -121,14 +121,14 @@ class FivetranAPI:
         headers: Optional[Dict] = None,
         params: Optional[Dict] = None,
         **kwargs,
-    ) -> Dict:
+    ) -> Tuple[Dict, requests.Response]:
         """
 
         Args:
-            request (Callable[..., requests.Response]):
-            url (str):
-            headers (Optional[Dict], optional):  (Default value = None)
-            params (Optional[Dict], optional):  (Default value = None)
+            request:
+            url:
+            headers:  (Default value = None)
+            params:  (Default value = None)
             **kwargs:
 
         Returns:
@@ -153,10 +153,10 @@ class FivetranAPI:
         """
 
         Args:
-            request (Callable[..., requests.Response]):
-            url (str):
-            headers (Optional[Dict], optional):  (Default value = None)
-            params (Optional[Dict], optional):  (Default value = None)
+            request:
+            url:
+            headers:  (Default value = None)
+            params:  (Default value = None)
             **kwargs:
 
         Returns:
@@ -169,7 +169,7 @@ class FivetranAPI:
             """
 
             Args:
-                item (Dict):
+                item):
 
             Returns:
 
@@ -197,9 +197,9 @@ class FivetranAPI:
         """
 
         Args:
-            url (str):
-            headers (Optional[Dict], optional):  (Default value = None)
-            params (Optional[Dict], optional):  (Default value = None)
+            url:
+            headers:  (Default value = None)
+            params:  (Default value = None)
 
         Returns:
 
@@ -215,8 +215,8 @@ class FivetranAPI:
         """
 
         Args:
-            connector_id (str):
-            limit (Optional[int], optional):  (Default value = None)
+            connector_id:
+            limit:  (Default value = None)
 
         Returns:
 
@@ -230,8 +230,8 @@ class FivetranAPI:
         """
 
         Args:
-            connector_id (str):
-            limit (Optional[int], optional):  (Default value = None)
+            connector_id:
+            limit:  (Default value = None)
 
         Returns:
 
@@ -245,8 +245,8 @@ class FivetranAPI:
         """
 
         Args:
-            connector_id (str):
-            limit (Optional[int], optional):  (Default value = None)
+            connector_id:
+            limit:  (Default value = None)
 
         Returns:
 
@@ -260,7 +260,7 @@ class FivetranAPI:
         """
 
         Args:
-            limit (Optional[int], optional):  (Default value = None)
+            limit:  (Default value = None)
 
         Returns:
 
@@ -274,8 +274,8 @@ class FivetranAPI:
         """
 
         Args:
-            group_id (str):
-            limit (Optional[int], optional):  (Default value = None)
+            group_id:
+            limit:  (Default value = None)
 
         Returns:
 
@@ -438,36 +438,18 @@ class SourceDestinationDict(TypedDict):
 NamespaceTypes = Union[Dict[str, Union[str, SourceDestinationDict]], str]
 
 
-def build_namespace_map(
-    connectors: Dict, namespace_map: Union[str, Optional[NamespaceTypes]], default_namespace: Optional[str]
+def process_base_namespace_map(
+    namespace_map: Optional[Union[str, Dict[str, Union[str, SourceDestinationDict]]]]
 ) -> Dict[str, NamespaceIdentifier]:
-    """
-
-    Args:
-        connectors (Dict):
-        namespace_map (Union[str, Optional[NamespaceTypes]]):
-        default_namespace (Optional[str]):
-
-    Returns:
-
-    Raises:
-
-    """
-    if namespace_map is None and default_namespace is None:
-        message = (
-            f"The FivetranGraiMapper requires a not null value for `default_namespace` and/or `namespaces. "
-            f"These values are used to identify which Fivetran connection id's belong to which associated "
-            f"Grai namespace. `default_namespace` will map a single namespace to ALL connection id's."
-            "This behavior can be overridden by `namespaces` which maps {connection_id -> "
-            "namespace} or {connection_id -> {source: namespace, destination: namespace}}"
-        )
-        raise ValueError(message)
-    elif isinstance(namespace_map, str):
-        namespace_map = json.loads(namespace_map)
-
     if namespace_map is None:
         namespace_map = {}
-    else:
+    elif isinstance(namespace_map, str):
+        try:
+            namespace_map = json.loads(namespace_map)
+        except:
+            message = f"The provided JSON string was invalid and could not be successfully parsed."
+            raise Exception(message)
+    elif isinstance(namespace_map, dict):
         message = (
             "The namespaces object should be a dictionary whose id's are Fivetran connector id's and whose values "
             "identify the Grai namespace associated with either the source or destination of the connector. "
@@ -477,16 +459,15 @@ def build_namespace_map(
         )
         assert all(isinstance(v, (dict, str)) for v in namespace_map.values()), message
         assert all("source" in v and "destination" in v for v in namespace_map.values() if isinstance(v, dict)), message
+    else:
+        raise ValueError(f"namespace_map must be either a JSON string, a dictionary not {type(namespace_map)}")
 
-    if default_namespace is not None:
-        namespace_map = namespace_map.copy()  # avoid modifying the users original argument
-        for k in connectors.keys():
-            namespace_map.setdefault(k, default_namespace)
+    result: Dict[str, NamespaceIdentifier] = {}
 
-    return {
-        k: NamespaceIdentifier(source=v, destination=v) if isinstance(v, str) else NamespaceIdentifier(**v)
-        for k, v in namespace_map.items()
-    }
+    for k, v in namespace_map.items():
+        result[k] = NamespaceIdentifier(source=v, destination=v) if isinstance(v, str) else NamespaceIdentifier(**v)
+
+    return result
 
 
 class FivetranConnector(FivetranAPI):
@@ -505,17 +486,52 @@ class FivetranConnector(FivetranAPI):
         self.semaphore = asyncio.Semaphore(self.parallelization)
         self.http_runner = parallelize_http(self.semaphore)
         self.default_namespace = default_namespace
+        self._namespace_map_base = process_base_namespace_map(namespaces)
 
-        self.connectors = {conn.id: conn for conn in self.get_connectors() if conn.id is not None}
-        self.namespace_map = build_namespace_map(self.connectors, namespaces, self.default_namespace)
-        if self.default_namespace is None:
-            self.connectors = {k: v for k, v in self.connectors.items() if k in self.namespace_map}
+        self._namespace_map: Optional[Dict[str, NamespaceIdentifier]] = None
+        self._connectors: Optional[Dict[str, ConnectorResponse]] = None
 
         self.table_to_conn_map: Dict[str, str] = {}
         self.column_to_conn_map: Dict[str, str] = {}
         self.schemas: Dict[str, SchemaMetadataResponse] = {}
         self.tables: Dict[str, TableMetadataResponse] = {}
         self.columns: Dict[str, ColumnMetadataResponse] = {}
+
+        self._nodes = None
+        self._edges = None
+        self.lineage_ready = False
+
+    def has_query_permissions(self):
+        try:
+            # Should check all of the required endpoints here since the API key can be scoped
+            self.get_all_groups(limit=1)
+            return True
+        except Exception as e:
+            return False
+
+    @property
+    def connectors(self) -> Dict[str, ConnectorResponse]:
+        if self._connectors is None:
+            self._connectors = {conn.id: conn for conn in self.get_connectors() if conn.id is not None}
+        return self._connectors
+
+    @property
+    def namespace_map(self):
+        if self._namespace_map is None:
+            namespace_map = self._namespace_map_base.copy()  # avoid modifying the users original argument
+            if self.default_namespace is not None:
+                identifier = NamespaceIdentifier(source=self.default_namespace, destination=self.default_namespace)
+                for k in self.connectors.keys():
+                    namespace_map.setdefault(k, identifier.copy())
+            else:
+                for k in self.connectors.keys():
+                    source_namespace = f"fivetran-{k}-source"
+                    destination_namespace = f"fivetran-{k}-destination"
+                    identifier = NamespaceIdentifier(source=source_namespace, destination=destination_namespace)
+                    namespace_map.setdefault(k, identifier)
+            self._namespace_map = namespace_map
+
+        return self._namespace_map
 
     def build_lineage(self):
         """ """
@@ -544,9 +560,13 @@ class FivetranConnector(FivetranAPI):
         Raises:
 
         """
+        if self.lineage_ready:
+            return self._nodes, self._edges
+
+        self.build_lineage()
+
         # table.parent_id -> schema.id
         # column.parent_id -> table.id
-        self.build_lineage()
         tables = {
             table.id: Table.from_fivetran_models(
                 self.schemas[table.parent_id],
@@ -573,6 +593,8 @@ class FivetranConnector(FivetranAPI):
             for col, table in zip(cols, tables[cols[0].fivetran_table_id])
         )
 
-        nodes = chain(chain.from_iterable(tables.values()), *columns)
-        edges = chain(column_edges, table_edges, table_to_column_edges)
-        return list(nodes), list(edges)
+        self._nodes = list(chain(chain.from_iterable(tables.values()), *columns))
+        self._edges = list(chain(column_edges, table_edges, table_to_column_edges))
+        self.lineage_ready = True
+
+        return self._nodes, self._edges

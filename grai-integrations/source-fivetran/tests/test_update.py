@@ -1,40 +1,33 @@
-import json
-
 import dotenv
-from grai_client.endpoints.v1.client import ClientV1
 
-from grai_source_fivetran.base import get_nodes_and_edges, update_server
-from grai_source_fivetran.loader import FivetranConnector
+from grai_source_fivetran.base import FivetranIntegration
 
-# def test_load_from_remote():
-#     dotenv.load_dotenv()
-#     # client = ClientV1("localhost", "8000", username="null@grai.io", password="super_secret")
-#     kwargs = {"default_namespace": 'default_namespace'}
-#     # breakpoint()
-#     connector = FivetranConnector(**kwargs)
-#     nodes, edges = get_nodes_and_edges(connector, 'v1')
-
-
-# def test_loader_with_json_namespaces():
+# def test_loader_with_json_namespaces(mock_source):
 #     dotenv.load_dotenv()
 #     namespaces = '{"happy": "monkey"}'
-#     conn = FivetranConnector(namespaces=namespaces)
-#     assert conn.namespace_map.keys() == {"happy"}
-#     assert conn.namespace_map['happy'].source == "monkey"
-#     assert conn.namespace_map['happy'].destination == "monkey"
-#
-#
-# def test_loader_with_dict_namespaces():
+#     conn = FivetranIntegration(namespaces=namespaces, source=mock_source)
+#     assert "happy" in conn.connector.namespace_map
+#     assert conn.connector.namespace_map["happy"].source == "monkey"
+#     assert conn.connector.namespace_map["happy"].destination == "monkey"
+
+
+# def test_loader_with_dict_namespaces(mock_source, namespace_map):
 #     dotenv.load_dotenv()
 #     namespaces = {"happy": "monkey"}
-#     conn = FivetranConnector(namespaces=namespaces)
-#     assert conn.namespace_map.keys() == {"happy"}
-#     assert conn.namespace_map['happy'].source == "monkey"
-#     assert conn.namespace_map['happy'].destination == "monkey"
+#     conn = FivetranIntegration(namespaces=namespaces, source=mock_source)
+#     assert "happy" in conn.connector.namespace_map
+#     assert conn.connector.namespace_map["happy"].source == "monkey"
+#     assert conn.connector.namespace_map["happy"].destination == "monkey"
 
 
-# def test_load_from_remote():
+# def test_load_from_remote(mock_source):
 #     dotenv.load_dotenv()
-#     client = ClientV1(host="localhost", port="8000", username="null@grai.io", password="super_secret", insecure=True)
-#     kwargs = {"default_namespace": "default_namespace"}
-#     update_server(client, **kwargs)
+#     conn = FivetranIntegration(source=mock_source)
+#     nodes, edges = conn.get_nodes_and_edges()
+
+
+# def test_load_from_remote_and_update(client, mock_source, namespace_map, run_live):
+#     dotenv.load_dotenv()
+#     conn = FivetranIntegration.from_client(client, source=mock_source.name, namespaces=namespace_map)
+#     if run_live:
+#         conn.update()

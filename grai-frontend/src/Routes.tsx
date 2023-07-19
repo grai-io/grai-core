@@ -38,6 +38,10 @@ const ConnectionCreate = lazy(
 )
 const Connection = lazy(() => import("./pages/connections/Connection"))
 
+const Sources = lazy(() => import("./pages/sources/Sources"))
+const SourceCreate = lazy(() => import("./pages/sources/SourceCreate"))
+const Source = lazy(() => import("./pages/sources/Source"))
+
 const Filters = lazy(() => import("./pages/filters/Filters"))
 const Filter = lazy(() => import("./pages/filters/Filter"))
 const FilterCreate = lazy(() => import("./pages/filters/FilterCreate"))
@@ -122,6 +126,11 @@ const Routes: React.FC = () => (
                 <Route path="create" element={<ConnectionCreate />} />
                 <Route path=":connectionId" element={<Connection />} />
               </Route>
+              <Route path="sources">
+              <Route index element={<Sources />} />
+              <Route path="create" element={<SourceCreate />} />
+              <Route path=":sourceId" element={<Source />} />
+            </Route>
               <Route path="filters">
                 <Route index element={<Filters />} />
                 <Route path="create" element={<FilterCreate />} />

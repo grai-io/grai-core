@@ -144,11 +144,3 @@ def validate_malformed(cls, v)
 ```python
 def dict(*args, **kwargs)
 ```
-
-
-
-### Config Objects
-
-```python
-class Config()
-```

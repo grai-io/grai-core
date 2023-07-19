@@ -1,13 +1,10 @@
 import os
 
 import pytest
+from grai_schemas.v1 import OrganisationV1, WorkspaceV1
+from grai_schemas.v1.mock import MockV1
 
 from grai_client.endpoints.v1.client import ClientV1
-from grai_client.testing.schema import (
-    mock_v1_edge,
-    mock_v1_edge_and_nodes,
-    mock_v1_node,
-)
 
 
 @pytest.fixture(scope="session")
@@ -40,15 +37,40 @@ def client(client_params):
 
 
 @pytest.fixture(scope="session")
-def node_v1(client):
-    test_node = mock_v1_node()
-    test_node = client.post(test_node)
-    return test_node
+def workspace_v1(client):
+    workspace = client.get("workspace", ref=f"default/default")[0]
+    return workspace
 
 
 @pytest.fixture(scope="session")
-def edge_v1(client):
-    test_edge, test_nodes = mock_v1_edge_and_nodes()
-    nodes = client.post(test_nodes)
-    edge = client.post(test_edge)
-    return edge
+def mock_v1(workspace_v1):
+    return MockV1(workspace=workspace_v1)
+
+
+@pytest.fixture(scope="session")
+def organisation_v1(client, workspace_v1):
+    org = OrganisationV1.from_spec({"name": "default"})
+    org.spec.id = workspace_v1.spec.organisation
+    return org
+
+
+@pytest.fixture(scope="session")
+def source_v1(client, mock_v1, workspace_v1):
+    test_source = MockV1().source.source_spec(workspace=workspace_v1.spec)
+    source = client.post(test_source)
+    return source
+
+
+@pytest.fixture(scope="session")
+def node_v1(client, mock_v1, source_v1):
+    test_node = mock_v1.node.named_node_spec(data_sources=[source_v1.spec])
+    return client.post(test_node)
+
+
+@pytest.fixture(scope="session")
+def edge_v1(client, mock_v1, source_v1):
+    s_node = mock_v1.node.named_node_spec(data_sources=[source_v1.spec])
+    d_node = mock_v1.node.named_node_spec(data_sources=[source_v1.spec])
+    test_edge = mock_v1.edge.named_edge_spec(data_sources=[source_v1.spec], source=s_node, destination=d_node)
+    _ = client.post([s_node, d_node])
+    return client.post(test_edge)

@@ -1,19 +1,21 @@
 import uuid
 from copy import deepcopy
 from itertools import chain
-from typing import Any, Dict, List, Optional, Sequence, TypeVar, Union
+from typing import Any, Dict, List, Optional, Sequence, Tuple, TypeVar, Union
 
 from django.db import models
 from django.db.models import Q
 from grai_schemas.schema import GraiType
-from grai_schemas.utilities import merge
-from grai_schemas.v1 import EdgeV1, NodeV1
+from grai_schemas.v1 import NodeV1, EdgeV1, SourcedEdgeV1, SourcedNodeV1
+from grai_schemas.v1.source import SourceSpec
 from grai_schemas.v1.node import NodeNamedID
+from grai_schemas.utilities import merge
 from multimethod import multimethod
 from pydantic import BaseModel
 
 from lineage.models import Edge as EdgeModel
 from lineage.models import Node as NodeModel
+from lineage.models import Source
 from workspaces.models import Workspace
 
 T = TypeVar("T")
@@ -152,12 +154,23 @@ def get_edge_nodes_from_database(items, workspace):
 #     Model.objects.bulk_create(new_items)
 
 
-def process_updates(workspace, Model, items, active_items=None):
+def process_updates(workspace, source: Source, Model: T, items, active_items=None) -> Tuple[List[T], List[T], List[T]]:
     if not items:
-        return
+        return [], [], []
 
     type = items[0].type
-    Schema = NodeV1 if type == "Node" else EdgeV1
+    if type == "Node":
+        Schema = NodeV1
+        sourced = False
+    elif type == "Edge":
+        Schema = EdgeV1
+        sourced = False
+    elif type == "SourceNode":
+        Schema = SourcedNodeV1
+        sourced = True
+    elif type == "SourceEdge":
+        Schema = SourcedEdgeV1
+        sourced = True
 
     active_models = get_existing_items([item.spec.dict() for item in items], workspace, Model)
 
@@ -167,7 +180,12 @@ def process_updates(workspace, Model, items, active_items=None):
         for active_model in active_models:
             spec = active_model.__dict__
 
-            if type == "Edge":
+            if sourced:
+                spec["data_source"] = SourceSpec(id=source.id, name=source.name)
+            else:
+                spec["data_sources"] = [SourceSpec(id=source.id, name=source.name)]
+
+            if type in ["Edge", "SourceEdge"]:
                 spec["source"] = NodeNamedID(**active_model.source.__dict__)
                 spec["destination"] = NodeNamedID(**active_model.destination.__dict__)
 
@@ -185,6 +203,7 @@ def process_updates(workspace, Model, items, active_items=None):
         item.spec.is_active = False
 
     new_items = [item_map[k] for k in new_item_keys]
+
     updated_items = [
         merge(item_map[k], current_item_map[k]) for k in updated_item_keys if item_map[k] != current_item_map[k]
     ]
@@ -195,9 +214,14 @@ def process_updates(workspace, Model, items, active_items=None):
         values["workspace"] = workspace
         # values["display_name"] = values["name"]
 
-        if type == "Edge":
+        if type in ["Edge", "SourceEdge"]:
             values["source"] = get_node(workspace, values["source"])
             values["destination"] = get_node(workspace, values["destination"])
+
+        if "data_source" in values:
+            values.pop("data_source")
+        if "data_sources" in values:
+            values.pop("data_sources")
 
         result = Model(**values)
         result.set_names()
@@ -210,17 +234,31 @@ def process_updates(workspace, Model, items, active_items=None):
     return new, deactivated_items, updates
 
 
-def update(workspace: Workspace, items: List[T], active_items: Optional[List[T]] = None):
+def update(
+    workspace: Workspace,
+    source: Source,
+    items: List[T],
+    active_items: Optional[List[T]] = None,
+):
     if not items:
         return
-    Model = NodeModel if items[0].type == "Node" else EdgeModel
-    new_items, deactivated_items, updated_items = process_updates(workspace, Model, items, active_items)
-    # breakpoint()
-    # Model.objects.bulk_update(
-    #     [schemaToModel(item) for item in deactivated_items], ["is_active"]
-    # )
-    Model.objects.bulk_update(updated_items, ["metadata"])
+
+    type = items[0].type
+
+    Model = NodeModel if type in ["Node", "SourceNode"] else EdgeModel
+    relationship = source.nodes if type in ["Node", "SourceNode"] else source.edges
+
+    new_items, deactivated_items, updated_items = process_updates(workspace, source, Model, items, active_items)
+
     Model.objects.bulk_create(new_items)
+    Model.objects.bulk_update(updated_items, ["metadata"])
+
+    relationship.add(*new_items, *updated_items)
+
+    if len(deactivated_items) > 0:
+        relationship.remove(*deactivated_items)
+        EdgeModel.objects.filter(workspace=workspace, data_sources=None).delete()
+        NodeModel.objects.filter(workspace=workspace, data_sources=None).delete()
 
 
 def modelToSchema(model, Schema, type):
@@ -229,5 +267,7 @@ def modelToSchema(model, Schema, type):
     if type == "Edge":
         spec["source"] = NodeNamedID(**model.source.__dict__)
         spec["destination"] = NodeNamedID(**model.destination.__dict__)
+
+    spec["data_sources"] = []
 
     return Schema.from_spec(spec)

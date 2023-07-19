@@ -70,10 +70,10 @@ def make_request(request: Callable[..., requests.Response],
 
 **Arguments**:
 
-  request (Callable[..., requests.Response]):
-  url (str):
-- `headers` _Optional[Dict], optional_ - (Default value = None)
-- `params` _Optional[Dict], optional_ - (Default value = None)
+  request:
+  url:
+- `headers` - (Default value = None)
+- `params` - (Default value = None)
   **kwargs:
 
 
@@ -93,10 +93,10 @@ def paginated_query(request: Callable[..., requests.Response],
 
 **Arguments**:
 
-  request (Callable[..., requests.Response]):
-  url (str):
-- `headers` _Optional[Dict], optional_ - (Default value = None)
-- `params` _Optional[Dict], optional_ - (Default value = None)
+  request:
+  url:
+- `headers` - (Default value = None)
+- `params` - (Default value = None)
   **kwargs:
 
 
@@ -114,9 +114,9 @@ def get_paginated_data_items(url: str,
 
 **Arguments**:
 
-  url (str):
-- `headers` _Optional[Dict], optional_ - (Default value = None)
-- `params` _Optional[Dict], optional_ - (Default value = None)
+  url:
+- `headers` - (Default value = None)
+- `params` - (Default value = None)
 
 
 **Returns**:
@@ -132,8 +132,8 @@ def get_tables(connector_id: str,
 
 **Arguments**:
 
-  connector_id (str):
-- `limit` _Optional[int], optional_ - (Default value = None)
+  connector_id:
+- `limit` - (Default value = None)
 
 
 **Returns**:
@@ -149,8 +149,8 @@ def get_columns(connector_id: str,
 
 **Arguments**:
 
-  connector_id (str):
-- `limit` _Optional[int], optional_ - (Default value = None)
+  connector_id:
+- `limit` - (Default value = None)
 
 
 **Returns**:
@@ -166,8 +166,8 @@ def get_schemas(connector_id: str,
 
 **Arguments**:
 
-  connector_id (str):
-- `limit` _Optional[int], optional_ - (Default value = None)
+  connector_id:
+- `limit` - (Default value = None)
 
 
 **Returns**:
@@ -182,7 +182,7 @@ def get_all_groups(limit: Optional[int] = None) -> List[GroupResponse]
 
 **Arguments**:
 
-- `limit` _Optional[int], optional_ - (Default value = None)
+- `limit` - (Default value = None)
 
 
 **Returns**:
@@ -199,8 +199,8 @@ def get_group_connectors(group_id: str,
 
 **Arguments**:
 
-  group_id (str):
-- `limit` _Optional[int], optional_ - (Default value = None)
+  group_id:
+- `limit` - (Default value = None)
 
 
 **Returns**:

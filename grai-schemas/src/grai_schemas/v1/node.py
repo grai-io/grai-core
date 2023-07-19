@@ -3,8 +3,14 @@ from uuid import UUID
 
 from grai_schemas.generics import GraiBaseModel
 from grai_schemas.v1.generics import ID, BaseID, NamedID, UuidID
-from grai_schemas.v1.metadata.metadata import MetadataV1
+from grai_schemas.v1.metadata.metadata import (
+    GraiMetadataV1,
+    GraiNodeMetadataV1,
+    MetadataV1,
+    NodeMetadataV1,
+)
 from grai_schemas.v1.metadata.nodes import GenericNodeMetadataV1
+from grai_schemas.v1.source import DataSourceMixin, DataSourcesMixin
 from pydantic import Field, validator
 
 
@@ -27,30 +33,86 @@ class BaseSpec(GraiBaseModel):
     """ """
 
     is_active: Optional[bool] = True
-    data_source: str
     display_name: Optional[str]
     workspace: Optional[UUID]
-    metadata: MetadataV1 = MetadataV1(grai=GenericNodeMetadataV1(node_type="Generic"))
+
+
+class SourcedNodeSpecMetadataMixin(GraiBaseModel):
+    metadata: GraiNodeMetadataV1 = GraiNodeMetadataV1(grai=GenericNodeMetadataV1(node_type="Generic"))
 
     @validator("metadata", always=True, pre=True)
-    def validate_metadata(cls, v: Optional[Union[Dict, MetadataV1]]) -> MetadataV1:
-        if isinstance(v, MetadataV1):
+    def validate_metadata(cls, v: Optional[Union[Dict, GraiNodeMetadataV1]]) -> GraiNodeMetadataV1:
+        if isinstance(v, GraiNodeMetadataV1):
             return v
         elif isinstance(v, dict):
             v.setdefault("grai", GenericNodeMetadataV1(node_type="Generic"))
-            return MetadataV1(**v)
+            return GraiNodeMetadataV1(**v)
         elif v is None:
-            return MetadataV1(grai=GenericNodeMetadataV1(node_type="Generic"))
+            return GraiNodeMetadataV1(grai=GenericNodeMetadataV1(node_type="Generic"))
         raise ValueError(f"Invalid metadata: {v}. Expected either None, a dict, or a MetadataV1 instance.")
 
 
-class NamedSpec(NodeNamedID, BaseSpec):
+class NamedSourceSpec(NodeNamedID, BaseSpec, SourcedNodeSpecMetadataMixin, DataSourceMixin):
     """ """
 
     pass
 
 
-class IDSpec(NodeUuidID, BaseSpec):
+class IDSourceSpec(NodeUuidID, BaseSpec, SourcedNodeSpecMetadataMixin, DataSourceMixin):
+    """ """
+
+    pass
+
+
+SourcedNodeSpec = Union[IDSourceSpec, NamedSourceSpec]
+
+
+class SourcedNodeV1(GraiBaseModel):
+    type: Literal["SourceNode"]
+    version: Literal["v1"]
+    spec: SourcedNodeSpec
+
+    @classmethod
+    def from_spec(cls, spec_dict: Dict) -> "SourcedNodeV1":
+        """
+
+        Args:
+            spec_dict (Dict):
+
+        Returns:
+
+        Raises:
+
+        """
+        return cls(version="v1", type="SourceNode", spec=spec_dict)
+
+    def __hash__(self):
+        return hash(self.spec)
+
+
+class NodeSpecMetadataMixin(GraiBaseModel):
+    metadata: NodeMetadataV1 = NodeMetadataV1(grai=GenericNodeMetadataV1(node_type="Generic"), sources={})
+
+    @validator("metadata", always=True, pre=True)
+    def validate_metadata(cls, v: Optional[Union[Dict, NodeMetadataV1]]) -> NodeMetadataV1:
+        if isinstance(v, NodeMetadataV1):
+            return v
+        elif isinstance(v, dict):
+            v.setdefault("grai", GenericNodeMetadataV1(node_type="Generic"))
+            v.setdefault("sources", {})
+            return NodeMetadataV1(**v)
+        elif v is None:
+            return NodeMetadataV1(grai=GenericNodeMetadataV1(node_type="Generic"), sources={})
+        raise ValueError(f"Invalid metadata: {v}. Expected either None, a dict, or a MetadataV1 instance.")
+
+
+class NamedSpec(NodeNamedID, BaseSpec, NodeSpecMetadataMixin, DataSourcesMixin):
+    """ """
+
+    pass
+
+
+class IDSpec(NodeUuidID, BaseSpec, NodeSpecMetadataMixin, DataSourcesMixin):
     """ """
 
     pass
@@ -82,3 +144,6 @@ class NodeV1(GraiBaseModel):
 
     def __hash__(self):
         return hash(self.spec)
+
+
+# __all__ = ["NodeSpec", "NodeV1", "SourcedNodeSpec", "SourcedNodeV1", "NodeIdTypes", "NodeNamedID", "NodeUuidID", "BaseSpec", "NamedSourceSpec", "IDSourceSpec"]

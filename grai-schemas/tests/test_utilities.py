@@ -1,7 +1,15 @@
 import pytest
 from grai_schemas.utilities import merge
 from grai_schemas.v1 import EdgeV1, NodeV1
-from grai_schemas.v1.metadata.metadata import GraiMalformedNodeMetadataV1, MetadataV1
+from grai_schemas.v1.metadata.edges import BaseEdgeMetadataV1
+from grai_schemas.v1.metadata.metadata import (
+    EdgeMetadataV1,
+    GraiMalformedEdgeMetadataV1,
+    GraiMalformedNodeMetadataV1,
+    MetadataV1,
+    NodeMetadataV1,
+)
+from grai_schemas.v1.metadata.nodes import BaseNodeMetadataV1
 from pydantic import BaseModel
 
 
@@ -129,32 +137,31 @@ class TestMerge:
 
     def test_merge_valid_node_metadata_into_malformed(self):
         a = GraiMalformedNodeMetadataV1()
-        b = MetadataV1(grai={"node_type": "Generic"})
+        b = NodeMetadataV1(grai={"node_type": "Generic"}, sources={})
 
-        assert merge(a, b) == MetadataV1(grai={"node_type": "Generic"})
+        assert merge(a, b) == NodeMetadataV1(grai={"node_type": "Generic"}, sources={})
 
     def test_merge_valid_edge_metadata_into_malformed(self):
-        a = GraiMalformedNodeMetadataV1()
-        b = MetadataV1(grai={"edge_type": "Generic"})
+        a = GraiMalformedEdgeMetadataV1()
+        b = EdgeMetadataV1(grai={"edge_type": "Generic"}, sources={})
 
-        assert merge(a, b) == MetadataV1(grai={"edge_type": "Generic"})
+        assert merge(a, b) == EdgeMetadataV1(grai={"edge_type": "Generic"}, sources={})
 
-    @pytest.mark.xfail
-    def test_marge_malformed_node_metadata_into_valid(self):
-        a = MetadataV1(grai={"node_type": "Generic"})
+    def test_merge_malformed_node_metadata_into_valid(self):
+        a = NodeMetadataV1(grai={"node_type": "Generic"}, sources={})
         b = GraiMalformedNodeMetadataV1()
 
-        merge(a, b)
+        with pytest.raises(ValueError):
+            merge(a, b)
 
-    @pytest.mark.xfail
-    def test_marge_malformed_edge_metadata_into_valid(self):
-        a = MetadataV1(grai={"edge_type": "Generic"})
-        b = GraiMalformedNodeMetadataV1()
-
-        merge(a, b)
+    def test_merge_malformed_edge_metadata_into_valid(self):
+        a = EdgeMetadataV1(grai={"edge_type": "Generic"}, sources={})
+        b = GraiMalformedEdgeMetadataV1()
+        with pytest.raises(ValueError):
+            merge(a, b)
 
     def test_merge_full_node_into_malformed_node(self):
-        base_node = {"name": "test", "namespace": "test", "data_source": "test", "metadata": {}}
+        base_node = {"name": "test", "namespace": "test", "data_sources": [], "metadata": {}}
 
         a = NodeV1.from_spec(base_node)
         a.spec.metadata = GraiMalformedNodeMetadataV1()
@@ -165,13 +172,33 @@ class TestMerge:
         base_edge = {
             "name": "test",
             "namespace": "test",
-            "data_source": "test",
+            "data_sources": [],
             "source": {"name": "test", "namespace": "test"},
             "destination": {"name": "test2", "namespace": "test"},
             "metadata": {},
         }
 
         a = EdgeV1.from_spec(base_edge)
-        a.spec.metadata = GraiMalformedNodeMetadataV1()
+        a.spec.metadata = GraiMalformedEdgeMetadataV1()
         b = EdgeV1.from_spec(base_edge)
         assert merge(a, b) == b
+
+    def test_merge_node_metadata_tags(self):
+        a = BaseNodeMetadataV1(type="NodeV1", node_type="Generic", node_attributes={}, tags=["1", "2"])
+        b = BaseNodeMetadataV1(type="NodeV1", node_type="Generic", node_attributes={}, tags=["2", "3", "4"])
+
+        c = merge(a, b)
+        assert isinstance(c, BaseNodeMetadataV1)
+        assert len(c.tags) == 4
+        assert len(set(c.tags)) == 4
+        assert {"1", "2", "3", "4"} == set(c.tags)
+
+    def test_merge_edge_metadata_tags(self):
+        a = BaseEdgeMetadataV1(type="EdgeV1", edge_type="Generic", edge_attributes={}, tags=["1", "2"])
+        b = BaseEdgeMetadataV1(type="EdgeV1", edge_type="Generic", edge_attributes={}, tags=["2", "3", "4"])
+
+        c = merge(a, b)
+        assert isinstance(c, BaseEdgeMetadataV1)
+        assert len(c.tags) == 4
+        assert len(set(c.tags)) == 4
+        assert {"1", "2", "3", "4"} == set(c.tags)

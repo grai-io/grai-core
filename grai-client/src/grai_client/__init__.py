@@ -1,3 +1,11 @@
-from grai_client import authentication, endpoints, schemas, update, utilities
+from grai_client import (
+    authentication,
+    endpoints,
+    errors,
+    integrations,
+    schemas,
+    update,
+    utilities,
+)
 
-__version__ = "0.2.19"
+__version__ = "0.3.0-alpha25"
