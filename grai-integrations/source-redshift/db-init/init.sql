@@ -28,3 +28,22 @@ CONSTRAINT fk_orders
     FOREIGN KEY(order_id)
     REFERENCES db.orders(id)
 );
+
+CREATE VIEW db.customer_orders_view AS
+SELECT
+    c.id AS customer_id,
+    c.first_name,
+    c.last_name,
+    o.id AS order_id,
+    o.status AS order_status,
+    o.order_date,
+    p.id AS payment_id,
+    p.payment_method,
+    p.amount AS payment_amount
+FROM
+    db.customers c
+JOIN
+    db.orders o ON c.id = o.user_id
+JOIN
+    db.payments p ON o.id = p.order_id
+WITH NO SCHEMA BINDING;

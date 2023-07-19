@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Literal, Sequence
+from typing import Any, Dict, List, Literal, Sequence, Union
 from warnings import warn
 
 from grai_client.schemas.schema import Schema
@@ -26,6 +26,7 @@ from grai_source_redshift.models import (
     ColumnID,
     Constraint,
     Edge,
+    LateBindingViewColumn,
     Table,
     TableID,
 )
@@ -79,6 +80,32 @@ def build_grai_metadata_from_column(current: Column, version: Literal["v1"] = "v
             "is_primary_key": current.column_constraint
             and current.column_constraint.value == ColumnConstraint.primary_key.value,
             "is_unique": current.column_constraint and current.column_constraint.value in UNIQUE_COLUMN_CONSTRAINTS,
+        },
+        "tags": [config.metadata_id],
+    }
+
+    return ColumnMetadata(**data)
+
+
+@build_grai_metadata.register
+def build_grai_metadata_from_column(current: LateBindingViewColumn, version: Literal["v1"] = "v1") -> ColumnMetadata:
+    """
+
+    Args:
+        current (Column):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
+
+    data = {
+        "version": version,
+        "node_type": NodeMetadataTypeLabels.column.value,
+        "node_attributes": {
+            "data_type": current.data_type,
         },
         "tags": [config.metadata_id],
     }
@@ -163,7 +190,7 @@ def build_app_metadata(current: Any, desired: Any) -> None:
 
 
 @build_app_metadata.register
-def build_metadata_from_column(current: Column, version: Literal["v1"] = "v1") -> Dict:
+def build_metadata_from_column(current: Union[Column, LateBindingViewColumn], version: Literal["v1"] = "v1") -> Dict:
     """
 
     Args:
@@ -265,35 +292,12 @@ def adapt_to_client(current: Any, desired: Any):
 
 
 @adapt_to_client.register
-def adapt_column_to_client(current: Column, version: Literal["v1"] = "v1"):
+def adapt_column_to_client(current: Union[Table, Column, LateBindingViewColumn], version: Literal["v1"] = "v1"):
     """
 
     Args:
-        current (Column):
-        version (Literal["v1"], optional):  (Default value = "v1")
-
-    Returns:
-
-    Raises:
-
-    """
-    spec_dict = {
-        "name": current.full_name,
-        "namespace": current.namespace,
-        "display_name": current.name,
-        "data_source": config.integration_name,
-        "metadata": build_metadata(current, version),
-    }
-    return Schema.to_model(spec_dict, version=version, typing_type="Node")
-
-
-@adapt_to_client.register
-def adapt_table_to_client(current: Table, version: Literal["v1"] = "v1"):
-    """
-
-    Args:
-        current (Table):
-        version (Literal["v1"], optional):  (Default value = "v1")
+        current:
+        version:  (Default value = "v1")
 
     Returns:
 
