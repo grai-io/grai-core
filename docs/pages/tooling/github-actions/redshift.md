@@ -44,6 +44,7 @@ jobs:
           namespace: my_apps_grai_namespace
           api-key: my_grai_api_key
           action: tests
+          source-name: prod-db
           grai-api-url: https://api.grai.io
           db-host: redshift-cluster-1.abc123xyz789.us-east-1.redshift.amazonaws.com
           db-port: '5439'
