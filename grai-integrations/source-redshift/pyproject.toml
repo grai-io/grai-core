@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai_source_redshift"
-version = "0.0.7"
+version = "0.0.8-alpha1"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>"]
 license = "Elastic-2.0"
@@ -40,4 +40,4 @@ line-length = 120
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.poetry_bumpversion.file."src/grai_source_bigquery/__init__.py"]
+[tool.poetry_bumpversion.file."src/grai_source_redshift/__init__.py"]

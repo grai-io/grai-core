@@ -12,6 +12,7 @@ from grai_source_redshift.models import (
     ColumnID,
     Edge,
     EdgeQuery,
+    LateBindingViewColumn,
     RedshiftNode,
     Table,
 )
@@ -170,7 +171,20 @@ class RedshiftConnector:
             WHERE table_schema NOT IN ('pg_catalog', 'information_schema', 'pg_internal')
             ORDER BY ordinal_position;
         """
-        return [Column(**result, namespace=self.namespace) for result in self.query_runner(query)]
+        columns = [Column(**result, namespace=self.namespace) for result in self.query_runner(query)]
+
+        late_binding_query = """
+            select *
+            from pg_get_late_binding_view_cols()
+            cols(column_schema name, table_name name, column_name name, data_type varchar, col_num int);
+        """
+
+        late_binding_views = [
+            LateBindingViewColumn(**result, namespace=self.namespace)
+            for result in self.query_runner(late_binding_query)
+        ]
+        columns.extend(late_binding_views)
+        return columns
 
     def get_table_columns(self, table: Table):
         """
