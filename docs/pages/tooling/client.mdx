@@ -3,6 +3,9 @@ title: "Client"
 description: Grai client operations
 ---
 
+import { Callout } from "nextra-theme-docs";
+
+
 # Client
 
 The client library provides a programmatic interface to the various REST endpoints on the server.
@@ -23,7 +26,7 @@ Most interactions with the server will start with a client instance like so
 ```python copy
 from grai_client.endpoints.v1.client import ClientV1
 
-client = ClientV1(host='api.grai.io', port='443', insecure=True, username='[your_username]', password='[your_password]')
+client = ClientV1(url="https://api.grai.io", username='[your_username]', password='[your_password]')
 ```
 
 Now that you have an instance of a client and have authenticated the client with the server
@@ -39,16 +42,27 @@ Each verb operation can take a variety of arguments like `node`, `edge`, and `wo
 but is primarily designed to work with structured objects from the `grai_schemas` library.
 For example, if you wanted to create a new node in your lineage you could do the following
 
-```python copy
-from grai_schemas.v1 import NodeV1
+<Callout type="info" emoji="ℹ️">
+  A *source* refers to the source of the data. This could be a database, a file, a custom script, and more.
+  In this example we are using a custom script as the source of the data and need to create the source before we can create the node.
+</Callout>
 
-my_node = NodeV1.from_spec({
+
+```python copy
+from grai_schemas.v1 import SourcedNodeV1
+from grai_schemas.v1.source import SourceSpec
+
+my_source = SourceSpec(name='my_custom_script')
+
+my_node = SourcedNodeV1.from_spec({
     'name': 'node01',
     'namespace': 'default',
+    'data_source': my_source,
     'is_active': True,
     'data_source': 'dbt',
     'display_name': 'A Super Cool Node',
 })
 
+client.post(my_source)
 client.post(my_node)
 ```

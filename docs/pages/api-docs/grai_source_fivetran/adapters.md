@@ -185,14 +185,15 @@ def adapt_to_client(current: Any, desired: Any)
 
 ```python
 @adapt_to_client.register
-def adapt_column_to_client(current: Column,
-                           version: Literal["v1"] = "v1") -> NodeV1
+def adapt_column_to_client(current: Column, source: SourceSpec,
+                           version: Literal["v1"]) -> SourcedNodeV1
 ```
 
 **Arguments**:
 
-  current (Column):
-- `version` _Literal[&quot;v1&quot;], optional_ - (Default value = &quot;v1&quot;)
+  current:
+  source:
+- `version` - (Default value = &quot;v1&quot;)
 
 
 **Returns**:
@@ -203,14 +204,15 @@ def adapt_column_to_client(current: Column,
 
 ```python
 @adapt_to_client.register
-def adapt_table_to_client(current: Table,
-                          version: Literal["v1"] = "v1") -> NodeV1
+def adapt_table_to_client(current: Table, source: SourceSpec,
+                          version: Literal["v1"]) -> SourcedNodeV1
 ```
 
 **Arguments**:
 
-  current (Table):
-- `version` _Literal[&quot;v1&quot;], optional_ - (Default value = &quot;v1&quot;)
+  current:
+  source:
+- `version` - (Default value = &quot;v1&quot;)
 
 
 **Returns**:
@@ -237,14 +239,15 @@ def make_name(node1: NodeTypes, node2: NodeTypes) -> str
 
 ```python
 @adapt_to_client.register
-def adapt_edge_to_client(current: Edge,
-                         version: Literal["v1"] = "v1") -> EdgeV1
+def adapt_edge_to_client(current: Edge, source: SourceSpec,
+                         version: Literal["v1"]) -> SourcedEdgeV1
 ```
 
 **Arguments**:
 
-  current (Edge):
-- `version` _Literal[&quot;v1&quot;], optional_ - (Default value = &quot;v1&quot;)
+  current:
+  source:
+- `version` - (Default value = &quot;v1&quot;)
 
 
 **Returns**:
@@ -255,14 +258,15 @@ def adapt_edge_to_client(current: Edge,
 
 ```python
 @adapt_to_client.register
-def adapt_seq_to_client(objs: Sequence,
-                        version: Literal["v1"]) -> List[Union[NodeV1, EdgeV1]]
+def adapt_seq_to_client(
+        objs: Sequence, source: SourceSpec,
+        version: Literal["v1"]) -> List[Union[SourcedNodeV1, SourcedEdgeV1]]
 ```
 
 **Arguments**:
 
-  objs (Sequence):
-  version (Literal[&quot;v1&quot;]):
+  objs:
+  version:
 
 
 **Returns**:
@@ -274,13 +278,15 @@ def adapt_seq_to_client(objs: Sequence,
 ```python
 @adapt_to_client.register
 def adapt_list_to_client(
-        objs: List, version: Literal["v1"]) -> List[Union[NodeV1, EdgeV1]]
+        objs: List, source: SourceSpec,
+        version: Literal["v1"]) -> List[Union[SourcedNodeV1, SourcedEdgeV1]]
 ```
 
 **Arguments**:
 
-  objs (List):
-  version (Literal[&quot;v1&quot;]):
+  objs:
+  source:
+  version:
 
 
 **Returns**:

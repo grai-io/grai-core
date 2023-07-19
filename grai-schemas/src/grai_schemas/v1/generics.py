@@ -1,14 +1,8 @@
 from typing import Literal, Optional, Union
 from uuid import UUID
 
-from grai_schemas.generics import GraiBaseModel
+from grai_schemas.generics import GraiBaseModel, Metadata
 from pydantic import BaseModel
-
-
-class V1Mixin(BaseModel):
-    """ """
-
-    version: Literal["v1"] = "v1"
 
 
 class BaseID(GraiBaseModel):
@@ -23,7 +17,7 @@ class BaseID(GraiBaseModel):
             raise NotImplementedError(
                 f"Computing a hash for {self} requires both name and namespace for compatibility reasons."
             )
-        return hash(hash(self.name) + hash(self.namespace))
+        return hash((self.name, self.namespace))
 
 
 class NamedID(BaseID):

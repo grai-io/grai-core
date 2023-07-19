@@ -1,16 +1,23 @@
 from django.db.models import Q
+from django.db.models.query import prefetch_related_objects
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from common.permissions.multitenant import Multitenant
-from lineage.models import Edge, Node
-from lineage.serializers import EdgeSerializer, NodeSerializer
-from workspaces.permissions import HasWorkspaceAPIKey
+from lineage.models import Edge, Node, Source
+from lineage.serializers import (
+    EdgeSerializer,
+    NodeSerializer,
+    SourceEdgeSerializer,
+    SourceNodeSerializer,
+    SourceSerializer,
+)
+from rest_framework import status
 
 
-class NodeViewSet(ModelViewSet):
+class AuthenticatedViewSetMixin:
     authentication_classes = [
         SessionAuthentication,
         BasicAuthentication,
@@ -19,12 +26,32 @@ class NodeViewSet(ModelViewSet):
 
     permission_classes = [Multitenant]
 
+
+class HasSourceViewSetMixin:
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        source = Source.objects.get(pk=self.kwargs["source_pk"])
+
+        instance.data_sources.remove(source)
+
+        if not instance.data_sources.exists():
+            instance.is_active = False
+            instance.save()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class NodeViewSet(AuthenticatedViewSetMixin, ModelViewSet):
     serializer_class = NodeSerializer
     type = Node
 
     def get_queryset(self):
+        return self._get_queryset().all()
+
+    def _get_queryset(self):
         if len(self.request.query_params) == 0:
-            return self.type.objects.all()
+            return self.type.objects
 
         q_filter = Q()
         query_params = self.request.query_params
@@ -35,54 +62,28 @@ class NodeViewSet(ModelViewSet):
             "display_name",
             "created_at",
             "updated_at",
+            "source_name",
         ]
-        starts_with_filters = ("metadata", "created_at", "updated_at")
+        starts_with_filters = ("metadata", "created_at", "updated_at", "data_sources")
         for filter_name, filter_value in query_params.items():
-            if filter_name in supported_filters or filter_name.startswith(starts_with_filters):
+            if filter_name == "source_name":
+                source = Source.objects.get(name=filter_value)
+                q_filter &= Q(data_sources=source)
+            elif filter_name in supported_filters or filter_name.startswith(starts_with_filters):
                 q_filter &= Q(**{filter_name: filter_value})
-        return self.type.objects.filter(q_filter).all()
+        return self.type.objects.filter(q_filter)
 
 
-class EdgeViewSet(ModelViewSet):
-    authentication_classes = [
-        SessionAuthentication,
-        BasicAuthentication,
-        JWTAuthentication,
-    ]
-    permission_classes = [Multitenant]
-
+class EdgeViewSet(AuthenticatedViewSetMixin, ModelViewSet):
     serializer_class = EdgeSerializer
     type = Edge
 
-    # def create(self, request, *args, **kwargs):
-    #     source = parse_named_node(request.data["source"])
-    #     destination = parse_named_node(request.data["destination"])
-    #
-    #     if source is not None or destination is not None:
-    #         if hasattr(request.data, "_mutable"):
-    #             request.data._mutable = True
-    #
-    #     match (source, destination):
-    #         case (NodeNamedID(), None):
-    #             node = Node.objects.get(Q(name=source.name) & Q(namespace=source.namespace))
-    #             request.data["source"] = node.id
-    #         case (None, NodeNamedID()):
-    #             node = Node.objects.get(Q(name=destination.name) & Q(namespace=destination.namespace))
-    #             request.data["destination"] = node.id
-    #         case (NodeNamedID(), NodeNamedID()):
-    #             q_filter = Q(name=source.name) & Q(namespace=source.namespace)
-    #             q_filter |= Q(name=destination.name) & Q(namespace=destination.namespace)
-    #             model_source, model_destination = Node.objects.filter(q_filter)
-    #             request.data["source"] = model_source.id
-    #             request.data["destination"] = model_destination.id
-    #         case _:
-    #             pass
-    #
-    #     return super().create(request, *args, **kwargs)
-
     def get_queryset(self):
+        return self._get_queryset().all()
+
+    def _get_queryset(self):
         if len(self.request.query_params) == 0:
-            return self.type.objects.all()
+            return self.type.objects
 
         q_filter = Q()
         query_params = self.request.query_params
@@ -93,10 +94,83 @@ class EdgeViewSet(ModelViewSet):
             "name",
             "namespace",
             "display_name",
+            "source_name",
         }
         starts_with_filters = ("metadata", "created_at", "updated_at")
+        for filter_name, filter_value in query_params.items():
+            if filter_name == "source_name":
+                source = Source.objects.get(name=filter_value)
+                q_filter &= Q(data_sources=source)
+            elif filter_name in supported_filters or filter_name.startswith(starts_with_filters):
+                q_filter &= Q(**{filter_name: filter_value})
+
+        return self.type.objects.filter(q_filter)
+
+
+class UpsertModelMixin:
+    def create(self, request, *args, **kwargs):
+        partial = kwargs.pop("partial", False)
+
+        try:
+            instance = self.get_upsert_object(request)
+
+        except self.type.DoesNotExist:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=False)
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        queryset = self.filter_queryset(self.get_queryset())
+        if queryset._prefetch_related_lookups:
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance,
+            # and then re-prefetch related objects
+            instance._prefetched_objects_cache = {}  # pragma: no cover
+            prefetch_related_objects([instance], *queryset._prefetch_related_lookups)  # pragma: no cover
+
+        return Response(serializer.data)
+
+
+class SourceViewSet(AuthenticatedViewSetMixin, ModelViewSet):
+    serializer_class = SourceSerializer
+    type = Source
+
+    def get_queryset(self):
+        if len(self.request.query_params) == 0:
+            return self.type.objects.all()
+
+        q_filter = Q()
+        query_params = self.request.query_params
+        supported_filters = {"name"}
+        starts_with_filters = ("created_at", "updated_at")
         for filter_name, filter_value in query_params.items():
             if filter_name in supported_filters or filter_name.startswith(starts_with_filters):
                 q_filter &= Q(**{filter_name: filter_value})
 
         return self.type.objects.filter(q_filter).all()
+
+
+class SourceNodeViewSet(HasSourceViewSetMixin, UpsertModelMixin, NodeViewSet):
+    serializer_class = SourceNodeSerializer
+
+    def get_queryset(self):
+        return super()._get_queryset().filter(data_sources=self.kwargs["source_pk"]).all()
+
+    def get_upsert_object(self, request):
+        return self.type.objects.get(name=request.data["name"], namespace=request.data["namespace"])
+
+
+class SourceEdgeViewSet(HasSourceViewSetMixin, UpsertModelMixin, EdgeViewSet):
+    serializer_class = SourceEdgeSerializer
+
+    def get_queryset(self):
+        return super()._get_queryset().filter(data_sources=self.kwargs["source_pk"]).all()
+
+    def get_upsert_object(self, request):
+        return self.type.objects.get(name=request.data["name"], namespace=request.data["namespace"])

@@ -11,6 +11,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from connections.models import Connection, Connector
 from installations.models import Branch, Commit, PullRequest, Repository
 from workspaces.models import Membership, Organisation, Workspace
+from lineage.models import Source
 
 
 @pytest.fixture
@@ -24,6 +25,21 @@ def create_workspace(create_organisation, name: str = None):
         name=str(uuid.uuid4()) if name is None else name,
         organisation=create_organisation,
     )
+
+
+@pytest.fixture
+def test_organisation():
+    return Organisation.objects.create(name="Org1")
+
+
+@pytest.fixture
+def test_workspace(test_organisation):
+    return Workspace.objects.create(name="W10", organisation=test_organisation)
+
+
+@pytest.fixture
+def test_source(test_workspace):
+    return Source.objects.create(workspace=test_workspace, name=str(uuid.uuid4()))
 
 
 @pytest.fixture
@@ -126,10 +142,15 @@ def test_commit_with_pr(create_workspace, test_repository, test_branch, test_pul
 
 
 @pytest.mark.django_db
-def test_create_run_connection(auto_login_user, test_connector):
+def test_create_run_connection(auto_login_user, test_connector, test_source):
     client, user, workspace = auto_login_user()
 
-    connection = Connection.objects.create(workspace=workspace, connector=test_connector, name=str(uuid.uuid4()))
+    connection = Connection.objects.create(
+        workspace=workspace,
+        connector=test_connector,
+        name=str(uuid.uuid4()),
+        source=test_source,
+    )
 
     url = "/api/v1/external-runs/"
     response = client.post(
@@ -144,6 +165,43 @@ def test_create_run_connection(auto_login_user, test_connector):
 
 
 @pytest.mark.django_db
+def test_create_run_connector_existing_source(auto_login_user, test_connector):
+    client, user, workspace = auto_login_user()
+
+    source = Source.objects.create(
+        workspace=workspace,
+        name=str(uuid.uuid4()),
+    )
+
+    url = "/api/v1/external-runs/"
+    response = client.post(
+        url,
+        {
+            "connector_name": test_connector.name,
+            "source_id": str(source.id),
+        },
+    )
+    assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
+    run = response.json()
+    assert run["id"] is not None
+
+
+@pytest.mark.django_db
+def test_create_run_connector_missing_source(auto_login_user, test_connector, test_source):
+    client, user, workspace = auto_login_user()
+
+    url = "/api/v1/external-runs/"
+    response = client.post(
+        url,
+        {
+            "connector_name": test_connector.name,
+        },
+    )
+    assert response.status_code == 400
+    assert response.json().get("error") == "You must provide a source_id or source_name"
+
+
+@pytest.mark.django_db
 def test_create_run_connector(auto_login_user, test_connector):
     client, user, workspace = auto_login_user()
 
@@ -152,6 +210,7 @@ def test_create_run_connector(auto_login_user, test_connector):
         url,
         {
             "connector_name": test_connector.name,
+            "source_name": "test2",
         },
     )
     assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
@@ -168,10 +227,7 @@ def test_create_run_connector_file(auto_login_user, test_connector):
     url = "/api/v1/external-runs/"
     response = client.post(
         url,
-        {
-            "connector_name": test_connector.name,
-            "file": file,
-        },
+        {"connector_name": test_connector.name, "file": file, "source_name": "test3"},
     )
     assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
     run = response.json()
@@ -202,6 +258,7 @@ def test_create_run_no_repo(auto_login_user, test_connector):
             "connector_name": test_connector.name,
             "github_owner": "owner",
             "github_repo": "repo",
+            "source_name": "test4",
         },
     )
 
@@ -230,6 +287,7 @@ def test_create_run_connector_with_github(auto_login_user, test_connector, test_
             "github_repo": test_repository.repo,
             "git_branch": "test_branch",
             "git_head_sha": "sha1234",
+            "source_name": "test5",
         },
     )
     assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
@@ -260,6 +318,7 @@ def test_create_run_connector_with_commit(
             "github_repo": test_repository.repo,
             "git_branch": test_branch.reference,
             "git_head_sha": test_commit.reference,
+            "source_name": "test6",
         },
     )
     assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
@@ -292,6 +351,7 @@ def test_create_run_connector_with_pull_request(
             "git_head_sha": test_commit.reference,
             "github_pr_reference": "123",
             "github_pr_title": "abc",
+            "source_name": "test7",
         },
     )
     assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
@@ -330,6 +390,7 @@ def test_create_run_connector_with_existing_pull_request(
             "git_head_sha": test_commit.reference,
             "github_pr_reference": test_pull_request.reference,
             "github_pr_title": test_pull_request.title,
+            "source_name": "test8",
         },
     )
     assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
@@ -343,7 +404,7 @@ def hmac_secret():
 
 
 @pytest.fixture
-def test_connection_dbt_cloud(create_workspace, test_dbt_cloud_connector, hmac_secret, mocker):
+def test_connection_dbt_cloud(create_workspace, test_dbt_cloud_connector, hmac_secret, mocker, test_source):
     mock = mocker.patch("connections.schedules.dbt_cloud.dbtCloudClient")
 
     dbt_cloud = types.SimpleNamespace()
@@ -369,6 +430,7 @@ def test_connection_dbt_cloud(create_workspace, test_dbt_cloud_connector, hmac_s
         name=str(uuid.uuid4()),
         secrets={"api_key": "1234"},
         schedules={"dbt_cloud": {"job_id": "282191"}, "type": "dbt-cloud"},
+        source=test_source,
     )
 
     return connection

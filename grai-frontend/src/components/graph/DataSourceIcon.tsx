@@ -15,6 +15,7 @@ interface Icons {
 
 const icons: Icons = {
   "grai-source-dbt": "/icons/data-sources/dbt.png",
+  "grai-source-dbt_cloud": "/icons/data-sources/dbt.png",
   "grai-source-postgres": "/icons/data-sources/postgres.png",
   "grai-source-snowflake": "/icons/data-sources/snowflake.png",
   "grai-source-mssql": "/icons/data-sources/mssql.png",
@@ -22,6 +23,7 @@ const icons: Icons = {
   "grai-source-mysql": "/icons/data-sources/mysql.png",
   "grai-source-redshift": "/icons/data-sources/redshift.png",
   "grai-source-metabase": "/icons/data-sources/metabase.png",
+  "grai-source-fivetran": "/icons/data-sources/fivetran.png",
 }
 
 const heights = {

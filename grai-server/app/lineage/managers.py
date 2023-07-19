@@ -1,3 +1,4 @@
+from psqlextra.manager import PostgresManager
 from typing import Iterable, List, Sequence
 
 from django.db import models
@@ -48,3 +49,7 @@ class CacheManager(TenantManagerMixin, models.Manager):
             cache.layout_graph()
 
         return result
+
+
+class SourceManager(TenantManagerMixin, PostgresManager):
+    pass

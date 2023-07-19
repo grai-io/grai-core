@@ -1,10 +1,10 @@
-from typing import List, Optional
+import uuid
+from typing import List, Optional, Union
 
 import redis
 from django.conf import settings
 from grandalf.graphs import Edge, Graph, Vertex
 from grandalf.layouts import SugiyamaLayout
-from query_chunk import chunk
 from redis import Redis
 
 from workspaces.models import Workspace
@@ -15,10 +15,12 @@ from .graph_types import BaseGraph, GraphColumn, GraphTable
 
 class GraphCache:
     manager: Redis
-    workspace: Workspace
+    workspace_id: str
 
-    def __init__(self, workspace: Workspace):
-        self.workspace = workspace
+    def __init__(self, workspace: Union[Workspace, str]):
+        self.workspace_id = (
+            workspace if isinstance(workspace, str) or isinstance(workspace, uuid.UUID) else str(workspace.id)
+        )
 
         self.manager = redis.Redis(
             host=settings.REDIS_GRAPH_CACHE_HOST,
@@ -27,19 +29,22 @@ class GraphCache:
         )
 
     def query(self, query: str, parameters: object = {}, timeout: int = None):
-        return self.manager.graph(f"lineage:{str(self.workspace.id)}").query(query, parameters, timeout=timeout)
-
-    def build_cache(self):
-        for node in chunk(self.workspace.nodes.all(), 10000):
-            self.cache_node(node)
-
-        for edge in chunk(self.workspace.edges.all(), 10000):
-            self.cache_edge(edge)
-
-    def clear_cache(self):
-        self.manager.delete(f"lineage:{str(self.workspace.id)}")
+        return self.manager.graph(f"lineage:{str(self.workspace_id)}").query(query, parameters, timeout=timeout)
 
     def cache_node(self, node):
+        def get_data_source() -> Optional[str]:
+            source = node.data_sources.first()
+
+            if not source:
+                return None
+
+            connection = source.connections.first()
+
+            if connection:
+                return f"grai-source-{connection.connector.slug}"
+
+            return source.name
+
         node_type = node.metadata.get("grai", {}).get("node_type")
 
         if node_type in ["Table", "Query"]:
@@ -54,7 +59,7 @@ class GraphCache:
                     "name": node.name,
                     "display_name": node.display_name,
                     "namespace": node.namespace,
-                    "data_source": node.data_source,
+                    "data_source": get_data_source(),
                     "tags": node.metadata.get("grai", {}).get("tags"),
                 },
             )

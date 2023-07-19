@@ -93,7 +93,7 @@ CORS_ALLOW_ALL_ORIGINS = config("CORS_ALLOW_ALL_ORIGINS", default=default_allow_
 
 DATABASES = {
     "default": {
-        "ENGINE": config("DB_ENGINE", default="django.db.backends.postgresql"),
+        "ENGINE": config("DB_ENGINE", default="psqlextra.backend"),
         "NAME": config("DB_NAME", default="grai"),
         "USER": config("DB_USER", default="grai"),
         "PASSWORD": config("DB_PASSWORD", default="grai"),
@@ -132,6 +132,8 @@ THIRD_PARTY_APPS = [
     "email_log",
     "djcelery_email",
     "drf_spectacular",
+    "django.contrib.postgres",
+    "psqlextra",
 ]
 
 ALGOLIA_APPLICATION_ID = config("ALGOLIA_APPLICATION_ID", None)

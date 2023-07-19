@@ -1,4 +1,4 @@
-from grai_schemas.v1 import EdgeV1, NodeV1
+from grai_schemas.v1 import SourcedEdgeV1, SourcedNodeV1
 
 
 def test_v1_adapted_nodes_have_name(v1_adapted_nodes):
@@ -96,7 +96,7 @@ def test_v1_adapt_nodes(v1_adapted_nodes):
     Raises:
 
     """
-    test_type = NodeV1
+    test_type = SourcedNodeV1
     for item in v1_adapted_nodes:
         assert isinstance(item, test_type), f"{type(item)} is not of type {test_type}"
 
@@ -112,7 +112,7 @@ def test_v1_adapt_edges(v1_adapted_edges):
     Raises:
 
     """
-    test_type = EdgeV1
+    test_type = SourcedEdgeV1
     for item in v1_adapted_edges:
         assert isinstance(item, test_type), f"{type(item)} is not of type {test_type}"
 

@@ -15,7 +15,7 @@ class ManifestProcessor()
 
 ```python
 @cached_property
-def adapted_nodes() -> List[NodeV1]
+def adapted_nodes() -> List[SourcedNodeV1]
 ```
 
 **Arguments**:
@@ -30,7 +30,7 @@ def adapted_nodes() -> List[NodeV1]
 
 ```python
 @cached_property
-def adapted_edges() -> List[EdgeV1]
+def adapted_edges() -> List[SourcedEdgeV1]
 ```
 
 **Arguments**:
@@ -90,8 +90,8 @@ def manifest() -> ManifestTypes
 
 ```python
 @classmethod
-def load(cls, manifest_obj: Union[str, dict],
-         namespace: str) -> "ManifestProcessor"
+def load(cls, manifest_obj: Union[str, dict], namespace: str,
+         source: SourceSpec) -> "ManifestProcessor"
 ```
 
 **Arguments**:

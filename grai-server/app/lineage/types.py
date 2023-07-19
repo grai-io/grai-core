@@ -14,7 +14,6 @@ class NodeFilter:
     namespace: strawberry.auto
     name: strawberry.auto
     display_name: strawberry.auto
-    data_source: strawberry.auto
     is_active: strawberry.auto
     created_at: strawberry.auto
     updated_at: strawberry.auto
@@ -28,7 +27,6 @@ class NodeOrder:
     namespace: strawberry.auto
     name: strawberry.auto
     display_name: strawberry.auto
-    data_source: strawberry.auto
     is_active: strawberry.auto
     created_at: strawberry.auto
     updated_at: strawberry.auto
@@ -40,7 +38,6 @@ class EdgeFilter:
     namespace: strawberry.auto
     name: strawberry.auto
     display_name: strawberry.auto
-    data_source: strawberry.auto
     is_active: strawberry.auto
     source: NodeFilter
     destination: NodeFilter
@@ -54,7 +51,6 @@ class EdgeOrder:
     namespace: strawberry.auto
     name: strawberry.auto
     display_name: strawberry.auto
-    data_source: strawberry.auto
     is_active: strawberry.auto
     created_at: strawberry.auto
     updated_at: strawberry.auto

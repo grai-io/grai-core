@@ -27,10 +27,48 @@ class BaseSpec(GraiBaseModel)
 
 
 
+## NamedSourceSpec Objects
+
+```python
+class NamedSourceSpec(NodeNamedID, BaseSpec, DataSourceMixin)
+```
+
+
+
+## IDSourceSpec Objects
+
+```python
+class IDSourceSpec(NodeUuidID, BaseSpec, DataSourceMixin)
+```
+
+
+
+## SourcedNodeV1 Objects
+
+```python
+class SourcedNodeV1(GraiBaseModel)
+```
+
+### from\_spec
+
+```python
+@classmethod
+def from_spec(cls, spec_dict: Dict) -> "SourcedNodeV1"
+```
+
+**Arguments**:
+
+  spec_dict (Dict):
+
+
+**Returns**:
+
+
+
 ## NamedSpec Objects
 
 ```python
-class NamedSpec(NodeNamedID, BaseSpec)
+class NamedSpec(NodeNamedID, BaseSpec, DataSourcesMixin)
 ```
 
 
@@ -38,7 +76,7 @@ class NamedSpec(NodeNamedID, BaseSpec)
 ## IDSpec Objects
 
 ```python
-class IDSpec(NodeUuidID, BaseSpec)
+class IDSpec(NodeUuidID, BaseSpec, DataSourcesMixin)
 ```
 
 

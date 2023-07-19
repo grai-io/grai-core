@@ -2,7 +2,6 @@ import datetime
 import time
 from enum import Enum
 from typing import List, Optional
-from xml.dom import NodeFilter
 
 import strawberry
 import strawberry_django
@@ -31,6 +30,7 @@ from lineage.models import Edge as EdgeModel
 from lineage.models import Event as EventModel
 from lineage.models import Filter as FilterModel
 from lineage.models import Node as NodeModel
+from lineage.models import Source as SourceModel
 from lineage.types import EdgeFilter, EdgeOrder, Filter, NodeFilter, NodeOrder
 from users.types import User, UserFilter
 from workspaces.models import Membership as MembershipModel
@@ -73,7 +73,6 @@ class Node:
     namespace: strawberry.auto
     name: strawberry.auto
     display_name: strawberry.auto
-    data_source: strawberry.auto
     metadata: JSON
     is_active: strawberry.auto
     source_edges: List["Edge"]
@@ -88,6 +87,15 @@ class Node:
 
         return Pagination[Event](queryset=queryset)
 
+    # Sources
+    @strawberry.django.field
+    def sources(
+        self,
+    ) -> Pagination["Source"]:
+        queryset = SourceModel.objects.filter(nodes=self)
+
+        return Pagination[Source](queryset=queryset)
+
 
 @strawberry.django.type(EdgeModel, order=EdgeOrder, filters=EdgeFilter, pagination=True)
 class Edge:
@@ -95,7 +103,6 @@ class Edge:
     namespace: strawberry.auto
     name: strawberry.auto
     display_name: strawberry.auto
-    data_source: strawberry.auto
     source: Node = strawberry.django.field()
     destination: Node = strawberry.django.field()
     metadata: JSON
@@ -164,6 +171,7 @@ class ConnectionFilter:
     id: strawberry.auto
     namespace: strawberry.auto
     name: strawberry.auto
+    source: "Source"
     connector: ConnectorFilter
     is_active: strawberry.auto
     created_at: strawberry.auto
@@ -185,6 +193,7 @@ class ConnectionOrder:
 class Connection:
     id: strawberry.auto
     connector: Connector
+    source: "Source"
     namespace: strawberry.auto
     name: strawberry.auto
     metadata: JSON
@@ -236,6 +245,67 @@ class Connection:
         queryset = EventModel.objects.filter(connection=self)
 
         return Pagination[Event](queryset=queryset)
+
+
+@strawberry.input
+class SourceNodeFilter:
+    node_type: Optional[str] = strawberry.UNSET
+
+
+@strawberry.input
+class SourceConnectionFilter:
+    temp: Optional[bool] = strawberry.UNSET
+
+
+@strawberry.django.type(SourceModel)
+class Source:
+    id: strawberry.auto
+    name: strawberry.auto
+    created_at: strawberry.auto
+    updated_at: strawberry.auto
+
+    @strawberry.django.field
+    def nodes(
+        self,
+        filters: Optional[SourceNodeFilter] = strawberry.UNSET,
+        search: Optional[str] = strawberry.UNSET,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination[Node]:
+        queryset = NodeModel.objects.filter(data_sources=self)
+
+        if filters:
+            if filters.node_type:
+                queryset = queryset.filter(metadata__grai__node_type=filters.node_type)
+
+        if search:
+            queryset = queryset.filter(
+                Q(id__icontains=search) | Q(name__icontains=search) | Q(display_name__icontains=search)
+            )
+
+        return Pagination[Node](queryset=queryset, pagination=pagination)
+
+    @strawberry.django.field
+    def edges(
+        self,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination[Edge]:
+        queryset = EdgeModel.objects.filter(data_sources=self)
+
+        return Pagination[Edge](queryset=queryset, pagination=pagination)
+
+    @strawberry.field
+    def connections(
+        self,
+        filters: Optional[SourceConnectionFilter] = strawberry.UNSET,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination[Connection]:
+        queryset = ConnectionModel.objects.filter(source=self)
+
+        if filters:
+            if filters.temp is not strawberry.UNSET:
+                queryset = queryset.filter(temp=filters.temp)
+
+        return Pagination[Connection](queryset=queryset, pagination=pagination)
 
 
 @strawberry.django.type(NodeModel, order=NodeOrder, filters=NodeFilter, pagination=True)
@@ -469,7 +539,6 @@ class Workspace:
                 | Q(name__icontains=search)
                 | Q(destination__name__icontains=search)
                 | Q(source__name__icontains=search)
-                | Q(data_source__icontains=search)
             )
 
         if filter:
@@ -746,6 +815,7 @@ class Workspace:
 
         return DataWrapper[str](data=data)
 
+    # Graph
     @strawberry.django.field
     async def graph(
         self,
@@ -772,6 +842,7 @@ class Workspace:
 
         return graph.get_graph_result(query=query)
 
+    # Graph Tables
     @strawberry.django.field
     async def graph_tables(
         self,
@@ -780,6 +851,20 @@ class Workspace:
         graph = GraphCache(workspace=self)
 
         return graph.get_tables(search=search)
+
+    # Sources
+    @strawberry.field
+    def sources(
+        self,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination[Source]:
+        queryset = SourceModel.objects.filter(workspace=self)
+
+        return Pagination[Source](queryset=queryset, pagination=pagination)
+
+    @strawberry.django.field
+    def source(self, id: strawberry.ID) -> Source:
+        return SourceModel.objects.get(id=id)
 
 
 @strawberry_django.filters.filter(MembershipModel, lookups=True)

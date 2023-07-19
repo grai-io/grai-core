@@ -5,7 +5,7 @@ from typing import get_args
 import pytest
 
 from grai_client.endpoints.client import validate_connection_arguments
-from grai_client.endpoints.utilities import add_query_params, serialize_obj
+from grai_client.endpoints.utilities import add_query_params
 
 
 def make_v1_node():
@@ -27,12 +27,6 @@ def make_v1_node():
             },
         },
     }
-
-
-def test_serialize_obj():
-    obj = make_v1_node()
-    json = serialize_obj(obj)
-    assert isinstance(json, (str, bytes)), type(json)
 
 
 class TestAddQueryParams:

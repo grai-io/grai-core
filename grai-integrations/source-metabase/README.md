@@ -1,1 +1,1 @@
-"# Grai Metabase Integration"
+# Grai Metabase Integration

@@ -23,7 +23,6 @@ def test_connector_from_env_vars():
     }
     for k, v in env_vars.items():
         os.environ[k] = v
-
     conn = BigqueryConnector()
     assert conn.project == "thing"
     assert conn.dataset == "grai"
@@ -42,10 +41,22 @@ class TestLiveBigqueryIfHasDotEnv(unittest.TestCase):
             return
 
         with connection.connect() as conn:
-            tables = conn.get_tables()
+            tables = conn.tables(conn.datasets[0])
 
         assert isinstance(tables, list)
-        # assert len(tables) > 0, f"test expected more than {len(tables)} results"
+        assert len(tables) > 0, f"test expected more than {len(tables)} results"
+
+    @classmethod
+    def test_building_nodes(cls):
+        """ """
+        if not cls.run_tests:
+            return
+
+        with connection.connect() as conn:
+            columns = conn.columns(conn.datasets[0])
+
+        assert isinstance(columns, list)
+        assert len(columns) > 0, f"test expected more than {len(columns)} results"
 
     @classmethod
     def test_building_edges(cls):
@@ -54,7 +65,7 @@ class TestLiveBigqueryIfHasDotEnv(unittest.TestCase):
             return
 
         with connection.connect() as conn:
-            edges = conn.get_foreign_keys()
+            edges = conn.edges()
 
         assert isinstance(edges, list)
-        # assert len(edges) > 0, f"test expected more than {len(edges)} results"
+        assert len(edges) > 0, f"test expected more than {len(edges)} results"

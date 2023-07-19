@@ -1,33 +1,65 @@
-from typing import Any, Optional, Union
+from typing import Any, Dict, Optional, Union
+from uuid import UUID
 
-from grai_schemas.generics import GraiBaseModel, MalformedMetadata
+from grai_schemas.generics import GraiBaseModel, MalformedMetadata, Metadata
 from grai_schemas.utilities import merge
 from grai_schemas.v1.metadata import edges, nodes
 
 
-class GraiMetadataV1(GraiBaseModel):
+class GraiNodeMetadataV1(Metadata):
     """ """
 
-    grai: Union[edges.Metadata, nodes.Metadata]
+    grai: nodes.Metadata
 
 
-class MetadataV1(GraiMetadataV1):
+class GraiEdgeMetadataV1(Metadata):
     """ """
 
-    class Config:
-        """ """
-
-        extra = "allow"
-        allow_mutation = True
+    grai: edges.Metadata
 
 
-class GraiMalformedNodeMetadataV1(MalformedMetadata, MetadataV1):
+GraiMetadataV1 = Union[GraiNodeMetadataV1, GraiEdgeMetadataV1]
+
+
+class SourcesNodeMetadataV1(Metadata):
+    """"""
+
+    sources: Dict[str, GraiNodeMetadataV1]
+
+
+class SourcesEdgeMetadataV1(Metadata):
+    """"""
+
+    sources: Dict[str, GraiEdgeMetadataV1]
+
+
+SourcesMetadataV1 = Union[SourcesNodeMetadataV1, SourcesEdgeMetadataV1]
+
+
+class NodeMetadataV1(GraiNodeMetadataV1, SourcesNodeMetadataV1):
     """ """
 
-    grai: nodes.MalformedNodeMetadataV1 = nodes.MalformedNodeMetadataV1()
+    pass
 
 
-class GraiMalformedEdgeMetadataV1(MalformedMetadata, MetadataV1):
+class EdgeMetadataV1(GraiEdgeMetadataV1, SourcesEdgeMetadataV1):
     """ """
 
-    grai: edges.MalformedEdgeMetadataV1 = edges.MalformedEdgeMetadataV1()
+    pass
+
+
+MetadataV1 = Union[NodeMetadataV1, EdgeMetadataV1]
+
+
+class GraiMalformedNodeMetadataV1(MalformedMetadata, NodeMetadataV1):
+    """ """
+
+    grai: nodes.MalformedNodeMetadataV1 = nodes.MalformedNodeMetadataV1()  # type: ignore
+    sources: Dict[str, nodes.Metadata] = {}
+
+
+class GraiMalformedEdgeMetadataV1(MalformedMetadata, EdgeMetadataV1):
+    """ """
+
+    grai: edges.MalformedEdgeMetadataV1 = edges.MalformedEdgeMetadataV1()  # type: ignore
+    sources: Dict[str, edges.Metadata] = {}

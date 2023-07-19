@@ -1,0 +1,1 @@
+from grai_source_bigquery.base import BigQueryIntegration

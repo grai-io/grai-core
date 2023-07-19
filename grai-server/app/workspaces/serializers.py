@@ -10,7 +10,7 @@ class WorkspaceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Workspace
-        fields = ("id", "name", "ref")
+        fields = ("id", "name", "ref", "organisation", "search_enabled")
         read_only_fields = ("ref", "created_at", "updated_at")
 
 

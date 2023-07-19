@@ -3,8 +3,8 @@ from django.contrib.admin import DateFieldListFilter
 from django.db.models import Count, Q
 from django.urls import reverse
 from django.utils.html import format_html
+from lineage.extended_graph_cache import ExtendedGraphCache
 
-from lineage.graph_cache import GraphCache
 from lineage.models import Edge, Node
 
 from .models import Membership, Organisation, Workspace, WorkspaceAPIKey
@@ -41,7 +41,7 @@ def build_workspace_cache(modeladmin, request, queryset):  # pragma: no cover
     workspaces = queryset
 
     for workspace in workspaces:
-        cache = GraphCache(workspace)
+        cache = ExtendedGraphCache(workspace)
         cache.build_cache()
 
 
@@ -50,7 +50,7 @@ def clear_workspace_cache(modeladmin, request, queryset):  # pragma: no cover
     workspaces = queryset
 
     for workspace in workspaces:
-        cache = GraphCache(workspace)
+        cache = ExtendedGraphCache(workspace)
         cache.clear_cache()
 
 
@@ -110,7 +110,7 @@ class WorkspaceInline(admin.TabularInline):
     model = Workspace
     extra = 0
 
-    def view(self):
+    def view(self):  # pragma: no cover
         return format_html(
             '<a href="{}">{}</a>',
             reverse("admin:workspaces_workspace_change", args=(self.id,)),

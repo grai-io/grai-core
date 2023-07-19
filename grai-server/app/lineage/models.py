@@ -6,7 +6,7 @@ from django_multitenant.models import TenantModel
 
 from .graph_cache import GraphCache
 from .graph_tasks import cache_edge, cache_node
-from .managers import CacheManager
+from .managers import CacheManager, SourceManager
 
 
 # Create your models here.
@@ -17,8 +17,6 @@ class Node(TenantModel):
     namespace = models.CharField(max_length=255, default="default")
     name = models.CharField(max_length=255)
     display_name = models.CharField(max_length=255)
-
-    data_source = models.CharField(max_length=255)
     metadata = models.JSONField(default=dict)
     is_active = models.BooleanField(default=True)
 
@@ -98,12 +96,11 @@ class Edge(TenantModel):
     name = models.CharField(max_length=255)
     namespace = models.CharField(max_length=255, default="default")
     display_name = models.CharField(max_length=255)
-
-    data_source = models.CharField(max_length=255)
-    source = models.ForeignKey("Node", related_name="source_edges", on_delete=models.PROTECT)
-    destination = models.ForeignKey("Node", related_name="destination_edges", on_delete=models.PROTECT)
     metadata = models.JSONField(default=dict)
     is_active = models.BooleanField(default=True)
+
+    source = models.ForeignKey("Node", related_name="source_edges", on_delete=models.PROTECT)
+    destination = models.ForeignKey("Node", related_name="destination_edges", on_delete=models.PROTECT)
 
     workspace = models.ForeignKey(
         "workspaces.Workspace",
@@ -243,6 +240,44 @@ class Event(TenantModel):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class TenantMeta:
+        tenant_field_name = "workspace_id"
+
+
+class Source(TenantModel):
+    objects = SourceManager()
+
+    tenant_id = "workspace_id"
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=255)
+
+    workspace = models.ForeignKey(
+        "workspaces.Workspace",
+        related_name="sources",
+        on_delete=models.CASCADE,
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    nodes = models.ManyToManyField(Node, related_name="data_sources")
+    edges = models.ManyToManyField(Edge, related_name="data_sources")
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["workspace", "name"],
+                name="Source name uniqueness",
+            ),
+        ]
+        indexes = [
+            models.Index(fields=["workspace", "name"]),
+        ]
+
+    def __str__(self):
+        return self.name
 
     class TenantMeta:
         tenant_field_name = "workspace_id"

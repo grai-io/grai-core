@@ -22,7 +22,7 @@ class SourceType(Enum)
 ## BaseNodeMetadataV1 Objects
 
 ```python
-class BaseNodeMetadataV1(V1Mixin)
+class BaseNodeMetadataV1(GraiBaseModel)
 ```
 
 
@@ -35,10 +35,18 @@ class MalformedNodeMetadataV1(MalformedMetadata, BaseNodeMetadataV1)
 
 
 
+### node\_type
+
+type: ignore
+
+### node\_attributes
+
+type: ignore
+
 ## ColumnAttributes Objects
 
 ```python
-class ColumnAttributes(V1Mixin, GenericAttributes)
+class ColumnAttributes(GenericAttributes)
 ```
 
 
@@ -58,7 +66,7 @@ class ColumnMetadata(BaseNodeMetadataV1)
 ## TableAttributes Objects
 
 ```python
-class TableAttributes(V1Mixin, GenericAttributes)
+class TableAttributes(GenericAttributes)
 ```
 
 

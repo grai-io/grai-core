@@ -6,6 +6,7 @@ from django_multitenant.utils import set_current_tenant
 
 from connections.models import Connection, Connector
 from workspaces.models import Membership, Organisation, Workspace, WorkspaceAPIKey
+from lineage.models import Source
 
 
 @pytest.fixture
@@ -86,8 +87,20 @@ def test_connector():
 
 
 @pytest.fixture
-def test_connection(test_connector, create_workspace):
-    connection = Connection.objects.create(name=str(uuid.uuid4()), connector=test_connector, workspace=create_workspace)
+def test_source(create_workspace):
+    source = Source.objects.create(name=str(uuid.uuid4()), workspace=create_workspace)
+
+    return source
+
+
+@pytest.fixture
+def test_connection(test_connector, create_workspace, test_source):
+    connection = Connection.objects.create(
+        name=str(uuid.uuid4()),
+        connector=test_connector,
+        workspace=create_workspace,
+        source=test_source,
+    )
 
     return connection
 

@@ -1,9 +1,7 @@
 from typing import Dict, Literal, Union
 
-from grai_schemas.base import Edge, Node
+from grai_schemas.base import GraiType
 from grai_schemas.generics import GraiBaseModel
-
-GraiType = Union[Node, Edge]
 
 
 class Schema(GraiBaseModel):

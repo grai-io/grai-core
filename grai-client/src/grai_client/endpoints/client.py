@@ -6,7 +6,6 @@ from functools import wraps
 from typing import (
     Any,
     Callable,
-    Coroutine,
     Dict,
     Generator,
     Iterable,
@@ -23,18 +22,13 @@ from typing import (
 import httpx
 from furl import furl
 from grai_schemas.base import Edge, Node
-from httpx import Auth, BasicAuth, QueryParams, Request, Response
+from httpx import Auth, BasicAuth, QueryParams, Response
 from multimethod import multimethod
 from pydantic import BaseModel, SecretStr
 from tqdm.autonotebook import tqdm
 
 from grai_client.authentication import APIKeyAuth
 from grai_client.endpoints.rest import delete, get, patch, post
-from grai_client.endpoints.utilities import (
-    add_query_params,
-    response_status_check,
-    serialize_obj,
-)
 from grai_client.schemas.schema import GraiType
 
 if sys.version_info < (3, 10):
@@ -815,105 +809,3 @@ def patch_sequence(
 
 
 # -------------------------------------------- #
-
-
-@get.register
-def client_get_url(client: BaseClient, url: str, options: ClientOptions = ClientOptions()) -> Response:
-    """
-
-    Args:
-        client (BaseClient):
-        url (str):
-        options (ClientOptions, optional):  (Default value = ClientOptions())
-
-    Returns:
-
-    Raises:
-
-    """
-    if options.query_args:
-        url = add_query_params(url, options.query_args)
-
-    response = client.session.get(url, headers=options.headers, **options.request_args)
-    response_status_check(response)
-    return response
-
-
-@delete.register
-def client_delete_url(client: BaseClient, url: str, options: ClientOptions = ClientOptions()) -> Response:
-    """
-
-    Args:
-        client (BaseClient):
-        url (str):
-        options (ClientOptions, optional):  (Default value = ClientOptions())
-
-    Returns:
-
-    Raises:
-
-    """
-    response = client.session.delete(url, headers=options.headers, **options.request_args)
-    response_status_check(response)
-    return response
-
-
-@post.register
-def client_post_url(
-    client: BaseClient,
-    url: str,
-    payload: Dict,
-    options: ClientOptions = ClientOptions(),
-) -> Response:
-    """
-
-    Args:
-        client (BaseClient):
-        url (str):
-        payload (Dict):
-        options (ClientOptions, optional):  (Default value = ClientOptions())
-
-    Returns:
-
-    Raises:
-
-    """
-    headers = {
-        "Content-Type": "application/json",
-        **options.headers,
-    }
-    payload = {**payload, **options.payload}
-
-    response = client.session.post(url, content=serialize_obj(payload), headers=headers, **options.request_args)
-
-    response_status_check(response)
-    return response
-
-
-@patch.register
-def client_patch_url(
-    client: BaseClient,
-    url: str,
-    payload: Dict,
-    options: ClientOptions = ClientOptions(),
-) -> Response:
-    """
-
-    Args:
-        client (BaseClient):
-        url (str):
-        payload (Dict):
-        options (ClientOptions, optional):  (Default value = ClientOptions())
-
-    Returns:
-
-    Raises:
-
-    """
-    headers = {"Content-Type": "application/json", **options.headers}
-    payload = {**payload, **options.payload}
-
-    response = client.session.patch(url, content=serialize_obj(payload), headers=headers, **options.request_args)
-
-    response_status_check(response)
-    return response

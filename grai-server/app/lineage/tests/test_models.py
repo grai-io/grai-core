@@ -5,7 +5,7 @@ import uuid
 import pytest
 from django_multitenant.utils import set_current_tenant
 
-from lineage.models import Edge, Node
+from lineage.models import Edge, Node, Source
 from workspaces.models import Organisation, Workspace
 
 
@@ -24,12 +24,11 @@ def create_workspace(create_organisation, name: str = None):
 
 @pytest.mark.django_db
 def test_node_created(create_workspace):
-    node = Node.objects.create(namespace="temp", name="a", data_source="test", workspace=create_workspace)
+    node = Node.objects.create(namespace="temp", name="a", workspace=create_workspace)
 
     assert node.id == uuid.UUID(str(node.id))
     assert node.name == "a"
     assert node.namespace == "temp"
-    assert node.data_source == "test"
     assert node.display_name == "a"
     assert isinstance(node.metadata, dict) and len(node.metadata.keys()) == 0
     assert node.is_active
@@ -42,7 +41,7 @@ def test_node_created(create_workspace):
 
 @pytest.mark.django_db
 def test_node_bulk_update(create_workspace):
-    node = Node.objects.create(namespace="temp", name="a", data_source="test", workspace=create_workspace)
+    node = Node.objects.create(namespace="temp", name="a", workspace=create_workspace)
 
     Node.objects.bulk_update([node], ["name"])
 
@@ -55,18 +54,11 @@ def test_table_table_id(create_workspace):
         }
     }
 
-    node = Node.objects.create(
-        namespace="temp",
-        name="a",
-        data_source="test",
-        workspace=create_workspace,
-        metadata=metadata,
-    )
+    node = Node.objects.create(namespace="temp", name="a", workspace=create_workspace, metadata=metadata)
 
     assert node.id == uuid.UUID(str(node.id))
     assert node.name == "a"
     assert node.namespace == "temp"
-    assert node.data_source == "test"
     assert node.display_name == "a"
     assert node.is_active
     assert isinstance(node.created_at, datetime.datetime)
@@ -83,14 +75,9 @@ def test_column_table_id(create_workspace):
         }
     }
 
-    node = Node.objects.create(
-        namespace="temp",
-        name="a",
-        data_source="test",
-        workspace=create_workspace,
-        metadata=metadata,
-    )
-    table = Node.objects.create(namespace="temp", name="b", data_source="test", workspace=create_workspace)
+    node = Node.objects.create(namespace="temp", name="a", workspace=create_workspace, metadata=metadata)
+    table = Node.objects.create(namespace="temp", name="b", workspace=create_workspace)
+
     Edge.objects.create(
         source=table,
         destination=node,
@@ -101,7 +88,6 @@ def test_column_table_id(create_workspace):
     assert node.id == uuid.UUID(str(node.id))
     assert node.name == "a"
     assert node.namespace == "temp"
-    assert node.data_source == "test"
     assert node.display_name == "a"
     assert node.is_active
     assert isinstance(node.created_at, datetime.datetime)
@@ -113,18 +99,18 @@ def test_column_table_id(create_workspace):
 @pytest.mark.django_db
 def test_node_created_from_load(create_workspace):
     set_current_tenant(None)
-    node = Node.objects.create(namespace="temp2", name="abc", data_source="test", workspace=create_workspace)
+    node = Node.objects.create(namespace="temp2", name="abc", workspace=create_workspace)
     nodes = list(Node.objects.filter(namespace="temp2", name="abc").all())
     assert len(nodes) == 1
     node2 = nodes[0]
-    attrs = ["id", "name", "namespace", "data_source", "display_name"]
+    attrs = ["id", "name", "namespace", "display_name"]
     for attr in attrs:
         assert getattr(node, attr) == getattr(node2, attr)
 
 
 @pytest.mark.django_db
 def test_node_deleted(create_workspace):
-    node = Node.objects.create(namespace="temp", name="a", data_source="test", workspace=create_workspace)
+    node = Node.objects.create(namespace="temp", name="a", workspace=create_workspace)
 
     id = str(node.id)
 
@@ -143,24 +129,20 @@ def test_edge_created(create_workspace):
     node_a = Node.objects.create(
         namespace="default",
         name="node_a",
-        data_source="node_source",
         workspace=create_workspace,
     )
     node_b = Node.objects.create(
         namespace="default",
         name="node_b",
-        data_source="node_source",
         workspace=create_workspace,
     )
     edge = Edge.objects.create(
-        data_source="edge_source",
         source_id=node_a.id,
         destination_id=node_b.id,
         workspace=create_workspace,
     )
 
     assert edge.id == uuid.UUID(str(edge.id))
-    assert edge.data_source == "edge_source"
     assert edge.is_active
     assert isinstance(edge.metadata, dict) and len(edge.metadata.keys()) == 0
     assert isinstance(edge.created_at, datetime.datetime)
@@ -176,17 +158,14 @@ def test_edge_deleted(create_workspace):
     node_a = Node.objects.create(
         namespace="default",
         name="node_a",
-        data_source="node_source",
         workspace=create_workspace,
     )
     node_b = Node.objects.create(
         namespace="default",
         name="node_b",
-        data_source="node_source",
         workspace=create_workspace,
     )
     edge = Edge.objects.create(
-        data_source="edge_source",
         source_id=node_a.id,
         destination_id=node_b.id,
         workspace=create_workspace,
@@ -201,3 +180,12 @@ def test_edge_deleted(create_workspace):
     edges = Edge.objects.filter(id=id).all()
 
     assert len(edges) == 0
+
+
+@pytest.mark.django_db
+def test_source_created(create_workspace):
+    source = Source.objects.create(workspace=create_workspace, name="Source1")
+
+    assert source.id == uuid.UUID(str(source.id))
+    assert source.name == "Source1"
+    assert str(source) == "Source1"

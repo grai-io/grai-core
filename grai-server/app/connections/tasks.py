@@ -29,7 +29,12 @@ def process_run(runId):
 @shared_task
 def run_connection_schedule(connectionId):
     connection = Connection.objects.get(pk=connectionId)
-    run = Run.objects.create(workspace=connection.workspace, connection=connection, status="queued")
+    run = Run.objects.create(
+        workspace=connection.workspace,
+        connection=connection,
+        status="queued",
+        source=connection.source,
+    )
     execute_run(run)
 
 

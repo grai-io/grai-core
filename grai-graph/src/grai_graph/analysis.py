@@ -120,7 +120,7 @@ class GraphAnalyzer:
         current_node = self.graph.get_node(node_id=node_id)
         assert (
             current_node.spec.metadata.grai.node_type == "Column"
-        ), "Unique violation tests can only be applied to columns"
+        ), f"Data type violation tests can only be applied to columns {current_node.spec.metadata.grai.node_type}"
 
         # Only looks downstream
         affected_nodes = self.traverse_data_type_violations(current_node, new_type)
@@ -190,7 +190,7 @@ class GraphAnalyzer:
         current_node = self.graph.get_node(node_id=node_id)
         assert (
             current_node.spec.metadata.grai.node_type == "Column"
-        ), "Unique violation tests can only be applied to columns"
+        ), f"Unique violation tests can only be applied to columns {current_node.spec.metadata.grai.node_type}"
 
         # Only looks downstream
         affected_nodes = self.traverse_unique_violations(current_node, expects_unique)
@@ -261,7 +261,7 @@ class GraphAnalyzer:
         current_node = self.graph.get_node(node_id=node_id)
         assert (
             current_node.spec.metadata.grai.node_type == "Column"
-        ), "Unique violation tests can only be applied to columns"
+        ), f"Unique violation tests can only be applied to columns {current_node.spec.metadata.grai.node_type}"
 
         # Only looks downstream
         affected_nodes = self.traverse_null_violations(current_node, is_nullable)

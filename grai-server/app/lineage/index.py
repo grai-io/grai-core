@@ -12,14 +12,13 @@ class NodeIndex(AlgoliaIndex):
         "namespace",
         "name",
         "display_name",
-        "data_source",
         "search_type",
         "is_active",
         "table_id",
     )
 
     settings = {
-        "searchableAttributes": ["id", "namespace", "name", "display_name", "data_source"],
+        "searchableAttributes": ["id", "namespace", "name", "display_name"],
         "attributesForFaceting": ["workspace_id"],
     }
 

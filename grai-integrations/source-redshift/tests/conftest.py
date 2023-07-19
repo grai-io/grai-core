@@ -1,7 +1,21 @@
-import pytest
+import uuid
 
-from grai_source_redshift.base import get_nodes_and_edges
+import pytest
+from grai_schemas.v1.source import SourceSpec
+from grai_schemas.v1.workspace import WorkspaceSpec
+
+from grai_source_redshift.base import RedshiftIntegration
 from grai_source_redshift.loader import RedshiftConnector
+
+
+@pytest.fixture
+def default_workspace():
+    return WorkspaceSpec(name="default", organization="default")
+
+
+@pytest.fixture
+def mock_source(default_workspace):
+    return SourceSpec(name="RedshiftTest", workspace=default_workspace)
 
 
 @pytest.fixture
@@ -19,19 +33,19 @@ def connection() -> RedshiftConnector:
     return connection
 
 
+class MockClient:
+    def __init__(self):
+        self.id = "v1"
+
+    def get(self, type, **kwargs):
+        return [SourceSpec(id=uuid.uuid4(), **kwargs)]
+
+
 @pytest.fixture
-def nodes_and_edges(connection):
-    """
+def nodes_and_edges(mock_source):
+    integration = RedshiftIntegration.from_client(client=MockClient(), source=mock_source.name, namespace="test")
 
-    Args:
-        connection:
-
-    Returns:
-
-    Raises:
-
-    """
-    nodes, edges = get_nodes_and_edges(connection, "v1")
+    nodes, edges = integration.get_nodes_and_edges()
     return nodes, edges
 
 

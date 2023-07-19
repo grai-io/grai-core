@@ -1,10 +1,12 @@
 import os
+import uuid
 
 import pandas as pd
 import pytest
-from grai_client.endpoints.v1.client import ClientV1
+from grai_schemas.v1.source import SourceSpec
+from grai_schemas.v1.workspace import WorkspaceSpec
 
-from grai_source_flat_file.base import get_nodes_and_edges
+from grai_source_flat_file.base import FlatFileIntegration
 
 # @pytest.fixture
 # def client():
@@ -14,11 +16,29 @@ from grai_source_flat_file.base import get_nodes_and_edges
 
 
 @pytest.fixture
+def default_workspace():
+    return WorkspaceSpec(name="default", organization="default")
+
+
+@pytest.fixture
+def mock_source(default_workspace):
+    return SourceSpec(name="SnowflakeTest", workspace=default_workspace)
+
+
+@pytest.fixture
 def mock_data():
     """ """
     n = 10
     test_data = {"a": range(n), "b": ["t"] * n}
     return pd.DataFrame(test_data)
+
+
+class MockClient:
+    def __init__(self):
+        self.id = "v1"
+
+    def get(self, type, **kwargs):
+        return [SourceSpec(id=uuid.uuid4(), **kwargs)]
 
 
 @pytest.fixture
@@ -38,7 +58,15 @@ def mock_get_nodes_and_edges(mock_data):
 
     try:
         mock_data.to_csv(file_name, index=False)
-        nodes, edges = get_nodes_and_edges(file_name, namespace)
+
+        integration = FlatFileIntegration.from_client(
+            client=MockClient(),
+            source="test",
+            file_name=file_name,
+            namespace=namespace,
+        )
+
+        nodes, edges = integration.get_nodes_and_edges()
     except Exception as e:
         raise e
     finally:

@@ -25,12 +25,14 @@ export const UPLOAD_CONNECTOR_FILE = gql`
     $connectorId: ID!
     $namespace: String!
     $file: Upload!
+    $sourceName: String!
   ) {
     uploadConnectorFile(
       workspaceId: $workspaceId
       connectorId: $connectorId
       namespace: $namespace
       file: $file
+      sourceName: $sourceName
     ) {
       id
       connection {
@@ -60,6 +62,7 @@ export const UPLOAD_CONNECTOR_FILE = gql`
 type Values = {
   file: File | null
   namespace: string
+  sourceName: string
 }
 
 type ConnectionFileProps = {
@@ -79,6 +82,7 @@ const ConnectionFile: React.FC<ConnectionFileProps> = ({
   const [values, setValues] = useState<Values>({
     file: null,
     namespace: "default",
+    sourceName: connector.name,
   })
 
   const [uploadConnectorFile, { loading, error }] = useMutation<
@@ -122,6 +126,16 @@ const ConnectionFile: React.FC<ConnectionFileProps> = ({
       <Grid container sx={{ mt: 5 }}>
         <Grid item md={8} sx={{ pr: 3 }}>
           {error && <GraphError error={error} />}
+          <TextField
+            label="Source"
+            margin="normal"
+            value={values.sourceName}
+            onChange={event =>
+              setValues({ ...values, sourceName: event.target.value })
+            }
+            required
+            fullWidth
+          />
           <TextField
             label="Namespace"
             margin="normal"

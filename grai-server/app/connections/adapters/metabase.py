@@ -2,19 +2,20 @@ from .base import BaseAdapter
 
 
 class MetabaseAdapter(BaseAdapter):
-    def get_nodes_and_edges(self):
-        from grai_source_metabase.base import get_nodes_and_edges
-        from grai_source_metabase.loader import MetabaseConnector
+    def get_integration(self):
+        from grai_source_metabase.base import MetabaseIntegration
 
         metadata = self.run.connection.metadata
         secrets = self.run.connection.secrets
 
-        conn = MetabaseConnector(
+        return MetabaseIntegration(
+            source={
+                "id": self.run.source.id,
+                "name": self.run.source.name,
+            },
             username=metadata.get("username"),
             password=secrets.get("password"),
-            namespaces=metadata.get("namespaces"),
+            namespace_map=metadata.get("namespaces") if metadata.get("namespaces") != "" else None,
             metabase_namespace=self.run.connection.namespace,
             endpoint=metadata.get("endpoint"),
         )
-
-        return get_nodes_and_edges(conn, "v1")

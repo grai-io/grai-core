@@ -1,7 +1,9 @@
 import os
 import shelve
+import tempfile
 import uuid
 import warnings
+from tempfile import NamedTemporaryFile
 
 import typer
 
@@ -13,7 +15,9 @@ class GraiCache:
 
     def __init__(self):
         self.cache_filename = "cache"
-        self.cache_file = os.path.join(config.handler.config_dir, self.cache_filename)
+
+        cache_dir = config.handler.config_dir if config.handler.config_dir else tempfile.gettempdir()
+        self.cache_file = os.path.join(cache_dir, self.cache_filename)
 
         with self.cache as cache:
             self.first_install = cache.get("first_install", True)

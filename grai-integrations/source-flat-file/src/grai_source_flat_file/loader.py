@@ -21,6 +21,9 @@ def get_file_name(file_name: str) -> str:
     return os.path.splitext(file_name)[0]
 
 
+LOADER_MAP = {".csv": pd.read_csv, ".parquet": pd.read_parquet, ".feather": pd.read_feather}
+
+
 def load_file(file_name: str) -> pd.DataFrame:
     """
 
@@ -32,10 +35,9 @@ def load_file(file_name: str) -> pd.DataFrame:
     Raises:
 
     """
-    loader_map = {".csv": pd.read_csv, ".parquet": pd.read_parquet, ".feather": pd.read_feather}
     file_ext = os.path.splitext(file_name)[-1]
-    assert file_ext in loader_map, f"{file_ext} not supported. Choose one of {set(loader_map.keys())}"
-    return loader_map[file_ext](file_name)
+    assert file_ext in LOADER_MAP, f"{file_ext} not supported. Choose one of {set(LOADER_MAP.keys())}"
+    return LOADER_MAP[file_ext](file_name)
 
 
 def map_pandas_types(dtype) -> str:

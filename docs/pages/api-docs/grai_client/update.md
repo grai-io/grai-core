@@ -3,15 +3,18 @@ sidebar_label: update
 title: grai_client.update
 ---
 
-## deactivate
+## compute\_graph\_changes
 
 ```python
-def deactivate(items: List[T]) -> List[T]
+def compute_graph_changes(
+        items: List[T],
+        active_items: List[T]) -> Tuple[List[T], List[T], List[T]]
 ```
 
 **Arguments**:
 
-  items (List[T]):
+  items:
+  active_items:
 
 
 **Returns**:
@@ -22,15 +25,17 @@ def deactivate(items: List[T]) -> List[T]
 
 ```python
 def update(client: BaseClient,
-           items: List[T],
-           active_items: Optional[List[T]] = None)
+           items: List[Union[SourcedNodeV1, SourcedEdgeV1]],
+           active_items: Optional[List[T]] = None,
+           source: Optional[Union[SourceV1, SourceSpec]] = None)
 ```
 
 **Arguments**:
 
-  client (BaseClient):
-  items (List[T]):
-- `active_items` _Optional[List[T]], optional_ - (Default value = None)
+  client:
+  items:
+- `active_items` - (Default value = None)
+- `source` - (Default value = None)
 
 
 **Returns**:
