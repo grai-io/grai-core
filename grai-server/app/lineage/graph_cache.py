@@ -353,7 +353,21 @@ class GraphCache:
             value = row["value"]
 
             if row["type"] == "table":
-                if row["field"] == "tag":
+                if row["field"] == "name":
+                    if row["operator"] == "equals":
+                        query.where(f"toLower(table.name) = toLower('{value}')")
+                    elif row["operator"] == "not-equals":
+                        query.where(f"toLower(table.name) <> toLower('{value}')")
+                    elif row["operator"] == "contains":
+                        query.where(f"toLower(table.name) CONTAINS toLower('{value}')")
+                    elif row["operator"] == "not-contains":
+                        query.where(f"NOT toLower(table.name) CONTAINS toLower('{value}')")
+                    elif row["operator"] == "starts-with":
+                        query.where(f"toLower(table.name) STARTS WITH toLower('{value}')")
+                    elif row["operator"] == "ends-with":
+                        query.where(f"toLower(table.name) ENDS WITH toLower('{value}')")
+
+                elif row["field"] == "tag":
                     if row["operator"] == "contains":
                         query.where(f"'{value}' IN table.tags")
             elif row["type"] == "ancestor":
