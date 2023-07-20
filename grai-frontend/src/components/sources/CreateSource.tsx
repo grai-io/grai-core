@@ -8,6 +8,7 @@ import {
   CreateSource as CreateSourceType,
   CreateSourceVariables,
 } from "./__generated__/CreateSource"
+import { NewSource } from "./__generated__/NewSource"
 import SourceForm, { Values } from "./SourceForm"
 
 export const CREATE_SOURCE = gql`
@@ -35,7 +36,38 @@ const CreateSource: React.FC<CreateSourceProps> = ({ workspaceId }) => {
   const [createSource, { loading, error }] = useMutation<
     CreateSourceType,
     CreateSourceVariables
-  >(CREATE_SOURCE)
+  >(CREATE_SOURCE, {
+    update(cache, { data }) {
+      cache.modify({
+        id: cache.identify({
+          id: workspaceId,
+          __typename: "Workspace",
+        }),
+        fields: {
+          sources(existingSources = { data: [] }) {
+            if (!data?.createSource) return
+
+            const newSource = cache.writeFragment<NewSource>({
+              data: data.createSource,
+              fragment: gql`
+                fragment NewSource on Source {
+                  id
+                  name
+                }
+              `,
+            })
+            return {
+              data: [...existingSources.data, newSource],
+              meta: {
+                total: (existingSources.meta?.total ?? 0) + 1,
+                __typename: "SourcePagination",
+              },
+            }
+          },
+        },
+      })
+    },
+  })
 
   const handleSubmit = (values: Values) =>
     createSource({
@@ -47,7 +79,7 @@ const CreateSource: React.FC<CreateSourceProps> = ({ workspaceId }) => {
       .then(
         res =>
           res.data?.createSource.id &&
-          navigate(`${routePrefix}/sources/${res.data.createSource.id}`)
+          navigate(`${routePrefix}/sources/${res.data.createSource.id}`),
       )
       .then(() => enqueueSnackbar("Source created"))
       .catch(() => {})
