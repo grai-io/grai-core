@@ -1,9 +1,9 @@
 import userEvent from "@testing-library/user-event"
+import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
 import { input } from "testing/autocomplete"
-import CreateFilter, { CREATE_FILTER } from "./CreateFilter"
 import { GET_WORKSPACE } from "pages/filters/FilterCreate"
-import { GraphQLError } from "graphql"
+import CreateFilter, { CREATE_FILTER } from "./CreateFilter"
 
 test("renders", async () => {
   render(<CreateFilter workspaceId="1" tags={[]} />, {
