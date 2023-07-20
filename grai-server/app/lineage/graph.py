@@ -11,9 +11,9 @@ def wrap(input: Union[T, List[T]]) -> List[T]:
 
 
 class Where:
-    def __init__(self, where: str, parameters: object = {}):
+    def __init__(self, where: str, parameters: object = None):
         self.where = where
-        self.parameters = parameters
+        self.parameters = parameters if parameters else {}
 
     def __str__(self) -> str:
         return self.where
@@ -24,8 +24,8 @@ class Match:
         self,
         match: str,
         optional: bool = False,
-        where: Union[str, Where, List[Where]] = [],
-        parameters: object = {},
+        where: Union[str, Where, List[Where]] = None,
+        parameters: object = None,
     ):
         self.match = match
         self.optional = optional
@@ -33,8 +33,8 @@ class Match:
         if isinstance(where, str):
             where = Where(where)
 
-        self.wheres = wrap(where)
-        self.parameters = parameters
+        self.wheres = wrap(where) if where else []
+        self.parameters = parameters if parameters else {}
 
     def where(self, where: Union[str, Where, List[Where]]) -> "Match":
         if isinstance(where, str):
@@ -67,9 +67,9 @@ Clause = Union[Match, str]
 
 
 class GraphQuery:
-    def __init__(self, clause: Union[Clause, List[Clause]] = [], parameters: object = {}):
-        self.clause = wrap(clause)
-        self.parameters = parameters
+    def __init__(self, clause: Union[Clause, List[Clause]] = None, parameters: object = None):
+        self.clause = wrap(clause) if clause else []
+        self.parameters = parameters if parameters else {}
 
     def match(
         self,

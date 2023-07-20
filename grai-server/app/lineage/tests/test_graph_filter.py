@@ -27,36 +27,24 @@ def test_incorrect_type():
     assert str(e_info.value) == "Unknown filter type: incorrect"
 
 
-def test_table_name_not_equals():
-    match2 = Match("Table2")
-    query2 = GraphQuery(match2)
+def test_empty():
+    query = GraphQuery(Match("Table"))
 
-    filter2 = Filter(
+    filter = Filter(
         name=str(uuid.uuid4()),
-        metadata=[
-            {
-                "type": "table",
-                "field": "name",
-                "operator": "not-equals",
-                "value": "test2",
-            }
-        ],
+        metadata=[],
     )
 
-    filter_by_filter(filter2, query2)
+    filter_by_filter(filter, query)
 
-    assert len(query2.clause[0].wheres) == 1
-    assert query2.clause[0].wheres[0].where == "toLower(table.name) <> toLower('test2')"
-    assert query2.parameters == {}
+    assert len(query.clause[0].wheres) == 0
+    assert query.parameters == {}
 
 
 def test_table_name_equals():
-    match3 = Match("Table")
-    query3 = GraphQuery(match3)
+    query = GraphQuery(Match("Table"))
 
-    assert len(query3.clause[0].wheres) == 0
-
-    filter3 = Filter(
+    filter = Filter(
         name=str(uuid.uuid4()),
         metadata=[
             {
@@ -68,8 +56,160 @@ def test_table_name_equals():
         ],
     )
 
-    filter_by_filter(filter3, query3)
+    filter_by_filter(filter, query)
 
-    assert len(query3.clause[0].wheres) == 1
-    assert query3.clause[0].wheres[0].where == "toLower(table.name) = toLower('test4')"
-    assert query3.parameters == {}
+    assert len(query.clause[0].wheres) == 1
+    assert query.clause[0].wheres[0].where == "toLower(table.name) = toLower('test4')"
+    assert query.parameters == {}
+
+
+def test_table_name_not_equals():
+    query = GraphQuery(Match("Table"))
+
+    filter = Filter(
+        name=str(uuid.uuid4()),
+        metadata=[
+            {
+                "type": "table",
+                "field": "name",
+                "operator": "not-equals",
+                "value": "test2",
+            }
+        ],
+    )
+
+    filter_by_filter(filter, query)
+
+    assert len(query.clause[0].wheres) == 1
+    assert query.clause[0].wheres[0].where == "toLower(table.name) <> toLower('test2')"
+    assert query.parameters == {}
+
+
+def test_table_name_contains():
+    query = GraphQuery(Match("Table"))
+
+    filter = Filter(
+        name=str(uuid.uuid4()),
+        metadata=[
+            {
+                "type": "table",
+                "field": "name",
+                "operator": "contains",
+                "value": "test3",
+            }
+        ],
+    )
+
+    filter_by_filter(filter, query)
+
+    assert len(query.clause[0].wheres) == 1
+    assert query.clause[0].wheres[0].where == "toLower(table.name) CONTAINS toLower('test3')"
+    assert query.parameters == {}
+
+
+def test_table_name_not_contains():
+    query = GraphQuery(Match("Table"))
+
+    filter = Filter(
+        name=str(uuid.uuid4()),
+        metadata=[
+            {
+                "type": "table",
+                "field": "name",
+                "operator": "not-contains",
+                "value": "test3",
+            }
+        ],
+    )
+
+    filter_by_filter(filter, query)
+
+    assert len(query.clause[0].wheres) == 1
+    assert query.clause[0].wheres[0].where == "NOT toLower(table.name) CONTAINS toLower('test3')"
+    assert query.parameters == {}
+
+
+def test_table_name_starts_with():
+    query = GraphQuery(Match("Table"))
+
+    filter = Filter(
+        name=str(uuid.uuid4()),
+        metadata=[
+            {
+                "type": "table",
+                "field": "name",
+                "operator": "starts-with",
+                "value": "test3",
+            }
+        ],
+    )
+
+    filter_by_filter(filter, query)
+
+    assert len(query.clause[0].wheres) == 1
+    assert query.clause[0].wheres[0].where == "toLower(table.name) STARTS WITH toLower('test3')"
+    assert query.parameters == {}
+
+
+def test_table_name_ends_with():
+    query = GraphQuery(Match("Table"))
+
+    filter = Filter(
+        name=str(uuid.uuid4()),
+        metadata=[
+            {
+                "type": "table",
+                "field": "name",
+                "operator": "ends-with",
+                "value": "test3",
+            }
+        ],
+    )
+
+    filter_by_filter(filter, query)
+
+    assert len(query.clause[0].wheres) == 1
+    assert query.clause[0].wheres[0].where == "toLower(table.name) ENDS WITH toLower('test3')"
+    assert query.parameters == {}
+
+
+def test_no_ancestor():
+    query = GraphQuery(Match("Table"))
+
+    filter = Filter(
+        name=str(uuid.uuid4()),
+        metadata=[
+            {
+                "type": "no-ancestor",
+                "field": "tag",
+                "operator": "contains",
+                "value": "test4",
+            }
+        ],
+    )
+
+    filter_by_filter(filter, query)
+
+    assert len(query.clause[0].wheres) == 0
+    assert query.parameters == {}
+
+
+def test_no_descendant():
+    query = GraphQuery(Match("Table"))
+
+    filter = Filter(
+        name=str(uuid.uuid4()),
+        metadata=[
+            {
+                "type": "no-descendant",
+                "field": "tag",
+                "operator": "contains",
+                "value": "test4",
+            }
+        ],
+    )
+
+    filter_by_filter(filter, query)
+
+    assert len(query.clause[0].wheres) == 0
+    assert query.parameters == {}
