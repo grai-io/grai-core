@@ -3,6 +3,8 @@ import { defineConfig } from "vite"
 import EnvironmentPlugin from "vite-plugin-environment"
 import viteTsconfigPaths from "vite-tsconfig-paths"
 
+const hash = Math.floor(Math.random() * 90000) + 10000
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -16,6 +18,13 @@ export default defineConfig({
   ],
   build: {
     outDir: "build",
+    rollupOptions: {
+      output: {
+        entryFileNames: `[name]_` + hash + `.js`,
+        chunkFileNames: `[name]_` + hash + `.js`,
+        assetFileNames: `[name]_` + hash + `.[ext]`,
+      },
+    },
   },
   server: {
     port: 3000,
