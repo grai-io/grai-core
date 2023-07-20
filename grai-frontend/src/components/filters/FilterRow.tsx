@@ -234,10 +234,13 @@ const FilterRow: React.FC<FilterRowProps> = ({
           <TextField
             fullWidth
             disabled={!operator}
-            value={filter.value ?? null}
+            value={filter.value ?? ""}
             onChange={event =>
               onChange({ ...filter, value: event.target.value })
             }
+            inputProps={{
+              "data-testid": "value",
+            }}
           />
         )}
       </Grid>

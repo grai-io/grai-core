@@ -79,9 +79,10 @@ const CreateFilter: React.FC<CreateFilterProps> = ({ workspaceId, tags }) => {
       },
     })
       .then(data =>
-        navigate(`${routePrefix}/filters/${data.data?.createFilter.id}`)
+        navigate(`${routePrefix}/filters/${data.data?.createFilter.id}`),
       )
       .then(() => enqueueSnackbar("Filter created", { variant: "success" }))
+      .catch(() => {})
 
   return (
     <>
