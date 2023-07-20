@@ -36,7 +36,7 @@ test("submit", async () => {
       await user.click(screen.getByRole("button", { name: /add filter/i })),
   )
 
-  input(screen.getByTestId("autocomplete-property"), "Table")
+  input(screen.getByTestId("autocomplete-property"))
   input(screen.getByTestId("autocomplete-field"), "Tag")
   input(screen.getByTestId("autocomplete-operator"), "Contains")
   await act(async () => await user.type(screen.getByTestId("value"), "test"))
