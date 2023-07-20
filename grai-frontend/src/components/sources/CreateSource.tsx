@@ -8,8 +8,8 @@ import {
   CreateSource as CreateSourceType,
   CreateSourceVariables,
 } from "./__generated__/CreateSource"
-import SourceForm, { Values } from "./SourceForm"
 import { NewSource } from "./__generated__/NewSource"
+import SourceForm, { Values } from "./SourceForm"
 
 export const CREATE_SOURCE = gql`
   mutation CreateSource($workspaceId: ID!, $name: String!) {
