@@ -1,6 +1,7 @@
 import React from "react"
 import { Close } from "@mui/icons-material"
 import { Autocomplete, Grid, IconButton, TextField } from "@mui/material"
+import FilterField from "./FilterField"
 
 type Operator = {
   value: string
@@ -37,6 +38,7 @@ type FilterRowProps = {
   filter: Filter
   onChange: (filter: Filter) => void
   onRemove: () => void
+  namespaces: string[]
   tags: string[]
 }
 
@@ -44,6 +46,7 @@ const FilterRow: React.FC<FilterRowProps> = ({
   filter,
   onChange,
   onRemove,
+  namespaces,
   tags,
 }) => {
   const nameField: Field = {
@@ -73,6 +76,33 @@ const FilterRow: React.FC<FilterRowProps> = ({
       {
         value: "not-contains",
         label: "Not Contains",
+      },
+    ],
+  }
+
+  const namespaceField: Field = {
+    value: "namespace",
+    label: "Namespace",
+    operators: [
+      {
+        value: "in",
+        label: "In",
+        valueComponent: (
+          disabled: boolean,
+          value: string | null,
+          onChange: (value: string | null) => void,
+        ) => (
+          <Autocomplete
+            openOnFocus
+            autoSelect
+            disabled={disabled}
+            options={namespaces}
+            value={value}
+            onChange={(event, newValue) => onChange(newValue)}
+            renderInput={params => <TextField {...params} />}
+            data-testid="autocomplete-value"
+          />
+        ),
       },
     ],
   }
@@ -111,18 +141,18 @@ const FilterRow: React.FC<FilterRowProps> = ({
     ],
   }
 
-  const countField: Field = {
-    value: "count",
-    label: "Count",
-    disabled: true,
-    operators: [],
-  }
+  // const countField: Field = {
+  //   value: "count",
+  //   label: "Count",
+  //   disabled: true,
+  //   operators: [],
+  // }
 
   const properties: Property[] = [
     {
       value: "table",
       label: "Table",
-      fields: [nameField, sourceField, tagField, countField],
+      fields: [nameField, namespaceField, sourceField, tagField],
     },
     {
       value: "parent",
@@ -178,48 +208,48 @@ const FilterRow: React.FC<FilterRowProps> = ({
     field?.operators.find(operator => operator.value === filter.operator) ??
     null
 
+  const handleFieldChange = (
+    _: React.SyntheticEvent<Element, Event>,
+    newValue: Field | null,
+  ) => {
+    let newFilter = { ...filter, field: newValue?.value ?? null }
+
+    if (!operator && newValue?.operators && newValue?.operators.length > 0) {
+      newFilter.operator = newValue?.operators[0].value
+    }
+
+    onChange(newFilter)
+  }
+
   return (
     <Grid container spacing={1} sx={{ mt: 0.5 }}>
       <Grid item md={3}>
-        <Autocomplete
-          openOnFocus
-          autoSelect
+        <FilterField<Property>
           options={properties}
           value={property}
           onChange={(event, newValue) =>
             onChange({ ...filter, type: newValue?.value ?? null })
           }
-          renderInput={params => <TextField {...params} />}
-          getOptionDisabled={option => option.disabled ?? false}
           data-testid="autocomplete-property"
         />
       </Grid>
       <Grid item md={3}>
-        <Autocomplete
-          openOnFocus
-          autoSelect
+        <FilterField<Field>
           disabled={!property}
           options={property?.fields ?? []}
           value={field}
-          onChange={(event, newValue) =>
-            onChange({ ...filter, field: newValue?.value ?? null })
-          }
-          renderInput={params => <TextField {...params} />}
-          getOptionDisabled={option => option.disabled ?? false}
+          onChange={handleFieldChange}
           data-testid="autocomplete-field"
         />
       </Grid>
       <Grid item md={3}>
-        <Autocomplete
-          openOnFocus
-          autoSelect
+        <FilterField<Operator>
           disabled={!field}
           options={field?.operators ?? []}
           value={operator}
           onChange={(event, newValue) =>
             onChange({ ...filter, operator: newValue?.value ?? null })
           }
-          renderInput={params => <TextField {...params} />}
           data-testid="autocomplete-operator"
         />
       </Grid>

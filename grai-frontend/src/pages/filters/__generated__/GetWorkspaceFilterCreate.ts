@@ -7,6 +7,11 @@
 // GraphQL query operation: GetWorkspaceFilterCreate
 // ====================================================
 
+export interface GetWorkspaceFilterCreate_workspace_namespaces {
+  __typename: "StrDataWrapper";
+  data: string[];
+}
+
 export interface GetWorkspaceFilterCreate_workspace_tags {
   __typename: "StrDataWrapper";
   data: string[];
@@ -16,6 +21,7 @@ export interface GetWorkspaceFilterCreate_workspace {
   __typename: "Workspace";
   id: any;
   name: string;
+  namespaces: GetWorkspaceFilterCreate_workspace_namespaces;
   tags: GetWorkspaceFilterCreate_workspace_tags;
 }
 

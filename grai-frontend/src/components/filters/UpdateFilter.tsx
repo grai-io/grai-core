@@ -28,12 +28,14 @@ interface Filter {
 
 type UpdateFilterProps = {
   filter: Filter
+  namespaces: string[]
   tags: string[]
   workspaceId: string
 }
 
 const UpdateFilter: React.FC<UpdateFilterProps> = ({
   filter,
+  namespaces,
   tags,
   workspaceId,
 }) => {
@@ -69,6 +71,7 @@ const UpdateFilter: React.FC<UpdateFilterProps> = ({
         }}
         onSave={handleSave}
         loading={loading}
+        namespaces={namespaces}
         tags={tags}
       />
     </>
