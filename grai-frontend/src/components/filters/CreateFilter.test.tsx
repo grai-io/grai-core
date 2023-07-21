@@ -80,8 +80,56 @@ test("submit namespace", async () => {
   )
 
   input(screen.getByTestId("autocomplete-property"), "table")
-  input(screen.getByTestId("autocomplete-field"), "tag", 2)
-  input(screen.getByTestId("autocomplete-operator"), "contains", 2)
+  input(screen.getByTestId("autocomplete-field"), "namespace", 2)
+  input(screen.getByTestId("autocomplete-operator"), "equals", 1)
+
+  await waitFor(() => {
+    expect(screen.getByTestId("autocomplete-value")).toBeInTheDocument()
+  })
+
+  input(screen.getByTestId("autocomplete-value"), "t")
+
+  await act(
+    async () => await user.click(screen.getByRole("button", { name: /save/i })),
+  )
+
+  expect(screen.getByText("New Page")).toBeInTheDocument()
+})
+
+test("submit namespace in", async () => {
+  const user = userEvent.setup()
+
+  render(
+    <CreateFilter
+      workspaceId="1"
+      namespaces={["namespace1"]}
+      tags={["tag1", "tag2"]}
+    />,
+    {
+      route: "/default/demo/filters/create",
+      path: "/:organisationName/:workspaceName/filters/create",
+      routes: ["/:organisationName/:workspaceName/filters/:filterId"],
+    },
+  )
+
+  await act(
+    async () =>
+      await user.type(
+        screen.getByRole("textbox", { name: "Name" }),
+        "test filter",
+      ),
+  )
+
+  await act(async () => await user.click(screen.getByTestId("CloseIcon")))
+
+  await act(
+    async () =>
+      await user.click(screen.getByRole("button", { name: /add filter/i })),
+  )
+
+  input(screen.getByTestId("autocomplete-property"), "table")
+  input(screen.getByTestId("autocomplete-field"), "namespace", 2)
+  input(screen.getByTestId("autocomplete-operator"), "in", 2)
 
   await waitFor(() => {
     expect(screen.getByTestId("autocomplete-value")).toBeInTheDocument()
