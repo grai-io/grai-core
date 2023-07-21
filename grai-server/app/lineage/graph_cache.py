@@ -1,6 +1,5 @@
 import uuid
 from typing import List, Optional, Union
-from .graph_filter import filter_by_filter
 
 import redis
 from django.conf import settings
@@ -11,6 +10,7 @@ from redis import Redis
 from workspaces.models import Workspace
 
 from .graph import GraphQuery
+from .graph_filter import filter_by_filter
 from .graph_types import BaseGraph, GraphColumn, GraphTable
 
 
@@ -30,7 +30,10 @@ class GraphCache:
         )
 
     def query(self, query: str, parameters: object = {}, timeout: int = None):
-        return self.manager.graph(f"lineage:{str(self.workspace_id)}").query(query, parameters, timeout=timeout)
+        try:
+            return self.manager.graph(f"lineage:{str(self.workspace_id)}").query(query, parameters, timeout=timeout)
+        except redis.exceptions.ResponseError as e:
+            raise Exception(f"Error while executing query: {query} with parameters: {parameters}, error: {e}") from e
 
     def cache_node(self, node):
         def get_data_source() -> Optional[str]:
@@ -261,6 +264,7 @@ class GraphCache:
                     COLLECT(distinct destination.id) AS destinations,
                     column,
                     collect(distinct column_destination.id) as column_destinations
+                {query.withWheres if query.withWheres else ""}
                 WITH
                     table,
                     destinations,
