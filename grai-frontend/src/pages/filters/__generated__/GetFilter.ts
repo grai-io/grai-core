@@ -15,6 +15,11 @@ export interface GetFilter_workspace_filter {
   created_at: any;
 }
 
+export interface GetFilter_workspace_namespaces {
+  __typename: "StrDataWrapper";
+  data: string[];
+}
+
 export interface GetFilter_workspace_tags {
   __typename: "StrDataWrapper";
   data: string[];
@@ -24,6 +29,7 @@ export interface GetFilter_workspace {
   __typename: "Workspace";
   id: any;
   filter: GetFilter_workspace_filter;
+  namespaces: GetFilter_workspace_namespaces;
   tags: GetFilter_workspace_tags;
 }
 

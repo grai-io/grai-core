@@ -10,9 +10,12 @@ const filter = {
 }
 
 test("renders", async () => {
-  render(<UpdateFilter filter={filter} tags={[]} workspaceId="1" />, {
-    withRouter: true,
-  })
+  render(
+    <UpdateFilter filter={filter} namespaces={[]} tags={[]} workspaceId="1" />,
+    {
+      withRouter: true,
+    },
+  )
 
   expect(screen.getByRole("textbox", { name: /name/i })).toBeInTheDocument()
 })
@@ -24,9 +27,12 @@ test("renders null name", async () => {
     metadata: [],
   }
 
-  render(<UpdateFilter filter={filter} tags={[]} workspaceId="1" />, {
-    withRouter: true,
-  })
+  render(
+    <UpdateFilter filter={filter} namespaces={[]} tags={[]} workspaceId="1" />,
+    {
+      withRouter: true,
+    },
+  )
 
   expect(screen.getByRole("textbox", { name: /name/i })).toBeInTheDocument()
 })
@@ -34,52 +40,58 @@ test("renders null name", async () => {
 test("submit", async () => {
   const user = userEvent.setup()
 
-  render(<UpdateFilter filter={filter} tags={[]} workspaceId="1" />, {
-    withRouter: true,
-  })
+  render(
+    <UpdateFilter filter={filter} namespaces={[]} tags={[]} workspaceId="1" />,
+    {
+      withRouter: true,
+    },
+  )
 
   await act(
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: "Name" }),
-        "test filter"
-      )
+        "test filter",
+      ),
   )
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+    async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 })
 
 test("submit error", async () => {
   const user = userEvent.setup()
 
-  render(<UpdateFilter filter={filter} tags={[]} workspaceId="1" />, {
-    withRouter: true,
-    mocks: [
-      {
-        request: {
-          query: UPDATE_FILTER,
-          variables: {
-            id: "1",
-            name: "test filtera",
-            metadata: [],
+  render(
+    <UpdateFilter filter={filter} namespaces={[]} tags={[]} workspaceId="1" />,
+    {
+      withRouter: true,
+      mocks: [
+        {
+          request: {
+            query: UPDATE_FILTER,
+            variables: {
+              id: "1",
+              name: "test filtera",
+              metadata: [],
+            },
+          },
+          result: {
+            errors: [new GraphQLError("Error!")],
           },
         },
-        result: {
-          errors: [new GraphQLError("Error!")],
-        },
-      },
-    ],
-  })
-
-  await act(
-    async () =>
-      await user.type(screen.getByRole("textbox", { name: "Name" }), "a")
+      ],
+    },
   )
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+    async () =>
+      await user.type(screen.getByRole("textbox", { name: "Name" }), "a"),
+  )
+
+  await act(
+    async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 
   await waitFor(() => {

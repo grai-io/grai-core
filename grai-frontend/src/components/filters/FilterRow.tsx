@@ -1,14 +1,28 @@
 import React from "react"
-import { Close } from "@mui/icons-material"
-import { Autocomplete, Grid, IconButton, TextField } from "@mui/material"
+import {
+  CheckBoxOutlineBlank,
+  Close,
+  CheckBox as CheckBoxIcon,
+} from "@mui/icons-material"
+import {
+  Autocomplete,
+  Checkbox,
+  Grid,
+  IconButton,
+  TextField,
+} from "@mui/material"
+import FilterField from "./FilterField"
+
+const icon = <CheckBoxOutlineBlank fontSize="small" />
+const checkedIcon = <CheckBoxIcon fontSize="small" />
 
 type Operator = {
   value: string
   label: string
   valueComponent?: (
     disabled: boolean,
-    value: string | null,
-    onChange: (value: string | null) => void,
+    value: string | string[] | null,
+    onChange: (value: string | string[] | null) => void,
   ) => React.ReactNode
 }
 
@@ -30,13 +44,14 @@ export type Filter = {
   type: string | null
   field: string | null
   operator: string | null
-  value: string | null
+  value: string | string[] | null
 }
 
 type FilterRowProps = {
   filter: Filter
   onChange: (filter: Filter) => void
   onRemove: () => void
+  namespaces: string[]
   tags: string[]
 }
 
@@ -44,6 +59,7 @@ const FilterRow: React.FC<FilterRowProps> = ({
   filter,
   onChange,
   onRemove,
+  namespaces,
   tags,
 }) => {
   const nameField: Field = {
@@ -77,6 +93,66 @@ const FilterRow: React.FC<FilterRowProps> = ({
     ],
   }
 
+  const namespaceField: Field = {
+    value: "namespace",
+    label: "Namespace",
+    operators: [
+      {
+        value: "equals",
+        label: "Equals",
+        valueComponent: (
+          disabled: boolean,
+          value: string | string[] | null,
+          onChange: (value: string | string[] | null) => void,
+        ) => (
+          <Autocomplete
+            openOnFocus
+            autoSelect
+            disabled={disabled}
+            options={namespaces}
+            value={Array.isArray(value) ? value[0] : value}
+            onChange={(event, newValue) => onChange(newValue)}
+            renderInput={params => <TextField {...params} />}
+            data-testid="autocomplete-value"
+          />
+        ),
+      },
+      {
+        value: "in",
+        label: "In",
+        valueComponent: (
+          disabled: boolean,
+          value: string | string[] | null,
+          onChange: (value: string | string[] | null) => void,
+        ) => (
+          <Autocomplete<string, true>
+            multiple
+            openOnFocus
+            autoSelect
+            limitTags={1}
+            disabled={disabled}
+            options={namespaces}
+            value={value ? (Array.isArray(value) ? value : [value]) : []}
+            onChange={(event, newValue) => onChange(newValue)}
+            renderInput={params => <TextField {...params} />}
+            renderOption={(props, option, { selected }) => (
+              <li {...props}>
+                <Checkbox
+                  icon={icon}
+                  checkedIcon={checkedIcon}
+                  style={{ marginRight: 8 }}
+                  checked={selected}
+                />
+                {option}
+              </li>
+            )}
+            data-testid="autocomplete-value"
+          />
+        ),
+      },
+    ],
+  }
+
   const sourceField: Field = {
     value: "data-source",
     label: "Data Source",
@@ -93,15 +169,15 @@ const FilterRow: React.FC<FilterRowProps> = ({
         label: "Contains",
         valueComponent: (
           disabled: boolean,
-          value: string | null,
-          onChange: (value: string | null) => void,
+          value: string | string[] | null,
+          onChange: (value: string | string[] | null) => void,
         ) => (
           <Autocomplete
             openOnFocus
             autoSelect
             disabled={disabled}
             options={tags}
-            value={value}
+            value={Array.isArray(value) ? value[0] : value}
             onChange={(event, newValue) => onChange(newValue)}
             renderInput={params => <TextField {...params} />}
             data-testid="autocomplete-value"
@@ -111,18 +187,18 @@ const FilterRow: React.FC<FilterRowProps> = ({
     ],
   }
 
-  const countField: Field = {
-    value: "count",
-    label: "Count",
-    disabled: true,
-    operators: [],
-  }
+  // const countField: Field = {
+  //   value: "count",
+  //   label: "Count",
+  //   disabled: true,
+  //   operators: [],
+  // }
 
   const properties: Property[] = [
     {
       value: "table",
       label: "Table",
-      fields: [nameField, sourceField, tagField, countField],
+      fields: [nameField, namespaceField, sourceField, tagField],
     },
     {
       value: "parent",
@@ -178,48 +254,48 @@ const FilterRow: React.FC<FilterRowProps> = ({
     field?.operators.find(operator => operator.value === filter.operator) ??
     null
 
+  const handleFieldChange = (
+    _: React.SyntheticEvent<Element, Event>,
+    newValue: Field | null,
+  ) => {
+    let newFilter = { ...filter, field: newValue?.value ?? null }
+
+    if (!operator && newValue?.operators && newValue?.operators.length > 0) {
+      newFilter.operator = newValue?.operators[0].value
+    }
+
+    onChange(newFilter)
+  }
+
   return (
     <Grid container spacing={1} sx={{ mt: 0.5 }}>
       <Grid item md={3}>
-        <Autocomplete
-          openOnFocus
-          autoSelect
+        <FilterField<Property>
           options={properties}
           value={property}
           onChange={(event, newValue) =>
             onChange({ ...filter, type: newValue?.value ?? null })
           }
-          renderInput={params => <TextField {...params} />}
-          getOptionDisabled={option => option.disabled ?? false}
           data-testid="autocomplete-property"
         />
       </Grid>
       <Grid item md={3}>
-        <Autocomplete
-          openOnFocus
-          autoSelect
+        <FilterField<Field>
           disabled={!property}
           options={property?.fields ?? []}
           value={field}
-          onChange={(event, newValue) =>
-            onChange({ ...filter, field: newValue?.value ?? null })
-          }
-          renderInput={params => <TextField {...params} />}
-          getOptionDisabled={option => option.disabled ?? false}
+          onChange={handleFieldChange}
           data-testid="autocomplete-field"
         />
       </Grid>
       <Grid item md={3}>
-        <Autocomplete
-          openOnFocus
-          autoSelect
+        <FilterField<Operator>
           disabled={!field}
           options={field?.operators ?? []}
           value={operator}
           onChange={(event, newValue) =>
             onChange({ ...filter, operator: newValue?.value ?? null })
           }
-          renderInput={params => <TextField {...params} />}
           data-testid="autocomplete-operator"
         />
       </Grid>
@@ -228,7 +304,7 @@ const FilterRow: React.FC<FilterRowProps> = ({
           operator.valueComponent(
             !operator,
             filter.value,
-            (value: string | null) => onChange({ ...filter, value }),
+            (value: string | string[] | null) => onChange({ ...filter, value }),
           )
         ) : (
           <TextField

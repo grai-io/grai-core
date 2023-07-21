@@ -4,7 +4,7 @@ import { act, render, screen } from "testing"
 import FilterForm from "./FilterForm"
 
 test("renders", async () => {
-  render(<FilterForm onSave={() => {}} tags={[]} />)
+  render(<FilterForm onSave={() => {}} namespaces={[]} tags={[]} />)
 
   await screen.findAllByText("Save")
 })
@@ -12,7 +12,14 @@ test("renders", async () => {
 test("close", async () => {
   const user = userEvent.setup()
 
-  render(<FilterForm onSave={() => {}} onClose={() => {}} tags={[]} />)
+  render(
+    <FilterForm
+      onSave={() => {}}
+      onClose={() => {}}
+      namespaces={[]}
+      tags={[]}
+    />,
+  )
 
   await screen.findAllByText("Cancel")
 

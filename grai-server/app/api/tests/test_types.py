@@ -2635,6 +2635,34 @@ async def test_tags(test_context):
 
 
 @pytest.mark.django_db
+async def test_namespaces(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    await Node.objects.acreate(workspace=workspace, name=str(uuid.uuid4()), namespace="test_namespace")
+
+    query = """
+        query Workspace($workspaceId: ID!) {
+          workspace(id: $workspaceId) {
+            id
+            namespaces {
+                data
+            }
+          }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={"workspaceId": str(workspace.id)},
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["namespaces"]["data"][0] == "test_namespace"
+
+
+@pytest.mark.django_db
 async def test_graph(test_context):
     context, organisation, workspace, user, membership = test_context
 

@@ -54,6 +54,7 @@ test("not found", async () => {
           workspace: {
             id: "1",
             filter: null,
+            namespaces: { data: ["namespace1"] },
             tags: { data: ["tag1"] },
           },
         },

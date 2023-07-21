@@ -23,6 +23,13 @@ def filter_by_filter(filter, query: GraphQuery) -> GraphQuery:
                 elif row["operator"] == "ends-with":
                     query.where(f"toLower(table.name) ENDS WITH toLower('{value}')")
 
+            elif row["field"] == "namespace":
+                if row["operator"] == "equals":
+                    query.where(f"table.namespace = '{value}'")
+                elif row["operator"] == "in":
+                    list = "['" + "', '".join(value) + "']"
+                    query.where(f"table.namespace IN {list}")
+
             elif row["field"] == "tag":
                 if row["operator"] == "contains":
                     query.where(f"'{value}' IN table.tags")

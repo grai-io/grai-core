@@ -815,6 +815,17 @@ class Workspace:
 
         return DataWrapper[str](data=data)
 
+    # Namespaces
+    @strawberry.field
+    async def namespaces(self) -> DataWrapper[str]:
+        namespaces = await sync_to_async(list)(
+            NodeModel.objects.filter(workspace=self).values_list("namespace", flat=True).distinct()
+        )
+
+        print(namespaces)
+
+        return DataWrapper(namespaces)
+
     # Graph
     @strawberry.django.field
     async def graph(

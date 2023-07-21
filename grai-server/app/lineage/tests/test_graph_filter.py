@@ -173,6 +173,50 @@ def test_table_name_ends_with():
     assert query.parameters == {}
 
 
+def test_table_namespace_equals():
+    query = GraphQuery(Match("Table"))
+
+    filter = Filter(
+        name=str(uuid.uuid4()),
+        metadata=[
+            {
+                "type": "table",
+                "field": "namespace",
+                "operator": "equals",
+                "value": "test3",
+            }
+        ],
+    )
+
+    filter_by_filter(filter, query)
+
+    assert len(query.clause[0].wheres) == 1
+    assert query.clause[0].wheres[0].where == "table.namespace = 'test3'"
+    assert query.parameters == {}
+
+
+def test_table_namespace_in():
+    query = GraphQuery(Match("Table"))
+
+    filter = Filter(
+        name=str(uuid.uuid4()),
+        metadata=[
+            {
+                "type": "table",
+                "field": "namespace",
+                "operator": "in",
+                "value": ["test3", "test4"],
+            }
+        ],
+    )
+
+    filter_by_filter(filter, query)
+
+    assert len(query.clause[0].wheres) == 1
+    assert query.clause[0].wheres[0].where == "table.namespace IN ['test3', 'test4']"
+    assert query.parameters == {}
+
+
 def test_no_ancestor():
     query = GraphQuery(Match("Table"))
 
