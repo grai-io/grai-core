@@ -2,9 +2,6 @@ from .graph import GraphQuery
 
 
 def filter_by_filter(filter, query: GraphQuery) -> GraphQuery:
-    if len(filter.metadata) == 0:
-        return query
-
     for row in filter.metadata:
         value = row["value"]
 
@@ -43,8 +40,9 @@ def filter_by_filter(filter, query: GraphQuery) -> GraphQuery:
         elif row["type"] == "no-ancestor":
             if row["field"] == "tag":
                 if row["operator"] == "contains":
-                    # where.append(f"(table)<-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*]-(othertable:Table) AND '{value}' IN othertable.tags")
-                    pass
+                    query.optional_match(
+                        "(table)<-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*]-(othertable:Table)"
+                    ).withWhere(f"WHERE (othertable is null or not '{value}' IN othertable.tags)")
         elif row["type"] == "descendant":
             if row["field"] == "tag":
                 if row["operator"] == "contains":
@@ -55,8 +53,9 @@ def filter_by_filter(filter, query: GraphQuery) -> GraphQuery:
         elif row["type"] == "no-descendant":
             if row["field"] == "tag":
                 if row["operator"] == "contains":
-                    # where.append(f"(table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*]->(othertable:Table) AND '{value}' IN othertable.tags")
-                    pass
+                    query.optional_match(
+                        "(table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*]->(othertable:Table)"
+                    ).withWhere(f"WHERE (othertable is null or not '{value}' IN othertable.tags)")
         else:
             raise Exception("Unknown filter type: " + row["type"])
 
