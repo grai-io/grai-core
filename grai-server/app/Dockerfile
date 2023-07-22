@@ -6,6 +6,7 @@ LABEL org.opencontainers.image.source="https://github.com/grai-io/grai-core"
 WORKDIR /usr/src/app
 
 ENV PATH=$PATH:/root/.cargo/bin
+ENV SECRET_KEY dummy
 
 ARG PYTHONDONTWRITEBYTECODE="1" \
     PYTHONUNBUFFERED="1" \
@@ -47,19 +48,20 @@ RUN poetry config virtualenvs.create false  \
     && rm -rf ~/.cache/pypoetry/cache \
     && rm -rf ~/.cache/pypoetry/artifacts
 
-
 COPY ./worker.sh /start-celeryworker
 COPY ./beat.sh /start-celerybeat
-COPY ./entrypoint.sh /usr/src/app/entrypoint.sh
+COPY . .
 
 RUN sed -i 's/\r$//g' /start-celerybeat \
     && chmod +x /start-celerybeat \
     && sed -i 's/\r$//g' /start-celeryworker \
     && chmod +x /start-celeryworker \
     && sed -i 's/\r$//g' /usr/src/app/entrypoint.sh \
-    && chmod +x /usr/src/app/entrypoint.sh
+    && chmod +x /usr/src/app/entrypoint.sh \
+    && sed -i 's/\r$//g' /usr/src/app/initialize_db.sh \
+    && chmod +x /usr/src/app/initialize_db.sh
 
-COPY . .
+RUN python manage.py collectstatic --noinput
 
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
 CMD gunicorn the_guide.wsgi -b 0.0.0.0:8000 -w 2 --thread 2

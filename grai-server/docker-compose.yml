@@ -24,6 +24,7 @@ services:
       - CELERY_BACKEND=redis://redis:6379/0
       - REDIS_GRAPH_CACHE_HOST=redis
       - DJANGO_SETTINGS_MODULE=the_guide.settings.dev
+      - CREATE_SAMPLE_DATA=true
     depends_on:
       - redis
       - db
@@ -106,7 +107,7 @@ services:
       interval: 2s
       timeout: 2s
       retries: 15
-    command: ["postgres", "-c", "log_statement=all"]
+    command: ["postgres", "-c", "log_statement=none"]
 
   redis:
     image: redis/redis-stack:latest

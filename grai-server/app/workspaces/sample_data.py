@@ -17,13 +17,17 @@ class SampleData:
     def __init__(self, workspace: Workspace):
         self.workspace = workspace
 
-    async def generate(self):
-        print("generate")
+    def workspace_has_connections(self) -> bool:
+        connections = Connection.objects.filter(workspace=self.workspace).all()
+        return len(connections) > 0
 
-        await self.add_connections()
-        await self.run_connections()
-        await self.add_dbt()
-        await self.add_edges()
+    async def generate(self):
+        has_connections = await sync_to_async(self.workspace_has_connections)()
+        if not has_connections:
+            await self.add_connections()
+            await self.run_connections()
+            await self.add_dbt()
+            await self.add_edges()
 
     async def add_connections(self):
         bigquery_connector = await Connector.objects.aget(slug="bigquery")

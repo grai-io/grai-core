@@ -242,6 +242,7 @@ LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 
 USE_I18N = True
+USE_L10N = True
 
 USE_TZ = True
 
@@ -260,7 +261,6 @@ PHONENUMBER_DEFAULT_REGION = "US"
 # OpenApi
 # https://drf-spectacular.readthedocs.io/en/latest/settings.html
 
-
 # LOGGING = {
 #     "version": 1,
 #     "disable_existing_loggers": False,
@@ -276,15 +276,10 @@ PHONENUMBER_DEFAULT_REGION = "US"
 #         },
 #     },
 #     "loggers": {
-#         "django": {
-#             "handlers": ["file"],
-#             "level": "DEBUG",
-#             "propagate": True,
-#         },
-#         "django.db.backends": {
-#             "handlers": ["db-console"],
-#             "level": "DEBUG",
-#             "propagate": False,
+#         'health_check': {  # replace 'your_app' with the name of your application
+#             'handlers': ['console'],
+#             'level': 'WARNING',
+#             'propagate': False,
 #         },
 #     },
 # }
@@ -328,5 +323,16 @@ GITHUB_PRIVATE_KEY = config("GITHUB_PRIVATE_KEY", None)
 
 NGROK_URL = config("NGROK_URL", f"https://{SERVER_HOST}")
 
+
 REDIS_GRAPH_CACHE_HOST = config("REDIS_GRAPH_CACHE_HOST", "localhost")
 REDIS_GRAPH_CACHE_PORT = config("REDIS_GRAPH_CACHE_PORT", 6379)
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"redis://{REDIS_GRAPH_CACHE_HOST}:{REDIS_GRAPH_CACHE_PORT}/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
+}

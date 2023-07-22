@@ -38,6 +38,7 @@ if not settings.DISABLE_TELEMETRY:
     sentry_sdk.init(
         dsn=settings.SENTRY_DSN,
         traces_sampler=traces_sampler,
+        profiles_sample_rate=0.01,
         integrations=[DjangoIntegration(), PostHogIntegration()],
         release=f"grai-server@{settings.SERVER_VERSION}",
     )

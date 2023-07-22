@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 host="${DB_HOST:-localhost}"
 port="${DB_PORT:-5432}"
 
@@ -15,21 +14,20 @@ export GRAI_SERVER_VERSION=`poetry version -s`
 DEFAULT_KEY=`cat /dev/urandom | env LC_ALL=C tr -dc 'a-zA-Z0-9' | fold -w 50 | head -n 1`
 export SECRET_KEY=${SECRET_KEY:-$DEFAULT_KEY}
 
-#python manage.py flush --no-input
-python manage.py migrate
-python manage.py collectstatic --no-input
+# Determine the type of running worker and set the INSTANCE_TYPE environment variable
+if [ "$1" = "/start-celerybeat" ]; then
+  INSTANCE_TYPE="beat"
+elif [ "$1" = "/start-celeryworker" ]; then
+  INSTANCE_TYPE="worker"
+else
+  INSTANCE_TYPE="web"
+fi
+export INSTANCE_TYPE=$INSTANCE_TYPE
 
+# Run the initialization script if this is a web instance
+if [ "$INSTANCE_TYPE" = "web" ]; then
+  echo "Initializing database with default data..."
+  bash /usr/src/app/initialize_db.sh
+fi
 
-# Seed database from json files
-fixtures=$(ls seed/)
-while IFS= read -r fixture; do
-    echo -n "Seeding "
-    echo $fixture
-    python manage.py loaddata seed/$fixture
-done <<< "$fixtures"
-
-# Every call to manage.py imports telemetry/apps which have a log event but we only want the first.
-# These should be set to false first if we don't want workers to log their deployment
-python manage.py shell < "init.py"
-python manage.py shell < "log.py"
 exec "$@"
