@@ -16,7 +16,7 @@ done <<< "$fixtures"
 python manage.py shell < "init.py"
 python manage.py shell < "log.py"
 
-# Instantiage the database if set to true
+# Instantiate the database if set to true
 if [ "$CREATE_SAMPLE_DATA" = "true" ]; then
   echo "Creating sample data..."
   python manage.py create_sample_data
