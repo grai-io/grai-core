@@ -18,25 +18,17 @@ COPY pyproject.toml poetry.lock ./
 # unixodbc-dev, g++ are required for pyodbc (note gcc should come with g++)
 RUN apt update \
     && apt install --no-install-recommends -y \
-      curl \
       apt-utils \
       libpq-dev \
-      gcc \
       g++ \
+      gcc \
       unixodbc-dev \
-      gnupg2 \
-    && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-    && curl https://packages.microsoft.com/config/debian/11/prod.list > /etc/apt/sources.list.d/mssql-release.list \
-    && apt-get update \
-    && ACCEPT_EULA=Y apt-get install -y msodbcsql18 \
     && pip install "poetry==${POETRY_VERSION}" \
     && poetry config virtualenvs.create false \
     && poetry install --no-root --no-interaction --no-ansi \
     && poetry version -s > /version.txt
 
-
 COPY . .
-
 
 RUN sed -i 's/\r$//g' /usr/src/app/entrypoint.sh && chmod +x /usr/src/app/entrypoint.sh \
     && sed -i 's/\r$//g' /usr/src/app/initialize_db.sh && chmod +x /usr/src/app/initialize_db.sh \
@@ -60,12 +52,22 @@ COPY --from=builder /usr/src/app/ /usr/src/app/
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    INSTANCE_TYPE=worker
+    INSTANCE_TYPE=server
 
 # netcat is used to wait for the database to be ready.
 # curl is used to support healthchecks
 RUN apt update \
-    && apt install --no-install-recommends -y curl netcat-openbsd bash libpq-dev \
+    && apt install --no-install-recommends -y  \
+      curl  \
+      netcat-openbsd \
+      bash  \
+      libpq-dev \
+      unixodbc-dev \
+      gnupg2 \
+    && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+    && curl https://packages.microsoft.com/config/debian/11/prod.list > /etc/apt/sources.list.d/mssql-release.list \
+    && apt-get update \
+    && ACCEPT_EULA=Y apt-get install -y msodbcsql18 \
     && rm -rf /var/lib/apt/lists/*
 
 
