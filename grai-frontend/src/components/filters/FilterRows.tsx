@@ -5,10 +5,16 @@ import FilterRow, { Filter } from "./FilterRow"
 type FilterRowsProps = {
   filters: Filter[]
   onChange: (filters: Filter[]) => void
+  namespaces: string[]
   tags: string[]
 }
 
-const FilterRows: React.FC<FilterRowsProps> = ({ filters, onChange, tags }) => {
+const FilterRows: React.FC<FilterRowsProps> = ({
+  filters,
+  onChange,
+  namespaces,
+  tags,
+}) => {
   const handleChangeFilters = (index: number) => (filter: Filter) => {
     const newFilters = [...filters]
     newFilters[index] = filter
@@ -30,6 +36,7 @@ const FilterRows: React.FC<FilterRowsProps> = ({ filters, onChange, tags }) => {
           filter={filter}
           onChange={handleChangeFilters(index)}
           onRemove={handleRemoveFilter(index)}
+          namespaces={namespaces}
           tags={tags}
         />
       ))}

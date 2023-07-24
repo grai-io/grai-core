@@ -16,6 +16,9 @@ export const GET_WORKSPACE = gql`
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       name
+      namespaces {
+        data
+      }
       tags {
         data
       }
@@ -44,7 +47,11 @@ const FilterCreate: React.FC = () => {
     <PageLayout>
       <PageHeader title="Create Filter" />
       <PageContent>
-        <CreateFilter workspaceId={workspace.id} tags={workspace.tags.data} />
+        <CreateFilter
+          workspaceId={workspace.id}
+          namespaces={workspace.namespaces.data}
+          tags={workspace.tags.data}
+        />
       </PageContent>
     </PageLayout>
   )

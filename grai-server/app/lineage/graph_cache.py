@@ -10,6 +10,7 @@ from redis import Redis
 from workspaces.models import Workspace
 
 from .graph import GraphQuery
+from .graph_filter import filter_by_filter
 from .graph_types import BaseGraph, GraphColumn, GraphTable
 
 
@@ -29,7 +30,10 @@ class GraphCache:
         )
 
     def query(self, query: str, parameters: object = {}, timeout: int = None):
-        return self.manager.graph(f"lineage:{str(self.workspace_id)}").query(query, parameters, timeout=timeout)
+        try:
+            return self.manager.graph(f"lineage:{str(self.workspace_id)}").query(query, parameters, timeout=timeout)
+        except redis.exceptions.ResponseError as e:
+            raise Exception(f"Error while executing query: {query} with parameters: {parameters}, error: {e}") from e
 
     def cache_node(self, node):
         def get_data_source() -> Optional[str]:
@@ -260,6 +264,7 @@ class GraphCache:
                     COLLECT(distinct destination.id) AS destinations,
                     column,
                     collect(distinct column_destination.id) as column_destinations
+                {query.withWheres if query.withWheres else ""}
                 WITH
                     table,
                     destinations,
@@ -343,47 +348,7 @@ class GraphCache:
 
     def filter_by_filters(self, filters, query: GraphQuery) -> GraphQuery:
         for filter in filters:
-            query = self.filter_by_filter(filter, query)
-
-    def filter_by_filter(self, filter, query: GraphQuery) -> GraphQuery:
-        if len(filter.metadata) == 0:
-            return query
-
-        for row in filter.metadata:
-            value = row["value"]
-
-            if row["type"] == "table":
-                if row["field"] == "tag":
-                    if row["operator"] == "contains":
-                        query.where(f"'{value}' IN table.tags")
-            elif row["type"] == "ancestor":
-                if row["field"] == "tag":
-                    if row["operator"] == "contains":
-                        query.match(
-                            "(table)<-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*]-(othertable:Table)",
-                            where=f"'{value}' IN othertable.tags",
-                        )
-            elif row["type"] == "no-ancestor":
-                if row["field"] == "tag":
-                    if row["operator"] == "contains":
-                        # where.append(f"(table)<-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*]-(othertable:Table) AND '{value}' IN othertable.tags")
-                        pass
-            elif row["type"] == "descendant":
-                if row["field"] == "tag":
-                    if row["operator"] == "contains":
-                        query.match(
-                            "(table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*]->(othertable:Table)",
-                            where=f"'{value}' IN othertable.tags",
-                        )
-            elif row["type"] == "no-descendant":
-                if row["field"] == "tag":
-                    if row["operator"] == "contains":
-                        # where.append(f"(table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*]->(othertable:Table) AND '{value}' IN othertable.tags")
-                        pass
-            else:
-                raise Exception("Unknown filter type: " + row["type"])
-
-        return query
+            query = filter_by_filter(filter, query)
 
     def get_with_step_graph_result(
         self, n: int, parameters: object = {}, where: Optional[str] = None

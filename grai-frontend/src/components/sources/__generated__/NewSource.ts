@@ -4,11 +4,11 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL fragment: NewApiKey
+// GraphQL fragment: NewSource
 // ====================================================
 
-export interface NewApiKey {
-  __typename: "WorkspaceAPIKey";
-  id: string;
+export interface NewSource {
+  __typename: "Source";
+  id: any;
   name: string;
 }
