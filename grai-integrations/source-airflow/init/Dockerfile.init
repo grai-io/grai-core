@@ -1,5 +1,0 @@
-FROM alpine:3.13
-RUN apk update && apk add curl jq
-COPY init_metabase.sh /init_metabase.sh
-RUN chmod +x /init_metabase.sh
-CMD ["/init_metabase.sh"]

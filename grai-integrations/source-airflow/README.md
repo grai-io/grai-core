@@ -1,1 +1,0 @@
-# Grai Metabase Integration
