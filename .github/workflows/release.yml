@@ -139,8 +139,9 @@ jobs:
       contents: write
 
     outputs:
-      image-digest: ${{ steps.docker-build.outputs.digest }}
-
+      image-digest-server: ${{ steps.docker-build-server.outputs.digest }}
+      image-digest-worker: ${{ steps.docker-build-worker.outputs.digest }}
+      image-digest-beat-worker: ${{ steps.docker-build-beat-worker.outputs.digest }}
     defaults:
       run:
         working-directory: grai-server/app
@@ -245,7 +246,9 @@ jobs:
       contents: write
 
     outputs:
-      image-digest: ${{ steps.docker-build.outputs.digest }}
+      image-digest-server: ${{ steps.docker-build-server.outputs.digest }}
+      image-digest-worker: ${{ steps.docker-build-worker.outputs.digest }}
+      image-digest-beat-worker: ${{ steps.docker-build-beat-worker.outputs.digest }}
 
     defaults:
       run:
@@ -340,19 +343,19 @@ jobs:
         uses: ianbelcher/eks-kubectl-action@master
         with:
           cluster_name: ${{ secrets.CLUSTER_NAME }}
-          args: set image deployment/api-prod api=ghcr.io/${{ github.repository }}/grai-server@${{ needs.build-server-release.outputs.image-digest || needs.build-server-cloud.outputs.image-digest }}
+          args: set image deployment/api-prod api=ghcr.io/${{ github.repository }}/grai-server@${{ needs.build-server-release.outputs.image-digest-server || needs.build-server-cloud.outputs.image-digest-server }}
 
       - name: Deploy to Kubernetes cluster - celery
         uses: ianbelcher/eks-kubectl-action@master
         with:
           cluster_name: ${{ secrets.CLUSTER_NAME }}
-          args: set image deployment/celery-worker-prod celery-worker=ghcr.io/${{ github.repository }}/grai-server@${{ needs.build-server-release.outputs.image-digest || needs.build-server-cloud.outputs.image-digest }}
+          args: set image deployment/celery-worker-prod celery-worker=ghcr.io/${{ github.repository }}/grai-worker@${{ needs.build-server-release.outputs.image-digest-worker || needs.build-server-cloud.outputs.image-digest-worker }}
 
       - name: Deploy to Kubernetes cluster - celery beat
         uses: ianbelcher/eks-kubectl-action@master
         with:
           cluster_name: ${{ secrets.CLUSTER_NAME }}
-          args: set image deployment/celery-beat-worker-prod celery-beat-worker=ghcr.io/${{ github.repository }}/grai-server@${{ needs.build-server-release.outputs.image-digest || needs.build-server-cloud.outputs.image-digest }}
+          args: set image deployment/celery-beat-worker-prod celery-beat-worker=ghcr.io/${{ github.repository }}/grai-beat-worker@${{ needs.build-server-release.outputs.image-digest-beat-worker || needs.build-server-cloud.outputs.image-digest-beat-worker }}
 
       - name: Verify deployment
         uses: ianbelcher/eks-kubectl-action@master
