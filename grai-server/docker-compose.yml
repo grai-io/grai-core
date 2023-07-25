@@ -3,7 +3,9 @@ version: "3.7"
 services:
   the_guide:
     # image: ghcr.io/grai-io/grai-core/grai-server:latest
-    build: ./app
+    build:
+      context: ./app
+      target: grai-core
     volumes:
       - ./app/:/usr/src/app/
     ports:
@@ -24,6 +26,7 @@ services:
       - CELERY_BACKEND=redis://redis:6379/0
       - REDIS_GRAPH_CACHE_HOST=redis
       - DJANGO_SETTINGS_MODULE=the_guide.settings.dev
+      - CREATE_SAMPLE_DATA=true
     depends_on:
       - redis
       - db
@@ -35,10 +38,11 @@ services:
       start_period: 20s
 
   celery_worker:
-    build: ./app
+    build:
+      context: ./app
+      target: grai-worker
     volumes:
       - ./app/:/usr/src/app/
-    command: /start-celeryworker
     environment:
       - DB_HOST=db
       - DB_PORT=5432
@@ -61,10 +65,11 @@ services:
     scale: 1
 
   celery_beat_worker:
-    build: ./app
+    build:
+      context: ./app
+      target: grai-beat-worker
     volumes:
       - ./app/:/usr/src/app/
-    command: /start-celerybeat
     environment:
       - DB_HOST=db
       - DB_PORT=5432
@@ -106,7 +111,7 @@ services:
       interval: 2s
       timeout: 2s
       retries: 15
-    command: ["postgres", "-c", "log_statement=all"]
+    command: ["postgres", "-c", "log_statement=none"]
 
   redis:
     image: redis/redis-stack:latest

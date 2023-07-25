@@ -76,6 +76,7 @@ jobs:
           context: grai-server/app
           push: true
           labels: ${{ steps.meta.outputs.labels }}
+          target: grai-server
           tags: ghcr.io/grai-io/grai-core/grai-server-temp:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max

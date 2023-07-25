@@ -13,7 +13,7 @@ concurrency:
 
 env:
   py_ver: "3.10"
-  poetry_ver: "1.2.2"
+  poetry_ver: "1.5.1"
   project_dir: "grai-cli"
 
 jobs:
@@ -78,6 +78,7 @@ jobs:
           push: true
           labels: ${{ steps.meta.outputs.labels }}
           tags: ghcr.io/grai-io/grai-core/grai-server-temp:latest
+          target: grai-server
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -91,7 +92,7 @@ jobs:
         working-directory: ${{ env.project_dir }}
 
     env:
-      GRAI_CLI_CONFIG_DIR: ${{ github.workspace }}/grai-cli/tests/config
+      GRAI_CLI_CONFIG: ${{ github.workspace }}/grai-cli/tests/config/config.yaml
 
     services:
       postgres:

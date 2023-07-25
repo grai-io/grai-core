@@ -3,8 +3,9 @@ from typing import Optional
 import click
 import typer
 
+import grai_cli
 from grai_cli.utilities.telemetry import Telemetry
-from grai_cli.utilities.utilities import HAS_RICH, default_callback
+from grai_cli.utilities.utilities import HAS_RICH, default_callback, print
 
 
 def result_callback(*args, **kwargs):
@@ -59,3 +60,8 @@ def callback(
         cache.set("telemetry_consent", telemetry)
 
     default_callback(ctx)
+
+
+@app.command("version", help="Returns the current CLI version")
+def get_cli_version():
+    print(grai_cli.__version__)

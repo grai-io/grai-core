@@ -17,7 +17,7 @@ def username_callback(inp: str):
 
     """
     if len(inp) == 0:
-        raise typer.BadParameter("Password is invalid for <reasons>")
+        raise typer.BadParameter("Password is empty")
     return inp
 
 
@@ -33,7 +33,7 @@ def workspace_callback(inp: str):
 
     """
     if len(inp) == 0:
-        raise typer.BadParameter("workspace is invalid for <reasons>")
+        raise typer.BadParameter("workspace is empty")
     return inp
 
 

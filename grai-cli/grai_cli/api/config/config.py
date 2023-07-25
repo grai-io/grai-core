@@ -6,12 +6,20 @@ from grai_cli.utilities import utilities
 from grai_cli.utilities.styling import GraiColors, default_styler, strip_style
 from grai_cli.utilities.validators import (
     host_callback,
-    insecure_callback,
     password_callback,
-    port_callback,
     username_callback,
     workspace_callback,
 )
+
+
+class InitDefaults:
+    @staticmethod
+    def url_default():
+        return default_styler(config.server.url)
+
+    @staticmethod
+    def workspace_default():
+        return default_styler(config.server.workspace)
 
 
 @config_app.command("init")
@@ -23,29 +31,28 @@ def cli_init_config(
         prompt_required=True,
         hide_input=True,
         confirmation_prompt=True,
-        callback=strip_style(password_callback),
+        callback=typer.unstyle,
     ),
     url: str = typer.Option(
-        default=default_styler(config.server.url),
+        InitDefaults.url_default,
         prompt="Server URL",
         prompt_required=True,
-        callback=strip_style(host_callback),
+        callback=typer.unstyle,
     ),
     workspace: str = typer.Option(
-        default=default_styler(config.server.workspace),
+        InitDefaults.workspace_default,
         prompt="The Grai workspace for this config",
         prompt_required=True,
-        callback=strip_style(workspace_callback),
+        callback=typer.unstyle,
     ),
 ):
     """Initialize a new config file
 
     Args:
-        username:  (Default value = typer.Option(..., prompt=True, callback=username_callback, prompt_required=True))
-        password:  (Default value = typer.Option(...,prompt=True,prompt_required=True,hide_input=True,confirmation_prompt=True,callback=strip_style(password_callback))
-        ):
+        username:
+        password:
         url:
-        workspace:  (Default value = typer.Option(default=default_styler(config.server.workspace))
+        workspace:
 
     Returns:
 
