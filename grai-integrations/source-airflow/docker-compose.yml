@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_USER: metabase
+      POSTGRES_DB: metabase
+    ports:
+      - 5435:5432
+    volumes:
+      - ./init/init.sql:/docker-entrypoint-initdb.d/seed.sql
+
+  metabase:
+    image: metabase/metabase:latest
+    depends_on:
+      - db
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_HOST: db
+      MB_DB_PORT: 5432
+      MB_DB_USER: metabase
+      MB_DB_PASS: mysecretpassword
+      MB_DB_NAME: metabase
+      MB_SECRET_KEY: mysecretkey
+      MB_DB_FILE: /metabase-data/metabase.db
+    volumes:
+      - ./init/metabase-data:/metabase-data
+    ports:
+      - 3001:3000
+
+  metabase_init:
+    build:
+      context: ./init
+      dockerfile: Dockerfile.init
+    depends_on:
+      - metabase
+    environment:
+      - MB_ADMIN_EMAIL=admin@metabase.local
+      - MB_ADMIN_PASSWORD=Metapass123
+      - MB_HOSTNAME=metabase
+      - MB_PORT=3000

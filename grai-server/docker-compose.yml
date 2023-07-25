@@ -3,7 +3,9 @@ version: "3.7"
 services:
   the_guide:
     # image: ghcr.io/grai-io/grai-core/grai-server:latest
-    build: ./app
+    build:
+      context: ./app
+      target: grai-core
     volumes:
       - ./app/:/usr/src/app/
     ports:
@@ -36,10 +38,11 @@ services:
       start_period: 20s
 
   celery_worker:
-    build: ./app
+    build:
+      context: ./app
+      target: grai-worker
     volumes:
       - ./app/:/usr/src/app/
-    command: /start-celeryworker
     environment:
       - DB_HOST=db
       - DB_PORT=5432
@@ -62,10 +65,11 @@ services:
     scale: 1
 
   celery_beat_worker:
-    build: ./app
+    build:
+      context: ./app
+      target: grai-beat-worker
     volumes:
       - ./app/:/usr/src/app/
-    command: /start-celerybeat
     environment:
       - DB_HOST=db
       - DB_PORT=5432

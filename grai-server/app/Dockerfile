@@ -44,15 +44,14 @@ FROM python:3.11-slim-bookworm AS base
 LABEL org.opencontainers.image.source="https://github.com/grai-io/grai-core"
 WORKDIR /usr/src/app
 
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    INSTANCE_TYPE=server
+
 COPY --from=builder /version.txt /version.txt
 COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
 COPY --from=builder /usr/src/app/ /usr/src/app/
-
-
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    INSTANCE_TYPE=server
 
 # netcat is used to wait for the database to be ready.
 # curl is used to support healthchecks
@@ -69,7 +68,6 @@ RUN apt update \
     && apt-get update \
     && ACCEPT_EULA=Y apt-get install -y msodbcsql18 \
     && rm -rf /var/lib/apt/lists/*
-
 
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
 
