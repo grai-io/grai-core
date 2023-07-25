@@ -66,7 +66,7 @@ const GraphFilters: React.FC = () => {
         <TextField
           fullWidth
           size="small"
-          placeholder="Search"
+          placeholder="Search Filters"
           value={search}
           onChange={event => setSearch(event.target.value)}
           InputProps={{
