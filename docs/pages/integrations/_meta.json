@@ -9,6 +9,7 @@
   "bigquery": "BigQuery",
   "flat-file": "Flat File",
   "yaml": "YAML",
+  "metabase": "Metabase",
   "other-sources": "Other Sources",
   "support-status": "Support Status"
 }

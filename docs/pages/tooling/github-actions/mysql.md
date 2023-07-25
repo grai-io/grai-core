@@ -44,6 +44,7 @@ jobs:
           namespace: my_apps_grai_namespace
           api-key: my_grai_api_key
           action: tests
+          source-name: prod-db
           grai-api-url: https://api.grai.io
           db-host: dev.mysql.com
           db-port: '3306'

@@ -26,7 +26,6 @@ export const GET_EDGE = gql`
         name
         display_name
         is_active
-        data_source
         metadata
         source {
           id

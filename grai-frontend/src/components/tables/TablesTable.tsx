@@ -36,7 +36,7 @@ const TablesTable: React.FC<TablesTableProps> = ({
         <TableRow>
           <TableCell>Name</TableCell>
           <TableCell>Namespace</TableCell>
-          <TableCell>Data Source</TableCell>
+          {/* <TableCell>Data Source</TableCell> */}
           <TableCell>Active</TableCell>
         </TableRow>
       </TableHead>
@@ -52,7 +52,7 @@ const TablesTable: React.FC<TablesTableProps> = ({
           >
             <TableCell>{table.display_name ?? table.name}</TableCell>
             <TableCell>{table.namespace}</TableCell>
-            <TableCell>{table.data_source}</TableCell>
+            {/* <TableCell>{table.data_source}</TableCell> */}
             <TableCell>{table.is_active ? "Yes" : "No"}</TableCell>
           </TableRow>
         ))}

@@ -3,7 +3,7 @@ sidebar_label: loader
 title: grai_source_bigquery.loader
 ---
 
-#### get\_from\_env
+## get\_from\_env
 
 ```python
 def get_from_env(label: str,
@@ -32,7 +32,7 @@ class BigqueryConnector()
 
 
 
-#### connect
+### connect
 
 ```python
 def connect() -> "BigqueryConnector"
@@ -46,7 +46,7 @@ def connect() -> "BigqueryConnector"
 
 
 
-#### connection
+### connection
 
 ```python
 @property
@@ -61,7 +61,7 @@ def connection() -> bigquery.Client
 
 
 
-#### close
+### close
 
 ```python
 def close() -> None
@@ -75,7 +75,7 @@ def close() -> None
 
 
 
-#### query\_runner
+### query\_runner
 
 ```python
 def query_runner(query: str, param_dict: Dict = {}) -> List[Dict]
@@ -91,11 +91,11 @@ def query_runner(query: str, param_dict: Dict = {}) -> List[Dict]
 
 
 
-#### tables
+### tables
 
 ```python
-@cached_property
-def tables() -> List[Table]
+@lru_cache
+def tables(dataset: str) -> List[Table]
 ```
 
 Create and return a list of dictionaries with the
@@ -110,11 +110,11 @@ connected to by the connection argument.
 
 
 
-#### columns
+### columns
 
 ```python
-@cached_property
-def columns() -> List[Column]
+@lru_cache
+def columns(dataset: str) -> List[Column]
 ```
 
 Creates and returns a list of dictionaries for the specified
@@ -128,11 +128,11 @@ schema.table in the database connected to.
 
 
 
-#### column\_map
+### column\_map
 
 ```python
-@cached_property
-def column_map() -> Dict[Tuple[str, str], List[Column]]
+@lru_cache
+def column_map(dataset: str) -> Dict[Tuple[str, str], List[Column]]
 ```
 
 **Arguments**:
@@ -143,10 +143,10 @@ def column_map() -> Dict[Tuple[str, str], List[Column]]
 
 
 
-#### get\_table\_columns
+### get\_table\_columns
 
 ```python
-def get_table_columns(table: Table) -> List[Column]
+def get_table_columns(table: Table, dataset: str) -> List[Column]
 ```
 
 **Arguments**:
@@ -158,10 +158,10 @@ def get_table_columns(table: Table) -> List[Column]
 
 
 
-#### get\_nodes
+### get\_nodes
 
 ```python
-def get_nodes() -> List[BigqueryNode]
+def get_nodes(dataset: str) -> List[BigqueryNode]
 ```
 
 **Arguments**:
@@ -172,10 +172,10 @@ def get_nodes() -> List[BigqueryNode]
 
 
 
-#### get\_edges
+### get\_edges
 
 ```python
-def get_edges() -> List[Edge]
+def get_edges(dataset: str) -> List[Edge]
 ```
 
 **Arguments**:
@@ -186,10 +186,94 @@ def get_edges() -> List[Edge]
 
 
 
-#### get\_nodes\_and\_edges
+### get\_nodes\_and\_edges
 
 ```python
 def get_nodes_and_edges() -> Tuple[List[BigqueryNode], List[Edge]]
+```
+
+**Arguments**:
+
+
+
+**Returns**:
+
+
+
+## LoggingConnector Objects
+
+```python
+class LoggingConnector(BigqueryConnector)
+```
+
+
+
+### logging\_connect
+
+```python
+def logging_connect() -> "LoggingConnector"
+```
+
+**Arguments**:
+
+
+
+**Returns**:
+
+
+
+### logging\_connection
+
+```python
+@property
+def logging_connection() -> logging.Client
+```
+
+**Arguments**:
+
+
+
+**Returns**:
+
+
+
+### logging\_close
+
+```python
+def logging_close() -> None
+```
+
+**Arguments**:
+
+
+
+**Returns**:
+
+
+
+### logs
+
+```python
+@cached_property
+def logs() -> List[Any]
+```
+
+Create and return a list of dictionaries with the
+schemas and names of tables in the database
+connected to by the connection argument.
+
+**Arguments**:
+
+
+
+**Returns**:
+
+
+
+### get\_bigquery\_edges
+
+```python
+def get_bigquery_edges(existing_nodes: List[BigqueryNode]) -> List[Edge]
 ```
 
 **Arguments**:

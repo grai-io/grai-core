@@ -139,8 +139,9 @@ jobs:
       contents: write
 
     outputs:
-      image-digest: ${{ steps.docker-build.outputs.digest }}
-
+      image-digest-server: ${{ steps.docker-build-server.outputs.digest }}
+      image-digest-worker: ${{ steps.docker-build-worker.outputs.digest }}
+      image-digest-beat-worker: ${{ steps.docker-build-beat-worker.outputs.digest }}
     defaults:
       run:
         working-directory: grai-server/app
@@ -163,10 +164,30 @@ jobs:
           password: ${{ secrets.GH_TOKEN }}
 
       - name: Extract metadata (tags, labels) for Docker
-        id: meta
+        id: meta-server
         uses: docker/metadata-action@v4
         with:
           images: ghcr.io/${{ github.repository }}/grai-server
+          tags: |
+            type=raw,value=cloud,priority=100
+            type=raw,value=latest,priority=100
+            type=raw,value=${{ needs.get-poetry-version.outputs.poetry-version }},priority=100
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta-worker
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/${{ github.repository }}/grai-worker
+          tags: |
+            type=raw,value=cloud,priority=100
+            type=raw,value=latest,priority=100
+            type=raw,value=${{ needs.get-poetry-version.outputs.poetry-version }},priority=100
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta-beat-worker
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/${{ github.repository }}/grai-beat-worker
           tags: |
             type=raw,value=cloud,priority=100
             type=raw,value=latest,priority=100
@@ -176,13 +197,40 @@ jobs:
         uses: docker/setup-buildx-action@master
 
       - name: Build
-        id: docker-build
+        id: docker-build-server
         uses: docker/build-push-action@v4
         with:
           context: grai-server/app
+          target: grai-server
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta-server.outputs.tags }}
+          labels: ${{ steps.meta-server.outputs.labels }}
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build
+        id: docker-build-worker
+        uses: docker/build-push-action@v4
+        with:
+          context: grai-server/app
+          target: grai-worker
+          push: true
+          tags: ${{ steps.meta-worker.outputs.tags }}
+          labels: ${{ steps.meta-worker.outputs.labels }}
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build
+        id: docker-build-beat-worker
+        uses: docker/build-push-action@v4
+        with:
+          context: grai-server/app
+          target: grai-beat-worker
+          push: true
+          tags: ${{ steps.meta-beat-worker.outputs.tags }}
+          labels: ${{ steps.meta-beat-worker.outputs.labels }}
           platforms: linux/amd64,linux/arm64
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -198,7 +246,9 @@ jobs:
       contents: write
 
     outputs:
-      image-digest: ${{ steps.docker-build.outputs.digest }}
+      image-digest-server: ${{ steps.docker-build-server.outputs.digest }}
+      image-digest-worker: ${{ steps.docker-build-worker.outputs.digest }}
+      image-digest-beat-worker: ${{ steps.docker-build-beat-worker.outputs.digest }}
 
     defaults:
       run:
@@ -215,24 +265,62 @@ jobs:
           password: ${{ secrets.GH_TOKEN }}
 
       - name: Extract metadata (tags, labels) for Docker
-        id: meta
+        id: meta-cloud-server
         uses: docker/metadata-action@v4
         with:
           images: ghcr.io/${{ github.repository }}/grai-server
           tags: |
             type=raw,value=cloud,priority=100
 
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta-cloud-worker
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/${{ github.repository }}/grai-worker
+          tags: |
+            type=raw,value=cloud,priority=100
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta-cloud-beat-worker
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/${{ github.repository }}/grai-beat-worker
+          tags: |
+            type=raw,value=cloud,priority=100
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@master
 
-      - name: Build
-        id: docker-build
+      - name: Build Cloud Server
+        id: docker-build-cloud-server
         uses: docker/build-push-action@v4
         with:
           context: grai-server/app
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta-cloud-server.outputs.tags }}
+          labels: ${{ steps.meta-cloud-server.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build Cloud Worker
+        id: docker-build-cloud-worker
+        uses: docker/build-push-action@v4
+        with:
+          context: grai-server/app
+          push: true
+          tags: ${{ steps.meta-cloud-worker.outputs.tags }}
+          labels: ${{ steps.meta-cloud-worker.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build Cloud Beat Worker
+        id: docker-build-cloud-beat-worker
+        uses: docker/build-push-action@v4
+        with:
+          context: grai-server/app
+          push: true
+          tags: ${{ steps.meta-cloud-beat-worker.outputs.tags }}
+          labels: ${{ steps.meta-cloud-beat-worker.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -255,19 +343,19 @@ jobs:
         uses: ianbelcher/eks-kubectl-action@master
         with:
           cluster_name: ${{ secrets.CLUSTER_NAME }}
-          args: set image deployment/api-prod api=ghcr.io/${{ github.repository }}/grai-server@${{ needs.build-server-release.outputs.image-digest || needs.build-server-cloud.outputs.image-digest }}
+          args: set image deployment/api-prod api=ghcr.io/${{ github.repository }}/grai-server@${{ needs.build-server-release.outputs.image-digest-server || needs.build-server-cloud.outputs.image-digest-server }}
 
       - name: Deploy to Kubernetes cluster - celery
         uses: ianbelcher/eks-kubectl-action@master
         with:
           cluster_name: ${{ secrets.CLUSTER_NAME }}
-          args: set image deployment/celery-worker-prod celery-worker=ghcr.io/${{ github.repository }}/grai-server@${{ needs.build-server-release.outputs.image-digest || needs.build-server-cloud.outputs.image-digest }}
+          args: set image deployment/celery-worker-prod celery-worker=ghcr.io/${{ github.repository }}/grai-worker@${{ needs.build-server-release.outputs.image-digest-worker || needs.build-server-cloud.outputs.image-digest-worker }}
 
       - name: Deploy to Kubernetes cluster - celery beat
         uses: ianbelcher/eks-kubectl-action@master
         with:
           cluster_name: ${{ secrets.CLUSTER_NAME }}
-          args: set image deployment/celery-beat-worker-prod celery-beat-worker=ghcr.io/${{ github.repository }}/grai-server@${{ needs.build-server-release.outputs.image-digest || needs.build-server-cloud.outputs.image-digest }}
+          args: set image deployment/celery-beat-worker-prod celery-beat-worker=ghcr.io/${{ github.repository }}/grai-beat-worker@${{ needs.build-server-release.outputs.image-digest-beat-worker || needs.build-server-cloud.outputs.image-digest-beat-worker }}
 
       - name: Verify deployment
         uses: ianbelcher/eks-kubectl-action@master

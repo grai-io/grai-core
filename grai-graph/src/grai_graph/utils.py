@@ -1,17 +1,19 @@
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
-from grai_schemas.v1 import EdgeV1, NodeV1
+from grai_schemas.v1 import EdgeV1, NodeV1, mock
 from grai_schemas.v1.metadata.edges import (
     ColumnToColumnAttributes,
     ColumnToColumnMetadata,
     EdgeMetadataTypeLabels,
     GenericEdgeMetadataV1,
 )
+from grai_schemas.v1.metadata.metadata import NodeMetadataV1
 from grai_schemas.v1.metadata.nodes import (
     ColumnAttributes,
     ColumnMetadata,
     NodeMetadataTypeLabels,
 )
+from grai_schemas.v1.node import NamedSpec
 from pydantic import BaseModel
 
 from grai_graph import analysis, graph
@@ -25,6 +27,7 @@ class TestNodeObj(BaseModel):
     name: str
     namespace: Optional[str] = DEFAULT_NAMESPACE
     node_attributes: Optional[ColumnAttributes] = None
+    data_sources: List[Any] = []
 
     def __hash__(self):
         return hash((self.name, self.namespace))
@@ -44,23 +47,27 @@ def mock_v1_node(node: Union[str, TestNodeObj]):
     if isinstance(node, str):
         node = TestNodeObj(name=node)
 
-    metadata = node.node_attributes if node.node_attributes is not None else {}
-    node_dict = {
-        "type": "Node",
-        "version": "v1",
-        "spec": {
-            "id": None,
-            "name": node.name,
-            "namespace": node.namespace,
-            "data_source": "test_source",
-            "display_name": node.name,
-            "is_active": True,
-            "metadata": {
-                "grai": ColumnMetadata(node_type=NodeMetadataTypeLabels.column.value, node_attributes=metadata).dict()
-            },
-        },
+    node_attributes = node.node_attributes if node.node_attributes is not None else {}
+    metadata = {
+        "grai": ColumnMetadata(
+            node_type=NodeMetadataTypeLabels.column.value,
+            node_attributes=node_attributes,
+        ),
+        "sources": {},
     }
-    return NodeV1(**node_dict)
+
+    node_spec = mock.MockV1().node.named_node_spec(
+        id=None,
+        name=node.name,
+        namespace=node.namespace,
+        data_source="test_source",
+        is_active=True,
+        metadata=metadata,
+    )
+    node = NodeV1.from_spec(node_spec)
+    node.spec.metadata = metadata
+
+    return node
 
 
 def mock_v1_edge(
@@ -85,29 +92,34 @@ def mock_v1_edge(
     if isinstance(destination_node, str):
         destination_node = TestNodeObj(name=destination_node)
 
-    edge_dict = {
-        "type": "Edge",
-        "version": "v1",
-        "spec": {
-            "id": None,
-            "name": f"{source_node.namespace}.{source_node.name} -> {destination_node.namespace}.{destination_node.name}",
-            "namespace": source_node.namespace,
-            "data_source": "test_source",
-            "source": {"name": source_node.name, "namespace": source_node.namespace},
-            "destination": {
-                "name": destination_node.name,
-                "namespace": destination_node.namespace,
-            },
-            "is_active": True,
-            "metadata": {
-                "grai": ColumnToColumnMetadata(
-                    edge_type=EdgeMetadataTypeLabels.column_to_column.value,
-                    edge_attributes=metadata,
-                ).dict()
-            },
-        },
+    metadata = {
+        "grai": ColumnToColumnMetadata(
+            edge_type=EdgeMetadataTypeLabels.column_to_column.value,
+            edge_attributes=metadata,
+        ),
+        "sources": [],
     }
-    return EdgeV1(**edge_dict)
+    name = f"{source_node.namespace}.{source_node.name} -> {destination_node.namespace}.{destination_node.name}"
+
+    node_metadata: NodeMetadataV1 = {
+        "grai": ColumnMetadata(
+            node_type="Column",
+            node_attributes={},
+        ).dict(),
+    }
+
+    edge_spec = mock.MockV1().edge.named_edge_spec(
+        id=None,
+        name=name,
+        namespace=source_node.namespace,
+        source=NamedSpec(**source_node.dict(), metadata=node_metadata),
+        destination=NamedSpec(**destination_node.dict(), metadata=node_metadata),
+        is_active=True,
+        metadata=metadata,
+    )
+    edge = EdgeV1.from_spec(edge_spec)
+    edge.spec.metadata = metadata
+    return edge
 
 
 def build_graph_from_map(map: Dict[Union[str, TestNodeObj], List[Tuple[str, ColumnToColumnAttributes]]]) -> graph.Graph:
@@ -136,7 +148,7 @@ def build_graph_from_map(map: Dict[Union[str, TestNodeObj], List[Tuple[str, Colu
 
 
 def get_analysis_from_map(
-    map: Dict[Union[str, TestNodeObj], Dict[ColumnToColumnAttributes, List[str]]]
+    map: Dict[Union[str, TestNodeObj], List[Tuple[str, ColumnToColumnAttributes]]]
 ) -> analysis.GraphAnalyzer:
     """
 

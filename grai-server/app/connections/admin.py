@@ -63,9 +63,9 @@ class ConnectionAdmin(admin.ModelAdmin):
 
     formfield_overrides = {JSONField: {"widget": PrettyJSONWidget}}
 
-    inlines = [
-        RunInline,
-    ]
+    # inlines = [
+    #     RunInline,
+    # ]
 
 
 class RunFileInline(admin.TabularInline):
@@ -85,6 +85,7 @@ class RunAdmin(admin.ModelAdmin):
     list_display = (
         "id",
         "connection",
+        "source",
         "status",
         "workspace",
         "started_at",

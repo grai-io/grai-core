@@ -1,6 +1,7 @@
 from typer.testing import CliRunner
 
 from grai_cli.api.entrypoint import app
+from grai_cli.api.server.setup import get_default_client
 from grai_cli.settings.cache import cache
 from grai_cli.utilities.test import prep_tests
 
@@ -22,6 +23,5 @@ def test_enable_telemetry():
     assert telemetry
 
 
-#
-# def test_version():
-#     assert __version__ == "0.1.0"
+def test_has_client():
+    client = get_default_client()

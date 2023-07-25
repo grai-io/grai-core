@@ -23,6 +23,7 @@ const connection = {
   name: "connection 1",
   metadata: {},
   secrets: {},
+  sourceName: "default",
 }
 
 test("renders", async () => {

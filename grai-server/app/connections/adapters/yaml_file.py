@@ -7,12 +7,21 @@ from .base import BaseAdapter
 
 
 class YamlFileAdapter(BaseAdapter):
-    def validate_file(self, runFile: RunFile):
+    def validate_file(self, run: Run, runFile: RunFile):
         import yaml
         from grai_schemas.schema import Schema
 
         with runFile.file.open("r") as f:
             for item in yaml.safe_load_all(f):
+                spec = item["spec"]
+
+                if not spec.get("data_sources", None):
+                    spec["data_sources"] = [
+                        {
+                            "name": run.source.name,
+                        }
+                    ]
+
                 yield Schema(entity=item).entity
 
     def run_update(self, run: Run):
@@ -20,7 +29,7 @@ class YamlFileAdapter(BaseAdapter):
 
         runFile = run.files.first()
 
-        entities = self.validate_file(runFile)
+        entities = self.validate_file(run, runFile)
 
         for entity in entities:
             type = entity.type
@@ -31,6 +40,8 @@ class YamlFileAdapter(BaseAdapter):
             if type == "Edge":
                 values["source"] = get_node(run.workspace, values["source"])
                 values["destination"] = get_node(run.workspace, values["destination"])
+
+            values.pop("data_sources")
 
             try:
                 record = Model.objects.filter(workspace=run.workspace).get(
@@ -44,12 +55,15 @@ class YamlFileAdapter(BaseAdapter):
                 record.save()
             except Model.DoesNotExist:
                 values["workspace"] = run.workspace
-                Model.objects.create(**values)
+                record = Model.objects.create(**values)
+
+            relationship = run.source.nodes if type == "Node" else run.source.edges
+            relationship.add(record)
 
     def get_nodes_and_edges(self):
         runFile = self.run.files.first()
 
-        entities = self.validate_file(runFile)
+        entities = self.validate_file(self.run, runFile)
 
         nodes = []
         edges = []
@@ -61,3 +75,10 @@ class YamlFileAdapter(BaseAdapter):
                 edges.append(EdgeV1.from_spec(entity.spec))
 
         return nodes, edges
+
+    def run_validate(self, run: Run) -> bool:
+        self.run = run
+
+        self.get_nodes_and_edges()
+
+        return True

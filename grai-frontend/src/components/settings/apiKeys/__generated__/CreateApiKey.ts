@@ -10,17 +10,8 @@
 export interface CreateApiKey_createApiKey_api_key {
   __typename: "WorkspaceAPIKey";
   id: string;
-  /**
-   * A free-form name for the API key. Need not be unique. 50 characters max.
-   */
   name: string;
-  /**
-   * Once API key expires, clients cannot use it anymore.
-   */
   expiry_date: any | null;
-  /**
-   * If the API key is revoked, clients cannot use it anymore. (This cannot be undone.)
-   */
   revoked: boolean;
 }
 

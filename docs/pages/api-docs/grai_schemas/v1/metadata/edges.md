@@ -3,26 +3,40 @@ sidebar_label: edges
 title: grai_schemas.v1.metadata.edges
 ---
 
-## EdgeTypeLabels Objects
+## EdgeMetadataTypeLabels Objects
 
 ```python
-class EdgeTypeLabels(Enum)
+class EdgeMetadataTypeLabels(Enum)
 ```
 
 
 
-## GenericEdgeMetadataV1 Objects
+## BaseEdgeMetadataV1 Objects
 
 ```python
-class GenericEdgeMetadataV1(V1Mixin)
+class BaseEdgeMetadataV1(GraiBaseModel)
 ```
 
 
+
+## MalformedEdgeMetadataV1 Objects
+
+```python
+class MalformedEdgeMetadataV1(MalformedMetadata, BaseEdgeMetadataV1)
+```
+
+### edge\_type
+
+type: ignore
+
+### edge\_attributes
+
+type: ignore
 
 ## TableToColumnAttributes Objects
 
 ```python
-class TableToColumnAttributes(V1Mixin)
+class TableToColumnAttributes(GenericAttributes)
 ```
 
 
@@ -30,7 +44,7 @@ class TableToColumnAttributes(V1Mixin)
 ## TableToColumnMetadata Objects
 
 ```python
-class TableToColumnMetadata(GenericEdgeMetadataV1)
+class TableToColumnMetadata(BaseEdgeMetadataV1)
 ```
 
 
@@ -38,7 +52,7 @@ class TableToColumnMetadata(GenericEdgeMetadataV1)
 ## TableToTableAttributes Objects
 
 ```python
-class TableToTableAttributes(V1Mixin)
+class TableToTableAttributes(GenericAttributes)
 ```
 
 
@@ -46,7 +60,7 @@ class TableToTableAttributes(V1Mixin)
 ## TableToTableMetadata Objects
 
 ```python
-class TableToTableMetadata(GenericEdgeMetadataV1)
+class TableToTableMetadata(BaseEdgeMetadataV1)
 ```
 
 
@@ -54,7 +68,7 @@ class TableToTableMetadata(GenericEdgeMetadataV1)
 ## ColumnToColumnAttributes Objects
 
 ```python
-class ColumnToColumnAttributes(V1Mixin)
+class ColumnToColumnAttributes(GenericAttributes)
 ```
 
 
@@ -62,5 +76,5 @@ class ColumnToColumnAttributes(V1Mixin)
 ## ColumnToColumnMetadata Objects
 
 ```python
-class ColumnToColumnMetadata(GenericEdgeMetadataV1)
+class ColumnToColumnMetadata(BaseEdgeMetadataV1)
 ```

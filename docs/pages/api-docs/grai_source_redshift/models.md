@@ -19,7 +19,7 @@ class ID(RedshiftNode)
 
 
 
-## Config Objects
+### Config Objects
 
 ```python
 class Config()
@@ -35,7 +35,7 @@ class TableID(ID)
 
 
 
-#### make\_full\_name
+### make\_full\_name
 
 ```python
 @root_validator(pre=True)
@@ -59,7 +59,7 @@ class ColumnID(ID)
 
 
 
-#### make\_full\_name
+### make\_full\_name
 
 ```python
 @root_validator(pre=True)
@@ -91,7 +91,7 @@ class Column(RedshiftNode)
 
 
 
-## Config Objects
+### Config Objects
 
 ```python
 class Config()
@@ -99,7 +99,7 @@ class Config()
 
 
 
-#### make\_full\_name
+### make\_full\_name
 
 ```python
 @validator("full_name", always=True)
@@ -148,7 +148,7 @@ class Table(RedshiftNode)
 
 
 
-## Config Objects
+### Config Objects
 
 ```python
 class Config()
@@ -156,7 +156,7 @@ class Config()
 
 
 
-#### make\_full\_name
+### make\_full\_name
 
 ```python
 @validator("full_name", always=True)
@@ -173,7 +173,7 @@ def make_full_name(cls, full_name, values)
 
 
 
-#### get\_edges
+### get\_edges
 
 ```python
 def get_edges()
@@ -189,7 +189,7 @@ class EdgeQuery(BaseModel)
 
 
 
-#### to\_edge
+### to\_edge
 
 ```python
 def to_edge() -> Edge

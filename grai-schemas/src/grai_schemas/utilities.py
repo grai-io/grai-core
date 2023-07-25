@@ -80,22 +80,20 @@ def merge_missing(a: T, b: None) -> T:
 
 
 @merge.register
-def merge_dicts(a: dict, b: dict) -> dict:
+def merge_dict_item(a: Dict, b: Dict) -> Dict:
     """
 
     Args:
-        a (dict):
-        b (dict):
+        a (Dict):
+        b (Dict):
 
     Returns:
 
     Raises:
 
     """
-    result = {**a}
-    for k, v in b.items():
-        result[k] = merge(result[k], v) if k in result else v
-
+    result = {**a, **b}
+    result.update({key: merge(a[key], b[key]) for key in a.keys() & b.keys()})
     return result
 
 
@@ -160,7 +158,7 @@ def merge_pydantic(a: BaseModel, b: Any) -> BaseModel:
     Raises:
 
     """
-    merged = merge(a.dict(), b)
+    merged = merge(dict(a), b)
     return type(a)(**merged)
 
 
@@ -177,7 +175,7 @@ def merge_pydantic_right(a: T, b: BaseModel) -> T:
     Raises:
 
     """
-    return merge(a, b.dict())
+    return merge(a, dict(b))
 
 
 def merge_models(a: T, b: T) -> T:

@@ -19,6 +19,7 @@ export type Values = {
 }
 
 type FilterFormProps = {
+  namespaces: string[]
   tags: string[]
   defaultValues?: Values
   onClose?: () => void
@@ -27,6 +28,7 @@ type FilterFormProps = {
 }
 
 const FilterForm: React.FC<FilterFormProps> = ({
+  namespaces,
   tags,
   defaultValues,
   onClose,
@@ -37,7 +39,7 @@ const FilterForm: React.FC<FilterFormProps> = ({
     defaultValues ?? {
       name: "",
       metadata: [defaultFilter],
-    }
+    },
   )
 
   const handleAddFilters = () =>
@@ -59,6 +61,7 @@ const FilterForm: React.FC<FilterFormProps> = ({
       <FilterRows
         filters={values.metadata}
         onChange={handleChangeFilters}
+        namespaces={namespaces}
         tags={tags}
       />
 

@@ -28,6 +28,7 @@ export const CREATE_CONNECTION = gql`
   mutation CreateConnection(
     $workspaceId: ID!
     $connectorId: ID!
+    $sourceName: String!
     $namespace: String!
     $name: String!
     $metadata: JSON!
@@ -36,6 +37,7 @@ export const CREATE_CONNECTION = gql`
     createConnection(
       workspaceId: $workspaceId
       connectorId: $connectorId
+      sourceName: $sourceName
       namespace: $namespace
       name: $name
       metadata: $metadata
@@ -44,6 +46,10 @@ export const CREATE_CONNECTION = gql`
     ) {
       id
       connector {
+        id
+        name
+      }
+      source {
         id
         name
       }
@@ -60,6 +66,7 @@ export const CREATE_CONNECTION = gql`
 export const UPDATE_CONNECTION = gql`
   mutation UpdateConnectionInitial(
     $connectionId: ID!
+    $sourceName: String!
     $namespace: String!
     $name: String!
     $metadata: JSON!
@@ -67,6 +74,7 @@ export const UPDATE_CONNECTION = gql`
   ) {
     updateConnection(
       id: $connectionId
+      sourceName: $sourceName
       namespace: $namespace
       name: $name
       metadata: $metadata
@@ -74,6 +82,10 @@ export const UPDATE_CONNECTION = gql`
     ) {
       id
       connector {
+        id
+        name
+      }
+      source {
         id
         name
       }
@@ -88,6 +100,7 @@ export const UPDATE_CONNECTION = gql`
 
 export type Values = {
   id?: string
+  sourceName: string
   namespace: string
   name: string
   metadata: any
@@ -111,6 +124,7 @@ const SetupConnection: React.FC<SetupConnectionProps> = ({
 }) => {
   const [values, setValues] = useState<Values>(
     connection ?? {
+      sourceName: connector.name,
       name: connector.name,
       namespace: "default",
       metadata: {},
@@ -176,6 +190,7 @@ const SetupConnection: React.FC<SetupConnectionProps> = ({
               data?.updateConnection &&
               setConnection({
                 ...data.updateConnection,
+                sourceName: data.updateConnection.source.name,
                 secrets: values.secrets,
               })
           )
@@ -189,6 +204,7 @@ const SetupConnection: React.FC<SetupConnectionProps> = ({
               data?.createConnection &&
               setConnection({
                 ...data.createConnection,
+                sourceName: data.createConnection.source.name,
                 secrets: values.secrets,
               })
           )
@@ -217,6 +233,16 @@ const SetupConnection: React.FC<SetupConnectionProps> = ({
       {errorUpdate && <GraphError error={errorUpdate} />}
       <Grid container sx={{ mt: 5 }}>
         <Grid item md={8} sx={{ pr: 3 }}>
+          <TextField
+            label="Source"
+            margin="normal"
+            value={values.sourceName}
+            onChange={event =>
+              setValues({ ...values, sourceName: event.target.value })
+            }
+            required
+            fullWidth
+          />
           <TextField
             label="Name"
             margin="normal"

@@ -32,7 +32,6 @@ export interface GetEdges_workspace_edges_data {
   name: string;
   display_name: string;
   is_active: boolean;
-  data_source: string;
   metadata: any;
   source: GetEdges_workspace_edges_data_source;
   destination: GetEdges_workspace_edges_data_destination;

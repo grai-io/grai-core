@@ -334,6 +334,7 @@ def get_all_workspaces(
     Raises:
 
     """
+
     resp = paginated(get)(client, client.get_url(grai_type), options)
 
     if len(resp) == 0:
@@ -362,6 +363,7 @@ def get_workspace_by_name_v1(
     Raises:
 
     """
+
     if is_valid_uuid(name):
         url = f"{client.get_url(grai_type)}{name}/"
         return get(client, url, options=options).json()

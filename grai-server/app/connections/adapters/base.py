@@ -16,24 +16,27 @@ from .tools import TestResultCacheBase
 class BaseAdapter(ABC):
     run: Run
 
+    def get_integration(self):
+        raise NotImplementedError(f"No get_integration implemented for {type(self)}")
+
     def get_nodes_and_edges(self):
-        raise NotImplementedError(f"No get_nodes_and_edges implemented for {type(self)}")  # pragma: no cover
+        return self.get_integration().get_nodes_and_edges()
 
-    def get_events(self, last_event_date):
-        raise NotImplementedError(f"No get_events implemented for {type(self)}")  # pragma: no cover
+    def events(self, last_event_date):
+        return self.get_integration().events(last_event_date)
 
-    def run_validate(self, run: Run):
+    def run_validate(self, run: Run) -> bool:
         self.run = run
 
-        self.get_nodes_and_edges()
+        return self.get_integration().ready()
 
     def run_update(self, run: Run):
         self.run = run
 
         nodes, edges = self.get_nodes_and_edges()
 
-        update(self.run.workspace, nodes)
-        update(self.run.workspace, edges)
+        update(self.run.workspace, self.run.source, nodes)
+        update(self.run.workspace, self.run.source, edges)
 
     def run_tests(self, run: Run):
         self.run = run
@@ -70,7 +73,7 @@ class BaseAdapter(ABC):
         if not all:
             last_event_date = Event.objects.filter(connection=run.connection).aggregate(Max("date"))["date__max"]
 
-        events = self.get_events(last_event_date)
+        events = self.events(last_event_date)
 
         connection = run.connection
 
@@ -88,7 +91,9 @@ class BaseAdapter(ABC):
 
                 if event.nodes:
                     nodes = Node.objects.filter(
-                        workspace=run.workspace, namespace=run.connection.namespace, name__in=event.nodes
+                        workspace=run.workspace,
+                        namespace=run.connection.namespace,
+                        name__in=event.nodes,
                     )
 
                     if len(nodes) != len(event.nodes):

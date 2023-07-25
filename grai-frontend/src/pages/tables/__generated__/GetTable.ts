@@ -65,6 +65,17 @@ export interface GetTable_workspace_table_destination_tables {
   data: GetTable_workspace_table_destination_tables_data[];
 }
 
+export interface GetTable_workspace_table_sources_data {
+  __typename: "Source";
+  id: any;
+  name: string;
+}
+
+export interface GetTable_workspace_table_sources {
+  __typename: "SourcePagination";
+  data: GetTable_workspace_table_sources_data[];
+}
+
 export interface GetTable_workspace_table_events_data_connection_connector {
   __typename: "Connector";
   id: any;
@@ -98,11 +109,11 @@ export interface GetTable_workspace_table {
   name: string;
   display_name: string;
   is_active: boolean;
-  data_source: string;
   metadata: any;
   columns: GetTable_workspace_table_columns;
   source_tables: GetTable_workspace_table_source_tables;
   destination_tables: GetTable_workspace_table_destination_tables;
+  sources: GetTable_workspace_table_sources;
   events: GetTable_workspace_table_events;
 }
 

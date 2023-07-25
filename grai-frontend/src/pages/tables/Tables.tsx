@@ -25,7 +25,6 @@ export const GET_TABLES = gql`
           name
           display_name
           is_active
-          data_source
           metadata
         }
         meta {
@@ -42,7 +41,7 @@ export interface Table {
   namespace: string
   name: string
   display_name: string
-  data_source: string
+  // data_source: string
   is_active: boolean
 }
 

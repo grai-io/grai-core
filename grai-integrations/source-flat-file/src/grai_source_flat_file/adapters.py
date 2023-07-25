@@ -1,18 +1,22 @@
-from typing import Any, Dict, List, Literal, Sequence, Type, Union
+from typing import Any, Dict, List, Literal, Sequence, TypeVar, Union
 
 from grai_schemas import config as base_config
-from grai_schemas.generics import DefaultValue
-from grai_schemas.v1 import EdgeV1, NodeV1
+from grai_schemas.v1 import SourcedEdgeV1, SourcedNodeV1, SourceV1
 from grai_schemas.v1.metadata.edges import EdgeMetadataTypeLabels, TableToColumnMetadata
 from grai_schemas.v1.metadata.nodes import (
     ColumnMetadata,
     NodeMetadataTypeLabels,
     TableMetadata,
 )
+from grai_schemas.v1.source import SourceSpec
 from multimethod import multimethod
 
 from grai_source_flat_file.models import ID, Column, Edge, Table
 from grai_source_flat_file.package_definitions import config
+
+T = TypeVar("T")
+X = TypeVar("X")
+Y = TypeVar("Y")
 
 
 @multimethod
@@ -182,13 +186,9 @@ def build_metadata(obj, version):
 
     """
     integration_meta = build_app_metadata(obj, version)
-    base_metadata = build_grai_metadata(obj, version)
-    integration_meta["grai"] = base_metadata
+    integration_meta["grai"] = build_grai_metadata(obj, version)
 
-    return {
-        base_config.metadata_id: base_metadata,
-        config.metadata_id: integration_meta,
-    }
+    return integration_meta
 
 
 @multimethod
@@ -208,7 +208,7 @@ def adapt_to_client(current: Any, desired: Any):
 
 
 @adapt_to_client.register
-def adapt_column_to_client(current: Union[Table, Column], version: Literal["v1"] = "v1"):
+def adapt_column_to_client(current: Union[Table, Column], source: SourceSpec, version: Literal["v1"]) -> SourcedNodeV1:
     """
 
     Args:
@@ -224,10 +224,10 @@ def adapt_column_to_client(current: Union[Table, Column], version: Literal["v1"]
         "name": current.full_name,
         "namespace": current.namespace,
         "display_name": current.name,
-        "data_source": config.integration_name,
+        "data_source": source,
         "metadata": build_metadata(current, version),
     }
-    return NodeV1.from_spec(spec_dict)
+    return SourcedNodeV1.from_spec(spec_dict)
 
 
 def make_name(node1: ID, node2: ID) -> str:
@@ -248,7 +248,7 @@ def make_name(node1: ID, node2: ID) -> str:
 
 
 @adapt_to_client.register
-def adapt_column_to_client(current: Edge, version: Literal["v1"] = "v1"):
+def adapt_column_to_client(current: Edge, source: SourceSpec, version: Literal["v1"]) -> SourcedEdgeV1:
     """
 
     Args:
@@ -261,7 +261,7 @@ def adapt_column_to_client(current: Edge, version: Literal["v1"] = "v1"):
 
     """
     spec_dict = {
-        "data_source": config.integration_name,
+        "data_source": source,
         "name": make_name(current.source, current.destination),
         "namespace": current.source.namespace,
         "source": {
@@ -274,11 +274,11 @@ def adapt_column_to_client(current: Edge, version: Literal["v1"] = "v1"):
         },
         "metadata": build_metadata(current, version),
     }
-    return EdgeV1.from_spec(spec_dict)
+    return SourcedEdgeV1.from_spec(spec_dict)
 
 
 @adapt_to_client.register
-def adapt_list_to_client(objs: Sequence, version: Literal["v1"] = "v1") -> List:
+def adapt_sequence_to_client(objs: Sequence, source: SourceSpec, version: Literal["v1"]) -> List:
     """
 
     Args:
@@ -290,4 +290,25 @@ def adapt_list_to_client(objs: Sequence, version: Literal["v1"] = "v1") -> List:
     Raises:
 
     """
-    return [adapt_to_client(item, version) for item in objs]
+    return [adapt_to_client(item, source, version) for item in objs]
+
+
+@adapt_to_client.register
+def adapt_list_to_client(objs: List, source: SourceSpec, version: Literal["v1"]) -> List:
+    """
+
+    Args:
+        objs (Sequence):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
+    return [adapt_to_client(item, source, version) for item in objs]
+
+
+@adapt_to_client.register
+def adapt_source_spec_v1_to_client(obj: X, source: SourceV1, version: Y) -> T:
+    return adapt_to_client(obj, source.spec, version)

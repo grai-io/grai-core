@@ -1,10 +1,9 @@
-from strawberry_django_plus import gql
-from strawberry_django_plus.gql import auto
+import strawberry
 
 from .models import Organisation as OrganisationModel
 
 
-@gql.django.type(OrganisationModel)
+@strawberry.django.type(OrganisationModel)
 class Organisation:
-    id: auto
-    name: auto
+    id: strawberry.auto
+    name: strawberry.auto

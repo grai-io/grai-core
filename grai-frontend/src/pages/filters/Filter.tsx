@@ -25,6 +25,9 @@ export const GET_FILTER = gql`
         metadata
         created_at
       }
+      namespaces {
+        data
+      }
       tags {
         data
       }
@@ -44,7 +47,7 @@ const Filter: React.FC = () => {
         workspaceName,
         filterId: filterId ?? "",
       },
-    }
+    },
   )
 
   if (error) return <GraphError error={error} />
@@ -65,6 +68,7 @@ const Filter: React.FC = () => {
       <PageContent>
         <UpdateFilter
           filter={filter}
+          namespaces={data?.workspace?.namespaces.data}
           tags={data?.workspace?.tags.data}
           workspaceId={data?.workspace.id}
         />

@@ -1,4 +1,3 @@
-import json
 import uuid
 
 from django.db import models
@@ -16,6 +15,7 @@ class Connector(models.Model):
     FIVETRAN = "fivetran"
     MYSQL = "mysql"
     REDSHIFT = "redshift"
+    METABASE = "metabase"
 
     CONNECTOR_SLUGS = [
         (POSTGRESQL, "postgres"),
@@ -28,6 +28,7 @@ class Connector(models.Model):
         (FIVETRAN, "fivetran"),
         (MYSQL, "mysql"),
         (REDSHIFT, "redshift"),
+        (METABASE, "metabase"),
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -62,6 +63,11 @@ class Connection(TenantModel):
     connector = models.ForeignKey("Connector", related_name="connections", on_delete=models.PROTECT)
     namespace = models.CharField(max_length=255, default="default")
     name = models.CharField(max_length=255)
+    source = models.ForeignKey(
+        "lineage.source",
+        related_name="connections",
+        on_delete=models.PROTECT,
+    )
     metadata = models.JSONField(default=dict)
     secrets = models.JSONField(default=dict, blank=True, null=True)
     schedules = models.JSONField(default=dict, blank=True, null=True)
@@ -150,10 +156,17 @@ class Run(TenantModel):
     tenant_id = "workspace_id"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    source = models.ForeignKey(
+        "lineage.Source",
+        related_name="runs",
+        on_delete=models.PROTECT,
+    )
     connection = models.ForeignKey(
         "Connection",
         related_name="runs",
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
     )
     status = models.CharField(max_length=255)
     metadata = models.JSONField(default=dict)

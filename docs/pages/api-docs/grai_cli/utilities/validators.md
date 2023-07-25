@@ -3,7 +3,7 @@ sidebar_label: validators
 title: grai_cli.utilities.validators
 ---
 
-#### username\_callback
+## username\_callback
 
 ```python
 def username_callback(inp: str)
@@ -18,7 +18,7 @@ def username_callback(inp: str)
 
 
 
-#### workspace\_callback
+## workspace\_callback
 
 ```python
 def workspace_callback(inp: str)
@@ -33,7 +33,7 @@ def workspace_callback(inp: str)
 
 
 
-#### password\_callback
+## password\_callback
 
 ```python
 def password_callback(inp: str)
@@ -48,7 +48,7 @@ def password_callback(inp: str)
 
 
 
-#### host\_callback
+## host\_callback
 
 ```python
 def host_callback(inp: str)
@@ -63,7 +63,7 @@ def host_callback(inp: str)
 
 
 
-#### port\_callback
+## port\_callback
 
 ```python
 def port_callback(inp: str)
@@ -78,7 +78,7 @@ def port_callback(inp: str)
 
 
 
-#### insecure\_callback
+## insecure\_callback
 
 ```python
 def insecure_callback(inp: str) -> str

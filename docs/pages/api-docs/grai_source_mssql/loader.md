@@ -11,7 +11,7 @@ class BaseSettings(pydantic.BaseSettings)
 
 
 
-## Config Objects
+### Config Objects
 
 ```python
 class Config()
@@ -35,7 +35,7 @@ class MsSqlSettings(BaseSettings)
 
 
 
-#### validate\_protocol
+### validate\_protocol
 
 ```python
 @validator("protocol")
@@ -51,7 +51,7 @@ def validate_protocol(cls, value)
 
 
 
-#### connection\_string
+### connection\_string
 
 ```python
 def connection_string()
@@ -59,7 +59,7 @@ def connection_string()
 
 
 
-#### validate\_driver
+### validate\_driver
 
 ```python
 @validator("driver")
@@ -75,7 +75,7 @@ def validate_driver(cls, value)
 
 
 
-#### parse\_empty\_values
+### parse\_empty\_values
 
 ```python
 @root_validator(pre=True)
@@ -117,7 +117,7 @@ class MsSQLConnector()
 
 
 
-#### connect
+### connect
 
 ```python
 def connect() -> pyodbc.connect
@@ -131,7 +131,7 @@ def connect() -> pyodbc.connect
 
 
 
-#### connection
+### connection
 
 ```python
 @property
@@ -140,7 +140,7 @@ def connection()
 
 
 
-#### close
+### close
 
 ```python
 def close() -> None
@@ -154,7 +154,7 @@ def close() -> None
 
 
 
-#### query\_runner
+### query\_runner
 
 ```python
 def query_runner(query: str, params: List = []) -> List[Dict]
@@ -170,7 +170,7 @@ def query_runner(query: str, params: List = []) -> List[Dict]
 
 
 
-#### tables
+### tables
 
 ```python
 @cached_property
@@ -189,7 +189,7 @@ connected to by the connection argument.
 
 
 
-#### columns
+### columns
 
 ```python
 @cached_property
@@ -207,7 +207,7 @@ schema.table in the database connected to.
 
 
 
-#### column\_map
+### column\_map
 
 ```python
 @cached_property
@@ -222,7 +222,7 @@ def column_map() -> Dict[Tuple[str, str], List[Column]]
 
 
 
-#### get\_table\_columns
+### get\_table\_columns
 
 ```python
 def get_table_columns(table: Table) -> List[Column]
@@ -237,7 +237,7 @@ def get_table_columns(table: Table) -> List[Column]
 
 
 
-#### foreign\_keys
+### foreign\_keys
 
 ```python
 @cached_property
@@ -254,7 +254,7 @@ This needs to be tested / evaluated
 
 
 
-#### get\_nodes
+### get\_nodes
 
 ```python
 def get_nodes() -> List[MsSqlNode]
@@ -268,7 +268,7 @@ def get_nodes() -> List[MsSqlNode]
 
 
 
-#### get\_edges
+### get\_edges
 
 ```python
 def get_edges() -> List[Edge]
@@ -282,7 +282,7 @@ def get_edges() -> List[Edge]
 
 
 
-#### get\_nodes\_and\_edges
+### get\_nodes\_and\_edges
 
 ```python
 def get_nodes_and_edges() -> Tuple[List[MsSqlNode], List[Edge]]

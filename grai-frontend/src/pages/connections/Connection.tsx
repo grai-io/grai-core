@@ -167,8 +167,7 @@ const Connection: React.FC = () => {
                 <RunStatus run={connection.last_run} link sx={{ mr: 3 }} />
               )}
 
-                <ConnectorIcon connector={connection.connector} />
-
+              <ConnectorIcon connector={connection.connector} />
             </>
           }
           buttons={

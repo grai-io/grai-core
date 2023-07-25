@@ -6,8 +6,10 @@ from strawberry.scalars import JSON
 from strawberry.types import Info
 
 from api.common import IsAuthenticated, aget_workspace, get_user
+from api.types import Source
 
 from .models import Filter as FilterModel
+from .models import Source as SourceModel
 from .types import Filter
 
 
@@ -69,3 +71,53 @@ class Mutation:
         filter.id = id
 
         return filter
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def createSource(
+        self,
+        info: Info,
+        workspaceId: strawberry.ID,
+        name: str,
+    ) -> Source:
+        workspace = await aget_workspace(info, workspaceId)
+
+        source = await SourceModel.objects.acreate(
+            workspace=workspace,
+            name=name,
+        )
+
+        return source
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def updateSource(
+        self,
+        info: Info,
+        id: strawberry.ID,
+        name: Optional[str] = None,
+    ) -> Source:
+        user = get_user(info)
+
+        try:
+            source = await SourceModel.objects.aget(pk=id, workspace__memberships__user_id=user.id)
+        except SourceModel.DoesNotExist:
+            raise Exception("Can't find source")
+
+        if name is not None:
+            source.name = name
+
+        await sync_to_async(source.save)()
+
+        return source
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def deleteSource(
+        self,
+        id: strawberry.ID,
+    ) -> Source:
+        source = await SourceModel.objects.aget(id=id)
+
+        await sync_to_async(source.delete)()
+
+        source.id = id
+
+        return source

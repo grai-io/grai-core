@@ -2,16 +2,16 @@ import unittest
 import uuid
 
 import networkx as nx
-from grai_client.testing.schema import (
-    mock_v1_edge,
-    mock_v1_edge_and_nodes,
-    mock_v1_node,
-)
+import pytest
+from grai_schemas.v1 import OrganisationV1, WorkspaceV1
+from grai_schemas.v1.edge import EdgeV1, SourcedEdgeV1
 from grai_schemas.v1.metadata.edges import (
     ColumnToColumnAttributes,
     TableToColumnAttributes,
     TableToTableAttributes,
 )
+from grai_schemas.v1.mock import MockV1
+from grai_schemas.v1.node import NodeV1, SourcedNodeV1
 
 from grai_graph import graph
 from grai_graph.utils import (
@@ -36,14 +36,42 @@ def get_node_id(node):
     return {"name": node.name, "namespace": node.namespace}
 
 
+def test_v1_build_sourced_graph():
+    """ """
+    edges = []
+    nodes = []
+    for i in range(4):
+        s_node = MockV1().node.named_source_node_spec()
+        d_node = MockV1().node.named_source_node_spec()
+        test_edge = MockV1().edge.named_source_edge_spec(
+            source=s_node,
+            destination=d_node,
+        )
+        edges.append(SourcedEdgeV1.from_spec(test_edge))
+        nodes.extend(
+            [
+                SourcedNodeV1.from_spec({**node.dict(), "data_source": test_edge.data_source})
+                for node in [s_node, d_node]
+            ]
+        )
+    G = graph.build_graph(nodes, edges, "v1")
+    assert isinstance(G.graph, nx.DiGraph)
+
+
 def test_v1_build_graph():
     """ """
     edges = []
     nodes = []
     for i in range(4):
-        e, n = mock_v1_edge_and_nodes()
-        edges.append(e)
-        nodes.extend(n)
+        source = MockV1().source.source_spec()
+        s_node = MockV1().node.named_node_spec(id=uuid.uuid4(), data_sources=[source])
+        d_node = MockV1().node.named_node_spec(id=uuid.uuid4(), data_sources=[source])
+        test_edge = MockV1().edge.named_edge_spec(
+            id=uuid.uuid4(), source=s_node, destination=d_node, data_sources=[source]
+        )
+
+        edges.append(EdgeV1.from_spec(test_edge))
+        nodes.extend([NodeV1.from_spec(node) for node in [s_node, d_node]])
     G = graph.build_graph(nodes, edges, "v1")
     assert isinstance(G.graph, nx.DiGraph)
 
@@ -56,43 +84,11 @@ class TestUniqueness(unittest.TestCase):
     unknown_unique = ColumnToColumnAttributes()
 
     def get_nodes(n: int = 3):
-        """
-
-        Args:
-            n (int, optional): (Default value = 3)
-
-        Returns:
-
-        Raises:
-
-        """
         variables = "abcdefghijklmnopqrstuvwxyz"
         extra_kwargs = {char: TestNodeObj(name=char, node_attributes={}) for char in variables[0:n]}
 
         def inner(fn):
-            """
-
-            Args:
-                fn:
-
-            Returns:
-
-            Raises:
-
-            """
-
             def wraps(*args, **kwargs):
-                """
-
-                Args:
-                    *args:
-                    **kwargs:
-
-                Returns:
-
-                Raises:
-
-                """
                 return fn(*args, **kwargs, **extra_kwargs)
 
             return wraps
@@ -226,7 +222,8 @@ class TestUniqueness(unittest.TestCase):
         }
         G = get_analysis_from_map(mock_structure)
         results = G.test_unique_violations(name="a", namespace=DEFAULT_NAMESPACE, expects_unique=True)
-        assert len(results) == 1 and results[0][0][-1].spec.name is "d", results
+        assert len(results) == 1
+        assert results[0][0][-1].spec.name == "d", results
 
     @get_nodes(n=3)
     def test_triangle_violation(self, a, b, c):
@@ -250,7 +247,7 @@ class TestUniqueness(unittest.TestCase):
         }
         G = get_analysis_from_map(mock_structure)
         results = G.test_unique_violations(name="a", namespace=DEFAULT_NAMESPACE, expects_unique=True)
-        assert len(results) == 2 and results[0][0][-1].spec.name is "c" and results[1][0][-1].spec.name is "c"
+        assert len(results) == 2 and results[0][0][-1].spec.name == "c" and results[1][0][-1].spec.name == "c"
 
 
 class TestNullable(unittest.TestCase):
@@ -455,7 +452,7 @@ class TestNullable(unittest.TestCase):
         G = get_analysis_from_map(mock_structure)
         results = G.test_nullable_violations(name="a", namespace=DEFAULT_NAMESPACE, is_nullable=True)
         assert (
-            len(results) == 1 and results[0][0][-1].spec.name is "d"
+            len(results) == 1 and results[0][0][-1].spec.name == "d"
         ), "Test failure not detected multiple steps from source node"
 
     @get_nodes(n=3)
@@ -480,7 +477,7 @@ class TestNullable(unittest.TestCase):
         }
         G = get_analysis_from_map(mock_structure)
         results = G.test_nullable_violations(name="a", namespace=DEFAULT_NAMESPACE, is_nullable=True)
-        assert len(results) == 2 and results[0][0][-1].spec.name is "c" and results[1][0][-1].spec.name is "c"
+        assert len(results) == 2 and results[0][0][-1].spec.name == "c" and results[1][0][-1].spec.name == "c"
 
 
 class TestDataType(unittest.TestCase):
@@ -686,7 +683,7 @@ class TestDataType(unittest.TestCase):
 
         results = G.test_data_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="int")
         assert (
-            len(results) == 1 and results[0][0][-1].spec.name is "d"
+            len(results) == 1 and results[0][0][-1].spec.name == "d"
         ), "Test failure not detected multiple steps from source node"
 
     @get_nodes(n=3)
@@ -711,4 +708,4 @@ class TestDataType(unittest.TestCase):
         }
         G = get_analysis_from_map(mock_structure)
         results = G.test_data_type_change(name="a", namespace=DEFAULT_NAMESPACE, new_type="int")
-        assert len(results) == 2 and results[0][0][-1].spec.name is "c" and results[1][0][-1].spec.name is "c"
+        assert len(results) == 2 and results[0][0][-1].spec.name == "c" and results[1][0][-1].spec.name == "c"

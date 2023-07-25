@@ -13,10 +13,17 @@ export interface CreateConnection_createConnection_connector {
   name: string;
 }
 
+export interface CreateConnection_createConnection_source {
+  __typename: "Source";
+  id: any;
+  name: string;
+}
+
 export interface CreateConnection_createConnection {
   __typename: "Connection";
   id: any;
   connector: CreateConnection_createConnection_connector;
+  source: CreateConnection_createConnection_source;
   namespace: string;
   name: string;
   metadata: any;
@@ -32,6 +39,7 @@ export interface CreateConnection {
 export interface CreateConnectionVariables {
   workspaceId: string;
   connectorId: string;
+  sourceName: string;
   namespace: string;
   name: string;
   metadata: any;

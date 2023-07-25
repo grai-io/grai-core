@@ -8,7 +8,7 @@ import * as Sentry from "@sentry/react"
 import { BrowserTracing } from "@sentry/tracing"
 import { ConfirmProvider } from "material-ui-confirm"
 import { SnackbarKey, SnackbarProvider } from "notistack"
-import { HelmetProvider } from "react-helmet-async"
+import { Helmet, HelmetProvider } from "react-helmet-async"
 import {
   BrowserRouter,
   createRoutesFromChildren,
@@ -45,7 +45,7 @@ const App: React.FC = () => {
             useLocation,
             useNavigationType,
             createRoutesFromChildren,
-            matchRoutes
+            matchRoutes,
           ),
         }),
       ],
@@ -63,6 +63,13 @@ const App: React.FC = () => {
     <div>
       <CssBaseline />
       <HelmetProvider>
+        <Helmet>
+          <title>Grai Cloud</title>
+          <meta
+            name="description"
+            content="The easiest way to get started with data lineage. Create a free account today."
+          />
+        </Helmet>
         <ThemeProvider theme={theme}>
           <LocalizationProvider dateAdapter={AdapterLuxon}>
             <ShepherdTour steps={newSteps} tourOptions={tourOptions}>

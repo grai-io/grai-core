@@ -1,8 +1,8 @@
-import os
-
 import pytest
+from grai_schemas.v1.source import SourceSpec
+from grai_schemas.v1.workspace import WorkspaceSpec
 
-from grai_source_bigquery.base import adapt_to_client, get_nodes_and_edges
+from grai_source_bigquery.base import adapt_to_client
 from grai_source_bigquery.loader import BigqueryConnector
 from grai_source_bigquery.models import Column, Edge, Table
 
@@ -32,20 +32,31 @@ from grai_source_bigquery.models import Column, Edge, Table
 
 
 @pytest.fixture
-def mock_get_nodes_and_edges(tables, edges):
+def default_workspace():
+    return WorkspaceSpec(name="default", organization="default")
+
+
+@pytest.fixture
+def mock_source(default_workspace):
+    return SourceSpec(name="BigQueryTest", workspace=default_workspace)
+
+
+@pytest.fixture
+def mock_get_nodes_and_edges(tables, edges, mock_source):
     """
 
     Args:
         tables:
         edges:
+        mock_source:
 
     Returns:
 
     Raises:
 
     """
-    nodes = adapt_to_client(tables, "v1")
-    edges = adapt_to_client(edges, "v1")
+    nodes = adapt_to_client(tables, mock_source, "v1")
+    edges = adapt_to_client(edges, mock_source, "v1")
     return nodes, edges
 
 

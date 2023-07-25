@@ -18,7 +18,7 @@ const Login: React.FC = () => (
       sx={{
         width: "100%",
         height: "100vh",
-        overflow: "hidden",
+        overflowX: "hidden",
         position: "relative",
       }}
     >

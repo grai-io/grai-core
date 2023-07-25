@@ -1,10 +1,13 @@
 from django.contrib import admin
 from django.contrib.admin import DateFieldListFilter
 from django.db.models import JSONField
+from django.urls import reverse
+from django.utils.html import format_html
 
 from common.admin.fields.json_widget import PrettyJSONWidget
 
-from .models import Edge, Event, Filter, Node
+from .models import Edge, Event, Filter, Node, Source
+from connections.models import Connection
 
 
 class EdgeInline(admin.TabularInline):
@@ -25,7 +28,6 @@ class SourceEdgeInline(EdgeInline):
     fields = [
         "name",
         "namespace",
-        "data_source",
         "destination",
         "metadata",
         "is_active",
@@ -33,7 +35,6 @@ class SourceEdgeInline(EdgeInline):
     readonly_fields = [
         "name",
         "namespace",
-        "data_source",
         "destination",
         "metadata",
         "is_active",
@@ -44,15 +45,24 @@ class DestinationEdgeInline(EdgeInline):
     fk_name = "destination"
     verbose_name = "Destination Edge"
     verbose_name_plural = "Destination Edges"
-    fields = ["name", "namespace", "data_source", "source", "metadata", "is_active"]
+    fields = ["name", "namespace", "source", "metadata", "is_active"]
     readonly_fields = [
         "name",
         "namespace",
-        "data_source",
         "source",
         "metadata",
         "is_active",
     ]
+
+
+class NodeSourceInline(admin.TabularInline):
+    model = Node.data_sources.through
+    extra = 0
+
+
+class EdgeSourceInline(admin.TabularInline):
+    model = Edge.data_sources.through
+    extra = 0
 
 
 class NodeAdmin(admin.ModelAdmin):
@@ -64,20 +74,18 @@ class NodeAdmin(admin.ModelAdmin):
         "id",
         "namespace",
         "final_name",
-        "data_source",
         "workspace",
         "is_active",
         "created_at",
     )
 
-    search_fields = ["id", "namespace", "name", "display_name", "data_source"]
+    search_fields = ["id", "namespace", "name", "display_name"]
 
     list_filter = (
         "workspace",
         ("created_at", DateFieldListFilter),
         "namespace",
         "is_active",
-        "data_source",
     )
 
     formfield_overrides = {JSONField: {"widget": PrettyJSONWidget}}
@@ -85,6 +93,7 @@ class NodeAdmin(admin.ModelAdmin):
     inlines = [
         SourceEdgeInline,
         DestinationEdgeInline,
+        NodeSourceInline,
     ]
 
 
@@ -97,23 +106,23 @@ class EdgeAdmin(admin.ModelAdmin):
         "id",
         "namespace",
         "final_name",
-        "data_source",
         "workspace",
         "is_active",
         "created_at",
     )
 
-    search_fields = ["id", "namespace", "name", "display_name", "data_source"]
+    search_fields = ["id", "namespace", "name", "display_name"]
 
     list_filter = (
         "workspace",
         ("created_at", DateFieldListFilter),
         "namespace",
         "is_active",
-        "data_source",
     )
 
     formfield_overrides = {JSONField: {"widget": PrettyJSONWidget}}
+
+    inlines = [EdgeSourceInline]
 
 
 class FilterAdmin(admin.ModelAdmin):
@@ -133,7 +142,47 @@ class FilterAdmin(admin.ModelAdmin):
     formfield_overrides = {JSONField: {"widget": PrettyJSONWidget}}
 
 
+class ConnectionInline(admin.TabularInline):
+    model = Connection
+    extra = 0
+
+    fields = [
+        "name",
+    ]
+
+    def view(self):  # pragma: no cover
+        return format_html(
+            '<a href="{}">{}</a>',
+            reverse("admin:connections_connection_change", args=(self.id,)),
+            self.name,
+        )
+
+    fields = ("name", view)
+    readonly_fields = (view,)
+
+
+class SourceAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "name",
+        "workspace",
+        "created_at",
+    )
+
+    search_fields = ["id", "name"]
+
+    list_filter = (
+        "workspace",
+        ("created_at", DateFieldListFilter),
+    )
+
+    inlines = [
+        ConnectionInline,
+    ]
+
+
 admin.site.register(Node, NodeAdmin)
 admin.site.register(Edge, EdgeAdmin)
 admin.site.register(Filter, FilterAdmin)
 admin.site.register(Event)
+admin.site.register(Source, SourceAdmin)

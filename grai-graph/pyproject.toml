@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai-graph"
-version = "0.2.3"
+version = "0.2.4"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>"]
 license = "Elastic-2.0"
@@ -13,10 +13,10 @@ documentation = "https://docs.grai.io/"
 python = "^3.8"
 networkx = "^2.8.5"
 pydantic = "^1.9.1"
-grai-client = "^0.2.18"
+grai-client = "^0.3.0"
+grai-schemas = "^0.2.0"
 matplotlib = {version = "^3.5.2", optional = true}
 pydot = {version = "^1.4.2", optional = true}
-grai-schemas = "^0.1.15"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.2.0"

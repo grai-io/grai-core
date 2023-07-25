@@ -13,7 +13,7 @@ concurrency:
 
 env:
   py_ver: "3.10"
-  poetry_ver: "1.2.2"
+  poetry_ver: "1.5.1"
   project_dir: "grai-cli"
 
 jobs:
@@ -38,12 +38,62 @@ jobs:
           black . --check
           isort . --profile black --check
 
+  build-server:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    outputs:
+      image-digest: ${{ steps.docker-build.outputs.digest }}
+
+    defaults:
+      run:
+        working-directory: grai-server/app
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GH_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/${{ github.repository }}/grai-server-temp
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@master
+
+      - name: Build
+        id: docker-build
+        uses: docker/build-push-action@v4
+        with:
+          context: grai-server/app
+          push: true
+          labels: ${{ steps.meta.outputs.labels }}
+          tags: ghcr.io/grai-io/grai-core/grai-server-temp:latest
+          target: grai-server
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
   tests-cli:
-    needs: lint-cli
+    needs:
+      - lint-cli
+      - build-server
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ${{ env.project_dir }}
+
+    env:
+      GRAI_CLI_CONFIG: ${{ github.workspace }}/grai-cli/tests/config/config.yaml
+
     services:
       postgres:
         image: postgres:latest
@@ -55,8 +105,12 @@ jobs:
           - 5432:5432
         # needed because the postgres container does not provide a healthcheck
         options: --health-cmd pg_isready --health-interval 2s --health-timeout 5s --health-retries 15
+
       the_guide:
-        image: ghcr.io/grai-io/grai-core/grai-server:latest
+        image: ghcr.io/grai-io/grai-core/grai-server-temp@${{ needs.build-server.outputs.image-digest }}
+        credentials:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GH_TOKEN }}
         env:
           DB_USER: grai
           DB_PASSWORD: grai
@@ -76,10 +130,12 @@ jobs:
           --health-interval 2s
           --health-retries 10
           --health-start-period 30s
+
       redis:
         image: redis/redis-stack:latest
         ports:
           - 6379:6379
+
     steps:
       - uses: actions/checkout@v3
 
@@ -90,5 +146,9 @@ jobs:
       - run: |
           pip install pytest
           pip install .
+
+      - run: ls ${{ github.workspace }}/grai-cli/tests/config
+
+      - run: cat ${{ github.workspace }}/grai-cli/tests/config/config.yaml
 
       - run: pytest -s

@@ -27,6 +27,8 @@ from httpx import Response
 from pydantic import BaseModel, ValidationError
 from requests import RequestException
 
+from grai_client.errors import InvalidResponseError, ObjectNotFoundError
+
 if sys.version_info < (3, 10):
     from typing_extensions import ParamSpec
 else:
@@ -38,6 +40,26 @@ if TYPE_CHECKING:
 
 P = ParamSpec("P")
 T = TypeVar("T")
+
+
+def validated_uuid(val: Union[str, UUID]):
+    """
+
+    Args:
+        val (Union[str, UUID]):
+
+    Returns:
+
+    Raises:
+
+    """
+    if isinstance(val, UUID):
+        return val
+
+    try:
+        return uuid.UUID(str(val))
+    except ValueError:
+        return None
 
 
 def is_valid_uuid(val: Union[str, UUID]):
@@ -74,15 +96,17 @@ def response_status_check(resp: Response) -> Response:
     """
     if resp.status_code in {200, 201, 204}:
         return resp
+    elif resp.status_code == 404:
+        raise ObjectNotFoundError(f"Object not found: {resp.url}")
+    else:
+        message = f"Error: {resp.status_code}. {resp.reason_phrase}. {resp.content.decode()}"
 
-    message = f"Error: {resp.status_code}. {resp.reason_phrase}. {resp.content.decode()}"
     if resp.status_code == 500:
         message = (
             f"{message}"
             "If you think this should not be the case it might be a bug, you can "
             "submit a bug report at https://github.com/grai-io/grai-core/issues"
         )
-
     raise RequestException(message)
 
 
@@ -101,7 +125,9 @@ def orjson_defaults(obj: Any) -> Any:
         return list(obj)
     elif isinstance(obj, (pathlib.PosixPath, pathlib.WindowsPath)):
         return str(obj)
-    elif isinstance(obj, (GraiBaseModel, BaseModel)):
+    elif isinstance(obj, GraiBaseModel):
+        return obj.json()
+    elif isinstance(obj, BaseModel):
         return obj.dict()
     else:
         raise Exception(f"No supported JSON serialization format for objects of type {type(obj)}")
@@ -201,6 +227,7 @@ def paginated(
         page = url
         while page:
             resp = fn(client, page, options).json()
+
             results.extend(resp["results"])
             page = resp["next"]
 
@@ -266,3 +293,29 @@ def handles_bad_metadata(
         return wrapped
 
     return decorator
+
+
+def expects_unique_query(fn) -> Callable[..., T]:
+    """"""
+
+    @wraps(fn)
+    def wrapper(*args, **kwargs) -> T:
+        result = fn(*args, **kwargs)
+        if (num_results := len(result)) == 0:
+            missing_message = (
+                f"A request to `{fn.__name__}{tuple(args)}` was marked as expecting a single unique response. "
+                f"However, no results were returned by the server"
+            )
+            raise ObjectNotFoundError(missing_message)
+        elif num_results == 1:
+            return result[0]
+        else:
+            invalid_message = (
+                f"A request to `{fn.__name__}{tuple(args)}` was marked as expecting a single unique response ."
+                f"However, more than one response was returned."
+                f"This is a defensive error which should not be triggered. If you encounter it "
+                "please open an issue at www.github.com/grai-io/grai-core/issues"
+            )
+            raise InvalidResponseError(invalid_message)
+
+    return wrapper

@@ -5,7 +5,7 @@ from django_multitenant.utils import set_current_tenant
 from django_tqdm import BaseCommand
 from query_chunk import chunk
 
-from lineage.graph_cache import GraphCache
+from lineage.extended_graph_cache import ExtendedGraphCache
 from workspaces.models import Workspace
 
 
@@ -58,7 +58,7 @@ class Command(BaseCommand):
 
         set_current_tenant(self.workspace)
 
-        self.cache = GraphCache(self.workspace)
+        self.cache = ExtendedGraphCache(self.workspace)
 
         if delete:
             self.cache.clear_cache()

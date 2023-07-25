@@ -1,24 +1,27 @@
-from typing import List, Optional
+import uuid
+from typing import List, Optional, Union
 
 import redis
 from django.conf import settings
 from grandalf.graphs import Edge, Graph, Vertex
 from grandalf.layouts import SugiyamaLayout
-from query_chunk import chunk
 from redis import Redis
 
 from workspaces.models import Workspace
 
 from .graph import GraphQuery
+from .graph_filter import filter_by_filter
 from .graph_types import BaseGraph, GraphColumn, GraphTable
 
 
 class GraphCache:
     manager: Redis
-    workspace: Workspace
+    workspace_id: str
 
-    def __init__(self, workspace: Workspace):
-        self.workspace = workspace
+    def __init__(self, workspace: Union[Workspace, str]):
+        self.workspace_id = (
+            workspace if isinstance(workspace, str) or isinstance(workspace, uuid.UUID) else str(workspace.id)
+        )
 
         self.manager = redis.Redis(
             host=settings.REDIS_GRAPH_CACHE_HOST,
@@ -27,22 +30,28 @@ class GraphCache:
         )
 
     def query(self, query: str, parameters: object = {}, timeout: int = None):
-        return self.manager.graph(f"lineage:{str(self.workspace.id)}").query(query, parameters, timeout=timeout)
-
-    def build_cache(self):
-        for node in chunk(self.workspace.nodes.all(), 10000):
-            self.cache_node(node)
-
-        for edge in chunk(self.workspace.edges.all(), 10000):
-            self.cache_edge(edge)
-
-    def clear_cache(self):
-        self.manager.delete(f"lineage:{str(self.workspace.id)}")
+        try:
+            return self.manager.graph(f"lineage:{str(self.workspace_id)}").query(query, parameters, timeout=timeout)
+        except redis.exceptions.ResponseError as e:
+            raise Exception(f"Error while executing query: {query} with parameters: {parameters}, error: {e}") from e
 
     def cache_node(self, node):
+        def get_data_source() -> Optional[str]:
+            source = node.data_sources.first()
+
+            if not source:
+                return None
+
+            connection = source.connections.first()
+
+            if connection:
+                return f"grai-source-{connection.connector.slug}"
+
+            return source.name
+
         node_type = node.metadata.get("grai", {}).get("node_type")
 
-        if node_type == "Table":
+        if node_type in ["Table", "Query"]:
             self.query(
                 """
                     MERGE (table:Table {id: $id})
@@ -54,7 +63,7 @@ class GraphCache:
                     "name": node.name,
                     "display_name": node.display_name,
                     "namespace": node.namespace,
-                    "data_source": node.data_source,
+                    "data_source": get_data_source(),
                     "tags": node.metadata.get("grai", {}).get("tags"),
                 },
             )
@@ -163,6 +172,20 @@ class GraphCache:
                     "destination": str(destination_table_edge.source_id),
                 },
             )
+        elif edge_type == "Generic":
+            self.query(
+                """
+                    MATCH (source:Table), (destination:Table)
+                    WHERE source.id = $source
+                    AND destination.id = $destination
+                    MERGE (source)-[r:TABLE_TO_TABLE {id: $id}]->(destination)
+                """,
+                {
+                    "id": str(edge.id),
+                    "source": str(edge.source_id),
+                    "destination": str(edge.destination_id),
+                },
+            )
 
     def delete_edge(self, edge):
         self.query(
@@ -241,6 +264,7 @@ class GraphCache:
                     COLLECT(distinct destination.id) AS destinations,
                     column,
                     collect(distinct column_destination.id) as column_destinations
+                {query.withWheres if query.withWheres else ""}
                 WITH
                     table,
                     destinations,
@@ -324,47 +348,7 @@ class GraphCache:
 
     def filter_by_filters(self, filters, query: GraphQuery) -> GraphQuery:
         for filter in filters:
-            query = self.filter_by_filter(filter, query)
-
-    def filter_by_filter(self, filter, query: GraphQuery) -> GraphQuery:
-        if len(filter.metadata) == 0:
-            return query
-
-        for row in filter.metadata:
-            value = row["value"]
-
-            if row["type"] == "table":
-                if row["field"] == "tag":
-                    if row["operator"] == "contains":
-                        query.where(f"'{value}' IN table.tags")
-            elif row["type"] == "ancestor":
-                if row["field"] == "tag":
-                    if row["operator"] == "contains":
-                        query.match(
-                            "(table)<-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*]-(othertable:Table)",
-                            where=f"'{value}' IN othertable.tags",
-                        )
-            elif row["type"] == "no-ancestor":
-                if row["field"] == "tag":
-                    if row["operator"] == "contains":
-                        # where.append(f"(table)<-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*]-(othertable:Table) AND '{value}' IN othertable.tags")
-                        pass
-            elif row["type"] == "descendant":
-                if row["field"] == "tag":
-                    if row["operator"] == "contains":
-                        query.match(
-                            "(table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*]->(othertable:Table)",
-                            where=f"'{value}' IN othertable.tags",
-                        )
-            elif row["type"] == "no-descendant":
-                if row["field"] == "tag":
-                    if row["operator"] == "contains":
-                        # where.append(f"(table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*]->(othertable:Table) AND '{value}' IN othertable.tags")
-                        pass
-            else:
-                raise Exception("Unknown filter type: " + row["type"])
-
-        return query
+            query = filter_by_filter(filter, query)
 
     def get_with_step_graph_result(
         self, n: int, parameters: object = {}, where: Optional[str] = None

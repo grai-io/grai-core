@@ -3,7 +3,7 @@ sidebar_label: utilities
 title: grai_schemas.utilities
 ---
 
-#### unpack\_object
+## unpack\_object
 
 ```python
 def unpack_object(obj: Union[Dict, BaseModel]) -> Dict
@@ -18,7 +18,7 @@ def unpack_object(obj: Union[Dict, BaseModel]) -> Dict
 
 
 
-#### merge
+## merge
 
 ```python
 @multimethod
@@ -35,7 +35,7 @@ def merge(a, b)
 
 
 
-#### merge\_atomic
+## merge\_atomic
 
 ```python
 @merge.register
@@ -52,7 +52,7 @@ def merge_atomic(a: Any, b: T) -> T
 
 
 
-#### merge\_missing
+## merge\_missing
 
 ```python
 @merge.register
@@ -69,24 +69,24 @@ def merge_missing(a: T, b: None) -> T
 
 
 
-#### merge\_dicts
+## merge\_dict\_item
 
 ```python
 @merge.register
-def merge_dicts(a: dict, b: dict) -> dict
+def merge_dict_item(a: Dict, b: Dict) -> Dict
 ```
 
 **Arguments**:
 
-  a (dict):
-  b (dict):
+  a (Dict):
+  b (Dict):
 
 
 **Returns**:
 
 
 
-#### merge\_list
+## merge\_list
 
 ```python
 @merge.register
@@ -103,7 +103,7 @@ def merge_list(a: list, b: list) -> list
 
 
 
-#### merge\_tuple
+## merge\_tuple
 
 ```python
 @merge.register
@@ -120,7 +120,7 @@ def merge_tuple(a: tuple, b: tuple) -> tuple
 
 
 
-#### merge\_set
+## merge\_set
 
 ```python
 @merge.register
@@ -137,7 +137,7 @@ def merge_set(a: set, b: set) -> set
 
 
 
-#### merge\_pydantic
+## merge\_pydantic
 
 ```python
 @merge.register
@@ -154,7 +154,7 @@ def merge_pydantic(a: BaseModel, b: Any) -> BaseModel
 
 
 
-#### merge\_pydantic\_right
+## merge\_pydantic\_right
 
 ```python
 @merge.register
@@ -171,7 +171,7 @@ def merge_pydantic_right(a: T, b: BaseModel) -> T
 
 
 
-#### merge\_models
+## merge\_models
 
 ```python
 def merge_models(a: T, b: T) -> T
