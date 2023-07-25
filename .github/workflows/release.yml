@@ -296,6 +296,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: grai-server/app
+          target: grai-server
           push: true
           tags: ${{ steps.meta-cloud-server.outputs.tags }}
           labels: ${{ steps.meta-cloud-server.outputs.labels }}
@@ -307,6 +308,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: grai-server/app
+          target: grai-worker
           push: true
           tags: ${{ steps.meta-cloud-worker.outputs.tags }}
           labels: ${{ steps.meta-cloud-worker.outputs.labels }}
@@ -318,6 +320,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: grai-server/app
+          target: grai-beat-worker
           push: true
           tags: ${{ steps.meta-cloud-beat-worker.outputs.tags }}
           labels: ${{ steps.meta-cloud-beat-worker.outputs.labels }}
