@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai-cli"
-version = "0.2.0"
+version = "0.2.1"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>"]
 license = "Elastic-2.0"
@@ -24,6 +24,7 @@ grai-client = "^0.3.0"
 posthog = "^2.2.0"
 rich = "^12.6.0"
 grai-schemas = "^0.2.0a10"
+goodconf = {extras = ["yaml"], version = "^3.0.1"}
 
 [tool.isort]
 profile = "black"

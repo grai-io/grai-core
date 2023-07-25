@@ -4,6 +4,9 @@ import pytest
 from grai_schemas.v1.mock import MockV1
 from typer.testing import CliRunner
 
+from grai_cli.settings.cache import cache
+from grai_cli.settings.config import ConfigDirHandler, EnvironmentVariables, GraiConfig
+
 mocker = MockV1()
 organisation = mocker.organisation.organisation_spec(name="default")
 workspace = mocker.workspace.workspace_spec(name="default", organisation=organisation)
@@ -12,31 +15,29 @@ workspace = mocker.workspace.workspace_spec(name="default", organisation=organis
 @pytest.fixture(autouse=True)
 def setup():
     """ """
-    old_config = os.environ.get("GRAI_CLI_CONFIG_DIR")
+    old_config = os.environ.get(EnvironmentVariables.config_file, None)
     script_dir = os.path.dirname(os.path.realpath(__file__))
-    os.environ["GRAI_CLI_CONFIG_DIR"] = os.path.join(script_dir, "config")
+    os.environ[EnvironmentVariables.config_file] = os.path.join(script_dir, "config", "config.yaml")
 
     yield
 
     if old_config is not None:
-        os.environ["GRAI_CLI_CONFIG_DIR"] = old_config
+        os.environ[EnvironmentVariables.config_file] = old_config
     else:
-        del os.environ["GRAI_CLI_CONFIG_DIR"]
-
-    # cache.set("telemetry_consent", telemetry_state)
+        del os.environ[EnvironmentVariables.config_file]
 
 
 @pytest.fixture()
-def config(setup):
-    from grai_cli.settings.cache import cache
-    from grai_cli.settings.config import GraiConfig
-
-    test_file = os.path.join(os.environ["GRAI_CLI_CONFIG_DIR"], "config.yaml")
-    config = GraiConfig.from_file(test_file)
-    config.handler.config_file = test_file
-    config.handler.config_dir = os.environ["GRAI_CLI_CONFIG_DIR"]
+def config(setup) -> GraiConfig:
+    config = GraiConfig()
     cache.set("telemetry_consent", False)
     return config
+
+
+@pytest.fixture()
+def handler(config):
+    handler = ConfigDirHandler()
+    return handler
 
 
 @pytest.fixture(scope="session")

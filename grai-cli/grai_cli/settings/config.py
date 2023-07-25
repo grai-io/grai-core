@@ -1,90 +1,64 @@
 import os
 import platform
 import warnings
-from typing import Any, Dict, Literal, Optional, Union
+from itertools import product
+from pprint import pprint
+from typing import Any, Dict, Literal, Optional, Protocol, Union
 
 import yaml
-from pydantic import BaseModel, BaseSettings, SecretStr
+from goodconf import Field, GoodConf
+from pydantic import BaseModel, BaseSettings, PrivateAttr, SecretStr
 
-OS = platform.system()
-if OS == "Darwin":
-    _HOME_PATH = os.path.expanduser("~")
-    DEFAULT_CONFIG_PATHS = [f"{_HOME_PATH}/.config/grai"]
-elif OS == "Linux":
-    _HOME_PATH = os.path.expanduser("~")
-    DEFAULT_CONFIG_PATHS = [f"{_HOME_PATH}/.config/grai"]
-elif OS == "Windows":
-    _HOME_PATH = os.getenv("APPDATA")
-    DEFAULT_CONFIG_PATHS = [f"{_HOME_PATH}/grai"]
-elif OS == "":
-    raise Exception("Python could not detect the type of your operating system. ")
-else:
-    warnings.warn(f"Operating system {OS} not recognized. Expected either 'Darwin', 'Windows', or 'Linux'")
-    _HOME_PATH = os.path.expanduser("~")
-    DEFAULT_CONFIG_PATHS = [f"{_HOME_PATH}/.config/grai"]
 
-DEFAULT_CONFIG_PATH = DEFAULT_CONFIG_PATHS[0]
+class EnvironmentVariables:
+    config_file = "GRAI_CLI_CONFIG"
+
+
+def default_config_paths():
+    operating_system = platform.system()
+    if operating_system == "Darwin":
+        home_path = os.path.expanduser("~")
+        config_path = [f"{home_path}/.config/grai"]
+    elif operating_system == "Linux":
+        home_path = os.path.expanduser("~")
+        config_path = [f"{home_path}/.config/grai"]
+    elif operating_system == "Windows":
+        home_path = os.getenv("APPDATA")
+        config_path = [f"{home_path}/grai"]
+    elif operating_system == "":
+        raise Exception("Python could not detect the type of your operating system. ")
+    else:
+        warnings.warn(
+            f"Operating system {operating_system} not recognized. Expected either 'Darwin', 'Windows', or 'Linux'"
+        )
+        home_path = os.path.expanduser("~")
+        config_path = [f"{home_path}/.config/grai"]
+    return config_path
+
+
+def get_config_file_from_environment(search_paths) -> str:
+    default_names = ["config.yaml", "config.yml"]
+    config_file = os.environ.get(EnvironmentVariables.config_file, None)
+    if config_file is None:
+        found_file = False
+        for path, filename in product(search_paths, default_names):
+            config_file = os.path.join(path, filename)
+            if found_file := os.path.exists(config_file):
+                break
+        if not found_file:
+            config_file = os.path.join(search_paths[0], default_names[0])
+    return config_file
 
 
 class ConfigDirHandler:
-    """ """
+    def __init__(self, config_file: Optional[str] = None):
+        self.search_paths = default_config_paths()
+        if config_file is None:
+            config_file = get_config_file_from_environment(self.search_paths)
 
-    DEFAULT_CONFIG_PATHS = DEFAULT_CONFIG_PATHS
-    DEFAULT_CONFIG_PATH = DEFAULT_CONFIG_PATHS[0]
-    DEFAULT_CONFIG_FILE_NAMES = ["config.yaml", "config.yml"]
-
-    def __init__(self):
-        path = os.environ.get("GRAI_CLI_CONFIG_DIR", None)
-        self.config_paths = [path, *self.DEFAULT_CONFIG_PATHS] if path is not None else [*self.DEFAULT_CONFIG_PATHS]
-        self.default_config_file = os.path.join(self.DEFAULT_CONFIG_PATH, self.DEFAULT_CONFIG_FILE_NAMES[0])
-
-        self.config_file: str = self.get_config_file()
-        self.has_config_file: bool = self.config_file is not None
-        self.config_dir: Optional[str] = os.path.dirname(self.config_file) if self.has_config_file else None
-
-        self._config_content: Dict = None
-
-    def get_config_file(self) -> Optional[str]:
-        for path in self.config_paths:
-            for filename in self.DEFAULT_CONFIG_FILE_NAMES:
-                config_file = os.path.join(path, filename)
-                if os.path.exists(config_file):
-                    return config_file
-
-        return None
-
-    @property
-    def config_content(self) -> Dict:
-        """ """
-        if isinstance(self._config_content, dict):
-            return self._config_content
-        elif not self.has_config_file:
-            return {}
-
-        with open(self.config_file, "r") as file:
-            self._config_content = yaml.safe_load(file)
-        return self._config_content
-
-    @config_content.setter
-    def config_content(self, value: Dict):
-        """
-
-        Args:
-            value (Dict):
-
-        Returns:
-
-        Raises:
-
-        """
-        if not isinstance(value, dict):
-            raise Exception("config_content must be a dictionary")
-        self._config_content = value
-
-    def save_content(self):
-        """ """
-        with open(self.config_file, "w") as file:
-            yaml.safe_dump(self._config_content, file)
+        self.config_file = config_file
+        self.config_dir = os.path.dirname(self.config_file)
+        os.makedirs(self.config_dir, exist_ok=True)
 
 
 def unredact(obj: Any) -> Any:
@@ -107,20 +81,6 @@ def unredact(obj: Any) -> Any:
 
 
 config_handler = ConfigDirHandler()
-
-
-def yaml_config_settings_source(settings: BaseSettings) -> dict[str, Any]:
-    """
-
-    Args:
-        settings:
-
-    Returns:
-
-    Raises:
-
-    """
-    return config_handler.config_content
 
 
 class ServerSettingsV1(BaseModel):
@@ -168,70 +128,68 @@ class ContextSettings(BaseModel):
     namespace: str = "default"
 
 
-class GraiConfig(BaseSettings):
-    """ """
+class LazyConfig(GoodConf):
+    _loaded = PrivateAttr(False)
 
-    server: Union[ServerSettingsV1]
-    auth: Union[BasicAuthSettings, ApiKeySettings]
-    # context: Optional[ContextSettings]
-    handler: ConfigDirHandler = config_handler
+    def __init__(self, load=False, **kwargs):
+        self._loaded = load
+        kwargs.setdefault("load", load)
+        super().__init__(**kwargs)
 
-    def save(self):
-        """ """
-        values = unredact(self.dict(exclude={"handler"}))
-        with open(self.handler.config_file, "w") as f:
-            yaml.dump(values, f)
+    def __getattr__(self, name):
+        if not self._loaded:
+            self.load()
+            self._loaded = True
+        if not hasattr(self, name):
+            raise ValueError(f"{self} does not have attr {name}")
+        return getattr(self, name)
 
-    def view(self):
-        """ """
-        return self.yaml(exclude={"handler"})
 
-    @classmethod
-    def default_config(cls):
-        server = ServerSettingsV1(url="http://localhost:8000", workspace="default/default")
-        auth = BasicAuthSettings(username="null@grai.io", password="super_secret")
-        return cls(server=server, auth=auth)
+def load_warning():
+    message = (
+        f"\nWe were unable to construct a complete config file from provided environment variables and/or the config file "
+        f"located at {config_handler.config_file}. This most likely means either \n"
+        f"1) The config file is malformed, in which case you can edit it or execute `grai config init` to recreate it.\n"
+        f"2) The config directory is incorrect. We've attempted looking in the following directories: "
+        f"{config_handler.search_paths} based on your operating system and the `{EnvironmentVariables.config_file}` env "
+        f"var. \n"
+        f"3) You may have made a mistake configuring your environment based purely on environment variables: \n"
+    )
+    warnings.warn(message)
+
+
+class BaseGraiConfig(LazyConfig):
+    class Config:
+        default_files = [config_handler.config_file]
+        file_env_var = EnvironmentVariables.config_file
+
+    def load(self, filename: Optional[str] = None) -> None:
+        try:
+            super().load(filename=filename)
+        except Exception as e:
+            import importlib.resources as pkg_resources
+
+            load_warning()
+            default_config = str(pkg_resources.files("grai_cli") / "config_default.yaml")
+            super().load(filename=default_config)
+        self._config_file = self.__config__._config_file
 
     @classmethod
     def from_file(cls, file):
         with open(file, "r") as file:
             content = yaml.safe_load(file)
-
         return cls(**content)
 
-    class Config:
+    def save(self):
         """ """
-
-        env_prefix = "grai_"
-        validate_assignment = True
-        fields = {"server": {}, "auth": {"exclude": {"authentication_mode"}}, "context": {}}
-
-        @classmethod
-        def customise_sources(
-            cls,
-            init_settings,
-            env_settings,
-            file_secret_settings,
-        ):
-            return (
-                init_settings,
-                env_settings,
-                yaml_config_settings_source,
-            )
+        values = unredact(self.dict())
+        with open(self._config_file, "w") as f:
+            yaml.dump(values, f)
 
 
-try:
-    config = GraiConfig()
+class GraiConfig(BaseGraiConfig):
+    server: Union[ServerSettingsV1]
+    auth: Union[BasicAuthSettings, ApiKeySettings]
 
-except Exception as e:
-    message = (
-        f"We were unable to construct a complete config file from provided environment variables and/or the config file "
-        f"located at {config_handler.config_file}. This most likely means either \n"
-        f"1) The config file is malformed, in which case you can edit it or execute `grai config init` to recreate it.\n"
-        f"2) The config directory is incorrect. We've attempted looking in the following directories: "
-        f"{config_handler.DEFAULT_CONFIG_PATHS} based on our operating system and the `GRAI_CLI_CONFIG_DIR` env var. \n"
-        f"3) You may have made a mistake configuring your environment based purely on environment variables. \n"
-        f"{os.environ.get('GRAI_CLI_CONFIG_DIR')}"
-    )
-    warnings.warn(message)
-    config = GraiConfig.default_config()
+
+config = GraiConfig()
