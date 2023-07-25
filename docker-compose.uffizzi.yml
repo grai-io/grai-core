@@ -27,7 +27,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 2000M
+          memory: 1000M
 
   db:
     image: postgres
@@ -47,7 +47,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 2000M
+          memory: 1000M
 
   redis:
     image: redis:7-alpine
@@ -85,7 +85,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 2000M
+          memory: 1000M
 
   celery-beat-worker:
     image: "${SERVER_IMAGE}"
@@ -109,15 +109,4 @@ services:
     deploy:
       resources:
         limits:
-          memory: 2000M
-
-  flower:
-    image: mher/flower
-    ports:
-      - 5557:5555
-    environment:
-      - CELERY_BROKER_URL=redis://127.0.0.1:6379/0
-    deploy:
-      resources:
-        limits:
-          memory: 2000M
+          memory: 500M
