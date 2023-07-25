@@ -246,9 +246,9 @@ jobs:
       contents: write
 
     outputs:
-      image-digest-server: ${{ steps.docker-build-server.outputs.digest }}
-      image-digest-worker: ${{ steps.docker-build-worker.outputs.digest }}
-      image-digest-beat-worker: ${{ steps.docker-build-beat-worker.outputs.digest }}
+      image-digest-server: ${{ steps.docker-build-cloud-server.outputs.digest }}
+      image-digest-worker: ${{ steps.docker-build-cloud-worker.outputs.digest }}
+      image-digest-beat-worker: ${{ steps.docker-build-cloud-beat-worker.outputs.digest }}
 
     defaults:
       run:
