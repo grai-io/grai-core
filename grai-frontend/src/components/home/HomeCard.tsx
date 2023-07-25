@@ -39,13 +39,7 @@ const HomeCard: React.FC<HomeCardProps> = ({
         />
       </CardActionArea>
     ) : (
-      <HomeCardContent
-        count={count}
-        icon={icon}
-        color={color}
-        text={text}
-        to={to}
-      />
+      <HomeCardContent count={count} icon={icon} color={color} text={text} />
     )}
   </Card>
 )
