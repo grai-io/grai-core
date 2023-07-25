@@ -1,9 +1,7 @@
 import os
 import shelve
-import tempfile
 import uuid
 import warnings
-from functools import cached_property
 from typing import Optional
 
 import typer

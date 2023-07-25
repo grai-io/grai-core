@@ -73,9 +73,6 @@ ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
 
 # --------- final images --------------- #
 
-FROM base AS grai-core
-CMD ["gunicorn", "the_guide.wsgi", "-b", "0.0.0.0:8000", "-w", "2", "--thread", "2"]
-
 FROM base AS grai-worker
 ENV INSTANCE_TYPE=worker
 CMD ["/usr/src/app/worker.sh"]
@@ -83,3 +80,6 @@ CMD ["/usr/src/app/worker.sh"]
 FROM base AS grai-beat-worker
 ENV INSTANCE_TYPE=beat
 CMD ["/usr/src/app/beat.sh"]
+
+FROM base AS grai-core
+CMD ["gunicorn", "the_guide.wsgi", "-b", "0.0.0.0:8000", "-w", "2", "--thread", "2"]
