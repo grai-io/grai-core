@@ -801,13 +801,13 @@ files = [
 
 [[package]]
 name = "django"
-version = "4.2.2"
+version = "4.2.3"
 description = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "Django-4.2.2-py3-none-any.whl", hash = "sha256:672b3fa81e1f853bb58be1b51754108ab4ffa12a77c06db86aa8df9ed0c46fe5"},
-    {file = "Django-4.2.2.tar.gz", hash = "sha256:2a6b6fbff5b59dd07bef10bcb019bee2ea97a30b2a656d51346596724324badf"},
+    {file = "Django-4.2.3-py3-none-any.whl", hash = "sha256:f7c7852a5ac5a3da5a8d5b35cc6168f31b605971441798dac845f17ca8028039"},
+    {file = "Django-4.2.3.tar.gz", hash = "sha256:45a747e1c5b3d6df1b141b1481e193b033fd1fdbda3ff52677dc81afdaacbaed"},
 ]
 
 [package.dependencies]
@@ -958,6 +958,27 @@ phonenumbers = ["phonenumbers (>=7.0.2)"]
 phonenumberslite = ["phonenumberslite (>=7.0.2)"]
 
 [[package]]
+name = "django-postgres-extra"
+version = "2.0.8"
+description = "Bringing all of PostgreSQL's awesomeness to Django."
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "django-postgres-extra-2.0.8.tar.gz", hash = "sha256:9efa08c6f18ed34460af41c6f679bb375b93d12544b1105aa348b787a30b46eb"},
+    {file = "django_postgres_extra-2.0.8-py3-none-any.whl", hash = "sha256:447d5a971759943ee63a9d4cef9c6c1fa290e518611ea521a38b6732681d2f3a"},
+]
+
+[package.dependencies]
+Django = ">=2.0,<5.0"
+python-dateutil = ">=2.8.0,<=3.0.0"
+
+[package.extras]
+analysis = ["autoflake (==1.4)", "autopep8 (==1.6.0)", "black (==22.3.0)", "docformatter (==1.4)", "flake8 (==4.0.1)", "isort (==5.10.0)"]
+docs = ["Sphinx (==2.2.0)", "docutils (<0.18)", "sphinx-rtd-theme (==0.4.3)"]
+publish = ["build (==0.7.0)", "twine (==3.7.1)"]
+test = ["coveralls (==3.3.0)", "dj-database-url (==0.5.0)", "freezegun (==1.1.0)", "psycopg2 (>=2.8.4,<3.0.0)", "pytest (==6.2.5)", "pytest-benchmark (==3.4.1)", "pytest-cov (==3.0.0)", "pytest-django (==4.4.0)", "snapshottest (==0.6.0)", "tox (==3.24.4)"]
+
+[[package]]
 name = "django-query-chunk"
 version = "0.0.1"
 description = "Part QuerySets into small chunks."
@@ -967,6 +988,24 @@ files = [
     {file = "django-query-chunk-0.0.1.tar.gz", hash = "sha256:3a60bbc00b6611062495e1c8f2a19a29642d91f0ee291363fc1410cf9627324a"},
     {file = "django_query_chunk-0.0.1-py3-none-any.whl", hash = "sha256:38951dd31f65c7e2af3e94a065c85a2d2185a8d29c0301a7cf6e3ecce54e4203"},
 ]
+
+[[package]]
+name = "django-redis"
+version = "5.3.0"
+description = "Full featured redis cache backend for Django."
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "django-redis-5.3.0.tar.gz", hash = "sha256:8bc5793ec06b28ea802aad85ec437e7646511d4e571e07ccad19cfed8b9ddd44"},
+    {file = "django_redis-5.3.0-py3-none-any.whl", hash = "sha256:2d8660d39f586c41c9907d5395693c477434141690fd7eca9d32376af00b0aac"},
+]
+
+[package.dependencies]
+Django = ">=3.2"
+redis = ">=3,<4.0.0 || >4.0.0,<4.0.1 || >4.0.1"
+
+[package.extras]
+hiredis = ["redis[hiredis] (>=3,!=4.0.0,!=4.0.1)"]
 
 [[package]]
 name = "django-ses"
@@ -1184,6 +1223,21 @@ doq = ["aioquic (>=0.9.20)"]
 idna = ["idna (>=2.1,<4.0)"]
 trio = ["trio (>=0.14,<0.23)"]
 wmi = ["wmi (>=1.5.1,<2.0.0)"]
+
+[[package]]
+name = "drf-nested-routers"
+version = "0.93.4"
+description = "Nested resources for the Django Rest Framework"
+optional = false
+python-versions = ">=3.5"
+files = [
+    {file = "drf-nested-routers-0.93.4.tar.gz", hash = "sha256:01aa556b8c08608bb74fb34f6ca065a5183f2cda4dc0478192cc17a2581d71b0"},
+    {file = "drf_nested_routers-0.93.4-py2.py3-none-any.whl", hash = "sha256:996b77f3f4dfaf64569e7b8f04e3919945f90f95366838ca5b8bed9dd709d6c5"},
+]
+
+[package.dependencies]
+Django = ">=1.11"
+djangorestframework = ">=3.6.0"
 
 [[package]]
 name = "drf-spectacular"
@@ -3115,7 +3169,7 @@ name = "pycparser"
 version = "2.21"
 description = "C parser in Python"
 optional = false
-python-versions = "*"
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 files = [
     {file = "pycparser-2.21-py2.py3-none-any.whl", hash = "sha256:8ee45429555515e1f6b185e78100aea234072576aa43ab53aefcae078162fca9"},
     {file = "pycparser-2.21.tar.gz", hash = "sha256:e644fdec12f7872f86c58ff790da456218b10f863970249516d60a5eaca77206"},
@@ -4074,27 +4128,6 @@ doc = ["sphinx"]
 test = ["pytest", "pytest-cov"]
 
 [[package]]
-name = "strawberry-django-plus"
-version = "2.6.4"
-description = "Enhanced Strawberry GraphQL integration with Django"
-optional = false
-python-versions = ">=3.8,<4.0"
-files = [
-    {file = "strawberry_django_plus-2.6.4-py3-none-any.whl", hash = "sha256:5cb32d9338009568687c1960bed3d48362b46c9dd543ad0cf28ede81bc36abd3"},
-    {file = "strawberry_django_plus-2.6.4.tar.gz", hash = "sha256:4f6fb5cbece61437b5f89ebe4861ae13eed02f77c400f2b6bc356b65aae9fe36"},
-]
-
-[package.dependencies]
-django = ">=3.2"
-strawberry-graphql = ">=0.161.0"
-strawberry-graphql-django = ">=0.8"
-typing-extensions = ">=4.2.0"
-
-[package.extras]
-debug-toolbar = ["django-debug-toolbar (>=3.4)"]
-enum = ["django-choices-field (>=2.0)"]
-
-[[package]]
 name = "strawberry-graphql"
 version = "0.185.1"
 description = "A library for creating GraphQL APIs"
@@ -4348,4 +4381,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "a24e97a8215109a3f60fa259a0ae59603943e355e85b0fc0e31fa746958f3ba0"
+content-hash = "89a772ae936feb0c120d17897d07325dd1da0dd1afa9cc4593cf76a22170017f"
