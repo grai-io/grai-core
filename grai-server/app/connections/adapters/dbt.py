@@ -1,13 +1,14 @@
-from .base import BaseAdapter
 from connections.models import Run
+
+from .base import BaseAdapter
 
 
 class DbtAdapter(BaseAdapter):
     def get_nodes_and_edges(self):
         import json
 
-        from grai_source_dbt.processor import ManifestProcessor
         from grai_schemas.v1.source import SourceV1
+        from grai_source_dbt.processor import ManifestProcessor
 
         namespace = self.run.connection.namespace
 

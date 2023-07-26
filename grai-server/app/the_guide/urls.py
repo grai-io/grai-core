@@ -13,6 +13,7 @@ from rest_framework_simplejwt.views import (
 from strawberry.django.views import AsyncGraphQLView
 
 from api.schema import schema
+
 from .views import index
 
 spectacular_settings = {

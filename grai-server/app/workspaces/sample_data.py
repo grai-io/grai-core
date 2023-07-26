@@ -6,9 +6,9 @@ from django.core.files import File
 
 from connections.models import Connection, Connector, Run, RunFile
 from connections.tasks import process_run, run_connection_schedule
+from lineage.models import Source
 
 from .models import Workspace
-from lineage.models import Source
 
 
 class SampleData:

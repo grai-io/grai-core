@@ -5,8 +5,8 @@ from django.urls import reverse
 from django_multitenant.utils import set_current_tenant
 
 from connections.models import Connection, Connector
-from workspaces.models import Membership, Organisation, Workspace, WorkspaceAPIKey
 from lineage.models import Source
+from workspaces.models import Membership, Organisation, Workspace, WorkspaceAPIKey
 
 
 @pytest.fixture

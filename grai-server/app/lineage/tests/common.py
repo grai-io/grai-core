@@ -1,10 +1,11 @@
 import json
 import uuid
+
 import pytest
 from django.urls import reverse
 
-from workspaces.models import Membership, Organisation, Workspace, WorkspaceAPIKey
 from lineage.models import Edge, Node, Source
+from workspaces.models import Membership, Organisation, Workspace, WorkspaceAPIKey
 
 
 def create_node(client, workspace, name=None, namespace="default", sources=None):

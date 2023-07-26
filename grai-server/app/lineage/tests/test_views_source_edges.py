@@ -1,6 +1,9 @@
 import uuid
+
 import pytest
 from django.urls import reverse
+
+from lineage.models import Source
 
 from .common import (
     api_client,
@@ -10,16 +13,15 @@ from .common import (
     create_node,
     create_user,
     create_workspace,
+    test_destination_node,
+    test_edge,
     test_full_nodes,
+    test_node,
     test_nodes,
     test_password,
     test_source,
     test_source_node,
-    test_destination_node,
-    test_edge,
-    test_node,
 )
-from lineage.models import Source
 
 
 @pytest.mark.django_db

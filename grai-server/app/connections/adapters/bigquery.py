@@ -1,5 +1,6 @@
-from .base import BaseAdapter
 from grai_schemas.v1.source import SourceV1
+
+from .base import BaseAdapter
 
 
 class BigqueryAdapter(BaseAdapter):

@@ -1,8 +1,8 @@
-from psqlextra.manager import PostgresManager
 from typing import Iterable, List, Sequence
 
 from django.db import models
 from django_multitenant.models import TenantManagerMixin
+from psqlextra.manager import PostgresManager
 
 from .graph_cache import GraphCache
 
