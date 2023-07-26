@@ -1,5 +1,5 @@
-import { ShepherdOptionsWithType } from "react-shepherd"
 import { offset, shift } from "@floating-ui/dom"
+import { ShepherdOptionsWithType } from "react-shepherd"
 
 const steps: ShepherdOptionsWithType[] = [
   {

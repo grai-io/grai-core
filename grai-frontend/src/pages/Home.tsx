@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useState } from "react"
 import { gql, useQuery } from "@apollo/client"
 import { Box } from "@mui/material"
+import { ShepherdTourContext } from "react-shepherd"
+import useLocalState from "helpers/useLocalState"
 import useWorkspace from "helpers/useWorkspace"
 import GettingStarted from "components/home/GettingStarted"
 import HomeCards from "components/home/HomeCards"
@@ -14,8 +16,6 @@ import {
   GetWorkspaceHomeVariables,
 } from "./__generated__/GetWorkspaceHome"
 import NotFound from "./NotFound"
-import { ShepherdTourContext } from "react-shepherd"
-import useLocalState from "helpers/useLocalState"
 
 export const GET_WORKSPACE = gql`
   query GetWorkspaceHome($organisationName: String!, $workspaceName: String!) {
