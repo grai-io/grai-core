@@ -14,9 +14,9 @@ class Node(TenantModel):
     objects = CacheManager()
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    namespace = models.CharField(max_length=255, default="default")
-    name = models.CharField(max_length=255)
-    display_name = models.CharField(max_length=255)
+    namespace = models.TextField(default="default")
+    name = models.TextField()
+    display_name = models.TextField()
     metadata = models.JSONField(default=dict)
     is_active = models.BooleanField(default=True)
 
@@ -43,7 +43,9 @@ class Node(TenantModel):
             return self.id
 
         if self.search_type() == "Column":
-            table = self.destination_edges.filter(metadata__grai__edge_type="TableToColumn").first()
+            table = self.destination_edges.filter(
+                metadata__grai__edge_type="TableToColumn"
+            ).first()
             return table.source.id if table is not None else None
 
     def save(self, *args, **kwargs):
@@ -93,14 +95,18 @@ class Edge(TenantModel):
     objects = CacheManager()
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=255)
-    namespace = models.CharField(max_length=255, default="default")
-    display_name = models.CharField(max_length=255)
+    name = models.TextField()
+    namespace = models.TextField(default="default")
+    display_name = models.TextField()
     metadata = models.JSONField(default=dict)
     is_active = models.BooleanField(default=True)
 
-    source = models.ForeignKey("Node", related_name="source_edges", on_delete=models.PROTECT)
-    destination = models.ForeignKey("Node", related_name="destination_edges", on_delete=models.PROTECT)
+    source = models.ForeignKey(
+        "Node", related_name="source_edges", on_delete=models.PROTECT
+    )
+    destination = models.ForeignKey(
+        "Node", related_name="destination_edges", on_delete=models.PROTECT
+    )
 
     workspace = models.ForeignKey(
         "workspaces.Workspace",
