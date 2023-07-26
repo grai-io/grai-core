@@ -2,10 +2,10 @@ import React, { ReactNode } from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { ShepherdTour } from "react-shepherd"
+import steps from "steps"
 import { act, fireEvent, render, screen, waitFor } from "testing"
 import Home, { GET_WORKSPACE } from "./Home"
 import Workspaces, { GET_WORKSPACES } from "./workspaces/Workspaces"
-import steps from "steps"
 
 window.scrollTo = jest.fn()
 
