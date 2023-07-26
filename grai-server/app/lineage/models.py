@@ -14,9 +14,9 @@ class Node(TenantModel):
     objects = CacheManager()
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    namespace = models.CharField(max_length=255, default="default")
-    name = models.CharField(max_length=255)
-    display_name = models.CharField(max_length=255)
+    namespace = models.TextField(default="default")
+    name = models.TextField()
+    display_name = models.TextField()
     metadata = models.JSONField(default=dict)
     is_active = models.BooleanField(default=True)
 
@@ -93,9 +93,9 @@ class Edge(TenantModel):
     objects = CacheManager()
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=255)
-    namespace = models.CharField(max_length=255, default="default")
-    display_name = models.CharField(max_length=255)
+    name = models.TextField()
+    namespace = models.TextField(default="default")
+    display_name = models.TextField()
     metadata = models.JSONField(default=dict)
     is_active = models.BooleanField(default=True)
 

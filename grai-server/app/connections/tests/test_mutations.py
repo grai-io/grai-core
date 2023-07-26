@@ -1,3 +1,5 @@
+import uuid
+
 import pytest
 
 from api.schema import schema
@@ -5,19 +7,18 @@ from api.tests.common import (
     generate_connection,
     generate_connection_name,
     generate_connector,
+    generate_source,
     generate_username,
     generate_workspace,
     test_basic_context,
     test_context,
     test_organisation,
+    test_source,
     test_user,
     test_workspace,
-    test_source,
-    generate_source,
 )
 from connections.models import Connection
 from lineage.models import Source
-import uuid
 
 
 @pytest.mark.asyncio

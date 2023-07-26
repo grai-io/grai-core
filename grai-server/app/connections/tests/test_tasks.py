@@ -6,7 +6,6 @@ from unittest import mock
 import pytest
 from decouple import config
 from django.core.files.uploadedfile import UploadedFile
-
 from grai_source_dbt_cloud.loader import Event
 
 from connections.models import Connection, Connector, Run, RunFile

@@ -1,8 +1,9 @@
-import pytest
 import uuid
 
-from lineage.signals import post_m2m_changed
+import pytest
+
 from lineage.models import Node, Source
+from lineage.signals import post_m2m_changed
 from workspaces.models import Organisation, Workspace
 
 

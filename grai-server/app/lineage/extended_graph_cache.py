@@ -1,7 +1,8 @@
-from .graph_cache import GraphCache
 from query_chunk import chunk
 
 from lineage.models import Edge, Node
+
+from .graph_cache import GraphCache
 
 
 class ExtendedGraphCache(GraphCache):

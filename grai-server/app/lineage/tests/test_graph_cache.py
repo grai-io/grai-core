@@ -2,10 +2,10 @@ import uuid
 
 import pytest
 
-from workspaces.models import Organisation, Workspace
-from workspaces.admin import ExtendedGraphCache
 from lineage.graph_cache import GraphCache
-from lineage.models import Node, Edge
+from lineage.models import Edge, Node
+from workspaces.admin import ExtendedGraphCache
+from workspaces.models import Organisation, Workspace
 
 
 @pytest.fixture

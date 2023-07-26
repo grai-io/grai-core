@@ -4,12 +4,12 @@ from api.schema import schema
 from api.tests.common import (
     generate_connection_name,
     generate_filter,
+    generate_source,
     generate_workspace,
     test_context,
     test_organisation,
     test_user,
     test_workspace,
-    generate_source,
 )
 from lineage.models import Filter, Source
 
