@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React from "react"
 import { gql, useQuery } from "@apollo/client"
 import { Grid } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
@@ -43,7 +43,7 @@ const HomeCards: React.FC = () => {
         organisationName,
         workspaceName,
       },
-    }
+    },
   )
 
   return (

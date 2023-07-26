@@ -16,13 +16,13 @@ import {
   useLocation,
   useNavigationType,
 } from "react-router-dom"
+import { ShepherdTour } from "react-shepherd"
 import PosthogProvider from "components/PosthogProvider"
 import BackendProvider from "./providers/BackendProvider"
 import Routes from "./Routes"
+import newSteps from "./steps"
 import theme from "./theme"
 import "posthog"
-import { ShepherdTour } from "react-shepherd"
-import newSteps from "./steps"
 
 const tourOptions = {
   defaultStepOptions: {

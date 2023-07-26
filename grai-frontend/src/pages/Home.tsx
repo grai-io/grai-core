@@ -47,7 +47,7 @@ const Home: React.FC = () => {
   const [search, setSearch] = useState(false)
   const [tourHidden, setTourHidden] = useLocalState(
     "getting-started-tour",
-    false
+    false,
   )
 
   const { loading, error, data } = useQuery<
@@ -68,7 +68,7 @@ const Home: React.FC = () => {
     })
 
     tour.start()
-  }, [])
+  }, [tour, tourHidden, setTourHidden])
 
   if (error) return <GraphError error={error} />
   if (loading) return <PageLayout loading />
