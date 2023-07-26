@@ -1,9 +1,13 @@
 import React, { ReactNode } from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
+import { ShepherdTour } from "react-shepherd"
+import steps from "steps"
 import { act, fireEvent, render, screen, waitFor } from "testing"
 import Home, { GET_WORKSPACE } from "./Home"
 import Workspaces, { GET_WORKSPACES } from "./workspaces/Workspaces"
+
+window.scrollTo = jest.fn()
 
 jest.mock("react-instantsearch-hooks-web", () => ({
   InstantSearch: ({ children }: { children: ReactNode }) => children,
@@ -25,12 +29,50 @@ test("renders", async () => {
 
   await waitFor(() => {
     expect(
-      screen.getByRole("heading", { name: /Welcome to Grai/i })
+      screen.getAllByRole("heading", { name: /Welcome to Grai/i }),
     ).toBeTruthy()
   })
 
   // eslint-disable-next-line testing-library/no-wait-for-empty-callback
   await waitFor(() => {})
+})
+
+test("tour", async () => {
+  render(
+    <ShepherdTour steps={steps} tourOptions={{}}>
+      <Home />
+    </ShepherdTour>,
+    {
+      withRouter: true,
+    },
+  )
+
+  await waitFor(() => {
+    expect(
+      screen.getAllByRole("heading", { name: /Welcome to Grai/i }),
+    ).toBeTruthy()
+  })
+
+  // eslint-disable-next-line testing-library/no-wait-for-empty-callback
+  await waitFor(() => {})
+
+  await waitFor(() => {
+    expect(
+      screen.getByText(
+        /Follow along our tour to get started with Grai and see what it can do for you./i,
+      ),
+    ).toBeInTheDocument()
+  })
+
+  await act(async () => await userEvent.click(screen.getByText(/close/i)))
+
+  await waitFor(() => {
+    expect(
+      screen.queryByText(
+        /Follow along our tour to get started with Grai and see what it can do for you./i,
+      ),
+    ).not.toBeInTheDocument()
+  })
 })
 
 test("search", async () => {
@@ -42,7 +84,7 @@ test("search", async () => {
 
   await waitFor(() => {
     expect(
-      screen.getByRole("heading", { name: /Welcome to Grai/i })
+      screen.getAllByRole("heading", { name: /Welcome to Grai/i }),
     ).toBeTruthy()
   })
 
@@ -59,7 +101,8 @@ test("search", async () => {
   await act(async () => await user.type(screen.getByRole("textbox"), "test"))
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /close/i }))
+    async () =>
+      await user.click(screen.getByRole("button", { name: /close/i })),
   )
 })
 
@@ -157,7 +200,7 @@ test("missing workspace", async () => {
 
   await waitFor(() => {
     expect(
-      screen.getByRole("heading", { name: /Create an organisation/i })
+      screen.getByRole("heading", { name: /Create an organisation/i }),
     ).toBeInTheDocument()
   })
 })
@@ -202,13 +245,13 @@ test("no reports", async () => {
 
   await waitFor(() => {
     expect(
-      screen.getByRole("heading", { name: /Welcome to Grai/i })
+      screen.getAllByRole("heading", { name: /Welcome to Grai/i }),
     ).toBeTruthy()
   })
 
   await waitFor(() => {
     expect(
-      screen.getByRole("heading", { name: /Getting started with Grai/i })
+      screen.getByRole("heading", { name: /Getting started with Grai/i }),
     ).toBeTruthy()
   })
 })

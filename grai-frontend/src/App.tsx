@@ -16,11 +16,22 @@ import {
   useLocation,
   useNavigationType,
 } from "react-router-dom"
+import { ShepherdTour } from "react-shepherd"
 import PosthogProvider from "components/PosthogProvider"
 import BackendProvider from "./providers/BackendProvider"
 import Routes from "./Routes"
+import steps from "./steps"
 import theme from "./theme"
 import "posthog"
+
+const tourOptions = {
+  defaultStepOptions: {
+    cancelIcon: {
+      enabled: true,
+    },
+  },
+  useModalOverlay: true,
+}
 
 const App: React.FC = () => {
   if (process.env.REACT_APP_SENTRY_DSN)
@@ -61,29 +72,31 @@ const App: React.FC = () => {
         </Helmet>
         <ThemeProvider theme={theme}>
           <LocalizationProvider dateAdapter={AdapterLuxon}>
-            <BackendProvider>
-              <ConfirmProvider
-                defaultOptions={{
-                  confirmationButtonProps: { autoFocus: true },
-                }}
-              >
-                <SnackbarProvider
-                  ref={notistackRef}
-                  maxSnack={3}
-                  hideIconVariant
-                  action={key => (
-                    <IconButton onClick={onClickDismiss(key)}>
-                      <Close />
-                    </IconButton>
-                  )}
+            <ShepherdTour steps={steps} tourOptions={tourOptions}>
+              <BackendProvider>
+                <ConfirmProvider
+                  defaultOptions={{
+                    confirmationButtonProps: { autoFocus: true },
+                  }}
                 >
-                  <BrowserRouter>
-                    <PosthogProvider />
-                    <Routes />
-                  </BrowserRouter>
-                </SnackbarProvider>
-              </ConfirmProvider>
-            </BackendProvider>
+                  <SnackbarProvider
+                    ref={notistackRef}
+                    maxSnack={3}
+                    hideIconVariant
+                    action={key => (
+                      <IconButton onClick={onClickDismiss(key)}>
+                        <Close />
+                      </IconButton>
+                    )}
+                  >
+                    <BrowserRouter>
+                      <PosthogProvider />
+                      <Routes />
+                    </BrowserRouter>
+                  </SnackbarProvider>
+                </ConfirmProvider>
+              </BackendProvider>
+            </ShepherdTour>
           </LocalizationProvider>
         </ThemeProvider>
       </HelmetProvider>

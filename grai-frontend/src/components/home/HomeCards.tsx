@@ -43,7 +43,7 @@ const HomeCards: React.FC = () => {
         organisationName,
         workspaceName,
       },
-    }
+    },
   )
 
   return (
@@ -79,6 +79,7 @@ const HomeCards: React.FC = () => {
           color="#8338EC"
           icon={<Connections2 />}
           to="connections/create"
+          className="add-connection"
         />
       </Grid>
     </Grid>
