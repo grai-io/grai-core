@@ -32,6 +32,7 @@ const pages = [
     path: "graph",
     icon: <Graph />,
     alt: "Graph",
+    className: "graph-page",
   },
   {
     title: "Tables",
@@ -112,13 +113,13 @@ const AppDrawer: React.FC = () => {
       </List>
       <List sx={{ flexGrow: 1 }}>
         {pages.map(page => (
-          <ListItem disablePadding key={page.path}>
+          <ListItem disablePadding key={page.path} className={page.className}>
             <ListItemButton component={Link} to={`${routePrefix}/${page.path}`}>
               <ListItemIcon>
                 <Box
                   sx={{
                     backgroundColor: decodeURI(location.pathname).startsWith(
-                      `${routePrefix}/${page.path}`
+                      `${routePrefix}/${page.path}`,
                     )
                       ? "#8338EC80"
                       : null,

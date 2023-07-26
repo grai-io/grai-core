@@ -29,6 +29,177 @@ const steps: ShepherdOptionsWithType[] = [
       enabled: true,
     },
     title: "Welcome to Grai!",
+    text: "Follow along our tour to get started with Grai and see what it can do for you.",
+  },
+  {
+    id: "view-graph",
+    attachTo: {
+      element: ".graph-page",
+      on: "left" as const,
+    },
+    highlightClass: "highlight",
+    scrollTo: false,
+    cancelIcon: {
+      enabled: true,
+    },
+    title: "View Graph",
+    text: [
+      "Your data lineage graph shows each of your data sources and how they are connected.",
+    ],
+    advanceOn: { selector: ".graph-page a", event: "click" },
+    floatingUIOptions: { middleware: [offset(10)] },
+  },
+  {
+    id: "view-graph-drag",
+    // attachTo: {
+    //   element: ".graph-page",
+    //   on: "left" as const,
+    // },
+    highlightClass: "highlight",
+    scrollTo: false,
+    cancelIcon: {
+      enabled: true,
+    },
+    title: "Graph",
+    text: [
+      "You can drag and zoom in and out on the graph to see additional tables and edges",
+    ],
+    buttons: [
+      {
+        classes: "shepherd-button-primary",
+        text: "Next",
+        type: "next",
+      },
+    ],
+  },
+  {
+    id: "graph-search",
+    attachTo: {
+      element: ".graph-search",
+      on: "left" as const,
+    },
+    highlightClass: "highlight",
+    scrollTo: false,
+    cancelIcon: {
+      enabled: true,
+    },
+    title: "Graph Search",
+    text: [
+      "Click on the search icon to search for a table or column in your graph.",
+    ],
+    advanceOn: { selector: ".graph-search", event: "click" },
+    floatingUIOptions: { middleware: [offset(10)] },
+  },
+  {
+    id: "graph-filter",
+    attachTo: {
+      element: ".graph-filter",
+      on: "left" as const,
+    },
+    highlightClass: "highlight",
+    scrollTo: false,
+    cancelIcon: {
+      enabled: true,
+    },
+    title: "Graph Filter",
+    text: ["Click on the filter icon to create and apply filters."],
+    advanceOn: { selector: ".graph-filter", event: "click" },
+    floatingUIOptions: { middleware: [offset(10)] },
+  },
+  {
+    id: "graph-table-expand",
+    attachTo: {
+      element: ".table-expand",
+      on: "left" as const,
+    },
+    highlightClass: "highlight",
+    scrollTo: false,
+    cancelIcon: {
+      enabled: true,
+    },
+    title: "Table Expand",
+    text: [
+      "Click on the expand icon to show the columns in a table and their relationships.",
+    ],
+    advanceOn: { selector: ".table-expand", event: "click" },
+    floatingUIOptions: { middleware: [offset(10)] },
+  },
+  {
+    id: "graph-table-context-menu",
+    attachTo: {
+      element: ".graph-table",
+      on: "left" as const,
+    },
+    highlightClass: "highlight",
+    scrollTo: false,
+    cancelIcon: {
+      enabled: true,
+    },
+    title: "Table Menu",
+    text: [
+      "Right clicking on a table will show a menu with additional options.<br />\
+      Double clicking will take you to the table details page.",
+    ],
+    buttons: [
+      {
+        classes: "shepherd-button-primary",
+        text: "Next",
+        type: "next",
+      },
+    ],
+    floatingUIOptions: { middleware: [offset(10)] },
+  },
+  {
+    id: "end",
+    buttons: [
+      {
+        classes: "shepherd-button-primary",
+        text: "Finish",
+        type: "cancel",
+      },
+    ],
+    highlightClass: "highlight",
+    cancelIcon: {
+      enabled: true,
+    },
+    title: "Tour complete",
+    text: [
+      "You can now explore the other pages from the menu on the left.<br />\
+      To change settings or log out, click on Profile.<br />\
+      To create a new workspace, click on Profile and then Workspaces.<br />\
+      To get started you will want to create your first connection.",
+    ],
+  },
+]
+
+const stepsOld: ShepherdOptionsWithType[] = [
+  {
+    id: "intro",
+    attachTo: { element: ".first-element", on: "bottom" as const },
+    beforeShowPromise: () =>
+      new Promise(function (resolve) {
+        setTimeout(function () {
+          window.scrollTo(0, 0)
+          resolve(null)
+        }, 500)
+      }),
+    buttons: [
+      {
+        classes: "shepherd-button-secondary",
+        text: "Close",
+        type: "cancel",
+      },
+      {
+        classes: "shepherd-button-primary",
+        text: "Next",
+        type: "next",
+      },
+    ],
+    highlightClass: "highlight",
+    cancelIcon: {
+      enabled: true,
+    },
+    title: "Welcome to Grai!",
     text: [
       "React-Shepherd is a JavaScript library for guiding users through your React app.",
     ],

@@ -53,7 +53,7 @@ const BaseNodeContent: React.FC<BaseNodeContentProps> = ({ data }) => (
           {data.expanded ? (
             <ExpandLess fontSize="large" />
           ) : (
-            <ExpandMore fontSize="large" />
+            <ExpandMore fontSize="large" className="table-expand" />
           )}
         </Box>
       )}
