@@ -6,10 +6,10 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple, TypeVar, Union
 from django.db import models
 from django.db.models import Q
 from grai_schemas.schema import GraiType
-from grai_schemas.v1 import NodeV1, EdgeV1, SourcedEdgeV1, SourcedNodeV1
-from grai_schemas.v1.source import SourceSpec
-from grai_schemas.v1.node import NodeNamedID
 from grai_schemas.utilities import merge
+from grai_schemas.v1 import EdgeV1, NodeV1, SourcedEdgeV1, SourcedNodeV1
+from grai_schemas.v1.node import NodeNamedID
+from grai_schemas.v1.source import SourceSpec
 from multimethod import multimethod
 from pydantic import BaseModel
 

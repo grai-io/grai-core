@@ -5,9 +5,9 @@ from django.urls import reverse
 from django.utils.html import format_html
 
 from common.admin.fields.json_widget import PrettyJSONWidget
+from connections.models import Connection
 
 from .models import Edge, Event, Filter, Node, Source
-from connections.models import Connection
 
 
 class EdgeInline(admin.TabularInline):

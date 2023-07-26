@@ -43,9 +43,7 @@ class Node(TenantModel):
             return self.id
 
         if self.search_type() == "Column":
-            table = self.destination_edges.filter(
-                metadata__grai__edge_type="TableToColumn"
-            ).first()
+            table = self.destination_edges.filter(metadata__grai__edge_type="TableToColumn").first()
             return table.source.id if table is not None else None
 
     def save(self, *args, **kwargs):
@@ -101,12 +99,8 @@ class Edge(TenantModel):
     metadata = models.JSONField(default=dict)
     is_active = models.BooleanField(default=True)
 
-    source = models.ForeignKey(
-        "Node", related_name="source_edges", on_delete=models.PROTECT
-    )
-    destination = models.ForeignKey(
-        "Node", related_name="destination_edges", on_delete=models.PROTECT
-    )
+    source = models.ForeignKey("Node", related_name="source_edges", on_delete=models.PROTECT)
+    destination = models.ForeignKey("Node", related_name="destination_edges", on_delete=models.PROTECT)
 
     workspace = models.ForeignKey(
         "workspaces.Workspace",

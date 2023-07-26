@@ -1,8 +1,9 @@
-from workspaces.sample_data import SampleData
-from workspaces.models import Workspace
-from asgiref.sync import sync_to_async, async_to_sync
+from asgiref.sync import async_to_sync, sync_to_async
 from django.core.cache import cache
 from django.core.management.base import BaseCommand
+
+from workspaces.models import Workspace
+from workspaces.sample_data import SampleData
 
 
 class Command(BaseCommand):

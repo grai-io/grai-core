@@ -9,7 +9,6 @@ from asgiref.sync import sync_to_async
 from django.conf import settings
 from django.db.models import Prefetch, Q
 from django.db.models.query import QuerySet
-from notifications.models import Alert as AlertModel
 from strawberry.scalars import JSON
 from strawberry_django.filters import FilterLookup
 from strawberry_django.pagination import OffsetPaginationInput
@@ -32,6 +31,7 @@ from lineage.models import Filter as FilterModel
 from lineage.models import Node as NodeModel
 from lineage.models import Source as SourceModel
 from lineage.types import EdgeFilter, EdgeOrder, Filter, NodeFilter, NodeOrder
+from notifications.models import Alert as AlertModel
 from users.types import User, UserFilter
 from workspaces.models import Membership as MembershipModel
 from workspaces.models import Workspace as WorkspaceModel

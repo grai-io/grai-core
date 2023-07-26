@@ -2,7 +2,7 @@ import datetime
 from typing import List, Optional
 
 import strawberry
-from asgiref.sync import sync_to_async, async_to_sync
+from asgiref.sync import async_to_sync, sync_to_async
 from decouple import config
 from django.conf import settings
 from django.contrib.auth import get_user_model
