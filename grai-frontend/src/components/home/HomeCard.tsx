@@ -9,6 +9,7 @@ type HomeCardProps = {
   color: string
   text: string
   to?: string
+  className?: string
 }
 
 const HomeCard: React.FC<HomeCardProps> = ({
@@ -17,6 +18,7 @@ const HomeCard: React.FC<HomeCardProps> = ({
   color,
   text,
   to,
+  className,
 }) => (
   <Card
     variant="outlined"
@@ -27,6 +29,7 @@ const HomeCard: React.FC<HomeCardProps> = ({
       flexDirection: "column",
       height: "100%",
     }}
+    className={className}
   >
     {to ? (
       <CardActionArea component={Link} to={to}>

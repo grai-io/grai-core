@@ -85,6 +85,7 @@ const CreateConnectionWizard: React.FC<CreateConnectionWizardProps> = ({
       title="Create Connection"
       steps={steps}
       onClose={() => workspaceNavigate("connections")}
+      className="create-connection-wizard"
     />
   )
 }

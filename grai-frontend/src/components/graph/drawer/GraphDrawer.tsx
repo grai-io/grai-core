@@ -87,6 +87,7 @@ const GraphDrawer: React.FC<GraphDrawerProps> = ({
                     </Tooltip>
                   }
                   sx={{ minWidth: 0 }}
+                  className="graph-search"
                 />
                 <Tab
                   value="filter"
@@ -96,6 +97,7 @@ const GraphDrawer: React.FC<GraphDrawerProps> = ({
                     </Tooltip>
                   }
                   sx={{ minWidth: 0 }}
+                  className="graph-filter"
                 />
               </TabList>
             </Box>
@@ -134,7 +136,7 @@ const GraphDrawer: React.FC<GraphDrawerProps> = ({
               </ListItemButton>
             </Tooltip>
           </ListItem>
-          <ListItem disablePadding>
+          <ListItem disablePadding className="graph-search">
             <Tooltip title="Search">
               <ListItemButton
                 onClick={() => setTab("search")}
