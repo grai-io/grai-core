@@ -4,7 +4,6 @@ import { ShepherdOptionsWithType } from "react-shepherd"
 const steps: ShepherdOptionsWithType[] = [
   {
     id: "intro",
-    attachTo: { element: ".first-element", on: "bottom" as const },
     beforeShowPromise: () =>
       new Promise(function (resolve) {
         setTimeout(function () {

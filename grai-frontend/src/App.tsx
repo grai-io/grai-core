@@ -20,7 +20,7 @@ import { ShepherdTour } from "react-shepherd"
 import PosthogProvider from "components/PosthogProvider"
 import BackendProvider from "./providers/BackendProvider"
 import Routes from "./Routes"
-import newSteps from "./steps"
+import steps from "./steps"
 import theme from "./theme"
 import "posthog"
 
@@ -72,7 +72,7 @@ const App: React.FC = () => {
         </Helmet>
         <ThemeProvider theme={theme}>
           <LocalizationProvider dateAdapter={AdapterLuxon}>
-            <ShepherdTour steps={newSteps} tourOptions={tourOptions}>
+            <ShepherdTour steps={steps} tourOptions={tourOptions}>
               <BackendProvider>
                 <ConfirmProvider
                   defaultOptions={{
