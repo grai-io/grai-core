@@ -55,7 +55,7 @@ const ConnectionDelete: React.FC<ConnectionDeleteProps> = ({
             data: existingConnections.data
               ? existingConnections.data.filter(
                   (keyRef: any) =>
-                    data?.deleteConnection.id !== readField("id", keyRef)
+                    data?.deleteConnection.id !== readField("id", keyRef),
                 )
               : [],
           }),
@@ -79,7 +79,7 @@ const ConnectionDelete: React.FC<ConnectionDeleteProps> = ({
           error &&
           enqueueSnackbar(`Failed to delete connection ${error}`, {
             variant: "error",
-          })
+          }),
       )
   }
 

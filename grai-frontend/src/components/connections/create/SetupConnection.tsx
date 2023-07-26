@@ -129,7 +129,7 @@ const SetupConnection: React.FC<SetupConnectionProps> = ({
       namespace: "default",
       metadata: {},
       secrets: {},
-    }
+    },
   )
 
   /* istanbul ignore next */
@@ -172,12 +172,12 @@ const SetupConnection: React.FC<SetupConnectionProps> = ({
             },
           })
         },
-      }
+      },
     )
 
   const [updateConnection, { loading: loadingUpdate, error: errorUpdate }] =
     useMutation<UpdateConnectionInitial, UpdateConnectionInitialVariables>(
-      UPDATE_CONNECTION
+      UPDATE_CONNECTION,
     )
 
   const handleSubmit = () =>
@@ -192,7 +192,7 @@ const SetupConnection: React.FC<SetupConnectionProps> = ({
                 ...data.updateConnection,
                 sourceName: data.updateConnection.source.name,
                 secrets: values.secrets,
-              })
+              }),
           )
           .then(() => opts.forwardStep())
           .catch(() => {})
@@ -206,7 +206,7 @@ const SetupConnection: React.FC<SetupConnectionProps> = ({
                 ...data.createConnection,
                 sourceName: data.createConnection.source.name,
                 secrets: values.secrets,
-              })
+              }),
           )
           .then(() => opts.forwardStep())
           .catch(() => {})
