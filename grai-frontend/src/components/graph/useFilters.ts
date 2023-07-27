@@ -2,16 +2,17 @@ import { useEffect } from "react"
 import { useSearchParams } from "react-router-dom"
 import useLocalState from "helpers/useLocalState"
 
-const useFilters = () => {
+const useFilters = (
+  localStorageKey: string = "graph-filters",
+  searchKey: string = "filters",
+) => {
   const [searchParams, setSearchParams] = useSearchParams()
 
-  const searchFilters = searchParams.get("filters")?.split(",") ?? null
+  const searchFilters = searchParams.get(searchKey)?.split(",") ?? null
   const [filters, setFilters] = useLocalState<string[] | null>(
-    "graph-filters",
+    localStorageKey,
     searchFilters,
   )
-
-  console.log(filters)
 
   const handleFiltersChange = (filters: string[]) => {
     filters.length > 0 ? setFilters(filters) : setFilters(null)
@@ -21,9 +22,9 @@ const useFilters = () => {
     let newParams = searchParams
 
     if (filters && filters.length > 0) {
-      newParams.set("filters", filters.join(","))
+      newParams.set(searchKey, filters.join(","))
     } else {
-      newParams.delete("filters")
+      newParams.delete(searchKey)
     }
 
     setSearchParams(newParams)

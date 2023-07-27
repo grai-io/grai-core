@@ -53,7 +53,7 @@ type TableLineageProps = {
 const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
   const [value, setValue] = useState(1)
   const { organisationName, workspaceName } = useWorkspace()
-  const { filters, setFilters } = useFilters()
+  const { filters, setFilters } = useFilters(`tables-${table.id}-graph-filters`)
 
   const { loading, error, data } = useQuery<
     GetTablesAndEdgesTableLineage,

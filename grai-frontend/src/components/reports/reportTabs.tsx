@@ -16,7 +16,12 @@ const reportTabs = ({ tables, errors, limitGraph, run }: ReportTabInput) => [
     label: "Graph",
     noWrapper: true,
     component: (
-      <ReportGraph tables={tables} errors={errors} limitGraph={limitGraph} />
+      <ReportGraph
+        run={run}
+        tables={tables}
+        errors={errors}
+        limitGraph={limitGraph}
+      />
     ),
   },
   {

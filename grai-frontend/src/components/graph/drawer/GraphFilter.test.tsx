@@ -2,6 +2,7 @@ import userEvent from "@testing-library/user-event"
 import { act } from "react-dom/test-utils"
 import { fireEvent, render, screen, waitFor } from "testing"
 import GraphFilter from "./GraphFilter"
+import useFilters from "../useFilters"
 
 const filter = {
   id: "1",
@@ -23,7 +24,19 @@ test("renders", async () => {
 test("click", async () => {
   const user = userEvent.setup()
 
-  render(<GraphFilter filter={filter} filters={[]} setFilters={() => {}} />, {
+  const GraphWrapper: React.FC = () => {
+    const { filters, setFilters } = useFilters()
+
+    return (
+      <GraphFilter
+        filter={filter}
+        filters={filters ?? []}
+        setFilters={setFilters}
+      />
+    )
+  }
+
+  render(<GraphWrapper />, {
     path: ":organisationName/:workspaceName/graph",
     route: "/default/demo/graph",
   })

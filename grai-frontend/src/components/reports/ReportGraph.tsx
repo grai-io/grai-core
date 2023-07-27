@@ -5,19 +5,22 @@ import GraphComponent, {
   Table,
 } from "components/graph/GraphComponent"
 import useFilters from "components/graph/useFilters"
+import { Run } from "./run/RunLog"
 
 type ReportGraphProps = {
   tables: Table[]
   errors: ResultError[] | null
   limitGraph: boolean
+  run: Run | null
 }
 
 const ReportGraph: React.FC<ReportGraphProps> = ({
   tables,
   errors,
   limitGraph,
+  run,
 }) => {
-  const { filters, setFilters } = useFilters()
+  const { filters, setFilters } = useFilters(`reports-${run?.id}-graph-filters`)
 
   return (
     <Box

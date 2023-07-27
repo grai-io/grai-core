@@ -58,7 +58,7 @@ type EdgeLineageProps = {
 const EdgeLineage: React.FC<EdgeLineageProps> = ({ edge }) => {
   const [value, setValue] = useState(1)
   const { organisationName, workspaceName } = useWorkspace()
-  const { filters, setFilters } = useFilters()
+  const { filters, setFilters } = useFilters(`edge-${edge.id}-graph-filters`)
 
   const { loading, error, data } = useQuery<
     GetTablesAndEdgesEdgeLineage,
