@@ -10,7 +10,7 @@ const filter = {
 }
 
 test("renders", async () => {
-  render(<GraphFilter filter={filter} />, {
+  render(<GraphFilter filter={filter} filters={[]} setFilters={() => {}} />, {
     path: ":organisationName/:workspaceName/graph",
     route: "/default/demo/graph",
   })
@@ -23,7 +23,7 @@ test("renders", async () => {
 test("click", async () => {
   const user = userEvent.setup()
 
-  render(<GraphFilter filter={filter} />, {
+  render(<GraphFilter filter={filter} filters={[]} setFilters={() => {}} />, {
     path: ":organisationName/:workspaceName/graph",
     route: "/default/demo/graph",
   })
@@ -42,7 +42,7 @@ test("click", async () => {
 })
 
 test("hover", async () => {
-  render(<GraphFilter filter={filter} />, {
+  render(<GraphFilter filter={filter} filters={[]} setFilters={() => {}} />, {
     path: ":organisationName/:workspaceName/graph",
     route: "/default/demo/graph",
   })

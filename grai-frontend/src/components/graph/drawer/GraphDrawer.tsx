@@ -30,6 +30,8 @@ type GraphDrawerProps = {
   loading?: boolean
   onRefresh?: () => void
   onMove?: (viewport: Viewport) => void
+  filters: string[]
+  setFilters: (filters: string[]) => void
 }
 
 const GraphDrawer: React.FC<GraphDrawerProps> = ({
@@ -38,6 +40,8 @@ const GraphDrawer: React.FC<GraphDrawerProps> = ({
   loading,
   onRefresh,
   onMove,
+  filters,
+  setFilters,
 }) => {
   const [tab, setTab] = useLocalState<string | null>("graph-drawer", null)
 
@@ -109,7 +113,7 @@ const GraphDrawer: React.FC<GraphDrawerProps> = ({
               />
             </TabPanel>
             <TabPanel value="filter" sx={{ p: 0 }}>
-              <GraphFilters />
+              <GraphFilters filters={filters} setFilters={setFilters} />
             </TabPanel>
           </TabContext>
         </Box>

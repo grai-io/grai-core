@@ -5,7 +5,7 @@ import { render, screen, waitFor } from "testing"
 import GraphFilters, { GET_FILTERS } from "./GraphFilters"
 
 test("renders", async () => {
-  render(<GraphFilters />, {
+  render(<GraphFilters filters={[]} setFilters={() => {}} />, {
     path: ":organisationName/:workspaceName/graph",
     route: "/default/demo/graph",
   })
@@ -18,7 +18,7 @@ test("renders", async () => {
 test("search", async () => {
   const user = userEvent.setup()
 
-  render(<GraphFilters />, {
+  render(<GraphFilters filters={[]} setFilters={() => {}} />, {
     path: ":organisationName/:workspaceName/graph",
     route: "/default/demo/graph",
   })
@@ -77,7 +77,7 @@ test("errors", async () => {
     },
   ]
 
-  render(<GraphFilters />, {
+  render(<GraphFilters filters={[]} setFilters={() => {}} />, {
     path: ":organisationName/:workspaceName/graph",
     route: "/default/demo/graph",
     mocks,

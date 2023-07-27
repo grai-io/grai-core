@@ -149,6 +149,7 @@ test("lineage", async () => {
     filtersMock,
     tableMock,
     tableMock,
+    tableMock,
     {
       request: {
         query: GET_TABLES_AND_EDGES,
@@ -196,7 +197,7 @@ test("lineage", async () => {
   })
 
   await act(
-    async () => await user.click(screen.getByRole("tab", { name: /Lineage/i }))
+    async () => await user.click(screen.getByRole("tab", { name: /Lineage/i })),
   )
 
   await waitFor(() => {
@@ -224,14 +225,16 @@ test("expand all", async () => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /Expand all rows/i }))
+      await user.click(
+        screen.getByRole("button", { name: /Expand all rows/i }),
+      ),
   )
 
   await act(
     async () =>
       await user.click(
-        screen.getByRole("button", { name: /Collapse all rows/i })
-      )
+        screen.getByRole("button", { name: /Collapse all rows/i }),
+      ),
   )
 })
 
@@ -257,16 +260,16 @@ test("click row", async () => {
     async () =>
       await user.click(
         // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-        screen.getByTestId("columns-table").querySelectorAll("tbody > tr")[0]
-      )
+        screen.getByTestId("columns-table").querySelectorAll("tbody > tr")[0],
+      ),
   )
 
   await act(
     async () =>
       await user.click(
         // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-        screen.getByTestId("columns-table").querySelectorAll("tbody > tr")[0]
-      )
+        screen.getByTestId("columns-table").querySelectorAll("tbody > tr")[0],
+      ),
   )
 })
 
@@ -290,6 +293,6 @@ test("search", async () => {
 
   await act(
     async () =>
-      await user.type(screen.getByTestId("table-search"), "Search Columns")
+      await user.type(screen.getByTestId("table-search"), "Search Columns"),
   )
 })

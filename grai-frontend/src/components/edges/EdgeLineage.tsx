@@ -3,6 +3,7 @@ import { gql, useQuery } from "@apollo/client"
 import { Alert, Box } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
 import GraphComponent from "components/graph/GraphComponent"
+import useFilters from "components/graph/useFilters"
 import GraphError from "components/utils/GraphError"
 import {
   GetTablesAndEdgesEdgeLineage,
@@ -57,6 +58,7 @@ type EdgeLineageProps = {
 const EdgeLineage: React.FC<EdgeLineageProps> = ({ edge }) => {
   const [value, setValue] = useState(1)
   const { organisationName, workspaceName } = useWorkspace()
+  const { filters, setFilters } = useFilters()
 
   const { loading, error, data } = useQuery<
     GetTablesAndEdgesEdgeLineage,
@@ -94,6 +96,8 @@ const EdgeLineage: React.FC<EdgeLineageProps> = ({ edge }) => {
             setValue,
           },
         }}
+        filters={filters ?? []}
+        setFilters={setFilters}
       />
     </Box>
   )

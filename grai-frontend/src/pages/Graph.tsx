@@ -8,6 +8,7 @@ import GraphComponent, {
   ResultError,
   Table,
 } from "components/graph/GraphComponent"
+import useFilters from "components/graph/useFilters"
 import PageLayout from "components/layout/PageLayout"
 import GraphError from "components/utils/GraphError"
 import {
@@ -18,7 +19,7 @@ import {
 export const GET_TABLES_AND_EDGES = gql`
   query GetTablesAndEdges(
     $organisationName: String!
-    $workspaceName: String! # $filters: WorkspaceTableFilter # $offset: Int!
+    $workspaceName: String!
     $filters: GraphFilter
   ) {
     workspace(organisationName: $organisationName, name: $workspaceName) {
@@ -53,6 +54,8 @@ const Graph: React.FC<GraphProps> = ({ alwaysShow }) => {
   const [tables, setTables] = useState<Table[]>([])
   const ref = useRef<HTMLDivElement>(null)
 
+  const { filters, setFilters } = useFilters()
+
   const [loadGraph, { loading, error, refetch }] = useLazyQuery<
     GetTablesAndEdges,
     GetTablesAndEdgesVariables
@@ -65,19 +68,19 @@ const Graph: React.FC<GraphProps> = ({ alwaysShow }) => {
           organisationName,
           workspaceName,
           filters: {
-            filters: searchParams.get("filters")?.split(",") ?? null,
+            filters,
             min_x: Math.round((-viewport.x - 500) / viewport.zoom),
             max_x: Math.round(
-              (-viewport.x + (ref.current?.clientWidth ?? 0)) / viewport.zoom
+              (-viewport.x + (ref.current?.clientWidth ?? 0)) / viewport.zoom,
             ),
             min_y: Math.round(-viewport.y / viewport.zoom),
             max_y: Math.round(
-              (-viewport.y + (ref.current?.clientHeight ?? 0)) / viewport.zoom
+              (-viewport.y + (ref.current?.clientHeight ?? 0)) / viewport.zoom,
             ),
           },
         },
       }).then(res => setTables(res.data?.workspace.graph ?? [])),
-    [searchParams, loadGraph, organisationName, workspaceName]
+    [filters, loadGraph, organisationName, workspaceName],
   )
 
   useEffect(() => {
@@ -115,6 +118,8 @@ const Graph: React.FC<GraphProps> = ({ alwaysShow }) => {
           onMove={handleMove}
           onRefresh={handleRefresh}
           refreshLoading={loading}
+          filters={filters ?? []}
+          setFilters={setFilters}
         />
       </div>
     </PageLayout>
