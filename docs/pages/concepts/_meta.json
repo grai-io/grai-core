@@ -1,4 +1,5 @@
 {
+  "sources": "Sources",
   "namespace": "Namespace",
   "nodes": "Nodes",
   "edges": "Edges"
