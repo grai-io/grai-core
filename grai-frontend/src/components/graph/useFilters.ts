@@ -28,7 +28,7 @@ const useFilters = (
     }
 
     setSearchParams(newParams)
-  }, [filters, searchParams, setSearchParams])
+  }, [searchKey, filters, searchParams, setSearchParams])
 
   return {
     filters,
