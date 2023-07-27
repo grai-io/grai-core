@@ -39,7 +39,12 @@ export const GET_FILTERS = gql`
   }
 `
 
-const GraphFilters: React.FC = () => {
+type GraphFiltersProps = {
+  filters: string[]
+  setFilters: (filters: string[]) => void
+}
+
+const GraphFilters: React.FC<GraphFiltersProps> = ({ filters, setFilters }) => {
   const [search, setSearch] = useState("")
   const { organisationName, workspaceName, routePrefix } = useWorkspace()
 
@@ -133,7 +138,12 @@ const GraphFilters: React.FC = () => {
           </Grid>
         </ListItem>
         {data?.workspace.filters.data.map(filter => (
-          <GraphFilter key={filter.id} filter={filter} />
+          <GraphFilter
+            key={filter.id}
+            filter={filter}
+            filters={filters}
+            setFilters={setFilters}
+          />
         ))}
       </List>
     </Box>
