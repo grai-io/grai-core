@@ -863,6 +863,51 @@ class Workspace:
 
         return graph.get_tables(search=search)
 
+    @strawberry.django.field
+    async def search_tables(
+        self,
+        search: Optional[str] = strawberry.UNSET,
+    ) -> List[Table]:
+        def get_tables(search: Optional[str]) -> List[Table]:
+            def get_words(word: str) -> List[str]:
+                from django.db import connection
+
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "SELECT * FROM unique_lexeme WHERE levenshtein_less_equal(word, %s, 2) < 3",
+                        [word],
+                    )
+                    rows = cursor.fetchall()
+
+                return list([item[0] for item in rows])
+
+            result = []
+
+            for word in search.replace("_", " ").replace(".", " ").strip().split(" "):
+                print(word)
+                words = get_words(word)
+                print(words)
+                result += words
+
+            search_string = " ".join(result)
+
+            print(search_string)
+
+            return list(
+                NodeModel.objects.raw(
+                    """
+                    SELECT *
+                    FROM lineage_node
+                    WHERE workspace_id=%s
+                    AND metadata->'grai'->>'node_type'='Table'
+                    AND ts_rank(search, websearch_to_tsquery('simple', replace(replace(%s, ' ', ' or '), '.', ' or '))) > 0
+                    ORDER BY ts_rank(search, websearch_to_tsquery('simple', replace(replace(%s, ' ', ' or '), '.', ' or '))) DESC""",
+                    [self.id, search_string, search_string],
+                )
+            )
+
+        return await sync_to_async(get_tables)(search)
+
     # Sources
     @strawberry.field
     def sources(
