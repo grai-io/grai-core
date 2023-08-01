@@ -18,6 +18,7 @@
     "url": "git+https://github.com/grai-io/grai-core"
   },
   "dependencies": {
+    "@feelback/react": "^0.3.4",
     "@mendable/search": "^0.0.104",
     "@sentry/nextjs": "^7.48.0",
     "next": "^13.3.0",
