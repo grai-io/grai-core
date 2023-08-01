@@ -5,7 +5,7 @@ services:
     # image: ghcr.io/grai-io/grai-core/grai-server:latest
     build:
       context: ./app
-      target: grai-core
+      target: grai-server
     volumes:
       - ./app/:/usr/src/app/
     ports:
@@ -100,6 +100,7 @@ services:
 
   db:
     image: postgres:14.3-alpine
+    shm_size: 1g
     environment:
       - POSTGRES_USER=grai
       - POSTGRES_PASSWORD=grai
