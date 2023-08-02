@@ -63,7 +63,7 @@ export interface Table extends NodeWithName {
   display_name: string
   x: number
   y: number
-  data_source: string
+  data_source: string | null
   columns: Column[]
   sources?: string[]
   destinations: string[]

@@ -12,7 +12,7 @@ type BaseNodeContentProps = {
 const BaseNodeContent: React.FC<BaseNodeContentProps> = ({ data }) => (
   <>
     <Box sx={{ display: "flex" }}>
-      <DataSourceIcon dataSource={data.data_source} />
+      {data.data_source && <DataSourceIcon dataSource={data.data_source} />}
       <Box sx={{ flexGrow: 1 }}>
         <Typography
           variant="h6"
