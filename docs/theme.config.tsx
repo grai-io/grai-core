@@ -4,6 +4,7 @@ import { DocsThemeConfig, useConfig } from "nextra-theme-docs";
 import { useRouter } from "next/router";
 import HeaderLogo from "./components/HeaderLogo";
 import { Slack, Github } from "./components/Social";
+import { FeedbackComponent } from "./components/Feedback";
 
 const config: DocsThemeConfig = {
   project: {
@@ -39,6 +40,14 @@ const config: DocsThemeConfig = {
   logo: HeaderLogo,
   logoLink: "https://www.grai.io",
 
+  main: ({ children }) => {
+    return (
+      <>
+        {children}
+        <FeedbackComponent contentSetId="e05b4f9f-0f68-4a1c-bcf3-5ceab9d4fa74" />
+      </>
+    );
+  },
   sidebar: {
     defaultMenuCollapseLevel: 1,
   },

@@ -1,3 +1,4 @@
+/*
 :root {
   --shiki-color-text: #414141;
   --shiki-color-background: transparent;
@@ -23,4 +24,74 @@
   --shiki-token-string-expression: #4bb74a;
   --shiki-token-punctuation: #bbbbbb;
   --shiki-token-link: #ffab70;
+}
+*/
+
+@import "@feelback/react/styles/feelback.css";
+
+.feelback-container {
+
+  .feelback-q {
+    font-size: 1.1em;
+
+    .feelback-btn {
+      --highlight-opacity: 0.07;
+      font-size: 1.4rem;
+      margin-top: 2px;
+
+      &:nth-child(1).active {
+        color: hsl(var(--nextra-primary-hue)100% 45%/var(--tw-text-opacity));
+        background-color: hsl(var(--nextra-primary-hue)100% 66%/.1);
+      }
+
+      &:nth-child(2).active {
+        color: hsl(315 100% 45%/var(--tw-text-opacity));
+        background-color: hsl(var(--nextra-primary-hue)100% 66%/.1);
+      }
+    }
+  }
+
+  .form-buttons {
+    margin-top: 0.5rem;
+
+    .btn-action {
+      font-weight: bold;
+      padding: 0.4rem 2rem;
+      height: auto;
+
+      &:hover {
+        color: hsl(var(--nextra-primary-hue)100% 45%/var(--tw-text-opacity));
+        background-color: hsl(var(--nextra-primary-hue)100% 66%/.1);
+      }
+    }
+  }
+}
+
+.feelback-container textarea,
+.feelback-container [type="email"] {
+  border: 1px solid rgb(183 184 186);
+}
+
+.feelback-container textarea:focus-visible {
+  outline: none;
+  --tw-ring-color: hsl(var(--nextra-primary-hue)100% 86%/var(--tw-ring-opacity));
+  --tw-ring-offset-color: hsl(var(--nextra-primary-hue)100% 77%);
+  --tw-ring-opacity: 1;
+  --tw-ring-offset-width: 1px;
+  --tw-ring-offset-shadow: var(--tw-ring-inset)0 0 0 var(--tw-ring-offset-width)var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset)0 0 0 calc(2px + var(--tw-ring-offset-width))var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 transparent);
+}
+
+html.dark {
+
+  .feelback-container textarea,
+  input[type="email"] {
+    border: none;
+  }
+
+  .feelback-container textarea:focus-visible {
+    --tw-ring-color: hsl(var(--nextra-primary-hue)100% 32%/var(--tw-ring-opacity));
+    --tw-ring-offset-color: hsl(var(--nextra-primary-hue)100% 39%);
+  }
 }

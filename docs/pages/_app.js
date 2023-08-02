@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { DefaultSeo } from "next-seo";
 import SEO from "../next-seo.config";
+import "../styles.css";
 
 import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
