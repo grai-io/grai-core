@@ -9,8 +9,8 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material"
-import { ShepherdTourContext } from "react-shepherd"
 import { useNavigate } from "react-router-dom"
+import { ShepherdTourContext } from "react-shepherd"
 
 export interface Connector {
   id: string

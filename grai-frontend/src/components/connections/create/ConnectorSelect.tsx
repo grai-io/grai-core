@@ -1,13 +1,13 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
+import { Box } from "@mui/material"
+import useWorkspace from "helpers/useWorkspace"
+import { Connections } from "components/icons"
 import Loading from "components/layout/Loading"
 import GraphError from "components/utils/GraphError"
 import { GetConnectors } from "./__generated__/GetConnectors"
 import { Connector } from "../connectors/ConnectorCard"
 import ConnectorList from "../connectors/ConnectorList"
-import { Connections } from "components/icons"
-import { Box } from "@mui/material"
-import useWorkspace from "helpers/useWorkspace"
 
 export const GET_CONNECTORS = gql`
   query GetConnectors {
