@@ -1,7 +1,7 @@
 import React from "react"
+import { Search } from "@mui/icons-material"
 import { render, screen } from "testing"
 import WizardSubtitle from "./WizardSubtitle"
-import { Search } from "@mui/icons-material"
 
 test("renders", async () => {
   render(<WizardSubtitle />)

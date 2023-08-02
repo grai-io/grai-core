@@ -1,7 +1,7 @@
 import React from "react"
+import userEvent from "@testing-library/user-event"
 import { act, render, screen, waitFor } from "testing"
 import ConnectorCard from "./ConnectorCard"
-import userEvent from "@testing-library/user-event"
 
 test("renders", async () => {
   render(
