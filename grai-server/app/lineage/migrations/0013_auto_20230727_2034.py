@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
         ),
         migrations.RunSQL(
             sql="""
-                CREATE INDEX textsearch_idx ON lineage_node USING GIN (search);
+                CREATE INDEX IF NOT EXISTS textsearch_idx ON lineage_node USING GIN (search);
             """,
             reverse_sql="""
                 DROP INDEX IF EXISTS textsearch_idx;
@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
         ),
         migrations.RunSQL(
             sql="""
-              CREATE MATERIALIZED VIEW unique_lexeme AS SELECT word FROM ts_stat('SELECT search FROM lineage_node')
+              CREATE MATERIALIZED VIEW IF NOT EXISTS unique_lexeme AS SELECT word FROM ts_stat('SELECT search FROM lineage_node')
             """,
             reverse_sql="""
               DROP MATERIALIZED VIEW IF EXISTS unique_lexeme;
