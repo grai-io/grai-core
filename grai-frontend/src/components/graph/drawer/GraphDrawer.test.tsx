@@ -4,10 +4,18 @@ import { act, render, screen, waitFor } from "testing"
 import GraphDrawer from "./GraphDrawer"
 
 test("renders", async () => {
-  render(<GraphDrawer search="" onSearch={() => {}} />, {
-    path: ":organisationName/:workspaceName/graph",
-    route: "/default/demo/graph",
-  })
+  render(
+    <GraphDrawer
+      search=""
+      onSearch={() => {}}
+      filters={[]}
+      setFilters={() => {}}
+    />,
+    {
+      path: ":organisationName/:workspaceName/graph",
+      route: "/default/demo/graph",
+    },
+  )
 
   await waitFor(() => {
     expect(screen.getByTestId("KeyboardArrowLeftIcon")).toBeInTheDocument()
@@ -19,12 +27,17 @@ test("expand", async () => {
 
   render(
     <ReactFlowProvider>
-      <GraphDrawer search="" onSearch={() => {}} />
+      <GraphDrawer
+        search=""
+        onSearch={() => {}}
+        filters={[]}
+        setFilters={() => {}}
+      />
     </ReactFlowProvider>,
     {
       path: ":organisationName/:workspaceName/graph",
       route: "/default/demo/graph",
-    }
+    },
   )
 
   await waitFor(() => {
@@ -49,12 +62,17 @@ test("filter", async () => {
 
   render(
     <ReactFlowProvider>
-      <GraphDrawer search="" onSearch={() => {}} />
+      <GraphDrawer
+        search=""
+        onSearch={() => {}}
+        filters={[]}
+        setFilters={() => {}}
+      />
     </ReactFlowProvider>,
     {
       path: ":organisationName/:workspaceName/graph",
       route: "/default/demo/graph",
-    }
+    },
   )
 
   await waitFor(() => {

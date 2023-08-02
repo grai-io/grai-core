@@ -56,7 +56,7 @@ export const GET_SOURCES = gql`
 
 const Sources: React.FC = () => {
   const [search, setSearch] = useState<string>()
-  const { organisationName, workspaceName } = useWorkspace()
+  const { organisationName, workspaceName, routePrefix } = useWorkspace()
 
   const { loading, error, data, refetch } = useQuery<
     GetSources,
@@ -76,7 +76,7 @@ const Sources: React.FC = () => {
 
   const filteredSources = search
     ? sources.filter(source =>
-        source.name.toLowerCase().includes(search.toLowerCase())
+        source.name.toLowerCase().includes(search.toLowerCase()),
       )
     : sources
 
@@ -89,7 +89,7 @@ const Sources: React.FC = () => {
             variant="contained"
             startIcon={<Add />}
             component={Link}
-            to="create"
+            to={`${routePrefix}/connections/create`}
             sx={{
               backgroundColor: "#FC6016",
               boxShadow: "0px 4px 6px rgba(252, 96, 22, 0.2)",

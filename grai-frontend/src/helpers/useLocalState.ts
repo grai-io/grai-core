@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 
 export default function useLocalState<T = any>(
   key: string,
-  initial: T
+  initial: T,
 ): [T, (value: T) => void] {
   const [value, setValue] = useState<T>(() => {
     if (typeof window !== "undefined" && window.localStorage) {
@@ -15,8 +15,10 @@ export default function useLocalState<T = any>(
   })
 
   useEffect(() => {
-    if (window.localStorage) {
-      window.localStorage.setItem(key, JSON.stringify(value))
+    if (typeof window !== "undefined" && window.localStorage) {
+      value
+        ? window.localStorage.setItem(key, JSON.stringify(value))
+        : window.localStorage.removeItem(key)
     }
   }, [key, value])
 

@@ -9,7 +9,7 @@ class GraphTable:
     name: str
     display_name: str
     namespace: str
-    data_source: str
+    data_source: Optional[str]
     x: int
     y: int
     columns: List["GraphColumn"]
@@ -29,11 +29,11 @@ class GraphColumn:
 
 
 @strawberry.type
-class BaseGraph:
+class BaseTable:
     id: str
     name: str
     display_name: str
     namespace: str
-    data_source: str
+    data_source: Optional[str]
     x: int
     y: int

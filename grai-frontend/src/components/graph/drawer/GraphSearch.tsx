@@ -32,6 +32,11 @@ export const SEARCH_TABLES = gql`
   }
 `
 
+type Position = {
+  x: number
+  y: number
+}
+
 type GraphSearchProps = {
   search: string
   onSearch: (search: string | null) => void
@@ -45,7 +50,7 @@ const GraphSearch: React.FC<GraphSearchProps> = ({
 }) => {
   const { organisationName, workspaceName } = useWorkspace()
   const reactFlowInstance = useReactFlow()
-  const [center, setCenter] = useState({ x: 0, y: 0 })
+  const [center, setCenter] = useState<Position>()
   const [selected, setSelected] = useState(0)
 
   const { loading, error, data } = useQuery<
@@ -64,6 +69,8 @@ const GraphSearch: React.FC<GraphSearchProps> = ({
   })
 
   useEffect(() => {
+    if (!center) return
+
     reactFlowInstance.setCenter(center.x, center.y, {
       zoom: 0.75,
     })
@@ -80,7 +87,7 @@ const GraphSearch: React.FC<GraphSearchProps> = ({
   const setTableCenter = useCallback(
     (table: { x: number; y: number }) =>
       setCenter({ x: table.x + 200, y: table.y }),
-    []
+    [],
   )
 
   useEffect(() => {

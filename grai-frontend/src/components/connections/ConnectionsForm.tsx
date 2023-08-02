@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { ReactNode, useState } from "react"
 import { ApolloError } from "@apollo/client"
 import { LoadingButton } from "@mui/lab"
 import { TextField } from "@mui/material"
@@ -30,7 +30,7 @@ export interface ConnectorType {
   id: string
   name: string
   metadata: ConnectorMetadata | null | undefined
-  icon?: string | null
+  icon?: string | ReactNode | null
 }
 
 export type Values = {

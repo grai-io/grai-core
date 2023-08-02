@@ -12,6 +12,7 @@ from django.db.models.query import QuerySet
 from strawberry.scalars import JSON
 from strawberry_django.filters import FilterLookup
 from strawberry_django.pagination import OffsetPaginationInput
+from strawberry.types import Info
 
 from api.search import Search
 from connections.models import Connection as ConnectionModel
@@ -24,7 +25,7 @@ from installations.models import Repository as RepositoryModel
 from lineage.filter import apply_table_filter, get_tags
 from lineage.graph import GraphQuery
 from lineage.graph_cache import GraphCache
-from lineage.graph_types import BaseGraph, GraphTable
+from lineage.graph_types import BaseTable, GraphTable
 from lineage.models import Edge as EdgeModel
 from lineage.models import Event as EventModel
 from lineage.models import Filter as FilterModel
@@ -858,10 +859,50 @@ class Workspace:
     async def graph_tables(
         self,
         search: Optional[str] = strawberry.UNSET,
-    ) -> List[BaseGraph]:
+    ) -> List[BaseTable]:
+        def get_tables(search: Optional[str]) -> List[Table]:
+            def get_words(word: str) -> List[str]:
+                from django.db import connection
+
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "SELECT * FROM unique_lexeme WHERE levenshtein_less_equal(word, %s, 2) < 3",
+                        [word],
+                    )
+                    rows = cursor.fetchall()
+
+                return list([item[0] for item in rows])
+
+            result = []
+
+            for word in search.replace("_", " ").replace(".", " ").strip().split(" "):
+                result += get_words(word)
+
+            search_string = " ".join(result)
+
+            return list(
+                NodeModel.objects.raw(
+                    """
+                    SELECT *
+                    FROM lineage_node
+                    WHERE workspace_id=%s
+                    AND metadata->'grai'->>'node_type'='Table'
+                    AND ts_rank(search, websearch_to_tsquery('simple', replace(replace(%s, ' ', ' or '), '.', ' or '))) > 0
+                    ORDER BY ts_rank(search, websearch_to_tsquery('simple', replace(replace(%s, ' ', ' or '), '.', ' or '))) DESC""",
+                    [self.id, search_string, search_string],
+                )
+            )
+
         graph = GraphCache(workspace=self)
 
-        return graph.get_tables(search=search)
+        ids = None
+
+        if search:
+            tables = await sync_to_async(get_tables)(search)
+
+            ids = [table.id for table in tables]
+
+        return graph.get_tables(ids=ids)
 
     # Sources
     @strawberry.field

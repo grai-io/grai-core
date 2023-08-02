@@ -62,7 +62,7 @@ export interface GetRunReport_workspace_graph {
   namespace: string;
   x: number;
   y: number;
-  data_source: string;
+  data_source: string | null;
   columns: GetRunReport_workspace_graph_columns[];
   destinations: string[];
 }

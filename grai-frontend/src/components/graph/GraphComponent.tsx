@@ -63,7 +63,7 @@ export interface Table extends NodeWithName {
   display_name: string
   x: number
   y: number
-  data_source: string
+  data_source: string | null
   columns: Column[]
   sources?: string[]
   destinations: string[]
@@ -83,6 +83,8 @@ type GraphComponentProps = {
   onMove?: (viewport: Viewport) => void
   onRefresh?: () => void
   refreshLoading?: boolean
+  filters: string[]
+  setFilters: (filters: string[]) => void
 }
 
 const GraphComponent: React.FC<GraphComponentProps> = ({
@@ -97,6 +99,8 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
   onMove,
   onRefresh,
   refreshLoading,
+  filters,
+  setFilters,
 }) => {
   const { organisationName, workspaceName } = useWorkspace()
 
@@ -119,8 +123,8 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
             workspaceName,
             tableId,
           },
-        }).then(res => res.data?.workspace.graph[0])
-      )
+        }).then(res => res.data?.workspace.graph[0]),
+      ),
     )
 
     setLoadedTables([...loadedTables, ...results.filter(notEmpty)])
@@ -129,7 +133,7 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
   const columns: NodeWithName[] = errors
     ? tables.reduce<NodeWithName[]>(
         (res, table) => res.concat(table.columns),
-        []
+        [],
       )
     : []
 
@@ -160,17 +164,17 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
         data_source: table.data_source,
         columns: table.columns,
         hiddenSourceTables: (table.table_destinations ?? []).filter(
-          t => !allTables.map(t => t.id).includes(t)
+          t => !allTables.map(t => t.id).includes(t),
         ),
         hiddenDestinationTables: (table.table_sources ?? []).filter(
-          t => !allTables.map(t => t.id).includes(t)
+          t => !allTables.map(t => t.id).includes(t),
         ),
         expanded: expanded.includes(table.id),
         onExpand(value: boolean) {
           setExpanded(
             value
               ? expanded.concat(table.id)
-              : expanded.filter(e => e !== table.id)
+              : expanded.filter(e => e !== table.id),
           )
         },
         onShow: handleLoadTable,
@@ -188,7 +192,7 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
 
   const getTableFromColumnId = (id: string) => {
     const table = allTables.find(table =>
-      table.columns.some(col => col.id === id)
+      table.columns.some(col => col.id === id),
     )
 
     if (!table && throwMissingTable) throw new Error(`Table not found ${id}`)
@@ -201,7 +205,7 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
     sourceHandle: string,
     target: string,
     targetHandle: string,
-    tests: ResultError[] = []
+    tests: ResultError[] = [],
   ) => ({
     id: `${source}-${sourceHandle}-${target}-${targetHandle}`,
     source,
@@ -222,13 +226,13 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
         (res, column) => {
           const columnEdges = column.destinations.reduce<Set<string>>(
             (tableRes, destination) => tableRes.add(destination),
-            new Set()
+            new Set(),
           )
           Array.from(columnEdges).forEach(id => res.add(id))
 
           return res
         },
-        new Set()
+        new Set(),
       )
 
       const destinationEdges = Array.from(otherColumnIds).reduce<{
@@ -252,15 +256,15 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
                   enrichedErrors?.filter(
                     error =>
                       table.columns.some(col => error.sourceId === col.id) &&
-                      error.destinationId === destinationId
-                  )
-                )
+                      error.destinationId === destinationId,
+                  ),
+                ),
               )
             : res.tables.add(destinationTable)
 
           return res
         },
-        { tables: new Set(), edges: [] }
+        { tables: new Set(), edges: [] },
       )
 
       table.destinations
@@ -279,11 +283,11 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
               error =>
                 table.columns.some(col => error.sourceId === col.id) &&
                 destinationTable.columns.some(
-                  col => error.destinationId === col.id
-                )
-            )
-          )
-        )
+                  col => error.destinationId === col.id,
+                ),
+            ),
+          ),
+        ),
       )
 
       return res.concat(edges)
@@ -300,7 +304,7 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
                 if (!destinationTable) return res
 
                 const destinationExpanded = expanded.includes(
-                  destinationTable.id
+                  destinationTable.id,
                 )
 
                 return res.concat(
@@ -312,14 +316,14 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
                     enrichedErrors?.filter(
                       error =>
                         error.sourceId === column.id &&
-                        error.destinationId === destination
-                    )
-                  )
+                        error.destinationId === destination,
+                    ),
+                  ),
                 )
-              }, [])
+              }, []),
             ),
-          []
-        )
+          [],
+        ),
       )
       .concat(
         table.destinations
@@ -333,11 +337,11 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
               enrichedErrors?.filter(
                 error =>
                   error.sourceId === table.id &&
-                  error.destinationId === destination
-              )
-            )
+                  error.destinationId === destination,
+              ),
+            ),
           )
-          .filter(notEmpty)
+          .filter(notEmpty),
       )
   }, [])
 
@@ -356,6 +360,8 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
       onMove={onMove}
       onRefresh={onRefresh}
       refreshLoading={refreshLoading}
+      filters={filters}
+      setFilters={setFilters}
     />
   )
 }

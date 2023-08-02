@@ -2925,6 +2925,31 @@ async def test_graph_tables(test_context):
 
 
 @pytest.mark.django_db
+async def test_graph_tables_search(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!) {
+          workspace(id: $workspaceId) {
+            id
+            graph_tables(search: "test") {
+                id
+            }
+          }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={"workspaceId": str(workspace.id)},
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+
+
+@pytest.mark.django_db
 async def test_source_nodes(test_context, test_source):
     context, organisation, workspace, user, membership = test_context
 
