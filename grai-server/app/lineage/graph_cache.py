@@ -11,7 +11,7 @@ from workspaces.models import Workspace
 
 from .graph import GraphQuery
 from .graph_filter import filter_by_filter
-from .graph_types import BaseGraph, GraphColumn, GraphTable
+from .graph_types import BaseTable, GraphColumn, GraphTable
 
 
 class GraphCache:
@@ -210,10 +210,13 @@ class GraphCache:
 
         return [result[0] for result in results]
 
-    def get_tables(self, search: Optional[str] = None):
+    def get_tables(self, search: Optional[str] = None, ids: Optional[List[str]] = None):
+        id_list = "', '".join([str(id) for id in ids]) if ids else None
+
         query = f"""
             MATCH (table:Table)
             {f"WHERE toLower(table.name) CONTAINS toLower('{search}')" if search else ""}
+            {f"WHERE table.id IN ['{id_list}']" if id_list else ""}
             WITH
                 table,
                 {{
@@ -231,7 +234,7 @@ class GraphCache:
 
         results = self.query(query).result_set
 
-        return [BaseGraph(**result[0]) for result in results]
+        return [BaseTable(**result[0]) for result in results]
 
     def get_table_edges(self):
         results = self.query(

@@ -12,6 +12,7 @@ from django.db.models.query import QuerySet
 from strawberry.scalars import JSON
 from strawberry_django.filters import FilterLookup
 from strawberry_django.pagination import OffsetPaginationInput
+from strawberry.types import Info
 
 from api.search import Search
 from connections.models import Connection as ConnectionModel
@@ -24,7 +25,7 @@ from installations.models import Repository as RepositoryModel
 from lineage.filter import apply_table_filter, get_tags
 from lineage.graph import GraphQuery
 from lineage.graph_cache import GraphCache
-from lineage.graph_types import BaseGraph, GraphTable
+from lineage.graph_types import BaseTable, GraphTable
 from lineage.models import Edge as EdgeModel
 from lineage.models import Event as EventModel
 from lineage.models import Filter as FilterModel
@@ -858,7 +859,7 @@ class Workspace:
     async def graph_tables(
         self,
         search: Optional[str] = strawberry.UNSET,
-    ) -> List[BaseGraph]:
+    ) -> List[BaseTable]:
         graph = GraphCache(workspace=self)
 
         return graph.get_tables(search=search)
@@ -866,8 +867,9 @@ class Workspace:
     @strawberry.django.field
     async def search_tables(
         self,
+        info: Info,
         search: Optional[str] = strawberry.UNSET,
-    ) -> List[Table]:
+    ) -> List[BaseTable]:
         def get_tables(search: Optional[str]) -> List[Table]:
             def get_words(word: str) -> List[str]:
                 from django.db import connection
@@ -884,14 +886,9 @@ class Workspace:
             result = []
 
             for word in search.replace("_", " ").replace(".", " ").strip().split(" "):
-                print(word)
-                words = get_words(word)
-                print(words)
-                result += words
+                result += get_words(word)
 
             search_string = " ".join(result)
-
-            print(search_string)
 
             return list(
                 NodeModel.objects.raw(
@@ -906,7 +903,16 @@ class Workspace:
                 )
             )
 
-        return await sync_to_async(get_tables)(search)
+        tables = await sync_to_async(get_tables)(search)
+
+        fields = [selection.name for field in info.selected_fields for selection in field.selections]
+
+        if not any(item in fields for item in ["x", "y"]):
+            return tables
+
+        graph_tables = GraphCache(workspace=self).get_tables(ids=[table.id for table in tables])
+
+        return graph_tables
 
     # Sources
     @strawberry.field
