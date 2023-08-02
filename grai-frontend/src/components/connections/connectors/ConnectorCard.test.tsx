@@ -11,7 +11,10 @@ test("renders", async () => {
         metadata: null,
       }}
       onSelect={() => {}}
-    />
+    />,
+    {
+      withRouter: true,
+    },
   )
 })
 
@@ -25,6 +28,9 @@ test("coming soon", async () => {
         coming_soon: true,
       }}
       onSelect={() => {}}
-    />
+    />,
+    {
+      withRouter: true,
+    },
   )
 })

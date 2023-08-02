@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React, { ReactNode, useContext } from "react"
 import {
   Box,
   Card,
@@ -10,13 +10,15 @@ import {
   Typography,
 } from "@mui/material"
 import { ShepherdTourContext } from "react-shepherd"
+import { useNavigate } from "react-router-dom"
 
 export interface Connector {
   id: string
   name: string
-  icon?: string | null
+  icon?: string | null | ReactNode
   coming_soon?: boolean
   metadata: any
+  to?: string
 }
 
 type ConnectorCardProps = {
@@ -29,12 +31,17 @@ const ConnectorCard: React.FC<ConnectorCardProps> = ({
   onSelect,
 }) => {
   const tour = useContext(ShepherdTourContext)
+  const navigate = useNavigate()
 
   return (
     <Box>
       <Card variant="outlined">
         <CardActionArea
           onClick={() => {
+            if (connector.to) {
+              navigate(connector.to)
+              return
+            }
             onSelect(connector)
             tour?.next()
           }}
@@ -43,13 +50,16 @@ const ConnectorCard: React.FC<ConnectorCardProps> = ({
           <List>
             <ListItem>
               <ListItemIcon sx={{ minWidth: 45 }}>
-                {connector.icon && (
-                  <img
-                    src={connector.icon}
-                    alt={`${connector.name} logo`}
-                    style={{ height: 28, width: 28 }}
-                  />
-                )}
+                {connector.icon &&
+                  (typeof connector.icon === "string" ? (
+                    <img
+                      src={connector.icon}
+                      alt={`${connector.name} logo`}
+                      style={{ height: 28, width: 28 }}
+                    />
+                  ) : (
+                    connector.icon
+                  ))}
               </ListItemIcon>
               <ListItemText
                 primary={

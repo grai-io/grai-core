@@ -5,6 +5,9 @@ import GraphError from "components/utils/GraphError"
 import { GetConnectors } from "./__generated__/GetConnectors"
 import { Connector } from "../connectors/ConnectorCard"
 import ConnectorList from "../connectors/ConnectorList"
+import { Connections } from "components/icons"
+import { Box } from "@mui/material"
+import useWorkspace from "helpers/useWorkspace"
 
 export const GET_CONNECTORS = gql`
   query GetConnectors {
@@ -29,6 +32,7 @@ type ConnectorSelectProps = {
 }
 
 const ConnectorSelect: React.FC<ConnectorSelectProps> = ({ onSelect }) => {
+  const { routePrefix } = useWorkspace()
   const { loading, error, data } = useQuery<GetConnectors>(GET_CONNECTORS)
 
   if (error) return <GraphError error={error} />
@@ -56,8 +60,20 @@ const ConnectorSelect: React.FC<ConnectorSelectProps> = ({ onSelect }) => {
   const databases = categories?.find(c => c.title === "databases")
   const datatools = categories?.find(c => c.title === "data tools")
   const others = categories?.filter(
-    c => !["databases", "data tools"].includes(c.title)
+    c => !["databases", "data tools"].includes(c.title),
   )
+
+  const emptySource = {
+    id: "source",
+    name: "Empty Source",
+    metadata: null,
+    icon: (
+      <Box sx={{ m: -3, ml: -1 }}>
+        <Connections stroke="black" />
+      </Box>
+    ),
+    to: `${routePrefix}/sources/create`,
+  }
 
   return (
     <>
@@ -79,7 +95,11 @@ const ConnectorSelect: React.FC<ConnectorSelectProps> = ({ onSelect }) => {
         <ConnectorList
           key={category.title}
           title={category.title}
-          connectors={category.connectors}
+          connectors={
+            category.title === "other"
+              ? [...category.connectors, emptySource]
+              : category.connectors
+          }
           onSelect={onSelect}
         />
       ))}

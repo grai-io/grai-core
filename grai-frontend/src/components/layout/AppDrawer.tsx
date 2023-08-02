@@ -64,12 +64,6 @@ const pages = [
     alt: "Sources",
   },
   {
-    title: "Connections",
-    path: "connections",
-    icon: <Connections />,
-    alt: "Connections",
-  },
-  {
     title: "Reports",
     path: "reports",
     icon: <Reports />,
