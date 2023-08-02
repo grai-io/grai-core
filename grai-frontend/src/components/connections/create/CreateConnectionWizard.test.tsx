@@ -28,7 +28,7 @@ test("close", async () => {
   const user = userEvent.setup()
 
   render(<CreateConnectionWizard workspaceId="1" />, {
-    routes: ["/:organisationName/:workspaceName/connections"],
+    routes: ["/:organisationName/:workspaceName/sources"],
   })
 
   expect(screen.getByText("Select an integration")).toBeInTheDocument()
@@ -97,7 +97,7 @@ const submit = async (user: UserEvent, container: HTMLElement) => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /PostgreSQL/i }))
+      await user.click(screen.getByRole("button", { name: /PostgreSQL/i })),
   )
 
   await waitFor(() => {
@@ -110,35 +110,35 @@ const submit = async (user: UserEvent, container: HTMLElement) => {
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: "Namespace" }),
-        "default"
-      )
+        "default",
+      ),
   )
 
   await act(
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: "Name" }),
-        "test connection"
-      )
+        "test connection",
+      ),
   )
   await act(
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: "Database Name" }),
-        "test"
-      )
+        "test",
+      ),
   )
   await act(
     async () =>
-      await user.type(screen.getByRole("textbox", { name: "user" }), "test")
+      await user.type(screen.getByRole("textbox", { name: "user" }), "test"),
   )
   await act(
     async () =>
-      await user.type(screen.getByRole("textbox", { name: "host" }), "test")
+      await user.type(screen.getByRole("textbox", { name: "host" }), "test"),
   )
   await act(
     async () =>
-      await user.type(screen.getByRole("textbox", { name: "port" }), "5432")
+      await user.type(screen.getByRole("textbox", { name: "port" }), "5432"),
   )
 
   // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
@@ -149,7 +149,7 @@ const submit = async (user: UserEvent, container: HTMLElement) => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /continue/i }))
+      await user.click(screen.getByRole("button", { name: /continue/i })),
   )
 }
 
@@ -300,7 +300,7 @@ test("submit", async () => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /continue/i }))
+      await user.click(screen.getByRole("button", { name: /continue/i })),
   )
 
   await waitFor(() => {
@@ -308,23 +308,26 @@ test("submit", async () => {
   })
 
   expect(
-    screen.getByText("Set a schedule for this connection")
+    screen.getByText("Set a schedule for this connection"),
   ).toBeInTheDocument()
 
   await act(async () => await user.click(screen.getByTestId("cron-expression")))
 
   await act(
     async () =>
-      await user.type(screen.getByRole("textbox", { name: "Minutes" }), "10,30")
+      await user.type(
+        screen.getByRole("textbox", { name: "Minutes" }),
+        "10,30",
+      ),
   )
   await act(
     async () =>
-      await user.type(screen.getByRole("textbox", { name: "Hours" }), "1,8")
+      await user.type(screen.getByRole("textbox", { name: "Hours" }), "1,8"),
   )
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /finish/i }))
+      await user.click(screen.getByRole("button", { name: /finish/i })),
   )
 
   await waitFor(() => {
