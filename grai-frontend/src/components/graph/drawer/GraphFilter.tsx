@@ -13,7 +13,6 @@ import {
   Typography,
 } from "@mui/material"
 import { Link } from "react-router-dom"
-import useSearchParams from "helpers/useSearchParams"
 import useWorkspace from "helpers/useWorkspace"
 
 interface Filter {
@@ -23,27 +22,26 @@ interface Filter {
 
 type GraphFilterProps = {
   filter: Filter
+  filters: string[]
+  setFilters: (filters: string[]) => void
 }
 
-const GraphFilter: React.FC<GraphFilterProps> = ({ filter }) => {
+const GraphFilter: React.FC<GraphFilterProps> = ({
+  filter,
+  filters,
+  setFilters,
+}) => {
   const [hover, setHover] = useState(false)
   const { routePrefix } = useWorkspace()
-  const { searchParams, setSearchParam } = useSearchParams()
-
-  const filters = searchParams.get("filters")?.split(",") ?? []
 
   const checked = filters.includes(filter.id)
 
   const handleToggle = () =>
-    setSearchParam(
-      "filters",
-      (checked
-        ? filters.filter(f => f !== filter.id)
-        : [...filters, filter.id]
-      ).join(",")
+    setFilters(
+      checked ? filters.filter(f => f !== filter.id) : [...filters, filter.id],
     )
 
-  const handleOnly = () => setSearchParam("filters", filter.id)
+  const handleOnly = () => setFilters([filter.id])
 
   return (
     <ListItem

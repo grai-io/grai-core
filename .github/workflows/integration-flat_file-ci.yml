@@ -7,11 +7,9 @@ on:
       - "grai-client/**"
       - "grai-server/**"
 
-
 concurrency:
   group: ${{ github.ref }}-integration-flat_file-ci
   cancel-in-progress: true
-
 
 env:
   py_ver: "3.10"
@@ -57,6 +55,12 @@ jobs:
           - 5432:5432
         # needed because the postgres container does not provide a healthcheck
         options: --health-cmd pg_isready --health-interval 2s --health-timeout 5s --health-retries 15
+
+      redis:
+        image: redis/redis-stack:latest
+        ports:
+          - 6379:6379
+
       the_guide:
         image: ghcr.io/grai-io/grai-core/grai-server:latest
         env:
@@ -67,6 +71,9 @@ jobs:
           DB_HOST: "postgres"
           DJANGO_SUPERUSER_USERNAME: null@grai.io
           DJANGO_SUPERUSER_PASSWORD: super_secret
+          CELERY_BROKER_URL: redis://redis:6379/0
+          CELERY_RESULT_BACKEND: redis://redis:6379/0
+          REDIS_GRAPH_CACHE_HOST: redis
         ports:
           - 8000:8000
         options: >-

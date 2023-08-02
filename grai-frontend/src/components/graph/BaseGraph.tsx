@@ -29,27 +29,27 @@ const proOptions = { hideAttribution: true }
 export const getAllIncomers = (
   node: Node,
   nodes: Node[],
-  edges: Edge[]
+  edges: Edge[],
 ): Node[] =>
   getIncomers(node, nodes, edges).reduce<Node[]>(
     (memo, incomer) =>
       incomer.id === node.id
         ? memo
         : [...memo, incomer, ...getAllIncomers(incomer, nodes, edges)],
-    []
+    [],
   )
 
 export const getAllOutgoers = (
   node: Node,
   nodes: Node[],
-  edges: Edge[]
+  edges: Edge[],
 ): Node[] =>
   getOutgoers(node, nodes, edges).reduce<Node[]>(
     (memo, outgoer) =>
       outgoer.id === node.id
         ? memo
         : [...memo, outgoer, ...getAllOutgoers(outgoer, nodes, edges)],
-    []
+    [],
   )
 
 type BaseGraphProps = {
@@ -65,6 +65,8 @@ type BaseGraphProps = {
   onMove?: (viewport: Viewport) => void
   onRefresh?: () => void
   refreshLoading?: boolean
+  filters: string[]
+  setFilters: (filters: string[]) => void
 }
 
 const BaseGraph: React.FC<BaseGraphProps> = ({
@@ -80,6 +82,8 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
   onMove,
   onRefresh,
   refreshLoading,
+  filters,
+  setFilters,
 }) => {
   const [highlighted, setHighlighted] = useState<string[]>([])
 
@@ -151,6 +155,8 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
         onMove={onMove}
         search={search ?? ""}
         onSearch={onSearch}
+        filters={filters}
+        setFilters={setFilters}
       />
     </ReactFlowProvider>
   )

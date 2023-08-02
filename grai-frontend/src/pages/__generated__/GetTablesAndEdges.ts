@@ -23,7 +23,7 @@ export interface GetTablesAndEdges_workspace_graph {
   name: string;
   display_name: string;
   namespace: string;
-  data_source: string;
+  data_source: string | null;
   x: number;
   y: number;
   columns: GetTablesAndEdges_workspace_graph_columns[];

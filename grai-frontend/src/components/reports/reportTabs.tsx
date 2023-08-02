@@ -1,8 +1,5 @@
-import { Box } from "@mui/material"
-import GraphComponent, {
-  ResultError,
-  Table,
-} from "components/graph/GraphComponent"
+import { ResultError, Table } from "components/graph/GraphComponent"
+import ReportGraph from "./ReportGraph"
 import TestResults from "./results/TestResults"
 import RunLog, { Run } from "./run/RunLog"
 
@@ -19,17 +16,12 @@ const reportTabs = ({ tables, errors, limitGraph, run }: ReportTabInput) => [
     label: "Graph",
     noWrapper: true,
     component: (
-      <Box
-        sx={{
-          height: "calc(100vh - 212px)",
-        }}
-      >
-        <GraphComponent
-          tables={tables}
-          errors={errors}
-          limitGraph={limitGraph}
-        />
-      </Box>
+      <ReportGraph
+        run={run}
+        tables={tables}
+        errors={errors}
+        limitGraph={limitGraph}
+      />
     ),
   },
   {

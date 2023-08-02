@@ -86,7 +86,7 @@ const Commit: React.FC = () => {
       { ...searchParams, limitGraph: "true" },
       {
         replace: true,
-      }
+      },
     )
     setDisplay(true)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
@@ -104,10 +104,11 @@ const Commit: React.FC = () => {
         repo: params.repo ?? "",
         reference: params.reference ?? "",
       },
-    }
+    },
   )
 
   if (error) return <GraphError error={error} />
+
   if (loading) return <PageLayout loading />
 
   const commit = data?.workspace.repository.commit
@@ -146,7 +147,7 @@ const Commit: React.FC = () => {
               <Typography>{`about ${durationAgo(
                 run.created_at,
                 1,
-                true
+                true,
               )} ago `}</Typography>
             )
           }

@@ -16,7 +16,7 @@ interface Column {
 export type BaseNodeData = {
   id: string
   label: string
-  data_source: string
+  data_source: string | null
   highlight: boolean
   columns: Column[]
   hiddenSourceTables: string[]

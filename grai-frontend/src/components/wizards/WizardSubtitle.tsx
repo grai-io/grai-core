@@ -3,7 +3,7 @@ import { AppBar, Toolbar, Container, Typography, Box } from "@mui/material"
 
 type WizardSubtitleProps = {
   title?: string | null
-  icon?: string | null
+  icon?: string | null | ReactNode
   children?: ReactNode
 }
 
@@ -24,13 +24,16 @@ const WizardSubtitle: React.FC<WizardSubtitleProps> = ({
         <Container maxWidth="lg">
           {
             <Box sx={{ display: "flex" }}>
-              {icon && (
-                <img
-                  src={icon}
-                  alt={`${title} logo`}
-                  style={{ height: 28, width: 28 }}
-                />
-              )}
+              {icon &&
+                (typeof icon === "string" ? (
+                  <img
+                    src={icon}
+                    alt={`${title} logo`}
+                    style={{ height: 28, width: 28 }}
+                  />
+                ) : (
+                  icon
+                ))}
               {title && (
                 <Typography variant="h5" sx={{ ml: icon ? 2 : undefined }}>
                   {title}
