@@ -45,21 +45,6 @@ def load_resource(file, source) -> ManifestProcessor:
     return ManifestProcessor.load(file, "default", source)
 
 
-def manifest_ver(id: str) -> ManifestProcessor:
-    """
-
-    Args:
-        id (str):
-
-    Returns:
-
-    Raises:
-
-    """
-    file = resource_path("manifest.json", version=id)
-    return ManifestProcessor.load(file, "default")
-
-
 files = [resource_path("manifest.json", ver) for ver in SUPPORTED_VERSIONS]
 files += [
     resource_path("manifest-seed.json", "v8"),
@@ -73,16 +58,7 @@ class TestProcessors:
     """ """
 
     def test_all_manifest_node_full_names_unique(self, file, mock_source):
-        """
-
-        Args:
-            processor:
-
-        Returns:
-
-        Raises:
-
-        """
+        """"""
         processor = load_resource(file, mock_source)
         node_names = {full_name(node) for node in processor.manifest.nodes.values()}
         assert len(node_names) == len(processor.manifest.nodes)

@@ -2,16 +2,33 @@ from typing import Type, Union, get_args
 
 from dbt_artifacts_parser.parsers.version_map import ArtifactTypes
 
-from grai_source_dbt.loaders import base, utils, v1, v2, v3, v4, v5, v6, v7, v8
+from grai_source_dbt.loaders import base, utils, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10
 from grai_source_dbt.loaders.v1 import ManifestLoaderV1
 from grai_source_dbt.loaders.v7 import ManifestLoaderV7
 from grai_source_dbt.utils import full_name, set_extra_fields
 
 ManifestTypes = Union[
-    v1.ManifestV1, v2.ManifestV2, v3.ManifestV3, v4.ManifestV4, v6.ManifestV6, v7.ManifestV7, v8.ManifestV8
+    v1.ManifestV1,
+    v2.ManifestV2,
+    v3.ManifestV3,
+    v4.ManifestV4,
+    v6.ManifestV6,
+    v7.ManifestV7,
+    v8.ManifestV8,
+    v9.ManifestV9,
+    v10.ManifestV10,
 ]
 NodeTypes = Union[
-    v1.NodeTypes, v2.NodeTypes, v3.NodeTypes, v4.NodeTypes, v5.NodeTypes, v6.NodeTypes, v7.NodeTypes, v8.NodeTypes
+    v1.NodeTypes,
+    v2.NodeTypes,
+    v3.NodeTypes,
+    v4.NodeTypes,
+    v5.NodeTypes,
+    v6.NodeTypes,
+    v7.NodeTypes,
+    v8.NodeTypes,
+    v9.NodeTypes,
+    v10.NodeTypes,
 ]
 
 SourceTypes = Union[
@@ -23,6 +40,8 @@ SourceTypes = Union[
     v6.SourceTypes,
     v7.SourceTypes,
     v8.SourceTypes,
+    v9.SourceTypes,
+    v10.SourceTypes,
 ]
 AllDbtNodeTypes = Union[NodeTypes, SourceTypes]
 AllDbtNodeInstances = get_args(AllDbtNodeTypes)
@@ -68,6 +87,8 @@ MANIFEST_MAP = {
     ArtifactTypes.MANIFEST_V6.value.dbt_schema_version: ManifestLoaderV1,
     ArtifactTypes.MANIFEST_V7.value.dbt_schema_version: ManifestLoaderV7,
     ArtifactTypes.MANIFEST_V8.value.dbt_schema_version: ManifestLoaderV7,
+    ArtifactTypes.MANIFEST_V9.value.dbt_schema_version: ManifestLoaderV7,
+    # ArtifactTypes.MANIFEST_V10.value.dbt_schema_version: ManifestLoaderV7,
 }
 
 
