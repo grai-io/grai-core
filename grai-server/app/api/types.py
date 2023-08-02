@@ -860,16 +860,6 @@ class Workspace:
         self,
         search: Optional[str] = strawberry.UNSET,
     ) -> List[BaseTable]:
-        graph = GraphCache(workspace=self)
-
-        return graph.get_tables(search=search)
-
-    @strawberry.django.field
-    async def search_tables(
-        self,
-        info: Info,
-        search: Optional[str] = strawberry.UNSET,
-    ) -> List[BaseTable]:
         def get_tables(search: Optional[str]) -> List[Table]:
             def get_words(word: str) -> List[str]:
                 from django.db import connection
@@ -903,16 +893,16 @@ class Workspace:
                 )
             )
 
-        tables = await sync_to_async(get_tables)(search)
+        graph = GraphCache(workspace=self)
 
-        fields = [selection.name for field in info.selected_fields for selection in field.selections]
+        ids = None
 
-        if not any(item in fields for item in ["x", "y"]):
-            return tables
+        if search:
+            tables = await sync_to_async(get_tables)(search)
 
-        graph_tables = GraphCache(workspace=self).get_tables(ids=[table.id for table in tables])
+            ids = [table.id for table in tables]
 
-        return graph_tables
+        return graph.get_tables(ids=ids)
 
     # Sources
     @strawberry.field

@@ -34,6 +34,6 @@ class BaseTable:
     name: str
     display_name: str
     namespace: str
-    data_source: str
+    data_source: Optional[str]
     x: int
     y: int

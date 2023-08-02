@@ -8,11 +8,11 @@
 // ====================================================
 
 export interface SearchGraphTables_workspace_graph_tables {
-  __typename: "BaseGraph";
+  __typename: "BaseTable";
   id: string;
   name: string;
   display_name: string;
-  data_source: string;
+  data_source: string | null;
   x: number;
   y: number;
 }

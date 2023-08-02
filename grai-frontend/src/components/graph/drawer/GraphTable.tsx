@@ -12,7 +12,7 @@ interface Table {
   id: string
   name: string
   display_name: string
-  data_source: string
+  data_source: string | null
   x: number
   y: number
 }
@@ -33,13 +33,14 @@ const GraphTable: React.FC<GraphTableProps> = ({
   <ListItem disablePadding divider selected={selected} onMouseEnter={onHover}>
     <ListItemButton onClick={onClick} sx={{ pl: 1 }}>
       <ListItemIcon>
-        <DataSourceIcon
-          dataSource={table.data_source}
-          size="small"
-          noMargin
-          noBorder
-          grayscale
-        />
+        {table.data_source && (
+          <DataSourceIcon
+            dataSource={table.data_source}
+            size="small"
+            noMargin
+            noBorder
+          />
+        )}
       </ListItemIcon>
       <ListItemText
         primary={
