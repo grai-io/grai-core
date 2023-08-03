@@ -247,8 +247,7 @@ def adapt_dashboard_to_client(current: Dashboard, source: SourceSpec, version: L
     """
     spec_dict = {
         "name": current.name,
-        # "namespace": current.namespace,
-        "namespace": "looker",
+        "namespace": current.namespace,
         "display_name": current.display_name,
         "data_source": source,
         "metadata": build_metadata(current, version),
@@ -271,8 +270,7 @@ def adapt_field_to_client(current: QueryField, source: SourceSpec, version: Lite
     """
     spec_dict = {
         "name": current.name,
-        # "namespace": current.namespace,
-        "namespace": "looker",
+        "namespace": current.namespace,
         "display_name": current.name,
         "data_source": source,
         "metadata": build_metadata(current, version),
@@ -315,11 +313,11 @@ def adapt_edge_to_client(current: Edge, source: SourceSpec, version: Literal["v1
         "name": make_name(current.source, current.destination),
         "namespace": current.source.namespace,
         "source": {
-            "name": current.source.full_name,
+            "name": current.source.name,
             "namespace": current.source.namespace,
         },
         "destination": {
-            "name": current.destination.full_name,
+            "name": current.destination.name,
             "namespace": current.destination.namespace,
         },
         "metadata": build_metadata(current, version),

@@ -34,6 +34,7 @@ class LookerConfig(BaseSettings):
     client_id: str
     client_secret: SecretStr
     verify_ssl: bool = True
+    namespace: str = "default"
 
     @validator("base_url")
     def validate_endpoint(cls, value):
@@ -87,12 +88,14 @@ class LookerAPI:
         client_id: Optional[str] = None,
         client_secret: Optional[str] = None,
         verify_ssl: Optional[bool] = None,
+        namespace: Optional[str] = None,
     ):
         passthrough_kwargs = {
             "base_url": base_url,
             "client_id": client_id,
             "client_secret": client_secret,
             "verify_ssl": verify_ssl,
+            "namespace": namespace,
         }
         self.config = LookerConfig(**{k: v for k, v in passthrough_kwargs.items() if v is not None})
 
@@ -103,7 +106,7 @@ class LookerAPI:
     def get_dashboards(self):
         result = self.sdk.all_dashboards()
 
-        return [Dashboard(**self.sdk.dashboard(item.id)) for item in result]
+        return [Dashboard(namespace=self.config.namespace, **self.sdk.dashboard(item.id)) for item in result]
 
     def get_user(self):
         return self.sdk.me()

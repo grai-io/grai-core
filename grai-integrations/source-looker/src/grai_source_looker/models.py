@@ -68,11 +68,12 @@ class FieldID(ID):
             # values[
             #     "full_name"
             # ] = f"{values['table_schema']}.{values['table_name']}.{values['name']}"
-            values["full_name"] = values["name"]
+            values["full_name"] = f"{values['table_name']}.{values['name']}"
         return values
 
 
 class QueryField(LookerNode):
+    namespace: str
     name: str
 
 
@@ -110,6 +111,7 @@ class Edge(BaseModel):
 class Dashboard(LookerNode):
     """ """
 
+    namespace: str
     name: str = Field(alias="id")
     display_name: str = Field(alias="title")
     dashboard_elements: Optional[List[DashboardElement]]
@@ -130,7 +132,7 @@ class Dashboard(LookerNode):
             query = self.get_query(element)
 
             if query:
-                fields.extend([QueryField(name=field) for field in query.fields])
+                fields.extend([QueryField(namespace=self.namespace, name=field) for field in query.fields])
 
         return fields
 
@@ -149,12 +151,12 @@ class Dashboard(LookerNode):
                             constraint_type=Constraint("bt"),
                             source=TableID(
                                 name=self.name,
-                                namespace="looker",
+                                namespace=self.namespace,
                             ),
                             destination=FieldID(
                                 table_name=self.name,
                                 name=field,
-                                namespace="looker",
+                                namespace=self.namespace,
                             ),
                         )
                         for field in query.fields

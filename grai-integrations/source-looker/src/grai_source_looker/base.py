@@ -20,6 +20,7 @@ class LookerIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementatio
         client_id: Optional[str] = None,
         client_secret: Optional[str] = None,
         verify_ssl: Optional[bool] = None,
+        namespace: Optional[str] = None,
     ):
         super().__init__(source, version)
 
@@ -28,6 +29,7 @@ class LookerIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementatio
             client_id=client_id,
             client_secret=client_secret,
             verify_ssl=verify_ssl,
+            namespace=namespace,
         )
 
     def ready(self) -> bool:
@@ -58,6 +60,9 @@ class LookerIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementatio
 
     def get_nodes_and_edges(self) -> Tuple[List[SourcedNode], List[SourcedEdge]]:
         nodes, edges = self.connector.get_nodes_and_edges()
+
+        print(nodes)
+        print(edges)
 
         nodes = adapt_to_client(nodes, self.source, self.version)
         edges = adapt_to_client(edges, self.source, self.version)
