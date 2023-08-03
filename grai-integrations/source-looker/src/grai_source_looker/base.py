@@ -6,33 +6,28 @@ from grai_client.integrations.base import (
 )
 from grai_schemas.base import SourcedEdge, SourcedNode
 from grai_schemas.v1.source import SourceV1
-from grai_source_fivetran.adapters import adapt_to_client
-from grai_source_fivetran.loader import FivetranConnector, NamespaceTypes
+
+from grai_source_looker.adapters import adapt_to_client
+from grai_source_looker.loader import LookerAPI
 
 
-class FivetranIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementation):
+class LookerIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementation):
     def __init__(
         self,
         source: SourceV1,
         version: Optional[str] = None,
-        namespaces: Optional[NamespaceTypes] = None,
-        default_namespace: Optional[str] = None,
-        parallelization: int = 10,
-        api_key: Optional[str] = None,
-        api_secret: Optional[str] = None,
-        endpoint: Optional[str] = None,
-        limit: Optional[int] = None,
+        base_url: Optional[str] = None,
+        client_id: Optional[str] = None,
+        client_secret: Optional[str] = None,
+        verify_ssl: Optional[bool] = None,
     ):
         super().__init__(source, version)
 
-        self.connector = FivetranConnector(
-            namespaces=namespaces,
-            default_namespace=default_namespace,
-            parallelization=parallelization,
-            api_key=api_key,
-            api_secret=api_secret,
-            endpoint=endpoint,
-            limit=limit,
+        self.connector = LookerAPI(
+            base_url=base_url,
+            client_id=client_id,
+            client_secret=client_secret,
+            verify_ssl=verify_ssl,
         )
 
     def ready(self) -> bool:
@@ -66,5 +61,5 @@ class FivetranIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementat
 
         nodes = adapt_to_client(nodes, self.source, self.version)
         edges = adapt_to_client(edges, self.source, self.version)
-        self.validate_nodes_and_edges(nodes, edges)
+        # self.validate_nodes_and_edges(nodes, edges)
         return nodes, edges

@@ -18,15 +18,10 @@ from typing import (
 
 import looker_sdk
 import requests
-from grai_source_fivetran.models import (
-    Column,
-    Edge,
-    NamespaceIdentifier,
-    NodeTypes,
-    Table,
-)
 from looker_sdk import api_settings
 from pydantic import BaseModel, BaseSettings, Json, SecretStr, validator
+
+from grai_source_looker.models import Dashboard
 
 T = TypeVar("T")
 P = ParamSpec("P")
@@ -63,6 +58,23 @@ class LookerConfig(BaseSettings):
         env_file = ".env"
 
 
+class LookerSettings(api_settings.ApiSettings):
+    def __init__(self, config: LookerConfig, *args, **kw_args):
+        self.config = config
+
+        super().__init__(*args, **kw_args)
+
+    def read_config(self) -> api_settings.SettingsConfig:
+        config = super().read_config()
+
+        config["base_url"] = self.config.base_url
+        config["client_id"] = self.config.client_id
+        config["client_secret"] = self.config.client_secret.get_secret_value()
+        config["verify_ssl"] = "true" if self.config.verify_ssl else "false"
+
+        return config
+
+
 # API authentication docs: https://cloud.google.com/looker/docs/api-auth
 # other docs https://cloud.google.com/looker/docs/reference/looker-api/latest/methods/Board/all_boards
 # sdk: https://github.com/looker-open-source/sdk-codegen/tree/main/python
@@ -84,10 +96,16 @@ class LookerAPI:
         }
         self.config = LookerConfig(**{k: v for k, v in passthrough_kwargs.items() if v is not None})
 
-        self.session = requests.Session()
-        self.session.auth = (
-            self.config.api_key.get_secret_value(),
-            self.config.api_secret.get_secret_value(),
-        )
-        self.session.headers.update({"Accept": "application/json"})
-        self.session.params.update({"limit": 10000 if limit is None else limit})
+        settings = LookerSettings(self.config)
+
+        self.sdk = looker_sdk.init40(config_settings=settings)
+
+    def get_dashboards(self):
+        result = self.sdk.all_dashboards()
+
+        return [Dashboard(**item) for item in result]
+
+    def get_nodes_and_edges(self):
+        nodes = self.get_dashboards()
+
+        return nodes, []

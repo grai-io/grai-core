@@ -17,6 +17,7 @@ from grai_schemas.v1.metadata.nodes import (
 from grai_schemas.v1.source import SourceSpec
 from multimethod import multimethod
 
+from grai_source_looker.models import Dashboard
 from grai_source_looker.package_definitions import config
 
 T = TypeVar("T")
@@ -40,6 +41,29 @@ def build_grai_metadata(current: Any, desired: Any) -> None:
     raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)} for value {current}")
 
 
+@build_grai_metadata.register
+def build_grai_metadata_from_dashboard(current: Dashboard, version: Literal["v1"] = "v1") -> TableMetadata:
+    """
+
+    Args:
+        current (Dashboard):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
+    data = {
+        "version": version,
+        "node_type": NodeMetadataTypeLabels.table.value,
+        "node_attributes": {},
+        "tags": [config.metadata_id],
+    }
+
+    return TableMetadata(**data)
+
+
 @multimethod
 def build_app_metadata(current: Any, desired: Any) -> None:
     """
@@ -54,6 +78,27 @@ def build_app_metadata(current: Any, desired: Any) -> None:
 
     """
     raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)} for value {current}")
+
+
+@build_app_metadata.register
+def build_metadata_from_dashboard(current: Dashboard, version: Literal["v1"] = "v1") -> Dict:
+    """
+
+    Args:
+        current (Dashboard):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
+    data = {
+        "name": current.name,
+        "display_name": current.display_name,
+    }
+
+    return data
 
 
 def build_metadata(obj, version):
@@ -90,21 +135,45 @@ def adapt_to_client(current: Any, desired: Any):
     raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)}")
 
 
-def make_name(node1: NodeTypes, node2: NodeTypes) -> str:
+# def make_name(node1: NodeTypes, node2: NodeTypes) -> str:
+#     """
+
+#     Args:
+#         node1 (NodeTypes):
+#         node2 (NodeTypes):
+
+#     Returns:
+
+#     Raises:
+
+#     """
+#     node1_name = f"{node1.namespace}:{node1.full_name}"
+#     node2_name = f"{node2.namespace}:{node2.full_name}"
+#     return f"{node1_name} -> {node2_name}"
+
+
+@adapt_to_client.register
+def adapt_dashboard_to_client(current: Dashboard, source: SourceSpec, version: Literal["v1"]) -> SourcedNodeV1:
     """
 
     Args:
-        node1 (NodeTypes):
-        node2 (NodeTypes):
+        current (Dashboard):
+        version (Literal["v1"], optional):  (Default value = "v1")
 
     Returns:
 
     Raises:
 
     """
-    node1_name = f"{node1.namespace}:{node1.full_name}"
-    node2_name = f"{node2.namespace}:{node2.full_name}"
-    return f"{node1_name} -> {node2_name}"
+    spec_dict = {
+        "name": current.name,
+        # "namespace": current.namespace,
+        "namespace": "looker",
+        "display_name": current.display_name,
+        "data_source": source,
+        "metadata": build_metadata(current, version),
+    }
+    return SourcedNodeV1.from_spec(spec_dict)
 
 
 @adapt_to_client.register
