@@ -17,7 +17,15 @@ from grai_schemas.v1.metadata.nodes import (
 from grai_schemas.v1.source import SourceSpec
 from multimethod import multimethod
 
-from grai_source_looker.models import ID, Dashboard, Edge, FieldID, QueryField, TableID
+from grai_source_looker.models import (
+    ID,
+    Dashboard,
+    Edge,
+    FieldID,
+    Query,
+    QueryField,
+    TableID,
+)
 from grai_source_looker.package_definitions import config
 
 T = TypeVar("T")
@@ -65,11 +73,11 @@ def build_grai_metadata_from_dashboard(current: Dashboard, version: Literal["v1"
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_field(current: QueryField, version: Literal["v1"] = "v1") -> ColumnMetadata:
+def build_grai_metadata_from_query(current: Query, version: Literal["v1"] = "v1") -> ColumnMetadata:
     """
 
     Args:
-        current (QueryField):
+        current (Query):
         version (Literal["v1"], optional):  (Default value = "v1")
 
     Returns:
@@ -156,7 +164,7 @@ def build_metadata_from_dashboard(current: Dashboard, version: Literal["v1"] = "
 
 
 @build_app_metadata.register
-def build_metadata_from_field(current: QueryField, version: Literal["v1"] = "v1") -> Dict:
+def build_metadata_from_query(current: Query, version: Literal["v1"] = "v1") -> Dict:
     """
 
     Args:
@@ -169,8 +177,8 @@ def build_metadata_from_field(current: QueryField, version: Literal["v1"] = "v1"
 
     """
     data = {
-        "name": current.name,
-        "display_name": current.name,
+        "name": current.title,
+        "display_name": current.title,
     }
 
     return data
@@ -256,11 +264,11 @@ def adapt_dashboard_to_client(current: Dashboard, source: SourceSpec, version: L
 
 
 @adapt_to_client.register
-def adapt_field_to_client(current: QueryField, source: SourceSpec, version: Literal["v1"]) -> SourcedNodeV1:
+def adapt_query_to_client(current: Query, source: SourceSpec, version: Literal["v1"]) -> SourcedNodeV1:
     """
 
     Args:
-        current (Dashboard):
+        current (Query):
         version (Literal["v1"], optional):  (Default value = "v1")
 
     Returns:
@@ -269,9 +277,9 @@ def adapt_field_to_client(current: QueryField, source: SourceSpec, version: Lite
 
     """
     spec_dict = {
-        "name": current.name,
+        "name": current.title,
         "namespace": current.namespace,
-        "display_name": current.name,
+        "display_name": current.title,
         "data_source": source,
         "metadata": build_metadata(current, version),
     }

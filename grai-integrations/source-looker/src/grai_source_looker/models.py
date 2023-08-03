@@ -68,7 +68,8 @@ class FieldID(ID):
             # values[
             #     "full_name"
             # ] = f"{values['table_schema']}.{values['table_name']}.{values['name']}"
-            values["full_name"] = f"{values['table_name']}.{values['name']}"
+            # values["full_name"] = f"{values['table_name']}.{values['name']}"
+            values["full_name"] = values["name"]
         return values
 
 
@@ -78,15 +79,22 @@ class QueryField(LookerNode):
 
 
 class Query(LookerNode):
+    id: int
+    title: Optional[str]
+    namespace: Optional[str]
+    model: str
+    view: str
     fields: List[str]
 
 
 class ResultMaker(LookerNode):
+    id: int
     query: Optional[Query]
 
 
 class DashboardElement(LookerNode):
-    query: Optional[Query]
+    id: int
+    title: Optional[str]
     result_maker: Optional[ResultMaker]
 
 
@@ -117,11 +125,54 @@ class Dashboard(LookerNode):
     dashboard_elements: Optional[List[DashboardElement]]
 
     def get_query(self, element):
-        if element.query:
-            return element.query
-
         if element.result_maker and element.result_maker.query:
             return element.result_maker.query
+
+    def get_queries(self):
+        """ """
+
+        queries = []
+
+        for element in self.dashboard_elements if self.dashboard_elements else []:
+            query = self.get_query(element)
+
+            if query:
+                query.title = element.title
+
+                queries.append(query)
+
+        for query in queries:
+            query.namespace = self.namespace
+
+        return queries
+
+    def get_query_edges(self):
+        """ """
+
+        edges = []
+
+        for element in self.dashboard_elements if self.dashboard_elements else []:
+            query = self.get_query(element)
+
+            if query:
+                edges.extend(
+                    [
+                        Edge(
+                            constraint_type=Constraint("bt"),
+                            source=TableID(
+                                name=self.name,
+                                namespace=self.namespace,
+                            ),
+                            destination=FieldID(
+                                table_name=self.name,
+                                name=element.title if element.title else element.id,
+                                namespace=self.namespace,
+                            ),
+                        )
+                    ]
+                )
+
+        return edges
 
     def get_fields(self):
         """ """

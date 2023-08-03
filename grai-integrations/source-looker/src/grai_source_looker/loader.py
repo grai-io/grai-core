@@ -114,13 +114,13 @@ class LookerAPI:
     def get_nodes_and_edges(self):
         dashboards = self.get_dashboards()
 
-        fields = []
+        queries = []
         edges = []
 
         for dashboard in dashboards:
-            fields.extend(dashboard.get_fields())
-            edges.extend(dashboard.get_edges())
+            queries.extend(dashboard.get_queries())
+            edges.extend(dashboard.get_query_edges())
 
-        dashboards.extend(fields)
+        dashboards.extend(queries)
 
         return dashboards, edges
