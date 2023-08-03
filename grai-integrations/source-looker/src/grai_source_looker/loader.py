@@ -120,8 +120,4 @@ class LookerAPI:
 
         dashboards.extend(fields)
 
-        print(dashboards)
-        print(fields)
-        print(edges)
-
         return dashboards, edges

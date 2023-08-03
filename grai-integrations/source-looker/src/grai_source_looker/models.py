@@ -80,8 +80,13 @@ class Query(LookerNode):
     fields: List[str]
 
 
+class ResultMaker(LookerNode):
+    query: Optional[Query]
+
+
 class DashboardElement(LookerNode):
     query: Optional[Query]
+    result_maker: Optional[ResultMaker]
 
 
 class Constraint(str, Enum):
@@ -107,7 +112,14 @@ class Dashboard(LookerNode):
 
     name: str = Field(alias="id")
     display_name: str = Field(alias="title")
-    dashboard_elements: Optional[List[DashboardElement]] = Field(alias="dashboard_elements")
+    dashboard_elements: Optional[List[DashboardElement]]
+
+    def get_query(self, element):
+        if element.query:
+            return element.query
+
+        if element.result_maker and element.result_maker.query:
+            return element.result_maker.query
 
     def get_fields(self):
         """ """
@@ -115,8 +127,10 @@ class Dashboard(LookerNode):
         fields = []
 
         for element in self.dashboard_elements if self.dashboard_elements else []:
-            if element.query:
-                fields.extend([QueryField(name=field) for field in element.query.fields])
+            query = self.get_query(element)
+
+            if query:
+                fields.extend([QueryField(name=field) for field in query.fields])
 
         return fields
 
@@ -126,7 +140,9 @@ class Dashboard(LookerNode):
         edges = []
 
         for element in self.dashboard_elements if self.dashboard_elements else []:
-            if element.query:
+            query = self.get_query(element)
+
+            if query:
                 edges.extend(
                     [
                         Edge(
@@ -141,7 +157,7 @@ class Dashboard(LookerNode):
                                 namespace="looker",
                             ),
                         )
-                        for field in element.query.fields
+                        for field in query.fields
                     ]
                 )
 
