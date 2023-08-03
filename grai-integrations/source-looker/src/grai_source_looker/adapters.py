@@ -17,7 +17,7 @@ from grai_schemas.v1.metadata.nodes import (
 from grai_schemas.v1.source import SourceSpec
 from multimethod import multimethod
 
-from grai_source_looker.models import Dashboard
+from grai_source_looker.models import ID, Dashboard, Edge, FieldID, QueryField, TableID
 from grai_source_looker.package_definitions import config
 
 T = TypeVar("T")
@@ -64,6 +64,60 @@ def build_grai_metadata_from_dashboard(current: Dashboard, version: Literal["v1"
     return TableMetadata(**data)
 
 
+@build_grai_metadata.register
+def build_grai_metadata_from_field(current: QueryField, version: Literal["v1"] = "v1") -> ColumnMetadata:
+    """
+
+    Args:
+        current (QueryField):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
+    data = {
+        "version": version,
+        "node_type": NodeMetadataTypeLabels.column.value,
+        "node_attributes": {},
+        "tags": [config.metadata_id],
+    }
+
+    return ColumnMetadata(**data)
+
+
+@build_grai_metadata.register
+def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> GenericEdgeMetadataV1:
+    """
+
+    Args:
+        current (Edge):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
+    data = {"version": version, "tags": [config.metadata_id]}
+
+    if isinstance(current.source, TableID):
+        if isinstance(current.destination, FieldID):
+            data["edge_type"] = EdgeMetadataTypeLabels.table_to_column.value
+            return TableToColumnMetadata(**data)
+        elif isinstance(current.destination, TableID):
+            data["edge_type"] = EdgeMetadataTypeLabels.table_to_table.value
+            return TableToTableMetadata(**data)
+    elif isinstance(current.source, FieldID):
+        if isinstance(current.destination, FieldID):
+            data["edge_type"] = EdgeMetadataTypeLabels.column_to_column.value
+            return ColumnToColumnMetadata(**data)
+
+    data["edge_type"] = EdgeMetadataTypeLabels.generic.value
+    return GenericEdgeMetadataV1(**data)
+
+
 @multimethod
 def build_app_metadata(current: Any, desired: Any) -> None:
     """
@@ -97,6 +151,49 @@ def build_metadata_from_dashboard(current: Dashboard, version: Literal["v1"] = "
         "name": current.name,
         "display_name": current.display_name,
     }
+
+    return data
+
+
+@build_app_metadata.register
+def build_metadata_from_field(current: QueryField, version: Literal["v1"] = "v1") -> Dict:
+    """
+
+    Args:
+        current (Dashboard):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
+    data = {
+        "name": current.name,
+        "display_name": current.name,
+    }
+
+    return data
+
+
+@build_app_metadata.register
+def build_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> Dict:
+    """
+
+    Args:
+        current (Edge):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
+    data = {
+        "definition": current.definition,
+        "constraint_type": current.constraint_type.name,
+    }
+    data |= current.metadata if current.metadata is not None else {}
 
     return data
 
@@ -135,23 +232,6 @@ def adapt_to_client(current: Any, desired: Any):
     raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)}")
 
 
-# def make_name(node1: NodeTypes, node2: NodeTypes) -> str:
-#     """
-
-#     Args:
-#         node1 (NodeTypes):
-#         node2 (NodeTypes):
-
-#     Returns:
-
-#     Raises:
-
-#     """
-#     node1_name = f"{node1.namespace}:{node1.full_name}"
-#     node2_name = f"{node2.namespace}:{node2.full_name}"
-#     return f"{node1_name} -> {node2_name}"
-
-
 @adapt_to_client.register
 def adapt_dashboard_to_client(current: Dashboard, source: SourceSpec, version: Literal["v1"]) -> SourcedNodeV1:
     """
@@ -174,6 +254,78 @@ def adapt_dashboard_to_client(current: Dashboard, source: SourceSpec, version: L
         "metadata": build_metadata(current, version),
     }
     return SourcedNodeV1.from_spec(spec_dict)
+
+
+@adapt_to_client.register
+def adapt_field_to_client(current: QueryField, source: SourceSpec, version: Literal["v1"]) -> SourcedNodeV1:
+    """
+
+    Args:
+        current (Dashboard):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
+    spec_dict = {
+        "name": current.name,
+        # "namespace": current.namespace,
+        "namespace": "looker",
+        "display_name": current.name,
+        "data_source": source,
+        "metadata": build_metadata(current, version),
+    }
+    return SourcedNodeV1.from_spec(spec_dict)
+
+
+def make_name(node1: ID, node2: ID) -> str:
+    """
+
+    Args:
+        node1 (ID):
+        node2 (ID):
+
+    Returns:
+
+    Raises:
+
+    """
+    node1_name = f"{node1.namespace}:{node1.full_name}"
+    node2_name = f"{node2.namespace}:{node2.full_name}"
+    return f"{node1_name} -> {node2_name}"
+
+
+@adapt_to_client.register
+def adapt_edge_to_client(current: Edge, source: SourceSpec, version: Literal["v1"]) -> SourcedEdgeV1:
+    """
+
+    Args:
+        current (Edge):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
+    spec_dict = {
+        "data_source": source,
+        "name": make_name(current.source, current.destination),
+        "namespace": current.source.namespace,
+        "source": {
+            "name": current.source.full_name,
+            "namespace": current.source.namespace,
+        },
+        "destination": {
+            "name": current.destination.full_name,
+            "namespace": current.destination.namespace,
+        },
+        "metadata": build_metadata(current, version),
+    }
+
+    return SourcedEdgeV1.from_spec(spec_dict)
 
 
 @adapt_to_client.register

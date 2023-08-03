@@ -31,7 +31,7 @@ class LookerIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementatio
         )
 
     def ready(self) -> bool:
-        self.connector.has_query_permissions()
+        self.connector.get_user()
         return True
 
     def validate_nodes_and_edges(self, nodes: List[SourcedNode], edges: List[SourcedEdge]):

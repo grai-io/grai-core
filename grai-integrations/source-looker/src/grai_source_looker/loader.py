@@ -21,7 +21,7 @@ import requests
 from looker_sdk import api_settings
 from pydantic import BaseModel, BaseSettings, Json, SecretStr, validator
 
-from grai_source_looker.models import Dashboard
+from grai_source_looker.models import Dashboard, QueryField
 
 T = TypeVar("T")
 P = ParamSpec("P")
@@ -103,9 +103,25 @@ class LookerAPI:
     def get_dashboards(self):
         result = self.sdk.all_dashboards()
 
-        return [Dashboard(**item) for item in result]
+        return [Dashboard(**self.sdk.dashboard(item.id)) for item in result]
+
+    def get_user(self):
+        return self.sdk.me()
 
     def get_nodes_and_edges(self):
-        nodes = self.get_dashboards()
+        dashboards = self.get_dashboards()
 
-        return nodes, []
+        fields = []
+        edges = []
+
+        for dashboard in dashboards:
+            fields.extend(dashboard.get_fields())
+            edges.extend(dashboard.get_edges())
+
+        dashboards.extend(fields)
+
+        print(dashboards)
+        print(fields)
+        print(edges)
+
+        return dashboards, edges
