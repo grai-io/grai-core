@@ -157,6 +157,7 @@ class LookerAPI:
 
                     if not dimension:
                         print(f"Dimension not found {field}")
+                        print(query.dynamic_fields)
                         continue
 
                     dimension.namespace = self.config.namespace

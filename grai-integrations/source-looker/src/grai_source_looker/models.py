@@ -133,8 +133,26 @@ class Query(LookerNode):
         if not self.dynamic_fields:
             return {}
 
+        result = {}
+
         try:
-            return {f["measure"]: f["based_on"] for f in json.loads(self.dynamic_fields)}
+            for f in json.loads(self.dynamic_fields):
+                category = f.get("category")
+
+                if category == "measure":
+                    result[f["measure"]] = f["based_on"]
+                elif category == "dimension":
+                    # result[f["dimension"]] = f["expression"]
+                    pass
+                elif category == "table_calculation":
+                    pass
+                elif not category and f.get("measure") and f.get("based_on"):
+                    result[f["measure"]] = f["based_on"]
+                else:
+                    print("Unknown category: ", f["category"])
+                    print(self.dynamic_fields)
+
+            return result
         except:
             print(self.dynamic_fields)
             raise
