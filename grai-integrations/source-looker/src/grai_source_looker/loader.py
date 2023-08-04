@@ -149,6 +149,11 @@ class LookerAPI:
                 queries.append(explore)
 
                 for field in query.fields:
+                    dynamic_field = query.dynamic_fields_map.get(field, None)
+
+                    if dynamic_field:
+                        field = dynamic_field
+
                     dimension = next(
                         (dimension for dimension in explore.fields.dimensions if dimension.name == field),
                         None,
@@ -156,10 +161,6 @@ class LookerAPI:
 
                     if not dimension:
                         print(f"Dimension not found {field}")
-
-                        # print(field)
-                        # print(explore.fields.dimensions)
-
                         continue
 
                     dimension.namespace = self.config.namespace
@@ -182,8 +183,6 @@ class LookerAPI:
 
                     edges.append(edge)
 
-                    # print(edge)
-
                     edge = Edge(
                         constraint_type=Constraint("f"),
                         source=FieldID(
@@ -201,8 +200,5 @@ class LookerAPI:
                     edges.append(edge)
 
         dashboards.extend(queries)
-
-        print(dashboards)
-        print(edges)
 
         return dashboards, edges

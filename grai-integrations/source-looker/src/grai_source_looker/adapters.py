@@ -467,8 +467,6 @@ def adapt_edge_to_client(current: Edge, source: SourceSpec, version: Literal["v1
         "metadata": build_metadata(current, version),
     }
 
-    print(spec_dict)
-
     return SourcedEdgeV1.from_spec(spec_dict)
 
 

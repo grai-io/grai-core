@@ -1,3 +1,4 @@
+import json
 import re
 from enum import Enum
 from typing import Any, Dict, List, Optional, Union
@@ -113,6 +114,11 @@ class QueryField(LookerNode):
     name: str
 
 
+class DynamicField(LookerNode):
+    measure: str
+    based_on: str
+
+
 class Query(LookerNode):
     id: int
     title: Optional[str]
@@ -120,11 +126,17 @@ class Query(LookerNode):
     model: str
     view: str
     fields: List[str]
+    dynamic_fields: Optional[str]
+
+    @property
+    def dynamic_fields_map(self):
+        return {f["measure"]: f["based_on"] for f in json.loads(self.dynamic_fields)}
 
 
 class ResultMaker(LookerNode):
     id: int
     query: Optional[Query]
+    dynamic_fields: Optional[str]
 
 
 class DashboardElement(LookerNode):
@@ -173,11 +185,10 @@ class Dashboard(LookerNode):
 
             if query:
                 query.title = element.title
+                query.namespace = self.namespace
+                query.dynamic_fields = element.result_maker.dynamic_fields
 
                 queries.append(query)
-
-        for query in queries:
-            query.namespace = self.namespace
 
         return queries
 
