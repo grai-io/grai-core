@@ -918,6 +918,15 @@ class Workspace:
     def source(self, id: strawberry.ID) -> Source:
         return SourceModel.objects.get(id=id)
 
+    # Source Graph
+    @strawberry.field
+    def source_graph(self) -> JSON:
+        # self = workspace class, access to id
+
+        # return JSON
+
+        pass
+
 
 @strawberry_django.filters.filter(MembershipModel, lookups=True)
 class MembershipFilter:
