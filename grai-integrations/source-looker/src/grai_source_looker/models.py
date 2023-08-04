@@ -127,6 +127,7 @@ class Query(LookerNode):
     view: str
     fields: List[str]
     dynamic_fields: Optional[str]
+    dashboard_name: Optional[str]
 
     @property
     def dynamic_fields_map(self):
@@ -212,6 +213,7 @@ class Dashboard(LookerNode):
                 query.title = element.title
                 query.namespace = self.namespace
                 query.dynamic_fields = element.result_maker.dynamic_fields
+                query.dashboard_name = self.name
 
                 queries.append(query)
 

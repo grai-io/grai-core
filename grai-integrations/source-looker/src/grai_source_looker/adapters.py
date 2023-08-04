@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Literal, Sequence, TypeVar, Union
 from grai_schemas import config as base_config
 from grai_schemas.v1 import SourcedEdgeV1, SourcedNodeV1, SourceV1
 from grai_schemas.v1.metadata.edges import (
+    BaseEdgeMetadataV1,
     ColumnToColumnMetadata,
     EdgeMetadataTypeLabels,
     GenericEdgeMetadataV1,
@@ -40,8 +41,8 @@ def build_grai_metadata(current: Any, desired: Any) -> None:
     """
 
     Args:
-        current (Any):
-        desired (Any):
+        current:
+        desired:
 
     Returns:
 
@@ -56,8 +57,8 @@ def build_grai_metadata_from_dashboard(current: Dashboard, version: Literal["v1"
     """
 
     Args:
-        current (Dashboard):
-        version (Literal["v1"], optional):  (Default value = "v1")
+        current:
+        version:  (Default value = "v1")
 
     Returns:
 
@@ -102,8 +103,8 @@ def build_grai_metadata_from_explore(current: Explore, version: Literal["v1"] = 
     """
 
     Args:
-        current (Explore):
-        version (Literal["v1"], optional):  (Default value = "v1")
+        current:
+        version:  (Default value = "v1")
 
     Returns:
 
@@ -125,8 +126,8 @@ def build_grai_metadata_from_dimension(current: Dimension, version: Literal["v1"
     """
 
     Args:
-        current (Dimension):
-        version (Literal["v1"], optional):  (Default value = "v1")
+        current:
+        version:  (Default value = "v1")
 
     Returns:
 
@@ -144,12 +145,12 @@ def build_grai_metadata_from_dimension(current: Dimension, version: Literal["v1"
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> GenericEdgeMetadataV1:
+def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> BaseEdgeMetadataV1:
     """
 
     Args:
-        current (Edge):
-        version (Literal["v1"], optional):  (Default value = "v1")
+        current:
+        version:  (Default value = "v1")
 
     Returns:
 
@@ -179,8 +180,8 @@ def build_app_metadata(current: Any, desired: Any) -> None:
     """
 
     Args:
-        current (Any):
-        desired (Any):
+        current:
+        desired:
 
     Returns:
 
@@ -195,8 +196,8 @@ def build_metadata_from_dashboard(current: Dashboard, version: Literal["v1"] = "
     """
 
     Args:
-        current (Dashboard):
-        version (Literal["v1"], optional):  (Default value = "v1")
+        current:
+        version:  (Default value = "v1")
 
     Returns:
 
@@ -216,8 +217,8 @@ def build_metadata_from_query(current: Query, version: Literal["v1"] = "v1") -> 
     """
 
     Args:
-        current (Dashboard):
-        version (Literal["v1"], optional):  (Default value = "v1")
+        current:
+        version:  (Default value = "v1")
 
     Returns:
 
@@ -237,8 +238,8 @@ def build_metadata_from_explore(current: Explore, version: Literal["v1"] = "v1")
     """
 
     Args:
-        current (Explore):
-        version (Literal["v1"], optional):  (Default value = "v1")
+        current:
+        version:  (Default value = "v1")
 
     Returns:
 
@@ -258,8 +259,8 @@ def build_metadata_from_dimension(current: Dimension, version: Literal["v1"] = "
     """
 
     Args:
-        current (Dimension):
-        version (Literal["v1"], optional):  (Default value = "v1")
+        current:
+        version:  (Default value = "v1")
 
     Returns:
 
@@ -279,8 +280,8 @@ def build_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> Di
     """
 
     Args:
-        current (Edge):
-        version (Literal["v1"], optional):  (Default value = "v1")
+        current:
+        version:  (Default value = "v1")
 
     Returns:
 
@@ -291,7 +292,7 @@ def build_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> Di
         "definition": current.definition,
         "constraint_type": current.constraint_type.name,
     }
-    data |= current.metadata if current.metadata is not None else {}
+    data.update(current.metadata if current.metadata is not None else {})
 
     return data
 
@@ -319,8 +320,8 @@ def adapt_to_client(current: Any, desired: Any):
     """
 
     Args:
-        current (Any):
-        desired (Any):
+        current:
+        desired:
 
     Returns:
 
@@ -335,8 +336,9 @@ def adapt_dashboard_to_client(current: Dashboard, source: SourceSpec, version: L
     """
 
     Args:
-        current (Dashboard):
-        version (Literal["v1"], optional):  (Default value = "v1")
+        current:
+        source:
+        version:  (Default value = "v1")
 
     Returns:
 
@@ -358,8 +360,9 @@ def adapt_query_to_client(current: Query, source: SourceSpec, version: Literal["
     """
 
     Args:
-        current (Query):
-        version (Literal["v1"], optional):  (Default value = "v1")
+        current:
+        source:
+        version:  (Default value = "v1")
 
     Returns:
 
@@ -381,8 +384,9 @@ def adapt_explore_to_client(current: Explore, source: SourceSpec, version: Liter
     """
 
     Args:
-        current (Explore):
-        version (Literal["v1"], optional):  (Default value = "v1")
+        current:
+        source:
+        version:  (Default value = "v1")
 
     Returns:
 
@@ -404,8 +408,9 @@ def adapt_dimension_to_client(current: Dimension, source: SourceSpec, version: L
     """
 
     Args:
-        current (Dimension):
-        version (Literal["v1"], optional):  (Default value = "v1")
+        current:
+        source:
+        version:  (Default value = "v1")
 
     Returns:
 
@@ -426,8 +431,8 @@ def make_name(node1: ID, node2: ID) -> str:
     """
 
     Args:
-        node1 (ID):
-        node2 (ID):
+        node1:
+        node2:
 
     Returns:
 
@@ -444,8 +449,9 @@ def adapt_edge_to_client(current: Edge, source: SourceSpec, version: Literal["v1
     """
 
     Args:
-        current (Edge):
-        version (Literal["v1"], optional):  (Default value = "v1")
+        current:
+        source:
+        version:  (Default value = "v1")
 
     Returns:
 

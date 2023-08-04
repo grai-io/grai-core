@@ -1,5 +1,7 @@
 import asyncio
+import itertools
 import json
+from functools import cached_property
 from itertools import chain
 from typing import (
     Any,
@@ -17,7 +19,6 @@ from typing import (
 )
 
 import looker_sdk
-import requests
 from looker_sdk import api_settings
 from pydantic import BaseModel, BaseSettings, Json, SecretStr, validator
 
@@ -41,10 +42,11 @@ class LookerConfig(BaseSettings):
     client_id: str
     client_secret: SecretStr
     verify_ssl: bool = True
-    namespace: str = "default"
+    namespace: str
+    data_source_namespaces: Json[str, str] = {}
 
     @validator("base_url")
-    def validate_endpoint(cls, value):
+    def validate_base_url(cls, value):
         """
 
         Args:
@@ -96,6 +98,7 @@ class LookerAPI:
         client_secret: Optional[str] = None,
         verify_ssl: Optional[bool] = None,
         namespace: Optional[str] = None,
+        data_source_namespaces: Optional[str] = None,
     ):
         passthrough_kwargs = {
             "base_url": base_url,
@@ -103,6 +106,7 @@ class LookerAPI:
             "client_secret": client_secret,
             "verify_ssl": verify_ssl,
             "namespace": namespace,
+            "data_source_namespaces": data_source_namespaces,
         }
         self.config = LookerConfig(**{k: v for k, v in passthrough_kwargs.items() if v is not None})
 
@@ -110,92 +114,93 @@ class LookerAPI:
 
         self.sdk = looker_sdk.init40(config_settings=settings)
 
-    def get_dashboards(self):
-        result = self.sdk.all_dashboards()
-
-        return [Dashboard(namespace=self.config.namespace, **self.sdk.dashboard(item.id)) for item in result]
-
-    def get_model_explore(self, lookml_model_name: str, explore_name: str):
+    def get_model_explore(self, lookml_model_name: str, explore_name: str) -> Explore:
         return Explore(
             namespace=self.config.namespace,
             **self.sdk.lookml_model_explore(lookml_model_name, explore_name),
         )
 
+    @cached_property
+    def dashboards(self) -> List[Dashboard]:
+        result = self.sdk.all_dashboards()
+        return [Dashboard(namespace=self.config.namespace, **self.sdk.dashboard(item.id)) for item in result]
+
+    @cached_property
+    def queries(self) -> List:
+        query_items = (dashboard.get_queries() for dashboard in self.dashboards)
+        return list(itertools.chain(*query_items))
+
+    @cached_property
+    def explores(self) -> List:
+        explores = (self.get_model_explore(query.model, query.view) for query in self.queries)
+        return [explore for explore in explores if not explore]
+
     def get_user(self):
         return self.sdk.me()
 
     def get_nodes_and_edges(self):
-        dashboards = self.get_dashboards()
+        nodes = [*self.dashboards, *self.queries]
+        edges = list(itertools.chain(dashboard.get_query_edges() for dashboard in self.dashboards))
 
-        queries = []
-        edges = []
+        for query in self.queries:
+            explore = self.get_model_explore(query.model, query.view)
+            # TODO: Typing doesn't make sense here. How can `get_model_explore` return false-y without erroring?
+            if not explore:
+                print("Explore not found")
+                continue
 
-        for dashboard in dashboards:
-            q = dashboard.get_queries()
-            queries.extend(q)
-            edges.extend(dashboard.get_query_edges())
+            nodes.append(explore)
 
-            for query in q:
-                explore = self.get_model_explore(query.model, query.view)
+            for field in query.fields:
+                dynamic_field = query.dynamic_fields_map.get(field, None)
 
-                if not explore:
-                    print("Explore not found")
+                if dynamic_field:
+                    field = dynamic_field
+
+                field_dimension = (dimension for dimension in explore.fields.dimensions if dimension.name == field)
+
+                if not (dimension := next(field_dimension, False)):
+                    print(f"Dimension not found {field}")
+                    print(query.dynamic_fields)
                     continue
 
-                queries.append(explore)
+                dimension.namespace = self.config.namespace
+                dimension.table_name = explore.table_name
 
-                for field in query.fields:
-                    dynamic_field = query.dynamic_fields_map.get(field, None)
+                nodes.append(dimension)
 
-                    if dynamic_field:
-                        field = dynamic_field
+                # TODO: Do these reference tables in their storage database or Looker specific constructs?
+                # We may not need to generate these edges if they correspond to the storage media but in that case
+                # we would need to provide a different namespace from the namespace_map
+                edge = Edge(
+                    constraint_type=Constraint("bt"),
+                    source=TableID(
+                        name=explore.table_name,
+                        namespace=self.config.namespace,
+                    ),
+                    destination=FieldID(
+                        table_name=explore.table_name,
+                        name=dimension.column_name,
+                        namespace=self.config.namespace,
+                    ),
+                )
 
-                    dimension = next(
-                        (dimension for dimension in explore.fields.dimensions if dimension.name == field),
-                        None,
-                    )
+                edges.append(edge)
 
-                    if not dimension:
-                        print(f"Dimension not found {field}")
-                        print(query.dynamic_fields)
-                        continue
+                edge = Edge(
+                    constraint_type=Constraint("f"),
+                    source=FieldID(
+                        table_name=explore.table_name,
+                        name=dimension.column_name,
+                        namespace=self.config.namespace,
+                    ),
+                    destination=FieldID(
+                        table_name=query.dashboard_name,
+                        name=query.title if query.title else query.id,
+                        namespace=self.config.namespace,
+                    ),
+                )
 
-                    dimension.namespace = self.config.namespace
-                    dimension.table_name = explore.table_name
+                edges.append(edge)
 
-                    queries.append(dimension)
-
-                    edge = Edge(
-                        constraint_type=Constraint("bt"),
-                        source=TableID(
-                            name=explore.table_name,
-                            namespace=self.config.namespace,
-                        ),
-                        destination=FieldID(
-                            table_name=explore.table_name,
-                            name=dimension.column_name,
-                            namespace=self.config.namespace,
-                        ),
-                    )
-
-                    edges.append(edge)
-
-                    edge = Edge(
-                        constraint_type=Constraint("f"),
-                        source=FieldID(
-                            table_name=explore.table_name,
-                            name=dimension.column_name,
-                            namespace=self.config.namespace,
-                        ),
-                        destination=FieldID(
-                            table_name=dashboard.name,
-                            name=query.title if query.title else query.id,
-                            namespace=self.config.namespace,
-                        ),
-                    )
-
-                    edges.append(edge)
-
-        dashboards.extend(queries)
-
-        return dashboards, edges
+        return nodes, edges

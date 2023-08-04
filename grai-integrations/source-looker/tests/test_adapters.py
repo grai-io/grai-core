@@ -2,9 +2,10 @@ import pytest
 from grai_schemas import config as core_config
 from grai_schemas.v1 import SourcedEdgeV1, SourcedNodeV1
 from grai_schemas.v1.metadata import GraiEdgeMetadataV1, GraiNodeMetadataV1
-from grai_source_fivetran.adapters import adapt_to_client
-from grai_source_fivetran.models import Column, Edge, Table
-from grai_source_fivetran.package_definitions import config
+
+from grai_source_looker.adapters import adapt_to_client
+from grai_source_looker.models import Column, Edge, Table
+from grai_source_looker.package_definitions import config
 
 
 def mock_edge_values():

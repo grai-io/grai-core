@@ -7,9 +7,10 @@ from grai_schemas.v1.metadata.edges import TableToColumnMetadata, TableToTableMe
 from grai_schemas.v1.metadata.nodes import ColumnMetadata
 from grai_schemas.v1.metadata.nodes import Metadata as NodeV1Metadata
 from grai_schemas.v1.metadata.nodes import NodeMetadataTypeLabels, TableMetadata
-from grai_source_fivetran.loader import FivetranConnector, process_base_namespace_map
-from grai_source_fivetran.models import Edge, NodeTypes
-from grai_source_fivetran.package_definitions import config
+
+from grai_source_looker.loader import LookerAPI, process_base_namespace_map
+from grai_source_looker.models import Edge, LookerNode
+from grai_source_looker.package_definitions import config
 
 
 def test_loader_node_types(app_nodes):
@@ -23,7 +24,7 @@ def test_loader_node_types(app_nodes):
     Raises:
 
     """
-    assert all(isinstance(node, NodeTypes) for node in app_nodes)
+    assert all(isinstance(node, LookerNode) for node in app_nodes)
 
 
 def test_loader_edge_types(app_edges):

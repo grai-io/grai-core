@@ -5,12 +5,24 @@ import pytest
 from grai_client.endpoints.v1.client import ClientV1
 from grai_schemas.v1.source import SourceSpec
 from grai_schemas.v1.workspace import WorkspaceSpec
-from grai_source_fivetran.adapters import adapt_to_client
-from grai_source_fivetran.base import FivetranIntegration
-from grai_source_fivetran.loader import FivetranAPI
-from grai_source_fivetran.mock_tools import MockFivetranObjects
+
+from grai_source_looker.adapters import adapt_to_client
+from grai_source_looker.base import LookerIntegration
+from grai_source_looker.loader import LookerAPI
 
 dotenv.load_dotenv()
+
+
+@pytest.fixture(scope="session")
+def loader_kwargs():
+    kwargs = {
+        "base_url": "http://my.looker.com",
+        "client_id": "asd",
+        "client_secret": "fgh",
+        "verify_ssl": True,
+        "namespace": "looker-namespace",
+    }
+    return loader_kwargs
 
 
 @pytest.fixture(scope="session")
@@ -60,7 +72,7 @@ def run_live(client):
 @pytest.fixture(scope="session")
 def api():
     """ """
-    return FivetranAPI()
+    return LookerAPI()
 
 
 @pytest.fixture
@@ -118,7 +130,7 @@ def app_edges(app_nodes_and_edges):
 @pytest.fixture(scope="session")
 def namespace_map(run_live):
     if run_live:
-        api = FivetranAPI()
+        api = LookerAPI()
         namespace_map = {
             conn.id: {"source": str(uuid.uuid4()), "destination": str(uuid.uuid4())} for conn in api.get_connectors()
         }
@@ -144,7 +156,7 @@ def nodes_and_edges(app_nodes_and_edges, client, mock_source, run_live, namespac
 
     """
     if run_live:
-        conn = FivetranIntegration.from_client(client, source=mock_source, namespaces=namespace_map)
+        conn = LookerIntegration.from_client(client, source=mock_source, namespaces=namespace_map)
         nodes, edges = conn.get_nodes_and_edges()
     else:
         nodes = adapt_to_client(app_nodes_and_edges[0], mock_source, "v1")
