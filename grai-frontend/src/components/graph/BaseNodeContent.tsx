@@ -35,7 +35,9 @@ const BaseNodeContent: React.FC<BaseNodeContentProps> = ({ data }) => (
           }}
         >
           {data.columns.length > 0 &&
-            `${data.columns.length} Column${data.columns.length > 1 && "s"}`}
+            `${data.columns.length} Column${
+              data.columns.length > 1 ? "s" : ""
+            }`}
         </Typography>
       </Box>
       {data.columns.length > 0 && (

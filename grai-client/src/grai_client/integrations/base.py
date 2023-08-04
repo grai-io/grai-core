@@ -79,8 +79,10 @@ class GraiIntegrationImplementation(ABC):
                 super().__init__(source=source, version=version, *args, **kwargs)
 
             def update(self):
-                update(self.client, self.nodes())
-                update(self.client, self.edges())
+                nodes, edges = self.get_nodes_and_edges()
+
+                update(self.client, nodes)
+                update(self.client, edges)
 
         if isinstance(source, str):
             sources = client.get("Source", name=source)

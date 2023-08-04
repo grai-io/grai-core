@@ -21,7 +21,14 @@ import requests
 from looker_sdk import api_settings
 from pydantic import BaseModel, BaseSettings, Json, SecretStr, validator
 
-from grai_source_looker.models import Dashboard, QueryField
+from grai_source_looker.models import (
+    Constraint,
+    Dashboard,
+    Edge,
+    Explore,
+    FieldID,
+    TableID,
+)
 
 T = TypeVar("T")
 P = ParamSpec("P")
@@ -106,7 +113,17 @@ class LookerAPI:
     def get_dashboards(self):
         result = self.sdk.all_dashboards()
 
-        return [Dashboard(namespace=self.config.namespace, **self.sdk.dashboard(item.id)) for item in result]
+        return [
+            Dashboard(namespace=self.config.namespace, **self.sdk.dashboard(item.id))
+            for item in result
+            if item.id in ["4"]
+        ]
+
+    def get_model_explore(self, lookml_model_name: str, explore_name: str):
+        return Explore(
+            namespace=self.config.namespace,
+            **self.sdk.lookml_model_explore(lookml_model_name, explore_name),
+        )
 
     def get_user(self):
         return self.sdk.me()
@@ -118,9 +135,73 @@ class LookerAPI:
         edges = []
 
         for dashboard in dashboards:
-            queries.extend(dashboard.get_queries())
+            q = dashboard.get_queries()
+            queries.extend(q)
             edges.extend(dashboard.get_query_edges())
 
+            for query in q:
+                explore = self.get_model_explore(query.model, query.view)
+
+                if not explore:
+                    print("Explore not found")
+                    continue
+
+                queries.append(explore)
+
+                for field in query.fields:
+                    dimension = next(
+                        (dimension for dimension in explore.fields.dimensions if dimension.name == field),
+                        None,
+                    )
+
+                    if not dimension:
+                        print(f"Dimension not found {field}")
+
+                        # print(field)
+                        # print(explore.fields.dimensions)
+
+                        continue
+
+                    dimension.namespace = self.config.namespace
+
+                    queries.append(dimension)
+
+                    edge = Edge(
+                        constraint_type=Constraint("bt"),
+                        source=TableID(
+                            name=explore.name,
+                            namespace=self.config.namespace,
+                        ),
+                        destination=FieldID(
+                            table_name=explore.name,
+                            name=dimension.name,
+                            namespace=self.config.namespace,
+                        ),
+                    )
+
+                    edges.append(edge)
+
+                    # print(edge)
+
+                    edge = Edge(
+                        constraint_type=Constraint("f"),
+                        source=FieldID(
+                            table_name=dashboard.name,
+                            name=query.title if query.title else query.id,
+                            namespace=self.config.namespace,
+                        ),
+                        destination=FieldID(
+                            table_name=explore.name,
+                            name=dimension.name,
+                            namespace=self.config.namespace,
+                        ),
+                    )
+
+                    edges.append(edge)
+
         dashboards.extend(queries)
+
+        print(dashboards)
+        print(edges)
 
         return dashboards, edges

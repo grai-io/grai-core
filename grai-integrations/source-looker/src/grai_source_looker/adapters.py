@@ -20,7 +20,9 @@ from multimethod import multimethod
 from grai_source_looker.models import (
     ID,
     Dashboard,
+    Dimension,
     Edge,
+    Explore,
     FieldID,
     Query,
     QueryField,
@@ -78,6 +80,52 @@ def build_grai_metadata_from_query(current: Query, version: Literal["v1"] = "v1"
 
     Args:
         current (Query):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
+    data = {
+        "version": version,
+        "node_type": NodeMetadataTypeLabels.column.value,
+        "node_attributes": {},
+        "tags": [config.metadata_id],
+    }
+
+    return ColumnMetadata(**data)
+
+
+@build_grai_metadata.register
+def build_grai_metadata_from_explore(current: Explore, version: Literal["v1"] = "v1") -> TableMetadata:
+    """
+
+    Args:
+        current (Explore):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
+    data = {
+        "version": version,
+        "node_type": NodeMetadataTypeLabels.table.value,
+        "node_attributes": {},
+        "tags": [config.metadata_id],
+    }
+
+    return TableMetadata(**data)
+
+
+@build_grai_metadata.register
+def build_grai_metadata_from_dimension(current: Dimension, version: Literal["v1"] = "v1") -> ColumnMetadata:
+    """
+
+    Args:
+        current (Dimension):
         version (Literal["v1"], optional):  (Default value = "v1")
 
     Returns:
@@ -185,6 +233,48 @@ def build_metadata_from_query(current: Query, version: Literal["v1"] = "v1") -> 
 
 
 @build_app_metadata.register
+def build_metadata_from_explore(current: Explore, version: Literal["v1"] = "v1") -> Dict:
+    """
+
+    Args:
+        current (Explore):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
+    data = {
+        "name": current.name,
+        "display_name": current.name,
+    }
+
+    return data
+
+
+@build_app_metadata.register
+def build_metadata_from_dimension(current: Dimension, version: Literal["v1"] = "v1") -> Dict:
+    """
+
+    Args:
+        current (Dimension):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
+    data = {
+        "name": current.name,
+        "display_name": current.label,
+    }
+
+    return data
+
+
+@build_app_metadata.register
 def build_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> Dict:
     """
 
@@ -286,6 +376,52 @@ def adapt_query_to_client(current: Query, source: SourceSpec, version: Literal["
     return SourcedNodeV1.from_spec(spec_dict)
 
 
+@adapt_to_client.register
+def adapt_explore_to_client(current: Explore, source: SourceSpec, version: Literal["v1"]) -> SourcedNodeV1:
+    """
+
+    Args:
+        current (Explore):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
+    spec_dict = {
+        "name": current.name,
+        "namespace": current.namespace,
+        "display_name": current.name,
+        "data_source": source,
+        "metadata": build_metadata(current, version),
+    }
+    return SourcedNodeV1.from_spec(spec_dict)
+
+
+@adapt_to_client.register
+def adapt_dimension_to_client(current: Dimension, source: SourceSpec, version: Literal["v1"]) -> SourcedNodeV1:
+    """
+
+    Args:
+        current (Dimension):
+        version (Literal["v1"], optional):  (Default value = "v1")
+
+    Returns:
+
+    Raises:
+
+    """
+    spec_dict = {
+        "name": current.name,
+        "namespace": current.namespace,
+        "display_name": current.label,
+        "data_source": source,
+        "metadata": build_metadata(current, version),
+    }
+    return SourcedNodeV1.from_spec(spec_dict)
+
+
 def make_name(node1: ID, node2: ID) -> str:
     """
 
@@ -330,6 +466,8 @@ def adapt_edge_to_client(current: Edge, source: SourceSpec, version: Literal["v1
         },
         "metadata": build_metadata(current, version),
     }
+
+    print(spec_dict)
 
     return SourcedEdgeV1.from_spec(spec_dict)
 

@@ -73,6 +73,26 @@ class FieldID(ID):
         return values
 
 
+class Dimension(LookerNode):
+    name: str
+    namespace: Optional[str]
+    label: str
+    type: str
+    sql: str
+
+
+class ExploreFields(LookerNode):
+    dimensions: List[Dimension]
+
+
+class Explore(LookerNode):
+    id: str
+    name: str
+    namespace: Optional[str]
+    fields: ExploreFields
+    sql_table_name: str
+
+
 class QueryField(LookerNode):
     namespace: str
     name: str
