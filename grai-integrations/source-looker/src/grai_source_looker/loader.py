@@ -113,11 +113,7 @@ class LookerAPI:
     def get_dashboards(self):
         result = self.sdk.all_dashboards()
 
-        return [
-            Dashboard(namespace=self.config.namespace, **self.sdk.dashboard(item.id))
-            for item in result
-            if item.id in ["4"]
-        ]
+        return [Dashboard(namespace=self.config.namespace, **self.sdk.dashboard(item.id)) for item in result]
 
     def get_model_explore(self, lookml_model_name: str, explore_name: str):
         return Explore(

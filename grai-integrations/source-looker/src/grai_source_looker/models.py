@@ -130,7 +130,14 @@ class Query(LookerNode):
 
     @property
     def dynamic_fields_map(self):
-        return {f["measure"]: f["based_on"] for f in json.loads(self.dynamic_fields)}
+        if not self.dynamic_fields:
+            return {}
+
+        try:
+            return {f["measure"]: f["based_on"] for f in json.loads(self.dynamic_fields)}
+        except:
+            print(self.dynamic_fields)
+            raise
 
 
 class ResultMaker(LookerNode):
