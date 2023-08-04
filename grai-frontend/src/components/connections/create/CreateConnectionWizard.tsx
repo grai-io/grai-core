@@ -31,7 +31,7 @@ const CreateConnectionWizard: React.FC<CreateConnectionWizardProps> = ({
 
   const steps: WizardSteps = [
     {
-      title: "Select connector",
+      title: "Select integration",
       element: opts => (
         <ConnectorSelectTab
           opts={opts}
@@ -82,9 +82,9 @@ const CreateConnectionWizard: React.FC<CreateConnectionWizardProps> = ({
 
   return (
     <WizardLayout
-      title="Create Connection"
+      title="Create Source"
       steps={steps}
-      onClose={() => workspaceNavigate("connections")}
+      onClose={() => workspaceNavigate("sources")}
       className="create-connection-wizard"
     />
   )

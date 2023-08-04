@@ -1,4 +1,5 @@
 import json
+import warnings
 from functools import cached_property
 from typing import List, Union
 
@@ -20,10 +21,11 @@ class ManifestProcessor:
 
     source: SourceSpec
 
-    def __init__(self, loader: BaseManifestLoader, source: SourceSpec):
+    def __init__(self, loader: BaseManifestLoader, source: SourceSpec, strict_mode: bool = False):
         self.loader = loader
         self.namespace = loader.namespace
         self.source = source
+        self.strict_mode = strict_mode
 
     @cached_property
     def adapted_nodes(self) -> List[SourcedNodeV1]:
@@ -91,12 +93,16 @@ class ManifestProcessor:
         return self.loader.manifest
 
     @classmethod
-    def load(cls, manifest_obj: Union[str, dict], namespace: str, source: SourceSpec) -> "ManifestProcessor":
+    def load(
+        cls, manifest_obj: Union[str, dict], namespace: str, source: SourceSpec, strict_mode: bool = False
+    ) -> "ManifestProcessor":
         """
 
         Args:
-            manifest_obj (Union[str, dict]):
-            namespace (str):
+            manifest_obj:
+            namespace:
+            source:
+            strict_mode:
 
         Returns:
 
@@ -110,10 +116,18 @@ class ManifestProcessor:
             manifest_dict = manifest_obj
 
         version = get_dbt_schema_version(manifest_dict)
-        if version not in cls.MANIFEST_MAP:
-            message = f"Manifest version {version} not yet supported"
-            raise NotImplementedError(message)
+
+        if version not in cls.MANIFEST_MAP and not strict_mode:
+            latest_supported_version = list(cls.MANIFEST_MAP.keys())[-1]
+            version_label = latest_supported_version.split("/")[-1].split(".")[0]
+            warnings.warn(
+                f"dbt manifest version {version} is not yet supported. We will attempt to parse the manifest as"
+                f"version {version_label} as a fallback. If you see this message please open an issue at"
+                f"www.github.com/grai-io/grai-core/issues/new"
+            )
+            version = latest_supported_version
 
         manifest_obj = parse_manifest(manifest_dict)
         manifest = cls.MANIFEST_MAP[version](manifest_obj, namespace)
+
         return ManifestProcessor(manifest, source)

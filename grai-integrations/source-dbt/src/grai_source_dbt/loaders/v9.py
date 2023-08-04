@@ -1,10 +1,10 @@
 from typing import Union
 
-from dbt_artifacts_parser.parsers.manifest.manifest_v8 import (
+from dbt_artifacts_parser.parsers.manifest.manifest_v9 import (
     AnalysisNode,
     GenericTestNode,
     HookNode,
-    ManifestV8,
+    ManifestV9,
     ModelNode,
     RPCNode,
     SeedNode,

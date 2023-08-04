@@ -4,7 +4,7 @@ import { render, waitFor, screen } from "testing"
 import ConnectorSelect, { GET_CONNECTORS } from "./ConnectorSelect"
 
 test("renders", async () => {
-  render(<ConnectorSelect onSelect={() => {}} />)
+  render(<ConnectorSelect onSelect={() => {}} />, { withRouter: true })
 
   await waitFor(() => {
     expect(screen.getAllByText("Hello World")).toBeTruthy()
@@ -68,7 +68,7 @@ test("renders other", async () => {
     },
   ]
 
-  render(<ConnectorSelect onSelect={() => {}} />, { mocks })
+  render(<ConnectorSelect onSelect={() => {}} />, { mocks, withRouter: true })
 
   await waitFor(() => {
     expect(screen.getByText("other")).toBeInTheDocument()
@@ -91,7 +91,7 @@ test("error", async () => {
     },
   ]
 
-  render(<ConnectorSelect onSelect={() => {}} />, { mocks })
+  render(<ConnectorSelect onSelect={() => {}} />, { mocks, withRouter: true })
 
   await waitFor(() => {
     expect(screen.getByText("Error!")).toBeInTheDocument()

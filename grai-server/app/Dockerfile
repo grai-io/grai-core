@@ -25,6 +25,7 @@ RUN apt update \
       unixodbc-dev \
     && pip install "poetry==${POETRY_VERSION}" \
     && poetry config virtualenvs.create false \
+    && poetry lock \
     && poetry install --no-root --no-interaction --no-ansi \
     && poetry version -s > /version.txt
 
