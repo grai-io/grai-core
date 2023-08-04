@@ -163,18 +163,19 @@ class LookerAPI:
                         continue
 
                     dimension.namespace = self.config.namespace
+                    dimension.table_name = explore.table_name
 
                     queries.append(dimension)
 
                     edge = Edge(
                         constraint_type=Constraint("bt"),
                         source=TableID(
-                            name=explore.name,
+                            name=explore.table_name,
                             namespace=self.config.namespace,
                         ),
                         destination=FieldID(
-                            table_name=explore.name,
-                            name=dimension.name,
+                            table_name=explore.table_name,
+                            name=dimension.column_name,
                             namespace=self.config.namespace,
                         ),
                     )
@@ -191,8 +192,8 @@ class LookerAPI:
                             namespace=self.config.namespace,
                         ),
                         destination=FieldID(
-                            table_name=explore.name,
-                            name=dimension.name,
+                            table_name=explore.table_name,
+                            name=dimension.column_name,
                             namespace=self.config.namespace,
                         ),
                     )

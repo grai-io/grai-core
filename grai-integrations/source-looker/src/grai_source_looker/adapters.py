@@ -246,7 +246,7 @@ def build_metadata_from_explore(current: Explore, version: Literal["v1"] = "v1")
 
     """
     data = {
-        "name": current.name,
+        "name": current.table_name,
         "display_name": current.name,
     }
 
@@ -267,7 +267,7 @@ def build_metadata_from_dimension(current: Dimension, version: Literal["v1"] = "
 
     """
     data = {
-        "name": current.name,
+        "name": current.column_name,
         "display_name": current.label,
     }
 
@@ -390,7 +390,7 @@ def adapt_explore_to_client(current: Explore, source: SourceSpec, version: Liter
 
     """
     spec_dict = {
-        "name": current.name,
+        "name": current.table_name,
         "namespace": current.namespace,
         "display_name": current.name,
         "data_source": source,
@@ -413,7 +413,7 @@ def adapt_dimension_to_client(current: Dimension, source: SourceSpec, version: L
 
     """
     spec_dict = {
-        "name": current.name,
+        "name": current.column_name,
         "namespace": current.namespace,
         "display_name": current.label,
         "data_source": source,

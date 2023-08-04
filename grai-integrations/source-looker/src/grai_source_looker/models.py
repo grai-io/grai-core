@@ -1,3 +1,4 @@
+import re
 from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
@@ -79,6 +80,11 @@ class Dimension(LookerNode):
     label: str
     type: str
     sql: str
+    table_name: Optional[str]
+
+    @property
+    def column_name(self):
+        return re.sub("\${TABLE}", self.table_name, self.sql.strip())
 
 
 class ExploreFields(LookerNode):
@@ -91,6 +97,15 @@ class Explore(LookerNode):
     namespace: Optional[str]
     fields: ExploreFields
     sql_table_name: str
+
+    @property
+    def table_name(self):
+        res = re.search("`([\w_\.]*)`", self.sql_table_name)
+
+        if res:
+            return res.group(1)
+
+        return self.sql_table_name
 
 
 class QueryField(LookerNode):
