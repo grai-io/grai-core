@@ -186,13 +186,13 @@ class LookerAPI:
                     edge = Edge(
                         constraint_type=Constraint("f"),
                         source=FieldID(
-                            table_name=dashboard.name,
-                            name=query.title if query.title else query.id,
+                            table_name=explore.table_name,
+                            name=dimension.column_name,
                             namespace=self.config.namespace,
                         ),
                         destination=FieldID(
-                            table_name=explore.table_name,
-                            name=dimension.column_name,
+                            table_name=dashboard.name,
+                            name=query.title if query.title else query.id,
                             namespace=self.config.namespace,
                         ),
                     )

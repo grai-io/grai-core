@@ -1833,13 +1833,13 @@ PyYAML = ">=6.0,<7.0"
 
 [[package]]
 name = "grai-source-looker"
-version = "0.0.1a5"
+version = "0.0.1a6"
 description = ""
 optional = false
 python-versions = ">=3.9.13,<4.0.0"
 files = [
-    {file = "grai_source_looker-0.0.1a5-py3-none-any.whl", hash = "sha256:f6f18c255c3dc4794295a8d7f171c55dfa90d359f5fec5aff28b25e984da4fb2"},
-    {file = "grai_source_looker-0.0.1a5.tar.gz", hash = "sha256:eb3b5a4f44ffc8672b2febc1e810e023b5d06a070367497ed1fadb300b33a684"},
+    {file = "grai_source_looker-0.0.1a6-py3-none-any.whl", hash = "sha256:bb3fca7999b8a919aa97ab1326ce4af2d7c7c73f5bb3afa0b69423354d4591bb"},
+    {file = "grai_source_looker-0.0.1a6.tar.gz", hash = "sha256:ad2e05bd946f142440784637d9a1465093cdc342898349a1adabfbb486a41613"},
 ]
 
 [package.dependencies]
@@ -4473,4 +4473,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "031dd279a9f18406bfdacc90fb31914bea9147de70ad32e8906dafe17d4748d3"
+content-hash = "8e3eaf7fd55372095e57b97549980b7ca4c2794909c4bb2d9c9b564aa89912cb"
