@@ -5,6 +5,7 @@ import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
 import TableHeader from "components/table/TableHeader"
+import { Source } from "components/tables/DataSourcesStack"
 import TablesTable from "components/tables/TablesTable"
 import GraphError from "components/utils/GraphError"
 import { GetTables, GetTablesVariables } from "./__generated__/GetTables"
@@ -49,21 +50,6 @@ export const GET_TABLES = gql`
     }
   }
 `
-
-interface Connector {
-  slug: string | null
-}
-
-interface Connection {
-  id: string
-  connector: Connector
-}
-
-interface Source {
-  id: string
-  name: string
-  connections: { data: Connection[] }
-}
 
 export interface Table {
   id: string

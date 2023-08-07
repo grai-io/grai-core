@@ -109,6 +109,7 @@ class Edge:
     destination: Node = strawberry.django.field()
     metadata: JSON
     is_active: strawberry.auto
+    data_sources: List["Source"]
     created_at: strawberry.auto
     updated_at: strawberry.auto
 
