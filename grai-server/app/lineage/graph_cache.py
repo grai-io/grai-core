@@ -55,8 +55,8 @@ class GraphCache:
             self.query(
                 """
                     MERGE (table:Table {id: $id})
-                    ON CREATE SET table.name = $name, table.display_name = $display_name, table.namespace = $namespace, table.data_source = $data_source, table.tags = $tags
-                    ON MATCH SET table.name = $name, table.display_name = $display_name, table.namespace = $namespace, table.data_source = $data_source, table.tags = $tags
+                    ON CREATE SET table.name = $name, table.display_name = $display_name, table.namespace = $namespace, table.data_source = $data_source, table.data_sources = $data_sources, table.tags = $tags
+                    ON MATCH SET table.name = $name, table.display_name = $display_name, table.namespace = $namespace, table.data_source = $data_source, table.data_sources = $data_sources, table.tags = $tags
                 """,
                 {
                     "id": str(node.id),
@@ -64,6 +64,7 @@ class GraphCache:
                     "display_name": node.display_name,
                     "namespace": node.namespace,
                     "data_source": get_data_source(),
+                    "data_sources": [str(source.id) for source in node.data_sources.all()],
                     "tags": node.metadata.get("grai", {}).get("tags"),
                 },
             )

@@ -10,6 +10,7 @@ import {
   CreateFilterVariables,
 } from "./__generated__/CreateFilter"
 import { NewFilter } from "./__generated__/NewFilter"
+import { Source } from "./FilterRow"
 
 export const CREATE_FILTER = gql`
   mutation CreateFilter($workspaceId: ID!, $name: String!, $metadata: JSON!) {
@@ -26,12 +27,14 @@ type CreateFilterProps = {
   workspaceId: string
   namespaces: string[]
   tags: string[]
+  sources: Source[]
 }
 
 const CreateFilter: React.FC<CreateFilterProps> = ({
   workspaceId,
   namespaces,
   tags,
+  sources,
 }) => {
   const { routePrefix } = useWorkspace()
   const { enqueueSnackbar } = useSnackbar()
@@ -97,6 +100,7 @@ const CreateFilter: React.FC<CreateFilterProps> = ({
         loading={loading}
         namespaces={namespaces}
         tags={tags}
+        sources={sources}
       />
     </>
   )
