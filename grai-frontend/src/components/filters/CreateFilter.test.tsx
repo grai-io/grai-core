@@ -74,7 +74,7 @@ test("submit namespace", async () => {
       ),
   )
 
-  input(screen.getByTestId("autocomplete-property"), "table")
+  // input(screen.getByTestId("autocomplete-property"), "table")
   input(screen.getByTestId("autocomplete-field"), "namespace", 2)
   input(screen.getByTestId("autocomplete-operator"), "equals", 1)
 
@@ -115,7 +115,7 @@ test("submit namespace in", async () => {
       ),
   )
 
-  input(screen.getByTestId("autocomplete-property"), "table")
+  // input(screen.getByTestId("autocomplete-property"), "table")
   input(screen.getByTestId("autocomplete-field"), "namespace", 2)
   input(screen.getByTestId("autocomplete-operator"), "in", 2)
 
@@ -152,7 +152,7 @@ test("submit tags", async () => {
       ),
   )
 
-  input(screen.getByTestId("autocomplete-property"), "table")
+  // input(screen.getByTestId("autocomplete-property"), "table")
   input(screen.getByTestId("autocomplete-field"), "tag", 3)
   input(screen.getByTestId("autocomplete-operator"), "contains", 2)
 
@@ -198,7 +198,12 @@ test("submit error", async () => {
           workspaceId: "1",
           name: "test filter",
           metadata: [
-            { type: "table", field: "name", operator: "contains", value: null },
+            {
+              type: "ancestor",
+              field: "tag",
+              operator: "contains",
+              value: null,
+            },
           ],
         },
       },
@@ -222,7 +227,7 @@ test("submit error", async () => {
       ),
   )
 
-  // input(screen.getByTestId("autocomplete-property"), "Table")
+  input(screen.getByTestId("autocomplete-property"), "Table")
   input(screen.getByTestId("autocomplete-field"), "Tag")
   input(screen.getByTestId("autocomplete-operator"), "Contains")
 
