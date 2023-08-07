@@ -13,9 +13,9 @@ import {
 } from "@mui/material"
 import { useNavigate } from "react-router-dom"
 import { Table as TableInterface } from "pages/tables/Tables"
+import DataSourceIcon from "components/graph/DataSourceIcon"
 import Loading from "components/layout/Loading"
 import TablePagination from "components/table/TablePagination"
-import DataSourceIcon from "components/graph/DataSourceIcon"
 
 type TablesTableProps = {
   tables: TableInterface[]
