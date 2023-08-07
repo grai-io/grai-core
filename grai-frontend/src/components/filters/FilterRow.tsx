@@ -197,7 +197,7 @@ const FilterRow: React.FC<FilterRowProps> = ({
   const properties: Property[] = [
     {
       value: "table",
-      label: "Table",
+      label: "Default",
       fields: [nameField, namespaceField, sourceField, tagField],
     },
     {
@@ -321,7 +321,7 @@ const FilterRow: React.FC<FilterRowProps> = ({
         )}
       </Grid>
       <Grid item md={1}>
-        <IconButton onClick={onRemove}>
+        <IconButton onClick={onRemove} data-testid="filter-row-remove">
           <Close />
         </IconButton>
       </Grid>

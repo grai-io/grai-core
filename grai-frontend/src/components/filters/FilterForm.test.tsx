@@ -6,7 +6,7 @@ import FilterForm from "./FilterForm"
 test("renders", async () => {
   render(<FilterForm onSave={() => {}} namespaces={[]} tags={[]} />)
 
-  await screen.findAllByText("Save")
+  await screen.findByText("Save")
 })
 
 test("close", async () => {
@@ -21,9 +21,9 @@ test("close", async () => {
     />,
   )
 
-  await screen.findAllByText("Cancel")
+  expect(screen.getByText("Cancel")).toBeInTheDocument()
 
   await act(async () => {
-    user.click(screen.getByTestId("CloseIcon"))
+    user.click(screen.getByText("Cancel"))
   })
 })
