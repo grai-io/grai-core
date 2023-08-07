@@ -197,7 +197,7 @@ const FilterRow: React.FC<FilterRowProps> = ({
   const properties: Property[] = [
     {
       value: "table",
-      label: "Table",
+      label: "Default",
       fields: [nameField, namespaceField, sourceField, tagField],
     },
     {

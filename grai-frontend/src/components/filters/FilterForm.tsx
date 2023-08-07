@@ -7,7 +7,7 @@ import { Filter } from "./FilterRow"
 import FilterRows from "./FilterRows"
 
 const defaultFilter: Filter = {
-  type: null,
+  type: "table",
   field: null,
   operator: null,
   value: null,
