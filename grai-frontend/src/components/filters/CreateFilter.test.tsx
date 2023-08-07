@@ -29,14 +29,16 @@ test("submit", async () => {
       ),
   )
 
-  await act(async () => await user.click(screen.getByTestId("CloseIcon")))
+  await act(
+    async () => await user.click(screen.getByTestId("filter-row-remove")),
+  )
 
   await act(
     async () =>
       await user.click(screen.getByRole("button", { name: /add filter/i })),
   )
 
-  input(screen.getByTestId("autocomplete-property"))
+  //input(screen.getByTestId("autocomplete-property"))
   input(screen.getByTestId("autocomplete-field"), "Tag")
   input(screen.getByTestId("autocomplete-operator"), "Contains")
   await act(async () => await user.type(screen.getByTestId("value"), "test"))
@@ -70,13 +72,6 @@ test("submit namespace", async () => {
         screen.getByRole("textbox", { name: "Name" }),
         "test filter",
       ),
-  )
-
-  await act(async () => await user.click(screen.getByTestId("CloseIcon")))
-
-  await act(
-    async () =>
-      await user.click(screen.getByRole("button", { name: /add filter/i })),
   )
 
   input(screen.getByTestId("autocomplete-property"), "table")
@@ -120,13 +115,6 @@ test("submit namespace in", async () => {
       ),
   )
 
-  await act(async () => await user.click(screen.getByTestId("CloseIcon")))
-
-  await act(
-    async () =>
-      await user.click(screen.getByRole("button", { name: /add filter/i })),
-  )
-
   input(screen.getByTestId("autocomplete-property"), "table")
   input(screen.getByTestId("autocomplete-field"), "namespace", 2)
   input(screen.getByTestId("autocomplete-operator"), "in", 2)
@@ -162,13 +150,6 @@ test("submit tags", async () => {
         screen.getByRole("textbox", { name: "Name" }),
         "test filter",
       ),
-  )
-
-  await act(async () => await user.click(screen.getByTestId("CloseIcon")))
-
-  await act(
-    async () =>
-      await user.click(screen.getByRole("button", { name: /add filter/i })),
   )
 
   input(screen.getByTestId("autocomplete-property"), "table")
@@ -241,14 +222,7 @@ test("submit error", async () => {
       ),
   )
 
-  await act(async () => await user.click(screen.getByTestId("CloseIcon")))
-
-  await act(
-    async () =>
-      await user.click(screen.getByRole("button", { name: /add filter/i })),
-  )
-
-  input(screen.getByTestId("autocomplete-property"), "Table")
+  // input(screen.getByTestId("autocomplete-property"), "Table")
   input(screen.getByTestId("autocomplete-field"), "Tag")
   input(screen.getByTestId("autocomplete-operator"), "Contains")
 
