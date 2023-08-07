@@ -5,8 +5,69 @@ import { act, render, screen, waitFor } from "testing"
 import Tables, { GET_TABLES } from "./Tables"
 
 test("renders", async () => {
+  const mocks = [
+    {
+      request: {
+        query: GET_TABLES,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+          offset: 0,
+          search: undefined,
+        },
+      },
+      result: {
+        data: {
+          workspace: {
+            id: "1234",
+            tables: {
+              data: [
+                {
+                  id: "1234",
+                  name: "table1",
+                  namespace: "default",
+                  display_name: "table1",
+                  is_active: true,
+                  metadata: {
+                    grai: {
+                      node_type: "Table",
+                      tags: ["tag1", "tag2"],
+                    },
+                  },
+                  data_sources: [
+                    {
+                      id: "1",
+                      name: "source1",
+                      connections: {
+                        data: [
+                          {
+                            id: "1",
+                            connector: {
+                              id: "1",
+                              name: "connector1",
+                              slug: "postgres",
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              ],
+              meta: {
+                total: 1,
+                filtered: 1,
+              },
+            },
+          },
+        },
+      },
+    },
+  ]
+
   render(<Tables />, {
     withRouter: true,
+    mocks,
   })
 
   await waitFor(() => {
@@ -14,7 +75,7 @@ test("renders", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getAllByText("Hello World")).toBeTruthy()
+    expect(screen.getAllByText("table1")).toBeTruthy()
   })
 })
 
@@ -166,7 +227,7 @@ test("click row", async () => {
 
   await act(
     // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-    async () => await user.click(container.querySelectorAll("tbody > tr")[0])
+    async () => await user.click(container.querySelectorAll("tbody > tr")[0]),
   )
 
   expect(screen.getByText("New Page")).toBeInTheDocument()

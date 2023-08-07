@@ -78,6 +78,7 @@ class Node:
     is_active: strawberry.auto
     source_edges: List["Edge"]
     destination_edges: List["Edge"]
+    data_sources: List["Source"]
 
     # Events
     @strawberry.field

@@ -1,15 +1,19 @@
 import React from "react"
 import {
+  Chip,
+  Stack,
   Table,
   TableBody,
   TableCell,
   TableFooter,
   TableHead,
   TableRow,
+  Tooltip,
   Typography,
 } from "@mui/material"
 import { useNavigate } from "react-router-dom"
 import { Table as TableInterface } from "pages/tables/Tables"
+import DataSourceIcon from "components/graph/DataSourceIcon"
 import Loading from "components/layout/Loading"
 import TablePagination from "components/table/TablePagination"
 
@@ -36,8 +40,10 @@ const TablesTable: React.FC<TablesTableProps> = ({
         <TableRow>
           <TableCell>Name</TableCell>
           <TableCell>Namespace</TableCell>
-          {/* <TableCell>Data Source</TableCell> */}
+          <TableCell>Node Type</TableCell>
+          <TableCell>Data Sources</TableCell>
           <TableCell>Active</TableCell>
+          <TableCell>Tags</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -52,8 +58,31 @@ const TablesTable: React.FC<TablesTableProps> = ({
           >
             <TableCell>{table.display_name ?? table.name}</TableCell>
             <TableCell>{table.namespace}</TableCell>
-            {/* <TableCell>{table.data_source}</TableCell> */}
+            <TableCell>{table.metadata?.grai?.node_type}</TableCell>
+            <TableCell sx={{ py: 0, pl: 1 }}>
+              <Stack direction="row" spacing={1}>
+                {table.data_sources.map(
+                  source =>
+                    source.connections.data[0].connector.slug && (
+                      <Tooltip title={source.name} key={source.name}>
+                        <DataSourceIcon
+                          dataSource={`grai-source-${source.connections.data[0].connector.slug}`}
+                          noMargin
+                          noBorder
+                        />
+                      </Tooltip>
+                    ),
+                )}
+              </Stack>
+            </TableCell>
             <TableCell>{table.is_active ? "Yes" : "No"}</TableCell>
+            <TableCell sx={{ py: 0 }}>
+              <Stack direction="row" spacing={1}>
+                {table.metadata?.grai?.tags?.map((tag: string) => (
+                  <Chip label={tag} key={tag} />
+                ))}
+              </Stack>
+            </TableCell>
           </TableRow>
         ))}
         {loading && (
