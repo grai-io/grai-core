@@ -48,9 +48,7 @@ def filter_by_filter(filter, query: GraphQuery) -> GraphQuery:
                 if row["operator"] == "contains":
                     query.optional_match(
                         "(table)<-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*]-(othertable:Table)"
-                    ).withWhere(
-                        f"WHERE (othertable is null or not '{value}' IN othertable.tags)"
-                    )
+                    ).withWhere(f"WHERE (othertable is null or not '{value}' IN othertable.tags)")
         elif row["type"] == "descendant":
             if row["field"] == "tag":
                 if row["operator"] == "contains":
@@ -63,9 +61,7 @@ def filter_by_filter(filter, query: GraphQuery) -> GraphQuery:
                 if row["operator"] == "contains":
                     query.optional_match(
                         "(table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*]->(othertable:Table)"
-                    ).withWhere(
-                        f"WHERE (othertable is null or not '{value}' IN othertable.tags)"
-                    )
+                    ).withWhere(f"WHERE (othertable is null or not '{value}' IN othertable.tags)")
         else:
             raise Exception("Unknown filter type: " + row["type"])
 
