@@ -26,6 +26,20 @@ export const GET_TABLES = gql`
           display_name
           is_active
           metadata
+          data_sources {
+            id
+            name
+            connections {
+              data {
+                id
+                connector {
+                  id
+                  name
+                  slug
+                }
+              }
+            }
+          }
         }
         meta {
           filtered
@@ -36,13 +50,29 @@ export const GET_TABLES = gql`
   }
 `
 
+interface Connector {
+  slug: string | null
+}
+
+interface Connection {
+  id: string
+  connector: Connector
+}
+
+interface Source {
+  id: string
+  name: string
+  connections: { data: Connection[] }
+}
+
 export interface Table {
   id: string
   namespace: string
   name: string
   display_name: string
-  // data_source: string
   is_active: boolean
+  metadata: any
+  data_sources: Source[]
 }
 
 const Tables: React.FC = () => {
