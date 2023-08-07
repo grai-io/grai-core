@@ -45,14 +45,6 @@ Grai makes it easy to understand and test how your data relates across databases
 - Get alerts in your CI/CD workflows whenever changes to a production system will impact your warehouse or dbt projects with [GitHub Actions](https://github.com/grai-io/grai-actions-server).
 - Self host the project or run it in the [Grai Cloud](https://app.grai.io) for free.
 
-## Community Roadmap
-
-We want your input about what is important, for that, add your votes using the 👍 reaction:
-
-    Top Feature Requests
-    Documentation Requests
-    Top Bugs
-    Top Questions
 
 ### Connectors
 
