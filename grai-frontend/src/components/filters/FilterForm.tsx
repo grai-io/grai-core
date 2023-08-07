@@ -3,7 +3,7 @@ import { Add } from "@mui/icons-material"
 import { LoadingButton } from "@mui/lab"
 import { Box, Button, Stack, TextField } from "@mui/material"
 import Form from "components/form/Form"
-import { Filter } from "./FilterRow"
+import { Filter, Source } from "./FilterRow"
 import FilterRows from "./FilterRows"
 
 const defaultFilter: Filter = {
@@ -21,6 +21,7 @@ export type Values = {
 type FilterFormProps = {
   namespaces: string[]
   tags: string[]
+  sources: Source[]
   defaultValues?: Values
   onClose?: () => void
   onSave: (values: Values) => void
@@ -30,6 +31,7 @@ type FilterFormProps = {
 const FilterForm: React.FC<FilterFormProps> = ({
   namespaces,
   tags,
+  sources,
   defaultValues,
   onClose,
   onSave,
@@ -63,6 +65,7 @@ const FilterForm: React.FC<FilterFormProps> = ({
         onChange={handleChangeFilters}
         namespaces={namespaces}
         tags={tags}
+        sources={sources}
       />
 
       <Stack spacing={2} direction="row" sx={{ mt: 3 }}>

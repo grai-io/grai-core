@@ -9,13 +9,18 @@ const filter = {
   metadata: [],
 }
 
+const defaultProps = {
+  workspaceId: "1",
+  filter,
+  namespaces: [],
+  tags: [],
+  sources: [],
+}
+
 test("renders", async () => {
-  render(
-    <UpdateFilter filter={filter} namespaces={[]} tags={[]} workspaceId="1" />,
-    {
-      withRouter: true,
-    },
-  )
+  render(<UpdateFilter {...defaultProps} />, {
+    withRouter: true,
+  })
 
   expect(screen.getByRole("textbox", { name: /name/i })).toBeInTheDocument()
 })
@@ -27,12 +32,9 @@ test("renders null name", async () => {
     metadata: [],
   }
 
-  render(
-    <UpdateFilter filter={filter} namespaces={[]} tags={[]} workspaceId="1" />,
-    {
-      withRouter: true,
-    },
-  )
+  render(<UpdateFilter {...defaultProps} />, {
+    withRouter: true,
+  })
 
   expect(screen.getByRole("textbox", { name: /name/i })).toBeInTheDocument()
 })
@@ -40,12 +42,9 @@ test("renders null name", async () => {
 test("submit", async () => {
   const user = userEvent.setup()
 
-  render(
-    <UpdateFilter filter={filter} namespaces={[]} tags={[]} workspaceId="1" />,
-    {
-      withRouter: true,
-    },
-  )
+  render(<UpdateFilter {...defaultProps} />, {
+    withRouter: true,
+  })
 
   await act(
     async () =>
@@ -63,27 +62,24 @@ test("submit", async () => {
 test("submit error", async () => {
   const user = userEvent.setup()
 
-  render(
-    <UpdateFilter filter={filter} namespaces={[]} tags={[]} workspaceId="1" />,
-    {
-      withRouter: true,
-      mocks: [
-        {
-          request: {
-            query: UPDATE_FILTER,
-            variables: {
-              id: "1",
-              name: "test filtera",
-              metadata: [],
-            },
-          },
-          result: {
-            errors: [new GraphQLError("Error!")],
+  render(<UpdateFilter {...defaultProps} />, {
+    withRouter: true,
+    mocks: [
+      {
+        request: {
+          query: UPDATE_FILTER,
+          variables: {
+            id: "1",
+            name: "test filtera",
+            metadata: [],
           },
         },
-      ],
-    },
-  )
+        result: {
+          errors: [new GraphQLError("Error!")],
+        },
+      },
+    ],
+  })
 
   await act(
     async () =>
