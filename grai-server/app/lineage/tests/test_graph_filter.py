@@ -103,7 +103,10 @@ def test_table_name_contains():
     filter_by_filter(filter, query)
 
     assert len(query.clause[0].wheres) == 1
-    assert query.clause[0].wheres[0].where == "toLower(table.name) CONTAINS toLower('test3')"
+    assert (
+        query.clause[0].wheres[0].where
+        == "toLower(table.name) CONTAINS toLower('test3')"
+    )
     assert query.parameters == {}
 
 
@@ -125,7 +128,10 @@ def test_table_name_not_contains():
     filter_by_filter(filter, query)
 
     assert len(query.clause[0].wheres) == 1
-    assert query.clause[0].wheres[0].where == "NOT toLower(table.name) CONTAINS toLower('test3')"
+    assert (
+        query.clause[0].wheres[0].where
+        == "NOT toLower(table.name) CONTAINS toLower('test3')"
+    )
     assert query.parameters == {}
 
 
@@ -147,7 +153,10 @@ def test_table_name_starts_with():
     filter_by_filter(filter, query)
 
     assert len(query.clause[0].wheres) == 1
-    assert query.clause[0].wheres[0].where == "toLower(table.name) STARTS WITH toLower('test3')"
+    assert (
+        query.clause[0].wheres[0].where
+        == "toLower(table.name) STARTS WITH toLower('test3')"
+    )
     assert query.parameters == {}
 
 
@@ -169,7 +178,10 @@ def test_table_name_ends_with():
     filter_by_filter(filter, query)
 
     assert len(query.clause[0].wheres) == 1
-    assert query.clause[0].wheres[0].where == "toLower(table.name) ENDS WITH toLower('test3')"
+    assert (
+        query.clause[0].wheres[0].where
+        == "toLower(table.name) ENDS WITH toLower('test3')"
+    )
     assert query.parameters == {}
 
 
@@ -214,6 +226,53 @@ def test_table_namespace_in():
 
     assert len(query.clause[0].wheres) == 1
     assert query.clause[0].wheres[0].where == "table.namespace IN ['test3', 'test4']"
+    assert query.parameters == {}
+
+
+def test_table_data_sources_in():
+    query = GraphQuery(Match("Table"))
+
+    filter = Filter(
+        name=str(uuid.uuid4()),
+        metadata=[
+            {
+                "type": "table",
+                "field": "data-source",
+                "operator": "in",
+                "value": ["source1", "source2"],
+            }
+        ],
+    )
+
+    filter_by_filter(filter, query)
+
+    assert len(query.clause[0].wheres) == 1
+    assert (
+        query.clause[0].wheres[0].where
+        == "any(x IN table.data_sources WHERE x IN ['source1', 'source2'])"
+    )
+    assert query.parameters == {}
+
+
+def test_table_tag_contains():
+    query = GraphQuery(Match("Table"))
+
+    filter = Filter(
+        name=str(uuid.uuid4()),
+        metadata=[
+            {
+                "type": "table",
+                "field": "tag",
+                "operator": "contains",
+                "value": "tag1",
+            }
+        ],
+    )
+
+    filter_by_filter(filter, query)
+
+    assert len(query.clause[0].wheres) == 1
+    assert query.clause[0].wheres[0].where == "'tag1' IN table.tags"
     assert query.parameters == {}
 
 

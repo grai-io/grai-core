@@ -20,7 +20,9 @@ class GraphCache:
 
     def __init__(self, workspace: Union[Workspace, str]):
         self.workspace_id = (
-            workspace if isinstance(workspace, str) or isinstance(workspace, uuid.UUID) else str(workspace.id)
+            workspace
+            if isinstance(workspace, str) or isinstance(workspace, uuid.UUID)
+            else str(workspace.id)
         )
 
         self.manager = redis.Redis(
@@ -31,9 +33,13 @@ class GraphCache:
 
     def query(self, query: str, parameters: object = {}, timeout: int = None):
         try:
-            return self.manager.graph(f"lineage:{str(self.workspace_id)}").query(query, parameters, timeout=timeout)
+            return self.manager.graph(f"lineage:{str(self.workspace_id)}").query(
+                query, parameters, timeout=timeout
+            )
         except redis.exceptions.ResponseError as e:
-            raise Exception(f"Error while executing query: {query} with parameters: {parameters}, error: {e}") from e
+            raise Exception(
+                f"Error while executing query: {query} with parameters: {parameters}, error: {e}"
+            ) from e
 
     def cache_node(self, node):
         def get_data_source() -> Optional[str]:
@@ -55,8 +61,8 @@ class GraphCache:
             self.query(
                 """
                     MERGE (table:Table {id: $id})
-                    ON CREATE SET table.name = $name, table.display_name = $display_name, table.namespace = $namespace, table.data_source = $data_source, table.tags = $tags
-                    ON MATCH SET table.name = $name, table.display_name = $display_name, table.namespace = $namespace, table.data_source = $data_source, table.tags = $tags
+                    ON CREATE SET table.name = $name, table.display_name = $display_name, table.namespace = $namespace, table.data_source = $data_source, table.data_sources = $data_sources, table.tags = $tags
+                    ON MATCH SET table.name = $name, table.display_name = $display_name, table.namespace = $namespace, table.data_source = $data_source, table.data_sources = $data_sources, table.tags = $tags
                 """,
                 {
                     "id": str(node.id),
@@ -64,6 +70,9 @@ class GraphCache:
                     "display_name": node.display_name,
                     "namespace": node.namespace,
                     "data_source": get_data_source(),
+                    "data_sources": [
+                        str(source.id) for source in node.data_sources.all()
+                    ],
                     "tags": node.metadata.get("grai", {}).get("tags"),
                 },
             )
@@ -152,7 +161,9 @@ class GraphCache:
                 },
             )
 
-            source_table_edge = edge.source.destination_edges.filter(metadata__grai__edge_type="TableToColumn").first()
+            source_table_edge = edge.source.destination_edges.filter(
+                metadata__grai__edge_type="TableToColumn"
+            ).first()
             destination_table_edge = edge.destination.destination_edges.filter(
                 metadata__grai__edge_type="TableToColumn"
             ).first()
@@ -332,7 +343,9 @@ class GraphCache:
 
         return tables
 
-    def filter_by_range(self, min_x: int, max_x: int, min_y: int, max_y: int, query: GraphQuery) -> GraphQuery:
+    def filter_by_range(
+        self, min_x: int, max_x: int, min_y: int, max_y: int, query: GraphQuery
+    ) -> GraphQuery:
         query.match(
             "(table)-[:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY*0..1]-(d)",
             where=[
@@ -441,13 +454,17 @@ class GraphCache:
 
         return tables
 
-    def get_table_filtered_graph_result(self, table_id: str, n: int) -> List["GraphTable"]:
+    def get_table_filtered_graph_result(
+        self, table_id: str, n: int
+    ) -> List["GraphTable"]:
         parameters = {"table": table_id}
         where = "WHERE firsttable.id = $table"
 
         return self.get_with_step_graph_result(n, parameters, where)
 
-    def get_edge_filtered_graph_result(self, edge_id: str, n: int = 1) -> List["GraphTable"]:
+    def get_edge_filtered_graph_result(
+        self, edge_id: str, n: int = 1
+    ) -> List["GraphTable"]:
         parameters = {"edge": edge_id}
         where = """
             WHERE (
@@ -475,7 +492,10 @@ class GraphCache:
         for v in V:
             v.view = defaultview()
 
-        E = [Edge(vertexes[edge["source_id"]], vertexes[edge["destination_id"]]) for edge in edges]
+        E = [
+            Edge(vertexes[edge["source_id"]], vertexes[edge["destination_id"]])
+            for edge in edges
+        ]
 
         g = Graph(V, E)
 
