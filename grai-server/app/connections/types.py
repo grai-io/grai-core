@@ -28,6 +28,7 @@ class ConnectorOrder:
 class Connector:
     id: strawberry.auto
     name: strawberry.auto
+    slug: strawberry.auto
     metadata: JSON
     is_active: strawberry.auto
     icon: Optional[str]
