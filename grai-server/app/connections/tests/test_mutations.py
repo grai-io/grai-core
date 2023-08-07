@@ -381,8 +381,7 @@ async def test_update_connection_with_incorrect_schedule(test_context):
     )
 
     assert (
-        str(result.errors)
-        == "[GraphQLError('Schedule type not found', locations=[SourceLocation(line=3, column=13)],"
+        str(result.errors) == "[GraphQLError('Schedule type not found', locations=[SourceLocation(line=3, column=13)],"
         " path=['updateConnection'])]"
     )
     assert result.data is None

@@ -200,12 +200,14 @@ class GraphCache:
         )
 
     def get_table_ids(self):
-        results = self.query("""
+        results = self.query(
+            """
                 MATCH (n:Table)
                 WITH
                     n.id as ids
                 RETURN ids
-            """).result_set
+            """
+        ).result_set
 
         return [result[0] for result in results]
 
@@ -236,7 +238,8 @@ class GraphCache:
         return [BaseTable(**result[0]) for result in results]
 
     def get_table_edges(self):
-        results = self.query("""
+        results = self.query(
+            """
                 MATCH (source:Table)-[r:TABLE_TO_TABLE|:TABLE_TO_TABLE_COPY]->(destination:Table)
                 WITH
                     r,
@@ -246,7 +249,8 @@ class GraphCache:
                         destination_id: destination.id
                     } AS edges
                 RETURN edges
-            """).result_set
+            """
+        ).result_set
 
         return [result[0] for result in results]
 
@@ -254,7 +258,8 @@ class GraphCache:
         self,
         query: GraphQuery,
     ) -> List[GraphTable]:
-        query.add(f"""
+        query.add(
+            f"""
                 OPTIONAL MATCH (table:Table)-[:TABLE_TO_COLUMN]->(column:Column)
                 OPTIONAL MATCH (column)-[:COLUMN_TO_COLUMN]->(column_destination:Column)
                 OPTIONAL MATCH (table)-[:TABLE_TO_TABLE]->(destination:Table)
@@ -287,7 +292,8 @@ class GraphCache:
                         destinations: destinations
                     }} AS tables
                 RETURN tables
-            """)
+            """
+        )
 
         result = self.query(str(query), query.get_parameters(), timeout=10000)
 
