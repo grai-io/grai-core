@@ -100,18 +100,11 @@ class SourceDestinationMixin:
         match data:
             case {
                 "source": {"name": source_name, "namespace": source_namespace},
-                "destination": {
-                    "name": destination_name,
-                    "namespace": destination_namespace,
-                },
+                "destination": {"name": destination_name, "namespace": destination_namespace},
             }:
                 q_filter = Q(name=source_name) & Q(namespace=source_namespace)
-                q_filter |= Q(name=destination_name) & Q(
-                    namespace=destination_namespace
-                )
-                results = {
-                    (r.name, r.namespace): r.id for r in Node.objects.filter(q_filter)
-                }
+                q_filter |= Q(name=destination_name) & Q(namespace=destination_namespace)
+                results = {(r.name, r.namespace): r.id for r in Node.objects.filter(q_filter)}
 
                 data["source"] = results[(source_name, source_namespace)]
                 data["destination"] = results[(destination_name, destination_namespace)]
@@ -128,9 +121,7 @@ class SourceDestinationMixin:
         return data
 
 
-class EdgeSerializer(
-    SourceParentMixin, SourceDestinationMixin, serializers.ModelSerializer
-):
+class EdgeSerializer(SourceParentMixin, SourceDestinationMixin, serializers.ModelSerializer):
     name = serializers.CharField(required=False)
     display_name = serializers.CharField(required=False)
     data_sources = ChildSourceSerializer(many=True, required=False)
@@ -192,9 +183,7 @@ class SourceMetadataMixin:
         metadata = validated_data.pop("metadata", {})
 
         grai_metadata = merge(metadata.get("grai", {}), existing.get("grai", {}))
-        grai_metadata["tags"] = merge_tags(
-            existing.get("grai", {}).get("tags"), metadata.get("grai", {}).get("tags")
-        )
+        grai_metadata["tags"] = merge_tags(existing.get("grai", {}).get("tags"), metadata.get("grai", {}).get("tags"))
 
         instance.metadata = {
             "grai": grai_metadata,
@@ -206,9 +195,7 @@ class SourceMetadataMixin:
         return super().update(instance, validated_data)
 
 
-class SourceNodeSerializer(
-    SourceMetadataMixin, SourceChildMixin, serializers.ModelSerializer
-):
+class SourceNodeSerializer(SourceMetadataMixin, SourceChildMixin, serializers.ModelSerializer):
     display_name = serializers.CharField(required=False)
     metadata = SourceMetadataField()
 
