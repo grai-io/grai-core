@@ -97,26 +97,26 @@ class NodeSerializer(SourceParentMixin, serializers.ModelSerializer):
 
 class SourceDestinationMixin:
     def to_internal_value(self, data):
-        if isinstance(source := data.get("source"), dict):
-            source = NodeNamedID(**source)
-        if isinstance(destination := data.get("destination"), dict):
-            destination = NodeNamedID(**destination)
+        match data:
+            case {
+                "source": {"name": source_name, "namespace": source_namespace},
+                "destination": {"name": destination_name, "namespace": destination_namespace},
+            }:
+                q_filter = Q(name=source_name) & Q(namespace=source_namespace)
+                q_filter |= Q(name=destination_name) & Q(namespace=destination_namespace)
+                results = {(r.name, r.namespace): r.id for r in Node.objects.filter(q_filter)}
 
-        match (source, destination):
-            case (NodeNamedID(), str()):
-                node = Node.objects.get(Q(name=source.name) & Q(namespace=source.namespace))
+                data["source"] = results[(source_name, source_namespace)]
+                data["destination"] = results[(destination_name, destination_namespace)]
+            case {"source": {"name": name, "namespace": namespace}}:
+                node = Node.objects.get(Q(name=name) & Q(namespace=namespace))
                 data["source"] = node.id
-            case (str(), NodeNamedID()):
-                node = Node.objects.get(Q(name=destination.name) & Q(namespace=destination.namespace))
+            case {"destination": {"name": name, "namespace": namespace}}:
+                node = Node.objects.get(Q(name=name) & Q(namespace=namespace))
                 data["destination"] = node.id
-            case (NodeNamedID(), NodeNamedID()):
-                q_filter = Q(name=source.name) & Q(namespace=source.namespace)
-                q_filter |= Q(name=destination.name) & Q(namespace=destination.namespace)
-                model_source, model_destination = Node.objects.filter(q_filter)
-                data["source"] = model_source.id
-                data["destination"] = model_destination.id
             case _:
                 pass
+
         data = super().to_internal_value(data)
         return data
 
