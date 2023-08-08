@@ -228,63 +228,19 @@ class Dashboard(LookerNode):
             query = self.get_query(element)
 
             if query:
-                edges.extend(
-                    [
-                        Edge(
-                            constraint_type=Constraint("bt"),
-                            source=TableID(
-                                name=self.name,
-                                namespace=self.namespace,
-                            ),
-                            destination=FieldID(
-                                table_name=self.name,
-                                name=element.title if element.title else element.id,
-                                namespace=self.namespace,
-                            ),
-                        )
-                    ]
-                )
-
-        return edges
-
-    def get_fields(self):
-        """ """
-
-        fields = []
-
-        for element in self.dashboard_elements if self.dashboard_elements else []:
-            query = self.get_query(element)
-
-            if query:
-                fields.extend([QueryField(namespace=self.namespace, name=field) for field in query.fields])
-
-        return fields
-
-    def get_edges(self):
-        """ """
-
-        edges = []
-
-        for element in self.dashboard_elements if self.dashboard_elements else []:
-            query = self.get_query(element)
-
-            if query:
-                edges.extend(
-                    [
-                        Edge(
-                            constraint_type=Constraint("bt"),
-                            source=TableID(
-                                name=self.name,
-                                namespace=self.namespace,
-                            ),
-                            destination=FieldID(
-                                table_name=self.name,
-                                name=field,
-                                namespace=self.namespace,
-                            ),
-                        )
-                        for field in query.fields
-                    ]
+                edges.append(
+                    Edge(
+                        constraint_type=Constraint("bt"),
+                        source=TableID(
+                            name=self.name,
+                            namespace=self.namespace,
+                        ),
+                        destination=FieldID(
+                            table_name=self.name,
+                            name=element.title if element.title else element.id,
+                            namespace=self.namespace,
+                        ),
+                    )
                 )
 
         return edges

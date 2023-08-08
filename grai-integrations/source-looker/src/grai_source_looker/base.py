@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from grai_client.integrations.base import (
     CombinedNodesAndEdgesMixin,
@@ -21,6 +21,7 @@ class LookerIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementatio
         client_secret: Optional[str] = None,
         verify_ssl: Optional[bool] = None,
         namespace: Optional[str] = None,
+        namespaces: Optional[Dict[str, str]] = None,
     ):
         super().__init__(source, version)
 
@@ -30,6 +31,7 @@ class LookerIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementatio
             client_secret=client_secret,
             verify_ssl=verify_ssl,
             namespace=namespace,
+            namespaces=namespaces,
         )
 
     def ready(self) -> bool:

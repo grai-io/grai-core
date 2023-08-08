@@ -1,6 +1,6 @@
 import dotenv
 
-from grai_source_looker.base import LookerIntegrationk
+from grai_source_looker.base import LookerIntegration
 
 # def test_loader_with_json_namespaces(mock_source):
 #     dotenv.load_dotenv()
