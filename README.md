@@ -60,7 +60,7 @@ Grai makes it easy to understand and test how your data relates across databases
 | <img src="resources/fivetran.png" alt=“” width="30" height="30">  | Fivetran      | `pip install grai-source-fivetran`  |
 | <img src="resources/csv.png" alt=“” width="30" height="30">       | csv, parquet, feather | `pip install grai-source-flat-file` |
 | <img src="resources/metabase.png" alt=“” width="30" height="30">  | Metabase      | `pip install grai-source-metabase`  |
-| <img src="resources/looker.png" alt=“” width="25" height="40">    | Looker (alpha) | `pip install grai-source-looker`    |
+| <img src="resources/looker.svg" alt=“” width="25" height="40">    | Looker (alpha) | `pip install grai-source-looker`    |
 
 
 ## Quickstart
