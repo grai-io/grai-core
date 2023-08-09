@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai-graph"
-version = "0.2.5-alpha1"
+version = "0.2.5-alpha2"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>"]
 license = "Elastic-2.0"

@@ -23,7 +23,7 @@ from installations.models import Commit as CommitModel
 from installations.models import PullRequest as PullRequestModel
 from installations.models import Repository as RepositoryModel
 from lineage.filter import apply_table_filter, get_tags
-from lineage.graph import GraphQuery
+from lineage.graph import GraphQuery, BaseSourceSegment
 from lineage.graph_cache import GraphCache
 from lineage.graph_types import BaseTable, GraphTable
 from lineage.models import Edge as EdgeModel
@@ -776,7 +776,7 @@ class Workspace:
         api_key = settings.ALGOLIA_SEARCH_KEY
 
         if not api_key:
-            raise Exception("Alogia not setup")
+            raise Exception("Algolia not setup")
 
         client = Search()
 
@@ -922,12 +922,27 @@ class Workspace:
 
     # Source Graph
     @strawberry.field
-    def source_graph(self) -> JSON:
+    def source_graph(self) -> JSON[str, list[str]]:
         # self = workspace class, access to id
+        nodes = NodeModel.objects.filter(workspace=self.id).values("id", "data_sources")
 
-        # return JSON
+        source_ids = set(source_id for node in nodes for source_id in node["data_sources"])
+        sources = SourceModel.objects.filter(id__in=source_ids, workspace=self.id).values("id", "name")
+        sources = {source["id"]: source["name"] for source in sources}
 
-        pass
+        nodes = {node["id"]: {sources[source_id] for source_id in node["data_sources"]} for node in nodes}
+
+        edges = EdgeModel.objects.filter(workspace=self.id).values("source", "destination")
+        edges = {edge["source"]: edge["destination"] for edge in edges}
+
+        # I can convert this into an explicit SQL queries to avoid loading the entire graph if needed.
+        segmentation = BaseSourceSegment(node_source_map=nodes, edge_map=edges)
+
+        result = segmentation.cover_edge_map
+        for source in segmentation.covering_set:
+            result.setdefault(source, [])
+
+        return result
 
 
 @strawberry_django.filters.filter(MembershipModel, lookups=True)

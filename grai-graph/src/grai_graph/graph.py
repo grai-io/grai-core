@@ -1,6 +1,6 @@
 from collections import Counter, defaultdict
 from functools import cached_property, lru_cache
-from typing import Any, Dict, List, Optional, Sequence, Tuple, Type, Union
+from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple, Type, Union
 from uuid import UUID
 
 import networkx as nx
@@ -242,22 +242,10 @@ def build_graph(nodes: List[Dict], edges: List[Dict], version: str) -> Graph:
     return Graph(manifest)
 
 
-class SourceSegment:
-    def __init__(self, nodes: List[NodeTypes], edges: List[EdgeTypes]):
-        # Assumes we are providing SourceSpecs not UUIDs in data_sources
-        self.node_source_map = {
-            node.spec.id: frozenset(source.name for source in node.spec.data_sources) for node in nodes
-        }
-        if None in self.node_source_map:
-            raise ValueError("All values in `nodes` must be of NodeType and their `.spec.id` value must not be empty.")
-
-        self.edge_map = {}
-        for edge in edges:
-            source = edge.spec.source.id if not isinstance(edge.spec.source, UUID) else edge.spec.source
-            destination = (
-                edge.spec.destination.id if not isinstance(edge.spec.destination, UUID) else edge.spec.destination
-            )
-            self.edge_map[source] = destination
+class BaseSourceSegment:
+    def __init__(self, node_source_map: Dict[UUID, Iterable], edge_map: Dict[UUID, UUID]):
+        self.node_source_map = {k: frozenset(v) for k, v in node_source_map.items()}
+        self.edge_map = edge_map
 
     @cached_property
     def covering_set(self) -> tuple:
@@ -291,3 +279,26 @@ class SourceSegment:
             destination_cover = self.node_cover_map[destination]
             result[source_cover].add(destination_cover)
         return {k: list(v) for k, v in result.items()}
+
+
+class SourceSegment(BaseSourceSegment):
+    def __init__(self, nodes: List[NodeTypes], edges: List[EdgeTypes]):
+        # Assumes we are providing SourceSpecs not UUIDs in data_sources
+        node_source_map = {node.spec.id: frozenset(source.name for source in node.spec.data_sources) for node in nodes}
+        if None in node_source_map:
+            raise ValueError("All values in `nodes` must be of NodeType and their `.spec.id` value must not be empty.")
+
+        edge_map = {}
+        for edge in edges:
+            source = edge.spec.source.id if not isinstance(edge.spec.source, UUID) else edge.spec.source
+            destination = (
+                edge.spec.destination.id if not isinstance(edge.spec.destination, UUID) else edge.spec.destination
+            )
+            edge_map[source] = destination
+
+        if None in edge_map:
+            raise ValueError(
+                "All values in `edges` must be of EdgeType and both `.spec.source.id` and `.spec.destination.id` "
+                "values must not be empty."
+            )
+        super().__init__(node_source_map=node_source_map, edge_map=edge_map)
