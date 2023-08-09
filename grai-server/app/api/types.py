@@ -78,7 +78,6 @@ class Node:
     is_active: strawberry.auto
     source_edges: List["Edge"]
     destination_edges: List["Edge"]
-    data_sources: List["Source"]
 
     # Columns
     @strawberry.django.field(
@@ -102,7 +101,7 @@ class Node:
 
     # Sources
     @strawberry.django.field
-    def sources(
+    def data_sources(
         self,
     ) -> Pagination["Source"]:
         queryset = SourceModel.objects.filter(nodes=self)
@@ -120,9 +119,17 @@ class Edge:
     destination: Node = strawberry.django.field()
     metadata: JSON
     is_active: strawberry.auto
-    data_sources: List["Source"]
     created_at: strawberry.auto
     updated_at: strawberry.auto
+
+    # Sources
+    @strawberry.django.field
+    def data_sources(
+        self,
+    ) -> Pagination["Source"]:
+        queryset = SourceModel.objects.filter(edges=self)
+
+        return Pagination[Source](queryset=queryset)
 
 
 @strawberry.django.type(RunModel, order="RunOrder", pagination=True)
