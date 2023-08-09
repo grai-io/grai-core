@@ -68,7 +68,7 @@ class Event:
     created_at: strawberry.auto
 
 
-@strawberry.django.type(NodeModel, order=NodeOrder, filters=NodeFilter, pagination=True, only=["id"])
+@strawberry.django.type(NodeModel, order=NodeOrder, filters=NodeFilter, pagination=True)
 class Node:
     id: strawberry.auto
     namespace: strawberry.auto
@@ -79,6 +79,17 @@ class Node:
     source_edges: List["Edge"]
     destination_edges: List["Edge"]
     data_sources: List["Source"]
+
+    # Columns
+    @strawberry.django.field(
+        prefetch_related=Prefetch(
+            "source_edges",
+            queryset=EdgeModel.objects.filter(metadata__grai__edge_type="TableToColumn").select_related("destination"),
+            to_attr="edges_list",
+        )
+    )
+    def columns(self) -> DataWrapper["Column"]:
+        return DataWrapper[Column](list(set([edge.destination for edge in self.edges_list])))
 
     # Events
     @strawberry.field
@@ -317,7 +328,7 @@ class Column(Node):
     def requirements_edges(
         self,
         pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
-    ) -> Pagination[Edge]:
+    ) -> Pagination["Edge"]:
         queryset = EdgeModel.objects.filter(source=self).filter(metadata__grai__edge_type="ColumnToColumn")
 
         return Pagination[Edge](queryset=queryset, pagination=pagination)
@@ -530,7 +541,10 @@ class Workspace:
 
     @strawberry.django.field
     def node(self, id: strawberry.ID) -> Node:
-        return NodeModel.objects.get(id=id)
+        return NodeModel.objects.filter(
+            id=id,
+            workspace=self,
+        )
 
     # Edges
     @strawberry.django.field
