@@ -69,7 +69,7 @@ test("search", async () => {
                   name: "Edge 1",
                   display_name: "Edge 1",
                   is_active: true,
-                  data_source: "test",
+                  data_sources: { data: [] },
                   metadata: {},
                   source: {
                     id: "1",
@@ -192,7 +192,7 @@ test("click row", async () => {
 
   await act(
     // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-    async () => await user.click(container.querySelectorAll("tbody > tr")[0])
+    async () => await user.click(container.querySelectorAll("tbody > tr")[0]),
   )
 
   expect(screen.getByText("New Page")).toBeInTheDocument()

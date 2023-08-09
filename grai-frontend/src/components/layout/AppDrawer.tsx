@@ -22,7 +22,7 @@ import {
   GraiLogoWhite,
   Graph,
   Reports,
-  Tables,
+  Nodes,
 } from "components/icons"
 import ProfileMenu from "./ProfileMenu"
 
@@ -35,10 +35,10 @@ const pages = [
     className: "graph-page",
   },
   {
-    title: "Tables",
-    path: "tables",
-    icon: <Tables />,
-    alt: "Tables",
+    title: "Nodes",
+    path: "nodes",
+    icon: <Nodes />,
+    alt: "Nodes",
   },
   {
     title: "Edges",

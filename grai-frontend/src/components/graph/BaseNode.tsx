@@ -93,7 +93,7 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
     <>
       <Box
         onContextMenu={handleContextMenu}
-        onDoubleClick={() => workspaceNavigate(`tables/${data.id}`)}
+        onDoubleClick={() => workspaceNavigate(`nodes/${data.id}`)}
         sx={{
           fontSize: 12,
           borderWidth: 1,
@@ -171,7 +171,7 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
         >
           Show downstream dependents
         </MenuItem>
-        <MenuItem onClick={() => workspaceNavigate(`tables/${data.id}`)}>
+        <MenuItem onClick={() => workspaceNavigate(`nodes/${data.id}`)}>
           Show profile for this table
         </MenuItem>
       </Menu>

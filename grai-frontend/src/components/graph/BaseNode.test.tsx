@@ -31,7 +31,7 @@ test("renders", async () => {
     </ReactFlowProvider>,
     {
       withRouter: true,
-    }
+    },
   )
 
   await waitFor(() => {
@@ -46,7 +46,7 @@ test("renders no columns", async () => {
     </ReactFlowProvider>,
     {
       withRouter: true,
-    }
+    },
   )
 
   await waitFor(() => {
@@ -73,7 +73,7 @@ test("renders multiple columns", async () => {
     </ReactFlowProvider>,
     {
       withRouter: true,
-    }
+    },
   )
 
   await waitFor(() => {
@@ -101,7 +101,7 @@ test("highlight", async () => {
     </ReactFlowProvider>,
     {
       withRouter: true,
-    }
+    },
   )
 
   await waitFor(() => {
@@ -121,7 +121,7 @@ test("search highlight", async () => {
     </ReactFlowProvider>,
     {
       withRouter: true,
-    }
+    },
   )
 
   await waitFor(() => {
@@ -141,7 +141,7 @@ test("search dim", async () => {
     </ReactFlowProvider>,
     {
       withRouter: true,
-    }
+    },
   )
 
   await waitFor(() => {
@@ -161,7 +161,7 @@ test("expanded", async () => {
     </ReactFlowProvider>,
     {
       withRouter: true,
-    }
+    },
   )
 
   await waitFor(() => {
@@ -182,7 +182,7 @@ test("expand", async () => {
     </ReactFlowProvider>,
     {
       withRouter: true,
-    }
+    },
   )
 
   await act(async () => await user.click(screen.getByTestId("ExpandMoreIcon")))
@@ -197,7 +197,7 @@ test("context menu", async () => {
     </ReactFlowProvider>,
     {
       withRouter: true,
-    }
+    },
   )
 
   fireEvent.contextMenu(screen.getByText("Node Label"))
@@ -214,7 +214,7 @@ test("context menu show lineage", async () => {
     </ReactFlowProvider>,
     {
       withRouter: true,
-    }
+    },
   )
 
   fireEvent.contextMenu(screen.getByText("Node Label"))
@@ -231,7 +231,7 @@ test("context menu show upstream dependents", async () => {
     </ReactFlowProvider>,
     {
       withRouter: true,
-    }
+    },
   )
 
   fireEvent.contextMenu(screen.getByText("Node Label"))
@@ -239,8 +239,8 @@ test("context menu show upstream dependents", async () => {
   await act(
     async () =>
       await user.click(
-        screen.getByRole("menuitem", { name: /Show upstream dependents/i })
-      )
+        screen.getByRole("menuitem", { name: /Show upstream dependents/i }),
+      ),
   )
 })
 
@@ -253,7 +253,7 @@ test("context menu show downstream dependents", async () => {
     </ReactFlowProvider>,
     {
       withRouter: true,
-    }
+    },
   )
 
   fireEvent.contextMenu(screen.getByText("Node Label"))
@@ -261,8 +261,8 @@ test("context menu show downstream dependents", async () => {
   await act(
     async () =>
       await user.click(
-        screen.getByRole("menuitem", { name: /Show downstream dependents/i })
-      )
+        screen.getByRole("menuitem", { name: /Show downstream dependents/i }),
+      ),
   )
 })
 
@@ -273,7 +273,7 @@ test("context menu show profile", async () => {
     <ReactFlowProvider>
       <BaseNode data={data} />
     </ReactFlowProvider>,
-    { routes: ["/:organisationName/:workspaceName/tables/:nodeId"] }
+    { routes: ["/:organisationName/:workspaceName/nodes/:nodeId"] },
   )
 
   fireEvent.contextMenu(screen.getByText("Node Label"))
@@ -281,8 +281,8 @@ test("context menu show profile", async () => {
   await act(
     async () =>
       await user.click(
-        screen.getByRole("menuitem", { name: /Show profile for this table/i })
-      )
+        screen.getByRole("menuitem", { name: /Show profile for this table/i }),
+      ),
   )
 
   await waitFor(() => {
@@ -295,7 +295,7 @@ test("double click", async () => {
     <ReactFlowProvider>
       <BaseNode data={data} />
     </ReactFlowProvider>,
-    { routes: ["/:organisationName/:workspaceName/tables/:nodeId"] }
+    { routes: ["/:organisationName/:workspaceName/nodes/:nodeId"] },
   )
 
   fireEvent.dblClick(screen.getByText("Node Label"))

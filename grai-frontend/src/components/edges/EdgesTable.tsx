@@ -19,7 +19,7 @@ interface Edge {
   display_name: string
   namespace: string
   is_active: boolean
-  data_sources: Source[]
+  data_sources: { data: Source[] }
   metadata: any
 }
 
