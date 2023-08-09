@@ -241,7 +241,8 @@ async def test_update_password_wrong_password(test_context):
 
     assert (
         str(result.errors)
-        == "[GraphQLError('Old password does not match', locations=[SourceLocation(line=3, column=13)], path=['updatePassword'])]"
+        == "[GraphQLError('Old password does not match', locations=[SourceLocation(line=3, column=13)],"
+        " path=['updatePassword'])]"
     )
     assert result.data is None
 

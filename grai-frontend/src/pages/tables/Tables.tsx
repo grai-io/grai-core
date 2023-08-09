@@ -5,6 +5,7 @@ import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
 import TableHeader from "components/table/TableHeader"
+import { Source } from "components/tables/DataSourcesStack"
 import TablesTable from "components/tables/TablesTable"
 import GraphError from "components/utils/GraphError"
 import { GetTables, GetTablesVariables } from "./__generated__/GetTables"
@@ -26,6 +27,20 @@ export const GET_TABLES = gql`
           display_name
           is_active
           metadata
+          data_sources {
+            id
+            name
+            connections {
+              data {
+                id
+                connector {
+                  id
+                  name
+                  slug
+                }
+              }
+            }
+          }
         }
         meta {
           filtered
@@ -41,8 +56,9 @@ export interface Table {
   namespace: string
   name: string
   display_name: string
-  // data_source: string
   is_active: boolean
+  metadata: any
+  data_sources: Source[]
 }
 
 const Tables: React.FC = () => {

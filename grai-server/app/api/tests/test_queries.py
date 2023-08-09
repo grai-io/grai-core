@@ -35,7 +35,8 @@ async def test_workspaces_no_login(test_basic_context):
 
     assert (
         str(result.errors)
-        == "[GraphQLError('User is not authenticated', locations=[SourceLocation(line=3, column=13)], path=['workspaces'])]"
+        == "[GraphQLError('User is not authenticated', locations=[SourceLocation(line=3, column=13)],"
+        " path=['workspaces'])]"
     )
     assert result.data is None
 

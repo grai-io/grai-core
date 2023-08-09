@@ -4,7 +4,7 @@ import { Grid, Typography } from "@mui/material"
 const FilterRowHeader: React.FC = () => (
   <Grid container spacing={1}>
     <Grid item md={3}>
-      <Typography>Property</Typography>
+      <Typography>Filter Type</Typography>
     </Grid>
     <Grid item md={3}>
       <Typography>Field</Typography>

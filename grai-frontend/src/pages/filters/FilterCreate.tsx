@@ -7,6 +7,10 @@ import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
 import GraphError from "components/utils/GraphError"
+import {
+  GetWorkspaceFilterCreate,
+  GetWorkspaceFilterCreateVariables,
+} from "./__generated__/GetWorkspaceFilterCreate"
 
 export const GET_WORKSPACE = gql`
   query GetWorkspaceFilterCreate(
@@ -22,6 +26,12 @@ export const GET_WORKSPACE = gql`
       tags {
         data
       }
+      sources {
+        data {
+          id
+          name
+        }
+      }
     }
   }
 `
@@ -29,7 +39,10 @@ export const GET_WORKSPACE = gql`
 const FilterCreate: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
 
-  const { loading, error, data } = useQuery(GET_WORKSPACE, {
+  const { loading, error, data } = useQuery<
+    GetWorkspaceFilterCreate,
+    GetWorkspaceFilterCreateVariables
+  >(GET_WORKSPACE, {
     variables: {
       organisationName,
       workspaceName,
@@ -51,6 +64,7 @@ const FilterCreate: React.FC = () => {
           workspaceId={workspace.id}
           namespaces={workspace.namespaces.data}
           tags={workspace.tags.data}
+          sources={workspace.sources.data}
         />
       </PageContent>
     </PageLayout>

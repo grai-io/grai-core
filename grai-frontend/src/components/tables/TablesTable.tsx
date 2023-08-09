@@ -1,5 +1,7 @@
 import React from "react"
 import {
+  Chip,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -12,6 +14,7 @@ import { useNavigate } from "react-router-dom"
 import { Table as TableInterface } from "pages/tables/Tables"
 import Loading from "components/layout/Loading"
 import TablePagination from "components/table/TablePagination"
+import DataSourcesStack from "./DataSourcesStack"
 
 type TablesTableProps = {
   tables: TableInterface[]
@@ -36,8 +39,10 @@ const TablesTable: React.FC<TablesTableProps> = ({
         <TableRow>
           <TableCell>Name</TableCell>
           <TableCell>Namespace</TableCell>
-          {/* <TableCell>Data Source</TableCell> */}
+          <TableCell>Node Type</TableCell>
+          <TableCell>Data Sources</TableCell>
           <TableCell>Active</TableCell>
+          <TableCell>Tags</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -52,8 +57,18 @@ const TablesTable: React.FC<TablesTableProps> = ({
           >
             <TableCell>{table.display_name ?? table.name}</TableCell>
             <TableCell>{table.namespace}</TableCell>
-            {/* <TableCell>{table.data_source}</TableCell> */}
+            <TableCell>{table.metadata?.grai?.node_type}</TableCell>
+            <TableCell sx={{ py: 0, pl: 1 }}>
+              <DataSourcesStack data_sources={table.data_sources} />
+            </TableCell>
             <TableCell>{table.is_active ? "Yes" : "No"}</TableCell>
+            <TableCell sx={{ py: 0 }}>
+              <Stack direction="row" spacing={1}>
+                {table.metadata?.grai?.tags?.map((tag: string) => (
+                  <Chip label={tag} key={tag} />
+                ))}
+              </Stack>
+            </TableCell>
           </TableRow>
         ))}
         {loading && (

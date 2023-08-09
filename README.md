@@ -23,7 +23,8 @@
 <h3 align="center">
   <a href="https://docs.grai.io/"><b>Documentation</b></a> &bull;
   <a href="https://www.grai.io" title="Grai Homepage"> Website </a> &bull;
-  <a href="https://join.slack.com/t/graicommunity/shared_invite/zt-1il70kfeb-TaCm5fwHg_quWCpKNYyj6w"><b>Slack Community</b></a> &bull;
+  <a href="https://join.slack.com/t/graicommunity/shared_invite/zt-1il70kfeb-TaCm5fwHg_quWCpKNYyj6w"><b>Slack</b></a> &bull;
+  <a href="https://github.com/orgs/grai-io/discussions/" title="Community Page"> Discussion </a> &bull;
   <a href="https://calendly.com/grai-founders"><b>Want to Chat?</b></a>
 </h3>
 
@@ -44,42 +45,28 @@ Grai makes it easy to understand and test how your data relates across databases
 - Get alerts in your CI/CD workflows whenever changes to a production system will impact your warehouse or dbt projects with [GitHub Actions](https://github.com/grai-io/grai-actions-server).
 - Self host the project or run it in the [Grai Cloud](https://app.grai.io) for free.
 
+
 ### Connectors
 
-We currently support pre-built integrations for a variety of sources including
-
-<center>
-
-|                                                                   | integration           | install                             |
-|-------------------------------------------------------------------|-----------------------|-------------------------------------|
-| <img src="resources/snowflake.png" alt=“” width="30" height="30"> | Snowflake             | `pip install grai-source-snowflake` |
-| <img src="resources/bigquery.svg" alt=“” width="30" height="30">  | BigQuery              | `pip install grai-source-bigquery`  |
-| <img src="resources/redshift.png" alt=“” width="30" height="30">  | Redshift              | `pip install grai-source-redshift`  |
-| <img src="resources/postgres.png" alt=“” width="30" height="30">  | Postgres              | `pip install grai-source-postgres`  |
-| <img src="resources/mysql.png" alt=“” width="30" height="30">     | MySQL                 | `pip install grai-source-mysql`     |
-| <img src="resources/mssql.png" alt=“” width="30" height="30">     | SQL Server            | `pip install grai-source-mssql`     |
-| <img src="resources/dbt.png" alt=“” width="30" height="30">       | dbt                   | `pip install grai-source-dbt`       |
-| <img src="resources/fivetran.png" alt=“” width="30" height="30">  | Fivetran              | `pip install grai-source-fivetran`  |
+|                                                                   | integration   | install                             |
+|-------------------------------------------------------------------|---------------|-------------------------------------|
+| <img src="resources/snowflake.png" alt=“” width="30" height="30"> | Snowflake     | `pip install grai-source-snowflake` |
+| <img src="resources/bigquery.svg" alt=“” width="30" height="30">  | BigQuery      | `pip install grai-source-bigquery`  |
+| <img src="resources/redshift.png" alt=“” width="30" height="30">  | Redshift      | `pip install grai-source-redshift`  |
+| <img src="resources/postgres.png" alt=“” width="30" height="30">  | Postgres      | `pip install grai-source-postgres`  |
+| <img src="resources/mysql.png" alt=“” width="30" height="30">     | MySQL         | `pip install grai-source-mysql`     |
+| <img src="resources/mssql.png" alt=“” width="30" height="30">     | SQL Server    | `pip install grai-source-mssql`     |
+| <img src="resources/dbt.png" alt=“” width="30" height="30">       | dbt           | `pip install grai-source-dbt`       |
+| <img src="resources/fivetran.png" alt=“” width="30" height="30">  | Fivetran      | `pip install grai-source-fivetran`  |
 | <img src="resources/csv.png" alt=“” width="30" height="30">       | csv, parquet, feather | `pip install grai-source-flat-file` |
-| <img src="resources/metabase.png" alt=“” width="30" height="30">  | Metabase (alpha)      | `pip install grai-source-metabase`  |
+| <img src="resources/metabase.png" alt=“” width="30" height="30">  | Metabase      | `pip install grai-source-metabase`  |
+| <img src="resources/looker.svg" alt=“” width="25" height="40">    | Looker (alpha) | `pip install grai-source-looker`    |
 
-</center>
 
 ## Quickstart
 
 You can find a full quickstart guide in the [documentation](https://docs.grai.io/quick-start) which covers deploying your own instance of Grai and getting set up with your first connector in python.
-
-### Running Locally
-
-You can always find pre-built images of the backend server at `ghcr.io/grai-io/grai-core/grai-server:latest` and the frontend at `ghcr.io/grai-io/grai-core/grai-frontend:latest`, however, if you prefer to build from source, you can do so with docker compose.
-
-```
-git clone https://github.com/grai-io/grai-core
-cp examples/deployment/docker-compose/docker-compose.yml
-docker compose up
-```
-
-The backend server will be available at [http://localhost:8000/](http://localhost:8000/) and the frontend is now here [http://localhost:3000/](http://localhost:3000/).
+The fastest way to get started is through the Grai CLI but you can also run the project locally with docker compose.
 
 Default login credentials:
 
@@ -87,6 +74,25 @@ Default login credentials:
 username: null@grai.io
 password: super_secret
 ```
+
+### CLI
+
+```bash
+pip install grai-cli
+grai demo start
+```
+
+### Running Locally
+
+You can always find pre-built images of the backend server at `ghcr.io/grai-io/grai-core/grai-server:latest` and the frontend at `ghcr.io/grai-io/grai-core/grai-frontend:latest`, however, if you prefer to build from source, you can do so with docker compose.
+
+```bash
+git clone https://github.com/grai-io/grai-core
+cp examples/deployment/docker-compose/docker-compose.yml
+docker compose up
+```
+
+The backend server will be available at [http://localhost:8000/](http://localhost:8000/) and the frontend is now here [http://localhost:3000/](http://localhost:3000/).
 
 After logging in and connecting a data source you'll be greeted with a lineage graph looking something like this
 
@@ -107,27 +113,25 @@ helm repo add grai https://charts.grai.io
 helm install grai grai/grai
 ```
 
-## Other Features
+## Component Services
 
-### CLI Library
+* [grai-server](https://github.com/grai-io/grai-core/tree/master/grai-server): The backend metadata service built on Postgres and Django as the Metadata persistence layer.
+* [grai-frontend](https://github.com/grai-io/grai-core/tree/master/grai-frontend): The frontend web application built on React.
+* [grai-cli](https://github.com/grai-io/grai-core/tree/master/grai-client): Python client library for interacting with the Grai server.
+* [grai-schemas](https://github.com/grai-io/grai-core/tree/master/grai-schemas): The python metadata schema implementation library of Grai. It provides a standardized view of all Grai objects used to ensure compatibility between the server, integrations, and the client.
+* [grai-graph](https://github.com/grai-io/grai-core/tree/master/grai-graph): A python utility library for working with the Grai metadata graph.
+* [grai-actions](https://github.com/grai-io/grai-actions): A library of GitHub Actions implementations to integrate Grai tests into your CI/CD pipelines.
+* [integrations](https://github.com/grai-io/grai-core/tree/master/grai-integrations): A collection of integration libraries to extract metadata and persist their results to Grai.
 
-Programmatically interact with your data lineage from the command line using the grai-cli. Although we strongly encourage using something like `pipx`, for installing the cli it's otherwise as simple as
 
-```
-pip install grai-cli
-```
+## Community Roadmap
 
-After installation you can invoke the CLI with the command `grai`. The first time you run the CLI you should be greeted with installation instructions, but you can always rerun them with the command `grai config init`.
+Community Feedback drives our roadmap. Please let us know what you'd like to see next by asking questions and upvoting feature requests!
 
-### Python Client Library
-
-The client library provides programmatic access to the data lineage server. You can use the client library for any programmatic functionality you want to add on top of the core Grai installation.
-
-```
-pip install grai-client
-```
-
-To work with the client, learn more [here](https://docs.grai.io/core/tooling/client).
+* [Feature Requests](https://github.com/orgs/grai-io/discussions/categories/feature-requests)
+* [Documentation Requests](https://github.com/orgs/grai-io/discussions/categories/documentation-requests)
+* [Bug Reports](https://github.com/grai-io/grai-core/issues)
+* [FAQ](https://github.com/orgs/grai-io/discussions/categories/q-a)
 
 ## Repo Activity
 
@@ -141,7 +145,7 @@ Join us on Slack:  <a href="https://join.slack.com/t/graicommunity/shared_invite
 
 Check us out at www.grai.io
 
-Sign up for our Newsletter `Grai Matters` [email list](https://share.hsforms.com/1npxxxm7USl-wUiKMtZoqwgdtk55).
+Sign up for our Newsletter `Grai Matters` [email list](https://blog.grai.io/#/portal/signup).
 
 <a href="https://github.com/grai-io/grai-core/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=grai-io/grai-core" />

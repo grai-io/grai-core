@@ -25,6 +25,30 @@ export interface GetEdges_workspace_edges_data_destination {
   display_name: string;
 }
 
+export interface GetEdges_workspace_edges_data_data_sources_connections_data_connector {
+  __typename: "Connector";
+  id: any;
+  slug: string | null;
+}
+
+export interface GetEdges_workspace_edges_data_data_sources_connections_data {
+  __typename: "Connection";
+  id: any;
+  connector: GetEdges_workspace_edges_data_data_sources_connections_data_connector;
+}
+
+export interface GetEdges_workspace_edges_data_data_sources_connections {
+  __typename: "ConnectionPagination";
+  data: GetEdges_workspace_edges_data_data_sources_connections_data[];
+}
+
+export interface GetEdges_workspace_edges_data_data_sources {
+  __typename: "Source";
+  id: any;
+  name: string;
+  connections: GetEdges_workspace_edges_data_data_sources_connections;
+}
+
 export interface GetEdges_workspace_edges_data {
   __typename: "Edge";
   id: any;
@@ -35,6 +59,7 @@ export interface GetEdges_workspace_edges_data {
   metadata: any;
   source: GetEdges_workspace_edges_data_source;
   destination: GetEdges_workspace_edges_data_destination;
+  data_sources: GetEdges_workspace_edges_data_data_sources[];
 }
 
 export interface GetEdges_workspace_edges_meta {

@@ -78,6 +78,7 @@ class Node:
     is_active: strawberry.auto
     source_edges: List["Edge"]
     destination_edges: List["Edge"]
+    data_sources: List["Source"]
 
     # Events
     @strawberry.field
@@ -108,6 +109,7 @@ class Edge:
     destination: Node = strawberry.django.field()
     metadata: JSON
     is_active: strawberry.auto
+    data_sources: List["Source"]
     created_at: strawberry.auto
     updated_at: strawberry.auto
 

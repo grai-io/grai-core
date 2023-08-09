@@ -1,7 +1,9 @@
 import pytest
+from grai_schemas.v1.mock import MockV1
 from grai_schemas.v1.source import SourceSpec
 from grai_schemas.v1.workspace import WorkspaceSpec
 
+from grai_source_postgres.base import PostgresIntegration
 from grai_source_postgres.loader import PostgresConnector
 
 
@@ -42,6 +44,11 @@ def connection(conn_credentials) -> PostgresConnector:
 
     connection = PostgresConnector(**conn_credentials)
     return connection
+
+
+@pytest.fixture
+def integration(conn_credentials) -> PostgresIntegration:
+    return PostgresIntegration(source=MockV1().source.source(), **conn_credentials)
 
 
 @pytest.fixture

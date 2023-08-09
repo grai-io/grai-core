@@ -25,12 +25,24 @@ export interface GetFilter_workspace_tags {
   data: string[];
 }
 
+export interface GetFilter_workspace_sources_data {
+  __typename: "Source";
+  id: any;
+  name: string;
+}
+
+export interface GetFilter_workspace_sources {
+  __typename: "SourcePagination";
+  data: GetFilter_workspace_sources_data[];
+}
+
 export interface GetFilter_workspace {
   __typename: "Workspace";
   id: any;
   filter: GetFilter_workspace_filter;
   namespaces: GetFilter_workspace_namespaces;
   tags: GetFilter_workspace_tags;
+  sources: GetFilter_workspace_sources;
 }
 
 export interface GetFilter {
