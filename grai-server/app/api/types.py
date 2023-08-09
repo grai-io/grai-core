@@ -517,8 +517,14 @@ class Workspace:
     def nodes(
         self,
         pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+        search: Optional[str] = strawberry.UNSET,
     ) -> Pagination["Node"]:
         queryset = NodeModel.objects.filter(workspace=self)
+
+        if search:
+            queryset = queryset.filter(
+                Q(id__icontains=search) | Q(name__icontains=search) | Q(display_name__icontains=search)
+            )
 
         return Pagination[Node](queryset=queryset, pagination=pagination)
 
