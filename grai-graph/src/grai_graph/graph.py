@@ -1,5 +1,7 @@
-from functools import lru_cache
+from collections import Counter, defaultdict
+from functools import cached_property, lru_cache
 from typing import Any, Dict, List, Optional, Sequence, Tuple, Type, Union
+from uuid import UUID
 
 import networkx as nx
 from grai_schemas.base import Edge as EdgeTypes
@@ -238,3 +240,54 @@ def build_graph(nodes: List[Dict], edges: List[Dict], version: str) -> Graph:
     manifest = GraphManifest(nodes, edges)
 
     return Graph(manifest)
+
+
+class SourceSegment:
+    def __init__(self, nodes: List[NodeTypes], edges: List[EdgeTypes]):
+        # Assumes we are providing SourceSpecs not UUIDs in data_sources
+        self.node_source_map = {
+            node.spec.id: frozenset(source.name for source in node.spec.data_sources) for node in nodes
+        }
+        if None in self.node_source_map:
+            raise ValueError("All values in `nodes` must be of NodeType and their `.spec.id` value must not be empty.")
+
+        self.edge_map = {}
+        for edge in edges:
+            source = edge.spec.source.id if not isinstance(edge.spec.source, UUID) else edge.spec.source
+            destination = (
+                edge.spec.destination.id if not isinstance(edge.spec.destination, UUID) else edge.spec.destination
+            )
+            self.edge_map[source] = destination
+
+    @cached_property
+    def covering_set(self) -> tuple:
+        # I think removing repeated sets won't affect the minimal covering set computation 🤞
+        sets = set(self.node_source_map.values())
+
+        result = []
+        while sets:
+            frequency = Counter(elem for s in sets for elem in s)
+            max_element = max(frequency, key=frequency.get)
+            result.append(max_element)
+            sets = [s for s in sets if max_element not in s]
+
+        return tuple(result)
+
+    @cached_property
+    def node_cover_map(self) -> dict:
+        result: dict = {}
+        for key, source_set in self.node_source_map.items():
+            for cover in self.covering_set:
+                if cover in source_set:
+                    result[key] = cover
+                    break
+        return result
+
+    @cached_property
+    def cover_edge_map(self) -> Dict[str, List[str]]:
+        result = defaultdict(set)
+        for source, destination in self.edge_map.items():
+            source_cover = self.node_cover_map[source]
+            destination_cover = self.node_cover_map[destination]
+            result[source_cover].add(destination_cover)
+        return {k: list(v) for k, v in result.items()}
