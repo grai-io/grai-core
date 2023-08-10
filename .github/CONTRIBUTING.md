@@ -69,7 +69,7 @@ For all Pull Requests, you should be extremely descriptive about both your probl
 
 Contributors to Grai are deemed to have acceppted
 
-    [GitHub's Acceptable Use Policy](https://docs.github.com/en/site-policy/acceptable-use-policies/github-acceptable-use-policies)
-    [GitHub's Community Guidelines](https://docs.github.com/en/site-policy/github-terms/github-community-guidelines)
-    [The Developer Certificate of Origin](https://developercertificate.org/)
+* [GitHub's Acceptable Use Policy](https://docs.github.com/en/site-policy/acceptable-use-policies/github-acceptable-use-policies)
+* [GitHub's Community Guidelines](https://docs.github.com/en/site-policy/github-terms/github-community-guidelines)
+* [The Developer Certificate of Origin](https://developercertificate.org/)
  
