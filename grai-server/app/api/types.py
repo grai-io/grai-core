@@ -3,6 +3,8 @@ import time
 from enum import Enum
 from typing import List, Optional
 
+from grai_graph.graph import BaseSourceSegment
+
 import strawberry
 import strawberry_django
 from asgiref.sync import sync_to_async
@@ -950,26 +952,34 @@ class Workspace:
     # Source Graph
     @strawberry.field
     def source_graph(self) -> JSON:
-        # self = workspace class, access to id
-        nodes = NodeModel.objects.filter(workspace=self.id).values("id", "data_sources")
+        def fetch_source_graph(workspace: WorkspaceModel):
+            # self = workspace class, access to id
+            nodes = list(NodeModel.objects.filter(workspace=workspace))
 
-        source_ids = set(source_id for node in nodes for source_id in node["data_sources"])
-        sources = SourceModel.objects.filter(id__in=source_ids, workspace=self.id).values("id", "name")
-        sources = {source["id"]: source["name"] for source in sources}
+            source_ids = set(source.id for node in nodes for source in node.data_sources.all())
 
-        nodes = {node["id"]: {sources[source_id] for source_id in node["data_sources"]} for node in nodes}
+            sources = SourceModel.objects.filter(
+                id__in=source_ids,
+                workspace=workspace,
+            ).values("id", "name")
 
-        edges = EdgeModel.objects.filter(workspace=self.id).values("source", "destination")
-        edges = {edge["source"]: edge["destination"] for edge in edges}
+            sources = {source["id"]: source["name"] for source in sources}
 
-        # I can convert this into an explicit SQL queries to avoid loading the entire graph if needed.
-        segmentation = BaseSourceSegment(node_source_map=nodes, edge_map=edges)
+            nodes = {node.id: {sources[source.id] for source in node.data_sources.all()} for node in nodes}
 
-        result = segmentation.cover_edge_map
-        for source in segmentation.covering_set:
-            result.setdefault(source, [])
+            edges = EdgeModel.objects.filter(workspace=workspace).values("source", "destination")
+            edges = {edge["source"]: edge["destination"] for edge in edges}
 
-        return result
+            # I can convert this into an explicit SQL queries to avoid loading the entire graph if needed.
+            segmentation = BaseSourceSegment(node_source_map=nodes, edge_map=edges)
+
+            result = segmentation.cover_edge_map
+            for source in segmentation.covering_set:
+                result.setdefault(source, [])
+
+            return result
+
+        return sync_to_async(fetch_source_graph)(self)
 
 
 @strawberry_django.filters.filter(MembershipModel, lookups=True)

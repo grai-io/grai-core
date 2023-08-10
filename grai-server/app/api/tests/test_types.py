@@ -890,7 +890,7 @@ async def test_workspace_search_key_no_env(test_context, mocker):
 
     assert (
         str(result.errors)
-        == "[GraphQLError('Alogia not setup', locations=[SourceLocation(line=5, column=17)], path=['workspace',"
+        == "[GraphQLError('Algolia not setup', locations=[SourceLocation(line=5, column=17)], path=['workspace',"
         " 'search_key'])]"
     )
 
@@ -2552,6 +2552,46 @@ async def test_workspace_alert(test_context, test_alert):
     assert result.errors is None
     assert result.data["workspace"]["id"] == str(workspace.id)
     assert result.data["workspace"]["alert"]["id"] == str(test_alert.id)
+
+
+@pytest.mark.django_db
+async def test_workspace_source_graph(test_context, test_source):
+    context, organisation, workspace, user, membership = test_context
+
+    source = await Node.objects.acreate(workspace=workspace, name="source")
+    destination = await Node.objects.acreate(workspace=workspace, name="destination")
+
+    await test_source.nodes.aadd(source)
+    await test_source.nodes.aadd(destination)
+
+    edge = await Edge.objects.acreate(
+        workspace=workspace,
+        source=source,
+        destination=destination,
+        metadata={"grai": {"edge_type": "Edge"}},
+    )
+    await test_source.edges.aadd(edge)
+
+    query = """
+        query Workspace($workspaceId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                source_graph
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["source_graph"] == {str(test_source.name): [str(test_source.name)]}
 
 
 @pytest.mark.django_db

@@ -40,6 +40,7 @@ const Connection = lazy(() => import("./pages/connections/Connection"))
 
 const Sources = lazy(() => import("./pages/sources/Sources"))
 const SourceCreate = lazy(() => import("./pages/sources/SourceCreate"))
+const SourceGraph = lazy(() => import("./pages/sources/SourceGraph"))
 const Source = lazy(() => import("./pages/sources/Source"))
 
 const Filters = lazy(() => import("./pages/filters/Filters"))
@@ -129,6 +130,7 @@ const Routes: React.FC = () => (
               <Route path="sources">
                 <Route index element={<Sources />} />
                 <Route path="create" element={<SourceCreate />} />
+                <Route path="graph" element={<SourceGraph />} />
                 <Route path=":sourceId" element={<Source />} />
               </Route>
               <Route path="filters">
