@@ -13,7 +13,7 @@ from strawberry.scalars import JSON
 from strawberry_django.filters import FilterLookup
 from strawberry_django.pagination import OffsetPaginationInput
 from strawberry.types import Info
-
+from grai_graph.graph import BaseSourceSegment
 from api.search import Search
 from connections.models import Connection as ConnectionModel
 from connections.models import Run as RunModel
@@ -23,7 +23,7 @@ from installations.models import Commit as CommitModel
 from installations.models import PullRequest as PullRequestModel
 from installations.models import Repository as RepositoryModel
 from lineage.filter import apply_table_filter, get_tags
-from lineage.graph import GraphQuery, BaseSourceSegment
+from lineage.graph import GraphQuery
 from lineage.graph_cache import GraphCache
 from lineage.graph_types import BaseTable, GraphTable
 from lineage.models import Edge as EdgeModel
@@ -68,7 +68,7 @@ class Event:
     created_at: strawberry.auto
 
 
-@strawberry.django.type(NodeModel, order=NodeOrder, filters=NodeFilter, pagination=True, only=["id"])
+@strawberry.django.type(NodeModel, order=NodeOrder, filters=NodeFilter, pagination=True)
 class Node:
     id: strawberry.auto
     namespace: strawberry.auto
@@ -78,7 +78,17 @@ class Node:
     is_active: strawberry.auto
     source_edges: List["Edge"]
     destination_edges: List["Edge"]
-    data_sources: List["Source"]
+
+    # Columns
+    @strawberry.django.field(
+        prefetch_related=Prefetch(
+            "source_edges",
+            queryset=EdgeModel.objects.filter(metadata__grai__edge_type="TableToColumn").select_related("destination"),
+            to_attr="edges_list",
+        )
+    )
+    def columns(self) -> DataWrapper["Column"]:
+        return DataWrapper[Column](list(set([edge.destination for edge in self.edges_list])))
 
     # Events
     @strawberry.field
@@ -91,7 +101,7 @@ class Node:
 
     # Sources
     @strawberry.django.field
-    def sources(
+    def data_sources(
         self,
     ) -> Pagination["Source"]:
         queryset = SourceModel.objects.filter(nodes=self)
@@ -109,9 +119,17 @@ class Edge:
     destination: Node = strawberry.django.field()
     metadata: JSON
     is_active: strawberry.auto
-    data_sources: List["Source"]
     created_at: strawberry.auto
     updated_at: strawberry.auto
+
+    # Sources
+    @strawberry.django.field
+    def data_sources(
+        self,
+    ) -> Pagination["Source"]:
+        queryset = SourceModel.objects.filter(edges=self)
+
+        return Pagination[Source](queryset=queryset)
 
 
 @strawberry.django.type(RunModel, order="RunOrder", pagination=True)
@@ -317,7 +335,7 @@ class Column(Node):
     def requirements_edges(
         self,
         pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
-    ) -> Pagination[Edge]:
+    ) -> Pagination["Edge"]:
         queryset = EdgeModel.objects.filter(source=self).filter(metadata__grai__edge_type="ColumnToColumn")
 
         return Pagination[Edge](queryset=queryset, pagination=pagination)
@@ -517,14 +535,23 @@ class Workspace:
     def nodes(
         self,
         pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+        search: Optional[str] = strawberry.UNSET,
     ) -> Pagination["Node"]:
         queryset = NodeModel.objects.filter(workspace=self)
+
+        if search:
+            queryset = queryset.filter(
+                Q(id__icontains=search) | Q(name__icontains=search) | Q(display_name__icontains=search)
+            )
 
         return Pagination[Node](queryset=queryset, pagination=pagination)
 
     @strawberry.django.field
     def node(self, id: strawberry.ID) -> Node:
-        return NodeModel.objects.get(id=id)
+        return NodeModel.objects.filter(
+            id=id,
+            workspace=self,
+        )
 
     # Edges
     @strawberry.django.field
@@ -922,7 +949,7 @@ class Workspace:
 
     # Source Graph
     @strawberry.field
-    def source_graph(self) -> JSON[str, list[str]]:
+    def source_graph(self) -> JSON:
         # self = workspace class, access to id
         nodes = NodeModel.objects.filter(workspace=self.id).values("id", "data_sources")
 

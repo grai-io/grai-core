@@ -5,8 +5,8 @@ import EdgesTable from "components/edges/EdgesTable"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
+import TableHeader from "components/nodes/NodeHeader"
 import TableFilterChoice from "components/table/TableFilterChoice"
-import TableHeader from "components/table/TableHeader"
 import GraphError from "components/utils/GraphError"
 import { GetEdges, GetEdgesVariables } from "./__generated__/GetEdges"
 
@@ -45,14 +45,17 @@ export const GET_EDGES = gql`
             display_name
           }
           data_sources {
-            id
-            name
-            connections {
-              data {
-                id
-                connector {
+            data {
+              id
+              name
+              connections {
+                data {
                   id
-                  slug
+                  connector {
+                    id
+                    name
+                    slug
+                  }
                 }
               }
             }
