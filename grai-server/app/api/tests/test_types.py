@@ -769,7 +769,7 @@ async def test_workspace_search_key_no_env(test_context, mocker):
 
     assert (
         str(result.errors)
-        == "[GraphQLError('Alogia not setup', locations=[SourceLocation(line=5, column=17)], path=['workspace',"
+        == "[GraphQLError('Algolia not setup', locations=[SourceLocation(line=5, column=17)], path=['workspace',"
         " 'search_key'])]"
     )
 
