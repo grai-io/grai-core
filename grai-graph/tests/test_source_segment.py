@@ -1,6 +1,6 @@
 from grai_schemas.v1.mock import MockV1
 
-from grai_graph.graph import SourceSegment
+from grai_graph.graph import BaseSourceSegment, SourceSegment
 
 mocker = MockV1()
 
@@ -27,3 +27,16 @@ class TestSourceSegment:
     def test_cover_edge_map(self):
         result = {"b": ["c"]}
         assert self.segment.cover_edge_map == result
+
+    # def test_real_query(self):
+    #     from grai_client.endpoints.v1.client import ClientV1
+    #     client = ClientV1(username="null@grai.io", password="super_secret", workspace="default", url="http://localhost:8000")
+    #     nodes = client.get("nodes")
+    #     edges = client.get("edges")
+    #     node_inp = {node.spec.id: {source.name for source in node.spec.data_sources} for node in nodes}
+    #
+    #     # overwrites edges
+    #     edge_inp = {edge.spec.source.id: edge.spec.destination.id for edge in edges}
+    #
+    #     source_segment = BaseSourceSegment(node_source_map=node_inp, edge_map=edge_inp)
+    #     breakpoint()

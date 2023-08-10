@@ -4,7 +4,7 @@ from enum import Enum
 from typing import List, Optional
 
 from grai_graph.graph import BaseSourceSegment
-
+from collections import defaultdict
 import strawberry
 import strawberry_django
 from asgiref.sync import sync_to_async
@@ -953,27 +953,25 @@ class Workspace:
     @strawberry.field
     def source_graph(self) -> JSON:
         def fetch_source_graph(workspace: WorkspaceModel):
-            # self = workspace class, access to id
-            nodes = list(NodeModel.objects.filter(workspace=workspace))
+            nodes = (
+                NodeModel.objects.filter(workspace=workspace, is_active=True)
+                .prefetch_related("data_sources")
+                .values("id", "data_sources__name")
+            )
+            grouped_nodes = defaultdict(list)
+            for result in nodes:
+                grouped_nodes[result["id"]].append(result["data_sources__name"])
 
-            source_ids = set(source.id for node in nodes for source in node.data_sources.all())
+            nodes = grouped_nodes
 
-            sources = SourceModel.objects.filter(
-                id__in=source_ids,
-                workspace=workspace,
-            ).values("id", "name")
-
-            sources = {source["id"]: source["name"] for source in sources}
-
-            nodes = {node.id: {sources[source.id] for source in node.data_sources.all()} for node in nodes}
-
-            edges = EdgeModel.objects.filter(workspace=workspace).values("source", "destination")
-            edges = {edge["source"]: edge["destination"] for edge in edges}
+            edges = defaultdict(list)
+            for edge in EdgeModel.objects.filter(workspace=workspace, is_active=True).values("source", "destination"):
+                edges[edge["source"]].append(edge["destination"])
 
             # I can convert this into an explicit SQL queries to avoid loading the entire graph if needed.
             segmentation = BaseSourceSegment(node_source_map=nodes, edge_map=edges)
 
-            result = segmentation.cover_edge_map
+            result = segmentation.cover_edge_map.copy()
             for source in segmentation.covering_set:
                 result.setdefault(source, [])
 
