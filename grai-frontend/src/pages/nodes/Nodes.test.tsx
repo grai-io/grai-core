@@ -2,13 +2,13 @@ import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
-import Tables, { GET_TABLES } from "./Tables"
+import Nodes, { GET_NODES } from "./Nodes"
 
 test("renders", async () => {
   const mocks = [
     {
       request: {
-        query: GET_TABLES,
+        query: GET_NODES,
         variables: {
           organisationName: "",
           workspaceName: "",
@@ -20,7 +20,7 @@ test("renders", async () => {
         data: {
           workspace: {
             id: "1234",
-            tables: {
+            nodes: {
               data: [
                 {
                   id: "1234",
@@ -34,24 +34,26 @@ test("renders", async () => {
                       tags: ["tag1", "tag2"],
                     },
                   },
-                  data_sources: [
-                    {
-                      id: "1",
-                      name: "source1",
-                      connections: {
-                        data: [
-                          {
-                            id: "1",
-                            connector: {
+                  data_sources: {
+                    data: [
+                      {
+                        id: "1",
+                        name: "source1",
+                        connections: {
+                          data: [
+                            {
                               id: "1",
-                              name: "connector1",
-                              slug: "postgres",
+                              connector: {
+                                id: "1",
+                                name: "connector1",
+                                slug: "postgres",
+                              },
                             },
-                          },
-                        ],
+                          ],
+                        },
                       },
-                    },
-                  ],
+                    ],
+                  },
                 },
               ],
               meta: {
@@ -65,13 +67,13 @@ test("renders", async () => {
     },
   ]
 
-  render(<Tables />, {
+  render(<Nodes />, {
     withRouter: true,
     mocks,
   })
 
   await waitFor(() => {
-    expect(screen.getByRole("heading", { name: /Tables/i })).toBeInTheDocument()
+    expect(screen.getByRole("heading", { name: /Nodes/i })).toBeInTheDocument()
   })
 
   await waitFor(() => {
@@ -83,7 +85,7 @@ test("error", async () => {
   const mocks = [
     {
       request: {
-        query: GET_TABLES,
+        query: GET_NODES,
         variables: {
           organisationName: "",
           workspaceName: "",
@@ -97,7 +99,7 @@ test("error", async () => {
     },
   ]
 
-  render(<Tables />, { mocks, withRouter: true })
+  render(<Nodes />, { mocks, withRouter: true })
 
   await waitFor(() => {
     expect(screen.getByText("Error!")).toBeInTheDocument()
@@ -110,7 +112,7 @@ test("search", async () => {
   const mocks = [
     {
       request: {
-        query: GET_TABLES,
+        query: GET_NODES,
         variables: {
           organisationName: "",
           workspaceName: "",
@@ -122,7 +124,7 @@ test("search", async () => {
         data: {
           workspace: {
             id: "1234",
-            tables: {
+            nodes: {
               data: [],
               meta: {
                 total: 0,
@@ -135,7 +137,7 @@ test("search", async () => {
     },
     {
       request: {
-        query: GET_TABLES,
+        query: GET_NODES,
         variables: {
           organisationName: "",
           workspaceName: "",
@@ -147,7 +149,7 @@ test("search", async () => {
         data: {
           workspace: {
             id: "1234",
-            tables: {
+            nodes: {
               data: [],
               meta: {
                 total: 0,
@@ -160,7 +162,7 @@ test("search", async () => {
     },
     {
       request: {
-        query: GET_TABLES,
+        query: GET_NODES,
         variables: {
           organisationName: "",
           workspaceName: "",
@@ -172,7 +174,7 @@ test("search", async () => {
         data: {
           workspace: {
             id: "1234",
-            tables: {
+            nodes: {
               data: [],
               meta: {
                 total: 0,
@@ -185,7 +187,7 @@ test("search", async () => {
     },
   ]
 
-  render(<Tables />, {
+  render(<Nodes />, {
     mocks,
     withRouter: true,
   })
@@ -197,14 +199,14 @@ test("search", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByText("No tables found")).toBeInTheDocument()
+    expect(screen.getByText("No nodes found")).toBeInTheDocument()
   })
 })
 
 test("refresh", async () => {
   const user = userEvent.setup()
 
-  render(<Tables />, {
+  render(<Nodes />, {
     withRouter: true,
   })
 
@@ -217,8 +219,8 @@ test("refresh", async () => {
 test("click row", async () => {
   const user = userEvent.setup()
 
-  const { container } = render(<Tables />, {
-    routes: ["/:tableId"],
+  const { container } = render(<Nodes />, {
+    routes: ["/:nodeId"],
   })
 
   await waitFor(() => {
@@ -233,11 +235,11 @@ test("click row", async () => {
   expect(screen.getByText("New Page")).toBeInTheDocument()
 })
 
-test("no tables", async () => {
+test("no nodes", async () => {
   const mocks = [
     {
       request: {
-        query: GET_TABLES,
+        query: GET_NODES,
         variables: {
           organisationName: "",
           workspaceName: "",
@@ -249,7 +251,7 @@ test("no tables", async () => {
         data: {
           workspace: {
             id: "1234",
-            tables: {
+            nodes: {
               data: [],
               meta: {
                 total: 0,
@@ -262,9 +264,9 @@ test("no tables", async () => {
     },
   ]
 
-  render(<Tables />, { mocks, withRouter: true })
+  render(<Nodes />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getByText("No tables found")).toBeInTheDocument()
+    expect(screen.getByText("No nodes found")).toBeInTheDocument()
   })
 })

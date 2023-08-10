@@ -4,14 +4,13 @@ import useWorkspace from "helpers/useWorkspace"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
-import TableHeader from "components/table/TableHeader"
-import { Source } from "components/tables/DataSourcesStack"
-import TablesTable from "components/tables/TablesTable"
+import NodeHeader from "components/nodes/NodeHeader"
+import NodesTable from "components/nodes/NodesTable"
 import GraphError from "components/utils/GraphError"
-import { GetTables, GetTablesVariables } from "./__generated__/GetTables"
+import { GetNodes, GetNodesVariables } from "./__generated__/GetNodes"
 
-export const GET_TABLES = gql`
-  query GetTables(
+export const GET_NODES = gql`
+  query GetNodes(
     $organisationName: String!
     $workspaceName: String!
     $offset: Int
@@ -19,7 +18,7 @@ export const GET_TABLES = gql`
   ) {
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
-      tables(pagination: { limit: 20, offset: $offset }, search: $search) {
+      nodes(pagination: { limit: 20, offset: $offset }, search: $search) {
         data {
           id
           namespace
@@ -28,15 +27,17 @@ export const GET_TABLES = gql`
           is_active
           metadata
           data_sources {
-            id
-            name
-            connections {
-              data {
-                id
-                connector {
+            data {
+              id
+              name
+              connections {
+                data {
                   id
-                  name
-                  slug
+                  connector {
+                    id
+                    name
+                    slug
+                  }
                 }
               }
             }
@@ -51,25 +52,15 @@ export const GET_TABLES = gql`
   }
 `
 
-export interface Table {
-  id: string
-  namespace: string
-  name: string
-  display_name: string
-  is_active: boolean
-  metadata: any
-  data_sources: Source[]
-}
-
-const Tables: React.FC = () => {
+const Nodes: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
   const [search, setSearch] = useState<string>()
   const [page, setPage] = useState<number>(0)
 
   const { loading, error, data, refetch } = useQuery<
-    GetTables,
-    GetTablesVariables
-  >(GET_TABLES, {
+    GetNodes,
+    GetNodesVariables
+  >(GET_NODES, {
     variables: {
       organisationName,
       workspaceName,
@@ -77,14 +68,14 @@ const Tables: React.FC = () => {
       search,
     },
     context: {
-      debounceKey: "tables",
+      debounceKey: "nodes",
       debounceTimeout: 1000,
     },
   })
 
   if (error) return <GraphError error={error} />
 
-  const tables = data?.workspace?.tables.data ?? []
+  const nodes = data?.workspace?.nodes.data ?? []
 
   const handleRefresh = () => refetch()
   const handleSearch = (value: string) => {
@@ -94,17 +85,17 @@ const Tables: React.FC = () => {
 
   return (
     <PageLayout>
-      <PageHeader title="Tables" />
+      <PageHeader title="Nodes" />
       <PageContent>
-        <TableHeader
+        <NodeHeader
           search={search}
           onSearch={handleSearch}
           onRefresh={handleRefresh}
         />
-        <TablesTable
-          tables={tables}
+        <NodesTable
+          nodes={nodes}
           loading={loading}
-          total={data?.workspace.tables.meta.filtered ?? 0}
+          total={data?.workspace.nodes.meta.filtered ?? 0}
           page={page}
           onPageChange={setPage}
         />
@@ -113,4 +104,4 @@ const Tables: React.FC = () => {
   )
 }
 
-export default Tables
+export default Nodes

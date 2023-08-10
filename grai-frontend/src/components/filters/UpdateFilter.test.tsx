@@ -32,7 +32,7 @@ test("renders null name", async () => {
     metadata: [],
   }
 
-  render(<UpdateFilter {...defaultProps} />, {
+  render(<UpdateFilter {...defaultProps} filter={filter} />, {
     withRouter: true,
   })
 
