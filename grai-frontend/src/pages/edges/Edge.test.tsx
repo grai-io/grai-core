@@ -25,7 +25,7 @@ export const edgeMock = {
           name: "Edge1",
           display_name: "Edge1",
           is_active: true,
-          data_source: "test",
+          data_sources: { data: [] },
           metadata: {},
           source: {
             id: "2",
@@ -186,7 +186,7 @@ test("lineage", async () => {
   })
 
   await act(
-    async () => await user.click(screen.getByRole("tab", { name: /Lineage/i }))
+    async () => await user.click(screen.getByRole("tab", { name: /Lineage/i })),
   )
 
   await waitFor(() => {
@@ -230,7 +230,7 @@ test("lineage error", async () => {
   })
 
   await act(
-    async () => await user.click(screen.getByRole("tab", { name: /Lineage/i }))
+    async () => await user.click(screen.getByRole("tab", { name: /Lineage/i })),
   )
 
   await waitFor(() => {
@@ -279,7 +279,7 @@ test("lineage empty", async () => {
   })
 
   await act(
-    async () => await user.click(screen.getByRole("tab", { name: /Lineage/i }))
+    async () => await user.click(screen.getByRole("tab", { name: /Lineage/i })),
   )
 
   await waitFor(() => {

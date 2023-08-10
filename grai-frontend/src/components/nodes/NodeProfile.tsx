@@ -1,55 +1,54 @@
 import React from "react"
 import { Card, Grid, Table, TableBody } from "@mui/material"
-import { Column } from "./columns/TableColumnsTable"
+// import { Column } from "./columns/TableColumnsTable"
 import TableDependencies from "./TableDependencies"
 import TableDetail from "./TableDetail"
 
-interface BaseTable {
-  id: string
-  display_name: string
-}
+// interface BaseTable {
+//   id: string
+//   display_name: string
+// }
 
-interface Source {
+interface DataSource {
   id: string
   name: string
 }
-export interface TableInterface {
+export interface Node {
   id: string
   name: string
   namespace: string
-  // data_source: string
   display_name: string
-  columns: { data: Column[] }
+  // columns: { data: Column[] }
   metadata: any | null
-  source_tables: { data: BaseTable[] }
-  destination_tables: { data: BaseTable[] }
-  sources: { data: Source[] }
+  // source_tables: { data: BaseTable[] }
+  // destination_tables: { data: BaseTable[] }
+  data_sources: { data: DataSource[] }
 }
 
-type TableProfileProps = {
-  table: TableInterface
+type NodeProfileProps = {
+  node: Node
 }
 
-const TableProfile: React.FC<TableProfileProps> = ({ table }) => (
+const NodeProfile: React.FC<NodeProfileProps> = ({ node }) => (
   <Grid container spacing={3}>
     <Grid item md={6}>
-      <TableDetail table={table} />
+      <TableDetail table={node} />
     </Grid>
     <Grid item md={6}>
       <Card variant="outlined" sx={{ borderRadius: 0, borderBottom: 0 }}>
         <Table>
           <TableBody>
-            <TableDependencies
+            {/* <TableDependencies
               label="Upstream dependencies"
-              dependencies={table.destination_tables.data}
+              dependencies={node.destination_tables.data}
             />
             <TableDependencies
               label="Downstream dependencies"
-              dependencies={table.source_tables.data}
-            />
+              dependencies={node.source_tables.data}
+            /> */}
             <TableDependencies
               label="Sources"
-              dependencies={table.sources.data}
+              dependencies={node.data_sources.data}
               routePrefix="sources"
             />
           </TableBody>
@@ -59,4 +58,4 @@ const TableProfile: React.FC<TableProfileProps> = ({ table }) => (
   </Grid>
 )
 
-export default TableProfile
+export default NodeProfile

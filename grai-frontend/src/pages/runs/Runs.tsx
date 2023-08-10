@@ -4,8 +4,8 @@ import useWorkspace from "helpers/useWorkspace"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
+import TableHeader from "components/nodes/NodeHeader"
 import RunsTable from "components/runs/RunsTable"
-import TableHeader from "components/table/TableHeader"
 import GraphError from "components/utils/GraphError"
 import { GetRuns, GetRunsVariables } from "./__generated__/GetRuns"
 
@@ -51,7 +51,7 @@ const Runs: React.FC = () => {
         organisationName,
         workspaceName,
       },
-    }
+    },
   )
 
   const handleRefresh = () => refetch()

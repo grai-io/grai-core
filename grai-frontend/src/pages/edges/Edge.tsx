@@ -11,6 +11,7 @@ import PageLayout from "components/layout/PageLayout"
 import PageTabs from "components/layout/PageTabs"
 import TabState from "components/tabs/TabState"
 import GraphError from "components/utils/GraphError"
+import { GetEdge, GetEdgeVariables } from "./__generated__/GetEdge"
 
 export const GET_EDGE = gql`
   query GetEdge(
@@ -39,6 +40,22 @@ export const GET_EDGE = gql`
           name
           display_name
         }
+        data_sources {
+          data {
+            id
+            name
+            connections {
+              data {
+                id
+                connector {
+                  id
+                  name
+                  slug
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -48,13 +65,16 @@ const Edge: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
   const { edgeId } = useParams()
 
-  const { loading, error, data } = useQuery(GET_EDGE, {
-    variables: {
-      organisationName,
-      workspaceName,
-      edgeId: edgeId ?? "",
+  const { loading, error, data } = useQuery<GetEdge, GetEdgeVariables>(
+    GET_EDGE,
+    {
+      variables: {
+        organisationName,
+        workspaceName,
+        edgeId: edgeId ?? "",
+      },
     },
-  })
+  )
 
   if (error) return <GraphError error={error} />
   if (loading) return <PageLayout loading />

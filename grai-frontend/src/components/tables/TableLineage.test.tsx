@@ -2,7 +2,7 @@ import React from "react"
 import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
 import { filtersMock } from "pages/Graph.test"
-import { tableMock } from "pages/tables/Table.test"
+import { tableMock } from "pages/nodes/Node.test"
 import TableLineage, {
   GET_TABLES_AND_EDGES,
 } from "components/tables/TableLineage"

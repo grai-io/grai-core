@@ -4,28 +4,27 @@ import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
 import { filtersMock } from "pages/Graph.test"
 import { GET_TABLES_AND_EDGES } from "components/tables/TableLineage"
-import Table, { GET_TABLE } from "./Table"
+import Node, { GET_NODE } from "./Node"
 
 export const tableMock = {
   request: {
-    query: GET_TABLE,
+    query: GET_NODE,
     variables: {
       organisationName: "default",
       workspaceName: "demo",
-      tableId: "",
+      nodeId: "",
     },
   },
   result: {
     data: {
       workspace: {
         id: "1",
-        table: {
+        node: {
           id: "1",
           namespace: "default",
           name: "Table1",
           display_name: "Table1",
           is_active: true,
-          data_source: "test",
           metadata: {
             grai: {
               tags: ["tag1", "tag2"],
@@ -63,7 +62,7 @@ export const tableMock = {
           events: {
             data: [],
           },
-          sources: {
+          data_sources: {
             data: [],
           },
         },
@@ -75,7 +74,7 @@ export const tableMock = {
 const mocks = [tableMock]
 
 test("renders", async () => {
-  render(<Table />, {
+  render(<Node />, {
     mocks,
     withRouter: true,
     path: ":organisationName/:workspaceName",
@@ -91,11 +90,11 @@ test("error", async () => {
   const mocks = [
     {
       request: {
-        query: GET_TABLE,
+        query: GET_NODE,
         variables: {
           organisationName: "",
           workspaceName: "",
-          tableId: "",
+          nodeId: "",
         },
       },
       result: {
@@ -104,7 +103,7 @@ test("error", async () => {
     },
   ]
 
-  render(<Table />, { mocks, withRouter: true })
+  render(<Node />, { mocks, withRouter: true })
 
   await waitFor(() => {
     expect(screen.getByText("Error!")).toBeInTheDocument()
@@ -115,18 +114,18 @@ test("not found", async () => {
   const mocks = [
     {
       request: {
-        query: GET_TABLE,
+        query: GET_NODE,
         variables: {
           organisationName: "",
           workspaceName: "",
-          tableId: "",
+          nodeId: "",
         },
       },
       result: {
         data: {
           workspace: {
             id: "1",
-            table: null,
+            node: null,
             graph: [],
           },
         },
@@ -134,7 +133,7 @@ test("not found", async () => {
     },
   ]
 
-  render(<Table />, { mocks, withRouter: true })
+  render(<Node />, { mocks, withRouter: true })
 
   await waitFor(() => {
     expect(screen.getAllByText("Page not found")).toBeTruthy()
@@ -185,7 +184,7 @@ test("lineage", async () => {
     },
   ]
 
-  render(<Table />, {
+  render(<Node />, {
     mocks,
     withRouter: true,
     path: ":organisationName/:workspaceName",
@@ -208,7 +207,7 @@ test("lineage", async () => {
 test("expand all", async () => {
   const user = userEvent.setup()
 
-  render(<Table />, {
+  render(<Node />, {
     mocks,
     withRouter: true,
     path: ":organisationName/:workspaceName",
@@ -241,7 +240,7 @@ test("expand all", async () => {
 test("click row", async () => {
   const user = userEvent.setup()
 
-  render(<Table />, {
+  render(<Node />, {
     mocks,
     withRouter: true,
     path: ":organisationName/:workspaceName",
@@ -276,7 +275,7 @@ test("click row", async () => {
 test("search", async () => {
   const user = userEvent.setup()
 
-  render(<Table />, {
+  render(<Node />, {
     mocks,
     withRouter: true,
     path: ":organisationName/:workspaceName",
@@ -293,6 +292,6 @@ test("search", async () => {
 
   await act(
     async () =>
-      await user.type(screen.getByTestId("table-search"), "Search Columns"),
+      await user.type(screen.getByTestId("node-search"), "Search Columns"),
   )
 })

@@ -17,8 +17,8 @@ const Workspaces = lazy(() => import("./pages/workspaces/Workspaces"))
 const WorkspaceCreate = lazy(() => import("./pages/workspaces/WorkspaceCreate"))
 const Home = lazy(() => import("./pages/Home"))
 const Graph = lazy(() => import("./pages/Graph"))
-const Tables = lazy(() => import("./pages/tables/Tables"))
-const Table = lazy(() => import("./pages/tables/Table"))
+const Nodes = lazy(() => import("./pages/nodes/Nodes"))
+const Node = lazy(() => import("./pages/nodes/Node"))
 const Edges = lazy(() => import("./pages/edges/Edges"))
 const Edge = lazy(() => import("./pages/edges/Edge"))
 const Runs = lazy(() => import("./pages/runs/Runs"))
@@ -89,9 +89,9 @@ const Routes: React.FC = () => (
             >
               <Route index element={<Home />} />
               <Route path="graph" element={<Graph />} />
-              <Route path="tables">
-                <Route index element={<Tables />} />
-                <Route path=":tableId" element={<Table />} />
+              <Route path="nodes">
+                <Route index element={<Nodes />} />
+                <Route path=":nodeId" element={<Node />} />
               </Route>
               <Route path="edges">
                 <Route index element={<Edges />} />
