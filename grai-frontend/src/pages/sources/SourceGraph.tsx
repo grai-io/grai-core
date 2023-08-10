@@ -3,34 +3,34 @@ import { gql, useQuery } from "@apollo/client"
 import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
 import Loading from "components/layout/Loading"
-import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
-import CreateSource from "components/sources/CreateSource"
+import Graph from "components/sources/Graph"
 import GraphError from "components/utils/GraphError"
 import {
-  GetWorkspaceSourceCreate,
-  GetWorkspaceSourceCreateVariables,
-} from "./__generated__/GetWorkspaceSourceCreate"
+  GetWorkspaceSourceGraph,
+  GetWorkspaceSourceGraphVariables,
+} from "./__generated__/GetWorkspaceSourceGraph"
 
 export const GET_WORKSPACE = gql`
-  query GetWorkspaceSourceCreate(
+  query GetWorkspaceSourceGraph(
     $organisationName: String!
     $workspaceName: String!
   ) {
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       name
+      source_graph
     }
   }
 `
 
-const SourceCreate: React.FC = () => {
+const SourceGraph: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
 
   const { loading, error, data } = useQuery<
-    GetWorkspaceSourceCreate,
-    GetWorkspaceSourceCreateVariables
+    GetWorkspaceSourceGraph,
+    GetWorkspaceSourceGraphVariables
   >(GET_WORKSPACE, {
     variables: {
       organisationName,
@@ -47,12 +47,10 @@ const SourceCreate: React.FC = () => {
 
   return (
     <PageLayout>
-      <PageHeader title="Create Source" />
-      <PageContent>
-        <CreateSource workspaceId={workspace.id} />
-      </PageContent>
+      <PageHeader title={workspace.name} />
+      <Graph sourceGraph={workspace.source_graph} />
     </PageLayout>
   )
 }
 
-export default SourceCreate
+export default SourceGraph
