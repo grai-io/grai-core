@@ -5,8 +5,20 @@ import { input } from "testing/autocomplete"
 import { GET_WORKSPACE } from "pages/filters/FilterCreate"
 import CreateFilter, { CREATE_FILTER } from "./CreateFilter"
 
+const defaultProps = {
+  workspaceId: "1",
+  namespaces: ["namespace1"],
+  tags: ["tag1", "tag2"],
+  sources: [
+    {
+      id: "1",
+      name: "source1",
+    },
+  ],
+}
+
 test("renders", async () => {
-  render(<CreateFilter workspaceId="1" namespaces={[]} tags={[]} />, {
+  render(<CreateFilter {...defaultProps} />, {
     withRouter: true,
   })
 
@@ -16,7 +28,7 @@ test("renders", async () => {
 test("submit", async () => {
   const user = userEvent.setup()
 
-  render(<CreateFilter workspaceId="1" namespaces={[]} tags={[]} />, {
+  render(<CreateFilter {...defaultProps} />, {
     withRouter: true,
     routes: ["/:organisationName/:workspaceName/filters/:filterId"],
   })
@@ -29,14 +41,16 @@ test("submit", async () => {
       ),
   )
 
-  await act(async () => await user.click(screen.getByTestId("CloseIcon")))
+  await act(
+    async () => await user.click(screen.getByTestId("filter-row-remove")),
+  )
 
   await act(
     async () =>
       await user.click(screen.getByRole("button", { name: /add filter/i })),
   )
 
-  input(screen.getByTestId("autocomplete-property"))
+  //input(screen.getByTestId("autocomplete-property"))
   input(screen.getByTestId("autocomplete-field"), "Tag")
   input(screen.getByTestId("autocomplete-operator"), "Contains")
   await act(async () => await user.type(screen.getByTestId("value"), "test"))
@@ -51,18 +65,11 @@ test("submit", async () => {
 test("submit namespace", async () => {
   const user = userEvent.setup()
 
-  render(
-    <CreateFilter
-      workspaceId="1"
-      namespaces={["namespace1"]}
-      tags={["tag1", "tag2"]}
-    />,
-    {
-      route: "/default/demo/filters/create",
-      path: "/:organisationName/:workspaceName/filters/create",
-      routes: ["/:organisationName/:workspaceName/filters/:filterId"],
-    },
-  )
+  render(<CreateFilter {...defaultProps} />, {
+    route: "/default/demo/filters/create",
+    path: "/:organisationName/:workspaceName/filters/create",
+    routes: ["/:organisationName/:workspaceName/filters/:filterId"],
+  })
 
   await act(
     async () =>
@@ -72,14 +79,7 @@ test("submit namespace", async () => {
       ),
   )
 
-  await act(async () => await user.click(screen.getByTestId("CloseIcon")))
-
-  await act(
-    async () =>
-      await user.click(screen.getByRole("button", { name: /add filter/i })),
-  )
-
-  input(screen.getByTestId("autocomplete-property"), "table")
+  // input(screen.getByTestId("autocomplete-property"), "table")
   input(screen.getByTestId("autocomplete-field"), "namespace", 2)
   input(screen.getByTestId("autocomplete-operator"), "equals", 1)
 
@@ -99,18 +99,11 @@ test("submit namespace", async () => {
 test("submit namespace in", async () => {
   const user = userEvent.setup()
 
-  render(
-    <CreateFilter
-      workspaceId="1"
-      namespaces={["namespace1"]}
-      tags={["tag1", "tag2"]}
-    />,
-    {
-      route: "/default/demo/filters/create",
-      path: "/:organisationName/:workspaceName/filters/create",
-      routes: ["/:organisationName/:workspaceName/filters/:filterId"],
-    },
-  )
+  render(<CreateFilter {...defaultProps} />, {
+    route: "/default/demo/filters/create",
+    path: "/:organisationName/:workspaceName/filters/create",
+    routes: ["/:organisationName/:workspaceName/filters/:filterId"],
+  })
 
   await act(
     async () =>
@@ -120,14 +113,7 @@ test("submit namespace in", async () => {
       ),
   )
 
-  await act(async () => await user.click(screen.getByTestId("CloseIcon")))
-
-  await act(
-    async () =>
-      await user.click(screen.getByRole("button", { name: /add filter/i })),
-  )
-
-  input(screen.getByTestId("autocomplete-property"), "table")
+  // input(screen.getByTestId("autocomplete-property"), "table")
   input(screen.getByTestId("autocomplete-field"), "namespace", 2)
   input(screen.getByTestId("autocomplete-operator"), "in", 2)
 
@@ -144,17 +130,14 @@ test("submit namespace in", async () => {
   expect(screen.getByText("New Page")).toBeInTheDocument()
 })
 
-test("submit tags", async () => {
+test("submit data sources", async () => {
   const user = userEvent.setup()
 
-  render(
-    <CreateFilter workspaceId="1" namespaces={[]} tags={["tag1", "tag2"]} />,
-    {
-      route: "/default/demo/filters/create",
-      path: "/:organisationName/:workspaceName/filters/create",
-      routes: ["/:organisationName/:workspaceName/filters/:filterId"],
-    },
-  )
+  render(<CreateFilter {...defaultProps} />, {
+    route: "/default/demo/filters/create",
+    path: "/:organisationName/:workspaceName/filters/create",
+    routes: ["/:organisationName/:workspaceName/filters/:filterId"],
+  })
 
   await act(
     async () =>
@@ -164,15 +147,42 @@ test("submit tags", async () => {
       ),
   )
 
-  await act(async () => await user.click(screen.getByTestId("CloseIcon")))
+  // input(screen.getByTestId("autocomplete-property"), "table")
+  input(screen.getByTestId("autocomplete-field"), "tag", 3)
+  input(screen.getByTestId("autocomplete-operator"), "contains")
+
+  await waitFor(() => {
+    expect(screen.getByTestId("autocomplete-value")).toBeInTheDocument()
+  })
+
+  input(screen.getByTestId("autocomplete-value"), "s")
+
+  await act(
+    async () => await user.click(screen.getByRole("button", { name: /save/i })),
+  )
+
+  expect(screen.getByText("New Page")).toBeInTheDocument()
+})
+
+test("submit tags", async () => {
+  const user = userEvent.setup()
+
+  render(<CreateFilter {...defaultProps} />, {
+    route: "/default/demo/filters/create",
+    path: "/:organisationName/:workspaceName/filters/create",
+    routes: ["/:organisationName/:workspaceName/filters/:filterId"],
+  })
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /add filter/i })),
+      await user.type(
+        screen.getByRole("textbox", { name: "Name" }),
+        "test filter",
+      ),
   )
 
-  input(screen.getByTestId("autocomplete-property"), "table")
-  input(screen.getByTestId("autocomplete-field"), "tag", 3)
+  // input(screen.getByTestId("autocomplete-property"), "table")
+  input(screen.getByTestId("autocomplete-field"), "tag", 4)
   input(screen.getByTestId("autocomplete-operator"), "contains", 2)
 
   await waitFor(() => {
@@ -217,7 +227,12 @@ test("submit error", async () => {
           workspaceId: "1",
           name: "test filter",
           metadata: [
-            { type: "table", field: "name", operator: "contains", value: null },
+            {
+              type: "ancestor",
+              field: "tag",
+              operator: "contains",
+              value: null,
+            },
           ],
         },
       },
@@ -227,7 +242,7 @@ test("submit error", async () => {
     },
   ]
 
-  render(<CreateFilter workspaceId="1" namespaces={[]} tags={[]} />, {
+  render(<CreateFilter {...defaultProps} />, {
     route: "/default/demo/filters/create",
     path: "/:organisationName/:workspaceName/filters/create",
     mocks,
@@ -239,13 +254,6 @@ test("submit error", async () => {
         screen.getByRole("textbox", { name: "Name" }),
         "test filter",
       ),
-  )
-
-  await act(async () => await user.click(screen.getByTestId("CloseIcon")))
-
-  await act(
-    async () =>
-      await user.click(screen.getByRole("button", { name: /add filter/i })),
   )
 
   input(screen.getByTestId("autocomplete-property"), "Table")

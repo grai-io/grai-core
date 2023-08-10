@@ -2,19 +2,82 @@ import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
-import Tables, { GET_TABLES } from "./Tables"
+import Nodes, { GET_NODES } from "./Nodes"
 
 test("renders", async () => {
-  render(<Tables />, {
+  const mocks = [
+    {
+      request: {
+        query: GET_NODES,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+          offset: 0,
+          search: undefined,
+        },
+      },
+      result: {
+        data: {
+          workspace: {
+            id: "1234",
+            nodes: {
+              data: [
+                {
+                  id: "1234",
+                  name: "table1",
+                  namespace: "default",
+                  display_name: "table1",
+                  is_active: true,
+                  metadata: {
+                    grai: {
+                      node_type: "Table",
+                      tags: ["tag1", "tag2"],
+                    },
+                  },
+                  data_sources: {
+                    data: [
+                      {
+                        id: "1",
+                        name: "source1",
+                        connections: {
+                          data: [
+                            {
+                              id: "1",
+                              connector: {
+                                id: "1",
+                                name: "connector1",
+                                slug: "postgres",
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+              meta: {
+                total: 1,
+                filtered: 1,
+              },
+            },
+          },
+        },
+      },
+    },
+  ]
+
+  render(<Nodes />, {
     withRouter: true,
+    mocks,
   })
 
   await waitFor(() => {
-    expect(screen.getByRole("heading", { name: /Tables/i })).toBeInTheDocument()
+    expect(screen.getByRole("heading", { name: /Nodes/i })).toBeInTheDocument()
   })
 
   await waitFor(() => {
-    expect(screen.getAllByText("Hello World")).toBeTruthy()
+    expect(screen.getAllByText("table1")).toBeTruthy()
   })
 })
 
@@ -22,7 +85,7 @@ test("error", async () => {
   const mocks = [
     {
       request: {
-        query: GET_TABLES,
+        query: GET_NODES,
         variables: {
           organisationName: "",
           workspaceName: "",
@@ -36,7 +99,7 @@ test("error", async () => {
     },
   ]
 
-  render(<Tables />, { mocks, withRouter: true })
+  render(<Nodes />, { mocks, withRouter: true })
 
   await waitFor(() => {
     expect(screen.getByText("Error!")).toBeInTheDocument()
@@ -49,7 +112,7 @@ test("search", async () => {
   const mocks = [
     {
       request: {
-        query: GET_TABLES,
+        query: GET_NODES,
         variables: {
           organisationName: "",
           workspaceName: "",
@@ -61,7 +124,7 @@ test("search", async () => {
         data: {
           workspace: {
             id: "1234",
-            tables: {
+            nodes: {
               data: [],
               meta: {
                 total: 0,
@@ -74,7 +137,7 @@ test("search", async () => {
     },
     {
       request: {
-        query: GET_TABLES,
+        query: GET_NODES,
         variables: {
           organisationName: "",
           workspaceName: "",
@@ -86,7 +149,7 @@ test("search", async () => {
         data: {
           workspace: {
             id: "1234",
-            tables: {
+            nodes: {
               data: [],
               meta: {
                 total: 0,
@@ -99,7 +162,7 @@ test("search", async () => {
     },
     {
       request: {
-        query: GET_TABLES,
+        query: GET_NODES,
         variables: {
           organisationName: "",
           workspaceName: "",
@@ -111,7 +174,7 @@ test("search", async () => {
         data: {
           workspace: {
             id: "1234",
-            tables: {
+            nodes: {
               data: [],
               meta: {
                 total: 0,
@@ -124,7 +187,7 @@ test("search", async () => {
     },
   ]
 
-  render(<Tables />, {
+  render(<Nodes />, {
     mocks,
     withRouter: true,
   })
@@ -136,14 +199,14 @@ test("search", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByText("No tables found")).toBeInTheDocument()
+    expect(screen.getByText("No nodes found")).toBeInTheDocument()
   })
 })
 
 test("refresh", async () => {
   const user = userEvent.setup()
 
-  render(<Tables />, {
+  render(<Nodes />, {
     withRouter: true,
   })
 
@@ -156,8 +219,8 @@ test("refresh", async () => {
 test("click row", async () => {
   const user = userEvent.setup()
 
-  const { container } = render(<Tables />, {
-    routes: ["/:tableId"],
+  const { container } = render(<Nodes />, {
+    routes: ["/:nodeId"],
   })
 
   await waitFor(() => {
@@ -166,17 +229,17 @@ test("click row", async () => {
 
   await act(
     // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-    async () => await user.click(container.querySelectorAll("tbody > tr")[0])
+    async () => await user.click(container.querySelectorAll("tbody > tr")[0]),
   )
 
   expect(screen.getByText("New Page")).toBeInTheDocument()
 })
 
-test("no tables", async () => {
+test("no nodes", async () => {
   const mocks = [
     {
       request: {
-        query: GET_TABLES,
+        query: GET_NODES,
         variables: {
           organisationName: "",
           workspaceName: "",
@@ -188,7 +251,7 @@ test("no tables", async () => {
         data: {
           workspace: {
             id: "1234",
-            tables: {
+            nodes: {
               data: [],
               meta: {
                 total: 0,
@@ -201,9 +264,9 @@ test("no tables", async () => {
     },
   ]
 
-  render(<Tables />, { mocks, withRouter: true })
+  render(<Nodes />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getByText("No tables found")).toBeInTheDocument()
+    expect(screen.getByText("No nodes found")).toBeInTheDocument()
   })
 })

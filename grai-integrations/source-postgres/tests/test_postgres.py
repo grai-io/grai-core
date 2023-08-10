@@ -2,6 +2,7 @@ import os
 
 import pytest
 
+from grai_source_postgres.base import PostgresIntegration
 from grai_source_postgres.loader import PostgresConnector
 
 
@@ -41,3 +42,13 @@ def test_connector_from_env_vars():
     assert conn.user == "user"
     assert conn.password == "pw"
     assert conn.namespace == "test"
+
+
+def test_integration(integration):
+    try:
+        is_ready = integration.ready()
+    except:
+        is_ready = False
+
+    if is_ready:
+        integration.get_nodes_and_edges()

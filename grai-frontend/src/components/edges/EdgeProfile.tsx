@@ -16,7 +16,6 @@ interface Edge {
   name: string
   display_name: string
   namespace: string
-  data_source: string
   is_active: boolean
   metadata: any | null
   source: Node
@@ -38,7 +37,6 @@ const EdgeProfile: React.FC<EdgeProfileProps> = ({ edge }) => {
             <TableBody>
               <NodeDetailRow label="Name" value={edge.name} />
               <NodeDetailRow label="Namespace" value={edge.namespace} />
-              <NodeDetailRow label="Data Source" value={edge.data_source} />
               <NodeDetailRow label="Metadata">
                 {edge.metadata && (
                   <JsonView

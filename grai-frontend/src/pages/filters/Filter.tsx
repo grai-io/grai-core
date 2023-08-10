@@ -31,6 +31,12 @@ export const GET_FILTER = gql`
       tags {
         data
       }
+      sources {
+        data {
+          id
+          name
+        }
+      }
     }
   }
 `
@@ -71,6 +77,7 @@ const Filter: React.FC = () => {
           namespaces={data?.workspace?.namespaces.data}
           tags={data?.workspace?.tags.data}
           workspaceId={data?.workspace.id}
+          sources={data?.workspace?.sources.data}
         />
       </PageContent>
     </PageLayout>

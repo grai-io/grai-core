@@ -11,14 +11,16 @@ import {
 import { useNavigate } from "react-router-dom"
 import Loading from "components/layout/Loading"
 import TablePagination from "components/table/TablePagination"
+import DataSourcesStack, { Source } from "components/tables/DataSourcesStack"
 
 interface Edge {
   id: string
   name: string
   display_name: string
   namespace: string
-  // data_source: string
   is_active: boolean
+  data_sources: { data: Source[] }
+  metadata: any
 }
 
 type EdgesTableProps = {
@@ -44,7 +46,8 @@ const EdgesTable: React.FC<EdgesTableProps> = ({
         <TableRow>
           <TableCell>Name</TableCell>
           <TableCell>Namespace</TableCell>
-          <TableCell>Data Source</TableCell>
+          <TableCell>Edge Type</TableCell>
+          <TableCell>Data Sources</TableCell>
           <TableCell>Active</TableCell>
         </TableRow>
       </TableHead>
@@ -60,7 +63,10 @@ const EdgesTable: React.FC<EdgesTableProps> = ({
           >
             <TableCell>{edge.display_name ?? edge.name}</TableCell>
             <TableCell>{edge.namespace}</TableCell>
-            {/* <TableCell>{edge.data_source}</TableCell> */}
+            <TableCell>{edge.metadata?.grai?.edge_type}</TableCell>
+            <TableCell sx={{ py: 0, pl: 1 }}>
+              <DataSourcesStack data_sources={edge.data_sources} />
+            </TableCell>
             <TableCell>{edge.is_active ? "Yes" : "No"}</TableCell>
           </TableRow>
         ))}
