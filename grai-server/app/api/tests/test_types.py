@@ -2434,6 +2434,46 @@ async def test_workspace_alert(test_context, test_alert):
 
 
 @pytest.mark.django_db
+async def test_workspace_source_graph(test_context, test_source):
+    context, organisation, workspace, user, membership = test_context
+
+    source = await Node.objects.acreate(workspace=workspace, name="source")
+    destination = await Node.objects.acreate(workspace=workspace, name="destination")
+
+    await test_source.nodes.aadd(source)
+    await test_source.nodes.aadd(destination)
+
+    edge = await Edge.objects.acreate(
+        workspace=workspace,
+        source=source,
+        destination=destination,
+        metadata={"grai": {"edge_type": "Edge"}},
+    )
+    await test_source.edges.aadd(edge)
+
+    query = """
+        query Workspace($workspaceId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                source_graph
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["source_graph"] == {str(test_source.name): [str(test_source.name)]}
+
+
+@pytest.mark.django_db
 async def test_filters(test_context):
     context, organisation, workspace, user, membership = test_context
 
