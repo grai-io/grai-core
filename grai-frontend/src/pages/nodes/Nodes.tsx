@@ -4,11 +4,11 @@ import useWorkspace from "helpers/useWorkspace"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
-import NodeHeader from "components/table/TableHeader"
 import NodesTable from "components/nodes/NodesTable"
+import TableFilterChoice from "components/table/TableFilterChoice"
+import NodeHeader from "components/table/TableHeader"
 import GraphError from "components/utils/GraphError"
 import { GetNodes, GetNodesVariables } from "./__generated__/GetNodes"
-import TableFilterChoice from "components/table/TableFilterChoice"
 
 export const GET_NODES = gql`
   query GetNodes(
