@@ -138,20 +138,29 @@ class Mutation:
         info: Info,
         id: strawberry.ID,
     ) -> Workspace:
+        def _clearWorkspace(workspace: WorkspaceModel):
+            edges = Edge.objects.filter(workspace=workspace)
+
+            if edges.exists():
+                for edge in edges:
+                    edge.data_sources.clear()
+
+                edges._raw_delete(edges.db)
+
+            nodes = Node.objects.filter(workspace=workspace)
+
+            if nodes.exists():
+                for node in nodes:
+                    node.data_sources.clear()
+
+                nodes._raw_delete(nodes.db)
+
+            cache = ExtendedGraphCache(workspace)
+            cache.clear_cache()
+
         workspace = await aget_workspace(info, id)
 
-        edges = Edge.objects.filter(workspace=workspace)
-
-        if await edges.aexists():
-            await sync_to_async(edges._raw_delete)(edges.db)
-
-        nodes = Node.objects.filter(workspace=workspace)
-
-        if await nodes.aexists():
-            await sync_to_async(nodes._raw_delete)(nodes.db)
-
-        graph_cache = ExtendedGraphCache(workspace=workspace)
-        graph_cache.clear_cache()
+        await sync_to_async(_clearWorkspace)(workspace)
 
         return workspace
 
