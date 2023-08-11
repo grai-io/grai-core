@@ -88,7 +88,7 @@ const Home: React.FC = () => {
         <HomeCards />
         {workspace.connections.meta.total === 0 &&
           workspace.tables.meta.total === 0 && <GettingStarted />}
-        {workspace.runs.meta.filtered > 0 && <ReportsCard />}
+        <ReportsCard />
       </Box>
       <SearchDialog
         open={search}
