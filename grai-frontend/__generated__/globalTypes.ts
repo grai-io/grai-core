@@ -35,6 +35,10 @@ export interface WorkspaceEdgeFilter {
   edge_type?: StringFilter | null;
 }
 
+export interface WorkspaceNodeFilter {
+  node_type?: StringFilter | null;
+}
+
 //==============================================================
 // END Enums and Input Objects
 //==============================================================

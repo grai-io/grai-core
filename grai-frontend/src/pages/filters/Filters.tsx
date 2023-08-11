@@ -8,7 +8,7 @@ import FiltersTable from "components/filters/FiltersTable"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
-import TableHeader from "components/nodes/NodeHeader"
+import TableHeader from "components/table/TableHeader"
 import GraphError from "components/utils/GraphError"
 import { GetFilters, GetFiltersVariables } from "./__generated__/GetFilters"
 

@@ -100,7 +100,7 @@ const NodesTable: React.FC<NodesTableProps> = ({
           count={total}
           rowsPerPage={20}
           page={page}
-          type="tables"
+          type="nodes"
           onPageChange={onPageChange}
         />
       </TableFooter>

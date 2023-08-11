@@ -2,7 +2,7 @@ import React, { ChangeEvent } from "react"
 import { Refresh, Search } from "@mui/icons-material"
 import { Box, TextField, InputAdornment, Tooltip, Button } from "@mui/material"
 
-type NodeHeaderProps = {
+type TableHeaderProps = {
   search?: string | null
   onSearch?: (value: string) => void
   onRefresh?: () => void
@@ -10,7 +10,7 @@ type NodeHeaderProps = {
   children?: React.ReactNode
 }
 
-const NodeHeader: React.FC<NodeHeaderProps> = ({
+const TableHeader: React.FC<TableHeaderProps> = ({
   search,
   onSearch,
   onRefresh,
@@ -60,4 +60,4 @@ const NodeHeader: React.FC<NodeHeaderProps> = ({
   )
 }
 
-export default NodeHeader
+export default TableHeader

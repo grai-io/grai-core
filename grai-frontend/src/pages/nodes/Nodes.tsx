@@ -4,8 +4,9 @@ import useWorkspace from "helpers/useWorkspace"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
-import NodeHeader from "components/nodes/NodeHeader"
 import NodesTable from "components/nodes/NodesTable"
+import TableFilterChoice from "components/table/TableFilterChoice"
+import NodeHeader from "components/table/TableHeader"
 import GraphError from "components/utils/GraphError"
 import { GetNodes, GetNodesVariables } from "./__generated__/GetNodes"
 
@@ -15,10 +16,15 @@ export const GET_NODES = gql`
     $workspaceName: String!
     $offset: Int
     $search: String
+    $filter: WorkspaceNodeFilter
   ) {
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
-      nodes(pagination: { limit: 20, offset: $offset }, search: $search) {
+      nodes(
+        pagination: { limit: 20, offset: $offset }
+        search: $search
+        filter: $filter
+      ) {
         data {
           id
           namespace
@@ -52,10 +58,17 @@ export const GET_NODES = gql`
   }
 `
 
+type NodeFilter = {
+  node_type?: {
+    contains?: string[]
+  }
+}
+
 const Nodes: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
   const [search, setSearch] = useState<string>()
   const [page, setPage] = useState<number>(0)
+  const [filter, setFilter] = useState<NodeFilter>()
 
   const { loading, error, data, refetch } = useQuery<
     GetNodes,
@@ -66,6 +79,7 @@ const Nodes: React.FC = () => {
       workspaceName,
       offset: page * 20,
       search,
+      filter,
     },
     context: {
       debounceKey: "nodes",
@@ -83,6 +97,9 @@ const Nodes: React.FC = () => {
     setPage(0)
   }
 
+  const handleNodeTypeChange = (value: string[]) =>
+    setFilter({ ...filter, node_type: { contains: value } })
+
   return (
     <PageLayout>
       <PageHeader title="Nodes" />
@@ -91,7 +108,14 @@ const Nodes: React.FC = () => {
           search={search}
           onSearch={handleSearch}
           onRefresh={handleRefresh}
-        />
+        >
+          <TableFilterChoice
+            options={["Table", "Column"]}
+            placeholder="Node Type"
+            value={filter?.node_type?.contains ?? []}
+            onChange={handleNodeTypeChange}
+          />
+        </NodeHeader>
         <NodesTable
           nodes={nodes}
           loading={loading}

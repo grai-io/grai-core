@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { gql, useQuery } from "@apollo/client"
 import { Typography } from "@mui/material"
-import TableHeader from "components/nodes/NodeHeader"
+import TableHeader from "components/table/TableHeader"
 import GraphError from "components/utils/GraphError"
 import {
   GetSourceTables,
