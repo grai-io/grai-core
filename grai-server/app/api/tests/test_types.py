@@ -314,6 +314,84 @@ async def test_nodes_searched(test_context):
 
 @pytest.mark.asyncio
 @pytest.mark.django_db
+async def test_nodes_filter_node_type_equals(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    name = str(uuid.uuid4())
+
+    await Node.objects.acreate(workspace=workspace, metadata={"grai": {"node_type": "Column"}})
+
+    table = await Node.objects.acreate(workspace=workspace, metadata={"grai": {"node_type": "Table"}}, name=name)
+
+    query = """
+        query Workspace($workspaceId: ID!, $filter: WorkspaceNodeFilter) {
+          workspace(id: $workspaceId) {
+            id
+            nodes(filter: $filter) {
+                data{
+                    id
+                }
+            }
+          }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "filter": {"node_type": {"equals": "Table"}},
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert len(result.data["workspace"]["nodes"]["data"]) == 1
+    assert result.data["workspace"]["nodes"]["data"][0]["id"] == str(table.id)
+
+
+@pytest.mark.django_db
+@pytest.mark.asyncio
+async def test_nodes_filter_node_type_contains(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    name = str(uuid.uuid4())
+
+    await Node.objects.acreate(workspace=workspace, metadata={"grai": {"node_type": "Column"}})
+
+    table = await Node.objects.acreate(workspace=workspace, metadata={"grai": {"node_type": "Table"}}, name=name)
+
+    query = """
+        query Workspace($workspaceId: ID!, $filter: WorkspaceNodeFilter) {
+          workspace(id: $workspaceId) {
+            id
+            nodes(filter: $filter) {
+                data{
+                    id
+                }
+            }
+          }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "filter": {"node_type": {"contains": ["Table"]}},
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert len(result.data["workspace"]["nodes"]["data"]) == 1
+    assert result.data["workspace"]["nodes"]["data"][0]["id"] == str(table.id)
+
+
+@pytest.mark.asyncio
+@pytest.mark.django_db
 async def test_workspace_node(test_context, test_source):
     context, organisation, workspace, user, membership = test_context
 
