@@ -13,6 +13,7 @@ import SourceTables from "components/sources/SourceTables"
 import TabState from "components/tabs/TabState"
 import GraphError from "components/utils/GraphError"
 import { GetSource, GetSourceVariables } from "./__generated__/GetSource"
+import SourceLineage from "components/sources/SourceLineage"
 
 export const GET_SOURCE = gql`
   query GetSource(
@@ -57,7 +58,7 @@ const Source: React.FC = () => {
         workspaceName,
         sourceId: sourceId ?? "",
       },
-    }
+    },
   )
 
   if (error) return <GraphError error={error} />
@@ -83,8 +84,8 @@ const Source: React.FC = () => {
     {
       value: "lineage",
       label: "Lineage",
-      // component: <EditScheduleForm source={source} />,
-      disabled: true,
+      component: <SourceLineage source={source} />,
+      noWrapper: true,
     },
   ]
 
