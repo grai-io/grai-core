@@ -8,12 +8,12 @@ import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
 import PageTabs from "components/layout/PageTabs"
 import SourceDetail from "components/sources/SourceDetail"
+import SourceLineage from "components/sources/SourceLineage"
 import SourceMenu from "components/sources/SourceMenu"
 import SourceTables from "components/sources/SourceTables"
 import TabState from "components/tabs/TabState"
 import GraphError from "components/utils/GraphError"
 import { GetSource, GetSourceVariables } from "./__generated__/GetSource"
-import SourceLineage from "components/sources/SourceLineage"
 
 export const GET_SOURCE = gql`
   query GetSource(
