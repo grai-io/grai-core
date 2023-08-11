@@ -442,6 +442,12 @@ class GraphCache:
 
         return tables
 
+    def get_source_filtered_graph_result(self, source_id: str, n: int) -> List["GraphTable"]:
+        parameters = {"source": source_id}
+        where = "WHERE $source IN firsttable.data_sources"
+
+        return self.get_with_step_graph_result(n, parameters, where)
+
     def get_table_filtered_graph_result(self, table_id: str, n: int) -> List["GraphTable"]:
         parameters = {"table": table_id}
         where = "WHERE firsttable.id = $table"

@@ -2888,6 +2888,31 @@ async def test_graph(test_context):
 
 
 @pytest.mark.django_db
+async def test_graph_filter_source_id(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!, $sourceId: ID!) {
+          workspace(id: $workspaceId) {
+            id
+            graph(filters: {source_id: $sourceId}) {
+                id
+            }
+          }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={"workspaceId": str(workspace.id), "sourceId": "1234"},
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+
+
+@pytest.mark.django_db
 async def test_graph_filter_table_id(test_context):
     context, organisation, workspace, user, membership = test_context
 
