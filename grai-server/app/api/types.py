@@ -478,6 +478,7 @@ class Table(Node):
 
 @strawberry.input
 class GraphFilter:
+    source_id: Optional[strawberry.ID] = strawberry.UNSET
     table_id: Optional[strawberry.ID] = strawberry.UNSET
     edge_id: Optional[strawberry.ID] = strawberry.UNSET
     n: Optional[int] = strawberry.UNSET
@@ -866,6 +867,9 @@ class Workspace:
 
         query = GraphQuery([], {})
         query.match("(table:Table)")
+
+        if filters and filters.source_id:
+            return graph.get_source_filtered_graph_result(filters.source_id, filters.n)
 
         if filters and filters.table_id:
             return graph.get_table_filtered_graph_result(filters.table_id, filters.n)
