@@ -8,7 +8,7 @@ import ConnectionsTable from "components/connections/ConnectionsTable"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
-import TableHeader from "components/nodes/NodeHeader"
+import TableHeader from "components/table/TableHeader"
 import GraphError from "components/utils/GraphError"
 import {
   GetConnections,

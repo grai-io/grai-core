@@ -284,6 +284,7 @@ class SourceConnectionFilter:
 class Source:
     id: strawberry.auto
     name: strawberry.auto
+    priority: strawberry.auto
     created_at: strawberry.auto
     updated_at: strawberry.auto
 
@@ -480,6 +481,7 @@ class Table(Node):
 
 @strawberry.input
 class GraphFilter:
+    source_id: Optional[strawberry.ID] = strawberry.UNSET
     table_id: Optional[strawberry.ID] = strawberry.UNSET
     edge_id: Optional[strawberry.ID] = strawberry.UNSET
     n: Optional[int] = strawberry.UNSET
@@ -507,6 +509,11 @@ class StringFilter:
 @strawberry.input
 class WorkspaceEdgeFilter:
     edge_type: Optional[StringFilter] = strawberry.UNSET
+
+
+@strawberry.input
+class WorkspaceNodeFilter:
+    node_type: Optional[StringFilter] = strawberry.UNSET
 
 
 @strawberry_django.filters.filter(WorkspaceModel)
@@ -538,6 +545,7 @@ class Workspace:
         self,
         pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
         search: Optional[str] = strawberry.UNSET,
+        filter: Optional[WorkspaceNodeFilter] = strawberry.UNSET,
     ) -> Pagination["Node"]:
         queryset = NodeModel.objects.filter(workspace=self)
 
@@ -545,6 +553,13 @@ class Workspace:
             queryset = queryset.filter(
                 Q(id__icontains=search) | Q(name__icontains=search) | Q(display_name__icontains=search)
             )
+
+        if filter:
+            if filter.node_type:
+                if filter.node_type.equals:
+                    queryset = queryset.filter(metadata__grai__node_type=filter.node_type.equals)
+                if filter.node_type.contains:
+                    queryset = queryset.filter(metadata__grai__node_type__in=filter.node_type.contains)
 
         return Pagination[Node](queryset=queryset, pagination=pagination)
 
@@ -868,6 +883,9 @@ class Workspace:
 
         query = GraphQuery([], {})
         query.match("(table:Table)")
+
+        if filters and filters.source_id:
+            return graph.get_source_filtered_graph_result(filters.source_id, filters.n)
 
         if filters and filters.table_id:
             return graph.get_table_filtered_graph_result(filters.table_id, filters.n)

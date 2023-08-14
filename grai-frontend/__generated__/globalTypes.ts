@@ -16,6 +16,7 @@ export enum RunAction {
 }
 
 export interface GraphFilter {
+  source_id?: string | null;
   table_id?: string | null;
   edge_id?: string | null;
   n?: number | null;
@@ -33,6 +34,10 @@ export interface StringFilter {
 
 export interface WorkspaceEdgeFilter {
   edge_type?: StringFilter | null;
+}
+
+export interface WorkspaceNodeFilter {
+  node_type?: StringFilter | null;
 }
 
 //==============================================================

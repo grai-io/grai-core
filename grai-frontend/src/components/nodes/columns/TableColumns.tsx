@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { CloseFullscreen, OpenInFull } from "@mui/icons-material"
 import { Button } from "@mui/material"
-import NodeHeader from "components/nodes/NodeHeader"
+import NodeHeader from "components/table/TableHeader"
 import TableColumnsTable, { Column } from "./TableColumnsTable"
 
 type TableColumnsProps = {

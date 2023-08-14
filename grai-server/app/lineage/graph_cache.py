@@ -37,7 +37,7 @@ class GraphCache:
 
     def cache_node(self, node):
         def get_data_source() -> Optional[str]:
-            source = node.data_sources.first()
+            source = node.data_sources.order_by("-priority").first()
 
             if not source:
                 return None
@@ -441,6 +441,12 @@ class GraphCache:
             )
 
         return tables
+
+    def get_source_filtered_graph_result(self, source_id: str, n: int) -> List["GraphTable"]:
+        parameters = {"source": source_id}
+        where = "WHERE $source IN firsttable.data_sources"
+
+        return self.get_with_step_graph_result(n, parameters, where)
 
     def get_table_filtered_graph_result(self, table_id: str, n: int) -> List["GraphTable"]:
         parameters = {"table": table_id}

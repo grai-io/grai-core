@@ -53,7 +53,14 @@ const UpdateFilter: React.FC<UpdateFilterProps> = ({
           id: workspaceId,
           __typename: "Workspace",
         }),
-        fieldName: "tables",
+        fieldName: "nodes",
+      })
+      cache.evict({
+        id: cache.identify({
+          id: workspaceId,
+          __typename: "Workspace",
+        }),
+        fieldName: "graph",
       })
     },
   })

@@ -1,8 +1,8 @@
 import React from "react"
 import { gql, useMutation } from "@apollo/client"
+import { LoadingButton } from "@mui/lab"
 import {
   Box,
-  Button,
   Card,
   Grid,
   List,
@@ -39,15 +39,15 @@ const WorkspaceDanger: React.FC<WorkspaceDangerProps> = ({ workspace }) => {
   const confirm = useConfirm()
   const { enqueueSnackbar } = useSnackbar()
 
-  const [clearWorkspace] = useMutation<ClearWorkspace, ClearWorkspaceVariables>(
-    CLEAR_WORKSPACE,
-    {
-      variables: { id: workspace.id },
-      update(cache) {
-        clearWorkspaceCache(cache, workspace.id)
-      },
-    }
-  )
+  const [clearWorkspace, { loading }] = useMutation<
+    ClearWorkspace,
+    ClearWorkspaceVariables
+  >(CLEAR_WORKSPACE, {
+    variables: { id: workspace.id },
+    update(cache) {
+      clearWorkspaceCache(cache, workspace.id)
+    },
+  })
 
   const handleClick = () => {
     confirm({
@@ -62,7 +62,7 @@ const WorkspaceDanger: React.FC<WorkspaceDangerProps> = ({ workspace }) => {
           error &&
           enqueueSnackbar(`Failed to clear workspace ${error}`, {
             variant: "error",
-          })
+          }),
       )
   }
 
@@ -80,13 +80,14 @@ const WorkspaceDanger: React.FC<WorkspaceDangerProps> = ({ workspace }) => {
             <List>
               <ListItem
                 secondaryAction={
-                  <Button
+                  <LoadingButton
                     variant="outlined"
                     color="error"
                     onClick={handleClick}
+                    loading={loading}
                   >
                     Clear Workspace
-                  </Button>
+                  </LoadingButton>
                 }
               >
                 <ListItemText

@@ -1,7 +1,7 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, render, screen, waitFor } from "testing"
+import { act, fireEvent, render, screen, waitFor, within } from "testing"
 import Nodes, { GET_NODES } from "./Nodes"
 
 test("renders", async () => {
@@ -269,4 +269,27 @@ test("no nodes", async () => {
   await waitFor(() => {
     expect(screen.getByText("No nodes found")).toBeInTheDocument()
   })
+})
+
+test("filter", async () => {
+  render(<Nodes />, {
+    withRouter: true,
+  })
+
+  await waitFor(() => {
+    expect(screen.getByRole("heading", { name: /Nodes/i })).toBeInTheDocument()
+  })
+
+  await waitFor(() => {
+    expect(screen.getAllByText("Hello World")).toBeTruthy()
+  })
+
+  const autocomplete = screen.getByTestId("table-filter-choice")
+  autocomplete.focus()
+  const input = within(autocomplete).getByRole("combobox")
+  // the value here can be any string you want, so you may also consider to
+  // wrapper it as a function and pass in inputValue as parameter
+  fireEvent.change(input, { target: { value: "T" } })
+  fireEvent.keyDown(autocomplete, { key: "ArrowDown" })
+  fireEvent.keyDown(autocomplete, { key: "Enter" })
 })

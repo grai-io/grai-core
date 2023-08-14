@@ -85,6 +85,7 @@ type GraphComponentProps = {
   refreshLoading?: boolean
   filters: string[]
   setFilters: (filters: string[]) => void
+  defaultViewport?: Viewport
 }
 
 const GraphComponent: React.FC<GraphComponentProps> = ({
@@ -101,6 +102,7 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
   refreshLoading,
   filters,
   setFilters,
+  defaultViewport,
 }) => {
   const { organisationName, workspaceName } = useWorkspace()
 
@@ -362,6 +364,7 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
       refreshLoading={refreshLoading}
       filters={filters}
       setFilters={setFilters}
+      defaultViewport={defaultViewport}
     />
   )
 }

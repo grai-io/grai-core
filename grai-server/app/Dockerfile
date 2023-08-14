@@ -47,7 +47,8 @@ WORKDIR /usr/src/app
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    INSTANCE_TYPE=server
+    INSTANCE_TYPE=server \
+    PGSSLCERT=/tmp/postgresql.crt
 
 COPY --from=builder /version.txt /version.txt
 COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
