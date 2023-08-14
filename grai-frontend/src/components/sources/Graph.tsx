@@ -109,6 +109,7 @@ const LayoutFlow = ({
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       fitView
+      proOptions={{ hideAttribution: true }}
     />
   )
 }

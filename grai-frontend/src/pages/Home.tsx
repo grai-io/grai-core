@@ -16,12 +16,15 @@ import {
   GetWorkspaceHomeVariables,
 } from "./__generated__/GetWorkspaceHome"
 import NotFound from "./NotFound"
+import Graph from "components/sources/Graph"
+import PageContent from "components/layout/PageContent"
 
 export const GET_WORKSPACE = gql`
   query GetWorkspaceHome($organisationName: String!, $workspaceName: String!) {
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       name
+      source_graph
       runs(filters: { action: TESTS }) {
         meta {
           filtered
@@ -89,6 +92,9 @@ const Home: React.FC = () => {
         {workspace.connections.meta.total === 0 &&
           workspace.tables.meta.total === 0 && <GettingStarted />}
         {workspace.runs.meta.filtered > 0 && <ReportsCard />}
+        <PageContent noGutter sx={{ height: "500px" }}>
+          <Graph sourceGraph={workspace.source_graph} />
+        </PageContent>
       </Box>
       <SearchDialog
         open={search}

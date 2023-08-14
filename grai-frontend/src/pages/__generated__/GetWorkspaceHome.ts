@@ -41,6 +41,7 @@ export interface GetWorkspaceHome_workspace {
   __typename: "Workspace";
   id: any;
   name: string;
+  source_graph: any;
   runs: GetWorkspaceHome_workspace_runs;
   tables: GetWorkspaceHome_workspace_tables;
   connections: GetWorkspaceHome_workspace_connections;
