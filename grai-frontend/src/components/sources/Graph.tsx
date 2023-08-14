@@ -10,10 +10,15 @@ import ReactFlow, {
 } from "reactflow"
 import "reactflow/dist/style.css"
 import notEmpty from "helpers/notEmpty"
+import useWorkspace from "helpers/useWorkspace"
+import SourceNode from "./SourceNode"
 
-export interface SourceGraph {
-  [key: string]: string[]
-}
+export type SourceGraph = {
+  id: string
+  name: string
+  icon: string | null
+  targets: string[]
+}[]
 
 type GraphProps = {
   sourceGraph: SourceGraph
@@ -25,6 +30,10 @@ const defaultOptions = {
   "elk.algorithm": "layered",
   "elk.layered.spacing.nodeNodeBetweenLayers": 100,
   "elk.spacing.nodeNode": 80,
+}
+
+const nodeTypes = {
+  custom: SourceNode,
 }
 
 const useLayoutedElements = () => {
@@ -40,8 +49,8 @@ const useLayoutedElements = () => {
         layoutOptions: layoutOptions,
         children: nodes.map(node => ({
           ...node,
-          width: node.width ?? undefined,
-          height: node.height ?? undefined,
+          width: 300,
+          height: 68,
         })),
         edges: getEdges(),
       }
@@ -79,9 +88,11 @@ const useLayoutedElements = () => {
 const LayoutFlow = ({
   initialNodes,
   initialEdges,
+  workspaceNavigate,
 }: {
   initialNodes: Node[]
   initialEdges: Edge[]
+  workspaceNavigate: (path: string) => void
 }) => {
   const [nodes, , onNodesChange] = useNodesState(initialNodes)
   const [edges, , onEdgesChange] = useEdgesState(initialEdges)
@@ -92,7 +103,7 @@ const LayoutFlow = ({
       () =>
         getLayoutedElements({
           "elk.algorithm": "layered",
-          "elk.direction": "DOWN",
+          "elk.direction": "RIGHT",
         }),
       1,
     )
@@ -108,29 +119,34 @@ const LayoutFlow = ({
       edges={edges}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
+      onNodeDoubleClick={(_event, node) =>
+        workspaceNavigate(`sources/${node.data.id}`)
+      }
       fitView
       proOptions={{ hideAttribution: true }}
+      nodeTypes={nodeTypes}
     />
   )
 }
 
 const Graph: React.FC<GraphProps> = ({ sourceGraph }) => {
-  const initialNodes: Node[] = Array.from(
-    new Set(Object.values(sourceGraph).flat()),
-  ).map(name => ({
-    id: name,
+  const { workspaceNavigate } = useWorkspace()
+
+  const initialNodes: Node[] = sourceGraph.map(source => ({
+    id: source.id,
     position: { x: 0, y: 0 },
-    data: { label: name },
+    data: { label: source.name, id: source.id, icon: source.icon },
+    type: "custom",
   }))
 
-  const initialEdges: Edge[] = Object.entries(sourceGraph).reduce<Edge[]>(
-    (result, [source, targets]) =>
+  const initialEdges: Edge[] = sourceGraph.reduce<Edge[]>(
+    (result, source) =>
       result.concat(
-        targets
-          .filter(target => source !== target)
+        source.targets
+          .filter(target => source.id !== target)
           .map(target => ({
-            id: `${source}-${target}`,
-            source,
+            id: `${source.id}-${target}`,
+            source: source.id,
             target,
           })),
       ),
@@ -139,7 +155,11 @@ const Graph: React.FC<GraphProps> = ({ sourceGraph }) => {
 
   return (
     <ReactFlowProvider>
-      <LayoutFlow initialNodes={initialNodes} initialEdges={initialEdges} />
+      <LayoutFlow
+        initialNodes={initialNodes}
+        initialEdges={initialEdges}
+        workspaceNavigate={workspaceNavigate}
+      />
     </ReactFlowProvider>
   )
 }

@@ -6,6 +6,7 @@ import steps from "steps"
 import { act, fireEvent, render, screen, waitFor } from "testing"
 import Home, { GET_WORKSPACE } from "./Home"
 import Workspaces, { GET_WORKSPACES } from "./workspaces/Workspaces"
+import { source_graph } from "./sources/SourceGraph.test"
 
 window.scrollTo = jest.fn()
 
@@ -220,7 +221,7 @@ test("no reports", async () => {
           workspace: {
             id: "1",
             name: "test workspace",
-            source_graph: {},
+            source_graph,
             runs: {
               meta: {
                 filtered: 0,

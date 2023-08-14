@@ -23,7 +23,12 @@ export const GET_WORKSPACE = gql`
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       name
-      source_graph
+      source_graph {
+        id
+        name
+        icon
+        targets
+      }
       runs(filters: { action: TESTS }) {
         meta {
           filtered

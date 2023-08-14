@@ -7,11 +7,19 @@
 // GraphQL query operation: GetWorkspaceSourceGraph
 // ====================================================
 
+export interface GetWorkspaceSourceGraph_workspace_source_graph {
+  __typename: "SourceGraph";
+  id: any;
+  name: string;
+  icon: string | null;
+  targets: string[];
+}
+
 export interface GetWorkspaceSourceGraph_workspace {
   __typename: "Workspace";
   id: any;
   name: string;
-  source_graph: any;
+  source_graph: GetWorkspaceSourceGraph_workspace_source_graph[];
 }
 
 export interface GetWorkspaceSourceGraph {

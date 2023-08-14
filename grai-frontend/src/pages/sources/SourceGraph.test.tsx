@@ -3,6 +3,21 @@ import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
 import SourceGraph, { GET_WORKSPACE } from "./SourceGraph"
 
+export const source_graph = [
+  {
+    id: "1",
+    name: "node A",
+    icon: "1",
+    targets: ["1", "2"],
+  },
+  {
+    id: "2",
+    name: "node B",
+    icon: null,
+    targets: ["2"],
+  },
+]
+
 test("renders", async () => {
   const mocks = [
     {
@@ -18,10 +33,7 @@ test("renders", async () => {
           workspace: {
             id: "1",
             name: "Hello World",
-            source_graph: {
-              "node A": ["node A", "node B"],
-              "node C": ["node C", "node B"],
-            },
+            source_graph,
           },
         },
       },
