@@ -282,6 +282,7 @@ class SourceConnectionFilter:
 class Source:
     id: strawberry.auto
     name: strawberry.auto
+    priority: strawberry.auto
     created_at: strawberry.auto
     updated_at: strawberry.auto
 
