@@ -479,6 +479,12 @@ class Table(Node):
         return DataWrapper["Table"](list(set(tables)))
 
 
+@strawberry.django.type(SourceModel)
+class SourceGraph(Source):
+    icon: Optional[str]
+    targets: List[str]
+
+
 @strawberry.input
 class GraphFilter:
     source_id: Optional[strawberry.ID] = strawberry.UNSET
@@ -969,18 +975,15 @@ class Workspace:
 
     # Source Graph
     @strawberry.field
-    def source_graph(self) -> JSON:
+    def source_graph(self) -> List[SourceGraph]:
         def fetch_source_graph(workspace: WorkspaceModel):
-            nodes = (
+            nodes = defaultdict(list)
+            for node in (
                 NodeModel.objects.filter(workspace=workspace, is_active=True)
                 .prefetch_related("data_sources")
-                .values("id", "data_sources__name")
-            )
-            grouped_nodes = defaultdict(list)
-            for result in nodes:
-                grouped_nodes[result["id"]].append(result["data_sources__name"])
-
-            nodes = grouped_nodes
+                .values("id", "data_sources__id")
+            ):
+                nodes[node["id"]].append(str(node["data_sources__id"]))
 
             edges = defaultdict(list)
             for edge in EdgeModel.objects.filter(workspace=workspace, is_active=True).values("source", "destination"):
@@ -993,7 +996,37 @@ class Workspace:
             for source in segmentation.covering_set:
                 result.setdefault(source, [])
 
-            return result
+            sources = list(
+                SourceModel.objects.filter(workspace=workspace).prefetch_related("connections__connector").all()
+            )
+
+            list_result = []
+            for source_id, targets in result.items():
+                source = next(
+                    (source for source in sources if str(source.id) == source_id),
+                    None,
+                )
+
+                if not source:
+                    raise Exception("Source not found")
+
+                connection = source.connections.first()
+
+                icon = f"grai-source-{connection.connector.slug}" if connection else None
+
+                list_result.append(
+                    SourceGraph(
+                        id=source.id,
+                        name=source.name,
+                        priority=source.priority,
+                        created_at=source.created_at,
+                        updated_at=source.updated_at,
+                        icon=icon,
+                        targets=targets,
+                    )
+                )
+
+            return list_result
 
         return sync_to_async(fetch_source_graph)(self)
 

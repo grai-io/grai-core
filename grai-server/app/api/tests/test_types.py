@@ -2654,7 +2654,11 @@ async def test_workspace_source_graph(test_context, test_source):
         query Workspace($workspaceId: ID!) {
             workspace(id: $workspaceId) {
                 id
-                source_graph
+                source_graph {
+                    id
+                    name
+                    targets
+                }
             }
         }
     """
@@ -2669,7 +2673,9 @@ async def test_workspace_source_graph(test_context, test_source):
 
     assert result.errors is None
     assert result.data["workspace"]["id"] == str(workspace.id)
-    assert result.data["workspace"]["source_graph"] == {str(test_source.name): [str(test_source.name)]}
+    assert result.data["workspace"]["source_graph"][0]["id"] == str(test_source.id)
+    assert result.data["workspace"]["source_graph"][0]["name"] == str(test_source.name)
+    assert result.data["workspace"]["source_graph"][0]["targets"] == [str(test_source.id)]
 
 
 @pytest.mark.django_db
