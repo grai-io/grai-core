@@ -26,6 +26,7 @@ export const GET_SOURCE = gql`
       source(id: $sourceId) {
         id
         name
+        priority
         connections(filters: { temp: false }) {
           data {
             id

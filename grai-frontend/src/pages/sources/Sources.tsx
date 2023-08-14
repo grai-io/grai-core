@@ -20,6 +20,7 @@ export const GET_SOURCES = gql`
         data {
           id
           name
+          priority
           nodes {
             meta {
               total
