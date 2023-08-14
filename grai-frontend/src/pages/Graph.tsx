@@ -15,6 +15,7 @@ import {
   GetTablesAndEdges,
   GetTablesAndEdgesVariables,
 } from "./__generated__/GetTablesAndEdges"
+import useLocalState from "helpers/useLocalState"
 
 export const GET_TABLES_AND_EDGES = gql`
   query GetTablesAndEdges(
@@ -53,6 +54,11 @@ const Graph: React.FC<GraphProps> = ({ alwaysShow }) => {
   const [searchParams] = useSearchParams()
   const [tables, setTables] = useState<Table[]>([])
   const ref = useRef<HTMLDivElement>(null)
+  const [viewport, setViewport] = useLocalState<Viewport>("graph-viewport", {
+    x: 0,
+    y: 0,
+    zoom: 1,
+  })
 
   const { filters, setFilters } = useFilters()
 
@@ -84,12 +90,9 @@ const Graph: React.FC<GraphProps> = ({ alwaysShow }) => {
   )
 
   useEffect(() => {
-    handleMove({
-      x: 0,
-      y: 0,
-      zoom: 1,
-    })
-  }, [handleMove])
+    console.log("handlemove", viewport)
+    handleMove(viewport)
+  }, [handleMove, viewport])
 
   if (error) return <GraphError error={error} />
 
@@ -115,11 +118,12 @@ const Graph: React.FC<GraphProps> = ({ alwaysShow }) => {
           errors={errors}
           limitGraph={limitGraph}
           alwaysShow={alwaysShow}
-          onMove={handleMove}
+          onMove={setViewport}
           onRefresh={handleRefresh}
           refreshLoading={loading}
           filters={filters ?? []}
           setFilters={setFilters}
+          defaultViewport={viewport}
         />
       </div>
     </PageLayout>
