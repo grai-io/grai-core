@@ -3,6 +3,7 @@ import { gql, useLazyQuery } from "@apollo/client"
 import { useSearchParams } from "react-router-dom"
 import { Viewport } from "reactflow"
 import theme from "theme"
+import useLocalState from "helpers/useLocalState"
 import useWorkspace from "helpers/useWorkspace"
 import GraphComponent, {
   ResultError,
@@ -15,7 +16,6 @@ import {
   GetTablesAndEdges,
   GetTablesAndEdgesVariables,
 } from "./__generated__/GetTablesAndEdges"
-import useLocalState from "helpers/useLocalState"
 
 export const GET_TABLES_AND_EDGES = gql`
   query GetTablesAndEdges(
