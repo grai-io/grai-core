@@ -64,6 +64,9 @@ jobs:
           DB_HOST: "postgres"
           DJANGO_SUPERUSER_USERNAME: null@grai.io
           DJANGO_SUPERUSER_PASSWORD: super_secret
+          CELERY_BROKER_URL: redis://redis:6379/0
+          CELERY_RESULT_BACKEND: redis://redis:6379/0
+          REDIS_GRAPH_CACHE_HOST: redis
         ports:
           - 8000:8000
         options: >-

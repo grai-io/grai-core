@@ -3,6 +3,8 @@ import time
 from enum import Enum
 from typing import List, Optional
 
+from grai_graph.graph import BaseSourceSegment
+from collections import defaultdict
 import strawberry
 import strawberry_django
 from asgiref.sync import sync_to_async
@@ -13,7 +15,7 @@ from strawberry.scalars import JSON
 from strawberry_django.filters import FilterLookup
 from strawberry_django.pagination import OffsetPaginationInput
 from strawberry.types import Info
-
+from grai_graph.graph import BaseSourceSegment
 from api.search import Search
 from connections.models import Connection as ConnectionModel
 from connections.models import Run as RunModel
@@ -477,6 +479,12 @@ class Table(Node):
         return DataWrapper["Table"](list(set(tables)))
 
 
+@strawberry.django.type(SourceModel)
+class SourceGraph(Source):
+    icon: Optional[str]
+    targets: List[str]
+
+
 @strawberry.input
 class GraphFilter:
     source_id: Optional[strawberry.ID] = strawberry.UNSET
@@ -818,7 +826,7 @@ class Workspace:
         api_key = settings.ALGOLIA_SEARCH_KEY
 
         if not api_key:
-            raise Exception("Alogia not setup")
+            raise Exception("Algolia not setup")
 
         client = Search()
 
@@ -964,6 +972,60 @@ class Workspace:
     @strawberry.django.field
     def source(self, id: strawberry.ID) -> Source:
         return SourceModel.objects.get(id=id)
+
+    # Source Graph
+    @strawberry.field
+    def source_graph(self) -> List[SourceGraph]:
+        def fetch_source_graph(workspace: WorkspaceModel):
+            nodes = defaultdict(list)
+            for node in (
+                NodeModel.objects.filter(workspace=workspace, is_active=True)
+                .prefetch_related("data_sources")
+                .values("id", "data_sources__id")
+            ):
+                nodes[node["id"]].append(str(node["data_sources__id"]))
+
+            edges = defaultdict(list)
+            for edge in EdgeModel.objects.filter(workspace=workspace, is_active=True).values("source", "destination"):
+                edges[edge["source"]].append(edge["destination"])
+
+            # I can convert this into an explicit SQL queries to avoid loading the entire graph if needed.
+            segmentation = BaseSourceSegment(node_source_map=nodes, edge_map=edges)
+
+            result = segmentation.cover_edge_map.copy()
+            for source in segmentation.covering_set:
+                result.setdefault(source, [])
+
+            sources = list(
+                SourceModel.objects.filter(workspace=workspace).prefetch_related("connections__connector").all()
+            )
+
+            list_result = []
+            for source_id, targets in result.items():
+                source = next(
+                    (source for source in sources if str(source.id) == source_id),
+                    None,
+                )
+
+                connection = source.connections.first()
+
+                icon = f"grai-source-{connection.connector.slug}" if connection else None
+
+                list_result.append(
+                    SourceGraph(
+                        id=source.id,
+                        name=source.name,
+                        priority=source.priority,
+                        created_at=source.created_at,
+                        updated_at=source.updated_at,
+                        icon=icon,
+                        targets=targets,
+                    )
+                )
+
+            return list_result
+
+        return sync_to_async(fetch_source_graph)(self)
 
 
 @strawberry_django.filters.filter(MembershipModel, lookups=True)

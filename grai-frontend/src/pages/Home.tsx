@@ -7,6 +7,7 @@ import useWorkspace from "helpers/useWorkspace"
 import GettingStarted from "components/home/GettingStarted"
 import HomeCards from "components/home/HomeCards"
 import ReportsCard from "components/home/ReportsCard"
+import SourceGraph from "components/home/SourceGraph"
 import WelcomeCard from "components/home/WelcomeCard"
 import PageLayout from "components/layout/PageLayout"
 import SearchDialog from "components/search/SearchDialog"
@@ -22,6 +23,12 @@ export const GET_WORKSPACE = gql`
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       name
+      source_graph {
+        id
+        name
+        icon
+        targets
+      }
       runs(filters: { action: TESTS }) {
         meta {
           filtered
@@ -89,6 +96,7 @@ const Home: React.FC = () => {
         {workspace.connections.meta.total === 0 &&
           workspace.tables.meta.total === 0 && <GettingStarted />}
         <ReportsCard />
+        <SourceGraph source_graph={workspace.source_graph} />
       </Box>
       <SearchDialog
         open={search}

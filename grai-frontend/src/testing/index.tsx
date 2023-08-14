@@ -52,6 +52,9 @@ const mockResolvers = {
   StrDataWrapper: () => ({
     data: ["tag1", "tag2"],
   }),
+  Workspace: () => ({
+    source_graph: [],
+  }),
 }
 
 type RouteType =
@@ -81,7 +84,7 @@ const customRender = (ui: ReactElement, options?: CustomRenderOptions) => {
 
 const basicRender = (
   ui: ReactElement,
-  { loggedIn = true, mocks }: CustomRenderOptions = {}
+  { loggedIn = true, mocks }: CustomRenderOptions = {},
 ) =>
   render(ui, {
     wrapper: props => (
@@ -117,7 +120,7 @@ const renderWithRouter = (
     loggedIn = true,
     guestRoute = false,
     mocks,
-  }: CustomRenderOptions = {}
+  }: CustomRenderOptions = {},
 ) => {
   return render(ui, {
     wrapper: props => (
@@ -155,7 +158,7 @@ const renderWithRouter = (
                                 path={route.path}
                                 element={route.element}
                               />
-                            )
+                            ),
                           )}
                         </Route>
                       </Routes>
