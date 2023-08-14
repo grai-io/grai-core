@@ -23,12 +23,6 @@ export const GET_WORKSPACE = gql`
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       name
-      source_graph {
-        id
-        name
-        icon
-        targets
-      }
       runs(filters: { action: TESTS }) {
         meta {
           filtered
@@ -96,7 +90,7 @@ const Home: React.FC = () => {
         {workspace.connections.meta.total === 0 &&
           workspace.tables.meta.total === 0 && <GettingStarted />}
         <ReportsCard />
-        <SourceGraph source_graph={workspace.source_graph} />
+        <SourceGraph workspaceId={workspace.id} />
       </Box>
       <SearchDialog
         open={search}
