@@ -18,6 +18,7 @@ import {
 import NotFound from "./NotFound"
 import Graph from "components/sources/Graph"
 import PageContent from "components/layout/PageContent"
+import SourceGraph from "components/home/SourceGraph"
 
 export const GET_WORKSPACE = gql`
   query GetWorkspaceHome($organisationName: String!, $workspaceName: String!) {
@@ -92,9 +93,7 @@ const Home: React.FC = () => {
         {workspace.connections.meta.total === 0 &&
           workspace.tables.meta.total === 0 && <GettingStarted />}
         <ReportsCard />
-        <PageContent noGutter sx={{ height: "500px" }}>
-          <Graph sourceGraph={workspace.source_graph} />
-        </PageContent>
+        <SourceGraph source_graph={workspace.source_graph} />
       </Box>
       <SearchDialog
         open={search}

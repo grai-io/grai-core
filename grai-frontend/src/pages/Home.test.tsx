@@ -220,6 +220,7 @@ test("no reports", async () => {
           workspace: {
             id: "1",
             name: "test workspace",
+            source_graph: {},
             runs: {
               meta: {
                 filtered: 0,

@@ -11,7 +11,7 @@ import ReactFlow, {
 import "reactflow/dist/style.css"
 import notEmpty from "helpers/notEmpty"
 
-interface SourceGraph {
+export interface SourceGraph {
   [key: string]: string[]
 }
 
