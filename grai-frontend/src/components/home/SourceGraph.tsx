@@ -1,8 +1,8 @@
+import React from "react"
 import { Box, Button, Typography } from "@mui/material"
+import { Link } from "react-router-dom"
 import PageContent from "components/layout/PageContent"
 import Graph, { SourceGraph as SourceGraphType } from "components/sources/Graph"
-import React from "react"
-import { Link } from "react-router-dom"
 
 type SourceGraphProps = {
   source_graph: SourceGraphType
