@@ -67,6 +67,7 @@ type BaseGraphProps = {
   refreshLoading?: boolean
   filters: string[]
   setFilters: (filters: string[]) => void
+  defaultViewport?: Viewport
 }
 
 const BaseGraph: React.FC<BaseGraphProps> = ({
@@ -84,6 +85,7 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
   refreshLoading,
   filters,
   setFilters,
+  defaultViewport,
 }) => {
   const [highlighted, setHighlighted] = useState<string[]>([])
 
@@ -146,6 +148,7 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
         }}
         onMoveEnd={(_, viewport) => onMove && onMove(viewport)}
         fitView={fitView}
+        defaultViewport={defaultViewport}
       />
       {loading && <Loading />}
 
