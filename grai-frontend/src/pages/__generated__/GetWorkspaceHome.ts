@@ -7,14 +7,6 @@
 // GraphQL query operation: GetWorkspaceHome
 // ====================================================
 
-export interface GetWorkspaceHome_workspace_source_graph {
-  __typename: "SourceGraph";
-  id: any;
-  name: string;
-  icon: string | null;
-  targets: string[];
-}
-
 export interface GetWorkspaceHome_workspace_runs_meta {
   __typename: "PaginationResult";
   filtered: number;
@@ -49,7 +41,6 @@ export interface GetWorkspaceHome_workspace {
   __typename: "Workspace";
   id: any;
   name: string;
-  source_graph: GetWorkspaceHome_workspace_source_graph[];
   runs: GetWorkspaceHome_workspace_runs;
   tables: GetWorkspaceHome_workspace_tables;
   connections: GetWorkspaceHome_workspace_connections;

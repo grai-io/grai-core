@@ -8,15 +8,12 @@ import PageLayout from "components/layout/PageLayout"
 import Graph from "components/sources/Graph"
 import GraphError from "components/utils/GraphError"
 import {
-  GetWorkspaceSourceGraph,
-  GetWorkspaceSourceGraphVariables,
-} from "./__generated__/GetWorkspaceSourceGraph"
+  GetSourceGraph,
+  GetSourceGraphVariables,
+} from "./__generated__/GetSourceGraph"
 
 export const GET_WORKSPACE = gql`
-  query GetWorkspaceSourceGraph(
-    $organisationName: String!
-    $workspaceName: String!
-  ) {
+  query GetSourceGraph($organisationName: String!, $workspaceName: String!) {
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       name
@@ -34,8 +31,8 @@ const SourceGraph: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
 
   const { loading, error, data } = useQuery<
-    GetWorkspaceSourceGraph,
-    GetWorkspaceSourceGraphVariables
+    GetSourceGraph,
+    GetSourceGraphVariables
   >(GET_WORKSPACE, {
     variables: {
       organisationName,
