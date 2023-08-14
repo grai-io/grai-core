@@ -1,9 +1,9 @@
+import React, { memo, useState } from "react"
 import { BarChart, Edit } from "@mui/icons-material"
 import { Box, IconButton, Tooltip, Typography } from "@mui/material"
-import DataSourceIcon from "components/graph/DataSourceIcon"
-import React, { memo, useState } from "react"
 import { Link } from "react-router-dom"
 import { Handle, Position } from "reactflow"
+import DataSourceIcon from "components/graph/DataSourceIcon"
 
 type SourceNodeProps = {
   data: {

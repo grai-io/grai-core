@@ -5,8 +5,8 @@ import { ShepherdTour } from "react-shepherd"
 import steps from "steps"
 import { act, fireEvent, render, screen, waitFor } from "testing"
 import Home, { GET_WORKSPACE } from "./Home"
-import Workspaces, { GET_WORKSPACES } from "./workspaces/Workspaces"
 import { source_graph } from "./sources/SourceGraph.test"
+import Workspaces, { GET_WORKSPACES } from "./workspaces/Workspaces"
 
 window.scrollTo = jest.fn()
 
