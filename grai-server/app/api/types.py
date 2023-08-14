@@ -983,7 +983,8 @@ class Workspace:
                 .prefetch_related("data_sources")
                 .values("id", "data_sources__id")
             ):
-                nodes[node["id"]].append(str(node["data_sources__id"]))
+                if node["data_sources__id"]:
+                    nodes[node["id"]].append(str(node["data_sources__id"]))
 
             edges = defaultdict(list)
             for edge in EdgeModel.objects.filter(workspace=workspace, is_active=True).values("source", "destination"):
