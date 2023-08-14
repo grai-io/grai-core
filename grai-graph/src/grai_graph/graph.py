@@ -243,7 +243,7 @@ def build_graph(nodes: List[Dict], edges: List[Dict], version: str) -> Graph:
 
 
 class BaseSourceSegment:
-    def __init__(self, node_source_map: Dict[UUID, Iterable], edge_map: Dict[UUID, UUID]):
+    def __init__(self, node_source_map: Dict[UUID, Iterable], edge_map: Dict[UUID, Sequence[UUID]]):
         self.node_source_map = {k: frozenset(v) for k, v in node_source_map.items()}
         self.edge_map = edge_map
 
@@ -274,10 +274,10 @@ class BaseSourceSegment:
     @cached_property
     def cover_edge_map(self) -> Dict[str, List[str]]:
         result = defaultdict(set)
-        for source, destination in self.edge_map.items():
+        for source, destinations in self.edge_map.items():
             source_cover = self.node_cover_map[source]
-            destination_cover = self.node_cover_map[destination]
-            result[source_cover].add(destination_cover)
+            destination_covers = {self.node_cover_map[destination] for destination in destinations}
+            result[source_cover].update(destination_covers)
         return {k: list(v) for k, v in result.items()}
 
 
@@ -288,13 +288,13 @@ class SourceSegment(BaseSourceSegment):
         if None in node_source_map:
             raise ValueError("All values in `nodes` must be of NodeType and their `.spec.id` value must not be empty.")
 
-        edge_map = {}
+        edge_map: Dict[UUID, List] = defaultdict(list)
         for edge in edges:
-            source = edge.spec.source.id if not isinstance(edge.spec.source, UUID) else edge.spec.source
-            destination = (
-                edge.spec.destination.id if not isinstance(edge.spec.destination, UUID) else edge.spec.destination
-            )
-            edge_map[source] = destination
+            source, destination = edge.spec.source, edge.spec.destination
+            source_id: UUID = source if isinstance(source, UUID) else source.id
+            destination_id: UUID = destination if isinstance(destination, UUID) else destination.id
+
+            edge_map[source_id].append(destination_id)
 
         if None in edge_map:
             raise ValueError(
