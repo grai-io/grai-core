@@ -37,6 +37,7 @@ export interface GetSource_workspace_source {
   __typename: "Source";
   id: any;
   name: string;
+  priority: number;
   connections: GetSource_workspace_source_connections;
 }
 

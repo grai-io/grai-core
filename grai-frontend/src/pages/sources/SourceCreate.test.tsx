@@ -30,12 +30,20 @@ test("submit", async () => {
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: /name/i }),
-        "test-source"
-      )
+        "test-source",
+      ),
   )
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+    async () =>
+      await user.type(
+        screen.getByRole("spinbutton", { name: /priority/i }),
+        "1",
+      ),
+  )
+
+  await act(
+    async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 
   expect(screen.getByText("New Page")).toBeInTheDocument()
@@ -68,6 +76,7 @@ test("submit error", async () => {
         variables: {
           workspaceId: "1",
           name: "test-source",
+          priority: 0,
         },
       },
       result: {
@@ -89,12 +98,12 @@ test("submit error", async () => {
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: /name/i }),
-        "test-source"
-      )
+        "test-source",
+      ),
   )
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+    async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 
   await waitFor(() => {

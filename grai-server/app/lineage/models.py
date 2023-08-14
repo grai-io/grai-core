@@ -252,6 +252,7 @@ class Source(TenantModel):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
+    priority = models.IntegerField(default=0)
 
     workspace = models.ForeignKey(
         "workspaces.Workspace",

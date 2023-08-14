@@ -85,6 +85,7 @@ const sourceMock = {
         source: {
           id: "1",
           name: "Source 1",
+          priority: 0,
           connections: {
             data: [],
           },
@@ -109,12 +110,12 @@ test("submit", async () => {
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: /name/i }),
-        "test-source"
-      )
+        "test-source",
+      ),
   )
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+    async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 })
 
@@ -130,6 +131,7 @@ test("submit error", async () => {
           variables: {
             sourceId: "1",
             name: "Source 1test-source",
+            priority: 0,
           },
         },
         result: {
@@ -148,12 +150,12 @@ test("submit error", async () => {
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: /name/i }),
-        "test-source"
-      )
+        "test-source",
+      ),
   )
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+    async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 
   await waitFor(() => {
@@ -177,7 +179,7 @@ test("renders tables", async () => {
   })
 
   await act(
-    async () => await user.click(screen.getByRole("tab", { name: /tables/i }))
+    async () => await user.click(screen.getByRole("tab", { name: /tables/i })),
   )
 
   // eslint-disable-next-line testing-library/no-wait-for-empty-callback
@@ -231,7 +233,7 @@ test("empty tables", async () => {
   })
 
   await act(
-    async () => await user.click(screen.getByRole("tab", { name: /tables/i }))
+    async () => await user.click(screen.getByRole("tab", { name: /tables/i })),
   )
 
   await waitFor(() => {
@@ -258,7 +260,7 @@ test("search tables", async () => {
   })
 
   await act(
-    async () => await user.click(screen.getByRole("tab", { name: /tables/i }))
+    async () => await user.click(screen.getByRole("tab", { name: /tables/i })),
   )
 
   // eslint-disable-next-line testing-library/no-wait-for-empty-callback
@@ -302,7 +304,7 @@ test("tables error", async () => {
   })
 
   await act(
-    async () => await user.click(screen.getByRole("tab", { name: /tables/i }))
+    async () => await user.click(screen.getByRole("tab", { name: /tables/i })),
   )
 
   await waitFor(() => {
@@ -322,12 +324,12 @@ test("tables click row", async () => {
   })
 
   await act(
-    async () => await user.click(screen.getByRole("tab", { name: /tables/i }))
+    async () => await user.click(screen.getByRole("tab", { name: /tables/i })),
   )
 
   await act(
     // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-    async () => await user.click(container.querySelectorAll("tbody > tr")[0])
+    async () => await user.click(container.querySelectorAll("tbody > tr")[0]),
   )
 
   expect(screen.getByText("New Page")).toBeInTheDocument()
@@ -346,7 +348,7 @@ test("connections click row", async () => {
 
   await act(
     // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-    async () => await user.click(container.querySelectorAll("tbody > tr")[0])
+    async () => await user.click(container.querySelectorAll("tbody > tr")[0]),
   )
 
   expect(screen.getByText("New Page")).toBeInTheDocument()
