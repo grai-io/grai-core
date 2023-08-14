@@ -1,5 +1,6 @@
 import React from "react"
 import { gql, useMutation } from "@apollo/client"
+import { LoadingButton } from "@mui/lab"
 import {
   Box,
   Card,
@@ -16,7 +17,6 @@ import {
   ClearWorkspace,
   ClearWorkspaceVariables,
 } from "./__generated__/ClearWorkspace"
-import { LoadingButton } from "@mui/lab"
 
 export const CLEAR_WORKSPACE = gql`
   mutation ClearWorkspace($id: ID!) {
