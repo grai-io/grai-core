@@ -1007,9 +1007,6 @@ class Workspace:
                     None,
                 )
 
-                if not source:
-                    raise Exception("Source not found")
-
                 connection = source.connections.first()
 
                 icon = f"grai-source-{connection.connector.slug}" if connection else None
