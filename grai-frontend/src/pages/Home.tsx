@@ -9,10 +9,8 @@ import HomeCards from "components/home/HomeCards"
 import ReportsCard from "components/home/ReportsCard"
 import SourceGraph from "components/home/SourceGraph"
 import WelcomeCard from "components/home/WelcomeCard"
-import PageContent from "components/layout/PageContent"
 import PageLayout from "components/layout/PageLayout"
 import SearchDialog from "components/search/SearchDialog"
-import Graph from "components/sources/Graph"
 import GraphError from "components/utils/GraphError"
 import {
   GetWorkspaceHome,
