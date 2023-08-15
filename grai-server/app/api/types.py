@@ -552,6 +552,7 @@ class Workspace:
         pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
         search: Optional[str] = strawberry.UNSET,
         filter: Optional[WorkspaceNodeFilter] = strawberry.UNSET,
+        order: Optional[NodeOrder] = strawberry.UNSET,
     ) -> Pagination["Node"]:
         queryset = NodeModel.objects.filter(workspace=self)
 
@@ -567,7 +568,7 @@ class Workspace:
                 if filter.node_type.contains:
                     queryset = queryset.filter(metadata__grai__node_type__in=filter.node_type.contains)
 
-        return Pagination[Node](queryset=queryset, pagination=pagination)
+        return Pagination[Node](queryset=queryset, pagination=pagination, order=order)
 
     @strawberry.django.field
     def node(self, id: strawberry.ID) -> Node:
