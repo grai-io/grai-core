@@ -1,3 +1,5 @@
+from typing import get_args
+
 import pytest
 from grai_schemas import config as core_config
 from grai_schemas.v1 import EdgeV1, NodeV1, SourcedEdgeV1, SourcedNodeV1
@@ -20,7 +22,8 @@ def test_loader_node_types(app_nodes):
     Raises:
 
     """
-    assert all(isinstance(node, NodeTypes) for node in app_nodes)
+
+    assert all(isinstance(node, get_args(NodeTypes)) for node in app_nodes)
 
 
 def test_loader_edge_types(app_edges):
@@ -295,7 +298,9 @@ class TestConnector:
 
         """
         for node in nodes:
-            assert isinstance(getattr(node.spec.metadata, core_config.metadata_id), NodeV1Metadata), node.spec.metadata
+            assert isinstance(
+                getattr(node.spec.metadata, core_config.metadata_id), get_args(NodeV1Metadata)
+            ), node.spec.metadata
 
         for edge in edges:
-            assert isinstance(getattr(edge.spec.metadata, core_config.metadata_id), EdgeV1Metadata)
+            assert isinstance(getattr(edge.spec.metadata, core_config.metadata_id), get_args(EdgeV1Metadata))

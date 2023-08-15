@@ -14,6 +14,7 @@ def mock_edge_values(source, destination):
         destination=destination,
         definition="test_definition",
         constraint_type="bt",
+        namespace="test",
     )
 
 
@@ -24,7 +25,7 @@ class AdapterTestValues:
             db_id=1,
             name="test_table",
             display_name="test_table",
-            schema_name="test_schema",
+            schema="test_schema",
             description="test_description",
             entity_type="entity/UserTable",
             namespace="test_namespace",
@@ -37,7 +38,7 @@ class AdapterTestValues:
             id=1,
             name="test_question",
             description="test_description",
-            result_metadata=[{"columns": [{"name": "test_column"}]}],
+            result_metadata=[{"base_type": "blank"}],
             creator={"id": 1, "first_name": "test", "last_name": "tester"},
             database_id=5,
             table_id=1,
