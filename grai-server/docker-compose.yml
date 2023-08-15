@@ -112,7 +112,18 @@ services:
       interval: 2s
       timeout: 2s
       retries: 15
-    command: ["postgres", "-c", "log_statement=none"]
+    command:
+      [
+        "postgres",
+        "-c",
+        "log_statement=all",
+        "-c",
+        "wal_level=logical",
+        "-c",
+        "max_replication_slots=10",
+        "-c",
+        "max_wal_senders=5",
+      ]
 
   redis:
     image: redis/redis-stack:latest

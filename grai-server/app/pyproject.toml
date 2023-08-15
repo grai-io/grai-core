@@ -62,6 +62,7 @@ django-postgres-extra = "^2.0.8"
 grandalf = "^0.8"
 drf-nested-routers = "^0.93.4"
 django-redis = "^5.3.0"
+retakesearch = "^0.1.32"
 
 
 [tool.poetry.group.dev.dependencies]
