@@ -12,12 +12,12 @@ import {
   TableSortLabel,
   Typography,
 } from "@mui/material"
+import { visuallyHidden } from "@mui/utils"
 import { useNavigate } from "react-router-dom"
+import { Order } from "pages/nodes/Nodes"
 import Loading from "components/layout/Loading"
 import TablePagination from "components/table/TablePagination"
 import DataSourcesStack, { Source } from "components/tables/DataSourcesStack"
-import { visuallyHidden } from "@mui/utils"
-import { Order } from "pages/nodes/Nodes"
 
 type TableHeadCellProps = {
   property: string
