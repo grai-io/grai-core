@@ -135,7 +135,7 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
       /> */}
 
       <ReactFlow
-        minZoom={0}
+        minZoom={0.1}
         nodes={nodes}
         edges={edges}
         proOptions={proOptions}
