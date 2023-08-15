@@ -204,6 +204,46 @@ const FilterRow: React.FC<FilterRowProps> = ({
           />
         ),
       },
+      {
+        value: "not-in",
+        label: "Not In",
+        valueComponent: (
+          disabled: boolean,
+          value: string | string[] | null,
+          onChange: (value: string | string[] | null) => void,
+        ) => (
+          <Autocomplete<Source, true>
+            multiple
+            openOnFocus
+            autoSelect
+            limitTags={1}
+            disabled={disabled}
+            options={sources}
+            value={sources.filter(source =>
+              (value ? (Array.isArray(value) ? value : [value]) : []).includes(
+                source.id,
+              ),
+            )}
+            getOptionLabel={source => source.name}
+            onChange={(event, newValue) =>
+              onChange(newValue.map(source => source.id))
+            }
+            renderInput={params => <TextField {...params} />}
+            renderOption={(props, option, { selected }) => (
+              <li {...props}>
+                <Checkbox
+                  icon={icon}
+                  checkedIcon={checkedIcon}
+                  style={{ marginRight: 8 }}
+                  checked={selected}
+                />
+                {option.name}
+              </li>
+            )}
+            data-testid="autocomplete-value"
+          />
+        ),
+      },
     ],
   }
 
@@ -214,6 +254,26 @@ const FilterRow: React.FC<FilterRowProps> = ({
       {
         value: "contains",
         label: "Contains",
+        valueComponent: (
+          disabled: boolean,
+          value: string | string[] | null,
+          onChange: (value: string | string[] | null) => void,
+        ) => (
+          <Autocomplete
+            openOnFocus
+            autoSelect
+            disabled={disabled}
+            options={tags}
+            value={Array.isArray(value) ? value[0] : value}
+            onChange={(event, newValue) => onChange(newValue)}
+            renderInput={params => <TextField {...params} />}
+            data-testid="autocomplete-value"
+          />
+        ),
+      },
+      {
+        value: "not-contains",
+        label: "Doesn't Contain",
         valueComponent: (
           disabled: boolean,
           value: string | string[] | null,
