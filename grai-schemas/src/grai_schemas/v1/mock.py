@@ -1,6 +1,6 @@
 import datetime
 import uuid
-from typing import Any, Dict, Generic, List, Type, TypeVar
+from typing import Any, Dict, Generic, List, Optional, Type, TypeVar
 
 from grai_schemas.generics import DefaultValue
 from grai_schemas.human_ids import get_human_id
@@ -56,7 +56,7 @@ class DefaultValueFactory(ModelFactory[DefaultValue]):
 
     @post_generated
     @classmethod
-    def data_type(cls, default_value) -> str:
+    def data_type(cls, default_value) -> Optional[str]:
         """ """
         return None if default_value is None else type(default_value).__name__
 
