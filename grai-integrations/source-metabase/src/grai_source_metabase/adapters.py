@@ -1,10 +1,10 @@
 from typing import Any, Dict, List, Literal, Sequence, TypeVar, Union
 
-from grai_schemas import config as base_config
-from grai_schemas.schema import Schema
 from grai_schemas.v1 import EdgeV1, NodeV1, SourcedEdgeV1, SourcedNodeV1, SourceV1
 from grai_schemas.v1.metadata.edges import EdgeMetadataTypeLabels, GenericEdgeMetadataV1
 from grai_schemas.v1.metadata.nodes import (
+    CollectionMetadata,
+    ColumnMetadata,
     GenericNodeMetadataV1,
     NodeMetadataTypeLabels,
     QueryMetadata,
@@ -14,7 +14,14 @@ from grai_schemas.v1.source import SourceSpec
 from multimethod import multimethod
 from pydantic import BaseModel
 
-from grai_source_metabase.models import Collection, Edge, NodeTypes, Question, Table
+from grai_source_metabase.models import (
+    Collection,
+    Column,
+    Edge,
+    NodeTypes,
+    Question,
+    Table,
+)
 from grai_source_metabase.package_definitions import config
 
 T = TypeVar("T")
@@ -38,6 +45,33 @@ def build_grai_metadata(current: Any, desired: Any) -> None:
     """
 
     raise NotImplementedError(f"No adapter between {type(current)} and {type(desired)} for value {current}")
+
+
+@build_grai_metadata.register
+def build_grai_metadata_from_table(current: Column, version: Literal["v1"] = "v1") -> ColumnMetadata:
+    """
+    Build grai metadata for a Table object.
+
+    Args:
+        current: The Table object to build grai metadata from.
+        version: The version of grai metadata to build. Defaults to "v1".
+
+    Returns:
+        TableMetadata: grai metadata object for the Table.
+
+    Raises:
+        None.
+
+    """
+
+    data = {
+        "version": version,
+        "node_type": NodeMetadataTypeLabels.column.value,
+        "node_attributes": {},
+        "tags": [config.metadata_id],
+    }
+
+    return ColumnMetadata(**data)
 
 
 @build_grai_metadata.register
@@ -68,7 +102,7 @@ def build_grai_metadata_from_table(current: Table, version: Literal["v1"] = "v1"
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_question(current: Question, version: Literal["v1"] = "v1") -> GenericNodeMetadataV1:
+def build_grai_metadata_from_question(current: Question, version: Literal["v1"] = "v1") -> QueryMetadata:
     """
     Build grai metadata for a Question object.
 
@@ -95,7 +129,7 @@ def build_grai_metadata_from_question(current: Question, version: Literal["v1"] 
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_collection(current: Collection, version: Literal["v1"] = "v1") -> GenericNodeMetadataV1:
+def build_grai_metadata_from_collection(current: Collection, version: Literal["v1"] = "v1") -> CollectionMetadata:
     """
     Build grai metadata for a Collection object.
 
@@ -110,12 +144,12 @@ def build_grai_metadata_from_collection(current: Collection, version: Literal["v
 
     data = {
         "version": version,
-        "node_type": NodeMetadataTypeLabels.generic.value,
+        "node_type": NodeMetadataTypeLabels.collection.value,
         "node_attributes": {},
         "tags": [config.metadata_id],
     }
 
-    return GenericNodeMetadataV1(**data)
+    return CollectionMetadata(**data)
 
 
 @build_grai_metadata.register
@@ -252,7 +286,9 @@ def adapt_to_client(current: Any, desired: Any):
 
 
 @adapt_to_client.register
-def adapt_table_to_client(current: Table, source: SourceSpec, version: Literal["v1"] = "v1") -> SourcedNodeV1:
+def adapt_table_to_client(
+    current: Union[Table, Column], source: SourceSpec, version: Literal["v1"] = "v1"
+) -> SourcedNodeV1:
     """
     Adapt a Table object to the desired client format.
 
@@ -315,6 +351,7 @@ def adapt_collection_to_client(current: Collection, source: SourceSpec, version:
     Adapt a Collection object to the desired client format.
     Args:
         current:
+        source:
         version:
 
     Returns:

@@ -3,6 +3,20 @@ from typing import Dict, List, Optional, Tuple
 from pydantic import BaseModel, Field, PrivateAttr
 
 
+class MetabaseDbmsVersion(BaseModel):
+    flavor: str
+    semantic_version: Optional[List]
+    version: str
+
+
+class DB(BaseModel):
+    dbms_version: Optional[MetabaseDbmsVersion]
+    engine: Optional[str]
+    id: int
+    name: str
+    timezone: Optional[str]
+
+
 class QuestionResultMetadata(BaseModel):
     # id: int
     base_type: str
@@ -13,19 +27,19 @@ class QuestionResultMetadata(BaseModel):
 
 class QuestionDataSetQuery(BaseModel):
     database: int
-    query: Dict
+    query: Optional[Dict]
     type: str
 
 
 class Question(BaseModel):
     id: int
     name: str
-    table_id: int
-    database_id: int
+    table_id: Optional[int]
+    database_id: Optional[int]
     collection_id: Optional[int]
     description: Optional[str]
     archived: Optional[bool]
-    result_metadata: List[QuestionResultMetadata]
+    result_metadata: Optional[List[QuestionResultMetadata]]
     dataset_query: Optional[QuestionDataSetQuery]
     # ---- unvalidated ----#
     creator: Optional[Dict]
@@ -33,16 +47,10 @@ class Question(BaseModel):
     collection: Optional[Dict]
 
 
-class TableDbDbmsVersion(BaseModel):
-    flavor: str
-    semantic_version: Optional[List]
-    version: str
-
-
 class TableDB(BaseModel):
     id: int
     name: str
-    dbms_version: Optional[TableDbDbmsVersion]
+    dbms_version: Optional[MetabaseDbmsVersion]
     engine: str
 
 
@@ -50,9 +58,9 @@ class Table(BaseModel):
     id: int
     name: str
     active: Optional[bool]
-    display_name: str
-    table_schema: str = Field(..., alias="schema")
-    entity_type: str
+    display_name: Optional[str]
+    table_schema: str = Field(alias="schema")
+    entity_type: Optional[str]
     db_id: int
     description: Optional[str]
     db: TableDB
@@ -67,8 +75,8 @@ class FingerPrintGlobal(BaseModel):
 
 
 class FingerPrint(BaseModel):
-    global_stats: FingerPrintGlobal = Field(..., alias="global")
-    type_stats: Dict = Field(..., alias="type")
+    global_stats: Optional[FingerPrintGlobal] = Field(alias="global")
+    type_stats: Optional[Dict] = Field(alias="type")
 
 
 class TableMetadataField(BaseModel):
@@ -85,15 +93,15 @@ class TableMetadata(BaseModel):
     name: str
     table_schema: str = Field(..., alias="schema")
     active: bool
-    db: TableDB
+    db: Optional[TableDB]
     db_id: int
     display_name: str
-    fields: List[TableMetadataField]
+    fields: Optional[List[TableMetadataField]]
 
 
 class Collection(BaseModel):
     name: str
-    id: str
+    id: int
     parent_id: Optional[str]
     archived: Optional[bool]
 

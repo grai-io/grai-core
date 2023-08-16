@@ -1,7 +1,9 @@
+import asyncio
 from functools import cached_property
 from itertools import chain
 from typing import Callable, Dict, List, Optional, Tuple, TypedDict, Union
 
+import httpx
 import requests
 from pydantic import (
     AnyHttpUrl,
@@ -100,7 +102,7 @@ class MetabaseAPI:
             raise ce
 
     @staticmethod
-    def make_request(request: Callable[..., requests.Response], url: str):
+    def make_request(request: Callable[..., requests.Response], url: str) -> Dict:
         """
         Makes an authenticated API request and returns the JSON response.
 
@@ -119,17 +121,20 @@ class MetabaseAPI:
         assert response.status_code == 200
         return response.json()
 
+    @staticmethod
+    async def async_make_request(request: Callable[..., requests.Response], url: str):
+        response = request(url=url)
+        assert response.status_code == 200
+        return response.json()
+
     def get_questions(self) -> List[api.Question]:
         """
         Retrieves the list of questions from the Metabase API.
 
         Returns:
-            dict: The JSON response containing the list of questions.
 
         """
         url = f"{self.api_endpoint}/card"
-        questions = self.make_request(self.session.get, url)
-        breakpoint()
         return [api.Question(**item) for item in self.make_request(self.session.get, url)]
 
     def get_tables(self) -> List[api.Table]:
@@ -137,26 +142,53 @@ class MetabaseAPI:
         Retrieves the list of tables from the Metabase API.
 
         Returns:
-            dict: The JSON response containing the list of tables.
 
         """
         url = f"{self.api_endpoint}/table"
         return [api.Table(**item) for item in self.make_request(self.session.get, url)]
 
-    def get_table_metadata(self, table_id) -> api.TableMetadataField:
-        url = f"{self.api_endpoint}/table/{table_id}/query_metadata"
-        return api.TableMetadataField(**self.make_request(self.session.get, url))
+    def get_table_metadata(self, table_id: int) -> api.TableMetadata:
+        """A table id to retrieve metadata for from Metabase
 
-    def get_dbs(self):
+        Args:
+            table_id: A table id to retrieve metadata for from Metabase.
+
+        Returns:
+
         """
-        Retrieves the list of databases from the Metabase API.
+        url = f"{self.api_endpoint}/table/{table_id}/query_metadata"
+        return api.TableMetadata(**self.make_request(self.session.get, url))
+
+    async def get_all_table_metadata(self, table_ids: List[int]) -> List[api.TableMetadata]:
+        """
+
+        Args:
+            table_ids: A list of table id's to retrieve metadata for from Metabase.
+
+        Returns:
+
+        """
+        async with httpx.AsyncClient(headers=self.session.headers) as client:
+            urls = [f"{self.api_endpoint}/table/{table_id}/query_metadata" for table_id in table_ids]
+            responses = await asyncio.gather(*[client.get(url) for url in urls], return_exceptions=True)
+
+        for i, response in enumerate(responses):
+            if not hasattr(response, "status_code") or response.status_code != 200:
+                response = self.session.get(url=urls[i])
+                assert response.status_code == 200, f"Request error to `{urls[i]}`. Got {response.status_code}"
+                responses[i] = response
+
+        return [api.TableMetadata(**response.json()) for response in responses]
+
+    def get_dbs(self) -> List[api.DB]:
+        """Retrieves the list of databases from the Metabase API.
 
         Returns:
             dict: The JSON response containing the list of databases.
 
         """
         url = f"{self.api_endpoint}/database"
-        return self.make_request(self.session.get, url)
+        return [api.DB(**api_resp) for api_resp in self.make_request(self.session.get, url)["data"]]
 
     def get_collections(self) -> List[api.Collection]:
         """
@@ -168,14 +200,14 @@ class MetabaseAPI:
         """
 
         url = f"{self.api_endpoint}/collection"
-        return [api.Collection(**item) for item in self.make_request(self.session.get, url)]
+        return [api.Collection(**item) for item in self.make_request(self.session.get, url) if item["id"] != "root"]
 
 
-def build_namespace_map(default_map: Dict[int, str], dbs: Dict, metabase_namespace: str) -> Dict[int, str]:
+def build_namespace_map(default_map: Dict[int, str], dbs: Dict[int, api.DB], metabase_namespace: str) -> Dict[int, str]:
     namespace_map = default_map.copy()
 
     for k, v in dbs.items():
-        db_id_ns = f"{metabase_namespace}.{k}.{v['name']}"
+        db_id_ns = f"{metabase_namespace}.{k}.{v.name}"
         namespace_map.setdefault(k, db_id_ns)
 
     return namespace_map
@@ -190,20 +222,24 @@ class MetabaseConnector(MetabaseAPI):
     Connector class for interacting with Metabase API and building lineage information.
 
     Args:
-        namespaces (Dict, optional): A mapping of database IDs to their corresponding namespace names. Defaults to None.
-        default_namespace (str, optional): The default namespace to be used when a table or question does not have a specific namespace. Defaults to None.
+        namespaces: A mapping of database IDs to their corresponding namespace names. Defaults to None.
+        default_namespace: The default namespace to be used when a table or question does not have a specific namespace. Defaults to None.
         *args: Additional positional arguments to be passed to the base class constructor.
         **kwargs: Additional keyword arguments to be passed to the base class constructor.
 
     Attributes:
         metabase_namespace (str): The default namespace to be used.
-        tables (List[Dict]): The list of tables retrieved from the Metabase API.
-        tables_map (Dict[int, Dict]): A mapping of table IDs to their corresponding table dictionaries.
-        dbs_map (Dict[int, Dict]): A mapping of database IDs to their corresponding database dictionaries.
-        questions_map (Dict[int, Dict]): A mapping of question IDs to their corresponding question dictionaries.
-        namespace_map (Dict[int, str]): A mapping of database IDs to their corresponding namespace names.
-        question_table_map (Dict[int, int]): A mapping of question IDs to their corresponding table IDs.
-        table_db_map (Dict[int, int]): A mapping of table IDs to their corresponding database IDs.
+        collections: A list of active collections in Metabase
+        questions: A list of non-archived questions returned by Metabase
+        tables: The list of tables retrieved from the Metabase API.
+        columns: The list of columns referenced by Metabase Questions
+
+        tables_map: A mapping of table IDs to their corresponding table dictionaries.
+        dbs_map: A mapping of database IDs to corresponding database responses.
+        questions_map: A mapping of question IDs to their corresponding question dictionaries.
+        namespace_map: A mapping of database IDs to their corresponding namespace names.
+        question_table_map: A mapping of question IDs to their corresponding table IDs.
+        table_db_map: A mapping of table IDs to their corresponding database IDs.
 
     """
 
@@ -233,26 +269,32 @@ class MetabaseConnector(MetabaseAPI):
         self.metabase_namespace = metabase_namespace
 
     @cached_property
+    def dbs_map(self) -> Dict[int, api.DB]:
+        return {db.id: db for db in self.get_dbs()}
+
+    @cached_property
     def namespace_map(self):
         return build_namespace_map(self.base_namespace_map, self.dbs_map, self.metabase_namespace)
 
     @cached_property
     def tables(self) -> List[Table]:
         tables = [
-            Table(**api_resp.dict(), namespace=self.namespace_map[api_resp.db_id]) for api_resp in self.get_tables()
+            Table(**api_resp.dict(), namespace=self.namespace_map[api_resp.db_id])
+            for api_resp in self.get_tables()
+            if api_resp.active
         ]
         return tables
 
     @cached_property
-    def tables_map(self) -> Dict[Tuple[int, int], Table]:
-        return {(table.db_id, table.id): table for table in self.tables}
+    def tables_map(self) -> Dict[int, Table]:
+        return {table.id: table for table in self.tables}
 
     @cached_property
     def table_metadata_map(self) -> Dict[int, TableMetadata]:
+        table_metas = asyncio.run(self.get_all_table_metadata(list(self.tables_map.keys())))
         table_metas = (
-            TableMetadata(namespace=table.namespace, **self.get_table_metadata(table.id).dict())
-            for table in self.tables
-            if table.active
+            TableMetadata(namespace=table.namespace, **meta.dict())
+            for meta, table in zip(table_metas, self.tables_map.values())
         )
         return {meta.id: meta for meta in table_metas}
 
@@ -268,6 +310,10 @@ class MetabaseConnector(MetabaseAPI):
         return collections
 
     @cached_property
+    def collections_map(self) -> Dict[int, Collection]:
+        return {collection.id: collection for collection in self.collections}
+
+    @cached_property
     def questions(self) -> List[Question]:
         questions = [
             Question(**api_resp.dict(), namespace=self.metabase_namespace)
@@ -276,57 +322,14 @@ class MetabaseConnector(MetabaseAPI):
         ]
         return questions
 
-    # @cached_property
-    # def tables_map(self) -> Dict[int, Table]:
-    #     return {table.id: table for table in self.tables if table.active}
-
     @cached_property
     def columns(self):
-        return list(
-            chain.from_iterable(
-                self.table_metadata_map[table_id].get_columns() for table_id in self.question_table_map.values()
-            )
+        seq_of_columns = (
+            self.table_metadata_map[question.table_id].get_columns()
+            for question in self.questions
+            if question.table_id in self.table_metadata_map
         )
-
-    # @cached_property
-    # def dbs_map(self) -> Dict:
-    #     return {db["id"]: db for db in self.get_dbs()["data"]}
-
-    # @cached_property
-    # def questions_map(self) -> Dict[int, Question]:
-    #     return {question.id: question for question in self.questions if question.archived is False}
-    #
-    # @cached_property
-    # def collections_map(self) -> Dict[int, Collection]:
-    #     return {
-    #         collection.id: collection
-    #         for collection in self.collections
-    #         if collection.id != "root" and collection.archived is False
-    #     }
-    #
-    # @cached_property
-    # def question_table_map(self) -> Dict[int, int]:
-    #     return {
-    #         question.id: question.table_id
-    #         for question in self.questions_map.values()
-    #         if question.table_id and self.tables_map.get(question.table_id, None) is not None
-    #     }
-    #
-    # @cached_property
-    # def table_db_map(self) -> Dict[int, int]:
-    #     return {
-    #         table.id: table.db_id
-    #         for table in self.tables
-    #         if table.id is not None and table.db_id is not None
-    #     }
-    #
-    # @cached_property
-    # def question_collection_map(self) -> Dict:
-    #     return {
-    #         question.id: question.collection_id
-    #         for question in self.questions_map.values()
-    #         if question.collection_id and self.collections_map.get(question.collection_id, None) is not None
-    #     }
+        return list(set(chain.from_iterable(seq_of_columns)))
 
     def get_nodes(self) -> List[NodeTypes]:
         """
@@ -348,28 +351,37 @@ class MetabaseConnector(MetabaseAPI):
             List[Edge]: The list of edges.
 
         """
-        column_to_table_edges = (
-            Edge(source=column, destination=self.tables_map[column.table_id], namespace=column.namespace)
-            for column in self.columns
+        question_columns_iter = (
+            (question, self.table_metadata_map[question.table_id].get_columns())
+            for question in self.questions
+            if question.table_id in self.table_metadata_map
         )
+        question_column_edge_iter = (
+            (Edge(source=column, destination=question, namespace=question.namespace) for column in columns)
+            for question, columns in question_columns_iter
+        )
+        column_to_question_edges = chain.from_iterable(question_column_edge_iter)
 
         question_to_table_edges = (
             Edge(
                 source=question,
-                destination=self.tables_map[(question.database_id, question.table_id)],
+                destination=self.tables_map[question.table_id],
                 namespace=self.metabase_namespace,
             )
             for question in self.questions
+            if question.table_id in self.tables_map
         )
 
         collection_to_question_edges = (
             Edge(
-                source=self.collections_map[collection],
-                destination=self.questions_map[question],
+                source=self.collections_map[question.collection_id],
+                destination=question,
                 namespace=self.metabase_namespace,
             )
-            for question, collection in self.question_collection_map.items()
+            for question in self.questions
+            if question.collection_id in self.collections_map
         )
 
-        edges = chain(question_to_table_edges, collection_to_question_edges, column_to_table_edges)
-        return list(edges)
+        edges = list(chain(collection_to_question_edges, question_to_table_edges, column_to_question_edges))
+
+        return edges

@@ -7,6 +7,7 @@ from grai_schemas.v1.metadata.edges import GenericEdgeMetadataV1
 from grai_schemas.v1.metadata.edges import Metadata as EdgeV1Metadata
 from grai_schemas.v1.metadata.nodes import Metadata as NodeV1Metadata
 
+from grai_source_metabase import api
 from grai_source_metabase.loader import MetabaseConnector, build_namespace_map
 from grai_source_metabase.models import Edge, NodeTypes
 
@@ -45,14 +46,14 @@ class TestBuildNamespaceMap:
 
     def test_namespace_map_from_json(self):
         """ """
-        test_dict = {2: {"name": "test_destination"}}
+        test_dict = {2: api.DB(name="test_destination", id=2)}
         namespace_map = build_namespace_map({1: "B"}, test_dict, "temp")
         assert len(namespace_map.keys()) > 0
 
     @pytest.mark.xfail
     def test_namespace_map_from_invalid_json(self):
         """ """
-        test_dict = {2: {"name": "test_destination"}}
+        test_dict = {2: api.DB(name="test_destination", id=2)}
         namespace_map = build_namespace_map({}, test_dict, "temp")
         assert len(namespace_map.keys()) > 0
 
@@ -236,6 +237,7 @@ class TestConnector:
         """
         node_ids = {(n.spec.namespace, n.spec.name) for n in nodes}
         edge_source_ids = {(n.spec.source.namespace, n.spec.source.name) for n in edges}
+
         assert len(edge_source_ids - node_ids) == 0, "All edge sources should exist in the node list"
 
     def test_v1_adapted_edge_destination_have_nodes(self, nodes, edges):

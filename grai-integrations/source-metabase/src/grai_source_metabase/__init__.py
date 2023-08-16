@@ -8,4 +8,4 @@ from grai_source_metabase import (
     package_definitions,
 )
 
-__version__ = "0.2.2-alpha1"
+__version__ = "0.2.2"
