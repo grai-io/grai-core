@@ -173,7 +173,7 @@ jobs:
           WORKER_IMAGE=${{ needs.build-worker.outputs.tags }}
           BEAT_WORKER_IMAGE=${{ needs.build-beat-worker.outputs.tags }}
           FRONTEND_IMAGE=${{needs.build-frontend.outputs.tags}}
-          export SERVER_IMAGE FRONTEND_IMAGE
+          export SERVER_IMAGE WORKER_IMAGE BEAT_WORKER_IMAGE FRONTEND_IMAGE
           export UFFIZZI_URL=\$UFFIZZI_URL
           GHA_ACTOR=${{github.actor}}
           GHA_REPO=${{github.event.repository.name}}
