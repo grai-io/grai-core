@@ -76,17 +76,26 @@ class AdapterTestValues:
             model="test",
             view="test",
             fields=["field1"],
-            name="test",
+            title="test",
             namespace="tests",
             schema_name="test",
             fivetran_id="test",
         )
     ]
 
-    dimension = Dimension(name="test", label="test", type="test", sql="test")
+    dimension = Dimension(
+        table_name="test",
+        name="test",
+        namespace="test",
+        label="test",
+        type="test",
+        sql="test",
+    )
 
     explores = [
         Explore(
+            table_name="test",
+            namespace="test",
             id="test",
             name="test",
             fields={"dimensions": [dimension]},

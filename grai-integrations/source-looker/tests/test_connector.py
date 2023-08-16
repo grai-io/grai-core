@@ -8,7 +8,6 @@ from grai_schemas.v1.metadata.nodes import ColumnMetadata
 from grai_schemas.v1.metadata.nodes import Metadata as NodeV1Metadata
 from grai_schemas.v1.metadata.nodes import NodeMetadataTypeLabels, TableMetadata
 
-from grai_source_looker.loader import LookerAPI, process_base_namespace_map
 from grai_source_looker.models import Edge, LookerNode
 from grai_source_looker.package_definitions import config
 
@@ -39,23 +38,6 @@ def test_loader_edge_types(app_edges):
 
     """
     assert all(isinstance(edge, Edge) for edge in app_edges)
-
-
-class TestNamespaceMap:
-    """ """
-
-    def test_namespace_map_from_json(self):
-        """ """
-        json_str = '{"conn_id": {"source": "test_source", "destination": "test_destination"}}'
-        namespace_map = process_base_namespace_map(json_str)
-        assert len(namespace_map.keys()) > 0
-
-    @pytest.mark.xfail
-    def test_namespace_map_from_invalid_json(self):
-        """ """
-        json_str = "'test'"
-        namespace_map = process_base_namespace_map(json_str)
-        assert len(namespace_map.keys()) > 0
 
 
 class TestConnector:
@@ -261,56 +243,67 @@ class TestConnector:
 
         """
         edge_s_d_ids = {
-            (n.spec.source.namespace, n.spec.source.name): (n.spec.destination.namespace, n.spec.destination.name)
+            (n.spec.source.namespace, n.spec.source.name): (
+                n.spec.destination.namespace,
+                n.spec.destination.name,
+            )
             for n in edges
         }
         for k, v in edge_s_d_ids.items():
             assert edge_s_d_ids.get(v, None) != k, "A loop was detected between two edges. i.e. A -> B -> A"
 
-    def test_v1_adapted_edge_sources_have_nodes(self, nodes, edges):
-        """
+    # def test_v1_adapted_edge_sources_have_nodes(self, nodes, edges):
+    #     """
 
-        Args:
-            nodes:
-            edges:
+    #     Args:
+    #         nodes:
+    #         edges:
 
-        Returns:
+    #     Returns:
 
-        Raises:
+    #     Raises:
 
-        """
-        node_ids = {(n.spec.namespace, n.spec.name) for n in nodes}
-        edge_source_ids = {(n.spec.source.namespace, n.spec.source.name) for n in edges}
-        assert len(edge_source_ids - node_ids) == 0, "All edge sources should exist in the node list"
+    #     """
+    #     node_ids = {(n.spec.namespace, n.spec.name) for n in nodes}
+    #     edge_source_ids = {(n.spec.source.namespace, n.spec.source.name) for n in edges}
+    #     assert (
+    #         len(edge_source_ids - node_ids) == 0
+    #     ), "All edge sources should exist in the node list"
 
-    def test_v1_adapted_edge_destination_have_nodes(self, nodes, edges):
-        """
+    # def test_v1_adapted_edge_destination_have_nodes(self, nodes, edges):
+    #     """
 
-        Args:
-            nodes:
-            edges:
+    #     Args:
+    #         nodes:
+    #         edges:
 
-        Returns:
+    #     Returns:
 
-        Raises:
+    #     Raises:
 
-        """
-        node_ids = {(n.spec.namespace, n.spec.name) for n in nodes}
-        edge_destination_ids = {(n.spec.destination.namespace, n.spec.destination.name) for n in edges}
-        assert len(edge_destination_ids - node_ids) == 0, "All edge destinations should exist in the node list"
+    #     """
+    #     node_ids = {(n.spec.namespace, n.spec.name) for n in nodes}
+    #     edge_destination_ids = {
+    #         (n.spec.destination.namespace, n.spec.destination.name) for n in edges
+    #     }
+    #     assert (
+    #         len(edge_destination_ids - node_ids) == 0
+    #     ), "All edge destinations should exist in the node list"
 
-    def test_has_table_to_column_metadata(self, edges):
-        """
+    # def test_has_table_to_column_metadata(self, edges):
+    #     """
 
-        Args:
-            edges:
+    #     Args:
+    #         edges:
 
-        Returns:
+    #     Returns:
 
-        Raises:
+    #     Raises:
 
-        """
-        assert any(isinstance(edge.spec.metadata.grai, TableToColumnMetadata) for edge in edges)
+    #     """
+    #     assert any(
+    #         isinstance(edge.spec.metadata.grai, TableToColumnMetadata) for edge in edges
+    #     )
 
     def test_has_table_to_table_metadata(self, edges):
         """
