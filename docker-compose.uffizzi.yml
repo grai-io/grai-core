@@ -66,7 +66,7 @@ services:
   celery-worker:
     image: "${WORKER_IMAGE}"
     volumes:
-      - ./grai-worker/app/:/usr/src/app/
+      - ./grai-server/app/:/usr/src/app/
     environment:
       - DB_HOST=127.0.0.1
       - DB_PORT=5432
@@ -88,7 +88,7 @@ services:
   celery-beat-worker:
     image: "${BEAT_WORKER_IMAGE}"
     volumes:
-      - ./grai-beat-worker/app/:/usr/src/app/
+      - ./grai-server/app/:/usr/src/app/
     environment:
       - DB_HOST=127.0.0.1
       - DB_PORT=5432
