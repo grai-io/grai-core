@@ -4,11 +4,11 @@ services:
   db:
     image: postgres:14.3-alpine
     environment:
-    - POSTGRES_USER=grai
-    - POSTGRES_PASSWORD=grai
-    - POSTGRES_DB=grai
+      - POSTGRES_USER=grai
+      - POSTGRES_PASSWORD=grai
+      - POSTGRES_DB=grai
     ports:
-    - 5432:5432
+      - 5432:5432
     healthcheck:
       test: "pg_isready -U grai"
       interval: 2s
@@ -50,7 +50,7 @@ services:
       - the_guide
 
   redis:
-    image: redis/redis-stack:latest
+    image: redis/redis-stack:6.2.6-v9
     restart: always
     ports:
       - 6379:6379
