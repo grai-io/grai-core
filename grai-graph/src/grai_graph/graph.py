@@ -1,5 +1,7 @@
-from functools import lru_cache
-from typing import Any, Dict, List, Optional, Sequence, Tuple, Type, Union
+from collections import Counter, defaultdict
+from functools import cached_property, lru_cache
+from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple, Type, Union
+from uuid import UUID
 
 import networkx as nx
 from grai_schemas.base import Edge as EdgeTypes
@@ -238,3 +240,65 @@ def build_graph(nodes: List[Dict], edges: List[Dict], version: str) -> Graph:
     manifest = GraphManifest(nodes, edges)
 
     return Graph(manifest)
+
+
+class BaseSourceSegment:
+    def __init__(self, node_source_map: Dict[UUID, Iterable], edge_map: Dict[UUID, Sequence[UUID]]):
+        self.node_source_map = {k: frozenset(v) for k, v in node_source_map.items()}
+        self.edge_map = edge_map
+
+    @cached_property
+    def covering_set(self) -> tuple:
+        # I think removing repeated sets won't affect the minimal covering set computation 🤞
+        sets = set(self.node_source_map.values())
+
+        result = []
+        while sets:
+            frequency = Counter(elem for s in sets for elem in s)
+            max_element = max(frequency, key=frequency.get)
+            result.append(max_element)
+            sets = [s for s in sets if max_element not in s]
+
+        return tuple(result)
+
+    @cached_property
+    def node_cover_map(self) -> dict:
+        result: dict = {}
+        for key, source_set in self.node_source_map.items():
+            for cover in self.covering_set:
+                if cover in source_set:
+                    result[key] = cover
+                    break
+        return result
+
+    @cached_property
+    def cover_edge_map(self) -> Dict[str, List[str]]:
+        result = defaultdict(set)
+        for source, destinations in self.edge_map.items():
+            source_cover = self.node_cover_map[source]
+            destination_covers = {self.node_cover_map[destination] for destination in destinations}
+            result[source_cover].update(destination_covers)
+        return {k: list(v) for k, v in result.items()}
+
+
+class SourceSegment(BaseSourceSegment):
+    def __init__(self, nodes: List[NodeTypes], edges: List[EdgeTypes]):
+        # Assumes we are providing SourceSpecs not UUIDs in data_sources
+        node_source_map = {node.spec.id: frozenset(source.name for source in node.spec.data_sources) for node in nodes}
+        if None in node_source_map:
+            raise ValueError("All values in `nodes` must be of NodeType and their `.spec.id` value must not be empty.")
+
+        edge_map: Dict[UUID, List] = defaultdict(list)
+        for edge in edges:
+            source, destination = edge.spec.source, edge.spec.destination
+            source_id: UUID = source if isinstance(source, UUID) else source.id
+            destination_id: UUID = destination if isinstance(destination, UUID) else destination.id
+
+            edge_map[source_id].append(destination_id)
+
+        if None in edge_map:
+            raise ValueError(
+                "All values in `edges` must be of EdgeType and both `.spec.source.id` and `.spec.destination.id` "
+                "values must not be empty."
+            )
+        super().__init__(node_source_map=node_source_map, edge_map=edge_map)

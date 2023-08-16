@@ -1,4 +1,4 @@
-import React, { ReactNode, useContext } from "react"
+import React, { ReactNode } from "react"
 import {
   Box,
   Card,
@@ -10,7 +10,6 @@ import {
   Typography,
 } from "@mui/material"
 import { useNavigate } from "react-router-dom"
-import { ShepherdTourContext } from "react-shepherd"
 
 export interface Connector {
   id: string
@@ -30,7 +29,6 @@ const ConnectorCard: React.FC<ConnectorCardProps> = ({
   connector,
   onSelect,
 }) => {
-  const tour = useContext(ShepherdTourContext)
   const navigate = useNavigate()
 
   return (
@@ -43,7 +41,6 @@ const ConnectorCard: React.FC<ConnectorCardProps> = ({
               return
             }
             onSelect(connector)
-            tour?.next()
           }}
           className="connector-card"
         >

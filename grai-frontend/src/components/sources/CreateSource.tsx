@@ -12,10 +12,11 @@ import { NewSource } from "./__generated__/NewSource"
 import SourceForm, { Values } from "./SourceForm"
 
 export const CREATE_SOURCE = gql`
-  mutation CreateSource($workspaceId: ID!, $name: String!) {
-    createSource(workspaceId: $workspaceId, name: $name) {
+  mutation CreateSource($workspaceId: ID!, $name: String!, $priority: Int!) {
+    createSource(workspaceId: $workspaceId, name: $name, priority: $priority) {
       id
       name
+      priority
     }
   }
 `
@@ -31,6 +32,7 @@ const CreateSource: React.FC<CreateSourceProps> = ({ workspaceId }) => {
 
   const defaultValues: Values = {
     name: "",
+    priority: 0,
   }
 
   const [createSource, { loading, error }] = useMutation<
@@ -74,6 +76,7 @@ const CreateSource: React.FC<CreateSourceProps> = ({ workspaceId }) => {
       variables: {
         workspaceId,
         name: values.name,
+        priority: values.priority,
       },
     })
       .then(

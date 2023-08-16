@@ -78,12 +78,14 @@ class Mutation:
         info: Info,
         workspaceId: strawberry.ID,
         name: str,
+        priority: int,
     ) -> Source:
         workspace = await aget_workspace(info, workspaceId)
 
         source = await SourceModel.objects.acreate(
             workspace=workspace,
             name=name,
+            priority=priority,
         )
 
         return source
@@ -94,6 +96,7 @@ class Mutation:
         info: Info,
         id: strawberry.ID,
         name: Optional[str] = None,
+        priority: Optional[int] = None,
     ) -> Source:
         user = get_user(info)
 
@@ -104,6 +107,9 @@ class Mutation:
 
         if name is not None:
             source.name = name
+
+        if priority is not None:
+            source.priority = priority
 
         await sync_to_async(source.save)()
 

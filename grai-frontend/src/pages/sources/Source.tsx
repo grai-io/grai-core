@@ -8,6 +8,7 @@ import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
 import PageTabs from "components/layout/PageTabs"
 import SourceDetail from "components/sources/SourceDetail"
+import SourceLineage from "components/sources/SourceLineage"
 import SourceMenu from "components/sources/SourceMenu"
 import SourceTables from "components/sources/SourceTables"
 import TabState from "components/tabs/TabState"
@@ -25,6 +26,7 @@ export const GET_SOURCE = gql`
       source(id: $sourceId) {
         id
         name
+        priority
         connections(filters: { temp: false }) {
           data {
             id
@@ -57,7 +59,7 @@ const Source: React.FC = () => {
         workspaceName,
         sourceId: sourceId ?? "",
       },
-    }
+    },
   )
 
   if (error) return <GraphError error={error} />
@@ -83,8 +85,8 @@ const Source: React.FC = () => {
     {
       value: "lineage",
       label: "Lineage",
-      // component: <EditScheduleForm source={source} />,
-      disabled: true,
+      component: <SourceLineage source={source} />,
+      noWrapper: true,
     },
   ]
 

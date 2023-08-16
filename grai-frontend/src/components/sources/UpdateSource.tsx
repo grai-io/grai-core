@@ -9,10 +9,11 @@ import {
 import SourceForm, { Values } from "./SourceForm"
 
 export const UPDATE_SOURCE = gql`
-  mutation UpdateSource($sourceId: ID!, $name: String!) {
-    updateSource(id: $sourceId, name: $name) {
+  mutation UpdateSource($sourceId: ID!, $name: String!, $priority: Int!) {
+    updateSource(id: $sourceId, name: $name, priority: $priority) {
       id
       name
+      priority
     }
   }
 `
@@ -20,6 +21,7 @@ export const UPDATE_SOURCE = gql`
 export interface Source {
   id: string
   name: string
+  priority: number
 }
 
 type UpdateSourceProps = {
@@ -38,6 +40,7 @@ const UpdateSource: React.FC<UpdateSourceProps> = ({ source }) => {
       variables: {
         sourceId: source.id,
         name: values.name,
+        priority: values.priority,
       },
     })
       .then(() => enqueueSnackbar("Source updated"))

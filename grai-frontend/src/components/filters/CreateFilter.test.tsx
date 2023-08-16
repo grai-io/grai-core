@@ -164,6 +164,40 @@ test("submit data sources", async () => {
   expect(screen.getByText("New Page")).toBeInTheDocument()
 })
 
+test("submit data sources not in", async () => {
+  const user = userEvent.setup()
+
+  render(<CreateFilter {...defaultProps} />, {
+    route: "/default/demo/filters/create",
+    path: "/:organisationName/:workspaceName/filters/create",
+    routes: ["/:organisationName/:workspaceName/filters/:filterId"],
+  })
+
+  await act(
+    async () =>
+      await user.type(
+        screen.getByRole("textbox", { name: "Name" }),
+        "test filter",
+      ),
+  )
+
+  // input(screen.getByTestId("autocomplete-property"), "table")
+  input(screen.getByTestId("autocomplete-field"), "tag", 3)
+  input(screen.getByTestId("autocomplete-operator"), "contains", 2)
+
+  await waitFor(() => {
+    expect(screen.getByTestId("autocomplete-value")).toBeInTheDocument()
+  })
+
+  input(screen.getByTestId("autocomplete-value"), "s")
+
+  await act(
+    async () => await user.click(screen.getByRole("button", { name: /save/i })),
+  )
+
+  expect(screen.getByText("New Page")).toBeInTheDocument()
+})
+
 test("submit tags", async () => {
   const user = userEvent.setup()
 
@@ -184,6 +218,40 @@ test("submit tags", async () => {
   // input(screen.getByTestId("autocomplete-property"), "table")
   input(screen.getByTestId("autocomplete-field"), "tag", 4)
   input(screen.getByTestId("autocomplete-operator"), "contains", 2)
+
+  await waitFor(() => {
+    expect(screen.getByTestId("autocomplete-value")).toBeInTheDocument()
+  })
+
+  input(screen.getByTestId("autocomplete-value"), "t")
+
+  await act(
+    async () => await user.click(screen.getByRole("button", { name: /save/i })),
+  )
+
+  expect(screen.getByText("New Page")).toBeInTheDocument()
+})
+
+test("submit tags doesnt contain", async () => {
+  const user = userEvent.setup()
+
+  render(<CreateFilter {...defaultProps} />, {
+    route: "/default/demo/filters/create",
+    path: "/:organisationName/:workspaceName/filters/create",
+    routes: ["/:organisationName/:workspaceName/filters/:filterId"],
+  })
+
+  await act(
+    async () =>
+      await user.type(
+        screen.getByRole("textbox", { name: "Name" }),
+        "test filter",
+      ),
+  )
+
+  // input(screen.getByTestId("autocomplete-property"), "table")
+  input(screen.getByTestId("autocomplete-field"), "tag", 4)
+  input(screen.getByTestId("autocomplete-operator"), "contains", 3)
 
   await waitFor(() => {
     expect(screen.getByTestId("autocomplete-value")).toBeInTheDocument()

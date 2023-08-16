@@ -1,7 +1,7 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act, render, screen, waitFor } from "testing"
+import { act, fireEvent, render, screen, waitFor, within } from "testing"
 import Nodes, { GET_NODES } from "./Nodes"
 
 test("renders", async () => {
@@ -14,6 +14,7 @@ test("renders", async () => {
           workspaceName: "",
           offset: 0,
           search: undefined,
+          order: {},
         },
       },
       result: {
@@ -27,6 +28,126 @@ test("renders", async () => {
                   name: "table1",
                   namespace: "default",
                   display_name: "table1",
+                  is_active: true,
+                  metadata: {
+                    grai: {
+                      node_type: "Table",
+                      tags: ["tag1", "tag2"],
+                    },
+                  },
+                  data_sources: {
+                    data: [
+                      {
+                        id: "1",
+                        name: "source1",
+                        connections: {
+                          data: [
+                            {
+                              id: "1",
+                              connector: {
+                                id: "1",
+                                name: "connector1",
+                                slug: "postgres",
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+              meta: {
+                total: 1,
+                filtered: 1,
+              },
+            },
+          },
+        },
+      },
+    },
+    {
+      request: {
+        query: GET_NODES,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+          offset: 0,
+          search: undefined,
+          order: { name: "ASC" },
+        },
+      },
+      result: {
+        data: {
+          workspace: {
+            id: "1234",
+            nodes: {
+              data: [
+                {
+                  id: "1234",
+                  name: "table2",
+                  namespace: "default",
+                  display_name: "table2",
+                  is_active: true,
+                  metadata: {
+                    grai: {
+                      node_type: "Table",
+                      tags: ["tag1", "tag2"],
+                    },
+                  },
+                  data_sources: {
+                    data: [
+                      {
+                        id: "1",
+                        name: "source1",
+                        connections: {
+                          data: [
+                            {
+                              id: "1",
+                              connector: {
+                                id: "1",
+                                name: "connector1",
+                                slug: "postgres",
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+              meta: {
+                total: 1,
+                filtered: 1,
+              },
+            },
+          },
+        },
+      },
+    },
+    {
+      request: {
+        query: GET_NODES,
+        variables: {
+          organisationName: "",
+          workspaceName: "",
+          offset: 0,
+          search: undefined,
+          order: { name: "DESC" },
+        },
+      },
+      result: {
+        data: {
+          workspace: {
+            id: "1234",
+            nodes: {
+              data: [
+                {
+                  id: "1234",
+                  name: "table3",
+                  namespace: "default",
+                  display_name: "table3",
                   is_active: true,
                   metadata: {
                     grai: {
@@ -79,6 +200,18 @@ test("renders", async () => {
   await waitFor(() => {
     expect(screen.getAllByText("table1")).toBeTruthy()
   })
+
+  await act(async () => await userEvent.click(screen.getByText("Name")))
+
+  await waitFor(() => {
+    expect(screen.getAllByText("table2")).toBeTruthy()
+  })
+
+  await act(async () => await userEvent.click(screen.getByText("Name")))
+
+  await waitFor(() => {
+    expect(screen.getAllByText("table3")).toBeTruthy()
+  })
 })
 
 test("error", async () => {
@@ -91,6 +224,7 @@ test("error", async () => {
           workspaceName: "",
           offset: 0,
           search: undefined,
+          order: {},
         },
       },
       result: {
@@ -118,6 +252,7 @@ test("search", async () => {
           workspaceName: "",
           offset: 0,
           search: undefined,
+          order: {},
         },
       },
       result: {
@@ -143,6 +278,7 @@ test("search", async () => {
           workspaceName: "",
           offset: 0,
           search: "S",
+          order: {},
         },
       },
       result: {
@@ -168,6 +304,7 @@ test("search", async () => {
           workspaceName: "",
           offset: 0,
           search: "Se",
+          order: {},
         },
       },
       result: {
@@ -245,6 +382,7 @@ test("no nodes", async () => {
           workspaceName: "",
           offset: 0,
           search: undefined,
+          order: {},
         },
       },
       result: {
@@ -269,4 +407,27 @@ test("no nodes", async () => {
   await waitFor(() => {
     expect(screen.getByText("No nodes found")).toBeInTheDocument()
   })
+})
+
+test("filter", async () => {
+  render(<Nodes />, {
+    withRouter: true,
+  })
+
+  await waitFor(() => {
+    expect(screen.getByRole("heading", { name: /Nodes/i })).toBeInTheDocument()
+  })
+
+  await waitFor(() => {
+    expect(screen.getAllByText("Hello World")).toBeTruthy()
+  })
+
+  const autocomplete = screen.getByTestId("table-filter-choice")
+  autocomplete.focus()
+  const input = within(autocomplete).getByRole("combobox")
+  // the value here can be any string you want, so you may also consider to
+  // wrapper it as a function and pass in inputValue as parameter
+  fireEvent.change(input, { target: { value: "T" } })
+  fireEvent.keyDown(autocomplete, { key: "ArrowDown" })
+  fireEvent.keyDown(autocomplete, { key: "Enter" })
 })

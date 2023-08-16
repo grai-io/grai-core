@@ -11,6 +11,7 @@ export interface CreateSource_createSource {
   __typename: "Source";
   id: any;
   name: string;
+  priority: number;
 }
 
 export interface CreateSource {
@@ -20,4 +21,5 @@ export interface CreateSource {
 export interface CreateSourceVariables {
   workspaceId: string;
   name: string;
+  priority: number;
 }

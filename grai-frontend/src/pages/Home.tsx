@@ -7,6 +7,7 @@ import useWorkspace from "helpers/useWorkspace"
 import GettingStarted from "components/home/GettingStarted"
 import HomeCards from "components/home/HomeCards"
 import ReportsCard from "components/home/ReportsCard"
+import SourceGraph from "components/home/SourceGraph"
 import WelcomeCard from "components/home/WelcomeCard"
 import PageLayout from "components/layout/PageLayout"
 import SearchDialog from "components/search/SearchDialog"
@@ -88,7 +89,8 @@ const Home: React.FC = () => {
         <HomeCards />
         {workspace.connections.meta.total === 0 &&
           workspace.tables.meta.total === 0 && <GettingStarted />}
-        {workspace.runs.meta.filtered > 0 && <ReportsCard />}
+        <ReportsCard />
+        <SourceGraph workspaceId={workspace.id} />
       </Box>
       <SearchDialog
         open={search}
