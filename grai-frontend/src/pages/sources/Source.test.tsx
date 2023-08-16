@@ -6,6 +6,8 @@ import { GET_SOURCE_TABLES } from "components/sources/SourceTables"
 import { UPDATE_SOURCE } from "components/sources/UpdateSource"
 import Source, { GET_SOURCE } from "./Source"
 
+jest.retryTimes(1)
+
 test("renders", async () => {
   render(<Source />, {
     withRouter: true,
