@@ -58,14 +58,14 @@ test("row click", async () => {
   const user = userEvent.setup()
 
   const { container } = render(<RunsTable runs={runs} />, {
-    routes: ["/:runId"],
+    routes: [":organisationName/:workspaceName/runs/:runId"],
   })
 
   expect(screen.getByText("Success")).toBeInTheDocument()
 
   await act(
     // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-    async () => await user.click(container.querySelectorAll("tbody > tr")[0])
+    async () => await user.click(container.querySelectorAll("tbody > tr")[0]),
   )
 
   expect(screen.getByText("New Page")).toBeInTheDocument()
