@@ -4,7 +4,7 @@ on:
   pull_request:
     paths:
       - "grai-integrations/source-looker/**"
-      - ".github/workflows/integrations-looker-ci.yml"
+      - ".github/workflows/integration-looker-ci.yml"
 env:
   py_ver: "3.10"
   poetry_ver: "1.3.2"
