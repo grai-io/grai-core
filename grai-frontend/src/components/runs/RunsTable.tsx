@@ -7,7 +7,7 @@ import {
   TableBody,
   Typography,
 } from "@mui/material"
-import { useNavigate } from "react-router-dom"
+import useWorkspace from "helpers/useWorkspace"
 import Loading from "components/layout/Loading"
 import RunDuration from "./RunDuration"
 import RunQueued from "./RunQueued"
@@ -45,7 +45,7 @@ type RunsTableProps = {
 }
 
 const RunsTable: React.FC<RunsTableProps> = ({ runs, loading }) => {
-  const navigate = useNavigate()
+  const { workspaceNavigate } = useWorkspace()
 
   return (
     <Table>
@@ -59,7 +59,6 @@ const RunsTable: React.FC<RunsTableProps> = ({ runs, loading }) => {
           <TableCell sx={{ textAlign: "right" }}>Started</TableCell>
           <TableCell sx={{ textAlign: "right" }}>Queued</TableCell>
           <TableCell sx={{ textAlign: "right" }}>Duration</TableCell>
-          <TableCell sx={{ width: 0 }} />
         </TableRow>
       </TableHead>
       <TableBody>
@@ -68,7 +67,7 @@ const RunsTable: React.FC<RunsTableProps> = ({ runs, loading }) => {
             key={run.id}
             hover
             sx={{ cursor: "pointer" }}
-            onClick={() => navigate(run.id)}
+            onClick={() => workspaceNavigate(`runs/${run.id}`)}
           >
             <TableCell sx={{ pl: 1 }}>{run.id.slice(0, 6)}</TableCell>
             <TableCell>{run.connection?.name}</TableCell>

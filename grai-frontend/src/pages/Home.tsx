@@ -7,6 +7,7 @@ import useWorkspace from "helpers/useWorkspace"
 import GettingStarted from "components/home/GettingStarted"
 import HomeCards from "components/home/HomeCards"
 import ReportsCard from "components/home/ReportsCard"
+import RunsCard from "components/home/RunsCard"
 import SourceGraph from "components/home/SourceGraph"
 import WelcomeCard from "components/home/WelcomeCard"
 import PageLayout from "components/layout/PageLayout"
@@ -91,6 +92,7 @@ const Home: React.FC = () => {
           workspace.tables.meta.total === 0 && <GettingStarted />}
         <ReportsCard />
         <SourceGraph workspaceId={workspace.id} />
+        <RunsCard workspaceId={workspace.id} />
       </Box>
       <SearchDialog
         open={search}
