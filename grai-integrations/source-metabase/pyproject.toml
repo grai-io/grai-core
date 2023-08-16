@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai-source-metabase"
-version = "0.2.2"
+version = "0.2.2-alpha1"
 
 description = ""
 authors = ["Elseagle <dowolebolu@gmail.com>", "Ian Eaves <ian@grai.io", "Edward Louth <edward@grai.io"]
