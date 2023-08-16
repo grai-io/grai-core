@@ -346,13 +346,13 @@ tqdm = ">=4.65.0,<5.0.0"
 
 [[package]]
 name = "grai-schemas"
-version = "0.2.1a1"
+version = "0.2.1"
 description = ""
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_schemas-0.2.1a1-py3-none-any.whl", hash = "sha256:1c9b0ac346a5038aafa306210f7483bb650acff8fe8895da81f0c2bc96c5d96d"},
-    {file = "grai_schemas-0.2.1a1.tar.gz", hash = "sha256:75505f32b81da61f90bbaa40876e2b3358480bc892ac20ad3a6a2566a9924be8"},
+    {file = "grai_schemas-0.2.1-py3-none-any.whl", hash = "sha256:bb383bc43a403a00afc17c2fb4f15bf407e6a0fbeac457728c6fc9ad4cfb04ae"},
+    {file = "grai_schemas-0.2.1.tar.gz", hash = "sha256:df9b951bbf5dd8670de006eaf3da1b680c91a42b84b0d8b86494229649727c20"},
 ]
 
 [package.dependencies]
@@ -937,4 +937,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "59aa5160a45538592d4eb7b452190ddd06be2ff66379148baac081424e441d05"
+content-hash = "80af83338a80d33455024ee4b013e7d19dff7e052330e59cedd4a911638f262e"
