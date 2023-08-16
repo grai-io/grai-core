@@ -1887,13 +1887,13 @@ PyYAML = ">=6.0,<7.0"
 
 [[package]]
 name = "grai-source-metabase"
-version = "0.2.2a1"
+version = "0.2.2"
 description = ""
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_source_metabase-0.2.2a1-py3-none-any.whl", hash = "sha256:2e509858c6510544bdeb9f3ac197c0fae794d86f303122f804c486562ff16794"},
-    {file = "grai_source_metabase-0.2.2a1.tar.gz", hash = "sha256:14f0fde8aa683801a28eef4a9c47cb1659fbeafed33a21d1d9fb469a5ae164c9"},
+    {file = "grai_source_metabase-0.2.2-py3-none-any.whl", hash = "sha256:7585d29254a0160df04a7259dbb4f86ea7c1af926eb7b647062a3a15fc527c50"},
+    {file = "grai_source_metabase-0.2.2.tar.gz", hash = "sha256:10f4e4387378c459fa45c87eafc4446d8f62c4aff9d240b67dacd45a49c543e5"},
 ]
 
 [package.dependencies]
@@ -4522,4 +4522,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "7633329fec613b9bc411bc1d36596478a6e16634e59984f4531ede7f51de328e"
+content-hash = "b1066c394b2f300f5d322eb00b4f7106eba96fbfd3056eb109045bc9d1173583"
