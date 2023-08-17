@@ -65,7 +65,7 @@ node_migrate = MigrateNode()
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("lineage", "0014_source_priority"),
+        ("lineage", "0015_source_intermediate_tables"),
     ]
 
     operations = [
