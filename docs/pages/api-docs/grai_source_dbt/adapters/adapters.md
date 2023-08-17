@@ -258,7 +258,7 @@ def adapt_list_to_client(
 
 ```python
 @adapt_to_client.register
-def adapt_to_client_default_version(obj: Any)
+def adapt_to_client_default_version(obj: Any, source: SourceV1)
 ```
 
 **Arguments**:

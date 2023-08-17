@@ -13,6 +13,7 @@ from connections.adapters.postgres import PostgresAdapter
 from connections.adapters.redshift import RedshiftAdapter
 from connections.adapters.snowflake import SnowflakeAdapter
 from connections.adapters.yaml_file import YamlFileAdapter
+from connections.adapters.looker import LookerAdapter
 from installations.github import Github
 from notifications.notifications import send_notification
 
@@ -61,6 +62,8 @@ def get_adapter(slug: str) -> BaseAdapter:
         return RedshiftAdapter()
     elif slug == Connector.METABASE:
         return MetabaseAdapter()
+    elif slug == Connector.LOOKER:
+        return LookerAdapter()
 
     raise NoConnectorError(f"No connector found for: {slug}")
 

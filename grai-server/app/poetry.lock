@@ -356,6 +356,29 @@ files = [
 ]
 
 [[package]]
+name = "cattrs"
+version = "23.1.2"
+description = "Composable complex class support for attrs and dataclasses."
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "cattrs-23.1.2-py3-none-any.whl", hash = "sha256:b2bb14311ac17bed0d58785e5a60f022e5431aca3932e3fc5cc8ed8639de50a4"},
+    {file = "cattrs-23.1.2.tar.gz", hash = "sha256:db1c821b8c537382b2c7c66678c3790091ca0275ac486c76f3c8f3920e83c657"},
+]
+
+[package.dependencies]
+attrs = ">=20"
+
+[package.extras]
+bson = ["pymongo (>=4.2.0,<5.0.0)"]
+cbor2 = ["cbor2 (>=5.4.6,<6.0.0)"]
+msgpack = ["msgpack (>=1.0.2,<2.0.0)"]
+orjson = ["orjson (>=3.5.2,<4.0.0)"]
+pyyaml = ["PyYAML (>=6.0,<7.0)"]
+tomlkit = ["tomlkit (>=0.11.4,<0.12.0)"]
+ujson = ["ujson (>=5.4.0,<6.0.0)"]
+
+[[package]]
 name = "celery"
 version = "5.3.1"
 description = "Distributed Task Queue."
@@ -832,13 +855,13 @@ http = ["httpx"]
 
 [[package]]
 name = "dbt-artifacts-parser"
-version = "0.4.1"
+version = "0.4.2"
 description = "A dbt artifacts parser in python"
 optional = false
 python-versions = ">=3.7.0"
 files = [
-    {file = "dbt_artifacts_parser-0.4.1-py3-none-any.whl", hash = "sha256:a31e33b2e3af6991a4dc8cba35005964406e695df414c89bb5b2c23cef346fe2"},
-    {file = "dbt_artifacts_parser-0.4.1.tar.gz", hash = "sha256:e37f24440f8eb7d1e261ebe05829d52959b67c39a2d7a1c46175a721b239d9db"},
+    {file = "dbt_artifacts_parser-0.4.2-py3-none-any.whl", hash = "sha256:691d42c9b9d4abdb7aaaf7b2185442c1d58eb9736783fbb09e70a15476e74cb0"},
+    {file = "dbt_artifacts_parser-0.4.2.tar.gz", hash = "sha256:3c83ef60855369d3ca4415ef7078828358db640c7ad91d0f3743b24a9e187adb"},
 ]
 
 [package.dependencies]
@@ -1886,6 +1909,26 @@ pydantic = ">=1.9.1,<2.0.0"
 PyYAML = ">=6.0,<7.0"
 
 [[package]]
+name = "grai-source-looker"
+version = "0.0.2"
+description = ""
+optional = false
+python-versions = ">=3.9.13,<4.0.0"
+files = [
+    {file = "grai_source_looker-0.0.2-py3-none-any.whl", hash = "sha256:a8130845c8cdab9e63c364525b6ce8963b6a7e6bf6cd7ca1ce095530277a0a18"},
+    {file = "grai_source_looker-0.0.2.tar.gz", hash = "sha256:067a9e5c1ef95deb130a7f2227e1af5536a8ecc50cab35f5e7ae880c4d61a487"},
+]
+
+[package.dependencies]
+grai-client = ">=0.3.0,<0.4.0"
+grai-schemas = ">=0.2.0,<0.3.0"
+looker-sdk = ">=23.12.0,<24.0.0"
+multimethod = ">=1.8,<2.0"
+pydantic = ">=1.9.1,<2.0.0"
+python-dotenv = ">=0.21.1,<0.22.0"
+requests = ">=2.28.1,<3.0.0"
+
+[[package]]
 name = "grai-source-metabase"
 version = "0.2.2"
 description = ""
@@ -2447,6 +2490,23 @@ files = [
     {file = "lazy_object_proxy-1.9.0-cp39-cp39-win32.whl", hash = "sha256:9090d8e53235aa280fc9239a86ae3ea8ac58eff66a705fa6aa2ec4968b95c821"},
     {file = "lazy_object_proxy-1.9.0-cp39-cp39-win_amd64.whl", hash = "sha256:db1c1722726f47e10e0b5fdbf15ac3b8adb58c091d12b3ab713965795036985f"},
 ]
+
+[[package]]
+name = "looker-sdk"
+version = "23.14.1"
+description = "Looker REST API"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "looker_sdk-23.14.1-py3-none-any.whl", hash = "sha256:678a8007c18ccc79e52be7b8bc9f27c5de6697cc6d90fc24d2fab5efff0e5587"},
+    {file = "looker_sdk-23.14.1.tar.gz", hash = "sha256:9510aabec41aae75d41cb0c81a53fe18c00c3fbe774ac610cc62c9410c5ea0a4"},
+]
+
+[package.dependencies]
+attrs = {version = ">=20.1.0", markers = "python_version >= \"3.7\""}
+cattrs = {version = ">=1.3", markers = "python_version >= \"3.7\""}
+requests = ">=2.22"
+typing-extensions = ">=4.1.1"
 
 [[package]]
 name = "lxml"
@@ -4089,13 +4149,13 @@ websocket = ["websocket-client"]
 
 [[package]]
 name = "shellingham"
-version = "1.5.2"
+version = "1.5.3"
 description = "Tool to Detect Surrounding Shell"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "shellingham-1.5.2-py2.py3-none-any.whl", hash = "sha256:db9b385e903ebfe07958f6df493d47d4432ff5bed71e75ed3e613ace090be5f3"},
-    {file = "shellingham-1.5.2.tar.gz", hash = "sha256:95946024df2db98c83382606a9ae875f613b15c950c980a3bf7a5adde40e7720"},
+    {file = "shellingham-1.5.3-py2.py3-none-any.whl", hash = "sha256:419c6a164770c9c7cfcaeddfacb3d31ac7a8db0b0f3e9c1287679359734107e9"},
+    {file = "shellingham-1.5.3.tar.gz", hash = "sha256:cb4a6fec583535bc6da17b647dd2330cf7ef30239e05d547d99ae3705fd0f7f8"},
 ]
 
 [[package]]
@@ -4522,4 +4582,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "b1066c394b2f300f5d322eb00b4f7106eba96fbfd3056eb109045bc9d1173583"
+content-hash = "2e38199defc8455932036f81930b8f374ba8fab49d59b9af1a57aa912f14a712"

@@ -122,6 +122,20 @@ class Config()
 
 
 
+## Metadata Objects
+
+```python
+class Metadata(GraiBaseModel)
+```
+
+### Config Objects
+
+```python
+class Config()
+```
+
+
+
 ## MalformedMetadata Objects
 
 ```python

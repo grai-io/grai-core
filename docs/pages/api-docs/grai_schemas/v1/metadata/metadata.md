@@ -3,26 +3,50 @@ sidebar_label: metadata
 title: grai_schemas.v1.metadata.metadata
 ---
 
-## GraiMetadataV1 Objects
+## GraiNodeMetadataV1 Objects
 
 ```python
-class GraiMetadataV1(Metadata)
+class GraiNodeMetadataV1(Metadata)
 ```
 
 
 
-## MetadataV1 Objects
+## GraiEdgeMetadataV1 Objects
 
 ```python
-class MetadataV1(GraiMetadataV1)
+class GraiEdgeMetadataV1(Metadata)
 ```
 
 
 
-### Config Objects
+## SourcesNodeMetadataV1 Objects
 
 ```python
-class Config()
+class SourcesNodeMetadataV1(Metadata)
+```
+
+
+
+## SourcesEdgeMetadataV1 Objects
+
+```python
+class SourcesEdgeMetadataV1(Metadata)
+```
+
+
+
+## NodeMetadataV1 Objects
+
+```python
+class NodeMetadataV1(GraiNodeMetadataV1, SourcesNodeMetadataV1)
+```
+
+
+
+## EdgeMetadataV1 Objects
+
+```python
+class EdgeMetadataV1(GraiEdgeMetadataV1, SourcesEdgeMetadataV1)
 ```
 
 
@@ -30,7 +54,7 @@ class Config()
 ## GraiMalformedNodeMetadataV1 Objects
 
 ```python
-class GraiMalformedNodeMetadataV1(MalformedMetadata, MetadataV1)
+class GraiMalformedNodeMetadataV1(MalformedMetadata, NodeMetadataV1)
 ```
 
 
@@ -42,7 +66,7 @@ type: ignore
 ## GraiMalformedEdgeMetadataV1 Objects
 
 ```python
-class GraiMalformedEdgeMetadataV1(MalformedMetadata, MetadataV1)
+class GraiMalformedEdgeMetadataV1(MalformedMetadata, EdgeMetadataV1)
 ```
 
 
