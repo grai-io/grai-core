@@ -24,3 +24,13 @@ the id from the server.
 
 
 **Returns**:
+
+
+
+## MockClientV1 Objects
+
+```python
+class MockClientV1(ClientV1)
+```
+
+A mock client that can be used for testing.

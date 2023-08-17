@@ -39,6 +39,25 @@ def build_grai_metadata_from_column(current: Column,
 
 
 
+## build\_grai\_metadata\_from\_column
+
+```python
+@build_grai_metadata.register
+def build_grai_metadata_from_column(
+        current: LateBindingViewColumn,
+        version: Literal["v1"] = "v1") -> ColumnMetadata
+```
+
+**Arguments**:
+
+  current (Column):
+- `version` _Literal[&quot;v1&quot;], optional_ - (Default value = &quot;v1&quot;)
+
+
+**Returns**:
+
+
+
 ## build\_grai\_metadata\_from\_node
 
 ```python
@@ -98,7 +117,7 @@ def build_app_metadata(current: Any, desired: Any) -> None
 
 ```python
 @build_app_metadata.register
-def build_metadata_from_column(current: Column,
+def build_metadata_from_column(current: Union[Column, LateBindingViewColumn],
                                version: Literal["v1"] = "v1") -> Dict
 ```
 
@@ -185,31 +204,15 @@ def adapt_to_client(current: Any, desired: Any)
 
 ```python
 @adapt_to_client.register
-def adapt_column_to_client(current: Column, source: SourceSpec,
+def adapt_column_to_client(current: Union[Column, Table,
+                                          LateBindingViewColumn],
+                           source: SourceSpec,
                            version: Literal["v1"]) -> SourcedNodeV1
 ```
 
 **Arguments**:
 
   current (Column):
-- `version` _Literal[&quot;v1&quot;], optional_ - (Default value = &quot;v1&quot;)
-
-
-**Returns**:
-
-
-
-## adapt\_table\_to\_client
-
-```python
-@adapt_to_client.register
-def adapt_table_to_client(current: Table, source: SourceSpec,
-                          version: Literal["v1"]) -> SourcedNodeV1
-```
-
-**Arguments**:
-
-  current (Table):
 - `version` _Literal[&quot;v1&quot;], optional_ - (Default value = &quot;v1&quot;)
 
 

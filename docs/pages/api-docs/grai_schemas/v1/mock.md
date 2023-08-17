@@ -3,26 +3,74 @@ sidebar_label: mock
 title: grai_schemas.v1.mock
 ---
 
+## DefaultValueFactory Objects
+
+```python
+class DefaultValueFactory(ModelFactory[DefaultValue])
+```
+
+### data\_type
+
+```python
+@post_generated
+@classmethod
+def data_type(cls, default_value) -> str
+```
+
+
+
+## NamedNodeSpecFactory Objects
+
+```python
+class NamedNodeSpecFactory(ModelFactory[NamedSpec])
+```
+
+### metadata
+
+```python
+@post_generated
+@classmethod
+def metadata(cls, data_sources: List[SourceSpec]) -> NodeMetadataV1
+```
+
+
+
+### is\_active
+
+```python
+@post_generated
+@classmethod
+def is_active(cls, data_sources: List[SourceSpec]) -> bool
+```
+
+
+
 ## MockNode Objects
 
 ```python
 class MockNode()
 ```
 
-### base\_node\_spec\_dict
+### node
 
 ```python
-@classmethod
-def base_node_spec_dict(cls, **kwargs)
+def node(**kwargs)
 ```
 
 
 
-### sourced\_node\_dict
+### named\_node\_spec
 
 ```python
-@classmethod
-def sourced_node_dict(cls, **kwargs)
+def named_node_spec(**kwargs)
+```
+
+
+
+### id\_node\_spec
+
+```python
+def id_node_spec(**kwargs)
 ```
 
 
@@ -30,26 +78,49 @@ def sourced_node_dict(cls, **kwargs)
 ### sourced\_node
 
 ```python
-@classmethod
-def sourced_node(cls, **kwargs)
+def sourced_node(**kwargs)
 ```
 
 
 
-### node\_dict
+### named\_source\_node\_spec
 
 ```python
-@classmethod
-def node_dict(cls, **kwargs)
+def named_source_node_spec(**kwargs)
 ```
 
 
 
-### node
+### id\_source\_node\_spec
 
 ```python
+def id_source_node_spec(**kwargs)
+```
+
+
+
+## NamedEdgeSpecFactory Objects
+
+```python
+class NamedEdgeSpecFactory(ModelFactory[NamedEdgeSpec])
+```
+
+### metadata
+
+```python
+@post_generated
 @classmethod
-def node(cls, **kwargs)
+def metadata(cls, data_sources: List[SourceSpec]) -> EdgeMetadataV1
+```
+
+
+
+### is\_active
+
+```python
+@post_generated
+@classmethod
+def is_active(cls, data_sources: List[SourceSpec]) -> bool
 ```
 
 
@@ -60,38 +131,10 @@ def node(cls, **kwargs)
 class MockEdge()
 ```
 
-### base\_edge\_spec\_dict
-
-```python
-@classmethod
-def base_edge_spec_dict(cls, **kwargs)
-```
-
-
-
-### sourced\_edge\_dict
-
-```python
-@classmethod
-def sourced_edge_dict(cls, **kwargs)
-```
-
-
-
 ### sourced\_edge
 
 ```python
-@classmethod
-def sourced_edge(cls, **kwargs)
-```
-
-
-
-### edge\_dict
-
-```python
-@classmethod
-def edge_dict(cls, **kwargs)
+def sourced_edge(**kwargs)
 ```
 
 
@@ -99,8 +142,39 @@ def edge_dict(cls, **kwargs)
 ### edge
 
 ```python
-@classmethod
-def edge(cls, **kwargs)
+def edge(**kwargs)
+```
+
+
+
+### named\_edge\_spec
+
+```python
+def named_edge_spec(**kwargs)
+```
+
+
+
+### id\_edge\_spec
+
+```python
+def id_edge_spec(**kwargs)
+```
+
+
+
+### named\_source\_edge\_spec
+
+```python
+def named_source_edge_spec(**kwargs)
+```
+
+
+
+### id\_source\_edge\_spec
+
+```python
+def id_source_edge_spec(**kwargs)
 ```
 
 
@@ -111,18 +185,96 @@ def edge(cls, **kwargs)
 class MockOrganisation()
 ```
 
-### organisation\_dict
-
-```python
-@classmethod
-def organisation_dict(cls, **kwargs)
-```
-
-
-
 ### organisation
 
 ```python
 @classmethod
 def organisation(cls, **kwargs)
+```
+
+
+
+### organisation\_spec
+
+```python
+@classmethod
+def organisation_spec(cls, **kwargs)
+```
+
+
+
+### organization
+
+```python
+@classmethod
+def organization(cls, **kwargs)
+```
+
+
+
+### organization\_spec
+
+```python
+@classmethod
+def organization_spec(cls, **kwargs)
+```
+
+
+
+## WorkspaceSpecFactory Objects
+
+```python
+class WorkspaceSpecFactory(ModelFactory[WorkspaceSpec])
+```
+
+### ref
+
+```python
+@post_generated
+@classmethod
+def ref(cls, name, organisation) -> str
+```
+
+
+
+## MockWorkspace Objects
+
+```python
+class MockWorkspace()
+```
+
+### workspace
+
+```python
+def workspace(**kwargs)
+```
+
+
+
+### workspace\_spec
+
+```python
+def workspace_spec(**kwargs)
+```
+
+
+
+## MockSource Objects
+
+```python
+class MockSource()
+```
+
+### source
+
+```python
+def source(**kwargs)
+```
+
+
+
+### source\_spec
+
+```python
+def source_spec(**kwargs)
 ```

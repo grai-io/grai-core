@@ -126,7 +126,7 @@ Connector class for interacting with Metabase API and building lineage informati
 
 **Attributes**:
 
-- `default_namespace` _str_ - The default namespace to be used.
+- `metabase_namespace` _str_ - The default namespace to be used.
 - `tables` _List[Dict]_ - The list of tables retrieved from the Metabase API.
 - `tables_map` _Dict[int, Dict]_ - A mapping of table IDs to their corresponding table dictionaries.
 - `dbs_map` _Dict[int, Dict]_ - A mapping of database IDs to their corresponding database dictionaries.
@@ -134,18 +134,6 @@ Connector class for interacting with Metabase API and building lineage informati
 - `namespace_map` _Dict[int, str]_ - A mapping of database IDs to their corresponding namespace names.
 - `default_namespace`0 _Dict[int, int]_ - A mapping of question IDs to their corresponding table IDs.
 - `default_namespace`1 _Dict[int, int]_ - A mapping of table IDs to their corresponding database IDs.
-- `default_namespace`2 _Dict[int, int]_ - A mapping of question IDs to their corresponding database IDs.
-
-### build\_lineage
-
-```python
-def build_lineage()
-```
-
-Builds the lineage information by updating the mappings and maps.
-
-This method updates the `tables_map`, `dbs_map`, `questions_map`, `question_table_map`, `table_db_map`,
-and `question_db_map` attributes.
 
 ### get\_nodes
 
