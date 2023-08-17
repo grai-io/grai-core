@@ -37,6 +37,7 @@ export interface NodeOrder {
   namespace?: Ordering | null;
   name?: Ordering | null;
   display_name?: Ordering | null;
+  metadata__grai__node_type?: Ordering | null;
   is_active?: Ordering | null;
   created_at?: Ordering | null;
   updated_at?: Ordering | null;

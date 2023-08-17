@@ -17,14 +17,14 @@ export interface GetWorkspaceHome_workspace_runs {
   meta: GetWorkspaceHome_workspace_runs_meta;
 }
 
-export interface GetWorkspaceHome_workspace_tables_meta {
+export interface GetWorkspaceHome_workspace_nodes_meta {
   __typename: "PaginationResult";
-  total: number;
+  filtered: number;
 }
 
-export interface GetWorkspaceHome_workspace_tables {
-  __typename: "TablePagination";
-  meta: GetWorkspaceHome_workspace_tables_meta;
+export interface GetWorkspaceHome_workspace_nodes {
+  __typename: "NodePagination";
+  meta: GetWorkspaceHome_workspace_nodes_meta;
 }
 
 export interface GetWorkspaceHome_workspace_connections_meta {
@@ -42,7 +42,7 @@ export interface GetWorkspaceHome_workspace {
   id: any;
   name: string;
   runs: GetWorkspaceHome_workspace_runs;
-  tables: GetWorkspaceHome_workspace_tables;
+  nodes: GetWorkspaceHome_workspace_nodes;
   connections: GetWorkspaceHome_workspace_connections;
 }
 

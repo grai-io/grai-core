@@ -327,7 +327,7 @@ async def test_nodes_filter_node_type_equals(test_context):
         query Workspace($workspaceId: ID!, $filter: WorkspaceNodeFilter) {
           workspace(id: $workspaceId) {
             id
-            nodes(filter: $filter) {
+            nodes(filters: $filter) {
                 data{
                     id
                 }
@@ -366,7 +366,7 @@ async def test_nodes_filter_node_type_contains(test_context):
         query Workspace($workspaceId: ID!, $filter: WorkspaceNodeFilter) {
           workspace(id: $workspaceId) {
             id
-            nodes(filter: $filter) {
+            nodes(filters: $filter) {
                 data{
                     id
                 }
@@ -737,7 +737,7 @@ async def test_edges_filter_edge_type_equals(test_context):
         query Workspace($workspaceId: ID!, $filter: WorkspaceEdgeFilter) {
           workspace(id: $workspaceId) {
             id
-            edges(filter: $filter) {
+            edges(filters: $filter) {
                 data{
                     id
                 }
@@ -784,7 +784,7 @@ async def test_edges_filter_edge_type_contains(test_context):
         query Workspace($workspaceId: ID!, $filter: WorkspaceEdgeFilter) {
           workspace(id: $workspaceId) {
             id
-            edges(filter: $filter) {
+            edges(filters: $filter) {
                 data{
                     id
                 }

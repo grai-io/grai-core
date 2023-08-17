@@ -551,7 +551,7 @@ class Workspace:
         self,
         pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
         search: Optional[str] = strawberry.UNSET,
-        filter: Optional[WorkspaceNodeFilter] = strawberry.UNSET,
+        filters: Optional[WorkspaceNodeFilter] = strawberry.UNSET,
         order: Optional[NodeOrder] = strawberry.UNSET,
     ) -> Pagination["Node"]:
         queryset = NodeModel.objects.filter(workspace=self)
@@ -561,12 +561,12 @@ class Workspace:
                 Q(id__icontains=search) | Q(name__icontains=search) | Q(display_name__icontains=search)
             )
 
-        if filter:
-            if filter.node_type:
-                if filter.node_type.equals:
-                    queryset = queryset.filter(metadata__grai__node_type=filter.node_type.equals)
-                if filter.node_type.contains:
-                    queryset = queryset.filter(metadata__grai__node_type__in=filter.node_type.contains)
+        if filters:
+            if filters.node_type:
+                if filters.node_type.equals:
+                    queryset = queryset.filter(metadata__grai__node_type=filters.node_type.equals)
+                if filters.node_type.contains:
+                    queryset = queryset.filter(metadata__grai__node_type__in=filters.node_type.contains)
 
         return Pagination[Node](queryset=queryset, pagination=pagination, order=order)
 
@@ -583,7 +583,7 @@ class Workspace:
         self,
         pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
         search: Optional[str] = strawberry.UNSET,
-        filter: Optional[WorkspaceEdgeFilter] = strawberry.UNSET,
+        filters: Optional[WorkspaceEdgeFilter] = strawberry.UNSET,
     ) -> Pagination["Edge"]:
         queryset = EdgeModel.objects.filter(workspace=self)
 
@@ -595,12 +595,12 @@ class Workspace:
                 | Q(source__name__icontains=search)
             )
 
-        if filter:
-            if filter.edge_type:
-                if filter.edge_type.equals:
-                    queryset = queryset.filter(metadata__grai__edge_type=filter.edge_type.equals)
-                if filter.edge_type.contains:
-                    queryset = queryset.filter(metadata__grai__edge_type__in=filter.edge_type.contains)
+        if filters:
+            if filters.edge_type:
+                if filters.edge_type.equals:
+                    queryset = queryset.filter(metadata__grai__edge_type=filters.edge_type.equals)
+                if filters.edge_type.contains:
+                    queryset = queryset.filter(metadata__grai__edge_type__in=filters.edge_type.contains)
 
         return Pagination[Edge](queryset=queryset, pagination=pagination)
 

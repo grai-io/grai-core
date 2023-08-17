@@ -24,7 +24,7 @@ export const GET_NODES = gql`
       nodes(
         pagination: { limit: 20, offset: $offset }
         search: $search
-        filter: $filter
+        filters: $filter
         order: $order
       ) {
         data {
