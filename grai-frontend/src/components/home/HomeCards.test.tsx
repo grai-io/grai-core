@@ -22,9 +22,9 @@ test("renders", async () => {
                 filtered: 38,
               },
             },
-            tables: {
+            nodes: {
               meta: {
-                total: 2,
+                filtered: 2,
               },
             },
             connections: {

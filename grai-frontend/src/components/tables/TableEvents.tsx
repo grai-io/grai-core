@@ -20,7 +20,7 @@ export const GET_TABLE_EVENTS = gql`
   ) {
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
-      table(id: $tableId) {
+      node(id: $tableId) {
         id
         events {
           data {
@@ -72,7 +72,7 @@ const TableEvents: React.FC<TableEventsProps> = ({ table, responsive }) => {
   if (error) return <GraphError error={error} />
   if (loading) return <Loading />
 
-  const tableData = data?.workspace?.table
+  const tableData = data?.workspace?.node
 
   if (!tableData) return <NotFound />
 
