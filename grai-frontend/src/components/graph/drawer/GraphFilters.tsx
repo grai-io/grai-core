@@ -20,6 +20,7 @@ import {
   GetFiltersDrawerVariables,
 } from "./__generated__/GetFiltersDrawer"
 import GraphFilter from "./GraphFilter"
+import GraphFilterInline from "./GraphFilterInline"
 
 export const GET_FILTERS = gql`
   query GetFiltersDrawer(
@@ -67,6 +68,7 @@ const GraphFilters: React.FC<GraphFiltersProps> = ({ filters, setFilters }) => {
 
   return (
     <Box>
+      <GraphFilterInline workspaceId={data?.workspace.id} />
       <Box sx={{ p: 1 }}>
         <TextField
           fullWidth
