@@ -9,6 +9,7 @@ from grai_schemas.v1.workspace import WorkspaceSpec
 from grai_source_looker.adapters import adapt_to_client
 from grai_source_looker.base import LookerIntegration
 from grai_source_looker.loader import LookerAPI
+from grai_source_looker.mock_tools import MockLookerObjects
 
 dotenv.load_dotenv()
 
@@ -22,7 +23,7 @@ def loader_kwargs():
         "verify_ssl": True,
         "namespace": "looker-namespace",
     }
-    return loader_kwargs
+    return kwargs
 
 
 @pytest.fixture(scope="session")
@@ -89,11 +90,17 @@ def connector_kwargs():
 def app_nodes_and_edges():
     """ """
     types_to_mock = ["cc", "ct", "tc", "tt"]
-    edges = [MockFivetranObjects.mock_edge(t) for t in types_to_mock]
+
     nodes = []
-    for edge in edges:
-        nodes.append(edge.source)
-        nodes.append(edge.destination)
+    edges = []
+
+    for t in types_to_mock:
+        edge, source, destination = MockLookerObjects.mock_edge(t)
+
+        nodes.append(source)
+        nodes.append(destination)
+        edges.append(edge)
+
     return nodes, edges
 
 

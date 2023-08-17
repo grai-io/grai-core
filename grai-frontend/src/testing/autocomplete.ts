@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { fireEvent, within } from "testing"
 
 export const input = (

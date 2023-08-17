@@ -57,6 +57,7 @@ export interface GetSources_workspace_sources_data {
   __typename: "Source";
   id: any;
   name: string;
+  priority: number;
   nodes: GetSources_workspace_sources_data_nodes;
   edges: GetSources_workspace_sources_data_edges;
   connections: GetSources_workspace_sources_data_connections;

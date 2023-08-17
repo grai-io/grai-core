@@ -1,4 +1,5 @@
 from .base import BaseAdapter
+import json
 
 
 class LookerAdapter(BaseAdapter):
@@ -16,5 +17,6 @@ class LookerAdapter(BaseAdapter):
             base_url=metadata["base_url"],
             client_id=metadata["client_id"],
             client_secret=secrets["client_secret"],
-            # namespace=self.run.connection.namespace,
+            namespace=self.run.connection.namespace,
+            namespaces=json.loads(metadata["namespaces"]) if metadata.get("namespaces") else None,
         )

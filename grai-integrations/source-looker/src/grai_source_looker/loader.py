@@ -1,26 +1,10 @@
-import asyncio
-import itertools
-import json
 from functools import cached_property
 from itertools import chain
-from typing import (
-    Any,
-    Callable,
-    Dict,
-    Iterable,
-    List,
-    Optional,
-    ParamSpec,
-    Sequence,
-    Tuple,
-    TypedDict,
-    TypeVar,
-    Union,
-)
+from typing import Dict, List, Optional
 
 import looker_sdk
 from looker_sdk import api_settings
-from pydantic import BaseModel, BaseSettings, Json, SecretStr, validator
+from pydantic import BaseSettings, SecretStr, validator
 
 from grai_source_looker.models import (
     Constraint,
@@ -31,9 +15,6 @@ from grai_source_looker.models import (
     TableID,
 )
 
-T = TypeVar("T")
-P = ParamSpec("P")
-
 
 class LookerConfig(BaseSettings):
     """ """
@@ -42,8 +23,8 @@ class LookerConfig(BaseSettings):
     client_id: str
     client_secret: SecretStr
     verify_ssl: bool = True
-    namespace: str
-    data_source_namespaces: Json[str, str] = {}
+    namespace: str = None
+    namespaces: Dict[str, str] = {}
 
     @validator("base_url")
     def validate_base_url(cls, value):
@@ -98,7 +79,7 @@ class LookerAPI:
         client_secret: Optional[str] = None,
         verify_ssl: Optional[bool] = None,
         namespace: Optional[str] = None,
-        data_source_namespaces: Optional[str] = None,
+        namespaces: Optional[Dict[str, str]] = None,
     ):
         passthrough_kwargs = {
             "base_url": base_url,
@@ -106,7 +87,7 @@ class LookerAPI:
             "client_secret": client_secret,
             "verify_ssl": verify_ssl,
             "namespace": namespace,
-            "data_source_namespaces": data_source_namespaces,
+            "namespaces": namespaces,
         }
         self.config = LookerConfig(**{k: v for k, v in passthrough_kwargs.items() if v is not None})
 
@@ -114,9 +95,9 @@ class LookerAPI:
 
         self.sdk = looker_sdk.init40(config_settings=settings)
 
-    def get_model_explore(self, lookml_model_name: str, explore_name: str) -> Explore:
+    def get_model_explore(self, lookml_model_name: str, explore_name: str, namespace: str) -> Explore:
         return Explore(
-            namespace=self.config.namespace,
+            namespace=namespace,
             **self.sdk.lookml_model_explore(lookml_model_name, explore_name),
         )
 
@@ -128,22 +109,25 @@ class LookerAPI:
     @cached_property
     def queries(self) -> List:
         query_items = (dashboard.get_queries() for dashboard in self.dashboards)
-        return list(itertools.chain(*query_items))
+        return list(chain(*query_items))
 
     @cached_property
     def explores(self) -> List:
-        explores = (self.get_model_explore(query.model, query.view) for query in self.queries)
-        return [explore for explore in explores if not explore]
+        explores = (self.get_model_explore(query.model, query.view, self.config.namespace) for query in self.queries)
+        return [explore for explore in explores if explore]
 
     def get_user(self):
         return self.sdk.me()
 
     def get_nodes_and_edges(self):
         nodes = [*self.dashboards, *self.queries]
-        edges = list(itertools.chain(dashboard.get_query_edges() for dashboard in self.dashboards))
+        edges = list(chain.from_iterable(dashboard.get_query_edges() for dashboard in self.dashboards))
 
         for query in self.queries:
-            explore = self.get_model_explore(query.model, query.view)
+            # Fetch custom explore namespace or use default
+            explore_namespace = self.config.namespaces.get(query.model, self.config.namespace)
+
+            explore = self.get_model_explore(query.model, query.view, explore_namespace)
             # TODO: Typing doesn't make sense here. How can `get_model_explore` return false-y without erroring?
             if not explore:
                 print("Explore not found")
@@ -164,7 +148,7 @@ class LookerAPI:
                     print(query.dynamic_fields)
                     continue
 
-                dimension.namespace = self.config.namespace
+                dimension.namespace = explore_namespace
                 dimension.table_name = explore.table_name
 
                 nodes.append(dimension)
@@ -176,12 +160,12 @@ class LookerAPI:
                     constraint_type=Constraint("bt"),
                     source=TableID(
                         name=explore.table_name,
-                        namespace=self.config.namespace,
+                        namespace=explore_namespace,
                     ),
                     destination=FieldID(
                         table_name=explore.table_name,
                         name=dimension.column_name,
-                        namespace=self.config.namespace,
+                        namespace=explore_namespace,
                     ),
                 )
 
@@ -192,7 +176,7 @@ class LookerAPI:
                     source=FieldID(
                         table_name=explore.table_name,
                         name=dimension.column_name,
-                        namespace=self.config.namespace,
+                        namespace=explore_namespace,
                     ),
                     destination=FieldID(
                         table_name=query.dashboard_name,

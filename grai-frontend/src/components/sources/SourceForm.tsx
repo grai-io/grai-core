@@ -7,6 +7,7 @@ import GraphError from "components/utils/GraphError"
 
 export type Values = {
   name: string
+  priority: number
 }
 
 type SourceFormProps = {
@@ -34,6 +35,17 @@ const SourceForm: React.FC<SourceFormProps> = ({
         value={values.name}
         onChange={event => setValues({ ...values, name: event.target.value })}
         margin="normal"
+        required
+        fullWidth
+      />
+      <TextField
+        label="Priority"
+        value={values.priority}
+        onChange={event =>
+          setValues({ ...values, priority: parseInt(event.target.value) })
+        }
+        margin="normal"
+        type="number"
         required
         fullWidth
       />

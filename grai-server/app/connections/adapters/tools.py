@@ -48,7 +48,10 @@ class TestResult(ABC):
         return ""
 
     def make_row(self) -> str:
-        row = f"| {self.node.spec.namespace} | {self.node.spec.name} | {self.failing_node_name} | {self.type} | {self.message()} |"
+        row = (
+            f"| {self.node.spec.namespace} | {self.node.spec.name} | {self.failing_node_name} | {self.type} |"
+            f" {self.message()} |"
+        )
         return row
 
     def error_metadata(self) -> Dict:
@@ -144,7 +147,10 @@ class TestSummary:
 
     def build_table(self) -> str:
         rows = "\n".join([test.make_row() for test in self.test_results])
-        message = f"| Namespace | Changed Node | Failing Dependency | Test | Message |\n| --- | --- | --- | --- | --- |\n{rows}"
+        message = (
+            "| Namespace | Changed Node | Failing Dependency | Test | Message |\n| --- | --- | --- | --- | ---"
+            f" |\n{rows}"
+        )
         return message
 
     def test_summary(self) -> str:

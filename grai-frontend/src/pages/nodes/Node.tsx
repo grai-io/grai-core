@@ -7,23 +7,23 @@ import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
 import PageTabs from "components/layout/PageTabs"
-import TableColumns from "components/tables/columns/TableColumns"
+import TableColumns from "components/nodes/columns/TableColumns"
+import NodeProfile from "components/nodes/NodeProfile"
 import TableEvents from "components/tables/TableEvents"
 import TableLineage from "components/tables/TableLineage"
-import TableProfile from "components/tables/TableProfile"
 import TabState from "components/tabs/TabState"
 import GraphError from "components/utils/GraphError"
-import { GetTable, GetTableVariables } from "./__generated__/GetTable"
+import { GetNode, GetNodeVariables } from "./__generated__/GetNode"
 
-export const GET_TABLE = gql`
-  query GetTable(
+export const GET_NODE = gql`
+  query GetNode(
     $organisationName: String!
     $workspaceName: String!
-    $tableId: ID!
+    $nodeId: ID!
   ) {
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
-      table(id: $tableId) {
+      node(id: $nodeId) {
         id
         namespace
         name
@@ -50,24 +50,34 @@ export const GET_TABLE = gql`
             metadata
           }
         }
-        source_tables {
+        # source_tables {
+        #   data {
+        #     id
+        #     name
+        #     display_name
+        #   }
+        # }
+        # destination_tables {
+        #   data {
+        #     id
+        #     name
+        #     display_name
+        #   }
+        # }
+        data_sources {
           data {
             id
             name
-            display_name
-          }
-        }
-        destination_tables {
-          data {
-            id
-            name
-            display_name
-          }
-        }
-        sources {
-          data {
-            id
-            name
+            connections {
+              data {
+                id
+                connector {
+                  id
+                  name
+                  slug
+                }
+              }
+            }
           }
         }
         events {
@@ -92,25 +102,25 @@ export const GET_TABLE = gql`
 
 const Table: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
-  const { tableId } = useParams()
+  const { nodeId } = useParams()
 
-  const { loading, error, data } = useQuery<GetTable, GetTableVariables>(
-    GET_TABLE,
+  const { loading, error, data } = useQuery<GetNode, GetNodeVariables>(
+    GET_NODE,
     {
       variables: {
         organisationName,
         workspaceName,
-        tableId: tableId ?? "",
+        nodeId: nodeId ?? "",
       },
-    }
+    },
   )
 
   if (error) return <GraphError error={error} />
   if (loading) return <PageLayout loading />
 
-  const table = data?.workspace?.table
+  const node = data?.workspace?.node
 
-  if (!table) return <NotFound />
+  if (!node) return <NotFound />
 
   const tabs = [
     {
@@ -119,10 +129,10 @@ const Table: React.FC = () => {
       component: (
         <>
           <PageContent>
-            <TableProfile table={table} />
+            <NodeProfile node={node} />
           </PageContent>
           <PageContent>
-            <TableColumns columns={table.columns.data} />
+            <TableColumns columns={node.columns.data} />
           </PageContent>
         </>
       ),
@@ -136,13 +146,13 @@ const Table: React.FC = () => {
     {
       label: "Lineage",
       value: "lineage",
-      component: <TableLineage table={table} />,
+      component: <TableLineage table={node} />,
       noWrapper: true,
     },
     {
       label: "Events",
       value: "events",
-      component: <TableEvents table={table} />,
+      component: <TableEvents table={node} />,
       noWrapper: true,
     },
   ]
@@ -150,7 +160,7 @@ const Table: React.FC = () => {
   return (
     <PageLayout>
       <TabState tabs={tabs}>
-        <PageHeader title={table.display_name} tabs />
+        <PageHeader title={node.display_name} tabs />
         <PageTabs />
       </TabState>
     </PageLayout>

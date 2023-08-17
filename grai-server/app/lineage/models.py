@@ -7,6 +7,16 @@ from django_multitenant.models import TenantModel
 from .graph_cache import GraphCache
 from .graph_tasks import cache_edge, cache_node
 from .managers import CacheManager, SourceManager
+from django.core.serializers.json import DjangoJSONEncoder
+import json
+from enum import Enum
+
+
+class GraiEncoder(DjangoJSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Enum):
+            return obj.value
+        return super().default(obj)
 
 
 # Create your models here.
@@ -17,7 +27,7 @@ class Node(TenantModel):
     namespace = models.TextField(default="default")
     name = models.TextField()
     display_name = models.TextField()
-    metadata = models.JSONField(default=dict)
+    metadata = models.JSONField(default=dict, encoder=GraiEncoder)
     is_active = models.BooleanField(default=True)
 
     workspace = models.ForeignKey(
@@ -96,7 +106,7 @@ class Edge(TenantModel):
     name = models.TextField()
     namespace = models.TextField(default="default")
     display_name = models.TextField()
-    metadata = models.JSONField(default=dict)
+    metadata = models.JSONField(default=dict, encoder=GraiEncoder)
     is_active = models.BooleanField(default=True)
 
     source = models.ForeignKey("Node", related_name="source_edges", on_delete=models.PROTECT)
@@ -252,6 +262,7 @@ class Source(TenantModel):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
+    priority = models.IntegerField(default=0)
 
     workspace = models.ForeignKey(
         "workspaces.Workspace",

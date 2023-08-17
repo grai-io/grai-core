@@ -217,6 +217,94 @@ def test_table_namespace_in():
     assert query.parameters == {}
 
 
+def test_table_data_sources_in():
+    query = GraphQuery(Match("Table"))
+
+    filter = Filter(
+        name=str(uuid.uuid4()),
+        metadata=[
+            {
+                "type": "table",
+                "field": "data-source",
+                "operator": "in",
+                "value": ["source1", "source2"],
+            }
+        ],
+    )
+
+    filter_by_filter(filter, query)
+
+    assert len(query.clause[0].wheres) == 1
+    assert query.clause[0].wheres[0].where == "any(x IN table.data_sources WHERE x IN ['source1', 'source2'])"
+    assert query.parameters == {}
+
+
+def test_table_data_sources_not_in():
+    query = GraphQuery(Match("Table"))
+
+    filter = Filter(
+        name=str(uuid.uuid4()),
+        metadata=[
+            {
+                "type": "table",
+                "field": "data-source",
+                "operator": "not-in",
+                "value": ["source1", "source2"],
+            }
+        ],
+    )
+
+    filter_by_filter(filter, query)
+
+    assert len(query.clause[0].wheres) == 1
+    assert query.clause[0].wheres[0].where == "NOT any(x IN table.data_sources WHERE x IN ['source1', 'source2'])"
+    assert query.parameters == {}
+
+
+def test_table_tag_contains():
+    query = GraphQuery(Match("Table"))
+
+    filter = Filter(
+        name=str(uuid.uuid4()),
+        metadata=[
+            {
+                "type": "table",
+                "field": "tag",
+                "operator": "contains",
+                "value": "tag1",
+            }
+        ],
+    )
+
+    filter_by_filter(filter, query)
+
+    assert len(query.clause[0].wheres) == 1
+    assert query.clause[0].wheres[0].where == "'tag1' IN table.tags"
+    assert query.parameters == {}
+
+
+def test_table_tag_doesnt_contain():
+    query = GraphQuery(Match("Table"))
+
+    filter = Filter(
+        name=str(uuid.uuid4()),
+        metadata=[
+            {
+                "type": "table",
+                "field": "tag",
+                "operator": "not-contains",
+                "value": "tag1",
+            }
+        ],
+    )
+
+    filter_by_filter(filter, query)
+
+    assert len(query.clause[0].wheres) == 1
+    assert query.clause[0].wheres[0].where == "'tag1' NOT IN table.tags"
+    assert query.parameters == {}
+
+
 def test_no_ancestor():
     query = GraphQuery(Match("Table"))
 

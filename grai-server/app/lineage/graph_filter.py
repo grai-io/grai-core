@@ -27,9 +27,20 @@ def filter_by_filter(filter, query: GraphQuery) -> GraphQuery:
                     list = "['" + "', '".join(value) + "']"
                     query.where(f"table.namespace IN {list}")
 
+            elif row["field"] == "data-source":
+                if row["operator"] == "in":
+                    list = "['" + "', '".join(value) + "']"
+                    query.where(f"any(x IN table.data_sources WHERE x IN {list})")
+                elif row["operator"] == "not-in":
+                    list = "['" + "', '".join(value) + "']"
+                    query.where(f"NOT any(x IN table.data_sources WHERE x IN {list})")
+
             elif row["field"] == "tag":
                 if row["operator"] == "contains":
                     query.where(f"'{value}' IN table.tags")
+                elif row["operator"] == "not-contains":
+                    query.where(f"'{value}' NOT IN table.tags")
+
         elif row["type"] == "ancestor":
             if row["field"] == "tag":
                 if row["operator"] == "contains":

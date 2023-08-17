@@ -3,27 +3,27 @@ import userEvent from "@testing-library/user-event"
 import { act, render, screen } from "testing"
 import FilterForm from "./FilterForm"
 
-test("renders", async () => {
-  render(<FilterForm onSave={() => {}} namespaces={[]} tags={[]} />)
+const defaultProps = {
+  onSave: () => {},
+  namespaces: [],
+  tags: [],
+  sources: [],
+}
 
-  await screen.findAllByText("Save")
+test("renders", async () => {
+  render(<FilterForm {...defaultProps} />)
+
+  await screen.findByText("Save")
 })
 
 test("close", async () => {
   const user = userEvent.setup()
 
-  render(
-    <FilterForm
-      onSave={() => {}}
-      onClose={() => {}}
-      namespaces={[]}
-      tags={[]}
-    />,
-  )
+  render(<FilterForm {...defaultProps} onClose={() => {}} />)
 
-  await screen.findAllByText("Cancel")
+  expect(screen.getByText("Cancel")).toBeInTheDocument()
 
   await act(async () => {
-    user.click(screen.getByTestId("CloseIcon"))
+    user.click(screen.getByText("Cancel"))
   })
 })

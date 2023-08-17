@@ -60,7 +60,7 @@ const Filters: React.FC = () => {
     ? filters.filter(
         filter =>
           filter.name &&
-          filter.name.toLowerCase().includes(search.toLowerCase())
+          filter.name.toLowerCase().includes(search.toLowerCase()),
       )
     : filters
 

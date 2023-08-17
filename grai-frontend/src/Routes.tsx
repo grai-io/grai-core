@@ -17,8 +17,8 @@ const Workspaces = lazy(() => import("./pages/workspaces/Workspaces"))
 const WorkspaceCreate = lazy(() => import("./pages/workspaces/WorkspaceCreate"))
 const Home = lazy(() => import("./pages/Home"))
 const Graph = lazy(() => import("./pages/Graph"))
-const Tables = lazy(() => import("./pages/tables/Tables"))
-const Table = lazy(() => import("./pages/tables/Table"))
+const Nodes = lazy(() => import("./pages/nodes/Nodes"))
+const Node = lazy(() => import("./pages/nodes/Node"))
 const Edges = lazy(() => import("./pages/edges/Edges"))
 const Edge = lazy(() => import("./pages/edges/Edge"))
 const Runs = lazy(() => import("./pages/runs/Runs"))
@@ -34,12 +34,13 @@ const Commit = lazy(() => import("./pages/reports/Commit"))
 
 const Connections = lazy(() => import("./pages/connections/Connections"))
 const ConnectionCreate = lazy(
-  () => import("./pages/connections/ConnectionCreate")
+  () => import("./pages/connections/ConnectionCreate"),
 )
 const Connection = lazy(() => import("./pages/connections/Connection"))
 
 const Sources = lazy(() => import("./pages/sources/Sources"))
 const SourceCreate = lazy(() => import("./pages/sources/SourceCreate"))
+const SourceGraph = lazy(() => import("./pages/sources/SourceGraph"))
 const Source = lazy(() => import("./pages/sources/Source"))
 
 const Filters = lazy(() => import("./pages/filters/Filters"))
@@ -51,7 +52,7 @@ const ProfileSettings = lazy(() => import("./pages/settings/ProfileSettings"))
 const PasswordSettings = lazy(() => import("./pages/settings/PasswordSettings"))
 const ApiKeys = lazy(() => import("./pages/settings/ApiKeys"))
 const WorkspaceSettings = lazy(
-  () => import("./pages/settings/WorkspaceSettings")
+  () => import("./pages/settings/WorkspaceSettings"),
 )
 const Memberships = lazy(() => import("./pages/settings/Memberships"))
 const PostInstall = lazy(() => import("./pages/PostInstall"))
@@ -88,9 +89,9 @@ const Routes: React.FC = () => (
             >
               <Route index element={<Home />} />
               <Route path="graph" element={<Graph />} />
-              <Route path="tables">
-                <Route index element={<Tables />} />
-                <Route path=":tableId" element={<Table />} />
+              <Route path="nodes">
+                <Route index element={<Nodes />} />
+                <Route path=":nodeId" element={<Node />} />
               </Route>
               <Route path="edges">
                 <Route index element={<Edges />} />
@@ -127,10 +128,11 @@ const Routes: React.FC = () => (
                 <Route path=":connectionId" element={<Connection />} />
               </Route>
               <Route path="sources">
-              <Route index element={<Sources />} />
-              <Route path="create" element={<SourceCreate />} />
-              <Route path=":sourceId" element={<Source />} />
-            </Route>
+                <Route index element={<Sources />} />
+                <Route path="create" element={<SourceCreate />} />
+                <Route path="graph" element={<SourceGraph />} />
+                <Route path=":sourceId" element={<Source />} />
+              </Route>
               <Route path="filters">
                 <Route index element={<Filters />} />
                 <Route path="create" element={<FilterCreate />} />

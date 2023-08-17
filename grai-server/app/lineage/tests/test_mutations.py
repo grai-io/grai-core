@@ -193,10 +193,11 @@ async def test_create_source(test_context):
     context, organisation, workspace, user, membership = test_context
 
     mutation = """
-        mutation CreateSource($workspaceId: ID!, $name: String!) {
-            createSource(workspaceId: $workspaceId, name: $name) {
+        mutation CreateSource($workspaceId: ID!, $name: String!, $priority: Int!) {
+            createSource(workspaceId: $workspaceId, name: $name, priority: $priority) {
                 id
                 name
+                priority
                 created_at
             }
         }
@@ -209,6 +210,7 @@ async def test_create_source(test_context):
         variable_values={
             "workspaceId": str(workspace.id),
             "name": name,
+            "priority": 1,
         },
         context_value=context,
     )
@@ -216,6 +218,7 @@ async def test_create_source(test_context):
     assert result.errors is None
     assert result.data["createSource"]["id"] != None
     assert result.data["createSource"]["name"] == name
+    assert result.data["createSource"]["priority"] == 1
 
 
 @pytest.mark.django_db
@@ -225,10 +228,11 @@ async def test_create_source_no_membership(test_context):
     workspace2 = await generate_workspace(organisation)
 
     mutation = """
-        mutation CreateSource($workspaceId: ID!, $name: String!) {
-            createSource(workspaceId: $workspaceId, name: $name) {
+        mutation CreateSource($workspaceId: ID!, $name: String!, $priority: Int!) {
+            createSource(workspaceId: $workspaceId, name: $name, priority: $priority) {
                 id
                 name
+                priority
                 created_at
             }
         }
@@ -239,6 +243,7 @@ async def test_create_source_no_membership(test_context):
         variable_values={
             "workspaceId": str(workspace2.id),
             "name": generate_connection_name(),
+            "priority": 1,
         },
         context_value=context,
     )
@@ -279,6 +284,36 @@ async def test_update_source(test_context):
     assert result.errors is None
     assert result.data["updateSource"]["id"] == str(source.id)
     assert result.data["updateSource"]["name"] == name
+
+
+@pytest.mark.django_db
+async def test_update_source_priority(test_context):
+    context, organisation, workspace, user, membership = test_context
+    source = await generate_source(workspace)
+
+    mutation = """
+        mutation UpdateSource($id: ID!, $priority: Int!) {
+            updateSource(id: $id, priority: $priority) {
+                id
+                name
+                priority
+                created_at
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "id": str(source.id),
+            "priority": 2,
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["updateSource"]["id"] == str(source.id)
+    assert result.data["updateSource"]["priority"] == 2
 
 
 @pytest.mark.django_db

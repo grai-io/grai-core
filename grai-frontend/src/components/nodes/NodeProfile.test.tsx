@@ -1,6 +1,6 @@
 import React from "react"
 import { render, screen, waitFor } from "testing"
-import TableProfile from "./TableProfile"
+import NodeProfile from "./NodeProfile"
 
 const other_table = {
   id: "2",
@@ -12,7 +12,6 @@ test("renders", async () => {
     id: "1",
     name: "Table 1",
     namespace: "default",
-    data_source: "test-source",
     display_name: "Table 1",
     columns: { data: [] },
     metadata: {
@@ -22,7 +21,7 @@ test("renders", async () => {
     },
     source_tables: { data: [other_table] },
     destination_tables: { data: [other_table] },
-    sources: {
+    data_sources: {
       data: [
         {
           id: "1",
@@ -32,7 +31,7 @@ test("renders", async () => {
     },
   }
 
-  render(<TableProfile table={table} />, {
+  render(<NodeProfile node={table} />, {
     withRouter: true,
   })
 
@@ -46,7 +45,6 @@ test("renders no sources or destinations", async () => {
     id: "1",
     name: "Table 1",
     namespace: "default",
-    data_source: "test-source",
     display_name: "Table 1",
     columns: { data: [] },
     metadata: {
@@ -56,12 +54,12 @@ test("renders no sources or destinations", async () => {
     },
     source_tables: { data: [] },
     destination_tables: { data: [] },
-    sources: {
+    data_sources: {
       data: [],
     },
   }
 
-  render(<TableProfile table={table} />, {
+  render(<NodeProfile node={table} />, {
     withRouter: true,
   })
 

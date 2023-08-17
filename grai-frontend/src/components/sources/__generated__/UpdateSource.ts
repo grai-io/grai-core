@@ -11,6 +11,7 @@ export interface UpdateSource_updateSource {
   __typename: "Source";
   id: any;
   name: string;
+  priority: number;
 }
 
 export interface UpdateSource {
@@ -20,4 +21,5 @@ export interface UpdateSource {
 export interface UpdateSourceVariables {
   sourceId: string;
   name: string;
+  priority: number;
 }

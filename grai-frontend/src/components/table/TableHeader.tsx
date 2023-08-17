@@ -29,7 +29,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
             value={search ?? ""}
             onChange={handleSearch}
             size="small"
-            data-testid="table-search"
+            data-testid="node-search"
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">

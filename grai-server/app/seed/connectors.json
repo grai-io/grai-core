@@ -623,6 +623,11 @@
                         "required": false,
                         "type": "boolean",
                         "order": 3
+                    },
+                    {
+                        "name": "namespaces",
+                        "required": false,
+                        "order": 4
                     }
                 ]
             },

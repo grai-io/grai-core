@@ -47,12 +47,18 @@ export type Filter = {
   value: string | string[] | null
 }
 
+export interface Source {
+  id: string
+  name: string
+}
+
 type FilterRowProps = {
   filter: Filter
   onChange: (filter: Filter) => void
   onRemove: () => void
   namespaces: string[]
   tags: string[]
+  sources: Source[]
 }
 
 const FilterRow: React.FC<FilterRowProps> = ({
@@ -61,6 +67,7 @@ const FilterRow: React.FC<FilterRowProps> = ({
   onRemove,
   namespaces,
   tags,
+  sources,
 }) => {
   const nameField: Field = {
     value: "name",
@@ -156,8 +163,88 @@ const FilterRow: React.FC<FilterRowProps> = ({
   const sourceField: Field = {
     value: "data-source",
     label: "Data Source",
-    disabled: true,
-    operators: [],
+    operators: [
+      {
+        value: "in",
+        label: "In",
+        valueComponent: (
+          disabled: boolean,
+          value: string | string[] | null,
+          onChange: (value: string | string[] | null) => void,
+        ) => (
+          <Autocomplete<Source, true>
+            multiple
+            openOnFocus
+            autoSelect
+            limitTags={1}
+            disabled={disabled}
+            options={sources}
+            value={sources.filter(source =>
+              (value ? (Array.isArray(value) ? value : [value]) : []).includes(
+                source.id,
+              ),
+            )}
+            getOptionLabel={source => source.name}
+            onChange={(event, newValue) =>
+              onChange(newValue.map(source => source.id))
+            }
+            renderInput={params => <TextField {...params} />}
+            renderOption={(props, option, { selected }) => (
+              <li {...props}>
+                <Checkbox
+                  icon={icon}
+                  checkedIcon={checkedIcon}
+                  style={{ marginRight: 8 }}
+                  checked={selected}
+                />
+                {option.name}
+              </li>
+            )}
+            data-testid="autocomplete-value"
+          />
+        ),
+      },
+      {
+        value: "not-in",
+        label: "Not In",
+        valueComponent: (
+          disabled: boolean,
+          value: string | string[] | null,
+          onChange: (value: string | string[] | null) => void,
+        ) => (
+          <Autocomplete<Source, true>
+            multiple
+            openOnFocus
+            autoSelect
+            limitTags={1}
+            disabled={disabled}
+            options={sources}
+            value={sources.filter(source =>
+              (value ? (Array.isArray(value) ? value : [value]) : []).includes(
+                source.id,
+              ),
+            )}
+            getOptionLabel={source => source.name}
+            onChange={(event, newValue) =>
+              onChange(newValue.map(source => source.id))
+            }
+            renderInput={params => <TextField {...params} />}
+            renderOption={(props, option, { selected }) => (
+              <li {...props}>
+                <Checkbox
+                  icon={icon}
+                  checkedIcon={checkedIcon}
+                  style={{ marginRight: 8 }}
+                  checked={selected}
+                />
+                {option.name}
+              </li>
+            )}
+            data-testid="autocomplete-value"
+          />
+        ),
+      },
+    ],
   }
 
   const tagField: Field = {
@@ -167,6 +254,26 @@ const FilterRow: React.FC<FilterRowProps> = ({
       {
         value: "contains",
         label: "Contains",
+        valueComponent: (
+          disabled: boolean,
+          value: string | string[] | null,
+          onChange: (value: string | string[] | null) => void,
+        ) => (
+          <Autocomplete
+            openOnFocus
+            autoSelect
+            disabled={disabled}
+            options={tags}
+            value={Array.isArray(value) ? value[0] : value}
+            onChange={(event, newValue) => onChange(newValue)}
+            renderInput={params => <TextField {...params} />}
+            data-testid="autocomplete-value"
+          />
+        ),
+      },
+      {
+        value: "not-contains",
+        label: "Doesn't Contain",
         valueComponent: (
           disabled: boolean,
           value: string | string[] | null,
@@ -197,7 +304,7 @@ const FilterRow: React.FC<FilterRowProps> = ({
   const properties: Property[] = [
     {
       value: "table",
-      label: "Table",
+      label: "Default",
       fields: [nameField, namespaceField, sourceField, tagField],
     },
     {
@@ -321,7 +428,7 @@ const FilterRow: React.FC<FilterRowProps> = ({
         )}
       </Grid>
       <Grid item md={1}>
-        <IconButton onClick={onRemove}>
+        <IconButton onClick={onRemove} data-testid="filter-row-remove">
           <Close />
         </IconButton>
       </Grid>

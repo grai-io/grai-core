@@ -44,6 +44,22 @@ export const GET_EDGES = gql`
             name
             display_name
           }
+          data_sources {
+            data {
+              id
+              name
+              connections {
+                data {
+                  id
+                  connector {
+                    id
+                    name
+                    slug
+                  }
+                }
+              }
+            }
+          }
         }
         meta {
           filtered

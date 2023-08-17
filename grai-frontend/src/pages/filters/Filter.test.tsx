@@ -56,6 +56,7 @@ test("not found", async () => {
             filter: null,
             namespaces: { data: ["namespace1"] },
             tags: { data: ["tag1"] },
+            sources: [],
           },
         },
       },

@@ -7,7 +7,7 @@ import {
   UpdateFilter as UpdateFilterType,
   UpdateFilterVariables,
 } from "./__generated__/UpdateFilter"
-import { Filter as FilterType } from "./FilterRow"
+import { Filter as FilterType, Source } from "./FilterRow"
 
 export const UPDATE_FILTER = gql`
   mutation UpdateFilter($id: ID!, $name: String!, $metadata: JSON!) {
@@ -30,6 +30,7 @@ type UpdateFilterProps = {
   filter: Filter
   namespaces: string[]
   tags: string[]
+  sources: Source[]
   workspaceId: string
 }
 
@@ -37,6 +38,7 @@ const UpdateFilter: React.FC<UpdateFilterProps> = ({
   filter,
   namespaces,
   tags,
+  sources,
   workspaceId,
 }) => {
   const { enqueueSnackbar } = useSnackbar()
@@ -51,7 +53,14 @@ const UpdateFilter: React.FC<UpdateFilterProps> = ({
           id: workspaceId,
           __typename: "Workspace",
         }),
-        fieldName: "tables",
+        fieldName: "nodes",
+      })
+      cache.evict({
+        id: cache.identify({
+          id: workspaceId,
+          __typename: "Workspace",
+        }),
+        fieldName: "graph",
       })
     },
   })
@@ -73,6 +82,7 @@ const UpdateFilter: React.FC<UpdateFilterProps> = ({
         loading={loading}
         namespaces={namespaces}
         tags={tags}
+        sources={sources}
       />
     </>
   )

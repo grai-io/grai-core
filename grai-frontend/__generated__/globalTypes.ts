@@ -7,6 +7,11 @@
 // START Enums and Input Objects
 //==============================================================
 
+export enum Ordering {
+  ASC = "ASC",
+  DESC = "DESC",
+}
+
 export enum RunAction {
   EVENTS = "EVENTS",
   EVENTS_ALL = "EVENTS_ALL",
@@ -16,6 +21,7 @@ export enum RunAction {
 }
 
 export interface GraphFilter {
+  source_id?: string | null;
   table_id?: string | null;
   edge_id?: string | null;
   n?: number | null;
@@ -26,6 +32,16 @@ export interface GraphFilter {
   max_y?: number | null;
 }
 
+export interface NodeOrder {
+  id?: Ordering | null;
+  namespace?: Ordering | null;
+  name?: Ordering | null;
+  display_name?: Ordering | null;
+  is_active?: Ordering | null;
+  created_at?: Ordering | null;
+  updated_at?: Ordering | null;
+}
+
 export interface StringFilter {
   equals?: string | null;
   contains?: string[] | null;
@@ -33,6 +49,10 @@ export interface StringFilter {
 
 export interface WorkspaceEdgeFilter {
   edge_type?: StringFilter | null;
+}
+
+export interface WorkspaceNodeFilter {
+  node_type?: StringFilter | null;
 }
 
 //==============================================================

@@ -28,7 +28,10 @@ def test_load_config_arguments(loader_kwargs):
     """ """
     config = LookerConfig(**loader_kwargs)
     for k, v in loader_kwargs.items():
-        assert getattr(config, k) == v
+        if k == "client_secret":
+            assert config.client_secret.get_secret_value() == v
+        else:
+            assert getattr(config, k) == v
 
 
 def test_config_base_url_validation(loader_kwargs):

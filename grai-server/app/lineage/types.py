@@ -17,8 +17,6 @@ class NodeFilter:
     is_active: strawberry.auto
     created_at: strawberry.auto
     updated_at: strawberry.auto
-    source_edges: "EdgeFilter"
-    destination_edges: "EdgeFilter"
 
 
 @strawberry_django.ordering.order(NodeModel)
@@ -27,6 +25,7 @@ class NodeOrder:
     namespace: strawberry.auto
     name: strawberry.auto
     display_name: strawberry.auto
+    metadata__grai__node_type: strawberry.auto
     is_active: strawberry.auto
     created_at: strawberry.auto
     updated_at: strawberry.auto

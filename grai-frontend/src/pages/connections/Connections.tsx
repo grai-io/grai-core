@@ -103,7 +103,7 @@ const Connections: React.FC = () => {
 
   const filteredConnections = search
     ? connections.filter(connection =>
-        connection.name.toLowerCase().includes(search.toLowerCase())
+        connection.name.toLowerCase().includes(search.toLowerCase()),
       )
     : connections
 

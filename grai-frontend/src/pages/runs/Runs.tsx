@@ -51,7 +51,7 @@ const Runs: React.FC = () => {
         organisationName,
         workspaceName,
       },
-    }
+    },
   )
 
   const handleRefresh = () => refetch()

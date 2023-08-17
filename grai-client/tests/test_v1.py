@@ -80,6 +80,15 @@ class TestWorkspaceV1:
             assert isinstance(r, WorkspaceV1)
 
     @staticmethod
+    def test_get_default_workspace(client, client_params, workspace_v1, organisation_v1, mock_v1):
+        new_workspace = mock_v1.workspace.workspace_spec(organisation=organisation_v1.spec, name=f"aaaa-{uuid4()}")
+        new_workspace2 = mock_v1.workspace.workspace_spec(organisation=organisation_v1.spec, name=f"zzzz-{uuid4()}")
+        resp = client.post([new_workspace, new_workspace2])
+
+        new_client = ClientV1(**client_params)
+        assert new_client.workspace == str(workspace_v1.spec.id)
+
+    @staticmethod
     def test_post_workspace(client, workspace_v1, organisation_v1, mock_v1):
         workspace = mock_v1.workspace.workspace_spec(organisation=organisation_v1.spec)
         workspace.ref = f"{organisation_v1.spec.name}/{workspace.name}"

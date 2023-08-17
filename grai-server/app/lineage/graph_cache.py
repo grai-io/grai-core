@@ -37,7 +37,7 @@ class GraphCache:
 
     def cache_node(self, node):
         def get_data_source() -> Optional[str]:
-            source = node.data_sources.first()
+            source = node.data_sources.order_by("-priority").first()
 
             if not source:
                 return None
@@ -55,8 +55,8 @@ class GraphCache:
             self.query(
                 """
                     MERGE (table:Table {id: $id})
-                    ON CREATE SET table.name = $name, table.display_name = $display_name, table.namespace = $namespace, table.data_source = $data_source, table.tags = $tags
-                    ON MATCH SET table.name = $name, table.display_name = $display_name, table.namespace = $namespace, table.data_source = $data_source, table.tags = $tags
+                    ON CREATE SET table.name = $name, table.display_name = $display_name, table.namespace = $namespace, table.data_source = $data_source, table.data_sources = $data_sources, table.tags = $tags
+                    ON MATCH SET table.name = $name, table.display_name = $display_name, table.namespace = $namespace, table.data_source = $data_source, table.data_sources = $data_sources, table.tags = $tags
                 """,
                 {
                     "id": str(node.id),
@@ -64,6 +64,7 @@ class GraphCache:
                     "display_name": node.display_name,
                     "namespace": node.namespace,
                     "data_source": get_data_source(),
+                    "data_sources": [str(source.id) for source in node.data_sources.all()],
                     "tags": node.metadata.get("grai", {}).get("tags"),
                 },
             )
@@ -440,6 +441,12 @@ class GraphCache:
             )
 
         return tables
+
+    def get_source_filtered_graph_result(self, source_id: str, n: int) -> List["GraphTable"]:
+        parameters = {"source": source_id}
+        where = "WHERE $source IN firsttable.data_sources"
+
+        return self.get_with_step_graph_result(n, parameters, where)
 
     def get_table_filtered_graph_result(self, table_id: str, n: int) -> List["GraphTable"]:
         parameters = {"table": table_id}

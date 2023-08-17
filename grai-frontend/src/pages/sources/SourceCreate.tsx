@@ -8,6 +8,10 @@ import PageHeader from "components/layout/PageHeader"
 import PageLayout from "components/layout/PageLayout"
 import CreateSource from "components/sources/CreateSource"
 import GraphError from "components/utils/GraphError"
+import {
+  GetWorkspaceSourceCreate,
+  GetWorkspaceSourceCreateVariables,
+} from "./__generated__/GetWorkspaceSourceCreate"
 
 export const GET_WORKSPACE = gql`
   query GetWorkspaceSourceCreate(
@@ -24,7 +28,10 @@ export const GET_WORKSPACE = gql`
 const SourceCreate: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
 
-  const { loading, error, data } = useQuery(GET_WORKSPACE, {
+  const { loading, error, data } = useQuery<
+    GetWorkspaceSourceCreate,
+    GetWorkspaceSourceCreateVariables
+  >(GET_WORKSPACE, {
     variables: {
       organisationName,
       workspaceName,

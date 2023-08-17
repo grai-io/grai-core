@@ -40,6 +40,7 @@ interface Connection {
 interface Source {
   id: string
   name: string
+  priority: number
   nodes: {
     meta: {
       total: number
@@ -76,6 +77,7 @@ const SourcesTable: React.FC<SourcesTableProps> = ({
       <TableHead>
         <TableRow>
           <TableCell>Name</TableCell>
+          <TableCell>Priority</TableCell>
           <TableCell sx={{ width: 0, textAlign: "right" }}>Nodes</TableCell>
           <TableCell sx={{ width: 0, textAlign: "right" }}>Edges</TableCell>
           <TableCell />
@@ -92,6 +94,7 @@ const SourcesTable: React.FC<SourcesTableProps> = ({
             onClick={() => navigate(source.id)}
           >
             <TableCell>{source.name}</TableCell>
+            <TableCell>{source.priority}</TableCell>
             <TableCell sx={{ textAlign: "right" }}>
               {source.nodes.meta.total}
             </TableCell>
