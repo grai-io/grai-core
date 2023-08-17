@@ -1,6 +1,7 @@
 import React from "react"
 import {
   FilterAlt,
+  FilterList,
   KeyboardArrowLeft,
   KeyboardArrowRight,
   Refresh,
@@ -23,6 +24,7 @@ import { Viewport } from "reactflow"
 import useLocalState from "helpers/useLocalState"
 import GraphFilters from "./GraphFilters"
 import GraphSearch from "./GraphSearch"
+import GraphFilterInline from "./GraphFilterInline"
 
 type GraphDrawerProps = {
   search: string
@@ -103,6 +105,16 @@ const GraphDrawer: React.FC<GraphDrawerProps> = ({
                   sx={{ minWidth: 0 }}
                   className="graph-filter"
                 />
+                <Tab
+                  value="filter-list"
+                  label={
+                    <Tooltip title="Filter List">
+                      <FilterList />
+                    </Tooltip>
+                  }
+                  sx={{ minWidth: 0 }}
+                  className="graph-filter-list"
+                />
               </TabList>
             </Box>
             <TabPanel value="search" sx={{ p: 0 }}>
@@ -113,6 +125,9 @@ const GraphDrawer: React.FC<GraphDrawerProps> = ({
               />
             </TabPanel>
             <TabPanel value="filter" sx={{ p: 0 }}>
+              <GraphFilterInline />
+            </TabPanel>
+            <TabPanel value="filter-list" sx={{ p: 0 }}>
               <GraphFilters filters={filters} setFilters={setFilters} />
             </TabPanel>
           </TabContext>
@@ -180,6 +195,28 @@ const GraphDrawer: React.FC<GraphDrawerProps> = ({
                   }}
                 >
                   <FilterAlt />
+                </ListItemIcon>
+              </ListItemButton>
+            </Tooltip>
+          </ListItem>
+          <ListItem disablePadding>
+            <Tooltip title="Filter List">
+              <ListItemButton
+                onClick={() => setTab("filter-list")}
+                sx={{
+                  minHeight: 48,
+                  justifyContent: "center",
+                  px: 2.5,
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: "auto",
+                    justifyContent: "center",
+                  }}
+                >
+                  <FilterList />
                 </ListItemIcon>
               </ListItemButton>
             </Tooltip>

@@ -15,10 +15,15 @@ import {
   GetWorkspaceFilterInline,
   GetWorkspaceFilterInlineVariables,
 } from "./__generated__/GetWorkspaceFilterInline"
+import GraphFilterTextbox from "./GraphFilterTextbox"
+import useWorkspace from "helpers/useWorkspace"
 
 export const GET_WORKSPACE = gql`
-  query GetWorkspaceFilterInline($workspaceId: ID!) {
-    workspace(id: $workspaceId) {
+  query GetWorkspaceFilterInline(
+    $organisationName: String!
+    $workspaceName: String!
+  ) {
+    workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       name
       namespaces {
@@ -37,13 +42,8 @@ export const GET_WORKSPACE = gql`
   }
 `
 
-type GraphFilterInlineProps = {
-  workspaceId: string
-}
-
-const GraphFilterInline: React.FC<GraphFilterInlineProps> = ({
-  workspaceId,
-}) => {
+const GraphFilterInline: React.FC = () => {
+  const { organisationName, workspaceName } = useWorkspace()
   const [filter, setFilter] = React.useState<Filter>(defaultFilter)
 
   const { loading, error, data } = useQuery<
@@ -51,7 +51,8 @@ const GraphFilterInline: React.FC<GraphFilterInlineProps> = ({
     GetWorkspaceFilterInlineVariables
   >(GET_WORKSPACE, {
     variables: {
-      workspaceId,
+      organisationName,
+      workspaceName,
     },
   })
 
@@ -89,57 +90,7 @@ const GraphFilterInline: React.FC<GraphFilterInlineProps> = ({
     setFilter(newFilter)
   }
 
-  return (
-    <Box sx={{ p: 1 }}>
-      <FilterField<Property>
-        options={properties}
-        // value={property}
-        // onChange={(event, newValue) =>
-        //   onChange({ ...filter, type: newValue?.value ?? null })
-        // }
-        data-testid="autocomplete-property"
-        size="small"
-      />
-      <FilterField<Field>
-        disabled={!property}
-        options={property?.fields ?? []}
-        value={field}
-        onChange={handleFieldChange}
-        data-testid="autocomplete-field"
-        size="small"
-      />
-      <FilterField<Operator>
-        disabled={!field}
-        options={field?.operators ?? []}
-        value={operator}
-        onChange={(event, newValue) =>
-          setFilter({ ...filter, operator: newValue?.value ?? null })
-        }
-        data-testid="autocomplete-operator"
-        size="small"
-      />
-      {operator?.valueComponent ? (
-        operator.valueComponent(
-          !operator,
-          filter.value,
-          (value: string | string[] | null) => setFilter({ ...filter, value }),
-        )
-      ) : (
-        <TextField
-          fullWidth
-          disabled={!operator}
-          value={filter.value ?? ""}
-          onChange={event =>
-            setFilter({ ...filter, value: event.target.value })
-          }
-          inputProps={{
-            "data-testid": "value",
-          }}
-          size="small"
-        />
-      )}
-    </Box>
-  )
+  return <GraphFilterTextbox />
 }
 
 export default GraphFilterInline
