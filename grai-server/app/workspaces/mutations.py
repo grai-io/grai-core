@@ -142,17 +142,11 @@ class Mutation:
             edges = Edge.objects.filter(workspace=workspace)
 
             if edges.exists():
-                for edge in edges:
-                    edge.data_sources.clear()
-
                 edges._raw_delete(edges.db)
 
             nodes = Node.objects.filter(workspace=workspace)
 
             if nodes.exists():
-                for node in nodes:
-                    node.data_sources.clear()
-
                 nodes._raw_delete(nodes.db)
 
             cache = ExtendedGraphCache(workspace)

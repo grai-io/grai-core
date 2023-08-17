@@ -28,9 +28,9 @@ export const GET_WORKSPACE = gql`
           filtered
         }
       }
-      tables {
+      nodes(filters: { node_type: { equals: "Table" } }) {
         meta {
-          total
+          filtered
         }
       }
       connections {
@@ -88,7 +88,7 @@ const Home: React.FC = () => {
         <WelcomeCard search={search} setSearch={setSearch} />
         <HomeCards />
         {workspace.connections.meta.total === 0 &&
-          workspace.tables.meta.total === 0 && <GettingStarted />}
+          workspace.nodes.meta.filtered === 0 && <GettingStarted />}
         <ReportsCard />
         <SourceGraph workspaceId={workspace.id} />
       </Box>

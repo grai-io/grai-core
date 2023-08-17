@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { WorkspaceNodeFilter } from "./../../../../__generated__/globalTypes";
+import { WorkspaceNodeFilter, NodeOrder } from "./../../../../__generated__/globalTypes";
 
 // ====================================================
 // GraphQL query operation: GetNodes
@@ -78,4 +78,5 @@ export interface GetNodesVariables {
   offset?: number | null;
   search?: string | null;
   filter?: WorkspaceNodeFilter | null;
+  order?: NodeOrder | null;
 }

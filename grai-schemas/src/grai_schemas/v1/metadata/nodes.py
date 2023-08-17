@@ -17,9 +17,10 @@ class NodeMetadataTypeLabels(Enum):
     table: Literal["Table"] = "Table"
     column: Literal["Column"] = "Column"
     query: Literal["Query"] = "Query"
+    collection: Literal["Collection"] = "Collection"
 
 
-NodeMetadataTypeLabelLiterals = Literal["Generic", "Table", "Column", "Query"]
+NodeMetadataTypeLabelLiterals = Literal["Generic", "Table", "Column", "Query", "Collection"]
 
 
 class SourceType(Enum):
@@ -94,4 +95,11 @@ class QueryMetadata(BaseNodeMetadataV1):
     node_attributes: QueryAttributes = QueryAttributes()
 
 
-Metadata = Union[ColumnMetadata, TableMetadata, QueryMetadata, GenericNodeMetadataV1]
+class CollectionMetadata(BaseNodeMetadataV1):
+    """"""
+
+    node_type: Literal["Collection"]
+    node_attributes: GenericAttributes = GenericAttributes()
+
+
+Metadata = Union[ColumnMetadata, TableMetadata, QueryMetadata, CollectionMetadata, GenericNodeMetadataV1]

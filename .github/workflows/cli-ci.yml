@@ -132,7 +132,7 @@ jobs:
           --health-start-period 30s
 
       redis:
-        image: redis/redis-stack:latest
+        image: redis/redis-stack-server:6.2.6-v9
         ports:
           - 6379:6379
 

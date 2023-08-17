@@ -17,13 +17,15 @@ export const GET_NODES = gql`
     $offset: Int
     $search: String
     $filter: WorkspaceNodeFilter
+    $order: NodeOrder
   ) {
     workspace(organisationName: $organisationName, name: $workspaceName) {
       id
       nodes(
         pagination: { limit: 20, offset: $offset }
         search: $search
-        filter: $filter
+        filters: $filter
+        order: $order
       ) {
         data {
           id
@@ -64,11 +66,27 @@ type NodeFilter = {
   }
 }
 
+interface OrderProperty {
+  [key: string]: "ASC" | "DESC"
+}
+
+export type Order = {
+  property: string
+  direction: "asc" | "desc"
+}
+
 const Nodes: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
   const [search, setSearch] = useState<string>()
   const [page, setPage] = useState<number>(0)
   const [filter, setFilter] = useState<NodeFilter>()
+  const [order, setOrder] = useState<Order | null>(null)
+
+  const orderProperty: OrderProperty = {}
+
+  if (order) {
+    orderProperty[order.property] = order.direction === "asc" ? "ASC" : "DESC"
+  }
 
   const { loading, error, data, refetch } = useQuery<
     GetNodes,
@@ -80,6 +98,7 @@ const Nodes: React.FC = () => {
       offset: page * 20,
       search,
       filter,
+      order: orderProperty,
     },
     context: {
       debounceKey: "nodes",
@@ -122,6 +141,8 @@ const Nodes: React.FC = () => {
           total={data?.workspace.nodes.meta.filtered ?? 0}
           page={page}
           onPageChange={setPage}
+          order={order}
+          onOrderChange={setOrder}
         />
       </PageContent>
     </PageLayout>

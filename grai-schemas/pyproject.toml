@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai_schemas"
-version = "0.2.0"
+version = "0.2.1"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>", "Edward Louth <edward@grai.io>"]
 license = "Elastic-2.0"

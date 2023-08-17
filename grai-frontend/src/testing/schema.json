@@ -271,11 +271,21 @@
                 "defaultValue": null
               },
               {
-                "name": "filter",
+                "name": "filters",
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
                   "name": "WorkspaceNodeFilter",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "order",
+                "description": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "NodeOrder",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -349,7 +359,7 @@
                 "defaultValue": null
               },
               {
-                "name": "filter",
+                "name": "filters",
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
@@ -1468,6 +1478,120 @@
         ],
         "interfaces": null,
         "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "NodeOrder",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "id",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "Ordering",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "namespace",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "Ordering",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "name",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "Ordering",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "display_name",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "Ordering",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "metadata__grai__node_type",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "Ordering",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "is_active",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "Ordering",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "created_at",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "Ordering",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "updated_at",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "Ordering",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "Ordering",
+        "description": null,
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "ASC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "DESC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
         "possibleTypes": null
       },
       {
@@ -3339,29 +3463,6 @@
         ],
         "interfaces": null,
         "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "ENUM",
-        "name": "Ordering",
-        "description": null,
-        "fields": null,
-        "inputFields": null,
-        "interfaces": null,
-        "enumValues": [
-          {
-            "name": "ASC",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "DESC",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
         "possibleTypes": null
       },
       {

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "the_guide"
-version = "0.1.36"
+version = "0.1.37"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>", "Edward Louth <edward@grai.io>"]
 license = "Elastic-2.0"
@@ -44,7 +44,7 @@ grai-source-dbt = "^0.3.1"
 grai-source-dbt-cloud =  "^0.1.0"
 grai-source-fivetran = "^0.1.0"
 grai-source-flat-file = "^0.1.0"
-grai-source-metabase = "^0.2.0"
+grai-source-metabase = "^0.2.2"
 grai-source-mssql = "^0.1.0"
 grai-source-mysql =  "^0.1.0"
 grai-source-postgres = "^0.2.0"
@@ -63,7 +63,6 @@ grandalf = "^0.8"
 drf-nested-routers = "^0.93.4"
 django-redis = "^5.3.0"
 retakesearch = "^0.1.32"
-
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.10.1"
