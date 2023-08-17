@@ -271,7 +271,7 @@
                 "defaultValue": null
               },
               {
-                "name": "filter",
+                "name": "filters",
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
@@ -359,7 +359,7 @@
                 "defaultValue": null
               },
               {
-                "name": "filter",
+                "name": "filters",
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
@@ -1518,6 +1518,16 @@
           },
           {
             "name": "display_name",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "Ordering",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "metadata__grai__node_type",
             "description": null,
             "type": {
               "kind": "ENUM",

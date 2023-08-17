@@ -23,7 +23,7 @@ export const GET_EDGES = gql`
       edges(
         pagination: { limit: 20, offset: $offset }
         search: $search
-        filter: $filter
+        filters: $filter
       ) {
         data {
           id
