@@ -2,6 +2,7 @@ import datetime
 import time
 from enum import Enum
 from typing import List, Optional
+from lineage.graph_search import GraphSearch
 
 from grai_graph.graph import BaseSourceSegment
 from collections import defaultdict
@@ -916,37 +917,13 @@ class Workspace:
         search: Optional[str] = strawberry.UNSET,
     ) -> List[BaseTable]:
         def get_tables(search: Optional[str]) -> List[Table]:
-            def get_words(word: str) -> List[str]:
-                from django.db import connection
+            graph_search = GraphSearch(workspace=self)
 
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        "SELECT * FROM unique_lexeme WHERE levenshtein_less_equal(word, %s, 2) < 3",
-                        [word],
-                    )
-                    rows = cursor.fetchall()
+            tables = graph_search.search(query=search)
 
-                return list([item[0] for item in rows])
+            print(tables)
 
-            result = []
-
-            for word in search.replace("_", " ").replace(".", " ").strip().split(" "):
-                result += get_words(word)
-
-            search_string = " ".join(result)
-
-            return list(
-                NodeModel.objects.raw(
-                    """
-                    SELECT *
-                    FROM lineage_node
-                    WHERE workspace_id=%s
-                    AND metadata->'grai'->>'node_type'='Table'
-                    AND ts_rank(search, websearch_to_tsquery('simple', replace(replace(%s, ' ', ' or '), '.', ' or '))) > 0
-                    ORDER BY ts_rank(search, websearch_to_tsquery('simple', replace(replace(%s, ' ', ' or '), '.', ' or '))) DESC""",
-                    [self.id, search_string, search_string],
-                )
-            )
+            return tables
 
         graph = GraphCache(workspace=self)
 
@@ -955,7 +932,10 @@ class Workspace:
         if search:
             tables = await sync_to_async(get_tables)(search)
 
-            ids = [table.id for table in tables]
+            if len(tables) == 0:
+                return []
+
+            ids = [table["id"] for table in tables]
 
         return graph.get_tables(ids=ids)
 

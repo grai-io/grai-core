@@ -143,3 +143,24 @@ services:
     depends_on:
       - redis
       - db
+
+  retake-core:
+    extends:
+      file: ./docker-compose.retake.yml
+      service: retake-core
+    ports:
+      - 9200:9200
+
+  retake-api:
+    extends:
+      file: ./docker-compose.retake.yml
+      service: retake-api
+    ports:
+      - 8002:8000
+
+  pgsync:
+    extends:
+      file: ./docker-compose.retake.yml
+      service: pgsync
+    ports:
+      - 7433:7433
