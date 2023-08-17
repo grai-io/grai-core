@@ -64,7 +64,6 @@ grandalf = "^0.8"
 drf-nested-routers = "^0.93.4"
 django-redis = "^5.3.0"
 
-
 [tool.poetry.group.dev.dependencies]
 isort = "^5.10.1"
 black = "^23.7.0"
