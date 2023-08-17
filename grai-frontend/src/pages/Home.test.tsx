@@ -227,9 +227,9 @@ test("no reports", async () => {
                 filtered: 0,
               },
             },
-            tables: {
+            nodes: {
               meta: {
-                total: 0,
+                filtered: 0,
               },
             },
             connections: {
