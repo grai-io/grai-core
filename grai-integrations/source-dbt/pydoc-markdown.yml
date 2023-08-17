@@ -7,5 +7,5 @@ processors:
   - type: crossref
 renderer:
   type: nextra
-  docs_base_path: ../../docs/pages/api-docs/integrations
+  docs_base_path: ../../docs/pages/api-docs
   relative_output_path: ''
