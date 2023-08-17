@@ -876,8 +876,6 @@ class Workspace:
             NodeModel.objects.filter(workspace=self).values_list("namespace", flat=True).distinct()
         )
 
-        print(namespaces)
-
         return DataWrapper(namespaces)
 
     # Graph
@@ -920,8 +918,6 @@ class Workspace:
             graph_search = GraphSearch(workspace=self)
 
             tables = graph_search.search(query=search)
-
-            print(tables)
 
             return tables
 

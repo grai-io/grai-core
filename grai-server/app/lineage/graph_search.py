@@ -12,8 +12,6 @@ class GraphSearch:
 
         index = self.client.get_index(index_name)
 
-        print(str(self.workspace.id))
-
         dsl = {"query": {"query_string": {"query": f"workspace_id.keyword:{str(self.workspace.id)}"}}}
         bm25_search_query = (
             Search()
@@ -24,8 +22,6 @@ class GraphSearch:
         )
 
         result = index.search(bm25_search_query)
-
-        print(result)
 
         hits = result.get("hits", {"hits": []}).get("hits", [])
         return [hit["_source"] for hit in hits]
