@@ -9,6 +9,7 @@ import {
   GetTablesAndEdgesTableLineage,
   GetTablesAndEdgesTableLineageVariables,
 } from "./__generated__/GetTablesAndEdgesTableLineage"
+import useInlineFilters from "components/graph/useInlineFilters"
 
 export const GET_TABLES_AND_EDGES = gql`
   query GetTablesAndEdgesTableLineage(
@@ -54,6 +55,9 @@ const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
   const [value, setValue] = useState(1)
   const { organisationName, workspaceName } = useWorkspace()
   const { filters, setFilters } = useFilters(`tables-${table.id}-graph-filters`)
+  const { inlineFilters, setInlineFilters } = useInlineFilters(
+    `tables-${table.id}-graph-inline-filters`,
+  )
 
   const { loading, error, data } = useQuery<
     GetTablesAndEdgesTableLineage,
@@ -93,6 +97,8 @@ const TableLineage: React.FC<TableLineageProps> = ({ table }) => {
         }}
         filters={filters ?? []}
         setFilters={setFilters}
+        inlineFilters={inlineFilters ?? []}
+        setInlineFilters={setInlineFilters}
       />
     </Box>
   )

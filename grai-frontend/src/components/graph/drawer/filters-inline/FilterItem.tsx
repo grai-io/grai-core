@@ -1,8 +1,8 @@
-import { VisibilityOff, Close } from "@mui/icons-material"
-import { Button, Box, Stack, Chip, IconButton, Tooltip } from "@mui/material"
 import React, { useState } from "react"
-import FilterPopper from "./FilterPopper"
+import { Delete } from "@mui/icons-material"
+import { Button, Box, Stack, Chip, IconButton, Tooltip } from "@mui/material"
 import { Filter, Field, Operator } from "components/filters/filters"
+import FilterPopper from "./FilterPopper"
 
 type FilterItemProps = {
   filter: Filter
@@ -22,14 +22,34 @@ const FilterItem: React.FC<FilterItemProps> = ({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [hover, setHover] = useState(false)
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    // setPendingValue(value);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) =>
     setAnchorEl(event.currentTarget)
+
+  const handleDelete = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    event.stopPropagation()
+    onDelete()
+  }
+
+  const filterValueToString = (value: string | null) => {
+    if (!value) return null
+
+    if (!operator?.options) return value
+
+    const option = operator.options.find(option =>
+      typeof option === "string" ? option === value : option.value === value,
+    )
+
+    return typeof option === "string" ? option : option?.label ?? null
   }
 
   const filterValue = Array.isArray(filter.value)
-    ? filter.value.length
-    : filter.value
+    ? filter.value.length > 0
+      ? filterValueToString(filter.value[0]) +
+        (filter.value.length > 1 ? ` +${filter.value.length - 1}` : "")
+      : null
+    : filterValueToString(filter.value)
 
   return (
     <>
@@ -67,18 +87,11 @@ const FilterItem: React.FC<FilterItemProps> = ({
             )}
           </Stack>
           {hover && (
-            <Stack direction="row" spacing={0}>
-              <Tooltip title="Ignore Filter">
-                <IconButton size="small">
-                  <VisibilityOff fontSize="small" />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Remove Filter">
-                <IconButton size="small" onClick={onDelete}>
-                  <Close fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            </Stack>
+            <Tooltip title="Remove Filter">
+              <IconButton size="small" onClick={handleDelete}>
+                <Delete fontSize="small" />
+              </IconButton>
+            </Tooltip>
           )}
         </Box>
       </Button>

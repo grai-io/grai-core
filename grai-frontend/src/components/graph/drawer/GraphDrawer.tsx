@@ -22,10 +22,10 @@ import {
 } from "@mui/material"
 import { Viewport } from "reactflow"
 import useLocalState from "helpers/useLocalState"
+import { Filter } from "components/filters/filters"
+import GraphFilterInline from "./GraphFilterInline"
 import GraphFilters from "./GraphFilters"
 import GraphSearch from "./GraphSearch"
-import GraphFilterInline from "./GraphFilterInline"
-import { Filter } from "components/filters/filters"
 
 type GraphDrawerProps = {
   search: string
@@ -54,7 +54,7 @@ const GraphDrawer: React.FC<GraphDrawerProps> = ({
 
   const expand = tab !== null
 
-  const drawerWidth = expand ? 300 : 48
+  const drawerWidth = expand ? 350 : 48
 
   return (
     <Drawer

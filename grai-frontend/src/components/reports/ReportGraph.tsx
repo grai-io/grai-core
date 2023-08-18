@@ -6,6 +6,7 @@ import GraphComponent, {
 } from "components/graph/GraphComponent"
 import useFilters from "components/graph/useFilters"
 import { Run } from "./run/RunLog"
+import useInlineFilters from "components/graph/useInlineFilters"
 
 type ReportGraphProps = {
   tables: Table[]
@@ -21,6 +22,9 @@ const ReportGraph: React.FC<ReportGraphProps> = ({
   run,
 }) => {
   const { filters, setFilters } = useFilters(`reports-${run?.id}-graph-filters`)
+  const { inlineFilters, setInlineFilters } = useInlineFilters(
+    `reports-${run?.id}-graph-inline-filters`,
+  )
 
   return (
     <Box
@@ -34,6 +38,8 @@ const ReportGraph: React.FC<ReportGraphProps> = ({
         limitGraph={limitGraph}
         filters={filters ?? []}
         setFilters={setFilters}
+        inlineFilters={inlineFilters ?? []}
+        setInlineFilters={setInlineFilters}
       />
     </Box>
   )

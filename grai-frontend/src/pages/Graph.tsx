@@ -10,13 +10,13 @@ import GraphComponent, {
   Table,
 } from "components/graph/GraphComponent"
 import useFilters from "components/graph/useFilters"
+import useInlineFilters from "components/graph/useInlineFilters"
 import PageLayout from "components/layout/PageLayout"
 import GraphError from "components/utils/GraphError"
 import {
   GetTablesAndEdges,
   GetTablesAndEdgesVariables,
 } from "./__generated__/GetTablesAndEdges"
-import useInlineFilters from "components/graph/useInlineFilters"
 
 export const GET_TABLES_AND_EDGES = gql`
   query GetTablesAndEdges(

@@ -1,18 +1,19 @@
+import React from "react"
 import { gql, useQuery } from "@apollo/client"
+import { Add, Save } from "@mui/icons-material"
 import { Box, Button, CircularProgress, Stack } from "@mui/material"
+import useWorkspace from "helpers/useWorkspace"
 import {
   Filter,
   defaultFilter,
   getProperties,
 } from "components/filters/filters"
 import GraphError from "components/utils/GraphError"
-import React from "react"
 import {
   GetWorkspaceFilterInline,
   GetWorkspaceFilterInlineVariables,
 } from "./__generated__/GetWorkspaceFilterInline"
-import useWorkspace from "helpers/useWorkspace"
-import { Add, Save } from "@mui/icons-material"
+import AddButton from "./filters-inline/AddButton"
 import FilterRow from "./filters-inline/FilterRow"
 
 export const GET_WORKSPACE = gql`
@@ -111,12 +112,17 @@ const GraphFilterInline: React.FC<GraphFilterInlineProps> = ({
       </Stack>
       {inlineFilters.map((filter, index) => (
         <FilterRow
+          key={index}
           properties={properties}
           filter={filter}
           setFilter={handleFilterChange(index)}
           onDelete={handleFilterDelete(index)}
         />
       ))}
+      <AddButton
+        fields={properties[0].fields}
+        onAdd={newFilter => setInlineFilters([...inlineFilters, newFilter])}
+      />
     </Box>
   )
 }

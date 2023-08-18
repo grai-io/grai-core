@@ -472,7 +472,7 @@ test("search", async () => {
   })
 
   await act(
-    async () => await user.type(screen.getByTestId("search-input"), "s")
+    async () => await user.type(screen.getByTestId("search-input"), "s"),
   )
 
   await waitFor(() => {
@@ -521,11 +521,11 @@ test("filter", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByTestId("FilterAltIcon")).toBeInTheDocument()
+    expect(screen.getByTestId("FilterListIcon")).toBeInTheDocument()
   })
 
   await act(async () => {
-    await user.click(screen.getByTestId("FilterAltIcon"))
+    await user.click(screen.getByTestId("FilterListIcon"))
   })
 
   await waitFor(() => {

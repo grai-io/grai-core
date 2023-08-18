@@ -10,12 +10,12 @@ import ReactFlow, {
   Viewport,
 } from "reactflow"
 import "reactflow/dist/style.css"
+import { Filter } from "components/filters/filters"
 import Loading from "components/layout/Loading"
 import BaseNode from "./BaseNode"
 import { ControlOptions } from "./controls/GraphControls"
 import GraphDrawer from "./drawer/GraphDrawer"
 import TestEdge from "./TestEdge"
-import { Filter } from "components/filters/filters"
 
 const nodeTypes = {
   baseNode: BaseNode,

@@ -11,6 +11,11 @@ export type Filter = {
   value: string | string[] | null
 }
 
+export interface OperationOption {
+  value: string
+  label: string
+}
+
 export type Operator = {
   value: string
   label: string
@@ -20,6 +25,8 @@ export type Operator = {
     value: string | string[] | null,
     onChange: (value: string | string[] | null) => void,
   ) => React.ReactNode
+  options?: (string | OperationOption)[]
+  multiple?: boolean
 }
 
 export type Field = {
@@ -111,6 +118,7 @@ const namespaceField = (namespaces: string[]): Field => ({
           data-testid="autocomplete-value"
         />
       ),
+      options: namespaces,
     },
     {
       value: "in",
@@ -144,6 +152,8 @@ const namespaceField = (namespaces: string[]): Field => ({
           data-testid="autocomplete-value"
         />
       ),
+      options: namespaces,
+      multiple: true,
     },
   ],
 })
@@ -191,6 +201,11 @@ const sourceField = (sources: Source[]): Field => ({
           data-testid="autocomplete-value"
         />
       ),
+      options: sources.map(source => ({
+        value: source.id,
+        label: source.name,
+      })),
+      multiple: true,
     },
     {
       value: "not-in",
@@ -231,6 +246,11 @@ const sourceField = (sources: Source[]): Field => ({
           data-testid="autocomplete-value"
         />
       ),
+      options: sources.map(source => ({
+        value: source.id,
+        label: source.name,
+      })),
+      multiple: true,
     },
   ],
 })
@@ -258,6 +278,8 @@ const tagField = (tags: string[]): Field => ({
           data-testid="autocomplete-value"
         />
       ),
+      options: tags,
+      multiple: true,
     },
     {
       value: "not-contains",
@@ -278,6 +300,8 @@ const tagField = (tags: string[]): Field => ({
           data-testid="autocomplete-value"
         />
       ),
+      options: tags,
+      multiple: true,
     },
   ],
 })
