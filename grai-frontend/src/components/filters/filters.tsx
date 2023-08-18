@@ -14,6 +14,7 @@ export type Filter = {
 export type Operator = {
   value: string
   label: string
+  shortLabel?: string
   valueComponent?: (
     disabled: boolean,
     value: string | string[] | null,
@@ -57,26 +58,32 @@ const nameField: Field = {
     {
       value: "equals",
       label: "Equals",
+      shortLabel: "=",
     },
     {
       value: "contains",
       label: "Contains",
+      shortLabel: "*a*",
     },
     {
       value: "starts-with",
       label: "Starts With",
+      shortLabel: "a*",
     },
     {
       value: "ends-with",
       label: "Ends With",
+      shortLabel: "*a",
     },
     {
       value: "not-equals",
       label: "Not Equals",
+      shortLabel: "!=",
     },
     {
       value: "not-contains",
       label: "Not Contains",
+      shortLabel: "!*a*",
     },
   ],
 }

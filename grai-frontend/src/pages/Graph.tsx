@@ -16,6 +16,7 @@ import {
   GetTablesAndEdges,
   GetTablesAndEdgesVariables,
 } from "./__generated__/GetTablesAndEdges"
+import useInlineFilters from "components/graph/useInlineFilters"
 
 export const GET_TABLES_AND_EDGES = gql`
   query GetTablesAndEdges(
@@ -61,6 +62,7 @@ const Graph: React.FC<GraphProps> = ({ alwaysShow }) => {
   })
 
   const { filters, setFilters } = useFilters()
+  const { inlineFilters, setInlineFilters } = useInlineFilters()
 
   const [loadGraph, { loading, error, refetch }] = useLazyQuery<
     GetTablesAndEdges,
@@ -123,6 +125,8 @@ const Graph: React.FC<GraphProps> = ({ alwaysShow }) => {
           refreshLoading={loading}
           filters={filters ?? []}
           setFilters={setFilters}
+          inlineFilters={inlineFilters ?? []}
+          setInlineFilters={setInlineFilters}
           defaultViewport={viewport}
         />
       </div>

@@ -1,11 +1,7 @@
 import { gql, useQuery } from "@apollo/client"
-import { Box, CircularProgress, TextField } from "@mui/material"
-import FilterField from "components/filters/FilterField"
+import { Box, Button, CircularProgress, Stack } from "@mui/material"
 import {
-  Field,
   Filter,
-  Operator,
-  Property,
   defaultFilter,
   getProperties,
 } from "components/filters/filters"
@@ -15,8 +11,9 @@ import {
   GetWorkspaceFilterInline,
   GetWorkspaceFilterInlineVariables,
 } from "./__generated__/GetWorkspaceFilterInline"
-import GraphFilterTextbox from "./GraphFilterTextbox"
 import useWorkspace from "helpers/useWorkspace"
+import { Add, Save } from "@mui/icons-material"
+import FilterRow from "./filters-inline/FilterRow"
 
 export const GET_WORKSPACE = gql`
   query GetWorkspaceFilterInline(
@@ -41,10 +38,16 @@ export const GET_WORKSPACE = gql`
     }
   }
 `
+type GraphFilterInlineProps = {
+  inlineFilters: Filter[]
+  setInlineFilters: (filters: Filter[]) => void
+}
 
-const GraphFilterInline: React.FC = () => {
+const GraphFilterInline: React.FC<GraphFilterInlineProps> = ({
+  inlineFilters,
+  setInlineFilters,
+}) => {
   const { organisationName, workspaceName } = useWorkspace()
-  const [filter, setFilter] = React.useState<Filter>(defaultFilter)
 
   const { loading, error, data } = useQuery<
     GetWorkspaceFilterInline,
@@ -69,28 +72,53 @@ const GraphFilterInline: React.FC = () => {
     workspace.sources.data,
   )
 
-  const property =
-    properties.find(property => property.value === filter.type) ?? null
-  const field =
-    property?.fields.find(field => field.value === filter.field) ?? null
-  const operator =
-    field?.operators.find(operator => operator.value === filter.operator) ??
-    null
-
-  const handleFieldChange = (
-    _: React.SyntheticEvent<Element, Event>,
-    newValue: Field | null,
-  ) => {
-    let newFilter = { ...filter, field: newValue?.value ?? null }
-
-    if (!operator && newValue?.operators && newValue?.operators.length > 0) {
-      newFilter.operator = newValue?.operators[0].value
-    }
-
-    setFilter(newFilter)
+  const handleFilterChange = (index: number) => (filter: Filter) => {
+    const newFilters = [...inlineFilters]
+    newFilters[index] = filter
+    setInlineFilters(newFilters)
   }
 
-  return <GraphFilterTextbox />
+  const handleFilterDelete = (index: number) => () => {
+    const newFilters = [...inlineFilters]
+    newFilters.splice(index, 1)
+    setInlineFilters(newFilters)
+  }
+
+  const handleAddField = () =>
+    setInlineFilters([
+      ...inlineFilters,
+      {
+        ...defaultFilter,
+        field: properties[0].fields[0].value,
+        operator: properties[0].fields[0].operators[0].value,
+      },
+    ])
+
+  return (
+    <Box sx={{ p: 1 }}>
+      <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
+        <Button
+          variant="outlined"
+          fullWidth
+          startIcon={<Add />}
+          onClick={handleAddField}
+        >
+          Add Field
+        </Button>
+        <Button variant="outlined" fullWidth startIcon={<Save />}>
+          Save
+        </Button>
+      </Stack>
+      {inlineFilters.map((filter, index) => (
+        <FilterRow
+          properties={properties}
+          filter={filter}
+          setFilter={handleFilterChange(index)}
+          onDelete={handleFilterDelete(index)}
+        />
+      ))}
+    </Box>
+  )
 }
 
 export default GraphFilterInline

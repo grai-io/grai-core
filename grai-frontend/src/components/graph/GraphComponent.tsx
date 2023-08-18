@@ -10,6 +10,7 @@ import {
 import BaseGraph from "./BaseGraph"
 import { BaseNodeData } from "./BaseNode"
 import { ControlOptions } from "./controls/GraphControls"
+import { Filter } from "components/filters/filters"
 
 export const GET_GRAPH_LOAD_TABLE = gql`
   query GetGraphLoadTable(
@@ -85,6 +86,8 @@ type GraphComponentProps = {
   refreshLoading?: boolean
   filters: string[]
   setFilters: (filters: string[]) => void
+  inlineFilters: Filter[]
+  setInlineFilters: (filters: Filter[]) => void
   defaultViewport?: Viewport
 }
 
@@ -102,6 +105,8 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
   refreshLoading,
   filters,
   setFilters,
+  inlineFilters,
+  setInlineFilters,
   defaultViewport,
 }) => {
   const { organisationName, workspaceName } = useWorkspace()
@@ -364,6 +369,8 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
       refreshLoading={refreshLoading}
       filters={filters}
       setFilters={setFilters}
+      inlineFilters={inlineFilters}
+      setInlineFilters={setInlineFilters}
       defaultViewport={defaultViewport}
     />
   )

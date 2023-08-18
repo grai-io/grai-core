@@ -25,6 +25,7 @@ import useLocalState from "helpers/useLocalState"
 import GraphFilters from "./GraphFilters"
 import GraphSearch from "./GraphSearch"
 import GraphFilterInline from "./GraphFilterInline"
+import { Filter } from "components/filters/filters"
 
 type GraphDrawerProps = {
   search: string
@@ -34,6 +35,8 @@ type GraphDrawerProps = {
   onMove?: (viewport: Viewport) => void
   filters: string[]
   setFilters: (filters: string[]) => void
+  inlineFilters: Filter[]
+  setInlineFilters: (filters: Filter[]) => void
 }
 
 const GraphDrawer: React.FC<GraphDrawerProps> = ({
@@ -44,6 +47,8 @@ const GraphDrawer: React.FC<GraphDrawerProps> = ({
   onMove,
   filters,
   setFilters,
+  inlineFilters,
+  setInlineFilters,
 }) => {
   const [tab, setTab] = useLocalState<string | null>("graph-drawer", null)
 
@@ -125,7 +130,10 @@ const GraphDrawer: React.FC<GraphDrawerProps> = ({
               />
             </TabPanel>
             <TabPanel value="filter" sx={{ p: 0 }}>
-              <GraphFilterInline />
+              <GraphFilterInline
+                inlineFilters={inlineFilters}
+                setInlineFilters={setInlineFilters}
+              />
             </TabPanel>
             <TabPanel value="filter-list" sx={{ p: 0 }}>
               <GraphFilters filters={filters} setFilters={setFilters} />
