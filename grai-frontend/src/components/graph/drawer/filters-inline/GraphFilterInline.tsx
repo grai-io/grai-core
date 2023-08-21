@@ -12,9 +12,10 @@ import GraphError from "components/utils/GraphError"
 import {
   GetWorkspaceFilterInline,
   GetWorkspaceFilterInlineVariables,
-} from "./__generated__/GetWorkspaceFilterInline"
-import AddButton from "./filters-inline/AddButton"
-import FilterRow from "./filters-inline/FilterRow"
+} from "../__generated__/GetWorkspaceFilterInline"
+import AddButton from "./AddButton"
+import FilterRow from "./FilterRow"
+import NotFound from "pages/NotFound"
 
 export const GET_WORKSPACE = gql`
   query GetWorkspaceFilterInline(
@@ -65,13 +66,16 @@ const GraphFilterInline: React.FC<GraphFilterInlineProps> = ({
 
   const workspace = data?.workspace
 
-  if (!workspace) return null
+  if (!workspace) return <NotFound />
 
   const properties = getProperties(
     workspace.namespaces.data,
     workspace.tags.data,
     workspace.sources.data,
   )
+
+  const handleAdd = (newFilter: Filter) =>
+    setInlineFilters([...inlineFilters, newFilter])
 
   const handleFilterChange = (index: number) => (filter: Filter) => {
     const newFilters = [...inlineFilters]
@@ -85,27 +89,9 @@ const GraphFilterInline: React.FC<GraphFilterInlineProps> = ({
     setInlineFilters(newFilters)
   }
 
-  const handleAddField = () =>
-    setInlineFilters([
-      ...inlineFilters,
-      {
-        ...defaultFilter,
-        field: properties[0].fields[0].value,
-        operator: properties[0].fields[0].operators[0].value,
-      },
-    ])
-
   return (
     <Box sx={{ p: 1 }}>
       <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
-        <Button
-          variant="outlined"
-          fullWidth
-          startIcon={<Add />}
-          onClick={handleAddField}
-        >
-          Add Field
-        </Button>
         <Button variant="outlined" fullWidth startIcon={<Save />}>
           Save
         </Button>
@@ -119,10 +105,7 @@ const GraphFilterInline: React.FC<GraphFilterInlineProps> = ({
           onDelete={handleFilterDelete(index)}
         />
       ))}
-      <AddButton
-        fields={properties[0].fields}
-        onAdd={newFilter => setInlineFilters([...inlineFilters, newFilter])}
-      />
+      <AddButton fields={properties[0].fields} onAdd={handleAdd} />
     </Box>
   )
 }

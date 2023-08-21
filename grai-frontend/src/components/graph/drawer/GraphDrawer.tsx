@@ -23,7 +23,7 @@ import {
 import { Viewport } from "reactflow"
 import useLocalState from "helpers/useLocalState"
 import { Filter } from "components/filters/filters"
-import GraphFilterInline from "./GraphFilterInline"
+import GraphFilterInline from "./filters-inline/GraphFilterInline"
 import GraphFilters from "./GraphFilters"
 import GraphSearch from "./GraphSearch"
 
