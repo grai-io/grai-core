@@ -2,7 +2,6 @@ import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act } from "react-dom/test-utils"
 import { render, screen, waitFor } from "testing"
-import GraphError from "components/utils/GraphError"
 import GraphFilterInline, { GET_WORKSPACE } from "./GraphFilterInline"
 
 const setInlineFilters = jest.fn()

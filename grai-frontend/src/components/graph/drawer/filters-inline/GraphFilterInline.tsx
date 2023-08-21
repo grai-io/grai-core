@@ -1,14 +1,10 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
-import { Add, Save } from "@mui/icons-material"
+import { Save } from "@mui/icons-material"
 import { Box, Button, CircularProgress, Stack } from "@mui/material"
 import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
-import {
-  Filter,
-  defaultFilter,
-  getProperties,
-} from "components/filters/filters"
+import { Filter, getProperties } from "components/filters/filters"
 import GraphError from "components/utils/GraphError"
 import AddButton from "./AddButton"
 import FilterRow from "./FilterRow"

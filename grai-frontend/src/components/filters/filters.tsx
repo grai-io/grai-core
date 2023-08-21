@@ -4,7 +4,7 @@ import {
 } from "@mui/icons-material"
 import { Autocomplete, Checkbox, TextField } from "@mui/material"
 import arrayFirst from "helpers/arrayFirst"
-import arrayWrap, { arrayWrapDefault } from "helpers/arrayWrap"
+import { arrayWrapDefault } from "helpers/arrayWrap"
 
 export type Filter = {
   type: string | null

@@ -13,6 +13,7 @@ import {
   Tooltip,
 } from "@mui/material"
 import theme from "theme"
+import arrayWrap from "helpers/arrayWrap"
 import notEmpty from "helpers/notEmpty"
 import {
   Field,
@@ -23,7 +24,6 @@ import {
 import PopperComponent from "./PopperComponent"
 import StyledInput from "./StyledInput"
 import StyledPopper from "./StyledPopper"
-import arrayWrap from "helpers/arrayWrap"
 
 type FilterPopperProps = {
   anchorEl: null | HTMLElement
