@@ -7,7 +7,13 @@ import { GET_FILTERS } from "components/graph/drawer/GraphFilters"
 import { SEARCH_TABLES } from "components/graph/drawer/GraphSearch"
 import Graph, { GET_TABLES_AND_EDGES } from "./Graph"
 
-const baseFilter = { min_x: -500, max_x: 0, min_y: 0, max_y: 0 }
+const baseFilter = {
+  min_x: -500,
+  max_x: 0,
+  min_y: 0,
+  max_y: 0,
+  inline_filters: undefined,
+}
 
 export const filtersMock = {
   request: {

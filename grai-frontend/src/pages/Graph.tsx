@@ -85,14 +85,22 @@ const Graph: React.FC<GraphProps> = ({ alwaysShow }) => {
             max_y: Math.round(
               (-viewport.y + (ref.current?.clientHeight ?? 0)) / viewport.zoom,
             ),
+            inline_filters: inlineFilters?.filter(
+              f =>
+                f.hasOwnProperty("type") &&
+                f.hasOwnProperty("field") &&
+                f.hasOwnProperty("operator") &&
+                f.hasOwnProperty("value") &&
+                f.value &&
+                (!Array.isArray(f.value) || f.value.length > 0),
+            ),
           },
         },
       }).then(res => setTables(res.data?.workspace.graph ?? [])),
-    [filters, loadGraph, organisationName, workspaceName],
+    [filters, inlineFilters, loadGraph, organisationName, workspaceName],
   )
 
   useEffect(() => {
-    console.log("handlemove", viewport)
     handleMove(viewport)
   }, [handleMove, viewport])
 
