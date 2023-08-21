@@ -23,6 +23,7 @@ import {
 import PopperComponent from "./PopperComponent"
 import StyledInput from "./StyledInput"
 import StyledPopper from "./StyledPopper"
+import arrayWrap from "helpers/arrayWrap"
 
 type FilterPopperProps = {
   anchorEl: null | HTMLElement
@@ -72,7 +73,6 @@ const FilterPopper: React.FC<FilterPopperProps> = ({
   }
 
   const handleClose = () => {
-    // setValue(pendingValue);
     if (anchorEl) {
       anchorEl.focus()
     }
@@ -81,10 +81,6 @@ const FilterPopper: React.FC<FilterPopperProps> = ({
 
   const open = Boolean(anchorEl)
   const id = open ? "github-label" : undefined
-
-  function arrayWrap<T>(value: T | T[]): T[] {
-    return Array.isArray(value) ? value : [value]
-  }
 
   return (
     <StyledPopper

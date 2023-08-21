@@ -3,6 +3,8 @@ import {
   CheckBox as CheckBoxIcon,
 } from "@mui/icons-material"
 import { Autocomplete, Checkbox, TextField } from "@mui/material"
+import arrayFirst from "helpers/arrayFirst"
+import arrayWrap, { arrayWrapDefault } from "helpers/arrayWrap"
 
 export type Filter = {
   type: string | null
@@ -112,7 +114,7 @@ const namespaceField = (namespaces: string[]): Field => ({
           autoSelect
           disabled={disabled}
           options={namespaces}
-          value={Array.isArray(value) ? value[0] : value}
+          value={arrayFirst(value)}
           onChange={(event, newValue) => onChange(newValue)}
           renderInput={params => <TextField {...params} />}
           data-testid="autocomplete-value"
@@ -135,7 +137,7 @@ const namespaceField = (namespaces: string[]): Field => ({
           limitTags={1}
           disabled={disabled}
           options={namespaces}
-          value={value ? (Array.isArray(value) ? value : [value]) : []}
+          value={arrayWrapDefault(value)}
           onChange={(event, newValue) => onChange(newValue)}
           renderInput={params => <TextField {...params} />}
           renderOption={(props, option, { selected }) => (
@@ -178,9 +180,7 @@ const sourceField = (sources: Source[]): Field => ({
           disabled={disabled}
           options={sources}
           value={sources.filter(source =>
-            (value ? (Array.isArray(value) ? value : [value]) : []).includes(
-              source.id,
-            ),
+            arrayWrapDefault(value).includes(source.id),
           )}
           getOptionLabel={source => source.name}
           onChange={(event, newValue) =>
@@ -223,9 +223,7 @@ const sourceField = (sources: Source[]): Field => ({
           disabled={disabled}
           options={sources}
           value={sources.filter(source =>
-            (value ? (Array.isArray(value) ? value : [value]) : []).includes(
-              source.id,
-            ),
+            arrayWrapDefault(value).includes(source.id),
           )}
           getOptionLabel={source => source.name}
           onChange={(event, newValue) =>
@@ -272,7 +270,7 @@ const tagField = (tags: string[]): Field => ({
           autoSelect
           disabled={disabled}
           options={tags}
-          value={Array.isArray(value) ? value[0] : value}
+          value={arrayFirst(value)}
           onChange={(event, newValue) => onChange(newValue)}
           renderInput={params => <TextField {...params} />}
           data-testid="autocomplete-value"
@@ -294,7 +292,7 @@ const tagField = (tags: string[]): Field => ({
           autoSelect
           disabled={disabled}
           options={tags}
-          value={Array.isArray(value) ? value[0] : value}
+          value={arrayFirst(value)}
           onChange={(event, newValue) => onChange(newValue)}
           renderInput={params => <TextField {...params} />}
           data-testid="autocomplete-value"
