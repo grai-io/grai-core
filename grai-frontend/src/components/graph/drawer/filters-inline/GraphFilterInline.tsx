@@ -2,6 +2,7 @@ import React from "react"
 import { gql, useQuery } from "@apollo/client"
 import { Add, Save } from "@mui/icons-material"
 import { Box, Button, CircularProgress, Stack } from "@mui/material"
+import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
 import {
   Filter,
@@ -9,13 +10,12 @@ import {
   getProperties,
 } from "components/filters/filters"
 import GraphError from "components/utils/GraphError"
+import AddButton from "./AddButton"
+import FilterRow from "./FilterRow"
 import {
   GetWorkspaceFilterInline,
   GetWorkspaceFilterInlineVariables,
 } from "../__generated__/GetWorkspaceFilterInline"
-import AddButton from "./AddButton"
-import FilterRow from "./FilterRow"
-import NotFound from "pages/NotFound"
 
 export const GET_WORKSPACE = gql`
   query GetWorkspaceFilterInline(
