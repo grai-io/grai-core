@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "the_guide"
-version = "0.1.37"
+version = "0.1.38"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>", "Edward Louth <edward@grai.io>"]
 license = "Elastic-2.0"
@@ -48,7 +48,7 @@ grai-source-looker = "^0.0.2"
 grai-source-metabase = "^0.2.2"
 grai-source-mssql = "^0.1.0"
 grai-source-mysql =  "^0.1.0"
-grai-source-postgres = "^0.2.0"
+grai-source-postgres = "^0.2.1"
 grai-source-redshift =  "^0.1.0"
 grai-source-snowflake = "^0.1.0"
 algoliasearch-django = "^2.0.0"
