@@ -3,8 +3,8 @@ import { Add } from "@mui/icons-material"
 import { LoadingButton } from "@mui/lab"
 import { Box, Button, Stack, TextField } from "@mui/material"
 import Form from "components/form/Form"
-import { Filter, Source, defaultFilter } from "./filters"
 import FilterRows from "./FilterRows"
+import { Filter, Source, defaultFilter } from "./filters"
 
 export type Values = {
   name: string

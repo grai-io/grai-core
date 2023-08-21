@@ -492,6 +492,7 @@ class GraphFilter:
     edge_id: Optional[strawberry.ID] = strawberry.UNSET
     n: Optional[int] = strawberry.UNSET
     filters: Optional[List[strawberry.ID]] = strawberry.UNSET
+    inline_filters: Optional[List[JSON]] = strawberry.UNSET
     min_x: Optional[int] = strawberry.UNSET
     max_x: Optional[int] = strawberry.UNSET
     min_y: Optional[int] = strawberry.UNSET
@@ -907,6 +908,9 @@ class Workspace:
             filter_list = await sync_to_async(FilterModel.objects.filter(id__in=filters.filters).all)()
 
             await sync_to_async(graph.filter_by_filters)(filter_list, query)
+
+        if filters and filters.inline_filters:
+            await sync_to_async(graph.filter_by_rows)(filters.inline_filters, query)
 
         return graph.get_graph_result(query=query)
 

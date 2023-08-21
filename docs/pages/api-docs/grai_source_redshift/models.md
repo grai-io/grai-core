@@ -116,6 +116,20 @@ def make_full_name(cls, full_name, values)
 
 
 
+## LateBindingViewColumn Objects
+
+```python
+class LateBindingViewColumn(RedshiftNode)
+```
+
+### Config Objects
+
+```python
+class Config()
+```
+
+
+
 ## Constraint Objects
 
 ```python

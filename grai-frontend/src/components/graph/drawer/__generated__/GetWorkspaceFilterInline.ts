@@ -42,5 +42,6 @@ export interface GetWorkspaceFilterInline {
 }
 
 export interface GetWorkspaceFilterInlineVariables {
-  workspaceId: string;
+  organisationName: string;
+  workspaceName: string;
 }

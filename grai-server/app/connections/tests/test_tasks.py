@@ -97,6 +97,20 @@ def test_dbt_connector():
 
 
 @pytest.fixture
+def test_metabase_connector():
+    connector, created = Connector.objects.get_or_create(name=Connector.METABASE, slug=Connector.METABASE)
+
+    return connector
+
+
+@pytest.fixture
+def test_looker_connector():
+    connector, created = Connector.objects.get_or_create(name=Connector.LOOKER, slug=Connector.LOOKER)
+
+    return connector
+
+
+@pytest.fixture
 def test_yaml_file_connector():
     connector, created = Connector.objects.get_or_create(name=Connector.YAMLFILE, slug=Connector.YAMLFILE)
 
@@ -389,6 +403,44 @@ class TestUpdateServer:
             source=test_source,
             metadata={"project": "a", "dataset": "dataset"},
             secrets={"credentials": {}},
+        )
+        run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
+
+        process_run(str(run.id))
+
+    @mock.patch("grai_source_metabase.base.MetabaseIntegration")
+    def test_metabase_no_account(self, mocked_class, test_workspace, test_metabase_connector, test_source):
+        mocked_class.return_value.get_nodes_and_edges.return_value = [[], []]
+
+        connection = Connection.objects.create(
+            name=str(uuid.uuid4()),
+            connector=test_metabase_connector,
+            workspace=test_workspace,
+            source=test_source,
+            metadata={
+                "endpoint": "https://metabase-test.com",
+                "username": "user",
+            },
+            secrets={"password": "password1234"},
+        )
+        run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
+
+        process_run(str(run.id))
+
+    @mock.patch("grai_source_looker.base.LookerIntegration")
+    def test_looker_no_account(self, mocked_class, test_workspace, test_looker_connector, test_source):
+        mocked_class.return_value.get_nodes_and_edges.return_value = [[], []]
+
+        connection = Connection.objects.create(
+            name=str(uuid.uuid4()),
+            connector=test_looker_connector,
+            workspace=test_workspace,
+            source=test_source,
+            metadata={
+                "base_url": "https://looker-test.com",
+                "client_id": "client_id",
+            },
+            secrets={"client_secret": "password1234"},
         )
         run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
 

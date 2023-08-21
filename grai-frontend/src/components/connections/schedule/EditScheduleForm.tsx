@@ -80,7 +80,7 @@ const EditScheduleForm: React.FC<EditScheduleFormProps> = ({ connection }) => {
       ? connection.schedules
       : {
           type: "",
-        }
+        },
   )
 
   const [updateConnection, { loading, error }] = useMutation<
@@ -172,7 +172,7 @@ const EditScheduleForm: React.FC<EditScheduleFormProps> = ({ connection }) => {
             helperText='Cron hours to run. Use "*" for all. (Example: "8,20")'
             margin="normal"
             value={values.cron?.hours ?? ""}
-            onChange={event => setCron("minutes", event.target.value)}
+            onChange={event => setCron("hours", event.target.value)}
             fullWidth
           />
           <TextField

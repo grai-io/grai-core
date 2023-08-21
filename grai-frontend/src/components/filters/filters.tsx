@@ -11,14 +11,22 @@ export type Filter = {
   value: string | string[] | null
 }
 
+export interface OperationOption {
+  value: string
+  label: string
+}
+
 export type Operator = {
   value: string
   label: string
+  shortLabel?: string
   valueComponent?: (
     disabled: boolean,
     value: string | string[] | null,
     onChange: (value: string | string[] | null) => void,
   ) => React.ReactNode
+  options?: (string | OperationOption)[]
+  multiple?: boolean
 }
 
 export type Field = {
@@ -57,26 +65,32 @@ const nameField: Field = {
     {
       value: "equals",
       label: "Equals",
+      shortLabel: "=",
     },
     {
       value: "contains",
       label: "Contains",
+      shortLabel: "*a*",
     },
     {
       value: "starts-with",
       label: "Starts With",
+      shortLabel: "a*",
     },
     {
       value: "ends-with",
       label: "Ends With",
+      shortLabel: "*a",
     },
     {
       value: "not-equals",
       label: "Not Equals",
+      shortLabel: "!=",
     },
     {
       value: "not-contains",
       label: "Not Contains",
+      shortLabel: "!*a*",
     },
   ],
 }
@@ -104,6 +118,7 @@ const namespaceField = (namespaces: string[]): Field => ({
           data-testid="autocomplete-value"
         />
       ),
+      options: namespaces,
     },
     {
       value: "in",
@@ -137,6 +152,8 @@ const namespaceField = (namespaces: string[]): Field => ({
           data-testid="autocomplete-value"
         />
       ),
+      options: namespaces,
+      multiple: true,
     },
   ],
 })
@@ -184,6 +201,11 @@ const sourceField = (sources: Source[]): Field => ({
           data-testid="autocomplete-value"
         />
       ),
+      options: sources.map(source => ({
+        value: source.id,
+        label: source.name,
+      })),
+      multiple: true,
     },
     {
       value: "not-in",
@@ -224,6 +246,11 @@ const sourceField = (sources: Source[]): Field => ({
           data-testid="autocomplete-value"
         />
       ),
+      options: sources.map(source => ({
+        value: source.id,
+        label: source.name,
+      })),
+      multiple: true,
     },
   ],
 })
@@ -251,6 +278,8 @@ const tagField = (tags: string[]): Field => ({
           data-testid="autocomplete-value"
         />
       ),
+      options: tags,
+      multiple: true,
     },
     {
       value: "not-contains",
@@ -271,6 +300,8 @@ const tagField = (tags: string[]): Field => ({
           data-testid="autocomplete-value"
         />
       ),
+      options: tags,
+      multiple: true,
     },
   ],
 })

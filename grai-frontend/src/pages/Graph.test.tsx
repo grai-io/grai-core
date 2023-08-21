@@ -7,7 +7,13 @@ import { GET_FILTERS } from "components/graph/drawer/GraphFilters"
 import { SEARCH_TABLES } from "components/graph/drawer/GraphSearch"
 import Graph, { GET_TABLES_AND_EDGES } from "./Graph"
 
-const baseFilter = { min_x: -500, max_x: 0, min_y: 0, max_y: 0 }
+const baseFilter = {
+  min_x: -500,
+  max_x: 0,
+  min_y: 0,
+  max_y: 0,
+  inline_filters: undefined,
+}
 
 export const filtersMock = {
   request: {
@@ -472,7 +478,7 @@ test("search", async () => {
   })
 
   await act(
-    async () => await user.type(screen.getByTestId("search-input"), "s")
+    async () => await user.type(screen.getByTestId("search-input"), "s"),
   )
 
   await waitFor(() => {
@@ -521,11 +527,11 @@ test("filter", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByTestId("FilterAltIcon")).toBeInTheDocument()
+    expect(screen.getByTestId("FilterListIcon")).toBeInTheDocument()
   })
 
   await act(async () => {
-    await user.click(screen.getByTestId("FilterAltIcon"))
+    await user.click(screen.getByTestId("FilterListIcon"))
   })
 
   await waitFor(() => {

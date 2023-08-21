@@ -410,7 +410,7 @@
             "updated_at": "2023-01-11T21:17:16.264Z"
         }
     },
-        {
+    {
         "model": "connections.connector",
         "pk": "a9158bbc-eeca-4b10-806a-1b0a7b997a8f",
         "fields": {
@@ -591,6 +591,52 @@
             "coming_soon": true,
             "created_at": "2023-06-05T10:00:00.000Z",
             "updated_at": "2023-06-05T10:00:00.000Z"
+        }
+    },
+    {
+        "model": "connections.connector",
+        "pk": "5ece5fa2-ddc7-45b6-bdbe-93a54a85c80a",
+        "fields": {
+            "name": "Looker",
+            "slug": "looker",
+            "metadata": {
+                "docs_url": "https://docs.grai.io/integrations/looker",
+                "fields": [
+                    {
+                        "name": "base_url",
+                        "required": true,
+                        "order": 0
+                    },
+                    {
+                        "name": "client_id",
+                        "required": true,
+                        "order": 1
+                    },
+                    {
+                        "name": "client_secret",
+                        "required": true,
+                        "secret": true,
+                        "order": 2
+                    },
+                    {
+                        "name": "verify_ssl",
+                        "required": false,
+                        "type": "boolean",
+                        "order": 3
+                    },
+                    {
+                        "name": "namespaces",
+                        "required": false,
+                        "order": 4
+                    }
+                ]
+            },
+            "is_active": true,
+            "icon": "/icons/data-sources/looker.png",
+            "category": "data tools",
+            "coming_soon": false,
+            "created_at": "2023-08-03T21:17:16.264Z",
+            "updated_at": "2023-08-03T21:17:16.264Z"
         }
     }
 ]
