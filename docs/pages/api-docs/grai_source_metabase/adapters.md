@@ -14,8 +14,8 @@ Build grai metadata for a given object.
 
 **Arguments**:
 
-- `current` _Any_ - The object to build grai metadata from.
-- `desired` _Any_ - The desired format of the metadata.
+- `current` - The object to build grai metadata from.
+- `desired` - The desired format of the metadata.
 
 
 **Returns**:
@@ -40,8 +40,8 @@ Build grai metadata for a Table object.
 
 **Arguments**:
 
-- `current` _Table_ - The Table object to build grai metadata from.
-- `version` _Literal[&quot;v1&quot;], optional_ - The version of grai metadata to build. Defaults to &quot;v1&quot;.
+- `current` - The Table object to build grai metadata from.
+- `version` - The version of grai metadata to build. Defaults to &quot;v1&quot;.
 
 
 **Returns**:
@@ -79,6 +79,27 @@ Build grai metadata for a Question object.
 
   None.
 
+## build\_grai\_metadata\_from\_collection
+
+```python
+@build_grai_metadata.register
+def build_grai_metadata_from_collection(
+        current: Collection,
+        version: Literal["v1"] = "v1") -> GenericNodeMetadataV1
+```
+
+Build grai metadata for a Collection object.
+
+**Arguments**:
+
+- `current` - The Collection object to build grai metadata from.
+- `version` - The version of grai metadata to build. Defaults to &quot;v1&quot;.
+
+
+**Returns**:
+
+- `GenericNodeMetadataV1` - grai metadata object for the Collection.
+
 ## build\_grai\_metadata\_from\_edge
 
 ```python
@@ -92,8 +113,8 @@ Build grai metadata for an Edge object.
 
 **Arguments**:
 
-- `current` _Edge_ - The Edge object to build grai metadata from.
-- `version` _Literal[&quot;v1&quot;], optional_ - The version of grai metadata to build. Defaults to &quot;v1&quot;.
+- `current` - The Edge object to build grai metadata from.
+- `version` - The version of grai metadata to build. Defaults to &quot;v1&quot;.
 
 
 **Returns**:
@@ -116,8 +137,8 @@ Build application-specific metadata for a given object.
 
 **Arguments**:
 
-- `current` _Any_ - The object to build application-specific metadata from.
-- `desired` _Any_ - The desired format of the metadata.
+- `current` - The object to build application-specific metadata from.
+- `desired` - The desired format of the metadata.
 
 
 **Returns**:
@@ -141,8 +162,8 @@ Build application-specific metadata for a Table object.
 
 **Arguments**:
 
-- `current` _Table_ - The Table object to build application-specific metadata from.
-- `version` _Literal[&quot;v1&quot;], optional_ - The version of the metadata to build. Defaults to &quot;v1&quot;.
+- `current` - The Table object to build application-specific metadata from.
+- `version` - The version of the metadata to build. Defaults to &quot;v1&quot;.
 
 
 **Returns**:
@@ -182,7 +203,7 @@ Build application-specific metadata for an Edge object.
 ## build\_metadata
 
 ```python
-def build_metadata(obj, version)
+def build_metadata(obj, version) -> Dict[str, Dict]
 ```
 
 Build metadata for a given object.
@@ -231,15 +252,17 @@ Adapt a given object to the desired client format.
 ```python
 @adapt_to_client.register
 def adapt_table_to_client(current: Table,
-                          version: Literal["v1"] = "v1") -> NodeV1
+                          source: SourceSpec,
+                          version: Literal["v1"] = "v1") -> SourcedNodeV1
 ```
 
 Adapt a Table object to the desired client format.
 
 **Arguments**:
 
-- `current` _Table_ - The Table object to adapt.
-- `version` _Literal[&quot;v1&quot;], optional_ - The version of the client format to adapt to. Defaults to &quot;v1&quot;.
+- `current` - The Table object to adapt.
+- `source` - The Source associated with the Table
+- `version` - The version of the client format to adapt to. Defaults to &quot;v1&quot;.
 
 
 **Returns**:
@@ -256,15 +279,17 @@ Adapt a Table object to the desired client format.
 ```python
 @adapt_to_client.register
 def adapt_question_to_client(current: Question,
-                             version: Literal["v1"] = "v1") -> NodeV1
+                             source: SourceSpec,
+                             version: Literal["v1"] = "v1") -> SourcedNodeV1
 ```
 
 Adapt a Question object to the desired client format.
 
 **Arguments**:
 
-- `current` _Question_ - The Question object to adapt.
-- `version` _Literal[&quot;v1&quot;], optional_ - The version of the client format to adapt to. Defaults to &quot;v1&quot;.
+- `current` - The Question object to adapt.
+- `source` - The source associated with the Question
+- `version` - The version of the client format to adapt to. Defaults to &quot;v1&quot;.
 
 
 **Returns**:
@@ -275,6 +300,23 @@ Adapt a Question object to the desired client format.
 **Raises**:
 
   None.
+
+## adapt\_collection\_to\_client
+
+```python
+@adapt_to_client.register
+def adapt_collection_to_client(current: Collection,
+                               source: SourceSpec,
+                               version: Literal["v1"] = "v1") -> SourcedNodeV1
+```
+
+Adapt a Collection object to the desired client format.
+
+**Arguments**:
+
+  current:
+  version:
+
 
 ## make\_name
 
@@ -304,15 +346,17 @@ Creates a name for an edge based on the given nodes.
 ```python
 @adapt_to_client.register
 def adapt_edge_to_client(current: Edge,
-                         version: Literal["v1"] = "v1") -> EdgeV1
+                         source: SourceSpec,
+                         version: Literal["v1"] = "v1") -> SourcedEdgeV1
 ```
 
 Adapt an Edge object to the desired client format.
 
 **Arguments**:
 
-- `current` _Edge_ - The Edge object to adapt.
-- `version` _Literal[&quot;v1&quot;], optional_ - The version of the client format to adapt to. Defaults to &quot;v1&quot;.
+- `current` - The Edge object to adapt.
+- `source` - The data source associated with the Edge
+- `version` - The version of the client format to adapt to. Defaults to &quot;v1&quot;.
 
 
 **Returns**:
@@ -328,16 +372,17 @@ Adapt an Edge object to the desired client format.
 
 ```python
 @adapt_to_client.register
-def adapt_seq_to_client(objs: Sequence,
-                        version: Literal["v1"]) -> List[Union[NodeV1, EdgeV1]]
+def adapt_seq_to_client(objs: Sequence, source: SourceSpec,
+                        version: Literal["v1"]) -> List[T]
 ```
 
 Adapt a sequence of objects to the desired client format.
 
 **Arguments**:
 
-- `objs` _Sequence_ - The sequence of objects to adapt.
-- `version` _Literal[&quot;v1&quot;]_ - The version of the client format to adapt to.
+- `objs` - The sequence of objects to adapt.
+- `source` - The source associated with each object in objs
+- `version` - The version of the client format to adapt to.
 
 
 **Returns**:
@@ -353,16 +398,43 @@ Adapt a sequence of objects to the desired client format.
 
 ```python
 @adapt_to_client.register
-def adapt_list_to_client(
-        objs: List, version: Literal["v1"]) -> List[Union[NodeV1, EdgeV1]]
+def adapt_list_to_client(objs: List, source: SourceSpec,
+                         version: Literal["v1"]) -> List[T]
 ```
 
 Adapt a list of objects to the desired client format.
 
 **Arguments**:
 
-- `objs` _List_ - The list of objects to adapt.
-- `version` _Literal[&quot;v1&quot;]_ - The version of the client format to adapt to.
+- `objs` - The list of objects to adapt.
+- `source` - The source associated with each object in objs
+- `version` - The version of the client format to adapt to.
+
+
+**Returns**:
+
+  List[Union[NodeV1, EdgeV1]]: Adapted list of objects in the desired client format.
+
+
+**Raises**:
+
+  None.
+
+## adapt\_source\_v1\_to\_client
+
+```python
+@adapt_to_client.register
+def adapt_source_v1_to_client(objs: Any, source: SourceV1,
+                              version: Any) -> List[T]
+```
+
+Adapt a list of objects to the desired client format.
+
+**Arguments**:
+
+- `objs` - The list of objects to adapt.
+- `source` - The source associated with each object in objs
+- `version` - The version of the client format to adapt to.
 
 
 **Returns**:

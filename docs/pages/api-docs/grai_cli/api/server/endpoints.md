@@ -16,10 +16,7 @@ def is_authenticated()
 ## get\_nodes
 
 ```python
-def get_nodes(name: Optional[str] = None,
-              namespace: Optional[str] = None,
-              print: bool = True,
-              to_file: Optional[Path] = None)
+def get_nodes(print: bool = True, to_file: Optional[Path] = None, **kwargs)
 ```
 
 **Arguments**:
@@ -122,8 +119,8 @@ def apply(file: Path = typer.Argument(...),
 
 **Arguments**:
 
-- `file` _Path, optional_ - (Default value = typer.Argument(...))
-- `dry_run` _bool, optional_ - (Default value = typer.Option(False, &quot;--d&quot;, help=&quot;Dry run of file application&quot;))
+- `file` - (Default value = typer.Argument(...))
+- `dry_run` - (Default value = typer.Option(False, &quot;--d&quot;, help=&quot;Dry run of file application&quot;))
 
 
 **Returns**:

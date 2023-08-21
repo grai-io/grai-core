@@ -3,6 +3,26 @@ sidebar_label: workspace
 title: grai_client.endpoints.v1.get.workspace
 ---
 
+## get\_workspace\_by\_url
+
+```python
+def get_workspace_by_url(
+    client: ClientV1, url: str,
+    options: ClientOptions = ClientOptions()) -> Response
+```
+
+**Arguments**:
+
+  client:
+  grai_type:
+  url:
+- `options` - (Default value = ClientOptions())
+
+
+**Returns**:
+
+
+
 ## get\_all\_workspaces
 
 ```python
@@ -34,7 +54,7 @@ def get_workspace_by_uuid(
     grai_type: WorkspaceLabels,
     workspace_id: Union[UUID, str],
     options: ClientOptions = ClientOptions()
-) -> Optional[WorkspaceV1]
+) -> WorkspaceV1
 ```
 
 **Arguments**:

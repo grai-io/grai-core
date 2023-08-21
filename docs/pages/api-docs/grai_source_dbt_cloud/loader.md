@@ -19,6 +19,15 @@ class DbtCloudConnector()
 
 
 
+### default\_account
+
+```python
+@cached_property
+def default_account() -> dict
+```
+
+
+
 ### get\_nodes\_and\_edges
 
 ```python
@@ -55,22 +64,6 @@ def get_run_nodes(account_id: str, run_id: str) -> List[str]
 
 
 **Returns**:
-
-
-
-### load\_client
-
-```python
-def load_client()
-```
-
-
-
-### get\_default\_acount
-
-```python
-def get_default_acount()
-```
 
 
 

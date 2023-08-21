@@ -82,7 +82,7 @@ class TableMetadata(BaseNodeMetadataV1)
 ## QueryAttributes Objects
 
 ```python
-class QueryAttributes(V1Mixin, GenericAttributes)
+class QueryAttributes(GenericAttributes)
 ```
 
 

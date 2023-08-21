@@ -26,7 +26,7 @@ const RegisterCard: React.FC = () => (
       >
         By creating an account, you agree to our{" "}
         <Link
-          href="https://www.grai.io/terms"
+          href="https://www.grai.io/terms-of-service"
           sx={{
             textDecoration: "none",
             color: theme => theme.palette.grey[900],
@@ -40,7 +40,7 @@ const RegisterCard: React.FC = () => (
         </Link>{" "}
         and{" "}
         <Link
-          href="https://www.grai.io/privacy"
+          href="https://www.grai.io/privacy-policy"
           sx={{
             textDecoration: "none",
             color: theme => theme.palette.grey[900],

@@ -65,7 +65,7 @@ def make_request(request: Callable[..., requests.Response],
                  url: str,
                  headers: Optional[Dict] = None,
                  params: Optional[Dict] = None,
-                 **kwargs) -> Dict
+                 **kwargs) -> Tuple[Dict, requests.Response]
 ```
 
 **Arguments**:
@@ -311,25 +311,6 @@ def parallelize_http(semaphore)
 ```python
 class SourceDestinationDict(TypedDict)
 ```
-
-
-
-## build\_namespace\_map
-
-```python
-def build_namespace_map(
-        connectors: Dict, namespace_map: Union[str, Optional[NamespaceTypes]],
-        default_namespace: Optional[str]) -> Dict[str, NamespaceIdentifier]
-```
-
-**Arguments**:
-
-  connectors (Dict):
-  namespace_map (Union[str, Optional[NamespaceTypes]]):
-  default_namespace (Optional[str]):
-
-
-**Returns**:
 
 
 
