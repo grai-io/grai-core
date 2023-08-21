@@ -74,3 +74,55 @@ test("filter", async () => {
     await user.click(screen.getByTestId("FilterAltIcon"))
   })
 })
+
+test("filter-list", async () => {
+  const user = userEvent.setup()
+
+  render(
+    <ReactFlowProvider>
+      <GraphDrawer {...defaultProps} />
+    </ReactFlowProvider>,
+    {
+      path: ":organisationName/:workspaceName/graph",
+      route: "/default/demo/graph",
+    },
+  )
+
+  await waitFor(() => {
+    expect(screen.getByTestId("FilterListIcon")).toBeInTheDocument()
+  })
+
+  await act(async () => {
+    await user.click(screen.getByTestId("FilterListIcon"))
+  })
+})
+
+test("filter-list expanded", async () => {
+  const user = userEvent.setup()
+
+  render(
+    <ReactFlowProvider>
+      <GraphDrawer {...defaultProps} />
+    </ReactFlowProvider>,
+    {
+      path: ":organisationName/:workspaceName/graph",
+      route: "/default/demo/graph",
+    },
+  )
+
+  await waitFor(() => {
+    expect(screen.getByTestId("KeyboardArrowRightIcon")).toBeInTheDocument()
+  })
+
+  await act(async () => {
+    await user.click(screen.getByTestId("KeyboardArrowRightIcon"))
+  })
+
+  await waitFor(() => {
+    expect(screen.getByTestId("FilterListIcon")).toBeInTheDocument()
+  })
+
+  await act(async () => {
+    await user.click(screen.getByTestId("FilterListIcon"))
+  })
+})
