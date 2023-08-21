@@ -5,8 +5,8 @@ import GraphComponent, {
   Table,
 } from "components/graph/GraphComponent"
 import useFilters from "components/graph/useFilters"
-import { Run } from "./run/RunLog"
 import useInlineFilters from "components/graph/useInlineFilters"
+import { Run } from "./run/RunLog"
 
 type ReportGraphProps = {
   tables: Table[]

@@ -4,12 +4,12 @@ import { Alert, Box } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
 import GraphComponent from "components/graph/GraphComponent"
 import useFilters from "components/graph/useFilters"
+import useInlineFilters from "components/graph/useInlineFilters"
 import GraphError from "components/utils/GraphError"
 import {
   GetTablesAndEdgesTableLineage,
   GetTablesAndEdgesTableLineageVariables,
 } from "./__generated__/GetTablesAndEdgesTableLineage"
-import useInlineFilters from "components/graph/useInlineFilters"
 
 export const GET_TABLES_AND_EDGES = gql`
   query GetTablesAndEdgesTableLineage(
