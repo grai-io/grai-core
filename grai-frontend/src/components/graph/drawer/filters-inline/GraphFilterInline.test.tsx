@@ -57,6 +57,114 @@ test("renders", async () => {
   })
 })
 
+test("renders multiple", async () => {
+  render(
+    <GraphFilterInline
+      inlineFilters={[
+        {
+          type: "table",
+          field: "namespace",
+          operator: "in",
+          value: [],
+        },
+      ]}
+      setInlineFilters={setInlineFilters}
+    />,
+    {
+      path: ":organisationName/:workspaceName/graph",
+      route: "/default/demo/graph",
+    },
+  )
+
+  await waitFor(() => {
+    expect(screen.getByText("Save")).toBeInTheDocument()
+  })
+})
+
+test("renders null value", async () => {
+  render(
+    <GraphFilterInline
+      inlineFilters={[
+        {
+          type: "table",
+          field: "namespace",
+          operator: "in",
+          value: null,
+        },
+      ]}
+      setInlineFilters={setInlineFilters}
+    />,
+    {
+      path: ":organisationName/:workspaceName/graph",
+      route: "/default/demo/graph",
+    },
+  )
+
+  await waitFor(() => {
+    expect(screen.getByText("Save")).toBeInTheDocument()
+  })
+})
+
+test("renders data sources", async () => {
+  render(
+    <GraphFilterInline
+      inlineFilters={[
+        {
+          type: "table",
+          field: "data-source",
+          operator: "in",
+          value: ["1", "2"],
+        },
+      ]}
+      setInlineFilters={setInlineFilters}
+    />,
+    {
+      path: ":organisationName/:workspaceName/graph",
+      route: "/default/demo/graph",
+    },
+  )
+
+  await waitFor(() => {
+    expect(screen.getByText("Save")).toBeInTheDocument()
+  })
+})
+
+test("renders not field", async () => {
+  render(
+    <GraphFilterInline
+      inlineFilters={[
+        {
+          type: "table",
+          field: "test",
+          operator: null,
+          value: null,
+        },
+      ]}
+      setInlineFilters={setInlineFilters}
+    />,
+    {
+      path: ":organisationName/:workspaceName/graph",
+      route: "/default/demo/graph",
+    },
+  )
+
+  await waitFor(() => {
+    expect(screen.getByText("Save")).toBeInTheDocument()
+  })
+})
+
+test("from search", async () => {
+  render(<GraphFilterInline {...defaultProps} />, {
+    path: ":organisationName/:workspaceName/graph",
+    route:
+      '/default/demo/graph?inline-filter=%5B%7B"type"%3A"table"%2C"field"%3A"namespace"%2C"operator"%3A"equals"%2C"value"%3A"default"%7D%5D',
+  })
+
+  await waitFor(() => {
+    expect(screen.getByText("Save")).toBeInTheDocument()
+  })
+})
+
 test("add", async () => {
   const user = userEvent.setup()
 
