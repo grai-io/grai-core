@@ -2,6 +2,7 @@ from grai_schemas import (
     base,
     generics,
     human_ids,
+    integrations,
     package_definitions,
     schema,
     serializers,
@@ -10,4 +11,4 @@ from grai_schemas import (
 )
 from grai_schemas.package_definitions import config
 
-__version__ = "0.2.1"
+__version__ = "0.2.2"
