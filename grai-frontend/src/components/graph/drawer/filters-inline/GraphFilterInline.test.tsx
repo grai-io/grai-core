@@ -1,6 +1,5 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { act } from "react-dom/test-utils"
 import { render, screen, waitFor } from "testing"
 import GraphFilterInline, { GET_WORKSPACE } from "./GraphFilterInline"
 
@@ -68,17 +67,13 @@ test("add", async () => {
     expect(screen.getByTestId("AddIcon")).toBeInTheDocument()
   })
 
-  await act(async () => {
-    await userEvent.click(screen.getByTestId("AddIcon"))
-  })
+  await userEvent.click(screen.getByTestId("AddIcon"))
 
   await waitFor(() => {
     expect(screen.getByText("Choose data field to add")).toBeInTheDocument()
   })
 
-  await act(async () => {
-    await userEvent.click(screen.getByRole("option", { name: /tag/i }))
-  })
+  await userEvent.click(screen.getByRole("option", { name: /tag/i }))
 
   expect(setInlineFilters).toHaveBeenCalledWith([
     { field: "namespace", operator: "equals", type: "table", value: "test" },
@@ -96,17 +91,13 @@ test("remove", async () => {
     expect(screen.getByText("Namespace")).toBeInTheDocument()
   })
 
-  await act(async () => {
-    await userEvent.hover(screen.getByText("Namespace"))
-  })
+  await userEvent.hover(screen.getByText("Namespace"))
 
   await waitFor(() => {
     expect(screen.getByTestId("DeleteIcon")).toBeInTheDocument()
   })
 
-  await act(async () => {
-    await userEvent.click(screen.getByTestId("DeleteIcon"))
-  })
+  await userEvent.click(screen.getByTestId("DeleteIcon"))
 
   expect(setInlineFilters).toHaveBeenCalledWith([])
 })
@@ -122,9 +113,7 @@ test("edit", async () => {
     expect(screen.getByText("Namespace")).toBeInTheDocument()
   })
 
-  await act(async () => {
-    await userEvent.click(screen.getByText("Namespace"))
-  })
+  await userEvent.click(screen.getByText("Namespace"))
 
   await waitFor(() => {
     expect(
@@ -136,9 +125,7 @@ test("edit", async () => {
     expect(screen.getByText("In")).toBeInTheDocument()
   })
 
-  await act(async () => {
-    await userEvent.click(screen.getByText("In"))
-  })
+  await userEvent.click(screen.getByText("In"))
 
   expect(setInlineFilters).toHaveBeenCalledWith([
     {
