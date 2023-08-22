@@ -1,6 +1,6 @@
+import { createTheme } from "@mui/material"
 import { render } from "testing"
 import StyledInput from "./StyledInput"
-import { createTheme } from "@mui/material"
 
 test("renders", async () => {
   render(<StyledInput />)

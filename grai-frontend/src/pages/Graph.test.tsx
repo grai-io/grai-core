@@ -3,10 +3,10 @@ import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
+import { GET_WORKSPACE } from "components/graph/drawer/filters-inline/GraphFilterInline"
 import { GET_FILTERS } from "components/graph/drawer/GraphFilters"
 import { SEARCH_TABLES } from "components/graph/drawer/GraphSearch"
 import Graph, { GET_TABLES_AND_EDGES } from "./Graph"
-import { GET_WORKSPACE } from "components/graph/drawer/filters-inline/GraphFilterInline"
 
 const baseFilter = {
   min_x: -500,
