@@ -40,3 +40,22 @@ test("click", async () => {
     expect(screen.getByText("Choose data field to add")).toBeInTheDocument()
   })
 })
+
+test("escape", async () => {
+  render(<AddButton {...defaultProps} />, {
+    path: ":organisationName/:workspaceName/graph",
+    route: "/default/demo/graph",
+  })
+
+  await waitFor(() => {
+    expect(screen.getByTestId("AddIcon")).toBeInTheDocument()
+  })
+
+  await userEvent.click(screen.getByTestId("AddIcon"))
+
+  await waitFor(() => {
+    expect(screen.getByText("Choose data field to add")).toBeInTheDocument()
+  })
+
+  await userEvent.keyboard("{Escape}")
+})

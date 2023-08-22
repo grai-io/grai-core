@@ -52,14 +52,7 @@ const FilterPopper: React.FC<FilterPopperProps> = ({
       | OperationOption
       | (null | string | OperationOption)[],
     reason: AutocompleteChangeReason,
-  ) => {
-    if (
-      event.type === "keydown" &&
-      (event as React.KeyboardEvent).key === "Backspace" &&
-      reason === "removeOption"
-    ) {
-      return
-    }
+  ) =>
     setFilter({
       ...filter,
       value: Array.isArray(newValue)
@@ -70,7 +63,6 @@ const FilterPopper: React.FC<FilterPopperProps> = ({
             .filter(notEmpty)
         : (typeof newValue === "string" ? newValue : newValue?.value) ?? null,
     })
-  }
 
   const handleClose = () => {
     if (anchorEl) {
@@ -80,6 +72,7 @@ const FilterPopper: React.FC<FilterPopperProps> = ({
   }
 
   const open = Boolean(anchorEl)
+
   const id = open ? "github-label" : undefined
 
   return (
@@ -219,7 +212,6 @@ const FilterPopper: React.FC<FilterPopperProps> = ({
                 onChange={handleValueChange}
                 disableCloseOnSelect
                 PopperComponent={PopperComponent}
-                renderTags={() => null}
                 noOptionsText={`No ${field?.label ?? filter.field}`}
                 renderOption={(props, option, { selected }) => (
                   <li {...props}>

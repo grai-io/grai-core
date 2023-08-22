@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
-import { render, screen, waitFor } from "testing"
+import { act, fireEvent, render, screen, waitFor } from "testing"
 import GraphFilterInline, { GET_WORKSPACE } from "./GraphFilterInline"
 
 const setInlineFilters = jest.fn()
@@ -32,7 +32,7 @@ const mocks = [
           id: "1",
           name: "demo",
           namespaces: {
-            data: [],
+            data: ["default", "test", "prod"],
           },
           tags: {
             data: [],
@@ -58,6 +58,8 @@ test("renders", async () => {
 })
 
 test("add", async () => {
+  const user = userEvent.setup()
+
   render(<GraphFilterInline {...defaultProps} />, {
     path: ":organisationName/:workspaceName/graph",
     route: "/default/demo/graph",
@@ -67,13 +69,15 @@ test("add", async () => {
     expect(screen.getByTestId("AddIcon")).toBeInTheDocument()
   })
 
-  await userEvent.click(screen.getByTestId("AddIcon"))
+  await act(async () => await user.click(screen.getByTestId("AddIcon")))
 
   await waitFor(() => {
     expect(screen.getByText("Choose data field to add")).toBeInTheDocument()
   })
 
-  await userEvent.click(screen.getByRole("option", { name: /tag/i }))
+  await act(
+    async () => await user.click(screen.getByRole("option", { name: /tag/i })),
+  )
 
   expect(setInlineFilters).toHaveBeenCalledWith([
     { field: "namespace", operator: "equals", type: "table", value: "test" },
@@ -81,7 +85,9 @@ test("add", async () => {
   ])
 })
 
-test("remove", async () => {
+test("hover", async () => {
+  const user = userEvent.setup()
+
   render(<GraphFilterInline {...defaultProps} />, {
     path: ":organisationName/:workspaceName/graph",
     route: "/default/demo/graph",
@@ -91,18 +97,45 @@ test("remove", async () => {
     expect(screen.getByText("Namespace")).toBeInTheDocument()
   })
 
-  await userEvent.hover(screen.getByText("Namespace"))
+  await act(async () => await user.hover(screen.getByText("Namespace")))
 
   await waitFor(() => {
     expect(screen.getByTestId("DeleteIcon")).toBeInTheDocument()
   })
 
-  await userEvent.click(screen.getByTestId("DeleteIcon"))
+  fireEvent.mouseLeave(screen.getByText("Namespace"))
+
+  await waitFor(() => {
+    expect(screen.queryByTestId("DeleteIcon")).not.toBeInTheDocument()
+  })
+})
+
+test("remove", async () => {
+  const user = userEvent.setup()
+
+  render(<GraphFilterInline {...defaultProps} />, {
+    path: ":organisationName/:workspaceName/graph",
+    route: "/default/demo/graph",
+  })
+
+  await waitFor(() => {
+    expect(screen.getByText("Namespace")).toBeInTheDocument()
+  })
+
+  await act(async () => await user.hover(screen.getByText("Namespace")))
+
+  await waitFor(() => {
+    expect(screen.getByTestId("DeleteIcon")).toBeInTheDocument()
+  })
+
+  await act(async () => await user.click(screen.getByTestId("DeleteIcon")))
 
   expect(setInlineFilters).toHaveBeenCalledWith([])
 })
 
 test("edit", async () => {
+  const user = userEvent.setup()
+
   render(<GraphFilterInline {...defaultProps} />, {
     path: ":organisationName/:workspaceName/graph",
     route: "/default/demo/graph",
@@ -113,7 +146,7 @@ test("edit", async () => {
     expect(screen.getByText("Namespace")).toBeInTheDocument()
   })
 
-  await userEvent.click(screen.getByText("Namespace"))
+  await act(async () => await user.click(screen.getByText("Namespace")))
 
   await waitFor(() => {
     expect(
@@ -122,10 +155,12 @@ test("edit", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByText("In")).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: /in/i })).toBeInTheDocument()
   })
 
-  await userEvent.click(screen.getByText("In"))
+  await act(
+    async () => await user.click(screen.getByRole("button", { name: /in/i })),
+  )
 
   expect(setInlineFilters).toHaveBeenCalledWith([
     {
@@ -133,6 +168,126 @@ test("edit", async () => {
       operator: "in",
       type: "table",
       value: "test",
+    },
+  ])
+
+  await waitFor(() => {
+    expect(screen.getByText("default")).toBeInTheDocument()
+  })
+
+  await act(async () => await user.click(screen.getByText("default")))
+
+  expect(setInlineFilters).toHaveBeenCalledWith([
+    {
+      field: "namespace",
+      operator: "equals",
+      type: "table",
+      value: "default",
+    },
+  ])
+
+  await act(async () => await user.type(screen.getByRole("listbox"), "test"))
+
+  await act(async () => await user.keyboard("{escape}"))
+})
+
+test("edit multiple", async () => {
+  const user = userEvent.setup()
+
+  render(
+    <GraphFilterInline
+      inlineFilters={[
+        {
+          type: "table",
+          field: "namespace",
+          operator: "in",
+          value: ["test"],
+        },
+      ]}
+      setInlineFilters={setInlineFilters}
+    />,
+    {
+      path: ":organisationName/:workspaceName/graph",
+      route: "/default/demo/graph",
+      mocks,
+    },
+  )
+
+  await waitFor(() => {
+    expect(screen.getByText("Namespace")).toBeInTheDocument()
+  })
+
+  await act(async () => await user.click(screen.getByText("Namespace")))
+
+  await waitFor(() => {
+    expect(
+      screen.getByText("Only show Table where Namespace"),
+    ).toBeInTheDocument()
+  })
+
+  await waitFor(() => {
+    expect(screen.getByText("default")).toBeInTheDocument()
+  })
+
+  await act(
+    async () =>
+      await act(async () => await user.click(screen.getByText("default"))),
+  )
+
+  expect(setInlineFilters).toHaveBeenCalledWith([
+    {
+      field: "namespace",
+      operator: "in",
+      type: "table",
+      value: ["test", "default"],
+    },
+  ])
+
+  await act(async () => await user.keyboard("{escape}"))
+})
+
+test("edit text", async () => {
+  const user = userEvent.setup()
+
+  render(
+    <GraphFilterInline
+      inlineFilters={[
+        {
+          type: "table",
+          field: "name",
+          operator: "equals",
+          value: "test",
+        },
+      ]}
+      setInlineFilters={setInlineFilters}
+    />,
+    {
+      path: ":organisationName/:workspaceName/graph",
+      route: "/default/demo/graph",
+      mocks,
+    },
+  )
+
+  await waitFor(() => {
+    expect(screen.getByText("Name")).toBeInTheDocument()
+  })
+
+  await act(async () => await user.click(screen.getByText("Name")))
+
+  await waitFor(() => {
+    expect(screen.getByText("Only show Table where Name")).toBeInTheDocument()
+  })
+
+  await act(async () => await user.type(screen.getByRole("textbox"), "name2"))
+
+  await act(async () => await user.keyboard("{escape}"))
+
+  expect(setInlineFilters).toHaveBeenCalledWith([
+    {
+      field: "name",
+      operator: "equals",
+      type: "table",
+      value: "name2",
     },
   ])
 })

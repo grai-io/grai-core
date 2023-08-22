@@ -26,7 +26,7 @@ const FilterItem: React.FC<FilterItemProps> = ({
     setAnchorEl(event.currentTarget)
 
   const handleDelete = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
   ) => {
     event.stopPropagation()
     onDelete()
@@ -41,7 +41,7 @@ const FilterItem: React.FC<FilterItemProps> = ({
       typeof option === "string" ? option === value : option.value === value,
     )
 
-    return typeof option === "string" ? option : option?.label ?? null
+    return typeof option === "string" ? option : option?.label ?? value
   }
 
   const filterValue = Array.isArray(filter.value)
@@ -88,7 +88,7 @@ const FilterItem: React.FC<FilterItemProps> = ({
           </Stack>
           {hover && (
             <Tooltip title="Remove Filter">
-              <IconButton size="small" onClick={handleDelete}>
+              <IconButton size="small" component="div" onClick={handleDelete}>
                 <Delete fontSize="small" />
               </IconButton>
             </Tooltip>
