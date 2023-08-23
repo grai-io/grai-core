@@ -277,7 +277,6 @@ const tagField = (tags: string[]): Field => ({
         />
       ),
       options: tags,
-      multiple: true,
     },
     {
       value: "not-contains",
@@ -299,7 +298,6 @@ const tagField = (tags: string[]): Field => ({
         />
       ),
       options: tags,
-      multiple: true,
     },
   ],
 })
