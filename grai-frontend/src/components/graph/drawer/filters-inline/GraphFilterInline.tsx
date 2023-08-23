@@ -8,6 +8,7 @@ import { Filter, getProperties } from "components/filters/filters"
 import GraphError from "components/utils/GraphError"
 import AddButton from "./AddButton"
 import FilterRow from "./FilterRow"
+import SaveButton from "./SaveButton"
 import {
   GetWorkspaceFilterInline,
   GetWorkspaceFilterInlineVariables,
@@ -87,11 +88,7 @@ const GraphFilterInline: React.FC<GraphFilterInlineProps> = ({
 
   return (
     <Box sx={{ p: 1 }}>
-      <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
-        <Button variant="outlined" fullWidth startIcon={<Save />}>
-          Save
-        </Button>
-      </Stack>
+      <SaveButton inlineFilters={inlineFilters} workspaceId={workspace.id} />
       {inlineFilters.map((filter, index) => (
         <FilterRow
           key={index}
