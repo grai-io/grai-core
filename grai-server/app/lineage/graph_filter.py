@@ -45,7 +45,7 @@ def filter_by_dict(row, query: GraphQuery) -> GraphQuery:
             if row["operator"] == "contains":
                 query.where(f"'{value}' IN table.tags")
             elif row["operator"] == "not-contains":
-                query.where(f"'{value}' NOT IN table.tags")
+                query.where(f"NOT '{value}' IN table.tags")
 
     elif row["type"] == "ancestor":
         if row["field"] == "tag":
