@@ -1,6 +1,7 @@
 import React from "react"
 import { gql, useMutation } from "@apollo/client"
 import { Dialog, DialogContent } from "@mui/material"
+import { useSnackbar } from "notistack"
 import DialogTitle from "components/dialogs/DialogTitle"
 import { NewFilter } from "components/filters/__generated__/NewFilter"
 import { Filter } from "components/filters/filters"
@@ -10,7 +11,6 @@ import {
   CreateFilterInlineVariables,
 } from "./__generated__/CreateFilterInline"
 import CreateFilterForm, { Values } from "./CreateFilterForm"
-import { useSnackbar } from "notistack"
 
 export const CREATE_FILTER = gql`
   mutation CreateFilterInline(

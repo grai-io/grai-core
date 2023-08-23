@@ -1,7 +1,7 @@
 import userEvent from "@testing-library/user-event"
+import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
 import SaveDialog, { CREATE_FILTER } from "./SaveDialog"
-import { GraphQLError } from "graphql"
 
 const defaultProps = {
   open: true,
