@@ -386,7 +386,7 @@ test("edit text", async () => {
     expect(screen.getByText("Only show Table where Name")).toBeInTheDocument()
   })
 
-  await act(async () => await user.type(screen.getByRole("textbox"), "name2"))
+  await act(async () => await user.type(screen.getByRole("textbox"), "a"))
 
   await act(async () => await user.keyboard("{escape}"))
 
@@ -395,7 +395,7 @@ test("edit text", async () => {
       field: "name",
       operator: "equals",
       type: "table",
-      value: "name2",
+      value: "testa",
     },
   ])
 })
