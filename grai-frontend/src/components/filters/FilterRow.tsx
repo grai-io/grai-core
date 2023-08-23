@@ -1,7 +1,8 @@
 import React from "react"
 import { Close } from "@mui/icons-material"
-import { Grid, IconButton, TextField } from "@mui/material"
+import { Grid, IconButton } from "@mui/material"
 import FilterField from "./FilterField"
+import FilterRowValue from "./FilterRowValue"
 import {
   Field,
   Filter,
@@ -84,25 +85,11 @@ const FilterRow: React.FC<FilterRowProps> = ({
         />
       </Grid>
       <Grid item md={2}>
-        {operator?.valueComponent ? (
-          operator.valueComponent(
-            !operator,
-            filter.value,
-            (value: string | string[] | null) => onChange({ ...filter, value }),
-          )
-        ) : (
-          <TextField
-            fullWidth
-            disabled={!operator}
-            value={filter.value ?? ""}
-            onChange={event =>
-              onChange({ ...filter, value: event.target.value })
-            }
-            inputProps={{
-              "data-testid": "value",
-            }}
-          />
-        )}
+        <FilterRowValue
+          operator={operator}
+          filter={filter}
+          onChange={onChange}
+        />
       </Grid>
       <Grid item md={1}>
         <IconButton onClick={onRemove} data-testid="filter-row-remove">
