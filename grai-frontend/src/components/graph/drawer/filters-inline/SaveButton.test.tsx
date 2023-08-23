@@ -4,7 +4,14 @@ import SaveButton from "./SaveButton"
 
 const defaultProps = {
   workspaceId: "1",
-  inlineFilters: [],
+  inlineFilters: [
+    {
+      type: "table",
+      field: null,
+      operator: null,
+      value: null,
+    },
+  ],
 }
 
 test("renders", async () => {

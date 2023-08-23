@@ -26,6 +26,7 @@ const SaveButton: React.FC<SaveButtonProps> = ({
         startIcon={<Save />}
         sx={{ mb: 1 }}
         onClick={handleOpen}
+        disabled={inlineFilters.length === 0}
       >
         Save
       </Button>
