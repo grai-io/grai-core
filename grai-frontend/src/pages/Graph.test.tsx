@@ -209,6 +209,10 @@ test("renders", async () => {
 //   })
 // })
 
+afterEach(() => {
+  window.localStorage.clear()
+})
+
 test("renders empty", async () => {
   class ResizeObserver {
     callback: globalThis.ResizeObserverCallback
@@ -625,7 +629,7 @@ test("inline filter", async () => {
           id: "1",
           name: "demo",
           namespaces: {
-            data: ["default", "test"],
+            data: ["default", "prod"],
           },
           tags: {
             data: [],
@@ -655,7 +659,7 @@ test("inline filter", async () => {
       inlineFilterMock(),
       inlineFilterMock(),
       inlineFilterMock(),
-      inlineFilterMock("test"),
+      inlineFilterMock("prod"),
       workspacesMock,
       workspacesMock,
     ],
@@ -682,7 +686,7 @@ test("inline filter", async () => {
   })
 
   await act(async () => {
-    await user.click(screen.getByText("test"))
+    await user.click(screen.getByText("prod"))
   })
 
   await waitFor(async () => {

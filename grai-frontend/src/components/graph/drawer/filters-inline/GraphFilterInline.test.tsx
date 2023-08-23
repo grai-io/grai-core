@@ -11,7 +11,7 @@ const defaultProps = {
       type: "table",
       field: "namespace",
       operator: "equals",
-      value: "test",
+      value: "prod",
     },
   ],
   setInlineFilters,
@@ -32,7 +32,7 @@ const mocks = [
           id: "1",
           name: "demo",
           namespaces: {
-            data: ["default", "test", "prod"],
+            data: ["default", "prod"],
           },
           tags: {
             data: [],
@@ -45,6 +45,14 @@ const mocks = [
     },
   },
 ]
+
+beforeEach(() => {
+  window.localStorage.clear()
+})
+
+afterEach(() => {
+  window.localStorage.clear()
+})
 
 test("renders", async () => {
   render(<GraphFilterInline {...defaultProps} />, {
@@ -135,7 +143,7 @@ test("renders not field", async () => {
       inlineFilters={[
         {
           type: "table",
-          field: "test",
+          field: "testfield",
           operator: null,
           value: null,
         },
@@ -188,7 +196,7 @@ test("add", async () => {
   )
 
   expect(setInlineFilters).toHaveBeenCalledWith([
-    { field: "namespace", operator: "equals", type: "table", value: "test" },
+    { field: "namespace", operator: "equals", type: "table", value: "prod" },
     { field: "tag", operator: "contains", type: "table", value: null },
   ])
 })
@@ -275,7 +283,7 @@ test("edit", async () => {
       field: "namespace",
       operator: "in",
       type: "table",
-      value: "test",
+      value: "prod",
     },
   ])
 
@@ -294,7 +302,7 @@ test("edit", async () => {
     },
   ])
 
-  await act(async () => await user.type(screen.getByRole("listbox"), "test"))
+  await act(async () => await user.type(screen.getByRole("listbox"), "prod"))
 
   await act(async () => await user.keyboard("{escape}"))
 })
@@ -309,7 +317,7 @@ test("edit multiple", async () => {
           type: "table",
           field: "namespace",
           operator: "in",
-          value: ["test"],
+          value: ["prod"],
         },
       ]}
       setInlineFilters={setInlineFilters}
@@ -347,7 +355,7 @@ test("edit multiple", async () => {
       field: "namespace",
       operator: "in",
       type: "table",
-      value: ["test", "default"],
+      value: ["prod", "default"],
     },
   ])
 
@@ -364,7 +372,7 @@ test("edit text", async () => {
           type: "table",
           field: "name",
           operator: "equals",
-          value: "test",
+          value: "testname",
         },
       ]}
       setInlineFilters={setInlineFilters}
@@ -395,7 +403,7 @@ test("edit text", async () => {
       field: "name",
       operator: "equals",
       type: "table",
-      value: "testa",
+      value: "testnamea",
     },
   ])
 })
