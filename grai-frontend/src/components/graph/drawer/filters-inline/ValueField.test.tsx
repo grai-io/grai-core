@@ -82,7 +82,7 @@ test("renders object", async () => {
   })
 })
 
-test("renders not option", async () => {
+test("renders not operator", async () => {
   const user = userEvent.setup()
 
   const operator = {
@@ -106,6 +106,53 @@ test("renders not option", async () => {
       field: "name",
       operator: "not-equals",
       value: "test",
+    },
+    setFilter: () => {},
+    onClose: () => {},
+  }
+
+  render(<ValueField {...props} />, {
+    path: ":organisationName/:workspaceName/graph",
+    route: "/default/demo/graph",
+  })
+
+  await waitFor(() => {
+    expect(screen.getByText("Test")).toBeInTheDocument()
+  })
+
+  await waitFor(() => {
+    expect(screen.getByText("Test 2")).toBeInTheDocument()
+  })
+
+  await act(async () => {
+    await user.keyboard("{escape}")
+  })
+})
+
+test("renders not option", async () => {
+  const user = userEvent.setup()
+
+  const operator = {
+    value: "equals",
+    label: "Equals",
+    options: [
+      { value: "test", label: "Test" },
+      { value: "test2", label: "Test 2" },
+    ],
+  }
+
+  const props = {
+    field: {
+      value: "name",
+      label: "Name",
+      operators: [operator],
+    },
+    operator,
+    filter: {
+      type: "table",
+      field: "name",
+      operator: "equals",
+      value: "test3",
     },
     setFilter: () => {},
     onClose: () => {},
