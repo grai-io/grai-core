@@ -1,7 +1,6 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
-import { Save } from "@mui/icons-material"
-import { Box, Button, CircularProgress, Stack } from "@mui/material"
+import { Box, CircularProgress } from "@mui/material"
 import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
 import { Filter, getProperties } from "components/filters/filters"
