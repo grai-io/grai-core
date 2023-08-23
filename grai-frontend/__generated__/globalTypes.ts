@@ -26,6 +26,7 @@ export interface GraphFilter {
   edge_id?: string | null;
   n?: number | null;
   filters?: string[] | null;
+  inline_filters?: any[] | null;
   min_x?: number | null;
   max_x?: number | null;
   min_y?: number | null;

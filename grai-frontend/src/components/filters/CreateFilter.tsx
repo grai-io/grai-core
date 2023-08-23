@@ -10,7 +10,7 @@ import {
   CreateFilterVariables,
 } from "./__generated__/CreateFilter"
 import { NewFilter } from "./__generated__/NewFilter"
-import { Source } from "./FilterRow"
+import { Source } from "./filters"
 
 export const CREATE_FILTER = gql`
   mutation CreateFilter($workspaceId: ID!, $name: String!, $metadata: JSON!) {

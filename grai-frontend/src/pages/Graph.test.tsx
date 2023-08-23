@@ -3,11 +3,18 @@ import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
 import { destinationTable, sourceTable, spareTable } from "helpers/testNodes"
+import { GET_WORKSPACE } from "components/graph/drawer/filters-inline/GraphFilterInline"
 import { GET_FILTERS } from "components/graph/drawer/GraphFilters"
 import { SEARCH_TABLES } from "components/graph/drawer/GraphSearch"
 import Graph, { GET_TABLES_AND_EDGES } from "./Graph"
 
-const baseFilter = { min_x: -500, max_x: 0, min_y: 0, max_y: 0 }
+const baseFilter = {
+  min_x: -500,
+  max_x: 0,
+  min_y: 0,
+  max_y: 0,
+  inline_filters: undefined,
+}
 
 export const filtersMock = {
   request: {
@@ -201,6 +208,10 @@ test("renders", async () => {
 //     expect(screen.getAllByTestId("placeholder")).toBeTruthy()
 //   })
 // })
+
+afterEach(() => {
+  window.localStorage.clear()
+})
 
 test("renders empty", async () => {
   class ResizeObserver {
@@ -472,7 +483,7 @@ test("search", async () => {
   })
 
   await act(
-    async () => await user.type(screen.getByTestId("search-input"), "s")
+    async () => await user.type(screen.getByTestId("search-input"), "s"),
   )
 
   await waitFor(() => {
@@ -521,11 +532,11 @@ test("filter", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByTestId("FilterAltIcon")).toBeInTheDocument()
+    expect(screen.getByTestId("FilterListIcon")).toBeInTheDocument()
   })
 
   await act(async () => {
-    await user.click(screen.getByTestId("FilterAltIcon"))
+    await user.click(screen.getByTestId("FilterListIcon"))
   })
 
   await waitFor(() => {
@@ -538,5 +549,147 @@ test("filter", async () => {
 
   await waitFor(() => {
     expect(screen.getByText("New Page")).toBeInTheDocument()
+  })
+})
+
+test("inline filter", async () => {
+  const user = userEvent.setup()
+
+  class ResizeObserver {
+    callback: globalThis.ResizeObserverCallback
+
+    constructor(callback: globalThis.ResizeObserverCallback) {
+      this.callback = callback
+    }
+
+    observe(target: Element) {
+      this.callback([{ target } as globalThis.ResizeObserverEntry], this)
+    }
+
+    unobserve() {}
+
+    disconnect() {}
+  }
+
+  window.ResizeObserver = ResizeObserver
+
+  const inlineFilterMock = (value: string = "default") => ({
+    request: {
+      query: GET_TABLES_AND_EDGES,
+      variables: {
+        organisationName: "default",
+        workspaceName: "demo",
+        filters: {
+          filters: null,
+          min_x: -500,
+          max_x: 0,
+          min_y: 0,
+          max_y: 0,
+          inline_filters: [
+            {
+              type: "table",
+              field: "namespace",
+              operator: "equals",
+              value,
+            },
+          ],
+        },
+      },
+    },
+    result: {
+      data: {
+        workspace: {
+          id: "1",
+          graph: [sourceTable, destinationTable, spareTable],
+          filters: {
+            data: [
+              {
+                id: "1",
+                name: "test",
+                metadata: [],
+              },
+            ],
+          },
+        },
+      },
+    },
+  })
+
+  const workspacesMock = {
+    request: {
+      query: GET_WORKSPACE,
+      variables: {
+        organisationName: "default",
+        workspaceName: "demo",
+      },
+    },
+    result: {
+      data: {
+        workspace: {
+          id: "1",
+          name: "demo",
+          namespaces: {
+            data: ["default", "prod"],
+          },
+          tags: {
+            data: [],
+          },
+          sources: {
+            data: [],
+          },
+        },
+      },
+    },
+  }
+
+  render(<Graph alwaysShow />, {
+    path: ":organisationName/:workspaceName/graph",
+    route:
+      '/default/demo/graph?inline-filter=%5B%7B"type"%3A"table"%2C"field"%3A"namespace"%2C"operator"%3A"equals"%2C"value"%3A"default"%7D%5D',
+    routes: ["/:organisationName/:workspaceName/filters"],
+    mocks: [
+      filtersMock,
+      filtersMock,
+      tablesMock,
+      tablesMock,
+      tablesMock,
+      tablesMockWithFilter,
+      searchMock(),
+      searchMock(),
+      inlineFilterMock(),
+      inlineFilterMock(),
+      inlineFilterMock(),
+      inlineFilterMock("prod"),
+      workspacesMock,
+      workspacesMock,
+    ],
+  })
+
+  await waitFor(() => {
+    expect(screen.getByText("N2 Node")).toBeInTheDocument()
+  })
+
+  await waitFor(() => {
+    expect(screen.getByTestId("FilterAltIcon")).toBeInTheDocument()
+  })
+
+  await act(async () => {
+    await user.click(screen.getByTestId("FilterAltIcon"))
+  })
+
+  await waitFor(() => {
+    expect(screen.getByText("Namespace")).toBeInTheDocument()
+  })
+
+  await act(async () => {
+    await user.click(screen.getByText("Namespace"))
+  })
+
+  await act(async () => {
+    await user.click(screen.getByText("prod"))
+  })
+
+  await waitFor(async () => {
+    await user.click(screen.getByTestId("DeleteIcon"))
   })
 })

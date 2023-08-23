@@ -3,6 +3,7 @@ import { gql, useLazyQuery } from "@apollo/client"
 import { Edge as RFEdge, Node as RFNode, Viewport } from "reactflow"
 import notEmpty from "helpers/notEmpty"
 import useWorkspace from "helpers/useWorkspace"
+import { Filter } from "components/filters/filters"
 import {
   GetGraphLoadTable,
   GetGraphLoadTableVariables,
@@ -85,6 +86,8 @@ type GraphComponentProps = {
   refreshLoading?: boolean
   filters: string[]
   setFilters: (filters: string[]) => void
+  inlineFilters: Filter[]
+  setInlineFilters: (filters: Filter[]) => void
   defaultViewport?: Viewport
 }
 
@@ -102,6 +105,8 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
   refreshLoading,
   filters,
   setFilters,
+  inlineFilters,
+  setInlineFilters,
   defaultViewport,
 }) => {
   const { organisationName, workspaceName } = useWorkspace()
@@ -364,6 +369,8 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
       refreshLoading={refreshLoading}
       filters={filters}
       setFilters={setFilters}
+      inlineFilters={inlineFilters}
+      setInlineFilters={setInlineFilters}
       defaultViewport={defaultViewport}
     />
   )

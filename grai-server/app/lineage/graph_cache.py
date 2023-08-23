@@ -10,7 +10,7 @@ from redis import Redis
 from workspaces.models import Workspace
 
 from .graph import GraphQuery
-from .graph_filter import filter_by_filter
+from .graph_filter import filter_by_filter, filter_by_dict
 from .graph_types import BaseTable, GraphColumn, GraphTable
 
 
@@ -353,6 +353,10 @@ class GraphCache:
     def filter_by_filters(self, filters, query: GraphQuery) -> GraphQuery:
         for filter in filters:
             query = filter_by_filter(filter, query)
+
+    def filter_by_rows(self, filters, query: GraphQuery) -> GraphQuery:
+        for filter in filters:
+            query = filter_by_dict(filter, query)
 
     def get_with_step_graph_result(
         self, n: int, parameters: object = {}, where: Optional[str] = None

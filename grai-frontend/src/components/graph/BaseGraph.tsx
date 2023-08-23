@@ -10,6 +10,7 @@ import ReactFlow, {
   Viewport,
 } from "reactflow"
 import "reactflow/dist/style.css"
+import { Filter } from "components/filters/filters"
 import Loading from "components/layout/Loading"
 import BaseNode from "./BaseNode"
 import { ControlOptions } from "./controls/GraphControls"
@@ -67,6 +68,8 @@ type BaseGraphProps = {
   refreshLoading?: boolean
   filters: string[]
   setFilters: (filters: string[]) => void
+  inlineFilters: Filter[]
+  setInlineFilters: (filters: Filter[]) => void
   defaultViewport?: Viewport
 }
 
@@ -85,6 +88,8 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
   refreshLoading,
   filters,
   setFilters,
+  inlineFilters,
+  setInlineFilters,
   defaultViewport,
 }) => {
   const [highlighted, setHighlighted] = useState<string[]>([])
@@ -160,6 +165,8 @@ const BaseGraph: React.FC<BaseGraphProps> = ({
         onSearch={onSearch}
         filters={filters}
         setFilters={setFilters}
+        inlineFilters={inlineFilters}
+        setInlineFilters={setInlineFilters}
       />
     </ReactFlowProvider>
   )
