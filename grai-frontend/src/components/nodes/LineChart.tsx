@@ -1,3 +1,5 @@
+import React from "react"
+import { lighten } from "@mui/material"
 import {
   Chart,
   ChartData,
@@ -5,10 +7,8 @@ import {
   LineElement,
   PointElement,
 } from "chart.js"
-import React from "react"
 import { Scatter } from "react-chartjs-2"
 import theme from "theme"
-import { lighten } from "@mui/material"
 
 type LineChartProps = {}
 

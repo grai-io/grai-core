@@ -9,14 +9,14 @@ import {
   TableRow,
   Typography,
 } from "@mui/material"
+import { Link } from "react-router-dom"
 import theme from "theme"
 import { enrichColumns } from "helpers/columns"
+import useWorkspace from "helpers/useWorkspace"
+import ColumnData from "./ColumnData"
 import ColumnProperties from "./ColumnProperties"
 import ColumnRequirements from "./ColumnRequirements"
 import ColumnTests from "./ColumnTests"
-import ColumnData from "./ColumnData"
-import { Link } from "react-router-dom"
-import useWorkspace from "helpers/useWorkspace"
 
 interface GraiColumnMetadata {
   node_attributes: {

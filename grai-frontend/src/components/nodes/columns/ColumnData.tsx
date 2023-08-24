@@ -1,6 +1,6 @@
+import React from "react"
 import { Stack } from "@mui/material"
 import LinearProgress from "components/progress/LinearProgress"
-import React from "react"
 
 const ColumnData: React.FC = () => (
   <Stack direction="row" spacing={1}>

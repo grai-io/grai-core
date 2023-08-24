@@ -1,3 +1,4 @@
+import React from "react"
 import {
   Box,
   LinearProgress as BaseLinearProgress,
@@ -5,7 +6,6 @@ import {
   LinearProgressPropsColorOverrides,
 } from "@mui/material"
 import { OverridableStringUnion } from "@mui/types"
-import React from "react"
 
 type LinearProgressProps = {
   value: number

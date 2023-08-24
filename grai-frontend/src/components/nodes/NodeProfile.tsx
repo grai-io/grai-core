@@ -1,12 +1,12 @@
 import React from "react"
 import { Card, Grid, Stack, Table, TableBody } from "@mui/material"
 // import { Column } from "./columns/TableColumnsTable"
-import TableDependencies from "./TableDependencies"
-import TableDetail from "./TableDetail"
 import NodeDetailRow from "components/layout/NodeDetailRow"
 import LinearProgress from "components/progress/LinearProgress"
 import BarChart from "./BarChart"
 import LineChart from "./LineChart"
+import TableDependencies from "./TableDependencies"
+import TableDetail from "./TableDetail"
 
 // interface BaseTable {
 //   id: string

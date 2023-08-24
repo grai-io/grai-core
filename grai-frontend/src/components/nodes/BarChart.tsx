@@ -1,3 +1,5 @@
+import React from "react"
+import { lighten } from "@mui/material"
 import {
   BarElement,
   CategoryScale,
@@ -5,11 +7,9 @@ import {
   ChartOptions,
   LinearScale,
 } from "chart.js"
-import React from "react"
+import ChartDataLabels from "chartjs-plugin-datalabels"
 import { Bar } from "react-chartjs-2"
 import theme from "theme"
-import ChartDataLabels from "chartjs-plugin-datalabels"
-import { lighten } from "@mui/material"
 
 const BarChart: React.FC = () => {
   const data = [
