@@ -33,7 +33,10 @@ test("renders", async () => {
       columns={columns}
       expanded={[]}
       onExpand={() => {}}
-    />
+    />,
+    {
+      withRouter: true,
+    },
   )
 
   expect(screen.getByText("Column 1")).toBeInTheDocument()
@@ -46,7 +49,10 @@ test("empty", async () => {
       columns={[]}
       expanded={[]}
       onExpand={() => {}}
-    />
+    />,
+    {
+      withRouter: true,
+    },
   )
 
   expect(screen.getByText("No columns found")).toBeInTheDocument()
@@ -60,7 +66,10 @@ test("search", async () => {
       columns={columns}
       expanded={[]}
       onExpand={() => {}}
-    />
+    />,
+    {
+      withRouter: true,
+    },
   )
 
   expect(screen.getByText("No columns found")).toBeInTheDocument()
@@ -74,7 +83,10 @@ test("expanded", async () => {
       columns={columns}
       expanded={["1"]}
       onExpand={() => {}}
-    />
+    />,
+    {
+      withRouter: true,
+    },
   )
 
   expect(screen.getByText("Column 1")).toBeInTheDocument()

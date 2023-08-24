@@ -27,6 +27,7 @@ export const tableMock = {
           is_active: true,
           metadata: {
             grai: {
+              node_type: "Table",
               tags: ["tag1", "tag2"],
             },
           },
