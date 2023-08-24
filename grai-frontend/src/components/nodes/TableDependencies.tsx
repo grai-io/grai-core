@@ -38,6 +38,7 @@ const TableDependencies: React.FC<TableDependenciesProps> = ({
                 to={`${workspaceRoutePrefix}/${routePrefix ?? "tables"}/${
                   table.id
                 }`}
+                sx={{ minWidth: 0 }}
               >
                 {"display_name" in table ? table.display_name : table.name}
               </Button>

@@ -4,7 +4,7 @@ import theme from "theme"
 
 type NodeDetailRowProps = {
   label: string
-  value?: string
+  value?: string | number
   children?: ReactNode
   right?: boolean
 }

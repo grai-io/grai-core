@@ -6,11 +6,15 @@ import "react-json-view-lite/dist/index.css"
 
 type Metadata = { [k: string]: any } | null
 
+interface Column {
+  id: string
+}
 interface TableInterface {
   name: string
   namespace: string
   // data_source: string
   metadata?: Metadata
+  columns: { data: Column[] }
 }
 
 type TableDetailProps = {
@@ -23,7 +27,7 @@ const TableDetail: React.FC<TableDetailProps> = ({ table }) => (
       <TableBody>
         <NodeDetailRow label="Last updated at" />
         <NodeDetailRow label="# of rows" />
-        <NodeDetailRow label="# of columns" />
+        <NodeDetailRow label="# of columns" value={table.columns.data.length} />
         <NodeDetailRow label="Name" value={table.name} />
         <NodeDetailRow label="Namespace" value={table.namespace} />
         {/* <NodeDetailRow label="Data Source" value={table.data_source} /> */}

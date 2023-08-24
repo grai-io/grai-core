@@ -1,14 +1,19 @@
 import React from "react"
-import { Card, Grid, Table, TableBody } from "@mui/material"
+import { Card, Grid, Stack, Table, TableBody } from "@mui/material"
 // import { Column } from "./columns/TableColumnsTable"
 import TableDependencies from "./TableDependencies"
 import TableDetail from "./TableDetail"
+import NodeDetailRow from "components/layout/NodeDetailRow"
+import LinearProgress from "components/progress/LinearProgress"
 
 // interface BaseTable {
 //   id: string
 //   display_name: string
 // }
 
+interface Column {
+  id: string
+}
 interface DataSource {
   id: string
   name: string
@@ -18,7 +23,7 @@ export interface Node {
   name: string
   namespace: string
   display_name: string
-  // columns: { data: Column[] }
+  columns: { data: Column[] }
   metadata: any | null
   // source_tables: { data: BaseTable[] }
   // destination_tables: { data: BaseTable[] }
@@ -51,6 +56,19 @@ const NodeProfile: React.FC<NodeProfileProps> = ({ node }) => (
               dependencies={node.data_sources.data}
               routePrefix="sources"
             />
+            {node.metadata.grai.node_type === "Column" && (
+              <NodeDetailRow label="Data">
+                <Stack direction="column" spacing={1}>
+                  <LinearProgress
+                    value={50}
+                    title="credit-card"
+                    titleValue={25}
+                  />
+                  <LinearProgress value={30} title="cash" titleValue={15} />
+                  <LinearProgress value={10} title="bnpl" titleValue={5} />
+                </Stack>
+              </NodeDetailRow>
+            )}
           </TableBody>
         </Table>
       </Card>

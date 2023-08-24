@@ -13,6 +13,7 @@ import { enrichColumns } from "helpers/columns"
 import ColumnProperties from "./ColumnProperties"
 import ColumnRequirements from "./ColumnRequirements"
 import ColumnTests from "./ColumnTests"
+import ColumnData from "./ColumnData"
 
 interface GraiColumnMetadata {
   node_attributes: {
@@ -68,7 +69,7 @@ const TableColumnsTable: React.FC<TableColumnsTableProps> = ({
 }) => {
   const filteredColumns = search
     ? columns.filter(column =>
-        column.name.toLowerCase().includes(search.toLowerCase())
+        column.name.toLowerCase().includes(search.toLowerCase()),
       )
     : columns
 
@@ -83,6 +84,7 @@ const TableColumnsTable: React.FC<TableColumnsTableProps> = ({
           <TableCell>Data Type</TableCell>
           <TableCell>Properties</TableCell>
           <TableCell>Downstream Tests</TableCell>
+          <TableCell>Data</TableCell>
           <TableCell sx={{ width: 0 }} />
         </TableRow>
       </TableHead>
@@ -109,6 +111,9 @@ const TableColumnsTable: React.FC<TableColumnsTableProps> = ({
                 <TableCell sx={{ py: 0 }}>
                   <ColumnTests column={column} />
                 </TableCell>
+                <TableCell>
+                  <ColumnData />
+                </TableCell>
                 <TableCell sx={{ py: 0, px: 1 }}>
                   {column.requirements.length > 0 &&
                     (expand ? <ExpandLess /> : <ExpandMore />)}
@@ -126,6 +131,7 @@ const TableColumnsTable: React.FC<TableColumnsTableProps> = ({
                     <TableCell sx={{ py: 0 }}>
                       <ColumnRequirements edges={requirement.tests} />
                     </TableCell>
+                    <TableCell />
                     <TableCell />
                   </TableRow>
                 ))}

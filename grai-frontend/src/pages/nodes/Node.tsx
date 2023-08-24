@@ -131,9 +131,11 @@ const Table: React.FC = () => {
           <PageContent>
             <NodeProfile node={node} />
           </PageContent>
-          <PageContent>
-            <TableColumns columns={node.columns.data} />
-          </PageContent>
+          {node.metadata.grai.node_type === "Table" && (
+            <PageContent>
+              <TableColumns columns={node.columns.data} />
+            </PageContent>
+          )}
         </>
       ),
       noWrapper: true,
