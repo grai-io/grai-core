@@ -8,6 +8,20 @@ from common.admin.fields.json_widget import PrettyJSONWidget
 from connections.models import Connection
 
 from .models import Edge, Event, Filter, Node, Source
+from connections.models import Run
+
+
+@admin.action(description="Force delete selected sources")
+def delete_sources(modeladmin, request, queryset):  # pragma: no cover
+    sources = queryset
+
+    for source in sources:
+        for connection in source.connections.all():
+            Run.objects.filter(connection=connection).delete()
+
+            connection.delete()
+
+    queryset.delete()
 
 
 class EdgeInline(admin.TabularInline):
@@ -178,6 +192,10 @@ class SourceAdmin(admin.ModelAdmin):
 
     inlines = [
         ConnectionInline,
+    ]
+
+    actions = [
+        delete_sources,
     ]
 
 
