@@ -1,6 +1,7 @@
 import React from "react"
-import { ExpandLess, ExpandMore } from "@mui/icons-material"
+import { ExpandLess, ExpandMore, Visibility } from "@mui/icons-material"
 import {
+  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -14,6 +15,8 @@ import ColumnProperties from "./ColumnProperties"
 import ColumnRequirements from "./ColumnRequirements"
 import ColumnTests from "./ColumnTests"
 import ColumnData from "./ColumnData"
+import { Link } from "react-router-dom"
+import useWorkspace from "helpers/useWorkspace"
 
 interface GraiColumnMetadata {
   node_attributes: {
@@ -67,6 +70,8 @@ const TableColumnsTable: React.FC<TableColumnsTableProps> = ({
   expanded,
   onExpand,
 }) => {
+  const { routePrefix } = useWorkspace()
+
   const filteredColumns = search
     ? columns.filter(column =>
         column.name.toLowerCase().includes(search.toLowerCase()),
@@ -85,6 +90,7 @@ const TableColumnsTable: React.FC<TableColumnsTableProps> = ({
           <TableCell>Properties</TableCell>
           <TableCell>Downstream Tests</TableCell>
           <TableCell>Data</TableCell>
+          <TableCell sx={{ width: 0 }} />
           <TableCell sx={{ width: 0 }} />
         </TableRow>
       </TableHead>
@@ -118,6 +124,14 @@ const TableColumnsTable: React.FC<TableColumnsTableProps> = ({
                   {column.requirements.length > 0 &&
                     (expand ? <ExpandLess /> : <ExpandMore />)}
                 </TableCell>
+                <TableCell sx={{ p: 0 }}>
+                  <IconButton
+                    component={Link}
+                    to={`${routePrefix}/nodes/${column.id}`}
+                  >
+                    <Visibility />
+                  </IconButton>
+                </TableCell>
               </TableRow>
               {expand &&
                 column.requirements.map(requirement => (
@@ -131,6 +145,7 @@ const TableColumnsTable: React.FC<TableColumnsTableProps> = ({
                     <TableCell sx={{ py: 0 }}>
                       <ColumnRequirements edges={requirement.tests} />
                     </TableCell>
+                    <TableCell />
                     <TableCell />
                     <TableCell />
                   </TableRow>
