@@ -6,6 +6,8 @@ import TableDetail from "./TableDetail"
 import NodeDetailRow from "components/layout/NodeDetailRow"
 import LinearProgress from "components/progress/LinearProgress"
 import BarChart from "./BarChart"
+import LineChart from "./LineChart"
+
 // interface BaseTable {
 //   id: string
 //   display_name: string
@@ -67,6 +69,7 @@ const NodeProfile: React.FC<NodeProfileProps> = ({ node }) => (
                   <LinearProgress value={30} title="cash" titleValue={15} />
                   <LinearProgress value={10} title="bnpl" titleValue={5} />
                   <BarChart />
+                  <LineChart />
                 </Stack>
               </NodeDetailRow>
             )}
