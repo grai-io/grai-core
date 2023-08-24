@@ -11,7 +11,11 @@ import ChartDataLabels from "chartjs-plugin-datalabels"
 import { Bar } from "react-chartjs-2"
 import theme from "theme"
 
-const BarChart: React.FC = () => {
+type BarChartProps = {
+  responsive?: boolean
+}
+
+const BarChart: React.FC<BarChartProps> = ({ responsive }) => {
   const data = [
     { category: "credit-card", count: 25 },
     { category: "cash", count: 15 },
@@ -22,6 +26,7 @@ const BarChart: React.FC = () => {
   Chart.register(CategoryScale, LinearScale, BarElement, ChartDataLabels)
 
   const options: ChartOptions<"bar"> = {
+    responsive,
     scales: {
       x: {
         grid: {

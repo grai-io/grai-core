@@ -10,7 +10,11 @@ import {
 import { Scatter } from "react-chartjs-2"
 import theme from "theme"
 
-const LineChart: React.FC = () => {
+type LineChartProps = {
+  responsive?: boolean
+}
+
+const LineChart: React.FC<LineChartProps> = ({ responsive }) => {
   Chart.register(PointElement, LineElement)
 
   const inputData = [
@@ -69,6 +73,7 @@ const LineChart: React.FC = () => {
   ]
 
   const options: ChartOptions<"scatter"> = {
+    responsive,
     scales: {
       x: {
         grid: {

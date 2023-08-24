@@ -34,9 +34,10 @@ export interface Node {
 
 type NodeProfileProps = {
   node: Node
+  responsive?: boolean
 }
 
-const NodeProfile: React.FC<NodeProfileProps> = ({ node }) => (
+const NodeProfile: React.FC<NodeProfileProps> = ({ node, responsive }) => (
   <Grid container spacing={3}>
     <Grid item md={6}>
       <TableDetail table={node} />
@@ -68,8 +69,8 @@ const NodeProfile: React.FC<NodeProfileProps> = ({ node }) => (
                   />
                   <LinearProgress value={30} title="cash" titleValue={15} />
                   <LinearProgress value={10} title="bnpl" titleValue={5} />
-                  <BarChart />
-                  <LineChart />
+                  <BarChart responsive={responsive} />
+                  <LineChart responsive={responsive} />
                 </Stack>
               </NodeDetailRow>
             )}
