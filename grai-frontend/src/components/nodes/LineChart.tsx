@@ -10,9 +10,7 @@ import {
 import { Scatter } from "react-chartjs-2"
 import theme from "theme"
 
-type LineChartProps = {}
-
-const LineChart: React.FC<LineChartProps> = ({}) => {
+const LineChart: React.FC = () => {
   Chart.register(PointElement, LineElement)
 
   const inputData = [
