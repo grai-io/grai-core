@@ -45,7 +45,7 @@ const ApiKeyDelete: React.FC<ApiKeyDeleteProps> = ({
           }),
           fields: {
             api_keys(existingApiKeys = { data: [] }, { readField }) {
-              if (!data?.deleteApiKey) return
+              if (!data?.deleteApiKey) return existingApiKeys
 
               return {
                 data: existingApiKeys.data.filter(

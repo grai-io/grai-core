@@ -55,7 +55,7 @@ const SaveDialog: React.FC<SaveDialogProps> = ({
         }),
         fields: {
           filters(existingFilters = { data: [] }) {
-            if (!data?.createFilter) return
+            if (!data?.createFilter) return existingFilters
 
             const newFilter = cache.writeFragment<NewFilter>({
               data: data.createFilter,
