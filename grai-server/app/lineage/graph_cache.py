@@ -202,10 +202,15 @@ class GraphCache:
     def get_table_ids(self):
         results = self.query(
             """
-                MATCH (n:Table)
+                MATCH (table:Table)
                 WITH
-                    n.id as ids
-                RETURN ids
+                    table,
+                    {
+                        id: table.id,
+                        width: size(table.display_name),
+                        columns: size((table)-[:TABLE_TO_COLUMN]->())
+                    } AS tables
+                RETURN tables
             """
         ).result_set
 
@@ -470,21 +475,29 @@ class GraphCache:
         return self.get_with_step_graph_result(n, parameters, where)
 
     def layout_graph(self):
-        table_ids = self.get_table_ids()
+        tables = self.get_table_ids()
         edges = self.get_table_edges()
 
         vertexes = {}
 
-        class defaultview(object):
-            w, h = 200, 400
+        x_gap = 150
+        y_gap = 20
 
-        for table_id in table_ids:
-            vertexes[table_id] = Vertex(table_id)
+        class defaultview(object):
+            def __init__(self, width: int = 400, height: int = 68):
+                # Height and width transposed as graph drawn sideways
+                self.w = height + y_gap
+                self.h = width + x_gap
+
+        for table in tables:
+            id = table["id"]
+            v = Vertex(id)
+            width = max((table["width"] * 8) + 160, 300)
+            height = max((table["columns"] * 50) + 66, 68)
+            v.view = defaultview(width=width, height=height)
+            vertexes[id] = v
 
         V = list(vertexes.values())
-
-        for v in V:
-            v.view = defaultview()
 
         E = [Edge(vertexes[edge["source_id"]], vertexes[edge["destination_id"]]) for edge in edges]
 
@@ -511,9 +524,9 @@ class GraphCache:
 
             for vertex in graph.sV:
                 minX = min(minX, vertex.view.xy[1])
-                maxX = max(maxX, vertex.view.xy[1])
+                maxX = max(maxX, vertex.view.xy[1] + vertex.view.w)
                 minY = min(minY, vertex.view.xy[0])
-                maxY = max(maxY, vertex.view.xy[0])
+                maxY = max(maxY, vertex.view.xy[0] + vertex.view.h)
 
             graphs.append(
                 {
@@ -532,6 +545,10 @@ class GraphCache:
 
         graph_width = 5000
 
+        graph_x_gap = 50
+        graph_y_gap = 50
+
+        # Layout graphs
         for graph in graphs:
             for v in graph["nodes"]:
                 self.update_node(
@@ -542,28 +559,28 @@ class GraphCache:
 
             height = graph["maxY"] - graph["minY"]
 
-            if height > max_height:
-                max_height = height
+            max_height = max(max_height, height)
 
             if x > graph_width:
-                y += max_height + 200
+                y += max_height + graph_y_gap
                 x = 0
                 max_height = 0
                 continue
 
             width = graph["maxX"] - graph["minX"]
 
-            x += width + 400
+            x += width + graph_x_gap
 
         x = 0
-        y += max_height + 200
+        y += max_height + graph_y_gap
 
+        # Layout single tables
         for table in single_tables:
             self.update_node(table.data, x, y)
 
             if x > graph_width:
-                y += 200
+                y += graph_y_gap
                 x = 0
                 continue
 
-            x += 500
+            x += graph_x_gap + 400
