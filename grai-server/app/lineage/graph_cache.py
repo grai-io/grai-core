@@ -506,21 +506,21 @@ class GraphCache:
 
             minX = 0
             maxX = 0
-            # minY = 0
-            # maxY = 0
+            minY = 0
+            maxY = 0
 
             for vertex in graph.sV:
                 minX = min(minX, vertex.view.xy[1])
                 maxX = max(maxX, vertex.view.xy[1])
-                # minY = min(minY, vertex.view.xy[0])
-                # maxY = max(maxY, vertex.view.xy[0])
+                minY = min(minY, vertex.view.xy[0])
+                maxY = max(maxY, vertex.view.xy[0])
 
             graphs.append(
                 {
                     "minX": minX,
                     "maxX": maxX,
-                    # "minY": minY,
-                    # "maxY": maxY,
+                    "minY": minY,
+                    "maxY": maxY,
                     "nodes": graph.sV,
                 }
             )
@@ -528,23 +528,42 @@ class GraphCache:
         x = 0
         y = 0
 
+        max_height = 0
+
+        graph_width = 5000
+
         for graph in graphs:
             for v in graph["nodes"]:
-                self.update_node(v.data, v.view.xy[1] + x + graph["minX"], v.view.xy[0])
+                self.update_node(
+                    v.data,
+                    v.view.xy[1] + x - graph["minX"],
+                    v.view.xy[0] + y - graph["minY"],
+                )
 
-            x += graph["maxX"] - graph["minX"] + 400
+            height = graph["maxY"] - graph["minY"]
 
-        start_x = x
-        index = 0
+            if height > max_height:
+                max_height = height
+
+            if x > graph_width:
+                y += max_height + 200
+                x = 0
+                max_height = 0
+                continue
+
+            width = graph["maxX"] - graph["minX"]
+
+            x += width + 400
+
+        x = 0
+        y += max_height + 200
 
         for table in single_tables:
             self.update_node(table.data, x, y)
 
-            if index > 20:
+            if x > graph_width:
                 y += 200
-                x = start_x
-                index = 0
+                x = 0
                 continue
 
             x += 500
-            index += 1
