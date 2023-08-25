@@ -202,10 +202,14 @@ class GraphCache:
     def get_table_ids(self):
         results = self.query(
             """
-                MATCH (n:Table)
+                MATCH (table:Table)
                 WITH
-                    n.id as ids
-                RETURN ids
+                    table,
+                    {
+                        id: table.id,
+                        display_name: table.display_name
+                    } AS tables
+                RETURN tables
             """
         ).result_set
 
@@ -470,21 +474,28 @@ class GraphCache:
         return self.get_with_step_graph_result(n, parameters, where)
 
     def layout_graph(self):
-        table_ids = self.get_table_ids()
+        tables = self.get_table_ids()
         edges = self.get_table_edges()
 
         vertexes = {}
 
-        class defaultview(object):
-            w, h = 200, 400
+        x_gap = 150
+        y_gap = 200
 
-        for table_id in table_ids:
-            vertexes[table_id] = Vertex(table_id)
+        class defaultview(object):
+            def __init__(self, width: int = 400, height: int = 68):
+                # Height and width transposed as graph drawn sideways
+                self.w = height + y_gap
+                self.h = width + x_gap
+
+        for table in tables:
+            id = table["id"]
+            v = Vertex(id)
+            width = max((len(table["display_name"]) * 8) + 160, 300)
+            v.view = defaultview(width=width)
+            vertexes[id] = v
 
         V = list(vertexes.values())
-
-        for v in V:
-            v.view = defaultview()
 
         E = [Edge(vertexes[edge["source_id"]], vertexes[edge["destination_id"]]) for edge in edges]
 
@@ -532,6 +543,8 @@ class GraphCache:
 
         graph_width = 5000
 
+        graph_y_gap = 500
+
         for graph in graphs:
             for v in graph["nodes"]:
                 self.update_node(
@@ -546,7 +559,7 @@ class GraphCache:
                 max_height = height
 
             if x > graph_width:
-                y += max_height + 200
+                y += max_height + graph_y_gap
                 x = 0
                 max_height = 0
                 continue
@@ -556,13 +569,13 @@ class GraphCache:
             x += width + 400
 
         x = 0
-        y += max_height + 200
+        y += max_height + graph_y_gap
 
         for table in single_tables:
             self.update_node(table.data, x, y)
 
             if x > graph_width:
-                y += 200
+                y += graph_y_gap
                 x = 0
                 continue
 
