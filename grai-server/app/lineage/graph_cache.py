@@ -207,7 +207,7 @@ class GraphCache:
                     table,
                     {
                         id: table.id,
-                        display_name: table.display_name
+                        width: size(table.display_name)
                     } AS tables
                 RETURN tables
             """
@@ -491,7 +491,7 @@ class GraphCache:
         for table in tables:
             id = table["id"]
             v = Vertex(id)
-            width = max((len(table["display_name"]) * 8) + 160, 300)
+            width = max((table["width"] * 8) + 160, 300)
             v.view = defaultview(width=width)
             vertexes[id] = v
 
