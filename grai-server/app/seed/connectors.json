@@ -109,7 +109,9 @@
                     },
                     {
                         "name": "dataset",
+                        "label": "Dataset(s)",
                         "required": true,
+                        "helper_text": "Comma separated list of datasets",
                         "order": 1
                     },
                     {
