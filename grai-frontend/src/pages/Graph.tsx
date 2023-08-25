@@ -38,9 +38,15 @@ export const GET_TABLES_AND_EDGES = gql`
           id
           name
           display_name
-          destinations
+          destinations {
+            edge_id
+            column_id
+          }
         }
-        destinations
+        destinations {
+          edge_id
+          table_id
+        }
       }
     }
   }

@@ -66,9 +66,15 @@ export const GET_COMMIT = gql`
           id
           name
           display_name
-          destinations
+          destinations {
+            edge_id
+            column_id
+          }
         }
-        destinations
+        destinations {
+          edge_id
+          table_id
+        }
       }
     }
   }

@@ -11,7 +11,7 @@ from workspaces.models import Workspace
 
 from .graph import GraphQuery
 from .graph_filter import filter_by_filter, filter_by_dict
-from .graph_types import BaseTable, GraphColumn, GraphTable
+from .graph_types import BaseTable, ColumnEdge, GraphColumn, GraphTable, TableEdge
 
 
 class GraphCache:
@@ -266,13 +266,19 @@ class GraphCache:
         query.add(
             f"""
                 OPTIONAL MATCH (table:Table)-[:TABLE_TO_COLUMN]->(column:Column)
-                OPTIONAL MATCH (column)-[:COLUMN_TO_COLUMN]->(column_destination:Column)
-                OPTIONAL MATCH (table)-[:TABLE_TO_TABLE]->(destination:Table)
+                OPTIONAL MATCH (column)-[column_edge:COLUMN_TO_COLUMN]->(column_destination:Column)
+                OPTIONAL MATCH (table)-[table_edge:TABLE_TO_TABLE]->(destination:Table)
                 WITH
                     table,
-                    COLLECT(distinct destination.id) AS destinations,
+                    COLLECT({{
+                        edge_id: table_edge.id,
+                        table_id: destination.id
+                    }}) AS destinations,
                     column,
-                    collect(distinct column_destination.id) as column_destinations
+                    collect({{
+                        edge_id: column_edge.id,
+                        column_id: column_destination.id
+                    }}) AS column_destinations
                 {query.withWheres if query.withWheres else ""}
                 WITH
                     table,
@@ -313,7 +319,11 @@ class GraphCache:
                     name=column.get("name"),
                     display_name=column.get("display_name"),
                     sources=[],
-                    destinations=column.get("column_destinations", []),
+                    destinations=[
+                        ColumnEdge(edge_id=c.get("edge_id"), column_id=c.get("column_id"))
+                        for c in column.get("column_destinations", [])
+                        if c.get("edge_id") and c.get("column_id")
+                    ],
                 )
                 for column in table.get("columns")
                 if column.get("id")
@@ -330,7 +340,11 @@ class GraphCache:
                     y=table.get("y"),
                     columns=columns,
                     sources=[],
-                    destinations=table.get("destinations", []),
+                    destinations=[
+                        TableEdge(edge_id=d.get("edge_id"), table_id=d.get("table_id"))
+                        for d in table.get("destinations", [])
+                        if d.get("edge_id") and d.get("table_id")
+                    ],
                     table_destinations=[],
                     table_sources=[],
                 )
