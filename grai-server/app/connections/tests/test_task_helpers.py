@@ -133,6 +133,7 @@ def mock_node(test_workspace, namespace="default"):
 
 def mock_node_schema(node, test_source, metadata={}):
     spec = {
+        "id": node.id,
         "name": node.name,
         "namespace": node.namespace,
         "display_name": node.display_name,
@@ -157,6 +158,7 @@ def mock_edge(source, destination, test_workspace):
 def mock_edge_schema(edge, test_source):
     return SourcedEdgeV1.from_spec(
         {
+            "id": edge.id,
             "name": edge.name,
             "namespace": edge.namespace,
             "display_name": edge.display_name,
@@ -259,7 +261,9 @@ class TestUpdate:
         workspace = mocker.workspace.workspace_spec(id=test_workspace.id, name=test_workspace.name)
         kwargs = {"data_source": source, "workspace": workspace, "namespace": nodes[0].namespace}
 
-        existing_node_spec = [mocker.node.named_source_node_spec(name=node.name, **kwargs) for node in nodes]
+        existing_node_spec = [
+            mocker.node.named_source_node_spec(name=node.name, id=node.id, **kwargs) for node in nodes
+        ]
         new_node_spec = [mocker.node.named_source_node_spec(**kwargs) for node in range(2)]
 
         created_nodes = [mocker.node.sourced_node(spec=spec) for spec in existing_node_spec]
@@ -350,9 +354,10 @@ class TestUpdate:
                 "id": str(edge.destination.id),
             }
             mock_spec = mocker.edge.named_source_edge_spec(
-                name=edge.name, source=source, destination=destination, **kwargs
+                name=edge.name, source=source, destination=destination, id=edge.id, **kwargs
             )
             existing_edge_spec.append(mock_spec)
+
         edge_nodes = [mock_node(test_workspace) for _ in range(3)]
 
         for node in edge_nodes:
@@ -471,9 +476,9 @@ class TestUpdate:
     @pytest.mark.django_db
     def test_deactivated(self, test_workspace, test_source):
         nodes = [mock_node(test_workspace) for _ in range(2)]
-        nodes[0].save()
+        for node in nodes:
+            node.save()
         mock_nodes = [mock_node_schema(node, test_source) for node in nodes]
-
         existing_nodes = []
         for node in mock_nodes:
             item = node.spec.dict(exclude_none=True)

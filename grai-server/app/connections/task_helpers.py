@@ -1,4 +1,5 @@
 import uuid
+import warnings
 from copy import deepcopy
 from itertools import chain
 from typing import Any, Dict, List, Optional, Sequence, Tuple, TypeVar, Union, Protocol, TypedDict
@@ -140,7 +141,6 @@ def compute_graph_changes(items: List[T], active_items: List[P]) -> Tuple[List[T
     updated_items: List[P] = [
         merge(current_item_map[k], item_map[k]) for k in updated_item_keys if item_map[k] != current_item_map[k]
     ]
-
     return new_items, deactivated_items, updated_items
 
 
@@ -159,6 +159,9 @@ def process_source_nodes(
                 f"existing_edges must be a list of NodeV1, got list of "
                 f"Union[{set(type(node) for node in existing_nodes)}]"
             )
+        if not all(edge.spec.id for edge in existing_nodes):
+            raise ValueError("Some edges in existing_edges are missing ids")
+
         active_nodes = existing_nodes
     elif existing_nodes is None:
         active_nodes = get_existing_nodes(items, workspace)
@@ -192,6 +195,9 @@ def process_source_edges(
                 f"existing_edges must be a list of EdgeV1, got list of "
                 f"Union[{set(type(node) for node in existing_edges)}]"
             )
+        if not all(edge.spec.id for edge in existing_edges):
+            raise ValueError("Some edges in existing_edges are missing ids")
+
         active_edges = existing_edges
     elif existing_edges is None:
         active_edges = get_existing_edges(items, workspace)
