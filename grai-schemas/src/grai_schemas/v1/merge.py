@@ -1,3 +1,4 @@
+import copy
 from typing import Any, Dict, Optional, Union
 
 from grai_schemas.generics import MalformedMetadata, Metadata
@@ -67,18 +68,16 @@ def merge_edge_sourced_edge(edge: EdgeV1, source_edge: SourcedEdgeV1) -> EdgeV1:
 @merge.register
 def merge_grai_node_into_node_metadata(spec: NodeSpec, source_spec: SourcedNodeSpec) -> NodeSpec:
     """ """
-    new_spec = spec.copy()
+    new_spec = copy.deepcopy(spec)
     new_spec.metadata.grai = merge(new_spec.metadata.grai, source_spec.metadata.grai)
-    new_spec.metadata.sources[source_spec.name] = source_spec.metadata
-
+    new_spec.metadata.sources[source_spec.data_source.name] = source_spec.metadata
     return new_spec
 
 
 @merge.register
 def merge_grai_edge_into_edge_metadata(spec: EdgeSpec, source_spec: SourcedEdgeSpec) -> NodeSpec:
     """ """
-    new_spec = spec.copy()
+    new_spec = copy.deepcopy(spec)
     new_spec.metadata.grai = merge(new_spec.metadata.grai, source_spec.metadata.grai)
-    new_spec.metadata.sources[source_spec.name] = source_spec.metadata
-
+    new_spec.metadata.sources[source_spec.data_source.name] = source_spec.metadata
     return new_spec
