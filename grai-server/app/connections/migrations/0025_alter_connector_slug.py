@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("connections", "0024_alter_connection_source_alter_run_source"),
     ]

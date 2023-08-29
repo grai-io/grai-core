@@ -10,6 +10,20 @@ from .managers import CacheManager, SourceManager
 from django.core.serializers.json import DjangoJSONEncoder
 import json
 from enum import Enum
+import msgspec
+from typing import Any
+
+
+def enc_hook(obj: Any) -> Any:
+    if isinstance(obj, complex):
+        # convert the complex to a tuple of real, imag
+        return obj.real, obj.imag
+    else:
+        # Raise a NotImplementedError for other types
+        raise NotImplementedError(f"Objects of type {type(obj)} are not supported")
+
+
+encoder = msgspec.json.Encoder(enc_hook=enc_hook)
 
 
 class GraiEncoder(DjangoJSONEncoder):

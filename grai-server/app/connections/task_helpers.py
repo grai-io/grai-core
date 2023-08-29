@@ -1,14 +1,14 @@
 import uuid
 from copy import deepcopy
 from itertools import chain
-from typing import Any, Dict, List, Optional, Sequence, Tuple, TypeVar, Union
+from typing import Any, Dict, List, Optional, Sequence, Tuple, TypeVar, Union, Protocol, TypedDict
 
 from django.db import models
 from django.db.models import Q
 from grai_schemas.schema import GraiType
 from grai_schemas.utilities import merge
 from grai_schemas.v1 import EdgeV1, NodeV1, SourcedEdgeV1, SourcedNodeV1
-from grai_schemas.v1.node import NodeNamedID
+from grai_schemas.v1.node import NodeNamedID, NamedSpec as NodeNamedSpec
 from grai_schemas.v1.source import SourceSpec
 from multimethod import multimethod
 from pydantic import BaseModel
@@ -17,8 +17,32 @@ from lineage.models import Edge as EdgeModel
 from lineage.models import Node as NodeModel
 from lineage.models import Source
 from workspaces.models import Workspace
+from django.contrib.postgres.aggregates import ArrayAgg
+from django.db.models.functions import Coalesce
+from functools import singledispatch
+from django.db.models import Value
+from uuid import UUID
 
-T = TypeVar("T")
+
+class NameNamespace(Protocol):
+    name: str
+    namespace: str
+    id: Optional[UUID]
+
+
+class NameNamespaceDict(TypedDict):
+    name: str
+    namespace: str
+    id: Optional[UUID]
+
+
+class SpecNameNamespace(Protocol):
+    spec: NameNamespace
+
+
+T = TypeVar("T", bound=SpecNameNamespace)
+P = TypeVar("P", bound=SpecNameNamespace)
+LineageModel = Union[NodeModel, EdgeModel]
 
 
 def to_dict(instance):
@@ -52,8 +76,8 @@ def merge_node_node(a: models.Model, b: models.Model) -> models.Model:
     return type(a)(merge(to_dict(a), to_dict(b)))
 
 
-def get_node(workspace: Workspace, grai_type: dict) -> NodeModel:
-    if grai_type.get("id") is not None:
+def get_node(workspace: Workspace, grai_type: NameNamespaceDict) -> NodeModel:
+    if grai_type.get("id", None) is not None:
         return NodeModel(**grai_type)
 
     return NodeModel.objects.filter(workspace=workspace).get(
@@ -61,21 +85,34 @@ def get_node(workspace: Workspace, grai_type: dict) -> NodeModel:
     )
 
 
-def deactivate(items: List) -> List:
-    for item in items:
-        item.is_active = False
-
-    return items
-
-
-def get_existing_items(from_items, workspace, Model):
-    query = Q()
+def build_item_query_filter(from_items: List[SpecNameNamespace], workspace: Workspace):
+    query = Q(workspace=workspace)
     for item in from_items:
-        query |= Q(name=item["name"]) & Q(namespace=item["namespace"])
-        item["workspace"] = workspace
+        query |= Q(name=item.spec.name) & Q(namespace=item.spec.namespace)
 
-    query &= Q(workspace=workspace)
-    return Model.objects.filter(query).all()
+    return query
+
+
+def get_existing_nodes(from_items: List[Union[SourcedNodeV1, NodeV1]], workspace: Workspace) -> List[NodeV1]:
+    query = build_item_query_filter(from_items, workspace)
+
+    # The data_sources don't matter for this code path, so we don't have to fetch them from the db
+    default_dict = {"data_sources": [], "workspace": workspace.id}
+    return [NodeV1.from_spec({**model.__dict__, **default_dict}) for model in NodeModel.objects.filter(query).all()]
+
+
+def get_existing_edges(from_items: List[Union[SourcedEdgeV1, EdgeV1]], workspace: Workspace) -> List[EdgeV1]:
+    query = build_item_query_filter(from_items, workspace)
+
+    default_dict = {"data_sources": []}
+    result = []
+    for item in EdgeModel.objects.filter(query).all():
+        edge_dict = {**item.__dict__, **default_dict}
+        edge_dict["workspace"] = edge_dict.pop("workspace_id")
+        edge_dict["source"] = {"id": edge_dict.pop("source_id")}
+        edge_dict["destination"] = {"id": edge_dict.pop("destination_id")}
+        result.append(EdgeV1.from_spec(edge_dict))
+    return result
 
 
 def get_edge_nodes_from_database(items, workspace):
@@ -90,155 +127,112 @@ def get_edge_nodes_from_database(items, workspace):
     return nodes
 
 
-# def process_updates(workspace, Model, items):
-#     obj_type = items[0].type
-#     items = [item.spec.dict() for item in items]
-#     for item in items:
-#         item.pop('id', None)
-#         item['workspace'] = workspace
-#
-#     existing_items = get_existing_items(items, workspace, Model)
-#
-#     current_item_map = {(item.name, item.namespace): item for item in existing_items}
-#     item_map = {(item["name"], item["namespace"]): item for item in items}
-#
-#     new_item_keys = item_map.keys() - current_item_map.keys()
-#     deactivated_item_keys = current_item_map.keys() - item_map.keys()
-#     updated_item_keys = item_map.keys() - new_item_keys
-#
-#     for k, model in current_item_map.items():
-#         item_map[k]["id"] = model.id
-#
-#     if obj_type == "Edge":
-#
-#         for k, model in current_item_map.items():
-#             item_map[k]["source"] = model.source
-#             item_map[k]["destination"] = model.destination
-#
-#         node_map = get_edge_nodes_from_database([item_map[key] for key in new_item_keys], workspace)
-#
-#         for key in new_item_keys:
-#             source = item_map[key]["source"]
-#             destination = item_map[key]["destination"]
-#             item_map[key]["source"] = node_map[(source["name"], source["namespace"])]
-#             item_map[key]["destination"] = node_map[(destination["name"], destination["namespace"])]
-#
-#     deactivated_items = deactivate([current_item_map[k] for k in deactivated_item_keys])
-#
-#     new_items = [Model(**item_map[k]) for k in new_item_keys]
-#     for item in new_items:
-#         item.set_names()
-#
-#
-#     updated_items = (merge(current_item_map[k], item_map[k]) for k in updated_item_keys)
-#     updated_items = list(updated_items)
-#
-#     return new_items, deactivated_items, updated_items
-
-
-# def update(
-#     workspace: Workspace,
-#     items: List[GraiType],
-# ):
-#     if not items:
-#         return
-#     obj_type = items[0].type
-#     Model = NodeModel if obj_type == "Node" else EdgeModel
-#
-#     new_items, deactivated_items, updated_items = process_updates(workspace, Model, items)
-#
-#     #Model.objects.bulk_update(deactivated_items, ["is_active"])
-#     #Model.objects.bulk_update(updated_items, ["metadata"])
-#     for item in updated_items:
-#         item.save()
-#     Model.objects.bulk_create(new_items)
-
-
-def process_updates(workspace, source: Source, Model: T, items, active_items=None) -> Tuple[List[T], List[T], List[T]]:
-    if not items:
-        return [], [], []
-
-    type = items[0].type
-    if type == "Node":
-        Schema = NodeV1
-        sourced = False
-    elif type == "Edge":
-        Schema = EdgeV1
-        sourced = False
-    elif type == "SourceNode":
-        Schema = SourcedNodeV1
-        sourced = True
-    elif type == "SourceEdge":
-        Schema = SourcedEdgeV1
-        sourced = True
-
-    active_models = get_existing_items([item.spec.dict() for item in items], workspace, Model)
-
-    if active_items is None:
-        active_items = []
-
-        for active_model in active_models:
-            spec = active_model.__dict__
-
-            if sourced:
-                spec["data_source"] = SourceSpec(id=source.id, name=source.name)
-            else:
-                spec["data_sources"] = [SourceSpec(id=source.id, name=source.name)]
-
-            if type in ["Edge", "SourceEdge"]:
-                spec["source"] = NodeNamedID(**active_model.source.__dict__)
-                spec["destination"] = NodeNamedID(**active_model.destination.__dict__)
-
-            active_items.append(Schema.from_spec(spec))
-
-    current_item_map = {(item.spec.name, item.spec.namespace): item for item in active_items}
-    item_map: Dict[int, T] = {(item.spec.name, item.spec.namespace): item for item in items}
+def compute_graph_changes(items: List[T], active_items: List[P]) -> Tuple[List[T], List[P], List[P]]:
+    current_item_map: Dict[Tuple[str, str], P] = {(item.spec.name, item.spec.namespace): item for item in active_items}
+    item_map: Dict[Tuple[str, str], T] = {(item.spec.name, item.spec.namespace): item for item in items}
 
     new_item_keys = item_map.keys() - current_item_map.keys()
     deactivated_item_keys = current_item_map.keys() - item_map.keys()
     updated_item_keys = item_map.keys() - new_item_keys
 
-    deactivated_items = [current_item_map[k] for k in deactivated_item_keys]
-    for item in deactivated_items:
-        item.spec.is_active = False
-
     new_items = [item_map[k] for k in new_item_keys]
-
-    updated_items = [
-        merge(item_map[k], current_item_map[k]) for k in updated_item_keys if item_map[k] != current_item_map[k]
+    deactivated_items = [current_item_map[k] for k in deactivated_item_keys]
+    updated_items: List[P] = [
+        merge(current_item_map[k], item_map[k]) for k in updated_item_keys if item_map[k] != current_item_map[k]
     ]
 
-    def schemaToModel(item):
-        values = item.spec.dict()
-        # breakpoint()
-        values["workspace"] = workspace
-        # values["display_name"] = values["name"]
+    return new_items, deactivated_items, updated_items
 
-        if type in ["Edge", "SourceEdge"]:
-            values["source"] = get_node(workspace, values["source"])
-            values["destination"] = get_node(workspace, values["destination"])
 
-        if "data_source" in values:
-            values.pop("data_source")
-        if "data_sources" in values:
-            values.pop("data_sources")
+def process_source_nodes(
+    workspace: Workspace, items: List[SourcedNodeV1], existing_nodes: Optional[List[NodeV1]] = None
+) -> Tuple[List[NodeModel], List[NodeModel], List[NodeModel]]:
+    def build_model_from_schema(item: Union[NodeV1, SourcedNodeV1]) -> NodeModel:
+        values = item.spec.dict() | {"workspace": workspace}
+        for key in ["data_source", "data_sources"]:
+            values.pop(key, None)
+        return NodeModel(**values)
 
-        result = Model(**values)
-        result.set_names()
-        return result
+    if isinstance(existing_nodes, list):
+        if not all(isinstance(node, NodeV1) for node in existing_nodes):
+            raise ValueError(
+                f"existing_edges must be a list of NodeV1, got list of "
+                f"Union[{set(type(node) for node in existing_nodes)}]"
+            )
+        active_nodes = existing_nodes
+    elif existing_nodes is None:
+        active_nodes = get_existing_nodes(items, workspace)
+    else:
+        raise ValueError("existing_edges must be a list of EdgeV1 or None")
 
-    new = [schemaToModel(item) for item in new_items]
-    updates = [schemaToModel(item) for item in updated_items]
-    deactivated_items = [schemaToModel(item) for item in deactivated_items]
-    # breakpoint()
-    return new, deactivated_items, updates
+    new_items, deactivated_items, updated_items = compute_graph_changes(items, active_nodes)
+    new = [build_model_from_schema(item) for item in new_items]
+    deactivated = [build_model_from_schema(item) for item in deactivated_items]
+    updated = [build_model_from_schema(item) for item in updated_items]
+
+    return new, deactivated, updated
+
+
+def process_source_edges(
+    workspace: Workspace, items: List[SourcedEdgeV1], existing_edges: Optional[List[EdgeV1]] = None
+) -> Tuple[List[EdgeModel], List[EdgeModel], List[EdgeModel]]:
+    def build_model_from_schema(item: Union[EdgeV1, SourcedEdgeV1]) -> EdgeModel:
+        values = item.spec.dict() | {"workspace": workspace}
+        values["source"] = get_node(workspace, values["source"])
+        values["destination"] = get_node(workspace, values["destination"])
+
+        for key in ["data_source", "data_sources"]:
+            values.pop(key, None)
+
+        return EdgeModel(**values)
+
+    if isinstance(existing_edges, list):
+        if not all(isinstance(node, EdgeV1) for node in existing_edges):
+            raise ValueError(
+                f"existing_edges must be a list of EdgeV1, got list of "
+                f"Union[{set(type(node) for node in existing_edges)}]"
+            )
+        active_edges = existing_edges
+    elif existing_edges is None:
+        active_edges = get_existing_edges(items, workspace)
+    else:
+        raise ValueError("existing_edges must be a list of EdgeV1 or None")
+
+    new_items, deactivated_items, updated_items = compute_graph_changes(items, active_edges)
+    new = [build_model_from_schema(item) for item in new_items]
+    deactivated = [build_model_from_schema(item) for item in deactivated_items]
+    updated = [build_model_from_schema(item) for item in updated_items]
+
+    return new, deactivated, updated
+
+
+def process_updates(
+    workspace: Workspace,
+    items: Optional[Union[list[SourcedNodeV1], list[SourcedEdgeV1]]] = None,
+    existing_items: Optional[Union[list[NodeV1], list[EdgeV1]]] = None,
+) -> Tuple[List[LineageModel], List[LineageModel], List[LineageModel]]:
+    if not items:
+        return [], [], []
+
+    item_types = {type(item) for item in items}
+    if len(item_types) != 1:
+        raise ValueError(f"Can't process updates for multiple item types {item_types}")
+
+    if isinstance(items[0], SourcedNodeV1):
+        new, old, updated = process_source_nodes(workspace, items, existing_items)
+    elif isinstance(items[0], SourcedEdgeV1):
+        new, old, updated = process_source_edges(workspace, items, existing_items)
+    else:
+        raise ValueError(f"Cannot process updates for items of type {type(items[0])}")
+
+    return new, old, updated
 
 
 def update(
     workspace: Workspace,
     source: Source,
     items: List[T],
-    active_items: Optional[List[T]] = None,
+    active_items: Optional[Union[list[NodeV1], list[EdgeV1]]] = None,
 ):
     if not items:
         return
@@ -248,7 +242,7 @@ def update(
     Model = NodeModel if type in ["Node", "SourceNode"] else EdgeModel
     relationship = source.nodes if type in ["Node", "SourceNode"] else source.edges
 
-    new_items, deactivated_items, updated_items = process_updates(workspace, source, Model, items, active_items)
+    new_items, deactivated_items, updated_items = process_updates(workspace, items, active_items)
 
     Model.objects.bulk_create(new_items)
     Model.objects.bulk_update(updated_items, ["metadata"])
