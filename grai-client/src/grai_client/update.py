@@ -1,5 +1,6 @@
 from typing import Dict, List, Optional, Tuple, TypeVar, Union
 
+from grai_schemas.utilities import compute_graph_changes
 from grai_schemas.v1.edge import EdgeV1, SourcedEdgeV1
 from grai_schemas.v1.node import NodeV1, SourcedNodeV1
 from grai_schemas.v1.source import SourceSpec, SourceV1
@@ -7,33 +8,6 @@ from grai_schemas.v1.source import SourceSpec, SourceV1
 from grai_client.endpoints.client import BaseClient
 
 T = TypeVar("T", SourcedNodeV1, SourcedEdgeV1)
-
-
-def compute_graph_changes(items: List[T], active_items: List[T]) -> Tuple[List[T], List[T], List[T]]:
-    """
-    Args:
-        items:
-        active_items:
-
-    Returns:
-
-    Raises:
-
-    """
-
-    active_item_map = {hash(item.spec): item for item in active_items}
-    item_map: Dict[int, T] = {hash(item.spec): item for item in items}
-
-    new_item_keys = item_map.keys() - active_item_map.keys()
-    deleted_source_item_keys = active_item_map.keys() - item_map.keys()
-    updated_item_keys = item_map.keys() - new_item_keys
-
-    deleted_from_sources = [active_item_map[k] for k in deleted_source_item_keys]
-
-    new_items: List[T] = [item_map[k] for k in new_item_keys]
-    updated_items = [item_map[k] for k in updated_item_keys if item_map[k] != active_item_map[k]]
-
-    return new_items, updated_items, deleted_from_sources
 
 
 def update(

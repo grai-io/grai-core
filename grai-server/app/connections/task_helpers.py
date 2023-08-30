@@ -149,6 +149,10 @@ def process_source_nodes(
 ) -> Tuple[List[NodeModel], List[NodeModel], List[NodeModel]]:
     def build_model_from_schema(item: Union[NodeV1, SourcedNodeV1]) -> NodeModel:
         values = item.spec.dict() | {"workspace": workspace}
+        if isinstance(item, SourcedNodeV1):
+            metadata = values.pop("metadata")
+            values["metadata"] = {"grai": metadata["grai"], "sources": {item.spec.data_source.name: metadata}}
+
         for key in ["data_source", "data_sources"]:
             values.pop(key, None)
         return NodeModel(**values)
@@ -243,12 +247,13 @@ def update(
     if not items:
         return
 
-    type = items[0].type
-
-    Model = NodeModel if type in ["Node", "SourceNode"] else EdgeModel
-    relationship = source.nodes if type in ["Node", "SourceNode"] else source.edges
+    item_types = items[0].type
+    Model = NodeModel if item_types in ["Node", "SourceNode"] else EdgeModel
+    relationship = source.nodes if item_types in ["Node", "SourceNode"] else source.edges
 
     new_items, deactivated_items, updated_items = process_updates(workspace, items, active_items)
+    for item in chain(new_items, deactivated_items, updated_items):
+        item.set_names()
 
     Model.objects.bulk_create(new_items)
     Model.objects.bulk_update(updated_items, ["metadata"])

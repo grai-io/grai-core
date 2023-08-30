@@ -16,11 +16,7 @@ class YamlFileAdapter(BaseAdapter):
                 spec = item["spec"]
 
                 if not spec.get("data_sources", None):
-                    spec["data_sources"] = [
-                        {
-                            "name": run.source.name,
-                        }
-                    ]
+                    spec["data_source"] = run.source.name
 
                 yield Schema(entity=item).entity
 

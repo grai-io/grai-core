@@ -9,27 +9,38 @@ from .graph_tasks import cache_edge, cache_node
 from .managers import CacheManager, SourceManager
 from django.core.serializers.json import DjangoJSONEncoder
 import json
-from enum import Enum
-import msgspec
+
+
 from typing import Any
 
 
-def enc_hook(obj: Any) -> Any:
-    if isinstance(obj, complex):
-        # convert the complex to a tuple of real, imag
-        return obj.real, obj.imag
-    else:
-        # Raise a NotImplementedError for other types
-        raise NotImplementedError(f"Objects of type {type(obj)} are not supported")
+from enum import Enum
+from uuid import UUID
+from datetime import datetime, date, timezone
+import pathlib
+from pydantic import BaseModel
 
 
-encoder = msgspec.json.Encoder(enc_hook=enc_hook)
+def to_ecma262(dt: datetime) -> str:
+    dt_utc = dt.astimezone(timezone.utc)
+    return dt_utc.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
 
 
 class GraiEncoder(DjangoJSONEncoder):
-    def default(self, obj):
+    def default(self, obj: Any):
         if isinstance(obj, Enum):
             return obj.value
+        elif isinstance(obj, BaseModel):
+            return obj.dict()
+        elif isinstance(obj, (UUID, pathlib.PosixPath, pathlib.WindowsPath)):
+            return str(obj)
+        elif isinstance(obj, datetime):
+            return to_ecma262(obj)
+        elif isinstance(obj, date):
+            return obj.strftime("%Y-%m-%d")
+        elif isinstance(obj, set):
+            return list(obj)
+
         return super().default(obj)
 
 
