@@ -55,13 +55,34 @@ class SourcedNodeSpecMetadataMixin(GraiBaseModel):
 class NamedSourceSpec(NodeNamedID, BaseSpec, SourcedNodeSpecMetadataMixin, DataSourceMixin):
     """ """
 
-    pass
+    def to_node(self) -> "NamedSpec":
+        """
+
+        Returns:
+
+        """
+        values = self.dict(exclude={"metadata", "data_source"})
+        values["data_sources"] = [self.data_source]
+        values["metadata"] = {"grai": self.metadata.grai, "sources": {self.data_source.name: self.metadata}}
+        return NamedSpec(**values)
 
 
 class IDSourceSpec(NodeUuidID, BaseSpec, SourcedNodeSpecMetadataMixin, DataSourceMixin):
     """ """
 
-    pass
+    def to_node(self) -> "IDSpec":
+        """
+
+        Returns:
+
+        """
+        values = self.dict()
+        values["data_sources"] = [values.pop("data_source")]
+        values["metadata"] = {
+            "grai": values["metadata"]["grai"],
+            "sources": {self.data_source.name: values["metadata"]},
+        }
+        return IDSpec(**values)
 
 
 SourcedNodeSpec = Union[IDSourceSpec, NamedSourceSpec]
@@ -88,6 +109,14 @@ class SourcedNodeV1(GraiBaseModel):
 
     def __hash__(self):
         return hash(self.spec)
+
+    def to_node(self) -> "NodeV1":
+        """
+
+        Returns:
+
+        """
+        return NodeV1(version="v1", type="Node", spec=self.spec.to_node())
 
 
 class NodeSpecMetadataMixin(GraiBaseModel):

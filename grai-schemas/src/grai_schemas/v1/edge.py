@@ -57,11 +57,39 @@ class NamedSourceSpec(EdgeNamedID, BaseSpec, SourcedEdgeSpecMetadataMixin, DataS
 
     pass
 
+    def to_edge(self) -> "NamedSpec":
+        """
+
+        Returns:
+
+        """
+        values = self.dict()
+        values["data_sources"] = [values.pop("data_source")]
+        values["metadata"] = {
+            "grai": values["metadata"]["grai"],
+            "sources": {self.data_source.name: values["metadata"]},
+        }
+        return NamedSpec(**values)
+
 
 class IDSourceSpec(EdgeUuidID, BaseSpec, SourcedEdgeSpecMetadataMixin, DataSourceMixin):
     """ """
 
     pass
+
+    def to_edge(self) -> "IDSpec":
+        """
+
+        Returns:
+
+        """
+        values = self.dict()
+        values["data_sources"] = [values.pop("data_source")]
+        values["metadata"] = {
+            "grai": values["metadata"]["grai"],
+            "sources": {self.data_source.name: values["metadata"]},
+        }
+        return IDSpec(**values)
 
 
 SourcedEdgeSpec = Union[IDSourceSpec, NamedSourceSpec]
@@ -88,6 +116,9 @@ class SourcedEdgeV1(GraiBaseModel):
 
     def __hash__(self):
         return hash(self.spec)
+
+    def to_edge(self) -> "EdgeV1":
+        return EdgeV1(version="v1", type="Edge", spec=self.spec.to_edge())
 
 
 class EdgeSpecMetadataMixin(GraiBaseModel):

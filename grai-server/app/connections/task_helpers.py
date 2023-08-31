@@ -22,6 +22,7 @@ from django.contrib.postgres.aggregates import ArrayAgg
 from django.db.models.functions import Coalesce
 from functools import singledispatch
 from django.db.models import Value
+from .adapters.schemas import schema_to_model
 from uuid import UUID
 
 
@@ -173,9 +174,9 @@ def process_source_nodes(
         raise ValueError("existing_edges must be a list of EdgeV1 or None")
 
     new_items, deactivated_items, updated_items = compute_graph_changes(items, active_nodes)
-    new = [build_model_from_schema(item) for item in new_items]
-    deactivated = [build_model_from_schema(item) for item in deactivated_items]
-    updated = [build_model_from_schema(item) for item in updated_items]
+    new = [schema_to_model(item, workspace) for item in new_items]
+    deactivated = [schema_to_model(item, workspace) for item in deactivated_items]
+    updated = [schema_to_model(item, workspace) for item in updated_items]
 
     return new, deactivated, updated
 
@@ -209,9 +210,9 @@ def process_source_edges(
         raise ValueError("existing_edges must be a list of EdgeV1 or None")
 
     new_items, deactivated_items, updated_items = compute_graph_changes(items, active_edges)
-    new = [build_model_from_schema(item) for item in new_items]
-    deactivated = [build_model_from_schema(item) for item in deactivated_items]
-    updated = [build_model_from_schema(item) for item in updated_items]
+    new = [schema_to_model(item, workspace) for item in new_items]
+    deactivated = [schema_to_model(item, workspace) for item in deactivated_items]
+    updated = [schema_to_model(item, workspace) for item in updated_items]
 
     return new, deactivated, updated
 
@@ -252,8 +253,6 @@ def update(
     relationship = source.nodes if item_types in ["Node", "SourceNode"] else source.edges
 
     new_items, deactivated_items, updated_items = process_updates(workspace, items, active_items)
-    for item in chain(new_items, deactivated_items, updated_items):
-        item.set_names()
 
     Model.objects.bulk_create(new_items)
     Model.objects.bulk_update(updated_items, ["metadata"])
