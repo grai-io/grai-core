@@ -1,4 +1,4 @@
-from typing import Any, Dict, Tuple, TypeVar, Union
+from typing import Any, Dict, Tuple, TypeVar, Union, get_args
 
 from grai_schemas.v1 import EdgeV1, NodeV1, SourcedEdgeV1, SourcedNodeV1
 from grai_schemas.v1.edge import EdgeSpec, SourcedEdgeSpec
@@ -37,6 +37,10 @@ def source_edge_builder(resp: Dict[str, Any]) -> SourcedEdgeV1:
     return SourcedEdgeV1.from_spec(resp)
 
 
+source_edge_spec_args = get_args(SourcedEdgeSpec)
+source_node_spec_args = get_args(SourcedNodeSpec)
+
+
 def get_source_and_spec(
     client: ClientV1, grai_type: Union[SourcedNodeSpec, SourcedEdgeSpec]
 ) -> Tuple[SourceSpec, Union[NodeSpec, EdgeSpec]]:
@@ -44,9 +48,9 @@ def get_source_and_spec(
     if source.id is None:
         source = get_is_unique(client, source).spec
 
-    if isinstance(grai_type, SourcedEdgeSpec):
+    if isinstance(grai_type, source_edge_spec_args):
         label = "Edge"
-    elif isinstance(grai_type, SourcedNodeSpec):
+    elif isinstance(grai_type, source_node_spec_args):
         label = "Node"
     else:
         raise ValueError(f"Unexpected type: {type(grai_type)}")

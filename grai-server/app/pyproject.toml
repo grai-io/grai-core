@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "the_guide"
-version = "0.1.38"
+version = "0.1.39"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>", "Edward Louth <edward@grai.io>"]
 license = "Elastic-2.0"
@@ -38,7 +38,8 @@ django-storages = "^1.13.2"
 ghapi = "^1.0.3"
 jwt = "^1.3.1"
 grai-graph = "^0.2.5-alpha3"
-grai-schemas = "^0.2.0"
+grai-schemas = "^0.2.4"
+grai-client = "^0.3.2"
 grai-source-bigquery = "^0.2.0"
 grai-source-dbt = "^0.3.1"
 grai-source-dbt-cloud =  "^0.1.0"

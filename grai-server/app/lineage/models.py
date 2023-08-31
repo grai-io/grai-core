@@ -9,14 +9,17 @@ from .graph_tasks import cache_edge, cache_node
 from .managers import CacheManager, SourceManager
 from django.core.serializers.json import DjangoJSONEncoder
 import json
+
+
+from typing import Any
+
+
 from enum import Enum
-
-
-class GraiEncoder(DjangoJSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, Enum):
-            return obj.value
-        return super().default(obj)
+from uuid import UUID
+from datetime import datetime, date, timezone
+import pathlib
+from pydantic import BaseModel
+from grai_schemas.serializers import GraiEncoder
 
 
 # Create your models here.

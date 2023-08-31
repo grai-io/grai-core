@@ -6,6 +6,7 @@ from django_multitenant.utils import set_current_tenant
 from installations.github import Github
 from installations.models import Repository
 from workspaces.models import Organisation, Workspace
+from django.conf import settings
 
 
 @pytest.fixture
@@ -60,6 +61,7 @@ def mocked_requests_post_no_token(*args, **kwargs):
 
 @pytest.mark.django_db
 class TestInit:
+    @pytest.mark.skipif(settings.GITHUB_PRIVATE_KEY is None, reason="requires github credentials")
     def test_init_with_installation_id(self, mocker):
         mocker.patch("installations.github.requests.post", side_effect=mocked_requests_post)
         set_current_tenant(None)
@@ -68,6 +70,7 @@ class TestInit:
         assert github.repo == "repo"
         assert github.installation_id == "1234"
 
+    @pytest.mark.skipif(settings.GITHUB_PRIVATE_KEY is None, reason="requires github credentials")
     def test_init(self, create_repository, mocker):
         mocker.patch("installations.github.requests.post", side_effect=mocked_requests_post)
         github = Github(owner="owner", repo="repo")
@@ -84,6 +87,7 @@ class TestInit:
 
 @pytest.mark.django_db
 class TestCreateCheck:
+    @pytest.mark.skipif(settings.GITHUB_PRIVATE_KEY is None, reason="requires github credentials")
     def test_create_check(self, mocker):
         mocker.patch("installations.github.requests.post", side_effect=mocked_requests_post)
         mocker.patch("installations.github.GhApi")
@@ -94,6 +98,7 @@ class TestCreateCheck:
 
         assert check is not None
 
+    @pytest.mark.skipif(settings.GITHUB_PRIVATE_KEY is None, reason="requires github credentials")
     def test_create_check_all(self, mocker):
         mocker.patch("installations.github.requests.post", side_effect=mocked_requests_post)
         mocker.patch("installations.github.GhApi")
@@ -106,6 +111,7 @@ class TestCreateCheck:
 
         assert check is not None
 
+    @pytest.mark.skipif(settings.GITHUB_PRIVATE_KEY is None, reason="requires github credentials")
     def test_create_check_no_token(self, mocker):
         mocker.patch("installations.github.requests.post", side_effect=mocked_requests_post_no_token)
 
@@ -118,6 +124,7 @@ class TestCreateCheck:
 
 @pytest.mark.django_db
 class TestStartCheck:
+    @pytest.mark.skipif(settings.GITHUB_PRIVATE_KEY is None, reason="requires github credentials")
     def test_start_check(self, mocker):
         mocker.patch("installations.github.requests.post", side_effect=mocked_requests_post)
         mocker.patch("installations.github.GhApi")
@@ -130,6 +137,7 @@ class TestStartCheck:
 
 @pytest.mark.django_db
 class TestCompleteCheck:
+    @pytest.mark.skipif(settings.GITHUB_PRIVATE_KEY is None, reason="requires github credentials")
     def test_complete_check(self, mocker):
         mocker.patch("installations.github.requests.post", side_effect=mocked_requests_post)
         mocker.patch("installations.github.GhApi")
@@ -142,6 +150,7 @@ class TestCompleteCheck:
 
 @pytest.mark.django_db
 class TestGetRepos:
+    @pytest.mark.skipif(settings.GITHUB_PRIVATE_KEY is None, reason="requires github credentials")
     def test_start_check(self, mocker):
         mocker.patch("installations.github.requests.post", side_effect=mocked_requests_post)
         mocker.patch("installations.github.GhApi")

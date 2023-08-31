@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("lineage", "0011_remove_edge_data_source_remove_node_data_source"),
     ]

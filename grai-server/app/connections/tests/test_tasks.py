@@ -14,6 +14,7 @@ from installations.models import Branch, Commit, PullRequest, Repository
 from installations.tests.test_github import mocked_requests_post
 from lineage.models import Edge, Node, Source
 from workspaces.models import Organisation, Workspace
+from django.conf import settings
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
@@ -484,6 +485,7 @@ class TestTests:
 
         process_run(str(run.id))
 
+    @pytest.mark.skipif(settings.GITHUB_PRIVATE_KEY is None, reason="requires github credentials")
     def test_dbt_github(
         self,
         test_workspace,
@@ -515,6 +517,7 @@ class TestTests:
 
         process_run(str(run.id))
 
+    @pytest.mark.skipif(settings.GITHUB_PRIVATE_KEY is None, reason="requires github credentials")
     def test_no_connector_github(self, test_workspace, test_connector, test_commit, mocker, test_source):
         mocker.patch("installations.github.requests.post", side_effect=mocked_requests_post)
         mocker.patch("installations.github.GhApi")
@@ -539,6 +542,7 @@ class TestTests:
 
         assert str(e_info.value) == "No connector found for: Connector"
 
+    @pytest.mark.skipif(settings.GITHUB_PRIVATE_KEY is None, reason="requires github credentials")
     def test_dbt_github_test_failure(
         self,
         test_workspace,
@@ -630,6 +634,7 @@ class TestTests:
 
         process_run(str(run.id))
 
+    @pytest.mark.skipif(settings.GITHUB_PRIVATE_KEY is None, reason="requires github credentials")
     def test_yaml_github_test_failure(
         self,
         test_workspace,
