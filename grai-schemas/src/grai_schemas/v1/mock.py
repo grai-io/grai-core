@@ -150,31 +150,31 @@ class MockNode:
         self.workspace = workspace
         self.kwargs = kwargs
 
-    def node(self, **kwargs):
+    def node(self, **kwargs) -> NodeV1:
         """ """
         kwargs.setdefault("spec", self.named_node_spec())
         return NodeFactory.build(factory_use_construct=True, **kwargs)
 
-    def named_node_spec(self, **kwargs):
+    def named_node_spec(self, **kwargs) -> NamedSpec:
         """ """
         base_spec = NamedNodeSpecFactory.build(factory_use_construct=True, **kwargs)
         if self.workspace:
             base_spec.workspace = self.workspace.id
         return base_spec
 
-    def id_node_spec(self, **kwargs):
+    def id_node_spec(self, **kwargs) -> IDSpec:
         """ """
         base_spec = IDNodeSpecFactory.build(factory_use_construct=True, **kwargs)
         if self.workspace:
             base_spec.workspace = self.workspace.id
         return base_spec
 
-    def sourced_node(self, **kwargs):
+    def sourced_node(self, **kwargs) -> SourcedNodeV1:
         """ """
         kwargs.setdefault("spec", self.named_source_node_spec())
         return SourcedNodeFactory.build(factory_use_construct=True, **kwargs)
 
-    def named_source_node_spec(self, **kwargs):
+    def named_source_node_spec(self, **kwargs) -> NamedSourceSpec:
         """ """
         base_spec = NamedSourceNodeSpecFactory.build(factory_use_construct=True, **kwargs)
 
@@ -182,7 +182,7 @@ class MockNode:
             base_spec.workspace = self.workspace.id
         return base_spec
 
-    def id_source_node_spec(self, **kwargs):
+    def id_source_node_spec(self, **kwargs) -> IDSourceSpec:
         """ """
         base_spec = IDSourceNodeSpecFactory.build(factory_use_construct=True, **kwargs)
 
@@ -202,8 +202,8 @@ class NamedEdgeSpecFactory(ModelFactory[NamedEdgeSpec]):
     @classmethod
     def metadata(cls, data_sources: List[SourceSpec]) -> EdgeMetadataV1:
         """ """
-        sources = {source.name: GraiEdgeMetadataV1Factory.build() for source in data_sources}
-        return EdgeMetadataV1Factory.build(sources=sources)
+        sources = {source.name: GraiEdgeMetadataV1Factory.build(factory_use_construct=True) for source in data_sources}
+        return EdgeMetadataV1Factory.build(sources=sources, factory_use_construct=True)
 
     @post_generated
     @classmethod
@@ -245,17 +245,17 @@ class MockEdge:
     def __init__(self, workspace=None, **kwargs):
         self.workspace = workspace
 
-    def sourced_edge(self, **kwargs):
+    def sourced_edge(self, **kwargs) -> SourcedEdgeV1:
         """ """
         kwargs.setdefault("spec", self.named_source_edge_spec())
         return SourcedEdgeFactory.build(factory_use_construct=True, **kwargs)
 
-    def edge(self, **kwargs):
+    def edge(self, **kwargs) -> EdgeV1:
         """ """
         kwargs.setdefault("spec", self.named_edge_spec())
         return EdgeFactory.build(factory_use_construct=True, **kwargs)
 
-    def named_edge_spec(self, **kwargs):
+    def named_edge_spec(self, **kwargs) -> NamedEdgeSpec:
         """ """
         base_spec = NamedEdgeSpecFactory.build(factory_use_construct=True, **kwargs)
 
@@ -264,7 +264,7 @@ class MockEdge:
 
         return base_spec
 
-    def id_edge_spec(self, **kwargs):
+    def id_edge_spec(self, **kwargs) -> EdgeIDSpec:
         """ """
         base_spec = IDEdgeSpecFactory.build(factory_use_construct=True, **kwargs)
 
@@ -273,7 +273,7 @@ class MockEdge:
 
         return base_spec
 
-    def named_source_edge_spec(self, **kwargs):
+    def named_source_edge_spec(self, **kwargs) -> NamedEdgeSourceSpec:
         """ """
         base_spec = NamedEdgeSourceSpecFactory.build(factory_use_construct=True, **kwargs)
 
@@ -282,7 +282,7 @@ class MockEdge:
 
         return base_spec
 
-    def id_source_edge_spec(self, **kwargs):
+    def id_source_edge_spec(self, **kwargs) -> EdgeIDSourceSpec:
         """ """
         base_spec = IDEdgeSourceSpecFactory.build(factory_use_construct=True, **kwargs)
 
@@ -306,22 +306,22 @@ class OrganisationFactory(ModelFactory[OrganisationV1]):
 
 class MockOrganisation:
     @classmethod
-    def organisation(cls, **kwargs):
+    def organisation(cls, **kwargs) -> OrganisationV1:
         """ """
         return OrganisationFactory.build(factory_use_construct=True, **kwargs)
 
     @classmethod
-    def organisation_spec(cls, **kwargs):
+    def organisation_spec(cls, **kwargs) -> OrganisationSpec:
         """ """
         return OrganisationSpecFactory.build(factory_use_construct=True, **kwargs)
 
     @classmethod
-    def organization(cls, **kwargs):
+    def organization(cls, **kwargs) -> OrganisationV1:
         """ """
         return cls.organisation(**kwargs)
 
     @classmethod
-    def organization_spec(cls, **kwargs):
+    def organization_spec(cls, **kwargs) -> OrganisationSpec:
         """ """
         return cls.organisation_spec(**kwargs)
 
@@ -349,12 +349,12 @@ class MockWorkspace:
     def __init__(self, organisation=None):
         self.organisation = organisation
 
-    def workspace(self, **kwargs):
+    def workspace(self, **kwargs) -> WorkspaceV1:
         """ """
         kwargs.setdefault("spec", self.workspace_spec())
         return WorkspaceFactory.build(factory_use_construct=True, **kwargs)
 
-    def workspace_spec(self, **kwargs):
+    def workspace_spec(self, **kwargs) -> WorkspaceSpec:
         """ """
         if self.organisation:
             kwargs.setdefault("organisation", self.organisation)
@@ -377,12 +377,12 @@ class MockSource:
     def __init__(self, workspace=None):
         self.workspace = workspace
 
-    def source(self, **kwargs):
+    def source(self, **kwargs) -> SourceV1:
         """ """
         kwargs.setdefault("spec", self.source_spec())
         return SourceFactory.build(factory_use_construct=True, **kwargs)
 
-    def source_spec(self, **kwargs):
+    def source_spec(self, **kwargs) -> SourceSpec:
         """ """
         if self.workspace:
             kwargs.setdefault("workspace", self.workspace)

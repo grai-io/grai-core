@@ -148,16 +148,6 @@ def compute_graph_changes(items: List[T], active_items: List[P]) -> Tuple[List[T
 def process_source_nodes(
     workspace: Workspace, items: List[SourcedNodeV1], existing_nodes: Optional[List[NodeV1]] = None
 ) -> Tuple[List[NodeModel], List[NodeModel], List[NodeModel]]:
-    def build_model_from_schema(item: Union[NodeV1, SourcedNodeV1]) -> NodeModel:
-        values = item.spec.dict() | {"workspace": workspace}
-        if isinstance(item, SourcedNodeV1):
-            metadata = values.pop("metadata")
-            values["metadata"] = {"grai": metadata["grai"], "sources": {item.spec.data_source.name: metadata}}
-
-        for key in ["data_source", "data_sources"]:
-            values.pop(key, None)
-        return NodeModel(**values)
-
     if isinstance(existing_nodes, list):
         if not all(isinstance(node, NodeV1) for node in existing_nodes):
             raise ValueError(
@@ -174,6 +164,7 @@ def process_source_nodes(
         raise ValueError("existing_edges must be a list of EdgeV1 or None")
 
     new_items, deactivated_items, updated_items = compute_graph_changes(items, active_nodes)
+
     new = [schema_to_model(item, workspace) for item in new_items]
     deactivated = [schema_to_model(item, workspace) for item in deactivated_items]
     updated = [schema_to_model(item, workspace) for item in updated_items]

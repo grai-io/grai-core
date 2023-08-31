@@ -34,48 +34,40 @@ def organization_v1_to_model(organization: OrganisationV1) -> Organisation:
     return organization_v1_spec_to_model(organization.spec)
 
 
-def workspace_v1_spec_to_model(workspace_arg: WorkspaceSpec, workspace: Optional[Workspace] = None) -> Workspace:
+def workspace_v1_spec_to_model(workspace_arg: WorkspaceSpec) -> Workspace:
     raise NotImplementedError()
 
 
-def workspace_v1_to_model(workspace_arg: WorkspaceV1, workspace: Optional[Workspace] = None) -> Workspace:
-    return workspace_v1_spec_to_model(workspace_arg.spec, workspace)
+def workspace_v1_to_model(workspace_arg: WorkspaceV1) -> Workspace:
+    return workspace_v1_spec_to_model(workspace_arg.spec)
 
 
-def source_v1_spec_to_model(source: SourceSpec, workspace: Optional[Workspace] = None) -> Source:
-    obj_workspace = source.workspace if workspace is None else workspace
-    if obj_workspace is None:
-        raise ValueError("Workspace must be provided either on the source or as an argument to this function")
-
-    return Source(name=source.name, workspace=obj_workspace)
+def source_v1_spec_to_model(source: SourceSpec, workspace: Workspace) -> Source:
+    return Source(name=source.name, workspace=workspace)
 
 
-def source_v1_to_model(source: SourceV1, workspace: Optional[Workspace] = None) -> Source:
+def source_v1_to_model(source: SourceV1, workspace: Workspace) -> Source:
     return source_v1_spec_to_model(source.spec, workspace)
 
 
-def source_node_v1_spec_to_model(source_node: SourcedNodeSpec, workspace: Optional[Workspace] = None) -> Node:
+def source_node_v1_spec_to_model(source_node: SourcedNodeSpec, workspace: Workspace) -> Node:
     """
     WARNING: Does not set ManyToMany relationships like data_sources for performance reasons.
     """
     return node_v1_spec_to_model(source_node.to_node(), workspace)
 
 
-def source_node_v1_to_model(source_node: SourcedNodeV1, workspace: Optional[Workspace] = None) -> Node:
+def source_node_v1_to_model(source_node: SourcedNodeV1, workspace: Workspace) -> Node:
     """
     WARNING: Does not set ManyToMany relationships like data_sources for performance reasons.
     """
     return source_node_v1_spec_to_model(source_node.spec, workspace)
 
 
-def node_v1_spec_to_model(node: NodeSpec, workspace: Optional[Workspace] = None) -> Node:
+def node_v1_spec_to_model(node: NodeSpec, workspace: Workspace) -> Node:
     """
     WARNING: Does not set ManyToMany relationships like data_sources for performance reasons.
     """
-    obj_workspace = node.workspace if workspace is None else workspace
-    if obj_workspace is None:
-        raise ValueError("Workspace must be provided either on the source or as an argument to this function")
-
     values = node.dict(exclude={"data_sources", "workspace"}) | {"workspace": workspace}
 
     result = Node(**values)
@@ -84,41 +76,37 @@ def node_v1_spec_to_model(node: NodeSpec, workspace: Optional[Workspace] = None)
     return result
 
 
-def node_v1_to_model(node: NodeV1, workspace: Optional[Workspace] = None) -> Node:
+def node_v1_to_model(node: NodeV1, workspace: Workspace) -> Node:
     """
     WARNING: Does not set ManyToMany relationships like data_sources for performance reasons.
     """
     return node_v1_spec_to_model(node.spec, workspace)
 
 
-def source_edge_v1_spec_to_model(source_edge: SourcedEdgeSpec, workspace: Optional[Workspace] = None) -> Node:
+def source_edge_v1_spec_to_model(source_edge: SourcedEdgeSpec, workspace: Workspace) -> Node:
     """
     WARNING: Does not set ManyToMany relationships like data_sources for performance reasons.
     """
     return edge_v1_spec_to_model(source_edge.to_edge(), workspace)
 
 
-def source_edge_v1_to_model(source_edge: SourcedEdgeV1, workspace: Optional[Workspace] = None) -> Node:
+def source_edge_v1_to_model(source_edge: SourcedEdgeV1, workspace: Workspace) -> Node:
     """
     WARNING: Does not set ManyToMany relationships like data_sources for performance reasons.
     """
     return source_edge_v1_spec_to_model(source_edge.spec, workspace)
 
 
-def edge_v1_spec_to_model(edge: EdgeSpec, workspace: Optional[Workspace] = None) -> Edge:
+def edge_v1_spec_to_model(edge: EdgeSpec, workspace: Workspace) -> Edge:
     """
     WARNING: Does not set ManyToMany relationships like data_sources for performance reasons.
     """
-    obj_workspace = edge.workspace if workspace is None else workspace
-    if obj_workspace is None:
-        raise ValueError("Workspace must be provided either on the source or as an argument to this function")
-
     values = edge.dict(exclude={"workspace", "data_sources"}) | {"workspace": workspace}
 
     if edge.source.id is None or edge.destination.id is None:
         source_name = Q(name=edge.source.name, namespace=edge.source.namespace)
         destination_name = Q(name=edge.destination.name, namespace=edge.destination.namespace)
-        workspace_filter = Q(workspace=obj_workspace)
+        workspace_filter = Q(workspace=workspace)
         query = (source_name | destination_name) & workspace_filter
 
         nodes = Node.objects.filter(query).all()
@@ -143,7 +131,7 @@ def edge_v1_spec_to_model(edge: EdgeSpec, workspace: Optional[Workspace] = None)
     return result
 
 
-def edge_v1_to_model(edge: EdgeV1, workspace: Optional[Workspace] = None) -> Edge:
+def edge_v1_to_model(edge: EdgeV1, workspace: Workspace) -> Edge:
     """
     WARNING: Does not set ManyToMany relationships like data_sources for performance reasons.
     """

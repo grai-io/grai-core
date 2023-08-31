@@ -19,29 +19,7 @@ from uuid import UUID
 from datetime import datetime, date, timezone
 import pathlib
 from pydantic import BaseModel
-
-
-def to_ecma262(dt: datetime) -> str:
-    dt_utc = dt.astimezone(timezone.utc)
-    return dt_utc.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
-
-
-class GraiEncoder(DjangoJSONEncoder):
-    def default(self, obj: Any):
-        if isinstance(obj, Enum):
-            return obj.value
-        elif isinstance(obj, BaseModel):
-            return obj.dict()
-        elif isinstance(obj, (UUID, pathlib.PosixPath, pathlib.WindowsPath)):
-            return str(obj)
-        elif isinstance(obj, datetime):
-            return to_ecma262(obj)
-        elif isinstance(obj, date):
-            return obj.strftime("%Y-%m-%d")
-        elif isinstance(obj, set):
-            return list(obj)
-
-        return super().default(obj)
+from grai_schemas.serializers import GraiEncoder
 
 
 # Create your models here.

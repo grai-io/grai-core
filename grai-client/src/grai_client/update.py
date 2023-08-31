@@ -37,7 +37,7 @@ def update(
             raise ValueError(
                 f"All items provided to `update` must be of the same type. Instead got a mix of types:" f" {item_types}"
             )
-    if any(isinstance(item, Union[NodeV1, EdgeV1]) for item in items):
+    if any(isinstance(item, (NodeV1, EdgeV1)) for item in items):
         raise NotImplementedError(
             f"Update is not supported for NodeV1 or EdgeV1. Please use SourcedNodeV1 or SourcedEdgeV1 instead."
         )

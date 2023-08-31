@@ -233,7 +233,7 @@ class TestUpdate:
 
     @pytest.mark.django_db
     def test_correct_updated_metadata(self, test_workspace, test_source):
-        mocker.node.named_node_spec(workspace=test_workspace, source=test_source)
+        mocker.node.named_node_spec(workspace=test_workspace.id, source=test_source.id)
         nodes = [mock_node(test_workspace) for _ in range(2)]
         nodes[0].metadata["test"] = {"key": "this is a test"}
         nodes[0].save()
@@ -257,9 +257,9 @@ class TestUpdate:
         for node in nodes:
             node.save()
 
-        source = mocker.source.source_spec(name=test_source.name, id=test_source.id, workspace=test_workspace)
         workspace = mocker.workspace.workspace_spec(id=test_workspace.id, name=test_workspace.name)
-        kwargs = {"data_source": source, "workspace": workspace, "namespace": nodes[0].namespace}
+        source = mocker.source.source_spec(name=test_source.name, id=test_source.id, workspace=workspace.id)
+        kwargs = {"data_source": source, "workspace": workspace.id, "namespace": nodes[0].namespace}
 
         existing_node_spec = [
             mocker.node.named_source_node_spec(name=node.name, id=node.id, **kwargs) for node in nodes
@@ -273,9 +273,7 @@ class TestUpdate:
 
         existing_nodes = []
         for node in created_nodes:
-            item = node.spec.dict(exclude_none=True)
-            item.pop("data_source")
-            item.pop("workspace")
+            item = node.spec.dict(exclude_none=True, exclude={"data_source", "workspace"})
             item["data_sources"] = []
             existing_nodes.append(NodeV1.from_spec(item))
 
@@ -302,10 +300,10 @@ class TestUpdate:
 
         for node in nodes:
             node.save()
-
-        source = mocker.source.source_spec(name=test_source.name, id=test_source.id, workspace=test_workspace)
         workspace = mocker.workspace.workspace_spec(id=test_workspace.id, name=test_workspace.name)
-        kwargs = {"data_source": source, "workspace": workspace, "namespace": nodes[0].namespace}
+        source = mocker.source.source_spec(name=test_source.name, id=test_source.id, workspace=workspace.id)
+
+        kwargs = {"data_source": source, "workspace": workspace.id, "namespace": nodes[0].namespace}
 
         existing_node_spec = [mocker.node.named_source_node_spec(name=node.name, **kwargs) for node in nodes]
         new_node_spec = [mocker.node.named_source_node_spec(**kwargs) for node in range(2)]
@@ -341,9 +339,9 @@ class TestUpdate:
             edge.destination.save()
             edge.save()
 
-        source = mocker.source.source_spec(name=test_source.name, id=test_source.id, workspace=test_workspace)
+        source = mocker.source.source_spec(name=test_source.name, id=test_source.id, workspace=test_workspace.id)
         workspace = mocker.workspace.workspace_spec(id=test_workspace.id, name=test_workspace.name)
-        kwargs = {"data_source": source, "workspace": workspace, "namespace": edges[0].namespace}
+        kwargs = {"data_source": source, "workspace": workspace.id, "namespace": edges[0].namespace}
 
         existing_edge_spec = []
         for edge in edges:
@@ -384,9 +382,7 @@ class TestUpdate:
 
         existing_edges = []
         for edge in created_edges:
-            item = edge.spec.dict(exclude_none=True)
-            item.pop("data_source")
-            item.pop("workspace")
+            item = edge.spec.dict(exclude_none=True, exclude={"data_source", "workspace"})
             item["data_sources"] = []
             existing_edges.append(EdgeV1.from_spec(item))
 
@@ -415,9 +411,10 @@ class TestUpdate:
             edge.destination.save()
             edge.save()
 
-        source = mocker.source.source_spec(name=test_source.name, id=test_source.id, workspace=test_workspace)
         workspace = mocker.workspace.workspace_spec(id=test_workspace.id, name=test_workspace.name)
-        kwargs = {"data_source": source, "workspace": workspace, "namespace": edges[0].namespace}
+        source = mocker.source.source_spec(name=test_source.name, id=test_source.id, workspace=workspace.id)
+
+        kwargs = {"data_source": source, "workspace": workspace.id, "namespace": edges[0].namespace}
 
         existing_edge_spec = []
         for edge in edges:
@@ -481,9 +478,7 @@ class TestUpdate:
         mock_nodes = [mock_node_schema(node, test_source) for node in nodes]
         existing_nodes = []
         for node in mock_nodes:
-            item = node.spec.dict(exclude_none=True)
-            item.pop("data_source")
-            item.pop("workspace")
+            item = node.spec.dict(exclude_none=True, exclude={"data_source", "workspace"})
             item["data_sources"] = []
             existing_nodes.append(NodeV1.from_spec(item))
 

@@ -63,11 +63,11 @@ class NamedSourceSpec(EdgeNamedID, BaseSpec, SourcedEdgeSpecMetadataMixin, DataS
         Returns:
 
         """
-        values = self.dict()
-        values["data_sources"] = [values.pop("data_source")]
+        values = self.dict(exclude={"data_source", "metadata"})
+        values["data_sources"] = [self.data_source]
         values["metadata"] = {
-            "grai": values["metadata"]["grai"],
-            "sources": {self.data_source.name: values["metadata"]},
+            "grai": self.metadata.grai,
+            "sources": {self.data_source.name: self.metadata},
         }
         return NamedSpec(**values)
 
@@ -83,11 +83,11 @@ class IDSourceSpec(EdgeUuidID, BaseSpec, SourcedEdgeSpecMetadataMixin, DataSourc
         Returns:
 
         """
-        values = self.dict()
-        values["data_sources"] = [values.pop("data_source")]
+        values = self.dict(exclude={"data_source", "metadata"})
+        values["data_sources"] = [self.data_source]
         values["metadata"] = {
-            "grai": values["metadata"]["grai"],
-            "sources": {self.data_source.name: values["metadata"]},
+            "grai": self.metadata.grai,
+            "sources": {self.data_source.name: self.metadata},
         }
         return IDSpec(**values)
 
