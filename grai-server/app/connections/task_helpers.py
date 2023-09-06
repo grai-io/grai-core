@@ -87,10 +87,19 @@ def get_node(workspace: Workspace, grai_type: NameNamespaceDict) -> NodeModel:
     )
 
 
-def build_item_query_filter(from_items: List[SpecNameNamespace], workspace: Union[UUID, Workspace]):
+def build_item_query_filter(
+    from_items: List[Union[SpecNameNamespace, NameNamespace]], workspace: Union[UUID, Workspace]
+):
+    if len(from_items) == 0:
+        raise ValueError("from_items must not be empty")
+
     query = Q()
     for item in from_items:
-        query |= Q(name=item.spec.name) & Q(namespace=item.spec.namespace)
+        if hasattr(item, "spec"):
+            query |= Q(name=item.spec.name) & Q(namespace=item.spec.namespace)
+        else:
+            query |= Q(name=item.name) & Q(namespace=item.namespace)
+
     query &= Q(workspace=workspace)
 
     return query

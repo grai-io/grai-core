@@ -484,7 +484,7 @@ class TestUpdate:
 
         update(test_workspace, test_source, mock_nodes[:1], existing_nodes)
 
-    def test_build_query_filter(self):
+    def test_build_spec_query_filter(self):
         workspace = mocker.workspace.workspace_spec(name="workspace1", id=uuid.uuid4())
         source = mocker.source.source_spec(name="source1", workspace=workspace)
         kwargs = {"data_source": source, "workspace": workspace.name, "namespace": "default"}
@@ -493,6 +493,21 @@ class TestUpdate:
         source_specs = [mocker.node.named_source_node_spec(**kwargs, name=name) for name in node_names]
         source_items = [mocker.node.sourced_node(spec=spec) for spec in source_specs]
         query = build_item_query_filter(source_items, workspace.id)
+
+        expected_query = (Q(name="node1", namespace="default") | Q(name="node2", namespace="default")) & Q(
+            workspace=workspace.id
+        )
+
+        assert query == expected_query
+
+    def test_build_query_filter(self):
+        workspace = mocker.workspace.workspace_spec(name="workspace1", id=uuid.uuid4())
+        source = mocker.source.source_spec(name="source1", workspace=workspace)
+        kwargs = {"data_source": source, "workspace": workspace.name, "namespace": "default"}
+
+        node_names = ["node1", "node2"]
+        source_specs = [mocker.node.named_source_node_spec(**kwargs, name=name) for name in node_names]
+        query = build_item_query_filter(source_specs, workspace.id)
 
         expected_query = (Q(name="node1", namespace="default") | Q(name="node2", namespace="default")) & Q(
             workspace=workspace.id
