@@ -87,7 +87,7 @@ def get_node(workspace: Workspace, grai_type: NameNamespaceDict) -> NodeModel:
     )
 
 
-def build_item_query_filter(from_items: List[SpecNameNamespace], workspace: Workspace):
+def build_item_query_filter(from_items: List[SpecNameNamespace], workspace: Union[UUID, Workspace]):
     query = Q()
     for item in from_items:
         query |= Q(name=item.spec.name) & Q(namespace=item.spec.namespace)
