@@ -88,9 +88,10 @@ def get_node(workspace: Workspace, grai_type: NameNamespaceDict) -> NodeModel:
 
 
 def build_item_query_filter(from_items: List[SpecNameNamespace], workspace: Workspace):
-    query = Q(workspace=workspace)
+    query = Q()
     for item in from_items:
         query |= Q(name=item.spec.name) & Q(namespace=item.spec.namespace)
+    query &= Q(workspace=workspace)
 
     return query
 
@@ -151,17 +152,17 @@ def process_source_nodes(
     if isinstance(existing_nodes, list):
         if not all(isinstance(node, NodeV1) for node in existing_nodes):
             raise ValueError(
-                f"existing_edges must be a list of NodeV1, got list of "
+                f"existing_nodes must be a list of NodeV1, got list of "
                 f"Union[{set(type(node) for node in existing_nodes)}]"
             )
-        if not all(edge.spec.id for edge in existing_nodes):
-            raise ValueError("Some edges in existing_edges are missing ids")
+        if not all(node.spec.id for node in existing_nodes):
+            raise ValueError("Some Nodes in existing_nodes are missing ids")
 
         active_nodes = existing_nodes
     elif existing_nodes is None:
         active_nodes = get_existing_nodes(items, workspace)
     else:
-        raise ValueError("existing_edges must be a list of EdgeV1 or None")
+        raise ValueError("existing_nodes must be a list of NodeV1 or None")
 
     new_items, deactivated_items, updated_items = compute_graph_changes(items, active_nodes)
 
@@ -175,16 +176,6 @@ def process_source_nodes(
 def process_source_edges(
     workspace: Workspace, items: List[SourcedEdgeV1], existing_edges: Optional[List[EdgeV1]] = None
 ) -> Tuple[List[EdgeModel], List[EdgeModel], List[EdgeModel]]:
-    def build_model_from_schema(item: Union[EdgeV1, SourcedEdgeV1]) -> EdgeModel:
-        values = item.spec.dict() | {"workspace": workspace}
-        values["source"] = get_node(workspace, values["source"])
-        values["destination"] = get_node(workspace, values["destination"])
-
-        for key in ["data_source", "data_sources"]:
-            values.pop(key, None)
-
-        return EdgeModel(**values)
-
     if isinstance(existing_edges, list):
         if not all(isinstance(node, EdgeV1) for node in existing_edges):
             raise ValueError(
