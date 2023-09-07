@@ -263,9 +263,21 @@ def update(
     relationship.add(*new_items, *updated_items)
 
     if len(deactivated_items) > 0:
+        """
+        When running update we normally do
+        update(nodes)
+        update(edges)
+
+        But if we are deleting nodes the associated Edges of the data source haven't yet received an update when we update the nodes.
+        """
         relationship.remove(*deactivated_items)
-        EdgeModel.objects.filter(workspace=workspace, data_sources=None).delete()
-        NodeModel.objects.filter(workspace=workspace, data_sources=None).delete()
+        empty_source_query = Q(workspace=workspace) & Q(data_sources=None)
+
+        deletable_nodes = NodeModel.objects.filter(empty_source_query)
+        deleted_edge_query = (Q(source__in=deletable_nodes) | Q(destination__in=deletable_nodes)) | empty_source_query
+
+        EdgeModel.objects.filter(deleted_edge_query).delete()
+        NodeModel.objects.filter(empty_source_query).delete()
 
 
 def modelToSchema(model, Schema, type):
