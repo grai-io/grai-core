@@ -3021,13 +3021,13 @@ files = [
 
 [[package]]
 name = "phonenumberslite"
-version = "8.13.19"
+version = "8.13.20"
 description = "Python version of Google's common library for parsing, formatting, storing and validating international phone numbers."
 optional = false
 python-versions = "*"
 files = [
-    {file = "phonenumberslite-8.13.19-py2.py3-none-any.whl", hash = "sha256:163a18e962e4a29ffd0bd523fa7aa60301bc7aa467bf0383bf3c4dac02097573"},
-    {file = "phonenumberslite-8.13.19.tar.gz", hash = "sha256:5d05d0f31f0838b1773c6093925c7c1ab3e98d98747db7c54a9385f8b6df5f71"},
+    {file = "phonenumberslite-8.13.20-py2.py3-none-any.whl", hash = "sha256:f0840de9bfe5b8f10b6883d971dd81f3a53bed8210326a53266f11e8be3428c3"},
+    {file = "phonenumberslite-8.13.20.tar.gz", hash = "sha256:09b07b32861f306dee10f17085afb3e058b4c179edf50deb94db4d4dd14235ff"},
 ]
 
 [[package]]
