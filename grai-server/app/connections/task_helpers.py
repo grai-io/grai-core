@@ -263,13 +263,6 @@ def update(
     relationship.add(*new_items, *updated_items)
 
     if len(deactivated_items) > 0:
-        """
-        When running update we normally do
-        update(nodes)
-        update(edges)
-
-        But if we are deleting nodes the associated Edges of the data source haven't yet received an update when we update the nodes.
-        """
         relationship.remove(*deactivated_items)
         empty_source_query = Q(workspace=workspace) & Q(data_sources=None)
 
