@@ -264,8 +264,13 @@ def update(
 
     if len(deactivated_items) > 0:
         relationship.remove(*deactivated_items)
-        EdgeModel.objects.filter(workspace=workspace, data_sources=None).delete()
-        NodeModel.objects.filter(workspace=workspace, data_sources=None).delete()
+        empty_source_query = Q(workspace=workspace) & Q(data_sources=None)
+
+        deletable_nodes = NodeModel.objects.filter(empty_source_query)
+        deleted_edge_query = (Q(source__in=deletable_nodes) | Q(destination__in=deletable_nodes)) | empty_source_query
+
+        EdgeModel.objects.filter(deleted_edge_query).delete()
+        deletable_nodes.delete()
 
 
 def modelToSchema(model, Schema, type):
