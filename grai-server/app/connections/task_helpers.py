@@ -270,7 +270,7 @@ def update(
         deleted_edge_query = (Q(source__in=deletable_nodes) | Q(destination__in=deletable_nodes)) | empty_source_query
 
         EdgeModel.objects.filter(deleted_edge_query).delete()
-        NodeModel.objects.filter(empty_source_query).delete()
+        deletable_nodes.delete()
 
 
 def modelToSchema(model, Schema, type):
