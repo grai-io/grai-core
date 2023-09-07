@@ -5,10 +5,11 @@ from grai_schemas.v1.workspace import WorkspaceSpec, WorkspaceV1
 from grai_schemas.v1.organization import OrganisationSpec, OrganisationV1
 from lineage.models import Edge, Node, Source
 from workspaces.models import Workspace, Organisation
-from typing import Optional, Any, Sequence, List
+from typing import Optional, Any, Sequence, List, Type, Literal
 from uuid import UUID
 import pprint
 from django.db.models import Q
+from multimethod import multimethod
 
 
 def get_data_source_models(data_sources: Sequence[SourceSpec], workspace: Workspace) -> List[Source]:
@@ -169,3 +170,24 @@ def schema_to_model(item: Any, workspace: Optional[Workspace] = None):
         return source_node_v1_spec_to_model(item, workspace)
     else:
         raise NotImplementedError(f"Cannot convert {type(item)} to a db model")
+
+
+@multimethod
+def model_to_schema(item, schema_type):
+    raise NotImplementedError(f"Cannot convert {type(item)} to a {schema_type}")
+
+
+@model_to_schema.register
+def node_model_to_node_v1_schema(model: Node, schema_type: Literal["NodeV1"]) -> NodeV1:
+    # TODO: Add data_sources
+    return NodeV1.from_spec({**model.__dict__, "data_sources": []})
+
+
+@model_to_schema.register
+def edge_model_to_edge_v1_schema(model: Edge, schema_type: Literal["EdgeV1"]) -> EdgeV1:
+    # TODO: Add data_sources
+    model_dict = {**model.__dict__, "data_sources": []}
+    model_dict["workspace"] = model_dict.pop("workspace_id")
+    model_dict["source"] = {"id": model_dict.pop("source_id")}
+    model_dict["destination"] = {"id": model_dict.pop("destination_id")}
+    return EdgeV1.from_spec(model_dict)

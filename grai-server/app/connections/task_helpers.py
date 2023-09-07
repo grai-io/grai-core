@@ -22,7 +22,7 @@ from django.contrib.postgres.aggregates import ArrayAgg
 from django.db.models.functions import Coalesce
 from functools import singledispatch
 from django.db.models import Value
-from .adapters.schemas import schema_to_model
+from .adapters.schemas import schema_to_model, model_to_schema
 from uuid import UUID
 
 
@@ -210,19 +210,27 @@ def process_source_edges(
 
 def process_updates(
     workspace: Workspace,
+    source: Source,
     items: Optional[Union[list[SourcedNodeV1], list[SourcedEdgeV1]]] = None,
     existing_items: Optional[Union[list[NodeV1], list[EdgeV1]]] = None,
 ) -> Tuple[List[LineageModel], List[LineageModel], List[LineageModel]]:
-    if not items:
+    if items is None:
         return [], [], []
 
     item_types = {type(item) for item in items}
     if len(item_types) != 1:
         raise ValueError(f"Can't process updates for multiple item types {item_types}")
 
+    if source.workspace != workspace:
+        raise ValueError(f"Source {source} is not in workspace {workspace}")
+
     if isinstance(items[0], SourcedNodeV1):
+        if existing_items is None:
+            existing_items = [model_to_schema(item, "NodeV1") for item in source.nodes.all()]
         new, old, updated = process_source_nodes(workspace, items, existing_items)
     elif isinstance(items[0], SourcedEdgeV1):
+        if existing_items is None:
+            existing_items = [model_to_schema(item, "EdgeV1") for item in source.edges.all()]
         new, old, updated = process_source_edges(workspace, items, existing_items)
     else:
         raise ValueError(f"Cannot process updates for items of type {type(items[0])}")
@@ -243,7 +251,7 @@ def update(
     Model = NodeModel if item_types in ["Node", "SourceNode"] else EdgeModel
     relationship = source.nodes if item_types in ["Node", "SourceNode"] else source.edges
 
-    new_items, deactivated_items, updated_items = process_updates(workspace, items, active_items)
+    new_items, deactivated_items, updated_items = process_updates(workspace, source, items, active_items)
 
     Model.objects.bulk_create(new_items)
     Model.objects.bulk_update(updated_items, ["metadata"])
