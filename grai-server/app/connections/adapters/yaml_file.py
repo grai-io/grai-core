@@ -1,17 +1,26 @@
-from grai_schemas.v1 import EdgeV1, NodeV1, SourcedEdgeV1, SourcedNodeV1, OrganisationV1, SourceV1, WorkspaceV1
-from grai_schemas.serializers import GraiYamlSerializer
+from itertools import tee
+from typing import Sequence
+
 from grai_schemas.schema import Schema
-from lineage.models import Edge, Node
+from grai_schemas.serializers import GraiYamlSerializer
+from grai_schemas.v1 import (
+    EdgeV1,
+    NodeV1,
+    OrganisationV1,
+    SourcedEdgeV1,
+    SourcedNodeV1,
+    SourceV1,
+    WorkspaceV1,
+)
+from grai_schemas.v1.edge import EdgeV1, SourcedEdgeV1
+from grai_schemas.v1.node import NodeV1, SourcedNodeV1
+
 from connections.models import Run, RunFile
 from connections.task_helpers import get_node
-from typing import Sequence
+from lineage.models import Edge, Node
 
 from .base import BaseAdapter
 from .schemas import schema_to_model
-
-from grai_schemas.v1.node import NodeV1, SourcedNodeV1
-from grai_schemas.v1.edge import EdgeV1, SourcedEdgeV1
-from itertools import tee
 
 SUPPORTED_SCHEMA_TYPES = {SourcedNodeV1, SourcedEdgeV1}
 SUPPORTED_SCHEMA_TYPE_NAMES = {schema.__name__ for schema in SUPPORTED_SCHEMA_TYPES}

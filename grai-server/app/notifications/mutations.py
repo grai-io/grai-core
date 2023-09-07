@@ -2,12 +2,12 @@ from typing import Optional
 
 import strawberry
 from asgiref.sync import sync_to_async
+from notifications.models import Alert as AlertModel
 from strawberry.scalars import JSON
 from strawberry.types import Info
 
 from api.common import IsAuthenticated, aget_workspace
 from api.types import Alert
-from notifications.models import Alert as AlertModel
 
 
 @strawberry.type

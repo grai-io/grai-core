@@ -1,12 +1,17 @@
 import uuid
 
 import pytest
-from grai_schemas.v1 import EdgeV1, NodeV1, mock, SourcedNodeV1, SourcedEdgeV1
+from django.db.models import Q
+from grai_schemas.v1 import EdgeV1, NodeV1, SourcedEdgeV1, SourcedNodeV1, mock
 
-from connections.task_helpers import get_node, process_updates, update
+from connections.task_helpers import (
+    build_item_query_filter,
+    get_node,
+    process_updates,
+    update,
+)
 from lineage.models import Edge, Node, Source
 from workspaces.models import Organisation, Workspace
-
 
 mocker = mock.MockV1()
 
@@ -203,22 +208,23 @@ class TestUpdate:
         edge = mock_edge(*nodes, test_workspace)
         updated_edge = mock_edge_schema(edge, test_source)
         updated_edge.spec.name = "a_new_place"
-        items = [updated_edge]
 
-        update(test_workspace, test_source, items)
-        db_edge = Edge.objects.filter(name="a_new_place").filter(namespace=edge.namespace).first()
+        update(test_workspace, test_source, [updated_edge])
+        db_edge = Edge.objects.filter(name="a_new_place", namespace=edge.namespace).first()
+        assert db_edge is not None
         assert db_edge.name == "a_new_place"
 
     @pytest.mark.django_db
     def test_empty(self, test_workspace, test_source):
-        new, old, updated = process_updates(test_workspace)
+        new, old, updated = process_updates(test_workspace, test_source)
 
     @pytest.mark.django_db
     def test_correct_new_items(self, test_workspace, test_source):
         nodes = [mock_node(test_workspace) for _ in range(2)]
         nodes[0].save()
+        test_source.nodes.add(nodes[0])
         mock_nodes = [mock_node_schema(node, test_source) for node in nodes]
-        new, old, updated = process_updates(test_workspace, mock_nodes)
+        new, old, updated = process_updates(test_workspace, test_source, mock_nodes)
         assert len(new) == 1
         assert new[0].name == nodes[1].name
 
@@ -226,8 +232,9 @@ class TestUpdate:
     def test_correct_updated_items(self, test_workspace, test_source):
         nodes = [mock_node(test_workspace) for _ in range(2)]
         nodes[0].save()
+        test_source.nodes.add(nodes[0])
         mock_nodes = [mock_node_schema(node, test_source) for node in nodes]
-        new, old, updated = process_updates(test_workspace, mock_nodes)
+        new, old, updated = process_updates(test_workspace, test_source, mock_nodes)
         assert len(updated) == 1
         assert updated[0].name == nodes[0].name
 
@@ -237,8 +244,11 @@ class TestUpdate:
         nodes = [mock_node(test_workspace) for _ in range(2)]
         nodes[0].metadata["test"] = {"key": "this is a test"}
         nodes[0].save()
+        test_source.nodes.add(nodes[0])
         mock_nodes = [mock_node_schema(node, test_source, {"test2": 2}) for node in nodes]
-        new, old, updated = process_updates(test_workspace, mock_nodes)
+        new, old, updated = process_updates(test_workspace, test_source, mock_nodes)
+
+        assert len(updated) == 1
         updated = updated[0].metadata
         assert "test" in updated
         assert isinstance(updated["test"], dict)
@@ -256,6 +266,7 @@ class TestUpdate:
 
         for node in nodes:
             node.save()
+        test_source.nodes.add(*nodes)
 
         workspace = mocker.workspace.workspace_spec(id=test_workspace.id, name=test_workspace.name)
         source = mocker.source.source_spec(name=test_source.name, id=test_source.id, workspace=workspace.id)
@@ -277,7 +288,9 @@ class TestUpdate:
             item["data_sources"] = []
             existing_nodes.append(NodeV1.from_spec(item))
 
-        new, deleted, updated = process_updates(test_workspace, [*new_nodes, *updated_nodes], existing_nodes)
+        new, deleted, updated = process_updates(
+            test_workspace, test_source, [*new_nodes, *updated_nodes], existing_nodes
+        )
 
         assert len(new) == len(new_nodes)
         new_ids = {(item.name, item.namespace) for item in new}
@@ -300,6 +313,8 @@ class TestUpdate:
 
         for node in nodes:
             node.save()
+
+        test_source.nodes.add(*nodes)
         workspace = mocker.workspace.workspace_spec(id=test_workspace.id, name=test_workspace.name)
         source = mocker.source.source_spec(name=test_source.name, id=test_source.id, workspace=workspace.id)
 
@@ -314,7 +329,7 @@ class TestUpdate:
         deleted_nodes = created_nodes[2:4]
         new_nodes = [mocker.node.sourced_node(spec=spec) for spec in new_node_spec]
 
-        new, deleted, updated = process_updates(test_workspace, [*new_nodes, *updated_nodes])
+        new, deleted, updated = process_updates(test_workspace, test_source, [*new_nodes, *updated_nodes])
 
         assert len(new) == len(new_nodes)
         new_ids = {(item.name, item.namespace) for item in new}
@@ -338,6 +353,7 @@ class TestUpdate:
             edge.source.save()
             edge.destination.save()
             edge.save()
+        test_source.edges.add(*edges)
 
         source = mocker.source.source_spec(name=test_source.name, id=test_source.id, workspace=test_workspace.id)
         workspace = mocker.workspace.workspace_spec(id=test_workspace.id, name=test_workspace.name)
@@ -386,7 +402,9 @@ class TestUpdate:
             item["data_sources"] = []
             existing_edges.append(EdgeV1.from_spec(item))
 
-        new, deleted, updated = process_updates(test_workspace, [*new_edges, *updated_edges], existing_edges)
+        new, deleted, updated = process_updates(
+            test_workspace, test_source, [*new_edges, *updated_edges], existing_edges
+        )
 
         assert len(new) == len(new_edges)
         new_ids = {(item.name, item.namespace) for item in new}
@@ -410,6 +428,7 @@ class TestUpdate:
             edge.source.save()
             edge.destination.save()
             edge.save()
+        test_source.edges.add(*edges)
 
         workspace = mocker.workspace.workspace_spec(id=test_workspace.id, name=test_workspace.name)
         source = mocker.source.source_spec(name=test_source.name, id=test_source.id, workspace=workspace.id)
@@ -429,12 +448,12 @@ class TestUpdate:
             )
             existing_edge_spec.append(mock_spec)
 
-        edge_nodes = [mock_node(test_workspace) for _ in range(3)]
+        edge_nodes = [mock_node(test_workspace) for i in range(3)]
         for node in edge_nodes:
             node.save()
 
         new_edge_spec = []
-        for i, edge in enumerate(range(2)):
+        for i in range(2):
             source = {
                 "name": edge_nodes[0 + i].name,
                 "namespace": edge_nodes[0 + i].namespace,
@@ -453,7 +472,7 @@ class TestUpdate:
         deleted_edges = created_edges[2:4]
         new_edges = [mocker.edge.sourced_edge(spec=spec) for spec in new_edge_spec]
 
-        new, deleted, updated = process_updates(test_workspace, [*new_edges, *updated_edges])
+        new, deleted, updated = process_updates(test_workspace, test_source, [*new_edges, *updated_edges])
 
         assert len(new) == len(new_edges)
         new_ids = {(item.name, item.namespace) for item in new}
@@ -483,3 +502,34 @@ class TestUpdate:
             existing_nodes.append(NodeV1.from_spec(item))
 
         update(test_workspace, test_source, mock_nodes[:1], existing_nodes)
+
+    def test_build_spec_query_filter(self):
+        workspace = mocker.workspace.workspace_spec(name="workspace1", id=uuid.uuid4())
+        source = mocker.source.source_spec(name="source1", workspace=workspace)
+        kwargs = {"data_source": source, "workspace": workspace.name, "namespace": "default"}
+
+        node_names = ["node1", "node2"]
+        source_specs = [mocker.node.named_source_node_spec(**kwargs, name=name) for name in node_names]
+        source_items = [mocker.node.sourced_node(spec=spec) for spec in source_specs]
+        query = build_item_query_filter(source_items, workspace.id)
+
+        expected_query = (Q(name="node1", namespace="default") | Q(name="node2", namespace="default")) & Q(
+            workspace=workspace.id
+        )
+
+        assert query == expected_query
+
+    def test_build_query_filter(self):
+        workspace = mocker.workspace.workspace_spec(name="workspace1", id=uuid.uuid4())
+        source = mocker.source.source_spec(name="source1", workspace=workspace)
+        kwargs = {"data_source": source, "workspace": workspace.name, "namespace": "default"}
+
+        node_names = ["node1", "node2"]
+        source_specs = [mocker.node.named_source_node_spec(**kwargs, name=name) for name in node_names]
+        query = build_item_query_filter(source_specs, workspace.id)
+
+        expected_query = (Q(name="node1", namespace="default") | Q(name="node2", namespace="default")) & Q(
+            workspace=workspace.id
+        )
+
+        assert query == expected_query

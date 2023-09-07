@@ -1,6 +1,5 @@
 from django.db.models import Q
 from django.db.models.query import prefetch_related_objects
-from rest_framework import status
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -15,6 +14,7 @@ from lineage.serializers import (
     SourceNodeSerializer,
     SourceSerializer,
 )
+from rest_framework import status
 
 
 class AuthenticatedViewSetMixin:
