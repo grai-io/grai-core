@@ -1,15 +1,31 @@
 import uuid
 import warnings
 from copy import deepcopy
+from functools import singledispatch
 from itertools import chain
-from typing import Any, Dict, List, Optional, Sequence, Tuple, TypeVar, Union, Protocol, TypedDict
+from typing import (
+    Any,
+    Dict,
+    List,
+    Optional,
+    Protocol,
+    Sequence,
+    Tuple,
+    TypedDict,
+    TypeVar,
+    Union,
+)
+from uuid import UUID
 
+from django.contrib.postgres.aggregates import ArrayAgg
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, Value
+from django.db.models.functions import Coalesce
 from grai_schemas.schema import GraiType
 from grai_schemas.utilities import merge
 from grai_schemas.v1 import EdgeV1, NodeV1, SourcedEdgeV1, SourcedNodeV1
-from grai_schemas.v1.node import NodeNamedID, NamedSpec as NodeNamedSpec
+from grai_schemas.v1.node import NamedSpec as NodeNamedSpec
+from grai_schemas.v1.node import NodeNamedID
 from grai_schemas.v1.source import SourceSpec
 from multimethod import multimethod
 from pydantic import BaseModel
@@ -18,12 +34,8 @@ from lineage.models import Edge as EdgeModel
 from lineage.models import Node as NodeModel
 from lineage.models import Source
 from workspaces.models import Workspace
-from django.contrib.postgres.aggregates import ArrayAgg
-from django.db.models.functions import Coalesce
-from functools import singledispatch
-from django.db.models import Value
-from .adapters.schemas import schema_to_model, model_to_schema
-from uuid import UUID
+
+from .adapters.schemas import model_to_schema, schema_to_model
 
 
 class NameNamespace(Protocol):

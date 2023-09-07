@@ -4,8 +4,9 @@ from django.db.models import Q
 from grai_schemas.utilities import merge
 from grai_schemas.v1.merge import merge_tags
 from grai_schemas.v1.node import NodeNamedID
-from rest_framework import serializers
 from rest_framework.fields import JSONField
+
+from rest_framework import serializers
 
 from .models import Edge, Node, Source
 

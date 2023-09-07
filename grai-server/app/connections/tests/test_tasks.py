@@ -5,6 +5,7 @@ from unittest import mock
 
 import pytest
 from decouple import config
+from django.conf import settings
 from django.core.files.uploadedfile import UploadedFile
 from grai_source_dbt_cloud.loader import Event
 
@@ -14,7 +15,6 @@ from installations.models import Branch, Commit, PullRequest, Repository
 from installations.tests.test_github import mocked_requests_post
 from lineage.models import Edge, Node, Source
 from workspaces.models import Organisation, Workspace
-from django.conf import settings
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 

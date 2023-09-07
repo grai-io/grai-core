@@ -1,12 +1,17 @@
 import uuid
 
 import pytest
-from grai_schemas.v1 import EdgeV1, NodeV1, mock, SourcedNodeV1, SourcedEdgeV1
+from django.db.models import Q
+from grai_schemas.v1 import EdgeV1, NodeV1, SourcedEdgeV1, SourcedNodeV1, mock
 
-from connections.task_helpers import get_node, process_updates, update, build_item_query_filter
+from connections.task_helpers import (
+    build_item_query_filter,
+    get_node,
+    process_updates,
+    update,
+)
 from lineage.models import Edge, Node, Source
 from workspaces.models import Organisation, Workspace
-from django.db.models import Q
 
 mocker = mock.MockV1()
 
