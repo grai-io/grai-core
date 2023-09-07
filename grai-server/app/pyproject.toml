@@ -92,6 +92,9 @@ build-backend = "poetry.core.masonry.api"
 DJANGO_SETTINGS_MODULE = "the_guide.settings.dev"
 asyncio_mode = "auto"
 # This is used in google dependencies which haven't been updated and which we don't control.
-filterwarnings = ["ignore::DeprecationWarning:pkg_resources"]
+filterwarnings = [
+    "ignore:.*declare_namespace\\('google\\..*'\\).*:DeprecationWarning:pkg_resources",
+    "ignore:.*declare_namespace\\('google(\\\\.\\\\w+)?'\\).*:DeprecationWarning:pkg_resources"
+]
 
 [tool.poetry_bumpversion.file."the_guide/__init__.py"]
