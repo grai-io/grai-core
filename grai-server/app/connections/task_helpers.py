@@ -117,14 +117,6 @@ def build_item_query_filter(
     return query
 
 
-def get_existing_nodes(from_items: List[Union[SourcedNodeV1, NodeV1]], workspace: Workspace) -> List[NodeV1]:
-    query = build_item_query_filter(from_items, workspace)
-
-    # The data_sources don't matter for this code path, so we don't have to fetch them from the db
-    default_dict = {"data_sources": [], "workspace": workspace.id}
-    return [NodeV1.from_spec({**model.__dict__, **default_dict}) for model in NodeModel.objects.filter(query).all()]
-
-
 def get_existing_edges(from_items: List[Union[SourcedEdgeV1, EdgeV1]], workspace: Workspace) -> List[EdgeV1]:
     query = build_item_query_filter(from_items, workspace)
 
@@ -168,7 +160,7 @@ def compute_graph_changes(items: List[T], active_items: List[P]) -> Tuple[List[T
 
 
 def process_source_nodes(
-    workspace: Workspace, items: List[SourcedNodeV1], existing_nodes: Optional[List[NodeV1]] = None
+    workspace: Workspace, source: Source, items: List[SourcedNodeV1], existing_nodes: Optional[List[NodeV1]] = None
 ) -> Tuple[List[NodeModel], List[NodeModel], List[NodeModel]]:
     if isinstance(existing_nodes, list):
         if not all(isinstance(node, NodeV1) for node in existing_nodes):
@@ -181,7 +173,9 @@ def process_source_nodes(
 
         active_nodes = existing_nodes
     elif existing_nodes is None:
-        active_nodes = get_existing_nodes(items, workspace)
+        query = build_item_query_filter(items, workspace)
+        current_item_generator = chain(NodeModel.objects.filter(query).all(), source.nodes.all())
+        active_nodes = [model_to_schema(item, "NodeV1") for item in current_item_generator]
     else:
         raise ValueError("existing_nodes must be a list of NodeV1 or None")
 
@@ -195,7 +189,7 @@ def process_source_nodes(
 
 
 def process_source_edges(
-    workspace: Workspace, items: List[SourcedEdgeV1], existing_edges: Optional[List[EdgeV1]] = None
+    workspace: Workspace, source: Source, items: List[SourcedEdgeV1], existing_edges: Optional[List[EdgeV1]] = None
 ) -> Tuple[List[EdgeModel], List[EdgeModel], List[EdgeModel]]:
     if isinstance(existing_edges, list):
         if not all(isinstance(node, EdgeV1) for node in existing_edges):
@@ -208,7 +202,9 @@ def process_source_edges(
 
         active_edges = existing_edges
     elif existing_edges is None:
-        active_edges = get_existing_edges(items, workspace)
+        query = build_item_query_filter(items, workspace)
+        current_item_generator = chain(EdgeModel.objects.filter(query).all(), source.edges.all())
+        active_edges = [model_to_schema(item, "EdgeV1") for item in current_item_generator]
     else:
         raise ValueError("existing_edges must be a list of EdgeV1 or None")
 
@@ -237,13 +233,9 @@ def process_updates(
         raise ValueError(f"Source {source} is not in workspace {workspace}")
 
     if isinstance(items[0], SourcedNodeV1):
-        if existing_items is None:
-            existing_items = [model_to_schema(item, "NodeV1") for item in source.nodes.all()]
-        new, old, updated = process_source_nodes(workspace, items, existing_items)
+        new, old, updated = process_source_nodes(workspace, source, items, existing_items)
     elif isinstance(items[0], SourcedEdgeV1):
-        if existing_items is None:
-            existing_items = [model_to_schema(item, "EdgeV1") for item in source.edges.all()]
-        new, old, updated = process_source_edges(workspace, items, existing_items)
+        new, old, updated = process_source_edges(workspace, source, items, existing_items)
     else:
         raise ValueError(f"Cannot process updates for items of type {type(items[0])}")
 
