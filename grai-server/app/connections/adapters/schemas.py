@@ -9,7 +9,7 @@ from grai_schemas.v1.organization import OrganisationSpec, OrganisationV1
 from grai_schemas.v1.source import SourceSpec, SourceV1
 from grai_schemas.v1.workspace import WorkspaceSpec, WorkspaceV1
 from multimethod import multimethod
-
+from grai_schemas.v1.node import NodeNamedID
 from lineage.models import Edge, Node, Source
 from workspaces.models import Organisation, Workspace
 
@@ -114,10 +114,14 @@ def edge_v1_spec_to_model(edge: EdgeSpec, workspace: Workspace) -> Edge:
 
         nodes = Node.objects.filter(query).all()
         if len(nodes) != 2:
-            raise ValueError(
-                f"Could not find the source and destination nodes for edge name={edge.name}, namespace={edge.namespace}"
-                f" in the `{workspace}` workspace."
+            found_nodes = "\n".join([f"- (name={n.name} & namespace={n.namespace})" for n in nodes])
+            message = (
+                f"Could not find the source and destination nodes for edge: "
+                f"(name={edge.name}, namespace={edge.namespace}) in workspace={workspace}. "
+                f"We were expecting to find 2 nodes but only found {len(nodes)}. "
+                f"Returned nodes include:\n{found_nodes}"
             )
+            raise ValueError(message)
         source, destination = nodes
         if source.name != edge.source.name or source.namespace != edge.source.namespace:
             destination, source = source, destination
@@ -189,7 +193,7 @@ def node_model_to_node_v1_schema(model: Node, schema_type: Literal["NodeV1"]) ->
 def edge_model_to_edge_v1_schema(model: Edge, schema_type: Literal["EdgeV1"]) -> EdgeV1:
     # TODO: Add data_sources
     model_dict = {**model.__dict__, "data_sources": []}
-    model_dict["workspace"] = model_dict.pop("workspace_id")
-    model_dict["source"] = {"id": model_dict.pop("source_id")}
+    model_dict["source"] = NodeNamedID(**model.source.__dict__)
+    model_dict["destination"] = NodeNamedID(**model.destination.__dict__)
     model_dict["destination"] = {"id": model_dict.pop("destination_id")}
     return EdgeV1.from_spec(model_dict)
