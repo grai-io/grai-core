@@ -108,9 +108,9 @@ def build_item_query_filter(
     query = Q()
     for item in from_items:
         if hasattr(item, "spec"):
-            query |= Q(name=item.spec.name) & Q(namespace=item.spec.namespace)
+            query |= Q(name=item.spec.name, namespace=item.spec.namespace)
         else:
-            query |= Q(name=item.name) & Q(namespace=item.namespace)
+            query |= Q(name=item.name, namespace=item.namespace)
 
     query &= Q(workspace=workspace)
 
@@ -264,10 +264,10 @@ def update(
 
     if len(deactivated_items) > 0:
         relationship.remove(*deactivated_items)
-        empty_source_query = Q(workspace=workspace) & Q(data_sources=None)
+        empty_source_query = Q(workspace=workspace, data_sources=None)
 
         deletable_nodes = NodeModel.objects.filter(empty_source_query)
-        deleted_edge_query = (Q(source__in=deletable_nodes) | Q(destination__in=deletable_nodes)) | empty_source_query
+        deleted_edge_query = Q(source__in=deletable_nodes) | Q(destination__in=deletable_nodes) | empty_source_query
 
         EdgeModel.objects.filter(deleted_edge_query).delete()
         deletable_nodes.delete()
