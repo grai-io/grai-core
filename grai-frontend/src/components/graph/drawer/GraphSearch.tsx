@@ -114,8 +114,6 @@ const GraphSearch: React.FC<GraphSearchProps> = ({
     }
   }, [onSearch, selected, tables, setTableCenter])
 
-  if (error) return <GraphError error={error} />
-
   return (
     <Box>
       <Box sx={{ p: 1 }}>
@@ -142,6 +140,7 @@ const GraphSearch: React.FC<GraphSearchProps> = ({
           }}
         />
       </Box>
+      {error && <GraphError error={error} />}
       {loading && <Loading />}
       <List
         disablePadding
