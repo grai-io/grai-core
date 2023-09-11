@@ -11,4 +11,4 @@ from grai_schemas import (
 )
 from grai_schemas.package_definitions import config
 
-__version__ = "0.2.2"
+__version__ = "0.2.5-alpha1"
