@@ -219,6 +219,22 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
     return table
   }
 
+  const getEdgeForSourceDestination = (source: Table, destination: Table) => {
+    const edge = source.destinations.find(d => d.table_id === destination.id)
+
+    if (edge) return edge.edge_id
+
+    for (const column of source.columns) {
+      for (const d of column.destinations) {
+        if (destination.columns.some(c => c.id === d.column_id)) {
+          return d.edge_id
+        }
+      }
+    }
+
+    throw new Error(`Edge not found ${source.id} -> ${destination.id}`)
+  }
+
   const generateEdge = (
     id: string,
     source: string,
@@ -297,7 +313,7 @@ const GraphComponent: React.FC<GraphComponentProps> = ({
       const edges = destinationEdges.edges.concat(
         Array.from(destinationEdges.tables).map(destinationTable =>
           generateEdge(
-            `${table.id}-all-${destinationTable.id}-all`,
+            getEdgeForSourceDestination(table, destinationTable),
             table.id,
             "all",
             destinationTable.id,
