@@ -1,6 +1,6 @@
-from typing import List
 from django.core.management.base import BaseCommand
-from search.search import Search
+
+from search.search import SearchClient
 
 
 class Command(BaseCommand):
@@ -10,6 +10,6 @@ class Command(BaseCommand):
         pass
 
     def handle(self, *args, **options):
-        search = Search()
+        search = SearchClient()
 
-        search.create()
+        search.build()

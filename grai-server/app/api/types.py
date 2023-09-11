@@ -2,7 +2,7 @@ import datetime
 import time
 from collections import defaultdict
 from enum import Enum
-from typing import List, Optional
+from typing import List, Optional, Tuple, Union
 
 import strawberry
 import strawberry_django
@@ -35,7 +35,7 @@ from lineage.models import Filter as FilterModel
 from lineage.models import Node as NodeModel
 from lineage.models import Source as SourceModel
 from lineage.types import EdgeFilter, EdgeOrder, Filter, NodeFilter, NodeOrder
-from search.search import Search as SearchClient
+from search.search import SearchClient
 from users.types import User, UserFilter
 from workspaces.models import Membership as MembershipModel
 from workspaces.models import Workspace as WorkspaceModel
@@ -919,22 +919,27 @@ class Workspace:
         self,
         search: Optional[str] = strawberry.UNSET,
     ) -> List[BaseTable]:
-        def get_tables(search: Optional[str]) -> List[Table]:
+        def get_tables(
+            search: Optional[str],
+        ) -> Union[Tuple[List[BaseTable], True], Tuple[List[Table], False]]:
             client = SearchClient()
 
-            tables = client.search(workspace=self, query=search)
+            tables, ready = client.search(workspace=self, query=search)
 
-            return tables
+            return tables, ready
 
         graph = GraphCache(workspace=self)
 
         ids = None
 
         if search:
-            tables = await sync_to_async(get_tables)(search)
+            tables, ready = await sync_to_async(get_tables)(search)
 
             if len(tables) == 0:
                 return []
+
+            if ready:
+                return tables
 
             ids = [table["id"] for table in tables]
 
