@@ -318,7 +318,7 @@ test("tables click row", async () => {
   const user = userEvent.setup()
 
   const { container } = render(<Source />, {
-    routes: ["/:organisationName/:workspaceName/tables/:tableId"],
+    routes: ["/:organisationName/:workspaceName/nodes/:tableId"],
   })
 
   await waitFor(() => {
