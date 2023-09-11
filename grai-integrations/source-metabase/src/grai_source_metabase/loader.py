@@ -118,13 +118,25 @@ class MetabaseAPI:
 
         """
         response = request(url=url)
-        assert response.status_code == 200
+        if response.status_code != 200:
+            message = (
+                f"While performing a {request.__name__.upper()} operation on `{url}`, "
+                f"the Metabase API returned error code {response.status_code} with `{response.reason}`."
+                f"This does not appear to be an issue with Grai, please check your Metabase instance."
+            )
+            raise requests.RequestException(message)
         return response.json()
 
     @staticmethod
     async def async_make_request(request: Callable[..., requests.Response], url: str):
         response = request(url=url)
-        assert response.status_code == 200
+        if response.status_code != 200:
+            message = (
+                f"While performing a {request.__name__.upper()} operation on `{url}`, "
+                f"the Metabase API returned error code {response.status_code} with `{response.reason}`."
+                f"This does not appear to be an issue with Grai, please check your Metabase instance."
+            )
+            raise requests.RequestException(message)
         return response.json()
 
     def get_questions(self) -> List[api.Question]:

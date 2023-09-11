@@ -301,7 +301,7 @@ def test_table_tag_doesnt_contain():
     filter_by_filter(filter, query)
 
     assert len(query.clause[0].wheres) == 1
-    assert query.clause[0].wheres[0].where == "'tag1' NOT IN table.tags"
+    assert query.clause[0].wheres[0].where == "NOT 'tag1' IN table.tags"
     assert query.parameters == {}
 
 

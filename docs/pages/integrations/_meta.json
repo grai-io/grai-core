@@ -10,6 +10,7 @@
   "flat-file": "Flat File",
   "yaml": "YAML",
   "metabase": "Metabase",
+  "looker": "Looker",
   "other-sources": "Other Sources",
   "support-status": "Support Status"
 }

@@ -7,7 +7,7 @@ import {
   UpdateFilter as UpdateFilterType,
   UpdateFilterVariables,
 } from "./__generated__/UpdateFilter"
-import { Filter as FilterType, Source } from "./FilterRow"
+import { Filter as FilterType, Source } from "./filters"
 
 export const UPDATE_FILTER = gql`
   mutation UpdateFilter($id: ID!, $name: String!, $metadata: JSON!) {

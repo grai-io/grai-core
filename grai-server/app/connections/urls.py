@@ -5,7 +5,6 @@ import uuid
 
 from django.urls import path
 from django_multitenant.utils import get_current_tenant
-from rest_framework import routers
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
@@ -14,6 +13,7 @@ from connections.tasks import process_run
 from installations.github import Github
 from installations.models import Branch, Commit, PullRequest, Repository
 from lineage.models import Source
+from rest_framework import routers
 from workspaces.models import Workspace
 
 from .models import Connection, Connector, Run, RunFile

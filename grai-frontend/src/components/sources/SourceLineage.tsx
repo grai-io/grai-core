@@ -4,6 +4,7 @@ import { Alert, Box } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
 import GraphComponent from "components/graph/GraphComponent"
 import useFilters from "components/graph/useFilters"
+import useInlineFilters from "components/graph/useInlineFilters"
 import GraphError from "components/utils/GraphError"
 import {
   GetTablesAndEdgesSourceLineage,
@@ -55,6 +56,9 @@ const SourceLineage: React.FC<SourceLineageProps> = ({ source }) => {
   const { filters, setFilters } = useFilters(
     `sources-${source.id}-graph-filters`,
   )
+  const { inlineFilters, setInlineFilters } = useInlineFilters(
+    `sources-${source.id}-graph-inline-filters`,
+  )
 
   const { loading, error, data } = useQuery<
     GetTablesAndEdgesSourceLineage,
@@ -94,6 +98,8 @@ const SourceLineage: React.FC<SourceLineageProps> = ({ source }) => {
         }}
         filters={filters ?? []}
         setFilters={setFilters}
+        inlineFilters={inlineFilters ?? []}
+        setInlineFilters={setInlineFilters}
       />
     </Box>
   )

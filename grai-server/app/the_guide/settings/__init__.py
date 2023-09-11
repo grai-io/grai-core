@@ -1,1 +1,1 @@
-from ..settings import base
+from ..settings import base, celery, dev, prod

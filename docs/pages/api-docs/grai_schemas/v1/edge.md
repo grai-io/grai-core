@@ -30,7 +30,8 @@ class BaseSpec(GraiBaseModel)
 ## NamedSourceSpec Objects
 
 ```python
-class NamedSourceSpec(EdgeNamedID, BaseSpec, DataSourceMixin)
+class NamedSourceSpec(EdgeNamedID, BaseSpec, SourcedEdgeSpecMetadataMixin,
+                      DataSourceMixin)
 ```
 
 
@@ -38,7 +39,8 @@ class NamedSourceSpec(EdgeNamedID, BaseSpec, DataSourceMixin)
 ## IDSourceSpec Objects
 
 ```python
-class IDSourceSpec(EdgeUuidID, BaseSpec, DataSourceMixin)
+class IDSourceSpec(EdgeUuidID, BaseSpec, SourcedEdgeSpecMetadataMixin,
+                   DataSourceMixin)
 ```
 
 
@@ -68,7 +70,8 @@ def from_spec(cls, spec_dict: Dict) -> "SourcedEdgeV1"
 ## NamedSpec Objects
 
 ```python
-class NamedSpec(EdgeNamedID, BaseSpec, DataSourcesMixin)
+class NamedSpec(EdgeNamedID, BaseSpec, EdgeSpecMetadataMixin,
+                DataSourcesMixin)
 ```
 
 
@@ -76,7 +79,7 @@ class NamedSpec(EdgeNamedID, BaseSpec, DataSourcesMixin)
 ## IDSpec Objects
 
 ```python
-class IDSpec(EdgeUuidID, BaseSpec, DataSourcesMixin)
+class IDSpec(EdgeUuidID, BaseSpec, EdgeSpecMetadataMixin, DataSourcesMixin)
 ```
 
 

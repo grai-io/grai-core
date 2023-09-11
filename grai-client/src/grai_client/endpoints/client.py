@@ -21,7 +21,7 @@ from typing import (
 
 import httpx
 from furl import furl
-from grai_schemas.base import Edge, Node
+from grai_schemas.base import Edge, Node, SourcedEdge, SourcedNode
 from httpx import Auth, BasicAuth, QueryParams, Response
 from multimethod import multimethod
 from pydantic import BaseModel, SecretStr
@@ -650,8 +650,8 @@ def type_segmentation(
 
 
 PRIORITY_ORDER_MAP = {
-    "post": (Node, Edge),
-    "delete": (Edge, Node),
+    "post": (Node, SourcedNode, Edge, SourcedEdge),
+    "delete": (Edge, SourcedEdge, Node, SourcedNode),
     "patch": (),
     "get": (),
 }

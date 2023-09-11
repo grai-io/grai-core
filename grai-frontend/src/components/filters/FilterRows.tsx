@@ -1,6 +1,7 @@
 import React from "react"
 import FilterRowHeader from "components/filters/FilterRowHeader"
-import FilterRow, { Filter, Source } from "./FilterRow"
+import FilterRow from "./FilterRow"
+import { Filter, Source } from "./filters"
 
 type FilterRowsProps = {
   filters: Filter[]

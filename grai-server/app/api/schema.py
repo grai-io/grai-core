@@ -1,4 +1,5 @@
 import strawberry
+from notifications.mutations import Mutation as NotificationMutation
 from strawberry.schema.config import StrawberryConfig
 from strawberry.tools import merge_types
 from strawberry_django.optimizer import DjangoOptimizerExtension
@@ -8,7 +9,6 @@ from auth.mutations import Mutation as AuthMutation
 from connections.mutations import Mutation as ConnectionMutation
 from installations.mutations import Mutation as InstallationMutation
 from lineage.mutations import Mutation as LineageMutation
-from notifications.mutations import Mutation as NotificationMutation
 from workspaces.mutations import Mutation as WorkspaceMutation
 
 mutations = (

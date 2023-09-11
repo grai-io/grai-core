@@ -3171,6 +3171,39 @@ async def test_graph_filter_xy(test_context):
 
 
 @pytest.mark.django_db
+async def test_graph_filter_inline_filters(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!, $filter: JSON!) {
+            workspace(id: $workspaceId) {
+                id
+                graph(filters: {inline_filters: [$filter]}) {
+                    id
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "filter": {
+                "type": "table",
+                "field": "tag",
+                "operator": "contains",
+                "value": "test",
+            },
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+
+
+@pytest.mark.django_db
 async def test_graph_tables(test_context):
     context, organisation, workspace, user, membership = test_context
 

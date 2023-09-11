@@ -5,6 +5,7 @@ from unittest import mock
 
 import pytest
 from decouple import config
+from django.conf import settings
 from django.core.files.uploadedfile import UploadedFile
 from grai_source_dbt_cloud.loader import Event
 
@@ -92,6 +93,20 @@ def test_redshift_connector():
 @pytest.fixture
 def test_dbt_connector():
     connector, created = Connector.objects.get_or_create(name=Connector.DBT, slug=Connector.DBT)
+
+    return connector
+
+
+@pytest.fixture
+def test_metabase_connector():
+    connector, created = Connector.objects.get_or_create(name=Connector.METABASE, slug=Connector.METABASE)
+
+    return connector
+
+
+@pytest.fixture
+def test_looker_connector():
+    connector, created = Connector.objects.get_or_create(name=Connector.LOOKER, slug=Connector.LOOKER)
 
     return connector
 
@@ -394,6 +409,44 @@ class TestUpdateServer:
 
         process_run(str(run.id))
 
+    @mock.patch("grai_source_metabase.base.MetabaseIntegration")
+    def test_metabase_no_account(self, mocked_class, test_workspace, test_metabase_connector, test_source):
+        mocked_class.return_value.get_nodes_and_edges.return_value = [[], []]
+
+        connection = Connection.objects.create(
+            name=str(uuid.uuid4()),
+            connector=test_metabase_connector,
+            workspace=test_workspace,
+            source=test_source,
+            metadata={
+                "endpoint": "https://metabase-test.com",
+                "username": "user",
+            },
+            secrets={"password": "password1234"},
+        )
+        run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
+
+        process_run(str(run.id))
+
+    @mock.patch("grai_source_looker.base.LookerIntegration")
+    def test_looker_no_account(self, mocked_class, test_workspace, test_looker_connector, test_source):
+        mocked_class.return_value.get_nodes_and_edges.return_value = [[], []]
+
+        connection = Connection.objects.create(
+            name=str(uuid.uuid4()),
+            connector=test_looker_connector,
+            workspace=test_workspace,
+            source=test_source,
+            metadata={
+                "base_url": "https://looker-test.com",
+                "client_id": "client_id",
+            },
+            secrets={"client_secret": "password1234"},
+        )
+        run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
+
+        process_run(str(run.id))
+
     @mock.patch("grai_source_dbt_cloud.base.DbtCloudIntegration")
     def test_dbt_cloud_no_project(self, mocked_class, test_workspace, test_dbt_cloud_connector, test_source):
         mocked_class.return_value.get_nodes_and_edges.return_value = [[], []]
@@ -432,6 +485,7 @@ class TestTests:
 
         process_run(str(run.id))
 
+    @pytest.mark.skipif(settings.GITHUB_PRIVATE_KEY is None, reason="requires github credentials")
     def test_dbt_github(
         self,
         test_workspace,
@@ -463,6 +517,7 @@ class TestTests:
 
         process_run(str(run.id))
 
+    @pytest.mark.skipif(settings.GITHUB_PRIVATE_KEY is None, reason="requires github credentials")
     def test_no_connector_github(self, test_workspace, test_connector, test_commit, mocker, test_source):
         mocker.patch("installations.github.requests.post", side_effect=mocked_requests_post)
         mocker.patch("installations.github.GhApi")
@@ -487,6 +542,7 @@ class TestTests:
 
         assert str(e_info.value) == "No connector found for: Connector"
 
+    @pytest.mark.skipif(settings.GITHUB_PRIVATE_KEY is None, reason="requires github credentials")
     def test_dbt_github_test_failure(
         self,
         test_workspace,
@@ -578,6 +634,7 @@ class TestTests:
 
         process_run(str(run.id))
 
+    @pytest.mark.skipif(settings.GITHUB_PRIVATE_KEY is None, reason="requires github credentials")
     def test_yaml_github_test_failure(
         self,
         test_workspace,

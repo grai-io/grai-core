@@ -1,11 +1,12 @@
-from celery import shared_task
 from django.utils import timezone
 
+from celery import shared_task
 from connections.adapters.base import BaseAdapter
 from connections.adapters.bigquery import BigqueryAdapter
 from connections.adapters.dbt import DbtAdapter
 from connections.adapters.dbt_cloud import DbtCloudAdapter
 from connections.adapters.fivetran import FivetranAdapter
+from connections.adapters.looker import LookerAdapter
 from connections.adapters.metabase import MetabaseAdapter
 from connections.adapters.mssql import MssqlAdapter
 from connections.adapters.mysql import MySQLAdapter
@@ -61,6 +62,8 @@ def get_adapter(slug: str) -> BaseAdapter:
         return RedshiftAdapter()
     elif slug == Connector.METABASE:
         return MetabaseAdapter()
+    elif slug == Connector.LOOKER:
+        return LookerAdapter()
 
     raise NoConnectorError(f"No connector found for: {slug}")
 

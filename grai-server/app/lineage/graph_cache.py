@@ -10,7 +10,7 @@ from redis import Redis
 from workspaces.models import Workspace
 
 from .graph import GraphQuery
-from .graph_filter import filter_by_filter
+from .graph_filter import filter_by_dict, filter_by_filter
 from .graph_types import BaseTable, GraphColumn, GraphTable
 
 
@@ -202,10 +202,15 @@ class GraphCache:
     def get_table_ids(self):
         results = self.query(
             """
-                MATCH (n:Table)
+                MATCH (table:Table)
                 WITH
-                    n.id as ids
-                RETURN ids
+                    table,
+                    {
+                        id: table.id,
+                        width: size(table.display_name),
+                        columns: size((table)-[:TABLE_TO_COLUMN]->())
+                    } AS tables
+                RETURN tables
             """
         ).result_set
 
@@ -354,6 +359,10 @@ class GraphCache:
         for filter in filters:
             query = filter_by_filter(filter, query)
 
+    def filter_by_rows(self, filters, query: GraphQuery) -> GraphQuery:
+        for filter in filters:
+            query = filter_by_dict(filter, query)
+
     def get_with_step_graph_result(
         self, n: int, parameters: object = {}, where: Optional[str] = None
     ) -> List["GraphTable"]:
@@ -466,21 +475,29 @@ class GraphCache:
         return self.get_with_step_graph_result(n, parameters, where)
 
     def layout_graph(self):
-        table_ids = self.get_table_ids()
+        tables = self.get_table_ids()
         edges = self.get_table_edges()
 
         vertexes = {}
 
-        class defaultview(object):
-            w, h = 200, 400
+        x_gap = 150
+        y_gap = 20
 
-        for table_id in table_ids:
-            vertexes[table_id] = Vertex(table_id)
+        class defaultview(object):
+            def __init__(self, width: int = 400, height: int = 68):
+                # Height and width transposed as graph drawn sideways
+                self.w = height + y_gap
+                self.h = width + x_gap
+
+        for table in tables:
+            id = table["id"]
+            v = Vertex(id)
+            width = max((table["width"] * 8) + 160, 300)
+            height = max((table["columns"] * 50) + 66, 68)
+            v.view = defaultview(width=width, height=height)
+            vertexes[id] = v
 
         V = list(vertexes.values())
-
-        for v in V:
-            v.view = defaultview()
 
         E = [Edge(vertexes[edge["source_id"]], vertexes[edge["destination_id"]]) for edge in edges]
 
@@ -502,21 +519,21 @@ class GraphCache:
 
             minX = 0
             maxX = 0
-            # minY = 0
-            # maxY = 0
+            minY = 0
+            maxY = 0
 
             for vertex in graph.sV:
                 minX = min(minX, vertex.view.xy[1])
-                maxX = max(maxX, vertex.view.xy[1])
-                # minY = min(minY, vertex.view.xy[0])
-                # maxY = max(maxY, vertex.view.xy[0])
+                maxX = max(maxX, vertex.view.xy[1] + vertex.view.w)
+                minY = min(minY, vertex.view.xy[0])
+                maxY = max(maxY, vertex.view.xy[0] + vertex.view.h)
 
             graphs.append(
                 {
                     "minX": minX,
                     "maxX": maxX,
-                    # "minY": minY,
-                    # "maxY": maxY,
+                    "minY": minY,
+                    "maxY": maxY,
                     "nodes": graph.sV,
                 }
             )
@@ -524,23 +541,46 @@ class GraphCache:
         x = 0
         y = 0
 
+        max_height = 0
+
+        graph_width = 5000
+
+        graph_x_gap = 50
+        graph_y_gap = 50
+
+        # Layout graphs
         for graph in graphs:
             for v in graph["nodes"]:
-                self.update_node(v.data, v.view.xy[1] + x + graph["minX"], v.view.xy[0])
+                self.update_node(
+                    v.data,
+                    v.view.xy[1] + x - graph["minX"],
+                    v.view.xy[0] + y - graph["minY"],
+                )
 
-            x += graph["maxX"] - graph["minX"] + 400
+            height = graph["maxY"] - graph["minY"]
 
-        start_x = x
-        index = 0
+            max_height = max(max_height, height)
 
+            if x > graph_width:
+                y += max_height + graph_y_gap
+                x = 0
+                max_height = 0
+                continue
+
+            width = graph["maxX"] - graph["minX"]
+
+            x += width + graph_x_gap
+
+        x = 0
+        y += max_height + graph_y_gap
+
+        # Layout single tables
         for table in single_tables:
             self.update_node(table.data, x, y)
 
-            if index > 20:
-                y += 200
-                x = start_x
-                index = 0
+            if x > graph_width:
+                y += graph_y_gap
+                x = 0
                 continue
 
-            x += 500
-            index += 1
+            x += graph_x_gap + 400

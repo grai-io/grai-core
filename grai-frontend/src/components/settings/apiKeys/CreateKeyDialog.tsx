@@ -90,7 +90,7 @@ const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({
         }),
         fields: {
           api_keys(existingApiKeys = { data: [] }) {
-            if (!data?.createApiKey) return
+            if (!data?.createApiKey) return existingApiKeys
 
             const newApiKey = cache.writeFragment<NewApiKey>({
               data: data.createApiKey.api_key,

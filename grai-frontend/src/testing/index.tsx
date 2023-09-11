@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 import React, { ReactElement, ReactNode } from "react"
 import { MockedResponse } from "@apollo/client/testing"
-import { ThemeProvider } from "@mui/material"
+import { Theme, ThemeProvider } from "@mui/material"
 import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
 import { render, RenderOptions } from "@testing-library/react"
@@ -11,7 +11,7 @@ import { ConfirmProvider } from "material-ui-confirm"
 import { SnackbarProvider } from "notistack"
 import { HelmetProvider } from "react-helmet-async"
 import { MemoryRouter, Route, Routes, Location } from "react-router-dom"
-import theme from "theme"
+import defaultTheme from "theme"
 import GuestRoute from "components/auth/GuestRoute"
 import WorkspaceProvider from "components/utils/WorkspaceProvider"
 import AuthMock from "./AuthMock"
@@ -73,6 +73,7 @@ type CustomRenderOptions = RenderOptions & {
   loggedIn?: boolean
   guestRoute?: boolean
   mocks?: readonly MockedResponse<Record<string, any>>[]
+  theme?: Theme
 }
 
 const customRender = (ui: ReactElement, options?: CustomRenderOptions) => {
@@ -84,14 +85,14 @@ const customRender = (ui: ReactElement, options?: CustomRenderOptions) => {
 
 const basicRender = (
   ui: ReactElement,
-  { loggedIn = true, mocks }: CustomRenderOptions = {},
+  { loggedIn = true, mocks, theme }: CustomRenderOptions = {},
 ) =>
   render(ui, {
     wrapper: props => (
       <HelmetProvider>
         <SnackbarProvider>
           <ConfirmProvider>
-            <ThemeProvider theme={theme}>
+            <ThemeProvider theme={theme ?? defaultTheme}>
               <LocalizationProvider dateAdapter={AdapterLuxon}>
                 <AuthMock initialLoggedIn={loggedIn}>
                   <AutoMockedProvider
@@ -120,12 +121,13 @@ const renderWithRouter = (
     loggedIn = true,
     guestRoute = false,
     mocks,
+    theme,
   }: CustomRenderOptions = {},
 ) => {
   return render(ui, {
     wrapper: props => (
       <HelmetProvider>
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={theme ?? defaultTheme}>
           <LocalizationProvider dateAdapter={AdapterLuxon}>
             <AutoMockedProvider
               mockResolvers={mockResolvers}

@@ -3,7 +3,7 @@ from typing import Dict, Literal, Optional, Union
 from uuid import UUID
 
 from grai_schemas.generics import GraiBaseModel
-from grai_schemas.v1.organization import OrganisationSpec
+from grai_schemas.v1.organization import OrganisationSpec, OrganisationV1
 from pydantic import Field, validator
 
 
@@ -29,6 +29,8 @@ class WorkspaceSpec(GraiBaseModel):
     def validate_organisation(cls, v: Union[UUID, str, Dict, OrganisationSpec]) -> Union[UUID, OrganisationSpec]:
         if isinstance(v, (OrganisationSpec, UUID)):
             return v
+        elif isinstance(v, OrganisationV1):
+            return v.spec
         elif isinstance(v, dict):
             return OrganisationSpec(**v)
         elif isinstance(v, str):
@@ -39,7 +41,7 @@ class WorkspaceSpec(GraiBaseModel):
                 return OrganisationSpec(name=v)
         else:
             message = (
-                f"Invalid value for organisation: Receive {v} which is of type {type(v)}. You might have meant "
+                f"Invalid value for organisation: Received {v} which is of type {type(v)}. You might have meant "
                 f"to provide a UUID for the organisation, or a string containing the name of the organisation?"
             )
             raise ValueError(message)

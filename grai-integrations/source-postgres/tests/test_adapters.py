@@ -151,6 +151,20 @@ def test_edge_adapter(item, version, target, mock_source):
     assert isinstance(result, target)
 
 
+def test_all_sources_in_nodes(nodes, edges):
+    edge_ids = {(e.spec.source.name, e.spec.source.namespace) for e in edges}
+    node_ids = {(n.spec.name, n.spec.namespace) for n in nodes}
+    missing_sources = edge_ids - node_ids
+    assert not missing_sources
+
+
+def test_all_destinations_in_nodes(nodes, edges):
+    edge_ids = {(e.spec.destination.name, e.spec.destination.namespace) for e in edges}
+    node_ids = {(n.spec.name, n.spec.namespace) for n in nodes}
+    missing_destinations = edge_ids - node_ids
+    assert not missing_destinations
+
+
 # def test_metadata_has_core_metadata_ids(nodes_and_edges):
 #     """
 #

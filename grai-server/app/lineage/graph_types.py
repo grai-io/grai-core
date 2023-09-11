@@ -10,8 +10,8 @@ class GraphTable:
     display_name: str
     namespace: str
     data_source: Optional[str]
-    x: int
-    y: int
+    x: float
+    y: float
     columns: List["GraphColumn"]
     sources: List[str]
     destinations: List[str]
@@ -35,5 +35,5 @@ class BaseTable:
     display_name: str
     namespace: str
     data_source: Optional[str]
-    x: int
-    y: int
+    x: float
+    y: float
