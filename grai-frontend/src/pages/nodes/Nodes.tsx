@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { gql, useQuery } from "@apollo/client"
+import { useSearchParams } from "react-router-dom"
 import useWorkspace from "helpers/useWorkspace"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
@@ -9,7 +10,6 @@ import TableFilterChoice from "components/table/TableFilterChoice"
 import NodeHeader from "components/table/TableHeader"
 import GraphError from "components/utils/GraphError"
 import { GetNodes, GetNodesVariables } from "./__generated__/GetNodes"
-import { useSearchParams } from "react-router-dom"
 
 export const GET_NODES = gql`
   query GetNodes(
