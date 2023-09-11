@@ -22,12 +22,12 @@ const types = [
   {
     name: "Table",
     icon: <ListAlt />,
-    route: (hit: SearchHit) => `/tables/${hit.id}`,
+    route: (hit: SearchHit) => `/nodes/${hit.id}`,
   },
   {
     name: "Column",
     icon: <ViewColumn />,
-    route: (hit: SearchHit) => `/tables/${hit.table_id}`,
+    route: (hit: SearchHit) => `/nodes/${hit.table_id}`,
   },
 ]
 
