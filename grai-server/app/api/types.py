@@ -3,7 +3,6 @@ import time
 from collections import defaultdict
 from enum import Enum
 from typing import List, Optional
-from lineage.graph_search import GraphSearch
 
 import strawberry
 import strawberry_django
@@ -36,6 +35,7 @@ from lineage.models import Filter as FilterModel
 from lineage.models import Node as NodeModel
 from lineage.models import Source as SourceModel
 from lineage.types import EdgeFilter, EdgeOrder, Filter, NodeFilter, NodeOrder
+from search.search import Search as SearchClient
 from users.types import User, UserFilter
 from workspaces.models import Membership as MembershipModel
 from workspaces.models import Workspace as WorkspaceModel
@@ -920,9 +920,9 @@ class Workspace:
         search: Optional[str] = strawberry.UNSET,
     ) -> List[BaseTable]:
         def get_tables(search: Optional[str]) -> List[Table]:
-            graph_search = GraphSearch(workspace=self)
+            client = SearchClient()
 
-            tables = graph_search.search(query=search)
+            tables = client.search(workspace=self, query=search)
 
             return tables
 
