@@ -148,6 +148,8 @@ services:
     extends:
       file: ./docker-compose.retake.yml
       service: retake-core
+    profiles:
+      - retake
     ports:
       - 9200:9200
 
@@ -155,6 +157,8 @@ services:
     extends:
       file: ./docker-compose.retake.yml
       service: retake-api
+    profiles:
+      - retake
     ports:
       - 8002:8000
 
@@ -162,5 +166,7 @@ services:
     extends:
       file: ./docker-compose.retake.yml
       service: pgsync
+    profiles:
+      - retake
     ports:
       - 7433:7433
