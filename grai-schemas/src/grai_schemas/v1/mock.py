@@ -157,7 +157,7 @@ class MockNode:
 
     def named_node_spec(self, **kwargs) -> NamedSpec:
         """ """
-        base_spec = NamedNodeSpecFactory.build(*kwargs)
+        base_spec = NamedNodeSpecFactory.build(**kwargs)
         if self.workspace:
             base_spec.workspace = self.workspace.id
         return base_spec
