@@ -1,3 +1,5 @@
+import traceback
+
 from django.utils import timezone
 
 from celery import shared_task
@@ -132,7 +134,7 @@ def execute_run(run: Run):
             if run.commit.pull_request:
                 github.post_comment(run.commit.pull_request.reference, message)
     except Exception as e:
-        run.metadata = {"error": str(e)}
+        run.metadata = {"error": str(e), "traceback": traceback.format_exc()}
         run.status = "error"
         run.finished_at = timezone.now()
         run.save()
