@@ -1,4 +1,5 @@
 from functools import cache
+from typing import get_args
 from uuid import UUID, uuid4
 
 import pytest
@@ -234,7 +235,7 @@ class TestNodesV1:
     def test_get_nodes(client):
         nodes = client.get("node")
         assert all(isinstance(node, NodeV1) for node in nodes)
-        assert all(isinstance(node.spec.metadata, MetadataV1) for node in nodes)
+        assert all(isinstance(node.spec.metadata, get_args(MetadataV1)) for node in nodes)
 
     @classmethod
     def test_post_node(cls, client, mock_v1):
@@ -315,7 +316,7 @@ class TestEdgesV1:
     def test_get_edges(client):
         result = client.get("edge")
         assert all(isinstance(edge, EdgeV1) for edge in result)
-        assert all(isinstance(edge.spec.metadata, MetadataV1) for edge in result)
+        assert all(isinstance(edge.spec.metadata, get_args(MetadataV1)) for edge in result)
 
     @staticmethod
     def test_post_edge(client, mock_v1):

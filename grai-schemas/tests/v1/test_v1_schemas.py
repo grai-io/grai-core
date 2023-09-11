@@ -276,3 +276,19 @@ class TestSourceV1:
         source_json = source.json()
         assert isinstance(source_json, str)
         assert source == SourceV1.parse_raw(source_json)
+
+
+class TestSourcedNodeV1:
+    @staticmethod
+    def test_to_node(mock_v1):
+        sourced_node = mock_v1.node.sourced_node()
+        node = sourced_node.to_node()
+        assert isinstance(node, NodeV1)
+
+
+class TestSourcedEdgeV1:
+    @staticmethod
+    def test_to_node(mock_v1):
+        sourced_node = mock_v1.edge.sourced_edge()
+        node = sourced_node.to_edge()
+        assert isinstance(node, EdgeV1)

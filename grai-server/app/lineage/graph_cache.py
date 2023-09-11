@@ -10,7 +10,7 @@ from redis import Redis
 from workspaces.models import Workspace
 
 from .graph import GraphQuery
-from .graph_filter import filter_by_filter, filter_by_dict
+from .graph_filter import filter_by_dict, filter_by_filter
 from .graph_types import BaseTable, ColumnEdge, GraphColumn, GraphTable, TableEdge
 
 

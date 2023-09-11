@@ -21,10 +21,10 @@ from typing import (
 )
 from uuid import UUID
 
-import orjson
-from grai_schemas.generics import GraiBaseModel, MalformedMetadata
+from grai_schemas.generics import MalformedMetadata
+from grai_schemas.serializers import dump_json, load_json
 from httpx import Response
-from pydantic import BaseModel, ValidationError
+from pydantic import ValidationError
 from requests import RequestException
 
 from grai_client.errors import InvalidResponseError, ObjectNotFoundError
@@ -110,56 +110,6 @@ def response_status_check(resp: Response) -> Response:
     raise RequestException(message)
 
 
-def orjson_defaults(obj: Any) -> Any:
-    """
-
-    Args:
-        obj (Any):
-
-    Returns:
-
-    Raises:
-
-    """
-    if isinstance(obj, set):
-        return list(obj)
-    elif isinstance(obj, (pathlib.PosixPath, pathlib.WindowsPath)):
-        return str(obj)
-    elif isinstance(obj, GraiBaseModel):
-        return obj.json()
-    elif isinstance(obj, BaseModel):
-        return obj.dict()
-    else:
-        raise Exception(f"No supported JSON serialization format for objects of type {type(obj)}")
-
-
-class GraiEncoder(json.JSONEncoder):
-    """Needed for the base python json implementation"""
-
-    def default(self, obj: Any) -> Any:
-        """
-
-        Args:
-            obj (Any):
-
-        Returns:
-
-        Raises:
-
-        """
-        if isinstance(obj, (UUID, pathlib.PosixPath, pathlib.WindowsPath)):
-            return str(obj)
-        elif isinstance(obj, (GraiBaseModel, BaseModel)):
-            return obj.dict()
-        elif isinstance(obj, datetime.date):
-            # datetime is a date but date is not a datetime
-            # TODO: TZ management
-            return obj.isoformat()
-        elif isinstance(obj, set):
-            return list(obj)
-        return json.JSONEncoder.default(self, obj)
-
-
 def serialize_obj(obj: Dict) -> bytes:
     """
 
@@ -171,23 +121,7 @@ def serialize_obj(obj: Dict) -> bytes:
     Raises:
 
     """
-    json_obj = orjson.dumps(obj, default=orjson_defaults)
-    return json_obj
-
-
-def serialize_obj_fallback(obj: Dict) -> str:
-    """
-
-    Args:
-        obj (Dict):
-
-    Returns:
-
-    Raises:
-
-    """
-    json_obj = json.dumps(obj, cls=GraiEncoder)
-    return json_obj
+    return dump_json(obj)
 
 
 def add_query_params(url: str, params: dict) -> str:

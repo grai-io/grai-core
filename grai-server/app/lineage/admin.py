@@ -5,10 +5,9 @@ from django.urls import reverse
 from django.utils.html import format_html
 
 from common.admin.fields.json_widget import PrettyJSONWidget
-from connections.models import Connection
+from connections.models import Connection, Run
 
 from .models import Edge, Event, Filter, Node, Source
-from connections.models import Run
 
 
 @admin.action(description="Force delete selected sources")

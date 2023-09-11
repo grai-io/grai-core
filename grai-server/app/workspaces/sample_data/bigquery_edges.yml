@@ -1,9 +1,10 @@
 version: v1
-type: Edge
+type: SourceEdge
 spec:
   name: prod.customers
   namespace: default
-  data_source: demo-edges
+  data_source:
+    name: demo-edges
   source:
     name: prod.customers
     namespace: prod
@@ -16,11 +17,12 @@ spec:
       edge_type: TableToTable
 ---
 version: v1
-type: Edge
+type: SourceEdge
 spec:
   name: prod.customers.id
   namespace: default
-  data_source: demo-edges
+  data_source:
+    name: demo-edges
   source:
     name: prod.customers.id
     namespace: prod
@@ -33,11 +35,12 @@ spec:
       edge_type: TableToColumn
 ---
 version: v1
-type: Edge
+type: SourceEdge
 spec:
   name: prod.customers.first_name
   namespace: default
-  data_source: demo-edges
+  data_source:
+    name: demo-edges
   source:
     name: prod.customers.first_name
     namespace: prod
@@ -54,11 +57,12 @@ spec:
         preserves_unique: true
 ---
 version: v1
-type: Edge
+type: SourceEdge
 spec:
   name: prod.customers.last_name
   namespace: default
-  data_source: demo-edges
+  data_source:
+    name: demo-edges
   source:
     name: prod.customers.last_name
     namespace: prod
@@ -75,11 +79,12 @@ spec:
         preserves_unique: true
 ---
 version: v1
-type: Edge
+type: SourceEdge
 spec:
   name: prod.orders
   namespace: default
-  data_source: demo-edges
+  data_source:
+    name: demo-edges
   source:
     name: prod.orders
     namespace: prod
@@ -92,11 +97,12 @@ spec:
       edge_type: TableToTable
 ---
 version: v1
-type: Edge
+type: SourceEdge
 spec:
   name: prod.orders.id
   namespace: default
-  data_source: demo-edges
+  data_source:
+    name: demo-edges
   source:
     name: prod.orders.id
     namespace: prod
@@ -113,11 +119,12 @@ spec:
         preserves_unique: true
 ---
 version: v1
-type: Edge
+type: SourceEdge
 spec:
   name: prod.orders.user_id
   namespace: default
-  data_source: demo-edges
+  data_source:
+    name: demo-edges
   source:
     name: prod.orders.user_id
     namespace: prod
@@ -134,11 +141,12 @@ spec:
         preserves_unique: true
 ---
 version: v1
-type: Edge
+type: SourceEdge
 spec:
   name: prod.orders.order_date
   namespace: default
-  data_source: demo-edges
+  data_source:
+    name: demo-edges
   source:
     name: prod.orders.order_date
     namespace: prod
@@ -151,11 +159,12 @@ spec:
       edge_type: TableToColumn
 ---
 version: v1
-type: Edge
+type: SourceEdge
 spec:
   name: prod.orders.status
   namespace: default
-  data_source: demo-edges
+  data_source:
+    name: demo-edges
   source:
     name: prod.orders.status
     namespace: prod
@@ -172,11 +181,12 @@ spec:
         preserves_unique: true
 ---
 version: v1
-type: Edge
+type: SourceEdge
 spec:
   name: prod.payments
   namespace: default
-  data_source: demo-edges
+  data_source:
+    name: demo-edges
   source:
     name: prod.payments
     namespace: prod
@@ -189,11 +199,12 @@ spec:
       edge_type: TableToTable
 ---
 version: v1
-type: Edge
+type: SourceEdge
 spec:
   name: prod.payments.id
   namespace: default
-  data_source: demo-edges
+  data_source:
+    name: demo-edges
   source:
     name: prod.payments.id
     namespace: prod
@@ -210,11 +221,12 @@ spec:
         preserves_unique: true
 ---
 version: v1
-type: Edge
+type: SourceEdge
 spec:
   name: prod.payments.order_id
   namespace: default
-  data_source: demo-edges
+  data_source:
+    name: demo-edges
   source:
     name: prod.payments.order_id
     namespace: prod
@@ -231,11 +243,12 @@ spec:
         preserves_unique: true
 ---
 version: v1
-type: Edge
+type: SourceEdge
 spec:
   name: prod.payments.payment_method
   namespace: default
-  data_source: demo-edges
+  data_source:
+    name: demo-edges
   source:
     name: prod.payments.payment_method
     namespace: prod
@@ -252,11 +265,12 @@ spec:
         preserves_unique: true
 ---
 version: v1
-type: Edge
+type: SourceEdge
 spec:
   name: prod.payments.amount
   namespace: default
-  data_source: demo-edges
+  data_source:
+    name: demo-edges
   source:
     name: prod.payments.amount
     namespace: prod

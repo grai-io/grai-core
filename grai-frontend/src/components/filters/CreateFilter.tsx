@@ -53,7 +53,7 @@ const CreateFilter: React.FC<CreateFilterProps> = ({
         }),
         fields: {
           filters(existingFilters = { data: [] }) {
-            if (!data?.createFilter) return
+            if (!data?.createFilter) return existingFilters
 
             const newFilter = cache.writeFragment<NewFilter>({
               data: data.createFilter,

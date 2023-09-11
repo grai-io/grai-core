@@ -1,11 +1,12 @@
-from celery import shared_task
 from django.utils import timezone
 
+from celery import shared_task
 from connections.adapters.base import BaseAdapter
 from connections.adapters.bigquery import BigqueryAdapter
 from connections.adapters.dbt import DbtAdapter
 from connections.adapters.dbt_cloud import DbtCloudAdapter
 from connections.adapters.fivetran import FivetranAdapter
+from connections.adapters.looker import LookerAdapter
 from connections.adapters.metabase import MetabaseAdapter
 from connections.adapters.mssql import MssqlAdapter
 from connections.adapters.mysql import MySQLAdapter
@@ -13,7 +14,6 @@ from connections.adapters.postgres import PostgresAdapter
 from connections.adapters.redshift import RedshiftAdapter
 from connections.adapters.snowflake import SnowflakeAdapter
 from connections.adapters.yaml_file import YamlFileAdapter
-from connections.adapters.looker import LookerAdapter
 from installations.github import Github
 from notifications.notifications import send_notification
 

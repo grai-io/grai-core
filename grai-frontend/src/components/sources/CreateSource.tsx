@@ -47,7 +47,7 @@ const CreateSource: React.FC<CreateSourceProps> = ({ workspaceId }) => {
         }),
         fields: {
           sources(existingSources = { data: [] }) {
-            if (!data?.createSource) return
+            if (!data?.createSource) return existingSources
 
             const newSource = cache.writeFragment<NewSource>({
               data: data.createSource,

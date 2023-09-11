@@ -1,5 +1,6 @@
-from .base import BaseAdapter
 import json
+
+from .base import BaseAdapter
 
 
 class LookerAdapter(BaseAdapter):
