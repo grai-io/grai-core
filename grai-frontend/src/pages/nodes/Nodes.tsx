@@ -9,6 +9,7 @@ import TableFilterChoice from "components/table/TableFilterChoice"
 import NodeHeader from "components/table/TableHeader"
 import GraphError from "components/utils/GraphError"
 import { GetNodes, GetNodesVariables } from "./__generated__/GetNodes"
+import { useSearchParams } from "react-router-dom"
 
 export const GET_NODES = gql`
   query GetNodes(
@@ -79,8 +80,19 @@ const Nodes: React.FC = () => {
   const { organisationName, workspaceName } = useWorkspace()
   const [search, setSearch] = useState<string>()
   const [page, setPage] = useState<number>(0)
-  const [filter, setFilter] = useState<NodeFilter>()
   const [order, setOrder] = useState<Order | null>(null)
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const node_types = searchParams.get("node_type")?.split(",") ?? []
+
+  const filter: NodeFilter | undefined =
+    node_types.length > 0
+      ? {
+          node_type: {
+            contains: node_types,
+          },
+        }
+      : undefined
 
   const orderProperty: OrderProperty = {}
 
@@ -116,8 +128,17 @@ const Nodes: React.FC = () => {
     setPage(0)
   }
 
-  const handleNodeTypeChange = (value: string[]) =>
-    setFilter({ ...filter, node_type: { contains: value } })
+  const handleNodeTypeChange = (value: string[]) => {
+    let newParams = searchParams
+
+    if (value.length > 0) {
+      newParams.set("node_type", value.join(","))
+    } else {
+      newParams.delete("node_type")
+    }
+
+    setSearchParams(newParams)
+  }
 
   return (
     <PageLayout>
