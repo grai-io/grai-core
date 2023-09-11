@@ -46,12 +46,24 @@ export interface GetCommit_workspace_repository {
   commit: GetCommit_workspace_repository_commit;
 }
 
+export interface GetCommit_workspace_graph_columns_destinations {
+  __typename: "ColumnEdge";
+  edge_id: string;
+  column_id: string;
+}
+
 export interface GetCommit_workspace_graph_columns {
   __typename: "GraphColumn";
   id: string;
   name: string;
   display_name: string;
-  destinations: string[];
+  destinations: GetCommit_workspace_graph_columns_destinations[];
+}
+
+export interface GetCommit_workspace_graph_destinations {
+  __typename: "TableEdge";
+  edge_id: string;
+  table_id: string;
 }
 
 export interface GetCommit_workspace_graph {
@@ -64,7 +76,7 @@ export interface GetCommit_workspace_graph {
   y: number;
   data_source: string | null;
   columns: GetCommit_workspace_graph_columns[];
-  destinations: string[];
+  destinations: GetCommit_workspace_graph_destinations[];
 }
 
 export interface GetCommit_workspace {
