@@ -136,7 +136,7 @@ def get_edge_nodes_from_database(items: List[SourcedEdgeV1], workspace: Workspac
     missing_node_labels = [k for k, v in node_map.items() if v is None]
     if len(missing_node_labels) > 0:
         missing_nodes = missing_node_labels[0 : min(len(missing_node_labels), 5)]
-        missing_node_names = "\n- ".join(node for node in missing_nodes)
+        missing_node_names = "\n- ".join([node for node in missing_nodes])
         message = (
             f"Some requested nodes could not be found. This error indicates some nodes identified as either the source"
             f"or destination an edge do not exist in the database and should be created first. In total there were"
