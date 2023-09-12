@@ -133,16 +133,22 @@ def get_edge_nodes_from_database(items: List[SourcedEdgeV1], workspace: Workspac
 
     node_map |= {(node.name, node.namespace): node.id for node in NodeModel.objects.filter(query).all()}
 
-    missing_node_labels = [k for k, v in node_map.items() if v is None]
+    missing_node_labels = {k for k, v in node_map.items() if v is None}
     if len(missing_node_labels) > 0:
-        missing_nodes = missing_node_labels[0 : min(len(missing_node_labels), 5)]
-        missing_node_names = "\n- ".join(node for node in missing_nodes)
+        anomalous_edges = []
+        for edge in items:
+            source = (edge.spec.source.name, edge.spec.source.namespace)
+            destination = (edge.spec.destination.name, edge.spec.destination.namespace)
+            if source in missing_node_labels or destination in missing_node_labels:
+                anomalous_edges.append(f"{source} -> {destination}")
+
+        anomalous_edge_list = "\n- ".join(edge for edge in anomalous_edges[:10])
         message = (
-            f"Some requested nodes could not be found. This error indicates some nodes identified as either the source"
-            f"or destination an edge do not exist in the database and should be created first. In total there were"
-            f"{len(missing_node_names)} missing nodes\n\n"
-            f"The following list is a sample of (name, namespace) value's of the missing nodes:\n"
-            f"{missing_node_names}"
+            f"An attempt was made to create edges with missing nodes. In total, {len(missing_node_labels)} nodes "
+            f"corresponding to {len(anomalous_edges)} edges were missing. The following list is a sample of "
+            f"The following list is a sample of {len(anomalous_edges[:10])} (name, namespace) labels "
+            f"for the `source -> destination` labels of the missing edges:\n"
+            f"{anomalous_edge_list}"
         )
         raise ValueError(message)
 
