@@ -106,9 +106,8 @@ class TestWorkspaceV1:
 
     @staticmethod
     @pytest.mark.xfail(raises=NotSupportedError)
-    def test_patch_workspace(client, workspace_v1, mock_v1):
-        workspace = mock_v1.workspace.workspace_spec(organisation=workspace_v1.spec)
-        resp = client.patch(workspace)
+    def test_patch_workspace(client, workspace_v1):
+        client.patch(workspace_v1)
 
     @staticmethod
     def test_get_workspace_by_workspace_v1(client, workspace_v1):
