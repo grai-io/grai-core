@@ -2,12 +2,14 @@
 
 from django.db import migrations
 from lineage.models import Source
+from django.db.models import Q
 
 
 def forwards(apps, schema_editor):
     for source in Source.objects.iterator(chunk_size=1000):
-        source.nodes.remove(*source.nodes.filter(workspace__id__ne=source.workspace))
-        source.edges.remove(*source.edges.filter(workspace__id__ne=source.workspace))
+        query = Q(workspace=source.workspace)
+        source.nodes.remove(*source.nodes.filter(~query))
+        source.edges.remove(*source.edges.filter(~query))
 
 
 class Migration(migrations.Migration):
