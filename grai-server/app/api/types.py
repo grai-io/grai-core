@@ -2,7 +2,7 @@ import datetime
 import time
 from collections import defaultdict
 from enum import Enum
-from typing import List, Optional
+from typing import List, Optional, Tuple, Union
 
 import strawberry
 import strawberry_django
@@ -35,6 +35,7 @@ from lineage.models import Filter as FilterModel
 from lineage.models import Node as NodeModel
 from lineage.models import Source as SourceModel
 from lineage.types import EdgeFilter, EdgeOrder, Filter, NodeFilter, NodeOrder
+from search.search import SearchClient
 from users.types import User, UserFilter
 from workspaces.models import Membership as MembershipModel
 from workspaces.models import Workspace as WorkspaceModel
@@ -877,8 +878,6 @@ class Workspace:
             NodeModel.objects.filter(workspace=self).values_list("namespace", flat=True).distinct()
         )
 
-        print(namespaces)
-
         return DataWrapper(namespaces)
 
     # Graph
@@ -920,38 +919,14 @@ class Workspace:
         self,
         search: Optional[str] = strawberry.UNSET,
     ) -> List[BaseTable]:
-        def get_tables(search: Optional[str]) -> List[Table]:
-            def get_words(word: str) -> List[str]:
-                from django.db import connection
+        def get_tables(
+            search: Optional[str],
+        ) -> List[Union[Table, BaseTable]]:
+            client = SearchClient()
 
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        "SELECT * FROM unique_lexeme WHERE levenshtein_less_equal(word, %s, 2) < 3",
-                        [word],
-                    )
-                    rows = cursor.fetchall()
+            tables = client.search(workspace=self, query=search)
 
-                return list([item[0] for item in rows])
-
-            result = []
-
-            for word in search.replace("_", " ").replace(".", " ").strip().split(" "):
-                result += get_words(word)
-
-            search_string = " ".join(result)
-
-            return list(
-                NodeModel.objects.raw(
-                    """
-                    SELECT *
-                    FROM lineage_node
-                    WHERE workspace_id=%s
-                    AND metadata->'grai'->>'node_type'='Table'
-                    AND ts_rank(search, websearch_to_tsquery('simple', replace(replace(%s, ' ', ' or '), '.', ' or '))) > 0
-                    ORDER BY ts_rank(search, websearch_to_tsquery('simple', replace(replace(%s, ' ', ' or '), '.', ' or '))) DESC""",
-                    [self.id, search_string, search_string],
-                )
-            )
+            return tables
 
         graph = GraphCache(workspace=self)
 
@@ -960,7 +935,13 @@ class Workspace:
         if search:
             tables = await sync_to_async(get_tables)(search)
 
-            ids = [table.id for table in tables]
+            if len(tables) == 0:
+                return []
+
+            if isinstance(tables[0], BaseTable):
+                return tables
+
+            ids = [table["id"] for table in tables]
 
         return graph.get_tables(ids=ids)
 
