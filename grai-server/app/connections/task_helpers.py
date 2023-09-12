@@ -134,6 +134,7 @@ def get_edge_nodes_from_database(items: List[SourcedEdgeV1], workspace: Workspac
     node_map |= {(node.name, node.namespace): node.id for node in NodeModel.objects.filter(query).all()}
 
     missing_node_labels = [k for k, v in node_map.items() if v is None]
+
     if len(missing_node_labels) > 0:
         missing_node_names = "\n ".join([f"- {str(x)}" for x in missing_node_labels[:5]])
         message = (
