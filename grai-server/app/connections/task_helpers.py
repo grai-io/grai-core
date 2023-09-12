@@ -153,9 +153,9 @@ def get_edge_nodes_from_database(items: List[SourcedEdgeV1], workspace: Workspac
         anomalous_edge_list = "\n- ".join(edge for edge in anomalous_edges[:10])
         message = (
             f"An attempt was made to create edges with missing nodes. In total there were {len(missing_node_labels)} "
-            f" missing nodes corresponding to {len(anomalous_edges)} edges. "
+            f"missing nodes corresponding to {len(anomalous_edges)} edges. "
             f"The following is a sample of {len(anomalous_edges[:10])} affected edges and the (name, namespace) labels "
-            f"identifying it's corresponding `source -> destination` nodes:\n"
+            f"identifying its corresponding `source -> destination` nodes:\n"
             f"{anomalous_edge_list}"
         )
         raise ValueError(message)
