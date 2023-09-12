@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List, Tuple
+from typing import List, Optional
 
 from decouple import config
 
@@ -8,7 +8,7 @@ from workspaces.models import Workspace
 
 class SearchInterface(ABC):
     @abstractmethod
-    def search(self, workspace: Workspace, query: str) -> Tuple[List, bool]:
+    def search(self, workspace: Workspace, query: str) -> List:
         pass  # pragma: no cover
 
     def build(self) -> None:
@@ -27,7 +27,7 @@ class SearchClient(SearchInterface):
 
         return BasicSearch()
 
-    def search(self, workspace: Workspace, query: str) -> Tuple[List, bool]:
+    def search(self, workspace: Workspace, query: Optional[str]) -> List:
         return self.client.search(workspace, query)
 
     def build(self):

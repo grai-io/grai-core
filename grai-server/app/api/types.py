@@ -921,24 +921,24 @@ class Workspace:
     ) -> List[BaseTable]:
         def get_tables(
             search: Optional[str],
-        ) -> Union[Tuple[List[BaseTable], True], Tuple[List[Table], False]]:
+        ) -> List[Union[Table, BaseTable]]:
             client = SearchClient()
 
-            tables, ready = client.search(workspace=self, query=search)
+            tables = client.search(workspace=self, query=search)
 
-            return tables, ready
+            return tables
 
         graph = GraphCache(workspace=self)
 
         ids = None
 
         if search:
-            tables, ready = await sync_to_async(get_tables)(search)
+            tables = await sync_to_async(get_tables)(search)
 
             if len(tables) == 0:
                 return []
 
-            if ready:
+            if isinstance(tables[0], BaseTable):
                 return tables
 
             ids = [table["id"] for table in tables]

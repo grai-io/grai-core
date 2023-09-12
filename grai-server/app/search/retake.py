@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Optional
 
 from decouple import config
 from retakesearch import Client, Database, Search, Table
@@ -55,7 +55,7 @@ class RetakeSearch(SearchInterface):
         index.vectorize(self.columns)
         index.add_source(database=database, table=table)
 
-    def search(self, workspace: Workspace, query: str) -> Tuple[List, bool]:
+    def search(self, workspace: Workspace, query: Optional[str]) -> List:
         index = client.get_index(self.index_name)
 
         dsl = {"query": {"query_string": {"query": f"workspace_id.keyword:{str(workspace.id)}"}}}
@@ -71,4 +71,4 @@ class RetakeSearch(SearchInterface):
 
         hits = result.get("hits", {"hits": []}).get("hits", [])
 
-        return ([hit["_source"] for hit in hits], False)
+        return [hit["_source"] for hit in hits]
