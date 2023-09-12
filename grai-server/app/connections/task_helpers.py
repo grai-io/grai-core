@@ -133,16 +133,30 @@ def get_edge_nodes_from_database(items: List[SourcedEdgeV1], workspace: Workspac
 
     node_map |= {(node.name, node.namespace): node.id for node in NodeModel.objects.filter(query).all()}
 
-    missing_node_labels = [k for k, v in node_map.items() if v is None]
-
+    missing_node_labels = {k for k, v in node_map.items() if v is None}
     if len(missing_node_labels) > 0:
-        missing_node_names = "\n ".join([f"- {str(x)}" for x in missing_node_labels[:5]])
+        anomalous_edges = []
+        for edge in items:
+            source_id = (edge.spec.source.name, edge.spec.source.namespace)
+            dest_id = (edge.spec.destination.name, edge.spec.destination.namespace)
+            missing_source = source_id in missing_node_labels
+            missing_dest = dest_id in missing_node_labels
+            if missing_source or missing_dest:
+                if missing_source and missing_dest:
+                    message = "missing source and destination"
+                elif missing_source:
+                    message = "missing source"
+                else:
+                    message = "missing destination"
+                anomalous_edges.append(f"{str(source_id)} -> {str(dest_id)}; {message}")
+
+        anomalous_edge_list = "\n- ".join(edge for edge in anomalous_edges[:10])
         message = (
-            f"Some requested nodes could not be found. This error indicates some nodes identified as either the source"
-            f"or destination an edge do not exist in the database and should be created first. In total there were "
-            f"{len(missing_node_labels)} missing nodes\n\n"
-            f"The following list is a sample of (name, namespace) value's of the missing nodes:\n"
-            f"{missing_node_names}"
+            f"An attempt was made to create edges with missing nodes. In total there were {len(missing_node_labels)} "
+            f"missing nodes corresponding to {len(anomalous_edges)} edges. "
+            f"The following is a sample of {len(anomalous_edges[:10])} affected edges and the (name, namespace) labels "
+            f"identifying its corresponding `source -> destination` nodes:\n"
+            f"{anomalous_edge_list}"
         )
         raise ValueError(message)
 

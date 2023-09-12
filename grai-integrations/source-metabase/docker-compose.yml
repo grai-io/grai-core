@@ -17,16 +17,9 @@ services:
     depends_on:
       - db
     environment:
-      MB_DB_TYPE: postgres
-      MB_DB_HOST: db
-      MB_DB_PORT: 5432
-      MB_DB_USER: metabase
-      MB_DB_PASS: mysecretpassword
-      MB_DB_NAME: metabase
-      MB_SECRET_KEY: mysecretkey
-      MB_DB_FILE: /metabase-data/metabase.db
+      MB_DB_FILE: /metabase.db
     volumes:
-      - ./init/metabase-data:/metabase-data
+      - ./init/metabase-data/metabase.db:/metabase.db
     ports:
       - 3001:3000
 

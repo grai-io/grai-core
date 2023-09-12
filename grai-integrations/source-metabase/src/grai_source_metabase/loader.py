@@ -121,7 +121,7 @@ class MetabaseAPI:
         if response.status_code != 200:
             message = (
                 f"While performing a {request.__name__.upper()} operation on `{url}`, "
-                f"the Metabase API returned error code {response.status_code} with `{response.reason}`."
+                f"the Metabase API returned error code `{response.status_code}` with reason `{response.reason}`. "
                 f"This does not appear to be an issue with Grai, please check your Metabase instance."
             )
             raise requests.RequestException(message)
