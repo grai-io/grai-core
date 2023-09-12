@@ -77,9 +77,9 @@ const SourcesTable: React.FC<SourcesTableProps> = ({
       <TableHead>
         <TableRow>
           <TableCell>Name</TableCell>
-          <TableCell>Priority</TableCell>
-          <TableCell sx={{ width: 0, textAlign: "right" }}>Nodes</TableCell>
-          <TableCell sx={{ width: 0, textAlign: "right" }}>Edges</TableCell>
+          <TableCell sx={{ textAlign: "right" }}>Priority</TableCell>
+          <TableCell sx={{ textAlign: "right" }}>Nodes</TableCell>
+          <TableCell sx={{ textAlign: "right" }}>Edges</TableCell>
           <TableCell />
           <TableCell>Connections</TableCell>
           <TableCell sx={{ width: 0 }} />
@@ -94,7 +94,7 @@ const SourcesTable: React.FC<SourcesTableProps> = ({
             onClick={() => navigate(source.id)}
           >
             <TableCell>{source.name}</TableCell>
-            <TableCell>{source.priority}</TableCell>
+            <TableCell sx={{ textAlign: "right" }}>{source.priority}</TableCell>
             <TableCell sx={{ textAlign: "right" }}>
               {source.nodes.meta.total}
             </TableCell>
