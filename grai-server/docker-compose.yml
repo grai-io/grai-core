@@ -116,7 +116,7 @@ services:
       [
         "postgres",
         "-c",
-        "log_statement=all",
+        "log_statement=none",
         "-c",
         "wal_level=logical",
         "-c",

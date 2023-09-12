@@ -7,7 +7,7 @@ from django.db.models import Q
 
 def forwards(apps, schema_editor):
     for source in Source.objects.iterator(chunk_size=1000):
-        query = Q(workspace__id=source.workspace)
+        query = Q(workspace=source.workspace)
         source.nodes.remove(*source.nodes.filter(~query))
         source.edges.remove(*source.edges.filter(~query))
 
