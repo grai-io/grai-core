@@ -72,6 +72,61 @@ async def test_workspace_get(test_context):
 
 @pytest.mark.django_db
 @pytest.mark.asyncio
+async def test_workspace_name(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    query = """
+        query Workspace($name: String!, $organisationName: String!) {
+            workspace(name: $name, organisationName: $organisationName) {
+                id
+                name
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "name": workspace.name,
+            "organisationName": organisation.name,
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"] == {
+        "id": str(workspace.id),
+        "name": workspace.name,
+    }
+
+
+@pytest.mark.django_db
+@pytest.mark.asyncio
+async def test_workspace_none(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    query = """
+        query Workspace {
+            workspace {
+                id
+                name
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        context_value=context,
+    )
+
+    assert (
+        str(result.errors)
+        == """[GraphQLError("Can't find workspace", locations=[SourceLocation(line=3, column=13)], path=['workspace'])]"""
+    )
+
+
+@pytest.mark.django_db
+@pytest.mark.asyncio
 async def test_workspace_no_workspace(test_context):
     context, organisation, workspace, user, membership = test_context
 

@@ -171,7 +171,7 @@ class ConnectionInline(admin.TabularInline):
         )
 
     fields = ("name", view)
-    readonly_fields = (view,)
+    readonly_fields = [view]
 
 
 class SourceAdmin(admin.ModelAdmin):

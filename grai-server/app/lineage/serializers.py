@@ -101,7 +101,10 @@ class SourceDestinationMixin:
         match data:
             case {
                 "source": {"name": source_name, "namespace": source_namespace},
-                "destination": {"name": destination_name, "namespace": destination_namespace},
+                "destination": {
+                    "name": destination_name,
+                    "namespace": destination_namespace,
+                },
             }:
                 q_filter = Q(name=source_name) & Q(namespace=source_namespace)
                 q_filter |= Q(name=destination_name) & Q(namespace=destination_namespace)
@@ -143,7 +146,7 @@ class EdgeSerializer(SourceParentMixin, SourceDestinationMixin, serializers.Mode
         read_only_fields = ("created_at", "updated_at")
 
 
-class SourceChildMixin:
+class SourceChildMixin(serializers.ModelSerializer):
     @cached_property
     def source_model(self) -> Source:
         return Source.objects.get(pk=self.context["view"].kwargs["source_pk"])

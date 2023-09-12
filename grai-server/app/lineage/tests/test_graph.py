@@ -218,7 +218,7 @@ class TestGraphQuery:
     def test_add(self):
         query = GraphQuery(clause="(a)").add("abc")
 
-        assert query.clause[1] == "abc"
+        assert str(query.clause[1]) == "abc"
         assert query.parameters == {}
         assert str(query) == "(a) abc"
 

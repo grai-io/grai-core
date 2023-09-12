@@ -2,7 +2,7 @@ import datetime
 import time
 from collections import defaultdict
 from enum import Enum
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Union
 
 import strawberry
 import strawberry_django
@@ -13,7 +13,6 @@ from django.db.models.query import QuerySet
 from grai_graph.graph import BaseSourceSegment
 from notifications.models import Alert as AlertModel
 from strawberry.scalars import JSON
-from strawberry.types import Info
 from strawberry_django.filters import FilterLookup
 from strawberry_django.pagination import OffsetPaginationInput
 
@@ -892,15 +891,22 @@ class Workspace:
         query.match("(table:Table)")
 
         if filters and filters.source_id:
-            return graph.get_source_filtered_graph_result(filters.source_id, filters.n)
+            return graph.get_source_filtered_graph_result(filters.source_id, filters.n or 0)
 
         if filters and filters.table_id:
-            return graph.get_table_filtered_graph_result(filters.table_id, filters.n)
+            return graph.get_table_filtered_graph_result(filters.table_id, filters.n or 0)
 
         if filters and filters.edge_id:
-            return graph.get_edge_filtered_graph_result(filters.edge_id, filters.n)
+            return graph.get_edge_filtered_graph_result(filters.edge_id, filters.n or 0)
 
-        if filters and filters.min_x is not None and filters.max_x is not strawberry.UNSET:
+        if (
+            filters
+            and filters.min_x is not None
+            and filters.min_x is not strawberry.UNSET
+            and filters.max_x is not None
+            and filters.min_y is not None
+            and filters.max_y is not None
+        ):
             graph.filter_by_range(filters.min_x, filters.max_x, filters.min_y, filters.max_y, query)
 
         if filters and filters.filters:
@@ -962,7 +968,7 @@ class Workspace:
     # Source Graph
     @strawberry.field
     def source_graph(self) -> List[SourceGraph]:
-        def fetch_source_graph(workspace: WorkspaceModel):
+        def fetch_source_graph(workspace: Workspace):
             nodes = defaultdict(list)
             for node in (
                 NodeModel.objects.filter(workspace=workspace, is_active=True)

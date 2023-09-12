@@ -19,12 +19,23 @@ class Where:
         return self.where
 
 
+WhereType = Union[str, Where]
+WhereArrayType = Union[WhereType, List[WhereType]]
+
+
+def wrapWhere(input: WhereArrayType) -> List[Where]:
+    if isinstance(input, list):
+        return [Where(w) if isinstance(w, str) else w for w in input]
+
+    return [input if isinstance(input, Where) else Where(input)]
+
+
 class Match:
     def __init__(
         self,
         match: str,
         optional: bool = False,
-        where: Union[str, Where, List[Where]] = None,
+        where: WhereArrayType | None = None,
         parameters: object = None,
     ):
         self.match = match
@@ -33,16 +44,16 @@ class Match:
         if isinstance(where, str):
             where = Where(where)
 
-        self.wheres = wrap(where) if where else []
+        self.wheres = wrapWhere(where) if where else []
         self.parameters = parameters if parameters else {}
 
-    def where(self, where: Union[str, Where, List[Where]]) -> "Match":
+    def where(self, where: WhereArrayType) -> "Match":
         if isinstance(where, str):
             self.wheres.append(Where(where))
 
             return self
 
-        self.wheres.extend(wrap(where))
+        self.wheres.extend(wrapWhere(where))
 
         return self
 
@@ -63,63 +74,54 @@ class Match:
         return res
 
 
-Clause = Union[Match, str]
+MatchType = Union[Match, str]
+MatchTypeArray = Union[MatchType, List[MatchType]]
+
+
+def wrapMatch(input: MatchTypeArray, optional: bool = False, where: WhereArrayType | None = None) -> List[Match]:
+    if isinstance(input, list):
+        return [Match(w, optional=optional, where=where) if isinstance(w, str) else w for w in input]
+
+    return [input if isinstance(input, Match) else Match(input, optional=optional, where=where)]
 
 
 class GraphQuery:
-    def __init__(self, clause: Union[Clause, List[Clause]] = None, parameters: object = None):
+    def __init__(
+        self,
+        clause: MatchTypeArray | None = None,
+        parameters: object = None,
+    ):
         self.clause = wrap(clause) if clause else []
         self.parameters = parameters if parameters else {}
-        self.withWheres = None
+        self.withWheres: str | None = None
 
     def match(
         self,
-        match: Union[str, Match, List[Match]],
-        where: Union[str, Where, List[Where]] = [],
+        match: MatchTypeArray,
+        where: WhereArrayType | None = None,
         parameters: object = {},
     ) -> "GraphQuery":
         self.parameters = self.parameters | parameters
 
-        if isinstance(match, Match):
-            self.clause.append(match)
-
-            return self
-
-        if isinstance(match, List):
-            self.clause.extend(match)
-
-            return self
-
-        self.clause.append(Match(match, where=where))
+        matches = wrapMatch(match, where=where)
+        self.clause.extend(matches)
 
         return self
 
     def optional_match(
         self,
-        match: Union[str, Match, List[Match]],
-        where: Union[str, Where, List[Where]] = [],
+        match: MatchTypeArray,
+        where: WhereArrayType | None = None,
         parameters: object = {},
     ) -> "GraphQuery":
         self.parameters = self.parameters | parameters
 
-        if isinstance(match, Match):
-            match.optional = True
-            self.clause.append(match)
-
-            return self
-
-        if isinstance(match, List):
-            for m in match:
-                m.optional = True
-            self.clause.extend(match)
-
-            return self
-
-        self.clause.append(Match(match, optional=True, where=where))
+        matches = wrapMatch(match, optional=True, where=where)
+        self.clause.extend(matches)
 
         return self
 
-    def where(self, where: Union[str, Where, List[Where]], parameters: object = {}) -> "GraphQuery":
+    def where(self, where: WhereArrayType, parameters: object = {}) -> "GraphQuery":
         if isinstance(where, str):
             where = Where(where, parameters)
 
