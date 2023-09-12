@@ -134,13 +134,13 @@ def get_edge_nodes_from_database(items: List[SourcedEdgeV1], workspace: Workspac
     node_map |= {(node.name, node.namespace): node.id for node in NodeModel.objects.filter(query).all()}
 
     missing_node_labels = [k for k, v in node_map.items() if v is None]
+    breakpoint()
     if len(missing_node_labels) > 0:
-        missing_nodes = missing_node_labels[0 : min(len(missing_node_labels), 5)]
-        missing_node_names = "\n- ".join([node for node in missing_nodes])
+        missing_node_names = "\n- ".join([str(x) for x in missing_node_labels[:5]])
         message = (
             f"Some requested nodes could not be found. This error indicates some nodes identified as either the source"
             f"or destination an edge do not exist in the database and should be created first. In total there were"
-            f"{len(missing_node_names)} missing nodes\n\n"
+            f"{len(missing_node_labels)} missing nodes\n\n"
             f"The following list is a sample of (name, namespace) value's of the missing nodes:\n"
             f"{missing_node_names}"
         )
