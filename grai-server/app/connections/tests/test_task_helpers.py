@@ -4,6 +4,7 @@ import pytest
 from django.db.models import Q
 from grai_schemas.v1 import EdgeV1, NodeV1, SourcedEdgeV1, SourcedNodeV1, mock
 
+
 from connections.task_helpers import (
     build_item_query_filter,
     get_node,
@@ -505,12 +506,13 @@ class TestUpdate:
 
     def test_build_spec_query_filter(self):
         workspace = mocker.workspace.workspace_spec(name="workspace1", id=uuid.uuid4())
-        source = mocker.source.source_spec(name="source1", workspace=workspace)
-        kwargs = {"data_source": source, "workspace": workspace.name, "namespace": "default"}
+        test_mocker = mock.MockV1(workspace=workspace)
 
+        source = test_mocker.source.source_spec(name="source1", workspace=workspace)
+        kwargs = {"data_source": source, "namespace": "default"}
         node_names = ["node1", "node2"]
-        source_specs = [mocker.node.named_source_node_spec(**kwargs, name=name) for name in node_names]
-        source_items = [mocker.node.sourced_node(spec=spec) for spec in source_specs]
+        source_specs = [test_mocker.node.named_source_node_spec(name=name, **kwargs) for name in node_names]
+        source_items = [test_mocker.node.sourced_node(spec=spec) for spec in source_specs]
         query = build_item_query_filter(source_items, workspace.id)
 
         expected_query = (Q(name="node1", namespace="default") | Q(name="node2", namespace="default")) & Q(
@@ -522,7 +524,7 @@ class TestUpdate:
     def test_build_query_filter(self):
         workspace = mocker.workspace.workspace_spec(name="workspace1", id=uuid.uuid4())
         source = mocker.source.source_spec(name="source1", workspace=workspace)
-        kwargs = {"data_source": source, "workspace": workspace.name, "namespace": "default"}
+        kwargs = {"data_source": source, "workspace": workspace.id, "namespace": "default"}
 
         node_names = ["node1", "node2"]
         source_specs = [mocker.node.named_source_node_spec(**kwargs, name=name) for name in node_names]

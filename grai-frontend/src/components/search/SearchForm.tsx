@@ -50,7 +50,7 @@ const SearchForm: React.FC<SearchFormProps> = ({ onClose, onError }) => {
         const hit = hits.find(hit => hit.id === selected)
         if (hit) {
           workspaceNavigate(
-            hit.table_id ? `tables/${hit.table_id}` : `tables/${hit.id}`
+            hit.table_id ? `nodes/${hit.table_id}` : `nodes/${hit.id}`,
           )
         }
     }

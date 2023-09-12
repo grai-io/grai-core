@@ -54,7 +54,7 @@ const HomeCards: React.FC = () => {
           count={data?.workspace.nodes.meta.filtered}
           text="Tables"
           color="#8338EC"
-          to="tables"
+          to="nodes?node_type=Table"
         />
       </Grid>
       <Grid item md={3}>

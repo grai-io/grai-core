@@ -58,7 +58,7 @@ const EdgeProfile: React.FC<EdgeProfileProps> = ({ edge }) => {
                 <Box>
                   <Button
                     component={Link}
-                    to={`${routePrefix}/tables/${edge.source.id}`}
+                    to={`${routePrefix}/nodes/${edge.source.id}`}
                   >
                     {edge.source.display_name}
                   </Button>
@@ -68,7 +68,7 @@ const EdgeProfile: React.FC<EdgeProfileProps> = ({ edge }) => {
                 <Box>
                   <Button
                     component={Link}
-                    to={`${routePrefix}/tables/${edge.destination.id}`}
+                    to={`${routePrefix}/nodes/${edge.destination.id}`}
                   >
                     {edge.destination.display_name}
                   </Button>

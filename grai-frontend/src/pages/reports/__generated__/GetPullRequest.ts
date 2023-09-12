@@ -45,12 +45,24 @@ export interface GetPullRequest_workspace_repository {
   pull_request: GetPullRequest_workspace_repository_pull_request;
 }
 
+export interface GetPullRequest_workspace_graph_columns_destinations {
+  __typename: "ColumnEdge";
+  edge_id: string;
+  column_id: string;
+}
+
 export interface GetPullRequest_workspace_graph_columns {
   __typename: "GraphColumn";
   id: string;
   name: string;
   display_name: string;
-  destinations: string[];
+  destinations: GetPullRequest_workspace_graph_columns_destinations[];
+}
+
+export interface GetPullRequest_workspace_graph_destinations {
+  __typename: "TableEdge";
+  edge_id: string;
+  table_id: string;
 }
 
 export interface GetPullRequest_workspace_graph {
@@ -63,7 +75,7 @@ export interface GetPullRequest_workspace_graph {
   y: number;
   data_source: string | null;
   columns: GetPullRequest_workspace_graph_columns[];
-  destinations: string[];
+  destinations: GetPullRequest_workspace_graph_destinations[];
 }
 
 export interface GetPullRequest_workspace_filters_data {

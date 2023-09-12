@@ -11,7 +11,12 @@ export const sourceTable = {
       id: "c1",
       name: "N3",
       display_name: "N3 Node",
-      destinations: ["c2"],
+      destinations: [
+        {
+          column_id: "c2",
+          edge_id: "e1",
+        },
+      ],
     },
   ],
   destinations: [],
