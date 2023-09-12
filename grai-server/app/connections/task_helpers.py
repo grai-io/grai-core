@@ -137,10 +137,18 @@ def get_edge_nodes_from_database(items: List[SourcedEdgeV1], workspace: Workspac
     if len(missing_node_labels) > 0:
         anomalous_edges = []
         for edge in items:
-            source = (edge.spec.source.name, edge.spec.source.namespace)
-            destination = (edge.spec.destination.name, edge.spec.destination.namespace)
-            if source in missing_node_labels or destination in missing_node_labels:
-                anomalous_edges.append(f"{source} -> {destination}")
+            source_id = (edge.spec.source.name, edge.spec.source.namespace)
+            dest_id = (edge.spec.destination.name, edge.spec.destination.namespace)
+            missing_source = source_id in missing_node_labels
+            missing_dest = dest_id in missing_node_labels
+            if missing_source or missing_dest:
+                if missing_source and missing_dest:
+                    message = "missing source and destination"
+                elif missing_source:
+                    message = "missing source"
+                else:
+                    message = "missing destination"
+                anomalous_edges.append(f"{str(source_id)} -> {str(dest_id)}; {message}")
 
         anomalous_edge_list = "\n- ".join(edge for edge in anomalous_edges[:10])
         message = (
