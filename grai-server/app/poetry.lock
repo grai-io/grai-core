@@ -217,17 +217,17 @@ uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
 name = "boto3"
-version = "1.28.44"
+version = "1.28.45"
 description = "The AWS SDK for Python"
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "boto3-1.28.44-py3-none-any.whl", hash = "sha256:c53c92dfe22489ba31e918c2e7b59ff43e2e778bd3d3559e62351a739382bb5c"},
-    {file = "boto3-1.28.44.tar.gz", hash = "sha256:eea3b07e0f28c9f92bccab972af24a3b0dd951c69d93da75227b8ecd3e18f6c4"},
+    {file = "boto3-1.28.45-py3-none-any.whl", hash = "sha256:682abbd304e93e726163d7de7448c1bf88108c72cf6a23dceb6bba86fdc86dff"},
+    {file = "boto3-1.28.45.tar.gz", hash = "sha256:4ee914266c9bed16978677a367fd05053d8dcaddcbe998c9df30787ab73f87aa"},
 ]
 
 [package.dependencies]
-botocore = ">=1.31.44,<1.32.0"
+botocore = ">=1.31.45,<1.32.0"
 jmespath = ">=0.7.1,<2.0.0"
 s3transfer = ">=0.6.0,<0.7.0"
 
@@ -236,13 +236,13 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "botocore"
-version = "1.31.44"
+version = "1.31.45"
 description = "Low-level, data-driven core of boto 3."
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "botocore-1.31.44-py3-none-any.whl", hash = "sha256:83d61c1ca781e6ede19fcc4d5dd73004eee3825a2b220f0d7727e32069209d98"},
-    {file = "botocore-1.31.44.tar.gz", hash = "sha256:84f90919fecb4a4f417fd10145c8a87ff2c4b14d6381cd34d9babf02110b3315"},
+    {file = "botocore-1.31.45-py3-none-any.whl", hash = "sha256:cceb150cff1d7f7a6faf655510a8384eb4505a33b430495fe1744d03a70dc66a"},
+    {file = "botocore-1.31.45.tar.gz", hash = "sha256:85ff64a0ac2705c4ba36268c3b2dbc1184062e9cf729a89dd66c2f54f730fc79"},
 ]
 
 [package.dependencies]
@@ -1514,20 +1514,19 @@ grpcio-gcp = ["grpcio-gcp (>=0.2.2,<1.0.dev0)"]
 
 [[package]]
 name = "google-auth"
-version = "2.22.0"
+version = "2.23.0"
 description = "Google Authentication Library"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 files = [
-    {file = "google-auth-2.22.0.tar.gz", hash = "sha256:164cba9af4e6e4e40c3a4f90a1a6c12ee56f14c0b4868d1ca91b32826ab334ce"},
-    {file = "google_auth-2.22.0-py2.py3-none-any.whl", hash = "sha256:d61d1b40897407b574da67da1a833bdc10d5a11642566e506565d1b1a46ba873"},
+    {file = "google-auth-2.23.0.tar.gz", hash = "sha256:753a26312e6f1eaeec20bc6f2644a10926697da93446e1f8e24d6d32d45a922a"},
+    {file = "google_auth-2.23.0-py2.py3-none-any.whl", hash = "sha256:2cec41407bd1e207f5b802638e32bb837df968bb5c05f413d0fa526fac4cf7a7"},
 ]
 
 [package.dependencies]
 cachetools = ">=2.0.0,<6.0"
 pyasn1-modules = ">=0.2.1"
 rsa = ">=3.1.4,<5"
-six = ">=1.9.0"
 urllib3 = "<2.0"
 
 [package.extras]
@@ -1799,13 +1798,13 @@ vis = ["matplotlib (>=3.5.2,<4.0.0)", "pydot (>=1.4.2,<2.0.0)"]
 
 [[package]]
 name = "grai-schemas"
-version = "0.2.4"
+version = "0.2.5a2"
 description = ""
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_schemas-0.2.4-py3-none-any.whl", hash = "sha256:2ff18a16f9d17dec6460e8b40ffd2a3a97e321ffa6c605fd9c3390d438afe6c7"},
-    {file = "grai_schemas-0.2.4.tar.gz", hash = "sha256:bce54e4c219c315d52deca9d7e30790c5e0fb2d1c01fcb7939c415c489ffe568"},
+    {file = "grai_schemas-0.2.5a2-py3-none-any.whl", hash = "sha256:0461efc27abb481bed7453be5f49d4d2044d56ffaca81f67272375aca63eb2a1"},
+    {file = "grai_schemas-0.2.5a2.tar.gz", hash = "sha256:0df8461827813c34db80682da754a717356d7861f83c8626be8d5f1db24b20dd"},
 ]
 
 [package.dependencies]
@@ -3764,12 +3763,12 @@ ocsp = ["cryptography (>=36.0.1)", "pyopenssl (==20.0.1)", "requests (>=2.26.0)"
 
 [[package]]
 name = "redshift-connector"
-version = "2.0.913"
+version = "2.0.914"
 description = "Redshift interface library"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "redshift_connector-2.0.913-py3-none-any.whl", hash = "sha256:bd70395c5b7ec9fcae9565daff6bcb88c7d3ea6182dafba2bac6138f68d00582"},
+    {file = "redshift_connector-2.0.914-py3-none-any.whl", hash = "sha256:fe24363dceb471e4e73fb6868d49da6e4b12c8ff845c19aa0af8dba8a4f2f283"},
 ]
 
 [package.dependencies]
@@ -4514,4 +4513,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "b1ed6cec54e102838a2b1ae9a6111be476b57681c92373a4fe3dc9d048c58d0e"
+content-hash = "9659105c1b44cb38f22b197816993de773aba3259222f7a73d1fe5646f3c45b7"

@@ -29,7 +29,7 @@ from grai_schemas.v1.node import NodeNamedID
 from grai_schemas.v1.source import SourceSpec
 from multimethod import multimethod
 from pydantic import BaseModel
-
+from itertools import chain
 from lineage.models import Edge as EdgeModel
 from lineage.models import Node as NodeModel
 from lineage.models import Source
@@ -117,39 +117,45 @@ def build_item_query_filter(
     return query
 
 
-def get_existing_edges(from_items: List[Union[SourcedEdgeV1, EdgeV1]], workspace: Workspace) -> List[EdgeV1]:
-    query = build_item_query_filter(from_items, workspace)
+def get_edge_nodes_from_database(items: List[SourcedEdgeV1], workspace: Workspace) -> Dict[Tuple[str, str], UUID]:
+    sources = (item.spec.source for item in items)
+    destinations = (item.spec.destination for item in items)
+    node_map = {(item.name, item.namespace): item.id for item in chain(sources, destinations)}
 
-    default_dict = {"data_sources": []}
-    result = []
-    for item in EdgeModel.objects.filter(query).all():
-        edge_dict = {**item.__dict__, **default_dict}
-        edge_dict["workspace"] = edge_dict.pop("workspace_id")
-        edge_dict["source"] = {"id": edge_dict.pop("source_id")}
-        edge_dict["destination"] = {"id": edge_dict.pop("destination_id")}
-        result.append(EdgeV1.from_spec(edge_dict))
-    return result
+    missing_node_ids = [k for k, v in node_map.items() if v is None]
+    if len(missing_node_ids) == 0:
+        return node_map
 
-
-def get_edge_nodes_from_database(items, workspace):
-    sources = (item["source"] for item in items)
-    destinations = (item["destination"] for item in items)
-    needed_nodes = {(item["name"], item["namespace"]) for item in [*sources, *destinations]}
     query = Q()
-    for name, namespace in needed_nodes:
-        query |= Q(name=name) & Q(namespace=namespace)
+    for name, namespace in missing_node_ids:
+        query |= Q(name=name, namespace=namespace)
     query &= Q(workspace=workspace)
-    nodes = {(node.name, node.namespace): node for node in NodeModel.objects.filter(query).all()}
-    return nodes
+
+    node_map |= {(node.name, node.namespace): node.id for node in NodeModel.objects.filter(query).all()}
+
+    missing_node_labels = [k for k, v in node_map.items() if v is None]
+    if len(missing_node_labels) > 0:
+        missing_nodes = missing_node_labels[0 : min(len(missing_node_labels), 5)]
+        missing_node_names = "\n- ".join(node for node in missing_nodes)
+        message = (
+            f"Some requested nodes could not be found. This error indicates some nodes identified as either the source"
+            f"or destination an edge do not exist in the database and should be created first. In total there were"
+            f"{len(missing_node_names)} missing nodes\n\n"
+            f"The following list is a sample of (name, namespace) value's of the missing nodes:\n"
+            f"{missing_node_names}"
+        )
+        raise ValueError(message)
+
+    return node_map
 
 
 def compute_graph_changes(items: List[T], active_items: List[P]) -> Tuple[List[T], List[P], List[P]]:
     current_item_map: Dict[Tuple[str, str], P] = {(item.spec.name, item.spec.namespace): item for item in active_items}
     item_map: Dict[Tuple[str, str], T] = {(item.spec.name, item.spec.namespace): item for item in items}
 
-    new_item_keys = item_map.keys() - current_item_map.keys()
-    deactivated_item_keys = current_item_map.keys() - item_map.keys()
-    updated_item_keys = item_map.keys() - new_item_keys
+    updated_item_keys = item_map.keys() & current_item_map.keys()
+    new_item_keys = item_map.keys() - updated_item_keys
+    deactivated_item_keys = current_item_map.keys() - updated_item_keys
 
     new_items = [item_map[k] for k in new_item_keys]
     deactivated_items = [current_item_map[k] for k in deactivated_item_keys]
@@ -209,6 +215,12 @@ def process_source_edges(
         raise ValueError("existing_edges must be a list of EdgeV1 or None")
 
     new_items, deactivated_items, updated_items = compute_graph_changes(items, active_edges)
+
+    edge_map = get_edge_nodes_from_database(new_items, workspace)
+    for item in new_items:
+        item.spec.source.id = edge_map[(item.spec.source.name, item.spec.source.namespace)]
+        item.spec.destination.id = edge_map[(item.spec.destination.name, item.spec.destination.namespace)]
+
     new = [schema_to_model(item, workspace) for item in new_items]
     deactivated = [schema_to_model(item, workspace) for item in deactivated_items]
     updated = [schema_to_model(item, workspace) for item in updated_items]

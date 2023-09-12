@@ -119,7 +119,7 @@ def edge_v1_spec_to_model(edge: EdgeSpec, workspace: Workspace) -> Edge:
                 f"Could not find the source and destination nodes for edge: "
                 f"(name={edge.name}, namespace={edge.namespace}) in workspace={workspace}. "
                 f"We were expecting to find 2 nodes but only found {len(nodes)}. "
-                f"Returned nodes include:\n{found_nodes}"
+                f"\n\nReturned nodes include:\n{found_nodes}"
             )
             raise ValueError(message)
         source, destination = nodes
