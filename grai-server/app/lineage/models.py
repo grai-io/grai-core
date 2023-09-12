@@ -69,7 +69,7 @@ class Node(TenantModel):
             self.display_name = self.name
         return self
 
-    def cache_model(self, cache: GraphCache = None, delete: bool = False):
+    def cache_model(self, cache: GraphCache | None = None, delete: bool = False):
         if cache:
             cache.cache_node(self)
         else:

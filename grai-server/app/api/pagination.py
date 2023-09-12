@@ -1,9 +1,11 @@
-from typing import Callable, Generic, List, Optional, TypeVar
+from typing import Any, Callable, Generic, List, Optional, TypeVar, Union
 
 import strawberry
 from django.db.models.query import QuerySet
 from strawberry.field import StrawberryField
 from strawberry_django.pagination import OffsetPaginationInput
+from django.db.models.query import QuerySet
+from django.db.models import Model
 
 from .order import apply_order
 
@@ -25,7 +27,7 @@ class Pagination(Generic[T]):
         self,
         queryset: QuerySet,
         filteredQueryset: Optional[QuerySet] = None,
-        apply_filters: Callable[[QuerySet], QuerySet] = None,
+        apply_filters: Union[Callable[[QuerySet], QuerySet], None] = None,
         order: Optional[StrawberryField] = strawberry.UNSET,
         pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
     ):
@@ -66,11 +68,14 @@ def apply_pagination(queryset: QuerySet, pagination: Optional[OffsetPaginationIn
     return queryset
 
 
+S = TypeVar("S")
+
+
 @strawberry.type
-class DataWrapper(Generic[T]):
-    def __init__(self, data: List[T]):
+class DataWrapper(Generic[S]):
+    def __init__(self, data: List[S]):
         self.data = data
 
     @strawberry.django.field
-    def data(self) -> List[T]:
+    def data(self) -> List[S]:
         return self.data

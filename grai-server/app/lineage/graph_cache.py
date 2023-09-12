@@ -29,7 +29,7 @@ class GraphCache:
             db=0,
         )
 
-    def query(self, query: str, parameters: object = {}, timeout: int = None):
+    def query(self, query: str, parameters: object = {}, timeout: Optional[int] = None):
         try:
             return self.manager.graph(f"lineage:{str(self.workspace_id)}").query(query, parameters, timeout=timeout)
         except redis.exceptions.ResponseError as e:
@@ -373,9 +373,13 @@ class GraphCache:
         for filter in filters:
             query = filter_by_filter(filter, query)
 
+        return query
+
     def filter_by_rows(self, filters, query: GraphQuery) -> GraphQuery:
         for filter in filters:
             query = filter_by_dict(filter, query)
+
+        return query
 
     def get_with_step_graph_result(
         self, n: int, parameters: object = {}, where: Optional[str] = None

@@ -26,7 +26,16 @@ def get_workspace(
     user = get_user(info)
 
     try:
-        query = {"id": id} if id else {"name": name, "organisation__name": organisationName}
+        query = None
+
+        if id:
+            query = {"id": id}
+        elif name and organisationName:
+            query = {"name": name, "organisation__name": organisationName}
+
+        if not query:
+            raise Exception("Can't find workspace")
+
         workspace = WorkspaceModel.objects.get(**query, memberships__user_id=user.id)
     except WorkspaceModel.DoesNotExist:
         raise Exception("Can't find workspace")
