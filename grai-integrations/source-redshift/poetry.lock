@@ -404,19 +404,20 @@ tqdm = ">=4.65.0,<5.0.0"
 
 [[package]]
 name = "grai-schemas"
-version = "0.2.6"
+version = "0.2.7a1"
 description = ""
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_schemas-0.2.6-py3-none-any.whl", hash = "sha256:04acc2697198fbfc70ff5c935f9688d9f5c85ebf8d79bca4fe8b8b444fd73594"},
-    {file = "grai_schemas-0.2.6.tar.gz", hash = "sha256:b7c9b8d7c1a1964ce914af575817142f4528d5f6cac635d9927d1068c43a4b43"},
+    {file = "grai_schemas-0.2.7a1-py3-none-any.whl", hash = "sha256:b3587e2f5b6a915c910eb7e70b51b127c97564daf1e1fc440330bde143667878"},
+    {file = "grai_schemas-0.2.7a1.tar.gz", hash = "sha256:068a7ff2aef4f1862596a1449a22afd001f5af424ed3e148a1e7d8218cb8e727"},
 ]
 
 [package.dependencies]
 multimethod = ">=1.9.1,<2.0.0"
 polyfactory = ">=2.6.1,<3.0.0"
 pydantic = ">=1.10.11,<2.0.0"
+pyyaml = ">=6.0.1,<7.0.0"
 
 [[package]]
 name = "h11"
@@ -1203,4 +1204,4 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "4d6dda40947934d2894d90131fa275a51104c0f6588ebf3ee42f5da6b4f66c10"
+content-hash = "2427e37f71f854f1986ae961d4d4d61b087c2a184d842b1691200c8fe76ee062"

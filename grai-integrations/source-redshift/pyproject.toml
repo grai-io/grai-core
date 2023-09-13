@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai_source_redshift"
-version = "0.1.1-alpha1"
+version = "0.1.1-alpha2"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>"]
 license = "Elastic-2.0"
@@ -14,7 +14,7 @@ documentation = "https://docs.grai.io/"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-grai-schemas = "^0.2.6"
+grai-schemas = "^0.2.7-alpha1"
 multimethod = "^1.8"
 pydantic = {extras = ["dotenv"], version = "^1.10.7"}
 botocore = "^1.29.153"
