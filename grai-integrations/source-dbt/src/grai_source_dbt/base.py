@@ -1,3 +1,4 @@
+from functools import cached_property
 from typing import List, Optional, Tuple
 
 from grai_client.integrations.base import (
@@ -10,7 +11,7 @@ from grai_schemas.v1.source import SourceV1
 from grai_source_dbt.processor import ManifestProcessor
 
 
-class DbtIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementation):
+class DbtIntegration(GraiIntegrationImplementation):
     def __init__(
         self,
         manifest_file: str,
@@ -23,10 +24,19 @@ class DbtIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementation):
         self.manifest_file = manifest_file
         self.namespace = namespace
 
+    @cached_property
+    def manifest(self) -> ManifestProcessor:
+        return ManifestProcessor.load(self.manifest_file, self.namespace, self.source)
+
+    def nodes(self) -> List[SourcedNode]:
+        return self.manifest.adapted_nodes
+
+    def edges(self) -> List[SourcedEdge]:
+        return self.manifest.adapted_edges
+
     def get_nodes_and_edges(self) -> Tuple[List[SourcedNode], List[SourcedEdge]]:
-        manifest = ManifestProcessor.load(self.manifest_file, self.namespace, self.source)
-        return manifest.adapted_nodes, manifest.adapted_edges
+        return self.nodes(), self.edges()
 
     def ready(self) -> bool:
-        _ = ManifestProcessor.load(self.manifest_file, self.namespace, self.source)
+        manifest = self.manifest
         return True

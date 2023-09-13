@@ -1,3 +1,3 @@
 from grai_source_dbt_cloud import base, loader
 
-__version__ = "0.1.0"
+__version__ = "0.1.4"

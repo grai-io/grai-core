@@ -1,6 +1,7 @@
 import uuid
 
 import pytest
+from grai_schemas.v1.mock import MockV1
 from grai_schemas.v1.source import SourceSpec
 from grai_schemas.v1.workspace import WorkspaceSpec
 
@@ -43,7 +44,7 @@ class MockClient:
 
 @pytest.fixture
 def nodes_and_edges(mock_source):
-    integration = RedshiftIntegration.from_client(client=MockClient(), source=mock_source.name, namespace="test")
+    integration = RedshiftIntegration(source=mock_source, namespace="test")
 
     nodes, edges = integration.get_nodes_and_edges()
     return nodes, edges

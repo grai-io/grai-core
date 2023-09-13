@@ -208,8 +208,8 @@ def build_metadata_from_node(current: Table, version: Literal["v1"] = "v1") -> D
     """
 
     Args:
-        current (Table):
-        version (Literal["v1"], optional):  (Default value = "v1")
+        current:
+        version:  (Default value = "v1")
 
     Returns:
 
@@ -245,8 +245,8 @@ def adapt_to_client(current: Any, desired: Any):
     """
 
     Args:
-        current (Any):
-        desired (Any):
+        current:
+        desired:
 
     Returns:
 
@@ -261,8 +261,9 @@ def adapt_column_to_client(current: Column, source: SourceSpec, version: Literal
     """
 
     Args:
-        current (Column):
-        version (Literal["v1"], optional):  (Default value = "v1")
+        current:
+        source:
+        version:  (Default value = "v1")
 
     Returns:
 
@@ -284,8 +285,9 @@ def adapt_table_to_client(current: Table, source: SourceSpec, version: Literal["
     """
 
     Args:
-        current (Table):
-        version (Literal["v1"], optional):  (Default value = "v1")
+        current:
+        source:
+        version:  (Default value = "v1")
 
     Returns:
 
@@ -324,8 +326,9 @@ def adapt_edge_to_client(current: Edge, source: SourceSpec, version: Literal["v1
     """
 
     Args:
-        current (Edge):
-        version (Literal["v1"], optional):  (Default value = "v1")
+        current:
+        source:
+        version:  (Default value = "v1")
 
     Returns:
 
@@ -354,8 +357,9 @@ def adapt_list_to_client(objs: Sequence, source: SourceSpec, version: Literal["v
     """
 
     Args:
-        objs (Sequence):
-        version (Literal["v1"]):
+        objs:
+        source:
+        version:
 
     Returns:
 

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai_source_mssql"
-version = "0.1.0"
+version = "0.1.2"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>"]
 license = "Elastic-2.0"
@@ -15,8 +15,7 @@ documentation = "https://docs.grai.io/"
 [tool.poetry.dependencies]
 python = "^3.8"
 pydantic = "^1.9.1"
-grai-client = "^0.3.0"
-grai-schemas = "^0.2.0"
+grai-schemas = "^0.2.6"
 multimethod = "^1.8"
 pyodbc = "^4.0.35"
 
@@ -26,6 +25,7 @@ mypy = "^0.971"
 isort = "^5.10.1"
 types-PyYAML = "^6.0.11"
 pytest = "^7.2.0"
+grai-client = "^0.3.0"
 
 [tool.isort]
 profile = "black"
@@ -35,7 +35,7 @@ known_first_party = "grai_source_mssql"
 line-length = 120
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry_bumpversion.file."src/grai_source_mssql/__init__.py"]

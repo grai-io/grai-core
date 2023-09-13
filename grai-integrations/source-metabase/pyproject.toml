@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai-source-metabase"
-version = "0.2.3"
+version = "0.2.4"
 
 description = ""
 authors = ["Elseagle <dowolebolu@gmail.com>", "Ian Eaves <ian@grai.io", "Edward Louth <edward@grai.io"]
@@ -13,8 +13,7 @@ packages = [
 python = "^3.8"
 pydantic = "^1.10.9"
 requests = "^2.31.0"
-grai-schemas = "^0.2.1"
-grai-client = "^0.3.0"
+grai-schemas = "^0.2.6"
 multimethod = "^1.9.1"
 retrying = "^1.3.4"
 httpx = {version="^0.24.1", extras=["http2"]}
@@ -24,6 +23,7 @@ python-dotenv = "^1.0.0"
 faker = "^18.11.2"
 black = "^23.3.0"
 pytest = "^7.4.0"
+grai-client = "^0.3.0"
 
 [build-system]
 requires = ["poetry-core"]

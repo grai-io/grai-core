@@ -11,6 +11,16 @@ else:
     from typing import ParamSpec
 
 
+class EventMixin(ABC):
+    @abstractmethod
+    def events(self) -> List[Event]:
+        pass
+
+    def update(self):
+        super().update()
+        update(self.client, self.events())
+
+
 P = ParamSpec("P")
 
 
