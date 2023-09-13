@@ -14,6 +14,36 @@ else:
 P = ParamSpec("P")
 
 
+class QuarantinedEdge:
+    edge: SourcedEdge
+    source_quarantined: bool
+    destination_quarantined: bool
+
+    def __init__(self, edge: SourcedEdge, source_quarantined: bool, destination_quarantined: bool):
+        self.edge = edge
+        self.source_quarantined = source_quarantined
+        self.destination_quarantined = destination_quarantined
+
+
+def verify_edge_ids(nodes: List[SourcedNode], edges: List[SourcedEdge]):
+    node_labels = {(n.spec.namespace, n.spec.name) for n in nodes}
+
+    good_edges = []
+    quarantined_edges = []
+    for edge in edges:
+        source_id = (edge.spec.source.namespace, edge.spec.source.name)
+        destination_id = (edge.spec.destination.namespace, edge.spec.destination.name)
+        if source_id in node_labels and destination_id in node_labels:
+            good_edges.append(edge)
+        else:
+            quarantined_edge = QuarantinedEdge(edge, source_id not in node_labels, destination_id not in node_labels)
+            quarantined_edges.append(quarantined_edge)
+
+    # TODO: sentry alerting on quarantine?
+
+    return good_edges
+
+
 class GraiIntegrationImplementation(ABC):
     source: SourceV1
     version: str
@@ -41,6 +71,11 @@ class GraiIntegrationImplementation(ABC):
     @abstractmethod
     def ready(self) -> bool:
         pass
+
+    def get_validated_nodes_and_edges(self) -> Tuple[List[SourcedNode], List[SourcedEdge]]:
+        nodes, edges = self.get_nodes_and_edges()
+        edges = verify_edge_ids(nodes, edges)
+        return nodes, edges
 
 
 class SeparateNodesAndEdgesMixin:
