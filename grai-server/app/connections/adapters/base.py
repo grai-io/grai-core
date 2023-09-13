@@ -20,7 +20,7 @@ class BaseAdapter(ABC):
         raise NotImplementedError(f"No get_integration implemented for {type(self)}")
 
     def get_nodes_and_edges(self):
-        return self.get_integration().get_nodes_and_edges()
+        return self.get_integration().get_validated_nodes_and_edges()
 
     def events(self, last_event_date):
         return self.get_integration().events(last_event_date)
@@ -33,7 +33,7 @@ class BaseAdapter(ABC):
     def run_update(self, run: Run):
         self.run = run
 
-        nodes, edges = self.get_nodes_and_edges()
+        nodes, edges = self.get_validated_nodes_and_edges()
 
         update(self.run.workspace, self.run.source, nodes)
         update(self.run.workspace, self.run.source, edges)
@@ -41,7 +41,7 @@ class BaseAdapter(ABC):
     def run_tests(self, run: Run):
         self.run = run
 
-        new_nodes, new_edges = self.get_nodes_and_edges()
+        new_nodes, new_edges = self.get_validated_nodes_and_edges()
 
         nodes = [modelToSchema(model, NodeV1, "Node") for model in Node.objects.filter(workspace=run.workspace)]
         edges = [
