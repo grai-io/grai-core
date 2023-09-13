@@ -1,7 +1,5 @@
 from typing import Any, Dict, List, Literal, Sequence, TypeVar
 
-from grai_client.schemas.schema import Schema
-from grai_schemas import config as base_config
 from grai_schemas.generics import DefaultValue
 from grai_schemas.v1 import SourcedEdgeV1, SourcedNodeV1, SourceV1
 from grai_schemas.v1.metadata.edges import (
