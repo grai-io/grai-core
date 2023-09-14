@@ -68,8 +68,8 @@ def build_graph_from_map(
 
 ```python
 def get_analysis_from_map(
-    map: Dict[Union[str, TestNodeObj], Dict[ColumnToColumnAttributes,
-                                            List[str]]]
+    map: Dict[Union[str, TestNodeObj], List[Tuple[str,
+                                                  ColumnToColumnAttributes]]]
 ) -> analysis.GraphAnalyzer
 ```
 

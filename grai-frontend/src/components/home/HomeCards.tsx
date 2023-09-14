@@ -19,9 +19,9 @@ export const GET_COUNTS = gql`
           filtered
         }
       }
-      tables {
+      nodes(filters: { node_type: { equals: "Table" } }) {
         meta {
-          total
+          filtered
         }
       }
       connections {
@@ -51,10 +51,10 @@ const HomeCards: React.FC = () => {
       {error && <GraphError error={error} />}
       <Grid item md={3}>
         <HomeCard
-          count={data?.workspace.tables.meta.total}
+          count={data?.workspace.nodes.meta.filtered}
           text="Tables"
           color="#8338EC"
-          to="tables"
+          to="nodes?node_type=Table"
         />
       </Grid>
       <Grid item md={3}>

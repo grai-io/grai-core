@@ -52,17 +52,16 @@ def integration(conn_credentials) -> PostgresIntegration:
 
 
 @pytest.fixture
-def nodes_and_edges(connection):
-    return [], []
-    # """
+def nodes_and_edges(integration):
+    nodes, edges = integration.get_nodes_and_edges()
+    return nodes, edges
 
-    # Args:
-    #     connection:
 
-    # Returns:
+@pytest.fixture
+def nodes(nodes_and_edges):
+    return nodes_and_edges[0]
 
-    # Raises:
 
-    # """
-    # nodes, edges = get_nodes_and_edges(connection, "v1")
-    # return nodes, edges
+@pytest.fixture
+def edges(nodes_and_edges):
+    return nodes_and_edges[1]

@@ -35,7 +35,7 @@ const TableDependencies: React.FC<TableDependenciesProps> = ({
             <Box key={table.id}>
               <Button
                 component={Link}
-                to={`${workspaceRoutePrefix}/${routePrefix ?? "tables"}/${
+                to={`${workspaceRoutePrefix}/${routePrefix ?? "nodes"}/${
                   table.id
                 }`}
               >

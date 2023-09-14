@@ -1,22 +1,21 @@
+import json
+import pathlib
 import uuid
+from datetime import date, datetime, timezone
+from enum import Enum
+from typing import Any
+from uuid import UUID
 
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.db.models import F, Q
 from django_multitenant.models import TenantModel
+from grai_schemas.serializers import GraiEncoder
+from pydantic import BaseModel
 
 from .graph_cache import GraphCache
 from .graph_tasks import cache_edge, cache_node
 from .managers import CacheManager, SourceManager
-from django.core.serializers.json import DjangoJSONEncoder
-import json
-from enum import Enum
-
-
-class GraiEncoder(DjangoJSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, Enum):
-            return obj.value
-        return super().default(obj)
 
 
 # Create your models here.
@@ -70,7 +69,7 @@ class Node(TenantModel):
             self.display_name = self.name
         return self
 
-    def cache_model(self, cache: GraphCache = None, delete: bool = False):
+    def cache_model(self, cache: GraphCache | None = None, delete: bool = False):
         if cache:
             cache.cache_node(self)
         else:

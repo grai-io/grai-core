@@ -61,8 +61,8 @@ class BigqueryConnector:
     ):
         self.namespace = get_from_env("namespace", "default") if namespace is None else namespace
         self.project = get_from_env("project", required=False) if project is None else project
-        self.dataset = get_from_env("dataset", required=False) if dataset is None else dataset
-        self.datasets = [self.dataset] if isinstance(self.dataset, str) else self.dataset
+        dataset = get_from_env("dataset", required=False) if dataset is None else dataset
+        self.datasets = [dataset] if isinstance(dataset, str) else dataset
 
         self.credentials = get_from_env("credentials", required=False) if credentials is None else credentials
         self._connection: Optional[bigquery.connector.BigqueryConnection] = None
@@ -394,9 +394,7 @@ class LoggingConnector(BigqueryConnector):
             f' AND timestamp>="{yesterday.strftime(time_format)}"'
         )
 
-        datasets = [self.dataset] if isinstance(self.dataset, str) else self.dataset
-
-        for dataset in datasets:
+        for dataset in self.datasets:
             filter_str += (
                 f' AND NOT protoPayload.metadata.jobChange.job.jobStats.queryStats.referencedTables="projects/grai-demo/datasets/{dataset}/tables/INFORMATION_SCHEMA.TABLES"'
                 f' AND NOT protoPayload.metadata.jobInsertion.job.jobStats.queryStats.referencedTables="projects/grai-demo/datasets/{dataset}/tables/INFORMATION_SCHEMA.TABLES"'

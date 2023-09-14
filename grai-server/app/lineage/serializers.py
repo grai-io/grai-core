@@ -4,8 +4,9 @@ from django.db.models import Q
 from grai_schemas.utilities import merge
 from grai_schemas.v1.merge import merge_tags
 from grai_schemas.v1.node import NodeNamedID
-from rest_framework import serializers
 from rest_framework.fields import JSONField
+
+from rest_framework import serializers
 
 from .models import Edge, Node, Source
 
@@ -100,7 +101,10 @@ class SourceDestinationMixin:
         match data:
             case {
                 "source": {"name": source_name, "namespace": source_namespace},
-                "destination": {"name": destination_name, "namespace": destination_namespace},
+                "destination": {
+                    "name": destination_name,
+                    "namespace": destination_namespace,
+                },
             }:
                 q_filter = Q(name=source_name) & Q(namespace=source_namespace)
                 q_filter |= Q(name=destination_name) & Q(namespace=destination_namespace)
@@ -142,7 +146,7 @@ class EdgeSerializer(SourceParentMixin, SourceDestinationMixin, serializers.Mode
         read_only_fields = ("created_at", "updated_at")
 
 
-class SourceChildMixin:
+class SourceChildMixin(serializers.ModelSerializer):
     @cached_property
     def source_model(self) -> Source:
         return Source.objects.get(pk=self.context["view"].kwargs["source_pk"])

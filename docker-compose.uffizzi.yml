@@ -37,6 +37,16 @@ services:
       - POSTGRES_DB=grai
     ports:
       - 5432:5432
+    command:
+      [
+        "postgres",
+        "-c",
+        "wal_level=logical",
+        "-c",
+        "max_replication_slots=10",
+        "-c",
+        "max_wal_senders=5",
+      ]
 
   frontend:
     image: "${FRONTEND_IMAGE}"
@@ -50,7 +60,7 @@ services:
           memory: 1000M
 
   redis:
-    image: redis:7-alpine
+    image: redis/redis-stack-server:6.2.6-v9
     ports:
       - "6379:6379"
     deploy:
@@ -64,9 +74,7 @@ services:
       - ./nginx-uffizzi:/etc/nginx
 
   celery-worker:
-    image: "${SERVER_IMAGE}"
-    command:
-      - "/start-celeryworker"
+    image: "${WORKER_IMAGE}"
     volumes:
       - ./grai-server/app/:/usr/src/app/
     environment:
@@ -88,7 +96,7 @@ services:
           memory: 1000M
 
   celery-beat-worker:
-    image: "${SERVER_IMAGE}"
+    image: "${BEAT_WORKER_IMAGE}"
     volumes:
       - ./grai-server/app/:/usr/src/app/
     environment:
@@ -104,8 +112,6 @@ services:
       - CELERY_BROKER=redis://127.0.0.1:6379/0
       - CELERY_BACKEND=redis://127.0.0.1:6379/0
       - SECRET_KEY="123456789"
-    command:
-      - "/start-celerybeat"
     deploy:
       resources:
         limits:

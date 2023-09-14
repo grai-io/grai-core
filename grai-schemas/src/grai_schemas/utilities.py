@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import uuid
-from typing import TYPE_CHECKING, Any, Dict, Generic, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, Generic, List, Tuple, TypeVar, Union
 
 from multimethod import multimethod
 from pydantic import BaseModel
@@ -193,3 +193,30 @@ def merge_models(a: T, b: T) -> T:
     a_type = type(a)
     merged = merge(a, b)
     return a_type(**merged)
+
+
+def compute_graph_changes(items: List[T], active_items: List[T]) -> Tuple[List[T], List[T], List[T]]:
+    """
+    Args:
+        items:
+        active_items:
+
+    Returns:
+
+    Raises:
+
+    """
+
+    active_item_map = {hash(item.spec): item for item in active_items}
+    item_map: Dict[int, T] = {hash(item.spec): item for item in items}
+
+    new_item_keys = item_map.keys() - active_item_map.keys()
+    deleted_source_item_keys = active_item_map.keys() - item_map.keys()
+    updated_item_keys = item_map.keys() - new_item_keys
+
+    deleted_from_sources = [active_item_map[k] for k in deleted_source_item_keys]
+
+    new_items: List[T] = [item_map[k] for k in new_item_keys]
+    updated_items = [item_map[k] for k in updated_item_keys if item_map[k] != active_item_map[k]]
+
+    return new_items, updated_items, deleted_from_sources

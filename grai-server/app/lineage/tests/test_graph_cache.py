@@ -54,16 +54,28 @@ def test_update_node(create_workspace):
 
 @pytest.mark.django_db
 def test_layout(create_workspace):
-    source = Node.objects.create(
-        workspace=create_workspace,
-        name=str(uuid.uuid4()),
-        metadata={"grai": {"node_type": "Table"}},
-    )
-    destination = Node.objects.create(
-        workspace=create_workspace,
-        name=str(uuid.uuid4()),
-        metadata={"grai": {"node_type": "Table"}},
-    )
+    for i in range(10):
+        source = Node.objects.create(
+            workspace=create_workspace,
+            name=str(uuid.uuid4()),
+            metadata={"grai": {"node_type": "Table"}},
+        )
+        destination = Node.objects.create(
+            workspace=create_workspace,
+            name=str(uuid.uuid4()),
+            metadata={"grai": {"node_type": "Table"}},
+        )
+
+        Edge.objects.create(
+            workspace=create_workspace,
+            source=source,
+            destination=destination,
+            metadata={
+                "grai": {
+                    "edge_type": "TableToTable",
+                }
+            },
+        )
 
     [
         Node.objects.create(
@@ -73,17 +85,6 @@ def test_layout(create_workspace):
         )
         for i in range(25)
     ]
-
-    Edge.objects.create(
-        workspace=create_workspace,
-        source=source,
-        destination=destination,
-        metadata={
-            "grai": {
-                "edge_type": "TableToTable",
-            }
-        },
-    )
 
     client = ExtendedGraphCache(workspace=create_workspace)
 

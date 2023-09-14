@@ -73,7 +73,7 @@ test("renders results", async () => {
   const user = userEvent.setup()
 
   render(<SearchContainer onClose={onClose} workspaceId="1" />, {
-    routes: ["/:organisationName/:workspaceName/tables/:tableId"],
+    routes: ["/:organisationName/:workspaceName/nodes/:tableId"],
   })
 
   const textbox = screen.getByRole("textbox")

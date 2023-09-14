@@ -67,9 +67,15 @@ export const GET_PULL_REQUEST = gql`
           id
           name
           display_name
-          destinations
+          destinations {
+            edge_id
+            column_id
+          }
         }
-        destinations
+        destinations {
+          edge_id
+          table_id
+        }
       }
       filters {
         data {
@@ -92,7 +98,7 @@ const PullRequest: React.FC = () => {
       { ...searchParams, limitGraph: "true" },
       {
         replace: true,
-      }
+      },
     )
     setDisplay(true)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
@@ -149,7 +155,7 @@ const PullRequest: React.FC = () => {
               <Typography>{`about ${durationAgo(
                 run.created_at,
                 1,
-                true
+                true,
               )} ago `}</Typography>
             )
           }

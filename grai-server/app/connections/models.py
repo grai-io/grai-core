@@ -16,6 +16,7 @@ class Connector(models.Model):
     MYSQL = "mysql"
     REDSHIFT = "redshift"
     METABASE = "metabase"
+    LOOKER = "looker"
 
     CONNECTOR_SLUGS = [
         (POSTGRESQL, "postgres"),
@@ -29,6 +30,7 @@ class Connector(models.Model):
         (MYSQL, "mysql"),
         (REDSHIFT, "redshift"),
         (METABASE, "metabase"),
+        (LOOKER, "looker"),
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

@@ -152,6 +152,7 @@ THE_GUIDE_APPS = [
     "notifications",
     "workspaces",
     "users",
+    "search",
     "telemetry",
 ]
 

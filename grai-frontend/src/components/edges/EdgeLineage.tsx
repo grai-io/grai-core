@@ -4,6 +4,7 @@ import { Alert, Box } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
 import GraphComponent from "components/graph/GraphComponent"
 import useFilters from "components/graph/useFilters"
+import useInlineFilters from "components/graph/useInlineFilters"
 import GraphError from "components/utils/GraphError"
 import {
   GetTablesAndEdgesEdgeLineage,
@@ -31,9 +32,15 @@ export const GET_TABLES_AND_EDGES = gql`
           id
           name
           display_name
-          destinations
+          destinations {
+            edge_id
+            column_id
+          }
         }
-        destinations
+        destinations {
+          edge_id
+          table_id
+        }
         table_destinations
         table_sources
       }
@@ -59,6 +66,9 @@ const EdgeLineage: React.FC<EdgeLineageProps> = ({ edge }) => {
   const [value, setValue] = useState(1)
   const { organisationName, workspaceName } = useWorkspace()
   const { filters, setFilters } = useFilters(`edge-${edge.id}-graph-filters`)
+  const { inlineFilters, setInlineFilters } = useInlineFilters(
+    `edge-${edge.id}-graph-inline-filters`,
+  )
 
   const { loading, error, data } = useQuery<
     GetTablesAndEdgesEdgeLineage,
@@ -98,6 +108,8 @@ const EdgeLineage: React.FC<EdgeLineageProps> = ({ edge }) => {
         }}
         filters={filters ?? []}
         setFilters={setFilters}
+        inlineFilters={inlineFilters ?? []}
+        setInlineFilters={setInlineFilters}
       />
     </Box>
   )

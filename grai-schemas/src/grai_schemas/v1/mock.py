@@ -1,6 +1,6 @@
 import datetime
 import uuid
-from typing import Any, Dict, Generic, List, Type, TypeVar
+from typing import Any, Dict, Generic, List, Optional, Type, TypeVar
 
 from grai_schemas.generics import DefaultValue
 from grai_schemas.human_ids import get_human_id
@@ -56,7 +56,7 @@ class DefaultValueFactory(ModelFactory[DefaultValue]):
 
     @post_generated
     @classmethod
-    def data_type(cls, default_value) -> str:
+    def data_type(cls, default_value) -> Optional[str]:
         """ """
         return None if default_value is None else type(default_value).__name__
 
@@ -150,41 +150,41 @@ class MockNode:
         self.workspace = workspace
         self.kwargs = kwargs
 
-    def node(self, **kwargs):
+    def node(self, **kwargs) -> NodeV1:
         """ """
         kwargs.setdefault("spec", self.named_node_spec())
-        return NodeFactory.build(factory_use_construct=True, **kwargs)
+        return NodeFactory.build(**kwargs)
 
-    def named_node_spec(self, **kwargs):
+    def named_node_spec(self, **kwargs) -> NamedSpec:
         """ """
-        base_spec = NamedNodeSpecFactory.build(factory_use_construct=True, **kwargs)
+        base_spec = NamedNodeSpecFactory.build(**kwargs)
         if self.workspace:
             base_spec.workspace = self.workspace.id
         return base_spec
 
-    def id_node_spec(self, **kwargs):
+    def id_node_spec(self, **kwargs) -> IDSpec:
         """ """
-        base_spec = IDNodeSpecFactory.build(factory_use_construct=True, **kwargs)
+        base_spec = IDNodeSpecFactory.build(**kwargs)
         if self.workspace:
             base_spec.workspace = self.workspace.id
         return base_spec
 
-    def sourced_node(self, **kwargs):
+    def sourced_node(self, **kwargs) -> SourcedNodeV1:
         """ """
         kwargs.setdefault("spec", self.named_source_node_spec())
-        return SourcedNodeFactory.build(factory_use_construct=True, **kwargs)
+        return SourcedNodeFactory.build(**kwargs)
 
-    def named_source_node_spec(self, **kwargs):
+    def named_source_node_spec(self, **kwargs) -> NamedSourceSpec:
         """ """
-        base_spec = NamedSourceNodeSpecFactory.build(factory_use_construct=True, **kwargs)
+        base_spec = NamedSourceNodeSpecFactory.build(**kwargs)
 
         if self.workspace:
             base_spec.workspace = self.workspace.id
         return base_spec
 
-    def id_source_node_spec(self, **kwargs):
+    def id_source_node_spec(self, **kwargs) -> IDSourceSpec:
         """ """
-        base_spec = IDSourceNodeSpecFactory.build(factory_use_construct=True, **kwargs)
+        base_spec = IDSourceNodeSpecFactory.build(**kwargs)
 
         if self.workspace:
             base_spec.workspace = self.workspace.id
@@ -245,46 +245,46 @@ class MockEdge:
     def __init__(self, workspace=None, **kwargs):
         self.workspace = workspace
 
-    def sourced_edge(self, **kwargs):
+    def sourced_edge(self, **kwargs) -> SourcedEdgeV1:
         """ """
         kwargs.setdefault("spec", self.named_source_edge_spec())
-        return SourcedEdgeFactory.build(factory_use_construct=True, **kwargs)
+        return SourcedEdgeFactory.build(**kwargs)
 
-    def edge(self, **kwargs):
+    def edge(self, **kwargs) -> EdgeV1:
         """ """
         kwargs.setdefault("spec", self.named_edge_spec())
-        return EdgeFactory.build(factory_use_construct=True, **kwargs)
+        return EdgeFactory.build(**kwargs)
 
-    def named_edge_spec(self, **kwargs):
+    def named_edge_spec(self, **kwargs) -> NamedEdgeSpec:
         """ """
-        base_spec = NamedEdgeSpecFactory.build(factory_use_construct=True, **kwargs)
+        base_spec = NamedEdgeSpecFactory.build(**kwargs)
 
         if self.workspace:
             base_spec.workspace = self.workspace.id
 
         return base_spec
 
-    def id_edge_spec(self, **kwargs):
+    def id_edge_spec(self, **kwargs) -> EdgeIDSpec:
         """ """
-        base_spec = IDEdgeSpecFactory.build(factory_use_construct=True, **kwargs)
+        base_spec = IDEdgeSpecFactory.build(**kwargs)
 
         if self.workspace:
             base_spec.workspace = self.workspace.id
 
         return base_spec
 
-    def named_source_edge_spec(self, **kwargs):
+    def named_source_edge_spec(self, **kwargs) -> NamedEdgeSourceSpec:
         """ """
-        base_spec = NamedEdgeSourceSpecFactory.build(factory_use_construct=True, **kwargs)
+        base_spec = NamedEdgeSourceSpecFactory.build(**kwargs)
 
         if self.workspace:
             base_spec.workspace = self.workspace.id
 
         return base_spec
 
-    def id_source_edge_spec(self, **kwargs):
+    def id_source_edge_spec(self, **kwargs) -> EdgeIDSourceSpec:
         """ """
-        base_spec = IDEdgeSourceSpecFactory.build(factory_use_construct=True, **kwargs)
+        base_spec = IDEdgeSourceSpecFactory.build(**kwargs)
 
         if self.workspace:
             base_spec.workspace = self.workspace.id
@@ -306,22 +306,22 @@ class OrganisationFactory(ModelFactory[OrganisationV1]):
 
 class MockOrganisation:
     @classmethod
-    def organisation(cls, **kwargs):
+    def organisation(cls, **kwargs) -> OrganisationV1:
         """ """
-        return OrganisationFactory.build(factory_use_construct=True, **kwargs)
+        return OrganisationFactory.build(**kwargs)
 
     @classmethod
-    def organisation_spec(cls, **kwargs):
+    def organisation_spec(cls, **kwargs) -> OrganisationSpec:
         """ """
-        return OrganisationSpecFactory.build(factory_use_construct=True, **kwargs)
+        return OrganisationSpecFactory.build(**kwargs)
 
     @classmethod
-    def organization(cls, **kwargs):
+    def organization(cls, **kwargs) -> OrganisationV1:
         """ """
         return cls.organisation(**kwargs)
 
     @classmethod
-    def organization_spec(cls, **kwargs):
+    def organization_spec(cls, **kwargs) -> OrganisationSpec:
         """ """
         return cls.organisation_spec(**kwargs)
 
@@ -349,16 +349,16 @@ class MockWorkspace:
     def __init__(self, organisation=None):
         self.organisation = organisation
 
-    def workspace(self, **kwargs):
+    def workspace(self, **kwargs) -> WorkspaceV1:
         """ """
         kwargs.setdefault("spec", self.workspace_spec())
-        return WorkspaceFactory.build(factory_use_construct=True, **kwargs)
+        return WorkspaceFactory.build(**kwargs)
 
-    def workspace_spec(self, **kwargs):
+    def workspace_spec(self, **kwargs) -> WorkspaceSpec:
         """ """
         if self.organisation:
             kwargs.setdefault("organisation", self.organisation)
-        return WorkspaceSpecFactory.build(factory_use_construct=True, **kwargs)
+        return WorkspaceSpecFactory.build(**kwargs)
 
 
 class SourceSpecFactory(ModelFactory[SourceSpec]):
@@ -377,16 +377,16 @@ class MockSource:
     def __init__(self, workspace=None):
         self.workspace = workspace
 
-    def source(self, **kwargs):
+    def source(self, **kwargs) -> SourceV1:
         """ """
         kwargs.setdefault("spec", self.source_spec())
-        return SourceFactory.build(factory_use_construct=True, **kwargs)
+        return SourceFactory.build(**kwargs)
 
-    def source_spec(self, **kwargs):
+    def source_spec(self, **kwargs) -> SourceSpec:
         """ """
         if self.workspace:
             kwargs.setdefault("workspace", self.workspace)
-        return SourceSpecFactory.build(factory_use_construct=True, **kwargs)
+        return SourceSpecFactory.build(**kwargs)
 
 
 class MockV1:

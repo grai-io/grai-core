@@ -5,9 +5,22 @@ from django.urls import reverse
 from django.utils.html import format_html
 
 from common.admin.fields.json_widget import PrettyJSONWidget
-from connections.models import Connection
+from connections.models import Connection, Run
 
 from .models import Edge, Event, Filter, Node, Source
+
+
+@admin.action(description="Force delete selected sources")
+def delete_sources(modeladmin, request, queryset):  # pragma: no cover
+    sources = queryset
+
+    for source in sources:
+        for connection in source.connections.all():
+            Run.objects.filter(connection=connection).delete()
+
+            connection.delete()
+
+    queryset.delete()
 
 
 class EdgeInline(admin.TabularInline):
@@ -158,7 +171,7 @@ class ConnectionInline(admin.TabularInline):
         )
 
     fields = ("name", view)
-    readonly_fields = (view,)
+    readonly_fields = [view]
 
 
 class SourceAdmin(admin.ModelAdmin):
@@ -178,6 +191,10 @@ class SourceAdmin(admin.ModelAdmin):
 
     inlines = [
         ConnectionInline,
+    ]
+
+    actions = [
+        delete_sources,
     ]
 
 

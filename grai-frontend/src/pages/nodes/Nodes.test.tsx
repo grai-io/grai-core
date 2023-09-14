@@ -410,6 +410,8 @@ test("no nodes", async () => {
 })
 
 test("filter", async () => {
+  const user = userEvent.setup()
+
   render(<Nodes />, {
     withRouter: true,
   })
@@ -430,4 +432,6 @@ test("filter", async () => {
   fireEvent.change(input, { target: { value: "T" } })
   fireEvent.keyDown(autocomplete, { key: "ArrowDown" })
   fireEvent.keyDown(autocomplete, { key: "Enter" })
+
+  await act(async () => await user.click(screen.getByTestId("CloseIcon")))
 })

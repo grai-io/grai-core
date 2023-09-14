@@ -2,6 +2,7 @@ import uuid
 
 import pytest
 from django_multitenant.utils import set_current_tenant
+from notifications.models import Alert
 
 from api.schema import schema
 from api.tests.common import (
@@ -17,7 +18,6 @@ from api.tests.common import (
     test_user,
     test_workspace,
 )
-from notifications.models import Alert
 
 
 @pytest.mark.asyncio

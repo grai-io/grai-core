@@ -7,12 +7,24 @@
 // GraphQL query operation: GetTablesAndEdgesEdgeLineage
 // ====================================================
 
+export interface GetTablesAndEdgesEdgeLineage_workspace_graph_columns_destinations {
+  __typename: "ColumnEdge";
+  edge_id: string;
+  column_id: string;
+}
+
 export interface GetTablesAndEdgesEdgeLineage_workspace_graph_columns {
   __typename: "GraphColumn";
   id: string;
   name: string;
   display_name: string;
-  destinations: string[];
+  destinations: GetTablesAndEdgesEdgeLineage_workspace_graph_columns_destinations[];
+}
+
+export interface GetTablesAndEdgesEdgeLineage_workspace_graph_destinations {
+  __typename: "TableEdge";
+  edge_id: string;
+  table_id: string;
 }
 
 export interface GetTablesAndEdgesEdgeLineage_workspace_graph {
@@ -25,7 +37,7 @@ export interface GetTablesAndEdgesEdgeLineage_workspace_graph {
   y: number;
   data_source: string | null;
   columns: GetTablesAndEdgesEdgeLineage_workspace_graph_columns[];
-  destinations: string[];
+  destinations: GetTablesAndEdgesEdgeLineage_workspace_graph_destinations[];
   table_destinations: string[] | null;
   table_sources: string[] | null;
 }

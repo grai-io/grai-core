@@ -1,6 +1,7 @@
 import React from "react"
 import {
   FilterAlt,
+  FilterList,
   KeyboardArrowLeft,
   KeyboardArrowRight,
   Refresh,
@@ -21,6 +22,8 @@ import {
 } from "@mui/material"
 import { Viewport } from "reactflow"
 import useLocalState from "helpers/useLocalState"
+import { Filter } from "components/filters/filters"
+import GraphFilterInline from "./filters-inline/GraphFilterInline"
 import GraphFilters from "./GraphFilters"
 import GraphSearch from "./GraphSearch"
 
@@ -32,6 +35,8 @@ type GraphDrawerProps = {
   onMove?: (viewport: Viewport) => void
   filters: string[]
   setFilters: (filters: string[]) => void
+  inlineFilters: Filter[]
+  setInlineFilters: (filters: Filter[]) => void
 }
 
 const GraphDrawer: React.FC<GraphDrawerProps> = ({
@@ -42,12 +47,14 @@ const GraphDrawer: React.FC<GraphDrawerProps> = ({
   onMove,
   filters,
   setFilters,
+  inlineFilters,
+  setInlineFilters,
 }) => {
   const [tab, setTab] = useLocalState<string | null>("graph-drawer", null)
 
   const expand = tab !== null
 
-  const drawerWidth = expand ? 300 : 48
+  const drawerWidth = expand ? 350 : 48
 
   return (
     <Drawer
@@ -103,6 +110,16 @@ const GraphDrawer: React.FC<GraphDrawerProps> = ({
                   sx={{ minWidth: 0 }}
                   className="graph-filter"
                 />
+                <Tab
+                  value="filter-list"
+                  label={
+                    <Tooltip title="Filter List">
+                      <FilterList />
+                    </Tooltip>
+                  }
+                  sx={{ minWidth: 0 }}
+                  className="graph-filter-list"
+                />
               </TabList>
             </Box>
             <TabPanel value="search" sx={{ p: 0 }}>
@@ -113,6 +130,12 @@ const GraphDrawer: React.FC<GraphDrawerProps> = ({
               />
             </TabPanel>
             <TabPanel value="filter" sx={{ p: 0 }}>
+              <GraphFilterInline
+                inlineFilters={inlineFilters}
+                setInlineFilters={setInlineFilters}
+              />
+            </TabPanel>
+            <TabPanel value="filter-list" sx={{ p: 0 }}>
               <GraphFilters filters={filters} setFilters={setFilters} />
             </TabPanel>
           </TabContext>
@@ -180,6 +203,28 @@ const GraphDrawer: React.FC<GraphDrawerProps> = ({
                   }}
                 >
                   <FilterAlt />
+                </ListItemIcon>
+              </ListItemButton>
+            </Tooltip>
+          </ListItem>
+          <ListItem disablePadding>
+            <Tooltip title="Filter List">
+              <ListItemButton
+                onClick={() => setTab("filter-list")}
+                sx={{
+                  minHeight: 48,
+                  justifyContent: "center",
+                  px: 2.5,
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: "auto",
+                    justifyContent: "center",
+                  }}
+                >
+                  <FilterList />
                 </ListItemIcon>
               </ListItemButton>
             </Tooltip>

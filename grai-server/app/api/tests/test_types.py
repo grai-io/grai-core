@@ -327,7 +327,7 @@ async def test_nodes_filter_node_type_equals(test_context):
         query Workspace($workspaceId: ID!, $filter: WorkspaceNodeFilter) {
           workspace(id: $workspaceId) {
             id
-            nodes(filter: $filter) {
+            nodes(filters: $filter) {
                 data{
                     id
                 }
@@ -366,7 +366,7 @@ async def test_nodes_filter_node_type_contains(test_context):
         query Workspace($workspaceId: ID!, $filter: WorkspaceNodeFilter) {
           workspace(id: $workspaceId) {
             id
-            nodes(filter: $filter) {
+            nodes(filters: $filter) {
                 data{
                     id
                 }
@@ -737,7 +737,7 @@ async def test_edges_filter_edge_type_equals(test_context):
         query Workspace($workspaceId: ID!, $filter: WorkspaceEdgeFilter) {
           workspace(id: $workspaceId) {
             id
-            edges(filter: $filter) {
+            edges(filters: $filter) {
                 data{
                     id
                 }
@@ -784,7 +784,7 @@ async def test_edges_filter_edge_type_contains(test_context):
         query Workspace($workspaceId: ID!, $filter: WorkspaceEdgeFilter) {
           workspace(id: $workspaceId) {
             id
-            edges(filter: $filter) {
+            edges(filters: $filter) {
                 data{
                     id
                 }
@@ -3163,6 +3163,39 @@ async def test_graph_filter_xy(test_context):
     result = await schema.execute(
         query,
         variable_values={"workspaceId": str(workspace.id)},
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+
+
+@pytest.mark.django_db
+async def test_graph_filter_inline_filters(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!, $filter: JSON!) {
+            workspace(id: $workspaceId) {
+                id
+                graph(filters: {inline_filters: [$filter]}) {
+                    id
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+            "filter": {
+                "type": "table",
+                "field": "tag",
+                "operator": "contains",
+                "value": "test",
+            },
+        },
         context_value=context,
     )
 

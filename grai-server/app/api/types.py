@@ -1,21 +1,21 @@
 import datetime
 import time
-from enum import Enum
-from typing import List, Optional
-
-from grai_graph.graph import BaseSourceSegment
 from collections import defaultdict
+from enum import Enum
+from typing import List, Optional, Union
+
 import strawberry
 import strawberry_django
 from asgiref.sync import sync_to_async
 from django.conf import settings
 from django.db.models import Prefetch, Q
 from django.db.models.query import QuerySet
+from grai_graph.graph import BaseSourceSegment
+from notifications.models import Alert as AlertModel
 from strawberry.scalars import JSON
 from strawberry_django.filters import FilterLookup
 from strawberry_django.pagination import OffsetPaginationInput
-from strawberry.types import Info
-from grai_graph.graph import BaseSourceSegment
+
 from api.search import Search
 from connections.models import Connection as ConnectionModel
 from connections.models import Run as RunModel
@@ -34,7 +34,7 @@ from lineage.models import Filter as FilterModel
 from lineage.models import Node as NodeModel
 from lineage.models import Source as SourceModel
 from lineage.types import EdgeFilter, EdgeOrder, Filter, NodeFilter, NodeOrder
-from notifications.models import Alert as AlertModel
+from search.search import SearchClient
 from users.types import User, UserFilter
 from workspaces.models import Membership as MembershipModel
 from workspaces.models import Workspace as WorkspaceModel
@@ -492,6 +492,7 @@ class GraphFilter:
     edge_id: Optional[strawberry.ID] = strawberry.UNSET
     n: Optional[int] = strawberry.UNSET
     filters: Optional[List[strawberry.ID]] = strawberry.UNSET
+    inline_filters: Optional[List[JSON]] = strawberry.UNSET
     min_x: Optional[int] = strawberry.UNSET
     max_x: Optional[int] = strawberry.UNSET
     min_y: Optional[int] = strawberry.UNSET
@@ -551,7 +552,7 @@ class Workspace:
         self,
         pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
         search: Optional[str] = strawberry.UNSET,
-        filter: Optional[WorkspaceNodeFilter] = strawberry.UNSET,
+        filters: Optional[WorkspaceNodeFilter] = strawberry.UNSET,
         order: Optional[NodeOrder] = strawberry.UNSET,
     ) -> Pagination["Node"]:
         queryset = NodeModel.objects.filter(workspace=self)
@@ -561,12 +562,12 @@ class Workspace:
                 Q(id__icontains=search) | Q(name__icontains=search) | Q(display_name__icontains=search)
             )
 
-        if filter:
-            if filter.node_type:
-                if filter.node_type.equals:
-                    queryset = queryset.filter(metadata__grai__node_type=filter.node_type.equals)
-                if filter.node_type.contains:
-                    queryset = queryset.filter(metadata__grai__node_type__in=filter.node_type.contains)
+        if filters:
+            if filters.node_type:
+                if filters.node_type.equals:
+                    queryset = queryset.filter(metadata__grai__node_type=filters.node_type.equals)
+                if filters.node_type.contains:
+                    queryset = queryset.filter(metadata__grai__node_type__in=filters.node_type.contains)
 
         return Pagination[Node](queryset=queryset, pagination=pagination, order=order)
 
@@ -583,7 +584,7 @@ class Workspace:
         self,
         pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
         search: Optional[str] = strawberry.UNSET,
-        filter: Optional[WorkspaceEdgeFilter] = strawberry.UNSET,
+        filters: Optional[WorkspaceEdgeFilter] = strawberry.UNSET,
     ) -> Pagination["Edge"]:
         queryset = EdgeModel.objects.filter(workspace=self)
 
@@ -595,12 +596,12 @@ class Workspace:
                 | Q(source__name__icontains=search)
             )
 
-        if filter:
-            if filter.edge_type:
-                if filter.edge_type.equals:
-                    queryset = queryset.filter(metadata__grai__edge_type=filter.edge_type.equals)
-                if filter.edge_type.contains:
-                    queryset = queryset.filter(metadata__grai__edge_type__in=filter.edge_type.contains)
+        if filters:
+            if filters.edge_type:
+                if filters.edge_type.equals:
+                    queryset = queryset.filter(metadata__grai__edge_type=filters.edge_type.equals)
+                if filters.edge_type.contains:
+                    queryset = queryset.filter(metadata__grai__edge_type__in=filters.edge_type.contains)
 
         return Pagination[Edge](queryset=queryset, pagination=pagination)
 
@@ -876,8 +877,6 @@ class Workspace:
             NodeModel.objects.filter(workspace=self).values_list("namespace", flat=True).distinct()
         )
 
-        print(namespaces)
-
         return DataWrapper(namespaces)
 
     # Graph
@@ -892,21 +891,31 @@ class Workspace:
         query.match("(table:Table)")
 
         if filters and filters.source_id:
-            return graph.get_source_filtered_graph_result(filters.source_id, filters.n)
+            return graph.get_source_filtered_graph_result(filters.source_id, filters.n or 0)
 
         if filters and filters.table_id:
-            return graph.get_table_filtered_graph_result(filters.table_id, filters.n)
+            return graph.get_table_filtered_graph_result(filters.table_id, filters.n or 0)
 
         if filters and filters.edge_id:
-            return graph.get_edge_filtered_graph_result(filters.edge_id, filters.n)
+            return graph.get_edge_filtered_graph_result(filters.edge_id, filters.n or 0)
 
-        if filters and filters.min_x is not None and filters.max_x is not strawberry.UNSET:
+        if (
+            filters
+            and filters.min_x is not None
+            and filters.min_x is not strawberry.UNSET
+            and filters.max_x is not None
+            and filters.min_y is not None
+            and filters.max_y is not None
+        ):
             graph.filter_by_range(filters.min_x, filters.max_x, filters.min_y, filters.max_y, query)
 
         if filters and filters.filters:
             filter_list = await sync_to_async(FilterModel.objects.filter(id__in=filters.filters).all)()
 
             await sync_to_async(graph.filter_by_filters)(filter_list, query)
+
+        if filters and filters.inline_filters:
+            await sync_to_async(graph.filter_by_rows)(filters.inline_filters, query)
 
         return graph.get_graph_result(query=query)
 
@@ -916,38 +925,14 @@ class Workspace:
         self,
         search: Optional[str] = strawberry.UNSET,
     ) -> List[BaseTable]:
-        def get_tables(search: Optional[str]) -> List[Table]:
-            def get_words(word: str) -> List[str]:
-                from django.db import connection
+        def get_tables(
+            search: Optional[str],
+        ) -> List[Union[Table, BaseTable]]:
+            client = SearchClient()
 
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        "SELECT * FROM unique_lexeme WHERE levenshtein_less_equal(word, %s, 2) < 3",
-                        [word],
-                    )
-                    rows = cursor.fetchall()
+            tables = client.search(workspace=self, query=search)
 
-                return list([item[0] for item in rows])
-
-            result = []
-
-            for word in search.replace("_", " ").replace(".", " ").strip().split(" "):
-                result += get_words(word)
-
-            search_string = " ".join(result)
-
-            return list(
-                NodeModel.objects.raw(
-                    """
-                    SELECT *
-                    FROM lineage_node
-                    WHERE workspace_id=%s
-                    AND metadata->'grai'->>'node_type'='Table'
-                    AND ts_rank(search, websearch_to_tsquery('simple', replace(replace(%s, ' ', ' or '), '.', ' or '))) > 0
-                    ORDER BY ts_rank(search, websearch_to_tsquery('simple', replace(replace(%s, ' ', ' or '), '.', ' or '))) DESC""",
-                    [self.id, search_string, search_string],
-                )
-            )
+            return tables
 
         graph = GraphCache(workspace=self)
 
@@ -956,7 +941,13 @@ class Workspace:
         if search:
             tables = await sync_to_async(get_tables)(search)
 
-            ids = [table.id for table in tables]
+            if len(tables) == 0:
+                return []
+
+            if isinstance(tables[0], BaseTable):
+                return tables
+
+            ids = [table["id"] for table in tables]
 
         return graph.get_tables(ids=ids)
 
@@ -977,7 +968,7 @@ class Workspace:
     # Source Graph
     @strawberry.field
     def source_graph(self) -> List[SourceGraph]:
-        def fetch_source_graph(workspace: WorkspaceModel):
+        def fetch_source_graph(workspace: Workspace):
             nodes = defaultdict(list)
             for node in (
                 NodeModel.objects.filter(workspace=workspace, is_active=True)

@@ -90,14 +90,19 @@ def manifest() -> ManifestTypes
 
 ```python
 @classmethod
-def load(cls, manifest_obj: Union[str, dict], namespace: str,
-         source: SourceSpec) -> "ManifestProcessor"
+def load(cls,
+         manifest_obj: Union[str, dict],
+         namespace: str,
+         source: SourceSpec,
+         strict_mode: bool = False) -> "ManifestProcessor"
 ```
 
 **Arguments**:
 
-  manifest_obj (Union[str, dict]):
-  namespace (str):
+  manifest_obj:
+  namespace:
+  source:
+  strict_mode:
 
 
 **Returns**:

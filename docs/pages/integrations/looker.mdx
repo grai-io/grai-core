@@ -1,0 +1,97 @@
+---
+title: Looker
+description: Grai integration for Looker to extract Dashboards and LookML output into your data observability stack.
+---
+
+import { Callout } from "nextra-theme-docs";
+import { LookerIcon } from "../../components/Integrations";
+import Image from "next/image";
+import InlineLogo from "../../components/InlineLogo";
+
+<InlineLogo logo={<LookerIcon width="200"/>} title="(alpha)"  />
+
+The Looker integration synchronizes your Dashboards and LookML from Looker into Grai
+In this way you can quickly identify which data is being used by your BI tools, which data is not, and more.
+
+## Web App
+
+<Image
+  src="/images/docs/core/integrations/looker.png"
+  height={600}
+  width={1200}
+  alt="Metabase Integration Homescreen"
+/>
+
+### Fields
+
+| Field           | Value                                                              | Example  |
+| --------------- | ------------------------------------------------------------------ | -------- |
+| Source | Name of the source for this connection | Looker |
+| Name            | Name for connection                                                | Looker   |
+| Namespace       | Namespace for the connection, see [namespace](/concepts/namespace) | default  |
+| base_url        | Base url of your looker instance                                   |          |
+| client_id       | Client ID for the Looker API                                       |          |
+| client_secret   | Client Secret for the Looker API                                   |          |
+| namespaces      | An Optional JSON string (see below)                                |          |
+
+You can find more information about generating a client id and secret [here](https://cloud.google.com/looker/docs/admin-panel-users-users#api_keys).
+
+#### Namespaces
+
+<Callout type="info" emoji="ℹ️">
+  If the namespaces field is not provided, Grai will create a default namespace for each Explore on your behalf.
+  You can always update the namespaces field later to customize your namespace organization.
+</Callout>
+
+In order to automatically tie your data lineage together, Grai needs to know which Grai namespace corresponds to each lookML model.
+The namespaces field should be a JSON string with the Grai namespace for each dashboard id e.g.
+
+```json
+{
+    "<model>": "<namespace>"
+}
+```
+
+
+## Python Library
+
+### Installation
+
+Install the Metabase Grai integration with pip
+
+```shell copy
+pip install grai-source-looker
+```
+
+This installs the Grai Looker integration, which is now ready to run in python
+
+### Connecting & Syncing
+
+The integration comes equipped with the client library already but we will need a python terminal or Jupyter Notebook to execute a few commands to establish a connection and begin querying the server.
+
+Spin up your favorite python terminal then:
+
+```python copy
+import os
+from grai_source_looker.base import LookerIntegration
+```
+
+For now we will use the default user credentials though you are free to create a new user / api keys from the server admin interface at http://localhost:8000/admin.
+
+```python copy
+client = ClientV1("localhost", "8000", username="null@grai.io", password="super_secret")
+```
+
+Using example variables, in order to update the server with your metadata, simply run:
+
+```python copy
+from grai_source_looker.base import LookerIntegration
+
+integration = LookerIntegration(base_url=<your_url>,
+                                client_id=<your_client_id>,
+                                client_secret=<your_client_secret>,
+                                namespace=<your_namespace>,
+)
+nodes, edges = integration.get_nodes_and_edges()
+client.post([nodes, edges])
+```

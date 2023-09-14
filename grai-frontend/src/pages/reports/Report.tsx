@@ -67,9 +67,15 @@ export const GET_RUN = gql`
           id
           name
           display_name
-          destinations
+          destinations {
+            edge_id
+            column_id
+          }
         }
-        destinations
+        destinations {
+          edge_id
+          table_id
+        }
       }
     }
   }
@@ -87,7 +93,7 @@ const Report: React.FC = () => {
       { ...searchParams, limitGraph: "true" },
       {
         replace: true,
-      }
+      },
     )
     setDisplay(true)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
@@ -137,7 +143,7 @@ const Report: React.FC = () => {
                 <Typography sx={{ ml: 2 }}>{`about ${durationAgo(
                   run.created_at,
                   1,
-                  true
+                  true,
                 )} ago `}</Typography>
               )}
             </>

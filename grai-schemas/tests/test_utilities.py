@@ -1,6 +1,8 @@
+from copy import deepcopy
+
 import pytest
 from grai_schemas.utilities import merge
-from grai_schemas.v1 import EdgeV1, NodeV1
+from grai_schemas.v1 import EdgeV1, NodeV1, SourcedEdgeV1, SourcedNodeV1
 from grai_schemas.v1.metadata.edges import BaseEdgeMetadataV1
 from grai_schemas.v1.metadata.metadata import (
     EdgeMetadataV1,
@@ -202,3 +204,23 @@ class TestMerge:
         assert len(c.tags) == 4
         assert len(set(c.tags)) == 4
         assert {"1", "2", "3", "4"} == set(c.tags)
+
+    def test_merge_source_into_node(self, mock_v1):
+        a = mock_v1.node.node()
+        b = mock_v1.node.sourced_node()
+        expected_metadata = deepcopy(a.spec.metadata)
+        expected_metadata.sources[b.spec.data_source.name] = b.spec.metadata
+        expected_metadata.grai = merge(expected_metadata.grai, b.spec.metadata.grai)
+
+        expected_node = NodeV1.from_spec({**a.spec.dict(), "metadata": expected_metadata})
+        merged_node = merge(a, b)
+        assert expected_node == merged_node
+
+    def test_merge_source_into_edge(self, mock_v1):
+        a = mock_v1.edge.edge()
+        b = mock_v1.edge.sourced_edge()
+        expected_metadata = deepcopy(a.spec.metadata)
+        expected_metadata.sources[b.spec.data_source.name] = b.spec.metadata
+        expected_metadata.grai = merge(expected_metadata.grai, b.spec.metadata.grai)
+
+        assert merge(a, b) == EdgeV1.from_spec({**a.spec.dict(), "metadata": expected_metadata})

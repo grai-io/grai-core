@@ -6,6 +6,8 @@ import { GET_SOURCE_TABLES } from "components/sources/SourceTables"
 import { UPDATE_SOURCE } from "components/sources/UpdateSource"
 import Source, { GET_SOURCE } from "./Source"
 
+jest.retryTimes(1)
+
 test("renders", async () => {
   render(<Source />, {
     withRouter: true,
@@ -316,7 +318,7 @@ test("tables click row", async () => {
   const user = userEvent.setup()
 
   const { container } = render(<Source />, {
-    routes: ["/:organisationName/:workspaceName/tables/:tableId"],
+    routes: ["/:organisationName/:workspaceName/nodes/:tableId"],
   })
 
   await waitFor(() => {

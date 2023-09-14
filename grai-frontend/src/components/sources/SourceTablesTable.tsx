@@ -50,7 +50,7 @@ const SourceTablesTable: React.FC<SourceTablesTableProps> = ({
           <TableRow
             key={table.id}
             hover
-            onClick={() => navigate(`${routePrefix}/tables/${table.id}`)}
+            onClick={() => navigate(`${routePrefix}/nodes/${table.id}`)}
             sx={{ cursor: "pointer" }}
           >
             <TableCell>{table.display_name}</TableCell>

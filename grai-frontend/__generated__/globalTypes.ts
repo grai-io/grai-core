@@ -26,6 +26,7 @@ export interface GraphFilter {
   edge_id?: string | null;
   n?: number | null;
   filters?: string[] | null;
+  inline_filters?: any[] | null;
   min_x?: number | null;
   max_x?: number | null;
   min_y?: number | null;
@@ -37,6 +38,7 @@ export interface NodeOrder {
   namespace?: Ordering | null;
   name?: Ordering | null;
   display_name?: Ordering | null;
+  metadata__grai__node_type?: Ordering | null;
   is_active?: Ordering | null;
   created_at?: Ordering | null;
   updated_at?: Ordering | null;

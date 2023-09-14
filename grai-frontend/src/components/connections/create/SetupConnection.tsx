@@ -145,7 +145,7 @@ const SetupConnection: React.FC<SetupConnectionProps> = ({
             }),
             fields: {
               connections(existingConnections = { data: [] }) {
-                if (!data?.createConnection) return
+                if (!data?.createConnection) return existingConnections;
 
                 const newConnection = cache.writeFragment<NewConnection>({
                   data: data.createConnection,

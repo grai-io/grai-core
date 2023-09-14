@@ -249,6 +249,7 @@ class PostgresConnector:
         """
         # query is from https://dba.stackexchange.com/questions/36979/retrieving-all-pk-and-fk/37068#37068
         # Only need constraint_types == 'f' for foreign keys but the others might be useful someday.
+
         query = """
             SELECT c.conname                                         AS constraint_name,
                    c.contype                                         AS constraint_type,
@@ -268,13 +269,17 @@ class PostgresConnector:
                    LEFT JOIN pg_class f_tbl ON f_tbl.oid = c.confrelid
                    LEFT JOIN pg_namespace f_sch ON f_sch.oid = f_tbl.relnamespace
                    LEFT JOIN pg_attribute f_col ON (f_col.attrelid = f_tbl.oid AND f_col.attnum = f_u.attnum)
+            WHERE sch.nspname IN %(schemas)s AND f_sch.nspname IN %(schemas)s
             GROUP BY constraint_name, constraint_type, "self_schema", "self_table", definition, "foreign_schema", "foreign_table"
             ORDER BY "self_schema", "self_table";
         """
+
+        query_params = {"schemas": tuple({table.table_schema for table in self.tables})}
+        results = self.query_runner(query, query_params)
+
         addtl_args = {
             "namespace": self.namespace,
         }
-        results = self.query_runner(query)
         filtered_results = (result for result in results if result["constraint_type"] == "f")
         result = (EdgeQuery(**fk, **addtl_args).to_edge() for fk in filtered_results)
         return [r for r in result if r is not None]

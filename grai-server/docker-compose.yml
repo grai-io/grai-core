@@ -112,10 +112,21 @@ services:
       interval: 2s
       timeout: 2s
       retries: 15
-    command: ["postgres", "-c", "log_statement=none"]
+    command:
+      [
+        "postgres",
+        "-c",
+        "log_statement=none",
+        "-c",
+        "wal_level=logical",
+        "-c",
+        "max_replication_slots=10",
+        "-c",
+        "max_wal_senders=5",
+      ]
 
   redis:
-    image: redis/redis-stack:latest
+    image: redis/redis-stack:6.2.6-v9
     environment:
       - REDISGRAPH_ARGS=RESULTSET_SIZE 100000
     ports:
@@ -132,3 +143,30 @@ services:
     depends_on:
       - redis
       - db
+
+  retake-core:
+    extends:
+      file: ./docker-compose.retake.yml
+      service: retake-core
+    profiles:
+      - retake
+    ports:
+      - 9200:9200
+
+  retake-api:
+    extends:
+      file: ./docker-compose.retake.yml
+      service: retake-api
+    profiles:
+      - retake
+    ports:
+      - 8002:8000
+
+  pgsync:
+    extends:
+      file: ./docker-compose.retake.yml
+      service: pgsync
+    profiles:
+      - retake
+    ports:
+      - 7433:7433

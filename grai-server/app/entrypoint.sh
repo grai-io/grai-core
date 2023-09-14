@@ -21,6 +21,9 @@ fi
 if [ "$INSTANCE_TYPE" = "server" ]; then
   echo "Initializing database with default data..."
   bash /usr/src/app/initialize_db.sh
+
+  echo "Building retake index..."
+  python manage.py build_search
 fi
 
 exec "$@"
