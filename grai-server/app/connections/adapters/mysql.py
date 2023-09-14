@@ -1,4 +1,5 @@
 from .base import BaseAdapter
+from grai_schemas.v1.source import SourceV1
 
 
 class MySQLAdapter(BaseAdapter):
@@ -7,12 +8,14 @@ class MySQLAdapter(BaseAdapter):
 
         metadata = self.run.connection.metadata
         secrets = self.run.connection.secrets
-
-        return MySQLIntegration(
-            source={
+        source = SourceV1.from_spec(
+            {
                 "id": self.run.source.id,
                 "name": self.run.source.name,
-            },
+            }
+        )
+        return MySQLIntegration(
+            source=source,
             host=metadata["host"],
             port=metadata["port"],
             dbname=metadata["dbname"],

@@ -1,37 +1,24 @@
 from connections.models import Run
 
 from .base import BaseAdapter
+from grai_source_dbt.base import DbtIntegration
+import json
+
+from grai_schemas.v1.source import SourceV1
 
 
 class DbtAdapter(BaseAdapter):
-    def get_nodes_and_edges(self):
-        import json
-
-        from grai_schemas.v1.source import SourceV1
-        from grai_source_dbt.processor import ManifestProcessor
-
+    def get_integration(self):
         namespace = self.run.connection.namespace
+        run_file = self.run.files.first()
 
-        runFile = self.run.files.first()
-
-        with runFile.file.open("r") as f:
+        with run_file.file.open("r") as f:
             manifest_obj = json.load(f)
 
-        manifest = ManifestProcessor.load(
-            manifest_obj,
-            namespace,
-            SourceV1.from_spec(
-                {
-                    "id": self.run.source.id,
-                    "name": self.run.source.name,
-                }
-            ),
+        source = SourceV1.from_spec(
+            {
+                "id": self.run.source.id,
+                "name": self.run.source.name,
+            }
         )
-        return manifest.adapted_nodes, manifest.adapted_edges
-
-    def run_validate(self, run: Run) -> bool:
-        self.run = run
-
-        self.get_nodes_and_edges()
-
-        return True
+        return DbtIntegration(manifest_obj, source=source, namespace=namespace)

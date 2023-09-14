@@ -1,6 +1,7 @@
 import json
 
 from .base import BaseAdapter
+from grai_schemas.v1.source import SourceV1
 
 
 class LookerAdapter(BaseAdapter):
@@ -9,12 +10,14 @@ class LookerAdapter(BaseAdapter):
 
         metadata = self.run.connection.metadata
         secrets = self.run.connection.secrets
-
-        return LookerIntegration(
-            source={
+        source = SourceV1.from_spec(
+            {
                 "id": self.run.source.id,
                 "name": self.run.source.name,
-            },
+            }
+        )
+        return LookerIntegration(
+            source=source,
             base_url=metadata["base_url"],
             client_id=metadata["client_id"],
             client_secret=secrets["client_secret"],

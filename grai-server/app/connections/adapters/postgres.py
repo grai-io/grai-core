@@ -1,4 +1,5 @@
 from .base import BaseAdapter
+from grai_schemas.v1.source import SourceV1
 
 
 class PostgresAdapter(BaseAdapter):
@@ -7,12 +8,14 @@ class PostgresAdapter(BaseAdapter):
 
         metadata = self.run.connection.metadata
         secrets = self.run.connection.secrets
-
-        return PostgresIntegration(
-            source={
+        source = SourceV1.from_spec(
+            {
                 "id": self.run.source.id,
                 "name": self.run.source.name,
-            },
+            }
+        )
+        return PostgresIntegration(
+            source=source,
             dbname=metadata["dbname"],
             user=metadata["user"],
             password=secrets["password"],

@@ -1,4 +1,5 @@
 from .base import BaseAdapter
+from grai_schemas.v1.source import SourceV1
 
 
 class SnowflakeAdapter(BaseAdapter):
@@ -7,12 +8,14 @@ class SnowflakeAdapter(BaseAdapter):
 
         metadata = self.run.connection.metadata
         secrets = self.run.connection.secrets
-
-        return SnowflakeIntegration(
-            source={
+        source = SourceV1.from_spec(
+            {
                 "id": self.run.source.id,
                 "name": self.run.source.name,
-            },
+            }
+        )
+        return SnowflakeIntegration(
+            source=source,
             account=metadata.get("account"),
             user=metadata.get("user"),
             password=secrets.get("password"),

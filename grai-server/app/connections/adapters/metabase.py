@@ -1,4 +1,5 @@
 from .base import BaseAdapter
+from grai_schemas.v1.source import SourceV1
 
 
 class MetabaseAdapter(BaseAdapter):
@@ -7,12 +8,14 @@ class MetabaseAdapter(BaseAdapter):
 
         metadata = self.run.connection.metadata
         secrets = self.run.connection.secrets
-
-        return MetabaseIntegration(
-            source={
+        source = SourceV1.from_spec(
+            {
                 "id": self.run.source.id,
                 "name": self.run.source.name,
-            },
+            }
+        )
+        return MetabaseIntegration(
+            source=source,
             username=metadata.get("username"),
             password=secrets.get("password"),
             namespace_map=metadata.get("namespaces") if metadata.get("namespaces") != "" else None,

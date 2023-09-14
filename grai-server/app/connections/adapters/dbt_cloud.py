@@ -8,14 +8,14 @@ class DbtCloudAdapter(BaseAdapter):
 
         secrets = self.run.connection.secrets
         namespace = self.run.connection.namespace
-
+        source = SourceV1.from_spec(
+            {
+                "id": self.run.source.id,
+                "name": self.run.source.name,
+            }
+        )
         return DbtCloudIntegration(
-            source=SourceV1.from_spec(
-                {
-                    "id": self.run.source.id,
-                    "name": self.run.source.name,
-                }
-            ),
+            source=source,
             api_key=secrets["api_key"],
             namespace=namespace,
         )

@@ -1,39 +1,45 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from itertools import chain
 from typing import Optional
 
 from django.db.models import Max
 from grai_graph.graph import build_graph
 from grai_schemas.v1 import EdgeV1, NodeV1
-
+from grai_schemas.integrations.base import GraiIntegrationImplementation
 from connections.models import Run
 from connections.task_helpers import modelToSchema, update
 from lineage.models import Edge, Event, Node
 
 from .tools import TestResultCacheBase
+from functools import cached_property
 
 
 class BaseAdapter(ABC):
     run: Run
 
-    def get_integration(self):
+    @abstractmethod
+    def get_integration(self) -> GraiIntegrationImplementation:
         raise NotImplementedError(f"No get_integration implemented for {type(self)}")
 
+    @cached_property
+    def integration(self) -> GraiIntegrationImplementation:
+        return self.get_integration()
+
     def get_nodes_and_edges(self):
-        return self.get_integration().get_validated_nodes_and_edges()
+        return self.integration.get_validated_nodes_and_edges()
 
     def events(self, last_event_date):
-        return self.get_integration().events(last_event_date)
+        return self.integration.events(last_event_date)
 
     def run_validate(self, run: Run) -> bool:
         self.run = run
 
-        return self.get_integration().ready()
+        return self.integration.ready()
 
     def run_update(self, run: Run):
         self.run = run
 
-        nodes, edges = self.get_validated_nodes_and_edges()
+        nodes, edges = self.integration.get_validated_nodes_and_edges()
 
         update(self.run.workspace, self.run.source, nodes)
         update(self.run.workspace, self.run.source, edges)
@@ -41,7 +47,7 @@ class BaseAdapter(ABC):
     def run_tests(self, run: Run):
         self.run = run
 
-        new_nodes, new_edges = self.get_validated_nodes_and_edges()
+        new_nodes, new_edges = self.integration.get_validated_nodes_and_edges()
 
         nodes = [modelToSchema(model, NodeV1, "Node") for model in Node.objects.filter(workspace=run.workspace)]
         edges = [

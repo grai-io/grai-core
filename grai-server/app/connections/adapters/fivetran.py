@@ -1,4 +1,5 @@
 from .base import BaseAdapter
+from grai_schemas.v1.source import SourceV1
 
 
 class FivetranAdapter(BaseAdapter):
@@ -7,6 +8,12 @@ class FivetranAdapter(BaseAdapter):
 
         metadata = self.run.connection.metadata
         secrets = self.run.connection.secrets
+        source = SourceV1.from_spec(
+            {
+                "id": self.run.source.id,
+                "name": self.run.source.name,
+            }
+        )
 
         def getNumber(value: str | None, default: int = None) -> int | None:
             if value is None or value == "":
@@ -21,10 +28,7 @@ class FivetranAdapter(BaseAdapter):
             return value
 
         return FivetranIntegration(
-            source={
-                "id": self.run.source.id,
-                "name": self.run.source.name,
-            },
+            source=source,
             api_key=metadata.get("api_key"),
             api_secret=secrets.get("api_secret"),
             namespaces=metadata.get("namespaces"),
