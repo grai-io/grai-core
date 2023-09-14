@@ -11,16 +11,6 @@ else:
     from typing import ParamSpec
 
 
-class EventMixin(ABC):
-    @abstractmethod
-    def events(self) -> List[Event]:
-        pass
-
-    def update(self):
-        super().update()
-        update(self.client, self.events())
-
-
 P = ParamSpec("P")
 
 
@@ -82,37 +72,10 @@ class GraiIntegrationImplementation(ABC):
     def ready(self) -> bool:
         pass
 
+    def events(self, *args, **kwargs) -> List[Event]:
+        return []
+
     def get_validated_nodes_and_edges(self) -> Tuple[List[SourcedNode], List[SourcedEdge]]:
         nodes, edges = self.get_nodes_and_edges()
         edges = verify_edge_ids(nodes, edges)
         return nodes, edges
-
-
-class SeparateNodesAndEdgesMixin:
-    def get_nodes_and_edges(self) -> Tuple[List[SourcedNode], List[SourcedEdge]]:
-        return self.nodes(), self.edges()
-
-
-class CombinedNodesAndEdgesMixin:
-    def nodes(self) -> List[SourcedNode]:
-        nodes, edges = self.get_nodes_and_edges()
-        return nodes
-
-    def edges(self) -> List[SourcedEdge]:
-        nodes, edges = self.get_nodes_and_edges()
-        return edges
-
-
-class ConnectorMixin(CombinedNodesAndEdgesMixin):
-    def get_nodes_and_edges(self) -> Tuple[List[SourcedNode], List[SourcedEdge]]:
-        with self.connector.connect() as conn:
-            nodes, edges = conn.get_nodes_and_edges()
-
-        nodes = self.adapt_to_client(nodes)
-        edges = self.adapt_to_client(edges)
-        return nodes, edges
-
-    def ready(self) -> bool:
-        with self.connector.connect() as _:
-            pass
-        return True
