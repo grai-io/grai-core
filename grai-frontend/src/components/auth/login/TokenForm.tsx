@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { gql, useMutation } from "@apollo/client"
 import { LoadingButton } from "@mui/lab"
 import {
@@ -61,6 +61,12 @@ const TokenForm: React.FC<TokenFormProps> = ({
     LoginWithToken,
     LoginWithTokenVariables
   >(LOGIN)
+
+  useEffect(() => {
+    if (devices.length === 1) {
+      setDevice(devices[0])
+    }
+  }, [devices, setDevice])
 
   if (device) {
     const handleSubmit = () =>
