@@ -1,9 +1,10 @@
 from .base import BaseAdapter
 from grai_schemas.v1.source import SourceV1
+from grai_schemas.integrations.base import ValidatedIntegration
 
 
 class SnowflakeAdapter(BaseAdapter):
-    def get_integration(self):
+    def get_integration(self) -> ValidatedIntegration:
         from grai_source_snowflake.base import SnowflakeIntegration
 
         metadata = self.run.connection.metadata
@@ -14,7 +15,7 @@ class SnowflakeAdapter(BaseAdapter):
                 "name": self.run.source.name,
             }
         )
-        return SnowflakeIntegration(
+        integration = SnowflakeIntegration(
             source=source,
             account=metadata.get("account"),
             user=metadata.get("user"),
@@ -24,3 +25,4 @@ class SnowflakeAdapter(BaseAdapter):
             database=metadata.get("database"),
             namespace=self.run.connection.namespace,
         )
+        return ValidatedIntegration(integration)

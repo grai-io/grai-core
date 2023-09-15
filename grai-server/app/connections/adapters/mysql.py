@@ -1,9 +1,10 @@
 from .base import BaseAdapter
 from grai_schemas.v1.source import SourceV1
+from grai_schemas.integrations.base import ValidatedIntegration
 
 
 class MySQLAdapter(BaseAdapter):
-    def get_integration(self):
+    def get_integration(self) -> ValidatedIntegration:
         from grai_source_mysql.base import MySQLIntegration
 
         metadata = self.run.connection.metadata
@@ -14,7 +15,7 @@ class MySQLAdapter(BaseAdapter):
                 "name": self.run.source.name,
             }
         )
-        return MySQLIntegration(
+        integration = MySQLIntegration(
             source=source,
             host=metadata["host"],
             port=metadata["port"],
@@ -23,3 +24,4 @@ class MySQLAdapter(BaseAdapter):
             password=secrets["password"],
             namespace=self.run.connection.namespace,
         )
+        return ValidatedIntegration(integration)

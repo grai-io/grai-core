@@ -2,10 +2,11 @@ import json
 
 from .base import BaseAdapter
 from grai_schemas.v1.source import SourceV1
+from grai_schemas.integrations.base import ValidatedIntegration
 
 
 class LookerAdapter(BaseAdapter):
-    def get_integration(self):
+    def get_integration(self) -> ValidatedIntegration:
         from grai_source_looker.base import LookerIntegration
 
         metadata = self.run.connection.metadata
@@ -16,7 +17,7 @@ class LookerAdapter(BaseAdapter):
                 "name": self.run.source.name,
             }
         )
-        return LookerIntegration(
+        integration = LookerIntegration(
             source=source,
             base_url=metadata["base_url"],
             client_id=metadata["client_id"],
@@ -24,3 +25,4 @@ class LookerAdapter(BaseAdapter):
             namespace=self.run.connection.namespace,
             namespaces=json.loads(metadata["namespaces"]) if metadata.get("namespaces") else None,
         )
+        return ValidatedIntegration(integration)

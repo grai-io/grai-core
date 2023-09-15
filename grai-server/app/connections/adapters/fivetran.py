@@ -1,11 +1,11 @@
 from .base import BaseAdapter
 from grai_schemas.v1.source import SourceV1
+from grai_schemas.integrations.base import ValidatedIntegration
+from grai_source_fivetran.base import FivetranIntegration
 
 
 class FivetranAdapter(BaseAdapter):
-    def get_integration(self):
-        from grai_source_fivetran.base import FivetranIntegration
-
+    def get_integration(self) -> ValidatedIntegration:
         metadata = self.run.connection.metadata
         secrets = self.run.connection.secrets
         source = SourceV1.from_spec(
@@ -27,7 +27,7 @@ class FivetranAdapter(BaseAdapter):
 
             return value
 
-        return FivetranIntegration(
+        integration = FivetranIntegration(
             source=source,
             api_key=metadata.get("api_key"),
             api_secret=secrets.get("api_secret"),
@@ -37,3 +37,4 @@ class FivetranAdapter(BaseAdapter):
             limit=getNumber(metadata.get("limit"), 10000),
             parallelization=getNumber(metadata.get("parallelization"), 10),
         )
+        return ValidatedIntegration(integration)

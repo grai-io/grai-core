@@ -1,9 +1,10 @@
 from .base import BaseAdapter
 from grai_schemas.v1.source import SourceV1
+from grai_schemas.integrations.base import ValidatedIntegration
 
 
 class MetabaseAdapter(BaseAdapter):
-    def get_integration(self):
+    def get_integration(self) -> ValidatedIntegration:
         from grai_source_metabase.base import MetabaseIntegration
 
         metadata = self.run.connection.metadata
@@ -14,7 +15,7 @@ class MetabaseAdapter(BaseAdapter):
                 "name": self.run.source.name,
             }
         )
-        return MetabaseIntegration(
+        integration = MetabaseIntegration(
             source=source,
             username=metadata.get("username"),
             password=secrets.get("password"),
@@ -22,3 +23,4 @@ class MetabaseAdapter(BaseAdapter):
             metabase_namespace=self.run.connection.namespace,
             endpoint=metadata.get("endpoint"),
         )
+        return ValidatedIntegration(integration)

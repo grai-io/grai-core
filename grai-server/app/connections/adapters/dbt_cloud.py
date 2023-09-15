@@ -1,8 +1,9 @@
 from .base import BaseAdapter
+from grai_schemas.integrations.base import ValidatedIntegration
 
 
 class DbtCloudAdapter(BaseAdapter):
-    def get_integration(self):
+    def get_integration(self) -> ValidatedIntegration:
         from grai_schemas.v1.source import SourceV1
         from grai_source_dbt_cloud.base import DbtCloudIntegration
 
@@ -14,8 +15,10 @@ class DbtCloudAdapter(BaseAdapter):
                 "name": self.run.source.name,
             }
         )
-        return DbtCloudIntegration(
+        integration = DbtCloudIntegration(
             source=source,
             api_key=secrets["api_key"],
             namespace=namespace,
         )
+
+        return ValidatedIntegration(integration)

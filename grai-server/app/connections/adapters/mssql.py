@@ -1,9 +1,10 @@
 from .base import BaseAdapter
 from grai_schemas.v1.source import SourceV1
+from grai_schemas.integrations.base import ValidatedIntegration
 
 
 class MssqlAdapter(BaseAdapter):
-    def get_integration(self):
+    def get_integration(self) -> ValidatedIntegration:
         from grai_source_mssql.base import MsSQLIntegration
 
         metadata = self.run.connection.metadata
@@ -14,7 +15,7 @@ class MssqlAdapter(BaseAdapter):
                 "name": self.run.source.name,
             }
         )
-        return MsSQLIntegration(
+        integration = MsSQLIntegration(
             source=source,
             user=metadata.get("user"),
             password=secrets.get("password"),
@@ -25,3 +26,4 @@ class MssqlAdapter(BaseAdapter):
             namespace=self.run.connection.namespace,
             additional_connection_strings=["TrustServerCertificate=yes"],
         )
+        return ValidatedIntegration(integration)

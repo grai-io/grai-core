@@ -1,9 +1,10 @@
 from .base import BaseAdapter
 from grai_schemas.v1.source import SourceV1
+from grai_schemas.integrations.base import ValidatedIntegration
 
 
 class PostgresAdapter(BaseAdapter):
-    def get_integration(self):
+    def get_integration(self) -> ValidatedIntegration:
         from grai_source_postgres.base import PostgresIntegration
 
         metadata = self.run.connection.metadata
@@ -14,7 +15,7 @@ class PostgresAdapter(BaseAdapter):
                 "name": self.run.source.name,
             }
         )
-        return PostgresIntegration(
+        integration = PostgresIntegration(
             source=source,
             dbname=metadata["dbname"],
             user=metadata["user"],
@@ -23,3 +24,4 @@ class PostgresAdapter(BaseAdapter):
             port=metadata["port"],
             namespace=self.run.connection.namespace,
         )
+        return ValidatedIntegration(integration)

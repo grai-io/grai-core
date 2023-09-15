@@ -5,31 +5,63 @@ from typing import Optional
 from django.db.models import Max
 from grai_graph.graph import build_graph
 from grai_schemas.v1 import EdgeV1, NodeV1
-from grai_schemas.integrations.base import GraiIntegrationImplementation
+from grai_schemas.integrations.base import GraiIntegrationImplementation, ValidatedIntegration
 from connections.models import Run
 from connections.task_helpers import modelToSchema, update
 from lineage.models import Edge, Event, Node
 
 from .tools import TestResultCacheBase
 from functools import cached_property
+import sentry_sdk
+
+
+class QuarantinedItemException(Exception):
+    pass
+
+
+def capture_quarantined_errors(integration: ValidatedIntegration, run: Run):
+    with sentry_sdk.push_scope() as scope:
+        scope.set_extra("integration", integration.integration.__class__.__name__)
+        scope.set_extra("workspace", run.workspace.name)
+        scope.set_extra("organization", run.workspace.organisation)
+        scope.set_extra("source", run.source.name)
+        scope.set_tag("error_type", "QuarantinedItems")
+
+        if integration.quarantine.nodes:
+            error_types = {type(reason) for item in integration.quarantine.nodes for reason in item}
+            error = QuarantinedItemException(f"Quarantined node with {error_types}")
+            sentry_sdk.capture_exception(error)
+
+        if integration.quarantine.edges:
+            error_types = {type(reason) for item in integration.quarantine.edges for reason in item}
+            error = QuarantinedItemException(f"Quarantined edge with {error_types}")
+            sentry_sdk.capture_exception(error)
+
+        if integration.quarantine.events:
+            error_types = {type(reason) for item in integration.quarantine.events for reason in item}
+            error = QuarantinedItemException(f"Quarantined event with {error_types}")
+            sentry_sdk.capture_exception(error)
 
 
 class BaseAdapter(ABC):
     run: Run
 
     @abstractmethod
-    def get_integration(self) -> GraiIntegrationImplementation:
+    def get_integration(self) -> ValidatedIntegration:
         raise NotImplementedError(f"No get_integration implemented for {type(self)}")
 
     @cached_property
-    def integration(self) -> GraiIntegrationImplementation:
+    def integration(self) -> ValidatedIntegration:
         return self.get_integration()
 
     def get_nodes_and_edges(self):
-        return self.integration.get_validated_nodes_and_edges()
+        return self.integration.get_nodes_and_edges()
 
     def events(self, last_event_date):
-        return self.integration.events(last_event_date)
+        events = self.integration.events(last_event_date)
+        capture_quarantined_errors(self.integration, self.run)
+
+        return events
 
     def run_validate(self, run: Run) -> bool:
         self.run = run
@@ -39,7 +71,8 @@ class BaseAdapter(ABC):
     def run_update(self, run: Run):
         self.run = run
 
-        nodes, edges = self.integration.get_validated_nodes_and_edges()
+        nodes, edges = self.integration.get_nodes_and_edges()
+        capture_quarantined_errors(self.integration, self.run)
 
         update(self.run.workspace, self.run.source, nodes)
         update(self.run.workspace, self.run.source, edges)
@@ -47,7 +80,7 @@ class BaseAdapter(ABC):
     def run_tests(self, run: Run):
         self.run = run
 
-        new_nodes, new_edges = self.integration.get_validated_nodes_and_edges()
+        new_nodes, new_edges = self.integration.get_nodes_and_edges()
 
         nodes = [modelToSchema(model, NodeV1, "Node") for model in Node.objects.filter(workspace=run.workspace)]
         edges = [

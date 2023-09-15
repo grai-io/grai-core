@@ -61,10 +61,10 @@ class GraiIntegrationImplementation(ABC):
 
     def __init__(
         self,
-        source: Union[SourceV1, SourceSpec],
+        source: SourceV1,
         version: Optional[str] = None,
     ):
-        self.source = source if isinstance(source, SourceV1) else SourceV1.from_spec(source)
+        self.source = source
         self.version = version if version else "v1"
 
     @abstractmethod
@@ -88,7 +88,7 @@ class GraiIntegrationImplementation(ABC):
 
 
 class QuarantineAccessor:
-    def __init__(self, integration_instance):
+    def __init__(self, integration_instance: GraiIntegrationImplementation):
         self._integration = integration_instance
         self._quarantine = Quarantine()
 
@@ -128,7 +128,7 @@ class ValidatedIntegration(GraiIntegrationImplementation):
     def __init__(self, integration: GraiIntegrationImplementation, *args, **kwargs):
         self.integration = integration
         self._quarantine_accessor = QuarantineAccessor(self)
-        super().__init__(*args, **kwargs)
+        super().__init__(source=self.integration.source, version=self.integration.version)
 
     @property
     def quarantine(self) -> QuarantineAccessor:
