@@ -227,6 +227,6 @@ class Mutation:
             device.confirmed = True
             device.save()
 
-            return device
+            return Device(id=device.persistent_id, name=device.name)
 
         return await sync_to_async(_confirm)(info, deviceId, token)

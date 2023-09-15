@@ -54,7 +54,7 @@ class Profile(User):
     @strawberry.field
     async def devices(self) -> DataWrapper[Device]:
         def fetch_devices(user) -> DataWrapper[Device]:
-            return [Device(id=device.id, name=device.name) for device in devices_for_user(user)]
+            return [Device(id=device.persistent_id, name=device.name) for device in devices_for_user(user)]
 
         devices = await sync_to_async(fetch_devices)(self)
 

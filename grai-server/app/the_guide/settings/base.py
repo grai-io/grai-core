@@ -136,6 +136,7 @@ THIRD_PARTY_APPS = [
     "psqlextra",
     "django_otp",
     "django_otp.plugins.otp_totp",
+    "django_otp.plugins.otp_static",
 ]
 
 ALGOLIA_APPLICATION_ID = config("ALGOLIA_APPLICATION_ID", None)
