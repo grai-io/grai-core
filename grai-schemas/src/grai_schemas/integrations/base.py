@@ -3,6 +3,13 @@ from abc import ABC, abstractmethod
 from typing import List, Optional, Tuple, Union
 
 from grai_schemas.base import Event, SourcedEdge, SourcedNode
+from grai_schemas.integrations.quarantine import (
+    MissingEdgeNodeReason,
+    Quarantine,
+    QuarantinedEdge,
+    QuarantinedEvent,
+    QuarantinedNode,
+)
 from grai_schemas.v1.source import SourceSpec, SourceV1
 
 if sys.version_info < (3, 10):
@@ -10,22 +17,16 @@ if sys.version_info < (3, 10):
 else:
     from typing import ParamSpec
 
+from functools import cache
+
+from pydantic import BaseModel
 
 P = ParamSpec("P")
 
 
-class QuarantinedEdge:
-    edge: SourcedEdge
-    source_quarantined: bool
-    destination_quarantined: bool
-
-    def __init__(self, edge: SourcedEdge, source_quarantined: bool, destination_quarantined: bool):
-        self.edge = edge
-        self.source_quarantined = source_quarantined
-        self.destination_quarantined = destination_quarantined
-
-
-def verify_edge_ids(nodes: List[SourcedNode], edges: List[SourcedEdge]):
+def verify_edge_ids(
+    nodes: List[SourcedNode], edges: List[SourcedEdge]
+) -> Tuple[List[SourcedEdge], List[QuarantinedEdge]]:
     node_labels = {(n.spec.namespace, n.spec.name) for n in nodes}
 
     good_edges = []
@@ -36,12 +37,22 @@ def verify_edge_ids(nodes: List[SourcedNode], edges: List[SourcedEdge]):
         if source_id in node_labels and destination_id in node_labels:
             good_edges.append(edge)
         else:
-            quarantined_edge = QuarantinedEdge(edge, source_id not in node_labels, destination_id not in node_labels)
-            quarantined_edges.append(quarantined_edge)
+            reasons = [
+                MissingEdgeNodeReason(side=side, node_name=name, node_namespace=namespace)
+                for side, (namespace, name) in (("source", source_id), ("destination", destination_id))
+                if (namespace, name) not in node_labels
+            ]
+            quarantined_edges.append(QuarantinedEdge(edge=edge, reasons=reasons))
 
     # TODO: sentry alerting on quarantine?
 
-    return good_edges
+    return good_edges, quarantined_edges
+
+
+class ValidatedResult(BaseModel):
+    nodes: List[SourcedNode] = []
+    edges: List[SourcedEdge] = []
+    events: List[Event] = []
 
 
 class GraiIntegrationImplementation(ABC):
@@ -75,7 +86,71 @@ class GraiIntegrationImplementation(ABC):
     def events(self, *args, **kwargs) -> List[Event]:
         return []
 
-    def get_validated_nodes_and_edges(self) -> Tuple[List[SourcedNode], List[SourcedEdge]]:
-        nodes, edges = self.get_nodes_and_edges()
-        edges = verify_edge_ids(nodes, edges)
-        return nodes, edges
+
+class QuarantineAccessor:
+    def __init__(self, integration_instance):
+        self._integration = integration_instance
+        self._quarantine = Quarantine()
+
+    @property
+    def nodes(self) -> List[QuarantinedNode]:
+        _ = self._integration.nodes  # Ensure nodes are populated in the quarantine
+        return self._quarantine.nodes
+
+    @nodes.setter
+    def nodes(self, value: List[QuarantinedNode]):
+        self._quarantine.nodes = value
+
+    @property
+    def edges(self) -> List[QuarantinedEdge]:
+        _ = self._integration.edges  # Ensure edges are populated in the quarantine
+        return self._quarantine.edges
+
+    @edges.setter
+    def edges(self, value: List[QuarantinedEdge]):
+        self._quarantine.edges = value
+
+    @property
+    def events(self) -> List[QuarantinedEvent]:
+        _ = self._integration.events  # Ensure events are populated in the quarantine
+        return self._quarantine.events
+
+    @events.setter
+    def events(self, value: List[QuarantinedEvent]):
+        self._quarantine.events = value
+
+    @property
+    def has_quarantined(self) -> bool:
+        return self._quarantine.has_quarantined
+
+
+class ValidatedIntegration(GraiIntegrationImplementation):
+    def __init__(self, integration: GraiIntegrationImplementation, *args, **kwargs):
+        self.integration = integration
+        self._quarantine_accessor = QuarantineAccessor(self)
+        super().__init__(*args, **kwargs)
+
+    @property
+    def quarantine(self) -> QuarantineAccessor:
+        return self._quarantine_accessor
+
+    @cache
+    def nodes(self) -> List[SourcedNode]:
+        return self.integration.nodes()
+
+    @cache
+    def edges(self) -> List[SourcedEdge]:
+        edges, quarantined_edges = verify_edge_ids(*self.integration.get_nodes_and_edges())
+        self.quarantine.edges = quarantined_edges
+        return edges
+
+    @cache
+    def get_nodes_and_edges(self) -> Tuple[List[SourcedNode], List[SourcedEdge]]:
+        return self.nodes(), self.edges()
+
+    @cache
+    def events(self, *args, **kwargs) -> List[Event]:
+        return self.integration.events(*args, **kwargs)
+
+    def ready(self) -> bool:
+        return self.integration.ready()
