@@ -134,6 +134,8 @@ THIRD_PARTY_APPS = [
     "drf_spectacular",
     "django.contrib.postgres",
     "psqlextra",
+    "django_otp",
+    "django_otp.plugins.otp_totp",
 ]
 
 ALGOLIA_APPLICATION_ID = config("ALGOLIA_APPLICATION_ID", None)
@@ -169,6 +171,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_otp.middleware.OTPMiddleware",
     "middleware.MultitenantMiddleware",
 ]
 
@@ -336,3 +339,5 @@ CACHES = {
         },
     }
 }
+
+OTP_TOTP_ISSUER = "Grai Cloud"

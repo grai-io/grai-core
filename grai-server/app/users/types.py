@@ -2,6 +2,10 @@ from typing import Optional
 
 import strawberry
 import strawberry_django
+from asgiref.sync import sync_to_async
+from django_otp import devices_for_user
+
+from api.pagination import DataWrapper
 
 from .models import User as UserModel
 
@@ -37,3 +41,21 @@ class User:
 
     created_at: strawberry.auto
     updated_at: strawberry.auto
+
+
+@strawberry.type
+class Device:
+    id: strawberry.ID
+    name: str
+
+
+@strawberry.django.type(UserModel, order=UserOrder, filters=UserFilter)
+class Profile(User):
+    @strawberry.field
+    async def devices(self) -> DataWrapper[Device]:
+        def fetch_devices(user) -> DataWrapper[Device]:
+            return [Device(id=device.id, name=device.name) for device in devices_for_user(user)]
+
+        devices = await sync_to_async(fetch_devices)(self)
+
+        return DataWrapper(devices)

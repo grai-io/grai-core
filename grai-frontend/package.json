@@ -55,6 +55,7 @@
     "react-helmet-async": "^1.3.0",
     "react-instantsearch-hooks-web": "^6.41.0",
     "react-json-view-lite": "^0.9.5",
+    "react-qr-code": "^2.0.12",
     "react-router-dom": "^6.0.0",
     "react-scripts": "5.0.1",
     "react-shepherd": "^4.2.0",

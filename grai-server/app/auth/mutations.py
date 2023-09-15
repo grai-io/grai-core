@@ -8,10 +8,18 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+from django_otp import verify_token
+from django_otp.plugins.otp_totp.models import TOTPDevice
 from strawberry.types import Info
 
 from api.common import IsAuthenticated, get_user
 from api.types import BasicResult, User
+from users.types import Device
+
+
+@strawberry.type
+class DeviceWithUrl(Device):
+    config_url: str
 
 
 @strawberry.type
@@ -149,3 +157,34 @@ class Mutation:
 
         except UserModel.DoesNotExist:
             raise Exception("User not found")
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def createDevice(self, info: Info, name: str) -> DeviceWithUrl:
+        def _create(info: Info, name: str) -> DeviceWithUrl:
+            user = get_user(info)
+
+            device = TOTPDevice(name=name)
+            device.user = user
+            device.confirmed = False
+            device.save()
+
+            return DeviceWithUrl(id=device.persistent_id, name=device.name, config_url=device.config_url)
+
+        return await sync_to_async(_create)(info, name)
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def confirmDevice(self, info: Info, deviceId: strawberry.ID, token: str) -> Device:
+        def _confirm(info: Info, deviceId: strawberry.ID, token: str) -> Device:
+            user = get_user(info)
+
+            device = verify_token(user, deviceId, token)
+
+            if not device:
+                raise Exception("Incorrect code")
+
+            device.confirmed = True
+            device.save()
+
+            return device
+
+        return await sync_to_async(_confirm)(info, deviceId, token)
