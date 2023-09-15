@@ -4,22 +4,50 @@ import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
 import LoginForm, { LOGIN } from "./LoginForm"
 
+const defaultProps = {
+  onDeviceRequest: jest.fn(),
+}
+
 test("submit", async () => {
   const user = userEvent.setup()
 
-  render(<LoginForm />, {
+  const mocks = [
+    {
+      request: {
+        query: LOGIN,
+        variables: {
+          username: "email@grai.io",
+          password: "password",
+        },
+      },
+      result: {
+        data: {
+          login: {
+            id: "1",
+            username: "",
+            first_name: "",
+            last_name: "",
+            __typename: "User",
+          },
+        },
+      },
+    },
+  ]
+
+  render(<LoginForm {...defaultProps} />, {
     guestRoute: true,
     loggedIn: false,
     path: "/login",
     route: "/login",
     routes: ["/"],
+    mocks,
   })
 
   await act(
-    async () => await user.type(screen.getByTestId("email"), "email@grai.io")
+    async () => await user.type(screen.getByTestId("email"), "email@grai.io"),
   )
   await act(
-    async () => await user.type(screen.getByTestId("password"), "password")
+    async () => await user.type(screen.getByTestId("password"), "password"),
   )
 
   await waitFor(() => {
@@ -28,7 +56,7 @@ test("submit", async () => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /log in/i }))
+      await user.click(screen.getByRole("button", { name: /log in/i })),
   )
 
   await waitFor(() => {
@@ -54,16 +82,16 @@ test("error", async () => {
     },
   ]
 
-  render(<LoginForm />, {
+  render(<LoginForm {...defaultProps} />, {
     withRouter: true,
     mocks,
   })
 
   await act(
-    async () => await user.type(screen.getByTestId("email"), "email@grai.io")
+    async () => await user.type(screen.getByTestId("email"), "email@grai.io"),
   )
   await act(
-    async () => await user.type(screen.getByTestId("password"), "password")
+    async () => await user.type(screen.getByTestId("password"), "password"),
   )
 
   await waitFor(() => {
@@ -72,7 +100,7 @@ test("error", async () => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /log in/i }))
+      await user.click(screen.getByRole("button", { name: /log in/i })),
   )
 
   await waitFor(() => {
