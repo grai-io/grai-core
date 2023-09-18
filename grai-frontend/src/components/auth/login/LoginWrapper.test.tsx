@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event"
-import { LOGIN } from "./LoginForm"
 import { act, render, screen, waitFor } from "testing"
+import { LOGIN } from "./LoginForm"
 import LoginWrapper from "./LoginWrapper"
 
 test("submit required 2fa", async () => {

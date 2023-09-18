@@ -1,7 +1,7 @@
-import { act, render, screen, waitFor } from "testing"
-import Test, { CONFIRM_DEVICE } from "./Test"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
+import { act, render, screen, waitFor } from "testing"
+import Test, { CONFIRM_DEVICE } from "./Test"
 
 test("submit test error", async () => {
   const user = userEvent.setup()
@@ -32,11 +32,7 @@ test("submit test error", async () => {
     { mocks },
   )
 
-  await waitFor(() =>
-    expect(
-      screen.getByText("Enter a code from your authenticator"),
-    ).toBeInTheDocument(),
-  )
+  await screen.findByText("Enter a code from your authenticator")
 
   await act(async () => {
     await user.type(screen.getByRole("textbox"), "123456")

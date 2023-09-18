@@ -1,7 +1,7 @@
 import userEvent from "@testing-library/user-event"
+import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
 import CreateDeviceForm, { CREATE_DEVICE } from "./CreateDeviceForm"
-import { GraphQLError } from "graphql"
 
 const defaultProps = {
   onClose: jest.fn(),

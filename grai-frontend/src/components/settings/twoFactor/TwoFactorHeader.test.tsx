@@ -1,6 +1,6 @@
+import userEvent from "@testing-library/user-event"
 import { act, render, screen, waitFor } from "testing"
 import TwoFactorHeader from "./TwoFactorHeader"
-import userEvent from "@testing-library/user-event"
 
 test("open", async () => {
   const user = userEvent.setup()

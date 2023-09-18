@@ -1,7 +1,7 @@
 import userEvent from "@testing-library/user-event"
-import TokenForm, { LOGIN } from "./TokenForm"
-import { act, render, screen, waitFor } from "testing"
 import { GraphQLError } from "graphql"
+import { act, render, screen, waitFor } from "testing"
+import TokenForm, { LOGIN } from "./TokenForm"
 
 const onBack = jest.fn()
 
@@ -32,23 +32,15 @@ test("submit multiple devices", async () => {
     routes: ["/"],
   })
 
-  await waitFor(() =>
-    expect(screen.getByText("Two Factor Authentication")).toBeInTheDocument(),
-  )
+  await screen.findByText("Two Factor Authentication")
 
-  await waitFor(() =>
-    expect(screen.getByText("Select a device")).toBeInTheDocument(),
-  )
+  await screen.findByText("Select a device")
 
   await act(
     async () => await user.click(screen.getByRole("button", { name: /test/i })),
   )
 
-  await waitFor(() =>
-    expect(
-      screen.getByText("Please enter the 6 digit code from your device"),
-    ).toBeInTheDocument(),
-  )
+  await screen.findByText("Please enter the 6 digit code from your device")
 
   await act(async () => await user.type(screen.getByRole("textbox"), "123456"))
 
@@ -84,15 +76,9 @@ test("submit single device", async () => {
     },
   )
 
-  await waitFor(() =>
-    expect(screen.getByText("Two Factor Authentication")).toBeInTheDocument(),
-  )
+  await screen.findByText("Two Factor Authentication")
 
-  await waitFor(() =>
-    expect(
-      screen.getByText("Please enter the 6 digit code from your device"),
-    ).toBeInTheDocument(),
-  )
+  await screen.findByText("Please enter the 6 digit code from your device")
 
   await act(async () => await user.type(screen.getByRole("textbox"), "123456"))
 
@@ -146,15 +132,9 @@ test("submit error", async () => {
     },
   )
 
-  await waitFor(() =>
-    expect(screen.getByText("Two Factor Authentication")).toBeInTheDocument(),
-  )
+  await screen.findByText("Two Factor Authentication")
 
-  await waitFor(() =>
-    expect(
-      screen.getByText("Please enter the 6 digit code from your device"),
-    ).toBeInTheDocument(),
-  )
+  await screen.findByText("Please enter the 6 digit code from your device")
 
   await act(async () => await user.type(screen.getByRole("textbox"), "123456"))
 
