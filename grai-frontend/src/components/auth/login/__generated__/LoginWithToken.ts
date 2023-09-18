@@ -4,17 +4,24 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GetProfile
+// GraphQL mutation operation: LoginWithToken
 // ====================================================
 
-export interface GetProfile_profile {
-  __typename: "Profile";
+export interface LoginWithToken_loginWithToken {
+  __typename: "User";
   id: any;
   username: string | null;
   first_name: string;
   last_name: string;
 }
 
-export interface GetProfile {
-  profile: GetProfile_profile;
+export interface LoginWithToken {
+  loginWithToken: LoginWithToken_loginWithToken;
+}
+
+export interface LoginWithTokenVariables {
+  username: string;
+  password: string;
+  deviceId: string;
+  token: string;
 }

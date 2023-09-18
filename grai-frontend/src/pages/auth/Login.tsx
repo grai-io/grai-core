@@ -1,7 +1,7 @@
 import React from "react"
 import { Box, Card, CardContent, Container, Typography } from "@mui/material"
 import { Helmet } from "react-helmet-async"
-import LoginForm from "components/auth/login/LoginForm"
+import LoginWrapper from "components/auth/login/LoginWrapper"
 import SignupLink from "components/auth/login/SignupLink"
 import GraiLogo from "components/icons/GraiLogo"
 
@@ -72,7 +72,7 @@ const Login: React.FC = () => (
           }}
         >
           <CardContent sx={{ p: "20px" }}>
-            <LoginForm />
+            <LoginWrapper />
           </CardContent>
         </Card>
         <SignupLink />

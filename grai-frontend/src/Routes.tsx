@@ -49,6 +49,7 @@ const FilterCreate = lazy(() => import("./pages/filters/FilterCreate"))
 
 const Settings = lazy(() => import("./pages/settings/Settings"))
 const ProfileSettings = lazy(() => import("./pages/settings/ProfileSettings"))
+const TwoFactor = lazy(() => import("./pages/settings/TwoFactor"))
 const PasswordSettings = lazy(() => import("./pages/settings/PasswordSettings"))
 const ApiKeys = lazy(() => import("./pages/settings/ApiKeys"))
 const WorkspaceSettings = lazy(
@@ -152,6 +153,7 @@ const Routes: React.FC = () => (
               >
                 <Route index element={<Settings />} />
                 <Route path="profile" element={<ProfileSettings />} />
+                <Route path="2fa" element={<TwoFactor />} />
                 <Route path="password" element={<PasswordSettings />} />
                 <Route path="api-keys" element={<ApiKeys />} />
                 <Route path="workspace" element={<WorkspaceSettings />} />

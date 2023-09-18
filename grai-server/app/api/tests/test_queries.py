@@ -1,6 +1,7 @@
 import uuid
 
 import pytest
+from asgiref.sync import sync_to_async
 
 from api.schema import schema
 from workspaces.models import Workspace
@@ -220,4 +221,44 @@ async def test_profile(test_context):
         "username": user.username,
         "first_name": user.first_name,
         "last_name": user.last_name,
+    }
+
+
+@pytest.mark.django_db
+@pytest.mark.asyncio
+async def test_profile_devices(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    token = "test123"
+
+    device = await sync_to_async(user.staticdevice_set.create)()
+    await sync_to_async(device.token_set.create)(token=token)
+
+    query = """
+        query Profile {
+            profile {
+                id
+                devices {
+                    data {
+                        id
+                        name
+                    }
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(query, context_value=context)
+
+    assert result.errors is None
+    assert result.data["profile"] == {
+        "id": str(user.id),
+        "devices": {
+            "data": [
+                {
+                    "id": str(device.persistent_id),
+                    "name": device.name,
+                }
+            ]
+        },
     }

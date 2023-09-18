@@ -2,13 +2,17 @@ from typing import List, Optional
 
 import strawberry
 import strawberry_django
+from asgiref.sync import sync_to_async
+from django_otp import devices_for_user
 from strawberry.types import Info
 
 from api.types import Connector, User, Workspace
 from connections.models import Connector as ConnectorModel
+from users.types import Profile
 from workspaces.models import Workspace as WorkspaceModel
 
 from .common import IsAuthenticated, get_user
+from .pagination import DataWrapper
 
 
 def get_workspaces(info: Info) -> List[Workspace]:
@@ -43,8 +47,20 @@ def get_workspace(
     return workspace
 
 
-def get_profile(info: Info) -> User:
+def get_profile(info: Info) -> Profile:
     return get_user(info)
+
+
+# async def get_devices(info: Info) -> DataWrapper[Device]:
+#     def fetch_devices(info: Info) -> DataWrapper[Device]:
+#         user = get_user(info)
+#         return [
+#             Device(id=device.id, name=device.name) for device in devices_for_user(user)
+#         ]
+
+#     devices = await sync_to_async(fetch_devices)(info)
+
+#     return DataWrapper(devices)
 
 
 @strawberry_django.ordering.order(ConnectorModel)
@@ -61,4 +77,7 @@ class Query:
     connectors: List[Connector] = strawberry.django.field(
         permission_classes=[IsAuthenticated], order=ConnectorOrder, pagination=True
     )
-    profile: User = strawberry.django.field(resolver=get_profile, permission_classes=[IsAuthenticated])
+    profile: Profile = strawberry.django.field(resolver=get_profile, permission_classes=[IsAuthenticated])
+    # devices: DataWrapper[Device] = strawberry.field(
+    #     resolver=get_devices, permission_classes=[IsAuthenticated]
+    # )

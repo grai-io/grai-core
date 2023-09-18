@@ -4,6 +4,7 @@ import {
   Business,
   CloudQueue,
   KeyboardArrowLeft,
+  Lock,
   Notifications,
   People,
   VpnKey,
@@ -54,6 +55,14 @@ const SettingsDrawer: React.FC = () => {
                 <AccountCircle />
               </ListItemIcon>
               <ListItemText primary="Profile" />
+            </ListItemButton>
+          </ListItem>
+          <ListItem sx={{ py: 0 }}>
+            <ListItemButton component={Link} to={`${routePrefix}/settings/2fa`}>
+              <ListItemIcon sx={{ minWidth: 0, mr: 2 }}>
+                <Lock />
+              </ListItemIcon>
+              <ListItemText primary="2 Factor" />
             </ListItemButton>
           </ListItem>
           <ListItem sx={{ py: 0 }}>
