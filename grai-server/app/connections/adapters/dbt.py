@@ -1,6 +1,5 @@
 import json
 
-from grai_schemas.integrations.base import ValidatedIntegration
 from grai_schemas.v1.source import SourceV1
 from grai_source_dbt.base import DbtIntegration
 
@@ -8,7 +7,7 @@ from .base import IntegrationAdapter
 
 
 class DbtAdapter(IntegrationAdapter):
-    def get_integration(self) -> ValidatedIntegration:
+    def get_integration(self) -> DbtIntegration:
         namespace = self.run.connection.namespace
         run_file = self.run.files.first()
 
@@ -22,4 +21,4 @@ class DbtAdapter(IntegrationAdapter):
             }
         )
         integration = DbtIntegration(manifest_obj, source=source, namespace=namespace)
-        return ValidatedIntegration(integration)
+        return integration

@@ -29,7 +29,7 @@ from grai_schemas.v1.node import NodeNamedID
 from grai_schemas.v1.source import SourceSpec
 from multimethod import multimethod
 from pydantic import BaseModel
-from itertools import chain
+
 from lineage.models import Edge as EdgeModel
 from lineage.models import Node as NodeModel
 from lineage.models import Source

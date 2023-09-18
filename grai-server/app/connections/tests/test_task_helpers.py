@@ -4,7 +4,6 @@ import pytest
 from django.db.models import Q
 from grai_schemas.v1 import EdgeV1, NodeV1, SourcedEdgeV1, SourcedNodeV1, mock
 
-
 from connections.task_helpers import (
     build_item_query_filter,
     get_node,

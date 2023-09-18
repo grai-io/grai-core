@@ -1,4 +1,3 @@
-from grai_schemas.integrations.base import ValidatedIntegration
 from grai_schemas.v1.source import SourceV1
 from grai_source_bigquery.base import BigQueryIntegration
 
@@ -6,7 +5,7 @@ from .base import IntegrationAdapter
 
 
 class BigqueryAdapter(IntegrationAdapter):
-    def get_integration(self) -> ValidatedIntegration:
+    def get_integration(self) -> BigQueryIntegration:
         metadata = self.run.connection.metadata
         secrets = self.run.connection.secrets
         source_spec = {
@@ -23,4 +22,4 @@ class BigqueryAdapter(IntegrationAdapter):
             log_parsing=metadata.get("log_parsing", False),
             log_parsing_window=int(metadata.get("log_parsing_window", 7)),
         )
-        return ValidatedIntegration(integration)
+        return integration

@@ -1,13 +1,11 @@
-from grai_schemas.integrations.base import ValidatedIntegration
+from grai_source_snowflake.base import SnowflakeIntegration
 from grai_schemas.v1.source import SourceV1
 
 from .base import IntegrationAdapter
 
 
 class SnowflakeAdapter(IntegrationAdapter):
-    def get_integration(self) -> ValidatedIntegration:
-        from grai_source_snowflake.base import SnowflakeIntegration
-
+    def get_integration(self) -> SnowflakeIntegration:
         metadata = self.run.connection.metadata
         secrets = self.run.connection.secrets
         source = SourceV1.from_spec(
@@ -26,4 +24,4 @@ class SnowflakeAdapter(IntegrationAdapter):
             database=metadata.get("database"),
             namespace=self.run.connection.namespace,
         )
-        return ValidatedIntegration(integration)
+        return integration

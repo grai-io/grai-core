@@ -54,30 +54,27 @@ class BaseAdapter(ABC):
     def get_nodes_and_edges(self):
         pass
 
+    @abstractmethod
     def run_update(self, run: Run):
-        self.run = run
-
-        nodes, edges = self.get_nodes_and_edges()
-
-        update(self.run.workspace, self.run.source, nodes)
-        update(self.run.workspace, self.run.source, edges)
+        pass
 
     @abstractmethod
     def run_tests(self, run: Run):
         pass
 
+    @abstractmethod
     def run_events(self, run: Run, all: bool = False):
         pass
 
 
 class IntegrationAdapter(BaseAdapter):
     @abstractmethod
-    def get_integration(self) -> ValidatedIntegration:
+    def get_integration(self):
         raise NotImplementedError(f"No get_integration implemented for {type(self)}")
 
     @cached_property
     def integration(self) -> ValidatedIntegration:
-        return self.get_integration()
+        return ValidatedIntegration(self.get_integration())
 
     def get_nodes_and_edges(self):
         return self.integration.get_nodes_and_edges()
@@ -85,7 +82,7 @@ class IntegrationAdapter(BaseAdapter):
     def run_update(self, run: Run):
         self.run = run
 
-        nodes, edges = self.get_nodes_and_edges()
+        nodes, edges = self.integration.get_nodes_and_edges()
         capture_quarantined_errors(self.integration, self.run)
 
         update(self.run.workspace, self.run.source, nodes)

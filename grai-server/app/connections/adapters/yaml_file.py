@@ -5,9 +5,9 @@ from grai_schemas.schema import Schema
 from grai_schemas.serializers import GraiYamlSerializer
 from grai_schemas.v1.edge import SourcedEdgeV1
 from grai_schemas.v1.node import SourcedNodeV1
-from connections.task_helpers import update
 
 from connections.models import Run, RunFile
+from connections.task_helpers import update
 
 from .base import BaseAdapter
 
@@ -47,4 +47,10 @@ class YamlFileAdapter(BaseAdapter):
         return True
 
     def run_tests(self, run: Run):
+        pass
+
+    def run_events(self, run: Run, all: bool = False):
+        pass
+
+    def run_update(self, run: Run):
         pass

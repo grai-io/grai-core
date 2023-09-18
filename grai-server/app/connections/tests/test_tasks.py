@@ -10,7 +10,7 @@ from django.core.files.uploadedfile import UploadedFile
 from grai_source_dbt_cloud.loader import Event
 
 from connections.models import Connection, Connector, Run, RunFile
-from connections.tasks import process_run, run_connection_schedule
+from connections.tasks import get_adapter, process_run, run_connection_schedule
 from installations.models import Branch, Commit, PullRequest, Repository
 from installations.tests.test_github import mocked_requests_post
 from lineage.models import Edge, Node, Source
@@ -248,10 +248,7 @@ class TestUpdateServer:
 
             process_run(str(run.id))
 
-    @mock.patch("grai_source_fivetran.base.FivetranIntegration")
-    def test_run_update_server_fivetran(self, mocked_class, test_workspace, test_fivetran_connector, test_source):
-        mocked_class.return_value.get_nodes_and_edges.return_value = [[], []]
-
+    def test_get_fivetran_connector(self, test_workspace, test_fivetran_connector, test_source):
         connection = Connection.objects.create(
             name=str(uuid.uuid4()),
             connector=test_fivetran_connector,
@@ -263,14 +260,9 @@ class TestUpdateServer:
 
         run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
 
-        process_run(str(run.id))
+        get_adapter(run.connection.connector.slug)
 
-    @mock.patch("grai_source_fivetran.base.FivetranIntegration")
-    def test_run_update_server_fivetran_extras(
-        self, mocked_class, test_workspace, test_fivetran_connector, test_source
-    ):
-        mocked_class.return_value.get_nodes_and_edges.return_value = [[], []]
-
+    def test_get_fivetran_connector_extras(self, test_workspace, test_fivetran_connector, test_source):
         connection = Connection.objects.create(
             name=str(uuid.uuid4()),
             connector=test_fivetran_connector,
@@ -286,12 +278,9 @@ class TestUpdateServer:
 
         run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
 
-        process_run(str(run.id))
+        get_adapter(run.connection.connector.slug)
 
-    @mock.patch("grai_source_mysql.base.MySQLIntegration")
-    def test_run_update_server_mysql(self, mocked_class, test_workspace, test_mysql_connector, test_source):
-        mocked_class.return_value.get_nodes_and_edges.return_value = [[], []]
-
+    def test_get_mysql_connector(self, test_workspace, test_mysql_connector, test_source):
         connection = Connection.objects.create(
             name=str(uuid.uuid4()),
             connector=test_mysql_connector,
@@ -308,12 +297,9 @@ class TestUpdateServer:
 
         run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
 
-        process_run(str(run.id))
+        get_adapter(run.connection.connector.slug)
 
-    @mock.patch("grai_source_redshift.base.RedshiftIntegration")
-    def test_run_update_server_redshift(self, mocked_class, test_workspace, test_redshift_connector, test_source):
-        mocked_class.return_value.get_nodes_and_edges.return_value = [[], []]
-
+    def test_get_redshift_connector(self, test_workspace, test_redshift_connector, test_source):
         connection = Connection.objects.create(
             name=str(uuid.uuid4()),
             connector=test_redshift_connector,
@@ -330,9 +316,9 @@ class TestUpdateServer:
 
         run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
 
-        process_run(str(run.id))
+        get_adapter(run.connection.connector.slug)
 
-    def test_run_update_server_yaml_file(self, test_workspace, test_yaml_file_connector, test_source):
+    def test_get_yaml_file_connector(self, test_workspace, test_yaml_file_connector, test_source):
         Node.objects.create(workspace=test_workspace, namespace="default", name="table1")
 
         with open(os.path.join(__location__, "test.yaml")) as reader:
@@ -346,12 +332,9 @@ class TestUpdateServer:
             run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
             RunFile.objects.create(run=run, file=file)
 
-            process_run(str(run.id))
+            get_adapter(run.connection.connector.slug)
 
-    @mock.patch("grai_source_snowflake.base.SnowflakeIntegration")
-    def test_snowflake_no_account(self, mocked_class, test_workspace, test_snowflake_connector, test_source):
-        mocked_class.return_value.get_nodes_and_edges.return_value = [[], []]
-
+    def get_get_snowflake_connector_no_account(self, test_workspace, test_snowflake_connector, test_source):
         connection = Connection.objects.create(
             name=str(uuid.uuid4()),
             connector=test_snowflake_connector,
@@ -369,12 +352,9 @@ class TestUpdateServer:
         )
         run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
 
-        process_run(str(run.id))
+        get_adapter(run.connection.connector.slug)
 
-    @mock.patch("grai_source_mssql.base.MsSQLIntegration")
-    def test_mssql_no_account(self, mocked_class, test_workspace, test_mssql_connector, test_source):
-        mocked_class.return_value.get_nodes_and_edges.return_value = [[], []]
-
+    def test_get_mssql_conneector(self, test_workspace, test_mssql_connector, test_source):
         connection = Connection.objects.create(
             name=str(uuid.uuid4()),
             connector=test_mssql_connector,
@@ -391,12 +371,9 @@ class TestUpdateServer:
         )
         run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
 
-        process_run(str(run.id))
+        get_adapter(run.connection.connector.slug)
 
-    @mock.patch("grai_source_bigquery.base.BigQueryIntegration")
-    def test_bigquery_no_project(self, mocked_class, test_workspace, test_bigquery_connector, test_source):
-        mocked_class.return_value.get_nodes_and_edges.return_value = [[], []]
-
+    def test_get_bigquery_connector(self, test_workspace, test_bigquery_connector, test_source):
         connection = Connection.objects.create(
             name=str(uuid.uuid4()),
             connector=test_bigquery_connector,
@@ -407,12 +384,9 @@ class TestUpdateServer:
         )
         run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
 
-        process_run(str(run.id))
+        get_adapter(run.connection.connector.slug)
 
-    @mock.patch("grai_source_metabase.base.MetabaseIntegration")
-    def test_metabase_no_account(self, mocked_class, test_workspace, test_metabase_connector, test_source):
-        mocked_class.return_value.get_nodes_and_edges.return_value = [[], []]
-
+    def test_metabase_no_account(self, test_workspace, test_metabase_connector, test_source):
         connection = Connection.objects.create(
             name=str(uuid.uuid4()),
             connector=test_metabase_connector,
@@ -426,12 +400,9 @@ class TestUpdateServer:
         )
         run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
 
-        process_run(str(run.id))
+        get_adapter(run.connection.connector.slug)
 
-    @mock.patch("grai_source_looker.base.LookerIntegration")
-    def test_looker_no_account(self, mocked_class, test_workspace, test_looker_connector, test_source):
-        mocked_class.return_value.get_nodes_and_edges.return_value = [[], []]
-
+    def test_get_looker_connector_no_account(self, test_workspace, test_looker_connector, test_source):
         connection = Connection.objects.create(
             name=str(uuid.uuid4()),
             connector=test_looker_connector,
@@ -445,12 +416,9 @@ class TestUpdateServer:
         )
         run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
 
-        process_run(str(run.id))
+        get_adapter(run.connection.connector.slug)
 
-    @mock.patch("grai_source_dbt_cloud.base.DbtCloudIntegration")
-    def test_dbt_cloud_no_project(self, mocked_class, test_workspace, test_dbt_cloud_connector, test_source):
-        mocked_class.return_value.get_nodes_and_edges.return_value = [[], []]
-
+    def test_get_dbt_connector(self, test_workspace, test_dbt_cloud_connector, test_source):
         connection = Connection.objects.create(
             name=str(uuid.uuid4()),
             connector=test_dbt_cloud_connector,
@@ -461,7 +429,7 @@ class TestUpdateServer:
         )
         run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
 
-        process_run(str(run.id))
+        get_adapter(run.connection.connector.slug)
 
 
 @pytest.mark.django_db
