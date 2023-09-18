@@ -1,14 +1,13 @@
-from connections.models import Run
-
-from .base import BaseAdapter
-from grai_source_dbt.base import DbtIntegration
 import json
 
-from grai_schemas.v1.source import SourceV1
 from grai_schemas.integrations.base import ValidatedIntegration
+from grai_schemas.v1.source import SourceV1
+from grai_source_dbt.base import DbtIntegration
+
+from .base import IntegrationAdapter
 
 
-class DbtAdapter(BaseAdapter):
+class DbtAdapter(IntegrationAdapter):
     def get_integration(self) -> ValidatedIntegration:
         namespace = self.run.connection.namespace
         run_file = self.run.files.first()

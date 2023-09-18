@@ -1,10 +1,11 @@
-from .base import BaseAdapter
-from grai_schemas.v1.source import SourceV1
 from grai_schemas.integrations.base import ValidatedIntegration
+from grai_schemas.v1.source import SourceV1
 from grai_source_fivetran.base import FivetranIntegration
 
+from .base import IntegrationAdapter
 
-class FivetranAdapter(BaseAdapter):
+
+class FivetranAdapter(IntegrationAdapter):
     def get_integration(self) -> ValidatedIntegration:
         metadata = self.run.connection.metadata
         secrets = self.run.connection.secrets

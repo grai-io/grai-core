@@ -3,15 +3,13 @@ from typing import Sequence
 
 from grai_schemas.schema import Schema
 from grai_schemas.serializers import GraiYamlSerializer
-
-from grai_schemas.v1.edge import EdgeV1, SourcedEdgeV1
-from grai_schemas.v1.node import NodeV1, SourcedNodeV1
+from grai_schemas.v1.edge import SourcedEdgeV1
+from grai_schemas.v1.node import SourcedNodeV1
+from connections.task_helpers import update
 
 from connections.models import Run, RunFile
 
-
 from .base import BaseAdapter
-from .schemas import schema_to_model
 
 SUPPORTED_SCHEMA_TYPES = {SourcedNodeV1, SourcedEdgeV1}
 SUPPORTED_SCHEMA_TYPE_NAMES = {schema.__name__ for schema in SUPPORTED_SCHEMA_TYPES}
@@ -47,3 +45,6 @@ class YamlFileAdapter(BaseAdapter):
             )
 
         return True
+
+    def run_tests(self, run: Run):
+        pass

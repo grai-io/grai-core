@@ -1,18 +1,18 @@
 from abc import ABC, abstractmethod
+from functools import cached_property
 from itertools import chain
-from typing import Optional
 
+import sentry_sdk
 from django.db.models import Max
 from grai_graph.graph import build_graph
+from grai_schemas.integrations.base import ValidatedIntegration
 from grai_schemas.v1 import EdgeV1, NodeV1
-from grai_schemas.integrations.base import GraiIntegrationImplementation, ValidatedIntegration
+
 from connections.models import Run
 from connections.task_helpers import modelToSchema, update
 from lineage.models import Edge, Event, Node
 
 from .tools import TestResultCacheBase
-from functools import cached_property
-import sentry_sdk
 
 
 class QuarantinedItemException(Exception):
@@ -47,6 +47,31 @@ class BaseAdapter(ABC):
     run: Run
 
     @abstractmethod
+    def run_validate(self, run: Run) -> bool:
+        pass
+
+    @abstractmethod
+    def get_nodes_and_edges(self):
+        pass
+
+    def run_update(self, run: Run):
+        self.run = run
+
+        nodes, edges = self.get_nodes_and_edges()
+
+        update(self.run.workspace, self.run.source, nodes)
+        update(self.run.workspace, self.run.source, edges)
+
+    @abstractmethod
+    def run_tests(self, run: Run):
+        pass
+
+    def run_events(self, run: Run, all: bool = False):
+        pass
+
+
+class IntegrationAdapter(BaseAdapter):
+    @abstractmethod
     def get_integration(self) -> ValidatedIntegration:
         raise NotImplementedError(f"No get_integration implemented for {type(self)}")
 
@@ -56,6 +81,15 @@ class BaseAdapter(ABC):
 
     def get_nodes_and_edges(self):
         return self.integration.get_nodes_and_edges()
+
+    def run_update(self, run: Run):
+        self.run = run
+
+        nodes, edges = self.get_nodes_and_edges()
+        capture_quarantined_errors(self.integration, self.run)
+
+        update(self.run.workspace, self.run.source, nodes)
+        update(self.run.workspace, self.run.source, edges)
 
     def events(self, last_event_date):
         events = self.integration.events(last_event_date)
@@ -67,15 +101,6 @@ class BaseAdapter(ABC):
         self.run = run
 
         return self.integration.ready()
-
-    def run_update(self, run: Run):
-        self.run = run
-
-        nodes, edges = self.integration.get_nodes_and_edges()
-        capture_quarantined_errors(self.integration, self.run)
-
-        update(self.run.workspace, self.run.source, nodes)
-        update(self.run.workspace, self.run.source, edges)
 
     def run_tests(self, run: Run):
         self.run = run
