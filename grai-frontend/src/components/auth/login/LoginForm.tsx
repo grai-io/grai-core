@@ -7,15 +7,24 @@ import { Link as RouterLink } from "react-router-dom"
 import Form from "components/form/Form"
 import GraphError from "components/utils/GraphError"
 import { Login, LoginVariables } from "./__generated__/Login"
+import { DeviceRequest } from "./LoginWrapper"
 import useAuth from "../useAuth"
 
 export const LOGIN = gql`
   mutation Login($username: String!, $password: String!) {
     login(username: $username, password: $password) {
-      id
-      username
-      first_name
-      last_name
+      ... on User {
+        id
+        username
+        first_name
+        last_name
+      }
+      ... on DeviceDataWrapper {
+        data {
+          id
+          name
+        }
+      }
     }
   }
 `
@@ -32,7 +41,11 @@ type Values = {
   password: string
 }
 
-const LoginForm: React.FC = () => {
+type LoginFormProps = {
+  onDeviceRequest: (request: DeviceRequest) => void
+}
+
+const LoginForm: React.FC<LoginFormProps> = ({ onDeviceRequest }) => {
   const { setLoggedIn } = useAuth()
   const [values, setValues] = useState<Values>({
     username: "",
@@ -44,8 +57,21 @@ const LoginForm: React.FC = () => {
   const handleSubmit = () =>
     login({ variables: values })
       .then(data => data.data?.login)
-      .then(user => user && posthog.identify(user.id, { email: user.username }))
-      .then(() => setLoggedIn(true))
+      .then(res => {
+        if (!res) return
+
+        if (res.__typename === "User") {
+          posthog.identify(res.id, { email: res.username })
+          setLoggedIn(true)
+          return
+        }
+
+        onDeviceRequest({
+          devices: res.data,
+          username: values.username,
+          password: values.password,
+        })
+      })
       .catch(() => {})
 
   return (
