@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 
 class MssqlAdapter(IntegrationAdapter):
-    def get_integration(self) -> MsSQLIntegration:
+    def get_integration(self) -> "MsSQLIntegration":
         from grai_source_mssql.base import MsSQLIntegration
 
         metadata = self.run.connection.metadata
