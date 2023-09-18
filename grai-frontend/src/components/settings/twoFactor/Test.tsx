@@ -40,7 +40,9 @@ const Test: React.FC<TestProps> = ({ device, onBack, onClose }) => {
         deviceId: device.id,
         token,
       },
-    }).then(() => onClose())
+    })
+      .then(() => onClose())
+      .catch(() => {})
   }
 
   return (

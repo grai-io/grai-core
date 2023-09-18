@@ -9,7 +9,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material"
-import posthog from "posthog-js"
+import posthog from "posthog"
 import Form from "components/form/Form"
 import GraphError from "components/utils/GraphError"
 import {

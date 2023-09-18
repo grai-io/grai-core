@@ -41,7 +41,7 @@ const CreateDeviceForm: React.FC<CreateDeviceFormProps> = ({ onClose }) => {
       variables: {
         name: "TOTP",
       },
-    })
+    }).catch(() => {})
   }, [createDevice])
 
   if (error) return <GraphError error={error} />

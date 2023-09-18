@@ -39,7 +39,7 @@ const ProfileSettings: React.FC = () => {
     <SettingsLayout>
       <Box sx={{ p: 3 }}>
         <TwoFactorHeader />
-        <TwoFactorTable keys={profile?.devices.data ?? []} loading={loading} />
+        <TwoFactorTable keys={profile.devices.data} loading={loading} />
       </Box>
     </SettingsLayout>
   )
