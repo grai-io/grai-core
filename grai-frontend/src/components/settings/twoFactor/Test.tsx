@@ -10,6 +10,10 @@ import {
 } from "@mui/material"
 import Form from "components/form/Form"
 import GraphError from "components/utils/GraphError"
+import {
+  ConfirmDevice,
+  ConfirmDeviceVariables,
+} from "./__generated__/ConfirmDevice"
 
 export const CONFIRM_DEVICE = gql`
   mutation ConfirmDevice($deviceId: ID!, $token: String!) {
@@ -32,7 +36,10 @@ type TestProps = {
 const Test: React.FC<TestProps> = ({ device, onBack, onClose }) => {
   const [token, setToken] = useState("")
 
-  const [confirmDevice, { loading, error }] = useMutation(CONFIRM_DEVICE)
+  const [confirmDevice, { loading, error }] = useMutation<
+    ConfirmDevice,
+    ConfirmDeviceVariables
+  >(CONFIRM_DEVICE)
 
   const handleSubmit = () => {
     confirmDevice({
