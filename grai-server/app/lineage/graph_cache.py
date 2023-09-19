@@ -270,12 +270,12 @@ class GraphCache:
                 OPTIONAL MATCH (table)-[table_edge:TABLE_TO_TABLE]->(destination:Table)
                 WITH
                     table,
-                    COLLECT({{
+                    COLLECT(distinct {{
                         edge_id: table_edge.id,
                         table_id: destination.id
                     }}) AS destinations,
                     column,
-                    collect({{
+                    collect(distinct {{
                         edge_id: column_edge.id,
                         column_id: column_destination.id
                     }}) AS column_destinations
@@ -396,7 +396,7 @@ class GraphCache:
                 OPTIONAL MATCH (table)-[table_edge:TABLE_TO_TABLE]->(destination:Table)
                 WITH
                     table,
-                    COLLECT({{
+                    COLLECT(distinct {{
                         edge_id: table_edge.id,
                         table_id: destination.id
                     }}) AS destinations,
@@ -412,7 +412,7 @@ class GraphCache:
                     destinations,
                     table_destinations,
                     table_sources,
-                    collect({{
+                    collect(distinct {{
                         id: column.id,
                         name: column.name,
                         display_name: column.display_name,
