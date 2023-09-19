@@ -19,6 +19,7 @@ from api.tests.common import (
     test_user,
     test_workspace,
 )
+from auth.validation import verification_generator
 
 
 @pytest.mark.django_db
@@ -650,6 +651,87 @@ async def test_complete_signup_no_user():
         == "[GraphQLError('User not found', locations=[SourceLocation(line=3, column=13)], path=['completeSignup'])]"
     )
     assert result.data is None
+
+
+@pytest.mark.django_db
+async def test_verify_email(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    mutation = """
+        mutation VerifyEmail($uid: String!, $token: String!) {
+            verifyEmail(uid: $uid, token: $token) {
+                id
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "uid": str(user.pk),
+            "token": verification_generator.make_token(user),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["verifyEmail"]["id"] == str(user.id)
+    await user.arefresh_from_db()
+    assert user.verified_at is not None
+
+
+@pytest.mark.django_db
+async def test_verify_email_invalid_token(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    mutation = """
+        mutation VerifyEmail($uid: String!, $token: String!) {
+            verifyEmail(uid: $uid, token: $token) {
+                id
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "uid": str(user.pk),
+            "token": "random",
+        },
+        context_value=context,
+    )
+
+    assert (
+        str(result.errors)
+        == "[GraphQLError('Token invalid', locations=[SourceLocation(line=3, column=13)], path=['verifyEmail'])]"
+    )
+
+
+@pytest.mark.django_db
+async def test_verify_email_incorrect_user(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    mutation = """
+        mutation VerifyEmail($uid: String!, $token: String!) {
+            verifyEmail(uid: $uid, token: $token) {
+                id
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "uid": str(uuid.uuid4()),
+            "token": verification_generator.make_token(user),
+        },
+        context_value=context,
+    )
+
+    assert (
+        str(result.errors)
+        == "[GraphQLError('Incorrect user', locations=[SourceLocation(line=3, column=13)], path=['verifyEmail'])]"
+    )
 
 
 @pytest.mark.django_db
