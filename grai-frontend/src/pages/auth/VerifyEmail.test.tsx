@@ -1,7 +1,7 @@
 import React from "react"
+import { GraphQLError } from "graphql"
 import { render, screen, waitFor } from "testing"
 import VerifyEmail, { VERIFY_EMAIL } from "./VerifyEmail"
-import { GraphQLError } from "graphql"
 
 test("renders", async () => {
   render(<VerifyEmail />, {
@@ -12,9 +12,7 @@ test("renders", async () => {
 
   expect(screen.getByRole("progressbar")).toBeTruthy()
 
-  await waitFor(async () =>
-    expect(screen.getByText("New Page")).toBeInTheDocument(),
-  )
+  await screen.findByText("New Page")
 })
 
 test("missing token", async () => {
@@ -24,9 +22,7 @@ test("missing token", async () => {
     routes: ["/"],
   })
 
-  await waitFor(async () =>
-    expect(screen.getByText("Missing required token")).toBeInTheDocument(),
-  )
+  await screen.findByText("Missing required token")
 })
 
 test("missing uid", async () => {
@@ -36,9 +32,7 @@ test("missing uid", async () => {
     routes: ["/"],
   })
 
-  await waitFor(async () =>
-    expect(screen.getByText("Missing required token")).toBeInTheDocument(),
-  )
+  await screen.findByText("Missing required token")
 })
 
 test("error", async () => {

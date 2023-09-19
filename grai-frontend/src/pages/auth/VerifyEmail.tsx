@@ -1,10 +1,10 @@
 import React, { useEffect } from "react"
 import { gql, useMutation } from "@apollo/client"
+import { useSnackbar } from "notistack"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import Loading from "components/layout/Loading"
 import GraphError from "components/utils/GraphError"
 import { Verify, VerifyVariables } from "./__generated__/Verify"
-import { useSnackbar } from "notistack"
 
 export const VERIFY_EMAIL = gql`
   mutation Verify($uid: String!, $token: String!) {
@@ -40,7 +40,7 @@ const VerifyEmail: React.FC = () => {
         navigate("/")
       })
       .catch(() => {})
-  }, [uid, token, verifyEmail, navigate])
+  }, [uid, token, verifyEmail, navigate, enqueueSnackbar])
 
   if (error) return <GraphError error={error} />
 
