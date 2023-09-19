@@ -210,15 +210,10 @@ class Mutation:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def verifyEmail(self, info: Info, uid: str, token: str) -> User:
-        UserModel = get_user_model()
+        user = get_user(info)
 
-        user = await UserModel.objects.aget(pk=uid)
-
-        # if not str(user.pk) == uid:
-        #     raise Exception("Incorrect user")
-
-        print(user.username)
-        print(token)
+        if not str(user.pk) == uid:
+            raise Exception("Incorrect user")
 
         if not verification_generator.check_token(user, token):
             raise Exception("Token invalid")
