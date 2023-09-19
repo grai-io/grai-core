@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai_source_fivetran"
-version = "0.1.1-alpha1"
+version = "0.1.1"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>", "Edward Louth <edward@grai.io>"]
 license = "Elastic-2.0"
