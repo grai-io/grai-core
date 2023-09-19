@@ -34,8 +34,8 @@ class YamlFileAdapter(BaseAdapter):
 
         return nodes, edges
 
-    def run_validate(self, run: Run) -> bool:
-        result_types = {type(result) for result in self.process_content(run, run.files.first())}
+    def run_validate(self) -> bool:
+        result_types = {type(result) for result in self.process_content(self.run.files.first())}
         if not result_types.issubset(SUPPORTED_SCHEMA_TYPES):
             unsupported_types = result_types.difference(SUPPORTED_SCHEMA_TYPES)
             unsupported_typenames = [schema.__name__ for schema in unsupported_types]
@@ -46,11 +46,8 @@ class YamlFileAdapter(BaseAdapter):
 
         return True
 
-    def run_tests(self, run: Run):
-        pass
+    def run_update(self):
+        nodes, edges = self.get_nodes_and_edges()
 
-    def run_events(self, run: Run, all: bool = False):
-        pass
-
-    def run_update(self, run: Run):
-        pass
+        update(self.run.workspace, self.run.source, nodes)
+        update(self.run.workspace, self.run.source, edges)

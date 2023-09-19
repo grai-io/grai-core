@@ -1,3 +1,4 @@
+from typing import List, Tuple
 from abc import ABC, abstractmethod
 from functools import cached_property
 from itertools import chain
@@ -44,10 +45,11 @@ def capture_quarantined_errors(integration: ValidatedIntegration, run: Run):
 
 
 class BaseAdapter(ABC):
-    run: Run
+    def __init__(self, run: Run):
+        self.run = run
 
     @abstractmethod
-    def run_validate(self, run: Run) -> bool:
+    def run_validate(self) -> bool:
         pass
 
     @abstractmethod
@@ -55,16 +57,65 @@ class BaseAdapter(ABC):
         pass
 
     @abstractmethod
-    def run_update(self, run: Run):
+    def run_update(self):
         pass
 
-    @abstractmethod
-    def run_tests(self, run: Run):
-        pass
+    def run_tests(self) -> Tuple[List, str]:
+        new_nodes, new_edges = self.get_nodes_and_edges()
 
-    @abstractmethod
-    def run_events(self, run: Run, all: bool = False):
-        pass
+        nodes = [modelToSchema(model, NodeV1, "Node") for model in Node.objects.filter(workspace=self.run.workspace)]
+        edges = [
+            modelToSchema(model, EdgeV1, "Edge")
+            for model in Edge.objects.filter(workspace=self.run.workspace)
+            .select_related("source")
+            .select_related("destination")
+        ]
+
+        graph = build_graph(nodes, edges, "v1")
+
+        results = TestResultCacheBase(new_nodes, new_edges, graph)
+
+        test_results = list(chain.from_iterable(results.test_results().values()))
+        test_list = [test.toJSON() for test in test_results]
+
+        message = None
+
+        if self.run.commit and self.run.trigger:
+            message = results.consolidated_summary().message(self.run)
+
+        return test_list, message
+
+    def run_events(self, run_all: bool = False):
+        last_event_date = None
+
+        if not run_all:
+            last_event_date = Event.objects.filter(connection=self.run.connection).aggregate(Max("date"))["date__max"]
+
+        events = self.events(last_event_date)
+
+        existing_event_references = self.run.connection.events.values_list("reference", flat=True)
+
+        for event in events:
+            if str(event.reference) not in existing_event_references:
+                event_model = self.run.connection.events.create(
+                    workspace=self.run.workspace,
+                    reference=event.reference,
+                    date=event.date,
+                    status=event.status,
+                    metadata=event.metadata,
+                )
+
+                if event.nodes:
+                    nodes = Node.objects.filter(
+                        workspace=self.run.workspace,
+                        namespace=self.run.connection.namespace,
+                        name__in=event.nodes,
+                    )
+
+                    if len(nodes) != len(event.nodes):
+                        print("Some nodes not found")
+
+                    event_model.nodes.add(*nodes)
 
 
 class IntegrationAdapter(BaseAdapter):
@@ -79,9 +130,7 @@ class IntegrationAdapter(BaseAdapter):
     def get_nodes_and_edges(self):
         return self.integration.get_nodes_and_edges()
 
-    def run_update(self, run: Run):
-        self.run = run
-
+    def run_update(self):
         nodes, edges = self.integration.get_nodes_and_edges()
         capture_quarantined_errors(self.integration, self.run)
 
@@ -94,70 +143,5 @@ class IntegrationAdapter(BaseAdapter):
 
         return events
 
-    def run_validate(self, run: Run) -> bool:
-        self.run = run
-
+    def run_validate(self) -> bool:
         return self.integration.ready()
-
-    def run_tests(self, run: Run):
-        self.run = run
-
-        new_nodes, new_edges = self.integration.get_nodes_and_edges()
-
-        nodes = [modelToSchema(model, NodeV1, "Node") for model in Node.objects.filter(workspace=run.workspace)]
-        edges = [
-            modelToSchema(model, EdgeV1, "Edge")
-            for model in Edge.objects.filter(workspace=run.workspace)
-            .select_related("source")
-            .select_related("destination")
-        ]
-
-        graph = build_graph(nodes, edges, "v1")
-
-        results = TestResultCacheBase(new_nodes, new_edges, graph)
-
-        test_results = list(chain.from_iterable(results.test_results().values()))
-        test_list = [test.toJSON() for test in test_results]
-
-        message = None
-
-        if run.commit and run.trigger:
-            message = results.consolidated_summary().message(run)
-
-        return test_list, message
-
-    def run_events(self, run: Run, all: bool = False):
-        self.run = run
-
-        last_event_date = None
-
-        if not all:
-            last_event_date = Event.objects.filter(connection=run.connection).aggregate(Max("date"))["date__max"]
-
-        events = self.events(last_event_date)
-
-        connection = run.connection
-
-        existing_event_references = connection.events.values_list("reference", flat=True)
-
-        for event in events:
-            if str(event.reference) not in existing_event_references:
-                event_model = connection.events.create(
-                    workspace=run.workspace,
-                    reference=event.reference,
-                    date=event.date,
-                    status=event.status,
-                    metadata=event.metadata,
-                )
-
-                if event.nodes:
-                    nodes = Node.objects.filter(
-                        workspace=run.workspace,
-                        namespace=run.connection.namespace,
-                        name__in=event.nodes,
-                    )
-
-                    if len(nodes) != len(event.nodes):
-                        print("Some nodes not found")
-
-                    event_model.nodes.add(*nodes)
