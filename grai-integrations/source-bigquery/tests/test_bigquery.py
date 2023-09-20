@@ -25,7 +25,7 @@ def test_connector_from_env_vars():
         os.environ[k] = v
     conn = BigqueryConnector()
     assert conn.project == "thing"
-    assert conn.dataset == "grai"
+    assert conn.datasets == ["grai"]
     assert conn.credentials == "user"
 
 

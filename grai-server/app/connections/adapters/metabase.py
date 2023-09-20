@@ -1,21 +1,25 @@
-from .base import BaseAdapter
+from grai_source_metabase.base import MetabaseIntegration
+from grai_schemas.v1.source import SourceV1
+
+from .base import IntegrationAdapter
 
 
-class MetabaseAdapter(BaseAdapter):
-    def get_integration(self):
-        from grai_source_metabase.base import MetabaseIntegration
-
+class MetabaseAdapter(IntegrationAdapter):
+    def get_integration(self) -> MetabaseIntegration:
         metadata = self.run.connection.metadata
         secrets = self.run.connection.secrets
-
-        return MetabaseIntegration(
-            source={
+        source = SourceV1.from_spec(
+            {
                 "id": self.run.source.id,
                 "name": self.run.source.name,
-            },
+            }
+        )
+        integration = MetabaseIntegration(
+            source=source,
             username=metadata.get("username"),
             password=secrets.get("password"),
             namespace_map=metadata.get("namespaces") if metadata.get("namespaces") != "" else None,
             metabase_namespace=self.run.connection.namespace,
             endpoint=metadata.get("endpoint"),
         )
+        return integration

@@ -4,12 +4,18 @@ from uuid import UUID
 
 from django.db.models import Q
 from grai_schemas.v1.edge import EdgeSpec, EdgeV1, SourcedEdgeSpec, SourcedEdgeV1
-from grai_schemas.v1.node import NodeSpec, NodeV1, SourcedNodeSpec, SourcedNodeV1
+from grai_schemas.v1.node import (
+    NodeNamedID,
+    NodeSpec,
+    NodeV1,
+    SourcedNodeSpec,
+    SourcedNodeV1,
+)
 from grai_schemas.v1.organization import OrganisationSpec, OrganisationV1
 from grai_schemas.v1.source import SourceSpec, SourceV1
 from grai_schemas.v1.workspace import WorkspaceSpec, WorkspaceV1
 from multimethod import multimethod
-from grai_schemas.v1.node import NodeNamedID
+
 from lineage.models import Edge, Node, Source
 from workspaces.models import Organisation, Workspace
 

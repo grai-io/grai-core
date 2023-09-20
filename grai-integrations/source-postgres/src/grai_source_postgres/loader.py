@@ -1,6 +1,6 @@
 import os
 from functools import cached_property
-from itertools import chain
+from itertools import chain, tee
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 import psycopg2
@@ -281,8 +281,8 @@ class PostgresConnector:
             "namespace": self.namespace,
         }
         filtered_results = (result for result in results if result["constraint_type"] == "f")
-        result = (EdgeQuery(**fk, **addtl_args).to_edge() for fk in filtered_results)
-        return [r for r in result if r is not None]
+        result_iter = (EdgeQuery(**fk, **addtl_args).to_edge() for fk in filtered_results if fk is not None)
+        return list(result_iter)
 
     def get_nodes(self) -> List[PostgresNode]:
         """
@@ -306,7 +306,8 @@ class PostgresConnector:
         Raises:
 
         """
-        return [edge for edge in chain(*[t.get_edges() for t in self.tables], self.foreign_keys) if edge is not None]
+        edge_iter = chain(*[t.get_edges() for t in self.tables], self.foreign_keys)
+        return list(edge_iter)
 
     def get_nodes_and_edges(self) -> Tuple[List[PostgresNode], List[Edge]]:
         """

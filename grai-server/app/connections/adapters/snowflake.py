@@ -1,18 +1,21 @@
-from .base import BaseAdapter
+from grai_source_snowflake.base import SnowflakeIntegration
+from grai_schemas.v1.source import SourceV1
+
+from .base import IntegrationAdapter
 
 
-class SnowflakeAdapter(BaseAdapter):
-    def get_integration(self):
-        from grai_source_snowflake.base import SnowflakeIntegration
-
+class SnowflakeAdapter(IntegrationAdapter):
+    def get_integration(self) -> SnowflakeIntegration:
         metadata = self.run.connection.metadata
         secrets = self.run.connection.secrets
-
-        return SnowflakeIntegration(
-            source={
+        source = SourceV1.from_spec(
+            {
                 "id": self.run.source.id,
                 "name": self.run.source.name,
-            },
+            }
+        )
+        integration = SnowflakeIntegration(
+            source=source,
             account=metadata.get("account"),
             user=metadata.get("user"),
             password=secrets.get("password"),
@@ -21,3 +24,4 @@ class SnowflakeAdapter(BaseAdapter):
             database=metadata.get("database"),
             namespace=self.run.connection.namespace,
         )
+        return integration

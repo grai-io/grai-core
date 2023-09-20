@@ -10,6 +10,7 @@ from grai_schemas.v1.edge import IDSpec as EdgeIDSpec
 from grai_schemas.v1.edge import NamedSourceSpec as NamedEdgeSourceSpec
 from grai_schemas.v1.edge import NamedSpec as NamedEdgeSpec
 from grai_schemas.v1.edge import SourcedEdgeSpec, SourcedEdgeV1
+from grai_schemas.v1.events import EventSpec, EventV1
 from grai_schemas.v1.metadata import edges, nodes
 from grai_schemas.v1.metadata.metadata import (
     EdgeMetadataV1,
@@ -389,6 +390,30 @@ class MockSource:
         return SourceSpecFactory.build(**kwargs)
 
 
+class EventFactory(ModelFactory[EventV1]):
+    __model__ = EventV1
+
+
+class EventSpecFactory(ModelFactory[EventSpec]):
+    __model__ = EventSpec
+
+
+class MockEvent:
+    def __init__(self, workspace=None):
+        self.workspace = workspace
+
+    def event_spec(self, **kwargs) -> EventSpec:
+        """ """
+        if self.workspace:
+            kwargs.setdefault("workspace", self.workspace)
+        return EventSpecFactory.build(**kwargs)
+
+    def event(self, **kwargs) -> EventV1:
+        """ """
+        kwargs.setdefault("spec", self.event_spec())
+        return EventFactory.build(**kwargs)
+
+
 class MockV1:
     def __init__(self, workspace=None, organisation=None):
         workspace = workspace.spec if isinstance(workspace, WorkspaceV1) else workspace
@@ -399,3 +424,4 @@ class MockV1:
         self.organisation = MockOrganisation
         self.workspace = MockWorkspace(organisation=organisation)
         self.source = MockSource(workspace=workspace)
+        self.event = MockEvent(workspace=workspace)

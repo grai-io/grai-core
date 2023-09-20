@@ -2,7 +2,6 @@ import uuid
 
 import dotenv
 import pytest
-from grai_client.endpoints.v1.client import ClientV1
 from grai_schemas.v1.source import SourceSpec
 from grai_schemas.v1.workspace import WorkspaceSpec
 
@@ -24,10 +23,20 @@ def mock_source(default_workspace):
     return SourceSpec(name="BigQueryTest", workspace=default_workspace)
 
 
+class MockClient:
+    def __init__(self):
+        self.id = "v1"
+
+    def get(self, type, **kwargs):
+        return [SourceSpec(id=uuid.uuid4(), **kwargs)]
+
+
 @pytest.fixture(scope="session")
 def client(mock_source):
     """ """
     try:
+        from grai_client.endpoints.v1.client import ClientV1
+
         client = ClientV1(
             "localhost",
             "8000",
@@ -39,22 +48,24 @@ def client(mock_source):
         if not client.get("Source", name=mock_source.name):
             client.post(mock_source)
     except:
-
-        class MockClient:
-            def __init__(self):
-                self.id = "v1"
-
-            def get(self, type, **kwargs):
-                return [SourceSpec(id=uuid.uuid4(), **kwargs)]
-
         client = MockClient()
 
     return client
 
 
 @pytest.fixture(scope="session")
-def run_live(client):
-    return isinstance(client, ClientV1)
+def run_live(client) -> bool:
+    has_client = not isinstance(client, MockClient)
+    has_local_api_creds = False
+    try:
+        FivetranAPI()
+        has_local_api_creds = True
+    except:
+        import warnings
+
+        warnings.warn("MISSING FIVETRAN CREDENTIALS. Not all tests will be able to run without these. .")
+
+    return has_client and has_local_api_creds
 
 
 # You may need to create a .env file to run these tests
@@ -145,8 +156,8 @@ def nodes_and_edges(app_nodes_and_edges, client, mock_source, run_live, namespac
 
     """
     if run_live:
-        conn = FivetranIntegration.from_client(client, source=mock_source, namespaces=namespace_map)
-        nodes, edges = conn.get_nodes_and_edges()
+        integration = FivetranIntegration(source=mock_source, namespaces=namespace_map)
+        nodes, edges = integration.get_nodes_and_edges()
     else:
         nodes = adapt_to_client(app_nodes_and_edges[0], mock_source, "v1")
         edges = adapt_to_client(app_nodes_and_edges[1], mock_source, "v1")

@@ -1,16 +1,14 @@
+from functools import cache
 from typing import List, Optional, Tuple
 
-from grai_client.integrations.base import (
-    CombinedNodesAndEdgesMixin,
-    EventMixin,
-    GraiIntegrationImplementation,
-)
-from grai_schemas.base import SourcedEdge, SourcedNode
+from grai_client.integrations.base import EventMixin
+from grai_schemas.base import Event, SourcedEdge, SourcedNode
+from grai_schemas.integrations.base import GraiIntegrationImplementation
 from grai_schemas.v1.source import SourceV1
 from grai_source_dbt_cloud.loader import DbtCloudConnector
 
 
-class DbtCloudIntegration(CombinedNodesAndEdgesMixin, EventMixin, GraiIntegrationImplementation):
+class DbtCloudIntegration(EventMixin, GraiIntegrationImplementation):
     def __init__(
         self,
         api_key: str,
@@ -26,11 +24,18 @@ class DbtCloudIntegration(CombinedNodesAndEdgesMixin, EventMixin, GraiIntegratio
             source=source,
         )
 
+    @cache
     def get_nodes_and_edges(self) -> Tuple[List[SourcedNode], List[SourcedEdge]]:
         nodes, edges = self.connector.get_nodes_and_edges()
         return nodes, edges
 
-    def events(self, last_event_date: Optional[str]):
+    def nodes(self) -> List[SourcedNode]:
+        return self.get_nodes_and_edges()[0]
+
+    def edges(self) -> List[SourcedEdge]:
+        return self.get_nodes_and_edges()[1]
+
+    def events(self, last_event_date: Optional[str]) -> List[Event]:
         events = self.connector.get_events(last_event_date=last_event_date)
         return events
 

@@ -1,16 +1,13 @@
 import pytest
-from grai_schemas import config as core_config
 from grai_schemas.v1 import SourcedEdgeV1, SourcedNodeV1
-from grai_schemas.v1.metadata.edges import ColumnToColumnMetadata
-from grai_schemas.v1.metadata.edges import Metadata as EdgeV1Metadata
-from grai_schemas.v1.metadata.edges import TableToColumnMetadata, TableToTableMetadata
-from grai_schemas.v1.metadata.nodes import ColumnMetadata
-from grai_schemas.v1.metadata.nodes import Metadata as NodeV1Metadata
-from grai_schemas.v1.metadata.nodes import NodeMetadataTypeLabels, TableMetadata
+from grai_schemas.v1.metadata.edges import (
+    ColumnToColumnMetadata,
+    TableToColumnMetadata,
+    TableToTableMetadata,
+)
 
-from grai_source_fivetran.loader import FivetranConnector, process_base_namespace_map
+from grai_source_fivetran.loader import process_base_namespace_map
 from grai_source_fivetran.models import Edge, NodeTypes
-from grai_source_fivetran.package_definitions import config
 
 
 def test_loader_node_types(app_nodes):

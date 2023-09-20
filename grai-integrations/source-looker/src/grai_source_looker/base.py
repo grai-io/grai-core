@@ -1,17 +1,15 @@
+from functools import cache
 from typing import Dict, List, Optional, Tuple
 
-from grai_client.integrations.base import (
-    CombinedNodesAndEdgesMixin,
-    GraiIntegrationImplementation,
-)
 from grai_schemas.base import SourcedEdge, SourcedNode
+from grai_schemas.integrations.base import GraiIntegrationImplementation
 from grai_schemas.v1.source import SourceV1
 
 from grai_source_looker.adapters import adapt_to_client
 from grai_source_looker.loader import LookerAPI
 
 
-class LookerIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementation):
+class LookerIntegration(GraiIntegrationImplementation):
     def __init__(
         self,
         source: SourceV1,
@@ -38,6 +36,7 @@ class LookerIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementatio
         self.connector.get_user()
         return True
 
+    @cache
     def get_nodes_and_edges(self) -> Tuple[List[SourcedNode], List[SourcedEdge]]:
         nodes, edges = self.connector.get_nodes_and_edges()
 
@@ -45,3 +44,9 @@ class LookerIntegration(CombinedNodesAndEdgesMixin, GraiIntegrationImplementatio
         edges = adapt_to_client(edges, self.source, self.version)
 
         return nodes, edges
+
+    def nodes(self) -> List[SourcedNode]:
+        return self.get_nodes_and_edges()[0]
+
+    def edges(self) -> List[SourcedEdge]:
+        return self.get_nodes_and_edges()[1]

@@ -1,1 +1,1 @@
-from grai_schemas.integrations import base
+from grai_schemas.integrations import base, quarantine

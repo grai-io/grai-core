@@ -29,6 +29,7 @@ __all__ = [
     "GraiMetadata",
     "Node",
     "Edge",
+    "Event",
     "SourcedNode",
     "SourcedEdge",
     "Source",

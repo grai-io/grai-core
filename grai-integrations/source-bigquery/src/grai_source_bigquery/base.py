@@ -1,16 +1,15 @@
-from typing import List, Optional, Union
+from functools import cache
+from typing import List, Optional, Tuple, Union
 
-from grai_client.integrations.base import (
-    GraiIntegrationImplementation,
-    SeparateNodesAndEdgesMixin,
-)
+from grai_schemas.base import Event, SourcedEdge, SourcedNode
+from grai_schemas.integrations.base import GraiIntegrationImplementation
 from grai_schemas.v1.source import SourceV1
 
 from grai_source_bigquery.adapters import adapt_to_client
 from grai_source_bigquery.loader import BigqueryConnector, LoggingConnector
 
 
-class BigQueryIntegration(SeparateNodesAndEdgesMixin, GraiIntegrationImplementation):
+class BigQueryIntegration(GraiIntegrationImplementation):
     def __init__(
         self,
         source: SourceV1,
@@ -41,17 +40,22 @@ class BigQueryIntegration(SeparateNodesAndEdgesMixin, GraiIntegrationImplementat
             )
         )
 
-    def nodes(self):
+    @cache
+    def nodes(self) -> List[SourcedNode]:
         with self.connector.connect() as conn:
             connector_nodes = conn.nodes()
             grai_nodes = adapt_to_client(connector_nodes, self.source, self.version)
         return grai_nodes
 
-    def edges(self):
+    @cache
+    def edges(self) -> List[SourcedEdge]:
         with self.connector.connect() as conn:
             connector_edges = conn.edges()
             grai_edges = adapt_to_client(connector_edges, self.source, self.version)
         return grai_edges
+
+    def get_nodes_and_edges(self) -> Tuple[List[SourcedNode], List[SourcedEdge]]:
+        return self.nodes(), self.edges()
 
     def ready(self) -> bool:
         with self.connector.connect() as _:
