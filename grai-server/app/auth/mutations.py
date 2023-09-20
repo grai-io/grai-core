@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Union
 
 import strawberry
@@ -18,6 +19,8 @@ from api.common import IsAuthenticated, get_user
 from api.pagination import DataWrapper
 from api.types import BasicResult, User
 from users.types import Device
+
+from .validation import send_validation_email, verification_generator
 
 
 @strawberry.type
@@ -108,6 +111,8 @@ class Mutation:
 
         await sync_to_async(login)(info.context.request, user)
 
+        await sync_to_async(send_validation_email)(user)
+
         return user
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -195,10 +200,28 @@ class Mutation:
             user.last_name = last_name
             user.set_password(password)
             await sync_to_async(user.save)()
+
+            send_validation_email(user)
+
             return user
 
         except UserModel.DoesNotExist:
             raise Exception("User not found")
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def verifyEmail(self, info: Info, uid: str, token: str) -> User:
+        user = get_user(info)
+
+        if not str(user.pk) == uid:
+            raise Exception("Incorrect user")
+
+        if not verification_generator.check_token(user, token):
+            raise Exception("Token invalid")
+
+        user.verified_at = datetime.now()
+        await sync_to_async(user.save)()
+
+        return user
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def createDevice(self, info: Info, name: str) -> DeviceWithUrl:

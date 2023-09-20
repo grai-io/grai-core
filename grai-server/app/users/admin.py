@@ -30,7 +30,7 @@ class CustomUserAdmin(UserAdmin):
                 ),
             },
         ),
-        (_("Dates"), {"fields": ("created_at", "last_login")}),
+        (_("Dates"), {"fields": ("created_at", "last_login", "verified_at")}),
     )
     add_fieldsets = (
         (
@@ -55,15 +55,30 @@ class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = User
-    list_display = ("username", "first_name", "last_name", "is_staff", "is_superuser", "created_at", "last_login")
-    list_filter = ("is_staff", "is_superuser", ("created_at", DateFieldListFilter), ("last_login", DateFieldListFilter))
+    list_display = (
+        "username",
+        "first_name",
+        "last_name",
+        "is_staff",
+        "is_superuser",
+        "created_at",
+        "last_login",
+        "verified_at",
+    )
+    list_filter = (
+        "is_staff",
+        "is_superuser",
+        ("created_at", DateFieldListFilter),
+        ("last_login", DateFieldListFilter),
+        ("verified_at", DateFieldListFilter),
+    )
     search_fields = ["username", "first_name", "last_name"]
 
     inlines = [
         MembershipInline,
     ]
 
-    readonly_fields = ("created_at", "last_login")
+    readonly_fields = ("created_at", "last_login", "verified_at")
 
 
 class AuditAdmin(admin.ModelAdmin):
