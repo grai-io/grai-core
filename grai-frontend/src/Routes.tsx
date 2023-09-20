@@ -66,6 +66,7 @@ const Register = lazy(() => import("./pages/auth/Register"))
 const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"))
 const PasswordReset = lazy(() => import("./pages/auth/PasswordReset"))
 const CompleteSignup = lazy(() => import("./pages/auth/CompleteSignup"))
+const VerifyEmail = lazy(() => import("./pages/auth/VerifyEmail"))
 
 const SentryRoutes = Sentry.withSentryReactRouterV6Routing(BrowerRoutes)
 
@@ -170,6 +171,7 @@ const Routes: React.FC = () => (
             <Route path="post-install" element={<PostInstall />} />
             <Route path="*" element={<NotFound />} />
           </Route>
+          <Route path="email-verification" element={<VerifyEmail />} />
         </Route>
       </Route>
 
