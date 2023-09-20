@@ -9,7 +9,9 @@ from connections.task_helpers import (
     get_node,
     process_updates,
     update,
+    get_edge_nodes_from_database,
 )
+from connections.adapters.schemas import source_node_v1_to_model
 from lineage.models import Edge, Node, Source
 from workspaces.models import Organisation, Workspace
 
@@ -534,3 +536,113 @@ class TestUpdate:
         )
 
         assert query == expected_query
+
+
+class TestGetEdgeNodesFromDatabase:
+    @staticmethod
+    def get_edge_nodes(items):
+        sources = (item.spec.source for item in items)
+        destinations = (item.spec.destination for item in items)
+        return [*sources, *destinations]
+
+    @pytest.mark.django_db
+    def test_no_missing_ids(self, test_source, test_workspace):
+        workspace = mocker.workspace.workspace_spec(name=test_workspace.name)
+        source = mocker.source.source_spec(name=test_source.name, workspace=workspace)
+        kwargs = {"data_source": source, "workspace": workspace.id, "namespace": "default"}
+
+        edge_specs = [
+            mocker.edge.named_source_edge_spec(
+                **kwargs,
+                source={"name": "node1", "namespace": "default", "id": uuid.uuid4()},
+                destination={"name": "node2", "namespace": "default", "id": uuid.uuid4()},
+            )
+        ]
+        edge_items = [mocker.edge.sourced_edge(spec=spec) for spec in edge_specs]
+        node_map = get_edge_nodes_from_database(edge_items, test_workspace)
+
+        assert len(node_map) == 2
+        assert set([v for v in node_map.values()]) == {edge_items[0].spec.source.id, edge_items[0].spec.destination.id}
+        assert set([v for v in node_map.keys()]) == {("node1", "default"), ("node2", "default")}
+
+    @pytest.mark.xfail(raises=ValueError)
+    @pytest.mark.django_db
+    def test_duplicate_nodes_bad_ids(self, test_source, test_workspace):
+        workspace = mocker.workspace.workspace_spec(name=test_workspace.name)
+        source = mocker.source.source_spec(name=test_source.name, workspace=workspace)
+        kwargs = {"data_source": source, "workspace": workspace.id, "namespace": "default"}
+
+        edge_specs = [
+            mocker.edge.named_source_edge_spec(
+                **kwargs,
+                source={"name": "node1", "namespace": "default", "id": uuid.uuid4()},
+                destination={"name": "node2", "namespace": "default", "id": uuid.uuid4()},
+            )
+            for i in range(2)
+        ]
+        edge_items = [mocker.edge.sourced_edge(spec=spec) for spec in edge_specs]
+        get_edge_nodes_from_database(edge_items, test_workspace)
+
+    @pytest.mark.xfail(raises=ValueError)
+    @pytest.mark.django_db
+    def test_missing_destination(self, test_workspace: Workspace):
+        workspace = mocker.workspace.workspace_spec(name="workspace1", id=uuid.uuid4())
+        source = mocker.source.source_spec(name="source1", workspace=workspace)
+        kwargs = {"data_source": source, "workspace": workspace.id, "namespace": "default"}
+        nodes = [[mocker.node.named_source_node_spec(**kwargs) for _ in range(2)] for _ in range(2)]
+        edge_specs = [
+            mocker.edge.named_source_edge_spec(**kwargs, source=source, destination=dest) for source, dest in nodes
+        ]
+
+        edge_items = [mocker.edge.sourced_edge(spec=spec) for spec in edge_specs]
+        nodes = self.get_edge_nodes(edge_items)
+        Node(name=nodes[1].name, namespace=nodes[1].namespace, workspace=test_workspace).save()
+
+        get_edge_nodes_from_database(edge_items, test_workspace)
+
+    @pytest.mark.xfail(raises=ValueError)
+    @pytest.mark.django_db
+    def test_missing_source(self, test_workspace: Workspace):
+        workspace = mocker.workspace.workspace_spec(name="workspace1", id=uuid.uuid4())
+        source = mocker.source.source_spec(name="source1", workspace=workspace)
+        kwargs = {"data_source": source, "workspace": workspace.id, "namespace": "default"}
+        nodes = [[mocker.node.named_source_node_spec(**kwargs) for _ in range(2)] for _ in range(2)]
+        edge_specs = [
+            mocker.edge.named_source_edge_spec(**kwargs, source=source, destination=dest) for source, dest in nodes
+        ]
+
+        edge_items = [mocker.edge.sourced_edge(spec=spec) for spec in edge_specs]
+        nodes = self.get_edge_nodes(edge_items)
+        Node(name=nodes[0].name, namespace=nodes[0].namespace, workspace=test_workspace).save()
+
+        get_edge_nodes_from_database(edge_items, test_workspace)
+
+    @pytest.mark.django_db
+    def test_missing_ids(self, test_source, test_workspace):
+        workspace = mocker.workspace.workspace_spec(name=test_workspace.name)
+        source = mocker.source.source_spec(name=test_source.name, workspace=workspace)
+        kwargs = {"data_source": source, "workspace": workspace.id, "namespace": "default"}
+
+        edge_specs = [
+            mocker.edge.named_source_edge_spec(
+                **kwargs,
+                source={"name": "node1", "namespace": "default"},
+                destination={"name": "node2", "namespace": "default"},
+            ),
+            mocker.edge.named_source_edge_spec(
+                **kwargs,
+                source={"name": "node3", "namespace": "default"},
+                destination={"name": "node4", "namespace": "default"},
+            ),
+        ]
+        ids = set()
+        for i in range(1, 5):
+            node = Node(name=f"node{i}", namespace="default", workspace=test_workspace)
+            node.save()
+            ids.add(node.id)
+        edge_items = [mocker.edge.sourced_edge(spec=spec) for spec in edge_specs]
+        node_map = get_edge_nodes_from_database(edge_items, test_workspace)
+
+        assert len(node_map) == 4
+        assert set([v for v in node_map.values()]) == ids
+        assert set([v for v in node_map.keys()]) == {(f"node{i}", "default") for i in range(1, 5)}

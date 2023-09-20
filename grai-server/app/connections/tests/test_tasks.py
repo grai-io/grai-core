@@ -334,7 +334,7 @@ class TestUpdateServer:
 
             get_adapter(run.connection.connector.slug)
 
-    def get_get_snowflake_connector_no_account(self, test_workspace, test_snowflake_connector, test_source):
+    def get_snowflake_connector_no_account(self, test_workspace, test_snowflake_connector, test_source):
         connection = Connection.objects.create(
             name=str(uuid.uuid4()),
             connector=test_snowflake_connector,

@@ -2,7 +2,7 @@ import uuid
 import warnings
 from copy import deepcopy
 from functools import singledispatch
-from itertools import chain
+from itertools import chain, tee
 from typing import (
     Any,
     Dict,
@@ -118,9 +118,20 @@ def build_item_query_filter(
 
 
 def get_edge_nodes_from_database(items: List[SourcedEdgeV1], workspace: Workspace) -> Dict[Tuple[str, str], UUID]:
+    """
+    Given a list of SourcedEdgeV1, return a dictionary mapping (name, namespace) tuples to node ids for the edge
+    sources and destinations. Can efficiently query for missing node_ids from the database for a collection of edges.
+    """
     sources = (item.spec.source for item in items)
     destinations = (item.spec.destination for item in items)
-    node_map = {(item.name, item.namespace): item.id for item in chain(sources, destinations)}
+
+    node_map = {}
+    for item in chain(sources, destinations):
+        key = (item.name, item.namespace)
+        if key in node_map and node_map[key] != item.id:
+            raise ValueError(f"Duplicate node label {key} with different ids {node_map[key]} and {item.id}")
+
+        node_map[key] = item.id
 
     missing_node_ids = [k for k, v in node_map.items() if v is None]
     if len(missing_node_ids) == 0:
