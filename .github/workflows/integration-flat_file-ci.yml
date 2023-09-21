@@ -80,7 +80,7 @@ jobs:
           --health-cmd "curl -f http://localhost:8000/health/ || exit 1"
           --health-interval 2s
           --health-retries 10
-          --health-start-period 30s
+          --health-start-period 90s
     steps:
       - uses: actions/checkout@v3
 
