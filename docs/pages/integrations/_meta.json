@@ -7,6 +7,7 @@
   "mssql": "Microsoft SQL Server",
   "snowflake": "Snowflake",
   "bigquery": "BigQuery",
+  "redshift": "Redshift",
   "flat-file": "Flat File",
   "yaml": "YAML",
   "metabase": "Metabase",

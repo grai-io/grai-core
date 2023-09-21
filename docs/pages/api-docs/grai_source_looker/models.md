@@ -35,43 +35,11 @@ class TableID(ID)
 
 
 
-### make\_full\_name
-
-```python
-@root_validator(pre=True)
-def make_full_name(cls, values)
-```
-
-**Arguments**:
-
-  values:
-
-
-**Returns**:
-
-
-
 ## FieldID Objects
 
 ```python
 class FieldID(ID)
 ```
-
-
-
-### make\_full\_name
-
-```python
-@root_validator(pre=True)
-def make_full_name(cls, values)
-```
-
-**Arguments**:
-
-  values:
-
-
-**Returns**:
 
 
 
@@ -111,20 +79,4 @@ def get_queries()
 
 ```python
 def get_query_edges()
-```
-
-
-
-### get\_fields
-
-```python
-def get_fields()
-```
-
-
-
-### get\_edges
-
-```python
-def get_edges()
 ```

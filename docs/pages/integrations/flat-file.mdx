@@ -13,37 +13,34 @@ The Flat File integration is used to upload a single flat file (like csv, parque
 
 | Field     | Value                                                               | Example |
 | --------- | ------------------------------------------------------------------- | ------- |
+| source    | The name of the source, see [sources](/concepts/sources)           | my-source |
 | Namespace | Namespace for the connection, see [namespaces](/concepts/namespace) | default |
 
 ## Python Library
 
-### Installation
+The dbt integration can be run as a standalone python library to extract data lineage from flat files like csv and parquet.
 
-Install Flat File Grai package with pip
+The library is available via pip
+
 
 ```shell copy
-pip install grai-source-flatfile
+pip install grai_source_flat_file
 ```
 
-### Connecting & Syncing
+More information about the API is available [here](/api-docs/grai_source_flat_file/base).
 
-The integration comes equipped with the client library already but we will need a python terminal or Jupyter Notebook to execute a few commands to establish a connection and begin querying the server.
+### Example
 
-Spin up your favorite python terminal then:
-
-```python copy
-import os
-from grai_source_flatfile.base import update_server
-```
-
-For now we will use the default user credentials though you are free to create a new user / api keys from the server admin interface at http://localhost:8000/admin.
+The library is split into a few distinct functions but if you only wish to extract nodes/edges you can do
+so as follows:
 
 ```python copy
-client = ClientV1("localhost", "8000", username="null@grai.io", password="super_secret")
-```
+  from grai_source_flat_file import FlatFileIntegration
+  from grai_schemas.v1.source import SourceV1
 
-Now we can update the server with data from any postgres source. In order to do so you will need to pass credentials and namespace into the update_server function. Namespace is used to uniquely identify the nodes and when used consistently will allow you to add to the node from any source.
+  source = SourceV1(name="my-source", type="my-type")
 
-```python copy
-update_server(client, [flat_file fields])
+  integration = FlatFileIntegration(source=source, namespace="dbt", file_name="/path/to/file.csv")
+
+  nodes, edges = integration.get_nodes_and_edges()
 ```

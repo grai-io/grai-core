@@ -31,6 +31,32 @@ Build grai metadata for a given object.
 
 ```python
 @build_grai_metadata.register
+def build_grai_metadata_from_table(current: Column,
+                                   version: Literal["v1"] = "v1"
+                                   ) -> ColumnMetadata
+```
+
+Build grai metadata for a Table object.
+
+**Arguments**:
+
+- `current` - The Table object to build grai metadata from.
+- `version` - The version of grai metadata to build. Defaults to &quot;v1&quot;.
+
+
+**Returns**:
+
+- `TableMetadata` - grai metadata object for the Table.
+
+
+**Raises**:
+
+  None.
+
+## build\_grai\_metadata\_from\_table
+
+```python
+@build_grai_metadata.register
 def build_grai_metadata_from_table(current: Table,
                                    version: Literal["v1"] = "v1"
                                    ) -> TableMetadata
@@ -57,9 +83,9 @@ Build grai metadata for a Table object.
 
 ```python
 @build_grai_metadata.register
-def build_grai_metadata_from_question(
-        current: Question,
-        version: Literal["v1"] = "v1") -> GenericNodeMetadataV1
+def build_grai_metadata_from_question(current: Question,
+                                      version: Literal["v1"] = "v1"
+                                      ) -> QueryMetadata
 ```
 
 Build grai metadata for a Question object.
@@ -85,7 +111,7 @@ Build grai metadata for a Question object.
 @build_grai_metadata.register
 def build_grai_metadata_from_collection(
         current: Collection,
-        version: Literal["v1"] = "v1") -> GenericNodeMetadataV1
+        version: Literal["v1"] = "v1") -> CollectionMetadata
 ```
 
 Build grai metadata for a Collection object.
@@ -251,7 +277,7 @@ Adapt a given object to the desired client format.
 
 ```python
 @adapt_to_client.register
-def adapt_table_to_client(current: Table,
+def adapt_table_to_client(current: Union[Table, Column],
                           source: SourceSpec,
                           version: Literal["v1"] = "v1") -> SourcedNodeV1
 ```
@@ -315,6 +341,7 @@ Adapt a Collection object to the desired client format.
 **Arguments**:
 
   current:
+  source:
   version:
 
 

@@ -3,43 +3,73 @@ sidebar_label: base
 title: grai_source_bigquery.base
 ---
 
-## get\_nodes\_and\_edges
+## BigQueryIntegration Objects
 
 ```python
-def get_nodes_and_edges(
-        connector: BigqueryConnector,
-        version: Literal["v1"]) -> Tuple[List[Node], List[Edge]]
+class BigQueryIntegration(GraiIntegrationImplementation)
 ```
+
+BigQuery integration.
+
+**Attributes**:
+
+- `connector` - The BigQuery connector
+
+### \_\_init\_\_
+
+```python
+def __init__(source: SourceV1,
+             version: Optional[str] = None,
+             namespace: Optional[str] = None,
+             project: Optional[str] = None,
+             dataset: Optional[Union[str, List[str]]] = None,
+             credentials: Optional[str] = None,
+             log_parsing: Optional[bool] = False,
+             log_parsing_window: Optional[int] = 7)
+```
+
+Initializes the BigQuery integration.
 
 **Arguments**:
 
-  connector (BigqueryConnector):
-  version (Literal[&quot;v1&quot;]):
+- `source` - The Grai data source to associate with output from the integration. More information about source objects is available in the `grai_schemas` library.
+- `version` - The Grai data version to associate with output from the integration
+- `namespace` - The Grai namespace to associate with output from the integration
+- `project` - GCP project id
+- `dataset` - BigQuery Dataset Id, or multiple datasets seperated by a comma (`,`)
+- `credentials` - JSON credentials for service account
+- `log_parsing` - The number of days to read logs
 
-
-**Returns**:
-
-
-
-## update\_server
+### nodes
 
 ```python
-def update_server(client: BaseClient,
-                  namespace: Optional[str] = None,
-                  project: Optional[str] = None,
-                  dataset: Optional[Union[str, List[str]]] = None,
-                  credentials: Optional[str] = None,
-                  log_parsing: Optional[bool] = False,
-                  log_parsing_window: Optional[int] = 7) -> None
+@cache
+def nodes() -> List[SourcedNode]
 ```
 
-**Arguments**:
+Return nodes from the connector.
 
-  client (BaseClient):
-- `namespace` _Optional[str], optional_ - (Default value = None)
-- `project` _Optional[str], optional_ - (Default value = None)
-- `dataset` _Optional[str], optional_ - (Default value = None)
-- `credentials` _Optional[str], optional_ - (Default value = None)
+### edges
 
+```python
+@cache
+def edges() -> List[SourcedEdge]
+```
 
-**Returns**:
+Return edges from the connector.
+
+### get\_nodes\_and\_edges
+
+```python
+def get_nodes_and_edges() -> Tuple[List[SourcedNode], List[SourcedEdge]]
+```
+
+Return nodes and edges from the connector.
+
+### ready
+
+```python
+def ready() -> bool
+```
+
+Check if the connector is ready to be used.

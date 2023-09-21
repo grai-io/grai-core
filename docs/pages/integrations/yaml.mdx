@@ -14,7 +14,8 @@ import InlineLogo from "../../components/InlineLogo";
 
 Every aspect of Grai can be serialized to yaml.
 This allows you to manage your entire data lineage as code, backup your lineage in version control, or create and edit nodes/edges in code.
-
+You can find explicit yaml definitions for all Grai objects in the grai-schemas library.
+Documentation for the schemas can be found [here](/api-docs/grai_schemas/v1/edge).
 ## Web App
 
 The YAML File integration is used to upload a single YAML file, which needs to have the correct Grai format.
@@ -30,6 +31,7 @@ The YAML File integration is used to upload a single YAML file, which needs to h
 
 | Field     | Value                                                               | Example |
 | --------- | ------------------------------------------------------------------- | ------- |
+| source    | The name of the source, see [sources](/concepts/sources)           | my-source |
 | Namespace | Namespace for the connection, see [namespaces](/concepts/namespace) | default |
 
 ## CLI
@@ -45,8 +47,6 @@ spec:
   name: "customers.customer_id"
   namespace: default
   is_active: true
-  data_source: postgres
-  display_name: "Customer ID"
   metadata:
     grai:
       node_type: Column
@@ -65,7 +65,6 @@ You can do the same with edges
 version: v1
 type: Edge
 spec:
-  data_source: test_folder
   source:
     name: public.lineage_node.id
     namespace: default

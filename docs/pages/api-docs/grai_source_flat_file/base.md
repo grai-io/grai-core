@@ -3,36 +3,66 @@ sidebar_label: base
 title: grai_source_flat_file.base
 ---
 
-## get\_nodes\_and\_edges
+## FlatFileIntegration Objects
 
 ```python
-def get_nodes_and_edges(file_name: str, namespace: str, version: str = "v1")
+class FlatFileIntegration(GraiIntegrationImplementation)
 ```
+
+A class for extracting Grai compliant metadata from flat files like csv and parquet.
+
+**Attributes**:
+
+- `file_name` - A path to the file
+- `namespace` - The Grai namespace to associate with output from the integration
+
+### \_\_init\_\_
+
+```python
+def __init__(file_name: str,
+             namespace: str,
+             source: SourceV1,
+             version: Optional[str] = None)
+```
+
+Initializes the Flat File integration.
 
 **Arguments**:
 
-  file_name (str):
-  namespace (str):
-- `version` _str, optional_ - (Default value = &quot;v1&quot;)
+- `file_name` - A path to the file
+- `namespace` - The Grai namespace to associate with output from the integration
+- `source` - The Grai data source to associate with output from the integration. More information about source objects is available in the `grai_schemas` library.
+- `version` - The Grai data version to associate with output from the integration
 
-
-**Returns**:
-
-
-
-## update\_server
+### get\_nodes\_and\_edges
 
 ```python
-def update_server(client: BaseClient,
-                  file_name: str,
-                  namespace: Optional[str] = None)
+@cache
+def get_nodes_and_edges() -> Tuple[List[SourcedNode], List[SourcedEdge]]
 ```
 
-**Arguments**:
+Returns a tuple of lists of SourcedNode and SourcedEdge objects
 
-  client (BaseClient):
-  file_name (str):
-- `namespace` _Optional[str], optional_ - (Default value = None)
+### nodes
 
+```python
+def nodes() -> List[SourcedNode]
+```
 
-**Returns**:
+Returns a list of SourcedNode objects
+
+### edges
+
+```python
+def edges() -> List[SourcedEdge]
+```
+
+Returns a list of SourcedEdge objects
+
+### ready
+
+```python
+def ready() -> bool
+```
+
+Returns True if the integration is ready to run

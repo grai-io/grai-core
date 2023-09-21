@@ -40,7 +40,7 @@ Authenticates the user and sets the session headers.
 
 ```python
 @staticmethod
-def make_request(request: Callable[..., requests.Response], url: str)
+def make_request(request: Callable[..., requests.Response], url: str) -> Dict
 ```
 
 Makes an authenticated API request and returns the JSON response.
@@ -63,31 +63,50 @@ Makes an authenticated API request and returns the JSON response.
 ### get\_questions
 
 ```python
-def get_questions()
+def get_questions() -> List[api.Question]
 ```
 
 Retrieves the list of questions from the Metabase API.
 
-**Returns**:
-
-- `dict` - The JSON response containing the list of questions.
 
 ### get\_tables
 
 ```python
-def get_tables()
+def get_tables() -> List[api.Table]
 ```
 
 Retrieves the list of tables from the Metabase API.
 
-**Returns**:
 
-- `dict` - The JSON response containing the list of tables.
+### get\_table\_metadata
+
+```python
+def get_table_metadata(table_id: int) -> api.TableMetadata
+```
+
+A table id to retrieve metadata for from Metabase
+
+**Arguments**:
+
+- `table_id` - A table id to retrieve metadata for from Metabase.
+
+
+### get\_all\_table\_metadata
+
+```python
+async def get_all_table_metadata(
+        table_ids: List[int]) -> List[api.TableMetadata]
+```
+
+**Arguments**:
+
+- `table_ids` - A list of table id&#x27;s to retrieve metadata for from Metabase.
+
 
 ### get\_dbs
 
 ```python
-def get_dbs()
+def get_dbs() -> List[api.DB]
 ```
 
 Retrieves the list of databases from the Metabase API.
@@ -99,7 +118,7 @@ Retrieves the list of databases from the Metabase API.
 ### get\_collections
 
 ```python
-def get_collections()
+def get_collections() -> List[api.Collection]
 ```
 
 Retrieves the list of collections from the Metabase API.
@@ -118,8 +137,8 @@ Connector class for interacting with Metabase API and building lineage informati
 
 **Arguments**:
 
-- `namespaces` _Dict, optional_ - A mapping of database IDs to their corresponding namespace names. Defaults to None.
-- `default_namespace` _str, optional_ - The default namespace to be used when a table or question does not have a specific namespace. Defaults to None.
+- `namespaces` - A mapping of database IDs to their corresponding namespace names. Defaults to None.
+- `default_namespace` - The default namespace to be used when a table or question does not have a specific namespace. Defaults to None.
 - `*args` - Additional positional arguments to be passed to the base class constructor.
 - `**kwargs` - Additional keyword arguments to be passed to the base class constructor.
 
@@ -127,13 +146,17 @@ Connector class for interacting with Metabase API and building lineage informati
 **Attributes**:
 
 - `metabase_namespace` _str_ - The default namespace to be used.
-- `tables` _List[Dict]_ - The list of tables retrieved from the Metabase API.
-- `tables_map` _Dict[int, Dict]_ - A mapping of table IDs to their corresponding table dictionaries.
-- `dbs_map` _Dict[int, Dict]_ - A mapping of database IDs to their corresponding database dictionaries.
-- `questions_map` _Dict[int, Dict]_ - A mapping of question IDs to their corresponding question dictionaries.
-- `namespace_map` _Dict[int, str]_ - A mapping of database IDs to their corresponding namespace names.
-- `default_namespace`0 _Dict[int, int]_ - A mapping of question IDs to their corresponding table IDs.
-- `default_namespace`1 _Dict[int, int]_ - A mapping of table IDs to their corresponding database IDs.
+- `collections` - A list of active collections in Metabase
+- `questions` - A list of non-archived questions returned by Metabase
+- `tables` - The list of tables retrieved from the Metabase API.
+- `columns` - The list of columns referenced by Metabase Questions
+
+- `tables_map` - A mapping of table IDs to their corresponding table dictionaries.
+- `default_namespace`0 - A mapping of database IDs to corresponding database responses.
+- `default_namespace`1 - A mapping of question IDs to their corresponding question dictionaries.
+- `default_namespace`2 - A mapping of database IDs to their corresponding namespace names.
+- `default_namespace`3 - A mapping of question IDs to their corresponding table IDs.
+- `default_namespace`4 - A mapping of table IDs to their corresponding database IDs.
 
 ### get\_nodes
 

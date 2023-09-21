@@ -36,11 +36,27 @@ class NamedSourceSpec(EdgeNamedID, BaseSpec, SourcedEdgeSpecMetadataMixin,
 
 
 
+### to\_edge
+
+```python
+def to_edge() -> "NamedSpec"
+```
+
+
+
 ## IDSourceSpec Objects
 
 ```python
 class IDSourceSpec(EdgeUuidID, BaseSpec, SourcedEdgeSpecMetadataMixin,
                    DataSourceMixin)
+```
+
+
+
+### to\_edge
+
+```python
+def to_edge() -> "IDSpec"
 ```
 
 

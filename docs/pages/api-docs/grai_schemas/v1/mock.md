@@ -14,7 +14,7 @@ class DefaultValueFactory(ModelFactory[DefaultValue])
 ```python
 @post_generated
 @classmethod
-def data_type(cls, default_value) -> str
+def data_type(cls, default_value) -> Optional[str]
 ```
 
 
@@ -54,7 +54,7 @@ class MockNode()
 ### node
 
 ```python
-def node(**kwargs)
+def node(**kwargs) -> NodeV1
 ```
 
 
@@ -62,7 +62,7 @@ def node(**kwargs)
 ### named\_node\_spec
 
 ```python
-def named_node_spec(**kwargs)
+def named_node_spec(**kwargs) -> NamedSpec
 ```
 
 
@@ -70,7 +70,7 @@ def named_node_spec(**kwargs)
 ### id\_node\_spec
 
 ```python
-def id_node_spec(**kwargs)
+def id_node_spec(**kwargs) -> IDSpec
 ```
 
 
@@ -78,7 +78,7 @@ def id_node_spec(**kwargs)
 ### sourced\_node
 
 ```python
-def sourced_node(**kwargs)
+def sourced_node(**kwargs) -> SourcedNodeV1
 ```
 
 
@@ -86,7 +86,7 @@ def sourced_node(**kwargs)
 ### named\_source\_node\_spec
 
 ```python
-def named_source_node_spec(**kwargs)
+def named_source_node_spec(**kwargs) -> NamedSourceSpec
 ```
 
 
@@ -94,7 +94,7 @@ def named_source_node_spec(**kwargs)
 ### id\_source\_node\_spec
 
 ```python
-def id_source_node_spec(**kwargs)
+def id_source_node_spec(**kwargs) -> IDSourceSpec
 ```
 
 
@@ -134,7 +134,7 @@ class MockEdge()
 ### sourced\_edge
 
 ```python
-def sourced_edge(**kwargs)
+def sourced_edge(**kwargs) -> SourcedEdgeV1
 ```
 
 
@@ -142,7 +142,7 @@ def sourced_edge(**kwargs)
 ### edge
 
 ```python
-def edge(**kwargs)
+def edge(**kwargs) -> EdgeV1
 ```
 
 
@@ -150,7 +150,7 @@ def edge(**kwargs)
 ### named\_edge\_spec
 
 ```python
-def named_edge_spec(**kwargs)
+def named_edge_spec(**kwargs) -> NamedEdgeSpec
 ```
 
 
@@ -158,7 +158,7 @@ def named_edge_spec(**kwargs)
 ### id\_edge\_spec
 
 ```python
-def id_edge_spec(**kwargs)
+def id_edge_spec(**kwargs) -> EdgeIDSpec
 ```
 
 
@@ -166,7 +166,7 @@ def id_edge_spec(**kwargs)
 ### named\_source\_edge\_spec
 
 ```python
-def named_source_edge_spec(**kwargs)
+def named_source_edge_spec(**kwargs) -> NamedEdgeSourceSpec
 ```
 
 
@@ -174,7 +174,7 @@ def named_source_edge_spec(**kwargs)
 ### id\_source\_edge\_spec
 
 ```python
-def id_source_edge_spec(**kwargs)
+def id_source_edge_spec(**kwargs) -> EdgeIDSourceSpec
 ```
 
 
@@ -189,7 +189,7 @@ class MockOrganisation()
 
 ```python
 @classmethod
-def organisation(cls, **kwargs)
+def organisation(cls, **kwargs) -> OrganisationV1
 ```
 
 
@@ -198,7 +198,7 @@ def organisation(cls, **kwargs)
 
 ```python
 @classmethod
-def organisation_spec(cls, **kwargs)
+def organisation_spec(cls, **kwargs) -> OrganisationSpec
 ```
 
 
@@ -207,7 +207,7 @@ def organisation_spec(cls, **kwargs)
 
 ```python
 @classmethod
-def organization(cls, **kwargs)
+def organization(cls, **kwargs) -> OrganisationV1
 ```
 
 
@@ -216,7 +216,7 @@ def organization(cls, **kwargs)
 
 ```python
 @classmethod
-def organization_spec(cls, **kwargs)
+def organization_spec(cls, **kwargs) -> OrganisationSpec
 ```
 
 
@@ -246,7 +246,7 @@ class MockWorkspace()
 ### workspace
 
 ```python
-def workspace(**kwargs)
+def workspace(**kwargs) -> WorkspaceV1
 ```
 
 
@@ -254,7 +254,7 @@ def workspace(**kwargs)
 ### workspace\_spec
 
 ```python
-def workspace_spec(**kwargs)
+def workspace_spec(**kwargs) -> WorkspaceSpec
 ```
 
 
@@ -268,7 +268,7 @@ class MockSource()
 ### source
 
 ```python
-def source(**kwargs)
+def source(**kwargs) -> SourceV1
 ```
 
 
@@ -276,5 +276,27 @@ def source(**kwargs)
 ### source\_spec
 
 ```python
-def source_spec(**kwargs)
+def source_spec(**kwargs) -> SourceSpec
+```
+
+
+
+## MockEvent Objects
+
+```python
+class MockEvent()
+```
+
+### event\_spec
+
+```python
+def event_spec(**kwargs) -> EventSpec
+```
+
+
+
+### event
+
+```python
+def event(**kwargs) -> EventV1
 ```

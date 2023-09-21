@@ -25,6 +25,7 @@ The SQL Server integration synchronizes metadata from your SQL Server databases 
 
 | Field     | Value                                                               | Example                                                  |
 | --------- | ------------------------------------------------------------------- | -------------------------------------------------------- |
+| source    | The name of the source, see [sources](/concepts/sources)           | my-source |
 | Name      | Name for connection                                                 | Microsoft SQL Server                                     |
 | Namespace | Namespace for the connection, see [namespaces](/concepts/namespace) | default                                                  |
 | host      | Database host                                                       | sample-database.cudyk77thtpt.us-west-2.rds.amazonaws.com |
@@ -53,34 +54,31 @@ You'll need to first install the ODBC drivers for SQL Server before installing t
 </Callout>
 
 ```shell copy
-pip install grai-source-mssql
+pip install grai_source_mssql
 ```
 
-This installs the Grai SQL Server integration, which is now ready to run in python.
+More information about the API is available [here](/api-docs/grai_source_mssql/base).
 
-### Connecting & Syncing
+### Example
 
-The integration comes equipped with the client library already but we will need a python terminal or Jupyter Notebook to execute a few commands to establish a connection and begin querying the server.
+The library is split into a few distinct functions but if you only wish to extract nodes/edges you can do
+so as follows:
 
-Spin up your favorite python terminal then:
-
-```python copy
-import os
-from grai_source_mssql.base import update_server
-```
-
-For now we will use the default user credentials though you are free to create a new user / api keys from the server admin interface at http://localhost:8000/admin.
 
 ```python copy
-client = ClientV1("localhost", "8000", username="null@grai.io", password="super_secret")
-```
+  from grai_source_mssql import MsSQLIntegration
+  from grai_schemas.v1.source import SourceV1
 
-Now we can update the server with data from any mssql source. In order to do so you will need to pass credentials and namespace into the update_server function. Namespace is used to uniquely identify the nodes and when used consistently will allow you to add to the node from any source.
+  source = SourceV1(name="my-source", type="my-type")
+  mssql_params = {
+    "username": "my-username",
+    "password": "my-password",
+    "host": "my-mssql-hostname",
+  }
 
-Using example variables, in order to update the server with your metadata, simply run:
+  integration = MsSQLIntegration(source=source, namespace="mssql", **mssql_params)
 
-```python copy
-update_server(client, host=[your_mssql_host], user=[your_mssql_user], password=[your_mssql_password], namespace=[your_grai_namespace])
+  nodes, edges = integration.get_nodes_and_edges()
 ```
 
 <Callout type="info" emoji="ℹ️">

@@ -25,6 +25,7 @@ The dbt Cloud integration synchronizes your dbt metadata into the lineage graph.
 
 | Field     | Value                                                              | Example   |
 | --------- | ------------------------------------------------------------------ | --------- |
+| source    | The name of the source, see [sources](/concepts/sources)           | my-source |
 | Name      | Name for connection                                                | dbt Cloud |
 | Namespace | Namespace for the connection, see [namespace](/concepts/namespace) | default   |
 | api_key   | dbt Cloud api key, see [api key](#apikey)                          |           |
@@ -32,3 +33,33 @@ The dbt Cloud integration synchronizes your dbt metadata into the lineage graph.
 ### ApiKey
 
 Follow [https://docs.getdbt.com/docs/dbt-cloud-apis/user-tokens](https://docs.getdbt.com/docs/dbt-cloud-apis/user-tokens) to generate an api key.
+
+
+## Python Library
+
+The dbt integration can be run as a standalone python library to extract data lineage from the dbt cloud api.
+
+The library is available via pip
+
+
+```shell copy
+pip install grai_source_dbt_cloud
+```
+
+More information about the API is available [here](/api-docs/grai_source_dbt_cloud/base).
+
+### Example
+
+The library is split into a few distinct functions but if you only wish to extract nodes/edges from dbt you can do
+so as follows:
+
+```python copy
+  from grai_source_dbt_cloud import DbtCloudIntegration
+  from grai_schemas.v1.source import SourceV1
+
+  source = SourceV1(name="my-source", type="my-type")
+
+  integration = DbtCloudIntegration(source=source, namespace="dbt", api_key="my-api-key")
+
+  nodes, edges = integration.get_nodes_and_edges()
+```

@@ -3,49 +3,76 @@ sidebar_label: base
 title: grai_source_snowflake.base
 ---
 
-## get\_nodes\_and\_edges
+## SnowflakeIntegration Objects
 
 ```python
-def get_nodes_and_edges(
-        connector: SnowflakeConnector,
-        version: Literal["v1"]) -> Tuple[List[Node], List[Edge]]
+class SnowflakeIntegration(GraiIntegrationImplementation)
 ```
+
+A class for extracting Grai compliant metadata from Snowflake
+
+**Attributes**:
+
+- `connector` - The connector responsible for communicating with Snowflake.
+
+### \_\_init\_\_
+
+```python
+def __init__(source: SourceV1,
+             version: Optional[str] = None,
+             account: Optional[str] = None,
+             user: Optional[str] = None,
+             password: Optional[str] = None,
+             warehouse: Optional[str] = None,
+             role: Optional[str] = None,
+             database: Optional[str] = None,
+             namespace: Optional[str] = None,
+             **kwargs)
+```
+
+Initializes the Snowflake integration.
 
 **Arguments**:
 
-  connector (SnowflakeConnector):
-  version (Literal[&quot;v1&quot;]):
+- `source` - The Grai data source to associate with output from the integration. More information about source objects is available in the `grai_schemas` library.
+- `version` - The Grai data version to associate with output from the integration
+- `namespace` - The Grai namespace to associate with output from the integration
+- `account` - Snowflake account, the characters in front of `.snowflakecomputing.com`
+- `user` - The database user
+- `role` - The Snowflake role to use.
+- `warehouse` - The Snowflake warehouse to use.
+- `database` - The Snowflake database to connect to.
+- `grai_schemas`0 - The password to use when connecting to Snowflake.
 
-
-**Returns**:
-
-
-
-## update\_server
+### get\_nodes\_and\_edges
 
 ```python
-def update_server(client: BaseClient,
-                  namespace: Optional[str] = None,
-                  account: Optional[str] = None,
-                  user: Optional[str] = None,
-                  password: Optional[str] = None,
-                  role: Optional[str] = None,
-                  warehouse: Optional[str] = None,
-                  database: Optional[str] = None,
-                  schema: Optional[str] = None) -> None
+@cache
+def get_nodes_and_edges() -> Tuple[List[SourcedNode], List[SourcedEdge]]
 ```
 
-**Arguments**:
+Returns a tuple of lists of SourcedNode and SourcedEdge objects
 
-  client (BaseClient):
-- `namespace` _Optional[str], optional_ - (Default value = None)
-- `account` _Optional[str], optional_ - (Default value = None)
-- `user` _Optional[str], optional_ - (Default value = None)
-- `password` _Optional[str], optional_ - (Default value = None)
-- `role` _Optional[str], optional_ - (Default value = None)
-- `warehouse` _Optional[str], optional_ - (Default value = None)
-- `database` _Optional[str], optional_ - (Default value = None)
-- `schema` _Optional[str], optional_ - (Default value = None)
+### ready
 
+```python
+def ready() -> bool
+```
 
-**Returns**:
+Returns True if the integration is ready to run
+
+### nodes
+
+```python
+def nodes() -> List[SourcedNode]
+```
+
+Returns a list of SourcedNode objects
+
+### edges
+
+```python
+def edges() -> List[SourcedEdge]
+```
+
+Returns a list of SourcedEdge objects

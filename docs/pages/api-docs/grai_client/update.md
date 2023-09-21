@@ -3,24 +3,6 @@ sidebar_label: update
 title: grai_client.update
 ---
 
-## compute\_graph\_changes
-
-```python
-def compute_graph_changes(
-        items: List[T],
-        active_items: List[T]) -> Tuple[List[T], List[T], List[T]]
-```
-
-**Arguments**:
-
-  items:
-  active_items:
-
-
-**Returns**:
-
-
-
 ## update
 
 ```python

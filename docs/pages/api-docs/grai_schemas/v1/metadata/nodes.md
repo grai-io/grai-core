@@ -92,3 +92,11 @@ class QueryAttributes(GenericAttributes)
 ```python
 class QueryMetadata(BaseNodeMetadataV1)
 ```
+
+
+
+## CollectionMetadata Objects
+
+```python
+class CollectionMetadata(BaseNodeMetadataV1)
+```
