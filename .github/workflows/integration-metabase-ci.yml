@@ -16,10 +16,6 @@ env:
   py_ver: "3.10"
   poetry_ver: "1.2.2"
   project_dir: "grai-integrations/source-metabase"
-  DB_DATABASE: grai
-  DB_USER: grai
-  DB_PASSWORD: grai
-  DB_HOST: localhost
 
 jobs:
   lint-integration-metabase:
@@ -64,7 +60,10 @@ jobs:
       - run: poetry run pytest
 
       - name: Start Metabase
-        run: |
-          docker compose up -d
-          sleep 90
-          pytest
+        run: docker compose up -d
+
+      - name: Wait for Metabase to start
+        run: sleep 90
+
+      - name: Run Metabase integration tests
+        run: poetry run pytest
