@@ -5,7 +5,7 @@ on:
     paths:
       - "grai-integrations/source-metabase/**"
       - "grai-server/**"
-
+      - ".github/workflows/integration-metabase-ci.yml"
 
 concurrency:
   group: ${{ github.ref }}-metabase-ci
