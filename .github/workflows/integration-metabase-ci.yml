@@ -1,4 +1,4 @@
-name: MySQL Integration CI
+name: Metabase Integration CI
 
 on:
   pull_request:
@@ -56,9 +56,12 @@ jobs:
         with:
           python-version: "${{ env.py_ver }}"
 
-      - run: |
-          pip install pytest
-          pip install .
+      - uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: "${{ env.poetry_ver }}"
+
+      - run: poetry install
+      - run: poetry run pytest
 
       - name: Start Metabase
         run: |
