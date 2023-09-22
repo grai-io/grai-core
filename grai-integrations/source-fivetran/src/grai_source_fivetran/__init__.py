@@ -7,4 +7,4 @@ from grai_source_fivetran import (
     models,
 )
 
-__version__ = "0.1.2-alpha1"
+__version__ = "0.1.2"
