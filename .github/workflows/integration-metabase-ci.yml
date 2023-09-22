@@ -3,27 +3,26 @@ name: MySQL Integration CI
 on:
   pull_request:
     paths:
-      - "grai-integrations/source-mysql/**"
-      - "grai-client/**"
+      - "grai-integrations/source-metabase/**"
       - "grai-server/**"
 
 
 concurrency:
-  group: ${{ github.ref }}-mysql-ci
+  group: ${{ github.ref }}-metabase-ci
   cancel-in-progress: true
 
 
 env:
   py_ver: "3.10"
   poetry_ver: "1.2.2"
-  project_dir: "grai-integrations/source-mysql"
+  project_dir: "grai-integrations/source-metabase"
   DB_DATABASE: grai
   DB_USER: grai
   DB_PASSWORD: grai
   DB_HOST: localhost
 
 jobs:
-  lint-integration-mysql:
+  lint-integration-metabase:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -44,31 +43,28 @@ jobs:
           black . --check
           isort . --profile black --check
 
-  tests-integration-mysql:
-    needs: lint-integration-mysql
+  tests-integration-metabase:
+    needs: lint-integration-metabase
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ${{ env.project_dir }}
     services:
-      test_db:
-        image: mysql:latest
+      # Needs to somehow mount the metabase.db file....
+      test_metabase:
+        image: metabase/metabase:latest
         env:
-          MYSQL_ROOT_PASSWORD: ${{ env.DB_PASSWORD }}
-          MYSQL_USER: ${{ env.DB_USER }}
-          MYSQL_PASSWORD: ${{ env.DB_PASSWORD }}
-          MYSQL_DATABASE: ${{ env.DB_DATABASE }}
+          MB_DB_FILE: /metabase.db
         ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+          - 3001:3000
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up MySQL
-        working-directory: ${{ env.project_dir }}/data/scripts
+      - name: Set up Metabase
+        working-directory: ${{ env.project_dir }}/init
         run: |
-          sh init-db.sh
+          sh init_metabase.sh
 
       - uses: actions/setup-python@v4
         with:
