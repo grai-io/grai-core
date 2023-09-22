@@ -49,22 +49,8 @@ jobs:
     defaults:
       run:
         working-directory: ${{ env.project_dir }}
-    services:
-      # Needs to somehow mount the metabase.db file....
-      test_metabase:
-        image: metabase/metabase:latest
-        env:
-          MB_DB_FILE: /metabase.db
-        ports:
-          - 3001:3000
-
     steps:
       - uses: actions/checkout@v3
-
-      - name: Set up Metabase
-        working-directory: ${{ env.project_dir }}/init
-        run: |
-          sh init_metabase.sh
 
       - uses: actions/setup-python@v4
         with:
@@ -73,5 +59,10 @@ jobs:
       - run: |
           pip install pytest
           pip install .
+
+      - name: Start Metabase
+        run: |
+          docker compose up -d
+          sleep 60
 
       - run: pytest
