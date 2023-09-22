@@ -48,63 +48,10 @@ def response_status_check(resp: Response) -> Response
 
 
 
-## orjson\_defaults
-
-```python
-def orjson_defaults(obj: Any) -> Any
-```
-
-**Arguments**:
-
-  obj (Any):
-
-
-**Returns**:
-
-
-
-## GraiEncoder Objects
-
-```python
-class GraiEncoder(json.JSONEncoder)
-```
-
-Needed for the base python json implementation
-
-### default
-
-```python
-def default(obj: Any) -> Any
-```
-
-**Arguments**:
-
-  obj (Any):
-
-
-**Returns**:
-
-
-
 ## serialize\_obj
 
 ```python
 def serialize_obj(obj: Dict) -> bytes
-```
-
-**Arguments**:
-
-  obj (Dict):
-
-
-**Returns**:
-
-
-
-## serialize\_obj\_fallback
-
-```python
-def serialize_obj_fallback(obj: Dict) -> str
 ```
 
 **Arguments**:

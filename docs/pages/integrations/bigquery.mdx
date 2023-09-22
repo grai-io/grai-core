@@ -24,6 +24,7 @@ The BigQuery integration synchronizes metadata from your BigQuery datawarehouse 
 
 | Field              | Value                                                                 | Example         |
 | ------------------ | --------------------------------------------------------------------- | --------------- |
+| source    | The name of the source, see [sources](/concepts/sources)           | my-source |
 | Name               | Name for connection                                                   | Google BigQuery |
 | Namespace          | Namespace for the connection, see [namespaces](/concepts/namespace)   | default         |
 | project            | GCP project id                                                        | grai-demo       |
@@ -57,42 +58,32 @@ Logs are read over a window of one or more days, to capture relevant database lo
 
 ## Python Library
 
-### Installation
+The BigQuery integration can be run as a standalone python library to extract data lineage from your BigQuery warehouse.
+The library is available via pip
 
-Install BigQuery Grai package with pip
 
 ```shell copy
-pip install grai-source-bigquery
+pip install grai_source_bigquery
 ```
 
-This installs the Grai BigQuery integration, which is now ready to run in python
+More information about the API is available [here](/api-docs/grai_source_bigquery/base).
 
-### Connecting & Syncing
+### Example
 
-The integrations comes equipped with the client library already but we will need a python terminal or Jupyter Notebook to execute a few commands to establish a connection and begin querying the server.
-
-Spin up your favorite python terminal then:
-
-```python copy
-import os
-from grai_source_bigquery.base import update_server
-```
-
-For now we will use the default user credentials though you are free to create a new user / api keys from the server admin interface at http://localhost:8000/admin.
+The library is split into a few distinct functions but if you only wish to extract nodes/edges from BigQuery you can do
+so from the base BigQueryIntegration class.
 
 ```python copy
-client = ClientV1("localhost","8000", username="null@grai.io", password="super_secret")
-```
+  from grai_source_bigquery import BigQueryIntegration
+  from grai_schemas.v1.source import SourceV1
 
-Now we can update the server with data from any BigQuery source. In order to do so you will need to pass credentials and namespace into the update_server function.
-Namespace is used to uniquely identify the nodes and when used consistently will allow you to add to the node from any source.
+  source = SourceV1(name="my-source", type="my-type")
+  big_query_settings = {
+    "project": "my-project",
+    "dataset": "my-dataset
+    "credentials": "my-credentials-json",
+  }
+  integration = BigQueryIntegration(source=source, namespace="BigQuery", **big_query_settings)
 
-Using example variables, in order to update the server with your metadata, simply run:
-
-```python copy
-update_server(client, project="[your_project]", dataset="[your_dataset]", credentials="[your_credentials]", namespace="[your_grai_namespace]")
-```
-
-```python copy
-update_server(client, project="[your_project]", dataset=["[your_dataset]", "[your_second_dataset]"], credentials="[your_credentials]", namespace="[your_grai_namespace]")
+  nodes, edges = integration.get_nodes_and_edges()
 ```

@@ -26,6 +26,7 @@ In this way you can quickly identify which data is being used by your BI tools, 
 
 | Field           | Value                                                              | Example  |
 | --------------- | ------------------------------------------------------------------ | -------- |
+| source    | The name of the source, see [sources](/concepts/sources)           | my-source |
 | Name            | Name for connection                                                | Metabase |
 | Namespace       | Namespace for the connection, see [namespace](/concepts/namespace) | default  |
 | username        | Username for an authorized Metabase User                           |          |
@@ -53,35 +54,34 @@ The namespaces field should be a JSON string with the Grai namespace for each da
 
 ## Python Library
 
-### Installation
+The Metabase integration can be run as a standalone python library to extract data lineage from your instance of Metabase.
 
-Install the Metabase Grai integration with pip
+The library is available via pip
+
 
 ```shell copy
-pip install grai-source-metabase
+pip install grai_source_metabase
 ```
 
-This installs the Grai Metabase integration, which is now ready to run in python
+More information about the API is available [here](/api-docs/grai_source_metabase/base).
 
-### Connecting & Syncing
+### Example
 
-The integration comes equipped with the client library already but we will need a python terminal or Jupyter Notebook to execute a few commands to establish a connection and begin querying the server.
-
-Spin up your favorite python terminal then:
-
-```python copy
-import os
-from grai_source_metabase.base import update_server
-```
-
-For now we will use the default user credentials though you are free to create a new user / api keys from the server admin interface at http://localhost:8000/admin.
+The library is split into a few distinct functions but if you only wish to extract nodes/edges you can do
+so as follows:
 
 ```python copy
-client = ClientV1("localhost", "8000", username="null@grai.io", password="super_secret")
-```
+  from grai_source_metabase import MetabaseIntegration
+  from grai_schemas.v1.source import SourceV1
 
-Using example variables, in order to update the server with your metadata, simply run:
+  source = SourceV1(name="my-source", type="my-type")
+  metabase_params = {
+    "username": "my-username",
+    "password": "my-password",
+    "endpoint": "https://metabase.yourdomain.com"
+  }
 
-```python copy
-update_server(client, metabase_namespace=[your_metabase_namespace], username=[your_username], password=[your_password], endpoint=[your_endpoint])
+  integration = MetabaseIntegration(source=source, namespace="metabase", **metabase_params)
+
+  nodes, edges = integration.get_nodes_and_edges()
 ```

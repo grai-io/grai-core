@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai_source_bigquery"
-version = "0.2.4"
+version = "0.2.5"
 description = ""
 authors = ["Edward Louth <edward@grai.io>"]
 license = "Elastic-2.0"
@@ -46,3 +46,5 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry_bumpversion.file."src/grai_source_bigquery/__init__.py"]
+search = '__version__ = "{current_version}"'
+replace = '__version__ = "{new_version}"'

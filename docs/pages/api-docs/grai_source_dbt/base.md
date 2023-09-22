@@ -1,46 +1,47 @@
 ---
 sidebar_label: base
-title: grai_source_dbt_cloud.base
+title: grai_source_dbt.base
 ---
 
-## DbtCloudIntegration Objects
+## DbtIntegration Objects
 
 ```python
-class DbtCloudIntegration(EventMixin, GraiIntegrationImplementation)
+class DbtIntegration(GraiIntegrationImplementation)
 ```
 
-A class for extracting Grai compliant metadata from the dbt cloud API.
+A class for extracting Grai compliant metadata from a dbt manifest.json file.
 
 **Attributes**:
 
-- `connector` - The dbt cloud connector responsible for communicating with the dbt cloud api.
+- `manifest_data` - A dictionary parsing of a manifest.json file
+- `namespace` - The Grai namespace to associate with output from the integration
 
 ### \_\_init\_\_
 
 ```python
-def __init__(api_key: str,
+def __init__(manifest_data: Union[str, dict],
              source: SourceV1,
              version: Optional[str] = None,
              namespace: Optional[str] = "default")
 ```
 
-Initializes the dbt cloud integration.
+Initializes the dbt integration.
 
 **Arguments**:
 
-- `api_key` - A dbt cloud api key
+- `manifest_data` - Either a string path to a manifest.json file, or a dictionary parsing of a manifest.json file
 - `source` - The Grai data source to associate with output from the integration. More information about source objects is available in the `grai_schemas` library.
 - `version` - The Grai data version to associate with output from the integration
 - `namespace` - The Grai namespace to associate with output from the integration
 
-### get\_nodes\_and\_edges
+### manifest
 
 ```python
-@cache
-def get_nodes_and_edges() -> Tuple[List[SourcedNode], List[SourcedEdge]]
+@cached_property
+def manifest() -> ManifestProcessor
 ```
 
-Returns a tuple of lists of SourcedNode and SourcedEdge objects
+Returns a ManifestProcessor object for the manifest.json file
 
 ### nodes
 
@@ -58,13 +59,13 @@ def edges() -> List[SourcedEdge]
 
 Returns a list of SourcedEdge objects
 
-### events
+### get\_nodes\_and\_edges
 
 ```python
-def events(last_event_date: Optional[str]) -> List[Event]
+def get_nodes_and_edges() -> Tuple[List[SourcedNode], List[SourcedEdge]]
 ```
 
-Returns a list of Event objects
+Returns a tuple of lists of SourcedNode and SourcedEdge objects
 
 ### ready
 

@@ -23,6 +23,7 @@ import InlineLogo from "../../components/InlineLogo";
 
 | Field         | Value                                                               | Example                                                  |
 | ------------- | ------------------------------------------------------------------- | -------------------------------------------------------- |
+| source    | The name of the source, see [sources](/concepts/sources)           | my-source |
 | Name          | Name for connection                                                 | Postgres                                                 |
 | Namespace     | Namespace for the connection, see [namespaces](/concepts/namespace) | default                                                  |
 | host          | Database host                                                       | sample-database.cudyk77thtpt.us-west-2.rds.amazonaws.com |
@@ -39,37 +40,35 @@ import InlineLogo from "../../components/InlineLogo";
 
 ## Python Library
 
-### Installation
+The postgres integration can be run as a standalone python library to extract data lineage from your instance of Postgres.
 
-Install Postgres Grai package with pip
+The library is available via pip
+
 
 ```shell copy
-pip install grai-source-postgres
+pip install grai_source_postgres
 ```
 
-This installs the Grai postgres integration, which is now ready to run in python.
+More information about the API is available [here](/api-docs/grai_source_postgres/base).
 
-## Connecting & Syncing
+### Example
 
-The integration comes equipped with the client library already but we will need a python terminal or Jupyter Notebook to execute a few commands to establish a connection and begin querying the server.
-
-Spin up your favorite python terminal then:
-
-```python copy
-import os
-from grai_source_postgres.base import update_server
-```
-
-For now we will use the default user credentials though you are free to create a new user / api keys from the server admin interface at http://localhost:8000/admin.
+The library is split into a few distinct functions but if you only wish to extract nodes/edges you can do
+so as follows:
 
 ```python copy
-client = ClientV1("localhost", "8000", username="null@grai.io", password="super_secret")
-```
+  from grai_source_postgres import PostgresIntegration
+  from grai_schemas.v1.source import SourceV1
 
-Now we can update the server with data from any postgres source. In order to do so you will need to pass credentials and namespace into the update_server function. Namespace is used to uniquely identify the nodes and when used consistently will allow you to add to the node from any source.
+  source = SourceV1(name="my-source", type="my-type")
+  postgres_params = {
+    "username": "my-username",
+    "password": "my-password",
+    "host": "https://prod.yourdomain.com",
+    "port": 5432
+  }
 
-Using example variables, in order to update the server with your metadata, simply run:
+  integration = PostgresIntegration(source=source, namespace="metabase", **postgres_params)
 
-```python copy
-update_server(client, dbname=[your_dbname], user=[your_db_username], password=[your_db_password], namespace=[your_grai_namespace], host=[your_db_host], port=[your_db_port])
+  nodes, edges = integration.get_nodes_and_edges()
 ```

@@ -36,11 +36,27 @@ class NamedSourceSpec(NodeNamedID, BaseSpec, SourcedNodeSpecMetadataMixin,
 
 
 
+### to\_node
+
+```python
+def to_node() -> "NamedSpec"
+```
+
+
+
 ## IDSourceSpec Objects
 
 ```python
 class IDSourceSpec(NodeUuidID, BaseSpec, SourcedNodeSpecMetadataMixin,
                    DataSourceMixin)
+```
+
+
+
+### to\_node
+
+```python
+def to_node() -> "IDSpec"
 ```
 
 
@@ -64,6 +80,14 @@ def from_spec(cls, spec_dict: Dict) -> "SourcedNodeV1"
 
 
 **Returns**:
+
+
+
+### to\_node
+
+```python
+def to_node() -> "NodeV1"
+```
 
 
 

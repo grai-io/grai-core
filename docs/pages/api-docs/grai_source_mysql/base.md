@@ -3,45 +3,73 @@ sidebar_label: base
 title: grai_source_mysql.base
 ---
 
-## get\_nodes\_and\_edges
+## MySQLIntegration Objects
 
 ```python
-def get_nodes_and_edges(
-        connector: MySQLConnector,
-        version: Literal["v1"]) -> Tuple[List[Node], List[Edge]]
+class MySQLIntegration(GraiIntegrationImplementation)
 ```
+
+A class for extracting Grai compliant metadata from MySQL
+
+**Attributes**:
+
+- `connector` - Responsible for communicating with MySQL.
+
+### \_\_init\_\_
+
+```python
+def __init__(source: SourceV1,
+             version: Optional[str] = None,
+             dbname: Optional[str] = None,
+             user: Optional[str] = None,
+             password: Optional[str] = None,
+             host: Optional[str] = None,
+             port: Optional[Union[str, int]] = None,
+             namespace: Optional[str] = None)
+```
+
+Initializes the MsSQL integration.
 
 **Arguments**:
 
-  connector (MySQLConnector):
-  version (Literal[&quot;v1&quot;]):
+- `source` - The Grai data source to associate with output from the integration. More information about source objects is available in the `grai_schemas` library.
+- `version` - The Grai data version to associate with output from the integration
+- `namespace` - The Grai namespace to associate with output from the integration
+- `dbname` - The MySQL database to connect to.
+- `user` - The username to use when connecting to MySQL.
+- `password` - The password to use when connecting to MySQL.
+- `host` - The MySQL host address.
+- `port` - The MySQL port.
 
-
-**Returns**:
-
-
-
-## update\_server
+### get\_nodes\_and\_edges
 
 ```python
-def update_server(client: BaseClient,
-                  dbname: Optional[str] = None,
-                  namespace: Optional[str] = None,
-                  user: Optional[str] = None,
-                  password: Optional[str] = None,
-                  host: Optional[str] = None,
-                  port: Optional[str] = None)
+@cache
+def get_nodes_and_edges() -> Tuple[List[SourcedNode], List[SourcedEdge]]
 ```
 
-**Arguments**:
+Returns a tuple of lists of SourcedNode and SourcedEdge objects
 
-  client (BaseClient):
-- `dbname` _Optional[str], optional_ - (Default value = None)
-- `namespace` _Optional[str], optional_ - (Default value = None)
-- `user` _Optional[str], optional_ - (Default value = None)
-- `password` _Optional[str], optional_ - (Default value = None)
-- `host` _Optional[str], optional_ - (Default value = None)
-- `port` _Optional[str], optional_ - (Default value = None)
+### ready
 
+```python
+def ready() -> bool
+```
 
-**Returns**:
+Returns True if the integration is ready to run
+
+### nodes
+
+```python
+def nodes() -> List[SourcedNode]
+```
+
+Returns a list of SourcedNode objects
+
+### edges
+
+```python
+def edges() -> List[SourcedEdge]
+```
+
+Returns a list of SourcedEdge objects

@@ -24,6 +24,7 @@ The Snowflake integration synchronizes metadata from your Snowflake datawarehous
 
 | Field     | Value                                                                   | Example          |
 | --------- | ----------------------------------------------------------------------- | ---------------- |
+| source    | The name of the source, see [sources](/concepts/sources)           | my-source |
 | Name      | Name for connection                                                     | Snowflake        |
 | Namespace | Namespace for the connection, see [namespaces](/concepts/namespace)     | default          |
 | account   | Snowflake account, the characters in front of `.snowflakecomputing.com` | hujwihs-hab96881 |
@@ -34,40 +35,40 @@ The Snowflake integration synchronizes metadata from your Snowflake datawarehous
 | schema    | Snowflake schema to use (optional)                                      |                  |
 | password  | Database password                                                       |                  |
 
+
 ## Python Library
 
-### Installation
+The Redshift integration can be run as a standalone python library to extract data lineage from your instance of Redshift.
 
-Install Snowflake Grai package with pip
+The library is available via pip
+
 
 ```shell copy
-pip install grai-source-snowflake
+pip install grai_source_snowflake
 ```
 
-This installs the Grai snowflake integration, which is now ready to run in python
+More information about the API is available [here](/api-docs/grai_source_snowflake/base).
 
-### Connecting & Syncing
+### Example
 
-The integration comes equipped with the client library already but we will need a python terminal or Jupyter Notebook to execute a few commands to establish a connection and begin querying the server.
-
-Spin up your favorite python terminal then:
-
-```python copy
-import os
-from grai_source_snowflake.base import update_server
-```
-
-For now we will use the default user credentials though you are free to create a new user / api keys from the server admin interface at http://localhost:8000/admin.
+The library is split into a few distinct functions but if you only wish to extract nodes/edges you can do
+so as follows:
 
 ```python copy
-client = ClientV1("localhost", "8000", username="null@grai.io", password="super_secret")
-```
+  from grai_source_postgres import SnowflakeIntegration
+  from grai_schemas.v1.source import SourceV1
 
-Now we can update the server with data from any snowflake source. In order to do so you will need to pass credentials and namespace into the update_server function. Namespace is used to uniquely identify the nodes and when used consistently will allow you to add to the node from any source.
+  source = SourceV1(name="my-source", type="my-type")
+  snowflake_params = {
+    "account": "hujwihs-hab96881",
+    "user": "you@your_company.com",
+    "password": "so_secret",
+    "role": "READ_ONLY",
+    "warehouse": "COMPUTE_WH",
+    "database"="GRAI"
+  }
 
-Using example variables, in order to update the server with your metadata, simply run:
+  integration = SnowflakeIntegration(source=source, namespace="snowflake", **snowflake_params)
 
-```python copy
-update_server(client, account="[your_account]", user="[your_user]]", password="[your_password]", role="[your_role]", warehouse="COMPUTE_WH", database="GRAI", schema="JAFFLE_SHOP", namespace="test")
-
+  nodes, edges = integration.get_nodes_and_edges()
 ```
