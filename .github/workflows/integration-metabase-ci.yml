@@ -1,0 +1,68 @@
+name: Metabase Integration CI
+
+on:
+  pull_request:
+    paths:
+      - "grai-integrations/source-metabase/**"
+      - "grai-server/**"
+      - ".github/workflows/integration-metabase-ci.yml"
+
+concurrency:
+  group: ${{ github.ref }}-metabase-ci
+  cancel-in-progress: true
+
+
+env:
+  py_ver: "3.10"
+  poetry_ver: "1.2.2"
+  project_dir: "grai-integrations/source-metabase"
+
+jobs:
+  lint-integration-metabase:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.project_dir }}
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - name: Install Python
+        id: setup-python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "${{ env.py_ver }}"
+
+      - run: pip install black isort
+
+      - run: |
+          black . --check
+          isort . --profile black --check
+
+  tests-integration-metabase:
+    needs: lint-integration-metabase
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.project_dir }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "${{ env.py_ver }}"
+
+      - uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: "${{ env.poetry_ver }}"
+
+      - run: poetry install
+
+      - name: Start Metabase
+        run: docker compose up -d
+
+      - name: Wait for Metabase to start
+        run: sleep 90
+
+      - name: Run Metabase integration tests
+        run: poetry run pytest
