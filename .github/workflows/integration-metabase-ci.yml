@@ -1,0 +1,81 @@
+name: MySQL Integration CI
+
+on:
+  pull_request:
+    paths:
+      - "grai-integrations/source-mysql/**"
+      - "grai-client/**"
+      - "grai-server/**"
+
+
+concurrency:
+  group: ${{ github.ref }}-mysql-ci
+  cancel-in-progress: true
+
+
+env:
+  py_ver: "3.10"
+  poetry_ver: "1.2.2"
+  project_dir: "grai-integrations/source-mysql"
+  DB_DATABASE: grai
+  DB_USER: grai
+  DB_PASSWORD: grai
+  DB_HOST: localhost
+
+jobs:
+  lint-integration-mysql:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.project_dir }}
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - name: Install Python
+        id: setup-python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "${{ env.py_ver }}"
+
+      - run: pip install black isort
+
+      - run: |
+          black . --check
+          isort . --profile black --check
+
+  tests-integration-mysql:
+    needs: lint-integration-mysql
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.project_dir }}
+    services:
+      test_db:
+        image: mysql:latest
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ env.DB_PASSWORD }}
+          MYSQL_USER: ${{ env.DB_USER }}
+          MYSQL_PASSWORD: ${{ env.DB_PASSWORD }}
+          MYSQL_DATABASE: ${{ env.DB_DATABASE }}
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up MySQL
+        working-directory: ${{ env.project_dir }}/data/scripts
+        run: |
+          sh init-db.sh
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "${{ env.py_ver }}"
+
+      - run: |
+          pip install pytest
+          pip install .
+
+      - run: pytest
