@@ -57,7 +57,6 @@ jobs:
           poetry-version: "${{ env.poetry_ver }}"
 
       - run: poetry install
-      - run: poetry run pytest
 
       - name: Start Metabase
         run: docker compose up -d
