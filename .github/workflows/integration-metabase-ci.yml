@@ -66,6 +66,5 @@ jobs:
       - name: Start Metabase
         run: |
           docker compose up -d
-          sleep 60
-
-      - run: pytest
+          sleep 90
+          pytest
