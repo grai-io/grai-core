@@ -586,7 +586,7 @@ class FivetranConnector(FivetranAPI):
         ]
 
         column_edges = (Edge(source=c1, destination=c2, constraint_type="c") for c1, c2 in columns)
-        table_edges = (Edge(source=t1, destination=t2, constraint_type="c") for t1, t2 in tables.values())
+        # table_edges = (Edge(source=t1, destination=t2, constraint_type="c") for t1, t2 in tables.values())
         table_to_column_edges = (
             Edge(source=table, destination=col, constraint_type="bt")
             for cols in columns
@@ -594,7 +594,7 @@ class FivetranConnector(FivetranAPI):
         )
 
         self._nodes = list(chain(chain.from_iterable(tables.values()), *columns))
-        self._edges = list(chain(column_edges, table_edges, table_to_column_edges))
+        self._edges = list(chain(column_edges, table_to_column_edges))
         self.lineage_ready = True
 
         return self._nodes, self._edges
