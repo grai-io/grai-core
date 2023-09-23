@@ -5,7 +5,7 @@ from grai_schemas.v1.generics import GraiBaseModel, NamedID, UuidID
 from grai_schemas.v1.metadata.edges import GenericEdgeMetadataV1, Metadata
 from grai_schemas.v1.metadata.metadata import EdgeMetadataV1, GraiEdgeMetadataV1
 from grai_schemas.v1.node import NodeIdTypes
-from grai_schemas.v1.source import DataSourceMixin, DataSourcesMixin
+from grai_schemas.v1.source import DataSourceMixin, DataSourcesMixin, SourceSpec
 from pydantic import validator
 
 
@@ -24,20 +24,13 @@ class EdgeUuidID(UuidID):
 EdgeIdTypes = Union[EdgeUuidID, EdgeNamedID]
 
 
-class BaseSpec(GraiBaseModel):
-    """ """
-
+class BaseSourcedEdgeSpec(GraiBaseModel):
     display_name: Optional[str]
     source: NodeIdTypes
     destination: NodeIdTypes
     is_active: Optional[bool] = True
     workspace: Optional[UUID]
-
-    def __str__(self):
-        return f"Edge[Node({self.source}) -> Node({self.destination})]"
-
-
-class SourcedEdgeSpecMetadataMixin(GraiBaseModel):
+    data_source: SourceSpec
     metadata: GraiEdgeMetadataV1 = GraiEdgeMetadataV1(grai=GenericEdgeMetadataV1(edge_type="Generic"))
 
     @validator("metadata", always=True, pre=True)
@@ -51,11 +44,12 @@ class SourcedEdgeSpecMetadataMixin(GraiBaseModel):
             return GraiEdgeMetadataV1(grai=GenericEdgeMetadataV1(edge_type="Generic"))
         raise ValueError(f"Invalid metadata: {v}. Expected either None, a dict, or a MetadataV1 instance.")
 
+    def __str__(self):
+        return f"Edge[Node({self.source}) -> Node({self.destination})]"
 
-class NamedSourceSpec(EdgeNamedID, BaseSpec, SourcedEdgeSpecMetadataMixin, DataSourceMixin):
+
+class NamedSourceSpec(EdgeNamedID, BaseSourcedEdgeSpec):
     """ """
-
-    pass
 
     def to_edge(self) -> "NamedSpec":
         """
@@ -72,10 +66,8 @@ class NamedSourceSpec(EdgeNamedID, BaseSpec, SourcedEdgeSpecMetadataMixin, DataS
         return NamedSpec(**values)
 
 
-class IDSourceSpec(EdgeUuidID, BaseSpec, SourcedEdgeSpecMetadataMixin, DataSourceMixin):
+class IDSourceSpec(EdgeUuidID, BaseSourcedEdgeSpec):
     """ """
-
-    pass
 
     def to_edge(self) -> "IDSpec":
         """
@@ -121,7 +113,13 @@ class SourcedEdgeV1(GraiBaseModel):
         return EdgeV1(version="v1", type="Edge", spec=self.spec.to_edge())
 
 
-class EdgeSpecMetadataMixin(GraiBaseModel):
+class BaseEdgeSpec(GraiBaseModel):
+    display_name: Optional[str]
+    source: NodeIdTypes
+    destination: NodeIdTypes
+    is_active: Optional[bool] = True
+    workspace: Optional[UUID]
+    data_sources: List[Union[UUID, SourceSpec]]
     metadata: EdgeMetadataV1 = EdgeMetadataV1(grai=GenericEdgeMetadataV1(edge_type="Generic"), sources={})
 
     @validator("metadata", always=True, pre=True)
@@ -136,14 +134,18 @@ class EdgeSpecMetadataMixin(GraiBaseModel):
             return EdgeMetadataV1(grai=GenericEdgeMetadataV1(edge_type="Generic"), sources={})
         raise ValueError(f"Invalid metadata: {v}. Expected either None, a dict, or a MetadataV1 instance.")
 
+    def __str__(self):
+        return f"Edge[Node({self.source}) -> Node({self.destination})]"
 
-class NamedSpec(EdgeNamedID, BaseSpec, EdgeSpecMetadataMixin, DataSourcesMixin):
+
+class NamedSpec(EdgeNamedID, BaseEdgeSpec):
     """ """
 
     pass
 
 
-class IDSpec(EdgeUuidID, BaseSpec, EdgeSpecMetadataMixin, DataSourcesMixin):
+class IDSpec(EdgeUuidID, BaseEdgeSpec):
+
     """ """
 
     pass

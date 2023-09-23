@@ -23,9 +23,9 @@ class BaseID(GraiBaseModel):
 class NamedID(BaseID):
     """ """
 
+    id: Optional[UUID]
     name: str
     namespace: str
-    id: Optional[UUID]
 
 
 class UuidID(BaseID):
