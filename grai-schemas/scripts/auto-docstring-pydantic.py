@@ -8,33 +8,28 @@ num_spaces = 4
 SPACES = " " * num_spaces
 
 
-class PydanticBaseModelVisitor(ast.NodeVisitor):
-    def __init__(self):
-        self.classes: List[ast.ClassDef] = []
-        self.imported_pydantic = False
-        self.imported_directly = False
+class ClassVisitor(ast.NodeVisitor):
+    def __init__(self) -> None:
+        self.classes_with_attributes = []
 
-    def visit_Import(self, node: ast.Import):
-        for n in node.names:
-            if n.name == "pydantic":
-                self.imported_pydantic = True
+    def visit_ClassDef(self, node: ast.ClassDef) -> None:
+        for item in node.body:
+            if isinstance(item, ast.AnnAssign):
+                self.classes_with_attributes.append(node)
+                break
         self.generic_visit(node)
 
-    def visit_ImportFrom(self, node: ast.ImportFrom):
-        if node.module == "pydantic":
-            for n in node.names:
-                if n.name == "BaseModel":
-                    self.imported_directly = True
-        self.generic_visit(node)
 
-    def visit_ClassDef(self, node: ast.ClassDef):
-        for base in node.bases:
-            if isinstance(base, ast.Name) and base.id == "BaseModel" and self.imported_directly:
-                self.classes.append(node)
-            elif isinstance(base, ast.Attribute) and base.attr == "BaseModel" and self.imported_pydantic:
-                if isinstance(base.value, ast.Name) and base.value.id == "pydantic":
-                    self.classes.append(node)
-        self.generic_visit(node)
+def get_classes_with_attributes(file_path: str):
+    """Returns classes with attribute definitions from a given Python file."""
+    with open(file_path, "r") as f:
+        source = f.read()
+
+    tree = ast.parse(source)
+    visitor = ClassVisitor()
+    visitor.visit(tree)
+
+    return visitor.classes_with_attributes
 
 
 def extract_attribute_descriptions(docstring: str) -> Dict[str, str]:
@@ -58,14 +53,13 @@ def add_google_style_docstring(filename: str):
         lines = file.readlines()
 
     tree = ast.parse("".join(lines))
-    visitor = PydanticBaseModelVisitor()
-    visitor.visit(tree)
+    classes = get_classes_with_attributes(filename)
 
     source = "".join(lines).split("\n")
     new_source = source.copy()
     offset = 0  # Keep track of the lines added for accurate insertion of subsequent docstrings
 
-    for class_node in visitor.classes:
+    for class_node in classes:
         current_doc = ast.get_docstring(class_node)
         existing_descriptions = extract_attribute_descriptions(current_doc)
 
