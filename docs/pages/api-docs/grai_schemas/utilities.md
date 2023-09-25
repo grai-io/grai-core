@@ -11,7 +11,7 @@ def unpack_object(obj: Union[Dict, BaseModel]) -> Dict
 
 **Arguments**:
 
-  obj (Union[Dict, BaseModel]):
+- `obj` - The object to unpack, generally a dict or BaseModel
 
 
 **Returns**:
@@ -25,10 +25,12 @@ def unpack_object(obj: Union[Dict, BaseModel]) -> Dict
 def merge(a, b)
 ```
 
+The base merge function
+
 **Arguments**:
 
-  a:
-  b:
+- `a` - The first object to merge
+- `b` - The second object to merge
 
 
 **Returns**:
@@ -42,14 +44,20 @@ def merge(a, b)
 def merge_atomic(a: Any, b: T) -> T
 ```
 
+Merge an atomic value with any other value
+
+This function effectively handles cases where a value is being replaced.
+For example, if the value integer `5` needed to be updated to `6`, this function would handle that.
+
 **Arguments**:
 
-  a (Any):
-  b (T):
+- `a` - The first object to merge
+- `b` - The second object to merge
 
 
 **Returns**:
 
+  The new value
 
 
 ## merge\_missing
@@ -59,14 +67,17 @@ def merge_atomic(a: Any, b: T) -> T
 def merge_missing(a: T, b: None) -> T
 ```
 
+Merge an object with a missing value
+
 **Arguments**:
 
-  a (T):
-  b (None):
+- `a` - The first object to merge
+- `b` - The second object to merge
 
 
 **Returns**:
 
+  The original object
 
 
 ## merge\_dict\_item
@@ -76,14 +87,17 @@ def merge_missing(a: T, b: None) -> T
 def merge_dict_item(a: Dict, b: Dict) -> Dict
 ```
 
+Merge two dictionaries
+
 **Arguments**:
 
-  a (Dict):
-  b (Dict):
+- `a` - The first object to merge
+- `b` - The second object to merge
 
 
 **Returns**:
 
+  The merged dictionary
 
 
 ## merge\_list
@@ -93,14 +107,17 @@ def merge_dict_item(a: Dict, b: Dict) -> Dict
 def merge_list(a: list, b: list) -> list
 ```
 
+Merge two lists
+
 **Arguments**:
 
-  a (list):
-  b (list):
+- `a` - The first object to merge
+- `b` - The second object to merge
 
 
 **Returns**:
 
+  A merged list
 
 
 ## merge\_tuple
@@ -110,14 +127,17 @@ def merge_list(a: list, b: list) -> list
 def merge_tuple(a: tuple, b: tuple) -> tuple
 ```
 
+Merge two tuples
+
 **Arguments**:
 
-  a (tuple):
-  b (tuple):
+- `a` - The first object to merge
+- `b` - The second object to merge
 
 
 **Returns**:
 
+  A merged tuple
 
 
 ## merge\_set
@@ -127,14 +147,17 @@ def merge_tuple(a: tuple, b: tuple) -> tuple
 def merge_set(a: set, b: set) -> set
 ```
 
+Merge two sets
+
 **Arguments**:
 
-  a (set):
-  b (set):
+- `a` - The first object to merge
+- `b` - The second object to merge
 
 
 **Returns**:
 
+  A merged set
 
 
 ## merge\_pydantic
@@ -144,14 +167,17 @@ def merge_set(a: set, b: set) -> set
 def merge_pydantic(a: BaseModel, b: Any) -> BaseModel
 ```
 
+Merge a non-pydantic object into a pydantic model
+
 **Arguments**:
 
-  a (BaseModel):
-  b (Any):
+- `a` - The first object to merge
+- `b` - The second object to merge
 
 
 **Returns**:
 
+  An updated pydantic model
 
 
 ## merge\_pydantic\_right
@@ -161,14 +187,17 @@ def merge_pydantic(a: BaseModel, b: Any) -> BaseModel
 def merge_pydantic_right(a: T, b: BaseModel) -> T
 ```
 
+Merge a pydantic model into a non-pydantic model
+
 **Arguments**:
 
-  a (T):
-  b (BaseModel):
+- `a` - The first object to merge
+- `b` - The second object to merge
 
 
 **Returns**:
 
+  An updated non-pydantic model
 
 
 ## merge\_models
@@ -181,26 +210,31 @@ This function is deprecated. Use `merge` instead
 
 **Arguments**:
 
-  a (T):
-  b (T):
+- `a` - The first object to merge
+- `b` - The second object to merge
 
 
 **Returns**:
 
+  An updated model
 
 
 ## compute\_graph\_changes
 
 ```python
 def compute_graph_changes(
-        items: List[T],
-        active_items: List[T]) -> Tuple[List[T], List[T], List[T]]
+    items: List[SpecProto], active_items: List[SpecProto]
+) -> Tuple[List[SpecProto], List[SpecProto], List[SpecProto]]
 ```
+
+Computes a graph update for a list of items and the corresponding set of currently active items.
 
 **Arguments**:
 
-  items:
-  active_items:
+- `items` - The new list of graph nodes
+- `active_items` - The current list of graph nodes. This does not have to be the full graph, only those relevant to the items set. Most commonly, these are drawn from the same data source.
 
 
 **Returns**:
+
+  A three tuple of new items, updated items, and deleted items.

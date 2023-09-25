@@ -3,6 +3,24 @@ sidebar_label: quarantine
 title: grai_schemas.integrations.quarantine
 ---
 
+## QuarantineReason Objects
+
+```python
+class QuarantineReason(BaseModel, ABC)
+```
+
+Base class for quarantine reasons
+
+### reason
+
+```python
+@property
+@abstractmethod
+def reason() -> str
+```
+
+Returns a string describing the reason for quarantine
+
 ## MissingEdgeNodeReason Objects
 
 ```python
@@ -13,9 +31,18 @@ Class definition of MissingEdgeNodeReason
 
 **Attributes**:
 
-- `side` - todo
-- `node_name` - todo
-- `node_namespace` - todo
+- `side` - Either Source or Destination
+- `node_name` - The name of the missing node
+- `node_namespace` - The namespace of the missing node
+
+### reason
+
+```python
+@property
+def reason() -> str
+```
+
+Returns a string describing the reason for quarantine
 
 ## QuarantinedEdge Objects
 
@@ -27,8 +54,8 @@ Class definition of QuarantinedEdge
 
 **Attributes**:
 
-- `edge` - todo
-- `reasons` - todo
+- `edge` - The edge that was quarantined
+- `reasons` - A list of reasons for quarantine
 
 ## QuarantinedNode Objects
 
@@ -40,8 +67,8 @@ Class definition of QuarantinedNode
 
 **Attributes**:
 
-- `node` - todo
-- `reasons` - todo
+- `node` - The node that was quarantined
+- `reasons` - A list of reasons for quarantine
 
 ## QuarantinedEvent Objects
 
@@ -53,8 +80,8 @@ Class definition of QuarantinedEvent
 
 **Attributes**:
 
-- `event` - todo
-- `reasons` - todo
+- `event` - The event that was quarantined
+- `reasons` - A list of reasons for quarantine
 
 ## Quarantine Objects
 
@@ -66,6 +93,15 @@ Class definition of Quarantine
 
 **Attributes**:
 
-- `nodes` - todo
-- `edges` - todo
-- `events` - todo
+- `nodes` - A list of quarantined nodes
+- `edges` - A list of quarantined edges
+- `events` - A list of quarantined events
+
+### has\_quarantined
+
+```python
+@property
+def has_quarantined()
+```
+
+Returns True if there are any quarantined objects in the Quarantine

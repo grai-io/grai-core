@@ -13,4 +13,4 @@ Class definition of GraiMetadata
 
 **Attributes**:
 
-- `grai` - todo
+- `grai` - Grai defined metadata attributes used to drive application logic.

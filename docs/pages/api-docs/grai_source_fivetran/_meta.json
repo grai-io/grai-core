@@ -1,0 +1,3 @@
+{
+    "adapters": "adapters",    "base": "base",    "fivetran_api": "fivetran_api",    "loader": "loader",    "mock_tools": "mock_tools",    "models": "models",    "package_definitions": "package_definitions"
+}

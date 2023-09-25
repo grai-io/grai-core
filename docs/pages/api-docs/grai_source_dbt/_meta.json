@@ -1,0 +1,3 @@
+{
+    "adapters": "adapters",    "base": "base",    "data_tools": "data_tools",    "loaders": "loaders",    "models": "models",    "package_definitions": "package_definitions",    "processor": "processor",    "utils": "utils"
+}

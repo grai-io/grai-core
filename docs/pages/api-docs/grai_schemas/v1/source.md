@@ -13,9 +13,9 @@ Class definition of SourceSpec
 
 **Attributes**:
 
-- `id` - todo
-- `name` - todo
-- `workspace` - todo
+- `id` - An optional UUID of the source.
+- `name` - The name of the source.
+- `workspace` - The workspace the source belongs to.
 
 ## DataSourceMixin Objects
 
@@ -27,7 +27,7 @@ Class definition of DataSourceMixin
 
 **Attributes**:
 
-- `data_source` - todo
+- `data_source` - The data source which created this object.
 
 ## DataSourcesMixin Objects
 
@@ -39,7 +39,7 @@ Class definition of DataSourcesMixin
 
 **Attributes**:
 
-- `data_sources` - todo
+- `data_sources` - The data sources which created this object.
 
 ## SourceV1 Objects
 
@@ -51,9 +51,9 @@ Class definition of SourceV1
 
 **Attributes**:
 
-- `type` - todo
-- `version` - todo
-- `spec` - todo
+- `type` - A string indicating the type of the object. In this case it is &quot;Source&quot;.
+- `version` - The version of the object e.g. &quot;v1&quot;.
+- `spec` - The specification of the object.
 
 ### from\_spec
 
@@ -64,7 +64,7 @@ def from_spec(cls, spec: Union[dict, SourceSpec]) -> "SourceV1"
 
 **Arguments**:
 
-  spec:
+- `spec` - The specification of the object.
 
 
 **Returns**:

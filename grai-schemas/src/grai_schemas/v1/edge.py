@@ -10,13 +10,13 @@ from pydantic import validator
 
 
 class EdgeNamedID(NamedID):
-    """ """
+    """Class definition of EdgeNamedID"""
 
     pass
 
 
 class EdgeUuidID(UuidID):
-    """ """
+    """Class definition of EdgeUuidID"""
 
     pass
 
@@ -28,13 +28,13 @@ class BaseSourcedEdgeSpec(GraiBaseModel):
     """Class definition of BaseSourcedEdgeSpec
 
     Attributes:
-        display_name: todo
-        source: todo
-        destination: todo
-        is_active: todo
-        workspace: todo
-        data_source: todo
-        metadata: todo
+        display_name: An optional short form name for the edge
+        source: The source node of the edge
+        destination: The destination node of the edge
+        is_active: Whether the edge is active or not
+        workspace: The workspace the edge belongs to
+        data_source: The data source which created this edge
+        metadata: Metadata associated with the edge.
 
     """
 
@@ -57,18 +57,18 @@ class BaseSourcedEdgeSpec(GraiBaseModel):
             return GraiEdgeMetadataV1(grai=GenericEdgeMetadataV1(edge_type="Generic"))
         raise ValueError(f"Invalid metadata: {v}. Expected either None, a dict, or a MetadataV1 instance.")
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Edge[Node({self.source}) -> Node({self.destination})]"
 
 
 class NamedSourceSpec(EdgeNamedID, BaseSourcedEdgeSpec):
-    """ """
+    """Class definition of NamedSourceSpec"""
 
     def to_edge(self) -> "NamedSpec":
         """
 
         Returns:
-
+            A NamedSpec instance
         """
         values = self.dict(exclude={"data_source", "metadata"})
         values["data_sources"] = [self.data_source]
@@ -80,13 +80,13 @@ class NamedSourceSpec(EdgeNamedID, BaseSourcedEdgeSpec):
 
 
 class IDSourceSpec(EdgeUuidID, BaseSourcedEdgeSpec):
-    """ """
+    """Class definition of IDSourceSpec"""
 
     def to_edge(self) -> "IDSpec":
         """
 
         Returns:
-
+            An IDSpec instance
         """
         values = self.dict(exclude={"data_source", "metadata"})
         values["data_sources"] = [self.data_source]
@@ -104,9 +104,9 @@ class SourcedEdgeV1(GraiBaseModel):
     """Class definition of SourcedEdgeV1
 
     Attributes:
-        type: todo
-        version: todo
-        spec: todo
+        type: The type of the edge e.g. NodeV1, EdgeV1, etc...
+        version: Object version e.g. v1
+        spec: The edge specification
 
     """
 
@@ -122,6 +122,7 @@ class SourcedEdgeV1(GraiBaseModel):
             spec_dict (Dict):
 
         Returns:
+            A SourcedEdgeV1 instance
 
         Raises:
 
@@ -132,6 +133,11 @@ class SourcedEdgeV1(GraiBaseModel):
         return hash(self.spec)
 
     def to_edge(self) -> "EdgeV1":
+        """Converts a SourcedEdgeV1 instance to an EdgeV1 instance
+
+        Returns:
+            An EdgeV1 instance
+        """
         return EdgeV1(version="v1", type="Edge", spec=self.spec.to_edge())
 
 
@@ -139,13 +145,13 @@ class BaseEdgeSpec(GraiBaseModel):
     """Class definition of BaseEdgeSpec
 
     Attributes:
-        display_name: todo
-        source: todo
-        destination: todo
-        is_active: todo
-        workspace: todo
-        data_sources: todo
-        metadata: todo
+        display_name: An optional short form name for the edge
+        source: The source node of the edge
+        destination: The destination node of the edge
+        is_active: Whether the edge is active or not
+        workspace: The workspace the edge belongs to
+        data_sources: The data sources which have contributed to this edge
+        metadata: Metadata associated with the edge.
 
     """
 
@@ -174,14 +180,13 @@ class BaseEdgeSpec(GraiBaseModel):
 
 
 class NamedSpec(EdgeNamedID, BaseEdgeSpec):
-    """ """
+    """Class definition of NamedSpec"""
 
     pass
 
 
 class IDSpec(EdgeUuidID, BaseEdgeSpec):
-
-    """ """
+    """Class definition of IDSpec"""
 
     pass
 
@@ -193,9 +198,9 @@ class EdgeV1(GraiBaseModel):
     """Class definition of EdgeV1
 
     Attributes:
-        type: todo
-        version: todo
-        spec: todo
+        type: The type of the edge e.g. NodeV1, EdgeV1, etc...
+        version: Object version e.g. v1
+        spec: The edge specification
 
     """
 
@@ -211,6 +216,7 @@ class EdgeV1(GraiBaseModel):
             spec_dict (Dict):
 
         Returns:
+            An EdgeV1 instance
 
         Raises:
 

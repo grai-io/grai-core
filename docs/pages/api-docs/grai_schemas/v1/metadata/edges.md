@@ -21,11 +21,11 @@ Class definition of BaseEdgeMetadataV1
 
 **Attributes**:
 
-- `type` - todo
-- `version` - todo
-- `edge_type` - todo
-- `edge_attributes` - todo
-- `tags` - todo
+- `type` - Object type of the Metadata e.g. NodeV1, EdgeV1, etc.
+- `version` - Schema version of the metadata
+- `edge_type` - The type of edge e.g. TableToColumn, ColumnToColumn, etc.
+- `edge_attributes` - Attributes specific to the edge type
+- `tags` - Tags associated with the edge
 
 ## MalformedEdgeMetadataV1 Objects
 
@@ -37,8 +37,8 @@ Class definition of MalformedEdgeMetadataV1
 
 **Attributes**:
 
-- `edge_type` - todo
-- `edge_attributes` - todo
+- `edge_type` - The literal &quot;Malformed&quot;
+- `edge_attributes` - Attributes specific to the edge type
 
 ### edge\_type
 
@@ -58,8 +58,8 @@ Class definition of GenericEdgeMetadataV1
 
 **Attributes**:
 
-- `edge_type` - todo
-- `edge_attributes` - todo
+- `edge_type` - The literal &quot;Generic&quot;
+- `edge_attributes` - Attributes specific to the edge type
 
 ## TableToColumnAttributes Objects
 
@@ -71,7 +71,7 @@ Class definition of TableToColumnAttributes
 
 **Attributes**:
 
-- `version` - todo
+- `version` - Schema version of the attributes
 
 ## TableToColumnMetadata Objects
 
@@ -83,8 +83,8 @@ Class definition of TableToColumnMetadata
 
 **Attributes**:
 
-- `edge_type` - todo
-- `edge_attributes` - todo
+- `edge_type` - The literal &quot;TableToColumn&quot;
+- `edge_attributes` - Attributes specific to the edge type
 
 ## TableToTableAttributes Objects
 
@@ -96,7 +96,7 @@ Class definition of TableToTableAttributes
 
 **Attributes**:
 
-- `version` - todo
+- `version` - Schema version of the attributes
 
 ## TableToTableMetadata Objects
 
@@ -108,8 +108,8 @@ Class definition of TableToTableMetadata
 
 **Attributes**:
 
-- `edge_type` - todo
-- `edge_attributes` - todo
+- `edge_type` - The literal &quot;TableToTable&quot;
+- `edge_attributes` - Attributes specific to the edge type
 
 ## ColumnToColumnAttributes Objects
 
@@ -121,10 +121,10 @@ Class definition of ColumnToColumnAttributes
 
 **Attributes**:
 
-- `version` - todo
-- `preserves_data_type` - todo
-- `preserves_nullable` - todo
-- `preserves_unique` - todo
+- `version` - Schema version of the attributes
+- `preserves_data_type` - Whether the data type is conserved between the source and destination columns
+- `preserves_nullable` - Whether the nullability is conserved between the source and destination columns
+- `preserves_unique` - Whether uniqueness is conserved between the source and destination columns
 
 ## ColumnToColumnMetadata Objects
 
@@ -136,5 +136,5 @@ Class definition of ColumnToColumnMetadata
 
 **Attributes**:
 
-- `edge_type` - todo
-- `edge_attributes` - todo
+- `edge_type` - The literal &quot;ColumnToColumn&quot;
+- `edge_attributes` - Attributes specific to the edge type

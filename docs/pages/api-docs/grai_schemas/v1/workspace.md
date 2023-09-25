@@ -13,15 +13,32 @@ Class definition of WorkspaceSpec
 
 **Attributes**:
 
-- `id` - todo
-- `name` - todo
-- `organisation` - todo
-- `ref` - todo
-- `search_enabled` - todo
+- `id` - Optional UUID of the workspace
+- `name` - The name of the workspace
+- `organisation` - The organisation the workspace belongs to
+- `ref` - The reference of the workspace in the form of `organisation/name`
+- `search_enabled` - Whether the workspace is searchable or not
 
 ### ref
 
 This keeps mypy happy
+
+### organization
+
+```python
+@property
+def organization()
+```
+
+Alias for organisation
+
+### \_\_hash\_\_
+
+```python
+def __hash__() -> int
+```
+
+Workspace hash definition
 
 ## WorkspaceV1 Objects
 

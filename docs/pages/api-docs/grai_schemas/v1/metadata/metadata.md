@@ -13,7 +13,7 @@ Class definition of GraiNodeMetadataV1
 
 **Attributes**:
 
-- `grai` - todo
+- `grai` - Grai defined operation attributes
 
 ## GraiEdgeMetadataV1 Objects
 
@@ -25,7 +25,7 @@ Class definition of GraiEdgeMetadataV1
 
 **Attributes**:
 
-- `grai` - todo
+- `grai` - Grai defined operation attributes
 
 ## SourcesNodeMetadataV1 Objects
 
@@ -37,7 +37,7 @@ Class definition of SourcesNodeMetadataV1
 
 **Attributes**:
 
-- `sources` - todo
+- `sources` - A dictionary of source names to source metadata
 
 ## SourcesEdgeMetadataV1 Objects
 
@@ -49,7 +49,7 @@ Class definition of SourcesEdgeMetadataV1
 
 **Attributes**:
 
-- `sources` - todo
+- `sources` - A dictionary of source names to source metadata
 
 ## NodeMetadataV1 Objects
 
@@ -57,7 +57,7 @@ Class definition of SourcesEdgeMetadataV1
 class NodeMetadataV1(GraiNodeMetadataV1, SourcesNodeMetadataV1)
 ```
 
-
+Class definition of NodeMetadataV1
 
 ## EdgeMetadataV1 Objects
 
@@ -65,7 +65,7 @@ class NodeMetadataV1(GraiNodeMetadataV1, SourcesNodeMetadataV1)
 class EdgeMetadataV1(GraiEdgeMetadataV1, SourcesEdgeMetadataV1)
 ```
 
-
+Class definition of EdgeMetadataV1
 
 ## GraiMalformedNodeMetadataV1 Objects
 
@@ -77,8 +77,8 @@ Class definition of GraiMalformedNodeMetadataV1
 
 **Attributes**:
 
-- `grai` - todo
-- `sources` - todo
+- `grai` - Grai defined operation attributes
+- `sources` - A dictionary of source names to source metadata
 
 ### grai
 
@@ -94,8 +94,8 @@ Class definition of GraiMalformedEdgeMetadataV1
 
 **Attributes**:
 
-- `grai` - todo
-- `sources` - todo
+- `grai` - Grai defined operation attributes
+- `sources` - A dictionary of source names to source metadata
 
 ### grai
 

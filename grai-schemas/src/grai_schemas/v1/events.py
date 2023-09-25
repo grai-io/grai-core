@@ -11,11 +11,11 @@ class EventSpec(GraiBaseModel):
     """Class definition of EventSpec
 
     Attributes:
-        id: todo
-        connection_id: todo
-        date: todo
-        workspace: todo
-        diff: todo
+        id: UUID of the event.
+        connection_id: UUID of the events connection.
+        date: Datetime of the event.
+        workspace: WorkspaceSpec of the event.
+        diff: Json of the changes from the event.
 
     """
 
@@ -33,9 +33,9 @@ class EventV1(GraiBaseModel):
     """Class definition of EventV1
 
     Attributes:
-        type: todo
-        version: todo
-        spec: todo
+        type: Object type of the Metadata e.g. NodeV1, EdgeV1, etc.
+        version: Schema version of the object.
+        spec: The event specification.
 
     """
 
@@ -51,7 +51,7 @@ class EventV1(GraiBaseModel):
             spec_dict (Dict):
 
         Returns:
-
+            An EventV1 instance
         Raises:
 
         """

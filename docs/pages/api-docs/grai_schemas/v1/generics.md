@@ -13,9 +13,9 @@ Class definition of BaseID
 
 **Attributes**:
 
-- `id` - todo
-- `name` - todo
-- `namespace` - todo
+- `id` - Optional UUID of the object
+- `name` - Optional name of the object
+- `namespace` - Optional namespace of the object
 
 ## NamedID Objects
 
@@ -27,9 +27,9 @@ Class definition of NamedID
 
 **Attributes**:
 
-- `id` - todo
-- `name` - todo
-- `namespace` - todo
+- `id` - Optional UUID of the object
+- `name` - Name of the object
+- `namespace` - Namespace of the object
 
 ## UuidID Objects
 
@@ -41,6 +41,6 @@ Class definition of UuidID
 
 **Attributes**:
 
-- `id` - todo
-- `name` - todo
-- `namespace` - todo
+- `id` - UUID of the object
+- `name` - Optional name of the object
+- `namespace` - Optional namespace of the object

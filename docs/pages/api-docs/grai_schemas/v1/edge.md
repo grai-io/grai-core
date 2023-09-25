@@ -9,7 +9,7 @@ title: grai_schemas.v1.edge
 class EdgeNamedID(NamedID)
 ```
 
-
+Class definition of EdgeNamedID
 
 ## EdgeUuidID Objects
 
@@ -17,7 +17,7 @@ class EdgeNamedID(NamedID)
 class EdgeUuidID(UuidID)
 ```
 
-
+Class definition of EdgeUuidID
 
 ## BaseSourcedEdgeSpec Objects
 
@@ -29,13 +29,13 @@ Class definition of BaseSourcedEdgeSpec
 
 **Attributes**:
 
-- `display_name` - todo
-- `source` - todo
-- `destination` - todo
-- `is_active` - todo
-- `workspace` - todo
-- `data_source` - todo
-- `metadata` - todo
+- `display_name` - An optional short form name for the edge
+- `source` - The source node of the edge
+- `destination` - The destination node of the edge
+- `is_active` - Whether the edge is active or not
+- `workspace` - The workspace the edge belongs to
+- `data_source` - The data source which created this edge
+- `metadata` - Metadata associated with the edge.
 
 ## NamedSourceSpec Objects
 
@@ -43,7 +43,7 @@ Class definition of BaseSourcedEdgeSpec
 class NamedSourceSpec(EdgeNamedID, BaseSourcedEdgeSpec)
 ```
 
-
+Class definition of NamedSourceSpec
 
 ### to\_edge
 
@@ -51,7 +51,9 @@ class NamedSourceSpec(EdgeNamedID, BaseSourcedEdgeSpec)
 def to_edge() -> "NamedSpec"
 ```
 
+**Returns**:
 
+  A NamedSpec instance
 
 ## IDSourceSpec Objects
 
@@ -59,7 +61,7 @@ def to_edge() -> "NamedSpec"
 class IDSourceSpec(EdgeUuidID, BaseSourcedEdgeSpec)
 ```
 
-
+Class definition of IDSourceSpec
 
 ### to\_edge
 
@@ -67,7 +69,9 @@ class IDSourceSpec(EdgeUuidID, BaseSourcedEdgeSpec)
 def to_edge() -> "IDSpec"
 ```
 
+**Returns**:
 
+  An IDSpec instance
 
 ## SourcedEdgeV1 Objects
 
@@ -79,9 +83,9 @@ Class definition of SourcedEdgeV1
 
 **Attributes**:
 
-- `type` - todo
-- `version` - todo
-- `spec` - todo
+- `type` - The type of the edge e.g. NodeV1, EdgeV1, etc...
+- `version` - Object version e.g. v1
+- `spec` - The edge specification
 
 ### from\_spec
 
@@ -97,7 +101,20 @@ def from_spec(cls, spec_dict: Dict) -> "SourcedEdgeV1"
 
 **Returns**:
 
+  A SourcedEdgeV1 instance
 
+
+### to\_edge
+
+```python
+def to_edge() -> "EdgeV1"
+```
+
+Converts a SourcedEdgeV1 instance to an EdgeV1 instance
+
+**Returns**:
+
+  An EdgeV1 instance
 
 ## BaseEdgeSpec Objects
 
@@ -109,13 +126,13 @@ Class definition of BaseEdgeSpec
 
 **Attributes**:
 
-- `display_name` - todo
-- `source` - todo
-- `destination` - todo
-- `is_active` - todo
-- `workspace` - todo
-- `data_sources` - todo
-- `metadata` - todo
+- `display_name` - An optional short form name for the edge
+- `source` - The source node of the edge
+- `destination` - The destination node of the edge
+- `is_active` - Whether the edge is active or not
+- `workspace` - The workspace the edge belongs to
+- `data_sources` - The data sources which have contributed to this edge
+- `metadata` - Metadata associated with the edge.
 
 ## NamedSpec Objects
 
@@ -123,7 +140,7 @@ Class definition of BaseEdgeSpec
 class NamedSpec(EdgeNamedID, BaseEdgeSpec)
 ```
 
-
+Class definition of NamedSpec
 
 ## IDSpec Objects
 
@@ -131,7 +148,7 @@ class NamedSpec(EdgeNamedID, BaseEdgeSpec)
 class IDSpec(EdgeUuidID, BaseEdgeSpec)
 ```
 
-
+Class definition of IDSpec
 
 ## EdgeV1 Objects
 
@@ -143,9 +160,9 @@ Class definition of EdgeV1
 
 **Attributes**:
 
-- `type` - todo
-- `version` - todo
-- `spec` - todo
+- `type` - The type of the edge e.g. NodeV1, EdgeV1, etc...
+- `version` - Object version e.g. v1
+- `spec` - The edge specification
 
 ### from\_spec
 
@@ -160,3 +177,5 @@ def from_spec(cls, spec_dict: Dict) -> "EdgeV1"
 
 
 **Returns**:
+
+  An EdgeV1 instance

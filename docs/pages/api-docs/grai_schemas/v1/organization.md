@@ -13,8 +13,8 @@ Class definition of OrganisationSpec
 
 **Attributes**:
 
-- `name` - todo
-- `id` - todo
+- `name` - The name of the organisation.
+- `id` - Optional UUID of the organisation
 
 ## OrganisationV1 Objects
 
@@ -26,9 +26,9 @@ Class definition of OrganisationV1
 
 **Attributes**:
 
-- `type` - todo
-- `version` - todo
-- `spec` - todo
+- `type` - The type of the object e.g. Node, Edge, etc.
+- `version` - The version of the object e.g. v1
+- `spec` - The specification of the object.
 
 ### from\_spec
 

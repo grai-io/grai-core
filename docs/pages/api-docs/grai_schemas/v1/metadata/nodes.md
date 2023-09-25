@@ -13,11 +13,11 @@ Class definition of NodeMetadataTypeLabels
 
 **Attributes**:
 
-- `generic` - todo
-- `table` - todo
-- `column` - todo
-- `query` - todo
-- `collection` - todo
+- `generic` - The literal &quot;Generic
+- `table` - The literal &quot;Table&quot;
+- `column` - The literal &quot;Column&quot;
+- `query` - The literal &quot;Query&quot;
+- `collection` - The literal &quot;Collection&quot;
 
 ## SourceType Objects
 
@@ -25,7 +25,11 @@ Class definition of NodeMetadataTypeLabels
 class SourceType(Enum)
 ```
 
+Class definition of SourceType
 
+**Attributes**:
+
+- `database` - todo
 
 ## BaseNodeMetadataV1 Objects
 
@@ -37,11 +41,11 @@ Class definition of BaseNodeMetadataV1
 
 **Attributes**:
 
-- `type` - todo
-- `version` - todo
-- `node_type` - todo
-- `node_attributes` - todo
-- `tags` - todo
+- `type` - Object type of the Metadata e.g. NodeV1, EdgeV1, etc.
+- `version` - Schema version of the metadata
+- `node_type` - The type of node e.g. Table, Column, etc.
+- `node_attributes` - Attributes specific to the node type
+- `tags` - Tags associated with the node
 
 ## MalformedNodeMetadataV1 Objects
 
@@ -53,8 +57,8 @@ Class definition of MalformedNodeMetadataV1
 
 **Attributes**:
 
-- `node_type` - todo
-- `node_attributes` - todo
+- `node_type` - The literal &quot;Malformed&quot;
+- `node_attributes` - Attributes specific to the node type
 
 ### node\_type
 
@@ -74,8 +78,8 @@ Class definition of GenericNodeMetadataV1
 
 **Attributes**:
 
-- `node_type` - todo
-- `node_attributes` - todo
+- `node_type` - The literal &quot;Generic&quot;
+- `node_attributes` - Attributes specific to the node type
 
 ## ColumnAttributes Objects
 
@@ -87,12 +91,12 @@ Class definition of ColumnAttributes
 
 **Attributes**:
 
-- `version` - todo
-- `data_type` - todo
-- `default_value` - todo
-- `is_nullable` - todo
-- `is_unique` - todo
-- `is_primary_key` - todo
+- `version` - Schema version of the metadata
+- `data_type` - The data type of the column
+- `default_value` - The default value of the column
+- `is_nullable` - Whether values in the column is nullable
+- `is_unique` - Whether values in the column are unique
+- `is_primary_key` - Whether the column is a primary key
 
 ### data\_type
 
@@ -108,8 +112,8 @@ Class definition of ColumnMetadata
 
 **Attributes**:
 
-- `node_type` - todo
-- `node_attributes` - todo
+- `node_type` - The type of node e.g. Table, Column, etc.
+- `node_attributes` - Attributes specific to the node type
 
 ## TableAttributes Objects
 
@@ -121,7 +125,7 @@ Class definition of TableAttributes
 
 **Attributes**:
 
-- `version` - todo
+- `version` - Schema version of the metadata
 
 ## TableMetadata Objects
 
@@ -133,8 +137,8 @@ Class definition of TableMetadata
 
 **Attributes**:
 
-- `node_type` - todo
-- `node_attributes` - todo
+- `node_type` - The type of node e.g. Table, Column, etc.
+- `node_attributes` - Attributes specific to the node type
 
 ## QueryAttributes Objects
 
@@ -146,7 +150,7 @@ Class definition of QueryAttributes
 
 **Attributes**:
 
-- `version` - todo
+- `version` - Schema version of the metadata
 
 ## QueryMetadata Objects
 
@@ -158,8 +162,8 @@ Class definition of QueryMetadata
 
 **Attributes**:
 
-- `node_type` - todo
-- `node_attributes` - todo
+- `node_type` - The type of node e.g. Table, Column, etc.
+- `node_attributes` - Attributes specific to the node type
 
 ## CollectionMetadata Objects
 
@@ -171,5 +175,5 @@ Class definition of CollectionMetadata
 
 **Attributes**:
 
-- `node_type` - todo
-- `node_attributes` - todo
+- `node_type` - The type of node e.g. Table, Column, etc.
+- `node_attributes` - Attributes specific to the node type

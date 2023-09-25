@@ -3,8 +3,10 @@ loaders:
 processors:
   - type: filter
     skip_empty_modules: true
+    documented_only: true
   - type: smart
   - type: crossref
+
 renderer:
   type: nextra
   docs_base_path: ../docs/pages/api-docs

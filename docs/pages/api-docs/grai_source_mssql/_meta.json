@@ -1,0 +1,3 @@
+{
+    "adapters": "adapters",    "base": "base",    "loader": "loader",    "models": "models",    "package_definitions": "package_definitions"
+}

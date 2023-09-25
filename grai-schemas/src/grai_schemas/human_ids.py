@@ -2879,4 +2879,5 @@ ADJECTIVES = [
 
 
 def get_human_id():
+    """generates a human readable id following the pattern {adjective}_{noun}"""
     return f"{random.choice(ADJECTIVES)}_{random.choice(NOUNS)}"

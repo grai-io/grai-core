@@ -6,9 +6,12 @@ from pydantic import BaseModel
 
 
 class QuarantineReason(BaseModel, ABC):
+    """Base class for quarantine reasons"""
+
     @property
     @abstractmethod
     def reason(self) -> str:
+        """Returns a string describing the reason for quarantine"""
         pass
 
 
@@ -16,9 +19,9 @@ class MissingEdgeNodeReason(QuarantineReason):
     """Class definition of MissingEdgeNodeReason
 
     Attributes:
-        side: todo
-        node_name: todo
-        node_namespace: todo
+        side: Either Source or Destination
+        node_name: The name of the missing node
+        node_namespace: The namespace of the missing node
 
     """
 
@@ -28,6 +31,7 @@ class MissingEdgeNodeReason(QuarantineReason):
 
     @property
     def reason(self) -> str:
+        """Returns a string describing the reason for quarantine"""
         return f"{self.side.capitalize()} node `({self.node_name}, {self.node_namespace})` was not found."
 
 
@@ -35,8 +39,8 @@ class QuarantinedEdge(BaseModel):
     """Class definition of QuarantinedEdge
 
     Attributes:
-        edge: todo
-        reasons: todo
+        edge: The edge that was quarantined
+        reasons: A list of reasons for quarantine
 
     """
 
@@ -48,8 +52,8 @@ class QuarantinedNode(BaseModel):
     """Class definition of QuarantinedNode
 
     Attributes:
-        node: todo
-        reasons: todo
+        node: The node that was quarantined
+        reasons: A list of reasons for quarantine
 
     """
 
@@ -61,8 +65,8 @@ class QuarantinedEvent(BaseModel):
     """Class definition of QuarantinedEvent
 
     Attributes:
-        event: todo
-        reasons: todo
+        event: The event that was quarantined
+        reasons: A list of reasons for quarantine
 
     """
 
@@ -74,9 +78,9 @@ class Quarantine(BaseModel):
     """Class definition of Quarantine
 
     Attributes:
-        nodes: todo
-        edges: todo
-        events: todo
+        nodes: A list of quarantined nodes
+        edges: A list of quarantined edges
+        events: A list of quarantined events
 
     """
 
@@ -86,4 +90,5 @@ class Quarantine(BaseModel):
 
     @property
     def has_quarantined(self):
+        """Returns True if there are any quarantined objects in the Quarantine"""
         return self.nodes or self.edges or self.events
