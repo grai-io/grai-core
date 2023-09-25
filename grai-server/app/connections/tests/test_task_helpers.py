@@ -559,6 +559,14 @@ class TestUpdate:
         assert Node.objects.filter(name=nodes[-1].name, namespace=nodes[-1].namespace).exists() is False
         assert Edge.objects.filter(name=edges[-1].name, namespace=edges[-1].namespace).exists() is False
 
+    @pytest.mark.django_db
+    def test_update_handles_new_sources(self, test_workspace):
+        """Tests whether update can handle cases where the updated source has not been persisted to the database."""
+        source = Source(workspace=test_workspace, name=str(uuid.uuid4()))
+        nodes = [mock_node(test_workspace) for _ in range(2)]
+        schema_nodes = [model_to_schema(node, source, "SourcedNodeV1") for node in nodes]
+        update(test_workspace, source, schema_nodes)
+
 
 class TestGetEdgeNodesFromDatabase:
     @staticmethod

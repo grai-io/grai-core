@@ -288,6 +288,8 @@ def update(
     if not items:
         return
 
+    source, _ = Source.objects.get_or_create(id=source.id, workspace=workspace)
+
     item_types = items[0].type
     Model = NodeModel if item_types in ["Node", "SourceNode"] else EdgeModel
     relationship = source.nodes if item_types in ["Node", "SourceNode"] else source.edges
