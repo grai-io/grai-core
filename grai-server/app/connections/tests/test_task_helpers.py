@@ -11,7 +11,7 @@ from connections.task_helpers import (
     update,
     get_edge_nodes_from_database,
 )
-from connections.adapters.schemas import source_node_v1_to_model
+from connections.adapters.schemas import model_to_schema
 from lineage.models import Edge, Node, Source
 from workspaces.models import Organisation, Workspace
 
@@ -536,6 +536,28 @@ class TestUpdate:
         )
 
         assert query == expected_query
+
+    @pytest.mark.django_db
+    def test_update_deletes_nodes_with_edge_dependencies(self, test_source, test_workspace):
+        """
+        This test validates that the update method can successfully delete nodes that have edges
+        """
+        edges = [mock_edge(*[mock_node(test_workspace) for _ in range(2)], test_workspace) for _ in range(3)]
+
+        for edge in edges:
+            edge.source.save()
+            edge.destination.save()
+            edge.save()
+        nodes = [*{edge.source for edge in edges}, *[edge.destination for edge in edges]]
+
+        test_source.edges.add(*edges)
+        test_source.nodes.add(*nodes)
+
+        schema_nodes = [model_to_schema(node, test_source, "SourcedNodeV1") for node in nodes]
+        update(test_workspace, test_source, schema_nodes[0:-1])
+
+        assert Node.objects.filter(name=nodes[-1].name, namespace=nodes[-1].namespace).exists() is False
+        assert Edge.objects.filter(name=edges[-1].name, namespace=edges[-1].namespace).exists() is False
 
 
 class TestGetEdgeNodesFromDatabase:

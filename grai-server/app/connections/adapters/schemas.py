@@ -190,9 +190,22 @@ def model_to_schema(item, schema_type):
 
 
 @model_to_schema.register
+def source_model_to_source_schema(model: Source, schema_type: Literal["SourceV1"]) -> SourceV1:
+    return SourceV1.from_spec(model.__dict__)
+
+
+@model_to_schema.register
 def node_model_to_node_v1_schema(model: Node, schema_type: Literal["NodeV1"]) -> NodeV1:
     # TODO: Add data_sources
     return NodeV1.from_spec({**model.__dict__, "data_sources": []})
+
+
+@model_to_schema.register
+def node_model_to_sourced_node_v1_schema(
+    model: Node, source: Source, schema_type: Literal["SourcedNodeV1"]
+) -> SourcedNodeV1:
+    schema_source = model_to_schema(source, "SourceV1")
+    return SourcedNodeV1.from_spec({**model.__dict__, "data_source": schema_source.spec})
 
 
 @model_to_schema.register
