@@ -76,7 +76,6 @@ const GraphDrawer: React.FC<GraphDrawerProps> = ({
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
               <TabList
                 centered
-                value={tab}
                 variant="fullWidth"
                 onChange={(_, value) => value !== "refresh" && setTab(value)}
               >
