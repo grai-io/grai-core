@@ -9,6 +9,16 @@ title: grai_schemas.v1.workspace
 class WorkspaceSpec(GraiBaseModel)
 ```
 
+Class definition of WorkspaceSpec
+
+**Attributes**:
+
+- `id` - todo
+- `name` - todo
+- `organisation` - todo
+- `ref` - todo
+- `search_enabled` - todo
+
 ### ref
 
 This keeps mypy happy
@@ -18,6 +28,14 @@ This keeps mypy happy
 ```python
 class WorkspaceV1(GraiBaseModel)
 ```
+
+Class definition of WorkspaceV1
+
+**Attributes**:
+
+- `type` - todo
+- `version` - todo
+- `spec` - todo
 
 ### from\_spec
 

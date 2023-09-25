@@ -25,6 +25,19 @@ EdgeIdTypes = Union[EdgeUuidID, EdgeNamedID]
 
 
 class BaseSourcedEdgeSpec(GraiBaseModel):
+    """Class definition of BaseSourcedEdgeSpec
+
+    Attributes:
+        display_name: todo
+        source: todo
+        destination: todo
+        is_active: todo
+        workspace: todo
+        data_source: todo
+        metadata: todo
+
+    """
+
     display_name: Optional[str]
     source: NodeIdTypes
     destination: NodeIdTypes
@@ -88,6 +101,15 @@ SourcedEdgeSpec = Union[IDSourceSpec, NamedSourceSpec]
 
 
 class SourcedEdgeV1(GraiBaseModel):
+    """Class definition of SourcedEdgeV1
+
+    Attributes:
+        type: todo
+        version: todo
+        spec: todo
+
+    """
+
     type: Literal["SourceEdge"]
     version: Literal["v1"]
     spec: SourcedEdgeSpec
@@ -114,6 +136,19 @@ class SourcedEdgeV1(GraiBaseModel):
 
 
 class BaseEdgeSpec(GraiBaseModel):
+    """Class definition of BaseEdgeSpec
+
+    Attributes:
+        display_name: todo
+        source: todo
+        destination: todo
+        is_active: todo
+        workspace: todo
+        data_sources: todo
+        metadata: todo
+
+    """
+
     display_name: Optional[str]
     source: NodeIdTypes
     destination: NodeIdTypes
@@ -155,7 +190,14 @@ EdgeSpec = Union[IDSpec, NamedSpec]
 
 
 class EdgeV1(GraiBaseModel):
-    """ """
+    """Class definition of EdgeV1
+
+    Attributes:
+        type: todo
+        version: todo
+        spec: todo
+
+    """
 
     type: Literal["Edge"]
     version: Literal["v1"]

@@ -50,12 +50,29 @@ def verify_edge_ids(
 
 
 class ValidatedResult(BaseModel):
+    """Class definition of ValidatedResult
+
+    Attributes:
+        nodes: todo
+        edges: todo
+        events: todo
+
+    """
+
     nodes: List[SourcedNode] = []
     edges: List[SourcedEdge] = []
     events: List[Event] = []
 
 
 class GraiIntegrationImplementation(ABC):
+    """Class definition of GraiIntegrationImplementation
+
+    Attributes:
+        source: todo
+        version: todo
+
+    """
+
     source: SourceV1
     version: str
 

@@ -5,7 +5,12 @@ from grai_schemas.generics import GraiBaseModel
 
 
 class Schema(GraiBaseModel):
-    """ """
+    """Class definition of Schema
+
+    Attributes:
+        entity: todo
+
+    """
 
     entity: GraiType
 

@@ -48,7 +48,11 @@ class Config()
 class PlaceHolderSchema(GraiBaseModel)
 ```
 
+Class definition of PlaceHolderSchema
 
+**Attributes**:
+
+- `is_active` - todo
 
 ### root\_validator\_of\_placeholder
 
@@ -72,7 +76,13 @@ def root_validator_of_placeholder(cls, values)
 class DefaultValue(GraiBaseModel)
 ```
 
+Class definition of DefaultValue
 
+**Attributes**:
+
+- `has_default_value` - todo
+- `data_type` - todo
+- `default_value` - todo
 
 ### validate\_default\_value\_root
 
@@ -96,7 +106,12 @@ def validate_default_value_root(cls, values)
 class PackageConfig(BaseModel)
 ```
 
+Class definition of PackageConfig
 
+**Attributes**:
+
+- `integration_name` - todo
+- `metadata_id` - todo
 
 ### metadata\_id\_validation
 
@@ -142,7 +157,11 @@ class Config()
 class MalformedMetadata(GraiBaseModel)
 ```
 
+Class definition of MalformedMetadata
 
+**Attributes**:
+
+- `malformed_values` - todo
 
 ### validate\_malformed
 

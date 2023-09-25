@@ -30,7 +30,14 @@ NodeIdTypes = Union[NodeUuidID, NodeNamedID]
 
 
 class BaseSpec(GraiBaseModel):
-    """ """
+    """Class definition of BaseSpec
+
+    Attributes:
+        is_active: todo
+        display_name: todo
+        workspace: todo
+
+    """
 
     is_active: Optional[bool] = True
     display_name: Optional[str]
@@ -38,6 +45,13 @@ class BaseSpec(GraiBaseModel):
 
 
 class SourcedNodeSpecMetadataMixin(GraiBaseModel):
+    """Class definition of SourcedNodeSpecMetadataMixin
+
+    Attributes:
+        metadata: todo
+
+    """
+
     metadata: GraiNodeMetadataV1 = GraiNodeMetadataV1(grai=GenericNodeMetadataV1(node_type="Generic"))
 
     @validator("metadata", always=True, pre=True)
@@ -89,6 +103,15 @@ SourcedNodeSpec = Union[IDSourceSpec, NamedSourceSpec]
 
 
 class SourcedNodeV1(GraiBaseModel):
+    """Class definition of SourcedNodeV1
+
+    Attributes:
+        type: todo
+        version: todo
+        spec: todo
+
+    """
+
     type: Literal["SourceNode"]
     version: Literal["v1"]
     spec: SourcedNodeSpec
@@ -120,6 +143,13 @@ class SourcedNodeV1(GraiBaseModel):
 
 
 class NodeSpecMetadataMixin(GraiBaseModel):
+    """Class definition of NodeSpecMetadataMixin
+
+    Attributes:
+        metadata: todo
+
+    """
+
     metadata: NodeMetadataV1 = NodeMetadataV1(grai=GenericNodeMetadataV1(node_type="Generic"), sources={})
 
     @validator("metadata", always=True, pre=True)
@@ -151,7 +181,14 @@ NodeSpec = Union[IDSpec, NamedSpec]
 
 
 class NodeV1(GraiBaseModel):
-    """ """
+    """Class definition of NodeV1
+
+    Attributes:
+        type: todo
+        version: todo
+        spec: todo
+
+    """
 
     type: Literal["Node"]
     version: Literal["v1"]

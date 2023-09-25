@@ -6,7 +6,14 @@ from pydantic import BaseModel
 
 
 class BaseID(GraiBaseModel):
-    """ """
+    """Class definition of BaseID
+
+    Attributes:
+        id: todo
+        name: todo
+        namespace: todo
+
+    """
 
     id: Optional[UUID]
     name: Optional[str]
@@ -21,7 +28,14 @@ class BaseID(GraiBaseModel):
 
 
 class NamedID(BaseID):
-    """ """
+    """Class definition of NamedID
+
+    Attributes:
+        id: todo
+        name: todo
+        namespace: todo
+
+    """
 
     id: Optional[UUID]
     name: str
@@ -29,7 +43,14 @@ class NamedID(BaseID):
 
 
 class UuidID(BaseID):
-    """ """
+    """Class definition of UuidID
+
+    Attributes:
+        id: todo
+        name: todo
+        namespace: todo
+
+    """
 
     id: UUID
     name: Optional[str]

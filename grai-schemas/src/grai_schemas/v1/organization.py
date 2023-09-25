@@ -6,6 +6,14 @@ from pydantic import validator
 
 
 class OrganisationSpec(GraiBaseModel):
+    """Class definition of OrganisationSpec
+
+    Attributes:
+        name: todo
+        id: todo
+
+    """
+
     name: str
     id: Optional[UUID]
 
@@ -14,6 +22,15 @@ class OrganisationSpec(GraiBaseModel):
 
 
 class OrganisationV1(GraiBaseModel):
+    """Class definition of OrganisationV1
+
+    Attributes:
+        type: todo
+        version: todo
+        spec: todo
+
+    """
+
     type: Literal["Organisation"]
     version: Literal["v1"] = "v1"
     spec: OrganisationSpec

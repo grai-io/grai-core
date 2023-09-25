@@ -13,6 +13,15 @@ class QuarantineReason(BaseModel, ABC):
 
 
 class MissingEdgeNodeReason(QuarantineReason):
+    """Class definition of MissingEdgeNodeReason
+
+    Attributes:
+        side: todo
+        node_name: todo
+        node_namespace: todo
+
+    """
+
     side: Literal["source", "destination"]
     node_name: str
     node_namespace: str
@@ -23,21 +32,54 @@ class MissingEdgeNodeReason(QuarantineReason):
 
 
 class QuarantinedEdge(BaseModel):
+    """Class definition of QuarantinedEdge
+
+    Attributes:
+        edge: todo
+        reasons: todo
+
+    """
+
     edge: SourcedEdge
     reasons: List[QuarantineReason]
 
 
 class QuarantinedNode(BaseModel):
+    """Class definition of QuarantinedNode
+
+    Attributes:
+        node: todo
+        reasons: todo
+
+    """
+
     node: SourcedNode
     reasons: List[QuarantineReason]
 
 
 class QuarantinedEvent(BaseModel):
+    """Class definition of QuarantinedEvent
+
+    Attributes:
+        event: todo
+        reasons: todo
+
+    """
+
     event: Event
     reasons: List[QuarantineReason]
 
 
 class Quarantine(BaseModel):
+    """Class definition of Quarantine
+
+    Attributes:
+        nodes: todo
+        edges: todo
+        events: todo
+
+    """
+
     nodes: List[QuarantinedNode] = []
     edges: List[QuarantinedEdge] = []
     events: List[QuarantinedEvent] = []

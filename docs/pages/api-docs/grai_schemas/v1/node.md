@@ -25,7 +25,25 @@ class NodeUuidID(UuidID)
 class BaseSpec(GraiBaseModel)
 ```
 
+Class definition of BaseSpec
 
+**Attributes**:
+
+- `is_active` - todo
+- `display_name` - todo
+- `workspace` - todo
+
+## SourcedNodeSpecMetadataMixin Objects
+
+```python
+class SourcedNodeSpecMetadataMixin(GraiBaseModel)
+```
+
+Class definition of SourcedNodeSpecMetadataMixin
+
+**Attributes**:
+
+- `metadata` - todo
 
 ## NamedSourceSpec Objects
 
@@ -67,6 +85,14 @@ def to_node() -> "IDSpec"
 class SourcedNodeV1(GraiBaseModel)
 ```
 
+Class definition of SourcedNodeV1
+
+**Attributes**:
+
+- `type` - todo
+- `version` - todo
+- `spec` - todo
+
 ### from\_spec
 
 ```python
@@ -91,6 +117,18 @@ def to_node() -> "NodeV1"
 
 
 
+## NodeSpecMetadataMixin Objects
+
+```python
+class NodeSpecMetadataMixin(GraiBaseModel)
+```
+
+Class definition of NodeSpecMetadataMixin
+
+**Attributes**:
+
+- `metadata` - todo
+
 ## NamedSpec Objects
 
 ```python
@@ -114,7 +152,13 @@ class IDSpec(NodeUuidID, BaseSpec, NodeSpecMetadataMixin, DataSourcesMixin)
 class NodeV1(GraiBaseModel)
 ```
 
+Class definition of NodeV1
 
+**Attributes**:
+
+- `type` - todo
+- `version` - todo
+- `spec` - todo
 
 ### from\_spec
 

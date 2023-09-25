@@ -19,19 +19,28 @@ class EdgeUuidID(UuidID)
 
 
 
-## BaseSpec Objects
+## BaseSourcedEdgeSpec Objects
 
 ```python
-class BaseSpec(GraiBaseModel)
+class BaseSourcedEdgeSpec(GraiBaseModel)
 ```
 
+Class definition of BaseSourcedEdgeSpec
 
+**Attributes**:
+
+- `display_name` - todo
+- `source` - todo
+- `destination` - todo
+- `is_active` - todo
+- `workspace` - todo
+- `data_source` - todo
+- `metadata` - todo
 
 ## NamedSourceSpec Objects
 
 ```python
-class NamedSourceSpec(EdgeNamedID, BaseSpec, SourcedEdgeSpecMetadataMixin,
-                      DataSourceMixin)
+class NamedSourceSpec(EdgeNamedID, BaseSourcedEdgeSpec)
 ```
 
 
@@ -47,8 +56,7 @@ def to_edge() -> "NamedSpec"
 ## IDSourceSpec Objects
 
 ```python
-class IDSourceSpec(EdgeUuidID, BaseSpec, SourcedEdgeSpecMetadataMixin,
-                   DataSourceMixin)
+class IDSourceSpec(EdgeUuidID, BaseSourcedEdgeSpec)
 ```
 
 
@@ -67,6 +75,14 @@ def to_edge() -> "IDSpec"
 class SourcedEdgeV1(GraiBaseModel)
 ```
 
+Class definition of SourcedEdgeV1
+
+**Attributes**:
+
+- `type` - todo
+- `version` - todo
+- `spec` - todo
+
 ### from\_spec
 
 ```python
@@ -83,11 +99,28 @@ def from_spec(cls, spec_dict: Dict) -> "SourcedEdgeV1"
 
 
 
+## BaseEdgeSpec Objects
+
+```python
+class BaseEdgeSpec(GraiBaseModel)
+```
+
+Class definition of BaseEdgeSpec
+
+**Attributes**:
+
+- `display_name` - todo
+- `source` - todo
+- `destination` - todo
+- `is_active` - todo
+- `workspace` - todo
+- `data_sources` - todo
+- `metadata` - todo
+
 ## NamedSpec Objects
 
 ```python
-class NamedSpec(EdgeNamedID, BaseSpec, EdgeSpecMetadataMixin,
-                DataSourcesMixin)
+class NamedSpec(EdgeNamedID, BaseEdgeSpec)
 ```
 
 
@@ -95,7 +128,7 @@ class NamedSpec(EdgeNamedID, BaseSpec, EdgeSpecMetadataMixin,
 ## IDSpec Objects
 
 ```python
-class IDSpec(EdgeUuidID, BaseSpec, EdgeSpecMetadataMixin, DataSourcesMixin)
+class IDSpec(EdgeUuidID, BaseEdgeSpec)
 ```
 
 
@@ -106,7 +139,13 @@ class IDSpec(EdgeUuidID, BaseSpec, EdgeSpecMetadataMixin, DataSourcesMixin)
 class EdgeV1(GraiBaseModel)
 ```
 
+Class definition of EdgeV1
 
+**Attributes**:
+
+- `type` - todo
+- `version` - todo
+- `spec` - todo
 
 ### from\_spec
 

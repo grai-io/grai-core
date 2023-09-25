@@ -15,6 +15,17 @@ _REF_REGEX = re.compile("^[^/]*/[^/]*$")
 
 
 class WorkspaceSpec(GraiBaseModel):
+    """Class definition of WorkspaceSpec
+
+    Attributes:
+        id: todo
+        name: todo
+        organisation: todo
+        ref: todo
+        search_enabled: todo
+
+    """
+
     id: Optional[UUID]
     name: str
     organisation: Union[UUID, OrganisationSpec] = Field(..., alias="organization")
@@ -81,6 +92,15 @@ class WorkspaceSpec(GraiBaseModel):
 
 
 class WorkspaceV1(GraiBaseModel):
+    """Class definition of WorkspaceV1
+
+    Attributes:
+        type: todo
+        version: todo
+        spec: todo
+
+    """
+
     type: Literal["Workspace"] = "Workspace"
     version: Literal["v1"] = "v1"
     spec: WorkspaceSpec

@@ -8,3 +8,9 @@ title: grai_schemas.base
 ```python
 class GraiMetadata(GraiBaseModel)
 ```
+
+Class definition of GraiMetadata
+
+**Attributes**:
+
+- `grai` - todo

@@ -48,7 +48,12 @@ class GraiBaseModel(HashableBaseModel):
 
 
 class PlaceHolderSchema(GraiBaseModel):
-    """ """
+    """Class definition of PlaceHolderSchema
+
+    Attributes:
+        is_active: todo
+
+    """
 
     is_active: Optional[bool] = True
 
@@ -75,7 +80,14 @@ class PlaceHolderSchema(GraiBaseModel):
 
 
 class DefaultValue(GraiBaseModel):
-    """ """
+    """Class definition of DefaultValue
+
+    Attributes:
+        has_default_value: todo
+        data_type: todo
+        default_value: todo
+
+    """
 
     has_default_value: Optional[bool] = None
     data_type: Optional[str] = None
@@ -114,7 +126,13 @@ class DefaultValue(GraiBaseModel):
 
 
 class PackageConfig(BaseModel):
-    """ """
+    """Class definition of PackageConfig
+
+    Attributes:
+        integration_name: todo
+        metadata_id: todo
+
+    """
 
     integration_name: str
     metadata_id: str
@@ -154,7 +172,12 @@ class Metadata(GraiBaseModel):
 
 
 class MalformedMetadata(GraiBaseModel):
-    """ """
+    """Class definition of MalformedMetadata
+
+    Attributes:
+        malformed_values: todo
+
+    """
 
     malformed_values: Dict = {}
 

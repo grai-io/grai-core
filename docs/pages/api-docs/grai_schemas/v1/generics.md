@@ -9,7 +9,13 @@ title: grai_schemas.v1.generics
 class BaseID(GraiBaseModel)
 ```
 
+Class definition of BaseID
 
+**Attributes**:
+
+- `id` - todo
+- `name` - todo
+- `namespace` - todo
 
 ## NamedID Objects
 
@@ -17,10 +23,24 @@ class BaseID(GraiBaseModel)
 class NamedID(BaseID)
 ```
 
+Class definition of NamedID
 
+**Attributes**:
+
+- `id` - todo
+- `name` - todo
+- `namespace` - todo
 
 ## UuidID Objects
 
 ```python
 class UuidID(BaseID)
 ```
+
+Class definition of UuidID
+
+**Attributes**:
+
+- `id` - todo
+- `name` - todo
+- `namespace` - todo

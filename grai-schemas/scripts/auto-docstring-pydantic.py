@@ -6,6 +6,7 @@ from typing import Dict, List
 
 num_spaces = 4
 SPACES = " " * num_spaces
+DEFAULT_ATTR_STRING = "todo"
 
 
 class ClassVisitor(ast.NodeVisitor):
@@ -63,13 +64,14 @@ def add_google_style_docstring(filename: str):
         current_doc = ast.get_docstring(class_node, clean=False)
 
         existing_descriptions = extract_attribute_descriptions(current_doc)
-
+        default_description = f"Class definition of {class_node.name}"
         # Extract attributes using annotations
         attributes = [item.target.id for item in class_node.body if isinstance(item, ast.AnnAssign)]
-        attributes_str = "\n".join(
-            [f"{SPACES}{SPACES}{attr}: {existing_descriptions.get(attr, f'')}" for attr in attributes]
-        )
-        attributes_docstring = f"\n\n{SPACES}Attributes:\n{attributes_str}".rstrip()
+        attr_map = {attr: existing_descriptions.get(attr, DEFAULT_ATTR_STRING) for attr in attributes}
+        attr_map = {k: DEFAULT_ATTR_STRING if v.strip().isspace() else v for k, v in attr_map.items()}
+
+        attributes_str = "\n".join([f"{SPACES * 2}{k}: {v}" for k, v in attr_map.items()])
+        attributes_docstring = f"{SPACES}Attributes:\n{attributes_str}".rstrip()
 
         doc_line = class_node.lineno - 1  # -1 because lineno is 1-based
 
@@ -86,8 +88,10 @@ def add_google_style_docstring(filename: str):
                 second_part = doc_parts[1].split(f"\n{SPACES * 2}")[-1]
                 post_attribute_string = second_part[second_part.index("\n") :].rstrip()
                 current_description = current_doc[: current_doc.index(split_str)].rstrip()
-            # breakpoint()
-            docstring = f'{SPACES}"""{current_description}{attributes_docstring}{post_attribute_string}\n{SPACES}"""'
+
+            description = f"{default_description}\n" if current_description == "" else f"{current_description}\n"
+            docstring = f'{SPACES}"""{description}\n{attributes_docstring}\n{post_attribute_string}\n{SPACES}"""'
+
             doc_start_line = next(i for i, line in enumerate(source[doc_line:]) if '"""' in line) + doc_line
             idx = doc_start_line + offset
             if source[doc_start_line].count('"""') == 2:
@@ -99,7 +103,7 @@ def add_google_style_docstring(filename: str):
 
                 new_source = new_source[:idx] + [docstring] + new_source[end_idx + 1 :]
         else:
-            docstring = f'{SPACES}"""\n{attributes_docstring}\n{SPACES}"""'
+            docstring = f'{SPACES}"""{default_description}\n{attributes_docstring}\n{SPACES}"""'
             new_doc_line = doc_line + offset
             new_source = new_source[: new_doc_line + 1] + [docstring] + new_source[new_doc_line + 1 :]
 
@@ -112,7 +116,7 @@ def add_google_style_docstring(filename: str):
 
 if __name__ == "__main__":
     directory = os.path.join(os.path.dirname(__file__), "..", "src", "grai_schemas")
-    directory = "."
+    # directory = "."
     for root, dirs, files in os.walk(directory):
         for file in files:
             if file.endswith(".py"):

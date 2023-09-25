@@ -7,7 +7,12 @@ from grai_schemas.v1.metadata import nodes as node_v1
 
 
 class GraiMetadata(GraiBaseModel):
-    """ """
+    """Class definition of GraiMetadata
+
+    Attributes:
+        grai: todo
+
+    """
 
     grai: Union[node_v1.Metadata, edge_v1.Metadata]
 

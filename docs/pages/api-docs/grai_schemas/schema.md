@@ -9,7 +9,11 @@ title: grai_schemas.schema
 class Schema(GraiBaseModel)
 ```
 
+Class definition of Schema
 
+**Attributes**:
+
+- `entity` - todo
 
 ### to\_model
 

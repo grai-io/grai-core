@@ -11,7 +11,16 @@ from grai_schemas.v1.metadata.generics import GenericAttributes
 
 
 class NodeMetadataTypeLabels(Enum):
-    """ """
+    """Class definition of NodeMetadataTypeLabels
+
+    Attributes:
+        generic: todo
+        table: todo
+        column: todo
+        query: todo
+        collection: todo
+
+    """
 
     generic: Literal["Generic"] = "Generic"
     table: Literal["Table"] = "Table"
@@ -30,7 +39,16 @@ class SourceType(Enum):
 
 
 class BaseNodeMetadataV1(GraiBaseModel):
-    """ """
+    """Class definition of BaseNodeMetadataV1
+
+    Attributes:
+        type: todo
+        version: todo
+        node_type: todo
+        node_attributes: todo
+        tags: todo
+
+    """
 
     type: Literal["NodeV1"] = "NodeV1"
     version: Literal["v1"] = "v1"
@@ -40,19 +58,43 @@ class BaseNodeMetadataV1(GraiBaseModel):
 
 
 class MalformedNodeMetadataV1(MalformedMetadata, BaseNodeMetadataV1):
-    """ """
+    """Class definition of MalformedNodeMetadataV1
+
+    Attributes:
+        node_type: todo
+        node_attributes: todo
+
+    """
 
     node_type: Optional[str] = "Malformed"  # type: ignore
     node_attributes: Optional[Any] = GenericAttributes()  # type: ignore
 
 
 class GenericNodeMetadataV1(BaseNodeMetadataV1):
+    """Class definition of GenericNodeMetadataV1
+
+    Attributes:
+        node_type: todo
+        node_attributes: todo
+
+    """
+
     node_type: Literal["Generic"]
     node_attributes: GenericAttributes = GenericAttributes()
 
 
 class ColumnAttributes(GenericAttributes):
-    """ """
+    """Class definition of ColumnAttributes
+
+    Attributes:
+        version: todo
+        data_type: todo
+        default_value: todo
+        is_nullable: todo
+        is_unique: todo
+        is_primary_key: todo
+
+    """
 
     version: Literal["v1"] = "v1"
     data_type: Optional[str]  # This will need to be standardized
@@ -63,40 +105,74 @@ class ColumnAttributes(GenericAttributes):
 
 
 class ColumnMetadata(BaseNodeMetadataV1):
-    """ """
+    """Class definition of ColumnMetadata
+
+    Attributes:
+        node_type: todo
+        node_attributes: todo
+
+    """
 
     node_type: Literal["Column"]
     node_attributes: ColumnAttributes = ColumnAttributes()
 
 
 class TableAttributes(GenericAttributes):
-    """ """
+    """Class definition of TableAttributes
+
+    Attributes:
+        version: todo
+
+    """
 
     version: Literal["v1"] = "v1"
 
 
 class TableMetadata(BaseNodeMetadataV1):
-    """ """
+    """Class definition of TableMetadata
+
+    Attributes:
+        node_type: todo
+        node_attributes: todo
+
+    """
 
     node_type: Literal["Table"]
     node_attributes: TableAttributes = TableAttributes()
 
 
 class QueryAttributes(GenericAttributes):
-    """ """
+    """Class definition of QueryAttributes
+
+    Attributes:
+        version: todo
+
+    """
 
     version: Literal["v1"] = "v1"
 
 
 class QueryMetadata(BaseNodeMetadataV1):
-    """ """
+    """Class definition of QueryMetadata
+
+    Attributes:
+        node_type: todo
+        node_attributes: todo
+
+    """
 
     node_type: Literal["Query"]
     node_attributes: QueryAttributes = QueryAttributes()
 
 
 class CollectionMetadata(BaseNodeMetadataV1):
-    """"""
+    """Class definition of CollectionMetadata
+
+    Attributes:
+        node_type: todo
+        node_attributes: todo
+
+    """
 
     node_type: Literal["Collection"]
     node_attributes: GenericAttributes = GenericAttributes()
