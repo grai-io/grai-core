@@ -1,7 +1,8 @@
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
-import WorkspaceDanger, { CLEAR_WORKSPACE } from "./WorkspaceDanger"
+import { CLEAR_WORKSPACE } from "./ClearWorkspace"
+import WorkspaceDanger from "./WorkspaceDanger"
 
 const workspace = {
   id: "1",
@@ -19,19 +20,22 @@ test("submit", async () => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /Clear Workspace/i }))
+      await user.click(
+        screen.getByRole("button", { name: /Clear Workspace/i }),
+      ),
   )
 
   await waitFor(() => {
     expect(
       screen.getByText(
-        "Are you sure you wish to clear the Test Workspace workspace?"
-      )
+        "Are you sure you wish to clear the Test Workspace workspace?",
+      ),
     ).toBeTruthy()
   })
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /Clear/i }))
+    async () =>
+      await user.click(screen.getByRole("button", { name: /Clear/i })),
   )
 
   await waitFor(() => {
@@ -60,24 +64,27 @@ test("submit error", async () => {
 
   await act(
     async () =>
-      await user.click(screen.getByRole("button", { name: /Clear Workspace/i }))
+      await user.click(
+        screen.getByRole("button", { name: /Clear Workspace/i }),
+      ),
   )
 
   await waitFor(() => {
     expect(
       screen.getByText(
-        "Are you sure you wish to clear the Test Workspace workspace?"
-      )
+        "Are you sure you wish to clear the Test Workspace workspace?",
+      ),
     ).toBeTruthy()
   })
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /Clear/i }))
+    async () =>
+      await user.click(screen.getByRole("button", { name: /Clear/i })),
   )
 
   await waitFor(() => {
     expect(
-      screen.getByText("Failed to clear workspace ApolloError: Error!")
+      screen.getByText("Failed to clear workspace ApolloError: Error!"),
     ).toBeInTheDocument()
   })
 })

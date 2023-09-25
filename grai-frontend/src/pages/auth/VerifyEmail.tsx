@@ -7,7 +7,7 @@ import GraphError from "components/utils/GraphError"
 import { Verify, VerifyVariables } from "./__generated__/Verify"
 
 export const VERIFY_EMAIL = gql`
-  mutation Verify($uid: String!, $token: String!) {
+  mutation Verify($uid: ID!, $token: String!) {
     verifyEmail(uid: $uid, token: $token) {
       id
     }
