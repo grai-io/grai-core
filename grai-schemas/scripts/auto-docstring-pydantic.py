@@ -4,6 +4,9 @@ import os
 import re
 from typing import Dict, List
 
+num_spaces = 4
+SPACES = " " * num_spaces
+
 
 class PydanticBaseModelVisitor(ast.NodeVisitor):
     def __init__(self):
@@ -66,23 +69,44 @@ def add_google_style_docstring(filename: str):
         current_doc = ast.get_docstring(class_node)
         existing_descriptions = extract_attribute_descriptions(current_doc)
 
-        docstring_content = f"Class definition of {class_node.name}."
-
         # Extract attributes using annotations
         attributes = [item.target.id for item in class_node.body if isinstance(item, ast.AnnAssign)]
-        attributes_str = "\n".join([f"        {attr}: {existing_descriptions.get(attr, f'')}" for attr in attributes])
-
-        docstring = f'    """\n    {docstring_content}\n\n    Attributes:\n{attributes_str}\n    """'
+        attributes_str = "\n".join(
+            [f"{SPACES}{SPACES}{attr}: {existing_descriptions.get(attr, f'')}" for attr in attributes]
+        )
+        attributes_docstring = f"{SPACES}Attributes:\n{attributes_str}"
 
         doc_line = class_node.lineno - 1  # -1 because lineno is 1-based
 
         if current_doc:
+            split_str = f"Attributes:\n"
+            doc_parts = current_doc.split(split_str)
+
+            assert len(doc_parts) <= 2, f"Docstring has unexpected format, multiple `{split_str}` found"
+
+            if len(doc_parts) == 1:
+                current_description = f"\n{SPACES}".join(doc_parts[0].split("\n")) + "\n\n"
+                post_attribute_string = ""
+            elif len(doc_parts) == 2:
+                second_part = doc_parts[1].split("\n")
+                for i, part in enumerate(second_part):
+                    if not part.startswith(SPACES):
+                        break
+
+                if i == len(second_part) - 1:
+                    post_attribute_string = ""
+                else:
+                    post_attribute_string = f"".join([f"\n{SPACES}{part}" for part in second_part[i:]])
+                current_description = f"\n{SPACES}".join(doc_parts[0].split("\n")).rstrip(SPACES)
+
+            docstring = f'{SPACES}"""{current_description}{attributes_docstring}{post_attribute_string}\n{SPACES}"""'
             doc_start_line = next(i for i, line in enumerate(source[doc_line:]) if '"""' in line) + doc_line
             doc_end_line = (
                 next(i for i, line in enumerate(source[doc_start_line + 1 :]) if '"""' in line) + doc_start_line + 1
             )
             new_source = new_source[: doc_start_line + offset] + [docstring] + new_source[doc_end_line + offset + 1 :]
         else:
+            docstring = f'{SPACES}"""\n{attributes_docstring}\n{SPACES}"""'
             new_doc_line = doc_line + offset
             new_source = new_source[: new_doc_line + 1] + [docstring] + new_source[new_doc_line + 1 :]
 
@@ -95,7 +119,7 @@ def add_google_style_docstring(filename: str):
 
 if __name__ == "__main__":
     directory = os.path.join(os.path.dirname(__file__), "..", "src", "grai_schemas")
-
+    # directory = "."
     for root, dirs, files in os.walk(directory):
         for file in files:
             if file.endswith(".py"):
