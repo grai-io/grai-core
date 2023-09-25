@@ -2,6 +2,7 @@ import React from "react"
 import { gql, useQuery } from "@apollo/client"
 import NotFound from "pages/NotFound"
 import ProfileForm from "components/settings/profile/ProfileForm"
+import SettingsAppBar from "components/settings/SettingsAppBar"
 import SettingsLayout from "components/settings/SettingsLayout"
 import GraphError from "components/utils/GraphError"
 import { GetProfile } from "./__generated__/GetProfile"
@@ -29,6 +30,7 @@ const ProfileSettings: React.FC = () => {
 
   return (
     <SettingsLayout>
+      <SettingsAppBar title="Personal info" />
       <ProfileForm profile={profile} />
     </SettingsLayout>
   )

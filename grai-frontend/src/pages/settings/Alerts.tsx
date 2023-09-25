@@ -1,6 +1,5 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
-import { Box } from "@mui/material"
 import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
 import AlertsHeader from "components/settings/alerts/AlertsHeader"
@@ -38,7 +37,7 @@ const Alerts: React.FC = () => {
         organisationName,
         workspaceName,
       },
-    }
+    },
   )
 
   if (error) return <GraphError error={error} />
@@ -49,14 +48,12 @@ const Alerts: React.FC = () => {
 
   return (
     <SettingsLayout>
-      <Box sx={{ p: 3 }}>
-        <AlertsHeader workspaceId={workspace?.id} />
-        <AlertsTable
-          alerts={data?.workspace?.alerts.data ?? []}
-          loading={loading}
-          workspaceId={workspace?.id}
-        />
-      </Box>
+      <AlertsHeader workspaceId={workspace?.id} />
+      <AlertsTable
+        alerts={data?.workspace?.alerts.data ?? []}
+        loading={loading}
+        workspaceId={workspace?.id}
+      />
     </SettingsLayout>
   )
 }

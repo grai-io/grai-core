@@ -67,7 +67,7 @@ const WorkspaceDanger: React.FC<WorkspaceDangerProps> = ({ workspace }) => {
   }
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ p: 3, pl: "48px" }}>
       <Typography variant="h5" sx={{ mb: 3 }}>
         Danger Zone
       </Typography>

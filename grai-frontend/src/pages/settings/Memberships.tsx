@@ -1,6 +1,5 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
-import { Box } from "@mui/material"
 import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
 import MembershipsHeader from "components/settings/memberships/MembershipsHeader"
@@ -58,15 +57,13 @@ const Memberships: React.FC = () => {
 
   return (
     <SettingsLayout>
-      <Box sx={{ p: 3 }}>
-        <MembershipsHeader workspaceId={workspace?.id} />
-        <MembershipsTable
-          memberships={data?.workspace?.memberships.data ?? []}
-          loading={loading}
-          workspaceId={workspace?.id}
-          total={data?.workspace?.memberships.meta.total ?? 0}
-        />
-      </Box>
+      <MembershipsHeader workspaceId={workspace?.id} />
+      <MembershipsTable
+        memberships={data?.workspace?.memberships.data ?? []}
+        loading={loading}
+        workspaceId={workspace?.id}
+        total={data?.workspace?.memberships.meta.total ?? 0}
+      />
     </SettingsLayout>
   )
 }
