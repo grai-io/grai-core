@@ -38,7 +38,7 @@
     "chartjs-chart-matrix": "^2.0.1",
     "dayjs": "^1.11.6",
     "elkjs": "^0.8.2",
-    "eslint": "^8.49.0",
+    "eslint": "^8.50.0",
     "eslint-plugin-import": "^2.27.5",
     "graphql": "^16.8.1",
     "luxon": "^3.3.0",
