@@ -177,11 +177,13 @@ test("submit", async () => {
           connector: {
             id: "1",
             name: "c",
+            icon: "",
           },
           source: {
             id: "1",
             name: "PostgreSQL",
           },
+          last_run: null,
           namespace: "default",
           name: "test connection",
           metadata: {
