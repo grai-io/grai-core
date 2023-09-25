@@ -1,0 +1,3 @@
+{
+    "client": "client",    "delete": "delete",    "get": "get",    "patch": "patch",    "post": "post",    "url": "url",    "utils": "utils"
+}

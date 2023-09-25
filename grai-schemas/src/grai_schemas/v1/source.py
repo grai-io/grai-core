@@ -7,6 +7,15 @@ from pydantic import validator
 
 
 class SourceSpec(GraiBaseModel):
+    """Class definition of SourceSpec
+
+    Attributes:
+        id: An optional UUID of the source.
+        name: The name of the source.
+        workspace: The workspace the source belongs to.
+
+    """
+
     id: Optional[UUID]
     name: str
     workspace: Union[UUID, WorkspaceSpec, None]
@@ -20,14 +29,37 @@ class SourceSpec(GraiBaseModel):
 
 
 class DataSourceMixin(GraiBaseModel):
+    """Class definition of DataSourceMixin
+
+    Attributes:
+        data_source: The data source which created this object.
+
+    """
+
     data_source: SourceSpec
 
 
 class DataSourcesMixin(GraiBaseModel):
+    """Class definition of DataSourcesMixin
+
+    Attributes:
+        data_sources: The data sources which created this object.
+
+    """
+
     data_sources: List[Union[UUID, SourceSpec]]
 
 
 class SourceV1(GraiBaseModel):
+    """Class definition of SourceV1
+
+    Attributes:
+        type: A string indicating the type of the object. In this case it is "Source".
+        version: The version of the object e.g. "v1".
+        spec: The specification of the object.
+
+    """
+
     type: Literal["Source"] = "Source"
     version: Literal["v1"] = "v1"
     spec: SourceSpec
@@ -40,7 +72,7 @@ class SourceV1(GraiBaseModel):
         """
 
         Args:
-            spec:
+            spec: The specification of the object.
 
         Returns:
 

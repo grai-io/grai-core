@@ -39,16 +39,6 @@ from polyfactory.factories.pydantic_factory import ModelFactory
 T = TypeVar("T")
 
 
-# class MetadataFactory(ModelFactory[MetadataV1]):
-#     __model__ = MetadataV1
-#     __set_as_default_factory_for_type__ = True
-#
-#     @post_generated
-#     @classmethod
-#     def sources(cls, grai) -> Dict[str, GraiMetadataV1]:
-#
-
-
 class DefaultValueFactory(ModelFactory[DefaultValue]):
     __model__ = DefaultValue
     __set_as_default_factory_for_type__ = True
@@ -147,36 +137,50 @@ class SourcedNodeFactory(ModelFactory[SourcedNodeV1]):
 
 
 class MockNode:
+    """A class for generating mock nodes for testing.
+
+    Attributes:
+        workspace: The workspace to associate with the mock nodes.
+        kwargs: Additional keyword arguments to pass to the factories.
+
+    """
+
     def __init__(self, workspace=None, **kwargs):
+        """Initializes the MockNode class.
+
+        Args:
+            workspace: The workspace to associate with the mock nodes.
+            kwargs: Additional keyword arguments to pass to the factories.
+        """
         self.workspace = workspace
         self.kwargs = kwargs
 
     def node(self, **kwargs) -> NodeV1:
-        """ """
+        """Generates a mocked NodeV1 object."""
         kwargs.setdefault("spec", self.named_node_spec())
         return NodeFactory.build(**kwargs)
 
     def named_node_spec(self, **kwargs) -> NamedSpec:
-        """ """
+        """Generates a mocked NamedSpec object."""
         base_spec = NamedNodeSpecFactory.build(**kwargs)
         if self.workspace:
             base_spec.workspace = self.workspace.id
         return base_spec
 
     def id_node_spec(self, **kwargs) -> IDSpec:
-        """ """
+        """Generates a mocked IDSpec object."""
         base_spec = IDNodeSpecFactory.build(**kwargs)
         if self.workspace:
             base_spec.workspace = self.workspace.id
         return base_spec
 
     def sourced_node(self, **kwargs) -> SourcedNodeV1:
-        """ """
+        """Generates a mocked SourcedNodeV1 object."""
         kwargs.setdefault("spec", self.named_source_node_spec())
         return SourcedNodeFactory.build(**kwargs)
 
     def named_source_node_spec(self, **kwargs) -> NamedSourceSpec:
-        """ """
+        """Generates a mocked NamedSourceSpec object."""
         base_spec = NamedSourceNodeSpecFactory.build(**kwargs)
 
         if self.workspace:
@@ -184,7 +188,7 @@ class MockNode:
         return base_spec
 
     def id_source_node_spec(self, **kwargs) -> IDSourceSpec:
-        """ """
+        """Generates a mocked IDSourceSpec object."""
         base_spec = IDSourceNodeSpecFactory.build(**kwargs)
 
         if self.workspace:
@@ -243,21 +247,27 @@ class SourcedEdgeFactory(ModelFactory[SourcedEdgeV1]):
 
 
 class MockEdge:
+    """A class for generating mock edges for testing.
+
+    Attributes:
+        workspace: The workspace to associate with the mock edges.
+    """
+
     def __init__(self, workspace=None, **kwargs):
         self.workspace = workspace
 
     def sourced_edge(self, **kwargs) -> SourcedEdgeV1:
-        """ """
+        """Generates a mocked SourcedEdgeV1 object."""
         kwargs.setdefault("spec", self.named_source_edge_spec())
         return SourcedEdgeFactory.build(**kwargs)
 
     def edge(self, **kwargs) -> EdgeV1:
-        """ """
+        """Generates a mocked EdgeV1 object."""
         kwargs.setdefault("spec", self.named_edge_spec())
         return EdgeFactory.build(**kwargs)
 
     def named_edge_spec(self, **kwargs) -> NamedEdgeSpec:
-        """ """
+        """Generates a mocked NamedEdgeSpec object."""
         base_spec = NamedEdgeSpecFactory.build(**kwargs)
 
         if self.workspace:
@@ -266,7 +276,7 @@ class MockEdge:
         return base_spec
 
     def id_edge_spec(self, **kwargs) -> EdgeIDSpec:
-        """ """
+        """Generates a mocked EdgeIDSpec object."""
         base_spec = IDEdgeSpecFactory.build(**kwargs)
 
         if self.workspace:
@@ -275,7 +285,7 @@ class MockEdge:
         return base_spec
 
     def named_source_edge_spec(self, **kwargs) -> NamedEdgeSourceSpec:
-        """ """
+        """Generates a mocked NamedEdgeSourceSpec object."""
         base_spec = NamedEdgeSourceSpecFactory.build(**kwargs)
 
         if self.workspace:
@@ -284,7 +294,7 @@ class MockEdge:
         return base_spec
 
     def id_source_edge_spec(self, **kwargs) -> EdgeIDSourceSpec:
-        """ """
+        """Generates a mocked EdgeIDSourceSpec object."""
         base_spec = IDEdgeSourceSpecFactory.build(**kwargs)
 
         if self.workspace:
@@ -306,24 +316,26 @@ class OrganisationFactory(ModelFactory[OrganisationV1]):
 
 
 class MockOrganisation:
+    """A class for generating mock organisations for testing."""
+
     @classmethod
     def organisation(cls, **kwargs) -> OrganisationV1:
-        """ """
+        """Generate a mocked OrganisationV1 object."""
         return OrganisationFactory.build(**kwargs)
 
     @classmethod
     def organisation_spec(cls, **kwargs) -> OrganisationSpec:
-        """ """
+        """Generate a mocked OrganisationSpec object."""
         return OrganisationSpecFactory.build(**kwargs)
 
     @classmethod
     def organization(cls, **kwargs) -> OrganisationV1:
-        """ """
+        """Generate a mocked OrganisationV1 object."""
         return cls.organisation(**kwargs)
 
     @classmethod
     def organization_spec(cls, **kwargs) -> OrganisationSpec:
-        """ """
+        """Generate a mocked OrganisationSpec object."""
         return cls.organisation_spec(**kwargs)
 
 
@@ -347,16 +359,27 @@ class WorkspaceFactory(ModelFactory[WorkspaceV1]):
 
 
 class MockWorkspace:
+    """A class for generating mock workspaces for testing.
+
+    Attributes:
+        organisation: The organisation to associate with the mock workspaces.
+    """
+
     def __init__(self, organisation=None):
+        """Initializes the MockWorkspace class.
+
+        Args:
+            organisation: The organisation to associate with the mock workspaces.
+        """
         self.organisation = organisation
 
     def workspace(self, **kwargs) -> WorkspaceV1:
-        """ """
+        """Generates a mocked WorkspaceV1 object."""
         kwargs.setdefault("spec", self.workspace_spec())
         return WorkspaceFactory.build(**kwargs)
 
     def workspace_spec(self, **kwargs) -> WorkspaceSpec:
-        """ """
+        """Generates a mocked WorkspaceSpec object."""
         if self.organisation:
             kwargs.setdefault("organisation", self.organisation)
         return WorkspaceSpecFactory.build(**kwargs)
@@ -375,16 +398,27 @@ class SourceFactory(ModelFactory[SourceV1]):
 
 
 class MockSource:
+    """A class for generating mocked source objects for testing.
+
+    Attributes:
+        workspace: The workspace to associate with the mock sources.
+    """
+
     def __init__(self, workspace=None):
+        """Initializes the MockSource class.
+
+        Args:
+            workspace: The workspace to associate with the mock sources.
+        """
         self.workspace = workspace
 
     def source(self, **kwargs) -> SourceV1:
-        """ """
+        """Generates a mocked SourceV1 object."""
         kwargs.setdefault("spec", self.source_spec())
         return SourceFactory.build(**kwargs)
 
     def source_spec(self, **kwargs) -> SourceSpec:
-        """ """
+        """Generates a mocked SourceSpec object."""
         if self.workspace:
             kwargs.setdefault("workspace", self.workspace)
         return SourceSpecFactory.build(**kwargs)
@@ -399,23 +433,52 @@ class EventSpecFactory(ModelFactory[EventSpec]):
 
 
 class MockEvent:
+    """A class for generating mock events for testing.
+
+    Attributes:
+        workspace: The workspace to associate with the mock events.
+    """
+
     def __init__(self, workspace=None):
+        """Initializes the MockEvent class.
+
+        Args:
+            workspace: The workspace to associate with the mock events.
+        """
         self.workspace = workspace
 
     def event_spec(self, **kwargs) -> EventSpec:
-        """ """
+        """Generates a mocked EventSpec object."""
         if self.workspace:
             kwargs.setdefault("workspace", self.workspace)
         return EventSpecFactory.build(**kwargs)
 
     def event(self, **kwargs) -> EventV1:
-        """ """
+        """Generates a mocked EventV1 object."""
         kwargs.setdefault("spec", self.event_spec())
         return EventFactory.build(**kwargs)
 
 
 class MockV1:
+    """A class for generating mock objects for testing.
+
+    Attributes:
+        node: Mocker for Node objects
+        edge: Mocker for Edge objects
+        organisation: Mocker for Organisation objects
+        workspace: Mocker for Workspace objects
+        source: Mocker for Source objects
+        event: Mocker for Event objects
+
+    """
+
     def __init__(self, workspace=None, organisation=None):
+        """Initializes the MockV1 class.
+
+        Args:
+            workspace: The workspace to associate with the mock objects.
+            organisation: The organisation to associate with the mock objects.
+        """
         workspace = workspace.spec if isinstance(workspace, WorkspaceV1) else workspace
         organisation = organisation.spec if isinstance(organisation, OrganisationV1) else organisation
 

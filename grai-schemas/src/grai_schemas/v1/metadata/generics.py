@@ -1,9 +1,11 @@
 from typing import Literal, Optional
 
-from grai_schemas.generics import GraiBaseModel, HashableBaseModel
+from grai_schemas import generics
 
 
-class GenericAttributes(HashableBaseModel):
+class GenericAttributes(generics.HashableBaseModel):
+    """Class definition of GenericAttributes"""
+
     class Config:
         """ """
 

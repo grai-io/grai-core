@@ -9,7 +9,11 @@ title: grai_schemas.v1.metadata.metadata
 class GraiNodeMetadataV1(Metadata)
 ```
 
+Class definition of GraiNodeMetadataV1
 
+**Attributes**:
+
+- `grai` - Grai defined operation attributes
 
 ## GraiEdgeMetadataV1 Objects
 
@@ -17,7 +21,11 @@ class GraiNodeMetadataV1(Metadata)
 class GraiEdgeMetadataV1(Metadata)
 ```
 
+Class definition of GraiEdgeMetadataV1
 
+**Attributes**:
+
+- `grai` - Grai defined operation attributes
 
 ## SourcesNodeMetadataV1 Objects
 
@@ -25,7 +33,11 @@ class GraiEdgeMetadataV1(Metadata)
 class SourcesNodeMetadataV1(Metadata)
 ```
 
+Class definition of SourcesNodeMetadataV1
 
+**Attributes**:
+
+- `sources` - A dictionary of source names to source metadata
 
 ## SourcesEdgeMetadataV1 Objects
 
@@ -33,7 +45,11 @@ class SourcesNodeMetadataV1(Metadata)
 class SourcesEdgeMetadataV1(Metadata)
 ```
 
+Class definition of SourcesEdgeMetadataV1
 
+**Attributes**:
+
+- `sources` - A dictionary of source names to source metadata
 
 ## NodeMetadataV1 Objects
 
@@ -41,7 +57,7 @@ class SourcesEdgeMetadataV1(Metadata)
 class NodeMetadataV1(GraiNodeMetadataV1, SourcesNodeMetadataV1)
 ```
 
-
+Class definition of NodeMetadataV1
 
 ## EdgeMetadataV1 Objects
 
@@ -49,7 +65,7 @@ class NodeMetadataV1(GraiNodeMetadataV1, SourcesNodeMetadataV1)
 class EdgeMetadataV1(GraiEdgeMetadataV1, SourcesEdgeMetadataV1)
 ```
 
-
+Class definition of EdgeMetadataV1
 
 ## GraiMalformedNodeMetadataV1 Objects
 
@@ -57,7 +73,12 @@ class EdgeMetadataV1(GraiEdgeMetadataV1, SourcesEdgeMetadataV1)
 class GraiMalformedNodeMetadataV1(MalformedMetadata, NodeMetadataV1)
 ```
 
+Class definition of GraiMalformedNodeMetadataV1
 
+**Attributes**:
+
+- `grai` - Grai defined operation attributes
+- `sources` - A dictionary of source names to source metadata
 
 ### grai
 
@@ -69,7 +90,12 @@ type: ignore
 class GraiMalformedEdgeMetadataV1(MalformedMetadata, EdgeMetadataV1)
 ```
 
+Class definition of GraiMalformedEdgeMetadataV1
 
+**Attributes**:
+
+- `grai` - Grai defined operation attributes
+- `sources` - A dictionary of source names to source metadata
 
 ### grai
 
