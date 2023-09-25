@@ -3,19 +3,16 @@ from pydantic import BaseModel
 
 
 class Test(pydantic.BaseModel):
-    """A test
-
-    Stuff
-    More Stuff
-
-    Other stuff
+    """
 
     Attributes:
         a:
         b:
+        c:
         e:
     """
 
     a: str
     b: complex
+    c: int
     e: str
