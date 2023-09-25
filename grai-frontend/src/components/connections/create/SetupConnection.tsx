@@ -4,6 +4,7 @@ import { ArrowForward } from "@mui/icons-material"
 import { LoadingButton } from "@mui/lab"
 import { Grid, TextField } from "@mui/material"
 import Form from "components/form/Form"
+import { NewSource } from "components/sources/__generated__/NewSource"
 import GraphError from "components/utils/GraphError"
 import WizardBottomBar from "components/wizards/WizardBottomBar"
 import { ElementOptions } from "components/wizards/WizardLayout"
@@ -13,6 +14,7 @@ import {
   CreateConnectionVariables,
 } from "./__generated__/CreateConnection"
 import { NewConnection } from "./__generated__/NewConnection"
+import { NewSourceConnection } from "./__generated__/NewSourceConnection"
 import {
   UpdateConnectionInitial,
   UpdateConnectionInitialVariables,
@@ -23,8 +25,6 @@ import CreateConnectionHelp from "./CreateConnectionHelp"
 import { Connection } from "./CreateConnectionWizard"
 import ConnectionsMetadata from "../ConnectionsMetadata"
 import { Connector } from "../connectors/ConnectorCard"
-import { NewSourceConnection } from "./__generated__/NewSourceConnection"
-import { NewSource } from "components/sources/__generated__/NewSource"
 
 export const CREATE_CONNECTION = gql`
   mutation CreateConnection(
