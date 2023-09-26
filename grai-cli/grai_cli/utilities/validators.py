@@ -17,7 +17,7 @@ def username_callback(inp: str):
 
     """
     if len(inp) == 0:
-        raise typer.BadParameter("Password is empty")
+        raise typer.BadParameter("Username is empty")
     return inp
 
 

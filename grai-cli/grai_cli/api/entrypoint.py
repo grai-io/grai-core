@@ -4,8 +4,9 @@ import click
 import typer
 
 import grai_cli
+from grai_cli.api.callbacks import default_callback
+from grai_cli.utilities.styling import HAS_RICH, print
 from grai_cli.utilities.telemetry import Telemetry
-from grai_cli.utilities.utilities import HAS_RICH, default_callback, print
 
 
 def result_callback(*args, **kwargs):
