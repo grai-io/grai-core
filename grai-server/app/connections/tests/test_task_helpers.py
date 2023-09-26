@@ -567,6 +567,9 @@ class TestUpdate:
         schema_nodes = [model_to_schema(node, source, "SourcedNodeV1") for node in nodes]
         update(test_workspace, source, schema_nodes)
 
+        assert Source.objects.filter(name=source.name, workspace=test_workspace).exists()
+        assert Node.objects.filter(name=nodes[0].name, namespace=nodes[0].namespace).exists()
+
 
 class TestGetEdgeNodesFromDatabase:
     @staticmethod
