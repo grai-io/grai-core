@@ -39,12 +39,3 @@ repos:
           (?x)^(
                 .*/migrations/.*.py
             )$
-  - repo: https://github.com/PyCQA/autoflake
-    rev: v2.2.1
-    hooks:
-      - id: autoflake
-        args:
-          - "--in-place"
-          - "--remove-all-unused-imports"
-          - "--remove-unused-variables"
-          - "--remove-duplicate-keys"
