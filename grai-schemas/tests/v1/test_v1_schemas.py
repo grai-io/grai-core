@@ -252,7 +252,7 @@ class TestOrganisationV1:
 class TestSourceV1:
     @staticmethod
     def test_source_missing_id(mock_v1):
-        data = mock_v1.source.source().dict()["spec"]
+        data = mock_v1.source.source_spec().dict()
         data.pop("id")
         source = SourceV1.from_spec(data)
         assert source.spec.id is None
@@ -260,16 +260,15 @@ class TestSourceV1:
     @staticmethod
     @pytest.mark.xfail(raises=ValidationError)
     def test_source_missing_name(mock_v1):
-        data = mock_v1.source.source().dict()["spec"]
+        data = mock_v1.source.source_spec().dict()
         data.pop("name")
-        source = SourceV1.from_spec(data)
+        SourceV1.from_spec(data)
 
     @staticmethod
-    @pytest.mark.xfail(raises=ValidationError)
     def test_source_missing_workspace(mock_v1):
-        data = mock_v1.source.source().dict()["spec"]
+        data = mock_v1.source.source_spec().dict()
         data.pop("workspace", None)
-        source = SourceV1.from_spec(data)
+        SourceV1.from_spec(data)
 
     def test_dumps_to_json(self, mock_v1):
         source = mock_v1.source.source()

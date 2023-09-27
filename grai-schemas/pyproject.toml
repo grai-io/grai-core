@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai_schemas"
-version = "0.2.7"
+version = "0.2.8"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>", "Edward Louth <edward@grai.io>"]
 license = "Elastic-2.0"
@@ -37,5 +37,8 @@ line-length = 120
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+xfail_strict = true
 
 [tool.poetry_bumpversion.file."src/grai_schemas/__init__.py"]
