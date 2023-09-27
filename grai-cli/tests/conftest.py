@@ -7,9 +7,15 @@ from typer.testing import CliRunner
 from grai_cli.settings.cache import cache
 from grai_cli.settings.config import ConfigDirHandler, EnvironmentVariables, GraiConfig
 
-mocker = MockV1()
-organisation = mocker.organisation.organisation_spec(name="default")
-workspace = mocker.workspace.workspace_spec(name="default", organisation=organisation)
+
+@pytest.fixture(scope="session")
+def organisation():
+    return MockV1().organisation.organisation_spec(name="default")
+
+
+@pytest.fixture(scope="session")
+def workspace(organisation):
+    return MockV1().workspace.workspace_spec(name="default", organisation=organisation)
 
 
 @pytest.fixture(autouse=True)
@@ -48,8 +54,8 @@ def client():
 
 
 @pytest.fixture
-def mock_v1():
-    return MockV1(workspace=workspace)
+def mock_v1(workspace, organisation):
+    return MockV1(workspace=workspace, organisation=organisation)
 
 
 @pytest.fixture

@@ -28,7 +28,7 @@ def get_default_client() -> BaseClient:
     _clients: Dict[str, Type[BaseClient]] = {
         "v1": ClientV1,
     }
-    url = config.server.url
+    url = str(config.server.url)
     workspace = config.server.workspace
 
     client = _clients[config.server.api_version](url=url, workspace=workspace)

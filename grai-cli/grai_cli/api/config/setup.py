@@ -10,3 +10,5 @@ set_app = typer.Typer(
     help="Set individual elements of your config",
     callback=default_callback,
 )
+
+config_app.add_typer(set_app, name="set")

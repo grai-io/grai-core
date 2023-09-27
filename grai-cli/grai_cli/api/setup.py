@@ -5,7 +5,6 @@ from grai_cli.api.server.setup import client_app, client_get_app
 from grai_cli.api.telemetry.commands import telemetry_app
 
 app.add_typer(config_app, name="config")
-app.add_typer(set_app, name="set")
 app.add_typer(demo_app, name="demo")
 app.add_typer(client_app, name="client")
 app.add_typer(client_get_app, name="get")

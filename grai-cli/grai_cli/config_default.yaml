@@ -1,7 +1,7 @@
 auth:
   authentication_mode: username
-  password: test
-  username: test
+  password: default_config
+  username: default_config_name
 server:
   api_version: v1
   url: https://api.grai.io

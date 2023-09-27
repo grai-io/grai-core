@@ -3,6 +3,7 @@ from typing import Optional
 
 import typer
 from grai_client.schemas.schema import validate_file
+from grai_schemas.utilities import merge
 
 from grai_cli.api.callbacks import requires_config_decorator
 from grai_cli.api.entrypoint import app
@@ -161,16 +162,14 @@ def apply(
         typer.Exit()
 
     for spec in specs:
+        record = None
         try:
             record = client.get(spec)
         except:
-            record = None
-
-        if record is None:
             client.post(spec)
-        else:
-            provided_values = {k: v for k, v in spec.spec.dict().items() if v}
-            updated_record = record.update(provided_values)
+
+        if record is not None:
+            updated_record = merge(record, spec)
             client.patch(updated_record)
 
 

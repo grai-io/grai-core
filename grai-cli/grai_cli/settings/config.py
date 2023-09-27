@@ -9,9 +9,14 @@ from typing import Any, Dict, Literal, Optional, Protocol, Union
 import typer
 import yaml
 from goodconf import Field, GoodConf
-from pydantic import BaseModel, BaseSettings, PrivateAttr, SecretStr
-
-from grai_cli.utilities.styling import print
+from pydantic import (
+    AnyHttpUrl,
+    BaseModel,
+    BaseSettings,
+    EmailStr,
+    PrivateAttr,
+    SecretStr,
+)
 
 
 class EnvironmentVariables:
@@ -95,7 +100,7 @@ class ServerSettingsV1(BaseModel):
     """ """
 
     api_version: Literal["v1"] = "v1"
-    url: str
+    url: AnyHttpUrl
     workspace: str
 
     class Config:
@@ -119,7 +124,7 @@ class BasicAuthSettings(AuthModeSettings):
     """ """
 
     authentication_mode: Literal["username"] = "username"
-    username: str
+    username: EmailStr
     password: SecretStr
 
 
@@ -171,6 +176,7 @@ class BaseGraiConfig(LazyConfig):
     class Config:
         default_files = [config_handler.config_file]
         file_env_var = EnvironmentVariables.config_file
+        validate_assignment = True
 
     def load(self, filename: Optional[str] = None, with_warning=True) -> None:
         try:
@@ -182,16 +188,22 @@ class BaseGraiConfig(LazyConfig):
 
         self._config_file = self.__config__._config_file
 
+    @property
+    def config_location(self):
+        if not self._loaded:
+            self.load()
+        return self._config_file
+
     @classmethod
     def from_file(cls, file):
         with open(file, "r") as file:
             content = yaml.safe_load(file)
         return cls(**content)
 
-    def save(self):
+    def save(self, save_path: Optional[str] = None):
         """ """
         values = unredact(self.dict())
-        save_path = self.__config__.default_files[0] if self._config_file is None else self._config_file
+        save_path = save_path if save_path is not None else config_handler.config_file
 
         with open(save_path, "w") as f:
             yaml.dump(values, f)

@@ -1,15 +1,14 @@
 from functools import wraps
-from typing import Callable
+from typing import Annotated, Callable
 
 import typer
 
 from grai_cli.api.config.setup import set_app
 from grai_cli.settings.config import config
 from grai_cli.utilities.validators import (
-    host_callback,
-    insecure_callback,
+    api_key_callback,
     password_callback,
-    port_callback,
+    url_callback,
     username_callback,
     workspace_callback,
 )
@@ -67,7 +66,7 @@ def setter_helper(path: str) -> Callable:
 
 
 @setter_helper("auth.username")
-def _(username: str = typer.Argument(..., callback=username_callback)):
+def _(username: Annotated[str, typer.Argument(..., callback=username_callback)]):
     """Sets config value for auth.username
 
     Args:
@@ -83,14 +82,17 @@ def _(username: str = typer.Argument(..., callback=username_callback)):
 
 @setter_helper("auth.password")
 def _(
-    password: str = typer.Option(
-        ...,
-        hide_input=True,
-        callback=password_callback,
-        prompt=True,
-        prompt_required=True,
-        confirmation_prompt=True,
-    )
+    password: Annotated[
+        str,
+        typer.Option(
+            ...,
+            hide_input=True,
+            callback=password_callback,
+            prompt=True,
+            prompt_required=True,
+            confirmation_prompt=True,
+        ),
+    ]
 ):
     """Sets config value for auth.password
 
@@ -107,18 +109,17 @@ def _(
 
 @setter_helper("auth.api_key")
 def _(
-    api_key: str = typer.Option(
-        ...,
-        hide_input=True,
-        prompt=True,
-        prompt_required=True,
-        confirmation_prompt=True,
-    )
+    api_key: Annotated[
+        str,
+        typer.Option(
+            ..., hide_input=True, prompt=True, prompt_required=True, confirmation_prompt=True, callback=api_key_callback
+        ),
+    ]
 ):
     """Sets config value for auth.api_key
 
     Args:
-        api_key (str, optional):  (Default value = typer.Option(...,hide_input=True,prompt=True,prompt_required=True,confirmation_prompt=True,))
+        api_key: Sets the api_key config in the config file.
 
     Returns:
 
@@ -128,42 +129,12 @@ def _(
     pass
 
 
-@setter_helper("server.host")
-def _(host: str = typer.Argument(..., callback=host_callback)):
-    """Sets config value for server.host
+@setter_helper("server.url")
+def _(url: Annotated[str, typer.Argument(..., callback=url_callback)]):
+    """Sets config value for server.url
 
     Args:
-        host (str, optional):  (Default value = typer.Argument(..., callback=host_callback))
-
-    Returns:
-
-    Raises:
-
-    """
-    pass
-
-
-@setter_helper("server.port")
-def _(port: str = typer.Argument(..., callback=port_callback)):
-    """Sets config value for server.port
-
-    Args:
-        port (str, optional):  (Default value = typer.Argument(..., callback=port_callback))
-
-    Returns:
-
-    Raises:
-
-    """
-    pass
-
-
-@setter_helper("server.insecure")
-def _(insecure: str = typer.Argument(..., callback=insecure_callback)):
-    """Sets config value for server.insecure
-
-    Args:
-        insecure (str, optional):  (Default value = typer.Argument(..., callback=insecure_callback))
+        url: Sets the url config in the config file.
 
     Returns:
 
@@ -174,7 +145,7 @@ def _(insecure: str = typer.Argument(..., callback=insecure_callback)):
 
 
 @setter_helper("server.workspace")
-def _(workspace: str = typer.Argument(..., callback=workspace_callback)):
+def _(workspace: Annotated[str, typer.Argument(..., callback=workspace_callback)]):
     """Sets config value for server.workspace
 
     Args:

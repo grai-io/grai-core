@@ -4,6 +4,7 @@ import tempfile
 import uuid
 
 import yaml
+from grai_schemas.v1.mock import MockV1
 from typer.testing import CliRunner
 
 from grai_cli.api.entrypoint import app
@@ -16,48 +17,6 @@ def get_temp_file():
     """ """
     fname = os.urandom(24).hex()
     return os.path.join(tempfile.gettempdir(), fname)
-
-
-def make_v1_node():
-    """ """
-    node = {
-        "version": "v1",
-        "type": "Node",
-        "spec": {
-            "name": "name-" + str(uuid.uuid4()),
-            "namespace": "namespace-" + str(uuid.uuid4()),
-            "data_sources": [],
-            "metadata": {"grai": {"node_type": "Generic"}},
-        },
-    }
-    return node
-
-
-def make_v1_edge(source_id, destination_id):
-    """
-
-    Args:
-        source_id:
-        destination_id:
-
-    Returns:
-
-    Raises:
-
-    """
-    node = {
-        "version": "v1",
-        "type": "Edge",
-        "spec": {
-            "data_source": "tests",
-            "source": source_id,
-            "destination": destination_id,
-            "name": "name-" + str(uuid.uuid4()),
-            "namespace": "test",
-            "metadata": {"edge_type": "Generic"},
-        },
-    }
-    return node
 
 
 def test_apply_single_node(runner, v1_node):
@@ -73,7 +32,8 @@ def test_apply_single_node(runner, v1_node):
     """
 
     with tempfile.NamedTemporaryFile("w+") as file:
-        write_yaml(v1_node, file.name)
+        node = MockV1().node.node()
+        write_yaml(node, file.name)
         result = runner.invoke(app, ["apply", file.name])
         assert result.exit_code == 0, result
 
