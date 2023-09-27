@@ -1,3 +1,4 @@
+import importlib.resources as pkg_resources
 import os
 import platform
 import warnings
@@ -5,9 +6,17 @@ from itertools import product
 from pprint import pprint
 from typing import Any, Dict, Literal, Optional, Protocol, Union
 
+import typer
 import yaml
 from goodconf import Field, GoodConf
-from pydantic import BaseModel, BaseSettings, PrivateAttr, SecretStr
+from pydantic import (
+    AnyHttpUrl,
+    BaseModel,
+    BaseSettings,
+    EmailStr,
+    PrivateAttr,
+    SecretStr,
+)
 
 
 class EnvironmentVariables:
@@ -60,6 +69,10 @@ class ConfigDirHandler:
         self.config_dir = os.path.dirname(self.config_file)
         os.makedirs(self.config_dir, exist_ok=True)
 
+    @property
+    def has_config_file(self):
+        return os.path.exists(self.config_file)
+
 
 def unredact(obj: Any) -> Any:
     """
@@ -87,7 +100,7 @@ class ServerSettingsV1(BaseModel):
     """ """
 
     api_version: Literal["v1"] = "v1"
-    url: str
+    url: AnyHttpUrl
     workspace: str
 
     class Config:
@@ -111,7 +124,7 @@ class BasicAuthSettings(AuthModeSettings):
     """ """
 
     authentication_mode: Literal["username"] = "username"
-    username: str
+    username: EmailStr
     password: SecretStr
 
 
@@ -130,6 +143,7 @@ class ContextSettings(BaseModel):
 
 class LazyConfig(GoodConf):
     _loaded = PrivateAttr(False)
+    _emit_warning = PrivateAttr(True)
 
     def __init__(self, load=False, **kwargs):
         self._loaded = load
@@ -140,9 +154,9 @@ class LazyConfig(GoodConf):
         if not self._loaded:
             self.load()
             self._loaded = True
-        if not hasattr(self, name):
-            raise ValueError(f"{self} does not have attr {name}")
-        return getattr(self, name)
+            return getattr(self, name)
+
+        raise ValueError(f"{self} does not have attribute `{name}`")
 
 
 def load_warning():
@@ -162,17 +176,23 @@ class BaseGraiConfig(LazyConfig):
     class Config:
         default_files = [config_handler.config_file]
         file_env_var = EnvironmentVariables.config_file
+        validate_assignment = True
 
-    def load(self, filename: Optional[str] = None) -> None:
+    def load(self, filename: Optional[str] = None, with_warning=True) -> None:
         try:
-            super().load(filename=filename)
+            super().load(filename)
         except Exception as e:
-            import importlib.resources as pkg_resources
-
             load_warning()
             default_config = str(pkg_resources.files("grai_cli") / "config_default.yaml")
             super().load(filename=default_config)
+
         self._config_file = self.__config__._config_file
+
+    @property
+    def config_location(self):
+        if not self._loaded:
+            self.load()
+        return self._config_file
 
     @classmethod
     def from_file(cls, file):
@@ -180,11 +200,31 @@ class BaseGraiConfig(LazyConfig):
             content = yaml.safe_load(file)
         return cls(**content)
 
-    def save(self):
+    def save(self, save_path: Optional[str] = None):
         """ """
         values = unredact(self.dict())
-        with open(self._config_file, "w") as f:
+        save_path = save_path if save_path is not None else config_handler.config_file
+
+        with open(save_path, "w") as f:
             yaml.dump(values, f)
+
+    def view(self):
+        """ """
+
+        def redact(obj: dict) -> dict:
+            """ """
+            if isinstance(obj, dict):
+                return {k: redact(v) for k, v in obj.items()}
+            elif isinstance(obj, SecretStr):
+                return str(obj)
+            else:
+                return obj
+
+        if not self._loaded:
+            self.load()
+        data = redact(self.dict())
+        data_representation = yaml.dump(data, default_flow_style=False)
+        return data_representation
 
 
 class GraiConfig(BaseGraiConfig):

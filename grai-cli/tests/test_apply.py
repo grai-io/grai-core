@@ -4,8 +4,10 @@ import tempfile
 import uuid
 
 import yaml
+from grai_schemas.v1.mock import MockV1
 from typer.testing import CliRunner
 
+from grai_cli import config
 from grai_cli.api.entrypoint import app
 from grai_cli.api.server.endpoints import apply, delete, get_edges, get_nodes
 from grai_cli.utilities.test import prep_tests
@@ -18,49 +20,7 @@ def get_temp_file():
     return os.path.join(tempfile.gettempdir(), fname)
 
 
-def make_v1_node():
-    """ """
-    node = {
-        "version": "v1",
-        "type": "Node",
-        "spec": {
-            "name": "name-" + str(uuid.uuid4()),
-            "namespace": "namespace-" + str(uuid.uuid4()),
-            "data_sources": [],
-            "metadata": {"grai": {"node_type": "Generic"}},
-        },
-    }
-    return node
-
-
-def make_v1_edge(source_id, destination_id):
-    """
-
-    Args:
-        source_id:
-        destination_id:
-
-    Returns:
-
-    Raises:
-
-    """
-    node = {
-        "version": "v1",
-        "type": "Edge",
-        "spec": {
-            "data_source": "tests",
-            "source": source_id,
-            "destination": destination_id,
-            "name": "name-" + str(uuid.uuid4()),
-            "namespace": "test",
-            "metadata": {"edge_type": "Generic"},
-        },
-    }
-    return node
-
-
-def test_apply_single_node(runner, v1_node):
+def test_apply_single_node(runner, mock_v1):
     """
 
     Args:
@@ -73,12 +33,13 @@ def test_apply_single_node(runner, v1_node):
     """
 
     with tempfile.NamedTemporaryFile("w+") as file:
-        write_yaml(v1_node, file.name)
+        node = mock_v1.node.node()
+        write_yaml(node, file.name)
         result = runner.invoke(app, ["apply", file.name])
         assert result.exit_code == 0, result
 
 
-def test_apply_multi_node(runner):
+def test_apply_multi_node(runner, mock_v1):
     """
 
     Args:
@@ -90,14 +51,13 @@ def test_apply_multi_node(runner):
 
     """
     with tempfile.NamedTemporaryFile("w+") as file:
-        file_name = pathlib.Path(file.name)
-        nodes = [make_v1_node() for i in range(5)]
+        nodes = [mock_v1.node.node() for i in range(5)]
         write_yaml(nodes, file.name)
         result = runner.invoke(app, ["apply", file.name])
         assert result.exit_code == 0, result
 
 
-def test_create_and_get_nodes(runner):
+def test_create_and_get_nodes(runner, mock_v1):
     """
 
     Args:
@@ -109,18 +69,21 @@ def test_create_and_get_nodes(runner):
 
     """
     with tempfile.NamedTemporaryFile("w+") as file:
-        nodes = [make_v1_node() for i in range(2)]
+        nodes = [mock_v1.node.node() for i in range(2)]
+        original_node_set = {(n.spec.name, n.spec.namespace) for n in nodes}
+
         write_yaml(nodes, file.name)
         result = runner.invoke(app, ["apply", file.name])
         assert result.exit_code == 0
+
         server_nodes = get_nodes(print=False)
         node_set = {(str(n.spec.name), str(n.spec.namespace)) for n in server_nodes}
-        original_node_set = {(n["spec"]["name"], n["spec"]["namespace"]) for n in nodes}
+
         diff = original_node_set - node_set
         assert len(diff) == 0, "Created nodes were not returned by get"
 
 
-def test_delete_single_node(runner):
+def test_delete_single_node(runner, v1_node):
     """
 
     Args:
@@ -133,7 +96,7 @@ def test_delete_single_node(runner):
     """
     with tempfile.NamedTemporaryFile("w+") as file:
         file_name = pathlib.Path(file.name)
-        node_dict = make_v1_node()
+        node_dict = v1_node.dict()
         yaml.dump(node_dict, file)
         result = runner.invoke(app, ["apply", file.name])
         assert result.exit_code == 0, result

@@ -8,6 +8,7 @@ import typer
 from pydantic import BaseModel
 
 from grai_cli.settings.config import config, config_handler
+from grai_cli.utilities.styling import print
 
 
 class GraiCache(BaseModel):
@@ -40,11 +41,6 @@ class GraiCache:
             self.telemetry_id = cache["telemetry_id"]
 
             if self.run_config_init or not os.path.exists(config_handler.config_file):
-                message = (
-                    f"No config file found in ({config_handler.config_file}). CLI is operating using default values. "
-                    f"You can create a new config file by running `grai config init`."
-                )
-                typer.echo(message)
                 cache["run_config_init"] = False
             self.run_config_init = cache["run_config_init"]
 
@@ -53,7 +49,7 @@ class GraiCache:
                     f"We use anonymous telemetry data to help us estimate our number of "
                     f"users and identify failure hotspots. You can disable it using the `--no-telemetry` flag"
                 )
-                typer.echo(message)
+                print(message)
                 cache["has_telemetry_alert"] = True
             self.has_telemetry_alert = cache["has_telemetry_alert"]
 

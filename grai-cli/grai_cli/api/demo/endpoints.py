@@ -11,7 +11,7 @@ import typer
 from pydantic import BaseModel
 
 from grai_cli.api.demo.setup import demo_app
-from grai_cli.utilities.utilities import print
+from grai_cli.utilities.styling import print
 
 
 class Demo:

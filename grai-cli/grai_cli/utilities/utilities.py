@@ -1,39 +1,15 @@
 import importlib.util
+import re
 from functools import wraps
 from io import TextIOBase
 from pathlib import Path
 from typing import IO, Any, Callable, Dict, Iterable, List, Sequence, Union
 from uuid import UUID
 
-import typer
 import yaml
 from multimethod import multimethod
-from pydantic import BaseModel
-
-from grai_cli.settings.config import config
-
-HAS_RICH = importlib.util.find_spec("rich") is not None
-
-if HAS_RICH:
-    from rich import print
-else:
-    print = print
-
-
-def default_callback(ctx: typer.Context):
-    """
-
-    Args:
-        ctx (typer.Context):
-
-    Returns:
-
-    Raises:
-
-    """
-    ctx.meta.setdefault("command_path", [])
-    if ctx.invoked_subcommand is not None:
-        ctx.meta["command_path"].append(ctx.invoked_subcommand)
+from pydantic import BaseModel, Field, SecretStr, constr, validator
+from typing_extensions import Annotated
 
 
 def load_yaml(file: Union[str, TextIOBase]) -> Dict:
@@ -244,55 +220,3 @@ def write_yaml(
             dump_yaml(data, f)
     else:
         dump_yaml(data, path)
-
-
-# def writes_config(fn: Callable) -> Callable:
-#     @wraps(fn)
-#     def inner(*args, **kwargs):
-#         write_config = kwargs.pop("write_config", True)
-#         config_location = kwargs.pop("config_location", config.handler.config_file)
-#
-#         result = fn(*args, **kwargs)
-#         if write_config:
-#             with open(config_location, "w") as file:
-#                 file.write(config.dump(redact=False))
-#         return result
-#
-#     return inner
-
-
-def get_config_view(config_field: str):
-    """Assumes <config_field> is dot separated i.e. `auth.username`
-
-    Args:
-        config_field (str):
-
-    Returns:
-
-    Raises:
-
-    """
-    config_view = config.root()
-    for path in config_field.split("."):
-        config_view = config_view[path]
-    return config_view
-
-
-def merge_dicts(dict_a: Dict, dict_b: Dict) -> Dict:
-    """Recursively merge elements of dict b into dict a preferring b
-
-    Args:
-        dict_a (Dict):
-        dict_b (Dict):
-
-    Returns:
-
-    Raises:
-
-    """
-    for k, v in dict_b.items():
-        if isinstance(dict_a.get(k, None), dict) and isinstance(v, dict):
-            merge_dicts(dict_a[k], v)
-        else:
-            dict_a[k] = v
-    return dict_a
