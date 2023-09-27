@@ -119,6 +119,9 @@ def validate_connection_arguments(
 
     """
 
+    if insecure is not None and not isinstance(insecure, bool):
+        raise ValueError(f"Unexpected `insecure` value: {insecure}, `insecure` must be either " f"True, False or None.")
+
     if url is not None:
         # derive from url
         parsed_url = furl(url)

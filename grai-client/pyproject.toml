@@ -43,6 +43,10 @@ known_first_party = "grai_client"
 [tool.black]
 line-length = 120
 
+[tool.pytest.ini_options]
+xfail_strict = true
+
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
