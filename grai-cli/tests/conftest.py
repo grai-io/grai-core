@@ -1,4 +1,5 @@
 import os
+import uuid
 
 import pytest
 from grai_schemas.v1.mock import MockV1
@@ -9,13 +10,28 @@ from grai_cli.settings.config import ConfigDirHandler, EnvironmentVariables, Gra
 
 
 @pytest.fixture(scope="session")
+def client():
+    from grai_cli.api.server.setup import get_default_client
+
+    return get_default_client()
+
+
+@pytest.fixture(scope="session")
 def organisation():
     return MockV1().organisation.organisation_spec(name="default")
 
 
 @pytest.fixture(scope="session")
-def workspace(organisation):
-    return MockV1().workspace.workspace_spec(name="default", organisation=organisation)
+def workspace(client, organisation):
+    workspace = client.get(MockV1(organisation=organisation).workspace.workspace_spec(name="default"))
+    organisation.id = workspace.spec.organisation
+    return workspace
+
+
+@pytest.fixture(scope="session")
+def source(client, workspace):
+    source = MockV1(workspace=workspace).source.source_spec(name=f"{uuid.uuid4()}")
+    return client.post(source)
 
 
 @pytest.fixture(autouse=True)
@@ -46,16 +62,9 @@ def handler(config):
     return handler
 
 
-@pytest.fixture(scope="session")
-def client():
-    from grai_cli.api.server.setup import get_default_client
-
-    return get_default_client()
-
-
 @pytest.fixture
-def mock_v1(workspace, organisation):
-    return MockV1(workspace=workspace, organisation=organisation)
+def mock_v1(workspace, organisation, source):
+    return MockV1(workspace=workspace, organisation=organisation, data_source=source, data_sources=[source])
 
 
 @pytest.fixture
