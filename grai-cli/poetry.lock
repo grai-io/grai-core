@@ -517,13 +517,13 @@ tqdm = ">=4.65.0,<5.0.0"
 
 [[package]]
 name = "grai-schemas"
-version = "0.2.8a1"
+version = "0.2.8"
 description = ""
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "grai_schemas-0.2.8a1-py3-none-any.whl", hash = "sha256:5155844feb654528f8044a467731df00f6d52bcd5a8ebe412d5e2c7c5cd9ad15"},
-    {file = "grai_schemas-0.2.8a1.tar.gz", hash = "sha256:a1dca1b6ec3aade28c5d8e64b7afad1233eefec276d6eb6f63e1cece27644d38"},
+    {file = "grai_schemas-0.2.8-py3-none-any.whl", hash = "sha256:4b575900b9269cd77810b84a79340a078d8c6afe4d18d0f48da0f5e067ac30be"},
+    {file = "grai_schemas-0.2.8.tar.gz", hash = "sha256:7f308aae4403c976ac88c94b91550febd537d57377ac8359587f35d9f717931d"},
 ]
 
 [package.dependencies]
@@ -1348,4 +1348,4 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "d53223dea282eb96f55989a13d1c9493129dc9205b93a9f31069ea187a849996"
+content-hash = "35f17d381bd7cc38f505401755490a781e6eb96550408db8e1a0d93b371e4b5d"
