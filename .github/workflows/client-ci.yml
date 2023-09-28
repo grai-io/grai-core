@@ -141,4 +141,4 @@ jobs:
 
       - run: poetry install
 
-      - run: pytest
+      - run: poetry run pytest
