@@ -92,7 +92,6 @@ def get_edges(
 
     """
     client = get_default_client()
-    breakpoint()
     result = client.get("Edge")
 
     if print:
