@@ -35,6 +35,7 @@ types-pyyaml = "^6.0.12.2"
 pre-commit = "^2.20.0"
 pdoc = "^13.1.1"
 pytest-durations = "^1.2.0"
+toml = "^0.10.2"
 
 [tool.isort]
 profile = "black"
