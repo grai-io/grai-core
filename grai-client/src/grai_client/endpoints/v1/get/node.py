@@ -36,6 +36,7 @@ def get_node_by_label_v1(
     """
     url = client.get_url(grai_type)
     resp = paginated_get(client, url, options)
+
     return [node_builder(obj) for obj in resp]
 
 
