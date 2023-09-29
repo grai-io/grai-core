@@ -11,7 +11,9 @@ test("renders", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByText("Workspace Settings")).toBeInTheDocument()
+    expect(
+      screen.getByRole("heading", { name: "Settings" }),
+    ).toBeInTheDocument()
   })
 
   await waitFor(() => {
@@ -38,7 +40,9 @@ test("error", async () => {
   render(<WorkspaceSettings />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getByText("Workspace Settings")).toBeInTheDocument()
+    expect(
+      screen.getByRole("heading", { name: "Settings" }),
+    ).toBeInTheDocument()
   })
 
   await waitFor(() => {
@@ -67,7 +71,9 @@ test("not found", async () => {
   render(<WorkspaceSettings />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getByText("Workspace Settings")).toBeInTheDocument()
+    expect(
+      screen.getByRole("heading", { name: "Settings" }),
+    ).toBeInTheDocument()
   })
 
   await waitFor(() => {
@@ -83,7 +89,9 @@ test("submit", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getAllByText("Workspace Settings")).toBeTruthy()
+    expect(
+      screen.getByRole("heading", { name: "Settings" }),
+    ).toBeInTheDocument()
   })
 
   await waitFor(() => {
@@ -94,12 +102,12 @@ test("submit", async () => {
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: /name/i }),
-        "Workspace 1"
-      )
+        "Workspace 1",
+      ),
   )
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+    async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 
   // eslint-disable-next-line testing-library/no-wait-for-empty-callback
@@ -144,7 +152,9 @@ test("submit error", async () => {
   render(<WorkspaceSettings />, { mocks, withRouter: true })
 
   await waitFor(() => {
-    expect(screen.getByText("Workspace Settings")).toBeInTheDocument()
+    expect(
+      screen.getByRole("heading", { name: "Settings" }),
+    ).toBeInTheDocument()
   })
 
   await waitFor(() => {
@@ -152,7 +162,7 @@ test("submit error", async () => {
   })
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /save/i }))
+    async () => await user.click(screen.getByRole("button", { name: /save/i })),
   )
 
   await waitFor(() => {

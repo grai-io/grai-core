@@ -1,153 +1,93 @@
 import React from "react"
-import {
-  AccountCircle,
-  Business,
-  CloudQueue,
-  Lock,
-  Notifications,
-  People,
-  VpnKey,
-} from "@mui/icons-material"
-import {
-  Drawer,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  ListSubheader,
-  Typography,
-} from "@mui/material"
-import { Link } from "react-router-dom"
-import useWorkspace from "helpers/useWorkspace"
-
-const Subheader = ({ children }: { children: React.ReactNode }) => (
-  <ListSubheader
-    sx={{
-      color: "#79797D",
-      fontSize: "14px",
-      fontWeight: 500,
-      textTransform: "uppercase",
-      backgroundColor: "#F8F8F8",
-      fontFamily: "Inter",
-      pl: "24px",
-    }}
-  >
-    {children}
-  </ListSubheader>
-)
+import { Drawer, Typography } from "@mui/material"
+import PersonalInfo from "components/icons/PersonalInfo"
+import TwoFactor from "components/icons/TwoFactor"
+import ApiKeys from "components/icons/ApiKeys"
+import Workspace from "components/icons/Workspace"
+import Users from "components/icons/Users"
+import Alerts from "components/icons/Alerts"
+import Installations from "components/icons/Installations"
+import SettingsDrawerSection, { Page } from "./SettingsDrawerSection"
 
 const drawerWidth = 300
 
-const SettingsDrawer: React.FC = () => {
-  const { routePrefix } = useWorkspace()
+const profilePages: Page[] = [
+  {
+    name: "Personal info",
+    icon: <PersonalInfo />,
+    path: "/settings/profile",
+  },
+  {
+    name: "2 Factor",
+    icon: <TwoFactor />,
+    path: "/settings/2fa",
+  },
+  {
+    name: "API Keys",
+    icon: <ApiKeys />,
+    path: "/settings/api-keys",
+  },
+]
 
-  return (
-    <Drawer
-      variant="permanent"
-      sx={{
+const workspacePages: Page[] = [
+  {
+    name: "Settings",
+    icon: <Workspace />,
+    path: "/settings/workspace",
+  },
+  {
+    name: "Users",
+    icon: <Users />,
+    path: "/settings/memberships",
+  },
+  {
+    name: "Alerts",
+    icon: <Alerts />,
+    path: "/settings/alerts",
+  },
+  {
+    name: "Installations",
+    icon: <Installations />,
+    path: "/settings/installations",
+  },
+]
+
+const SettingsDrawer: React.FC = () => (
+  <Drawer
+    variant="permanent"
+    sx={{
+      width: drawerWidth,
+      "& .MuiDrawer-paper": {
+        marginLeft: "76px",
         width: drawerWidth,
-        "& .MuiDrawer-paper": {
-          marginLeft: "76px",
-          width: drawerWidth,
-          boxSizing: "border-box",
-          backgroundColor: "#F8F8F8",
-        },
+        boxSizing: "border-box",
+        backgroundColor: "#F8F8F8",
+      },
+    }}
+  >
+    <Typography
+      variant="h1"
+      sx={{
+        pl: "24px",
+        pt: "32px",
+        color: "rgba(0, 0, 0, 0.80)",
+        fontSize: "18px",
+        fontWeight: 700,
       }}
     >
-      <Typography
-        sx={{
-          pl: "24px",
-          pt: "32px",
-          color: "rgba(0, 0, 0, 0.80)",
-          fontSize: "18px",
-          fontWeight: 700,
-        }}
-      >
-        Settings
-      </Typography>
-      <List sx={{ pt: 2 }}>
-        <Subheader>Profile</Subheader>
-        <ListItem sx={{ py: 0 }}>
-          <ListItemButton
-            component={Link}
-            to={`${routePrefix}/settings/profile`}
-          >
-            <ListItemIcon sx={{ minWidth: 0, mr: 2 }}>
-              <AccountCircle />
-            </ListItemIcon>
-            <ListItemText primary="Personal info" />
-          </ListItemButton>
-        </ListItem>
-        <ListItem sx={{ py: 0 }}>
-          <ListItemButton component={Link} to={`${routePrefix}/settings/2fa`}>
-            <ListItemIcon sx={{ minWidth: 0, mr: 2 }}>
-              <Lock />
-            </ListItemIcon>
-            <ListItemText primary="2 Factor" />
-          </ListItemButton>
-        </ListItem>
-        <ListItem sx={{ py: 0 }}>
-          <ListItemButton
-            component={Link}
-            to={`${routePrefix}/settings/api-keys`}
-          >
-            <ListItemIcon sx={{ minWidth: 0, mr: 2 }}>
-              <VpnKey />
-            </ListItemIcon>
-            <ListItemText primary="API Keys" />
-          </ListItemButton>
-        </ListItem>
-      </List>
-      <List sx={{ pt: "36px" }}>
-        <Subheader>Workspace Settings</Subheader>
-        <ListItem sx={{ py: 0 }}>
-          <ListItemButton
-            component={Link}
-            to={`${routePrefix}/settings/workspace`}
-          >
-            <ListItemIcon sx={{ minWidth: 0, mr: 2 }}>
-              <Business />
-            </ListItemIcon>
-            <ListItemText primary="Settings" />
-          </ListItemButton>
-        </ListItem>
-        <ListItem sx={{ py: 0 }}>
-          <ListItemButton
-            component={Link}
-            to={`${routePrefix}/settings/memberships`}
-          >
-            <ListItemIcon sx={{ minWidth: 0, mr: 2 }}>
-              <People />
-            </ListItemIcon>
-            <ListItemText primary="Users" />
-          </ListItemButton>
-        </ListItem>
-        <ListItem sx={{ py: 0 }}>
-          <ListItemButton
-            component={Link}
-            to={`${routePrefix}/settings/alerts`}
-          >
-            <ListItemIcon sx={{ minWidth: 0, mr: 2 }}>
-              <Notifications />
-            </ListItemIcon>
-            <ListItemText primary="Alerts" />
-          </ListItemButton>
-        </ListItem>
-        <ListItem sx={{ py: 0 }}>
-          <ListItemButton
-            component={Link}
-            to={`${routePrefix}/settings/installations`}
-          >
-            <ListItemIcon sx={{ minWidth: 0, mr: 2 }}>
-              <CloudQueue />
-            </ListItemIcon>
-            <ListItemText primary="Installations" />
-          </ListItemButton>
-        </ListItem>
-      </List>
-    </Drawer>
-  )
-}
+      Settings
+    </Typography>
+    <SettingsDrawerSection
+      title="Profile"
+      pages={profilePages}
+      sx={{ pt: 2 }}
+    />
+    <SettingsDrawerSection
+      title="Workspace"
+      pages={workspacePages}
+      sx={{ pt: "36px" }}
+    />
+  </Drawer>
+)
 
 export default SettingsDrawer

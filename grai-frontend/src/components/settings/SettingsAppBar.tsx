@@ -19,7 +19,6 @@ const SettingsAppBar: React.FC<SettingsAppBarProps> = ({ title, buttons }) => (
   >
     <Typography
       variant="h6"
-      component="div"
       sx={{
         color: "rgba(0, 0, 0, 0.80)",
         fontSize: "24px",
