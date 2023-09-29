@@ -10,6 +10,7 @@ import {
   GetMemberships,
   GetMembershipsVariables,
 } from "./__generated__/GetMemberships"
+import SettingsContent from "components/settings/SettingsContent"
 
 export const GET_MEMBERSHIPS = gql`
   query GetMemberships($organisationName: String!, $workspaceName: String!) {
@@ -58,12 +59,14 @@ const Memberships: React.FC = () => {
   return (
     <SettingsLayout>
       <MembershipsHeader workspaceId={workspace?.id} />
-      <MembershipsTable
-        memberships={data?.workspace?.memberships.data ?? []}
-        loading={loading}
-        workspaceId={workspace?.id}
-        total={data?.workspace?.memberships.meta.total ?? 0}
-      />
+      <SettingsContent>
+        <MembershipsTable
+          memberships={data?.workspace?.memberships.data ?? []}
+          loading={loading}
+          workspaceId={workspace?.id}
+          total={data?.workspace?.memberships.meta.total ?? 0}
+        />
+      </SettingsContent>
     </SettingsLayout>
   )
 }

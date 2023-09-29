@@ -7,6 +7,7 @@ import AlertsTable from "components/settings/alerts/AlertsTable"
 import SettingsLayout from "components/settings/SettingsLayout"
 import GraphError from "components/utils/GraphError"
 import { GetAlerts, GetAlertsVariables } from "./__generated__/GetAlerts"
+import SettingsContent from "components/settings/SettingsContent"
 
 export const GET_ALERTS = gql`
   query GetAlerts($organisationName: String!, $workspaceName: String!) {
@@ -49,11 +50,13 @@ const Alerts: React.FC = () => {
   return (
     <SettingsLayout>
       <AlertsHeader workspaceId={workspace?.id} />
-      <AlertsTable
-        alerts={data?.workspace?.alerts.data ?? []}
-        loading={loading}
-        workspaceId={workspace?.id}
-      />
+      <SettingsContent>
+        <AlertsTable
+          alerts={data?.workspace?.alerts.data ?? []}
+          loading={loading}
+          workspaceId={workspace?.id}
+        />
+      </SettingsContent>
     </SettingsLayout>
   )
 }

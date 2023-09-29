@@ -1,5 +1,5 @@
 import React from "react"
-import { Drawer, Typography } from "@mui/material"
+import { Box, Drawer, Typography } from "@mui/material"
 import PersonalInfo from "components/icons/PersonalInfo"
 import TwoFactor from "components/icons/TwoFactor"
 import ApiKeys from "components/icons/ApiKeys"
@@ -9,7 +9,7 @@ import Alerts from "components/icons/Alerts"
 import Installations from "components/icons/Installations"
 import SettingsDrawerSection, { Page } from "./SettingsDrawerSection"
 
-const drawerWidth = 300
+const drawerWidth = 230
 
 const profilePages: Page[] = [
   {
@@ -53,16 +53,11 @@ const workspacePages: Page[] = [
 ]
 
 const SettingsDrawer: React.FC = () => (
-  <Drawer
-    variant="permanent"
+  <Box
     sx={{
       width: drawerWidth,
-      "& .MuiDrawer-paper": {
-        marginLeft: "76px",
-        width: drawerWidth,
-        boxSizing: "border-box",
-        backgroundColor: "#F8F8F8",
-      },
+      boxSizing: "border-box",
+      backgroundColor: "#F8F8F8",
     }}
   >
     <Typography
@@ -87,7 +82,7 @@ const SettingsDrawer: React.FC = () => (
       pages={workspacePages}
       sx={{ pt: "36px" }}
     />
-  </Drawer>
+  </Box>
 )
 
 export default SettingsDrawer

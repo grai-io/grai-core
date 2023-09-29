@@ -6,6 +6,7 @@ import TwoFactorHeader from "components/settings/twoFactor/TwoFactorHeader"
 import TwoFactorTable from "components/settings/twoFactor/TwoFactorTable"
 import GraphError from "components/utils/GraphError"
 import { GetProfileTwoFactor } from "./__generated__/GetProfileTwoFactor"
+import SettingsContent from "components/settings/SettingsContent"
 
 export const GET_PROFILE = gql`
   query GetProfileTwoFactor {
@@ -37,7 +38,9 @@ const ProfileSettings: React.FC = () => {
   return (
     <SettingsLayout>
       <TwoFactorHeader />
-      <TwoFactorTable keys={profile.devices.data} loading={loading} />
+      <SettingsContent>
+        <TwoFactorTable keys={profile.devices.data} loading={loading} />
+      </SettingsContent>
     </SettingsLayout>
   )
 }

@@ -37,12 +37,14 @@ const ApiKeysHeader: React.FC<ApiKeysHeaderProps> = ({ workspaceId }) => {
           </>
         }
       />
-      <Card variant="outlined" sx={{ mt: 3, mb: 3, p: 2, display: "flex" }}>
-        <Typography variant="body2" sx={{ mr: 2, mt: 0.25 }}>
-          WorkspaceId
-        </Typography>
-        <Typography>{workspaceId}</Typography>
-      </Card>
+      <Box sx={{ p: 3, pb: 0 }}>
+        <Card variant="outlined" sx={{ mt: 3, mb: 3, p: 2, display: "flex" }}>
+          <Typography variant="body2" sx={{ mr: 2, mt: 0.25 }}>
+            WorkspaceId
+          </Typography>
+          <Typography>{workspaceId}</Typography>
+        </Card>
+      </Box>
     </>
   )
 }

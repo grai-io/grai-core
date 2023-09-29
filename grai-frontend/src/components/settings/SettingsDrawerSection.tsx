@@ -51,11 +51,12 @@ const SettingsDrawerSection: React.FC<SettingsDrawerSectionProps> = ({
     <List sx={sx}>
       <Subheader>{title}</Subheader>
       {pages.map(({ name, icon, path }) => (
-        <ListItem sx={{ py: 0 }} key={name}>
+        <ListItem sx={{ py: 0 }} key={name} disableGutters>
           <ListItemButton
             component={Link}
             to={routePrefix + path}
             selected={location.pathname === routePrefix + path}
+            sx={{ pl: "24px" }}
           >
             <ListItemIcon sx={{ minWidth: 0, mr: 2 }}>{icon}</ListItemIcon>
             <ListItemText primary={name} />
