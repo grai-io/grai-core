@@ -1,14 +1,7 @@
 import React, { useState } from "react"
 import { gql, useMutation } from "@apollo/client"
 import { LoadingButton } from "@mui/lab"
-import {
-  Box,
-  Button,
-  Grid,
-  InputAdornment,
-  TextField,
-  Typography,
-} from "@mui/material"
+import { Box, Button, InputAdornment, TextField } from "@mui/material"
 import { useSnackbar } from "notistack"
 import { Link } from "react-router-dom"
 import useWorkspace from "helpers/useWorkspace"
@@ -65,72 +58,65 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profile }) => {
       .catch(err => {})
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h5" sx={{ mb: 3 }}>
-        Profile Settings
-      </Typography>
-      <Grid container>
-        <Grid item md={6}>
-          <Form onSubmit={handleSubmit}>
-            {error && <GraphError error={error} />}
-            <TextField
-              label="Email"
-              value={profile.username}
-              margin="normal"
-              fullWidth
-              disabled
-            />
-            <TextField
-              label="First Name"
-              value={values.first_name}
-              onChange={event =>
-                setValues({ ...values, first_name: event.target.value })
-              }
-              margin="normal"
-              fullWidth
-              required
-            />
-            <TextField
-              label="Last Name"
-              value={values.last_name}
-              onChange={event =>
-                setValues({ ...values, last_name: event.target.value })
-              }
-              margin="normal"
-              fullWidth
-              required
-            />
-            <TextField
-              label="Password"
-              value="password"
-              type="password"
-              margin="normal"
-              fullWidth
-              disabled
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <Button
-                      component={Link}
-                      to={`${routePrefix}/settings/password`}
-                    >
-                      Change password
-                    </Button>
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <LoadingButton
-              type="submit"
-              variant="contained"
-              sx={{ mt: 2 }}
-              loading={loading}
-            >
-              Save
-            </LoadingButton>
-          </Form>
-        </Grid>
-      </Grid>
+    <Box sx={{ m: 3, ml: "48px", maxWidth: "475px" }}>
+      <Form onSubmit={handleSubmit}>
+        {error && <GraphError error={error} />}
+        <TextField
+          label="Email"
+          value={profile.username}
+          margin="normal"
+          fullWidth
+          disabled
+        />
+        <TextField
+          label="First Name"
+          value={values.first_name}
+          onChange={event =>
+            setValues({ ...values, first_name: event.target.value })
+          }
+          margin="normal"
+          fullWidth
+          required
+        />
+        <TextField
+          label="Last Name"
+          value={values.last_name}
+          onChange={event =>
+            setValues({ ...values, last_name: event.target.value })
+          }
+          margin="normal"
+          fullWidth
+          required
+        />
+        <TextField
+          label="Password"
+          value="password"
+          type="password"
+          margin="normal"
+          fullWidth
+          disabled
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <Button
+                  component={Link}
+                  to={`${routePrefix}/settings/password`}
+                >
+                  Change password
+                </Button>
+              </InputAdornment>
+            ),
+          }}
+        />
+        <LoadingButton
+          type="submit"
+          variant="contained"
+          sx={{ mt: 2 }}
+          loading={loading}
+        >
+          Save
+        </LoadingButton>
+      </Form>
     </Box>
   )
 }

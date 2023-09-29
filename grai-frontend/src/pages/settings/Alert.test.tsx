@@ -9,12 +9,14 @@ test("renders", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByText("Settings")).toBeInTheDocument()
+    expect(
+      screen.getByRole("heading", { name: "Settings" }),
+    ).toBeInTheDocument()
   })
 
   await waitFor(() => {
     expect(
-      screen.getByRole("heading", { name: /Hello World/i })
+      screen.getByRole("heading", { name: /Hello World/i }),
     ).toBeInTheDocument()
   })
 })
@@ -69,7 +71,7 @@ test("no workspace", async () => {
 
   await waitFor(() => {
     expect(
-      screen.getByText("Sorry something has gone wrong")
+      screen.getByText("Sorry something has gone wrong"),
     ).toBeInTheDocument()
   })
 })

@@ -2,6 +2,7 @@ import React from "react"
 import { gql, useQuery } from "@apollo/client"
 import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
+import SettingsAppBar from "components/settings/SettingsAppBar"
 import SettingsLayout from "components/settings/SettingsLayout"
 import WorkspaceDanger from "components/settings/workspace/WorkspaceDanger"
 import WorkspaceForm from "components/settings/workspace/WorkspaceForm"
@@ -45,6 +46,7 @@ const WorkspaceSettings: React.FC = () => {
 
   return (
     <SettingsLayout>
+      <SettingsAppBar title="Workspace" />
       <WorkspaceForm workspace={workspaceModel} />
       <WorkspaceDanger workspace={workspaceModel} />
     </SettingsLayout>
