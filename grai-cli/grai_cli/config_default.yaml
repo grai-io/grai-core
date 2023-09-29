@@ -1,5 +1,8 @@
+auth:
+  authentication_mode: username
+  password: default_config
+  username: default_config_name
 server:
-    host: localhost
-    port: '8000'
-    workspace: 'default'
-    insecure: True
+  api_version: v1
+  url: https://api.grai.io
+  workspace: default

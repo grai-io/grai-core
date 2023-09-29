@@ -50,4 +50,5 @@ jobs:
           poetry-version: "${{ env.poetry_ver }}"
 
       - run: poetry install
+
       - run: poetry run pytest

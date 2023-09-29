@@ -42,6 +42,7 @@ def authenticate_with_username(client: BaseClient) -> BaseClient:
     Raises:
 
     """
+
     client.authenticate(username=config.auth.username, password=config.auth.password.get_secret_value())
     return client
 

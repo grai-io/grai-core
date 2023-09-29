@@ -1,0 +1,3 @@
+{
+    "adapters": "adapters",    "base": "base",    "loader": "loader",    "mock_tools": "mock_tools"
+}

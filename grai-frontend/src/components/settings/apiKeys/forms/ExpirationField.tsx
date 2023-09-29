@@ -51,20 +51,16 @@ const ExpirationField: React.FC<ExpirationFieldProps> = ({
         <DatePicker
           value={dateValue}
           onChange={value => onChange(value)}
-          slots={{
-            textField: props => (
-              <TextField
-                {...props}
-                fullWidth
-                margin="normal"
-                disabled={disabled}
-                required
-                inputProps={{
-                  "data-testid": "date-input",
-                  ...props.inputProps,
-                }}
-              />
-            ),
+          slotProps={{
+            textField: {
+              fullWidth: true,
+              margin: "normal",
+              disabled,
+              required,
+              inputProps: {
+                "data-testid": "date-input",
+              },
+            },
           }}
         />
       )}

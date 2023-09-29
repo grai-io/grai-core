@@ -15,6 +15,17 @@ _REF_REGEX = re.compile("^[^/]*/[^/]*$")
 
 
 class WorkspaceSpec(GraiBaseModel):
+    """Class definition of WorkspaceSpec
+
+    Attributes:
+        id: Optional UUID of the workspace
+        name: The name of the workspace
+        organisation: The organisation the workspace belongs to
+        ref: The reference of the workspace in the form of `organisation/name`
+        search_enabled: Whether the workspace is searchable or not
+
+    """
+
     id: Optional[UUID]
     name: str
     organisation: Union[UUID, OrganisationSpec] = Field(..., alias="organization")
@@ -23,6 +34,7 @@ class WorkspaceSpec(GraiBaseModel):
 
     @property
     def organization(self):
+        """Alias for organisation"""
         return self.organisation
 
     @validator("organisation", always=True, pre=True)
@@ -77,10 +89,20 @@ class WorkspaceSpec(GraiBaseModel):
             raise ValueError(message)
 
     def __hash__(self) -> int:
+        """Workspace hash definition"""
         return hash(self.ref)
 
 
 class WorkspaceV1(GraiBaseModel):
+    """Class definition of WorkspaceV1
+
+    Attributes:
+        type: todo
+        version: todo
+        spec: todo
+
+    """
+
     type: Literal["Workspace"] = "Workspace"
     version: Literal["v1"] = "v1"
     spec: WorkspaceSpec

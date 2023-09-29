@@ -107,6 +107,7 @@ def response_status_check(resp: Response) -> Response:
             "If you think this should not be the case it might be a bug, you can "
             "submit a bug report at https://github.com/grai-io/grai-core/issues"
         )
+
     raise RequestException(message)
 
 
@@ -154,16 +155,23 @@ def paginated(
             url:
             options:
         """
+
         if page := options.pagination.get("page", False):
             return fn(client, page, options).json()["results"]
 
+        # Temporary fix for pagination to deal with poorly configured proxy headers
+
         results = []
         page = url
+        secure = url.startswith("https")
         while page:
             resp = fn(client, page, options).json()
 
             results.extend(resp["results"])
             page = resp["next"]
+
+            if page and page.startswith("http") and secure:
+                page = f"https{page[4:]}"
 
         return results
 

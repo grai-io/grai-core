@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai-client"
-version = "0.3.2"
+version = "0.3.3"
 description = ""
 authors = ["Ian Eaves <ian@grai.io>"]
 license = "Elastic-2.0"
@@ -35,6 +35,7 @@ types-pyyaml = "^6.0.12.2"
 pre-commit = "^2.20.0"
 pdoc = "^13.1.1"
 pytest-durations = "^1.2.0"
+toml = "^0.10.2"
 
 [tool.isort]
 profile = "black"
@@ -42,6 +43,10 @@ known_first_party = "grai_client"
 
 [tool.black]
 line-length = 120
+
+[tool.pytest.ini_options]
+xfail_strict = true
+
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

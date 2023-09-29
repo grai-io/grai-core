@@ -3,10 +3,15 @@ from typing import Callable
 
 import typer
 
-if importlib.util.find_spec("rich") is not None:
+HAS_RICH = importlib.util.find_spec("rich") is not None
+
+if HAS_RICH:
+    from rich import print
     from rich.theme import Theme
 
     custom_theme = Theme({"info": "#BFD2EB", "warning": "#ff0000", "danger": "bold red"})
+else:
+    print = print
 
 
 class GraiColors:

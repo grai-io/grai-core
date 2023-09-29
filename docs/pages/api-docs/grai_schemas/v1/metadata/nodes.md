@@ -9,7 +9,15 @@ title: grai_schemas.v1.metadata.nodes
 class NodeMetadataTypeLabels(Enum)
 ```
 
+Class definition of NodeMetadataTypeLabels
 
+**Attributes**:
+
+- `generic` - The literal &quot;Generic
+- `table` - The literal &quot;Table&quot;
+- `column` - The literal &quot;Column&quot;
+- `query` - The literal &quot;Query&quot;
+- `collection` - The literal &quot;Collection&quot;
 
 ## SourceType Objects
 
@@ -17,7 +25,11 @@ class NodeMetadataTypeLabels(Enum)
 class SourceType(Enum)
 ```
 
+Class definition of SourceType
 
+**Attributes**:
+
+- `database` - todo
 
 ## BaseNodeMetadataV1 Objects
 
@@ -25,7 +37,15 @@ class SourceType(Enum)
 class BaseNodeMetadataV1(GraiBaseModel)
 ```
 
+Class definition of BaseNodeMetadataV1
 
+**Attributes**:
+
+- `type` - Object type of the Metadata e.g. NodeV1, EdgeV1, etc.
+- `version` - Schema version of the metadata
+- `node_type` - The type of node e.g. Table, Column, etc.
+- `node_attributes` - Attributes specific to the node type
+- `tags` - Tags associated with the node
 
 ## MalformedNodeMetadataV1 Objects
 
@@ -33,7 +53,12 @@ class BaseNodeMetadataV1(GraiBaseModel)
 class MalformedNodeMetadataV1(MalformedMetadata, BaseNodeMetadataV1)
 ```
 
+Class definition of MalformedNodeMetadataV1
 
+**Attributes**:
+
+- `node_type` - The literal &quot;Malformed&quot;
+- `node_attributes` - Attributes specific to the node type
 
 ### node\_type
 
@@ -43,13 +68,35 @@ type: ignore
 
 type: ignore
 
+## GenericNodeMetadataV1 Objects
+
+```python
+class GenericNodeMetadataV1(BaseNodeMetadataV1)
+```
+
+Class definition of GenericNodeMetadataV1
+
+**Attributes**:
+
+- `node_type` - The literal &quot;Generic&quot;
+- `node_attributes` - Attributes specific to the node type
+
 ## ColumnAttributes Objects
 
 ```python
 class ColumnAttributes(GenericAttributes)
 ```
 
+Class definition of ColumnAttributes
 
+**Attributes**:
+
+- `version` - Schema version of the metadata
+- `data_type` - The data type of the column
+- `default_value` - The default value of the column
+- `is_nullable` - Whether values in the column is nullable
+- `is_unique` - Whether values in the column are unique
+- `is_primary_key` - Whether the column is a primary key
 
 ### data\_type
 
@@ -61,7 +108,12 @@ This will need to be standardized
 class ColumnMetadata(BaseNodeMetadataV1)
 ```
 
+Class definition of ColumnMetadata
 
+**Attributes**:
+
+- `node_type` - The type of node e.g. Table, Column, etc.
+- `node_attributes` - Attributes specific to the node type
 
 ## TableAttributes Objects
 
@@ -69,7 +121,11 @@ class ColumnMetadata(BaseNodeMetadataV1)
 class TableAttributes(GenericAttributes)
 ```
 
+Class definition of TableAttributes
 
+**Attributes**:
+
+- `version` - Schema version of the metadata
 
 ## TableMetadata Objects
 
@@ -77,7 +133,12 @@ class TableAttributes(GenericAttributes)
 class TableMetadata(BaseNodeMetadataV1)
 ```
 
+Class definition of TableMetadata
 
+**Attributes**:
+
+- `node_type` - The type of node e.g. Table, Column, etc.
+- `node_attributes` - Attributes specific to the node type
 
 ## QueryAttributes Objects
 
@@ -85,7 +146,11 @@ class TableMetadata(BaseNodeMetadataV1)
 class QueryAttributes(GenericAttributes)
 ```
 
+Class definition of QueryAttributes
 
+**Attributes**:
+
+- `version` - Schema version of the metadata
 
 ## QueryMetadata Objects
 
@@ -93,10 +158,22 @@ class QueryAttributes(GenericAttributes)
 class QueryMetadata(BaseNodeMetadataV1)
 ```
 
+Class definition of QueryMetadata
 
+**Attributes**:
+
+- `node_type` - The type of node e.g. Table, Column, etc.
+- `node_attributes` - Attributes specific to the node type
 
 ## CollectionMetadata Objects
 
 ```python
 class CollectionMetadata(BaseNodeMetadataV1)
 ```
+
+Class definition of CollectionMetadata
+
+**Attributes**:
+
+- `node_type` - The type of node e.g. Table, Column, etc.
+- `node_attributes` - Attributes specific to the node type

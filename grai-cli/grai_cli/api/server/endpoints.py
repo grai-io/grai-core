@@ -3,12 +3,15 @@ from typing import Optional
 
 import typer
 from grai_client.schemas.schema import validate_file
+from grai_schemas.utilities import merge
 
+from grai_cli.api.callbacks import requires_config_decorator
 from grai_cli.api.entrypoint import app
 from grai_cli.api.server.setup import client_app, client_get_app, get_default_client
 from grai_cli.utilities import utilities
 from grai_cli.utilities.styling import default_styler
-from grai_cli.utilities.utilities import merge_dicts, write_yaml
+from grai_cli.utilities.styling import print as print_styled
+from grai_cli.utilities.utilities import write_yaml
 
 
 @client_app.command("is_authenticated", help="Verify auth credentials are valid")
@@ -17,9 +20,9 @@ def is_authenticated():
     client = get_default_client()
     authentication_status = client.check_authentication()
     if authentication_status.status_code == 200:
-        utilities.print("Authenticated")
+        print_styled("Authenticated")
     else:
-        utilities.print(
+        print_styled(
             f"Failed to Authenticate: Code {authentication_status.status_code}, {authentication_status.content}"
         )
 
@@ -42,7 +45,7 @@ def get_nodes(print: bool = True, to_file: Optional[Path] = None, **kwargs):
     result = client.get("Node", **kwargs)
 
     if print:
-        utilities.print(result)
+        print_styled(result)
     if isinstance(to_file, Path):
         write_yaml(result, to_file)
 
@@ -92,7 +95,7 @@ def get_edges(
     result = client.get("Edge")
 
     if print:
-        utilities.print(result)
+        print_styled(result)
     if to_file:
         write_yaml(result, to_file)
 
@@ -124,14 +127,15 @@ def get_workspaces(
         result = client.get("workspaces", name=name)
 
     if print:
-        utilities.print(result)
+        print_styled(result)
     if to_file:
         write_yaml(result, to_file)
 
     return result
 
 
-@app.command("apply", help="Apply a configuration to The Guide by file name")
+@app.command(help="Apply a configuration to The Guide by file name")
+@requires_config_decorator
 def apply(
     file: Path = typer.Argument(...),
     dry_run: bool = typer.Option(False, "--d", help="Dry run of file application"),
@@ -154,24 +158,23 @@ def apply(
 
     if dry_run:
         for spec in specs:
-            utilities.print(spec)
+            print_styled(spec)
         typer.Exit()
 
     for spec in specs:
+        record = None
         try:
             record = client.get(spec)
         except:
-            record = None
-
-        if record is None:
             client.post(spec)
-        else:
-            provided_values = {k: v for k, v in spec.spec.dict().items() if v}
-            updated_record = record.update(provided_values)
+
+        if record is not None:
+            updated_record = merge(record, spec)
             client.patch(updated_record)
 
 
 @app.command("delete", help="Delete a configuration from The Guide by file name")
+@requires_config_decorator
 def delete(
     file: Path = typer.Argument(...),
     dry_run: bool = typer.Option(False, "--d", help="Dry run of file application"),
@@ -194,7 +197,7 @@ def delete(
     specs = validate_file(file)
     if dry_run:
         for spec in specs:
-            utilities.print(spec)
+            print_styled(spec)
         typer.Exit()
 
     for spec in specs:

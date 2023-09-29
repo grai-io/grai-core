@@ -8,6 +8,17 @@ from pydantic import Json
 
 
 class EventSpec(GraiBaseModel):
+    """Class definition of EventSpec
+
+    Attributes:
+        id: UUID of the event.
+        connection_id: UUID of the events connection.
+        date: Datetime of the event.
+        workspace: WorkspaceSpec of the event.
+        diff: Json of the changes from the event.
+
+    """
+
     id: UUID
     connection_id: UUID
     date: datetime
@@ -19,6 +30,15 @@ class EventSpec(GraiBaseModel):
 
 
 class EventV1(GraiBaseModel):
+    """Class definition of EventV1
+
+    Attributes:
+        type: Object type of the Metadata e.g. NodeV1, EdgeV1, etc.
+        version: Schema version of the object.
+        spec: The event specification.
+
+    """
+
     type: Literal["Event"] = "Event"
     version: Literal["v1"] = "v1"
     spec: EventSpec
@@ -31,7 +51,7 @@ class EventV1(GraiBaseModel):
             spec_dict (Dict):
 
         Returns:
-
+            An EventV1 instance
         Raises:
 
         """
