@@ -33,9 +33,22 @@ const AppDrawerItem: React.FC<AppDrawerItemProps> = ({ page, expand }) => {
   return (
     <ListItem disablePadding key={page.path} className={page.className}>
       <TooltipWrap show={!expand} title={page.title} placement="right">
-        <ListItemButton component={Link} to={`${routePrefix}/${page.path}`}>
+        <ListItemButton
+          component={Link}
+          to={`${routePrefix}/${page.path}`}
+          sx={{
+            ":hover .child-icon": {
+              color: "white",
+              backgroundColor: "#324459",
+            },
+            ":hover .child-text": {
+              color: "white",
+            },
+          }}
+        >
           <ListItemIcon>
             <Box
+              className="child-icon"
               sx={{
                 backgroundColor: selected ? "#8338EC80" : null,
                 color: selected ? "white" : "#747A82",
@@ -52,6 +65,7 @@ const AppDrawerItem: React.FC<AppDrawerItemProps> = ({ page, expand }) => {
             <ListItemText
               primary={page.title}
               primaryTypographyProps={{
+                className: "child-text",
                 sx: {
                   fontWeight: 600,
                   color: selected ? "white" : "#FFFFFF80",
