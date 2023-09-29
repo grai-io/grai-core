@@ -6,35 +6,32 @@ type ConnectionsProps = {
 
 const Connections: React.FC<ConnectionsProps> = ({ stroke }) => (
   <svg
-    width="48"
-    height="48"
-    viewBox="0 0 48 48"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
     <path
-      d="M33 28V20C32.9996 19.6493 32.9071 19.3048 32.7315 19.0012C32.556 18.6975 32.3037 18.4454 32 18.27L25 14.27C24.696 14.0945 24.3511 14.0021 24 14.0021C23.6489 14.0021 23.304 14.0945 23 14.27L16 18.27C15.6963 18.4454 15.444 18.6975 15.2685 19.0012C15.0929 19.3048 15.0004 19.6493 15 20V28C15.0004 28.3508 15.0929 28.6952 15.2685 28.9989C15.444 29.3025 15.6963 29.5547 16 29.73L23 33.73C23.304 33.9056 23.6489 33.998 24 33.998C24.3511 33.998 24.696 33.9056 25 33.73L32 29.73C32.3037 29.5547 32.556 29.3025 32.7315 28.9989C32.9071 28.6952 32.9996 28.3508 33 28Z"
-      stroke={stroke ?? "white"}
-      strokeOpacity="0.72"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      d="M21 15.9999V7.9999C20.9996 7.64918 20.9071 7.30471 20.7315 7.00106C20.556 6.69742 20.3037 6.44526 20 6.2699L13 2.2699C12.696 2.09437 12.3511 2.00195 12 2.00195C11.6489 2.00195 11.304 2.09437 11 2.2699L4 6.2699C3.69626 6.44526 3.44398 6.69742 3.26846 7.00106C3.09294 7.30471 3.00036 7.64918 3 7.9999V15.9999C3.00036 16.3506 3.09294 16.6951 3.26846 16.9987C3.44398 17.3024 3.69626 17.5545 4 17.7299L11 21.7299C11.304 21.9054 11.6489 21.9979 12 21.9979C12.3511 21.9979 12.696 21.9054 13 21.7299L20 17.7299C20.3037 17.5545 20.556 17.3024 20.7315 16.9987C20.9071 16.6951 20.9996 16.3506 21 15.9999Z"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
     />
     <path
-      d="M15.27 18.96L24 24.01L32.73 18.96"
-      stroke={stroke ?? "white"}
-      strokeOpacity="0.72"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      d="M3.27002 6.95996L12 12.01L20.73 6.95996"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
     />
     <path
-      d="M24 34.08V24"
-      stroke={stroke ?? "white"}
-      strokeOpacity="0.72"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      d="M12 22.08V12"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
     />
   </svg>
 )

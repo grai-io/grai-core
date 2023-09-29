@@ -25,6 +25,8 @@ import {
   Nodes,
 } from "components/icons"
 import ProfileMenu from "./ProfileMenu"
+import Edge from "components/icons/Edge"
+import AppDrawerItem from "./AppDrawerItem"
 
 const pages = [
   {
@@ -43,18 +45,7 @@ const pages = [
   {
     title: "Edges",
     path: "edges",
-    icon: (
-      <Box sx={{ p: "12px" }}>
-        <LinkIcon
-          sx={{
-            color: "white",
-            fontSize: 20,
-            width: 24,
-            height: 20,
-          }}
-        />
-      </Box>
-    ),
+    icon: <Edge />,
     alt: "Edges",
   },
   {
@@ -73,8 +64,6 @@ const pages = [
 
 const AppDrawer: React.FC = () => {
   const { routePrefix } = useWorkspace()
-  const location = useLocation()
-
   const [expand, setExpand] = useLocalState("app-drawer", true)
 
   const drawerWidth = expand ? 224 : 81
@@ -107,34 +96,7 @@ const AppDrawer: React.FC = () => {
       </List>
       <List sx={{ flexGrow: 1 }}>
         {pages.map(page => (
-          <ListItem disablePadding key={page.path} className={page.className}>
-            <ListItemButton component={Link} to={`${routePrefix}/${page.path}`}>
-              <ListItemIcon>
-                <Box
-                  sx={{
-                    backgroundColor: decodeURI(location.pathname).startsWith(
-                      `${routePrefix}/${page.path}`,
-                    )
-                      ? "#8338EC80"
-                      : null,
-                    borderRadius: "8px",
-                    height: 48,
-                    mr: "16px",
-                  }}
-                >
-                  {page.icon}
-                </Box>
-              </ListItemIcon>
-              {expand && (
-                <ListItemText
-                  primary={page.title}
-                  primaryTypographyProps={{
-                    sx: { fontWeight: 600, color: "#FFFFFF80" },
-                  }}
-                />
-              )}
-            </ListItemButton>
-          </ListItem>
+          <AppDrawerItem page={page} expand={expand} key={page.path} />
         ))}
         <ProfileMenu expand={expand} />
       </List>

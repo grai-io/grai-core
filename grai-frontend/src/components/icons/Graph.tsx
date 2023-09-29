@@ -2,35 +2,32 @@ import React from "react"
 
 const Graph: React.FC = () => (
   <svg
-    width="48"
-    height="48"
-    viewBox="0 0 48 48"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
     <path
-      d="M30 32V22"
-      stroke="white"
-      strokeOpacity="0.72"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      d="M18 20V10"
+      stroke="currentColor"
+      stroke-width="2.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
     />
     <path
-      d="M24 32V16"
-      stroke="white"
-      strokeOpacity="0.72"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      d="M12 20V4"
+      stroke="currentColor"
+      stroke-width="2.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
     />
     <path
-      d="M18 32V26"
-      stroke="white"
-      strokeOpacity="0.72"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      d="M6 20V14"
+      stroke="currentColor"
+      stroke-width="2.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
     />
   </svg>
 )
