@@ -1,5 +1,5 @@
 import React from "react"
-import { Box, Drawer, Typography } from "@mui/material"
+import { Box, Typography } from "@mui/material"
 import Alerts from "components/icons/Alerts"
 import ApiKeys from "components/icons/ApiKeys"
 import Installations from "components/icons/Installations"
