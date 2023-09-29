@@ -4,13 +4,13 @@ import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
 import MembershipsHeader from "components/settings/memberships/MembershipsHeader"
 import MembershipsTable from "components/settings/memberships/MembershipsTable"
+import SettingsContent from "components/settings/SettingsContent"
 import SettingsLayout from "components/settings/SettingsLayout"
 import GraphError from "components/utils/GraphError"
 import {
   GetMemberships,
   GetMembershipsVariables,
 } from "./__generated__/GetMemberships"
-import SettingsContent from "components/settings/SettingsContent"
 
 export const GET_MEMBERSHIPS = gql`
   query GetMemberships($organisationName: String!, $workspaceName: String!) {

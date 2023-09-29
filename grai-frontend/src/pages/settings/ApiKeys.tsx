@@ -4,10 +4,10 @@ import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
 import ApiKeysHeader from "components/settings/apiKeys/ApiKeysHeader"
 import ApiKeysTable from "components/settings/apiKeys/ApiKeysTable"
+import SettingsContent from "components/settings/SettingsContent"
 import SettingsLayout from "components/settings/SettingsLayout"
 import GraphError from "components/utils/GraphError"
 import { GetApiKeys, GetApiKeysVariables } from "./__generated__/GetApiKeys"
-import SettingsContent from "components/settings/SettingsContent"
 
 export const GET_API_KEYS = gql`
   query GetApiKeys($organisationName: String!, $workspaceName: String!) {

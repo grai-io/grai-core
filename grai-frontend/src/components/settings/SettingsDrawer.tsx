@@ -1,12 +1,12 @@
 import React from "react"
 import { Box, Drawer, Typography } from "@mui/material"
+import Alerts from "components/icons/Alerts"
+import ApiKeys from "components/icons/ApiKeys"
+import Installations from "components/icons/Installations"
 import PersonalInfo from "components/icons/PersonalInfo"
 import TwoFactor from "components/icons/TwoFactor"
-import ApiKeys from "components/icons/ApiKeys"
-import Workspace from "components/icons/Workspace"
 import Users from "components/icons/Users"
-import Alerts from "components/icons/Alerts"
-import Installations from "components/icons/Installations"
+import Workspace from "components/icons/Workspace"
 import SettingsDrawerSection, { Page } from "./SettingsDrawerSection"
 
 const drawerWidth = 230

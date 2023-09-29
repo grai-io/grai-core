@@ -1,5 +1,5 @@
-import { Box, SxProps } from "@mui/material"
 import React from "react"
+import { Box, SxProps } from "@mui/material"
 
 type SettingsContentProps = {
   children: React.ReactNode

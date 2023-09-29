@@ -1,12 +1,12 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
 import NotFound from "pages/NotFound"
+import SettingsContent from "components/settings/SettingsContent"
 import SettingsLayout from "components/settings/SettingsLayout"
 import TwoFactorHeader from "components/settings/twoFactor/TwoFactorHeader"
 import TwoFactorTable from "components/settings/twoFactor/TwoFactorTable"
 import GraphError from "components/utils/GraphError"
 import { GetProfileTwoFactor } from "./__generated__/GetProfileTwoFactor"
-import SettingsContent from "components/settings/SettingsContent"
 
 export const GET_PROFILE = gql`
   query GetProfileTwoFactor {

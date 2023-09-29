@@ -1,3 +1,4 @@
+import React from "react"
 import {
   List,
   ListItem,
@@ -7,9 +8,8 @@ import {
   ListSubheader,
   SxProps,
 } from "@mui/material"
-import useWorkspace from "helpers/useWorkspace"
-import React from "react"
 import { Link, useLocation } from "react-router-dom"
+import useWorkspace from "helpers/useWorkspace"
 
 const Subheader = ({ children }: { children: React.ReactNode }) => (
   <ListSubheader

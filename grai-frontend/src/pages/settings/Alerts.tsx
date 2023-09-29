@@ -4,10 +4,10 @@ import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
 import AlertsHeader from "components/settings/alerts/AlertsHeader"
 import AlertsTable from "components/settings/alerts/AlertsTable"
+import SettingsContent from "components/settings/SettingsContent"
 import SettingsLayout from "components/settings/SettingsLayout"
 import GraphError from "components/utils/GraphError"
 import { GetAlerts, GetAlertsVariables } from "./__generated__/GetAlerts"
-import SettingsContent from "components/settings/SettingsContent"
 
 export const GET_ALERTS = gql`
   query GetAlerts($organisationName: String!, $workspaceName: String!) {
