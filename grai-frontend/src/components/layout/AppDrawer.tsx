@@ -27,6 +27,7 @@ import {
 import ProfileMenu from "./ProfileMenu"
 import Edge from "components/icons/Edge"
 import AppDrawerItem from "./AppDrawerItem"
+import Settings from "components/icons/Settings"
 
 const pages = [
   {
@@ -101,6 +102,15 @@ const AppDrawer: React.FC = () => {
         <ProfileMenu expand={expand} />
       </List>
       <List>
+        <AppDrawerItem
+          page={{
+            title: "Settings",
+            path: "settings",
+            icon: <Settings />,
+            alt: "Settings",
+          }}
+          expand={expand}
+        />
         {expand ? (
           <ListItem disablePadding>
             <ListItemButton onClick={() => setExpand(false)}>
