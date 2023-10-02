@@ -1,9 +1,11 @@
+from itertools import tee
 from pathlib import Path
-from typing import Optional
+from typing import Dict, List, Optional
 
 import typer
 from grai_client.schemas.schema import validate_file
 from grai_schemas.utilities import merge
+from typing_extensions import Annotated
 
 from grai_cli.api.callbacks import requires_config_decorator
 from grai_cli.api.entrypoint import app
@@ -27,22 +29,21 @@ def is_authenticated():
         )
 
 
-def get_nodes(print: bool = True, to_file: Optional[Path] = None, **kwargs):
+def perform_type_query(query_type: str, print: bool = True, to_file: Optional[Path] = None, **kwargs) -> List:
     """
 
     Args:
-        name (Optional[str], optional):  (Default value = None)
-        namespace (Optional[str], optional):  (Default value = None)
-        print (bool, optional):  (Default value = True)
-        to_file (Optional[Path], optional):  (Default value = None)
-
+        query_type: The type of query to perform (Edge, Node, Workspace, etc...)
+        print: Print the search response to the console. Defaults to True.
+        to_file:  Path to write the search response to. Does not write by default.
+        kwargs: Additional kwargs to pass to the search.
     Returns:
 
     Raises:
 
     """
     client = get_default_client()
-    result = client.get("Node", **kwargs)
+    result = client.get(query_type, **kwargs)
 
     if print:
         print_styled(result)
@@ -52,58 +53,96 @@ def get_nodes(print: bool = True, to_file: Optional[Path] = None, **kwargs):
     return result
 
 
-@client_get_app.command("nodes", help=f"Grab active {default_styler('nodes')} from the guide.")
+def pairwise(iterable):
+    # s -> (s0,s1), (s1,s2), (s2, s3), ...
+    a, b = tee(iterable)
+    next(b, None)
+    return zip(a, b)
+
+
+def parse_extra_args(args_list: List[str]) -> Dict[str, str]:
+    args_dict = {}
+
+    for key, value in pairwise(args_list):
+        if not key.startswith("--"):
+            message = f"Invalid argument: {key}. Arguments must start with `--`."
+            raise typer.BadParameter(message)
+        args_dict[key[2:]] = value
+
+    return args_dict
+
+
+@client_get_app.command("nodes", context_settings={"allow_extra_args": True, "ignore_unknown_options": True})
 def get_nodes_cli(
-    name: Optional[str] = typer.Argument(None),
-    namespace: Optional[str] = typer.Option(None, "--namespace", "-n", help="Namespace of node"),
-    print: bool = typer.Option(True, "--p", help=f"Print nodes to console"),
-    to_file: Optional[Path] = typer.Option(None, "--f", help="Write nodes to file"),
+    ctx: typer.Context,
+    name: Optional[Annotated[str, typer.Option(..., "--name", "-n", help="Name of node")]] = None,
+    namespace: Optional[Annotated[str, typer.Option(None, "--namespace", "-ns", help="Namespace of node")]] = None,
+    print: Annotated[bool, typer.Option(..., "--p", help=f"Print nodes to console")] = True,
+    to_file: Optional[Annotated[Path, typer.Option(None, "--f", help="Write nodes to file")]] = None,
 ):
-    """
+    """Retrieve nodes from The Guide
+
+    You can pass additional arguments to the search by passing them after a `--` in the command line. For example:
+
+    * grai get nodes --is_active True --name my_node
+    * grai get nodes --metadata__grai__node_type Table
+
+    NOTE: Not all request parameters are supported by the REST api. See the documentation for more details.
 
     Args:
-        name (Optional[str], optional):  (Default value = typer.Argument(None))
-        namespace (Optional[str], optional):  (Default value = typer.Option(None, "--namespace", "-n", help="Namespace of node"))
-        print (bool, optional):  (Default value = typer.Option(True, "--p", help=f"Print nodes to console"))
-        to_file (Optional[Path], optional):  (Default value = typer.Option(None, "--f", help="Write nodes to file"))
+        name: The name of the node to retrieve. By default it will not search any specific name.
+        namespace:  The namespace of the node to retrieve. By default it will not search and specific namespace.
+        print:  Print the search response to the console. Defaults to True.
+        to_file: Path to write the search response to. Does not write by default.
+        **kwargs: Additional kwargs to pass to the search.
 
     Returns:
 
     Raises:
 
     """
-    return get_nodes(name=name, namespace=namespace, print=print, to_file=to_file)
+    kwargs = parse_extra_args(ctx.args)
+    if name is not None:
+        kwargs["name"] = name
+    if namespace is not None:
+        kwargs["namespace"] = namespace
+    return perform_type_query("Node", print=print, to_file=to_file, **kwargs)
 
 
-@client_get_app.command("edges", help=f"Grab active {default_styler('edges')} from the guide.")
+@client_get_app.command("edges", context_settings={"allow_extra_args": True, "ignore_unknown_options": True})
 def get_edges(
-    print: bool = typer.Option(True, "--p", help=f"Print edges to console"),
-    to_file: Optional[Path] = typer.Option(None, "--f", help="Write edges to file"),
+    ctx: typer.Context,
+    name: Optional[Annotated[str, typer.Option(..., "--name", "-n", help="Name of edge")]] = None,
+    namespace: Optional[Annotated[str, typer.Option(None, "--namespace", "-ns", help="Namespace of edge")]] = None,
+    print: Annotated[bool, typer.Option(..., "--p", help=f"Print edges to console")] = True,
+    to_file: Optional[Annotated[Path, typer.Option(None, "--f", help="Write edges to file")]] = None,
 ):
-    """
+    """Performs a parameterized edge query against the guide.
 
     Args:
-        print (bool, optional):  (Default value = typer.Option(True, "--p", help=f"Print edges to console"))
-        to_file (Optional[Path], optional):  (Default value = typer.Option(None, "--f", help="Write edges to file"))
+        name: The name of the edge to retrieve. By default it will not search any specific name.
+        namespace:  The namespace of the edge to retrieve. By default it will not search and specific namespace.
+        print:  Print the search response to the console. Defaults to True.
+        to_file: Path to write the search response to. Does not write by default.
+        **kwargs: Additional kwargs to pass to the search.
 
     Returns:
+        A list of edges matching the specified search query.
 
     Raises:
 
     """
-    client = get_default_client()
-    result = client.get("Edge")
-
-    if print:
-        print_styled(result)
-    if to_file:
-        write_yaml(result, to_file)
-
-    return result
+    kwargs = parse_extra_args(ctx.args)
+    if name is not None:
+        kwargs["name"] = name
+    if namespace is not None:
+        kwargs["namespace"] = namespace
+    return perform_type_query("Edge", print=print, to_file=to_file, **kwargs)
 
 
 @client_get_app.command("workspaces", help=f"Grab active {default_styler('workspaces')} from the guide.")
 def get_workspaces(
+    ctx: typer.Context,
     name: str = typer.Argument(None),
     print: bool = typer.Option(True, "--p", help=f"Print workspaces to console"),
     to_file: Optional[Path] = typer.Option(None, "--f", help="Write workspaces to file"),
@@ -120,18 +159,8 @@ def get_workspaces(
     Raises:
 
     """
-    client = get_default_client()
-    if name is None:
-        result = client.get("workspaces")
-    else:
-        result = client.get("workspaces", name=name)
-
-    if print:
-        print_styled(result)
-    if to_file:
-        write_yaml(result, to_file)
-
-    return result
+    kwargs = parse_extra_args(ctx.args)
+    return perform_type_query("Workspace", print=print, to_file=to_file, **kwargs)
 
 
 @app.command(help="Apply a configuration to The Guide by file name")
@@ -140,11 +169,11 @@ def apply(
     file: Path = typer.Argument(...),
     dry_run: bool = typer.Option(False, "--d", help="Dry run of file application"),
 ):
-    """
+    """Apply a file to The Guide either creating or modifying the associated resource.
 
     Args:
-        file:  (Default value = typer.Argument(...))
-        dry_run:  (Default value = typer.Option(False, "--d", help="Dry run of file application"))
+        file:  yaml file to apply
+        dry_run:  Print the resulting yaml to the console without applying it to the guide.
 
     Returns:
 
@@ -182,8 +211,8 @@ def delete(
     """
 
     Args:
-        file (Path, optional):  (Default value = typer.Argument(...))
-        dry_run (bool, optional):  (Default value = typer.Option(False, "--d", help="Dry run of file application"))
+        file:  yaml file to delete
+        dry_run:  Print the resulting yaml to the console without deleting resources from the guide.
 
     Returns:
 
