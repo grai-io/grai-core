@@ -1,5 +1,6 @@
 import React from "react"
-import { render, screen, waitFor } from "testing"
+import { userEvent } from "@testing-library/user-event"
+import { act, fireEvent, render, screen, waitFor } from "testing"
 import AppDrawer from "./AppDrawer"
 
 test("renders", async () => {
@@ -12,27 +13,26 @@ test("renders", async () => {
   })
 })
 
-// test("collapse", async () => {
-//   render(<AppDrawer />, {
-//     withRouter: true,
-//   })
+test("collapse", async () => {
+  const user = userEvent.setup()
 
-//   await waitFor(() => {
-//     expect(screen.getByText("Collapse")).toBeTruthy()
-//   })
+  render(<AppDrawer />, {
+    withRouter: true,
+  })
 
-//   await act(async () => await userEvent.click(screen.getByText("Collapse")))
+  await waitFor(() => {
+    expect(screen.getByText("Graph")).toBeTruthy()
+  })
 
-//   await waitFor(() => {
-//     expect(screen.queryByText("Collapse")).toBeFalsy()
-//   })
+  fireEvent.mouseEnter(screen.getByText("Graph"))
 
-//   await act(
-//     async () =>
-//       await userEvent.click(screen.getByTestId("KeyboardArrowRightIcon")),
-//   )
+  await waitFor(() => {
+    expect(screen.getByTestId("LeftIcon")).toBeInTheDocument()
+  })
 
-//   await waitFor(() => {
-//     expect(screen.getByText("Collapse")).toBeTruthy()
-//   })
-// })
+  await act(async () => await user.click(screen.getByTestId("LeftIcon")))
+
+  await waitFor(() => {
+    expect(screen.queryByTestId("LeftIcon")).not.toBeInTheDocument()
+  })
+})
