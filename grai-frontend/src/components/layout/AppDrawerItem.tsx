@@ -1,3 +1,4 @@
+import React from "react"
 import {
   Box,
   ListItem,
@@ -5,37 +6,38 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material"
-import TooltipWrap from "components/utils/TooltipWrap"
+import { Link, useLocation } from "react-router-dom"
 import useWorkspace from "helpers/useWorkspace"
-import React from "react"
-import { Link } from "react-router-dom"
+import TooltipWrap from "components/utils/TooltipWrap"
 
-export type Page = {
+type AppDrawerItemProps = {
   title: string
   path: string
   icon: JSX.Element
-  alt: string
   className?: string
-}
-
-type AppDrawerItemProps = {
-  page: Page
   expand: boolean
 }
 
-const AppDrawerItem: React.FC<AppDrawerItemProps> = ({ page, expand }) => {
+const AppDrawerItem: React.FC<AppDrawerItemProps> = ({
+  title,
+  path,
+  icon,
+  className,
+  expand,
+}) => {
+  const location = useLocation()
   const { routePrefix } = useWorkspace()
 
-  const selected = decodeURI(location.pathname).startsWith(
-    `${routePrefix}/${page.path}`,
-  )
+  const to = `${routePrefix}/${path}`
+
+  const selected = decodeURI(location.pathname).startsWith(to)
 
   return (
-    <ListItem disablePadding key={page.path} className={page.className}>
-      <TooltipWrap show={!expand} title={page.title} placement="right">
+    <ListItem disablePadding key={path} className={className}>
+      <TooltipWrap show={!expand} title={title} placement="right">
         <ListItemButton
           component={Link}
-          to={`${routePrefix}/${page.path}`}
+          to={to}
           sx={{
             ":hover .child-icon": {
               color: "white",
@@ -58,12 +60,12 @@ const AppDrawerItem: React.FC<AppDrawerItemProps> = ({ page, expand }) => {
                 p: "12px",
               }}
             >
-              {page.icon}
+              {icon}
             </Box>
           </ListItemIcon>
           {expand && (
             <ListItemText
-              primary={page.title}
+              primary={title}
               primaryTypographyProps={{
                 className: "child-text",
                 sx: {

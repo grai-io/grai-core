@@ -5,7 +5,6 @@ import { Routes as BrowerRoutes, Route } from "react-router-dom"
 import WorkspaceRedirect from "pages/workspaces/WorkspaceRedirect"
 import Loading from "components/layout/Loading"
 import PageLayout from "components/layout/PageLayout"
-import SettingsLayout from "components/settings/SettingsLayout"
 import SuspenseOutlet from "components/utils/SuspenseOutlet"
 import WorkspaceProvider from "components/utils/WorkspaceProvider"
 import GuestRoute from "./components/auth/GuestRoute"
@@ -140,18 +139,7 @@ const Routes: React.FC = () => (
                 <Route path="create" element={<FilterCreate />} />
                 <Route path=":filterId" element={<Filter />} />
               </Route>
-              <Route
-                path="settings"
-                element={
-                  <SuspenseOutlet
-                    fallback={
-                      <SettingsLayout>
-                        <Loading />
-                      </SettingsLayout>
-                    }
-                  />
-                }
-              >
+              <Route path="settings">
                 <Route index element={<Settings />} />
                 <Route path="profile" element={<ProfileSettings />} />
                 <Route path="2fa" element={<TwoFactor />} />

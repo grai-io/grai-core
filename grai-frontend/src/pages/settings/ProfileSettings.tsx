@@ -5,10 +5,10 @@ import ProfileForm from "components/settings/profile/ProfileForm"
 import SettingsAppBar from "components/settings/SettingsAppBar"
 import SettingsLayout from "components/settings/SettingsLayout"
 import GraphError from "components/utils/GraphError"
-import { GetProfile } from "./__generated__/GetProfile"
+import { GetProfileSettings } from "./__generated__/GetProfileSettings"
 
 export const GET_PROFILE = gql`
-  query GetProfile {
+  query GetProfileSettings {
     profile {
       id
       username
@@ -19,7 +19,7 @@ export const GET_PROFILE = gql`
 `
 
 const ProfileSettings: React.FC = () => {
-  const { loading, error, data } = useQuery<GetProfile>(GET_PROFILE)
+  const { loading, error, data } = useQuery<GetProfileSettings>(GET_PROFILE)
 
   if (error) return <GraphError error={error} />
   if (loading) return <SettingsLayout loading />

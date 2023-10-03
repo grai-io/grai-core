@@ -1,19 +1,6 @@
 import React from "react"
-import {
-  KeyboardArrowLeft,
-  KeyboardArrowRight,
-  Link as LinkIcon,
-} from "@mui/icons-material"
-import {
-  Box,
-  Drawer,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-} from "@mui/material"
-import { Link, useLocation } from "react-router-dom"
+import { Drawer, List, ListItem, ListItemButton } from "@mui/material"
+import { Link } from "react-router-dom"
 import useLocalState from "helpers/useLocalState"
 import useWorkspace from "helpers/useWorkspace"
 import {
@@ -24,10 +11,10 @@ import {
   Reports,
   Nodes,
 } from "components/icons"
-import ProfileMenu from "./ProfileMenu"
 import Edge from "components/icons/Edge"
-import AppDrawerItem from "./AppDrawerItem"
 import Settings from "components/icons/Settings"
+import AppDrawerItem from "./AppDrawerItem"
+import Profile from "./profile/Profile"
 
 const pages = [
   {
@@ -97,21 +84,26 @@ const AppDrawer: React.FC = () => {
       </List>
       <List sx={{ flexGrow: 1 }}>
         {pages.map(page => (
-          <AppDrawerItem page={page} expand={expand} key={page.path} />
+          <AppDrawerItem
+            expand={expand}
+            key={page.path}
+            title={page.title}
+            path={page.path}
+            icon={page.icon}
+            className={page.className}
+          />
         ))}
-        <ProfileMenu expand={expand} />
       </List>
       <List>
         <AppDrawerItem
-          page={{
-            title: "Settings",
-            path: "settings",
-            icon: <Settings />,
-            alt: "Settings",
-          }}
+          title="Settings"
+          path="settings/profile"
+          icon={<Settings />}
           expand={expand}
         />
-        {expand ? (
+
+        <Profile expand={expand} />
+        {/* {expand ? (
           <ListItem disablePadding>
             <ListItemButton onClick={() => setExpand(false)}>
               <ListItemIcon>
@@ -155,7 +147,7 @@ const AppDrawer: React.FC = () => {
               </ListItemIcon>
             </ListItemButton>
           </ListItem>
-        )}
+        )} */}
       </List>
     </Drawer>
   )
