@@ -10,6 +10,7 @@ import WorkspaceProvider from "components/utils/WorkspaceProvider"
 import GuestRoute from "./components/auth/GuestRoute"
 import PrivateRoute from "./components/auth/PrivateRoute"
 import NotFound from "./pages/NotFound"
+import SettingsLayout from "components/settings/SettingsLayout"
 
 const Index = lazy(() => import("./pages/Index"))
 const Workspaces = lazy(() => import("./pages/workspaces/Workspaces"))
@@ -139,7 +140,12 @@ const Routes: React.FC = () => (
                 <Route path="create" element={<FilterCreate />} />
                 <Route path=":filterId" element={<Filter />} />
               </Route>
-              <Route path="settings">
+              <Route
+                path="settings"
+                element={
+                  <SuspenseOutlet fallback={<SettingsLayout loading />} />
+                }
+              >
                 <Route index element={<Settings />} />
                 <Route path="profile" element={<ProfileSettings />} />
                 <Route path="2fa" element={<TwoFactor />} />
