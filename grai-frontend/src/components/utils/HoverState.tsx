@@ -1,4 +1,4 @@
-import React from "react"
+import React, { ReactElement } from "react"
 
 type BindHover = {
   onMouseEnter: () => void
@@ -10,7 +10,7 @@ type HoverStateProps = {
     hover: boolean,
     bindHover: BindHover,
     setHover: (hover: boolean) => void,
-  ) => React.ReactNode
+  ) => ReactElement<any, any> | null
 }
 
 const HoverState: React.FC<HoverStateProps> = ({ children }) => {
