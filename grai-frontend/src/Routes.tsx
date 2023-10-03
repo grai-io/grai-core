@@ -143,13 +143,7 @@ const Routes: React.FC = () => (
               <Route
                 path="settings"
                 element={
-                  <SuspenseOutlet
-                    fallback={
-                      <SettingsLayout>
-                        <Loading />
-                      </SettingsLayout>
-                    }
-                  />
+                  <SuspenseOutlet fallback={<SettingsLayout loading />} />
                 }
               >
                 <Route index element={<Settings />} />
