@@ -21,7 +21,7 @@
     "@feelback/react": "^0.3.4",
     "@mendable/search": "^0.0.104",
     "@sentry/nextjs": "^7.48.0",
-    "next": "^13.3.0",
+    "next": "^13.5.4",
     "next-seo": "^6.0.0",
     "nextra": "^2.3.0",
     "nextra-theme-docs": "^2.3.0",
