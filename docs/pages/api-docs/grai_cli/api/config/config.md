@@ -7,30 +7,17 @@ title: grai_cli.api.config.config
 
 ```python
 @config_app.command("init")
-def cli_init_config(username: str = typer.Option(...,
-                                                 prompt=True,
-                                                 callback=username_callback,
-                                                 prompt_required=True),
-                    password: str = typer.Option(
-                        ...,
-                        prompt=True,
-                        prompt_required=True,
-                        hide_input=True,
-                        confirmation_prompt=True,
-                        callback=typer.unstyle,
-                    ),
-                    url: str = typer.Option(
-                        InitDefaults.url_default,
-                        prompt="Server URL",
-                        prompt_required=True,
-                        callback=typer.unstyle,
-                    ),
-                    workspace: str = typer.Option(
-                        InitDefaults.workspace_default,
-                        prompt="The Grai workspace for this config",
-                        prompt_required=True,
-                        callback=typer.unstyle,
-                    ))
+def cli_init_config(
+    username: Annotated[str, PartialPrompt(callback=username_callback)],
+    password: Annotated[str,
+                        PartialPrompt(hide_input=True,
+                                      confirmation_prompt=True,
+                                      callback=password_callback)],
+    url: Annotated[str,
+                   PartialPrompt(prompt="Server URL", callback=url_callback
+                                 )] = InitDefaults.url_default(),
+    workspace: Annotated[str, PartialPrompt(
+        callback=workspace_callback)] = InitDefaults.workspace_default())
 ```
 
 Initialize a new config file
@@ -46,6 +33,15 @@ Initialize a new config file
 **Returns**:
 
 
+
+## location
+
+```python
+@config_app.command(help="Print config file location")
+def location()
+```
+
+View the current config file
 
 ## view
 

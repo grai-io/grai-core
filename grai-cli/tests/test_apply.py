@@ -9,7 +9,7 @@ from typer.testing import CliRunner
 
 from grai_cli import config
 from grai_cli.api.entrypoint import app
-from grai_cli.api.server.endpoints import apply, delete, get_edges, get_nodes
+from grai_cli.api.server.endpoints import apply, delete, get_edges, perform_type_query
 from grai_cli.utilities.test import prep_tests
 from grai_cli.utilities.utilities import write_yaml
 
@@ -76,7 +76,7 @@ def test_create_and_get_nodes(runner, mock_v1):
         result = runner.invoke(app, ["apply", file.name])
         assert result.exit_code == 0
 
-        server_nodes = get_nodes(print=False)
+        server_nodes = perform_type_query("Node", print=False)
         node_set = {(str(n.spec.name), str(n.spec.namespace)) for n in server_nodes}
 
         diff = original_node_set - node_set
@@ -102,7 +102,7 @@ def test_delete_single_node(runner, v1_node):
         assert result.exit_code == 0, result
         result = runner.invoke(app, ["delete", file.name])
         assert result.exit_code == 0, result
-        server_nodes = get_nodes(print=False)
+        server_nodes = perform_type_query("Node", print=False)
         node_set = {(str(n.spec.name), str(n.spec.namespace)) for n in server_nodes}
         assert (
             node_dict["spec"]["name"],
