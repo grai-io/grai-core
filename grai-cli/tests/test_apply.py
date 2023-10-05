@@ -76,7 +76,7 @@ def test_create_and_get_nodes(runner, mock_v1):
         result = runner.invoke(app, ["apply", file.name])
         assert result.exit_code == 0
 
-        server_nodes = perform_type_query(print=False)
+        server_nodes = perform_type_query("Node", print=False)
         node_set = {(str(n.spec.name), str(n.spec.namespace)) for n in server_nodes}
 
         diff = original_node_set - node_set
@@ -102,7 +102,7 @@ def test_delete_single_node(runner, v1_node):
         assert result.exit_code == 0, result
         result = runner.invoke(app, ["delete", file.name])
         assert result.exit_code == 0, result
-        server_nodes = perform_type_query(print=False)
+        server_nodes = perform_type_query("Node", print=False)
         node_set = {(str(n.spec.name), str(n.spec.namespace)) for n in server_nodes}
         assert (
             node_dict["spec"]["name"],
