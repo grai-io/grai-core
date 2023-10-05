@@ -3,21 +3,6 @@ sidebar_label: utilities
 title: grai_cli.utilities.utilities
 ---
 
-## default\_callback
-
-```python
-def default_callback(ctx: typer.Context)
-```
-
-**Arguments**:
-
-  ctx (typer.Context):
-
-
-**Returns**:
-
-
-
 ## load\_yaml
 
 ```python
@@ -218,41 +203,6 @@ def write_yaml(data: Union[Sequence, Dict, BaseModel],
   data (Union[Sequence, Dict, BaseModel]):
   path (Union[str, Path, TextIOBase]):
 - `mode` _str, optional_ - (Default value = &quot;w&quot;)
-
-
-**Returns**:
-
-
-
-## get\_config\_view
-
-```python
-def get_config_view(config_field: str)
-```
-
-Assumes &lt;config_field&gt; is dot separated i.e. `auth.username`
-
-**Arguments**:
-
-  config_field (str):
-
-
-**Returns**:
-
-
-
-## merge\_dicts
-
-```python
-def merge_dicts(dict_a: Dict, dict_b: Dict) -> Dict
-```
-
-Recursively merge elements of dict b into dict a preferring b
-
-**Arguments**:
-
-  dict_a (Dict):
-  dict_b (Dict):
 
 
 **Returns**:

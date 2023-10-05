@@ -61,7 +61,10 @@ A class for generating mock nodes for testing.
 ### \_\_init\_\_
 
 ```python
-def __init__(workspace=None, **kwargs)
+def __init__(workspace: Optional[WorkspaceSpec] = None,
+             data_source: Optional[SourceSpec] = None,
+             data_sources: Optional[List[SourceSpec]] = None,
+             **kwargs)
 ```
 
 Initializes the MockNode class.
@@ -405,7 +408,11 @@ A class for generating mock objects for testing.
 ### \_\_init\_\_
 
 ```python
-def __init__(workspace=None, organisation=None)
+def __init__(workspace: Optional[Union[WorkspaceV1, WorkspaceSpec]] = None,
+             organisation: Optional[Union[OrganisationV1,
+                                          OrganisationSpec]] = None,
+             data_source: Optional[Union[SourceSpec, SourceV1]] = None,
+             data_sources: Optional[List[Union[SourceSpec, SourceV1]]] = None)
 ```
 
 Initializes the MockV1 class.
