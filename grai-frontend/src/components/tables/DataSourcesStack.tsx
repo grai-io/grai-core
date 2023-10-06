@@ -26,6 +26,7 @@ const DataSourcesStack: React.FC<DataSourcesStackProps> = ({
   <Stack direction="row" spacing={1}>
     {data_sources?.data?.map(
       source =>
+        source.connections.data[0] &&
         source.connections.data[0].connector.slug && (
           // <Tooltip title={source.name} key={source.name}>
           <DataSourceIcon
