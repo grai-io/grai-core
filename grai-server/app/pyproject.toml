@@ -64,6 +64,7 @@ grai-source-snowflake = "^0.1.2"
 types-redis = "^4.6.0.5"
 django-otp = "^1.2.2"
 qrcode = "^7.4.2"
+grai-source-openlineage = "^0.1.0a1"
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.10.1"

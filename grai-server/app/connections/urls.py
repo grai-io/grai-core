@@ -266,7 +266,38 @@ def dbt_cloud(request):
     return Response({"status": "ok"})
 
 
+@api_view(["POST"])
+def open_lineage(request):
+    print("openlineage")
+
+    body = json.loads(request.body)
+
+    try:
+        connection = Connection.objects.get(
+            connector__slug=Connector.OPEN_LINEAGE,
+        )
+    except Connection.DoesNotExist:
+        return Response({"status": "Connection not found"})
+
+    if not connection.is_active:
+        return Response({"status": "Connection not active"})
+
+    run = Run.objects.create(
+        workspace=connection.workspace,
+        connection=connection,
+        status="queued",
+        input=body,
+        action=Run.UPDATE,
+        source=connection.source,
+    )
+
+    process_run.delay(run.id)
+
+    return Response({"status": "ok"})
+
+
 urlpatterns = router.urls + [
     path("external-runs/", create_run),
     path("dbt-cloud/", dbt_cloud, name="dbt-cloud"),
+    path("openlineage/", open_lineage),
 ]

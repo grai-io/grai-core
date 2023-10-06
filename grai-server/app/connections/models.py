@@ -17,6 +17,7 @@ class Connector(models.Model):
     REDSHIFT = "redshift"
     METABASE = "metabase"
     LOOKER = "looker"
+    OPEN_LINEAGE = "openlineage"
 
     CONNECTOR_SLUGS = [
         (POSTGRESQL, "postgres"),
@@ -31,6 +32,7 @@ class Connector(models.Model):
         (REDSHIFT, "redshift"),
         (METABASE, "metabase"),
         (LOOKER, "looker"),
+        (OPEN_LINEAGE, "openlineage"),
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -196,6 +198,10 @@ class Run(TenantModel):
     )
     trigger = models.JSONField(
         default=dict,
+        blank=True,
+        null=True,
+    )
+    input = models.JSONField(
         blank=True,
         null=True,
     )
