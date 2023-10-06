@@ -1,0 +1,43 @@
+[tool.poetry]
+name = "grai_source_openlineage"
+version = "0.1.0-a1"
+description = ""
+authors = ["Edward Louth <edward@grai.io>"]
+license = "Elastic-2.0"
+packages = [
+    { include = "grai_source_openlineage", from = "src" },
+]
+readme = "README.md"
+homepage = "https://www.grai.io/"
+repository = "https://github.com/grai-io/grai-core/tree/master/grai-integrations/source-openlineage"
+documentation = "https://docs.grai.io/"
+
+
+[tool.poetry.dependencies]
+python = "^3.8"
+pydantic = "^1.9.1"
+grai-schemas = "^0.2.6"
+
+[tool.poetry.group.dev.dependencies]
+isort = "^5.10.1"
+pytest = "^7.2.0"
+mypy = "^0.991"
+black = "^22.12.0"
+devtools = "^0.10.0"
+types-setuptools = "^67.3.0.1"
+grai-client = "^0.3.0"
+
+[tool.isort]
+profile = "black"
+known_first_party = "grai_source_openlineage"
+
+[tool.black]
+line-length = 120
+
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.poetry_bumpversion.file."src/grai_source_openlineage/__init__.py"]
