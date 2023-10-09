@@ -51,8 +51,11 @@ class TableMetadata(MetabaseModelDefaults, api.TableMetadata):
         return columns
 
     def get_edges(self) -> List["Edge"]:
-        base_kwargs = {"namespace": self.namespace}
-        edges = [Edge() for field in self.fields]
+        table = api.Table(
+            id=self.id, name=self.name, schema=self.table_schema, active=self.active, db_id=self.db_id, db=self.db
+        )
+        edges = [Edge(namespace=self.namespace, source=column, destination=table) for column in self.get_columns()]
+        return edges
 
 
 class Table(MetabaseModelDefaults, api.Table):

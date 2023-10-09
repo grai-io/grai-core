@@ -20,8 +20,8 @@ class MetabaseIntegration(GraiIntegrationImplementation):
     def __init__(
         self,
         source: SourceV1,
+        metabase_namespace: str,
         version: Optional[str] = None,
-        metabase_namespace: Optional[str] = None,
         namespace_map: Optional[Union[str, Dict[int, str]]] = None,
         endpoint: Optional[str] = None,
         username: Optional[str] = None,
