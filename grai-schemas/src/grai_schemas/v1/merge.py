@@ -4,6 +4,7 @@ from typing import Any, Dict, Optional, Union
 from grai_schemas.generics import MalformedMetadata, Metadata
 from grai_schemas.utilities import merge
 from grai_schemas.v1.edge import EdgeSpec, EdgeV1, SourcedEdgeSpec, SourcedEdgeV1
+from grai_schemas.v1.generics import Code
 from grai_schemas.v1.metadata.edges import BaseEdgeMetadataV1
 from grai_schemas.v1.metadata.nodes import BaseNodeMetadataV1
 from grai_schemas.v1.node import NodeSpec, NodeV1, SourcedNodeSpec, SourcedNodeV1
@@ -151,3 +152,8 @@ def merge_grai_edge_into_edge_metadata(spec: EdgeSpec, source_spec: SourcedEdgeS
     new_spec.metadata.grai = merge(new_spec.metadata.grai, source_spec.metadata.grai)
     new_spec.metadata.sources[source_spec.data_source.name] = source_spec.metadata
     return new_spec
+
+
+@merge.register
+def merge_code_into_code(code_a: Code, code_b: Code) -> Code:
+    return code_b
