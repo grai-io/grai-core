@@ -1,15 +1,15 @@
 import React, { ReactNode } from "react"
-import { Box } from "@mui/material"
-import ErrorBoundary from "components/utils/ErrorBoundary"
-import AppDrawer from "./AppDrawer"
-import Loading from "./Loading"
-import GettingStarted from "./GettingStarted"
 import { gql, useQuery } from "@apollo/client"
+import { Box } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
+import ErrorBoundary from "components/utils/ErrorBoundary"
 import {
   GetWorkspacePageLayout,
   GetWorkspacePageLayoutVariables,
 } from "./__generated__/GetWorkspacePageLayout"
+import AppDrawer from "./AppDrawer"
+import GettingStarted from "./GettingStarted"
+import Loading from "./Loading"
 
 export const GET_WORKSPACE = gql`
   query GetWorkspacePageLayout(

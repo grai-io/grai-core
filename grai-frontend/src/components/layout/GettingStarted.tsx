@@ -1,7 +1,7 @@
-import { AppBar, Toolbar, Typography, Button, Link } from "@mui/material"
-import useWorkspace from "helpers/useWorkspace"
 import React from "react"
+import { AppBar, Toolbar, Typography, Button, Link } from "@mui/material"
 import { Link as RouterLink } from "react-router-dom"
+import useWorkspace from "helpers/useWorkspace"
 
 const GettingStarted: React.FC = () => {
   const { routePrefix } = useWorkspace()
