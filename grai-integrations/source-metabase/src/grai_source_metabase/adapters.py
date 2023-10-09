@@ -1,7 +1,14 @@
+from functools import partial
 from typing import Any, Dict, List, Literal, Sequence, TypeVar, Union
 
 from grai_schemas.v1 import EdgeV1, NodeV1, SourcedEdgeV1, SourcedNodeV1, SourceV1
-from grai_schemas.v1.metadata.edges import EdgeMetadataTypeLabels, GenericEdgeMetadataV1
+from grai_schemas.v1.metadata.edges import (
+    BaseEdgeMetadataV1,
+    ColumnToColumnAttributes,
+    ColumnToColumnMetadata,
+    EdgeMetadataTypeLabels,
+    GenericEdgeMetadataV1,
+)
 from grai_schemas.v1.metadata.nodes import (
     CollectionMetadata,
     ColumnMetadata,
@@ -48,7 +55,7 @@ def build_grai_metadata(current: Any, desired: Any) -> None:
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_table(current: Column, version: Literal["v1"] = "v1") -> ColumnMetadata:
+def build_grai_metadata_from_column(current: Column, version: Literal["v1"] = "v1") -> ColumnMetadata:
     """
     Build grai metadata for a Table object.
 
@@ -71,7 +78,7 @@ def build_grai_metadata_from_table(current: Column, version: Literal["v1"] = "v1
         "tags": [config.metadata_id],
     }
 
-    return ColumnMetadata(**data)
+    return ColumnMetadata(version=version, node_type=NodeMetadataTypeLabels.column.value, tags=[config.metadata_id])
 
 
 @build_grai_metadata.register
@@ -84,21 +91,14 @@ def build_grai_metadata_from_table(current: Table, version: Literal["v1"] = "v1"
         version: The version of grai metadata to build. Defaults to "v1".
 
     Returns:
-        TableMetadata: grai metadata object for the Table.
+        grai metadata object for the Table.
 
     Raises:
         None.
 
     """
 
-    data = {
-        "version": version,
-        "node_type": NodeMetadataTypeLabels.table.value,
-        "node_attributes": {},
-        "tags": [config.metadata_id],
-    }
-
-    return TableMetadata(**data)
+    return TableMetadata(version=version, node_type=NodeMetadataTypeLabels.table.value, tags=[config.metadata_id])
 
 
 @build_grai_metadata.register
@@ -111,21 +111,14 @@ def build_grai_metadata_from_question(current: Question, version: Literal["v1"] 
         version (Literal["v1"], optional): The version of grai metadata to build. Defaults to "v1".
 
     Returns:
-        GenericNodeMetadataV1: grai metadata object for the Question.
+        grai metadata object for the Question.
 
     Raises:
         None.
 
     """
 
-    data = {
-        "version": version,
-        "node_type": NodeMetadataTypeLabels.query.value,
-        "node_attributes": {},
-        "tags": [config.metadata_id],
-    }
-
-    return QueryMetadata(**data)
+    return QueryMetadata(version=version, node_type=NodeMetadataTypeLabels.query.value, tags=[config.metadata_id])
 
 
 @build_grai_metadata.register
@@ -138,22 +131,19 @@ def build_grai_metadata_from_collection(current: Collection, version: Literal["v
         version: The version of grai metadata to build. Defaults to "v1".
 
     Returns:
-        GenericNodeMetadataV1: grai metadata object for the Collection.
+        grai metadata object for the Collection.
 
     """
 
-    data = {
-        "version": version,
-        "node_type": NodeMetadataTypeLabels.collection.value,
-        "node_attributes": {},
-        "tags": [config.metadata_id],
-    }
-
-    return CollectionMetadata(**data)
+    return CollectionMetadata(
+        version=version, node_type=NodeMetadataTypeLabels.collection.value, tags=[config.metadata_id]
+    )
 
 
 @build_grai_metadata.register
-def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> GenericEdgeMetadataV1:
+def build_grai_metadata_from_edge(
+    current: Edge, version: Literal["v1"] = "v1"
+) -> Union[ColumnToColumnMetadata, GenericEdgeMetadataV1]:
     """
     Build grai metadata for an Edge object.
 
@@ -162,20 +152,28 @@ def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") 
         version: The version of grai metadata to build. Defaults to "v1".
 
     Returns:
-        GenericEdgeMetadataV1: grai metadata object for the Edge.
+        Grai metadata object for the Edge.
 
     Raises:
         None.
 
     """
+    tags = [config.metadata_id]
 
-    data = {
-        "version": version,
-        "edge_type": EdgeMetadataTypeLabels.generic.value,
-        "tags": [config.metadata_id],
-    }
+    if isinstance(current.source, Column):
+        if isinstance(current.destination, Question):
+            attributes = ColumnToColumnAttributes(
+                version=version, preserves_data_type=True, preserves_nullable=True, preserves_unique=True
+            )
 
-    return GenericEdgeMetadataV1(**data)
+            return ColumnToColumnMetadata(
+                version=version,
+                tags=tags,
+                edge_type=EdgeMetadataTypeLabels.column_to_column.value,
+                edge_attributes=attributes,
+            )
+
+    return GenericEdgeMetadataV1(version=version, tags=tags, edge_type=EdgeMetadataTypeLabels.generic.value)
 
 
 @multimethod
