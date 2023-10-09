@@ -90,7 +90,7 @@ class UnknownLanguage(ProgrammingLanguage):
     """Class representation catch-all programming language"""
 
     language_name: str = "Unknown"
-    file_extension: None = None
+    file_extension: Optional[str] = None
 
 
 ProgrammingLanguage = Union[Python, R, SQL, UnknownLanguage]
