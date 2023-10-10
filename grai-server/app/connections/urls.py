@@ -2,6 +2,7 @@ import hashlib
 import hmac
 import json
 import uuid
+import logging
 
 from django.urls import path
 from django_multitenant.utils import get_current_tenant
@@ -218,7 +219,9 @@ def create_run(request):
 
         return Response({"id": run.id})
     except DisplayError as e:
-        return Response({"error": str(e)}, status=400)
+        logging.exception(str(e))
+        message = "An error was encountered while creating a run. The full error has been logged to the server."
+        return Response({"error": message}, status=400)
 
 
 def validate_webhook(request, secret: str):
