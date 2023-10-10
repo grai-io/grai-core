@@ -14,7 +14,7 @@ def save(model: Connection):
 
     client = dbtCloudClient(api_key=api_key)
 
-    client_url = f"{settings.NGROK_URL}{reverse('connections:dbt-cloud')}"
+    client_url = f"{settings.SERVER_URL}{reverse('connections:dbt-cloud')}"
 
     payload = {
         "event_types": ["job.run.completed"],
