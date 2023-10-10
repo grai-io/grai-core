@@ -112,6 +112,13 @@ def test_looker_connector():
 
 
 @pytest.fixture
+def test_openlineage_connector():
+    connector, created = Connector.objects.get_or_create(name=Connector.OPEN_LINEAGE, slug=Connector.OPEN_LINEAGE)
+
+    return connector
+
+
+@pytest.fixture
 def test_yaml_file_connector():
     connector, created = Connector.objects.get_or_create(name=Connector.YAMLFILE, slug=Connector.YAMLFILE)
 
@@ -413,6 +420,19 @@ class TestUpdateServer:
                 "client_id": "client_id",
             },
             secrets={"client_secret": "password1234"},
+        )
+        run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
+
+        get_adapter(run.connection.connector.slug)
+
+    def test_get_openlineage_connector_no_account(self, test_workspace, test_openlineage_connector, test_source):
+        connection = Connection.objects.create(
+            name=str(uuid.uuid4()),
+            connector=test_openlineage_connector,
+            workspace=test_workspace,
+            source=test_source,
+            metadata={},
+            secrets={"api_secret": "password1234"},
         )
         run = Run.objects.create(connection=connection, workspace=test_workspace, source=test_source)
 

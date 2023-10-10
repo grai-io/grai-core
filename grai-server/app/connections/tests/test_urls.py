@@ -88,6 +88,13 @@ def test_dbt_cloud_connector():
 
 
 @pytest.fixture
+def test_openlineage_connector():
+    connector, created = Connector.objects.get_or_create(name=Connector.OPEN_LINEAGE, slug=Connector.OPEN_LINEAGE)
+
+    return connector
+
+
+@pytest.fixture
 def test_repository(create_workspace):
     return Repository.objects.create(
         workspace=create_workspace,
@@ -436,6 +443,19 @@ def test_connection_dbt_cloud(create_workspace, test_dbt_cloud_connector, hmac_s
     return connection
 
 
+@pytest.fixture
+def test_connection_openlineage(create_workspace, test_openlineage_connector, test_source):
+    connection = Connection.objects.create(
+        workspace=create_workspace,
+        connector=test_openlineage_connector,
+        name=str(uuid.uuid4()),
+        secrets={"api_secret": "secret1234"},
+        source=test_source,
+    )
+
+    return connection
+
+
 @pytest.mark.django_db
 def test_dbt_cloud(test_connection_dbt_cloud, client, hmac_secret):
     url = "/api/v1/dbt-cloud/"
@@ -640,6 +660,73 @@ def test_dbt_cloud_not_active(test_connection_dbt_cloud, client, hmac_secret):
         url,
         body,
         headers={"authorization": signature},
+        content_type="application/json",
+    )
+    assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
+    data = response.json()
+    assert data["status"] == "Connection not active"
+
+
+@pytest.mark.django_db
+def test_openlineage(client, test_connection_openlineage):
+    url = f"/api/v1/openlineage/{test_connection_openlineage.id}/{test_connection_openlineage.secrets['api_secret']}/"
+
+    body = {}
+
+    response = client.post(
+        url,
+        body,
+        content_type="application/json",
+    )
+    assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
+    data = response.json()
+    assert data["status"] == "ok"
+
+
+@pytest.mark.django_db
+def test_openlineage_no_connection(client):
+    url = f"/api/v1/openlineage/e80c8d93-5a35-4468-a3ce-bcfc7ccee438/secret/"
+
+    body = {}
+
+    response = client.post(
+        url,
+        body,
+        content_type="application/json",
+    )
+    assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
+    data = response.json()
+    assert data["status"] == "Connection not found"
+
+
+@pytest.mark.django_db
+def test_openlineage_invalid_secret(client, test_connection_openlineage):
+    url = f"/api/v1/openlineage/{test_connection_openlineage.id}/incorrect/"
+
+    body = {}
+
+    response = client.post(
+        url,
+        body,
+        content_type="application/json",
+    )
+    assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
+    data = response.json()
+    assert data["status"] == "Invalid secret"
+
+
+@pytest.mark.django_db
+def test_openlineage_not_active(client, test_connection_openlineage):
+    test_connection_openlineage.is_active = False
+    test_connection_openlineage.save()
+
+    url = f"/api/v1/openlineage/{test_connection_openlineage.id}/{test_connection_openlineage.secrets['api_secret']}/"
+
+    body = {}
+
+    response = client.post(
+        url,
+        body,
         content_type="application/json",
     )
     assert response.status_code == 200, f"verb `get` failed on workspaces with status {response.status_code}"
