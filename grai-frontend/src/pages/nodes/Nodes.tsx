@@ -4,7 +4,6 @@ import { useSearchParams } from "react-router-dom"
 import useWorkspace from "helpers/useWorkspace"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
-import PageLayout from "components/layout/PageLayout"
 import NodesTable from "components/nodes/NodesTable"
 import TableFilterChoice from "components/table/TableFilterChoice"
 import NodeHeader from "components/table/TableHeader"
@@ -141,7 +140,7 @@ const Nodes: React.FC = () => {
   }
 
   return (
-    <PageLayout>
+    <>
       <PageHeader title="Nodes" />
       <PageContent>
         <NodeHeader
@@ -166,7 +165,7 @@ const Nodes: React.FC = () => {
           onOrderChange={setOrder}
         />
       </PageContent>
-    </PageLayout>
+    </>
   )
 }
 

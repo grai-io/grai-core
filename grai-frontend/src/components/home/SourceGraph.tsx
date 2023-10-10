@@ -5,6 +5,10 @@ import { Link } from "react-router-dom"
 import PageContent from "components/layout/PageContent"
 import Graph from "components/sources/Graph"
 import GraphError from "components/utils/GraphError"
+import {
+  GetWorkspaceSourceGraph,
+  GetWorkspaceSourceGraphVariables,
+} from "./__generated__/GetWorkspaceSourceGraph"
 
 export const GET_WORKSPACE_SOURCE_GRAPH = gql`
   query GetWorkspaceSourceGraph($workspaceId: ID!) {
@@ -25,7 +29,10 @@ type SourceGraphProps = {
 }
 
 const SourceGraph: React.FC<SourceGraphProps> = ({ workspaceId }) => {
-  const { loading, error, data } = useQuery(GET_WORKSPACE_SOURCE_GRAPH, {
+  const { loading, error, data } = useQuery<
+    GetWorkspaceSourceGraph,
+    GetWorkspaceSourceGraphVariables
+  >(GET_WORKSPACE_SOURCE_GRAPH, {
     variables: {
       workspaceId,
     },
@@ -54,9 +61,11 @@ const SourceGraph: React.FC<SourceGraphProps> = ({ workspaceId }) => {
       {loading ? (
         <CircularProgress />
       ) : (
-        <Box sx={{ height: "500px" }}>
-          <Graph sourceGraph={data.workspace.source_graph} />
-        </Box>
+        data?.workspace && (
+          <Box sx={{ height: "500px" }}>
+            <Graph sourceGraph={data.workspace.source_graph} />
+          </Box>
+        )
       )}
     </PageContent>
   )

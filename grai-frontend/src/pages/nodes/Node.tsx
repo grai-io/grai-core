@@ -3,9 +3,9 @@ import { gql, useQuery } from "@apollo/client"
 import { useParams } from "react-router-dom"
 import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
+import Loading from "components/layout/Loading"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
-import PageLayout from "components/layout/PageLayout"
 import PageTabs from "components/layout/PageTabs"
 import TableColumns from "components/nodes/columns/TableColumns"
 import NodeProfile from "components/nodes/NodeProfile"
@@ -116,7 +116,7 @@ const Table: React.FC = () => {
   )
 
   if (error) return <GraphError error={error} />
-  if (loading) return <PageLayout loading />
+  if (loading) return <Loading />
 
   const node = data?.workspace?.node
 
@@ -158,12 +158,10 @@ const Table: React.FC = () => {
   ]
 
   return (
-    <PageLayout>
-      <TabState tabs={tabs}>
-        <PageHeader title={node.display_name} tabs />
-        <PageTabs />
-      </TabState>
-    </PageLayout>
+    <TabState tabs={tabs}>
+      <PageHeader title={node.display_name} tabs />
+      <PageTabs />
+    </TabState>
   )
 }
 

@@ -4,7 +4,7 @@ import { Container } from "@mui/material"
 import gql from "graphql-tag"
 import { useParams } from "react-router"
 import useWorkspace from "helpers/useWorkspace"
-import PageLayout from "components/layout/PageLayout"
+import Loading from "components/layout/Loading"
 import RepositoryList from "components/reports/repositories/RepositoryList"
 import GraphError from "components/utils/GraphError"
 import {
@@ -50,16 +50,12 @@ const Repositories: React.FC = () => {
   })
 
   if (error) return <GraphError error={error} />
-  if (loading) return <PageLayout loading />
+  if (loading) return <Loading />
 
   return (
-    <PageLayout>
-      <Container maxWidth="sm" sx={{ mt: 20 }}>
-        <RepositoryList
-          repositories={data?.workspace.repositories.data ?? []}
-        />
-      </Container>
-    </PageLayout>
+    <Container maxWidth="sm" sx={{ mt: 20 }}>
+      <RepositoryList repositories={data?.workspace.repositories.data ?? []} />
+    </Container>
   )
 }
 

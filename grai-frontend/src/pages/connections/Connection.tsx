@@ -12,8 +12,8 @@ import ConnectionEvents from "components/connections/events/ConnectionEvents"
 import ConnectionRunsTable from "components/connections/runs/ConnectionRunsTable"
 import EditScheduleForm from "components/connections/schedule/EditScheduleForm"
 import ConnectorIcon from "components/connectors/ConnectorIcon"
+import Loading from "components/layout/Loading"
 import PageHeader from "components/layout/PageHeader"
-import PageLayout from "components/layout/PageLayout"
 import PageTabs from "components/layout/PageTabs"
 import RunStatus from "components/runs/RunStatus"
 import TabState from "components/tabs/TabState"
@@ -113,7 +113,7 @@ const Connection: React.FC = () => {
   useRunPolling(status, startPolling, stopPolling)
 
   if (error) return <GraphError error={error} />
-  if (loading) return <PageLayout loading />
+  if (loading) return <Loading />
 
   const workspace = data?.workspace
   const connection = data?.workspace?.connection
@@ -157,37 +157,35 @@ const Connection: React.FC = () => {
   ]
 
   return (
-    <PageLayout>
-      <TabState tabs={tabs}>
-        <PageHeader
-          title={connection.name}
-          status={
-            <>
-              {connection.last_run && (
-                <RunStatus run={connection.last_run} link sx={{ mr: 3 }} />
-              )}
+    <TabState tabs={tabs}>
+      <PageHeader
+        title={connection.name}
+        status={
+          <>
+            {connection.last_run && (
+              <RunStatus run={connection.last_run} link sx={{ mr: 3 }} />
+            )}
 
-              <ConnectorIcon connector={connection.connector} />
-            </>
-          }
-          buttons={
-            <Stack direction="row" spacing={2}>
-              <ConnectionRun
-                connection={connection}
-                workspaceId={workspace.id}
-                onRun={handleRun}
-              />
-              <ConnectionMenu
-                connection={connection}
-                workspaceId={workspace.id}
-              />
-            </Stack>
-          }
-          tabs
-        />
-        <PageTabs />
-      </TabState>
-    </PageLayout>
+            <ConnectorIcon connector={connection.connector} />
+          </>
+        }
+        buttons={
+          <Stack direction="row" spacing={2}>
+            <ConnectionRun
+              connection={connection}
+              workspaceId={workspace.id}
+              onRun={handleRun}
+            />
+            <ConnectionMenu
+              connection={connection}
+              workspaceId={workspace.id}
+            />
+          </Stack>
+        }
+        tabs
+      />
+      <PageTabs />
+    </TabState>
   )
 }
 
