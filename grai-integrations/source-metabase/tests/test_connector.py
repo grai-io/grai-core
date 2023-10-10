@@ -3,7 +3,7 @@ from typing import get_args
 import pytest
 from grai_schemas import config as core_config
 from grai_schemas.v1 import EdgeV1, NodeV1, SourcedEdgeV1, SourcedNodeV1
-from grai_schemas.v1.metadata.edges import GenericEdgeMetadataV1
+from grai_schemas.v1.metadata.edges import BaseEdgeMetadataV1
 from grai_schemas.v1.metadata.edges import Metadata as EdgeV1Metadata
 from grai_schemas.v1.metadata.nodes import Metadata as NodeV1Metadata
 
@@ -53,7 +53,7 @@ class TestBuildNamespaceMap:
     @pytest.mark.xfail
     def test_namespace_map_from_invalid_json(self):
         """ """
-        test_dict = {2: api.DB(name="test_destination", id=2)}
+        test_dict = {2: {"id": 2, "name": "test_destination"}}
         namespace_map = build_namespace_map({}, test_dict, "temp")
         assert len(namespace_map.keys()) > 0
 
@@ -267,7 +267,7 @@ class TestConnector:
         Raises:
 
         """
-        assert all(isinstance(edge.spec.metadata.grai, GenericEdgeMetadataV1) for edge in edges)
+        assert all(isinstance(edge.spec.metadata.grai, BaseEdgeMetadataV1) for edge in edges)
 
     def test_metadata_has_core_metadata_ids(self, nodes, edges):
         """

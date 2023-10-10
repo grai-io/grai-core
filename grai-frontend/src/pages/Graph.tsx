@@ -124,7 +124,7 @@ const Graph: React.FC<GraphProps> = ({ alwaysShow }) => {
       <div
         ref={ref}
         style={{
-          height: "100vh",
+          height: "100%",
           width: "100%",
           backgroundColor: theme.palette.grey[100],
         }}
