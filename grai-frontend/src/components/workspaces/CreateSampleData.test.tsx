@@ -1,9 +1,9 @@
 import React from "react"
+import { GraphQLError } from "graphql"
+import { render, screen, waitFor } from "testing"
 import CreateSampleData, {
   LOAD_WORKSPACE_SAMPLE_DATA,
 } from "./CreateSampleData"
-import { render, screen, waitFor } from "testing"
-import { GraphQLError } from "graphql"
 
 const workspace = {
   id: "1",

@@ -1,10 +1,10 @@
 import React from "react"
+import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
-import Workspaces, { GET_WORKSPACES } from "./Workspaces"
-import userEvent from "@testing-library/user-event"
-import { CREATE_WORKSPACE } from "components/workspaces/OrganisationForm"
 import { LOAD_WORKSPACE_SAMPLE_DATA } from "components/workspaces/CreateSampleData"
+import { CREATE_WORKSPACE } from "components/workspaces/OrganisationForm"
+import Workspaces, { GET_WORKSPACES } from "./Workspaces"
 
 test("renders", async () => {
   render(<Workspaces />, {
