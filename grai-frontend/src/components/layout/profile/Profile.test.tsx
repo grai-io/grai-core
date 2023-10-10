@@ -1,6 +1,5 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
-import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
 import Profile from "./Profile"
 
