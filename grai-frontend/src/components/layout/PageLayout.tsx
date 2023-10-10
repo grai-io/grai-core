@@ -67,11 +67,12 @@ const PageLayout: React.FC<PageLayoutProps> = ({
     },
   })
 
-  const hasConnections = (data?.workspace.connections.meta.total ?? 0) > 0
+  const hasConnections =
+    !data || (data?.workspace.connections.meta.total ?? 0) > 0
 
   return (
     <>
-      {data && !hasConnections && <GettingStarted />}
+      {!hasConnections && <GettingStarted />}
       <Box sx={{ display: "flex" }}>
         <AppDrawer profile={data?.profile} />
         <Box sx={{ width: "100%" }}>
@@ -82,8 +83,8 @@ const PageLayout: React.FC<PageLayoutProps> = ({
                 padding: padding ? 3 : undefined,
                 flexGrow: 1,
                 backgroundColor: "#F8F8F8",
-                minHeight: "calc(100vh - 64px)",
                 height: "100%",
+                minHeight: hasConnections ? "100vh" : "calc(100vh - 64px)",
               }}
             >
               {children}

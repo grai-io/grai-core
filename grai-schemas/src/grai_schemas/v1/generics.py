@@ -1,8 +1,9 @@
+import abc
 from typing import Literal, Optional, Union
 from uuid import UUID
 
 from grai_schemas.generics import GraiBaseModel, Metadata
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 
 
 class BaseID(GraiBaseModel):
@@ -58,3 +59,50 @@ class UuidID(BaseID):
 
 
 ID = Union[UuidID, NamedID]
+
+
+class ProgrammingLanguage(BaseModel):
+    pass
+
+
+class Python(ProgrammingLanguage):
+    """Class representation of the Python programming language"""
+
+    language_name: Literal["Python"]
+    file_extension: Literal[".py"] = ".py"
+
+
+class R(ProgrammingLanguage):
+    """Class representation of the R programming language"""
+
+    language_name: Literal["R"]
+    file_extension: Literal[".r"] = ".r"
+
+
+class SQL(ProgrammingLanguage):
+    """Class representation of the SQL programming language"""
+
+    language_name: Literal["SQL"]
+    file_extension: Literal[".sql"] = ".sql"
+
+
+class UnknownLanguage(ProgrammingLanguage):
+    """Class representation catch-all programming language"""
+
+    language_name: str = "Unknown"
+    file_extension: Optional[str] = None
+
+
+ProgrammingLanguage = Union[Python, R, SQL, UnknownLanguage]
+
+
+class Code(BaseModel):
+    """A generic descriptor for Code"""
+
+    code: Optional[str]
+    has_code: bool = False
+    language: ProgrammingLanguage = UnknownLanguage()
+
+    @validator("has_code", pre=True, always=True)
+    def set_has_code(cls, value, values):
+        return bool(values.get("code"))

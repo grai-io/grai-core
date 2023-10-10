@@ -2,6 +2,7 @@ from enum import Enum
 from typing import Any, Dict, List, Literal, Optional, Union
 
 from grai_schemas.generics import GraiBaseModel, MalformedMetadata
+from grai_schemas.v1.generics import Code
 from grai_schemas.v1.metadata.generics import GenericAttributes
 
 
@@ -34,6 +35,7 @@ class BaseEdgeMetadataV1(GraiBaseModel):
     edge_type: EdgeTypeLabelLiterals
     edge_attributes: GenericAttributes
     tags: Optional[List[str]]
+    code: Code = Code()
 
 
 class MalformedEdgeMetadataV1(MalformedMetadata, BaseEdgeMetadataV1):
@@ -71,7 +73,6 @@ class TableToColumnAttributes(GenericAttributes):
     """
 
     version: Literal["v1"] = "v1"
-    pass
 
 
 class TableToColumnMetadata(BaseEdgeMetadataV1):
@@ -96,7 +97,6 @@ class TableToTableAttributes(GenericAttributes):
     """
 
     version: Literal["v1"] = "v1"
-    pass
 
 
 class TableToTableMetadata(BaseEdgeMetadataV1):
