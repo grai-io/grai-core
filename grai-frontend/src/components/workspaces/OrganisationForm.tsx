@@ -59,8 +59,6 @@ const OrganisationForm: React.FC<OrganisationFormProps> = ({ onCreate }) => {
     })
       .then(data => data.data?.createWorkspace)
       .then(workspace => workspace && onCreate && onCreate(workspace))
-      // .then(data => data && navigate(`/${data.organisation.name}/${data.name}`))
-      // .then(() => enqueueSnackbar("Workspace created"))
       .catch(() => {})
 
   return (
