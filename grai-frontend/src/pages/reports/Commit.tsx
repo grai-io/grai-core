@@ -8,8 +8,8 @@ import resultsToErrors from "helpers/resultsToErrors"
 import { durationAgo } from "helpers/runDuration"
 import useSearchParams from "helpers/useSearchParams"
 import useWorkspace from "helpers/useWorkspace"
+import Loading from "components/layout/Loading"
 import PageHeader from "components/layout/PageHeader"
-import PageLayout from "components/layout/PageLayout"
 import PageTabs from "components/layout/PageTabs"
 import CommitBreadcrumbs from "components/reports/commit/CommitBreadcrumbs"
 import ReportResult from "components/reports/ReportResult"
@@ -115,7 +115,7 @@ const Commit: React.FC = () => {
 
   if (error) return <GraphError error={error} />
 
-  if (loading) return <PageLayout loading />
+  if (loading) return <Loading />
 
   const commit = data?.workspace.repository.commit
 
@@ -136,57 +136,55 @@ const Commit: React.FC = () => {
   const repository = data.workspace.repository
 
   return (
-    <PageLayout>
-      <TabState tabs={tabs}>
-        <PageHeader
-          title={commit.title ?? `Run ${run?.id.slice(0, 6)}`}
-          breadcrumbs={
-            <CommitBreadcrumbs
-              type={type}
-              repository={repository}
-              reference={commit.reference}
-            />
-          }
-          tabs
-          status={
-            run?.created_at && (
-              <Typography>{`about ${durationAgo(
-                run.created_at,
-                1,
-                true,
-              )} ago `}</Typography>
-            )
-          }
-          buttons={<ReportResult errors={errors} />}
-        >
-          <Box sx={{ display: "flex", mt: 2 }}>
-            <Typography variant="body2" sx={{ display: "flex" }}>
-              <Link
-                href={
-                  commit.pull_request
-                    ? `https://github.com/${repository.owner}/${repository.repo}/pull/${commit.pull_request.reference}/commits/${commit.reference}`
-                    : `https://github.com/${repository.owner}/${repository.repo}/tree/${commit.reference}`
-                }
-                target="_blank"
-                underline="hover"
-                sx={{ display: "flex", alignItems: "center", ml: 0.5 }}
-              >
-                <span>#{commit.reference.slice(0, 7)}</span>
-                <OpenInNew sx={{ fontSize: 15, ml: 0.25 }} />
-              </Link>
-            </Typography>
-            <Typography
-              variant="body2"
-              sx={{ ml: 1, display: "flex", alignItems: "center" }}
+    <TabState tabs={tabs}>
+      <PageHeader
+        title={commit.title ?? `Run ${run?.id.slice(0, 6)}`}
+        breadcrumbs={
+          <CommitBreadcrumbs
+            type={type}
+            repository={repository}
+            reference={commit.reference}
+          />
+        }
+        tabs
+        status={
+          run?.created_at && (
+            <Typography>{`about ${durationAgo(
+              run.created_at,
+              1,
+              true,
+            )} ago `}</Typography>
+          )
+        }
+        buttons={<ReportResult errors={errors} />}
+      >
+        <Box sx={{ display: "flex", mt: 2 }}>
+          <Typography variant="body2" sx={{ display: "flex" }}>
+            <Link
+              href={
+                commit.pull_request
+                  ? `https://github.com/${repository.owner}/${repository.repo}/pull/${commit.pull_request.reference}/commits/${commit.reference}`
+                  : `https://github.com/${repository.owner}/${repository.repo}/tree/${commit.reference}`
+              }
+              target="_blank"
+              underline="hover"
+              sx={{ display: "flex", alignItems: "center", ml: 0.5 }}
             >
-              <CallSplit sx={{ fontSize: 15, mx: 0.25 }} />
-              {commit.branch.reference}
-            </Typography>
-          </Box>
-        </PageHeader>
-        <PageTabs />
-      </TabState>
-    </PageLayout>
+              <span>#{commit.reference.slice(0, 7)}</span>
+              <OpenInNew sx={{ fontSize: 15, ml: 0.25 }} />
+            </Link>
+          </Typography>
+          <Typography
+            variant="body2"
+            sx={{ ml: 1, display: "flex", alignItems: "center" }}
+          >
+            <CallSplit sx={{ fontSize: 15, mx: 0.25 }} />
+            {commit.branch.reference}
+          </Typography>
+        </Box>
+      </PageHeader>
+      <PageTabs />
+    </TabState>
   )
 }
 

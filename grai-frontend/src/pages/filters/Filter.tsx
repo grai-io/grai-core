@@ -5,9 +5,9 @@ import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
 import FiltersMenu from "components/filters/FiltersMenu"
 import UpdateFilter from "components/filters/UpdateFilter"
+import Loading from "components/layout/Loading"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
-import PageLayout from "components/layout/PageLayout"
 import GraphError from "components/utils/GraphError"
 import { GetFilter, GetFilterVariables } from "./__generated__/GetFilter"
 
@@ -57,14 +57,14 @@ const Filter: React.FC = () => {
   )
 
   if (error) return <GraphError error={error} />
-  if (loading) return <PageLayout loading />
+  if (loading) return <Loading />
 
   const filter = data?.workspace?.filter
 
   if (!filter) return <NotFound />
 
   return (
-    <PageLayout>
+    <>
       <PageHeader
         title={filter.name ?? ""}
         buttons={
@@ -80,7 +80,7 @@ const Filter: React.FC = () => {
           sources={data?.workspace?.sources.data}
         />
       </PageContent>
-    </PageLayout>
+    </>
   )
 }
 

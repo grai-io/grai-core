@@ -1,15 +1,14 @@
 import React, { useState } from "react"
 import { gql, useMutation } from "@apollo/client"
 import { LoadingButton } from "@mui/lab"
-import { Checkbox, FormControlLabel, FormGroup, TextField } from "@mui/material"
-import { useSnackbar } from "notistack"
-import { useNavigate } from "react-router-dom"
+import { TextField, Typography } from "@mui/material"
 import Form from "components/form/Form"
 import GraphError from "components/utils/GraphError"
 import {
   CreateWorkspace,
   CreateWorkspaceVariables,
 } from "./__generated__/CreateWorkspace"
+import { Workspace } from "./CreateOrganisation"
 
 export const CREATE_WORKSPACE = gql`
   mutation CreateWorkspace(
@@ -38,10 +37,11 @@ type FormValues = {
   sample_data: boolean
 }
 
-const OrganisationForm: React.FC = () => {
-  const { enqueueSnackbar } = useSnackbar()
-  const navigate = useNavigate()
+type OrganisationFormProps = {
+  onCreate?: (workspace: Workspace) => void
+}
 
+const OrganisationForm: React.FC<OrganisationFormProps> = ({ onCreate }) => {
   const [values, setValues] = useState<FormValues>({
     organisationName: "",
     name: "production",
@@ -58,8 +58,9 @@ const OrganisationForm: React.FC = () => {
       variables: values,
     })
       .then(data => data.data?.createWorkspace)
-      .then(data => data && navigate(`/${data.organisation.name}/${data.name}`))
-      .then(() => enqueueSnackbar("Workspace created"))
+      .then(workspace => workspace && onCreate && onCreate(workspace))
+      // .then(data => data && navigate(`/${data.organisation.name}/${data.name}`))
+      // .then(() => enqueueSnackbar("Workspace created"))
       .catch(() => {})
 
   return (
@@ -76,19 +77,6 @@ const OrganisationForm: React.FC = () => {
           setValues({ ...values, organisationName: event.target.value })
         }
       />
-      <FormGroup sx={{ my: 2 }}>
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={values.sample_data}
-              onChange={(event, checked) =>
-                setValues({ ...values, sample_data: checked })
-              }
-            />
-          }
-          label="Populate with sample data"
-        />
-      </FormGroup>
       <LoadingButton
         variant="contained"
         fullWidth
@@ -99,6 +87,9 @@ const OrganisationForm: React.FC = () => {
       >
         NEXT
       </LoadingButton>
+      <Typography sx={{ my: 2 }} variant="body2">
+        Contact your administrator to access an existing organisation.
+      </Typography>
     </Form>
   )
 }

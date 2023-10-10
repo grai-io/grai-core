@@ -5,7 +5,6 @@ import useWorkspace from "helpers/useWorkspace"
 import Loading from "components/layout/Loading"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
-import PageLayout from "components/layout/PageLayout"
 import CreateSource from "components/sources/CreateSource"
 import GraphError from "components/utils/GraphError"
 import {
@@ -46,12 +45,12 @@ const SourceCreate: React.FC = () => {
   if (!workspace) return <NotFound />
 
   return (
-    <PageLayout>
+    <>
       <PageHeader title="Create Source" />
       <PageContent>
         <CreateSource workspaceId={workspace.id} />
       </PageContent>
-    </PageLayout>
+    </>
   )
 }
 

@@ -2,74 +2,38 @@ import React from "react"
 import userEvent from "@testing-library/user-event"
 import { GraphQLError } from "graphql"
 import { act, render, screen, waitFor } from "testing"
-import Profile, { GET_PROFILE } from "./Profile"
+import Profile from "./Profile"
+
+const profile = {
+  id: "1",
+  username: "test",
+  first_name: "First",
+  last_name: "Last",
+}
 
 test("renders", async () => {
-  render(<Profile expand />, {
+  render(<Profile expand profile={profile} />, {
     withRouter: true,
   })
 
   await waitFor(() => {
-    expect(screen.getByText("Hello World Hello World")).toBeTruthy()
+    expect(screen.getByText("First Last")).toBeTruthy()
   })
 })
 
 test("renders collapsed", async () => {
-  render(<Profile expand={false} />, {
+  render(<Profile expand={false} profile={profile} />, {
     withRouter: true,
   })
 
   await waitFor(() => {
-    expect(screen.getByText("HH")).toBeTruthy()
-  })
-})
-
-test("renders no name", async () => {
-  const mocks = [
-    {
-      request: {
-        query: GET_PROFILE,
-      },
-      result: {
-        data: {
-          profile: {
-            id: "1",
-            username: "test",
-            first_name: null,
-            last_name: null,
-          },
-        },
-      },
-    },
-  ]
-
-  render(<Profile expand />, {
-    withRouter: true,
-    mocks,
-  })
-
-  await waitFor(() => {
-    expect(screen.getByText("Profile")).toBeTruthy()
+    expect(screen.getByText("FL")).toBeTruthy()
   })
 })
 
 test("renders no profile", async () => {
-  const mocks = [
-    {
-      request: {
-        query: GET_PROFILE,
-      },
-      result: {
-        data: {
-          profile: null,
-        },
-      },
-    },
-  ]
-
   render(<Profile expand />, {
     withRouter: true,
-    mocks,
   })
 
   await waitFor(() => {
@@ -78,44 +42,19 @@ test("renders no profile", async () => {
 })
 
 test("logout", async () => {
-  render(<Profile expand />, {
+  render(<Profile expand profile={profile} />, {
     withRouter: true,
   })
 
   await waitFor(() => {
-    expect(screen.getByText("Hello World Hello World")).toBeTruthy()
+    expect(screen.getByText("First Last")).toBeTruthy()
   })
 
-  await act(
-    async () =>
-      await userEvent.click(screen.getByText("Hello World Hello World")),
-  )
+  await act(async () => await userEvent.click(screen.getByText("First Last")))
 
   await waitFor(() => {
     expect(screen.getByText("Logout")).toBeInTheDocument()
   })
 
   await act(async () => await userEvent.click(screen.getByText("Logout")))
-})
-
-test("renders error", async () => {
-  const mocks = [
-    {
-      request: {
-        query: GET_PROFILE,
-      },
-      result: {
-        errors: [new GraphQLError("Error!")],
-      },
-    },
-  ]
-
-  render(<Profile expand />, {
-    withRouter: true,
-    mocks,
-  })
-
-  await waitFor(() => {
-    expect(screen.getByText("Error!")).toBeInTheDocument()
-  })
 })
