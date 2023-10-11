@@ -385,7 +385,7 @@ jobs:
       - name: Run lint
         run: npm run lint
       - name: Run npm tests
-        run: npm test -- --coverage
+        run: npm test:coverage
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:

@@ -79,6 +79,7 @@
     "start": "vite",
     "build": "tsc && vite build",
     "test": "react-scripts test",
+    "test:coverage": "react-scripts test --coverage --testTimeout=10000",
     "lint": "eslint src/**/*.{ts,tsx,test.tsx}",
     "lint:fix": "eslint src/**/*.{ts,tsx,test.tsx} --fix",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
