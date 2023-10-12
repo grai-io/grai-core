@@ -12,8 +12,15 @@ from grai_source_openlineage.models import Column, Constraint, Edge, NodeTypes, 
 class OpenLineageProcessor:
     source: SourceSpec
 
-    def __init__(self, lineage: dict, namespace: str, source: SourceSpec):
+    def __init__(
+        self,
+        lineage: dict,
+        namespaces: Optional[Dict[str, str]],
+        namespace: str,
+        source: SourceSpec,
+    ):
         self.lineage = lineage
+        self.namespaces = namespaces
         self.namespace = namespace
         self.source = source
 
@@ -75,6 +82,12 @@ class OpenLineageProcessor:
 
     @cached_property
     def manifest(self) -> Tuple[List[NodeTypes], List[Edge]]:
+        def get_namespace(namespace: str) -> str:
+            if self.namespaces:
+                return self.namespaces.get(namespace, self.namespace)
+            else:
+                return self.namespace
+
         tables: Set[Table] = set()
         columns: Set[Column] = set()
         edges: List[Edge] = []
@@ -88,7 +101,7 @@ class OpenLineageProcessor:
                 continue
 
             output_name = output.get("name")
-            output_namespace = output.get("namespace")
+            output_namespace = get_namespace(output.get("namespace"))
 
             table = Table(name=output_name, namespace=output_namespace)
             tables.add(table)
@@ -112,7 +125,7 @@ class OpenLineageProcessor:
                 )
 
                 for input_field in field.get("inputFields", []):
-                    namespace = input_field["namespace"]
+                    namespace = get_namespace(input_field["namespace"])
                     name = input_field["name"]
                     field = input_field["field"]
                     input_column_full_name = f"{name}.{field}"
@@ -145,7 +158,13 @@ class OpenLineageProcessor:
         return nodes, edges
 
     @classmethod
-    def load(cls, lineage_data: Union[str, dict], namespace: str, source: SourceSpec) -> "OpenLineageProcessor":
+    def load(
+        cls,
+        lineage_data: Union[str, dict],
+        namespaces: Optional[Dict[str, str]],
+        namespace: str,
+        source: SourceSpec,
+    ) -> "OpenLineageProcessor":
         """
 
         Args:
@@ -163,4 +182,4 @@ class OpenLineageProcessor:
         else:
             lineage = lineage_data
 
-        return OpenLineageProcessor(lineage, namespace, source)
+        return OpenLineageProcessor(lineage, namespaces, namespace, source)

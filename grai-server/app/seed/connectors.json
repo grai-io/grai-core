@@ -511,6 +511,11 @@
                         "required": true,
                         "secret": true,
                         "order": 0
+                    },
+                    {
+                        "name": "namespaces",
+                        "required": false,
+                        "order": 1
                     }
                 ]
             },
@@ -666,6 +671,11 @@
                         "required": true,
                         "secret": true,
                         "order": 0
+                    },
+                    {
+                        "name": "namespaces",
+                        "required": false,
+                        "order": 1
                     }
                 ]
             },

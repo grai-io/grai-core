@@ -1,5 +1,5 @@
 from functools import cached_property
-from typing import List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 from grai_schemas.base import SourcedEdge, SourcedNode
 from grai_schemas.integrations.base import GraiIntegrationImplementation
@@ -23,6 +23,7 @@ class OpenLineageIntegration(GraiIntegrationImplementation):
         source: SourceV1,
         version: Optional[str] = None,
         namespace: Optional[str] = "default",
+        namespaces: Optional[Dict[str, str]] = None,
     ):
         """Initializes the dbt integration.
 
@@ -37,11 +38,12 @@ class OpenLineageIntegration(GraiIntegrationImplementation):
 
         self.lineage_data = lineage_data
         self.namespace = namespace
+        self.namespaces = namespaces
 
     @cached_property
     def lineage(self) -> OpenLineageProcessor:
         """Returns a ManifestProcessor object for the lineage json file"""
-        return OpenLineageProcessor.load(self.lineage_data, self.namespace, self.source)
+        return OpenLineageProcessor.load(self.lineage_data, self.namespaces, self.namespace, self.source)
 
     def nodes(self) -> List[SourcedNode]:
         """Returns a list of SourcedNode objects"""
