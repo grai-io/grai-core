@@ -2,7 +2,6 @@ version: "3.7"
 
 services:
   the_guide:
-    # image: ghcr.io/grai-io/grai-core/grai-server:latest
     build:
       context: ./app
       target: grai-server

@@ -104,6 +104,7 @@ DATABASES = {
 
 
 DJANGO_CORE_APPS = [
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -157,6 +158,7 @@ THE_GUIDE_APPS = [
     "users",
     "search",
     "telemetry",
+    "grAI",
 ]
 
 INSTALLED_APPS = DJANGO_CORE_APPS + THIRD_PARTY_APPS + THE_GUIDE_APPS
@@ -216,6 +218,17 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "the_guide.wsgi.application"
+
+
+ASGI_APPLICATION = "the_guide.asgi.application"
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
