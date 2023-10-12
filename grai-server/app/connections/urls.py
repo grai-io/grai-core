@@ -28,7 +28,15 @@ router.register("connectors", ConnectorViewSet, basename="connectors")
 router.register("runs", RunViewSet, basename="runs")
 
 
-class DisplayError(Exception):
+class MissingSourceError(Exception):
+    pass
+
+
+class MissingConnectorError(Exception):
+    pass
+
+
+class MissingRepositoryError(Exception):
     pass
 
 
@@ -41,7 +49,7 @@ def get_source(request) -> Source:
     source_name = request.POST.get("source_name")
 
     if source_name is None:
-        raise DisplayError("You must provide a source_id or source_name")
+        raise MissingSourceError("You must provide a source_id or source_name")
 
     source, created = Source.objects.get_or_create(name=source_name)
 
@@ -57,7 +65,7 @@ def get_connection(request) -> Connection:
     connector_name = request.POST.get("connector_name")
 
     if connector_name is None:
-        raise DisplayError("You must provide a connector or connection_id")
+        raise MissingConnectorError("You must provide a connector or connection_id")
 
     source = get_source(request)
 
@@ -95,7 +103,7 @@ def get_commit(
     try:
         repository = Repository.objects.get(owner=owner, repo=repo)
     except Repository.DoesNotExist:
-        raise DisplayError("Repository not found, have you installed the Grai Github App?")
+        raise MissingRepositoryError("Repository not found, have you installed the Grai Github App?")
 
     # Branch
     branch, created = Branch.objects.get_or_create(repository=repository, reference=branch_reference)
@@ -218,9 +226,18 @@ def create_run(request):
         process_run.delay(run.id)
 
         return Response({"id": run.id})
-    except DisplayError as e:
+    except MissingSourceError as e:
         logging.exception(str(e))
-        message = "An error was encountered while creating a run. The full error has been logged to the server."
+        message = "You must provide a source_id or source_name"
+        return Response({"error": message}, status=400)
+    except MissingConnectorError as e:
+        logging.exception(str(e))
+        message = "You must provide a connector or connection_id"
+        return Response({"error": message}, status=400)
+    except MissingRepositoryError as e:
+        logging.exception(str(e))
+        message = "Repository not found, have you installed the Grai Github App?"
+
         return Response({"error": message}, status=400)
 
 

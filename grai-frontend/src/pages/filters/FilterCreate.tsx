@@ -3,9 +3,9 @@ import { gql, useQuery } from "@apollo/client"
 import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
 import CreateFilter from "components/filters/CreateFilter"
+import Loading from "components/layout/Loading"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
-import PageLayout from "components/layout/PageLayout"
 import GraphError from "components/utils/GraphError"
 import {
   GetWorkspaceFilterCreate,
@@ -50,14 +50,14 @@ const FilterCreate: React.FC = () => {
   })
 
   if (error) return <GraphError error={error} />
-  if (loading) return <PageLayout loading />
+  if (loading) return <Loading />
 
   const workspace = data?.workspace
 
   if (!workspace) return <NotFound />
 
   return (
-    <PageLayout>
+    <>
       <PageHeader title="Create Filter" />
       <PageContent>
         <CreateFilter
@@ -67,7 +67,7 @@ const FilterCreate: React.FC = () => {
           sources={workspace.sources.data}
         />
       </PageContent>
-    </PageLayout>
+    </>
   )
 }
 

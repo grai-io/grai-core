@@ -35,6 +35,12 @@ export const GET_WORKSPACE = gql`
         }
       }
     }
+    profile {
+      id
+      username
+      first_name
+      last_name
+    }
   }
 `
 
@@ -68,7 +74,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({
     <>
       {!hasConnections && <GettingStarted />}
       <Box sx={{ display: "flex" }}>
-        <AppDrawer />
+        <AppDrawer profile={data?.profile} />
         <Box sx={{ width: "100%" }}>
           {loading && <Loading />}
           <ErrorBoundary>
@@ -77,6 +83,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({
                 padding: padding ? 3 : undefined,
                 flexGrow: 1,
                 backgroundColor: "#F8F8F8",
+                height: "100%",
                 minHeight: hasConnections ? "100vh" : "calc(100vh - 64px)",
               }}
             >

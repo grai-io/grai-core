@@ -98,15 +98,19 @@ async def generate_connector(slug: str, name: str):
     return connector
 
 
+async def generate_connectors():
+    await generate_connector(slug="postgres", name="postgres")
+    await generate_connector(slug="bigquery", name="bigquery")
+    await generate_connector(slug="yaml_file", name="yaml_file")
+    await generate_connector(slug="dbt", name="dbt")
+
+
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_create_workspace_sample_data(test_context):
     context, organisation, workspace, user, membership = test_context
 
-    await generate_connector(slug="postgres", name="postgres")
-    await generate_connector(slug="bigquery", name="bigquery")
-    await generate_connector(slug="yaml_file", name="yaml_file")
-    await generate_connector(slug="dbt", name="dbt")
+    await generate_connectors()
 
     mutation = """
         mutation CreateWorkspace($organisationName: String!, $name: String!, $sample_data: Boolean!) {
@@ -221,6 +225,34 @@ async def test_clear_workspace_with_nodes(test_context):
 
     assert result.errors is None
     assert result.data["clearWorkspace"]["id"] == str(workspace.id)
+
+
+@pytest.mark.django_db
+async def test_load_workspace_sample_data(test_context):
+    context, organisation, workspace, user, membership = test_context
+
+    await generate_connectors()
+
+    mutation = """
+        mutation LoadWorkspaceSampleData($id: ID!) {
+            loadWorkspaceSampleData(id: $id) {
+                id
+            }
+        }
+    """
+
+    result = await schema.execute(
+        mutation,
+        variable_values={
+            "id": str(workspace.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["loadWorkspaceSampleData"] == {
+        "id": str(workspace.id),
+    }
 
 
 @pytest.mark.django_db

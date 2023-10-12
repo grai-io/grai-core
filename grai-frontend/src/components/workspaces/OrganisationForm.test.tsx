@@ -6,8 +6,9 @@ import OrganisationForm, { CREATE_WORKSPACE } from "./OrganisationForm"
 
 test("renders", async () => {
   const user = userEvent.setup()
+  const onCreate = jest.fn()
 
-  render(<OrganisationForm />, {
+  render(<OrganisationForm onCreate={onCreate} />, {
     routes: ["/Hello World/Hello World"],
   })
 
@@ -15,19 +16,15 @@ test("renders", async () => {
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: /name/i }),
-        "TestOrganisation"
-      )
+        "TestOrganisation",
+      ),
   )
-
-  await act(async () => await user.click(screen.getByRole("checkbox")))
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /next/i }))
+    async () => await user.click(screen.getByRole("button", { name: /next/i })),
   )
 
-  await waitFor(() => {
-    expect(screen.getByText("New Page")).toBeInTheDocument()
-  })
+  expect(onCreate).toHaveBeenCalled()
 })
 
 test("error", async () => {
@@ -58,12 +55,12 @@ test("error", async () => {
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: /name/i }),
-        "TestOrganisation"
-      )
+        "TestOrganisation",
+      ),
   )
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /next/i }))
+    async () => await user.click(screen.getByRole("button", { name: /next/i })),
   )
 
   await waitFor(() => {

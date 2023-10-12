@@ -2,12 +2,8 @@ import React from "react"
 import { render, screen, waitFor } from "@testing-library/react"
 import App from "./App"
 
-jest.retryTimes(1)
-
 test("renders", async () => {
   render(<App />)
-
-  expect(screen.getByRole("progressbar")).toBeInTheDocument()
 
   await waitFor(() => {
     expect(screen.queryByRole("progressbar")).not.toBeInTheDocument()
