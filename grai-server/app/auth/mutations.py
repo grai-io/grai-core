@@ -149,7 +149,7 @@ class Mutation:
             email_template_name = "auth/password_reset_email.txt"
             c = {
                 "email": user.username,
-                "base_url": config("FRONTEND_URL", "http://localhost:3000"),
+                "base_url": settings.FRONTEND_URL,
                 "uid": user.pk,
                 "user": user,
                 "token": default_token_generator.make_token(user),
