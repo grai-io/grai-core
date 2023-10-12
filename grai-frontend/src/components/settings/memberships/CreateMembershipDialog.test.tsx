@@ -11,7 +11,7 @@ test("renders", async () => {
     <CreateMembershipDialog workspaceId="1" open={true} onClose={() => {}} />,
     {
       withRouter: true,
-    }
+    },
   )
 
   await waitFor(() => {
@@ -26,7 +26,7 @@ test("submit", async () => {
     <CreateMembershipDialog workspaceId="1" open={true} onClose={() => {}} />,
     {
       withRouter: true,
-    }
+    },
   )
 
   await waitFor(() => {
@@ -34,7 +34,11 @@ test("submit", async () => {
   })
 
   await act(
-    async () => await user.type(screen.getByRole("combobox"), "email@grai.io")
+    async () =>
+      await user.type(
+        screen.getByPlaceholderText("Enter emails"),
+        "email@grai.io",
+      ),
   )
 
   await act(async () => await user.keyboard("{enter}"))
@@ -44,7 +48,7 @@ test("submit", async () => {
   })
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /Save/i }))
+    async () => await user.click(screen.getByRole("button", { name: /Save/i })),
   )
 })
 
@@ -69,7 +73,7 @@ test("error", async () => {
 
   render(
     <CreateMembershipDialog workspaceId="1" open={true} onClose={() => {}} />,
-    { mocks }
+    { mocks },
   )
 
   await waitFor(() => {
@@ -77,13 +81,17 @@ test("error", async () => {
   })
 
   await act(
-    async () => await user.type(screen.getByRole("combobox"), "email@grai.io")
+    async () =>
+      await user.type(
+        screen.getByPlaceholderText("Enter emails"),
+        "email@grai.io",
+      ),
   )
 
   await act(async () => await user.keyboard("{tab}"))
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /Save/i }))
+    async () => await user.click(screen.getByRole("button", { name: /Save/i })),
   )
 
   await waitFor(() => {
