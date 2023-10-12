@@ -7,5 +7,5 @@ def index(request):
     return render(request, "grAI/index.html")
 
 
-def room(request, room_name):
-    return render(request, "grAI/room.html", {"room_name": room_name})
+def room(request, workspace):
+    return render(request, "grAI/room.html", {"workspace": workspace})

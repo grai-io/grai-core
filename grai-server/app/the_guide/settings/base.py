@@ -104,7 +104,6 @@ DATABASES = {
 
 
 DJANGO_CORE_APPS = [
-    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -355,3 +354,5 @@ CACHES = {
 }
 
 OTP_TOTP_ISSUER = "Grai Cloud"
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

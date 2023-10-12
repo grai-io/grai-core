@@ -12,7 +12,6 @@ documentation = "https://docs.grai.io/"
 [tool.poetry.dependencies]
 python = "^3.11"
 Django = "^4.1"
-gunicorn = "^20.0.4"
 djangorestframework = "^3.12.4"
 djangorestframework-simplejwt = {extras = ["crypto"], version = "^5.2.0"}
 drf-spectacular = "^0.24.2"
@@ -64,8 +63,10 @@ grai-source-snowflake = "^0.1.2"
 types-redis = "^4.6.0.5"
 django-otp = "^1.2.2"
 qrcode = "^7.4.2"
-channels = {version = "^4.0.0", extras = ["daphne"]}
+channels = "^4.0.0"
 channels-redis = "^4.1.0"
+uvicorn = {version = "^0.23.2", extras = ["standard"]}
+gunicorn = "^21.2.0"
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.10.1"

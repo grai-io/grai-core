@@ -76,7 +76,8 @@ ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
 # --------- final images --------------- #
 
 FROM base AS grai-server
-CMD ["gunicorn", "the_guide.wsgi", "-b", "0.0.0.0:8000", "-w", "2", "--thread", "2"]
+CMD ["gunicorn", "the_guide.asgi:application", "-b", "0.0.0.0:8000", "-k", "uvicorn.workers.UvicornWorker"]
+
 
 FROM base AS grai-worker
 ENV INSTANCE_TYPE=worker
