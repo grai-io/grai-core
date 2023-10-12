@@ -3,9 +3,9 @@ import { gql, useQuery } from "@apollo/client"
 import { useParams, useSearchParams } from "react-router-dom"
 import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
+import Loading from "components/layout/Loading"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
-import PageLayout from "components/layout/PageLayout"
 import CommitsList from "components/reports/commit/CommitsList"
 import CommitsTable from "components/reports/commit/CommitsTable"
 import BranchFilter from "components/reports/filters/BranchFilter"
@@ -77,11 +77,11 @@ const Commits: React.FC = () => {
         owner: params.owner ?? "",
         repo: params.repo ?? "",
       },
-    }
+    },
   )
 
   if (error) return <GraphError error={error} />
-  if (loading) return <PageLayout loading />
+  if (loading) return <Loading />
 
   const repository = data?.workspace.repository
 
@@ -90,7 +90,7 @@ const Commits: React.FC = () => {
   const branchReference = searchParams.get("branch")
 
   return (
-    <PageLayout>
+    <>
       <PageHeader
         breadcrumbs={<ReportBreadcrumbs type={type} repository={repository} />}
       >
@@ -116,7 +116,7 @@ const Commits: React.FC = () => {
           />
         )}
       </PageContent>
-    </PageLayout>
+    </>
   )
 }
 

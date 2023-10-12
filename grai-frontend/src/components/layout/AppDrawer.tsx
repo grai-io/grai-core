@@ -16,7 +16,7 @@ import Settings from "components/icons/Settings"
 import HoverState from "components/utils/HoverState"
 import AppDrawerCollapse from "./AppDrawerCollapse"
 import AppDrawerItem from "./AppDrawerItem"
-import Profile from "./profile/Profile"
+import Profile, { User } from "./profile/Profile"
 
 const pages = [
   {
@@ -52,7 +52,11 @@ const pages = [
   },
 ]
 
-const AppDrawer: React.FC = () => {
+type AppDrawerProps = {
+  profile?: User
+}
+
+const AppDrawer: React.FC<AppDrawerProps> = ({ profile }) => {
   const { routePrefix } = useWorkspace()
   const [expand, setExpand] = useLocalState("app-drawer", true)
 
@@ -113,7 +117,7 @@ const AppDrawer: React.FC = () => {
               expand={expand}
             />
 
-            <Profile expand={expand} />
+            <Profile expand={expand} profile={profile} />
             {/* {expand ? (
             <ListItem disablePadding>
               <ListItemButton onClick={() => setExpand(false)}>

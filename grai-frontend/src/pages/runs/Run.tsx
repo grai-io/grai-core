@@ -5,9 +5,9 @@ import NotFound from "pages/NotFound"
 import useRunPolling from "helpers/runPolling"
 import useWorkspace from "helpers/useWorkspace"
 import ConnectionRun, { RunResult } from "components/connections/ConnectionRun"
+import Loading from "components/layout/Loading"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
-import PageLayout from "components/layout/PageLayout"
 import RunDetail from "components/runs/RunDetail"
 import RunStatus from "components/runs/RunStatus"
 import GraphError from "components/utils/GraphError"
@@ -110,7 +110,7 @@ const Run: React.FC = () => {
   useRunPolling(status, startPolling, stopPolling)
 
   if (error) return <GraphError error={error} />
-  if (loading) return <PageLayout loading />
+  if (loading) return <Loading />
 
   const run = data?.workspace?.run
 
@@ -119,7 +119,7 @@ const Run: React.FC = () => {
   const handleRun = (run: RunResult) => workspaceNavigate(`runs/${run.id}`)
 
   return (
-    <PageLayout>
+    <>
       <PageHeader
         title={
           (run.connection ? run.connection.name + "/" : null) +
@@ -139,7 +139,7 @@ const Run: React.FC = () => {
       <PageContent>
         <RunDetail run={run} />
       </PageContent>
-    </PageLayout>
+    </>
   )
 }
 export default Run

@@ -7,7 +7,6 @@ import useWorkspace from "helpers/useWorkspace"
 import ConnectionsTable from "components/connections/ConnectionsTable"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
-import PageLayout from "components/layout/PageLayout"
 import TableHeader from "components/table/TableHeader"
 import GraphError from "components/utils/GraphError"
 import {
@@ -108,7 +107,7 @@ const Connections: React.FC = () => {
     : connections
 
   return (
-    <PageLayout>
+    <>
       <PageHeader
         title="Connections"
         buttons={
@@ -141,7 +140,7 @@ const Connections: React.FC = () => {
           total={data?.workspace.connections.meta.total ?? 0}
         />
       </PageContent>
-    </PageLayout>
+    </>
   )
 }
 

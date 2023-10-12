@@ -159,6 +159,23 @@ class Mutation:
         return workspace
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def loadWorkspaceSampleData(
+        self,
+        info: Info,
+        id: strawberry.ID,
+    ) -> Workspace:
+        @transaction.atomic
+        def _load_workspace_sample_data(info: Info, workspace: WorkspaceModel) -> Workspace:
+            generator = SampleData(workspace)
+            async_to_sync(generator.generate)()
+
+            return workspace
+
+        workspace = await aget_workspace(info, id)
+
+        return await sync_to_async(_load_workspace_sample_data)(info, workspace)
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def createMembership(
         self,
         info: Info,

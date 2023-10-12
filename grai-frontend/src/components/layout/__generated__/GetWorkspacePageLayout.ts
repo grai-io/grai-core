@@ -46,8 +46,17 @@ export interface GetWorkspacePageLayout_workspace {
   connections: GetWorkspacePageLayout_workspace_connections;
 }
 
+export interface GetWorkspacePageLayout_profile {
+  __typename: "Profile";
+  id: any;
+  username: string | null;
+  first_name: string;
+  last_name: string;
+}
+
 export interface GetWorkspacePageLayout {
   workspace: GetWorkspacePageLayout_workspace;
+  profile: GetWorkspacePageLayout_profile;
 }
 
 export interface GetWorkspacePageLayoutVariables {

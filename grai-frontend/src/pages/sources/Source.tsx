@@ -5,7 +5,6 @@ import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
 import Loading from "components/layout/Loading"
 import PageHeader from "components/layout/PageHeader"
-import PageLayout from "components/layout/PageLayout"
 import PageTabs from "components/layout/PageTabs"
 import SourceDetail from "components/sources/SourceDetail"
 import SourceLineage from "components/sources/SourceLineage"
@@ -91,16 +90,14 @@ const Source: React.FC = () => {
   ]
 
   return (
-    <PageLayout>
-      <TabState tabs={tabs}>
-        <PageHeader
-          title={source.name}
-          buttons={<SourceMenu source={source} workspaceId={workspace.id} />}
-          tabs
-        />
-        <PageTabs />
-      </TabState>
-    </PageLayout>
+    <TabState tabs={tabs}>
+      <PageHeader
+        title={source.name}
+        buttons={<SourceMenu source={source} workspaceId={workspace.id} />}
+        tabs
+      />
+      <PageTabs />
+    </TabState>
   )
 }
 
