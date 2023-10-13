@@ -21,7 +21,8 @@ def send_validation_email(user: User):
         "token": token,
         "uid": user.pk,
     }
-    email_message = render_to_string("auth/email_verification_template.html", c)
+    email_message = render_to_string("auth/email_verification.txt", c)
+    html_message = render_to_string("auth/email_verification_template.html", c)
 
     subject = "Welcome to Grai"
 
