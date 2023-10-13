@@ -14,11 +14,14 @@ class OpenLineageProcessor:
 
     def __init__(
         self,
-        lineage: dict,
+        lineage: Union[str, dict],
         namespaces: Optional[Dict[str, str]],
         namespace: str,
         source: SourceSpec,
     ):
+        if isinstance(lineage, str):
+            lineage = json.load(lineage)
+
         self.lineage = lineage
         self.namespaces = namespaces
         self.namespace = namespace
@@ -156,31 +159,3 @@ class OpenLineageProcessor:
         nodes = list(tables) + list(columns)
 
         return nodes, edges
-
-    @classmethod
-    def load(
-        cls,
-        lineage_data: Union[str, dict],
-        namespaces: Optional[Dict[str, str]],
-        namespace: str,
-        source: SourceSpec,
-    ) -> "OpenLineageProcessor":
-        """
-
-        Args:
-            lineage_data:
-            namespace:
-            namespaces:
-            source:
-
-        Returns:
-
-        Raises:
-
-        """
-        if isinstance(lineage_data, str):
-            lineage = json.load(lineage_data)
-        else:
-            lineage = lineage_data
-
-        return OpenLineageProcessor(lineage, namespaces, namespace, source)
