@@ -101,8 +101,11 @@ def build_grai_metadata_from_node(current: Table, version: Literal["v1"] = "v1")
     return TableMetadata(**data)
 
 
+EdgeReturnTypes = Union[GenericEdgeMetadataV1, TableToColumnMetadata, TableToTableMetadata, ColumnToColumnMetadata]
+
+
 @build_grai_metadata.register
-def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> GenericEdgeMetadataV1:
+def build_grai_metadata_from_edge(current: Edge, version: Literal["v1"] = "v1") -> EdgeReturnTypes:
     """
 
     Args:
@@ -352,6 +355,7 @@ def adapt_seq_to_client(
 
     Args:
         objs:
+        source:
         version:
 
     Returns:

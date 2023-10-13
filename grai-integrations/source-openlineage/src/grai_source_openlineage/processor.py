@@ -1,6 +1,6 @@
 import json
 from functools import cached_property
-from typing import List, Set, Tuple, Union
+from typing import Dict, List, Optional, Set, Tuple, Union
 
 from grai_schemas.v1 import SourcedEdgeV1, SourcedNodeV1
 from grai_schemas.v1.source import SourceSpec
@@ -170,6 +170,7 @@ class OpenLineageProcessor:
         Args:
             lineage_data:
             namespace:
+            namespaces:
             source:
 
         Returns:

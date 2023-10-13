@@ -14,6 +14,7 @@ class OpenLineageIntegration(GraiIntegrationImplementation):
     Attributes:
         lineage_data: A dictionary parsing of a OpenLineage json file
         namespace: The Grai namespace to associate with output from the integration
+        namespaces: A dictionary of namespace aliases to use when parsing the lineage data
 
     """
 
@@ -32,6 +33,7 @@ class OpenLineageIntegration(GraiIntegrationImplementation):
             source: The Grai data source to associate with output from the integration. More information about source objects is available in the `grai_schemas` library.
             version: The Grai data version to associate with output from the integration
             namespace: The Grai namespace to associate with output from the integration
+            namespaces: A dictionary of namespace aliases to use when parsing the lineage data
 
         """
         super().__init__(source, version)
@@ -43,7 +45,7 @@ class OpenLineageIntegration(GraiIntegrationImplementation):
     @cached_property
     def lineage(self) -> OpenLineageProcessor:
         """Returns a ManifestProcessor object for the lineage json file"""
-        return OpenLineageProcessor.load(self.lineage_data, self.namespaces, self.namespace, self.source)
+        return OpenLineageProcessor.load(self.lineage_data, self.namespaces, self.namespace, self.source.spec)
 
     def nodes(self) -> List[SourcedNode]:
         """Returns a list of SourcedNode objects"""
