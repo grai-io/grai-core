@@ -1,7 +1,7 @@
 import React from "react"
+import userEvent from "@testing-library/user-event"
 import { render, screen, waitFor } from "testing"
 import ChatWindow from "./ChatWindow"
-import userEvent from "@testing-library/user-event"
 
 const handleInput = jest.fn()
 

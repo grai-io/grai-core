@@ -2,7 +2,7 @@ import React from "react"
 import { render, screen } from "testing"
 import ChatHistory from "./ChatHistory"
 
-test("renders ", async () => {
+test("renders", async () => {
   const chats = [
     {
       message: "first message",

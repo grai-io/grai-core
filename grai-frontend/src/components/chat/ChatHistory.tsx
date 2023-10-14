@@ -1,6 +1,6 @@
 import React from "react"
-import { Chat } from "./ChatWindow"
 import { List, ListItem } from "@mui/material"
+import { Chat } from "./ChatWindow"
 
 type ChatHistoryProps = {
   chats: Chat[]

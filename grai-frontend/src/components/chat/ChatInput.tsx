@@ -1,7 +1,7 @@
+import React, { useState } from "react"
 import { Send } from "@mui/icons-material"
 import { Box, Button, TextField } from "@mui/material"
 import Form from "components/form/Form"
-import React, { useState } from "react"
 
 type ChatInputProps = {
   onInput: (message: string) => void
