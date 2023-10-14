@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 import { Card } from "@mui/material"
 import ChatHistory from "./ChatHistory"
 import ChatInput from "./ChatInput"
