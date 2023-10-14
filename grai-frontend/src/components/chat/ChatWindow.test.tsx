@@ -3,8 +3,10 @@ import { render, screen, waitFor } from "testing"
 import ChatWindow from "./ChatWindow"
 import userEvent from "@testing-library/user-event"
 
+const handleInput = jest.fn()
+
 test("renders", async () => {
-  render(<ChatWindow />)
+  render(<ChatWindow chats={[]} onInput={handleInput} />)
 
   expect(screen.getByRole("textbox")).toBeInTheDocument()
 })
@@ -12,7 +14,7 @@ test("renders", async () => {
 test("type", async () => {
   const user = userEvent.setup()
 
-  render(<ChatWindow />)
+  render(<ChatWindow chats={[]} onInput={handleInput} />)
 
   expect(screen.getByRole("textbox")).toBeInTheDocument()
 
@@ -22,9 +24,7 @@ test("type", async () => {
 
   user.type(screen.getByRole("textbox"), "{enter}")
 
-  await waitFor(() => {
-    expect(screen.getByText("Hello")).toBeInTheDocument()
-  })
+  await waitFor(() => expect(screen.getByRole("textbox")).toHaveValue(""))
 
-  expect(screen.getByRole("textbox")).toHaveValue("")
+  expect(handleInput).toHaveBeenCalledWith("Hello")
 })

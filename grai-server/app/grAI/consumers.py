@@ -60,4 +60,4 @@ class ChatConsumer(WebsocketConsumer):
         message = event["message"]
         self.update_cache(message)
         # Send message to WebSocket
-        self.send(text_data=json.dumps({"message": message}))
+        self.send(text_data=json.dumps({"message": f"you sent message: {message}"}))

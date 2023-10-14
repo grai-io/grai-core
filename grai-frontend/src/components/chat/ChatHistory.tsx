@@ -9,7 +9,14 @@ type ChatHistoryProps = {
 const ChatHistory: React.FC<ChatHistoryProps> = ({ chats }) => (
   <List>
     {chats.map((chat, index) => (
-      <ListItem key={index} disableGutters>
+      <ListItem
+        key={index}
+        disableGutters
+        sx={{
+          display: "flex",
+          justifyContent: chat.sender ? null : "flex-end",
+        }}
+      >
         {chat.message}
       </ListItem>
     ))}

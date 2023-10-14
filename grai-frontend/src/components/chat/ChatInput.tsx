@@ -29,6 +29,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onInput }) => {
           type="submit"
           variant="contained"
           color="primary"
+          disabled={!value}
           sx={{ ml: 2 }}
         >
           <Send />
