@@ -12,14 +12,14 @@ class IsAuthenticated(BasePermission):
     message = "User is not authenticated"
 
     async def has_permission(self, source: typing.Any, info: Info, **kwargs) -> bool:
-        if info.context.request.user is None:
+        if info.context.user is None:
             return False
 
-        return await sync_to_async(lambda: info.context.request.user.is_authenticated)()
+        return await sync_to_async(lambda: info.context.user.is_authenticated)()
 
 
 def get_user(info: Info):
-    return info.context.request.user
+    return info.context.user
 
 
 async def aget_workspace(info: Info, workspaceId: strawberry.ID):
