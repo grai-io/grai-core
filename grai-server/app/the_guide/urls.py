@@ -10,9 +10,6 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView,
 )
-from strawberry.django.views import AsyncGraphQLView
-
-from api.schema import schema
 
 from .views import index
 
@@ -37,7 +34,7 @@ urlpatterns = [
     path("api/v1/lineage/", include("lineage.urls"), name="lineage"),
     path("api/v1/", include("connections.urls"), name="connections"),
     path("api/v1/", include("workspaces.urls"), name="workspaces"),
-    # path("graphql/", AsyncGraphQLView.as_view(schema=schema)),
+    path("graphql/", include("api.urls")),
     # OpenAPI 3 docs w/ Swagger
     path(
         "api/v1/schema/",

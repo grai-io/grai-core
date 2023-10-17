@@ -19,9 +19,35 @@ DEFAULT_HEADERS = {
 }
 
 
+class A:
+    pass
+
+
+class B(A):
+    extra = True
+
+
+class SessionChannelsRequest(ChannelsRequest):
+    def __init__(self, *args, META: dict | None = None, **kwargs):
+        self.META = {} if META is None else META
+        super().__init__(*args, **kwargs)
+
+    @classmethod
+    def from_parent(cls, obj: ChannelsRequest):
+        return cls(**vars(obj))
+
+    @property
+    def session(self):
+        # Depends on Channels' SessionMiddleware / AuthMiddlewareStack
+        if "session" in self.consumer.scope:
+            return self.consumer.scope["session"]
+
+        return None
+
+
 @dataclass
 class ChannelsContext:
-    request: ChannelsRequest
+    request: SessionChannelsRequest
     response: TemporalResponse
 
     @property
@@ -54,10 +80,11 @@ class ChannelsWSContext:
 class GraphQLHTTPConsumer(BaseGraphQLHTTPConsumer):
     @override
     async def get_context(self, request: ChannelsRequest, response: TemporalResponse) -> ChannelsContext:
-        return ChannelsContext(
-            request=request,
+        ctx = ChannelsContext(
+            request=SessionChannelsRequest.from_parent(request),
             response=response,
         )
+        return ctx
 
 
 def cors_options(allow_all=True, hosts=[], host_wildcards=[], headers=["content-type"]):

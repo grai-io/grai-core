@@ -32,7 +32,18 @@ from django.conf import settings
 from .asgi_graphql import GraphQLHTTPConsumer, CorsMiddleware
 
 
-gql_http_consumer = AuthMiddlewareStack(GraphQLHTTPConsumer.as_asgi(schema=schema))
+gql_consumer = GraphQLHTTPConsumer.as_asgi(schema=schema)
+
+gql_http_consumer = AuthMiddlewareStack(
+    CorsMiddleware(
+        gql_consumer,
+        allow_all=False,
+        hosts=["http://localhost:3000", "http://localhost:8000"],
+        host_wildcards=[],
+        headers=["content-type"],
+    )
+)
+
 
 app = ProtocolTypeRouter(
     {
@@ -49,10 +60,12 @@ app = ProtocolTypeRouter(
 )
 
 
-application = CorsMiddleware(
-    app,
-    allow_all=False,
-    hosts=settings.ALLOWED_HOSTS,
-    host_wildcards=[],
-    headers=["content-type"],
-)
+application = app
+
+# application = CorsMiddleware(
+#     app,
+#     allow_all=False,
+#     hosts=["http://localhost:3000", "http://localhost:8000"],
+#     host_wildcards=[],
+#     headers=["content-type"],
+# )
