@@ -78,6 +78,16 @@ files = [
 test = ["coverage", "mypy", "pexpect", "ruff", "wheel"]
 
 [[package]]
+name = "asgi-cors-strawberry"
+version = "0.2.0"
+description = "ASGI middleware for CORS, especially for using strawberry-graphql"
+optional = false
+python-versions = "*"
+files = [
+    {file = "asgi-cors-strawberry-0.2.0.tar.gz", hash = "sha256:39e41b025b5c67061938d1eff537b9266f1d82ffd0bc36aa07393b253aa25e2e"},
+]
+
+[[package]]
 name = "asgiref"
 version = "3.7.2"
 description = "ASGI specs, helper code, and adapters"
@@ -4602,16 +4612,18 @@ test = ["pytest", "pytest-cov"]
 
 [[package]]
 name = "strawberry-graphql"
-version = "0.209.6"
+version = "0.209.7"
 description = "A library for creating GraphQL APIs"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "strawberry_graphql-0.209.6-py3-none-any.whl", hash = "sha256:b92f42612633264fd2d815ae811cb619350926be63d2330913c4b1bcc7d0dd78"},
-    {file = "strawberry_graphql-0.209.6.tar.gz", hash = "sha256:abd6c3b3a8ddb2e28a16142e7a6b1a380e4c00f5a72caa2eba6bdc2a99e50fb5"},
+    {file = "strawberry_graphql-0.209.7-py3-none-any.whl", hash = "sha256:4277d0365aca113fef7697ab7cfe430e151748e26b6d00f773d58a2bf5a18eb1"},
+    {file = "strawberry_graphql-0.209.7.tar.gz", hash = "sha256:e4fd764e6fa68130d106b84a3ef758b9a3bda472f98934d2a0256838023f9a1e"},
 ]
 
 [package.dependencies]
+asgiref = {version = ">=3.2,<4.0", optional = true, markers = "extra == \"django\" or extra == \"channels\""}
+channels = {version = ">=3.0.5", optional = true, markers = "extra == \"channels\""}
 graphql-core = ">=3.2.0,<3.3.0"
 python-dateutil = ">=2.7.0,<3.0.0"
 typing-extensions = ">=4.5.0"
@@ -5077,4 +5089,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "22f97ac611e58924e032801f388aef482d92e9020a8ef8b93a8263d4e89fbc5d"
+content-hash = "563ab7c3657573e4dd221efec14fd2ad459db9bea6a79fbdf123aaffb5c8d269"
