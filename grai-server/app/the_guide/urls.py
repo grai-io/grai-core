@@ -20,7 +20,6 @@ spectacular_settings = {
 
 urlpatterns = [
     path("", index, name="index"),
-    path("chat/", include("grAI.urls")),
     path("admin/", admin.site.urls),
     # path("api/v1/health/", include("health.urls"), name="health"),
     path("api/v1/auth/jwttoken/", TokenObtainPairView.as_view(), name="token_obtain_pair"),

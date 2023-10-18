@@ -75,7 +75,9 @@ hosts = {SERVER_HOST, FRONTEND_HOST}
 if DEBUG:
     default_allowed_hosts = ["*"]
     default_csrf_trusted_origins = [f"{scheme}://*" for scheme in schemes]
-    default_cors_allowed_origins = default_csrf_trusted_origins
+    default_cors_allowed_origins = [
+        f"{scheme}://{host}" for scheme in schemes for host in [FRONTEND_HOST, f"{FRONTEND_HOST}:{FRONTEND_PORT}"]
+    ]
     default_allow_all_origins = True
 else:
     default_allowed_hosts = [SERVER_HOST, "127.0.0.1", "[::1]"]

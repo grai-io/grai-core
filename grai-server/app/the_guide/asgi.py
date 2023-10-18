@@ -8,10 +8,14 @@ https://docs.djangoproject.com/en/3.1/howto/deployment/asgi/
 """
 
 import os
-
 import django
-from django.conf import settings
 from django.core.asgi import get_asgi_application
+
+django.setup()
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "the_guide.settings.prod")
+django_asgi_app = get_asgi_application()
+
+from django.conf import settings
 from django.urls import re_path
 
 from api.schema import schema
@@ -23,18 +27,13 @@ from grAI.routing import websocket_urlpatterns
 
 from .asgi_graphql import CorsMiddleware, GraphQLHTTPConsumer
 
-django.setup()
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "the_guide.settings.prod")
-django_asgi_app = get_asgi_application()
-
-
 gql_consumer = GraphQLHTTPConsumer.as_asgi(schema=schema)
 
 gql_http_consumer = AuthMiddlewareStack(
     CorsMiddleware(
         gql_consumer,
         allow_all=False,
-        hosts=["http://localhost:3000", "http://localhost:8000"],
+        hosts=settings.CORS_ALLOWED_ORIGINS,
         host_wildcards=[],
         headers=["content-type"],
     )
