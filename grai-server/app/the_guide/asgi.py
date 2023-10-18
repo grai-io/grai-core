@@ -8,7 +8,6 @@ https://docs.djangoproject.com/en/3.1/howto/deployment/asgi/
 """
 
 import os
-from typing import Any, Dict, Optional
 
 import django
 from django.core.asgi import get_asgi_application
@@ -45,7 +44,7 @@ gql_http_consumer = AuthMiddlewareStack(
 )
 
 
-app = ProtocolTypeRouter(
+application = ProtocolTypeRouter(
     {
         "http": URLRouter(
             [
@@ -58,14 +57,3 @@ app = ProtocolTypeRouter(
         ),
     }
 )
-
-
-application = app
-
-# application = CorsMiddleware(
-#     app,
-#     allow_all=False,
-#     hosts=["http://localhost:3000", "http://localhost:8000"],
-#     host_wildcards=[],
-#     headers=["content-type"],
-# )
