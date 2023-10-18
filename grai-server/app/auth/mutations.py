@@ -90,7 +90,26 @@ class Mutation:
         self,
         info: Info,
     ) -> bool:
-        await sync_to_async(logout)(info.context.request)
+        def _logout(request):
+            from django.contrib.auth.signals import user_logged_out
+
+            """
+            Remove the authenticated user's ID from the request and flush their session
+            data.
+            """
+            # Dispatch the signal before the user is logged out so the receivers have a
+            # chance to find out *who* logged out.
+            user = request.consumer.scope.get("user", None)
+            if not getattr(user, "is_authenticated", True):
+                user = None
+            user_logged_out.send(sender=user.__class__, request=request, user=user)
+            request.session.flush()
+            if "user" in request.consumer.scope:
+                from django.contrib.auth.models import AnonymousUser
+
+                request.consumer.scope["user"] = AnonymousUser()
+
+        await sync_to_async(_logout)(info.context.request)
 
         return True
 

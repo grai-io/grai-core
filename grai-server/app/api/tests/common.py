@@ -15,7 +15,7 @@ from users.models import User
 from workspaces.models import Membership, Organisation, Workspace
 
 
-class Context(object):
+class ChannelsContext(object):
     pass
 
 
@@ -122,10 +122,10 @@ async def test_context(test_organisation, test_workspace, test_user):
     membership = await Membership.objects.acreate(user=test_user, workspace=test_workspace, role="admin")
 
     request = HttpRequest
-    request.user = test_user
 
-    context = Context()
+    context = ChannelsContext()
     context.request = request
+    context.user = test_user
 
     engine = import_module(settings.SESSION_ENGINE)
     session_key = None
@@ -138,10 +138,10 @@ async def test_context(test_organisation, test_workspace, test_user):
 @pytest_asyncio.fixture
 async def test_basic_context():
     request = HttpRequest
-    request.user = None
 
-    context = Context()
+    context = ChannelsContext()
     context.request = request
+    request.user = None
 
     engine = import_module(settings.SESSION_ENGINE)
     session_key = None
