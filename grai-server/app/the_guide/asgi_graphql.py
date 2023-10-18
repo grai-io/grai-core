@@ -30,6 +30,7 @@ class B(A):
 class SessionChannelsRequest(ChannelsRequest):
     def __init__(self, *args, META: dict | None = None, **kwargs):
         self.META = {} if META is None else META
+        self._user = None
         super().__init__(*args, **kwargs)
 
     @classmethod
@@ -43,6 +44,18 @@ class SessionChannelsRequest(ChannelsRequest):
             return self.consumer.scope["session"]
 
         return None
+
+    @property
+    def user(self):
+        if self._user is None:
+            user = self.request.consumer.scope["user"] if "user" in self.request.consumer.scope else AnonymousUser()
+            self.user = user
+
+        return self._user
+
+    @user.setter
+    def user(self, value):
+        self._user = value
 
 
 @dataclass
