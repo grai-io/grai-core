@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
+import { baseURL } from "client"
 import useWebSocket from "react-use-websocket"
 import ChatWindow, { Chat } from "./ChatWindow"
-import { baseURL } from "client"
 
 interface Workspace {
   id: string
