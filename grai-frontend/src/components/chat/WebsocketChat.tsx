@@ -6,8 +6,7 @@ import ChatWindow, { Chat } from "./ChatWindow"
 const socketURL =
   window._env_?.REACT_APP_SERVER_WS_URL ??
   process.env.REACT_APP_SERVER_WS_URL ??
-  baseURL.replace("http", "ws") ??
-  "ws://localhost:8000"
+  baseURL.replace("http", "ws")
 
 interface Workspace {
   id: string
