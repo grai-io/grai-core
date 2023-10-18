@@ -5,21 +5,6 @@ from django.urls import reverse
 
 from lineage.models import Source
 
-from .common import (
-    api_client,
-    api_key,
-    auto_login_user,
-    create_membership,
-    create_node,
-    create_user,
-    create_workspace,
-    test_full_nodes,
-    test_node,
-    test_nodes,
-    test_password,
-    test_source,
-)
-
 
 @pytest.mark.django_db
 def test_get_source_nodes(auto_login_user, test_source):

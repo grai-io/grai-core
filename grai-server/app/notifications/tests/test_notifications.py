@@ -3,7 +3,6 @@ import uuid
 import pytest
 from notifications.models import Alert
 
-from api.tests.common import test_organisation, test_workspace
 from notifications.notifications import send_notification
 
 
