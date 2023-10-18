@@ -1,12 +1,12 @@
 import fnmatch
 from dataclasses import dataclass
+from typing import Any
 
 from django.contrib.auth.models import AnonymousUser
 from overrides import override
 from strawberry.channels import ChannelsConsumer, ChannelsRequest
-from strawberry.http.temporal_response import TemporalResponse
 from strawberry.channels import GraphQLHTTPConsumer as BaseGraphQLHTTPConsumer
-from typing import Any
+from strawberry.http.temporal_response import TemporalResponse
 
 ACCESS_CONTROL_ALLOW_ORIGIN = b"Access-Control-Allow-Origin"
 ACCESS_CONTROL_ALLOW_HEADERS = b"Access-Control-Allow-Headers"
@@ -48,7 +48,7 @@ class SessionChannelsRequest(ChannelsRequest):
     @property
     def user(self):
         if self._user is None:
-            user = self.request.consumer.scope["user"] if "user" in self.request.consumer.scope else AnonymousUser()
+            user = self.consumer.scope["user"] if "user" in self.consumer.scope else AnonymousUser()
             self.user = user
 
         return self._user
@@ -62,22 +62,6 @@ class SessionChannelsRequest(ChannelsRequest):
 class ChannelsContext:
     request: SessionChannelsRequest
     response: TemporalResponse
-
-    @property
-    def user(self):
-        # Depends on Channels' AuthMiddlewareStack
-        if "user" in self.request.consumer.scope:
-            return self.request.consumer.scope["user"]
-
-        return AnonymousUser()
-
-    @property
-    def session(self):
-        # Depends on Channels' SessionMiddleware / AuthMiddlewareStack
-        if "session" in self.request.consumer.scope:
-            return self.request.consumer.scope["session"]
-
-        return None
 
 
 @dataclass
