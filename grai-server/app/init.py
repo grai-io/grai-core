@@ -18,15 +18,15 @@ workspace_name = config("DJANGO_SUPERUSER_WORKSPACE", "default")
 if not username and email:
     username = email
 
+print(f"Get or creating organisation {organisation_name}")
+organisation, created = Organisation.objects.get_or_create(name=organisation_name)
+
+print(f"Get or creating workspace {workspace_name}")
+workspace, created = Workspace.objects.get_or_create(name=workspace_name, organisation=organisation)
+
 if username and password and not User.objects.filter(is_superuser=True).exists():
     print(f"Creating superuser {username}")
     user = User.objects.create_superuser(username, password)
-
-    print(f"Get or creating organisation {organisation_name}")
-    organisation, created = Organisation.objects.get_or_create(name=organisation_name)
-
-    print(f"Get or creating workspace {workspace_name}")
-    workspace, created = Workspace.objects.get_or_create(name=workspace_name, organisation=organisation)
 
     print(f"Creating membership")
     Membership.objects.create(role="admin", user=user, workspace=workspace)
