@@ -19,14 +19,6 @@ DEFAULT_HEADERS = {
 }
 
 
-class A:
-    pass
-
-
-class B(A):
-    extra = True
-
-
 class SessionChannelsRequest(ChannelsRequest):
     def __init__(self, *args, META: dict | None = None, **kwargs):
         self.META = {} if META is None else META
