@@ -2,7 +2,7 @@ import fnmatch
 from dataclasses import dataclass
 from typing import Any
 
-from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth.models import AnonymousUser, User
 from overrides import override
 from strawberry.channels import ChannelsConsumer, ChannelsRequest
 from strawberry.channels import GraphQLHTTPConsumer as BaseGraphQLHTTPConsumer
@@ -19,14 +19,14 @@ DEFAULT_HEADERS = {
 }
 
 
-class SessionChannelsRequest(ChannelsRequest):
+class GraiChannelsRequest(ChannelsRequest):
     def __init__(self, *args, META: dict | None = None, **kwargs):
-        self.META = {} if META is None else META
+        self._META = {} if META is None else META
         self._user = None
         super().__init__(*args, **kwargs)
 
     @classmethod
-    def from_parent(cls, obj: ChannelsRequest):
+    def from_parent(cls, obj: ChannelsRequest) -> "GraiChannelsRequest":
         return cls(**vars(obj))
 
     @property
@@ -38,7 +38,7 @@ class SessionChannelsRequest(ChannelsRequest):
         return None
 
     @property
-    def user(self):
+    def user(self) -> User | None:
         if self._user is None:
             user = self.consumer.scope["user"] if "user" in self.consumer.scope else AnonymousUser()
             self.user = user
@@ -46,13 +46,21 @@ class SessionChannelsRequest(ChannelsRequest):
         return self._user
 
     @user.setter
-    def user(self, value):
+    def user(self, value: User):
         self._user = value
+
+    @property
+    def META(self) -> dict:
+        return self._META
+
+    @META.setter
+    def META(self, value: dict):
+        self._META = value
 
 
 @dataclass
 class ChannelsContext:
-    request: SessionChannelsRequest
+    request: GraiChannelsRequest
     response: TemporalResponse
 
 
@@ -70,7 +78,7 @@ class GraphQLHTTPConsumer(BaseGraphQLHTTPConsumer):
     @override
     async def get_context(self, request: ChannelsRequest, response: TemporalResponse) -> ChannelsContext:
         ctx = ChannelsContext(
-            request=SessionChannelsRequest.from_parent(request),
+            request=GraiChannelsRequest.from_parent(request),
             response=response,
         )
         return ctx
