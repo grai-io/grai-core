@@ -10,25 +10,22 @@ https://docs.djangoproject.com/en/3.1/howto/deployment/asgi/
 import os
 
 import django
+from django.conf import settings
 from django.core.asgi import get_asgi_application
 from django.urls import re_path
-
-
-django.setup()
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "the_guide.settings.prod")
-django_asgi_app = get_asgi_application()
-
 
 from api.schema import schema
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.sessions import SessionMiddlewareStack
-
-# from asgi_cors_strawberry import CorsMiddleware
 from grAI.authentication import WorkspacePathAuthMiddleware
 from grAI.routing import websocket_urlpatterns
-from django.conf import settings
-from .asgi_graphql import GraphQLHTTPConsumer, CorsMiddleware
+
+from .asgi_graphql import CorsMiddleware, GraphQLHTTPConsumer
+
+django.setup()
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "the_guide.settings.prod")
+django_asgi_app = get_asgi_application()
 
 
 gql_consumer = GraphQLHTTPConsumer.as_asgi(schema=schema)

@@ -15,7 +15,7 @@ from users.models import User
 from workspaces.models import Membership, Organisation, Workspace
 
 
-class ChannelsContext(object):
+class Context(object):
     pass
 
 
@@ -124,7 +124,7 @@ async def test_context(test_organisation, test_workspace, test_user):
     request = HttpRequest
     request.user = test_user
 
-    context = ChannelsContext()
+    context = Context()
     context.request = request
 
     engine = import_module(settings.SESSION_ENGINE)
@@ -140,7 +140,7 @@ async def test_basic_context():
     request = HttpRequest
     request.user = None
 
-    context = ChannelsContext()
+    context = Context()
     context.request = request
 
     engine = import_module(settings.SESSION_ENGINE)
