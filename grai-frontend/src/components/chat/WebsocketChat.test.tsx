@@ -1,8 +1,8 @@
 import React from "react"
 import userEvent from "@testing-library/user-event"
+import WS from "jest-websocket-mock"
 import { act, render, screen, waitFor } from "testing"
 import WebsocketChat from "./WebsocketChat"
-import WS from "jest-websocket-mock"
 
 const workspace = {
   id: "1",
@@ -44,17 +44,11 @@ test("type", async () => {
 })
 
 test("receive", async () => {
-  const getUrl = () => {
-    return new Promise<string>(resolve => {
-      setTimeout(() => resolve(URL), 1000)
-    })
-  }
-
   render(<WebsocketChat workspace={workspace} />)
 
   await server.connected
 
   await act(async () => server.send(JSON.stringify({ message: "Hello" })))
 
-  await waitFor(() => expect(screen.getByText("Hello")).toBeInTheDocument())
+  await screen.findByText("Hello")
 })
