@@ -51,20 +51,6 @@ async def test_source(test_workspace):
     return source
 
 
-@pytest_asyncio.fixture
-async def test_alert(test_workspace):
-    alert = await Alert.objects.acreate(
-        workspace=test_workspace,
-        name=str(uuid.uuid4()),
-        channel="email",
-        channel_metadata={},
-        triggers={},
-        is_active=False,
-    )
-
-    return alert
-
-
 @pytest.fixture
 async def test_connector():
     connector = await Connector.objects.acreate(name=str(uuid.uuid4()))
@@ -96,25 +82,6 @@ async def test_alert(test_workspace):
     )
 
     return alert
-
-
-@pytest.fixture
-async def test_connector():
-    connector = await Connector.objects.acreate(name=str(uuid.uuid4()))
-
-    return connector
-
-
-@pytest.fixture
-async def test_connection(test_connector, test_workspace, test_source):
-    connection = await Connection.objects.acreate(
-        workspace=test_workspace,
-        connector=test_connector,
-        name=str(uuid.uuid4()),
-        source=test_source,
-    )
-
-    return connection
 
 
 @pytest_asyncio.fixture
@@ -208,10 +175,3 @@ async def generate_filter(workspace: Workspace, user: User):
         metadata={},
         created_by=user,
     )
-
-
-@pytest_asyncio.fixture
-async def test_source(test_workspace):
-    source = await Source.objects.acreate(name=str(uuid.uuid4()), workspace=test_workspace)
-
-    return source
