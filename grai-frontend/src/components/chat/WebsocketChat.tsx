@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import useWebSocket from "react-use-websocket"
 import ChatWindow, { Chat } from "./ChatWindow"
+import { baseURL } from "client"
 
 interface Workspace {
   id: string
@@ -13,7 +14,7 @@ type WebsocketChatProps = {
 const WebsocketChat: React.FC<WebsocketChatProps> = ({ workspace }) => {
   const [chats, setChats] = useState<Chat[]>([])
 
-  const socketUrl = `ws://localhost:8000/ws/chat/${workspace.id}/`
+  const socketUrl = `ws://${baseURL}/ws/chat/${workspace.id}/`
 
   const { sendJsonMessage, lastMessage } = useWebSocket(socketUrl)
 
