@@ -69,6 +69,7 @@
   },
   "devDependencies": {
     "canvas": "^2.11.2",
+    "jest-websocket-mock": "^2.5.0",
     "react-scripts": "^5.0.1"
   },
   "overrides": {
