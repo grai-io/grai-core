@@ -41,6 +41,7 @@
     "eslint": "^8.51.0",
     "eslint-plugin-import": "^2.27.5",
     "graphql": "^16.8.1",
+    "jest-websocket-mock": "^2.5.0",
     "luxon": "^3.3.0",
     "material-ui-confirm": "^3.0.8",
     "material-ui-popup-state": "^5.0.4",
@@ -69,7 +70,6 @@
   },
   "devDependencies": {
     "canvas": "^2.11.2",
-    "jest-websocket-mock": "^2.5.0",
     "react-scripts": "^5.0.1"
   },
   "overrides": {
