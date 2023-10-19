@@ -56,8 +56,9 @@ const TestEdge: React.FC<EdgeProps<TestData>> = ({
             errorCount > 0
               ? lighten(theme.palette.error.light, 0.3)
               : data?.highlight
-              ? theme.palette.secondary.main
+              ? "#8338EC"
               : undefined,
+          strokeWidth: 2,
         }}
         onDoubleClick={() => workspaceNavigate(`edges/${id}`)}
         data-testid="test-edge-path"
