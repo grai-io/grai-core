@@ -19,6 +19,7 @@ def get_default_client() -> BaseClient:
     Args:
 
     Returns:
+        An instance of the default client
 
     Raises:
 

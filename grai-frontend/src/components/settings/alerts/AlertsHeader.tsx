@@ -1,7 +1,8 @@
 import React, { useState } from "react"
 import { Add } from "@mui/icons-material"
-import { Box, Button, Typography } from "@mui/material"
+import { Box, Button } from "@mui/material"
 import CreateAlertDialog from "./CreateAlertDialog"
+import SettingsAppBar from "../SettingsAppBar"
 
 type AlertsHeaderProps = {
   workspaceId: string
@@ -14,21 +15,23 @@ const AlertsHeader: React.FC<AlertsHeaderProps> = ({ workspaceId }) => {
   const handleClose = () => setOpen(false)
 
   return (
-    <Box sx={{ display: "flex", mb: 3 }}>
-      <Typography variant="h5" sx={{ flexGrow: 1 }}>
-        Alerts
-      </Typography>
-      <Box>
-        <Button variant="outlined" startIcon={<Add />} onClick={handleOpen}>
-          Add alert
-        </Button>
-      </Box>
-      <CreateAlertDialog
-        workspaceId={workspaceId}
-        open={open}
-        onClose={handleClose}
-      />
-    </Box>
+    <SettingsAppBar
+      title="Alerts"
+      buttons={
+        <>
+          <Box>
+            <Button variant="outlined" startIcon={<Add />} onClick={handleOpen}>
+              Add alert
+            </Button>
+          </Box>
+          <CreateAlertDialog
+            workspaceId={workspaceId}
+            open={open}
+            onClose={handleClose}
+          />
+        </>
+      }
+    />
   )
 }
 export default AlertsHeader

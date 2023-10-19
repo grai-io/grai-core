@@ -1,10 +1,10 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
-import { Box } from "@mui/material"
 import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
 import ApiKeysHeader from "components/settings/apiKeys/ApiKeysHeader"
 import ApiKeysTable from "components/settings/apiKeys/ApiKeysTable"
+import SettingsContent from "components/settings/SettingsContent"
 import SettingsLayout from "components/settings/SettingsLayout"
 import GraphError from "components/utils/GraphError"
 import { GetApiKeys, GetApiKeysVariables } from "./__generated__/GetApiKeys"
@@ -43,7 +43,7 @@ const ApiKeys: React.FC = () => {
         organisationName,
         workspaceName,
       },
-    }
+    },
   )
 
   if (error) return <GraphError error={error} />
@@ -54,14 +54,14 @@ const ApiKeys: React.FC = () => {
 
   return (
     <SettingsLayout>
-      <Box sx={{ p: 3 }}>
-        <ApiKeysHeader workspaceId={workspace?.id} />
+      <ApiKeysHeader workspaceId={workspace?.id} />
+      <SettingsContent>
         <ApiKeysTable
           keys={workspace?.api_keys.data ?? []}
           loading={loading}
           workspaceId={workspace?.id}
         />
-      </Box>
+      </SettingsContent>
     </SettingsLayout>
   )
 }

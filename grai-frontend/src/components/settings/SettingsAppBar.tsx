@@ -1,38 +1,37 @@
 import React from "react"
-import { Close } from "@mui/icons-material"
-import { AppBar, IconButton, Toolbar, Typography } from "@mui/material"
-import { useNavigate } from "react-router-dom"
-import useWorkspace from "helpers/useWorkspace"
+import { Box, Typography } from "@mui/material"
 
-const SettingsAppBar: React.FC = () => {
-  const { routePrefix } = useWorkspace()
-  const navigate = useNavigate()
+type SettingsAppBarProps = {
+  title: string
+  buttons?: React.ReactNode
+}
 
-  const handleClose = () => navigate(routePrefix)
-
-  return (
-    <AppBar
-      position="fixed"
-      color="transparent"
-      elevation={0}
+const SettingsAppBar: React.FC<SettingsAppBarProps> = ({ title, buttons }) => (
+  <Box
+    sx={{
+      px: "48px",
+      py: "16px",
+      borderBottomStyle: "solid",
+      borderBottomWidth: 1,
+      borderBottomColor: "divider",
+      display: "flex",
+    }}
+  >
+    <Typography
+      variant="h6"
       sx={{
-        borderBottomStyle: "solid",
-        borderBottomWidth: 1,
-        borderBottomColor: "divider",
-        zIndex: theme => theme.zIndex.drawer + 1,
-        backgroundColor: "white",
+        color: "rgba(0, 0, 0, 0.80)",
+        fontSize: "24px",
+        fontWeight: 400,
+        lineHeight: "32px",
+        my: "8px",
       }}
     >
-      <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          Settings
-        </Typography>
-        <IconButton onClick={handleClose}>
-          <Close />
-        </IconButton>
-      </Toolbar>
-    </AppBar>
-  )
-}
+      {title}
+    </Typography>
+    <Box sx={{ flexGrow: 1 }} />
+    {buttons}
+  </Box>
+)
 
 export default SettingsAppBar

@@ -1,6 +1,6 @@
 import React from "react"
-import userEvent from "@testing-library/user-event"
-import { act, render, screen, waitFor } from "testing"
+import { userEvent } from "@testing-library/user-event"
+import { act, fireEvent, render, screen, waitFor } from "testing"
 import AppDrawer from "./AppDrawer"
 
 test("renders", async () => {
@@ -9,31 +9,30 @@ test("renders", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByText("Profile")).toBeTruthy()
+    expect(screen.getByText("Graph")).toBeTruthy()
   })
 })
 
 test("collapse", async () => {
+  const user = userEvent.setup()
+
   render(<AppDrawer />, {
     withRouter: true,
   })
 
   await waitFor(() => {
-    expect(screen.getByText("Collapse")).toBeTruthy()
+    expect(screen.getByText("Graph")).toBeTruthy()
   })
 
-  await act(async () => await userEvent.click(screen.getByText("Collapse")))
+  fireEvent.mouseEnter(screen.getByText("Graph"))
 
   await waitFor(() => {
-    expect(screen.queryByText("Collapse")).toBeFalsy()
+    expect(screen.getByTestId("LeftIcon")).toBeInTheDocument()
   })
 
-  await act(
-    async () =>
-      await userEvent.click(screen.getByTestId("KeyboardArrowRightIcon"))
-  )
+  await act(async () => await user.click(screen.getByTestId("LeftIcon")))
 
   await waitFor(() => {
-    expect(screen.getByText("Collapse")).toBeTruthy()
+    expect(screen.queryByTestId("LeftIcon")).not.toBeInTheDocument()
   })
 })

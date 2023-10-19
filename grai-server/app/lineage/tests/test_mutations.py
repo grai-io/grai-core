@@ -1,15 +1,11 @@
 import pytest
 
 from api.schema import schema
-from api.tests.common import (
+from conftest import (
     generate_connection_name,
     generate_filter,
     generate_source,
     generate_workspace,
-    test_context,
-    test_organisation,
-    test_user,
-    test_workspace,
 )
 from lineage.models import Filter, Source
 

@@ -10,19 +10,7 @@ from lineage.models import Node
 from lineage.urls import app_name
 from workspaces.models import Membership, Organisation, Workspace
 
-from .common import (
-    api_client,
-    api_key,
-    auto_login_user,
-    create_membership,
-    create_node,
-    create_user,
-    create_workspace,
-    test_full_nodes,
-    test_nodes,
-    test_password,
-    test_source,
-)
+from .conftest import api_key, create_node
 
 actions = ["list"]
 route_prefixes = ["nodes", "edges", "sources"]

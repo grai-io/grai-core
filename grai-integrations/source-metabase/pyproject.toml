@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grai-source-metabase"
-version = "0.2.5"
+version = "0.2.6"
 
 description = ""
 authors = ["Elseagle <dowolebolu@gmail.com>", "Ian Eaves <ian@grai.io", "Edward Louth <edward@grai.io"]
@@ -24,6 +24,8 @@ faker = "^18.11.2"
 black = "^23.3.0"
 pytest = "^7.4.0"
 grai-client = "^0.3.2"
+mypy = "^1.5.1"
+types-requests = "^2.31.0.8"
 
 [build-system]
 requires = ["poetry-core"]
@@ -35,5 +37,8 @@ known_first_party = "grai_source_metabase"
 
 [tool.black]
 line-length = 120
+
+[tool.pytest.ini_options]
+xfail_strict = true
 
 [tool.poetry_bumpversion.file."src/grai_source_metabase/__init__.py"]

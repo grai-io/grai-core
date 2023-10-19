@@ -11,18 +11,6 @@ from installations.models import Branch, Commit, PullRequest, Repository
 from lineage.models import Edge, Event, Filter, Node
 from workspaces.models import Workspace
 
-from .common import (
-    generate_connection,
-    test_alert,
-    test_connection,
-    test_connector,
-    test_context,
-    test_organisation,
-    test_source,
-    test_user,
-    test_workspace,
-)
-
 
 @pytest.mark.django_db
 async def test_workspace_run(test_context, test_source):

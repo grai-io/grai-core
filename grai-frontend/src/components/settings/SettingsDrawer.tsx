@@ -1,140 +1,88 @@
-import React, { useState } from "react"
-import {
-  AccountCircle,
-  Business,
-  CloudQueue,
-  KeyboardArrowLeft,
-  Lock,
-  Notifications,
-  People,
-  VpnKey,
-} from "@mui/icons-material"
-import {
-  Box,
-  Drawer,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Toolbar,
-} from "@mui/material"
-import { Link } from "react-router-dom"
-import useWorkspace from "helpers/useWorkspace"
+import React from "react"
+import { Box, Typography } from "@mui/material"
+import Alerts from "components/icons/Alerts"
+import ApiKeys from "components/icons/ApiKeys"
+import Installations from "components/icons/Installations"
+import PersonalInfo from "components/icons/PersonalInfo"
+import TwoFactor from "components/icons/TwoFactor"
+import Users from "components/icons/Users"
+import Workspace from "components/icons/Workspace"
+import SettingsDrawerSection, { Page } from "./SettingsDrawerSection"
 
-const drawerWidth = 300
+const drawerWidth = 230
 
-const SettingsDrawer: React.FC = () => {
-  const { routePrefix } = useWorkspace()
-  const [open, setOpen] = useState(true)
+const profilePages: Page[] = [
+  {
+    name: "Personal info",
+    icon: <PersonalInfo />,
+    path: "/settings/profile",
+  },
+  {
+    name: "2 Factor",
+    icon: <TwoFactor />,
+    path: "/settings/2fa",
+  },
+  {
+    name: "API Keys",
+    icon: <ApiKeys />,
+    path: "/settings/api-keys",
+  },
+]
 
-  const handleClose = () => setOpen(false)
+const workspacePages: Page[] = [
+  {
+    name: "Settings",
+    icon: <Workspace />,
+    path: "/settings/workspace",
+  },
+  {
+    name: "Users",
+    icon: <Users />,
+    path: "/settings/memberships",
+  },
+  {
+    name: "Alerts",
+    icon: <Alerts />,
+    path: "/settings/alerts",
+  },
+  {
+    name: "Installations",
+    icon: <Installations />,
+    path: "/settings/installations",
+  },
+]
 
-  return (
-    <Drawer
-      variant="permanent"
-      open={open}
+const SettingsDrawer: React.FC = () => (
+  <Box
+    sx={{
+      width: drawerWidth,
+      boxSizing: "border-box",
+      backgroundColor: "#F8F8F8",
+    }}
+  >
+    <Typography
+      variant="h1"
       sx={{
-        width: drawerWidth,
-        flexShrink: 0,
-        "& .MuiDrawer-paper": {
-          width: drawerWidth,
-          boxSizing: "border-box",
-        },
+        pl: "24px",
+        pt: "32px",
+        color: "rgba(0, 0, 0, 0.80)",
+        fontSize: "18px",
+        fontWeight: 700,
       }}
     >
-      <Toolbar />
-      <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
-        <List sx={{ pt: 2 }}>
-          <ListItem sx={{ py: 0 }}>
-            <ListItemButton
-              component={Link}
-              to={`${routePrefix}/settings/profile`}
-            >
-              <ListItemIcon sx={{ minWidth: 0, mr: 2 }}>
-                <AccountCircle />
-              </ListItemIcon>
-              <ListItemText primary="Profile" />
-            </ListItemButton>
-          </ListItem>
-          <ListItem sx={{ py: 0 }}>
-            <ListItemButton component={Link} to={`${routePrefix}/settings/2fa`}>
-              <ListItemIcon sx={{ minWidth: 0, mr: 2 }}>
-                <Lock />
-              </ListItemIcon>
-              <ListItemText primary="2 Factor" />
-            </ListItemButton>
-          </ListItem>
-          <ListItem sx={{ py: 0 }}>
-            <ListItemButton
-              component={Link}
-              to={`${routePrefix}/settings/api-keys`}
-            >
-              <ListItemIcon sx={{ minWidth: 0, mr: 2 }}>
-                <VpnKey />
-              </ListItemIcon>
-              <ListItemText primary="API Keys" />
-            </ListItemButton>
-          </ListItem>
-          <ListItem sx={{ py: 0 }}>
-            <ListItemButton
-              component={Link}
-              to={`${routePrefix}/settings/workspace`}
-            >
-              <ListItemIcon sx={{ minWidth: 0, mr: 2 }}>
-                <Business />
-              </ListItemIcon>
-              <ListItemText primary="Workspace Settings" />
-            </ListItemButton>
-          </ListItem>
-          <ListItem sx={{ py: 0 }}>
-            <ListItemButton
-              component={Link}
-              to={`${routePrefix}/settings/memberships`}
-            >
-              <ListItemIcon sx={{ minWidth: 0, mr: 2 }}>
-                <People />
-              </ListItemIcon>
-              <ListItemText primary="Users" />
-            </ListItemButton>
-          </ListItem>
-          <ListItem sx={{ py: 0 }}>
-            <ListItemButton
-              component={Link}
-              to={`${routePrefix}/settings/alerts`}
-            >
-              <ListItemIcon sx={{ minWidth: 0, mr: 2 }}>
-                <Notifications />
-              </ListItemIcon>
-              <ListItemText primary="Alerts" />
-            </ListItemButton>
-          </ListItem>
-          <ListItem sx={{ py: 0 }}>
-            <ListItemButton
-              component={Link}
-              to={`${routePrefix}/settings/installations`}
-            >
-              <ListItemIcon sx={{ minWidth: 0, mr: 2 }}>
-                <CloudQueue />
-              </ListItemIcon>
-              <ListItemText primary="Installations" />
-            </ListItemButton>
-          </ListItem>
-        </List>
-        <Box sx={{ flexGrow: 1 }} />
-        <List>
-          <ListItem disablePadding>
-            <ListItemButton onClick={handleClose}>
-              <ListItemIcon sx={{ minWidth: 0, mr: 2 }}>
-                <KeyboardArrowLeft />
-              </ListItemIcon>
-              <ListItemText primary="Collapse" />
-            </ListItemButton>
-          </ListItem>
-        </List>
-      </Box>
-    </Drawer>
-  )
-}
+      Settings
+    </Typography>
+    <SettingsDrawerSection
+      title="Profile"
+      pages={profilePages}
+      sx={{ pt: 2 }}
+    />
+    <SettingsDrawerSection
+      title="Workspace"
+      pages={workspacePages}
+      sx={{ pt: "36px" }}
+    />
+  </Box>
+)
 
 export default SettingsDrawer

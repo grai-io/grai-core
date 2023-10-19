@@ -16,7 +16,7 @@ export default function useLocalState<T = any>(
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.localStorage) {
-      value
+      value !== undefined && value !== null
         ? window.localStorage.setItem(key, JSON.stringify(value))
         : window.localStorage.removeItem(key)
     }

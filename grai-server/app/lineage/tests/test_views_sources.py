@@ -3,22 +3,7 @@ import json
 import pytest
 from django.urls import reverse
 
-from .common import (
-    api_client,
-    api_key,
-    auto_login_user,
-    create_edge_with_node_ids,
-    create_edge_without_node_ids,
-    create_membership,
-    create_node,
-    create_source,
-    create_user,
-    create_workspace,
-    test_edges,
-    test_full_nodes,
-    test_nodes,
-    test_password,
-)
+from .conftest import create_source
 
 
 @pytest.mark.django_db

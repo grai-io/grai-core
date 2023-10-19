@@ -2,6 +2,7 @@ import os
 import subprocess
 import warnings
 from pathlib import Path
+import openai
 
 from decouple import config
 
@@ -52,8 +53,11 @@ TEMPLATE_DEBUG = config("TEMPLATE_DEBUG", default=DEBUG, cast=bool)
 
 SERVER_HOST = config("SERVER_HOST", default="localhost", cast=str)
 SERVER_PORT = config("SERVER_PORT", default="8000", cast=str)
+SERVER_URL = config("SERVER_URL", default=f"http://{SERVER_HOST}:{SERVER_PORT}", cast=str)
+
 FRONTEND_HOST = config("FRONTEND_HOST", default=SERVER_HOST, cast=str)
 FRONTEND_PORT = config("SERVER_PORT", default="3000", cast=str)
+FRONTEND_URL = config("FRONTEND_URL", default=f"http://{FRONTEND_HOST}:{FRONTEND_PORT}", cast=str)
 
 DISABLE_HTTP = config("DISABLE_HTTP", default=False)
 
@@ -72,7 +76,9 @@ hosts = {SERVER_HOST, FRONTEND_HOST}
 if DEBUG:
     default_allowed_hosts = ["*"]
     default_csrf_trusted_origins = [f"{scheme}://*" for scheme in schemes]
-    default_cors_allowed_origins = default_csrf_trusted_origins
+    default_cors_allowed_origins = [
+        f"{scheme}://{host}" for scheme in schemes for host in [FRONTEND_HOST, f"{FRONTEND_HOST}:{FRONTEND_PORT}"]
+    ]
     default_allow_all_origins = True
 else:
     default_allowed_hosts = [SERVER_HOST, "127.0.0.1", "[::1]"]
@@ -157,6 +163,7 @@ THE_GUIDE_APPS = [
     "users",
     "search",
     "telemetry",
+    "grAI",
 ]
 
 INSTALLED_APPS = DJANGO_CORE_APPS + THIRD_PARTY_APPS + THE_GUIDE_APPS
@@ -215,7 +222,26 @@ TEMPLATES = [
     },
 ]
 
+
+REDIS_HOST = config("REDIS_HOST", "localhost")
+REDIS_PORT = config("REDIS_PORT", 6379)
+
 WSGI_APPLICATION = "the_guide.wsgi.application"
+
+REDIS_CHANNEL_HOST = config("REDIS_CHANNEL_HOST", REDIS_HOST)
+REDIS_CHANNEL_PORT = config("REDIS_CHANNEL_PORT", REDIS_PORT)
+
+ASGI_APPLICATION = "the_guide.asgi.application"
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [
+                (REDIS_CHANNEL_HOST, REDIS_CHANNEL_PORT),
+            ],
+        },
+    },
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -256,11 +282,6 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
-
-# https://nixhive.com/how-to-run-django-on-a-subpath-via-proxy/
-# FORCE_SCRIPT_NAME = '/guide'
-# USE_X_FORWARDED_HOST = True
-
 PHONENUMBER_DEFAULT_REGION = "US"
 
 # OpenApi
@@ -300,8 +321,8 @@ AWS_SES_REGION_ENDPOINT = "email.us-west-2.amazonaws.com"
 
 # Celery settings
 
-CELERY_BROKER_URL = config("CELERY_BROKER", "redis://127.0.0.1:6379/0")
-CELERY_RESULT_BACKEND = config("CELERY_BACKEND", "redis://127.0.0.1:6379/0")
+CELERY_BROKER_URL = config("CELERY_BROKER", f"redis://{REDIS_HOST}:{REDIS_PORT}/0")
+CELERY_RESULT_BACKEND = config("CELERY_BACKEND", f"redis://{REDIS_HOST}:{REDIS_PORT}/0")
 
 #: Only add pickle to this list if your broker is secured
 #: from unwanted access (see userguide/security.html)
@@ -326,10 +347,10 @@ AWS_STORAGE_BUCKET_NAME = config("AWS_STORAGE_BUCKET_NAME", None)
 GITHUB_APP_ID = config("GITHUB_APP_ID", None)
 GITHUB_PRIVATE_KEY = config("GITHUB_PRIVATE_KEY", None)
 
-NGROK_URL = config("NGROK_URL", f"https://{SERVER_HOST}")
+SERVER_URL = config("SERVER_URL", f"https://{SERVER_HOST}")
 
-REDIS_GRAPH_CACHE_HOST = config("REDIS_GRAPH_CACHE_HOST", "localhost")
-REDIS_GRAPH_CACHE_PORT = config("REDIS_GRAPH_CACHE_PORT", 6379)
+REDIS_GRAPH_CACHE_HOST = config("REDIS_GRAPH_CACHE_HOST", REDIS_HOST)
+REDIS_GRAPH_CACHE_PORT = config("REDIS_GRAPH_CACHE_PORT", REDIS_PORT)
 
 CACHES = {
     "default": {
@@ -342,3 +363,39 @@ CACHES = {
 }
 
 OTP_TOTP_ISSUER = "Grai Cloud"
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# OpenAI
+
+OPENAI_API_KEY = config("OPENAI_API_KEY", None)
+OPENAI_ORG_ID = config("OPENAI_ORG_ID", None)
+OPENAI_PREFERRED_MODEL = config("OPENAI_PREFERRED_MODEL", "gpt-3.5-turbo")
+
+openai.organization = OPENAI_ORG_ID
+openai.api_key = OPENAI_API_KEY
+
+try:
+    models = [item["id"] for item in openai.Model.list()["data"]]
+except openai.error.AuthenticationError as e:
+    HAS_OPENAI = False
+else:
+    if len(models) == 0:
+        message = f"Provided OpenAI API key does not have access to any models as a result we've disabled OpenAI."
+        warnings.warn(message)
+
+        HAS_OPENAI = False
+        OPENAI_PREFERRED_MODEL = ""
+    elif OPENAI_PREFERRED_MODEL not in models:
+        default_model = models[0]
+        message = (
+            f"Provided OpenAI API key does not have access to the preferred model {OPENAI_PREFERRED_MODEL}. "
+            f"If you wish to use {OPENAI_PREFERRED_MODEL} please provide an API key with appropriate permissions. "
+            f"In the mean time we've defaulted to {default_model}."
+        )
+        warnings.warn(message)
+
+        HAS_OPENAI = True
+        OPENAI_PREFERRED_MODEL = default_model
+    else:
+        HAS_OPENAI = True

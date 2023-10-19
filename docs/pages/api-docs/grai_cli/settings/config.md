@@ -83,5 +83,13 @@ class BaseGraiConfig(LazyConfig)
 ### save
 
 ```python
-def save()
+def save(save_path: Optional[str] = None)
+```
+
+
+
+### view
+
+```python
+def view()
 ```

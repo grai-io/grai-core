@@ -9,7 +9,7 @@ test("renders", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByText("Profile Settings")).toBeInTheDocument()
+    expect(screen.getByText("Personal info")).toBeInTheDocument()
   })
 })
 

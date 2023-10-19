@@ -3,9 +3,9 @@ import { gql, useQuery } from "@apollo/client"
 import { useParams } from "react-router-dom"
 import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
+import Loading from "components/layout/Loading"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
-import PageLayout from "components/layout/PageLayout"
 import PullRequestTable from "components/reports/pull_request/PullRequestTable"
 import ReportBreadcrumbs from "components/reports/ReportBreadcrumbs"
 import TypeReportTabs from "components/reports/TypeReportTabs"
@@ -74,14 +74,14 @@ const PullRequests: React.FC = () => {
   })
 
   if (error) return <GraphError error={error} />
-  if (loading) return <PageLayout loading />
+  if (loading) return <Loading />
 
   const repository = data?.workspace.repository
 
   if (!repository) return <NotFound />
 
   return (
-    <PageLayout>
+    <>
       <PageHeader
         breadcrumbs={<ReportBreadcrumbs type={type} repository={repository} />}
       >
@@ -98,7 +98,7 @@ const PullRequests: React.FC = () => {
           repository={repository}
         />
       </PageContent>
-    </PageLayout>
+    </>
   )
 }
 

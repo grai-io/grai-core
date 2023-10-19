@@ -2,22 +2,10 @@ import django.db.utils
 import pytest
 from django.urls import reverse
 
-from .common import (
-    api_client,
-    api_key,
-    auto_login_user,
+from .conftest import (
     create_edge_with_node_ids,
     create_edge_without_node_ids,
-    create_membership,
     create_node,
-    create_source,
-    create_user,
-    create_workspace,
-    test_edges,
-    test_full_nodes,
-    test_nodes,
-    test_password,
-    test_source,
 )
 
 

@@ -3,7 +3,7 @@ import { gql, useQuery } from "@apollo/client"
 import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
 import CreateConnectionWizard from "components/connections/create/CreateConnectionWizard"
-import PageLayout from "components/layout/PageLayout"
+import Loading from "components/layout/Loading"
 import GraphError from "components/utils/GraphError"
 import {
   GetWorkspaceConnectionCreate,
@@ -36,7 +36,7 @@ const ConnectionCreate: React.FC = () => {
   })
 
   if (error) return <GraphError error={error} />
-  if (loading) return <PageLayout loading />
+  if (loading) return <Loading />
 
   const workspace = data?.workspace
 

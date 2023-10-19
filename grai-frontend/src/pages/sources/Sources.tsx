@@ -6,7 +6,6 @@ import { Link } from "react-router-dom"
 import useWorkspace from "helpers/useWorkspace"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
-import PageLayout from "components/layout/PageLayout"
 import SourcesTable from "components/sources/SourcesTable"
 import TableHeader from "components/table/TableHeader"
 import GraphError from "components/utils/GraphError"
@@ -82,7 +81,7 @@ const Sources: React.FC = () => {
     : sources
 
   return (
-    <PageLayout>
+    <>
       <PageHeader
         title="Sources"
         buttons={
@@ -115,7 +114,7 @@ const Sources: React.FC = () => {
           total={data?.workspace.sources.meta.total ?? 0}
         />
       </PageContent>
-    </PageLayout>
+    </>
   )
 }
 

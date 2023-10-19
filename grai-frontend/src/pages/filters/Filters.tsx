@@ -7,7 +7,6 @@ import useWorkspace from "helpers/useWorkspace"
 import FiltersTable from "components/filters/FiltersTable"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
-import PageLayout from "components/layout/PageLayout"
 import TableHeader from "components/table/TableHeader"
 import GraphError from "components/utils/GraphError"
 import { GetFilters, GetFiltersVariables } from "./__generated__/GetFilters"
@@ -65,7 +64,7 @@ const Filters: React.FC = () => {
     : filters
 
   return (
-    <PageLayout>
+    <>
       <PageHeader
         title="Filters"
         buttons={
@@ -98,7 +97,7 @@ const Filters: React.FC = () => {
           total={data?.workspace.filters.meta.total ?? 0}
         />
       </PageContent>
-    </PageLayout>
+    </>
   )
 }
 

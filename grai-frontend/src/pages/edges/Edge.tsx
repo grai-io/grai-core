@@ -5,9 +5,9 @@ import NotFound from "pages/NotFound"
 import useWorkspace from "helpers/useWorkspace"
 import EdgeLineage from "components/edges/EdgeLineage"
 import EdgeProfile from "components/edges/EdgeProfile"
+import Loading from "components/layout/Loading"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
-import PageLayout from "components/layout/PageLayout"
 import PageTabs from "components/layout/PageTabs"
 import TabState from "components/tabs/TabState"
 import GraphError from "components/utils/GraphError"
@@ -77,7 +77,7 @@ const Edge: React.FC = () => {
   )
 
   if (error) return <GraphError error={error} />
-  if (loading) return <PageLayout loading />
+  if (loading) return <Loading />
 
   const edge = data?.workspace?.edge
 
@@ -105,12 +105,10 @@ const Edge: React.FC = () => {
   ]
 
   return (
-    <PageLayout>
-      <TabState tabs={tabs}>
-        <PageHeader title={edge.display_name} tabs />
-        <PageTabs />
-      </TabState>
-    </PageLayout>
+    <TabState tabs={tabs}>
+      <PageHeader title={edge.display_name} tabs />
+      <PageTabs />
+    </TabState>
   )
 }
 

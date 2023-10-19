@@ -1,7 +1,7 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
-import { Box } from "@mui/material"
 import NotFound from "pages/NotFound"
+import SettingsContent from "components/settings/SettingsContent"
 import SettingsLayout from "components/settings/SettingsLayout"
 import TwoFactorHeader from "components/settings/twoFactor/TwoFactorHeader"
 import TwoFactorTable from "components/settings/twoFactor/TwoFactorTable"
@@ -37,10 +37,10 @@ const ProfileSettings: React.FC = () => {
 
   return (
     <SettingsLayout>
-      <Box sx={{ p: 3 }}>
-        <TwoFactorHeader />
+      <TwoFactorHeader />
+      <SettingsContent>
         <TwoFactorTable keys={profile.devices.data} loading={loading} />
-      </Box>
+      </SettingsContent>
     </SettingsLayout>
   )
 }

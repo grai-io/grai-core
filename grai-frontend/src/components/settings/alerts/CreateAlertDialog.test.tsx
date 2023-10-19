@@ -29,8 +29,8 @@ test("submit", async () => {
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: /name/i }),
-        "Test Alert"
-      )
+        "Test Alert",
+      ),
   )
 
   fireEvent.change(screen.getByTestId("channel-select"), {
@@ -38,7 +38,11 @@ test("submit", async () => {
   })
 
   await act(
-    async () => await user.type(screen.getByRole("combobox"), "email@grai.io")
+    async () =>
+      await user.type(
+        screen.getByRole("combobox", { name: "" }),
+        "email@grai.io",
+      ),
   )
 
   await act(async () => await user.keyboard("{enter}"))
@@ -46,7 +50,7 @@ test("submit", async () => {
   await act(async () => await user.click(screen.getByRole("checkbox")))
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /Save/i }))
+    async () => await user.click(screen.getByRole("button", { name: /Save/i })),
   )
 })
 
@@ -87,8 +91,8 @@ test("error", async () => {
     async () =>
       await user.type(
         screen.getByRole("textbox", { name: /name/i }),
-        "Test Alert"
-      )
+        "Test Alert",
+      ),
   )
 
   fireEvent.change(screen.getByTestId("channel-select"), {
@@ -96,13 +100,17 @@ test("error", async () => {
   })
 
   await act(
-    async () => await user.type(screen.getByRole("combobox"), "email@grai.io")
+    async () =>
+      await user.type(
+        screen.getByRole("combobox", { name: "" }),
+        "email@grai.io",
+      ),
   )
 
   await act(async () => await user.keyboard("{enter}"))
 
   await act(
-    async () => await user.click(screen.getByRole("button", { name: /Save/i }))
+    async () => await user.click(screen.getByRole("button", { name: /Save/i })),
   )
 
   await waitFor(() => {

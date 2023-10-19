@@ -3,14 +3,6 @@ import os
 import pytest
 from django.core.files.uploadedfile import UploadedFile
 from strawberry.types import Info
-
-from api.tests.common import (
-    test_context,
-    test_organisation,
-    test_source,
-    test_user,
-    test_workspace,
-)
 from connections.models import Connector
 from connections.mutations import Mutation
 from lineage.models import Node

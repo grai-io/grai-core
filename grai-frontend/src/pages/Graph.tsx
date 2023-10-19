@@ -11,7 +11,6 @@ import GraphComponent, {
 } from "components/graph/GraphComponent"
 import useFilters from "components/graph/useFilters"
 import useInlineFilters from "components/graph/useInlineFilters"
-import PageLayout from "components/layout/PageLayout"
 import GraphError from "components/utils/GraphError"
 import {
   GetTablesAndEdges,
@@ -120,31 +119,29 @@ const Graph: React.FC<GraphProps> = ({ alwaysShow }) => {
   const handleRefresh = () => refetch()
 
   return (
-    <PageLayout>
-      <div
-        ref={ref}
-        style={{
-          height: "100vh",
-          width: "100%",
-          backgroundColor: theme.palette.grey[100],
-        }}
-      >
-        <GraphComponent
-          tables={tables}
-          errors={errors}
-          limitGraph={limitGraph}
-          alwaysShow={alwaysShow}
-          onMove={setViewport}
-          onRefresh={handleRefresh}
-          refreshLoading={loading}
-          filters={filters ?? []}
-          setFilters={setFilters}
-          inlineFilters={inlineFilters ?? []}
-          setInlineFilters={setInlineFilters}
-          defaultViewport={viewport}
-        />
-      </div>
-    </PageLayout>
+    <div
+      ref={ref}
+      style={{
+        height: "100%",
+        width: "100%",
+        backgroundColor: theme.palette.grey[100],
+      }}
+    >
+      <GraphComponent
+        tables={tables}
+        errors={errors}
+        limitGraph={limitGraph}
+        alwaysShow={alwaysShow}
+        onMove={setViewport}
+        onRefresh={handleRefresh}
+        refreshLoading={loading}
+        filters={filters ?? []}
+        setFilters={setFilters}
+        inlineFilters={inlineFilters ?? []}
+        setInlineFilters={setInlineFilters}
+        defaultViewport={viewport}
+      />
+    </div>
   )
 }
 

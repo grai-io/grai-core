@@ -4,7 +4,6 @@ import { useSearchParams } from "react-router-dom"
 import getRepoFromParams from "helpers/getRepoFromParams"
 import useWorkspace from "helpers/useWorkspace"
 import PageHeader from "components/layout/PageHeader"
-import PageLayout from "components/layout/PageLayout"
 import PageTabs from "components/layout/PageTabs"
 import ReportFilter from "components/reports/ReportFilter"
 import ReportsTable from "components/reports/ReportsTable"
@@ -149,12 +148,10 @@ const Reports: React.FC = () => {
   ]
 
   return (
-    <PageLayout>
-      <TabState tabs={tabs}>
-        <PageHeader title="Reports" tabs />
-        <PageTabs />
-      </TabState>
-    </PageLayout>
+    <TabState tabs={tabs}>
+      <PageHeader title="Reports" tabs />
+      <PageTabs />
+    </TabState>
   )
 }
 

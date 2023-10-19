@@ -9,7 +9,9 @@ test("renders", async () => {
   })
 
   await waitFor(() => {
-    expect(screen.getByText("Settings")).toBeInTheDocument()
+    expect(
+      screen.getByRole("heading", { name: "Settings" }),
+    ).toBeInTheDocument()
   })
 
   await waitFor(() => {

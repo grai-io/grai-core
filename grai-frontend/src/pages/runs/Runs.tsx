@@ -3,7 +3,6 @@ import { gql, useQuery } from "@apollo/client"
 import useWorkspace from "helpers/useWorkspace"
 import PageContent from "components/layout/PageContent"
 import PageHeader from "components/layout/PageHeader"
-import PageLayout from "components/layout/PageLayout"
 import RunsTable from "components/runs/RunsTable"
 import TableHeader from "components/table/TableHeader"
 import GraphError from "components/utils/GraphError"
@@ -65,7 +64,7 @@ const Runs: React.FC = () => {
     : runs
 
   return (
-    <PageLayout>
+    <>
       <PageHeader title="Runs" />
       <PageContent>
         <TableHeader
@@ -75,7 +74,7 @@ const Runs: React.FC = () => {
         />
         <RunsTable runs={filteredRuns} loading={loading} />
       </PageContent>
-    </PageLayout>
+    </>
   )
 }
 

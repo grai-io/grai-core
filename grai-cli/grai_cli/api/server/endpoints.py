@@ -90,6 +90,7 @@ def get_nodes_cli(
     NOTE: Not all request parameters are supported by the REST api. See the documentation for more details.
 
     Args:
+        ctx: Typer context primarily used for passing additional keyword arguments to the search.
         name: The name of the node to retrieve. By default it will not search any specific name.
         namespace:  The namespace of the node to retrieve. By default it will not search and specific namespace.
         print:  Print the search response to the console. Defaults to True.
@@ -120,6 +121,7 @@ def get_edges(
     """Performs a parameterized edge query against the guide.
 
     Args:
+        ctx: Typer context primarily used for passing additional keyword arguments to the search.
         name: The name of the edge to retrieve. By default it will not search any specific name.
         namespace:  The namespace of the edge to retrieve. By default it will not search and specific namespace.
         print:  Print the search response to the console. Defaults to True.
@@ -150,6 +152,7 @@ def get_workspaces(
     """
 
     Args:
+        ctx: Typer context primarily used for passing additional keyword arguments to the search.
         name (str, optional):  (Default value = typer.Argument(None))
         print (bool, optional):  (Default value = typer.Option(True, "--p", help=f"Print workspaces to console"))
         to_file (Optional[Path], optional):  (Default value = typer.Option(None, "--f", help="Write workspaces to file"))
@@ -160,6 +163,10 @@ def get_workspaces(
 
     """
     kwargs = parse_extra_args(ctx.args)
+
+    if name is not None:
+        kwargs["name"] = name
+
     return perform_type_query("Workspace", print=print, to_file=to_file, **kwargs)
 
 

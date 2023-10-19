@@ -1,14 +1,13 @@
 import React from "react"
-import { Box, Typography } from "@mui/material"
+import { Box } from "@mui/material"
 import GitHubInstallation from "components/settings/installations/GitHubInstallation"
+import SettingsAppBar from "components/settings/SettingsAppBar"
 import SettingsLayout from "components/settings/SettingsLayout"
 
 const Installations: React.FC = () => (
   <SettingsLayout>
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h5" sx={{ mb: 3 }}>
-        Installations
-      </Typography>
+    <SettingsAppBar title="Installations" />
+    <Box sx={{ p: 3, pl: "48px" }}>
       <GitHubInstallation />
     </Box>
   </SettingsLayout>

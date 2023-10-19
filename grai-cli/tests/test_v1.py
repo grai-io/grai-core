@@ -26,7 +26,8 @@ def test_get_by_name_and_namespace(runner, v1_node):
         write_yaml(node_dict, file.name)
 
         result = runner.invoke(app, ["apply", file.name])
-        results = perform_type_query(name=name, namespace=namespace, print=False)
+
+        results = perform_type_query("Node", name=name, namespace=namespace, print=False)
 
         assert len(results) > 0
         for result in results:
@@ -50,7 +51,9 @@ def test_get_by_namespace(runner, v1_node):
         namespace = node_dict["spec"]["namespace"]
         write_yaml(node_dict, file.name)
         result = runner.invoke(app, ["apply", file.name])
-        results = perform_type_query(namespace=namespace, print=False)
+
+        results = perform_type_query("Node", namespace=namespace, print=False)
+
         assert isinstance(results, list)
         assert all(isinstance(result, NodeV1) for result in results)
         assert all(result.spec.namespace == namespace for result in results)

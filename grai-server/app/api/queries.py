@@ -2,17 +2,14 @@ from typing import List, Optional
 
 import strawberry
 import strawberry_django
-from asgiref.sync import sync_to_async
-from django_otp import devices_for_user
 from strawberry.types import Info
 
-from api.types import Connector, User, Workspace
+from api.types import Connector, Workspace
 from connections.models import Connector as ConnectorModel
 from users.types import Profile
 from workspaces.models import Workspace as WorkspaceModel
 
 from .common import IsAuthenticated, get_user
-from .pagination import DataWrapper
 
 
 def get_workspaces(info: Info) -> List[Workspace]:

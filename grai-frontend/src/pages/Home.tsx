@@ -9,7 +9,7 @@ import HomeCards from "components/home/HomeCards"
 import ReportsCard from "components/home/ReportsCard"
 import SourceGraph from "components/home/SourceGraph"
 import WelcomeCard from "components/home/WelcomeCard"
-import PageLayout from "components/layout/PageLayout"
+import Loading from "components/layout/Loading"
 import SearchDialog from "components/search/SearchDialog"
 import GraphError from "components/utils/GraphError"
 import {
@@ -72,7 +72,7 @@ const Home: React.FC = () => {
   }, [tour, tourHidden, setTourHidden])
 
   if (error) return <GraphError error={error} />
-  if (loading) return <PageLayout loading />
+  if (loading) return <Loading />
 
   const workspace = data?.workspace
 
@@ -83,7 +83,7 @@ const Home: React.FC = () => {
   }
 
   return (
-    <PageLayout>
+    <>
       <Box sx={{ padding: "24px" }}>
         <WelcomeCard search={search} setSearch={setSearch} />
         <HomeCards />
@@ -97,7 +97,7 @@ const Home: React.FC = () => {
         onClose={handleClose}
         workspaceId={workspace.id}
       />
-    </PageLayout>
+    </>
   )
 }
 
