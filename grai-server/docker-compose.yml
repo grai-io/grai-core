@@ -16,10 +16,8 @@ services:
       - CREATE_SAMPLE_DATA=true
       - DJANGO_SUPERUSER_USERNAME=null@grai.io
       - DJANGO_SUPERUSER_PASSWORD=super_secret
-      - ?OPENAI_API_KEY
-      - ?OPENAI_ORG_ID
-    env_file:
-      - .env
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_ORG_ID=${OPENAI_ORG_ID}
     depends_on:
       - redis
       - db
