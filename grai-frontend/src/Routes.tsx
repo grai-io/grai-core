@@ -68,6 +68,8 @@ const PasswordReset = lazy(() => import("./pages/auth/PasswordReset"))
 const CompleteSignup = lazy(() => import("./pages/auth/CompleteSignup"))
 const VerifyEmail = lazy(() => import("./pages/auth/VerifyEmail"))
 
+const Chat = lazy(() => import("./pages/Chat"))
+
 const SentryRoutes = Sentry.withSentryReactRouterV6Routing(BrowerRoutes)
 
 const Routes: React.FC = () => (
@@ -159,6 +161,7 @@ const Routes: React.FC = () => (
                   <Route path="installations" element={<Installations />} />
                   <Route path="*" element={<NotFound />} />
                 </Route>
+                <Route path="chat" element={<Chat />} />
                 <Route path="*" element={<NotFound />} />
               </Route>
             </Route>

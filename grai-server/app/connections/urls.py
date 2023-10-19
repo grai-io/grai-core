@@ -237,6 +237,7 @@ def create_run(request):
     except MissingRepositoryError as e:
         logging.exception(str(e))
         message = "Repository not found, have you installed the Grai Github App?"
+
         return Response({"error": message}, status=400)
 
 
