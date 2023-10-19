@@ -7,18 +7,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
 from api.schema import schema
-from api.tests.common import (
-    generate_connection,
-    generate_connection_name,
-    generate_connector,
-    generate_username,
-    generate_workspace,
-    test_basic_context,
-    test_context,
-    test_organisation,
-    test_user,
-    test_workspace,
-)
+from conftest import generate_username
 from auth.validation import verification_generator
 
 

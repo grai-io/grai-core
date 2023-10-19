@@ -5,18 +5,6 @@ import pytest
 from django_multitenant.utils import set_current_tenant
 
 from api.schema import schema
-from api.tests.common import (
-    generate_connection,
-    generate_connection_name,
-    generate_connector,
-    generate_username,
-    generate_workspace,
-    test_basic_context,
-    test_context,
-    test_organisation,
-    test_user,
-    test_workspace,
-)
 
 
 @pytest.mark.django_db
