@@ -1,5 +1,5 @@
 import React from "react"
-import { Box, Menu, MenuItem, lighten } from "@mui/material"
+import { Box, Menu, MenuItem, SxProps, Theme } from "@mui/material"
 import { Handle, useStore, Position, ReactFlowState } from "reactflow"
 import theme from "theme"
 import useWorkspace from "helpers/useWorkspace"
@@ -8,6 +8,20 @@ import HiddenTableButton from "./HiddenTableButton"
 import Placeholder from "./Placeholder"
 
 const zoomSelector = (s: ReactFlowState) => s.transform[2] >= 0.15
+
+const getStyle = (data: BaseNodeData): SxProps<Theme> | undefined => {
+  if (data.highlight || data.searchHighlight)
+    return {
+      borderColor: "#8338EC",
+      borderWidth: 2,
+    }
+
+  if (data.searchDim)
+    return {
+      color: theme.palette.grey[500],
+      boxShadow: undefined,
+    }
+}
 interface Column {
   id: string
   display_name: string
@@ -73,22 +87,6 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
     handleClose()
   }
 
-  const borderColor = data.highlight
-    ? theme.palette.secondary.main
-    : data.searchDim
-    ? "#999"
-    : "rgba(0, 0, 0, 0.08)"
-
-  const backgroundColor = data.searchHighlight
-    ? lighten(theme.palette.info.light, 0.5)
-    : "white"
-
-  const color = data.searchDim
-    ? theme.palette.grey[500]
-    : data.searchHighlight
-    ? theme.palette.info.contrastText
-    : undefined
-
   return (
     <>
       <Box
@@ -99,13 +97,13 @@ const BaseNode: React.FC<BaseNodeProps> = ({ data }) => {
           borderWidth: 1,
           borderStyle: "solid",
           borderRadius: "12px",
-          boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.06)",
-          borderColor,
+          borderColor: "#EBEBEB",
           minWidth: 300,
           minHeight: 68,
           cursor: "auto",
-          backgroundColor,
-          color,
+          backgroundColor: "white",
+          boxShadow: "0px 8px 20px 0px rgba(0, 0, 0, 0.06)",
+          ...getStyle(data),
         }}
         className="graph-table"
       >

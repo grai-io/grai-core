@@ -52,8 +52,11 @@ TEMPLATE_DEBUG = config("TEMPLATE_DEBUG", default=DEBUG, cast=bool)
 
 SERVER_HOST = config("SERVER_HOST", default="localhost", cast=str)
 SERVER_PORT = config("SERVER_PORT", default="8000", cast=str)
+SERVER_URL = config("SERVER_URL", default=f"http://{SERVER_HOST}:{SERVER_PORT}", cast=str)
+
 FRONTEND_HOST = config("FRONTEND_HOST", default=SERVER_HOST, cast=str)
 FRONTEND_PORT = config("SERVER_PORT", default="3000", cast=str)
+FRONTEND_URL = config("FRONTEND_URL", default=f"http://{FRONTEND_HOST}:{FRONTEND_PORT}", cast=str)
 
 DISABLE_HTTP = config("DISABLE_HTTP", default=False)
 
@@ -72,7 +75,9 @@ hosts = {SERVER_HOST, FRONTEND_HOST}
 if DEBUG:
     default_allowed_hosts = ["*"]
     default_csrf_trusted_origins = [f"{scheme}://*" for scheme in schemes]
-    default_cors_allowed_origins = default_csrf_trusted_origins
+    default_cors_allowed_origins = [
+        f"{scheme}://{host}" for scheme in schemes for host in [FRONTEND_HOST, f"{FRONTEND_HOST}:{FRONTEND_PORT}"]
+    ]
     default_allow_all_origins = True
 else:
     default_allowed_hosts = [SERVER_HOST, "127.0.0.1", "[::1]"]
@@ -157,6 +162,7 @@ THE_GUIDE_APPS = [
     "users",
     "search",
     "telemetry",
+    "grAI",
 ]
 
 INSTALLED_APPS = DJANGO_CORE_APPS + THIRD_PARTY_APPS + THE_GUIDE_APPS
@@ -215,7 +221,26 @@ TEMPLATES = [
     },
 ]
 
+
+REDIS_HOST = config("REDIS_HOST", "localhost")
+REDIS_PORT = config("REDIS_PORT", 6379)
+
 WSGI_APPLICATION = "the_guide.wsgi.application"
+
+REDIS_CHANNEL_HOST = config("REDIS_CHANNEL_HOST", REDIS_HOST)
+REDIS_CHANNEL_PORT = config("REDIS_CHANNEL_PORT", REDIS_PORT)
+
+ASGI_APPLICATION = "the_guide.asgi.application"
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [
+                (REDIS_CHANNEL_HOST, REDIS_CHANNEL_PORT),
+            ],
+        },
+    },
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -256,11 +281,6 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
-
-# https://nixhive.com/how-to-run-django-on-a-subpath-via-proxy/
-# FORCE_SCRIPT_NAME = '/guide'
-# USE_X_FORWARDED_HOST = True
-
 PHONENUMBER_DEFAULT_REGION = "US"
 
 # OpenApi
@@ -300,8 +320,8 @@ AWS_SES_REGION_ENDPOINT = "email.us-west-2.amazonaws.com"
 
 # Celery settings
 
-CELERY_BROKER_URL = config("CELERY_BROKER", "redis://127.0.0.1:6379/0")
-CELERY_RESULT_BACKEND = config("CELERY_BACKEND", "redis://127.0.0.1:6379/0")
+CELERY_BROKER_URL = config("CELERY_BROKER", f"redis://{REDIS_HOST}:{REDIS_PORT}/0")
+CELERY_RESULT_BACKEND = config("CELERY_BACKEND", f"redis://{REDIS_HOST}:{REDIS_PORT}/0")
 
 #: Only add pickle to this list if your broker is secured
 #: from unwanted access (see userguide/security.html)
@@ -328,8 +348,8 @@ GITHUB_PRIVATE_KEY = config("GITHUB_PRIVATE_KEY", None)
 
 SERVER_URL = config("SERVER_URL", f"https://{SERVER_HOST}")
 
-REDIS_GRAPH_CACHE_HOST = config("REDIS_GRAPH_CACHE_HOST", "localhost")
-REDIS_GRAPH_CACHE_PORT = config("REDIS_GRAPH_CACHE_PORT", 6379)
+REDIS_GRAPH_CACHE_HOST = config("REDIS_GRAPH_CACHE_HOST", REDIS_HOST)
+REDIS_GRAPH_CACHE_PORT = config("REDIS_GRAPH_CACHE_PORT", REDIS_PORT)
 
 CACHES = {
     "default": {
@@ -342,3 +362,5 @@ CACHES = {
 }
 
 OTP_TOTP_ISSUER = "Grai Cloud"
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

@@ -5,18 +5,7 @@ from asgiref.sync import sync_to_async
 from django.contrib.auth import get_user_model
 
 from api.schema import schema
-from api.tests.common import (
-    generate_connection,
-    generate_connection_name,
-    generate_connector,
-    generate_username,
-    generate_workspace,
-    test_basic_context,
-    test_context,
-    test_organisation,
-    test_user,
-    test_workspace,
-)
+from conftest import generate_connector, generate_username
 from connections.models import Connector
 from lineage.models import Edge, Node
 from workspaces.models import WorkspaceAPIKey

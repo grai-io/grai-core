@@ -14,12 +14,12 @@ const DEFAULT_DEBOUNCE_TIMEOUT = 100
 
 export const cache = new InMemoryCache()
 
-const make_client = (logoutUser: () => void) => {
-  const baseURL =
-    window._env_?.REACT_APP_SERVER_URL ??
-    process.env.REACT_APP_SERVER_URL ??
-    "http://localhost:8000"
+export const baseURL =
+  window._env_?.REACT_APP_SERVER_URL ??
+  process.env.REACT_APP_SERVER_URL ??
+  "http://localhost:8000"
 
+const make_client = (logoutUser: () => void) => {
   const uploadLink = createUploadLink({
     uri: `${baseURL}/graphql/`,
     credentials: "include",
