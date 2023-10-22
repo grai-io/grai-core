@@ -8,8 +8,8 @@ class UserChat(models.Model):
 
     USER = "user"
     AGENT = "agent"
-
-    ROLES = [(USER, "user"), (AGENT, "agent")]
+    SYSTEM = "system"
+    ROLES = [(USER, "user"), (AGENT, "agent"), (SYSTEM, "system")]
 
     id = models.AutoField(primary_key=True)
     membership = models.ForeignKey("workspaces.Membership", related_name="membership", on_delete=models.CASCADE)

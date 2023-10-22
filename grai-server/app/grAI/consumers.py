@@ -105,18 +105,18 @@ class ChatConsumer(WebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json["message"]
 
-        ##self.send_function({"type": "chat.message", "message": message})
         if not self.membership.workspace.ai_enabled:
-            message = (
+            response = (
                 "AI enabled chat has been disabled for your workspace. Please contact an administrator if you wish to "
                 "enable these features."
             )
-            self.send_function({"type": "chat.message", "message": message})
-            return
+            agent = "system"
+        else:
+            response = self.conversation.request(message)
+            agent = "agent"
 
-        response = self.conversation.request(message)
         self.send_function({"type": "chat.message", "message": response})
-        self.save(response, "agent")
+        self.save(response, agent)
 
     # Receive message from room group
     def chat_message(self, event):
