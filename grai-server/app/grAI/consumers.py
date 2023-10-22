@@ -106,6 +106,14 @@ class ChatConsumer(WebsocketConsumer):
         message = text_data_json["message"]
 
         ##self.send_function({"type": "chat.message", "message": message})
+        if not self.membership.workspace.ai_enabled:
+            message = (
+                "AI enabled chat has been disabled for your workspace. Please contact an administrator if you wish to "
+                "enable these features."
+            )
+            self.send_function({"type": "chat.message", "message": message})
+            return
+
         response = self.conversation.request(message)
         self.send_function({"type": "chat.message", "message": response})
         self.save(response, "agent")
