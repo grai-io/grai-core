@@ -87,9 +87,9 @@ class OpenLineageProcessor:
     def manifest(self) -> Tuple[List[NodeTypes], List[Edge]]:
         def get_namespace(namespace: str) -> str:
             if self.namespaces:
-                return self.namespaces.get(namespace, self.namespace)
+                return self.namespaces.get(namespace, namespace)
             else:
-                return self.namespace
+                return namespace
 
         tables: Set[Table] = set()
         columns: Set[Column] = set()
