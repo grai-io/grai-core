@@ -13,6 +13,7 @@ from django.db.models.query import QuerySet
 from grai_graph.graph import BaseSourceSegment
 from notifications.models import Alert as AlertModel
 from strawberry.scalars import JSON
+from strawberry.types import Info
 from strawberry_django.filters import FilterLookup
 from strawberry_django.pagination import OffsetPaginationInput
 
@@ -20,6 +21,8 @@ from api.search import Search
 from connections.models import Connection as ConnectionModel
 from connections.models import Run as RunModel
 from connections.types import Connector, ConnectorFilter
+from grAI.models import UserChat as ChatModel
+from grAI.types import Chat
 from installations.models import Branch as BranchModel
 from installations.models import Commit as CommitModel
 from installations.models import PullRequest as PullRequestModel
@@ -41,6 +44,7 @@ from workspaces.models import Workspace as WorkspaceModel
 from workspaces.models import WorkspaceAPIKey as WorkspaceAPIKeyModel
 from workspaces.types import Organisation
 
+from .common import get_user
 from .pagination import DataWrapper, Pagination
 
 
@@ -1019,6 +1023,19 @@ class Workspace:
             return list_result
 
         return sync_to_async(fetch_source_graph)(self)
+
+    # Chats
+    @strawberry.field
+    def chats(
+        self,
+        info: Info,
+        pagination: Optional[OffsetPaginationInput] = strawberry.UNSET,
+    ) -> Pagination[Chat]:
+        user = get_user(info)
+
+        queryset = ChatModel.objects.filter(membership__workspace=self, membership__user=user)
+
+        return Pagination[Chat](queryset=queryset, pagination=pagination)
 
 
 @strawberry_django.filters.filter(MembershipModel, lookups=True)
