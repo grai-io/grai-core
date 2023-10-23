@@ -2,6 +2,7 @@ import React from "react"
 import { gql, useQuery } from "@apollo/client"
 import { Box, Grid, Typography } from "@mui/material"
 import useWorkspace from "helpers/useWorkspace"
+import { Chat as ChatType } from "components/chat/ChatWindow"
 import WebsocketChat from "components/chat/WebsocketChat"
 import Loading from "components/layout/Loading"
 import GraphError from "components/utils/GraphError"
@@ -11,7 +12,6 @@ import {
   GetWorkspaceChat_workspace_chats_data_messages_data,
 } from "./__generated__/GetWorkspaceChat"
 import NotFound from "./NotFound"
-import { Chat as ChatType } from "components/chat/ChatWindow"
 
 export const GET_WORKSPACE = gql`
   query GetWorkspaceChat($organisationName: String!, $workspaceName: String!) {
