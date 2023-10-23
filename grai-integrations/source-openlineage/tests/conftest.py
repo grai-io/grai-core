@@ -20,6 +20,11 @@ def openlineage_test_event(tests_data_path) -> dict:
 
 
 @pytest.fixture(scope="session")
+def openlineage_test_full_event(tests_data_path) -> dict:
+    return json.load(open(os.path.join(tests_data_path, "full_event.json")))
+
+
+@pytest.fixture(scope="session")
 def mock_organisation() -> OrganisationV1:
     return MockV1().organisation.organisation()
 
@@ -36,7 +41,11 @@ def mock_source(mock_workspace) -> SourceV1:
 
 @pytest.fixture(scope="session")
 def mocker(mock_workspace, mock_source, mock_organisation) -> MockV1:
-    return MockV1(workspace=mock_workspace, data_source=mock_source, organisation=mock_organisation)
+    return MockV1(
+        workspace=mock_workspace,
+        data_source=mock_source,
+        organisation=mock_organisation,
+    )
 
 
 class DataGetter:
