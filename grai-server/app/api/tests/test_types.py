@@ -1517,6 +1517,44 @@ async def test_workspace_api_keys(test_context):
     # assert result.data["workspace"]["memberships"]["data"][0]["user"]["id"] == str(user.id)
 
 
+@pytest.mark.django_db
+async def test_workspace_chats(test_context, test_chat, test_message):
+    context, organisation, workspace, user, membership = test_context
+
+    query = """
+        query Workspace($workspaceId: ID!) {
+            workspace(id: $workspaceId) {
+                id
+                chats {
+                    data {
+                        id
+                        messages {
+                            data {
+                                id
+                                message
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    """
+
+    result = await schema.execute(
+        query,
+        variable_values={
+            "workspaceId": str(workspace.id),
+        },
+        context_value=context,
+    )
+
+    assert result.errors is None
+    assert result.data["workspace"]["id"] == str(workspace.id)
+    assert result.data["workspace"]["chats"]["data"][0]["id"] == str(test_chat.id)
+    assert result.data["workspace"]["chats"]["data"][0]["messages"]["data"][0]["id"] == str(test_message.id)
+    assert result.data["workspace"]["chats"]["data"][0]["messages"]["data"][0]["message"] == test_message.message
+
+
 @pytest.fixture
 async def test_repository(test_workspace):
     return await Repository.objects.acreate(

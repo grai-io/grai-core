@@ -1033,7 +1033,7 @@ class Workspace:
     ) -> Pagination[Chat]:
         user = get_user(info)
 
-        queryset = ChatModel.objects.filter(membership__workspace=self, membership__user=user)
+        queryset = ChatModel.objects.filter(membership__workspace=self, membership__user=user).order_by("created_at")
 
         return Pagination[Chat](queryset=queryset, pagination=pagination)
 

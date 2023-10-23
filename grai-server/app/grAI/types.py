@@ -23,6 +23,6 @@ class Chat:
     def messages(
         self,
     ) -> Pagination[Message]:
-        queryset = MessageModel.objects.filter(chat=self)
+        queryset = MessageModel.objects.filter(chat=self, visible=True)
 
         return Pagination[Message](queryset=queryset)
