@@ -14,12 +14,7 @@ class MessageRoles(ChoicesMixin, Enum):
     USER = "user"
     AGENT = "assistant"
     SYSTEM = "system"
-
-
-class MessageActions(ChoicesMixin, Enum):
-    SUMMARIZE = "summarize"
     FUNCTION = "function"
-    MESSAGE = "message"
 
 
 class UserChat(models.Model):
@@ -36,7 +31,6 @@ class Message(models.Model):
     message = models.TextField()
     visible = models.BooleanField()
     role = models.CharField(max_length=255, choices=MessageRoles.choices(), default=MessageRoles.USER)
-    action = models.CharField(max_length=255, choices=MessageActions.choices(), default=MessageActions.MESSAGE)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

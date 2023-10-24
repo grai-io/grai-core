@@ -6,7 +6,7 @@ from django.core.cache import cache
 from channels.generic.websocket import AsyncConsumer, WebsocketConsumer
 from asgiref.sync import async_to_sync
 from users.models import User
-from grAI.openai import get_chat_conversation, BaseConversation
+from grAI.chat_implementations import get_chat_conversation, BaseConversation
 from functools import cached_property, partial
 from typing import Callable
 from grAI.models import UserChat, Message
@@ -21,49 +21,37 @@ class ChatConsumer(WebsocketConsumer):
 
     def __init__(self, *args, **kwargs):
         self._user_chat = None
-        self._conversation = None
+        self.conversations: dict[uuid.UUID, BaseConversation] = {}
         super().__init__(*args, **kwargs)
 
     @property
     def user_chat(self) -> UserChat:
         if self._user_chat is None:
-            self._user_chat = UserChat(membership=self.membership)
-            self._user_chat.save()
+            self.user_chat = uuid.uuid4()
 
         return self._user_chat
 
     @user_chat.setter
     def user_chat(self, value: UserChat | uuid.UUID):
-        chat_id = value if isinstance(value, uuid.UUID) else value.id
+        if isinstance(value, UserChat):
+            chat_obj = value
+        elif isinstance(self._user_chat, UserChat) and value == self._user_chat.id:
+            return
+        else:
+            try:
+                chat_obj = UserChat.objects.filter(pk=value).get()
+            except:
+                chat_obj = UserChat(membership=self.membership)
+                chat_obj.save()
 
-        if self._user_chat is None:
-            chat_obj = value if isinstance(value, UserChat) else UserChat.objects.filter(pk=value)
+        if chat_obj.membership != self.membership:
+            raise ValueError(f"User does not have permission to view chat session `{chat_obj.id}` ")
 
-            if chat_obj.membership != self.membership:
-                raise ValueError(f"User does not have permission to view chat session `{value}` ")
-
-            self._user_chat = chat_obj
-        elif chat_id != self._user_chat.id:
-            raise ValueError(f"Provided chat id {chat_id} does not match the current chat.")
-
-    def chat_cache_id(self, chat_id):
-        return f"grAI:chat_id:{chat_id}"
-
-    @property
-    def conversation(self) -> BaseConversation:
-        if self._conversation is None:
-            self._conversation = get_chat_conversation()
-
-        return self._conversation
-
-    @conversation.setter
-    def conversation(self, value: BaseConversation):
-        self._conversation = value
+        self._user_chat = chat_obj
 
     @cached_property
     def send_function(self) -> Callable:
-        sending_function = async_to_sync(self.channel_layer.group_send)
-        return partial(sending_function, self.group_name)
+        return partial(async_to_sync(self.channel_layer.group_send), self.group_name)
 
     @property
     def user(self) -> User:
@@ -90,14 +78,19 @@ class ChatConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_discard)(self.group_name, self.channel_name)
 
     def save(self, message: str, role: str, visible: bool):
-        new_message = Message(chat=self.chat.id, message=message, role=role, visible=visible)
+        new_message = Message(chat=self.user_chat, message=message, role=role, visible=visible)
         new_message.save()
 
     # Receive message from WebSocket
-    def receive(self, text_data_string: str):
-        text_data = json.loads(text_data_string)
+    def receive(self, text_data: str | None = None, bytes_data: bytes | None = None):
+        if text_data is None:
+            raise ValueError("Text data must be provided to this websocket")
+
+        text_data = json.loads(text_data)
         message = text_data["message"]
-        chat_id = text_data["chat_id"]
+        self.user_chat = uuid.UUID(text_data["chat_id"]) if text_data["chat_id"] != "" else uuid.uuid4()
+
+        self.save(message=message, role="user", visible=True)
 
         if not settings.HAS_OPENAI:
             response = (
@@ -112,12 +105,15 @@ class ChatConsumer(WebsocketConsumer):
             )
             agent = "system"
         else:
-            response = self.conversation.request(message, chat_id)
-            agent = "agent"
-        self.send_function({"type": "chat.message", "message": response})
-        self.save(response, agent, True)
+            if self.user_chat.id not in self.conversations:
+                self.conversations[self.user_chat.id] = get_chat_conversation(self.user_chat.id)
+
+            response = self.conversations[self.user_chat.id].request(message)
+            agent = "assistant"
+
+        self.send_function({"type": "chat.message", "message": response, "chat_id": str(self.user_chat.id)})
+        self.save(message=response, role=agent, visible=True)
 
     # Receive message from room group
     def chat_message(self, event):
-        self.send(text_data=json.dumps({k: event[k] for k in ["message", "chat_id"]}))
-        self.save(event["message"], "user", True)
+        self.send(text_data=json.dumps(event))
