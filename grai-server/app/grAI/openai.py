@@ -6,6 +6,8 @@ from functools import partial
 import openai
 import json
 from django.conf import settings
+from django.core.cache import cache
+from grAI.models import Message, MessageActions
 
 
 class API(ABC):
@@ -52,6 +54,7 @@ class InvalidAPI(API):
 class BaseConversation:
     def __init__(
         self,
+        chat_id: str,
         prompt: str,
         model_type: str = settings.OPENAI_PREFERRED_MODEL,
         user: str = str(uuid.uuid4()),
@@ -62,20 +65,42 @@ class BaseConversation:
             functions = []
 
         self.model_type = model_type
+        self.chat_id = chat_id
+        self.cache_id = f"grAI:chat_id:{chat_id}"
         self.system_context = prompt
         self.user = user
         self.api_functions = {func.id: func for func in functions}
         self.verbose = verbose
 
-        self.messages = [
-            {"role": "system", "content": self.system_context},
-        ]
-        self.raw_responses = []
+        self.prompt_message = {"role": "system", "content": self.system_context}
+        self.hydrate_chat()
+
+    @property
+    def messages(self) -> list:
+        return cache.get(self.cache_id)
+
+    @messages.setter
+    def messages(self, values):
+        cache.aset(self.cache_id, values)
+
+    def hydrate_chat(self):
+        messages = cache.get_or_set(self.cache_id, [])
+        if len(messages) == 0:
+            model_messages = Message.objects.filter(chat_id=self.chat_id).order("-created_at").all()
+
+            most_recent_summary_idx = None
+            for i, message in enumerate(model_messages):
+                if message.action == MessageActions.SUMMARIZE:
+                    most_recent_summary_idx = i
+
+            if most_recent_summary_idx is not None:
+                model_messages = model_messages[most_recent_summary_idx:]
+
+            messages = [{"role": m.role, "content": m.message} for m in model_messages]
+
+        cache.aset(self.cache_id, messages)
 
     def summarize(self, messages):
-        if self.verbose:
-            print("LOGGING: Attempting to summarize content")
-
         summary_prompt = """
         Please summarize this conversation encoding the most important information a future agent would need to continue working on the problem with me. Please insure you do not call any functions
         and only provide a text based summary of the conversation to this point.
@@ -86,13 +111,9 @@ class BaseConversation:
         model = partial(openai.ChatCompletion.create, model=self.model_type, user=self.user)
         response = model(messages=summary_messages)
 
-        self.raw_responses.append(response)
-
         # this is hacky for now
         summary_message = {"role": "assistant", "content": response.choices[0].message.content}
-        messages = [messages[0], summary_message, messages[-1]]
-
-        return messages
+        return summary_message
 
     @property
     def functions(self):
@@ -108,43 +129,28 @@ class BaseConversation:
             model = partial(openai.ChatCompletion.create, model=self.model_type, user=self.user)
         return model
 
-    def call_model(self) -> str:
-        if self.verbose:
-            print(f"LOGGING: Calling model with {len(self.messages)} messages")
-
-        try:
-            response = self.model(messages=self.messages)
-            self.raw_responses.append(response)
-        except openai.InvalidRequestError:
-            if self.verbose:
-                print("LOGGING: Text was too long... probably")
-            self.messages = self.summarize(self.messages[:-1])
-            response = self.model(messages=self.messages)
-
-        return response
+    def build_messages(self, messages):
+        return [self.prompt_message, messages]
 
     def request(self, user_input: str) -> str:
-        if not settings.HAS_OPENAI:
-            message = (
-                "OpenAI is currently disabled. In order to use AI components please enable ChatGPT for your "
-                "organization."
-            )
-            return message
+        messages = cache.get(self.cache_id)
+        new_messages = [{"role": "user", "content": user_input}]
 
-        self.messages.append({"role": "user", "content": user_input})
         stop = False
         while not stop:
-            response = self.call_model()
+            try:
+                response = self.model(messages=self.build_messages(messages))
+            except openai.InvalidRequestError:
+                # If it hits the token limit try to summarize
+                summary = self.summarize(messages[:-1])
+                messages = [summary, messages[-1]]
+                response = self.model(messages=self.build_messages(messages))
+
             result = response.choices[0]
 
             if stop := result.finish_reason == "stop":
-                if self.verbose:
-                    print(f"LOGGING: Responded with: {result.message.content}")
-                self.messages.append({"role": "assistant", "content": result.message.content})
+                new_messages.append({"role": "assistant", "content": result.message.content})
             elif result.finish_reason == "function_call":
-                if self.verbose:
-                    print(f"LOGGING: Requested function {result.message.function_call.name}")
-
                 func_id = result.message.function_call.name
                 func_kwargs = json.loads(result.message.function_call.arguments)
                 api = self.api_functions.get(func_id, InvalidAPI(self.api_functions.values()))
@@ -155,7 +161,6 @@ class BaseConversation:
                 else:
                     self.messages.append({"role": "function", "name": func_id, "content": response})
             elif result.finish_reason == "length":
-                print("LOGGING: Stopped for length, summarizing.")
                 self.messages = self.summarize(self.messages[:-1])
             else:
                 # valid values include length, content_filter, null

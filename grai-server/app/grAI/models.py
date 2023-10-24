@@ -1,6 +1,25 @@
 import uuid
 
 from django.db import models
+from enum import Enum
+
+
+class ChoicesMixin:
+    @classmethod
+    def choices(cls):
+        return [(key.value, key.name) for key in cls]
+
+
+class MessageRoles(ChoicesMixin, Enum):
+    USER = "user"
+    AGENT = "assistant"
+    SYSTEM = "system"
+
+
+class MessageActions(ChoicesMixin, Enum):
+    SUMMARIZE = "summarize"
+    FUNCTION = "function"
+    MESSAGE = "message"
 
 
 class UserChat(models.Model):
@@ -12,16 +31,12 @@ class UserChat(models.Model):
 
 
 class Message(models.Model):
-    USER = "user"
-    AGENT = "agent"
-    SYSTEM = "system"
-    ROLES = [(USER, "user"), (AGENT, "agent"), (SYSTEM, "system")]
-
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     chat = models.ForeignKey(UserChat, on_delete=models.CASCADE, related_name="messages")
     message = models.TextField()
     visible = models.BooleanField()
-    role = models.CharField(max_length=255, choices=ROLES, default=USER)
+    role = models.CharField(max_length=255, choices=MessageRoles.choices(), default=MessageRoles.USER)
+    action = models.CharField(max_length=255, choices=MessageActions.choices(), default=MessageActions.MESSAGE)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
