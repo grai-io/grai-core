@@ -1,4 +1,5 @@
 {
+  "airflow": "Airflow",
   "bigquery": "BigQuery",
   "dbt": "dbt",
   "dbt-cloud": "dbt Cloud",
