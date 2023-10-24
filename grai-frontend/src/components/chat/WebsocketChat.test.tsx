@@ -32,15 +32,15 @@ test("type", async () => {
 
   expect(screen.getByRole("textbox")).toBeInTheDocument()
 
-  user.type(screen.getByRole("textbox"), "Hello")
+  user.type(screen.getByRole("textbox"), "He")
 
-  await waitFor(() => expect(screen.getByRole("textbox")).toHaveValue("Hello"))
+  await waitFor(() => expect(screen.getByRole("textbox")).toHaveValue("He"))
 
   user.type(screen.getByRole("textbox"), "{enter}")
 
   await waitFor(() => expect(screen.getByRole("textbox")).toHaveValue(""))
 
-  expect(screen.getByText("Hello")).toBeInTheDocument()
+  expect(screen.getByText("He")).toBeInTheDocument()
 })
 
 test("receive", async () => {
@@ -48,7 +48,7 @@ test("receive", async () => {
 
   await server.connected
 
-  await act(async () => server.send(JSON.stringify({ message: "Hello" })))
+  await act(async () => server.send(JSON.stringify({ message: "He" })))
 
-  await screen.findByText("Hello")
+  await screen.findByText("He")
 })

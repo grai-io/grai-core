@@ -147,6 +147,7 @@ class Mutation:
 
             subject = "Grai Password Reset"
             email_template_name = "auth/password_reset_email.txt"
+            html_template_name = "auth/password_reset_template.html"
             c = {
                 "email": user.username,
                 "base_url": settings.FRONTEND_URL,
@@ -155,6 +156,7 @@ class Mutation:
                 "token": default_token_generator.make_token(user),
             }
             email_message = render_to_string(email_template_name, c)
+            html_message = render_to_string(html_template_name, c)
 
             await sync_to_async(send_mail)(
                 subject,
@@ -162,6 +164,7 @@ class Mutation:
                 settings.EMAIL_FROM,
                 [user.username],
                 fail_silently=False,
+                html_message=html_message,
             )
 
         except UserModel.DoesNotExist:
