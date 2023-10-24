@@ -31,13 +31,40 @@ If there are any attributes you need greater control over PR's are welcome.
 | TEMPLATE_DEBUG         | No       | False                                                                                                | Run templating in debug mode    |
 | SERVER_HOST            | No       | localhost                                                                                            | host for the current deployment |
 | SERVER_PORT            | No       | 8000                                                                                                 | port for the current deployment |
+| SERVER_URL             | No       | http://\{SERVER_HOST\}:\{SERVER_PORT}                                                                | URL of the server deployment    |
 | FRONTEND_HOST          | No       | localhost                                                                                            | host for the deployed frontend  |
 | FRONTEND_PORT          | No       | 3000                                                                                                 | port for the deployed frontend  |
+| FRONTEND_URL           | No       | http://\{FRONTEND_HOST\}:\{FRONTEND_PORT\}                                                           | URL of the frontenddeployment   |
 | DISABLE_HTTP           | No       | False                                                                                                | disables access through http    |
-| ALLOWED_HOSTS          | No       | SERVER_HOST, 127.0.0.1, [::1]                                                                        | disables access through http    |
-| CORS_ALLOWED_ORIGINS   | No       | http://\{SERVER_HOST\}, https://\{SERVER_HOST\}, http://\{FRONTEND_HOST\}, https://\{FRONTEND_HOST\} | host for the current deployment |
+| ALLOWED_HOSTS          | No       | SERVER_HOST, 127.0.0.1, [::1]                                                                        | Django configuration for allowed hosts   |
+| CORS_ALLOWED_ORIGINS   | No       | http://\{FRONTEND_HOST\}, http://\{FRONTEND_HOST\}:\{FRONTEND_PORT\}, https://\{FRONTEND_HOST\}, https://\{FRONTEND_HOST\}:\{FRONTEND_PORT\} | CORS Allowed Origins            |
 | CSRF_TRUSTED_ORIGINS   | No       | SERVER_HOST, 127.0.0.1, [::1]                                                                        | host for the current deployment |
 | CORS_ALLOW_ALL_ORIGINS | No       | False                                                                                                | Django CORS allow all setting   |
+
+
+### Database Configuration
+
+| environment variable | required | default value | description                                                                 |
+| -------------------- | -------- | ------------- | --------------------------------------------------------------------------- |
+| DB_ENGINE            | No       | psqlextra.backend | The database engine to use |
+| DB_NAME              | No       | grai          | The name of the database to use                                            |
+| DB_USER              | No       | grai          | The user to connect to the database with                                    |
+| DB_PASSWORD          | No       | grai          | The password to connect to the database with                                |
+| DB_HOST              | No       | localhost     | The host of the database                                                   |
+| DB_PORT              | No       | 5432          | The port of the database                                                   |
+
+
+### Redis Configuration
+
+| environment variable | required | default value | description                                                                 |
+| -------------------- | -------- | ------------- | --------------------------------------------------------------------------- |
+| REDIS_HOST           | No       | localhost     | The host of the redis server                                                |
+| REDIS_PORT           | No       | 6379          | The port of the redis server                                                |
+| REDIS_CHANNEL_HOST   | No       | \{REDIS_HOST\}     | The host of the redis server used for backend websockets                                              |
+| REDIS_CHANNEL_PORT   | No       | \{REDIS_PORT\}     | The port of the redis server used for backend websockets                                              |
+| REDIS_GRAPH_CACHE_HOST | No      | \{REDIS_HOST\}     | The host of the redis server used for graph cache                                              |
+| REDIS_GRAPH_CACHE_PORT | No      | \{REDIS_PORT\}     | The port of the redis server used for graph cache                                              |
+
 
 ### Email Configuration
 
@@ -54,14 +81,18 @@ If there are any attributes you need greater control over PR's are welcome.
 
 | environment variable | required | default value            | description                |
 | -------------------- | -------- | ------------------------ | -------------------------- |
-| CELERY_BROKER_URL    | No       | redis://127.0.0.1:6379/0 | The backend url for celery |
+| CELERY_BROKER    | No       | redis://\{REDIS_HOST\}:\{REDIS_PORT\}/0 | The backend url for celery |
+| CELERY_BACKEND  | No       | redis://\{REDIS_HOST\}:\{REDIS_PORT\}/0 | The backend url for celery |
 
 ### Miscellaneous
 
 | environment variable    | required | default value                               | description                                     |
 | ----------------------- | -------- | ------------------------------------------- | ----------------------------------------------- |
 | SENTRY_DSN              | No       |                                             | Configure error reporting with Sentry           |
+| SENTRY_SAMPLE_RATE      | No       | 0.2                                         | The sample rate for Sentry                      |
+| POSTHOG_HOST            | No       | https://app.posthog.com                     | The posthog url                                 |
 | POSTHOG_PROJECT_API_KEY | No       |                                             | Configure logging through posthog               |
+| DISABLE_POSTHOG         | No       | False                                       | Disables all posthog logging                    |
 | DISABLE_TELEMETRY       | No       | False                                       | Disables all telemetry                          |
 | DEFAULT_FILE_STORAGE    | No       | django.core.files.storage.FileSystemStorage | The default file storage backend used by Django |
 | AWS_STORAGE_BUCKET_NAME | No       | None                                        | AWS bucket storage                              |
