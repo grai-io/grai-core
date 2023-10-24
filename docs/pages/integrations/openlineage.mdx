@@ -1,0 +1,76 @@
+---
+title: "Open Lineage"
+description: Grai integration for Open Lineage to automatically access metadata.
+---
+
+import { Callout } from "nextra-theme-docs";
+import { OpenlineageLogoIcon } from "../../components/Integrations";
+import Image from "next/image";
+import InlineLogo from "../../components/InlineLogo";
+
+<InlineLogo logo={<OpenlineageLogoIcon />} title="OpenLineage" />
+
+The OpenLineage integration consumes OpenLineage metadata from various systems.
+
+## Web App
+
+<Image
+  src="/images/docs/core/integrations/openlineage.png"
+  height={600}
+  width={1200}
+  alt="OpenLineage Integration"
+/>
+
+### Fields
+
+| Field      | Value                                                               | Example      |
+| ---------- | ------------------------------------------------------------------- | ------------ |
+| source     | The name of the source, see [sources](/concepts/sources)            | my-source    |
+| Name       | Name for connection                                                 | OpenLineage  |
+| Namespace  | Namespace for the connection, see [namespaces](/concepts/namespace) | default      |
+| api_secret | Input an api_secret which will be used to verify each message       | super_secret |
+| namespaces | Optional                                                            |              |
+
+## Python Library
+
+The OpenLineage integration can be run as a standalone python library to convert OpenLineage events into Grai objects.
+
+The library is available via pip
+
+```shell copy
+pip install grai_source_openlineage
+```
+
+More information about the API is available [here](/api-docs/grai_source_openlineage/base).
+
+### Example
+
+The library is split into a few distinct functions but if you only wish to extract nodes/edges you can do
+so as follows:
+
+```python copy
+  from grai_source_openlineage import OpenLineageIntegration
+  from grai_schemas.v1.source import SourceV1
+
+  source = SourceV1(name="my-source", type="my-type")
+  openlineage_params = {
+    "namespaces": {}
+  }
+
+  integration = OpenLineageIntegration(source=source, namespace="openlineage", **openlineage_params)
+
+  nodes, edges = integration.get_nodes_and_edges()
+```
+
+In this case, we are putting all nodes and edges produced by OpenLineage in a single namespace.
+In practice you usually don't want to do this because it will result in overlapping id's.
+For example, an OpenLineage connection copying data from a source table `my_table` to a destination table `my_table` will
+result in two nodes with the same id.
+
+To avoid this, you can pass a `namespaces` parameter to the `OpenLineageIntegration` constructor which will map OpenLineage
+namespaces to source and destination Grai namespaces.
+
+```python copy
+    namespaces = {<openlineage_namespace>: <grai_namepsace>}
+    integration = OpenLineageIntegration(source=source, namespaces=namespaces)
+```

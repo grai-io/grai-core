@@ -3,7 +3,7 @@ import * as React from "react";
 const defaultHeight = 64;
 const defaultWidth = 64;
 
-const BigQueryLogoIcon = (props: { height: number; width: number; }) => {
+const BigQueryLogoIcon = (props: { height: number; width: number }) => {
   const height = props.height || defaultHeight;
   const width = props.width || defaultWidth;
   return (
@@ -41,7 +41,7 @@ const BigQueryLogoIcon = (props: { height: number; width: number; }) => {
   );
 };
 
-const DbtLogoIcon = (props: { height: number; width: number; }) => {
+const DbtLogoIcon = (props: { height: number; width: number }) => {
   const height = props.height || defaultHeight;
   const width = props.width || defaultWidth;
   return (
@@ -63,7 +63,7 @@ const DbtLogoIcon = (props: { height: number; width: number; }) => {
   );
 };
 
-const FivetranLogoIcon = (props: { height: number; width: number; }) => {
+const FivetranLogoIcon = (props: { height: number; width: number }) => {
   const height = props.height || defaultHeight;
   const width = props.width || defaultWidth;
   return (
@@ -108,7 +108,7 @@ const FivetranLogoIcon = (props: { height: number; width: number; }) => {
   );
 };
 
-const SnowflakeLogoIcon = (props: { height: number; width: number; }) => {
+const SnowflakeLogoIcon = (props: { height: number; width: number }) => {
   const height = props.height || defaultHeight;
   const width = props.width || defaultWidth;
   return (
@@ -135,7 +135,7 @@ const SnowflakeLogoIcon = (props: { height: number; width: number; }) => {
   );
 };
 
-const SqlServerLogoIcon = (props: { height: number; width: number; }) => {
+const SqlServerLogoIcon = (props: { height: number; width: number }) => {
   const height = props.height || defaultHeight;
   const width = props.width || defaultWidth;
   return (
@@ -187,7 +187,7 @@ const SqlServerLogoIcon = (props: { height: number; width: number; }) => {
 
 // Generate the SVG for the MySQL logo
 
-const MySqlLogoIcon = (props: { height: number; width: number; }) => {
+const MySqlLogoIcon = (props: { height: number; width: number }) => {
   const height = props.height || defaultHeight;
   const width = props.width || defaultWidth;
   return (
@@ -207,7 +207,7 @@ const MySqlLogoIcon = (props: { height: number; width: number; }) => {
   );
 };
 
-const PostgresLogoIcon = (props: { height: number; width: number; }) => {
+const PostgresLogoIcon = (props: { height: number; width: number }) => {
   const height = props.height || defaultHeight;
   const width = props.width || defaultWidth;
   return (
@@ -271,7 +271,7 @@ const PostgresLogoIcon = (props: { height: number; width: number; }) => {
   );
 };
 
-const YamlLogoIcon = (props: { height: number; width: number; }) => {
+const YamlLogoIcon = (props: { height: number; width: number }) => {
   const height = props.height || defaultHeight;
   const width = props.width || defaultWidth;
   return (
@@ -288,7 +288,7 @@ const YamlLogoIcon = (props: { height: number; width: number; }) => {
   );
 };
 
-const MetabaseIcon = (props: { height: number; width: number; }) => {
+const MetabaseIcon = (props: { height: number; width: number }) => {
   const height = props.height || defaultHeight;
   const width = props.width || defaultWidth;
   return (
@@ -300,56 +300,155 @@ const MetabaseIcon = (props: { height: number; width: number; }) => {
       preserveAspectRatio="xMidYMid"
     >
       <g fill="#509EE3">
-        <ellipse cx="19.3939396" cy="82.7565395" rx="19.3939394" ry="19.703938">
-        </ellipse>
-          <ellipse cx="19.3939396" cy="137.927566" rx="19.3939394" ry="19.703938">
-        </ellipse>
-          <ellipse opacity="0.2" cx="73.6969698" cy="82.7565395" rx="19.3939394" ry="19.703938">
-        </ellipse>
-          <ellipse cx="73.6969698" cy="138.463513" rx="19.3939394" ry="19.703938">
-        </ellipse>
-          <ellipse opacity="0.2" cx="128" cy="82.7565395" rx="19.3939394" ry="19.703938">
-        </ellipse>
-          <ellipse opacity="0.2" cx="128" cy="19.703938" rx="19.3939394" ry="19.703938">
-        </ellipse>
-          <ellipse opacity="0.2" cx="128" cy="138.463513" rx="19.3939394" ry="19.703938">
-        </ellipse>
-          <ellipse opacity="0.2" cx="182.30303" cy="82.7565395" rx="19.3939394" ry="19.703938">
-        </ellipse>
-          <ellipse cx="236.60606" cy="82.7565395" rx="19.3939394" ry="19.703938">
-        </ellipse>
-          <ellipse cx="182.30303" cy="138.463513" rx="19.3939394" ry="19.703938">
-        </ellipse>
-          <ellipse cx="236.60606" cy="138.463513" rx="19.3939394" ry="19.703938">
-        </ellipse>
-          <ellipse cx="19.3939396" cy="193.098592" rx="19.3939394" ry="19.703938">
-        </ellipse>
-          <ellipse opacity="0.2" cx="73.6969698" cy="193.634539" rx="19.3939394" ry="19.703938">
-        </ellipse>
-          <ellipse cx="128" cy="193.634539" rx="19.3939394" ry="19.703938">
-        </ellipse>
-          <ellipse opacity="0.2" cx="182.30303" cy="193.634539" rx="19.3939394" ry="19.703938">
-        </ellipse>
-          <ellipse cx="236.60606" cy="193.634539" rx="19.3939394" ry="19.703938">
-        </ellipse>
-          <ellipse cx="19.3939396" cy="248.269618" rx="19.3939394" ry="19.703938">
-        </ellipse>
-          <ellipse opacity="0.2" cx="73.6969698" cy="248.805565" rx="19.3939394" ry="19.703938">
-        </ellipse>
-          <ellipse opacity="0.2" cx="128" cy="248.805565" rx="19.3939394" ry="19.703938">
-        </ellipse>
-          <ellipse opacity="0.2" cx="128" cy="303.976591" rx="19.3939394" ry="19.703938">
-        </ellipse>
-          <ellipse opacity="0.2" cx="182.30303" cy="248.805565" rx="19.3939394" ry="19.703938">
-        </ellipse>
-          <ellipse cx="236.60606" cy="248.805565" rx="19.3939394" ry="19.703938">
-        </ellipse>
+        <ellipse
+          cx="19.3939396"
+          cy="82.7565395"
+          rx="19.3939394"
+          ry="19.703938"
+        ></ellipse>
+        <ellipse
+          cx="19.3939396"
+          cy="137.927566"
+          rx="19.3939394"
+          ry="19.703938"
+        ></ellipse>
+        <ellipse
+          opacity="0.2"
+          cx="73.6969698"
+          cy="82.7565395"
+          rx="19.3939394"
+          ry="19.703938"
+        ></ellipse>
+        <ellipse
+          cx="73.6969698"
+          cy="138.463513"
+          rx="19.3939394"
+          ry="19.703938"
+        ></ellipse>
+        <ellipse
+          opacity="0.2"
+          cx="128"
+          cy="82.7565395"
+          rx="19.3939394"
+          ry="19.703938"
+        ></ellipse>
+        <ellipse
+          opacity="0.2"
+          cx="128"
+          cy="19.703938"
+          rx="19.3939394"
+          ry="19.703938"
+        ></ellipse>
+        <ellipse
+          opacity="0.2"
+          cx="128"
+          cy="138.463513"
+          rx="19.3939394"
+          ry="19.703938"
+        ></ellipse>
+        <ellipse
+          opacity="0.2"
+          cx="182.30303"
+          cy="82.7565395"
+          rx="19.3939394"
+          ry="19.703938"
+        ></ellipse>
+        <ellipse
+          cx="236.60606"
+          cy="82.7565395"
+          rx="19.3939394"
+          ry="19.703938"
+        ></ellipse>
+        <ellipse
+          cx="182.30303"
+          cy="138.463513"
+          rx="19.3939394"
+          ry="19.703938"
+        ></ellipse>
+        <ellipse
+          cx="236.60606"
+          cy="138.463513"
+          rx="19.3939394"
+          ry="19.703938"
+        ></ellipse>
+        <ellipse
+          cx="19.3939396"
+          cy="193.098592"
+          rx="19.3939394"
+          ry="19.703938"
+        ></ellipse>
+        <ellipse
+          opacity="0.2"
+          cx="73.6969698"
+          cy="193.634539"
+          rx="19.3939394"
+          ry="19.703938"
+        ></ellipse>
+        <ellipse
+          cx="128"
+          cy="193.634539"
+          rx="19.3939394"
+          ry="19.703938"
+        ></ellipse>
+        <ellipse
+          opacity="0.2"
+          cx="182.30303"
+          cy="193.634539"
+          rx="19.3939394"
+          ry="19.703938"
+        ></ellipse>
+        <ellipse
+          cx="236.60606"
+          cy="193.634539"
+          rx="19.3939394"
+          ry="19.703938"
+        ></ellipse>
+        <ellipse
+          cx="19.3939396"
+          cy="248.269618"
+          rx="19.3939394"
+          ry="19.703938"
+        ></ellipse>
+        <ellipse
+          opacity="0.2"
+          cx="73.6969698"
+          cy="248.805565"
+          rx="19.3939394"
+          ry="19.703938"
+        ></ellipse>
+        <ellipse
+          opacity="0.2"
+          cx="128"
+          cy="248.805565"
+          rx="19.3939394"
+          ry="19.703938"
+        ></ellipse>
+        <ellipse
+          opacity="0.2"
+          cx="128"
+          cy="303.976591"
+          rx="19.3939394"
+          ry="19.703938"
+        ></ellipse>
+        <ellipse
+          opacity="0.2"
+          cx="182.30303"
+          cy="248.805565"
+          rx="19.3939394"
+          ry="19.703938"
+        ></ellipse>
+        <ellipse
+          cx="236.60606"
+          cy="248.805565"
+          rx="19.3939394"
+          ry="19.703938"
+        ></ellipse>
       </g>
     </svg>
   );
 };
 
-const LookerIcon = (props: { height: number; width: number; }) => {
+const LookerIcon = (props: { height: number; width: number }) => {
   const height = props.height || defaultHeight;
   const width = props.width || defaultWidth;
   return (
@@ -364,42 +463,126 @@ const LookerIcon = (props: { height: number; width: number; }) => {
       </defs>
       <g id="Layer_2" data-name="Layer 2">
         <g id="specs">
-          <path className="cls-1" d="M58.49,0A16.6,16.6,0,0,0,44.72,25.86l7.09-7.08a6.88,6.88,0,0,1-.35-2.19,7,7,0,1,1,7,7,6.87,6.87,0,0,1-2.18-.35l-7.08,7.08A16.59,16.59,0,1,0,58.49,0Z"/>
-          <path className="cls-2" d="M51.89,48.35a25.79,25.79,0,0,0-5.17-15.54L37.52,42A13.19,13.19,0,0,1,35,57.92l5,12.22A25.93,25.93,0,0,0,51.89,48.35Z"/>
-          <path className="cls-3" d="M26.18,61.54h-.24a13.2,13.2,0,1,1,7.25-24.23l9.11-9.11A25.94,25.94,0,1,0,25.94,74.29a26.53,26.53,0,0,0,5.24-.52Z"/>
-          <path className="cls-4" d="M58.84,72.11a58.87,58.87,0,0,0-17,2.49l7.29,17.81a40.19,40.19,0,0,1,9.7-1.18,39.71,39.71,0,1,1-28.09,11.63,40.12,40.12,0,0,1,9.47-7L33,78.1a58.87,58.87,0,1,0,25.89-6Z"/>
-          <path className="cls-5" d="M174.72,24.34h16.55V149.27H252.2V165H174.72Z"/>
-          <path className="cls-5" d="M276.19,158.23a47.42,47.42,0,0,1-17.66-18.51,53.43,53.43,0,0,1-6.33-25.88A53.43,53.43,0,0,1,258.53,88a47.42,47.42,0,0,1,17.66-18.51,51.17,51.17,0,0,1,51,0A47.56,47.56,0,0,1,344.86,88a53.54,53.54,0,0,1,6.33,25.88,53.54,53.54,0,0,1-6.33,25.88,47.56,47.56,0,0,1-17.66,18.51,51.17,51.17,0,0,1-51,0Zm42-12.18A32.79,32.79,0,0,0,330.5,133.3a39.31,39.31,0,0,0,4.63-19.46,39.34,39.34,0,0,0-4.63-19.46,32.79,32.79,0,0,0-12.28-12.75,32.37,32.37,0,0,0-16.53-4.44,32.84,32.84,0,0,0-29,17.19,39.44,39.44,0,0,0-4.62,19.46,39.42,39.42,0,0,0,4.62,19.46,33,33,0,0,0,45.53,12.75Z"/>
-          <path className="cls-5" d="M383.77,158.23a47.56,47.56,0,0,1-17.66-18.51,53.54,53.54,0,0,1-6.33-25.88A53.54,53.54,0,0,1,366.11,88a47.56,47.56,0,0,1,17.66-18.51,51.17,51.17,0,0,1,51,0A47.49,47.49,0,0,1,452.44,88a53.54,53.54,0,0,1,6.33,25.88,53.54,53.54,0,0,1-6.33,25.88,47.49,47.49,0,0,1-17.66,18.51,51.17,51.17,0,0,1-51,0Zm42-12.18a32.86,32.86,0,0,0,12.28-12.75,39.42,39.42,0,0,0,4.63-19.46,39.45,39.45,0,0,0-4.63-19.46,32.86,32.86,0,0,0-12.28-12.75,32.37,32.37,0,0,0-16.53-4.44,32.92,32.92,0,0,0-16.63,4.44,32.59,32.59,0,0,0-12.37,12.75,39.34,39.34,0,0,0-4.63,19.46,39.31,39.31,0,0,0,4.63,19.46,32.59,32.59,0,0,0,12.37,12.75,32.92,32.92,0,0,0,16.63,4.44A32.37,32.37,0,0,0,425.81,146.05Z"/>
-          <path className="cls-5" d="M470.66,24.34H487.2v88.92L537,62.67h21v.78l-42,42.41,40.1,58.4V165H536.26l-31.93-47.7L487.2,134.47V165H470.66Z"/>
-          <path className="cls-5" d="M577.45,158.42a45.88,45.88,0,0,1-17.1-18.23A55.12,55.12,0,0,1,554.22,114,57.48,57.48,0,0,1,560,88.43a46.28,46.28,0,0,1,16.43-18.8,43.74,43.74,0,0,1,24.47-7q14.16,0,24.56,6.33a42.1,42.1,0,0,1,16,17.48A56.33,56.33,0,0,1,647,112a33.68,33.68,0,0,1-.38,4.91H570.27q.57,11,5.29,18.52a30.89,30.89,0,0,0,12,11.33,32.56,32.56,0,0,0,15.21,3.78q18.88,0,28.52-17.38l13.6,6.61a47.9,47.9,0,0,1-16.81,18.42Q617.31,165,602.2,165A46.92,46.92,0,0,1,577.45,158.42ZM630,103.64a31.32,31.32,0,0,0-3.4-12.09,26.08,26.08,0,0,0-9.45-10.2q-6.42-4.16-16.24-4.16a27.52,27.52,0,0,0-19.27,7.27q-7.93,7.28-10.39,19.18Z"/>
-          <path className="cls-5" d="M657.68,62.69h15.76v19h.78q2.92-8.18,11.29-13.63A31.66,31.66,0,0,1,703,62.64a28.83,28.83,0,0,1,11.68,2.15V82.5a31,31,0,0,0-14-3.12,23.07,23.07,0,0,0-13.24,4.1,29.53,29.53,0,0,0-9.64,11,31.92,31.92,0,0,0-3.6,14.93V165H657.68Z"/>
+          <path
+            className="cls-1"
+            d="M58.49,0A16.6,16.6,0,0,0,44.72,25.86l7.09-7.08a6.88,6.88,0,0,1-.35-2.19,7,7,0,1,1,7,7,6.87,6.87,0,0,1-2.18-.35l-7.08,7.08A16.59,16.59,0,1,0,58.49,0Z"
+          />
+          <path
+            className="cls-2"
+            d="M51.89,48.35a25.79,25.79,0,0,0-5.17-15.54L37.52,42A13.19,13.19,0,0,1,35,57.92l5,12.22A25.93,25.93,0,0,0,51.89,48.35Z"
+          />
+          <path
+            className="cls-3"
+            d="M26.18,61.54h-.24a13.2,13.2,0,1,1,7.25-24.23l9.11-9.11A25.94,25.94,0,1,0,25.94,74.29a26.53,26.53,0,0,0,5.24-.52Z"
+          />
+          <path
+            className="cls-4"
+            d="M58.84,72.11a58.87,58.87,0,0,0-17,2.49l7.29,17.81a40.19,40.19,0,0,1,9.7-1.18,39.71,39.71,0,1,1-28.09,11.63,40.12,40.12,0,0,1,9.47-7L33,78.1a58.87,58.87,0,1,0,25.89-6Z"
+          />
+          <path
+            className="cls-5"
+            d="M174.72,24.34h16.55V149.27H252.2V165H174.72Z"
+          />
+          <path
+            className="cls-5"
+            d="M276.19,158.23a47.42,47.42,0,0,1-17.66-18.51,53.43,53.43,0,0,1-6.33-25.88A53.43,53.43,0,0,1,258.53,88a47.42,47.42,0,0,1,17.66-18.51,51.17,51.17,0,0,1,51,0A47.56,47.56,0,0,1,344.86,88a53.54,53.54,0,0,1,6.33,25.88,53.54,53.54,0,0,1-6.33,25.88,47.56,47.56,0,0,1-17.66,18.51,51.17,51.17,0,0,1-51,0Zm42-12.18A32.79,32.79,0,0,0,330.5,133.3a39.31,39.31,0,0,0,4.63-19.46,39.34,39.34,0,0,0-4.63-19.46,32.79,32.79,0,0,0-12.28-12.75,32.37,32.37,0,0,0-16.53-4.44,32.84,32.84,0,0,0-29,17.19,39.44,39.44,0,0,0-4.62,19.46,39.42,39.42,0,0,0,4.62,19.46,33,33,0,0,0,45.53,12.75Z"
+          />
+          <path
+            className="cls-5"
+            d="M383.77,158.23a47.56,47.56,0,0,1-17.66-18.51,53.54,53.54,0,0,1-6.33-25.88A53.54,53.54,0,0,1,366.11,88a47.56,47.56,0,0,1,17.66-18.51,51.17,51.17,0,0,1,51,0A47.49,47.49,0,0,1,452.44,88a53.54,53.54,0,0,1,6.33,25.88,53.54,53.54,0,0,1-6.33,25.88,47.49,47.49,0,0,1-17.66,18.51,51.17,51.17,0,0,1-51,0Zm42-12.18a32.86,32.86,0,0,0,12.28-12.75,39.42,39.42,0,0,0,4.63-19.46,39.45,39.45,0,0,0-4.63-19.46,32.86,32.86,0,0,0-12.28-12.75,32.37,32.37,0,0,0-16.53-4.44,32.92,32.92,0,0,0-16.63,4.44,32.59,32.59,0,0,0-12.37,12.75,39.34,39.34,0,0,0-4.63,19.46,39.31,39.31,0,0,0,4.63,19.46,32.59,32.59,0,0,0,12.37,12.75,32.92,32.92,0,0,0,16.63,4.44A32.37,32.37,0,0,0,425.81,146.05Z"
+          />
+          <path
+            className="cls-5"
+            d="M470.66,24.34H487.2v88.92L537,62.67h21v.78l-42,42.41,40.1,58.4V165H536.26l-31.93-47.7L487.2,134.47V165H470.66Z"
+          />
+          <path
+            className="cls-5"
+            d="M577.45,158.42a45.88,45.88,0,0,1-17.1-18.23A55.12,55.12,0,0,1,554.22,114,57.48,57.48,0,0,1,560,88.43a46.28,46.28,0,0,1,16.43-18.8,43.74,43.74,0,0,1,24.47-7q14.16,0,24.56,6.33a42.1,42.1,0,0,1,16,17.48A56.33,56.33,0,0,1,647,112a33.68,33.68,0,0,1-.38,4.91H570.27q.57,11,5.29,18.52a30.89,30.89,0,0,0,12,11.33,32.56,32.56,0,0,0,15.21,3.78q18.88,0,28.52-17.38l13.6,6.61a47.9,47.9,0,0,1-16.81,18.42Q617.31,165,602.2,165A46.92,46.92,0,0,1,577.45,158.42ZM630,103.64a31.32,31.32,0,0,0-3.4-12.09,26.08,26.08,0,0,0-9.45-10.2q-6.42-4.16-16.24-4.16a27.52,27.52,0,0,0-19.27,7.27q-7.93,7.28-10.39,19.18Z"
+          />
+          <path
+            className="cls-5"
+            d="M657.68,62.69h15.76v19h.78q2.92-8.18,11.29-13.63A31.66,31.66,0,0,1,703,62.64a28.83,28.83,0,0,1,11.68,2.15V82.5a31,31,0,0,0-14-3.12,23.07,23.07,0,0,0-13.24,4.1,29.53,29.53,0,0,0-9.64,11,31.92,31.92,0,0,0-3.6,14.93V165H657.68Z"
+          />
         </g>
       </g>
     </svg>
   );
 };
 
-const RedshiftIcon = (props: { height: number; width: number; }) => {
+const RedshiftIcon = (props: { height: number; width: number }) => {
   const height = props.height || defaultHeight;
   const width = props.width || defaultWidth;
   return (
     <svg
-        viewBox="0 0 1615 1783.7"
-        xmlns="http://www.w3.org/2000/svg"
-        height={height}
-        width={width}
+      viewBox="0 0 1615 1783.7"
+      xmlns="http://www.w3.org/2000/svg"
+      height={height}
+      width={width}
     >
-        <path d="m807.5 1363.8 678.3 161.5v-1270.5l-678.3 161.5z" fill="#205b97"/>
-        <path d="m1485.8 254.8 129.2 64.6v1141.3l-129.2 64.6zm-678.3 1109-678.3 161.5v-1270.5l678.3 161.5z" fill="#5193ce"/>
-        <path d="m129.2 254.8-129.2 64.6v1141.3l129.2 64.6z" fill="#205b97"/>
-        <path d="m979.8 1783.7 258.4-129.2v-1525.3l-258.4-129.2-79 847z" fill="#5193ce"/>
-        <path d="m635.2 1783.7-258.4-129.2v-1525.3l258.4-129.2 79 847z" fill="#205b97"/>
-        <path d="m635.2 0h348.1v1780.1h-348.1z" fill="#2e73b7"/>
+      <path
+        d="m807.5 1363.8 678.3 161.5v-1270.5l-678.3 161.5z"
+        fill="#205b97"
+      />
+      <path
+        d="m1485.8 254.8 129.2 64.6v1141.3l-129.2 64.6zm-678.3 1109-678.3 161.5v-1270.5l678.3 161.5z"
+        fill="#5193ce"
+      />
+      <path d="m129.2 254.8-129.2 64.6v1141.3l129.2 64.6z" fill="#205b97" />
+      <path
+        d="m979.8 1783.7 258.4-129.2v-1525.3l-258.4-129.2-79 847z"
+        fill="#5193ce"
+      />
+      <path
+        d="m635.2 1783.7-258.4-129.2v-1525.3l258.4-129.2 79 847z"
+        fill="#205b97"
+      />
+      <path d="m635.2 0h348.1v1780.1h-348.1z" fill="#2e73b7" />
     </svg>
   );
 };
 
+const OpenlineageLogoIcon = (props: { height: number; width: number }) => {
+  const height = props.height || defaultHeight;
+  const width = props.width || defaultWidth;
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox="0 0 120 120"
+      version="1.1"
+      xmlns="http://www.w3.org/2000/svg"
+      fillRule="evenodd"
+      clipRule="evenodd"
+      strokeLinejoin="round"
+      strokeMiterlimit="2"
+    >
+      <g transform="matrix(1,0,0,1,-409.803,0)">
+        <g
+          id="openlineage-icon-color"
+          transform="matrix(0.995272,0,0,1.38053,409.803,0)"
+        >
+          <rect x="0" y="0" width="120.57" height="86.923" fill="none" />
+          <g transform="matrix(1.00475,0,0,0.724359,-0.469881,11.2728)">
+            <g transform="matrix(1,0,0,1,39.5361,51.8347)">
+              <path
+                d="M0,-16.664C-1.133,-18.991 -2.901,-20.95 -5.1,-22.314C-7.347,-23.674 -9.934,-24.368 -12.56,-24.314C-17.892,-24.446 -22.808,-21.446 -25.13,-16.644C-26.394,-14.08 -27.035,-11.253 -27,-8.394C-27.049,-5.535 -26.422,-2.705 -25.17,-0.134C-22.855,4.67 -17.941,7.674 -12.61,7.546C-9.985,7.592 -7.4,6.899 -5.15,5.546C-2.931,4.177 -1.146,2.208 0,-0.134C1.261,-2.702 1.892,-5.534 1.84,-8.394C1.893,-11.258 1.263,-14.093 0,-16.664M2.9,1.436C-0.053,7.261 -6.081,10.879 -12.61,10.746C-19.138,10.887 -25.17,7.276 -28.13,1.456C-29.681,-1.586 -30.463,-4.96 -30.41,-8.374C-30.468,-11.804 -29.686,-15.196 -28.13,-18.254C-26.692,-21.064 -24.5,-23.419 -21.8,-25.054C-19.023,-26.706 -15.841,-27.551 -12.61,-27.494C-9.379,-27.55 -6.197,-26.705 -3.42,-25.054C-0.723,-23.418 1.465,-21.063 2.9,-18.254C4.461,-15.194 5.247,-11.798 5.19,-8.364C5.236,-4.96 4.449,-1.596 2.9,1.436"
+                fill="rgb(116,164,188)"
+                fillRule="nonzero"
+              />
+            </g>
+            <g transform="matrix(1,0,0,1,83.4978,24.8649)">
+              <path
+                d="M0,37.192C-0.034,37.193 -0.068,37.193 -0.102,37.192L-19.102,37.192C-19.952,37.22 -20.664,36.554 -20.692,35.704C-20.693,35.67 -20.693,35.636 -20.692,35.602L-20.692,1.602C-20.703,1.171 -20.528,0.755 -20.212,0.462C-19.875,0.145 -19.424,-0.021 -18.962,0.002C-18.528,-0.008 -18.107,0.154 -17.792,0.452C-17.475,0.745 -17.3,1.161 -17.312,1.592L-17.312,34.062L-0.132,34.062C0.299,34.04 0.72,34.191 1.038,34.482C1.341,34.774 1.504,35.182 1.488,35.602C1.516,36.452 0.85,37.164 0,37.192M2.949,-15.389L-29.341,-15.389L-29.341,52.581L4.929,52.581L27.949,18.591L2.949,-15.389Z"
+                fill="rgb(116,164,188)"
+                fillRule="nonzero"
+              />
+            </g>
+          </g>
+        </g>
+      </g>
+    </svg>
+  );
+};
 
 export {
   BigQueryLogoIcon,
@@ -413,4 +596,5 @@ export {
   MetabaseIcon,
   LookerIcon,
   RedshiftIcon,
+  OpenlineageLogoIcon,
 };
